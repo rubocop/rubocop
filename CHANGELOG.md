@@ -7,6 +7,7 @@
 * [#3248](https://github.com/bbatsov/rubocop/issues/3248): Support 'ruby-' prefix in `.ruby-version`. ([@tjwp][])
 * [#3250](https://github.com/bbatsov/rubocop/pull/3250): Make regexp for cop names less restrictive in CommentConfig lines. ([@tjwp][])
 * [#3261](https://github.com/bbatsov/rubocop/pull/3261): Prefer `TargetRubyVersion` to `.ruby-version`. ([@tjwp][])
+* [#3249](https://github.com/bbatsov/rubocop/issues/3249): Account for `rescue nil` in `Style/ShadowedException`. ([@rrosenblum][])
 
 ## 0.41.1 (2016-06-26)
 

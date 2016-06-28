@@ -73,7 +73,13 @@ module RuboCop
 
             rescued_exceptions.each_with_object([]) do |exception, converted|
               begin
-                converted << instance_eval(exception, __FILE__, __LINE__)
+                evaled_exception = instance_eval(exception, __FILE__, __LINE__)
+                # `rescue nil` is valid syntax in all versions of Ruby. In Ruby
+                # 1.9.3, it effectively disables the `rescue`. In versions
+                # after 1.9.3, a `TypeError` is thrown when the statement is
+                # rescued. In order to account for this, we convert `nil` to
+                # `NilClass`.
+                converted << (evaled_exception || NilClass)
               rescue StandardError, ScriptError
                 next
               end
