@@ -39,10 +39,10 @@ module RuboCop
           end
 
           rescue_group_rescues_multiple_levels = rescued_groups.any? do |group|
-            !contains_multiple_levels_of_exceptions?(group)
+            contains_multiple_levels_of_exceptions?(group)
           end
 
-          return if rescue_group_rescues_multiple_levels &&
+          return if !rescue_group_rescues_multiple_levels &&
                     rescued_groups == sort_rescued_groups(rescued_groups)
 
           add_offense(node, :expression)
