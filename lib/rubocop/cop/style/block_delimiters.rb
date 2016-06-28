@@ -6,7 +6,7 @@ module RuboCop
     module Style
       # Check for uses of braces or do/end around single line or
       # multi-line blocks.
-      class BlockDelimiters < Cop
+      class BlockDelimiters < Cop # rubocop:disable Metrics/ClassLength
         include ConfigurableEnforcedStyle
 
         def on_send(node)
@@ -79,9 +79,11 @@ module RuboCop
             if b.is?('{')
               corrector.insert_before(b, ' ') unless whitespace_before?(b)
               corrector.insert_before(e, ' ') unless whitespace_before?(e)
+              corrector.insert_after(b, ' ') unless whitespace_after?(b)
               corrector.replace(b, 'do')
               corrector.replace(e, 'end')
             else
+              corrector.insert_after(b, ' ') unless whitespace_after?(b, 2)
               corrector.replace(b, '{')
               corrector.replace(e, '}')
             end
@@ -90,6 +92,10 @@ module RuboCop
 
         def whitespace_before?(node)
           node.source_buffer.source[node.begin_pos - 1, 1] =~ /\s/
+        end
+
+        def whitespace_after?(node, length = 1)
+          node.source_buffer.source[node.begin_pos + length, 1] =~ /\s/
         end
 
         def get_blocks(node, &block)
