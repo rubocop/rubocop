@@ -1205,6 +1205,10 @@ Lint/UnneededDisable:
                  It must be explicitly disabled.
   Enabled: true
 
+Lint/UnneededSplatExpansion:
+  Description: 'Checks for splat unnecessarily being called on literals'
+  Enabled: true
+
 Lint/UnusedBlockArgument:
   Description: 'Checks for unused block arguments.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#underscore-unused-vars'
@@ -1223,10 +1227,6 @@ Lint/UselessAccessModifier:
   Description: 'Checks for useless access modifiers.'
   Enabled: true
   ContextCreatingMethods: []
-
-Lint/UselessArraySplat:
-  Description: 'Checks for useless array splats.'
-  Enabled: true
 
 Lint/UselessAssignment:
   Description: 'Checks for useless assignment to a local variable.'

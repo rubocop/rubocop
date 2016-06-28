@@ -24,6 +24,7 @@
 ### Changes
 
 * [#3341](https://github.com/bbatsov/rubocop/issues/3341): Exclude RSpec tests from inspection by `Style/NumericPredicate` cop. ([@drenmi][])
+* Rename `Lint/UselessArraySplat` to `Lint/UnneededSplatExpansion`, and add functionality to check for unnecessary expansion of other literals. ([@rrosenblum][])
 
 ## 0.42.0 (2016-07-25)
 
