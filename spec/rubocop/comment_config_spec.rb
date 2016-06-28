@@ -57,7 +57,9 @@ describe RuboCop::CommentConfig do
         '# rubocop:enable Lint/RandOne foo bar!',            # 45
         '# rubocop:disable FlatMap',
         '[1, 2, 3, 4].map { |e| [e, e] }.flatten(1)',
-        '# rubocop:enable FlatMap'
+        '# rubocop:enable FlatMap',
+        '# rubocop:disable RSpec/Example',
+        '# rubocop:disable Custom2/Number9'                  # 50
       ]
     end
 
@@ -155,6 +157,14 @@ describe RuboCop::CommentConfig do
     it 'can handle double disable of one cop' do
       expect(disabled_lines_of_cop('Style/ClassVars'))
         .to eq([9, 10, 11] + (33..source.size).to_a)
+    end
+
+    it 'supports disabling cops with multiple uppercase letters' do
+      expect(disabled_lines_of_cop('RSpec/Example')).to include(49)
+    end
+
+    it 'supports disabling cops with numbers in their name' do
+      expect(disabled_lines_of_cop('Custom2/Number9')).to include(50)
     end
   end
 end

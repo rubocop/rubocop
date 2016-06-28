@@ -7,7 +7,7 @@ module RuboCop
   class CommentConfig
     UNNEEDED_DISABLE = 'Lint/UnneededDisable'.freeze
 
-    COP_NAME_PATTERN = '([A-Z][a-z]+/)?(?:[A-Z][a-z]+)+'.freeze
+    COP_NAME_PATTERN = '([A-Z]\w+/)?(?:[A-Z]\w+)'.freeze
     COP_NAMES_PATTERN = "(?:#{COP_NAME_PATTERN} , )*#{COP_NAME_PATTERN}".freeze
     COPS_PATTERN = "(all|#{COP_NAMES_PATTERN})".freeze
 
