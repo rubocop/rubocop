@@ -177,28 +177,42 @@ module RuboCop
       end
 
       def compile_seq_terms(tokens, cur_node)
-        terms = []
-        index = nil
-        until tokens.first == ')'
-          if tokens.first == '...'
-            return compile_ellipsis(tokens, cur_node, terms, index || 0)
-          elsif tokens.first == '$...'
-            return compile_capt_ellip(tokens, cur_node, terms, index || 0)
-          elsif index.nil?
-            # in 'sequence head' position; some expressions are compiled
-            # differently at 'sequence head' (notably 'node type' expressions)
-            # grep for seq_head to see where it makes a difference
-            terms << compile_expr(tokens, cur_node, true)
-            index = 0
-          else
-            child_node = "#{cur_node}.children[#{index}]"
-            terms << compile_expr(tokens, child_node, false)
-            index += 1
+        terms, size =
+          compile_seq_terms_with_size(tokens, cur_node) do |token, terms, index|
+            case token
+            when '...'.freeze
+              return compile_ellipsis(tokens, cur_node, terms, index)
+            when '$...'.freeze
+              return compile_capt_ellip(tokens, cur_node, terms, index)
+            end
           end
+
+        terms << "(#{cur_node}.children.size == #{size})"
+      end
+
+      def compile_seq_terms_with_size(tokens, cur_node)
+        index = nil
+        terms = []
+        until tokens.first == ')'
+          yield tokens.first, terms, index || 0
+          term, index = compile_expr_with_index(tokens, cur_node, index)
+          terms << term
         end
-        terms << "(#{cur_node}.children.size == #{index})"
+
         tokens.shift # drop concluding )
-        terms
+        [terms, index]
+      end
+
+      def compile_expr_with_index(tokens, cur_node, index)
+        if index.nil?
+          # in 'sequence head' position; some expressions are compiled
+          # differently at 'sequence head' (notably 'node type' expressions)
+          # grep for seq_head to see where it makes a difference
+          [compile_expr(tokens, cur_node, true), 0]
+        else
+          child_node = "#{cur_node}.children[#{index}]"
+          [compile_expr(tokens, child_node, false), index + 1]
+        end
       end
 
       def compile_ellipsis(tokens, cur_node, terms, index)

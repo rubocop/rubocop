@@ -76,23 +76,7 @@ module RuboCop
           global_var, = *node
 
           if style == :use_english_names
-            regular, english = ENGLISH_VARS[global_var].partition do |var|
-              NON_ENGLISH_VARS.include? var
-            end
-
-            # For now, we assume that lists are 2 items or less. Easy grammar!
-            regular_msg = regular.join('` or `')
-            english_msg = english.join('` or `')
-
-            if !regular.empty? && !english.empty?
-              format(MSG_BOTH, english_msg, regular_msg, global_var)
-            elsif !regular.empty?
-              format(MSG_REGULAR, regular_msg, global_var)
-            elsif !english.empty?
-              format(MSG_ENGLISH, english_msg, global_var)
-            else
-              raise 'Bug in SpecialGlobalVars - global var w/o preferred vars!'
-            end
+            format_english_message(global_var)
           else
             format(MSG_REGULAR, preferred_names(global_var).first, global_var)
           end
@@ -112,6 +96,32 @@ module RuboCop
         end
 
         private
+
+        def format_english_message(global_var)
+          regular, english = ENGLISH_VARS[global_var].partition do |var|
+            NON_ENGLISH_VARS.include? var
+          end
+
+          format_message(english, regular, global_var)
+        end
+
+        def format_message(english, regular, global_var)
+          if !regular.empty? && !english.empty?
+            format(MSG_BOTH, format_list(english), format_list(regular),
+                   global_var)
+          elsif !regular.empty?
+            format(MSG_REGULAR, format_list(regular), global_var)
+          elsif !english.empty?
+            format(MSG_ENGLISH, format_list(english), global_var)
+          else
+            raise 'Bug in SpecialGlobalVars - global var w/o preferred vars!'
+          end
+        end
+
+        # For now, we assume that lists are 2 items or less. Easy grammar!
+        def format_list(items)
+          items.join('` or `')
+        end
 
         def replacement(node, global_var)
           parent_type = node.parent && node.parent.type
