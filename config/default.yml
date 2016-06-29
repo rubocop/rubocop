@@ -73,9 +73,12 @@ AllCops:
   # cache location is secure from this kind of attack, and wish to use a
   # symlinked cache location, set this value to "true".
   AllowSymlinksInCacheRootDirectory: false
-  # What version of the Ruby interpreter is the inspected code intended to
+  # What MRI version of the Ruby interpreter is the inspected code intended to
   # run on? (If there is more than one, set this to the lowest version.)
-  TargetRubyVersion: 2.0
+  # If a value is specified for TargetRubyVersion then it is used.
+  # Else if .ruby-version exists and it contains an MRI version it is used.
+  # Otherwise we fallback to the oldest officially supported Ruby version (2.0).
+  TargetRubyVersion: ~
 
 # Indent private/protected/public as deep as method definitions
 Style/AccessModifierIndentation:

@@ -16,6 +16,8 @@ module RuboCop
 
     COMMON_PARAMS = %w(Exclude Include Severity
                        AutoCorrect StyleGuide Details).freeze
+    # 2.0 is the oldest officially supported Ruby version.
+    DEFAULT_RUBY_VERSION = 2.0
     KNOWN_RUBIES = [1.9, 2.0, 2.1, 2.2, 2.3].freeze
     OBSOLETE_COPS = {
       'Style/TrailingComma' =>
@@ -196,16 +198,18 @@ module RuboCop
 
     def target_ruby_version
       @target_ruby_version ||=
-        if File.file?('.ruby-version')
-          @target_ruby_version_source = :dot_ruby_version
-
-          /(ruby-)?(?<ruby_version>\d.\d)/ =~ File.read('.ruby-version')
-
-          ruby_version.to_f if ruby_version
-        else
+        if for_all_cops['TargetRubyVersion']
           @target_ruby_version_source = :rubocop_yml
 
           for_all_cops['TargetRubyVersion']
+        elsif File.file?('.ruby-version') &&
+              /\A(ruby-)?(?<version>\d+\.\d+)/ =~ File.read('.ruby-version')
+
+          @target_ruby_version_source = :dot_ruby_version
+
+          version.to_f
+        else
+          DEFAULT_RUBY_VERSION
         end
     end
 
