@@ -111,6 +111,7 @@ describe RuboCop::Cop::Lint::ShadowedException do
                            'end'])
 
       expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+      expect(cop.highlights).to eq(['rescue StandardError, Exception'])
     end
 
     it 'accepts splat arguments passed to rescue' do
@@ -152,6 +153,7 @@ describe RuboCop::Cop::Lint::ShadowedException do
                            'end'])
 
       expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+      expect(cop.highlights).to eq(['rescue nil, StandardError, Exception'])
     end
   end
 
@@ -167,6 +169,9 @@ describe RuboCop::Cop::Lint::ShadowedException do
                            'end'])
 
       expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+      expect(cop.highlights).to eq([['rescue Exception',
+                                     '  handle_exception',
+                                     'rescue StandardError'].join("\n")])
     end
 
     it 'registers an offense when a higher level exception is rescued before ' \
@@ -181,6 +186,10 @@ describe RuboCop::Cop::Lint::ShadowedException do
                            'end'])
 
       expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+      expect(cop.highlights).to eq([['rescue Exception',
+                                     '  handle_exception',
+                                     'rescue NoMethodError, ZeroDivisionError']
+                                     .join("\n")])
     end
 
     it 'registers an offense rescuing out of order exceptions when there ' \
@@ -196,6 +205,9 @@ describe RuboCop::Cop::Lint::ShadowedException do
                            'end'])
 
       expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+      expect(cop.highlights).to eq([['rescue Exception',
+                                     '  handle_exception',
+                                     'rescue StandardError'].join("\n")])
     end
 
     it 'accepts rescuing exceptions in order of level' do
@@ -260,6 +272,9 @@ describe RuboCop::Cop::Lint::ShadowedException do
                              'end'])
 
         expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+        expect(cop.highlights).to eq([['rescue Exception',
+                                       '  b',
+                                       'rescue *BAR'].join("\n")])
       end
     end
 

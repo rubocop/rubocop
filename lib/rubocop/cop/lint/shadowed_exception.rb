@@ -45,10 +45,19 @@ module RuboCop
           return if !rescue_group_rescues_multiple_levels &&
                     rescued_groups == sort_rescued_groups(rescued_groups)
 
-          add_offense(node, :expression)
+          add_offense(node, offense_range(node, rescues))
         end
 
         private
+
+        def offense_range(node, rescues)
+          first_rescue = rescues.first
+          last_rescue = rescues.last
+          last_exceptions, = *last_rescue
+          Parser::Source::Range.new(node.loc.expression.source_buffer,
+                                    first_rescue.loc.expression.begin_pos,
+                                    last_exceptions.loc.expression.end_pos)
+        end
 
         def rescue_modifier?(node)
           node && node.rescue_type? &&
