@@ -376,34 +376,8 @@ describe RuboCop::Config do
   end
 
   describe '#target_ruby_version' do
-    context 'when .ruby-version is present' do
-      let(:ruby_version) { '2.2.4' }
-      let(:ruby_version_to_f) { 2.2 }
-
-      before do
-        allow(File).to receive(:file?).with('.ruby-version').and_return true
-        allow(File)
-          .to receive(:read)
-          .with('.ruby-version')
-          .and_return ruby_version
-      end
-
-      it 'reads it to determine the target ruby version' do
-        expect(configuration.target_ruby_version).to eq ruby_version_to_f
-      end
-
-      context 'when ruby version is prefixed by "ruby-"' do
-        let(:ruby_version) { 'ruby-2.3.0' }
-        let(:ruby_version_to_f) { 2.3 }
-
-        it 'correctly determines the target ruby version' do
-          expect(configuration.target_ruby_version).to eq ruby_version_to_f
-        end
-      end
-    end
-
-    context 'when .ruby-version is not present' do
-      let(:ruby_version) { 2.0 }
+    context 'when TargetRubyVersion is set' do
+      let(:ruby_version) { 2.1 }
 
       let(:hash) do
         {
@@ -414,11 +388,95 @@ describe RuboCop::Config do
       end
 
       before do
-        allow(File).to receive(:file?).with('.ruby-version').and_return false
+        allow(File).to receive(:file?).with('.ruby-version')
       end
 
-      it 'falls back to TargetRubyVersion' do
+      it 'uses TargetRubyVersion' do
         expect(configuration.target_ruby_version).to eq ruby_version
+      end
+
+      it 'does not read .ruby-version' do
+        configuration.target_ruby_version
+        expect(File).not_to have_received(:file?).with('.ruby-version')
+      end
+    end
+
+    context 'when TargetRubyVersion is not set' do
+      context 'when .ruby-version is present' do
+        before do
+          allow(File).to receive(:file?).with('.ruby-version').and_return true
+          allow(File)
+            .to receive(:read)
+            .with('.ruby-version')
+            .and_return ruby_version
+        end
+
+        context 'when .ruby-version contains an MRI version' do
+          let(:ruby_version) { '2.2.4' }
+          let(:ruby_version_to_f) { 2.2 }
+
+          it 'reads it to determine the target ruby version' do
+            expect(configuration.target_ruby_version).to eq ruby_version_to_f
+          end
+        end
+
+        context 'when the MRI version contains multiple digits' do
+          let(:ruby_version) { '10.11.0' }
+          let(:ruby_version_to_f) { 10.11 }
+
+          it 'reads it to determine the target ruby version' do
+            expect(configuration.target_ruby_version).to eq ruby_version_to_f
+          end
+        end
+
+        context 'when .ruby-version contains a version prefixed by "ruby-"' do
+          let(:ruby_version) { 'ruby-2.3.0' }
+          let(:ruby_version_to_f) { 2.3 }
+
+          it 'correctly determines the target ruby version' do
+            expect(configuration.target_ruby_version).to eq ruby_version_to_f
+          end
+        end
+
+        context 'when .ruby-version contains a JRuby version' do
+          let(:ruby_version) { 'jruby-9.1.2.0' }
+
+          it 'uses the default target ruby version' do
+            expect(configuration.target_ruby_version)
+              .to eq described_class::DEFAULT_RUBY_VERSION
+          end
+        end
+
+        context 'when .ruby-version contains a Rbx version' do
+          let(:ruby_version) { 'rbx-3.42' }
+
+          it 'uses the default target ruby version' do
+            expect(configuration.target_ruby_version)
+              .to eq described_class::DEFAULT_RUBY_VERSION
+          end
+        end
+
+        context 'when .ruby-version contains "system" version' do
+          let(:ruby_version) { 'system' }
+
+          it 'uses the default target ruby version' do
+            expect(configuration.target_ruby_version)
+              .to eq described_class::DEFAULT_RUBY_VERSION
+          end
+        end
+      end
+
+      context 'when .ruby-version is not present' do
+        let(:ruby_version) { described_class::DEFAULT_RUBY_VERSION }
+
+        before do
+          allow(File).to receive(:file?).with('.ruby-version').and_return false
+        end
+
+        it 'uses the default target ruby version' do
+          expect(configuration.target_ruby_version)
+            .to eq described_class::DEFAULT_RUBY_VERSION
+        end
       end
     end
   end
