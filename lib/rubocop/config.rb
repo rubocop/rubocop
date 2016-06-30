@@ -173,7 +173,7 @@ module RuboCop
     end
 
     def patterns_to_exclude
-      @patterns_to_exclude ||= for_all_cops['Exclude']
+      @patterns_to_exclude ||= for_all_cops['Exclude'] || []
     end
 
     def path_relative_to_config(path)

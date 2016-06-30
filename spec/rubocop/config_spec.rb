@@ -246,6 +246,18 @@ describe RuboCop::Config do
         expect(configuration.file_to_exclude?('baz.rb')).to be_falsey
       end
     end
+
+    context 'when the passed path is blank' do
+      it 'does not raise an error' do
+        loaded_path = '/tmp/.rubocop.yml'
+        create_file(loaded_path,
+                    ['AllCops:',
+                     '  Exclude:'])
+        configuration = described_class.new({}, loaded_path)
+
+        expect(configuration.file_to_exclude?('foo.rb')).to be_falsey
+      end
+    end
   end
 
   describe '#patterns_to_include' do
