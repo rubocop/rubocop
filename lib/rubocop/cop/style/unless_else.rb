@@ -14,7 +14,7 @@ module RuboCop
 
           # discard ternary ops and modifier if/unless nodes
           return unless loc.respond_to?(:keyword) && loc.respond_to?(:else)
-          return unless loc.keyword.is?('unless') && loc.else
+          return unless loc.keyword.is?('unless'.freeze) && loc.else
 
           add_offense(node, :expression)
         end
