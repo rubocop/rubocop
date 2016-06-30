@@ -37,10 +37,6 @@ module RuboCop
           _receiver, method_name, *_args = *node
 
           node.each_ancestor(*ASGN_NODES).any? do |asgn_node|
-            if asgn_node.masgn_type?
-              mlhs_node, _mrhs_node = *asgn_node
-              asgn_node = mlhs_node.children[node.sibling_index]
-            end
             # `obj.method = value` parses as (send ... :method= ...), and will
             # not be returned as an `asgn_node` here
             # however, `obj.method ||= value` parses as (or-asgn (send ...) ...)
@@ -48,6 +44,14 @@ module RuboCop
             if asgn_node.or_asgn_type? || asgn_node.and_asgn_type?
               asgn_node, _value = *asgn_node
               return false if asgn_node.send_type?
+            end
+
+            if asgn_node.masgn_type?
+              mlhs_node, _mrhs_node = *asgn_node
+              var_nodes = *mlhs_node
+              vars = var_nodes.map { |n| (_b = *n).first }
+
+              return vars.include?(method_name)
             end
 
             asgn_node.loc.name.source == method_name.to_s
