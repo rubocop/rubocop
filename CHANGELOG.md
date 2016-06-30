@@ -10,6 +10,7 @@
 * [#3249](https://github.com/bbatsov/rubocop/issues/3249): Account for `rescue nil` in `Style/ShadowedException`. ([@rrosenblum][])
 * Modify the highlighting in `Style/ShadowedException` to be more useful. Highlight just `rescue` area. ([@rrosenblum][])
 * [#3129](https://github.com/bbatsov/rubocop/issues/3129): Fix `Style/MethodCallParentheses` to work with multiple assignments. ([@tejasbubane][])
+* [#3247](https://github.com/bbatsov/rubocop/issues/3247): Ensure whitespace after beginning of block in `Style/BlockDelimiters`. ([@tjwp][])
 
 ## 0.41.1 (2016-06-26)
 

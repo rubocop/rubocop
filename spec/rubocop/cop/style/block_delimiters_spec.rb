@@ -176,21 +176,36 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
       expect(cop.messages).to be_empty
     end
 
-    it 'auto-corrects { and } to do and end if it is a procedural block' do
-      source = <<-END.strip_indent
-        each { |x|
-          x
-        }
-      END
-
-      expected_source = <<-END.strip_indent
+    context 'with a procedural block' do
+      let(:corrected_source) do
+        <<-END.strip_indent
         each do |x|
           x
         end
-      END
+        END
+      end
 
-      new_source = autocorrect_source(cop, source)
-      expect(new_source).to eq(expected_source)
+      it 'auto-corrects { and } to do and end' do
+        source = <<-END.strip_indent
+        each { |x|
+          x
+        }
+        END
+
+        new_source = autocorrect_source(cop, source)
+        expect(new_source).to eq(corrected_source)
+      end
+
+      it 'auto-corrects { and } to do and end with appropriate spacing' do
+        source = <<-END.strip_indent
+        each {|x|
+          x
+        }
+        END
+
+        new_source = autocorrect_source(cop, source)
+        expect(new_source).to eq(corrected_source)
+      end
     end
 
     it 'does not auto-correct {} to do-end if it is a known functional ' \
@@ -220,6 +235,23 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
     it 'auto-corrects do-end to {} if it is a functional block' do
       source = <<-END.strip_indent
         foo = map do |x|
+          x
+        end
+      END
+
+      expected_source = <<-END.strip_indent
+        foo = map { |x|
+          x
+        }
+      END
+
+      new_source = autocorrect_source(cop, source)
+      expect(new_source).to eq(expected_source)
+    end
+
+    it 'auto-corrects do-end to {} with appropriate spacing' do
+      source = <<-END.strip_indent
+        foo = map do|x|
           x
         end
       END
