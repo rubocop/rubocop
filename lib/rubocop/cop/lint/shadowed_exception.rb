@@ -39,16 +39,25 @@ module RuboCop
           end
 
           rescue_group_rescues_multiple_levels = rescued_groups.any? do |group|
-            !contains_multiple_levels_of_exceptions?(group)
+            contains_multiple_levels_of_exceptions?(group)
           end
 
-          return if rescue_group_rescues_multiple_levels &&
+          return if !rescue_group_rescues_multiple_levels &&
                     rescued_groups == sort_rescued_groups(rescued_groups)
 
-          add_offense(node, :expression)
+          add_offense(node, offense_range(node, rescues))
         end
 
         private
+
+        def offense_range(node, rescues)
+          first_rescue = rescues.first
+          last_rescue = rescues.last
+          last_exceptions, = *last_rescue
+          Parser::Source::Range.new(node.loc.expression.source_buffer,
+                                    first_rescue.loc.expression.begin_pos,
+                                    last_exceptions.loc.expression.end_pos)
+        end
 
         def rescue_modifier?(node)
           node && node.rescue_type? &&
@@ -73,7 +82,13 @@ module RuboCop
 
             rescued_exceptions.each_with_object([]) do |exception, converted|
               begin
-                converted << instance_eval(exception, __FILE__, __LINE__)
+                evaled_exception = instance_eval(exception, __FILE__, __LINE__)
+                # `rescue nil` is valid syntax in all versions of Ruby. In Ruby
+                # 1.9.3, it effectively disables the `rescue`. In versions
+                # after 1.9.3, a `TypeError` is thrown when the statement is
+                # rescued. In order to account for this, we convert `nil` to
+                # `NilClass`.
+                converted << (evaled_exception || NilClass)
               rescue StandardError, ScriptError
                 next
               end

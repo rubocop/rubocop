@@ -111,6 +111,7 @@ describe RuboCop::Cop::Lint::ShadowedException do
                            'end'])
 
       expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+      expect(cop.highlights).to eq(['rescue StandardError, Exception'])
     end
 
     it 'accepts splat arguments passed to rescue' do
@@ -121,6 +122,38 @@ describe RuboCop::Cop::Lint::ShadowedException do
                            'end'])
 
       expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts rescuing nil' do
+      inspect_source(cop, ['begin',
+                           '  a',
+                           'rescue nil',
+                           '  b',
+                           'end'])
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts rescuing nil and another exception' do
+      inspect_source(cop, ['begin',
+                           '  a',
+                           'rescue nil, Exception',
+                           '  b',
+                           'end'])
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense when rescuing nil multiple exceptions of ' \
+       'different levels' do
+      inspect_source(cop, ['begin',
+                           '  a',
+                           'rescue nil, StandardError, Exception',
+                           '  b',
+                           'end'])
+
+      expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+      expect(cop.highlights).to eq(['rescue nil, StandardError, Exception'])
     end
   end
 
@@ -136,6 +169,9 @@ describe RuboCop::Cop::Lint::ShadowedException do
                            'end'])
 
       expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+      expect(cop.highlights).to eq([['rescue Exception',
+                                     '  handle_exception',
+                                     'rescue StandardError'].join("\n")])
     end
 
     it 'registers an offense when a higher level exception is rescued before ' \
@@ -150,6 +186,10 @@ describe RuboCop::Cop::Lint::ShadowedException do
                            'end'])
 
       expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+      expect(cop.highlights).to eq([['rescue Exception',
+                                     '  handle_exception',
+                                     'rescue NoMethodError, ZeroDivisionError']
+                                     .join("\n")])
     end
 
     it 'registers an offense rescuing out of order exceptions when there ' \
@@ -165,6 +205,9 @@ describe RuboCop::Cop::Lint::ShadowedException do
                            'end'])
 
       expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+      expect(cop.highlights).to eq([['rescue Exception',
+                                     '  handle_exception',
+                                     'rescue StandardError'].join("\n")])
     end
 
     it 'accepts rescuing exceptions in order of level' do
@@ -229,6 +272,9 @@ describe RuboCop::Cop::Lint::ShadowedException do
                              'end'])
 
         expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+        expect(cop.highlights).to eq([['rescue Exception',
+                                       '  b',
+                                       'rescue *BAR'].join("\n")])
       end
     end
 
@@ -256,6 +302,30 @@ describe RuboCop::Cop::Lint::ShadowedException do
 
         expect(cop.offenses).to be_empty
       end
+    end
+
+    it 'accepts rescuing nil before another exception' do
+      inspect_source(cop, ['begin',
+                           '  a',
+                           'rescue nil',
+                           '  b',
+                           'rescue',
+                           '  c',
+                           'end'])
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts rescuing nil after another exception' do
+      inspect_source(cop, ['begin',
+                           '  a',
+                           'rescue',
+                           '  b',
+                           'rescue nil',
+                           '  c',
+                           'end'])
+
+      expect(cop.offenses).to be_empty
     end
   end
 end
