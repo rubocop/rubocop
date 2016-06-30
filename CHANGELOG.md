@@ -276,6 +276,7 @@
 
 * [#3230](https://github.com/bbatsov/rubocop/issues/3230): Improve highlighting for `Style/AsciiComments` cop. ([@drenmi][])
 * Improve highlighting for `Style/AsciiIdentifiers` cop. ([@drenmi][])
+* [#3265](https://github.com/bbatsov/rubocop/issues/3265): Include --no-offense-counts in .rubocop_todo.yml. ([@vergenzt][])
 
 ## 0.41.1 (2016-06-26)
 
@@ -2563,3 +2564,4 @@
 [@breckenedge]: https://github.com/breckenedge
 [@enriikke]: https://github.com/enriikke
 [@iguchi1124]: https://github.com/iguchi1124
+[@vergenzt]: https://github.com/vergenzt
