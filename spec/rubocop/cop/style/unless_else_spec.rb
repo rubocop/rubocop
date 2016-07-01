@@ -30,10 +30,48 @@ describe RuboCop::Cop::Style::UnlessElse do
     end
   end
 
-  it 'accepts an unless without else' do
-    inspect_source(cop, ['unless x',
-                         '  a = 1',
-                         'end'])
-    expect(cop.offenses).to be_empty
+  context 'unless with nested if-else' do
+    let(:source) do
+      ['unless(x)',
+       '  if(y == 0)',
+       '    a = 0',
+       '  elsif(z == 0)',
+       '    a = 1',
+       '  else',
+       '    a = 2',
+       '  end',
+       'else',
+       '  a = 3',
+       'end']
+    end
+
+    it 'registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it 'auto-corrects' do
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq(['if(x)',
+                               '  a = 3',
+                               'else',
+                               '  if(y == 0)',
+                               '    a = 0',
+                               '  elsif(z == 0)',
+                               '    a = 1',
+                               '  else',
+                               '    a = 2',
+                               '  end',
+                               'end'].join("\n"))
+    end
+  end
+
+  context 'unless without else' do
+    it 'does not register an offense' do
+      inspect_source(cop, ['unless x',
+                           '  a = 1',
+                           'end'])
+      expect(cop.offenses).to be_empty
+    end
   end
 end
