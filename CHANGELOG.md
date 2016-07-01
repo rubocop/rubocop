@@ -12,6 +12,7 @@
 * [#3129](https://github.com/bbatsov/rubocop/issues/3129): Fix `Style/MethodCallParentheses` to work with multiple assignments. ([@tejasbubane][])
 * [#3247](https://github.com/bbatsov/rubocop/issues/3247): Ensure whitespace after beginning of block in `Style/BlockDelimiters`. ([@tjwp][])
 * [#2941](https://github.com/bbatsov/rubocop/issues/2941): Make sure `Lint/UnneededDisable` can do auto-correction. ([@jonas054][])
+* [#3269](https://github.com/bbatsov/rubocop/pull/3269):  Fix `Lint/ShadowedException` to block arbitrary code execution. ([@pocke][])
 
 ## 0.41.1 (2016-06-26)
 
