@@ -36,8 +36,9 @@ module RuboCop
         line_nos.each do |lineno|
           next if comment_lines.include?(lineno + 1)
           line = processed_source.lines[lineno]
-          next if line =~ /\A\s*\Z/
-          next if indent && indent != (line =~ /\S/)
+          index = line =~ /\S/
+          next unless index
+          next if indent && indent != index
           return yield(range, line)
         end
         false
