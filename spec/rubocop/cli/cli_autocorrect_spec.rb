@@ -278,6 +278,37 @@ describe RuboCop::CLI, :isolated_environment do
     expect(IO.read('example.rb')).to eq(corrected.join("\n"))
   end
 
+  it 'corrects UnneededDisable offenses' do
+    source = ['class A',
+              '  # rubocop:disable Metrics/MethodLength',
+              '  def func',
+              '    x = foo # rubocop:disable Lint/UselessAssignment,Style/For',
+              '    bar',
+              '  end',
+              'end',
+              ''].join("\n")
+    create_file('example.rb', source)
+    expect(cli.run(%w(--auto-correct --format simple))).to eq(1)
+    expect($stdout.string)
+      .to eq(['== example.rb ==',
+              'C:  1:  1: Missing top-level class documentation comment.',
+              'W:  2:  3: [Corrected] Unnecessary disabling of ' \
+              'Metrics/MethodLength.',
+              'W:  4: 54: [Corrected] Unnecessary disabling of Style/For.',
+              '',
+              '1 file inspected, 3 offenses detected, 2 offenses corrected',
+              ''].join("\n"))
+    corrected = ['class A',
+                 '  def func',
+                 '    x = foo # rubocop:disable Lint/UselessAssignment',
+                 '    bar',
+                 '  end',
+                 'end',
+                 '']
+    expect($stderr.string).to eq('')
+    expect(IO.read('example.rb')).to eq(corrected.join("\n"))
+  end
+
   it 'corrects RedundantBegin offenses and fixes indentation etc' do
     source = ['  def func',
               '    begin',

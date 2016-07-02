@@ -31,27 +31,34 @@ module RuboCop
 
         def autocorrect(args)
           lambda do |corrector|
-            ranges, range = *args # ranges are sorted by position
+            ranges, range = *args # Ranges are sorted by position.
 
             if range.source.start_with?('#')
-              # eat the entire comment and following newline
-              corrector.remove(range_with_surrounding_space(range, :right))
+              # Eat the entire comment, the preceding space, and the preceding
+              # newline if there is one.
+              original_begin = range.begin_pos
+              range = range_with_surrounding_space(range, :left, true)
+              range = range_with_surrounding_space(range, :right,
+                                                   # Special for a comment that
+                                                   # begins the file: remove
+                                                   # the newline at the end.
+                                                   original_begin == 0)
             else
-              # is there any cop between this one and the end of the line, which
+              # Is there any cop between this one and the end of the line, which
               # is NOT being removed?
 
               if ends_its_line?(ranges.last) && trailing_range?(ranges, range)
-                # eat the comma on the left
+                # Eat the comma on the left.
                 range = range_with_surrounding_space(range, :left)
                 range = range_with_surrounding_comma(range, :left)
               end
 
               range = range_with_surrounding_comma(range, :right)
-              # eat following spaces up to EOL, but not the newline itself
+              # Eat following spaces up to EOL, but not the newline itself.
               range = range_with_surrounding_space(range, :right, false)
-
-              corrector.remove(range)
             end
+
+            corrector.remove(range)
           end
         end
 

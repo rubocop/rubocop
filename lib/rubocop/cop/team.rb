@@ -70,6 +70,24 @@ module RuboCop
         end
       end
 
+      def autocorrect(buffer, cops)
+        @updated_source_file = false
+        return unless autocorrect?
+
+        new_source = autocorrect_all_cops(buffer, cops)
+
+        return if new_source == buffer.source
+
+        if @options[:stdin]
+          # holds source read in from stdin, when --stdin option is used
+          @options[:stdin] = new_source
+        else
+          filename = buffer.name
+          File.open(filename, 'wb') { |f| f.write(new_source) }
+        end
+        @updated_source_file = true
+      end
+
       private
 
       def offenses(processed_source)
@@ -109,24 +127,6 @@ module RuboCop
       def cop_enabled?(cop_class)
         @config.cop_enabled?(cop_class) ||
           (@options[:only] || []).include?(cop_class.cop_name)
-      end
-
-      def autocorrect(buffer, cops)
-        @updated_source_file = false
-        return unless autocorrect?
-
-        new_source = autocorrect_all_cops(buffer, cops)
-
-        return if new_source == buffer.source
-
-        if @options[:stdin]
-          # holds source read in from stdin, when --stdin option is used
-          @options[:stdin] = new_source
-        else
-          filename = buffer.name
-          File.open(filename, 'wb') { |f| f.write(new_source) }
-        end
-        @updated_source_file = true
       end
 
       def autocorrect_all_cops(buffer, cops)

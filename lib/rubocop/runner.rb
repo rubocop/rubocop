@@ -107,11 +107,18 @@ module RuboCop
           if cop.relevant_file?(file)
             cop.check(offenses, source.disabled_line_ranges, source.comments)
             offenses += cop.offenses
+            autocorrect_unneeded_disables(source, cop)
           end
         end
+        offenses
       end
 
       offenses.sort.reject(&:disabled?).freeze
+    end
+
+    def autocorrect_unneeded_disables(source, cop)
+      cop.processed_source = source
+      Cop::Team.new([], nil, @options).autocorrect(source.buffer, [cop])
     end
 
     def file_started(file)
