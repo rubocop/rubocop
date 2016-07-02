@@ -45,7 +45,7 @@ describe RuboCop::Cop::Performance::EndWith do
     end
 
     # character classes, anchors
-    %w(w W s S d D A Z z G b B).each do |str|
+    %w(w W s S d D A Z z G b B h H R X S).each do |str|
       it "doesn't register an error for #{method} /\\#{str}\\z/" do
         inspect_source(cop, "str#{method} /\\#{str}\\z/")
         expect(cop.messages).to be_empty
@@ -53,7 +53,7 @@ describe RuboCop::Cop::Performance::EndWith do
     end
 
     # characters with no special meaning whatsoever
-    %w(h i j l m o q y).each do |str|
+    %w(i j l m o q y).each do |str|
       it "autocorrects #{method} /\\#{str}\\z/" do
         new_source = autocorrect_source(cop, "str#{method} /\\#{str}\\z/")
         expect(new_source).to eq "str.end_with?('#{str}')"
