@@ -75,7 +75,12 @@ module RuboCop
         def correction_compact_to_exploded(node)
           exception_node, _new, message_node = *node.first
 
-          "#{exception_node.const_name}, #{message_node.source}"
+          message = message_node && message_node.source
+
+          correction = exception_node.const_name.to_s
+          correction = "#{correction}, #{message}" if message
+
+          correction
         end
 
         def correction_exploded_to_compact(node)

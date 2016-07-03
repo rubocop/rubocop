@@ -78,19 +78,38 @@ describe RuboCop::Cop::Style::RaiseArgs, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'exploded' } }
 
     context 'with a raise with exception object' do
-      it 'reports an offense' do
-        inspect_source(cop, 'raise Ex.new(msg)')
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages)
-          .to eq(['Provide an exception class and message ' \
-                  'as arguments to `raise`.'])
-        expect(cop.config_to_allow_offenses)
-          .to eq('EnforcedStyle' => 'compact')
+      context 'with one argument' do
+        it 'reports an offense' do
+          inspect_source(cop, 'raise Ex.new(msg)')
+          expect(cop.offenses.size).to eq(1)
+          expect(cop.messages)
+            .to eq(['Provide an exception class and message ' \
+                    'as arguments to `raise`.'])
+          expect(cop.config_to_allow_offenses)
+            .to eq('EnforcedStyle' => 'compact')
+        end
+
+        it 'auto-corrects to exploded style' do
+          new_source = autocorrect_source(cop, ['raise Ex.new(msg)'])
+          expect(new_source).to eq('raise Ex, msg')
+        end
       end
 
-      it 'auto-corrects to exploded style' do
-        new_source = autocorrect_source(cop, ['raise Ex.new(msg)'])
-        expect(new_source).to eq('raise Ex, msg')
+      context 'with no arguments' do
+        it 'reports an offense' do
+          inspect_source(cop, 'raise Ex.new')
+          expect(cop.offenses.size).to eq(1)
+          expect(cop.messages)
+            .to eq(['Provide an exception class and message ' \
+                    'as arguments to `raise`.'])
+          expect(cop.config_to_allow_offenses)
+            .to eq('EnforcedStyle' => 'compact')
+        end
+
+        it 'auto-corrects to exploded style' do
+          new_source = autocorrect_source(cop, ['raise Ex.new'])
+          expect(new_source).to eq('raise Ex')
+        end
       end
     end
 
