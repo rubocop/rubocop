@@ -13,6 +13,10 @@
 * [#3247](https://github.com/bbatsov/rubocop/issues/3247): Ensure whitespace after beginning of block in `Style/BlockDelimiters`. ([@tjwp][])
 * [#2941](https://github.com/bbatsov/rubocop/issues/2941): Make sure `Lint/UnneededDisable` can do auto-correction. ([@jonas054][])
 
+### Changes
+
+* [#3230](https://github.com/bbatsov/rubocop/issues/3230): Improve highlighting for `Style/AsciiComments` cop. ([@drenmi][])
+
 ## 0.41.1 (2016-06-26)
 
 ### Bug fixes
