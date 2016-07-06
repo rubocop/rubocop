@@ -327,5 +327,17 @@ describe RuboCop::Cop::Lint::ShadowedException do
 
       expect(cop.offenses).to be_empty
     end
+
+    it 'ignores expressions of non-const' do
+      inspect_source(cop, ['begin',
+                           '  a',
+                           'rescue foo',
+                           '  b',
+                           'rescue [bar]',
+                           '  c',
+                           'end'])
+
+      expect(cop.offenses).to be_empty
+    end
   end
 end

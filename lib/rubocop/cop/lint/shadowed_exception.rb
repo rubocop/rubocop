@@ -78,17 +78,10 @@ module RuboCop
 
         def evaluate_exceptions(rescue_group)
           if rescue_group
-            rescued_exceptions = rescue_group.source.delete(' ').split(',')
-
+            rescued_exceptions = rescued_exceptions(rescue_group)
             rescued_exceptions.each_with_object([]) do |exception, converted|
               begin
-                evaled_exception = instance_eval(exception, __FILE__, __LINE__)
-                # `rescue nil` is valid syntax in all versions of Ruby. In Ruby
-                # 1.9.3, it effectively disables the `rescue`. In versions
-                # after 1.9.3, a `TypeError` is thrown when the statement is
-                # rescued. In order to account for this, we convert `nil` to
-                # `NilClass`.
-                converted << (evaled_exception || NilClass)
+                converted << instance_eval(exception, __FILE__, __LINE__)
               rescue StandardError, ScriptError
                 next
               end
@@ -103,6 +96,21 @@ module RuboCop
           groups.sort do |x, y|
             x <=> y || 0
           end
+        end
+
+        # @param [RuboCop::Node] rescue_group is a node of array_type
+        def rescued_exceptions(rescue_group)
+          klasses = *rescue_group
+          klasses.map do |klass|
+            # `rescue nil` is valid syntax in all versions of Ruby. In Ruby
+            # 1.9.3, it effectively disables the `rescue`. In versions
+            # after 1.9.3, a `TypeError` is thrown when the statement is
+            # rescued. In order to account for this, we convert `nil` to
+            # `NilClass`.
+            next 'NilClass' if klass.nil_type?
+            next unless klass.const_type?
+            klass.source
+          end.compact
         end
       end
     end
