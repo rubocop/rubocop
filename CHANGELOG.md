@@ -21,6 +21,7 @@
 * [#3272](https://github.com/bbatsov/rubocop/issues/3272): Add escape character missing to LITERAL_REGEX. ([@pocke][])
 * [#3255](https://github.com/bbatsov/rubocop/issues/3255): Fix auto-correct for `Style/RaiseArgs` when constructing exception without arguments. ([@drenmi][])
 * Improve highlighting for `Style/AsciiIdentifiers` cop. ([@drenmi][])
+* [#3294](https://github.com/bbatsov/rubocop/pull/3294): Allow to use `Time.zone_default`. ([@Tei][])
 
 ## 0.41.1 (2016-06-26)
 
@@ -2258,3 +2259,4 @@
 [@pclalv]: https://github.com/pclalv
 [@flexoid]: https://github.com/flexoid
 [@sgringwe]: https://github.com/sgringwe
+[@Tei]: https://github.com/Tei

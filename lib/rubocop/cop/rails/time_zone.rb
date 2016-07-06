@@ -151,7 +151,11 @@ module RuboCop
         end
 
         def good_methods
-          style == :strict ? [:zone] : [:zone, :current] + ACCEPTED_METHODS
+          if style == :strict
+            [:zone, :zone_default]
+          else
+            [:zone, :zone_default, :current] + ACCEPTED_METHODS
+          end
         end
 
         def acceptable_methods(klass, method_name, node)
