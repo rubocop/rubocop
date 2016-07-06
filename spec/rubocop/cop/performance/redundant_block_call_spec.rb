@@ -15,6 +15,15 @@ describe RuboCop::Cop::Performance::RedundantBlockCall do
                               'end'].join("\n"))
   end
 
+  it 'autocorrects block.call with empty parentheses' do
+    new_source = autocorrect_source(cop, ['def method(&block)',
+                                          '  block.call()',
+                                          'end'])
+    expect(new_source).to eq(['def method(&block)',
+                              '  yield',
+                              'end'].join("\n"))
+  end
+
   it 'autocorrects block.call with arguments' do
     new_source = autocorrect_source(cop, ['def method(&block)',
                                           '  block.call 1, 2',

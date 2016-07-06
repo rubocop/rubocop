@@ -85,7 +85,7 @@ module RuboCop
             new_source << args.map(&:source).join(', ')
           end
 
-          new_source << CLOSE_PAREN if parentheses?(node)
+          new_source << CLOSE_PAREN if parentheses?(node) && !args.empty?
           ->(corrector) { corrector.replace(node.source_range, new_source) }
         end
       end
