@@ -17,6 +17,7 @@
 ### Changes
 
 * [#3230](https://github.com/bbatsov/rubocop/issues/3230): Improve highlighting for `Style/AsciiComments` cop. ([@drenmi][])
+* [#3272](https://github.com/bbatsov/rubocop/issues/3272): Add escape character missing to LITERAL_REGEX. ([@pocke][])
 
 ## 0.41.1 (2016-06-26)
 

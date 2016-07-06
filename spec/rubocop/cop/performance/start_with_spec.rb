@@ -36,7 +36,7 @@ describe RuboCop::Cop::Performance::StartWith do
     end
 
     # character classes, anchors
-    %w(w W s S d D A Z z G b B).each do |str|
+    %w(w W s S d D A Z z G b B h H R X S).each do |str|
       it "doesn't register an error for #{method} /\\A\\#{str}/" do
         inspect_source(cop, "str#{method} /\\A\\#{str}/")
         expect(cop.messages).to be_empty
@@ -44,7 +44,7 @@ describe RuboCop::Cop::Performance::StartWith do
     end
 
     # characters with no special meaning whatsoever
-    %w(h i j l m o q y).each do |str|
+    %w(i j l m o q y).each do |str|
       it "autocorrects #{method} /\\A\\#{str}/" do
         new_source = autocorrect_source(cop, "str#{method} /\\A\\#{str}/")
         expect(new_source).to eq "str.start_with?('#{str}')"
