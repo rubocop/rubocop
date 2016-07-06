@@ -11,6 +11,17 @@ describe RuboCop::Cop::Style::AsciiIdentifiers do
                    ['# encoding: utf-8',
                     'älg = 1'])
     expect(cop.offenses.size).to eq(1)
+    expect(cop.highlights).to eq(['ä'])
+    expect(cop.messages)
+      .to eq(['Use only ascii symbols in identifiers.'])
+  end
+
+  it 'registers an offense for a variable name with mixed chars' do
+    inspect_source(cop,
+                   ['# encoding: utf-8',
+                    'foo∂∂bar = baz'])
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.highlights).to eq(['∂∂'])
     expect(cop.messages)
       .to eq(['Use only ascii symbols in identifiers.'])
   end
