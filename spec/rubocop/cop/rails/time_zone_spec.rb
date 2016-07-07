@@ -16,7 +16,7 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
         expect(cop.offenses.first.message).to include('`Time.zone.now`')
       end
 
-      it "registers an offense  for #{klass}.current" do
+      it "registers an offense for #{klass}.current" do
         inspect_source(cop, "#{klass}.current")
         expect(cop.offenses.size).to eq(1)
         expect(cop.offenses.first.message).to include('`Time.zone.now`')
@@ -164,6 +164,21 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts Time.zone_default.now' do
+      inspect_source(cop, 'Time.zone_default.now')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts Time.zone_default.today' do
+      inspect_source(cop, 'Time.zone_default.today')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts Time.zone_default.local' do
+      inspect_source(cop, 'Time.zone_default.local(2012, 6, 10, 12, 00)')
+      expect(cop.offenses).to be_empty
+    end
+
     described_class::DANGEROUS_METHODS.each do |a_method|
       it "accepts Some::Time.#{a_method}" do
         inspect_source(cop, "Some::Time.#{a_method}")
@@ -203,6 +218,11 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
       end
 
       it 'accepts #{klass}.zone.now' do
+        inspect_source(cop, "#{klass}.zone.now")
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'accepts #{klass}.zone_default.now' do
         inspect_source(cop, "#{klass}.zone.now")
         expect(cop.offenses).to be_empty
       end
