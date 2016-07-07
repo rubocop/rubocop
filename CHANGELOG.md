@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.41.2 (2016-07-07)
+
 ### Bug fixes
 
 * [#3248](https://github.com/bbatsov/rubocop/issues/3248): Support 'ruby-' prefix in `.ruby-version`. ([@tjwp][])
