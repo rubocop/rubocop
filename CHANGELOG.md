@@ -14,14 +14,14 @@
 * [#2941](https://github.com/bbatsov/rubocop/issues/2941): Make sure `Lint/UnneededDisable` can do auto-correction. ([@jonas054][])
 * [#3269](https://github.com/bbatsov/rubocop/pull/3269):  Fix `Lint/ShadowedException` to block arbitrary code execution. ([@pocke][])
 * [#3266](https://github.com/bbatsov/rubocop/issues/3266): Handle empty parentheses in `Performance/RedundantBlockCall` auto-correct. ([@jonas054][])
+* [#3272](https://github.com/bbatsov/rubocop/issues/3272): Add escape character missing to LITERAL_REGEX. ([@pocke][])
+* [#3255](https://github.com/bbatsov/rubocop/issues/3255): Fix auto-correct for `Style/RaiseArgs` when constructing exception without arguments. ([@drenmi][])
+* [#3294](https://github.com/bbatsov/rubocop/pull/3294): Allow to use `Time.zone_default`. ([@Tei][])
 
 ### Changes
 
 * [#3230](https://github.com/bbatsov/rubocop/issues/3230): Improve highlighting for `Style/AsciiComments` cop. ([@drenmi][])
-* [#3272](https://github.com/bbatsov/rubocop/issues/3272): Add escape character missing to LITERAL_REGEX. ([@pocke][])
-* [#3255](https://github.com/bbatsov/rubocop/issues/3255): Fix auto-correct for `Style/RaiseArgs` when constructing exception without arguments. ([@drenmi][])
 * Improve highlighting for `Style/AsciiIdentifiers` cop. ([@drenmi][])
-* [#3294](https://github.com/bbatsov/rubocop/pull/3294): Allow to use `Time.zone_default`. ([@Tei][])
 
 ## 0.41.1 (2016-06-26)
 
