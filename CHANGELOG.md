@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#3271](https://github.com/bbatsov/rubocop/issues/3271): Fix bad auto-correct for `Style/EachForSimpleLoop` cop. ([@drenmi][])
+
 ## 0.41.2 (2016-07-07)
 
 ### Bug fixes
