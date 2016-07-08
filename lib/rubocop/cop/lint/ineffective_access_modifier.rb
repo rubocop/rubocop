@@ -91,28 +91,43 @@ module RuboCop
         end
 
         def check_scope(node, cur_vis = :public)
-          node.children.each do |child|
-            if (new_vis = access_modifier(child))
-              @last_access_modifier = child
-              cur_vis = new_vis
-            elsif child.defs_type?
-              if cur_vis != :public
-                _, method_name, = *child
-                @useless[method_name] = [child, cur_vis, @last_access_modifier]
-              end
-            elsif (methods = private_class_method(child))
-              # don't warn about defs nodes which are followed by a call to
-              # `private_class_method :name`
-              # obviously the programmer knows what they are doing
-              methods.select(&:sym_type?).each do |sym|
-                @useless.delete(sym.children[0])
-              end
-            elsif child.kwbegin_type?
-              cur_vis = check_scope(child, cur_vis)
-            end
+          node.children.reduce(cur_vis) do |visibility, child|
+            check_child_scope(child, visibility)
+          end
+        end
+
+        def check_child_scope(node, cur_vis)
+          if (new_vis = access_modifier(node))
+            cur_vis = change_visibility(node, new_vis)
+          elsif node.defs_type?
+            mark_method_as_useless(node, cur_vis) if cur_vis != :public
+          elsif (methods = private_class_method(node))
+            # don't warn about defs nodes which are followed by a call to
+            # `private_class_method :name`
+            # obviously the programmer knows what they are doing
+            revert_method_uselessness(methods)
+          elsif node.kwbegin_type?
+            cur_vis = check_scope(node, cur_vis)
           end
 
           cur_vis
+        end
+
+        def change_visibility(node, new_vis)
+          @last_access_modifier = node
+          new_vis
+        end
+
+        def mark_method_as_useless(node, cur_vis)
+          _, method_name, = *node
+          @useless[method_name] = [node, cur_vis, @last_access_modifier]
+        end
+
+        def revert_method_uselessness(methods)
+          methods.each do |sym|
+            next unless sym.sym_type?
+            @useless.delete(sym.children[0])
+          end
         end
       end
     end
