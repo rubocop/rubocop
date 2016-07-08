@@ -5,6 +5,7 @@
 ### New features
 
 * [#3306](https://github.com/bbatsov/rubocop/issues/3306): Add autocorrection for `Style/EachWithObject`. ([@owst][])
+* Add new `Style/TernaryParentheses` cop. ([@drenmi][])
 
 ### Bug fixes
 

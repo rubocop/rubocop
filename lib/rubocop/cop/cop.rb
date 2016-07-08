@@ -217,17 +217,17 @@ module RuboCop
 
       def style_guide_url
         url = cop_config['StyleGuide']
-        (url.nil? || url.empty?) ? nil : url
+        url.nil? || url.empty? ? nil : url
       end
 
       def reference_url
         url = cop_config['Reference']
-        (url.nil? || url.empty?) ? nil : url
+        url.nil? || url.empty? ? nil : url
       end
 
       def details
         details = cop_config && cop_config['Details']
-        (details.nil? || details.empty?) ? nil : details
+        details.nil? || details.empty? ? nil : details
       end
 
       private

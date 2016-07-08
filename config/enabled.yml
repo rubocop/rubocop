@@ -832,6 +832,10 @@ Style/Tab:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#spaces-indentation'
   Enabled: true
 
+Style/TernaryParentheses:
+  Description: 'Checks for use of parentheses around ternary conditions.'
+  Enabled: true
+
 Style/TrailingBlankLines:
   Description: 'Checks trailing blank lines and final newline.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#newline-eof'

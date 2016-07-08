@@ -105,7 +105,7 @@ module RuboCop
         end
 
         def message(node, selector)
-          message = (selector == '->') ? METHOD_MESSAGE : LITERAL_MESSAGE
+          message = selector == '->' ? METHOD_MESSAGE : LITERAL_MESSAGE
 
           format(message, message_line_modifier(node))
         end
