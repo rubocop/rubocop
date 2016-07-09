@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#3306](https://github.com/bbatsov/rubocop/issues/3306): Add autocorrection for `Style/EachWithObject`. ([@owst][])
+
 ### Bug fixes
 
 * [#3271](https://github.com/bbatsov/rubocop/issues/3271): Fix bad auto-correct for `Style/EachForSimpleLoop` cop. ([@drenmi][])

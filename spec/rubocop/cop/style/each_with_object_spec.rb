@@ -23,6 +23,16 @@ describe RuboCop::Cop::Style::EachWithObject do
     expect(cop.highlights).to eq(%w(inject reduce))
   end
 
+  it 'correctly autocorrects' do
+    corrected = autocorrect_source(cop, ['[1, 2, 3].inject({}) do |h, i|',
+                                         '  h',
+                                         'end'])
+
+    expect(corrected).to eq(['[1, 2, 3].each_with_object({}) do |i, h|',
+                             '  h',
+                             'end'].join("\n"))
+  end
+
   it 'ignores inject and reduce with passed in, but not returned hash' do
     inspect_source(cop,
                    ['[].inject({}) do |a, e|',
