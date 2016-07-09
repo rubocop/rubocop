@@ -1400,14 +1400,17 @@ Rails/Exit:
 
 Rails/FindBy:
   Description: 'Prefer find_by over where.first.'
+  StyleGuide: 'https://github.com/bbatsov/rails-style-guide#find_by'
   Enabled: true
 
 Rails/FindEach:
   Description: 'Prefer all.find_each over all.find.'
+  StyleGuide: 'https://github.com/bbatsov/rails-style-guide#find-each'
   Enabled: true
 
 Rails/HasAndBelongsToMany:
   Description: 'Prefer has_many :through to has_and_belongs_to_many.'
+  StyleGuide: 'https://github.com/bbatsov/rails-style-guide#has-many-through'
   Enabled: true
 
 Rails/Output:
@@ -1426,6 +1429,7 @@ Rails/ReadWriteAttribute:
   Description: >-
                  Checks for read_attribute(:attr) and
                  write_attribute(:attr, val).
+  StyleGuide: 'https://github.com/bbatsov/rails-style-guide#read-attribute'
   Enabled: true
 
 Rails/RequestReferer:
