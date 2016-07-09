@@ -81,28 +81,30 @@ module RuboCop
         def autocorrect(node)
           *conditions, _body = *node
 
-          new_condition =
-            conditions.each_with_object([]) do |condition, correction|
-              variable, = *condition
-              if variable.respond_to?(:array_type?) && variable.array_type?
-                correction << expand_percent_array(variable)
-                next
-              end
-
-              correction << condition.source
-            end
-          new_condition = new_condition.join(', ')
-
           lambda do |corrector|
             if needs_reorder?(conditions)
-              reorder_condition(corrector, node, new_condition)
+              reorder_condition(corrector, node, replacement(conditions))
             else
-              inline_fix_branch(corrector, node, conditions, new_condition)
+              inline_fix_branch(corrector, node, conditions,
+                                replacement(conditions))
             end
           end
         end
 
         private
+
+        def replacement(conditions)
+          new_condition = conditions.map do |condition|
+            variable, = *condition
+            if variable.respond_to?(:array_type?) && variable.array_type?
+              expand_percent_array(variable)
+            else
+              condition.source
+            end
+          end
+
+          new_condition.join(', ')
+        end
 
         def inline_fix_branch(corrector, node, conditions, new_condition)
           range =

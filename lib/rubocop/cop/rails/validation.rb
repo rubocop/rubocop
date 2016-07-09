@@ -43,23 +43,23 @@ module RuboCop
         end
 
         def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(node.loc.selector, 'validates')
+            correct_validate_type(corrector, node)
+          end
+        end
+
+        def correct_validate_type(corrector, node)
           _receiver, method_name, *args = *node
           options = args.find { |arg| arg.type != :sym }
-          lambda do |corrector|
-            validate_type = method_name.to_s.split('_')[1]
-            corrector.replace(node.loc.selector, 'validates')
-            cop_config['AllowUnusedKeywordArguments']
-            if options
-              corrector.replace(
-                options.loc.expression,
-                "#{validate_type}: { #{options.source} }"
-              )
-            else
-              corrector.insert_after(
-                node.loc.expression,
-                ", #{validate_type}: true"
-              )
-            end
+          validate_type = method_name.to_s.split('_')[1]
+
+          if options
+            corrector.replace(options.loc.expression,
+                              "#{validate_type}: { #{options.source} }")
+          else
+            corrector.insert_after(node.loc.expression,
+                                   ", #{validate_type}: true")
           end
         end
       end

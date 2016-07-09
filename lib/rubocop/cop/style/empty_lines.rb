@@ -19,21 +19,28 @@ module RuboCop
             lines << token.pos.line
           end
 
+          each_extra_empty_line(lines.sort) do |range|
+            add_offense(range, range)
+          end
+        end
+
+        def autocorrect(range)
+          ->(corrector) { corrector.remove(range) }
+        end
+
+        private
+
+        def each_extra_empty_line(lines)
           prev_line = 1
 
-          lines.sort.each do |cur_line|
-            line_diff = cur_line - prev_line
-
-            if line_diff > LINE_OFFSET
+          lines.each do |cur_line|
+            if exceeds_line_offset?(cur_line - prev_line)
               # we need to be wary of comments since they
               # don't show up in the tokens
               ((prev_line + 1)...cur_line).each do |line|
-                # we check if the prev and current lines are empty
-                next unless processed_source[line - 2].empty? &&
-                            processed_source[line - 1].empty?
+                next unless previous_and_current_lines_empty?(line)
 
-                range = source_range(processed_source.buffer, line, 0)
-                add_offense(range, range)
+                yield source_range(processed_source.buffer, line, 0)
               end
             end
 
@@ -41,8 +48,12 @@ module RuboCop
           end
         end
 
-        def autocorrect(range)
-          ->(corrector) { corrector.remove(range) }
+        def exceeds_line_offset?(line_diff)
+          line_diff > LINE_OFFSET
+        end
+
+        def previous_and_current_lines_empty?(line)
+          processed_source[line - 2].empty? && processed_source[line - 1].empty?
         end
       end
     end
