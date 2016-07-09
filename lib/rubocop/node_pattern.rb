@@ -134,6 +134,7 @@ module RuboCop
         fail_due_to('unbalanced pattern') unless tokens.empty?
       end
 
+      # rubocop:disable Metrics/MethodLength
       def compile_expr(tokens, cur_node, seq_head)
         # read a single pattern-matching expression from the token stream,
         # return Ruby code which performs the corresponding matching operation
@@ -160,6 +161,7 @@ module RuboCop
         else fail_due_to("invalid token #{token.inspect}")
         end
       end
+      # rubocop:enable Metrics/MethodLength
 
       def compile_seq(tokens, cur_node, seq_head)
         fail_due_to('empty parentheses') if tokens.first == ')'
