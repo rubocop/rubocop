@@ -60,6 +60,8 @@ module RuboCop
              "#{output.path}` in a .rubocop.yml file."
       end
 
+      private
+
       def command
         command = 'rubocop --auto-gen-config'
         if @exclude_limit_option
@@ -89,14 +91,22 @@ module RuboCop
           output.puts '# Cop supports --auto-correct.'
         end
 
-        default_cfg = RuboCop::ConfigLoader.default_configuration[cop_name]
+        default_cfg = default_config(cop_name)
         return unless default_cfg
 
-        params = default_cfg.keys -
-                 %w(Description StyleGuide Reference Enabled Exclude) -
-                 cfg.keys
+        params = cop_config_params(default_cfg, cfg)
         return if params.empty?
 
+        output_cop_param_comments(params, default_cfg)
+      end
+
+      def cop_config_params(default_cfg, cfg)
+        default_cfg.keys -
+          %w(Description StyleGuide Reference Enabled Exclude) -
+          cfg.keys
+      end
+
+      def output_cop_param_comments(params, default_cfg)
         output.puts "# Configuration parameters: #{params.join(', ')}."
 
         params.each do |param|
@@ -106,6 +116,10 @@ module RuboCop
             output.puts "# #{param}: #{value.join(', ')}"
           end
         end
+      end
+
+      def default_config(cop_name)
+        RuboCop::ConfigLoader.default_configuration[cop_name]
       end
 
       def output_cop_config(output, cfg, cop_name)
