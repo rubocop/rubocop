@@ -179,12 +179,20 @@ module RuboCop
           protected
 
           def assignment
-            @new_elements.map do |lhs, rhs|
-              "#{lhs.source} = #{rhs.source}"
-            end
+            @new_elements.map { |lhs, rhs| "#{lhs.source} = #{source(rhs)}" }
           end
 
           private
+
+          def source(node)
+            if node.str_type? && node.loc.begin.nil?
+              "'#{node.source}'"
+            elsif node.sym_type? && node.loc.begin.nil?
+              ":#{node.source}"
+            else
+              node.source
+            end
+          end
 
           def extract_sources(node)
             node.children.map(&:source)
