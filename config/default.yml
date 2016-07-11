@@ -952,6 +952,13 @@ Style/SymbolProc:
     - respond_to
     - define_method
 
+Style/TernaryParentheses:
+  EnforcedStyle: require_no_parentheses
+  SupportedStyles:
+    - require_parentheses
+    - require_no_parentheses
+  AllowSafeAssignment: true
+
 Style/TrailingBlankLines:
   EnforcedStyle: final_newline
   SupportedStyles:

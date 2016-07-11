@@ -101,7 +101,7 @@ module RuboCop
 
         def offense_node(body)
           *_, condition = *body
-          (condition && condition.if_type?) ? condition : body
+          condition && condition.if_type? ? condition : body
         end
 
         def offense_location(offense_node)
