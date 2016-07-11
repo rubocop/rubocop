@@ -33,7 +33,17 @@ module RuboCop
           return unless first_argument_returned?(args, return_value)
           return if accumulator_param_assigned_to?(body, args)
 
-          add_offense(method, :selector, format(MSG, method_name))
+          add_offense(node, method.loc.selector, format(MSG, method_name))
+        end
+
+        def autocorrect(node)
+          lambda do |corrector|
+            method, args, _body = *node
+            corrector.replace(method.loc.selector, 'each_with_object')
+            first_arg, second_arg = *args
+            corrector.replace(first_arg.loc.expression, second_arg.source)
+            corrector.replace(second_arg.loc.expression, first_arg.source)
+          end
         end
 
         private
