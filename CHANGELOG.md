@@ -10,6 +10,7 @@
 
 * [#3271](https://github.com/bbatsov/rubocop/issues/3271): Fix bad auto-correct for `Style/EachForSimpleLoop` cop. ([@drenmi][])
 * [#3288](https://github.com/bbatsov/rubocop/issues/3288): Fix auto-correct of word and symbol arrays in `Style/ParallelAssignment` cop. ([@jonas054][])
+* [#3307](https://github.com/bbatsov/rubocop/issues/3307): Fix exception when inspecting an operator assignment with `Style/MethodCallParentheses` cop. ([@drenmi][])
 
 ## 0.41.2 (2016-07-07)
 

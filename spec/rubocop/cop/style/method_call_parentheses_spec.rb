@@ -74,6 +74,11 @@ describe RuboCop::Cop::Style::MethodCallParentheses do
     expect(cop.offenses.size).to eq 1
   end
 
+  it 'registers an offense for `obj.method += func()`' do
+    inspect_source(cop, 'obj.method += func()')
+    expect(cop.offenses.size).to eq 1
+  end
+
   it 'auto-corrects by removing unneeded braces' do
     new_source = autocorrect_source(cop, 'test()')
     expect(new_source).to eq('test')
