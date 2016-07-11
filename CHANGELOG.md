@@ -11,6 +11,10 @@
 * [#3271](https://github.com/bbatsov/rubocop/issues/3271): Fix bad auto-correct for `Style/EachForSimpleLoop` cop. ([@drenmi][])
 * [#3288](https://github.com/bbatsov/rubocop/issues/3288): Fix auto-correct of word and symbol arrays in `Style/ParallelAssignment` cop. ([@jonas054][])
 
+### Changes
+
+* [#2645](https://github.com/bbatsov/rubocop/issues/2645): `Style/EmptyLiteral` no longer generates an offense for `String.new` when using frozen string literals. ([@drenmi][])
+
 ## 0.41.2 (2016-07-07)
 
 ### Bug fixes
