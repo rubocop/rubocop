@@ -27,10 +27,18 @@ module RuboCop
 
         def on_block(node)
           on_body_of_reduce(node) do |body|
-            void_next = body.each_node(:next).find { |n| n.children.empty? }
+            void_next = body.each_node(:next).find do |n|
+              n.children.empty? && parent_block_node(n) == node
+            end
 
             add_offense(void_next, :expression) if void_next
           end
+        end
+
+        private
+
+        def parent_block_node(node)
+          node.each_ancestor.find { |n| n.type == :block }
         end
       end
     end
