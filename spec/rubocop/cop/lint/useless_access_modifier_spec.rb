@@ -4,7 +4,8 @@
 require 'spec_helper'
 
 describe RuboCop::Cop::Lint::UselessAccessModifier do
-  subject(:cop) { described_class.new }
+  let(:config) { RuboCop::Config.new }
+  subject(:cop) { described_class.new(config) }
 
   context 'when an access modifier has no effect' do
     let(:source) do
@@ -71,7 +72,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
     it 'does not register an offense' do
       inspect_source(cop, source)
-      expect(cop.offenses.size).to eq(0)
+      expect(cop.offenses).to be_empty
     end
   end
 
@@ -137,7 +138,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
     it 'does not register an offense' do
       inspect_source(cop, source)
-      expect(cop.offenses.size).to eq(0)
+      expect(cop.offenses).to be_empty
     end
   end
 
@@ -195,7 +196,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
       it 'does not register an offense' do
         inspect_source(cop, source)
-        expect(cop.offenses.size).to eq(0)
+        expect(cop.offenses).to be_empty
       end
     end
   end
@@ -233,6 +234,116 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
     it 'does not register an offense' do
       inspect_source(cop, source)
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  context "when using ActiveSupport's `concerning` method" do
+    let(:config) do
+      RuboCop::Config.new(
+        'Lint/UselessAccessModifier' => {
+          'ContextCreatingMethods' => ['concerning']
+        }
+      )
+    end
+    it 'is aware that this creates a new scope' do
+      src = ['class SomeClass',
+             '  concerning :FirstThing do',
+             '    def foo',
+             '    end',
+             '    private',
+             '',
+             '    def method',
+             '    end',
+             '  end',
+             '',
+             '  concerning :SecondThing do',
+             '    def omg',
+             '    end',
+             '    private',
+             '    def method',
+             '    end',
+             '  end',
+             ' end']
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'still points out redundant uses within the block' do
+      src = ['class SomeClass',
+             '  concerning :FirstThing do',
+             '    def foo',
+             '    end',
+             '    private',
+             '',
+             '    def method',
+             '    end',
+             '  end',
+             '',
+             '  concerning :SecondThing do',
+             '    def omg',
+             '    end',
+             '    private',
+             '    def method',
+             '    end',
+             '    private',
+             '    def another_method',
+             '    end',
+             '  end',
+             ' end']
+      inspect_source(cop, src)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.line).to eq(17)
+    end
+  end
+
+  context 'when using ActiveSupport behavior when Rails is not eabled' do
+    it 'reports offenses' do
+      src = ['module SomeModule',
+             '  extend ActiveSupport::Concern',
+             '  class_methods do',
+             '    def some_public_class_method',
+             '    end',
+             '    private',
+             '    def some_private_class_method',
+             '    end',
+             '  end',
+             '  def some_public_instance_method',
+             '  end',
+             '  private',
+             '  def some_private_instance_method',
+             '  end',
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offenses.size).to eq(1)
+    end
+  end
+
+  context 'when using the class_methods method from ActiveSupport::Concern' do
+    let(:config) do
+      RuboCop::Config.new(
+        'Lint/UselessAccessModifier' => {
+          'ContextCreatingMethods' => ['class_methods']
+        }
+      )
+    end
+    it 'is aware that this creates a new scope' do
+      src = ['module SomeModule',
+             '  extend ActiveSupport::Concern',
+             '  class_methods do',
+             '    def some_public_class_method',
+             '    end',
+             '    private',
+             '    def some_private_class_method',
+             '    end',
+             '  end',
+             '  def some_public_instance_method',
+             '  end',
+             '  private',
+             '  def some_private_instance_method',
+             '  end',
+             'end']
+      inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
   end
