@@ -79,21 +79,32 @@ module RuboCop
       puts "Scanning #{file}" if @options[:debug]
       file_started(file)
 
-      cache = ResultCache.new(file, @options, @config_store) if cached_run?
-      if cache && cache.valid?
-        offenses = cache.load
-      else
-        source = get_processed_source(file)
-        source, offenses = do_inspection_loop(file, source)
-        offenses = add_unneeded_disables(file, offenses.compact.sort, source)
-        save_in_cache(cache, offenses)
-      end
-
+      offenses = file_offenses(file)
       formatter_set.file_finished(file, offenses)
       offenses
     rescue InfiniteCorrectionLoop => e
       formatter_set.file_finished(file, e.offenses.compact.sort.freeze)
       raise
+    end
+
+    def file_offenses(file)
+      file_offense_cache(file) do
+        source = get_processed_source(file)
+        source, offenses = do_inspection_loop(file, source)
+        add_unneeded_disables(file, offenses.compact.sort, source)
+      end
+    end
+
+    def file_offense_cache(file)
+      cache = ResultCache.new(file, @options, @config_store) if cached_run?
+      if cache && cache.valid?
+        offenses = cache.load
+      else
+        offenses = yield
+        save_in_cache(cache, offenses)
+      end
+
+      offenses
     end
 
     def add_unneeded_disables(file, offenses, source)
