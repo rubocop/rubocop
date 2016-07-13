@@ -77,24 +77,34 @@ module RuboCop
         end
 
         def new_expression(outer_node, inner_node)
-          outer_cond, = *outer_node
-          inner_cond, = *inner_node
-
           outer_keyword = outer_node.loc.keyword.source
-          inner_keyword = inner_node.loc.keyword.source
+          operator = replacement_operator(outer_keyword)
+          lh_operand = left_hand_operand(outer_node, operator)
+          rh_operand = right_hand_operand(inner_node, outer_keyword)
 
-          operator = outer_keyword == 'if'.freeze ? '&&'.freeze : '||'.freeze
+          "#{outer_keyword} #{lh_operand} #{operator} #{rh_operand}"
+        end
 
-          outer_expr = outer_cond.source
-          outer_expr = "(#{outer_expr})" if outer_cond.or_type? &&
-                                            operator == '&&'.freeze
-          inner_expr = inner_cond.source
+        def replacement_operator(keyword)
+          keyword == 'if'.freeze ? '&&'.freeze : '||'.freeze
+        end
 
-          inner_expr = "(#{inner_expr})" if requires_parens?(inner_cond)
-          inner_expr = "!#{inner_expr}" unless outer_keyword == inner_keyword
+        def left_hand_operand(node, operator)
+          cond, = *node
 
-          "#{outer_node.loc.keyword.source} " \
-          "#{outer_expr} #{operator} #{inner_expr}"
+          expr = cond.source
+          expr = "(#{expr})" if cond.or_type? && operator == '&&'.freeze
+          expr
+        end
+
+        def right_hand_operand(node, left_hand_keyword)
+          cond, = *node
+          keyword = node.loc.keyword.source
+
+          expr = cond.source
+          expr = "(#{expr})" if requires_parens?(cond)
+          expr = "!#{expr}" unless left_hand_keyword == keyword
+          expr
         end
 
         def requires_parens?(node)

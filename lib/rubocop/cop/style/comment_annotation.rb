@@ -23,7 +23,7 @@ module RuboCop
             next unless annotation?(comment) &&
                         !correct_annotation?(first_word, colon, space, note)
 
-            length = first_word.length + colon.to_s.length + space.to_s.length
+            length = concat_length(first_word, colon, space)
             add_offense(comment, annotation_range(comment, margin, length),
                         format(note ? MSG : MISSING_NOTE, first_word))
           end
@@ -35,24 +35,24 @@ module RuboCop
           ix == 0 || comments[ix - 1].loc.line < comments[ix].loc.line - 1
         end
 
+        def autocorrect(comment)
+          margin, first_word, colon, space, note = split_comment(comment)
+          return if note.nil?
+
+          length = concat_length(first_word, colon, space)
+          range = annotation_range(comment, margin, length)
+
+          ->(corrector) { corrector.replace(range, "#{first_word.upcase}: ") }
+        end
+
         def annotation_range(comment, margin, length)
           start = comment.loc.expression.begin_pos + margin.length
           source_buffer = comment.loc.expression.source_buffer
           Parser::Source::Range.new(source_buffer, start, start + length)
         end
 
-        def autocorrect(comment)
-          margin, first_word, colon, space, note = split_comment(comment)
-          start = comment.loc.expression.begin_pos + margin.length
-          return if note.nil?
-
-          lambda do |corrector|
-            length = first_word.length + colon.to_s.length + space.to_s.length
-            range = Parser::Source::Range.new(comment.loc.expression.source,
-                                              start,
-                                              start + length)
-            corrector.replace(range, "#{first_word.upcase}: ")
-          end
+        def concat_length(*args)
+          args.reduce(0) { |a, e| a + e.to_s.length }
         end
 
         def correct_annotation?(first_word, colon, space, note)

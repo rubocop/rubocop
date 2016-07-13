@@ -174,23 +174,25 @@ module RuboCop
 
         def autocorrect(node)
           ancestor_node = start_for_block_node(node)
-          source = node.source_range.source_buffer
+          start_col = compute_start_col(ancestor_node, node)
+          loc_end = node.loc.end
+          delta = start_col - loc_end.column
 
-          lambda do |corrector|
-            starting_position_of_block_end = node.loc.end.begin_pos
-            end_col = node.loc.end.column
-            start_col = compute_start_col(ancestor_node, node)
-
-            if end_col < start_col
-              delta = start_col - end_col
-              corrector.insert_before(node.loc.end, ' ' * delta)
-            elsif end_col > start_col
-              range_start = starting_position_of_block_end + start_col - end_col
-              range = Parser::Source::Range.new(source, range_start,
-                                                starting_position_of_block_end)
-              corrector.remove(range)
-            end
+          if delta > 0
+            add_space_before(loc_end, delta)
+          elsif delta < 0
+            source = node.source_range.source_buffer
+            remove_space_before(loc_end.begin_pos, -delta, source)
           end
+        end
+
+        def add_space_before(loc, delta)
+          ->(corrector) { corrector.insert_before(loc, ' ' * delta) }
+        end
+
+        def remove_space_before(end_pos, delta, source)
+          range = Parser::Source::Range.new(source, end_pos - delta, end_pos)
+          ->(corrector) { corrector.remove(range) }
         end
       end
     end
