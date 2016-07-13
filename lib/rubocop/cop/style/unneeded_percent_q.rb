@@ -16,6 +16,7 @@ module RuboCop
         PERCENT_Q = '%q'.freeze
         PERCENT_CAPITAL_Q = '%Q'.freeze
         STRING_INTERPOLATION_REGEXP = /#\{.+}/
+        ESCAPED_NON_BACKSLASH = /\\[^\\]/
 
         def on_dstr(node)
           check(node)
@@ -35,12 +36,9 @@ module RuboCop
           src = node.source
           return unless start_with_percent_q_variant?(src)
           return if src.include?(SINGLE_QUOTE) && src.include?(QUOTE)
-          if src.start_with?(PERCENT_Q) && src =~ STRING_INTERPOLATION_REGEXP
-            return
-          end
-          if src.start_with?(PERCENT_CAPITAL_Q) && acceptable_capital_q?(node)
-            return
-          end
+          return if src.start_with?(PERCENT_Q) && acceptable_q?(node)
+          return if src.start_with?(PERCENT_CAPITAL_Q) &&
+                    acceptable_capital_q?(node)
 
           add_offense(node, :expression)
         end
@@ -71,6 +69,14 @@ module RuboCop
 
         def start_with_percent_q_variant?(string)
           string.start_with?(PERCENT_Q, PERCENT_CAPITAL_Q)
+        end
+
+        def acceptable_q?(node)
+          src = node.source
+
+          return true if src =~ STRING_INTERPOLATION_REGEXP
+
+          src.scan(/\\./).any? { |s| s =~ ESCAPED_NON_BACKSLASH }
         end
 
         def acceptable_capital_q?(node)
