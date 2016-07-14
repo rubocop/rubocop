@@ -79,4 +79,12 @@ describe RuboCop::Cop::Style::SingleLineBlockParams, :config do
                     'end'])
     expect(cop.offenses).to be_empty
   end
+
+  it 'does not report if no block arguments are present' do
+    inspect_source(cop,
+                   ['def m',
+                    '  test.reduce { true }',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
 end

@@ -21,9 +21,10 @@ module RuboCop
           return unless receiver
           return unless method_names.include?(method_name)
 
-          # discard cases with argument destructuring
           args = *args_node
 
+          return if args.empty?
+          # discard cases with argument destructuring
           return true unless args.all? { |n| n.type == :arg }
           return if args_match?(method_name, args)
 
