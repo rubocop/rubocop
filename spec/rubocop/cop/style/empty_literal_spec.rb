@@ -148,7 +148,7 @@ describe RuboCop::Cop::Style::EmptyLiteral do
                              '# frozen_string_literal: true',
                              'test = String.new'])
 
-        expect(cop.offenses.size).to eq(0)
+        expect(cop.offenses).to be_empty
       end
     end
   end

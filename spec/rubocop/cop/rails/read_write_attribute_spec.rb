@@ -15,7 +15,7 @@ describe RuboCop::Cop::Rails::ReadWriteAttribute do
 
     it 'registers no offense with explicit receiver' do
       inspect_source(cop, 'res = object.read_attribute(:test)')
-      expect(cop.offenses.size).to eq(0)
+      expect(cop.offenses).to be_empty
     end
   end
 
@@ -28,7 +28,7 @@ describe RuboCop::Cop::Rails::ReadWriteAttribute do
 
     it 'registers no offense with explicit receiver' do
       inspect_source(cop, 'object.write_attribute(:test, val)')
-      expect(cop.offenses.size).to eq(0)
+      expect(cop.offenses).to be_empty
     end
   end
 

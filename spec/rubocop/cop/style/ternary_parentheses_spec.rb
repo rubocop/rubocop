@@ -35,7 +35,7 @@ describe RuboCop::Cop::Style::TernaryParentheses, :config do
     let(:source) { code }
 
     it 'does not register an offense' do
-      expect(cop.offenses.size).to eq(0)
+      expect(cop.offenses).to be_empty
     end
   end
 

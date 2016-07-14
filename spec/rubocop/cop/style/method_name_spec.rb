@@ -72,7 +72,7 @@ describe RuboCop::Cop::Style::MethodName, :config do
                              '    end',
                              '  end',
                              'end'])
-        expect(cop.offenses.size).to eq(0)
+        expect(cop.offenses).to be_empty
       end
     end
   end

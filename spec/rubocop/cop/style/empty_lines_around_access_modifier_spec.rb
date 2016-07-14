@@ -43,7 +43,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundAccessModifier do
                       '',
                       '  def test; end',
                       'end'])
-      expect(cop.offenses.size).to eq(0)
+      expect(cop.offenses).to be_empty
     end
 
     it "ignores #{access_modifier} inside a method call" do
@@ -53,7 +53,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundAccessModifier do
                       "    #{access_modifier}",
                       '  end',
                       'end'])
-      expect(cop.offenses.size).to eq(0)
+      expect(cop.offenses).to be_empty
     end
 
     it "ignores #{access_modifier} deep inside a method call" do
@@ -65,7 +65,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundAccessModifier do
                       '    end',
                       '  end',
                       'end'])
-      expect(cop.offenses.size).to eq(0)
+      expect(cop.offenses).to be_empty
     end
 
     it "ignores #{access_modifier} with a right-hand-side condition" do
@@ -75,7 +75,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundAccessModifier do
                       "    #{access_modifier} if true",
                       '  end',
                       'end'])
-      expect(cop.offenses.size).to eq(0)
+      expect(cop.offenses).to be_empty
     end
 
     it "autocorrects blank line before #{access_modifier}" do
@@ -186,7 +186,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundAccessModifier do
                       "\r",
                       "  def test; end\r",
                       "end\r"])
-      expect(cop.offenses.size).to eq(0)
+      expect(cop.offenses).to be_empty
     end
   end
 end

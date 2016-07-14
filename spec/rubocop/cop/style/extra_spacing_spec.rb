@@ -78,18 +78,18 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
 
     it 'ignores whitespace at the beginning of the line' do
       inspect_source(cop, '  m = "hello"')
-      expect(cop.offenses.size).to eq(0)
+      expect(cop.offenses).to be_empty
     end
 
     it 'ignores whitespace inside a string' do
       inspect_source(cop, 'm = "hello   this"')
-      expect(cop.offenses.size).to eq(0)
+      expect(cop.offenses).to be_empty
     end
 
     it 'ignores trailing whitespace' do
       inspect_source(cop, ['      class Benchmarker < Performer     ',
                            '      end'])
-      expect(cop.offenses.size).to eq(0)
+      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense on class inheritance' do
@@ -245,21 +245,21 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
                            'bb = 2',
                            '',
                            'ccc = 3'])
-      expect(cop.offenses.size).to eq(0)
+      expect(cop.offenses).to be_empty
     end
 
     it 'does not register an offense if assignments are aligned' do
       inspect_source(cop, ['a   = 1',
                            'bb  = 2',
                            'ccc = 3'])
-      expect(cop.offenses.size).to eq(0)
+      expect(cop.offenses).to be_empty
     end
 
     it 'aligns the first assignment with the following assignment' do
       inspect_source(cop, ['# comment',
                            'a   = 1',
                            'bb  = 2'])
-      expect(cop.offenses.size).to eq(0)
+      expect(cop.offenses).to be_empty
     end
 
     it 'autocorrects consecutive assignments which are not aligned' do

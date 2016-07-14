@@ -9,7 +9,7 @@ end
 
 def expect_no_copyright_offense(cop, source)
   inspect_source(cop, source)
-  expect(cop.offenses.size).to eq(0)
+  expect(cop.offenses).to be_empty
 end
 
 def expect_copyright_offense(cop, source)
