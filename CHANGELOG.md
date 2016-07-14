@@ -15,6 +15,10 @@
 * [#3307](https://github.com/bbatsov/rubocop/issues/3307): Fix exception when inspecting an operator assignment with `Style/MethodCallParentheses` cop. ([@drenmi][])
 * [#3316](https://github.com/bbatsov/rubocop/issues/3316): Fix error for blocks without arguments in `Style/SingleLineBlockParams` cop. ([@owst][])
 
+### Changes
+
+* [#2645](https://github.com/bbatsov/rubocop/issues/2645): `Style/EmptyLiteral` no longer generates an offense for `String.new` when using frozen string literals. ([@drenmi][])
+
 ## 0.41.2 (2016-07-07)
 
 ### Bug fixes

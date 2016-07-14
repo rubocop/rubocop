@@ -89,24 +89,24 @@ describe RuboCop::Cop::Style::EmptyLiteral do
 
   describe 'Empty String' do
     it 'registers an offense for String.new()' do
-      inspect_source(cop,
-                     'test = String.new()')
+      inspect_source(cop, 'test = String.new()')
+
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(["Use string literal `''` instead of `String.new`."])
     end
 
     it 'registers an offense for String.new' do
-      inspect_source(cop,
-                     'test = String.new')
+      inspect_source(cop, 'test = String.new')
+
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(["Use string literal `''` instead of `String.new`."])
     end
 
     it 'does not register an offense for String.new("top")' do
-      inspect_source(cop,
-                     'test = String.new("top")')
+      inspect_source(cop, 'test = String.new("top")')
+
       expect(cop.offenses).to be_empty
     end
 
@@ -126,9 +126,29 @@ describe RuboCop::Cop::Style::EmptyLiteral do
       end
       subject(:cop) { described_class.new(config) }
 
+      it 'registers an offense for String.new' do
+        inspect_source(cop, 'test = String.new')
+
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.messages)
+          .to eq(['Use string literal `""` instead of `String.new`.'])
+      end
+
       it 'auto-corrects String.new to a double-quoted empty string literal' do
         new_source = autocorrect_source(cop, 'test = String.new')
         expect(new_source).to eq('test = ""')
+      end
+    end
+
+    context 'when frozen string literals is enabled' do
+      let(:ruby_version) { 2.3 }
+
+      it 'does not register an offense for String.new' do
+        inspect_source(cop, ['# encoding: utf-8',
+                             '# frozen_string_literal: true',
+                             'test = String.new'])
+
+        expect(cop.offenses.size).to eq(0)
       end
     end
   end

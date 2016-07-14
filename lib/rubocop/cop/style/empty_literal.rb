@@ -7,9 +7,11 @@ module RuboCop
       # This cop checks for the use of a method, the result of which
       # would be a literal, like an empty array, hash or string.
       class EmptyLiteral < Cop
+        include FrozenStringLiteral
+
         ARR_MSG = 'Use array literal `[]` instead of `Array.new`.'.freeze
         HASH_MSG = 'Use hash literal `{}` instead of `Hash.new`.'.freeze
-        STR_MSG = "Use string literal `''` instead of `String.new`.".freeze
+        STR_MSG = 'Use string literal `%s` instead of `String.new`.'.freeze
 
         # Empty array node
         #
@@ -39,7 +41,10 @@ module RuboCop
 
             add_offense(node, :expression, HASH_MSG)
           when STR_NODE
-            add_offense(node, :expression, STR_MSG)
+            return if frozen_string_literals_enabled?(processed_source)
+
+            add_offense(node, :expression,
+                        format(STR_MSG, preferred_string_literal))
           end
         end
 
@@ -55,16 +60,16 @@ module RuboCop
                    return if first_arg_in_method_call_without_parentheses?(node)
                    '{}'
                  when STR_NODE
-                   if enforce_double_quotes?
-                     '""'
-                   else
-                     "''"
-                   end
+                   preferred_string_literal
                  end
           ->(corrector) { corrector.replace(node.source_range, name) }
         end
 
         private
+
+        def preferred_string_literal
+          enforce_double_quotes? ? '""' : "''"
+        end
 
         def enforce_double_quotes?
           string_literals_config['EnforcedStyle'] == 'double_quotes'
