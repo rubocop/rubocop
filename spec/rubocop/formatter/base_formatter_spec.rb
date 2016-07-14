@@ -47,9 +47,11 @@ module RuboCop
         describe 'invocation order' do
           subject(:formatter) do
             formatter = double('formatter')
-            def formatter.method_missing(method_name, *)
-              return if method_name == :output
-              puts method_name
+            [:started, :file_started, :file_finished, :finished, :output]
+              .each do |message|
+              allow(formatter).to receive(message) do
+                puts message.to_s unless message == :output
+              end
             end
             formatter
           end
