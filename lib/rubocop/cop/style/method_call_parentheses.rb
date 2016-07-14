@@ -38,10 +38,12 @@ module RuboCop
 
           node.each_ancestor(*ASGN_NODES).any? do |asgn_node|
             # `obj.method = value` parses as (send ... :method= ...), and will
-            # not be returned as an `asgn_node` here
-            # however, `obj.method ||= value` parses as (or-asgn (send ...) ...)
-            # which IS an `asgn_node`
-            if asgn_node.or_asgn_type? || asgn_node.and_asgn_type?
+            # not be returned as an `asgn_node` here, however,
+            # `obj.method ||= value` parses as (or-asgn (send ...) ...)
+            # which IS an `asgn_node`. Similarly, `obj.method += value` parses
+            # as (op-asgn (send ...) ...), which is also an `asgn_node`.
+            if asgn_node.or_asgn_type? || asgn_node.and_asgn_type? ||
+               asgn_node.op_asgn_type?
               asgn_node, _value = *asgn_node
               return false if asgn_node.send_type?
             end
