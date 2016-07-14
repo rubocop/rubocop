@@ -75,6 +75,7 @@
 * [#3127](https://github.com/bbatsov/rubocop/pull/3127): New cop `Lint/InheritException` checks for error classes inheriting from `Exception`, and instead suggests `RuntimeError` or `StandardError`. ([@drenmi][])
 * Add new `Performance/PushSplat` cop. ([@segiddins][])
 * [#3089](https://github.com/bbatsov/rubocop/issues/3089): Add new `Rails/Exit` cop. ([@sgringwe][])
+* [#3104](https://github.com/bbatsov/rubocop/issues/3104): Add new `Style/MethodMissing` cop. ([@haziqhafizuddin][])
 
 ### Bug fixes
 
@@ -2279,3 +2280,4 @@
 [@flexoid]: https://github.com/flexoid
 [@sgringwe]: https://github.com/sgringwe
 [@Tei]: https://github.com/Tei
+[@haziqhafizuddin]: https://github.com/haziqhafizuddin
