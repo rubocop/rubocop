@@ -6,7 +6,7 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'rake', '~> 11.0'
-gem 'rspec', '~> 3.4.0'
+gem 'rspec', '~> 3.5.0'
 gem 'yard', '~> 0.8'
 gem 'simplecov', '~> 0.10'
 gem 'pry'
