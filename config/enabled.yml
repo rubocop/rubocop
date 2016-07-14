@@ -1210,6 +1210,7 @@ Lint/UnreachableCode:
 Lint/UselessAccessModifier:
   Description: 'Checks for useless access modifiers.'
   Enabled: true
+  ContextCreatingMethods: []
 
 Lint/UselessArraySplat:
   Description: 'Checks for useless array splats.'
