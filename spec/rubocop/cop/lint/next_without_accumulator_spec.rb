@@ -24,6 +24,18 @@ describe RuboCop::Cop::Lint::NextWithoutAccumulator do
     SOURCE
   end
 
+  def code_with_nested_block(method_name)
+    <<-SOURCE
+      [(1..3), (4..6)].#{method_name}(0) do |acc, elems|
+        elems.each_with_index do |elem, i|
+          next if i == 1
+          acc << elem
+        end
+        acc
+      end
+    SOURCE
+  end
+
   shared_examples 'reduce/inject' do |reduce_alias|
     context "given a #{reduce_alias} block" do
       it 'registers an offense for a bare next' do
@@ -36,11 +48,16 @@ describe RuboCop::Cop::Lint::NextWithoutAccumulator do
         inspect_source(cop, code_with_accumulator(reduce_alias))
         expect(cop.offenses).to be_empty
       end
+
+      it 'accepts next within a nested block' do
+        inspect_source(cop, code_with_nested_block(reduce_alias))
+        expect(cop.offenses).to be_empty
+      end
     end
   end
 
-  include_examples 'reduce/inject', :reduce
-  include_examples 'reduce/inject', :inject
+  it_behaves_like 'reduce/inject', :reduce
+  it_behaves_like 'reduce/inject', :inject
 
   context 'given an unrelated block' do
     it 'accepts a bare next' do

@@ -18,6 +18,7 @@
 ### Changes
 
 * [#2645](https://github.com/bbatsov/rubocop/issues/2645): `Style/EmptyLiteral` no longer generates an offense for `String.new` when using frozen string literals. ([@drenmi][])
+* [#3308](https://github.com/bbatsov/rubocop/issues/3308): Make `Lint/NextWithoutAccumulator` aware of nested enumeration. ([@drenmi][])
 
 ## 0.41.2 (2016-07-07)
 
