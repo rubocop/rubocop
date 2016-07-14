@@ -113,7 +113,8 @@ module RuboCop
       Node.new(type || @type, children || @children, properties)
     end
 
-    # Returns the index of the receiver node in its siblings.
+    # Returns the index of the receiver node in its siblings. (Sibling index
+    # uses zero based numbering.)
     #
     # @return [Integer] the index of the receiver node in its siblings
     def sibling_index

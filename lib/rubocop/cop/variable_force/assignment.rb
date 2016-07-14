@@ -79,7 +79,7 @@ module RuboCop
         def operator_assignment_node
           return nil unless node.parent
           return nil unless OPERATOR_ASSIGNMENT_TYPES.include?(node.parent.type)
-          return nil unless node.parent.children.index(node) == 0
+          return nil unless node.sibling_index.zero?
           node.parent
         end
 
