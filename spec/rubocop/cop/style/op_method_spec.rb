@@ -71,16 +71,12 @@ describe RuboCop::Cop::Style::OpMethod do
 
   it 'does not register an offense for non binary operators' do
     inspect_source(cop,
-                   ['def -@', # Unary minus
-                    'end',
-                    '',
+                   ['def -@; end',
                     # This + is not a unary operator. It can only be
                     # called with dot notation.
-                    'def +',
-                    'end',
-                    '',
-                    'def *(a, b)', # Quite strange, but legal ruby.
-                    'end'])
+                    'def +; end',
+                    'def *(a, b); end', # Quite strange, but legal ruby.
+                    'def `(cmd); end'])
     expect(cop.offenses).to be_empty
   end
 end
