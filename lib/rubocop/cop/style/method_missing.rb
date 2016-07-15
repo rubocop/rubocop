@@ -4,35 +4,70 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for definition of method_missing.
+      # This cop checks for the presence of `method_missing` without also
+      # defining `respond_to_missing?` and falling back on `super`.
       #
       # @example
       #   #bad
-      #   def method_missing ...
+      #   def method_missing(...)
+      #     ...
+      #   end
       #
       #   #good
-      #   def delegation ...
-      #   def proxy ...
-      #   def define_method ...
+      #   def respond_to_missing?(...)
+      #     ...
+      #   end
       #
-      #   #good
-      #   if you must use method_missing be sure to define respond_to_missing?
-      #   def method_missing ...
-      #   def respond_to_missing? ...
+      #   def method_missing(...)
+      #     ...
+      #     super
+      #   end
       class MethodMissing < Cop
         include OnMethodDef
 
-        MSG = 'Avoid using `method_missing`. Instead use `delegation`, '\
-              '`proxy` or `define_method`.'.freeze
+        MSG = 'When using `method_missing`, %s.'.freeze
 
         def on_method_def(node, method_name, _args, _body)
-          lvar_node = node.each_descendant.find(&:lvar_type?)
+          return unless method_name == :method_missing
 
-          if method_name == :method_missing
-            return if lvar_node.to_a == [:formatter]
-            add_offense(node, :expression)
+          check(node)
+        end
+
+        private
+
+        def check(node)
+          return if calls_super?(node) && implements_respond_to_missing?(node)
+
+          add_offense(node, :expression)
+        end
+
+        def message(node)
+          instructions = []
+
+          unless implements_respond_to_missing?(node)
+            instructions << 'define `respond_to_missing?`'.freeze
+          end
+
+          unless calls_super?(node)
+            instructions << 'fall back on `super`'.freeze
+          end
+
+          format(MSG, instructions.join(' and '))
+        end
+
+        def calls_super?(node)
+          node.descendants.any?(&:zsuper_type?)
+        end
+
+        def implements_respond_to_missing?(node)
+          node.parent.children.any? do |sibling|
+            respond_to_missing_def?(sibling)
           end
         end
+
+        def_node_matcher :respond_to_missing_def?, <<-PATTERN
+          (def :respond_to_missing? (...) ...)
+        PATTERN
       end
     end
   end

@@ -6,13 +6,71 @@ require 'spec_helper'
 describe RuboCop::Cop::Style::MethodMissing do
   subject(:cop) { described_class.new }
 
-  it 'registers an offense for method_missing' do
-    inspect_source(cop, ['class Test',
-                         '  def method_missing; end',
-                         'end'])
+  before do
+    inspect_source(cop, source)
+  end
 
-    expect(cop.messages).to eq(['Avoid using `method_missing`. '\
-      'Instead use `delegation`, `proxy` or `define_method`.'])
-    expect(cop.offenses.empty?).to eq(false)
+  shared_examples 'code with offense' do |code|
+    let(:source) { code }
+
+    it 'registers an offense' do
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages).to eq([message])
+    end
+  end
+
+  shared_examples 'code without offense' do |code|
+    let(:source) { code }
+
+    it 'does not register an offense' do
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  describe 'when not implementing #respond_to_missing? or calling #super' do
+    let(:message) do
+      'When using `method_missing`, define `respond_to_missing?` and ' \
+      'fall back on `super`.'
+    end
+
+    it_behaves_like 'code with offense',
+                    ['class Test',
+                     '  def method_missing; end',
+                     'end'].join("\n")
+  end
+
+  describe 'when not implementing #respond_to_missing?' do
+    let(:message) do
+      'When using `method_missing`, define `respond_to_missing?`.'
+    end
+
+    it_behaves_like 'code with offense',
+                    ['class Test',
+                     '  def method_missing',
+                     '    super',
+                     '  end',
+                     'end'].join("\n")
+  end
+
+  describe 'when not calling #super' do
+    let(:message) do
+      'When using `method_missing`, fall back on `super`.'
+    end
+
+    it_behaves_like 'code with offense',
+                    ['class Test',
+                     '  def respond_to_missing?; end',
+                     '  def method_missing; end',
+                     'end'].join("\n")
+  end
+
+  describe 'when implementing #respond_to_missing? and calling #super' do
+    it_behaves_like 'code without offense',
+                    ['class Test',
+                     '  def respond_to_missing?; end',
+                     '  def method_missing',
+                     '    super',
+                     '  end',
+                     'end'].join("\n")
   end
 end
