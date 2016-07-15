@@ -14,6 +14,7 @@
 * [#3288](https://github.com/bbatsov/rubocop/issues/3288): Fix auto-correct of word and symbol arrays in `Style/ParallelAssignment` cop. ([@jonas054][])
 * [#3307](https://github.com/bbatsov/rubocop/issues/3307): Fix exception when inspecting an operator assignment with `Style/MethodCallParentheses` cop. ([@drenmi][])
 * [#3316](https://github.com/bbatsov/rubocop/issues/3316): Fix error for blocks without arguments in `Style/SingleLineBlockParams` cop. ([@owst][])
+* [#3320](https://github.com/bbatsov/rubocop/issues/3320): Make `Style/OpMethod` aware of the backtick method. ([@drenmi][])
 
 ### Changes
 
