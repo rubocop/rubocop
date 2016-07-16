@@ -365,4 +365,22 @@ describe RuboCop::Node do
       end
     end
   end
+
+  describe '#sibling_index' do
+    let(:node) { RuboCop::ProcessedSource.new(src, ruby_version).ast }
+
+    let(:src) do
+      [
+        'def foo; end',
+        'def bar; end',
+        'def baz; end'
+      ].join("\n")
+    end
+
+    it 'returns its sibling index' do
+      (0..2).each do |n|
+        expect(node.children[n].sibling_index).to eq(n)
+      end
+    end
+  end
 end

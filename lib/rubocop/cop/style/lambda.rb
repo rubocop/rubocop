@@ -182,8 +182,7 @@ module RuboCop
           return false unless parent && parent.send_type?
           return false if parenthesized_call?(parent)
 
-          index = parent.children.index { |c| c.equal?(node) }
-          index >= 2
+          node.sibling_index > 1
         end
 
         def remove_unparenthesized_whitespaces(corrector, node)
