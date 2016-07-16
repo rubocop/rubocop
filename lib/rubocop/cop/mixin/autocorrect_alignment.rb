@@ -77,7 +77,7 @@ module RuboCop
              begins_its_line?(current.source_range)
             @column_delta = base_column - display_column(current.source_range)
 
-            yield current if @column_delta != 0
+            yield current if @column_delta.nonzero?
           end
           prev_line = current.loc.line
         end

@@ -95,7 +95,7 @@ module RuboCop
           column_index = column
         end
 
-        line_begin_pos = if line_number == 0
+        line_begin_pos = if line_number.zero?
                            0
                          else
                            source_buffer.line_range(line_number).begin_pos

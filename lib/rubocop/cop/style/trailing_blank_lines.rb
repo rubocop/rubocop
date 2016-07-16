@@ -60,7 +60,7 @@ module RuboCop
           when 0
             'Trailing blank line missing.'
           else
-            instead_of = if wanted_blank_lines == 0
+            instead_of = if wanted_blank_lines.zero?
                            ''
                          else
                            "instead of #{wanted_blank_lines} "

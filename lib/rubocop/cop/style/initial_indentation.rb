@@ -14,7 +14,7 @@ module RuboCop
             !t.text.start_with?('#')
           end
           return unless first_token
-          return if first_token.pos.column == 0
+          return if first_token.pos.column.zero?
 
           with_space = range_with_surrounding_space(first_token.pos, :left,
                                                     !:with_newline)

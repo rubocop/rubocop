@@ -70,7 +70,7 @@ module RuboCop
             space_inside_left_brace(left_brace, args_delimiter, sb)
           end
 
-          if inner =~ /\S$/ && block_length(node) == 0
+          if inner =~ /\S$/ && block_length(node).zero?
             no_space(sb, right_brace.begin_pos, right_brace.end_pos,
                      'Space missing inside }.')
           else

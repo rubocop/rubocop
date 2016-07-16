@@ -15,7 +15,7 @@ module RuboCop
 
         body_length = body_length(body)
 
-        return false if body_length == 0
+        return false if body_length.zero?
         return false if cond.each_node.any?(&:lvasgn_type?)
         return false if body_has_comment?(body)
         return false if end_keyword_has_comment?(node)

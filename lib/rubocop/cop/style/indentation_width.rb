@@ -200,7 +200,7 @@ module RuboCop
 
           indentation = body_node.loc.column - effective_column(base_loc)
           @column_delta = configured_indentation_width - indentation
-          return if @column_delta == 0
+          return if @column_delta.zero?
 
           offense(body_node, indentation, style)
         end

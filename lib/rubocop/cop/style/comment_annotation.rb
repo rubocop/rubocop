@@ -32,7 +32,7 @@ module RuboCop
         private
 
         def first_comment_line?(comments, ix)
-          ix == 0 || comments[ix - 1].loc.line < comments[ix].loc.line - 1
+          ix.zero? || comments[ix - 1].loc.line < comments[ix].loc.line - 1
         end
 
         def autocorrect(comment)

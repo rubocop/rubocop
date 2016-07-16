@@ -42,7 +42,7 @@ module RuboCop
                                                    # Special for a comment that
                                                    # begins the file: remove
                                                    # the newline at the end.
-                                                   original_begin == 0)
+                                                   original_begin.zero?)
             else
               # Is there any cop between this one and the end of the line, which
               # is NOT being removed?

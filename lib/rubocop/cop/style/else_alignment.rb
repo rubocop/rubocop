@@ -100,7 +100,7 @@ module RuboCop
           return unless begins_its_line?(else_range)
 
           @column_delta = effective_column(base_range) - else_range.column
-          return if @column_delta == 0
+          return if @column_delta.zero?
 
           add_offense(else_range, else_range,
                       format(MSG, else_range.source, base_range.source[/^\S*/]))

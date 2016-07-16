@@ -565,12 +565,12 @@ module RuboCop
     def case_if_value_used?
       # (case <condition> <when...>)
       # (if <condition> <truebranch> <falsebranch>)
-      sibling_index == 0 ? true : parent.value_used?
+      sibling_index.zero? ? true : parent.value_used?
     end
 
     def while_until_value_used?
       # (while <condition> <body>) -> always evaluates to `nil`
-      sibling_index == 0
+      sibling_index.zero?
     end
 
     def parent_module_name_part(node)

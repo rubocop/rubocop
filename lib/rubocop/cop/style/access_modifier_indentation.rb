@@ -49,7 +49,7 @@ module RuboCop
           offset = access_modifier_start_col - class_start_col
 
           @column_delta = expected_indent_offset - offset
-          if @column_delta == 0
+          if @column_delta.zero?
             correct_style_detected
           else
             add_offense(send_node, :expression) do

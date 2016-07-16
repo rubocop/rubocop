@@ -80,7 +80,7 @@ module RuboCop
 
           expected_column = base_column(left_bracket, left_parenthesis)
           @column_delta = expected_column - right_bracket.column
-          return if @column_delta == 0
+          return if @column_delta.zero?
 
           msg = if style == :align_brackets
                   'Indent the right bracket the same as the left bracket.'

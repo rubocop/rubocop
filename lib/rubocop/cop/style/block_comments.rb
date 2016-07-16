@@ -23,15 +23,13 @@ module RuboCop
 
           lambda do |corrector|
             corrector.remove(eq_begin)
-            # rubocop:disable Style/ZeroLengthPredicate
-            unless contents.length == 0
+            unless contents.length.zero?
               corrector.replace(contents,
                                 contents.source
                                   .gsub(/\A/, '# ')
                                   .gsub(/\n\n/, "\n#\n")
                                   .gsub(/\n(?=[^\z#])/, "\n# "))
             end
-            # rubocop:enable Style/ZeroLengthPredicate
             corrector.remove(eq_end)
           end
         end
