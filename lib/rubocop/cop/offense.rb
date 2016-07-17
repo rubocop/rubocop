@@ -92,15 +92,9 @@ module RuboCop
       # @return [Parser::Source::Range]
       #   the range of the code that is highlighted
       def highlighted_area
-        column_length = if location.first_line == location.last_line
-                          location.column_range.count
-                        else
-                          location.source_line.length - location.column
-                        end
-
-        Parser::Source::Range.new(location.source_line,
-                                  location.column,
-                                  location.column + column_length)
+        Parser::Source::Range.new(source_line,
+                                  column,
+                                  column + column_length)
       end
 
       # @api private
@@ -118,6 +112,35 @@ module RuboCop
       # @api private
       def column
         location.column
+      end
+
+      # @api private
+      def source_line
+        location.source_line
+      end
+
+      # @api private
+      def column_length
+        if first_line == last_line
+          column_range.count
+        else
+          source_line.length - column
+        end
+      end
+
+      # @api private
+      def first_line
+        location.first_line
+      end
+
+      # @api private
+      def last_line
+        location.last_line
+      end
+
+      # @api private
+      def column_range
+        location.column_range
       end
 
       # @api private
