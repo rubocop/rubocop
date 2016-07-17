@@ -4,19 +4,22 @@
 module RuboCop
   module Cop
     module Style
-      # This cops checks if empty lines around the bodies of classes match the
-      # configuration.
+      # This cops checks if empty lines around the bodies of classes match
+      # the configuration.
       #
       # @example
       #
-      #   class Test
+      #   EnforcedStyle: empty_lines
       #
-      #      def something
+      #   # good
+      #
+      #   class Foo
+      #
+      #      def bar
       #        ...
       #      end
       #
       #   end
-      #
       class EmptyLinesAroundClassBody < Cop
         include EmptyLinesAroundBody
 
