@@ -4,31 +4,35 @@
 module RuboCop
   module Cop
     module Style
-      # This cops checks if empty lines around the bodies of methods match
-      # the configuration.
+      # This cops checks if empty lines exist around the bodies of methods.
       #
       # @example
       #
-      #   def something(arg)
+      #   # good
       #
+      #   def foo
       #     ...
       #   end
       #
+      #   # bad
+      #
+      #   def bar
+      #
+      #     ...
+      #
+      #   end
       class EmptyLinesAroundMethodBody < Cop
         include EmptyLinesAroundBody
         include OnMethodDef
 
         KIND = 'method'.freeze
 
-        private
-
         def on_method_def(node, _method_name, _args, body)
           check(node, body)
         end
 
-        # Override ConfigurableEnforcedStyle#style and hard-code
-        # configuration. It's difficult to imagine that anybody would want
-        # empty lines around a method body, so we don't make it configurable.
+        private
+
         def style
           :no_empty_lines
         end
