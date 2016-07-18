@@ -34,25 +34,27 @@ module RuboCop
           receiver, _method_name, *_args = *node
 
           receiver_line = receiver.source_range.end.line
-
-          if node.loc.selector
-            selector_line = node.loc.selector.line
-          else
-            # l.(1) has no selector, so we use the opening parenthesis instead
-            selector_line = node.loc.begin.line
-          end
+          selector_line = selector_range(node).line
 
           # receiver and selector are on the same line
           return true if selector_line == receiver_line
 
           dot_line = node.loc.dot.line
 
-          # don't register an offense if there is a line comment between
-          # the dot and the selector
-          # otherwise, we might break the code while "correcting" it
-          # (even if there is just an extra blank line, treat it the same)
-          return true if (selector_line - dot_line) > 1
+          # don't register an offense if there is a line comment between the
+          # dot and the selector otherwise, we might break the code while
+          # "correcting" it (even if there is just an extra blank line, treat
+          # it the same)
+          return true if line_between?(selector_line, dot_line)
 
+          correct_dot_position_style?(dot_line, selector_line)
+        end
+
+        def line_between?(first_line, second_line)
+          (first_line - second_line) > 1
+        end
+
+        def correct_dot_position_style?(dot_line, selector_line)
           case style
           when :leading then dot_line == selector_line
           when :trailing then dot_line != selector_line
@@ -61,21 +63,24 @@ module RuboCop
 
         def autocorrect(node)
           receiver, _method_name, *_args = *node
-          if node.loc.selector
-            selector = node.loc.selector
-          else
-            # l.(1) has no selector, so we use the opening parenthesis instead
-            selector = node.loc.begin
-          end
 
           lambda do |corrector|
             corrector.remove(node.loc.dot)
             case style
             when :leading
-              corrector.insert_before(selector, '.')
+              corrector.insert_before(selector_range(node), '.')
             when :trailing
               corrector.insert_after(receiver.source_range, '.')
             end
+          end
+        end
+
+        def selector_range(node)
+          if node.loc.selector
+            node.loc.selector
+          else
+            # l.(1) has no selector, so we use the opening parenthesis instead
+            node.loc.begin
           end
         end
       end
