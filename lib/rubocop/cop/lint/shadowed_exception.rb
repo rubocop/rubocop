@@ -94,7 +94,15 @@ module RuboCop
 
         def sort_rescued_groups(groups)
           groups.sort do |x, y|
-            x <=> y || 0
+            if x.include?(Exception)
+              1
+            elsif y.include?(Exception)
+              -1
+            elsif x.empty? || y.empty?
+              0
+            else
+              x <=> y || 0
+            end
           end
         end
 

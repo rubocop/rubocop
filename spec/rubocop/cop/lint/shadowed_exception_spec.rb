@@ -328,6 +328,44 @@ describe RuboCop::Cop::Lint::ShadowedException do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts rescuing a known exception after an unknown exceptions' do
+      inspect_source(cop, ['begin',
+                           '  a',
+                           'rescue UnknownException',
+                           '  b',
+                           'rescue StandardError',
+                           '  c',
+                           'end'])
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts rescuing a known exception before an unknown exceptions' do
+      inspect_source(cop, ['begin',
+                           '  a',
+                           'rescue StandardError',
+                           '  b',
+                           'rescue UnknownException',
+                           '  c',
+                           'end'])
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts rescuing a known exception between unknown exceptions' do
+      inspect_source(cop, ['begin',
+                           '  a',
+                           'rescue UnknownException',
+                           '  b',
+                           'rescue StandardError',
+                           '  c',
+                           'rescue AnotherUnknownException',
+                           '  d',
+                           'end'])
+
+      expect(cop.offenses).to be_empty
+    end
+
     it 'ignores expressions of non-const' do
       inspect_source(cop, ['begin',
                            '  a',

@@ -15,6 +15,7 @@
 * [#3307](https://github.com/bbatsov/rubocop/issues/3307): Fix exception when inspecting an operator assignment with `Style/MethodCallParentheses` cop. ([@drenmi][])
 * [#3316](https://github.com/bbatsov/rubocop/issues/3316): Fix error for blocks without arguments in `Style/SingleLineBlockParams` cop. ([@owst][])
 * [#3320](https://github.com/bbatsov/rubocop/issues/3320): Make `Style/OpMethod` aware of the backtick method. ([@drenmi][])
+* Do not register an offense in `Lint/ShadowedException` when rescuing an exception built into Ruby before a custom exception. ([@rrosenblum][])
 
 ### Changes
 
