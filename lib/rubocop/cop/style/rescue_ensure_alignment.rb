@@ -58,14 +58,17 @@ module RuboCop
 
         def check(node)
           end_loc = ancestor_node(node).loc.end
-          return if end_loc.column == node.loc.keyword.column
-          return if end_loc.line == node.loc.keyword.line
-
           kw_loc = node.loc.keyword
 
-          add_offense(node, kw_loc,
-                      format(MSG, kw_loc.source, kw_loc.line, kw_loc.column,
-                             end_loc.line, end_loc.column))
+          return if end_loc.column == kw_loc.column
+          return if end_loc.line == kw_loc.line
+
+          add_offense(node, kw_loc, format_message(kw_loc, end_loc))
+        end
+
+        def format_message(kw_loc, end_loc)
+          format(MSG, kw_loc.source, kw_loc.line, kw_loc.column, end_loc.line,
+                 end_loc.column)
         end
 
         def modifier?(node)
