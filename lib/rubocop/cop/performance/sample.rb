@@ -89,7 +89,6 @@ module RuboCop
             arg.source if arg
           end
 
-          # FIXME: use Range#size once Ruby 1.9 support is dropped
           def range_size(range_node)
             vals = *range_node
             return :unknown unless vals.all?(&:int_type?)

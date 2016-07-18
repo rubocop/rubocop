@@ -106,8 +106,7 @@ module RuboCop
         end
 
         def escape(s)
-          # Single quotes not escaped in Ruby 1.9, so add extra substitution.
-          CGI.escapeHTML(s).gsub(/'/, '&#39;')
+          CGI.escapeHTML(s)
         end
 
         def base64_encoded_logo_image

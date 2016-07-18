@@ -21,6 +21,7 @@
 * [#2645](https://github.com/bbatsov/rubocop/issues/2645): `Style/EmptyLiteral` no longer generates an offense for `String.new` when using frozen string literals. ([@drenmi][])
 * [#3308](https://github.com/bbatsov/rubocop/issues/3308): Make `Lint/NextWithoutAccumulator` aware of nested enumeration. ([@drenmi][])
 * Extend `Style/MethodMissing` cop to check for the conditions in the style guide. ([@drenmi][])
+* [#3325](https://github.com/bbatsov/rubocop/issues/3325): Drop support for MRI 1.9.3. ([@drenmi][])
 
 ## 0.41.2 (2016-07-07)
 
