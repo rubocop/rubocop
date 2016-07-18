@@ -55,12 +55,9 @@ module RuboCop
         common_chars_of_shorter = Array.new(shorter.size)
         common_chars_of_longer = Array.new(longer.size)
 
-        # In Ruby 1.9 String#chars returns Enumerator rather than Array.
-        longer_chars = longer.each_char.to_a
-
         shorter.each_char.with_index do |shorter_char, shorter_index|
           matching_index_range(shorter_index).each do |longer_index|
-            longer_char = longer_chars[longer_index]
+            longer_char = longer.chars[longer_index]
 
             next unless shorter_char == longer_char
 
@@ -68,7 +65,7 @@ module RuboCop
             common_chars_of_longer[longer_index] = longer_char
 
             # Mark the matching character as already used
-            longer_chars[longer_index] = nil
+            longer.chars[longer_index] = nil
 
             break
           end

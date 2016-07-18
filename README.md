@@ -71,12 +71,11 @@ You can read a ton more about RuboCop in its [official manual](http://rubocop.re
 
 RuboCop supports the following Ruby implementations:
 
-* MRI 1.9.3
 * MRI 2.0
 * MRI 2.1
 * MRI 2.2
 * MRI 2.3
-* JRuby in 1.9 mode
+* JRuby 9.0+
 * Rubinius 2.0+
 
 ## Team

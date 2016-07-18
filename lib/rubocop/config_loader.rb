@@ -140,13 +140,8 @@ module RuboCop
 
       def load_yaml_configuration(absolute_path)
         yaml_code = IO.read(absolute_path, encoding: 'UTF-8')
-        # At one time, there was a problem with the psych YAML engine under
-        # Ruby 1.9.3. YAML.load_file would crash when reading empty .yml files
-        # or files that only contained comments and blank lines. This problem
-        # is not possible to reproduce now, but we want to avoid it in case
-        # it's still there. So we only load the YAML code if we find some real
-        # code in there.
-        hash = yaml_code =~ /^[A-Z]/i ? yaml_safe_load(yaml_code) : {}
+        hash = yaml_safe_load(yaml_code) || {}
+
         puts "configuration from #{absolute_path}" if debug?
 
         unless hash.is_a?(Hash)

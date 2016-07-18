@@ -170,9 +170,6 @@ module RuboCop
             output.puts "    - '#{file}'"
           end
         end
-      rescue LoadError
-        # Fallback to Enabled: false for Ruby < 1.9.3
-        output.puts '  Enabled: false'
       end
     end
   end

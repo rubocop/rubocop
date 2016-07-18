@@ -15,8 +15,6 @@ group :test do
   gem 'codeclimate-test-reporter', require: false
   gem 'safe_yaml', require: false
   gem 'webmock', require: false
-  # Json 2.0 requires Ruby >= 2.0
-  gem 'json', '~> 1.8', require: false, platforms: :ruby_19
 end
 
 local_gemfile = 'Gemfile.local'
