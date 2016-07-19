@@ -94,15 +94,30 @@ module RuboCop
         end
 
         def highlighted_source_line(offense)
-          location = offense.location
-          source_line = location.source_line
+          source_before_highlight(offense) +
+            hightlight_source_tag(offense) +
+            source_after_highlight(offense) +
+            possible_ellipses(offense.location)
+        end
 
-          escape(source_line[0...offense.highlighted_area.begin_pos]) +
-            "<span class=\"highlight #{offense.severity}\">" +
-            escape(offense.highlighted_area.source) +
-            '</span>' +
-            escape(source_line[offense.highlighted_area.end_pos..-1]) +
-            (location.first_line == location.last_line ? '' : " #{ELLIPSES}")
+        def hightlight_source_tag(offense)
+          "<span class=\"highlight #{offense.severity}\">" \
+            "#{escape(offense.highlighted_area.source)}" \
+            '</span>'
+        end
+
+        def source_before_highlight(offense)
+          source_line = offense.location.source_line
+          escape(source_line[0...offense.highlighted_area.begin_pos])
+        end
+
+        def source_after_highlight(offense)
+          source_line = offense.location.source_line
+          escape(source_line[offense.highlighted_area.end_pos..-1])
+        end
+
+        def possible_ellipses(location)
+          location.first_line == location.last_line ? '' : " #{ELLIPSES}"
         end
 
         def escape(s)
