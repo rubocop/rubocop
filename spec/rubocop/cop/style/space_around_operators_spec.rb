@@ -185,6 +185,22 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
   end
 
   describe 'missing space around operators' do
+    shared_examples 'modifier with missing space' do |keyword|
+      it "registers an offense in presence of modifier #{keyword} statement" do
+        src = ["a=1 #{keyword} condition",
+               'c=2']
+        inspect_source(cop, src)
+        expect(cop.offenses.map(&:line)).to eq([1, 2])
+        expect(cop.messages).to eq(
+          ['Surrounding space missing for operator `=`.'] * 2
+        )
+
+        new_source = autocorrect_source(cop, src)
+        expect(new_source)
+          .to eq(src.map { |line| line.sub('=', ' = ') }.join("\n"))
+      end
+    end
+
     it 'registers an offense for assignment without space on both sides' do
       inspect_source(cop, ['x=0', 'y+= 0', 'z[0] =0'])
       expect(cop.messages)
@@ -232,35 +248,10 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
       end
     end
 
-    it 'registers an offense in presence of modifier if statement' do
-      check_modifier('if')
-    end
-
-    it 'registers an offense in presence of modifier unless statement' do
-      check_modifier('unless')
-    end
-
-    it 'registers an offense in presence of modifier while statement' do
-      check_modifier('while')
-    end
-
-    it 'registers an offense in presence of modifier until statement' do
-      check_modifier('until')
-    end
-
-    def check_modifier(keyword)
-      src = ["a=1 #{keyword} condition",
-             'c=2']
-      inspect_source(cop, src)
-      expect(cop.offenses.map(&:line)).to eq([1, 2])
-      expect(cop.messages).to eq(
-        ['Surrounding space missing for operator `=`.'] * 2
-      )
-
-      new_source = autocorrect_source(cop, src)
-      expect(new_source)
-        .to eq(src.map { |line| line.sub('=', ' = ') }.join("\n"))
-    end
+    it_behaves_like 'modifier with missing space', 'if'
+    it_behaves_like 'modifier with missing space', 'unless'
+    it_behaves_like 'modifier with missing space', 'while'
+    it_behaves_like 'modifier with missing space', 'until'
 
     it 'registers an offense for binary operators that could be unary' do
       inspect_source(cop, ['a-3', 'x&0xff', 'z+0'])
@@ -446,6 +437,22 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
   end
 
   describe 'extra space around operators' do
+    shared_examples 'modifier with extra space' do |keyword|
+      it "registers an offense in presence of modifier #{keyword} statement" do
+        src = ["a =  1 #{keyword} condition",
+               'c =   2']
+        inspect_source(cop, src)
+        expect(cop.offenses.map(&:line)).to eq([1, 2])
+        expect(cop.messages).to eq(
+          ['Operator `=` should be surrounded by a single space.'] * 2
+        )
+
+        new_source = autocorrect_source(cop, src)
+        expect(new_source)
+          .to eq(src.map { |line| line.sub(/\s*=\s*/, ' = ') }.join("\n"))
+      end
+    end
+
     it 'registers an offense for assignment with many spaces on either side' do
       inspect_source(cop, ['x   = 0',
                            'y +=   0',
@@ -476,35 +483,10 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
       expect(new_source).to eq('x == 0 ? 1 : 2')
     end
 
-    it 'registers an offense in presence of modifier if statement' do
-      check_modifier('if')
-    end
-
-    it 'registers an offense in presence of modifier unless statement' do
-      check_modifier('unless')
-    end
-
-    it 'registers an offense in presence of modifier while statement' do
-      check_modifier('while')
-    end
-
-    it 'registers an offense in presence of modifier until statement' do
-      check_modifier('until')
-    end
-
-    def check_modifier(keyword)
-      src = ["a =  1 #{keyword} condition",
-             'c =   2']
-      inspect_source(cop, src)
-      expect(cop.offenses.map(&:line)).to eq([1, 2])
-      expect(cop.messages).to eq(
-        ['Operator `=` should be surrounded by a single space.'] * 2
-      )
-
-      new_source = autocorrect_source(cop, src)
-      expect(new_source)
-        .to eq(src.map { |line| line.sub(/\s*=\s*/, ' = ') }.join("\n"))
-    end
+    it_behaves_like 'modifier with extra space', 'if'
+    it_behaves_like 'modifier with extra space', 'unless'
+    it_behaves_like 'modifier with extra space', 'while'
+    it_behaves_like 'modifier with extra space', 'until'
 
     it 'registers an offense for binary operators that could be unary' do
       inspect_source(cop, ['a -  3',
