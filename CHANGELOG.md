@@ -41,6 +41,7 @@
 * [#3272](https://github.com/bbatsov/rubocop/issues/3272): Add escape character missing to LITERAL_REGEX. ([@pocke][])
 * [#3255](https://github.com/bbatsov/rubocop/issues/3255): Fix auto-correct for `Style/RaiseArgs` when constructing exception without arguments. ([@drenmi][])
 * [#3294](https://github.com/bbatsov/rubocop/pull/3294): Allow to use `Time.zone_default`. ([@Tei][])
+* [#3300](https://github.com/bbatsov/rubocop/issues/3300): Do not replace `%q()`s containing escaped non-backslashes. ([@owst][])
 
 ### Changes
 

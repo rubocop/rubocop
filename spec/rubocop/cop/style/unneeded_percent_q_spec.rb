@@ -34,24 +34,22 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
       expect(cop.messages).to be_empty
     end
 
-    it 'registers an offense for a string with single quotes and what appears' \
-       ' to be an escape' do
-      # There is no such thing as escapes in a %q() string
-      # So this can just as well be written with double quotes
-      inspect_source(cop, "%q('hi\\t')")
+    it 'registers an offfense for a string containing escaped backslashes' do
+      inspect_source(cop, '%q(\\\\foo\\\\)')
 
-      expect(cop.messages).to eq(['Use `%q` only for strings that contain ' \
-                                  'both single quotes and double quotes.'])
+      expect(cop.messages.length).to eq 1
     end
 
-    it 'registers an offense for a string with double quotes and what appears' \
-       ' to be an escape' do
-      # There is no such thing as escapes in a %q() string
-      # So this can just as well be written with single quotes
-      inspect_source(cop, '%q("hi\\t")')
+    it 'accepts a string with escaped non-backslash characters' do
+      inspect_source(cop, "%q(\\'foo\\')")
 
-      expect(cop.messages).to eq(['Use `%q` only for strings that contain ' \
-                                  'both single quotes and double quotes.'])
+      expect(cop.messages).to be_empty
+    end
+
+    it 'accepts a string with escaped backslash and non-backslash characters' do
+      inspect_source(cop, "%q(\\\\ \\'foo\\' \\\\)") # This is \\ \'foo\' \\
+
+      expect(cop.messages).to be_empty
     end
 
     it 'accepts regular expressions starting with %q' do
