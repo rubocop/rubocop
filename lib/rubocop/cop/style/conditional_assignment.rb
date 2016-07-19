@@ -420,6 +420,21 @@ module RuboCop
                                     condition.loc.expression.begin_pos)
         end
 
+        def correct_if_branches(corrector, cop, node)
+          if_branch, elsif_branches, else_branch = extract_tail_branches(node)
+
+          corrector.insert_before(node.source_range, lhs(if_branch))
+          replace_branch_assignment(corrector, if_branch)
+          correct_branches(corrector, elsif_branches)
+          replace_branch_assignment(corrector, else_branch)
+          corrector.insert_before(node.loc.end, indent(cop, lhs(if_branch)))
+        end
+
+        def replace_branch_assignment(corrector, branch)
+          _variable, *_operator, assignment = *branch
+          corrector.replace(branch.source_range, assignment.source)
+        end
+
         def correct_branches(corrector, branches)
           branches.each do |branch|
             *_, assignment = *branch
@@ -495,18 +510,7 @@ module RuboCop
           include ConditionalCorrectorHelper
 
           def correct(cop, node)
-            if_branch, elsif_branches, else_branch = extract_tail_branches(node)
-            _variable, *_operator, if_assignment = *if_branch
-            _else_variable, *_operator, else_assignment = *else_branch
-
-            lambda do |corrector|
-              corrector.insert_before(node.source_range, lhs(if_branch))
-              corrector.replace(if_branch.source_range, if_assignment.source)
-              correct_branches(corrector, elsif_branches)
-              corrector.replace(else_branch.source_range,
-                                else_assignment.source)
-              corrector.insert_before(node.loc.end, indent(cop, lhs(if_branch)))
-            end
+            ->(corrector) { correct_if_branches(corrector, cop, node) }
           end
 
           def move_assignment_inside_condition(node)
@@ -562,13 +566,11 @@ module RuboCop
 
           def correct(cop, node)
             when_branches, else_branch = extract_tail_branches(node)
-            _variable, *_operator, else_assignment = *else_branch
 
             lambda do |corrector|
               corrector.insert_before(node.source_range, lhs(else_branch))
               correct_branches(corrector, when_branches)
-              corrector.replace(else_branch.source_range,
-                                else_assignment.source)
+              replace_branch_assignment(corrector, else_branch)
 
               corrector.insert_before(node.loc.end,
                                       indent(cop, lhs(else_branch)))
@@ -623,21 +625,18 @@ module RuboCop
       class UnlessCorrector
         class << self
           include ConditionalAssignmentHelper
+          include ConditionalCorrectorHelper
 
           def correct(cop, node)
-            _condition, else_branch, if_branch = *node
-            if_branch = tail(if_branch)
-            else_branch = tail(else_branch)
-            _variable, *_operator, if_assignment = *if_branch
-            _else_variable, *_operator, else_assignment = *else_branch
+            ->(corrector) { correct_if_branches(corrector, cop, node) }
+          end
 
-            lambda do |corrector|
-              corrector.insert_before(node.source_range, lhs(if_branch))
-              corrector.replace(if_branch.source_range, if_assignment.source)
-              corrector.replace(else_branch.source_range,
-                                else_assignment.source)
-              corrector.insert_before(node.loc.end, indent(cop, lhs(if_branch)))
-            end
+          private
+
+          def extract_tail_branches(node)
+            _condition, else_branch, if_branch = *node
+
+            [tail(if_branch), [], tail(else_branch)]
           end
         end
       end
