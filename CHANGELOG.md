@@ -22,6 +22,7 @@
 * [#3308](https://github.com/bbatsov/rubocop/issues/3308): Make `Lint/NextWithoutAccumulator` aware of nested enumeration. ([@drenmi][])
 * Extend `Style/MethodMissing` cop to check for the conditions in the style guide. ([@drenmi][])
 * [#3325](https://github.com/bbatsov/rubocop/issues/3325): Drop support for MRI 1.9.3. ([@drenmi][])
+* Add support for MRI 2.4. ([@dvandersluis][])
 
 ## 0.41.2 (2016-07-07)
 
@@ -2285,3 +2286,4 @@
 [@sgringwe]: https://github.com/sgringwe
 [@Tei]: https://github.com/Tei
 [@haziqhafizuddin]: https://github.com/haziqhafizuddin
+[@dvandersluis]: https://github.com/dvandersluis
