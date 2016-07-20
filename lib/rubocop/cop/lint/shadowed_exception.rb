@@ -27,7 +27,10 @@ module RuboCop
       #   handle_exception
       # end
       class ShadowedException < Cop
-        MSG = 'Do not shadow rescued Exceptions'.freeze
+        SHADOWED_EXCEPTION_MSG =
+          'Do not shadow rescued Exceptions'.freeze
+        UNNECESSARY_RESCUED_EXCEPTION_MSG =
+          'Unnecessary rescued exceptions detected'.freeze
 
         def on_rescue(node)
           return if rescue_modifier?(node)
@@ -38,25 +41,54 @@ module RuboCop
             exceptions << evaluate_exceptions(rescue_group)
           end
 
-          rescue_group_rescues_multiple_levels = rescued_groups.any? do |group|
-            contains_multiple_levels_of_exceptions?(group)
-          end
-
-          return if !rescue_group_rescues_multiple_levels &&
-                    rescued_groups == sort_rescued_groups(rescued_groups)
-
-          add_offense(node, offense_range(node, rescues))
+          add_offenses(node, rescues, rescued_groups)
         end
 
         private
 
-        def offense_range(node, rescues)
+        def add_offenses(node, rescues, rescued_groups)
+          rescue_group_rescues_multiple_levels = rescued_groups.any? do |group|
+            contains_multiple_levels_of_exceptions?(group)
+          end
+
+          if rescue_group_rescues_multiple_levels
+            offense_range = unnecessary_exceptions_offense_range(
+              node, rescues, rescued_groups
+            )
+            add_offense(node,
+                        offense_range,
+                        UNNECESSARY_RESCUED_EXCEPTION_MSG)
+          end
+
+          if rescued_groups != sort_rescued_groups(rescued_groups)
+            add_offense(node,
+                        shadowed_exception_offense_range(node, rescues),
+                        SHADOWED_EXCEPTION_MSG)
+          end
+        end
+
+        def unnecessary_exceptions_offense_range(node, rescues, rescued_groups)
+          offense_rescue_group_index = rescued_groups.index do |group|
+            contains_multiple_levels_of_exceptions?(group)
+          end
+          offense_rescue_group = rescues[offense_rescue_group_index]
+          offense_exceptions, = *rescues[offense_rescue_group_index]
+          Parser::Source::Range.new(
+            node.loc.expression.source_buffer,
+            offense_rescue_group.loc.expression.begin_pos,
+            offense_exceptions.loc.node.loc.expression.end_pos
+          )
+        end
+
+        def shadowed_exception_offense_range(node, rescues)
           first_rescue = rescues.first
           last_rescue = rescues.last
           last_exceptions, = *last_rescue
-          Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                    first_rescue.loc.expression.begin_pos,
-                                    last_exceptions.loc.expression.end_pos)
+          Parser::Source::Range.new(
+            node.loc.expression.source_buffer,
+            first_rescue.loc.expression.begin_pos,
+            last_exceptions.loc.expression.end_pos
+          )
         end
 
         def rescue_modifier?(node)
