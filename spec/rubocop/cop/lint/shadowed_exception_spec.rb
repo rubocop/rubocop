@@ -110,7 +110,7 @@ describe RuboCop::Cop::Lint::ShadowedException do
                            '  foo',
                            'end'])
 
-      expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+      expect(cop.messages).to eq(['Unnecessary rescued exceptions detected'])
       expect(cop.highlights).to eq(['rescue StandardError, Exception'])
     end
 
@@ -152,7 +152,7 @@ describe RuboCop::Cop::Lint::ShadowedException do
                            '  b',
                            'end'])
 
-      expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+      expect(cop.messages).to eq(['Unnecessary rescued exceptions detected'])
       expect(cop.highlights).to eq(['rescue nil, StandardError, Exception'])
     end
   end
@@ -338,6 +338,19 @@ describe RuboCop::Cop::Lint::ShadowedException do
                            'end'])
 
       expect(cop.offenses).to be_empty
+    end
+  end
+
+  context 'unnecessary rescued exceptions' do
+    it 'registers an offense' do
+      inspect_source(cop, ['begin',
+                           '  something',
+                           'rescue Timeout::Error, StandardError',
+                           '  foo',
+                           'end'])
+
+      expect(cop.messages).to eq(['Unnecessary rescued exceptions detected'])
+      expect(cop.highlights).to eq(['rescue Timeout::Error, StandardError'])
     end
   end
 end
