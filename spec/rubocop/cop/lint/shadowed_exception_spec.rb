@@ -55,6 +55,17 @@ describe RuboCop::Cop::Lint::ShadowedException do
       expect(cop.offenses).to be_empty
     end
 
+    it 'registers an offense rescuing Exception with any other error or ' \
+       'exception' do
+      inspect_source(cop, ['begin',
+                           '  something',
+                           'rescue NonStandardError, Exception',
+                           '  handle_exception',
+                           'end'])
+
+      expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+    end
+
     it 'accepts rescuing a single exception that is assigned to a variable' do
       inspect_source(cop, ['begin',
                            '  something',
@@ -262,6 +273,19 @@ describe RuboCop::Cop::Lint::ShadowedException do
       end
 
       it 'registers an offense for splat arguments rescued after ' \
+         'rescuing a known exception' do
+        inspect_source(cop, ['begin',
+                             '  a',
+                             'rescue StandardError',
+                             '  b',
+                             'rescue *BAR',
+                             '  c',
+                             'end'])
+
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'registers an offense for splat arguments rescued after ' \
          'rescuing Exception' do
         inspect_source(cop, ['begin',
                              '  a',
@@ -326,6 +350,59 @@ describe RuboCop::Cop::Lint::ShadowedException do
                            'end'])
 
       expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts rescuing a known exception after an unknown exceptions' do
+      inspect_source(cop, ['begin',
+                           '  a',
+                           'rescue UnknownException',
+                           '  b',
+                           'rescue StandardError',
+                           '  c',
+                           'end'])
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts rescuing a known exception before an unknown exceptions' do
+      inspect_source(cop, ['begin',
+                           '  a',
+                           'rescue StandardError',
+                           '  b',
+                           'rescue UnknownException',
+                           '  c',
+                           'end'])
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts rescuing a known exception between unknown exceptions' do
+      inspect_source(cop, ['begin',
+                           '  a',
+                           'rescue UnknownException',
+                           '  b',
+                           'rescue StandardError',
+                           '  c',
+                           'rescue AnotherUnknownException',
+                           '  d',
+                           'end'])
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense rescuing Exception before an unknown exceptions' do
+      inspect_source(cop, ['begin',
+                           '  a',
+                           'rescue Exception',
+                           '  b',
+                           'rescue UnknownException',
+                           '  c',
+                           'end'])
+
+      expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+      expect(cop.highlights).to eq([['rescue Exception',
+                                     '  b',
+                                     'rescue UnknownException'].join("\n")])
     end
 
     it 'ignores expressions of non-const' do

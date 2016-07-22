@@ -66,10 +66,22 @@ module RuboCop
         end
 
         def contains_multiple_levels_of_exceptions?(group)
+          if group.size > 1 && group.include?(Exception)
+            # Treat `Exception` as the highest level exception unless `nil` was
+            # also rescued
+            return !(group.size == 2 && group.include?(NilClass))
+          end
+
           group.any? do |exception|
             higher_exception = false
             group.each_with_index do |_e, i|
-              higher_exception ||= group[i] < exception
+              higher_exception ||= begin
+                                     if group[i].nil? || exception.nil?
+                                       false
+                                     else
+                                       group[i] < exception
+                                     end
+                                   end
             end
 
             higher_exception
@@ -83,7 +95,7 @@ module RuboCop
               begin
                 converted << instance_eval(exception, __FILE__, __LINE__)
               rescue StandardError, ScriptError
-                next
+                converted << nil
               end
             end
           else
@@ -94,7 +106,15 @@ module RuboCop
 
         def sort_rescued_groups(groups)
           groups.sort do |x, y|
-            x <=> y || 0
+            if x.include?(Exception)
+              1
+            elsif y.include?(Exception)
+              -1
+            elsif x.empty? || y.empty?
+              0
+            else
+              x <=> y || 0
+            end
           end
         end
 
