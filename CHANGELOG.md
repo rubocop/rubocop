@@ -23,6 +23,7 @@
 * Extend `Style/MethodMissing` cop to check for the conditions in the style guide. ([@drenmi][])
 * [#3325](https://github.com/bbatsov/rubocop/issues/3325): Drop support for MRI 1.9.3. ([@drenmi][])
 * Add support for MRI 2.4. ([@dvandersluis][])
+* [#3256](https://github.com/bbatsov/rubocop/issues/3256): Highlight the closing brace in `Style/Multiline...BraceLayout` cops. ([@jonas054][])
 
 ## 0.41.2 (2016-07-07)
 
