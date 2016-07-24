@@ -131,24 +131,30 @@ module RuboCop
 
         def add_offenses(unneeded_cops)
           unneeded_cops.each do |comment, cops|
-            # Is the entire rubocop:disable line useless, or should just
-            # some of the mentioned cops be removed?
             if all_disabled?(comment) ||
                directive_count(comment) == cops.size
-              location = comment.loc.expression
-              cop_list = cops.sort.map { |c| describe(c) }
-              add_offense([[location], location], location,
-                          "Unnecessary disabling of #{cop_list.join(', ')}.")
+              add_offense_for_entire_comment(comment, cops)
             else
-              cop_ranges = cops.map { |c| [c, cop_range(comment, c)] }
-              cop_ranges.sort_by! { |_, r| r.begin_pos }
-              ranges = cop_ranges.map { |_, r| r }
-
-              cop_ranges.each do |cop, range|
-                add_offense([ranges, range], range,
-                            "Unnecessary disabling of #{describe(cop)}.")
-              end
+              add_offense_for_some_cops(comment, cops)
             end
+          end
+        end
+
+        def add_offense_for_entire_comment(comment, cops)
+          location = comment.loc.expression
+          cop_list = cops.sort.map { |c| describe(c) }
+          add_offense([[location], location], location,
+                      "Unnecessary disabling of #{cop_list.join(', ')}.")
+        end
+
+        def add_offense_for_some_cops(comment, cops)
+          cop_ranges = cops.map { |c| [c, cop_range(comment, c)] }
+          cop_ranges.sort_by! { |_, r| r.begin_pos }
+          ranges = cop_ranges.map { |_, r| r }
+
+          cop_ranges.each do |cop, range|
+            add_offense([ranges, range], range,
+                        "Unnecessary disabling of #{describe(cop)}.")
           end
         end
 
