@@ -37,85 +37,69 @@ module RuboCop
       #   raise 'exception' if something
       #   ok
       class GuardClause < Cop
-        include ConfigurableEnforcedStyle
         include IfNode
         include MinBodyLength
 
         MSG = 'Use a guard clause instead of wrapping the code inside a ' \
               'conditional expression.'.freeze
 
-        def_node_matcher :single_line_control_flow_exit?, <<-PATTERN
-          [{(send nil {:raise :fail} ...) return break next} single_line?]
-        PATTERN
-
         def on_def(node)
           _, _, body = *node
+
           return unless body
 
-          if if?(body)
-            check_trailing_if(body)
+          if body.if_type?
+            check_ending_if(body)
           elsif body.begin_type?
-            last_expr = body.children.last
-            check_trailing_if(last_expr) if if?(last_expr)
+            last_child = body.children.last
+            check_ending_if(last_child) if last_child.if_type?
           end
         end
 
         def on_if(node)
-          return if accept_form?(node)
-          return unless any_single_line_control_flow_exit?(node)
-          return if line_too_long_when_corrected?(node)
+          return if accepted_form?(node) || !contains_guard_clause?(node)
 
           add_offense(node, :keyword, MSG)
         end
 
         private
 
-        def accept_form?(node)
-          cond, body, else_body = *node
-          return true unless body && else_body
-          return true if modifier_if?(node) || ternary?(node) || elsif?(node)
-
-          cond.multiline?
-        end
-
-        def any_single_line_control_flow_exit?(node)
-          _cond, body, else_body = *node
-
-          single_line_control_flow_exit?(body) ||
-            single_line_control_flow_exit?(else_body)
-        end
-
-        def if?(node)
-          node && node.if_type?
-        end
-
-        def elsif?(node)
-          return false unless node.parent && node.parent.if_type?
-          _condition, _if_branch, else_branch = *node.parent
-          else_branch.equal?(node)
-        end
-
-        def check_trailing_if(node)
-          cond, body, else_body = *node
-
-          return if body && else_body
-          # discard modifier ifs and ternary_ops
-          return if modifier_if?(node) || ternary?(node)
-          return if cond.multiline?
-          # discard short ifs
-          return unless min_body_length?(node)
-          return if line_too_long_when_corrected?(node)
+        def check_ending_if(node)
+          return if accepted_form?(node, true) || !min_body_length?(node)
 
           add_offense(node, :keyword, MSG)
         end
 
-        def line_too_long_when_corrected?(node)
-          cond, body, else_body = *node
+        def accepted_form?(node, ending = false)
+          condition, = *node
 
-          if single_line_control_flow_exit?(body) || !else_body
-            line_too_long?(node, body, 'if', cond)
+          ignored_node?(node, ending) || condition.multiline? ||
+            line_too_long_when_corrected?(node)
+        end
+
+        def ignored_node?(node, ending)
+          return true if modifier_if?(node) || ternary?(node)
+
+          if ending
+            if_else?(node)
           else
-            line_too_long?(node, else_body, 'unless', cond)
+            !if_else?(node) || elsif?(node)
+          end
+        end
+
+        def contains_guard_clause?(node)
+          _, body, else_body = *node
+
+          guard_clause?(body) || guard_clause?(else_body)
+        end
+
+        def line_too_long_when_corrected?(node)
+          condition, body, else_body = *node
+
+          if guard_clause?(body) || !else_body
+            line_too_long?(node, body, 'if', condition)
+          else
+            line_too_long?(node, else_body, 'unless', condition)
           end
         end
 
