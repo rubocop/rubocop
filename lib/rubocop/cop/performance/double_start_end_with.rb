@@ -34,17 +34,8 @@ module RuboCop
           second_call_args = two_start_end_with_calls(node)
 
           if receiver && second_call_args.all?(&:pure?)
-            add_offense(
-              node,
-              :expression,
-              format(
-                MSG,
-                receiver: receiver.source,
-                method: method,
-                combined_args: combine_args(first_call_args, second_call_args),
-                original_code: node.source
-              )
-            )
+            combined_args = combine_args(first_call_args, second_call_args)
+            add_offense_for_double_call(node, receiver, method, combined_args)
           end
         end
 
@@ -52,6 +43,18 @@ module RuboCop
 
         def combine_args(first_call_args, second_call_args)
           (first_call_args + second_call_args).map(&:source).join(', ')
+        end
+
+        def add_offense_for_double_call(node, receiver, method, combined_args)
+          add_offense(node,
+                      :expression,
+                      format(
+                        MSG,
+                        receiver: receiver.source,
+                        method: method,
+                        combined_args: combined_args,
+                        original_code: node.source
+                      ))
         end
 
         def_node_matcher :two_start_end_with_calls, <<-END
