@@ -56,7 +56,7 @@ module RuboCop
 
           correct_column = expected_column(node, elements)
           @column_delta = correct_column - right_paren.column
-          return if @column_delta == 0
+          return if @column_delta.zero?
 
           left_paren = node.loc.begin
           msg = correct_column == left_paren.column ? MSG_ALIGN : MSG_INDENT

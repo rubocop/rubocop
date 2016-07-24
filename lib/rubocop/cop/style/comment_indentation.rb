@@ -24,7 +24,7 @@ module RuboCop
           column = comment.loc.column
 
           @column_delta = correct_comment_indentation - column
-          return if @column_delta == 0
+          return if @column_delta.zero?
 
           if two_alternatives?(next_line)
             # Try the other

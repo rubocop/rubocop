@@ -8,7 +8,7 @@ module RuboCop
       module_function
 
       def pluralize(number, thing, options = {})
-        if number == 0 && options[:no_for_zero]
+        if number.zero? && options[:no_for_zero]
           "no #{thing}s"
         elsif number == 1
           "1 #{thing}"

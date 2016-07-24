@@ -23,7 +23,7 @@ module RuboCop
         end
 
         def on_block(node)
-          return if block_length(node) == 0
+          return if block_length(node).zero?
 
           method, _args, _body = *node
           return unless method.type == :send

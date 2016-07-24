@@ -85,7 +85,7 @@ module RuboCop
 
           expected_column = base_column(left_brace, left_parenthesis)
           @column_delta = expected_column - right_brace.column
-          return if @column_delta == 0
+          return if @column_delta.zero?
 
           msg = if style == :align_braces
                   'Indent the right brace the same as the left brace.'

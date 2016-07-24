@@ -124,7 +124,7 @@ module RuboCop
         end
 
         def rescue_body_name
-          if body_index == 0
+          if body_index.zero?
             'main'
           elsif branch_body_node.type == :resbody
             "rescue#{body_index - 1}"

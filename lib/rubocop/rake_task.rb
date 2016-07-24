@@ -47,7 +47,7 @@ module RuboCop
       cli = CLI.new
       puts 'Running RuboCop...' if verbose
       result = cli.run(options)
-      abort('RuboCop failed!') if result != 0 && fail_on_error
+      abort('RuboCop failed!') if result.nonzero? && fail_on_error
     end
 
     def full_options

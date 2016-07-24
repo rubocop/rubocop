@@ -643,6 +643,12 @@ Style/NonNilCheck:
   # offenses for `!x.nil?` and does no changes that might change behavior.
   IncludeSemanticChanges: false
 
+Style/NumericPredicate:
+  EnforcedStyle: predicate
+  SupportedStyles:
+    - predicate
+    - comparison
+
 Style/MethodDefParentheses:
   EnforcedStyle: require_parentheses
   SupportedStyles:

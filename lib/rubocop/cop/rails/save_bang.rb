@@ -60,7 +60,7 @@ module RuboCop
         def return_value_used?(node)
           return false unless node.parent
           node.parent.lvasgn_type? ||
-            (node.parent.if_type? && node.sibling_index == 0)
+            (node.parent.if_type? && node.sibling_index.zero?)
         end
 
         # Check argument signature as no arguments or one hash

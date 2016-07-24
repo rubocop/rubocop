@@ -27,7 +27,7 @@ module RuboCop
                           configured_indentation_width + offset
         @column_delta = expected_column - actual_column
 
-        if @column_delta == 0
+        if @column_delta.zero?
           # which column was actually used as 'base column' for indentation?
           # (not the column which we think should be the 'base column',
           # but the one which has actually been used for that purpose)

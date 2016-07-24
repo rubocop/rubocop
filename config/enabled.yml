@@ -552,6 +552,12 @@ Style/NumericLiteralPrefix:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#numeric-literal-prefixes'
   Enabled: true
 
+Style/NumericPredicate:
+  Description: >-
+                 Checks for the use of predicate- or comparison methods for
+                 numeric comparisons.
+  Enabled: true
+
 Style/OneLineConditional:
   Description: >-
                  Favor the ternary operator(?:) over

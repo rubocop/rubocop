@@ -62,7 +62,7 @@ module RuboCop
                              indentation(lhs) + correct_indentation(node)
                            end
           @column_delta = correct_column - rhs.column
-          rhs if @column_delta != 0
+          rhs if @column_delta.nonzero?
         end
 
         def extra_indentation(given_style)

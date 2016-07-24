@@ -248,7 +248,7 @@ module RuboCop
         end
 
         def good_alignment?
-          @column_deltas.values.compact.none? { |v| v != 0 }
+          @column_deltas.values.compact.all?(&:zero?)
         end
       end
     end
