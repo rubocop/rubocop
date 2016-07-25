@@ -88,20 +88,24 @@ module RuboCop
           with_space = range_with_surrounding_space(op)
           return if with_space.source.start_with?("\n")
 
+          offense(op, with_space, right_operand) do |msg|
+            add_offense(with_space, op, msg)
+          end
+        end
+
+        def offense(op, with_space, right_operand)
+          msg = offense_message(op, with_space, right_operand)
+          yield msg if msg
+        end
+
+        def offense_message(op, with_space, right_operand)
           if op.is?('**')
-            unless with_space.is?('**')
-              add_offense(with_space, op,
-                          'Space around operator `**` detected.')
-            end
+            'Space around operator `**` detected.' unless with_space.is?('**')
           elsif with_space.source !~ /^\s.*\s$/
-            add_offense(with_space, op, 'Surrounding space missing for ' \
-                                        "operator `#{op.source}`.")
-          elsif excess_leading_space?(op, with_space)
-            add_offense(with_space, op, "Operator `#{op.source}` should be " \
-                                        'surrounded by a single space.')
-          elsif excess_trailing_space?(right_operand, with_space)
-            add_offense(with_space, op, "Operator `#{op.source}` should be " \
-                                        'surrounded by a single space.')
+            "Surrounding space missing for operator `#{op.source}`."
+          elsif excess_leading_space?(op, with_space) ||
+                excess_trailing_space?(right_operand, with_space)
+            "Operator `#{op.source}` should be surrounded by a single space."
           end
         end
 
