@@ -31,23 +31,30 @@ module RuboCop
 
         def autocorrect(node)
           body = @body
-          eol_comment = processed_source.comments.find do |c|
-            c.loc.line == node.source_range.line
-          end
+
           lambda do |corrector|
-            if body
-              if body.type == :begin
-                body.children.each do |part|
-                  break_line_before(part.source_range, node, corrector, 1)
-                end
-              else
-                break_line_before(body.source_range, node, corrector, 1)
-              end
+            each_part(body) do |part|
+              break_line_before(part, node, corrector, 1)
             end
 
             break_line_before(node.loc.end, node, corrector, 0)
 
+            eol_comment = end_of_line_comment(node.source_range.line)
             move_comment(eol_comment, node, corrector) if eol_comment
+          end
+        end
+
+        def end_of_line_comment(line)
+          processed_source.comments.find { |c| c.loc.line == line }
+        end
+
+        def each_part(body)
+          return unless body
+
+          if body.begin_type?
+            body.children.each { |part| yield part.source_range }
+          else
+            yield body.source_range
           end
         end
 
