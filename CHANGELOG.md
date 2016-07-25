@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.42.0 (2016-07-25)
+
 ### New features
 
 * [#3306](https://github.com/bbatsov/rubocop/issues/3306): Add autocorrection for `Style/EachWithObject`. ([@owst][])
