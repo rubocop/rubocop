@@ -169,6 +169,7 @@ module RuboCop
           end
         end
 
+        # rubocop:disable Metrics/MethodLength
         def branch?(parent_node, child_node)
           child_index = parent_node.children.index(child_node)
 
@@ -189,6 +190,7 @@ module RuboCop
             false
           end
         end
+        # rubocop:enable Metrics/MethodLength
 
         class InvalidBranchBodyError < StandardError; end
       end
