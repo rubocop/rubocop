@@ -648,6 +648,10 @@ Style/NumericPredicate:
   SupportedStyles:
     - predicate
     - comparison
+  # Exclude RSpec specs because assertions like `expect(1).to be > 0` cause
+  # false positives.
+  Exclude:
+    - 'spec/**/*'
 
 Style/MethodDefParentheses:
   EnforcedStyle: require_parentheses
