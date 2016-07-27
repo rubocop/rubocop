@@ -23,6 +23,13 @@ describe RuboCop::Cop::Style::Lambda, :config do
     end
   end
 
+  shared_examples 'does not auto-correct' do
+    it 'does not autocorrect' do
+      expect(autocorrect_source(cop, source)).to eq(source.join("\n"))
+      expect(cop.offenses.map(&:corrected?)).to eq [false]
+    end
+  end
+
   context 'with enforced `lambda` style' do
     let(:cop_config) { { 'EnforcedStyle' => 'lambda' } }
 
@@ -199,6 +206,18 @@ describe RuboCop::Cop::Style::Lambda, :config do
                                          '  x',
                                          'end'].join("\n")
       end
+
+      context 'in a send' do
+        let(:source) do
+          ['f -> do',
+           '  x',
+           'end']
+        end
+
+        it_behaves_like 'registers an offense',
+                        'Use the `lambda` method for multiline lambdas.'
+        it_behaves_like 'does not auto-correct'
+      end
     end
 
     context 'unusual lack of spacing' do
@@ -338,15 +357,9 @@ describe RuboCop::Cop::Style::Lambda, :config do
          'end, source: cats']
       end
 
-      it 'registers an offense' do
-        inspect_source(cop, source)
-        expect(cop.offenses.size).to eq 1
-      end
-
-      it 'does not auto-correct' do
-        expect(autocorrect_source(cop, source)).to eq(source.join("\n"))
-        expect(cop.offenses.map(&:corrected?)).to eq [false]
-      end
+      it_behaves_like 'registers an offense',
+                      'Use the `lambda` method for multiline lambdas.'
+      it_behaves_like 'does not auto-correct'
     end
   end
 end
