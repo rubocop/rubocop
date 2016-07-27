@@ -14,6 +14,7 @@
 * Add new `Style/TernaryParentheses` cop. ([@drenmi][])
 * [#3136](https://github.com/bbatsov/rubocop/issues/3136): Add config for `UselessAccessModifier` so it can be made aware of ActiveSupport's `concerning` and `class_methods` methods. ([@maxjacobson][])
 * [#3128](https://github.com/bbatsov/rubocop/issues/3128): Add new `Rails/SaveBang` cop. ([@QuinnHarris][])
+* Add new `Style/NumericPredicate` cop. ([@drenmi][])
 
 ### Bug fixes
 
