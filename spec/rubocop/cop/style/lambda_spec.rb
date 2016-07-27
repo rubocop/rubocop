@@ -206,18 +206,6 @@ describe RuboCop::Cop::Style::Lambda, :config do
                                          '  x',
                                          'end'].join("\n")
       end
-
-      context 'in a send' do
-        let(:source) do
-          ['f -> do',
-           '  x',
-           'end']
-        end
-
-        it_behaves_like 'registers an offense',
-                        'Use the `lambda` method for multiline lambdas.'
-        it_behaves_like 'does not auto-correct'
-      end
     end
 
     context 'unusual lack of spacing' do
@@ -355,6 +343,18 @@ describe RuboCop::Cop::Style::Lambda, :config do
         ['has_many :kittens, -> do',
          '  where(cats: Cat.young.where_values_hash)',
          'end, source: cats']
+      end
+
+      it_behaves_like 'registers an offense',
+                      'Use the `lambda` method for multiline lambdas.'
+      it_behaves_like 'does not auto-correct'
+    end
+
+    context 'with a multiline lambda literal as a keyword argument' do
+      let(:source) do
+        ['has_many opt: -> do',
+         '  where(cats: Cat.young.where_values_hash)',
+         'end']
       end
 
       it_behaves_like 'registers an offense',

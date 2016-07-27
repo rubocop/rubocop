@@ -177,12 +177,18 @@ module RuboCop
           args.children.map(&:source).join(', ')
         end
 
-        def arg_to_unparenthesized_call?(node)
-          parent = node.parent
+        def arg_to_unparenthesized_call?(arg_node)
+          parent = arg_node.parent
+
+          if parent && parent.pair_type?
+            arg_node = parent.parent
+            parent = arg_node.parent
+          end
+
           return false unless parent && parent.send_type?
           return false if parenthesized_call?(parent)
 
-          node.sibling_index > 1
+          arg_node.sibling_index > 1
         end
 
         def remove_unparenthesized_whitespaces(corrector, node)
