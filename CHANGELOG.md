@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+### New features
+
 * [#2968](https://github.com/bbatsov/rubocop/issues/2968): Add new `Style/DocumentationMethod` cop. ([@sooyang][])
 
 ### Changes
