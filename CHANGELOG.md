@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+* [#2968](https://github.com/bbatsov/rubocop/issues/2968): Add new `Style/DocumentationMethod` cop. ([@sooyang][])
+
 ### Changes
 
 * [#3341](https://github.com/bbatsov/rubocop/issues/3341): Exclude RSpec tests from inspection by `Style/NumericPredicate` cop. ([@drenmi][])
@@ -2299,3 +2301,4 @@
 [@haziqhafizuddin]: https://github.com/haziqhafizuddin
 [@dvandersluis]: https://github.com/dvandersluis
 [@QuinnHarris]: https://github.com/QuinnHarris
+[@sooyang]: https://github.com/sooyang
