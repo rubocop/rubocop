@@ -6,6 +6,10 @@
 
 * [#2968](https://github.com/bbatsov/rubocop/issues/2968): Add new `Style/DocumentationMethod` cop. ([@sooyang][])
 
+### Bug fixes
+
+* [#3349](https://github.com/bbatsov/rubocop/issues/3349): Fix bad autocorrect for `Style/Lambda` cop. ([@metcalf][])
+
 ### Changes
 
 * [#3341](https://github.com/bbatsov/rubocop/issues/3341): Exclude RSpec tests from inspection by `Style/NumericPredicate` cop. ([@drenmi][])
@@ -2305,3 +2309,4 @@
 [@dvandersluis]: https://github.com/dvandersluis
 [@QuinnHarris]: https://github.com/QuinnHarris
 [@sooyang]: https://github.com/sooyang
+[@metcalf]: https://github.com/metcalf
