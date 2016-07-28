@@ -45,27 +45,32 @@ module RuboCop
         private
 
         def find_first_offense(variables)
-          first_offense = nil
+          first_offense = find_first_possible_offense(variables.reverse)
+          return if first_offense.nil?
+          return if splat_variable_before?(first_offense, variables)
 
-          variables.reverse_each do |variable|
+          first_offense
+        end
+
+        def find_first_possible_offense(variables)
+          variables.reduce(nil) do |offense, variable|
             var, = *variable
             var, = *var
             if allow_named_underscore_variables
-              break unless var == :_
+              break offense unless var == :_
             else
-              break unless var.to_s.start_with?(UNDERSCORE)
+              break offense unless var.to_s.start_with?(UNDERSCORE)
             end
-            first_offense = variable
+
+            variable
           end
+        end
 
-          return nil if first_offense.nil?
-
+        def splat_variable_before?(first_offense, variables)
           first_offense_index = variables.index(first_offense)
-          0.upto(first_offense_index - 1).each do |index|
-            return nil if variables[index].splat_type?
+          0.upto(first_offense_index - 1).any? do |index|
+            variables[index].splat_type?
           end
-
-          first_offense
         end
 
         def allow_named_underscore_variables

@@ -33,36 +33,43 @@ module RuboCop
           lambda do |corrector|
             ranges, range = *args # Ranges are sorted by position.
 
-            if range.source.start_with?('#')
-              # Eat the entire comment, the preceding space, and the preceding
-              # newline if there is one.
-              original_begin = range.begin_pos
-              range = range_with_surrounding_space(range, :left, true)
-              range = range_with_surrounding_space(range, :right,
-                                                   # Special for a comment that
-                                                   # begins the file: remove
-                                                   # the newline at the end.
-                                                   original_begin.zero?)
-            else
-              # Is there any cop between this one and the end of the line, which
-              # is NOT being removed?
-
-              if ends_its_line?(ranges.last) && trailing_range?(ranges, range)
-                # Eat the comma on the left.
-                range = range_with_surrounding_space(range, :left)
-                range = range_with_surrounding_comma(range, :left)
-              end
-
-              range = range_with_surrounding_comma(range, :right)
-              # Eat following spaces up to EOL, but not the newline itself.
-              range = range_with_surrounding_space(range, :right, false)
-            end
+            range = if range.source.start_with?('#')
+                      comment_range_with_surrounding_space(range)
+                    else
+                      directive_range_in_list(range, ranges)
+                    end
 
             corrector.remove(range)
           end
         end
 
         private
+
+        def comment_range_with_surrounding_space(range)
+          # Eat the entire comment, the preceding space, and the preceding
+          # newline if there is one.
+          original_begin = range.begin_pos
+          range = range_with_surrounding_space(range, :left, true)
+          range_with_surrounding_space(range, :right,
+                                       # Special for a comment that
+                                       # begins the file: remove
+                                       # the newline at the end.
+                                       original_begin.zero?)
+        end
+
+        def directive_range_in_list(range, ranges)
+          # Is there any cop between this one and the end of the line, which
+          # is NOT being removed?
+          if ends_its_line?(ranges.last) && trailing_range?(ranges, range)
+            # Eat the comma on the left.
+            range = range_with_surrounding_space(range, :left)
+            range = range_with_surrounding_comma(range, :left)
+          end
+
+          range = range_with_surrounding_comma(range, :right)
+          # Eat following spaces up to EOL, but not the newline itself.
+          range_with_surrounding_space(range, :right, false)
+        end
 
         def each_unneeded_disable(cop_disabled_line_ranges, offenses, comments)
           disabled_ranges = cop_disabled_line_ranges[COP_NAME] || [0..0]
@@ -124,24 +131,30 @@ module RuboCop
 
         def add_offenses(unneeded_cops)
           unneeded_cops.each do |comment, cops|
-            # Is the entire rubocop:disable line useless, or should just
-            # some of the mentioned cops be removed?
             if all_disabled?(comment) ||
                directive_count(comment) == cops.size
-              location = comment.loc.expression
-              cop_list = cops.sort.map { |c| describe(c) }
-              add_offense([[location], location], location,
-                          "Unnecessary disabling of #{cop_list.join(', ')}.")
+              add_offense_for_entire_comment(comment, cops)
             else
-              cop_ranges = cops.map { |c| [c, cop_range(comment, c)] }
-              cop_ranges.sort_by! { |_, r| r.begin_pos }
-              ranges = cop_ranges.map { |_, r| r }
-
-              cop_ranges.each do |cop, range|
-                add_offense([ranges, range], range,
-                            "Unnecessary disabling of #{describe(cop)}.")
-              end
+              add_offense_for_some_cops(comment, cops)
             end
+          end
+        end
+
+        def add_offense_for_entire_comment(comment, cops)
+          location = comment.loc.expression
+          cop_list = cops.sort.map { |c| describe(c) }
+          add_offense([[location], location], location,
+                      "Unnecessary disabling of #{cop_list.join(', ')}.")
+        end
+
+        def add_offense_for_some_cops(comment, cops)
+          cop_ranges = cops.map { |c| [c, cop_range(comment, c)] }
+          cop_ranges.sort_by! { |_, r| r.begin_pos }
+          ranges = cop_ranges.map { |_, r| r }
+
+          cop_ranges.each do |cop, range|
+            add_offense([ranges, range], range,
+                        "Unnecessary disabling of #{describe(cop)}.")
           end
         end
 
