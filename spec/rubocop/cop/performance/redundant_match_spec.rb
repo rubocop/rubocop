@@ -54,6 +54,11 @@ describe RuboCop::Cop::Performance::RedundantMatch do
                               'end'].join("\n"))
   end
 
+  it 'does not autocorrect if .match has a string agrgument' do
+    new_source = autocorrect_source(cop, 'something if str.match("string")')
+    expect(new_source).to eq 'something if str.match("string")'
+  end
+
   it 'does not register an error when return value of .match is passed ' \
      'to another method' do
     inspect_source(cop, ['def method(str)',

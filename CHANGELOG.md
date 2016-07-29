@@ -9,6 +9,7 @@
 ### Bug fixes
 
 * [#3349](https://github.com/bbatsov/rubocop/issues/3349): Fix bad autocorrect for `Style/Lambda` cop. ([@metcalf][])
+* [#3351](https://github.com/bbatsov/rubocop/issues/3351): Fix bad auto-correct for `Performance/RedundantMatch` cop. ([@annaswims][])
 
 ### Changes
 
@@ -2310,3 +2311,4 @@
 [@QuinnHarris]: https://github.com/QuinnHarris
 [@sooyang]: https://github.com/sooyang
 [@metcalf]: https://github.com/metcalf
+[@annaswims]: https://github.com/annaswims

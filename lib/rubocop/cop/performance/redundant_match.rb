@@ -43,8 +43,10 @@ module RuboCop
           # Regexp#match can take a second argument, but this cop doesn't
           # register an offense in that case
           receiver, _method, arg = *node
-          new_source = receiver.source + ' =~ ' + arg.source
-          ->(corrector) { corrector.replace(node.source_range, new_source) }
+          if arg.type == :regexp
+            new_source = receiver.source + ' =~ ' + arg.source
+            ->(corrector) { corrector.replace(node.source_range, new_source) }
+          end
         end
       end
     end
