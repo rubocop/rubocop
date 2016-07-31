@@ -49,9 +49,9 @@ module RuboCop
         private
 
         def check(node)
-          if node.const_name == 'Exception'
-            add_offense(node, :expression, format(MSG, preferred_base_class))
-          end
+          return unless node.const_name == 'Exception'
+
+          add_offense(node, :expression, format(MSG, preferred_base_class))
         end
 
         def autocorrect(node)

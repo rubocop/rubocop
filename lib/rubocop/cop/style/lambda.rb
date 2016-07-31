@@ -92,10 +92,9 @@ module RuboCop
 
           selector = block_method.source
 
-          if offending_selector?(node, selector)
-            add_offense(node, block_method.source_range,
-                        message(node, selector))
-          end
+          return unless offending_selector?(node, selector)
+
+          add_offense(node, block_method.source_range, message(node, selector))
         end
 
         def offending_selector?(node, selector)

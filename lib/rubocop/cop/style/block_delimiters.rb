@@ -6,7 +6,7 @@ module RuboCop
     module Style
       # Check for uses of braces or do/end around single line or
       # multi-line blocks.
-      class BlockDelimiters < Cop # rubocop:disable Metrics/ClassLength
+      class BlockDelimiters < Cop
         include ConfigurableEnforcedStyle
 
         def on_send(node)
@@ -160,13 +160,13 @@ module RuboCop
         end
 
         def correction_would_break_code?(node)
-          if node.loc.begin.is?('do')
-            # Converting `obj.method arg do |x| end` to use `{}` would cause
-            # a syntax error.
-            send = node.children.first
-            _receiver, _method_name, *args = *send
-            !args.empty? && !parentheses?(send)
-          end
+          return unless node.loc.begin.is?('do')
+
+          # Converting `obj.method arg do |x| end` to use `{}` would cause
+          # a syntax error.
+          send = node.children.first
+          _receiver, _method_name, *args = *send
+          !args.empty? && !parentheses?(send)
         end
 
         def ignored_method?(method_name)

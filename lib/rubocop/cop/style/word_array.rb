@@ -50,9 +50,9 @@ module RuboCop
                     comments_in_array?(node)
           style_detected(:brackets, array_elems.size)
 
-          if style == :percent && array_elems.size >= min_size
-            add_offense(node, :expression, PERCENT_MSG)
-          end
+          return unless style == :percent && array_elems.size >= min_size
+
+          add_offense(node, :expression, PERCENT_MSG)
         end
 
         def check_percent(node)

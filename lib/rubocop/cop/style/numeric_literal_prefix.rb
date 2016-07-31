@@ -47,11 +47,13 @@ module RuboCop
         def literal_type(node)
           literal = integer_part(node)
 
+          # rubocop:disable Style/GuardClause
           if literal =~ OCTAL_ZERO_ONLY_REGEX && octal_zero_only?
             return :octal_zero_only
           elsif literal =~ OCTAL_REGEX && !octal_zero_only?
             return :octal
           end
+          # rubocop:enable Style/GuardClause
 
           case literal
           when HEX_REGEX

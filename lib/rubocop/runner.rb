@@ -254,9 +254,9 @@ module RuboCop
 
     def filter_cop_classes(cop_classes, config)
       # use only cops that link to a style guide if requested
-      if style_guide_cops_only?(config)
-        cop_classes.select! { |cop| config.for_cop(cop)['StyleGuide'] }
-      end
+      return unless style_guide_cops_only?(config)
+
+      cop_classes.select! { |cop| config.for_cop(cop)['StyleGuide'] }
     end
 
     def style_guide_cops_only?(config)

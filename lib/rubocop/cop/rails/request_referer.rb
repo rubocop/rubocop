@@ -10,9 +10,9 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         def on_send(node)
-          if offense?(node)
-            add_offense(node.source_range, node.source_range, message)
-          end
+          return unless offense?(node)
+
+          add_offense(node.source_range, node.source_range, message)
         end
 
         def autocorrect(node)

@@ -51,8 +51,7 @@ module RuboCop
           if body.if_type?
             check_ending_if(body)
           elsif body.begin_type?
-            last_child = body.children.last
-            check_ending_if(last_child) if last_child.if_type?
+            check_ending_if(body.children.last)
           end
         end
 
@@ -65,7 +64,9 @@ module RuboCop
         private
 
         def check_ending_if(node)
-          return if accepted_form?(node, true) || !min_body_length?(node)
+          return if !node.if_type? ||
+                    accepted_form?(node, true) ||
+                    !min_body_length?(node)
 
           add_offense(node, :keyword, MSG)
         end
@@ -73,8 +74,7 @@ module RuboCop
         def accepted_form?(node, ending = false)
           condition, = *node
 
-          ignored_node?(node, ending) || condition.multiline? ||
-            line_too_long_when_corrected?(node)
+          ignored_node?(node, ending) || condition.multiline?
         end
 
         def ignored_node?(node, ending)
@@ -91,24 +91,6 @@ module RuboCop
           _, body, else_body = *node
 
           guard_clause?(body) || guard_clause?(else_body)
-        end
-
-        def line_too_long_when_corrected?(node)
-          condition, body, else_body = *node
-
-          if guard_clause?(body) || !else_body
-            line_too_long?(node, body, 'if', condition)
-          else
-            line_too_long?(node, else_body, 'unless', condition)
-          end
-        end
-
-        def line_too_long?(node, body, keyword, condition)
-          max    = config.for_cop('Metrics/LineLength')['Max'] || 80
-          indent = node.loc.column
-          source = body && body.source || ''
-          # 2 is for spaces on left and right of keyword
-          indent + (source + keyword + condition.source).length + 2 > max
         end
       end
     end

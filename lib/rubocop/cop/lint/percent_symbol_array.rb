@@ -22,9 +22,9 @@ module RuboCop
         end
 
         def on_percent_literal(node)
-          if contains_colons_or_commas?(node)
-            add_offense(node, :expression, MSG)
-          end
+          return unless contains_colons_or_commas?(node)
+
+          add_offense(node, :expression, MSG)
         end
 
         private

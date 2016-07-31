@@ -35,9 +35,9 @@ module RuboCop
         def on_if(node)
           return unless modifier_if?(node)
           _cond, body, _else = if_node_parts(node)
-          if body.type == :if
-            add_offense(node, :keyword, message(node.loc.keyword.source))
-          end
+          return unless body.if_type?
+
+          add_offense(node, :keyword, message(node.loc.keyword.source))
         end
       end
     end

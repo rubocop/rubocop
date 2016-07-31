@@ -26,9 +26,9 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          if rand_one?(node)
-            add_offense(node, :expression, format(MSG, node.source))
-          end
+          return unless rand_one?(node)
+
+          add_offense(node, :expression, format(MSG, node.source))
         end
       end
     end

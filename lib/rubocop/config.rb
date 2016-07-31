@@ -274,11 +274,11 @@ module RuboCop
     end
 
     def check_obsolete_parameter(cop, parameter, alternative = nil)
-      if self[cop] && self[cop].key?(parameter)
-        raise ValidationError, "obsolete parameter #{parameter} (for #{cop}) " \
-                              "found in #{loaded_path}" \
-                              "#{"\n" if alternative}#{alternative}"
-      end
+      return unless self[cop] && self[cop].key?(parameter)
+
+      raise ValidationError, "obsolete parameter #{parameter} (for #{cop}) " \
+                            "found in #{loaded_path}" \
+                            "#{"\n" if alternative}#{alternative}"
     end
 
     def reject_obsolete_cops
@@ -291,23 +291,21 @@ module RuboCop
     end
 
     def check_target_ruby
-      return unless target_ruby_version
+      return if KNOWN_RUBIES.include?(target_ruby_version)
 
-      unless KNOWN_RUBIES.include?(target_ruby_version)
-        msg = "Unknown Ruby version #{target_ruby_version.inspect} found "
+      msg = "Unknown Ruby version #{target_ruby_version.inspect} found "
 
-        msg +=
-          case @target_ruby_version_source
-          when :dot_ruby_version
-            'in `.ruby-version`.'
-          when :rubocop_yml
-            "in `TargetRubyVersion` parameter (in #{loaded_path})." \
-          end
+      msg +=
+        case @target_ruby_version_source
+        when :dot_ruby_version
+          'in `.ruby-version`.'
+        when :rubocop_yml
+          "in `TargetRubyVersion` parameter (in #{loaded_path})." \
+        end
 
-        msg += "\nKnown versions: #{KNOWN_RUBIES.join(', ')}"
+      msg += "\nKnown versions: #{KNOWN_RUBIES.join(', ')}"
 
-        raise ValidationError, msg
-      end
+      raise ValidationError, msg
     end
   end
 end
