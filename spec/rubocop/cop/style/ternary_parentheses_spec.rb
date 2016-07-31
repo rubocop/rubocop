@@ -147,4 +147,19 @@ describe RuboCop::Cop::Style::TernaryParentheses, :config do
       end
     end
   end
+
+  context 'when `RedundantParenthesis` would cause an infinite loop' do
+    let(:config) do
+      RuboCop::Config.new(
+        'Style/RedundantParentheses' => { 'Enabled' => true },
+        'Style/TernaryParentheses' => {
+          'EnforcedStyle' => 'require_parentheses',
+          'SupportedStyles' => %w(require_parentheses require_no_parentheses)
+        }
+      )
+    end
+
+    it_behaves_like 'code without offense',
+                    'foo = bar? ? a : b'
+  end
 end
