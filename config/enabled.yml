@@ -556,6 +556,7 @@ Style/NumericPredicate:
   Description: >-
                  Checks for the use of predicate- or comparison methods for
                  numeric comparisons.
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#predicate-methods'
   Enabled: true
 
 Style/OneLineConditional:
