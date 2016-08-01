@@ -25,19 +25,10 @@ module RuboCop
         end
 
         def autocorrect(node)
-          words = node.children
           if style == :percent
-            escape = words.any? { |w| needs_escaping?(w.children[0]) }
-            char = escape ? 'W' : 'w'
-            contents = autocorrect_words(words, escape, node.loc.line)
-            lambda do |corrector|
-              corrector.replace(node.source_range, "%#{char}(#{contents})")
-            end
+            correct_percent(node)
           else
-            words = words.map { |w| to_string_literal(w.children[0]) }
-            lambda do |corrector|
-              corrector.replace(node.source_range, "[#{words.join(', ')}]")
-            end
+            correct_bracketed(node)
           end
         end
 
@@ -92,6 +83,25 @@ module RuboCop
 
         def word_regex
           cop_config['WordRegex']
+        end
+
+        def correct_percent(node)
+          words = node.children
+          escape = words.any? { |w| needs_escaping?(w.children[0]) }
+          char = escape ? 'W' : 'w'
+          contents = autocorrect_words(words, escape, node.loc.line)
+
+          lambda do |corrector|
+            corrector.replace(node.source_range, "%#{char}(#{contents})")
+          end
+        end
+
+        def correct_bracketed(node)
+          words = node.children.map { |w| to_string_literal(w.children[0]) }
+
+          lambda do |corrector|
+            corrector.replace(node.source_range, "[#{words.join(', ')}]")
+          end
         end
 
         def autocorrect_words(word_nodes, escape, base_line_number)
