@@ -55,7 +55,8 @@ module RuboCop
 
           (require_parentheses? && !parenthesized?(condition) ||
             !require_parentheses? && parenthesized?(condition)) &&
-            !(safe_assignment?(condition) && safe_assignment_allowed?)
+            !(safe_assignment?(condition) && safe_assignment_allowed?) &&
+            !infinite_loop?
         end
 
         def autocorrect(node)
@@ -85,8 +86,20 @@ module RuboCop
           style == :require_parentheses
         end
 
+        def redundant_parentheses_enabled?
+          @config.for_cop('RedundantParentheses')['Enabled']
+        end
+
         def parenthesized?(node)
           node.source =~ /^\(.*\)$/
+        end
+
+        # When this cop is configured to enforce parentheses and the
+        # `RedundantParentheses` cop is enabled, it will cause an infinite loop
+        # as they compete to add and remove the parens respectively.
+        def infinite_loop?
+          require_parentheses? &&
+            redundant_parentheses_enabled?
         end
       end
     end
