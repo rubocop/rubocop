@@ -43,25 +43,32 @@ module RuboCop
                   'block start.'.freeze
 
         def on_block(node)
-          end_loc = node.loc.end
-          do_loc = node.loc.begin # Actually it's either do or {.
-          return if do_loc.line == end_loc.line # One-liner, no newline needed.
+          return if oneliner?(node)
 
           # A block node has three children: the block start,
           # the arguments, and the expression. We care if the block start
           # with arguments and the expression start on the same line.
           _block_start, args, last_expression = node.children
+          do_loc = node.loc.begin # Actually it's either do or {.
 
-          unless args.children.empty?
-            if do_loc.line != args.loc.last_line
-              add_offense_for_expression(node, args, ARG_MSG)
-            end
+          if args_on_different_line?(do_loc.line, args)
+            add_offense_for_expression(node, args, ARG_MSG)
           end
 
           return unless last_expression
           expression_loc = last_expression.loc
           return unless do_loc.line == expression_loc.line
           add_offense_for_expression(node, last_expression, MSG)
+        end
+
+        def oneliner?(node)
+          node.loc.begin.line == node.loc.end.line
+        end
+
+        def args_on_different_line?(do_line, args)
+          return false if args.children.empty?
+
+          do_line != args.loc.last_line
         end
 
         def add_offense_for_expression(node, expr, msg)
