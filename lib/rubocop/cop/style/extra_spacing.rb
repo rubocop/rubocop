@@ -51,7 +51,7 @@ module RuboCop
         def autocorrect(range)
           lambda do |corrector|
             if range.source.end_with?('=')
-              align_equal_sign(range, corrector)
+              align_equal_signs(range, corrector)
             else
               corrector.remove(range)
             end
@@ -172,22 +172,25 @@ module RuboCop
           token.type == :tEQL || token.type == :tOP_ASGN
         end
 
-        def align_equal_sign(range, corrector)
+        def align_equal_signs(range, corrector)
           lines  = contiguous_assignment_lines(range)
           tokens = @asgn_tokens.select { |t| lines.include?(t.pos.line) }
 
           columns  = tokens.map { |t| align_column(t) }
           align_to = columns.max
 
-          tokens.each do |token|
-            next unless @corrected.add?(token)
-            diff = align_to - token.pos.last_column
+          tokens.each { |token| align_equal_sign(corrector, token, align_to) }
+        end
 
-            if diff > 0
-              corrector.insert_before(token.pos, ' ' * diff)
-            elsif diff < 0
-              corrector.remove_preceding(token.pos, -diff)
-            end
+        def align_equal_sign(corrector, token, align_to)
+          return unless @corrected.add?(token)
+
+          diff = align_to - token.pos.last_column
+
+          if diff > 0
+            corrector.insert_before(token.pos, ' ' * diff)
+          elsif diff < 0
+            corrector.remove_preceding(token.pos, -diff)
           end
         end
 
