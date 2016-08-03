@@ -59,10 +59,10 @@ module RuboCop
         def on_send(node)
           numeric, replacement = check(node)
 
-          if numeric
-            add_offense(node, node.loc.expression,
-                        format(MSG, replacement, node.source))
-          end
+          return unless numeric
+
+          add_offense(node, node.loc.expression,
+                      format(MSG, replacement, node.source))
         end
 
         private
@@ -75,9 +75,9 @@ module RuboCop
               predicate(node)
             end
 
-          if numeric && operator && replacement_supported?(operator)
-            return numeric, replacement(numeric, operator)
-          end
+          return unless numeric && operator && replacement_supported?(operator)
+
+          [numeric, replacement(numeric, operator)]
         end
 
         def autocorrect(node)

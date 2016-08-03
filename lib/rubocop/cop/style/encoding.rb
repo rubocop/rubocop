@@ -35,13 +35,10 @@ module RuboCop
 
         def autocorrect(range)
           if @message == MSG_MISSING
-            encoding = cop_config[AUTO_CORRECT_ENCODING_COMMENT]
-            if encoding && encoding =~ ENCODING_PATTERN
-              lambda do |corrector|
-                corrector.insert_before(range, "#{encoding}\n")
-              end
-            else
-              raise "#{encoding} does not match #{ENCODING_PATTERN}"
+            raise encoding_mismatch_message unless matching_encoding?
+
+            lambda do |corrector|
+              corrector.insert_before(range, "#{encoding}\n")
             end
           else
             # Need to remove unnecessary encoding comment
@@ -52,6 +49,18 @@ module RuboCop
         end
 
         private
+
+        def encoding
+          cop_config[AUTO_CORRECT_ENCODING_COMMENT]
+        end
+
+        def matching_encoding?
+          encoding =~ ENCODING_PATTERN
+        end
+
+        def encoding_mismatch_message
+          "#{encoding} does not match #{ENCODING_PATTERN}"
+        end
 
         def offense(processed_source, line_number)
           line = processed_source[line_number]

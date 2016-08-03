@@ -33,10 +33,11 @@ module RuboCop
           first_call_args,
           second_call_args = two_start_end_with_calls(node)
 
-          if receiver && second_call_args.all?(&:pure?)
-            combined_args = combine_args(first_call_args, second_call_args)
-            add_offense_for_double_call(node, receiver, method, combined_args)
-          end
+          return unless receiver && second_call_args.all?(&:pure?)
+
+          combined_args = combine_args(first_call_args, second_call_args)
+
+          add_offense_for_double_call(node, receiver, method, combined_args)
         end
 
         private

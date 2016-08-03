@@ -19,6 +19,7 @@ module RuboCop
                     !any_pairs_on_the_same_line?(node.parent)
 
           _, right = *node
+
           check_operator(node.loc.operator, right.source_range)
         end
 
@@ -31,10 +32,10 @@ module RuboCop
         end
 
         def on_resbody(node)
-          if node.loc.assoc
-            _, variable, = *node
-            check_operator(node.loc.assoc, variable.source_range)
-          end
+          return unless node.loc.assoc
+          _, variable, = *node
+
+          check_operator(node.loc.assoc, variable.source_range)
         end
 
         def on_send(node)
