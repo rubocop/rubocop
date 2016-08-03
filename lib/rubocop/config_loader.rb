@@ -140,7 +140,7 @@ module RuboCop
 
       def load_yaml_configuration(absolute_path)
         yaml_code = IO.read(absolute_path, encoding: 'UTF-8')
-        hash = yaml_safe_load(yaml_code) || {}
+        hash = yaml_safe_load(yaml_code, absolute_path) || {}
 
         puts "configuration from #{absolute_path}" if debug?
 
@@ -151,15 +151,16 @@ module RuboCop
         hash
       end
 
-      def yaml_safe_load(yaml_code)
+      def yaml_safe_load(yaml_code, filename)
         if YAML.respond_to?(:safe_load) # Ruby 2.1+
           if defined?(SafeYAML) && SafeYAML.respond_to?(:load)
-            SafeYAML.load(yaml_code, nil, whitelisted_tags: %w(!ruby/regexp))
+            SafeYAML.load(yaml_code, filename,
+                          whitelisted_tags: %w(!ruby/regexp))
           else
-            YAML.safe_load(yaml_code, [Regexp])
+            YAML.safe_load(yaml_code, [Regexp], [], false, filename)
           end
         else
-          YAML.load(yaml_code)
+          YAML.load(yaml_code, filename)
         end
       end
 

@@ -1412,8 +1412,8 @@ describe RuboCop::CLI, :isolated_environment do
       cli.run(['example'])
       # MRI and JRuby return slightly different error messages.
       expect($stderr.string)
-        .to match(/^\(<unknown>\):\ (did\ not\ find\ )?expected\ alphabetic\ or
-                  \ numeric\ character/x)
+        .to match(%r{^\(\S+example/\.rubocop\.yml\):\ (did\ not\ find\ )?
+                  expected\ alphabetic\ or \ numeric\ character}x)
     end
 
     context 'when a file inherits from a higher level' do
