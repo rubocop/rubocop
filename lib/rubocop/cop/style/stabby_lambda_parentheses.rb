@@ -101,13 +101,11 @@ module RuboCop
         end
 
         def args?(node)
-          args = node_args(node)
-          args.children.count > 0
+          !node_args(node).children.empty?
         end
 
         def parentheses?(node)
-          args = node_args(node)
-          args.loc.begin
+          node_args(node).loc.begin
         end
       end
     end

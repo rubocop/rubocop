@@ -85,7 +85,7 @@ module RuboCop
         end
 
         def looks_like_trivial_reader?(args, body)
-          args.children.empty? && body && body.type == :ivar
+          args.children.empty? && body && body.ivar_type?
         end
 
         def trivial_writer?(method_name, args, body)
@@ -95,10 +95,10 @@ module RuboCop
         end
 
         def looks_like_trivial_writer?(args, body)
-          args.children.size == 1 &&
+          args.children.one? &&
             ![:restarg, :blockarg].include?(args.children[0].type) &&
-            body && body.type == :ivasgn &&
-            body.children[1] && body.children[1].type == :lvar
+            body && body.ivasgn_type? &&
+            body.children[1] && body.children[1].lvar_type?
         end
 
         def allowed_method?(method_name, body)
@@ -134,9 +134,9 @@ module RuboCop
         end
 
         def autocorrect(node)
-          if node.type == :def
+          if node.def_type?
             autocorrect_instance(node)
-          elsif node.type == :defs && node.children.first.type == :self
+          elsif node.defs_type? && node.children.first.self_type?
             autocorrect_class(node)
           end
         end

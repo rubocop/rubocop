@@ -37,7 +37,7 @@ module RuboCop
 
         def check_else(node)
           _cond, _if_branch, else_branch = *node
-          return unless else_branch && else_branch.type == :begin
+          return unless else_branch && else_branch.begin_type?
 
           first_else_expr = else_branch.children.first
           return unless first_else_expr.source_range.line == node.loc.else.line

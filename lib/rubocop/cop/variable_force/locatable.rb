@@ -45,7 +45,7 @@ module RuboCop
           #   rescue
           #     # resbody
           #   end
-          if branch_point_node.type == :rescue &&
+          if branch_point_node.rescue_type? &&
              (branch_body_name == 'main' || other.branch_body_name == 'main')
             return false
           end
@@ -109,7 +109,7 @@ module RuboCop
         end
 
         def case_body_name
-          if branch_body_node.type == :when
+          if branch_body_node.when_type?
             "when#{body_index - 1}"
           else
             'else'

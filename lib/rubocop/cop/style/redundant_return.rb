@@ -72,15 +72,15 @@ module RuboCop
         def on_method_def(_node, _method_name, _args, body)
           return unless body
 
-          if body.type == :return
+          if body.return_type?
             check_return_node(body)
-          elsif body.type == :begin
+          elsif body.begin_type?
             expressions = *body
             last_expr = expressions.last
 
-            if last_expr && last_expr.type == :return
-              check_return_node(last_expr)
-            end
+            return unless last_expr && last_expr.return_type?
+
+            check_return_node(last_expr)
           end
         end
 

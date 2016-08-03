@@ -29,11 +29,11 @@ module RuboCop
       # is a Class or Module. Filters out simple method calls to similarly
       # named private, protected or public.
       def class_or_module_parent?(node)
-        node.each_ancestor do |a|
-          if a.type == :block
-            return true if a.class_constructor?
-          elsif a.type != :begin
-            return [:casgn, :sclass, :class, :module].include?(a.type)
+        node.each_ancestor do |ancestor|
+          if ancestor.block_type?
+            return true if ancestor.class_constructor?
+          elsif !ancestor.begin_type?
+            return [:casgn, :sclass, :class, :module].include?(ancestor.type)
           end
         end
       end

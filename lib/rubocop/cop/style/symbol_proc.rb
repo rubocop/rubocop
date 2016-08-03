@@ -119,15 +119,15 @@ module RuboCop
 
         def can_shorten?(block_args, block_body)
           # something { |x, y| ... }
-          return false unless block_args.children.size == 1
+          return false unless block_args.children.one?
           return false if non_shortenable_args?(block_args)
-          return false unless block_body && block_body.type == :send
+          return false unless block_body && block_body.send_type?
 
           receiver, _method_name, args = *block_body
 
           # method in block must be invoked on a lvar without args
           return false if args
-          return false unless receiver && receiver.type == :lvar
+          return false unless receiver && receiver.lvar_type?
 
           block_arg_name, = *block_args.children.first
           receiver_name, = *receiver

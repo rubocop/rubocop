@@ -108,7 +108,7 @@ module RuboCop
         end
 
         def autocorrect_body(corrector, node, block_body)
-          first_node = if block_body.type == :begin
+          first_node = if block_body.begin_type?
                          block_body.children.first
                        else
                          block_body

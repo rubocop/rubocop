@@ -277,7 +277,7 @@ module RuboCop
         def assignment_node(node)
           *_variable, assignment = *node
 
-          if assignment.begin_type? && assignment.children.size == 1
+          if assignment.begin_type? && assignment.children.one?
             assignment, = *assignment
           end
 
@@ -486,7 +486,7 @@ module RuboCop
 
           def extract_branches(node)
             *_var, rhs = *node
-            condition, = *rhs if rhs.begin_type? && rhs.children.size == 1
+            condition, = *rhs if rhs.begin_type? && rhs.children.one?
             _condition, if_branch, else_branch = *(condition || rhs)
 
             [if_branch, else_branch]

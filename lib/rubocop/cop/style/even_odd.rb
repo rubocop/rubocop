@@ -36,7 +36,7 @@ module RuboCop
         def base_number(node)
           receiver, = *node
           node = expression(receiver)
-          node.children[0].source
+          node.children.first.source
         end
 
         def offense_type(node)
@@ -64,11 +64,9 @@ module RuboCop
           return unless node
 
           # check for scenarios like (x % 2) == 0
-          if node.type == :begin && node.children.size == 1
-            node = node.children.first
-          end
+          node = node.children.first if node.begin_type? && node.children.one?
 
-          return unless node.type == :send
+          return unless node.send_type?
           node
         end
       end

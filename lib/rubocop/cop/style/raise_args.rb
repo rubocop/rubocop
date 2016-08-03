@@ -106,10 +106,10 @@ module RuboCop
         def check_exploded(node)
           _receiver, selector, *args = *node
 
-          if args.size == 1
+          if args.one?
             arg, = *args
 
-            if arg.type == :send && arg.loc.selector.is?('new')
+            if arg.send_type? && arg.loc.selector.is?('new')
               _receiver, _selector, *constructor_args = *arg
 
               # Allow code like `raise Ex.new(arg1, arg2)`.

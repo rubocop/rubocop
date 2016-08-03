@@ -21,12 +21,11 @@ module RuboCop
 
         def check_variable(variable)
           return unless variable.should_be_unused?
-          return if variable.references.empty?
           return if variable.references.none?(&:explicit?)
 
           node = variable.declaration_node
 
-          location = if node.type == :match_with_lvasgn
+          location = if node.match_with_lvasgn_type?
                        node.children.first.source_range
                      else
                        node.loc.name

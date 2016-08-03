@@ -19,7 +19,7 @@ module RuboCop
         SPACE_MSG = 'Missing space around string interpolation detected.'.freeze
 
         def on_dstr(node)
-          node.children.select { |n| n.type == :begin }.each do |begin_node|
+          node.each_child_node(:begin) do |begin_node|
             final_node = begin_node.children.last
             next unless final_node
 

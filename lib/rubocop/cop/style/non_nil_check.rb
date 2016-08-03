@@ -57,18 +57,17 @@ module RuboCop
 
         def on_method_def(_node, name, _args, body)
           # only predicate methods are handled differently
-          return unless name.to_s.end_with?('?')
-          return unless body
+          return unless name.to_s.end_with?('?') && body
 
-          if body.type != :begin
-            ignore_node(body)
-          elsif body.type == :begin
+          if body.begin_type?
             ignore_node(body.children.last)
+          else
+            ignore_node(body)
           end
         end
 
         def nil_check?(node)
-          return false unless node && node.type == :send
+          return false unless node && node.send_type?
 
           _receiver, method, *_args = *node
           method == :nil?

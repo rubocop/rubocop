@@ -39,11 +39,10 @@ module RuboCop
         def check(name, node)
           return unless node
 
-          if node.type == :defs
+          if node.defs_type?
             check_defs(name, node)
-          elsif node.type == :begin
-            defs_nodes = node.children.compact.select { |n| n.type == :defs }
-            defs_nodes.each { |n| check_defs(name, n) }
+          elsif node.begin_type?
+            node.each_child_node(:defs) { |n| check_defs(name, n) }
           end
         end
 

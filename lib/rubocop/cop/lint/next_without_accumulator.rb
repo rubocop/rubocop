@@ -38,7 +38,7 @@ module RuboCop
         private
 
         def parent_block_node(node)
-          node.each_ancestor.find { |n| n.type == :block }
+          node.each_ancestor(:block).first
         end
       end
     end

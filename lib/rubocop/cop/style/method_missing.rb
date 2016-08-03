@@ -60,7 +60,7 @@ module RuboCop
         end
 
         def implements_respond_to_missing?(node)
-          node.parent.children.any? do |sibling|
+          node.parent.each_child_node(:def).any? do |sibling|
             respond_to_missing_def?(sibling)
           end
         end

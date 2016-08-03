@@ -21,7 +21,7 @@ module RuboCop
           method, _args, _body = *node
           method.each_node(:send) do |send_node|
             receiver, _method_name, *_args = *send_node
-            next unless receiver && receiver.type == :block
+            next unless receiver && receiver.block_type?
 
             # The begin and end could also be braces, but we call the
             # variables do... and end...

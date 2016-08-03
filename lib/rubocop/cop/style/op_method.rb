@@ -31,7 +31,7 @@ module RuboCop
                         args.children.one? &&
                         !TARGET_ARGS.include?(args)
 
-          add_offense(args.children[0], :expression, format(MSG, name))
+          add_offense(args.children.first, :expression, format(MSG, name))
         end
 
         def op_method?(name)

@@ -185,7 +185,7 @@ module RuboCop
           asgn_node, _operator, rhs_node = *node
         end
 
-        return unless asgn_node.type == :lvasgn
+        return unless asgn_node.lvasgn_type?
 
         name = asgn_node.children.first
 
@@ -264,7 +264,7 @@ module RuboCop
         if TWISTED_SCOPE_TYPES.include?(node.type)
           # See the comment at the end of file for this behavior.
           twisted_nodes = [node.children[0]]
-          twisted_nodes << node.children[1] if node.type == :class
+          twisted_nodes << node.children[1] if node.class_type?
           twisted_nodes.compact!
 
           twisted_nodes.each do |twisted_node|
@@ -322,7 +322,7 @@ module RuboCop
             assignment_nodes_in_loop << node
           when *OPERATOR_ASSIGNMENT_TYPES
             asgn_node = node.children.first
-            if asgn_node.type == :lvasgn
+            if asgn_node.lvasgn_type?
               referenced_variable_names_in_loop << asgn_node.children.first
             end
           end

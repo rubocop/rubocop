@@ -26,7 +26,7 @@ module RuboCop
 
         def on_alias(node)
           # alias_method can't be used with global variables
-          return if node.children.any?(&:gvar_type?)
+          return if node.each_child_node(:gvar).any?
           # alias_method can't be used in instance_eval blocks
           scope_type = scope_type(node)
           return if scope_type == :instance_eval

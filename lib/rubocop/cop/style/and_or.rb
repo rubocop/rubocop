@@ -60,7 +60,7 @@ module RuboCop
 
         def autocorrect(node)
           expr1, expr2 = *node
-          replacement = (node.type == :and ? '&&' : '||')
+          replacement = (node.and_type? ? '&&' : '||')
           lambda do |corrector|
             [expr1, expr2].each do |expr|
               if expr.send_type?

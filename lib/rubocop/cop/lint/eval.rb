@@ -14,7 +14,7 @@ module RuboCop
           return unless receiver.nil? &&
                         method_name == :eval &&
                         !args.empty? &&
-                        args.first.type != :str
+                        !args.first.str_type?
           add_offense(node, :selector)
         end
       end

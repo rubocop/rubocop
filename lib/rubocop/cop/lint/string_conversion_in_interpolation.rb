@@ -16,9 +16,9 @@ module RuboCop
                    'interpolation.'.freeze
 
         def on_dstr(node)
-          node.children.select { |n| n.type == :begin }.each do |begin_node|
+          node.each_child_node(:begin) do |begin_node|
             final_node = begin_node.children.last
-            next unless final_node && final_node.type == :send
+            next unless final_node && final_node.send_type?
 
             receiver, method_name, *args = *final_node
             next unless method_name == :to_s && args.empty?
