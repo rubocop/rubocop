@@ -39,22 +39,9 @@ module RuboCop
         def on_send(node)
           return if part_of_ignored_node?(node)
 
-          downcase_eq(node) do |send_downcase, case_method, eq_method, other|
-            *_, method = *other
-            if CASE_METHODS.include?(method)
-              range = node.loc.expression
-              ignore_node(node)
-            else
-              range = node.loc.selector.join(send_downcase.loc.selector)
-            end
-
-            add_offense(node, range, format(MSG, case_method, eq_method))
-            return
-          end
-
-          eq_downcase(node) do |eq_method, send_downcase, case_method|
-            range = node.loc.selector.join(send_downcase.loc.selector)
-            add_offense(node, range, format(MSG, eq_method, case_method))
+          inefficient_comparison(node) do |range, is_other_part, *methods|
+            ignore_node(node) if is_other_part
+            add_offense(node, range, format(MSG, *methods))
           end
         end
 
@@ -73,6 +60,31 @@ module RuboCop
         end
 
         private
+
+        def inefficient_comparison(node)
+          loc = node.loc
+
+          downcase_eq(node) do |send_downcase, case_method, eq_method, other|
+            *_, method = *other
+            range, is_other_part = downcase_eq_range(method, loc, send_downcase)
+
+            yield range, is_other_part, case_method, eq_method
+            return
+          end
+
+          eq_downcase(node) do |eq_method, send_downcase, case_method|
+            range = loc.selector.join(send_downcase.loc.selector)
+            yield range, false, eq_method, case_method
+          end
+        end
+
+        def downcase_eq_range(method, loc, send_downcase)
+          if CASE_METHODS.include?(method)
+            [loc.expression, true]
+          else
+            [loc.selector.join(send_downcase.loc.selector), false]
+          end
+        end
 
         def correction(node, _receiver, method, arg, variable)
           lambda do |corrector|
