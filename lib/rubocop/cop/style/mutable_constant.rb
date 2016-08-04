@@ -14,9 +14,9 @@ module RuboCop
       #   # good
       #   CONST = [1, 2, 3].freeze
       class MutableConstant < Cop
-        MSG = 'Freeze mutable objects assigned to constants.'.freeze
-
         include FrozenStringLiteral
+
+        MSG = 'Freeze mutable objects assigned to constants.'.freeze
 
         def on_casgn(node)
           _scope, _const_name, value = *node
@@ -31,6 +31,18 @@ module RuboCop
           on_assignment(value)
         end
 
+        private
+
+        def on_assignment(value)
+          value = splat_value(value) if splat_value(value)
+
+          return unless value && value.mutable_literal?
+          return if FROZEN_STRING_LITERAL_TYPES.include?(value.type) &&
+                    frozen_string_literals_enabled?(processed_source)
+
+          add_offense(value, :expression)
+        end
+
         def autocorrect(node)
           expr = node.source_range
           lambda do |corrector|
@@ -43,15 +55,9 @@ module RuboCop
           end
         end
 
-        private
-
-        def on_assignment(value)
-          return unless value && value.mutable_literal?
-          return if FROZEN_STRING_LITERAL_TYPES.include?(value.type) &&
-                    frozen_string_literals_enabled?(processed_source)
-
-          add_offense(value, :expression)
-        end
+        def_node_matcher :splat_value, <<-PATTERN
+          (array (splat $_))
+        PATTERN
       end
     end
   end
