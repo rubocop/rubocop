@@ -443,6 +443,13 @@ describe RuboCop::Cop::Style::Next, :config do
     expect(cop.offenses).to be_empty
   end
 
+  it 'does not crash with empty brackets' do
+    inspect_source(cop, ['loop do',
+                         '  ()',
+                         'end'])
+    expect(cop.offenses).to be_empty
+  end
+
   context 'MinBodyLength: 3' do
     let(:cop_config) do
       { 'MinBodyLength' => 3 }
