@@ -1457,6 +1457,13 @@ Rails/HasAndBelongsToMany:
   StyleGuide: 'https://github.com/bbatsov/rails-style-guide#has-many-through'
   Enabled: true
 
+Rails/HttpPositionalArguments:
+  Description: 'Use keyword arguments instead of positional arguments in http method calls.'
+  Enabled: true
+  Include:
+    - 'spec/**/*'
+    - 'test/**/*'
+
 Rails/NotNullColumn:
   Description: 'Do not add a NOT NULL column without a default value'
   Enabled: true

@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#3370](https://github.com/bbatsov/rubocop/issues/3370): Add new `Rails/HttpPositionalArguments` cop to check your Rails 5 test code for existence of positional args usage. ([@logicminds][])
 * [#3510](https://github.com/bbatsov/rubocop/issues/3510): Add a configuration option, `ConvertCodeThatCanStartToReturnNil`, to `Style/SafeNavigation` to check for code that could start returning `nil` if safe navigation is used. ([@rrosenblum][])
 * Add a new `AllCops/StyleGuideBaseURL` setting that allows the use of relative paths and/or fragments within each cop's `StyleGuide` setting, to make forking of custom style guides easier. ([@scottmatthewman][])
 
@@ -2398,3 +2399,4 @@
 [@coorasse]: https://github.com/coorasse
 [@scottmatthewman]: https://github.com/scottmatthewman
 [@tcdowney]: https://github.com/tcdowney
+[@logicminds]: https://github.com/logicminds
