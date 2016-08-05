@@ -13,6 +13,7 @@
 * [#3347](https://github.com/bbatsov/rubocop/issues/3347): Prevent infinite loop in `Style/TernaryParentheses` cop when used together with `Style/RedundantParentheses`. ([@drenmi][])
 * [#3209](https://github.com/bbatsov/rubocop/issues/3209): Remove faulty line length check from `Style/GuardClause` cop. ([@drenmi][])
 * [#3366](https://github.com/bbatsov/rubocop/issues/3366): Make `Style/MutableConstant` cop aware of splat assignments. ([@drenmi][])
+* [#3372](https://github.com/bbatsov/rubocop/pull/3372): Fix RuboCop crash with empty brackets in `Style/Next` cop. ([@pocke][])
 
 ### Changes
 
