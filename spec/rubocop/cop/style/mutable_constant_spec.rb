@@ -66,6 +66,29 @@ describe RuboCop::Cop::Style::MutableConstant do
     expect(cop.offenses).to be_empty
   end
 
+  context 'when performing a splat assignment' do
+    it 'allows an immutable value' do
+      inspect_source(cop, 'FOO = *(1...10)')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'allows a frozen array value' do
+      inspect_source(cop, 'FOO = *[1...10].freeze')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense for a mutable value' do
+      source = 'BAR = *[1, 2, 3]'
+
+      inspect_source(cop, source)
+      expect(cop.offenses.size).to eq(1)
+
+      corrected = autocorrect_source(cop, source)
+
+      expect(corrected).to eq('BAR = *[1, 2, 3].freeze')
+    end
+  end
+
   context 'when assigning an array without brackets' do
     it 'adds brackets when auto-correcting' do
       new_source = autocorrect_source(cop, 'XXX = YYY, ZZZ')
