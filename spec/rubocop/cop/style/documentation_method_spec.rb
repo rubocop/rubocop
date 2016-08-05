@@ -5,6 +5,7 @@ require 'spec_helper'
 
 describe RuboCop::Cop::Style::DocumentationMethod do
   subject(:cop) { described_class.new(config) }
+
   let(:config) do
     RuboCop::Config.new('Style/CommentAnnotation' => {
                           'Keywords' => %w(TODO FIXME OPTIMIZE HACK REVIEW)
@@ -59,7 +60,7 @@ describe RuboCop::Cop::Style::DocumentationMethod do
       expect(cop.offenses).to be_empty
     end
 
-    it 'does not registers an offense for private non-empty method' do
+    it 'does not register an offense for private non-empty method' do
       inspect_source(cop,
                      ['private',
                       '',
@@ -72,7 +73,20 @@ describe RuboCop::Cop::Style::DocumentationMethod do
       expect(cop.offenses).to be_empty
     end
 
-    it 'does not registers an offense for private empty method' do
+    it 'does not register an offense for protected non-empty method' do
+      inspect_source(cop,
+                     ['protected',
+                      '',
+                      'def method',
+                      ' puts "method"',
+                      'end',
+                      '',
+                      'class MyClass',
+                      'end'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'does not register an offense for private empty method' do
       inspect_source(cop,
                      ['private',
                       '',
@@ -84,7 +98,7 @@ describe RuboCop::Cop::Style::DocumentationMethod do
       expect(cop.offenses).to be_empty
     end
 
-    it 'does not registers an offense for private non-empty method' do
+    it 'does not register an offense for private non-empty method' do
       inspect_source(cop,
                      ['private def method',
                       ' puts "method"',
@@ -95,7 +109,18 @@ describe RuboCop::Cop::Style::DocumentationMethod do
       expect(cop.offenses).to be_empty
     end
 
-    it 'does not registers an offense for private empty method' do
+    it 'does not register an offense for protected non-empty method' do
+      inspect_source(cop,
+                     ['protected def method',
+                      ' puts "method"',
+                      'end',
+                      '',
+                      'class MyClass',
+                      'end'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'does not register an offense for private empty method' do
       inspect_source(cop,
                      ['private def method',
                       'end',
@@ -123,7 +148,7 @@ describe RuboCop::Cop::Style::DocumentationMethod do
       expect(cop.offenses.size).to eq(1)
     end
 
-    it 'does not registers an offense for combination of methods with
+    it 'does not register an offense for combination of methods with
      documentation' do
       inspect_source(cop,
                      ['# documentation comment',
@@ -184,7 +209,7 @@ describe RuboCop::Cop::Style::DocumentationMethod do
       expect(cop.offenses).to be_empty
     end
 
-    it 'does not registers an offense for private non-empty method' do
+    it 'does not register an offense for private non-empty method' do
       inspect_source(cop,
                      ['class MyClass',
                       '  private',
@@ -196,7 +221,7 @@ describe RuboCop::Cop::Style::DocumentationMethod do
       expect(cop.offenses).to be_empty
     end
 
-    it 'does not registers an offense for private non-empty method' do
+    it 'does not register an offense for private non-empty method' do
       inspect_source(cop,
                      ['class MyClass',
                       '  private def method',
@@ -206,7 +231,7 @@ describe RuboCop::Cop::Style::DocumentationMethod do
       expect(cop.offenses).to be_empty
     end
 
-    it 'does not registers an offense for private empty method' do
+    it 'does not register an offense for private empty method' do
       inspect_source(cop,
                      ['class MyClass',
                       '  private',
@@ -217,7 +242,7 @@ describe RuboCop::Cop::Style::DocumentationMethod do
       expect(cop.offenses).to be_empty
     end
 
-    it 'does not registers an offense for private empty method' do
+    it 'does not register an offense for private empty method' do
       inspect_source(cop,
                      ['class MyClass',
                       '  private def method',
@@ -243,7 +268,7 @@ describe RuboCop::Cop::Style::DocumentationMethod do
       expect(cop.offenses.size).to eq(1)
     end
 
-    it 'does not registers an offense for combination of methods with
+    it 'does not register an offense for combination of methods with
      documentation' do
       inspect_source(cop,
                      ['class MyClass',
@@ -303,7 +328,7 @@ describe RuboCop::Cop::Style::DocumentationMethod do
       expect(cop.offenses).to be_empty
     end
 
-    it 'does not registers an offense for private non-empty method' do
+    it 'does not register an offense for private non-empty method' do
       inspect_source(cop,
                      ['module MyModule',
                       '  private',
@@ -315,7 +340,7 @@ describe RuboCop::Cop::Style::DocumentationMethod do
       expect(cop.offenses).to be_empty
     end
 
-    it 'does not registers an offense for private non-empty method' do
+    it 'does not register an offense for private non-empty method' do
       inspect_source(cop,
                      ['module MyModule',
                       '  private def method',
@@ -325,7 +350,7 @@ describe RuboCop::Cop::Style::DocumentationMethod do
       expect(cop.offenses).to be_empty
     end
 
-    it 'does not registers an offense for private empty method' do
+    it 'does not register an offense for private empty method' do
       inspect_source(cop,
                      ['module MyModule',
                       '  private',
@@ -336,7 +361,7 @@ describe RuboCop::Cop::Style::DocumentationMethod do
       expect(cop.offenses).to be_empty
     end
 
-    it 'does not registers an offense for private empty method' do
+    it 'does not register an offense for private empty method' do
       inspect_source(cop,
                      ['module MyModule',
                       '  private def method',
@@ -362,7 +387,7 @@ describe RuboCop::Cop::Style::DocumentationMethod do
       expect(cop.offenses.size).to eq(1)
     end
 
-    it 'does not registers an offense for combination of methods with
+    it 'does not register an offense for combination of methods with
      documentation' do
       inspect_source(cop,
                      ['module MyModule',
@@ -434,7 +459,7 @@ describe RuboCop::Cop::Style::DocumentationMethod do
       expect(cop.offenses).to be_empty
     end
 
-    it 'does not registers an offense for private empty method' do
+    it 'does not register an offense for private empty method' do
       inspect_source(cop,
                      ['class MyClass',
                       'end',
@@ -448,7 +473,7 @@ describe RuboCop::Cop::Style::DocumentationMethod do
       expect(cop.offenses).to be_empty
     end
 
-    it 'does not registers an offense for private non-empty method' do
+    it 'does not register an offense for private non-empty method' do
       inspect_source(cop,
                      ['class MyClass',
                       'end',
@@ -463,7 +488,7 @@ describe RuboCop::Cop::Style::DocumentationMethod do
       expect(cop.offenses).to be_empty
     end
 
-    it 'does not registers an offense for private empty method' do
+    it 'does not register an offense for private empty method' do
       inspect_source(cop,
                      ['class MyClass',
                       'end',
@@ -475,7 +500,7 @@ describe RuboCop::Cop::Style::DocumentationMethod do
       expect(cop.offenses).to be_empty
     end
 
-    it 'does not registers an offense for private non-empty method' do
+    it 'does not register an offense for private non-empty method' do
       inspect_source(cop,
                      ['class MyClass',
                       'end',
@@ -508,7 +533,7 @@ describe RuboCop::Cop::Style::DocumentationMethod do
       expect(cop.offenses.size).to eq(1)
     end
 
-    it 'does not registers an offense for combination of methods with
+    it 'does not register an offense for combination of methods with
      documentation' do
       inspect_source(cop,
                      ['class MyClass',

@@ -3,32 +3,9 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for missing documentation comment for public method.
+      # This cop checks for missing documentation comment for public methods.
       #
       # @example
-      #   # declaring methods outside of a class
-      #
-      #   # bad
-      #
-      #   def method
-      #     puts "method"
-      #   end
-      #
-      #   class MyClass
-      #   end
-      #
-      #   # good
-      #
-      #   # Method Comment
-      #   def method
-      #     puts "method"
-      #   end
-      #
-      #   class MyClass
-      #   end
-      #
-      # @example
-      #   # declaring methods inside a class
       #
       #   # bad
       #
@@ -36,6 +13,16 @@ module RuboCop
       #     def method
       #       puts 'method'
       #     end
+      #   end
+      #
+      #   module MyModule
+      #     def method
+      #       puts 'method'
+      #     end
+      #   end
+      #
+      #   def my_class.method
+      #     puts 'method'
       #   end
       #
       #   # good
@@ -47,19 +34,6 @@ module RuboCop
       #     end
       #   end
       #
-      # @example
-      #   # declaring methods inside a module
-      #
-      #   # bad
-      #
-      #   module MyModule
-      #     def method
-      #       puts 'method'
-      #     end
-      #   end
-      #
-      #   #good
-      #
       #   module MyModule
       #     # Method Comment
       #     def method
@@ -67,106 +41,53 @@ module RuboCop
       #     end
       #   end
       #
-      #   # singleton methods
-      #
-      #   # bad
-      #
-      #   class MyClass
-      #   end
-      #
-      #   my_class = MyClass.new
-      #
-      #   def my_class.method
-      #     puts 'method'
-      #   end
-      #
-      #   # good
-      #
-      #   class MyClass
-      #   end
-      #
-      #   my_class = MyClass.new
-      #
       #   # Method Comment
       #   def my_class.method
       #     puts 'method'
       #   end
-      #
       class DocumentationMethod < Cop
+        include DocumentationComment
         include AnnotationComment
         include OnMethodDef
-        MSG = 'Missing top-level %s documentation method comment.'.freeze
-        METHOD_TYPE = %w(private protected).freeze
 
-        def_node_matcher :constant_definition?, '{def casgn}'
+        MSG = 'Missing method documentation comment.'.freeze
+        NON_PUBLIC_MODIFIERS = %w(private protected).freeze
 
         def on_def(node)
-          check_offenses(node)
+          check(node)
         end
 
-        def on_method_def(node, _method_name, _args, _body)
-          check_offenses(node)
+        def on_method_def(node, *)
+          check(node)
         end
 
         private
 
-        def check_offenses(node)
-          _name, _body = *node
+        def check(node)
+          return if non_public_method?(node)
+          return if associated_comment?(node)
 
-          line = node.loc.line
-          return if node.ancestors.first.to_a.include? method_type
-          return if (processed_source[0..line].map(&:strip) &
-            METHOD_TYPE).any?
-          ast_with_comments = processed_source.ast_with_comments
-          return if associated_comment?(node, ast_with_comments)
-          add_offense(node, :keyword, format(MSG, :module))
+          add_offense(node, :keyword, MSG)
         end
 
-        def namespace?(body_node)
-          return false unless body_node
+        def non_public_method?(node)
+          non_public_modifier?(node.parent) ||
+            preceding_non_public_modifier?(node)
+        end
 
-          case body_node.type
-          when :begin
-            body_node.children.all? { |node| constant_definition?(node) }
-          else
-            constant_definition?(body_node)
+        def preceding_non_public_modifier?(node)
+          stripped_source_upto(node.loc.line).any? do |line|
+            NON_PUBLIC_MODIFIERS.include?(line)
           end
         end
 
-        # Returns true if the node has a comment on the line above it that
-        # isn't an annotation.
-        def associated_comment?(node, ast_with_comments)
-          preceding_comments = preceding_comments(node, ast_with_comments)
-          return false if preceding_comments.empty?
-
-          distance = node.loc.keyword.line - preceding_comments.last.loc.line
-          return false if distance > 1
-          return false unless comment_line_only?(preceding_comments.last)
-
-          # As long as there's at least one comment line that isn't an
-          # annotation, it's OK.
-          preceding_comments.any? do |comment|
-            !annotation?(comment) && !interpreter_directive_comment?(comment)
-          end
+        def stripped_source_upto(line)
+          processed_source[0..line].map(&:strip)
         end
 
-        def preceding_comments(node, ast_with_comments)
-          ast_with_comments[node].select { |c| c.loc.line < node.loc.line }
-        end
-
-        def comment_line_only?(comment)
-          source_buffer = comment.loc.expression.source_buffer
-          comment_line = source_buffer.source_line(comment.loc.line)
-          comment_line =~ /^\s*#/
-        end
-
-        def interpreter_directive_comment?(comment)
-          comment.text =~ /^#\s*(frozen_string_literal|encoding):/
-        end
-
-        def method_type
-          :private || :protected
-        end
+        def_node_matcher :non_public_modifier?, <<-PATTERN
+          (send nil {:private :protected} ({def defs} ...))
+        PATTERN
       end
     end
   end

@@ -244,6 +244,20 @@ module RuboCop
       def interpret_string_escapes(string)
         StringInterpreter.interpret(string)
       end
+
+      def same_line?(n1, n2)
+        n1.respond_to?(:loc) &&
+          n2.respond_to?(:loc) &&
+          n1.loc.line == n2.loc.line
+      end
+
+      def line_distance(n1, n2)
+        n2.loc.line - n1.loc.line
+      end
+
+      def preceed?(n1, n2)
+        line_distance(n1, n2) == 1
+      end
     end
   end
 end

@@ -56,6 +56,7 @@ require 'rubocop/cop/mixin/code_length' # relies on configurable_max
 require 'rubocop/cop/mixin/classish_length' # relies on code_length
 require 'rubocop/cop/mixin/configurable_enforced_style'
 require 'rubocop/cop/mixin/configurable_naming'
+require 'rubocop/cop/mixin/documentation_comment'
 require 'rubocop/cop/mixin/empty_lines_around_body'
 require 'rubocop/cop/mixin/end_keyword_alignment'
 require 'rubocop/cop/mixin/first_element_line_break'
