@@ -31,14 +31,13 @@ module RuboCop
       # A class emitter method is a singleton method in a class/module, where
       # the method has the same name as a class defined in the class/module.
       def class_emitter_method?(node, name)
-        return false unless node.defs_type?
+        return false unless node.parent && node.defs_type?
         # a class emitter method may be defined inside `def self.included`,
         # `def self.extended`, etc.
-        node = node.parent while node.parent && node.parent.defs_type?
-        return false unless node.parent
+        node = node.parent while node.parent.defs_type?
 
-        node.parent.children.compact.any? do |c|
-          c.class_type? && c.loc.name.is?(name.to_s)
+        node.parent.each_child_node(:class).any? do |c|
+          c.loc.name.is?(name.to_s)
         end
       end
     end

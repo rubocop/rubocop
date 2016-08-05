@@ -81,10 +81,7 @@ module RuboCop
         yield sexp if Array(syms).include?(sexp.type)
         return if Array(excludes).include?(sexp.type)
 
-        sexp.children.each do |elem|
-          next unless elem.is_a?(Parser::AST::Node)
-          on_node(syms, elem, excludes, &block)
-        end
+        sexp.each_child_node { |elem| on_node(syms, elem, excludes, &block) }
       end
 
       def source_range(source_buffer, line_number, column, length = 1)

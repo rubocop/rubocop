@@ -38,7 +38,7 @@ module RuboCop
 
         def on_module(node)
           _name, body = *node
-          return unless body && body.type == :begin
+          return unless body && body.begin_type?
 
           body.children.each do |body_node|
             if style == :module_function && body_node == EXTEND_SELF_NODE

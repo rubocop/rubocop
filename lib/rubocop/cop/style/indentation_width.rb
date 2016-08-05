@@ -121,7 +121,7 @@ module RuboCop
           _condition, *branches = *node
           latest_when = nil
           branches.compact.each do |b|
-            if b.type == :when
+            if b.when_type?
               # TODO: Revert to the original expression once the fix in Rubinius
               #   is released.
               #
@@ -208,7 +208,7 @@ module RuboCop
         def offense(body_node, indentation, style)
           # This cop only auto-corrects the first statement in a def body, for
           # example.
-          if body_node.type == :begin && !parentheses?(body_node)
+          if body_node.begin_type? && !parentheses?(body_node)
             body_node = body_node.children.first
           end
 
@@ -272,7 +272,7 @@ module RuboCop
         end
 
         def starts_with_access_modifier?(body_node)
-          body_node.type == :begin && modifier_node?(body_node.children.first)
+          body_node.begin_type? && modifier_node?(body_node.children.first)
         end
 
         def configured_indentation_width

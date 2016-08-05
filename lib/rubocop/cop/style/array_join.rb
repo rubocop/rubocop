@@ -14,8 +14,8 @@ module RuboCop
 
         def on_send(node)
           receiver_node, method_name, *arg_nodes = *node
-          return unless receiver_node && receiver_node.type == :array &&
-                        method_name == :* && arg_nodes[0].type == :str
+          return unless receiver_node && receiver_node.array_type? &&
+                        method_name == :* && arg_nodes.first.str_type?
 
           add_offense(node, :selector)
         end
@@ -23,7 +23,7 @@ module RuboCop
         def autocorrect(node)
           receiver_node, _method_name, *arg_nodes = *node
           array = receiver_node.source
-          join_arg = arg_nodes[0].source
+          join_arg = arg_nodes.first.source
 
           lambda do |corrector|
             corrector.replace(node.source_range, "#{array}.join(#{join_arg})")

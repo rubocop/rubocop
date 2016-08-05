@@ -59,7 +59,7 @@ module RuboCop
 
         # returns false if the then or else children are conditionals
         def nested_conditional?(node)
-          node.children[1, 2].any? { |child| child && child.type == :if }
+          node.children[1, 2].compact.any?(&:if_type?)
         end
 
         def oneline(node)

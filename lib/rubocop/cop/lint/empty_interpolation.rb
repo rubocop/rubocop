@@ -13,7 +13,7 @@ module RuboCop
         MSG = 'Empty interpolation detected.'.freeze
 
         def on_dstr(node)
-          node.children.select { |n| n.type == :begin }.each do |begin_node|
+          node.each_child_node(:begin) do |begin_node|
             add_offense(begin_node, :expression) if begin_node.children.empty?
           end
         end

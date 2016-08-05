@@ -139,10 +139,13 @@ module RuboCop
         end
 
         def allow_self(node)
-          return unless node.type == :send
+          return unless node.send_type?
 
           receiver, _method_name, *_args = *node
-          @allowed_send_nodes << node if receiver && receiver.type == :self
+
+          return unless receiver && receiver.self_type?
+
+          @allowed_send_nodes << node
         end
       end
     end

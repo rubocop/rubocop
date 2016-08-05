@@ -25,7 +25,10 @@ module RuboCop
 
         def on_or_asgn(node)
           lhs, value = *node
-          on_assignment(value) if lhs && lhs.type == :casgn
+
+          return unless lhs && lhs.casgn_type?
+
+          on_assignment(value)
         end
 
         def autocorrect(node)
@@ -43,8 +46,7 @@ module RuboCop
         private
 
         def on_assignment(value)
-          return unless value
-          return unless value.mutable_literal?
+          return unless value && value.mutable_literal?
           return if FROZEN_STRING_LITERAL_TYPES.include?(value.type) &&
                     frozen_string_literals_enabled?(processed_source)
 

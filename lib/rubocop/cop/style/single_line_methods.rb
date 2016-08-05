@@ -52,7 +52,7 @@ module RuboCop
           return unless body
 
           if body.begin_type?
-            body.children.each { |part| yield part.source_range }
+            body.each_child_node { |part| yield part.source_range }
           else
             yield body.source_range
           end

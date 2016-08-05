@@ -26,7 +26,9 @@ module RuboCop
 
           second_arg = args[1]
 
-          add_offense(second_arg, :expression) if second_arg.type == :send
+          return unless second_arg.send_type?
+
+          add_offense(second_arg, :expression)
         end
       end
     end

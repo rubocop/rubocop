@@ -30,17 +30,13 @@ module RuboCop
         def contains_splat?(node)
           return unless node.array_type?
 
-          node.children.any? do |child|
-            child.respond_to?(:splat_type?) && child.splat_type?
-          end
+          node.each_child_node(:splat).any?
         end
 
         def contains_double_splat?(node)
           return unless node.hash_type?
 
-          node.children.any? do |child|
-            child.respond_to?(:kwsplat_type?) && child.kwsplat_type?
-          end
+          node.each_child_node(:kwsplat).any?
         end
 
         def string_argument?(node)

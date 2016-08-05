@@ -71,7 +71,7 @@ module RuboCop
         def return_value_node_of_scope(scope)
           body_node = scope.body_node
 
-          if body_node.type == :begin
+          if body_node.begin_type?
             body_node.children.last
           else
             body_node

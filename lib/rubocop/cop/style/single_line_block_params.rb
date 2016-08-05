@@ -25,7 +25,7 @@ module RuboCop
 
           return if args.empty?
           # discard cases with argument destructuring
-          return true unless args.all? { |n| n.type == :arg }
+          return true unless args.all?(&:arg_type?)
           return if args_match?(method_name, args)
 
           add_offense(args_node, :expression, message(method_name))

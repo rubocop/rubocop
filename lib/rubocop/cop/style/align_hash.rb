@@ -189,7 +189,7 @@ module RuboCop
         end
 
         def hash?(node)
-          node.respond_to?(:type) && node.type == :hash
+          node.respond_to?(:type) && node.hash_type?
         end
 
         def explicit_hash?(node)

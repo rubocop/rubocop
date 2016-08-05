@@ -19,7 +19,7 @@ module RuboCop
         end
 
         def message(node)
-          if node.type == :while
+          if node.while_type?
             format(MSG, 'until', 'while')
           else
             format(MSG, 'while', 'until')
@@ -32,12 +32,12 @@ module RuboCop
           lambda do |corrector|
             condition, _body, _rest = *node
             # Look inside parentheses around the condition, if any.
-            condition, = *condition while condition.type == :begin
+            condition, = *condition while condition.begin_type?
             # Unwrap the negated portion of the condition (a send node).
             pos_condition, _method, = *condition
             corrector.replace(
               node.loc.keyword,
-              node.type == :while ? 'until' : 'while'
+              node.while_type? ? 'until' : 'while'
             )
             corrector.replace(condition.source_range, pos_condition.source)
           end

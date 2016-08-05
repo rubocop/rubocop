@@ -26,7 +26,7 @@ module RuboCop
           return if block_length(node).zero?
 
           method, _args, _body = *node
-          return unless method.type == :send
+          return unless method.send_type?
 
           _receiver, method_name, *args = *method
           return unless method_name == :each && args.empty?

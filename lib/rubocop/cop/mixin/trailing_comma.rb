@@ -128,7 +128,7 @@ module RuboCop
 
       def put_comma(node, items, kind, sb)
         last_item = items.last
-        return if last_item.type == :block_pass
+        return if last_item.block_pass_type?
 
         last_expr = last_item.source_range
         ix = last_expr.source.rindex("\n") || 0

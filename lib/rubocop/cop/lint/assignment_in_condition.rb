@@ -30,9 +30,9 @@ module RuboCop
           condition, = *node
 
           # assignments inside blocks are not what we're looking for
-          return if condition.type == :block
+          return if condition.block_type?
           traverse_node(condition, ASGN_TYPES) do |asgn_node|
-            if asgn_node.type == :send
+            if asgn_node.send_type?
               _receiver, method_name, *_args = *asgn_node
               next :skip_children if method_name !~ /=\z/
             end
@@ -43,7 +43,7 @@ module RuboCop
             end
 
             # assignment nodes from shorthand ops like ||= don't have operator
-            if asgn_node.type != :begin && asgn_node.loc.operator
+            if !asgn_node.begin_type? && asgn_node.loc.operator
               add_offense(asgn_node, :operator)
             end
           end
@@ -54,9 +54,7 @@ module RuboCop
           result = yield node if types.include?(node.type)
           # return to skip all descendant nodes
           return if result == :skip_children
-          node.children.each do |child|
-            traverse_node(child, types, &block) if child.is_a?(Node)
-          end
+          node.each_child_node { |child| traverse_node(child, types, &block) }
         end
       end
     end
