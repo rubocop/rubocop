@@ -65,12 +65,38 @@ describe RuboCop::Cop::Style::MethodMissing do
   end
 
   describe 'when implementing #respond_to_missing? and calling #super' do
-    it_behaves_like 'code without offense',
-                    ['class Test',
-                     '  def respond_to_missing?; end',
-                     '  def method_missing',
-                     '    super',
-                     '  end',
-                     'end'].join("\n")
+    context 'when implemented as instance methods' do
+      it_behaves_like 'code without offense',
+                      ['class Test',
+                       '  def respond_to_missing?; end',
+                       '  def method_missing',
+                       '    super',
+                       '  end',
+                       'end'].join("\n")
+    end
+
+    context 'when implemented as class methods' do
+      it_behaves_like 'code without offense',
+                      ['class Test',
+                       '  def self.respond_to_missing?; end',
+                       '  def self.method_missing',
+                       '    super',
+                       '  end',
+                       'end'].join("\n")
+    end
+
+    context 'when implemented with different scopes' do
+      let(:message) do
+        'When using `method_missing`, define `respond_to_missing?`.'
+      end
+
+      it_behaves_like 'code with offense',
+                      ['class Test',
+                       '  def respond_to_missing?; end',
+                       '  def self.method_missing',
+                       '    super',
+                       '  end',
+                       'end'].join("\n")
+    end
   end
 end
