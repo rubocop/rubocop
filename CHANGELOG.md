@@ -15,6 +15,7 @@
 * [#3366](https://github.com/bbatsov/rubocop/issues/3366): Make `Style/MutableConstant` cop aware of splat assignments. ([@drenmi][])
 * [#3372](https://github.com/bbatsov/rubocop/pull/3372): Fix RuboCop crash with empty brackets in `Style/Next` cop. ([@pocke][])
 * [#3358](https://github.com/bbatsov/rubocop/issues/3358): Make `Style/MethodMissing` cop aware of class scope. ([@drenmi][])
+* [#3342](https://github.com/bbatsov/rubocop/issues/3342): Fix error in `Lint/ShadowedException` cop if last rescue does not have parameter. ([@soutaro][])
 
 ### Changes
 
@@ -2317,3 +2318,4 @@
 [@sooyang]: https://github.com/sooyang
 [@metcalf]: https://github.com/metcalf
 [@annaswims]: https://github.com/annaswims
+[@soutaro]: https://github.com/soutaro

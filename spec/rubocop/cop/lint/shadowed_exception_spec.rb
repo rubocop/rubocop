@@ -416,5 +416,31 @@ describe RuboCop::Cop::Lint::ShadowedException do
 
       expect(cop.offenses).to be_empty
     end
+
+    context 'last rescue does not specify exception class' do
+      let(:source) do
+        ['begin',
+         'rescue A, B',
+         '  do_something',
+         'rescue C',
+         '  do_something',
+         'rescue',
+         '  do_something',
+         'end']
+      end
+
+      it 'does not raise error' do
+        expect { inspect_source(cop, source) }.not_to raise_error
+      end
+
+      it 'highlights range ending at rescue keyword' do
+        inspect_source(cop, source)
+        expect(cop.highlights).to eq([['rescue A, B',
+                                       '  do_something',
+                                       'rescue C',
+                                       '  do_something',
+                                       'rescue'].join("\n")])
+      end
+    end
   end
 end
