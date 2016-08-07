@@ -54,9 +54,15 @@ module RuboCop
           first_rescue = rescues.first
           last_rescue = rescues.last
           last_exceptions, = *last_rescue
+          # last_rescue clause may not specify exception class
+          end_pos = if last_exceptions
+                      last_exceptions.loc.expression.end_pos
+                    else
+                      last_rescue.loc.keyword.end_pos
+                    end
           Parser::Source::Range.new(node.loc.expression.source_buffer,
                                     first_rescue.loc.expression.begin_pos,
-                                    last_exceptions.loc.expression.end_pos)
+                                    end_pos)
         end
 
         def rescue_modifier?(node)
