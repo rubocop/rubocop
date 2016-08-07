@@ -4,13 +4,13 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for the presence of arentheses around ternary
+      # This cop checks for the presence of parentheses around ternary
       # conditions. It is configurable to enforce inclusion or omission of
       # parentheses using `EnforcedStyle`.
       #
       # @example
       #
-      #   EnforcedStyle: require_no_parentheses (deafault)
+      #   EnforcedStyle: require_no_parentheses (default)
       #
       #   @bad
       #   foo = (bar?) ? a : b
@@ -96,7 +96,7 @@ module RuboCop
 
         # When this cop is configured to enforce parentheses and the
         # `RedundantParentheses` cop is enabled, it will cause an infinite loop
-        # as they compete to add and remove the parens respectively.
+        # as they compete to add and remove the parentheses respectively.
         def infinite_loop?
           require_parentheses? &&
             redundant_parentheses_enabled?
