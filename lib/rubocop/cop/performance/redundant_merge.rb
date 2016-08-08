@@ -16,7 +16,7 @@ module RuboCop
         MSG = 'Use `%s` instead of `%s`.'.freeze
 
         def_node_matcher :redundant_merge, '(send $_ :merge! (hash $...))'
-        def_node_matcher :modifier_flow_control, <<-END
+        def_node_matcher :modifier_flow_control?, <<-END
           [{if while until} modifier_form?]
         END
 
@@ -30,21 +30,13 @@ module RuboCop
 
         def autocorrect(node)
           redundant_merge(node) do |receiver, pairs|
-            lambda do |corrector|
-              new_source = to_assignments(receiver, pairs).join("\n")
+            new_source = to_assignments(receiver, pairs).join("\n")
 
-              parent = node.parent
-              if parent && pairs.size > 1
-                if modifier_flow_control(parent)
-                  new_source = rewrite_with_modifier(node, parent, new_source)
-                  node = parent
-                else
-                  padding = "\n#{leading_spaces(node)}"
-                  new_source.gsub!(/\n/, padding)
-                end
-              end
-
-              corrector.replace(node.source_range, new_source)
+            parent = node.parent
+            if parent && pairs.size > 1
+              correct_multiple_elements(node, parent, new_source)
+            else
+              correct_single_element(node, new_source)
             end
           end
         end
@@ -60,6 +52,22 @@ module RuboCop
 
             yield receiver, pairs
           end
+        end
+
+        def correct_multiple_elements(node, parent, new_source)
+          if modifier_flow_control?(parent)
+            new_source = rewrite_with_modifier(node, parent, new_source)
+            node = parent
+          else
+            padding = "\n#{leading_spaces(node)}"
+            new_source.gsub!(/\n/, padding)
+          end
+
+          ->(corrector) { corrector.replace(node.source_range, new_source) }
+        end
+
+        def correct_single_element(node, new_source)
+          ->(corrector) { corrector.replace(node.source_range, new_source) }
         end
 
         def to_assignments(receiver, pairs)
