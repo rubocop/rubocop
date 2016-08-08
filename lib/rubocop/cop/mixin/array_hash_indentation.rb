@@ -26,21 +26,21 @@ module RuboCop
         expected_column = base_column(left_brace, left_parenthesis) +
                           configured_indentation_width + offset
         @column_delta = expected_column - actual_column
+        styles =
+          detected_styles(actual_column, offset, left_parenthesis, left_brace)
 
         if @column_delta.zero?
-          # which column was actually used as 'base column' for indentation?
-          # (not the column which we think should be the 'base column',
-          # but the one which has actually been used for that purpose)
-          base_column = actual_column - configured_indentation_width - offset
-          styles = detected_styles(base_column, left_parenthesis, left_brace)
-          if styles.size > 1
-            ambiguous_style_detected(*styles)
-          else
-            correct_style_detected
-          end
+          check_expected_style(styles)
         else
-          incorrect_style_detected(actual_column, offset, first,
-                                   left_parenthesis, left_brace)
+          incorrect_style_detected(styles, first, left_parenthesis)
+        end
+      end
+
+      def check_expected_style(styles)
+        if styles.size > 1
+          ambiguous_style_detected(*styles)
+        else
+          correct_style_detected
         end
       end
 
@@ -54,7 +54,12 @@ module RuboCop
         end
       end
 
-      def detected_styles(column, left_parenthesis, left_brace)
+      def detected_styles(actual_column, offset, left_parenthesis, left_brace)
+        base_column = actual_column - configured_indentation_width - offset
+        detected_styles_for_column(base_column, left_parenthesis, left_brace)
+      end
+
+      def detected_styles_for_column(column, left_parenthesis, left_brace)
         styles = []
         if column == (left_brace.source_line =~ /\S/)
           styles << :consistent
@@ -67,12 +72,9 @@ module RuboCop
         styles
       end
 
-      def incorrect_style_detected(column, offset, first, left_parenthesis,
-                                   left_brace)
+      def incorrect_style_detected(styles, first, left_parenthesis)
         add_offense(first, :expression,
                     message(base_description(left_parenthesis))) do
-          base_column = column - configured_indentation_width - offset
-          styles = detected_styles(base_column, left_parenthesis, left_brace)
           ambiguous_style_detected(*styles)
         end
       end
