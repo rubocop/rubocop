@@ -28,7 +28,7 @@ module RuboCop
 
         def check(node)
           return unless node.loc.end
-          return unless fit_within_line_as_modifier_form?(node)
+          return unless single_line_as_modifier?(node)
           add_offense(node, :keyword, message(node.loc.keyword.source))
         end
 

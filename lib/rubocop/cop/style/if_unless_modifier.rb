@@ -26,7 +26,7 @@ module RuboCop
           return if elsif?(node)
           return if if_else?(node)
           return if node.chained?
-          return unless fit_within_line_as_modifier_form?(node)
+          return unless single_line_as_modifier?(node)
           return if nested_conditional?(node)
           add_offense(node, :keyword, message(node.loc.keyword.source))
         end

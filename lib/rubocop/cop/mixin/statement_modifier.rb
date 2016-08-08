@@ -7,18 +7,32 @@ module RuboCop
     module StatementModifier
       include IfNode
 
-      def fit_within_line_as_modifier_form?(node)
-        cond, body, _else = if_node_parts(node)
+      def single_line_as_modifier?(node)
+        cond, body, = if_node_parts(node)
 
-        return false if length(node) > 3
-        return false if body && body.begin_type? # multiple statements
+        return false if non_eligible_node?(node) || non_eligible_body?(body) ||
+                        non_eligible_condition?(cond)
 
+        modifier_fits_on_single_line?(node)
+      end
+
+      def non_eligible_node?(node)
+        line_count(node) > 3 || commented?(node.loc.end)
+      end
+
+      def non_eligible_body?(body)
+        return true unless body
+
+        body.begin_type? || empty_body?(body) || commented?(body.source_range)
+      end
+
+      def non_eligible_condition?(condition)
+        condition.each_node.any?(&:lvasgn_type?)
+      end
+
+      def modifier_fits_on_single_line?(node)
+        cond, body, = if_node_parts(node)
         body_length = body_length(body)
-
-        return false if body_length.zero?
-        return false if cond.each_node.any?(&:lvasgn_type?)
-        return false if body_has_comment?(body)
-        return false if end_keyword_has_comment?(node)
 
         length_in_modifier_form(node, cond, body_length) <= max_line_length
       end
@@ -36,24 +50,20 @@ module RuboCop
           config.for_cop('Metrics/LineLength')['Max']
       end
 
-      def length(node)
+      def line_count(node)
         node.source.lines.grep(/\S/).size
       end
 
+      def empty_body?(body)
+        body_length(body).zero?
+      end
+
       def body_length(body)
-        if body && body.source_range
-          body.source_range.size
-        else
-          0
-        end
+        body.source_range ? body.source_range.size : 0
       end
 
-      def body_has_comment?(body)
-        comment_lines.include?(body.source_range.line)
-      end
-
-      def end_keyword_has_comment?(node)
-        comment_lines.include?(node.loc.end.line)
+      def commented?(source)
+        comment_lines.include?(source.line)
       end
 
       def comment_lines
