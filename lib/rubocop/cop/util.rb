@@ -258,6 +258,10 @@ module RuboCop
       def preceed?(n1, n2)
         line_distance(n1, n2) == 1
       end
+
+      def stripped_source_upto(line)
+        processed_source[0..line].map(&:strip)
+      end
     end
   end
 end
