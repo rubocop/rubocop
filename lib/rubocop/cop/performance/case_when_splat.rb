@@ -94,15 +94,7 @@ module RuboCop
         private
 
         def replacement(conditions)
-          new_condition = conditions.map do |condition|
-            variable, = *condition
-            if variable.respond_to?(:array_type?) && variable.array_type?
-              expand_percent_array(variable)
-            else
-              condition.source
-            end
-          end
-
+          new_condition = conditions.map(&:source)
           new_condition.join(', ')
         end
 
@@ -155,6 +147,8 @@ module RuboCop
             found_non_splat ||= error_condition?(condition)
 
             next unless condition.splat_type?
+            variable, = *condition
+            next if variable.array_type?
             result << condition if found_non_splat
           end
         end
@@ -170,24 +164,6 @@ module RuboCop
           conditions.any? do |condition|
             variable, = *condition
             condition.splat_type? && !(variable && variable.array_type?)
-          end
-        end
-
-        def expand_percent_array(array)
-          array_start = array.loc.begin.source
-          elements = *array
-          elements = elements.map(&:source)
-
-          if array_start.start_with?(PERCENT_W)
-            "'#{elements.join("', '")}'"
-          elsif array_start.start_with?(PERCENT_CAPITAL_W)
-            %("#{elements.join('", "')}")
-          elsif array_start.start_with?(PERCENT_I)
-            ":#{elements.join(', :')}"
-          elsif array_start.start_with?(PERCENT_CAPITAL_I)
-            %(:"#{elements.join('", :"')}")
-          else
-            elements.join(', ')
           end
         end
       end
