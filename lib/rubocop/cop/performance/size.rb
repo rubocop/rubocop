@@ -28,22 +28,35 @@ module RuboCop
         MSG = 'Use `size` instead of `count`.'.freeze
 
         def on_send(node)
-          receiver, method, args = *node
-
-          return if receiver.nil?
-          return unless method == :count
-          return unless array?(receiver) || hash?(receiver)
-          return if node.parent && node.parent.block_type?
-          return if args
+          return unless eligible_node?(node)
 
           add_offense(node, node.loc.selector)
         end
+
+        private
 
         def autocorrect(node)
           ->(corrector) { corrector.replace(node.loc.selector, 'size') }
         end
 
-        private
+        def eligible_node?(node)
+          receiver, method, args = *node
+
+          return false unless method == :count
+          return false if args
+
+          eligible_receiver?(receiver) && !allowed_parent?(node.parent)
+        end
+
+        def eligible_receiver?(node)
+          return false unless node
+
+          array?(node) || hash?(node)
+        end
+
+        def allowed_parent?(node)
+          node && node.block_type?
+        end
 
         def array?(node)
           receiver, method = *node
