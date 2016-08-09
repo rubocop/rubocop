@@ -116,7 +116,9 @@ module RuboCop
               1
             elsif y.include?(Exception)
               -1
-            elsif x.empty? || y.empty?
+            elsif x.none? || y.none?
+              # do not change the order if a group is empty or only contains
+              # `nil`s
               0
             else
               x <=> y || 0

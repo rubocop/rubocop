@@ -55,6 +55,16 @@ describe RuboCop::Cop::Lint::ShadowedException do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts rescuing multiple custom exceptions' do
+      inspect_source(cop, ['begin',
+                           '  something',
+                           'rescue CustomError, NonStandardException',
+                           '  handle_exception',
+                           'end'])
+
+      expect(cop.offenses).to be_empty
+    end
+
     it 'registers an offense rescuing Exception with any other error or ' \
        'exception' do
       inspect_source(cop, ['begin',
@@ -259,6 +269,18 @@ describe RuboCop::Cop::Lint::ShadowedException do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts rescuing custom exceptions in multiple rescue groups' do
+      inspect_source(cop, ['begin',
+                           '  something',
+                           'rescue NonStandardError, OtherError',
+                           '  handle_standard_error',
+                           'rescue CustomError',
+                           '  handle_exception',
+                           'end'])
+
+      expect(cop.offenses).to be_empty
+    end
+
     context 'splat arguments' do
       it 'accepts splat arguments passed to multiple rescues' do
         inspect_source(cop, ['begin',
@@ -435,11 +457,7 @@ describe RuboCop::Cop::Lint::ShadowedException do
 
       it 'highlights range ending at rescue keyword' do
         inspect_source(cop, source)
-        expect(cop.highlights).to eq([['rescue A, B',
-                                       '  do_something',
-                                       'rescue C',
-                                       '  do_something',
-                                       'rescue'].join("\n")])
+        expect(cop.offenses).to be_empty
       end
     end
   end

@@ -18,6 +18,7 @@
 * [#3358](https://github.com/bbatsov/rubocop/issues/3358): Make `Style/MethodMissing` cop aware of class scope. ([@drenmi][])
 * [#3342](https://github.com/bbatsov/rubocop/issues/3342): Fix error in `Lint/ShadowedException` cop if last rescue does not have parameter. ([@soutaro][])
 * [#3380](https://github.com/bbatsov/rubocop/issues/3380): Fix false positive in `Style/TrailingUnderscoreVariable` cop. ([@drenmi][])
+* [#3388](https://github.com/bbatsov/rubocop/issues/3388): Fix bug where `Lint/ShadowedException` would register an offense when rescuing different numbers of custom exceptions in multiple rescue groups. ([@rrosenblum][])
 
 ### Changes
 
