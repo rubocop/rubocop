@@ -13,19 +13,28 @@ module RuboCop
         MATCHER
 
         def on_send(node)
-          counter(node) do |variable, arg|
-            return if contains_splat?(variable)
-            return if contains_double_splat?(variable)
-            return if !arg.nil? && string_argument?(arg.first)
-            if node.parent
-              return if node.parent.casgn_type? || node.parent.block_type?
-            end
+          return if allowed_parent?(node.parent)
+
+          counter(node) do |var, arg|
+            return if allowed_variable?(var) || allowed_argument?(arg)
 
             add_offense(node, :expression)
           end
         end
 
         private
+
+        def allowed_variable?(var)
+          contains_splat?(var) || contains_double_splat?(var)
+        end
+
+        def allowed_argument?(arg)
+          arg && non_string_argument?(arg.first)
+        end
+
+        def allowed_parent?(node)
+          node && (node.casgn_type? || node.block_type?)
+        end
 
         def contains_splat?(node)
           return unless node.array_type?
@@ -39,7 +48,7 @@ module RuboCop
           node.each_child_node(:kwsplat).any?
         end
 
-        def string_argument?(node)
+        def non_string_argument?(node)
           node && !node.str_type?
         end
       end
