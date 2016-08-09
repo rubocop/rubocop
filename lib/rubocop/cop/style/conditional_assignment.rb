@@ -337,16 +337,20 @@ module RuboCop
         end
 
         def check_node(node, branches)
-          return unless branches.all?
-          last_statements = branches.map { |branch| tail(branch) }
-          return unless lhs_all_match?(last_statements)
-          return if last_statements.any?(&:masgn_type?)
-          return unless assignment_types_match?(*last_statements)
-
+          return unless allowed_statements?(branches)
           return if single_line_conditions_only? && branches.any?(&:begin_type?)
           return if correction_exceeds_line_limit?(node, branches)
 
           add_offense(node, :expression)
+        end
+
+        def allowed_statements?(branches)
+          return false unless branches.all?
+
+          statements = branches.map { |branch| tail(branch) }
+
+          lhs_all_match?(statements) && !statements.any?(&:masgn_type?) &&
+            assignment_types_match?(*statements)
         end
 
         # If `Metrics/LineLength` is enabled, we do not want to introduce an
