@@ -6,12 +6,13 @@ module RuboCop
     # Common functionality for checking documentation.
     module DocumentationComment
       extend NodePattern::Macros
+      include Style::AnnotationComment
 
       def_node_matcher :constant_definition?, '{class module casgn}'
 
       private
 
-      def associated_comment?(node)
+      def documentation_comment?(node)
         preceding_lines = preceding_lines(node)
 
         return false unless preceding_comment?(node, preceding_lines.last)
@@ -21,9 +22,9 @@ module RuboCop
         end
       end
 
-      def preceding_comment?(node, line)
-        line && preceed?(line, node) &&
-          comment_line?(line.loc.expression.source)
+      def preceding_comment?(n1, n2)
+        n1 && n2 && preceed?(n2, n1) &&
+          comment_line?(n2.loc.expression.source)
       end
 
       def preceding_lines(node)

@@ -14,7 +14,6 @@ module RuboCop
       # same for all its children.
       class Documentation < Cop
         include DocumentationComment
-        include AnnotationComment
 
         MSG = 'Missing top-level %s documentation comment.'.freeze
 
@@ -38,7 +37,7 @@ module RuboCop
 
         def check(node, body, type)
           return if namespace?(body)
-          return if associated_comment?(node) || nodoc_comment?(node)
+          return if documentation_comment?(node) || nodoc_comment?(node)
 
           add_offense(node, :keyword, format(MSG, type))
         end

@@ -3,555 +3,709 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::DocumentationMethod do
+describe RuboCop::Cop::Style::DocumentationMethod, :config do
   subject(:cop) { described_class.new(config) }
 
+  before do
+    inspect_source(cop, source)
+  end
+
+  shared_examples 'code with offense' do |code|
+    context "when checking #{code}" do
+      let(:source) { code }
+
+      it 'registers an offense' do
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.messages).to eq([message])
+      end
+    end
+  end
+
+  shared_examples 'code without offense' do |code|
+    let(:source) { code }
+
+    it 'does not register an offense' do
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  let(:require_for_non_public_methods) { false }
+
   let(:config) do
-    RuboCop::Config.new('Style/CommentAnnotation' => {
-                          'Keywords' => %w(TODO FIXME OPTIMIZE HACK REVIEW)
-                        },
-                        'Style/DocumentationMethod' => {
-                          'Enabled' => true
-                        })
+    RuboCop::Config.new(
+      'Style/CommentAnnotation' => {
+        'Keywords' => %w(TODO FIXME OPTIMIZE HACK REVIEW)
+      },
+      'Style/DocumentationMethod' => {
+        'RequireForNonPublicMethods' => require_for_non_public_methods
+      }
+    )
   end
 
-  context 'declaring methods outside a class' do
-    it 'registers an offense for non-empty method' do
-      inspect_source(cop,
-                     ['def method',
-                      ' puts "method"',
-                      'end',
-                      '',
-                      'class MyClass',
-                      'end'])
-      expect(cop.offenses.size).to eq(1)
+  let(:message) { described_class::MSG }
+
+  context 'when declaring methods outside a class' do
+    context 'without documentation comment' do
+      context 'when method is public' do
+        it_behaves_like 'code with offense', <<-CODE
+                        def foo
+                          puts 'bar'
+                        end
+        CODE
+
+        it_behaves_like 'code with offense',
+                        'def method; end'
+      end
+
+      context 'when method is private' do
+        it_behaves_like 'code without offense', <<-CODE
+                        private
+
+                        def foo
+                          puts 'bar'
+                        end
+        CODE
+
+        it_behaves_like 'code without offense', <<-CODE
+                        private
+
+                        def foo; end
+        CODE
+
+        it_behaves_like 'code without offense', <<-CODE
+                        private def foo
+                          puts 'bar'
+                        end
+        CODE
+
+        it_behaves_like 'code without offense',
+                        'private def method; end'
+
+        context 'when required for non-public methods' do
+          let(:require_for_non_public_methods) { true }
+
+          it_behaves_like 'code with offense', <<-CODE
+                          private
+
+                          def foo
+                            puts 'bar'
+                          end
+          CODE
+
+          it_behaves_like 'code with offense', <<-CODE
+                          private
+
+                          def foo; end
+          CODE
+
+          it_behaves_like 'code with offense', <<-CODE
+                          private def foo
+                            puts 'bar'
+                          end
+          CODE
+
+          it_behaves_like 'code with offense',
+                          'private def method; end'
+        end
+      end
+
+      context 'when method is protected' do
+        it_behaves_like 'code without offense', <<-CODE
+                        protected
+
+                        def foo
+                          puts 'bar'
+                        end
+        CODE
+
+        it_behaves_like 'code without offense', <<-CODE
+                          protected def foo
+                            puts 'bar'
+                          end
+        CODE
+
+        context 'when required for non-public methods' do
+          let(:require_for_non_public_methods) { true }
+
+          it_behaves_like 'code with offense', <<-CODE
+                          protected
+
+                          def foo
+                            puts 'bar'
+                          end
+          CODE
+
+          it_behaves_like 'code with offense', <<-CODE
+                          protected def foo
+                            puts 'bar'
+                          end
+          CODE
+        end
+      end
     end
 
-    it 'accepts non-empty method with documentation' do
-      inspect_source(cop,
-                     ['# method comment',
-                      'def method',
-                      ' puts "method"',
-                      'end',
-                      '',
-                      'class MyClass',
-                      'end'])
-      expect(cop.offenses).to be_empty
+    context 'with documentation comment' do
+      it_behaves_like 'code without offense', <<-CODE
+                      # Documenation
+                      def foo
+                        puts 'bar'
+                      end
+      CODE
+
+      it_behaves_like 'code without offense', <<-CODE
+                      # Documentation
+                      def foo; end
+      CODE
     end
 
-    it 'registers an offense for empty method' do
-      inspect_source(cop,
-                     ['def method',
-                      'end',
-                      '',
-                      'class MyClass',
-                      'end'])
-      expect(cop.offenses.size).to eq(1)
+    context 'with both public and private methods' do
+      it_behaves_like 'code with offense', <<-CODE
+                      def foo
+                        puts 'bar'
+                      end
+
+                      private
+
+                      def baz
+                        puts 'bar'
+                      end
+      CODE
+
+      it_behaves_like 'code without offense', <<-CODE
+                      # Documenation
+                      def foo
+                        puts 'bar'
+                      end
+
+                      private
+
+                      def baz
+                        puts 'bar'
+                      end
+      CODE
+
+      context 'when required for non-public methods' do
+        let(:require_for_non_public_methods) { true }
+
+        it_behaves_like 'code with offense', <<-CODE
+                        # Documenation
+                        def foo
+                          puts 'bar'
+                        end
+
+                        private
+
+                        def baz
+                          puts 'bar'
+                        end
+        CODE
+      end
     end
 
-    it 'accepts empty method with documentation' do
-      inspect_source(cop,
-                     ['# method comment',
-                      'def method',
-                      'end',
-                      '',
-                      'class MyClass',
-                      'end'])
-      expect(cop.offenses).to be_empty
+    context 'when declaring methods in a class' do
+      context 'without documentation comment' do
+        context 'wheh method is public' do
+          it_behaves_like 'code with offense', <<-CODE
+                          class Foo
+                            def bar
+                              puts 'baz'
+                            end
+                          end
+          CODE
+
+          it_behaves_like 'code with offense', <<-CODE
+                          class Foo
+                            def method; end
+                          end
+          CODE
+        end
+
+        context 'when method is private' do
+          it_behaves_like 'code without offense', <<-CODE
+                          class Foo
+                            private
+
+                            def bar
+                              puts 'baz'
+                            end
+                          end
+          CODE
+
+          it_behaves_like 'code without offense', <<-CODE
+                          class Foo
+                            private def bar
+                              puts 'baz'
+                            end
+                          end
+          CODE
+
+          it_behaves_like 'code without offense', <<-CODE
+                          class Foo
+                            private
+
+                            def bar; end
+                          end
+          CODE
+
+          it_behaves_like 'code without offense', <<-CODE
+                          class Foo
+                            private def bar; end
+                          end
+          CODE
+
+          context 'when required for non-public methods' do
+            let(:require_for_non_public_methods) { true }
+
+            it_behaves_like 'code with offense', <<-CODE
+                            class Foo
+                              private
+
+                              def bar
+                                puts 'baz'
+                              end
+                            end
+            CODE
+
+            it_behaves_like 'code with offense', <<-CODE
+                            class Foo
+                              private def bar
+                                puts 'baz'
+                              end
+                            end
+            CODE
+
+            it_behaves_like 'code with offense', <<-CODE
+                            class Foo
+                              private
+
+                              def bar; end
+                            end
+            CODE
+
+            it_behaves_like 'code with offense', <<-CODE
+                            class Foo
+                              private def bar; end
+                            end
+            CODE
+          end
+        end
+      end
+
+      context 'with documentation comment' do
+        context 'when method is public' do
+          it_behaves_like 'code without offense', <<-CODE
+                          class Foo
+                            # Documentation
+                            def bar
+                              puts 'baz'
+                            end
+                          end
+          CODE
+
+          it_behaves_like 'code without offense', <<-CODE
+                          class Foo
+                            # Documentation
+                            def bar; end
+                          end
+          CODE
+        end
+      end
+
+      context 'with both public and private methods' do
+        it_behaves_like 'code with offense', <<-CODE
+                        class Foo
+                          def bar
+                            puts 'baz'
+                          end
+
+                          private
+
+                          def baz
+                            puts 'baz'
+                          end
+                        end
+        CODE
+
+        it_behaves_like 'code without offense', <<-CODE
+                        class Foo
+                          # Documentation
+                          def bar
+                            puts 'baz'
+                          end
+
+                          private
+
+                          def baz
+                            puts 'baz'
+                          end
+                        end
+        CODE
+
+        context 'when required for non-public methods' do
+          let(:require_for_non_public_methods) { true }
+
+          it_behaves_like 'code with offense', <<-CODE
+                          class Foo
+                            # Documentation
+                            def bar
+                              puts 'baz'
+                            end
+
+                            private
+
+                            def baz
+                              puts 'baz'
+                            end
+                          end
+          CODE
+        end
+      end
     end
 
-    it 'does not register an offense for private non-empty method' do
-      inspect_source(cop,
-                     ['private',
-                      '',
-                      'def method',
-                      ' puts "method"',
-                      'end',
-                      '',
-                      'class MyClass',
-                      'end'])
-      expect(cop.offenses).to be_empty
+    context 'when declaring methods in a module' do
+      context 'without documentation comment' do
+        context 'wheh method is public' do
+          it_behaves_like 'code with offense', <<-CODE
+                           module Foo
+                             def bar
+                               puts 'baz'
+                             end
+                           end
+          CODE
+
+          it_behaves_like 'code with offense', <<-CODE
+                          module Foo
+                            def method; end
+                          end
+          CODE
+        end
+
+        context 'when method is private' do
+          it_behaves_like 'code without offense', <<-CODE
+                          module Foo
+                            private
+
+                            def bar
+                              puts 'baz'
+                            end
+                          end
+          CODE
+
+          it_behaves_like 'code without offense', <<-CODE
+                          module Foo
+                            private def bar
+                              puts 'baz'
+                            end
+                          end
+          CODE
+
+          it_behaves_like 'code without offense', <<-CODE
+                          module Foo
+                            private
+
+                            def bar; end
+                          end
+          CODE
+
+          it_behaves_like 'code without offense', <<-CODE
+                          module Foo
+                            private def bar; end
+                          end
+          CODE
+
+          context 'when required for non-public methods' do
+            let(:require_for_non_public_methods) { true }
+
+            it_behaves_like 'code with offense', <<-CODE
+                            module Foo
+                              private
+
+                              def bar
+                                puts 'baz'
+                              end
+                            end
+            CODE
+
+            it_behaves_like 'code with offense', <<-CODE
+                            module Foo
+                              private def bar
+                                puts 'baz'
+                              end
+                            end
+            CODE
+
+            it_behaves_like 'code with offense', <<-CODE
+                            module Foo
+                              private
+
+                              def bar; end
+                            end
+            CODE
+
+            it_behaves_like 'code with offense', <<-CODE
+                            module Foo
+                              private def bar; end
+                            end
+            CODE
+          end
+        end
+      end
+
+      context 'with documentation comment' do
+        context 'when method is public' do
+          it_behaves_like 'code without offense', <<-CODE
+                          module Foo
+                            # Documentation
+                            def bar
+                              puts 'baz'
+                            end
+                          end
+          CODE
+
+          it_behaves_like 'code without offense', <<-CODE
+                          module Foo
+                            # Documentation
+                            def bar; end
+                          end
+          CODE
+        end
+      end
+
+      context 'with both public and private methods' do
+        it_behaves_like 'code with offense', <<-CODE
+                        module Foo
+                          def bar
+                            puts 'baz'
+                          end
+
+                          private
+
+                          def baz
+                            puts 'baz'
+                          end
+                        end
+        CODE
+
+        it_behaves_like 'code without offense', <<-CODE
+                        module Foo
+                          # Documentation
+                          def bar
+                            puts 'baz'
+                          end
+
+                          private
+
+                          def baz
+                            puts 'baz'
+                          end
+                        end
+        CODE
+
+        context 'when required for non-public methods' do
+          let(:require_for_non_public_methods) { true }
+
+          it_behaves_like 'code with offense', <<-CODE
+                          module Foo
+                            # Documentation
+                            def bar
+                              puts 'baz'
+                            end
+
+                            private
+
+                            def baz
+                              puts 'baz'
+                            end
+                          end
+          CODE
+        end
+      end
     end
 
-    it 'does not register an offense for protected non-empty method' do
-      inspect_source(cop,
-                     ['protected',
-                      '',
-                      'def method',
-                      ' puts "method"',
-                      'end',
-                      '',
-                      'class MyClass',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
+    context 'when declaring methods for class instance' do
+      context 'without documentation comment' do
+        it_behaves_like 'code with offense', <<-CODE
+                        class Foo; end
 
-    it 'does not register an offense for private empty method' do
-      inspect_source(cop,
-                     ['private',
-                      '',
-                      'def method',
-                      'end',
-                      '',
-                      'class MyClass',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
+                        foo = Foo.new
 
-    it 'does not register an offense for private non-empty method' do
-      inspect_source(cop,
-                     ['private def method',
-                      ' puts "method"',
-                      'end',
-                      '',
-                      'class MyClass',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
+                        def foo.bar
+                          puts 'baz'
+                        end
+        CODE
 
-    it 'does not register an offense for protected non-empty method' do
-      inspect_source(cop,
-                     ['protected def method',
-                      ' puts "method"',
-                      'end',
-                      '',
-                      'class MyClass',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
+        it_behaves_like 'code with offense', <<-CODE
+                        class Foo; end
 
-    it 'does not register an offense for private empty method' do
-      inspect_source(cop,
-                     ['private def method',
-                      'end',
-                      '',
-                      'class MyClass',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
+                        foo = Foo.new
 
-    it 'registers an offense for combination of methods without
-     documentation' do
-      inspect_source(cop,
-                     ['def method',
-                      ' puts "method"',
-                      'end',
-                      '',
-                      'private',
-                      '',
-                      'def method',
-                      ' puts "method"',
-                      'end',
-                      '',
-                      'class MyClass',
-                      'end'])
-      expect(cop.offenses.size).to eq(1)
-    end
+                        def foo.bar; end
+        CODE
+      end
 
-    it 'does not register an offense for combination of methods with
-     documentation' do
-      inspect_source(cop,
-                     ['# documentation comment',
-                      'def method',
-                      ' puts "method"',
-                      'end',
-                      '',
-                      'private',
-                      '',
-                      'def method',
-                      ' puts "method"',
-                      'end',
-                      '',
-                      'class MyClass',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
-  end
+      context 'with documentation comment' do
+        it_behaves_like 'code without offense', <<-CODE
+                        class Foo; end
 
-  context 'declaring methods in a class' do
-    it 'registers an offense for non-empty method' do
-      inspect_source(cop,
-                     ['class MyClass',
-                      '  def method',
-                      '    puts "method"',
-                      '  end',
-                      'end'])
-      expect(cop.offenses.size).to eq(1)
-    end
+                        foo = Foo.new
 
-    it 'accepts non-empty method with documentation' do
-      inspect_source(cop,
-                     ['class MyClass',
-                      '  # method comment',
-                      '  def method',
-                      '    puts "method"',
-                      '  end',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
+                        # Documentation
+                        def foo.bar
+                          puts 'baz'
+                        end
+        CODE
 
-    it 'registers an offense for empty method' do
-      inspect_source(cop,
-                     ['class MyClass',
-                      '  def method',
-                      '  end',
-                      'end'])
-      expect(cop.offenses.size).to eq(1)
-    end
+        it_behaves_like 'code without offense', <<-CODE
+                        class Foo; end
 
-    it 'accepts empty method with documentation' do
-      inspect_source(cop,
-                     ['class MyClass',
-                      '  # method comment',
-                      '  def method',
-                      '  end',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
+                        foo = Foo.new
 
-    it 'does not register an offense for private non-empty method' do
-      inspect_source(cop,
-                     ['class MyClass',
-                      '  private',
-                      '',
-                      '  def method',
-                      '    puts "method"',
-                      '  end',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
+                        # Documentation
+                        def foo.bar; end
+        CODE
 
-    it 'does not register an offense for private non-empty method' do
-      inspect_source(cop,
-                     ['class MyClass',
-                      '  private def method',
-                      '    puts "method"',
-                      '  end',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
+        context 'when method is private' do
+          it_behaves_like 'code without offense', <<-CODE
+                          class Foo; end
 
-    it 'does not register an offense for private empty method' do
-      inspect_source(cop,
-                     ['class MyClass',
-                      '  private',
-                      '',
-                      '  def method',
-                      '  end',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
+                          foo = Foo.bar
 
-    it 'does not register an offense for private empty method' do
-      inspect_source(cop,
-                     ['class MyClass',
-                      '  private def method',
-                      '  end',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
+                          private
 
-    it 'registers an offense for combination of methods without
-     documentation' do
-      inspect_source(cop,
-                     ['class MyClass',
-                      '  def method',
-                      '    puts "method"',
-                      '  end',
-                      '',
-                      '  private',
-                      '',
-                      '  def method',
-                      '    puts "method"',
-                      '  end',
-                      'end'])
-      expect(cop.offenses.size).to eq(1)
-    end
+                          def foo.bar; end
+          CODE
 
-    it 'does not register an offense for combination of methods with
-     documentation' do
-      inspect_source(cop,
-                     ['class MyClass',
-                      '  # documentation comment',
-                      '  def method',
-                      '    puts "method"',
-                      '  end',
-                      '',
-                      '  private',
-                      '',
-                      '  def method',
-                      '    puts "method"',
-                      '  end',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
-  end
+          it_behaves_like 'code without offense', <<-CODE
+                          class Foo; end
 
-  context 'declaring methods in a module' do
-    it 'registers an offense for non-empty method' do
-      inspect_source(cop,
-                     ['module MyModule',
-                      '  def method',
-                      '    puts "method"',
-                      '  end',
-                      'end'])
-      expect(cop.offenses.size).to eq(1)
-    end
+                          foo = Foo.new
 
-    it 'accepts non-empty method with documentation' do
-      inspect_source(cop,
-                     ['module MyModule',
-                      '  # method comment',
-                      '  def method',
-                      '    puts "method"',
-                      '  end',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
+                          private
 
-    it 'registers an offense for empty method' do
-      inspect_source(cop,
-                     ['module MyModule',
-                      '  def method',
-                      '  end',
-                      'end'])
-      expect(cop.offenses.size).to eq(1)
-    end
+                          def foo.bar
+                            puts 'baz'
+                          end
+          CODE
 
-    it 'accepts empty method with documentation' do
-      inspect_source(cop,
-                     ['module MyModule',
-                      '  # method comment',
-                      '  def method',
-                      '  end',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
+          it_behaves_like 'code without offense', <<-CODE
+                          class Foo; end
 
-    it 'does not register an offense for private non-empty method' do
-      inspect_source(cop,
-                     ['module MyModule',
-                      '  private',
-                      '',
-                      '  def method',
-                      '    puts "method"',
-                      '  end',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
+                          foo = Foo.new
 
-    it 'does not register an offense for private non-empty method' do
-      inspect_source(cop,
-                     ['module MyModule',
-                      '  private def method',
-                      '    puts "method"',
-                      '  end',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
+                          private def foo.bar; end
+          CODE
 
-    it 'does not register an offense for private empty method' do
-      inspect_source(cop,
-                     ['module MyModule',
-                      '  private',
-                      '',
-                      '  def method',
-                      '  end',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
+          it_behaves_like 'code without offense', <<-CODE
+                          class Foo; end
 
-    it 'does not register an offense for private empty method' do
-      inspect_source(cop,
-                     ['module MyModule',
-                      '  private def method',
-                      '  end',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
+                          foo = Foo.new
 
-    it 'registers an offense for combination of methods without
-     documentation' do
-      inspect_source(cop,
-                     ['module MyModule',
-                      '  def method',
-                      '    puts "method"',
-                      '  end',
-                      '',
-                      '  private',
-                      '',
-                      '  def method',
-                      '    puts "method"',
-                      '  end',
-                      'end'])
-      expect(cop.offenses.size).to eq(1)
-    end
+                          private def foo.bar
+                            puts 'baz'
+                          end
+          CODE
 
-    it 'does not register an offense for combination of methods with
-     documentation' do
-      inspect_source(cop,
-                     ['module MyModule',
-                      '  # documentation comment',
-                      '  def method',
-                      '    puts "method"',
-                      '  end',
-                      '',
-                      '  private',
-                      '',
-                      '  def method',
-                      '    puts "method"',
-                      '  end',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
-  end
+          context 'when required for non-public methods' do
+            let(:require_for_non_public_methods) { true }
 
-  context 'singleton methods' do
-    it 'registers an offense for non-empty method' do
-      inspect_source(cop,
-                     ['class MyClass',
-                      'end',
-                      '',
-                      'my_class = MyClass.new',
-                      '',
-                      'def my_class.method',
-                      ' puts "method"',
-                      'end'])
-      expect(cop.offenses.size).to eq(1)
-    end
+            it_behaves_like 'code with offense', <<-CODE
+                            class Foo; end
 
-    it 'registers an offense for empty method' do
-      inspect_source(cop,
-                     ['class MyClass',
-                      'end',
-                      '',
-                      'my_class = MyClass.new',
-                      '',
-                      'def my_class.method',
-                      'end'])
-      expect(cop.offenses.size).to eq(1)
-    end
+                            foo = Foo.bar
 
-    it 'accepts non-empty method with documentation' do
-      inspect_source(cop,
-                     ['class MyClass',
-                      'end',
-                      '',
-                      'my_class = MyClass.new',
-                      '',
-                      '# documentation comment',
-                      'def my_class.method',
-                      ' puts "method"',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
+                            private
 
-    it 'accepts empty method with documentation' do
-      inspect_source(cop,
-                     ['class MyClass',
-                      'end',
-                      '',
-                      'my_class = MyClass.new',
-                      '',
-                      '# documentation comment',
-                      'def my_class.method',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
+                            def foo.bar; end
+            CODE
 
-    it 'does not register an offense for private empty method' do
-      inspect_source(cop,
-                     ['class MyClass',
-                      'end',
-                      '',
-                      'my_class = MyClass.new',
-                      '',
-                      'private',
-                      '',
-                      'def my_class.method',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
+            it_behaves_like 'code with offense', <<-CODE
+                            class Foo; end
 
-    it 'does not register an offense for private non-empty method' do
-      inspect_source(cop,
-                     ['class MyClass',
-                      'end',
-                      '',
-                      'my_class = MyClass.new',
-                      '',
-                      'private',
-                      '',
-                      'def my_class.method',
-                      '  puts "method"',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
+                            foo = Foo.new
 
-    it 'does not register an offense for private empty method' do
-      inspect_source(cop,
-                     ['class MyClass',
-                      'end',
-                      '',
-                      'my_class = MyClass.new',
-                      '',
-                      'private def my_class.method',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
+                            private
 
-    it 'does not register an offense for private non-empty method' do
-      inspect_source(cop,
-                     ['class MyClass',
-                      'end',
-                      '',
-                      'my_class = MyClass.new',
-                      '',
-                      'private def my_class.method',
-                      '  puts "method"',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
+                            def foo.bar
+                              puts 'baz'
+                            end
+            CODE
 
-    it 'registers an offense for combination of methods without
-     documentation' do
-      inspect_source(cop,
-                     ['class MyClass',
-                      'end',
-                      '',
-                      'my_class = MyClass.new',
-                      '',
-                      'def my_class.method',
-                      ' puts "method"',
-                      'end',
-                      '',
-                      'private',
-                      '',
-                      'def my_class.method',
-                      ' puts "method"',
-                      'end'])
-      expect(cop.offenses.size).to eq(1)
-    end
+            it_behaves_like 'code with offense', <<-CODE
+                            class Foo; end
 
-    it 'does not register an offense for combination of methods with
-     documentation' do
-      inspect_source(cop,
-                     ['class MyClass',
-                      'end',
-                      '',
-                      'my_class = MyClass.new',
-                      '',
-                      '# documentation comment',
-                      'def my_class.method',
-                      ' puts "method"',
-                      'end',
-                      '',
-                      'private',
-                      '',
-                      'def my_class.method',
-                      ' puts "method"',
-                      'end'])
-      expect(cop.offenses).to be_empty
+                            foo = Foo.new
+
+                            private def foo.bar; end
+            CODE
+
+            it_behaves_like 'code with offense', <<-CODE
+                            class Foo; end
+
+                            foo = Foo.new
+
+                            private def foo.bar
+                              puts 'baz'
+                            end
+            CODE
+          end
+        end
+
+        context 'with both public and private methods' do
+          it_behaves_like 'code with offense', <<-CODE
+                          class Foo; end
+
+                          foo = Foo.new
+
+                          def foo.bar
+                            puts 'baz'
+                          end
+
+                          private
+
+                          def foo.baz
+                            puts 'baz'
+                          end
+          CODE
+
+          it_behaves_like 'code without offense', <<-CODE
+                          class Foo; end
+
+                          foo = Foo.new
+
+                          # Documentation
+                          def foo.bar
+                            puts 'baz'
+                          end
+
+                          private
+
+                          def foo.baz
+                            puts 'baz'
+                          end
+          CODE
+
+          context 'when required for non-public methods' do
+            let(:require_for_non_public_methods) { true }
+
+            it_behaves_like 'code with offense', <<-CODE
+                          class Foo; end
+
+                          foo = Foo.new
+
+                          # Documentation
+                          def foo.bar
+                            puts 'baz'
+                          end
+
+                          private
+
+                          def foo.baz
+                            puts 'baz'
+                          end
+            CODE
+          end
+        end
+      end
     end
   end
 end
