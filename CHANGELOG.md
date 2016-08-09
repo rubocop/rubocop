@@ -17,6 +17,7 @@
 * [#3372](https://github.com/bbatsov/rubocop/pull/3372): Fix RuboCop crash with empty brackets in `Style/Next` cop. ([@pocke][])
 * [#3358](https://github.com/bbatsov/rubocop/issues/3358): Make `Style/MethodMissing` cop aware of class scope. ([@drenmi][])
 * [#3342](https://github.com/bbatsov/rubocop/issues/3342): Fix error in `Lint/ShadowedException` cop if last rescue does not have parameter. ([@soutaro][])
+* [#3380](https://github.com/bbatsov/rubocop/issues/3380): Fix false positive in `Style/TrailingUnderscoreVariable` cop. ([@drenmi][])
 
 ### Changes
 

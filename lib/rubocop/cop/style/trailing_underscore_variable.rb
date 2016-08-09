@@ -26,7 +26,9 @@ module RuboCop
         UNDERSCORE = '_'.freeze
 
         def on_masgn(node)
-          return unless (range = unneeded_range(node))
+          range = unneeded_range(node)
+
+          return unless range
 
           good_code = node.source
           offset = range.begin_pos - node.source_range.begin_pos
@@ -36,8 +38,9 @@ module RuboCop
         end
 
         def autocorrect(node)
+          range = unneeded_range(node)
+
           lambda do |corrector|
-            range = unneeded_range(node)
             corrector.remove(range) if range
           end
         end
@@ -46,7 +49,8 @@ module RuboCop
 
         def find_first_offense(variables)
           first_offense = find_first_possible_offense(variables.reverse)
-          return if first_offense.nil?
+
+          return unless first_offense
           return if splat_variable_before?(first_offense, variables)
 
           first_offense
@@ -67,10 +71,15 @@ module RuboCop
         end
 
         def splat_variable_before?(first_offense, variables)
-          first_offense_index = variables.index(first_offense)
-          0.upto(first_offense_index - 1).any? do |index|
-            variables[index].splat_type?
-          end
+          # Account for cases like `_, *rest, _`, where we would otherwise get
+          # the index of the first underscore.
+          first_offense_index = reverse_index(variables, first_offense)
+
+          variables[0...first_offense_index].any?(&:splat_type?)
+        end
+
+        def reverse_index(collection, item)
+          collection.size - 1 - collection.reverse.index(item)
         end
 
         def allow_named_underscore_variables

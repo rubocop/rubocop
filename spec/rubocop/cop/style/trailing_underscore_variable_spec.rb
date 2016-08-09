@@ -86,6 +86,13 @@ describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
       expect(cop.messages).to be_empty
     end
 
+    it 'does not register an offense for an underscore preceded by a ' \
+       'splat variable and another underscore' do
+      inspect_source(cop, '_, *b, _ = *foo')
+
+      expect(cop.messages).to be_empty
+    end
+
     it 'does not register an offense for multiple underscores preceded by a ' \
        'splat variable' do
       inspect_source(cop, 'a, *b, _, _ = foo()')
