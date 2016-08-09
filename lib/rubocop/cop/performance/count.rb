@@ -39,13 +39,15 @@ module RuboCop
       #
       #   Model.where(id: [1, 2, 3]).to_a.count { |m| m.method == true }
       class Count < Cop
+        include SafeMode
+
         MSG = 'Use `count` instead of `%s...%s`.'.freeze
 
         SELECTORS = [:reject, :select].freeze
         COUNTERS = [:count, :length, :size].freeze
 
         def on_send(node)
-          return unless should_run?
+          return if rails_safe_mode?
           selector, selector_loc, params, counter = parse(node)
           return unless COUNTERS.include?(counter)
           return unless SELECTORS.include?(selector)
@@ -75,12 +77,6 @@ module RuboCop
         end
 
         private
-
-        def should_run?
-          !(cop_config['SafeMode'.freeze] ||
-            config['Rails'.freeze] &&
-            config['Rails'.freeze]['Enabled'.freeze])
-        end
 
         def parse(node)
           left, counter = *node
