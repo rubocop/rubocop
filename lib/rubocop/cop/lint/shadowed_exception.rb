@@ -8,24 +8,25 @@ module RuboCop
       # less specific exception being rescued before a more specific
       # exception is rescued.
       #
-      # @example
-      # # bad
-      # begin
-      #   something
-      # rescue Exception
-      #   handle_exception
-      # rescue StandardError
-      #   handle_standard_error
-      # end
+      #   @example
       #
-      # #good
-      # begin
-      #   something
-      # rescue StandardError
-      #   handle_standard_error
-      # rescue Exception
-      #   handle_exception
-      # end
+      #   # bad
+      #   begin
+      #     something
+      #   rescue Exception
+      #     handle_exception
+      #   rescue StandardError
+      #     handle_standard_error
+      #   end
+      #
+      #   # good
+      #   begin
+      #     something
+      #   rescue StandardError
+      #     handle_standard_error
+      #   rescue Exception
+      #     handle_exception
+      #   end
       class ShadowedException < Cop
         MSG = 'Do not shadow rescued Exceptions'.freeze
 
