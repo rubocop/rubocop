@@ -159,7 +159,7 @@ module RuboCop
       def process_regexp_named_captures(node)
         regexp_node, rhs_node = *node
 
-        regexp_string = regexp_node.children[0].children[0]
+        regexp_string = regexp_node.children[0].children[0] || ''
         regexp = Regexp.new(regexp_string)
         variable_names = regexp.named_captures.keys
 

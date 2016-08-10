@@ -23,5 +23,13 @@ describe RuboCop::Cop::VariableForce do
         end
       end
     end
+
+    context 'when processing an empty regex' do
+      let(:node) { s(:match_with_lvasgn, s(:regexp, s(:regopt)), s(:str)) }
+
+      it 'does not raise an error' do
+        expect { force.process_node(node) }.not_to raise_error
+      end
+    end
   end
 end
