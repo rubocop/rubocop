@@ -9,19 +9,13 @@ module RuboCop
       include ConfigurableEnforcedStyle
 
       def check_brace_layout(node)
-        return unless node.loc.begin # Ignore implicit literals.
-        return if children(node).empty? # Ignore empty literals.
-        return if node.single_line? # Ignore single-line literals.
+        return if ignored_literal?(node)
 
         # If the last node is or contains a conflicting HEREDOC, we don't want
         # to adjust the brace layout because this will result in invalid code.
-        return if last_line_heredoc?(children(node).last)
+        return if last_line_heredoc?(node.children.last)
 
-        case style
-        when :symmetrical then handle_symmetrical(node)
-        when :new_line then handle_new_line(node)
-        when :same_line then handle_same_line(node)
-        end
+        check(node)
       end
 
       def autocorrect(node)
@@ -42,6 +36,50 @@ module RuboCop
 
       private
 
+      def check(node)
+        case style
+        when :symmetrical then check_symmetrical(node)
+        when :new_line then check_new_line(node)
+        when :same_line then check_same_line(node)
+        end
+      end
+
+      def check_new_line(node)
+        return unless closing_brace_on_same_line?(node)
+
+        add_offense(node, :end, self.class::ALWAYS_NEW_LINE_MESSAGE)
+      end
+
+      def check_same_line(node)
+        return if closing_brace_on_same_line?(node)
+
+        add_offense(node, :end, self.class::ALWAYS_SAME_LINE_MESSAGE)
+      end
+
+      def check_symmetrical(node)
+        if opening_brace_on_same_line?(node)
+          return if closing_brace_on_same_line?(node)
+
+          add_offense(node, :end, self.class::SAME_LINE_MESSAGE)
+        else
+          return unless closing_brace_on_same_line?(node)
+
+          add_offense(node, :end, self.class::NEW_LINE_MESSAGE)
+        end
+      end
+
+      def ignored_literal?(node)
+        implicit_literal?(node) || empty_literal?(node) || node.single_line?
+      end
+
+      def implicit_literal?(node)
+        !node.loc.begin
+      end
+
+      def empty_literal?(node)
+        node.children.empty?
+      end
+
       def last_element_range_with_trailing_comma(node)
         trailing_comma_range = last_element_trailing_comma_range(node)
         if trailing_comma_range
@@ -55,30 +93,6 @@ module RuboCop
         range = range_with_surrounding_space(children(node).last.source_range,
                                              :right).end.resize(1)
         range.source == ',' ? range : nil
-      end
-
-      def handle_new_line(node)
-        return unless closing_brace_on_same_line?(node)
-
-        add_offense(node, :end, self.class::ALWAYS_NEW_LINE_MESSAGE)
-      end
-
-      def handle_same_line(node)
-        return if closing_brace_on_same_line?(node)
-
-        add_offense(node, :end, self.class::ALWAYS_SAME_LINE_MESSAGE)
-      end
-
-      def handle_symmetrical(node)
-        if opening_brace_on_same_line?(node)
-          return if closing_brace_on_same_line?(node)
-
-          add_offense(node, :end, self.class::SAME_LINE_MESSAGE)
-        else
-          return unless closing_brace_on_same_line?(node)
-
-          add_offense(node, :end, self.class::NEW_LINE_MESSAGE)
-        end
       end
 
       def children(node)
@@ -124,15 +138,13 @@ module RuboCop
       def last_line_heredoc?(node, parent = nil)
         parent ||= node
 
-        return false unless node.respond_to?(:loc)
-
-        if node.loc.respond_to?(:heredoc_end) &&
+        if node.respond_to?(:loc) &&
+           node.loc.respond_to?(:heredoc_end) &&
            node.loc.heredoc_end.last_line >= parent.loc.last_line
           return true
         end
 
         return false unless node.respond_to?(:children)
-        return false if node.children.empty?
 
         node.children.any? { |child| last_line_heredoc?(child, parent) }
       end

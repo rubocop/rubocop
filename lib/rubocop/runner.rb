@@ -108,10 +108,7 @@ module RuboCop
     end
 
     def add_unneeded_disables(file, offenses, source)
-      if source.disabled_line_ranges.any? &&
-         # Don't check unneeded disable if --only or --except option is
-         # given, because these options override configuration.
-         (@options[:except] || []).empty? && (@options[:only] || []).empty?
+      if check_for_unneded_disables?(source)
         config = @config_store.for(file)
         if config.cop_enabled?(Cop::Lint::UnneededDisable)
           cop = Cop::Lint::UnneededDisable.new(config, @options)
@@ -125,6 +122,14 @@ module RuboCop
       end
 
       offenses.sort.reject(&:disabled?).freeze
+    end
+
+    def check_for_unneded_disables?(source)
+      !source.disabled_line_ranges.empty? && !filtered_run?
+    end
+
+    def filtered_run?
+      @options[:except] || @options[:only]
     end
 
     def autocorrect_unneeded_disables(source, cop)

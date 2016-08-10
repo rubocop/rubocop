@@ -29,30 +29,43 @@ module RuboCop
         MSG = 'Do not use parallel assignment.'.freeze
 
         def on_masgn(node)
-          left, right = *node
-          left_elements = *left
-          right_elements = [*right].compact # edge case for one constant
+          lhs, rhs = *node
+          lhs_elements = *lhs
+          rhs_elements = [*rhs].compact # edge case for one constant
 
-          # only complain when the number of variables matches
-          return if left_elements.size != right_elements.size
-
-          # account for edge cases using one variable with a comma
-          return if left_elements.size == 1
-
-          # account for edge case of Constant::CONSTANT
-          return unless right.array_type?
-
-          # allow mass assignment as the return of a method call
-          return if right.block_type? || right.send_type?
-
-          # allow mass assignment when using splat
-          return if (left_elements + right_elements).any?(&:splat_type?)
-
-          order = find_valid_order(left_elements, right_elements)
-          # For `a, b = b, a` or similar, there is no valid order
-          return if order.nil?
+          return if allowed_lhs?(lhs) || allowed_rhs?(rhs) ||
+                    allowed_masign?(lhs_elements, rhs_elements)
 
           add_offense(node, :expression)
+        end
+
+        private
+
+        def allowed_masign?(lhs_elements, rhs_elements)
+          lhs_elements.size != rhs_elements.size ||
+            !find_valid_order(lhs_elements, rhs_elements)
+        end
+
+        def allowed_lhs?(node)
+          elements = *node
+
+          # Account for edge cases using one variable with a comma
+          # E.g.: `foo, = *bar`
+          elements.one? || elements.any?(&:splat_type?)
+        end
+
+        def allowed_rhs?(node)
+          # Edge case for one constant
+          elements = [*node].compact
+
+          # Account for edge case of `Constant::CONSTANT`
+          !node.array_type? ||
+            return_of_method_call?(node) ||
+            elements.any?(&:splat_type?)
+        end
+
+        def return_of_method_call?(node)
+          node.block_type? || node.send_type?
         end
 
         def autocorrect(node)
@@ -75,8 +88,6 @@ module RuboCop
                               assignment_corrector.correction)
           end
         end
-
-        private
 
         def find_valid_order(left_elements, right_elements)
           # arrange left_elements in an order such that no corresponding right

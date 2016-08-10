@@ -14,21 +14,31 @@ module RuboCop
         ASSIGNMENT_TYPES = [:lvasgn, :casgn, :cvasgn,
                             :gvasgn, :ivasgn, :masgn].freeze
 
+        def on_if(node)
+          return unless eligible_node?(node)
+
+          add_offense(node, :keyword, message(node.loc.keyword.source))
+        end
+
+        private
+
+        def autocorrect(node)
+          ->(corrector) { corrector.replace(node.source_range, oneline(node)) }
+        end
+
+        def eligible_node?(node)
+          !non_eligible_if?(node) && !node.chained? &&
+            !nested_conditional?(node) && single_line_as_modifier?(node)
+        end
+
+        def non_eligible_if?(node)
+          ternary?(node) || modifier_if?(node) ||
+            elsif?(node) || if_else?(node)
+        end
+
         def message(keyword)
           "Favor modifier `#{keyword}` usage when having a single-line body." \
           ' Another good alternative is the usage of control flow `&&`/`||`.'
-        end
-
-        def on_if(node)
-          # discard ternary ops, if/else and modifier if/unless nodes
-          return if ternary?(node)
-          return if modifier_if?(node)
-          return if elsif?(node)
-          return if if_else?(node)
-          return if node.chained?
-          return unless fit_within_line_as_modifier_form?(node)
-          return if nested_conditional?(node)
-          add_offense(node, :keyword, message(node.loc.keyword.source))
         end
 
         def parenthesize?(node)
@@ -50,12 +60,6 @@ module RuboCop
           source = node.source_range.source_line[0...limit.loc.column]
           source =~ /\s*\(\s*$/
         end
-
-        def autocorrect(node)
-          ->(corrector) { corrector.replace(node.source_range, oneline(node)) }
-        end
-
-        private
 
         # returns false if the then or else children are conditionals
         def nested_conditional?(node)

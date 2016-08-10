@@ -53,17 +53,35 @@ module RuboCop
 
         def check_token_set(index)
           predecessor, operator, successor = processed_source.tokens[index, 3]
-          return unless successor
-          return unless CONCAT_TOKEN_TYPES.include?(operator.type)
-          return unless standard_string_literal?(predecessor)
-          return unless standard_string_literal?(successor)
+
+          return unless eligible_successor?(successor) &&
+                        eligible_operator?(operator) &&
+                        eligible_predecessor?(predecessor)
+
           return if operator.pos.line == successor.pos.line
 
           next_successor = token_after_last_string(successor, index)
-          return if next_successor &&
-                    HIGH_PRECEDENCE_OP_TOKEN_TYPES.include?(next_successor.type)
+
+          return unless eligible_next_successor?(next_successor)
 
           add_offense(operator.pos, operator.pos)
+        end
+
+        def eligible_successor?(successor)
+          successor && standard_string_literal?(successor)
+        end
+
+        def eligible_operator?(operator)
+          CONCAT_TOKEN_TYPES.include?(operator.type)
+        end
+
+        def eligible_next_successor?(next_successor)
+          !(next_successor &&
+            HIGH_PRECEDENCE_OP_TOKEN_TYPES.include?(next_successor.type))
+        end
+
+        def eligible_predecessor?(predecessor)
+          standard_string_literal?(predecessor)
         end
 
         def token_after_last_string(successor, base_index)

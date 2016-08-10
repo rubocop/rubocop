@@ -24,6 +24,8 @@ module RuboCop
       # own meaning. Correcting ActiveRecord methods with this cop should be
       # considered unsafe.
       class Detect < Cop
+        include SafeMode
+
         MSG = 'Use `%s` instead of `%s.%s`.'.freeze
         REVERSE_MSG = 'Use `reverse.%s` instead of `%s.%s`.'.freeze
 
@@ -31,7 +33,7 @@ module RuboCop
         DANGEROUS_METHODS = [:first, :last].freeze
 
         def on_send(node)
-          return unless should_run?
+          return if rails_safe_mode?
           receiver, second_method, *args = *node
           return if accept_second_call?(receiver, second_method, args)
 
@@ -61,12 +63,6 @@ module RuboCop
         end
 
         private
-
-        def should_run?
-          !(cop_config['SafeMode'.freeze] ||
-            config['Rails'.freeze] &&
-            config['Rails'.freeze]['Enabled'.freeze])
-        end
 
         def accept_second_call?(receiver, method, args)
           !receiver ||

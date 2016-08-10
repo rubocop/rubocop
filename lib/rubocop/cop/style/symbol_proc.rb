@@ -118,21 +118,39 @@ module RuboCop
         end
 
         def can_shorten?(block_args, block_body)
-          # something { |x, y| ... }
-          return false unless block_args.children.one?
-          return false if non_shortenable_args?(block_args)
-          return false unless block_body && block_body.send_type?
+          return false unless shortenable_args?(block_args) &&
+                              shortenable_body?(block_body)
 
-          receiver, _method_name, args = *block_body
+          argument_matches_receiver?(block_args, block_body)
+        end
 
-          # method in block must be invoked on a lvar without args
-          return false if args
-          return false unless receiver && receiver.lvar_type?
+        # TODO: This might be clearer as a node matcher with unification
+        def argument_matches_receiver?(block_args, block_body)
+          receiver, = *block_body
 
           block_arg_name, = *block_args.children.first
           receiver_name, = *receiver
 
           block_arg_name == receiver_name
+        end
+
+        # The block body must have a single send without arguments to an
+        # lvar type.
+        # E.g.: `foo { |bar| bar.baz }`
+        def shortenable_body?(block_body)
+          return false unless block_body && block_body.send_type?
+
+          receiver, _, args = *block_body
+
+          return false if args
+
+          receiver && receiver.lvar_type?
+        end
+
+        # The block must have a single, shortenable argument.
+        # E.g.: `foo { |bar| ... }`
+        def shortenable_args?(block_args)
+          block_args.children.one? && !non_shortenable_args?(block_args)
         end
 
         def super?(node)
