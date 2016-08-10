@@ -557,6 +557,10 @@ Style/NumericPredicate:
                  Checks for the use of predicate- or comparison methods for
                  numeric comparisons.
   StyleGuide: '#predicate-methods'
+  # This will change to a new a method call which isn't guaranteed to be on the
+  # object. Switching these methods has to be done with knowledge of the types
+  # of the variables which rubocop doesn't have.
+  Autocorrect: false
   Enabled: true
 
 Style/OneLineConditional:
@@ -1311,6 +1315,10 @@ Performance/DoubleStartEndWith:
 Performance/EndWith:
   Description: 'Use `end_with?` instead of a regex match anchored to the end of a string.'
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#stringmatch-vs-stringstart_withstringend_with-code-start-code-end'
+  # This will change to a new a method call which isn't guaranteed to be on the
+  # object. Switching these methods has to be done with knowledge of the types
+  # of the variables which rubocop doesn't have.
+  Autocorrect: false
   Enabled: true
 
 Performance/FixedSize:
@@ -1393,6 +1401,10 @@ Performance/SortWithBlock:
 Performance/StartWith:
   Description: 'Use `start_with?` instead of a regex match anchored to the beginning of a string.'
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#stringmatch-vs-stringstart_withstringend_with-code-start-code-end'
+  # This will change to a new a method call which isn't guaranteed to be on the
+  # object. Switching these methods has to be done with knowledge of the types
+  # of the variables which rubocop doesn't have.
+  Autocorrect: false
   Enabled: true
 
 Performance/StringReplacement:
