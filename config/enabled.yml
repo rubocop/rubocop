@@ -912,6 +912,10 @@ Style/VariableName:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#snake-case-symbols-methods-vars'
   Enabled: true
 
+Style/VariableNumber:
+  Description: 'Use the configured style when numbering variables.'
+  Enabled: true
+
 Style/WhenThen:
   Description: 'Use when x then ... for one-line cases.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#one-line-cases'
