@@ -61,17 +61,16 @@ module RuboCop
           range = expect_space ? brace : space_range(brace)
           add_offense(range, range,
                       message(brace, is_empty_braces, expect_space)) do
-            if expect_space
-              if t1.text == t2.text
-                ambiguous_style_detected(:no_space, :compact)
-              else
-                unexpected_style_detected(:no_space)
-              end
-            elsif t1.text == t2.text
-              unexpected_style_detected(:space)
-            else
-              ambiguous_style_detected(:space, :compact)
-            end
+            style = expect_space ? :no_space : :space
+            ambiguous_or_unexpected_style_detected(style, t1.text == t2.text)
+          end
+        end
+
+        def ambiguous_or_unexpected_style_detected(style, is_match)
+          if is_match
+            ambiguous_style_detected(style, :compact)
+          else
+            unexpected_style_detected(style)
           end
         end
 
