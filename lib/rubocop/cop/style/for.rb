@@ -32,15 +32,21 @@ module RuboCop
           return unless method_name == :each && args.empty?
 
           if style == :for
-            end_pos = method.source_range.end_pos
-            range = Parser::Source::Range.new(processed_source.buffer,
-                                              end_pos - EACH_LENGTH,
-                                              end_pos)
-            add_offense(range, range, 'Prefer `for` over `each`.') do
-              opposite_style_detected
-            end
+            incorrect_style_detected(method)
           else
             correct_style_detected
+          end
+        end
+
+        private
+
+        def incorrect_style_detected(method)
+          end_pos = method.source_range.end_pos
+          range = Parser::Source::Range.new(processed_source.buffer,
+                                            end_pos - EACH_LENGTH,
+                                            end_pos)
+          add_offense(range, range, 'Prefer `for` over `each`.') do
+            opposite_style_detected
           end
         end
       end
