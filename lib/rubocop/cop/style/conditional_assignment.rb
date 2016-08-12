@@ -32,7 +32,7 @@ module RuboCop
           branch.begin_type? ? [*branch].last : branch
         end
 
-        def lhs(node)
+        def lhs(node) # rubocop:disable Metrics/MethodLength
           case node.type
           when :send
             lhs_for_send(node)
