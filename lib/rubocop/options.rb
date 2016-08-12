@@ -127,7 +127,7 @@ module RuboCop
       end
     end
 
-    def add_boolean_flags(opts)
+    def add_boolean_flags(opts) # rubocop:disable Metrics/MethodLength
       option(opts, '-F', '--fail-fast')
       option(opts, '-C', '--cache FLAG')
       option(opts, '-d', '--debug')
