@@ -73,20 +73,34 @@ module RuboCop
         def autocorrect(node)
           return if correction_would_break_code?(node)
 
+          if node.loc.begin.is?('{')
+            replace_braces_with_do_end(node.loc)
+          else
+            replace_do_end_with_braces(node.loc)
+          end
+        end
+
+        def replace_braces_with_do_end(loc)
+          b = loc.begin
+          e = loc.end
+
           lambda do |corrector|
-            b = node.loc.begin
-            e = node.loc.end
-            if b.is?('{')
-              corrector.insert_before(b, ' ') unless whitespace_before?(b)
-              corrector.insert_before(e, ' ') unless whitespace_before?(e)
-              corrector.insert_after(b, ' ') unless whitespace_after?(b)
-              corrector.replace(b, 'do')
-              corrector.replace(e, 'end')
-            else
-              corrector.insert_after(b, ' ') unless whitespace_after?(b, 2)
-              corrector.replace(b, '{')
-              corrector.replace(e, '}')
-            end
+            corrector.insert_before(b, ' ') unless whitespace_before?(b)
+            corrector.insert_before(e, ' ') unless whitespace_before?(e)
+            corrector.insert_after(b, ' ') unless whitespace_after?(b)
+            corrector.replace(b, 'do')
+            corrector.replace(e, 'end')
+          end
+        end
+
+        def replace_do_end_with_braces(loc)
+          b = loc.begin
+          e = loc.end
+
+          lambda do |corrector|
+            corrector.insert_after(b, ' ') unless whitespace_after?(b, 2)
+            corrector.replace(b, '{')
+            corrector.replace(e, '}')
           end
         end
 
