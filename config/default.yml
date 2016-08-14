@@ -1219,6 +1219,10 @@ Rails/HasAndBelongsToMany:
   Include:
     - app/models/**/*.rb
 
+Rails/NotNullColumn:
+  Include:
+    - db/migrate/*.rb
+
 Rails/Output:
   Include:
     - app/**/*.rb
