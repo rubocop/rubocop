@@ -1453,6 +1453,10 @@ Rails/RequestReferer:
   Description: 'Use consistent syntax for request.referer.'
   Enabled: true
 
+Rails/SafeNavigation:
+  Description: "Use Ruby's safe navigation operator (`&.`) instead of `try!`"
+  Enabled: true
+
 Rails/ScopeArgs:
   Description: 'Checks the arguments of ActiveRecord scopes.'
   Enabled: true
