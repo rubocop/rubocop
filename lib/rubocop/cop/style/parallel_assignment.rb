@@ -74,18 +74,20 @@ module RuboCop
             left_elements = *left
             right_elements = [*right].compact
             order = find_valid_order(left_elements, right_elements)
+            correction = assignment_corrector(node, order)
 
-            assignment_corrector =
-              if modifier_statement?(node.parent)
-                ModifierCorrector.new(node, config, order)
-              elsif rescue_modifier?(node.parent)
-                RescueCorrector.new(node, config, order)
-              else
-                GenericCorrector.new(node, config, order)
-              end
+            corrector.replace(correction.correction_range,
+                              correction.correction)
+          end
+        end
 
-            corrector.replace(assignment_corrector.correction_range,
-                              assignment_corrector.correction)
+        def assignment_corrector(node, order)
+          if modifier_statement?(node.parent)
+            ModifierCorrector.new(node, config, order)
+          elsif rescue_modifier?(node.parent)
+            RescueCorrector.new(node, config, order)
+          else
+            GenericCorrector.new(node, config, order)
           end
         end
 

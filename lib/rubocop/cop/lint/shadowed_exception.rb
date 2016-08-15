@@ -79,20 +79,7 @@ module RuboCop
             return !(group.size == 2 && group.include?(NilClass))
           end
 
-          group.any? do |exception|
-            higher_exception = false
-            group.each_with_index do |_e, i|
-              higher_exception ||= begin
-                                     if group[i].nil? || exception.nil?
-                                       false
-                                     else
-                                       group[i] < exception
-                                     end
-                                   end
-            end
-
-            higher_exception
-          end
+          group.combination(2).any? { |a, b| a && b && a <=> b }
         end
 
         def evaluate_exceptions(rescue_group)

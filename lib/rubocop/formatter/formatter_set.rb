@@ -47,15 +47,6 @@ module RuboCop
       end
 
       def add_formatter(formatter_type, output_path = nil)
-        formatter_class = case formatter_type
-                          when Class
-                            formatter_type
-                          when /\A[A-Z]/
-                            custom_formatter_class(formatter_type)
-                          else
-                            builtin_formatter_class(formatter_type)
-                          end
-
         if output_path
           dir_path = File.dirname(output_path)
           FileUtils.mkdir_p(dir_path) unless File.exist?(dir_path)
@@ -64,7 +55,7 @@ module RuboCop
           output = $stdout
         end
 
-        self << formatter_class.new(output, @options)
+        self << formatter_class(formatter_type).new(output, @options)
       end
 
       def close_output_files
@@ -74,6 +65,17 @@ module RuboCop
       end
 
       private
+
+      def formatter_class(formatter_type)
+        case formatter_type
+        when Class
+          formatter_type
+        when /\A[A-Z]/
+          custom_formatter_class(formatter_type)
+        else
+          builtin_formatter_class(formatter_type)
+        end
+      end
 
       def builtin_formatter_class(specified_key)
         matching_keys = BUILTIN_FORMATTERS_FOR_KEYS.keys.select do |key|

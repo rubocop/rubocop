@@ -21,15 +21,6 @@ module RuboCop
     private
 
     def serialize_offense(offense)
-      # JSON.dump will fail if the offense message contains text which is not
-      # valid UTF-8
-      message = offense.message
-      message = if message.respond_to?(:scrub)
-                  message.scrub
-                else
-                  message.chars.select(&:valid_encoding?).join
-                end
-
       {
         # Calling #to_s here ensures that the serialization works when using
         # other json serializers such as Oj. Some of these gems do not call
@@ -39,10 +30,21 @@ module RuboCop
           begin_pos: offense.location.begin_pos,
           end_pos: offense.location.end_pos
         },
-        message:  message,
+        message:  message(offense),
         cop_name: offense.cop_name,
         status:   offense.status
       }
+    end
+
+    def message(offense)
+      # JSON.dump will fail if the offense message contains text which is not
+      # valid UTF-8
+      message = offense.message
+      if message.respond_to?(:scrub)
+        message.scrub
+      else
+        message.chars.select(&:valid_encoding?).join
+      end
     end
 
     # Restore an offense object loaded from a JSON file.

@@ -64,19 +64,7 @@ module RuboCop
 
             @local = {}
 
-            scan(@body_node) do |node|
-              case node.type
-              when :masgn
-                process_multiple_assignment(node)
-              when :or_asgn, :and_asgn
-                process_logical_operator_assignment(node)
-              when :op_asgn
-                process_binary_operator_assignment(node)
-              when *ASSIGNMENT_TYPES
-                _, rhs_node = *node
-                process_assignment(node, rhs_node) if rhs_node
-              end
-            end
+            scan(@body_node) { |node| process_assignment_node(node) }
 
             @local[variable_name]
           end
@@ -88,6 +76,20 @@ module RuboCop
               node.each_child_node do |child_node|
                 scan(child_node, &block)
               end
+            end
+          end
+
+          def process_assignment_node(node)
+            case node.type
+            when :masgn
+              process_multiple_assignment(node)
+            when :or_asgn, :and_asgn
+              process_logical_operator_assignment(node)
+            when :op_asgn
+              process_binary_operator_assignment(node)
+            when *ASSIGNMENT_TYPES
+              _, rhs_node = *node
+              process_assignment(node, rhs_node) if rhs_node
             end
           end
 

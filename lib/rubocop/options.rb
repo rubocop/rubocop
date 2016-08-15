@@ -127,7 +127,7 @@ module RuboCop
       end
     end
 
-    def add_boolean_flags(opts)
+    def add_boolean_flags(opts) # rubocop:disable Metrics/MethodLength
       option(opts, '-F', '--fail-fast')
       option(opts, '-C', '--cache FLAG')
       option(opts, '-d', '--debug')
@@ -192,7 +192,7 @@ module RuboCop
       @options = options
     end
 
-    def validate_compatibility
+    def validate_compatibility # rubocop:disable Metrics/MethodLength
       if only_includes_unneeded_disable?
         raise ArgumentError, 'Lint/UnneededDisable can not be used with --only.'
       end

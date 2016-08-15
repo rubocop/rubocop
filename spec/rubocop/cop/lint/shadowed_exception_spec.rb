@@ -123,16 +123,41 @@ describe RuboCop::Cop::Lint::ShadowedException do
       expect(cop.offenses).to be_empty
     end
 
-    it 'registers an offense when rescuing multiple levels of exceptions ' \
-       'in the same rescue' do
+    context 'when there are multiple levels of exceptions in the same rescue' do
+      it 'registers an offense for two exceptions' do
+        inspect_source(cop, ['begin',
+                             '  something',
+                             'rescue StandardError, NameError',
+                             '  foo',
+                             'end'])
+
+        expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+        expect(cop.highlights).to eq(['rescue StandardError, NameError'])
+      end
+
+      it 'registers an offense for more than two exceptions' do
+        inspect_source(cop, ['begin',
+                             '  something',
+                             'rescue StandardError, NameError, NoMethodError',
+                             '  foo',
+                             'end'])
+
+        expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+        expect(cop.highlights)
+          .to eq(['rescue StandardError, NameError, NoMethodError'])
+      end
+    end
+
+    it 'registers an offense for the same exception multiple times' do
       inspect_source(cop, ['begin',
                            '  something',
-                           'rescue StandardError, Exception',
+                           'rescue NameError, NameError',
                            '  foo',
                            'end'])
 
       expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
-      expect(cop.highlights).to eq(['rescue StandardError, Exception'])
+      expect(cop.highlights)
+        .to eq(['rescue NameError, NameError'])
     end
 
     it 'accepts splat arguments passed to rescue' do
