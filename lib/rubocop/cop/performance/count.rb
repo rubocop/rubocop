@@ -95,21 +95,24 @@ module RuboCop
         def parse(node)
           head, counter = *node
           expression, selector, params = *head
-
-          selector_loc =
-            if selector.is_a?(Symbol)
-              if expression && expression.parent.loc.respond_to?(:selector)
-                expression.parent.loc.selector
-              elsif head.loc.respond_to?(:selector)
-                head.loc.selector
-              end
-            else
-              _, selector, params = *expression
-
-              expression.loc.selector if contains_selector?(expression)
+          if selector.is_a?(Symbol)
+            selector_loc = selector_location(expression, head.loc)
+          else
+            _, selector, params = *expression
+            if contains_selector?(expression)
+              selector_loc = expression.loc.selector
             end
+          end
 
           [selector, selector_loc, params, counter]
+        end
+
+        def selector_location(expression, head_loc)
+          if expression && expression.parent.loc.respond_to?(:selector)
+            expression.parent.loc.selector
+          elsif head_loc.respond_to?(:selector)
+            head_loc.selector
+          end
         end
 
         def contains_selector?(node)
