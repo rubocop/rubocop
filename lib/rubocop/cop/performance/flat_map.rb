@@ -20,16 +20,17 @@ module RuboCop
         FLATTEN_MULTIPLE_LEVELS = ' Beware, `flat_map` only flattens 1 level ' \
                                   'and `flatten` can be used to flatten ' \
                                   'multiple levels.'.freeze
-        FLATTEN = [:flatten, :flatten!].freeze
+        FLATTEN_METHODS = [:flatten, :flatten!].freeze
+        MAP_METHODS = [:map, :collect].freeze
 
         def on_send(node)
           left, second_method, flatten_param = *node
-          return unless FLATTEN.include?(second_method)
+          return unless flatten_method?(second_method)
 
           flatten_level, = *flatten_param
           expression, = *left
           _array, first_method = *expression
-          return unless first_method == :map || first_method == :collect
+          return unless map_method?(first_method)
 
           if cop_config['EnabledForFlattenWithoutParams'] && flatten_level.nil?
             offense_for_levels(node, expression, first_method, second_method)
@@ -56,6 +57,14 @@ module RuboCop
         end
 
         private
+
+        def flatten_method?(method_name)
+          FLATTEN_METHODS.include?(method_name)
+        end
+
+        def map_method?(method_name)
+          MAP_METHODS.include?(method_name)
+        end
 
         def offense_for_levels(node, expression, first_method, second_method)
           message = MSG + FLATTEN_MULTIPLE_LEVELS
