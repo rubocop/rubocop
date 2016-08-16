@@ -6,6 +6,7 @@
 
 * [#2968](https://github.com/bbatsov/rubocop/issues/2968): Add new `Style/DocumentationMethod` cop. ([@sooyang][])
 * [#3360](https://github.com/bbatsov/rubocop/issues/3360): Add `RequireForNonPublicMethods` configuration option to `Style/DocumentationMethod` cop. ([@drenmi][])
+* Add new `Rails/SafeNavigation` cop to convert `try!` to `&.`. ([@rrosenblum][])
 
 ### Bug fixes
 
