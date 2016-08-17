@@ -135,7 +135,7 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
     expect(cop.highlights).to eq(['when *cond1', 'when *cond2'])
   end
 
-  it 'registers an offense for splat on an array literal' do
+  it 'allows splat expansion on an array literal' do
     inspect_source(cop, ['case foo',
                          'when *[1, 2]',
                          '  bar',
@@ -145,19 +145,16 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
                          '  baz',
                          'end'])
 
-    expect(cop.messages)
-      .to eq([described_class::ARRAY_MSG, described_class::ARRAY_MSG])
-    expect(cop.highlights).to eq(['when *[1, 2]', 'when *[3, 4]'])
+    expect(cop.offenses).to be_empty
   end
 
-  it 'registers an offense for splat on array literal as the last condition' do
+  it 'allows splat expansion on array literal as the last condition' do
     inspect_source(cop, ['case foo',
                          'when *[1, 2]',
                          '  bar',
                          'end'])
 
-    expect(cop.messages).to eq([described_class::ARRAY_MSG])
-    expect(cop.highlights).to eq(['when *[1, 2]'])
+    expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for a splat on a variable that proceeds a splat ' \
@@ -169,9 +166,8 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
                          '  baz',
                          'end'])
 
-    expect(cop.messages)
-      .to eq([described_class::MSG, described_class::ARRAY_MSG])
-    expect(cop.highlights).to eq(['when *cond', 'when *[1, 2]'])
+    expect(cop.messages).to eq([described_class::MSG])
+    expect(cop.highlights).to eq(['when *cond'])
   end
 
   it 'registers an offense when splat is part of the condition' do
@@ -187,22 +183,6 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
   end
 
   context 'autocorrect' do
-    it 'corrects *array to a list of the elements in the array' do
-      new_source = autocorrect_source(cop, ['case foo',
-                                            'when *[1, 2]',
-                                            '  bar',
-                                            'when 3',
-                                            '  baz',
-                                            'end'])
-
-      expect(new_source).to eq(['case foo',
-                                'when 1, 2',
-                                '  bar',
-                                'when 3',
-                                '  baz',
-                                'end'].join("\n"))
-    end
-
     it 'moves a single splat condition to the end of the when conditions' do
       new_source = autocorrect_source(cop, ['case foo',
                                             'when *cond',
@@ -306,7 +286,7 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
                                 'end'].join("\n"))
     end
 
-    it 'corrects splat on variable and on array literal at the same time' do
+    it 'corrects splat on a variable and leaves an array literal alone' do
       new_source = autocorrect_source(cop, ['case foo',
                                             'when *cond',
                                             '  bar',
@@ -315,50 +295,10 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
                                             'end'])
 
       expect(new_source).to eq(['case foo',
-                                'when 1, 2',
+                                'when *[1, 2]',
                                 '  baz',
                                 'when *cond',
                                 '  bar',
-                                'end'].join("\n"))
-    end
-
-    it 'corrects splat on array literals using %w' do
-      new_source = autocorrect_source(cop, ['case foo',
-                                            'when *%w(first second)',
-                                            '  baz',
-                                            'end'])
-
-      expect(new_source).to eq(['case foo',
-                                "when 'first', 'second'",
-                                '  baz',
-                                'end'].join("\n"))
-    end
-
-    it 'corrects splat on array literals using %W' do
-      new_source = autocorrect_source(cop, ['case foo',
-                                            'when *%W(#{first} #{second})',
-                                            '  baz',
-                                            'end'])
-
-      expect(new_source).to eq(['case foo',
-                                'when "#{first}", "#{second}"',
-                                '  baz',
-                                'end'].join("\n"))
-    end
-
-    it 'corrects a array and something else' do
-      new_source = autocorrect_source(cop, ['case foo',
-                                            'when *[cond1, cond2], cond3',
-                                            '  bar',
-                                            'when cond4',
-                                            '  baz',
-                                            'end'])
-
-      expect(new_source).to eq(['case foo',
-                                'when cond1, cond2, cond3',
-                                '  bar',
-                                'when cond4',
-                                '  baz',
                                 'end'].join("\n"))
     end
 
@@ -389,7 +329,7 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
       expect(new_source).to eq(['case foo',
                                 'when cond4',
                                 '  baz',
-                                'when cond1, cond2, *cond3',
+                                'when *[cond1, cond2], *cond3',
                                 '  bar',
                                 'end'].join("\n"))
     end
@@ -405,71 +345,9 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
       expect(new_source).to eq(['case foo',
                                 'when cond4',
                                 '  baz',
-                                'when *cond1, cond2, cond3',
+                                'when *cond1, *[cond2, cond3]',
                                 '  bar',
                                 'end'].join("\n"))
-    end
-
-    context 'ruby >= 2.0', :ruby20 do
-      it 'corrects splat on array literals using %i' do
-        new_source = autocorrect_source(cop, ['case foo',
-                                              'when *%i(first second)',
-                                              '  baz',
-                                              'end'])
-
-        expect(new_source).to eq(['case foo',
-                                  'when :first, :second',
-                                  '  baz',
-                                  'end'].join("\n"))
-      end
-
-      it 'corrects splat on array literals using %I' do
-        new_source = autocorrect_source(cop, ['case foo',
-                                              'when *%I(#{first} #{second})',
-                                              '  baz',
-                                              'end'])
-
-        expect(new_source).to eq(['case foo',
-                                  'when :"#{first}", :"#{second}"',
-                                  '  baz',
-                                  'end'].join("\n"))
-      end
-
-      it 'corrects everything at once' do
-        new_source = autocorrect_source(cop, ['case foo',
-                                              'when *bar',
-                                              '  1',
-                                              'when baz',
-                                              '  2',
-                                              "when *['a', 'b']",
-                                              '  3',
-                                              'when *%w(c d)',
-                                              '  4',
-                                              'when *%W(#{e} #{f})',
-                                              '  5',
-                                              'when *%i(g h)',
-                                              '  6',
-                                              'when *%I(#{i} #{j})',
-                                              '  7',
-                                              'end'])
-
-        expect(new_source).to eq(['case foo',
-                                  'when baz',
-                                  '  2',
-                                  "when 'a', 'b'",
-                                  '  3',
-                                  "when 'c', 'd'",
-                                  '  4',
-                                  'when "#{e}", "#{f}"',
-                                  '  5',
-                                  'when :g, :h',
-                                  '  6',
-                                  'when :"#{i}", :"#{j}"',
-                                  '  7',
-                                  'when *bar',
-                                  '  1',
-                                  'end'].join("\n"))
-      end
     end
   end
 end

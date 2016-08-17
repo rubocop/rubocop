@@ -18,7 +18,7 @@ module RuboCop
           'unwanted in the resulting symbols.'.freeze
 
         def on_array(node)
-          process(node, *%w(%i %I))
+          process(node, '%i', '%I')
         end
 
         def on_percent_literal(node)

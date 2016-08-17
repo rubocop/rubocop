@@ -24,7 +24,7 @@ module RuboCop
         END_REGEX = /(?<!\\)( +)\z/
 
         def on_array(node)
-          process(node, *%w(%i %I %w %W))
+          process(node, '%i', '%I', '%w', '%W')
         end
 
         def on_percent_literal(node)
