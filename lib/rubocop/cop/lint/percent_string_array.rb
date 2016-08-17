@@ -33,7 +33,7 @@ module RuboCop
           patterns = [/,$/, /^'.*'$/, /^".*"$/]
 
           node.children.any? do |child|
-            literal = child.children.first
+            literal = scrub_string(child.children.first)
 
             # To avoid likely false positives (e.g. a single ' or ")
             next if literal.to_s.gsub(/[^\p{Alnum}]/, '').empty?
@@ -52,6 +52,17 @@ module RuboCop
 
               corrector.remove_leading(range, 1) if /^['"]/ =~ range.source
             end
+          end
+        end
+
+        def scrub_string(string)
+          if string.respond_to?(:scrub)
+            string.scrub
+          else
+            string
+              .encode('UTF-16BE', 'UTF-8',
+                      invalid: :replace, undef: :replace, replace: '?')
+              .encode('UTF-8')
           end
         end
       end

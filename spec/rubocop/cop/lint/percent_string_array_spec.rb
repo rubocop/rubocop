@@ -22,7 +22,7 @@ describe RuboCop::Cop::Lint::PercentStringArray do
         expect(cop.offenses).to be_empty
       end
 
-      [%(%w(' ")), %(%w(' " ! = #)), ':"#{a}"'].each do |false_positive|
+      [%(%w(' ")), %(%w(' " ! = # ,)), ':"#{a}"'].each do |false_positive|
         it "accepts likely false positive #{false_positive}" do
           inspect_source(cop, false_positive)
 
@@ -64,6 +64,18 @@ describe RuboCop::Cop::Lint::PercentStringArray do
 
     it 'removes undesireable characters' do
       expect(autocorrect_source(cop, source)).to eq(expected_corrected_source)
+    end
+  end
+
+  context 'with invalid byte sequence in UTF-8' do
+    it 'add an offences if tokens contain quotes' do
+      expect_offense('%W("a\255\255")')
+    end
+
+    it 'accepts if tokens contain invalid byte sequence only' do
+      inspect_source(cop, '%W(\255)')
+
+      expect(cop.offenses).to be_empty
     end
   end
 end
