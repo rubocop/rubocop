@@ -33,12 +33,6 @@ module RuboCop
       def load_file(path)
         path = File.absolute_path(path)
         hash = load_yaml_configuration(path)
-
-        resolve_inheritance_from_gems(hash, hash.delete('inherit_gem'))
-        resolve_inheritance(path, hash)
-        resolve_requires(path, hash)
-
-        hash.delete('inherit_from')
         config = Config.new(hash, path)
 
         config.deprecation_check do |deprecation_message|
@@ -46,6 +40,13 @@ module RuboCop
         end
 
         config.add_missing_namespaces
+
+        resolve_inheritance_from_gems(config, config.delete('inherit_gem'))
+        resolve_inheritance(path, config)
+        resolve_requires(path, config)
+
+        config.delete('inherit_from')
+
         config.validate
         config.make_excludes_absolute
         config

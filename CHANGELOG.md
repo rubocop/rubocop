@@ -22,6 +22,7 @@
 * [#3380](https://github.com/bbatsov/rubocop/issues/3380): Fix false positive in `Style/TrailingUnderscoreVariable` cop. ([@drenmi][])
 * [#3388](https://github.com/bbatsov/rubocop/issues/3388): Fix bug where `Lint/ShadowedException` would register an offense when rescuing different numbers of custom exceptions in multiple rescue groups. ([@rrosenblum][])
 * [#3386](https://github.com/bbatsov/rubocop/issues/3386): Make `VariableForce` understand an empty RegExp literal as LHS to `=~`. ([@drenmi][])
+* [#3421](https://github.com/bbatsov/rubocop/pull/3421): Fix clobbering `inherit_from` additions when not using Namespaces in the configs. ([@nicklamuro][])
 
 ### Changes
 
@@ -2327,3 +2328,4 @@
 [@metcalf]: https://github.com/metcalf
 [@annaswims]: https://github.com/annaswims
 [@soutaro]: https://github.com/soutaro
+[@nicklamuro]: https://github.com/nicklamuro
