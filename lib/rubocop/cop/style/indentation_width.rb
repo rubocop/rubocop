@@ -21,6 +21,8 @@ module RuboCop
         include IfNode
         include AccessModifierNode
 
+        SPECIAL_MODIFIERS = %w(private protected).freeze
+
         def on_rescue(node)
           _begin_node, *rescue_nodes, else_node = *node
           rescue_nodes.each do |rescue_node|
@@ -65,19 +67,11 @@ module RuboCop
           check_indentation(node.loc.keyword, members.first)
 
           return unless members.any? && members.first.begin_type?
-          style =
-            config.for_cop('Style/IndentationConsistency')['EnforcedStyle']
-          return unless style == 'rails'
+          return unless indentation_consistency_style == 'rails'
 
-          special = %w(protected private) # Extra indentation step after these.
-          previous_modifier = nil
-          members.first.children.each do |m|
-            if modifier_node?(m) && special.include?(m.source)
-              previous_modifier = m
-            elsif previous_modifier
-              check_indentation(previous_modifier.source_range, m, style)
-              previous_modifier = nil
-            end
+          each_member(members) do |member, previous_modifier|
+            check_indentation(previous_modifier, member,
+                              indentation_consistency_style)
           end
         end
 
@@ -161,6 +155,26 @@ module RuboCop
         end
 
         private
+
+        def each_member(members)
+          previous_modifier = nil
+          members.first.children.each do |member|
+            if special_modifier?(member)
+              previous_modifier = member
+            elsif previous_modifier
+              yield member, previous_modifier.source_range
+              previous_modifier = nil
+            end
+          end
+        end
+
+        def special_modifier?(node)
+          modifier_node?(node) && SPECIAL_MODIFIERS.include?(node.source)
+        end
+
+        def indentation_consistency_style
+          config.for_cop('Style/IndentationConsistency')['EnforcedStyle']
+        end
 
         def check_assignment(node, rhs)
           # If there are method calls chained to the right hand side of the
