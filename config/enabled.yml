@@ -1430,6 +1430,10 @@ Rails/HasAndBelongsToMany:
   StyleGuide: 'https://github.com/bbatsov/rails-style-guide#has-many-through'
   Enabled: true
 
+Rails/NotNullColumn:
+  Description: 'Do not add a NOT NULL column without a default value'
+  Enabled: true
+
 Rails/Output:
   Description: 'Checks for calls to puts, print, etc.'
   Enabled: true
