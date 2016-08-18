@@ -30,6 +30,7 @@
 * Fix error in `Lint/ShadowedException` cop for higher number of rescue groups. ([@groddeck][])
 [@groddeck]: https://github.com/groddeck
 * [#3456](https://github.com/bbatsov/rubocop/pull/3456): Don't crash on a multiline empty brace in `Style/MultilineMethodCallBraceLayout`. ([@pocke][])
+* [#3423](https://github.com/bbatsov/rubocop/issues/3423): Checks if .rubocop is a file before parsing. ([@joejuzl][])
 
 ### Changes
 
@@ -2338,3 +2339,4 @@
 [@soutaro]: https://github.com/soutaro
 [@nicklamuro]: https://github.com/nicklamuro
 [@mikezter]: https://github.com/mikezter
+[@joejuzl]: https://github.com/joejuzl
