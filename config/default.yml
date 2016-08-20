@@ -1048,6 +1048,13 @@ Style/VariableName:
     - snake_case
     - camelCase
 
+Style/VariableNumber:
+  EnforcedStyle: normalcase
+  SupportedStyles:
+    - snake_case
+    - normalcase
+    - non_integer
+
 Style/WhileUntilModifier:
   MaxLineLength: 80
 

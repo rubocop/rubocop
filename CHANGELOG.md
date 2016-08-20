@@ -8,6 +8,7 @@
 * [#3360](https://github.com/bbatsov/rubocop/issues/3360): Add `RequireForNonPublicMethods` configuration option to `Style/DocumentationMethod` cop. ([@drenmi][])
 * Add new `Rails/SafeNavigation` cop to convert `try!` to `&.`. ([@rrosenblum][])
 * [#3415](https://github.com/bbatsov/rubocop/pull/3415): Add new `Rails/NotNullColumn` cop. ([@pocke][])
+* [#3167](https://github.com/bbatsov/rubocop/issues/3167): Add new `Style/VariableNumber` cop. ([@sooyang][])
 
 ### Bug fixes
 
