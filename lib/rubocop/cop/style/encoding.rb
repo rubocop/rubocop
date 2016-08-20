@@ -64,17 +64,22 @@ module RuboCop
 
         def offense(processed_source, line_number)
           line = processed_source[line_number]
-          encoding_present = line =~ ENCODING_PATTERN
-          ascii_only = processed_source.buffer.source.ascii_only?
-          always_encode = style == :always
-          never_encode = style == :never
-          encoding_omitable = never_encode || (!always_encode && ascii_only)
 
-          if !encoding_present && !encoding_omitable
+          if !encoding_present?(line) && !encoding_omitable?
             MSG_MISSING
-          elsif encoding_present && encoding_omitable
+          elsif encoding_present?(line) && encoding_omitable?
             MSG_UNNECESSARY
           end
+        end
+
+        def encoding_present?(line)
+          line =~ ENCODING_PATTERN
+        end
+
+        def encoding_omitable?
+          return true if style == :never
+
+          style != :always && processed_source.buffer.source.ascii_only?
         end
 
         def encoding_line_number(processed_source)

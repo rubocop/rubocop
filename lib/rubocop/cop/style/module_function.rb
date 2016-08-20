@@ -40,11 +40,19 @@ module RuboCop
           _name, body = *node
           return unless body && body.begin_type?
 
-          body.children.each do |body_node|
-            if style == :module_function && body_node == EXTEND_SELF_NODE
-              add_offense(body_node, :expression, MODULE_FUNCTION_MSG)
-            elsif style == :extend_self && body_node == MODULE_FUNCTION_NODE
-              add_offense(body_node, :expression, EXTEND_SELF_MSG)
+          each_wrong_style(body.children) do |child_node, msg|
+            add_offense(child_node, :expression, msg)
+          end
+        end
+
+        private
+
+        def each_wrong_style(nodes)
+          nodes.each do |node|
+            if style == :module_function && node == EXTEND_SELF_NODE
+              yield node, MODULE_FUNCTION_MSG
+            elsif style == :extend_self && node == MODULE_FUNCTION_NODE
+              yield node, EXTEND_SELF_MSG
             end
           end
         end

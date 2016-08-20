@@ -41,17 +41,27 @@ module RuboCop
           receiver, name, = *node
           if receiver.const_type?
             _, const_name = *receiver
-            if (qualified = lookup_constant(node, const_name))
-              found_method(node, "#{qualified}.#{name}")
-            end
+            check_const_receiver(node, name, const_name)
           elsif receiver.self_type?
-            if (enclosing = node.parent_module_name)
-              found_method(node, "#{enclosing}.#{name}")
-            end
+            check_self_receiver(node, name)
           end
         end
 
         private
+
+        def check_const_receiver(node, name, const_name)
+          qualified = lookup_constant(node, const_name)
+          return unless qualified
+
+          found_method(node, "#{qualified}.#{name}")
+        end
+
+        def check_self_receiver(node, name)
+          enclosing = node.parent_module_name
+          return unless enclosing
+
+          found_method(node, "#{enclosing}.#{name}")
+        end
 
         def message_for_dup(node, method_name)
           format(MSG, method_name, @definitions[method_name],

@@ -136,7 +136,7 @@ module RuboCop
 
           args = *node
 
-          if args.size == 1 && args.first && args.first.begin_type?
+          if only_begin_arg?(args)
             parentheses?(args.first)
           else
             args.empty? || parentheses?(node)
@@ -151,6 +151,10 @@ module RuboCop
           send_node, args = method_node_and_args(node)
 
           args.empty? || parentheses?(send_node) || square_brackets?(send_node)
+        end
+
+        def only_begin_arg?(args)
+          args.size == 1 && args.first && args.first.begin_type?
         end
 
         def first_arg?(node)
