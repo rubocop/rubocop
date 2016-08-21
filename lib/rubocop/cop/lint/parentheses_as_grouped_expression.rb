@@ -15,19 +15,16 @@ module RuboCop
 
         def on_send(node)
           _receiver, method_name, *args = *node
-          return if args.size > 1
+          return unless args.one?
           return if operator?(method_name) || node.asgn_method_call?
-          return unless args.first && args.first.source.start_with?('(')
+
+          first_arg = args.first
+          return unless first_arg.source.start_with?('(')
 
           space_length = spaces_before_left_parenthesis(node)
           return unless space_length > 0
-          expr = args.first.source_range
-          space_range =
-            Parser::Source::Range.new(expr.source_buffer,
-                                      expr.begin_pos - space_length,
-                                      expr.begin_pos)
 
-          add_offense(nil, space_range)
+          add_offense(nil, space_range(first_arg.source_range, space_length))
         end
 
         private
@@ -46,6 +43,12 @@ module RuboCop
 
           match = without_receiver.match(/^\s*\.?\s*#{method_regexp}(\s+)\(/)
           match ? match.captures[0].length : 0
+        end
+
+        def space_range(expr, space_length)
+          Parser::Source::Range.new(expr.source_buffer,
+                                    expr.begin_pos - space_length,
+                                    expr.begin_pos)
         end
       end
     end
