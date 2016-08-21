@@ -22,7 +22,12 @@ describe RuboCop::Cop::Lint::PercentStringArray do
         expect(cop.offenses).to be_empty
       end
 
-      [%(%w(' ")), %(%w(' " ! = # ,)), ':"#{a}"'].each do |false_positive|
+      [
+        %(%#{char}(' ")),
+        %(%#{char}(' " ! = # ,)),
+        ':"#{a}"',
+        %(%#{char}(\#{a} b))
+      ].each do |false_positive|
         it "accepts likely false positive #{false_positive}" do
           inspect_source(cop, false_positive)
 
