@@ -13,6 +13,7 @@
 * Add new style `no_mixed_keys` to `Style/HashSyntax` to only check for hashes with mixed keys. ([@daviddavis][])
 * Allow including multiple configuration files from a single gem. ([@tjwallace][])
 * Add check for `persisted?` method call when using a create method in `Rails/SaveBang`. ([@QuinnHarris][])
+* Add new `Style/SafeNavigation` cop to convert method calls safeguarded by a non `nil` check for the object to `&.`. ([@rrosenblum][])
 
 ### Bug fixes
 
