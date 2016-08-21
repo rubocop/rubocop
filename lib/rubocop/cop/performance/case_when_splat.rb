@@ -108,15 +108,8 @@ module RuboCop
 
         def reorder_condition(corrector, node, new_condition)
           *_conditions, body = *node
-          parent = node.parent
-          _case_branch, *when_branches, _else_branch = *parent
-          current_index = when_branches.index { |branch| branch == node }
-          next_branch = when_branches[current_index + 1]
-          range = Parser::Source::Range.new(parent,
-                                            node.source_range.begin_pos,
-                                            next_branch.source_range.begin_pos)
-
-          corrector.remove(range)
+          _case_branch, *when_branches, _else_branch = *node.parent
+          corrector.remove(when_branch_range(node, when_branches))
 
           correction = if same_line?(node, body)
                          new_condition_with_then(node, new_condition)
@@ -125,6 +118,15 @@ module RuboCop
                        end
 
           corrector.insert_after(when_branches.last.source_range, correction)
+        end
+
+        def when_branch_range(node, when_branches)
+          current_index = when_branches.index { |branch| branch == node }
+          next_branch = when_branches[current_index + 1]
+
+          Parser::Source::Range.new(node.parent,
+                                    node.source_range.begin_pos,
+                                    next_branch.source_range.begin_pos)
         end
 
         def same_line?(node, other)
