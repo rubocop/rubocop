@@ -33,10 +33,10 @@ module RuboCop
           patterns = [/,$/, /^'.*'$/, /^".*"$/]
 
           node.children.any? do |child|
-            literal = scrub_string(child.children.first)
+            literal = scrub_string(child.children.first.to_s)
 
             # To avoid likely false positives (e.g. a single ' or ")
-            next if literal.to_s.gsub(/[^\p{Alnum}]/, '').empty?
+            next if literal.gsub(/[^\p{Alnum}]/, '').empty?
 
             patterns.any? { |pat| literal =~ pat }
           end
