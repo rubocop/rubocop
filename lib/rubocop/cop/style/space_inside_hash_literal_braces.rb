@@ -13,20 +13,36 @@ module RuboCop
         MSG = 'Space inside %s.'.freeze
 
         def on_hash(node)
-          b_ix = index_of_first_token(node)
           tokens = processed_source.tokens
 
-          # Hash literal with braces?
-          return unless tokens[b_ix].type == :tLBRACE
+          hash_literal_with_braces(node) do |begin_index, end_index|
+            check(tokens[begin_index], tokens[begin_index + 1])
+            return if begin_index == end_index - 1
 
-          e_ix = index_of_last_token(node)
-          return unless tokens[e_ix].type == :tRCURLY
-
-          check(tokens[b_ix], tokens[b_ix + 1])
-          check(tokens[e_ix - 1], tokens[e_ix]) unless b_ix == e_ix - 1
+            check(tokens[end_index - 1], tokens[end_index])
+          end
         end
 
         private
+
+        def hash_literal_with_braces(node)
+          tokens = processed_source.tokens
+          begin_index = index_of_first_token(node)
+          return unless left_brace?(tokens[begin_index])
+
+          end_index = index_of_last_token(node)
+          return unless right_brace?(tokens[end_index])
+
+          yield begin_index, end_index
+        end
+
+        def left_brace?(token)
+          token.type == :tLBRACE
+        end
+
+        def right_brace?(token)
+          token.type == :tRCURLY
+        end
 
         def check(t1, t2)
           # No offense if line break inside.
