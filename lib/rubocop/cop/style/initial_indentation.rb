@@ -9,28 +9,37 @@ module RuboCop
       class InitialIndentation < Cop
         MSG = 'Indentation of first line in file detected.'.freeze
 
-        def investigate(processed_source)
-          first_token = processed_source.tokens.find do |t|
-            !t.text.start_with?('#')
-          end
-          return unless first_token
-          return if first_token.pos.column.zero?
-
-          with_space = range_with_surrounding_space(first_token.pos, :left,
-                                                    !:with_newline)
-          # If the file starts with a byte order mark (BOM), the column can be
-          # non-zero, but then we find out here if there's no space to the left
-          # of the first token.
-          return if with_space == first_token.pos
-
-          space = Parser::Source::Range.new(processed_source.buffer,
-                                            with_space.begin_pos,
-                                            first_token.pos.begin_pos)
-          add_offense(space, first_token.pos)
+        def investigate(_processed_source)
+          token = first_token
+          space_before(token) { |space| add_offense(space, token.pos) }
         end
 
         def autocorrect(range)
           ->(corrector) { corrector.remove(range) }
+        end
+
+        private
+
+        def first_token
+          processed_source.tokens.find { |t| !t.text.start_with?('#') }
+        end
+
+        def space_before(token)
+          return unless token
+          return if token.pos.column.zero?
+
+          token_with_space =
+            range_with_surrounding_space(token.pos, :left, !:with_newline)
+          # If the file starts with a byte order mark (BOM), the column can be
+          # non-zero, but then we find out here if there's no space to the left
+          # of the first token.
+          return if token_with_space == token.pos
+
+          yield range_between(token_with_space.begin_pos, token.pos.begin_pos)
+        end
+
+        def range_between(start_pos, end_pos)
+          Parser::Source::Range.new(processed_source.buffer, start_pos, end_pos)
         end
       end
     end
