@@ -2418,3 +2418,4 @@
 [@jmks]: https://github.com/jmks/
 [@connorjacobsen]: https://github.com/connorjacobsen
 [@legendetm]: https://github.com/legendetm
+[@connorjacobsen]: https://github.com/connorjacobsen
