@@ -1439,6 +1439,10 @@ Rails/Delegate:
   Description: 'Prefer delegate method for delegations.'
   Enabled: true
 
+Rails/DelegateAllowBlank:
+  Description: 'Do not use allow_blank as an option to delegate.'
+  Enabled: true
+
 Rails/DynamicFindBy:
   Description: 'Use `find_by` instead of dynamic `find_by_*`.'
   StyleGuide: 'https://github.com/bbatsov/rails-style-guide#find_by'

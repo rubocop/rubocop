@@ -11,6 +11,7 @@
 * [#3428](https://github.com/bbatsov/rubocop/issues/3428): Add support for configuring `Style/PreferredHashMethods` with either `short` or `verbose` style method names. ([@abrom][])
 * [#3455](https://github.com/bbatsov/rubocop/issues/3455): Add new `Rails/DynamicFindBy` cop. ([@pocke][])
 * [#3542](https://github.com/bbatsov/rubocop/issues/3542): Add a configuration option, `IgnoreCopDirectives`, to `Metrics/LineLength` to stop cop directives (`# rubocop:disable Metrics/AbcSize`) from being counted when considering line length. ([@jmks][])
+* Add new `Rails/DelegateAllowBlank` cop. ([@connorjacobsen][])
 
 ### Bug fixes
 
@@ -2412,3 +2413,4 @@
 [@abrom]: https://github.com/abrom
 [@thegedge]: https://github.com/thegedge
 [@jmks]: https://github.com/jmks/
+[@connorjacobsen]: https://github.com/connorjacobsen
