@@ -117,15 +117,16 @@ module RuboCop
                         node.parent.loc.end.begin_pos
                       end
 
-            range = Parser::Source::Range.new(node.source_range.source_buffer,
-                                              node.loc.else.begin_pos,
-                                              end_pos)
-            corrector.remove(range)
+            corrector.remove(range_between(node.loc.else.begin_pos, end_pos))
           end
         end
 
         def autocorrect_forbidden?(type)
           [type, 'both'].include? missing_else_style
+        end
+
+        def range_between(start_pos, end_pos)
+          Parser::Source::Range.new(processed_source.buffer, start_pos, end_pos)
         end
 
         def missing_else_style
