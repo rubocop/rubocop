@@ -36,6 +36,16 @@ module RuboCop
         def same_name_assignment?(node)
           _receiver, method_name, *_args = *node
 
+          any_assignment?(node) do |asgn_node|
+            if asgn_node.masgn_type?
+              next variable_in_mass_assignment?(method_name, asgn_node)
+            end
+
+            asgn_node.loc.name.source == method_name.to_s
+          end
+        end
+
+        def any_assignment?(node)
           node.each_ancestor(*ASGN_NODES).any? do |asgn_node|
             # `obj.method = value` parses as (send ... :method= ...), and will
             # not be returned as an `asgn_node` here, however,
@@ -45,19 +55,18 @@ module RuboCop
             if asgn_node.or_asgn_type? || asgn_node.and_asgn_type? ||
                asgn_node.op_asgn_type?
               asgn_node, _value = *asgn_node
-              return false if asgn_node.send_type?
+              next if asgn_node.send_type?
             end
 
-            if asgn_node.masgn_type?
-              mlhs_node, _mrhs_node = *asgn_node
-              var_nodes = *mlhs_node
-              vars = var_nodes.map { |n| (_b = *n).first }
-
-              return vars.include?(method_name)
-            end
-
-            asgn_node.loc.name.source == method_name.to_s
+            yield asgn_node
           end
+        end
+
+        def variable_in_mass_assignment?(variable_name, node)
+          mlhs_node, _mrhs_node = *node
+          var_nodes = *mlhs_node
+
+          var_nodes.map { |n| n.to_a.first }.include?(variable_name)
         end
 
         # don't check `lambda.()` syntax; the Style/LambdaCall cop does that
