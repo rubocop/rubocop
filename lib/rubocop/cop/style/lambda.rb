@@ -165,11 +165,18 @@ module RuboCop
 
         def needs_whitespace?(block_method, args, node)
           selector_end = block_method.loc.selector.end.end_pos
-          args_begin   = args.loc.begin && args.loc.begin.begin_pos
-          args_end     = args.loc.end && args.loc.end.end_pos
           block_begin  = node.loc.begin.begin_pos
-          (block_begin == args_end && selector_end == args_begin) ||
+
+          (block_begin == end_pos(args) && selector_end == begin_pos(args)) ||
             (block_begin == selector_end)
+        end
+
+        def begin_pos(node)
+          node.loc.begin && node.loc.begin.begin_pos
+        end
+
+        def end_pos(node)
+          node.loc.end && node.loc.end.end_pos
         end
 
         def lambda_arg_string(args)
