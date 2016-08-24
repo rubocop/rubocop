@@ -10,11 +10,64 @@ module RuboCop
       # the use of the newer Ruby 1.9 syntax (when applicable).
       #
       # A separate offense is registered for each problematic pair.
+      #
+      # The supported styles are:
+      #
+      # * ruby19 - forces use of the 1.9 syntax (e.g. {a: 1}) when hashes have
+      #   all symbols for keys
+      # * hash_rockets - forces use of hash rockets for all hashes
+      # * no_mixed_keys - simply checks for hashes with mixed syntaxes
+      # * ruby19_mixed_keys - forces use of ruby 1.9 syntax and forbids mixed
+      #   syntax hashes
+      #
+      # @example
+      #   "EnforcedStyle => 'ruby19'"
+      #
+      #   @good
+      #   {a: 2, b: 1}
+      #   {:c => 2, 'd' => 2} # acceptable since 'd' isn't a symbol
+      #   {d: 1, 'e' => 2} # technically not forbidden
+      #
+      #   @bad
+      #   {:a => 2}
+      #   {b: 1, :c => 2}
+      #
+      # @example
+      #   "EnforcedStyle => 'hash_rockets'"
+      #
+      #   @good
+      #   {:a => 1, :b => 2}
+      #
+      #   @bad
+      #   {a: 1, b: 2}
+      #   {c: 1, 'd' => 5}
+      #
+      # @example
+      #   "EnforcedStyle => 'no_mixed_keys'"
+      #
+      #   @good
+      #   {:a => 1, :b => 2}
+      #   {c: 1, d: 2}
+      #
+      #   @bad
+      #   {:a => 1, b: 2}
+      #   {c: 1, 'd' => 2}
+      #
+      # @example
+      #   "EnforcedStyle => 'ruby19_no_mixed_keys'"
+      #
+      #   @good
+      #   {a: 1, b: 2}
+      #   {:c => 3, 'd' => 4}
+      #
+      #   @bad
+      #   {:a => 1, :b => 2}
+      #   {c: 2, 'd' => 3} # should just use hash rockets
       class HashSyntax < Cop
         include ConfigurableEnforcedStyle
 
         MSG_19 = 'Use the new Ruby 1.9 hash syntax.'.freeze
-        MSG_RUBY19_NO_MIXED_KEYS = "Don't mix styles in the same hash.".freeze
+        MSG_NO_MIXED_KEYS = "Don't mix styles in the same hash.".freeze
         MSG_HASH_ROCKETS = 'Use hash rockets syntax.'.freeze
 
         @force_hash_rockets = false
@@ -29,6 +82,8 @@ module RuboCop
             hash_rockets_check(node)
           elsif style == :ruby19_no_mixed_keys
             ruby19_no_mixed_keys_check(node)
+          elsif style == :no_mixed_keys
+            no_mixed_keys_check(node)
           else
             ruby19_check(node)
           end
@@ -54,7 +109,18 @@ module RuboCop
           elsif sym_indices?(pairs)
             check(pairs, '=>', MSG_19)
           else
-            check(pairs, ':', MSG_RUBY19_NO_MIXED_KEYS)
+            check(pairs, ':', MSG_NO_MIXED_KEYS)
+          end
+        end
+
+        def no_mixed_keys_check(node)
+          pairs = *node
+
+          if !sym_indices?(pairs)
+            check(pairs, ':', MSG_NO_MIXED_KEYS)
+          else
+            delim = pairs.first.loc.operator.source == ':' ? '=>' : ':'
+            check(pairs, delim, MSG_NO_MIXED_KEYS)
           end
         end
 
@@ -62,8 +128,8 @@ module RuboCop
           lambda do |corrector|
             if style == :hash_rockets || @force_hash_rockets
               autocorrect_hash_rockets(corrector, node)
-            elsif style == :ruby19_no_mixed_keys
-              autocorrect_ruby19_no_mixed_keys(corrector, node)
+            elsif style == :ruby19_no_mixed_keys || style == :no_mixed_keys
+              autocorrect_no_mixed_keys(corrector, node)
             else
               autocorrect_ruby19(corrector, node)
             end
@@ -150,7 +216,7 @@ module RuboCop
           corrector.remove(range_with_surrounding_space(op))
         end
 
-        def autocorrect_ruby19_no_mixed_keys(corrector, node)
+        def autocorrect_no_mixed_keys(corrector, node)
           op = node.loc.operator
 
           if op.is?(':')
