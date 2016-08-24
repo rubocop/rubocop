@@ -471,21 +471,8 @@ module RuboCop
           include ConditionalCorrectorHelper
 
           def correct(node)
-            condition, if_branch, else_branch = *node
-            _variable, *_operator, if_rhs = *if_branch
-            _else_variable, *_operator, else_rhs = *else_branch
-            condition = condition.source
-            if_rhs = if_rhs.source
-            else_rhs = else_rhs.source
-
-            ternary = "#{condition} ? #{if_rhs} : #{else_rhs}"
-            if if_branch.send_type? && if_branch.method_name != :[]=
-              ternary = "(#{ternary})"
-            end
-            correction = "#{lhs(if_branch)}#{ternary}"
-
             lambda do |corrector|
-              corrector.replace(node.source_range, correction)
+              corrector.replace(node.source_range, correction(node))
             end
           end
 
@@ -504,6 +491,25 @@ module RuboCop
           end
 
           private
+
+          def correction(node)
+            condition, if_branch, else_branch = *node
+
+            "#{lhs(if_branch)}#{ternary(condition, if_branch, else_branch)}"
+          end
+
+          def ternary(condition, if_branch, else_branch)
+            _variable, *_operator, if_rhs = *if_branch
+            _else_variable, *_operator, else_rhs = *else_branch
+
+            expr = "#{condition.source} ? #{if_rhs.source} : #{else_rhs.source}"
+
+            element_assignment?(if_branch) ? "(#{expr})" : expr
+          end
+
+          def element_assignment?(node)
+            node.send_type? && node.method_name != :[]=
+          end
 
           def extract_branches(node)
             *_var, rhs = *node
