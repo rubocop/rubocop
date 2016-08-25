@@ -9,8 +9,7 @@ describe RuboCop::Cop::Lint::PercentStringArray do
   def expect_offense(source)
     inspect_source(cop, source)
 
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.offenses.first.message).to eq(described_class::MSG)
+    expect(cop.offenses.map(&:message)).to eq([described_class::MSG])
     expect(cop.highlights).to eq([source])
   end
 
