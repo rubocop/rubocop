@@ -3,15 +3,8 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::SpaceBeforeBlockBraces do
+describe RuboCop::Cop::Style::SpaceBeforeBlockBraces, :config do
   subject(:cop) { described_class.new(config) }
-  let(:config) do
-    merged = RuboCop::ConfigLoader
-             .default_configuration['Style/SpaceBeforeBlockBraces']
-             .merge(cop_config)
-    RuboCop::Config.new('Style/BlockDelimiters' => { 'Enabled' => false },
-                        'Style/SpaceBeforeBlockBraces' => merged)
-  end
   let(:cop_config) { { 'EnforcedStyle' => 'space' } }
 
   context 'when EnforcedStyle is space' do
@@ -34,6 +27,16 @@ describe RuboCop::Cop::Style::SpaceBeforeBlockBraces do
                       'each { puts }'])
       expect(cop.messages).to eq(['Space missing to the left of {.'])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+    end
+
+    it 'registers an offense for multiline block where left brace has no ' \
+       'outer space' do
+      inspect_source(cop, ['foo.map{ |a|',
+                           '  a.bar.to_s',
+                           '}'])
+      expect(cop.messages).to eq(['Space missing to the left of {.'])
+      expect(cop.highlights).to eq(['{'])
+      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'no_space')
     end
 
     it 'auto-corrects missing space' do
