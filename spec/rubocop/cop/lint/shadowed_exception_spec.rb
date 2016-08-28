@@ -269,15 +269,10 @@ describe RuboCop::Cop::Lint::ShadowedException do
     end
 
     it 'accepts many (>= 7) rescue groups' do
-      ErrorA = Class.new(RuntimeError)
-      ErrorB = Class.new(RuntimeError)
-      ErrorC = Class.new(RuntimeError)
-      ErrorD = Class.new(RuntimeError)
-      ErrorE = Class.new(RuntimeError)
-      ErrorF = Class.new(RuntimeError)
-      ErrorG = Class.new(RuntimeError)
       inspect_source(cop, ['begin',
                            '  something',
+                           'rescue StandardError',
+                           '  handle_error',
                            'rescue ErrorA',
                            '  handle_error',
                            'rescue ErrorB',
@@ -289,8 +284,6 @@ describe RuboCop::Cop::Lint::ShadowedException do
                            'rescue ErrorE',
                            '  handle_error',
                            'rescue ErrorF',
-                           '  handle_error',
-                           'rescue ErrorG',
                            '  handle_error',
                            'end'])
 
