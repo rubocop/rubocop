@@ -72,13 +72,10 @@ module RuboCop
         end
 
         def whitespace_range(node)
-          source_buffer = node.source_range.source_buffer
           begin_pos = node.loc.keyword.begin_pos
           current_column = node.loc.keyword.column
 
-          Parser::Source::Range.new(source_buffer,
-                                    begin_pos - current_column,
-                                    begin_pos)
+          range_between(begin_pos - current_column, begin_pos)
         end
 
         def ancestor_node(node)

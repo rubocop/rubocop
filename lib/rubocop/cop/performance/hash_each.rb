@@ -70,9 +70,8 @@ module RuboCop
         def correct_args(node, corrector)
           args = node.parent.children[1]
           used_arg = "|#{@args.detect { |_k, v| v }.first}|"
-          args_range = Parser::Source::Range.new(node.parent.source,
-                                                 args.loc.begin.begin_pos,
-                                                 args.loc.end.end_pos)
+          args_range = range_between(args.loc.begin.begin_pos,
+                                     args.loc.end.end_pos)
           corrector.replace(args_range, used_arg)
         end
 

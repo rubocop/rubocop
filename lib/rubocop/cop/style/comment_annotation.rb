@@ -47,8 +47,7 @@ module RuboCop
 
         def annotation_range(comment, margin, length)
           start = comment.loc.expression.begin_pos + margin.length
-          source_buffer = comment.loc.expression.source_buffer
-          Parser::Source::Range.new(source_buffer, start, start + length)
+          range_between(start, start + length)
         end
 
         def concat_length(*args)

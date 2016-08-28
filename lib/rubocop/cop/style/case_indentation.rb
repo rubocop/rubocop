@@ -74,9 +74,7 @@ module RuboCop
           when_column = node.location.keyword.column
           begin_pos = node.loc.keyword.begin_pos
 
-          Parser::Source::Range.new(node.source_range.source_buffer,
-                                    begin_pos - when_column,
-                                    begin_pos)
+          range_between(begin_pos - when_column, begin_pos)
         end
 
         def replacement(node)

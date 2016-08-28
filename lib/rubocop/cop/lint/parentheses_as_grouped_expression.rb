@@ -46,9 +46,7 @@ module RuboCop
         end
 
         def space_range(expr, space_length)
-          Parser::Source::Range.new(expr.source_buffer,
-                                    expr.begin_pos - space_length,
-                                    expr.begin_pos)
+          range_between(expr.begin_pos - space_length, expr.begin_pos)
         end
       end
     end

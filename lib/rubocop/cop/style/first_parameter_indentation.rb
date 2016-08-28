@@ -74,9 +74,8 @@ module RuboCop
         end
 
         def base_range(send_node, arg_node)
-          Parser::Source::Range.new(processed_source.buffer,
-                                    send_node.source_range.begin_pos,
-                                    arg_node.source_range.begin_pos)
+          range_between(send_node.source_range.begin_pos,
+                        arg_node.source_range.begin_pos)
         end
 
         # Returns the column of the given range. For single line ranges, this

@@ -22,9 +22,8 @@ module RuboCop
         def on_method_def(_node, _method_name, args, _body)
           return unless args.loc.begin && args.loc.begin.is?('(')
           expr = args.source_range
-          pos_before_left_paren = Parser::Source::Range.new(expr.source_buffer,
-                                                            expr.begin_pos - 1,
-                                                            expr.begin_pos)
+          pos_before_left_paren = range_between(expr.begin_pos - 1,
+                                                expr.begin_pos)
           return unless pos_before_left_paren.source =~ /\s/
 
           add_offense(pos_before_left_paren, pos_before_left_paren)

@@ -37,10 +37,6 @@ module RuboCop
 
           yield range_between(token_with_space.begin_pos, token.pos.begin_pos)
         end
-
-        def range_between(start_pos, end_pos)
-          Parser::Source::Range.new(processed_source.buffer, start_pos, end_pos)
-        end
       end
     end
   end

@@ -120,10 +120,6 @@ module RuboCop
           yield range_between(start_pos, end_pos)
         end
 
-        def range_between(start_pos, end_pos)
-          Parser::Source::Range.new(processed_source.buffer, start_pos, end_pos)
-        end
-
         def aligned_tok?(token)
           if token.type == :tCOMMENT
             aligned_comments?(token)

@@ -33,9 +33,7 @@ module RuboCop
 
         def incorrect_style_detected(arg, value, space_on_both_sides,
                                      no_surrounding_space)
-          range = Parser::Source::Range.new(processed_source.buffer,
-                                            arg.pos.end_pos,
-                                            value.pos.begin_pos)
+          range = range_between(arg.pos.end_pos, value.pos.begin_pos)
           add_offense(range, range) do
             if style == :space && no_surrounding_space ||
                style == :no_space && space_on_both_sides

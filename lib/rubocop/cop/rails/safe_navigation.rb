@@ -59,9 +59,8 @@ module RuboCop
         def autocorrect(node)
           _receiver, _try, method, *params = *node
 
-          range = Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                            node.loc.dot.begin_pos,
-                                            node.loc.expression.end_pos)
+          range = range_between(node.loc.dot.begin_pos,
+                                node.loc.expression.end_pos)
 
           replacement = "&.#{method.source[1..-1]}"
           unless params.empty?

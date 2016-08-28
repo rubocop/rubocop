@@ -282,7 +282,7 @@ module RuboCop
           begin_pos = expr.begin_pos
           ind = expr.begin_pos - indentation
           pos = indentation >= 0 ? ind..begin_pos : begin_pos..ind
-          Parser::Source::Range.new(expr.source_buffer, pos.begin, pos.end)
+          range_between(pos.begin, pos.end)
         end
 
         def starts_with_access_modifier?(body_node)

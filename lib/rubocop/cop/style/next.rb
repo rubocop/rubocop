@@ -156,9 +156,8 @@ module RuboCop
                     else
                       cond.source_range.end_pos
                     end
-          Parser::Source::Range.new(node.source_range.source_buffer,
-                                    node.source_range.begin_pos,
-                                    end_pos)
+
+          range_between(node.source_range.begin_pos, end_pos)
         end
 
         def end_range(node)
@@ -168,7 +167,7 @@ module RuboCop
           begin_pos -= 1 if end_followed_by_whitespace_only?(source_buffer,
                                                              end_pos)
 
-          Parser::Source::Range.new(source_buffer, begin_pos, end_pos)
+          range_between(begin_pos, end_pos)
         end
 
         def end_followed_by_whitespace_only?(source_buffer, end_pos)

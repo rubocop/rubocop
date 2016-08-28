@@ -15,11 +15,8 @@ module RuboCop
 
       # For a `match` inside `range`, return a new `Range` covering the match
       def match_range(range, match)
-        Parser::Source::Range.new(
-          range.source_buffer,
-          range.begin_pos + match.begin(1),
-          range.begin_pos + match.end(1)
-        )
+        range_between(range.begin_pos + match.begin(1),
+                      range.begin_pos + match.end(1))
       end
     end
   end

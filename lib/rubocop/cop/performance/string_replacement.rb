@@ -160,9 +160,7 @@ module RuboCop
         end
 
         def range(node)
-          Parser::Source::Range.new(node.source_range.source_buffer,
-                                    node.loc.selector.begin_pos,
-                                    node.source_range.end_pos)
+          range_between(node.loc.selector.begin_pos, node.source_range.end_pos)
         end
 
         def replacement_method(method, first_source, second_source)
@@ -192,10 +190,8 @@ module RuboCop
         end
 
         def remove_second_param(corrector, node, first_param)
-          end_range =
-            Parser::Source::Range.new(node.source_range.source_buffer,
-                                      first_param.source_range.end_pos,
-                                      node.source_range.end_pos)
+          end_range = range_between(first_param.source_range.end_pos,
+                                    node.source_range.end_pos)
 
           corrector.replace(end_range, method_suffix(node))
         end

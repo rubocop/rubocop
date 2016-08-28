@@ -125,10 +125,6 @@ module RuboCop
           [type, 'both'].include? missing_else_style
         end
 
-        def range_between(start_pos, end_pos)
-          Parser::Source::Range.new(processed_source.buffer, start_pos, end_pos)
-        end
-
         def missing_else_style
           missing_config = config.for_cop('Style/MissingElse')
           missing_config['Enabled'] ? missing_config['EnforcedStyle'] : nil

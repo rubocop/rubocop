@@ -98,11 +98,9 @@ module RuboCop
           new_condition.join(', ')
         end
 
-        def inline_fix_branch(corrector, node, conditions, new_condition)
-          range =
-            Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                      conditions[0].loc.expression.begin_pos,
-                                      conditions[-1].loc.expression.end_pos)
+        def inline_fix_branch(corrector, _node, conditions, new_condition)
+          range = range_between(conditions[0].loc.expression.begin_pos,
+                                conditions[-1].loc.expression.end_pos)
           corrector.replace(range, new_condition)
         end
 
@@ -124,9 +122,8 @@ module RuboCop
           current_index = when_branches.index { |branch| branch == node }
           next_branch = when_branches[current_index + 1]
 
-          Parser::Source::Range.new(node.parent,
-                                    node.source_range.begin_pos,
-                                    next_branch.source_range.begin_pos)
+          range_between(node.source_range.begin_pos,
+                        next_branch.source_range.begin_pos)
         end
 
         def same_line?(node, other)

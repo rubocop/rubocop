@@ -32,9 +32,8 @@ module RuboCop
           _, _, method_def = *node
           expr = node.source_range
 
-          line_start = Parser::Source::Range.new(expr.source_buffer,
-                                                 expr.begin_pos,
-                                                 method_def.loc.keyword.end_pos)
+          line_start = range_between(expr.begin_pos,
+                                     method_def.loc.keyword.end_pos)
           align_with = {
             def: method_def.loc.keyword,
             start_of_line: line_start

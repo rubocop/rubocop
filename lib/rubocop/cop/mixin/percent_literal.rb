@@ -26,11 +26,7 @@ module RuboCop
       # A range containing only the contents of the percent literal (e.g. in
       # %i{1 2 3} this will be the range covering '1 2 3' only)
       def contents_range(node)
-        Parser::Source::Range.new(
-          node.loc.expression.source_buffer,
-          node.loc.begin.end_pos,
-          node.loc.end.begin_pos
-        )
+        range_between(node.loc.begin.end_pos, node.loc.end.begin_pos)
       end
     end
   end

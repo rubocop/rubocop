@@ -71,11 +71,8 @@ module RuboCop
           when :new_line
             ->(corrector) { corrector.insert_after(node.loc.operator, "\n") }
           when :same_line
-            range = Parser::Source::Range.new(
-              node.source_range.source_buffer,
-              node.loc.operator.end_pos,
-              extract_rhs(node).source_range.begin_pos
-            )
+            range = range_between(node.loc.operator.end_pos,
+                                  extract_rhs(node).source_range.begin_pos)
 
             ->(corrector) { corrector.replace(range, ' ') }
           end

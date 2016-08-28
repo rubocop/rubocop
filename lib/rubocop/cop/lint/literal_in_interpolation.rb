@@ -54,9 +54,7 @@ module RuboCop
           end_pos =
             node.loc.end ? node.loc.end.begin_pos : node.loc.expression.end_pos
 
-          Parser::Source::Range.new(node.source_range.source_buffer,
-                                    node.loc.begin.end_pos,
-                                    end_pos).source
+          range_between(node.loc.begin.end_pos, end_pos).source
         end
 
         # Does node print its own source when converted to a string?

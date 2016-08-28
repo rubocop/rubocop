@@ -73,9 +73,7 @@ module RuboCop
 
         def add_offense_for_expression(node, expr, msg)
           expression = expr.source_range
-          range = Parser::Source::Range.new(expression.source_buffer,
-                                            expression.begin_pos,
-                                            expression.end_pos)
+          range = range_between(expression.begin_pos, expression.end_pos)
 
           add_offense(node, range, msg)
         end
@@ -101,9 +99,7 @@ module RuboCop
           end_pos =
             range_with_surrounding_space(args.source_range, :right, false)
             .end_pos
-          range = Parser::Source::Range.new(args.source_range.source_buffer,
-                                            node.loc.begin.end.begin_pos,
-                                            end_pos)
+          range = range_between(node.loc.begin.end.begin_pos, end_pos)
           corrector.replace(range, " |#{block_arg_string(args)}|")
         end
 

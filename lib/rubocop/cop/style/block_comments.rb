@@ -37,12 +37,8 @@ module RuboCop
         def parts(comment)
           expr = comment.loc.expression
           eq_begin = expr.resize(BEGIN_LENGTH)
-          eq_end = Parser::Source::Range.new(expr.source_buffer,
-                                             expr.end_pos - END_LENGTH,
-                                             expr.end_pos)
-          contents = Parser::Source::Range.new(expr.source_buffer,
-                                               eq_begin.end_pos,
-                                               eq_end.begin_pos)
+          eq_end = range_between(expr.end_pos - END_LENGTH, expr.end_pos)
+          contents = range_between(eq_begin.end_pos, eq_end.begin_pos)
           [eq_begin, eq_end, contents]
         end
       end

@@ -29,9 +29,7 @@ module RuboCop
           _receiver, _method_name, *args = *node
           arg1 = args.first.source_range
           arg1_with_space = range_with_surrounding_space(arg1, :left)
-          space = Parser::Source::Range.new(arg1.source_buffer,
-                                            arg1_with_space.begin_pos,
-                                            arg1.begin_pos)
+          space = range_between(arg1_with_space.begin_pos, arg1.begin_pos)
           add_offense(space, space) if space.length > 1
         end
 
