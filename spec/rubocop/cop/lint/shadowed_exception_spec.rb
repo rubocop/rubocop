@@ -268,6 +268,35 @@ describe RuboCop::Cop::Lint::ShadowedException do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts many (>= 7) rescue groups' do
+      ErrorA = Class.new(RuntimeError)
+      ErrorB = Class.new(RuntimeError)
+      ErrorC = Class.new(RuntimeError)
+      ErrorD = Class.new(RuntimeError)
+      ErrorE = Class.new(RuntimeError)
+      ErrorF = Class.new(RuntimeError)
+      ErrorG = Class.new(RuntimeError)
+      inspect_source(cop, ['begin',
+                           '  something',
+                           'rescue ErrorA',
+                           '  handle_error',
+                           'rescue ErrorB',
+                           '  handle_error',
+                           'rescue ErrorC',
+                           '  handle_error',
+                           'rescue ErrorD',
+                           '  handle_error',
+                           'rescue ErrorE',
+                           '  handle_error',
+                           'rescue ErrorF',
+                           '  handle_error',
+                           'rescue ErrorG',
+                           '  handle_error',
+                           'end'])
+
+      expect(cop.offenses).to be_empty
+    end
+
     it 'accepts rescuing exceptions in order of level with multiple ' \
        'exceptions in a group' do
       inspect_source(cop, ['begin',
