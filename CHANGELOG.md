@@ -26,6 +26,8 @@
 * [#3421](https://github.com/bbatsov/rubocop/pull/3421): Fix clobbering `inherit_from` additions when not using Namespaces in the configs. ([@nicklamuro][])
 * [#3425](https://github.com/bbatsov/rubocop/pull/3425): Fix bug for invalid bytes in UTF-8 in `Lint/PercentStringArray` cop. ([@pocke][])
 * [#3374](https://github.com/bbatsov/rubocop/issues/3374): Make `SpaceInsideBlockBraces` and `SpaceBeforeBlockBraces` not depend on `BlockDelimiters` configuration. ([@jonas054][])
+* Fix error in `Lint/ShadowedException` cop for higher number of rescue groups. ([@groddeck][])
+[@groddeck]: https://github.com/groddeck
 
 ### Changes
 
