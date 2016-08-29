@@ -247,6 +247,51 @@ describe RuboCop::CLI, :isolated_environment do
     expect(IO.read('example.rb')).to eq(corrected.join("\n"))
   end
 
+  [:line_count_based, :semantic, :braces_for_chaining].each do |style|
+    context "when BlockDelimiters has #{style} style" do
+      it 'corrects SpaceBeforeBlockBraces, SpaceInsideBlockBraces offenses' do
+        source = ['r = foo.map{|a|',
+                  '  a.bar.to_s',
+                  '}',
+                  'foo.map{|a|',
+                  '  a.bar.to_s',
+                  '}.baz']
+        create_file('example.rb', source)
+        create_file('.rubocop.yml', ['Style/BlockDelimiters:',
+                                     "  EnforcedStyle: #{style}"])
+        expect(cli.run(['--auto-correct'])).to eq(1)
+        corrected = case style
+                    when :semantic
+                      ['r = foo.map { |a|',
+                       '  a.bar.to_s',
+                       '}',
+                       'foo.map { |a|',
+                       '  a.bar.to_s',
+                       '}.baz',
+                       '']
+                    when :braces_for_chaining
+                      ['r = foo.map do |a|',
+                       '  a.bar.to_s',
+                       'end',
+                       'foo.map { |a|',
+                       '  a.bar.to_s',
+                       '}.baz',
+                       '']
+                    when :line_count_based
+                      ['r = foo.map do |a|',
+                       '  a.bar.to_s',
+                       'end',
+                       'foo.map do |a|',
+                       '  a.bar.to_s',
+                       'end.baz',
+                       '']
+                    end
+        expect($stderr.string).to eq('')
+        expect(IO.read('example.rb')).to eq(corrected.join("\n"))
+      end
+    end
+  end
+
   it 'corrects InitialIndentation offenses' do
     source = ['  # comment 1',
               '',
