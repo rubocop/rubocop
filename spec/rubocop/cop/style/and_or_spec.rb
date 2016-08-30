@@ -253,6 +253,20 @@ describe RuboCop::Cop::Style::AndOr, :config do
       end
     end
 
+    context 'with obj.method = arg on left' do
+      it 'autocorrects "and" with && and adds parens' do
+        new_source = autocorrect_source(cop, 'obj.method = arg and x')
+        expect(new_source).to eq('(obj.method = arg) && x')
+      end
+    end
+
+    context 'with obj.method= arg on left' do
+      it 'autocorrects "and" with && and adds parens' do
+        new_source = autocorrect_source(cop, 'obj.method= arg and x')
+        expect(new_source).to eq('(obj.method= arg) && x')
+      end
+    end
+
     context 'with predicate method with arg without space on right' do
       it 'autocorrects "or" with || and adds parens' do
         new_source = autocorrect_source(cop, 'false or 3.is_a?Integer')
