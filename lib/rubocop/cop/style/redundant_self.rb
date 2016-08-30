@@ -49,7 +49,7 @@ module RuboCop
         def initialize(config = nil, options = nil)
           super
           @allowed_send_nodes = []
-          @local_variables = []
+          @local_variables_scopes = Hash.new { |hash, key| hash[key] = [] }
         end
 
         # Assignment of self.x
@@ -68,12 +68,12 @@ module RuboCop
 
         # Using self.x to distinguish from local variable x
 
-        def on_def(_node)
-          @local_variables = []
+        def on_def(node)
+          add_scope(node)
         end
 
-        def on_defs(_node)
-          @local_variables = []
+        def on_defs(node)
+          add_scope(node)
         end
 
         def on_args(node)
@@ -86,7 +86,7 @@ module RuboCop
 
         def on_lvasgn(node)
           lhs, _rhs = *node
-          @local_variables << lhs
+          @local_variables_scopes[node] << lhs
         end
 
         # Detect offenses
@@ -97,8 +97,7 @@ module RuboCop
           return unless regular_method_call?(node)
 
           return if @allowed_send_nodes.include?(node) ||
-                    @local_variables.include?(method_name)
-
+                    @local_variables_scopes[node].include?(method_name)
           add_offense(node, :expression)
         end
 
@@ -112,6 +111,13 @@ module RuboCop
 
         private
 
+        def add_scope(node)
+          local_variables = []
+          node.descendants.each do |child_node|
+            @local_variables_scopes[child_node] = local_variables
+          end
+        end
+
         def regular_method_call?(node)
           _receiver, method_name, *_args = *node
 
@@ -123,7 +129,7 @@ module RuboCop
 
         def on_argument(node)
           name, = *node
-          @local_variables << name
+          @local_variables_scopes[node] << name
         end
 
         def keyword?(method_name)

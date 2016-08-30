@@ -125,6 +125,23 @@ describe RuboCop::Cop::Style::RedundantSelf do
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
+
+    it 'accepts a self receiver used to distinguish from an argument' do
+      src = ['def foo(bar)',
+             '  puts bar, self.bar',
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts a self receiver used to distinguish from an argument' do
+      src = ['def foo(bar)',
+             '  def inner_method(); end',
+             '  puts bar, self.bar',
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
   end
 
   describe 'class methods' do
