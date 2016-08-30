@@ -11,7 +11,7 @@ module RuboCop
     end
 
     def from_json(text)
-      deserialize_offenses(JSON.load(text))
+      deserialize_offenses(JSON.parse(text))
     end
 
     def to_json(offenses)
