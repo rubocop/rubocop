@@ -77,7 +77,7 @@ module RuboCop
       end
 
       def empty_literal?(node)
-        node.children.empty?
+        children(node).empty?
       end
 
       def last_element_range_with_trailing_comma(node)

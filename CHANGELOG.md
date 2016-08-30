@@ -28,6 +28,7 @@
 * [#3374](https://github.com/bbatsov/rubocop/issues/3374): Make `SpaceInsideBlockBraces` and `SpaceBeforeBlockBraces` not depend on `BlockDelimiters` configuration. ([@jonas054][])
 * Fix error in `Lint/ShadowedException` cop for higher number of rescue groups. ([@groddeck][])
 [@groddeck]: https://github.com/groddeck
+* [#3456](https://github.com/bbatsov/rubocop/pull/3456): Don't crash on a multiline empty brace in `Style/MultilineMethodCallBraceLayout`. ([@pocke][])
 
 ### Changes
 
