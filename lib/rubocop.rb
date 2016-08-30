@@ -399,6 +399,8 @@ require 'rubocop/cop/rails/time_zone'
 require 'rubocop/cop/rails/uniq_before_pluck'
 require 'rubocop/cop/rails/validation'
 
+require 'rubocop/cop/security/json_load'
+
 require 'rubocop/cop/team'
 
 require 'rubocop/formatter/base_formatter'
