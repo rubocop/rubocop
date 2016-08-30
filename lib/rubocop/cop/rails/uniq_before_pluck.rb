@@ -72,9 +72,8 @@ module RuboCop
         end
 
         def dot_method_with_whitespace(method, node)
-          Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                    dot_method_begin_pos(method, node),
-                                    node.loc.selector.end_pos)
+          range_between(dot_method_begin_pos(method, node),
+                        node.loc.selector.end_pos)
         end
 
         def dot_method_begin_pos(method, node)

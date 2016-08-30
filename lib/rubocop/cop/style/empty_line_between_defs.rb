@@ -65,9 +65,7 @@ module RuboCop
           end_pos = prev_def.loc.end.end_pos
           source_buffer = prev_def.loc.end.source_buffer
           newline_pos = source_buffer.source.index("\n", end_pos)
-          newline = Parser::Source::Range.new(source_buffer,
-                                              newline_pos,
-                                              newline_pos + 1)
+          newline = range_between(newline_pos, newline_pos + 1)
           ->(corrector) { corrector.insert_after(newline, "\n") }
         end
       end

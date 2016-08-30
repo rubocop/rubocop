@@ -123,8 +123,8 @@ module RuboCop
                         else
                           line_begin_pos - column_delta.abs
                         end
-        Parser::Source::Range.new(expr.source_buffer, pos_to_remove,
-                                  pos_to_remove + column_delta.abs)
+
+        range_between(pos_to_remove, pos_to_remove + column_delta.abs)
       end
 
       def remove(range, corrector)
@@ -132,9 +132,7 @@ module RuboCop
         $stderr = StringIO.new # Avoid error messages on console
         corrector.remove(range)
       rescue RuntimeError
-        range = Parser::Source::Range.new(range.source_buffer,
-                                          range.begin_pos + 1,
-                                          range.end_pos + 1)
+        range = range_between(range.begin_pos + 1, range.end_pos + 1)
         retry if range.source =~ /^ +$/
       ensure
         $stderr = original_stderr

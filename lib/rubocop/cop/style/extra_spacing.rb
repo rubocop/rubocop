@@ -100,20 +100,24 @@ module RuboCop
         end
 
         def check_other(t1, t2, ast)
+          extra_space_range(t1, t2) do |range|
+            # Unary + doesn't appear as a token and needs special handling.
+            next if ignored_range?(ast, range.begin_pos)
+            next if unary_plus_non_offense?(range)
+
+            add_offense(range, range, MSG_UNNECESSARY)
+          end
+        end
+
+        def extra_space_range(t1, t2)
           return if t1.pos.line != t2.pos.line
           return if allow_for_alignment? && aligned_tok?(t2)
 
           start_pos = t1.pos.end_pos
           end_pos = t2.pos.begin_pos - 1
           return if end_pos <= start_pos
-          return if ignored_range?(ast, start_pos)
 
-          range = Parser::Source::Range.new(processed_source.buffer,
-                                            start_pos, end_pos)
-          # Unary + doesn't appear as a token and needs special handling.
-          return if unary_plus_non_offense?(range)
-
-          add_offense(range, range, MSG_UNNECESSARY)
+          yield range_between(start_pos, end_pos)
         end
 
         def aligned_tok?(token)

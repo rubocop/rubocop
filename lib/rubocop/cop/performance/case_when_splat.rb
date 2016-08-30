@@ -98,25 +98,16 @@ module RuboCop
           new_condition.join(', ')
         end
 
-        def inline_fix_branch(corrector, node, conditions, new_condition)
-          range =
-            Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                      conditions[0].loc.expression.begin_pos,
-                                      conditions[-1].loc.expression.end_pos)
+        def inline_fix_branch(corrector, _node, conditions, new_condition)
+          range = range_between(conditions[0].loc.expression.begin_pos,
+                                conditions[-1].loc.expression.end_pos)
           corrector.replace(range, new_condition)
         end
 
         def reorder_condition(corrector, node, new_condition)
           *_conditions, body = *node
-          parent = node.parent
-          _case_branch, *when_branches, _else_branch = *parent
-          current_index = when_branches.index { |branch| branch == node }
-          next_branch = when_branches[current_index + 1]
-          range = Parser::Source::Range.new(parent,
-                                            node.source_range.begin_pos,
-                                            next_branch.source_range.begin_pos)
-
-          corrector.remove(range)
+          _case_branch, *when_branches, _else_branch = *node.parent
+          corrector.remove(when_branch_range(node, when_branches))
 
           correction = if same_line?(node, body)
                          new_condition_with_then(node, new_condition)
@@ -125,6 +116,14 @@ module RuboCop
                        end
 
           corrector.insert_after(when_branches.last.source_range, correction)
+        end
+
+        def when_branch_range(node, when_branches)
+          current_index = when_branches.index { |branch| branch == node }
+          next_branch = when_branches[current_index + 1]
+
+          range_between(node.source_range.begin_pos,
+                        next_branch.source_range.begin_pos)
         end
 
         def same_line?(node, other)

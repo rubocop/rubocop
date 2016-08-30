@@ -57,10 +57,9 @@ module RuboCop
         end
 
         def offense(node, method_name, block_method_name)
-          sb = node.source_range.source_buffer
           block_start = node.loc.begin.begin_pos
           block_end = node.loc.end.end_pos
-          range = Parser::Source::Range.new(sb, block_start, block_end)
+          range = range_between(block_start, block_end)
 
           add_offense(node,
                       range,
@@ -91,9 +90,7 @@ module RuboCop
         end
 
         def block_range_with_space(node)
-          block_range =
-            Parser::Source::Range.new(node.source_range.source_buffer,
-                                      begin_pos_for_replacement(node),
+          block_range = range_between(begin_pos_for_replacement(node),
                                       node.loc.end.end_pos)
           range_with_surrounding_space(block_range, :left)
         end

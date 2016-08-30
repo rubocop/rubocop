@@ -181,8 +181,7 @@ module RuboCop
           if delta > 0
             add_space_before(loc_end, delta)
           elsif delta < 0
-            source = node.source_range.source_buffer
-            remove_space_before(loc_end.begin_pos, -delta, source)
+            remove_space_before(loc_end.begin_pos, -delta)
           end
         end
 
@@ -190,8 +189,8 @@ module RuboCop
           ->(corrector) { corrector.insert_before(loc, ' ' * delta) }
         end
 
-        def remove_space_before(end_pos, delta, source)
-          range = Parser::Source::Range.new(source, end_pos - delta, end_pos)
+        def remove_space_before(end_pos, delta)
+          range = range_between(end_pos - delta, end_pos)
           ->(corrector) { corrector.remove(range) }
         end
       end

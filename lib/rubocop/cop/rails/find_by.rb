@@ -26,9 +26,8 @@ module RuboCop
           return unless (recv_and_method = where_first(node))
           receiver, second_method = *recv_and_method
 
-          range = Parser::Source::Range.new(node.source_range.source_buffer,
-                                            receiver.loc.selector.begin_pos,
-                                            node.loc.selector.end_pos)
+          range = range_between(receiver.loc.selector.begin_pos,
+                                node.loc.selector.end_pos)
 
           add_offense(node, range, format(MSG, second_method))
         end
@@ -41,11 +40,8 @@ module RuboCop
           return if second_method == :first
 
           where_loc = receiver.loc.selector
-          first_loc = Parser::Source::Range.new(
-            node.source_range.source_buffer,
-            node.loc.dot.begin_pos,
-            node.loc.selector.end_pos
-          )
+          first_loc = range_between(node.loc.dot.begin_pos,
+                                    node.loc.selector.end_pos)
 
           lambda do |corrector|
             corrector.replace(where_loc, 'find_by')

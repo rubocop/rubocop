@@ -134,8 +134,7 @@ module RuboCop
           key = node.children.first.source_range
           op = node.loc.operator
 
-          range = Parser::Source::Range.new(key.source_buffer,
-                                            key.begin_pos, op.end_pos)
+          range = range_between(key.begin_pos, op.end_pos)
           range = range_with_surrounding_space(range, :right)
           corrector.replace(range,
                             range.source.sub(/^:(.*\S)\s*=>\s*$/, '\1: '))

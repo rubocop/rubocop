@@ -17,6 +17,18 @@ module RuboCop
     def file
       return cache_path unless cache_path_expired?
 
+      request do |response|
+        open cache_path, 'w' do |io|
+          io.write response.body
+        end
+      end
+
+      cache_path
+    end
+
+    private
+
+    def request
       http = Net::HTTP.new(@uri.hostname, @uri.port)
       http.use_ssl = true if @uri.instance_of? URI::HTTPS
 
@@ -24,18 +36,10 @@ module RuboCop
       if cache_path_exists?
         request['If-Modified-Since'] = File.stat(cache_path).mtime.rfc2822
       end
+
       response = http.request(request)
-
-      cache_path.tap do |f|
-        if response.is_a?(Net::HTTPSuccess)
-          open f, 'w' do |io|
-            io.write response.body
-          end
-        end
-      end
+      yield response if response.is_a?(Net::HTTPSuccess)
     end
-
-    private
 
     def cache_path
       File.expand_path(".rubocop-#{cache_name_from_uri}", @base_dir)

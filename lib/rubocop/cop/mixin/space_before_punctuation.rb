@@ -20,10 +20,8 @@ module RuboCop
           next unless space_missing?(t1, t2)
           next if space_required_after?(t1)
 
-          buffer = processed_source.buffer
-          pos_before_punctuation = Parser::Source::Range.new(buffer,
-                                                             t1.pos.end_pos,
-                                                             t2.pos.begin_pos)
+          pos_before_punctuation = range_between(t1.pos.end_pos,
+                                                 t2.pos.begin_pos)
 
           yield t2, pos_before_punctuation
         end

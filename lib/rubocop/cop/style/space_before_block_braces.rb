@@ -34,9 +34,8 @@ module RuboCop
         end
 
         def space_detected(left_brace, space_plus_brace)
-          space = Parser::Source::Range.new(left_brace.source_buffer,
-                                            space_plus_brace.begin_pos,
-                                            left_brace.begin_pos)
+          space = range_between(space_plus_brace.begin_pos,
+                                left_brace.begin_pos)
           add_offense(space, space, 'Space detected to the left of {.') do
             opposite_style_detected
           end

@@ -127,9 +127,7 @@ module RuboCop
               node.source_range.begin_pos
             end
 
-          Parser::Source::Range.new(node.source_range.source_buffer,
-                                    begin_pos,
-                                    node.source_range.end_pos)
+          range_between(begin_pos, node.source_range.end_pos)
         end
       end
     end

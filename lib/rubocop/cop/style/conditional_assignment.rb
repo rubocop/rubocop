@@ -361,14 +361,24 @@ module RuboCop
         # of the longest line + the length of the corrected assignment is
         # greater than the max configured line length
         def correction_exceeds_line_limit?(node, branches)
-          return false unless config.for_cop(LINE_LENGTH)[ENABLED]
-          assignment = lhs(tail(branches[0]))
-          max_line_length = config.for_cop(LINE_LENGTH)[MAX]
-          indentation_width = config.for_cop(INDENTATION_WIDTH)[WIDTH] || 2
-          return true if longest_rhs(branches) + indentation_width +
-                         assignment.length > max_line_length
+          return false unless line_length_cop_enabled?
 
+          assignment = lhs(tail(branches[0]))
+
+          longest_rhs_exceeds_line_limit?(branches, assignment) ||
+            longest_line_exceeds_line_limit?(node, assignment)
+        end
+
+        def longest_rhs_exceeds_line_limit?(branches, assignment)
+          longest_rhs_full_length(branches, assignment) > max_line_length
+        end
+
+        def longest_line_exceeds_line_limit?(node, assignment)
           longest_line(node, assignment).length > max_line_length
+        end
+
+        def longest_rhs_full_length(branches, assignment)
+          longest_rhs(branches) + indentation_width + assignment.length
         end
 
         def longest_line(node, assignment)
@@ -384,9 +394,16 @@ module RuboCop
           branches.map { |branch| branch.children.last.source.length }.max
         end
 
-        def lines_with_numbers(node)
-          line_nos = node.loc.line..node.loc.last_line
-          node.source.lines.zip(line_nos)
+        def line_length_cop_enabled?
+          config.for_cop(LINE_LENGTH)[ENABLED]
+        end
+
+        def max_line_length
+          config.for_cop(LINE_LENGTH)[MAX]
+        end
+
+        def indentation_width
+          config.for_cop(INDENTATION_WIDTH)[WIDTH] || 2
         end
 
         def single_line_conditions_only?
@@ -454,21 +471,8 @@ module RuboCop
           include ConditionalCorrectorHelper
 
           def correct(node)
-            condition, if_branch, else_branch = *node
-            _variable, *_operator, if_rhs = *if_branch
-            _else_variable, *_operator, else_rhs = *else_branch
-            condition = condition.source
-            if_rhs = if_rhs.source
-            else_rhs = else_rhs.source
-
-            ternary = "#{condition} ? #{if_rhs} : #{else_rhs}"
-            if if_branch.send_type? && if_branch.method_name != :[]=
-              ternary = "(#{ternary})"
-            end
-            correction = "#{lhs(if_branch)}#{ternary}"
-
             lambda do |corrector|
-              corrector.replace(node.source_range, correction)
+              corrector.replace(node.source_range, correction(node))
             end
           end
 
@@ -487,6 +491,25 @@ module RuboCop
           end
 
           private
+
+          def correction(node)
+            condition, if_branch, else_branch = *node
+
+            "#{lhs(if_branch)}#{ternary(condition, if_branch, else_branch)}"
+          end
+
+          def ternary(condition, if_branch, else_branch)
+            _variable, *_operator, if_rhs = *if_branch
+            _else_variable, *_operator, else_rhs = *else_branch
+
+            expr = "#{condition.source} ? #{if_rhs.source} : #{else_rhs.source}"
+
+            element_assignment?(if_branch) ? "(#{expr})" : expr
+          end
+
+          def element_assignment?(node)
+            node.send_type? && node.method_name != :[]=
+          end
 
           def extract_branches(node)
             *_var, rhs = *node

@@ -116,6 +116,10 @@ module RuboCop
         end
       end
 
+      def range_between(start_pos, end_pos)
+        Parser::Source::Range.new(processed_source.buffer, start_pos, end_pos)
+      end
+
       def range_with_surrounding_comma(range, side = :both)
         buffer = @processed_source.buffer
         src = buffer.source

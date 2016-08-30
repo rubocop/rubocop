@@ -46,12 +46,12 @@ module RuboCop
           return if !rescue_group_rescues_multiple_levels &&
                     sorted?(rescued_groups)
 
-          add_offense(node, offense_range(node, rescues))
+          add_offense(node, offense_range(rescues))
         end
 
         private
 
-        def offense_range(node, rescues)
+        def offense_range(rescues)
           first_rescue = rescues.first
           last_rescue = rescues.last
           last_exceptions, = *last_rescue
@@ -61,9 +61,8 @@ module RuboCop
                     else
                       last_rescue.loc.keyword.end_pos
                     end
-          Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                    first_rescue.loc.expression.begin_pos,
-                                    end_pos)
+
+          range_between(first_rescue.loc.expression.begin_pos, end_pos)
         end
 
         def rescue_modifier?(node)

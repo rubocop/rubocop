@@ -84,9 +84,7 @@ module RuboCop
 
           align_with[:variable] =
             if !line_break_before_keyword?(expr, inner_node)
-              Parser::Source::Range.new(expr.source_buffer,
-                                        expr.begin_pos,
-                                        inner_node.loc.keyword.end_pos)
+              range_between(expr.begin_pos, inner_node.loc.keyword.end_pos)
             else
               inner_node.loc.keyword
             end
@@ -130,9 +128,9 @@ module RuboCop
           buffer = expr.source_buffer
           source = buffer.source_line(expr.line)
           range  = buffer.line_range(expr.line)
-          Parser::Source::Range.new(buffer,
-                                    range.begin_pos + (source =~ /\S/),
-                                    range.begin_pos + (source =~ /\s*\z/))
+
+          range_between(range.begin_pos + (source =~ /\S/),
+                        range.begin_pos + (source =~ /\s*\z/))
         end
       end
     end

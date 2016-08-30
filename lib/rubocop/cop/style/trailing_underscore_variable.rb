@@ -101,10 +101,8 @@ module RuboCop
               node.loc.operator.begin_pos
             end
 
-          range =
-            Parser::Source::Range.new(node.source_range.source_buffer,
-                                      first_offense.source_range.begin_pos,
-                                      end_position)
+          range = range_between(first_offense.source_range.begin_pos,
+                                end_position)
           range_with_surrounding_space(range, :right)
         end
       end

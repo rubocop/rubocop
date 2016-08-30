@@ -46,9 +46,7 @@ module RuboCop
           return unless offense?(condition)
 
           expr = node.source_range
-          range = Parser::Source::Range.new(expr.source_buffer,
-                                            expr.begin_pos,
-                                            condition.source_range.end_pos)
+          range = range_between(expr.begin_pos, condition.source_range.end_pos)
           add_offense(range, range)
         end
 

@@ -67,12 +67,9 @@ module RuboCop
       end
 
       def whitespace_range(node)
-        source_buffer = node.source_range.source_buffer
         begin_pos = node.loc.end.begin_pos
 
-        Parser::Source::Range.new(source_buffer,
-                                  begin_pos - node.loc.end.column,
-                                  begin_pos)
+        range_between(begin_pos - node.loc.end.column, begin_pos)
       end
 
       def alignment_column(align_to)

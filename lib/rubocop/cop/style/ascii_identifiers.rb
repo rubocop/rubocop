@@ -25,8 +25,7 @@ module RuboCop
                            identifier.text.index(first_offense)
           end_position   = start_position + first_offense.length
 
-          Parser::Source::Range.new(identifier.pos.source_buffer,
-                                    start_position, end_position)
+          range_between(start_position, end_position)
         end
 
         def first_non_ascii_chars(string)

@@ -33,9 +33,8 @@ module RuboCop
             else
               args_expr = args_node(node).source_range
               args_with_space = range_with_surrounding_space(args_expr, :left)
-              just_space = Parser::Source::Range.new(args_expr.source_buffer,
-                                                     args_with_space.begin_pos,
-                                                     args_expr.begin_pos)
+              just_space = range_between(args_with_space.begin_pos,
+                                         args_expr.begin_pos)
               corrector.replace(just_space, '(')
               corrector.insert_after(args_expr, ')')
             end

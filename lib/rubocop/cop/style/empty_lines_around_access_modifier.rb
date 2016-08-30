@@ -38,11 +38,8 @@ module RuboCop
         private
 
         def line_range(node)
-          Parser::Source::Range.new(
-            processed_source.buffer,
-            node.source_range.begin_pos - node.loc.column,
-            node.source_range.end_pos
-          )
+          range_between(node.source_range.begin_pos - node.loc.column,
+                        node.source_range.end_pos)
         end
 
         def previous_line_ignoring_comments(processed_source, send_line)

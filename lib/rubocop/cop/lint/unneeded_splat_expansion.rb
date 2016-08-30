@@ -72,18 +72,23 @@ module RuboCop
         def autocorrect(node)
           variable, = *node
           parent = node.parent
-          grandparent = parent.parent
+          loc = node.loc
 
           lambda do |corrector|
             if !variable.array_type?
-              corrector.replace(node.loc.expression, "[#{variable.source}]")
-            elsif parent.when_type? || parent.send_type? ||
-                  (grandparent && grandparent.resbody_type?)
-              corrector.replace(node.loc.expression, remove_brackets(variable))
+              corrector.replace(loc.expression, "[#{variable.source}]")
+            elsif unneeded_brackets?(parent)
+              corrector.replace(loc.expression, remove_brackets(variable))
             else
-              corrector.remove(node.loc.operator)
+              corrector.remove(loc.operator)
             end
           end
+        end
+
+        def unneeded_brackets?(node)
+          parent = node.parent
+
+          node.when_type? || node.send_type? || (parent && parent.resbody_type?)
         end
 
         def remove_brackets(array)

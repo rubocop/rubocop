@@ -24,7 +24,7 @@ module RuboCop
         def autocorrect(comment)
           expr = comment.loc.expression
           b = expr.begin_pos
-          hash_mark = Parser::Source::Range.new(expr.source_buffer, b, b + 1)
+          hash_mark = range_between(b, b + 1)
           ->(corrector) { corrector.insert_after(hash_mark, ' ') }
         end
       end

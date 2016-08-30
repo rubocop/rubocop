@@ -66,10 +66,8 @@ module RuboCop
         def autocorrect_if_unless(outer_node, inner_node)
           outer_cond, = *outer_node
 
-          range =
-            Parser::Source::Range.new(inner_node.source_range.source_buffer,
-                                      inner_node.loc.keyword.begin_pos,
-                                      outer_cond.source_range.end_pos)
+          range = range_between(inner_node.loc.keyword.begin_pos,
+                                outer_cond.source_range.end_pos)
 
           lambda do |corrector|
             corrector.replace(range, new_expression(outer_node, inner_node))

@@ -38,25 +38,28 @@ module RuboCop
 
         def autocorrect(node)
           if node.while_post_type? || node.until_post_type?
-            _, body = *node
-            return lambda do |corrector|
-              corrector.replace(body.loc.begin, 'loop do')
-              corrector.remove(body.loc.end.end.join(node.source_range.end))
-            end
-          end
-
-          if node.modifier_form?
-            range = node.source_range
-            replacement = modifier_replacement(node)
+            replace_begin_end_with_modifier(node)
+          elsif node.modifier_form?
+            replace_source(node.source_range, modifier_replacement(node))
           else
-            range = non_modifier_range(node)
-            replacement = 'loop do'
+            replace_source(non_modifier_range(node), 'loop do')
           end
-
-          ->(corrector) { corrector.replace(range, replacement) }
         end
 
         private
+
+        def replace_begin_end_with_modifier(node)
+          _, body = *node
+
+          lambda do |corrector|
+            corrector.replace(body.loc.begin, 'loop do')
+            corrector.remove(body.loc.end.end.join(node.source_range.end))
+          end
+        end
+
+        def replace_source(range, replacement)
+          ->(corrector) { corrector.replace(range, replacement) }
+        end
 
         def modifier_replacement(node)
           _, body = *node

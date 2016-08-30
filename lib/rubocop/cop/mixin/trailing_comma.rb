@@ -15,8 +15,7 @@ module RuboCop
       end
 
       def check(node, items, kind, begin_pos, end_pos)
-        sb = node.source_range.source_buffer
-        after_last_item = Parser::Source::Range.new(sb, begin_pos, end_pos)
+        after_last_item = range_between(begin_pos, end_pos)
 
         return if heredoc?(after_last_item.source)
 
@@ -25,15 +24,14 @@ module RuboCop
         if comma_offset && !inside_comment?(after_last_item, comma_offset)
           check_comma(node, kind, after_last_item.begin_pos + comma_offset)
         elsif should_have_comma?(style, node)
-          put_comma(node, items, kind, sb)
+          put_comma(node, items, kind)
         end
       end
 
       def check_comma(node, kind, comma_pos)
         return if should_have_comma?(style, node)
 
-        avoid_comma(kind, comma_pos, node.source_range.source_buffer,
-                    extra_avoid_comma_info)
+        avoid_comma(kind, comma_pos, extra_avoid_comma_info)
       end
 
       def extra_avoid_comma_info
@@ -117,24 +115,22 @@ module RuboCop
         a.last_line == b.line
       end
 
-      def avoid_comma(kind, comma_begin_pos, sb, extra_info)
-        range = Parser::Source::Range.new(sb, comma_begin_pos,
-                                          comma_begin_pos + 1)
+      def avoid_comma(kind, comma_begin_pos, extra_info)
+        range = range_between(comma_begin_pos, comma_begin_pos + 1)
         article = kind =~ /array/ ? 'an' : 'a'
         add_offense(range, range,
                     format(MSG, 'Avoid', format(kind, article)) +
                     "#{extra_info}.")
       end
 
-      def put_comma(node, items, kind, sb)
+      def put_comma(node, items, kind)
         last_item = items.last
         return if last_item.block_pass_type?
 
         last_expr = last_item.source_range
         ix = last_expr.source.rindex("\n") || 0
         ix += last_expr.source[ix..-1] =~ /\S/
-        range = Parser::Source::Range.new(sb, last_expr.begin_pos + ix,
-                                          last_expr.end_pos)
+        range = range_between(last_expr.begin_pos + ix, last_expr.end_pos)
         autocorrect_range = avoid_autocorrect?(elements(node)) ? nil : range
 
         add_offense(autocorrect_range, range,
