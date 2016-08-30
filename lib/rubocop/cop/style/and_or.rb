@@ -78,9 +78,18 @@ module RuboCop
         def correct_send(node, corrector)
           receiver, method_name, *args = *node
           return correct_not(node, receiver, corrector) if method_name == :!
+          if method_name.to_s.end_with?('=')
+            return correct_setter(node, corrector)
+          end
           return unless correctable_send?(node)
 
           corrector.replace(whitespace_before_arg(node), '('.freeze)
+          corrector.insert_after(args.last.source_range, ')'.freeze)
+        end
+
+        def correct_setter(node, corrector)
+          receiver, _method_name, *args = *node
+          corrector.insert_before(receiver.source_range, '('.freeze)
           corrector.insert_after(args.last.source_range, ')'.freeze)
         end
 

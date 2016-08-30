@@ -12,6 +12,7 @@
 
 ### Bug fixes
 
+* [#3445](https://github.com/bbatsov/rubocop/issues/3445): Fix bad autocorrect for `Style/AndOr` cop. ([@mikezter][])
 * [#3349](https://github.com/bbatsov/rubocop/issues/3349): Fix bad autocorrect for `Style/Lambda` cop. ([@metcalf][])
 * [#3351](https://github.com/bbatsov/rubocop/issues/3351): Fix bad auto-correct for `Performance/RedundantMatch` cop. ([@annaswims][])
 * [#3347](https://github.com/bbatsov/rubocop/issues/3347): Prevent infinite loop in `Style/TernaryParentheses` cop when used together with `Style/RedundantParentheses`. ([@drenmi][])
@@ -2334,3 +2335,4 @@
 [@annaswims]: https://github.com/annaswims
 [@soutaro]: https://github.com/soutaro
 [@nicklamuro]: https://github.com/nicklamuro
+[@mikezter]: https://github.com/mikezter
