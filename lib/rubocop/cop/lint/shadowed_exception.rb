@@ -44,7 +44,7 @@ module RuboCop
           end
 
           return if !rescue_group_rescues_multiple_levels &&
-                    rescued_groups == sort_rescued_groups(rescued_groups)
+                    sorted?(rescued_groups)
 
           add_offense(node, offense_range(node, rescues))
         end
@@ -98,18 +98,18 @@ module RuboCop
           end
         end
 
-        def sort_rescued_groups(groups)
-          groups.sort do |x, y|
+        def sorted?(rescued_groups)
+          rescued_groups.each_cons(2).all? do |x, y|
             if x.include?(Exception)
-              1
+              false
             elsif y.include?(Exception)
-              -1
+              true
             elsif x.none? || y.none?
-              # do not change the order if a group is empty or only contains
+              # consider sorted if a group is empty or only contains
               # `nil`s
-              0
+              true
             else
-              x <=> y || 0
+              (x <=> y || 0) <= 0
             end
           end
         end
