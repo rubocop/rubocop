@@ -1482,3 +1482,7 @@ Rails/UniqBeforePluck:
 Rails/Validation:
   Description: 'Use validates :attribute, hash of validations.'
   Enabled: true
+
+Security/JSONLoad:
+  Description : 'Prefer usage of JSON.parse'
+  Enabled: true
