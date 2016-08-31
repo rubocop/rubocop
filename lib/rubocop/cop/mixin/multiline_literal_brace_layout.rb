@@ -69,11 +69,16 @@ module RuboCop
       end
 
       def ignored_literal?(node)
-        implicit_literal?(node) || empty_literal?(node) || node.single_line?
+        implicit_literal?(node) || empty_literal?(node) || node.single_line? || single_line_disregarding_receiver?(node)
       end
 
       def implicit_literal?(node)
         !node.loc.begin
+      end
+
+      def single_line_disregarding_receiver?(node)
+        receiver, method_name, args = *node
+        receiver && receiver.loc.end.line == node.loc.end.line
       end
 
       def empty_literal?(node)

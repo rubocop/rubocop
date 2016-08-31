@@ -56,5 +56,12 @@ describe RuboCop::Cop::Style::MultilineMethodCallBraceLayout, :config do
       inspect_source(cop, 'puts("Hello world!")')
       expect(cop.offenses).to be_empty
     end
+
+    it 'ignores single-line calls with multi-line receiver' do
+      inspect_source(cop, ['[',
+                           '].join(" ")'
+      ])
+      expect(cop.offenses).to be_empty
+    end
   end
 end
