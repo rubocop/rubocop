@@ -124,17 +124,23 @@ module RuboCop
       end
 
       def put_comma(node, items, kind)
+        return if avoid_autocorrect?(elements(node))
+
         last_item = items.last
         return if last_item.block_pass_type?
 
-        last_expr = last_item.source_range
-        ix = last_expr.source.rindex("\n") || 0
-        ix += last_expr.source[ix..-1] =~ /\S/
-        range = range_between(last_expr.begin_pos + ix, last_expr.end_pos)
-        autocorrect_range = avoid_autocorrect?(elements(node)) ? nil : range
+        range = autocorrect_range(last_item)
 
-        add_offense(autocorrect_range, range,
+        add_offense(range, range,
                     format(MSG, 'Put a', format(kind, 'a multiline') + '.'))
+      end
+
+      def autocorrect_range(item)
+        expr = item.source_range
+        ix = expr.source.rindex("\n") || 0
+        ix += expr.source[ix..-1] =~ /\S/
+
+        range_between(expr.begin_pos + ix, expr.end_pos)
       end
 
       # By default, there's no reason to avoid auto-correct.
