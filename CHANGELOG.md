@@ -44,6 +44,7 @@
 * [#3460](https://github.com/bbatsov/rubocop/issues/3460): Fix false positives in `Style/InlineComment` cop. ([@drenmi][])
 * [#3485](https://github.com/bbatsov/rubocop/issues/3485): Make OneLineConditional cop not register offense for empty else. ([@tejasbubane][])
 * [#3508](https://github.com/bbatsov/rubocop/pull/3508): Fix false negatives in `Rails/NotNullColumn`. ([@pocke][])
+* [#3462](https://github.com/bbatsov/rubocop/issues/3462): Don't create MultilineMethodCallBraceLayout offenses for single-line method calls when receiver spans multiple lines. ([@maxjacobson][])
 
 ### Changes
 
