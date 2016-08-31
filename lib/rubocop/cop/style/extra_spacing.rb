@@ -30,14 +30,7 @@ module RuboCop
           return if processed_source.ast.nil?
 
           if force_equal_sign_alignment?
-            @asgn_tokens = processed_source.tokens.select { |t| equal_sign?(t) }
-            # we don't want to operate on equals signs which are part of an
-            #   optarg in a method definition
-            # e.g.: def method(optarg = default_val); end
-            @asgn_tokens = remove_optarg_equals(@asgn_tokens, processed_source)
-
-            # Only attempt to align the first = on each line
-            @asgn_tokens = Set.new(@asgn_tokens.uniq { |t| t.pos.line })
+            @asgn_tokens = assignment_tokens
             @asgn_lines  = @asgn_tokens.map { |t| t.pos.line }
             # Don't attempt to correct the same = more than once
             @corrected   = Set.new
@@ -59,6 +52,17 @@ module RuboCop
         end
 
         private
+
+        def assignment_tokens
+          tokens = processed_source.tokens.select { |t| equal_sign?(t) }
+          # we don't want to operate on equals signs which are part of an
+          #   optarg in a method definition
+          # e.g.: def method(optarg = default_val); end
+          tokens = remove_optarg_equals(tokens, processed_source)
+
+          # Only attempt to align the first = on each line
+          Set.new(tokens.uniq { |t| t.pos.line })
+        end
 
         def check_tokens(ast, t1, t2)
           return if t2.type == :tNL
