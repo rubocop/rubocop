@@ -535,9 +535,14 @@ Style/GuardClause:
 Style/HashSyntax:
   EnforcedStyle: ruby19
   SupportedStyles:
+    # checks for 1.9 syntax (e.g. {a: 1}) for all symbol keys
     - ruby19
-    - ruby19_no_mixed_keys
+    # checks for hash rocket syntax for all hashes
     - hash_rockets
+    # forbids mixed key syntaxes (e.g. {a: 1, :b => 2})
+    - no_mixed_keys
+    # enforces both ruby19 and no_mixed_keys styles
+    - ruby19_no_mixed_keys
   # Force hashes that have a symbol value to use hash rockets
   UseHashRocketsWithSymbolValues: false
   # Do not suggest { a?: 1 } over { :a? => 1 } in ruby19 style
