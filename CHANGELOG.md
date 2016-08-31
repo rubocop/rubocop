@@ -32,6 +32,7 @@
 [@groddeck]: https://github.com/groddeck
 * [#3456](https://github.com/bbatsov/rubocop/pull/3456): Don't crash on a multiline empty brace in `Style/MultilineMethodCallBraceLayout`. ([@pocke][])
 * [#3423](https://github.com/bbatsov/rubocop/issues/3423): Checks if .rubocop is a file before parsing. ([@joejuzl][])
+* [#3462](https://github.com/bbatsov/rubocop/issues/3423): Don't create offenses for single-line method calls when receiver spans multiple lines. ([@maxjacobson][])
 
 ### Changes
 
