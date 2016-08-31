@@ -290,6 +290,16 @@ Usage: rubocop [options] [file1, file2, ...]
       end
     end
 
+    context '.rubocop directory' do
+      before do
+        FileUtils.mkdir '.rubocop'
+      end
+
+      it 'is ignored and command line options are used' do
+        is_expected.to eq(color: false)
+      end
+    end
+
     context 'RUBOCOP_OPTS environment variable' do
       it 'has lower precedence then command line options' do
         with_env_options '--color' do
