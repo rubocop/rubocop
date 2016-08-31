@@ -12,6 +12,7 @@
 
 ### Bug fixes
 
+* [#3383](https://github.com/bbatsov/rubocop/issues/3383): Fix the local variable reset issue with `Style/RedundantSelf` cop. ([@bankair][])
 * [#3445](https://github.com/bbatsov/rubocop/issues/3445): Fix bad autocorrect for `Style/AndOr` cop. ([@mikezter][])
 * [#3349](https://github.com/bbatsov/rubocop/issues/3349): Fix bad autocorrect for `Style/Lambda` cop. ([@metcalf][])
 * [#3351](https://github.com/bbatsov/rubocop/issues/3351): Fix bad auto-correct for `Performance/RedundantMatch` cop. ([@annaswims][])
