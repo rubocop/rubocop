@@ -43,6 +43,7 @@
 * Rename `Lint/UselessArraySplat` to `Lint/UnneededSplatExpansion`, and add functionality to check for unnecessary expansion of other literals. ([@rrosenblum][])
 * No longer register an offense for splat expansion of an array literal in `Performance/CaseWhenSplat`. `Lint/UnneededSplatExpansion` now handles this behavior. ([@rrosenblum][])
 * `Lint/InheritException` restricts inheriting from standard library subclasses of `Exception`. ([@metcalf][])
+* No longer register an offense if the first line of code starts with `#\` in `Style/LeadingCommentSpace`. `config.ru` files consider such lines as options. ([@scottohara][])
 
 ## 0.42.0 (2016-07-25)
 
@@ -2347,3 +2348,4 @@
 [@joejuzl]: https://github.com/joejuzl
 [@hedgesky]: https://github.com/hedgesky
 [@tjwallace]: https://github.com/tjwallace
+[@scottohara]: https://github.com/scottohara
