@@ -30,7 +30,7 @@ overrides the setting.
 
 ### Cache Path
 
-By default, the cache is stored in in a subdirectory of the temporary
+By default, the cache is stored in a subdirectory of the temporary
 directory, `/tmp/rubocop_cache/` on Unix-like systems. The
 configuration parameter `AllCops: CacheRootDirectory` can be used to
 set it to a different path. One reason to use this option could be
