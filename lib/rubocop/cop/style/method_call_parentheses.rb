@@ -41,7 +41,8 @@ module RuboCop
               next variable_in_mass_assignment?(method_name, asgn_node)
             end
 
-            asgn_node.loc.name.source == method_name.to_s
+            asgn_node.loc.respond_to?(:name) &&
+              (asgn_node.loc.name.source == method_name.to_s)
           end
         end
 
