@@ -71,7 +71,7 @@ module RuboCop
                 correct_other(expr, corrector)
               end
             end
-            corrector.replace(node.loc.operator, replacement)
+            corrector.replace(node.loc.operator, replacement) unless expr2.type == :return
           end
         end
 

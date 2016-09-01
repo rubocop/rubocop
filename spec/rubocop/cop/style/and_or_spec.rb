@@ -131,6 +131,12 @@ describe RuboCop::Cop::Style::AndOr, :config do
       expect(new_source).to eq('(x = a + b) && (return x)')
     end
 
+    it 'leaves *and* as is if auto-correction changes the meaning return without value' do
+      src = 'method(a) and return'
+      new_source = autocorrect_source(cop, src)
+      expect(new_source).to eq(src)
+    end
+
     it 'warns on short-circuit (and)' do
       inspect_source(cop, 'x = a + b and return x')
       expect(cop.offenses.size).to eq(1)
