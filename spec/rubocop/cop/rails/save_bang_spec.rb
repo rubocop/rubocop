@@ -50,6 +50,14 @@ describe RuboCop::Cop::Rails::SaveBang do
       expect(cop.messages).to be_empty
     end
 
+    it "when assigning the return value of #{method} with block" do
+      inspect_source(cop, "x = object.#{method} do |obj|\n" \
+                          "  obj.name = 'Tom'\n" \
+                          'end')
+
+      expect(cop.messages).to be_empty
+    end
+
     it "when using #{method} with if" do
       inspect_source(cop, "if object.#{method}; something; end")
 
