@@ -50,23 +50,30 @@ module RuboCop
 
     def inspect_files(files)
       inspected_files = []
-      all_passed = true
 
       formatter_set.started(files)
 
-      files.each do |file|
-        break if aborting?
-        offenses = process_file(file)
-        all_passed = false if offenses.any? { |o| considered_failure?(o) }
-        inspected_files << file
-        break if @options[:fail_fast] && !all_passed
-      end
-
-      all_passed
+      each_inspected_file(files) { |file| inspected_files << file }
     ensure
       ResultCache.cleanup(@config_store, @options[:debug]) if cached_run?
       formatter_set.finished(inspected_files.freeze)
       formatter_set.close_output_files
+    end
+
+    def each_inspected_file(files)
+      files.reduce(true) do |all_passed, file|
+        break false if aborting?
+
+        offenses = process_file(file)
+        yield file
+
+        if offenses.any? { |o| considered_failure?(o) }
+          break false if @options[:fail_fast]
+          next false
+        end
+
+        all_passed
+      end
     end
 
     def list_files(paths)
