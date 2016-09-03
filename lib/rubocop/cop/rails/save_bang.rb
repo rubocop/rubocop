@@ -60,6 +60,8 @@ module RuboCop
         def return_value_used?(node)
           return false unless node.parent
           node.parent.lvasgn_type? ||
+            (node.parent.block_type? && node.parent.parent &&
+              node.parent.parent.lvasgn_type?) ||
             (node.parent.if_type? && node.sibling_index.zero?)
         end
 
