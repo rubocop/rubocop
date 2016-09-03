@@ -77,16 +77,21 @@ module RuboCop
 
         def lhs_for_send(node)
           receiver = node.receiver.nil? ? '' : node.receiver.source
+          method_name = node.method_name
 
-          if node.method_name == :[]=
+          if method_name == :[]=
             indices = node.children[2...-1].map(&:source).join(', ')
             "#{receiver}[#{indices}] = "
-          elsif node.method_name.to_s.end_with?(EQUAL) &&
-                ![:!=, :==, :===, :>=, :<=].include?(node.method_name)
-            "#{receiver}.#{node.method_name[0...-1]} = "
+          elsif setter_method?(method_name)
+            "#{receiver}.#{method_name[0...-1]} = "
           else
-            "#{receiver} #{node.method_name} "
+            "#{receiver} #{method_name} "
           end
+        end
+
+        def setter_method?(method_name)
+          method_name.to_s.end_with?(EQUAL) &&
+            ![:!=, :==, :===, :>=, :<=].include?(method_name)
         end
       end
 

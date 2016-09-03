@@ -81,7 +81,7 @@ module RuboCop
         def autocorrect(node)
           lambda do |corrector|
             _method, args, block_body = *node
-            unless args.children.empty? || args.loc.last_line == node.loc.line
+            unless arguments_on_different_line?(node, args)
               autocorrect_arguments(corrector, node, args)
               expr_before_body = args.source_range.end
             end
@@ -93,6 +93,10 @@ module RuboCop
               autocorrect_body(corrector, node, block_body)
             end
           end
+        end
+
+        def arguments_on_different_line?(node, args)
+          args.children.empty? || args.loc.last_line == node.loc.line
         end
 
         def autocorrect_arguments(corrector, node, args)

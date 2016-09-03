@@ -260,12 +260,7 @@ module RuboCop
           def correction
             parent = node.parent
 
-            modifier_range =
-              Parser::Source::Range.new(parent.source_range.source_buffer,
-                                        parent.loc.keyword.begin_pos,
-                                        parent.source_range.end_pos)
-
-            "#{modifier_range.source}\n" \
+            "#{modifier_range(parent).source}\n" \
               "#{indentation(node)}" \
               "#{assignment.join("\n#{indentation(node)}")}" \
               "\n#{offset(node)}end"
@@ -273,6 +268,15 @@ module RuboCop
 
           def correction_range
             node.parent.source_range
+          end
+
+          private
+
+          def modifier_range(node)
+            puts self.class.ancestors.inspect
+            Parser::Source::Range.new(node.source_range.source_buffer,
+                                      node.loc.keyword.begin_pos,
+                                      node.source_range.end_pos)
           end
         end
       end

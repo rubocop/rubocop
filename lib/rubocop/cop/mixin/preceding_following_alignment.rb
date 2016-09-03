@@ -22,14 +22,24 @@ module RuboCop
         # minus 2 because node.loc.line is zero-based
         pre  = (range.line - 2).downto(0)
         post = range.line.upto(processed_source.lines.size - 1)
-        return true if aligned_with_line?(pre, range, &predicate) ||
-                       aligned_with_line?(post, range, &predicate)
+
+        aligned_with_any_line_range?([pre, post], range, &predicate)
+      end
+
+      def aligned_with_any_line_range?(line_ranges, range, &predicate)
+        return true if aligned_with_any_line?(line_ranges, range, &predicate)
 
         # If no aligned token was found, search for an aligned token on the
         # nearest line with the same indentation as the checked line.
         base_indentation = processed_source.lines[range.line - 1] =~ /\S/
-        aligned_with_line?(pre, range, base_indentation, &predicate) ||
-          aligned_with_line?(post, range, base_indentation, &predicate)
+
+        aligned_with_any_line?(line_ranges, range, base_indentation, &predicate)
+      end
+
+      def aligned_with_any_line?(line_ranges, range, indent = nil, &predicate)
+        line_ranges.any? do |line_nos|
+          aligned_with_line?(line_nos, range, indent, &predicate)
+        end
       end
 
       def aligned_with_line?(line_nos, range, indent = nil)

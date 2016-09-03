@@ -40,19 +40,18 @@ module RuboCop
         private
 
         def check_for_line_terminator_or_opener
-          tokens_for_lines = @processed_source.tokens.group_by do |token|
-            token.pos.line
-          end
+          each_semicolon { |line, column| convention_on(line, column, true) }
+        end
 
+        def each_semicolon
           tokens_for_lines.each do |line, tokens|
-            if tokens.last.type == :tSEMI
-              convention_on(line, tokens.last.pos.column, true)
-            end
-
-            if tokens.first.type == :tSEMI
-              convention_on(line, tokens.first.pos.column, true)
-            end
+            yield line, tokens.last.pos.column if tokens.last.type == :tSEMI
+            yield line, tokens.first.pos.column if tokens.first.type == :tSEMI
           end
+        end
+
+        def tokens_for_lines
+          @processed_source.tokens.group_by { |token| token.pos.line }
         end
 
         def convention_on(line, column, autocorrect)

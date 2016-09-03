@@ -82,6 +82,15 @@ module RuboCop
         variable_table.pop_scope
       end
 
+      def process_node(node)
+        catch(:skip_children) do
+          dispatch_node(node)
+          process_children(node)
+        end
+      end
+
+      private
+
       # This is called for each scope recursively.
       def inspect_variables_in_scope(scope_node)
         variable_table.push_scope(scope_node)
@@ -93,13 +102,6 @@ module RuboCop
         origin_node.each_child_node do |child_node|
           next if scanned_node?(child_node)
           process_node(child_node)
-        end
-      end
-
-      def process_node(node)
-        catch(:skip_children) do
-          dispatch_node(node)
-          process_children(node)
         end
       end
 
@@ -170,10 +172,7 @@ module RuboCop
 
       def process_regexp_named_captures(node)
         regexp_node, rhs_node = *node
-
-        regexp_string = regexp_node.children[0].children[0] || ''
-        regexp = Regexp.new(regexp_string)
-        variable_names = regexp.named_captures.keys
+        variable_names = regexp_captured_names(regexp_node)
 
         variable_names.each do |name|
           next if variable_table.variable_exist?(name)
@@ -188,6 +187,13 @@ module RuboCop
         end
 
         skip_children!
+      end
+
+      def regexp_captured_names(node)
+        regexp_string = node.children[0].children[0] || ''
+        regexp = Regexp.new(regexp_string)
+
+        regexp.named_captures.keys
       end
 
       def process_variable_operator_assignment(node)
