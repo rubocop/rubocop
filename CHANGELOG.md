@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#3379](https://github.com/bbatsov/rubocop/issues/3379): Add table of contents at the beginning of HTML formatted output. ([@hedgesky][])
 * [#2968](https://github.com/bbatsov/rubocop/issues/2968): Add new `Style/DocumentationMethod` cop. ([@sooyang][])
 * [#3360](https://github.com/bbatsov/rubocop/issues/3360): Add `RequireForNonPublicMethods` configuration option to `Style/DocumentationMethod` cop. ([@drenmi][])
 * Add new `Rails/SafeNavigation` cop to convert `try!` to `&.`. ([@rrosenblum][])
@@ -2343,3 +2344,4 @@
 [@nicklamuro]: https://github.com/nicklamuro
 [@mikezter]: https://github.com/mikezter
 [@joejuzl]: https://github.com/joejuzl
+[@hedgesky]: https://github.com/hedgesky
