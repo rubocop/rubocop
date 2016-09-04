@@ -273,7 +273,6 @@ module RuboCop
           private
 
           def modifier_range(node)
-            puts self.class.ancestors.inspect
             Parser::Source::Range.new(node.source_range.source_buffer,
                                       node.loc.keyword.begin_pos,
                                       node.source_range.end_pos)
