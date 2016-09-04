@@ -24,14 +24,7 @@ module RuboCop
         def on_method_def(_node, _method_name, _args, body)
           return unless body
 
-          expression = if body.begin_type?
-                         body.children
-                       else
-                         body
-                       end
-
-          last_expr = expression.is_a?(Array) ? expression.last : expression
-
+          last_expr = last_expression(body)
           return unless setter_call_to_local_variable?(last_expr)
 
           tracker = MethodVariableTracker.new(body)
@@ -39,9 +32,13 @@ module RuboCop
           variable_name, = *receiver
           return unless tracker.contain_local_object?(variable_name)
 
-          add_offense(receiver,
-                      :name,
-                      format(MSG, receiver.loc.name.source))
+          add_offense(receiver, :name, format(MSG, receiver.loc.name.source))
+        end
+
+        def last_expression(body)
+          expression = body.begin_type? ? body.children : body
+
+          expression.is_a?(Array) ? expression.last : expression
         end
 
         def setter_call_to_local_variable?(node)
