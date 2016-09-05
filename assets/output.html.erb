@@ -70,13 +70,12 @@
     line-height: 2.2rem;
     margin: 0 0 0.5em;
     }
-    .information .infobox ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    }
-    .information .infobox ul li {
+    .information .offenses-list li {
     line-height: 1.8rem
+    }
+    .information .offenses-list {
+    padding-left: 20px;
+    margin-bottom: 0;
     }
 
     #offenses .offense-box {
@@ -191,7 +190,7 @@
           idx,
           scrollY = window.scrollY;
         for (i = 0; i < boxPositions.length; i++) {
-          if (scrollY <= boxPositions[i]) {
+          if (scrollY <= boxPositions[i] - 1) {
             idx = i;
             break;
           }
@@ -214,14 +213,26 @@
     </div>
     <div class="information">
       <div class="infobox">
-        <%= pluralize(files.count, 'file') %> inspected,
-        <%= pluralize(summary.offense_count, 'offense', no_for_zero: true) %> detected
+        <div class="total">
+          <%= pluralize(files.count, 'file') %> inspected,
+          <%= pluralize(summary.offense_count, 'offense', no_for_zero: true) %> detected:
+        </div>
+        <ul class="offenses-list">
+          <% files.each do |file| %>
+            <% next if file.offenses.none? %>
+            <li>
+              <a href="#offense_<%= relative_path(file.path) %>">
+                <%= relative_path(file.path) %> - <%= pluralize(file.offenses.count, 'offense') %>
+              </a>
+            </li>
+          <% end %>
+        </ul>
       </div>
     </div>
     <div id="offenses">
       <% files.each do |file| %>
       <% if file.offenses.any? %>
-      <div class="offense-box">
+      <div class="offense-box" id="offense_<%= relative_path(file.path) %>">
         <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
         <div class="box-title"><h3><%= relative_path(file.path) %> - <%= pluralize(file.offenses.count, 'offense') %></h3></div>
         <div class="offense-reports">

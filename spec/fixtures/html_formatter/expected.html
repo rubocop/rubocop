@@ -70,13 +70,12 @@
     line-height: 2.2rem;
     margin: 0 0 0.5em;
     }
-    .information .infobox ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    }
-    .information .infobox ul li {
+    .information .offenses-list li {
     line-height: 1.8rem
+    }
+    .information .offenses-list {
+    padding-left: 20px;
+    margin-bottom: 0;
     }
 
     #offenses .offense-box {
@@ -223,7 +222,7 @@
           idx,
           scrollY = window.scrollY;
         for (i = 0; i < boxPositions.length; i++) {
-          if (scrollY <= boxPositions[i]) {
+          if (scrollY <= boxPositions[i] - 1) {
             idx = i;
             break;
           }
@@ -366,14 +365,40 @@ TvFXMeuCkZPcaEBLqvgPBhCuiZo8+sAAAAAASUVORK5CYII=
     </div>
     <div class="information">
       <div class="infobox">
-        3 files inspected,
-        16 offenses detected
+        <div class="total">
+          3 files inspected,
+          16 offenses detected:
+        </div>
+        <ul class="offenses-list">
+          
+            
+            <li>
+              <a href="#offense_app/controllers/application_controller.rb">
+                app/controllers/application_controller.rb - 2 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/controllers/books_controller.rb">
+                app/controllers/books_controller.rb - 8 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/models/book.rb">
+                app/models/book.rb - 6 offenses
+              </a>
+            </li>
+          
+        </ul>
       </div>
     </div>
     <div id="offenses">
       
       
-      <div class="offense-box">
+      <div class="offense-box" id="offense_app/controllers/application_controller.rb">
         <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
         <div class="box-title"><h3>app/controllers/application_controller.rb - 2 offenses</h3></div>
         <div class="offense-reports">
@@ -405,7 +430,7 @@ TvFXMeuCkZPcaEBLqvgPBhCuiZo8+sAAAAAASUVORK5CYII=
       
       
       
-      <div class="offense-box">
+      <div class="offense-box" id="offense_app/controllers/books_controller.rb">
         <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
         <div class="box-title"><h3>app/controllers/books_controller.rb - 8 offenses</h3></div>
         <div class="offense-reports">
@@ -503,7 +528,7 @@ TvFXMeuCkZPcaEBLqvgPBhCuiZo8+sAAAAAASUVORK5CYII=
       
       
       
-      <div class="offense-box">
+      <div class="offense-box" id="offense_app/models/book.rb">
         <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
         <div class="box-title"><h3>app/models/book.rb - 6 offenses</h3></div>
         <div class="offense-reports">
