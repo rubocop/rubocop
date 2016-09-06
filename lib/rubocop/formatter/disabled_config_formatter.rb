@@ -151,6 +151,13 @@ module RuboCop
         require 'pathname'
         parent = Pathname.new(Dir.pwd)
 
+        output.puts '  Exclude:'
+        excludes(offending_files, cop_name, parent).each do |file|
+          output_exclude_path(output, file, parent)
+        end
+      end
+
+      def excludes(offending_files, cop_name, parent)
         # Exclude properties in .rubocop_todo.yml override default ones, as well
         # as any custom excludes in .rubocop.yml, so in order to retain those
         # excludes we must copy them.
@@ -158,18 +165,16 @@ module RuboCop
         # just look at the current working directory
         config = ConfigStore.new.for(parent)
         cfg = config[cop_name] || {}
-        excludes = ((cfg['Exclude'] || []) + offending_files).uniq
 
-        output.puts '  Exclude:'
-        excludes.each do |file|
-          file_path = Pathname.new(file)
-          begin
-            relative = file_path.relative_path_from(parent)
-            output.puts "    - '#{relative}'"
-          rescue ArgumentError
-            output.puts "    - '#{file}'"
-          end
-        end
+        ((cfg['Exclude'] || []) + offending_files).uniq
+      end
+
+      def output_exclude_path(output, file, parent)
+        file_path = Pathname.new(file)
+        relative = file_path.relative_path_from(parent)
+        output.puts "    - '#{relative}'"
+      rescue ArgumentError
+        output.puts "    - '#{file}'"
       end
     end
   end
