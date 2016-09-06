@@ -59,6 +59,18 @@ describe RuboCop::Cop::Rails::SafeNavigation, :config do
                         ['(:each_with_object, []) do |e, acc|',
                          '  acc << e.some_method',
                          'end'].join("\n")
+        it_behaves_like :offense, 'try! with a question method', 'try!',
+                        '(:something?)'
+        it_behaves_like :offense, 'try! with a bang method', 'try!',
+                        '(:something!)'
+
+        it_behaves_like :accepts, 'try! used to call an enumerable accessor',
+                        'foo.try!(:[], :bar)'
+        it_behaves_like :accepts, 'try! with ==', 'foo.try!(:==, bar)'
+        it_behaves_like :accepts, 'try! with an operator', 'foo.try!(:+, bar)'
+        it_behaves_like :accepts, 'try! with a method stored as a variable',
+                        ['bar = :==',
+                         'foo.try!(baz, bar)'].join("\n")
       end
 
       context 'try' do
@@ -73,6 +85,8 @@ describe RuboCop::Cop::Rails::SafeNavigation, :config do
                          'end'].join("\n")
       end
 
+      it_behaves_like :autocorrect, 'try! a single parameter',
+                      'foo.try!(:thing=, bar)', 'foo&.thing = bar'
       it_behaves_like :autocorrect, 'try! a single parameter',
                       '[1, 2].try!(:join)', '[1, 2]&.join'
       it_behaves_like :autocorrect, 'try! with 2 parameters',
@@ -124,6 +138,9 @@ describe RuboCop::Cop::Rails::SafeNavigation, :config do
                          '  acc << e.some_method',
                          'end'].join("\n")
 
+        it_behaves_like :accepts, 'try! used to call an enumerable accessor',
+                        'foo.try!(:[], :bar)'
+
         it_behaves_like :autocorrect, 'try! a single parameter',
                         '[1, 2].try!(:join)', '[1, 2]&.join'
         it_behaves_like :autocorrect, 'try! with 2 parameters',
@@ -157,6 +174,9 @@ describe RuboCop::Cop::Rails::SafeNavigation, :config do
                         ['(:each_with_object, []) do |e, acc|',
                          '  acc << e.some_method',
                          'end'].join("\n")
+
+        it_behaves_like :accepts, 'try! used to call an enumerable accessor',
+                        'foo.try!(:[], :bar)'
 
         it_behaves_like :autocorrect, 'try a single parameter',
                         '[1, 2].try(:join)', '[1, 2]&.join'
