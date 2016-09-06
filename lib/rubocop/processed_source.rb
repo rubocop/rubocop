@@ -91,16 +91,20 @@ module RuboCop
         return
       end
 
-      parser = create_parser(ruby_version)
+      @ast, @comments, @tokens = tokenize(create_parser(ruby_version))
+    end
 
+    def tokenize(parser)
       begin
-        @ast, @comments, tokens = parser.tokenize(@buffer)
-        @ast.complete! if @ast
+        ast, comments, tokens = parser.tokenize(@buffer)
+        ast.complete! if ast
       rescue Parser::SyntaxError # rubocop:disable Lint/HandleExceptions
         # All errors are in diagnostics. No need to handle exception.
       end
 
-      @tokens = tokens.map { |t| Token.from_parser_token(t) } if tokens
+      tokens = tokens.map { |t| Token.from_parser_token(t) } if tokens
+
+      [ast, comments, tokens]
     end
 
     def parser_class(ruby_version) # rubocop:disable Metrics/MethodLength
