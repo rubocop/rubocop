@@ -44,12 +44,6 @@ describe RuboCop::Cop::Rails::SaveBang do
       expect(cop.messages).to be_empty
     end
 
-    it "when using #{method} with if" do
-      inspect_source(cop, "if object.#{method}; something; end")
-
-      expect(cop.messages).to be_empty
-    end
-
     it 'autocorrects' do
       new_source = autocorrect_source(cop, "object.#{method}()")
 
@@ -57,7 +51,7 @@ describe RuboCop::Cop::Rails::SaveBang do
     end
   end
 
-  shared_examples 'checks_variable_assign_only_offense' do |method, pass|
+  shared_examples 'checks_variable_return_use_offense' do |method, pass|
     it "when assigning the return value of #{method}" do
       inspect_source(cop, "x = object.#{method}\n")
 
@@ -85,11 +79,22 @@ describe RuboCop::Cop::Rails::SaveBang do
                   " Or check `persisted?` on model returned from `#{method}`."])
       end
     end
+
+    it "when using #{method} with if" do
+      inspect_source(cop, "if object.#{method}; something; end")
+
+      if pass
+        expect(cop.messages).to be_empty
+      else
+        expect(cop.messages)
+          .to eq(["`#{method}` returns a model which is always truthy."])
+      end
+    end
   end
 
   described_class::MODIFY_PERSIST_METHODS.each do |method|
     it_behaves_like('checks_common_offense', method)
-    it_behaves_like('checks_variable_assign_only_offense', method, true)
+    it_behaves_like('checks_variable_return_use_offense', method, true)
   end
 
   shared_examples 'checks_create_offense' do |method|
@@ -112,7 +117,7 @@ describe RuboCop::Cop::Rails::SaveBang do
 
   described_class::CREATE_PERSIST_METHODS.each do |method|
     it_behaves_like('checks_common_offense', method)
-    it_behaves_like('checks_variable_assign_only_offense', method, false)
+    it_behaves_like('checks_variable_return_use_offense', method, false)
     it_behaves_like('checks_create_offense', method)
   end
 end

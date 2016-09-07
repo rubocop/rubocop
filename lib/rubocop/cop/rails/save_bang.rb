@@ -42,6 +42,8 @@ module RuboCop
         CREATE_MSG = (MSG +
                       ' Or check `persisted?` on model returned from `%s`.')
                      .freeze
+        CREATE_CONDITIONAL_MSG = '`%s` returns a model which is always truthy.'
+                                 .freeze
 
         CREATE_PERSIST_METHODS = [:create,
                                   :first_or_create, :find_or_create_by].freeze
@@ -77,7 +79,8 @@ module RuboCop
         def on_send(node)
           return unless PERSIST_METHODS.include?(node.method_name)
           return unless expected_signature?(node)
-          return if return_value_used?(node)
+          return if return_value_assigned?(node)
+          return if check_used_in_conditional(node)
 
           add_offense(node, node.loc.selector,
                       format(MSG,
@@ -107,13 +110,25 @@ module RuboCop
           end
         end
 
+        def check_used_in_conditional(node)
+          return false unless node.parent
+          return false unless node.parent.if_type? && node.sibling_index.zero?
+
+          unless MODIFY_PERSIST_METHODS.include?(node.method_name)
+            add_offense(node, node.loc.selector,
+                        format(CREATE_CONDITIONAL_MSG,
+                               node.method_name.to_s))
+          end
+
+          true
+        end
+
         # Ignore simple assignment or if condition
-        def return_value_used?(node)
+        def return_value_assigned?(node)
           return false unless node.parent
           node.parent.lvasgn_type? ||
             (node.parent.block_type? && node.parent.parent &&
-              node.parent.parent.lvasgn_type?) ||
-            (node.parent.if_type? && node.sibling_index.zero?)
+              node.parent.parent.lvasgn_type?)
         end
 
         # Check argument signature as no arguments or one hash
