@@ -64,21 +64,23 @@ module RuboCop
         def autocorrect(node)
           _receiver, _try, method_node, *params = *node
           method = method_node.source[1..-1]
-
           range = range_between(node.loc.dot.begin_pos,
                                 node.loc.expression.end_pos)
 
-          new_params = params.map(&:source).join(', ')
-          replacement = if method.end_with?('=')
-                          "&.#{method[0...-1]} = #{new_params}"
-                        elsif params.empty?
-                          "&.#{method}"
-                        else
-                          "&.#{method}(#{new_params})"
-                        end
-
           lambda do |corrector|
-            corrector.replace(range, replacement)
+            corrector.replace(range, replacement(method, params))
+          end
+        end
+
+        def replacement(method, params)
+          new_params = params.map(&:source).join(', ')
+
+          if method.end_with?('=')
+            "&.#{method[0...-1]} = #{new_params}"
+          elsif params.empty?
+            "&.#{method}"
+          else
+            "&.#{method}(#{new_params})"
           end
         end
       end
