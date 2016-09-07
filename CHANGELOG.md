@@ -11,6 +11,7 @@
 * [#3415](https://github.com/bbatsov/rubocop/pull/3415): Add new `Rails/NotNullColumn` cop. ([@pocke][])
 * [#3167](https://github.com/bbatsov/rubocop/issues/3167): Add new `Style/VariableNumber` cop. ([@sooyang][])
 * Add new style `no_mixed_keys` to `Style/HashSyntax` to only check for hashes with mixed keys. ([@daviddavis][])
+* Allow including multiple configuration files from a single gem. ([@tjwallace][])
 
 ### Bug fixes
 
@@ -2345,3 +2346,4 @@
 [@mikezter]: https://github.com/mikezter
 [@joejuzl]: https://github.com/joejuzl
 [@hedgesky]: https://github.com/hedgesky
+[@tjwallace]: https://github.com/tjwallace

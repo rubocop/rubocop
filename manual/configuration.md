@@ -102,6 +102,16 @@ inherit_gem:
   cucumber: conf/rubocop.yml
 ```
 
+An array can also be used as the value to include multiple configuration files
+from a single gem:
+
+```yaml
+inherit_gem:
+  my-shared-gem:
+    - default.yml
+    - strict.yml
+```
+
 **Note**: If the shared dependency is declared using a [Bundler](http://bundler.io/)
 Gemfile and the gem was installed using `bundle install`, it would be
 necessary to also invoke RuboCop using Bundler in order to find the
