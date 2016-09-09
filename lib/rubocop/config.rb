@@ -208,7 +208,9 @@ module RuboCop
     # Returns true if there's a chance that an Include pattern matches hidden
     # files, false if that's definitely not possible.
     def possibly_include_hidden?
-      @possibly_include_hidden ||= patterns_to_include.any? do |s|
+      return @possibly_include_hidden if defined?(@possibly_include_hidden)
+
+      @possibly_include_hidden = patterns_to_include.any? do |s|
         s.is_a?(Regexp) || s.start_with?('.') || s.include?('/.')
       end
     end
