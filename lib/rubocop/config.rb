@@ -11,7 +11,7 @@ module RuboCop
   # file from which it was read. Several different Configs can be used
   # during a run of the rubocop program, if files in several
   # directories are inspected.
-  class Config < Hash
+  class Config
     include PathUtil
 
     COMMON_PARAMS = %w(Exclude Include Severity
@@ -43,12 +43,76 @@ module RuboCop
 
     attr_reader :loaded_path
 
+    def self.[](hash)
+      new(hash)
+    end
+
     def initialize(hash = {}, loaded_path = nil)
       @loaded_path = loaded_path
       @for_cop = Hash.new do |h, cop|
         h[cop] = self[Cop::Cop.qualified_cop_name(cop, loaded_path)] || {}
       end
-      replace(hash)
+      @hash = hash
+    end
+
+    def ==(other)
+      other.is_a?(Hash) ? @hash == other : super
+    end
+
+    def [](key)
+      @hash[key]
+    end
+
+    def []=(key, value)
+      @hash[key] = value
+    end
+
+    def delete(key)
+      @hash.delete(key)
+    end
+
+    def each(&block)
+      @hash.each(&block)
+    end
+
+    def each_key(&block)
+      @hash.each_key(&block)
+    end
+
+    def eql?(other)
+      other.is_a?(Hash) ? @hash.eql?(other) : super
+    end
+
+    def fetch(key)
+      @hash.fetch(key)
+    end
+
+    def key?(key)
+      @hash.key?(key)
+    end
+
+    def keys
+      @hash.keys
+    end
+
+    def map(&block)
+      @hash.map(&block)
+    end
+
+    def merge(other_hash)
+      @hash.merge(other_hash)
+    end
+
+    def to_h
+      @hash
+    end
+
+    def to_hash
+      @hash
+    end
+
+    def to_s
+      @hash.to_s
     end
 
     def make_excludes_absolute
