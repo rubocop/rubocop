@@ -65,6 +65,7 @@ module RuboCop
 
         def check_assignment(assignment)
           node = right_assignment_node(assignment)
+          return unless node
           return unless CREATE_PERSIST_METHODS.include?(node.method_name)
           return unless expected_signature?(node)
           return if persisted_referenced?(assignment)
@@ -99,7 +100,7 @@ module RuboCop
 
         def right_assignment_node(assignment)
           node = assignment.node.child_nodes.first
-          return node unless node.block_type?
+          return node unless node && node.block_type?
           node.child_nodes.first
         end
 
