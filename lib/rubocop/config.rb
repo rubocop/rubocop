@@ -112,7 +112,7 @@ module RuboCop
     end
 
     def to_s
-      @hash.to_s
+      @to_s ||= @hash.to_s
     end
 
     def make_excludes_absolute
