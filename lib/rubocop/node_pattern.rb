@@ -485,20 +485,33 @@ module RuboCop
       # yield all descendants which match.
       def def_node_search(method_name, pattern_str)
         compiler = RuboCop::NodePattern::Compiler.new(pattern_str, 'node')
-        if method_name.to_s.end_with?('?')
-          on_match = 'return true'
-          prelude = ''
-        else
-          yieldval = compiler.emit_capture_list
-          yieldval = 'node' if yieldval.empty?
-          on_match = "yield(#{yieldval})"
-          prelude = "return enum_for(:#{method_name}, node0" \
-          "#{compiler.emit_trailing_params}) unless block_given?"
-        end
+        called_from = caller.first.split(':')
 
+        if method_name.to_s.end_with?('?')
+          node_search_first(method_name, compiler, called_from)
+        else
+          node_search_all(method_name, compiler, called_from)
+        end
+      end
+
+      def node_search_first(method_name, compiler, called_from)
+        node_search(method_name, compiler, 'return true', '', called_from)
+      end
+
+      def node_search_all(method_name, compiler, called_from)
+        yieldval = compiler.emit_capture_list
+        yieldval = 'node' if yieldval.empty?
+        prelude = "return enum_for(:#{method_name}, node0" \
+                  "#{compiler.emit_trailing_params}) unless block_given?"
+
+        node_search(method_name, compiler, "yield(#{yieldval})", prelude,
+                    called_from)
+      end
+
+      def node_search(method_name, compiler, on_match, prelude, called_from)
         src = node_search_body(method_name, compiler.emit_trailing_params,
                                prelude, compiler.match_code, on_match)
-        filename, lineno = *caller.first.split(':')
+        filename, lineno = *called_from
         class_eval(src, filename, lineno.to_i)
       end
 

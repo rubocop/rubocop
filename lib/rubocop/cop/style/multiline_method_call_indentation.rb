@@ -74,21 +74,42 @@ module RuboCop
         end
 
         def message(node, lhs, rhs)
-          if @base
-            base_source = @base.source[/[^\n]*/]
-            if style == :indented_relative_to_receiver
-              "Indent `#{rhs.source}` #{configured_indentation_width} spaces " \
-              "more than `#{base_source}` on line #{@base.line}."
-            else
-              "Align `#{rhs.source}` with `#{base_source}` on " \
-              "line #{@base.line}."
-            end
+          if should_indent_relative_to_receiver?
+            relative_to_receiver_message(rhs)
+          elsif should_align_with_base?
+            align_with_base_message(rhs)
           else
-            used_indentation = rhs.column - indentation(lhs)
-            what = operation_description(node, rhs)
-            "Use #{correct_indentation(node)} (not #{used_indentation}) " \
-              "spaces for indenting #{what} spanning multiple lines."
+            no_base_message(lhs, rhs, node)
           end
+        end
+
+        def should_indent_relative_to_receiver?
+          @base && style == :indented_relative_to_receiver
+        end
+
+        def should_align_with_base?
+          @base && style != :indented_relative_to_receiver
+        end
+
+        def relative_to_receiver_message(rhs)
+          "Indent `#{rhs.source}` #{configured_indentation_width} spaces " \
+            "more than `#{base_source}` on line #{@base.line}."
+        end
+
+        def align_with_base_message(rhs)
+          "Align `#{rhs.source}` with `#{base_source}` on line #{@base.line}."
+        end
+
+        def base_source
+          @base.source[/[^\n]*/]
+        end
+
+        def no_base_message(lhs, rhs, node)
+          used_indentation = rhs.column - indentation(lhs)
+          what = operation_description(node, rhs)
+
+          "Use #{correct_indentation(node)} (not #{used_indentation}) " \
+            "spaces for indenting #{what} spanning multiple lines."
         end
 
         def alignment_base(node, rhs, given_style)

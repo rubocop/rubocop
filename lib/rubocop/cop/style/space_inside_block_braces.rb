@@ -48,17 +48,22 @@ module RuboCop
 
         def braces_with_contents_inside(node, inner)
           _method, args, _body = *node
-          left_brace = node.loc.begin
-          right_brace = node.loc.end
           args_delimiter = args.loc.begin # Can be ( | or nil.
 
+          check_left_brace(inner, node.loc.begin, args_delimiter)
+          check_right_brace(inner, node.loc.end, block_length(node))
+        end
+
+        def check_left_brace(inner, left_brace, args_delimiter)
           if inner =~ /^\S/
             no_space_inside_left_brace(left_brace, args_delimiter)
           else
             space_inside_left_brace(left_brace, args_delimiter)
           end
+        end
 
-          if inner =~ /\S$/ && block_length(node).zero?
+        def check_right_brace(inner, right_brace, block_length)
+          if inner =~ /\S$/ && block_length.zero?
             no_space(right_brace.begin_pos, right_brace.end_pos,
                      'Space missing inside }.')
           else

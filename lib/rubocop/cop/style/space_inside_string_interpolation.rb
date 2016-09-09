@@ -19,25 +19,39 @@ module RuboCop
         SPACE_MSG = 'Missing space around string interpolation detected.'.freeze
 
         def on_dstr(node)
-          node.each_child_node(:begin) do |begin_node|
-            final_node = begin_node.children.last
-            next unless final_node
-
-            interp = final_node.source_range
-            interp_with_surrounding_space = range_with_surrounding_space(interp)
-            if style == :no_space
-              if interp_with_surrounding_space != interp
-                add_offense(final_node, :expression, NO_SPACE_MSG)
-              end
-            elsif style == :space
-              if interp_with_surrounding_space.source != " #{interp.source} "
-                add_offense(final_node, :expression, SPACE_MSG)
-              end
-            end
+          each_style_violation(node) do |final_node, msg|
+            add_offense(final_node, :expression, msg)
           end
         end
 
         private
+
+        def each_style_violation(node)
+          node.each_child_node(:begin) do |begin_node|
+            final_node = begin_node.children.last
+            next unless final_node
+
+            if style == :no_space && space_on_any_side?(final_node)
+              yield final_node, NO_SPACE_MSG
+            elsif style == :space && !space_on_each_side?(final_node)
+              yield final_node, SPACE_MSG
+            end
+          end
+        end
+
+        def space_on_any_side?(node)
+          interp = node.source_range
+          interp_with_surrounding_space = range_with_surrounding_space(interp)
+
+          interp_with_surrounding_space != interp
+        end
+
+        def space_on_each_side?(node)
+          interp = node.source_range
+          interp_with_surrounding_space = range_with_surrounding_space(interp)
+
+          interp_with_surrounding_space.source == " #{interp.source} "
+        end
 
         def autocorrect(node)
           new_source = style == :no_space ? node.source : " #{node.source} "

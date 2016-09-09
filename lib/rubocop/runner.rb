@@ -16,6 +16,8 @@ module RuboCop
       end
     end
 
+    MAX_ITERATIONS = 200
+
     attr_reader :errors, :warnings, :aborting
     alias aborting? aborting
 
@@ -178,27 +180,11 @@ module RuboCop
     def do_inspection_loop(file, processed_source)
       offenses = []
 
-      # Keep track of the state of the source. If a cop modifies the source
-      # and another cop undoes it producing identical source we have an
-      # infinite loop.
-      @processed_sources = []
-
-      # It is also possible for a cop to keep adding indefinitely to a file,
-      # making it bigger and bigger. If the inspection loop runs for an
-      # excessively high number of iterations, this is likely happening.
-      @iterations = 0
-
       # When running with --auto-correct, we need to inspect the file (which
       # includes writing a corrected version of it) until no more corrections
       # are made. This is because automatic corrections can introduce new
       # offenses. In the normal case the loop is only executed once.
-      loop do
-        check_for_infinite_loop(processed_source, offenses)
-
-        if (@iterations += 1) > 200
-          raise InfiniteCorrectionLoop.new(processed_source.path, offenses)
-        end
-
+      iterate_until_no_changes(processed_source, offenses) do
         # The offenses that couldn't be corrected will be found again so we
         # only keep the corrected ones in order to avoid duplicate reporting.
         offenses.select!(&:corrected?)
@@ -214,6 +200,29 @@ module RuboCop
       end
 
       [processed_source, offenses]
+    end
+
+    def iterate_until_no_changes(source, offenses)
+      # Keep track of the state of the source. If a cop modifies the source
+      # and another cop undoes it producing identical source we have an
+      # infinite loop.
+      @processed_sources = []
+
+      # It is also possible for a cop to keep adding indefinitely to a file,
+      # making it bigger and bigger. If the inspection loop runs for an
+      # excessively high number of iterations, this is likely happening.
+      iterations = 0
+
+      loop do
+        check_for_infinite_loop(source, offenses)
+
+        if (iterations += 1) > MAX_ITERATIONS
+          raise InfiniteCorrectionLoop.new(source.path, offenses)
+        end
+
+        source = yield
+        break unless source
+      end
     end
 
     # Check whether a run created source identical to a previous run, which
