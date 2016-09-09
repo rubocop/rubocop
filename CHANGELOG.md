@@ -45,6 +45,7 @@
 * No longer register an offense for splat expansion of an array literal in `Performance/CaseWhenSplat`. `Lint/UnneededSplatExpansion` now handles this behavior. ([@rrosenblum][])
 * `Lint/InheritException` restricts inheriting from standard library subclasses of `Exception`. ([@metcalf][])
 * No longer register an offense if the first line of code starts with `#\` in `Style/LeadingCommentSpace`. `config.ru` files consider such lines as options. ([@scottohara][])
+* Change misleading message for `Style/EmptyLinesAroundAccessModifier:`. ([@shockwavenn][])
 
 ## 0.42.0 (2016-07-25)
 
@@ -2350,3 +2351,4 @@
 [@hedgesky]: https://github.com/hedgesky
 [@tjwallace]: https://github.com/tjwallace
 [@scottohara]: https://github.com/scottohara
+[@shockwavenn]: https://github.com/shockwavenn
