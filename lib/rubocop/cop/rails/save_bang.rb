@@ -8,10 +8,12 @@ module RuboCop
       # should be used instead of save because the model might have failed to
       # save and an exception is better than unhandled failure.
       #
-      # This will ignore calls that are assigned to a variable or used as the
-      # condition in an if/unless statement.  It will also ignore any call with
-      # more than 2 arguments as that is likely not an Active Record call or
-      # if a Model.update(id, attributes) call.
+      # This will ignore calls that return a boolean for success if the result
+      # is assigned to a variable or used as the condition in an if/unless
+      # statement.  It will also ignore calls that return a model assigned to a
+      # variable that has a call to `persisted?`. Finally, it will ignore any
+      # call with more than 2 arguments as that is likely not an Active Record
+      # call or a Model.update(id, attributes) call.
       #
       # @example
       #
@@ -29,17 +31,56 @@ module RuboCop
       #   user.update!(name: 'Joe')
       #   user.find_or_create_by!(name: 'Joe')
       #   user.destroy!
+      #
+      #   user = User.find_or_create_by(name: 'Joe')
+      #   unless user.persisted?
+      #      . . .
+      #   end
       class SaveBang < Cop
         MSG = 'Use `%s` instead of `%s` if the return value is not checked.'
               .freeze
+        CREATE_MSG = (MSG +
+                      ' Or check `persisted?` on model returned from `%s`.')
+                     .freeze
+        CREATE_CONDITIONAL_MSG = '`%s` returns a model which is always truthy.'
+                                 .freeze
 
-        PERSIST_METHODS = [:save, :create, :update, :destroy,
-                           :first_or_create, :find_or_create_by].freeze
+        CREATE_PERSIST_METHODS = [:create,
+                                  :first_or_create, :find_or_create_by].freeze
+        MODIFY_PERSIST_METHODS = [:save, :update, :destroy].freeze
+        PERSIST_METHODS = (CREATE_PERSIST_METHODS +
+                           MODIFY_PERSIST_METHODS).freeze
+
+        def join_force?(force_class)
+          force_class == VariableForce
+        end
+
+        def after_leaving_scope(scope, _variable_table)
+          scope.variables.each do |_name, variable|
+            variable.assignments.each do |assignment|
+              check_assignment(assignment)
+            end
+          end
+        end
+
+        def check_assignment(assignment)
+          node = right_assignment_node(assignment)
+          return unless CREATE_PERSIST_METHODS.include?(node.method_name)
+          return unless expected_signature?(node)
+          return if persisted_referenced?(assignment)
+
+          add_offense(node, node.loc.selector,
+                      format(CREATE_MSG,
+                             "#{node.method_name}!",
+                             node.method_name.to_s,
+                             node.method_name.to_s))
+        end
 
         def on_send(node)
           return unless PERSIST_METHODS.include?(node.method_name)
-          return if return_value_used?(node)
           return unless expected_signature?(node)
+          return if return_value_assigned?(node)
+          return if check_used_in_conditional(node)
 
           add_offense(node, node.loc.selector,
                       format(MSG,
@@ -56,13 +97,38 @@ module RuboCop
 
         private
 
+        def right_assignment_node(assignment)
+          node = assignment.node.child_nodes.first
+          return node unless node.block_type?
+          node.child_nodes.first
+        end
+
+        def persisted_referenced?(assignment)
+          return unless assignment.referenced?
+          assignment.variable.references.any? do |reference|
+            reference.node.parent.method_name == :persisted?
+          end
+        end
+
+        def check_used_in_conditional(node)
+          return false unless node.parent
+          return false unless node.parent.if_type? && node.sibling_index.zero?
+
+          unless MODIFY_PERSIST_METHODS.include?(node.method_name)
+            add_offense(node, node.loc.selector,
+                        format(CREATE_CONDITIONAL_MSG,
+                               node.method_name.to_s))
+          end
+
+          true
+        end
+
         # Ignore simple assignment or if condition
-        def return_value_used?(node)
+        def return_value_assigned?(node)
           return false unless node.parent
           node.parent.lvasgn_type? ||
             (node.parent.block_type? && node.parent.parent &&
-              node.parent.parent.lvasgn_type?) ||
-            (node.parent.if_type? && node.sibling_index.zero?)
+              node.parent.parent.lvasgn_type?)
         end
 
         # Check argument signature as no arguments or one hash

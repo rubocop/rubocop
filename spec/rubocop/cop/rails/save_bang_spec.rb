@@ -5,7 +5,7 @@ require 'spec_helper'
 describe RuboCop::Cop::Rails::SaveBang do
   subject(:cop) { described_class.new }
 
-  shared_examples 'checks_offense' do |method|
+  shared_examples 'checks_common_offense' do |method|
     it "when using #{method} with arguments" do
       inspect_source(cop, "object.#{method}(name: 'Tom', age: 20)")
 
@@ -44,26 +44,6 @@ describe RuboCop::Cop::Rails::SaveBang do
       expect(cop.messages).to be_empty
     end
 
-    it "when assigning the return value of #{method}" do
-      inspect_source(cop, "x = object.#{method}")
-
-      expect(cop.messages).to be_empty
-    end
-
-    it "when assigning the return value of #{method} with block" do
-      inspect_source(cop, "x = object.#{method} do |obj|\n" \
-                          "  obj.name = 'Tom'\n" \
-                          'end')
-
-      expect(cop.messages).to be_empty
-    end
-
-    it "when using #{method} with if" do
-      inspect_source(cop, "if object.#{method}; something; end")
-
-      expect(cop.messages).to be_empty
-    end
-
     it 'autocorrects' do
       new_source = autocorrect_source(cop, "object.#{method}()")
 
@@ -71,7 +51,73 @@ describe RuboCop::Cop::Rails::SaveBang do
     end
   end
 
-  described_class::PERSIST_METHODS.each do |method|
-    it_behaves_like('checks_offense', method)
+  shared_examples 'checks_variable_return_use_offense' do |method, pass|
+    it "when assigning the return value of #{method}" do
+      inspect_source(cop, "x = object.#{method}\n")
+
+      if pass
+        expect(cop.messages).to be_empty
+      else
+        expect(cop.messages)
+          .to eq(["Use `#{method}!` instead of `#{method}` " \
+                  'if the return value is not checked.' \
+                  " Or check `persisted?` on model returned from `#{method}`."])
+      end
+    end
+
+    it "when assigning the return value of #{method} with block" do
+      inspect_source(cop, "x = object.#{method} do |obj|\n" \
+                          "  obj.name = 'Tom'\n" \
+                          'end')
+
+      if pass
+        expect(cop.messages).to be_empty
+      else
+        expect(cop.messages)
+          .to eq(["Use `#{method}!` instead of `#{method}` " \
+                  'if the return value is not checked.' \
+                  " Or check `persisted?` on model returned from `#{method}`."])
+      end
+    end
+
+    it "when using #{method} with if" do
+      inspect_source(cop, "if object.#{method}; something; end")
+
+      if pass
+        expect(cop.messages).to be_empty
+      else
+        expect(cop.messages)
+          .to eq(["`#{method}` returns a model which is always truthy."])
+      end
+    end
+  end
+
+  described_class::MODIFY_PERSIST_METHODS.each do |method|
+    it_behaves_like('checks_common_offense', method)
+    it_behaves_like('checks_variable_return_use_offense', method, true)
+  end
+
+  shared_examples 'checks_create_offense' do |method|
+    it "when using persisted? after #{method}" do
+      inspect_source(cop, "x = object.#{method}\n" \
+                          'if x.persisted? then; something; end')
+
+      expect(cop.messages).to be_empty
+    end
+
+    it "when using persisted? after #{method} with block" do
+      inspect_source(cop, "x = object.#{method} do |obj|\n" \
+                          "  obj.name = 'Tom'\n" \
+                          "end\n" \
+                          'if x.persisted? then; something; end')
+
+      expect(cop.messages).to be_empty
+    end
+  end
+
+  described_class::CREATE_PERSIST_METHODS.each do |method|
+    it_behaves_like('checks_common_offense', method)
+    it_behaves_like('checks_variable_return_use_offense', method, false)
+    it_behaves_like('checks_create_offense', method)
   end
 end
