@@ -44,6 +44,42 @@ describe RuboCop::Cop::Style::LeadingCommentSpace do
     expect(cop.offenses.size).to eq(1)
   end
 
+  context 'file named config.ru' do
+    it 'does not register an offense for #\ on first line' do
+      inspect_source(cop,
+                     ['#\ -w -p 8765',
+                      'test'],
+                     '/some/dir/config.ru')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense for #\ after the first line' do
+      inspect_source(cop,
+                     ['test',
+                      '#\ -w -p 8765'],
+                     '/some/dir/config.ru')
+      expect(cop.offenses.size).to eq(1)
+    end
+  end
+
+  context 'file not named config.ru' do
+    it 'registers an offense for #\ on first line' do
+      inspect_source(cop,
+                     ['#\ -w -p 8765',
+                      'test'],
+                     '/some/dir/test_case.rb')
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it 'registers an offense for #\ after the first line' do
+      inspect_source(cop,
+                     ['test',
+                      '#\ -w -p 8765'],
+                     '/some/dir/test_case.rb')
+      expect(cop.offenses.size).to eq(1)
+    end
+  end
+
   it 'accepts rdoc syntax' do
     inspect_source(cop,
                    ['#++',
