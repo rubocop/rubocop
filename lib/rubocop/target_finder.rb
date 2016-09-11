@@ -56,7 +56,7 @@ module RuboCop
     def target_files_in_dir(base_dir = Dir.pwd)
       # Support Windows: Backslashes from command-line -> forward slashes
       if File::ALT_SEPARATOR
-        base_dir.gsub!(File::ALT_SEPARATOR, File::SEPARATOR)
+        base_dir = base_dir.gsub(File::ALT_SEPARATOR, File::SEPARATOR)
       end
       all_files = find_files(base_dir, File::FNM_DOTMATCH)
       hidden_files = Set.new(all_files - find_files(base_dir, 0))
