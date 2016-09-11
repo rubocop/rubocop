@@ -121,6 +121,22 @@ describe RuboCop::CLI, :isolated_environment do
     end
   end
 
+  context 'when lines end with CR+LF' do
+    it 'reports an offense' do
+      create_file('example.rb', ["# encoding: utf-8\r",
+                                 "x = 0\r",
+                                 "puts x\r"])
+      result = cli.run(['--format', 'simple', 'example.rb'])
+      expect(result).to eq(1)
+      expect($stdout.string)
+        .to eq(['== example.rb ==',
+                'C:  1:  1: Carriage return character detected.',
+                '',
+                '1 file inspected, 1 offense detected',
+                ''].join("\n"))
+    end
+  end
+
   context 'when checking a correct file' do
     it 'returns 0' do
       create_file('example.rb', ['# encoding: utf-8',

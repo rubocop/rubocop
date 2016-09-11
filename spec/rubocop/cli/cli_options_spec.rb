@@ -1117,5 +1117,31 @@ describe RuboCop::CLI, :isolated_environment do
         $stdin = STDIN
       end
     end
+
+    it 'detects CR at end of line' do
+      begin
+        create_file('example.rb', "puts 'hello world'\r")
+        File.open('example.rb') do |file|
+          # We must use a File object to simulate the behavior of
+          # STDIN, which is an IO object. StringIO won't do in this
+          # case, as its read() method doesn't handle line endings the
+          # same way IO#read() does.
+          $stdin = file
+          argv = ['--only=Style/EndOfLine',
+                  '--format=simple',
+                  '--stdin',
+                  'fake.rb']
+          expect(cli.run(argv)).to eq(1)
+          expect($stdout.string)
+            .to eq(['== fake.rb ==',
+                    'C:  1:  1: Carriage return character detected.',
+                    '',
+                    '1 file inspected, 1 offense detected',
+                    ''].join("\n"))
+        end
+      ensure
+        $stdin = STDIN
+      end
+    end
   end
 end
