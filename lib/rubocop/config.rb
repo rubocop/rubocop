@@ -51,10 +51,6 @@ module RuboCop
       @hash = hash
     end
 
-    def ==(other)
-      other.is_a?(Hash) ? @hash == other : super
-    end
-
     def [](key)
       @hash[key]
     end
@@ -73,10 +69,6 @@ module RuboCop
 
     def each_key(&block)
       @hash.each_key(&block)
-    end
-
-    def eql?(other)
-      other.is_a?(Hash) ? @hash.eql?(other) : super
     end
 
     def fetch(key)
