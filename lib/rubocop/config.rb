@@ -43,10 +43,6 @@ module RuboCop
 
     attr_reader :loaded_path
 
-    def self.[](hash)
-      new(hash)
-    end
-
     def initialize(hash = {}, loaded_path = nil)
       @loaded_path = loaded_path
       @for_cop = Hash.new do |h, cop|
