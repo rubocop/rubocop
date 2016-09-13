@@ -37,6 +37,7 @@
 * [#3456](https://github.com/bbatsov/rubocop/pull/3456): Don't crash on a multiline empty brace in `Style/MultilineMethodCallBraceLayout`. ([@pocke][])
 * [#3423](https://github.com/bbatsov/rubocop/issues/3423): Checks if .rubocop is a file before parsing. ([@joejuzl][])
 * [#3439](https://github.com/bbatsov/rubocop/issues/3439): Fix variable assignment check not working properly when a block is used in `Rails/SaveBang`. ([@QuinnHarris][])
+* [#3462](https://github.com/bbatsov/rubocop/issues/3462): Don't create MultilineMethodCallBraceLayout offenses for single-line method calls when receiver spans multiple lines. ([@maxjacobson][])
 
 ### Changes
 
