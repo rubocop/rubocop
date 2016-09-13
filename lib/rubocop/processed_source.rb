@@ -14,7 +14,7 @@ module RuboCop
                 :parser_error, :raw_source, :ruby_version
 
     def self.from_file(path, ruby_version)
-      file = File.read(path)
+      file = File.read(path, mode: 'rb')
       new(file, ruby_version, path)
     rescue Errno::ENOENT
       raise RuboCop::Error, "No such file or directory: #{path}"
