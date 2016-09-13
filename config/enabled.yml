@@ -402,7 +402,7 @@ Style/LineEndConcatenation:
 
 Style/MethodCallParentheses:
   Description: 'Do not use parentheses for method calls with no arguments.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-args-no-parens'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#method-invocation-parens'
   Enabled: true
 
 Style/MethodDefParentheses:
@@ -998,7 +998,7 @@ Lint/AmbiguousOperator:
   Description: >-
                  Checks for ambiguous operators in the first argument of a
                  method invocation without parentheses.
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#parens-as-args'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#method-invocation-parens'
   Enabled: true
 
 Lint/AmbiguousRegexpLiteral:
