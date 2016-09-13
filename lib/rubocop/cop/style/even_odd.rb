@@ -4,7 +4,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for places where Fixnum#even? or Fixnum#odd?
+      # This cop checks for places where Integer#even? or Integer#odd?
       # should have been used.
       #
       # @example
@@ -15,7 +15,7 @@ module RuboCop
       #   # good
       #   if x.even?
       class EvenOdd < Cop
-        MSG = 'Replace with `Fixnum#%s?`.'.freeze
+        MSG = 'Replace with `Integer#%s?`.'.freeze
 
         ZERO = s(:int, 0)
         ONE = s(:int, 1)
