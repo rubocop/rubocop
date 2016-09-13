@@ -19,7 +19,7 @@ module RuboCop
     # Entry point for the application logic. Here we
     # do the command line arguments processing and inspect
     # the target files
-    # @return [Fixnum] UNIX exit code
+    # @return [Integer] UNIX exit code
     def run(args = ARGV)
       @options, paths = Options.new.parse(args)
       act_on_options

@@ -260,7 +260,7 @@ Style/EndOfLine:
   Enabled: true
 
 Style/EvenOdd:
-  Description: 'Favor the use of Fixnum#even? && Fixnum#odd?'
+  Description: 'Favor the use of Integer#even? && Integer#odd?'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#predicate-methods'
   Enabled: true
 
@@ -1368,7 +1368,7 @@ Performance/ReverseEach:
 Performance/Sample:
   Description: >-
                   Use `sample` instead of `shuffle.first`,
-                  `shuffle.last`, and `shuffle[Fixnum]`.
+                  `shuffle.last`, and `shuffle[Integer]`.
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#arrayshufflefirst-vs-arraysample-code'
   Enabled: true
 
