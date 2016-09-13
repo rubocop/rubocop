@@ -120,4 +120,10 @@ describe RuboCop::Cop::Rails::SaveBang do
     it_behaves_like('checks_variable_return_use_offense', method, false)
     it_behaves_like('checks_create_offense', method)
   end
+
+  it 'properly ignores lvasign without right hand side' do
+    inspect_source(cop, 'variable += 1')
+
+    expect(cop.messages).to be_empty
+  end
 end
