@@ -1209,6 +1209,10 @@ Lint/UnderscorePrefixedVariableName:
   Description: 'Do not use prefix `_` for a variable that is used.'
   Enabled: true
 
+Lint/UnifiedInteger:
+  Description: 'Use Integer instead of Fixnum or Bignum'
+  Enabled: true
+
 Lint/UnneededDisable:
   Description: >-
                  Checks for rubocop:disable comments that can be removed.
