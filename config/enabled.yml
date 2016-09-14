@@ -664,6 +664,13 @@ Style/RescueModifier:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-rescue-modifiers'
   Enabled: true
 
+Style/SafeNavigation:
+  Description: >-
+                  This cop transforms usages of a method call safeguarded by
+                  a check for the existance of the object to
+                  safe navigation (`&.`).
+  Enabled: true
+
 Style/SelfAssignment:
   Description: >-
                  Checks for places where self-assignment shorthand should have

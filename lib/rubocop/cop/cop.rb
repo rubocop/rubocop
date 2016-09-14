@@ -24,6 +24,8 @@ module RuboCop
 
       def qualified_cop_name(name, origin)
         @cop_names ||= Set.new(map(&:cop_name))
+        return name if @cop_names.include?(name)
+
         basename = File.basename(name)
         found_ns = types.map(&:capitalize).select do |ns|
           @cop_names.include?("#{ns}/#{basename}")
@@ -33,8 +35,9 @@ module RuboCop
         when 0 then name # No namespace found. Deal with it later in caller.
         when 1 then cop_name_with_namespace(name, origin, basename, found_ns[0])
         else raise AmbiguousCopName,
-                   "Ambiguous cop name `#{basename}` used in" \
-                   "#{origin} needs namespace qualifier."
+                   "Ambiguous cop name `#{name}` used in #{origin} needs " \
+                   'namespace qualifier. Did you mean ' \
+                   "#{found_ns.map { |ns| "#{ns}/#{basename}" }.join(' or ')}"
         end
       end
 

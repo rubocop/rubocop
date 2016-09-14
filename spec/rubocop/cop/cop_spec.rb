@@ -16,6 +16,14 @@ describe RuboCop::Cop::Cop do
   end
 
   describe '.qualified_cop_name' do
+    before do
+      $stderr = StringIO.new
+    end
+
+    after do
+      $stderr = STDERR
+    end
+
     it 'adds namespace if the cop name is found in exactly one namespace' do
       expect(described_class.qualified_cop_name('LineLength', '--only'))
         .to eq('Metrics/LineLength')
@@ -31,10 +39,23 @@ describe RuboCop::Cop::Cop do
         .to eq('Metrics/LineLength')
     end
 
+    it 'returns the cop name in a different namespace if the provided ' \
+       'namespace is incorrect' do
+      expect(described_class.qualified_cop_name('Style/LineLength', '--only'))
+        .to eq('Metrics/LineLength')
+    end
+
     it 'raises an error if the cop name is in more than one namespace' do
-      skip 'Example needs a cop with same name in two namespaces'
-      expect { described_class.qualified_cop_name('ExampleCop', '--only') }
+      expect { described_class.qualified_cop_name('SafeNavigation', '--only') }
         .to raise_error(RuboCop::Cop::AmbiguousCopName)
+    end
+
+    it 'returns the given cop name if it already has a namespace even when ' \
+       'the cop exists in multiple namespaces' do
+      qualified_cop_name =
+        described_class.qualified_cop_name('Style/SafeNavigation', '--only')
+
+      expect(qualified_cop_name).to eq('Style/SafeNavigation')
     end
   end
 
