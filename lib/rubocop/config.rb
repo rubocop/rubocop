@@ -223,11 +223,11 @@ module RuboCop
     end
 
     def patterns_to_include
-      @patterns_to_include ||= for_all_cops['Include']
+      for_all_cops['Include']
     end
 
     def patterns_to_exclude
-      @patterns_to_exclude ||= for_all_cops['Exclude']
+      for_all_cops['Exclude']
     end
 
     def path_relative_to_config(path)
