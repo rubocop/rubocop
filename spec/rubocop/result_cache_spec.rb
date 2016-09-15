@@ -101,11 +101,11 @@ describe RuboCop::ResultCache, :isolated_environment do
         context 'and symlink attack protection is disabled' do
           before do
             allow(config_store).to receive(:for).with('.').and_return(
-              RuboCop::Config[
+              RuboCop::Config.new(
                 'AllCops' => {
                   'AllowSymlinksInCacheRootDirectory' => true
                 }
-              ]
+              )
             )
           end
 
@@ -171,7 +171,7 @@ describe RuboCop::ResultCache, :isolated_environment do
 
   describe '.cleanup' do
     before do
-      cfg = RuboCop::Config[{ 'AllCops' => { 'MaxFilesInCache' => 1 } }]
+      cfg = RuboCop::Config.new('AllCops' => { 'MaxFilesInCache' => 1 })
       allow(config_store).to receive(:for).with('.').and_return(cfg)
       allow(config_store).to receive(:for).with('other.rb').and_return(cfg)
       create_file('other.rb', ['x = 1'])
@@ -209,7 +209,7 @@ describe RuboCop::ResultCache, :isolated_environment do
   describe 'the cache path when using a temp directory' do
     before do
       allow(config_store).to receive(:for).with('.').and_return(
-        RuboCop::Config['AllCops' => { 'CacheRootDirectory' => '/tmp' }]
+        RuboCop::Config.new('AllCops' => { 'CacheRootDirectory' => '/tmp' })
       )
     end
     it 'contains the process uid' do

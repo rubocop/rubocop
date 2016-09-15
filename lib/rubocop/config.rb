@@ -43,20 +43,12 @@ module RuboCop
 
     attr_reader :loaded_path
 
-    def self.[](hash)
-      new(hash)
-    end
-
     def initialize(hash = {}, loaded_path = nil)
       @loaded_path = loaded_path
       @for_cop = Hash.new do |h, cop|
         h[cop] = self[Cop::Cop.qualified_cop_name(cop, loaded_path)] || {}
       end
       @hash = hash
-    end
-
-    def ==(other)
-      other.is_a?(Hash) ? @hash == other : super
     end
 
     def [](key)
@@ -77,10 +69,6 @@ module RuboCop
 
     def each_key(&block)
       @hash.each_key(&block)
-    end
-
-    def eql?(other)
-      other.is_a?(Hash) ? @hash.eql?(other) : super
     end
 
     def fetch(key)

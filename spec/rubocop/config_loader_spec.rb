@@ -84,7 +84,7 @@ describe RuboCop::ConfigLoader do
       it 'returns a configuration inheriting from default.yml' do
         config = default_config['Style/Encoding'].dup
         config['Enabled'] = false
-        expect(configuration_from_file)
+        expect(configuration_from_file.to_h)
           .to eql(default_config.merge('Style/Encoding' => config))
       end
     end
@@ -213,7 +213,7 @@ describe RuboCop::ConfigLoader do
               'Max' => 5
             }
           )
-        expect(configuration_from_file).to eq(config)
+        expect(configuration_from_file.to_h).to eq(config)
       end
     end
 
@@ -286,7 +286,7 @@ describe RuboCop::ConfigLoader do
             }
           )
 
-        expect(configuration_from_file).to eq(config)
+        expect(configuration_from_file.to_h).to eq(config)
       end
     end
 
@@ -453,13 +453,13 @@ describe RuboCop::ConfigLoader do
                                        'Style/Encoding:',
                                        '  Enabled: false'])
 
-      expect(load_file).to eq('Style/Encoding' => { 'Enabled' => false })
+      expect(load_file.to_h).to eq('Style/Encoding' => { 'Enabled' => false })
     end
 
     it 'returns an empty configuration loaded from an empty file' do
       create_file(configuration_path, '')
       configuration = load_file
-      expect(configuration).to eq({})
+      expect(configuration.to_h).to eq({})
     end
 
     context 'when SafeYAML is required' do
