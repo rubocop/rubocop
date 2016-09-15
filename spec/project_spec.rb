@@ -17,7 +17,7 @@ describe 'RuboCop Project' do
 
     it 'has a nicely formatted description for all cops' do
       cop_names.each do |name|
-        description = default_config.fetch(name).fetch('Description')
+        description = default_config[name]['Description']
         expect(description).not_to be_nil
         expect(description).not_to include("\n")
       end

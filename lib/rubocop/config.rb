@@ -71,10 +71,6 @@ module RuboCop
       @hash.each_key(&block)
     end
 
-    def fetch(key)
-      @hash.fetch(key)
-    end
-
     def key?(key)
       @hash.key?(key)
     end
