@@ -67,14 +67,6 @@ module RuboCop
       @hash.each(&block)
     end
 
-    def each_key(&block)
-      @hash.each_key(&block)
-    end
-
-    def fetch(key)
-      @hash.fetch(key)
-    end
-
     def key?(key)
       @hash.key?(key)
     end
@@ -104,7 +96,7 @@ module RuboCop
     end
 
     def make_excludes_absolute
-      each_key do |key|
+      each do |key, _|
         validate_section_presence(key)
         next unless self[key]['Exclude']
 
