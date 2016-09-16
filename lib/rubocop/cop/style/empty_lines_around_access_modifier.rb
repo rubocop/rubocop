@@ -8,7 +8,8 @@ module RuboCop
       class EmptyLinesAroundAccessModifier < Cop
         include AccessModifierNode
 
-        MSG = 'Keep a blank line before and after `%s`.'.freeze
+        MSG = 'Keep a blank line after `%s`. And before, '\
+              'if it is not first line of module.'.freeze
 
         def on_send(node)
           return unless modifier_node?(node)

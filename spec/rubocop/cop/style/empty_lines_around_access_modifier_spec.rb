@@ -17,7 +17,8 @@ describe RuboCop::Cop::Style::EmptyLinesAroundAccessModifier do
                       'end'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(["Keep a blank line before and after `#{access_modifier}`."])
+        .to eq(["Keep a blank line after `#{access_modifier}`. "\
+                'And before, if it is not first line of module.'])
     end
 
     it "requires blank line after #{access_modifier}" do
@@ -30,7 +31,8 @@ describe RuboCop::Cop::Style::EmptyLinesAroundAccessModifier do
                       'end'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(["Keep a blank line before and after `#{access_modifier}`."])
+        .to eq(["Keep a blank line after `#{access_modifier}`. "\
+                'And before, if it is not first line of module.'])
     end
 
     it "ignores comment line before #{access_modifier}" do
