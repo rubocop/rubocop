@@ -142,14 +142,6 @@ describe RuboCop::Cop::Style::FirstArrayElementLineBreak do
     expect(cop.offenses).to be_empty
   end
 
-  context 'array assignment' do
-    let(:source) do
-      ['a,',
-       'b = [1,',
-       '2]']
-    end
-  end
-
   it 'ignores elements listed on a single line' do
     inspect_source(
       cop,

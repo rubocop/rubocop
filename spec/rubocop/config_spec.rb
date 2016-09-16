@@ -254,7 +254,6 @@ describe RuboCop::Config do
       configuration.patterns_to_include
     end
 
-    let(:hash) { {} }
     let(:loaded_path) { 'example/.rubocop.yml' }
 
     context 'when config file has AllCops => Include key' do
@@ -315,7 +314,6 @@ describe RuboCop::Config do
       configuration.patterns_to_exclude
     end
 
-    let(:hash) { {} }
     let(:loaded_path) { 'example/.rubocop.yml' }
 
     context 'when config file has AllCops => Exclude key' do
@@ -501,8 +499,6 @@ describe RuboCop::Config do
       end
 
       context 'when .ruby-version is not present' do
-        let(:ruby_version) { described_class::DEFAULT_RUBY_VERSION }
-
         before do
           allow(File).to receive(:file?).with('.ruby-version').and_return false
         end

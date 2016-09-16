@@ -26,8 +26,6 @@ describe RuboCop::Cop::VariableForce::Scope do
     RuboCop::ProcessedSource.new(source, ruby_version).ast
   end
 
-  let(:scope_node_type) { :def }
-
   let(:scope_node) { ast.each_node(scope_node_type).first }
 
   subject(:scope) { described_class.new(scope_node) }
