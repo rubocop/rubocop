@@ -12,6 +12,12 @@ describe RuboCop::Cop::Performance::SortWithBlock do
     expect(new_source).to eq 'array.sort_by(&:foo)'
   end
 
+  it 'autocorrects array.sort { |a, b| a.bar <=> b.bar }' do
+    new_source =
+      autocorrect_source(cop, 'array.sort { |a, b| a.bar <=> b.bar }')
+    expect(new_source).to eq 'array.sort_by(&:bar)'
+  end
+
   it 'autocorrects array.sort { |x, y| x.foo <=> y.foo }' do
     new_source =
       autocorrect_source(cop, 'array.sort { |x, y| x.foo <=> y.foo }')

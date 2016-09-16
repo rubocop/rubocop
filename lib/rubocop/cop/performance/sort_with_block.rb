@@ -38,7 +38,8 @@ module RuboCop
           send, = *node
 
           lambda do |corrector|
-            corrector.replace(sort_range(send, node), 'sort_by(&:foo)')
+            method = node.children.last.children.last.children.last
+            corrector.replace(sort_range(send, node), "sort_by(&:#{method})")
           end
         end
 
