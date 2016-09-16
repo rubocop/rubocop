@@ -189,7 +189,6 @@ describe RuboCop::Cop::Cop do
   describe '#autocorrect?' do
     # dummy config for a generic cop instance
     let(:config) { RuboCop::Config.new({}) }
-    let(:options) { nil }
     let(:cop) { described_class.new(config, options) }
     let(:support_autocorrect) { true }
     subject { cop.autocorrect? }

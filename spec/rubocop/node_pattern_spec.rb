@@ -819,6 +819,7 @@ describe RuboCop::NodePattern do
       let(:pattern) { '{^send ^^send}' }
       let(:ruby) { '"str".concat(local += "abc")' }
       let(:node) { root_node.children[2].children[2] }
+      it_behaves_like :matching
     end
 
     # NOTE!! a pitfall of doing this is that unification is done using #==

@@ -5,9 +5,6 @@ require 'spec_helper'
 
 describe RuboCop::Cop::Lint::DefEndAlignment, :config do
   subject(:cop) { described_class.new(config) }
-  let(:opposite) do
-    cop_config['AlignWith'] == 'def' ? 'start_of_line' : 'def'
-  end
 
   let(:source) do
     ['foo def a',

@@ -5,7 +5,6 @@ require 'spec_helper'
 
 describe RuboCop::Cop::Performance::HashEachMethods do
   subject(:cop) { described_class.new }
-  let(:hash) { { key: 'value' } }
 
   it 'registers an offense for Hash#keys.each' do
     inspect_source(cop, 'hash.keys.each { |k| p k }')

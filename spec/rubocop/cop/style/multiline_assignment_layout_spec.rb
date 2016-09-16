@@ -5,7 +5,6 @@ require 'spec_helper'
 
 describe RuboCop::Cop::Style::MultilineAssignmentLayout, :config do
   subject(:cop) { described_class.new(config) }
-  let(:enforced_style) { 'new_line' }
   let(:supported_types) { %w(if) }
 
   let(:cop_config) do
