@@ -15,6 +15,7 @@
 * Add check for `persisted?` method call when using a create method in `Rails/SaveBang`. ([@QuinnHarris][])
 * Add new `Style/SafeNavigation` cop to convert method calls safeguarded by a non `nil` check for the object to `&.`. ([@rrosenblum][])
 * Add new `Performance/SortWithBlock` cop to use `sort_by(&:foo)` instead of `sort_by { |a, b| a.foo <=> b.foo }`. ([@koic][])
+* [#3492](https://github.com/bbatsov/rubocop/pull/3492): Add new `UnifiedInteger` cop. ([@pocke][])
 
 ### Bug fixes
 
