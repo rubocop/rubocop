@@ -42,6 +42,7 @@
 * [#3439](https://github.com/bbatsov/rubocop/issues/3439): Fix variable assignment check not working properly when a block is used in `Rails/SaveBang`. ([@QuinnHarris][])
 * [#3401](https://github.com/bbatsov/rubocop/issues/3401): Read file contents in binary mode so `Style/EndOfLine` works on Windows. ([@jonas054][])
 * [#3450](https://github.com/bbatsov/rubocop/issues/3450): Prevent `Style/TernaryParentheses` cop from making unsafe corrections. ([@drenmi][])
+* [#3460](https://github.com/bbatsov/rubocop/issues/3460): Fix false positives in `Style/InlineComment` cop. ([@drenmi][])
 
 ### Changes
 
