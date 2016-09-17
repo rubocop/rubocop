@@ -67,8 +67,8 @@ module RuboCop
               corrector.insert_before(condition.source_range, '(')
               corrector.insert_after(condition.source_range, ')')
             else
-              # Don't correct if it's a safe assignment
-              unless safe_assignment?(condition)
+              unless safe_assignment?(condition) ||
+                     unsafe_autocorrect?(condition)
                 corrector.remove(condition.loc.begin)
                 corrector.remove(condition.loc.end)
               end
@@ -101,6 +101,23 @@ module RuboCop
           require_parentheses? &&
             redundant_parentheses_enabled?
         end
+
+        def unsafe_autocorrect?(condition)
+          condition.children.any? do |child|
+            unparenthesized_method_call?(child)
+          end
+        end
+
+        def unparenthesized_method_call?(child)
+          argument = method_call_argument(child)
+
+          argument && argument !~ /^\(/
+        end
+
+        def_node_matcher :method_call_argument, <<-PATTERN
+          {(:defined? $...)
+           (send {(send ...) nil} _ $(send nil _)...)}
+        PATTERN
       end
     end
   end
