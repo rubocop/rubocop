@@ -26,23 +26,29 @@ describe RuboCop::Cop::Rails::NotNullColumn, :config do
       let(:source) do
         'add_column :users, :name, :string, null: false, default: ""'
       end
-      it 'accepts' do
-        expect(cop.offenses).to be_empty
+      include_examples 'accepts'
+    end
+
+    context 'with null: false and default: nil' do
+      let(:source) do
+        'add_column :users, :name, :string, null: false, default: nil'
+      end
+      it 'reports an offense' do
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.messages).to eq(
+          ['Do not add a NOT NULL column without a default value']
+        )
       end
     end
 
     context 'with null: true' do
       let(:source) { 'add_column :users, :name, :string, null: true' }
-      it 'accepts' do
-        expect(cop.offenses).to be_empty
-      end
+      include_examples 'accepts'
     end
 
     context 'without any options' do
       let(:source) { 'add_column :users, :name, :string' }
-      it 'accepts' do
-        expect(cop.offenses).to be_empty
-      end
+      include_examples 'accepts'
     end
   end
 
@@ -54,9 +60,7 @@ describe RuboCop::Cop::Rails::NotNullColumn, :config do
         'change_column :users, :name, :string, null: false'
       ]
     end
-    it 'accepts' do
-      expect(cop.offenses).to be_empty
-    end
+    include_examples 'accepts'
   end
 
   context 'with create_table call' do
@@ -70,8 +74,6 @@ describe RuboCop::Cop::Rails::NotNullColumn, :config do
        '  end',
        'end']
     end
-    it 'accepts' do
-      expect(cop.offenses).to be_empty
-    end
+    include_examples 'accepts'
   end
 end

@@ -26,7 +26,7 @@ module RuboCop
         PATTERN
 
         def_node_matcher :has_default?, <<-PATTERN
-          (pair (sym :default) _)
+          (pair (sym :default) !(:nil))
         PATTERN
 
         def on_send(node)
