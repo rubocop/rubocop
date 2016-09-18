@@ -36,7 +36,6 @@
 * [#3425](https://github.com/bbatsov/rubocop/pull/3425): Fix bug for invalid bytes in UTF-8 in `Lint/PercentStringArray` cop. ([@pocke][])
 * [#3374](https://github.com/bbatsov/rubocop/issues/3374): Make `SpaceInsideBlockBraces` and `SpaceBeforeBlockBraces` not depend on `BlockDelimiters` configuration. ([@jonas054][])
 * Fix error in `Lint/ShadowedException` cop for higher number of rescue groups. ([@groddeck][])
-[@groddeck]: https://github.com/groddeck
 * [#3456](https://github.com/bbatsov/rubocop/pull/3456): Don't crash on a multiline empty brace in `Style/MultilineMethodCallBraceLayout`. ([@pocke][])
 * [#3423](https://github.com/bbatsov/rubocop/issues/3423): Checks if .rubocop is a file before parsing. ([@joejuzl][])
 * [#3439](https://github.com/bbatsov/rubocop/issues/3439): Fix variable assignment check not working properly when a block is used in `Rails/SaveBang`. ([@QuinnHarris][])
@@ -2357,3 +2356,4 @@
 [@tjwallace]: https://github.com/tjwallace
 [@scottohara]: https://github.com/scottohara
 [@koic]: https://github.com/koic
+[@groddeck]: https://github.com/groddeck
