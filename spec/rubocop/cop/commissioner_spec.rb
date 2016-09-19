@@ -24,7 +24,7 @@ describe RuboCop::Cop::Commissioner do
       it 'returns all offenses except the ones of the cop' do
         cops = []
         cops << double('cop A', offenses: %w(foo), excluded_file?: false)
-        cops << double('cop B', offenses: %w(bar), excluded_file?: true)
+        cops << double('cop B', excluded_file?: true)
         cops << double('cop C', offenses: %w(baz), excluded_file?: false)
         cops.each(&:as_null_object)
 
