@@ -15,8 +15,11 @@ module RuboCop
         def on_normal_if_unless(node)
           exp = node.source
           return if exp.include?("\n")
-          return unless node.loc.respond_to?(:else) && node.loc.else
+
           condition = exp.include?('if') ? 'if' : 'unless'
+          return unless node.loc.respond_to?(:else) &&
+                        node.loc.else &&
+                        else_branch_present?(node, condition)
 
           add_offense(node, :expression, format(MSG, condition))
         end
@@ -69,6 +72,13 @@ module RuboCop
           return true if node.keyword_not?
 
           !parenthesized_call?(node)
+        end
+
+        private
+
+        def else_branch_present?(node, condition)
+          _, if_branch, else_branch = *node
+          condition == 'if' ? else_branch : if_branch
         end
       end
     end
