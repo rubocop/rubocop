@@ -17,7 +17,7 @@ module RuboCop
 
       describe '#finished' do
         context 'when there are many offenses' do
-          let(:offense) { double('offense', cop_name: 'SomeCop') }
+          let(:offense) { double('offense') }
 
           before do
             formatter.started(files)
