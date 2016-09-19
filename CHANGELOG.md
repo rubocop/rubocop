@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#3510](https://github.com/bbatsov/rubocop/issues/3510): Add a configuration option, `ConvertCodeThatCanStartToReturnNil`, to `Style/SafeNavigation` to check for code that could start returning `nil` if safe navigation is used. ([@rrosenblum][])
+
 ### Bug fixes
 
 * [#3513](https://github.com/bbatsov/rubocop/pull/3513): Fix false positive in `Style/TernaryParentheses` for a ternary with ranges. ([@dreyks][])
@@ -10,6 +14,7 @@
 ### Changes
 
 * [#3512](https://github.com/bbatsov/rubocop/issues/3512): Change error message of `Lint/UnneededSplatExpansion` for array in method parameters. ([@tejasbubane][])
+* [#3510](https://github.com/bbatsov/rubocop/issues/3510): Fix some issues with `Style/SafeNavigation`. Fix auto-correct of multiline if expressions, and do not register an offense for scenarios using `||` and ternary expression. ([@rrosenblum][])
 
 ## 0.43.0 (2016-09-19)
 
