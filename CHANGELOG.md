@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.43.0 (2016-09-19)
+
 ### New features
 
 * [#3379](https://github.com/bbatsov/rubocop/issues/3379): Add table of contents at the beginning of HTML formatted output. ([@hedgesky][])
