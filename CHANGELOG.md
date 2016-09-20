@@ -4,7 +4,7 @@
 
 ### Bug fixes
 
-[#3513](https://github.com/bbatsov/rubocop/pull/3513): Fix false positive in `Style/TernaryParentheses` for a ternary with ranges. ([@dreyks][])
+* [#3513](https://github.com/bbatsov/rubocop/pull/3513): Fix false positive in `Style/TernaryParentheses` for a ternary with ranges. ([@dreyks][])
 
 ## 0.43.0 (2016-09-19)
 
