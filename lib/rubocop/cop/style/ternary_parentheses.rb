@@ -91,7 +91,7 @@ module RuboCop
         end
 
         def parenthesized?(node)
-          node.source =~ /^\(.*\)$/
+          node.begin_type?
         end
 
         # When this cop is configured to enforce parentheses and the

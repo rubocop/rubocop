@@ -168,6 +168,11 @@ describe RuboCop::Cop::Style::TernaryParentheses, :config do
                         'foo = (baz.foo? bar, baz) ? a : b'
       end
     end
+
+    context 'with condition including a range' do
+      it_behaves_like 'code without offense',
+                      '(foo..bar).include?(baz) ? a : b'
+    end
   end
 
   context 'when `RedundantParenthesis` would cause an infinite loop' do
