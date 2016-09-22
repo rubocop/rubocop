@@ -703,8 +703,7 @@ describe RuboCop::CLI, :isolated_environment do
               'comment.',
               "#{e}:2:1: C: [Corrected] Indent access modifiers like " \
               '`private`.',
-              "#{e}:2:1: C: [Corrected] Keep a blank line before and " \
-              'after `private`.',
+              "#{e}:2:1: C: [Corrected] Keep a blank line after `private`.",
               "#{e}:2:3: W: Useless `private` access modifier.",
               "#{e}:3:7: C: [Corrected] Freeze mutable objects assigned " \
               'to constants.',

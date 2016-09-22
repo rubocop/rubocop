@@ -121,6 +121,19 @@ describe RuboCop::Cop::Style::EmptyLinesAroundAccessModifier do
       expect(cop.offenses).to be_empty
     end
 
+    it "requires blank line after, but not before, #{access_modifier} " \
+       'when at the beginning of class/module' do
+      inspect_source(cop,
+                     ['class Test',
+                      "  #{access_modifier}",
+                      '  def test',
+                      '  end',
+                      'end'])
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages)
+        .to eq(["Keep a blank line after `#{access_modifier}`."])
+    end
+
     context 'at the beginning of block' do
       context 'for blocks defined with do' do
         it 'accepts missing blank line' do
@@ -141,6 +154,18 @@ describe RuboCop::Cop::Style::EmptyLinesAroundAccessModifier do
                           '  def test; end',
                           'end'])
           expect(cop.offenses).to be_empty
+        end
+
+        it "requires blank line after, but not before, #{access_modifier}" do
+          inspect_source(cop,
+                         ['included do',
+                          "  #{access_modifier}",
+                          '  def test',
+                          '  end',
+                          'end'])
+          expect(cop.offenses.size).to eq(1)
+          expect(cop.messages)
+            .to eq(["Keep a blank line after `#{access_modifier}`."])
         end
       end
 

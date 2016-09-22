@@ -21,6 +21,7 @@
 
 * [#3512](https://github.com/bbatsov/rubocop/issues/3512): Change error message of `Lint/UnneededSplatExpansion` for array in method parameters. ([@tejasbubane][])
 * [#3510](https://github.com/bbatsov/rubocop/issues/3510): Fix some issues with `Style/SafeNavigation`. Fix auto-correct of multiline if expressions, and do not register an offense for scenarios using `||` and ternary expression. ([@rrosenblum][])
+* [#3503](https://github.com/bbatsov/rubocop/issues/3503): Change misleading message of `Style/EmptyLinesAroundAccessModifier`. ([@bquorning][])
 
 ## 0.43.0 (2016-09-19)
 
