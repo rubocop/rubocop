@@ -97,6 +97,35 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
       expect(cop.offenses.size).to eq(0)
     end
 
+    it 'does not register an offense for normal case number in local variable' do
+        inspect_source(cop, 'user1_id = 1')
+        expect(cop.offenses.size).to eq(0)
+      end
+
+    it 'does not register an offense for normal case number in local variable' do
+        inspect_source(cop, 'sha256 = 3')
+        expect(cop.offenses.size).to eq(0)
+      end
+
+    it 'does not register an offense for normal case number in local variable' do
+        inspect_source(cop, 'target_u2f_device = nil')
+        expect(cop.offenses.size).to eq(0)
+      end
+
+    it 'registers an offense for stuff' do
+        inspect_source(cop, 'user_1_id = 3')
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.highlights).to eq(['user_1_id'])
+        expect(cop.messages).to eq(['Use normalcase for variable numbers.'])
+      end
+
+    it 'registers an offense for stuff' do
+        inspect_source(cop, 'sha_256 = 1')
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.highlights).to eq(['sha_256'])
+        expect(cop.messages).to eq(['Use normalcase for variable numbers.'])
+      end
+
     it 'registers an offense for snake case numbering in instance variable' do
       inspect_source(cop, '@local_1 = 3')
       expect(cop.offenses.size).to eq(1)
