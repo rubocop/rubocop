@@ -5,6 +5,8 @@ require 'spec_helper'
 
 describe RuboCop::Cop::Lint::UnneededSplatExpansion do
   subject(:cop) { described_class.new }
+  let(:message) { 'Unnecessary splat expansion.' }
+  let(:array_param_message) { 'Pass array contents as separate arguments.' }
 
   it 'allows assigning to a splat' do
     inspect_source(cop, '*, rhs = *node')
@@ -43,29 +45,44 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
     expect(cop.offenses).to be_empty
   end
 
-  shared_examples 'splat expansion' do |literal|
-    context 'expansion of method parameters' do
-      it 'registers an offense for expansion of parameters' do
-        inspect_source(cop, "array.push(*#{literal})")
+  shared_examples 'splat literal assignment' do |literal|
+    it 'registers an offense for ' do
+      inspect_source(cop, "a = *#{literal}")
 
-        expect(cop.messages).to eq(['Unnecessary splat expansion.'])
-        expect(cop.highlights).to eq(["*#{literal}"])
-      end
-    end
-
-    context 'assignment to splat expansion of literals' do
-      it 'registers an offense for ' do
-        inspect_source(cop, "a = *#{literal}")
-
-        expect(cop.messages).to eq(['Unnecessary splat expansion.'])
-        expect(cop.highlights).to eq(["*#{literal}"])
-      end
+      expect(cop.messages).to eq([message])
+      expect(cop.highlights).to eq(["*#{literal}"])
     end
   end
 
-  it_behaves_like 'splat expansion', '[1, 2, 3]'
-  it_behaves_like 'splat expansion', '%w(one two three)'
-  it_behaves_like 'splat expansion', '%W(one #{two} three)'
+  shared_examples 'array splat expansion' do |literal|
+    context 'method parameters' do
+      it 'registers an offense' do
+        inspect_source(cop, "array.push(*#{literal})")
+
+        expect(cop.messages).to eq([array_param_message])
+        expect(cop.highlights).to eq(["*#{literal}"])
+      end
+    end
+
+    it_behaves_like 'splat literal assignment', literal
+  end
+
+  shared_examples 'splat expansion' do |literal|
+    context 'method parameters' do
+      it 'registers an offense' do
+        inspect_source(cop, "array.push(*#{literal})")
+
+        expect(cop.messages).to eq([message])
+        expect(cop.highlights).to eq(["*#{literal}"])
+      end
+    end
+
+    it_behaves_like 'splat literal assignment', literal
+  end
+
+  it_behaves_like 'array splat expansion', '[1, 2, 3]'
+  it_behaves_like 'array splat expansion', '%w(one two three)'
+  it_behaves_like 'array splat expansion', '%W(one #{two} three)'
   it_behaves_like 'splat expansion', "'a'"
   it_behaves_like 'splat expansion', '"#{a}"'
   it_behaves_like 'splat expansion', '1'
@@ -75,7 +92,7 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
     it 'registers an offense for an array using a constructor' do
       inspect_source(cop, 'a = *Array.new(3) { 42 }')
 
-      expect(cop.messages).to eq(['Unnecessary splat expansion.'])
+      expect(cop.messages).to eq([message])
       expect(cop.highlights).to eq(['*Array.new(3) { 42 }'])
     end
   end
@@ -87,7 +104,7 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
                            '  bar',
                            'end'])
 
-      expect(cop.messages).to eq(['Unnecessary splat expansion.'])
+      expect(cop.messages).to eq([message])
       expect(cop.highlights).to eq(['*[first, second]'])
     end
 
@@ -97,7 +114,7 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
                            '  bar',
                            'end'])
 
-      expect(cop.messages).to eq(['Unnecessary splat expansion.'])
+      expect(cop.messages).to eq([message])
       expect(cop.highlights).to eq(['*%w(first second)'])
     end
 
@@ -107,7 +124,7 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
                            '  bar',
                            'end'])
 
-      expect(cop.messages).to eq(['Unnecessary splat expansion.'])
+      expect(cop.messages).to eq([message])
       expect(cop.highlights).to eq(['*%W(#{first} second)'])
     end
 
@@ -138,7 +155,7 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
                          '  bar',
                          'end'])
 
-    expect(cop.messages).to eq(['Unnecessary splat expansion.'])
+    expect(cop.messages).to eq([message])
     expect(cop.highlights).to eq(['*[First, Second]'])
   end
 
@@ -284,8 +301,8 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
   end
 
   context 'ruby >= 2.0', :ruby20 do
-    it_behaves_like 'splat expansion', '%i(first second)'
-    it_behaves_like 'splat expansion', '%I(first second #{third})'
+    it_behaves_like 'array splat expansion', '%i(first second)'
+    it_behaves_like 'array splat expansion', '%I(first second #{third})'
 
     context 'arrays being expanded with %i variants using splat expansion' do
       it 'registers an offense for an array literal being expanded in a ' \
@@ -306,14 +323,14 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
         it 'registers an offense for an array literal %i' do
           inspect_source(cop, 'array.push(*%i(first second))')
 
-          expect(cop.messages).to eq(['Unnecessary splat expansion.'])
+          expect(cop.messages).to eq([array_param_message])
           expect(cop.highlights).to eq(['*%i(first second)'])
         end
 
         it 'registers an offense for an array literal %I' do
           inspect_source(cop, 'array.push(*%I(#{first} second))')
 
-          expect(cop.messages).to eq(['Unnecessary splat expansion.'])
+          expect(cop.messages).to eq([array_param_message])
           expect(cop.highlights).to eq(['*%I(#{first} second)'])
         end
       end

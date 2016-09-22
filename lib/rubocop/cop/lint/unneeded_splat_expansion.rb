@@ -47,6 +47,7 @@ module RuboCop
       #   end
       class UnneededSplatExpansion < Cop
         MSG = 'Unnecessary splat expansion.'.freeze
+        ARRAY_PARAM_MSG = 'Pass array contents as separate arguments.'.freeze
         PERCENT_W = '%w'.freeze
         PERCENT_CAPITAL_W = '%W'.freeze
         PERCENT_I = '%i'.freeze
@@ -63,7 +64,12 @@ module RuboCop
             if object.send_type?
               return unless ASSIGNMENT_TYPES.include?(node.parent.parent.type)
             end
-            add_offense(node, :expression)
+
+            if array_splat?(node) && method_argument?(node)
+              add_offense(node, :expression, ARRAY_PARAM_MSG)
+            else
+              add_offense(node, :expression)
+            end
           end
         end
 
@@ -83,6 +89,14 @@ module RuboCop
               corrector.remove(loc.operator)
             end
           end
+        end
+
+        def array_splat?(node)
+          node.children.first.array_type?
+        end
+
+        def method_argument?(node)
+          node.parent.send_type?
         end
 
         def unneeded_brackets?(node)
