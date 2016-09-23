@@ -1184,6 +1184,10 @@ Lint/UnusedMethodArgument:
   AllowUnusedKeywordArguments: false
   IgnoreEmptyMethods: true
 
+Lint/StringConversionInInterpolation:
+  # Whether to allow `#to_s` with an implicit receiver
+  AllowImplicitReceiver: false
+
 ##################### Performance ############################
 
 Performance/RedundantMerge:
