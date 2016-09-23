@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* Add switch to `Lint/StringConversionInInterpolation` to allow `#to_s` with an implicit receiver. ([@savef][])
+
 ### Bug fixes
 
 * [#3513](https://github.com/bbatsov/rubocop/pull/3513): Fix false positive in `Style/TernaryParentheses` for a ternary with ranges. ([@dreyks][])

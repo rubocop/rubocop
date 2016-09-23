@@ -21,6 +21,7 @@ module RuboCop
             next unless final_node && final_node.send_type?
 
             receiver, method_name, *args = *final_node
+            next if allow_implicit_receiver?(receiver)
             next unless method_name == :to_s && args.empty?
 
             add_offense(
@@ -45,6 +46,10 @@ module RuboCop
               end
             )
           end
+        end
+
+        def allow_implicit_receiver?(receiver)
+          cop_config['AllowImplicitReceiver'] && receiver.nil?
         end
       end
     end

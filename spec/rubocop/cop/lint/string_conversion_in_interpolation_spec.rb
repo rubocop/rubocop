@@ -3,8 +3,8 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Lint::StringConversionInInterpolation do
-  subject(:cop) { described_class.new }
+describe RuboCop::Cop::Lint::StringConversionInInterpolation, :config do
+  subject(:cop) { described_class.new(config) }
 
   it 'registers an offense for #to_s in interpolation' do
     inspect_source(cop, '"this is the #{result.to_s}"')
@@ -48,5 +48,19 @@ describe RuboCop::Cop::Lint::StringConversionInInterpolation do
   it 'autocorrects implicit receiver by replacing to_s with self' do
     corrected = autocorrect_source(cop, ['"some #{to_s}"'])
     expect(corrected).to eq '"some #{self}"'
+  end
+
+  context 'with AllowImplicitReceiver' do
+    let(:cop_config) { { 'AllowImplicitReceiver' => true } }
+
+    it 'allows implicit receiver' do
+      inspect_source(cop, '"#{to_s}"')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'still registers an offence when there is a receiver' do
+      inspect_source(cop, '"this is the #{result.to_s}"')
+      expect(cop.offenses.size).to eq(1)
+    end
   end
 end
