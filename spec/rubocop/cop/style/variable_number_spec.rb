@@ -109,6 +109,18 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
       expect(cop.offenses.size).to eq(0)
     end
 
+    it 'does not register on offense for normal case multi digit number in
+      local variable' do
+      inspect_source(cop, 'foo10_bar = 4')
+      expect(cop.offenses.size).to eq(0)
+    end
+
+    it 'does not register on offense for normal case multi digit number in
+      local variable' do
+      inspect_source(cop, 'foo_bar10 = 4')
+      expect(cop.offenses.size).to eq(0)
+    end
+
     it 'does not register an offense for normal case number in the middle of
       local variable' do
       inspect_source(cop, 'target_u2f_device = nil')

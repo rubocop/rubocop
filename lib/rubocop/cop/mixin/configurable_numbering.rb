@@ -9,7 +9,7 @@ module RuboCop
       include ConfigurableEnforcedStyle
 
       SNAKE_CASE = /^@{0,2}[-_a-z]+[_\D]*(_\d)*[!?=]?$/
-      NORMAL_CASE = /^@{0,2}-{0,1}_{0,1}[a-zA-Z\d]*(_[a-zA-Z]+[a-zA-Z\d])*
+      NORMAL_CASE = /^@{0,2}-{0,1}_{0,1}[a-zA-Z\d]*(_[a-zA-Z]+\d*)*
                      [_\D]*[!?=]?$/x
       NON_INTEGER = /^@{0,2}[-_a-z]+[_\D]*[!?=]?$/
 
