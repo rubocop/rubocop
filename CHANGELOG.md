@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* Add new `Style/AsciiCodeString` cop to convert strings using `?` to use single quotes instead. ([@rrosenblum][])
+
 ### Bug fixes
 
 * [#3513](https://github.com/bbatsov/rubocop/pull/3513): Fix false positive in `Style/TernaryParentheses` for a ternary with ranges. ([@dreyks][])

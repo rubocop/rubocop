@@ -45,6 +45,10 @@ Style/ArrayJoin:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#array-join'
   Enabled: true
 
+Style/AsciiCodeString:
+  Description: 'Do not use legacy ascii code strings.'
+  Enabled: true
+
 Style/AsciiComments:
   Description: 'Use only ascii symbols in comments.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#english-comments'
