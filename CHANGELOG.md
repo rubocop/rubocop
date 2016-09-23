@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#3513](https://github.com/bbatsov/rubocop/pull/3513): Fix false positive in `Style/TernaryParentheses` for a ternary with ranges. ([@dreyks][])
+* [#3520](https://github.com/bbatsov/rubocop/issues/3520): Fix regression causing `Lint/AssignmentInCondition` false positive. ([@savef][])
 
 ## 0.43.0 (2016-09-19)
 
