@@ -83,6 +83,12 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts = in a block followed by method call' do
+    inspect_source(cop,
+                   'return 1 if any_errors? { o = file }.present?')
+    expect(cop.offenses).to be_empty
+  end
+
   it 'accepts ||= in condition' do
     inspect_source(cop,
                    'raise StandardError unless foo ||= bar')

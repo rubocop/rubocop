@@ -48,7 +48,8 @@ module RuboCop
         end
 
         def skip_children?(asgn_node)
-          safe_assignment_allowed? && safe_assignment?(asgn_node)
+          (asgn_node.send_type? && asgn_node.method_name !~ /=\z/) ||
+            (safe_assignment_allowed? && safe_assignment?(asgn_node))
         end
 
         # each_node/visit_descendants_with_types with :skip_children
