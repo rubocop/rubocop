@@ -16,6 +16,8 @@ Before submitting a patch or a pull request make sure all tests are
 passing and that your patch is in line with the [contribution
 guidelines](https://github.com/bbatsov/rubocop/blob/master/.github/CONTRIBUTING.md).
 
+See also. [development.md](development.md)
+
 ## Documentation
 
 Good documentation is just as important as good code.
