@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe RuboCop::Cop::Style::SafeNavigation, :config do
   subject(:cop) { described_class.new(config) }
+  let(:cop_config) { { 'ConvertCodeThatCanStartToReturnNil' => false } }
 
   it 'allows calls to methods not safeguarded by respond_to' do
     inspect_source(cop, 'foo.bar')
@@ -25,14 +26,14 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
     end
 
     it 'allows method calls that nil responds to safe guarded by ' \
-       'an object check' do
+      'an object check' do
       inspect_source(cop, 'foo.to_i if foo')
 
       expect(cop.offenses).to be_empty
     end
 
     it 'allows method calls that do not get called using . safe guarded by ' \
-       'an object check' do
+      'an object check' do
       inspect_source(cop, 'foo + bar if foo')
 
       expect(cop.offenses).to be_empty
@@ -172,138 +173,285 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
         end
       end
 
+      context 'if expression' do
+        it 'registers an offense for a single method call inside of a check ' \
+          'for the object' do
+          inspect_source(cop, ["if #{variable}",
+                               "  #{variable}.bar",
+                               'end'])
+
+          expect(cop.messages).to eq([described_class::MSG])
+        end
+
+        it 'registers an offense for a single method call inside of a ' \
+          'non-nil check for the object' do
+          inspect_source(cop, ["if !#{variable}.nil?",
+                               "  #{variable}.bar",
+                               'end'])
+
+          expect(cop.messages).to eq([described_class::MSG])
+        end
+
+        it 'registers an offense for a single method call inside of an ' \
+          'unless nil check for the object' do
+          inspect_source(cop, ["unless #{variable}.nil?",
+                               "  #{variable}.bar",
+                               'end'])
+
+          expect(cop.messages).to eq([described_class::MSG])
+        end
+
+        it 'registers an offense for a single method call inside of an ' \
+          'unless negative check for the object' do
+          inspect_source(cop, ["unless !#{variable}",
+                               "  #{variable}.bar",
+                               'end'])
+
+          expect(cop.messages).to eq([described_class::MSG])
+        end
+
+        it 'accepts a single method call inside of a check for the object ' \
+           'with an else' do
+          inspect_source(cop, ["if #{variable}",
+                               "  #{variable}.bar",
+                               'else',
+                               '  something',
+                               'end'])
+
+          expect(cop.offenses).to be_empty
+        end
+
+        context 'ternary expression' do
+          it 'accepts ternary expression' do
+            source = "!#{variable}.nil? ? #{variable}.bar : something"
+            inspect_source(cop, source)
+
+            expect(cop.offenses).to be_empty
+          end
+        end
+      end
+
       context 'object check before method call' do
-        it 'registers an offense for an object check followed by a ' \
-          'method call' do
-          inspect_source(cop, "#{variable} && #{variable}.bar")
+        context 'ConvertCodeThatCanStartToReturnNil true' do
+          let(:cop_config) { { 'ConvertCodeThatCanStartToReturnNil' => true } }
 
-          expect(cop.messages).to eq([described_class::MSG])
+          it 'registers an offense for a non-nil object check followed by a ' \
+            'method call' do
+            inspect_source(cop, "!#{variable}.nil? && #{variable}.bar")
+
+            expect(cop.messages).to eq([described_class::MSG])
+          end
+
+          it 'registers an offense for a non-nil object check followed by a ' \
+            'method call with params' do
+            inspect_source(cop, "!#{variable}.nil? && #{variable}.bar(baz)")
+
+            expect(cop.messages).to eq([described_class::MSG])
+          end
+
+          it 'registers an offense for a non-nil object check followed by a ' \
+            'method call with a block' do
+            source = "!#{variable}.nil? && #{variable}.bar { |e| e.qux }"
+
+            inspect_source(cop, source)
+
+            expect(cop.messages).to eq([described_class::MSG])
+          end
+
+          it 'registers an offense for a non-nil object check followed by a ' \
+            'method call with params and a block' do
+            source = "!#{variable}.nil? && #{variable}.bar(baz) { |e| e.qux }"
+
+            inspect_source(cop, source)
+
+            expect(cop.messages).to eq([described_class::MSG])
+          end
+
+          it 'registers an offense for an object check followed by a ' \
+            'method call' do
+            inspect_source(cop, "#{variable} && #{variable}.bar")
+
+            expect(cop.messages).to eq([described_class::MSG])
+          end
+
+          it 'registers an offense for an object check followed by a ' \
+            'method call with params' do
+            inspect_source(cop, "#{variable} && #{variable}.bar(baz)")
+
+            expect(cop.messages).to eq([described_class::MSG])
+          end
+
+          it 'registers an offense for an object check followed by a ' \
+            'method call with a block' do
+            inspect_source(cop, "#{variable} && #{variable}.bar { |e| e.qux }")
+
+            expect(cop.messages).to eq([described_class::MSG])
+          end
+
+          it 'registers an offense for an object check followed by a ' \
+            'method call with params and a block' do
+            source = "#{variable} && #{variable}.bar(baz) { |e| e.qux }"
+
+            inspect_source(cop, source)
+
+            expect(cop.messages).to eq([described_class::MSG])
+          end
+
+          it 'registers an offense for a check for the object followed by a ' \
+            'method call in the condition for an if expression' do
+            inspect_source(cop, ["if #{variable} && #{variable}.bar",
+                                 '  something',
+                                 'end'])
+
+            expect(cop.messages).to eq([described_class::MSG])
+          end
+
+          it 'registers an offense for a check for the object followed by a ' \
+            'method call in the condition for an if expression' do
+            inspect_source(cop, ["if #{variable} && #{variable}.bar",
+                                 '  something',
+                                 'end'])
+
+            expect(cop.messages).to eq([described_class::MSG])
+          end
         end
 
-        it 'registers an offense for an object check followed by a ' \
-          'method call with params' do
-          inspect_source(cop, "#{variable} && #{variable}.bar(baz)")
+        context 'ConvertCodeThatCanStartToReturnNil false' do
+          it 'registers an offense for a non-nil object check followed by a ' \
+            'method call' do
+            inspect_source(cop, "!#{variable}.nil? && #{variable}.bar")
 
-          expect(cop.messages).to eq([described_class::MSG])
+            expect(cop.offenses).to be_empty
+          end
+
+          it 'registers an offense for a non-nil object check followed by a ' \
+            'method call with params' do
+            inspect_source(cop, "!#{variable}.nil? && #{variable}.bar(baz)")
+
+            expect(cop.offenses).to be_empty
+          end
+
+          it 'registers an offense for a non-nil object check followed by a ' \
+            'method call with a block' do
+            source = "!#{variable}.nil? && #{variable}.bar { |e| e.qux }"
+
+            inspect_source(cop, source)
+
+            expect(cop.offenses).to be_empty
+          end
+
+          it 'registers an offense for a non-nil object check followed by a ' \
+            'method call with params and a block' do
+            source = "!#{variable}.nil? && #{variable}.bar(baz) { |e| e.qux }"
+
+            inspect_source(cop, source)
+
+            expect(cop.offenses).to be_empty
+          end
+
+          it 'registers an offense for an object check followed by a ' \
+            'method call' do
+            inspect_source(cop, "#{variable} && #{variable}.bar")
+
+            expect(cop.offenses).to be_empty
+          end
+
+          it 'registers an offense for an object check followed by a ' \
+            'method call with params' do
+            inspect_source(cop, "#{variable} && #{variable}.bar(baz)")
+
+            expect(cop.offenses).to be_empty
+          end
+
+          it 'registers an offense for an object check followed by a ' \
+            'method call with a block' do
+            inspect_source(cop, "#{variable} && #{variable}.bar { |e| e.qux }")
+
+            expect(cop.offenses).to be_empty
+          end
+
+          it 'registers an offense for an object check followed by a ' \
+            'method call with params and a block' do
+            source = "#{variable} && #{variable}.bar(baz) { |e| e.qux }"
+
+            inspect_source(cop, source)
+
+            expect(cop.offenses).to be_empty
+          end
+
+          it 'registers an offense for a check for the object followed by a ' \
+            'method call in the condition for an if expression' do
+            inspect_source(cop, ["if #{variable} && #{variable}.bar",
+                                 '  something',
+                                 'end'])
+
+            expect(cop.offenses).to be_empty
+          end
+
+          it 'registers an offense for a check for the object followed by a ' \
+            'method call in the condition for an if expression' do
+            inspect_source(cop, ["if #{variable} && #{variable}.bar",
+                                 '  something',
+                                 'end'])
+
+            expect(cop.offenses).to be_empty
+          end
         end
 
-        it 'registers an offense for an object check followed by a ' \
-          'method call with a block' do
-          inspect_source(cop, "#{variable} && #{variable}.bar { |e| e.qux }")
-
-          expect(cop.messages).to eq([described_class::MSG])
-        end
-
-        it 'registers an offense for an object check followed by a ' \
-          'method call with params and a block' do
-          source = "#{variable} && #{variable}.bar(baz) { |e| e.qux }"
-
-          inspect_source(cop, source)
-
-          expect(cop.messages).to eq([described_class::MSG])
-        end
-
-        it 'registers an offense for a non nil object check followed by a ' \
-          'method call' do
-          inspect_source(cop, "!#{variable}.nil? && #{variable}.bar")
-
-          expect(cop.messages).to eq([described_class::MSG])
-        end
-
-        it 'registers an offense for a non nil object check followed by a ' \
-          'method call with params' do
-          inspect_source(cop, "!#{variable}.nil? && #{variable}.bar(baz)")
-
-          expect(cop.messages).to eq([described_class::MSG])
-        end
-
-        it 'registers an offense for a non nil object check followed by a ' \
-          'method call with a block' do
-          source = "!#{variable}.nil? && #{variable}.bar { |e| e.qux }"
-
-          inspect_source(cop, source)
-
-          expect(cop.messages).to eq([described_class::MSG])
-        end
-
-        it 'registers an offense for a non nil object check followed by a ' \
-          'method call with params and a block' do
-          source = "!#{variable}.nil? && #{variable}.bar(baz) { |e| e.qux }"
-
-          inspect_source(cop, source)
-
-          expect(cop.messages).to eq([described_class::MSG])
-        end
-
-        it 'registers an offense for a nil object check followed by a ' \
-          'method call' do
+        it 'allows a nil object check followed by a method call' do
           inspect_source(cop, "#{variable}.nil? || #{variable}.bar")
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.offenses).to be_empty
         end
 
-        it 'registers an offense for a nil object check followed by a ' \
-          'method call with params' do
+        it 'allows a nil object check followed by a method call with params' do
           inspect_source(cop, "#{variable}.nil? || #{variable}.bar(baz)")
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.offenses).to be_empty
         end
 
-        it 'registers an offense for a nil object check followed by a ' \
-          'method call with a block' do
+        it 'allows a nil object check followed by a method call with a block' do
           source = "#{variable}.nil? || #{variable}.bar { |e| e.qux }"
 
           inspect_source(cop, source)
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.offenses).to be_empty
         end
 
-        it 'registers an offense for a nil object check followed by a ' \
-          'method call with params and a block' do
+        it 'allows a nil object check followed by a method call with params ' \
+          'and a block' do
           source = "#{variable}.nil? || #{variable}.bar(baz) { |e| e.qux }"
 
           inspect_source(cop, source)
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.offenses).to be_empty
         end
 
-        it 'registers an offense for a non object check followed by a ' \
-          'method call' do
+        it 'allows a non object check followed by a method call' do
           inspect_source(cop, "!#{variable} || #{variable}.bar")
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.offenses).to be_empty
         end
 
-        it 'registers an offense for a non object check followed by a ' \
-          'method call with params' do
+        it 'allows a non object check followed by a method call with params' do
           inspect_source(cop, "!#{variable} || #{variable}.bar(baz)")
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.offenses).to be_empty
         end
 
-        it 'registers an offense for a non object check followed by a ' \
-          'method call with a block' do
+        it 'allows a non object check followed by a method call with a block' do
           inspect_source(cop, "!#{variable} || #{variable}.bar { |e| e.qux }")
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.offenses).to be_empty
         end
 
-        it 'registers an offense for a non object check followed by a ' \
-          'method call with params and a block' do
+        it 'allows a non object check followed by a method call with params ' \
+          'and a block' do
           source = "!#{variable} || #{variable}.bar(baz) { |e| e.qux }"
 
           inspect_source(cop, source)
 
-          expect(cop.messages).to eq([described_class::MSG])
-        end
-
-        it 'registers an offense for an object check followed by a ' \
-          'method call and another check' do
-          source = "#{variable} && #{variable}.bar && something"
-
-          inspect_source(cop, source)
-
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.offenses).to be_empty
         end
       end
     end
@@ -363,7 +511,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
           end
 
           it 'corrects a method call with params safeguarded with a check ' \
-             'for the object' do
+            'for the object' do
             source = "#{variable}.bar(baz) if #{variable}"
 
             new_source = autocorrect_source(cop, source)
@@ -372,7 +520,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
           end
 
           it 'corrects a method call with a block safeguarded with a check ' \
-             'for the object' do
+            'for the object' do
             source = "#{variable}.bar { |e| e.qux } if #{variable}"
 
             new_source = autocorrect_source(cop, source)
@@ -381,7 +529,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
           end
 
           it 'corrects a method call with params and a block safeguarded ' \
-             'with a check for the object' do
+            'with a check for the object' do
             source = "#{variable}.bar(baz) { |e| e.qux } if #{variable}"
 
             new_source = autocorrect_source(cop, source)
@@ -390,7 +538,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
           end
 
           it 'corrects a method call safeguarded with a negative check for ' \
-             'the object' do
+            'the object' do
             source = "#{variable}.bar unless !#{variable}"
 
             new_source = autocorrect_source(cop, source)
@@ -399,7 +547,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
           end
 
           it 'corrects a method call with params safeguarded with a ' \
-             'negative check for the object' do
+            'negative check for the object' do
             source = "#{variable}.bar(baz) unless !#{variable}"
 
             new_source = autocorrect_source(cop, source)
@@ -408,7 +556,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
           end
 
           it 'corrects a method call with a block safeguarded with a ' \
-             'negative check for the object' do
+            'negative check for the object' do
             source = "#{variable}.bar { |e| e.qux } unless !#{variable}"
 
             new_source = autocorrect_source(cop, source)
@@ -417,7 +565,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
           end
 
           it 'corrects a method call with params and a block safeguarded ' \
-             'with a negative check for the object' do
+            'with a negative check for the object' do
             source = "#{variable}.bar(baz) { |e| e.qux } unless !#{variable}"
 
             new_source = autocorrect_source(cop, source)
@@ -508,153 +656,243 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
           end
         end
 
+        context 'if expression' do
+          it 'corrects a single method call inside of a check for the object' do
+            new_source = autocorrect_source(cop, ["if #{variable}",
+                                                  "  #{variable}.bar",
+                                                  'end'])
+
+            expect(new_source).to eq("#{variable}&.bar")
+          end
+
+          it 'corrects a single method call with params inside of a check ' \
+            'for the object' do
+            new_source = autocorrect_source(cop, ["if #{variable}",
+                                                  "  #{variable}.bar(baz)",
+                                                  'end'])
+
+            expect(new_source).to eq("#{variable}&.bar(baz)")
+          end
+
+          it 'corrects a single method call with a block inside of a check ' \
+            'for the object' do
+            source = ["if #{variable}",
+                      "  #{variable}.bar { |e| e.qux }",
+                      'end']
+            new_source = autocorrect_source(cop, source)
+
+            expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
+          end
+
+          it 'corrects a single method call with params and a block inside ' \
+            'of a check for the object' do
+            source = ["if #{variable}",
+                      "  #{variable}.bar(baz) { |e| e.qux }",
+                      'end']
+            new_source = autocorrect_source(cop, source)
+
+            expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }")
+          end
+
+          it 'corrects a single method call inside of a non-nil check for ' \
+            'the object' do
+            new_source = autocorrect_source(cop, ["if !#{variable}.nil?",
+                                                  "  #{variable}.bar",
+                                                  'end'])
+
+            expect(new_source).to eq("#{variable}&.bar")
+          end
+
+          it 'corrects a single method call with params inside of a non-nil ' \
+            'check for the object' do
+            new_source = autocorrect_source(cop, ["if !#{variable}.nil?",
+                                                  "  #{variable}.bar(baz)",
+                                                  'end'])
+
+            expect(new_source).to eq("#{variable}&.bar(baz)")
+          end
+
+          it 'corrects a single method call with a block inside of a non-nil ' \
+            'check for the object' do
+            source = ["if !#{variable}.nil?",
+                      "  #{variable}.bar { |e| e.qux }",
+                      'end']
+            new_source = autocorrect_source(cop, source)
+
+            expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
+          end
+
+          it 'corrects a single method call with params and a block inside ' \
+            'of a non-nil check for the object' do
+            source = ["if !#{variable}.nil?",
+                      "  #{variable}.bar(baz) { |e| e.qux }",
+                      'end']
+            new_source = autocorrect_source(cop, source)
+
+            expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }")
+          end
+
+          it 'corrects a single method call inside of an unless nil check ' \
+            'for the object' do
+            new_source = autocorrect_source(cop, ["unless #{variable}.nil?",
+                                                  "  #{variable}.bar",
+                                                  'end'])
+
+            expect(new_source).to eq("#{variable}&.bar")
+          end
+
+          it 'corrects a single method call with params inside of an unless ' \
+            'nil check for the object' do
+            new_source = autocorrect_source(cop, ["unless #{variable}.nil?",
+                                                  "  #{variable}.bar(baz)",
+                                                  'end'])
+
+            expect(new_source).to eq("#{variable}&.bar(baz)")
+          end
+
+          it 'corrects a single method call with a block inside of an unless ' \
+            'nil check for the object' do
+            source = ["unless #{variable}.nil?",
+                      "  #{variable}.bar { |e| e.qux }",
+                      'end']
+            new_source = autocorrect_source(cop, source)
+
+            expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
+          end
+
+          it 'corrects a single method call with params and a block inside ' \
+            'of an unless nil check for the object' do
+            source = ["unless #{variable}.nil?",
+                      "  #{variable}.bar(baz) { |e| e.qux }",
+                      'end']
+            new_source = autocorrect_source(cop, source)
+
+            expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }")
+          end
+
+          it 'corrects a single method call inside of an unless negative ' \
+            'check for the object' do
+            new_source = autocorrect_source(cop, ["unless !#{variable}",
+                                                  "  #{variable}.bar",
+                                                  'end'])
+
+            expect(new_source).to eq("#{variable}&.bar")
+          end
+
+          it 'corrects a single method call with params inside of an unless ' \
+            'negative check for the object' do
+            new_source = autocorrect_source(cop, ["unless !#{variable}",
+                                                  "  #{variable}.bar(baz)",
+                                                  'end'])
+
+            expect(new_source).to eq("#{variable}&.bar(baz)")
+          end
+
+          it 'corrects a single method call with a block inside of an unless ' \
+            'negative check for the object' do
+            source = ["unless !#{variable}",
+                      "  #{variable}.bar { |e| e.qux }",
+                      'end']
+            new_source = autocorrect_source(cop, source)
+
+            expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
+          end
+
+          it 'corrects a single method call with params and a block inside ' \
+            'of an unless negative check for the object' do
+            source = ["unless !#{variable}",
+                      "  #{variable}.bar(baz) { |e| e.qux }",
+                      'end']
+            new_source = autocorrect_source(cop, source)
+
+            expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }")
+          end
+        end
+
         context 'object check before method call' do
-          it 'corrects an object check followed by a method call' do
-            source = "#{variable} && #{variable}.bar"
+          context 'ConvertCodeThatCanStartToReturnNil true' do
+            let(:cop_config) do
+              { 'ConvertCodeThatCanStartToReturnNil' => true }
+            end
 
-            new_source = autocorrect_source(cop, source)
+            it 'corrects an object check followed by a method call' do
+              source = "#{variable} && #{variable}.bar"
 
-            expect(new_source).to eq("#{variable}&.bar")
-          end
+              new_source = autocorrect_source(cop, source)
 
-          it 'corrects an object check followed by a method call with params' do
-            source = "#{variable} && #{variable}.bar(baz)"
+              expect(new_source).to eq("#{variable}&.bar")
+            end
 
-            new_source = autocorrect_source(cop, source)
+            it 'corrects an object check followed by a method call ' \
+              'with params' do
+              source = "#{variable} && #{variable}.bar(baz)"
 
-            expect(new_source).to eq("#{variable}&.bar(baz)")
-          end
+              new_source = autocorrect_source(cop, source)
 
-          it 'corrects an object check followed by a method call with ' \
-            'a block' do
-            source = "#{variable} && #{variable}.bar { |e| e.qux }"
+              expect(new_source).to eq("#{variable}&.bar(baz)")
+            end
 
-            new_source = autocorrect_source(cop, source)
+            it 'corrects an object check followed by a method call with ' \
+              'a block' do
+              source = "#{variable} && #{variable}.bar { |e| e.qux }"
 
-            expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
-          end
+              new_source = autocorrect_source(cop, source)
 
-          it 'corrects an object check followed by a method call with ' \
-            'params and a block' do
-            source = "#{variable} && #{variable}.bar(baz) { |e| e.qux }"
+              expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
+            end
 
-            new_source = autocorrect_source(cop, source)
+            it 'corrects an object check followed by a method call with ' \
+              'params and a block' do
+              source = "#{variable} && #{variable}.bar(baz) { |e| e.qux }"
 
-            expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }")
-          end
+              new_source = autocorrect_source(cop, source)
 
-          it 'corrects a non nil object check followed by a method call' do
-            source = "!#{variable}.nil? && #{variable}.bar"
+              expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }")
+            end
 
-            new_source = autocorrect_source(cop, source)
+            it 'corrects a non-nil object check followed by a method call' do
+              source = "!#{variable}.nil? && #{variable}.bar"
 
-            expect(new_source).to eq("#{variable}&.bar")
-          end
+              new_source = autocorrect_source(cop, source)
 
-          it 'corrects a non nil object check followed by a method call ' \
-            'with params' do
-            source = "!#{variable}.nil? && #{variable}.bar(baz)"
+              expect(new_source).to eq("#{variable}&.bar")
+            end
 
-            new_source = autocorrect_source(cop, source)
+            it 'corrects a non-nil object check followed by a method call ' \
+              'with params' do
+              source = "!#{variable}.nil? && #{variable}.bar(baz)"
 
-            expect(new_source).to eq("#{variable}&.bar(baz)")
-          end
+              new_source = autocorrect_source(cop, source)
 
-          it 'corrects a non nil object check followed by a method call ' \
-            'with a block' do
-            source = "!#{variable}.nil? && #{variable}.bar { |e| e.qux }"
+              expect(new_source).to eq("#{variable}&.bar(baz)")
+            end
 
-            new_source = autocorrect_source(cop, source)
+            it 'corrects a non-nil object check followed by a method call ' \
+              'with a block' do
+              source = "!#{variable}.nil? && #{variable}.bar { |e| e.qux }"
 
-            expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
-          end
+              new_source = autocorrect_source(cop, source)
 
-          it 'corrects a non nil object check followed by a method call ' \
-            'with params and a block' do
-            source = "!#{variable}.nil? && #{variable}.bar(baz) { |e| e.qux }"
+              expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
+            end
 
-            new_source = autocorrect_source(cop, source)
+            it 'corrects a non-nil object check followed by a method call ' \
+              'with params and a block' do
+              source = "!#{variable}.nil? && #{variable}.bar(baz) { |e| e.qux }"
 
-            expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }")
-          end
+              new_source = autocorrect_source(cop, source)
 
-          it 'corrects a nil object check followed by a method call' do
-            source = "#{variable}.nil? || #{variable}.bar"
+              expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }")
+            end
 
-            new_source = autocorrect_source(cop, source)
+            it 'corrects an object check followed by a method call and ' \
+              'another check' do
+              source = "#{variable} && #{variable}.bar && something"
 
-            expect(new_source).to eq("#{variable}&.bar")
-          end
+              new_source = autocorrect_source(cop, source)
 
-          it 'corrects a nil object check followed by a method call ' \
-            'with params' do
-            source = "#{variable}.nil? || #{variable}.bar(baz)"
-
-            new_source = autocorrect_source(cop, source)
-
-            expect(new_source).to eq("#{variable}&.bar(baz)")
-          end
-
-          it 'corrects a nil object check followed by a method call with ' \
-            'a block' do
-            source = "#{variable}.nil? || #{variable}.bar { |e| e.qux }"
-
-            new_source = autocorrect_source(cop, source)
-
-            expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
-          end
-
-          it 'corrects a nil object check followed by a method call with ' \
-            'params and a block' do
-            source = "#{variable}.nil? || #{variable}.bar(baz) { |e| e.qux }"
-
-            new_source = autocorrect_source(cop, source)
-
-            expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }")
-          end
-
-          it 'corrects a non object check followed by a method call' do
-            source = "!#{variable} || #{variable}.bar"
-
-            new_source = autocorrect_source(cop, source)
-
-            expect(new_source).to eq("#{variable}&.bar")
-          end
-
-          it 'corrects a non object check followed by a method call ' \
-            'with params' do
-            source = "!#{variable} || #{variable}.bar(baz)"
-
-            new_source = autocorrect_source(cop, source)
-
-            expect(new_source).to eq("#{variable}&.bar(baz)")
-          end
-
-          it 'corrects a non object check followed by a method call with ' \
-            'a block' do
-            source = "!#{variable} || #{variable}.bar { |e| e.qux }"
-
-            new_source = autocorrect_source(cop, source)
-
-            expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
-          end
-
-          it 'corrects a non object check followed by a method call with ' \
-            'params and a block' do
-            source = "!#{variable} || #{variable}.bar(baz) { |e| e.qux }"
-
-            new_source = autocorrect_source(cop, source)
-
-            expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }")
-          end
-
-          it 'corrects an object check followed by a method call and ' \
-            'another check' do
-            source = "#{variable} && #{variable}.bar && something"
-
-            new_source = autocorrect_source(cop, source)
-
-            expect(new_source).to eq("#{variable}&.bar && something")
+              expect(new_source).to eq("#{variable}&.bar && something")
+            end
           end
         end
       end
