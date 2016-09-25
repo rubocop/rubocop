@@ -30,11 +30,11 @@ module RuboCop
       end
 
       let(:actual_html) do
-        File.read(actual_html_path, encoding: 'UTF-8')
+        File.read(actual_html_path, encoding: Encoding::UTF_8)
       end
 
       let(:actual_html_cached) do
-        File.read(actual_html_path_cached, encoding: 'UTF-8')
+        File.read(actual_html_path_cached, encoding: Encoding::UTF_8)
       end
 
       let(:expected_html_path) do
@@ -42,7 +42,7 @@ module RuboCop
       end
 
       let(:expected_html) do
-        html = File.read(expected_html_path, encoding: 'UTF-8')
+        html = File.read(expected_html_path, encoding: Encoding::UTF_8)
         # Avoid failure on version bump
         html.sub(/(class="version".{0,20})\d+(?:\.\d+){2}/i) do
           Regexp.last_match(1) + RuboCop::Version::STRING

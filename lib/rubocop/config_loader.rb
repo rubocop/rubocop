@@ -140,7 +140,7 @@ module RuboCop
       end
 
       def load_yaml_configuration(absolute_path)
-        yaml_code = IO.read(absolute_path, encoding: 'UTF-8')
+        yaml_code = IO.read(absolute_path, encoding: Encoding::UTF_8)
         hash = yaml_safe_load(yaml_code, absolute_path) || {}
 
         puts "configuration from #{absolute_path}" if debug?
