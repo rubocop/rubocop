@@ -1233,6 +1233,10 @@ Rails/Date:
     - strict
     - flexible
 
+Rails/DynamicFindBy:
+  Whitelist:
+    - find_by_sql
+
 Rails/Exit:
   Include:
     - app/**/*.rb

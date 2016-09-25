@@ -384,6 +384,7 @@ require 'rubocop/cop/style/zero_length_predicate'
 
 require 'rubocop/cop/rails/action_filter'
 require 'rubocop/cop/rails/date'
+require 'rubocop/cop/rails/dynamic_find_by'
 require 'rubocop/cop/rails/delegate'
 require 'rubocop/cop/rails/exit'
 require 'rubocop/cop/rails/find_by'
