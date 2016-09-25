@@ -235,7 +235,7 @@ module RuboCop
       end
 
       def to_string_literal(string)
-        if needs_escaping?(string)
+        if needs_escaping?(string) && compatible_external_encoding_for?(string)
           string.inspect
         else
           "'#{string.gsub('\\') { '\\\\' }}'"
@@ -266,6 +266,11 @@ module RuboCop
 
       def stripped_source_upto(line)
         processed_source[0..line].map(&:strip)
+      end
+
+      def compatible_external_encoding_for?(src)
+        src = src.dup if RUBY_VERSION < '2.3'
+        src.force_encoding(Encoding.default_external).valid_encoding?
       end
     end
   end

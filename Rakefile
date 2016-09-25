@@ -19,11 +19,7 @@ require 'rubocop/rake_task'
 Dir['tasks/**/*.rake'].each { |t| load t }
 
 RSpec::Core::RakeTask.new(:spec)
-
-RSpec::Core::RakeTask.new(:ascii_spec) do |t|
-  t.ruby_opts = '-E ASCII'
-  t.pattern = 'spec/rubocop/config_loader_spec.rb'
-end
+RSpec::Core::RakeTask.new(:ascii_spec) { |t| t.ruby_opts = '-E ASCII' }
 
 desc 'Run RSpec with code coverage'
 task :coverage do
