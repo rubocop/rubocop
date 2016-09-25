@@ -19,9 +19,7 @@ describe RuboCop::ResultCache, :isolated_environment do
   end
   let(:location) do
     source_buffer = Parser::Source::Buffer.new(file)
-    # Calling read() on the buffer results in a source that has an encoding of
-    # ANSII-8BIT instead of UTF-8 encoded source we were expecting
-    source_buffer.source = File.read(file)
+    source_buffer.read
     Parser::Source::Range.new(source_buffer, 0, 2)
   end
 
