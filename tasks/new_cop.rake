@@ -1,4 +1,3 @@
-# encoding: utf-8
 # frozen_string_literal: true
 
 desc 'Generate a new cop template'
@@ -19,7 +18,6 @@ task :new_cop, [:cop] do |_task, args|
   end
 
   cop_code = <<-END
-# encoding: utf-8
 # frozen_string_literal: true
 
 module RuboCop
@@ -66,7 +64,6 @@ end
   File.write(cop_path, cop_code)
 
   spec_code = <<-END
-# encoding: utf-8
 # frozen_string_literal: true
 
 require 'spec_helper'
