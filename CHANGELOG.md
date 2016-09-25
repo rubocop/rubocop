@@ -9,6 +9,7 @@
 * Add a new `AllCops/StyleGuideBaseURL` setting that allows the use of relative paths and/or fragments within each cop's `StyleGuide` setting, to make forking of custom style guides easier. ([@scottmatthewman][])
 * [#3566](https://github.com/bbatsov/rubocop/issues/3566): Add new `Metric/BlockLength` cop to ensure blocks don't get too long. ([@savef][])
 * [#3428](https://github.com/bbatsov/rubocop/issues/3428): Add support for configuring `Style/PreferredHashMethods` with either `short` or `verbose` style method names. ([@abrom][])
+* [#3455](https://github.com/bbatsov/rubocop/issues/3455): Add new `Rails/DynamicFindBy` cop. ([@pocke][])
 
 ### Bug fixes
 

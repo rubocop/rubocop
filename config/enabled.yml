@@ -1439,6 +1439,11 @@ Rails/Delegate:
   Description: 'Prefer delegate method for delegations.'
   Enabled: true
 
+Rails/DynamicFindBy:
+  Description: 'Use `find_by` instead of dynamic `find_by_*`.'
+  StyleGuide: 'https://github.com/bbatsov/rails-style-guide#find_by'
+  Enabled: true
+
 Rails/Exit:
   Description: >-
                   Favor `fail`, `break`, `return`, etc. over `exit` in
