@@ -5,6 +5,7 @@
 ### New features
 
 * [#3510](https://github.com/bbatsov/rubocop/issues/3510): Add a configuration option, `ConvertCodeThatCanStartToReturnNil`, to `Style/SafeNavigation` to check for code that could start returning `nil` if safe navigation is used. ([@rrosenblum][])
+* Add a new `AllCops/StyleGuideBaseURL` setting that allows the use of relative paths and/or fragments within each cop's `StyleGuide` setting, to make forking of custom style guides easier. ([@scottmatthewman][])
 
 ### Bug fixes
 
@@ -2380,3 +2381,4 @@
 [@koic]: https://github.com/koic
 [@groddeck]: https://github.com/groddeck
 [@b-t-g]: https://github.com/b-t-g
+[@scottmatthewman]: https://github.com/scottmatthewman

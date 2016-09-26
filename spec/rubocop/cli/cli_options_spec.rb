@@ -630,8 +630,7 @@ describe RuboCop::CLI, :isolated_environment do
           ['# Supports --auto-correct',
            'Style/Tab:',
            '  Description: No hard tabs.',
-           '  StyleGuide: ' \
-           'https://github.com/bbatsov/ruby-style-guide#spaces-indentation',
+           '  StyleGuide: "#spaces-indentation"',
            '  Enabled: true',
            '',
            ''].join("\n")
@@ -654,8 +653,7 @@ describe RuboCop::CLI, :isolated_environment do
           ['# Supports --auto-correct',
            'Style/Tab:',
            '  Description: No hard tabs.',
-           '  StyleGuide: ' \
-           'https://github.com/bbatsov/ruby-style-guide#spaces-indentation',
+           '  StyleGuide: "#spaces-indentation"',
            '  Enabled: true',
            '',
            ''].join("\n")
