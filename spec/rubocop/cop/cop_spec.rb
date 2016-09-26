@@ -240,4 +240,24 @@ describe RuboCop::Cop::Cop do
       end
     end
   end
+
+  describe '#style_guide_url' do
+    let(:options) { {} }
+    let(:cop) { described_class.new(config, options) }
+    subject { cop.style_guide_url }
+
+    context 'when StyleGuide is not set in the config' do
+      let(:config) { RuboCop::Config.new({}) }
+      it { is_expected.to be_nil }
+    end
+
+    context 'when StyleGuide is set in the config' do
+      let(:config) do
+        RuboCop::Config.new(
+          'Cop/Cop' => { 'StyleGuide' => 'http://example.org/styleguide' }
+        )
+      end
+      it { is_expected.to eq('http://example.org/styleguide') }
+    end
+  end
 end
