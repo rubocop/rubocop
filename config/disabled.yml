@@ -14,6 +14,10 @@ Style/AutoResourceCleanup:
   Description: 'Suggests the usage of an auto resource cleanup version of a method (if available).'
   Enabled: false
 
+Style/EmptyLinesAroundMethodDefinition:
+  Description: 'Use empty lines before and after method definitions'
+  Enabled: false
+
 Style/CollectionMethods:
   Description: 'Preferred collection methods.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#map-find-select-reduce-size'
