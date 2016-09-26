@@ -21,9 +21,9 @@ module RuboCop
     end
 
     def initialize(source, ruby_version, path = nil)
-      # In Ruby 2, source code encoding defaults to UTF-8. We follow the same
-      # principle regardless of which Ruby version we're running under.
-      # Encoding comments will override this setting.
+      # Defaults source encoding to UTF-8, regardless of the encoding it has
+      # been read with, which could be non-utf8 depending on the default
+      # external encoding.
       unless source.encoding == Encoding::UTF_8
         source.force_encoding(Encoding::UTF_8)
       end
