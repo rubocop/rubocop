@@ -15,6 +15,7 @@ pages:
 - Integration with other tools: integration_with_other_tools.md
 - Support: support.md
 - Contributing: contributing.md
+- Development: development.md
 extra_css:
   - css/extra.css
 theme: readthedocs
