@@ -13,6 +13,7 @@
 * [#3520](https://github.com/bbatsov/rubocop/issues/3520): Fix regression causing `Lint/AssignmentInCondition` false positive. ([@savef][])
 * [#3514](https://github.com/bbatsov/rubocop/issues/3514): Make `Style/VariableNumber` cop not register an offense when valid normal case variable names have an integer after the first `_`. ([@b-t-g][])
 * [#3516](https://github.com/bbatsov/rubocop/issues/3516): Make `Style/VariableNumber` cop not register an offense when valid normal case variable names have an integer in the middle. ([@b-t-g][])
+* [#3436](https://github.com/bbatsov/rubocop/issues/3436): Make `Rails/SaveBang` cop not register an offense when return value of a non-bang method is returned by the parent method. ([@coorasse][])
 
 ### Changes
 
@@ -2381,4 +2382,5 @@
 [@koic]: https://github.com/koic
 [@groddeck]: https://github.com/groddeck
 [@b-t-g]: https://github.com/b-t-g
+[@coorasse]: https://github.com/coorasse
 [@scottmatthewman]: https://github.com/scottmatthewman

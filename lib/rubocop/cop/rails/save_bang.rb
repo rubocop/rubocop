@@ -82,6 +82,7 @@ module RuboCop
           return unless expected_signature?(node)
           return if return_value_assigned?(node)
           return if check_used_in_conditional(node)
+          return if last_call_of_method?(node)
 
           add_offense(node, node.loc.selector,
                       format(MSG,
@@ -122,6 +123,11 @@ module RuboCop
           end
 
           true
+        end
+
+        def last_call_of_method?(node)
+          !node.parent.nil? &&
+            node.parent.children.count == node.sibling_index + 1
         end
 
         # Ignore simple assignment or if condition
