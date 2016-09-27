@@ -61,7 +61,8 @@
 * [#3485](https://github.com/bbatsov/rubocop/issues/3485): Make OneLineConditional cop not register offense for empty else. ([@tejasbubane][])
 * [#3508](https://github.com/bbatsov/rubocop/pull/3508): Fix false negatives in `Rails/NotNullColumn`. ([@pocke][])
 * [#3462](https://github.com/bbatsov/rubocop/issues/3462): Don't create MultilineMethodCallBraceLayout offenses for single-line method calls when receiver spans multiple lines. ([@maxjacobson][])
-
+* [#3514](https://github.com/bbatsov/rubocop/issues/3514): Make Style/VariableNumber cop not register an offense when valid normal case variable names have an integer after the first "_". ([@b-t-g][])
+* [#3516](https://github.com/bbatsov/rubocop/issues/3516): Make Style/VariableNumber cop not register an offense when valid normal case variable names have an integer in the middle. ([@b-t-g][])
 ### Changes
 
 * [#3341](https://github.com/bbatsov/rubocop/issues/3341): Exclude RSpec tests from inspection by `Style/NumericPredicate` cop. ([@drenmi][])
@@ -2377,3 +2378,4 @@
 [@scottohara]: https://github.com/scottohara
 [@koic]: https://github.com/koic
 [@groddeck]: https://github.com/groddeck
+[@b-t-g]: https://github.com/b-t-g
