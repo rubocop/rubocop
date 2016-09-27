@@ -1,5 +1,6 @@
 # encoding: utf-8
 # frozen_string_literal: true
+require 'uri'
 
 module RuboCop
   module Cop
@@ -228,7 +229,12 @@ module RuboCop
 
       def style_guide_url
         url = cop_config['StyleGuide']
-        url.nil? || url.empty? ? nil : url
+        return nil if url.nil? || url.empty?
+
+        base_url = config.for_all_cops['StyleGuideBaseURL']
+        return url if base_url.nil? || base_url.empty?
+
+        URI.join(base_url, url).to_s
       end
 
       def reference_url

@@ -195,8 +195,7 @@ describe RuboCop::ConfigLoader do
             'Metrics/LineLength' => {
               'Description' =>
               default_config['Metrics/LineLength']['Description'],
-              'StyleGuide' =>
-              'https://github.com/bbatsov/ruby-style-guide#80-character-limits',
+              'StyleGuide' => '#80-character-limits',
               'Enabled' => true,
               'Max' => 77,
               'AllowHeredoc' => true,
@@ -206,8 +205,7 @@ describe RuboCop::ConfigLoader do
             'Metrics/MethodLength' => {
               'Description' =>
               default_config['Metrics/MethodLength']['Description'],
-              'StyleGuide' =>
-              'https://github.com/bbatsov/ruby-style-guide#short-methods',
+              'StyleGuide' => '#short-methods',
               'Enabled' => true,
               'CountComments' => false,
               'Max' => 5
@@ -276,8 +274,7 @@ describe RuboCop::ConfigLoader do
             'Metrics/LineLength' => {
               'Description' =>
               default_config['Metrics/LineLength']['Description'],
-              'StyleGuide' =>
-              'https://github.com/bbatsov/ruby-style-guide#80-character-limits',
+              'StyleGuide' => '#80-character-limits',
               'Enabled' => true,
               'Max' => 120,             # overridden in line_length.yml
               'AllowHeredoc' => false,  # overridden in rubocop.yml
