@@ -626,11 +626,11 @@ describe RuboCop::CLI, :isolated_environment do
       let(:cop_list) { ['Style/Tab'] }
 
       it 'prints that cop and nothing else' do
-        expect(stdout).to eq(
+        expect(stdout).to match(
           ['# Supports --auto-correct',
            'Style/Tab:',
            '  Description: No hard tabs.',
-           '  StyleGuide: "#spaces-indentation"',
+           /^  StyleGuide: ('|")#spaces-indentation('|")$/,
            '  Enabled: true',
            '',
            ''].join("\n")
@@ -649,11 +649,11 @@ describe RuboCop::CLI, :isolated_environment do
       let(:cop_list) { ['Style/Tab,Lint/X123'] }
 
       it 'skips the unknown cop' do
-        expect(stdout).to eq(
+        expect(stdout).to match(
           ['# Supports --auto-correct',
            'Style/Tab:',
            '  Description: No hard tabs.',
-           '  StyleGuide: "#spaces-indentation"',
+           /^  StyleGuide: ('|")#spaces-indentation('|")$/,
            '  Enabled: true',
            '',
            ''].join("\n")
