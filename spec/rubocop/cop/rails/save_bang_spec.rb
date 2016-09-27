@@ -90,6 +90,11 @@ describe RuboCop::Cop::Rails::SaveBang do
           .to eq(["`#{method}` returns a model which is always truthy."])
       end
     end
+
+    it "when using #{method} as last method call" do
+      inspect_source(cop, ['def foo', "object.#{method}", 'end'])
+      expect(cop.messages).to be_empty
+    end
   end
 
   described_class::MODIFY_PERSIST_METHODS.each do |method|
