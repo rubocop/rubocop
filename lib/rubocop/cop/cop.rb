@@ -23,12 +23,11 @@ module RuboCop
       end
 
       def qualified_cop_name(name, origin)
-        @cop_names ||= Set.new(map(&:cop_name))
-        return name if @cop_names.include?(name)
+        return name if cop_names.include?(name)
 
         basename = File.basename(name)
         found_ns = types.map(&:capitalize).select do |ns|
-          @cop_names.include?("#{ns}/#{basename}")
+          cop_names.include?("#{ns}/#{basename}")
         end
 
         case found_ns.size
@@ -47,6 +46,12 @@ module RuboCop
                "#{found_ns}"
         end
         "#{found_ns}/#{basename}"
+      end
+
+      private
+
+      def cop_names
+        @cop_names ||= Set.new(map(&:cop_name))
       end
     end
 
