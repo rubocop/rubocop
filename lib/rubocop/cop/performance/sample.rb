@@ -91,7 +91,7 @@ module RuboCop
           def range_size(range_node)
             vals = *range_node
             return :unknown unless vals.all?(&:int_type?)
-            low, high = *vals.map(&:to_a).map(&:first)
+            low, high = *vals.map { |val| val.to_a.first }
             return :unknown unless low.zero? && high >= 0
             case range_node.type
             when :erange then high - low
