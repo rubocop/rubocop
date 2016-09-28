@@ -307,4 +307,28 @@ describe RuboCop::Cop::Style::GuardClause, :config do
   include_examples('on if nodes which exit current scope', 'next')
   include_examples('on if nodes which exit current scope', 'break')
   include_examples('on if nodes which exit current scope', 'raise "error"')
+
+  context 'method in module' do
+    it 'registers an offense for instance method' do
+      inspect_source(cop, ['module CopTest',
+                           '  def test',
+                           '    if something',
+                           '      work',
+                           '    end',
+                           '  end',
+                           'end'])
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it 'registers an offense for singleton methods' do
+      inspect_source(cop, ['module CopTest',
+                           '  def self.test',
+                           '    if something',
+                           '      work',
+                           '    end',
+                           '  end',
+                           'end'])
+      expect(cop.offenses.size).to eq(1)
+    end
+  end
 end
