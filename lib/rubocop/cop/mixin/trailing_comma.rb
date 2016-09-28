@@ -84,7 +84,7 @@ module RuboCop
         items = elements(node).map(&:source_range)
         return false if items.empty?
         items << node.loc.begin << node.loc.end
-        (items.map(&:first_line) + items.map(&:last_line)).uniq.count > 1
+        (items.map(&:first_line) + items.map(&:last_line)).uniq.size > 1
       end
 
       def elements(node)
