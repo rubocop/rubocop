@@ -187,6 +187,18 @@ describe RuboCop::Cop::Style::RedundantSelf do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts a self receiver of .()' do
+    src = 'self.()'
+    inspect_source(cop, src)
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'reports an offence a self receiver of .call' do
+    src = 'self.call'
+    inspect_source(cop, src)
+    expect(cop.offenses.size).to eq(1)
+  end
+
   it 'auto-corrects by removing redundant self' do
     new_source = autocorrect_source(cop, 'self.x')
     expect(new_source).to eq('x')

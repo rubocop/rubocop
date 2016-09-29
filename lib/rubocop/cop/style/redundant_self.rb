@@ -123,7 +123,8 @@ module RuboCop
           !(operator?(method_name) ||
             keyword?(method_name) ||
             constant_name?(method_name) ||
-            node.asgn_method_call?)
+            node.asgn_method_call? ||
+            braces_style_call?(node))
         end
 
         def on_argument(node)
@@ -141,6 +142,10 @@ module RuboCop
 
         def constant_name?(method_name)
           method_name.match(/^[A-Z]/)
+        end
+
+        def braces_style_call?(node)
+          node.loc.selector.nil?
         end
 
         def allow_self(node)
