@@ -182,8 +182,7 @@ Usage: rubocop [options] [file1, file2, ...]
       before do
         create_file('example.rb', '# encoding: utf-8')
 
-        create_file(required_file_path, ['# encoding: utf-8',
-                                         "puts 'Hello from required file!'"])
+        create_file(required_file_path, "puts 'Hello from required file!'")
       end
 
       it 'requires the passed path' do

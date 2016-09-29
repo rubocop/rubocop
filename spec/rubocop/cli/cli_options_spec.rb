@@ -281,8 +281,7 @@ describe RuboCop::CLI, :isolated_environment do
 
     context 'when two namespaces are given' do
       it 'runs all enabled cops in those namespaces' do
-        create_file('example.rb', ['# encoding: utf-8',
-                                   'if x== 100000000000000 ',
+        create_file('example.rb', ['if x== 100000000000000 ',
                                    '  # ' + '-' * 98,
                                    "\ty",
                                    'end'])
@@ -666,8 +665,7 @@ describe RuboCop::CLI, :isolated_environment do
     let(:target_file) { 'example.rb' }
 
     before do
-      create_file(target_file, ['# encoding: utf-8',
-                                '#' * 90])
+      create_file(target_file, '#' * 90)
     end
 
     describe 'builtin formatters' do
@@ -676,7 +674,7 @@ describe RuboCop::CLI, :isolated_environment do
           cli.run(['--format', 'simple', 'example.rb'])
           expect($stdout.string)
             .to include(["== #{target_file} ==",
-                         'C:  2: 81: Line is too long. [90/80]'].join("\n"))
+                         'C:  1: 81: Line is too long. [90/80]'].join("\n"))
         end
       end
 
@@ -702,8 +700,7 @@ describe RuboCop::CLI, :isolated_environment do
               end
 
               it "outputs #{format.upcase} code without crashing" do
-                create_file('example.rb', ['# encoding: utf-8',
-                                           'def 文',
+                create_file('example.rb', ['def 文',
                                            '  b if a',
                                            '  b if a',
                                            '  b if a',
@@ -733,8 +730,7 @@ describe RuboCop::CLI, :isolated_environment do
 
       context 'when clang format is specified' do
         it 'outputs with clang format' do
-          create_file('example1.rb', ['# encoding: utf-8',
-                                      'x= 0 ',
+          create_file('example1.rb', ['x= 0 ',
                                       '#' * 85,
                                       'y ',
                                       'puts x'])
@@ -743,8 +739,7 @@ describe RuboCop::CLI, :isolated_environment do
                                       'def a',
                                       '   puts',
                                       'end'])
-          create_file('example3.rb', ['# encoding: utf-8',
-                                      'def badName',
+          create_file('example3.rb', ['def badName',
                                       '  if something',
                                       '    test',
                                       '    end',
@@ -753,19 +748,19 @@ describe RuboCop::CLI, :isolated_environment do
                           'example2.rb', 'example3.rb']))
             .to eq(1)
           expect($stdout.string)
-            .to eq(['example1.rb:2:2: C: Surrounding space missing for ' \
+            .to eq(['example1.rb:1:2: C: Surrounding space missing for ' \
                     'operator =.',
                     'x= 0 ',
                     ' ^',
-                    'example1.rb:2:5: C: Trailing whitespace detected.',
+                    'example1.rb:1:5: C: Trailing whitespace detected.',
                     'x= 0 ',
                     '    ^',
-                    'example1.rb:3:81: C: Line is too long. [85/80]',
+                    'example1.rb:2:81: C: Line is too long. [85/80]',
                     '###################################################' \
                     '##################################',
                     '                                                   ' \
                     '                             ^^^^^',
-                    'example1.rb:4:2: C: Trailing whitespace detected.',
+                    'example1.rb:3:2: C: Trailing whitespace detected.',
                     'y ',
                     ' ^',
                     'example2.rb:1:1: C: Incorrect indentation detected' \
@@ -787,20 +782,20 @@ describe RuboCop::CLI, :isolated_environment do
                     'indentation.',
                     '   puts',
                     '^^^',
-                    'example3.rb:2:5: C: Use snake_case for method names.',
+                    'example3.rb:1:5: C: Use snake_case for method names.',
                     'def badName',
                     '    ^^^^^^^',
-                    'example3.rb:3:3: C: Use a guard clause instead of ' \
+                    'example3.rb:2:3: C: Use a guard clause instead of ' \
                     'wrapping the code inside a conditional expression.',
                     '  if something',
                     '  ^^',
-                    'example3.rb:3:3: C: Favor modifier if usage ' \
+                    'example3.rb:2:3: C: Favor modifier if usage ' \
                     'when having a single-line body. Another good ' \
                     'alternative is the usage of control flow &&/||.',
                     '  if something',
                     '  ^^',
-                    'example3.rb:5:5: W: end at 5, 4 is not aligned ' \
-                    'with if at 3, 2.',
+                    'example3.rb:4:5: W: end at 4, 4 is not aligned ' \
+                    'with if at 2, 2.',
                     '    end',
                     '    ^^^',
                     '',
@@ -902,8 +897,8 @@ describe RuboCop::CLI, :isolated_environment do
       cli.run(['--format', 'simple', '--format', 'emacs', 'example.rb'])
       expect($stdout.string)
         .to include(["== #{target_file} ==",
-                     'C:  2: 81: Line is too long. [90/80]',
-                     "#{abs(target_file)}:2:81: C: Line is too long. " \
+                     'C:  1: 81: Line is too long. [90/80]',
+                     "#{abs(target_file)}:1:81: C: Line is too long. " \
                      '[90/80]'].join("\n"))
     end
   end
@@ -912,8 +907,7 @@ describe RuboCop::CLI, :isolated_environment do
     let(:target_file) { 'example.rb' }
 
     before do
-      create_file(target_file, ['# encoding: utf-8',
-                                '#' * 90])
+      create_file(target_file, '#' * 90)
     end
 
     it 'redirects output to the specified file' do
@@ -927,13 +921,13 @@ describe RuboCop::CLI, :isolated_environment do
                target_file])
 
       expect($stdout.string).to eq(["== #{target_file} ==",
-                                    'C:  2: 81: Line is too long. [90/80]',
+                                    'C:  1: 81: Line is too long. [90/80]',
                                     '',
                                     '1 file inspected, 1 offense detected',
                                     ''].join("\n"))
 
       expect(File.read('emacs_output.txt'))
-        .to eq(["#{abs(target_file)}:2:81: C: Line is too long. [90/80]",
+        .to eq(["#{abs(target_file)}:1:81: C: Line is too long. [90/80]",
                 ''].join("\n"))
     end
   end
@@ -942,8 +936,7 @@ describe RuboCop::CLI, :isolated_environment do
     let(:target_file) { 'example.rb' }
 
     before do
-      create_file(target_file, ['# encoding: utf-8',
-                                'def f',
+      create_file(target_file, ['def f',
                                 ' x',
                                 'end'])
     end
@@ -1010,8 +1003,7 @@ describe RuboCop::CLI, :isolated_environment do
                "\n")
     end
     it 'succeeds when there is only a disabled offense' do
-      create_file(target_file, ['# encoding: utf-8',
-                                'def f',
+      create_file(target_file, ['def f',
                                 ' x # rubocop:disable Style/IndentationWidth',
                                 'end'])
 
@@ -1025,8 +1017,7 @@ describe RuboCop::CLI, :isolated_environment do
     let(:target_file) { 'example.rb' }
 
     before do
-      create_file(target_file, ['# encoding: utf-8',
-                                '#' * 90])
+      create_file(target_file, '#' * 90)
 
       create_file('.rubocop.yml', ['AllCops:',
                                    '  Exclude:',
