@@ -122,8 +122,7 @@ describe RuboCop::CLI, :isolated_environment do
 
   context 'when lines end with CR+LF' do
     it 'reports an offense' do
-      create_file('example.rb', ["# encoding: utf-8\r",
-                                 "x = 0\r",
+      create_file('example.rb', ["x = 0\r",
                                  "puts x\r"])
       result = cli.run(['--format', 'simple', 'example.rb'])
       expect(result).to eq(1)
@@ -138,9 +137,7 @@ describe RuboCop::CLI, :isolated_environment do
 
   context 'when checking a correct file' do
     it 'returns 0' do
-      create_file('example.rb', ['# encoding: utf-8',
-                                 'x = 0',
-                                 'puts x'])
+      create_file('example.rb', ['x = 0', 'puts x'])
       expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(0)
       expect($stdout.string)
         .to eq(['',
@@ -150,8 +147,7 @@ describe RuboCop::CLI, :isolated_environment do
 
     context 'when super is used with a block' do
       it 'still returns 0' do
-        create_file('example.rb', ['# encoding: utf-8',
-                                   '# frozen_string_literal: true',
+        create_file('example.rb', ['# frozen_string_literal: true',
                                    '# this is a class',
                                    'class Thing',
                                    '  def super_with_block',
@@ -174,49 +170,42 @@ describe RuboCop::CLI, :isolated_environment do
   end
 
   it 'checks a given file with faults and returns 1' do
-    create_file('example.rb', ['# encoding: utf-8',
-                               'x = 0 ',
-                               'puts x'])
+    create_file('example.rb', ['x = 0 ', 'puts x'])
     expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(1)
     expect($stdout.string)
       .to eq ['== example.rb ==',
-              'C:  2:  6: Trailing whitespace detected.',
+              'C:  1:  6: Trailing whitespace detected.',
               '',
               '1 file inspected, 1 offense detected',
               ''].join("\n")
   end
 
   it 'registers an offense for a syntax error' do
-    create_file('example.rb', ['# encoding: utf-8',
-                               'class Test',
-                               'en'])
+    create_file('example.rb', ['class Test', 'en'])
     expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
     expect($stdout.string)
-      .to eq(["#{abs('example.rb')}:4:1: E: unexpected " \
+      .to eq(["#{abs('example.rb')}:3:1: E: unexpected " \
               'token $end (Using Ruby 2.0 parser; configure using ' \
               '`TargetRubyVersion` parameter, under `AllCops`)',
               ''].join("\n"))
   end
 
   it 'registers an offense for Parser warnings' do
-    create_file('example.rb', ['# encoding: utf-8',
-                               'puts *test',
-                               'if a then b else c end'])
+    create_file('example.rb', ['puts *test', 'if a then b else c end'])
     expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
     expect($stdout.string)
-      .to eq(["#{abs('example.rb')}:2:6: W: " \
+      .to eq(["#{abs('example.rb')}:1:6: W: " \
               'Ambiguous splat operator. Parenthesize the method arguments ' \
               "if it's surely a splat operator, or add a whitespace to the " \
               'right of the `*` if it should be a multiplication.',
-              "#{abs('example.rb')}:3:1: C: " \
+              "#{abs('example.rb')}:2:1: C: " \
               'Favor the ternary operator (`?:`) over `if/then/else/end` ' \
               'constructs.',
               ''].join("\n"))
   end
 
   it 'can process a file with an invalid UTF-8 byte sequence' do
-    create_file('example.rb', ['# encoding: utf-8',
-                               "# #{'f9'.hex.chr}#{'29'.hex.chr}"])
+    create_file('example.rb', ["# #{'f9'.hex.chr}#{'29'.hex.chr}"])
     expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
     expect($stdout.string)
       .to eq(["#{abs('example.rb')}:1:1: F: Invalid byte sequence in utf-8.",
@@ -242,8 +231,7 @@ describe RuboCop::CLI, :isolated_environment do
 
   describe 'rubocop:disable comment' do
     it 'can disable all cops in a code section' do
-      src = ['# encoding: utf-8',
-             '# rubocop:disable all',
+      src = ['# rubocop:disable all',
              '#' * 90,
              'x(123456)',
              'y("123")',
@@ -258,8 +246,8 @@ describe RuboCop::CLI, :isolated_environment do
       # all cops were disabled, then 2 were enabled again, so we
       # should get 2 offenses reported.
       expect($stdout.string)
-        .to eq(["#{abs('example.rb')}:8:81: C: Line is too long. [95/80]",
-                "#{abs('example.rb')}:10:5: C: Prefer single-quoted " \
+        .to eq(["#{abs('example.rb')}:7:81: C: Line is too long. [95/80]",
+                "#{abs('example.rb')}:9:5: C: Prefer single-quoted " \
                 "strings when you don't need string interpolation or " \
                 'special symbols.',
                 ''].join("\n"))
@@ -288,8 +276,7 @@ describe RuboCop::CLI, :isolated_environment do
 
     it 'can disable selected cops in a code section' do
       create_file('example.rb',
-                  ['# encoding: utf-8',
-                   '# rubocop:disable Style/LineLength,' \
+                  ['# rubocop:disable Style/LineLength,' \
                    'Style/NumericLiterals,Style/StringLiterals',
                    '#' * 90,
                    'x(123456)',
@@ -309,43 +296,40 @@ describe RuboCop::CLI, :isolated_environment do
       # 3 cops were disabled, then 2 were enabled again, so we
       # should get 2 offenses reported.
       expect($stdout.string)
-        .to eq(["#{abs('example.rb')}:8:81: C: Line is too long. [95/80]",
-                "#{abs('example.rb')}:10:5: C: Prefer single-quoted " \
+        .to eq(["#{abs('example.rb')}:7:81: C: Line is too long. [95/80]",
+                "#{abs('example.rb')}:9:5: C: Prefer single-quoted " \
                 "strings when you don't need string interpolation or " \
                 'special symbols.',
                 ''].join("\n"))
     end
 
     it 'can disable all cops on a single line' do
-      create_file('example.rb', ['# encoding: utf-8',
-                                 'y("123", 123456) # rubocop:disable all'])
+      create_file('example.rb', 'y("123", 123456) # rubocop:disable all')
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(0)
       expect($stdout.string).to be_empty
     end
 
     it 'can disable selected cops on a single line' do
       create_file('example.rb',
-                  ['# encoding: utf-8',
-                   'a' * 90 + ' # rubocop:disable Metrics/LineLength',
+                  ['a' * 90 + ' # rubocop:disable Metrics/LineLength',
                    '#' * 95,
                    'y("123", 123456) # rubocop:disable Style/StringLiterals,' \
                    'Style/NumericLiterals'])
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       expect($stdout.string)
-        .to eq(["#{abs('example.rb')}:3:81: C: Line is too long. [95/80]",
+        .to eq(["#{abs('example.rb')}:2:81: C: Line is too long. [95/80]",
                 ''].join("\n"))
     end
 
     context 'without using namespace' do
       it 'can disable selected cops on a single line' do
         create_file('example.rb',
-                    ['# encoding: utf-8',
-                     'a' * 90 + ' # rubocop:disable LineLength',
+                    ['a' * 90 + ' # rubocop:disable LineLength',
                      '#' * 95,
                      'y("123") # rubocop:disable StringLiterals'])
         expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
         expect($stdout.string)
-          .to eq(["#{abs('example.rb')}:3:81: C: Line is too long. [95/80]",
+          .to eq(["#{abs('example.rb')}:2:81: C: Line is too long. [95/80]",
                   ''].join("\n"))
       end
     end
@@ -353,29 +337,26 @@ describe RuboCop::CLI, :isolated_environment do
     context 'when not necessary' do
       it 'causes an offense to be reported' do
         create_file('example.rb',
-                    ['# encoding: utf-8',
-                     '#' * 95,
+                    ['#' * 95,
                      '# rubocop:disable all',
                      'a' * 10 + ' # rubocop:disable LineLength,ClassLength',
                      'y(123) # rubocop:disable all'])
         expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
         expect($stderr.string).to eq('')
         expect($stdout.string)
-          .to eq(["#{abs('example.rb')}:2:81: C: Line is too long. [95/80]",
-                  "#{abs('example.rb')}:3:1: W: Unnecessary disabling of " \
+          .to eq(["#{abs('example.rb')}:1:81: C: Line is too long. [95/80]",
+                  "#{abs('example.rb')}:2:1: W: Unnecessary disabling of " \
                   'all cops.',
-                  "#{abs('example.rb')}:4:12: W: Unnecessary disabling of " \
+                  "#{abs('example.rb')}:3:12: W: Unnecessary disabling of " \
                   '`Metrics/ClassLength`, `Metrics/LineLength`.',
-                  "#{abs('example.rb')}:5:8: W: Unnecessary disabling of " \
+                  "#{abs('example.rb')}:4:8: W: Unnecessary disabling of " \
                   'all cops.',
                   ''].join("\n"))
       end
 
       context 'and there are no other offenses' do
         it 'exits with error code' do
-          create_file('example.rb',
-                      ['# encoding: utf-8',
-                       'a' * 10 + ' # rubocop:disable LineLength'])
+          create_file('example.rb', 'a' * 10 + ' # rubocop:disable LineLength')
           expect(cli.run(['example.rb'])).to eq(1)
         end
       end
@@ -384,8 +365,7 @@ describe RuboCop::CLI, :isolated_environment do
         context "and UnneededDisable is #{state}" do
           it 'does not report UnneededDisable offenses' do
             create_file('example.rb',
-                        ['# encoding: utf-8',
-                         '#' * 95,
+                        ['#' * 95,
                          '# rubocop:disable all',
                          'a' * 10 + ' # rubocop:disable LineLength,ClassLength',
                          'y(123) # rubocop:disable all'])
@@ -393,7 +373,7 @@ describe RuboCop::CLI, :isolated_environment do
             expect(cli.run(['--format', 'emacs'])).to eq(1)
             expect($stderr.string).to eq('')
             expect($stdout.string)
-              .to eq(["#{abs('example.rb')}:2:81: C: Line is too long. [95/80]",
+              .to eq(["#{abs('example.rb')}:1:81: C: Line is too long. [95/80]",
                       ''].join("\n"))
           end
         end
@@ -413,10 +393,7 @@ describe RuboCop::CLI, :isolated_environment do
   end
 
   it 'finds a file with no .rb extension but has a shebang line' do
-    create_file('example', ['#!/usr/bin/env ruby',
-                            '# encoding: utf-8',
-                            'x = 0',
-                            'puts x'])
+    create_file('example', ['#!/usr/bin/env ruby', 'x = 0', 'puts x'])
     expect(cli.run(%w(--format simple))).to eq(0)
     expect($stdout.string)
       .to eq(['', '1 file inspected, no offenses detected', ''].join("\n"))
@@ -552,23 +529,20 @@ describe RuboCop::CLI, :isolated_environment do
   describe 'rails cops' do
     describe 'enabling/disabling' do
       it 'by default does not run rails cops' do
-        create_file('app/models/example1.rb', ['# encoding: utf-8',
-                                               'read_attribute(:test)'])
+        create_file('app/models/example1.rb', 'read_attribute(:test)')
         expect(cli.run(['--format', 'simple', 'app/models/example1.rb']))
           .to eq(0)
       end
 
       it 'with -R given runs rails cops' do
-        create_file('app/models/example1.rb', ['# encoding: utf-8',
-                                               'read_attribute(:test)'])
+        create_file('app/models/example1.rb', 'read_attribute(:test)')
         expect(cli.run(['--format', 'simple', '-R', 'app/models/example1.rb']))
           .to eq(1)
         expect($stdout.string).to include('Prefer self[:attr]')
       end
 
       it 'with configuration option true in one dir runs rails cops there' do
-        source = ['# encoding: utf-8',
-                  'read_attribute(:test)']
+        source = 'read_attribute(:test)'
         create_file('dir1/app/models/example1.rb', source)
         create_file('dir1/.rubocop.yml', ['Rails:',
                                           '  Enabled: true',
@@ -586,7 +560,7 @@ describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(%w(--format simple dir1 dir2))).to eq(1)
         expect($stdout.string)
           .to eq(['== dir1/app/models/example1.rb ==',
-                  'C:  2:  1: Prefer self[:attr] over read_attribute' \
+                  'C:  1:  1: Prefer self[:attr] over read_attribute' \
                   '(:attr).',
                   '',
                   '2 files inspected, 1 offense detected',
@@ -594,8 +568,7 @@ describe RuboCop::CLI, :isolated_environment do
       end
 
       it 'with configuration option false but -R given runs rails cops' do
-        create_file('app/models/example1.rb', ['# encoding: utf-8',
-                                               'read_attribute(:test)'])
+        create_file('app/models/example1.rb', 'read_attribute(:test)')
         create_file('.rubocop.yml', ['Rails:',
                                      '  Enabled: false'])
         expect(cli.run(['--format', 'simple', '-R', 'app/models/example1.rb']))
@@ -616,8 +589,7 @@ describe RuboCop::CLI, :isolated_environment do
 
     describe 'including/excluding' do
       it 'honors Exclude settings in .rubocop_todo.yml one level up' do
-        create_file('lib/example.rb', ['# encoding: utf-8',
-                                       'puts %x(ls)'])
+        create_file('lib/example.rb', 'puts %x(ls)')
         create_file('.rubocop.yml', 'inherit_from: .rubocop_todo.yml')
         create_file('.rubocop_todo.yml', ['Style/CommandLiteral:',
                                           '  Exclude:',
@@ -627,9 +599,7 @@ describe RuboCop::CLI, :isolated_environment do
       end
 
       it 'includes some directories by default' do
-        source = ['# encoding: utf-8',
-                  'read_attribute(:test)',
-                  "default_scope order: 'position'"]
+        source = ['read_attribute(:test)', "default_scope order: 'position'"]
         # Several rails cops include app/models by default.
         create_file('dir1/app/models/example1.rb', source)
         create_file('dir1/app/models/example2.rb', source)
@@ -652,7 +622,7 @@ describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(%w(--format simple dir1 dir2))).to eq(1)
         expect($stdout.string)
           .to eq(['== dir1/app/models/example1.rb ==',
-                  'C:  2:  1: Prefer self[:attr] over read_attribute' \
+                  'C:  1:  1: Prefer self[:attr] over read_attribute' \
                   '(:attr).',
                   '',
                   '4 files inspected, 1 offense detected',
@@ -663,15 +633,10 @@ describe RuboCop::CLI, :isolated_environment do
 
   describe 'cops can exclude files based on config' do
     it 'ignores excluded files' do
-      create_file('example.rb', ['# encoding: utf-8',
-                                 'x = 0'])
-      create_file('regexp.rb', ['# encoding: utf-8',
-                                'x = 0'])
-      create_file('exclude_glob.rb', ['#!/usr/bin/env ruby',
-                                      '# encoding: utf-8',
-                                      'x = 0'])
-      create_file('dir/thing.rb', ['# encoding: utf-8',
-                                   'x = 0'])
+      create_file('example.rb', 'x = 0')
+      create_file('regexp.rb', 'x = 0')
+      create_file('exclude_glob.rb', ['#!/usr/bin/env ruby', 'x = 0'])
+      create_file('dir/thing.rb', 'x = 0')
       create_file('.rubocop.yml', ['Lint/UselessAssignment:',
                                    '  Exclude:',
                                    '    - example.rb',
@@ -690,8 +655,7 @@ describe RuboCop::CLI, :isolated_environment do
       it 'accepts rails style indentation' do
         create_file('.rubocop.yml', ['Style/IndentationConsistency:',
                                      '  EnforcedStyle: rails'])
-        create_file('example.rb', ['# encoding: utf-8',
-                                   '',
+        create_file('example.rb', ['',
                                    '# A feline creature',
                                    'class Cat',
                                    '  def meow',
@@ -722,8 +686,7 @@ describe RuboCop::CLI, :isolated_environment do
         it "registers offense for normal indentation in #{parent}" do
           create_file('.rubocop.yml', ['Style/IndentationConsistency:',
                                        '  EnforcedStyle: rails'])
-          create_file('example.rb', ['# encoding: utf-8',
-                                     '',
+          create_file('example.rb', ['',
                                      '# A feline creature',
                                      "#{parent} Cat",
                                      '  def meow',
@@ -751,8 +714,8 @@ describe RuboCop::CLI, :isolated_environment do
           expect(result).to eq(1)
           expect($stdout.string)
             .to eq(['== example.rb ==',
-                    'C: 11:  3: Use 2 (not 0) spaces for rails indentation.',
-                    'C: 17:  3: Use 2 (not 0) spaces for rails indentation.',
+                    'C: 10:  3: Use 2 (not 0) spaces for rails indentation.',
+                    'C: 16:  3: Use 2 (not 0) spaces for rails indentation.',
                     '',
                     '1 file inspected, 2 offenses detected',
                     ''].join("\n"))
@@ -806,9 +769,7 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'allows the default configuration file as the -c argument' do
-      create_file('example.rb', ['# encoding: utf-8',
-                                 'x = 0',
-                                 'puts x'])
+      create_file('example.rb', ['x = 0', 'puts x'])
       create_file('.rubocop.yml', [])
 
       expect(cli.run(%w(--format simple -c .rubocop.yml))).to eq(0)
@@ -818,9 +779,7 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'displays cop names if DisplayCopNames is true' do
-      source = ['# encoding: utf-8',
-                'x = 0 ',
-                'puts x']
+      source = ['x = 0 ', 'puts x']
       create_file('example1.rb', source)
 
       # DisplayCopNames: false inherited from config/default.yml
@@ -833,9 +792,9 @@ describe RuboCop::CLI, :isolated_environment do
       expect(cli.run(%w(--format simple))).to eq(1)
       expect($stdout.string)
         .to eq(['== example1.rb ==',
-                'C:  2:  6: Trailing whitespace detected.',
+                'C:  1:  6: Trailing whitespace detected.',
                 '== dir/example2.rb ==',
-                'C:  2:  6: Style/TrailingWhitespace: Trailing whitespace' \
+                'C:  1:  6: Style/TrailingWhitespace: Trailing whitespace' \
                 ' detected.',
                 '',
                 '2 files inspected, 2 offenses detected',
@@ -843,9 +802,7 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'displays style guide URLs if DisplayStyleGuide is true' do
-      source = ['# encoding: utf-8',
-                'x = 0 ',
-                'puts x']
+      source = ['x = 0 ', 'puts x']
       create_file('example1.rb', source)
 
       # DisplayCopNames: false inherited from config/default.yml
@@ -860,9 +817,9 @@ describe RuboCop::CLI, :isolated_environment do
       expect(cli.run(%w(--format simple))).to eq(1)
       expect($stdout.string)
         .to eq(['== example1.rb ==',
-                'C:  2:  6: Trailing whitespace detected.',
+                'C:  1:  6: Trailing whitespace detected.',
                 '== dir/example2.rb ==',
-                'C:  2:  6: Trailing whitespace' \
+                'C:  1:  6: Trailing whitespace' \
                 " detected. (#{url})",
                 '',
                 '2 files inspected, 2 offenses detected',
@@ -870,9 +827,7 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'uses the DefaultFormatter if another formatter is not specified' do
-      source = ['# encoding: utf-8',
-                'x = 0 ',
-                'puts x']
+      source = ['x = 0 ', 'puts x']
       create_file('example1.rb', source)
       create_file('.rubocop.yml', ['AllCops:',
                                    '  DefaultFormatter: offenses'])
@@ -906,16 +861,9 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'ignores excluded files' do
-      create_file('example.rb', ['# encoding: utf-8',
-                                 'x = 0',
-                                 'puts x'])
-      create_file('regexp.rb', ['# encoding: utf-8',
-                                'x = 0',
-                                'puts x'])
-      create_file('exclude_glob.rb', ['#!/usr/bin/env ruby',
-                                      '# encoding: utf-8',
-                                      'x = 0',
-                                      'puts x'])
+      create_file('example.rb', ['x = 0', 'puts x'])
+      create_file('regexp.rb', ['x = 0', 'puts x'])
+      create_file('exclude_glob.rb', ['#!/usr/bin/env ruby', 'x = 0', 'puts x'])
       create_file('.rubocop.yml', ['AllCops:',
                                    '  Exclude:',
                                    '    - example.rb',
@@ -928,16 +876,14 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'only reads configuration in explicitly included hidden directories' do
-      create_file('.hidden/example.rb', ['# encoding: utf-8',
-                                         'x=0'])
+      create_file('.hidden/example.rb', 'x=0')
       # This file contains configuration for an unknown cop. This would cause a
       # warning to be printed on stderr if the file was read. But it's in a
       # hidden directory, so it's not read.
       create_file('.hidden/.rubocop.yml', ['SymbolName:',
                                            '  Enabled: false'])
 
-      create_file('.other/example.rb', ['# encoding: utf-8',
-                                        'x=0'])
+      create_file('.other/example.rb', 'x=0')
       # The .other directory is explicitly included, so the configuration file
       # is read, and modifies the behavior.
       create_file('.other/.rubocop.yml', ['Style/SpaceAroundOperators:',
@@ -949,15 +895,14 @@ describe RuboCop::CLI, :isolated_environment do
       expect($stderr.string).to eq('')
       expect($stdout.string)
         .to eq(['== .other/example.rb ==',
-                'W:  2:  1: Useless assignment to variable - x.',
+                'W:  1:  1: Useless assignment to variable - x.',
                 '',
                 '1 file inspected, 1 offense detected',
                 ''].join("\n"))
     end
 
     it 'does not consider Include parameters in subdirectories' do
-      create_file('dir/example.ruby', ['# encoding: utf-8',
-                                       'x=0'])
+      create_file('dir/example.ruby', 'x=0')
       create_file('dir/.rubocop.yml', ['AllCops:',
                                        '  Include:',
                                        '    - "*.ruby"'])
@@ -971,8 +916,7 @@ describe RuboCop::CLI, :isolated_environment do
 
     it 'matches included/excluded files correctly when . argument is given' do
       create_file('example.rb', 'x = 0')
-      create_file('special.dsl', ['# encoding: utf-8',
-                                  'setup { "stuff" }'])
+      create_file('special.dsl', 'setup { "stuff" }')
       create_file('.rubocop.yml', ['AllCops:',
                                    '  Include:',
                                    '    - "*.dsl"',
@@ -981,7 +925,7 @@ describe RuboCop::CLI, :isolated_environment do
       expect(cli.run(%w(--format simple .))).to eq(1)
       expect($stdout.string)
         .to eq(['== special.dsl ==',
-                "C:  2:  9: Prefer single-quoted strings when you don't " \
+                "C:  1:  9: Prefer single-quoted strings when you don't " \
                 'need string interpolation or special symbols.',
                 '',
                 '1 file inspected, 1 offense detected',
@@ -992,8 +936,7 @@ describe RuboCop::CLI, :isolated_environment do
     # File.stub(:open).and_call_original causes SystemStackError.
     it 'does not read files in excluded list', broken: :rbx do
       %w(rb.rb non-rb.ext without-ext).each do |filename|
-        create_file("example/ignored/#{filename}", ['# encoding: utf-8',
-                                                    '#' * 90])
+        create_file("example/ignored/#{filename}", '#' * 90)
       end
 
       create_file('example/.rubocop.yml', ['AllCops:',
@@ -1069,10 +1012,7 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'can be configured to merge a parameter that is a hash' do
-      create_file('example1.rb',
-                  ['# encoding: utf-8',
-                   'puts %w(a b c)',
-                   'puts %q|hi|'])
+      create_file('example1.rb', ['puts %w(a b c)', 'puts %q|hi|'])
       # We want to change the preferred delimiters for word arrays. The other
       # settings from default.yml are unchanged.
       create_file('rubocop.yml',
@@ -1083,9 +1023,9 @@ describe RuboCop::CLI, :isolated_environment do
       cli.run(['--format', 'simple', '-c', 'rubocop.yml', 'example1.rb'])
       expect($stdout.string)
         .to eq(['== example1.rb ==',
-                'C:  2:  6: %w-literals should be delimited by [ and ].',
-                'C:  3:  6: %q-literals should be delimited by ( and ).',
-                'C:  3:  6: Use %q only for strings that contain both single ' \
+                'C:  1:  6: %w-literals should be delimited by [ and ].',
+                'C:  2:  6: %q-literals should be delimited by ( and ).',
+                'C:  2:  6: Use %q only for strings that contain both single ' \
                 'quotes and double quotes.',
                 '',
                 '1 file inspected, 3 offenses detected',
@@ -1095,8 +1035,7 @@ describe RuboCop::CLI, :isolated_environment do
     it 'can be configured to override a parameter that is a hash in a ' \
        'special case' do
       create_file('example1.rb',
-                  ['# encoding: utf-8',
-                   'arr.select { |e| e > 0 }.collect { |e| e * 2 }',
+                  ['arr.select { |e| e > 0 }.collect { |e| e * 2 }',
                    'a2.find_all { |e| e > 0 }'])
       # We prefer find_all over select. This setting overrides the default
       # select over find_all. Other preferred methods appearing in the default
@@ -1114,8 +1053,8 @@ describe RuboCop::CLI, :isolated_environment do
                'example1.rb'])
       expect($stdout.string)
         .to eq(['== example1.rb ==',
-                'C:  2:  5: Prefer find_all over select.',
-                'C:  2: 26: Prefer map over collect.',
+                'C:  1:  5: Prefer find_all over select.',
+                'C:  1: 26: Prefer map over collect.',
                 '',
                 '1 file inspected, 2 offenses detected',
                 ''].join("\n"))
@@ -1161,8 +1100,7 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'can use an alternative max line length from a config file' do
-      create_file('example_src/example1.rb', ['# encoding: utf-8',
-                                              '#' * 90])
+      create_file('example_src/example1.rb', '#' * 90)
       create_file('example_src/.rubocop.yml', ['Metrics/LineLength:',
                                                '  Enabled: true',
                                                '  Max: 100'])
@@ -1174,23 +1112,21 @@ describe RuboCop::CLI, :isolated_environment do
 
     it 'can have different config files in different directories' do
       %w(src lib).each do |dir|
-        create_file("example/#{dir}/example1.rb", ['# encoding: utf-8',
-                                                   '#' * 90])
+        create_file("example/#{dir}/example1.rb", '#' * 90)
       end
       create_file('example/src/.rubocop.yml', ['Metrics/LineLength:',
                                                '  Enabled: true',
                                                '  Max: 100'])
       expect(cli.run(%w(--format simple example))).to eq(1)
       expect($stdout.string).to eq(['== example/lib/example1.rb ==',
-                                    'C:  2: 81: Line is too long. [90/80]',
+                                    'C:  1: 81: Line is too long. [90/80]',
                                     '',
                                     '2 files inspected, 1 offense detected',
                                     ''].join("\n"))
     end
 
     it 'prefers a config file in ancestor directory to another in home' do
-      create_file('example_src/example1.rb', ['# encoding: utf-8',
-                                              '#' * 90])
+      create_file('example_src/example1.rb', '#' * 90)
       create_file('example_src/.rubocop.yml', ['Metrics/LineLength:',
                                                '  Enabled: true',
                                                '  Max: 100'])
@@ -1205,13 +1141,11 @@ describe RuboCop::CLI, :isolated_environment do
 
     it 'can exclude directories relative to .rubocop.yml' do
       %w(src etc/test etc/spec tmp/test tmp/spec).each do |dir|
-        create_file("example/#{dir}/example1.rb", ['# encoding: utf-8',
-                                                   '#' * 90])
+        create_file("example/#{dir}/example1.rb", '#' * 90)
       end
 
       # Hidden subdirectories should also be excluded.
-      create_file('example/etc/.dot/example1.rb', ['# encoding: utf-8',
-                                                   '#' * 90])
+      create_file('example/etc/.dot/example1.rb', '#' * 90)
 
       create_file('example/.rubocop.yml', ['AllCops:',
                                            '  Exclude:',
@@ -1222,7 +1156,7 @@ describe RuboCop::CLI, :isolated_environment do
       expect(cli.run(%w(--format simple example))).to eq(1)
       expect($stderr.string).to eq('')
       expect($stdout.string).to eq(['== example/tmp/test/example1.rb ==',
-                                    'C:  2: 81: Line is too long. [90/80]',
+                                    'C:  1: 81: Line is too long. [90/80]',
                                     '',
                                     '1 file inspected, 1 offense detected',
                                     ''].join("\n"))
@@ -1235,8 +1169,7 @@ describe RuboCop::CLI, :isolated_environment do
                    '    - lib/parser/lexer.rb'])
 
       create_file('vendor/bundle/ruby/1.9.1/gems/parser-2.0.0/lib/ex.rb',
-                  ['# encoding: utf-8',
-                   '#' * 90])
+                  '#' * 90)
 
       create_file('.rubocop.yml',
                   ['AllCops:',
@@ -1250,9 +1183,7 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'excludes the vendor directory by default' do
-      create_file('vendor/ex.rb',
-                  ['# encoding: utf-8',
-                   '#' * 90])
+      create_file('vendor/ex.rb', '#' * 90)
 
       cli.run(%w(--format simple))
       expect($stdout.string)
@@ -1270,8 +1201,7 @@ describe RuboCop::CLI, :isolated_environment do
                   ['inherit_from: non_existent.yml'])
 
       create_file('vendor/bundle/ruby/1.9.1/gems/parser-2.0.0/lib/ex.rb',
-                  ['# encoding: utf-8',
-                   '#' * 90])
+                  '#' * 90)
 
       create_file('.rubocop.yml',
                   ['AllCops:',
@@ -1295,8 +1225,7 @@ describe RuboCop::CLI, :isolated_environment do
                    '    - lib/parser/lexer.rb'])
 
       create_file('vendor/bundle/ruby/1.9.1/gems/parser-2.0.0/lib/ex.rb',
-                  ['# encoding: utf-8',
-                   '#' * 90])
+                  '#' * 90)
 
       create_file('.rubocop.yml',
                   ['inherit_from: config/default.yml'])
@@ -1313,8 +1242,7 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'prints a warning for an unrecognized cop name in .rubocop.yml' do
-      create_file('example/example1.rb', ['# encoding: utf-8',
-                                          '#' * 90])
+      create_file('example/example1.rb', '#' * 90)
 
       create_file('example/.rubocop.yml', ['Style/LyneLenth:',
                                            '  Enabled: true',
@@ -1328,8 +1256,7 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'prints a warning for an unrecognized configuration parameter' do
-      create_file('example/example1.rb', ['# encoding: utf-8',
-                                          '#' * 90])
+      create_file('example/example1.rb', '#' * 90)
 
       create_file('example/.rubocop.yml', ['Metrics/LineLength:',
                                            '  Enabled: true',
@@ -1343,8 +1270,7 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'prints an error message for an unrecognized EnforcedStyle' do
-      create_file('example/example1.rb', ['# encoding: utf-8',
-                                          'puts "hello"'])
+      create_file('example/example1.rb', 'puts "hello"')
       create_file('example/.rubocop.yml', ['Style/BracesAroundHashParameters:',
                                            '  EnforcedStyle: context'])
 
@@ -1359,8 +1285,7 @@ describe RuboCop::CLI, :isolated_environment do
 
     it 'works when a configuration file passed by -c specifies Exclude ' \
        'with regexp' do
-      create_file('example/example1.rb', ['# encoding: utf-8',
-                                          '#' * 90])
+      create_file('example/example1.rb', '#' * 90)
 
       create_file('rubocop.yml', ['AllCops:',
                                   '  Exclude:',
@@ -1374,8 +1299,7 @@ describe RuboCop::CLI, :isolated_environment do
 
     it 'works when a configuration file passed by -c specifies Exclude ' \
        'with strings' do
-      create_file('example/example1.rb', ['# encoding: utf-8',
-                                          '#' * 90])
+      create_file('example/example1.rb', '#' * 90)
 
       create_file('rubocop.yml', ['AllCops:',
                                   '  Exclude:',
@@ -1388,8 +1312,7 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'works when a configuration file specifies a Severity' do
-      create_file('example/example1.rb', ['# encoding: utf-8',
-                                          '#' * 90])
+      create_file('example/example1.rb', '#' * 90)
 
       create_file('rubocop.yml', ['Metrics/LineLength:',
                                   '  Severity: error'])
@@ -1397,7 +1320,7 @@ describe RuboCop::CLI, :isolated_environment do
       cli.run(%w(--format simple -c rubocop.yml))
       expect($stdout.string)
         .to eq(['== example/example1.rb ==',
-                'E:  2: 81: Line is too long. [90/80]',
+                'E:  1: 81: Line is too long. [90/80]',
                 '',
                 '1 file inspected, 1 offense detected',
                 ''].join("\n"))
@@ -1405,8 +1328,7 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'fails when a configuration file specifies an invalid Severity' do
-      create_file('example/example1.rb', ['# encoding: utf-8',
-                                          '#' * 90])
+      create_file('example/example1.rb', '#' * 90)
 
       create_file('rubocop.yml', ['Metrics/LineLength:',
                                   '  Severity: superbad'])

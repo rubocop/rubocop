@@ -13,18 +13,9 @@ module RuboCop
         let(:output) { $stdout.string }
 
         before do
-          create_file('1_offense.rb', [
-                        '# encoding: utf-8',
-                        '#' * 90
-                      ])
+          create_file('1_offense.rb', '#' * 90)
 
-          create_file('4_offenses.rb', [
-                        '# encoding: utf-8',
-                        'puts x ',
-                        'test;',
-                        'top;',
-                        '#' * 90
-                      ])
+          create_file('4_offenses.rb', ['puts x ', 'test;', 'top;', '#' * 90])
 
           create_file('no_offense.rb', '# encoding: utf-8')
 

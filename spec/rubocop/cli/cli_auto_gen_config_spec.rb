@@ -35,8 +35,7 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'overwrites an existing todo file' do
-      create_file('example1.rb', ['# encoding: utf-8',
-                                  'x= 0 ',
+      create_file('example1.rb', ['x= 0 ',
                                   '#' * 85,
                                   'y ',
                                   'puts x'])
@@ -72,8 +71,7 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'honors rubocop:disable comments' do
-      create_file('example1.rb', ['# encoding: utf-8',
-                                  '#' * 81,
+      create_file('example1.rb', ['#' * 81,
                                   '# rubocop:disable LineLength',
                                   '#' * 85,
                                   'y ',
@@ -102,8 +100,7 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'can generate a todo list' do
-      create_file('example1.rb', ['# encoding: utf-8',
-                                  '$x= 0 ',
+      create_file('example1.rb', ['$x= 0 ',
                                   '#' * 90,
                                   '#' * 85,
                                   'y ',
@@ -206,8 +203,7 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'can generate Exclude properties with a given limit' do
-      create_file('example1.rb', ['# encoding: utf-8',
-                                  '$x= 0 ',
+      create_file('example1.rb', ['$x= 0 ',
                                   '#' * 90,
                                   '#' * 85,
                                   'y ',
@@ -343,10 +339,9 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'generates a todo list that removes the reports' do
-      create_file('example.rb', ['# encoding: utf-8',
-                                 'y.gsub!(/abc\/xyz/, x)'])
+      create_file('example.rb', 'y.gsub!(/abc\/xyz/, x)')
       expect(cli.run(%w(--format emacs))).to eq(1)
-      expect($stdout.string).to eq("#{abs('example.rb')}:2:9: C: Use `%r` " \
+      expect($stdout.string).to eq("#{abs('example.rb')}:1:9: C: Use `%r` " \
                                    "around regular expression.\n")
       expect(cli.run(['--auto-gen-config'])).to eq(1)
       expected =
@@ -382,8 +377,7 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'does not include offense counts when --no-offense-counts is used' do
-      create_file('example1.rb', ['# encoding: utf-8',
-                                  '$x= 0 ',
+      create_file('example1.rb', ['$x= 0 ',
                                   '#' * 90,
                                   '#' * 85,
                                   'y ',

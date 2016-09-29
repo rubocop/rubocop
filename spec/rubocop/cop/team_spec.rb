@@ -60,11 +60,7 @@ describe RuboCop::Cop::Team do
 
     context 'when Parser reports non-fatal warning for the file' do
       before do
-        create_file(file_path, [
-                      '# encoding: utf-8',
-                      '#' * 90,
-                      'puts *test'
-                    ])
+        create_file(file_path, ['#' * 90, 'puts *test'])
       end
 
       let(:cop_names) { offenses.map(&:cop_name) }
@@ -82,21 +78,14 @@ describe RuboCop::Cop::Team do
       let(:options) { { auto_correct: true } }
 
       before do
-        create_file(file_path, [
-                      '# encoding: utf-8',
-                      'puts "string"'
-                    ])
+        create_file(file_path, 'puts "string"')
       end
 
       it 'does autocorrection' do
         source = RuboCop::ProcessedSource.from_file(file_path, ruby_version)
         team.inspect_file(source)
         corrected_source = File.read(file_path)
-        expect(corrected_source).to eq([
-          '# encoding: utf-8',
-          "puts 'string'",
-          ''
-        ].join("\n"))
+        expect(corrected_source).to eq("puts 'string'\n")
       end
 
       it 'still returns offenses' do
