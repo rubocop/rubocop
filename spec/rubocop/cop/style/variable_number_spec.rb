@@ -16,7 +16,7 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
       expect(cop.messages).to eq(['Use snake_case for variable numbers.'])
     end
 
-    it 'does not registers an offense for snake case numbering in local
+    it 'does not register an offense for snake case numbering in local
      variable' do
       inspect_source(cop, 'local_1 = 1')
       expect(cop.offenses.size).to eq(0)
@@ -91,7 +91,7 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
       expect(cop.messages).to eq(['Use normalcase for variable numbers.'])
     end
 
-    it 'does not registers an offense for normal case numbering in local
+    it 'does not register an offense for normal case numbering in local
      variable' do
       inspect_source(cop, 'local1 = 1')
       expect(cop.offenses.size).to eq(0)
@@ -216,13 +216,13 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
       expect(cop.messages).to eq(['Use non_integer for variable numbers.'])
     end
 
-    it 'does not registers an offense for non integer numbering in local
+    it 'does not register an offense for non integer numbering in local
      variable' do
       inspect_source(cop, 'localone = 1')
       expect(cop.offenses.size).to eq(0)
     end
 
-    it 'does not registers an offense for non integer numbering in local
+    it 'does not register an offense for non integer numbering in local
      variable' do
       inspect_source(cop, 'local_one = 1')
       expect(cop.offenses.size).to eq(0)

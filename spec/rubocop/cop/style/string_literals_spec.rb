@@ -176,6 +176,18 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
       new_source = autocorrect_source(cop, '"España"')
       expect(new_source).to eq("'España'")
     end
+
+    it 'does not register an offense for words with non-ascii chars and ' \
+       'other control sequences' do
+      inspect_source(cop, '"España\n"')
+      expect(cop.offenses.size).to eq(0)
+    end
+
+    it 'does not autocorrect words with non-ascii chars and other control ' \
+       'sequences' do
+      new_source = autocorrect_source(cop, '"España\n"')
+      expect(new_source).to eq('"España\n"')
+    end
   end
 
   context 'configured with double quotes preferred' do

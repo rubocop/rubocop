@@ -19,8 +19,7 @@ before_install: gem update --remote bundler
 install:
   - bundle install --retry=3
 script:
-  - bundle exec rspec
-  - bundle exec rubocop
+  - bundle exec rake
 addons:
   code_climate:
     repo_token: a11b66bfbb1acdf220d5cb317b2e945a986fd85adebe29a76d411ad6d74ec31f
