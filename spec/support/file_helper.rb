@@ -10,7 +10,7 @@ module FileHelper
     dir_path = File.dirname(file_path)
     FileUtils.makedirs dir_path unless File.exist?(dir_path)
 
-    File.open(file_path, 'wb') do |file|
+    File.open(file_path, 'w') do |file|
       case content
       when ''
         # Write nothing. Create empty file.

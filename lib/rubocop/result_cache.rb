@@ -91,7 +91,7 @@ module RuboCop
     end
 
     def load
-      @cached_data.from_json(IO.binread(@path))
+      @cached_data.from_json(IO.read(@path, encoding: Encoding::UTF_8))
     end
 
     def save(offenses)
@@ -103,7 +103,7 @@ module RuboCop
       # indication that a symlink attack is being waged.
       return if symlink_protection_triggered?(dir)
 
-      File.open(preliminary_path, 'wb') do |f|
+      File.open(preliminary_path, 'w', encoding: Encoding::UTF_8) do |f|
         f.write(@cached_data.to_json(offenses))
       end
       # The preliminary path is used so that if there are multiple RuboCop
