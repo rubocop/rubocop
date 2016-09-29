@@ -219,10 +219,11 @@ module RuboCop
       # If double quoted string literals are found in Ruby code, and they are
       # not the preferred style, should they be flagged?
       def double_quotes_acceptable?(string)
-        # If a string literal contains hard-to-type characters which would
-        # not appear on a "normal" keyboard, then double-quotes are acceptable
-        needs_escaping?(string) ||
-          string.codepoints.any? { |cp| cp < 32 || cp > 126 }
+        needs_escaping?(string) || hard_to_type?(string)
+      end
+
+      def hard_to_type?(string)
+        string.codepoints.any? { |cp| cp < 32 || cp > 126 }
       end
 
       def needs_escaping?(string)
