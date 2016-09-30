@@ -157,7 +157,7 @@ module RuboCop
           sources = source_files
                     .select { |path| File.file?(path) }
                     .sort
-                    .map { |path| IO.read(path) }
+                    .map { |path| IO.read(path, encoding: Encoding::UTF_8) }
           Digest::MD5.hexdigest(sources.join)
         end
     end
