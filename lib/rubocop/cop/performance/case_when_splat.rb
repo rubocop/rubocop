@@ -106,6 +106,8 @@ module RuboCop
         def reorder_condition(corrector, node, new_condition)
           *_conditions, body = *node
           _case_branch, *when_branches, _else_branch = *node.parent
+          return if when_branches.size == 1 # Can't reorder one branch
+
           corrector.remove(when_branch_range(node, when_branches))
 
           correction = if same_line?(node, body)

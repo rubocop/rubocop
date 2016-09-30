@@ -80,6 +80,18 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
     expect(cop.highlights).to eq(['when *cond'])
   end
 
+  # TODO: Examine if changing `when *Foo, Bar` to `when Bar, *Foo` gives faster
+  # code.
+  it 'registers an offense for a single when with splat expansion followed ' \
+     'by another value' do
+    inspect_source(cop, ['case foo',
+                         'when *Foo, Bar',
+                         '  nil',
+                         'end'])
+    expect(cop.messages).to eq([described_class::MSG])
+    expect(cop.highlights).to eq(['when *Foo'])
+  end
+
   it 'registers an offense for multiple splat conditions at the beginning' do
     inspect_source(cop, ['case foo',
                          'when *cond1',
@@ -182,6 +194,18 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
   end
 
   context 'autocorrect' do
+    # TODO: Either report and auto-correct, or don't do anything. Currently we
+    # report but don't auto-correct.
+    it 'does not correct a single when with splat expansion followed by ' \
+       'another value' do
+      old_source = ['case foo',
+                    'when *Foo, Bar',
+                    '  nil',
+                    'end']
+      new_source = autocorrect_source(cop, old_source)
+      expect(new_source).to eq(old_source.join("\n"))
+    end
+
     it 'moves a single splat condition to the end of the when conditions' do
       new_source = autocorrect_source(cop, ['case foo',
                                             'when *cond',
