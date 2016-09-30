@@ -16,6 +16,7 @@
 * [#3436](https://github.com/bbatsov/rubocop/issues/3436): Make `Rails/SaveBang` cop not register an offense when return value of a non-bang method is returned by the parent method. ([@coorasse][])
 * [#3540](https://github.com/bbatsov/rubocop/issues/3540): Fix `Style/GuardClause` to register offense for instance and singleton methods. ([@tejasbubane][])
 * [#3311](https://github.com/bbatsov/rubocop/issues/3311): Detect incompatibilities with the external encoding to prevent bad autocorrections in `Style/StringLiterals`. ([@deivid-rodriguez][])
+* [#3499](https://github.com/bbatsov/rubocop/issues/3499): Ensure `Lint/UnusedBlockArgument` doesn't make recommendations that would change arity for methods defined using `#define_method`. ([@drenmi][])
 
 ### Changes
 
