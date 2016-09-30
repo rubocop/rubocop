@@ -36,6 +36,13 @@ describe RuboCop::Cop::Performance::RedundantMerge, :config do
     end
   end
 
+  context 'when receiver is implicit' do
+    it "doesn't autocorrect" do
+      new_source = autocorrect_source(cop, 'merge!(foo: 1, bar: 2)')
+      expect(new_source).to eq('merge!(foo: 1, bar: 2)')
+    end
+  end
+
   context 'when internal to each_with_object' do
     it 'autocorrects when the receiver is the object being built' do
       source = ['foo.each_with_object({}) do |f, hash|',
