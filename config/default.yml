@@ -435,12 +435,14 @@ Style/EmptyLinesAroundClassBody:
   EnforcedStyle: no_empty_lines
   SupportedStyles:
     - empty_lines
+    - empty_lines_except_namespace
     - no_empty_lines
 
 Style/EmptyLinesAroundModuleBody:
   EnforcedStyle: no_empty_lines
   SupportedStyles:
     - empty_lines
+    - empty_lines_except_namespace
     - no_empty_lines
 
 # Checks whether the source file has a utf-8 encoding comment or not
