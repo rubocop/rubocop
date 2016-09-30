@@ -48,13 +48,13 @@ module RuboCop
         end
 
         def previous_line_empty?(previous_line)
-          block_start?(previous_line.lstrip) ||
-            class_def?(previous_line.lstrip) ||
+          block_start?(previous_line) ||
+            class_def?(previous_line) ||
             previous_line.blank?
         end
 
         def next_line_empty?(next_line)
-          body_end?(next_line.lstrip) || next_line.blank?
+          body_end?(next_line) || next_line.blank?
         end
 
         def empty_lines_around?(node)
@@ -67,7 +67,7 @@ module RuboCop
         end
 
         def class_def?(line)
-          line.start_with?('class', 'module')
+          line =~ /^\s*(class|module)/
         end
 
         def block_start?(line)
@@ -75,7 +75,7 @@ module RuboCop
         end
 
         def body_end?(line)
-          line.start_with?('end')
+          line =~ /^\s*end/
         end
 
         def message(node)
