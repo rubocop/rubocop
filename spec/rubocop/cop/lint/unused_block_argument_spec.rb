@@ -71,6 +71,24 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
           expect(cop.highlights).to eq(['index'])
         end
       end
+
+      context 'and the method call is `define_method`' do
+        let(:source) { <<-END }
+          define_method(:foo) do |bar|
+            puts 'baz'
+          end
+        END
+
+        it 'registers an offense' do
+          expect(cop.offenses.size).to eq(1)
+          expect(cop.offenses.first.message).to eq(
+            'Unused block argument - `bar`. ' \
+            "If it's necessary, use `_` or `_bar` as an argument name " \
+            "to indicate that it won't be used."
+          )
+          expect(cop.highlights).to eq(['bar'])
+        end
+      end
     end
 
     context 'when a block have a block local variable' do
@@ -145,26 +163,54 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
     end
 
     context 'when an optional keyword argument is unused', ruby: 2 do
-      let(:source) { <<-END }
-        define_method(:foo) do |bar: 'default'|
-          puts 'bar'
-        end
-      END
+      context 'when the method call is `define_method`' do
+        let(:source) { <<-END }
+          define_method(:foo) do |bar: 'default'|
+            puts 'bar'
+          end
+        END
 
-      it 'registers an offense but does not suggest underscore-prefix' do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.highlights).to eq(['bar'])
-        expect(cop.offenses.first.message).to eq(
-          'Unused block argument - `bar`. ' \
-          "You can omit the argument if you don't care about it."
-        )
+        it 'registers an offense' do
+          expect(cop.offenses.size).to eq(1)
+          expect(cop.offenses.first.message).to eq(
+            'Unused block argument - `bar`. ' \
+            "If it's necessary, use `_` or `_bar` as an argument name " \
+            "to indicate that it won't be used."
+          )
+          expect(cop.highlights).to eq(['bar'])
+        end
+
+        context 'when AllowUnusedKeywordArguments set' do
+          let(:cop_config) { { 'AllowUnusedKeywordArguments' => true } }
+
+          it 'does not care' do
+            expect(cop.offenses).to be_empty
+          end
+        end
       end
 
-      context 'and AllowUnusedKeywordArguments set' do
-        let(:cop_config) { { 'AllowUnusedKeywordArguments' => true } }
+      context 'when the method call is not `define_method`' do
+        let(:source) { <<-END }
+          foo(:foo) do |bar: 'default'|
+            puts 'bar'
+          end
+        END
 
-        it 'does not care' do
-          expect(cop.offenses).to be_empty
+        it 'registers an offense' do
+          expect(cop.offenses.size).to eq(1)
+          expect(cop.offenses.first.message).to eq(
+            'Unused block argument - `bar`. ' \
+            "You can omit the argument if you don't care about it."
+          )
+          expect(cop.highlights).to eq(['bar'])
+        end
+
+        context 'when AllowUnusedKeywordArguments set' do
+          let(:cop_config) { { 'AllowUnusedKeywordArguments' => true } }
+
+          it 'does not care' do
+            expect(cop.offenses).to be_empty
+          end
         end
       end
     end
