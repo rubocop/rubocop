@@ -17,6 +17,7 @@
 * [#3540](https://github.com/bbatsov/rubocop/issues/3540): Fix `Style/GuardClause` to register offense for instance and singleton methods. ([@tejasbubane][])
 * [#3311](https://github.com/bbatsov/rubocop/issues/3311): Detect incompatibilities with the external encoding to prevent bad autocorrections in `Style/StringLiterals`. ([@deivid-rodriguez][])
 * [#3499](https://github.com/bbatsov/rubocop/issues/3499): Ensure `Lint/UnusedBlockArgument` doesn't make recommendations that would change arity for methods defined using `#define_method`. ([@drenmi][])
+* [#3430](https://github.com/bbatsov/rubocop/issues/3430): Fix exception in `Performance/RedundantMerge` when inspecting a `#merge!` with implicit receiver. ([@drenmi][])
 
 ### Changes
 

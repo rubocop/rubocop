@@ -44,6 +44,7 @@ module RuboCop
 
         def each_redundant_merge(node)
           redundant_merge(node) do |receiver, pairs|
+            next unless receiver
             next if node.value_used? &&
                     !EachWithObjectInspector.new(node, receiver).value_used?
             next if pairs.size > 1 && !receiver.pure?
