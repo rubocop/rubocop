@@ -19,6 +19,7 @@
 * [#3499](https://github.com/bbatsov/rubocop/issues/3499): Ensure `Lint/UnusedBlockArgument` doesn't make recommendations that would change arity for methods defined using `#define_method`. ([@drenmi][])
 * [#3430](https://github.com/bbatsov/rubocop/issues/3430): Fix exception in `Performance/RedundantMerge` when inspecting a `#merge!` with implicit receiver. ([@drenmi][])
 * [#3411](https://github.com/bbatsov/rubocop/issues/3411): Avoid auto-correction crash for single `when` in `Performance/CaseWhenSplat`. ([@jonas054][])
+* [#3286](https://github.com/bbatsov/rubocop/issues/3286): Allow `self.a, self.b = b, a` in `Style/ParallelAssignment`. ([@jonas054][])
 
 ### Changes
 
