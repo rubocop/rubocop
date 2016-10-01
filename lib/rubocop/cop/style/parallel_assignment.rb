@@ -42,7 +42,8 @@ module RuboCop
 
         def allowed_masign?(lhs_elements, rhs_elements)
           lhs_elements.size != rhs_elements.size ||
-            !find_valid_order(lhs_elements, rhs_elements)
+            !find_valid_order(lhs_elements,
+                              add_self_to_getters(rhs_elements))
         end
 
         def allowed_lhs?(node)
@@ -103,6 +104,17 @@ module RuboCop
             nil
           end
         end
+
+        # Converts (send nil :something) nodes to (send (:self) :something).
+        # This makes the sorting algorithm work for expressions such as
+        # `self.a, self.b = b, a`.
+        def add_self_to_getters(right_elements)
+          right_elements.map do |e|
+            implicit_self_getter?(e) { |var| s(:send, s(:self), var) } || e
+          end
+        end
+
+        def_node_matcher :implicit_self_getter?, '(send nil $_)'
 
         # Helper class necessitated by silly design of TSort prior to Ruby 2.1
         # Newer versions have a better API, but that doesn't help us
