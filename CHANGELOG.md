@@ -9,6 +9,7 @@
 
 ### Bug fixes
 
+* [#3103](https://github.com/bbatsov/rubocop/pull/3103): Make `Style/ExtraSpacing` cop register an offense for extra spaces present in single-line hash literals. ([@tcdowney][])
 * [#3513](https://github.com/bbatsov/rubocop/pull/3513): Fix false positive in `Style/TernaryParentheses` for a ternary with ranges. ([@dreyks][])
 * [#3520](https://github.com/bbatsov/rubocop/issues/3520): Fix regression causing `Lint/AssignmentInCondition` false positive. ([@savef][])
 * [#3514](https://github.com/bbatsov/rubocop/issues/3514): Make `Style/VariableNumber` cop not register an offense when valid normal case variable names have an integer after the first `_`. ([@b-t-g][])
@@ -2392,3 +2393,4 @@
 [@b-t-g]: https://github.com/b-t-g
 [@coorasse]: https://github.com/coorasse
 [@scottmatthewman]: https://github.com/scottmatthewman
+[@tcdowney]: https://github.com/tcdowney
