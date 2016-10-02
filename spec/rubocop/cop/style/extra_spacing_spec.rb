@@ -49,6 +49,25 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
       expect(cop.offenses).to be_empty
     end
 
+    context 'when spaces are present in a single-line hash literal' do
+      it 'registers an offense for hashes with symbol keys' do
+        inspect_source(cop, 'hash = {a:   1,  b:    2}')
+        expect(cop.offenses.size).to eq(3)
+      end
+
+      it 'registers an offense for hashes with hash rockets' do
+        source = [
+          'let(:single_line_hash) {',
+          '  {"a"   => "1", "b" => "2"}',
+          '}'
+        ]
+
+        inspect_source(cop, source)
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.offenses.first.line).to eq(2)
+      end
+    end
+
     it 'can handle extra space before a float' do
       source = ['{:a => "a",',
                 ' :b => [nil,  2.5]}']

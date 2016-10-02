@@ -140,15 +140,17 @@ module RuboCop
         end
 
         # Returns an array of ranges that should not be reported. It's the
-        # extra spaces between the keys and values in a hash, since those are
-        # handled by the Style/AlignHash cop.
+        # extra spaces between the keys and values in a multiline hash,
+        # since those are handled by the Style/AlignHash cop.
         def ignored_ranges(ast)
           return [] unless ast
 
           @ignored_ranges ||= on_node(:pair, ast).map do |pair|
+            next if pair.parent.single_line?
+
             key, value = *pair
             key.source_range.end_pos...value.source_range.begin_pos
-          end
+          end.compact
         end
 
         def aligned_comments?(token)
