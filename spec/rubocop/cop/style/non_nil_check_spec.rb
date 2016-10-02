@@ -106,6 +106,13 @@ describe RuboCop::Cop::Style::NonNilCheck, :config do
       expect(cop.highlights).to eq(['!x.nil?'])
     end
 
+    it 'registers an offense for unless x.nil?' do
+      inspect_source(cop, 'puts b unless x.nil?')
+      expect(cop.messages)
+        .to eq(['Explicit non-nil checks are usually redundant.'])
+      expect(cop.highlights).to eq(['x.nil?'])
+    end
+
     it 'does not register an offense for `x.nil?`' do
       inspect_source(cop, 'x.nil?')
       expect(cop.offenses).to be_empty
@@ -120,6 +127,11 @@ describe RuboCop::Cop::Style::NonNilCheck, :config do
       inspect_source(cop, 'not x.nil?')
       expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['not x.nil?'])
+    end
+
+    it 'autocorrects by changing unless x.nil? to if x' do
+      corrected = autocorrect_source(cop, 'puts a unless x.nil?')
+      expect(corrected).to eq 'puts a if x'
     end
 
     it 'autocorrects by changing `x != nil` to `x`' do

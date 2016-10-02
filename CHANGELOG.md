@@ -20,6 +20,7 @@
 * [#3430](https://github.com/bbatsov/rubocop/issues/3430): Fix exception in `Performance/RedundantMerge` when inspecting a `#merge!` with implicit receiver. ([@drenmi][])
 * [#3411](https://github.com/bbatsov/rubocop/issues/3411): Avoid auto-correction crash for single `when` in `Performance/CaseWhenSplat`. ([@jonas054][])
 * [#3286](https://github.com/bbatsov/rubocop/issues/3286): Allow `self.a, self.b = b, a` in `Style/ParallelAssignment`. ([@jonas054][])
+* [#3419](https://github.com/bbatsov/rubocop/issues/3419): Report offense for `unless x.nil?` in `Style/NonNilCheck` if `IncludeSemanticChanges` is `true`. ([@jonas054][])
 
 ### Changes
 

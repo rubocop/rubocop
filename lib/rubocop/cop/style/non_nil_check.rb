@@ -35,7 +35,8 @@ module RuboCop
           if not_equal_to_nil?(method, args)
             add_offense(node, :selector)
           elsif include_semantic_changes? &&
-                not_and_nil_check?(method, receiver)
+                (not_and_nil_check?(method, receiver) ||
+                 unless_and_nil_check?(node, method))
             add_offense(node, :expression)
           end
         end
@@ -48,6 +49,13 @@ module RuboCop
 
         def not_and_nil_check?(method, receiver)
           method == :! && nil_check?(receiver)
+        end
+
+        def unless_and_nil_check?(send_node, method)
+          return unless method == :nil?
+
+          parent = send_node.parent
+          parent && parent.if_type? && parent.loc.keyword.is?('unless')
         end
 
         def message(node)
@@ -88,6 +96,8 @@ module RuboCop
             autocorrect_comparison(node)
           elsif method == :!
             autocorrect_non_nil(node, receiver)
+          elsif method == :nil?
+            autocorrect_unless_nil(node, receiver)
           end
         end
 
@@ -116,6 +126,13 @@ module RuboCop
             else
               corrector.replace(node.source_range, 'self')
             end
+          end
+        end
+
+        def autocorrect_unless_nil(node, receiver)
+          lambda do |corrector|
+            corrector.replace(node.parent.loc.keyword, 'if')
+            corrector.replace(node.source_range, receiver.source)
           end
         end
       end
