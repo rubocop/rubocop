@@ -235,11 +235,21 @@ describe RuboCop::Cop::Style::EmptyElse do
 
       context 'with an else-clause containing only the literal nil ' \
               'using semicolons' do
-        let(:source) { 'if a; foo elsif b; bar else nil end' }
-        let(:corrected_source) { 'if a; foo elsif b; bar end' }
+        context 'with one elsif' do
+          let(:source) { 'if a; foo elsif b; bar else nil end' }
+          let(:corrected_source) { 'if a; foo elsif b; bar end' }
 
-        it_behaves_like 'offense registration'
-        it_behaves_like 'auto-correct', 'if'
+          it_behaves_like 'offense registration'
+          it_behaves_like 'auto-correct', 'if'
+        end
+
+        context 'with multiple elsifs' do
+          let(:source) { 'if a; foo elsif b; bar; elsif c; bar else nil end' }
+          let(:corrected_source) { 'if a; foo elsif b; bar; elsif c; bar end' }
+
+          it_behaves_like 'offense registration'
+          it_behaves_like 'auto-correct', 'if'
+        end
       end
 
       context 'with an else-clause with side-effects' do
@@ -366,11 +376,21 @@ describe RuboCop::Cop::Style::EmptyElse do
       end
 
       context 'with an else-clause containing only the literal nil' do
-        let(:source) { 'if a; foo elsif b; bar else nil end' }
-        let(:corrected_source) { 'if a; foo elsif b; bar end' }
+        context 'with one elsif' do
+          let(:source) { 'if a; foo elsif b; bar else nil end' }
+          let(:corrected_source) { 'if a; foo elsif b; bar end' }
 
-        it_behaves_like 'offense registration'
-        it_behaves_like 'auto-correct', 'if'
+          it_behaves_like 'offense registration'
+          it_behaves_like 'auto-correct', 'if'
+        end
+
+        context 'with multiple elsifs' do
+          let(:source) { 'if a; foo elsif b; bar; elsif c; bar else nil end' }
+          let(:corrected_source) { 'if a; foo elsif b; bar; elsif c; bar end' }
+
+          it_behaves_like 'offense registration'
+          it_behaves_like 'auto-correct', 'if'
+        end
       end
 
       context 'with an else-clause with side-effects' do

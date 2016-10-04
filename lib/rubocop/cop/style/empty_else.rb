@@ -110,14 +110,16 @@ module RuboCop
           return false if autocorrect_forbidden?(node.type.to_s)
 
           lambda do |corrector|
-            end_pos = if node.loc.end
-                        node.loc.end.begin_pos
-                      else
-                        node.parent.loc.end.begin_pos
-                      end
+            end_pos = base_if_node(node).loc.end.begin_pos
 
             corrector.remove(range_between(node.loc.else.begin_pos, end_pos))
           end
+        end
+
+        def base_if_node(node)
+          parent_node = node
+          parent_node = parent_node.parent until parent_node.loc.end
+          parent_node
         end
 
         def autocorrect_forbidden?(type)
