@@ -38,6 +38,8 @@ describe RuboCop::Cop::Style::UnneededCapitalW do
               '  %W(\007) +',
               '  %W(\00) +',
               '  %W(\a)',
+              '  %W(\s)',
+              '  %W(\n)',
               'end']
     inspect_source(cop, source)
     expect(cop.offenses).to be_empty
