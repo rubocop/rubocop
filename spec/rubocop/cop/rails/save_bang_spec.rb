@@ -90,6 +90,40 @@ describe RuboCop::Cop::Rails::SaveBang do
       end
     end
 
+    it "when using #{method} with multiple conditional" do
+      inspect_source(cop, ["if true && object.active? && object.#{method}",
+                           '  something',
+                           'end'])
+      if pass
+        expect(cop.messages).to be_empty
+      else
+        expect(cop.messages)
+          .to eq(["`#{method}` returns a model which is always truthy."])
+      end
+    end
+
+    it "when using #{method} with oneline if" do
+      inspect_source(cop, "something if object.#{method}")
+
+      if pass
+        expect(cop.messages).to be_empty
+      else
+        expect(cop.messages)
+          .to eq(["`#{method}` returns a model which is always truthy."])
+      end
+    end
+
+    it "when using #{method} with oneline if and multiple conditional" do
+      inspect_source(cop, "something if false || object.#{method}")
+
+      if pass
+        expect(cop.messages).to be_empty
+      else
+        expect(cop.messages)
+          .to eq(["`#{method}` returns a model which is always truthy."])
+      end
+    end
+
     it "when using #{method} as last method call" do
       inspect_source(cop, ['def foo', "object.#{method}", 'end'])
       expect(cop.messages).to be_empty

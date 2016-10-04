@@ -112,8 +112,7 @@ module RuboCop
         end
 
         def check_used_in_conditional(node)
-          return false unless node.parent
-          return false unless node.parent.if_type? && node.sibling_index.zero?
+          return false unless conditional?(node)
 
           unless MODIFY_PERSIST_METHODS.include?(node.method_name)
             add_offense(node, node.loc.selector,
@@ -122,6 +121,11 @@ module RuboCop
           end
 
           true
+        end
+
+        def conditional?(node)
+          node.parent && (node.parent.if_type? && node.sibling_index.zero? ||
+            conditional?(node.parent))
         end
 
         def last_call_of_method?(node)
