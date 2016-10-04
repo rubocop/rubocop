@@ -39,7 +39,7 @@ module RuboCop
           # Include any trailing whitespace so we don't create a syntax error.
           operator_range = range_with_surrounding_space(operator_range,
                                                         :right,
-                                                        !:with_newline)
+                                                        false)
           one_more_char = operator_range.resize(operator_range.size + 1)
           # Don't create a double backslash at the end of the line, in case
           # there already was a backslash after the concatenation operator.
