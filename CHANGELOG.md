@@ -23,6 +23,7 @@
 * [#3286](https://github.com/bbatsov/rubocop/issues/3286): Allow `self.a, self.b = b, a` in `Style/ParallelAssignment`. ([@jonas054][])
 * [#3419](https://github.com/bbatsov/rubocop/issues/3419): Report offense for `unless x.nil?` in `Style/NonNilCheck` if `IncludeSemanticChanges` is `true`. ([@jonas054][])
 * [#3382](https://github.com/bbatsov/rubocop/issues/3382): Avoid auto-correction crash for multiple elsifs in `Style/EmptyElse`. ([@lumeet][])
+* [#3334](https://github.com/bbatsov/rubocop/issues/3334): Do not register an offense for a literal space (`\s`) in `Style/UnneededCapitalW`. ([@rrosenblum][])
 
 ### Changes
 
