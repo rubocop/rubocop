@@ -5,13 +5,13 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) { { 'ConvertCodeThatCanStartToReturnNil' => false } }
 
-  it 'allows calls to methods not safeguarded by respond_to' do
-    inspect_source(cop, 'foo.bar')
-
-    expect(cop.offenses).to be_empty
-  end
-
   context 'target_ruby_version > 2.3', :ruby23 do
+    it 'allows calls to methods not safeguarded by respond_to' do
+      inspect_source(cop, 'foo.bar')
+
+      expect(cop.offenses).to be_empty
+    end
+
     it 'allows calls using safe navigation' do
       inspect_source(cop, 'foo&.bar')
 
