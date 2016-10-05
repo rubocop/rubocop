@@ -31,6 +31,7 @@
 * [#3512](https://github.com/bbatsov/rubocop/issues/3512): Change error message of `Lint/UnneededSplatExpansion` for array in method parameters. ([@tejasbubane][])
 * [#3510](https://github.com/bbatsov/rubocop/issues/3510): Fix some issues with `Style/SafeNavigation`. Fix auto-correct of multiline if expressions, and do not register an offense for scenarios using `||` and ternary expression. ([@rrosenblum][])
 * [#3503](https://github.com/bbatsov/rubocop/issues/3503): Change misleading message of `Style/EmptyLinesAroundAccessModifier`. ([@bquorning][])
+* [#3407](https://github.com/bbatsov/rubocop/issues/3407): Turn off autocorrect for unsafe rules by default. ([@ptarjan][])
 
 ## 0.43.0 (2016-09-19)
 
@@ -86,7 +87,6 @@
 * `Lint/InheritException` restricts inheriting from standard library subclasses of `Exception`. ([@metcalf][])
 * No longer register an offense if the first line of code starts with `#\` in `Style/LeadingCommentSpace`. `config.ru` files consider such lines as options. ([@scottohara][])
 * [#3292](https://github.com/bbatsov/rubocop/issues/3292): Remove `Performance/PushSplat` as it can produce code that is slower or even cause failure. ([@jonas054][])
-* [#3407](https://github.com/bbatsov/rubocop/issues/3407): Turn off autocorrect for unsafe rules by default. ([@ptarjan][])
 
 ## 0.42.0 (2016-07-25)
 
