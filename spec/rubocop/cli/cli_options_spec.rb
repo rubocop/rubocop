@@ -592,17 +592,14 @@ describe RuboCop::CLI, :isolated_environment do
       end
 
       it 'prints all types' do
-        cops
-          .types
-          .map(&:to_s)
-          .map(&:capitalize)
-          .each { |type| expect(stdout).to include(type) }
+        cops.types
+            .each { |type| expect(stdout).to include(type.to_s.capitalize) }
       end
 
       it 'prints all cops in their right type listing' do
         lines = stdout.lines
         lines.slice_before(/Type /).each do |slice|
-          types = cops.types.map(&:to_s).map(&:capitalize)
+          types = cops.types.map { |type| type.to_s.capitalize }
           current = types.delete(slice.shift[/Type '(?<c>[^']+)'/, 'c'])
           # all cops in their type listing
           cops.with_type(current).each do |cop|
