@@ -991,6 +991,10 @@ Metrics/MethodLength:
   StyleGuide: '#short-methods'
   Enabled: true
 
+Metrics/BlockLength:
+  Description: 'Avoid long blocks with many lines.'
+  Enabled: true
+
 Metrics/ParameterLists:
   Description: 'Avoid parameter lists longer than three or four parameters.'
   StyleGuide: '#too-many-params'
