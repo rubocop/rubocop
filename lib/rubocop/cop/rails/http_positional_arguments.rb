@@ -3,8 +3,8 @@
 module RuboCop
   module Cop
     module Rails
-      # This cop is used to identify usages of `http methods
-      # like get,post,put,path` without the usage of keyword arguments
+      # This cop is used to identify usages of http methods
+      # like `get`, `post`, `put`, `path` without the usage of keyword arguments
       # in your tests and change them to use keyword arguments.
       #
       # @example
@@ -14,8 +14,8 @@ module RuboCop
       #   # good
       #   get :new, params: { user_id: 1 }
       class HttpPositionalArguments < Cop
-        MSG = 'Use `keyword arguments` instead of ' \
-              'positional arguments for http call: %s.'.freeze
+        MSG = 'Use keyword arguments instead of ' \
+              'positional arguments for http call: `%s`.'.freeze
         KEYWORD_ARGS = [:headers, :env, :params, :body, :flash, :as].freeze
         HTTP_METHODS = [:get, :post, :put, :patch, :delete, :head].freeze
 
