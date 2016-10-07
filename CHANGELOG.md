@@ -8,6 +8,7 @@
 * [#3510](https://github.com/bbatsov/rubocop/issues/3510): Add a configuration option, `ConvertCodeThatCanStartToReturnNil`, to `Style/SafeNavigation` to check for code that could start returning `nil` if safe navigation is used. ([@rrosenblum][])
 * Add a new `AllCops/StyleGuideBaseURL` setting that allows the use of relative paths and/or fragments within each cop's `StyleGuide` setting, to make forking of custom style guides easier. ([@scottmatthewman][])
 * [#3566](https://github.com/bbatsov/rubocop/issues/3566): Add new `Metric/BlockLength` cop to ensure blocks don't get too long. ([@savef][])
+* [#3428](https://github.com/bbatsov/rubocop/issues/3428): Add support for configuring `Style/PreferredHashMethods` with either `short` or `verbose` style method names. ([@abrom][])
 
 ### Bug fixes
 
@@ -2404,3 +2405,4 @@
 [@scottmatthewman]: https://github.com/scottmatthewman
 [@tcdowney]: https://github.com/tcdowney
 [@logicminds]: https://github.com/logicminds
+[@abrom]: https://github.com/abrom
