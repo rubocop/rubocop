@@ -41,7 +41,9 @@ describe RuboCop::Cop::Style::NumericPredicate, :config do
   end
 
   context 'when configured to enforce numeric predicate methods' do
-    let(:cop_config) { { 'EnforcedStyle' => 'predicate' } }
+    let(:cop_config) do
+      { 'EnforcedStyle' => 'predicate', 'AutoCorrect' => true }
+    end
 
     context 'when checking if a number is zero' do
       it_behaves_like 'code with offense',
@@ -145,7 +147,9 @@ describe RuboCop::Cop::Style::NumericPredicate, :config do
   end
 
   context 'when configured to enforce numeric comparison methods' do
-    let(:cop_config) { { 'EnforcedStyle' => 'comparison' } }
+    let(:cop_config) do
+      { 'EnforcedStyle' => 'comparison', 'AutoCorrect' => true }
+    end
 
     context 'when checking if a number is zero' do
       it_behaves_like 'code with offense',
