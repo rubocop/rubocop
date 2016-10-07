@@ -26,6 +26,7 @@
 * [#3382](https://github.com/bbatsov/rubocop/issues/3382): Avoid auto-correction crash for multiple elsifs in `Style/EmptyElse`. ([@lumeet][])
 * [#3334](https://github.com/bbatsov/rubocop/issues/3334): Do not register an offense for a literal space (`\s`) in `Style/UnneededCapitalW`. ([@rrosenblum][])
 * [#3390](https://github.com/bbatsov/rubocop/issues/3390): Fix SaveBang cop for multiple conditional. ([@tejasbubane][])
+* [#3577](https://github.com/bbatsov/rubocop/issues/3577): Fix `Style/RaiseArgs` not allowing compact raise with splatted args. ([@savef][])
 
 ### Changes
 

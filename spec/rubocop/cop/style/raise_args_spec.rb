@@ -142,6 +142,11 @@ describe RuboCop::Cop::Style::RaiseArgs, :config do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts a raise with splatted arguments' do
+      inspect_source(cop, 'raise RuntimeError.new(*args)')
+      expect(cop.offenses).to be_empty
+    end
+
     it 'accepts a raise with 3 args' do
       inspect_source(cop, 'raise RuntimeError, msg, caller')
       expect(cop.offenses).to be_empty
