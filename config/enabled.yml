@@ -1514,5 +1514,11 @@ Rails/Validation:
   Enabled: true
 
 Security/JSONLoad:
-  Description : 'Prefer usage of JSON.parse'
+  Description: >-
+                 Prefer usage of `JSON.parse` over `JSON.load` due to potential
+                 security issues. See reference for more information.
+  Reference: 'http://ruby-doc.org/stdlib-2.3.0/libdoc/json/rdoc/JSON.html#method-i-load'
   Enabled: true
+  # Autocorrect here will change to a method that may cause crashes depending
+  # on the value of the argument.
+  AutoCorrect: false
