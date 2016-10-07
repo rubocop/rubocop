@@ -29,7 +29,7 @@ describe RuboCop::Cop::Security::JSONLoad, :config do
     it "registers an offense for JSON.#{method}" do
       inspect_source(cop, "JSON.#{method}('{}')")
       expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.first.message).to include("JSON##{method}")
+      expect(cop.offenses.first.message).to include("JSON.#{method}")
     end
 
     it "autocorrects '.#{method}' to '.parse'" do

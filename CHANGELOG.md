@@ -35,6 +35,7 @@
 * [#3510](https://github.com/bbatsov/rubocop/issues/3510): Fix some issues with `Style/SafeNavigation`. Fix auto-correct of multiline if expressions, and do not register an offense for scenarios using `||` and ternary expression. ([@rrosenblum][])
 * [#3503](https://github.com/bbatsov/rubocop/issues/3503): Change misleading message of `Style/EmptyLinesAroundAccessModifier`. ([@bquorning][])
 * [#3407](https://github.com/bbatsov/rubocop/issues/3407): Turn off autocorrect for unsafe rules by default. ([@ptarjan][])
+* [#3521](https://github.com/bbatsov/rubocop/issues/3521): Turn off autocorrect for `Security/JSONLoad` by default. ([@savef][])
 
 ## 0.43.0 (2016-09-19)
 
