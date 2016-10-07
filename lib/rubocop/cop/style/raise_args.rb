@@ -105,21 +105,21 @@ module RuboCop
         def check_exploded(node)
           _receiver, selector, *args = *node
 
-          if args.one?
-            arg, = *args
+          return correct_style_detected unless args.one?
+          arg, = *args
 
-            if arg.send_type? && arg.loc.selector.is?('new')
-              _receiver, _selector, *constructor_args = *arg
+          return unless arg.send_type? && arg.loc.selector.is?('new')
+          _receiver, _selector, *constructor_args = *arg
 
-              # Allow code like `raise Ex.new(arg1, arg2)`.
-              if constructor_args.size <= 1
-                add_offense(node, :expression, message(selector)) do
-                  opposite_style_detected
-                end
-              end
-            end
-          else
-            correct_style_detected
+          # Allow code like `raise Ex.new(arg1, arg2)`.
+          return unless constructor_args.size <= 1
+
+          # Allow code like `raise Ex.new(*args)`
+          first_arg = constructor_args.first
+          return if first_arg && first_arg.splat_type?
+
+          add_offense(node, :expression, message(selector)) do
+            opposite_style_detected
           end
         end
 
