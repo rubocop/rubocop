@@ -19,17 +19,21 @@ module RuboCop
           end
         end
 
+        private
+
         def check_line(line, index, heredocs)
-          return unless line.length > max
+          return if line.length <= max
+          if ignore_cop_directives? && directive_on_source_line?(index)
+            return check_directive_line(line, index)
+          end
           return if heredocs &&
                     line_in_whitelisted_heredoc?(heredocs, index.succ)
+          return check_uri_line(line, index) if allow_uri?
 
-          if allow_uri?
-            uri_range = find_excessive_uri_range(line)
-            return if uri_range && allowed_uri_position?(line, uri_range)
-          end
-
-          offense(excess_range(uri_range, line, index), line)
+          offense(
+            source_range(processed_source.buffer, index + 1, 0...line.length),
+            line
+          )
         end
 
         def offense(loc, line)
@@ -81,6 +85,10 @@ module RuboCop
           cop_config['AllowURI']
         end
 
+        def ignore_cop_directives?
+          cop_config['IgnoreCopDirectives']
+        end
+
         def allowed_uri_position?(line, uri_range)
           uri_range.begin < max && uri_range.end == line.length
         end
@@ -110,6 +118,36 @@ module RuboCop
 
         def uri_regexp
           @regexp ||= URI.regexp(cop_config['URISchemes'])
+        end
+
+        def check_directive_line(line, index)
+          return if line_length_without_directive(line) <= max
+
+          range = max..(line_length_without_directive(line) - 1)
+          offense(source_range(processed_source.buffer, index + 1, range), line)
+        end
+
+        def directive_on_source_line?(index)
+          source_line_number = index + processed_source.buffer.first_line
+          comment =
+            processed_source
+            .comments
+            .detect { |e| e.location.line == source_line_number }
+
+          return false unless comment
+          comment.text.match(CommentConfig::COMMENT_DIRECTIVE_REGEXP)
+        end
+
+        def line_length_without_directive(line)
+          before_comment, = line.split('#')
+          before_comment.rstrip.length
+        end
+
+        def check_uri_line(line, index)
+          uri_range = find_excessive_uri_range(line)
+          return if uri_range && allowed_uri_position?(line, uri_range)
+
+          offense(excess_range(uri_range, line, index), line)
         end
       end
     end

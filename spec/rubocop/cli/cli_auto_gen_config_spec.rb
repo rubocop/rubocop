@@ -46,7 +46,7 @@ describe RuboCop::CLI, :isolated_environment do
       expect(IO.readlines('.rubocop_todo.yml')[8..-1].map(&:chomp))
         .to eq(['# Offense count: 1',
                 '# Configuration parameters: AllowHeredoc, AllowURI, ' \
-                'URISchemes.',
+                'URISchemes, IgnoreCopDirectives.',
                 '# URISchemes: http, https',
                 'Metrics/LineLength:',
                 '  Max: 85',
@@ -81,7 +81,7 @@ describe RuboCop::CLI, :isolated_environment do
       expect(IO.readlines('.rubocop_todo.yml')[8..-1].join)
         .to eq(['# Offense count: 1',
                 '# Configuration parameters: AllowHeredoc, AllowURI, ' \
-                'URISchemes.',
+                'URISchemes, IgnoreCopDirectives.',
                 '# URISchemes: http, https',
                 'Metrics/LineLength:',
                 '  Max: 81',
@@ -136,7 +136,8 @@ describe RuboCop::CLI, :isolated_environment do
          'again.',
          '',
          '# Offense count: 2',
-         '# Configuration parameters: AllowHeredoc, AllowURI, URISchemes.',
+         '# Configuration parameters: AllowHeredoc, AllowURI, URISchemes, '\
+         'IgnoreCopDirectives.',
          '# URISchemes: http, https',
          'Metrics/LineLength:',
          '  Max: 90',
@@ -224,7 +225,8 @@ describe RuboCop::CLI, :isolated_environment do
          'again.',
          '',
          '# Offense count: 3',
-         '# Configuration parameters: AllowHeredoc, AllowURI, URISchemes.',
+         '# Configuration parameters: AllowHeredoc, AllowURI, URISchemes, '\
+         'IgnoreCopDirectives.',
          '# URISchemes: http, https',
          'Metrics/LineLength:',
          '  Max: 90', # Offense occurs in 2 files, limit is 1, so no Exclude.
@@ -412,7 +414,8 @@ describe RuboCop::CLI, :isolated_environment do
          '# versions of RuboCop, may require this file to be generated ' \
          'again.',
          '',
-         '# Configuration parameters: AllowHeredoc, AllowURI, URISchemes.',
+         '# Configuration parameters: AllowHeredoc, AllowURI, URISchemes, '\
+         'IgnoreCopDirectives.',
          '# URISchemes: http, https',
          'Metrics/LineLength:',
          '  Max: 90',
