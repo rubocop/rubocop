@@ -3,17 +3,48 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for uses of methods Hash#has_key? and Hash#has_value?
-      # Prefer to use Hash#key? and Hash#value? instead
+      # This cop (by default) checks for uses of methods Hash#has_key? and
+      # Hash#has_value? where it enforces Hash#key? and Hash#value?
+      # It is configurable to enforce the inverse, using `verbose` method
+      # names also.
+      #
+      # @example
+      #
+      #  # EnforcedStyle: short (default)
+      #
+      #  # bad
+      #  Hash#has_key?
+      #  Hash#has_value?
+      #
+      #  # good
+      #  Hash#key?
+      #  Hash#value?
+      #
+      # @example
+      #
+      #  # EnforcedStyle: verbose
+      #
+      #  # bad
+      #  Hash#key?
+      #  Hash#value?
+      #
+      #  # good
+      #  Hash#has_key?
+      #  Hash#has_value?
       class PreferredHashMethods < Cop
+        include ConfigurableEnforcedStyle
+
         MSG = 'Use `Hash#%s` instead of `Hash#%s`.'.freeze
 
-        PREFERRED_METHODS = [:has_key?, :has_value?].freeze
+        OFFENDING_SELECTORS = {
+          short: [:has_key?, :has_value?],
+          verbose: [:key?, :value?]
+        }.freeze
 
         def on_send(node)
           _receiver, method_name, *args = *node
           return unless args.size == 1 &&
-                        PREFERRED_METHODS.include?(method_name)
+                        offending_selector?(method_name)
 
           add_offense(node, :selector,
                       format(MSG,
@@ -31,7 +62,15 @@ module RuboCop
         private
 
         def proper_method_name(method_name)
-          method_name.to_s.sub(/has_/, '')
+          if style == :verbose
+            "has_#{method_name}"
+          else
+            method_name.to_s.sub(/has_/, '')
+          end
+        end
+
+        def offending_selector?(method_name)
+          OFFENDING_SELECTORS[style].include?(method_name)
         end
       end
     end

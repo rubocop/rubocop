@@ -820,6 +820,12 @@ Style/PredicateName:
   Exclude:
     - 'spec/**/*'
 
+Style/PreferredHashMethods:
+  EnforcedStyle: short
+  SupportedStyles:
+    - short
+    - verbose
+
 Style/RaiseArgs:
   EnforcedStyle: exploded
   SupportedStyles:
