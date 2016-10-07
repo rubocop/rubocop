@@ -200,7 +200,8 @@ describe RuboCop::ConfigLoader do
               'Max' => 77,
               'AllowHeredoc' => true,
               'AllowURI' => true,
-              'URISchemes' => %w(http https)
+              'URISchemes' => %w(http https),
+              'IgnoreCopDirectives' => false
             },
             'Metrics/MethodLength' => {
               'Description' =>
@@ -279,7 +280,8 @@ describe RuboCop::ConfigLoader do
               'Max' => 120,             # overridden in line_length.yml
               'AllowHeredoc' => false,  # overridden in rubocop.yml
               'AllowURI' => true,
-              'URISchemes' => %w(http https)
+              'URISchemes' => %w(http https),
+              'IgnoreCopDirectives' => false
             }
           )
 

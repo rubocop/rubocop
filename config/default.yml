@@ -1123,6 +1123,9 @@ Metrics/LineLength:
   URISchemes:
     - http
     - https
+  # The IgnoreCopDirectives option causes the LineLength rule to ignore cop
+  # directives like '# rubocop: enable ...' when calculating a line's length.
+  IgnoreCopDirectives: false
 
 Metrics/MethodLength:
   CountComments: false  # count full line comments?
