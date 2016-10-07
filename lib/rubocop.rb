@@ -148,6 +148,7 @@ require 'rubocop/cop/lint/void'
 
 require 'rubocop/cop/metrics/cyclomatic_complexity'
 require 'rubocop/cop/metrics/abc_size' # relies on cyclomatic_complexity
+require 'rubocop/cop/metrics/block_length'
 require 'rubocop/cop/metrics/block_nesting'
 require 'rubocop/cop/metrics/class_length'
 require 'rubocop/cop/metrics/line_length'
