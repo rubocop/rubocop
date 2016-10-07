@@ -11,7 +11,7 @@ module RuboCop
 
         MSG = 'Assignment Branch Condition size for %s is too high. ' \
               '[%.4g/%.4g]'.freeze
-        BRANCH_NODES = [:send].freeze
+        BRANCH_NODES = [:send, :csend].freeze
         CONDITION_NODES = CyclomaticComplexity::COUNTED_NODES.freeze
 
         private

@@ -57,7 +57,19 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
                       'end'])
       expect(cop.messages)
         .to eq(['Assignment Branch Condition size for method_name is too ' \
-                'high. [6.4/0]']) # square root of 1*1 + 5*5 + 2*2 => 6.4
+                'high. [6.4/0]']) # sqrt(1*1 + 5*5 + 2*2) => 6.4
+    end
+
+    context 'target_ruby_version >= 2.3', :ruby23 do
+      it 'treats safe navigation method calls like regular method calls' do
+        inspect_source(cop,
+                       ['def method_name',
+                        '  object&.do_something',
+                        'end'])
+        expect(cop.messages)
+          .to eq(['Assignment Branch Condition size for method_name is too ' \
+                  'high. [2/0]']) # sqrt(0 + 2*2 + 0) => 2
+      end
     end
   end
 
