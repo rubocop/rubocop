@@ -18,6 +18,7 @@ describe RuboCop::Cop::Metrics::MethodLength, :config do
     expect(cop.offenses.size).to eq(1)
     expect(cop.offenses.map(&:line).sort).to eq([1])
     expect(cop.config_to_allow_offenses).to eq('Max' => 6)
+    expect(cop.messages.first).to eq('Method has too many lines. [6/5]')
   end
 
   it 'reports the correct beginning and end lines' do
