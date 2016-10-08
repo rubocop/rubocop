@@ -10,7 +10,7 @@ describe RuboCop::Cop::Rails::UniqBeforePluck, :config do
       if action == :correct
         it "finds the use of #{method} after pluck in #{source}" do
           inspect_source(cop, source)
-          expect(cop.messages).to eq(["Use `#{method}` before `pluck`"])
+          expect(cop.messages).to eq(["Use `#{method}` before `pluck`."])
           expect(cop.highlights).to eq([method])
           corrected_source = corrected || "Model.#{method}.pluck(:id)"
           expect(autocorrect_source(cop, source)).to eq(corrected_source)

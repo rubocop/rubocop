@@ -27,7 +27,7 @@ module RuboCop
       #     handle_exception
       #   end
       class ShadowedException < Cop
-        MSG = 'Do not shadow rescued Exceptions'.freeze
+        MSG = 'Do not shadow rescued Exceptions.'.freeze
 
         def on_rescue(node)
           return if rescue_modifier?(node)

@@ -35,7 +35,7 @@ module RuboCop
       # false positives.
       #
       class UniqBeforePluck < RuboCop::Cop::Cop
-        MSG = 'Use `%s` before `pluck`'.freeze
+        MSG = 'Use `%s` before `pluck`.'.freeze
         NEWLINE = "\n".freeze
         PATTERN = '[!^block (send (send %s :pluck ...) ${:uniq :distinct} ...)]'
                   .freeze

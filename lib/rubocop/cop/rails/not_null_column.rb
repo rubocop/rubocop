@@ -14,7 +14,7 @@ module RuboCop
       #   add_column :users, :name, :string, null: true
       #   add_column :users, :name, :string, null: false, default: ''
       class NotNullColumn < Cop
-        MSG = 'Do not add a NOT NULL column without a default value'.freeze
+        MSG = 'Do not add a NOT NULL column without a default value.'.freeze
 
         def_node_matcher :add_not_null_column?, <<-PATTERN
           (send nil :add_column _ _ _ (hash $...))
