@@ -27,7 +27,7 @@ module RuboCop
       #
       class OutputSafety < Cop
         MSG = 'Tagging a string as html safe may be a security risk, ' \
-              'prefer `safe_join` or other Rails tag helpers instead'.freeze
+              'prefer `safe_join` or other Rails tag helpers instead.'.freeze
 
         def on_send(node)
           receiver, method_name, *_args = *node

@@ -72,7 +72,7 @@ describe RuboCop::Cop::Lint::ShadowedException do
                            '  handle_exception',
                            'end'])
 
-      expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+      expect(cop.messages).to eq(['Do not shadow rescued Exceptions.'])
     end
 
     it 'accepts rescuing a single exception that is assigned to a variable' do
@@ -130,7 +130,7 @@ describe RuboCop::Cop::Lint::ShadowedException do
                              '  foo',
                              'end'])
 
-        expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+        expect(cop.messages).to eq(['Do not shadow rescued Exceptions.'])
         expect(cop.highlights).to eq(['rescue StandardError, NameError'])
       end
 
@@ -141,7 +141,7 @@ describe RuboCop::Cop::Lint::ShadowedException do
                              '  foo',
                              'end'])
 
-        expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+        expect(cop.messages).to eq(['Do not shadow rescued Exceptions.'])
         expect(cop.highlights)
           .to eq(['rescue StandardError, NameError, NoMethodError'])
       end
@@ -154,7 +154,7 @@ describe RuboCop::Cop::Lint::ShadowedException do
                            '  foo',
                            'end'])
 
-      expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+      expect(cop.messages).to eq(['Do not shadow rescued Exceptions.'])
       expect(cop.highlights)
         .to eq(['rescue NameError, NameError'])
     end
@@ -197,7 +197,7 @@ describe RuboCop::Cop::Lint::ShadowedException do
                            '  b',
                            'end'])
 
-      expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+      expect(cop.messages).to eq(['Do not shadow rescued Exceptions.'])
       expect(cop.highlights).to eq(['rescue nil, StandardError, Exception'])
     end
   end
@@ -213,7 +213,7 @@ describe RuboCop::Cop::Lint::ShadowedException do
                            '  handle_standard_error',
                            'end'])
 
-      expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+      expect(cop.messages).to eq(['Do not shadow rescued Exceptions.'])
       expect(cop.highlights).to eq([['rescue Exception',
                                      '  handle_exception',
                                      'rescue StandardError'].join("\n")])
@@ -230,7 +230,7 @@ describe RuboCop::Cop::Lint::ShadowedException do
                            '  handle_standard_error',
                            'end'])
 
-      expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+      expect(cop.messages).to eq(['Do not shadow rescued Exceptions.'])
       expect(cop.highlights).to eq([['rescue Exception',
                                      '  handle_exception',
                                      'rescue NoMethodError, ZeroDivisionError']
@@ -249,7 +249,7 @@ describe RuboCop::Cop::Lint::ShadowedException do
                            '  everything_is_ok',
                            'end'])
 
-      expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+      expect(cop.messages).to eq(['Do not shadow rescued Exceptions.'])
       expect(cop.highlights).to eq([['rescue Exception',
                                      '  handle_exception',
                                      'rescue StandardError'].join("\n")])
@@ -363,7 +363,7 @@ describe RuboCop::Cop::Lint::ShadowedException do
                              '  c',
                              'end'])
 
-        expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+        expect(cop.messages).to eq(['Do not shadow rescued Exceptions.'])
         expect(cop.highlights).to eq([['rescue Exception',
                                        '  b',
                                        'rescue *BAR'].join("\n")])
@@ -467,7 +467,7 @@ describe RuboCop::Cop::Lint::ShadowedException do
                            '  c',
                            'end'])
 
-      expect(cop.messages).to eq(['Do not shadow rescued Exceptions'])
+      expect(cop.messages).to eq(['Do not shadow rescued Exceptions.'])
       expect(cop.highlights).to eq([['rescue Exception',
                                      '  b',
                                      'rescue UnknownException'].join("\n")])

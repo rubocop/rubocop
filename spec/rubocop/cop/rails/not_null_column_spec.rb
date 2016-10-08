@@ -16,7 +16,7 @@ describe RuboCop::Cop::Rails::NotNullColumn, :config do
       it 'reports an offense' do
         expect(cop.offenses.size).to eq(1)
         expect(cop.messages).to eq(
-          ['Do not add a NOT NULL column without a default value']
+          ['Do not add a NOT NULL column without a default value.']
         )
       end
     end
@@ -35,7 +35,7 @@ describe RuboCop::Cop::Rails::NotNullColumn, :config do
       it 'reports an offense' do
         expect(cop.offenses.size).to eq(1)
         expect(cop.messages).to eq(
-          ['Do not add a NOT NULL column without a default value']
+          ['Do not add a NOT NULL column without a default value.']
         )
       end
     end

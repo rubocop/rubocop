@@ -23,6 +23,21 @@ describe 'RuboCop Project' do
     end
   end
 
+  describe 'cop message' do
+    let(:cops) { RuboCop::Cop::Cop.all }
+
+    it 'end with a period or a question mark' do
+      cops.each do |cop|
+        begin
+          msg = cop.const_get(:MSG)
+        rescue NameError
+          next
+        end
+        expect(msg).to match(/\.|\?|(?:\[.+\])|%s$/)
+      end
+    end
+  end
+
   describe 'changelog' do
     subject(:changelog) do
       path = File.join(File.dirname(__FILE__), '..', 'CHANGELOG.md')
