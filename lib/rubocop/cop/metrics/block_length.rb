@@ -7,7 +7,9 @@ module RuboCop
       # Comment lines can optionally be ignored.
       # The maximum allowed length is configurable.
       class BlockLength < Cop
-        include CodeLength
+        include TooManyLines
+
+        LABEL = 'Block'.freeze
 
         def on_block(node)
           check_code_length(node)
@@ -15,14 +17,8 @@ module RuboCop
 
         private
 
-        def message(length, max_length)
-          format('Block has too many lines. [%d/%d]', length, max_length)
-        end
-
-        def code_length(node)
-          lines = node.source.lines.to_a[1..-2] || []
-
-          lines.count { |line| !irrelevant_line(line) }
+        def cop_label
+          LABEL
         end
       end
     end

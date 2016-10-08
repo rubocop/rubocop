@@ -15,6 +15,7 @@ describe RuboCop::Cop::Metrics::BlockLength, :config do
     expect(cop.offenses.size).to eq(1)
     expect(cop.offenses.map(&:line).sort).to eq([1])
     expect(cop.config_to_allow_offenses).to eq('Max' => 3)
+    expect(cop.messages.first).to eq('Block has too many lines. [3/2]')
   end
 
   it 'reports the correct beginning and end lines' do
