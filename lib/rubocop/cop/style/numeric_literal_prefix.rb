@@ -50,13 +50,11 @@ module RuboCop
         end
 
         def octal_literal_type(literal)
-          # rubocop:disable Style/GuardClause
           if literal =~ OCTAL_ZERO_ONLY_REGEX && octal_zero_only?
-            return :octal_zero_only
+            :octal_zero_only
           elsif literal =~ OCTAL_REGEX && !octal_zero_only?
-            return :octal
+            :octal
           end
-          # rubocop:enable Style/GuardClause
         end
 
         def hex_bin_dec_literal_type(literal)
