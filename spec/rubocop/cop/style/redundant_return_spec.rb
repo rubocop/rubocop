@@ -221,4 +221,66 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
       expect(new_source).to eq(src)
     end
   end
+
+  context 'when return is inside an if-branch' do
+    let(:src) do
+      ['def func',
+       '  if x',
+       '    return 1',
+       '  elsif y',
+       '    return 2',
+       '  else',
+       '    return 3',
+       '  end',
+       'end']
+    end
+
+    it 'registers an offense' do
+      inspect_source(cop, src)
+      expect(cop.offenses.size).to eq 3
+    end
+
+    it 'auto-corrects' do
+      corrected = autocorrect_source(cop, src)
+      expect(corrected).to eq ['def func',
+                               '  if x',
+                               '    1',
+                               '  elsif y',
+                               '    2',
+                               '  else',
+                               '    3',
+                               '  end',
+                               'end'].join("\n")
+    end
+  end
+
+  context 'when return is inside a when-branch' do
+    let(:src) do
+      ['def func',
+       '  case x',
+       '  when y then return 1',
+       '  when z then return 2',
+       '  else',
+       '    return 3',
+       '  end',
+       'end']
+    end
+
+    it 'registers an offense' do
+      inspect_source(cop, src)
+      expect(cop.offenses.size).to eq 3
+    end
+
+    it 'auto-corrects' do
+      corrected = autocorrect_source(cop, src)
+      expect(corrected).to eq ['def func',
+                               '  case x',
+                               '  when y then 1',
+                               '  when z then 2',
+                               '  else',
+                               '    3',
+                               '  end',
+                               'end'].join("\n")
+    end
+  end
 end
