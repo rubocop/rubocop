@@ -18,7 +18,8 @@ module RuboCop
 
         ALLOWED_LITERALS = [:irange, :erange].freeze
 
-        def_node_matcher :square_brackets?, '(send (send _recv _msg) :[] ...)'
+        def_node_matcher :square_brackets?,
+                         '(send {(send _recv _msg) str array hash} :[] ...)'
         def_node_matcher :range_end?, '^^{irange erange}'
         def_node_matcher :method_node_and_args, '$(send _recv _msg $...)'
         def_node_matcher :rescue?, '{^resbody ^^resbody}'

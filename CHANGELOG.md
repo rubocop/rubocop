@@ -31,6 +31,7 @@
 * [#3390](https://github.com/bbatsov/rubocop/issues/3390): Fix SaveBang cop for multiple conditional. ([@tejasbubane][])
 * [#3577](https://github.com/bbatsov/rubocop/issues/3577): Fix `Style/RaiseArgs` not allowing compact raise with splatted args. ([@savef][])
 * [#3578](https://github.com/bbatsov/rubocop/issues/3578): Fix safe navigation method call counting in `Metrics/AbcSize`. ([@savef][])
+* [#3592](https://github.com/bbatsov/rubocop/issues/3592): Fix `Style/RedundantParentheses` for indexing with literals. ([@thegedge][])
 
 ### Changes
 
@@ -2408,3 +2409,4 @@
 [@tcdowney]: https://github.com/tcdowney
 [@logicminds]: https://github.com/logicminds
 [@abrom]: https://github.com/abrom
+[@thegedge]: https://github.com/thegedge
