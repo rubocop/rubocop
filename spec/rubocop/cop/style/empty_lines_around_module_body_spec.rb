@@ -82,4 +82,163 @@ describe RuboCop::Cop::Style::EmptyLinesAroundModuleBody, :config do
       expect(corrected).to eq(source)
     end
   end
+
+  context 'when EnforcedStyle is empty_lines_except_namespace' do
+    let(:cop_config) { { 'EnforcedStyle' => 'empty_lines_except_namespace' } }
+    let(:extra_begin) { 'Extra empty line detected at module body beginning.' }
+    let(:extra_end) { 'Extra empty line detected at module body end.' }
+    let(:missing_begin) { 'Empty line missing at module body beginning.' }
+    let(:missing_end) { 'Empty line missing at module body end.' }
+
+    context 'when only child is class' do
+      it 'requires no empty lines for namespace' do
+        inspect_source(cop,
+                       ['module Parent',
+                        '  module Child',
+                        '',
+                        '    do_something',
+                        '',
+                        '  end',
+                        'end'])
+        expect(cop.messages).to eq([])
+      end
+
+      it 'registers offence for namespace body starting with a blank' do
+        inspect_source(cop,
+                       ['module Parent',
+                        '',
+                        '  module Child',
+                        '',
+                        '    do_something',
+                        '',
+                        '  end',
+                        'end'])
+        expect(cop.messages).to eq([extra_begin])
+      end
+
+      it 'registers offence for namespace body ending with a blank' do
+        inspect_source(cop,
+                       ['module Parent',
+                        '  module Child',
+                        '',
+                        '    do_something',
+                        '',
+                        '  end',
+                        '',
+                        'end'])
+        expect(cop.messages).to eq([extra_end])
+      end
+
+      it 'registers offences for namespaced module body not starting '\
+          'with a blank' do
+        inspect_source(cop,
+                       ['module Parent',
+                        '  module Child',
+                        '    do_something',
+                        '',
+                        '  end',
+                        'end'])
+        expect(cop.messages).to eq([missing_begin])
+      end
+
+      it 'registers offences for namespaced module body not ending '\
+          'with a blank' do
+        inspect_source(cop,
+                       ['module Parent',
+                        '  module Child',
+                        '',
+                        '    do_something',
+                        '  end',
+                        'end'])
+        expect(cop.messages).to eq([missing_end])
+      end
+
+      it 'autocorrects beginning and end' do
+        new_source = autocorrect_source(cop,
+                                        ['module Parent',
+                                         '',
+                                         '  module Child',
+                                         '    do_something',
+                                         '  end',
+                                         '',
+                                         'end'])
+        expect(new_source).to eq(['module Parent',
+                                  '  module Child',
+                                  '',
+                                  '    do_something',
+                                  '',
+                                  '  end',
+                                  'end'].join("\n"))
+      end
+    end
+
+    context 'when only child is class' do
+      it 'requires no empty lines for namespace' do
+        inspect_source(cop,
+                       ['module Parent',
+                        '  class SomeClass',
+                        '    do_something',
+                        '  end',
+                        'end'])
+        expect(cop.messages).to eq([])
+      end
+
+      it 'registers offence for namespace body starting with a blank' do
+        inspect_source(cop,
+                       ['module Parent',
+                        '',
+                        '  class SomeClass',
+                        '    do_something',
+                        '  end',
+                        'end'])
+        expect(cop.messages).to eq([extra_begin])
+      end
+
+      it 'registers offence for namespace body ending with a blank' do
+        inspect_source(cop,
+                       ['module Parent',
+                        '  class SomeClass',
+                        '    do_something',
+                        '  end',
+                        '',
+                        'end'])
+        expect(cop.messages).to eq([extra_end])
+      end
+    end
+
+    context 'when has multiple child modules' do
+      it 'requires empty lines for namespace' do
+        inspect_source(cop,
+                       ['module Parent',
+                        '',
+                        '  module Mom',
+                        '',
+                        '    do_something',
+                        '',
+                        '  end',
+                        '  module Dad',
+                        '',
+                        '  end',
+                        '',
+                        'end'])
+        expect(cop.messages).to eq([])
+      end
+
+      it 'registers offences for namespace body starting '\
+        'and ending without a blank' do
+        inspect_source(cop,
+                       ['module Parent',
+                        '  module Mom',
+                        '',
+                        '    do_something',
+                        '',
+                        '  end',
+                        '  module Dad',
+                        '',
+                        '  end',
+                        'end'])
+        expect(cop.messages).to eq([missing_begin, missing_end])
+      end
+    end
+  end
 end
