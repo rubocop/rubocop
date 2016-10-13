@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'pry'
 module RuboCop
   module Cop
     module Performance
@@ -66,9 +65,9 @@ module RuboCop
           _case_branch, *when_branches, _else_branch = *node
           when_conditions =
             when_branches.each_with_object([]) do |branch, conditions|
-              *condition, _ = *branch
-              condition.each { |c| conditions << c }
-            end
+            *condition, _ = *branch
+            condition.each { |c| conditions << c }
+          end
 
           splat_offenses(when_conditions).reverse_each do |condition|
             range = condition.parent.loc.keyword.join(condition.source_range)
@@ -136,12 +135,12 @@ module RuboCop
 
         def new_condition_with_then(node, new_condition)
           "\n#{' ' * node.loc.column}when " \
-            "#{new_condition} then #{node.children.last.source}"
+          "#{new_condition} then #{node.children.last.source}"
         end
 
         def new_branch_without_then(node, body, new_condition)
           "\n#{' ' * node.loc.column}when #{new_condition}\n" \
-            "#{' ' * body.loc.column}#{node.children.last.source}"
+          "#{' ' * body.loc.column}#{node.children.last.source}"
         end
 
         def splat_offenses(when_conditions)

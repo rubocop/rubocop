@@ -2,6 +2,12 @@
 
 ## master (unreleased)
 
+## 0.44.1 (2016-10-13)
+
+### Bugs fixed
+
+* Remove a debug `require`.
+
 ## 0.44.0 (2016-10-13)
 
 ### New features
