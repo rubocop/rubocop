@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.44.0 (2016-10-13)
+
 ### New features
 
 * [#3560](https://github.com/bbatsov/rubocop/pull/3560): Add a configuration option `empty_lines_except_namespace` to `Style/EmptyLinesAroundClassBody` and `Style/EmptyLinesAroundModuleBody`. ([@legendetm][])
