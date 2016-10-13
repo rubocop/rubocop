@@ -65,9 +65,9 @@ module RuboCop
           _case_branch, *when_branches, _else_branch = *node
           when_conditions =
             when_branches.each_with_object([]) do |branch, conditions|
-            *condition, _ = *branch
-            condition.each { |c| conditions << c }
-          end
+              *condition, _ = *branch
+              condition.each { |c| conditions << c }
+            end
 
           splat_offenses(when_conditions).reverse_each do |condition|
             range = condition.parent.loc.keyword.join(condition.source_range)
