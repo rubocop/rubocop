@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#3615](https://github.com/bbatsov/rubocop/pull/3615): Add autocorrection for `Lint/EmptyInterpolation`. ([@pocke][])
+
 ### Bug fixes
 
 * [#3607](https://github.com/bbatsov/rubocop/pull/3607): Fix `Style/RedundantReturn` cop for empty if body. ([@pocke][])
