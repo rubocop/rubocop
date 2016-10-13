@@ -694,7 +694,7 @@ describe RuboCop::CLI, :isolated_environment do
     expect(IO.read('example.rb')).to eq(['class Dsl',
                                          '  private',
                                          '',
-                                         '  A = %w(git path).freeze',
+                                         '  A = %w[git path].freeze',
                                          'end',
                                          ''].join("\n"))
     e = abs('example.rb')
@@ -878,8 +878,8 @@ describe RuboCop::CLI, :isolated_environment do
               '',
               ''].join("\n"))
     expect(IO.read('example.rb'))
-      .to eq(['f(type: %w(offline offline_payment),',
-              '  bar_colors: %w(958c12 953579 ff5800 0085cc))',
+      .to eq(['f(type: %w[offline offline_payment],',
+              '  bar_colors: %w[958c12 953579 ff5800 0085cc])',
               ''].join("\n"))
   end
 

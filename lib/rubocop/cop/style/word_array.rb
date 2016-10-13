@@ -91,7 +91,7 @@ module RuboCop
           contents = autocorrect_words(words, escape, node.loc.line)
 
           lambda do |corrector|
-            corrector.replace(node.source_range, "%#{char}(#{contents})")
+            corrector.replace(node.source_range, "%#{char}[#{contents}]")
           end
         end
 
@@ -111,7 +111,7 @@ module RuboCop
             previous_node_line_number = node.loc.line
             content = node.children.first
             content = escape ? escape_string(content) : content
-            content.gsub!(/\)/, '\\)')
+            content.gsub!(/\]/, '\\]')
             line_breaks + content
           end.join(' ')
         end

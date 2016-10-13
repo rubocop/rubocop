@@ -47,7 +47,7 @@ describe RuboCop::Cop::Style::WordArray, :config do
 
     it 'uses %W when autocorrecting strings with newlines and tabs' do
       new_source = autocorrect_source(cop, %(["one\\n", "hi\\tthere"]))
-      expect(new_source).to eq('%W(one\\n hi\\tthere)')
+      expect(new_source).to eq('%W[one\\n hi\\tthere]')
     end
 
     it 'does not register an offense for array of non-words' do
@@ -105,20 +105,20 @@ describe RuboCop::Cop::Style::WordArray, :config do
 
     it 'auto-corrects an array of words' do
       new_source = autocorrect_source(cop, "['one', %q(two), 'three']")
-      expect(new_source).to eq('%w(one two three)')
+      expect(new_source).to eq('%w[one two three]')
     end
 
     it 'auto-corrects an array of words and character constants' do
       new_source = autocorrect_source(cop, '[%{one}, %Q(two), ?\n, ?\t]')
-      expect(new_source).to eq('%W(one two \n \t)')
+      expect(new_source).to eq('%W[one two \n \t]')
     end
 
     it 'keeps the line breaks in place after auto-correct' do
       new_source = autocorrect_source(cop,
                                       ["['one',",
                                        "'two', 'three']"])
-      expect(new_source).to eq(['%w(one ',
-                                'two three)'].join("\n"))
+      expect(new_source).to eq(['%w[one ',
+                                'two three]'].join("\n"))
     end
 
     it 'detects right value of MinSize to use for --auto-gen-config' do
@@ -204,7 +204,7 @@ describe RuboCop::Cop::Style::WordArray, :config do
 
     it 'auto-corrects an array of email addresses' do
       new_source = autocorrect_source(cop, "['a@example.com', 'b@example.com']")
-      expect(new_source).to eq('%w(a@example.com b@example.com)')
+      expect(new_source).to eq('%w[a@example.com b@example.com]')
     end
   end
 
@@ -213,12 +213,12 @@ describe RuboCop::Cop::Style::WordArray, :config do
 
     it 'uses %W when autocorrecting strings with non-printable chars' do
       new_source = autocorrect_source(cop, '["\x1f\x1e", "hello"]')
-      expect(new_source).to eq('%W(\u001F\u001E hello)')
+      expect(new_source).to eq('%W[\u001F\u001E hello]')
     end
 
     it 'uses %w for strings which only appear to have an escape' do
       new_source = autocorrect_source(cop, "['hi\\tthere', 'again\\n']")
-      expect(new_source).to eq('%w(hi\\tthere again\\n)')
+      expect(new_source).to eq('%w[hi\\tthere again\\n]')
     end
   end
 
@@ -232,7 +232,7 @@ describe RuboCop::Cop::Style::WordArray, :config do
 
     it "doesn't break when words contain delimiters" do
       new_source = autocorrect_source(cop, "[')', ']']")
-      expect(new_source).to eq('%w(\\) ])')
+      expect(new_source).to eq('%w[) \\]]')
     end
   end
 end

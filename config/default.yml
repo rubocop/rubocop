@@ -787,14 +787,14 @@ Style/ParenthesesAroundCondition:
 Style/PercentLiteralDelimiters:
   PreferredDelimiters:
     '%':  ()
-    '%i': ()
-    '%I': ()
+    '%i': []
+    '%I': []
     '%q': ()
     '%Q': ()
-    '%r': '{}'
+    '%r': {}
     '%s': ()
-    '%w': ()
-    '%W': ()
+    '%w': []
+    '%W': []
     '%x': ()
 
 Style/PercentQLiterals:

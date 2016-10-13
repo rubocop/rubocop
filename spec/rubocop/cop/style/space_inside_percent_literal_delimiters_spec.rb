@@ -6,7 +6,7 @@ describe RuboCop::Cop::Style::SpaceInsidePercentLiteralDelimiters do
   subject(:cop) { described_class.new }
 
   %w(i I w W x).each do |type|
-    [%w({ }), %w{( )}, %w([ ]), %w(! !)].each do |(ldelim, rdelim)|
+    [%w[{ }], %w[( )], %w([ ]), %w[! !]].each do |(ldelim, rdelim)|
       context "for #{type} type and #{[ldelim, rdelim]} delimiters" do
         define_method(:example) do |content|
           ['%', type, ldelim, content, rdelim].join
