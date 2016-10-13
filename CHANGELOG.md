@@ -6,7 +6,7 @@
 
 ### Bugs fixed
 
-* Remove a debug `require`.
+* Remove a debug `require`. ([@bbatsov][])
 
 ## 0.44.0 (2016-10-13)
 
