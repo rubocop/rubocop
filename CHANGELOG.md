@@ -8,7 +8,7 @@
 
 ## 0.44.1 (2016-10-13)
 
-### Bugs fixed
+### Bug fixes
 
 * Remove a debug `require`. ([@bbatsov][])
 
