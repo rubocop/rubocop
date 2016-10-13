@@ -80,8 +80,6 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
     expect(cop.highlights).to eq(['when *cond'])
   end
 
-  # TODO: Examine if changing `when *Foo, Bar` to `when Bar, *Foo` gives faster
-  # code.
   it 'registers an offense for a single when with splat expansion followed ' \
      'by another value' do
     inspect_source(cop, ['case foo',
@@ -194,16 +192,51 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
   end
 
   context 'autocorrect' do
-    # TODO: Either report and auto-correct, or don't do anything. Currently we
-    # report but don't auto-correct.
-    it 'does not correct a single when with splat expansion followed by ' \
-       'another value' do
-      old_source = ['case foo',
-                    'when *Foo, Bar',
-                    '  nil',
-                    'end']
-      new_source = autocorrect_source(cop, old_source)
-      expect(new_source).to eq(old_source.join("\n"))
+    it 'corrects a single when with splat expansion followed by ' \
+      'another value' do
+      source = ['case foo',
+                'when *Foo, Bar, Baz',
+                '  nil',
+                'end']
+      new_source = autocorrect_source(cop, source)
+      expect(new_source).to eq(['case foo',
+                                'when Bar, Baz, *Foo',
+                                '  nil',
+                                'end'].join("\n"))
+    end
+
+    it 'corrects a when with splat expansion followed by another value ' \
+      'when there are multiple whens' do
+      source = ['case foo',
+                'when *Foo, Bar',
+                '  nil',
+                'when FooBar',
+                '  1',
+                'end']
+      new_source = autocorrect_source(cop, source)
+      expect(new_source).to eq(['case foo',
+                                'when FooBar',
+                                '  1',
+                                'when Bar, *Foo',
+                                '  nil',
+                                'end'].join("\n"))
+    end
+
+    it 'corrects a when with multiple out of order splat expansions ' \
+      'followed by other values when there are multiple whens' do
+      source = ['case foo',
+                'when *Foo, Bar, *Baz, Qux',
+                '  nil',
+                'when FooBar',
+                '  1',
+                'end']
+      new_source = autocorrect_source(cop, source)
+      expect(new_source).to eq(['case foo',
+                                'when FooBar',
+                                '  1',
+                                'when Bar, Qux, *Foo, *Baz',
+                                '  nil',
+                                'end'].join("\n"))
     end
 
     it 'moves a single splat condition to the end of the when conditions' do

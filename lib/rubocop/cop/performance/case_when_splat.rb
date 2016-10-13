@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'pry'
 module RuboCop
   module Cop
     module Performance
@@ -81,7 +82,7 @@ module RuboCop
           *conditions, _body = *node
 
           lambda do |corrector|
-            if needs_reorder?(conditions)
+            if needs_reorder?(node)
               reorder_condition(corrector, node, replacement(conditions))
             else
               inline_fix_branch(corrector, node, conditions,
@@ -93,8 +94,10 @@ module RuboCop
         private
 
         def replacement(conditions)
-          new_condition = conditions.map(&:source)
-          new_condition.join(', ')
+          ordered_conditions = conditions.partition { |cond| !cond.splat_type? }
+          ordered_conditions.flatten!
+          ordered_conditions.map!(&:source)
+          ordered_conditions.join(', ')
         end
 
         def inline_fix_branch(corrector, _node, conditions, new_condition)
@@ -160,10 +163,15 @@ module RuboCop
             !condition.splat_type?
         end
 
-        def needs_reorder?(conditions)
-          conditions.any? do |condition|
-            variable, = *condition
-            condition.splat_type? && !(variable && variable.array_type?)
+        def needs_reorder?(node)
+          _case_condition, *when_branches, _else_branch = *node.parent
+          current_index = when_branches.index { |branch| branch == node }
+          when_branches[(current_index + 1)..-1].any? do |branch|
+            *conditions, _ = *branch
+            conditions.none? do |condition|
+              variable, = *condition
+              condition.splat_type? && !(variable && variable.array_type?)
+            end
           end
         end
       end
