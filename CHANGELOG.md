@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#3607](https://github.com/bbatsov/rubocop/pull/3607): Fix `Style/RedundantReturn` cop for empty if body. ([@pocke][])
+
 ## 0.44.1 (2016-10-13)
 
 ### Bugs fixed

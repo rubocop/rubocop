@@ -57,6 +57,17 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
     expect(cop.offenses).to be_empty
   end
 
+  it 'does not blow up on empty if body' do
+    src = ['def func',
+           '  if x',
+           '  elsif y',
+           '  else',
+           '  end',
+           'end']
+    inspect_source(cop, src)
+    expect(cop.offenses).to be_empty
+  end
+
   it 'auto-corrects by removing redundant returns' do
     src = ['def func',
            '  one',

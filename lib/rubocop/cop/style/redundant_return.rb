@@ -106,7 +106,7 @@ module RuboCop
           return if modifier_if?(node) || ternary?(node)
 
           _cond, if_node, else_node = if_node_parts(node)
-          check_branch(if_node)
+          check_branch(if_node) if if_node
           check_branch(else_node) if else_node
         end
 
