@@ -34,6 +34,7 @@
 * [#3577](https://github.com/bbatsov/rubocop/issues/3577): Fix `Style/RaiseArgs` not allowing compact raise with splatted args. ([@savef][])
 * [#3578](https://github.com/bbatsov/rubocop/issues/3578): Fix safe navigation method call counting in `Metrics/AbcSize`. ([@savef][])
 * [#3592](https://github.com/bbatsov/rubocop/issues/3592): Fix `Style/RedundantParentheses` for indexing with literals. ([@thegedge][])
+* [#3597](https://github.com/bbatsov/rubocop/issues/3597): Fix the autocorrect of `Performance/CaseWhenSplat` when trying to rearange splat expanded variables to the end of a when condition. ([@rrosenblum][])
 
 ### Changes
 
