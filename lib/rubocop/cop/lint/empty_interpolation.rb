@@ -16,6 +16,12 @@ module RuboCop
             add_offense(begin_node, :expression) if begin_node.children.empty?
           end
         end
+
+        def autocorrect(node)
+          lambda do |collector|
+            collector.remove(node.loc.expression)
+          end
+        end
       end
     end
   end
