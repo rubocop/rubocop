@@ -450,6 +450,10 @@ Style/MultilineIfThen:
   StyleGuide: '#no-then'
   Enabled: true
 
+Style/MultilineMemoization:
+  Description: 'Wrap multiline memoizations in a `begin` and `end` block.'
+  Enabled: true
+
 Style/MultilineMethodCallBraceLayout:
   Description: >-
                  Checks that the closing brace in a method call is
