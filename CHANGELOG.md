@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#3607](https://github.com/bbatsov/rubocop/pull/3607): Fix `Style/RedundantReturn` cop for empty if body. ([@pocke][])
+* [#3291](https://github.com/bbatsov/rubocop/issues/3291): Improve detection of `raw` and `html_safe` methods in `Rails/OutputSafety`. ([@lumeet][])
 
 ## 0.44.1 (2016-10-13)
 
