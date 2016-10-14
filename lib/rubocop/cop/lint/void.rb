@@ -10,7 +10,7 @@ module RuboCop
         VAR_MSG = 'Variable `%s` used in void context.'.freeze
         LIT_MSG = 'Literal `%s` used in void context.'.freeze
 
-        OPS = %w(* / % + - == === != < > <= >= <=>).freeze
+        OPS = %w[* / % + - == === != < > <= >= <=>].freeze
 
         def on_begin(node)
           check_begin(node)

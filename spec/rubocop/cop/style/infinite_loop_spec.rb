@@ -19,7 +19,7 @@ describe RuboCop::Cop::Style::InfiniteLoop do
     end
   end
 
-  %w(false nil).each do |lit|
+  %w[false nil].each do |lit|
     it "registers an offense for a until loop with #{lit} as condition" do
       inspect_source(cop,
                      ["until #{lit}",

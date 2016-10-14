@@ -6,8 +6,8 @@ describe RuboCop::Cop::Style::IndentHash do
   subject(:cop) { described_class.new(config) }
   let(:config) do
     supported_styles = {
-      'SupportedStyles' => %w(special_inside_parentheses consistent
-                              align_braces)
+      'SupportedStyles' => %w[special_inside_parentheses consistent
+                              align_braces]
     }
     RuboCop::Config.new('Style/AlignHash' => align_hash_config,
                         'Style/IndentHash' =>

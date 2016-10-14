@@ -51,7 +51,7 @@ module RuboCop
 
         def if?(node)
           node.loc.respond_to?(:keyword) &&
-            %w(if elsif).include?(node.loc.keyword.source)
+            %w[if elsif].include?(node.loc.keyword.source)
         end
 
         def else?(node)

@@ -9,7 +9,7 @@ module RuboCop
       let(:output) { StringIO.new }
 
       let(:files) do
-        %w(lib/rubocop.rb spec/spec_helper.rb bin/rubocop).map do |path|
+        %w[lib/rubocop.rb spec/spec_helper.rb bin/rubocop].map do |path|
           File.expand_path(path)
         end
       end
@@ -49,7 +49,7 @@ module RuboCop
       describe '#finished' do
         context 'when there are many offenses' do
           let(:offenses) do
-            %w(CopB CopA CopC CopC).map { |c| double('offense', cop_name: c) }
+            %w[CopB CopA CopC CopC].map { |c| double('offense', cop_name: c) }
           end
 
           before do

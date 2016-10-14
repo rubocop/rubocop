@@ -63,7 +63,7 @@ module RuboCop
             base.source_range
           else
             base = node
-            until %w(if unless).include?(base.loc.keyword.source)
+            until %w[if unless].include?(base.loc.keyword.source)
               base = base.parent
             end
             base.loc.keyword

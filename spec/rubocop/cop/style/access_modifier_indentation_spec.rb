@@ -5,7 +5,7 @@ require 'spec_helper'
 describe RuboCop::Cop::Style::AccessModifierIndentation do
   subject(:cop) { described_class.new(config) }
   let(:config) do
-    c = cop_config.merge('SupportedStyles' => %w(indent outdent))
+    c = cop_config.merge('SupportedStyles' => %w[indent outdent])
     RuboCop::Config
       .new('Style/AccessModifierIndentation' => c,
            'Style/IndentationWidth' => { 'Width' => indentation_width })

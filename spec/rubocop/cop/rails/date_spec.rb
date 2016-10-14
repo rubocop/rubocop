@@ -8,7 +8,7 @@ describe RuboCop::Cop::Rails::Date, :config do
   context 'when EnforcedStyle is "strict"' do
     let(:cop_config) { { 'EnforcedStyle' => 'strict' } }
 
-    %w(today current yesterday tomorrow).each do |day|
+    %w[today current yesterday tomorrow].each do |day|
       it "registers an offense for Date.#{day}" do
         inspect_source(cop, "Date.#{day}")
         expect(cop.offenses.size).to eq(1)
@@ -25,7 +25,7 @@ describe RuboCop::Cop::Rails::Date, :config do
       end
     end
 
-    %w(to_time to_time_in_current_zone).each do |method|
+    %w[to_time to_time_in_current_zone].each do |method|
       it "registers an offense for ##{method}" do
         inspect_source(cop, "date.#{method}")
         expect(cop.offenses.size).to eq(1)
@@ -65,7 +65,7 @@ describe RuboCop::Cop::Rails::Date, :config do
   context 'when EnforcedStyle is "flexible"' do
     let(:cop_config) { { 'EnforcedStyle' => 'flexible' } }
 
-    %w(current yesterday tomorrow).each do |day|
+    %w[current yesterday tomorrow].each do |day|
       it "accepts Date.#{day}" do
         inspect_source(cop, "Date.#{day}")
         expect(cop.offenses).to be_empty

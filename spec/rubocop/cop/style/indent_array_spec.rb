@@ -6,8 +6,8 @@ describe RuboCop::Cop::Style::IndentArray do
   subject(:cop) { described_class.new(config) }
   let(:config) do
     supported_styles = {
-      'SupportedStyles' => %w(special_inside_parentheses consistent
-                              align_brackets)
+      'SupportedStyles' => %w[special_inside_parentheses consistent
+                              align_brackets]
     }
     RuboCop::Config.new('Style/IndentArray' =>
                         cop_config.merge(supported_styles).merge(

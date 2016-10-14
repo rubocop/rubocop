@@ -342,7 +342,7 @@ describe RuboCop::CLI, :isolated_environment do
 
     it 'generates a todo list that removes the reports' do
       create_file('example.rb', 'y.gsub!(/abc\/xyz/, x)')
-      expect(cli.run(%w(--format emacs))).to eq(1)
+      expect(cli.run(%w[--format emacs])).to eq(1)
       expect($stdout.string).to eq("#{abs('example.rb')}:1:9: C: Use `%r` " \
                                    "around regular expression.\n")
       expect(cli.run(['--auto-gen-config'])).to eq(1)
@@ -373,7 +373,7 @@ describe RuboCop::CLI, :isolated_environment do
         end
       end
       $stdout = StringIO.new
-      result = cli.run(%w(--config .rubocop_todo.yml --format emacs))
+      result = cli.run(%w[--config .rubocop_todo.yml --format emacs])
       expect($stdout.string).to eq('')
       expect(result).to eq(0)
     end

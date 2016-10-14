@@ -180,7 +180,7 @@ describe RuboCop::Cop::Style::TernaryParentheses, :config do
         'Style/RedundantParentheses' => { 'Enabled' => true },
         'Style/TernaryParentheses' => {
           'EnforcedStyle' => 'require_parentheses',
-          'SupportedStyles' => %w(require_parentheses require_no_parentheses)
+          'SupportedStyles' => %w[require_parentheses require_no_parentheses]
         }
       )
     end

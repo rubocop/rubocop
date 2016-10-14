@@ -105,7 +105,7 @@ module RuboCop
           replacement = if backtick_literal?(node)
                           ['%x', ''].zip(preferred_delimiters).map(&:join)
                         else
-                          %w(` `)
+                          %w[` `]
                         end
 
           lambda do |corrector|

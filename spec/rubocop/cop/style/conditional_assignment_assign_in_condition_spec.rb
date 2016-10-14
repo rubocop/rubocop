@@ -519,8 +519,8 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                             'Enabled' => true,
                             'SingleLineConditionsOnly' => true,
                             'EnforcedStyle' => 'assign_inside_condition',
-                            'SupportedStyles' => %w(assign_to_condition
-                                                    assign_inside_condition)
+                            'SupportedStyles' => %w[assign_to_condition
+                                                    assign_inside_condition]
                           },
                           'Lint/EndAlignment' => {
                             'AlignWith' => 'keyword',
@@ -707,8 +707,8 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                             'Enabled' => true,
                             'SingleLineConditionsOnly' => false,
                             'EnforcedStyle' => 'assign_inside_condition',
-                            'SupportedStyles' => %w(assign_to_condition
-                                                    assign_inside_condition)
+                            'SupportedStyles' => %w[assign_to_condition
+                                                    assign_inside_condition]
                           },
                           'Lint/EndAlignment' => {
                             'AlignWith' => 'keyword',

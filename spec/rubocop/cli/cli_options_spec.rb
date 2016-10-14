@@ -125,7 +125,7 @@ describe RuboCop::CLI, :isolated_environment do
         expect($stderr.string).to include('Unrecognized cop or namespace: .')
       end
 
-      %w(Syntax Lint/Syntax).each do |name|
+      %w[Syntax Lint/Syntax].each do |name|
         it "only checks syntax if #{name} is given" do
           create_file('example.rb', 'x ')
           expect(cli.run(['--only', name])).to eq(0)
@@ -133,7 +133,7 @@ describe RuboCop::CLI, :isolated_environment do
         end
       end
 
-      %w(Lint/UnneededDisable UnneededDisable).each do |name|
+      %w[Lint/UnneededDisable UnneededDisable].each do |name|
         it "exits with error if cop name #{name} is passed" do
           create_file('example.rb', ['if x== 0 ',
                                      "\ty",
@@ -269,7 +269,7 @@ describe RuboCop::CLI, :isolated_environment do
                                    '  ' + '#' * 100,
                                    "\ty",
                                    'end'])
-        expect(cli.run(%w(-f offenses --only Metrics example.rb))).to eq(1)
+        expect(cli.run(%w[-f offenses --only Metrics example.rb])).to eq(1)
         expect($stdout.string).to eq(['',
                                       '1  Metrics/LineLength',
                                       '--',
@@ -287,7 +287,7 @@ describe RuboCop::CLI, :isolated_environment do
                                    'end'])
         create_file('.rubocop.yml', ['Style/SpaceAroundOperators:',
                                      '  Enabled: false'])
-        expect(cli.run(%w(-f o --only Metrics,Style example.rb))).to eq(1)
+        expect(cli.run(%w[-f o --only Metrics,Style example.rb])).to eq(1)
         expect($stdout.string)
           .to eq(['',
                   '1  Metrics/LineLength',
@@ -321,7 +321,7 @@ describe RuboCop::CLI, :isolated_environment do
         expect($stderr.string).to include('Unrecognized cop or namespace: .')
       end
 
-      %w(Syntax Lint/Syntax).each do |name|
+      %w[Syntax Lint/Syntax].each do |name|
         it "exits with error if #{name} is given" do
           create_file('example.rb', 'x ')
           expect(cli.run(['--except', name])).to eq(2)
@@ -378,7 +378,7 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     context 'when several cops are given' do
-      %w(UnneededDisable Lint/UnneededDisable Lint).each do |cop_name|
+      %w[UnneededDisable Lint/UnneededDisable Lint].each do |cop_name|
         it "disables the given cops including #{cop_name}" do
           create_file('example.rb', ['if x== 100000000000000 ',
                                      "\ty",
@@ -675,7 +675,7 @@ describe RuboCop::CLI, :isolated_environment do
         end
       end
 
-      %w(html json).each do |format|
+      %w[html json].each do |format|
         context "when #{format} format is specified" do
           context 'and offenses come from the cache' do
             context 'and a message has binary encoding' do

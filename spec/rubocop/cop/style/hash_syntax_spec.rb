@@ -20,7 +20,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       let(:cop_config) do
         {
           'EnforcedStyle'   => 'ruby19',
-          'SupportedStyles' => %w(ruby19 hash_rockets),
+          'SupportedStyles' => %w[ruby19 hash_rockets],
           'UseHashRocketsWithSymbolValues' => false,
           'PreferHashRocketsForNonAlnumEndingSymbols' => false
         }.merge(cop_config_overrides)
@@ -140,7 +140,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
                             },
                             'Style/HashSyntax' => {
                               'EnforcedStyle'   => 'ruby19',
-                              'SupportedStyles' => %w(ruby19 hash_rockets),
+                              'SupportedStyles' => %w[ruby19 hash_rockets],
                               'UseHashRocketsWithSymbolValues' => false
                             },
                             'Style/SpaceAroundOperators' => {
@@ -158,7 +158,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       let(:config) do
         RuboCop::Config.new('Style/HashSyntax' => {
                               'EnforcedStyle' => 'ruby19',
-                              'SupportedStyles' => %w(ruby19 hash_rockets),
+                              'SupportedStyles' => %w[ruby19 hash_rockets],
                               'UseHashRocketsWithSymbolValues' => true
                             })
       end
@@ -234,7 +234,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
     let(:cop_config) do
       {
         'EnforcedStyle' => 'hash_rockets',
-        'SupportedStyles' => %w(ruby19 hash_rockets),
+        'SupportedStyles' => %w[ruby19 hash_rockets],
         'UseHashRocketsWithSymbolValues' => false
       }
     end
@@ -275,7 +275,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       let(:cop_config) do
         {
           'EnforcedStyle' => 'hash_rockets',
-          'SupportedStyles' => %w(ruby19 hash_rockets),
+          'SupportedStyles' => %w[ruby19 hash_rockets],
           'UseHashRocketsWithSymbolValues' => true
         }
       end

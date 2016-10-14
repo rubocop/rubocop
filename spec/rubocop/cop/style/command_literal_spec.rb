@@ -6,7 +6,7 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
   subject(:cop) { described_class.new(config) }
   let(:config) do
     supported_styles = {
-      'SupportedStyles' => %w(backticks percent_x mixed)
+      'SupportedStyles' => %w[backticks percent_x mixed]
     }
     RuboCop::Config.new('Style/PercentLiteralDelimiters' =>
                           percent_literal_delimiters_config,

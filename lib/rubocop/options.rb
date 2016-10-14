@@ -181,7 +181,7 @@ module RuboCop
       names.each do |name|
         next if Cop::Cop.all.any? { |c| c.cop_name == name }
         next if namespaces.include?(name)
-        next if %w(Syntax Lint/Syntax).include?(name)
+        next if %w[Syntax Lint/Syntax].include?(name)
 
         raise ArgumentError, "Unrecognized cop or namespace: #{name}."
       end
@@ -212,16 +212,16 @@ module RuboCop
 
     def only_includes_unneeded_disable?
       @options.key?(:only) &&
-        (@options[:only] & %w(Lint/UnneededDisable UnneededDisable)).any?
+        (@options[:only] & %w[Lint/UnneededDisable UnneededDisable]).any?
     end
 
     def except_syntax?
       @options.key?(:except) &&
-        (@options[:except] & %w(Lint/Syntax Syntax)).any?
+        (@options[:except] & %w[Lint/Syntax Syntax]).any?
     end
 
     def boolean_or_empty_cache?
-      !@options.key?(:cache) || %w(true false).include?(@options[:cache])
+      !@options.key?(:cache) || %w[true false].include?(@options[:cache])
     end
 
     def no_offense_counts_without_auto_gen_config?

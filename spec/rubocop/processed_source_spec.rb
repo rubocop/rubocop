@@ -144,13 +144,13 @@ describe RuboCop::ProcessedSource do
 
     context 'when a range is passed' do
       it 'returns the array of lines' do
-        expect(processed_source[3..4]).to eq(%w(end some_method))
+        expect(processed_source[3..4]).to eq(%w[end some_method])
       end
     end
 
     context 'when start index and length are passed' do
       it 'returns the array of lines' do
-        expect(processed_source[3, 2]).to eq(%w(end some_method))
+        expect(processed_source[3, 2]).to eq(%w[end some_method])
       end
     end
   end
