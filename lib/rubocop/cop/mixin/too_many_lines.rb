@@ -16,9 +16,23 @@ module RuboCop
       end
 
       def code_length(node)
-        lines = node.source.lines.to_a[1...-1] || []
+        body = extract_body(node)
+        lines = body && body.source.lines || []
 
         lines.count { |line| !irrelevant_line(line) }
+      end
+
+      def extract_body(node)
+        case node.type
+        when :block, :def
+          _receiver_or_method, _args, body = *node
+        when :defs
+          _self, _method, _args, body = *node
+        else
+          body = node
+        end
+
+        body
       end
     end
   end

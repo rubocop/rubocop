@@ -45,6 +45,19 @@ describe RuboCop::Cop::Metrics::MethodLength, :config do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts a method with multiline arguments ' \
+     'and less than 5 lines of body' do
+    inspect_source(cop, ['def m(x,',
+                         '      y,',
+                         '      z)',
+                         '  a = 1',
+                         '  a = 2',
+                         '  a = 3',
+                         '  a = 4',
+                         'end'])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'does not count blank lines' do
     inspect_source(cop, ['def m()',
                          '  a = 1',
