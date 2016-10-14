@@ -47,6 +47,18 @@ describe RuboCop::Cop::Metrics::BlockLength, :config do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts a block with multiline receiver and less than 3 lines of body' do
+    inspect_source(cop, ['[',
+                         '  :a,',
+                         '  :b,',
+                         '  :c,',
+                         '].each do',
+                         '  a = 1',
+                         '  a = 2',
+                         'end'])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'accepts empty blocks' do
     inspect_source(cop, ['something do',
                          'end'])
