@@ -5,6 +5,7 @@
 ### New features
 
 * [#3615](https://github.com/bbatsov/rubocop/pull/3615): Add autocorrection for `Lint/EmptyInterpolation`. ([@pocke][])
+* Make `PercentLiteralDelimiters` enforce delimiters around `%I()` too. ([@bronson][])
 
 ### Bug fixes
 
@@ -2435,3 +2436,4 @@
 [@jmks]: https://github.com/jmks/
 [@connorjacobsen]: https://github.com/connorjacobsen
 [@legendetm]: https://github.com/legendetm
+[@bronson]: https://github.com/bronson
