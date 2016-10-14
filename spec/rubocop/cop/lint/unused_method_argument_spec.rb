@@ -68,7 +68,7 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       end
     end
 
-    context 'when an optional keyword argument is unused', ruby: 2 do
+    context 'when an optional keyword argument is unused' do
       let(:source) { <<-END }
         def self.some_method(foo, bar: 1)
           puts foo
@@ -319,7 +319,7 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       end
     end
 
-    context 'when a keyword argument is unused', ruby: 2 do
+    context 'when a keyword argument is unused' do
       let(:source) { <<-END }
         def some_method(foo, bar: 1)
           puts foo

@@ -162,7 +162,7 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
       end
     end
 
-    context 'when an optional keyword argument is unused', ruby: 2 do
+    context 'when an optional keyword argument is unused' do
       context 'when the method call is `define_method`' do
         let(:source) { <<-END }
           define_method(:foo) do |bar: 'default'|

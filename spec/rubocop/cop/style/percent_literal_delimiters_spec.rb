@@ -166,7 +166,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     end
   end
 
-  context '`%i` symbol array', ruby: 2 do
+  context '`%i` symbol array' do
     it 'does not register an offense for preferred delimiters' do
       inspect_source(cop, '%i[some symbols]')
       expect(cop.offenses).to be_empty
