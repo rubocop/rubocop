@@ -107,6 +107,20 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
     expect(cop.offenses.size).to eq(1)
   end
 
+  it 'does not blow up for empty if condition' do
+    inspect_source(cop,
+                   ['if ()',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'does not blow up for empty unless condition' do
+    inspect_source(cop,
+                   ['unless ()',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
   context 'safe assignment is allowed' do
     it 'accepts = in condition surrounded with braces' do
       inspect_source(cop,

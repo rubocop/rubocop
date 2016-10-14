@@ -29,6 +29,8 @@ module RuboCop
           cond, _body = *node
 
           return unless cond.begin_type?
+          # handle `if () ...`
+          return if empty_condition?(cond)
           # handle `if (something rescue something_else) ...`
           return if modifier_op?(cond.children.first)
           # check if there's any whitespace between the keyword and the cond

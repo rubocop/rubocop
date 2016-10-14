@@ -9,9 +9,12 @@ module RuboCop
       include IfNode
 
       def_node_matcher :single_negative?, '(send !(send _ :!) :!)'
+      def_node_matcher :empty_condition?, '(begin)'
 
       def check_negative_conditional(node)
         condition, _body, _rest = *node
+
+        return if empty_condition?(condition)
 
         # Look at last expression of contents if there are parentheses
         # around condition.

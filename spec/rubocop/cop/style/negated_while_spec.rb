@@ -70,4 +70,18 @@ describe RuboCop::Cop::Style::NegatedWhile do
     corrected = autocorrect_source(cop, 'something until !x.even?')
     expect(corrected).to eq 'something while x.even?'
   end
+
+  it 'does not blow up for empty while condition' do
+    inspect_source(cop,
+                   ['while ()',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'does not blow up for empty until condition' do
+    inspect_source(cop,
+                   ['until ()',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
 end
