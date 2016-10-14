@@ -8,7 +8,7 @@ module RuboCop
         include PercentLiteral
 
         def on_array(node)
-          process(node, '%w', '%W', '%i')
+          process(node, '%w', '%W', '%i', '%I')
         end
 
         def on_regexp(node)

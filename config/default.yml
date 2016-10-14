@@ -788,6 +788,7 @@ Style/PercentLiteralDelimiters:
   PreferredDelimiters:
     '%':  ()
     '%i': ()
+    '%I': ()
     '%q': ()
     '%Q': ()
     '%r': '{}'

@@ -10,6 +10,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
       'PreferredDelimiters' => {
         '%'  => '[]',
         '%i' => '[]',
+        '%I' => '[]',
         '%q' => '[]',
         '%Q' => '[]',
         '%r' => '[]',
@@ -175,6 +176,28 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
       inspect_source(cop, '%i(some symbols)')
       expect(cop.messages).to eq(
         ['`%i`-literals should be delimited by `[` and `]`.']
+      )
+    end
+  end
+
+  context '`%I` interpolated symbol array' do
+    it 'does not register an offense for preferred delimiters' do
+      inspect_source(cop, '%I[some words]')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense for other delimiters' do
+      inspect_source(cop, '%I(some words)')
+      expect(cop.messages).to eq(
+        ['`%I`-literals should be delimited by `[` and `]`.']
+      )
+    end
+
+    it 'registers an offense for other delimiters ' \
+       'when containing preferred delimiter characters in interpolation' do
+      inspect_source(cop, '%I(#{[1].first})')
+      expect(cop.messages).to eq(
+        ['`%I`-literals should be delimited by `[` and `]`.']
       )
     end
   end
