@@ -4,6 +4,12 @@ require 'spec_helper'
 
 describe RuboCop::Cop::Style::EmptyLinesAroundModuleBody, :config do
   subject(:cop) { described_class.new(config) }
+  let(:extra_begin) { 'Extra empty line detected at module body beginning.' }
+  let(:extra_end) { 'Extra empty line detected at module body end.' }
+  let(:missing_begin) { 'Empty line missing at module body beginning.' }
+  let(:missing_end) { 'Empty line missing at module body end.' }
+  let(:missing_def) { 'Empty line missing before first def definition' }
+  let(:missing_type) { 'Empty line missing before first module definition' }
 
   context 'when EnforcedStyle is no_empty_lines' do
     let(:cop_config) { { 'EnforcedStyle' => 'no_empty_lines' } }
@@ -85,10 +91,6 @@ describe RuboCop::Cop::Style::EmptyLinesAroundModuleBody, :config do
 
   context 'when EnforcedStyle is empty_lines_except_namespace' do
     let(:cop_config) { { 'EnforcedStyle' => 'empty_lines_except_namespace' } }
-    let(:extra_begin) { 'Extra empty line detected at module body beginning.' }
-    let(:extra_end) { 'Extra empty line detected at module body end.' }
-    let(:missing_begin) { 'Empty line missing at module body beginning.' }
-    let(:missing_end) { 'Empty line missing at module body end.' }
 
     context 'when only child is class' do
       it 'requires no empty lines for namespace' do
@@ -241,4 +243,6 @@ describe RuboCop::Cop::Style::EmptyLinesAroundModuleBody, :config do
       end
     end
   end
+
+  include_examples 'empty_lines_around_class_or_module_body', 'module'
 end
