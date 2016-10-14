@@ -107,6 +107,20 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
     expect(cop.offenses.size).to eq(1)
   end
 
+  it 'does not blow up for empty if condition' do
+    inspect_source(cop,
+                   ['if ()',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'does not blow up for empty unless condition' do
+    inspect_source(cop,
+                   ['unless ()',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
   context 'safe assignment is allowed' do
     it 'accepts variable assignment in condition surrounded with parentheses' do
       inspect_source(cop,

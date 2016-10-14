@@ -94,6 +94,20 @@ describe RuboCop::Cop::Style::NegatedIf do
     expect(cop.offenses).to be_empty
   end
 
+  it 'does not blow up for empty if condition' do
+    inspect_source(cop,
+                   ['if ()',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'does not blow up for empty unless condition' do
+    inspect_source(cop,
+                   ['unless ()',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'autocorrects by replacing if not with unless' do
     corrected = autocorrect_source(cop, 'something if !x.even?')
     expect(corrected).to eq 'something unless x.even?'
