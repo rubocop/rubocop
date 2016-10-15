@@ -1058,6 +1058,10 @@ Lint/DeprecatedClassMethods:
   Description: 'Check for deprecated class method calls.'
   Enabled: true
 
+Lint/DuplicateCaseCondition:
+  Description: 'Do not repeat values in case conditionals.'
+  Enabled: true
+
 Lint/DuplicateMethods:
   Description: 'Check for duplicate method definitions.'
   Enabled: true
