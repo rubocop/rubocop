@@ -1,6 +1,8 @@
 # Change log
 
 ## master (unreleased)
+* [#3246](https://github.com/bbatsov/rubocop/issues/3246): Add list of all cops to Documentation. ([@sihu][])
+
 
 ### New features
 
@@ -2441,3 +2443,4 @@
 [@legendetm]: https://github.com/legendetm
 [@bronson]: https://github.com/bronson
 [@albus522]: https://github.com/albus522
+[@sihu]: https://github.com/sihu

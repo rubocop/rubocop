@@ -7,8 +7,7 @@ module RuboCop
       # less specific exception being rescued before a more specific
       # exception is rescued.
       #
-      #   @example
-      #
+      # @example
       #   # bad
       #   begin
       #     something

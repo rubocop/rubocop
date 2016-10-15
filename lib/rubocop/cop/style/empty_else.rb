@@ -10,6 +10,7 @@ module RuboCop
       #
       # @example
       #   # good for all styles
+      #
       #   if condition
       #     statement
       #   else
@@ -21,8 +22,9 @@ module RuboCop
       #     statement
       #   end
       #
-      # empty - warn only on empty else
-      #   @example
+      # @example
+      #   # empty - warn only on empty else
+      #
       #   # bad
       #   if condition
       #     statement
@@ -36,8 +38,9 @@ module RuboCop
       #     nil
       #   end
       #
-      # nil - warn on else with nil in it
-      #   @example
+      # @example
+      #   # nil - warn on else with nil in it
+      #
       #   # bad
       #   if condition
       #     statement
@@ -51,8 +54,9 @@ module RuboCop
       #   else
       #   end
       #
-      # both - warn on empty else and else with nil in it
-      #   @example
+      # @example
+      #   # both - warn on empty else and else with nil in it
+      #
       #   # bad
       #   if condition
       #     statement

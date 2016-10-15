@@ -8,7 +8,7 @@ describe RuboCop::Cop::Style::SpaceInsideArrayPercentLiteral do
   %w(i I w W).each do |type|
     [%w({ }), %w{( )}, %w([ ]), %w(! !)].each do |(ldelim, rdelim)|
       context "for #{type} type and #{[ldelim, rdelim]} delimiters" do
-        define_method(:example) do |content|
+        define_method(:code_example) do |content|
           ['%', type, ldelim, content, rdelim].join
         end
 
@@ -17,35 +17,35 @@ describe RuboCop::Cop::Style::SpaceInsideArrayPercentLiteral do
         end
 
         it 'registers an offense for unnecessary spaces' do
-          source = example('1   2')
+          source = code_example('1   2')
           inspect_source(cop, source)
           expect(cop.offenses.size).to eq(1)
           expect(cop.highlights).to eq(['   '])
           expect(cop.messages).to eq([described_class::MSG])
-          expect_corrected(source, example('1 2'))
+          expect_corrected(source, code_example('1 2'))
         end
 
         it 'registers an offense for multiple spaces between items' do
-          source = example('1   2   3')
+          source = code_example('1   2   3')
           inspect_source(cop, source)
           expect(cop.offenses.size).to eq(2)
-          expect_corrected(source, example('1 2 3'))
+          expect_corrected(source, code_example('1 2 3'))
         end
 
         it 'accepts literals with escaped and additional spaces' do
-          source = example('a\   b \ c')
+          source = code_example('a\   b \ c')
           inspect_source(cop, source)
           expect(cop.offenses.size).to eq(1)
-          expect_corrected(source, example('a\  b \ c'))
+          expect_corrected(source, code_example('a\  b \ c'))
         end
 
         it 'accepts literals without additional spaces' do
-          inspect_source(cop, example('a b c'))
+          inspect_source(cop, code_example('a b c'))
           expect(cop.messages).to be_empty
         end
 
         it 'accepts literals with escaped spaces' do
-          inspect_source(cop, example('a\  b\ \  c'))
+          inspect_source(cop, code_example('a\  b\ \  c'))
           expect(cop.messages).to be_empty
         end
 
