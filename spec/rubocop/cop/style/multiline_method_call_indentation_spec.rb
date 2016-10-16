@@ -342,6 +342,16 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
       expect(cop.messages).to be_empty
     end
 
+    it 'accepts aligned methods in a begin..end block' do
+      inspect_source(cop,
+                     ['@dependencies ||= begin',
+                      '  DEFAULT_DEPENDENCIES',
+                      '    .reject { |e| e }',
+                      '    .map { |e| e }',
+                      'end'])
+      expect(cop.messages).to be_empty
+    end
+
     it 'registers an offense for misaligned methods in if condition' do
       inspect_source(cop,
                      ['if a.',

@@ -14,6 +14,7 @@
 * Redundant return style now properly handles empty `when` blocks. ([@albus522][])
 * [#3622](https://github.com/bbatsov/rubocop/pull/3622): Fix false positive for `Metrics/MethodLength` and `Metrics/BlockLength`. ([@meganemura][])
 * [#3625](https://github.com/bbatsov/rubocop/pull/3625): Fix some cops errors when condition is empty brace. ([@pocke][])
+* [#3468](https://github.com/bbatsov/rubocop/issues/3468): Fix bug regarding alignment inside `begin`..`end` block in `Style/MultilineMethodCallIndentation`. ([@jonas054][])
 
 ## 0.44.1 (2016-10-13)
 
