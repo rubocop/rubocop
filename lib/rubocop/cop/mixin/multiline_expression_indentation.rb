@@ -125,7 +125,7 @@ module RuboCop
       def part_of_assignment_rhs(node, candidate)
         node.each_ancestor.find do |a|
           case a.type
-          when :if, :while, :until, :for, :return, :array
+          when :if, :while, :until, :for, :return, :array, :kwbegin
             break # other kinds of alignment
           when :block
             break if part_of_block_body?(candidate, a)
