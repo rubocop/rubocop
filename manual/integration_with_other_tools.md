@@ -15,7 +15,9 @@ The [vim-rubocop](https://github.com/ngmy/vim-rubocop) plugin runs
 RuboCop and displays the results in Vim.
 
 There's also a RuboCop checker in
-[syntastic](https://github.com/scrooloose/syntastic).
+[syntastic](https://github.com/scrooloose/syntastic);
+[neomake](https://github.com/neomake/neomake) and
+[ale](https://github.com/w0rp/ale) checks asynchronously.
 
 ### Sublime Text
 
