@@ -6,14 +6,15 @@ module RuboCop
       # Checks for unnecessary additional spaces inside the delimiters of
       # %i/%w/%x literals.
       #
-      # @good
-      # %i(foo bar baz)
+      # @example
+      #   @good
+      #   %i(foo bar baz)
       #
-      # @bad
-      # %w( foo bar baz )
+      #   @bad
+      #   %w( foo bar baz )
       #
-      # @bad
-      # %x(  ls -l )
+      #   @bad
+      #   %x(  ls -l )
       class SpaceInsidePercentLiteralDelimiters < Cop
         include MatchRange
         include PercentLiteral

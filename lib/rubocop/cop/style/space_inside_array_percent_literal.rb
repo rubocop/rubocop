@@ -6,11 +6,12 @@ module RuboCop
       # Checks for unnecessary additional spaces inside array percent literals
       # (i.e. %i/%w).
       #
-      # @good
-      # %i(foo bar baz)
+      # @example
+      #   @good
+      #   %i(foo bar baz)
       #
-      # @bad
-      # %w(foo  bar  baz)
+      #   @bad
+      #   %w(foo  bar  baz)
       class SpaceInsideArrayPercentLiteral < Cop
         include MatchRange
         include PercentLiteral
