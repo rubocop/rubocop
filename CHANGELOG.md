@@ -9,6 +9,7 @@
 * [#3615](https://github.com/bbatsov/rubocop/pull/3615): Add autocorrection for `Lint/EmptyInterpolation`. ([@pocke][])
 * Make `PercentLiteralDelimiters` enforce delimiters around `%I()` too. ([@bronson][])
 * [#3408](https://github.com/bbatsov/rubocop/issues/3408): Add check for repeated values in case conditionals. ([@swcraig][])
+* [#3570](https://github.com/bbatsov/rubocop/issues/3570): Add new `MultilineIfModifier` cop to avoid usage of if/unless-modifiers on multiline statements. ([@tessi][])
 
 ### Bug fixes
 
@@ -2456,3 +2457,4 @@
 [@swcraig]: https://github.com/swcraig
 [@jessieay]: https://github.com/jessieay
 [@tiagocasanovapt]: https://github.com/tiagocasanovapt
+[@tessi]: https://github.com/tessi

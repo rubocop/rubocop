@@ -450,6 +450,11 @@ Style/MultilineIfThen:
   StyleGuide: '#no-then'
   Enabled: true
 
+Style/MultilineIfModifier:
+  Description: 'Only use if/unless modifiers on single line statements.'
+  StyleGuide: '#no-multiline-if-modifiers'
+  Enabled: true
+
 Style/MultilineMemoization:
   Description: 'Wrap multiline memoizations in a `begin` and `end` block.'
   Enabled: true
