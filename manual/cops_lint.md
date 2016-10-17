@@ -54,9 +54,9 @@ if/while/until.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-AllowSafeAssignment | true| |
+Attribute | Value
+--- | ---
+AllowSafeAssignment | true
 
 
 ## Lint/BlockAlignment
@@ -103,10 +103,10 @@ end
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-AlignWith | either| |
-SupportedStyles | either, start_of_block, start_of_line| |
+Attribute | Value
+--- | ---
+AlignWith | either
+SupportedStyles | either, start_of_block, start_of_line
 
 
 ## Lint/CircularArgumentReference
@@ -199,11 +199,11 @@ end
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-AlignWith | start_of_line| |
-SupportedStyles | start_of_line, def| |
-AutoCorrect | false| |
+Attribute | Value
+--- | ---
+AlignWith | start_of_line
+SupportedStyles | start_of_line, def
+AutoCorrect | false
 
 
 ## Lint/DeprecatedClassMethods
@@ -351,11 +351,11 @@ end)
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-AlignWith | keyword| |
-SupportedStyles | keyword, variable, start_of_line| |
-AutoCorrect | false| |
+Attribute | Value
+--- | ---
+AlignWith | keyword
+SupportedStyles | keyword, variable, start_of_line
+AutoCorrect | false
 
 
 ## Lint/EndInMethod
@@ -528,10 +528,10 @@ class C < StandardError; end
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | runtime_error| |
-SupportedStyles | runtime_error, standard_error| |
+Attribute | Value
+--- | ---
+EnforcedStyle | runtime_error
+SupportedStyles | runtime_error, standard_error
 
 
 ## Lint/InvalidCharacterLiteral
@@ -984,10 +984,10 @@ end
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-IgnoreEmptyBlocks | true| |
-AllowUnusedKeywordArguments | false| |
+Attribute | Value
+--- | ---
+IgnoreEmptyBlocks | true
+AllowUnusedKeywordArguments | false
 
 
 ## Lint/UnusedMethodArgument
@@ -1008,10 +1008,10 @@ end
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-AllowUnusedKeywordArguments | false| |
-IgnoreEmptyMethods | true| |
+Attribute | Value
+--- | ---
+AllowUnusedKeywordArguments | false
+IgnoreEmptyMethods | true
 
 
 ## Lint/UselessAccessModifier
@@ -1099,9 +1099,9 @@ end
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-ContextCreatingMethods | | |
+Attribute | Value
+--- | ---
+ContextCreatingMethods | 
 
 
 ## Lint/UselessAssignment

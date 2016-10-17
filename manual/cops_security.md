@@ -30,8 +30,8 @@ JSON.parse("{}")
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Reference | http://ruby-doc.org/stdlib-2.3.0/libdoc/json/rdoc/JSON.html#method-i-load| |
-AutoCorrect | false| |
+Attribute | Value
+--- | ---
+Reference | http://ruby-doc.org/stdlib-2.3.0/libdoc/json/rdoc/JSON.html#method-i-load
+AutoCorrect | false
 

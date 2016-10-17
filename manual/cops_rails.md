@@ -13,11 +13,11 @@ something_filter methods or the newer something_action methods.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | action| |
-SupportedStyles | action, filter| |
-Include | app/controllers/**/*.rb| |
+Attribute | Value
+--- | ---
+EnforcedStyle | action
+SupportedStyles | action, filter
+Include | app/controllers/\*\*/\*.rb
 
 
 ## Rails/Date
@@ -64,10 +64,10 @@ date.to_time_in_current_zone
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | flexible| |
-SupportedStyles | strict, flexible| |
+Attribute | Value
+--- | ---
+EnforcedStyle | flexible
+SupportedStyles | strict, flexible
 
 
 ## Rails/Delegate
@@ -159,9 +159,9 @@ User.find_by!(email: email)
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Whitelist | find_by_sql| |
+Attribute | Value
+--- | ---
+Whitelist | find_by_sql
 
 
 ## Rails/Exit
@@ -186,10 +186,10 @@ do its job.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Include | app/**/*.rb, config/**/*.rb, lib/**/*.rb| |
-Exclude | /lib/**/*.rake| |
+Attribute | Value
+--- | ---
+Include | app/\*\*/\*.rb, config/\*\*/\*.rb, lib/\*\*/\*.rb
+Exclude | lib/\*\*/\*.rake
 
 
 ## Rails/FindBy
@@ -214,9 +214,9 @@ User.find_by(name: 'Bruce')
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Include | app/models/**/*.rb| |
+Attribute | Value
+--- | ---
+Include | app/models/\*\*/\*.rb
 
 
 ## Rails/FindEach
@@ -240,9 +240,9 @@ User.all.find_each
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Include | app/models/**/*.rb| |
+Attribute | Value
+--- | ---
+Include | app/models/\*\*/\*.rb
 
 
 ## Rails/HasAndBelongsToMany
@@ -255,9 +255,9 @@ This cop checks for the use of the has_and_belongs_to_many macro.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Include | app/models/**/*.rb| |
+Attribute | Value
+--- | ---
+Include | app/models/\*\*/\*.rb
 
 
 ## Rails/HttpPositionalArguments
@@ -282,9 +282,9 @@ get :new, params: { user_id: 1 }
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Include | spec/**/*, test/**/*| |
+Attribute | Value
+--- | ---
+Include | spec/\*\*/\*, test/\*\*/\*
 
 
 ## Rails/NotNullColumn
@@ -309,9 +309,9 @@ add_column :users, :name, :string, null: false, default: ''
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Include | db/migrate/*.rb| |
+Attribute | Value
+--- | ---
+Include | db/migrate/\*.rb
 
 
 ## Rails/Output
@@ -324,9 +324,9 @@ This cop checks for the use of output calls like puts and print
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Include | app/**/*.rb, config/**/*.rb, db/**/*.rb, lib/**/*.rb| |
+Attribute | Value
+--- | ---
+Include | app/\*\*/\*.rb, config/\*\*/\*.rb, db/\*\*/\*.rb, lib/\*\*/\*.rb
 
 
 ## Rails/OutputSafety
@@ -404,9 +404,9 @@ self[:attr] = val
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Include | app/models/**/*.rb| |
+Attribute | Value
+--- | ---
+Include | app/models/\*\*/\*.rb
 
 
 ## Rails/RequestReferer
@@ -420,10 +420,10 @@ request.referrer, depending on configuration.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | referer| |
-SupportedStyles | referer, referrer| |
+Attribute | Value
+--- | ---
+EnforcedStyle | referer
+SupportedStyles | referer, referrer
 
 
 ## Rails/SafeNavigation
@@ -478,9 +478,9 @@ foo.to_i if foo
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-ConvertTry | false| |
+Attribute | Value
+--- | ---
+ConvertTry | false
 
 
 ## Rails/SaveBang
@@ -545,9 +545,9 @@ scope :something, -> { where(something: true) }
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Include | app/models/**/*.rb| |
+Attribute | Value
+--- | ---
+Include | app/models/\*\*/\*.rb
 
 
 ## Rails/TimeZone
@@ -586,11 +586,11 @@ Time.at(timestamp).in_time_zone
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Reference | http://danilenko.org/2012/7/6/rails_timezones| |
-EnforcedStyle | flexible| |
-SupportedStyles | strict, flexible| |
+Attribute | Value
+--- | ---
+Reference | http://danilenko.org/2012/7/6/rails_timezones
+EnforcedStyle | flexible
+SupportedStyles | strict, flexible
 
 
 ## Rails/UniqBeforePluck
@@ -635,11 +635,11 @@ instance.assoc.pluck(:id).uniq
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedMode | conservative| |
-SupportedModes | conservative, aggressive| |
-AutoCorrect | false| |
+Attribute | Value
+--- | ---
+EnforcedMode | conservative
+SupportedModes | conservative, aggressive
+AutoCorrect | false
 
 
 ## Rails/Validation
@@ -652,7 +652,7 @@ This cop checks for the use of old-style attribute validation macros.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Include | app/models/**/*.rb| |
+Attribute | Value
+--- | ---
+Include | app/models/\*\*/\*.rb
 
