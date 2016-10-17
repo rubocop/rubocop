@@ -16,6 +16,13 @@ pages:
 - Support: support.md
 - Contributing: contributing.md
 - Development: development.md
+- Cops Documentation:
+    - Linting Cops: cops_lint.md
+    - Metrics Cops: cops_metrics.md
+    - Performance Cops: cops_performance.md
+    - Rails Cops: cops_rails.md
+    - Security Cops: cops_security.md
+    - Style Cops: cops_style.md
 extra_css:
   - css/extra.css
 theme: readthedocs

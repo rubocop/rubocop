@@ -63,10 +63,10 @@ task :generate_cops_documentation do |_task|
   def default_settings(pars)
     return '' unless pars.keys.count > 0
     content = h3('Important attributes')
-    content << "Attribute | Value |\n"
-    content << "--- | --- |\n"
+    content << "Attribute | Value\n"
+    content << "--- | ---\n"
     pars.each do |par|
-      content << "#{par.first} | #{format_table_value(par.last)} |\n"
+      content << "#{par.first} | #{format_table_value(par.last)}\n"
     end
     content << "\n"
     content
@@ -74,7 +74,8 @@ task :generate_cops_documentation do |_task|
 
   def format_table_value(v)
     value = v.is_a?(Array) ? v.join(', ') : v.to_s
-    value.gsub(Dir.pwd, '') << '|'
+    value.gsub("#{Dir.pwd}/", '')
+         .gsub('*', '\*')
   end
 
   def print_cops_of_type(cops, type, config)
@@ -103,9 +104,16 @@ task :generate_cops_documentation do |_task|
     cops_body(config, cop, description, examples_object, pars)
   end
 
-  puts 'This generator uses the comments and tags (`@example`) for the '\
-  'generation. Please use `yardoc` before running this script to make '\
-  'sure, that all your changes were rendered.'
+  puts 'This generator uses the comments and tags (`@example`) from the '\
+  'source files to generate the cops-specification. Please use `yardoc` '\
+  'before running this script to make sure, that all your changes were '\
+  'rendered.'
+  answer = ''
+  until %w(Y N).include? answer
+    puts 'Would you like to run `yardoc` before you generate? [Y/N]'
+    answer = $stdin.gets.chomp.upcase
+  end
+  system('exec yardoc') if answer == 'Y'
   cops = RuboCop::Cop::Cop.all
   config = RuboCop::ConfigStore.new.for(Dir.pwd)
   YARD::Registry.load!

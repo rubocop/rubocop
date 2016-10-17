@@ -12,10 +12,10 @@ configured maximum. The ABC size is based on assignments, branches
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Reference | http://c2.com/cgi/wiki?AbcMetric| |
-Max | 19| |
+Attribute | Value
+--- | ---
+Reference | http://c2.com/cgi/wiki?AbcMetric
+Max | 19
 
 
 ## Metrics/BlockLength
@@ -30,11 +30,11 @@ The maximum allowed length is configurable.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-CountComments | false| |
-Max | 25| |
-Exclude | /Rakefile, /**/*.rake, /spec/**/*.rb| |
+Attribute | Value
+--- | ---
+CountComments | false
+Max | 25
+Exclude | Rakefile, \*\*/\*.rake, spec/\*\*/\*.rb
 
 
 ## Metrics/BlockNesting
@@ -51,9 +51,9 @@ The maximum level of nesting allowed is configurable.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Max | 3| |
+Attribute | Value
+--- | ---
+Max | 3
 
 
 ## Metrics/ClassLength
@@ -68,10 +68,10 @@ The maximum allowed length is configurable.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-CountComments | false| |
-Max | 168| |
+Attribute | Value
+--- | ---
+CountComments | false
+Max | 168
 
 
 ## Metrics/CyclomaticComplexity
@@ -93,9 +93,9 @@ Loops can be said to have an exit condition, so they add one.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Max | 7| |
+Attribute | Value
+--- | ---
+Max | 7
 
 
 ## Metrics/LineLength
@@ -109,13 +109,13 @@ The maximum length is configurable.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Max | 80| |
-AllowHeredoc | true| |
-AllowURI | true| |
-URISchemes | http, https| |
-IgnoreCopDirectives | false| |
+Attribute | Value
+--- | ---
+Max | 80
+AllowHeredoc | true
+AllowURI | true
+URISchemes | http, https
+IgnoreCopDirectives | false
 
 
 ## Metrics/MethodLength
@@ -130,10 +130,10 @@ The maximum allowed length is configurable.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-CountComments | false| |
-Max | 14| |
+Attribute | Value
+--- | ---
+CountComments | false
+Max | 14
 
 
 ## Metrics/ModuleLength
@@ -148,10 +148,10 @@ The maximum allowed length is configurable.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-CountComments | false| |
-Max | 156| |
+Attribute | Value
+--- | ---
+CountComments | false
+Max | 156
 
 
 ## Metrics/ParameterLists
@@ -167,10 +167,10 @@ be excluded from the total count.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Max | 5| |
-CountKeywordArgs | true| |
+Attribute | Value
+--- | ---
+Max | 5
+CountKeywordArgs | true
 
 
 ## Metrics/PerceivedComplexity
@@ -207,7 +207,7 @@ end                             # 7 complexity points
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Max | 7| |
+Attribute | Value
+--- | ---
+Max | 7
 

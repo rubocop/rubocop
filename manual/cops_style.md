@@ -11,11 +11,11 @@ as the class/module keyword, depending on configuration.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | indent| |
-SupportedStyles | outdent, indent| |
-IndentationWidth | | |
+Attribute | Value
+--- | ---
+EnforcedStyle | indent
+SupportedStyles | outdent, indent
+IndentationWidth | 
 
 
 ## Style/AccessorMethodName
@@ -55,10 +55,10 @@ It also finds uses of `alias :symbol` rather than `alias bareword`.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | prefer_alias| |
-SupportedStyles | prefer_alias, prefer_alias_method| |
+Attribute | Value
+--- | ---
+EnforcedStyle | prefer_alias
+SupportedStyles | prefer_alias, prefer_alias_method
 
 
 ## Style/AlignArray
@@ -81,12 +81,12 @@ literal are aligned.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedHashRocketStyle | key| |
-EnforcedColonStyle | key| |
-EnforcedLastArgumentHashStyle | always_inspect| |
-SupportedLastArgumentHashStyles | always_inspect, always_ignore, ignore_implicit, ignore_explicit| |
+Attribute | Value
+--- | ---
+EnforcedHashRocketStyle | key
+EnforcedColonStyle | key
+EnforcedLastArgumentHashStyle | always_inspect
+SupportedLastArgumentHashStyles | always_inspect, always_ignore, ignore_implicit, ignore_explicit
 
 
 ## Style/AlignParameters
@@ -100,11 +100,11 @@ definition are aligned.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | with_first_parameter| |
-SupportedStyles | with_first_parameter, with_fixed_indentation| |
-IndentationWidth | | |
+Attribute | Value
+--- | ---
+EnforcedStyle | with_first_parameter
+SupportedStyles | with_first_parameter, with_fixed_indentation
+IndentationWidth | 
 
 
 ## Style/AndOr
@@ -117,10 +117,10 @@ This cop checks for uses of *and* and *or*.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | always| |
-SupportedStyles | always, conditionals| |
+Attribute | Value
+--- | ---
+EnforcedStyle | always
+SupportedStyles | always, conditionals
 
 
 ## Style/ArrayJoin
@@ -192,10 +192,10 @@ This cop checks if usage of %() or %Q() matches configuration.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | bare_percent| |
-SupportedStyles | percent_q, bare_percent| |
+Attribute | Value
+--- | ---
+EnforcedStyle | bare_percent
+SupportedStyles | percent_q, bare_percent
 
 
 ## Style/BeginBlock
@@ -225,13 +225,13 @@ multi-line blocks.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | line_count_based| |
-SupportedStyles | line_count_based, semantic, braces_for_chaining| |
-ProceduralMethods | benchmark, bm, bmbm, create, each_with_object, measure, new, realtime, tap, with_object| |
-FunctionalMethods | let, let!, subject, watch| |
-IgnoredMethods | lambda, proc, it| |
+Attribute | Value
+--- | ---
+EnforcedStyle | line_count_based
+SupportedStyles | line_count_based, semantic, braces_for_chaining
+ProceduralMethods | benchmark, bm, bmbm, create, each_with_object, measure, new, realtime, tap, with_object
+FunctionalMethods | let, let!, subject, watch
+IgnoredMethods | lambda, proc, it
 
 
 ## Style/BlockEndNewline
@@ -276,10 +276,10 @@ if the last parameter is a hash.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | no_braces| |
-SupportedStyles | braces, no_braces, context_dependent| |
+Attribute | Value
+--- | ---
+EnforcedStyle | no_braces
+SupportedStyles | braces, no_braces, context_dependent
 
 
 ## Style/CaseEquality
@@ -303,12 +303,12 @@ It will register a separate offense for each misaligned *when*.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-IndentWhenRelativeTo | case| |
-SupportedStyles | case, end| |
-IndentOneStep | false| |
-IndentationWidth | | |
+Attribute | Value
+--- | ---
+IndentWhenRelativeTo | case
+SupportedStyles | case, end
+IndentOneStep | false
+IndentationWidth | 
 
 
 ## Style/CharacterLiteral
@@ -351,10 +351,10 @@ The compact style is only forced for classes/modules with one child.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | nested| |
-SupportedStyles | nested, compact| |
+Attribute | Value
+--- | ---
+EnforcedStyle | nested
+SupportedStyles | nested, compact
 
 
 ## Style/ClassCheck
@@ -367,10 +367,10 @@ This cop enforces consistent use of `Object#is_a?` or `Object#kind_of?`.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | is_a?| |
-SupportedStyles | is_a?, kind_of?| |
+Attribute | Value
+--- | ---
+EnforcedStyle | is_a?
+SupportedStyles | is_a?, kind_of?
 
 
 ## Style/ClassMethods
@@ -456,9 +456,9 @@ can yield some false positives.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-PreferredMethods | {"collect"=>"map", "collect!"=>"map!", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select"}| |
+Attribute | Value
+--- | ---
+PreferredMethods | {"collect"=>"map", "collect!"=>"map!", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select"}
 
 
 ## Style/ColonMethodCall
@@ -505,11 +505,11 @@ folders = %x(find . -type d).split
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | backticks| |
-SupportedStyles | backticks, percent_x, mixed| |
-AllowInnerBackticks | false| |
+Attribute | Value
+--- | ---
+EnforcedStyle | backticks
+SupportedStyles | backticks, percent_x, mixed
+AllowInnerBackticks | false
 
 
 ## Style/CommentAnnotation
@@ -523,9 +523,9 @@ to guidelines.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Keywords | TODO, FIXME, OPTIMIZE, HACK, REVIEW| |
+Attribute | Value
+--- | ---
+Keywords | TODO, FIXME, OPTIMIZE, HACK, REVIEW
 
 
 ## Style/CommentIndentation
@@ -643,11 +643,11 @@ end
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | assign_to_condition| |
-SupportedStyles | assign_to_condition, assign_inside_condition| |
-SingleLineConditionsOnly | true| |
+Attribute | Value
+--- | ---
+EnforcedStyle | assign_to_condition
+SupportedStyles | assign_to_condition, assign_inside_condition
+SingleLineConditionsOnly | true
 
 
 ## Style/ConstantName
@@ -682,10 +682,10 @@ an offense is reported.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Notice | ^Copyright (\(c\) )?2[0-9]{3} .+| |
-AutocorrectNotice | | |
+Attribute | Value
+--- | ---
+Notice | ^Copyright (\(c\) )?2[0-9]{3} .+
+AutocorrectNotice | 
 
 
 ## Style/DefWithParentheses
@@ -715,9 +715,9 @@ same for all its children.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Exclude | /spec/**/*, /test/**/*| |
+Attribute | Value
+--- | ---
+Exclude | spec/\*\*/\*, test/\*\*/\*
 
 
 ## Style/DocumentationMethod
@@ -775,10 +775,10 @@ end
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Exclude | /spec/**/*, /test/**/*| |
-RequireForNonPublicMethods | false| |
+Attribute | Value
+--- | ---
+Exclude | spec/\*\*/\*, test/\*\*/\*
+RequireForNonPublicMethods | false
 
 
 ## Style/DotPosition
@@ -791,10 +791,10 @@ This cop checks the . position in multi-line method calls.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | leading| |
-SupportedStyles | leading, trailing| |
+Attribute | Value
+--- | ---
+EnforcedStyle | leading
+SupportedStyles | leading, trailing
 
 
 ## Style/DoubleNegation
@@ -1004,10 +1004,10 @@ end
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | both| |
-SupportedStyles | empty, nil, both| |
+Attribute | Value
+--- | ---
+EnforcedStyle | both
+SupportedStyles | empty, nil, both
 
 
 ## Style/EmptyLineBetweenDefs
@@ -1021,9 +1021,9 @@ separated by empty lines.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-AllowAdjacentOneLineDefs | false| |
+Attribute | Value
+--- | ---
+AllowAdjacentOneLineDefs | false
 
 
 ## Style/EmptyLines
@@ -1075,10 +1075,10 @@ end
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | no_empty_lines| |
-SupportedStyles | empty_lines, no_empty_lines| |
+Attribute | Value
+--- | ---
+EnforcedStyle | no_empty_lines
+SupportedStyles | empty_lines, no_empty_lines
 
 
 ## Style/EmptyLinesAroundClassBody
@@ -1108,10 +1108,10 @@ end
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | no_empty_lines| |
-SupportedStyles | empty_lines, empty_lines_except_namespace, no_empty_lines| |
+Attribute | Value
+--- | ---
+EnforcedStyle | no_empty_lines
+SupportedStyles | empty_lines, empty_lines_except_namespace, no_empty_lines
 
 
 ## Style/EmptyLinesAroundMethodBody
@@ -1177,10 +1177,10 @@ end
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | no_empty_lines| |
-SupportedStyles | empty_lines, empty_lines_except_namespace, no_empty_lines| |
+Attribute | Value
+--- | ---
+EnforcedStyle | no_empty_lines
+SupportedStyles | empty_lines, empty_lines_except_namespace, no_empty_lines
 
 
 ## Style/EmptyLiteral
@@ -1211,11 +1211,11 @@ never - enforce no encoding comment in all files
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | when_needed| |
-SupportedStyles | when_needed, always, never| |
-AutoCorrectEncodingComment | # encoding: utf-8| |
+Attribute | Value
+--- | ---
+EnforcedStyle | when_needed
+SupportedStyles | when_needed, always, never
+AutoCorrectEncodingComment | # encoding: utf-8
 
 
 ## Style/EndBlock
@@ -1278,10 +1278,10 @@ website  = "https://github.com/bbatsov/rubocop"
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-AllowForAlignment | true| |
-ForceEqualSignAlignment | false| |
+Attribute | Value
+--- | ---
+AllowForAlignment | true
+ForceEqualSignAlignment | false
 
 
 ## Style/FileName
@@ -1296,12 +1296,12 @@ first line) are ignored.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Exclude | | |
-ExpectMatchingDefinition | false| |
-Regex | | |
-IgnoreExecutableScripts | true| |
+Attribute | Value
+--- | ---
+Exclude | 
+ExpectMatchingDefinition | false
+Regex | 
+IgnoreExecutableScripts | true
 
 
 ## Style/FirstArrayElementLineBreak
@@ -1432,11 +1432,11 @@ second_param)
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | special_for_inner_method_call_in_parentheses| |
-SupportedStyles | consistent, special_for_inner_method_call, special_for_inner_method_call_in_parentheses| |
-IndentationWidth | | |
+Attribute | Value
+--- | ---
+EnforcedStyle | special_for_inner_method_call_in_parentheses
+SupportedStyles | consistent, special_for_inner_method_call, special_for_inner_method_call_in_parentheses
+IndentationWidth | 
 
 
 ## Style/FlipFlop
@@ -1460,10 +1460,10 @@ allowed, however.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | each| |
-SupportedStyles | for, each| |
+Attribute | Value
+--- | ---
+EnforcedStyle | each
+SupportedStyles | for, each
 
 
 ## Style/FormatString
@@ -1482,10 +1482,10 @@ argument is an array literal.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | format| |
-SupportedStyles | format, sprintf, percent| |
+Attribute | Value
+--- | ---
+EnforcedStyle | format
+SupportedStyles | format, sprintf, percent
 
 
 ## Style/FrozenStringLiteralComment
@@ -1502,10 +1502,10 @@ comment. The frozen string literal comment is only valid in Ruby 2.3+.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | always| |
-SupportedStyles | when_needed, always| |
+Attribute | Value
+--- | ---
+EnforcedStyle | always
+SupportedStyles | when_needed, always
 
 
 ## Style/GlobalVars
@@ -1523,10 +1523,10 @@ Note that backreferences like $1, $2, etc are not global variables.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Reference | http://www.zenspider.com/Languages/Ruby/QuickRef.html| |
-AllowedVariables | | |
+Attribute | Value
+--- | ---
+Reference | http://www.zenspider.com/Languages/Ruby/QuickRef.html
+AllowedVariables | 
 
 
 ## Style/GuardClause
@@ -1573,9 +1573,9 @@ ok
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-MinBodyLength | 1| |
+Attribute | Value
+--- | ---
+MinBodyLength | 1
 
 
 ## Style/HashSyntax
@@ -1649,12 +1649,12 @@ The supported styles are:
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | ruby19| |
-SupportedStyles | ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys| |
-UseHashRocketsWithSymbolValues | false| |
-PreferHashRocketsForNonAlnumEndingSymbols | false| |
+Attribute | Value
+--- | ---
+EnforcedStyle | ruby19
+SupportedStyles | ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
+UseHashRocketsWithSymbolValues | false
+PreferHashRocketsForNonAlnumEndingSymbols | false
 
 
 ## Style/IdenticalConditionalBranches
@@ -1733,9 +1733,9 @@ The maximum line length is configurable.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-MaxLineLength | 80| |
+Attribute | Value
+--- | ---
+MaxLineLength | 80
 
 
 ## Style/IfUnlessModifierOfIfUnless
@@ -1838,11 +1838,11 @@ styles are 'consistent' and 'align_brackets'. Here are examples:
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | special_inside_parentheses| |
-SupportedStyles | special_inside_parentheses, consistent, align_brackets| |
-IndentationWidth | | |
+Attribute | Value
+--- | ---
+EnforcedStyle | special_inside_parentheses
+SupportedStyles | special_inside_parentheses, consistent, align_brackets
+IndentationWidth | 
 
 
 ## Style/IndentAssignment
@@ -1875,9 +1875,9 @@ end
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-IndentationWidth | | |
+Attribute | Value
+--- | ---
+IndentationWidth | 
 
 
 ## Style/IndentHash
@@ -1923,11 +1923,11 @@ styles are 'consistent' and 'align_braces'. Here are examples:
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | special_inside_parentheses| |
-SupportedStyles | special_inside_parentheses, consistent, align_braces| |
-IndentationWidth | | |
+Attribute | Value
+--- | ---
+EnforcedStyle | special_inside_parentheses
+SupportedStyles | special_inside_parentheses, consistent, align_braces
+IndentationWidth | 
 
 
 ## Style/IndentationConsistency
@@ -1951,10 +1951,10 @@ end
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | normal| |
-SupportedStyles | normal, rails| |
+Attribute | Value
+--- | ---
+EnforcedStyle | normal
+SupportedStyles | normal, rails
 
 
 ## Style/IndentationWidth
@@ -1977,9 +1977,9 @@ end
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Width | 2| |
+Attribute | Value
+--- | ---
+Width | 2
 
 
 ## Style/InfiniteLoop
@@ -2097,10 +2097,10 @@ f = ->(x) do
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | line_count_dependent| |
-SupportedStyles | line_count_dependent, lambda, literal| |
+Attribute | Value
+--- | ---
+EnforcedStyle | line_count_dependent
+SupportedStyles | line_count_dependent, lambda, literal
 
 
 ## Style/LambdaCall
@@ -2123,10 +2123,10 @@ lambda.call(x, y)
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | call| |
-SupportedStyles | call, braces| |
+Attribute | Value
+--- | ---
+EnforcedStyle | call
+SupportedStyles | call, braces
 
 
 ## Style/LeadingCommentSpace
@@ -2202,10 +2202,10 @@ definitions. Both instance and class/singleton methods are checked.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | require_parentheses| |
-SupportedStyles | require_parentheses, require_no_parentheses, require_no_parentheses_except_multiline| |
+Attribute | Value
+--- | ---
+EnforcedStyle | require_parentheses
+SupportedStyles | require_parentheses, require_no_parentheses, require_no_parentheses_except_multiline
 
 
 ## Style/MethodMissing
@@ -2248,10 +2248,10 @@ have to be made for operator methods.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | snake_case| |
-SupportedStyles | snake_case, camelCase| |
+Attribute | Value
+--- | ---
+EnforcedStyle | snake_case
+SupportedStyles | snake_case, camelCase
 
 
 ## Style/MissingElse
@@ -2292,10 +2292,10 @@ end
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | both| |
-SupportedStyles | if, case, both| |
+Attribute | Value
+--- | ---
+EnforcedStyle | both
+SupportedStyles | if, case, both
 
 
 ## Style/ModuleFunction
@@ -2330,10 +2330,10 @@ end
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | module_function| |
-SupportedStyles | module_function, extend_self| |
+Attribute | Value
+--- | ---
+EnforcedStyle | module_function
+SupportedStyles | module_function, extend_self
 
 
 ## Style/MultilineArrayBraceLayout
@@ -2399,10 +2399,10 @@ line as the last element of the array.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | symmetrical| |
-SupportedStyles | symmetrical, new_line, same_line| |
+Attribute | Value
+--- | ---
+EnforcedStyle | symmetrical
+SupportedStyles | symmetrical, new_line, same_line
 
 
 ## Style/MultilineAssignmentLayout
@@ -2444,11 +2444,11 @@ foo =
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-SupportedTypes | block, case, class, if, kwbegin, module| |
-EnforcedStyle | new_line| |
-SupportedStyles | same_line, new_line| |
+Attribute | Value
+--- | ---
+SupportedTypes | block, case, class, if, kwbegin, module
+EnforcedStyle | new_line
+SupportedStyles | same_line, new_line
 
 
 ## Style/MultilineBlockChain
@@ -2575,10 +2575,10 @@ line as the last element of the hash.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | symmetrical| |
-SupportedStyles | symmetrical, new_line, same_line| |
+Attribute | Value
+--- | ---
+EnforcedStyle | symmetrical
+SupportedStyles | symmetrical, new_line, same_line
 
 
 ## Style/MultilineIfThen
@@ -2689,10 +2689,10 @@ foo(
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | symmetrical| |
-SupportedStyles | symmetrical, new_line, same_line| |
+Attribute | Value
+--- | ---
+EnforcedStyle | symmetrical
+SupportedStyles | symmetrical, new_line, same_line
 
 
 ## Style/MultilineMethodCallIndentation
@@ -2733,11 +2733,11 @@ end
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | aligned| |
-SupportedStyles | aligned, indented, indented_relative_to_receiver| |
-IndentationWidth | | |
+Attribute | Value
+--- | ---
+EnforcedStyle | aligned
+SupportedStyles | aligned, indented, indented_relative_to_receiver
+IndentationWidth | 
 
 
 ## Style/MultilineMethodDefinitionBraceLayout
@@ -2803,10 +2803,10 @@ def foo(
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | symmetrical| |
-SupportedStyles | symmetrical, new_line, same_line| |
+Attribute | Value
+--- | ---
+EnforcedStyle | symmetrical
+SupportedStyles | symmetrical, new_line, same_line
 
 
 ## Style/MultilineOperationIndentation
@@ -2830,11 +2830,11 @@ end
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | aligned| |
-SupportedStyles | aligned, indented| |
-IndentationWidth | | |
+Attribute | Value
+--- | ---
+EnforcedStyle | aligned
+SupportedStyles | aligned, indented
+IndentationWidth | 
 
 
 ## Style/MultilineTernaryOperator
@@ -2954,11 +2954,11 @@ end
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | skip_modifier_ifs| |
-MinBodyLength | 3| |
-SupportedStyles | skip_modifier_ifs, always| |
+Attribute | Value
+--- | ---
+EnforcedStyle | skip_modifier_ifs
+MinBodyLength | 3
+SupportedStyles | skip_modifier_ifs, always
 
 
 ## Style/NilComparison
@@ -3010,9 +3010,9 @@ if x
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-IncludeSemanticChanges | false| |
+Attribute | Value
+--- | ---
+IncludeSemanticChanges | false
 
 
 ## Style/Not
@@ -3039,10 +3039,10 @@ Can be configured to use `0` only for octal literals using
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedOctalStyle | zero_with_o| |
-SupportedOctalStyles | zero_with_o, zero_only| |
+Attribute | Value
+--- | ---
+EnforcedOctalStyle | zero_with_o
+SupportedOctalStyles | zero_with_o, zero_only
 
 
 ## Style/NumericLiterals
@@ -3056,9 +3056,9 @@ of digits in them.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-MinDigits | 5| |
+Attribute | Value
+--- | ---
+MinDigits | 5
 
 
 ## Style/NumericPredicate
@@ -3111,12 +3111,12 @@ bar.baz > 0
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-AutoCorrect | false| |
-EnforcedStyle | predicate| |
-SupportedStyles | predicate, comparison| |
-Exclude | /spec/**/*| |
+Attribute | Value
+--- | ---
+AutoCorrect | false
+EnforcedStyle | predicate
+SupportedStyles | predicate, comparison
+Exclude | spec/\*\*/\*
 
 
 ## Style/OneLineConditional
@@ -3175,9 +3175,9 @@ end
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-SuspiciousParamNames | options, opts, args, params, parameters| |
+Attribute | Value
+--- | ---
+SuspiciousParamNames | options, opts, args, params, parameters
 
 
 ## Style/OptionalArguments
@@ -3242,9 +3242,9 @@ condition of if/unless/while/until.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-AllowSafeAssignment | true| |
+Attribute | Value
+--- | ---
+AllowSafeAssignment | true
 
 
 ## Style/PercentLiteralDelimiters
@@ -3257,9 +3257,9 @@ This cop enforces the consistent usage of `%`-literal delimiters.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-PreferredDelimiters | {"%"=>"()", "%i"=>"()", "%I"=>"()", "%q"=>"()", "%Q"=>"()", "%r"=>"{}", "%s"=>"()", "%w"=>"()", "%W"=>"()", "%x"=>"()"}| |
+Attribute | Value
+--- | ---
+PreferredDelimiters | {"%"=>"()", "%i"=>"()", "%I"=>"()", "%q"=>"()", "%Q"=>"()", "%r"=>"{}", "%s"=>"()", "%w"=>"()", "%W"=>"()", "%x"=>"()"}
 
 
 ## Style/PercentQLiterals
@@ -3272,10 +3272,10 @@ This cop checks for usage of the %Q() syntax when %q() would do.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | lower_case_q| |
-SupportedStyles | lower_case_q, upper_case_q| |
+Attribute | Value
+--- | ---
+EnforcedStyle | lower_case_q
+SupportedStyles | lower_case_q, upper_case_q
 
 
 ## Style/PerlBackrefs
@@ -3313,12 +3313,12 @@ def value? ...
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-NamePrefix | is_, has_, have_| |
-NamePrefixBlacklist | is_, has_, have_| |
-NameWhitelist | is_a?| |
-Exclude | /spec/**/*| |
+Attribute | Value
+--- | ---
+NamePrefix | is_, has_, have_
+NamePrefixBlacklist | is_, has_, have_
+NameWhitelist | is_a?
+Exclude | spec/\*\*/\*
 
 
 ## Style/PreferredHashMethods
@@ -3359,10 +3359,10 @@ Hash#has_value?
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | short| |
-SupportedStyles | short, verbose| |
+Attribute | Value
+--- | ---
+EnforcedStyle | short
+SupportedStyles | short, verbose
 
 
 ## Style/Proc
@@ -3418,10 +3418,10 @@ fail "message"
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | exploded| |
-SupportedStyles | compact, exploded| |
+Attribute | Value
+--- | ---
+EnforcedStyle | exploded
+SupportedStyles | compact, exploded
 
 
 ## Style/RedundantBegin
@@ -3541,9 +3541,9 @@ end
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-AllowMultipleReturnValues | false| |
+Attribute | Value
+--- | ---
+AllowMultipleReturnValues | false
 
 
 ## Style/RedundantSelf
@@ -3629,11 +3629,11 @@ x =~ /home\//
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | slashes| |
-SupportedStyles | slashes, percent_r, mixed| |
-AllowInnerSlashes | false| |
+Attribute | Value
+--- | ---
+EnforcedStyle | slashes
+SupportedStyles | slashes, percent_r, mixed
+AllowInnerSlashes | false
 
 
 ## Style/RescueEnsureAlignment
@@ -3723,9 +3723,9 @@ foo.to_i if foo
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-ConvertCodeThatCanStartToReturnNil | false| |
+Attribute | Value
+--- | ---
+ConvertCodeThatCanStartToReturnNil | false
 
 
 ## Style/SelfAssignment
@@ -3757,9 +3757,9 @@ It also checks for lines terminated with a semicolon.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-AllowAsExpressionSeparator | false| |
+Attribute | Value
+--- | ---
+AllowAsExpressionSeparator | false
 
 
 ## Style/Send
@@ -3780,10 +3780,10 @@ This cop checks for uses of `fail` and `raise`.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | only_raise| |
-SupportedStyles | only_raise, only_fail, semantic| |
+Attribute | Value
+--- | ---
+EnforcedStyle | only_raise
+SupportedStyles | only_raise, only_fail, semantic
 
 
 ## Style/SingleLineBlockParams
@@ -3800,9 +3800,9 @@ parameters.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-Methods | {"reduce"=>["a", "e"]}, {"inject"=>["a", "e"]}| |
+Attribute | Value
+--- | ---
+Methods | {"reduce"=>["a", "e"]}, {"inject"=>["a", "e"]}
 
 
 ## Style/SingleLineMethods
@@ -3816,9 +3816,9 @@ It can optionally accept single-line methods with no body.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-AllowIfMethodIsEmpty | true| |
+Attribute | Value
+--- | ---
+AllowIfMethodIsEmpty | true
 
 
 ## Style/SpaceAfterColon
@@ -3903,10 +3903,10 @@ Checks the spacing inside and after block parameters pipes.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyleInsidePipes | no_space| |
-SupportedStyles | space, no_space| |
+Attribute | Value
+--- | ---
+EnforcedStyleInsidePipes | no_space
+SupportedStyles | space, no_space
 
 
 ## Style/SpaceAroundEqualsInParameterDefault
@@ -3920,10 +3920,10 @@ have or don't have surrounding space depending on configuration.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | space| |
-SupportedStyles | space, no_space| |
+Attribute | Value
+--- | ---
+EnforcedStyle | space
+SupportedStyles | space, no_space
 
 
 ## Style/SpaceAroundKeyword
@@ -3967,9 +3967,9 @@ which should not have surrounding space.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-AllowForAlignment | true| |
+Attribute | Value
+--- | ---
+AllowForAlignment | true
 
 
 ## Style/SpaceBeforeBlockBraces
@@ -3983,10 +3983,10 @@ brace depending on configuration.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | space| |
-SupportedStyles | space, no_space| |
+Attribute | Value
+--- | ---
+EnforcedStyle | space
+SupportedStyles | space, no_space
 
 
 ## Style/SpaceBeforeComma
@@ -4029,9 +4029,9 @@ something   y, z
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-AllowForAlignment | true| |
+Attribute | Value
+--- | ---
+AllowForAlignment | true
 
 
 ## Style/SpaceBeforeSemicolon
@@ -4074,12 +4074,12 @@ configuration.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | space| |
-SupportedStyles | space, no_space| |
-EnforcedStyleForEmptyBraces | no_space| |
-SpaceBeforeBlockParameters | true| |
+Attribute | Value
+--- | ---
+EnforcedStyle | space
+SupportedStyles | space, no_space
+EnforcedStyleForEmptyBraces | no_space
+SpaceBeforeBlockParameters | true
 
 
 ## Style/SpaceInsideBrackets
@@ -4101,11 +4101,11 @@ surrounding space depending on configuration.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | space| |
-EnforcedStyleForEmptyBraces | no_space| |
-SupportedStyles | space, no_space, compact| |
+Attribute | Value
+--- | ---
+EnforcedStyle | space
+EnforcedStyleForEmptyBraces | no_space
+SupportedStyles | space, no_space, compact
 
 
 ## Style/SpaceInsideParens
@@ -4182,10 +4182,10 @@ This cop checks for whitespace within string interpolations.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | no_space| |
-SupportedStyles | space, no_space| |
+Attribute | Value
+--- | ---
+EnforcedStyle | no_space
+SupportedStyles | space, no_space
 
 
 ## Style/SpecialGlobalVars
@@ -4198,10 +4198,10 @@ This cop looks for uses of Perl-style global variables.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | use_english_names| |
-SupportedStyles | use_perl_names, use_english_names| |
+Attribute | Value
+--- | ---
+EnforcedStyle | use_english_names
+SupportedStyles | use_perl_names, use_english_names
 
 
 ## Style/StabbyLambdaParentheses
@@ -4231,10 +4231,10 @@ There are two different styles. Defaults to `require_parentheses`.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | require_parentheses| |
-SupportedStyles | require_parentheses, require_no_parentheses| |
+Attribute | Value
+--- | ---
+EnforcedStyle | require_parentheses
+SupportedStyles | require_parentheses, require_no_parentheses
 
 
 ## Style/StringLiterals
@@ -4247,11 +4247,11 @@ Checks if uses of quotes match the configured preference.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | single_quotes| |
-SupportedStyles | single_quotes, double_quotes| |
-ConsistentQuotesInMultiline | false| |
+Attribute | Value
+--- | ---
+EnforcedStyle | single_quotes
+SupportedStyles | single_quotes, double_quotes
+ConsistentQuotesInMultiline | false
 
 
 ## Style/StringLiteralsInInterpolation
@@ -4264,10 +4264,10 @@ Checks if uses of quotes match the configured preference.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | single_quotes| |
-SupportedStyles | single_quotes, double_quotes| |
+Attribute | Value
+--- | ---
+EnforcedStyle | single_quotes
+SupportedStyles | single_quotes, double_quotes
 
 
 ## Style/StringMethods
@@ -4281,9 +4281,9 @@ from the String class.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-PreferredMethods | {"intern"=>"to_sym"}| |
+Attribute | Value
+--- | ---
+PreferredMethods | {"intern"=>"to_sym"}
 
 
 ## Style/StructInheritance
@@ -4320,10 +4320,10 @@ support a version of Ruby lower than 2.0.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | percent| |
-SupportedStyles | percent, brackets| |
+Attribute | Value
+--- | ---
+EnforcedStyle | percent
+SupportedStyles | percent, brackets
 
 
 ## Style/SymbolLiteral
@@ -4364,9 +4364,9 @@ something.map(&:upcase)
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-IgnoredMethods | respond_to, define_method| |
+Attribute | Value
+--- | ---
+IgnoredMethods | respond_to, define_method
 
 
 ## Style/Tab
@@ -4418,11 +4418,11 @@ foo = (bar && baz) ? a : b
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | require_no_parentheses| |
-SupportedStyles | require_parentheses, require_no_parentheses| |
-AllowSafeAssignment | true| |
+Attribute | Value
+--- | ---
+EnforcedStyle | require_no_parentheses
+SupportedStyles | require_parentheses, require_no_parentheses
+AllowSafeAssignment | true
 
 
 ## Style/TrailingBlankLines
@@ -4436,10 +4436,10 @@ source code.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | final_newline| |
-SupportedStyles | final_newline, final_blank_line| |
+Attribute | Value
+--- | ---
+EnforcedStyle | final_newline
+SupportedStyles | final_newline, final_blank_line
 
 
 ## Style/TrailingCommaInArguments
@@ -4477,10 +4477,10 @@ method(
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyleForMultiline | no_comma| |
-SupportedStyles | comma, consistent_comma, no_comma| |
+Attribute | Value
+--- | ---
+EnforcedStyleForMultiline | no_comma
+SupportedStyles | comma, consistent_comma, no_comma
 
 
 ## Style/TrailingCommaInLiteral
@@ -4518,10 +4518,10 @@ a = [
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyleForMultiline | no_comma| |
-SupportedStyles | comma, consistent_comma, no_comma| |
+Attribute | Value
+--- | ---
+EnforcedStyleForMultiline | no_comma
+SupportedStyles | comma, consistent_comma, no_comma
 
 
 ## Style/TrailingUnderscoreVariable
@@ -4550,9 +4550,9 @@ a, *b, _ = foo()  => The correction `a, *b, = foo()` is a syntax error
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-AllowNamedUnderscoreVariables | true| |
+Attribute | Value
+--- | ---
+AllowNamedUnderscoreVariables | true
 
 
 ## Style/TrailingWhitespace
@@ -4574,13 +4574,13 @@ have been created with the attr_* family of functions automatically.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-ExactNameMatch | true| |
-AllowPredicates | true| |
-AllowDSLWriters | false| |
-IgnoreClassMethods | false| |
-Whitelist | to_ary, to_a, to_c, to_enum, to_h, to_hash, to_i, to_int, to_io, to_open, to_path, to_proc, to_r, to_regexp, to_str, to_s, to_sym| |
+Attribute | Value
+--- | ---
+ExactNameMatch | true
+AllowPredicates | true
+AllowDSLWriters | false
+IgnoreClassMethods | false
+Whitelist | to_ary, to_a, to_c, to_enum, to_h, to_hash, to_i, to_int, to_io, to_open, to_path, to_proc, to_r, to_regexp, to_str, to_s, to_sym
 
 
 ## Style/UnlessElse
@@ -4647,10 +4647,10 @@ snake_case or camelCase, for their names.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | snake_case| |
-SupportedStyles | snake_case, camelCase| |
+Attribute | Value
+--- | ---
+EnforcedStyle | snake_case
+SupportedStyles | snake_case, camelCase
 
 
 ## Style/VariableNumber
@@ -4705,10 +4705,10 @@ variable_one = 1
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | normalcase| |
-SupportedStyles | snake_case, normalcase, non_integer| |
+Attribute | Value
+--- | ---
+EnforcedStyle | normalcase
+SupportedStyles | snake_case, normalcase, non_integer
 
 
 ## Style/WhenThen
@@ -4739,9 +4739,9 @@ The maximum line length is configurable.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-MaxLineLength | 80| |
+Attribute | Value
+--- | ---
+MaxLineLength | 80
 
 
 ## Style/WordArray
@@ -4758,12 +4758,12 @@ which do not want to include that syntax.
 
 ### Important attributes
 
-Attribute | Value |
---- | --- |
-EnforcedStyle | percent| |
-SupportedStyles | percent, brackets| |
-MinSize | 0| |
-WordRegex | (?-mix:\A[\p{Word}\n\t]+\z)| |
+Attribute | Value
+--- | ---
+EnforcedStyle | percent
+SupportedStyles | percent, brackets
+MinSize | 0
+WordRegex | (?-mix:\A[\p{Word}\n\t]+\z)
 
 
 ## Style/ZeroLengthPredicate

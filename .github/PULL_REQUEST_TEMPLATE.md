@@ -5,6 +5,7 @@ The more detailed you are, the better.**
 
 Before submitting the PR make sure the following are checked:
 
+* [ ] Documentation updated with `rake generate_cops_documentation`
 * [ ] Wrote [good commit messages][1].
 * [ ] Commit message starts with `[Fix #issue-number]` (if the related issue exists).
 * [ ] Used the same coding conventions as the rest of the project.

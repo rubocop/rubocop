@@ -20,7 +20,7 @@ task :new_cop, [:cop] do |_task, args|
   cop_code = <<-END
 # frozen_string_literal: true
 
-# TODO: when finished, run 1) `yardoc` and 2) `rake generate_cops_documentation` to update the docs
+# TODO: when finished, run `rake generate_cops_documentation` to update the docs
 module RuboCop
   module Cop
     module #{category}
