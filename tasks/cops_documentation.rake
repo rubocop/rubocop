@@ -92,7 +92,7 @@ task :generate_cops_documentation do |_task|
 
   def print_cop_with_doc(cop, config)
     t = config.for_cop(cop)
-    pars = t.reject! { |k| %w(Description Enabled StyleGuide).include? k }
+    pars = t.reject { |k| %w(Description Enabled StyleGuide).include? k }
     description = 'No documentation'
     examples_object = []
     YARD::Registry.all.select { |o| !o.docstring.blank? }.map do |o|
@@ -115,7 +115,7 @@ task :generate_cops_documentation do |_task|
   end
   system('exec yardoc') if answer == 'Y'
   cops = RuboCop::Cop::Cop.all
-  config = RuboCop::ConfigStore.new.for(Dir.pwd)
+  config = RuboCop::ConfigLoader.default_configuration
   YARD::Registry.load!
   cops.types.sort!.each { |type| print_cops_of_type(cops, type, config) }
 end

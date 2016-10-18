@@ -61,7 +61,7 @@ end
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop identifies places where a case-insensitive string comparison
 can better be implemented using `casecmp`.
@@ -92,7 +92,7 @@ Reference | https://github.com/JuanitoFatas/fast-ruby#stringcasecmp-vs-stringdow
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop is used to identify usages of `count` on an `Enumerable` that
 follow calls to `select` or `reject`. Querying logic can instead be
@@ -143,7 +143,7 @@ SafeMode | true
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop is used to identify usages of
 `select.first`, `select.last`, `find_all.first`, and `find_all.last`
@@ -208,7 +208,7 @@ str.end_with?(var1, var2)
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop identifies unnecessary use of a regex where `String#end_with?`
 would suffice.
@@ -245,7 +245,7 @@ Do not compute the size of statically sized objects.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop is used to identify usages of
 
@@ -274,7 +274,7 @@ EnabledForFlattenWithoutParams | false
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for uses of `each_key` & `each_value` Hash methods.
 
@@ -323,7 +323,7 @@ This cop identifies places where `lstrip.rstrip` can be replaced by
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop identifies uses of `Range#include?`, which iterates over each
 item in a `Range` to see if a specified item is there. In contrast,
@@ -347,7 +347,7 @@ Reference | https://github.com/JuanitoFatas/fast-ruby#cover-vs-include-code
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop identifies the use of a `&block` parameter and `block.call`
 where `yield` would do just as well.
@@ -406,7 +406,7 @@ return regex.match('str')
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop identifies places where `Hash#merge!` can be replaced by
 `Hash#[]=`.
@@ -453,7 +453,7 @@ array.sort
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop is used to identify usages of `reverse.each` and
 change them to use `reverse_each` instead.
@@ -479,7 +479,7 @@ Reference | https://github.com/JuanitoFatas/fast-ruby#enumerablereverseeach-vs-e
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop is used to identify usages of `shuffle.first`, `shuffle.last`
 and `shuffle[]` and change them to use `sample` instead.
@@ -517,7 +517,7 @@ Reference | https://github.com/JuanitoFatas/fast-ruby#arrayshufflefirst-vs-array
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop is used to identify usages of `count` on an
 `Array` and `Hash` and change them to `size`.
@@ -578,7 +578,7 @@ end
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop identifies unnecessary use of a regex where
 `String#start_with?` would suffice.
@@ -607,7 +607,7 @@ AutoCorrect | false
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop identifies places where `gsub` can be replaced by
 `tr` or `delete`.
