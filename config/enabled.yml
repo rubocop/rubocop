@@ -698,7 +698,6 @@ Style/SignalException:
 
 Style/SingleLineBlockParams:
   Description: 'Enforces the names of some block params.'
-  StyleGuide: '#reduce-blocks'
   Enabled: true
 
 Style/SingleLineMethods:
