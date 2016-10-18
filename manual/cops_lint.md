@@ -47,7 +47,7 @@ do_something(/pattern/i)
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop checks for assignments in the conditions of
 if/while/until.
@@ -63,7 +63,7 @@ AllowSafeAssignment | true
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks whether the end keywords are aligned properly for do
 end blocks.
@@ -179,7 +179,7 @@ This cop checks for calls to debugger or pry.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks whether the end keywords of method definitions are
 aligned properly.
@@ -213,6 +213,27 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 This cop checks for uses of the deprecated class method usages.
+
+## Lint/DuplicateCaseCondition
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks that there are no repeated conditions
+used in case 'when' expressions.
+
+### Example
+
+```ruby
+# bad
+case x
+when 'first'
+  do_something
+when 'first'
+  do_something_else
+end
+```
 
 ## Lint/DuplicateMethods
 
@@ -316,7 +337,7 @@ This cop checks for empty interpolation.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks whether the end keywords are aligned properly.
 
@@ -497,7 +518,7 @@ end
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop looks for error classes inheriting from `Exception`
 and its standard library subclasses, excluding subclasses of
@@ -946,7 +967,7 @@ statement in non-final position in *begin*(implicit) blocks.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for unused block arguments.
 
@@ -994,7 +1015,7 @@ AllowUnusedKeywordArguments | false
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for unused method arguments.
 
@@ -1018,7 +1039,7 @@ IgnoreEmptyMethods | true
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop checks for redundant access modifiers, including those with no
 code, those which are repeated, and leading `public` modifiers in a

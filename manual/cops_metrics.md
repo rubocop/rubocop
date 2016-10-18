@@ -4,7 +4,7 @@
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop checks that the ABC size of methods is not higher than the
 configured maximum. The ABC size is based on assignments, branches
@@ -15,14 +15,14 @@ configured maximum. The ABC size is based on assignments, branches
 Attribute | Value
 --- | ---
 Reference | http://c2.com/cgi/wiki?AbcMetric
-Max | 19
+Max | 15
 
 
 ## Metrics/BlockLength
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop checks if the length of a block exceeds some maximum value.
 Comment lines can optionally be ignored.
@@ -41,7 +41,7 @@ Exclude | Rakefile, \*\*/\*.rake, spec/\*\*/\*.rb
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop checks for excessive nesting of conditional and looping
 constructs. Despite the cop's name, blocks are not considered as an
@@ -60,7 +60,7 @@ Max | 3
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop checks if the length a class exceeds some maximum value.
 Comment lines can optionally be ignored.
@@ -71,14 +71,14 @@ The maximum allowed length is configurable.
 Attribute | Value
 --- | ---
 CountComments | false
-Max | 168
+Max | 100
 
 
 ## Metrics/CyclomaticComplexity
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop checks that the cyclomatic complexity of methods is not higher
 than the configured maximum. The cyclomatic complexity is the number of
@@ -95,14 +95,14 @@ Loops can be said to have an exit condition, so they add one.
 
 Attribute | Value
 --- | ---
-Max | 7
+Max | 6
 
 
 ## Metrics/LineLength
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop checks the length of lines in the source code.
 The maximum length is configurable.
@@ -122,7 +122,7 @@ IgnoreCopDirectives | false
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop checks if the length of a method exceeds some maximum value.
 Comment lines can optionally be ignored.
@@ -133,14 +133,14 @@ The maximum allowed length is configurable.
 Attribute | Value
 --- | ---
 CountComments | false
-Max | 14
+Max | 10
 
 
 ## Metrics/ModuleLength
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop checks if the length a module exceeds some maximum value.
 Comment lines can optionally be ignored.
@@ -151,14 +151,14 @@ The maximum allowed length is configurable.
 Attribute | Value
 --- | ---
 CountComments | false
-Max | 156
+Max | 100
 
 
 ## Metrics/ParameterLists
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop checks for methods with too many parameters.
 The maximum number of parameters is configurable.
@@ -177,7 +177,7 @@ CountKeywordArgs | true
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop tries to produce a complexity score that's a measure of the
 complexity the reader experiences when looking at a method. For that

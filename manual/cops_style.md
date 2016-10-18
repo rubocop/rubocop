@@ -4,7 +4,7 @@
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 Modifiers should be indented as deep as method definitions, or as deep
 as the class/module keyword, depending on configuration.
@@ -46,7 +46,7 @@ def attribute ...
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop finds uses of `alias` where `alias_method` would be more
 appropriate (or is simply preferred due to configuration), and vice
@@ -74,7 +74,7 @@ aligned.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 Here we check if the keys, separators, and values of a multi-line hash
 literal are aligned.
@@ -93,7 +93,7 @@ SupportedLastArgumentHashStyles | always_inspect, always_ignore, ignore_implicit
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 Here we check if the parameters on a multi-line method call or
 definition are aligned.
@@ -111,7 +111,7 @@ IndentationWidth |
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for uses of *and* and *or*.
 
@@ -164,7 +164,7 @@ This cop checks for uses of Module#attr.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | No
+Disabled | No
 
 This cop checks for cases when you could use a block
 accepting version of a method that does automatic
@@ -186,7 +186,7 @@ end
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks if usage of %() or %Q() matches configuration.
 
@@ -218,7 +218,7 @@ This cop looks for uses of block comments (=begin...=end).
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 Check for uses of braces or do/end around single line or
 multi-line blocks.
@@ -269,7 +269,7 @@ blah { |i|
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for braces around the last parameter in a method call
 if the last parameter is a hash.
@@ -294,7 +294,7 @@ This cop checks for uses of the case equality operator(===).
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks how the *when*s of a *case* expression
 are indented in relation to its *case* or *end* keyword.
@@ -332,7 +332,7 @@ an underscore in them.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop checks the style of children definitions at classes and
 modules. Basically there are two different styles:
@@ -361,7 +361,7 @@ SupportedStyles | nested, compact
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop enforces consistent use of `Object#is_a?` or `Object#kind_of?`.
 
@@ -474,7 +474,7 @@ of the . operator (like FileUtils::rmdir instead of FileUtils.rmdir).
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop enforces using `` or %x around command literals.
 
@@ -516,7 +516,7 @@ AllowInnerBackticks | false
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks that comment annotation keywords are written according
 to guidelines.
@@ -540,7 +540,7 @@ This cops checks the indentation of comments.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 Check for `if` and `case` statements where each branch is used for
 assignment to the same variable when using the return of the
@@ -702,7 +702,7 @@ class/singleton methods are checked.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop checks for missing top-level documentation of
 classes and modules. Classes with no body are exempt from the
@@ -785,7 +785,7 @@ RequireForNonPublicMethods | false
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks the . position in multi-line method calls.
 
@@ -930,7 +930,7 @@ end
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 Checks for empty else-clauses, possibly including comments and/or an
 explicit `nil` depending on the EnforcedStyle.
@@ -1014,7 +1014,7 @@ SupportedStyles | empty, nil, both
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks whether method definitions are
 separated by empty lines.
@@ -1046,7 +1046,7 @@ Access modifiers should be surrounded by blank lines.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cops checks if empty lines around the bodies of blocks match
 the configuration.
@@ -1085,7 +1085,7 @@ SupportedStyles | empty_lines, no_empty_lines
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cops checks if empty lines around the bodies of classes match
 the configuration.
@@ -1144,7 +1144,7 @@ end
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cops checks if empty lines around the bodies of modules match
 the configuration.
@@ -1213,7 +1213,7 @@ never - enforce no encoding comment in all files
 
 Attribute | Value
 --- | ---
-EnforcedStyle | when_needed
+EnforcedStyle | never
 SupportedStyles | when_needed, always, never
 AutoCorrectEncodingComment | # encoding: utf-8
 
@@ -1257,7 +1257,7 @@ if x.even?
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for extra/unnecessary whitespace.
 
@@ -1288,7 +1288,7 @@ ForceEqualSignAlignment | false
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop makes sure that Ruby source files have snake_case
 names. Ruby scripts (i.e. source files with a shebang in the
@@ -1308,7 +1308,7 @@ IgnoreExecutableScripts | true
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | Yes
+Disabled | Yes
 
 This cop checks for a line break before the first element in a
 multi-line array.
@@ -1330,7 +1330,7 @@ multi-line array.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | Yes
+Disabled | Yes
 
 This cop checks for a line break before the first element in a
 multi-line hash.
@@ -1352,7 +1352,7 @@ multi-line hash.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | Yes
+Disabled | Yes
 
 This cop checks for a line break before the first argument in a
 multi-line method call.
@@ -1378,7 +1378,7 @@ method foo, bar,
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | Yes
+Disabled | Yes
 
 This cop checks for a line break before the first parameter in a
 multi-line method parameter definition.
@@ -1410,7 +1410,7 @@ end
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks the indentation of the first parameter in a method call.
 Parameters after the first one are checked by Style/AlignParameters, not
@@ -1451,7 +1451,7 @@ This cop looks for uses of flip flop operator
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop looks for uses of the *for* keyword, or *each* method. The
 preferred alternative is set in the EnforcedStyle configuration
@@ -1470,7 +1470,7 @@ SupportedStyles | for, each
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop enforces the use of a single string formatting utility.
 Valid options include Kernel#format, Kernel#sprintf and String#%.
@@ -1492,7 +1492,7 @@ SupportedStyles | format, sprintf, percent
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop is designed to help upgrade to Ruby 3.0. It will add the
 comment `# frozen_string_literal: true` to the top of files to
@@ -1504,7 +1504,7 @@ comment. The frozen string literal comment is only valid in Ruby 2.3+.
 
 Attribute | Value
 --- | ---
-EnforcedStyle | always
+EnforcedStyle | when_needed
 SupportedStyles | when_needed, always
 
 
@@ -1512,7 +1512,7 @@ SupportedStyles | when_needed, always
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cops looks for uses of global variables.
 It does not report offenses for built-in global variables.
@@ -1533,7 +1533,7 @@ AllowedVariables |
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 Use a guard clause instead of wrapping the code inside a conditional
 expression
@@ -1582,7 +1582,7 @@ MinBodyLength | 1
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks hash literal syntax.
 
@@ -1725,7 +1725,7 @@ end
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 Checks for if and unless statements that would fit on one line
 if written as a modifier if/unless.
@@ -1778,7 +1778,7 @@ Checks for uses of semicolon in if statements.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | No
+Disabled | No
 
 This cop checks for `raise` or `fail` statements which do not specify an
 explicit exception class. (This raises a `RuntimeError`. Some projects
@@ -1799,7 +1799,7 @@ raise ArgumentError, 'Error message here'
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks the indentation of the first element in an array literal
 where the opening bracket and the first element are on separate lines.
@@ -1849,7 +1849,7 @@ IndentationWidth |
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks the indentation of the first line of the
 right-hand-side of a multi-line assignment.
@@ -1884,7 +1884,7 @@ IndentationWidth |
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cops checks the indentation of the first key in a hash literal
 where the opening brace and the first key are on separate lines. The
@@ -1934,7 +1934,7 @@ IndentationWidth |
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cops checks for inconsistent indentation.
 
@@ -1961,7 +1961,7 @@ SupportedStyles | normal, rails
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cops checks for indentation that doesn't use two spaces.
 
@@ -2017,7 +2017,7 @@ line in a file.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | No
+Disabled | No
 
 This cop checks for trailing inline comments.
 
@@ -2040,7 +2040,7 @@ end
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop (by default) checks for uses of the lambda literal syntax for
 single line lambdas, and the method call syntax for multiline lambdas.
@@ -2107,7 +2107,7 @@ SupportedStyles | line_count_dependent, lambda, literal
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for use of the lambda.(args) syntax.
 
@@ -2177,7 +2177,7 @@ This cop checks for unwanted parentheses in parameterless method calls.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | No
+Disabled | No
 
 This cop checks for methods called on a do...end block. The point of
 this check is that it's easy to miss the call tacked on to the block
@@ -2195,7 +2195,7 @@ end.c
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cops checks for parentheses around the arguments in method
 definitions. Both instance and class/singleton methods are checked.
@@ -2240,7 +2240,7 @@ end
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop makes sure that all methods use the configured style,
 snake_case or camelCase, for their names. Some special arrangements
@@ -2302,7 +2302,7 @@ SupportedStyles | if, case, both
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cops checks for use of `extend self` or `module_function` in a
 module.
@@ -2340,7 +2340,7 @@ SupportedStyles | module_function, extend_self
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks that the closing brace in an array literal is either
 on the same line as the last array element, or a new line.
@@ -2516,7 +2516,7 @@ blah { |i|
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks that the closing brace in a hash literal is either
 on the same line as the last hash element, or a new line.
@@ -2630,7 +2630,7 @@ end
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks that the closing brace in a method call is either
 on the same line as the last method argument, or a new line.
@@ -2699,7 +2699,7 @@ SupportedStyles | symmetrical, new_line, same_line
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks the indentation of the method name part in method calls
 that span more than one line.
@@ -2744,7 +2744,7 @@ IndentationWidth |
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks that the closing brace in a method definition is either
 on the same line as the last method parameter, or a new line.
@@ -2813,7 +2813,7 @@ SupportedStyles | symmetrical, new_line, same_line
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks the indentation of the right hand side operand in
 binary operations that span more than one line.
@@ -2931,7 +2931,7 @@ This cop checks for nested ternary op expressions.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 Use `next` to skip iteration instead of a condition at the end.
 
@@ -2983,7 +2983,7 @@ if x.nil?
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for non-nil checks, which are usually redundant.
 
@@ -3027,7 +3027,7 @@ This cop checks for uses if the keyword *not* instead of !.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for octal, hex, binary and decimal literals using
 uppercase prefixes and corrects them to lowercase prefix
@@ -3049,7 +3049,7 @@ SupportedOctalStyles | zero_with_o, zero_only
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for big numeric literals without _ between groups
 of digits in them.
@@ -3065,7 +3065,7 @@ MinDigits | 5
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for usage of comparison operators (`==`, `!=`,
 `>`, `<`) to test numbers as zero, nonzero, positive, or negative.
@@ -3235,7 +3235,7 @@ c = 3
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for the presence of superfluous parentheses around the
 condition of if/unless/while/until.
@@ -3251,7 +3251,7 @@ AllowSafeAssignment | true
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop enforces the consistent usage of `%`-literal delimiters.
 
@@ -3266,7 +3266,7 @@ PreferredDelimiters | {"%"=>"()", "%i"=>"()", "%I"=>"()", "%q"=>"()", "%Q"=>"()"
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for usage of the %Q() syntax when %q() would do.
 
@@ -3291,7 +3291,7 @@ backreferences like $1, $2, etc.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop makes sure that predicates are named properly.
 
@@ -3325,7 +3325,7 @@ Exclude | spec/\*\*/\*
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop (by default) checks for uses of methods Hash#has_key? and
 Hash#has_value? where it enforces Hash#key? and Hash#value?
@@ -3378,7 +3378,7 @@ would be more appropriate.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks the args passed to `fail` and `raise`. For exploded
 style (default), it recommends passing the exception class and message
@@ -3517,7 +3517,7 @@ x if y.z.nil?
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for redundant `return` expressions.
 
@@ -3596,7 +3596,7 @@ otherwise.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop enforces using // or %r around regular expressions.
 
@@ -3675,50 +3675,45 @@ This cop checks for uses of rescue in its modifier form.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
-This cop transforms usages of a method call safeguarded by a non `nil`
-check for the variable whose method is being called to
-safe navigation (`&.`).
-
-Configuration option: ConvertCodeThatCanStartToReturnNil
-The default for this is `false`. When configured to `true`, this will
-check for code in the format `!foo.nil? && foo.bar`. As it is written,
-the return of this code is limited to `false` and whatever the return
-of the method is. If this is converted to safe navigation,
-`foo&.bar` can start returning `nil` as well as what the method
-returns.
+This cop converts usages of `try!` to `&.`. It can also be configured
+to convert `try`. It will convert code to use safe navigation if the
+target Ruby version is set to 2.3+
 
 ### Example
 
 ```ruby
-# bad
-foo.bar if foo
-foo.bar(param1, param2) if foo
-foo.bar { |e| e.something } if foo
-foo.bar(param) { |e| e.something } if foo
+# ConvertTry: false
+  # bad
+  foo.try!(:bar)
+  foo.try!(:bar, baz)
+  foo.try!(:bar) { |e| e.baz }
 
-foo.bar if !foo.nil?
-foo.bar unless !foo
-foo.bar unless foo.nil?
+  foo.try!(:[], 0)
 
-foo && foo.bar
-foo && foo.bar(param1, param2)
-foo && foo.bar { |e| e.something }
-foo && foo.bar(param) { |e| e.something }
+  # good
+  foo.try(:bar)
+  foo.try(:bar, baz)
+  foo.try(:bar) { |e| e.baz }
 
-# good
-foo&.bar
-foo&.bar(param1, param2)
-foo&.bar { |e| e.something }
-foo&.bar(param) { |e| e.something }
+  foo&.bar
+  foo&.bar(baz)
+  foo&.bar { |e| e.baz }
 
-foo.nil? || foo.bar
-!foo || foo.bar
+# ConvertTry: true
+  # bad
+  foo.try!(:bar)
+  foo.try!(:bar, baz)
+  foo.try!(:bar) { |e| e.baz }
+  foo.try(:bar)
+  foo.try(:bar, baz)
+  foo.try(:bar) { |e| e.baz }
 
-# Methods that `nil` will `respond_to?` should not be converted to
-# use safe navigation
-foo.to_i if foo
+  # good
+  foo&.bar
+  foo&.bar(baz)
+  foo&.bar { |e| e.baz }
 ```
 
 ### Important attributes
@@ -3750,7 +3745,7 @@ x += 1
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for multiple expressions placed on the same line.
 It also checks for lines terminated with a semicolon.
@@ -3766,7 +3761,7 @@ AllowAsExpressionSeparator | false
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | No
+Disabled | No
 
 This cop checks for the use of the send method.
 
@@ -3774,7 +3769,7 @@ This cop checks for the use of the send method.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for uses of `fail` and `raise`.
 
@@ -3790,7 +3785,7 @@ SupportedStyles | only_raise, only_fail, semantic
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop checks whether the block parameters of a single-line
 method accepting a block match the names specified via configuration.
@@ -3809,7 +3804,7 @@ Methods | {"reduce"=>["a", "e"]}, {"inject"=>["a", "e"]}
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for single-line method definitions.
 It can optionally accept single-line methods with no body.
@@ -3887,7 +3882,7 @@ Checks for semicolon (;) not followed by some kind of space.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 Checks the spacing inside and after block parameters pipes.
 
@@ -3913,7 +3908,7 @@ SupportedStyles | space, no_space
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 Checks that the equals signs in parameter default assignments
 have or don't have surrounding space depending on configuration.
@@ -3960,7 +3955,7 @@ something = 123 if test
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 Checks that operators have space around them, except for **
 which should not have surrounding space.
@@ -3976,7 +3971,7 @@ AllowForAlignment | true
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 Checks that block braces have or don't have a space before the opening
 brace depending on configuration.
@@ -4010,7 +4005,7 @@ same line.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 Checks that exactly one space is used between a method name and the
 first argument for method calls without parentheses.
@@ -4065,7 +4060,7 @@ Checks for unnecessary additional spaces inside array percent literals
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 Checks that block braces have or don't have surrounding space inside
 them on configuration. For blocks taking parameters, it checks that the
@@ -4094,7 +4089,7 @@ Checks for spaces inside square brackets.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 Checks that braces used for hash literals have or don't have
 surrounding space depending on configuration.
@@ -4166,7 +4161,7 @@ Checks for spaces inside range literals.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for whitespace within string interpolations.
 
@@ -4192,7 +4187,7 @@ SupportedStyles | space, no_space
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop looks for uses of Perl-style global variables.
 
@@ -4208,7 +4203,7 @@ SupportedStyles | use_perl_names, use_english_names
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 Check for parentheses around stabby lambda arguments.
 There are two different styles. Defaults to `require_parentheses`.
@@ -4241,7 +4236,7 @@ SupportedStyles | require_parentheses, require_no_parentheses
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 Checks if uses of quotes match the configured preference.
 
@@ -4258,7 +4253,7 @@ ConsistentQuotesInMultiline | false
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 Checks if uses of quotes match the configured preference.
 
@@ -4348,7 +4343,7 @@ This cop checks symbol literal syntax.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 Use symbols as procs when possible.
 
@@ -4381,7 +4376,7 @@ This cop checks for tabs inside the source code.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for the presence of parentheses around ternary
 conditions. It is configurable to enforce inclusion or omission of
@@ -4429,7 +4424,7 @@ AllowSafeAssignment | true
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop looks for trailing blank lines and a final newline in the
 source code.
@@ -4446,7 +4441,7 @@ SupportedStyles | final_newline, final_blank_line
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for trailing comma in argument lists.
 
@@ -4487,7 +4482,7 @@ SupportedStyles | comma, consistent_comma, no_comma
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for trailing comma in array and hash literals.
 
@@ -4528,7 +4523,7 @@ SupportedStyles | comma, consistent_comma, no_comma
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for extra underscores in variable assignment.
 
@@ -4567,7 +4562,7 @@ This cop looks for trailing whitespace in the source code.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop looks for trivial reader/writer methods, that could
 have been created with the attr_* family of functions automatically.
@@ -4640,7 +4635,7 @@ This cop checks for variable interpolation (like "#@ivar").
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop makes sure that all variables use the configured style,
 snake_case or camelCase, for their names.
@@ -4657,7 +4652,7 @@ SupportedStyles | snake_case, camelCase
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop makes sure that all numbered variables use the
 configured style, snake_case, normalcase or non_integer,
@@ -4731,7 +4726,7 @@ Checks for uses of `do` in multi-line `while/until` statements.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 Checks for while and until statements that would fit on one line
 if written as a modifier while/until.
@@ -4748,7 +4743,7 @@ MaxLineLength | 80
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop can check for array literals made up of word-like
 strings, that are not using the %w() syntax.
