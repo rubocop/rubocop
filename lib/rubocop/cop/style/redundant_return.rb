@@ -98,6 +98,7 @@ module RuboCop
         end
 
         def check_when_node(node)
+          return unless node
           _cond, body = *node
           check_branch(body) if body
         end

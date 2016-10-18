@@ -19,6 +19,7 @@
 * [#3625](https://github.com/bbatsov/rubocop/pull/3625): Fix some cops errors when condition is empty brace. ([@pocke][])
 * [#3468](https://github.com/bbatsov/rubocop/issues/3468): Fix bug regarding alignment inside `begin`..`end` block in `Style/MultilineMethodCallIndentation`. ([@jonas054][])
 * [#3644](https://github.com/bbatsov/rubocop/pull/3644): Fix generation incorrect documentation. ([@pocke][])
+* [#3645](https://github.com/bbatsov/rubocop/pull/3645): Fix bug with empty case when nodes in `Style/RedundantReturn`. ([@tiagocasanovapt][])
 
 ## 0.44.1 (2016-10-13)
 
@@ -2448,3 +2449,4 @@
 [@albus522]: https://github.com/albus522
 [@sihu]: https://github.com/sihu
 [@swcraig]: https://github.com/swcraig
+[@tiagocasanovapt]: https://github.com/tiagocasanovapt
