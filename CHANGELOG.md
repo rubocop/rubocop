@@ -19,6 +19,7 @@
 * [#3625](https://github.com/bbatsov/rubocop/pull/3625): Fix some cops errors when condition is empty brace. ([@pocke][])
 * [#3468](https://github.com/bbatsov/rubocop/issues/3468): Fix bug regarding alignment inside `begin`..`end` block in `Style/MultilineMethodCallIndentation`. ([@jonas054][])
 * [#3644](https://github.com/bbatsov/rubocop/pull/3644): Fix generation incorrect documentation. ([@pocke][])
+* [#3637](https://github.com/bbatsov/rubocop/issues/3637): Fix Style/NonNilCheck crashing for ternary condition. ([@tejasbubane][])
 
 ### Changes
 
