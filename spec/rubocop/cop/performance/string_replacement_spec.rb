@@ -130,8 +130,8 @@ describe RuboCop::Cop::Performance::StringReplacement do
         expect(cop.messages).to eq(['Use `delete` instead of `gsub`.'])
       end
 
-      %w(a b c ' " % ! = < > # & ; : ` ~ 1 2 3 - _ , \r \\\\ \y \u1234
-         \x65).each do |str|
+      %w[a b c ' " % ! = < > # & ; : ` ~ 1 2 3 - _ , \r \\\\ \y \u1234
+         \x65].each do |str|
         it "registers an offense when replacing #{str} with a literal" do
           inspect_source(cop, "'abc'.gsub(/#{str}/, 'a')")
           expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])

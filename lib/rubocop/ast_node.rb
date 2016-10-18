@@ -40,7 +40,7 @@ module RuboCop
                 :or, :postexe, :redo, :rescue, :retry, :return, :self, :super,
                 :zsuper, :then, :undef, :until, :when, :while, :yield].freeze
     OPERATOR_KEYWORDS = [:and, :or].freeze
-    SPECIAL_KEYWORDS = %w(__FILE__ __LINE__ __ENCODING__).freeze
+    SPECIAL_KEYWORDS = %w[__FILE__ __LINE__ __ENCODING__].freeze
 
     # def_matcher can be used to define a pattern-matching method on Node
     class << self

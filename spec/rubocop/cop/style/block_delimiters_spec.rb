@@ -34,9 +34,9 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
   context 'Semantic style' do
     cop_config = {
       'EnforcedStyle' => 'semantic',
-      'ProceduralMethods' => %w(tap),
-      'FunctionalMethods' => %w(let),
-      'IgnoredMethods' => %w(lambda)
+      'ProceduralMethods' => %w[tap],
+      'FunctionalMethods' => %w[let],
+      'IgnoredMethods' => %w[lambda]
     }
 
     let(:cop_config) { cop_config }

@@ -8,7 +8,7 @@ module RuboCop
         include Locatable
 
         MULTIPLE_LEFT_HAND_SIDE_TYPE = :mlhs
-        REFERENCE_PENETRABLE_BRANCH_TYPES = %w(rescue_main ensure_main).freeze
+        REFERENCE_PENETRABLE_BRANCH_TYPES = %w[rescue_main ensure_main].freeze
 
         attr_reader :node, :variable, :referenced
         alias referenced? referenced

@@ -8,6 +8,7 @@
 
 * [#3615](https://github.com/bbatsov/rubocop/pull/3615): Add autocorrection for `Lint/EmptyInterpolation`. ([@pocke][])
 * Make `PercentLiteralDelimiters` enforce delimiters around `%I()` too. ([@bronson][])
+* Prefer square brackets for array literals to match the [updated style guide](https://github.com/bbatsov/ruby-style-guide/pull/563). ([@bronson][])
 
 ### Bug fixes
 

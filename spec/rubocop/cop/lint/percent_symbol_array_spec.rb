@@ -13,7 +13,7 @@ describe RuboCop::Cop::Lint::PercentSymbolArray do
   end
 
   context 'detecting colons or commas in a %i/%I string' do
-    %w(i I).each do |char|
+    %w[i I].each do |char|
       it 'accepts tokens without colons or commas' do
         inspect_source(cop, "%#{char}(foo bar baz)")
 

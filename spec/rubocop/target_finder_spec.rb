@@ -79,7 +79,7 @@ describe RuboCop::TargetFinder, :isolated_environment do
     end
 
     context 'when same paths are passed' do
-      let(:args) { %w(dir1 dir1) }
+      let(:args) { %w[dir1 dir1] }
 
       it 'does not return duplicated file paths' do
         count = found_basenames.count { |f| f == 'ruby1.rb' }

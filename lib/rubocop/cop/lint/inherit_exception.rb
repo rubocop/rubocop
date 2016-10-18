@@ -37,7 +37,7 @@ module RuboCop
           runtime_error: 'RuntimeError',
           standard_error: 'StandardError'
         }.freeze
-        ILLEGAL_CLASSES = %w(
+        ILLEGAL_CLASSES = %w[
           Exception
           SystemStackError
           NoMemoryError
@@ -49,7 +49,7 @@ module RuboCop
           Interrupt
           SignalException
           SystemExit
-        ).freeze
+        ].freeze
 
         def on_class(node)
           _class, base_class, _body = *node

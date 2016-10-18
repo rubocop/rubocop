@@ -9,7 +9,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     let(:cop_config) do
       { 'Enabled'           => true,
         'EnforcedStyle'     => 'always',
-        'SupportedStyles'   => %w(always when_needed) }
+        'SupportedStyles'   => %w[always when_needed] }
     end
 
     it 'accepts an empty source' do
@@ -213,7 +213,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     let(:cop_config) do
       { 'Enabled'           => true,
         'EnforcedStyle'     => 'when_needed',
-        'SupportedStyles'   => %w(always when_needed) }
+        'SupportedStyles'   => %w[always when_needed] }
     end
 
     it 'accepts an empty source' do

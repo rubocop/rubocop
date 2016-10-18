@@ -5,7 +5,7 @@ require 'spec_helper'
 describe RuboCop::Cop::Style::CommentAnnotation, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) do
-    { 'Keywords' => %w(TODO FIXME OPTIMIZE HACK REVIEW) }
+    { 'Keywords' => %w[TODO FIXME OPTIMIZE HACK REVIEW] }
   end
 
   context 'missing colon' do
@@ -22,7 +22,7 @@ describe RuboCop::Cop::Style::CommentAnnotation, :config do
   end
 
   context 'with configured keyword' do
-    let(:cop_config) { { 'Keywords' => %w(ISSUE) } }
+    let(:cop_config) { { 'Keywords' => %w[ISSUE] } }
 
     it 'registers an offense for a missing colon after the word' do
       inspect_source(cop, '# ISSUE wrong order')
@@ -122,7 +122,7 @@ describe RuboCop::Cop::Style::CommentAnnotation, :config do
 
   context 'when a keyword is not in the configuration' do
     let(:cop_config) do
-      { 'Keywords' => %w(FIXME OPTIMIZE HACK REVIEW) }
+      { 'Keywords' => %w[FIXME OPTIMIZE HACK REVIEW] }
     end
 
     it 'accepts the word without colon' do

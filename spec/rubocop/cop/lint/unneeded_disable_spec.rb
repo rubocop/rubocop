@@ -209,7 +209,7 @@ describe RuboCop::Cop::Lint::UnneededDisable do
                 expect(cop.messages)
                   .to eq(['Unnecessary disabling of `Metrics/ClassLength`.',
                           'Unnecessary disabling of `Lint/Debugger`.'])
-                expect(cop.highlights).to eq(%w(ClassLength Debugger))
+                expect(cop.highlights).to eq(%w[ClassLength Debugger])
               end
             end
           end

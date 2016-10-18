@@ -5,7 +5,7 @@ require 'spec_helper'
 describe RuboCop::Cop::Lint::ConditionPosition do
   subject(:cop) { described_class.new }
 
-  %w(if unless while until).each do |keyword|
+  %w[if unless while until].each do |keyword|
     it 'registers an offense for condition on the next line' do
       inspect_source(cop,
                      [keyword,

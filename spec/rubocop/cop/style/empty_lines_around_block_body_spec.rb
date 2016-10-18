@@ -6,7 +6,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBlockBody, :config do
   subject(:cop) { described_class.new(config) }
 
   # Test blocks using both {} and do..end
-  [%w({ }), %w(do end)].each do |open, close|
+  [%w[{ }], %w[do end]].each do |open, close|
     context "when EnforcedStyle is no_empty_lines for #{open} #{close} block" do
       let(:cop_config) { { 'EnforcedStyle' => 'no_empty_lines' } }
 

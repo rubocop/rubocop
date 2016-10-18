@@ -121,7 +121,7 @@ describe RuboCop::Cop::Style::FileName do
     end
 
     context 'on a file which defines no class or module at all' do
-      %w(lib src test spec).each do |dir|
+      %w[lib src test spec].each do |dir|
         context "under #{dir}" do
           let(:filename) { "/some/dir/#{dir}/file/test_case.rb" }
 
@@ -168,7 +168,7 @@ describe RuboCop::Cop::Style::FileName do
     end
 
     shared_examples 'matching module or class' do
-      %w(lib src test spec).each do |dir|
+      %w[lib src test spec].each do |dir|
         context "in a matching directory under #{dir}" do
           let(:filename) { "/some/dir/#{dir}/a/b.rb" }
 

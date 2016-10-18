@@ -27,7 +27,7 @@ module RuboCop
         COMPLEX_STRING_EDGE_TOKEN_TYPES = [:tSTRING_BEG, :tSTRING_END].freeze
         HIGH_PRECEDENCE_OP_TOKEN_TYPES = [:tSTAR2, :tPERCENT, :tDOT,
                                           :tLBRACK2].freeze
-        QUOTE_DELIMITERS = %w(' ").freeze
+        QUOTE_DELIMITERS = %w[' "].freeze
 
         def investigate(processed_source)
           processed_source.tokens.each_index do |index|

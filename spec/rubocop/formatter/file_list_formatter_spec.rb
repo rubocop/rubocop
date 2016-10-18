@@ -12,7 +12,7 @@ module RuboCop
         it 'displays parsable text' do
           cop = Cop::Cop.new
           source_buffer = Parser::Source::Buffer.new('test', 1)
-          source_buffer.source = %w(a b cdefghi).join("\n")
+          source_buffer.source = %w[a b cdefghi].join("\n")
 
           cop.add_offense(nil,
                           Parser::Source::Range.new(source_buffer, 0, 1),

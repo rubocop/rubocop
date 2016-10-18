@@ -132,7 +132,7 @@ module RuboCop
           # But RC can be run from any working directory, and can check any path
           # We can't assume that the working directory, or any other, is the
           # "starting point" to build a namespace
-          start = %w(lib spec test src)
+          start = %w[lib spec test src]
           start_index = nil
 
           # To find the closest namespace root take the path components, and

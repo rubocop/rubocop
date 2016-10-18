@@ -13,8 +13,8 @@ module RuboCop
   class Config
     include PathUtil
 
-    COMMON_PARAMS = %w(Exclude Include Severity
-                       AutoCorrect StyleGuide Details).freeze
+    COMMON_PARAMS = %w[Exclude Include Severity
+                       AutoCorrect StyleGuide Details].freeze
     # 2.0 is the oldest officially supported Ruby version.
     DEFAULT_RUBY_VERSION = 2.0
     KNOWN_RUBIES = [1.9, 2.0, 2.1, 2.2, 2.3, 2.4].freeze
@@ -123,7 +123,7 @@ module RuboCop
     end
 
     def deprecation_check
-      %w(Exclude Include).each do |key|
+      %w[Exclude Include].each do |key|
         plural = "#{key}s"
         next unless for_all_cops[plural]
 

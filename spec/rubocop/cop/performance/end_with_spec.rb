@@ -21,7 +21,7 @@ describe RuboCop::Cop::Performance::EndWith do
       expect(new_source).to eq 'str.end_with?("\t")'
     end
 
-    %w(. $ ^ |).each do |str|
+    %w[. $ ^ |].each do |str|
       it "autocorrects #{method} /\\#{str}\\z/" do
         new_source = autocorrect_source(cop, "str#{method} /\\#{str}\\z/")
         expect(new_source).to eq "str.end_with?('#{str}')"
@@ -36,7 +36,7 @@ describe RuboCop::Cop::Performance::EndWith do
     # escapes like "\n"
     # note that "\b" is a literal backspace char in a double-quoted string...
     # but in a regex, it's an anchor on a word boundary
-    %w(a e f r t v).each do |str|
+    %w[a e f r t v].each do |str|
       it "autocorrects #{method} /\\#{str}\\z/" do
         new_source = autocorrect_source(cop, "str#{method} /\\#{str}\\z/")
         expect(new_source).to eq %{str.end_with?("\\#{str}")}
@@ -44,7 +44,7 @@ describe RuboCop::Cop::Performance::EndWith do
     end
 
     # character classes, anchors
-    %w(w W s S d D A Z z G b B h H R X S).each do |str|
+    %w[w W s S d D A Z z G b B h H R X S].each do |str|
       it "doesn't register an error for #{method} /\\#{str}\\z/" do
         inspect_source(cop, "str#{method} /\\#{str}\\z/")
         expect(cop.messages).to be_empty
@@ -52,7 +52,7 @@ describe RuboCop::Cop::Performance::EndWith do
     end
 
     # characters with no special meaning whatsoever
-    %w(i j l m o q y).each do |str|
+    %w[i j l m o q y].each do |str|
       it "autocorrects #{method} /\\#{str}\\z/" do
         new_source = autocorrect_source(cop, "str#{method} /\\#{str}\\z/")
         expect(new_source).to eq "str.end_with?('#{str}')"

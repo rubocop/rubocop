@@ -58,7 +58,13 @@ module RuboCop
         end
 
         def preferred_delimiters(type)
-          cop_config['PreferredDelimiters'][type].split(//)
+          delimiters = cop_config['PreferredDelimiters'][type]
+          case delimiters
+          when String then delimiters.split(//)
+          when [] then ['[', ']']
+          when {} then ['{', '}']
+          else delimiters # explicit ['{', '}']
+          end
         end
 
         def uses_preferred_delimiter?(node, type)

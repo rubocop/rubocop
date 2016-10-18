@@ -11,7 +11,7 @@ describe RuboCop::Cop::Style::AndOr, :config do
     subject(:cop) { described_class.new(config) }
     let(:cop_config) { cop_config }
 
-    %w(and or).each do |operator|
+    %w[and or].each do |operator|
       it "accepts \"#{operator}\" outside of conditional" do
         inspect_source(cop, "x = a + b #{operator} return x")
         expect(cop.offenses).to be_empty
@@ -48,7 +48,7 @@ describe RuboCop::Cop::Style::AndOr, :config do
       end
     end
 
-    %w(&& ||).each do |operator|
+    %w[&& ||].each do |operator|
       it "accepts #{operator} inside of conditional" do
         inspect_source(cop, "test if a #{operator} b")
         expect(cop.offenses).to be_empty

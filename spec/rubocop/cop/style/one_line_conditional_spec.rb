@@ -66,8 +66,8 @@ describe RuboCop::Cop::Style::OneLineConditional do
     include_examples 'no offense'
   end
 
-  %w(| ^ & <=> == === =~ > >= < <= << >> + - * / % ** ~ ! != !~
-     && ||).each do |operator|
+  %w[| ^ & <=> == === =~ > >= < <= << >> + - * / % ** ~ ! != !~
+     && ||].each do |operator|
     it 'parenthesizes the expression if it is preceded by an operator' do
       corrected =
         autocorrect_source(cop, "a #{operator} if cond then run else dont end")

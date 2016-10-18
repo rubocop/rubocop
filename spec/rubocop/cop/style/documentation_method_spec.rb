@@ -33,7 +33,7 @@ describe RuboCop::Cop::Style::DocumentationMethod, :config do
   let(:config) do
     RuboCop::Config.new(
       'Style/CommentAnnotation' => {
-        'Keywords' => %w(TODO FIXME OPTIMIZE HACK REVIEW)
+        'Keywords' => %w[TODO FIXME OPTIMIZE HACK REVIEW]
       },
       'Style/DocumentationMethod' => {
         'RequireForNonPublicMethods' => require_for_non_public_methods

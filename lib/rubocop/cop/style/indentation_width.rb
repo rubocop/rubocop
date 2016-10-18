@@ -20,7 +20,7 @@ module RuboCop
         include IfNode
         include AccessModifierNode
 
-        SPECIAL_MODIFIERS = %w(private protected).freeze
+        SPECIAL_MODIFIERS = %w[private protected].freeze
 
         def on_rescue(node)
           _begin_node, *rescue_nodes, else_node = *node

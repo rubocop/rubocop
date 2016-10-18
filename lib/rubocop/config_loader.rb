@@ -66,7 +66,7 @@ module RuboCop
 
       def base_configs(path, inherit_from)
         configs = Array(inherit_from).compact.map do |f|
-          if f =~ /\A#{URI.regexp(%w(http https))}\z/
+          if f =~ /\A#{URI.regexp(%w[http https])}\z/
             f = RemoteConfig.new(f, File.dirname(path)).file
           else
             f = File.expand_path(f, File.dirname(path))
@@ -155,7 +155,7 @@ module RuboCop
         if YAML.respond_to?(:safe_load) # Ruby 2.1+
           if defined?(SafeYAML) && SafeYAML.respond_to?(:load)
             SafeYAML.load(yaml_code, filename,
-                          whitelisted_tags: %w(!ruby/regexp))
+                          whitelisted_tags: %w[!ruby/regexp])
           else
             YAML.safe_load(yaml_code, [Regexp], [], false, filename)
           end
