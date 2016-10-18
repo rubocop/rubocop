@@ -17,7 +17,7 @@ module RuboCop
       #    end
       #
       class DuplicateCaseCondition < Cop
-        MSG = 'Redundant when condition detected.'.freeze
+        MSG = 'Duplicate `when` condition detected.'.freeze
 
         def on_case(case_node)
           _condition, *whens, _else = *case_node
