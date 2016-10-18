@@ -1940,6 +1940,35 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                   '  2',
                                   '      end'].join("\n"))
       end
+
+      it 'corrects assignment in an if statement that is nested ' \
+        'in unless else' do
+        source = ['unless foo',
+                  '  if foobar',
+                  '    baz = 1',
+                  '  elsif qux',
+                  '    baz = 2',
+                  '  else',
+                  '    baz = 3',
+                  '  end',
+                  'else',
+                  '  baz = 4',
+                  'end']
+
+        new_source = autocorrect_source(cop, source)
+
+        expect(new_source).to eq(['unless foo',
+                                  '  baz = if foobar',
+                                  '    1',
+                                  '  elsif qux',
+                                  '    2',
+                                  '  else',
+                                  '    3',
+                                  '        end',
+                                  'else',
+                                  '  baz = 4',
+                                  'end'].join("\n"))
+      end
     end
   end
 
