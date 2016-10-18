@@ -50,7 +50,7 @@ module RuboCop
         end
 
         def concat_length(*args)
-          args.reduce(0) { |a, e| a + e.to_s.length }
+          args.reduce(0) { |acc, elem| acc + elem.to_s.length }
         end
 
         def correct_annotation?(first_word, colon, space, note)
