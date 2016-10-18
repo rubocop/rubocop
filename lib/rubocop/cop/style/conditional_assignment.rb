@@ -248,7 +248,12 @@ module RuboCop
           return unless style == :assign_to_condition
           return if elsif?(node)
 
-          _condition, if_branch, else_branch = *node
+          if ternary?(node) || node.loc.keyword.is?('if')
+            _condition, if_branch, else_branch = *node
+          else
+            _condition, else_branch, if_branch = *node
+          end
+
           elsif_branches, else_branch = expand_elses(else_branch)
           return unless else_branch # empty else
 
