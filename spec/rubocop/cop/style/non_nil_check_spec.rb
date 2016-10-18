@@ -129,6 +129,11 @@ describe RuboCop::Cop::Style::NonNilCheck, :config do
       expect(cop.highlights).to eq(['not x.nil?'])
     end
 
+    it 'does not blow up with ternary operators' do
+      inspect_source(cop, 'my_var.nil? ? 1 : 0')
+      expect(cop.offenses).to be_empty
+    end
+
     it 'autocorrects by changing unless x.nil? to if x' do
       corrected = autocorrect_source(cop, 'puts a unless x.nil?')
       expect(corrected).to eq 'puts a if x'
