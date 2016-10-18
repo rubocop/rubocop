@@ -30,7 +30,7 @@ task :generate_cops_documentation do |_task|
   end
 
   def properties(config, cop)
-    content = "Enabled by default | Supports autocorrection\n"
+    content = "Enabled by default | Supports autocorrection\n".dup
     content << "--- | ---\n"
     default_status = config.cop_enabled?(cop) ? 'Enabled' : 'Disabled'
     supports_autocorrect = cop.new.support_autocorrect? ? 'Yes' : 'No'
@@ -39,21 +39,21 @@ task :generate_cops_documentation do |_task|
   end
 
   def h2(title)
-    content = "\n"
+    content = "\n".dup
     content << "## #{title}\n"
     content << "\n"
     content
   end
 
   def h3(title)
-    content = "\n"
+    content = "\n".dup
     content << "### #{title}\n"
     content << "\n"
     content
   end
 
   def code_example(ruby_code)
-    content = "```ruby\n"
+    content = "```ruby\n".dup
     content << ruby_code.text.gsub('@good', '# good')
                .gsub('@bad', '# bad').strip
     content << "\n```\n"
@@ -80,7 +80,7 @@ task :generate_cops_documentation do |_task|
 
   def print_cops_of_type(cops, type, config)
     selected_cops = cops_of_type(cops, type)
-    content = "# #{type.capitalize}\n"
+    content = "# #{type.capitalize}\n".dup
     selected_cops.each do |cop|
       content << print_cop_with_doc(cop, config)
     end
