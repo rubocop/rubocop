@@ -872,11 +872,11 @@ Style/SignalException:
 Style/SingleLineBlockParams:
   Methods:
     - reduce:
-        - a
-        - e
+        - acc
+        - elem
     - inject:
-        - a
-        - e
+        - acc
+        - elem
 
 Style/SingleLineMethods:
   AllowIfMethodIsEmpty: true
