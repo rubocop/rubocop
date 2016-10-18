@@ -296,4 +296,22 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
                                'end'].join("\n")
     end
   end
+
+  context 'when case nodes are empty' do
+    let(:src) do
+      ['def func',
+       '  case x',
+       '  when y then 1',
+       '  when z # do nothing',
+       '  else',
+       '    3',
+       '  end',
+       'end']
+    end
+
+    it 'accepts empty when nodes' do
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
+  end
 end
