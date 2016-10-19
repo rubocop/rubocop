@@ -1085,6 +1085,10 @@ Lint/EmptyInterpolation:
   Description: 'Checks for empty string interpolation.'
   Enabled: true
 
+Lint/EmptyWhen:
+  Description: 'Checks for `when` branches with empty bodies.'
+  Enabled: true
+
 Lint/EndAlignment:
   Description: 'Align ends correctly.'
   Enabled: true

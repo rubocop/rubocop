@@ -333,6 +333,24 @@ This cop checks for empty interpolation.
 "result is #{}"
 ```
 
+## Lint/EmptyWhen
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks for the presence of `when` branches without a body.
+
+### Example
+
+```ruby
+# bad
+case foo
+when bar then 1
+when baz then # nothing
+end
+```
+
 ## Lint/EndAlignment
 
 Enabled by default | Supports autocorrection
