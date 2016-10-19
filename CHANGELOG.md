@@ -9,6 +9,7 @@
 * [#3615](https://github.com/bbatsov/rubocop/pull/3615): Add autocorrection for `Lint/EmptyInterpolation`. ([@pocke][])
 * Make `PercentLiteralDelimiters` enforce delimiters around `%I()` too. ([@bronson][])
 * [#3408](https://github.com/bbatsov/rubocop/issues/3408): Add check for repeated values in case conditionals. ([@swcraig][])
+* [#3646](https://github.com/bbatsov/rubocop/pull/3646): Add new `Lint/EmptyWhen` cop. ([@drenmi][])
 
 ### Bug fixes
 
