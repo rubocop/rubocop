@@ -24,6 +24,7 @@
 * [#3637](https://github.com/bbatsov/rubocop/issues/3637): Fix Style/NonNilCheck crashing for ternary condition. ([@tejasbubane][])
 * [#3654](https://github.com/bbatsov/rubocop/pull/3654): Add missing keywords for `Rails/HttpPositionalArguments`. ([@eitoball][])
 * [#3652](https://github.com/bbatsov/rubocop/issues/3652): Avoid crash Rails/HttpPositionalArguments for lvar params when auto-correct. ([@pocke][])
+* [#3650](https://github.com/bbatsov/rubocop/issues/3650): Fix `Style/VariableNumber` registering an offense for variables with double digit numbers. ([@rrosenblum][])
 
 ### Changes
 
