@@ -1,8 +1,6 @@
 # Change log
 
 ## master (unreleased)
-* [#3246](https://github.com/bbatsov/rubocop/issues/3246): Add list of all cops to Documentation. ([@sihu][])
-
 
 ### New features
 
@@ -10,6 +8,7 @@
 * Make `PercentLiteralDelimiters` enforce delimiters around `%I()` too. ([@bronson][])
 * [#3408](https://github.com/bbatsov/rubocop/issues/3408): Add check for repeated values in case conditionals. ([@swcraig][])
 * [#3646](https://github.com/bbatsov/rubocop/pull/3646): Add new `Lint/EmptyWhen` cop. ([@drenmi][])
+* [#3246](https://github.com/bbatsov/rubocop/issues/3246): Add list of all cops to the manual (generated automatically from a rake task). ([@sihu][])
 
 ### Bug fixes
 
