@@ -33,14 +33,20 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
     end
   end
 
-  describe 'when using keyword args' do
-    let(:source) do
-      'get :new, params: { user_id: @user.id }'
-    end
+  [
+    'params: { user_id: @user.id }',
+    'xhr: true',
+    'session: { foo: \'bar\' }'
+  ].each do |keyword_args|
+    describe 'when using keyword args' do
+      let(:source) do
+        "get :new, #{keyword_args}"
+      end
 
-    it 'does not register an offense' do
-      inspect_source(cop, source)
-      expect(cop.messages).to be_empty
+      it 'does not register an offense' do
+        inspect_source(cop, source)
+        expect(cop.messages).to be_empty
+      end
     end
   end
 
