@@ -3797,7 +3797,7 @@ parameters.
 
 Attribute | Value
 --- | ---
-Methods | {"reduce"=>["a", "e"]}, {"inject"=>["a", "e"]}
+Methods | {"reduce"=>["acc", "elem"]}, {"inject"=>["acc", "elem"]}
 
 
 ## Style/SingleLineMethods
@@ -4036,6 +4036,43 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 Checks for semicolon (;) preceded by space.
+
+## Style/SpaceInLambdaLiteral
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for spaces in lambda literals.
+
+### Example
+
+```ruby
+EnforcedStyle: require_no_space (default)
+
+  # bad
+  a = -> (x, y) { x + y }
+
+  # good
+  a = ->(x, y) { x + y }
+```
+```ruby
+EnforcedStyle: require_space
+
+  # bad
+  a = ->(x, y) { x + y }
+
+  # good
+  a = -> (x, y) { x + y }
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+EnforcedStyle | require_no_space
+SupportedStyles | require_no_space, require_space
+
 
 ## Style/SpaceInsideArrayPercentLiteral
 

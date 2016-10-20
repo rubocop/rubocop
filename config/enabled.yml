@@ -379,6 +379,10 @@ Style/Lambda:
   StyleGuide: '#lambda-multi-line'
   Enabled: true
 
+Style/SpaceInLambdaLiteral:
+  Description: 'Checks for spaces in lambda literals.'
+  Enabled: true
+
 Style/LambdaCall:
   Description: 'Use lambda.call(...) instead of lambda.(...).'
   StyleGuide: '#proc-call'
