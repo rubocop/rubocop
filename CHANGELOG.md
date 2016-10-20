@@ -70,6 +70,7 @@
 * [#3578](https://github.com/bbatsov/rubocop/issues/3578): Fix safe navigation method call counting in `Metrics/AbcSize`. ([@savef][])
 * [#3592](https://github.com/bbatsov/rubocop/issues/3592): Fix `Style/RedundantParentheses` for indexing with literals. ([@thegedge][])
 * [#3597](https://github.com/bbatsov/rubocop/issues/3597): Fix the autocorrect of `Performance/CaseWhenSplat` when trying to rearange splat expanded variables to the end of a when condition. ([@rrosenblum][])
+* [#3474](https://github.com/bbatsov/rubocop/issues/3474): Make the `Rails/TimeZone` only analyze functions which have "Time" in the receiver. ([@b-t-g][])
 
 ### Changes
 

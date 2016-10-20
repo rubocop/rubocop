@@ -33,6 +33,14 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
         expect(cop.offenses.first.message).to include('`Time.zone.local`')
       end
 
+      it 'does not register an offense when a .new method is made
+        independently of the Time class' do
+        inspect_source(cop,
+                       'Range.new(1,
+                                  Time.days_in_month(date.month, date.year))')
+        expect(cop.offenses).to be_empty
+      end
+
       it "does not register an offense for #{klass}.new with zone argument" do
         inspect_source(cop, "#{klass}.new(1988, 3, 15, 3, 0, 0, '-05:00')")
         expect(cop.offenses).to be_empty
