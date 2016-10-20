@@ -221,4 +221,16 @@ post :create, params: { id: @user.id, ac: {
     output = 'post :create, params: confirmation_data'
     expect(new_source).to eq(output)
   end
+
+  it 'auto-corrects http action when params is a lvar' do
+    source = [
+      'params = { id: 1 }',
+      'post user_attrs, params'
+    ]
+    inspect_source(cop, source)
+    expect(cop.offenses.size).to eq(1)
+    new_source = autocorrect_source(cop, source)
+    expected = "params = { id: 1 }\npost user_attrs, params: params"
+    expect(new_source).to eq(expected)
+  end
 end

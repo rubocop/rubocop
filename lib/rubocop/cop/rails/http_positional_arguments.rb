@@ -54,12 +54,12 @@ module RuboCop
         def convert_hash_data(data, type)
           # empty hash or no hash return empty string
           return '' if data.nil? || data.children.count < 1
-          hash_data = if data.type == :send
+          hash_data = if data.hash_type?
+                        format('{ %s }', data.children.map(&:source).join(', '))
+                      else
                         # user supplies an object,
                         # no need to surround with braces
                         data.source
-                      else
-                        format('{ %s }', data.children.map(&:source).join(', '))
                       end
           format(', %s: %s', type, hash_data)
         end
