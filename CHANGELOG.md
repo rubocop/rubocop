@@ -10,6 +10,7 @@
 * [#3646](https://github.com/bbatsov/rubocop/pull/3646): Add new `Lint/EmptyWhen` cop. ([@drenmi][])
 * [#3246](https://github.com/bbatsov/rubocop/issues/3246): Add list of all cops to the manual (generated automatically from a rake task). ([@sihu][])
 * [#3647](https://github.com/bbatsov/rubocop/issues/3647): Add `--force-default-config` option. ([@jawshooah][])
+* [#3631](https://github.com/bbatsov/rubocop/issues/3631): Add new `Style/SpaceInLambdaLiteral` cop to check for spaces in lambda literals. ([@swcraig][])
 
 ### Bug fixes
 
