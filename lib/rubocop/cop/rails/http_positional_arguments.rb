@@ -16,7 +16,10 @@ module RuboCop
       class HttpPositionalArguments < Cop
         MSG = 'Use keyword arguments instead of ' \
               'positional arguments for http call: `%s`.'.freeze
-        KEYWORD_ARGS = [:headers, :env, :params, :body, :flash, :as].freeze
+        KEYWORD_ARGS = [
+          :headers, :env, :params, :body, :flash, :as,
+          :xhr, :session, :method
+        ].freeze
         HTTP_METHODS = [:get, :post, :put, :patch, :delete, :head].freeze
 
         def on_send(node)
