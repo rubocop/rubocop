@@ -38,6 +38,17 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
       expect(cop.offenses).to be_empty
     end
 
+    it 'allows object checks in the condition of an elsif statement ' \
+      'and a method call on that object in the body' do
+      inspect_source(cop, ['if foo',
+                           '  something',
+                           'elsif bar',
+                           '  bar.baz',
+                           'end'])
+
+      expect(cop.offenses).to be_empty
+    end
+
     shared_examples 'all variable types' do |variable|
       context 'modifier if' do
         it 'registers an offense for a method call on an accessor ' \
