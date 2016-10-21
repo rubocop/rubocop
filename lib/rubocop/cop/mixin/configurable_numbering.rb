@@ -7,10 +7,9 @@ module RuboCop
     module ConfigurableNumbering
       include ConfigurableEnforcedStyle
 
-      SNAKE_CASE = /^@{0,2}[-_a-z]+[_\D]*(_\d)*[!?=]?$/
-      NORMAL_CASE = /^@{0,2}-{0,1}_{0,1}[a-zA-Z\d]*(_[a-zA-Z]+\d*)*
-                     [_\D]*[!?=]?$/x
-      NON_INTEGER = /^@{0,2}[-_a-z]+[_\D]*[!?=]?$/
+      SNAKE_CASE = /(^_|[a-z]|_\d+)$/
+      NORMAL_CASE = /(^_|[A-Za-z]\d*)$/
+      NON_INTEGER = /(^_|[A-Za-z])$/
 
       def check_name(node, name, name_range)
         return if operator?(name)

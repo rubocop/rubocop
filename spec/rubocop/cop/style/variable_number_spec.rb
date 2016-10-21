@@ -5,66 +5,43 @@ require 'spec_helper'
 describe RuboCop::Cop::Style::VariableNumber, :config do
   subject(:cop) { described_class.new(config) }
 
+  shared_examples :offense do |style, variable|
+    it "registers an offense for #{variable} in #{style}" do
+      inspect_source(cop, "#{variable} = 1")
+
+      expect(cop.messages).to eq(["Use #{style} for variable numbers."])
+      expect(cop.highlights).to eq([variable])
+    end
+  end
+
+  shared_examples :accepts do |style, variable|
+    it "accepts #{variable} in #{style}" do
+      inspect_source(cop, "#{variable} = 1")
+
+      expect(cop.offenses).to be_empty
+    end
+  end
+
   context 'when configured for snake_case' do
     let(:cop_config) { { 'EnforcedStyle' => 'snake_case' } }
 
-    it 'registers an offense for normal case numbering in local variable' do
-      inspect_source(cop, 'local1 = 1')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['local1'])
-      expect(cop.messages).to eq(['Use snake_case for variable numbers.'])
-    end
+    it_behaves_like :offense, 'snake_case', 'local1'
+    it_behaves_like :offense, 'snake_case', 'local_'
+    it_behaves_like :offense, 'snake_case', '@local1'
+    it_behaves_like :offense, 'snake_case', '@@local1'
+    it_behaves_like :offense, 'snake_case', 'camelCase1'
+    it_behaves_like :offense, 'snake_case', '@camelCase1'
+    it_behaves_like :offense, 'snake_case', '_unused1'
+    it_behaves_like :offense, 'snake_case', 'aB1'
 
-    it 'does not register an offense for snake case numbering in local
-     variable' do
-      inspect_source(cop, 'local_1 = 1')
-      expect(cop.offenses.size).to eq(0)
-    end
-
-    it 'registers an offense for normal case numbering in instance variable' do
-      inspect_source(cop, '@local1 = 3')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['@local1'])
-      expect(cop.messages).to eq(['Use snake_case for variable numbers.'])
-    end
-
-    it 'registers an offense for normal case numbering in class variable' do
-      inspect_source(cop, '@@local1 = 3')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['@@local1'])
-      expect(cop.messages).to eq(['Use snake_case for variable numbers.'])
-    end
-
-    it 'registers an offense for correct + incorrect' do
-      inspect_source(cop, ['local_1 = 1',
-                           ' local1 = 1'])
-      expect(cop.highlights).to eq(['local1'])
-      expect(cop.messages).to eq(['Use snake_case for variable numbers.'])
-    end
-
-    it 'registers an offense for normal case numbering in camel case
-     variable' do
-      inspect_source(cop, 'myAttribute1 = 3')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['myAttribute1'])
-      expect(cop.messages).to eq(['Use snake_case for variable numbers.'])
-    end
-
-    it 'registers an offense for normal case numbering in camel case
-     instance variable name' do
-      inspect_source(cop, '@myAttribute1 = 3')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['@myAttribute1'])
-      expect(cop.messages).to eq(['Use snake_case for variable numbers.'])
-    end
-
-    it 'registers an offense for normal case numbering in local variables
-     marked as unused' do
-      inspect_source(cop, '_myLocal1 = 1')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['_myLocal1'])
-      expect(cop.messages).to eq(['Use snake_case for variable numbers.'])
-    end
+    it_behaves_like :accepts, 'snake_case', 'local_1'
+    it_behaves_like :accepts, 'snake_case', 'local_12'
+    it_behaves_like :accepts, 'snake_case', 'local_123'
+    it_behaves_like :accepts, 'snake_case', 'aB_1'
+    it_behaves_like :accepts, 'snake_case', 'a_1_b'
+    it_behaves_like :accepts, 'snake_case', 'a_1_b_1'
+    it_behaves_like :accepts, 'snake_case', '_'
+    it_behaves_like :accepts, 'snake_case', '_foo'
 
     it 'registers an offense for normal case numbering in method parameter' do
       inspect_source(cop, 'def method(arg1); end')
@@ -83,106 +60,27 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
   context 'when configured for normal' do
     let(:cop_config) { { 'EnforcedStyle' => 'normalcase' } }
 
-    it 'registers an offense for snake case numbering in local variable' do
-      inspect_source(cop, 'local_1 = 1')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['local_1'])
-      expect(cop.messages).to eq(['Use normalcase for variable numbers.'])
-    end
+    it_behaves_like :offense, 'normalcase', 'local_1'
+    it_behaves_like :offense, 'normalcase', 'local_'
+    it_behaves_like :offense, 'normalcase', 'sha_256'
+    it_behaves_like :offense, 'normalcase', '@local_1'
+    it_behaves_like :offense, 'normalcase', '@@local_1'
+    it_behaves_like :offense, 'normalcase', 'myAttribute_1'
+    it_behaves_like :offense, 'normalcase', '@myAttribute_1'
+    it_behaves_like :offense, 'normalcase', '_myLocal_1'
+    it_behaves_like :offense, 'normalcase', 'localFOO_1'
+    it_behaves_like :offense, 'normalcase', 'local_FOO_1'
 
-    it 'does not register an offense for normal case numbering in local
-     variable' do
-      inspect_source(cop, 'local1 = 1')
-      expect(cop.offenses.size).to eq(0)
-    end
-
-    it 'does not register an offense for normal case number in local
-      variable' do
-      inspect_source(cop, 'user1_id = 1')
-      expect(cop.offenses.size).to eq(0)
-    end
-
-    it 'does not register an offense for normal case number in local
-      variable' do
-      inspect_source(cop, 'sha256 = 3')
-      expect(cop.offenses.size).to eq(0)
-    end
-
-    it 'does not register on offense for normal case multi digit number in
-      local variable' do
-      inspect_source(cop, 'foo10_bar = 4')
-      expect(cop.offenses.size).to eq(0)
-    end
-
-    it 'does not register on offense for normal case multi digit number in
-      local variable' do
-      inspect_source(cop, 'foo_bar10 = 4')
-      expect(cop.offenses.size).to eq(0)
-    end
-
-    it 'does not register an offense for normal case number in the middle of
-      local variable' do
-      inspect_source(cop, 'target_u2f_device = nil')
-      expect(cop.offenses.size).to eq(0)
-    end
-
-    it 'registers an offense for only integers in the middle' do
-      inspect_source(cop, 'user_1_id = 3')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['user_1_id'])
-      expect(cop.messages).to eq(['Use normalcase for variable numbers.'])
-    end
-
-    it 'registers an offense for only integers at the end of name' do
-      inspect_source(cop, 'sha_256 = 1')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['sha_256'])
-      expect(cop.messages).to eq(['Use normalcase for variable numbers.'])
-    end
-
-    it 'registers an offense for snake case numbering in instance variable' do
-      inspect_source(cop, '@local_1 = 3')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['@local_1'])
-      expect(cop.messages).to eq(['Use normalcase for variable numbers.'])
-    end
-
-    it 'registers an offense for snake case numbering in class variable' do
-      inspect_source(cop, '@@local_1 = 3')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['@@local_1'])
-      expect(cop.messages).to eq(['Use normalcase for variable numbers.'])
-    end
-
-    it 'registers an offense for correct + incorrect' do
-      inspect_source(cop, ['local_1 = 1',
-                           ' local1 = 1'])
-      expect(cop.highlights).to eq(['local_1'])
-      expect(cop.messages).to eq(['Use normalcase for variable numbers.'])
-    end
-
-    it 'registers an offense for snake case numbering in camel case variable' do
-      inspect_source(cop, 'myAttribute_1 = 3')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['myAttribute_1'])
-      expect(cop.messages).to eq(['Use normalcase for variable numbers.'])
-    end
-
-    it 'registers an offense for snake case numbering in camel case
-     instance variable name' do
-      inspect_source(cop, '@myAttribute_1 = 3')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['@myAttribute_1'])
-      expect(cop.messages).to eq(['Use normalcase for variable numbers.'])
-    end
-
-    it 'registers an offense for snake case numbering in camel case
-     local variables marked as unused' do
-      inspect_source(cop, '_myLocal_1 = 1')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['_myLocal_1'])
-      expect(cop.messages).to eq(['Use normalcase for variable numbers.'])
-    end
+    it_behaves_like :accepts, 'normalcase', 'local1'
+    it_behaves_like :accepts, 'normalcase', 'user1_id'
+    it_behaves_like :accepts, 'normalcase', 'sha256'
+    it_behaves_like :accepts, 'normalcase', 'foo10_bar'
+    it_behaves_like :accepts, 'normalcase', 'target_u2f_device'
+    it_behaves_like :accepts, 'normalcase', 'localFOO1'
+    it_behaves_like :accepts, 'normalcase', 'snake_case'
+    it_behaves_like :accepts, 'normalcase', 'user_1_id'
+    it_behaves_like :accepts, 'normalcase', '_'
+    it_behaves_like :accepts, 'normalcase', '_foo'
 
     it 'registers an offense for snake case numbering in method parameter' do
       inspect_source(cop, 'def method(arg_1); end')
@@ -201,92 +99,25 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
   context 'when configured for non integer' do
     let(:cop_config) { { 'EnforcedStyle' => 'non_integer' } }
 
-    it 'registers an offense for snake case numbering in local variable' do
-      inspect_source(cop, 'local_1 = 1')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['local_1'])
-      expect(cop.messages).to eq(['Use non_integer for variable numbers.'])
-    end
+    it_behaves_like :offense, 'non_integer', 'local_1'
+    it_behaves_like :offense, 'non_integer', 'local_'
+    it_behaves_like :offense, 'non_integer', 'local1'
+    it_behaves_like :offense, 'non_integer', '@local_1'
+    it_behaves_like :offense, 'non_integer', '@local1'
+    it_behaves_like :offense, 'non_integer', 'myAttribute_1'
+    it_behaves_like :offense, 'non_integer', 'myAttribute1'
+    it_behaves_like :offense, 'non_integer', '@myAttribute_1'
+    it_behaves_like :offense, 'non_integer', '@myAttribute1'
+    it_behaves_like :offense, 'non_integer', '_myLocal_1'
+    it_behaves_like :offense, 'non_integer', '_myLocal1'
 
-    it 'registers an offense for normal case numbering in local variable' do
-      inspect_source(cop, 'local1 = 1')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['local1'])
-      expect(cop.messages).to eq(['Use non_integer for variable numbers.'])
-    end
-
-    it 'does not register an offense for non integer numbering in local
-     variable' do
-      inspect_source(cop, 'localone = 1')
-      expect(cop.offenses.size).to eq(0)
-    end
-
-    it 'does not register an offense for non integer numbering in local
-     variable' do
-      inspect_source(cop, 'local_one = 1')
-      expect(cop.offenses.size).to eq(0)
-    end
-
-    it 'registers an offense for snake case numbering in instance variable' do
-      inspect_source(cop, '@local_1 = 3')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['@local_1'])
-      expect(cop.messages).to eq(['Use non_integer for variable numbers.'])
-    end
-
-    it 'registers an offense for normal case numbering in instance variable' do
-      inspect_source(cop, '@local1 = 3')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['@local1'])
-      expect(cop.messages).to eq(['Use non_integer for variable numbers.'])
-    end
-
-    it 'registers an offense for snake case numbering in camel case variable' do
-      inspect_source(cop, 'myAttribute_1 = 3')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['myAttribute_1'])
-      expect(cop.messages).to eq(['Use non_integer for variable numbers.'])
-    end
-
-    it 'registers an offense for normal case numbering in camel case
-     variable' do
-      inspect_source(cop, 'myAttribute1 = 3')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['myAttribute1'])
-      expect(cop.messages).to eq(['Use non_integer for variable numbers.'])
-    end
-
-    it 'registers an offense for snake case numbering in camel case
-     instance variable' do
-      inspect_source(cop, '@myAttribute_1 = 3')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['@myAttribute_1'])
-      expect(cop.messages).to eq(['Use non_integer for variable numbers.'])
-    end
-
-    it 'registers an offense for normal case numbering in camel case
-     instance variable' do
-      inspect_source(cop, '@myAttribute1 = 3')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['@myAttribute1'])
-      expect(cop.messages).to eq(['Use non_integer for variable numbers.'])
-    end
-
-    it 'registers an offense for snake case numbering in camel case
-     local variables marked as unused' do
-      inspect_source(cop, '_myLocal_1 = 1')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['_myLocal_1'])
-      expect(cop.messages).to eq(['Use non_integer for variable numbers.'])
-    end
-
-    it 'registers an offense for normal case numbering in camel case
-     local variables marked as unused' do
-      inspect_source(cop, '_myLocal1 = 1')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['_myLocal1'])
-      expect(cop.messages).to eq(['Use non_integer for variable numbers.'])
-    end
+    it_behaves_like :accepts, 'non_integer', 'localone'
+    it_behaves_like :accepts, 'non_integer', 'local_one'
+    it_behaves_like :accepts, 'non_integer', '@foo'
+    it_behaves_like :accepts, 'non_integer', '@@foo'
+    it_behaves_like :accepts, 'non_integer', 'fooBar'
+    it_behaves_like :accepts, 'non_integer', '_'
+    it_behaves_like :accepts, 'non_integer', '_foo'
 
     it 'registers an offense for snake case numbering in method parameter' do
       inspect_source(cop, 'def method(arg_1); end')
