@@ -25,6 +25,10 @@ module RuboCop
                                                         options_config)
     end
 
+    def force_default_config!
+      @options_config = ConfigLoader.default_configuration
+    end
+
     def for(file_or_dir)
       return @options_config if @options_config
 

@@ -54,6 +54,7 @@ module RuboCop
       ConfigLoader.auto_gen_config = @options[:auto_gen_config]
 
       @config_store.options_config = @options[:config] if @options[:config]
+      @config_store.force_default_config! if @options[:force_default_config]
 
       if @options[:color]
         # color output explicitly forced on
