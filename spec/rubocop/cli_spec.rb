@@ -778,6 +778,36 @@ describe RuboCop::CLI, :isolated_environment do
                 ''].join("\n"))
     end
 
+    context 'when --force-default-config option is specified' do
+      shared_examples 'ignores config file' do
+        it 'ignores config file' do
+          create_file('example.rb', ['x = 0 ', 'puts x'])
+          create_file('.rubocop.yml', ['Style/TrailingWhitespace:',
+                                       '  Enabled: false'])
+
+          expect(cli.run(args)).to eq(1)
+          expect($stdout.string)
+            .to eq(['== example.rb ==',
+                    'C:  1:  6: Trailing whitespace detected.',
+                    '',
+                    '1 file inspected, 1 offense detected',
+                    ''].join("\n"))
+        end
+      end
+
+      context 'when no config file specified' do
+        let(:args) { %w(--format simple --force-default-config) }
+        include_examples 'ignores config file'
+      end
+
+      context 'when config file specified with -c' do
+        let(:args) do
+          %w(--format simple --force-default-config -c .rubocop.yml)
+        end
+        include_examples 'ignores config file'
+      end
+    end
+
     it 'displays cop names if DisplayCopNames is true' do
       source = ['x = 0 ', 'puts x']
       create_file('example1.rb', source)

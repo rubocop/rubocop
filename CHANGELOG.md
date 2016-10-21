@@ -9,6 +9,7 @@
 * [#3408](https://github.com/bbatsov/rubocop/issues/3408): Add check for repeated values in case conditionals. ([@swcraig][])
 * [#3646](https://github.com/bbatsov/rubocop/pull/3646): Add new `Lint/EmptyWhen` cop. ([@drenmi][])
 * [#3246](https://github.com/bbatsov/rubocop/issues/3246): Add list of all cops to the manual (generated automatically from a rake task). ([@sihu][])
+* [#3647](https://github.com/bbatsov/rubocop/issues/3647): Add `--force-default-config` option. ([@jawshooah][])
 
 ### Bug fixes
 
