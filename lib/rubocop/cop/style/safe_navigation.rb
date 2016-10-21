@@ -85,7 +85,8 @@ module RuboCop
 
         def check_node(node)
           return if target_ruby_version < 2.3
-          return if node.loc.respond_to?(:else) && !node.loc.else.nil?
+          return if if_else?(node)
+          return if elsif?(node)
           checked_variable, receiver, method = extract_parts(node)
           return unless receiver == checked_variable
           return if NIL_METHODS.include?(method)
