@@ -70,6 +70,12 @@ describe RuboCop::Cop::Rails::SafeNavigation, :config do
         it_behaves_like :accepts, 'try! with a method stored as a variable',
                         ['bar = :==',
                          'foo.try!(baz, bar)'].join("\n")
+
+        it 'accepts usages of try! without receiver' do
+          inspect_source(cop, 'try!(:something)')
+
+          expect(cop.offenses).to be_empty
+        end
       end
 
       context 'try' do
