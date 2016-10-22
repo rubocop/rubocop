@@ -50,13 +50,13 @@ module RuboCop
     def deserialize_offenses(offenses)
       source_buffer = Parser::Source::Buffer.new(@filename)
       source_buffer.source = File.read(@filename, encoding: Encoding::UTF_8)
-      offenses.map! do |o|
+      offenses.map! do |offense|
         location = Parser::Source::Range.new(source_buffer,
-                                             o['location']['begin_pos'],
-                                             o['location']['end_pos'])
-        Cop::Offense.new(o['severity'], location,
-                         o['message'],
-                         o['cop_name'], o['status'].to_sym)
+                                             offense['location']['begin_pos'],
+                                             offense['location']['end_pos'])
+        Cop::Offense.new(offense['severity'], location,
+                         offense['message'],
+                         offense['cop_name'], offense['status'].to_sym)
       end
     end
   end
