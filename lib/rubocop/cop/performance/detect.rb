@@ -28,18 +28,25 @@ module RuboCop
         MSG = 'Use `%s` instead of `%s.%s`.'.freeze
         REVERSE_MSG = 'Use `reverse.%s` instead of `%s.%s`.'.freeze
 
-        SELECT_METHODS = [:select, :find_all].freeze
-        DANGEROUS_METHODS = [:first, :last].freeze
+        def_node_matcher :detect_candidate?, <<-PATTERN
+          {
+            (send $(block (send _ {:select :find_all}) ...) ${:first :last} $...)
+            (send $(send _ {:select :find_all} ...) ${:first :last} $...)
+          }
+        PATTERN
 
         def on_send(node)
           return if rails_safe_mode?
-          receiver, second_method, *args = *node
-          return if accept_second_call?(receiver, second_method, args)
 
-          receiver, _args, body = *receiver if receiver.block_type?
-          return if accept_first_call?(receiver, body)
+          detect_candidate?(node) do |receiver, second_method, args|
+            return unless args.empty?
+            return unless receiver
 
-          offense(node, receiver, second_method)
+            receiver, _args, body = *receiver if receiver.block_type?
+            return if accept_first_call?(receiver, body)
+
+            offense(node, receiver, second_method)
+          end
         end
 
         def autocorrect(node)
@@ -63,18 +70,11 @@ module RuboCop
 
         private
 
-        def accept_second_call?(receiver, method, args)
-          !receiver ||
-            !DANGEROUS_METHODS.include?(method) ||
-            !args.empty?
-        end
-
         def accept_first_call?(receiver, body)
-          caller, first_method, args = *receiver
+          caller, _first_method, args = *receiver
 
           # check that we have usual block or block pass
           return true if body.nil? && (args.nil? || !args.block_pass_type?)
-          return true unless SELECT_METHODS.include?(first_method)
 
           lazy?(caller)
         end
