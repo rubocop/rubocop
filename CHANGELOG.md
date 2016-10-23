@@ -28,6 +28,7 @@
 * Fix bug in `Style/SafeNavigation` where there is a check for an object in an elsif statement with a method call on that object in the branch. ([@rrosenblum][])
 * [#3660](https://github.com/bbatsov/rubocop/pull/3660): Fix false positive for Rails/SafeNavigation when without receiver. ([@pocke][])
 * [#3650](https://github.com/bbatsov/rubocop/issues/3650): Fix `Style/VariableNumber` registering an offense for variables with double digit numbers. ([@rrosenblum][])
+* [#3661](https://github.com/bbatsov/rubocop/issues/3661): Fix `Rails.SaveBang` to account for control flow. ([@tejasbubane][])
 
 ### Changes
 
