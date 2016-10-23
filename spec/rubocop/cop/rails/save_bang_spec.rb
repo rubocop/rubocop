@@ -128,6 +128,16 @@ describe RuboCop::Cop::Rails::SaveBang do
       inspect_source(cop, ['def foo', "object.#{method}", 'end'])
       expect(cop.messages).to be_empty
     end
+
+    it "when using #{method} in || conditional and not last clause" do
+      inspect_source(cop, "object.#{method} || do_this")
+      expect(cop.messages).to be_empty
+    end
+
+    it "when using #{method} in && conditional and not last clause" do
+      inspect_source(cop, "object.#{method} && do_this")
+      expect(cop.messages).to be_empty
+    end
   end
 
   described_class::MODIFY_PERSIST_METHODS.each do |method|

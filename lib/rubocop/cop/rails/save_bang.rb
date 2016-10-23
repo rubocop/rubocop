@@ -82,6 +82,7 @@ module RuboCop
           return if return_value_assigned?(node)
           return if check_used_in_conditional(node)
           return if last_call_of_method?(node)
+          return if non_last_clause_in_condition?(node)
 
           add_offense(node, node.loc.selector,
                       format(MSG,
@@ -131,6 +132,13 @@ module RuboCop
         def last_call_of_method?(node)
           !node.parent.nil? &&
             node.parent.children.count == node.sibling_index + 1
+        end
+
+        def non_last_clause_in_condition?(node)
+          parent = node.parent
+
+          parent && (parent.and_type? || parent.or_type?) &&
+            parent.children.last != node
         end
 
         # Ignore simple assignment or if condition
