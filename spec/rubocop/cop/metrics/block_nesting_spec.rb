@@ -158,4 +158,52 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
                          'end'])
     expect(cop.offenses).to be_empty
   end
+
+  context 'when CountBlocks is false' do
+    let(:cop_config) { { 'Max' => 2, 'CountBlocks' => false } }
+
+    it 'accepts nested multiline blocks' do
+      inspect_source(cop, ['if a',
+                           '  if b',
+                           '    [1, 2].each do |c|',
+                           '      puts c',
+                           '    end',
+                           '  end',
+                           'end'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts nested inline blocks' do
+      inspect_source(cop, ['if a',
+                           '  if b',
+                           '    [1, 2].each { |c| puts c }',
+                           '  end',
+                           'end'])
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  context 'when CountBlocks is true' do
+    let(:cop_config) { { 'Max' => 2, 'CountBlocks' => true } }
+
+    context 'nested multiline block' do
+      source = ['if a',
+                '  if b',
+                '    [1, 2].each do |c|',
+                '      puts c',
+                '    end',
+                '  end',
+                'end']
+      it_behaves_like 'too deep', source, [3]
+    end
+
+    context 'nested inline block' do
+      source = ['if a',
+                '  if b',
+                '    [1, 2].each { |c| puts c }',
+                '  end',
+                'end']
+      it_behaves_like 'too deep', source, [3]
+    end
+  end
 end

@@ -1175,6 +1175,7 @@ Metrics/AbcSize:
   Max: 15
 
 Metrics/BlockNesting:
+  CountBlocks: false
   Max: 3
 
 Metrics/ClassLength:

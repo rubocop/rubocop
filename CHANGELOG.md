@@ -9,6 +9,7 @@
 * [#3795](https://github.com/bbatsov/rubocop/pull/3795): Add `Lint/MultipleCompare` cop. ([@pocke][])
 * [#3772](https://github.com/bbatsov/rubocop/issues/3772): Allow exclusion of certain methods for `Metrics/BlockLength`. ([@NobodysNightmare][])
 * [#3804](https://github.com/bbatsov/rubocop/pull/3804): Add new `Lint/SafeNavigationChain` cop. ([@pocke][])
+* [#3670](https://github.com/bbatsov/rubocop/pull/3670): Add `CountBlocks` boolean option to `Metrics/BlockNesting`. It allows blocks to be counted towards the nesting limit. ([@georgyangelov][])
 
 ### Changes
 
@@ -566,7 +567,7 @@
 * [#2665](https://github.com/bbatsov/rubocop/pull/2665): Make specs pass when running on Windows. ([@jonas054][])
 * [#2691](https://github.com/bbatsov/rubocop/pull/2691): Do not register an offense in `Performance/TimesMap` for calling `map` or `collect` on a variable named `times`. ([@rrosenblum][])
 * [#2689](https://github.com/bbatsov/rubocop/pull/2689): Change `Performance/RedundantBlockCall` to respect parentheses usage. ([@rrosenblum][])
-* [#2694](https://github.com/bbatsov/rubocop/issues/2694): Fix caching when using a different JSON gem such as Oj. ([@stormbreakerbg][])
+* [#2694](https://github.com/bbatsov/rubocop/issues/2694): Fix caching when using a different JSON gem such as Oj. ([@georgyangelov][])
 * [#2707](https://github.com/bbatsov/rubocop/pull/2707): Change `Lint/NestedMethodDefinition` to respect `Class.new` and `Module.new`. ([@owst][])
 * [#2701](https://github.com/bbatsov/rubocop/pull/2701): Do not consider assignments to the same variable as useless if later assignments are within a loop. ([@owst][])
 * [#2696](https://github.com/bbatsov/rubocop/issues/2696): `Style/NestedModifier` adds parentheses around a condition when needed. ([@lumeet][])
@@ -2468,7 +2469,7 @@
 [@mvidner]: https://github.com/mvidner
 [@mattparlane]: https://github.com/mattparlane
 [@drenmi]: https://github.com/drenmi
-[@stormbreakerbg]: https://github.com/stormbreakerbg
+[@georgyangelov]: https://github.com/georgyangelov
 [@owst]: https://github.com/owst
 [@seikichi]: https://github.com/seikichi
 [@madwort]: https://github.com/madwort
