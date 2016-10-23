@@ -1054,6 +1054,27 @@ describe RuboCop::Cop::Style::IndentationWidth do
     end
 
     context 'with block' do
+      context 'when consistency style is rails' do
+        let(:consistency_config) { { 'EnforcedStyle' => 'rails' } }
+
+        it 'registers an offense for bad indentation in a do/end body' do
+          inspect_source(cop,
+                         ['concern :Authenticatable do',
+                          '  def foo',
+                          '    puts "foo"',
+                          '  end',
+                          '',
+                          '  private',
+                          '',
+                          '  def bar',
+                          '    puts "bar"',
+                          '  end',
+                          'end'])
+          expect(cop.messages)
+            .to eq(['Use 2 (not 0) spaces for rails indentation.'])
+        end
+      end
+
       it 'registers an offense for bad indentation of a do/end body' do
         inspect_source(cop,
                        ['a = func do',
