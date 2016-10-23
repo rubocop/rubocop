@@ -68,7 +68,7 @@ module RuboCop
 
         private
 
-        def parameter_name
+        def style_parameter_name
           'EnforcedStyle'
         end
 

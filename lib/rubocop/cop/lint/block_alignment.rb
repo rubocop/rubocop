@@ -54,7 +54,7 @@ module RuboCop
           check_block_alignment(start_for_block_node(node), node)
         end
 
-        def parameter_name
+        def style_parameter_name
           'EnforcedStyleAlignWith'
         end
 

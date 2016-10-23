@@ -55,7 +55,7 @@ module RuboCop
         return no_acceptable_style! if style.nil?
         return no_acceptable_style! if style.empty?
 
-        config_to_allow_offenses[parameter_name] = style.first
+        config_to_allow_offenses[style_parameter_name] = style.first
       end
 
       alias conflicting_styles_detected no_acceptable_style!
@@ -63,7 +63,7 @@ module RuboCop
 
       def style
         @enforced_style ||= begin
-          s = cop_config[parameter_name].to_sym
+          s = cop_config[style_parameter_name].to_sym
           unless supported_styles.include?(s)
             raise "Unknown style #{s} selected!"
           end
@@ -81,12 +81,12 @@ module RuboCop
 
       def supported_styles
         @supported_styles ||= begin
-          supported_styles = Util.to_supported_styles(parameter_name)
+          supported_styles = Util.to_supported_styles(style_parameter_name)
           cop_config[supported_styles].map(&:to_sym)
         end
       end
 
-      def parameter_name
+      def style_parameter_name
         'EnforcedStyle'
       end
     end

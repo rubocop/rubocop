@@ -25,7 +25,7 @@ module RuboCop
 
         private
 
-        def parameter_name
+        def max_parameter_name
           'MinDigits'
         end
 

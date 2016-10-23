@@ -9,7 +9,7 @@ module RuboCop
 
       MSG = '%s comma after the last %s'.freeze
 
-      def parameter_name
+      def style_parameter_name
         'EnforcedStyleForMultiline'
       end
 

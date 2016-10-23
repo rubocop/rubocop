@@ -44,7 +44,7 @@ module RuboCop
         add_offense(node, end_loc, msg)
       end
 
-      def parameter_name
+      def style_parameter_name
         'EnforcedStyleAlignWith'
       end
 
