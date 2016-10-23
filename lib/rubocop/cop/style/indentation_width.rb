@@ -49,21 +49,26 @@ module RuboCop
           # assignments, etc, would be more difficult. The end/} must be at the
           # beginning of its line.
           loc = node.loc
-          check_indentation(loc.end, body) if begins_its_line?(loc.end)
+          return unless begins_its_line?(loc.end)
+
+          check_indentation(loc.end, body)
+          return unless indentation_consistency_style == 'rails'
+
+          check_members(loc.end, [body])
         end
 
         def on_module(node)
           _module_name, *members = *node
-          check_members(node, members)
+          check_members(node.loc.keyword, members)
         end
 
         def on_class(node)
           _class_name, _base_class, *members = *node
-          check_members(node, members)
+          check_members(node.loc.keyword, members)
         end
 
-        def check_members(node, members)
-          check_indentation(node.loc.keyword, members.first)
+        def check_members(base, members)
+          check_indentation(base, members.first)
 
           return unless members.any? && members.first.begin_type?
           return unless indentation_consistency_style == 'rails'
