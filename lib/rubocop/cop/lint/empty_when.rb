@@ -16,7 +16,7 @@ module RuboCop
         MSG = 'Avoid `when` branches without a body.'.freeze
 
         def on_case(node)
-          *when_nodes, _else_node = *node
+          _cond_node, *when_nodes, _else_node = *node
 
           when_nodes.each do |when_node|
             check_when(when_node)
