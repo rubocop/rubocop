@@ -84,8 +84,8 @@ module RuboCop
             rescued_exceptions = rescued_exceptions(rescue_group)
             rescued_exceptions.each_with_object([]) do |exception, converted|
               begin
-                converted << instance_eval(exception, __FILE__, __LINE__)
-              rescue StandardError, ScriptError
+                converted << Kernel.const_get(exception)
+              rescue NameError
                 converted << nil
               end
             end
