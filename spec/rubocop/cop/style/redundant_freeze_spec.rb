@@ -46,23 +46,25 @@ describe RuboCop::Cop::Style::RedundantFreeze do
   end
 
   context 'when the receiver is a frozen string literal' do
-    context 'when the target ruby version >= 3.0' do
-      let(:ruby_version) { 3.0 }
+    if RuboCop::Config::KNOWN_RUBIES.include?(3.0)
+      context 'when the target ruby version >= 3.0' do
+        let(:ruby_version) { 3.0 }
 
-      context 'when the frozen string literal comment is missing' do
-        it_behaves_like :immutable_objects, '"#{a}"'
-      end
+        context 'when the frozen string literal comment is missing' do
+          it_behaves_like :immutable_objects, '"#{a}"'
+        end
 
-      context 'when the frozen string literal comment is true' do
-        let(:prefix) { '# frozen_string_literal: true' }
-        it_behaves_like :immutable_objects, '"#{a}"'
-      end
+        context 'when the frozen string literal comment is true' do
+          let(:prefix) { '# frozen_string_literal: true' }
+          it_behaves_like :immutable_objects, '"#{a}"'
+        end
 
-      context 'when the frozen string literal comment is false' do
-        let(:prefix) { '# frozen_string_literal: false' }
-        it_behaves_like :immutable_objects, '"#{a}"'
+        context 'when the frozen string literal comment is false' do
+          let(:prefix) { '# frozen_string_literal: false' }
+          it_behaves_like :immutable_objects, '"#{a}"'
+        end
       end
-    end if RuboCop::Config::KNOWN_RUBIES.include?(3.0)
+    end
 
     context 'when the target ruby version >= 2.3' do
       let(:ruby_version) { 2.3 }
