@@ -629,6 +629,12 @@ Style/Lambda:
     - lambda
     - literal
 
+Style/SpaceInLambdaLiteral:
+  EnforcedStyle: require_no_space
+  SupportedStyles:
+    - require_no_space
+    - require_space
+
 Style/LambdaCall:
   EnforcedStyle: call
   SupportedStyles:
