@@ -114,11 +114,12 @@ module RuboCop
 
         def extra_space_range(t1, t2)
           return if t1.pos.line != t2.pos.line
-          return if allow_for_alignment? && aligned_tok?(t2)
 
           start_pos = t1.pos.end_pos
           end_pos = t2.pos.begin_pos - 1
           return if end_pos <= start_pos
+
+          return if allow_for_alignment? && aligned_tok?(t2)
 
           yield range_between(start_pos, end_pos)
         end
