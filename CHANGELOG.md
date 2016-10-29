@@ -12,6 +12,7 @@
 * [#3647](https://github.com/bbatsov/rubocop/issues/3647): Add `--force-default-config` option. ([@jawshooah][])
 * [#3570](https://github.com/bbatsov/rubocop/issues/3570): Add new `MultilineIfModifier` cop to avoid usage of if/unless-modifiers on multiline statements. ([@tessi][])
 * [#3631](https://github.com/bbatsov/rubocop/issues/3631): Add new `Style/SpaceInLambdaLiteral` cop to check for spaces in lambda literals. ([@swcraig][])
+* Add new `Lint/EmptyExpression` cop. ([@drenmi][])
 
 ### Bug fixes
 

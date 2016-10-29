@@ -319,6 +319,24 @@ Enabled | No
 
 This cop checks for empty `ensure` blocks
 
+## Lint/EmptyExpression
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks for the presence of empty expressions.
+
+### Example
+
+```ruby
+# bad
+foo = ()
+if ()
+  bar
+end
+```
+
 ## Lint/EmptyInterpolation
 
 Enabled by default | Supports autocorrection
