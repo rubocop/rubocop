@@ -1090,6 +1090,10 @@ Lint/EmptyEnsure:
   Description: 'Checks for empty ensure block.'
   Enabled: true
 
+Lint/EmptyExpression:
+  Description: 'Checks for empty expressions.'
+  Enabled: true
+
 Lint/EmptyInterpolation:
   Description: 'Checks for empty string interpolation.'
   Enabled: true
