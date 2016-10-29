@@ -58,4 +58,32 @@ describe RuboCop::Cop::Rails::OutputSafety do
     inspect_source(cop, source)
     expect(cop.offenses).to be_empty
   end
+
+  it 'accepts raw methods when wrapped in a safe_join' do
+    source = 'safe_join([raw(i18n_text),
+              raw(i18n_mode_additional_markup(key))])'
+    inspect_source(cop, source)
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts html_safe methods when wrapped in a safe_join' do
+    source = 'safe_join([i18n_text.html_safe,
+              i18n_mode_additional_markup(key).html_safe])'
+    inspect_source(cop, source)
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts raw methods when wrapped in safe_join when not at the root' do
+    source = 'foo(safe_join([i18n_text.html_safe,
+              i18n_mode_additional_markup(key).html_safe]))'
+    inspect_source(cop, source)
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts raw methods when wrapped in a safe_join when not at the root' do
+    source = 'foo(safe_join([raw(i18n_text),
+              raw(i18n_mode_additional_markup(key))]))'
+    inspect_source(cop, source)
+    expect(cop.offenses).to be_empty
+  end
 end

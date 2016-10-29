@@ -41,13 +41,25 @@ module RuboCop
         def looks_like_rails_html_safe?(node)
           receiver, method_name, *args = *node
 
-          receiver && method_name == :html_safe && args.empty?
+          receiver && method_name == :html_safe && args.empty? &&
+            !called_from_safe_join?(node)
         end
 
         def looks_like_rails_raw?(node)
           receiver, method_name, *args = *node
 
-          receiver.nil? && method_name == :raw && args.one?
+          receiver.nil? && method_name == :raw && args.one? &&
+            !called_from_safe_join?(node)
+        end
+
+        def called_from_safe_join?(node)
+          from_safe_join = false
+          while node.parent.is_a? RuboCop::Node
+            node = node.parent
+            _receiver, method_name, *_args = *node
+            from_safe_join ||= (method_name == :safe_join)
+          end
+          from_safe_join
         end
       end
     end
