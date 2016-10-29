@@ -185,7 +185,7 @@ describe RuboCop::CLI, :isolated_environment do
     expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
     expect($stdout.string)
       .to eq(["#{abs('example.rb')}:3:1: E: unexpected " \
-              'token $end (Using Ruby 2.0 parser; configure using ' \
+              'token $end (Using Ruby 2.1 parser; configure using ' \
               '`TargetRubyVersion` parameter, under `AllCops`)',
               ''].join("\n"))
   end
