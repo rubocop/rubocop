@@ -993,7 +993,7 @@ describe RuboCop::CLI, :isolated_environment do
        'W:  3: 27: Unused method argument - bar.']
     summary = '1 file inspected, 3 offenses detected'
     create_file('.rubocop.yml', ['AllCops:',
-                                 '  TargetRubyVersion: 2.0'])
+                                 '  TargetRubyVersion: 2.1'])
     create_file('example.rb', src)
     expect(cli.run(%w(-a -f simple))).to eq(1)
     expect($stderr.string).to eq('')
