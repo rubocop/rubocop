@@ -32,6 +32,7 @@
 * [#3660](https://github.com/bbatsov/rubocop/pull/3660): Fix false positive for Rails/SafeNavigation when without receiver. ([@pocke][])
 * [#3650](https://github.com/bbatsov/rubocop/issues/3650): Fix `Style/VariableNumber` registering an offense for variables with double digit numbers. ([@rrosenblum][])
 * [#3494](https://github.com/bbatsov/rubocop/issues/3494): Check `rails` style indentation also inside blocks in `Style/IndentationWidth`. ([@jonas054][])
+* [#3676](https://github.com/bbatsov/rubocop/issues/3676): Ignore raw and html_safe invocations when wrapped inside a safe_join. ([@b-t-g][])
 
 ### Changes
 
