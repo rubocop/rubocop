@@ -16,7 +16,7 @@ module RuboCop
       #   all symbols for keys
       # * hash_rockets - forces use of hash rockets for all hashes
       # * no_mixed_keys - simply checks for hashes with mixed syntaxes
-      # * ruby19_mixed_keys - forces use of ruby 1.9 syntax and forbids mixed
+      # * ruby19_no_mixed_keys - forces use of ruby 1.9 syntax and forbids mixed
       #   syntax hashes
       #
       # @example
