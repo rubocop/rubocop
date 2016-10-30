@@ -30,8 +30,11 @@ module RuboCop
               'prefer `safe_join` or other Rails tag helpers instead.'.freeze
 
         def on_send(node)
-          return unless looks_like_rails_html_safe?(node) ||
-                        looks_like_rails_raw?(node)
+          _receiver, method_name, *_args = *node
+          ignore_node(node) if method_name == :safe_join
+          return unless !part_of_ignored_node?(node) &&
+                        (looks_like_rails_html_safe?(node) ||
+                        looks_like_rails_raw?(node))
 
           add_offense(node, :selector)
         end
@@ -41,25 +44,13 @@ module RuboCop
         def looks_like_rails_html_safe?(node)
           receiver, method_name, *args = *node
 
-          receiver && method_name == :html_safe && args.empty? &&
-            !called_from_safe_join?(node)
+          receiver && method_name == :html_safe && args.empty?
         end
 
         def looks_like_rails_raw?(node)
           receiver, method_name, *args = *node
 
-          receiver.nil? && method_name == :raw && args.one? &&
-            !called_from_safe_join?(node)
-        end
-
-        def called_from_safe_join?(node)
-          from_safe_join = false
-          while node.parent.is_a? RuboCop::Node
-            node = node.parent
-            _receiver, method_name, *_args = *node
-            from_safe_join ||= (method_name == :safe_join)
-          end
-          from_safe_join
+          receiver.nil? && method_name == :raw && args.one?
         end
       end
     end
