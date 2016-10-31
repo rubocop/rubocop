@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+## 0.45.0 (2016-10-31)
+
 ### New features
 
 * [#3615](https://github.com/bbatsov/rubocop/pull/3615): Add autocorrection for `Lint/EmptyInterpolation`. ([@pocke][])
