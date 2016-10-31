@@ -164,6 +164,7 @@ In the following section you find all available cops:
 * [Rails/ActionFilter](cops_rails.md#railsactionfilter)
 * [Rails/Date](cops_rails.md#railsdate)
 * [Rails/Delegate](cops_rails.md#railsdelegate)
+* [Rails/DynamicFindBy](cops_rails.md#railsdynamicfindby)
 * [Rails/Exit](cops_rails.md#railsexit)
 * [Rails/FindBy](cops_rails.md#railsfindby)
 * [Rails/FindEach](cops_rails.md#railsfindeach)
