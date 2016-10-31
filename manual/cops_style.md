@@ -1597,7 +1597,7 @@ The supported styles are:
   all symbols for keys
 * hash_rockets - forces use of hash rockets for all hashes
 * no_mixed_keys - simply checks for hashes with mixed syntaxes
-* ruby19_mixed_keys - forces use of ruby 1.9 syntax and forbids mixed
+* ruby19_no_mixed_keys - forces use of ruby 1.9 syntax and forbids mixed
   syntax hashes
 
 ### Example
@@ -2580,6 +2580,26 @@ Attribute | Value
 EnforcedStyle | symmetrical
 SupportedStyles | symmetrical, new_line, same_line
 
+
+## Style/MultilineIfModifier
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+Checks for uses of if/unless modifiers with multiple-lines bodies.
+
+### Example
+
+```ruby
+# bad
+{
+  result: 'this should not happen'
+} unless cond
+
+# good
+{ result: 'ok' } if cond
+```
 
 ## Style/MultilineIfThen
 
@@ -4043,7 +4063,8 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
-This cop checks for spaces in lambda literals.
+This cop checks for spaces between -> and opening parameter
+brace in lambda literals.
 
 ### Example
 
