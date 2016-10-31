@@ -64,7 +64,8 @@ module RuboCop
               return unless ASSIGNMENT_TYPES.include?(node.parent.parent.type)
             end
 
-            if array_splat?(node) && method_argument?(node)
+            if array_splat?(node) &&
+               (method_argument?(node) || part_of_an_array?(node))
               add_offense(node, :expression, ARRAY_PARAM_MSG)
             else
               add_offense(node, :expression)
@@ -76,13 +77,12 @@ module RuboCop
 
         def autocorrect(node)
           variable, = *node
-          parent = node.parent
           loc = node.loc
 
           lambda do |corrector|
             if !variable.array_type?
               corrector.replace(loc.expression, "[#{variable.source}]")
-            elsif unneeded_brackets?(parent)
+            elsif unneeded_brackets?(node)
               corrector.replace(loc.expression, remove_brackets(variable))
             else
               corrector.remove(loc.operator)
@@ -98,10 +98,19 @@ module RuboCop
           node.parent.send_type?
         end
 
+        def part_of_an_array?(node)
+          # The parent of a splat expansion is an array that does not have
+          # `begin` or `end`
+          parent = node.parent
+          parent.array_type? && parent.loc.begin && parent.loc.end
+        end
+
         def unneeded_brackets?(node)
           parent = node.parent
+          grandparent = node.parent.parent
 
-          node.when_type? || node.send_type? || (parent && parent.resbody_type?)
+          parent.when_type? || parent.send_type? || part_of_an_array?(node) ||
+            (grandparent && grandparent.resbody_type?)
         end
 
         def remove_brackets(array)

@@ -4,6 +4,8 @@
 
 ### Bug fixes
 
+* [#3662](https://github.com/bbatsov/rubocop/issues/3662): Fix the auto-correction of `Lint/UnneededSplatExpansion` when the splat expansion is inside of another array. ([@rrosenblum][])
+
 ## 0.45.0 (2016-10-31)
 
 ### New features

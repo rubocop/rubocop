@@ -179,6 +179,20 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
     expect(cop.offenses).to be_empty
   end
 
+  it 'registers an offense for the expansion of an array literal' \
+    'inside of an array literal' do
+    inspect_source(cop, '[1, 2, *[3, 4, 5], 6, 7]')
+
+    expect(cop.messages).to eq([array_param_message])
+    expect(cop.highlights).to eq(['*[3, 4, 5]'])
+  end
+
+  it 'allows expanding a method call on an array literal' do
+    inspect_source(cop, '[1, 2, *[3, 4, 5].map(&:to_s), 6, 7]')
+
+    expect(cop.offenses).to be_empty
+  end
+
   context 'autocorrect' do
     context 'assignment to a splat expanded variable' do
       it 'removes the splat from an array using []' do
@@ -297,6 +311,26 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
         expect(new_source).to eq('foo("#{one}", "two", "three")')
       end
     end
+
+    context 'splat expansion inside of an array' do
+      it 'removes the splat and brackets from []' do
+        new_source = autocorrect_source(cop, '[1, 2, *[3, 4, 5], 6, 7]')
+
+        expect(new_source).to eq('[1, 2, 3, 4, 5, 6, 7]')
+      end
+
+      it 'changes %w to a list of words' do
+        new_source = autocorrect_source(cop, "['a', 'b', *%w(c d e), 'f', 'g']")
+
+        expect(new_source).to eq("['a', 'b', 'c', 'd', 'e', 'f', 'g']")
+      end
+
+      it 'changes %W to a list of words' do
+        new_source = autocorrect_source(cop, '["a", "b", *%W(#{one} two)]')
+
+        expect(new_source).to eq('["a", "b", "#{one}", "two"]')
+      end
+    end
   end
 
   context 'ruby >= 2.0', :ruby20 do
@@ -357,6 +391,20 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
                                     'when :"#{first}", :"second"',
                                     '  baz',
                                     'end'].join("\n"))
+        end
+      end
+
+      context 'splat expansion inside of an array' do
+        it 'changes %i to a list of symbols' do
+          new_source = autocorrect_source(cop, '[:a, :b, *%i(c d), :e]')
+
+          expect(new_source).to eq('[:a, :b, :c, :d, :e]')
+        end
+
+        it 'changes %I to a list of symbols' do
+          new_source = autocorrect_source(cop, '[:a, :b, *%I(#{one} two), :e]')
+
+          expect(new_source).to eq('[:a, :b, :"#{one}", :"two", :e]')
         end
       end
     end
