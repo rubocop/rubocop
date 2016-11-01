@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#3600](https://github.com/bbatsov/rubocop/issues/3600): Add new `Bundler/DuplicatedGem` cop. ([@jmks][])
+
 ### Bug fixes
 
 * [#3662](https://github.com/bbatsov/rubocop/issues/3662): Fix the auto-correction of `Lint/UnneededSplatExpansion` when the splat expansion is inside of another array. ([@rrosenblum][])
