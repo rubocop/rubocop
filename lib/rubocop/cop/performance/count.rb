@@ -42,32 +42,32 @@ module RuboCop
 
         MSG = 'Use `count` instead of `%s...%s`.'.freeze
 
-        SELECTORS = [:reject, :select].freeze
-        COUNTERS = [:count, :length, :size].freeze
+        def_node_matcher :count_candidate?, <<-PATTERN
+          {
+            (send (block $(send _ ${:select :reject}) ...) ${:count :length :size})
+            (send $(send _ ${:select :reject} (:block_pass _)) ${:count :length :size})
+          }
+        PATTERN
 
         def on_send(node)
           return if rails_safe_mode?
 
-          @selector, @selector_loc, @params, @counter = parse(node)
+          count_candidate?(node) do |selector_node, selector, counter|
+            return unless eligible_node?(node)
 
-          check(node)
+            range = source_starting_at(node) do
+              selector_node.loc.selector.begin_pos
+            end
+
+            add_offense(node, range, format(MSG, selector, counter))
+          end
         end
 
         private
 
-        attr_reader :selector, :selector_loc, :params, :counter
-
-        def check(node)
-          return unless eligible_node?(node) && eligible_params? &&
-                        eligible_method_chain?
-
-          range = source_starting_at(node) { @selector_loc.begin_pos }
-
-          add_offense(node, range, format(MSG, @selector, @counter))
-        end
-
         def autocorrect(node)
-          selector, selector_loc = parse(node)
+          selector_node, selector, _counter = count_candidate?(node)
+          selector_loc = selector_node.loc.selector
 
           return if selector == :reject
 
@@ -83,48 +83,12 @@ module RuboCop
           !(node.parent && node.parent.block_type?)
         end
 
-        def eligible_params?
-          !(params && !params.block_pass_type?)
-        end
-
-        def eligible_method_chain?
-          COUNTERS.include?(counter) && SELECTORS.include?(selector)
-        end
-
-        def parse(node)
-          head, counter = *node
-          expression, selector, params = *head
-          if selector.is_a?(Symbol)
-            selector_loc = selector_location(expression, head.loc)
-          else
-            _, selector, params = *expression
-            if contains_selector?(expression)
-              selector_loc = expression.loc.selector
-            end
-          end
-
-          [selector, selector_loc, params, counter]
-        end
-
-        def selector_location(expression, head_loc)
-          if expression && expression.parent.loc.respond_to?(:selector)
-            expression.parent.loc.selector
-          elsif head_loc.respond_to?(:selector)
-            head_loc.selector
-          end
-        end
-
-        def contains_selector?(node)
-          node.respond_to?(:loc) && node.loc.respond_to?(:selector)
-        end
-
         def source_starting_at(node)
-          begin_pos =
-            if block_given?
-              yield node
-            else
-              node.source_range.begin_pos
-            end
+          begin_pos = if block_given?
+                        yield node
+                      else
+                        node.source_range.begin_pos
+                      end
 
           range_between(begin_pos, node.source_range.end_pos)
         end
