@@ -23,6 +23,7 @@ pages:
     - Rails Cops: cops_rails.md
     - Security Cops: cops_security.md
     - Style Cops: cops_style.md
+    - Bundler Cops: cops_bundler.md
 extra_css:
   - css/extra.css
 theme: readthedocs

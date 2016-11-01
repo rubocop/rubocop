@@ -91,6 +91,8 @@ require 'rubocop/cop/mixin/too_many_lines'
 require 'rubocop/cop/mixin/trailing_comma'
 require 'rubocop/cop/mixin/unused_argument'
 
+require 'rubocop/cop/bundler/duplicated_gem'
+
 require 'rubocop/cop/lint/ambiguous_operator'
 require 'rubocop/cop/lint/ambiguous_regexp_literal'
 require 'rubocop/cop/lint/assignment_in_condition'

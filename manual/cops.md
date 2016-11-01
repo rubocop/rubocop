@@ -58,6 +58,10 @@ Rails:
   Enabled: true
 ```
 
+### Bundler
+
+Bundler cops check for style or bad practices in Bundler files, e.g. `Gemfile`.
+
 ### Available cops
 
 In the following section you find all available cops:
@@ -377,4 +381,7 @@ In the following section you find all available cops:
 
 #### Type [Security](cops_security.md)
 * [Security/JSONLoad](cops_security.md#securityjsonload)
-## 
+
+#### Type [Bundler](cops_bundler.md)
+
+* [Bundler/DuplicatedGem](cops_bundler.md#bundlerduplicatedgem)

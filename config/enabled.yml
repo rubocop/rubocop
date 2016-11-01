@@ -1559,3 +1559,12 @@ Security/JSONLoad:
   # Autocorrect here will change to a method that may cause crashes depending
   # on the value of the argument.
   AutoCorrect: false
+
+##################### Bundler #############################
+
+Bundler/DuplicatedGem:
+  Description: 'Checks for duplicate gem entries in Gemfile.'
+  Enabled: true
+  Include:
+    - '**/Gemfile'
+    - '**/gems.rb'
