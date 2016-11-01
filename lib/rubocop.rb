@@ -92,6 +92,7 @@ require 'rubocop/cop/mixin/trailing_comma'
 require 'rubocop/cop/mixin/unused_argument'
 
 require 'rubocop/cop/bundler/duplicated_gem'
+require 'rubocop/cop/bundler/ordered_gems'
 
 require 'rubocop/cop/lint/ambiguous_operator'
 require 'rubocop/cop/lint/ambiguous_regexp_literal'
