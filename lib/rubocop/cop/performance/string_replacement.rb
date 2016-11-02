@@ -21,22 +21,24 @@ module RuboCop
       class StringReplacement < Cop
         MSG = 'Use `%s` instead of `%s`.'.freeze
         DETERMINISTIC_REGEX = /\A(?:#{LITERAL_REGEX})+\Z/
-        REGEXP_CONSTRUCTOR_METHODS = [:new, :compile].freeze
-        GSUB_METHODS = [:gsub, :gsub!].freeze
-        DETERMINISTIC_TYPES = [:regexp, :str, :send].freeze
         DELETE = 'delete'.freeze
         TR = 'tr'.freeze
         BANG = '!'.freeze
         SINGLE_QUOTE = "'".freeze
 
+        def_node_matcher :string_replacement?, <<-PATTERN
+          (send _ ${:gsub :gsub!}
+                    ${regexp str (send (const nil :Regexp) {:new :compile} _)}
+                    $str)
+        PATTERN
+
         def on_send(node)
-          _string, method, first_param, second_param = *node
+          string_replacement?(node) do |method, first_param, second_param|
+            return if accept_second_param?(second_param)
+            return if accept_first_param?(first_param)
 
-          return unless GSUB_METHODS.include?(method)
-          return if accept_second_param?(second_param)
-          return if accept_first_param?(first_param)
-
-          offense(node, method, first_param, second_param)
+            offense(node, method, first_param, second_param)
+          end
         end
 
         def autocorrect(node)
@@ -44,7 +46,7 @@ module RuboCop
           first_source, = first_source(first_param)
           second_source, = *second_param
 
-          if regex?(first_param)
+          unless first_param.str_type?
             first_source = interpret_string_escapes(first_source)
           end
 
@@ -72,19 +74,15 @@ module RuboCop
         private
 
         def accept_second_param?(second_param)
-          return true unless string?(second_param)
           second_source, = *second_param
-
           second_source.length > 1
         end
 
         def accept_first_param?(first_param)
-          return true unless DETERMINISTIC_TYPES.include?(first_param.type)
-
           first_source, options = first_source(first_param)
           return true if first_source.nil?
 
-          if regex?(first_param)
+          unless first_param.str_type?
             return true if options
             return true unless first_source =~ DETERMINISTIC_REGEX
             # This must be done after checking DETERMINISTIC_REGEX
@@ -97,7 +95,7 @@ module RuboCop
 
         def offense(node, method, first_param, second_param)
           first_source, = first_source(first_param)
-          if regex?(first_param)
+          unless first_param.str_type?
             first_source = interpret_string_escapes(first_source)
           end
           second_source, = *second_param
@@ -106,28 +104,14 @@ module RuboCop
           add_offense(node, range(node), message)
         end
 
-        def string?(node)
-          node && node.str_type?
-        end
-
         def first_source(first_param)
           case first_param.type
-          when :regexp, :send
-            return nil unless regex?(first_param)
-            source, options = extract_source(first_param)
-          when :str
-            source, = *first_param
-          end
-
-          [source, options]
-        end
-
-        def extract_source(node)
-          case node.type
           when :regexp
-            source_from_regex_literal(node)
+            source_from_regex_literal(first_param)
           when :send
-            source_from_regex_constructor(node)
+            source_from_regex_constructor(first_param)
+          when :str
+            first_param.children.first
           end
         end
 
@@ -147,15 +131,6 @@ module RuboCop
             source, = *regex
             source
           end
-        end
-
-        def regex?(node)
-          return true if node.regexp_type?
-
-          const, init, = *node
-          _, klass = *const
-
-          klass == :Regexp && REGEXP_CONSTRUCTOR_METHODS.include?(init)
         end
 
         def range(node)
