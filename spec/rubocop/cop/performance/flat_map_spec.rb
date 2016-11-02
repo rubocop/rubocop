@@ -11,6 +11,7 @@ describe RuboCop::Cop::Performance::FlatMap, :config do
 
       expect(cop.messages)
         .to eq(["Use `flat_map` instead of `#{method}...#{flatten}`."])
+      expect(cop.highlights).to eq(["#{method} { |e| [e, e] }.#{flatten}(1)"])
     end
 
     it "does not register an offense when calling #{method}...#{flatten} " \
@@ -77,6 +78,7 @@ describe RuboCop::Cop::Performance::FlatMap, :config do
           .to eq(["Use `flat_map` instead of `map...#{flatten}`. " \
                'Beware, `flat_map` only flattens 1 level and `flatten` ' \
                'can be used to flatten multiple levels.'])
+        expect(cop.highlights).to eq(["map { |e| [e, e] }.#{flatten}"])
       end
 
       it "will not correct #{method}..#{flatten} to flat_map" do
