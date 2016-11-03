@@ -184,7 +184,7 @@ module RuboCop
         class GenericCorrector
           include AutocorrectAlignment
 
-          attr_reader :config, :node, :correction, :correction_range
+          attr_reader :config, :node
 
           def initialize(node, config, new_elements)
             @node = node
