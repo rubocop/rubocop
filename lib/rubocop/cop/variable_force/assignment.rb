@@ -23,6 +23,8 @@ module RuboCop
           @node = node
           @variable = variable
           @referenced = false
+
+          super
         end
 
         def name
