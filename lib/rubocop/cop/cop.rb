@@ -130,6 +130,7 @@ module RuboCop
 
         @offenses = []
         @corrections = []
+        @processed_source = nil
       end
 
       def join_force?(_force_class)
