@@ -69,7 +69,10 @@ module RuboCop
         MSG_NO_MIXED_KEYS = "Don't mix styles in the same hash.".freeze
         MSG_HASH_ROCKETS = 'Use hash rockets syntax.'.freeze
 
-        @force_hash_rockets = false
+        def initialize(*)
+          @force_hash_rockets = false
+          super
+        end
 
         def on_hash(node)
           if cop_config['UseHashRocketsWithSymbolValues']
