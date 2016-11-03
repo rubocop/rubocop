@@ -178,7 +178,7 @@ module RuboCop
       end
 
       def compile_seq_terms(tokens, cur_node)
-        terms, size =
+        ret, size =
           compile_seq_terms_with_size(tokens, cur_node) do |token, terms, index|
             case token
             when '...'.freeze
@@ -188,7 +188,7 @@ module RuboCop
             end
           end
 
-        terms << "(#{cur_node}.children.size == #{size})"
+        ret << "(#{cur_node}.children.size == #{size})"
       end
 
       def compile_seq_terms_with_size(tokens, cur_node)
