@@ -11,6 +11,12 @@ module RuboCop
     class FuubarStyleFormatter < ClangStyleFormatter
       RESET_SEQUENCE = "\e[0m".freeze
 
+      def initialize(*)
+        @severest_offense = nil
+
+        super
+      end
+
       def started(target_files)
         super
 
