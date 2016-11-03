@@ -21,6 +21,12 @@ module RuboCop
         NON_FOR_LOOP_TYPES = LOOP_TYPES - [FOR_LOOP_TYPE]
         NON_FOR_LOOP_TYPES_CHILD_INDEX = 1
 
+        def initialize(*)
+          @branch_point_node = @branch_body_node = nil
+
+          super()
+        end
+
         def node
           raise '#node must be declared!'
         end
@@ -64,9 +70,7 @@ module RuboCop
 
         # Inner if, case, rescue, or ensure node.
         def branch_point_node
-          if instance_variable_defined?(:@branch_point_node)
-            return @branch_point_node
-          end
+          return @branch_point_node if @branch_point_node
 
           set_branch_point_and_body_nodes!
           @branch_point_node
@@ -74,9 +78,7 @@ module RuboCop
 
         # A child node of #branch_point_node this assignment belongs.
         def branch_body_node
-          if instance_variable_defined?(:@branch_body_node)
-            return @branch_body_node
-          end
+          return @branch_body_node if @branch_body_node
 
           set_branch_point_and_body_nodes!
           @branch_body_node
