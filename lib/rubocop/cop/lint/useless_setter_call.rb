@@ -53,6 +53,7 @@ module RuboCop
         class MethodVariableTracker
           def initialize(body_node)
             @body_node = body_node
+            @local = nil
           end
 
           def contain_local_object?(variable_name)
