@@ -189,5 +189,8 @@ module RuboCop
         dirs_to_search
       end
     end
+
+    # Initializing class ivars
+    clear_options
   end
 end
