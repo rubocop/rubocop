@@ -31,6 +31,7 @@ module RuboCop
       @path = path
       @diagnostics = []
       @ruby_version = ruby_version
+      @parser_error = nil
 
       parse(source, ruby_version)
     end
