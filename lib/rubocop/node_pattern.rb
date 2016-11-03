@@ -334,7 +334,8 @@ module RuboCop
           "(#{cur_node}#{'.type' if seq_head} == temp#{@unify[name]})"
         else
           n = @unify[name] = next_temp_value
-          "(temp#{n} = #{cur_node}#{'.type' if seq_head}; true)"
+          # double assign to temp#{n} to avoid "assigned but unused variable"
+          "(temp#{n} = temp#{n} = #{cur_node}#{'.type' if seq_head}; true)"
         end
       end
 
@@ -444,7 +445,8 @@ module RuboCop
 
       def with_temp_node(cur_node)
         with_temp_variable do |temp_var|
-          yield "#{temp_var} = #{cur_node}", temp_var
+          # double assign to temp#{n} to avoid "assigned but unused variable"
+          yield "#{temp_var} = #{temp_var} = #{cur_node}", temp_var
         end
       end
 
