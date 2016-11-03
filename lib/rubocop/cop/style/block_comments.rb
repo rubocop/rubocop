@@ -27,7 +27,7 @@ module RuboCop
                                 contents.source
                                   .gsub(/\A/, '# ')
                                   .gsub(/\n\n/, "\n#\n")
-                                  .gsub(/\n(?=[^\z#])/, "\n# "))
+                                  .gsub(/\n(?=[^#])/, "\n# "))
             end
             corrector.remove(eq_end)
           end
