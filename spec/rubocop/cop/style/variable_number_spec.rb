@@ -26,7 +26,6 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'snake_case' } }
 
     it_behaves_like :offense, 'snake_case', 'local1'
-    it_behaves_like :offense, 'snake_case', 'local_'
     it_behaves_like :offense, 'snake_case', '@local1'
     it_behaves_like :offense, 'snake_case', '@@local1'
     it_behaves_like :offense, 'snake_case', 'camelCase1'
@@ -37,11 +36,14 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
     it_behaves_like :accepts, 'snake_case', 'local_1'
     it_behaves_like :accepts, 'snake_case', 'local_12'
     it_behaves_like :accepts, 'snake_case', 'local_123'
+    it_behaves_like :accepts, 'snake_case', 'local_'
     it_behaves_like :accepts, 'snake_case', 'aB_1'
     it_behaves_like :accepts, 'snake_case', 'a_1_b'
     it_behaves_like :accepts, 'snake_case', 'a_1_b_1'
     it_behaves_like :accepts, 'snake_case', '_'
     it_behaves_like :accepts, 'snake_case', '_foo'
+    it_behaves_like :accepts, 'snake_case', '@foo'
+    it_behaves_like :accepts, 'snake_case', '@__foo__'
 
     it 'registers an offense for normal case numbering in method parameter' do
       inspect_source(cop, 'def method(arg1); end')
@@ -61,7 +63,6 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'normalcase' } }
 
     it_behaves_like :offense, 'normalcase', 'local_1'
-    it_behaves_like :offense, 'normalcase', 'local_'
     it_behaves_like :offense, 'normalcase', 'sha_256'
     it_behaves_like :offense, 'normalcase', '@local_1'
     it_behaves_like :offense, 'normalcase', '@@local_1'
@@ -72,6 +73,7 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
     it_behaves_like :offense, 'normalcase', 'local_FOO_1'
 
     it_behaves_like :accepts, 'normalcase', 'local1'
+    it_behaves_like :accepts, 'normalcase', 'local_'
     it_behaves_like :accepts, 'normalcase', 'user1_id'
     it_behaves_like :accepts, 'normalcase', 'sha256'
     it_behaves_like :accepts, 'normalcase', 'foo10_bar'
@@ -81,6 +83,8 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
     it_behaves_like :accepts, 'normalcase', 'user_1_id'
     it_behaves_like :accepts, 'normalcase', '_'
     it_behaves_like :accepts, 'normalcase', '_foo'
+    it_behaves_like :accepts, 'normalcase', '@foo'
+    it_behaves_like :accepts, 'normalcase', '@__foo__'
 
     it 'registers an offense for snake case numbering in method parameter' do
       inspect_source(cop, 'def method(arg_1); end')
@@ -100,7 +104,6 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'non_integer' } }
 
     it_behaves_like :offense, 'non_integer', 'local_1'
-    it_behaves_like :offense, 'non_integer', 'local_'
     it_behaves_like :offense, 'non_integer', 'local1'
     it_behaves_like :offense, 'non_integer', '@local_1'
     it_behaves_like :offense, 'non_integer', '@local1'
@@ -113,11 +116,13 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
 
     it_behaves_like :accepts, 'non_integer', 'localone'
     it_behaves_like :accepts, 'non_integer', 'local_one'
+    it_behaves_like :accepts, 'non_integer', 'local_'
     it_behaves_like :accepts, 'non_integer', '@foo'
     it_behaves_like :accepts, 'non_integer', '@@foo'
     it_behaves_like :accepts, 'non_integer', 'fooBar'
     it_behaves_like :accepts, 'non_integer', '_'
     it_behaves_like :accepts, 'non_integer', '_foo'
+    it_behaves_like :accepts, 'non_integer', '@__foo__'
 
     it 'registers an offense for snake case numbering in method parameter' do
       inspect_source(cop, 'def method(arg_1); end')
