@@ -11,7 +11,7 @@ gem 'simplecov', '~> 0.10'
 gem 'pry'
 
 group :test do
-  gem 'codeclimate-test-reporter', require: false
+  gem 'codeclimate-test-reporter', '~> 1.0', require: false
   gem 'safe_yaml', require: false
   gem 'webmock', require: false
 end
