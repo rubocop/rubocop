@@ -4520,13 +4520,26 @@ foo = (bar?) ? a : b
 foo = (bar.baz) ? a : b
 foo = (bar && baz) ? a : b
 ```
+```ruby
+EnforcedStyle: require_parentheses_when_complex
+
+# bad
+foo = (bar?) ? a : b
+foo = (bar.baz?) ? a : b
+foo = bar && baz ? a : b
+
+# good
+foo = bar? ? a : b
+foo = bar.baz ? a : b
+foo = (bar && baz) ? a : b
+```
 
 ### Important attributes
 
 Attribute | Value
 --- | ---
 EnforcedStyle | require_no_parentheses
-SupportedStyles | require_parentheses, require_no_parentheses
+SupportedStyles | require_parentheses, require_no_parentheses, require_parentheses_when_complex
 AllowSafeAssignment | true
 
 
