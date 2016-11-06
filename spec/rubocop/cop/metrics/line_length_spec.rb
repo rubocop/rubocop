@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe RuboCop::Cop::Metrics::LineLength, :config do
   subject(:cop) { described_class.new(config) }
-  let(:cop_config) { { 'Max' => 80 } }
+  let(:cop_config) { { 'Max' => 80, 'IgnoredPatterns' => nil } }
 
   it "registers an offense for a line that's 81 characters wide" do
     inspect_source(cop, '#' * 81)
@@ -118,6 +118,29 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
     end
   end
 
+  context 'when IgnoredPatterns option is set' do
+    let(:cop_config) do
+      {
+        'Max' => 18,
+        'IgnoredPatterns' => ['^\s*test\s', /^\s*def\s+test_/]
+      }
+    end
+
+    let(:source) do
+      ['class ExampleTest < TestCase',
+       "  test 'some really long test description which exceeds length' do",
+       '  end',
+       '  def test_some_other_long_test_description_which_exceeds_length',
+       '  end',
+       'end']
+    end
+
+    it 'accepts long lines matching a pattern but not other long lines' do
+      inspect_source(cop, source)
+      expect(cop.highlights).to eq(['< TestCase'])
+    end
+  end
+
   context 'when AllowHeredoc option is enabled' do
     let(:cop_config) { { 'Max' => 80, 'AllowHeredoc' => true } }
 
@@ -142,7 +165,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
 
     context 'and only certain heredoc delimiters are whitelisted' do
       let(:cop_config) do
-        { 'Max' => 80, 'AllowHeredoc' => %w(SQL OK) }
+        { 'Max' => 80, 'AllowHeredoc' => %w(SQL OK), 'IgnoredPatterns' => [] }
       end
 
       let(:source) { <<-END }

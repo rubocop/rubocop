@@ -217,7 +217,8 @@ describe RuboCop::ConfigLoader do
               'AllowHeredoc' => true,
               'AllowURI' => true,
               'URISchemes' => %w(http https),
-              'IgnoreCopDirectives' => false
+              'IgnoreCopDirectives' => false,
+              'IgnoredPatterns' => []
             },
             'Metrics/MethodLength' => {
               'Description' =>
@@ -297,7 +298,8 @@ describe RuboCop::ConfigLoader do
               'AllowHeredoc' => false,  # overridden in rubocop.yml
               'AllowURI' => true,
               'URISchemes' => %w(http https),
-              'IgnoreCopDirectives' => false
+              'IgnoreCopDirectives' => false,
+              'IgnoredPatterns' => []
             }
           )
 

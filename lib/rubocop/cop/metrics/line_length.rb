@@ -23,6 +23,7 @@ module RuboCop
 
         def check_line(line, index, heredocs)
           return if line.length <= max
+          return if matches_ignored_pattern?(line)
           if ignore_cop_directives? && directive_on_source_line?(index)
             return check_directive_line(line, index)
           end
@@ -79,6 +80,14 @@ module RuboCop
             range.cover?(line_number) &&
               (allowed_heredoc == true || allowed_heredoc.include?(delimiter))
           end
+        end
+
+        def matches_ignored_pattern?(line)
+          ignored_patterns.any? { |pattern| Regexp.new(pattern).match(line) }
+        end
+
+        def ignored_patterns
+          cop_config['IgnoredPatterns'] || []
         end
 
         def allow_uri?
