@@ -10,7 +10,7 @@ module HostEnvironmentSimulatorHelper
       pid = ::Process.fork do
         # Need to write coverage result under different name
         if defined?(SimpleCov)
-          SimpleCov.command_name "rspec_#{Process.pid}"
+          SimpleCov.coverage_dir "coverage/ignored_results_#{Process.pid}"
           SimpleCov.pid = Process.pid
         end
 
