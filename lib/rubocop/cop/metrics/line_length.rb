@@ -23,18 +23,22 @@ module RuboCop
 
         def check_line(line, index, heredocs)
           return if line.length <= max
-          return if matches_ignored_pattern?(line)
+          return if ignored_line?(line, index, heredocs)
+
           if ignore_cop_directives? && directive_on_source_line?(index)
             return check_directive_line(line, index)
           end
-          return if heredocs &&
-                    line_in_whitelisted_heredoc?(heredocs, index.succ)
           return check_uri_line(line, index) if allow_uri?
 
           offense(
             source_range(processed_source.buffer, index + 1, 0...line.length),
             line
           )
+        end
+
+        def ignored_line?(line, index, heredocs)
+          matches_ignored_pattern?(line) ||
+            heredocs && line_in_whitelisted_heredoc?(heredocs, index.succ)
         end
 
         def offense(loc, line)
