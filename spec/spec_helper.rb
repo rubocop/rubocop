@@ -44,6 +44,3 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 end
-
-# Disable network connections
-WebMock.disable_net_connect!(allow: 'codeclimate.com')
