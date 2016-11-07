@@ -141,6 +141,7 @@ module RuboCop
         @options[:only] << 'Lint'
       end
       option(opts, '-a', '--auto-correct')
+      option(opts, '-g', '--changed-lines-only')
 
       option(opts, '-n', '--[no-]color') { |c| @options[:color] = c }
 
@@ -310,6 +311,8 @@ module RuboCop
       lint:                  'Run only lint cops.',
       list_target_files:     'List all files RuboCop will inspect.',
       auto_correct:          'Auto-correct offenses.',
+      changed_lines_only:    ['If you do not pass in a specified file,',
+                              'only files with changes will be inspected.'],
       no_color:              'Force color output on or off.',
       version:               'Display version.',
       verbose_version:       'Display verbose version.',

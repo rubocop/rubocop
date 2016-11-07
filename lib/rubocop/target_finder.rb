@@ -9,6 +9,7 @@ module RuboCop
     def initialize(config_store, options = {})
       @config_store = config_store
       @options = options
+      @lineup_finder = RuboCop::LineupFinder.new
     end
 
     def force_exclusion?
@@ -21,6 +22,10 @@ module RuboCop
 
     def fail_fast?
       @options[:fail_fast]
+    end
+
+    def changed_lines_only?
+      @options[:changed_lines_only]
     end
 
     # Generate a list of target files by expanding globbing patterns
@@ -72,6 +77,9 @@ module RuboCop
     end
 
     def to_inspect?(file, hidden_files, base_dir_config)
+      if changed_lines_only?
+        return false unless @lineup_finder.changed_files.include?(File.absolute_path(file))
+      end
       return false if base_dir_config.file_to_exclude?(file)
       unless hidden_files.include?(file)
         return true if File.extname(file) == '.rb'

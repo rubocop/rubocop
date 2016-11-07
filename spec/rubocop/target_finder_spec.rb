@@ -9,8 +9,9 @@ describe RuboCop::TargetFinder, :isolated_environment do
     described_class.new(config_store, options)
   end
   let(:config_store) { RuboCop::ConfigStore.new }
-  let(:options) { { force_exclusion: force_exclusion, debug: debug } }
+  let(:options) { { force_exclusion: force_exclusion, debug: debug, changed_lines_only: changed_lines_only } }
   let(:force_exclusion) { false }
+  let(:changed_lines_only) { false }
   let(:debug) { false }
 
   before do
@@ -206,6 +207,26 @@ describe RuboCop::TargetFinder, :isolated_environment do
       allow(config_store).to receive(:for).and_return(config)
 
       expect(found_basenames).not_to include('ruby2.rb')
+    end
+
+    context 'when looking for changes only' do
+      let(:changed_lines_only) { true }
+      let(:found_files) { target_finder.target_files_in_dir(base_dir) }
+      let(:found_basenames) { found_files.map { |f| File.basename(f) } }
+
+      before do
+        lineup_finder = instance_double('lineup_finder')
+        # TODO: Why is the original method still being called?
+        # This test is spitting out not a git repository errors.
+        allow(lineup_finder).to receive(:changed_files).at_least(1).times.and_return([File.absolute_path('dir1/ruby1.rb')])
+        expect(RuboCop::LineupFinder).to receive(:new).and_return(lineup_finder)
+      end
+
+      it 'excludes files with no changes' do
+        rb_file_count = found_files.count { |f| f.end_with?('.rb') }
+        expect(rb_file_count).to eq(1)
+        expect(found_basenames).to eq(['ruby1.rb'])
+      end
     end
 
     context 'when an exception is raised while reading file' do
