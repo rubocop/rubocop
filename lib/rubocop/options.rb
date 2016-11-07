@@ -128,7 +128,8 @@ module RuboCop
       end
     end
 
-    def add_boolean_flags(opts) # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+    def add_boolean_flags(opts)
       option(opts, '-F', '--fail-fast')
       option(opts, '-C', '--cache FLAG')
       option(opts, '-d', '--debug')
@@ -141,6 +142,7 @@ module RuboCop
         @options[:only] << 'Lint'
       end
       option(opts, '-a', '--auto-correct')
+      option(opts, '-g', '--changed-lines-only')
 
       option(opts, '-n', '--[no-]color') { |c| @options[:color] = c }
 
@@ -148,6 +150,7 @@ module RuboCop
       option(opts, '-V', '--verbose-version')
       option(opts, '-s', '--stdin') { @options[:stdin] = $stdin.binmode.read }
     end
+    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
     def add_list_options(opts)
       option(opts, '-L', '--list-target-files')
@@ -310,6 +313,9 @@ module RuboCop
       lint:                  'Run only lint cops.',
       list_target_files:     'List all files RuboCop will inspect.',
       auto_correct:          'Auto-correct offenses.',
+      changed_lines_only:    ['If you do not pass in a specified file,',
+                              'only files with changes will be inspected.',
+                              'Must be using git for source control.'],
       no_color:              'Force color output on or off.',
       version:               'Display version.',
       verbose_version:       'Display verbose version.',

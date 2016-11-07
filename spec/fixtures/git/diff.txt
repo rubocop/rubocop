@@ -1,0 +1,33 @@
+diff --git a/lib/rubocop/cop/cop.rb b/lib/rubocop/cop/cop.rb
+index 73a927b..fe01e7b 100644
+--- a/lib/rubocop/cop/cop.rb
++++ b/lib/rubocop/cop/cop.rb
+@@ -20,5 +19,0 @@ module RuboCop
+-      # @return [Array<Cop>] Cops not for a specific type.
+-      def without_type(type)
+-        CopStore.new(reject { |c| c.cop_type == type })
+-      end
+-
+@@ -118,9 +112,0 @@ module RuboCop
+-      # Returns true if the cop name or the cop namespace matches any of the
+-      # given names.
+-      def self.match?(given_names)
+-        return false unless given_names
+-
+-        given_names.include?(cop_name) ||
+-          given_names.include?(cop_type.to_s.capitalize)
+-      end
+-
+@@ -158,0 +145,5 @@ module RuboCop
++      def added_method
++        does_something
++        returns_something
++      end
++
+@@ -168 +158,0 @@ module RuboCop
+-        self.class::MSG
+@@ -172,2 +162,2 @@ module RuboCop
+-        location = find_location(node, loc)
+-        return if duplicate_location?(location)
++        location = find_location(node, loc) # edit this line
++        return if duplicate_location?(location) # and this one
