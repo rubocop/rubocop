@@ -4,7 +4,7 @@ require 'rubocop'
 
 desc 'Generate docs of all cops types'
 
-task :generate_cops_documentation do |_task|
+task generate_cops_documentation: :yard do
   def cop_name_without_type(cop_name)
     cop_name.split('/').last.to_sym
   end
@@ -104,18 +104,24 @@ task :generate_cops_documentation do |_task|
     cops_body(config, cop, description, examples_object, pars)
   end
 
-  puts 'This generator uses the comments and tags (`@example`) from the '\
-  'source files to generate the cops-specification. Please use `yardoc` '\
-  'before running this script to make sure, that all your changes were '\
-  'rendered.'
-  answer = ''
-  until %w(Y N).include? answer
-    puts 'Would you like to run `yardoc` before you generate? [Y/N]'
-    answer = $stdin.gets.chomp.upcase
+  def assert_manual_synchronized
+    # Do not print diff and yield whether exit code was zero
+    sh('git diff --quiet manual') do |outcome, _|
+      return if outcome
+
+      # Output diff before raising error
+      sh('git diff manual')
+
+      raise 'The manual directory is out of sync. ' \
+        'Run rake generate_cops_documentation and commit the results.'
+    end
   end
-  system('exec yardoc') if answer == 'Y'
-  cops = RuboCop::Cop::Cop.all
+
+  cops   = RuboCop::Cop::Cop.all
   config = RuboCop::ConfigLoader.default_configuration
+
   YARD::Registry.load!
   cops.types.sort!.each { |type| print_cops_of_type(cops, type, config) }
+
+  assert_manual_synchronized if ENV['CI'] == 'true'
 end

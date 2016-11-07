@@ -21,6 +21,8 @@ install:
 script:
   - bundle exec rake
   - bundle exec codeclimate-test-reporter
+  # Running YARD under jruby crashes so skip checking manual under jruby
+  - ruby -e "exit 1 unless RUBY_PLATFORM == 'java'" || bundle exec rake generate_cops_documentation
 addons:
   code_climate:
     repo_token: a11b66bfbb1acdf220d5cb317b2e945a986fd85adebe29a76d411ad6d74ec31f
