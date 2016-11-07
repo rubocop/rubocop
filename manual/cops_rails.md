@@ -432,43 +432,48 @@ Enabled by default | Supports autocorrection
 --- | ---
 Disabled | Yes
 
-This cop converts usages of `try!` to `&.`. It can also be configured
-to convert `try`. It will convert code to use safe navigation if the
-target Ruby version is set to 2.3+
+This cop transforms usages of a method call safeguarded by a non `nil`
+check for the variable whose method is being called to
+safe navigation (`&.`).
+
+Configuration option: ConvertCodeThatCanStartToReturnNil
+The default for this is `false`. When configured to `true`, this will
+check for code in the format `!foo.nil? && foo.bar`. As it is written,
+the return of this code is limited to `false` and whatever the return
+of the method is. If this is converted to safe navigation,
+`foo&.bar` can start returning `nil` as well as what the method
+returns.
 
 ### Example
 
 ```ruby
-# ConvertTry: false
-  # bad
-  foo.try!(:bar)
-  foo.try!(:bar, baz)
-  foo.try!(:bar) { |e| e.baz }
+# bad
+foo.bar if foo
+foo.bar(param1, param2) if foo
+foo.bar { |e| e.something } if foo
+foo.bar(param) { |e| e.something } if foo
 
-  foo.try!(:[], 0)
+foo.bar if !foo.nil?
+foo.bar unless !foo
+foo.bar unless foo.nil?
 
-  # good
-  foo.try(:bar)
-  foo.try(:bar, baz)
-  foo.try(:bar) { |e| e.baz }
+foo && foo.bar
+foo && foo.bar(param1, param2)
+foo && foo.bar { |e| e.something }
+foo && foo.bar(param) { |e| e.something }
 
-  foo&.bar
-  foo&.bar(baz)
-  foo&.bar { |e| e.baz }
+# good
+foo&.bar
+foo&.bar(param1, param2)
+foo&.bar { |e| e.something }
+foo&.bar(param) { |e| e.something }
 
-# ConvertTry: true
-  # bad
-  foo.try!(:bar)
-  foo.try!(:bar, baz)
-  foo.try!(:bar) { |e| e.baz }
-  foo.try(:bar)
-  foo.try(:bar, baz)
-  foo.try(:bar) { |e| e.baz }
+foo.nil? || foo.bar
+!foo || foo.bar
 
-  # good
-  foo&.bar
-  foo&.bar(baz)
-  foo&.bar { |e| e.baz }
+# Methods that `nil` will `respond_to?` should not be converted to
+# use safe navigation
+foo.to_i if foo
 ```
 
 ### Important attributes
