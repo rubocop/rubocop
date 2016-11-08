@@ -160,14 +160,19 @@ module RuboCop
         @options[:extra_details] || config.for_all_cops['ExtraDetails']
       end
 
+      def changed_lines_only?
+        @options[:changed_lines_only]
+      end
+
       def message(_node = nil)
         self.class::MSG
       end
 
       def add_offense(node, loc, message = nil, severity = nil)
         location = find_location(node, loc)
-
         return if duplicate_location?(location)
+
+        return if changed_lines_only? && offense_not_on_changed_line?(location)
 
         severity = custom_severity || severity || default_severity
 
@@ -178,6 +183,11 @@ module RuboCop
 
         @offenses << Offense.new(severity, location, message, name, status)
         yield if block_given? && status != :disabled
+      end
+
+      def offense_not_on_changed_line?(location)
+        location_intersect_changes = RuboCop::LineupFinder.new.changed_files_and_lines[location.source_buffer.name] & Array(location.first_line..location.last_line)
+        return if location_intersect_changes && location_intersect_changes.empty?
       end
 
       def find_location(node, loc)
