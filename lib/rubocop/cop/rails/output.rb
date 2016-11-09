@@ -6,7 +6,7 @@ module RuboCop
       # This cop checks for the use of output calls like puts and print
       class Output < Cop
         MSG = 'Do not write to stdout. ' \
-              'Use Rails\' logger if you want to log.'.freeze
+              "Use Rails's logger if you want to log.".freeze
 
         def_node_matcher :output?, <<-PATTERN
           (send nil {:ap :p :pp :pretty_print :print :puts} $...)
