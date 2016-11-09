@@ -16,18 +16,12 @@ module RuboCop
       class ScopeArgs < Cop
         MSG = 'Use `lambda`/`proc` instead of a plain method call.'.freeze
 
+        def_node_matcher :scope?, '(send nil :scope _ $send)'
+
         def on_send(node)
-          return unless node.command?(:scope)
-
-          _receiver, _method_name, *args = *node
-
-          return unless args.size == 2
-
-          second_arg = args[1]
-
-          return unless second_arg.send_type?
-
-          add_offense(second_arg, :expression)
+          scope?(node) do |second_arg|
+            add_offense(second_arg, :expression)
+          end
         end
       end
     end
