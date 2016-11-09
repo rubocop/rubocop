@@ -17,6 +17,7 @@
 
 * [#3662](https://github.com/bbatsov/rubocop/issues/3662): Fix the auto-correction of `Lint/UnneededSplatExpansion` when the splat expansion is inside of another array. ([@rrosenblum][])
 * [#3699](https://github.com/bbatsov/rubocop/issues/3699): Fix false positive in `Style/VariableNumber` on variable names ending with an underscore. ([@bquorning][])
+* [#3696](https://github.com/bbatsov/rubocop/issues/3696): Fix to avoid warning `when` branches without a body if it has comments. ([@hanumakanthvvn][])
 
 ## 0.45.0 (2016-10-31)
 
@@ -2492,3 +2493,4 @@
 [@iGEL]: https://github.com/iGEL
 [@tessi]: https://github.com/tessi
 [@ivanovaleksey]: https://github.com/ivanovaleksey
+[@hanumakanthvvn]: https://github.com/hanumakanthvvn
