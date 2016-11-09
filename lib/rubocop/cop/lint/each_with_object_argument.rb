@@ -15,13 +15,12 @@ module RuboCop
       class EachWithObjectArgument < Cop
         MSG = 'The argument to each_with_object can not be immutable.'.freeze
 
-        def on_send(node)
-          _receiver, method_name, *args = *node
-          return unless method_name == :each_with_object
-          return unless args.length == 1
+        def_node_matcher :each_with_object?, '(send _ :each_with_object $_)'
 
-          arg = args.first
-          add_offense(node, :expression) if arg.immutable_literal?
+        def on_send(node)
+          each_with_object?(node) do |arg|
+            add_offense(node, :expression) if arg.immutable_literal?
+          end
         end
       end
     end
