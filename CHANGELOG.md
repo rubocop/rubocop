@@ -7,6 +7,7 @@
 * [#3600](https://github.com/bbatsov/rubocop/issues/3600): Add new `Bundler/DuplicatedGem` cop. ([@jmks][])
 * [#3624](https://github.com/bbatsov/rubocop/pull/3624): Add new configuration option `empty_lines_special` to `Style/EmptyLinesAroundClassBody` and `Style/EmptyLinesAroundModuleBody`. ([@legendetm][])
 * Add new `Style/EmptyMethod` cop. ([@drenmi][])
+* `Style/EmptyLiteral` will now auto-correct `Hash.new` when it is the first argument being passed to a method. The arguments will be wrapped with parenthesis. ([@rrosenblum][])
 
 ### Changes
 

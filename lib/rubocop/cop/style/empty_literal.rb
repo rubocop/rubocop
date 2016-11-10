@@ -31,23 +31,13 @@ module RuboCop
 
             add_offense(node, :expression,
                         format(STR_MSG, preferred_string_literal))
-
           end
         end
 
         def autocorrect(node)
-          name = array_node(node) { '[]' }
-          name ||= hash_node(node) do
-            # `some_method {}` is not same as `some_method Hash.new`
-            # because the braces are interpreted as a block, so we avoid
-            # the correction. Parentheses around the arguments would
-            # solve the problem, but we let the user add those manually.
-            return if first_arg_in_method_call_without_parentheses?(node)
-            '{}'
+          lambda do |corrector|
+            corrector.replace(replacement_range(node), correction(node))
           end
-          name ||= str_node(node) { preferred_string_literal }
-
-          ->(corrector) { corrector.replace(node.source_range, name) }
         end
 
         private
@@ -69,6 +59,40 @@ module RuboCop
 
           _receiver, _method_name, *args = *node.parent
           node.object_id == args.first.object_id && !parentheses?(node.parent)
+        end
+
+        def replacement_range(node)
+          if hash_node(node) &&
+             first_arg_in_method_call_without_parentheses?(node)
+            # `some_method {}` is not same as `some_method Hash.new`
+            # because the braces are interpreted as a block. We will have
+            # to rewrite the arguments to wrap them in parenthesis.
+            _receiver, _method_name, *args = *node.parent
+
+            Parser::Source::Range.new(node.parent.loc.expression,
+                                      args[0].loc.expression.begin_pos - 1,
+                                      args[-1].loc.expression.end_pos)
+          else
+            node.source_range
+          end
+        end
+
+        def correction(node)
+          if array_node(node)
+            '[]'
+          elsif str_node(node)
+            preferred_string_literal
+          elsif hash_node(node)
+            if first_arg_in_method_call_without_parentheses?(node)
+              # `some_method {}` is not same as `some_method Hash.new`
+              # because the braces are interpreted as a block. We will have
+              # to rewrite the arguments to wrap them in parenthesis.
+              _receiver, _method_name, *args = *node.parent
+              "(#{args[1..-1].map(&:source).unshift('{}').join(', ')})"
+            else
+              '{}'
+            end
+          end
         end
       end
     end
