@@ -1,30 +1,28 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'pry'
 
 describe RuboCop::Cop::Style::EmptyLiteral do
   subject(:cop) { described_class.new }
 
   describe 'Empty Array' do
     it 'registers an offense for Array.new()' do
-      inspect_source(cop,
-                     'test = Array.new()')
+      inspect_source(cop, 'test = Array.new()')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Use array literal `[]` instead of `Array.new`.'])
     end
 
     it 'registers an offense for Array.new' do
-      inspect_source(cop,
-                     'test = Array.new')
+      inspect_source(cop, 'test = Array.new')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Use array literal `[]` instead of `Array.new`.'])
     end
 
     it 'does not register an offense for Array.new(3)' do
-      inspect_source(cop,
-                     'test = Array.new(3)')
+      inspect_source(cop, 'test = Array.new(3)')
       expect(cop.offenses).to be_empty
     end
 
@@ -36,30 +34,26 @@ describe RuboCop::Cop::Style::EmptyLiteral do
 
   describe 'Empty Hash' do
     it 'registers an offense for Hash.new()' do
-      inspect_source(cop,
-                     'test = Hash.new()')
+      inspect_source(cop, 'test = Hash.new()')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Use hash literal `{}` instead of `Hash.new`.'])
     end
 
     it 'registers an offense for Hash.new' do
-      inspect_source(cop,
-                     'test = Hash.new')
+      inspect_source(cop, 'test = Hash.new')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Use hash literal `{}` instead of `Hash.new`.'])
     end
 
     it 'does not register an offense for Hash.new(3)' do
-      inspect_source(cop,
-                     'test = Hash.new(3)')
+      inspect_source(cop, 'test = Hash.new(3)')
       expect(cop.offenses).to be_empty
     end
 
     it 'does not register an offense for Hash.new { block }' do
-      inspect_source(cop,
-                     'test = Hash.new { block }')
+      inspect_source(cop, 'test = Hash.new { block }')
       expect(cop.offenses).to be_empty
     end
 
