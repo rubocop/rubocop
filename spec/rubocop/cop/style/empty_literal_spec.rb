@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'pry'
 
 describe RuboCop::Cop::Style::EmptyLiteral do
   subject(:cop) { described_class.new }
@@ -73,10 +72,16 @@ describe RuboCop::Cop::Style::EmptyLiteral do
                 'yadayada.map { a }.reduce({}, :merge)'].join("\n"))
     end
 
-    it 'does not auto-correct Hash.new to {} if changing code meaning' do
+    it 'auto-correct Hash.new to {} as the only parameter to a method' do
+      source = 'yadayada.map { a }.reduce Hash.new'
+      new_source = autocorrect_source(cop, source)
+      expect(new_source).to eq('yadayada.map { a }.reduce({})')
+    end
+
+    it 'auto-correct Hash.new to {} as the first parameter to a method' do
       source = 'yadayada.map { a }.reduce Hash.new, :merge'
       new_source = autocorrect_source(cop, source)
-      expect(new_source).to eq(source)
+      expect(new_source).to eq('yadayada.map { a }.reduce({}, :merge)')
     end
   end
 
