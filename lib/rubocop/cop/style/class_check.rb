@@ -9,13 +9,13 @@ module RuboCop
 
         MSG = 'Prefer `Object#%s` over `Object#%s`.'.freeze
 
-        def on_send(node)
-          _receiver, method_name, *_args = *node
-          return unless [:is_a?,
-                         :kind_of?].include?(method_name)
+        def_node_matcher :class_check?, '(send _ ${:is_a? :kind_of?} _)'
 
-          return if style == method_name
-          add_offense(node, :selector)
+        def on_send(node)
+          class_check?(node) do |method_name|
+            return if style == method_name
+            add_offense(node, :selector)
+          end
         end
 
         def message(node)
