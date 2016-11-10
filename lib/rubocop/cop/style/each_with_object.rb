@@ -20,19 +20,22 @@ module RuboCop
         MSG = 'Use `each_with_object` instead of `%s`.'.freeze
         METHODS = [:inject, :reduce].freeze
 
+        def_node_matcher :each_with_object_candidate?, <<-PATTERN
+          (block $(send _ {:inject :reduce} _) $_ $_)
+        PATTERN
+
         def on_block(node)
-          method, args, body = *node
-          return unless reduce_method?(method)
+          each_with_object_candidate?(node) do |method, args, body|
+            _, method_name, method_arg = *method
+            return if simple_method_arg?(method_arg)
 
-          _, method_name, method_arg = *method
-          return if simple_method_arg?(method_arg)
+            return_value = return_value(body)
+            return unless return_value
+            return unless first_argument_returned?(args, return_value)
+            return if accumulator_param_assigned_to?(body, args)
 
-          return_value = return_value(body)
-          return unless return_value
-          return unless first_argument_returned?(args, return_value)
-          return if accumulator_param_assigned_to?(body, args)
-
-          add_offense(node, method.loc.selector, format(MSG, method_name))
+            add_offense(node, method.loc.selector, format(MSG, method_name))
+          end
         end
 
         def autocorrect(node)
@@ -46,13 +49,6 @@ module RuboCop
         end
 
         private
-
-        def reduce_method?(method)
-          return false unless method.send_type?
-
-          _, method_name, _method_arg = *method
-          METHODS.include? method_name
-        end
 
         def simple_method_arg?(method_arg)
           method_arg && method_arg.basic_literal?
