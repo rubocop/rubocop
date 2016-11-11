@@ -50,13 +50,6 @@ describe RuboCop::Cop::Lint::EmptyWhen, :config do
     it_behaves_like 'code with offense',
                     ['case foo',
                      'when :bar then 1',
-                     'when :baz # nothing',
-                     'else',
-                     'end'].join("\n")
-
-    it_behaves_like 'code with offense',
-                    ['case foo',
-                     'when :bar then 1',
                      'when :baz then',
                      'end'].join("\n")
 
@@ -138,6 +131,16 @@ describe RuboCop::Cop::Lint::EmptyWhen, :config do
                      'when :bar',
                      '  1',
                      'when :baz',
+                     '  # nothing',
+                     'else',
+                     '  3',
+                     'end'].join("\n")
+    it_behaves_like 'code without offense',
+                    ['case',
+                     'when :bar',
+                     '  1',
+                     'when :baz',
+                     '',
                      '  # nothing',
                      'else',
                      '  3',
