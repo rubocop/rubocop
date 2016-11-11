@@ -109,6 +109,22 @@ describe RuboCop::ConfigLoader do
       end
     end
 
+    context 'when a parent file specifies DisabledByDefault: true' do
+      let(:file_path) { '.rubocop.yml' }
+
+      before do
+        create_file('disable.yml',
+                    ['AllCops:',
+                     '  DisabledByDefault: true'])
+
+        create_file(file_path, ['inherit_from: disable.yml'])
+      end
+
+      it 'disables cops by default' do
+        expect(configuration_from_file['Style/Alias']['Enabled']).to eql(false)
+      end
+    end
+
     context 'when a file inherits from a parent file' do
       let(:file_path) { 'dir/.rubocop.yml' }
 
