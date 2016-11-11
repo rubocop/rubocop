@@ -18,6 +18,7 @@
 
 * [#3662](https://github.com/bbatsov/rubocop/issues/3662): Fix the auto-correction of `Lint/UnneededSplatExpansion` when the splat expansion is inside of another array. ([@rrosenblum][])
 * [#3699](https://github.com/bbatsov/rubocop/issues/3699): Fix false positive in `Style/VariableNumber` on variable names ending with an underscore. ([@bquorning][])
+* [#3687](https://github.com/bbatsov/rubocop/issues/3687): Fix the fact that `Style/TernaryParentheses` cop claims to correct uncorrected offenses. ([@Ana06][])
 
 ## 0.45.0 (2016-10-31)
 
@@ -2493,3 +2494,4 @@
 [@iGEL]: https://github.com/iGEL
 [@tessi]: https://github.com/tessi
 [@ivanovaleksey]: https://github.com/ivanovaleksey
+[@Ana06]: https://github.com/Ana06
