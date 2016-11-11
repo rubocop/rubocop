@@ -61,16 +61,16 @@ module RuboCop
         def autocorrect(node)
           condition, = *node
 
+          return nil if !require_parentheses? && (safe_assignment?(condition) ||
+                        unsafe_autocorrect?(condition))
+
           lambda do |corrector|
             if require_parentheses?
               corrector.insert_before(condition.source_range, '(')
               corrector.insert_after(condition.source_range, ')')
             else
-              unless safe_assignment?(condition) ||
-                     unsafe_autocorrect?(condition)
-                corrector.remove(condition.loc.begin)
-                corrector.remove(condition.loc.end)
-              end
+              corrector.remove(condition.loc.begin)
+              corrector.remove(condition.loc.end)
             end
           end
         end
