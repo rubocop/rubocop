@@ -8,6 +8,7 @@
 * [#3624](https://github.com/bbatsov/rubocop/pull/3624): Add new configuration option `empty_lines_special` to `Style/EmptyLinesAroundClassBody` and `Style/EmptyLinesAroundModuleBody`. ([@legendetm][])
 * Add new `Style/EmptyMethod` cop. ([@drenmi][])
 * `Style/EmptyLiteral` will now auto-correct `Hash.new` when it is the first argument being passed to a method. The arguments will be wrapped with parenthesis. ([@rrosenblum][])
+* [#3713](https://github.com/bbatsov/rubocop/pull/3713): Respect `DisabledByDefault` in parent configs. ([@aroben][])
 
 ### Changes
 
@@ -2495,3 +2496,4 @@
 [@tessi]: https://github.com/tessi
 [@ivanovaleksey]: https://github.com/ivanovaleksey
 [@Ana06]: https://github.com/Ana06
+[@aroben]: https://github.com/aroben

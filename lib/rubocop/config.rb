@@ -151,16 +151,6 @@ module RuboCop
       for_cop(cop).empty? || for_cop(cop)['Enabled']
     end
 
-    def add_missing_namespaces
-      keys.each do |k|
-        q = Cop::Cop.qualified_cop_name(k, loaded_path)
-        next if q == k
-
-        self[q] = self[k]
-        delete(k)
-      end
-    end
-
     def validate
       # Don't validate RuboCop's own files. Avoids infinite recursion.
       base_config_path = File.expand_path(File.join(ConfigLoader::RUBOCOP_HOME,
