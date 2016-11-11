@@ -15,10 +15,6 @@ module RuboCop
       class EmptyWhen < Cop
         MSG = 'Avoid `when` branches without a body.'.freeze
 
-        def investigate(processed_source)
-          @processed_source = processed_source
-        end
-
         def on_case(node)
           _cond_node, *when_nodes, _else_node = *node
 
