@@ -27,36 +27,27 @@ module RuboCop
         include OnMethodDef
         include IfNode
 
-        NIL_NODE = s(:nil)
+        def_node_matcher :not_equal_to_nil?, '(send _ :!= (:nil))'
+        def_node_matcher :unless_check?, '(if (send _ :nil?) ...)'
+        def_node_matcher :nil_check?, '(send _ :nil?)'
+        def_node_matcher :not_and_nil_check?, '(send (send _ :nil?) :!)'
 
         def on_send(node)
           return if ignored_node?(node)
-          receiver, method, args = *node
 
-          if not_equal_to_nil?(method, args)
+          if not_equal_to_nil?(node)
             add_offense(node, :selector)
           elsif include_semantic_changes? &&
-                (not_and_nil_check?(method, receiver) ||
-                 unless_and_nil_check?(node, method))
+                (not_and_nil_check?(node) || unless_and_nil_check?(node))
             add_offense(node, :expression)
           end
         end
 
         private
 
-        def not_equal_to_nil?(method, args)
-          method == :!= && args == NIL_NODE
-        end
-
-        def not_and_nil_check?(method, receiver)
-          method == :! && nil_check?(receiver)
-        end
-
-        def unless_and_nil_check?(send_node, method)
-          return unless method == :nil?
-
+        def unless_and_nil_check?(send_node)
           parent = send_node.parent
-          parent && parent.if_type? && !ternary?(parent) &&
+          nil_check?(send_node) && unless_check?(parent) && !ternary?(parent) &&
             parent.loc.keyword.is?('unless')
         end
 
@@ -84,21 +75,15 @@ module RuboCop
           end
         end
 
-        def nil_check?(node)
-          return false unless node && node.send_type?
-
-          _receiver, method, *_args = *node
-          method == :nil?
-        end
-
         def autocorrect(node)
           receiver, method, _args = *node
 
-          if method == :!=
+          case method
+          when :!=
             autocorrect_comparison(node)
-          elsif method == :!
+          when :!
             autocorrect_non_nil(node, receiver)
-          elsif method == :nil?
+          when :nil?
             autocorrect_unless_nil(node, receiver)
           end
         end
@@ -106,18 +91,15 @@ module RuboCop
         def autocorrect_comparison(node)
           expr = node.source
 
-          new_code =
-            if include_semantic_changes?
-              expr.sub(/\s*!=\s*nil/, '')
-            else
-              expr.sub(/^(\S*)\s*!=\s*nil/, '!\1.nil?')
-            end
+          new_code = if include_semantic_changes?
+                       expr.sub(/\s*!=\s*nil/, '')
+                     else
+                       expr.sub(/^(\S*)\s*!=\s*nil/, '!\1.nil?')
+                     end
 
           return if expr == new_code
 
-          lambda do |corrector|
-            corrector.replace(node.source_range, new_code)
-          end
+          ->(corrector) { corrector.replace(node.source_range, new_code) }
         end
 
         def autocorrect_non_nil(node, inner_node)
