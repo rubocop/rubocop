@@ -6,6 +6,7 @@
 
 * [#3600](https://github.com/bbatsov/rubocop/issues/3600): Add new `Bundler/DuplicatedGem` cop. ([@jmks][])
 * [#3624](https://github.com/bbatsov/rubocop/pull/3624): Add new configuration option `empty_lines_special` to `Style/EmptyLinesAroundClassBody` and `Style/EmptyLinesAroundModuleBody`. ([@legendetm][])
+* Add new `Style/EmptyMethod` cop. ([@drenmi][])
 
 ### Changes
 

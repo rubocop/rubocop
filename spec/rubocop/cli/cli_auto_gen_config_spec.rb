@@ -110,8 +110,7 @@ describe RuboCop::CLI, :isolated_environment do
                                   'puts x',
                                   '',
                                   'class A',
-                                  '  def a',
-                                  '  end',
+                                  '  def a; end',
                                   'end'])
       # Make ConfigLoader reload the default configuration so that its
       # absolute Exclude paths will point into this example's work directory.
@@ -389,8 +388,7 @@ describe RuboCop::CLI, :isolated_environment do
                                   'puts x',
                                   '',
                                   'class A',
-                                  '  def a',
-                                  '  end',
+                                  '  def a; end',
                                   'end'])
       # Make ConfigLoader reload the default configuration so that its
       # absolute Exclude paths will point into this example's work directory.

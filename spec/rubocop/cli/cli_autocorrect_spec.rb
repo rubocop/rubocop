@@ -677,8 +677,7 @@ describe RuboCop::CLI, :isolated_environment do
     expect(cli.run(['--auto-correct'])).to eq(1)
     expect($stderr.string).to eq('')
     expect(IO.read('example.rb')).to eq(['class Test',
-                                         '  def f',
-                                         '  end',
+                                         '  def f; end',
                                          'end',
                                          ''].join("\n"))
   end
@@ -803,15 +802,13 @@ describe RuboCop::CLI, :isolated_environment do
                 ['# Example class.',
                  'class Klass',
                  '  ',
-                 '  def f',
-                 '  end',
+                 '  def f; end',
                  'end'])
     expect(cli.run(['--auto-correct'])).to eq(0)
     expect(IO.read('example.rb'))
       .to eq(['# Example class.',
               'class Klass',
-              '  def f',
-              '  end',
+              '  def f; end',
               'end',
               ''].join("\n"))
     expect($stderr.string).to eq('')
