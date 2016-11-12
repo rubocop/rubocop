@@ -18,19 +18,17 @@ module RuboCop
               'name its argument `other`.'.freeze
 
         OP_LIKE_METHODS = [:eql?, :equal?].freeze
-
         BLACKLISTED = [:+@, :-@, :[], :[]=, :<<, :`].freeze
 
-        TARGET_ARGS = [s(:args, s(:arg, :other)),
-                       s(:args, s(:arg, :_other))].freeze
+        def_node_matcher :op_method_candidate?, <<-PATTERN
+          (def $_ (args $(arg [!:other !:_other])) _)
+        PATTERN
 
         def on_def(node)
-          name, args, _body = *node
-          return unless op_method?(name) &&
-                        args.children.one? &&
-                        !TARGET_ARGS.include?(args)
-
-          add_offense(args.children.first, :expression, format(MSG, name))
+          op_method_candidate?(node) do |name, arg|
+            return unless op_method?(name)
+            add_offense(arg, :expression, format(MSG, name))
+          end
         end
 
         def op_method?(name)
