@@ -1039,7 +1039,7 @@ describe RuboCop::CLI, :isolated_environment do
         expect($stdout.string).to eq([
           '== fake.rb ==',
           'C:  1:  3: Prefer $INPUT_RECORD_SEPARATOR or $RS from the ' \
-          "stdlib 'English' module over $/.",
+          "stdlib 'English' module (don't forget to require it) over $/.",
           '',
           '1 file inspected, 1 offense detected',
           ''
@@ -1092,8 +1092,8 @@ describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(argv)).to eq(0)
         expect($stdout.string).to eq([
           '== fake.rb ==',
-          'C:  1:  3: [Corrected] Prefer $INPUT_RECORD_SEPARATOR or $RS ' \
-          "from the stdlib 'English' module over $/.",
+          'C:  1:  3: [Corrected] Prefer $INPUT_RECORD_SEPARATOR or $RS from ' \
+          "the stdlib 'English' module (don't forget to require it) over $/.",
           '',
           '1 file inspected, 1 offense detected, 1 offense corrected',
           '====================',

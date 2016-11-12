@@ -7,10 +7,10 @@ module RuboCop
       class SpecialGlobalVars < Cop
         include ConfigurableEnforcedStyle
 
-        MSG_BOTH = 'Prefer `%s` from the stdlib \'English\' module, ' \
-        'or `%s` over `%s`.'.freeze
+        MSG_BOTH = 'Prefer `%s` from the stdlib \'English\' module ' \
+        '(don\'t forget to require it), or `%s` over `%s`.'.freeze
         MSG_ENGLISH = 'Prefer `%s` from the stdlib \'English\' module ' \
-        'over `%s`.'.freeze
+        '(don\'t forget to require it) over `%s`.'.freeze
         MSG_REGULAR = 'Prefer `%s` over `%s`.'.freeze
 
         ENGLISH_VARS = { # rubocop:disable Style/MutableConstant

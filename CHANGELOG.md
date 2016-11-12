@@ -11,6 +11,7 @@
 ### Changes
 
 * The offense range for `Performance/FlatMap` now includes any parameters that are passed to `flatten`. ([@rrosenblum][])
+* [#1747](https://github.com/bbatsov/rubocop/issues/1747): Update `Style/SpecialGlobalVars` messages with a reminder to `require 'English'`. ([@ivanovaleksey][])
 
 ### Bug fixes
 
@@ -2490,3 +2491,4 @@
 [@tiagocasanovapt]: https://github.com/tiagocasanovapt
 [@iGEL]: https://github.com/iGEL
 [@tessi]: https://github.com/tessi
+[@ivanovaleksey]: https://github.com/ivanovaleksey

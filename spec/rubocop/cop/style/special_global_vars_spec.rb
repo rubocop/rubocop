@@ -34,14 +34,14 @@ describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Prefer `$PROCESS_ID` or `$PID` from the stdlib \'English\' ' \
-                'module over `$$`.'])
+                'module (don\'t forget to require it) over `$$`.'])
     end
 
     it 'is clear about variables from the English library vs those not' do
       inspect_source(cop, 'puts $*')
       expect(cop.messages)
-        .to eq(['Prefer `$ARGV` from the stdlib \'English\' module, ' \
-                'or `ARGV` over `$*`.'])
+        .to eq(['Prefer `$ARGV` from the stdlib \'English\' module ' \
+                '(don\'t forget to require it), or `ARGV` over `$*`.'])
     end
 
     it 'does not register an offense for backrefs like $1' do
