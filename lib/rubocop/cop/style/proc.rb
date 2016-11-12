@@ -8,17 +8,13 @@ module RuboCop
       class Proc < Cop
         MSG = 'Use `proc` instead of `Proc.new`.'.freeze
 
-        TARGET = s(:send, s(:const, nil, :Proc), :new)
+        def_node_matcher :proc_new?,
+                         '(block $(send (const nil :Proc) :new) ...)'
 
         def on_block(node)
-          # We're looking for
-          # (block
-          #   (send
-          #     (const nil :Proc) :new)
-          #   ...)
-          block_method, = *node
-
-          add_offense(block_method, :expression) if block_method == TARGET
+          proc_new?(node) do |block_method|
+            add_offense(block_method, :expression)
+          end
         end
 
         def autocorrect(node)
