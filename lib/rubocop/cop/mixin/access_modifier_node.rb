@@ -4,12 +4,12 @@ module RuboCop
   module Cop
     # Common functionality for checking modifier nodes.
     module AccessModifierNode
-      extend RuboCop::Sexp
+      extend NodePattern::Macros
 
-      PRIVATE_NODE = s(:send, nil, :private)
-      PROTECTED_NODE = s(:send, nil, :protected)
-      PUBLIC_NODE = s(:send, nil, :public)
-      MODULE_FUNCTION_NODE = s(:send, nil, :module_function)
+      def_node_matcher :private_node?, '(send nil :private)'
+      def_node_matcher :protected_node?, '(send nil :protected)'
+      def_node_matcher :public_node?, '(send nil :public)'
+      def_node_matcher :module_function_node?, '(send nil :module_function)'
 
       # Returns true when the node is an access modifier.
       def modifier_node?(node)
@@ -18,10 +18,10 @@ module RuboCop
 
       # Returns true when the node looks like an access modifier.
       def modifier_structure?(node)
-        [PRIVATE_NODE,
-         PROTECTED_NODE,
-         PUBLIC_NODE,
-         MODULE_FUNCTION_NODE].include?(node)
+        private_node?(node) ||
+          protected_node?(node) ||
+          public_node?(node) ||
+          module_function_node?(node)
       end
 
       # Returns true when the parent of what looks like an access modifier
