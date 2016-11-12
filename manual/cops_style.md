@@ -1192,6 +1192,53 @@ Enabled | Yes
 This cop checks for the use of a method, the result of which
 would be a literal, like an empty array, hash or string.
 
+## Style/EmptyMethod
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for the formatting of empty method definitions.
+By default it enforces empty method definitions to go on a single
+line (compact style), but it cah be configured to enforce the `end`
+to go on its own line (loose style.)
+
+Note: A method definition is not considered empty if it contains
+      comments.
+
+### Example
+
+```ruby
+EnforcedStyle: compact (default)
+
+# bad
+def foo(bar)
+end
+
+# good
+def foo(bar); end
+def foo(bar)
+  # baz
+end
+
+EnforcedStyle: loose
+
+# bad
+def foo(bar); end
+
+# good
+def foo(bar)
+end
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+EnforcedStyle | compact
+SupportedStyles | compact, loose
+
+
 ## Style/Encoding
 
 Enabled by default | Supports autocorrection

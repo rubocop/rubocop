@@ -24,8 +24,7 @@ describe RuboCop::Runner, :isolated_environment do
     context 'if there are no offenses in inspected files' do
       let(:source) { <<-END.strip_indent }
         # coding: utf-8
-        def valid_code
-        end
+        def valid_code; end
       END
 
       it 'returns true' do
@@ -36,8 +35,7 @@ describe RuboCop::Runner, :isolated_environment do
     context 'if there is an offense in an inspected file' do
       let(:source) { <<-END.strip_indent }
         # coding: utf-8
-        def INVALID_CODE
-        end
+        def INVALID_CODE; end
       END
 
       it 'returns false' do
@@ -53,7 +51,7 @@ describe RuboCop::Runner, :isolated_environment do
           Offenses:
 
           example.rb:2:5: C: Use snake_case for method names.
-          def INVALID_CODE
+          def INVALID_CODE; end
               ^^^^^^^^^^^^
 
           1 file inspected, 1 offense detected
@@ -87,8 +85,7 @@ describe RuboCop::Runner, :isolated_environment do
           formatters: [['progress', formatter_output_path]],
           stdin: <<-END.strip_indent
             # coding: utf-8
-            def INVALID_CODE
-            end
+            def INVALID_CODE; end
           END
         }
       end
@@ -107,7 +104,7 @@ describe RuboCop::Runner, :isolated_environment do
           Offenses:
 
           example.rb:2:5: C: Use snake_case for method names.
-          def INVALID_CODE
+          def INVALID_CODE; end
               ^^^^^^^^^^^^
 
           1 file inspected, 1 offense detected

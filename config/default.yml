@@ -447,6 +447,12 @@ Style/EmptyLinesAroundModuleBody:
     - empty_lines_special
     - no_empty_lines
 
+Style/EmptyMethod:
+  EnforcedStyle: compact
+  SupportedStyles:
+    - compact
+    - expanded
+
 # Checks whether the source file has a utf-8 encoding comment or not
 # AutoCorrectEncodingComment must match the regex
 # /#.*coding\s?[:=]\s?(?:UTF|utf)-8/

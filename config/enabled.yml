@@ -244,6 +244,11 @@ Style/EmptyLiteral:
   StyleGuide: '#literal-array-hash'
   Enabled: true
 
+Style/EmptyMethod:
+  Description: 'Checks the formatting of empty method definitions.'
+  StyleGuide: '#no-single-line-methods'
+  Enabled: true
+
 Style/EndBlock:
   Description: 'Avoid the use of END blocks.'
   StyleGuide: '#no-END-blocks'
