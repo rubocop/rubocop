@@ -185,6 +185,15 @@ describe RuboCop::Cop::Style::AccessModifierIndentation do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts methods with a body' do
+      inspect_source(cop, ['module Test',
+                           '  def test',
+                           '    foo',
+                           '  end',
+                           'end'])
+      expect(cop.offenses).to be_empty
+    end
+
     it 'handles properly nested classes' do
       inspect_source(cop,
                      ['class Test',

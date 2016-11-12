@@ -37,7 +37,7 @@ module RuboCop
         def check_body(body, node)
           return if body.nil? # Empty class etc.
 
-          modifiers = body.children.select { |c| modifier_node?(c) }
+          modifiers = body.each_child_node.select { |c| modifier_node?(c) }
           class_column = node.source_range.column
 
           modifiers.each { |modifier| check_modifier(modifier, class_column) }
