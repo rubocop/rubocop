@@ -13,23 +13,30 @@ module RuboCop
       #   something.map(&:upcase)
       class SymbolProc < Cop
         MSG = 'Pass `&:%s` as an argument to `%s` instead of a block.'.freeze
+        SUPER_TYPES = [:super, :zsuper].freeze
 
-        PROC_NODE = s(:send, s(:const, nil, :Proc), :new)
+        def_node_matcher :proc_node?, '(send (const nil :Proc) :new)'
+        def_node_matcher :symbol_proc?, <<-PATTERN
+          (block
+            ${(send ...) (super ...) zsuper}
+            $(args (arg _))
+            $(send lvar $_))
+        PATTERN
 
         def on_block(node)
-          block_send_or_super, block_args, block_body = *node
-          block_method_name = resolve_block_method_name(block_send_or_super)
+          symbol_proc?(node) do |send_or_super, block_args, block_body, method|
+            block_method_name = resolve_block_method_name(send_or_super)
 
-          # TODO: Rails-specific handling that we should probably make
-          # configurable - https://github.com/bbatsov/rubocop/issues/1485
-          # we should ignore lambdas & procs
-          return if block_send_or_super == PROC_NODE
-          return if [:lambda, :proc].include?(block_method_name)
-          return if ignored_method?(block_method_name)
-          return unless can_shorten?(block_args, block_body)
+            # TODO: Rails-specific handling that we should probably make
+            # configurable - https://github.com/bbatsov/rubocop/issues/1485
+            # we should ignore lambdas & procs
+            return if proc_node?(send_or_super)
+            return if [:lambda, :proc].include?(block_method_name)
+            return if ignored_method?(block_method_name)
+            return unless can_shorten?(block_args, block_body)
 
-          _receiver, method_name, _args = *block_body
-          offense(node, method_name, block_method_name)
+            offense(node, method, block_method_name)
+          end
         end
 
         def autocorrect(node)
@@ -114,9 +121,6 @@ module RuboCop
         end
 
         def can_shorten?(block_args, block_body)
-          return false unless shortenable_args?(block_args) &&
-                              shortenable_body?(block_body)
-
           argument_matches_receiver?(block_args, block_body)
         end
 
@@ -130,33 +134,8 @@ module RuboCop
           block_arg_name == receiver_name
         end
 
-        # The block body must have a single send without arguments to an
-        # lvar type.
-        # E.g.: `foo { |bar| bar.baz }`
-        def shortenable_body?(block_body)
-          return false unless block_body && block_body.send_type?
-
-          receiver, _, args = *block_body
-
-          return false if args
-
-          receiver && receiver.lvar_type?
-        end
-
-        # The block must have a single, shortenable argument.
-        # E.g.: `foo { |bar| ... }`
-        def shortenable_args?(block_args)
-          block_args.children.one? && !non_shortenable_args?(block_args)
-        end
-
         def super?(node)
-          [:super, :zsuper].include?(node.type)
-        end
-
-        def non_shortenable_args?(block_args)
-          # something { |&x| ... }
-          # something { |*x| ... }
-          [:blockarg, :restarg].include?(block_args.children.first.type)
+          SUPER_TYPES.include?(node.type)
         end
       end
     end
