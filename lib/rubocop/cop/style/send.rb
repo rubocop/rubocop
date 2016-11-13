@@ -8,10 +8,13 @@ module RuboCop
         MSG = 'Prefer `Object#__send__` or `Object#public_send` to ' \
               '`send`.'.freeze
 
+        def_node_matcher :sending?, '(send _ :send $...)'
+
         def on_send(node)
-          _receiver, method_name, *args = *node
-          return unless method_name == :send && !args.empty?
-          add_offense(node, :selector)
+          sending?(node) do |args|
+            return if args.empty?
+            add_offense(node, :selector)
+          end
         end
       end
     end
