@@ -596,6 +596,38 @@ describe RuboCop::Cop::Style::IndentationWidth do
 
           include_examples 'assignment and if with keyword alignment'
         end
+
+        context 'when alignment style is start_of_line' do
+          let(:end_alignment_config) do
+            { 'Enabled' => true, 'AlignWith' => 'start_of_line' }
+          end
+
+          it 'accepts an if' do
+            inspect_source(cop,
+                           ['var = if a',
+                            '  0',
+                            'end'])
+            expect(cop.offenses).to be_empty
+          end
+
+          it 'accepts a while' do
+            inspect_source(cop,
+                           ['var = while a',
+                            '  b',
+                            'end'])
+            expect(cop.offenses).to be_empty
+          end
+
+          it 'accepts an if/else' do
+            inspect_source(cop,
+                           ['var = if a',
+                            '  0',
+                            'else',
+                            '  1',
+                            'end'])
+            expect(cop.offenses).to be_empty
+          end
+        end
       end
 
       it 'accepts an if/else branches with rescue clauses' do
