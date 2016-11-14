@@ -49,7 +49,7 @@ module RuboCop
       end
 
       def variable_alignment?(whole_expression, rhs, end_alignment_style)
-        end_alignment_style == :variable &&
+        [:start_of_line, :variable].include?(end_alignment_style) &&
           !line_break_before_keyword?(whole_expression, rhs)
       end
 
