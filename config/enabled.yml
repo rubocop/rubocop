@@ -602,7 +602,7 @@ Style/ParenthesesAroundCondition:
   Description: >-
                  Don't use parentheses around the condition of an
                  if/unless/while.
-  StyleGuide: '#no-parens-if'
+  StyleGuide: '#no-parens-around-condition'
   Enabled: true
 
 Style/PercentLiteralDelimiters:
