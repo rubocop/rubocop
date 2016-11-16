@@ -164,6 +164,34 @@ Attribute | Value
 Whitelist | find_by_sql
 
 
+## Rails/EnumUniqueness
+
+Enabled by default | Supports autocorrection
+--- | ---
+Disabled | No
+
+This cop looks for duplicate values in enum declarations.
+
+### Example
+
+```ruby
+# bad
+enum status: { active: 0, archived: 0 }
+
+# good
+enum status: { active: 0, archived: 1 }
+
+# good
+enum status: [:active, :archived]
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+Include | app/models/\*\*/\*.rb
+
+
 ## Rails/Exit
 
 Enabled by default | Supports autocorrection

@@ -1477,6 +1477,10 @@ Rails/DynamicFindBy:
   StyleGuide: 'https://github.com/bbatsov/rails-style-guide#find_by'
   Enabled: true
 
+Rails/EnumUniqueness:
+  Description: 'Avoid duplicate integers in hash-syntax `enum` declaration.'
+  Enabled: true
+
 Rails/Exit:
   Description: >-
                   Favor `fail`, `break`, `return`, etc. over `exit` in
