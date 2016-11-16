@@ -1257,6 +1257,10 @@ Rails/DynamicFindBy:
   Whitelist:
     - find_by_sql
 
+Rails/EnumUniqueness:
+  Include:
+    - app/models/**/*.rb
+
 Rails/Exit:
   Include:
     - app/**/*.rb
