@@ -27,6 +27,7 @@
 * [#3568](https://github.com/bbatsov/rubocop/issues/3568): Fix `--auto-gen-config` behavior for `Style/VariableNumber`. ([@jonas054][])
 * Add `format` as an acceptable keyword argument for `Rails/HttpPositionalArguments`. ([@aesthetikx][])
 * [#3598](https://github.com/bbatsov/rubocop/issues/3598): In `Style/NumericPredicate`, don't report `x != 0` or `x.nonzero?` as the expressions have different values. ([@jonas054][])
+* Fix config inheritance of `AllCops`. ([@volmer][])
 
 ## 0.45.0 (2016-10-31)
 
