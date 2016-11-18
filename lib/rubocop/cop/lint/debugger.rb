@@ -17,10 +17,14 @@ module RuboCop
                       :save_screenshot} ...)}
         END
 
+        def_node_matcher :binding_irb_call?, <<-END
+          (send (send nil :binding) :irb ...)
+        END
+
         def_node_matcher :pry_rescue?, '(send (const nil :Pry) :rescue ...)'
 
         def on_send(node)
-          return unless debugger_call?(node)
+          return unless debugger_call?(node) || binding_irb?(node)
           add_offense(node, :expression, format(MSG, node.source))
         end
 
@@ -37,6 +41,10 @@ module RuboCop
               corrector.remove(range)
             end
           end
+        end
+
+        def binding_irb?(node)
+          target_ruby_version >= 2.4 && binding_irb_call?(node)
         end
       end
     end
