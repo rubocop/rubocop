@@ -66,22 +66,18 @@ describe RuboCop::Cop::Style::NumericPredicate, :config do
     end
 
     context 'with checking if a number is not zero' do
-      it_behaves_like 'code with offense',
-                      'number != 0',
-                      'number.nonzero?'
+      it_behaves_like 'code without offense',
+                      'number != 0'
 
-      it_behaves_like 'code with offense',
-                      '0 != number',
-                      'number.nonzero?'
+      it_behaves_like 'code without offense',
+                      '0 != number'
 
       context 'with a complex expression' do
-        it_behaves_like 'code with offense',
-                        'foo - 1 != 0',
-                        '(foo - 1).nonzero?'
+        it_behaves_like 'code without offense',
+                        'foo - 1 != 0'
 
-        it_behaves_like 'code with offense',
-                        '0 != foo - 1',
-                        '(foo - 1).nonzero?'
+        it_behaves_like 'code without offense',
+                        '0 != foo - 1'
       end
     end
 
@@ -158,9 +154,8 @@ describe RuboCop::Cop::Style::NumericPredicate, :config do
     end
 
     context 'with checking if a number is not zero' do
-      it_behaves_like 'code with offense',
-                      'number.nonzero?',
-                      'number != 0'
+      it_behaves_like 'code without offense',
+                      'number.nonzero?'
     end
 
     context 'when checking if a number is positive' do

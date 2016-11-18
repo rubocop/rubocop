@@ -1201,7 +1201,7 @@ Enabled | Yes
 This cop checks for the formatting of empty method definitions.
 By default it enforces empty method definitions to go on a single
 line (compact style), but it cah be configured to enforce the `end`
-to go on its own line (loose style.)
+to go on its own line (expanded style.)
 
 Note: A method definition is not considered empty if it contains
       comments.
@@ -1221,7 +1221,7 @@ def foo(bar)
   # baz
 end
 
-EnforcedStyle: loose
+EnforcedStyle: expanded
 
 # bad
 def foo(bar); end
@@ -1236,7 +1236,7 @@ end
 Attribute | Value
 --- | ---
 EnforcedStyle | compact
-SupportedStyles | compact, loose
+SupportedStyles | compact, expanded
 
 
 ## Style/Encoding
@@ -3134,10 +3134,14 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
-This cop checks for usage of comparison operators (`==`, `!=`,
-`>`, `<`) to test numbers as zero, nonzero, positive, or negative.
+This cop checks for usage of comparison operators (`==`,
+`>`, `<`) to test numbers as zero, positive, or negative.
 These can be replaced by their respective predicate methods.
 The cop can also be configured to do the reverse.
+
+The cop disregards `nonzero?` as it its value is truthy or falsey,
+but not `true` and `false`, and thus not always interchangeable with
+`!= 0`.
 
 ### Example
 
@@ -3147,14 +3151,12 @@ The cop can also be configured to do the reverse.
 # bad
 
 foo == 0
-0 != bar.baz
 0 > foo
 bar.baz > 0
 
 # good
 
 foo.zero?
-bar.baz.nonzero?
 foo.negative?
 bar.baz.positive?
 ```
@@ -3164,14 +3166,12 @@ bar.baz.positive?
 # bad
 
 foo.zero?
-bar.baz.nonzero?
 foo.negative?
 bar.baz.positive?
 
 # good
 
 foo == 0
-0 != bar.baz
 0 > foo
 bar.baz > 0
 ```
@@ -3744,48 +3744,43 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
-This cop transforms usages of a method call safeguarded by a non `nil`
-check for the variable whose method is being called to
-safe navigation (`&.`).
-
-Configuration option: ConvertCodeThatCanStartToReturnNil
-The default for this is `false`. When configured to `true`, this will
-check for code in the format `!foo.nil? && foo.bar`. As it is written,
-the return of this code is limited to `false` and whatever the return
-of the method is. If this is converted to safe navigation,
-`foo&.bar` can start returning `nil` as well as what the method
-returns.
+This cop converts usages of `try!` to `&.`. It can also be configured
+to convert `try`. It will convert code to use safe navigation if the
+target Ruby version is set to 2.3+
 
 ### Example
 
 ```ruby
-# bad
-foo.bar if foo
-foo.bar(param1, param2) if foo
-foo.bar { |e| e.something } if foo
-foo.bar(param) { |e| e.something } if foo
+# ConvertTry: false
+  # bad
+  foo.try!(:bar)
+  foo.try!(:bar, baz)
+  foo.try!(:bar) { |e| e.baz }
 
-foo.bar if !foo.nil?
-foo.bar unless !foo
-foo.bar unless foo.nil?
+  foo.try!(:[], 0)
 
-foo && foo.bar
-foo && foo.bar(param1, param2)
-foo && foo.bar { |e| e.something }
-foo && foo.bar(param) { |e| e.something }
+  # good
+  foo.try(:bar)
+  foo.try(:bar, baz)
+  foo.try(:bar) { |e| e.baz }
 
-# good
-foo&.bar
-foo&.bar(param1, param2)
-foo&.bar { |e| e.something }
-foo&.bar(param) { |e| e.something }
+  foo&.bar
+  foo&.bar(baz)
+  foo&.bar { |e| e.baz }
 
-foo.nil? || foo.bar
-!foo || foo.bar
+# ConvertTry: true
+  # bad
+  foo.try!(:bar)
+  foo.try!(:bar, baz)
+  foo.try!(:bar) { |e| e.baz }
+  foo.try(:bar)
+  foo.try(:bar, baz)
+  foo.try(:bar) { |e| e.baz }
 
-# Methods that `nil` will `respond_to?` should not be converted to
-# use safe navigation
-foo.to_i if foo
+  # good
+  foo&.bar
+  foo&.bar(baz)
+  foo&.bar { |e| e.baz }
 ```
 
 ### Important attributes
