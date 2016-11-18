@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Lint::Debugger do
-  subject(:cop) { described_class.new }
+describe RuboCop::Cop::Lint::Debugger, :config do
+  subject(:cop) { described_class.new(config) }
 
   include_examples 'debugger', 'debugger', 'debugger'
   include_examples 'debugger', 'byebug', 'byebug'
@@ -26,7 +26,7 @@ describe RuboCop::Cop::Lint::Debugger do
                     'save_screenshot foo']
   include_examples 'non-debugger', 'a non-pry binding', 'binding.pirate'
 
-  ALL_COMMANDS = %w(debugger byebug pry remote_pry pry_remote
+  ALL_COMMANDS = %w(debugger byebug pry remote_pry pry_remote irb
                     save_and_open_page save_and_open_screenshot
                     save_screenshot).freeze
 
@@ -50,5 +50,14 @@ describe RuboCop::Cop::Lint::Debugger do
     expect(new_source).to eq(['def method',
                               '  puts 1',
                               'end'].join("\n"))
+  end
+
+  context 'target_ruby_version >= 2.4', :ruby24 do
+    include_examples 'debugger', 'irb binding', 'binding.irb'
+
+    ALL_COMMANDS.each do |src|
+      include_examples 'non-debugger', "a #{src} in comments", "# #{src}"
+      include_examples 'non-debugger', "a #{src} method", "code.#{src}"
+    end
   end
 end
