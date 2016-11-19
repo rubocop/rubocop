@@ -59,6 +59,10 @@ describe RuboCop::Cop::Style::TernaryParentheses, :config do
                       'foo = (bar && baz) ? a : b'
 
       it_behaves_like 'code with offense',
+                      'foo = foo1 == foo2 ? a : b',
+                      'foo = (foo1 == foo2) ? a : b'
+
+      it_behaves_like 'code with offense',
                       'foo = bar.baz? ? a : b',
                       'foo = (bar.baz?) ? a : b'
 
@@ -100,6 +104,9 @@ describe RuboCop::Cop::Style::TernaryParentheses, :config do
       it_behaves_like 'code with offense',
                       'foo = (1 + 1 == 2) ? a : b',
                       'foo = 1 + 1 == 2 ? a : b'
+
+      it_behaves_like 'code with offense',
+                      'foo = (foo1 == foo2) ? a : b'
 
       it_behaves_like 'code with offense',
                       'foo = (bar && baz) ? a : b',
