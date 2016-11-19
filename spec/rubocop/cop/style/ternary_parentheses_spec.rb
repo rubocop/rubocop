@@ -155,22 +155,18 @@ describe RuboCop::Cop::Style::TernaryParentheses, :config do
 
     context 'with an unparenthesized method call condition' do
       it_behaves_like 'code with offense',
-                      'foo = (defined? bar) ? a : b',
                       'foo = (defined? bar) ? a : b'
 
       it_behaves_like 'code with offense',
-                      'foo = (baz? bar) ? a : b',
                       'foo = (baz? bar) ? a : b'
 
       context 'when calling method on a receiver' do
         it_behaves_like 'code with offense',
-                        'foo = (baz.foo? bar) ? a : b',
                         'foo = (baz.foo? bar) ? a : b'
       end
 
       context 'when calling method with multiple arguments' do
         it_behaves_like 'code with offense',
-                        'foo = (baz.foo? bar, baz) ? a : b',
                         'foo = (baz.foo? bar, baz) ? a : b'
       end
     end
