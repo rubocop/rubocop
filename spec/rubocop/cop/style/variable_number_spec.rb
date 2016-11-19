@@ -5,12 +5,19 @@ require 'spec_helper'
 describe RuboCop::Cop::Style::VariableNumber, :config do
   subject(:cop) { described_class.new(config) }
 
-  shared_examples :offense do |style, variable|
-    it "registers an offense for #{variable} in #{style}" do
-      inspect_source(cop, "#{variable} = 1")
+  shared_examples :offense do |style, variable, style_to_allow_offenses|
+    it "registers an offense for #{Array(variable).first} in #{style}" do
+      inspect_source(cop, Array(variable).map { |v| "#{v} = 1" }.join("\n"))
 
       expect(cop.messages).to eq(["Use #{style} for variable numbers."])
-      expect(cop.highlights).to eq([variable])
+      expect(cop.highlights).to eq(Array(variable)[0, 1])
+      config_to_allow_offenses =
+        if style_to_allow_offenses
+          { 'EnforcedStyle' => style_to_allow_offenses.to_s }
+        else
+          { 'Enabled' => false }
+        end
+      expect(cop.config_to_allow_offenses).to eq(config_to_allow_offenses)
     end
   end
 
@@ -25,13 +32,14 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
   context 'when configured for snake_case' do
     let(:cop_config) { { 'EnforcedStyle' => 'snake_case' } }
 
-    it_behaves_like :offense, 'snake_case', 'local1'
-    it_behaves_like :offense, 'snake_case', '@local1'
-    it_behaves_like :offense, 'snake_case', '@@local1'
-    it_behaves_like :offense, 'snake_case', 'camelCase1'
-    it_behaves_like :offense, 'snake_case', '@camelCase1'
-    it_behaves_like :offense, 'snake_case', '_unused1'
-    it_behaves_like :offense, 'snake_case', 'aB1'
+    it_behaves_like :offense, 'snake_case', 'local1', :normalcase
+    it_behaves_like :offense, 'snake_case', '@local1', :normalcase
+    it_behaves_like :offense, 'snake_case', '@@local1', :normalcase
+    it_behaves_like :offense, 'snake_case', 'camelCase1', :normalcase
+    it_behaves_like :offense, 'snake_case', '@camelCase1', :normalcase
+    it_behaves_like :offense, 'snake_case', '_unused1', :normalcase
+    it_behaves_like :offense, 'snake_case', 'aB1', :normalcase
+    it_behaves_like :offense, 'snake_case', %w(a1 a_2), nil
 
     it_behaves_like :accepts, 'snake_case', 'local_1'
     it_behaves_like :accepts, 'snake_case', 'local_12'
@@ -62,15 +70,16 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
   context 'when configured for normal' do
     let(:cop_config) { { 'EnforcedStyle' => 'normalcase' } }
 
-    it_behaves_like :offense, 'normalcase', 'local_1'
-    it_behaves_like :offense, 'normalcase', 'sha_256'
-    it_behaves_like :offense, 'normalcase', '@local_1'
-    it_behaves_like :offense, 'normalcase', '@@local_1'
-    it_behaves_like :offense, 'normalcase', 'myAttribute_1'
-    it_behaves_like :offense, 'normalcase', '@myAttribute_1'
-    it_behaves_like :offense, 'normalcase', '_myLocal_1'
-    it_behaves_like :offense, 'normalcase', 'localFOO_1'
-    it_behaves_like :offense, 'normalcase', 'local_FOO_1'
+    it_behaves_like :offense, 'normalcase', 'local_1', :snake_case
+    it_behaves_like :offense, 'normalcase', 'sha_256', :snake_case
+    it_behaves_like :offense, 'normalcase', '@local_1', :snake_case
+    it_behaves_like :offense, 'normalcase', '@@local_1', :snake_case
+    it_behaves_like :offense, 'normalcase', 'myAttribute_1', :snake_case
+    it_behaves_like :offense, 'normalcase', '@myAttribute_1', :snake_case
+    it_behaves_like :offense, 'normalcase', '_myLocal_1', :snake_case
+    it_behaves_like :offense, 'normalcase', 'localFOO_1', :snake_case
+    it_behaves_like :offense, 'normalcase', 'local_FOO_1', :snake_case
+    it_behaves_like :offense, 'normalcase', %w(a_1 a2), nil
 
     it_behaves_like :accepts, 'normalcase', 'local1'
     it_behaves_like :accepts, 'normalcase', 'local_'
@@ -103,16 +112,17 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
   context 'when configured for non integer' do
     let(:cop_config) { { 'EnforcedStyle' => 'non_integer' } }
 
-    it_behaves_like :offense, 'non_integer', 'local_1'
-    it_behaves_like :offense, 'non_integer', 'local1'
-    it_behaves_like :offense, 'non_integer', '@local_1'
-    it_behaves_like :offense, 'non_integer', '@local1'
-    it_behaves_like :offense, 'non_integer', 'myAttribute_1'
-    it_behaves_like :offense, 'non_integer', 'myAttribute1'
-    it_behaves_like :offense, 'non_integer', '@myAttribute_1'
-    it_behaves_like :offense, 'non_integer', '@myAttribute1'
-    it_behaves_like :offense, 'non_integer', '_myLocal_1'
-    it_behaves_like :offense, 'non_integer', '_myLocal1'
+    it_behaves_like :offense, 'non_integer', 'local_1', :snake_case
+    it_behaves_like :offense, 'non_integer', 'local1', :normalcase
+    it_behaves_like :offense, 'non_integer', '@local_1', :snake_case
+    it_behaves_like :offense, 'non_integer', '@local1', :normalcase
+    it_behaves_like :offense, 'non_integer', 'myAttribute_1', :snake_case
+    it_behaves_like :offense, 'non_integer', 'myAttribute1', :normalcase
+    it_behaves_like :offense, 'non_integer', '@myAttribute_1', :snake_case
+    it_behaves_like :offense, 'non_integer', '@myAttribute1', :normalcase
+    it_behaves_like :offense, 'non_integer', '_myLocal_1', :snake_case
+    it_behaves_like :offense, 'non_integer', '_myLocal1', :normalcase
+    it_behaves_like :offense, 'non_integer', %w(a_1 aone), nil
 
     it_behaves_like :accepts, 'non_integer', 'localone'
     it_behaves_like :accepts, 'non_integer', 'local_one'
