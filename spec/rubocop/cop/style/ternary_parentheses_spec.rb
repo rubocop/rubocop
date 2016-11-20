@@ -22,9 +22,19 @@ describe RuboCop::Cop::Style::TernaryParentheses, :config do
         it 'auto-corrects' do
           expect(autocorrect_source(cop, code)).to eq(expected)
         end
+
+        it 'claims to auto-correct' do
+          autocorrect_source(cop, code)
+          expect(cop.offenses.last.status).to eq(:corrected)
+        end
       else
         it 'does not auto-correct' do
           expect(autocorrect_source(cop, code)).to eq(code)
+        end
+
+        it 'does not claim to auto-correct' do
+          autocorrect_source(cop, code)
+          expect(cop.offenses.last.status).to eq(:uncorrected)
         end
       end
     end
