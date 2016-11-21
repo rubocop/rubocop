@@ -9,7 +9,7 @@
 * Add new `Style/EmptyMethod` cop. ([@drenmi][])
 * `Style/EmptyLiteral` will now auto-correct `Hash.new` when it is the first argument being passed to a method. The arguments will be wrapped with parenthesis. ([@rrosenblum][])
 * [#3713](https://github.com/bbatsov/rubocop/pull/3713): Respect `DisabledByDefault` in parent configs. ([@aroben][])
-* New cop `Rails/EnumUniqueness` checks for duplicate values defined in enum config hash. ([@olliebennett][])
+* New cop `Rails/EnumUniqueness` checks for duplicate values defined in enum config. ([@olliebennett][])
 
 ### Changes
 
