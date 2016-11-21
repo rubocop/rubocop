@@ -22,6 +22,7 @@
 * [#3699](https://github.com/bbatsov/rubocop/issues/3699): Fix false positive in `Style/VariableNumber` on variable names ending with an underscore. ([@bquorning][])
 * [#3687](https://github.com/bbatsov/rubocop/issues/3687): Fix the fact that `Style/TernaryParentheses` cop claims to correct uncorrected offenses. ([@Ana06][])
 * [#3568](https://github.com/bbatsov/rubocop/issues/3568): Fix `--auto-gen-config` behavior for `Style/VariableNumber`. ([@jonas054][])
+* Add `format` as an acceptable keyword argument for `Rails/HttpPositionalArguments`. ([@aesthetikx][])
 
 ## 0.45.0 (2016-10-31)
 
@@ -2500,3 +2501,4 @@
 [@Ana06]: https://github.com/Ana06
 [@aroben]: https://github.com/aroben
 [@olliebennett]: https://github.com/olliebennett
+[@aesthetikx]: https://github.com/aesthetikx

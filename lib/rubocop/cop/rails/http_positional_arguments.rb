@@ -18,7 +18,7 @@ module RuboCop
               'positional arguments for http call: `%s`.'.freeze
         KEYWORD_ARGS = [
           :headers, :env, :params, :body, :flash, :as,
-          :xhr, :session, :method
+          :xhr, :session, :method, :format
         ].freeze
         HTTP_METHODS = [:get, :post, :put, :patch, :delete, :head].freeze
 
