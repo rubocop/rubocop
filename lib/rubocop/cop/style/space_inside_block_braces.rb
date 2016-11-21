@@ -54,7 +54,7 @@ module RuboCop
         end
 
         def check_left_brace(inner, left_brace, args_delimiter)
-          if inner =~ /^\S/
+          if inner =~ /\A\S/
             no_space_inside_left_brace(left_brace, args_delimiter)
           else
             space_inside_left_brace(left_brace, args_delimiter)
