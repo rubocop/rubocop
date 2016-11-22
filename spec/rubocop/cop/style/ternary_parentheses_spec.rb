@@ -48,6 +48,24 @@ describe RuboCop::Cop::Style::TernaryParentheses, :config do
     end
   end
 
+  shared_examples 'safe assignment disabled' do |style|
+    let(:cop_config) do
+      {
+        'EnforcedStyle' => style,
+        'AllowSafeAssignment' => false
+      }
+    end
+
+    it_behaves_like 'code with offense',
+                    'foo = (bar = find_bar) ? a : b'
+
+    it_behaves_like 'code with offense',
+                    'foo = bar = (baz = find_baz) ? a : b'
+
+    it_behaves_like 'code with offense',
+                    'foo = (bar = baz = find_baz) ? a : b'
+  end
+
   context 'when configured to enforce parentheses inclusion' do
     let(:cop_config) { { 'EnforcedStyle' => 'require_parentheses' } }
 
@@ -144,23 +162,7 @@ describe RuboCop::Cop::Style::TernaryParentheses, :config do
       it_behaves_like 'code without offense',
                       'foo = (bar = baz = find_baz) ? a : b'
 
-      context 'when safe assignment is disabled' do
-        let(:cop_config) do
-          {
-            'EnforcedStyle' => 'require_no_parentheses',
-            'AllowSafeAssignment' => false
-          }
-        end
-
-        it_behaves_like 'code with offense',
-                        'foo = (bar = find_bar) ? a : b'
-
-        it_behaves_like 'code with offense',
-                        'foo = bar = (baz = find_baz) ? a : b'
-
-        it_behaves_like 'code with offense',
-                        'foo = (bar = baz = find_baz) ? a : b'
-      end
+      it_behaves_like 'safe assignment disabled', 'require_no_parentheses'
     end
 
     context 'with an unparenthesized method call condition' do
@@ -184,6 +186,127 @@ describe RuboCop::Cop::Style::TernaryParentheses, :config do
     context 'with condition including a range' do
       it_behaves_like 'code without offense',
                       '(foo..bar).include?(baz) ? a : b'
+    end
+  end
+
+  context 'configured for parentheses on complex and there are parens' do
+    let(:cop_config) do
+      { 'EnforcedStyle' => 'require_parentheses_when_complex' }
+    end
+
+    let(:message) do
+      'Only use parentheses for ternary expressions with complex conditions.'
+    end
+
+    context 'with a simple condition' do
+      it_behaves_like 'code with offense',
+                      'foo = (bar?) ? a : b',
+                      'foo = bar? ? a : b'
+    end
+
+    context 'with a complex condition' do
+      it_behaves_like 'code with offense',
+                      'foo = (bar.baz?) ? a : b',
+                      'foo = bar.baz? ? a : b'
+
+      it_behaves_like 'code without offense',
+                      'foo = (bar && (baz || bar)) ? a : b'
+    end
+
+    context 'with an assignment condition' do
+      it_behaves_like 'code without offense',
+                      'foo = (bar = find_bar) ? a : b'
+
+      it_behaves_like 'code without offense',
+                      'foo = baz = (bar = find_bar) ? a : b'
+
+      it_behaves_like 'code without offense',
+                      'foo = bar = (bar == 1) ? a : b'
+
+      it_behaves_like 'code without offense',
+                      'foo = (bar = baz = find_bar) ? a : b'
+
+      it_behaves_like 'safe assignment disabled',
+                      'require_parentheses_when_complex'
+    end
+
+    context 'with method call condition' do
+      it_behaves_like 'code with offense',
+                      'foo = (defined? bar) ? a : b'
+
+      it_behaves_like 'code with offense',
+                      'foo = (baz? bar) ? a : b'
+
+      context 'when calling method on a receiver' do
+        it_behaves_like 'code with offense',
+                        'foo = (baz.foo? bar) ? a : b'
+      end
+    end
+
+    context 'with condition including a range' do
+      it_behaves_like 'code without offense',
+                      '(foo..bar).include?(baz) ? a : b'
+    end
+  end
+
+  context 'configured for parentheses on complex and there are no parens' do
+    let(:cop_config) do
+      { 'EnforcedStyle' => 'require_parentheses_when_complex' }
+    end
+
+    let(:message) do
+      'Use parentheses for ternary expressions with complex conditions.'
+    end
+
+    context 'with complex condition' do
+      it_behaves_like 'code with offense',
+                      'foo = 1 + 1 == 2 ? a : b',
+                      'foo = (1 + 1 == 2) ? a : b'
+
+      it_behaves_like 'code with offense',
+                      'foo = bar && baz ? a : b',
+                      'foo = (bar && baz) ? a : b'
+
+      it_behaves_like 'code with offense',
+                      'foo = bar && baz || bar ? a : b',
+                      'foo = (bar && baz || bar) ? a : b'
+
+      it_behaves_like 'code with offense',
+                      'foo = bar && (baz != bar) ? a : b',
+                      'foo = (bar && (baz != bar)) ? a : b'
+
+      it_behaves_like 'code with offense',
+                      'foo = 1 < (bar.baz?) ? a : b',
+                      'foo = (1 < (bar.baz?)) ? a : b'
+
+      it_behaves_like 'code with offense',
+                      'foo = 1 <= (bar ** baz) ? a : b',
+                      'foo = (1 <= (bar ** baz)) ? a : b'
+
+      it_behaves_like 'code with offense',
+                      'foo = 1 >= bar * baz ? a : b',
+                      'foo = (1 >= bar * baz) ? a : b'
+
+      it_behaves_like 'code with offense',
+                      'foo = bar + baz ? a : b',
+                      'foo = (bar + baz) ? a : b'
+
+      it_behaves_like 'code with offense',
+                      'foo = bar - baz ? a : b',
+                      'foo = (bar - baz) ? a : b'
+
+      it_behaves_like 'code with offense',
+                      'foo = bar < baz ? a : b',
+                      'foo = (bar < baz) ? a : b'
+    end
+
+    context 'with an assignment condition' do
+      it_behaves_like 'code with offense',
+                      'foo = bar = baz == 1 ? a : b',
+                      'foo = bar = (baz == 1) ? a : b'
+
+      it_behaves_like 'code without offense',
+                      'foo = (bar = baz == 1) ? a : b'
     end
   end
 

@@ -1006,6 +1006,7 @@ Style/TernaryParentheses:
   SupportedStyles:
     - require_parentheses
     - require_no_parentheses
+    - require_parentheses_when_complex
   AllowSafeAssignment: true
 
 Style/TrailingBlankLines:
