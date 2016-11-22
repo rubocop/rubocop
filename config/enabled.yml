@@ -1577,3 +1577,12 @@ Bundler/DuplicatedGem:
   Include:
     - '**/Gemfile'
     - '**/gems.rb'
+
+Bundler/OrderedGems:
+  Description: >-
+                 Sort alphabetically gems appearing within a contiguous set
+                 of lines in the Gemfile
+  Enabled: true
+  Include:
+    - '**/Gemfile'
+    - '**/gems.rb'

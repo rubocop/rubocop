@@ -4,11 +4,11 @@ source 'https://rubygems.org'
 
 gemspec
 
+gem 'pry'
 gem 'rake', '~> 11.0'
 gem 'rspec', '~> 3.5.0'
-gem 'yard', '~> 0.8'
 gem 'simplecov', '~> 0.10'
-gem 'pry'
+gem 'yard', '~> 0.8'
 
 group :test do
   gem 'codeclimate-test-reporter', '~> 1.0', require: false

@@ -39,3 +39,35 @@ Attribute | Value
 --- | ---
 Include | \*\*/Gemfile, \*\*/gems.rb
 
+
+## Bundler/OrderedGems
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+Gems in consecutive lines should be alphabetically sorted
+
+### Example
+
+```ruby
+# bad
+gem 'rubocop'
+gem 'rspec'
+
+# good
+gem 'rspec'
+gem 'rubocop'
+
+# good
+gem 'rubocop'
+
+gem 'rspec'
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+Include | \*\*/Gemfile, \*\*/gems.rb
+
