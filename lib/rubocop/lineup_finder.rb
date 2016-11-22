@@ -15,17 +15,6 @@ module RuboCop
       .map { |file| File.absolute_path(file) }
     end
 
-    def changed_line_ranges(file)
-      git_diff_zero_unified(file)
-      .each_line
-      .grep(/@@ -(\d+)(?:,)?(\d+)? \+(\d+)(?:,)?(\d+)? @@/) {
-        [
-          Regexp.last_match[3].to_i,
-          (Regexp.last_match[4] || 1).to_i
-        ]
-      }
-    end
-
     def changed_files_and_lines
       @diff_info ||= Hash[
         changed_files.collect do |file|
@@ -56,6 +45,17 @@ module RuboCop
 
     def git_diff_zero_unified(file)
       `git diff -U0 HEAD #{file}`
+    end
+
+    def changed_line_ranges(file)
+      git_diff_zero_unified(file)
+      .each_line
+      .grep(/@@ -(\d+)(?:,)?(\d+)? \+(\d+)(?:,)?(\d+)? @@/) {
+        [
+          Regexp.last_match[3].to_i,
+          (Regexp.last_match[4] || 1).to_i
+        ]
+      }
     end
   end
 end
