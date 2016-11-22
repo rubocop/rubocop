@@ -38,8 +38,6 @@ describe RuboCop::LineupFinder, :isolated_environment do
   end
 
   describe '.changed_files_and_lines' do
-    subject(:changed_files_and_lines) { lineup_finder.changed_files_and_lines }
-
     let(:changed_files) do
       [
         'lib/rubocop/cop/cop.rb',
@@ -56,7 +54,7 @@ describe RuboCop::LineupFinder, :isolated_environment do
       added_or_changed_lines = [145, 146, 147, 148, 149, 162, 163]
 
       changed_files.each do |filename|
-        changes_for_file = changed_files_and_lines[filename]
+        changes_for_file = lineup_finder.changed_lines(filename)
         expect(changes_for_file).to match_array(added_or_changed_lines)
       end
     end

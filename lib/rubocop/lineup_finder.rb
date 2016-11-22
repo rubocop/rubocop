@@ -14,12 +14,8 @@ module RuboCop
         .map { |filename| File.absolute_path(filename) }
     end
 
-    def changed_files_and_lines
-      @changes ||= Hash[
-        changed_files.collect do |filename|
-          [filename, changed_line_mask(filename)]
-        end
-      ]
+    def changed_lines(filename)
+      changed_files_and_lines[filename] || []
     end
 
     private
@@ -30,6 +26,14 @@ module RuboCop
 
     def git_diff_zero_unified(filename)
       `git diff -U0 HEAD #{filename}`
+    end
+
+    def changed_files_and_lines
+      @changes ||= Hash[
+        changed_files.collect do |filename|
+          [filename, changed_line_mask(filename)]
+        end
+      ]
     end
 
     def changed_line_mask(filename)

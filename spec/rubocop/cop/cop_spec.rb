@@ -95,6 +95,26 @@ describe RuboCop::Cop::Cop do
     expect(cop.offenses.first.cop_name).to eq('Style/For')
   end
 
+  context 'when reporting offenses on changed lines only' do
+    before do
+      allow(cop).to receive(:changed_lines_only?).and_return(true)
+    end
+
+    it 'will not register offenses if offense does not occur on changed lines' do
+      allow_any_instance_of(RuboCop::LineupFinder).to receive(:changed_lines). and_return([])
+      cop.add_offense(nil, location, 'message')
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'will register offenses if offense occurs on changed lines' do
+      allow_any_instance_of(RuboCop::LineupFinder).to receive(:changed_lines). and_return([location.first_line])
+      cop.add_offense(nil, location, 'message')
+
+      expect(cop.offenses).not_to be_empty
+    end
+  end
+
   describe 'setting of Offense#corrected attribute' do
     context 'when cop does not support autocorrection' do
       before do
