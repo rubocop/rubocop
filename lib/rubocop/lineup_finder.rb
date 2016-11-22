@@ -8,11 +8,12 @@ module RuboCop
     attr_reader :diff_info
 
     def changed_files
-      @changed_files ||= git_diff_name_only
-      .lines
-      .map(&:chomp)
-      .grep(/\.rb$/)
-      .map { |file| File.absolute_path(file) }
+      @changed_files ||=
+        git_diff_name_only
+        .lines
+        .map(&:chomp)
+        .grep(/\.rb$/)
+        .map { |file| File.absolute_path(file) }
     end
 
     def changed_files_and_lines
@@ -24,15 +25,7 @@ module RuboCop
 
       @changes ||= Hash[
         diff_info.collect do |filename, changed_line_ranges|
-          mask = changed_line_ranges.collect do |changed_line_number, number_of_changed_lines|
-            if number_of_changed_lines == 0
-              []
-            else
-              Array(changed_line_number .. (changed_line_number + number_of_changed_lines - 1))
-            end
-          end.flatten
-
-          [filename, mask]
+          [filename, line_ranges_to_mask(changed_line_ranges)]
         end
       ]
     end
@@ -49,13 +42,24 @@ module RuboCop
 
     def changed_line_ranges(file)
       git_diff_zero_unified(file)
-      .each_line
-      .grep(/@@ -(\d+)(?:,)?(\d+)? \+(\d+)(?:,)?(\d+)? @@/) {
-        [
-          Regexp.last_match[3].to_i,
-          (Regexp.last_match[4] || 1).to_i
-        ]
-      }
+        .each_line
+        .grep(/@@ -(\d+)(?:,)?(\d+)? \+(\d+)(?:,)?(\d+)? @@/) do
+          [
+            Regexp.last_match[3].to_i,
+            (Regexp.last_match[4] || 1).to_i
+          ]
+        end
+    end
+
+    def line_ranges_to_mask(line_ranges)
+      line_ranges.collect do |line_range_start, number_of_changed_lines|
+        if number_of_changed_lines.zero?
+          []
+        else
+          line_range_end = line_range_start + number_of_changed_lines - 1
+          Array(line_range_start..line_range_end)
+        end
+      end.flatten
     end
   end
 end
