@@ -3,29 +3,21 @@
 # require 'set'
 
 module RuboCop
-  # This class finds changed files by parsing git changes
+  # This class finds changes by parsing git changes
   class LineupFinder
-    attr_reader :diff_info
-
     def changed_files
       @changed_files ||=
         git_diff_name_only
         .lines
         .map(&:chomp)
         .grep(/\.rb$/)
-        .map { |file| File.absolute_path(file) }
+        .map { |filename| File.absolute_path(filename) }
     end
 
     def changed_files_and_lines
-      @diff_info ||= Hash[
-        changed_files.collect do |file|
-          [file, changed_line_ranges(file)]
-        end
-      ]
-
       @changes ||= Hash[
-        diff_info.collect do |filename, changed_line_ranges|
-          [filename, line_ranges_to_mask(changed_line_ranges)]
+        changed_files.collect do |filename|
+          [filename, changed_line_mask(filename)]
         end
       ]
     end
@@ -36,12 +28,16 @@ module RuboCop
       `git diff --diff-filter=AM --name-only HEAD`
     end
 
-    def git_diff_zero_unified(file)
-      `git diff -U0 HEAD #{file}`
+    def git_diff_zero_unified(filename)
+      `git diff -U0 HEAD #{filename}`
     end
 
-    def changed_line_ranges(file)
-      git_diff_zero_unified(file)
+    def changed_line_mask(filename)
+      ranges_to_mask(changed_line_ranges(filename))
+    end
+
+    def changed_line_ranges(filename)
+      git_diff_zero_unified(filename)
         .each_line
         .grep(/@@ -(\d+)(?:,)?(\d+)? \+(\d+)(?:,)?(\d+)? @@/) do
           [
@@ -51,8 +47,8 @@ module RuboCop
         end
     end
 
-    def line_ranges_to_mask(line_ranges)
-      line_ranges.collect do |line_range_start, number_of_changed_lines|
+    def ranges_to_mask(ranges)
+      ranges.collect do |line_range_start, number_of_changed_lines|
         if number_of_changed_lines.zero?
           []
         else
