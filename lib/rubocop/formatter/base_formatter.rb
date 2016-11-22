@@ -77,8 +77,7 @@ module RuboCop
       #   all target file paths to be inspected
       #
       # @return [void]
-      def started(target_files)
-      end
+      def started(target_files); end
 
       # @api public
       #
@@ -91,8 +90,7 @@ module RuboCop
       #   file specific information, currently this is always empty.
       #
       # @return [void]
-      def file_started(file, options)
-      end
+      def file_started(file, options); end
 
       # @api public
       #
@@ -107,8 +105,7 @@ module RuboCop
       # @return [void]
       #
       # @see RuboCop::Cop::Offense
-      def file_finished(file, offenses)
-      end
+      def file_finished(file, offenses); end
 
       # @api public
       #
@@ -120,8 +117,7 @@ module RuboCop
       #   unless RuboCop is interrupted by user.
       #
       # @return [void]
-      def finished(inspected_files)
-      end
+      def finished(inspected_files); end
     end
   end
 end

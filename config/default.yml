@@ -447,6 +447,12 @@ Style/EmptyLinesAroundModuleBody:
     - empty_lines_special
     - no_empty_lines
 
+Style/EmptyMethod:
+  EnforcedStyle: compact
+  SupportedStyles:
+    - compact
+    - expanded
+
 # Checks whether the source file has a utf-8 encoding comment or not
 # AutoCorrectEncodingComment must match the regex
 # /#.*coding\s?[:=]\s?(?:UTF|utf)-8/
@@ -1250,6 +1256,10 @@ Rails/Date:
 Rails/DynamicFindBy:
   Whitelist:
     - find_by_sql
+
+Rails/EnumUniqueness:
+  Include:
+    - app/models/**/*.rb
 
 Rails/Exit:
   Include:

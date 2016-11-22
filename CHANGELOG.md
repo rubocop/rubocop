@@ -6,15 +6,23 @@
 
 * [#3600](https://github.com/bbatsov/rubocop/issues/3600): Add new `Bundler/DuplicatedGem` cop. ([@jmks][])
 * [#3624](https://github.com/bbatsov/rubocop/pull/3624): Add new configuration option `empty_lines_special` to `Style/EmptyLinesAroundClassBody` and `Style/EmptyLinesAroundModuleBody`. ([@legendetm][])
+* Add new `Style/EmptyMethod` cop. ([@drenmi][])
+* `Style/EmptyLiteral` will now auto-correct `Hash.new` when it is the first argument being passed to a method. The arguments will be wrapped with parenthesis. ([@rrosenblum][])
+* [#3713](https://github.com/bbatsov/rubocop/pull/3713): Respect `DisabledByDefault` in parent configs. ([@aroben][])
+* New cop `Rails/EnumUniqueness` checks for duplicate values defined in enum config hash. ([@olliebennett][])
 
 ### Changes
 
 * The offense range for `Performance/FlatMap` now includes any parameters that are passed to `flatten`. ([@rrosenblum][])
+* [#1747](https://github.com/bbatsov/rubocop/issues/1747): Update `Style/SpecialGlobalVars` messages with a reminder to `require 'English'`. ([@ivanovaleksey][])
 
 ### Bug fixes
 
 * [#3662](https://github.com/bbatsov/rubocop/issues/3662): Fix the auto-correction of `Lint/UnneededSplatExpansion` when the splat expansion is inside of another array. ([@rrosenblum][])
 * [#3699](https://github.com/bbatsov/rubocop/issues/3699): Fix false positive in `Style/VariableNumber` on variable names ending with an underscore. ([@bquorning][])
+* [#3687](https://github.com/bbatsov/rubocop/issues/3687): Fix the fact that `Style/TernaryParentheses` cop claims to correct uncorrected offenses. ([@Ana06][])
+* [#3568](https://github.com/bbatsov/rubocop/issues/3568): Fix `--auto-gen-config` behavior for `Style/VariableNumber`. ([@jonas054][])
+* Add `format` as an acceptable keyword argument for `Rails/HttpPositionalArguments`. ([@aesthetikx][])
 
 ## 0.45.0 (2016-10-31)
 
@@ -2489,3 +2497,8 @@
 [@tiagocasanovapt]: https://github.com/tiagocasanovapt
 [@iGEL]: https://github.com/iGEL
 [@tessi]: https://github.com/tessi
+[@ivanovaleksey]: https://github.com/ivanovaleksey
+[@Ana06]: https://github.com/Ana06
+[@aroben]: https://github.com/aroben
+[@olliebennett]: https://github.com/olliebennett
+[@aesthetikx]: https://github.com/aesthetikx

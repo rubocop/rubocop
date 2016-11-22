@@ -12,34 +12,21 @@ module RuboCop
         HASH_MSG = 'Use hash literal `{}` instead of `Hash.new`.'.freeze
         STR_MSG = 'Use string literal `%s` instead of `String.new`.'.freeze
 
-        # Empty array node
-        #
-        # (send
-        #   (const nil :Array) :new)
-        ARRAY_NODE = s(:send, s(:const, nil, :Array), :new)
-
-        # Empty hash node
-        #
-        # (send
-        #   (const nil :Hash) :new)
-        HASH_NODE = s(:send, s(:const, nil, :Hash), :new)
-
-        # Empty string node
-        #
-        # (send
-        #   (const nil :String) :new)
-        STR_NODE = s(:send, s(:const, nil, :String), :new)
+        def_node_matcher :array_node, '(send (const nil :Array) :new)'
+        def_node_matcher :hash_node, '(send (const nil :Hash) :new)'
+        def_node_matcher :str_node, '(send (const nil :String) :new)'
 
         def on_send(node)
-          case node
-          when ARRAY_NODE
-            add_offense(node, :expression, ARR_MSG)
-          when HASH_NODE
+          array_node(node) { add_offense(node, :expression, ARR_MSG) }
+
+          hash_node(node) do
             # If Hash.new takes a block, it can't be changed to {}.
             return if node.parent && node.parent.block_type?
 
             add_offense(node, :expression, HASH_MSG)
-          when STR_NODE
+          end
+
+          str_node(node) do
             return if frozen_string_literals_enabled?(processed_source)
 
             add_offense(node, :expression,
@@ -48,20 +35,9 @@ module RuboCop
         end
 
         def autocorrect(node)
-          name = case node
-                 when ARRAY_NODE
-                   '[]'
-                 when HASH_NODE
-                   # `some_method {}` is not same as `some_method Hash.new`
-                   # because the braces are interpreted as a block, so we avoid
-                   # the correction. Parentheses around the arguments would
-                   # solve the problem, but we let the user add those manually.
-                   return if first_arg_in_method_call_without_parentheses?(node)
-                   '{}'
-                 when STR_NODE
-                   preferred_string_literal
-                 end
-          ->(corrector) { corrector.replace(node.source_range, name) }
+          lambda do |corrector|
+            corrector.replace(replacement_range(node), correction(node))
+          end
         end
 
         private
@@ -83,6 +59,40 @@ module RuboCop
 
           _receiver, _method_name, *args = *node.parent
           node.object_id == args.first.object_id && !parentheses?(node.parent)
+        end
+
+        def replacement_range(node)
+          if hash_node(node) &&
+             first_arg_in_method_call_without_parentheses?(node)
+            # `some_method {}` is not same as `some_method Hash.new`
+            # because the braces are interpreted as a block. We will have
+            # to rewrite the arguments to wrap them in parenthesis.
+            _receiver, _method_name, *args = *node.parent
+
+            Parser::Source::Range.new(node.parent.loc.expression,
+                                      args[0].loc.expression.begin_pos - 1,
+                                      args[-1].loc.expression.end_pos)
+          else
+            node.source_range
+          end
+        end
+
+        def correction(node)
+          if array_node(node)
+            '[]'
+          elsif str_node(node)
+            preferred_string_literal
+          elsif hash_node(node)
+            if first_arg_in_method_call_without_parentheses?(node)
+              # `some_method {}` is not same as `some_method Hash.new`
+              # because the braces are interpreted as a block. We will have
+              # to rewrite the arguments to wrap them in parenthesis.
+              _receiver, _method_name, *args = *node.parent
+              "(#{args[1..-1].map(&:source).unshift('{}').join(', ')})"
+            else
+              '{}'
+            end
+          end
         end
       end
     end

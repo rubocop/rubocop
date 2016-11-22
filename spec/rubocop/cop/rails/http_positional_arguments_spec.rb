@@ -36,7 +36,8 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
   [
     'params: { user_id: @user.id }',
     'xhr: true',
-    'session: { foo: \'bar\' }'
+    'session: { foo: \'bar\' }',
+    'format: :json'
   ].each do |keyword_args|
     describe 'when using keyword args' do
       let(:source) do

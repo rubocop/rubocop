@@ -33,7 +33,7 @@ describe 'RuboCop Project' do
         rescue NameError
           next
         end
-        expect(msg).to match(/\.|\?|(?:\[.+\])|%s$/)
+        expect(msg).to match(/(?:[.?]|(?:\[.+\])|%s)$/)
       end
     end
   end

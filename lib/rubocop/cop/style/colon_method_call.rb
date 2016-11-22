@@ -8,15 +8,15 @@ module RuboCop
       class ColonMethodCall < Cop
         MSG = 'Do not use `::` for method calls.'.freeze
 
-        JAVA_TYPES = [:byte, :boolean, :byte, :short, :char,
-                      :int, :long, :float, :double].freeze
-
-        JAVA_TYPE_NODES =
-          JAVA_TYPES.map { |t| s(:send, s(:const, nil, :Java), t) }
+        def_node_matcher :java_type_node?, <<-PATTERN
+          (send
+            (const nil :Java)
+            {:boolean :byte :char :double :float :int :long :short})
+        PATTERN
 
         def on_send(node)
           # ignore Java interop code like Java::int
-          return if JAVA_TYPE_NODES.include?(node)
+          return if java_type_node?(node)
 
           receiver, method_name, *_args = *node
 

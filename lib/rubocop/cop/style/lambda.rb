@@ -70,31 +70,21 @@ module RuboCop
           }
         }.freeze
 
-        TARGET = s(:send, nil, :lambda)
+        def_node_matcher :lambda_node?, '(block $(send nil :lambda) ...)'
 
         def on_block(node)
-          # We're looking for
-          # (block
-          #   (send nil :lambda)
-          #   ...)
-          block_method, _args, = *node
+          lambda_node?(node) do |block_method|
+            selector = block_method.source
 
-          return unless block_method == TARGET
+            return unless offending_selector?(node, selector)
 
-          check(node)
+            add_offense(node,
+                        block_method.source_range,
+                        message(node, selector))
+          end
         end
 
         private
-
-        def check(node)
-          block_method, _args, = *node
-
-          selector = block_method.source
-
-          return unless offending_selector?(node, selector)
-
-          add_offense(node, block_method.source_range, message(node, selector))
-        end
 
         def offending_selector?(node, selector)
           lines = node.multiline? ? :multiline : :single_line

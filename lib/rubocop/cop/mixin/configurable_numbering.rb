@@ -14,16 +14,23 @@ module RuboCop
       def check_name(node, name, name_range)
         return if operator?(name)
 
-        if valid_name?(node, name)
+        if valid_name?(node, name, style)
           correct_style_detected
         else
-          add_offense(node, name_range, message(style))
+          add_offense(node, name_range, message(style)) do
+            (supported_styles - [style]).each do |other_style|
+              if valid_name?(node, name, other_style)
+                unexpected_style_detected(other_style)
+                break
+              end
+            end
+          end
         end
       end
 
-      def valid_name?(node, name)
+      def valid_name?(node, name, given_style)
         pattern =
-          case style
+          case given_style
           when :snake_case
             SNAKE_CASE
           when :normalcase

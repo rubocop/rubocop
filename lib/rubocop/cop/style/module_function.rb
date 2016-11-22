@@ -27,13 +27,13 @@ module RuboCop
       class ModuleFunction < Cop
         include ConfigurableEnforcedStyle
 
-        MODULE_FUNCTION_MSG = 'Use `module_function` instead of `extend self`.'
-                              .freeze
-        EXTEND_SELF_MSG = 'Use `extend self` instead of `module_function`.'
-                          .freeze
+        MODULE_FUNCTION_MSG =
+          'Use `module_function` instead of `extend self`.'.freeze
+        EXTEND_SELF_MSG =
+          'Use `extend self` instead of `module_function`.'.freeze
 
-        MODULE_FUNCTION_NODE = s(:send, nil, :module_function)
-        EXTEND_SELF_NODE = s(:send, nil, :extend, s(:self))
+        def_node_matcher :module_function_node?, '(send nil :module_function)'
+        def_node_matcher :extend_self_node?, '(send nil :extend self)'
 
         def on_module(node)
           _name, body = *node
@@ -47,11 +47,14 @@ module RuboCop
         private
 
         def each_wrong_style(nodes)
-          nodes.each do |node|
-            if style == :module_function && node == EXTEND_SELF_NODE
-              yield node, MODULE_FUNCTION_MSG
-            elsif style == :extend_self && node == MODULE_FUNCTION_NODE
-              yield node, EXTEND_SELF_MSG
+          case style
+          when :module_function
+            nodes.each do |node|
+              yield node, MODULE_FUNCTION_MSG if extend_self_node?(node)
+            end
+          when :extend_self
+            nodes.each do |node|
+              yield node, EXTEND_SELF_MSG if module_function_node?(node)
             end
           end
         end

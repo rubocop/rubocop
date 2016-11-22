@@ -22,9 +22,19 @@ describe RuboCop::Cop::Style::TernaryParentheses, :config do
         it 'auto-corrects' do
           expect(autocorrect_source(cop, code)).to eq(expected)
         end
+
+        it 'claims to auto-correct' do
+          autocorrect_source(cop, code)
+          expect(cop.offenses.last.status).to eq(:corrected)
+        end
       else
         it 'does not auto-correct' do
           expect(autocorrect_source(cop, code)).to eq(code)
+        end
+
+        it 'does not claim to auto-correct' do
+          autocorrect_source(cop, code)
+          expect(cop.offenses.last.status).to eq(:uncorrected)
         end
       end
     end
@@ -57,6 +67,10 @@ describe RuboCop::Cop::Style::TernaryParentheses, :config do
       it_behaves_like 'code with offense',
                       'foo = bar && baz ? a : b',
                       'foo = (bar && baz) ? a : b'
+
+      it_behaves_like 'code with offense',
+                      'foo = foo1 == foo2 ? a : b',
+                      'foo = (foo1 == foo2) ? a : b'
 
       it_behaves_like 'code with offense',
                       'foo = bar.baz? ? a : b',
@@ -100,6 +114,9 @@ describe RuboCop::Cop::Style::TernaryParentheses, :config do
       it_behaves_like 'code with offense',
                       'foo = (1 + 1 == 2) ? a : b',
                       'foo = 1 + 1 == 2 ? a : b'
+
+      it_behaves_like 'code with offense',
+                      'foo = (foo1 == foo2) ? a : b'
 
       it_behaves_like 'code with offense',
                       'foo = (bar && baz) ? a : b',
@@ -148,22 +165,18 @@ describe RuboCop::Cop::Style::TernaryParentheses, :config do
 
     context 'with an unparenthesized method call condition' do
       it_behaves_like 'code with offense',
-                      'foo = (defined? bar) ? a : b',
                       'foo = (defined? bar) ? a : b'
 
       it_behaves_like 'code with offense',
-                      'foo = (baz? bar) ? a : b',
                       'foo = (baz? bar) ? a : b'
 
       context 'when calling method on a receiver' do
         it_behaves_like 'code with offense',
-                        'foo = (baz.foo? bar) ? a : b',
                         'foo = (baz.foo? bar) ? a : b'
       end
 
       context 'when calling method with multiple arguments' do
         it_behaves_like 'code with offense',
-                        'foo = (baz.foo? bar, baz) ? a : b',
                         'foo = (baz.foo? bar, baz) ? a : b'
       end
     end

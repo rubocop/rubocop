@@ -32,23 +32,32 @@ module RuboCop
       def load_file(path)
         path = File.absolute_path(path)
         hash = load_yaml_configuration(path)
+
+        add_missing_namespaces(path, hash)
+
+        resolve_inheritance_from_gems(hash, hash.delete('inherit_gem'))
+        resolve_inheritance(path, hash)
+        resolve_requires(path, hash)
+
+        hash.delete('inherit_from')
         config = Config.new(hash, path)
 
         config.deprecation_check do |deprecation_message|
           warn("#{path} - #{deprecation_message}")
         end
 
-        config.add_missing_namespaces
-
-        resolve_inheritance_from_gems(config, config.delete('inherit_gem'))
-        resolve_inheritance(path, config)
-        resolve_requires(path, config)
-
-        config.delete('inherit_from')
-
         config.validate
         config.make_excludes_absolute
         config
+      end
+
+      def add_missing_namespaces(path, hash)
+        hash.keys.each do |k|
+          q = Cop::Cop.qualified_cop_name(k, path)
+          next if q == k
+
+          hash[q] = hash.delete(k)
+        end
       end
 
       # Return a recursive merge of two hashes. That is, a normal hash merge,

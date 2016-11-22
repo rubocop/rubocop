@@ -7,24 +7,21 @@ describe RuboCop::Cop::Style::EmptyLiteral do
 
   describe 'Empty Array' do
     it 'registers an offense for Array.new()' do
-      inspect_source(cop,
-                     'test = Array.new()')
+      inspect_source(cop, 'test = Array.new()')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Use array literal `[]` instead of `Array.new`.'])
     end
 
     it 'registers an offense for Array.new' do
-      inspect_source(cop,
-                     'test = Array.new')
+      inspect_source(cop, 'test = Array.new')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Use array literal `[]` instead of `Array.new`.'])
     end
 
     it 'does not register an offense for Array.new(3)' do
-      inspect_source(cop,
-                     'test = Array.new(3)')
+      inspect_source(cop, 'test = Array.new(3)')
       expect(cop.offenses).to be_empty
     end
 
@@ -36,30 +33,26 @@ describe RuboCop::Cop::Style::EmptyLiteral do
 
   describe 'Empty Hash' do
     it 'registers an offense for Hash.new()' do
-      inspect_source(cop,
-                     'test = Hash.new()')
+      inspect_source(cop, 'test = Hash.new()')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Use hash literal `{}` instead of `Hash.new`.'])
     end
 
     it 'registers an offense for Hash.new' do
-      inspect_source(cop,
-                     'test = Hash.new')
+      inspect_source(cop, 'test = Hash.new')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Use hash literal `{}` instead of `Hash.new`.'])
     end
 
     it 'does not register an offense for Hash.new(3)' do
-      inspect_source(cop,
-                     'test = Hash.new(3)')
+      inspect_source(cop, 'test = Hash.new(3)')
       expect(cop.offenses).to be_empty
     end
 
     it 'does not register an offense for Hash.new { block }' do
-      inspect_source(cop,
-                     'test = Hash.new { block }')
+      inspect_source(cop, 'test = Hash.new { block }')
       expect(cop.offenses).to be_empty
     end
 
@@ -79,10 +72,16 @@ describe RuboCop::Cop::Style::EmptyLiteral do
                 'yadayada.map { a }.reduce({}, :merge)'].join("\n"))
     end
 
-    it 'does not auto-correct Hash.new to {} if changing code meaning' do
+    it 'auto-correct Hash.new to {} as the only parameter to a method' do
+      source = 'yadayada.map { a }.reduce Hash.new'
+      new_source = autocorrect_source(cop, source)
+      expect(new_source).to eq('yadayada.map { a }.reduce({})')
+    end
+
+    it 'auto-correct Hash.new to {} as the first parameter to a method' do
       source = 'yadayada.map { a }.reduce Hash.new, :merge'
       new_source = autocorrect_source(cop, source)
-      expect(new_source).to eq(source)
+      expect(new_source).to eq('yadayada.map { a }.reduce({}, :merge)')
     end
   end
 
