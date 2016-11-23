@@ -141,25 +141,6 @@ module RuboCop
         @cop_config ||= @config.for_cop(self)
       end
 
-      def debug?
-        @options[:debug]
-      end
-
-      def display_cop_names?
-        debug? || @options[:display_cop_names] ||
-          @config.for_all_cops['DisplayCopNames']
-      end
-
-      def display_style_guide?
-        (style_guide_url || reference_url) &&
-          (@options[:display_style_guide] ||
-            config.for_all_cops['DisplayStyleGuide'])
-      end
-
-      def extra_details?
-        @options[:extra_details] || config.for_all_cops['ExtraDetails']
-      end
-
       def changed_lines_only?
         @options[:changed_lines_only]
       end
@@ -240,36 +221,12 @@ module RuboCop
         !relevant_file?(file)
       end
 
-      def style_guide_url
-        url = cop_config['StyleGuide']
-        return nil if url.nil? || url.empty?
-
-        base_url = config.for_all_cops['StyleGuideBaseURL']
-        return url if base_url.nil? || base_url.empty?
-
-        URI.join(base_url, url).to_s
-      end
-
-      def reference_url
-        url = cop_config['Reference']
-        url.nil? || url.empty? ? nil : url
-      end
-
-      def details
-        details = cop_config && cop_config['Details']
-        details.nil? || details.empty? ? nil : details
-      end
-
       private
 
       def annotate_message(message)
-        message = "#{name}: #{message}" if display_cop_names?
-        message += " #{details}" if extra_details?
-        if display_style_guide?
-          links = [style_guide_url, reference_url].compact.join(', ')
-          message = "#{message} (#{links})"
-        end
-        message
+        RuboCop::Cop::OffenseMessageAnnotater.new(
+          config, cop_config, @options
+        ).annotate_message(message, name)
       end
 
       def file_name_matches_any?(file, parameter, default_result)
