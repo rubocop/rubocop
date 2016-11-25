@@ -23,6 +23,10 @@ module RuboCop
       @options[:fail_fast]
     end
 
+    def changed_lines_only?
+      @options[:changed_lines_only]
+    end
+
     # Generate a list of target files by expanding globbing patterns
     # (if any). If args is empty, recursively find all Ruby source
     # files under the current directory
@@ -73,11 +77,17 @@ module RuboCop
 
     def to_inspect?(file, hidden_files, base_dir_config)
       return false if base_dir_config.file_to_exclude?(file)
+      return false if changed_lines_only? && !file_changed?(file)
       unless hidden_files.include?(file)
         return true if File.extname(file) == '.rb'
         return true if ruby_executable?(file)
       end
       base_dir_config.file_to_include?(file)
+    end
+
+    def file_changed?(file)
+      @lineup_finder ||= RuboCop::LineupFinder.new
+      @lineup_finder.changed_files.include?(File.absolute_path(file))
     end
 
     # Search for files recursively starting at the given base directory using
