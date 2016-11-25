@@ -138,7 +138,7 @@ module RuboCop
     end
 
     def for_all_cops
-      @for_all_cops ||= self['AllCops'] || {}
+      self['AllCops'] || {}
     end
 
     def cop_enabled?(cop)

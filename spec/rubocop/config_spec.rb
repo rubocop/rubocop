@@ -509,4 +509,28 @@ describe RuboCop::Config do
       end
     end
   end
+
+  describe '#for_all_cops' do
+    let(:hash) do
+      { 'AllCops' => { 'UseCache' => true } }
+    end
+
+    it 'returns AllCops' do
+      expect(configuration.for_all_cops).to eq('UseCache' => true)
+    end
+
+    context 'when AllCops is not present in the hash' do
+      let(:hash) { {} }
+
+      it 'is an empty hash' do
+        expect(configuration.for_all_cops).to eq({})
+      end
+
+      it 'returns AllCops on later assignment' do
+        expect(configuration.for_all_cops).to eq({})
+        configuration['AllCops'] = { 'UseCache' => true }
+        expect(configuration.for_all_cops).to eq('UseCache' => true)
+      end
+    end
+  end
 end
