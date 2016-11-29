@@ -116,6 +116,7 @@ AllowHeredoc | true
 AllowURI | true
 URISchemes | http, https
 IgnoreCopDirectives | false
+IgnoredPatterns | 
 
 
 ## Metrics/MethodLength

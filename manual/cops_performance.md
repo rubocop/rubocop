@@ -88,6 +88,34 @@ Attribute | Value
 Reference | https://github.com/JuanitoFatas/fast-ruby#stringcasecmp-vs-stringdowncase---code
 
 
+## Performance/CompareWithBlock
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop identifies places where `sort { |a, b| a.foo <=> b.foo }`
+can be replaced by `sort_by(&:foo)`.
+This cop also checks `max` and `min` methods.
+
+### Example
+
+```ruby
+# bad
+array.sort { |a, b| a.foo <=> b.foo }
+array.max { |a, b| a.foo <=> b.foo }
+array.min { |a, b| a.foo <=> b.foo }
+
+# good
+array.sort_by(&:foo)
+array.sort_by { |v| v.foo }
+array.sort_by do |var|
+  var.foo
+end
+array.max_by(&:foo)
+array.min_by(&:foo)
+```
+
 ## Performance/Count
 
 Enabled by default | Supports autocorrection
@@ -550,29 +578,6 @@ Attribute | Value
 --- | ---
 Reference | https://github.com/JuanitoFatas/fast-ruby#arraycount-vs-arraysize-code
 
-
-## Performance/SortWithBlock
-
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
-
-This cop identifies places where `sort { |a, b| a.foo <=> b.foo }`
-can be replaced by `sort_by(&:foo)`.
-
-### Example
-
-```ruby
-# bad
-array.sort { |a, b| a.foo <=> b.foo }
-
-# good
-array.sort_by(&:foo)
-array.sort_by { |v| v.foo }
-array.sort_by do |var|
-  var.foo
-end
-```
 
 ## Performance/StartWith
 
