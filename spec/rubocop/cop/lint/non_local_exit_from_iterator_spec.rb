@@ -162,5 +162,17 @@ describe RuboCop::Cop::Lint::NonLocalExitFromIterator do
 
       it { expect(cop.offenses).to be_empty }
     end
+
+    context 'when the message is define_singleton_method' do
+      let(:source) { <<-END }
+        str = 'foo'
+        str.define_singleton_method :bar do |baz|
+          return unless baz
+          replace baz
+        end
+      END
+
+      it { expect(cop.offenses).to be_empty }
+    end
   end
 end

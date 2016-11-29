@@ -31,6 +31,7 @@
 * Add `format` as an acceptable keyword argument for `Rails/HttpPositionalArguments`. ([@aesthetikx][])
 * [#3598](https://github.com/bbatsov/rubocop/issues/3598): In `Style/NumericPredicate`, don't report `x != 0` or `x.nonzero?` as the expressions have different values. ([@jonas054][])
 * [#3690](https://github.com/bbatsov/rubocop/issues/3690): Do not register an offense for multiline braces with content in `Style/SpaceInsideBlockBraces`. ([@rrosenblum][])
+* [#3746](https://github.com/bbatsov/rubocop/issues/3746): `Lint/NonLocalExitFromIterator` does not warn about `return` in a block which is passed to `Object#define_singleton_method`. ([@AlexWayfer][])
 
 ## 0.45.0 (2016-10-31)
 
@@ -2511,3 +2512,4 @@
 [@olliebennett]: https://github.com/olliebennett
 [@aesthetikx]: https://github.com/aesthetikx
 [@tdeo]: https://github.com/tdeo
+[@AlexWayfer]: https://github.com/AlexWayfer
