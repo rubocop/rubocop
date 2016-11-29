@@ -20,6 +20,7 @@
 * The offense range for `Performance/FlatMap` now includes any parameters that are passed to `flatten`. ([@rrosenblum][])
 * [#1747](https://github.com/bbatsov/rubocop/issues/1747): Update `Style/SpecialGlobalVars` messages with a reminder to `require 'English'`. ([@ivanovaleksey][])
 * Checks `binding.irb` call by `Lint/Debugger` cop. ([@pocke][])
+* [#3742](https://github.com/bbatsov/rubocop/pull/3742): Checks `min` and `max` call by `Perfomance/CompareWithBlock` cop. ([@pocke][])
 
 ### Bug fixes
 

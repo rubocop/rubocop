@@ -1427,7 +1427,7 @@ Performance/Size:
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#arraycount-vs-arraysize-code'
   Enabled: true
 
-Performance/SortWithBlock:
+Performance/CompareWithBlock:
   Description: 'Use `sort_by(&:foo)` instead of `sort_by { |a, b| a.foo <=> b.foo }`.'
   Enabled: true
 
