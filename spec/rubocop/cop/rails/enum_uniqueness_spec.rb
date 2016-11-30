@@ -34,4 +34,12 @@ describe RuboCop::Cop::Rails::EnumUniqueness, :config do
       expect(cop.messages).to be_empty
     end
   end
+
+  context 'when received a variable' do
+    it 'does not register an offence' do
+      inspect_source(cop, ['var = { status: { active: 0, archived: 1 } }',
+                           'enum var'])
+      expect(cop.messages).to be_empty
+    end
+  end
 end

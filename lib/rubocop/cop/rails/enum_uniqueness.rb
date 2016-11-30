@@ -20,17 +20,18 @@ module RuboCop
       class EnumUniqueness < Cop
         MSG = 'Duplicate value `%s` found in `%s` enum declaration.'.freeze
 
+        def_node_matcher :enum_call, <<-END
+          (send nil :enum (hash (pair (_ $_) $_)))
+        END
+
         def on_send(node)
-          _receiver, method_name, *args = *node
+          enum_call(node) do |enum_name, enum_args|
+            dupes = arr_dupes(enum_values(enum_args))
+            return if dupes.empty?
 
-          return unless method_name == :enum
-
-          enum_name, enum_args = parse_args(args)
-
-          dupes = arr_dupes(enum_values(enum_args))
-          return if dupes.empty?
-
-          add_offense(node, :selector, format(MSG, dupes.join(','), enum_name))
+            add_offense(node, :selector,
+                        format(MSG, dupes.join(','), enum_name))
+          end
         end
 
         private
@@ -55,15 +56,6 @@ module RuboCop
 
         def arr_dupes(array)
           array.select { |element| array.count(element) > 1 }.uniq
-        end
-
-        def parse_args(args)
-          enum_config = args.first.each_child_node.first.child_nodes
-
-          enum_name = enum_config.first.source
-          enum_opts = enum_config.last
-
-          [enum_name, enum_opts]
         end
       end
     end
