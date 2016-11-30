@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.46.0 (2016-11-30)
+
 ### New features
 
 * [#3600](https://github.com/bbatsov/rubocop/issues/3600): Add new `Bundler/DuplicatedGem` cop. ([@jmks][])
