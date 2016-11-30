@@ -53,6 +53,15 @@ module CopHelper
     corrector.rewrite
   end
 
+  def autocorrect_source_with_loop(cop, source, file = nil)
+    loop do
+      cop.instance_variable_set(:@corrections, [])
+      new_source = autocorrect_source(cop, source, file)
+      return new_source if new_source == source
+      source = new_source
+    end
+  end
+
   def _investigate(cop, processed_source)
     forces = RuboCop::Cop::Force.all.each_with_object([]) do |klass, instances|
       next unless cop.join_force?(klass)

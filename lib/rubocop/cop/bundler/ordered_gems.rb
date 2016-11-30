@@ -45,6 +45,23 @@ module RuboCop
           )
         end
 
+        def autocorrect(node)
+          previous = previous_declaration(node)
+
+          current_content = node.source
+          previous_content = previous.source
+
+          lambda do |corrector|
+            corrector.replace(node.loc.expression, previous_content)
+            corrector.replace(previous.loc.expression, current_content)
+          end
+        end
+
+        def previous_declaration(node)
+          gem_declarations(processed_source.ast)
+            .find { |x| x.loc.line == node.loc.line - 1 }
+        end
+
         def_node_search :gem_declarations, <<-PATTERN
           (:send, nil, :gem, ...)
         PATTERN

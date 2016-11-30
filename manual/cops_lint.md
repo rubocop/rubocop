@@ -712,7 +712,8 @@ Enabled | No
 This cop checks for non-local exit from iterator, without return value.
 It warns only when satisfies all of these: `return` doesn't have return
 value, the block is preceded by a method chain, the block has arguments,
-and the method which receives the block is not `define_method`.
+and the method which receives the block is not `define_method`
+or `define_singleton_method`.
 
 ### Example
 

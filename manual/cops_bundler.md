@@ -44,7 +44,7 @@ Include | \*\*/Gemfile, \*\*/gems.rb
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | No
+Enabled | Yes
 
 Gems in consecutive lines should be alphabetically sorted
 
