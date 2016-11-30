@@ -113,3 +113,7 @@ Style/SymbolArray:
   Description: 'Use %i or %I for arrays of symbols.'
   StyleGuide: '#percent-i'
   Enabled: false
+
+Style/SingleLineBlockParams:
+  Description: 'Enforces the names of some block params.'
+  Enabled: true
