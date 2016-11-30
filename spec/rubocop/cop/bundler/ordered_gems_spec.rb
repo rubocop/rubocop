@@ -28,10 +28,12 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
       expect(cop.offenses.size).to eq(1)
     end
 
-    it 'mentions both gem names in message' do
+    it 'has the correct offense message' do
       inspect_source(cop, source)
-      expect(cop.offenses.first.message).to include('rspec')
-      expect(cop.offenses.first.message).to include('rubocop')
+      expect(cop.messages)
+        .to eq(['Gems should be sorted in an alphabetical '\
+                'order within their section of the Gemfile. '\
+                'Gem `rspec` should appear before `rubocop`.'])
     end
 
     it 'highlights the second gem' do
