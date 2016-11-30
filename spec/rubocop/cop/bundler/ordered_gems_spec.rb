@@ -78,4 +78,34 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
       expect(cop.offenses.size).to eq(0)
     end
   end
+
+  it 'autocorrects' do
+    source = <<-END
+      gem "d"
+      gem "b"
+      gem "e"
+      gem "a"
+      gem "c"
+
+      gem "h"
+      gem "g"
+      gem "j"
+      gem "f"
+      gem "i"
+    END
+
+    new_source = autocorrect_source_with_loop(cop, source)
+    expect(new_source).to eq(['      gem "a"',
+                              '      gem "b"',
+                              '      gem "c"',
+                              '      gem "d"',
+                              '      gem "e"',
+                              '',
+                              '      gem "f"',
+                              '      gem "g"',
+                              '      gem "h"',
+                              '      gem "i"',
+                              '      gem "j"',
+                              ''].join("\n"))
+  end
 end

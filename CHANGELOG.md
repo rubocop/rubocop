@@ -1,5 +1,9 @@
 # Change log
 
+### New features
+
+* [#3757](https://github.com/bbatsov/rubocop/pull/3757): Add Auto-Correct for `Bundler/OrderedGems` cop. ([@pocke][])
+
 ## master (unreleased)
 
 ## 0.46.0 (2016-11-30)
