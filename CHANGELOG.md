@@ -6,6 +6,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#xxxx](https://github.com/bbatsov/rubocop/pull/xxxx): Avoid crash in `Rails/EnumUniqueness` cop. ([@pocke][])
+
 ## 0.46.0 (2016-11-30)
 
 ### New features
