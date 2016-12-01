@@ -1,10 +1,14 @@
 # Change log
 
+## master (unreleased)
+
 ### New features
 
 * [#3757](https://github.com/bbatsov/rubocop/pull/3757): Add Auto-Correct for `Bundler/OrderedGems` cop. ([@pocke][])
 
-## master (unreleased)
+### Changes
+
+* [#3725](https://github.com/bbatsov/rubocop/issues/3725): Disable `Style/SingleLineBlockParams` by default. ([@tejasbubane][])
 
 ### Bug fixes
 

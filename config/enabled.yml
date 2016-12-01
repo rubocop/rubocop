@@ -710,10 +710,6 @@ Style/SignalException:
   StyleGuide: '#prefer-raise-over-fail'
   Enabled: true
 
-Style/SingleLineBlockParams:
-  Description: 'Enforces the names of some block params.'
-  Enabled: true
-
 Style/SingleLineMethods:
   Description: 'Avoid single-line methods.'
   StyleGuide: '#no-single-line-methods'
