@@ -8,8 +8,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
   context 'always' do
     let(:cop_config) do
       { 'Enabled'           => true,
-        'EnforcedStyle'     => 'always',
-        'SupportedStyles'   => %w(always when_needed) }
+        'EnforcedStyle'     => 'always' }
     end
 
     it 'accepts an empty source' do
@@ -212,8 +211,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
   context 'when_needed' do
     let(:cop_config) do
       { 'Enabled'           => true,
-        'EnforcedStyle'     => 'when_needed',
-        'SupportedStyles'   => %w(always when_needed) }
+        'EnforcedStyle'     => 'when_needed' }
     end
 
     it 'accepts an empty source' do
@@ -337,6 +335,258 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
           expect(cop.messages)
             .to eq(['Missing frozen string literal comment.'])
         end
+      end
+    end
+  end
+
+  context 'never' do
+    let(:cop_config) do
+      { 'Enabled'           => true,
+        'EnforcedStyle'     => 'never' }
+    end
+
+    it 'accepts an empty source' do
+      inspect_source(cop, '')
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts a source with no tokens' do
+      inspect_source(cop, ' ')
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense for a frozen string literal comment ' \
+      'on the top line' do
+      inspect_source(cop, ['# frozen_string_literal: true',
+                           'puts 1'])
+
+      expect(cop.messages).to eq(['Unnecessary frozen string literal comment.'])
+      expect(cop.highlights).to eq(['# frozen_string_literal: true'])
+    end
+
+    it 'registers an offense for a disabled frozen string literal comment ' \
+      'on the top line' do
+      inspect_source(cop, ['# frozen_string_literal: false',
+                           'puts 1'])
+
+      expect(cop.messages).to eq(['Unnecessary frozen string literal comment.'])
+      expect(cop.highlights).to eq(['# frozen_string_literal: false'])
+    end
+
+    it 'accepts not having a frozen string literal comment on the top line' do
+      inspect_source(cop, 'puts 1')
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts not having not having a frozen string literal comment ' \
+      'under a shebang' do
+      inspect_source(cop, ['#!/usr/bin/env ruby',
+                           'puts 1'])
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense for a frozen string literal comment ' \
+      'below a shebang comment' do
+      inspect_source(cop, ['#!/usr/bin/env ruby',
+                           '# frozen_string_literal: true',
+                           'puts 1'])
+
+      expect(cop.messages).to eq(['Unnecessary frozen string literal comment.'])
+      expect(cop.highlights).to eq(['# frozen_string_literal: true'])
+    end
+
+    it 'registers an offense for a disabled frozen string literal ' \
+      'below a shebang comment' do
+      inspect_source(cop, ['#!/usr/bin/env ruby',
+                           '# frozen_string_literal: false',
+                           'puts 1'])
+
+      expect(cop.messages).to eq(['Unnecessary frozen string literal comment.'])
+      expect(cop.highlights).to eq(['# frozen_string_literal: false'])
+    end
+
+    it 'allows not having a frozen string literal comment ' \
+      'under an encoding comment' do
+      inspect_source(cop, ['# encoding: utf-8',
+                           'puts 1'])
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense for a frozen string literal comment below ' \
+      'an encoding comment' do
+      inspect_source(cop, ['# encoding: utf-8',
+                           '# frozen_string_literal: true',
+                           'puts 1'])
+
+      expect(cop.messages).to eq(['Unnecessary frozen string literal comment.'])
+      expect(cop.highlights).to eq(['# frozen_string_literal: true'])
+    end
+
+    it 'registers an offense for a dsabled frozen string literal below ' \
+      'an encoding comment' do
+      inspect_source(cop, ['# encoding: utf-8',
+                           '# frozen_string_literal: false',
+                           'puts 1'])
+
+      expect(cop.messages).to eq(['Unnecessary frozen string literal comment.'])
+      expect(cop.highlights).to eq(['# frozen_string_literal: false'])
+    end
+
+    it 'allows not having a frozen string literal comment ' \
+      'under a shebang and an encoding comment' do
+      inspect_source(cop, ['#!/usr/bin/env ruby',
+                           '# encoding: utf-8',
+                           'puts 1'])
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense for a frozen string literal comment ' \
+      'below shebang and encoding comments' do
+      inspect_source(cop, ['#!/usr/bin/env ruby',
+                           '# encoding: utf-8',
+                           '# frozen_string_literal: true',
+                           'puts 1'])
+
+      expect(cop.messages).to eq(['Unnecessary frozen string literal comment.'])
+      expect(cop.highlights).to eq(['# frozen_string_literal: true'])
+    end
+
+    it 'registers an offense for a disabled frozen string literal comment ' \
+      'below shebang and encoding comments' do
+      inspect_source(cop, ['#!/usr/bin/env ruby',
+                           '# encoding: utf-8',
+                           '# frozen_string_literal: false',
+                           'puts 1'])
+
+      expect(cop.messages).to eq(['Unnecessary frozen string literal comment.'])
+      expect(cop.highlights).to eq(['# frozen_string_literal: false'])
+    end
+
+    it 'registers an offense for a frozen string literal comment ' \
+      'below shebang above an encoding comments' do
+      inspect_source(cop, ['#!/usr/bin/env ruby',
+                           '# frozen_string_literal: true',
+                           '# encoding: utf-8',
+                           'puts 1'])
+
+      expect(cop.messages).to eq(['Unnecessary frozen string literal comment.'])
+      expect(cop.highlights).to eq(['# frozen_string_literal: true'])
+    end
+
+    it 'registers an offense for a disabled frozen string literal comment ' \
+      'below shebang above an encoding comments' do
+      inspect_source(cop, ['#!/usr/bin/env ruby',
+                           '# frozen_string_literal: false',
+                           '# encoding: utf-8',
+                           'puts 1'])
+
+      expect(cop.messages).to eq(['Unnecessary frozen string literal comment.'])
+      expect(cop.highlights).to eq(['# frozen_string_literal: false'])
+    end
+
+    context 'auto-correct' do
+      it 'removes the frozen string literal comment from the top line' do
+        new_source = autocorrect_source(cop, ['# frozen_string_literal: true',
+                                              'puts 1'])
+
+        expect(new_source).to eq('puts 1')
+      end
+
+      it 'removes a disabled frozen string literal comment on the top line' do
+        new_source = autocorrect_source(cop, ['# frozen_string_literal: false',
+                                              'puts 1'])
+
+        expect(new_source).to eq('puts 1')
+      end
+
+      it 'removes a frozen string literal comment below a shebang comment' do
+        new_source = autocorrect_source(cop, ['#!/usr/bin/env ruby',
+                                              '# frozen_string_literal: true',
+                                              'puts 1'])
+
+        expect(new_source).to eq(['#!/usr/bin/env ruby',
+                                  'puts 1'].join("\n"))
+      end
+
+      it 'removes a disabled frozen string literal below a shebang comment' do
+        new_source = autocorrect_source(cop, ['#!/usr/bin/env ruby',
+                                              '# frozen_string_literal: false',
+                                              'puts 1'])
+
+        expect(new_source).to eq(['#!/usr/bin/env ruby',
+                                  'puts 1'].join("\n"))
+      end
+
+      it 'removes a frozen string literal comment below an encoding comment' do
+        new_source = autocorrect_source(cop, ['# encoding: utf-8',
+                                              '# frozen_string_literal: true',
+                                              'puts 1'])
+
+        expect(new_source).to eq(['# encoding: utf-8',
+                                  'puts 1'].join("\n"))
+      end
+
+      it 'removes a dsabled frozen string literal below an encoding comment' do
+        new_source = autocorrect_source(cop, ['# encoding: utf-8',
+                                              '# frozen_string_literal: false',
+                                              'puts 1'])
+
+        expect(new_source).to eq(['# encoding: utf-8',
+                                  'puts 1'].join("\n"))
+      end
+
+      it 'removes a frozen string literal comment ' \
+        'below shebang and encoding comments' do
+        new_source = autocorrect_source(cop, ['#!/usr/bin/env ruby',
+                                              '# encoding: utf-8',
+                                              '# frozen_string_literal: true',
+                                              'puts 1'])
+
+        expect(new_source).to eq(['#!/usr/bin/env ruby',
+                                  '# encoding: utf-8',
+                                  'puts 1'].join("\n"))
+      end
+
+      it 'removes a disabled frozen string literal comment from ' \
+        'below shebang and encoding comments' do
+        new_source = autocorrect_source(cop, ['#!/usr/bin/env ruby',
+                                              '# encoding: utf-8',
+                                              '# frozen_string_literal: false',
+                                              'puts 1'])
+
+        expect(new_source).to eq(['#!/usr/bin/env ruby',
+                                  '# encoding: utf-8',
+                                  'puts 1'].join("\n"))
+      end
+
+      it 'removes a frozen string literal comment ' \
+        'below shebang above an encoding comments' do
+        new_source = autocorrect_source(cop, ['#!/usr/bin/env ruby',
+                                              '# frozen_string_literal: true',
+                                              '# encoding: utf-8',
+                                              'puts 1'])
+
+        expect(new_source).to eq(['#!/usr/bin/env ruby',
+                                  '# encoding: utf-8',
+                                  'puts 1'].join("\n"))
+      end
+
+      it 'removes a disabled frozen string literal comment ' \
+        'below shebang above an encoding comments' do
+        new_source = autocorrect_source(cop, ['#!/usr/bin/env ruby',
+                                              '# frozen_string_literal: false',
+                                              '# encoding: utf-8',
+                                              'puts 1'])
+
+        expect(new_source).to eq(['#!/usr/bin/env ruby',
+                                  '# encoding: utf-8',
+                                  'puts 1'].join("\n"))
       end
     end
   end

@@ -1552,7 +1552,7 @@ comment. The frozen string literal comment is only valid in Ruby 2.3+.
 Attribute | Value
 --- | ---
 EnforcedStyle | when_needed
-SupportedStyles | when_needed, always
+SupportedStyles | when_needed, always, never
 
 
 ## Style/GlobalVars

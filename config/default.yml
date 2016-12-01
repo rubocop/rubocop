@@ -535,6 +535,9 @@ Style/FrozenStringLiteralComment:
     # string literal. If you run code against multiple versions of Ruby, it is
     # possible that this will create errors in Ruby 2.3.0+.
     - always
+    # `never` will enforce that the frozen string literal comment does not
+    # exist in a file.
+    - never
 
 # Built-in global variables are allowed by default.
 Style/GlobalVars:
