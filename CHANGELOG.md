@@ -5,6 +5,7 @@
 ### New features
 
 * [#3757](https://github.com/bbatsov/rubocop/pull/3757): Add Auto-Correct for `Bundler/OrderedGems` cop. ([@pocke][])
+* `Style/FrozenStringLiteralComment` now supports the style `never` that will remove the `frozen_string_literal` comment. ([@rrosenblum][])
 
 ### Changes
 
