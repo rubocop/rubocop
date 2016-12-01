@@ -14,7 +14,8 @@ module RuboCop
       class RedundantFreeze < Cop
         include FrozenStringLiteral
 
-        MSG = 'Freezing immutable objects is pointless.'.freeze
+        MSG = 'Do not freeze immutable objects, as freezing them has no ' \
+              'effect.'.freeze
 
         def_node_matcher :freezing?, '(send $_ :freeze)'
 

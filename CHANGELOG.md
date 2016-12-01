@@ -12,6 +12,7 @@
 * [#3725](https://github.com/bbatsov/rubocop/issues/3725): Disable `Style/SingleLineBlockParams` by default. ([@tejasbubane][])
 * [#3765](https://github.com/bbatsov/rubocop/pull/3765): Add a validation for supported styles other than EnforcedStyle. `AlignWith`, `IndentWhenRelativeTo` and `EnforcedMode` configurations are renamed. ([@pocke][])
 * [#3782](https://github.com/bbatsov/rubocop/pull/3782): Add check for `add_reference` method by `Rails/NotNullColumn` cop. ([@pocke][])
+* [#3761](https://github.com/bbatsov/rubocop/pull/3761): Update `Style/RedundantFreeze` message from `Freezing immutable objects is pointless.` to `Do not freeze immutable objects, as freezing them has no effect.`. ([@lucasuyezu][])
 
 ### Bug fixes
 
@@ -2538,3 +2539,4 @@
 [@AlexWayfer]: https://github.com/AlexWayfer
 [@amogil]: https://github.com/amogil
 [@kevindew]: https://github.com/kevindew
+[@lucasuyezu]: https://github.com/lucasuyezu
