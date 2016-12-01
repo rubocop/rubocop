@@ -14,6 +14,7 @@
 
 * [#3751](https://github.com/bbatsov/rubocop/pull/3751): Avoid crash in `Rails/EnumUniqueness` cop. ([@pocke][])
 * [#3766](https://github.com/bbatsov/rubocop/pull/3766): Avoid crash in `Style/ConditionalAssignment` cop with masgn. ([@pocke][])
+* [#3750](https://github.com/bbatsov/rubocop/issues/3750): Register an offense in `Style/ConditionalAssignment` when the assignment spans multiple lines. ([@rrosenblum][])
 
 ## 0.46.0 (2016-11-30)
 

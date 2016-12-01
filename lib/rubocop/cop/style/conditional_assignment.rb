@@ -410,7 +410,10 @@ module RuboCop
         end
 
         def longest_rhs(branches)
-          branches.map { |branch| branch.children.last.source.length }.max
+          line_lengths = branches.flat_map do |branch|
+            branch.children.last.source.split("\n").map(&:length)
+          end
+          line_lengths.max
         end
 
         def line_length_cop_enabled?
