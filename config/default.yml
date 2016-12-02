@@ -113,6 +113,10 @@ Style/AlignHash:
   #   'a'  => 2
   #   'bb' => 3
   EnforcedHashRocketStyle: key
+  SupportedHashRocketStyles:
+    - key
+    - separator
+    - table
   # Alignment of entries using colon as separator. Valid values are:
   #
   # key - left alignment of keys
@@ -125,6 +129,10 @@ Style/AlignHash:
   #   a:  0
   #   bb: 1
   EnforcedColonStyle: key
+  SupportedColonStyles:
+    - key
+    - separator
+    - table
   # Select whether hashes that are the last argument in a method call should be
   # inspected? Valid values are:
   #
@@ -940,7 +948,7 @@ Style/StringMethods:
 
 Style/SpaceAroundBlockParameters:
   EnforcedStyleInsidePipes: no_space
-  SupportedStyles:
+  SupportedStylesInsidePipes:
     - space
     - no_space
 
@@ -967,20 +975,25 @@ Style/SpaceInsideBlockBraces:
   SupportedStyles:
     - space
     - no_space
-  # Valid values are: space, no_space
   EnforcedStyleForEmptyBraces: no_space
+  SupportedStylesForEmptyBraces:
+    - space
+    - no_space
   # Space between { and |. Overrides EnforcedStyle if there is a conflict.
   SpaceBeforeBlockParameters: true
 
 Style/SpaceInsideHashLiteralBraces:
   EnforcedStyle: space
-  EnforcedStyleForEmptyBraces: no_space
   SupportedStyles:
     - space
     - no_space
     # 'compact' normally requires a space inside hash braces, with the exception
     # that successive left braces or right braces are collapsed together
     - compact
+  EnforcedStyleForEmptyBraces: no_space
+  SupportedStylesForEmptyBraces:
+    - space
+    - no_space
 
 Style/SpaceInsideStringInterpolation:
   EnforcedStyle: no_space
@@ -1021,7 +1034,7 @@ Style/TrailingCommaInArguments:
   # If `consistent_comma`, the cop requires a comma after the last argument,
   # for all parenthesized method calls with arguments.
   EnforcedStyleForMultiline: no_comma
-  SupportedStyles:
+  SupportedStylesForMultiline:
     - comma
     - consistent_comma
     - no_comma
@@ -1032,7 +1045,7 @@ Style/TrailingCommaInLiteral:
   # If `consistent_comma`, the cop requires a comma after the last item of all
   # non-empty array and hash literals.
   EnforcedStyleForMultiline: no_comma
-  SupportedStyles:
+  SupportedStylesForMultiline:
     - comma
     - consistent_comma
     - no_comma
