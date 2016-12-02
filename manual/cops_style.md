@@ -84,7 +84,9 @@ literal are aligned.
 Attribute | Value
 --- | ---
 EnforcedHashRocketStyle | key
+SupportedHashRocketStyles | key, separator, table
 EnforcedColonStyle | key
+SupportedColonStyles | key, separator, table
 EnforcedLastArgumentHashStyle | always_inspect
 SupportedLastArgumentHashStyles | always_inspect, always_ignore, ignore_implicit, ignore_explicit
 
@@ -3968,7 +3970,7 @@ Checks the spacing inside and after block parameters pipes.
 Attribute | Value
 --- | ---
 EnforcedStyleInsidePipes | no_space
-SupportedStyles | space, no_space
+SupportedStylesInsidePipes | space, no_space
 
 
 ## Style/SpaceAroundEqualsInParameterDefault
@@ -4179,6 +4181,7 @@ Attribute | Value
 EnforcedStyle | space
 SupportedStyles | space, no_space
 EnforcedStyleForEmptyBraces | no_space
+SupportedStylesForEmptyBraces | space, no_space
 SpaceBeforeBlockParameters | true
 
 
@@ -4204,8 +4207,9 @@ surrounding space depending on configuration.
 Attribute | Value
 --- | ---
 EnforcedStyle | space
-EnforcedStyleForEmptyBraces | no_space
 SupportedStyles | space, no_space, compact
+EnforcedStyleForEmptyBraces | no_space
+SupportedStylesForEmptyBraces | space, no_space
 
 
 ## Style/SpaceInsideParens
@@ -4593,7 +4597,7 @@ method(
 Attribute | Value
 --- | ---
 EnforcedStyleForMultiline | no_comma
-SupportedStyles | comma, consistent_comma, no_comma
+SupportedStylesForMultiline | comma, consistent_comma, no_comma
 
 
 ## Style/TrailingCommaInLiteral
@@ -4634,7 +4638,7 @@ a = [
 Attribute | Value
 --- | ---
 EnforcedStyleForMultiline | no_comma
-SupportedStyles | comma, consistent_comma, no_comma
+SupportedStylesForMultiline | comma, consistent_comma, no_comma
 
 
 ## Style/TrailingUnderscoreVariable

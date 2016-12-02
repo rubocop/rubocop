@@ -80,7 +80,10 @@ module RuboCop
       end
 
       def supported_styles
-        @supported_styles ||= cop_config['SupportedStyles'].map(&:to_sym)
+        @supported_styles ||= begin
+          supported_styles = Util.to_supported_styles(parameter_name)
+          cop_config[supported_styles].map(&:to_sym)
+        end
       end
 
       def parameter_name

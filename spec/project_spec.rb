@@ -21,6 +21,22 @@ describe 'RuboCop Project' do
         expect(description).not_to include("\n")
       end
     end
+
+    it 'has a SupportedStyles for all EnforcedStyle' \
+      'and EnforcedStyle is valid' do
+      errors = []
+      cop_names.each do |name|
+        enforced_styles = default_config[name]
+                          .select { |key, _| key.start_with?('Enforced') }
+        enforced_styles.each do |style_name, _style|
+          supported_key = RuboCop::Cop::Util.to_supported_styles(style_name)
+          valid = default_config[name][supported_key]
+          errors.push("#{supported_key} is missing for #{name}") unless valid
+        end
+      end
+
+      raise errors.join("\n") unless errors.empty?
+    end
   end
 
   describe 'cop message' do
