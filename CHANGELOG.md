@@ -12,7 +12,7 @@
 
 ### Bug fixes
 
-* [#xxxx](https://github.com/bbatsov/rubocop/pull/xxxx): Avoid crash in `Rails/EnumUniqueness` cop. ([@pocke][])
+* [#3751](https://github.com/bbatsov/rubocop/pull/3751): Avoid crash in `Rails/EnumUniqueness` cop. ([@pocke][])
 
 ## 0.46.0 (2016-11-30)
 
