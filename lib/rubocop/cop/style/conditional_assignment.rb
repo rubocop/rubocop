@@ -92,6 +92,15 @@ module RuboCop
           method_name.to_s.end_with?(EQUAL) &&
             ![:!=, :==, :===, :>=, :<=].include?(method_name)
         end
+
+        def part_of_masgn_type?(node)
+          masgn_count = if node.casgn_type?
+                          2
+                        else
+                          1
+                        end
+          node.children.size == masgn_count
+        end
       end
 
       # Check for `if` and `case` statements where each branch is used for
@@ -201,8 +210,8 @@ module RuboCop
           'Assign variables inside of conditionals'.freeze
         VARIABLE_ASSIGNMENT_TYPES =
           [:casgn, :cvasgn, :gvasgn, :ivasgn, :lvasgn].freeze
-        ASSIGNMENT_TYPES =
-          VARIABLE_ASSIGNMENT_TYPES + [:and_asgn, :or_asgn, :op_asgn].freeze
+        ASSIGNMENT_TYPES = VARIABLE_ASSIGNMENT_TYPES +
+                           [:and_asgn, :or_asgn, :op_asgn, :masgn].freeze
         IF = 'if'.freeze
         UNLESS = 'unless'.freeze
         LINE_LENGTH = 'Metrics/LineLength'.freeze
@@ -218,6 +227,7 @@ module RuboCop
           define_method "on_#{type}" do |node|
             return if part_of_ignored_node?(node)
             return unless style == :assign_inside_condition
+            return if part_of_masgn_type?(node)
 
             check_assignment_to_condition(node)
           end
