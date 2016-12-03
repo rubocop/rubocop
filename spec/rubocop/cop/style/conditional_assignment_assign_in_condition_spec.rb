@@ -42,6 +42,30 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       expect(cop.messages).to eq([described_class::ASSIGN_TO_CONDITION_MSG])
     end
 
+    it 'registers an offense assigning any variable type to if else' \
+      'with multiple assignment' do
+      source = ["#{variable}, #{variable} = if foo",
+                '                something',
+                '              else',
+                '                something_else',
+                '              end']
+      inspect_source(cop, source)
+
+      expect(cop.messages).to eq([described_class::ASSIGN_TO_CONDITION_MSG])
+    end
+
+    it 'allows assigning any variable type inside if else' \
+      'with multiple assignment' do
+      source = ['if foo',
+                "  #{variable}, #{variable} = something",
+                'else',
+                "  #{variable}, #{variable} = something_else",
+                'end']
+      inspect_source(cop, source)
+
+      expect(cop.messages).to be_empty
+    end
+
     it 'allows assigning any variable type inside if else' do
       source = ['if foo',
                 "  #{variable} = 1",
