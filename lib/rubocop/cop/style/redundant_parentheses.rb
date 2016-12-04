@@ -66,7 +66,9 @@ module RuboCop
           if keyword_with_redundant_parentheses?(node)
             return offense(begin_node, 'a keyword')
           end
-          return offense(begin_node, 'a literal') if disallowed_literal?(node)
+          if disallowed_literal?(begin_node, node)
+            return offense(begin_node, 'a literal')
+          end
           return offense(begin_node, 'a variable') if node.variable?
           return offense(begin_node, 'a constant') if node.const_type?
           check_send(begin_node, node) if node.send_type?
@@ -126,8 +128,17 @@ module RuboCop
           line_range.source =~ /^\s*\)\s*,/
         end
 
-        def disallowed_literal?(node)
-          node.literal? && !ALLOWED_LITERALS.include?(node.type)
+        def disallowed_literal?(begin_node, node)
+          node.literal? &&
+            !ALLOWED_LITERALS.include?(node.type) &&
+            !raised_to_power_negative_numeric?(begin_node, node)
+        end
+
+        def raised_to_power_negative_numeric?(begin_node, node)
+          return false unless node.int_type? || node.float_type?
+          return false if node.children.first >= 0 || begin_node.parent.nil?
+
+          begin_node.parent.children[node.sibling_index + 1] == :**
         end
 
         def keyword_with_redundant_parentheses?(node)
