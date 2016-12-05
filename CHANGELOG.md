@@ -5,6 +5,7 @@
 ### New features
 
 * [#3757](https://github.com/bbatsov/rubocop/pull/3757): Add Auto-Correct for `Bundler/OrderedGems` cop. ([@pocke][])
+* `Style/FrozenStringLiteralComment` now supports the style `never` that will remove the `frozen_string_literal` comment. ([@rrosenblum][])
 
 ### Changes
 
@@ -15,6 +16,7 @@
 * [#3751](https://github.com/bbatsov/rubocop/pull/3751): Avoid crash in `Rails/EnumUniqueness` cop. ([@pocke][])
 * [#3766](https://github.com/bbatsov/rubocop/pull/3766): Avoid crash in `Style/ConditionalAssignment` cop with masgn. ([@pocke][])
 * [#3770](https://github.com/bbatsov/rubocop/pull/3770): `Style/RedundantParentheses` Don't flag raised to a power negative numeric literals, since removing the parentheses would change the meaning of the expressions. ([@amogil][])
+* [#3750](https://github.com/bbatsov/rubocop/issues/3750): Register an offense in `Style/ConditionalAssignment` when the assignment spans multiple lines. ([@rrosenblum][])
 
 ## 0.46.0 (2016-11-30)
 

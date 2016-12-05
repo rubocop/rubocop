@@ -588,6 +588,61 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     expect(cop.messages).to eq([described_class::MSG])
   end
 
+  it 'registers an offense for assignment in if else when the assignment ' \
+    'spans multiple lines' do
+    source = ['if foo',
+              '  foo = {',
+              '    a: 1,',
+              '    b: 2,',
+              '    c: 2,',
+              '    d: 2,',
+              '    e: 2,',
+              '    f: 2,',
+              '    g: 2,',
+              '    h: 2',
+              '  }',
+              'else',
+              '  foo = { }',
+              'end']
+    inspect_source(cop, source)
+
+    expect(cop.messages).to eq([described_class::MSG])
+  end
+
+  it 'autocorrects assignment in if else when the assignment ' \
+    'spans multiple lines' do
+    source = ['if foo',
+              '  foo = {',
+              '    a: 1,',
+              '    b: 2,',
+              '    c: 2,',
+              '    d: 2,',
+              '    e: 2,',
+              '    f: 2,',
+              '    g: 2,',
+              '    h: 2',
+              '  }',
+              'else',
+              '  foo = { }',
+              'end']
+    new_source = autocorrect_source(cop, source)
+
+    expect(new_source).to eq(['foo = if foo',
+                              '  {',
+                              '    a: 1,',
+                              '    b: 2,',
+                              '    c: 2,',
+                              '    d: 2,',
+                              '    e: 2,',
+                              '    f: 2,',
+                              '    g: 2,',
+                              '    h: 2',
+                              '  }',
+                              'else',
+                              '  { }',
+                              '      end'].join("\n"))
+  end
+
   context 'assignment as the last statement' do
     it 'allows more than variable assignment in if else' do
       source = ['if foo',
