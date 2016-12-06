@@ -51,10 +51,6 @@ module RuboCop
           end
         end
 
-        def parameter_name
-          'IndentWhenRelativeTo'
-        end
-
         def base_column(case_node, base)
           case base
           when :case then case_node.location.keyword.column

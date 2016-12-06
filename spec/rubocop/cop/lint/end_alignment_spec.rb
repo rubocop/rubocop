@@ -5,7 +5,7 @@ require 'spec_helper'
 describe RuboCop::Cop::Lint::EndAlignment, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) do
-    { 'AlignWith' => 'keyword', 'AutoCorrect' => true }
+    { 'EnforcedStyleAlignWith' => 'keyword', 'AutoCorrect' => true }
   end
 
   include_examples 'misaligned', '', 'class',  'Test',      '  end'
@@ -52,9 +52,9 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
     expect(cop.offenses).to be_empty
   end
 
-  context 'when AlignWith is start_of_line' do
+  context 'when EnforcedStyleAlignWith is start_of_line' do
     let(:cop_config) do
-      { 'AlignWith' => 'start_of_line', 'AutoCorrect' => true }
+      { 'EnforcedStyleAlignWith' => 'start_of_line', 'AutoCorrect' => true }
     end
 
     include_examples 'misaligned', '', 'class Test',    '', '  end'
@@ -82,11 +82,11 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
     include_examples 'misaligned', '', 'puts 1; case a when b', '', '  end'
   end
 
-  context 'when AlignWith is variable' do
-    # same as 'AlignWith' => 'keyword', as long as assignments or `case`
-    # are not involved
+  context 'when EnforcedStyleAlignWith is variable' do
+    # same as 'EnforcedStyleAlignWith' => 'keyword',
+    # as long as assignments or `case` are not involved
     let(:cop_config) do
-      { 'AlignWith' => 'variable', 'AutoCorrect' => true }
+      { 'EnforcedStyleAlignWith' => 'variable', 'AutoCorrect' => true }
     end
 
     include_examples 'misaligned', '', 'class',  'Test',      '  end'
@@ -174,27 +174,27 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
   end
 
   context 'case as argument' do
-    context 'when AlignWith is keyword' do
+    context 'when EnforcedStyleAlignWith is keyword' do
       let(:cop_config) do
-        { 'AlignWith' => 'keyword', 'AutoCorrect' => true }
+        { 'EnforcedStyleAlignWith' => 'keyword', 'AutoCorrect' => true }
       end
 
       include_examples 'aligned', 'test case', 'a when b', '     end'
       include_examples 'misaligned', 'test ', 'case', 'a when b', 'end'
     end
 
-    context 'when AlignWith is variable' do
+    context 'when EnforcedStyleAlignWith is variable' do
       let(:cop_config) do
-        { 'AlignWith' => 'variable', 'AutoCorrect' => true }
+        { 'EnforcedStyleAlignWith' => 'variable', 'AutoCorrect' => true }
       end
 
       include_examples 'aligned', 'test case', 'a when b', 'end'
       include_examples 'misaligned', '', 'test case', 'a when b', '     end'
     end
 
-    context 'when AlignWith is start_of_line' do
+    context 'when EnforcedStyleAlignWith is start_of_line' do
       let(:cop_config) do
-        { 'AlignWith' => 'start_of_line', 'AutoCorrect' => true }
+        { 'EnforcedStyleAlignWith' => 'start_of_line', 'AutoCorrect' => true }
       end
 
       include_examples 'aligned',        'test case a when b', '', 'end'
@@ -203,7 +203,7 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
   end
 
   context 'regarding assignment' do
-    context 'when AlignWith is keyword' do
+    context 'when EnforcedStyleAlignWith is keyword' do
       include_examples 'misaligned', 'var = ', 'if',     'test',     'end'
       include_examples 'misaligned', 'var = ', 'unless', 'test',     'end'
       include_examples 'misaligned', 'var = ', 'while',  'test',     'end'
@@ -217,9 +217,9 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
       include_examples 'aligned', 'var = case',   'a when b', '      end'
     end
 
-    context 'when AlignWith is variable' do
+    context 'when EnforcedStyleAlignWith is variable' do
       let(:cop_config) do
-        { 'AlignWith' => 'variable', 'AutoCorrect' => true }
+        { 'EnforcedStyleAlignWith' => 'variable', 'AutoCorrect' => true }
       end
 
       include_examples 'aligned', 'var = if',     'test',     'end'
@@ -263,9 +263,9 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
     end
   end
 
-  context 'when AlignWith is start_of_line' do
+  context 'when EnforcedStyleAlignWith is start_of_line' do
     let(:cop_config) do
-      { 'AlignWith' => 'start_of_line', 'AutoCorrect' => true }
+      { 'EnforcedStyleAlignWith' => 'start_of_line', 'AutoCorrect' => true }
     end
 
     include_examples 'misaligned', '', 'var = if test',       '', '      end'

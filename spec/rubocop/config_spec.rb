@@ -171,33 +171,6 @@ describe RuboCop::Config do
           .to raise_error(RuboCop::ValidationError, /itisinvalid/)
       end
     end
-
-    context 'when the configration includes a valid EnforcedMode' do
-      before do
-        create_file(configuration_path, [
-                      'Rails/UniqBeforePluck:',
-                      '  EnforcedMode: aggressive'
-                    ])
-      end
-
-      it 'does not raise validation error' do
-        expect { configuration.validate }.to_not raise_error
-      end
-    end
-
-    context 'when the configration includes an invalid EnforcedMode' do
-      before do
-        create_file(configuration_path, [
-                      'Rails/UniqBeforePluck:',
-                      '  EnforcedMode: itisinvalid'
-                    ])
-      end
-
-      it 'does not raise validation error' do
-        expect { configuration.validate }
-          .to raise_error(RuboCop::ValidationError, /itisinvalid/)
-      end
-    end
   end
 
   describe '#make_excludes_absolute' do

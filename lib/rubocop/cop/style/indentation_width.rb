@@ -87,7 +87,7 @@ module RuboCop
           *_, body = *args.first
 
           def_end_config = config.for_cop('Lint/DefEndAlignment')
-          style = def_end_config['AlignWith'] || 'start_of_line'
+          style = def_end_config['EnforcedStyleAlignWith'] || 'start_of_line'
           base = style == 'def' ? args.first : node
 
           check_indentation(base.source_range, body)
@@ -188,7 +188,7 @@ module RuboCop
           return unless rhs
 
           end_config = config.for_cop('Lint/EndAlignment')
-          style = end_config['AlignWith'] || 'keyword'
+          style = end_config['EnforcedStyleAlignWith'] || 'keyword'
           base = variable_alignment?(node.loc, rhs, style.to_sym) ? node : rhs
 
           case rhs.type
