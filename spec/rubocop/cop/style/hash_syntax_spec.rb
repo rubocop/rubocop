@@ -51,6 +51,11 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
         expect(cop.messages).to be_empty
       end
 
+      it 'accepts an empty hash' do
+        inspect_source(cop, '{}')
+        expect(cop.messages).to be_empty
+      end
+
       context 'ruby < 2.2', :ruby21 do
         it 'accepts hash rockets when symbol keys have string in them' do
           inspect_source(cop, 'x = { :"string" => 0 }')
@@ -179,6 +184,11 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
         expect(cop.messages).to be_empty
       end
 
+      it 'accepts an empty hash' do
+        inspect_source(cop, '{}')
+        expect(cop.messages).to be_empty
+      end
+
       it 'registers an offense when any element uses a symbol for the value' do
         inspect_source(cop, 'x = { a: 1, b: :c }')
         expect(cop.messages)
@@ -266,6 +276,11 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       expect(cop.messages).to be_empty
     end
 
+    it 'accepts an empty hash' do
+      inspect_source(cop, '{}')
+      expect(cop.messages).to be_empty
+    end
+
     it 'auto-corrects new style to hash rockets' do
       new_source = autocorrect_source(cop, '{ a: 1, b: 2}')
       expect(new_source).to eq('{ :a => 1, :b => 2}')
@@ -326,6 +341,11 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
 
       it 'accepts hash rockets when keys have different types' do
         inspect_source(cop, 'x = { :a => 0, "b" => 1 }')
+        expect(cop.messages).to be_empty
+      end
+
+      it 'accepts an empty hash' do
+        inspect_source(cop, '{}')
         expect(cop.messages).to be_empty
       end
 
@@ -465,6 +485,11 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
         expect(cop.messages).to be_empty
       end
 
+      it 'accepts an empty hash' do
+        inspect_source(cop, '{}')
+        expect(cop.messages).to be_empty
+      end
+
       it 'registers an offense when keys have different types and styles' do
         inspect_source(cop, 'x = { a: 0, "b" => 1 }')
         expect(cop.messages).to eq(["Don't mix styles in the same hash."])
@@ -572,6 +597,11 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
 
     it 'accepts hash rockets when keys have different types' do
       inspect_source(cop, 'x = { :a => 0, "b" => 1 }')
+      expect(cop.messages).to be_empty
+    end
+
+    it 'accepts an empty hash' do
+      inspect_source(cop, '{}')
       expect(cop.messages).to be_empty
     end
 

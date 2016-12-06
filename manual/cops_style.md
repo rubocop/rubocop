@@ -307,7 +307,7 @@ It will register a separate offense for each misaligned *when*.
 
 Attribute | Value
 --- | ---
-IndentWhenRelativeTo | case
+EnforcedStyle | case
 SupportedStyles | case, end
 IndentOneStep | false
 IndentationWidth | 

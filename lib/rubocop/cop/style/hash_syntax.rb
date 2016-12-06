@@ -75,37 +75,30 @@ module RuboCop
         end
 
         def on_hash(node)
-          if cop_config['UseHashRocketsWithSymbolValues']
-            pairs = *node
-            @force_hash_rockets = pairs.any? { |p| symbol_value?(p) }
-          end
+          pairs = *node
+          return if pairs.empty?
+          @force_hash_rockets = force_hash_rockets?(pairs)
 
           if style == :hash_rockets || @force_hash_rockets
-            hash_rockets_check(node)
+            hash_rockets_check(pairs)
           elsif style == :ruby19_no_mixed_keys
-            ruby19_no_mixed_keys_check(node)
+            ruby19_no_mixed_keys_check(pairs)
           elsif style == :no_mixed_keys
-            no_mixed_keys_check(node)
+            no_mixed_keys_check(pairs)
           else
-            ruby19_check(node)
+            ruby19_check(pairs)
           end
         end
 
-        def ruby19_check(node)
-          pairs = *node
-
+        def ruby19_check(pairs)
           check(pairs, '=>', MSG_19) if sym_indices?(pairs)
         end
 
-        def hash_rockets_check(node)
-          pairs = *node
-
+        def hash_rockets_check(pairs)
           check(pairs, ':', MSG_HASH_ROCKETS)
         end
 
-        def ruby19_no_mixed_keys_check(node)
-          pairs = *node
-
+        def ruby19_no_mixed_keys_check(pairs)
           if @force_hash_rockets
             check(pairs, ':', MSG_HASH_ROCKETS)
           elsif sym_indices?(pairs)
@@ -115,9 +108,7 @@ module RuboCop
           end
         end
 
-        def no_mixed_keys_check(node)
-          pairs = *node
-
+        def no_mixed_keys_check(pairs)
           if !sym_indices?(pairs)
             check(pairs, ':', MSG_NO_MIXED_KEYS)
           else
@@ -225,6 +216,11 @@ module RuboCop
           else
             autocorrect_ruby19(corrector, node)
           end
+        end
+
+        def force_hash_rockets?(pairs)
+          cop_config['UseHashRocketsWithSymbolValues'] &&
+            pairs.any? { |p| symbol_value?(p) }
         end
       end
     end

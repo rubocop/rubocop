@@ -68,8 +68,8 @@ Enabled | Yes
 This cop checks whether the end keywords are aligned properly for do
 end blocks.
 
-Three modes are supported through the `AlignWith` configuration
-parameter:
+Three modes are supported through the `EnforcedStyleAlignWith`
+configuration parameter:
 
 `start_of_block` : the `end` shall be aligned with the
 start of the line where the `do` appeared.
@@ -105,8 +105,8 @@ end
 
 Attribute | Value
 --- | ---
-AlignWith | either
-SupportedStyles | either, start_of_block, start_of_line
+EnforcedStyleAlignWith | either
+SupportedStylesAlignWith | either, start_of_block, start_of_line
 
 
 ## Lint/CircularArgumentReference
@@ -184,7 +184,7 @@ Enabled | Yes
 This cop checks whether the end keywords of method definitions are
 aligned properly.
 
-Two modes are supported through the AlignWith configuration
+Two modes are supported through the EnforcedStyleAlignWith configuration
 parameter. If it's set to `start_of_line` (which is the default), the
 `end` shall be aligned with the start of the line where the `def`
 keyword is. If it's set to `def`, the `end` shall be aligned with the
@@ -201,8 +201,8 @@ end
 
 Attribute | Value
 --- | ---
-AlignWith | start_of_line
-SupportedStyles | start_of_line, def
+EnforcedStyleAlignWith | start_of_line
+SupportedStylesAlignWith | start_of_line, def
 AutoCorrect | false
 
 
@@ -377,8 +377,8 @@ Enabled | Yes
 
 This cop checks whether the end keywords are aligned properly.
 
-Three modes are supported through the `AlignWith` configuration
-parameter:
+Three modes are supported through the `EnforcedStyleAlignWith`
+configuration parameter:
 
 If it's set to `keyword` (which is the default), the `end`
 shall be aligned with the start of the keyword (if, class, etc.).
@@ -410,8 +410,8 @@ end)
 
 Attribute | Value
 --- | ---
-AlignWith | keyword
-SupportedStyles | keyword, variable, start_of_line
+EnforcedStyleAlignWith | keyword
+SupportedStylesAlignWith | keyword, variable, start_of_line
 AutoCorrect | false
 
 
