@@ -6,8 +6,8 @@ module RuboCop
       # This cop checks whether the end keywords are aligned properly for do
       # end blocks.
       #
-      # Three modes are supported through the `AlignWith` configuration
-      # parameter:
+      # Three modes are supported through the `EnforcedStyleAlignWith`
+      # configuration parameter:
       #
       # `start_of_block` : the `end` shall be aligned with the
       # start of the line where the `do` appeared.
@@ -55,7 +55,7 @@ module RuboCop
         end
 
         def parameter_name
-          'AlignWith'
+          'EnforcedStyleAlignWith'
         end
 
         private

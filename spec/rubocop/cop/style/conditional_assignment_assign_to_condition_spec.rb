@@ -13,7 +13,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                                   assign_inside_condition)
                         },
                         'Lint/EndAlignment' => {
-                          'AlignWith' => 'keyword',
+                          'EnforcedStyleAlignWith' => 'keyword',
                           'Enabled' => true
                         },
                         'Metrics/LineLength' => {
@@ -1522,7 +1522,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                                     assign_inside_condition)
                           },
                           'Lint/EndAlignment' => {
-                            'AlignWith' => 'keyword',
+                            'EnforcedStyleAlignWith' => 'keyword',
                             'Enabled' => true
                           },
                           'Metrics/LineLength' => {
@@ -1980,7 +1980,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                             'SingleLineConditionsOnly' => false
                           },
                           'Lint/EndAlignment' => {
-                            'AlignWith' => 'start_of_line',
+                            'EnforcedStyleAlignWith' => 'start_of_line',
                             'Enabled' => true
                           },
                           'Metrics/LineLength' => {

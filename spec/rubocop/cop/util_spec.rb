@@ -121,19 +121,9 @@ describe RuboCop::Cop::Util do
       it { is_expected.to eq('SupportedStyles') }
     end
 
-    context 'when EnforcedMode' do
-      let(:enforced_style) { 'EnforcedMode' }
-      it { is_expected.to eq('SupportedModes') }
-    end
-
     context 'when EnforcedStyleInsidePipes' do
       let(:enforced_style) { 'EnforcedStyleInsidePipes' }
       it { is_expected.to eq('SupportedStylesInsidePipes') }
-    end
-
-    context 'when AlignWith' do
-      let(:enforced_style) { 'AlignWith' }
-      it { is_expected.to eq('SupportedStyles') }
     end
   end
 end

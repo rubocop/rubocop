@@ -9,7 +9,7 @@
 ### Changes
 
 * [#3725](https://github.com/bbatsov/rubocop/issues/3725): Disable `Style/SingleLineBlockParams` by default. ([@tejasbubane][])
-* [#3765](https://github.com/bbatsov/rubocop/pull/3765): Add a validation for supported styles other than EnforcedStyle. ([@pocke][])
+* [#3765](https://github.com/bbatsov/rubocop/pull/3765): Add a validation for supported styles other than EnforcedStyle. `AlignWith`, `IndentWhenRelativeTo` and `EnforcedMode` configurations are renamed. ([@pocke][])
 
 ### Bug fixes
 

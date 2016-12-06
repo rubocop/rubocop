@@ -296,7 +296,7 @@ Style/BracesAroundHashParameters:
 
 # Indentation of `when`.
 Style/CaseIndentation:
-  IndentWhenRelativeTo: case
+  EnforcedStyle: case
   SupportedStyles:
     - case
     - end
@@ -1194,8 +1194,8 @@ Lint/BlockAlignment:
   # The value `start_of_line` means it should be aligned with the whole
   # expression's starting line.
   # The value `either` means both are allowed.
-  AlignWith: either
-  SupportedStyles:
+  EnforcedStyleAlignWith: either
+  SupportedStylesAlignWith:
     - either
     - start_of_block
     - start_of_line
@@ -1209,8 +1209,8 @@ Lint/EndAlignment:
   # situations, `end` should still be aligned with the keyword.
   # The value `start_of_line` means that `end` should be aligned with the start
   # of the line which the matching keyword appears on.
-  AlignWith: keyword
-  SupportedStyles:
+  EnforcedStyleAlignWith: keyword
+  SupportedStylesAlignWith:
     - keyword
     - variable
     - start_of_line
@@ -1221,8 +1221,8 @@ Lint/DefEndAlignment:
   # The value `start_of_line` means that `end` should be aligned with method
   # calls like `private`, `public`, etc, if present in front of the `def`
   # keyword on the same line.
-  AlignWith: start_of_line
-  SupportedStyles:
+  EnforcedStyleAlignWith: start_of_line
+  SupportedStylesAlignWith:
     - start_of_line
     - def
   AutoCorrect: false
@@ -1340,8 +1340,8 @@ Rails/TimeZone:
     - flexible
 
 Rails/UniqBeforePluck:
-  EnforcedMode: conservative
-  SupportedModes:
+  EnforcedStyle: conservative
+  SupportedStyles:
     - conservative
     - aggressive
   AutoCorrect: false

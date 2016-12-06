@@ -523,7 +523,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                                     assign_inside_condition)
                           },
                           'Lint/EndAlignment' => {
-                            'AlignWith' => 'keyword',
+                            'EnforcedStyleAlignWith' => 'keyword',
                             'Enabled' => true
                           },
                           'Metrics/LineLength' => {
@@ -711,7 +711,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                                     assign_inside_condition)
                           },
                           'Lint/EndAlignment' => {
-                            'AlignWith' => 'keyword',
+                            'EnforcedStyleAlignWith' => 'keyword',
                             'Enabled' => true
                           },
                           'Metrics/LineLength' => {

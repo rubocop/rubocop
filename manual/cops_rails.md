@@ -630,11 +630,11 @@ Prefer the use of uniq (or distinct), before pluck instead of after.
 The use of uniq before pluck is preferred because it executes within
 the database.
 
-This cop has two different enforcement modes. When the EnforcedMode
+This cop has two different enforcement modes. When the EnforcedStyle
 is conservative (the default) then only calls to pluck on a constant
 (i.e. a model class) before uniq are added as offenses.
 
-When the EnforcedMode is aggressive then all calls to pluck before
+When the EnforcedStyle is aggressive then all calls to pluck before
 uniq are added as offenses. This may lead to false positives as the cop
 cannot distinguish between calls to pluck on an ActiveRecord::Relation
 vs a call to pluck on an ActiveRecord::Associations::CollectionProxy.
@@ -663,8 +663,8 @@ instance.assoc.pluck(:id).uniq
 
 Attribute | Value
 --- | ---
-EnforcedMode | conservative
-SupportedModes | conservative, aggressive
+EnforcedStyle | conservative
+SupportedStyles | conservative, aggressive
 AutoCorrect | false
 
 

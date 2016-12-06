@@ -50,7 +50,7 @@ shared_examples_for 'misaligned' do |prefix, alignment_base, arg, end_kw, name|
     # style. In other cases, it won't match any style at all
     expect(cop.config_to_allow_offenses).to(
       eq('Enabled' => false).or(
-        satisfy { |h| other_styles.include?(h['AlignWith']) }
+        satisfy { |h| other_styles.include?(h['EnforcedStyleAlignWith']) }
       )
     )
   end

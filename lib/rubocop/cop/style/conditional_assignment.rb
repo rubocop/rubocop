@@ -8,7 +8,7 @@ module RuboCop
       module ConditionalAssignmentHelper
         EQUAL = '='.freeze
         END_ALIGNMENT = 'Lint/EndAlignment'.freeze
-        ALIGN_WITH = 'AlignWith'.freeze
+        ALIGN_WITH = 'EnforcedStyleAlignWith'.freeze
         KEYWORD = 'keyword'.freeze
 
         # `elsif` branches show up in the `node` as an `else`. We need

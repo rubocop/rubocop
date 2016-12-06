@@ -15,9 +15,9 @@ describe RuboCop::Cop::Lint::DefEndAlignment, :config do
      '    end']
   end
 
-  context 'when AlignWith is start_of_line' do
+  context 'when EnforcedStyleAlignWith is start_of_line' do
     let(:cop_config) do
-      { 'AlignWith' => 'start_of_line', 'AutoCorrect' => true }
+      { 'EnforcedStyleAlignWith' => 'start_of_line', 'AutoCorrect' => true }
     end
 
     include_examples 'misaligned', '', 'def', 'test',      '  end'
@@ -58,9 +58,9 @@ describe RuboCop::Cop::Lint::DefEndAlignment, :config do
     end
   end
 
-  context 'when AlignWith is def' do
+  context 'when EnforcedStyleAlignWith is def' do
     let(:cop_config) do
-      { 'AlignWith' => 'def', 'AutoCorrect' => true }
+      { 'EnforcedStyleAlignWith' => 'def', 'AutoCorrect' => true }
     end
 
     include_examples 'misaligned', '', 'def', 'test',      '  end'

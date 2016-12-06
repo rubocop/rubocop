@@ -11,10 +11,10 @@ describe RuboCop::Cop::Style::CaseIndentation do
                         'Style/IndentationWidth' => { 'Width' => 2 })
   end
 
-  context 'with IndentWhenRelativeTo: case' do
+  context 'with EnforcedStyle: case' do
     context 'with IndentOneStep: false' do
       let(:cop_config) do
-        { 'IndentWhenRelativeTo' => 'case', 'IndentOneStep' => false }
+        { 'EnforcedStyle' => 'case', 'IndentOneStep' => false }
       end
 
       context 'regarding assignment where the right hand side is a case' do
@@ -54,7 +54,7 @@ describe RuboCop::Cop::Style::CaseIndentation do
           it 'registers an offense' do
             inspect_source(cop, source)
             expect(cop.messages).to eq(['Indent `when` as deep as `case`.'])
-            expect(cop.config_to_allow_offenses).to eq('IndentWhenRelativeTo' =>
+            expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
                                                        'end')
           end
 
@@ -234,7 +234,7 @@ describe RuboCop::Cop::Style::CaseIndentation do
 
     context 'with IndentOneStep: true' do
       let(:cop_config) do
-        { 'IndentWhenRelativeTo' => 'case', 'IndentOneStep' => true }
+        { 'EnforcedStyle' => 'case', 'IndentOneStep' => true }
       end
 
       let(:correct_source) do
@@ -338,7 +338,7 @@ describe RuboCop::Cop::Style::CaseIndentation do
       context 'when indentation width is overridden for this cop only' do
         let(:cop_config) do
           {
-            'IndentWhenRelativeTo' => 'case',
+            'EnforcedStyle' => 'case',
             'IndentOneStep' => true,
             'IndentationWidth' => 5
           }
@@ -361,10 +361,10 @@ describe RuboCop::Cop::Style::CaseIndentation do
     end
   end
 
-  context 'with IndentWhenRelativeTo: end' do
+  context 'with EnforcedStyle: end' do
     context 'with IndentOneStep: false' do
       let(:cop_config) do
-        { 'IndentWhenRelativeTo' => 'end', 'IndentOneStep' => false }
+        { 'EnforcedStyle' => 'end', 'IndentOneStep' => false }
       end
 
       let(:correct_source) do
@@ -416,7 +416,7 @@ describe RuboCop::Cop::Style::CaseIndentation do
 
     context 'with IndentOneStep: true' do
       let(:cop_config) do
-        { 'IndentWhenRelativeTo' => 'end', 'IndentOneStep' => true }
+        { 'EnforcedStyle' => 'end', 'IndentOneStep' => true }
       end
 
       let(:correct_source) do
@@ -457,7 +457,7 @@ describe RuboCop::Cop::Style::CaseIndentation do
             inspect_source(cop, source)
             expect(cop.messages)
               .to eq(['Indent `when` one step more than `end`.'])
-            expect(cop.config_to_allow_offenses).to eq('IndentWhenRelativeTo' =>
+            expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
                                                        'case')
           end
 

@@ -72,7 +72,7 @@ describe RuboCop::Cop::Rails::UniqBeforePluck, :config do
   %w(uniq distinct).each do |method|
     context 'when the enforced mode is conservative' do
       let(:cop_config) do
-        { 'EnforcedMode' => 'conservative', 'AutoCorrect' => true }
+        { 'EnforcedStyle' => 'conservative', 'AutoCorrect' => true }
       end
 
       it_behaves_like 'mode independent behavior', method
@@ -82,7 +82,7 @@ describe RuboCop::Cop::Rails::UniqBeforePluck, :config do
 
     context 'when the enforced mode is aggressive' do
       let(:cop_config) do
-        { 'EnforcedMode' => 'aggressive', 'AutoCorrect' => true }
+        { 'EnforcedStyle' => 'aggressive', 'AutoCorrect' => true }
       end
 
       it_behaves_like 'mode independent behavior', method

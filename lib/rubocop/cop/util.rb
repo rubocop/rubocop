@@ -273,12 +273,9 @@ module RuboCop
       end
 
       def to_supported_styles(enforced_style)
-        irregular_styles = %w(IndentWhenRelativeTo AlignWith)
-        return 'SupportedStyles' if irregular_styles.include?(enforced_style)
         enforced_style
           .sub(/^Enforced/, 'Supported')
           .sub('Style', 'Styles')
-          .sub('Mode', 'Modes')
       end
     end
   end
