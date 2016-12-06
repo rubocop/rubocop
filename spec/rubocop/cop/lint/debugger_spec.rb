@@ -25,10 +25,11 @@ describe RuboCop::Cop::Lint::Debugger, :config do
                     'save_and_open_screenshot foo',
                     'save_screenshot foo']
   include_examples 'non-debugger', 'a non-pry binding', 'binding.pirate'
+  include_examples 'debugger', 'focus', 'focus'
 
   ALL_COMMANDS = %w(debugger byebug pry remote_pry pry_remote irb
                     save_and_open_page save_and_open_screenshot
-                    save_screenshot).freeze
+                    save_screenshot focus).freeze
 
   ALL_COMMANDS.each do |src|
     include_examples 'non-debugger', "a #{src} in comments", "# #{src}"
