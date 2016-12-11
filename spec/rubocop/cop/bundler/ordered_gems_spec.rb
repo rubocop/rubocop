@@ -38,6 +38,13 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
       inspect_source(cop, source)
       expect(cop.highlights).to eq(["gem 'rspec'"])
     end
+
+    it 'autocorrects' do
+      new_source = autocorrect_source_with_loop(cop, source)
+      expect(new_source).to eq(["      gem 'rspec'",
+                                "      gem 'rubocop'",
+                                ''].join("\n"))
+    end
   end
 
   context 'When each individual group of line is sorted' do
@@ -66,6 +73,14 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
       inspect_source(cop, source)
       expect(cop.offenses.size).to eq(1)
     end
+
+    it 'autocorrects' do
+      new_source = autocorrect_source_with_loop(cop, source)
+      expect(new_source).to eq(["      gem 'rspec'",
+                                "      gem 'rubocop',",
+                                "          '0.1.1'",
+                                ''].join("\n"))
+    end
   end
 
   context 'When the gemfile is empty' do
@@ -79,33 +94,75 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
     end
   end
 
-  it 'autocorrects' do
-    source = <<-END
-      gem "d"
-      gem "b"
-      gem "e"
-      gem "a"
-      gem "c"
+  context 'When each individual group of line is not sorted' do
+    let(:source) { <<-END }
+        gem "d"
+        gem "b"
+        gem "e"
+        gem "a"
+        gem "c"
 
-      gem "h"
-      gem "g"
-      gem "j"
-      gem "f"
-      gem "i"
+        gem "h"
+        gem "g"
+        gem "j"
+        gem "f"
+        gem "i"
     END
 
-    new_source = autocorrect_source_with_loop(cop, source)
-    expect(new_source).to eq(['      gem "a"',
-                              '      gem "b"',
-                              '      gem "c"',
-                              '      gem "d"',
-                              '      gem "e"',
-                              '',
-                              '      gem "f"',
-                              '      gem "g"',
-                              '      gem "h"',
-                              '      gem "i"',
-                              '      gem "j"',
-                              ''].join("\n"))
+    it 'registers some offenses' do
+      inspect_source(cop, source)
+      expect(cop.offenses).not_to be_empty
+    end
+
+    it 'autocorrects' do
+      new_source = autocorrect_source_with_loop(cop, source)
+      expect(new_source).to eq(['        gem "a"',
+                                '        gem "b"',
+                                '        gem "c"',
+                                '        gem "d"',
+                                '        gem "e"',
+                                '',
+                                '        gem "f"',
+                                '        gem "g"',
+                                '        gem "h"',
+                                '        gem "i"',
+                                '        gem "j"',
+                                ''].join("\n"))
+    end
+  end
+
+  context 'When gem groups is separated by comment' do
+    let(:source) { <<-END }
+      # For code quality
+      gem 'rubocop'
+      # For test
+      gem 'rspec'
+    END
+
+    it 'accepts' do
+      inspect_source(cop, source)
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  context 'When gems have an inline comment, and not sorted' do
+    let(:source) { <<-END }
+      gem 'rubocop' # For code quality
+      gem 'pry'
+      gem 'rspec'   # For test
+    END
+
+    it 'registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it 'autocorrects' do
+      new_source = autocorrect_source_with_loop(cop, source)
+      expect(new_source).to eq(["      gem 'pry'",
+                                "      gem 'rspec'   # For test",
+                                "      gem 'rubocop' # For code quality",
+                                ''].join("\n"))
+    end
   end
 end
