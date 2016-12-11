@@ -82,7 +82,8 @@ module RuboCop
           # the range of the text to replace, which is the whole line
           code_to_replace = node.loc.expression
           # what to replace with
-          new_code = format('%s %s%s%s', http_method, controller_action,
+          format = parentheses?(node) ? '%s(%s%s%s)' : '%s %s%s%s'
+          new_code = format(format, http_method, controller_action,
                             params, headers)
           ->(corrector) { corrector.replace(code_to_replace, new_code) }
         end

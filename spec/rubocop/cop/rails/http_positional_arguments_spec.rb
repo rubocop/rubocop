@@ -176,6 +176,15 @@ post :create, params: { id: @user.id, ac: {
     expect(new_source).to eq(expected)
   end
 
+  it 'maintains parentheses in auto-correcting' do
+    source = 'post(:user_attrs, id: 1)'
+    inspect_source(cop, source)
+    expect(cop.offenses.size).to eq(1)
+    new_source = autocorrect_source(cop, source)
+    expected = 'post(:user_attrs, params: { id: 1 })'
+    expect(new_source).to eq(expected)
+  end
+
   it 'does not register when post is found' do
     source = "if post.stint_title.present? \n true\n end"
     inspect_source(cop, source)
