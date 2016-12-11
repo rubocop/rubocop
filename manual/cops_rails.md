@@ -332,10 +332,12 @@ in migration file.
 ```ruby
 # bad
 add_column :users, :name, :string, null: false
+add_reference :products, :category, null: false
 
 # good
 add_column :users, :name, :string, null: true
 add_column :users, :name, :string, null: false, default: ''
+add_reference :products, :category
 ```
 
 ### Important attributes

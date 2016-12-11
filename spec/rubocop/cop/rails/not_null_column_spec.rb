@@ -75,4 +75,28 @@ describe RuboCop::Cop::Rails::NotNullColumn, :config do
     end
     include_examples 'accepts'
   end
+
+  context 'with add_reference call' do
+    context 'with null: false' do
+      let(:source) { 'add_reference :products, :category, null: false' }
+      it 'reports an offense' do
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.messages).to eq(
+          ['Do not add a NOT NULL column without a default value.']
+        )
+      end
+    end
+
+    context 'with default option' do
+      let(:source) do
+        'add_reference :products, :category, null: false, default: 1'
+      end
+      include_examples 'accepts'
+    end
+
+    context 'without any options' do
+      let(:source) { 'add_reference :products, :category' }
+      include_examples 'accepts'
+    end
+  end
 end
