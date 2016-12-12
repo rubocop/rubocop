@@ -13,6 +13,7 @@ pages:
 - Caching: caching.md
 - Extensions: extensions.md
 - Integration with other tools: integration_with_other_tools.md
+- Automated Code Review: automated_code_review.md
 - Support: support.md
 - Contributing: contributing.md
 - Development: development.md
