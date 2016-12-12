@@ -45,7 +45,7 @@ module RuboCop
       end
 
       def parameter_name
-        'AlignWith'
+        'EnforcedStyleAlignWith'
       end
 
       def variable_alignment?(whole_expression, rhs, end_alignment_style)

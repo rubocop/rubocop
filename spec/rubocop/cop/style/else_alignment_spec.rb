@@ -8,7 +8,7 @@ describe RuboCop::Cop::Style::ElseAlignment do
     RuboCop::Config.new('Lint/EndAlignment' => end_alignment_config)
   end
   let(:end_alignment_config) do
-    { 'Enabled' => true, 'AlignWith' => 'variable' }
+    { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'variable' }
   end
 
   it 'accepts a ternary if' do
@@ -284,7 +284,7 @@ describe RuboCop::Cop::Style::ElseAlignment do
 
       context 'when alignment style is keyword by choice' do
         let(:end_alignment_config) do
-          { 'Enabled' => true, 'AlignWith' => 'keyword' }
+          { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'keyword' }
         end
 
         include_examples 'assignment and if with keyword alignment'

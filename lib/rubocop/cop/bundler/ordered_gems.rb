@@ -48,18 +48,33 @@ module RuboCop
         def autocorrect(node)
           previous = previous_declaration(node)
 
-          current_content = node.source
-          previous_content = previous.source
+          current_range = declaration_with_comment(node)
+          previous_range = declaration_with_comment(previous)
 
           lambda do |corrector|
-            corrector.replace(node.loc.expression, previous_content)
-            corrector.replace(previous.loc.expression, current_content)
+            swap_range(corrector, current_range, previous_range)
           end
         end
 
+        def declaration_with_comment(node)
+          buffer = processed_source.buffer
+          begin_pos = node.loc.expression.begin_pos
+          end_line = buffer.line_for_position(node.loc.expression.end_pos)
+          end_pos = buffer.line_range(end_line).end_pos
+          Parser::Source::Range.new(buffer, begin_pos, end_pos)
+        end
+
+        def swap_range(corrector, range1, range2)
+          src1 = range1.source
+          src2 = range2.source
+          corrector.replace(range1, src2)
+          corrector.replace(range2, src1)
+        end
+
         def previous_declaration(node)
-          gem_declarations(processed_source.ast)
-            .find { |x| x.loc.line == node.loc.line - 1 }
+          declarations = gem_declarations(processed_source.ast)
+          node_index = declarations.find_index(node)
+          declarations.to_a[node_index - 1]
         end
 
         def_node_search :gem_declarations, <<-PATTERN

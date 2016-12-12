@@ -12,10 +12,10 @@ describe RuboCop::Cop::Style::IndentationWidth do
   end
   let(:consistency_config) { { 'EnforcedStyle' => 'normal' } }
   let(:end_alignment_config) do
-    { 'Enabled' => true, 'AlignWith' => 'variable' }
+    { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'variable' }
   end
   let(:def_end_alignment_config) do
-    { 'Enabled' => true, 'AlignWith' => 'start_of_line' }
+    { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'start_of_line' }
   end
 
   context 'with Width set to 4' do
@@ -591,7 +591,7 @@ describe RuboCop::Cop::Style::IndentationWidth do
 
         context 'when alignment style is keyword by choice' do
           let(:end_alignment_config) do
-            { 'Enabled' => true, 'AlignWith' => 'keyword' }
+            { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'keyword' }
           end
 
           include_examples 'assignment and if with keyword alignment'
@@ -809,7 +809,7 @@ describe RuboCop::Cop::Style::IndentationWidth do
 
       context 'when end is aligned with start of line' do
         let(:def_end_alignment_config) do
-          { 'Enabled' => true, 'AlignWith' => 'start_of_line' }
+          { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'start_of_line' }
         end
 
         include_examples 'without modifier on the same line'
@@ -847,7 +847,7 @@ describe RuboCop::Cop::Style::IndentationWidth do
 
       context 'when end is aligned with def' do
         let(:def_end_alignment_config) do
-          { 'Enabled' => true, 'AlignWith' => 'def' }
+          { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'def' }
         end
 
         include_examples 'without modifier on the same line'

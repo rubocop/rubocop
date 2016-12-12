@@ -10,6 +10,7 @@
 ### Changes
 
 * [#3725](https://github.com/bbatsov/rubocop/issues/3725): Disable `Style/SingleLineBlockParams` by default. ([@tejasbubane][])
+* [#3765](https://github.com/bbatsov/rubocop/pull/3765): Add a validation for supported styles other than EnforcedStyle. `AlignWith`, `IndentWhenRelativeTo` and `EnforcedMode` configurations are renamed. ([@pocke][])
 
 ### Bug fixes
 
@@ -17,6 +18,8 @@
 * [#3766](https://github.com/bbatsov/rubocop/pull/3766): Avoid crash in `Style/ConditionalAssignment` cop with masgn. ([@pocke][])
 * [#3770](https://github.com/bbatsov/rubocop/pull/3770): `Style/RedundantParentheses` Don't flag raised to a power negative numeric literals, since removing the parentheses would change the meaning of the expressions. ([@amogil][])
 * [#3750](https://github.com/bbatsov/rubocop/issues/3750): Register an offense in `Style/ConditionalAssignment` when the assignment spans multiple lines. ([@rrosenblum][])
+* [#3775](https://github.com/bbatsov/rubocop/pull/3775): Avoid crash in `Style/HashSyntax` cop with an empty hash. ([@pocke][])
+* [#3783](https://github.com/bbatsov/rubocop/pull/3783): Maintain parentheses in `Rails/HttpPositionalArguments` when methods are defined with them. ([@kevindew][])
 
 ## 0.46.0 (2016-11-30)
 
@@ -2532,3 +2535,4 @@
 [@tdeo]: https://github.com/tdeo
 [@AlexWayfer]: https://github.com/AlexWayfer
 [@amogil]: https://github.com/amogil
+[@kevindew]: https://github.com/kevindew

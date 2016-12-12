@@ -286,14 +286,19 @@ module RuboCop
 
     def validate_enforced_styles(valid_cop_names)
       valid_cop_names.each do |name|
-        next unless (style = self[name]['EnforcedStyle'])
-        valid = ConfigLoader.default_configuration[name]['SupportedStyles']
-        next if valid.include?(style)
+        styles = self[name].select { |key, _| key.start_with?('Enforced') }
 
-        msg = "invalid EnforcedStyle '#{style}' for #{name} found in " \
-              "#{loaded_path}\n" \
-              "Valid choices are: #{valid.join(', ')}"
-        raise ValidationError, msg
+        styles.each do |style_name, style|
+          supported_key = RuboCop::Cop::Util.to_supported_styles(style_name)
+          valid = ConfigLoader.default_configuration[name][supported_key]
+          next unless valid
+          next if valid.include?(style)
+
+          msg = "invalid #{style_name} '#{style}' for #{name} found in " \
+            "#{loaded_path}\n" \
+            "Valid choices are: #{valid.join(', ')}"
+          raise ValidationError, msg
+        end
       end
     end
 

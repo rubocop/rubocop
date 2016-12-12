@@ -117,6 +117,60 @@ describe RuboCop::Config do
         expect { configuration.validate }.to_not raise_error
       end
     end
+
+    context 'when the configuration includes a valid EnforcedStyle' do
+      before do
+        create_file(configuration_path, [
+                      'Style/AndOr:',
+                      '  EnforcedStyle: conditionals'
+                    ])
+      end
+
+      it 'does not raise validation error' do
+        expect { configuration.validate }.to_not raise_error
+      end
+    end
+
+    context 'when the configration includes an invalid EnforcedStyle' do
+      before do
+        create_file(configuration_path, [
+                      'Style/AndOr:',
+                      '  EnforcedStyle: itisinvalid'
+                    ])
+      end
+
+      it 'raises validation error' do
+        expect { configuration.validate }
+          .to raise_error(RuboCop::ValidationError, /itisinvalid/)
+      end
+    end
+
+    context 'when the configration includes a valid Enforced.+Style' do
+      before do
+        create_file(configuration_path, [
+                      'Style/SpaceAroundBlockParameters:',
+                      '  EnforcedStyleInsidePipes: space'
+                    ])
+      end
+
+      it 'does not raise validation error' do
+        expect { configuration.validate }.to_not raise_error
+      end
+    end
+
+    context 'when the configration includes an invalid Enforced.+Style' do
+      before do
+        create_file(configuration_path, [
+                      'Style/SpaceAroundBlockParameters:',
+                      '  EnforcedStyleInsidePipes: itisinvalid'
+                    ])
+      end
+
+      it 'does not raise validation error' do
+        expect { configuration.validate }
+          .to raise_error(RuboCop::ValidationError, /itisinvalid/)
+      end
+    end
   end
 
   describe '#make_excludes_absolute' do

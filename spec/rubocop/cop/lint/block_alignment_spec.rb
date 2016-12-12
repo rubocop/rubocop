@@ -5,7 +5,7 @@ require 'spec_helper'
 describe RuboCop::Cop::Lint::BlockAlignment, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) do
-    { 'AlignWith' => 'either' }
+    { 'EnforcedStyleAlignWith' => 'either' }
   end
 
   context 'when the block has no arguments' do
@@ -638,7 +638,7 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
 
   context 'when configured to align with start_of_line' do
     let(:cop_config) do
-      { 'AlignWith' => 'start_of_line' }
+      { 'EnforcedStyleAlignWith' => 'start_of_line' }
     end
 
     it 'allows when start_of_line aligned' do
@@ -686,7 +686,7 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
 
   context 'when configured to align with do' do
     let(:cop_config) do
-      { 'AlignWith' => 'start_of_block' }
+      { 'EnforcedStyleAlignWith' => 'start_of_block' }
     end
 
     it 'allows when do aligned' do

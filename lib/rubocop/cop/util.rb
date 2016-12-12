@@ -271,6 +271,12 @@ module RuboCop
         src = src.dup if RUBY_VERSION < '2.3'
         src.force_encoding(Encoding.default_external).valid_encoding?
       end
+
+      def to_supported_styles(enforced_style)
+        enforced_style
+          .sub(/^Enforced/, 'Supported')
+          .sub('Style', 'Styles')
+      end
     end
   end
 end

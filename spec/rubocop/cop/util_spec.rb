@@ -112,4 +112,18 @@ describe RuboCop::Cop::Util do
       end
     end
   end
+
+  describe '#to_supported_styles' do
+    subject { RuboCop::Cop::Util.to_supported_styles(enforced_style) }
+
+    context 'when EnforcedStyle' do
+      let(:enforced_style) { 'EnforcedStyle' }
+      it { is_expected.to eq('SupportedStyles') }
+    end
+
+    context 'when EnforcedStyleInsidePipes' do
+      let(:enforced_style) { 'EnforcedStyleInsidePipes' }
+      it { is_expected.to eq('SupportedStylesInsidePipes') }
+    end
+  end
 end

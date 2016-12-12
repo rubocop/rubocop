@@ -87,7 +87,7 @@ module RuboCop
           return unless rhs
 
           end_config = config.for_cop('Lint/EndAlignment')
-          style = end_config['AlignWith'] || 'keyword'
+          style = end_config['EnforcedStyleAlignWith'] || 'keyword'
           base = variable_alignment?(node.loc, rhs, style.to_sym) ? node : rhs
 
           return unless rhs.if_type?
