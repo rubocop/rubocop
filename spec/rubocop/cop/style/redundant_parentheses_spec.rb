@@ -115,6 +115,7 @@ describe RuboCop::Cop::Style::RedundantParentheses do
   it_behaves_like 'redundant', '(0)**2', '0**2', 'a literal', '(0)'
   it_behaves_like 'redundant', '(2)**2', '2**2', 'a literal', '(2)'
   it_behaves_like 'redundant', '(2.1)**2', '2.1**2', 'a literal', '(2.1)'
+  it_behaves_like 'redundant', '2**(-2)', '2**-2', 'a literal', '(-2)'
   it_behaves_like 'plausible', '(-2)**2'
   it_behaves_like 'plausible', '(-2.1)**2'
 

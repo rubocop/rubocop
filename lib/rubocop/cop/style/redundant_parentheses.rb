@@ -138,7 +138,7 @@ module RuboCop
           return false unless node.int_type? || node.float_type?
           return false if node.children.first >= 0 || begin_node.parent.nil?
 
-          begin_node.parent.children[node.sibling_index + 1] == :**
+          begin_node.parent.children[begin_node.sibling_index + 1] == :**
         end
 
         def keyword_with_redundant_parentheses?(node)
