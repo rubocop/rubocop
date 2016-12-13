@@ -17,6 +17,7 @@
 
 * [#3751](https://github.com/bbatsov/rubocop/pull/3751): Avoid crash in `Rails/EnumUniqueness` cop. ([@pocke][])
 * [#3766](https://github.com/bbatsov/rubocop/pull/3766): Avoid crash in `Style/ConditionalAssignment` cop with masgn. ([@pocke][])
+* [#3770](https://github.com/bbatsov/rubocop/pull/3770): `Style/RedundantParentheses` Don't flag raised to a power negative numeric literals, since removing the parentheses would change the meaning of the expressions. ([@amogil][])
 * [#3750](https://github.com/bbatsov/rubocop/issues/3750): Register an offense in `Style/ConditionalAssignment` when the assignment spans multiple lines. ([@rrosenblum][])
 * [#3775](https://github.com/bbatsov/rubocop/pull/3775): Avoid crash in `Style/HashSyntax` cop with an empty hash. ([@pocke][])
 * [#3783](https://github.com/bbatsov/rubocop/pull/3783): Maintain parentheses in `Rails/HttpPositionalArguments` when methods are defined with them. ([@kevindew][])
@@ -2534,4 +2535,5 @@
 [@aesthetikx]: https://github.com/aesthetikx
 [@tdeo]: https://github.com/tdeo
 [@AlexWayfer]: https://github.com/AlexWayfer
+[@amogil]: https://github.com/amogil
 [@kevindew]: https://github.com/kevindew

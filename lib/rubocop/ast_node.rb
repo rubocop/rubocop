@@ -441,6 +441,10 @@ module RuboCop
       equal?(receiver)
     end
 
+    def numeric_type?
+      int_type? || float_type?
+    end
+
     def_matcher :command?, '(send nil %1 ...)'
     def_matcher :lambda?,  '(block (send nil :lambda) ...)'
     def_matcher :proc?, <<-PATTERN
