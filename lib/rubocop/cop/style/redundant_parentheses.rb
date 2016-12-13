@@ -135,10 +135,14 @@ module RuboCop
         end
 
         def raised_to_power_negative_numeric?(begin_node, node)
-          return false unless node.int_type? || node.float_type?
-          return false if node.children.first >= 0 || begin_node.parent.nil?
+          return false unless node.numeric_type?
 
-          begin_node.parent.children[begin_node.sibling_index + 1] == :**
+          siblings = begin_node.parent && begin_node.parent.children
+          return false if siblings.nil?
+          next_sibling = siblings[begin_node.sibling_index + 1]
+          base_value = node.children.first
+
+          base_value < 0 && next_sibling == :**
         end
 
         def keyword_with_redundant_parentheses?(node)
