@@ -21,6 +21,7 @@
 * [#3750](https://github.com/bbatsov/rubocop/issues/3750): Register an offense in `Style/ConditionalAssignment` when the assignment spans multiple lines. ([@rrosenblum][])
 * [#3775](https://github.com/bbatsov/rubocop/pull/3775): Avoid crash in `Style/HashSyntax` cop with an empty hash. ([@pocke][])
 * [#3783](https://github.com/bbatsov/rubocop/pull/3783): Maintain parentheses in `Rails/HttpPositionalArguments` when methods are defined with them. ([@kevindew][])
+* [#3786](https://github.com/bbatsov/rubocop/pull/3786): Avoid crash `Style/ConditionalAssignment` cop with mass assign method. ([@pocke][])
 
 ## 0.46.0 (2016-11-30)
 
