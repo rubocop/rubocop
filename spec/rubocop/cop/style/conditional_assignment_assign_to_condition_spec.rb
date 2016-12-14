@@ -468,9 +468,11 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
   it_behaves_like('all variable types', 'bar')
   it_behaves_like('all variable types', 'BAR')
+  it_behaves_like('all variable types', 'FOO::BAR')
   it_behaves_like('all variable types', '@bar')
   it_behaves_like('all variable types', '@@bar')
   it_behaves_like('all variable types', '$BAR')
+  it_behaves_like('all variable types', 'foo.bar')
 
   shared_examples 'all assignment types' do |assignment|
     { 'local variable' => 'bar',

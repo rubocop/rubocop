@@ -93,13 +93,10 @@ module RuboCop
             ![:!=, :==, :===, :>=, :<=].include?(method_name)
         end
 
-        def part_of_masgn_type?(node)
-          masgn_count = if node.casgn_type?
-                          2
-                        else
-                          1
-                        end
-          node.children.size == masgn_count
+        def assignment_rhs_exist?(node)
+          parent = node.parent
+          return true unless parent
+          !(parent.mlhs_type? || parent.resbody_type?)
         end
       end
 
@@ -227,7 +224,7 @@ module RuboCop
           define_method "on_#{type}" do |node|
             return if part_of_ignored_node?(node)
             return unless style == :assign_inside_condition
-            return if part_of_masgn_type?(node)
+            return unless assignment_rhs_exist?(node)
 
             check_assignment_to_condition(node)
           end
@@ -236,6 +233,7 @@ module RuboCop
         def on_send(node)
           return unless assignment_type?(node)
           return unless style == :assign_inside_condition
+          return unless assignment_rhs_exist?(node)
 
           check_assignment_to_condition(node)
         end

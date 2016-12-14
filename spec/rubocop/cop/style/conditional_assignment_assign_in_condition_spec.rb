@@ -132,6 +132,17 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       expect(cop.offenses).to be_empty
     end
 
+    it 'does not crash for rescue assignment' do
+      source = ['begin',
+                '  foo',
+                "rescue => #{variable}",
+                '  bar',
+                'end']
+      inspect_source(cop, source)
+
+      expect(cop.offenses).to be_empty
+    end
+
     context 'auto-correct' do
       it 'corrects assigning any variable type to ternary' do
         new_source = autocorrect_source(cop, "#{variable} = foo? ? 1 : 2")
@@ -562,6 +573,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     it_behaves_like('all variable types', '@bar')
     it_behaves_like('all variable types', '@@bar')
     it_behaves_like('all variable types', '$BAR')
+    it_behaves_like('all variable types', 'foo.bar')
 
     it_behaves_like('multiline all variable types', 'bar', [])
     it_behaves_like('multiline all variable types', 'BAR', [])
@@ -569,6 +581,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     it_behaves_like('multiline all variable types', '@bar', [])
     it_behaves_like('multiline all variable types', '@@bar', [])
     it_behaves_like('multiline all variable types', '$BAR', [])
+    it_behaves_like('multiline all variable types', 'foo.bar', [])
 
     it_behaves_like('all assignment types', '=')
     it_behaves_like('all assignment types', '==')
@@ -750,6 +763,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     it_behaves_like('all variable types', '@bar')
     it_behaves_like('all variable types', '@@bar')
     it_behaves_like('all variable types', '$BAR')
+    it_behaves_like('all variable types', 'foo.bar')
 
     it_behaves_like('multiline all variable types', 'bar',
                     [described_class::ASSIGN_TO_CONDITION_MSG])
@@ -762,6 +776,8 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     it_behaves_like('multiline all variable types', '@@bar',
                     [described_class::ASSIGN_TO_CONDITION_MSG])
     it_behaves_like('multiline all variable types', '$BAR',
+                    [described_class::ASSIGN_TO_CONDITION_MSG])
+    it_behaves_like('multiline all variable types', 'foo.bar',
                     [described_class::ASSIGN_TO_CONDITION_MSG])
 
     it_behaves_like('all assignment types', '=')
