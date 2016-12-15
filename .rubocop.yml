@@ -15,3 +15,9 @@ Style/Encoding:
 
 Style/FrozenStringLiteralComment:
   EnforcedStyle: always
+
+Metrics/BlockLength:
+  Exclude:
+    - 'Rakefile'
+    - '**/*.rake'
+    - 'spec/**/*.rb'
