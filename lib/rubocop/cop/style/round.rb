@@ -7,7 +7,7 @@ module RuboCop
       class Round < Cop
         MSG = 'Prefer `Float#floor` or `Float#ceil` over `Float#round`.'.freeze
 
-        def_node_matcher :rounding?, '(send _ :round ...)'
+        def_node_matcher :rounding?, '{(send _ :round (int 0)) (send _ :round)}'
 
         def on_send(node)
           rounding?(node) do
