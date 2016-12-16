@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#3791](https://github.com/bbatsov/rubocop/pull/3791): Add new `Style/Round` cop. ([@cyberdelia][])
 * [#3757](https://github.com/bbatsov/rubocop/pull/3757): Add Auto-Correct for `Bundler/OrderedGems` cop. ([@pocke][])
 * `Style/FrozenStringLiteralComment` now supports the style `never` that will remove the `frozen_string_literal` comment. ([@rrosenblum][])
 
@@ -2330,6 +2331,7 @@
 [@pmenglund]: https://github.com/pmenglund
 [@chulkilee]: https://github.com/chulkilee
 [@codez]: https://github.com/codez
+[@cyberdelia]: https://github.com/cyberdelia
 [@emou]: https://github.com/emou
 [@skanev]: http://github.com/skanev
 [@claco]: http://github.com/claco
