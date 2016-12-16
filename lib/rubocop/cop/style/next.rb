@@ -82,10 +82,21 @@ module RuboCop
         def simple_if_without_break?(node)
           return false unless node
           return false unless if_without_else?(node)
-          return false if style == :skip_modifier_ifs && modifier_if?(node)
-          return false if !modifier_if?(node) && !min_body_length?(node)
+          return false if if_else_children?(node)
+          return false if allowed_modifier_if?(node)
 
           !exit_body_type?(node)
+        end
+
+        def allowed_modifier_if?(node)
+          style == :skip_modifier_ifs && modifier_if?(node) ||
+            !modifier_if?(node) && !min_body_length?(node)
+        end
+
+        def if_else_children?(node)
+          node.each_child_node(:if).any? do |child|
+            if_else?(child)
+          end
         end
 
         def if_without_else?(node)

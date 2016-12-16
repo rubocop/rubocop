@@ -23,6 +23,7 @@
 * [#3783](https://github.com/bbatsov/rubocop/pull/3783): Maintain parentheses in `Rails/HttpPositionalArguments` when methods are defined with them. ([@kevindew][])
 * [#3786](https://github.com/bbatsov/rubocop/pull/3786): Avoid crash `Style/ConditionalAssignment` cop with mass assign method. ([@pocke][])
 * [#3749](https://github.com/bbatsov/rubocop/pull/3749): Detect corner case of `Style/NumericLitterals`. ([@kamaradclimber][])
+* [#3788](https://github.com/bbatsov/rubocop/pull/3788): Prevent bad auto-correct in `Style/Next` when block has nested conditionals. ([@drenmi][])
 
 ## 0.46.0 (2016-11-30)
 
