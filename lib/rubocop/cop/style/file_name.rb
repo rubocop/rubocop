@@ -18,8 +18,11 @@ module RuboCop
         SNAKE_CASE = /^[\da-z_.?!]+$/
 
         ACRONYM_NAME_MAPPINGS = {
-          Dsl: :DSL,
-          Cli: :CLI,
+          'Cli'  => 'CLI',
+          'Dsl'  => 'DSL',
+          'Http' => 'HTTP',
+          'Rfc'  => 'RFC',
+          'Xml'  => 'XML',
         }.freeze
 
         def investigate(processed_source)
@@ -134,7 +137,12 @@ module RuboCop
         end
 
         def match_acronym_name?(name, expected)
-          ACRONYM_NAME_MAPPINGS[name] == expected
+          name = name.to_s
+          expected = expected.to_s
+
+          ACRONYM_NAME_MAPPINGS.any? do |(key, value)|
+            name.gsub(/#{key}/, value) == expected
+          end
         end
 
         def to_namespace(path)
