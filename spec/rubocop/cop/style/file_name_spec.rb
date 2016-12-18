@@ -301,7 +301,7 @@ describe RuboCop::Cop::Style::FileName do
         '    class AdminUser',
         '    end',
         '  end',
-        'end',
+        'end'
       ]
     end
 
@@ -322,7 +322,7 @@ describe RuboCop::Cop::Style::FileName do
         'module My',
         '  class CLI',
         '  end',
-        'end',
+        'end'
       ]
     end
 
@@ -343,7 +343,7 @@ describe RuboCop::Cop::Style::FileName do
         'module My',
         '  class HTTPServer',
         '  end',
-        'end',
+        'end'
       ]
     end
 

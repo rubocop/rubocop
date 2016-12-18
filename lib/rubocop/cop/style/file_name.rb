@@ -22,7 +22,7 @@ module RuboCop
           'Dsl'  => 'DSL',
           'Http' => 'HTTP',
           'Rfc'  => 'RFC',
-          'Xml'  => 'XML',
+          'Xml'  => 'XML'
         }.freeze
 
         def investigate(processed_source)
@@ -95,7 +95,7 @@ module RuboCop
             next unless (const = child.defined_module)
 
             const_namespace, const_name = *const
-            next unless name == const_name || match_acronym_name?(name, const_name)
+            next if name != const_name && !match_acronym_name?(name, const_name)
 
             return node if namespace.empty?
             return node if match_namespace(child, const_namespace, namespace)
@@ -123,9 +123,8 @@ module RuboCop
 
               namespace, name = *namespace
 
-              if name == expected.last || match_acronym_name?(expected.last, name)
-                expected.pop
-              end
+              expected.pop if name == expected.last ||
+                              match_acronym_name?(expected.last, name)
             end
 
             false
