@@ -17,6 +17,11 @@ module RuboCop
 
         SNAKE_CASE = /^[\da-z_.?!]+$/
 
+        ACRONYM_NAME_MAPPINGS = {
+          Dsl: :DSL,
+          Cli: :CLI,
+        }.freeze
+
         def investigate(processed_source)
           file_path = processed_source.buffer.name
           return if config.file_to_include?(file_path)
@@ -87,7 +92,7 @@ module RuboCop
             next unless (const = child.defined_module)
 
             const_namespace, const_name = *const
-            next unless name == const_name
+            next unless name == const_name || match_acronym_name?(name, const_name)
 
             return node if namespace.empty?
             return node if match_namespace(child, const_namespace, namespace)
@@ -115,7 +120,9 @@ module RuboCop
 
               namespace, name = *namespace
 
-              expected.pop if name == expected.last
+              if name == expected.last || match_acronym_name?(name, expected.last)
+                expected.pop
+              end
             end
 
             false
@@ -124,6 +131,10 @@ module RuboCop
 
         def match?(expected)
           expected.empty? || expected == [:Object]
+        end
+
+        def match_acronym_name?(name, expected)
+          ACRONYM_NAME_MAPPINGS[name] == expected
         end
 
         def to_namespace(path)

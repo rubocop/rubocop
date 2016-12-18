@@ -286,4 +286,22 @@ describe RuboCop::Cop::Style::FileName do
       end
     end
   end
+
+  context 'with acronym class and module name' do
+    let(:cop_config) do
+      { 'ExpectMatchingDefinition' => true }
+    end
+
+    let(:filename) { '/some/dir/hoge/cli.rb' }
+    let(:source) do
+      [
+        'class Hoge::CLI',
+        'end',
+      ]
+    end
+
+    it 'does not register an offense' do
+      expect(cop.offenses).to be_empty
+    end
+  end
 end
