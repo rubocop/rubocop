@@ -1,0 +1,3 @@
+.gitignore
+lib/rubocop/cop/cop.rb
+lib/rubocop/lineup_finder.rb

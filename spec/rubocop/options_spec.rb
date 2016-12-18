@@ -92,6 +92,8 @@ Usage: rubocop [options] [file1, file2, ...]
     -R, --rails                      Run extra Rails cops.
     -l, --lint                       Run only lint cops.
     -a, --auto-correct               Auto-correct offenses.
+    -g, --changed-lines-only         If you do not pass in a specified file,
+                                     only files with changes will be inspected.
     -n, --[no-]color                 Force color output on or off.
     -v, --version                    Display version.
     -V, --verbose-version            Display verbose version.
