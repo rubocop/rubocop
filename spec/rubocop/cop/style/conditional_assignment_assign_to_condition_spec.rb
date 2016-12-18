@@ -8,6 +8,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     RuboCop::Config.new('Style/ConditionalAssignment' => {
                           'Enabled' => true,
                           'SingleLineConditionsOnly' => true,
+                          'IncludeTernaryExpressions' => true,
                           'EnforcedStyle' => 'assign_to_condition',
                           'SupportedStyles' => %w(assign_to_condition
                                                   assign_inside_condition)
@@ -1574,6 +1575,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       RuboCop::Config.new('Style/ConditionalAssignment' => {
                             'Enabled' => true,
                             'SingleLineConditionsOnly' => false,
+                            'IncludeTernaryExpressions' => true,
                             'EnforcedStyle' => 'assign_to_condition',
                             'SupportedStyles' => %w(assign_to_condition
                                                     assign_inside_condition)
@@ -2034,7 +2036,8 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     let(:config) do
       RuboCop::Config.new('Style/ConditionalAssignment' => {
                             'Enabled' => true,
-                            'SingleLineConditionsOnly' => false
+                            'SingleLineConditionsOnly' => false,
+                            'IncludeTernaryExpressions' => true
                           },
                           'Lint/EndAlignment' => {
                             'EnforcedStyleAlignWith' => 'start_of_line',
@@ -2104,6 +2107,34 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                     'end'].join("\n"))
         end
       end
+    end
+  end
+
+  context 'IncludeTernaryExpressions false' do
+    let(:config) do
+      RuboCop::Config.new('Style/ConditionalAssignment' => {
+                            'Enabled' => true,
+                            'SingleLineConditionsOnly' => true,
+                            'IncludeTernaryExpressions' => false,
+                            'EnforcedStyle' => 'assign_to_condition',
+                            'SupportedStyles' => %w(assign_to_condition
+                                                    assign_inside_condition)
+                          },
+                          'Lint/EndAlignment' => {
+                            'EnforcedStyleAlignWith' => 'keyword',
+                            'Enabled' => true
+                          },
+                          'Metrics/LineLength' => {
+                            'Max' => 80,
+                            'Enabled' => true
+                          })
+    end
+
+    it 'allows assignment in ternary operation' do
+      source = 'foo? ? bar = "a" : bar = "b"'
+      inspect_source(cop, source)
+
+      expect(cop.offenses).to be_empty
     end
   end
 end
