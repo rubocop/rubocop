@@ -338,6 +338,7 @@ add_reference :products, :category, null: false
 add_column :users, :name, :string, null: true
 add_column :users, :name, :string, null: false, default: ''
 add_reference :products, :category
+add_reference :products, :category, null: false, default: 1
 ```
 
 ### Important attributes
