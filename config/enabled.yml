@@ -1172,6 +1172,10 @@ Lint/Loop:
   StyleGuide: '#loop-with-break'
   Enabled: true
 
+Lint/MultipleCompare:
+  Description: "Use `&&` operator to compare multiple value."
+  Enabled: true
+
 Lint/NestedMethodDefinition:
   Description: 'Do not use nested method definitions.'
   StyleGuide: '#no-nested-methods'
