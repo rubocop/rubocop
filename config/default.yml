@@ -383,6 +383,7 @@ Style/ConditionalAssignment:
   # will only register an offense for assignment to a condition that has
   # at least one multiline branch.
   SingleLineConditionsOnly: true
+  IncludeTernaryExpressions: true
 
 # Checks that you have put a copyright in a comment before any code.
 #

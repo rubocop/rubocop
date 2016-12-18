@@ -243,6 +243,7 @@ module RuboCop
 
           assignment = assignment_node(node)
           return unless condition?(assignment)
+          return if ternary?(assignment) && !include_ternary?
 
           _condition, *branches, else_branch = *assignment
           return unless else_branch # empty else
@@ -354,6 +355,7 @@ module RuboCop
         end
 
         def check_node(node, branches)
+          return if ternary?(node) && !include_ternary?
           return unless allowed_statements?(branches)
           return if single_line_conditions_only? && branches.any?(&:begin_type?)
           return if correction_exceeds_line_limit?(node, branches)
@@ -428,6 +430,10 @@ module RuboCop
 
         def single_line_conditions_only?
           cop_config[SINGLE_LINE_CONDITIONS_ONLY]
+        end
+
+        def include_ternary?
+          cop_config['IncludeTernaryExpressions']
         end
       end
 

@@ -553,6 +553,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       RuboCop::Config.new('Style/ConditionalAssignment' => {
                             'Enabled' => true,
                             'SingleLineConditionsOnly' => true,
+                            'IncludeTernaryExpressions' => true,
                             'EnforcedStyle' => 'assign_inside_condition',
                             'SupportedStyles' => %w(assign_to_condition
                                                     assign_inside_condition)
@@ -743,6 +744,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       RuboCop::Config.new('Style/ConditionalAssignment' => {
                             'Enabled' => true,
                             'SingleLineConditionsOnly' => false,
+                            'IncludeTernaryExpressions' => true,
                             'EnforcedStyle' => 'assign_inside_condition',
                             'SupportedStyles' => %w(assign_to_condition
                                                     assign_inside_condition)
@@ -987,6 +989,33 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                 '  something_else',
                                 '  bar = 3',
                                 'end'].join("\n"))
+    end
+  end
+
+  context 'IncludeTernaryExpressions false' do
+    let(:config) do
+      RuboCop::Config.new('Style/ConditionalAssignment' => {
+                            'Enabled' => true,
+                            'SingleLineConditionsOnly' => true,
+                            'IncludeTernaryExpressions' => false,
+                            'EnforcedStyle' => 'assign_inside_condition',
+                            'SupportedStyles' => %w(assign_to_condition
+                                                    assign_inside_condition)
+                          },
+                          'Lint/EndAlignment' => {
+                            'EnforcedStyleAlignWith' => 'keyword',
+                            'Enabled' => true
+                          },
+                          'Metrics/LineLength' => {
+                            'Max' => 80,
+                            'Enabled' => true
+                          })
+    end
+
+    it 'allows assigning any variable type to ternary' do
+      inspect_source(cop, 'bar = foo? ? 1 : 2')
+
+      expect(cop.offenses).to be_empty
     end
   end
 end
