@@ -120,7 +120,7 @@ module RuboCop
 
               namespace, name = *namespace
 
-              if name == expected.last || match_acronym_name?(name, expected.last)
+              if name == expected.last || match_acronym_name?(expected.last, name)
                 expected.pop
               end
             end

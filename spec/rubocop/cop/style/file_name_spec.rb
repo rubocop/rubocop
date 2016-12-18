@@ -287,15 +287,41 @@ describe RuboCop::Cop::Style::FileName do
     end
   end
 
-  context 'with acronym class and module name' do
+  context 'with acronym namespace' do
     let(:cop_config) do
-      { 'ExpectMatchingDefinition' => true }
+      { 'IgnoreExecutableScripts' => true, 'ExpectMatchingDefinition' => true }
     end
 
-    let(:filename) { '/some/dir/hoge/cli.rb' }
+    let(:filename) { '/lib/my/cli/admin_user.rb' }
+
     let(:source) do
       [
-        'class Hoge::CLI',
+        'module My',
+        '  module CLI',
+        '    class AdminUser',
+        '    end',
+        '  end',
+        'end',
+      ]
+    end
+
+    it 'does not register an offense' do
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  context 'with acronym class name' do
+    let(:cop_config) do
+      { 'IgnoreExecutableScripts' => true, 'ExpectMatchingDefinition' => true }
+    end
+
+    let(:filename) { '/lib/my/cli.rb' }
+
+    let(:source) do
+      [
+        'module My',
+        '  class CLI',
+        '  end',
         'end',
       ]
     end
