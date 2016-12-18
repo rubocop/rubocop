@@ -49,9 +49,20 @@ module RuboCop
 
         def duplicated_gem_nodes
           gem_declarations(processed_source.ast)
-            .group_by { |e| e.method_args.first }
+            .group_by { |e| gem_name_with_version(e) }
             .keep_if { |_, nodes| nodes.length > 1 }
             .values
+        end
+
+        def gem_name_with_version(node)
+          hash = {}
+          hash[:name] = node.method_args[0]
+          hash[:version] =
+            if !node.method_args[1].nil? && node.method_args[1].str_type?
+              node.method_args[1].source
+            end
+
+          hash
         end
 
         def offense(node, gem_name, line_of_first_occurence)
