@@ -28,6 +28,7 @@ require 'rubocop/warning'
 
 require 'rubocop/cop/util'
 require 'rubocop/cop/offense'
+require 'rubocop/cop/message_annotator'
 require 'rubocop/cop/ignored_node'
 require 'rubocop/cop/autocorrect_logic'
 require 'rubocop/cop/cop'
