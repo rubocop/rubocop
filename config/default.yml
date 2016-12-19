@@ -498,6 +498,9 @@ Style/FileName:
   # report offending filenames for executable scripts (i.e. source
   # files with a shebang in the first line).
   IgnoreExecutableScripts: true
+  AllowedAcronymNames:
+    - CLI
+    - DSL
 
 Style/FirstParameterIndentation:
   EnforcedStyle: special_for_inner_method_call_in_parentheses

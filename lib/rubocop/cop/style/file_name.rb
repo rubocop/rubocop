@@ -17,14 +17,6 @@ module RuboCop
 
         SNAKE_CASE = /^[\da-z_.?!]+$/
 
-        ACRONYM_NAME_MAPPINGS = {
-          'Cli'  => 'CLI',
-          'Dsl'  => 'DSL',
-          'Http' => 'HTTP',
-          'Rfc'  => 'RFC',
-          'Xml'  => 'XML'
-        }.freeze
-
         def investigate(processed_source)
           file_path = processed_source.buffer.name
           return if config.file_to_include?(file_path)
@@ -44,8 +36,7 @@ module RuboCop
                                                  to_namespace(file_path))
                   no_definition_message(basename, file_path)
                 else
-                  return if cop_config['IgnoreExecutableScripts'] &&
-                            shebang?(first_line)
+                  return if ignore_executable_scripts? && shebang?(first_line)
                   other_message(basename)
                 end
 
@@ -74,12 +65,20 @@ module RuboCop
           line && line.start_with?('#!')
         end
 
+        def ignore_executable_scripts?
+          cop_config['IgnoreExecutableScripts']
+        end
+
         def expect_matching_definition?
           cop_config['ExpectMatchingDefinition']
         end
 
         def regex
           cop_config['Regex']
+        end
+
+        def allowed_acronym_names
+          cop_config['AllowedAcronymNames'] || []
         end
 
         def filename_good?(basename)
@@ -100,6 +99,7 @@ module RuboCop
             return node if namespace.empty?
             return node if match_namespace(child, const_namespace, namespace)
           end
+
           nil
         end
 
@@ -135,12 +135,12 @@ module RuboCop
           expected.empty? || expected == [:Object]
         end
 
-        def match_acronym_name?(name, expected)
-          name = name.to_s
+        def match_acronym_name?(expected, name)
           expected = expected.to_s
+          name = name.to_s
 
-          ACRONYM_NAME_MAPPINGS.any? do |(key, value)|
-            name.gsub(/#{key}/, value) == expected
+          allowed_acronym_names.any? do |acronym_name|
+            expected.gsub(acronym_name.capitalize, acronym_name) == name
           end
         end
 

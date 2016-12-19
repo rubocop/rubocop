@@ -289,7 +289,11 @@ describe RuboCop::Cop::Style::FileName do
 
   context 'with acronym namespace' do
     let(:cop_config) do
-      { 'IgnoreExecutableScripts' => true, 'ExpectMatchingDefinition' => true }
+      {
+        'IgnoreExecutableScripts' => true,
+        'ExpectMatchingDefinition' => true,
+        'AllowedAcronymNames' => ['CLI']
+      }
     end
 
     let(:filename) { '/lib/my/cli/admin_user.rb' }
@@ -312,7 +316,11 @@ describe RuboCop::Cop::Style::FileName do
 
   context 'with acronym class name' do
     let(:cop_config) do
-      { 'IgnoreExecutableScripts' => true, 'ExpectMatchingDefinition' => true }
+      {
+        'IgnoreExecutableScripts' => true,
+        'ExpectMatchingDefinition' => true,
+        'AllowedAcronymNames' => ['CLI']
+      }
     end
 
     let(:filename) { '/lib/my/cli.rb' }
@@ -333,7 +341,11 @@ describe RuboCop::Cop::Style::FileName do
 
   context 'with include acronym name' do
     let(:cop_config) do
-      { 'IgnoreExecutableScripts' => true, 'ExpectMatchingDefinition' => true }
+      {
+        'IgnoreExecutableScripts' => true,
+        'ExpectMatchingDefinition' => true,
+        'AllowedAcronymNames' => ['HTTP']
+      }
     end
 
     let(:filename) { '/lib/my/http_server.rb' }
