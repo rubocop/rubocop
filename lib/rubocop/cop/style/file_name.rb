@@ -34,6 +34,7 @@ module RuboCop
                   return unless expect_matching_definition?
                   return if find_class_or_module(processed_source.ast,
                                                  to_namespace(file_path))
+
                   no_definition_message(basename, file_path)
                 else
                   return if ignore_executable_scripts? && shebang?(first_line)
@@ -77,8 +78,8 @@ module RuboCop
           cop_config['Regex']
         end
 
-        def allowed_acronym_names
-          cop_config['AllowedAcronymNames'] || []
+        def allowed_acronyms
+          cop_config['AllowedAcronyms'] || []
         end
 
         def filename_good?(basename)
@@ -94,7 +95,7 @@ module RuboCop
             next unless (const = child.defined_module)
 
             const_namespace, const_name = *const
-            next if name != const_name && !match_acronym_name?(name, const_name)
+            next if name != const_name && !match_acronym?(name, const_name)
 
             return node if namespace.empty?
             return node if match_namespace(child, const_namespace, namespace)
@@ -123,8 +124,9 @@ module RuboCop
 
               namespace, name = *namespace
 
-              expected.pop if name == expected.last ||
-                              match_acronym_name?(expected.last, name)
+              if name == expected.last || match_acronym?(expected.last, name)
+                expected.pop
+              end
             end
 
             false
@@ -135,12 +137,12 @@ module RuboCop
           expected.empty? || expected == [:Object]
         end
 
-        def match_acronym_name?(expected, name)
+        def match_acronym?(expected, name)
           expected = expected.to_s
           name = name.to_s
 
-          allowed_acronym_names.any? do |acronym_name|
-            expected.gsub(acronym_name.capitalize, acronym_name) == name
+          allowed_acronyms.any? do |acronym|
+            expected.gsub(acronym.capitalize, acronym) == name
           end
         end
 

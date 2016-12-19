@@ -292,7 +292,7 @@ describe RuboCop::Cop::Style::FileName do
       {
         'IgnoreExecutableScripts' => true,
         'ExpectMatchingDefinition' => true,
-        'AllowedAcronymNames' => ['CLI']
+        'AllowedAcronyms' => ['CLI']
       }
     end
 
@@ -319,7 +319,7 @@ describe RuboCop::Cop::Style::FileName do
       {
         'IgnoreExecutableScripts' => true,
         'ExpectMatchingDefinition' => true,
-        'AllowedAcronymNames' => ['CLI']
+        'AllowedAcronyms' => ['CLI']
       }
     end
 
@@ -344,7 +344,7 @@ describe RuboCop::Cop::Style::FileName do
       {
         'IgnoreExecutableScripts' => true,
         'ExpectMatchingDefinition' => true,
-        'AllowedAcronymNames' => ['HTTP']
+        'AllowedAcronyms' => ['HTTP']
       }
     end
 

@@ -498,7 +498,7 @@ Style/FileName:
   # report offending filenames for executable scripts (i.e. source
   # files with a shebang in the first line).
   IgnoreExecutableScripts: true
-  AllowedAcronymNames:
+  AllowedAcronyms:
     - CLI
     - DSL
     - ACL
