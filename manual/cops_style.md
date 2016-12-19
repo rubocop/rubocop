@@ -2222,6 +2222,16 @@ Enabled | Yes
 
 This cop checks for unwanted parentheses in parameterless method calls.
 
+### Example
+
+```ruby
+# bad
+object.some_method()
+
+# good
+object.some_method
+```
+
 ## Style/MethodCalledOnDoEndBlock
 
 Enabled by default | Supports autocorrection

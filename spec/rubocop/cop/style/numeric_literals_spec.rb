@@ -19,8 +19,9 @@ describe RuboCop::Cop::Style::NumericLiterals, :config do
   end
 
   it 'registers an offense for an integer with misplaced underscore' do
-    inspect_source(cop, 'a = 123_456_78_90_00')
-    expect(cop.offenses.size).to eq(1)
+    inspect_source(cop, ['a = 123_456_78_90_00',
+                         'b = 819_2'])
+    expect(cop.offenses.size).to eq(2)
     expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
   end
 

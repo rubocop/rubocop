@@ -110,4 +110,26 @@ describe RuboCop::Cop::Metrics::BlockLength, :config do
       expect(cop.offenses.map(&:line).sort).to eq([1])
     end
   end
+
+  context 'when foo method is excluded is enabled' do
+    before { cop_config['ExcludedMethods'] = ['foo'] }
+
+    it 'still rejects other methods with long blocks' do
+      inspect_source(cop, ['something do',
+                           '  a = 1',
+                           '  a = 2',
+                           '  a = 3',
+                           'end'])
+      expect(cop.offenses).not_to be_empty
+    end
+
+    it 'accepts the foo method with a long block' do
+      inspect_source(cop, ['foo do',
+                           '  a = 1',
+                           '  a = 2',
+                           '  a = 3',
+                           'end'])
+      expect(cop.offenses).to be_empty
+    end
+  end
 end

@@ -39,7 +39,7 @@ module RuboCop
           case int
           when /^\d+$/
             add_offense(node, :expression) { self.max = int.size + 1 }
-          when /\d{4}/, /_\d{1,2}_/
+          when /\d{4}/, /_\d{1,2}(_|$)/
             add_offense(node, :expression) do
               self.config_to_allow_offenses = { 'Enabled' => false }
             end

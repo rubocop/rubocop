@@ -4,6 +4,13 @@ module RuboCop
   module Cop
     module Style
       # This cop checks for unwanted parentheses in parameterless method calls.
+      #
+      # @example
+      #   # bad
+      #   object.some_method()
+      #
+      #   # good
+      #   object.some_method
       class MethodCallParentheses < Cop
         MSG = 'Do not use parentheses for method calls with ' \
               'no arguments.'.freeze

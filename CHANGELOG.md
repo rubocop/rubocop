@@ -6,6 +6,8 @@
 
 * [#3757](https://github.com/bbatsov/rubocop/pull/3757): Add Auto-Correct for `Bundler/OrderedGems` cop. ([@pocke][])
 * `Style/FrozenStringLiteralComment` now supports the style `never` that will remove the `frozen_string_literal` comment. ([@rrosenblum][])
+* [#3795](https://github.com/bbatsov/rubocop/pull/3795): Add `Lint/MultipleCompare` cop. ([@pocke][])
+* [#3772](https://github.com/bbatsov/rubocop/issues/3772): Allow exclusion of certain methods for `Metrics/BlockLength`. ([@NobodysNightmare][])
 
 ### Changes
 
@@ -13,6 +15,7 @@
 * [#3765](https://github.com/bbatsov/rubocop/pull/3765): Add a validation for supported styles other than EnforcedStyle. `AlignWith`, `IndentWhenRelativeTo` and `EnforcedMode` configurations are renamed. ([@pocke][])
 * [#3782](https://github.com/bbatsov/rubocop/pull/3782): Add check for `add_reference` method by `Rails/NotNullColumn` cop. ([@pocke][])
 * [#3761](https://github.com/bbatsov/rubocop/pull/3761): Update `Style/RedundantFreeze` message from `Freezing immutable objects is pointless.` to `Do not freeze immutable objects, as freezing them has no effect.`. ([@lucasuyezu][])
+* [#3753](https://github.com/bbatsov/rubocop/issues/3753): Change error message of `Bundler/OrderedGems` to mention `Alphabetize Gems`. ([@tejasbubane][])
 
 ### Bug fixes
 
@@ -23,6 +26,8 @@
 * [#3775](https://github.com/bbatsov/rubocop/pull/3775): Avoid crash in `Style/HashSyntax` cop with an empty hash. ([@pocke][])
 * [#3783](https://github.com/bbatsov/rubocop/pull/3783): Maintain parentheses in `Rails/HttpPositionalArguments` when methods are defined with them. ([@kevindew][])
 * [#3786](https://github.com/bbatsov/rubocop/pull/3786): Avoid crash `Style/ConditionalAssignment` cop with mass assign method. ([@pocke][])
+* [#3749](https://github.com/bbatsov/rubocop/pull/3749): Detect corner case of `Style/NumericLitterals`. ([@kamaradclimber][])
+* [#3788](https://github.com/bbatsov/rubocop/pull/3788): Prevent bad auto-correct in `Style/Next` when block has nested conditionals. ([@drenmi][])
 
 ## 0.46.0 (2016-11-30)
 
@@ -2525,6 +2530,7 @@
 [@bronson]: https://github.com/bronson
 [@albus522]: https://github.com/albus522
 [@sihu]: https://github.com/sihu
+[@kamaradclimber]: https://github.com/kamaradclimber
 [@swcraig]: https://github.com/swcraig
 [@jessieay]: https://github.com/jessieay
 [@tiagocasanovapt]: https://github.com/tiagocasanovapt

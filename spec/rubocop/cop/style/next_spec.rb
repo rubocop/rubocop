@@ -250,6 +250,21 @@ describe RuboCop::Cop::Style::Next, :config do
       expect(cop.offenses).to be_empty
     end
 
+    it "allows loops with #{condition} with else, nested in another " \
+       'condition' do
+      inspect_source(cop, ['[].each do |o|',
+                           '  if foo',
+                           "    #{condition} o == 1",
+                           '      puts o',
+                           '    else',
+                           "      puts 'no'",
+                           '    end',
+                           '  end',
+                           'end'])
+
+      expect(cop.offenses).to be_empty
+    end
+
     it "allows loops with #{condition} with else at the end" do
       inspect_source(cop, ['[].each do |o|',
                            '  puts o',
