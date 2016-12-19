@@ -153,7 +153,7 @@ module RuboCop
         severity = custom_severity || severity || default_severity
 
         message ||= message(node)
-        message = annotate_message(message)
+        message = annotate(message)
 
         status = enabled_line?(location.line) ? correct(node) : :disabled
 
@@ -215,10 +215,10 @@ module RuboCop
 
       private
 
-      def annotate_message(message)
-        RuboCop::Cop::OffenseMessageAnnotater.new(
+      def annotate(message)
+        RuboCop::Cop::MessageAnnotator.new(
           config, cop_config, @options
-        ).annotate_message(message, name)
+        ).annotate(message, name)
       end
 
       def file_name_matches_any?(file, parameter, default_result)
