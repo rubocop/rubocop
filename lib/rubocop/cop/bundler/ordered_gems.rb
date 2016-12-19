@@ -17,7 +17,9 @@ module RuboCop
       #
       #   gem 'rspec'
       class OrderedGems < Cop
-        MSG = 'Gem `%s` should appear before `%s` in their gem group.'.freeze
+        MSG = 'Gems should be sorted in an alphabetical order within their '\
+              'section of the Gemfile. '\
+              'Gem `%s` should appear before `%s`.'.freeze
         def investigate(processed_source)
           return if processed_source.ast.nil?
           gem_declarations(processed_source.ast)
