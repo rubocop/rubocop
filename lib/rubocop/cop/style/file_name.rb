@@ -34,10 +34,10 @@ module RuboCop
                   return unless expect_matching_definition?
                   return if find_class_or_module(processed_source.ast,
                                                  to_namespace(file_path))
+
                   no_definition_message(basename, file_path)
                 else
-                  return if cop_config['IgnoreExecutableScripts'] &&
-                            shebang?(first_line)
+                  return if ignore_executable_scripts? && shebang?(first_line)
                   other_message(basename)
                 end
 
@@ -66,12 +66,20 @@ module RuboCop
           line && line.start_with?('#!')
         end
 
+        def ignore_executable_scripts?
+          cop_config['IgnoreExecutableScripts']
+        end
+
         def expect_matching_definition?
           cop_config['ExpectMatchingDefinition']
         end
 
         def regex
           cop_config['Regex']
+        end
+
+        def allowed_acronyms
+          cop_config['AllowedAcronyms'] || []
         end
 
         def filename_good?(basename)
@@ -87,11 +95,12 @@ module RuboCop
             next unless (const = child.defined_module)
 
             const_namespace, const_name = *const
-            next unless name == const_name
+            next if name != const_name && !match_acronym?(name, const_name)
 
             return node if namespace.empty?
             return node if match_namespace(child, const_namespace, namespace)
           end
+
           nil
         end
 
@@ -115,7 +124,9 @@ module RuboCop
 
               namespace, name = *namespace
 
-              expected.pop if name == expected.last
+              if name == expected.last || match_acronym?(expected.last, name)
+                expected.pop
+              end
             end
 
             false
@@ -124,6 +135,15 @@ module RuboCop
 
         def match?(expected)
           expected.empty? || expected == [:Object]
+        end
+
+        def match_acronym?(expected, name)
+          expected = expected.to_s
+          name = name.to_s
+
+          allowed_acronyms.any? do |acronym|
+            expected.gsub(acronym.capitalize, acronym) == name
+          end
         end
 
         def to_namespace(path)

@@ -286,4 +286,81 @@ describe RuboCop::Cop::Style::FileName do
       end
     end
   end
+
+  context 'with acronym namespace' do
+    let(:cop_config) do
+      {
+        'IgnoreExecutableScripts' => true,
+        'ExpectMatchingDefinition' => true,
+        'AllowedAcronyms' => ['CLI']
+      }
+    end
+
+    let(:filename) { '/lib/my/cli/admin_user.rb' }
+
+    let(:source) do
+      [
+        'module My',
+        '  module CLI',
+        '    class AdminUser',
+        '    end',
+        '  end',
+        'end'
+      ]
+    end
+
+    it 'does not register an offense' do
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  context 'with acronym class name' do
+    let(:cop_config) do
+      {
+        'IgnoreExecutableScripts' => true,
+        'ExpectMatchingDefinition' => true,
+        'AllowedAcronyms' => ['CLI']
+      }
+    end
+
+    let(:filename) { '/lib/my/cli.rb' }
+
+    let(:source) do
+      [
+        'module My',
+        '  class CLI',
+        '  end',
+        'end'
+      ]
+    end
+
+    it 'does not register an offense' do
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  context 'with include acronym name' do
+    let(:cop_config) do
+      {
+        'IgnoreExecutableScripts' => true,
+        'ExpectMatchingDefinition' => true,
+        'AllowedAcronyms' => ['HTTP']
+      }
+    end
+
+    let(:filename) { '/lib/my/http_server.rb' }
+
+    let(:source) do
+      [
+        'module My',
+        '  class HTTPServer',
+        '  end',
+        'end'
+      ]
+    end
+
+    it 'does not register an offense' do
+      expect(cop.offenses).to be_empty
+    end
+  end
 end
