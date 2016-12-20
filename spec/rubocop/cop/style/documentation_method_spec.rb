@@ -310,6 +310,28 @@ describe RuboCop::Cop::Style::DocumentationMethod, :config do
         end
       end
 
+      context 'with annotation comment' do
+        it_behaves_like 'code with offense', <<-CODE
+                        class Foo
+                          # FIXME: offense
+                          def bar
+                            puts 'baz'
+                          end
+                        end
+        CODE
+      end
+
+      context 'with directive comment' do
+        it_behaves_like 'code with offense', <<-CODE
+                        class Foo
+                          # rubocop:disable Style/For
+                          def bar
+                            puts 'baz'
+                          end
+                        end
+        CODE
+      end
+
       context 'with both public and private methods' do
         it_behaves_like 'code with offense', <<-CODE
                         class Foo
