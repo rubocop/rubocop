@@ -17,7 +17,9 @@ module RuboCop
         return false unless preceding_comment?(node, preceding_lines.last)
 
         preceding_lines.any? do |comment|
-          !annotation?(comment) && !interpreter_directive_comment?(comment)
+          !annotation?(comment) &&
+            !interpreter_directive_comment?(comment) &&
+            !rubocop_directive_comment?(comment)
         end
       end
 
@@ -34,6 +36,10 @@ module RuboCop
 
       def interpreter_directive_comment?(comment)
         comment.text =~ /^#\s*(frozen_string_literal|encoding):/
+      end
+
+      def rubocop_directive_comment?(comment)
+        comment.text =~ CommentConfig::COMMENT_DIRECTIVE_REGEXP
       end
     end
   end

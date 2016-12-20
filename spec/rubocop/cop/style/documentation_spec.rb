@@ -70,6 +70,16 @@ describe RuboCop::Cop::Style::Documentation do
     expect(cop.offenses.size).to eq(1)
   end
 
+  it 'registers an offense for non-empty class with directive comment' do
+    inspect_source(cop,
+                   ['# rubocop:disable Style/For',
+                    'class My_Class',
+                    '  def method',
+                    '  end',
+                    'end'])
+    expect(cop.offenses.size).to eq(1)
+  end
+
   it 'registers offense for non-empty class with frozen string comment' do
     inspect_source(cop,
                    ['# frozen_string_literal: true',
