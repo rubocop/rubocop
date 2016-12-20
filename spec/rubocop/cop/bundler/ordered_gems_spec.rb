@@ -167,4 +167,35 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
                                 ''].join("\n"))
     end
   end
+
+  context 'When a gem that starts with a capital letter is sorted' do
+    let(:source) { <<-END }
+      gem 'a'
+      gem 'Z'
+    END
+
+    it 'does not register an offense' do
+      inspect_source(cop, source)
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  context 'When a gem that starts with a capital letter is not sorted' do
+    let(:source) { <<-END }
+      gem 'Z'
+      gem 'a'
+    END
+
+    it 'registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it 'autocorrects' do
+      new_source = autocorrect_source_with_loop(cop, source)
+      expect(new_source).to eq(["      gem 'a'",
+                                "      gem 'Z'",
+                                ''].join("\n"))
+    end
+  end
 end
