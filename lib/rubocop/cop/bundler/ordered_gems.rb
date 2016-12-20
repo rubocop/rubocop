@@ -25,10 +25,16 @@ module RuboCop
           gem_declarations(processed_source.ast)
             .each_cons(2) do |previous, current|
             next unless consecutive_lines(previous, current)
-            next unless current.children[2].children.first.to_s <
-                        previous.children[2].children.first.to_s
+            next unless case_insensitive_out_of_order?(
+              current.children[2].children.first.to_s,
+              previous.children[2].children.first.to_s
+            )
             register_offense(previous, current)
           end
+        end
+
+        def case_insensitive_out_of_order?(string_a, string_b)
+          1 > string_a.casecmp(string_b)
         end
 
         def consecutive_lines(previous, current)

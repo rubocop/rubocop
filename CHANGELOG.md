@@ -18,6 +18,7 @@
 * [#3782](https://github.com/bbatsov/rubocop/pull/3782): Add check for `add_reference` method by `Rails/NotNullColumn` cop. ([@pocke][])
 * [#3761](https://github.com/bbatsov/rubocop/pull/3761): Update `Style/RedundantFreeze` message from `Freezing immutable objects is pointless.` to `Do not freeze immutable objects, as freezing them has no effect.`. ([@lucasuyezu][])
 * [#3753](https://github.com/bbatsov/rubocop/issues/3753): Change error message of `Bundler/OrderedGems` to mention `Alphabetize Gems`. ([@tejasbubane][])
+* [#3802](https://github.com/bbatsov/rubocop/pull/3802): Ignore case when checking Gemfile order. ([@breckenedge][])
 
 ### Bug fixes
 
@@ -2549,3 +2550,4 @@
 [@amogil]: https://github.com/amogil
 [@kevindew]: https://github.com/kevindew
 [@lucasuyezu]: https://github.com/lucasuyezu
+[@breckenedge]: https://github.com/breckenedge
