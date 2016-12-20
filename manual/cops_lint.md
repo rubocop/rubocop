@@ -860,6 +860,31 @@ Enabled | No
 
 This cop checks for *rescue* blocks targeting the Exception class.
 
+## Lint/SafeNavigationChain
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+Safe navigation operator returns nil if the receiver is nil.
+So if you chain an ordinary method call after safe navigation operator,
+it raises NoMethodError.
+We should use safe navigation operator after safe navigation operator.
+This cop checks the problem.
+
+### Example
+
+```ruby
+# bad
+x&.foo.bar
+x&.foo + bar
+x&.foo[bar]
+
+# good
+x&.foo&.bar
+x&.foo || bar
+```
+
 ## Lint/ShadowedException
 
 Enabled by default | Supports autocorrection

@@ -8,6 +8,7 @@
 * `Style/FrozenStringLiteralComment` now supports the style `never` that will remove the `frozen_string_literal` comment. ([@rrosenblum][])
 * [#3795](https://github.com/bbatsov/rubocop/pull/3795): Add `Lint/MultipleCompare` cop. ([@pocke][])
 * [#3772](https://github.com/bbatsov/rubocop/issues/3772): Allow exclusion of certain methods for `Metrics/BlockLength`. ([@NobodysNightmare][])
+* [#3804](https://github.com/bbatsov/rubocop/pull/3804): Add new `Lint/SafeNavigationChain` cop. ([@pocke][])
 
 ### Changes
 

@@ -1225,6 +1225,10 @@ Lint/RescueException:
   StyleGuide: '#no-blind-rescues'
   Enabled: true
 
+Lint/SafeNavigationChain:
+  Description: 'Do not chain ordinary method call after safe navigation operator.'
+  Enabled: true
+
 Lint/ShadowedException:
   Description: >-
                   Avoid rescuing a higher level exception
