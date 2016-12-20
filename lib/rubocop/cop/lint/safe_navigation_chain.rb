@@ -3,11 +3,11 @@
 module RuboCop
   module Cop
     module Lint
-      # Safe navigation operator returns nil if the receiver is nil.
-      # So if you chain an ordinary method call after safe navigation operator,
-      # it raises NoMethodError.
-      # We should use safe navigation operator after safe navigation operator.
-      # This cop checks the problem.
+      # The safe navigation operator returns nil if the receiver is
+      # nil.  If you chain an ordinary method call after a safe
+      # navigation operator, it raises NoMethodError.  We should use a
+      # safe navigation operator after a safe navigation operator.
+      # This cop checks for the problem outlined above.
       #
       # @example
       #   # bad
@@ -20,7 +20,9 @@ module RuboCop
       #   x&.foo || bar
       class SafeNavigationChain < Cop
         MSG = 'Do not chain ordinary method call' \
-          ' after safe navigation operator.'.freeze
+              ' after safe navigation operator.'.freeze
+
+        ADDITIONAL_NIL_METHODS = %i(present? blank?).freeze
 
         def_node_matcher :bad_method?, <<-PATTERN
           (send (csend ...) $_ ...)
@@ -39,7 +41,7 @@ module RuboCop
 
         def autocorrect(node)
           dot = node.loc.dot
-          return unless node.loc.dot
+          return unless dot
 
           lambda do |corrector|
             corrector.insert_before(dot, '&')
@@ -49,7 +51,7 @@ module RuboCop
         private
 
         def nil_methods
-          nil.methods + %i(present? blank?)
+          nil.methods + ADDITIONAL_NIL_METHODS
         end
       end
     end
