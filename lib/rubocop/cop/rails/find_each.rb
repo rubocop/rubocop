@@ -18,12 +18,11 @@ module RuboCop
         SCOPE_METHODS = [:all, :where, :not].freeze
 
         def on_send(node)
-          receiver, second_method, _selector = *node
-          return unless second_method == :each
-          return if receiver.nil?
+          receiver, method, _selector = *node
+          return unless receiver && method == :each
 
-          _model, first_method = *receiver
-          return unless SCOPE_METHODS.include?(first_method)
+          _model, preceding_method = *receiver
+          return unless SCOPE_METHODS.include?(preceding_method)
           return if method_chain(node).any? { |m| ignored_by_find_each?(m) }
 
           add_offense(node, node.loc.selector, MSG)
@@ -38,15 +37,7 @@ module RuboCop
         private
 
         def method_chain(node)
-          if (node.send_type? || node.block_type?) && !node.receiver.nil?
-            if node.parent
-              method_chain(node.parent) << node.method_name
-            else
-              [node.method_name]
-            end
-          else
-            []
-          end
+          [*node.ancestors, node].map(&:method_name)
         end
 
         def ignored_by_find_each?(relation_method)
