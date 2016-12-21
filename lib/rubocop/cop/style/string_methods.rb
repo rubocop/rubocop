@@ -14,9 +14,7 @@ module RuboCop
           _receiver, method_name, *_args = *node
           return unless preferred_methods[method_name]
           add_offense(node, :selector,
-                      format(MSG,
-                             preferred_method(method_name),
-                             method_name))
+                      format(MSG, preferred_method(method_name), method_name))
         end
 
         def autocorrect(node)
