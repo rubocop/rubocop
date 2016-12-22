@@ -866,11 +866,11 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
-Safe navigation operator returns nil if the receiver is nil.
-So if you chain an ordinary method call after safe navigation operator,
-it raises NoMethodError.
-We should use safe navigation operator after safe navigation operator.
-This cop checks the problem.
+The safe navigation operator returns nil if the receiver is
+nil.  If you chain an ordinary method call after a safe
+navigation operator, it raises NoMethodError.  We should use a
+safe navigation operator after a safe navigation operator.
+This cop checks for the problem outlined above.
 
 ### Example
 
