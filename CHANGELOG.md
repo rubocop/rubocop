@@ -32,6 +32,7 @@
 * [#3749](https://github.com/bbatsov/rubocop/pull/3749): Detect corner case of `Style/NumericLitterals`. ([@kamaradclimber][])
 * [#3788](https://github.com/bbatsov/rubocop/pull/3788): Prevent bad auto-correct in `Style/Next` when block has nested conditionals. ([@drenmi][])
 * [#3807](https://github.com/bbatsov/rubocop/pull/3807): Prevent `Style/Documentation` and `Style/DocumentationMethod` from mistaking RuboCop directives for class documentation. ([@drenmi][])
+* [#3815](https://github.com/bbatsov/rubocop/pull/3815): Fix false positive in `Style/IdenticalConditionalBranches` cop when branches have same line at leading. ([@pocke][])
 
 ## 0.46.0 (2016-11-30)
 
