@@ -37,7 +37,7 @@ module RuboCop
           # without an `else`, or a branch that contains only comments.
           return if branches.any?(&:nil?)
 
-          check_node(branches)
+          check_branches(branches)
         end
 
         def on_case(node)
@@ -46,17 +46,22 @@ module RuboCop
           return unless else_branch # empty else
           when_branches = expand_when_branches(when_branches)
 
-          check_node(when_branches.push(else_branch))
+          check_branches(when_branches.push(else_branch))
         end
 
         private
 
-        def check_node(branches)
-          branches = branches.map { |branch| tail(branch) }
+        def check_branches(branches)
+          tails = branches.map { |branch| tail(branch) }
+          check_sentences(tails)
+          heads = branches.map { |branch| head(branch) }
+          check_sentences(heads)
+        end
 
-          return unless branches.all? { |branch| branch == branches[0] }
-          branches.each do |branch|
-            add_offense(branch, :expression, format(MSG, branch.source))
+        def check_sentences(sentences)
+          return unless sentences.all? { |sentence| sentence == sentences[0] }
+          sentences.each do |sentence|
+            add_offense(sentence, :expression, format(MSG, sentence.source))
           end
         end
 
@@ -82,6 +87,14 @@ module RuboCop
         def tail(node)
           if node && node.begin_type?
             node.children.last
+          else
+            node
+          end
+        end
+
+        def head(node)
+          if node && node.begin_type?
+            node.children.first
           else
             node
           end
