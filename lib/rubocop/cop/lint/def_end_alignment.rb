@@ -14,8 +14,28 @@ module RuboCop
       #
       # @example
       #
+      #   # bad
+      #
+      #   private def foo
+      #               end
+      #
+      # @example
+      #
+      #   # EnforcedStyleAlignWith: start_of_line (default)
+      #
+      #   # good
+      #
       #   private def foo
       #   end
+      #
+      # @example
+      #
+      #   # EnforcedStyleAlignWith: def
+      #
+      #   # good
+      #
+      #   private def foo
+      #           end
       class DefEndAlignment < Cop
         include OnMethodDef
         include EndKeywordAlignment

@@ -7,7 +7,15 @@ module RuboCop
       #
       # @example
       #
+      #   # bad
+      #
       #   "result is #{}"
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   "result is #{some_result}"
       class EmptyInterpolation < Cop
         MSG = 'Empty interpolation detected.'.freeze
 

@@ -7,10 +7,20 @@ module RuboCop
       #
       # @example
       #
-      #   @bad
+      #   # bad
+      #
       #   case foo
       #   when bar then 1
       #   when baz then # nothing
+      #   end
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   case foo
+      #   when bar then 1
+      #   when baz then 2
       #   end
       class EmptyWhen < Cop
         MSG = 'Avoid `when` branches without a body.'.freeze

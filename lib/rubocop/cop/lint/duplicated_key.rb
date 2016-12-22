@@ -8,7 +8,16 @@ module RuboCop
       # This cop mirrors a warning in Ruby 2.2.
       #
       # @example
+      #
+      #   # bad
+      #
       #   hash = { food: 'apple', food: 'orange' }
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   hash = { food: 'apple', other_food: 'orange' }
       class DuplicatedKey < Cop
         MSG = 'Duplicated key in hash literal.'.freeze
 

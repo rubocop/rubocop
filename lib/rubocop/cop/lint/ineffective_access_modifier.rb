@@ -9,7 +9,9 @@ module RuboCop
       # used for that.
       #
       # @example
-      #   @bad
+      #
+      #   # bad
+      #
       #   class C
       #     private
       #
@@ -18,7 +20,10 @@ module RuboCop
       #     end
       #   end
       #
-      #   @good
+      # @example
+      #
+      #   # good
+      #
       #   class C
       #     def self.method
       #       puts 'hi'
@@ -26,6 +31,10 @@ module RuboCop
       #
       #     private_class_method :method
       #   end
+      #
+      # @example
+      #
+      #   # good
       #
       #   class C
       #     class << self

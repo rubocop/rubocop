@@ -6,6 +6,9 @@ module RuboCop
       # This cop checks for nested method definitions.
       #
       # @example
+      #
+      #   # bad
+      #
       #   # `bar` definition actually produces methods in the same scope
       #   # as the outer `foo` method. Furthermore, the `bar` method
       #   # will be redefined every time `foo` is invoked.
@@ -14,6 +17,25 @@ module RuboCop
       #     end
       #   end
       #
+      # @example
+      #
+      #   # good
+      #
+      #   def foo
+      #     bar = -> { puts 'hello' }
+      #     bar.call
+      #   end
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   def foo
+      #     self.class_eval do
+      #       def bar
+      #       end
+      #     end
+      #   end
       class NestedMethodDefinition < Cop
         include OnMethodDef
         extend RuboCop::NodePattern::Macros

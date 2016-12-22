@@ -4,6 +4,18 @@ module RuboCop
   module Cop
     module Lint
       # This cop checks for uses of the deprecated class method usages.
+      #
+      # @example
+      #
+      #   # bad
+      #
+      #   File.exists?(some_path)
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   File.exist?(some_path)
       class DeprecatedClassMethods < Cop
         # Inner class to DeprecatedClassMethods.
         # This class exists to add abstraction and clean naming to the

@@ -4,6 +4,26 @@ module RuboCop
   module Cop
     module Lint
       # This cop checks for *rescue* blocks targeting the Exception class.
+      #
+      # @example
+      #
+      #   # bad
+      #
+      #   begin
+      #     do_something
+      #   rescue Exception
+      #     handle_exception
+      #   end
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   begin
+      #     do_something
+      #   rescue ArgumentError
+      #     handle_exception
+      #   end
       class RescueException < Cop
         MSG = 'Avoid rescuing the `Exception` class. ' \
               'Perhaps you meant to rescue `StandardError`?'.freeze

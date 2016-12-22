@@ -8,10 +8,15 @@ module RuboCop
       # that big. If you need a float that big, something is wrong with you.
       #
       # @example
+      #
       #   # bad
+      #
       #   float = 3.0e400
       #
+      # @example
+      #
       #   # good
+      #
       #   float = 42.9
       class FloatOutOfRange < Cop
         MSG = 'Float out of range.'.freeze

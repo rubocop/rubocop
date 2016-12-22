@@ -7,7 +7,17 @@ module RuboCop
       #
       # @example
       #
+      #   # bad
+      #
       #   def some_method(used, unused, _unused_but_allowed)
+      #     puts used
+      #   end
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   def some_method(used, _unused, _unused_but_allowed)
       #     puts used
       #   end
       class UnusedMethodArgument < Cop

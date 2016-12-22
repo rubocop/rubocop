@@ -8,7 +8,15 @@ module RuboCop
       #
       # @example
       #
+      #   # bad
+      #
       #   "result is #{something.to_s}"
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   "result is #{something}"
       class StringConversionInInterpolation < Cop
         MSG_DEFAULT = 'Redundant use of `Object#to_s` in interpolation.'.freeze
         MSG_SELF = 'Use `self` instead of `Object#to_s` in ' \

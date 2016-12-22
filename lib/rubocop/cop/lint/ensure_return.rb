@@ -4,6 +4,27 @@ module RuboCop
   module Cop
     module Lint
       # This cop checks for *return* from an *ensure* block.
+      #
+      # @example
+      #
+      #   # bad
+      #
+      #   begin
+      #     do_something
+      #   ensure
+      #     do_something_else
+      #     return
+      #   end
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   begin
+      #     do_something
+      #   ensure
+      #     do_something_else
+      #   end
       class EnsureReturn < Cop
         MSG = 'Do not return from an `ensure` block.'.freeze
 

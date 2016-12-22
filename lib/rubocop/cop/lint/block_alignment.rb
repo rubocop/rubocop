@@ -20,18 +20,40 @@ module RuboCop
       #
       # @example
       #
-      #   # either
+      #   # bad
+      #
+      #   foo.bar
+      #      .each do
+      #        baz
+      #          end
+      #
+      # @example
+      #
+      #   # EnforcedStyleAlignWith: either (default)
+      #
+      #   # good
+      #
       #   variable = lambda do |i|
       #     i
       #   end
       #
-      #   # start_of_block
+      # @example
+      #
+      #   # EnforcedStyleAlignWith: start_of_block
+      #
+      #   # good
+      #
       #   foo.bar
       #     .each do
       #        baz
       #      end
       #
-      #   # start_of_line
+      # @example
+      #
+      #   # EnforcedStyleAlignWith: start_of_line
+      #
+      #   # good
+      #
       #   foo.bar
       #     .each do
       #        baz

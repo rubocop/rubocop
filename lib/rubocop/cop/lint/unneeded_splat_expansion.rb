@@ -6,7 +6,9 @@ module RuboCop
       # This cop checks for unneeded usages of splat expansion
       #
       # @example
+      #
       #   # bad
+      #
       #   a = *[1, 2, 3]
       #   a = *'a'
       #   a = *1
@@ -24,7 +26,10 @@ module RuboCop
       #     baz
       #   end
       #
+      # @example
+      #
       #   # good
+      #
       #   c = [1, 2, 3]
       #   a = *c
       #   a, b = *c

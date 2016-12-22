@@ -9,14 +9,27 @@ module RuboCop
       #
       # @example
       #
+      #   # bad
+      #
       #   if 20
       #     do_something
       #   end
+      #
+      # @example
+      #
+      #   # bad
       #
       #   if some_var && true
       #     do_something
       #   end
       #
+      # @example
+      #
+      #   # good
+      #
+      #   if some_var && some_condition
+      #     do_something
+      #   end
       class LiteralInCondition < Cop
         MSG = 'Literal `%s` appeared in a condition.'.freeze
 

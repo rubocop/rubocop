@@ -9,11 +9,16 @@ module RuboCop
       # comparison operators.
       #
       # @example
+      #
       #   # bad
+      #
       #   x < y < z
       #   10 <= x <= 20
       #
+      # @example
+      #
       #   # good
+      #
       #   x < y && y < z
       #   10 <= x && x <= 20
       class MultipleCompare < Cop

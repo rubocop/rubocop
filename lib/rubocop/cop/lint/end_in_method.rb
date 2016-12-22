@@ -4,6 +4,29 @@ module RuboCop
   module Cop
     module Lint
       # This cop checks for END blocks in method definitions.
+      #
+      # @example
+      #
+      #   # bad
+      #
+      #   def some_method
+      #     END { do_something }
+      #   end
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   def some_method
+      #     at_exit { do_something }
+      #   end
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   # outside defs
+      #   END { do_something }
       class EndInMethod < Cop
         MSG = '`END` found in method definition. Use `at_exit` instead.'.freeze
 

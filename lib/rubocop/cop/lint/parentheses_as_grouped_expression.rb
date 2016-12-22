@@ -8,7 +8,15 @@ module RuboCop
       #
       # @example
       #
+      #   # bad
+      #
       #   puts (x + y)
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   puts(x + y)
       class ParenthesesAsGroupedExpression < Cop
         MSG = '`(...)` interpreted as grouped expression.'.freeze
 

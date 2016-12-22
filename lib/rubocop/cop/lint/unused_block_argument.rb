@@ -21,6 +21,8 @@ module RuboCop
       #     puts :baz
       #   end
       #
+      # @example
+      #
       #   # bad
       #
       #   do_something do |used, _unused|

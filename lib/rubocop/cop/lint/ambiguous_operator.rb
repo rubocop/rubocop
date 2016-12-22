@@ -7,14 +7,19 @@ module RuboCop
       # method invocation without parentheses.
       #
       # @example
-      #   array = [1, 2, 3]
+      #
+      #   # bad
       #
       #   # The `*` is interpreted as a splat operator but it could possibly be
-      #   # a `*` method invocation (i.e. `do_something.*(array)`).
-      #   do_something *array
+      #   # a `*` method invocation (i.e. `do_something.*(some_array)`).
+      #   do_something *some_array
+      #
+      # @example
+      #
+      #   # good
       #
       #   # With parentheses, there's no ambiguity.
-      #   do_something(*array)
+      #   do_something(*some_array)
       class AmbiguousOperator < Cop
         include ParserDiagnostic
 

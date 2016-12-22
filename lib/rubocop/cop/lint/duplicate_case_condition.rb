@@ -8,14 +8,25 @@ module RuboCop
       #
       # @example
       #
-      #    # bad
-      #    case x
-      #    when 'first'
-      #      do_something
-      #    when 'first'
-      #      do_something_else
-      #    end
+      #   # bad
       #
+      #   case x
+      #   when 'first'
+      #     do_something
+      #   when 'first'
+      #     do_something_else
+      #   end
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   case x
+      #   when 'first
+      #     do_something
+      #   when 'second'
+      #     do_something_else
+      #   end
       class DuplicateCaseCondition < Cop
         MSG = 'Duplicate `when` condition detected.'.freeze
 

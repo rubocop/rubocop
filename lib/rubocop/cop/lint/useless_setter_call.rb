@@ -8,10 +8,22 @@ module RuboCop
       #
       # @example
       #
-      #  def something
-      #    x = Something.new
-      #    x.attr = 5
-      #  end
+      #   # bad
+      #
+      #   def something
+      #     x = Something.new
+      #     x.attr = 5
+      #   end
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   def something
+      #     x = Something.new
+      #     x.attr = 5
+      #     x
+      #   end
       class UselessSetterCall < Cop
         include OnMethodDef
 

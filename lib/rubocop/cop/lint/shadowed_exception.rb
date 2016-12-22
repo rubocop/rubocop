@@ -8,7 +8,9 @@ module RuboCop
       # exception is rescued.
       #
       # @example
+      #
       #   # bad
+      #
       #   begin
       #     something
       #   rescue Exception
@@ -17,7 +19,10 @@ module RuboCop
       #     handle_standard_error
       #   end
       #
+      # @example
+      #
       #   # good
+      #
       #   begin
       #     something
       #   rescue StandardError

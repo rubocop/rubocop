@@ -16,6 +16,9 @@ module RuboCop
       #        ^
       #
       # @example
+      #
+      #   # bad
+      #
       #   p(? )
       class InvalidCharacterLiteral < Cop
         include ParserDiagnostic

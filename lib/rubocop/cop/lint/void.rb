@@ -5,6 +5,42 @@ module RuboCop
     module Lint
       # This cop checks for operators, variables and literals used
       # in void context.
+      #
+      # @example
+      #
+      #   # bad
+      #
+      #   def some_method
+      #     some_num * 10
+      #     do_something
+      #   end
+      #
+      # @example
+      #
+      #   # bad
+      #
+      #   def some_method
+      #     some_var
+      #     do_something
+      #   end
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   def some_method
+      #     do_something
+      #     some_num * 10
+      #   end
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   def some_method
+      #     do_something
+      #     some_var
+      #   end
       class Void < Cop
         OP_MSG = 'Operator `%s` used in void context.'.freeze
         VAR_MSG = 'Variable `%s` used in void context.'.freeze

@@ -9,8 +9,15 @@ module RuboCop
       #
       # @example
       #
+      #   # bad
+      #
       #   format('A value: %s and another: %i', a_value)
       #
+      # @example
+      #
+      #   # good
+      #
+      #   format('A value: %s and another: %i', a_value, another)
       class FormatParameterMismatch < Cop
         # http://rubular.com/r/CvpbxkcTzy
         MSG = "Number of arguments (%i) to `%s` doesn't match the number of " \

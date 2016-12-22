@@ -12,14 +12,17 @@ method invocation without parentheses.
 ### Example
 
 ```ruby
-array = [1, 2, 3]
+# bad
 
 # The `*` is interpreted as a splat operator but it could possibly be
-# a `*` method invocation (i.e. `do_something.*(array)`).
-do_something *array
+# a `*` method invocation (i.e. `do_something.*(some_array)`).
+do_something *some_array
+```
+```ruby
+# good
 
 # With parentheses, there's no ambiguity.
-do_something(*array)
+do_something(*some_array)
 ```
 
 ## Lint/AmbiguousRegexpLiteral
@@ -34,10 +37,15 @@ a method invocation without parentheses.
 ### Example
 
 ```ruby
+# bad
+
 # This is interpreted as a method invocation with a regexp literal,
 # but it could possibly be `/` method invocations.
 # (i.e. `do_something./(pattern)./(i)`)
 do_something /pattern/i
+```
+```ruby
+# good
 
 # With parentheses, there's no ambiguity.
 do_something(/pattern/i)
@@ -51,6 +59,23 @@ Enabled | No
 
 This cop checks for assignments in the conditions of
 if/while/until.
+
+### Example
+
+```ruby
+# bad
+
+if some_var = true
+  do_something
+end
+```
+```ruby
+# good
+
+if some_var == true
+  do_something
+end
+```
 
 ### Important attributes
 
@@ -83,18 +108,37 @@ location. The autofixer will default to `start_of_line`.
 ### Example
 
 ```ruby
-# either
+# bad
+
+foo.bar
+   .each do
+     baz
+       end
+```
+```ruby
+# EnforcedStyleAlignWith: either (default)
+
+# good
+
 variable = lambda do |i|
   i
 end
+```
+```ruby
+# EnforcedStyleAlignWith: start_of_block
 
-# start_of_block
+# good
+
 foo.bar
   .each do
      baz
    end
+```
+```ruby
+# EnforcedStyleAlignWith: start_of_line
 
-# start_of_line
+# good
+
 foo.bar
   .each do
      baz
@@ -124,26 +168,35 @@ This cop mirrors a warning produced by MRI since 2.2.
 
 ```ruby
 # bad
+
 def bake(pie: pie)
   pie.heat_up
 end
-
+```
+```ruby
 # good
+
 def bake(pie:)
   pie.refrigerate
 end
-
+```
+```ruby
 # good
+
 def bake(pie: self.pie)
   pie.feed_to(user)
 end
-
+```
+```ruby
 # bad
+
 def cook(dry_ingredients = dry_ingredients)
   dry_ingredients.reduce(&:+)
 end
-
+```
+```ruby
 # good
+
 def cook(dry_ingredients = self.dry_ingredients)
   dry_ingredients.combine
 end
@@ -161,8 +214,17 @@ if/while/until.
 ### Example
 
 ```ruby
+# bad
+
 if
   some_condition
+  do_something
+end
+```
+```ruby
+# good
+
+if some_condition
   do_something
 end
 ```
@@ -174,6 +236,34 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 This cop checks for calls to debugger or pry.
+
+### Example
+
+```ruby
+# bad (ok during development)
+
+# using pry
+def some_method
+  binding.pry
+  do_something
+end
+```
+```ruby
+# bad (ok during development)
+
+# using byebug
+def some_method
+  byebug
+  do_something
+end
+```
+```ruby
+# good
+
+def some_method
+  do_something
+end
+```
 
 ## Lint/DefEndAlignment
 
@@ -193,8 +283,26 @@ keyword is. If it's set to `def`, the `end` shall be aligned with the
 ### Example
 
 ```ruby
+# bad
+
+private def foo
+            end
+```
+```ruby
+# EnforcedStyleAlignWith: start_of_line (default)
+
+# good
+
 private def foo
 end
+```
+```ruby
+# EnforcedStyleAlignWith: def
+
+# good
+
+private def foo
+        end
 ```
 
 ### Important attributes
@@ -214,6 +322,19 @@ Enabled | Yes
 
 This cop checks for uses of the deprecated class method usages.
 
+### Example
+
+```ruby
+# bad
+
+File.exists?(some_path)
+```
+```ruby
+# good
+
+File.exist?(some_path)
+```
+
 ## Lint/DuplicateCaseCondition
 
 Enabled by default | Supports autocorrection
@@ -227,10 +348,21 @@ used in case 'when' expressions.
 
 ```ruby
 # bad
+
 case x
 when 'first'
   do_something
 when 'first'
+  do_something_else
+end
+```
+```ruby
+# good
+
+case x
+when 'first
+  do_something
+when 'second'
   do_something_else
 end
 ```
@@ -248,11 +380,23 @@ definitions.
 
 ```ruby
 # bad
+
 def duplicated
   1
 end
 
 def duplicated
+  2
+end
+```
+```ruby
+# good
+
+def duplicated
+  1
+end
+
+def other_duplicated
   2
 end
 ```
@@ -270,7 +414,14 @@ This cop mirrors a warning in Ruby 2.2.
 ### Example
 
 ```ruby
+# bad
+
 hash = { food: 'apple', food: 'orange' }
+```
+```ruby
+# good
+
+hash = { food: 'apple', other_food: 'orange' }
 ```
 
 ## Lint/EachWithObjectArgument
@@ -288,7 +439,15 @@ It's definitely a bug.
 ### Example
 
 ```ruby
+# bad
+
 sum = numbers.each_with_object(0) { |e, a| a += e }
+```
+```ruby
+# good
+
+num = 0
+sum = numbers.each_with_object(num) { |e, a| a += e }
 ```
 
 ## Lint/ElseLayout
@@ -304,9 +463,21 @@ which is usually a mistake.
 ### Example
 
 ```ruby
+# bad
+
 if something
   ...
 else do_this
+  do_that
+end
+```
+```ruby
+# good
+
+if something
+  ...
+else
+  do_this
   do_that
 end
 ```
@@ -318,6 +489,43 @@ Enabled by default | Supports autocorrection
 Enabled | No
 
 This cop checks for empty `ensure` blocks
+
+### Example
+
+```ruby
+# bad
+
+def some_method
+  do_something
+ensure
+end
+```
+```ruby
+# bad
+
+begin
+  do_something
+ensure
+end
+```
+```ruby
+# good
+
+def some_method
+  do_something
+ensure
+  do_something_else
+end
+```
+```ruby
+# good
+
+begin
+  do_something
+ensure
+  do_something_else
+end
+```
 
 ## Lint/EmptyExpression
 
@@ -331,8 +539,17 @@ This cop checks for the presence of empty expressions.
 
 ```ruby
 # bad
+
 foo = ()
 if ()
+  bar
+end
+```
+```ruby
+# good
+
+foo = (some_expression)
+if (some_expression)
   bar
 end
 ```
@@ -348,7 +565,14 @@ This cop checks for empty interpolation.
 ### Example
 
 ```ruby
+# bad
+
 "result is #{}"
+```
+```ruby
+# good
+
+"result is #{some_result}"
 ```
 
 ## Lint/EmptyWhen
@@ -363,9 +587,18 @@ This cop checks for the presence of `when` branches without a body.
 
 ```ruby
 # bad
+
 case foo
 when bar then 1
 when baz then # nothing
+end
+```
+```ruby
+# good
+
+case foo
+when bar then 1
+when baz then 2
 end
 ```
 
@@ -392,16 +625,32 @@ start of the line where the matching keyword appears.
 ### Example
 
 ```ruby
+# bad
+
+variable = if true
+    end
+```
+```ruby
+# EnforcedStyleAlignWith: keyword (default)
+
 # good
-# keyword style
+
 variable = if true
            end
+```
+```ruby
+# EnforcedStyleAlignWith: variable
 
-# variable style
+# good
+
 variable = if true
 end
+```
+```ruby
+# EnforcedStyleAlignWith: start_of_line
 
-# start_of_line style
+# good
+
 puts(if true
 end)
 ```
@@ -423,6 +672,29 @@ Enabled | No
 
 This cop checks for END blocks in method definitions.
 
+### Example
+
+```ruby
+# bad
+
+def some_method
+  END { do_something }
+end
+```
+```ruby
+# good
+
+def some_method
+  at_exit { do_something }
+end
+```
+```ruby
+# good
+
+# outside defs
+END { do_something }
+```
+
 ## Lint/EnsureReturn
 
 Enabled by default | Supports autocorrection
@@ -431,6 +703,28 @@ Enabled | No
 
 This cop checks for *return* from an *ensure* block.
 
+### Example
+
+```ruby
+# bad
+
+begin
+  do_something
+ensure
+  do_something_else
+  return
+end
+```
+```ruby
+# good
+
+begin
+  do_something
+ensure
+  do_something_else
+end
+```
+
 ## Lint/Eval
 
 Enabled by default | Supports autocorrection
@@ -438,6 +732,14 @@ Enabled by default | Supports autocorrection
 Enabled | No
 
 This cop checks for the use of *Kernel#eval*.
+
+### Example
+
+```ruby
+# bad
+
+eval(something)
+```
 
 ## Lint/FloatOutOfRange
 
@@ -453,9 +755,12 @@ that big. If you need a float that big, something is wrong with you.
 
 ```ruby
 # bad
-float = 3.0e400
 
+float = 3.0e400
+```
+```ruby
 # good
+
 float = 42.9
 ```
 
@@ -472,7 +777,14 @@ passed as arguments.
 ### Example
 
 ```ruby
+# bad
+
 format('A value: %s and another: %i', a_value)
+```
+```ruby
+# good
+
+format('A value: %s and another: %i', a_value, another)
 ```
 
 ## Lint/HandleExceptions
@@ -482,6 +794,45 @@ Enabled by default | Supports autocorrection
 Enabled | No
 
 This cop checks for *rescue* blocks with no body.
+
+### Example
+
+```ruby
+# bad
+
+def some_method
+  do_something
+rescue
+  # do nothing
+end
+```
+```ruby
+# bad
+
+begin
+  do_something
+rescue
+  # do nothing
+end
+```
+```ruby
+# good
+
+def some_method
+  do_something
+rescue
+  handle_exception
+end
+```
+```ruby
+# good
+
+begin
+  do_something
+rescue
+  handle_exception
+end
+```
 
 ## Lint/ImplicitStringConcatenation
 
@@ -496,9 +847,12 @@ which are on the same line.
 
 ```ruby
 # bad
-array = ['Item 1' 'Item 2']
 
+array = ['Item 1' 'Item 2']
+```
+```ruby
 # good
+
 array = ['Item 1Item 2']
 array = ['Item 1' + 'Item 2']
 array = [
@@ -522,6 +876,7 @@ used for that.
 
 ```ruby
 # bad
+
 class C
   private
 
@@ -529,8 +884,10 @@ class C
     puts 'hi'
   end
 end
-
+```
+```ruby
 # good
+
 class C
   def self.method
     puts 'hi'
@@ -538,6 +895,9 @@ class C
 
   private_class_method :method
 end
+```
+```ruby
+# good
 
 class C
   class << self
@@ -612,6 +972,8 @@ warning without syntax errors.
 ### Example
 
 ```ruby
+# bad
+
 p(? )
 ```
 
@@ -628,11 +990,23 @@ if/while/until.
 ### Example
 
 ```ruby
+# bad
+
 if 20
   do_something
 end
+```
+```ruby
+# bad
 
 if some_var && true
+  do_something
+end
+```
+```ruby
+# good
+
+if some_var && some_condition
   do_something
 end
 ```
@@ -648,7 +1022,14 @@ This cop checks for interpolated literals.
 ### Example
 
 ```ruby
+# bad
+
 "result is #{10}"
+```
+```ruby
+# good
+
+"result is 10"
 ```
 
 ## Lint/Loop
@@ -658,6 +1039,41 @@ Enabled by default | Supports autocorrection
 Enabled | No
 
 This cop checks for uses of *begin...end while/until something*.
+
+### Example
+
+```ruby
+# bad
+
+# using while
+begin
+  do_something
+end while some_condition
+```
+```ruby
+# bad
+
+# using until
+begin
+  do_something
+end until some_condition
+```
+```ruby
+# good
+
+# using while
+while some_condition
+  do_something
+end
+```
+```ruby
+# good
+
+# using until
+until some_condition
+  do_something
+end
+```
 
 ## Lint/MultipleCompare
 
@@ -674,10 +1090,13 @@ comparison operators.
 
 ```ruby
 # bad
+
 x < y < z
 10 <= x <= 20
-
+```
+```ruby
 # good
+
 x < y && y < z
 10 <= x && x <= 20
 ```
@@ -693,11 +1112,31 @@ This cop checks for nested method definitions.
 ### Example
 
 ```ruby
+# bad
+
 # `bar` definition actually produces methods in the same scope
 # as the outer `foo` method. Furthermore, the `bar` method
 # will be redefined every time `foo` is invoked.
 def foo
   def bar
+  end
+end
+```
+```ruby
+# good
+
+def foo
+  bar = -> { puts 'hello' }
+  bar.call
+end
+```
+```ruby
+# good
+
+def foo
+  self.class_eval do
+    def bar
+    end
   end
 end
 ```
@@ -714,12 +1153,15 @@ Don't omit the accumulator when calling `next` in a `reduce` block.
 
 ```ruby
 # bad
+
 result = (1..4).reduce(0) do |acc, i|
   next if i.odd?
   acc + i
 end
-
+```
+```ruby
 # good
+
 result = (1..4).reduce(0) do |acc, i|
   next acc if i.odd?
   acc + i
@@ -776,7 +1218,14 @@ parenthesis.
 ### Example
 
 ```ruby
+# bad
+
 puts (x + y)
+```
+```ruby
+# good
+
+puts(x + y)
 ```
 
 ## Lint/PercentStringArray
@@ -785,13 +1234,24 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
-This cop checks for quotes and commas in %w, e.g.
+This cop checks for quotes and commas in %w, e.g. `%w('foo', "bar")`
 
-  `%w('foo', "bar")`
-
-it is more likely that the additional characters are unintended (for
+It is more likely that the additional characters are unintended (for
 example, mistranslating an array of literals to percent string notation)
 rather than meant to be part of the resulting strings.
+
+### Example
+
+```ruby
+# bad
+
+%w('foo', "bar")
+```
+```ruby
+# good
+
+%w(foo bar)
+```
 
 ## Lint/PercentSymbolArray
 
@@ -799,13 +1259,24 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
-This cop checks for colons and commas in %i, e.g.
+This cop checks for colons and commas in %i, e.g. `%i(:foo, :bar)`
 
-  `%i(:foo, :bar)`
-
-it is more likely that the additional characters are unintended (for
+It is more likely that the additional characters are unintended (for
 example, mistranslating an array of literals to percent string notation)
 rather than meant to be part of the resulting symbols.
+
+### Example
+
+```ruby
+# bad
+
+%i(:foo, :bar)
+```
+```ruby
+# good
+
+%i(foo bar)
+```
 
 ## Lint/RandOne
 
@@ -820,13 +1291,16 @@ Such calls always return `0`.
 
 ```ruby
 # bad
+
 rand 1
 Kernel.rand(-1)
 rand 1.0
 rand(-1.0)
-
+```
+```ruby
 # good
-0
+
+0 # just use 0 instead
 ```
 
 ## Lint/RequireParentheses
@@ -847,9 +1321,16 @@ an operand of &&/||.
 ### Example
 
 ```ruby
+# bad
+
 if day.is? :tuesday && month == :jan
   ...
 end
+```
+```ruby
+# good
+
+if day.is?(:tuesday) && month == :jan
 ```
 
 ## Lint/RescueException
@@ -859,6 +1340,27 @@ Enabled by default | Supports autocorrection
 Enabled | No
 
 This cop checks for *rescue* blocks targeting the Exception class.
+
+### Example
+
+```ruby
+# bad
+
+begin
+  do_something
+rescue Exception
+  handle_exception
+end
+```
+```ruby
+# good
+
+begin
+  do_something
+rescue ArgumentError
+  handle_exception
+end
+```
 
 ## Lint/SafeNavigationChain
 
@@ -876,11 +1378,14 @@ This cop checks for the problem outlined above.
 
 ```ruby
 # bad
+
 x&.foo.bar
 x&.foo + bar
 x&.foo[bar]
-
+```
+```ruby
 # good
+
 x&.foo&.bar
 x&.foo || bar
 ```
@@ -899,6 +1404,7 @@ exception is rescued.
 
 ```ruby
 # bad
+
 begin
   something
 rescue Exception
@@ -906,8 +1412,10 @@ rescue Exception
 rescue StandardError
   handle_standard_error
 end
-
+```
+```ruby
 # good
+
 begin
   something
 rescue StandardError
@@ -928,6 +1436,31 @@ for block arguments or block local variables.
 This is a mimic of the warning
 "shadowing outer local variable - foo" from `ruby -cw`.
 
+### Example
+
+```ruby
+# bad
+
+def some_method
+  foo = 1
+
+  2.times do |foo| # shadowing outer `foo`
+    do_something(foo)
+  end
+end
+```
+```ruby
+# good
+
+def some_method
+  foo = 1
+
+  2.times do |bar|
+    do_something(bar)
+  end
+end
+```
+
 ## Lint/StringConversionInInterpolation
 
 Enabled by default | Supports autocorrection
@@ -940,7 +1473,14 @@ which is redundant.
 ### Example
 
 ```ruby
+# bad
+
 "result is #{something.to_s}"
+```
+```ruby
+# good
+
+"result is #{something}"
 ```
 
 ## Lint/UnderscorePrefixedVariableName
@@ -951,6 +1491,30 @@ Enabled | No
 
 This cop checks for underscore-prefixed variables that are actually
 used.
+
+### Example
+
+```ruby
+# bad
+
+[1, 2, 3].each do |_num|
+  do_something(_num)
+end
+```
+```ruby
+# good
+
+[1, 2, 3].each do |num|
+  do_something(num)
+end
+```
+```ruby
+# good
+
+[1, 2, 3].each do |_num|
+  do_something # not using `_num`
+end
+```
 
 ## Lint/UnifiedInteger
 
@@ -964,10 +1528,13 @@ This cop checks for using Fixnum or Bignum constant.
 
 ```ruby
 # bad
+
 1.is_a?(Fixnum)
 1.is_a?(Bignum)
-
+```
+```ruby
 # good
+
 1.is_a?(Integer)
 ```
 
@@ -999,6 +1566,7 @@ This cop checks for unneeded usages of splat expansion
 
 ```ruby
 # bad
+
 a = *[1, 2, 3]
 a = *'a'
 a = *1
@@ -1015,8 +1583,10 @@ when *[1, 2, 3]
 else
   baz
 end
-
+```
+```ruby
 # good
+
 c = [1, 2, 3]
 a = *c
 a, b = *c
@@ -1048,6 +1618,24 @@ This cop checks for unreachable code.
 The check are based on the presence of flow of control
 statement in non-final position in *begin*(implicit) blocks.
 
+### Example
+
+```ruby
+# bad
+
+def some_method
+  return
+  do_something
+end
+```
+```ruby
+# good
+
+def some_method
+  do_something
+end
+```
+
 ## Lint/UnusedBlockArgument
 
 Enabled by default | Supports autocorrection
@@ -1072,7 +1660,8 @@ end
 define_method(:foo) do |_bar|
   puts :baz
 end
-
+```
+```ruby
 # bad
 
 do_something do |used, _unused|
@@ -1107,7 +1696,16 @@ This cop checks for unused method arguments.
 ### Example
 
 ```ruby
+# bad
+
 def some_method(used, unused, _unused_but_allowed)
+  puts used
+end
+```
+```ruby
+# good
+
+def some_method(used, _unused, _unused_but_allowed)
   puts used
 end
 ```
@@ -1226,6 +1824,25 @@ Currently this cop has advanced logic that detects unreferenced
 reassignments and properly handles varied cases such as branch, loop,
 rescue, ensure, etc.
 
+### Example
+
+```ruby
+# bad
+
+def some_method
+  some_var = 1
+  do_something
+end
+```
+```ruby
+# good
+
+def some_method
+  some_var = 1
+  do_something(some_var)
+end
+```
+
 ## Lint/UselessComparison
 
 Enabled by default | Supports autocorrection
@@ -1237,6 +1854,8 @@ This cop checks for comparison of something with itself.
 ### Example
 
 ```ruby
+# bad
+
 x.top >= x.top
 ```
 
@@ -1251,10 +1870,23 @@ This cop checks for useless `else` in `begin..end` without `rescue`.
 ### Example
 
 ```ruby
+# bad
+
 begin
   do_something
 else
-  handle_errors # This will never be run.
+  do_something_else # This will never be run.
+end
+```
+```ruby
+# good
+
+begin
+  do_something
+rescue
+  handle_errors
+else
+  do_something_else
 end
 ```
 
@@ -1270,9 +1902,20 @@ expression of a function definition.
 ### Example
 
 ```ruby
+# bad
+
 def something
   x = Something.new
   x.attr = 5
+end
+```
+```ruby
+# good
+
+def something
+  x = Something.new
+  x.attr = 5
+  x
 end
 ```
 
@@ -1284,3 +1927,38 @@ Enabled | No
 
 This cop checks for operators, variables and literals used
 in void context.
+
+### Example
+
+```ruby
+# bad
+
+def some_method
+  some_num * 10
+  do_something
+end
+```
+```ruby
+# bad
+
+def some_method
+  some_var
+  do_something
+end
+```
+```ruby
+# good
+
+def some_method
+  do_something
+  some_num * 10
+end
+```
+```ruby
+# good
+
+def some_method
+  do_something
+  some_var
+end
+```
