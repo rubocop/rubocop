@@ -104,6 +104,34 @@ task generate_cops_documentation: :yard do
     cops_body(config, cop, description, examples_object, pars)
   end
 
+  def table_of_content_for_type(cops, type)
+    type_title = type[0].upcase + type[1..-1]
+    content = "#### Type [#{type_title}](cops_#{type}.md)\n\n".dup
+    cops_of_type(cops, type.to_sym).each do |cop|
+      anchor = cop.cop_name.sub('/', '').downcase
+      content << "* [#{cop.cop_name}](cops_#{type}.md##{anchor})\n"
+    end
+
+    content
+  end
+
+  def print_table_of_contents(cops)
+    path = "#{Dir.pwd}/manual/cops.md"
+    original = File.read(path)
+    content = "<!-- START_COP_LIST -->\n".dup
+
+    content << cops.types.map(&:to_s).sort
+                   .map { |type| table_of_content_for_type(cops, type) }
+               .join("\n")
+
+    content << "\n<!-- END_COP_LIST -->"
+
+    content = original.sub(
+      /<!-- START_COP_LIST -->.+<!-- END_COP_LIST -->/m, content
+    )
+    File.write(path, content)
+  end
+
   def assert_manual_synchronized
     # Do not print diff and yield whether exit code was zero
     sh('git diff --quiet manual') do |outcome, _|
@@ -122,6 +150,7 @@ task generate_cops_documentation: :yard do
 
   YARD::Registry.load!
   cops.types.sort!.each { |type| print_cops_of_type(cops, type, config) }
+  print_table_of_contents(cops)
 
   assert_manual_synchronized if ENV['CI'] == 'true'
 end
