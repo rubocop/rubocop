@@ -10,7 +10,7 @@ describe RuboCop::Cop::Security::JSONLoad, :config do
     expect(cop.offenses).to be_empty
   end
 
-  it 'accepts JSON.parse' do
+  it 'accepts Module::JSON.parse' do
     inspect_source(cop, 'Module::JSON.parse("{}")')
     expect(cop.offenses).to be_empty
   end
@@ -20,7 +20,7 @@ describe RuboCop::Cop::Security::JSONLoad, :config do
     expect(cop.offenses).to be_empty
   end
 
-  it 'accepts JSON.dump' do
+  it 'accepts Module::JSON.dump' do
     inspect_source(cop, 'Module::JSON.load({})')
     expect(cop.offenses).to be_empty
   end

@@ -201,6 +201,7 @@ In the following section you find all available cops:
 #### Type [Security](cops_security.md)
 
 * [Security/JSONLoad](cops_security.md#securityjsonload)
+* [Security/MarshalLoad](cops_security.md#securitymarshalload)
 
 #### Type [Style](cops_style.md)
 

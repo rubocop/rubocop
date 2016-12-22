@@ -35,3 +35,31 @@ Attribute | Value
 Reference | http://ruby-doc.org/stdlib-2.3.0/libdoc/json/rdoc/JSON.html#method-i-load
 AutoCorrect | false
 
+
+## Security/MarshalLoad
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks for the use of Marshal class methods which have
+potential security issues leading to remote code execution when
+loading from an untrusted source.
+
+### Example
+
+```ruby
+# bad
+Marshal.load("{}")
+Marshal.restore("{}")
+
+# good
+Marshal.dump("{}")
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+Reference | http://ruby-doc.org/core-2.3.3/Marshal.html#module-Marshal-label-Security+considerations
+

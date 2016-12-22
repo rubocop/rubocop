@@ -650,6 +650,7 @@ Attribute | Value
 EnforcedStyle | assign_to_condition
 SupportedStyles | assign_to_condition, assign_inside_condition
 SingleLineConditionsOnly | true
+IncludeTernaryExpressions | true
 
 
 ## Style/ConstantName

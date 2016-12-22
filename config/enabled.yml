@@ -1573,6 +1573,13 @@ Security/JSONLoad:
   # on the value of the argument.
   AutoCorrect: false
 
+Security/MarshalLoad:
+  Description: >-
+                 Avoid using of `Marshal.load` or `Marshal.restore` due to potential
+                 security issues. See reference for more information.
+  Reference: 'http://ruby-doc.org/core-2.3.3/Marshal.html#module-Marshal-label-Security+considerations'
+  Enabled: true
+
 ##################### Bundler #############################
 
 Bundler/DuplicatedGem:
