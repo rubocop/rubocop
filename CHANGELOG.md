@@ -2554,4 +2554,4 @@
 [@kevindew]: https://github.com/kevindew
 [@lucasuyezu]: https://github.com/lucasuyezu
 [@breckenedge]: https://github.com/breckenedge
-[@enriikke] https://github.com/enriikke
+[@enriikke]: https://github.com/enriikke
