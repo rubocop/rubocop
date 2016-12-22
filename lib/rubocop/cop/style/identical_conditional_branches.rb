@@ -53,15 +53,15 @@ module RuboCop
 
         def check_branches(branches)
           tails = branches.map { |branch| tail(branch) }
-          check_sentences(tails)
+          check_expressions(tails)
           heads = branches.map { |branch| head(branch) }
-          check_sentences(heads)
+          check_expressions(heads)
         end
 
-        def check_sentences(sentences)
-          return unless sentences.all? { |sentence| sentence == sentences[0] }
-          sentences.each do |sentence|
-            add_offense(sentence, :expression, format(MSG, sentence.source))
+        def check_expressions(expressions)
+          return unless expressions.all? { |expr| expr == expressions[0] }
+          expressions.each do |expression|
+            add_offense(expression, :expression, format(MSG, expression.source))
           end
         end
 
