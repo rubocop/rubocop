@@ -4,6 +4,34 @@ module RuboCop
   module Cop
     module Lint
       # This cop checks for calls to debugger or pry.
+      #
+      # @example
+      #
+      #   # bad (ok during development)
+      #
+      #   # using pry
+      #   def some_method
+      #     binding.pry
+      #     do_something
+      #   end
+      #
+      # @example
+      #
+      #   # bad (ok during development)
+      #
+      #   # using byebug
+      #   def some_method
+      #     byebug
+      #     do_something
+      #   end
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   def some_method
+      #     do_something
+      #   end
       class Debugger < Cop
         MSG = 'Remove debugger entry point `%s`.'.freeze
 

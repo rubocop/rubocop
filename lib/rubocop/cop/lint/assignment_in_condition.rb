@@ -5,6 +5,22 @@ module RuboCop
     module Lint
       # This cop checks for assignments in the conditions of
       # if/while/until.
+      #
+      # @example
+      #
+      #   # bad
+      #
+      #   if some_var = true
+      #     do_something
+      #   end
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   if some_var == true
+      #     do_something
+      #   end
       class AssignmentInCondition < Cop
         include SafeAssignment
 

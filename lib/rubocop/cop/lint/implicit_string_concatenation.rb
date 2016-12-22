@@ -7,10 +7,15 @@ module RuboCop
       # which are on the same line.
       #
       # @example
-      #   @bad
+      #
+      #   # bad
+      #
       #   array = ['Item 1' 'Item 2']
       #
-      #   @good
+      # @example
+      #
+      #   # good
+      #
       #   array = ['Item 1Item 2']
       #   array = ['Item 1' + 'Item 2']
       #   array = [

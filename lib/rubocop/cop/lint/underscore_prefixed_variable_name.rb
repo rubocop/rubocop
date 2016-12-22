@@ -5,6 +5,30 @@ module RuboCop
     module Lint
       # This cop checks for underscore-prefixed variables that are actually
       # used.
+      #
+      # @example
+      #
+      #   # bad
+      #
+      #   [1, 2, 3].each do |_num|
+      #     do_something(_num)
+      #   end
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   [1, 2, 3].each do |num|
+      #     do_something(num)
+      #   end
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   [1, 2, 3].each do |_num|
+      #     do_something # not using `_num`
+      #   end
       class UnderscorePrefixedVariableName < Cop
         MSG = 'Do not use prefix `_` for a variable that is used.'.freeze
 

@@ -7,12 +7,26 @@ module RuboCop
       # definitions.
       #
       # @example
-      #   @bad
+      #
+      #   # bad
+      #
       #   def duplicated
       #     1
       #   end
       #
       #   def duplicated
+      #     2
+      #   end
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   def duplicated
+      #     1
+      #   end
+      #
+      #   def other_duplicated
       #     2
       #   end
       class DuplicateMethods < Cop

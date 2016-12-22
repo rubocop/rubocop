@@ -6,6 +6,23 @@ module RuboCop
       # This cop checks for unreachable code.
       # The check are based on the presence of flow of control
       # statement in non-final position in *begin*(implicit) blocks.
+      #
+      # @example
+      #
+      #   # bad
+      #
+      #   def some_method
+      #     return
+      #     do_something
+      #   end
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   def some_method
+      #     do_something
+      #   end
       class UnreachableCode < Cop
         MSG = 'Unreachable code detected.'.freeze
 

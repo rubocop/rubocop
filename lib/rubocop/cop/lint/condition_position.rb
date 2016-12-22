@@ -8,8 +8,18 @@ module RuboCop
       #
       # @example
       #
+      #   # bad
+      #
       #   if
       #     some_condition
+      #     do_something
+      #   end
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   if some_condition
       #     do_something
       #   end
       class ConditionPosition < Cop

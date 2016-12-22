@@ -9,9 +9,22 @@ module RuboCop
       #
       # @example
       #
+      #   # bad
+      #
       #   if something
       #     ...
       #   else do_this
+      #     do_that
+      #   end
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   if something
+      #     ...
+      #   else
+      #     do_this
       #     do_that
       #   end
       class ElseLayout < Cop

@@ -6,11 +6,16 @@ module RuboCop
       # This cop checks for using Fixnum or Bignum constant.
       #
       # @example
+      #
       #   # bad
+      #
       #   1.is_a?(Fixnum)
       #   1.is_a?(Bignum)
       #
+      # @example
+      #
       #   # good
+      #
       #   1.is_a?(Integer)
       class UnifiedInteger < Cop
         MSG = 'Use `Integer` instead of `%s`.'.freeze

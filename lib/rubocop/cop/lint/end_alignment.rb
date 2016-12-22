@@ -18,16 +18,36 @@ module RuboCop
       # start of the line where the matching keyword appears.
       #
       # @example
-      #   @good
-      #   # keyword style
+      #
+      #   # bad
+      #
+      #   variable = if true
+      #       end
+      #
+      # @example
+      #
+      #   # EnforcedStyleAlignWith: keyword (default)
+      #
+      #   # good
+      #
       #   variable = if true
       #              end
       #
-      #   # variable style
+      # @example
+      #
+      #   # EnforcedStyleAlignWith: variable
+      #
+      #   # good
+      #
       #   variable = if true
       #   end
       #
-      #   # start_of_line style
+      # @example
+      #
+      #   # EnforcedStyleAlignWith: start_of_line
+      #
+      #   # good
+      #
       #   puts(if true
       #   end)
       class EndAlignment < Cop

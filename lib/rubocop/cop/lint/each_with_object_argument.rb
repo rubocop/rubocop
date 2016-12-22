@@ -11,7 +11,16 @@ module RuboCop
       #
       # @example
       #
+      #   # bad
+      #
       #   sum = numbers.each_with_object(0) { |e, a| a += e }
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   num = 0
+      #   sum = numbers.each_with_object(num) { |e, a| a += e }
       class EachWithObjectArgument < Cop
         MSG = 'The argument to each_with_object can not be immutable.'.freeze
 

@@ -7,7 +7,15 @@ module RuboCop
       #
       # @example
       #
+      #   # bad
+      #
       #   "result is #{10}"
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   "result is 10"
       class LiteralInInterpolation < Cop
         MSG = 'Literal interpolation detected.'.freeze
         COMPOSITE = [:array, :hash, :pair, :irange, :erange].freeze

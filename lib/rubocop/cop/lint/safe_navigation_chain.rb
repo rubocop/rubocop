@@ -10,12 +10,17 @@ module RuboCop
       # This cop checks for the problem outlined above.
       #
       # @example
+      #
       #   # bad
+      #
       #   x&.foo.bar
       #   x&.foo + bar
       #   x&.foo[bar]
       #
+      # @example
+      #
       #   # good
+      #
       #   x&.foo&.bar
       #   x&.foo || bar
       class SafeNavigationChain < Cop

@@ -7,7 +7,9 @@ module RuboCop
       #
       # @example
       #
-      #  x.top >= x.top
+      #   # bad
+      #
+      #   x.top >= x.top
       class UselessComparison < Cop
         MSG = 'Comparison of something with itself detected.'.freeze
         OPS = %w(== === != < > <= >= <=>).freeze

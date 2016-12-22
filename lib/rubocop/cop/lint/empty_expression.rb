@@ -7,9 +7,19 @@ module RuboCop
       #
       # @example
       #
-      #   @bad
+      #   # bad
+      #
       #   foo = ()
       #   if ()
+      #     bar
+      #   end
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   foo = (some_expression)
+      #   if (some_expression)
       #     bar
       #   end
       class EmptyExpression < Cop
