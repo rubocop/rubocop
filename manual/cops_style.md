@@ -3768,6 +3768,14 @@ Enabled | Yes
 
 This cop checks for uses of rescue in its modifier form.
 
+## Style/Round
+
+Enabled by default | Supports autocorrection
+--- | ---
+Disabled | No
+
+This cop checks for the use of the round method.
+
 ## Style/SafeNavigation
 
 Enabled by default | Supports autocorrection

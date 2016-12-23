@@ -105,6 +105,10 @@ Style/Send:
   StyleGuide: '#prefer-public-send'
   Enabled: false
 
+Style/Round:
+  Description: 'Prefer `Float#floor` or `Float#ceil` over `Float#round`, as `floor` and `ceil` behavior is clearer.'
+  Enabled: false
+
 Style/StringMethods:
   Description: 'Checks if configured preferred methods are used over non-preferred.'
   Enabled: false
