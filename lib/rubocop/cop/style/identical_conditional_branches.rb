@@ -3,8 +3,8 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for identical lines at the end of each branch of a
-      # conditional statement.
+      # This cop checks for identical lines at the beginning or end of
+      # each branch of a conditional statement.
       #
       # @example
       #   @bad
@@ -23,6 +23,23 @@ module RuboCop
       #     do_y
       #   end
       #   do_z
+      #
+      #   @bad
+      #   if condition
+      #     do_z
+      #     do_x
+      #   else
+      #     do_z
+      #     do_y
+      #   end
+      #
+      #   @good
+      #   do_z
+      #   if condition
+      #     do_x
+      #   else
+      #     do_y
+      #   end
       class IdenticalConditionalBranches < Cop
         include IfNode
 
