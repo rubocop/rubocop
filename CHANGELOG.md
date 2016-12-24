@@ -21,6 +21,7 @@
 * [#3753](https://github.com/bbatsov/rubocop/issues/3753): Change error message of `Bundler/OrderedGems` to mention `Alphabetize Gems`. ([@tejasbubane][])
 * [#3802](https://github.com/bbatsov/rubocop/pull/3802): Ignore case when checking Gemfile order. ([@breckenedge][])
 * Add missing examples in `Lint` cops documentation. ([@enriikke][])
+* Make `Style/EmptyMethod` cop aware of class methods. ([@drenmi][])
 
 ### Bug fixes
 

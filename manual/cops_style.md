@@ -650,6 +650,7 @@ Attribute | Value
 EnforcedStyle | assign_to_condition
 SupportedStyles | assign_to_condition, assign_inside_condition
 SingleLineConditionsOnly | true
+IncludeTernaryExpressions | true
 
 
 ## Style/ConstantName
@@ -1216,20 +1217,26 @@ EnforcedStyle: compact (default)
 # bad
 def foo(bar)
 end
+def self.foo(bar)
+end
 
 # good
 def foo(bar); end
 def foo(bar)
   # baz
 end
+def self.foo(bar); end
 
 EnforcedStyle: expanded
 
 # bad
 def foo(bar); end
+def self.foo(bar); end
 
 # good
 def foo(bar)
+end
+def self.foo(bar)
 end
 ```
 
