@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#3821](https://github.com/bbatsov/rubocop/pull/3821): Add `Security/YAMLLoad` cop. ([@cyberdelia][])
 * [#3816](https://github.com/bbatsov/rubocop/pull/3816): Add `Security/MarshalLoad` cop. ([@cyberdelia][])
 * [#3757](https://github.com/bbatsov/rubocop/pull/3757): Add Auto-Correct for `Bundler/OrderedGems` cop. ([@pocke][])
 * `Style/FrozenStringLiteralComment` now supports the style `never` that will remove the `frozen_string_literal` comment. ([@rrosenblum][])

@@ -541,7 +541,7 @@ describe RuboCop::CLI, :isolated_environment do
     shared_examples(:prints_config) do
       it 'prints the current configuration' do
         out = stdout.lines.to_a
-        printed_config = YAML.load(out.join)
+        printed_config = YAML.load(out.join) # rubocop:disable Security/YAMLLoad
         cop_names = (cop_list[0] || '').split(',')
         cop_names.each do |cop_name|
           global_conf[cop_name].each do |key, value|

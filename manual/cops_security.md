@@ -63,3 +63,31 @@ Attribute | Value
 --- | ---
 Reference | http://ruby-doc.org/core-2.3.3/Marshal.html#module-Marshal-label-Security+considerations
 
+
+## Security/YAMLLoad
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for the use of YAML class methods which have
+potential security issues leading to remote code execution when
+loading from an untrusted source.
+
+### Example
+
+```ruby
+# bad
+YAML.load("--- foo")
+
+# good
+YAML.safe_load("--- foo")
+YAML.dump("foo")
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+Reference | https://ruby-doc.org/stdlib-2.3.3/libdoc/yaml/rdoc/YAML.html#module-YAML-label-Security
+

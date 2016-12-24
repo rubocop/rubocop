@@ -1580,6 +1580,13 @@ Security/MarshalLoad:
   Reference: 'http://ruby-doc.org/core-2.3.3/Marshal.html#module-Marshal-label-Security+considerations'
   Enabled: true
 
+Security/YAMLLoad:
+  Description: >-
+                 Prefer usage of `YAML.safe_load` over `YAML.load` due to potential
+                 security issues. See reference for more information.
+  Reference: 'https://ruby-doc.org/stdlib-2.3.3/libdoc/yaml/rdoc/YAML.html#module-YAML-label-Security'
+  Enabled: true
+
 ##################### Bundler #############################
 
 Bundler/DuplicatedGem:
