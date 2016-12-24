@@ -1,5 +1,21 @@
 # Security
 
+## Security/Eval
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks for the use of *Kernel#eval*.
+
+### Example
+
+```ruby
+# bad
+
+eval(something)
+```
+
 ## Security/JSONLoad
 
 Enabled by default | Supports autocorrection

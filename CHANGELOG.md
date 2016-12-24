@@ -16,6 +16,7 @@
 
 ### Changes
 
+* [#3820](https://github.com/bbatsov/rubocop/pull/3820): Rename `Lint/Eval` to `Security/Eval`. ([@cyberdelia][])
 * [#3725](https://github.com/bbatsov/rubocop/issues/3725): Disable `Style/SingleLineBlockParams` by default. ([@tejasbubane][])
 * [#3765](https://github.com/bbatsov/rubocop/pull/3765): Add a validation for supported styles other than EnforcedStyle. `AlignWith`, `IndentWhenRelativeTo` and `EnforcedMode` configurations are renamed. ([@pocke][])
 * [#3782](https://github.com/bbatsov/rubocop/pull/3782): Add check for `add_reference` method by `Rails/NotNullColumn` cop. ([@pocke][])
