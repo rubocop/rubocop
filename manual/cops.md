@@ -181,6 +181,7 @@ In the following section you find all available cops:
 * [Rails/DynamicFindBy](cops_rails.md#railsdynamicfindby)
 * [Rails/EnumUniqueness](cops_rails.md#railsenumuniqueness)
 * [Rails/Exit](cops_rails.md#railsexit)
+* [Rails/FilePath](cops_rails.md#railsfilepath)
 * [Rails/FindBy](cops_rails.md#railsfindby)
 * [Rails/FindEach](cops_rails.md#railsfindeach)
 * [Rails/HasAndBelongsToMany](cops_rails.md#railshasandbelongstomany)
