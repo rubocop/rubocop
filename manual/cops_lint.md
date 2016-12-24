@@ -725,22 +725,6 @@ ensure
 end
 ```
 
-## Lint/Eval
-
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
-
-This cop checks for the use of *Kernel#eval*.
-
-### Example
-
-```ruby
-# bad
-
-eval(something)
-```
-
 ## Lint/FloatOutOfRange
 
 Enabled by default | Supports autocorrection

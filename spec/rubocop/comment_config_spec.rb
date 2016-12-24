@@ -19,7 +19,7 @@ describe RuboCop::CommentConfig do
         '# rubocop:enable all',
         '',
         "code = 'This is evil.'",
-        'eval(code) # rubocop:disable Lint/Eval',
+        'eval(code) # rubocop:disable Security/Eval',
         "puts 'This is not evil.'",                          # 12
         '',
         'def some_method',
@@ -115,7 +115,7 @@ describe RuboCop::CommentConfig do
     end
 
     it 'supports disabling single line with a directive at end of line' do
-      eval_disabled_lines = disabled_lines_of_cop('Lint/Eval')
+      eval_disabled_lines = disabled_lines_of_cop('Security/Eval')
       expect(eval_disabled_lines).to include(12)
       expect(eval_disabled_lines).not_to include(13)
     end

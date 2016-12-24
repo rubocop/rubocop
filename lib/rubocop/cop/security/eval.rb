@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Lint
+    module Security
       # This cop checks for the use of *Kernel#eval*.
       #
       # @example

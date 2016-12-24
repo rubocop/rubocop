@@ -95,7 +95,6 @@ In the following section you find all available cops:
 * [Lint/EndAlignment](cops_lint.md#lintendalignment)
 * [Lint/EndInMethod](cops_lint.md#lintendinmethod)
 * [Lint/EnsureReturn](cops_lint.md#lintensurereturn)
-* [Lint/Eval](cops_lint.md#linteval)
 * [Lint/FloatOutOfRange](cops_lint.md#lintfloatoutofrange)
 * [Lint/FormatParameterMismatch](cops_lint.md#lintformatparametermismatch)
 * [Lint/HandleExceptions](cops_lint.md#linthandleexceptions)
@@ -200,6 +199,7 @@ In the following section you find all available cops:
 
 #### Type [Security](cops_security.md)
 
+* [Security/Eval](cops_security.md#securityeval)
 * [Security/JSONLoad](cops_security.md#securityjsonload)
 * [Security/MarshalLoad](cops_security.md#securitymarshalload)
 * [Security/YAMLLoad](cops_security.md#securityyamlload)

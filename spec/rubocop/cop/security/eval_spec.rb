@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Lint::Eval do
+describe RuboCop::Cop::Security::Eval do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for eval as function' do
