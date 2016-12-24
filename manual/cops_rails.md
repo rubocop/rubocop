@@ -223,6 +223,28 @@ Include | app/\*\*/\*.rb, config/\*\*/\*.rb, lib/\*\*/\*.rb
 Exclude | lib/\*\*/\*.rake
 
 
+## Rails/FilePath
+
+Enabled by default | Supports autocorrection
+--- | ---
+Disabled | Yes
+
+This cop is used to identify usages of file path joining process
+to use `Rails.root.join` clause.
+
+### Example
+
+```ruby
+# bad
+Rails.root.join('app/models/goober')
+File.join(Rails.root, 'app/models/goober')
+"#{Rails.root}/app/models/goober"
+
+# good
+Rails.root.join('app', 'models', 'goober')
+```
+
+
 ## Rails/FindBy
 
 Enabled by default | Supports autocorrection
@@ -684,4 +706,3 @@ This cop checks for the use of old-style attribute validation macros.
 Attribute | Value
 --- | ---
 Include | app/models/\*\*/\*.rb
-

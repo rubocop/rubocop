@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#3822](https://github.com/bbatsov/rubocop/pull/3822): Add `Rails/FilePath` cop. ([@iguchi1124][])
 * [#3821](https://github.com/bbatsov/rubocop/pull/3821): Add `Security/YAMLLoad` cop. ([@cyberdelia][])
 * [#3816](https://github.com/bbatsov/rubocop/pull/3816): Add `Security/MarshalLoad` cop. ([@cyberdelia][])
 * [#3757](https://github.com/bbatsov/rubocop/pull/3757): Add Auto-Correct for `Bundler/OrderedGems` cop. ([@pocke][])
@@ -2560,3 +2561,4 @@
 [@lucasuyezu]: https://github.com/lucasuyezu
 [@breckenedge]: https://github.com/breckenedge
 [@enriikke]: https://github.com/enriikke
+[@iguchi1124]: https://github.com/iguchi1124

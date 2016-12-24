@@ -1488,6 +1488,10 @@ Rails/Exit:
                   exits during unit testing or running in production.
   Enabled: true
 
+Rails/FilePath:
+  Description: 'Use `Rails.root.join` for file path joining.'
+  Enabled: true
+
 Rails/FindBy:
   Description: 'Prefer find_by over where.first.'
   StyleGuide: 'https://github.com/bbatsov/rails-style-guide#find_by'
