@@ -43,7 +43,7 @@ describe RuboCop::Cop::Style::EmptyMethod, :config do
 
     let(:message) { 'Put empty method definitions on a single line.' }
 
-    context 'with an empty method definition' do
+    context 'with an empty instance method definition' do
       it_behaves_like 'code with offense',
                       ['def foo',
                        'end'].join("\n"),
@@ -64,7 +64,7 @@ describe RuboCop::Cop::Style::EmptyMethod, :config do
                       'def foo; end'
     end
 
-    context 'with a non-empty method definition' do
+    context 'with a non-empty instance method definition' do
       it_behaves_like 'code without offense',
                       ['def foo',
                        '  bar',
@@ -78,6 +78,42 @@ describe RuboCop::Cop::Style::EmptyMethod, :config do
                        '  # bar',
                        'end']
     end
+
+    context 'with an empty class method definition' do
+      it_behaves_like 'code with offense',
+                      ['def self.foo',
+                       'end'].join("\n"),
+                      'def self.foo; end'
+
+      it_behaves_like 'code with offense',
+                      ['def self.foo(bar, baz)',
+                       'end'].join("\n"),
+                      'def self.foo(bar, baz); end'
+
+      it_behaves_like 'code with offense',
+                      ['def self.foo',
+                       '',
+                       'end'].join("\n"),
+                      'def self.foo; end'
+
+      it_behaves_like 'code without offense',
+                      'def self.foo; end'
+    end
+
+    context 'with a non-empty class method definition' do
+      it_behaves_like 'code without offense',
+                      ['def self.foo',
+                       '  bar',
+                       'end']
+
+      it_behaves_like 'code without offense',
+                      'def self.foo; bar; end'
+
+      it_behaves_like 'code without offense',
+                      ['def self.foo',
+                       '  # bar',
+                       'end']
+    end
   end
 
   context 'when configured with expanded style' do
@@ -87,7 +123,7 @@ describe RuboCop::Cop::Style::EmptyMethod, :config do
       'Put the `end` of empty method definitions on the next line.'
     end
 
-    context 'with an empty method definition' do
+    context 'with an empty instance method definition' do
       it_behaves_like 'code without offense',
                       ['def foo',
                        'end'].join("\n")
@@ -103,7 +139,7 @@ describe RuboCop::Cop::Style::EmptyMethod, :config do
                        'end'].join("\n")
     end
 
-    context 'with a non-empty method definition' do
+    context 'with a non-empty instance method definition' do
       it_behaves_like 'code without offense',
                       ['def foo',
                        '  bar',
@@ -114,6 +150,37 @@ describe RuboCop::Cop::Style::EmptyMethod, :config do
 
       it_behaves_like 'code without offense',
                       ['def foo',
+                       '  # bar',
+                       'end']
+    end
+
+    context 'with an empty class method definition' do
+      it_behaves_like 'code without offense',
+                      ['def self.foo',
+                       'end'].join("\n")
+
+      it_behaves_like 'code without offense',
+                      ['def self.foo',
+                       '',
+                       'end'].join("\n")
+
+      it_behaves_like 'code with offense',
+                      'def self.foo; end',
+                      ['def self.foo',
+                       'end'].join("\n")
+    end
+
+    context 'with a non-empty class method definition' do
+      it_behaves_like 'code without offense',
+                      ['def self.foo',
+                       '  bar',
+                       'end']
+
+      it_behaves_like 'code without offense',
+                      'def self.foo; bar; end'
+
+      it_behaves_like 'code without offense',
+                      ['def self.foo',
                        '  # bar',
                        'end']
     end

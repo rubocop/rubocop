@@ -18,31 +18,36 @@ module RuboCop
       #   @bad
       #   def foo(bar)
       #   end
+      #   def self.foo(bar)
+      #   end
       #
       #   @good
       #   def foo(bar); end
       #   def foo(bar)
       #     # baz
       #   end
+      #   def self.foo(bar); end
       #
       #   EnforcedStyle: expanded
       #
       #   @bad
       #   def foo(bar); end
+      #   def self.foo(bar); end
       #
       #   @good
       #   def foo(bar)
       #   end
+      #   def self.foo(bar)
+      #   end
       class EmptyMethod < Cop
+        include OnMethodDef
         include ConfigurableEnforcedStyle
 
         MSG_COMPACT = 'Put empty method definitions on a single line.'.freeze
         MSG_EXPANDED = 'Put the `end` of empty method definitions on the ' \
                        'next line.'.freeze
 
-        def on_def(node)
-          _method_name, _args, body = *node
-
+        def on_method_def(node, _method_name, _args, body)
           return if body || comment_lines?(node)
           return if compact_style? && compact?(node)
           return if expanded_style? && expanded?(node)
@@ -63,12 +68,13 @@ module RuboCop
         end
 
         def corrected(node)
-          method_name, args, _body = *node
+          method_name, args, _body, scope = method_def_node_parts(node)
 
           arguments = args.source unless args.children.empty?
           joint = compact_style? ? '; ' : "\n"
+          scope = scope ? 'self.' : ''
 
-          ["def #{method_name}#{arguments}", 'end'].join(joint)
+          ["def #{scope}#{method_name}#{arguments}", 'end'].join(joint)
         end
 
         def comment_lines?(node)
