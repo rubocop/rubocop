@@ -169,7 +169,7 @@ module RuboCop
             YAML.safe_load(yaml_code, [Regexp], [], false, filename)
           end
         else
-          YAML.load(yaml_code, filename)
+          YAML.load(yaml_code, filename) # rubocop:disable Security/YAMLLoad
         end
       end
 

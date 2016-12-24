@@ -421,6 +421,7 @@ require 'rubocop/cop/rails/validation'
 
 require 'rubocop/cop/security/json_load'
 require 'rubocop/cop/security/marshal_load'
+require 'rubocop/cop/security/yaml_load'
 
 require 'rubocop/cop/team'
 
