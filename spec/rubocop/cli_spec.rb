@@ -243,13 +243,14 @@ describe RuboCop::CLI, :isolated_environment do
       it 'does not trigger UnneededDisable due to lines moving around' do
         src = ['a = 1 # rubocop:disable Lint/UselessAssignment']
         create_file('example.rb', src)
-        create_file('.rubocop.yml', ['Style/FrozenStringLiteralComment:',
-                                     '  Enabled: true',
-                                     '  EnforcedStyle: always'])
+        create_file('.rubocop.yml',
+                    ['MagicComments/FrozenStringLiteral:',
+                     '  Enabled: true',
+                     '  EnforcedStyle: always'])
         expect(cli.run(['--format', 'offenses', '-a', 'example.rb'])).to eq(0)
         expect($stdout.string).to eq(['',
                                       '1  Style/EmptyLineAfterMagicComment',
-                                      '1  Style/FrozenStringLiteralComment',
+                                      '1  MagicComments/FrozenStringLiteral',
                                       '--',
                                       '2  Total',
                                       '',
@@ -970,7 +971,7 @@ describe RuboCop::CLI, :isolated_environment do
 
     it 'can be configured with option to disable a certain error' do
       create_file('example1.rb', 'puts 0 ')
-      create_file('rubocop.yml', ['Style/Encoding:',
+      create_file('rubocop.yml', ['MagicComments/Encoding:',
                                   '  Enabled: false',
                                   '',
                                   'Style/CaseIndentation:',
@@ -1007,7 +1008,7 @@ describe RuboCop::CLI, :isolated_environment do
     it 'can disable parser-derived offenses with warning severity' do
       # `-' interpreted as argument prefix
       create_file('example.rb', 'puts -1')
-      create_file('.rubocop.yml', ['Style/Encoding:',
+      create_file('.rubocop.yml', ['MagicComments/Encoding:',
                                    '  Enabled: false',
                                    '',
                                    'Lint/AmbiguousOperator:',
@@ -1017,7 +1018,7 @@ describe RuboCop::CLI, :isolated_environment do
 
     it 'cannot disable Syntax offenses' do
       create_file('example.rb', 'class Test')
-      create_file('.rubocop.yml', ['Style/Encoding:',
+      create_file('.rubocop.yml', ['MagicComments/Encoding:',
                                    '  Enabled: false',
                                    '',
                                    'Syntax:',
@@ -1082,7 +1083,7 @@ describe RuboCop::CLI, :isolated_environment do
       create_file('example1.rb', ['if a',
                                   '  b',
                                   'end'])
-      create_file('rubocop.yml', ['Style/Encoding:',
+      create_file('rubocop.yml', ['MagicComments/Encoding:',
                                   '  Enabled: false',
                                   '',
                                   'Metrics/LineLength:',
@@ -1102,7 +1103,7 @@ describe RuboCop::CLI, :isolated_environment do
 
     it 'can be configured with project config to disable a certain error' do
       create_file('example_src/example1.rb', 'puts 0 ')
-      create_file('example_src/.rubocop.yml', ['Style/Encoding:',
+      create_file('example_src/.rubocop.yml', ['MagicComments/Encoding:',
                                                '  Enabled: false',
                                                '',
                                                'Style/CaseIndentation:',

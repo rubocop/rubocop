@@ -3,7 +3,7 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::Encoding, :config do
+describe RuboCop::Cop::MagicComments::Encoding, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'when_needed' do

@@ -93,6 +93,7 @@
 * Add missing examples in `Lint` cops documentation. ([@enriikke][])
 * Make `Style/EmptyMethod` cop aware of class methods. ([@drenmi][])
 * [#3871](https://github.com/bbatsov/rubocop/pull/3871): Add check for void `defined?` and `self` by `Lint/Void` cop. ([@pocke][])
+* New cop group `MagicComments`. `Style/Encoding` has been moved to `MagicComments/Encoding` and `Style/FrozenStringLiteralComment` has been moved to `MagicComments/FrozenStringLiteralComment`. ([@rrosenblum][])
 
 ### Bug fixes
 

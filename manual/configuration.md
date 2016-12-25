@@ -14,7 +14,7 @@ The file has the following format:
 ```yaml
 inherit_from: ../.rubocop.yml
 
-Style/Encoding:
+MagicComments/Encoding:
   Enabled: false
 
 Metrics/LineLength:

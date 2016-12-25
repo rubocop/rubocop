@@ -133,6 +133,11 @@ In the following section you find all available cops:
 * [Lint/UselessSetterCall](cops_lint.md#lintuselesssettercall)
 * [Lint/Void](cops_lint.md#lintvoid)
 
+#### Department [MagicComments](cops_magiccomments.md)
+
+* [MagicComments/Encoding](cops_magiccomments.md#magiccommentsencoding)
+* [MagicComments/FrozenStringLiteral](cops_magiccomments.md#magiccommentsfrozenstringliteral)
+
 #### Department [Metrics](cops_metrics.md)
 
 * [Metrics/AbcSize](cops_metrics.md#metricsabcsize)
@@ -268,7 +273,6 @@ In the following section you find all available cops:
 * [Style/EmptyLinesAroundModuleBody](cops_style.md#styleemptylinesaroundmodulebody)
 * [Style/EmptyLiteral](cops_style.md#styleemptyliteral)
 * [Style/EmptyMethod](cops_style.md#styleemptymethod)
-* [Style/Encoding](cops_style.md#styleencoding)
 * [Style/EndBlock](cops_style.md#styleendblock)
 * [Style/EndOfLine](cops_style.md#styleendofline)
 * [Style/EvenOdd](cops_style.md#styleevenodd)
@@ -282,7 +286,6 @@ In the following section you find all available cops:
 * [Style/FlipFlop](cops_style.md#styleflipflop)
 * [Style/For](cops_style.md#stylefor)
 * [Style/FormatString](cops_style.md#styleformatstring)
-* [Style/FrozenStringLiteralComment](cops_style.md#stylefrozenstringliteralcomment)
 * [Style/GlobalVars](cops_style.md#styleglobalvars)
 * [Style/GuardClause](cops_style.md#styleguardclause)
 * [Style/HashSyntax](cops_style.md#stylehashsyntax)

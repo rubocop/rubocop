@@ -9,11 +9,11 @@ AllCops:
     - 'tmp/**/*'
   TargetRubyVersion: 2.1
 
-Style/Encoding:
+MagicComments/Encoding:
   EnforcedStyle: when_needed
   Enabled: true
 
-Style/FrozenStringLiteralComment:
+MagicComments/FrozenStringLiteral:
   EnforcedStyle: always
 
 Style/IndentHeredoc:

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
+describe RuboCop::Cop::MagicComments::FrozenStringLiteral, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'always' do
