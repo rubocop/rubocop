@@ -477,6 +477,56 @@ end
 array.sort
 ```
 
+## Performance/RegexpMatch
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+In Ruby 2.4, `String#match?` and `Regexp#match?` have been added.
+The methods are faster than `match`. Because the methods avoid
+creating a `MatchData` object or saving backref.
+So, when `MatchData` is not used, use `match?` instead of `match`.
+
+### Example
+
+```ruby
+# bad
+def foo
+  if x =~ /re/
+    do_something
+  end
+end
+
+# bad
+def foo
+  if x.match(/re/)
+    do_something
+  end
+end
+
+# good
+def foo
+  if x.match?(/re/)
+    do_something
+  end
+end
+
+# good
+def foo
+  if x =~ /re/
+    do_something(Regexp.last_match)
+  end
+end
+
+# good
+def foo
+  if x.match(/re/)
+    do_something($~)
+  end
+end
+```
+
 ## Performance/ReverseEach
 
 Enabled by default | Supports autocorrection

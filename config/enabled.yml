@@ -1408,6 +1408,10 @@ Performance/RedundantSortBy:
   Description: 'Use `sort` instead of `sort_by { |x| x }`.'
   Enabled: true
 
+Performance/RegexpMatch:
+  Description: 'Use `match?` instead of `Regexp#match`, `String#match`, `Symbol#match` or `=~` when `MatchData` is not used.'
+  Enabled: true
+
 Performance/ReverseEach:
   Description: 'Use `reverse_each` instead of `reverse.each`.'
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#enumerablereverseeach-vs-enumerablereverse_each-code'
