@@ -13,6 +13,7 @@
 * [#3804](https://github.com/bbatsov/rubocop/pull/3804): Add new `Lint/SafeNavigationChain` cop. ([@pocke][])
 * [#3670](https://github.com/bbatsov/rubocop/pull/3670): Add `CountBlocks` boolean option to `Metrics/BlockNesting`. It allows blocks to be counted towards the nesting limit. ([@georgyangelov][])
 * [#2992](https://github.com/bbatsov/rubocop/issues/2992): Add a configuration to `Style/ConditionalAssignment` to toggle offenses for ternary expressions. ([@rrosenblum][])
+* [#3824](https://github.com/bbatsov/rubocop/pull/3824): Add new `Perfomance/RegexpMatch` cop. ([@pocke][])
 
 ### Changes
 

@@ -164,6 +164,7 @@ In the following section you find all available cops:
 * [Performance/RedundantMatch](cops_performance.md#performanceredundantmatch)
 * [Performance/RedundantMerge](cops_performance.md#performanceredundantmerge)
 * [Performance/RedundantSortBy](cops_performance.md#performanceredundantsortby)
+* [Performance/RegexpMatch](cops_performance.md#performanceregexpmatch)
 * [Performance/ReverseEach](cops_performance.md#performancereverseeach)
 * [Performance/Sample](cops_performance.md#performancesample)
 * [Performance/Size](cops_performance.md#performancesize)
