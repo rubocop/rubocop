@@ -1563,6 +1563,13 @@ Rails/UniqBeforePluck:
   Description: 'Prefer the use of uniq or distinct before pluck.'
   Enabled: true
 
+Rails/SkipsModelValidations:
+  Description: >-
+                 Use methods that skips model validations with caution.
+                 See reference for more information.
+  Reference: 'http://guides.rubyonrails.org/active_record_validations.html#skipping-validations'
+  Enabled: true
+
 Rails/Validation:
   Description: 'Use validates :attribute, hash of validations.'
   Enabled: true

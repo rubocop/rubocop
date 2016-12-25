@@ -195,6 +195,7 @@ In the following section you find all available cops:
 * [Rails/SafeNavigation](cops_rails.md#railssafenavigation)
 * [Rails/SaveBang](cops_rails.md#railssavebang)
 * [Rails/ScopeArgs](cops_rails.md#railsscopeargs)
+* [Rails/SkipsModelValidations](cops_rails.md#railsskipsmodelvalidations)
 * [Rails/TimeZone](cops_rails.md#railstimezone)
 * [Rails/UniqBeforePluck](cops_rails.md#railsuniqbeforepluck)
 * [Rails/Validation](cops_rails.md#railsvalidation)
