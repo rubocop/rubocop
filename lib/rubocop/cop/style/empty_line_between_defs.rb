@@ -14,9 +14,9 @@ module RuboCop
         # doing a linear scan over siblings, so we don't want to call
         # it on each def.
         def on_begin(node)
-          node.children.each_cons(2) do |prev, n|
-            nodes = [prev, n]
-            check_defs(nodes) if nodes.all?(&method(:def_node?))
+          node.children.each_cons(2) do |prev, child|
+            nodes = [prev, child]
+            check_defs(nodes) if nodes.all? { |n| def_node?(n) }
           end
         end
 
