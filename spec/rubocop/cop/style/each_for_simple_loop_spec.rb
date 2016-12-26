@@ -22,7 +22,7 @@ describe RuboCop::Cop::Style::EachForSimpleLoop do
     expect(cop.highlights).to eq(['(0...10).each'])
   end
 
-  it 'registers offense for inclusive end range' do
+  it 'registers offense for inclusive end range with do ... end syntax' do
     inspect_source(cop, ['(0...10).each do',
                          'end'])
     expect(cop.offenses.size).to eq 1
@@ -43,7 +43,7 @@ describe RuboCop::Cop::Style::EachForSimpleLoop do
     expect(cop.offenses).to be_empty
   end
 
-  it 'does not register offense if range startpoint is not constant' do
+  it 'does not register offense if range endpoint is not constant' do
     inspect_source(cop, '(0..b).each {}')
     expect(cop.offenses).to be_empty
   end

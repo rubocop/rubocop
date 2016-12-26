@@ -133,7 +133,7 @@ describe RuboCop::Cop::Style::SpaceAroundBlockParameters, :config do
       expect(cop.highlights).to eq([' '])
     end
 
-    it 'registers an offense for no space after last parameter' do
+    it 'registers an offense for multiple spaces after last parameter' do
       inspect_source(cop, '{}.each { | x, y   | puts x }')
       expect(cop.messages)
         .to eq(['Extra space after last block parameter detected.'])

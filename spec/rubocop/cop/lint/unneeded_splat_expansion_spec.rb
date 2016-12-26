@@ -213,25 +213,25 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
         expect(new_source).to eq('a = %W(one two three)')
       end
 
-      it 'convert an expanded string to an array' do
+      it 'converts an expanded string to an array' do
         new_source = autocorrect_source(cop, "a = *'a'")
 
         expect(new_source).to eq("a = ['a']")
       end
 
-      it 'convert an expanded string to an array' do
+      it 'converts an expanded string with interpolation to an array' do
         new_source = autocorrect_source(cop, 'a = *"#{a}"')
 
         expect(new_source).to eq('a = ["#{a}"]')
       end
 
-      it 'convert an expanded string to an array' do
+      it 'converts an expanded integer to an array' do
         new_source = autocorrect_source(cop, 'a = *1')
 
         expect(new_source).to eq('a = [1]')
       end
 
-      it 'convert an expanded string to an array' do
+      it 'converts an expanded float to an array' do
         new_source = autocorrect_source(cop, 'a = *1.1')
 
         expect(new_source).to eq('a = [1.1]')

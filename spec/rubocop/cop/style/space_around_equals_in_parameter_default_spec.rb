@@ -41,13 +41,13 @@ describe RuboCop::Cop::Style::SpaceAroundEqualsInParameterDefault, :config do
       expect(new_source).to eq(['def f(x, y = 0, z = 1)', 'end'].join("\n"))
     end
 
-    it 'accepts default value assignment with space' do
+    it 'accepts default value assignment with spaces and unary + operator' do
       inspect_source(cop, ['def f(x, y = +1, z = {})',
                            'end'])
       expect(cop.messages).to be_empty
     end
 
-    it 'auto-corrects missing space' do
+    it 'auto-corrects missing space for arguments with unary operators' do
       new_source = autocorrect_source(cop, ['def f(x=-1, y= 0, z =+1)', 'end'])
       expect(new_source).to eq(['def f(x = -1, y = 0, z = +1)',
                                 'end'].join("\n"))

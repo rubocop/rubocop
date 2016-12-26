@@ -129,25 +129,25 @@ Usage: rubocop [options] [file1, file2, ...]
     end
 
     describe 'incompatible cli options' do
-      it 'fails with argument correct error' do
+      it 'rejects using -v with -V' do
         msg = 'Incompatible cli options: [:version, :verbose_version]'
         expect { options.parse %w(-vV) }
           .to raise_error(ArgumentError, msg)
       end
 
-      it 'fails with argument correct error' do
+      it 'rejects using -v with --show-cops' do
         msg = 'Incompatible cli options: [:version, :show_cops]'
         expect { options.parse %w(-v --show-cops) }
           .to raise_error(ArgumentError, msg)
       end
 
-      it 'fails with argument correct error' do
+      it 'rejects using -V with --show-cops' do
         msg = 'Incompatible cli options: [:verbose_version, :show_cops]'
         expect { options.parse %w(-V --show-cops) }
           .to raise_error(ArgumentError, msg)
       end
 
-      it 'fails with argument correct error' do
+      it 'mentions all incompatible options when more than two are used' do
         msg = ['Incompatible cli options: [:version, :verbose_version,',
                ' :show_cops]'].join
         expect { options.parse %w(-vV --show-cops) }

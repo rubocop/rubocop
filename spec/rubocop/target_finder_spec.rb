@@ -173,10 +173,6 @@ describe RuboCop::TargetFinder, :isolated_environment do
       expect(found_basenames).not_to include('file')
     end
 
-    it 'picks ruby executable files with no extension' do
-      expect(found_basenames).to include('executable')
-    end
-
     it 'does not pick directories' do
       found_basenames = found_files.map { |f| File.basename(f) }
       expect(found_basenames).not_to include('dir1')

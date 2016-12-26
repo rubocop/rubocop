@@ -299,7 +299,8 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
                                 'end'].join("\n"))
     end
 
-    it 'corrects parallel assignment in rescue statements' do
+    it 'corrects parallel assignment inside rescue statements '\
+       'within method definitions' do
       new_source = autocorrect_source(cop, ['def bar',
                                             '  a, b = 1, 2',
                                             'rescue',
@@ -314,7 +315,8 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
                                 'end'].join("\n"))
     end
 
-    it 'corrects parallel assignment in rescue statements' do
+    it 'corrects parallel assignment in rescue statements '\
+       'within begin ... rescue' do
       new_source = autocorrect_source(cop, ['begin',
                                             '  a, b = 1, 2',
                                             'rescue',
