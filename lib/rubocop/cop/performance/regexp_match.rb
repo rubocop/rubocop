@@ -59,6 +59,10 @@ module RuboCop
       #     end
       #   end
       class RegexpMatch < Cop
+        extend TargetRubyVersion
+
+        minimum_target_ruby_version 2.4
+
         MSG =
           'Use `match?` instead of `%s` when `MatchData` is not used.'.freeze
 
@@ -107,15 +111,11 @@ module RuboCop
         PATTERN
 
         def on_if(node)
-          return if target_ruby_version < 2.4
-
           cond, = *node
           check_condition(cond)
         end
 
         def on_case(node)
-          return if target_ruby_version < 2.4
-
           case_cond, = *node
           return if case_cond
           when_clauses(node).each do |when_node|

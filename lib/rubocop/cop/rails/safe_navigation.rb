@@ -40,15 +40,17 @@ module RuboCop
       #     foo&.bar(baz)
       #     foo&.bar { |e| e.baz }
       class SafeNavigation < Cop
+        extend TargetRubyVersion
+
         MSG = 'Use safe navigation (`&.`) instead of `%s`.'.freeze
 
         def_node_matcher :try_call, <<-PATTERN
           (send !nil ${:try :try!} $_ ...)
         PATTERN
 
-        def on_send(node)
-          return if target_ruby_version < 2.3
+        minimum_target_ruby_version 2.3
 
+        def on_send(node)
           try_call(node) do |try_method, method_to_try|
             return if try_method == :try && !cop_config['ConvertTry']
             return unless method_to_try.sym_type?

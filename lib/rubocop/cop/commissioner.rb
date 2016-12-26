@@ -67,6 +67,10 @@ module RuboCop
 
       def remove_irrelevant_cops(filename)
         @cops.reject! { |cop| cop.excluded_file?(filename) }
+        @cops.reject! do |cop|
+          cop.class.respond_to?(:support_target_ruby_version?) &&
+            !cop.class.support_target_ruby_version?(cop.target_ruby_version)
+        end
       end
 
       def reset_callbacks
