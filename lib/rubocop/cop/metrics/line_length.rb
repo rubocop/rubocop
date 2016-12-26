@@ -30,7 +30,7 @@ module RuboCop
           end
           return check_uri_line(line, index) if allow_uri?
 
-          offense(
+          register_offense(
             source_range(processed_source.buffer, index + 1, 0...line.length),
             line
           )
@@ -41,7 +41,7 @@ module RuboCop
             heredocs && line_in_whitelisted_heredoc?(heredocs, index.succ)
         end
 
-        def offense(loc, line)
+        def register_offense(loc, line)
           message = format(MSG, line.length, max)
           add_offense(nil, loc, message) { self.max = line.length }
         end
@@ -137,7 +137,14 @@ module RuboCop
           return if line_length_without_directive(line) <= max
 
           range = max..(line_length_without_directive(line) - 1)
-          offense(source_range(processed_source.buffer, index + 1, range), line)
+          register_offense(
+            source_range(
+              processed_source.buffer,
+              index + 1,
+              range
+            ),
+            line
+          )
         end
 
         def directive_on_source_line?(index)
@@ -160,7 +167,7 @@ module RuboCop
           uri_range = find_excessive_uri_range(line)
           return if uri_range && allowed_uri_position?(line, uri_range)
 
-          offense(excess_range(uri_range, line, index), line)
+          register_offense(excess_range(uri_range, line, index), line)
         end
       end
     end

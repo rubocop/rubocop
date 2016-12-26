@@ -54,14 +54,14 @@ module RuboCop
 
         def offense_for_levels(node, map_node, first_method, flatten)
           message = MSG + FLATTEN_MULTIPLE_LEVELS
-          offense(node, map_node, first_method, flatten, message)
+          register_offense(node, map_node, first_method, flatten, message)
         end
 
         def offense_for_method(node, map_node, first_method, flatten)
-          offense(node, map_node, first_method, flatten, MSG)
+          register_offense(node, map_node, first_method, flatten, MSG)
         end
 
-        def offense(node, map_node, first_method, flatten, message)
+        def register_offense(node, map_node, first_method, flatten, message)
           range = range_between(map_node.loc.selector.begin_pos,
                                 node.loc.expression.end_pos)
 

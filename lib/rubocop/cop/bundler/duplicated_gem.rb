@@ -34,7 +34,7 @@ module RuboCop
 
           duplicated_gem_nodes.each do |nodes|
             nodes[1..-1].each do |node|
-              offense(
+              register_offense(
                 node,
                 node.method_args.first.to_a.first,
                 nodes.first.loc.line
@@ -54,7 +54,7 @@ module RuboCop
             .values
         end
 
-        def offense(node, gem_name, line_of_first_occurence)
+        def register_offense(node, gem_name, line_of_first_occurence)
           line_range = node.loc.column...node.loc.last_column
 
           add_offense(
