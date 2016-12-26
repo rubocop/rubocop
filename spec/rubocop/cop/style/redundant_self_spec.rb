@@ -105,7 +105,7 @@ describe RuboCop::Cop::Style::RedundantSelf do
       expect(cop.offenses).to be_empty
     end
 
-    it 'accepts a self receiver used to distinguish from argument' do
+    it 'accepts a self receiver used to distinguish from optional argument' do
       src = ['def requested_specs(final = true)',
              '  something if self.final != final',
              'end']
@@ -133,7 +133,8 @@ describe RuboCop::Cop::Style::RedundantSelf do
       expect(cop.offenses).to be_empty
     end
 
-    it 'accepts a self receiver used to distinguish from an argument' do
+    it 'accepts a self receiver used to distinguish from an argument' \
+      ' when an inner method is defined' do
       src = ['def foo(bar)',
              '  def inner_method(); end',
              '  puts bar, self.bar',
@@ -160,7 +161,7 @@ describe RuboCop::Cop::Style::RedundantSelf do
       expect(cop.offenses).to be_empty
     end
 
-    it 'accepts a self receiver used to distinguish from argument' do
+    it 'accepts a self receiver used to distinguish from optional argument' do
       src = ['def self.requested_specs(final = true)',
              '  something if self.final != final',
              'end']

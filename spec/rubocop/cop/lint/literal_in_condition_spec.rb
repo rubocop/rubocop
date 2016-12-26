@@ -129,7 +129,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
     expect(cop.offenses).to be_empty
   end
 
-  it 'accepts array literal in case, if it has non-literal elements' do
+  it 'accepts array literal in case, if it has nested non-literal element' do
     inspect_source(cop,
                    ['case [1, 2, [x, 1]]',
                     'when [1, 2, 5] then top',

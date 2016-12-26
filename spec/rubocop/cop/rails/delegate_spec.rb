@@ -68,7 +68,7 @@ describe RuboCop::Cop::Rails::Delegate do
     expect(cop.offenses).to be_empty
   end
 
-  it 'ignores trivial delegate with mismatched arguments' do
+  it 'ignores trivial delegate with optional argument with a default value' do
     inspect_source(cop,
                    ['def fox(foo = nil)',
                     '  bar.fox(foo || 5)',
@@ -76,7 +76,7 @@ describe RuboCop::Cop::Rails::Delegate do
     expect(cop.offenses).to be_empty
   end
 
-  it 'ignores trivial delegate with mismatched arguments' do
+  it 'ignores trivial delegate with mismatched number of arguments' do
     inspect_source(cop,
                    ['def fox(a, baz)',
                     '  bar.fox(a)',

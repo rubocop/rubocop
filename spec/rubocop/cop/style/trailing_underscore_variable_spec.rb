@@ -148,7 +148,7 @@ describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
         expect(new_source).to eq('a, = foo()')
       end
 
-      it 'removes multiple trailing underscores and commas' do
+      it 'removes trailing underscores and commas and preserves assignments' do
         new_source = autocorrect_source(cop, 'a, _, _, = foo()')
 
         expect(new_source).to eq('a, = foo()')
@@ -160,7 +160,7 @@ describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
         expect(new_source).to eq('foo()')
       end
 
-      it 'removes multiple trailing underscores and commas' do
+      it 'removes all assignments when every assignment is to `_`' do
         new_source = autocorrect_source(cop, '_, _, _, = foo()')
 
         expect(new_source).to eq('foo()')

@@ -315,15 +315,6 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
             expect(cop.messages).to eq([described_class::MSG])
           end
-
-          it 'registers an offense for a check for the object followed by a ' \
-            'method call in the condition for an if expression' do
-            inspect_source(cop, ["if #{variable} && #{variable}.bar",
-                                 '  something',
-                                 'end'])
-
-            expect(cop.messages).to eq([described_class::MSG])
-          end
         end
 
         context 'ConvertCodeThatCanStartToReturnNil false' do
@@ -385,15 +376,6 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             source = "#{variable} && #{variable}.bar(baz) { |e| e.qux }"
 
             inspect_source(cop, source)
-
-            expect(cop.offenses).to be_empty
-          end
-
-          it 'registers an offense for a check for the object followed by a ' \
-            'method call in the condition for an if expression' do
-            inspect_source(cop, ["if #{variable} && #{variable}.bar",
-                                 '  something',
-                                 'end'])
 
             expect(cop.offenses).to be_empty
           end

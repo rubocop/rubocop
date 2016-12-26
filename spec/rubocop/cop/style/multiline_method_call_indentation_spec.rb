@@ -376,7 +376,7 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
       expect(cop.highlights).to eq(['.with'])
     end
 
-    it 'does not check binary operations' do
+    it 'does not check binary operations when string wrapped with backslash' do
       inspect_source(cop,
                      ["flash[:error] = 'Here is a string ' \\",
                       "                'That spans' <<",
@@ -384,7 +384,7 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
       expect(cop.offenses).to be_empty
     end
 
-    it 'does not check binary operations' do
+    it 'does not check binary operations when string wrapped with +' do
       inspect_source(cop,
                      ["flash[:error] = 'Here is a string ' +",
                       "                'That spans' <<",

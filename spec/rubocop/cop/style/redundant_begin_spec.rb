@@ -61,7 +61,8 @@ describe RuboCop::Cop::Style::RedundantBegin do
     expect(cop.offenses).to be_empty
   end
 
-  it 'auto-corrects by removing redundant begin blocks' do
+  it 'auto-corrects source separated by newlines ' \
+     'by removing redundant begin blocks' do
     src = ['  def func',
            '    begin',
            '      foo',
@@ -82,7 +83,8 @@ describe RuboCop::Cop::Style::RedundantBegin do
     expect(new_source).to eq(result_src)
   end
 
-  it 'auto-corrects by removing redundant begin blocks' do
+  it 'auto-corrects source separated by semicolons ' \
+     'by removing redundant begin blocks' do
     src = '  def func; begin; x; y; rescue; z end end'
     result_src = '  def func; ; x; y; rescue; z  end'
     new_source = autocorrect_source(cop, src)

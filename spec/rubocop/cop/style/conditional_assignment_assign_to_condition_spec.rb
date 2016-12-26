@@ -576,7 +576,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     expect(cop.messages).to eq([described_class::MSG])
   end
 
-  it 'registers an offense for assignment in if elsif else' do
+  it 'registers an offense for assignment in if elsif elsif else' do
     source = ['if foo',
               '  bar = 1',
               'elsif baz',
@@ -841,7 +841,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       expect(cop.offenses).to be_empty
     end
 
-    it 'allows multiple assignment in if elsif else when the last ' \
+    it 'allows multiple assignment in case statements when the last ' \
        'assignment is the same and the earlier assignments do not appear in ' \
        'all branches' do
       source = ['case foo',
@@ -963,21 +963,6 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
   it 'registers an offense for assignment in if then else' do
     source = ['if foo then bar = 1',
               'else bar = 2',
-              'end']
-    inspect_source(cop, source)
-
-    expect(cop.messages).to eq([described_class::MSG])
-  end
-
-  it 'registers an offense for assignment in if elsif else' do
-    source = ['if foo',
-              '  bar = 1',
-              'elsif foobar',
-              '  bar = 2',
-              'elsif baz',
-              '  bar = 3',
-              'else',
-              '  bar = 4',
               'end']
     inspect_source(cop, source)
 

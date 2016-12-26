@@ -35,7 +35,7 @@ describe RuboCop::Cop::Rails::ScopeArgs do
     expect(cop.offenses).to be_empty
   end
 
-  it 'accepts a lambda' do
+  it 'accepts a lambda with a block argument' do
     inspect_source(cop,
                    'scope :active, lambda { |active| where(active: active) }')
 

@@ -53,7 +53,7 @@ describe RuboCop::Cop::Performance::Detect do
       expect(cop.messages).to eq(["Use `detect` instead of `#{method}.first`."])
     end
 
-    it "registers an offense when first is called on multiline #{method}" do
+    it "registers an offense when last is called on multiline #{method}" do
       inspect_source(cop, ["[1, 2, 3].#{method} do |i|",
                            '  i % 2 == 0',
                            'end.last'])

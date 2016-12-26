@@ -120,7 +120,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundClassBody, :config do
       expect(corrected).to eq(source)
     end
 
-    it 'autocorrects beginning and end' do
+    it 'autocorrects beginning and end for `class << self`' do
       new_source = autocorrect_source(cop,
                                       ['class << self',
                                        '  do_something',

@@ -12,7 +12,7 @@ describe RuboCop::Cop::Style::StructInheritance do
     expect(cop.offenses.size).to eq(1)
   end
 
-  it 'registers an offense when extending instance of Struct' do
+  it 'registers an offense when extending instance of Struct with do ... end' do
     inspect_source(cop,
                    ['class Person < Struct.new(:first_name, :last_name) do end',
                     'end'])
