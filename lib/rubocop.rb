@@ -91,6 +91,7 @@ require 'rubocop/cop/mixin/space_inside' # relies on surrounding_space
 require 'rubocop/cop/mixin/statement_modifier'
 require 'rubocop/cop/mixin/string_help'
 require 'rubocop/cop/mixin/string_literals_help'
+require 'rubocop/cop/mixin/target_ruby_version'
 require 'rubocop/cop/mixin/too_many_lines'
 require 'rubocop/cop/mixin/trailing_comma'
 require 'rubocop/cop/mixin/unused_argument'

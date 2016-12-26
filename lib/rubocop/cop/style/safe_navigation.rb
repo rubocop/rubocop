@@ -45,10 +45,13 @@ module RuboCop
       #   foo.to_i if foo
       class SafeNavigation < Cop
         include IfNode
+        extend TargetRubyVersion
 
         MSG = 'Use safe navigation (`&.`) instead of checking if an object ' \
               'exists before calling the method.'.freeze
         NIL_METHODS = nil.methods.freeze
+
+        minimum_target_ruby_version 2.3
 
         def_node_matcher :safe_navigation_candidate, <<-PATTERN
           {
@@ -84,7 +87,6 @@ module RuboCop
         end
 
         def check_node(node)
-          return if target_ruby_version < 2.3
           return if if_else?(node)
           return if elsif?(node)
           checked_variable, receiver, method = extract_parts(node)
