@@ -115,10 +115,19 @@ module RuboCop
             compute_do_source_line_column(block_node, end_loc)
           return unless do_source_line_column
 
-          offense(block_node, start_loc, end_loc, do_source_line_column)
+          register_offense(
+            block_node,
+            start_loc,
+            end_loc,
+            do_source_line_column
+          )
         end
 
-        def offense(block_node, start_loc, end_loc, do_source_line_column)
+        def register_offense(block_node,
+                             start_loc,
+                             end_loc,
+                             do_source_line_column)
+
           error_source_line_column = if style == :start_of_block
                                        do_source_line_column
                                      else
