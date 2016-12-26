@@ -85,5 +85,21 @@ describe RuboCop::Cop::Bundler::DuplicatedGem, :config do
         expect(cop.highlights).to eq(["gem 'rubocop', path: '/path/to/gem'"])
       end
     end
+
+    context 'and same gems have different version specifications' do
+      let(:source) { <<-END }
+        if RUBY_VERSION < '2.2.5'
+          gem 'beaker', '~> 2.0', require: false
+          gem 'beaker-rspec', '~> 5.0', require: false
+        else
+          gem 'beaker-rspec', require: false
+        end
+      END
+
+      it 'does not register any offenses' do
+        inspect_gemfile(cop, source)
+        expect(cop.offenses).to be_empty
+      end
+    end
   end
 end
