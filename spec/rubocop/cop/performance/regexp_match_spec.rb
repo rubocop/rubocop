@@ -242,7 +242,9 @@ describe RuboCop::Cop::Performance::RegexpMatch, :config do
       ['matching by =~`', '/re/ =~ foo', '/re/.match?(foo)'],
       ['matching by =~`', 'foo =~ /re/', 'foo.match?(/re/)'],
       ['matching by =~`', '"foo" =~ re', '"foo".match?(re)'],
-      ['matching by =~`', ':foo =~ re', ':foo.match?(re)']
+      ['matching by =~`', ':foo =~ re', ':foo.match?(re)'],
+      ['matching by ===`', '/re/ === foo', '/re/.match?(foo)'],
+      ['matching by ===`', '/re/i === foo', '/re/i.match?(foo)']
     ].each do |name, code, correction|
       include_examples :all_legacy_match_methods, name, code, correction
     end
