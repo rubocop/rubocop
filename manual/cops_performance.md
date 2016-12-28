@@ -483,9 +483,10 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
-In Ruby 2.4, `String#match?` and `Regexp#match?` have been added.
-The methods are faster than `match`. Because the methods avoid
-creating a `MatchData` object or saving backref.
+In Ruby 2.4, `String#match?`, `Regexp#match?` and `Symbol#match?`
+have been added. The methods are faster than `match`.
+Because the methods avoid creating a `MatchData` object or saving
+backref.
 So, when `MatchData` is not used, use `match?` instead of `match`.
 
 ### Example
