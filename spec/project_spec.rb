@@ -1,8 +1,37 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'rake'
+require 'digest'
 
 describe 'RuboCop Project' do
+  if ENV['CI']
+    def dir_digest(dir)
+      contents = Dir.glob("#{dir}/**/*").map do |path|
+        File.read(path) if File.file?(path)
+      end.compact
+      Digest::MD5.digest(contents.join)
+    end
+
+    describe 'documentation' do
+      it 'is already compiled' do
+        original_stdin = $stdin
+        $stdin = StringIO.new('Y')
+        begin
+          Rake.load_rakefile('Rakefile')
+          before_dir_digest = dir_digest('manual')
+          Rake.application.invoke_task('generate_cops_documentation')
+          after_dir_digest = dir_digest('manual')
+          msg = 'Make sure to generate the manual: ' \
+            'rake generate_cops_documentation'
+          expect(before_dir_digest).to eq(after_dir_digest), msg
+        ensure
+          $stdin = original_stdin
+        end
+      end
+    end
+  end
+
   describe 'default configuration file' do
     let(:cop_names) { RuboCop::Cop::Cop.all.map(&:cop_name) }
 
