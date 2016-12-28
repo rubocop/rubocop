@@ -33,7 +33,7 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
   end
 
   it 'reports an offense for defs ending with return' do
-    src = ['def func',
+    src = ['def self.func',
            '  one',
            '  two',
            '  return something',
@@ -142,7 +142,7 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
     end
 
     it 'reports an offense for defs ending with return' do
-      src = ['def func',
+      src = ['def self.func',
              '  one',
              '  two',
              '  return something, test',
@@ -215,7 +215,7 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
     end
 
     it 'accepts defs ending with return' do
-      src = ['def func',
+      src = ['def self.func',
              '  one',
              '  two',
              '  return something, test',

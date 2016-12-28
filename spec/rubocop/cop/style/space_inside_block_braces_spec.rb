@@ -292,7 +292,7 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces, :config do
     end
 
     it 'accepts left brace without outer space' do
-      inspect_source(cop, 'each {puts}')
+      inspect_source(cop, 'each{puts}')
       expect(cop.offenses).to be_empty
     end
 
