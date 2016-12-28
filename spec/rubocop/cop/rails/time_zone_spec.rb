@@ -224,13 +224,13 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
         end
       end
 
-      it 'accepts #{klass}.zone.now' do
+      it "accepts #{klass}.zone.now" do
         inspect_source(cop, "#{klass}.zone.now")
         expect(cop.offenses).to be_empty
       end
 
-      it 'accepts #{klass}.zone_default.now' do
-        inspect_source(cop, "#{klass}.zone.now")
+      it "accepts #{klass}.zone_default.now" do
+        inspect_source(cop, "#{klass}.zone_default.now")
         expect(cop.offenses).to be_empty
       end
 
