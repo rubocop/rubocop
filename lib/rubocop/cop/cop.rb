@@ -3,58 +3,6 @@ require 'uri'
 
 module RuboCop
   module Cop
-    class AmbiguousCopName < RuboCop::Error; end
-
-    # Store for all cops with helper functions
-    class CopStore < ::Array
-      # @return [Array<String>] list of types for current cops.
-      def departments
-        @departments ||= map(&:department).uniq!
-      end
-
-      # @return [Array<Cop>] Cops for that specific type.
-      def with_department(department)
-        CopStore.new(select { |c| c.department == department })
-      end
-
-      # @return [Array<Cop>] Cops not for a specific type.
-      def without_department(department)
-        CopStore.new(reject { |c| c.department == department })
-      end
-
-      def qualified_cop_name(name, origin)
-        return name if cop_names.include?(name)
-
-        basename = File.basename(name)
-        found_ns = departments.select do |ns|
-          cop_names.include?("#{ns}/#{basename}")
-        end
-
-        case found_ns.size
-        when 0 then name # No namespace found. Deal with it later in caller.
-        when 1 then cop_name_with_namespace(name, origin, basename, found_ns[0])
-        else raise AmbiguousCopName,
-                   "Ambiguous cop name `#{name}` used in #{origin} needs " \
-                   'namespace qualifier. Did you mean ' \
-                   "#{found_ns.map { |ns| "#{ns}/#{basename}" }.join(' or ')}"
-        end
-      end
-
-      def cop_name_with_namespace(name, origin, basename, found_ns)
-        if name != basename && found_ns != File.dirname(name).to_sym
-          warn "#{origin}: #{name} has the wrong namespace - should be " \
-               "#{found_ns}"
-        end
-        "#{found_ns}/#{basename}"
-      end
-
-      private
-
-      def cop_names
-        @cop_names ||= Set.new(map(&:cop_name))
-      end
-    end
-
     # A scaffold for concrete cops.
     #
     # The Cop class is meant to be extended.
@@ -85,22 +33,26 @@ module RuboCop
       attr_reader :config, :offenses, :corrections
       attr_accessor :processed_source # TODO: Bad design.
 
-      @all = CopStore.new
+      @registry = Registry.new
+
+      class << self
+        attr_reader :registry
+      end
 
       def self.all
-        @all.without_department(:Test)
+        registry.without_department(:Test).cops
       end
 
       def self.qualified_cop_name(name, origin)
-        @all.qualified_cop_name(name, origin)
+        registry.qualified_cop_name(name, origin)
       end
 
       def self.non_rails
-        all.without_department(:Rails)
+        registry.without_department(:Rails)
       end
 
       def self.inherited(subclass)
-        @all << subclass
+        registry.enlist(subclass)
       end
 
       def self.badge

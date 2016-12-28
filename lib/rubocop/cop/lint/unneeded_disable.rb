@@ -199,7 +199,7 @@ module RuboCop
         end
 
         def all_cop_names
-          @all_cop_names ||= Cop.all.map(&:cop_name)
+          @all_cop_names ||= Cop.registry.names
         end
       end
     end

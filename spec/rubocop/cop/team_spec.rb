@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe RuboCop::Cop::Team do
   subject(:team) { described_class.new(cop_classes, config, options) }
+
   let(:cop_classes) { RuboCop::Cop::Cop.non_rails }
   let(:config) { RuboCop::ConfigLoader.default_configuration }
   let(:options) { nil }
@@ -104,7 +105,9 @@ describe RuboCop::Cop::Team do
 
     context 'when only some cop classes are passed to .new' do
       let(:cop_classes) do
-        [RuboCop::Cop::Lint::Void, RuboCop::Cop::Metrics::LineLength]
+        RuboCop::Cop::Registry.new(
+          [RuboCop::Cop::Lint::Void, RuboCop::Cop::Metrics::LineLength]
+        )
       end
 
       it 'returns only instances of the classes' do
@@ -150,7 +153,9 @@ describe RuboCop::Cop::Team do
     end
 
     context 'when a cop joined a force' do
-      let(:cop_classes) { [RuboCop::Cop::Lint::UselessAssignment] }
+      let(:cop_classes) do
+        RuboCop::Cop::Registry.new([RuboCop::Cop::Lint::UselessAssignment])
+      end
 
       it 'returns the force' do
         expect(forces.size).to eq(1)
@@ -160,10 +165,12 @@ describe RuboCop::Cop::Team do
 
     context 'when multiple cops joined a same force' do
       let(:cop_classes) do
-        [
-          RuboCop::Cop::Lint::UselessAssignment,
-          RuboCop::Cop::Lint::ShadowingOuterLocalVariable
-        ]
+        RuboCop::Cop::Registry.new(
+          [
+            RuboCop::Cop::Lint::UselessAssignment,
+            RuboCop::Cop::Lint::ShadowingOuterLocalVariable
+          ]
+        )
       end
 
       it 'returns only one force instance' do
@@ -172,7 +179,9 @@ describe RuboCop::Cop::Team do
     end
 
     context 'when no cops joined force' do
-      let(:cop_classes) { [RuboCop::Cop::Style::For] }
+      let(:cop_classes) do
+        RuboCop::Cop::Registry.new([RuboCop::Cop::Style::For])
+      end
 
       it 'returns nothing' do
         expect(forces).to be_empty

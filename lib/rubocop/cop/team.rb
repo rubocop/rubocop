@@ -52,7 +52,8 @@ module RuboCop
       end
 
       def cops
-        @cops ||= @cop_classes.select { |c| cop_enabled?(c) }.map do |cop_class|
+        only_options = @options.fetch(:only, [])
+        @cops ||= @cop_classes.enabled(@config, only_options).map do |cop_class|
           cop_class.new(@config, @options)
         end
       end
@@ -121,11 +122,6 @@ module RuboCop
         yield offenses if block_given?
 
         Investigation.new(offenses, commissioner.errors)
-      end
-
-      def cop_enabled?(cop_class)
-        @config.cop_enabled?(cop_class) ||
-          (@options[:only] || []).include?(cop_class.cop_name)
       end
 
       def autocorrect_all_cops(buffer, cops)

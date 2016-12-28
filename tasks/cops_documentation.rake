@@ -10,7 +10,7 @@ task generate_cops_documentation: :yard do
   end
 
   def cops_of_department(cops, department)
-    cops.with_department(department).sort_by!(&:cop_name)
+    cops.with_department(department).sort!
   end
 
   def cops_body(config, cop, description, examples_objects, pars)
@@ -153,7 +153,7 @@ task generate_cops_documentation: :yard do
     end
   end
 
-  cops   = RuboCop::Cop::Cop.all
+  cops   = RuboCop::Cop::Cop.registry
   config = RuboCop::ConfigLoader.default_configuration
 
   YARD::Registry.load!

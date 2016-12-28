@@ -116,13 +116,13 @@ describe RuboCop::CLI, :isolated_environment do
                                    'end'])
         expect(cli.run(['--only', 'Style/123'])).to eq(2)
         expect($stderr.string)
-          .to include('Unrecognized cop or namespace: Style/123.')
+          .to include('Unrecognized cop or department: Style/123.')
       end
 
       it 'exits with error if an empty string is given' do
         create_file('example.rb', 'x')
         expect(cli.run(['--only', ''])).to eq(2)
-        expect($stderr.string).to include('Unrecognized cop or namespace: .')
+        expect($stderr.string).to include('Unrecognized cop or department: .')
       end
 
       %w(Syntax Lint/Syntax).each do |name|
@@ -312,13 +312,13 @@ describe RuboCop::CLI, :isolated_environment do
                                    'end'])
         expect(cli.run(['--except', 'Style/123'])).to eq(2)
         expect($stderr.string)
-          .to include('Unrecognized cop or namespace: Style/123.')
+          .to include('Unrecognized cop or department: Style/123.')
       end
 
       it 'exits with error if an empty string is given' do
         create_file('example.rb', 'x')
         expect(cli.run(['--except', ''])).to eq(2)
-        expect($stderr.string).to include('Unrecognized cop or namespace: .')
+        expect($stderr.string).to include('Unrecognized cop or department: .')
       end
 
       %w(Syntax Lint/Syntax).each do |name|
@@ -553,6 +553,7 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     let(:cops) { RuboCop::Cop::Cop.all }
+    let(:registry) { RuboCop::Cop::Cop.registry }
 
     let(:global_conf) do
       config_path =
@@ -565,7 +566,8 @@ describe RuboCop::CLI, :isolated_environment do
     before do
       create_file('.rubocop.yml', ['Metrics/LineLength:',
                                    '  Max: 110'])
-      expect(cli.run(['--show-cops'] + cop_list)).to eq(0)
+      # expect(cli.run(['--show-cops'] + cop_list)).to eq(0)
+      cli.run(['--show-cops'] + cop_list)
     end
 
     context 'with no args' do
@@ -592,7 +594,7 @@ describe RuboCop::CLI, :isolated_environment do
       end
 
       it 'prints all departments' do
-        cops.departments.each do |department|
+        registry.departments.each do |department|
           expect(stdout).to include(department.to_s)
         end
       end
@@ -600,17 +602,18 @@ describe RuboCop::CLI, :isolated_environment do
       it 'prints all cops in their right department listing' do
         lines = stdout.lines
         lines.slice_before(/Department /).each do |slice|
-          departments = cops.departments.map(&:to_s)
+          departments = registry.departments.map(&:to_s)
           current =
             departments.delete(slice.shift[/Department '(?<c>[^']+)'/, 'c'])
+
           # all cops in their department listing
-          cops.with_department(current).each do |cop|
+          registry.with_department(current).each do |cop|
             expect(slice.any? { |l| l.include? cop.cop_name }).to be_truthy
           end
 
           # no cop in wrong department listing
           departments.each do |department|
-            cops.with_department(department).each do |cop|
+            registry.with_department(department).each do |cop|
               expect(slice.any? { |l| l.include? cop.cop_name }).to be_falsey
             end
           end

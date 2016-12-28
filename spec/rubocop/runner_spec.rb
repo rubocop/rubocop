@@ -124,10 +124,12 @@ describe RuboCop::Runner, :isolated_environment do
     subject(:runner) do
       runner_class = Class.new(RuboCop::Runner) do
         def mobilized_cop_classes(_config)
-          [
-            RuboCop::Cop::Test::ClassMustBeAModuleCop,
-            RuboCop::Cop::Test::ModuleMustBeAClassCop
-          ]
+          RuboCop::Cop::Registry.new(
+            [
+              RuboCop::Cop::Test::ClassMustBeAModuleCop,
+              RuboCop::Cop::Test::ModuleMustBeAClassCop
+            ]
+          )
         end
       end
       runner_class.new(options, RuboCop::ConfigStore.new)

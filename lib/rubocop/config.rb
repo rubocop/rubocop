@@ -257,7 +257,7 @@ module RuboCop
         end
 
         # There could be a custom cop with this name. If so, don't warn
-        next if Cop::Cop.all.any? { |c| c.match?([name]) }
+        next if Cop::Cop.registry.contains_cop_matching?([name])
 
         warn Rainbow("Warning: unrecognized cop #{name} found in " \
                      "#{loaded_path}").yellow

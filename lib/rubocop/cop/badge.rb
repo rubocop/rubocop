@@ -52,12 +52,21 @@ module RuboCop
         [department, cop_name].hash
       end
 
+      def match?(other)
+        cop_name == other.cop_name &&
+          (!qualified? || department == other.department)
+      end
+
       def to_s
         qualified? ? "#{department}/#{cop_name}" : cop_name
       end
 
       def qualified?
         !department.nil?
+      end
+
+      def with_department(department)
+        self.class.new(department, cop_name)
       end
     end
   end

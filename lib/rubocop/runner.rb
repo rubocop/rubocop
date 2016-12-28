@@ -142,7 +142,12 @@ module RuboCop
 
     def autocorrect_unneeded_disables(source, cop)
       cop.processed_source = source
-      Cop::Team.new([], nil, @options).autocorrect(source.buffer, [cop])
+
+      Cop::Team.new(
+        RuboCop::Cop::Registry.new,
+        nil,
+        @options
+      ).autocorrect(source.buffer, [cop])
     end
 
     def file_started(file)
@@ -268,7 +273,7 @@ module RuboCop
 
         cop_classes.reject! { |c| c.match?(@options[:except]) }
 
-        cop_classes
+        Cop::Registry.new(cop_classes)
       end
     end
 
