@@ -1409,7 +1409,7 @@ Performance/RedundantSortBy:
   Enabled: true
 
 Performance/RegexpMatch:
-  Description: 'Use `match?` instead of `Regexp#match`, `String#match`, `Symbol#match` or `=~` when `MatchData` is not used.'
+  Description: 'Use `match?` instead of `Regexp#match`, `String#match`, `Symbol#match`, `Regexp#===` or `=~` when `MatchData` is not used.'
   Enabled: true
 
 Performance/ReverseEach:

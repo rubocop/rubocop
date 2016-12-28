@@ -24,6 +24,13 @@ module RuboCop
       #     end
       #   end
       #
+      #   # bad
+      #   def foo
+      #     if /re/ === x
+      #       do_something
+      #     end
+      #   end
+      #
       #   # good
       #   def foo
       #     if x.match?(/re/)
@@ -44,6 +51,13 @@ module RuboCop
       #       do_something($~)
       #     end
       #   end
+      #
+      #   # good
+      #   def foo
+      #     if /re/ === x
+      #       do_something($~)
+      #     end
+      #   end
       class RegexpMatch < Cop
         MSG =
           'Use `match?` instead of `%s` when `MatchData` is not used.'.freeze
@@ -59,6 +73,10 @@ module RuboCop
           (send !nil :=~ !nil)
         PATTERN
 
+        def_node_matcher :match_threequals?, <<-PATTERN
+          (send (regexp (str _) {(regopt) (regopt _)}) :=== !nil)
+        PATTERN
+
         def_node_matcher :match_with_lvasgn?, <<-PATTERN
           (match_with_lvasgn !nil !nil)
         PATTERN
@@ -67,6 +85,7 @@ module RuboCop
           {
             #match_method?
             #match_operator?
+            #match_threequals?
             #match_with_lvasgn?
           }
         PATTERN
@@ -109,7 +128,7 @@ module RuboCop
           lambda do |corrector|
             if match_method?(node)
               corrector.replace(node.loc.selector, 'match?')
-            elsif match_operator?(node)
+            elsif match_operator?(node) || match_threequals?(node)
               recv, _, arg = *node
               correct_operator(corrector, recv, arg)
             elsif match_with_lvasgn?(node)

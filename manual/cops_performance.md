@@ -506,6 +506,13 @@ def foo
   end
 end
 
+# bad
+def foo
+  if /re/ === x
+    do_something
+  end
+end
+
 # good
 def foo
   if x.match?(/re/)
@@ -523,6 +530,13 @@ end
 # good
 def foo
   if x.match(/re/)
+    do_something($~)
+  end
+end
+
+# good
+def foo
+  if /re/ === x
     do_something($~)
   end
 end
