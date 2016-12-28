@@ -18,7 +18,7 @@ module RuboCop
       @config_to_allow_offenses = {}
       @detected_styles = {}
 
-      COPS = Cop::Cop.all.group_by(&:cop_name)
+      COPS = Cop::Cop.registry.to_h
 
       class << self
         attr_accessor :config_to_allow_offenses, :detected_styles

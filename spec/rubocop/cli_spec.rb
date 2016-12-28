@@ -192,16 +192,18 @@ describe RuboCop::CLI, :isolated_environment do
 
   it 'registers an offense for Parser warnings' do
     create_file('example.rb', ['puts *test', 'if a then b else c end'])
-    expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
-    expect($stdout.string)
-      .to eq(["#{abs('example.rb')}:1:6: W: " \
-              'Ambiguous splat operator. Parenthesize the method arguments ' \
-              "if it's surely a splat operator, or add a whitespace to the " \
-              'right of the `*` if it should be a multiplication.',
-              "#{abs('example.rb')}:2:1: C: " \
-              'Favor the ternary operator (`?:`) over `if/then/else/end` ' \
-              'constructs.',
-              ''].join("\n"))
+    aggregate_failures('CLI output') do
+      expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
+      expect($stdout.string)
+        .to eq(["#{abs('example.rb')}:1:6: W: " \
+                'Ambiguous splat operator. Parenthesize the method arguments ' \
+                "if it's surely a splat operator, or add a whitespace to the " \
+                'right of the `*` if it should be a multiplication.',
+                "#{abs('example.rb')}:2:1: C: " \
+                'Favor the ternary operator (`?:`) over `if/then/else/end` ' \
+                'constructs.',
+                ''].join("\n"))
+    end
   end
 
   it 'can process a file with an invalid UTF-8 byte sequence' do

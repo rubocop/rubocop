@@ -104,26 +104,26 @@ module RuboCop
     def print_available_cops
       # Load the configs so the require()s are done for custom cops
       @config_store.for(Dir.pwd)
-      cops = Cop::Cop.all
+      registry = Cop::Cop.registry
       show_all = @options[:show_cops].empty?
 
       if show_all
-        puts "# Available cops (#{cops.length}) + config for #{Dir.pwd}: "
+        puts "# Available cops (#{registry.length}) + config for #{Dir.pwd}: "
       end
 
-      cops.departments.sort!.each do |department|
-        print_cops_of_department(cops, department, show_all)
+      registry.departments.sort!.each do |department|
+        print_cops_of_department(registry, department, show_all)
       end
     end
 
-    def print_cops_of_department(cops, department, show_all)
+    def print_cops_of_department(registry, department, show_all)
       selected_cops = if show_all
-                        cops_of_department(cops, department)
+                        cops_of_department(registry, department)
                       else
-                        selected_cops_of_department(cops, department)
+                        selected_cops_of_department(registry, department)
                       end
 
-      puts "# Department '#{department}' (#{selected_cops.size}):" if show_all
+      puts "# Department '#{department}' (#{selected_cops.length}):" if show_all
 
       print_cop_details(selected_cops)
     end
@@ -144,7 +144,7 @@ module RuboCop
     end
 
     def cops_of_department(cops, department)
-      cops.with_department(department).sort_by!(&:cop_name)
+      cops.with_department(department).sort!
     end
 
     def config_lines(cop)

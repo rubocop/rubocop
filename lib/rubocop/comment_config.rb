@@ -133,9 +133,7 @@ module RuboCop
     end
 
     def all_cop_names
-      @all_cop_names ||= Cop::Cop.all.map(&:cop_name).reject do |cop_name|
-        cop_name == UNNEEDED_DISABLE
-      end
+      @all_cop_names ||= Cop::Cop.registry.names - [UNNEEDED_DISABLE]
     end
 
     def comment_only_line?(line_number)

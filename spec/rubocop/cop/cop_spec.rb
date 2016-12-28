@@ -173,9 +173,9 @@ describe RuboCop::Cop::Cop do
     it('has right department') { expect(cop.department).to eq(:Rails) }
   end
 
-  describe 'CopStore' do
+  describe 'Registry' do
     context '#departments' do
-      subject { described_class.all.departments }
+      subject { described_class.registry.departments }
       it('has departments') { expect(subject.length).not_to eq(0) }
       it { is_expected.to include(:Lint) }
       it { is_expected.to include(:Rails) }
@@ -185,24 +185,26 @@ describe RuboCop::Cop::Cop do
         expect(subject.length).to eq(subject.uniq.length)
       end
     end
+
     context '#with_department' do
-      let(:departments) { described_class.all.departments }
-      it 'has at least one cop per type' do
+      let(:departments) { described_class.registry.departments }
+
+      it 'has at least one cop per department' do
         departments.each do |c|
-          expect(described_class.all.with_department(c).length).to be > 0
+          expect(described_class.registry.with_department(c).length).to be > 0
         end
       end
 
       it 'has each cop in exactly one type' do
         sum = 0
         departments.each do |c|
-          sum += described_class.all.with_department(c).length
+          sum += described_class.registry.with_department(c).length
         end
-        expect(sum).to be described_class.all.length
+        expect(sum).to be described_class.registry.length
       end
 
       it 'returns 0 for an invalid type' do
-        expect(described_class.all.with_department('x').length).to be 0
+        expect(described_class.registry.with_department('x').length).to be 0
       end
     end
   end

@@ -179,14 +179,14 @@ module RuboCop
     def self.validate_cop_list(names)
       return unless names
 
-      departments = Cop::Cop.all.departments.map(&:to_s)
+      departments = Cop::Cop.registry.departments.map(&:to_s)
 
       names.each do |name|
-        next if Cop::Cop.all.any? { |c| c.cop_name == name }
+        next if Cop::Cop.registry.names.include?(name)
         next if departments.include?(name)
         next if %w(Syntax Lint/Syntax).include?(name)
 
-        raise ArgumentError, "Unrecognized cop or namespace: #{name}."
+        raise ArgumentError, "Unrecognized cop or department: #{name}."
       end
     end
 
