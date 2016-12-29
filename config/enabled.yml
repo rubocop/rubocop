@@ -404,7 +404,7 @@ Style/LineEndConcatenation:
                  line end.
   Enabled: true
 
-Style/MethodCallParentheses:
+Style/MethodCallWithoutArgsParentheses:
   Description: 'Do not use parentheses for method calls with no arguments.'
   StyleGuide: '#method-invocation-parens'
   Enabled: true

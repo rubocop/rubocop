@@ -31,7 +31,7 @@ describe RuboCop::CommentConfig do
         'This is a string not a real comment # rubocop:disable Style/Loop',
         'END',
         '',
-        'foo # rubocop:disable Style/MethodCallParentheses', # 23
+        'foo # rubocop:disable Style/MethodCallWithoutArgsParentheses', # 23
         '',
         '# rubocop:enable Lint/Void',
         '',

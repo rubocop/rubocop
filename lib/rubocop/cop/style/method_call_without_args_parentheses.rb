@@ -11,7 +11,7 @@ module RuboCop
       #
       #   # good
       #   object.some_method
-      class MethodCallParentheses < Cop
+      class MethodCallWithoutArgsParentheses < Cop
         MSG = 'Do not use parentheses for method calls with ' \
               'no arguments.'.freeze
 

@@ -16,6 +16,8 @@
 * [#2992](https://github.com/bbatsov/rubocop/issues/2992): Add a configuration to `Style/ConditionalAssignment` to toggle offenses for ternary expressions. ([@rrosenblum][])
 * [#3824](https://github.com/bbatsov/rubocop/pull/3824): Add new `Perfomance/RegexpMatch` cop. ([@pocke][])
 * [#3825](https://github.com/bbatsov/rubocop/pull/3825): Add new `Rails/SkipsModelValidations` cop. ([@rahulcs][])
+* [#3737](https://github.com/bbatsov/rubocop/issues/3737): Add new `Style/MethodCallWithArgsParentheses` cop. ([@dominh][])
+* Renamed `MethodCallParentheses` to `MethodCallWithoutArgsParentheses`. ([@dominh][])
 
 ### Changes
 
@@ -2569,3 +2571,4 @@
 [@iguchi1124]: https://github.com/iguchi1124
 [@vergenzt]: https://github.com/vergenzt
 [@rahulcs]: https://github.com/rahulcs
+[@dominh]: https://github.com/dominh

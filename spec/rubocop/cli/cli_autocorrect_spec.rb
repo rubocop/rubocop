@@ -917,7 +917,7 @@ describe RuboCop::CLI, :isolated_environment do
               ''].join("\n"))
   end
 
-  it 'can correct MethodCallParentheses and EmptyLiteral offenses' do
+  it 'can correct MethodCallWithoutArgsParentheses and EmptyLiteral offenses' do
     create_file('example.rb', 'Hash.new()')
     expect(cli.run(%w(--auto-correct --format emacs))).to eq(0)
     expect($stderr.string).to eq('')

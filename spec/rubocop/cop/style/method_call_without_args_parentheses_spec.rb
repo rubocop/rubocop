@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::MethodCallParentheses do
+describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for parens in method call without args' do
