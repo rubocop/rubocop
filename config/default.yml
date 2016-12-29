@@ -740,6 +740,9 @@ Style/MethodDefParentheses:
     - require_no_parentheses
     - require_no_parentheses_except_multiline
 
+Style/MethodCallWithArgsParentheses:
+  IgnoredMethods: []
+
 Style/MethodName:
   EnforcedStyle: snake_case
   SupportedStyles:

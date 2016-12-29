@@ -2331,7 +2331,39 @@ some_str = 'ala' \
            'bala'
 ```
 
-## Style/MethodCallParentheses
+## Style/MethodCallWithArgsParentheses
+
+Enabled by default | Supports autocorrection
+--- | ---
+Disabled | Yes
+
+This cop checks presence of parentheses in method calls containing
+parameters.
+As in popular Ruby's frameworks a lot of methods should always be
+called without parentheses,
+users can ignore them by passing their names to IgnoredMethods option.
+
+### Example
+
+```ruby
+# bad
+array.delete e
+
+# good
+array.delete(e)
+
+# good if `puts` is listed in IgnoredMethods
+puts 'test'
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+IgnoredMethods | 
+
+
+## Style/MethodCallWithoutArgsParentheses
 
 Enabled by default | Supports autocorrection
 --- | ---
