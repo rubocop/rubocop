@@ -3,148 +3,113 @@
 module RuboCop
   module Cop
     module Style
-      # Here we check if the keys, separators, and values of a multi-line hash
-      # literal are aligned.
+      # Check that the keys, separators, and values of a multi-line hash
+      # literal are aligned according to configuration. The configuration
+      # options are:
+      #
+      #   - key (left align keys)
+      #   - separator (align hash rockets and colons, right align keys)
+      #   - table (left align keys, hash rockets, and values)
+      #
+      # The treatment of hashes passed as the last argument to a method call
+      # can also be configured. The options are:
+      #
+      #   - always_inspect
+      #   - always_ignore
+      #   - ignore_implicit (without curly braces)
+      #   - ignore_explicit (with curly braces)
+      #
+      # @example
+      #
+      #   # EnforcedHashRocketStyle: key (default)
+      #   # EnforcedColonStyle: key (default)
+      #
+      #   # good
+      #   {
+      #     foo: bar,
+      #     ba: baz
+      #   }
+      #   {
+      #     :foo => bar,
+      #     :ba => baz
+      #   }
+      #
+      #   # bad
+      #   {
+      #     foo: bar,
+      #      ba: baz
+      #   }
+      #   {
+      #     :foo => bar,
+      #      :ba => baz
+      #   }
+      #
+      # @example
+      #
+      #   # EnforcedHashRocketStyle: separator
+      #   # EnforcedColonStyle: separator
+      #
+      #   #good
+      #   {
+      #     foo: bar,
+      #      ba: baz
+      #   }
+      #   {
+      #     :foo => bar,
+      #      :ba => baz
+      #   }
+      #
+      #   #bad
+      #   {
+      #     foo: bar,
+      #     ba: baz
+      #   }
+      #   {
+      #     :foo => bar,
+      #     :ba => baz
+      #   }
+      #   {
+      #     :foo => bar,
+      #     :ba  => baz
+      #   }
+      #
+      # @example
+      #
+      #   # EnforcedHashRocketStyle: table
+      #   # EnforcedColonStyle: table
+      #
+      #   #good
+      #   {
+      #     foo: bar,
+      #     ba:  baz
+      #   }
+      #   {
+      #     :foo => bar,
+      #     :ba  => baz
+      #   }
+      #
+      #   #bad
+      #   {
+      #     foo: bar,
+      #     ba: baz
+      #   }
+      #   {
+      #     :foo => bar,
+      #      :ba => baz
+      #   }
       class AlignHash < Cop
-        # Handles calculation of deltas (deviations from correct alignment)
-        # when the enforced style is 'key'.
-        class KeyAlignment
-          def checkable_layout(_node)
-            true
-          end
-
-          def deltas_for_first_pair(*)
-            {} # The first pair is always considered correct.
-          end
-
-          def deltas(first_pair, current_pair)
-            if Util.begins_its_line?(current_pair.source_range)
-              { key: first_pair.loc.column - current_pair.loc.column }
-            else
-              {}
-            end
-          end
-        end
-
-        # Common functionality for the styles where not only keys, but also
-        # values are aligned.
-        class AlignmentOfValues
-          include HashNode # any_pairs_on_the_same_line?
-
-          def checkable_layout(node)
-            !any_pairs_on_the_same_line?(node) && all_have_same_separator?(node)
-          end
-
-          def deltas(first_pair, current_pair)
-            key_delta = key_delta(first_pair, current_pair)
-            current_separator = current_pair.loc.operator
-            separator_delta = separator_delta(first_pair, current_separator,
-                                              key_delta)
-            value_delta = value_delta(first_pair, current_pair) -
-                          key_delta - separator_delta
-
-            { key: key_delta, separator: separator_delta, value: value_delta }
-          end
-
-          private
-
-          def separator_delta(first_pair, current_separator, key_delta)
-            if current_separator.is?(':')
-              0 # Colon follows directly after key
-            else
-              hash_rocket_delta(first_pair, current_separator) - key_delta
-            end
-          end
-
-          def all_have_same_separator?(node)
-            first_separator = node.children.first.loc.operator.source
-            node.children.butfirst.all? do |pair|
-              pair.loc.operator.is?(first_separator)
-            end
-          end
-        end
-
-        # Handles calculation of deltas when the enforced style is 'table'.
-        class TableAlignment < AlignmentOfValues
-          # The table style is the only one where the first key-value pair can
-          # be considered to have bad alignment.
-          def deltas_for_first_pair(first_pair, node)
-            key_widths = node.children.map do |pair|
-              key, _value = *pair
-              key.source.length
-            end
-            @max_key_width = key_widths.max
-
-            separator_delta = separator_delta(first_pair,
-                                              first_pair.loc.operator, 0)
-            {
-              separator: separator_delta,
-              value:     value_delta(first_pair, first_pair) - separator_delta
-            }
-          end
-
-          private
-
-          def key_delta(first_pair, current_pair)
-            first_pair.loc.column - current_pair.loc.column
-          end
-
-          def hash_rocket_delta(first_pair, current_separator)
-            first_pair.loc.column + @max_key_width + 1 -
-              current_separator.column
-          end
-
-          def value_delta(first_pair, current_pair)
-            first_key, = *first_pair
-            _, current_value = *current_pair
-            correct_value_column = first_key.loc.column +
-                                   spaced_separator(current_pair).length +
-                                   @max_key_width
-            correct_value_column - current_value.loc.column
-          end
-
-          def spaced_separator(node)
-            node.loc.operator.is?('=>') ? ' => ' : ': '
-          end
-        end
-
-        # Handles calculation of deltas when the enforced style is 'separator'.
-        class SeparatorAlignment < AlignmentOfValues
-          def deltas_for_first_pair(*)
-            {} # The first pair is always considered correct.
-          end
-
-          private
-
-          def key_delta(first_pair, current_pair)
-            key_end_column(first_pair) - key_end_column(current_pair)
-          end
-
-          def key_end_column(pair)
-            key, _value = *pair
-            key.loc.column + key.source.length
-          end
-
-          def hash_rocket_delta(first_pair, current_separator)
-            first_pair.loc.operator.column - current_separator.column
-          end
-
-          def value_delta(first_pair, current_pair)
-            _, first_value = *first_pair
-            _, current_value = *current_pair
-            first_value.loc.column - current_value.loc.column
-          end
-        end
+        include HashAlignment
 
         MSG = 'Align the elements of a hash literal if they span more than ' \
               'one line.'.freeze
 
         def on_send(node)
-          return unless (last_child = node.children.last) &&
-                        hash?(last_child) &&
-                        ignore_last_argument_hash?(last_child)
+          last_argument = node.children.last
 
-          ignore_node(last_child)
+          return unless hash?(last_argument) &&
+                        ignore_hash_argument?(last_argument)
+
+          ignore_node(last_argument)
         end
 
         def on_hash(node)
@@ -152,33 +117,30 @@ module RuboCop
           return if node.children.empty?
           return unless node.multiline?
 
-          @alignment_for_hash_rockets ||=
-            new_alignment('EnforcedHashRocketStyle')
-          @alignment_for_colons ||= new_alignment('EnforcedColonStyle')
-
-          unless @alignment_for_hash_rockets.checkable_layout(node) &&
-                 @alignment_for_colons.checkable_layout(node)
-            return
-          end
+          return unless alignment_for_hash_rockets.checkable_layout?(node) &&
+                        alignment_for_colons.checkable_layout?(node)
 
           check_pairs(node)
         end
 
         private
 
+        attr_accessor :column_deltas
+
         def check_pairs(node)
           first_pair = node.children.first
-          @column_deltas = alignment_for(first_pair)
-                           .deltas_for_first_pair(first_pair, node)
+          self.column_deltas = alignment_for(first_pair)
+                               .deltas_for_first_pair(first_pair, node)
           add_offense(first_pair, :expression) unless good_alignment?
 
           node.children.each do |current|
-            @column_deltas = alignment_for(current).deltas(first_pair, current)
+            self.column_deltas = alignment_for(current)
+                                 .deltas(first_pair, current)
             add_offense(current, :expression) unless good_alignment?
           end
         end
 
-        def ignore_last_argument_hash?(node)
+        def ignore_hash_argument?(node)
           case cop_config['EnforcedLastArgumentHashStyle']
           when 'always_inspect'  then false
           when 'always_ignore'   then true
@@ -192,22 +154,32 @@ module RuboCop
         end
 
         def explicit_hash?(node)
-          node.loc.begin
+          hash?(node) && node.loc.begin
         end
 
         def alignment_for(pair)
           if pair.loc.operator.is?('=>')
-            @alignment_for_hash_rockets
+            alignment_for_hash_rockets
           else
-            @alignment_for_colons
+            alignment_for_colons
           end
+        end
+
+        def alignment_for_hash_rockets
+          @alignment_for_hash_rockets ||=
+            new_alignment('EnforcedHashRocketStyle')
+        end
+
+        def alignment_for_colons
+          @alignment_for_colons ||=
+            new_alignment('EnforcedColonStyle')
         end
 
         def autocorrect(node)
           # We can't use the instance variable inside the lambda. That would
           # just give each lambda the same reference and they would all get the
           # last value of each. A local variable fixes the problem.
-          key_delta = @column_deltas[:key] || 0
+          key_delta = column_deltas[:key] || 0
           key, value = *node
 
           if value.nil?
@@ -226,8 +198,8 @@ module RuboCop
           # We can't use the instance variable inside the lambda. That would
           # just give each lambda the same reference and they would all get the
           # last value of each. Some local variables fix the problem.
-          separator_delta = @column_deltas[:separator] || 0
-          value_delta     = @column_deltas[:value] || 0
+          separator_delta = column_deltas[:separator] || 0
+          value_delta     = column_deltas[:value] || 0
 
           key_column = key.column
           key_delta = -key_column if key_delta < -key_column
@@ -258,7 +230,7 @@ module RuboCop
         end
 
         def good_alignment?
-          @column_deltas.values.compact.all?(&:zero?)
+          column_deltas.values.compact.all?(&:zero?)
         end
       end
     end
