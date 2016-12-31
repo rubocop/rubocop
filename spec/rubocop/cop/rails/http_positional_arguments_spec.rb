@@ -232,6 +232,15 @@ post :create, params: { id: @user.id, ac: {
     expect(new_source).to eq(output)
   end
 
+  it 'auto-corrects http action when parameter matches special keyword name' do
+    source = 'post :create, id: 7, comment: { body: "hei" }'
+    inspect_source(cop, source)
+    expect(cop.offenses.size).to eq(1)
+    new_source = autocorrect_source(cop, source)
+    output = 'post :create, params: { id: 7, comment: { body: "hei" } }'
+    expect(new_source).to eq(output)
+  end
+
   it 'auto-corrects http action when params is a lvar' do
     source = [
       'params = { id: 1 }',
