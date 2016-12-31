@@ -223,7 +223,7 @@ post :create, params: { id: @user.id, ac: {
     expect(new_source).to eq(output)
   end
 
-  it 'does not register an offense for process method' do
+  it 'auto-corrects http action when params is a method call' do
     source = 'post :create, confirmation_data'
     inspect_source(cop, source)
     expect(cop.offenses.size).to eq(1)
