@@ -41,6 +41,7 @@
 * [#3788](https://github.com/bbatsov/rubocop/pull/3788): Prevent bad auto-correct in `Style/Next` when block has nested conditionals. ([@drenmi][])
 * [#3807](https://github.com/bbatsov/rubocop/pull/3807): Prevent `Style/Documentation` and `Style/DocumentationMethod` from mistaking RuboCop directives for class documentation. ([@drenmi][])
 * [#3815](https://github.com/bbatsov/rubocop/pull/3815): Fix false positive in `Style/IdenticalConditionalBranches` cop when branches have same line at leading. ([@pocke][])
+* Fix false negative in `Rails/HttpPositionalArguments` where offense would go undetected if one of the request parameter names matched one of the special keyword arguments. ([@deivid-rodriguez][])
 
 ## 0.46.0 (2016-11-30)
 

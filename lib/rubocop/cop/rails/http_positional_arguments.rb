@@ -42,8 +42,8 @@ module RuboCop
 
         # @return [Boolean] true if the line needs to be converted
         def needs_conversion?(data)
-          value = data.descendants.find do |d|
-            special_keyword_arg?(d)
+          value = data.child_nodes.find do |d|
+            special_keyword_arg?(d.children.first)
           end
           value.nil?
         end
