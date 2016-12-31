@@ -17,8 +17,7 @@ module RuboCop
         MSG = 'Use keyword arguments instead of ' \
               'positional arguments for http call: `%s`.'.freeze
         KEYWORD_ARGS = [
-          :headers, :env, :params, :body, :flash, :as, :xhr, :session, :method,
-          :format
+          :headers, :env, :params, :body, :flash, :as, :xhr, :session, :method
         ].freeze
         HTTP_METHODS = [:get, :post, :put, :patch, :delete, :head].freeze
 
@@ -42,14 +41,22 @@ module RuboCop
 
         # @return [Boolean] true if the line needs to be converted
         def needs_conversion?(data)
-          value = data.child_nodes.find do |d|
-            special_keyword_arg?(d.children.first)
+          children = data.child_nodes
+
+          value = children.find do |d|
+            special_keyword_arg?(d.children.first) ||
+              (format_arg?(d.children.first) && children.size == 1)
           end
+
           value.nil?
         end
 
         def special_keyword_arg?(node)
           KEYWORD_ARGS.include?(node.children.first) if node.type == :sym
+        end
+
+        def format_arg?(node)
+          node.children.first == :format if node.type == :sym
         end
 
         def convert_hash_data(data, type)
