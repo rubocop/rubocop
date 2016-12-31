@@ -42,13 +42,14 @@ module RuboCop
 
         # @return [Boolean] true if the line needs to be converted
         def needs_conversion?(data)
-          # if the line has already been converted to use keyword args
-          # then skip
-          # ie. get :new, params: { user_id: 1 }  (looking for keyword arg)
           value = data.descendants.find do |d|
-            KEYWORD_ARGS.include?(d.children.first) if d.type == :sym
+            special_keyword_arg?(d)
           end
           value.nil?
+        end
+
+        def special_keyword_arg?(node)
+          KEYWORD_ARGS.include?(node.children.first) if node.type == :sym
         end
 
         def convert_hash_data(data, type)
