@@ -142,9 +142,7 @@ module RuboCop
     end
 
     def cop_enabled?(cop)
-      department = cop.department.to_s.capitalize!
-
-      if (dept_config = self[department])
+      if (dept_config = self[cop.department.to_s])
         return false if dept_config['Enabled'] == false
       end
 
@@ -323,7 +321,7 @@ module RuboCop
 
     def reject_obsolete_cops
       OBSOLETE_COPS.each do |cop_name, message|
-        next unless key?(cop_name) || key?(cop_name.split('/').last)
+        next unless key?(cop_name) || key?(Cop::Badge.parse(cop_name).cop_name)
         message += "\n(obsolete configuration found in #{loaded_path}, please" \
                    ' update it)'
         raise ValidationError, message

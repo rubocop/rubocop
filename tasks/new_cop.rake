@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rubocop'
+
 desc 'Generate a new cop template'
 task :new_cop, [:cop] do |_task, args|
   def to_snake(str)
@@ -10,11 +12,13 @@ task :new_cop, [:cop] do |_task, args|
       .downcase
   end
 
-  cop_name = args[:cop] # Category/Name
+  cop_name = args[:cop] # Department/Name
   raise ArgumentError, 'One argument is required' unless cop_name
-  category, name = *cop_name.split('/', 2)
-  unless category && name
-    raise ArgumentError, 'Specify a cop name with Category/Name style'
+
+  badge = RuboCop::Cop::Badge.parse(cop_name)
+
+  unless badge.qualified?
+    raise ArgumentError, 'Specify a cop name with Department/Name style'
   end
 
   cop_code = <<-END
@@ -23,7 +27,7 @@ task :new_cop, [:cop] do |_task, args|
 # TODO: when finished, run `rake generate_cops_documentation` to update the docs
 module RuboCop
   module Cop
-    module #{category}
+    module #{badge.department}
       # TODO: Write cop description and example of bad / good code.
       #
       # @example
@@ -38,14 +42,14 @@ module RuboCop
       #
       #   # good
       #   good_method(args)
-      class #{name} < Cop
+      class #{badge.cop_name} < Cop
         # TODO: Implement the cop into here.
         #
         # In many cases, you can use a node matcher for matching node pattern.
         # See. https://github.com/bbatsov/rubocop/blob/master/lib/rubocop/node_pattern.rb
         #
         # For example
-        MSG = 'Message of #{cop_name}'.freeze
+        MSG = 'Message of #{badge.cop_name}'.freeze
 
         def_node_matcher :bad_method?, <<-PATTERN
           (:send nil :bad_method ...)
@@ -61,7 +65,7 @@ module RuboCop
 end
   END
 
-  cop_path = "lib/rubocop/cop/#{to_snake(cop_name)}.rb"
+  cop_path = "lib/rubocop/cop/#{to_snake(badge.cop_name)}.rb"
   File.write(cop_path, cop_code)
 
   spec_code = <<-END
@@ -69,7 +73,7 @@ end
 
 require 'spec_helper'
 
-describe RuboCop::Cop::#{category}::#{name} do
+describe RuboCop::Cop::#{badge.department}::#{badge.cop_name} do
   let(:config) { RuboCop::Config.new }
   subject(:cop) { described_class.new(config) }
 
@@ -80,7 +84,7 @@ describe RuboCop::Cop::#{category}::#{name} do
     inspect_source(cop, 'bad_method')
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
-      .to eq(['Message of #{cop_name}'])
+      .to eq(['Message of #{badge.cop_name}'])
   end
 
   it 'accepts' do
@@ -100,7 +104,7 @@ created
 
 Do 4 steps
 - Add an entry to `New feature` section in CHANGELOG.md
-  - e.g. Add new `#{cop_name}` cop. ([@your_id][])
+  - e.g. Add new `#{badge.cop_name}` cop. ([@your_id][])
 - Add `require '#{cop_path.gsub(/\.rb$/, '')}'` into lib/rubocop.rb
 - Add an entry into config/enabled.yml or config/disabled.yml
 - Implement a new cop to the generated file!

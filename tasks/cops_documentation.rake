@@ -6,7 +6,7 @@ desc 'Generate docs of all cops departments'
 
 task generate_cops_documentation: :yard do
   def cop_name_without_department(cop_name)
-    cop_name.split('/').last.to_sym
+    RuboCop::Cop::Badge.parse(cop_name).cop_name.to_sym
   end
 
   def cops_of_department(cops, department)
@@ -80,7 +80,7 @@ task generate_cops_documentation: :yard do
 
   def print_cops_of_department(cops, type, config)
     selected_cops = cops_of_department(cops, type)
-    content = "# #{type.capitalize}\n".dup
+    content = "# #{type}\n".dup
     selected_cops.each do |cop|
       content << print_cop_with_doc(cop, config)
     end
@@ -106,10 +106,11 @@ task generate_cops_documentation: :yard do
 
   def table_of_content_for_department(cops, department)
     type_title = department[0].upcase + department[1..-1]
-    content = "#### Department [#{type_title}](cops_#{department}.md)\n\n".dup
+    filename = "cops_#{department.downcase}.md"
+    content = "#### Department [#{type_title}](#{filename})\n\n".dup
     cops_of_department(cops, department.to_sym).each do |cop|
       anchor = cop.cop_name.sub('/', '').downcase
-      content << "* [#{cop.cop_name}](cops_#{department}.md##{anchor})\n"
+      content << "* [#{cop.cop_name}](#{filename}##{anchor})\n"
     end
 
     content

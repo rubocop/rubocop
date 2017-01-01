@@ -123,10 +123,7 @@ module RuboCop
                         selected_cops_of_department(cops, department)
                       end
 
-      if show_all
-        puts "# Department '#{department.to_s.capitalize}' " \
-             "(#{selected_cops.size}):"
-      end
+      puts "# Department '#{department}' (#{selected_cops.size}):" if show_all
 
       print_cop_details(selected_cops)
     end
