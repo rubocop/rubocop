@@ -111,21 +111,28 @@ module RuboCop
         puts "# Available cops (#{cops.length}) + config for #{Dir.pwd}: "
       end
 
-      cops.types.sort!.each { |type| print_cops_of_type(cops, type, show_all) }
+      cops.departments.sort!.each do |department|
+        print_cops_of_department(cops, department, show_all)
+      end
     end
 
-    def print_cops_of_type(cops, type, show_all)
+    def print_cops_of_department(cops, department, show_all)
       selected_cops = if show_all
-                        cops_of_type(cops, type)
+                        cops_of_department(cops, department)
                       else
-                        selected_cops_of_type(cops, type)
+                        selected_cops_of_department(cops, department)
                       end
 
       if show_all
-        puts "# Type '#{type.to_s.capitalize}' (#{selected_cops.size}):"
+        puts "# Department '#{department.to_s.capitalize}' " \
+             "(#{selected_cops.size}):"
       end
 
-      selected_cops.each do |cop|
+      print_cop_details(selected_cops)
+    end
+
+    def print_cop_details(cops)
+      cops.each do |cop|
         puts '# Supports --auto-correct' if cop.new.support_autocorrect?
         puts "#{cop.cop_name}:"
         puts config_lines(cop)
@@ -133,14 +140,14 @@ module RuboCop
       end
     end
 
-    def selected_cops_of_type(cops, type)
-      cops_of_type(cops, type).select do |cop|
+    def selected_cops_of_department(cops, department)
+      cops_of_department(cops, department).select do |cop|
         @options[:show_cops].include?(cop.cop_name)
       end
     end
 
-    def cops_of_type(cops, type)
-      cops.with_type(type).sort_by!(&:cop_name)
+    def cops_of_department(cops, department)
+      cops.with_department(department).sort_by!(&:cop_name)
     end
 
     def config_lines(cop)

@@ -591,24 +591,28 @@ describe RuboCop::CLI, :isolated_environment do
         end
       end
 
-      it 'prints all types' do
-        cops.types
-            .each { |type| expect(stdout).to include(type.to_s.capitalize) }
+      it 'prints all departments' do
+        cops.departments.each do |department|
+          expect(stdout).to include(department.to_s.capitalize)
+        end
       end
 
-      it 'prints all cops in their right type listing' do
+      it 'prints all cops in their right department listing' do
         lines = stdout.lines
-        lines.slice_before(/Type /).each do |slice|
-          types = cops.types.map { |type| type.to_s.capitalize }
-          current = types.delete(slice.shift[/Type '(?<c>[^']+)'/, 'c'])
-          # all cops in their type listing
-          cops.with_type(current).each do |cop|
+        lines.slice_before(/Department /).each do |slice|
+          departments = cops.departments.map do |department|
+            department.to_s.capitalize
+          end
+          current =
+            departments.delete(slice.shift[/Department '(?<c>[^']+)'/, 'c'])
+          # all cops in their department listing
+          cops.with_department(current).each do |cop|
             expect(slice.any? { |l| l.include? cop.cop_name }).to be_truthy
           end
 
-          # no cop in wrong type listing
-          types.each do |type|
-            cops.with_type(type).each do |cop|
+          # no cop in wrong department listing
+          departments.each do |department|
+            cops.with_department(department).each do |cop|
               expect(slice.any? { |l| l.include? cop.cop_name }).to be_falsey
             end
           end

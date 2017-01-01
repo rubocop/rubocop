@@ -44,7 +44,7 @@ module RuboCop
       # @!attribute [r] cop_name
       #
       # @return [String]
-      #   a cop class name without namespace.
+      #   a cop class name without department.
       #   i.e. type of the violation.
       #
       # @example

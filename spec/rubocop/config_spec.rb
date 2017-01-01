@@ -427,7 +427,7 @@ describe RuboCop::Config do
   end
 
   describe '#cop_enabled?' do
-    context 'when an entire cop type is disabled' do
+    context 'when an entire cop department is disabled' do
       context 'but an individual cop is enabled' do
         let(:hash) do
           {
@@ -443,7 +443,7 @@ describe RuboCop::Config do
       end
     end
 
-    context 'when an entire cop type is enabled' do
+    context 'when an entire cop department is enabled' do
       context 'but an individual cop is disabled' do
         let(:hash) do
           {

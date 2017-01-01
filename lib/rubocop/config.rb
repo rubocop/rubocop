@@ -142,7 +142,7 @@ module RuboCop
     end
 
     def cop_enabled?(cop)
-      department = cop.cop_type.to_s.capitalize!
+      department = cop.department.to_s.capitalize!
 
       if (dept_config = self[department])
         return false if dept_config['Enabled'] == false
