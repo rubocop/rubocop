@@ -152,34 +152,35 @@ describe RuboCop::Cop::Cop do
   context 'with no submodule' do
     subject(:cop) { described_class }
     it('has right name') { expect(cop.cop_name).to eq('Cop/Cop') }
-    it('has right department') { expect(cop.department).to eq(:cop) }
+    it('has right department') { expect(cop.department).to eq(:Cop) }
   end
 
   context 'with style cops' do
     subject(:cop) { RuboCop::Cop::Style::For }
     it('has right name') { expect(cop.cop_name).to eq('Style/For') }
-    it('has right department') { expect(cop.department).to eq(:style) }
+    it('has right department') { expect(cop.department).to eq(:Style) }
   end
 
   context 'with lint cops' do
     subject(:cop) { RuboCop::Cop::Lint::Loop }
     it('has right name') { expect(cop.cop_name).to eq('Lint/Loop') }
-    it('has right department') { expect(cop.department).to eq(:lint) }
+    it('has right department') { expect(cop.department).to eq(:Lint) }
   end
 
   context 'with rails cops' do
     subject(:cop) { RuboCop::Cop::Rails::Validation }
     it('has right name') { expect(cop.cop_name).to eq('Rails/Validation') }
-    it('has right department') { expect(cop.department).to eq(:rails) }
+    it('has right department') { expect(cop.department).to eq(:Rails) }
   end
 
   describe 'CopStore' do
     context '#departments' do
       subject { described_class.all.departments }
       it('has departments') { expect(subject.length).not_to eq(0) }
-      it { is_expected.to include(:lint) }
-      it { is_expected.to include(:rails) }
-      it { is_expected.to include(:style) }
+      it { is_expected.to include(:Lint) }
+      it { is_expected.to include(:Rails) }
+      it { is_expected.to include(:Style) }
+
       it 'contains every value only once' do
         expect(subject.length).to eq(subject.uniq.length)
       end

@@ -179,7 +179,7 @@ module RuboCop
     def self.validate_cop_list(names)
       return unless names
 
-      departments = Cop::Cop.all.departments.map { |t| t.to_s.capitalize }
+      departments = Cop::Cop.all.departments.map(&:to_s)
 
       names.each do |name|
         next if Cop::Cop.all.any? { |c| c.cop_name == name }

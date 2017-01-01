@@ -26,7 +26,7 @@ module RuboCop
         return name if cop_names.include?(name)
 
         basename = File.basename(name)
-        found_ns = departments.map(&:capitalize).select do |ns|
+        found_ns = departments.select do |ns|
           cop_names.include?("#{ns}/#{basename}")
         end
 
@@ -88,7 +88,7 @@ module RuboCop
       @all = CopStore.new
 
       def self.all
-        @all.without_department(:test)
+        @all.without_department(:Test)
       end
 
       def self.qualified_cop_name(name, origin)
@@ -96,23 +96,27 @@ module RuboCop
       end
 
       def self.non_rails
-        all.without_department(:rails)
+        all.without_department(:Rails)
       end
 
       def self.inherited(subclass)
         @all << subclass
       end
 
+      def self.badge
+        @badge ||= Badge.for(name)
+      end
+
       def self.cop_name
-        @cop_name ||= name.split('::').last(2).join('/')
+        badge.to_s
       end
 
       def self.department
-        @department ||= name.split('::')[-2].downcase.to_sym
+        badge.department
       end
 
       def self.lint?
-        department == :lint
+        department == :Lint
       end
 
       # Returns true if the cop name or the cop namespace matches any of the
@@ -121,7 +125,7 @@ module RuboCop
         return false unless given_names
 
         given_names.include?(cop_name) ||
-          given_names.include?(department.to_s.capitalize)
+          given_names.include?(department.to_s)
       end
 
       def initialize(config = nil, options = nil)

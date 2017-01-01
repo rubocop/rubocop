@@ -159,7 +159,7 @@ module RuboCop
 
         def cop_range(comment, cop)
           matching_range(comment.loc.expression, cop) ||
-            matching_range(comment.loc.expression, cop.split('/').last) ||
+            matching_range(comment.loc.expression, Badge.parse(cop).cop_name) ||
             raise("Couldn't find #{cop} in comment: #{comment.text}")
         end
 

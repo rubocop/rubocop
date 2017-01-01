@@ -593,16 +593,14 @@ describe RuboCop::CLI, :isolated_environment do
 
       it 'prints all departments' do
         cops.departments.each do |department|
-          expect(stdout).to include(department.to_s.capitalize)
+          expect(stdout).to include(department.to_s)
         end
       end
 
       it 'prints all cops in their right department listing' do
         lines = stdout.lines
         lines.slice_before(/Department /).each do |slice|
-          departments = cops.departments.map do |department|
-            department.to_s.capitalize
-          end
+          departments = cops.departments.map(&:to_s)
           current =
             departments.delete(slice.shift[/Department '(?<c>[^']+)'/, 'c'])
           # all cops in their department listing
