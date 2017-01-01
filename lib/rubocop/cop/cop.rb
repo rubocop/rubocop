@@ -8,25 +8,25 @@ module RuboCop
     # Store for all cops with helper functions
     class CopStore < ::Array
       # @return [Array<String>] list of types for current cops.
-      def types
-        @types ||= map(&:cop_type).uniq!
+      def departments
+        @departments ||= map(&:department).uniq!
       end
 
       # @return [Array<Cop>] Cops for that specific type.
-      def with_type(type)
-        CopStore.new(select { |c| c.cop_type == type })
+      def with_department(department)
+        CopStore.new(select { |c| c.department == department })
       end
 
       # @return [Array<Cop>] Cops not for a specific type.
-      def without_type(type)
-        CopStore.new(reject { |c| c.cop_type == type })
+      def without_department(department)
+        CopStore.new(reject { |c| c.department == department })
       end
 
       def qualified_cop_name(name, origin)
         return name if cop_names.include?(name)
 
         basename = File.basename(name)
-        found_ns = types.map(&:capitalize).select do |ns|
+        found_ns = departments.map(&:capitalize).select do |ns|
           cop_names.include?("#{ns}/#{basename}")
         end
 
@@ -88,7 +88,7 @@ module RuboCop
       @all = CopStore.new
 
       def self.all
-        @all.without_type(:test)
+        @all.without_department(:test)
       end
 
       def self.qualified_cop_name(name, origin)
@@ -96,7 +96,7 @@ module RuboCop
       end
 
       def self.non_rails
-        all.without_type(:rails)
+        all.without_department(:rails)
       end
 
       def self.inherited(subclass)
@@ -107,12 +107,12 @@ module RuboCop
         @cop_name ||= name.split('::').last(2).join('/')
       end
 
-      def self.cop_type
-        @cop_type ||= name.split('::')[-2].downcase.to_sym
+      def self.department
+        @department ||= name.split('::')[-2].downcase.to_sym
       end
 
       def self.lint?
-        cop_type == :lint
+        department == :lint
       end
 
       # Returns true if the cop name or the cop namespace matches any of the
@@ -121,7 +121,7 @@ module RuboCop
         return false unless given_names
 
         given_names.include?(cop_name) ||
-          given_names.include?(cop_type.to_s.capitalize)
+          given_names.include?(department.to_s.capitalize)
       end
 
       def initialize(config = nil, options = nil)

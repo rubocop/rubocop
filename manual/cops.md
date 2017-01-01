@@ -67,12 +67,12 @@ Bundler cops check for style or bad practices in Bundler files, e.g. `Gemfile`.
 In the following section you find all available cops:
 
 <!-- START_COP_LIST -->
-#### Type [Bundler](cops_bundler.md)
+#### Department [Bundler](cops_bundler.md)
 
 * [Bundler/DuplicatedGem](cops_bundler.md#bundlerduplicatedgem)
 * [Bundler/OrderedGems](cops_bundler.md#bundlerorderedgems)
 
-#### Type [Lint](cops_lint.md)
+#### Department [Lint](cops_lint.md)
 
 * [Lint/AmbiguousOperator](cops_lint.md#lintambiguousoperator)
 * [Lint/AmbiguousRegexpLiteral](cops_lint.md#lintambiguousregexpliteral)
@@ -133,7 +133,7 @@ In the following section you find all available cops:
 * [Lint/UselessSetterCall](cops_lint.md#lintuselesssettercall)
 * [Lint/Void](cops_lint.md#lintvoid)
 
-#### Type [Metrics](cops_metrics.md)
+#### Department [Metrics](cops_metrics.md)
 
 * [Metrics/AbcSize](cops_metrics.md#metricsabcsize)
 * [Metrics/BlockLength](cops_metrics.md#metricsblocklength)
@@ -146,7 +146,7 @@ In the following section you find all available cops:
 * [Metrics/ParameterLists](cops_metrics.md#metricsparameterlists)
 * [Metrics/PerceivedComplexity](cops_metrics.md#metricsperceivedcomplexity)
 
-#### Type [Performance](cops_performance.md)
+#### Department [Performance](cops_performance.md)
 
 * [Performance/CaseWhenSplat](cops_performance.md#performancecasewhensplat)
 * [Performance/Casecmp](cops_performance.md#performancecasecmp)
@@ -172,7 +172,7 @@ In the following section you find all available cops:
 * [Performance/StringReplacement](cops_performance.md#performancestringreplacement)
 * [Performance/TimesMap](cops_performance.md#performancetimesmap)
 
-#### Type [Rails](cops_rails.md)
+#### Department [Rails](cops_rails.md)
 
 * [Rails/ActionFilter](cops_rails.md#railsactionfilter)
 * [Rails/Date](cops_rails.md#railsdate)
@@ -199,14 +199,14 @@ In the following section you find all available cops:
 * [Rails/UniqBeforePluck](cops_rails.md#railsuniqbeforepluck)
 * [Rails/Validation](cops_rails.md#railsvalidation)
 
-#### Type [Security](cops_security.md)
+#### Department [Security](cops_security.md)
 
 * [Security/Eval](cops_security.md#securityeval)
 * [Security/JSONLoad](cops_security.md#securityjsonload)
 * [Security/MarshalLoad](cops_security.md#securitymarshalload)
 * [Security/YAMLLoad](cops_security.md#securityyamlload)
 
-#### Type [Style](cops_style.md)
+#### Department [Style](cops_style.md)
 
 * [Style/AccessModifierIndentation](cops_style.md#styleaccessmodifierindentation)
 * [Style/AccessorMethodName](cops_style.md#styleaccessormethodname)

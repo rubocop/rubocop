@@ -152,31 +152,31 @@ describe RuboCop::Cop::Cop do
   context 'with no submodule' do
     subject(:cop) { described_class }
     it('has right name') { expect(cop.cop_name).to eq('Cop/Cop') }
-    it('has right type') { expect(cop.cop_type).to eq(:cop) }
+    it('has right department') { expect(cop.department).to eq(:cop) }
   end
 
   context 'with style cops' do
     subject(:cop) { RuboCop::Cop::Style::For }
     it('has right name') { expect(cop.cop_name).to eq('Style/For') }
-    it('has right type') { expect(cop.cop_type).to eq(:style) }
+    it('has right department') { expect(cop.department).to eq(:style) }
   end
 
   context 'with lint cops' do
     subject(:cop) { RuboCop::Cop::Lint::Loop }
     it('has right name') { expect(cop.cop_name).to eq('Lint/Loop') }
-    it('has right type') { expect(cop.cop_type).to eq(:lint) }
+    it('has right department') { expect(cop.department).to eq(:lint) }
   end
 
   context 'with rails cops' do
     subject(:cop) { RuboCop::Cop::Rails::Validation }
     it('has right name') { expect(cop.cop_name).to eq('Rails/Validation') }
-    it('has right type') { expect(cop.cop_type).to eq(:rails) }
+    it('has right department') { expect(cop.department).to eq(:rails) }
   end
 
   describe 'CopStore' do
-    context '#types' do
-      subject { described_class.all.types }
-      it('has types') { expect(subject.length).not_to eq(0) }
+    context '#departments' do
+      subject { described_class.all.departments }
+      it('has departments') { expect(subject.length).not_to eq(0) }
       it { is_expected.to include(:lint) }
       it { is_expected.to include(:rails) }
       it { is_expected.to include(:style) }
@@ -184,24 +184,24 @@ describe RuboCop::Cop::Cop do
         expect(subject.length).to eq(subject.uniq.length)
       end
     end
-    context '#with_type' do
-      let(:types) { described_class.all.types }
+    context '#with_department' do
+      let(:departments) { described_class.all.departments }
       it 'has at least one cop per type' do
-        types.each do |c|
-          expect(described_class.all.with_type(c).length).to be > 0
+        departments.each do |c|
+          expect(described_class.all.with_department(c).length).to be > 0
         end
       end
 
       it 'has each cop in exactly one type' do
         sum = 0
-        types.each do |c|
-          sum += described_class.all.with_type(c).length
+        departments.each do |c|
+          sum += described_class.all.with_department(c).length
         end
         expect(sum).to be described_class.all.length
       end
 
       it 'returns 0 for an invalid type' do
-        expect(described_class.all.with_type('x').length).to be 0
+        expect(described_class.all.with_department('x').length).to be 0
       end
     end
   end

@@ -2,15 +2,15 @@
 require 'yard'
 require 'rubocop'
 
-desc 'Generate docs of all cops types'
+desc 'Generate docs of all cops departments'
 
 task generate_cops_documentation: :yard do
-  def cop_name_without_type(cop_name)
+  def cop_name_without_department(cop_name)
     cop_name.split('/').last.to_sym
   end
 
-  def cops_of_type(cops, type)
-    cops.with_type(type).sort_by!(&:cop_name)
+  def cops_of_department(cops, department)
+    cops.with_department(department).sort_by!(&:cop_name)
   end
 
   def cops_body(config, cop, description, examples_objects, pars)
@@ -78,8 +78,8 @@ task generate_cops_documentation: :yard do
          .gsub('*', '\*')
   end
 
-  def print_cops_of_type(cops, type, config)
-    selected_cops = cops_of_type(cops, type)
+  def print_cops_of_department(cops, type, config)
+    selected_cops = cops_of_department(cops, type)
     content = "# #{type.capitalize}\n".dup
     selected_cops.each do |cop|
       content << print_cop_with_doc(cop, config)
@@ -96,7 +96,7 @@ task generate_cops_documentation: :yard do
     description = 'No documentation'
     examples_object = []
     YARD::Registry.all.select { |o| !o.docstring.blank? }.map do |o|
-      if o.name == cop_name_without_type(cop.cop_name)
+      if o.name == cop_name_without_department(cop.cop_name)
         description = o.docstring
         examples_object = o.tags('example')
       end
@@ -104,12 +104,12 @@ task generate_cops_documentation: :yard do
     cops_body(config, cop, description, examples_object, pars)
   end
 
-  def table_of_content_for_type(cops, type)
-    type_title = type[0].upcase + type[1..-1]
-    content = "#### Type [#{type_title}](cops_#{type}.md)\n\n".dup
-    cops_of_type(cops, type.to_sym).each do |cop|
+  def table_of_content_for_department(cops, department)
+    type_title = department[0].upcase + department[1..-1]
+    content = "#### Department [#{type_title}](cops_#{department}.md)\n\n".dup
+    cops_of_department(cops, department.to_sym).each do |cop|
       anchor = cop.cop_name.sub('/', '').downcase
-      content << "* [#{cop.cop_name}](cops_#{type}.md##{anchor})\n"
+      content << "* [#{cop.cop_name}](cops_#{department}.md##{anchor})\n"
     end
 
     content
@@ -120,9 +120,7 @@ task generate_cops_documentation: :yard do
     original = File.read(path)
     content = "<!-- START_COP_LIST -->\n".dup
 
-    content << cops.types.map(&:to_s).sort
-                   .map { |type| table_of_content_for_type(cops, type) }
-               .join("\n")
+    content << table_contents(cops)
 
     content << "\n<!-- END_COP_LIST -->"
 
@@ -130,6 +128,15 @@ task generate_cops_documentation: :yard do
       /<!-- START_COP_LIST -->.+<!-- END_COP_LIST -->/m, content
     )
     File.write(path, content)
+  end
+
+  def table_contents(cops)
+    cops
+      .departments
+      .map(&:to_s)
+      .sort
+      .map { |department| table_of_content_for_department(cops, department) }
+      .join("\n")
   end
 
   def assert_manual_synchronized
@@ -149,7 +156,10 @@ task generate_cops_documentation: :yard do
   config = RuboCop::ConfigLoader.default_configuration
 
   YARD::Registry.load!
-  cops.types.sort!.each { |type| print_cops_of_type(cops, type, config) }
+  cops.departments.sort!.each do |department|
+    print_cops_of_department(cops, department, config)
+  end
+
   print_table_of_contents(cops)
 
   assert_manual_synchronized if ENV['CI'] == 'true'
