@@ -5,6 +5,8 @@ require 'spec_helper'
 describe 'isolated environment', :isolated_environment do
   include FileHelper
 
+  include_context 'cli spec behavior'
+
   let(:cli) { RuboCop::CLI.new }
 
   before(:each) { $stdout = StringIO.new }
