@@ -43,11 +43,8 @@ module RuboCop
         private
 
         def avoid_autocorrect?(args)
-          hash_with_braces?(args.last) && braces_will_be_removed?(args)
-        end
-
-        def hash_with_braces?(node)
-          node.hash_type? && node.loc.begin
+          args.last.hash_type? && args.last.braces? &&
+            braces_will_be_removed?(args)
         end
 
         # Returns true if running with --auto-correct would remove the braces
