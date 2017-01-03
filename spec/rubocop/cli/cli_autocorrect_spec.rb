@@ -5,6 +5,8 @@ require 'spec_helper'
 describe RuboCop::CLI, :isolated_environment do
   include FileHelper
 
+  include_context 'cli spec behavior'
+
   subject(:cli) { described_class.new }
 
   before(:each) do
