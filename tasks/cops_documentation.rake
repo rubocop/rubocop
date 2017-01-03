@@ -84,7 +84,7 @@ task generate_cops_documentation: :yard do
     selected_cops.each do |cop|
       content << print_cop_with_doc(cop, config)
     end
-    file_name = "#{Dir.pwd}/manual/cops_#{type}.md"
+    file_name = "#{Dir.pwd}/manual/cops_#{type.downcase}.md"
     file = File.open(file_name, 'w')
     puts "* generated #{file_name}"
     file.write(content)
