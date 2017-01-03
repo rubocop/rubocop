@@ -52,6 +52,8 @@ describe RuboCop::Cop::Style::RedundantParentheses do
   it_behaves_like 'redundant', '(true)', 'true', 'a literal'
   it_behaves_like 'redundant', '(false)', 'false', 'a literal'
   it_behaves_like 'redundant', '(/regexp/)', '/regexp/', 'a literal'
+  it_behaves_like 'redundant', '("x"; "y")', '"x"; "y"', 'a literal'
+  it_behaves_like 'redundant', '(1; 2)', '1; 2', 'a literal'
   if RUBY_VERSION >= '2.1'
     it_behaves_like 'redundant', '(1i)', '1i', 'a literal'
     it_behaves_like 'redundant', '(1r)', '1r', 'a literal'
@@ -93,6 +95,7 @@ describe RuboCop::Cop::Style::RedundantParentheses do
   it_behaves_like 'redundant', '("foo"[0])', '"foo"[0]', 'a method call'
   it_behaves_like 'redundant', '(["foo"][0])', '["foo"][0]', 'a method call'
   it_behaves_like 'redundant', '({0 => :a}[0])', '{0 => :a}[0]', 'a method call'
+  it_behaves_like 'redundant', '(x; y)', 'x; y', 'a method call'
 
   it_behaves_like 'redundant', '(!x)', '!x', 'an unary operation'
   it_behaves_like 'redundant', '(~x)', '~x', 'an unary operation'
@@ -119,6 +122,51 @@ describe RuboCop::Cop::Style::RedundantParentheses do
   it_behaves_like 'redundant', '2**(2)', '2**2', 'a literal', '(2)'
   it_behaves_like 'plausible', '(-2)**2'
   it_behaves_like 'plausible', '(-2.1)**2'
+
+  it_behaves_like 'plausible', 'x = (foo; bar)'
+  it_behaves_like 'plausible', 'x += (foo; bar)'
+  it_behaves_like 'plausible', 'x + (foo; bar)'
+  it_behaves_like 'plausible', 'x((foo; bar))'
+  it_behaves_like 'redundant', <<-END, <<-END2, 'a method call', '(foo; bar)'
+    def x
+      (foo; bar)
+    end
+  END
+    def x
+      foo; bar
+    end
+  END2
+  it_behaves_like 'redundant', <<-END, <<-END2, 'a method call', '(foo; bar)'
+    def x
+      baz
+      (foo; bar)
+    end
+  END
+    def x
+      baz
+      foo; bar
+    end
+  END2
+  it_behaves_like 'redundant', <<-END, <<-END2, 'a method call', '(foo; bar)'
+    x do
+      (foo; bar)
+    end
+  END
+    x do
+      foo; bar
+    end
+  END2
+  it_behaves_like 'redundant', <<-END, <<-END2, 'a method call', '(foo; bar)'
+    x do
+      baz
+      (foo; bar)
+    end
+  END
+    x do
+      baz
+      foo; bar
+    end
+  END2
 
   it 'accepts parentheses around a method call with unparenthesized ' \
      'arguments' do
