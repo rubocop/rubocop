@@ -6,12 +6,12 @@ module RuboCop
       # This cop checks for the presence of superfluous parentheses around the
       # condition of if/unless/while/until.
       class ParenthesesAroundCondition < Cop
-        include IfNode
         include SafeAssignment
         include Parentheses
 
         def on_if(node)
-          return if ternary?(node)
+          return if node.ternary?
+
           process_control_op(node)
         end
 
@@ -42,11 +42,11 @@ module RuboCop
         end
 
         def modifier_op?(node)
-          return false if ternary?(node)
+          return false if node.if_type? && node.ternary?
           return true if node.rescue_type?
 
           [:if, :while, :until].include?(node.type) &&
-            node.loc.end.nil?
+            node.modifier_form?
         end
 
         def message(node)

@@ -16,23 +16,29 @@ module RuboCop
       #   elsif cond then b
       #   end
       class MultilineIfThen < Cop
-        include IfNode
         include OnNormalIfUnless
 
+        NON_MODIFIER_THEN = /then\s*(#.*)?$/
+
+        MSG = 'Do not use `then` for multi-line `%s`.'.freeze
+
         def on_normal_if_unless(node)
-          return unless node.loc.begin
-          return unless node.loc.begin.source_line =~ /then\s*(#.*)?$/
-          add_offense(node, :begin)
+          return unless non_modifier_then?(node)
+
+          add_offense(node, :begin, format(MSG, node.keyword))
         end
 
-        def message(node)
-          "Do not use `then` for multi-line `#{node.loc.keyword.source}`."
+        private
+
+        def non_modifier_then?(node)
+          node.loc.begin && node.loc.begin.source_line =~ NON_MODIFIER_THEN
         end
 
         def autocorrect(node)
           lambda do |corrector|
-            corrector.remove(range_with_surrounding_space(node.loc.begin,
-                                                          :left))
+            corrector.remove(
+              range_with_surrounding_space(node.loc.begin, :left)
+            )
           end
         end
       end

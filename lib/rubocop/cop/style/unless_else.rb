@@ -9,11 +9,7 @@ module RuboCop
               'positive case first.'.freeze
 
         def on_if(node)
-          loc = node.loc
-
-          # discard ternary ops and modifier if/unless nodes
-          return unless loc.respond_to?(:keyword) && loc.respond_to?(:else)
-          return unless loc.keyword.is?('unless'.freeze) && loc.else
+          return unless node.unless? && node.else?
 
           add_offense(node, :expression)
         end

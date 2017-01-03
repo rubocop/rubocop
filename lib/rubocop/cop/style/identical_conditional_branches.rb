@@ -41,12 +41,10 @@ module RuboCop
       #     do_y
       #   end
       class IdenticalConditionalBranches < Cop
-        include IfNode
-
         MSG = 'Move `%s` out of the conditional.'.freeze
 
         def on_if(node)
-          return if elsif?(node)
+          return if node.elsif?
           _condition, if_branch, else_branch = *node
           branches = expand_elses(else_branch).unshift(if_branch)
 

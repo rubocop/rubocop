@@ -22,7 +22,6 @@ module RuboCop
       # or a case expression with a default branch.
       class RedundantReturn < Cop
         include OnMethodDef
-        include IfNode
 
         MSG = 'Redundant `return` detected.'.freeze
 
@@ -104,9 +103,10 @@ module RuboCop
         end
 
         def check_if_node(node)
-          return if modifier_if?(node) || ternary?(node)
+          return if node.modifier_form? || node.ternary?
 
-          _cond, if_node, else_node = if_node_parts(node)
+          _cond, if_node, else_node = *node.if_node_parts
+
           check_branch(if_node) if if_node
           check_branch(else_node) if else_node
         end

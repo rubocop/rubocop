@@ -6,7 +6,6 @@ module RuboCop
       # Checks that operators have space around them, except for **
       # which should not have surrounding space.
       class SpaceAroundOperators < Cop
-        include IfNode
         include PrecedingFollowingAlignment
         include HashNode # any_pairs_on_the_same_line?
 
@@ -23,7 +22,8 @@ module RuboCop
         end
 
         def on_if(node)
-          return unless ternary?(node)
+          return unless node.ternary?
+
           _, if_branch, else_branch = *node
 
           check_operator(node.loc.question, if_branch.source_range)

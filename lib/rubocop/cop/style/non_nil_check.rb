@@ -25,7 +25,6 @@ module RuboCop
       #  end
       class NonNilCheck < Cop
         include OnMethodDef
-        include IfNode
 
         def_node_matcher :not_equal_to_nil?, '(send _ :!= (:nil))'
         def_node_matcher :unless_check?, '(if (send _ :nil?) ...)'
@@ -47,8 +46,8 @@ module RuboCop
 
         def unless_and_nil_check?(send_node)
           parent = send_node.parent
-          nil_check?(send_node) && unless_check?(parent) && !ternary?(parent) &&
-            parent.loc.keyword.is?('unless')
+          nil_check?(send_node) && unless_check?(parent) && !parent.ternary? &&
+            parent.unless?
         end
 
         def message(node)

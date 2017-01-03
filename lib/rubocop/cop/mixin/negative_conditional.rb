@@ -2,11 +2,10 @@
 
 module RuboCop
   module Cop
-    # Some common code shared between FavorUnlessOverNegatedIf and
-    # FavorUntilOverNegatedWhile.
+    # Some common code shared between `NegatedIf` and
+    # `NegatedWhile` cops.
     module NegativeConditional
       extend NodePattern::Macros
-      include IfNode
 
       def_node_matcher :single_negative?, '(send !(send _ :!) :!)'
       def_node_matcher :empty_condition?, '(begin)'
@@ -20,7 +19,8 @@ module RuboCop
         # around condition.
         condition = condition.children.last while condition.begin_type?
 
-        return unless single_negative?(condition) && !if_else?(node)
+        return unless single_negative?(condition)
+        return if node.if_type? && node.else?
 
         add_offense(node, :expression)
       end

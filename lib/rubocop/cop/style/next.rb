@@ -19,7 +19,6 @@ module RuboCop
       #     puts a
       #   end
       class Next < Cop
-        include IfNode
         include ConfigurableEnforcedStyle
         include MinBodyLength
 
@@ -89,25 +88,25 @@ module RuboCop
         end
 
         def allowed_modifier_if?(node)
-          style == :skip_modifier_ifs && modifier_if?(node) ||
-            !modifier_if?(node) && !min_body_length?(node)
-        end
-
-        def if_else_children?(node)
-          node.each_child_node(:if).any? do |child|
-            if_else?(child)
+          if node.modifier_form?
+            style == :skip_modifier_ifs
+          else
+            !min_body_length?(node)
           end
         end
 
+        def if_else_children?(node)
+          node.each_child_node(:if).any?(&:else?)
+        end
+
         def if_without_else?(node)
-          node.if_type? && !ternary?(node) && !if_else?(node)
+          node.if_type? && !node.ternary? && !node.else?
         end
 
         def exit_body_type?(node)
-          _conditional, if_body, _else_body = *node
-          return false unless if_body
+          return false unless node.if_branch
 
-          EXIT_TYPES.include?(if_body.type)
+          EXIT_TYPES.include?(node.if_branch.type)
         end
 
         def offense_node(body)
@@ -123,7 +122,7 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            if modifier_if?(node)
+            if node.modifier_form?
               autocorrect_modifier(corrector, node)
             else
               autocorrect_block(corrector, node)

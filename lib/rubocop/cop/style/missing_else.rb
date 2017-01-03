@@ -40,9 +40,9 @@ module RuboCop
         def on_normal_if_unless(node)
           unless_else_cop = config.for_cop('Style/UnlessElse')
           unless_else_enabled = unless_else_cop['Enabled'] if unless_else_cop
-          return if unless_else_enabled &&
-                    node.loc.keyword &&
-                    node.loc.keyword.is?('unless')
+
+          return if unless_else_enabled && node.unless?
+
           check(node, if_else_clause(node)) unless style == :case
         end
 
