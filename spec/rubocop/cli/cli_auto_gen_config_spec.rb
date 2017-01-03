@@ -4,31 +4,9 @@ require 'spec_helper'
 require 'timeout'
 
 describe RuboCop::CLI, :isolated_environment do
-  include FileHelper
-
   include_context 'cli spec behavior'
 
   subject(:cli) { described_class.new }
-
-  before(:each) do
-    $stdout = StringIO.new
-    $stderr = StringIO.new
-    RuboCop::ConfigLoader.debug = false
-
-    # OPTIMIZE: Makes these specs faster. Work directory (the parent of
-    # .rubocop_cache) is removed afterwards anyway.
-    RuboCop::ResultCache.inhibit_cleanup = true
-  end
-
-  after(:each) do
-    $stdout = STDOUT
-    $stderr = STDERR
-    RuboCop::ResultCache.inhibit_cleanup = false
-  end
-
-  def abs(path)
-    File.expand_path(path)
-  end
 
   describe '--auto-gen-config' do
     before(:each) do
