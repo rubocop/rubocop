@@ -93,7 +93,7 @@ module RuboCop
         end
 
         def basic_literal?(node)
-          if node && node.array_type?
+          if node.array_type?
             primitive_array?(node)
           else
             node.basic_literal?

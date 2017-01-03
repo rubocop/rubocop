@@ -6,18 +6,9 @@ module RuboCop
     # syntax.
     module ArraySyntax
       def bracketed_array_of?(element_type, node)
-        return false unless square_brackets?(node)
+        return false unless node.square_brackets? && node.values.size > 1
 
-        array_elems = node.children
-
-        # no need to check empty arrays
-        return false unless array_elems && array_elems.size > 1
-
-        array_elems.all? { |e| e.type == element_type }
-      end
-
-      def square_brackets?(node)
-        node.loc.begin && node.loc.begin.is?('[')
+        node.values.all? { |value| value.type == element_type }
       end
     end
   end

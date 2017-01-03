@@ -23,6 +23,10 @@ module RuboCop
       class PercentStringArray < Cop
         include PercentLiteral
 
+        QUOTES_AND_COMMAS = [/,$/, /^'.*'$/, /^".*"$/].freeze
+        LEADING_QUOTE = /^['"]/
+        TRAILING_QUOTE = /['"]?,?$/
+
         MSG = "Within `%w`/`%W`, quotes and ',' are unnecessary and may be " \
           'unwanted in the resulting strings.'.freeze
 
@@ -39,27 +43,27 @@ module RuboCop
         private
 
         def contains_quotes_or_commas?(node)
-          patterns = [/,$/, /^'.*'$/, /^".*"$/]
-
-          node.children.any? do |child|
-            literal = scrub_string(child.children.first.to_s)
+          node.values.any? do |value|
+            literal = scrub_string(value.children.first.to_s)
 
             # To avoid likely false positives (e.g. a single ' or ")
             next if literal.gsub(/[^\p{Alnum}]/, '').empty?
 
-            patterns.any? { |pat| literal =~ pat }
+            QUOTES_AND_COMMAS.any? { |pat| literal =~ pat }
           end
         end
 
         def autocorrect(node)
           lambda do |corrector|
-            node.children.each do |child|
-              range = child.loc.expression
+            node.values.each do |value|
+              range = value.loc.expression
 
-              match = /['"]?,?$/.match(range.source)
+              match = range.source.match(TRAILING_QUOTE)
               corrector.remove_trailing(range, match[0].length) if match
 
-              corrector.remove_leading(range, 1) if /^['"]/ =~ range.source
+              if range.source =~ LEADING_QUOTE
+                corrector.remove_leading(range, 1)
+              end
             end
           end
         end

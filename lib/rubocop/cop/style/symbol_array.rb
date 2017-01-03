@@ -19,7 +19,7 @@ module RuboCop
         def on_array(node)
           if bracketed_array_of?(:sym, node)
             check_bracketed_array(node)
-          elsif percent_array?(node)
+          elsif node.percent_literal?(:symbol)
             check_percent_array(node)
           end
         end
@@ -38,10 +38,6 @@ module RuboCop
         end
 
         private
-
-        def percent_array?(node)
-          node.loc.begin && node.loc.begin.source =~ /\A%[iI]/
-        end
 
         def check_bracketed_array(node)
           return if comments_in_array?(node)
