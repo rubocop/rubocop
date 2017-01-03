@@ -84,16 +84,18 @@ module RuboCop
         end
 
         private
+        
+        def check(node)
+          empty_check(node) if empty_style?
+          nil_check(node) if nil_style?
+        end
 
-        def check(node, else_clause)
-          case style
-          when :empty
-            empty_check(node, else_clause)
-          when :nil
-            nil_check(node, else_clause)
-          when :both
-            both_check(node, else_clause)
-          end
+        def nil_style?
+          style == :nil || style == :both
+        end
+
+        def empty_style?
+          style == :empty || style == :both
         end
 
         def empty_check(node, else_clause)

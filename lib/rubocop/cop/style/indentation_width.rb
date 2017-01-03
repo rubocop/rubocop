@@ -17,7 +17,6 @@ module RuboCop
         include AutocorrectAlignment
         include OnMethodDef
         include CheckAssignment
-        include IfNode
         include AccessModifierNode
 
         SPECIAL_MODIFIERS = %w(private protected).freeze
@@ -149,11 +148,10 @@ module RuboCop
         end
 
         def on_if(node, base = node)
-          return if ignored_node?(node)
-          return if ternary?(node)
-          return if modifier_if?(node)
+          return if ignored_node?(node) || !node.body
+          return if node.ternary? || node.modifier_form?
 
-          _condition, body, else_clause = if_node_parts(node)
+          _condition, body, else_clause = *node.if_node_parts
 
           check_if(node, body, else_clause, base.loc) if body
         end
@@ -201,14 +199,14 @@ module RuboCop
         end
 
         def check_if(node, body, else_clause, base_loc)
-          return if ternary?(node)
+          return if node.ternary?
 
           check_indentation(base_loc, body)
           return unless else_clause
 
           # If the else clause is an elsif, it will get its own on_if call so
           # we don't need to process it here.
-          return if elsif?(else_clause)
+          return if else_clause.if_type? && else_clause.elsif?
 
           check_indentation(node.loc.else, else_clause)
         end

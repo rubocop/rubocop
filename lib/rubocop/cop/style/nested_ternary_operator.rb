@@ -5,16 +5,14 @@ module RuboCop
     module Style
       # This cop checks for nested ternary op expressions.
       class NestedTernaryOperator < Cop
-        include IfNode
-
         MSG = 'Ternary operators must not be nested. Prefer `if` or `else` ' \
               'constructs instead.'.freeze
 
         def on_if(node)
-          return unless ternary?(node)
+          return unless node.ternary?
 
-          node.each_descendant(:if) do |nested_if_node|
-            add_offense(nested_if_node, :expression) if ternary?(nested_if_node)
+          node.each_descendant(:if).select(&:ternary?).each do |nested_ternary|
+            add_offense(nested_ternary, :expression)
           end
         end
       end

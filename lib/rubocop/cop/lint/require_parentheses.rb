@@ -26,43 +26,36 @@ module RuboCop
       #
       #   if day.is?(:tuesday) && month == :jan
       class RequireParentheses < Cop
-        include IfNode
-
         MSG = 'Use parentheses in the method call to avoid confusion about ' \
               'precedence.'.freeze
 
         def on_send(node)
           _receiver, method_name, *args = *node
 
-          return if parentheses?(node)
-          return if args.empty?
+          return if parentheses?(node) || args.empty?
 
-          if ternary?(args.first)
+          if args.first.if_type? && args.first.ternary?
             check_ternary(args.first, node)
-          elsif predicate?(method_name)
-            # We're only checking predicate methods. There would be false
-            # positives otherwise.
-            check_send(args.last, node)
+          elsif method_name.to_s.end_with?('?')
+            check_predicate(args.last, node)
           end
         end
 
         private
 
-        def check_ternary(arg, node)
-          condition, = *arg
-          return unless offense?(condition)
+        def check_ternary(ternary, node)
+          return unless offense?(ternary.condition)
 
-          expr = node.source_range
-          range = range_between(expr.begin_pos, condition.source_range.end_pos)
+          range = range_between(node.source_range.begin_pos,
+                                ternary.condition.source_range.end_pos)
+
           add_offense(range, range)
         end
 
-        def check_send(arg, node)
-          add_offense(node, :expression) if offense?(arg)
-        end
+        def check_predicate(predicate, node)
+          return unless offense?(predicate)
 
-        def predicate?(method_name)
-          method_name.to_s.end_with?('?')
+          add_offense(node, :expression)
         end
 
         def offense?(node)

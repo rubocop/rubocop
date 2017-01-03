@@ -53,7 +53,6 @@ module RuboCop
       class EndAlignment < Cop
         include CheckAssignment
         include EndKeywordAlignment
-        include IfNode
 
         def on_class(node)
           check_other_alignment(node)
@@ -64,7 +63,7 @@ module RuboCop
         end
 
         def on_if(node)
-          check_other_alignment(node) unless ternary?(node)
+          check_other_alignment(node) unless node.ternary?
         end
 
         def on_while(node)
@@ -88,7 +87,7 @@ module RuboCop
           # we check if it's an if/unless/while/until.
           return unless (rhs = first_part_of_call_chain(rhs))
           return unless [:if, :while, :until, :case].include?(rhs.type)
-          return if ternary?(rhs)
+          return if rhs.if_type? && rhs.ternary?
 
           check_asgn_alignment(node, rhs)
         end

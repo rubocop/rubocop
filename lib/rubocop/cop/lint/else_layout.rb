@@ -28,12 +28,10 @@ module RuboCop
       #     do_that
       #   end
       class ElseLayout < Cop
-        include IfNode
+        MSG = 'Odd `else` layout detected. Did you mean to use `elsif`?'.freeze
 
         def on_if(node)
-          return if ternary?(node)
-          # ignore modifier ops & elsif nodes
-          return unless node.loc.end
+          return if node.ternary? || node.elsif?
 
           check(node)
         end
@@ -41,39 +39,25 @@ module RuboCop
         private
 
         def check(node)
-          return unless node
-          return check_else(node) if else?(node)
+          return unless node.else_branch
 
-          check_if(node) if if?(node)
+          if node.else? && node.loc.else.is?('else')
+            check_else(node)
+          elsif node.if?
+            check(node.else_branch)
+          end
         end
 
         def check_else(node)
-          _cond, _if_branch, else_branch = *node
-          return unless else_branch && else_branch.begin_type?
+          else_branch = node.else_branch
 
-          first_else_expr = else_branch.children.first
-          return unless first_else_expr.source_range.line == node.loc.else.line
+          return unless else_branch.begin_type?
 
-          add_offense(first_else_expr, :expression, message)
-        end
+          first_else = else_branch.children.first
 
-        def check_if(node)
-          _cond, _if_branch, else_branch = *node
-          check(else_branch)
-        end
+          return unless first_else.source_range.line == node.loc.else.line
 
-        def if?(node)
-          node.loc.respond_to?(:keyword) &&
-            %w(if elsif).include?(node.loc.keyword.source)
-        end
-
-        def else?(node)
-          node.loc.respond_to?(:else) && node.loc.else &&
-            node.loc.else.is?('else')
-        end
-
-        def message
-          'Odd `else` layout detected. Did you mean to use `elsif`?'
+          add_offense(first_else, :expression)
         end
       end
     end

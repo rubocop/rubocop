@@ -58,7 +58,7 @@ module RuboCop
     # @see http://rubydoc.info/gems/ast/AST/Node:initialize
     def initialize(type, children = [], properties = {})
       @mutable_attributes = {}
-
+      
       # ::AST::Node#initialize freezes itself.
       super
 

@@ -4,10 +4,8 @@ module RuboCop
   module Cop
     # Common functionality for modifier cops.
     module StatementModifier
-      include IfNode
-
       def single_line_as_modifier?(node)
-        cond, body, = if_node_parts(node)
+        cond, body, = *node_parts(node)
 
         return false if non_eligible_node?(node) || non_eligible_body?(body) ||
                         non_eligible_condition?(cond)
@@ -30,7 +28,7 @@ module RuboCop
       end
 
       def modifier_fits_on_single_line?(node)
-        cond, body, = if_node_parts(node)
+        cond, body, = *node_parts(node)
         body_length = body_length(body)
 
         length_in_modifier_form(node, cond, body_length) <= max_line_length
@@ -67,6 +65,16 @@ module RuboCop
 
       def comment_lines
         @comment_lines ||= processed_source.comments.map { |c| c.location.line }
+      end
+
+      private
+
+      def node_parts(node)
+        if node.if_type?
+          node.if_node_parts
+        else
+          node
+        end
       end
     end
   end

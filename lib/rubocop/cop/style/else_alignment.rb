@@ -11,22 +11,26 @@ module RuboCop
         include EndKeywordAlignment
         include AutocorrectAlignment
         include CheckAssignment
-        include IfNode
 
         MSG = 'Align `%s` with `%s`.'.freeze
 
         def on_if(node, base = nil)
+<<<<<<< HEAD
           return if ignored_node?(node)
-          return unless if_else?(node)
+          return unless node.else?
 
           else_range = node.loc.else
           return unless begins_its_line?(else_range)
+=======
+          return if accepted_if?(node)
+          return unless node.else? && begins_its_line?(node.loc.else)
+>>>>>>> c5560306... > If
 
           check_alignment(base_range(node, base), else_range)
 
           _, _, else_body = *node
 
-          return unless else_body && elsif?(else_body)
+          return unless else_body && else_body.if_type? && else_body.elsif?
 
           # If the `else` part is actually an `elsif`, we check the `elsif`
           # node in case it contains an `else` within, because that `else`
@@ -38,7 +42,7 @@ module RuboCop
         end
 
         def on_rescue(node)
-          return unless if_else?(node)
+          return unless node.loc.respond_to?(:else) && node.loc.else
 
           parent = node.parent
           parent = parent.parent if parent.ensure_type?
@@ -52,7 +56,7 @@ module RuboCop
 
         def on_case(node)
           _cond, *whens, _else = *node
-          return unless if_else?(node)
+          return unless node.loc.respond_to?(:else) && node.loc.else
           check_alignment(whens.last.loc.keyword, node.loc.else)
         end
 

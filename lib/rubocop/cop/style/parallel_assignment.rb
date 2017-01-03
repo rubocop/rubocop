@@ -23,8 +23,6 @@ module RuboCop
       #   b = 2
       #   c = 3
       class ParallelAssignment < Cop
-        include IfNode
-
         MSG = 'Do not use parallel assignment.'.freeze
 
         def on_masgn(node)
@@ -164,7 +162,7 @@ module RuboCop
 
         def modifier_statement?(node)
           node &&
-            ((node.if_type? && modifier_if?(node)) ||
+            ((node.if_type? && node.modifier_form?) ||
             ((node.while_type? || node.until_type?) && modifier_while?(node)))
         end
 

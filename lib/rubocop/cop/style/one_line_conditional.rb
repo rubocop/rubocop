@@ -12,15 +12,9 @@ module RuboCop
               'over `%s/then/else/end` constructs.'.freeze
 
         def on_normal_if_unless(node)
-          exp = node.source
-          return if exp.include?("\n")
+          return unless node.single_line? && node.else_branch
 
-          condition = exp.include?('if') ? 'if' : 'unless'
-          return unless node.loc.respond_to?(:else) &&
-                        node.loc.else &&
-                        else_branch_present?(node, condition)
-
-          add_offense(node, :expression, format(MSG, condition))
+          add_offense(node, :expression, format(MSG, node.keyword))
         end
 
         def autocorrect(node)
@@ -30,20 +24,23 @@ module RuboCop
         end
 
         def replacement(node)
-          return ternary(node) unless node.parent
-          return "(#{ternary(node)})" if [:and, :or].include?(node.parent.type)
+          return to_ternary(node) unless node.parent
 
-          if node.parent.send_type? && operator?(node.parent.method_name)
-            return "(#{ternary(node)})"
+          if [:and, :or].include?(node.parent.type)
+            return "(#{to_ternary(node)})"
           end
 
-          ternary(node)
+          if node.parent.send_type? && operator?(node.parent.method_name)
+            return "(#{to_ternary(node)})"
+          end
+
+          to_ternary(node)
         end
 
-        def ternary(node)
+        def to_ternary(node)
           cond, body, else_clause = *node
-          "#{expr_replacement(cond)} ? #{expr_replacement(body)} : " +
-            expr_replacement(else_clause)
+          "#{expr_replacement(cond)} ? #{expr_replacement(body)} : " \
+            "#{expr_replacement(else_clause)}"
         end
 
         def expr_replacement(node)
@@ -71,13 +68,6 @@ module RuboCop
           return true if node.keyword_not?
 
           !parenthesized_call?(node)
-        end
-
-        private
-
-        def else_branch_present?(node, condition)
-          _, if_branch, else_branch = *node
-          condition == 'if' ? else_branch : if_branch
         end
       end
     end
