@@ -78,13 +78,13 @@ task generate_cops_documentation: :yard do
          .gsub('*', '\*')
   end
 
-  def print_cops_of_department(cops, type, config)
-    selected_cops = cops_of_department(cops, type)
-    content = "# #{type}\n".dup
+  def print_cops_of_department(cops, department, config)
+    selected_cops = cops_of_department(cops, department)
+    content = "# #{department}\n".dup
     selected_cops.each do |cop|
       content << print_cop_with_doc(cop, config)
     end
-    file_name = "#{Dir.pwd}/manual/cops_#{type.downcase}.md"
+    file_name = "#{Dir.pwd}/manual/cops_#{department.downcase}.md"
     file = File.open(file_name, 'w')
     puts "* generated #{file_name}"
     file.write(content)
