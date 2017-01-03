@@ -49,6 +49,7 @@
 * Fix false negative in `Rails/HttpPositionalArguments` where offense would go undetected if the `:format` keyword was used with other non-special keywords. ([@deivid-rodriguez][])
 * [#3406](https://github.com/bbatsov/rubocop/issues/3406): Enable cops if Enabled is not explicitly set to false. ([@metcalf][])
 * Fix `Lint/FormatParameterMismatch` for splatted last argument. ([@zverok][])
+* [#3853](https://github.com/bbatsov/rubocop/pull/3853): Fix false positive in `RedundantParentheses` cop with multiple expression. ([@pocke][])
 
 ## 0.46.0 (2016-11-30)
 

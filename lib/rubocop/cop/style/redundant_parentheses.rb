@@ -37,7 +37,8 @@ module RuboCop
             hash_literal_as_first_arg?(node) ||
             rescue?(node) ||
             allowed_method_call?(node) ||
-            allowed_array_or_hash_element?(node)
+            allowed_array_or_hash_element?(node) ||
+            allowed_multiple_expression?(node)
         end
 
         def allowed_ancestor?(node)
@@ -48,6 +49,13 @@ module RuboCop
         def allowed_method_call?(node)
           # Don't flag `method (arg) { }`
           arg_in_call_with_block?(node) && !parentheses?(node.parent)
+        end
+
+        def allowed_multiple_expression?(node)
+          return false if node.children.size == 1
+          ancestor = node.ancestors.first
+          return false unless ancestor
+          !ancestor.begin_type? && !ancestor.def_type? && !ancestor.block_type?
         end
 
         def empty_parentheses?(node)
