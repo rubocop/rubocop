@@ -5,10 +5,6 @@ require 'rubocop'
 desc 'Generate docs of all cops departments'
 
 task generate_cops_documentation: :yard do
-  def cop_name_without_department(cop_name)
-    RuboCop::Cop::Badge.parse(cop_name).cop_name.to_sym
-  end
-
   def cops_of_department(cops, department)
     cops.with_department(department).sort!
   end
@@ -95,11 +91,11 @@ task generate_cops_documentation: :yard do
     pars = t.reject { |k| %w(Description Enabled StyleGuide).include? k }
     description = 'No documentation'
     examples_object = []
-    YARD::Registry.all.select { |o| !o.docstring.blank? }.map do |o|
-      if o.name == cop_name_without_department(cop.cop_name)
-        description = o.docstring
-        examples_object = o.tags('example')
-      end
+    YARD::Registry.all(:class).detect do |code_object|
+      next unless RuboCop::Cop::Badge.for(code_object.to_s) == cop.badge
+
+      description = code_object.docstring unless code_object.docstring.blank?
+      examples_object = code_object.tags('example')
     end
     cops_body(config, cop, description, examples_object, pars)
   end
