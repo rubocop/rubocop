@@ -37,7 +37,7 @@ module RuboCop
         private
 
         def enum_values(enum_args)
-          if enum_args.type == :array
+          if enum_args.array_type?
             enum_array_keys(enum_args)
           else
             enum_hash_values(enum_args)
@@ -49,9 +49,7 @@ module RuboCop
         end
 
         def enum_hash_values(hash_node)
-          hash_node.each_child_node.map do |child_node|
-            child_node.child_nodes.last.source
-          end
+          hash_node.values.map(&:source)
         end
 
         def arr_dupes(array)

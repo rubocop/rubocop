@@ -61,9 +61,9 @@ module RuboCop
 
         def convert_hash_data(data, type)
           # empty hash or no hash return empty string
-          return '' if data.nil? || data.children.count < 1
+          return '' if data.nil? || data.children.empty?
           hash_data = if data.hash_type?
-                        format('{ %s }', data.children.map(&:source).join(', '))
+                        format('{ %s }', data.pairs.map(&:source).join(', '))
                       else
                         # user supplies an object,
                         # no need to surround with braces
@@ -86,7 +86,7 @@ module RuboCop
           _receiver, http_method, http_path, *data = *node
           controller_action = http_path.source
           params = convert_hash_data(data.first, 'params')
-          headers = convert_hash_data(data.last, 'headers') if data.count > 1
+          headers = convert_hash_data(data.last, 'headers') if data.size > 1
           # the range of the text to replace, which is the whole line
           code_to_replace = node.loc.expression
           # what to replace with

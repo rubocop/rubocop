@@ -38,15 +38,11 @@ module RuboCop
             if node.children.size > 1
               add_brackets(corrector, node)
             elsif return_value.hash_type?
-              add_braces(corrector, return_value) unless braces?(return_value)
+              add_braces(corrector, return_value) unless return_value.braces?
             end
             return_kw = range_with_surrounding_space(node.loc.keyword, :right)
             corrector.remove(return_kw)
           end
-        end
-
-        def braces?(arg)
-          arg.loc.begin
         end
 
         def add_brackets(corrector, node)
