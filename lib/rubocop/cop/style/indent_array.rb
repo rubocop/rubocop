@@ -63,7 +63,7 @@ module RuboCop
           return if ignored_node?(array_node)
 
           left_bracket = array_node.loc.begin
-          first_elem = array_node.children.first
+          first_elem = array_node.values.first
           if first_elem
             return if first_elem.source_range.line == left_bracket.line
             check_first(first_elem, left_bracket, left_parenthesis, 0)
