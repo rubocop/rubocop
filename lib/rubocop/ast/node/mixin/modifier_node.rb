@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RuboCop
-  module NodeExtension
+  module AST
     # Common functionality for nodes that can be used as modifiers:
     # `if`, `while`, `until`
     module ModifierNode

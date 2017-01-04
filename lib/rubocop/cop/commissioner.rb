@@ -5,7 +5,7 @@ module RuboCop
     # Commissioner class is responsible for processing the AST and delegating
     # work to the specified cops.
     class Commissioner
-      include RuboCop::Node::Traversal
+      include RuboCop::AST::Traversal
 
       attr_reader :errors
 
@@ -26,12 +26,12 @@ module RuboCop
       # to continue iterating over the children of a node.
       # However, if we know that a certain node type (like `int`) never has
       # child nodes, there is no reason to pay the cost of calling `super`.
-      no_child_callbacks = Node::Traversal::NO_CHILD_NODES.map do |type|
+      no_child_callbacks = NO_CHILD_NODES.map do |type|
         :"on_#{type}"
       end
 
       callback_methods.each do |callback|
-        next unless RuboCop::Node::Traversal.method_defined?(callback)
+        next unless method_defined?(callback)
         class_eval <<-EOS, __FILE__, __LINE__
           def #{callback}(node)
             @callbacks[:"#{callback}"] ||= @cops.select do |cop|

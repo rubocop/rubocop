@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module RuboCop
-  module NodeExtension
+  module AST
     # A node extension for `array` nodes.
-    class ArrayNode < RuboCop::Node
+    class ArrayNode < Node
       PERCENT_LITERAL_TYPES = {
         string: /^%[wW]/,
         symbol: /^%[iI]/

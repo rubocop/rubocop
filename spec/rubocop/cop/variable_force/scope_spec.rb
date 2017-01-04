@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe RuboCop::Cop::VariableForce::Scope do
-  include RuboCop::Sexp
+  include RuboCop::AST::Sexp
 
   describe '.new' do
     context 'when lvasgn node is passed' do

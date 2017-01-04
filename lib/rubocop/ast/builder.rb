@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module RuboCop
-  class Node
+  module AST
     # `RuboCop::Builder` is an AST builder that is utilized to let `Parser`
-    # generate ASTs with {RuboCop::Node}.
+    # generate ASTs with {RuboCop::AST::Node}.
     #
     # @example
     #   buffer = Parser::Source::Buffer.new('(string)')
@@ -28,11 +28,11 @@ module RuboCop
 
       def node_map(type)
         case type
-        when :array then RuboCop::NodeExtension::ArrayNode
-        when :hash  then RuboCop::NodeExtension::HashNode
-        when :if    then RuboCop::NodeExtension::IfNode
-        when :until, :until_post then RuboCop::NodeExtension::UntilNode
-        when :while, :while_post then RuboCop::NodeExtension::WhileNode
+        when :array then ArrayNode
+        when :hash  then HashNode
+        when :if    then IfNode
+        when :until, :until_post then UntilNode
+        when :while, :while_post then WhileNode
         else Node
         end
       end

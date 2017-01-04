@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module RuboCop
-  module NodeExtension
+  module AST
     # A node extension for `hash` nodes.
-    class HashNode < RuboCop::Node
+    class HashNode < Node
       def pairs
         each_pair.to_a
       end

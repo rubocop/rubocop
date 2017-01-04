@@ -1,14 +1,18 @@
 # frozen_string_literal: true
 
 module RuboCop
-  module NodeExtension
+  module AST
     # A node extension for `while` nodes.
-    class WhileNode < RuboCop::Node
+    class WhileNode < Node
       include ConditionalNode
       include ModifierNode
 
       def keyword
         'while'
+      end
+
+      def inverse_keyword
+        'until'
       end
 
       def do?

@@ -79,7 +79,7 @@ module RuboCop
 
         def requires_parens?(node)
           node.or_type? ||
-            !(RuboCop::Node::COMPARISON_OPERATORS & node.children).empty?
+            !(RuboCop::AST::Node::COMPARISON_OPERATORS & node.children).empty?
         end
       end
     end

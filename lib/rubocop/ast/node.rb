@@ -142,7 +142,7 @@ module RuboCop
       def each_ancestor(*types, &block)
         return to_enum(__method__, *types) unless block_given?
 
-        visit_ancestors_with_types(types, &block)
+        visit_ancestors(types, &block)
 
         self
       end
@@ -422,6 +422,7 @@ module RuboCop
 
       def chained?
         return false unless argument?
+
         receiver, _method_name, *_args = *parent
         equal?(receiver)
       end
@@ -523,7 +524,7 @@ module RuboCop
 
       private
 
-      def visit_ancestors_with_types(types)
+      def visit_ancestors(types)
         last_node = self
 
         while (current_node = last_node.parent)
