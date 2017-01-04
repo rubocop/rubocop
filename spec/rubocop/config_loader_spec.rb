@@ -121,7 +121,7 @@ describe RuboCop::ConfigLoader do
       end
 
       it 'disables cops by default' do
-        expect(configuration_from_file['Style/Alias']['Enabled']).to eql(false)
+        expect(configuration_from_file['Style/Alias']['Enabled']).to be(false)
       end
     end
 
