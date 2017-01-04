@@ -38,34 +38,60 @@ module RuboCop
         MSG_EMPTY = '`%s` condition requires an empty `else`-clause.'.freeze
 
         def on_normal_if_unless(node)
-          unless_else_cop = config.for_cop('Style/UnlessElse')
-          unless_else_enabled = unless_else_cop['Enabled'] if unless_else_cop
+          return if case_style?
+          return if unless_else_cop_enabled? && node.unless?
 
-          return if unless_else_enabled && node.unless?
-
-          check(node, if_else_clause(node)) unless style == :case
+          check(node)
         end
 
         def on_case(node)
-          check(node, case_else_clause(node)) unless style == :if
+          return if if_style?
+
+          check(node)
         end
 
         private
 
-        def check(node, _else_clause)
-          return if node.loc.else
-          empty_else = config.for_cop('Style/EmptyElse')
+        def check(node)
+          return if node.else?
 
-          if empty_else && empty_else['Enabled']
-            case empty_else['EnforcedStyle']
-            when 'empty'
+          if empty_else_cop_enabled?
+            if empty_else_style == :empty
               add_offense(node, :expression, format(MSG_NIL, node.type))
-            when 'nil'
+            elsif empty_else_style == :nil
               add_offense(node, :expression, format(MSG_EMPTY, node.type))
             end
           end
 
           add_offense(node, :expression, format(MSG, node.type))
+        end
+
+        def if_style?
+          style == :if
+        end
+
+        def case_style?
+          style == :case
+        end
+
+        def unless_else_cop_enabled?
+          unless_else_config['Enabled'] if unless_else_config
+        end
+
+        def unless_else_config
+          config.for_cop('Style/UnlessElse')
+        end
+
+        def empty_else_cop_enabled?
+          empty_else_config['Enabled'] if empty_else_config
+        end
+
+        def empty_else_style
+          empty_else_config['EnforcedStyle'].to_sym if empty_else_config
+        end
+
+        def empty_else_config
+          config.for_cop('Style/EmptyElse')
         end
       end
     end

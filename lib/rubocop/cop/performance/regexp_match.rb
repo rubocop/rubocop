@@ -97,10 +97,6 @@ module RuboCop
         def_node_matcher :match_node?, MATCH_NODE_PATTERN
         def_node_search :search_match_nodes, MATCH_NODE_PATTERN
 
-        def_node_search :when_clauses, <<-PATTERN
-          (when ...)
-        PATTERN
-
         def_node_search :last_matches, <<-PATTERN
           {
             (send (const nil :Regexp) :last_match)
@@ -111,16 +107,16 @@ module RuboCop
         PATTERN
 
         def on_if(node)
-          cond, = *node
-          check_condition(cond)
+          check_condition(node.condition)
         end
 
         def on_case(node)
-          case_cond, = *node
-          return if case_cond
-          when_clauses(node).each do |when_node|
-            cond, = *when_node
-            check_condition(cond)
+          return if node.condition
+
+          node.each_when do |when_node|
+            when_node.each_condition do |condition|
+              check_condition(condition)
+            end
           end
         end
 

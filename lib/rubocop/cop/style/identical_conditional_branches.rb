@@ -45,8 +45,8 @@ module RuboCop
 
         def on_if(node)
           return if node.elsif?
-          _condition, if_branch, else_branch = *node
-          branches = expand_elses(else_branch).unshift(if_branch)
+
+          branches = expand_elses(node.else_branch).unshift(node.if_branch)
 
           # return if any branch is empty. An empty branch can be an `if`
           # without an `else`, or a branch that contains only comments.
@@ -56,12 +56,9 @@ module RuboCop
         end
 
         def on_case(node)
-          return unless node.loc.else
-          _condition, *when_branches, else_branch = *node
-          return unless else_branch # empty else
-          when_branches = expand_when_branches(when_branches)
+          return unless node.else? && node.else_branch
 
-          check_branches(when_branches.push(else_branch))
+          check_branches(node.when_branches.map(&:body).push(node.else_branch))
         end
 
         private
@@ -74,7 +71,8 @@ module RuboCop
         end
 
         def check_expressions(expressions)
-          return unless expressions.all? { |expr| expr == expressions[0] }
+          return unless expressions.uniq.one?
+
           expressions.each do |expression|
             add_offense(expression, :expression, format(MSG, expression.source))
           end
@@ -93,26 +91,12 @@ module RuboCop
           end
         end
 
-        # `when` nodes contain the entire branch including the condition.
-        # We only need the contents of the branch, not the condition.
-        def expand_when_branches(when_branches)
-          when_branches.map { |branch| branch.children[1] }
-        end
-
         def tail(node)
-          if node && node.begin_type?
-            node.children.last
-          else
-            node
-          end
+          node.begin_type? ? node.children.last : node
         end
 
         def head(node)
-          if node && node.begin_type?
-            node.children.first
-          else
-            node
-          end
+          node.begin_type? ? node.children.first : node
         end
       end
     end
