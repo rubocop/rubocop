@@ -8,13 +8,15 @@ module RuboCop
         MSG = 'Do not use `when x;`. Use `when x then` instead.'.freeze
 
         def on_when(node)
-          return unless node.loc.begin && node.loc.begin.is?(';')
+          return if node.multiline? || node.then?
 
           add_offense(node, :begin)
         end
 
         def autocorrect(node)
-          ->(corrector) { corrector.replace(node.loc.begin, ' then') }
+          lambda do |corrector|
+            corrector.replace(node.loc.begin, ' then')
+          end
         end
       end
     end

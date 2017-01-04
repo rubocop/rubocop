@@ -48,6 +48,7 @@ module RuboCop
       def true_branch
         node_parts[1]
       end
+      alias if_branch true_branch
 
       def nested_conditional?
         node_parts[1..2].compact.any?(&:if_type?)

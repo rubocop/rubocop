@@ -242,7 +242,7 @@ module RuboCop
           else_branch = node.else_branch
           elsif_branches, else_branch = expand_elses(else_branch)
 
-          return unless else_branch # empty else
+          return unless else_branch
 
           branches = [node.if_branch, *elsif_branches, else_branch]
 

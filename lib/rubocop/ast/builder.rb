@@ -29,9 +29,11 @@ module RuboCop
       def node_map(type)
         case type
         when :array then ArrayNode
+        when :case  then CaseNode
         when :hash  then HashNode
         when :if    then IfNode
         when :until, :until_post then UntilNode
+        when :when  then WhenNode
         when :while, :while_post then WhileNode
         else Node
         end

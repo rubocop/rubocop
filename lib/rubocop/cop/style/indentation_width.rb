@@ -112,37 +112,13 @@ module RuboCop
 
         alias on_until on_while
 
-        def on_case(node)
-          _condition, *branches = *node
-          latest_when = nil
-          branches.compact.each do |b|
-            if b.when_type?
-              # TODO: Revert to the original expression once the fix in Rubinius
-              #   is released.
-              #
-              # Originally this expression was:
-              #
-              #   *_conditions, body = *b
-              #
-              # However it fails on Rubinius 2.2.9 due to its bug:
-              #
-              #   RuntimeError:
-              #     can't modify frozen instance of Array
-              #   # kernel/common/array.rb:988:in `pop'
-              #   # ./lib/rubocop/cop/style/indentation_width.rb:99:in `on_case'
-              #
-              # It seems to be fixed on the current master (0a92c3c).
-              body = b.children.last
-
-              # Check "when" body against "when" keyword indentation.
-              check_indentation(b.loc.keyword, body)
-              latest_when = b
-            else
-              # Since it's not easy to get the position of the "else" keyword,
-              # we check "else" body against latest "when" keyword indentation.
-              check_indentation(latest_when.loc.keyword, b)
-            end
+        def on_case(case_node)
+          case_node.when_branches.compact.each do |when_node|
+            check_indentation(when_node.loc.keyword, when_node.body)
           end
+
+          check_indentation(case_node.when_branches.last.loc.keyword,
+                            case_node.else_branch)
         end
 
         def on_if(node, base = node)

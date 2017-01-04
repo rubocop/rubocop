@@ -75,8 +75,11 @@ module RuboCop
         end
 
         def on_case(node)
-          return check_asgn_alignment(node.parent, node) if argument_case?(node)
-          check_other_alignment(node)
+          if node.argument?
+            check_asgn_alignment(node.parent, node)
+          else
+            check_other_alignment(node)
+          end
         end
 
         private
@@ -93,22 +96,24 @@ module RuboCop
         end
 
         def check_asgn_alignment(outer_node, inner_node)
-          expr = outer_node.source_range
-
           align_with = {
             keyword: inner_node.loc.keyword,
-            start_of_line: start_line_range(outer_node)
+            start_of_line: start_line_range(outer_node),
+            variable: asgn_variable_align_with(outer_node, inner_node)
           }
 
-          align_with[:variable] =
-            if !line_break_before_keyword?(expr, inner_node)
-              range_between(expr.begin_pos, inner_node.loc.keyword.end_pos)
-            else
-              inner_node.loc.keyword
-            end
-
           check_end_kw_alignment(inner_node, align_with)
-          ignore_node(inner_node) # Don't check again.
+          ignore_node(inner_node)
+        end
+
+        def asgn_variable_align_with(outer_node, inner_node)
+          expr = outer_node.source_range
+
+          if !line_break_before_keyword?(expr, inner_node)
+            range_between(expr.begin_pos, inner_node.loc.keyword.end_pos)
+          else
+            inner_node.loc.keyword
+          end
         end
 
         def check_other_alignment(node)
@@ -128,17 +133,13 @@ module RuboCop
           if style == :keyword
             node
           elsif style == :variable
-            return node.parent if argument_case?(node)
+            return node.parent if node.case_type? && node.argument?
             # Fall back to 'keyword' style if this node is not on the RHS
             # of an assignment
             node.ancestors.find(&:assignment?) || node
           else
             start_line_range(node)
           end
-        end
-
-        def argument_case?(node)
-          node.case_type? && node.parent && node.parent.send_type?
         end
 
         def start_line_range(node)
