@@ -193,7 +193,7 @@ describe RuboCop::Config do
         configuration.make_excludes_absolute
       end
 
-      it 'should generate valid absolute directory' do
+      it 'generates valid absolute directory' do
         excludes = configuration['AllCops']['Exclude']
                    .map { |e| e.sub(/^[A-Z]:/, '') }
         expect(excludes)
@@ -223,7 +223,7 @@ describe RuboCop::Config do
         configuration.make_excludes_absolute
       end
 
-      it 'should generate valid absolute directory' do
+      it 'generates valid absolute directory' do
         excludes = configuration['AllCops']['Exclude']
                    .map { |e| e.sub(/^[A-Z]:/, '') }
         expect(excludes)
