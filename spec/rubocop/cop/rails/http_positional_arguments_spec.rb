@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 describe RuboCop::Cop::Rails::HttpPositionalArguments do
-  subject(:cop) { RuboCop::Cop::Rails::HttpPositionalArguments.new }
+  subject(:cop) { described_class.new }
 
   it 'registers an offense for post method' do
     source = 'post :create, user_id: @user.id'
@@ -51,7 +51,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
     end
   end
 
-  describe :get do
+  describe '.get' do
     let(:source) do
       'get :new, user_id: @user.id'
     end
@@ -82,7 +82,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
     end
   end
 
-  describe :patch do
+  describe '.patch' do
     let(:source) do
       <<-EOS
 patch :update,
@@ -116,7 +116,7 @@ EOS
     end
   end
 
-  describe :post do
+  describe '.post' do
     let(:source) do
       <<-EOS
 post :create,
