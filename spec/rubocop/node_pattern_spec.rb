@@ -17,19 +17,19 @@ describe RuboCop::NodePattern do
   shared_examples :matching do
     include AST::Sexp
     it 'matches' do
-      expect(RuboCop::NodePattern.new(pattern).match(node, *params)).to be true
+      expect(described_class.new(pattern).match(node, *params)).to be true
     end
   end
 
   shared_examples :nonmatching do
     it "doesn't match" do
-      expect(RuboCop::NodePattern.new(pattern).match(node, *params)).to be_nil
+      expect(described_class.new(pattern).match(node, *params)).to be_nil
     end
   end
 
   shared_examples :invalid do
     it 'is invalid' do
-      expect { RuboCop::NodePattern.new(pattern) }
+      expect { described_class.new(pattern) }
         .to raise_error(RuboCop::NodePattern::Invalid)
     end
   end
@@ -38,7 +38,7 @@ describe RuboCop::NodePattern do
     include AST::Sexp
     it 'yields captured value(s) and returns true if there is a block' do
       expect do |probe|
-        compiled = RuboCop::NodePattern.new(pattern)
+        compiled = described_class.new(pattern)
         retval = compiled.match(node, *params) do |capture|
           probe.to_proc.call(capture)
           :retval_from_block
@@ -48,7 +48,7 @@ describe RuboCop::NodePattern do
     end
 
     it 'returns captured values if there is no block' do
-      retval = RuboCop::NodePattern.new(pattern).match(node, *params)
+      retval = described_class.new(pattern).match(node, *params)
       expect(retval).to eq captured_val
     end
   end
@@ -57,7 +57,7 @@ describe RuboCop::NodePattern do
     include AST::Sexp
     it 'yields captured value(s) and returns true if there is a block' do
       expect do |probe|
-        compiled = RuboCop::NodePattern.new(pattern)
+        compiled = described_class.new(pattern)
         retval = compiled.match(node, *params) do |*captures|
           probe.to_proc.call(captures)
           :retval_from_block
@@ -67,7 +67,7 @@ describe RuboCop::NodePattern do
     end
 
     it 'returns captured values if there is no block' do
-      retval = RuboCop::NodePattern.new(pattern).match(node, *params)
+      retval = described_class.new(pattern).match(node, *params)
       expect(retval).to eq captured_vals
     end
   end

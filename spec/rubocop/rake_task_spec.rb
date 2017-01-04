@@ -9,25 +9,25 @@ describe RuboCop::RakeTask do
 
   describe 'defining tasks' do
     it 'creates a rubocop task' do
-      RuboCop::RakeTask.new
+      described_class.new
 
       expect(Rake::Task.task_defined?(:rubocop)).to be true
     end
 
     it 'creates a rubocop:auto_correct task' do
-      RuboCop::RakeTask.new
+      described_class.new
 
       expect(Rake::Task.task_defined?('rubocop:auto_correct')).to be true
     end
 
     it 'creates a named task' do
-      RuboCop::RakeTask.new(:lint_lib)
+      described_class.new(:lint_lib)
 
       expect(Rake::Task.task_defined?(:lint_lib)).to be true
     end
 
     it 'creates an auto_correct task for the named task' do
-      RuboCop::RakeTask.new(:lint_lib)
+      described_class.new(:lint_lib)
 
       expect(Rake::Task.task_defined?('lint_lib:auto_correct')).to be true
     end
@@ -46,7 +46,7 @@ describe RuboCop::RakeTask do
     end
 
     it 'runs with default options' do
-      RuboCop::RakeTask.new
+      described_class.new
 
       cli = double('cli', run: 0)
       allow(RuboCop::CLI).to receive(:new) { cli }
@@ -56,7 +56,7 @@ describe RuboCop::RakeTask do
     end
 
     it 'runs with specified options if a block is given' do
-      RuboCop::RakeTask.new do |task|
+      described_class.new do |task|
         task.patterns = ['lib/**/*.rb']
         task.formatters = ['files']
         task.fail_on_error = false
@@ -73,7 +73,7 @@ describe RuboCop::RakeTask do
     end
 
     it 'allows nested arrays inside formatters, options, and requires' do
-      RuboCop::RakeTask.new do |task|
+      described_class.new do |task|
         task.formatters = [['files']]
         task.requires = [['library']]
         task.options = [['--display-cop-names']]
@@ -89,7 +89,7 @@ describe RuboCop::RakeTask do
     end
 
     it 'will not error when result is not 0 and fail_on_error is false' do
-      RuboCop::RakeTask.new do |task|
+      described_class.new do |task|
         task.fail_on_error = false
       end
 
@@ -100,7 +100,7 @@ describe RuboCop::RakeTask do
     end
 
     it 'exits when result is not 0 and fail_on_error is true' do
-      RuboCop::RakeTask.new
+      described_class.new
 
       cli = double('cli', run: 1)
       allow(RuboCop::CLI).to receive(:new) { cli }
@@ -114,7 +114,7 @@ describe RuboCop::RakeTask do
                                    '  DefaultFormatter: offenses'])
       create_file('test.rb', '$:')
 
-      RuboCop::RakeTask.new do |task|
+      described_class.new do |task|
         task.options = ['test.rb']
       end
 
@@ -130,7 +130,7 @@ describe RuboCop::RakeTask do
 
     context 'auto_correct' do
       it 'runs with --auto-correct' do
-        RuboCop::RakeTask.new
+        described_class.new
 
         cli = double('cli', run: 0)
         allow(RuboCop::CLI).to receive(:new) { cli }
@@ -141,7 +141,7 @@ describe RuboCop::RakeTask do
       end
 
       it 'runs with with the options that were passed to its parent task' do
-        RuboCop::RakeTask.new do |task|
+        described_class.new do |task|
           task.patterns = ['lib/**/*.rb']
           task.formatters = ['files']
           task.fail_on_error = false
