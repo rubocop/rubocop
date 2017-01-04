@@ -24,7 +24,7 @@ module RuboCop
         context 'when no disable cop comments are detected' do
           let(:cop_disabled_line_ranges) { {} }
           it 'does not add to cop_disabled_line_ranges' do
-            expect { file_started }.to_not(
+            expect { file_started }.not_to(
               change { formatter.cop_disabled_line_ranges }
             )
           end

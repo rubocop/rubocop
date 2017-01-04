@@ -72,7 +72,7 @@ describe RuboCop::Config do
       let(:configuration_path) { 'config/.rubocop.yml' }
 
       it 'is not validated' do
-        expect { configuration.validate }.to_not raise_error
+        expect { configuration.validate }.not_to raise_error
       end
     end
 
@@ -114,7 +114,7 @@ describe RuboCop::Config do
       end
 
       it 'does not raise validation error' do
-        expect { configuration.validate }.to_not raise_error
+        expect { configuration.validate }.not_to raise_error
       end
     end
 
@@ -127,7 +127,7 @@ describe RuboCop::Config do
       end
 
       it 'does not raise validation error' do
-        expect { configuration.validate }.to_not raise_error
+        expect { configuration.validate }.not_to raise_error
       end
     end
 
@@ -154,7 +154,7 @@ describe RuboCop::Config do
       end
 
       it 'does not raise validation error' do
-        expect { configuration.validate }.to_not raise_error
+        expect { configuration.validate }.not_to raise_error
       end
     end
 

@@ -211,12 +211,12 @@ describe RuboCop::Cop::Performance::Count do
   context 'properly parses non related code' do
     it 'will not raise an error for Bundler.setup' do
       expect { inspect_source(cop, 'Bundler.setup(:default, :development)') }
-        .to_not raise_error
+        .not_to raise_error
     end
 
     it 'will not raise an error for RakeTask.new' do
       expect { inspect_source(cop, 'RakeTask.new(:spec)') }
-        .to_not raise_error
+        .not_to raise_error
     end
   end
 

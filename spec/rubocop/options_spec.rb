@@ -204,11 +204,11 @@ Usage: rubocop [options] [file1, file2, ...]
       end
 
       it 'accepts true as argument' do
-        expect { options.parse %w(--cache true) }.to_not raise_error
+        expect { options.parse %w(--cache true) }.not_to raise_error
       end
 
       it 'accepts false as argument' do
-        expect { options.parse %w(--cache false) }.to_not raise_error
+        expect { options.parse %w(--cache false) }.not_to raise_error
       end
     end
 
