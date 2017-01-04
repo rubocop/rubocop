@@ -45,8 +45,16 @@ module RuboCop
 
           num_of_format_args, num_of_expected_fields = count_matches(node)
 
-          num_of_format_args != :unknown &&
-            num_of_expected_fields != num_of_format_args
+          return false if num_of_format_args == :unknown
+          matched_arguments_count?(num_of_expected_fields, num_of_format_args)
+        end
+
+        def matched_arguments_count?(expected, passed)
+          if passed < 0
+            expected < passed.abs
+          else
+            expected != passed
+          end
         end
 
         def called_on_string?(node)
@@ -92,11 +100,11 @@ module RuboCop
           receiver_node, _method_name, *args = *node
 
           if (sprintf?(node) || format?(node)) && !heredoc?(node)
-            number_of_args_for_format = (args.size - 1)
+            number_of_args_for_format = arguments_count(args) - 1
             number_of_expected_fields = expected_fields_count(args.first)
           elsif percent?(node) && args.first.array_type?
             number_of_expected_fields = expected_fields_count(receiver_node)
-            number_of_args_for_format = args.first.child_nodes.size
+            number_of_args_for_format = arguments_count(args.first.child_nodes)
           else
             number_of_args_for_format = number_of_expected_fields = :unknown
           end
@@ -125,6 +133,14 @@ module RuboCop
             .scan(FIELD_REGEX)
             .select { |x| x.first != PERCENT_PERCENT }
             .reduce(0) { |acc, elem| acc + (elem[2] =~ /\*/ ? 2 : 1) }
+        end
+
+        def arguments_count(args)
+          if args.last.type == :splat
+            -(args.count - 1)
+          else
+            args.count
+          end
         end
 
         def format?(node)
