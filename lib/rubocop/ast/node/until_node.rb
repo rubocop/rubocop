@@ -11,6 +11,10 @@ module RuboCop
         'until'
       end
 
+      def inverse_keyword
+        'while'
+      end
+
       def do?
         loc.begin && loc.begin.is?('do')
       end
