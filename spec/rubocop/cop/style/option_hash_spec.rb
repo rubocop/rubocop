@@ -50,7 +50,7 @@ describe RuboCop::Cop::Style::OptionHash, :config do
   end
 
   context 'when there are no arguments' do
-    before(:each) do
+    before do
       inspect_source(cop, source)
     end
 
@@ -69,7 +69,7 @@ describe RuboCop::Cop::Style::OptionHash, :config do
   end
 
   context 'when the last argument is a non-options-hash optional hash' do
-    before(:each) do
+    before do
       inspect_source(cop, source)
     end
 

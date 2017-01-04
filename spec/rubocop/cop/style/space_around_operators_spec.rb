@@ -312,7 +312,7 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
     end
 
     context 'when a hash literal is on a single line' do
-      before(:each) { inspect_source(cop, '{ 1=>2, a: b }') }
+      before { inspect_source(cop, '{ 1=>2, a: b }') }
 
       context 'and Style/AlignHash:EnforcedHashRocketStyle is key' do
         let(:hash_style) { 'key' }
@@ -334,7 +334,7 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
     end
 
     context 'when a hash literal is on multiple lines' do
-      before(:each) do
+      before do
         inspect_source(cop, ['{',
                              '  1=>2,',
                              '  a: b',

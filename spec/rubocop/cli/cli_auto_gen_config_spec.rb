@@ -9,7 +9,7 @@ describe RuboCop::CLI, :isolated_environment do
   subject(:cli) { described_class.new }
 
   describe '--auto-gen-config' do
-    before(:each) do
+    before do
       RuboCop::Formatter::DisabledConfigFormatter
         .config_to_allow_offenses = {}
     end

@@ -7,12 +7,12 @@ describe RuboCop::Options, :isolated_environment do
 
   subject(:options) { described_class.new }
 
-  before(:each) do
+  before do
     $stdout = StringIO.new
     $stderr = StringIO.new
   end
 
-  after(:each) do
+  after do
     $stdout = STDOUT
     $stderr = STDERR
   end
