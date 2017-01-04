@@ -60,7 +60,7 @@ describe RuboCop::Runner, :isolated_environment do
     end
 
     context 'if a cop crashes' do
-      before(:each) do
+      before do
         # The cache responds that it's not valid, which means that new results
         # should normally be collected and saved...
         cache = double('cache', 'valid?' => false)

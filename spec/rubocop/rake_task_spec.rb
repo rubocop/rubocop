@@ -34,13 +34,13 @@ describe RuboCop::RakeTask do
   end
 
   describe 'running tasks' do
-    before(:each) do
+    before do
       $stdout = StringIO.new
       $stderr = StringIO.new
       Rake::Task['rubocop'].clear if Rake::Task.task_defined?('rubocop')
     end
 
-    after(:each) do
+    after do
       $stdout = STDOUT
       $stderr = STDERR
     end

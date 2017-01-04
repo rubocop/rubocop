@@ -51,7 +51,7 @@ describe RuboCop::Cop::Style::EndOfLine do
   end
 
   context 'when the default external encoding is US_ASCII' do
-    around(:each) do |example|
+    around do |example|
       orig_encoding = Encoding.default_external
       Encoding.default_external = Encoding::US_ASCII
       example.run

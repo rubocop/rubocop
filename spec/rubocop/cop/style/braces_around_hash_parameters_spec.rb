@@ -6,7 +6,7 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
   subject(:cop) { described_class.new(config) }
 
   shared_examples 'general non-offenses' do
-    after(:each) { expect(cop.offenses).to be_empty }
+    after { expect(cop.offenses).to be_empty }
 
     it 'accepts one non-hash parameter' do
       inspect_source(cop, 'where(2)')
@@ -27,7 +27,7 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
   end
 
   shared_examples 'no_braces and context_dependent non-offenses' do
-    after(:each) { expect(cop.offenses).to be_empty }
+    after { expect(cop.offenses).to be_empty }
 
     it 'accepts one hash parameter without braces' do
       inspect_source(cop, 'where(x: "y")')
@@ -178,7 +178,7 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
     context 'for incorrect code' do
       include_examples 'no_braces and context_dependent offenses'
 
-      after(:each) do
+      after do
         expect(cop.messages)
           .to eq(['Redundant curly braces around a hash parameter.'])
       end
@@ -250,7 +250,7 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
     context 'for correct code' do
       include_examples 'general non-offenses'
 
-      after(:each) { expect(cop.offenses).to be_empty }
+      after { expect(cop.offenses).to be_empty }
 
       it 'accepts one hash parameter with braces' do
         inspect_source(cop, 'where({ x: 1 })')
@@ -267,7 +267,7 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
     end
 
     context 'for incorrect code' do
-      after(:each) do
+      after do
         expect(cop.messages)
           .to eq(['Missing curly braces around a hash parameter.'])
       end

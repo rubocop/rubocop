@@ -62,7 +62,7 @@ describe RuboCop::ResultCache, :isolated_environment do
           described_class.new(file, options, config_store, cache_root)
         end
 
-        before(:each) do
+        before do
           # Avoid getting "symlink() function is unimplemented on this
           # machine" on Windows.
           if RUBY_PLATFORM =~ /cygwin|mswin|mingw|bccwin|wince|emx/
@@ -79,7 +79,7 @@ describe RuboCop::ResultCache, :isolated_environment do
           end
           $stderr = StringIO.new
         end
-        after(:each) do
+        after do
           FileUtils.rmdir(@attack_target_dir)
           $stderr = STDERR
         end
@@ -157,8 +157,8 @@ describe RuboCop::ResultCache, :isolated_environment do
         [RuboCop::Cop::Offense.new(:warning, location, "unused var \xF0",
                                    'Lint/UselessAssignment')]
       end
-      before(:each) { Encoding.default_internal = Encoding::UTF_8 }
-      after(:each) { Encoding.default_internal = nil }
+      before { Encoding.default_internal = Encoding::UTF_8 }
+      after { Encoding.default_internal = nil }
 
       it 'writes non UTF-8 encodable data to file with no exception' do
         cache.save(offenses)

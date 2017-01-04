@@ -20,7 +20,7 @@ describe RuboCop::Cop::Lint::UnneededDisable do
         .rewrite
     end
 
-    before(:each) do
+    before do
       cop.check(offenses, cop_disabled_line_ranges, comments)
     end
 

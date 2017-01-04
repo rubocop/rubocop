@@ -6,7 +6,7 @@ describe RuboCop::Cop::Lint::CircularArgumentReference do
   subject(:cop) { described_class.new }
 
   describe 'circular argument references in ordinal arguments' do
-    before(:each) do
+    before do
       inspect_source(cop, source)
     end
 
@@ -75,7 +75,7 @@ describe RuboCop::Cop::Lint::CircularArgumentReference do
     end
 
     context 'ruby >= 2.0', :ruby20 do
-      before(:each) do
+      before do
         inspect_source(cop, source)
       end
 
