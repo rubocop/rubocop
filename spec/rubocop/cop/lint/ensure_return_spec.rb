@@ -34,6 +34,6 @@ describe RuboCop::Cop::Lint::EnsureReturn do
                       '  something',
                       'ensure',
                       'end'])
-    end.to_not raise_exception
+    end.not_to raise_exception
   end
 end

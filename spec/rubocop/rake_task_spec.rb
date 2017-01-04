@@ -96,7 +96,7 @@ describe RuboCop::RakeTask do
       cli = double('cli', run: 1)
       allow(RuboCop::CLI).to receive(:new) { cli }
 
-      expect { Rake::Task['rubocop'].execute }.to_not raise_error
+      expect { Rake::Task['rubocop'].execute }.not_to raise_error
     end
 
     it 'exits when result is not 0 and fail_on_error is true' do
