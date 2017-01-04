@@ -86,7 +86,7 @@ module RuboCop
           # assignment, we let rhs be the receiver of those method calls before
           # we check if it's an if/unless/while/until.
           return unless (rhs = first_part_of_call_chain(rhs))
-          return unless [:if, :while, :until, :case].include?(rhs.type)
+          return unless CONDITIONAL_NODES.include?(rhs.type)
           return if rhs.if_type? && rhs.ternary?
 
           check_asgn_alignment(node, rhs)

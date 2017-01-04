@@ -17,28 +17,13 @@ module RuboCop
         end
 
         def message(node)
-          if node.if?
-            format(MSG, 'unless', 'if')
-          else
-            format(MSG, 'if', 'unless')
-          end
+          format(MSG, node.inverse_keyword, node.keyword)
         end
 
         private
 
         def autocorrect(node)
-          lambda do |corrector|
-            condition = node.condition
-            # look inside parentheses around the condition
-            condition = condition.children.first while condition.begin_type?
-            # unwrap the negated portion of the condition (a send node)
-            pos_condition, _method, = *condition
-            corrector.replace(
-              node.loc.keyword,
-              node.if? ? 'unless' : 'if'
-            )
-            corrector.replace(condition.source_range, pos_condition.source)
-          end
+          negative_conditional_corrector(node)
         end
       end
     end

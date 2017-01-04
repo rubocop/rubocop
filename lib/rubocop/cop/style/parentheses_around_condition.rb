@@ -26,16 +26,12 @@ module RuboCop
         private
 
         def process_control_op(node)
-          cond, _body = *node
+          cond = node.condition
 
           return unless cond.begin_type?
-          # handle `if () ...`
-          return if empty_condition?(cond)
-          # handle `if (something rescue something_else) ...`
+          return if cond.children.empty?
           return if modifier_op?(cond.children.first)
-          # check if there's any whitespace between the keyword and the cond
           return if parens_required?(node.children.first)
-          # allow safe assignment
           return if safe_assignment?(cond) && safe_assignment_allowed?
 
           add_offense(cond, :expression, message(node))
@@ -45,12 +41,12 @@ module RuboCop
           return false if node.if_type? && node.ternary?
           return true if node.rescue_type?
 
-          [:if, :while, :until].include?(node.type) &&
+          MODIFIER_NODES.include?(node.type) &&
             node.modifier_form?
         end
 
         def message(node)
-          kw = node.loc.keyword.source
+          kw = node.keyword
           article = kw == 'while' ? 'a' : 'an'
           "Don't use parentheses around the condition of #{article} `#{kw}`."
         end

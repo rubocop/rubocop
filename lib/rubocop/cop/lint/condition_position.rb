@@ -23,6 +23,8 @@ module RuboCop
       #     do_something
       #   end
       class ConditionPosition < Cop
+        MSG = 'Place the condition on the same line as `%s`.'.freeze
+
         def on_if(node)
           return if node.ternary?
 
@@ -40,16 +42,9 @@ module RuboCop
         private
 
         def check(node)
-          return if !(node.if_type? && node.elsif?) && node.loc.end.nil?
+          return if node.modifier_form? || node.single_line_condition?
 
-          condition, = *node
-          return if node.loc.keyword.line == condition.source_range.line
-
-          add_offense(condition, :expression, message(node.loc.keyword.source))
-        end
-
-        def message(keyword)
-          "Place the condition on the same line as `#{keyword}`."
+          add_offense(node.condition, :expression, format(MSG, node.keyword))
         end
       end
     end

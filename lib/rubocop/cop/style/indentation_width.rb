@@ -12,7 +12,7 @@ module RuboCop
       #     puts 'hello'
       #    end
       #   end
-      class IndentationWidth < Cop # rubocop:disable Metrics/ClassLength
+      class IndentationWidth < Cop
         include EndKeywordAlignment
         include AutocorrectAlignment
         include OnMethodDef
@@ -105,11 +105,9 @@ module RuboCop
         def on_while(node, base = node)
           return if ignored_node?(node)
 
-          _condition, body = *node
-          return unless node.loc.keyword.begin_pos ==
-                        node.source_range.begin_pos
+          return unless node.single_line_condition?
 
-          check_indentation(base.loc, body)
+          check_indentation(base.loc, node.body)
         end
 
         alias on_until on_while
@@ -151,9 +149,7 @@ module RuboCop
           return if ignored_node?(node) || !node.body
           return if node.ternary? || node.modifier_form?
 
-          _condition, body, else_clause = *node.if_node_parts
-
-          check_if(node, body, else_clause, base.loc) if body
+          check_if(node, node.body, node.false_branch, base.loc)
         end
 
         private

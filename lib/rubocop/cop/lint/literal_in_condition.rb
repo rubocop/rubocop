@@ -111,14 +111,10 @@ module RuboCop
             receiver, = *node
 
             handle_node(receiver)
-          elsif [:and, :or].include?(node.type)
-            *operands = *node
-            operands.each do |op|
-              handle_node(op)
-            end
+          elsif LOGICAL_OPERATOR_NODES.include?(node.type)
+            node.each_child_node { |op| handle_node(op) }
           elsif node.begin_type? && node.children.one?
-            child_node = node.children.first
-            handle_node(child_node)
+            handle_node(node.children.first)
           end
         end
 

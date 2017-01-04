@@ -3,7 +3,7 @@
 module RuboCop
   module NodeExtension
     # A node extension for `hash` nodes.
-    module HashNode
+    class HashNode < RuboCop::Node
       def pairs
         each_pair.to_a
       end

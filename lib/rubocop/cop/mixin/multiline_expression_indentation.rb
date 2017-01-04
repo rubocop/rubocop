@@ -101,9 +101,9 @@ module RuboCop
           next unless a.loc.respond_to?(:keyword)
 
           case a.type
-          when :if, :while, :until then expression, = *a
-          when :for                then _, expression, = *a
-          when :return             then expression, = *a
+          when :for                  then _, expression, = *a
+          when :return               then expression, = *a
+          when *Util::MODIFIER_NODES then expression, = *a
           end
 
           within_node?(node, expression) if expression

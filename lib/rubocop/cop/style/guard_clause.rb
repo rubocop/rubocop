@@ -81,9 +81,8 @@ module RuboCop
         end
 
         def contains_guard_clause?(node)
-          _, body, else_body = *node
-
-          guard_clause?(body) || guard_clause?(else_body)
+          node.if_branch && node.if_branch.guard_clause? ||
+            node.else_branch && node.else_branch.guard_clause?
         end
       end
     end

@@ -3,7 +3,7 @@
 module RuboCop
   module NodeExtension
     # A node extension for `if` nodes.
-    module IfNode
+    class IfNode < RuboCop::Node
       def if?
         keyword == 'if'
       end
@@ -20,6 +20,16 @@ module RuboCop
         ternary? ? '' : loc.keyword.source
       end
 
+      def inverse_keyword
+        if keyword == 'if'
+          'unless'
+        elsif keyword == 'unless'
+          'if'
+        else
+          ''
+        end
+      end
+
       def ternary?
         loc.respond_to?(:question)
       end
@@ -32,13 +42,22 @@ module RuboCop
         (if? || unless?) && super
       end
 
-      def condition
-        if_node_parts[0]
+      def single_line_condition?
+        loc.keyword.line == condition.source_range.line
       end
 
-      def if_branch
-        if_node_parts[1]
+      def multiline_condition?
+        !single_line_condition?
       end
+
+      def condition
+        node_parts[0]
+      end
+
+      def true_branch
+        node_parts[1]
+      end
+      alias body true_branch
 
       def nested_conditional?
         node_parts[1..2].compact.any?(&:if_type?)
@@ -49,14 +68,14 @@ module RuboCop
       end
       alias else_branch false_branch
 
-      def if_node_parts
+      def node_parts
         if unless?
-          condition, else_clause, if_clause = *self
+          condition, false_branch, true_branch = *self
         else
-          condition, if_clause, else_clause = *self
+          condition, true_branch, false_branch = *self
         end
 
-        [condition, if_clause, else_clause]
+        [condition, true_branch, false_branch]
       end
     end
   end
