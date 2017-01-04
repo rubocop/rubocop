@@ -112,7 +112,7 @@ module RuboCop
 
         def autocorrect(node)
           if node.if_type?
-            _check, body, = *node.if_node_parts
+            _check, body, = *node.node_parts
           else
             _check, body = *node
           end

@@ -11,18 +11,32 @@ module RuboCop
       def_node_matcher :empty_condition?, '(begin)'
 
       def check_negative_conditional(node)
-        condition, _body, _rest = *node
+        condition = node.condition
 
         return if empty_condition?(condition)
 
-        # Look at last expression of contents if there are parentheses
-        # around condition.
         condition = condition.children.last while condition.begin_type?
 
         return unless single_negative?(condition)
         return if node.if_type? && node.else?
 
         add_offense(node, :expression)
+      end
+
+      def negative_conditional_corrector(node)
+        condition = negated_condition(node)
+
+        lambda do |corrector|
+          corrector.replace(node.loc.keyword, node.inverse_keyword)
+          corrector.replace(condition.source_range,
+                            condition.children.first.source)
+        end
+      end
+
+      def negated_condition(node)
+        condition = node.condition
+        condition = condition.children.first while condition.begin_type?
+        condition
       end
     end
   end

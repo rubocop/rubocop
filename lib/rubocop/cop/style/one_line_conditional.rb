@@ -12,7 +12,7 @@ module RuboCop
               'over `%s/then/else/end` constructs.'.freeze
 
         def on_normal_if_unless(node)
-          return unless node.single_line? && node.else_branch
+          return unless node.single_line? && node.false_branch
 
           add_offense(node, :expression, format(MSG, node.keyword))
         end

@@ -49,11 +49,11 @@ module RuboCop
         end
 
         def on_while(node)
-          _, body = *node
-          return unless body && ends_with_condition?(body)
+          return unless node.body && ends_with_condition?(node.body)
 
-          offense_node = offense_node(body)
-          add_offense(offense_node, offense_location(offense_node), MSG)
+          offending_node = offense_node(node.body)
+
+          add_offense(offending_node, offense_location(offending_node), MSG)
         end
         alias on_until on_while
 
@@ -79,7 +79,6 @@ module RuboCop
         end
 
         def simple_if_without_break?(node)
-          return false unless node
           return false unless if_without_else?(node)
           return false if if_else_children?(node)
           return false if allowed_modifier_if?(node)
@@ -100,13 +99,13 @@ module RuboCop
         end
 
         def if_without_else?(node)
-          node.if_type? && !node.ternary? && !node.else?
+          node && node.if_type? && !node.ternary? && !node.else?
         end
 
         def exit_body_type?(node)
-          return false unless node.if_branch
+          return false unless node.true_branch
 
-          EXIT_TYPES.include?(node.if_branch.type)
+          EXIT_TYPES.include?(node.true_branch.type)
         end
 
         def offense_node(body)

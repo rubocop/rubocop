@@ -3,7 +3,7 @@
 module RuboCop
   module NodeExtension
     # A node extension for `array` nodes.
-    module ArrayNode
+    class ArrayNode < RuboCop::Node
       PERCENT_LITERAL_TYPES = {
         string: /^%[wW]/,
         symbol: /^%[iI]/

@@ -15,6 +15,10 @@ module RuboCop
       SHORTHAND_ASGN_NODES = [:op_asgn, :or_asgn, :and_asgn].freeze
       ASGN_NODES = (EQUALS_ASGN_NODES + SHORTHAND_ASGN_NODES).freeze
 
+      MODIFIER_NODES = [:if, :while, :until].freeze
+      CONDITIONAL_NODES = (MODIFIER_NODES + [:case]).freeze
+      LOGICAL_OPERATOR_NODES = [:and, :or].freeze
+
       # http://phrogz.net/programmingruby/language.html#table_18.4
       # Backtick is added last just to help editors parse this code.
       OPERATOR_METHODS = %w(

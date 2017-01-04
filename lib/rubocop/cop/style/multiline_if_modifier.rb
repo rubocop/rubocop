@@ -23,7 +23,6 @@ module RuboCop
 
         def on_if(node)
           return unless node.modifier_form? && node.body.multiline?
-          return if node.body.single_line?
 
           add_offense(node, :expression)
         end

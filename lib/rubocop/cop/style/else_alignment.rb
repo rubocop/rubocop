@@ -15,16 +15,8 @@ module RuboCop
         MSG = 'Align `%s` with `%s`.'.freeze
 
         def on_if(node, base = nil)
-<<<<<<< HEAD
           return if ignored_node?(node)
-          return unless node.else?
-
-          else_range = node.loc.else
-          return unless begins_its_line?(else_range)
-=======
-          return if accepted_if?(node)
           return unless node.else? && begins_its_line?(node.loc.else)
->>>>>>> c5560306... > If
 
           check_alignment(base_range(node, base), else_range)
 

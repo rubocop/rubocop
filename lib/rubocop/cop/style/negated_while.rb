@@ -18,28 +18,13 @@ module RuboCop
         end
 
         def message(node)
-          if node.while_type?
-            format(MSG, 'until', 'while')
-          else
-            format(MSG, 'while', 'until')
-          end
+          format(MSG, node.inverse_keyword, node.keyword)
         end
 
         private
 
         def autocorrect(node)
-          lambda do |corrector|
-            condition, _body, _rest = *node
-            # Look inside parentheses around the condition, if any.
-            condition, = *condition while condition.begin_type?
-            # Unwrap the negated portion of the condition (a send node).
-            pos_condition, _method, = *condition
-            corrector.replace(
-              node.loc.keyword,
-              node.while_type? ? 'until' : 'while'
-            )
-            corrector.replace(condition.source_range, pos_condition.source)
-          end
+          negative_conditional_corrector(node)
         end
       end
     end
