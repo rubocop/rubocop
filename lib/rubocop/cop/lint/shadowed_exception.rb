@@ -116,7 +116,7 @@ module RuboCop
           end
         end
 
-        # @param [RuboCop::Node] rescue_group is a node of array_type
+        # @param [RuboCop::AST::Node] rescue_group is a node of array_type
         def rescued_exceptions(rescue_group)
           klasses = *rescue_group
           klasses.map do |klass|

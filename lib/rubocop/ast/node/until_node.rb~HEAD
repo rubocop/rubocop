@@ -1,14 +1,18 @@
 # frozen_string_literal: true
 
 module RuboCop
-  module NodeExtension
+  module AST
     # A node extension for `until` nodes.
-    class UntilNode < RuboCop::Node
+    class UntilNode < Node
       include ConditionalNode
       include ModifierNode
 
       def keyword
         'until'
+      end
+
+      def inverse_keyword
+        'while'
       end
 
       def do?

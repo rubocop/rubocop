@@ -7,7 +7,7 @@ describe RuboCop::NodePattern do
   let(:root_node) do
     buffer = Parser::Source::Buffer.new('(string)', 1)
     buffer.source = ruby
-    builder = RuboCop::Node::Builder.new
+    builder = RuboCop::AST::Builder.new
     Parser::CurrentRuby.new(builder).parse(buffer)
   end
 
@@ -15,7 +15,7 @@ describe RuboCop::NodePattern do
   let(:params) { [] }
 
   shared_examples :matching do
-    include AST::Sexp
+    include RuboCop::AST::Sexp
     it 'matches' do
       expect(described_class.new(pattern).match(node, *params)).to be true
     end
@@ -35,7 +35,7 @@ describe RuboCop::NodePattern do
   end
 
   shared_examples :single_capture do
-    include AST::Sexp
+    include RuboCop::AST::Sexp
     it 'yields captured value(s) and returns true if there is a block' do
       expect do |probe|
         compiled = described_class.new(pattern)
@@ -54,7 +54,7 @@ describe RuboCop::NodePattern do
   end
 
   shared_examples :multiple_capture do
-    include AST::Sexp
+    include RuboCop::AST::Sexp
     it 'yields captured value(s) and returns true if there is a block' do
       expect do |probe|
         compiled = described_class.new(pattern)

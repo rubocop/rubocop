@@ -23,9 +23,9 @@ module RuboCop
     #     end
     #   end
     class Cop
-      extend RuboCop::Sexp
+      extend RuboCop::AST::Sexp
       extend NodePattern::Macros
-      include RuboCop::Sexp
+      include RuboCop::AST::Sexp
       include Util
       include IgnoredNode
       include AutocorrectLogic

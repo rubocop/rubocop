@@ -6,7 +6,7 @@ module RuboCop
     # This module contains a collection of useful utility methods.
     module Util
       include PathUtil
-      extend RuboCop::Sexp
+      extend RuboCop::AST::Sexp
 
       BYTE_ORDER_MARK = 0xfeff # The Unicode codepoint
 
@@ -176,8 +176,8 @@ module RuboCop
       end
 
       def within_node?(inner, outer)
-        o = outer.is_a?(Node) ? outer.source_range : outer
-        i = inner.is_a?(Node) ? inner.source_range : inner
+        o = outer.is_a?(AST::Node) ? outer.source_range : outer
+        i = inner.is_a?(AST::Node) ? inner.source_range : inner
         i.begin_pos >= o.begin_pos && i.end_pos <= o.end_pos
       end
 

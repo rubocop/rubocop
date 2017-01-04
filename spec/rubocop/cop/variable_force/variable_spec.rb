@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rubocop/ast_node/sexp'
+require 'rubocop/ast/sexp'
 
 describe RuboCop::Cop::VariableForce::Variable do
-  include RuboCop::Sexp
+  include RuboCop::AST::Sexp
 
   describe '.new' do
     context 'when non variable declaration node is passed' do

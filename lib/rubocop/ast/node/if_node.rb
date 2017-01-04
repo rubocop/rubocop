@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module RuboCop
-  module NodeExtension
+  module AST
     # A node extension for `if` nodes.
-    class IfNode < RuboCop::Node
+    class IfNode < Node
       include ConditionalNode
       include ModifierNode
 

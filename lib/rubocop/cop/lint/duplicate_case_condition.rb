@@ -31,10 +31,9 @@ module RuboCop
         MSG = 'Duplicate `when` condition detected.'.freeze
 
         def on_case(case_node)
-          _condition, *whens, _else = *case_node
           conditions_seen = []
 
-          whens.each do |when_node|
+          case_node.when_branches.each do |when_node|
             conditions = when_conditions(when_node)
             conditions.each do |cond|
               if repeated_condition?(conditions_seen, cond)

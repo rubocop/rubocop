@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RuboCop
-  class Node
+  module AST
     # Provides methods for traversing an AST.
     # Does not transform an AST; for that, use Parser::AST::Processor.
     # Override methods to perform custom processing. Remember to call `super`

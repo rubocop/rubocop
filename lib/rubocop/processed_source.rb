@@ -133,7 +133,7 @@ module RuboCop
     end
 
     def create_parser(ruby_version)
-      builder = RuboCop::Node::Builder.new
+      builder = RuboCop::AST::Builder.new
 
       parser_class(ruby_version).new(builder).tap do |parser|
         # On JRuby and Rubinius, there's a risk that we hang in tokenize() if we

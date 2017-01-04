@@ -58,7 +58,7 @@ describe RuboCop::ProcessedSource do
 
   describe '#ast' do
     it 'is the root node of AST' do
-      expect(processed_source.ast).to be_a(RuboCop::Node)
+      expect(processed_source.ast).to be_a(RuboCop::AST::Node)
     end
   end
 
