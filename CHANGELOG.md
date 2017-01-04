@@ -47,6 +47,7 @@
 * Fix false negative in `Rails/HttpPositionalArguments` where offense would go undetected if one of the request parameter names matched one of the special keyword arguments. ([@deivid-rodriguez][])
 * Fix false negative in `Rails/HttpPositionalArguments` where offense would go undetected if the `:format` keyword was used with other non-special keywords. ([@deivid-rodriguez][])
 * [#3406](https://github.com/bbatsov/rubocop/issues/3406): Enable cops if Enabled is not explicitly set to false. ([@metcalf][])
+* Fix `Lint/FormatParameterMismatch` for splatted last argument. ([@zverok][])
 
 ## 0.46.0 (2016-11-30)
 
@@ -2573,3 +2574,4 @@
 [@vergenzt]: https://github.com/vergenzt
 [@rahulcs]: https://github.com/rahulcs
 [@dominh]: https://github.com/dominh
+[@zverok]: https://github.com/zverok
