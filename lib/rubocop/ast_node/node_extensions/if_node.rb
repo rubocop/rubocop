@@ -4,6 +4,9 @@ module RuboCop
   module NodeExtension
     # A node extension for `if` nodes.
     class IfNode < RuboCop::Node
+      include ConditionalNode
+      include ModifierNode
+
       def if?
         keyword == 'if'
       end
@@ -42,22 +45,9 @@ module RuboCop
         (if? || unless?) && super
       end
 
-      def single_line_condition?
-        loc.keyword.line == condition.source_range.line
-      end
-
-      def multiline_condition?
-        !single_line_condition?
-      end
-
-      def condition
-        node_parts[0]
-      end
-
       def true_branch
         node_parts[1]
       end
-      alias body true_branch
 
       def nested_conditional?
         node_parts[1..2].compact.any?(&:if_type?)
