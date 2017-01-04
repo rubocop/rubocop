@@ -13,11 +13,21 @@ module RuboCop
     #   parser = Parser::CurrentRuby.new(builder)
     #   root_node = parser.parse(buffer)
     class Builder < Parser::Builders::Default
+      NODE_MAP = {
+        ArrayNode => [:array],
+        CaseNode  => [:case],
+        HashNode  => [:hash],
+        IfNode    => [:if],
+        WhenNode  => [:when],
+        UntilNode => [:until, :until_post],
+        WhileNode => [:while, :while_post]
+      }.freeze
+
       # Generates {Node} from the given information.
       #
       # @return [Node] the generated node
       def n(type, children, source_map)
-        node_map(type).new(type, children, location: source_map)
+        node_klass(type).new(type, children, location: source_map)
       end
 
       # TODO: Figure out what to do about literal encoding handling...
@@ -26,16 +36,19 @@ module RuboCop
         value(token)
       end
 
-      def node_map(type)
-        case type
-        when :array then ArrayNode
-        when :case  then CaseNode
-        when :hash  then HashNode
-        when :if    then IfNode
-        when :until, :until_post then UntilNode
-        when :when  then WhenNode
-        when :while, :while_post then WhileNode
-        else Node
+      private
+
+      def node_klass(type)
+        node_map[type] || Node
+      end
+
+      # Take the human readable constant and generate a hash map where each
+      # (mapped) node type is a key with its constant as the value.
+      def node_map
+        @node_map ||= begin
+          NODE_MAP.each_pair.each_with_object({}) do |(klass, types), map|
+            types.each { |type| map[type] = klass }
+          end
         end
       end
     end
