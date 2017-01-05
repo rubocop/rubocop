@@ -103,9 +103,9 @@ module RuboCop
         end
 
         def exit_body_type?(node)
-          return false unless node.true_branch
+          return false unless node.if_branch
 
-          EXIT_TYPES.include?(node.true_branch.type)
+          EXIT_TYPES.include?(node.if_branch.type)
         end
 
         def offense_node(body)

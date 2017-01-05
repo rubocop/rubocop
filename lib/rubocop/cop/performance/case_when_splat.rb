@@ -118,7 +118,8 @@ module RuboCop
         end
 
         def when_branch_range(when_node)
-          next_branch = when_node.parent.when_branches[when_node.index + 1]
+          next_branch =
+            when_node.parent.when_branches[when_node.branch_index + 1]
 
           range_between(when_node.source_range.begin_pos,
                         next_branch.source_range.begin_pos)
@@ -161,7 +162,7 @@ module RuboCop
 
         def needs_reorder?(when_node)
           following_branches =
-            when_node.parent.when_branches[(when_node.index + 1)..-1]
+            when_node.parent.when_branches[(when_node.branch_index + 1)..-1]
 
           following_branches.any? do |when_branch|
             when_branch.conditions.any? do |condition|

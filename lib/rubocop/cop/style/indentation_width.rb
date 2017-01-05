@@ -125,7 +125,7 @@ module RuboCop
           return if ignored_node?(node) || !node.body
           return if node.ternary? || node.modifier_form?
 
-          check_if(node, node.body, node.false_branch, base.loc)
+          check_if(node, node.body, node.else_branch, base.loc)
         end
 
         private

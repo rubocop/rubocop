@@ -292,7 +292,7 @@ module RuboCop
           *_variable, assignment = *node
 
           if assignment.begin_type? && assignment.children.one?
-            assignment = assignment.children.first
+            assignment, = *assignment
           end
 
           assignment
