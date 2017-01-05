@@ -146,7 +146,7 @@ module RuboCop
         return false if dept_config['Enabled'] == false
       end
 
-      for_cop(cop).empty? || for_cop(cop)['Enabled']
+      for_cop(cop).empty? || for_cop(cop).fetch('Enabled', true)
     end
 
     def validate

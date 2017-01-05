@@ -458,6 +458,19 @@ describe RuboCop::Config do
         end
       end
     end
+
+    context 'when a cop has configuration but no explicit Enabled setting' do
+      let(:hash) do
+        {
+          'Style/TrailingWhitespace' => { 'Exclude' => ['foo'] }
+        }
+      end
+
+      it 'enables the cop by default' do
+        cop_class = RuboCop::Cop::Style::TrailingWhitespace
+        expect(configuration.cop_enabled?(cop_class)).to be true
+      end
+    end
   end
 
   describe '#target_ruby_version' do
