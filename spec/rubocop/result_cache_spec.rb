@@ -62,6 +62,8 @@ describe RuboCop::ResultCache, :isolated_environment do
           described_class.new(file, options, config_store, cache_root)
         end
 
+        let(:attack_target_dir) { Dir.mktmpdir }
+
         before do
           # Avoid getting "symlink() function is unimplemented on this
           # machine" on Windows.
@@ -69,18 +71,16 @@ describe RuboCop::ResultCache, :isolated_environment do
             skip 'Symlinks not implemented on Windows'
           end
 
-          @attack_target_dir = Dir.mktmpdir
-
           cache.save(offenses)
           Find.find(cache_root) do |path|
             next unless File.basename(path) == '_'
             FileUtils.rm_rf(path)
-            FileUtils.ln_s(@attack_target_dir, path)
+            FileUtils.ln_s(attack_target_dir, path)
           end
           $stderr = StringIO.new
         end
         after do
-          FileUtils.rmdir(@attack_target_dir)
+          FileUtils.rmdir(attack_target_dir)
           $stderr = STDERR
         end
 
