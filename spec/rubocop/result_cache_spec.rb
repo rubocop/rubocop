@@ -196,19 +196,18 @@ describe RuboCop::ResultCache, :isolated_environment do
         .to eq("Removing the 2 oldest files from #{cache_root}\n")
     end
   end
-end
 
-describe RuboCop::ResultCache, :isolated_environment do
-  let(:config_store) { double('config_store') }
-  let(:tmpdir) { File.realpath(Dir.tmpdir) }
-  let(:puid) { Process.uid.to_s }
+  context 'the cache path when using a temp directory' do
+    let(:config_store) { double('config_store') }
+    let(:tmpdir) { File.realpath(Dir.tmpdir) }
+    let(:puid) { Process.uid.to_s }
 
-  describe 'the cache path when using a temp directory' do
     before do
       allow(config_store).to receive(:for).with('.').and_return(
         RuboCop::Config.new('AllCops' => { 'CacheRootDirectory' => '/tmp' })
       )
     end
+
     it 'contains the process uid' do
       cacheroot = RuboCop::ResultCache.cache_root(config_store)
       expect(cacheroot).to eq(File.join(tmpdir, puid, 'rubocop_cache'))
