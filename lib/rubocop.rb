@@ -66,6 +66,7 @@ require 'rubocop/cop/mixin/configurable_max'
 require 'rubocop/cop/mixin/code_length' # relies on configurable_max
 require 'rubocop/cop/mixin/classish_length' # relies on code_length
 require 'rubocop/cop/mixin/configurable_enforced_style'
+require 'rubocop/cop/mixin/configurable_formatting'
 require 'rubocop/cop/mixin/configurable_naming'
 require 'rubocop/cop/mixin/configurable_numbering'
 require 'rubocop/cop/mixin/def_node'
