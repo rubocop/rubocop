@@ -173,14 +173,14 @@ describe RuboCop::Cop::Cop do
 
   describe 'Registry' do
     context '#departments' do
-      subject { described_class.registry.departments }
-      it('has departments') { expect(subject.length).not_to eq(0) }
+      subject(:departments) { described_class.registry.departments }
+      it('has departments') { expect(departments.length).not_to eq(0) }
       it { is_expected.to include(:Lint) }
       it { is_expected.to include(:Rails) }
       it { is_expected.to include(:Style) }
 
       it 'contains every value only once' do
-        expect(subject.length).to eq(subject.uniq.length)
+        expect(departments.length).to eq(departments.uniq.length)
       end
     end
 
