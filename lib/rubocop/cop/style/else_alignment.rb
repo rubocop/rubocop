@@ -11,34 +11,31 @@ module RuboCop
         include EndKeywordAlignment
         include AutocorrectAlignment
         include CheckAssignment
-        include IfNode
 
         MSG = 'Align `%s` with `%s`.'.freeze
 
         def on_if(node, base = nil)
           return if ignored_node?(node)
-          return unless if_else?(node)
+          return unless node.else? && begins_its_line?(node.loc.else)
 
-          else_range = node.loc.else
-          return unless begins_its_line?(else_range)
+          check_alignment(base_range(node, base), node.loc.else)
 
-          check_alignment(base_range(node, base), else_range)
+          else_branch = node.else_branch
 
-          _, _, else_body = *node
-
-          return unless else_body && elsif?(else_body)
+          return unless else_branch && else_branch.if_type? &&
+                        else_branch.elsif?
 
           # If the `else` part is actually an `elsif`, we check the `elsif`
           # node in case it contains an `else` within, because that `else`
           # should have the same alignment (base).
-          on_if(else_body, base)
+          on_if(else_branch, base)
           # The `elsif` node will get an `on_if` call from the framework later,
           # but we're done here, so we set it to ignored.
-          ignore_node(else_body)
+          ignore_node(else_branch)
         end
 
         def on_rescue(node)
-          return unless if_else?(node)
+          return unless node.loc.respond_to?(:else) && node.loc.else
 
           parent = node.parent
           parent = parent.parent if parent.ensure_type?
@@ -51,9 +48,9 @@ module RuboCop
         end
 
         def on_case(node)
-          _cond, *whens, _else = *node
-          return unless if_else?(node)
-          check_alignment(whens.last.loc.keyword, node.loc.else)
+          return unless node.else?
+
+          check_alignment(node.when_branches.last.loc.keyword, node.loc.else)
         end
 
         private
@@ -62,11 +59,8 @@ module RuboCop
           if base
             base.source_range
           else
-            base = node
-            until %w(if unless).include?(base.loc.keyword.source)
-              base = base.parent
-            end
-            base.loc.keyword
+            lineage = [node, *node.each_ancestor(:if)]
+            lineage.find { |parent| parent.if? || parent.unless? }.loc.keyword
           end
         end
 

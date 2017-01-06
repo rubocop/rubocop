@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe RuboCop::Cop::VariableForce::Locatable do
-  include RuboCop::Sexp
+  include RuboCop::AST::Sexp
 
   class LocatableObject
     include RuboCop::Cop::VariableForce::Locatable

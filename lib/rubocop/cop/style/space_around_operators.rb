@@ -6,16 +6,14 @@ module RuboCop
       # Checks that operators have space around them, except for **
       # which should not have surrounding space.
       class SpaceAroundOperators < Cop
-        include IfNode
         include PrecedingFollowingAlignment
-        include HashNode # any_pairs_on_the_same_line?
 
         def on_pair(node)
           return unless node.loc.operator.is?('=>')
 
           align_hash_config = config.for_cop('Style/AlignHash')
           return if align_hash_config['EnforcedHashRocketStyle'] == 'table' &&
-                    !any_pairs_on_the_same_line?(node.parent)
+                    !node.parent.pairs_on_same_line?
 
           _, right = *node
 
@@ -23,7 +21,8 @@ module RuboCop
         end
 
         def on_if(node)
-          return unless ternary?(node)
+          return unless node.ternary?
+
           _, if_branch, else_branch = *node
 
           check_operator(node.loc.question, if_branch.source_range)

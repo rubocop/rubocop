@@ -11,25 +11,24 @@ module RuboCop
         MSG = '%s curly braces around a hash parameter.'.freeze
 
         def on_send(node)
+          return if node.asgn_method_call?
+
           _receiver, method_name, *args = *node
 
-          # Discard attr writer methods.
-          return if node.asgn_method_call?
-          # Discard operator methods.
           return if operator?(method_name)
+          return if args.empty?
 
-          # We care only for the last argument.
-          arg = args.last
+          return unless args.last.hash_type? && !args.last.pairs.empty?
 
-          check(arg, args) if non_empty_hash?(arg)
+          check(args.last, args)
         end
 
         private
 
         def check(arg, args)
-          if style == :braces && !braces?(arg)
+          if style == :braces && !arg.braces?
             add_offense(arg.parent, arg.source_range, format(MSG, 'Missing'))
-          elsif style == :no_braces && braces?(arg)
+          elsif style == :no_braces && arg.braces?
             add_offense(arg.parent, arg.source_range,
                         format(MSG, 'Redundant'))
           elsif style == :context_dependent
@@ -39,7 +38,7 @@ module RuboCop
 
         def check_context_dependent(arg, args)
           braces_around_second_from_end = args.length > 1 && args[-2].hash_type?
-          if braces?(arg)
+          if arg.braces?
             unless braces_around_second_from_end
               add_offense(arg.parent, arg.source_range,
                           format(MSG, 'Redundant'))
@@ -57,7 +56,7 @@ module RuboCop
           _receiver, _method_name, *args = *send_node
           node = args.last
           lambda do |corrector|
-            if braces?(node)
+            if node.braces?
               remove_braces_with_whitespace(corrector, node)
             else
               add_braces(corrector, node)
@@ -98,10 +97,6 @@ module RuboCop
         def add_braces(corrector, node)
           corrector.insert_before(node.source_range, '{')
           corrector.insert_after(node.source_range, '}')
-        end
-
-        def non_empty_hash?(arg)
-          arg && arg.hash_type? && !arg.children.empty?
         end
 
         def braces?(arg)

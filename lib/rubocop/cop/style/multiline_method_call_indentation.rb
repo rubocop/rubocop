@@ -129,9 +129,9 @@ module RuboCop
           n = kw_node_with_special_indentation(lhs)
           if n
             case n.type
-            when :if, :while, :until then expression, = *n
-            when :for                then _, expression, = *n
-            when :return             then expression, = *n
+            when :for            then _, expression, = *n
+            when :return         then expression, = *n
+            when *MODIFIER_NODES then expression, = *n
             end
             return expression.source_range
           end

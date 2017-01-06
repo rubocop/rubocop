@@ -18,7 +18,7 @@ module RuboCop
         def on_array(node)
           if bracketed_array_of?(:str, node)
             check_bracketed(node)
-          elsif percent_syntax?(node)
+          elsif node.percent_literal?(:string)
             check_percent(node)
           end
         end
@@ -34,21 +34,17 @@ module RuboCop
         private
 
         def check_bracketed(node)
-          array_elems = node.children
-
-          return if complex_content?(array_elems) ||
+          return if complex_content?(node.values) ||
                     comments_in_array?(node)
-          style_detected(:brackets, array_elems.size)
+          style_detected(:brackets, node.values.size)
 
-          return unless style == :percent && array_elems.size >= min_size
+          return unless style == :percent && node.values.size >= min_size
 
           add_offense(node, :expression, PERCENT_MSG)
         end
 
         def check_percent(node)
-          array_elems = node.children
-
-          style_detected(:percent, array_elems.size)
+          style_detected(:percent, node.values.size)
           add_offense(node, :expression, ARRAY_MSG) if style == :brackets
         end
 

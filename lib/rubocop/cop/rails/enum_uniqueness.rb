@@ -25,36 +25,19 @@ module RuboCop
         END
 
         def on_send(node)
-          enum_call(node) do |enum_name, enum_args|
-            dupes = arr_dupes(enum_values(enum_args))
-            return if dupes.empty?
+          enum_call(node) do |name, args|
+            duplicates = duplicates(args.values.map(&:source))
+
+            return if duplicates.empty?
 
             add_offense(node, :selector,
-                        format(MSG, dupes.join(','), enum_name))
+                        format(MSG, duplicates.join(','), name))
           end
         end
 
         private
 
-        def enum_values(enum_args)
-          if enum_args.type == :array
-            enum_array_keys(enum_args)
-          else
-            enum_hash_values(enum_args)
-          end
-        end
-
-        def enum_array_keys(array_node)
-          array_node.each_child_node.map(&:source)
-        end
-
-        def enum_hash_values(hash_node)
-          hash_node.each_child_node.map do |child_node|
-            child_node.child_nodes.last.source
-          end
-        end
-
-        def arr_dupes(array)
+        def duplicates(array)
           array.select { |element| array.count(element) > 1 }.uniq
         end
       end

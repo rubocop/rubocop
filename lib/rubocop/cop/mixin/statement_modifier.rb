@@ -4,13 +4,10 @@ module RuboCop
   module Cop
     # Common functionality for modifier cops.
     module StatementModifier
-      include IfNode
-
       def single_line_as_modifier?(node)
-        cond, body, = if_node_parts(node)
-
-        return false if non_eligible_node?(node) || non_eligible_body?(body) ||
-                        non_eligible_condition?(cond)
+        return false if non_eligible_node?(node) ||
+                        non_eligible_body?(node.body) ||
+                        non_eligible_condition?(node.condition)
 
         modifier_fits_on_single_line?(node)
       end
@@ -20,9 +17,7 @@ module RuboCop
       end
 
       def non_eligible_body?(body)
-        return true unless body
-
-        body.begin_type? || empty_body?(body) || commented?(body.source_range)
+        empty_body?(body) || body.begin_type? || commented?(body.source_range)
       end
 
       def non_eligible_condition?(condition)
@@ -30,10 +25,10 @@ module RuboCop
       end
 
       def modifier_fits_on_single_line?(node)
-        cond, body, = if_node_parts(node)
-        body_length = body_length(body)
+        modifier_length = length_in_modifier_form(node, node.condition,
+                                                  body_length(node.body))
 
-        length_in_modifier_form(node, cond, body_length) <= max_line_length
+        modifier_length <= max_line_length
       end
 
       def length_in_modifier_form(node, cond, body_length)
@@ -54,7 +49,7 @@ module RuboCop
       end
 
       def empty_body?(body)
-        body_length(body).zero?
+        !body || body_length(body).zero?
       end
 
       def body_length(body)

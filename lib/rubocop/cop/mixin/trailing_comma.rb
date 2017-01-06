@@ -95,8 +95,7 @@ module RuboCop
           # For each argument, if it is a multi-line hash without braces,
           # then promote the hash elements to method arguments
           # for the purpose of determining multi-line-ness.
-          if a.hash_type? && a.loc.first_line != a.loc.last_line &&
-             !brackets?(a)
+          if a.hash_type? && a.multiline? && !a.braces?
             a.children
           else
             a

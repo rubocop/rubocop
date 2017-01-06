@@ -49,7 +49,6 @@ module RuboCop
       #   foo = bar.baz ? a : b
       #   foo = (bar && baz) ? a : b
       class TernaryParentheses < Cop
-        include IfNode
         include SafeAssignment
         include ConfigurableEnforcedStyle
 
@@ -58,14 +57,15 @@ module RuboCop
           ' complex conditions.'.freeze
 
         def on_if(node)
-          return unless ternary?(node) && !infinite_loop? && offense?(node)
+          return unless node.ternary? && !infinite_loop? && offense?(node)
+
           add_offense(node, node.source_range, message(node))
         end
 
         private
 
         def offense?(node)
-          condition, = *node
+          condition = node.condition
 
           if safe_assignment?(condition)
             !safe_assignment_allowed?
@@ -81,7 +81,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          condition, = *node
+          condition = node.condition
 
           return nil if parenthesized?(condition) &&
                         (safe_assignment?(condition) ||
@@ -118,8 +118,7 @@ module RuboCop
 
         def message(node)
           if require_parentheses_when_complex?
-            condition, = *node
-            omit = parenthesized?(condition) ? 'Only use' : 'Use'
+            omit = parenthesized?(node.condition) ? 'Only use' : 'Use'
             format(MSG_COMPLEX, omit)
           else
             verb = require_parentheses? ? 'Use' : 'Omit'

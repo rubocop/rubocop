@@ -7,8 +7,6 @@ module RuboCop
       # N.B. this cop does not handle spaces after a ternary operator, which are
       # instead handled by Style/SpaceAroundOperators.
       class SpaceAfterColon < Cop
-        include IfNode
-
         MSG = 'Space missing after colon.'.freeze
 
         def on_pair(node)

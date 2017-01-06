@@ -22,7 +22,7 @@ module RuboCop
         context 'when no offenses are detected' do
           let(:offenses) { [] }
           it 'does not add to offense_counts' do
-            expect { finish }.to_not change { formatter.offense_counts }
+            expect { finish }.not_to change { formatter.offense_counts }
           end
         end
 

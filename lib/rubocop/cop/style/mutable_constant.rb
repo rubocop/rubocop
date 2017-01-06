@@ -44,8 +44,9 @@ module RuboCop
 
         def autocorrect(node)
           expr = node.source_range
+
           lambda do |corrector|
-            if node.array_type? && node.loc.begin.nil? && node.loc.end.nil?
+            if node.array_type? && !node.square_brackets?
               corrector.insert_before(expr, '[')
               corrector.insert_after(expr, '].freeze')
             else

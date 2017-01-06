@@ -12,12 +12,11 @@ module RuboCop
       #     puts 'hello'
       #    end
       #   end
-      class IndentationWidth < Cop # rubocop:disable Metrics/ClassLength
+      class IndentationWidth < Cop
         include EndKeywordAlignment
         include AutocorrectAlignment
         include OnMethodDef
         include CheckAssignment
-        include IfNode
         include AccessModifierNode
 
         SPECIAL_MODIFIERS = %w(private protected).freeze
@@ -106,56 +105,27 @@ module RuboCop
         def on_while(node, base = node)
           return if ignored_node?(node)
 
-          _condition, body = *node
-          return unless node.loc.keyword.begin_pos ==
-                        node.source_range.begin_pos
+          return unless node.single_line_condition?
 
-          check_indentation(base.loc, body)
+          check_indentation(base.loc, node.body)
         end
 
         alias on_until on_while
 
-        def on_case(node)
-          _condition, *branches = *node
-          latest_when = nil
-          branches.compact.each do |b|
-            if b.when_type?
-              # TODO: Revert to the original expression once the fix in Rubinius
-              #   is released.
-              #
-              # Originally this expression was:
-              #
-              #   *_conditions, body = *b
-              #
-              # However it fails on Rubinius 2.2.9 due to its bug:
-              #
-              #   RuntimeError:
-              #     can't modify frozen instance of Array
-              #   # kernel/common/array.rb:988:in `pop'
-              #   # ./lib/rubocop/cop/style/indentation_width.rb:99:in `on_case'
-              #
-              # It seems to be fixed on the current master (0a92c3c).
-              body = b.children.last
-
-              # Check "when" body against "when" keyword indentation.
-              check_indentation(b.loc.keyword, body)
-              latest_when = b
-            else
-              # Since it's not easy to get the position of the "else" keyword,
-              # we check "else" body against latest "when" keyword indentation.
-              check_indentation(latest_when.loc.keyword, b)
-            end
+        def on_case(case_node)
+          case_node.when_branches.compact.each do |when_node|
+            check_indentation(when_node.loc.keyword, when_node.body)
           end
+
+          check_indentation(case_node.when_branches.last.loc.keyword,
+                            case_node.else_branch)
         end
 
         def on_if(node, base = node)
-          return if ignored_node?(node)
-          return if ternary?(node)
-          return if modifier_if?(node)
+          return if ignored_node?(node) || !node.body
+          return if node.ternary? || node.modifier_form?
 
-          _condition, body, else_clause = if_node_parts(node)
-
-          check_if(node, body, else_clause, base.loc) if body
+          check_if(node, node.body, node.else_branch, base.loc)
         end
 
         private
@@ -201,14 +171,14 @@ module RuboCop
         end
 
         def check_if(node, body, else_clause, base_loc)
-          return if ternary?(node)
+          return if node.ternary?
 
           check_indentation(base_loc, body)
           return unless else_clause
 
           # If the else clause is an elsif, it will get its own on_if call so
           # we don't need to process it here.
-          return if elsif?(else_clause)
+          return if else_clause.if_type? && else_clause.elsif?
 
           check_indentation(node.loc.else, else_clause)
         end

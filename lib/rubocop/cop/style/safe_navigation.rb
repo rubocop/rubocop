@@ -44,7 +44,6 @@ module RuboCop
       #   # use safe navigation
       #   foo.to_i if foo
       class SafeNavigation < Cop
-        include IfNode
         extend TargetRubyVersion
 
         MSG = 'Use safe navigation (`&.`) instead of checking if an object ' \
@@ -74,7 +73,8 @@ module RuboCop
         PATTERN
 
         def on_if(node)
-          return if ternary?(node)
+          return if node.ternary?
+
           check_node(node)
         end
 
@@ -87,13 +87,18 @@ module RuboCop
         end
 
         def check_node(node)
-          return if if_else?(node)
-          return if elsif?(node)
+          return if target_ruby_version < 2.3
+          return if allowed_if_condition?(node)
           checked_variable, receiver, method = extract_parts(node)
           return unless receiver == checked_variable
           return if NIL_METHODS.include?(method)
           return unless method =~ /\w+[=!?]?/
+
           add_offense(node, :expression)
+        end
+
+        def allowed_if_condition?(node)
+          node.if_type? && (node.else? || node.elsif?)
         end
 
         def extract_parts(node)
@@ -106,8 +111,8 @@ module RuboCop
         end
 
         def autocorrect(node)
-          if node.loc.respond_to?(:keyword) && node.loc.keyword.is?('unless')
-            _check, _else, body = *node
+          if node.if_type?
+            _check, body, = *node.node_parts
           else
             _check, body = *node
           end

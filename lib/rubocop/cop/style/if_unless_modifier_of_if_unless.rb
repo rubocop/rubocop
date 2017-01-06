@@ -25,18 +25,12 @@ module RuboCop
       class IfUnlessModifierOfIfUnless < Cop
         include StatementModifier
 
-        MESSAGE = 'Avoid modifier `%s` after another conditional.'.freeze
-
-        def message(keyword)
-          format(MESSAGE, keyword)
-        end
+        MSG = 'Avoid modifier `%s` after another conditional.'.freeze
 
         def on_if(node)
-          return unless modifier_if?(node)
-          _cond, body, _else = if_node_parts(node)
-          return unless body.if_type?
+          return unless node.modifier_form? && node.body.if_type?
 
-          add_offense(node, :keyword, message(node.loc.keyword.source))
+          add_offense(node, :keyword, format(MSG, node.keyword))
         end
       end
     end

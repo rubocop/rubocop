@@ -36,7 +36,6 @@ module RuboCop
       #   raise 'exception' if something
       #   ok
       class GuardClause < Cop
-        include IfNode
         include MinBodyLength
         include OnMethodDef
 
@@ -48,7 +47,7 @@ module RuboCop
 
           if body.if_type?
             check_ending_if(body)
-          elsif body.begin_type?
+          elsif body.begin_type? && body.children.last.if_type?
             check_ending_if(body.children.last)
           end
         end
@@ -56,39 +55,34 @@ module RuboCop
         def on_if(node)
           return if accepted_form?(node) || !contains_guard_clause?(node)
 
-          add_offense(node, :keyword, MSG)
+          add_offense(node, :keyword)
         end
 
         private
 
         def check_ending_if(node)
-          return if !node.if_type? ||
-                    accepted_form?(node, true) ||
-                    !min_body_length?(node)
+          return if accepted_form?(node, true) || !min_body_length?(node)
 
-          add_offense(node, :keyword, MSG)
+          add_offense(node, :keyword)
         end
 
         def accepted_form?(node, ending = false)
-          condition, = *node
-
-          ignored_node?(node, ending) || condition.multiline?
+          accepted_if?(node, ending) || node.condition.multiline?
         end
 
-        def ignored_node?(node, ending)
-          return true if modifier_if?(node) || ternary?(node)
+        def accepted_if?(node, ending)
+          return true if node.modifier_form? || node.ternary?
 
           if ending
-            if_else?(node)
+            node.else?
           else
-            !if_else?(node) || elsif?(node)
+            !node.else? || node.elsif?
           end
         end
 
         def contains_guard_clause?(node)
-          _, body, else_body = *node
-
-          guard_clause?(body) || guard_clause?(else_body)
+          node.if_branch && node.if_branch.guard_clause? ||
+            node.else_branch && node.else_branch.guard_clause?
         end
       end
     end

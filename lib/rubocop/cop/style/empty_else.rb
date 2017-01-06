@@ -76,38 +76,38 @@ module RuboCop
         MSG = 'Redundant `else`-clause.'.freeze
 
         def on_normal_if_unless(node)
-          check(node, if_else_clause(node))
+          check(node)
         end
 
         def on_case(node)
-          check(node, case_else_clause(node))
+          check(node)
         end
 
         private
 
-        def check(node, else_clause)
-          case style
-          when :empty
-            empty_check(node, else_clause)
-          when :nil
-            nil_check(node, else_clause)
-          when :both
-            both_check(node, else_clause)
-          end
+        def check(node)
+          empty_check(node) if empty_style?
+          nil_check(node) if nil_style?
         end
 
-        def empty_check(node, else_clause)
-          add_offense(node, :else, MSG) if node.loc.else && else_clause.nil?
+        def nil_style?
+          style == :nil || style == :both
         end
 
-        def nil_check(node, else_clause)
-          return unless else_clause && else_clause.nil_type?
+        def empty_style?
+          style == :empty || style == :both
+        end
+
+        def empty_check(node)
+          return unless node.else? && !node.else_branch
+
           add_offense(node, :else, MSG)
         end
 
-        def both_check(node, else_clause)
-          empty_check(node, else_clause)
-          nil_check(node, else_clause)
+        def nil_check(node)
+          return unless node.else_branch && node.else_branch.nil_type?
+
+          add_offense(node, :else, MSG)
         end
 
         def autocorrect(node)
@@ -121,13 +121,11 @@ module RuboCop
         end
 
         def base_if_node(node)
-          parent_node = node
-          parent_node = parent_node.parent until parent_node.loc.end
-          parent_node
+          node.each_ancestor(:if).find { |parent| parent.loc.end } || node
         end
 
         def autocorrect_forbidden?(type)
-          [type, 'both'].include? missing_else_style
+          [type, 'both'].include?(missing_else_style)
         end
 
         def missing_else_style

@@ -54,7 +54,7 @@ module RuboCop
           config.for_cop('Style/StringLiterals')
         end
 
-        def first_arg_in_method_call_without_parentheses?(node)
+        def first_argument_unparenthesized?(node)
           return false unless node.parent && node.parent.send_type?
 
           _receiver, _method_name, *args = *node.parent
@@ -63,7 +63,7 @@ module RuboCop
 
         def replacement_range(node)
           if hash_node(node) &&
-             first_arg_in_method_call_without_parentheses?(node)
+             first_argument_unparenthesized?(node)
             # `some_method {}` is not same as `some_method Hash.new`
             # because the braces are interpreted as a block. We will have
             # to rewrite the arguments to wrap them in parenthesis.
@@ -83,7 +83,7 @@ module RuboCop
           elsif str_node(node)
             preferred_string_literal
           elsif hash_node(node)
-            if first_arg_in_method_call_without_parentheses?(node)
+            if first_argument_unparenthesized?(node)
               # `some_method {}` is not same as `some_method Hash.new`
               # because the braces are interpreted as a block. We will have
               # to rewrite the arguments to wrap them in parenthesis.

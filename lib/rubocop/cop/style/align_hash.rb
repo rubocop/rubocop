@@ -104,9 +104,11 @@ module RuboCop
               'one line.'.freeze
 
         def on_send(node)
+          return if double_splat?(node)
+
           last_argument = node.children.last
 
-          return unless hash?(last_argument) &&
+          return unless last_argument.hash_type? &&
                         ignore_hash_argument?(last_argument)
 
           ignore_node(last_argument)
@@ -114,8 +116,7 @@ module RuboCop
 
         def on_hash(node)
           return if ignored_node?(node)
-          return if node.children.empty?
-          return unless node.multiline?
+          return if node.pairs.empty? || node.single_line?
 
           return unless alignment_for_hash_rockets.checkable_layout?(node) &&
                         alignment_for_colons.checkable_layout?(node)
@@ -127,8 +128,12 @@ module RuboCop
 
         attr_accessor :column_deltas
 
+        def double_splat?(node)
+          node.children.last.is_a?(Symbol)
+        end
+
         def check_pairs(node)
-          first_pair = node.children.first
+          first_pair = node.pairs.first
           self.column_deltas = alignment_for(first_pair)
                                .deltas_for_first_pair(first_pair, node)
           add_offense(first_pair, :expression) unless good_alignment?
@@ -144,17 +149,9 @@ module RuboCop
           case cop_config['EnforcedLastArgumentHashStyle']
           when 'always_inspect'  then false
           when 'always_ignore'   then true
-          when 'ignore_explicit' then explicit_hash?(node)
-          when 'ignore_implicit' then !explicit_hash?(node)
+          when 'ignore_explicit' then node.braces?
+          when 'ignore_implicit' then !node.braces?
           end
-        end
-
-        def hash?(node)
-          node.respond_to?(:type) && node.hash_type?
-        end
-
-        def explicit_hash?(node)
-          hash?(node) && node.loc.begin
         end
 
         def alignment_for(pair)

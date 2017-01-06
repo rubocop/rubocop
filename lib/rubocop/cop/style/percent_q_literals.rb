@@ -8,6 +8,10 @@ module RuboCop
         include PercentLiteral
         include ConfigurableEnforcedStyle
 
+        LOWER_CASE_Q_MSG = 'Do not use `%Q` unless interpolation is ' \
+                           'needed.  Use `%q`.'.freeze
+        UPPER_CASE_Q_MSG = 'Use `%Q` instead of `%q`.'.freeze
+
         def on_str(node)
           process(node, '%Q', '%q')
         end
@@ -15,23 +19,22 @@ module RuboCop
         private
 
         def on_percent_literal(node)
-          if style == :lower_case_q
-            if type(node) == '%Q'
-              check(node,
-                    'Do not use `%Q` unless interpolation is needed.  ' \
-                    'Use `%q`.')
-            end
-          elsif type(node) == '%q'
-            check(node, 'Use `%Q` instead of `%q`.')
-          end
-        end
+          return if correct_literal_style?(node)
 
-        def check(node, msg)
           # Report offense only if changing case doesn't change semantics,
           # i.e., if the string would become dynamic or has special characters.
           return if node.children != parse(corrected(node.source)).ast.children
 
-          add_offense(node, :begin, msg)
+          add_offense(node, :begin, message)
+        end
+
+        def correct_literal_style?(node)
+          style == :lower_case_q && type(node) == '%q' ||
+            style == :upper_case_q && type(node) == '%Q'
+        end
+
+        def message
+          style == :lower_case_q ? LOWER_CASE_Q_MSG : UPPER_CASE_Q_MSG
         end
 
         def autocorrect(node)

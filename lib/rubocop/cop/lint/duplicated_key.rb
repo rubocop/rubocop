@@ -24,9 +24,7 @@ module RuboCop
         def on_hash(node)
           keys = []
 
-          hash_pairs = *node
-          hash_pairs.each do |pair|
-            key, _value = *pair
+          node.each_pair do |key, _value|
             if keys.include?(key) && key.recursive_basic_literal?
               add_offense(key, :expression)
             end

@@ -28,19 +28,16 @@ module RuboCop
       #     end
       #   end
       class IfInsideElse < Cop
-        include IfNode
-
         MSG = 'Convert `if` nested inside `else` to `elsif`.'.freeze
 
         def on_if(node)
-          _cond, _if_branch, else_branch = *node
-          return unless else_branch
-          return unless else_branch.if_type?
-          return if ternary?(node) || ternary?(else_branch)
-          return unless else_branch.loc.keyword.is?('if')
-          return if node.loc.keyword.is?('unless')
+          return if node.ternary? || node.unless?
 
-          add_offense(else_branch, :keyword, MSG)
+          else_branch = node.else_branch
+
+          return unless else_branch && else_branch.if_type? && else_branch.if?
+
+          add_offense(else_branch, :keyword)
         end
       end
     end

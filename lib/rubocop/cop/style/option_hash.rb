@@ -25,23 +25,12 @@ module RuboCop
         def on_args(node)
           *_but_last, last_arg = *node
 
-          # asserting that there was an argument at all
-          return unless last_arg
-
-          # asserting last argument is an optional argument
-          return unless last_arg.optarg_type?
+          return unless last_arg && last_arg.optarg_type?
 
           arg, default_value = *last_arg
 
-          # asserting default value is a hash
-          return unless default_value.hash_type?
-
-          # asserting default value is empty hash
-          *key_value_pairs = *default_value
-          return unless key_value_pairs.empty?
-
-          # Check for suspicious argument names
-          return unless name_in_suspicious_param_names?(arg)
+          return unless default_value.hash_type? && default_value.pairs.empty?
+          return unless suspicious_name?(arg)
 
           add_offense(last_arg, :expression, MSG)
         end
@@ -59,7 +48,7 @@ module RuboCop
 
         private
 
-        def name_in_suspicious_param_names?(arg_name)
+        def suspicious_name?(arg_name)
           cop_config.key?('SuspiciousParamNames') &&
             cop_config['SuspiciousParamNames'].include?(arg_name.to_s)
         end

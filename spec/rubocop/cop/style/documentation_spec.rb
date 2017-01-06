@@ -187,7 +187,7 @@ describe RuboCop::Cop::Style::Documentation do
                       '  if //',
                       '  end',
                       'end'])
-    end.to_not raise_error
+    end.not_to raise_error
   end
 
   it 'registers an offense if the comment line contains code' do

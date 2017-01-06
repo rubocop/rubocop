@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RuboCop::Node do
+describe RuboCop::AST::Node do
   describe '#asgn_method_call?' do
     it 'does not match ==' do
       parsed = parse_source('Object.new == value')
@@ -40,10 +40,12 @@ describe RuboCop::Node do
 
     before(:all) do
       module RuboCop
-        class Node
-          # Let's make our predicate matchers read better
-          def used?
-            value_used?
+        module AST
+          class Node
+            # Let's make our predicate matchers read better
+            def used?
+              value_used?
+            end
           end
         end
       end

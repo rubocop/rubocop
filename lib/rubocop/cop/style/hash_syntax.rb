@@ -75,18 +75,18 @@ module RuboCop
         end
 
         def on_hash(node)
-          pairs = *node
-          return if pairs.empty?
-          @force_hash_rockets = force_hash_rockets?(pairs)
+          return if node.pairs.empty?
+
+          @force_hash_rockets = force_hash_rockets?(node.pairs)
 
           if style == :hash_rockets || @force_hash_rockets
-            hash_rockets_check(pairs)
+            hash_rockets_check(node.pairs)
           elsif style == :ruby19_no_mixed_keys
-            ruby19_no_mixed_keys_check(pairs)
+            ruby19_no_mixed_keys_check(node.pairs)
           elsif style == :no_mixed_keys
-            no_mixed_keys_check(pairs)
+            no_mixed_keys_check(node.pairs)
           else
-            ruby19_check(pairs)
+            ruby19_check(node.pairs)
           end
         end
 

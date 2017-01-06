@@ -61,8 +61,8 @@ module RuboCop
 
         def delegate?(body)
           receiver, = *body
-          return false unless receiver.is_a?(Node) && receiver.send_type?
-          receiver.child_nodes.empty?
+          receiver.respond_to?(:type) && receiver.send_type? &&
+            receiver.child_nodes.empty?
         end
 
         def arguments_match?(args, body)

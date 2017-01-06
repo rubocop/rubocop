@@ -196,7 +196,6 @@ module RuboCop
       #     bar = 2
       #   end
       class ConditionalAssignment < Cop
-        include IfNode
         include ConditionalAssignmentHelper
         include ConfigurableEnforcedStyle
         include IgnoredNode
@@ -209,8 +208,6 @@ module RuboCop
           [:casgn, :cvasgn, :gvasgn, :ivasgn, :lvasgn].freeze
         ASSIGNMENT_TYPES = VARIABLE_ASSIGNMENT_TYPES +
                            [:and_asgn, :or_asgn, :op_asgn, :masgn].freeze
-        IF = 'if'.freeze
-        UNLESS = 'unless'.freeze
         LINE_LENGTH = 'Metrics/LineLength'.freeze
         INDENTATION_WIDTH = 'Style/IndentationWidth'.freeze
         ENABLED = 'Enabled'.freeze
@@ -238,12 +235,38 @@ module RuboCop
           check_assignment_to_condition(node)
         end
 
+        def on_if(node)
+          return unless style == :assign_to_condition
+          return if node.elsif?
+
+          else_branch = node.else_branch
+          elsif_branches, else_branch = expand_elses(else_branch)
+
+          return unless else_branch
+
+          branches = [node.if_branch, *elsif_branches, else_branch]
+
+          check_node(node, branches)
+        end
+
+        def on_case(node)
+          return unless style == :assign_to_condition
+          return unless node.else_branch
+
+          when_branches = expand_when_branches(node.when_branches)
+          branches = [*when_branches, node.else_branch]
+
+          check_node(node, branches)
+        end
+
+        private
+
         def check_assignment_to_condition(node)
           ignore_node(node)
 
           assignment = assignment_node(node)
           return unless condition?(assignment)
-          return if ternary?(assignment) && !include_ternary?
+          return if allowed_ternary?(assignment)
 
           _condition, *branches, else_branch = *assignment
           return unless else_branch # empty else
@@ -253,33 +276,8 @@ module RuboCop
           add_offense(node, :expression, ASSIGN_TO_CONDITION_MSG)
         end
 
-        def on_if(node)
-          return unless style == :assign_to_condition
-          return if elsif?(node)
-
-          if ternary?(node) || node.loc.keyword.is?('if')
-            _condition, if_branch, else_branch = *node
-          else
-            _condition, else_branch, if_branch = *node
-          end
-
-          elsif_branches, else_branch = expand_elses(else_branch)
-          return unless else_branch # empty else
-
-          branches = [if_branch, *elsif_branches, else_branch]
-
-          check_node(node, branches)
-        end
-
-        def on_case(node)
-          return unless style == :assign_to_condition
-          _condition, *when_branches, else_branch = *node
-          return unless else_branch # empty else
-
-          when_branches = expand_when_branches(when_branches)
-          branches = [*when_branches, else_branch]
-
-          check_node(node, branches)
+        def allowed_ternary?(assignment)
+          assignment.if_type? && assignment.ternary? && !include_ternary?
         end
 
         def autocorrect(node)
@@ -289,8 +287,6 @@ module RuboCop
             move_assignment_outside_condition(node)
           end
         end
-
-        private
 
         def assignment_node(node)
           *_variable, assignment = *node
@@ -307,26 +303,31 @@ module RuboCop
         end
 
         def move_assignment_outside_condition(node)
-          if ternary?(node)
-            TernaryCorrector.correct(node)
-          elsif node.loc.keyword.is?(IF)
-            IfCorrector.correct(self, node)
-          elsif node.loc.keyword.is?(UNLESS)
-            UnlessCorrector.correct(self, node)
-          else
+          if node.case_type?
             CaseCorrector.correct(self, node)
+          elsif node.ternary?
+            TernaryCorrector.correct(node)
+          elsif node.if?
+            IfCorrector.correct(self, node)
+          elsif node.unless?
+            UnlessCorrector.correct(self, node)
           end
         end
 
         def move_assignment_inside_condition(node)
           *_assignment, condition = *node
-          if ternary?(condition) || ternary?(condition.children[0])
+
+          if ternary_condition?(condition)
             TernaryCorrector.move_assignment_inside_condition(node)
           elsif condition.case_type?
             CaseCorrector.move_assignment_inside_condition(node)
           elsif condition.if_type?
             IfCorrector.move_assignment_inside_condition(node)
           end
+        end
+
+        def ternary_condition?(node)
+          [node, node.children.first].any? { |n| n.if_type? && n.ternary? }
         end
 
         def lhs_all_match?(branches)
@@ -336,8 +337,8 @@ module RuboCop
 
         def assignment_types_match?(*nodes)
           return unless assignment_type?(nodes.first)
-          first_type = nodes.first.type
-          nodes.all? { |node| node.type == first_type }
+
+          nodes.map(&:type).uniq.one?
         end
 
         # The shovel operator `<<` does not have its own type. It is a `send`
@@ -346,16 +347,15 @@ module RuboCop
           return true if ASSIGNMENT_TYPES.include?(branch.type)
 
           if branch.send_type?
-            _receiver, method, = *branch
-            return true if METHODS.include?(method)
-            return true if method.to_s.end_with?(EQUAL)
+            return true if METHODS.include?(branch.method_name) ||
+                           branch.method_name.to_s.end_with?(EQUAL)
           end
 
           false
         end
 
         def check_node(node, branches)
-          return if ternary?(node) && !include_ternary?
+          return if allowed_ternary?(node)
           return unless allowed_statements?(branches)
           return if single_line_conditions_only? && branches.any?(&:begin_type?)
           return if correction_exceeds_line_limit?(node, branches)

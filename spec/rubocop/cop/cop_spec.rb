@@ -108,42 +108,40 @@ describe RuboCop::Cop::Cop do
     end
 
     context 'when cop supports autocorrection' do
-      before do
-        @cop = RuboCop::Cop::Style::Alias.new
-      end
+      let(:cop) { RuboCop::Cop::Style::Alias.new }
 
       context 'when offense was corrected' do
         before do
-          allow(@cop).to receive(:autocorrect?).and_return(true)
-          allow(@cop).to receive(:autocorrect).and_return(->(_corrector) {})
+          allow(cop).to receive(:autocorrect?).and_return(true)
+          allow(cop).to receive(:autocorrect).and_return(->(_corrector) {})
         end
 
         it 'is set to true' do
-          @cop.add_offense(nil, location, 'message')
-          expect(@cop.offenses.first.corrected?).to eq(true)
+          cop.add_offense(nil, location, 'message')
+          expect(cop.offenses.first.corrected?).to eq(true)
         end
       end
 
       context 'when autocorrection is not needed' do
         before do
-          allow(@cop).to receive(:autocorrect?).and_return(false)
+          allow(cop).to receive(:autocorrect?).and_return(false)
         end
 
         it 'is set to false' do
-          @cop.add_offense(nil, location, 'message')
-          expect(@cop.offenses.first.corrected?).to eq(false)
+          cop.add_offense(nil, location, 'message')
+          expect(cop.offenses.first.corrected?).to eq(false)
         end
       end
 
       context 'when offense was not corrected because of an error' do
         before do
-          allow(@cop).to receive(:autocorrect?).and_return(true)
-          allow(@cop).to receive(:autocorrect).and_return(false)
+          allow(cop).to receive(:autocorrect?).and_return(true)
+          allow(cop).to receive(:autocorrect).and_return(false)
         end
 
         it 'is set to false' do
-          @cop.add_offense(nil, location, 'message')
-          expect(@cop.offenses.first.corrected?).to eq(false)
+          cop.add_offense(nil, location, 'message')
+          expect(cop.offenses.first.corrected?).to eq(false)
         end
       end
     end
@@ -175,14 +173,14 @@ describe RuboCop::Cop::Cop do
 
   describe 'Registry' do
     context '#departments' do
-      subject { described_class.registry.departments }
-      it('has departments') { expect(subject.length).not_to eq(0) }
+      subject(:departments) { described_class.registry.departments }
+      it('has departments') { expect(departments.length).not_to eq(0) }
       it { is_expected.to include(:Lint) }
       it { is_expected.to include(:Rails) }
       it { is_expected.to include(:Style) }
 
       it 'contains every value only once' do
-        expect(subject.length).to eq(subject.uniq.length)
+        expect(departments.length).to eq(departments.uniq.length)
       end
     end
 

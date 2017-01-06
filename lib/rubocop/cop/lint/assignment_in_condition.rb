@@ -42,11 +42,9 @@ module RuboCop
         private
 
         def check(node)
-          condition, = *node
+          return if node.condition.block_type?
 
-          return if condition.block_type?
-
-          traverse_node(condition, ASGN_TYPES) do |asgn_node|
+          traverse_node(node.condition, ASGN_TYPES) do |asgn_node|
             next :skip_children if skip_children?(asgn_node)
             next if allowed_construct?(asgn_node)
 

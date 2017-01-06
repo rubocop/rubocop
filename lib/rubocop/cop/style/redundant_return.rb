@@ -22,7 +22,6 @@ module RuboCop
       # or a case expression with a default branch.
       class RedundantReturn < Cop
         include OnMethodDef
-        include IfNode
 
         MSG = 'Redundant `return` detected.'.freeze
 
@@ -39,15 +38,11 @@ module RuboCop
             if node.children.size > 1
               add_brackets(corrector, node)
             elsif return_value.hash_type?
-              add_braces(corrector, return_value) unless braces?(return_value)
+              add_braces(corrector, return_value) unless return_value.braces?
             end
             return_kw = range_with_surrounding_space(node.loc.keyword, :right)
             corrector.remove(return_kw)
           end
-        end
-
-        def braces?(arg)
-          arg.loc.begin
         end
 
         def add_brackets(corrector, node)
@@ -104,9 +99,10 @@ module RuboCop
         end
 
         def check_if_node(node)
-          return if modifier_if?(node) || ternary?(node)
+          return if node.modifier_form? || node.ternary?
 
-          _cond, if_node, else_node = if_node_parts(node)
+          _cond, if_node, else_node = *node.node_parts
+
           check_branch(if_node) if if_node
           check_branch(else_node) if else_node
         end

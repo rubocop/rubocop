@@ -76,7 +76,11 @@ module RuboCop
           raise 'alternative_style can only be used when there are exactly ' \
                '2 SupportedStyles'
         end
-        (supported_styles - [style]).first
+        alternative_styles.first
+      end
+
+      def alternative_styles
+        (supported_styles - [style])
       end
 
       def supported_styles

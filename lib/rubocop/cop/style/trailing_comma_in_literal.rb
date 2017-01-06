@@ -31,7 +31,7 @@ module RuboCop
         include TrailingComma
 
         def on_array(node)
-          check_literal(node, 'item of %s array') if square_brackets?(node)
+          check_literal(node, 'item of %s array') if node.square_brackets?
         end
 
         def on_hash(node)

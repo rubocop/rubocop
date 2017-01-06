@@ -61,13 +61,8 @@ module RuboCop
         PERCENT_I = '%i'.freeze
         PERCENT_CAPITAL_I = '%I'.freeze
 
-        def on_case(node)
-          _case_branch, *when_branches, _else_branch = *node
-          when_conditions =
-            when_branches.each_with_object([]) do |branch, conditions|
-              *condition, _ = *branch
-              condition.each { |c| conditions << c }
-            end
+        def on_case(case_node)
+          when_conditions = case_node.when_branches.flat_map(&:conditions)
 
           splat_offenses(when_conditions).reverse_each do |condition|
             range = condition.parent.loc.keyword.join(condition.source_range)
@@ -77,99 +72,101 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          *conditions, _body = *node
+        private
 
+        def autocorrect(when_node)
           lambda do |corrector|
-            if needs_reorder?(node)
-              reorder_condition(corrector, node, replacement(conditions))
+            if needs_reorder?(when_node)
+              reorder_condition(corrector, when_node)
             else
-              inline_fix_branch(corrector, node, conditions,
-                                replacement(conditions))
+              inline_fix_branch(corrector, when_node)
             end
           end
         end
 
-        private
-
         def replacement(conditions)
-          ordered_conditions = conditions.partition { |cond| !cond.splat_type? }
-          ordered_conditions.flatten!
-          ordered_conditions.map!(&:source)
-          ordered_conditions.join(', ')
+          reordered = conditions.partition(&:splat_type?).reverse
+          reordered.flatten.map(&:source).join(', ')
         end
 
-        def inline_fix_branch(corrector, _node, conditions, new_condition)
+        def inline_fix_branch(corrector, when_node)
+          conditions = when_node.conditions
           range = range_between(conditions[0].loc.expression.begin_pos,
                                 conditions[-1].loc.expression.end_pos)
-          corrector.replace(range, new_condition)
+
+          corrector.replace(range, replacement(conditions))
         end
 
-        def reorder_condition(corrector, node, new_condition)
-          *_conditions, body = *node
-          _case_branch, *when_branches, _else_branch = *node.parent
-          return if when_branches.size == 1 # Can't reorder one branch
+        def reorder_condition(corrector, when_node)
+          when_branches = when_node.parent.when_branches
 
-          corrector.remove(when_branch_range(node, when_branches))
+          return if when_branches.one?
 
-          correction = if same_line?(node, body)
-                         new_condition_with_then(node, new_condition)
-                       else
-                         new_branch_without_then(node, body, new_condition)
-                       end
-
-          corrector.insert_after(when_branches.last.source_range, correction)
+          corrector.remove(when_branch_range(when_node))
+          corrector.insert_after(when_branches.last.source_range,
+                                 reordering_correction(when_node))
         end
 
-        def when_branch_range(node, when_branches)
-          current_index = when_branches.index { |branch| branch == node }
-          next_branch = when_branches[current_index + 1]
+        def reordering_correction(when_node)
+          new_condition = replacement(when_node.conditions)
 
-          range_between(node.source_range.begin_pos,
+          if same_line?(when_node, when_node.body)
+            new_condition_with_then(when_node, new_condition)
+          else
+            new_branch_without_then(when_node, new_condition)
+          end
+        end
+
+        def when_branch_range(when_node)
+          next_branch =
+            when_node.parent.when_branches[when_node.branch_index + 1]
+
+          range_between(when_node.source_range.begin_pos,
                         next_branch.source_range.begin_pos)
         end
 
-        def same_line?(node, other)
-          node.loc.first_line == other.loc.first_line
-        end
-
         def new_condition_with_then(node, new_condition)
-          "\n#{' ' * node.loc.column}when " \
-          "#{new_condition} then #{node.children.last.source}"
+          "\n#{indent_for(node)}when " \
+          "#{new_condition} then #{node.body.source}"
         end
 
-        def new_branch_without_then(node, body, new_condition)
-          "\n#{' ' * node.loc.column}when #{new_condition}\n" \
-          "#{' ' * body.loc.column}#{node.children.last.source}"
+        def new_branch_without_then(node, new_condition)
+          "\n#{indent_for(node)}when #{new_condition}" \
+          "\n#{indent_for(node.body)}#{node.body.source}"
+        end
+
+        def indent_for(node)
+          ' ' * node.loc.column
         end
 
         def splat_offenses(when_conditions)
           found_non_splat = false
-          when_conditions.reverse.each_with_object([]) do |condition, result|
-            found_non_splat ||= error_condition?(condition)
 
-            next unless condition.splat_type?
-            variable, = *condition
-            next if variable.array_type?
-            result << condition if found_non_splat
+          offenses = when_conditions.reverse.map do |condition|
+            found_non_splat ||= non_splat?(condition)
+
+            next if non_splat?(condition)
+
+            condition if found_non_splat
           end
+
+          offenses.compact
         end
 
-        def error_condition?(condition)
+        def non_splat?(condition)
           variable, = *condition
 
           (condition.splat_type? && variable.array_type?) ||
             !condition.splat_type?
         end
 
-        def needs_reorder?(node)
-          _case_condition, *when_branches, _else_branch = *node.parent
-          current_index = when_branches.index { |branch| branch == node }
-          when_branches[(current_index + 1)..-1].any? do |branch|
-            *conditions, _ = *branch
-            conditions.none? do |condition|
-              variable, = *condition
-              condition.splat_type? && !(variable && variable.array_type?)
+        def needs_reorder?(when_node)
+          following_branches =
+            when_node.parent.when_branches[(when_node.branch_index + 1)..-1]
+
+          following_branches.any? do |when_branch|
+            when_branch.conditions.any? do |condition|
+              non_splat?(condition)
             end
           end
         end

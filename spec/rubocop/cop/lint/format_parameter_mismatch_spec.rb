@@ -138,6 +138,26 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
     expect(cop.offenses).to be_empty
   end
 
+  context 'when splat argument is present' do
+    it 'does not register an offense when args count is less than expected' do
+      inspect_source(cop, '"%s, %s, %s" % [1, *arr]')
+      expect(cop.offenses).to be_empty
+      inspect_source(cop, 'format("%s, %s, %s", 1, *arr)')
+      expect(cop.offenses).to be_empty
+      inspect_source(cop, 'sprintf("%s, %s, %s", 1, *arr)')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'does register an offense when args count is more than expected' do
+      inspect_source(cop, 'puts "%s, %s, %s" % [1, 2, 3, 4, *arr]')
+      expect(cop.offenses).not_to be_empty
+      inspect_source(cop, 'format("%s, %s, %s", 1, 2, 3, 4, *arr)')
+      expect(cop.offenses).not_to be_empty
+      inspect_source(cop, 'sprintf("%s, %s, %s", 1, 2, 3, 4, *arr)')
+      expect(cop.offenses).not_to be_empty
+    end
+  end
+
   context 'when multiple arguments are called for' do
     context 'and a single variable argument is passed' do
       it 'does not register an offense' do

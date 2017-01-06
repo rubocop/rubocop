@@ -53,7 +53,6 @@ module RuboCop
       class EndAlignment < Cop
         include CheckAssignment
         include EndKeywordAlignment
-        include IfNode
 
         def on_class(node)
           check_other_alignment(node)
@@ -64,7 +63,7 @@ module RuboCop
         end
 
         def on_if(node)
-          check_other_alignment(node) unless ternary?(node)
+          check_other_alignment(node) unless node.ternary?
         end
 
         def on_while(node)
@@ -76,8 +75,11 @@ module RuboCop
         end
 
         def on_case(node)
-          return check_asgn_alignment(node.parent, node) if argument_case?(node)
-          check_other_alignment(node)
+          if node.argument?
+            check_asgn_alignment(node.parent, node)
+          else
+            check_other_alignment(node)
+          end
         end
 
         private
@@ -87,29 +89,31 @@ module RuboCop
           # assignment, we let rhs be the receiver of those method calls before
           # we check if it's an if/unless/while/until.
           return unless (rhs = first_part_of_call_chain(rhs))
-          return unless [:if, :while, :until, :case].include?(rhs.type)
-          return if ternary?(rhs)
+          return unless CONDITIONAL_NODES.include?(rhs.type)
+          return if rhs.if_type? && rhs.ternary?
 
           check_asgn_alignment(node, rhs)
         end
 
         def check_asgn_alignment(outer_node, inner_node)
-          expr = outer_node.source_range
-
           align_with = {
             keyword: inner_node.loc.keyword,
-            start_of_line: start_line_range(outer_node)
+            start_of_line: start_line_range(outer_node),
+            variable: asgn_variable_align_with(outer_node, inner_node)
           }
 
-          align_with[:variable] =
-            if !line_break_before_keyword?(expr, inner_node)
-              range_between(expr.begin_pos, inner_node.loc.keyword.end_pos)
-            else
-              inner_node.loc.keyword
-            end
-
           check_end_kw_alignment(inner_node, align_with)
-          ignore_node(inner_node) # Don't check again.
+          ignore_node(inner_node)
+        end
+
+        def asgn_variable_align_with(outer_node, inner_node)
+          expr = outer_node.source_range
+
+          if !line_break_before_keyword?(expr, inner_node)
+            range_between(expr.begin_pos, inner_node.loc.keyword.end_pos)
+          else
+            inner_node.loc.keyword
+          end
         end
 
         def check_other_alignment(node)
@@ -129,17 +133,13 @@ module RuboCop
           if style == :keyword
             node
           elsif style == :variable
-            return node.parent if argument_case?(node)
+            return node.parent if node.case_type? && node.argument?
             # Fall back to 'keyword' style if this node is not on the RHS
             # of an assignment
             node.ancestors.find(&:assignment?) || node
           else
             start_line_range(node)
           end
-        end
-
-        def argument_case?(node)
-          node.case_type? && node.parent && node.parent.send_type?
         end
 
         def start_line_range(node)

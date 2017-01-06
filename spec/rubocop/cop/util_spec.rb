@@ -114,7 +114,7 @@ describe RuboCop::Cop::Util do
   end
 
   describe '#to_supported_styles' do
-    subject { RuboCop::Cop::Util.to_supported_styles(enforced_style) }
+    subject { described_class.to_supported_styles(enforced_style) }
 
     context 'when EnforcedStyle' do
       let(:enforced_style) { 'EnforcedStyle' }

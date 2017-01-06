@@ -5,7 +5,7 @@ require 'spec_helper'
 describe RuboCop::Cop::Style::IdenticalConditionalBranches do
   subject(:cop) { described_class.new }
 
-  before(:each) do
+  before do
     inspect_source(cop, source)
   end
 

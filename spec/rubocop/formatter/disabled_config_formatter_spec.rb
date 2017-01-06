@@ -21,13 +21,13 @@ module RuboCop
       end
       let(:location) { OpenStruct.new(line: 1, column: 5) }
 
-      before(:each) do
+      before do
         $stderr = StringIO.new
         $stdout = StringIO.new
         # Avoid intermittent failure when another test set ConfigLoader options
         ConfigLoader.clear_options
       end
-      after(:each) do
+      after do
         $stderr = STDERR
         $stdout = STDOUT
       end

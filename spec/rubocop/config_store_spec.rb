@@ -53,8 +53,8 @@ describe RuboCop::ConfigStore do
 
       context 'when --force-default-config option is specified' do
         it 'uses default config without searching for config path' do
-          expect(RuboCop::ConfigLoader).to_not receive(:configuration_file_for)
-          expect(RuboCop::ConfigLoader).to_not receive(:configuration_from_file)
+          expect(RuboCop::ConfigLoader).not_to receive(:configuration_file_for)
+          expect(RuboCop::ConfigLoader).not_to receive(:configuration_from_file)
           config_store.force_default_config!
           expect(config_store.for('file1')).to eq('default config')
         end

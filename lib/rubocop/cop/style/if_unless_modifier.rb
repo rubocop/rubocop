@@ -7,8 +7,11 @@ module RuboCop
       # if written as a modifier if/unless.
       # The maximum line length is configurable.
       class IfUnlessModifier < Cop
-        include IfNode
         include StatementModifier
+
+        MSG = 'Favor modifier `%s` usage when having a single-line body. ' \
+              'Another good alternative is the usage of control flow ' \
+              '`&&`/`||`.'.freeze
 
         ASSIGNMENT_TYPES = [:lvasgn, :casgn, :cvasgn,
                             :gvasgn, :ivasgn, :masgn].freeze
@@ -16,28 +19,24 @@ module RuboCop
         def on_if(node)
           return unless eligible_node?(node)
 
-          add_offense(node, :keyword, message(node.loc.keyword.source))
+          add_offense(node, :keyword, format(MSG, node.keyword))
         end
 
         private
 
         def autocorrect(node)
-          ->(corrector) { corrector.replace(node.source_range, oneline(node)) }
+          lambda do |corrector|
+            corrector.replace(node.source_range, to_modifier_form(node))
+          end
         end
 
         def eligible_node?(node)
           !non_eligible_if?(node) && !node.chained? &&
-            !nested_conditional?(node) && single_line_as_modifier?(node)
+            !node.nested_conditional? && single_line_as_modifier?(node)
         end
 
         def non_eligible_if?(node)
-          ternary?(node) || modifier_if?(node) ||
-            elsif?(node) || if_else?(node)
-        end
-
-        def message(keyword)
-          "Favor modifier `#{keyword}` usage when having a single-line body." \
-          ' Another good alternative is the usage of control flow `&&`/`||`.'
+          node.ternary? || node.modifier_form? || node.elsif? || node.else?
         end
 
         def parenthesize?(node)
@@ -60,21 +59,13 @@ module RuboCop
           source =~ /\s*\(\s*$/
         end
 
-        # returns false if the then or else children are conditionals
-        def nested_conditional?(node)
-          node.children[1, 2].compact.any?(&:if_type?)
-        end
+        def to_modifier_form(node)
+          expression = [node.body.source,
+                        node.keyword,
+                        node.condition.source,
+                        first_line_comment(node)].compact.join(' ')
 
-        def oneline(node)
-          cond, body, _else = if_node_parts(node)
-
-          expr = "#{body.source} #{node.loc.keyword.source} " + cond.source
-          if (comment_after = first_line_comment(node))
-            expr << ' ' << comment_after
-          end
-          expr = "(#{expr})" if parenthesize?(node)
-
-          expr
+          parenthesize?(node) ? "(#{expression})" : expression
         end
 
         def first_line_comment(node)

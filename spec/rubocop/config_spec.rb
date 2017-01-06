@@ -72,7 +72,7 @@ describe RuboCop::Config do
       let(:configuration_path) { 'config/.rubocop.yml' }
 
       it 'is not validated' do
-        expect { configuration.validate }.to_not raise_error
+        expect { configuration.validate }.not_to raise_error
       end
     end
 
@@ -114,7 +114,7 @@ describe RuboCop::Config do
       end
 
       it 'does not raise validation error' do
-        expect { configuration.validate }.to_not raise_error
+        expect { configuration.validate }.not_to raise_error
       end
     end
 
@@ -127,7 +127,7 @@ describe RuboCop::Config do
       end
 
       it 'does not raise validation error' do
-        expect { configuration.validate }.to_not raise_error
+        expect { configuration.validate }.not_to raise_error
       end
     end
 
@@ -154,7 +154,7 @@ describe RuboCop::Config do
       end
 
       it 'does not raise validation error' do
-        expect { configuration.validate }.to_not raise_error
+        expect { configuration.validate }.not_to raise_error
       end
     end
 
@@ -193,7 +193,7 @@ describe RuboCop::Config do
         configuration.make_excludes_absolute
       end
 
-      it 'should generate valid absolute directory' do
+      it 'generates valid absolute directory' do
         excludes = configuration['AllCops']['Exclude']
                    .map { |e| e.sub(/^[A-Z]:/, '') }
         expect(excludes)
@@ -223,7 +223,7 @@ describe RuboCop::Config do
         configuration.make_excludes_absolute
       end
 
-      it 'should generate valid absolute directory' do
+      it 'generates valid absolute directory' do
         excludes = configuration['AllCops']['Exclude']
                    .map { |e| e.sub(/^[A-Z]:/, '') }
         expect(excludes)
@@ -456,6 +456,19 @@ describe RuboCop::Config do
           cop_class = RuboCop::Cop::Style::TrailingWhitespace
           expect(configuration.cop_enabled?(cop_class)).to be false
         end
+      end
+    end
+
+    context 'when a cop has configuration but no explicit Enabled setting' do
+      let(:hash) do
+        {
+          'Style/TrailingWhitespace' => { 'Exclude' => ['foo'] }
+        }
+      end
+
+      it 'enables the cop by default' do
+        cop_class = RuboCop::Cop::Style::TrailingWhitespace
+        expect(configuration.cop_enabled?(cop_class)).to be true
       end
     end
   end

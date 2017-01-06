@@ -62,25 +62,25 @@ describe RuboCop::ResultCache, :isolated_environment do
           described_class.new(file, options, config_store, cache_root)
         end
 
-        before(:each) do
+        let(:attack_target_dir) { Dir.mktmpdir }
+
+        before do
           # Avoid getting "symlink() function is unimplemented on this
           # machine" on Windows.
           if RUBY_PLATFORM =~ /cygwin|mswin|mingw|bccwin|wince|emx/
             skip 'Symlinks not implemented on Windows'
           end
 
-          @attack_target_dir = Dir.mktmpdir
-
           cache.save(offenses)
           Find.find(cache_root) do |path|
             next unless File.basename(path) == '_'
             FileUtils.rm_rf(path)
-            FileUtils.ln_s(@attack_target_dir, path)
+            FileUtils.ln_s(attack_target_dir, path)
           end
           $stderr = StringIO.new
         end
-        after(:each) do
-          FileUtils.rmdir(@attack_target_dir)
+        after do
+          FileUtils.rmdir(attack_target_dir)
           $stderr = STDERR
         end
 
@@ -157,8 +157,8 @@ describe RuboCop::ResultCache, :isolated_environment do
         [RuboCop::Cop::Offense.new(:warning, location, "unused var \xF0",
                                    'Lint/UselessAssignment')]
       end
-      before(:each) { Encoding.default_internal = Encoding::UTF_8 }
-      after(:each) { Encoding.default_internal = nil }
+      before { Encoding.default_internal = Encoding::UTF_8 }
+      after { Encoding.default_internal = nil }
 
       it 'writes non UTF-8 encodable data to file with no exception' do
         cache.save(offenses)
@@ -196,19 +196,18 @@ describe RuboCop::ResultCache, :isolated_environment do
         .to eq("Removing the 2 oldest files from #{cache_root}\n")
     end
   end
-end
 
-describe RuboCop::ResultCache, :isolated_environment do
-  let(:config_store) { double('config_store') }
-  let(:tmpdir) { File.realpath(Dir.tmpdir) }
-  let(:puid) { Process.uid.to_s }
+  context 'the cache path when using a temp directory' do
+    let(:config_store) { double('config_store') }
+    let(:tmpdir) { File.realpath(Dir.tmpdir) }
+    let(:puid) { Process.uid.to_s }
 
-  describe 'the cache path when using a temp directory' do
     before do
       allow(config_store).to receive(:for).with('.').and_return(
         RuboCop::Config.new('AllCops' => { 'CacheRootDirectory' => '/tmp' })
       )
     end
+
     it 'contains the process uid' do
       cacheroot = RuboCop::ResultCache.cache_root(config_store)
       expect(cacheroot).to eq(File.join(tmpdir, puid, 'rubocop_cache'))

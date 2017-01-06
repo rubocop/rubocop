@@ -22,7 +22,7 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     context 'when there are some files' do
-      before(:each) do
+      before do
         create_file('show.rabl', 'object @user => :person')
         create_file('app.rb', 'puts "hello world"')
         create_file('Gemfile', ['source "https://rubygems.org"',
@@ -40,7 +40,7 @@ describe RuboCop::CLI, :isolated_environment do
       end
 
       context 'when there is an include and exclude' do
-        before(:each) do
+        before do
           create_file('.rubocop.yml', ['AllCops:',
                                        '  Exclude:',
                                        '    - Gemfile',

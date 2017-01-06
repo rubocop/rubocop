@@ -25,21 +25,21 @@ describe RuboCop::RemoteConfig do
 
   describe '.file' do
     it 'downloads the file if the file does not exist' do
-      expect(subject).to eq(cached_file_path)
+      expect(remote_config).to eq(cached_file_path)
       expect(File.exist?(cached_file_path)).to be_truthy
     end
 
     it 'does not download the file if cache lifetime has not been reached' do
       FileUtils.touch cached_file_path, mtime: Time.now - ((60 * 60) * 20)
 
-      expect(subject).to eq(cached_file_path)
+      expect(remote_config).to eq(cached_file_path)
       assert_not_requested :get, remote_config_url
     end
 
     it 'downloads the file if cache lifetime has been reached' do
       FileUtils.touch cached_file_path, mtime: Time.now - ((60 * 60) * 30)
 
-      expect(subject).to eq(cached_file_path)
+      expect(remote_config).to eq(cached_file_path)
       assert_requested :get, remote_config_url
     end
   end

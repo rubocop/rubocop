@@ -11,35 +11,19 @@ module RuboCop
         MSG = 'Favor `%s` over `%s` for negative conditions.'.freeze
 
         def on_if(node)
-          return unless node.loc.respond_to?(:keyword)
-          return if node.loc.keyword.is?('elsif')
+          return if node.elsif?
 
           check_negative_conditional(node)
         end
 
         def message(node)
-          if node.loc.keyword.is?('if')
-            format(MSG, 'unless', 'if')
-          else
-            format(MSG, 'if', 'unless')
-          end
+          format(MSG, node.inverse_keyword, node.keyword)
         end
 
         private
 
         def autocorrect(node)
-          lambda do |corrector|
-            condition, _body, _rest = *node
-            # look inside parentheses around the condition
-            condition = condition.children.first while condition.begin_type?
-            # unwrap the negated portion of the condition (a send node)
-            pos_condition, _method, = *condition
-            corrector.replace(
-              node.loc.keyword,
-              node.loc.keyword.is?('if') ? 'unless' : 'if'
-            )
-            corrector.replace(condition.source_range, pos_condition.source)
-          end
+          negative_conditional_corrector(node)
         end
       end
     end

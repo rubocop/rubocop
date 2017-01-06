@@ -40,51 +40,42 @@ module RuboCop
               'expression.'.freeze
 
         def on_case(case_node)
-          condition_node = case_node.children.first
+          return if case_node.condition
 
-          add_offense(case_node, :keyword, MSG) if condition_node.nil?
+          add_offense(case_node, :keyword, MSG)
         end
 
         private
 
         def autocorrect(case_node)
+          when_branches = case_node.when_branches
+
           lambda do |corrector|
-            _cond_node, *when_nodes, _else_node = *case_node
-
-            correct_case_whens(corrector, case_node, when_nodes)
-
-            correct_multiple_alternative_whens(corrector, when_nodes)
+            correct_case_when(corrector, case_node, when_branches)
+            correct_when_conditions(corrector, when_branches)
           end
         end
 
-        def correct_case_whens(corrector, case_node, when_nodes)
-          case_to_first_when =
-            case_node.loc.keyword.join(when_nodes.first.loc.keyword)
+        def correct_case_when(corrector, case_node, when_nodes)
+          case_range = case_node.loc.keyword.join(when_nodes.shift.loc.keyword)
 
-          corrector.replace(case_to_first_when, 'if')
+          corrector.replace(case_range, 'if')
 
-          when_nodes.drop(1).each do |when_node|
+          when_nodes.each do |when_node|
             corrector.replace(when_node.loc.keyword, 'elsif')
           end
         end
 
-        # Since an if condition containing commas is not syntactically valid, we
-        # correct `when x, y` to `if x || y`.
-        def correct_multiple_alternative_whens(corrector, when_nodes)
+        def correct_when_conditions(corrector, when_nodes)
           when_nodes.each do |when_node|
-            # In `when a; r` we have two children: [a, r].
-            # In `when a, b, c; r` we have 4.
-            # In `when a, b then r` we have 3.
-            *children, _ = when_node.children
+            conditions = when_node.conditions
 
-            next unless children.size > 1
+            next unless conditions.size > 1
 
-            first = children.first
-            last = children.last
-            range = range_between(first.loc.expression.begin_pos,
-                                  last.loc.expression.end_pos)
+            range = range_between(conditions.first.loc.expression.begin_pos,
+                                  conditions.last.loc.expression.end_pos)
 
-            corrector.replace(range, children.map(&:source).join(' || '))
+            corrector.replace(range, conditions.map(&:source).join(' || '))
           end
         end
       end
