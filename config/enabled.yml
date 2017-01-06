@@ -1545,6 +1545,12 @@ Rails/RequestReferer:
   Description: 'Use consistent syntax for request.referer.'
   Enabled: true
 
+Rails/ReversibleMigration:
+  Description: 'Checks whether the change method of the migration file is reversible.'
+  StyleGuide: 'https://github.com/bbatsov/rails-style-guide#reversible-migration'
+  Reference: 'http://api.rubyonrails.org/classes/ActiveRecord/Migration/CommandRecorder.html'
+  Enabled: true
+
 Rails/SafeNavigation:
   Description: "Use Ruby's safe navigation operator (`&.`) instead of `try!`"
   Enabled: true
