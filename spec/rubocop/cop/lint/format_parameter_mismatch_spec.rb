@@ -182,6 +182,14 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
     end
   end
 
+  # Regression: https://github.com/bbatsov/rubocop/issues/3869
+  context 'when passed an empty array' do
+    it 'does not register an offense' do
+      inspect_source(cop, "'%' % []")
+      expect(cop.offenses).to be_empty
+    end
+  end
+
   it 'ignores percent right next to format string' do
     inspect_source(cop, 'format("%0.1f%% percent", 22.5)')
     expect(cop.offenses).to be_empty

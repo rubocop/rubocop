@@ -136,7 +136,9 @@ module RuboCop
         end
 
         def arguments_count(args)
-          if args.last.type == :splat
+          if args.empty?
+            0
+          elsif args.last.type == :splat
             -(args.count - 1)
           else
             args.count
