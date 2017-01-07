@@ -8,7 +8,7 @@ module RuboCop
         MSG = 'Do not use `when x;`. Use `when x then` instead.'.freeze
 
         def on_when(node)
-          return if node.multiline? || node.then?
+          return if node.multiline? || node.then? || !node.body
 
           add_offense(node, :begin)
         end
