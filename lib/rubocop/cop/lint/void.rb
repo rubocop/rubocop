@@ -45,6 +45,8 @@ module RuboCop
         OP_MSG = 'Operator `%s` used in void context.'.freeze
         VAR_MSG = 'Variable `%s` used in void context.'.freeze
         LIT_MSG = 'Literal `%s` used in void context.'.freeze
+        SELF_MSG = '`self` used in void context.'.freeze
+        DEFINED_MSG = '`%s` used in void context.'.freeze
 
         OPS = %w(* / % + - == === != < > <= >= <=>).freeze
 
@@ -65,6 +67,8 @@ module RuboCop
             check_for_void_op(expr)
             check_for_literal(expr)
             check_for_var(expr)
+            check_for_self(expr)
+            check_for_defined(expr)
           end
         end
 
@@ -85,6 +89,18 @@ module RuboCop
           return if !node.literal? || node.xstr_type?
 
           add_offense(node, :expression, format(LIT_MSG, node.source))
+        end
+
+        def check_for_self(node)
+          return unless node.self_type?
+
+          add_offense(node, :expression, SELF_MSG)
+        end
+
+        def check_for_defined(node)
+          return unless node.defined_type?
+
+          add_offense(node, :expression, format(DEFINED_MSG, node.source))
         end
       end
     end
