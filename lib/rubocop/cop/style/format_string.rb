@@ -13,62 +13,31 @@ module RuboCop
       class FormatString < Cop
         include ConfigurableEnforcedStyle
 
+        MSG = 'Favor `%s` over `%s`.'.freeze
+
+        def_node_matcher :formatter, <<-PATTERN
+        {
+          (send nil ${:sprintf :format} _ _ ...)
+          (send {str dstr} $:% ... )
+          (send !nil $:% {array hash})
+        }
+        PATTERN
+
         def on_send(node)
-          add_offense(node, :selector) if offending_node?(node)
+          return unless (selector = formatter(node))
+
+          detected_style = selector == :% ? :percent : selector
+          return if detected_style == style
+
+          add_offense(node, :selector, message(detected_style))
         end
 
-        private
-
-        def offending_node?(node)
-          case style
-          when :format
-            sprintf?(node) || percent?(node)
-          when :sprintf
-            format?(node) || percent?(node)
-          when :percent
-            format?(node) || sprintf?(node)
-          end
+        def message(detected_style)
+          format(MSG, method_name(style), method_name(detected_style))
         end
 
-        def format_method?(name, node)
-          receiver, method_name, *args = *node
-
-          # commands have no explicit receiver
-          return false unless !receiver && method_name == name
-
-          # we do an argument count check to reduce false positives
-          args.size >= 2
-        end
-
-        def format?(node)
-          format_method?(:format, node)
-        end
-
-        def sprintf?(node)
-          format_method?(:sprintf, node)
-        end
-
-        def percent?(node)
-          receiver_node, method_name, *arg_nodes = *node
-
-          method_name == :% &&
-            ([:str, :dstr].include?(receiver_node.type) ||
-             arg_nodes.first.array_type? || arg_nodes.first.hash_type?)
-        end
-
-        def message(node)
-          _receiver_node, method_name, *_arg_nodes = *node
-
-          preferred =
-            if style == :percent
-              'String#%'
-            else
-              style
-            end
-
-          method_name = 'String#%' if method_name == :%
-
-          "Favor `#{preferred}` over `#{method_name}`."
+        def method_name(style_name)
+          style_name == :percent ? 'String#%' : style_name
         end
       end
     end
