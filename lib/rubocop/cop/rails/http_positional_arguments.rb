@@ -21,26 +21,23 @@ module RuboCop
         ].freeze
         HTTP_METHODS = [:get, :post, :put, :patch, :delete, :head].freeze
 
+        def_node_matcher :http_request?, <<-END
+          (send nil {#{HTTP_METHODS.map(&:inspect).join(' ')}} !nil $_data ...)
+        END
+
         def on_send(node)
-          receiver, http_method, http_path, data = *node
-          # if the first word on the line is not an http method, then skip
-          return unless HTTP_METHODS.include?(http_method)
+          data = http_request?(node)
           # if the data is nil then we don't need to add keyword arguments
           # because there is no data to put in params or headers, so skip
           return if data.nil?
           return unless needs_conversion?(data)
-          # ensures this is the first method on the line
-          # there is an edge case here where sometimes the http method is
-          # wrapped into another method, but its just safer to skip those
-          # cases and process manually
-          return unless receiver.nil?
-          # a http_method without a path?, must be something else
-          return if http_path.nil?
+
           add_offense(node, node.loc.selector, format(MSG, node.method_name))
         end
 
         # @return [Boolean] true if the line needs to be converted
         def needs_conversion?(data)
+          return true unless data.hash_type?
           children = data.child_nodes
 
           value = children.find do |d|

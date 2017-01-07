@@ -22,6 +22,12 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
     expect(cop.offenses.size).to eq(1)
   end
 
+  it 'accepts for not HTTP method' do
+    source = 'puts :create, user_id: @user.id'
+    inspect_source(cop, source)
+    expect(cop.offenses).to be_empty
+  end
+
   describe 'when using process' do
     let(:source) do
       'process :new, method: :get, params: { user_id: @user.id }'
@@ -259,6 +265,24 @@ post :create, params: { id: @user.id, ac: {
     expect(cop.offenses.size).to eq(1)
     new_source = autocorrect_source(cop, source)
     expected = "params = { id: 1 }\npost user_attrs, params: params"
+    expect(new_source).to eq(expected)
+  end
+
+  it 'auto-corrects http action when params is a method call' do
+    source = 'post user_attrs, params'
+    inspect_source(cop, source)
+    expect(cop.offenses.size).to eq(1)
+    new_source = autocorrect_source(cop, source)
+    expected = 'post user_attrs, params: params'
+    expect(new_source).to eq(expected)
+  end
+
+  it 'auto-corrects http action when params is a method call with chain' do
+    source = 'post user_attrs, params.merge(foo: bar)'
+    inspect_source(cop, source)
+    expect(cop.offenses.size).to eq(1)
+    new_source = autocorrect_source(cop, source)
+    expected = 'post user_attrs, params: params.merge(foo: bar)'
     expect(new_source).to eq(expected)
   end
 end
