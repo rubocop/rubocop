@@ -39,4 +39,15 @@ describe RuboCop::Cop::Style::WhenThen do
                               'when b then c',
                               'end'].join("\n"))
   end
+
+  # Regression: https://github.com/bbatsov/rubocop/issues/3868
+  context 'when inspecting a case statement with an empty branch' do
+    it 'does not register an offense' do
+      inspect_source(cop, ['case value',
+                           'when cond1',
+                           'end'])
+
+      expect(cop.offenses).to be_empty
+    end
+  end
 end
