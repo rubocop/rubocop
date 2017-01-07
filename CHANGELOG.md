@@ -31,6 +31,7 @@
 * [#3802](https://github.com/bbatsov/rubocop/pull/3802): Ignore case when checking Gemfile order. ([@breckenedge][])
 * Add missing examples in `Lint` cops documentation. ([@enriikke][])
 * Make `Style/EmptyMethod` cop aware of class methods. ([@drenmi][])
+* [#3871](https://github.com/bbatsov/rubocop/pull/3871): Add check for void `defined?` and `self` by `Lint/Void` cop. ([@pocke][])
 
 ### Bug fixes
 

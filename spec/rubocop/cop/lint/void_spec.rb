@@ -50,6 +50,18 @@ describe RuboCop::Cop::Lint::Void do
     end
   end
 
+  it 'registers an offense for void `self` if not on last line' do
+    inspect_source(cop, 'self; top')
+    expect(cop.offenses.size).to eq(1)
+  end
+
+  it 'registers an offense for void `defined?` if not on last line' do
+    inspect_source(cop,
+                   ['defined?(x)',
+                    'top'])
+    expect(cop.offenses.size).to eq(1)
+  end
+
   it 'handles explicit begin blocks' do
     inspect_source(cop,
                    ['begin',
