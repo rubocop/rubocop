@@ -53,7 +53,7 @@ module RuboCop
 
           method_name == :% &&
             ([:str, :dstr].include?(receiver_node.type) ||
-             arg_nodes.first.array_type?)
+             arg_nodes.first.array_type? || arg_nodes.first.hash_type?)
         end
 
         def message(node)

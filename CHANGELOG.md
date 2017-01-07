@@ -19,6 +19,7 @@
 * [#3737](https://github.com/bbatsov/rubocop/issues/3737): Add new `Style/MethodCallWithArgsParentheses` cop. ([@dominh][])
 * Renamed `MethodCallParentheses` to `MethodCallWithoutArgsParentheses`. ([@dominh][])
 * [#3854](https://github.com/bbatsov/rubocop/pull/3854): Add new `Rails/ReversibleMigration` cop. ([@sue445][])
+* [#3872](https://github.com/bbatsov/rubocop/pull/3872): Detect `String#%` with hash literal. ([@backus][])
 
 ### Changes
 
@@ -2580,3 +2581,4 @@
 [@dominh]: https://github.com/dominh
 [@sue445]: https://github.com/sue445
 [@zverok]: https://github.com/zverok
+[@backus]: https://github.com/backus

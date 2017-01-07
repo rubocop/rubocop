@@ -83,6 +83,14 @@ describe RuboCop::Cop::Style::FormatString, :config do
         .to eq(['Favor `format` over `String#%`.'])
     end
 
+    it 'registers an offense for something followed by a hash' do
+      inspect_source(cop,
+                     'puts x % { a: 10, b: 11 }')
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages)
+        .to eq(['Favor `format` over `String#%`.'])
+    end
+
     it 'does not register an offense for numbers' do
       inspect_source(cop,
                      'puts 10 % 4')
