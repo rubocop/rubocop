@@ -64,14 +64,14 @@ module RuboCop
         private
 
         def check_branches(branches)
-          tails = branches.map { |branch| tail(branch) }
+          tails = branches.compact.map { |branch| tail(branch) }
           check_expressions(tails)
-          heads = branches.map { |branch| head(branch) }
+          heads = branches.compact.map { |branch| head(branch) }
           check_expressions(heads)
         end
 
         def check_expressions(expressions)
-          return unless expressions.uniq.one?
+          return unless expressions.size > 1 && expressions.uniq.one?
 
           expressions.each do |expression|
             add_offense(expression, :expression, format(MSG, expression.source))
