@@ -50,6 +50,7 @@
 * [#3406](https://github.com/bbatsov/rubocop/issues/3406): Enable cops if Enabled is not explicitly set to false. ([@metcalf][])
 * Fix `Lint/FormatParameterMismatch` for splatted last argument. ([@zverok][])
 * [#3853](https://github.com/bbatsov/rubocop/pull/3853): Fix false positive in `RedundantParentheses` cop with multiple expression. ([@pocke][])
+* [#3870](https://github.com/bbatsov/rubocop/pull/3870): Avoid crash in `Rails/HttpPositionalArguments`. ([@pocke][])
 
 ## 0.46.0 (2016-11-30)
 
