@@ -20,7 +20,7 @@ module RuboCop
           return if style == :when_needed && target_ruby_version < 2.3
           return if processed_source.tokens.empty?
 
-          if frozen_string_literal_comment_exists?(processed_source)
+          if frozen_string_literal_comment_exists?
             check_for_no_comment(processed_source)
           else
             check_for_comment(processed_source)

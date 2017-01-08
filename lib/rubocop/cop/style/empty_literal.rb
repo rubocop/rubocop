@@ -27,7 +27,7 @@ module RuboCop
           end
 
           str_node(node) do
-            return if frozen_string_literals_enabled?(processed_source)
+            return if frozen_string_literals_enabled?
 
             add_offense(node, :expression,
                         format(STR_MSG, preferred_string_literal))

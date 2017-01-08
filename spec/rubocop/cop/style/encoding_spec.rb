@@ -78,7 +78,7 @@ describe RuboCop::Cop::Style::Encoding, :config do
     end
 
     it 'accepts vim-style encoding comments' do
-      inspect_source(cop, ['# vim:fileencoding=utf-8',
+      inspect_source(cop, ['# vim:filetype=ruby, fileencoding=utf-8',
                            'def foo() \'ä\' end'])
       expect(cop.messages).to be_empty
     end
@@ -153,7 +153,7 @@ describe RuboCop::Cop::Style::Encoding, :config do
     end
 
     it 'accepts vim-style encoding comments' do
-      inspect_source(cop, ['# vim:fileencoding=utf-8',
+      inspect_source(cop, ['# vim:filetype=ruby, fileencoding=utf-8',
                            'def foo() end'])
       expect(cop.messages).to be_empty
     end

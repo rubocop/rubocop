@@ -72,7 +72,7 @@ module RuboCop
         end
 
         def encoding_present?(line)
-          line =~ ENCODING_PATTERN
+          MagicComment.parse(line).encoding
         end
 
         def encoding_omitable?

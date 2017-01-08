@@ -10,24 +10,27 @@ module RuboCop
       FROZEN_STRING_LITERAL_ENABLED = '# frozen_string_literal: true'.freeze
       FROZEN_STRING_LITERAL_TYPES = [:str, :dstr].freeze
 
-      def frozen_string_literal_comment_exists?(processed_source,
-                                                comment = FROZEN_STRING_LITERAL)
-        first_three_lines =
-          [processed_source[0], processed_source[1], processed_source[2]]
-        first_three_lines.compact!
-        first_three_lines.any? do |line|
-          line.start_with?(comment)
+      def frozen_string_literal_comment_exists?
+        leading_comment_lines.any? do |line|
+          MagicComment.parse(line).frozen_string_literal_specified?
         end
       end
 
-      def frozen_string_literals_enabled?(processed_source)
+      def frozen_string_literals_enabled?
         ruby_version = processed_source.ruby_version
         return false unless ruby_version
         return true if ruby_version >= 3.0
         return false unless ruby_version >= 2.3
-        frozen_string_literal_comment_exists?(
-          processed_source, FROZEN_STRING_LITERAL_ENABLED
-        )
+
+        leading_comment_lines.any? do |line|
+          MagicComment.parse(line).frozen_string_literal?
+        end
+      end
+
+      private
+
+      def leading_comment_lines
+        processed_source[0..2].compact
       end
     end
   end
