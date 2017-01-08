@@ -37,7 +37,7 @@ module RuboCop
 
           return unless value && value.mutable_literal?
           return if FROZEN_STRING_LITERAL_TYPES.include?(value.type) &&
-                    frozen_string_literals_enabled?(processed_source)
+                    frozen_string_literals_enabled?
 
           add_offense(value, :expression)
         end

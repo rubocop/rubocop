@@ -141,6 +141,20 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts an emacs style combined magic comment' do
+      inspect_source(
+        cop,
+        [
+          '#!/usr/bin/env ruby',
+          '# -*- encoding: UTF-8; frozen_string_literal: true -*-',
+          '# encoding: utf-8',
+          'puts 1'
+        ]
+      )
+
+      expect(cop.offenses).to be_empty
+    end
+
     context 'auto-correct' do
       it 'adds a frozen string literal comment to the first line if one is ' \
          'missing' do

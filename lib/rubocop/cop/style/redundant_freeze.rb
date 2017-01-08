@@ -39,7 +39,7 @@ module RuboCop
           return false unless node
           return true if node.immutable_literal?
           FROZEN_STRING_LITERAL_TYPES.include?(node.type) &&
-            frozen_string_literals_enabled?(processed_source)
+            frozen_string_literals_enabled?
         end
       end
     end

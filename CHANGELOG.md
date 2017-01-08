@@ -54,6 +54,7 @@
 * [#3853](https://github.com/bbatsov/rubocop/pull/3853): Fix false positive in `RedundantParentheses` cop with multiple expression. ([@pocke][])
 * [#3870](https://github.com/bbatsov/rubocop/pull/3870): Avoid crash in `Rails/HttpPositionalArguments`. ([@pocke][])
 * [#3869](https://github.com/bbatsov/rubocop/pull/3869): Prevent `Lint/FormatParameterMismatch` from breaking when `#%` is passed an empty array. ([@drenmi][])
+* [#3879](https://github.com/bbatsov/rubocop/pull/3879): Properly handle Emacs and Vim magic comments for `FrozenStringLiteralComment`. ([@backus][])
 
 ## 0.46.0 (2016-11-30)
 
