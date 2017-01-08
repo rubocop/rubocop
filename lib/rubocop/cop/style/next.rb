@@ -56,14 +56,7 @@ module RuboCop
           add_offense(offending_node, offense_location(offending_node), MSG)
         end
         alias on_until on_while
-
-        def on_for(node)
-          _, _, body = *node
-          return unless body && ends_with_condition?(body)
-
-          offense_node = offense_node(body)
-          add_offense(offense_node, offense_location(offense_node), MSG)
-        end
+        alias on_for on_while
 
         private
 

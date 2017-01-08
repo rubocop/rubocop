@@ -66,18 +66,6 @@ module RuboCop
           check_members(node.loc.keyword, members)
         end
 
-        def check_members(base, members)
-          check_indentation(base, members.first)
-
-          return unless members.any? && members.first.begin_type?
-          return unless indentation_consistency_style == 'rails'
-
-          each_member(members) do |member, previous_modifier|
-            check_indentation(previous_modifier, member,
-                              indentation_consistency_style)
-          end
-        end
-
         def on_send(node)
           super
           return unless modifier_and_def_on_same_line?(node)
@@ -98,8 +86,7 @@ module RuboCop
         end
 
         def on_for(node)
-          _variable, _collection, body = *node
-          check_indentation(node.loc.keyword, body)
+          check_indentation(node.loc.keyword, node.body)
         end
 
         def on_while(node, base = node)
@@ -113,7 +100,7 @@ module RuboCop
         alias on_until on_while
 
         def on_case(case_node)
-          case_node.when_branches.compact.each do |when_node|
+          case_node.each_when do |when_node|
             check_indentation(when_node.loc.keyword, when_node.body)
           end
 
@@ -129,6 +116,18 @@ module RuboCop
         end
 
         private
+
+        def check_members(base, members)
+          check_indentation(base, members.first)
+
+          return unless members.any? && members.first.begin_type?
+          return unless indentation_consistency_style == 'rails'
+
+          each_member(members) do |member, previous_modifier|
+            check_indentation(previous_modifier, member,
+                              indentation_consistency_style)
+          end
+        end
 
         def each_member(members)
           previous_modifier = nil

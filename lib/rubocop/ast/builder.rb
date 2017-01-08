@@ -16,6 +16,7 @@ module RuboCop
       NODE_MAP = {
         ArrayNode => [:array],
         CaseNode  => [:case],
+        ForNode   => [:for],
         HashNode  => [:hash],
         IfNode    => [:if],
         WhenNode  => [:when],

@@ -25,7 +25,7 @@ module RuboCop
       # Returns the condition of the node. This works together with each node's
       # custom destructuring method to select the correct part of the node.
       #
-      # @return [Node] the condition of the node
+      # @return [Node, nil] the condition of the node
       def condition
         node_parts[0]
       end
@@ -36,7 +36,7 @@ module RuboCop
       #
       # @note For `if` nodes, this is the truthy branch.
       #
-      # @return [Node] the body of the node
+      # @return [Node, nil] the body of the node
       def body
         node_parts[1]
       end
