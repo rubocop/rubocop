@@ -121,4 +121,4 @@ Style/SymbolArray:
 
 Style/SingleLineBlockParams:
   Description: 'Enforces the names of some block params.'
-  Enabled: true
+  Enabled: false

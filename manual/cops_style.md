@@ -4018,7 +4018,7 @@ SupportedStyles | only_raise, only_fail, semantic
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | No
+Disabled | No
 
 This cop checks whether the block parameters of a single-line
 method accepting a block match the names specified via configuration.
