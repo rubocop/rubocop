@@ -32,24 +32,63 @@ module RuboCop
       #
       # @return [Node] an array of keys in the `hash` literal
       def keys
-        each_pair.map(&:child_nodes).map(&:first)
+        each_key.to_a
+      end
+
+      # Calls the given block for each `key` node in the `hash` literal.
+      # If no block is given, an `Enumerator` is returned.
+      #
+      # @return [self] if a block is given
+      # @return [Enumerator] if no block is given
+      def each_key
+        return pairs.map(&:key).to_enum unless block_given?
+
+        pairs.map(&:key).each do |key|
+          yield key
+        end
+
+        self
       end
 
       # Returns an array of all the values in the `hash` literal.
       #
       # @return [Node] an array of values in the `hash` literal
       def values
-        each_pair.map(&:child_nodes).map(&:last)
+        each_pair.map(&:value)
+      end
+
+      # Calls the given block for each `value` node in the `hash` literal.
+      # If no block is given, an `Enumerator` is returned.
+      #
+      # @return [self] if a block is given
+      # @return [Enumerator] if no block is given
+      def each_value
+        return pairs.map(&:value).to_enum unless block_given?
+
+        pairs.map(&:value).each do |value|
+          yield value
+        end
+
+        self
       end
 
       # Checks whether any of the key value pairs in the `hash` literal are on
       # the same line.
       #
+      # @node A multiline `pair` is considered to be on the same line if it
+      #       shares any of its lines with another `pair`
+      #
       # @return [Boolean] whether any `pair` nodes are on the same line
       def pairs_on_same_line?
-        pairs.each_cons(2).any? do |first, second|
-          first.loc.last_line == second.loc.line
-        end
+        pairs.each_cons(2).any? { |first, second| first.same_line?(second) }
+      end
+
+      # Checks whether this `hash` uses a mix of hash rocket and colon
+      # delimiters for its pairs.
+      #
+      # @return [Boolean] whether the `hash` uses mixed delimiters
+      def mixed_delimiters?
+        pairs.map(&:delimiter).uniq.size > 1
       end
 
       # Checks whether the `hash` literal is delimited by curly braces.

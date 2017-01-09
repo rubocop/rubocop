@@ -55,7 +55,30 @@ describe RuboCop::AST::HashNode do
     end
   end
 
-  describe '#keys' do
+  describe '#each_key' do
+    let(:source) { '{ a: 1, b: 2, c: 3 }' }
+
+    context 'when not passed a block' do
+      it { expect(hash_node.each_key).to be_an(Enumerator) }
+    end
+
+    context 'when passed a block' do
+      let(:expected) do
+        [
+          hash_node.pairs[0].key,
+          hash_node.pairs[1].key,
+          hash_node.pairs[2].key
+        ]
+      end
+
+      it 'yields all the pairs' do
+        expect { |b| hash_node.each_key(&b) }
+          .to yield_successive_args(*expected)
+      end
+    end
+  end
+
+  describe '#values' do
     context 'with an empty hash' do
       let(:source) { '{}' }
 
@@ -74,6 +97,29 @@ describe RuboCop::AST::HashNode do
 
       it { expect(hash_node.values.size).to eq(2) }
       it { expect(hash_node.values).to all(be_send_type) }
+    end
+  end
+
+  describe '#each_value' do
+    let(:source) { '{ a: 1, b: 2, c: 3 }' }
+
+    context 'when not passed a block' do
+      it { expect(hash_node.each_value).to be_an(Enumerator) }
+    end
+
+    context 'when passed a block' do
+      let(:expected) do
+        [
+          hash_node.pairs[0].value,
+          hash_node.pairs[1].value,
+          hash_node.pairs[2].value
+        ]
+      end
+
+      it 'yields all the pairs' do
+        expect { |b| hash_node.each_value(&b) }
+          .to yield_successive_args(*expected)
+      end
     end
   end
 
@@ -123,6 +169,26 @@ describe RuboCop::AST::HashNode do
       end
 
       it { expect(hash_node.pairs_on_same_line?).to be_truthy }
+    end
+  end
+
+  describe '#mixed_delimiters?' do
+    context 'when all pairs are using a colon delimiter' do
+      let(:source) { '{ a: 1, b: 2 }' }
+
+      it { expect(hash_node.mixed_delimiters?).to be_falsey }
+    end
+
+    context 'when all pairs are using a hash rocket delimiter' do
+      let(:source) { '{ :a => 1, :b => 2 }' }
+
+      it { expect(hash_node.mixed_delimiters?).to be_falsey }
+    end
+
+    context 'when pairs are using different delimiters' do
+      let(:source) { '{ :a => 1, b: 2 }' }
+
+      it { expect(hash_node.mixed_delimiters?).to be_truthy }
     end
   end
 

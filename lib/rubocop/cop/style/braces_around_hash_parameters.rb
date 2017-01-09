@@ -37,7 +37,7 @@ module RuboCop
         end
 
         def check_context_dependent(arg, args)
-          braces_around_second_from_end = args.length > 1 && args[-2].hash_type?
+          braces_around_second_from_end = args.size > 1 && args[-2].hash_type?
           if arg.braces?
             unless braces_around_second_from_end
               add_offense(arg.parent, arg.source_range,

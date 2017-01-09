@@ -73,13 +73,10 @@ module RuboCop
         def to_assignments(receiver, pairs)
           pairs.map do |pair|
             key, value = *pair
-            key_src = if key.sym_type? && !key.source.start_with?(':')
-                        ":#{key.source}"
-                      else
-                        key.source
-                      end
 
-            format(AREF_ASGN, receiver.source, key_src, value.source)
+            key = key.sym_type? && pair.colon? ? ":#{key.source}" : key.source
+
+            format(AREF_ASGN, receiver.source, key, value.source)
           end
         end
 
