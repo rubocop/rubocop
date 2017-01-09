@@ -7,6 +7,8 @@ module RuboCop
     class Commissioner
       include RuboCop::AST::Traversal
 
+      CopError = Struct.new(:error, :line, :column)
+
       attr_reader :errors
 
       def self.callback_methods
@@ -38,7 +40,7 @@ module RuboCop
               cop.respond_to?(:"#{callback}")
             end
             @callbacks[:#{callback}].each do |cop|
-              with_cop_error_handling(cop) do
+              with_cop_error_handling(cop, node) do
                 cop.send(:#{callback}, node)
               end
             end
@@ -96,11 +98,16 @@ module RuboCop
         end
       end
 
-      def with_cop_error_handling(cop)
+      def with_cop_error_handling(cop, node = nil)
         yield
       rescue => e
         raise e if @options[:raise_error]
-        @errors[cop] << e
+        if node
+          line = node.loc.line
+          column = node.loc.column
+        end
+        error = CopError.new(e, line, column)
+        @errors[cop] << error
       end
     end
   end
