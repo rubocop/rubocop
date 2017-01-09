@@ -16,7 +16,7 @@ module RuboCop
 
         def deltas(first_pair, current_pair)
           if Util.begins_its_line?(current_pair.source_range)
-            { key: first_pair.loc.column - current_pair.loc.column }
+            { key: first_pair.key_delta(current_pair) }
           else
             {}
           end
@@ -26,13 +26,12 @@ module RuboCop
       # Common functionality for checking alignment of hash values.
       module ValueAlignment
         def checkable_layout?(node)
-          !node.pairs_on_same_line? && all_have_same_separator?(node)
+          !node.pairs_on_same_line? && !node.mixed_delimiters?
         end
 
         def deltas(first_pair, current_pair)
           key_delta = key_delta(first_pair, current_pair)
-          current_separator = current_pair.loc.operator
-          separator_delta = separator_delta(first_pair, current_separator,
+          separator_delta = separator_delta(first_pair, current_pair,
                                             key_delta)
           value_delta = value_delta(first_pair, current_pair) -
                         key_delta - separator_delta
@@ -42,18 +41,11 @@ module RuboCop
 
         private
 
-        def separator_delta(first_pair, current_separator, key_delta)
-          if current_separator.is?(':')
+        def separator_delta(first_pair, current_pair, key_delta)
+          if current_pair.colon?
             0
           else
-            hash_rocket_delta(first_pair, current_separator) - key_delta
-          end
-        end
-
-        def all_have_same_separator?(node)
-          first_separator = node.children.first.loc.operator.source
-          node.children.butfirst.all? do |pair|
-            pair.loc.operator.is?(first_separator)
+            hash_rocket_delta(first_pair, current_pair) - key_delta
           end
         end
       end
@@ -65,14 +57,9 @@ module RuboCop
         # The table style is the only one where the first key-value pair can
         # be considered to have bad alignment.
         def deltas_for_first_pair(first_pair, node)
-          self.max_key_width =
-            node.children.map do |pair|
-              key, _value = *pair
-              key.source.length
-            end.max
+          self.max_key_width = node.keys.map { |key| key.source.length }.max
 
-          separator_delta = separator_delta(first_pair,
-                                            first_pair.loc.operator, 0)
+          separator_delta = separator_delta(first_pair, first_pair, 0)
           {
             separator: separator_delta,
             value: value_delta(first_pair, first_pair) - separator_delta
@@ -84,25 +71,19 @@ module RuboCop
         attr_accessor :max_key_width
 
         def key_delta(first_pair, current_pair)
-          first_pair.loc.column - current_pair.loc.column
+          first_pair.key_delta(current_pair)
         end
 
-        def hash_rocket_delta(first_pair, current_separator)
+        def hash_rocket_delta(first_pair, current_pair)
           first_pair.loc.column + max_key_width + 1 -
-            current_separator.column
+            current_pair.loc.operator.column
         end
 
         def value_delta(first_pair, current_pair)
-          first_key, = *first_pair
-          _, current_value = *current_pair
-          correct_value_column = first_key.loc.column +
-                                 spaced_separator(current_pair).length +
+          correct_value_column = first_pair.key.loc.column +
+                                 current_pair.delimiter(true).length +
                                  max_key_width
-          correct_value_column - current_value.loc.column
-        end
-
-        def spaced_separator(node)
-          node.loc.operator.is?('=>') ? ' => ' : ': '
+          correct_value_column - current_pair.value.loc.column
         end
       end
 
@@ -117,22 +98,15 @@ module RuboCop
         private
 
         def key_delta(first_pair, current_pair)
-          key_end_column(first_pair) - key_end_column(current_pair)
+          first_pair.key_delta(current_pair, :right)
         end
 
-        def key_end_column(pair)
-          key, _value = *pair
-          key.loc.column + key.source.length
-        end
-
-        def hash_rocket_delta(first_pair, current_separator)
-          first_pair.loc.operator.column - current_separator.column
+        def hash_rocket_delta(first_pair, current_pair)
+          first_pair.delimiter_delta(current_pair)
         end
 
         def value_delta(first_pair, current_pair)
-          _, first_value = *first_pair
-          _, current_value = *current_pair
-          first_value.loc.column - current_value.loc.column
+          first_pair.value_delta(current_pair)
         end
       end
     end

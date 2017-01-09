@@ -14,14 +14,16 @@ module RuboCop
     #   root_node = parser.parse(buffer)
     class Builder < Parser::Builders::Default
       NODE_MAP = {
-        ArrayNode => [:array],
-        CaseNode  => [:case],
-        ForNode   => [:for],
-        HashNode  => [:hash],
-        IfNode    => [:if],
-        WhenNode  => [:when],
-        UntilNode => [:until, :until_post],
-        WhileNode => [:while, :while_post]
+        ArrayNode        => [:array],
+        CaseNode         => [:case],
+        ForNode          => [:for],
+        HashNode         => [:hash],
+        IfNode           => [:if],
+        KeywordSplatNode => [:kwsplat],
+        PairNode         => [:pair],
+        UntilNode        => [:until, :until_post],
+        WhenNode         => [:when],
+        WhileNode        => [:while, :while_post]
       }.freeze
 
       # Generates {Node} from the given information.

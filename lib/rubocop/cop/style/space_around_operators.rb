@@ -9,24 +9,18 @@ module RuboCop
         include PrecedingFollowingAlignment
 
         def on_pair(node)
-          return unless node.loc.operator.is?('=>')
+          return unless node.hash_rocket?
 
-          align_hash_config = config.for_cop('Style/AlignHash')
-          return if align_hash_config['EnforcedHashRocketStyle'] == 'table' &&
-                    !node.parent.pairs_on_same_line?
+          return if hash_table_style? && !node.parent.pairs_on_same_line?
 
-          _, right = *node
-
-          check_operator(node.loc.operator, right.source_range)
+          check_operator(node.loc.operator, node.value)
         end
 
         def on_if(node)
           return unless node.ternary?
 
-          _, if_branch, else_branch = *node
-
-          check_operator(node.loc.question, if_branch.source_range)
-          check_operator(node.loc.colon, else_branch.source_range)
+          check_operator(node.loc.question, node.if_branch.source_range)
+          check_operator(node.loc.colon, node.else_branch.source_range)
         end
 
         def on_resbody(node)
@@ -128,6 +122,15 @@ module RuboCop
               corrector.replace(range, " #{range.source.strip} ")
             end
           end
+        end
+
+        def align_hash_cop_config
+          config.for_cop('Style/AlignHash')
+        end
+
+        def hash_table_style?
+          align_hash_cop_config &&
+            align_hash_cop_config['EnforcedHashRocketStyle'] == 'table'
         end
       end
     end

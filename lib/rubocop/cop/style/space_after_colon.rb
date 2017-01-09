@@ -10,9 +10,9 @@ module RuboCop
         MSG = 'Space missing after colon.'.freeze
 
         def on_pair(node)
-          colon = node.loc.operator
+          return unless node.colon?
 
-          return unless colon.is?(':')
+          colon = node.loc.operator
 
           add_offense(colon, colon) unless followed_by_space?(colon)
         end

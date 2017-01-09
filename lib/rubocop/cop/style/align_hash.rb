@@ -155,7 +155,7 @@ module RuboCop
         end
 
         def alignment_for(pair)
-          if pair.loc.operator.is?('=>')
+          if pair.hash_rocket?
             alignment_for_hash_rockets
           else
             alignment_for_colons
@@ -177,12 +177,12 @@ module RuboCop
           # just give each lambda the same reference and they would all get the
           # last value of each. A local variable fixes the problem.
           key_delta = column_deltas[:key] || 0
-          key, value = *node
 
-          if value.nil?
+          if !node.value
             correct_no_value(key_delta, node.source_range)
           else
-            correct_key_value(key_delta, key.source_range, value.source_range,
+            correct_key_value(key_delta, node.key.source_range,
+                              node.value.source_range,
                               node.loc.operator)
           end
         end
@@ -227,7 +227,7 @@ module RuboCop
         end
 
         def good_alignment?
-          column_deltas.values.compact.all?(&:zero?)
+          column_deltas.values.all?(&:zero?)
         end
       end
     end

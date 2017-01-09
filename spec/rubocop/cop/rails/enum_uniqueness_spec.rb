@@ -6,40 +6,69 @@ describe RuboCop::Cop::Rails::EnumUniqueness, :config do
   subject(:cop) { described_class.new }
 
   context 'when array syntax is used' do
-    it 'registers an offense for duplicate enum values' do
-      inspect_source(cop, 'enum status: [:active, :archived, :active]')
+    context 'with a single duplicated enum value' do
+      it 'registers an offense' do
+        inspect_source(cop, 'enum status: [:active, :archived, :active]')
 
-      msg = 'Duplicate value `:active` found in `status` enum declaration.'
-      expect(cop.messages).to eq([msg])
+        msg = 'Duplicate value `:active` found in `status` enum declaration.'
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.messages).to eq([msg])
+      end
     end
 
-    it 'does not register an offense for unique enum values' do
-      inspect_source(cop, 'enum status: [:active, :archived]')
+    context 'with several duplicated enum values' do
+      it 'registers two offenses' do
+        inspect_source(cop,
+                       'enum status: [:active, :archived, :active, :active]')
 
-      expect(cop.messages).to be_empty
+        expect(cop.offenses.size).to eq(2)
+      end
+    end
+
+    context 'with no duplicated enum values' do
+      it 'does not register an offense for unique enum values' do
+        inspect_source(cop, 'enum status: [:active, :archived]')
+
+        expect(cop.offenses).to be_empty
+      end
     end
   end
 
   context 'when hash syntax is used' do
-    it 'registers an offense for duplicate enum values' do
-      inspect_source(cop, 'enum status: { active: 0, archived: 0 }')
+    context 'with a single duplicated enum value' do
+      it 'registers an offense' do
+        inspect_source(cop, 'enum status: { active: 0, archived: 0 }')
 
-      msg = 'Duplicate value `0` found in `status` enum declaration.'
-      expect(cop.messages).to eq([msg])
+        msg = 'Duplicate value `0` found in `status` enum declaration.'
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.messages).to eq([msg])
+      end
     end
 
-    it 'does not register an offense for unique enum values' do
-      inspect_source(cop, 'enum status: { active: 0, archived: 1 }')
+    context 'with several duplicated enum values' do
+      it 'registers two offenses' do
+        inspect_source(cop,
+                       'enum status: { active: 0, pending: 0, archived: 0 }')
 
-      expect(cop.messages).to be_empty
+        expect(cop.offenses.size).to eq(2)
+      end
+    end
+
+    context 'with no duplicated enum values' do
+      it 'does not register an offense' do
+        inspect_source(cop, 'enum status: { active: 0, pending: 1 }')
+
+        expect(cop.offenses).to be_empty
+      end
     end
   end
 
-  context 'when received a variable' do
+  context 'when receiving a variable' do
     it 'does not register an offence' do
       inspect_source(cop, ['var = { status: { active: 0, archived: 1 } }',
                            'enum var'])
-      expect(cop.messages).to be_empty
+
+      expect(cop.offenses).to be_empty
     end
   end
 end
