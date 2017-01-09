@@ -1784,12 +1784,25 @@ class Foo
   end
 end
 ```
+```ruby
+# Lint/UselessAccessModifier:
+#   MethodCreatingMethods:
+#     - delegate
+require 'active_support/core_ext/module/delegation'
+class Foo
+  # this is not redundant because `delegate` creates methods
+  private
+
+  delegate :method_a, to: :method_b
+end
+```
 
 ### Important attributes
 
 Attribute | Value
 --- | ---
 ContextCreatingMethods | 
+MethodCreatingMethods | 
 
 
 ## Lint/UselessAssignment

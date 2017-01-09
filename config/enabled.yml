@@ -1279,6 +1279,7 @@ Lint/UselessAccessModifier:
   Description: 'Checks for useless access modifiers.'
   Enabled: true
   ContextCreatingMethods: []
+  MethodCreatingMethods: []
 
 Lint/UselessAssignment:
   Description: 'Checks for useless assignment to a local variable.'
