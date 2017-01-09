@@ -58,7 +58,7 @@ describe RuboCop::Cop::Commissioner do
     end
 
     it 'stores all errors raised by the cops' do
-      allow(cop).to receive(:on_def) { raise RuntimeError }
+      allow(cop).to receive(:on_int) { raise RuntimeError }
 
       commissioner = described_class.new([cop], [])
       source = ['def method', '1', 'end']
@@ -67,12 +67,14 @@ describe RuboCop::Cop::Commissioner do
       commissioner.investigate(processed_source)
 
       expect(commissioner.errors[cop].size).to eq(1)
-      expect(commissioner.errors[cop][0]).to be_instance_of(RuntimeError)
+      expect(commissioner.errors[cop][0].error).to be_instance_of(RuntimeError)
+      expect(commissioner.errors[cop][0].line).to eq 2
+      expect(commissioner.errors[cop][0].column).to eq 0
     end
 
     context 'when passed :raise_error option' do
       it 're-raises the exception received while processing' do
-        allow(cop).to receive(:on_def) { raise RuntimeError }
+        allow(cop).to receive(:on_int) { raise RuntimeError }
 
         commissioner = described_class.new([cop], [], raise_error: true)
         source = ['def method', '1', 'end']

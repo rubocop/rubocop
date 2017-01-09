@@ -151,27 +151,32 @@ module RuboCop
 
       def process_commissioner_errors(file, file_errors)
         file_errors.each do |cop, errors|
-          errors.each do |e|
+          errors.each do |cop_error|
+            e = cop_error.error
+            line = ":#{cop_error.line}" if cop_error.line
+            column = ":#{cop_error.column}" if cop_error.column
+            location = "#{file}#{line}#{column}"
+
             if e.is_a?(Warning)
-              handle_warning(e,
-                             Rainbow("#{e.message} (from file: " \
-                             "#{file})").yellow)
+              handle_warning(e, location)
             else
-              handle_error(e,
-                           Rainbow("An error occurred while #{cop.name}" \
-                           " cop was inspecting #{file}.").red)
+              handle_error(e, location, cop)
             end
           end
         end
       end
 
-      def handle_warning(e, message)
+      def handle_warning(e, location)
+        message = Rainbow("#{e.message} (from file: #{location})").yellow
+
         @warnings << message
         warn message
         puts e.backtrace if debug?
       end
 
-      def handle_error(e, message)
+      def handle_error(e, location, cop)
+        message = Rainbow("An error occurred while #{cop.name}" \
+                           " cop was inspecting #{location}.").red
         @errors << message
         warn message
         if debug?
