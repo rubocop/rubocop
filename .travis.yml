@@ -5,11 +5,11 @@ matrix:
   include:
      - rvm: jruby-9.0.1.0
        env: JRUBY_OPTS='--debug' # get more accurate coverage data
+     - rvm: 2.4.0 # Ruby 2.4.0 runs very slow, so let it start earlier
      - rvm: 2.0.0
      - rvm: 2.1.10
      - rvm: 2.2.6
      - rvm: 2.3.3
-     - rvm: 2.4.0
      - rvm: ruby-head
      - rvm: rbx-3
   allow_failures:
