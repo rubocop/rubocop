@@ -6,9 +6,15 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
   subject(:cop) { described_class.new(config) }
   let(:config) do
     RuboCop::Config
-      .new('Style/AlignHash' => { 'EnforcedHashRocketStyle' => hash_style })
+      .new(
+        'Style/AlignHash' => { 'EnforcedHashRocketStyle' => hash_style },
+        'Style/SpaceAroundOperators' => {
+          'AllowForAlignment' => allow_for_alignment
+        }
+      )
   end
   let(:hash_style) { 'key' }
+  let(:allow_for_alignment) { true }
 
   it 'accepts operator surrounded by tabs' do
     inspect_source(cop, "a\t+\tb")
@@ -558,6 +564,39 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
       expect(cop.messages).to eq(
         ['Operator `=>` should be surrounded by a single space.']
       )
+    end
+
+    it 'registers an offense for a hash rocket with an extra space' \
+      'on multiple line' do
+      inspect_source(cop, ['{',
+                           '  1 =>  2',
+                           '}'])
+      expect(cop.messages).to eq(
+        ['Operator `=>` should be surrounded by a single space.']
+      )
+    end
+
+    it 'accepts for a hash rocket with an extra space for alignment' \
+      'on multiple line' do
+      inspect_source(cop, ['{',
+                           '  1 =>  2,',
+                           '  11 => 3',
+                           '}'])
+      expect(cop.offenses).to be_empty
+    end
+
+    context 'when does not allowed for alignment' do
+      let(:allow_for_alignment) { false }
+
+      it 'accepts an extra space' do
+        inspect_source(cop, ['{',
+                             '  1 =>  2,',
+                             '  11 => 3',
+                             '}'])
+        expect(cop.messages).to eq(
+          ['Operator `=>` should be surrounded by a single space.']
+        )
+      end
     end
 
     it 'registers an offense for match operators with too many spaces' do
