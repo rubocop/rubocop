@@ -26,6 +26,10 @@ module RuboCop
       @comment = comment
     end
 
+    def any?
+      frozen_string_literal_specified? || encoding_specified?
+    end
+
     # Does the magic comment enable the frozen string literal feature.
     #
     # Test whether the frozen string literal value is `true`. Cannot
@@ -42,7 +46,7 @@ module RuboCop
     #
     # @return [Boolean]
     def frozen_string_literal_specified?
-      !frozen_string_literal.nil?
+      specified?(frozen_string_literal)
     end
 
     # Expose the `frozen_string_literal` value coerced to a boolean if possible.
@@ -61,7 +65,15 @@ module RuboCop
       end
     end
 
+    def encoding_specified?
+      specified?(encoding)
+    end
+
     private
+
+    def specified?(value)
+      !value.nil?
+    end
 
     # Match the entire comment string with a pattern and take the first capture.
     #

@@ -128,6 +128,7 @@ describe RuboCop::CLI, :isolated_environment do
     context 'when super is used with a block' do
       it 'still returns 0' do
         create_file('example.rb', ['# frozen_string_literal: true',
+                                   '',
                                    '# this is a class',
                                    'class Thing',
                                    '  def super_with_block',
@@ -244,13 +245,15 @@ describe RuboCop::CLI, :isolated_environment do
                                      '  EnforcedStyle: always'])
         expect(cli.run(['--format', 'offenses', '-a', 'example.rb'])).to eq(0)
         expect($stdout.string).to eq(['',
+                                      '1  Style/EmptyLineAfterMagicComment',
                                       '1  Style/FrozenStringLiteralComment',
                                       '--',
-                                      '1  Total',
+                                      '2  Total',
                                       '',
                                       ''].join("\n"))
         expect(IO.read('example.rb'))
           .to eq(['# frozen_string_literal: true',
+                  '',
                   'a = 1 # rubocop:disable Lint/UselessAssignment',
                   ''].join("\n"))
       end

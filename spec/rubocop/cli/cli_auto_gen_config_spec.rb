@@ -86,6 +86,7 @@ describe RuboCop::CLI, :isolated_environment do
                                   'y ',
                                   'puts x'])
       create_file('example2.rb', ['# encoding: utf-8',
+                                  '',
                                   "\tx = 0",
                                   'puts x',
                                   '',
@@ -189,6 +190,7 @@ describe RuboCop::CLI, :isolated_environment do
                                   'y ',
                                   'puts x'])
       create_file('example2.rb', ['# encoding: utf-8',
+                                  '',
                                   '#' * 85,
                                   "\tx = 0",
                                   'puts x'])
@@ -266,9 +268,11 @@ describe RuboCop::CLI, :isolated_environment do
 
     it 'does not generate configuration for the Syntax cop' do
       create_file('example1.rb', ['# encoding: utf-8',
+                                  '',
                                   'x = < ', # Syntax error
                                   'puts x'])
       create_file('example2.rb', ['# encoding: utf-8',
+                                  '',
                                   "\tx = 0",
                                   'puts x'])
       expect(cli.run(['--auto-gen-config'])).to eq(1)
@@ -364,6 +368,7 @@ describe RuboCop::CLI, :isolated_environment do
                                   'y ',
                                   'puts x'])
       create_file('example2.rb', ['# encoding: utf-8',
+                                  '',
                                   "\tx = 0",
                                   'puts x',
                                   '',
