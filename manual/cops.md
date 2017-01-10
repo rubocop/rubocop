@@ -255,6 +255,7 @@ In the following section you find all available cops:
 * [Style/ElseAlignment](cops_style.md#styleelsealignment)
 * [Style/EmptyCaseCondition](cops_style.md#styleemptycasecondition)
 * [Style/EmptyElse](cops_style.md#styleemptyelse)
+* [Style/EmptyLineAfterMagicComment](cops_style.md#styleemptylineaftermagiccomment)
 * [Style/EmptyLineBetweenDefs](cops_style.md#styleemptylinebetweendefs)
 * [Style/EmptyLines](cops_style.md#styleemptylines)
 * [Style/EmptyLinesAroundAccessModifier](cops_style.md#styleemptylinesaroundaccessmodifier)

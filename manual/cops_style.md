@@ -1217,6 +1217,33 @@ EnforcedStyle | both
 SupportedStyles | empty, nil, both
 
 
+## Style/EmptyLineAfterMagicComment
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+Checks for a newline after the final magic comment.
+
+### Example
+
+```ruby
+# good
+# frozen_string_literal: true
+
+# Some documentation for Person
+class Person
+  # Some code
+end
+
+# bad
+# frozen_string_literal: true
+# Some documentation for Person
+class Person
+  # Some code
+end
+```
+
 ## Style/EmptyLineBetweenDefs
 
 Enabled by default | Supports autocorrection

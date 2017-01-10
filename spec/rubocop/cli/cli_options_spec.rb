@@ -717,6 +717,7 @@ describe RuboCop::CLI, :isolated_environment do
                                       'y ',
                                       'puts x'])
           create_file('example2.rb', ['# encoding: utf-8',
+                                      '',
                                       "\tx",
                                       'def a',
                                       '   puts',
@@ -749,18 +750,18 @@ describe RuboCop::CLI, :isolated_environment do
                     ' (column 0 instead of 1).',
                     '# encoding: utf-8',
                     '^^^^^^^^^^^^^^^^^',
-                    'example2.rb:2:1: C: Tab detected.',
+                    'example2.rb:3:1: C: Tab detected.',
                     "\tx",
                     '^',
-                    'example2.rb:2:2: C: Indentation of first line in file ' \
+                    'example2.rb:3:2: C: Indentation of first line in file ' \
                     'detected.',
                     "\tx",
                     ' ^',
-                    'example2.rb:3:1: C: Inconsistent indentation ' \
+                    'example2.rb:4:1: C: Inconsistent indentation ' \
                     'detected.',
                     'def a ...',
                     '^^^^^',
-                    'example2.rb:4:1: C: Use 2 (not 3) spaces for ' \
+                    'example2.rb:5:1: C: Use 2 (not 3) spaces for ' \
                     'indentation.',
                     '   puts',
                     '^^^',
@@ -789,25 +790,27 @@ describe RuboCop::CLI, :isolated_environment do
       context 'when emacs format is specified' do
         it 'outputs with emacs format' do
           create_file('example1.rb', ['# encoding: utf-8',
+                                      '',
                                       'x= 0 ',
                                       'y ',
                                       'puts x'])
           create_file('example2.rb', ['# encoding: utf-8',
+                                      '',
                                       "\tx = 0",
                                       'puts x'])
           expect(cli.run(['--format', 'emacs', 'example1.rb',
                           'example2.rb'])).to eq(1)
           expected_output =
-            ["#{abs('example1.rb')}:2:2: C: Surrounding space missing" \
+            ["#{abs('example1.rb')}:3:2: C: Surrounding space missing" \
              ' for operator `=`.',
-             "#{abs('example1.rb')}:2:5: C: Trailing whitespace detected.",
-             "#{abs('example1.rb')}:3:2: C: Trailing whitespace detected.",
+             "#{abs('example1.rb')}:3:5: C: Trailing whitespace detected.",
+             "#{abs('example1.rb')}:4:2: C: Trailing whitespace detected.",
              "#{abs('example2.rb')}:1:1: C: Incorrect indentation detected" \
              ' (column 0 instead of 1).',
-             "#{abs('example2.rb')}:2:1: C: Tab detected.",
-             "#{abs('example2.rb')}:2:2: C: Indentation of first line in " \
+             "#{abs('example2.rb')}:3:1: C: Tab detected.",
+             "#{abs('example2.rb')}:3:2: C: Indentation of first line in " \
              'file detected.',
-             "#{abs('example2.rb')}:3:1: C: Inconsistent indentation " \
+             "#{abs('example2.rb')}:4:1: C: Inconsistent indentation " \
              'detected.',
              ''].join("\n")
           expect($stdout.string).to eq(expected_output)

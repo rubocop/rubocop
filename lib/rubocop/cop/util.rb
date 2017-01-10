@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-# rubocop:disable Metrics/ModuleLength
 
+# rubocop:disable Metrics/ModuleLength
 module RuboCop
   module Cop
     # This module contains a collection of useful utility methods.
