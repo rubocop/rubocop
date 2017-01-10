@@ -13,7 +13,7 @@ module RuboCop
 
           return if hash_table_style? && !node.parent.pairs_on_same_line?
 
-          check_operator(node.loc.operator, node.value)
+          check_operator(node.loc.operator, node.source_range)
         end
 
         def on_if(node)
