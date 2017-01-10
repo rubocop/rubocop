@@ -65,7 +65,7 @@ module RuboCop
 end
   END
 
-  cop_path = "lib/rubocop/cop/#{to_snake(badge.cop_name)}.rb"
+  cop_path = "lib/rubocop/cop/#{to_snake(badge.to_s)}.rb"
   File.write(cop_path, cop_code)
 
   spec_code = <<-END
