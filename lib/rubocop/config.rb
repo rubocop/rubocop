@@ -27,7 +27,7 @@ module RuboCop
         'The `Rails/DefaultScope` cop no longer exists.',
       'Style/SingleSpaceBeforeFirstArg' =>
         'The `Style/SingleSpaceBeforeFirstArg` cop has been renamed to ' \
-        '`Style/SpaceBeforeFirstArg. ',
+        '`Style/SpaceBeforeFirstArg.`',
       'Lint/SpaceBeforeFirstArg' =>
         'The `Lint/SpaceBeforeFirstArg` cop has been removed, since it was a ' \
         'duplicate of `Style/SpaceBeforeFirstArg`. Please use ' \
@@ -37,8 +37,59 @@ module RuboCop
         'use `Style/SpaceAroundKeyword` instead.',
       'Style/SpaceBeforeModifierKeyword' =>
         'The `Style/SpaceBeforeModifierKeyword` cop has been removed. Please ' \
-        'use `Style/SpaceAroundKeyword` instead.'
+        'use `Style/SpaceAroundKeyword` instead.',
+      'Style/MethodCallParentheses' =>
+        'The `Style/MethodCallParentheses` cop has been renamed to ' \
+          '`Style/MethodCallWithoutArgsParentheses`.',
+      'Lint/Eval' =>
+        'The `Lint/Eval` cop has been renamed to `Security/Eval`.'
     }.freeze
+
+    OBSOLETE_PARAMETERS = [
+      {
+        cop: 'Style/SpaceAroundOperators',
+        parameter: 'MultiSpaceAllowedForOperators',
+        alternative: 'If your intention was to allow extra spaces ' \
+                     'for alignment, please use AllowForAlignment: ' \
+                     'true instead.'
+      },
+      {
+        cop: 'AllCops',
+        parameter: 'RunRailsCops',
+        alternative: "Use the following configuration instead:\n" \
+                     "Rails:\n  Enabled: true"
+      },
+      {
+        cop: 'Style/CaseIndentation',
+        parameter: 'IndentWhenRelativeTo',
+        alternative: '`IndentWhenRelativeTo` has been renamed to ' \
+                     '`EnforcedStyle`'
+      },
+      {
+        cop: 'Lint/BlockAlignment',
+        parameter: 'AlignWith',
+        alternative: '`AlignWith` has been renamed to ' \
+                     '`EnforcedStyleAlignWith`'
+      },
+      {
+        cop: 'Lint/EndAlignment',
+        parameter: 'AlignWith',
+        alternative: '`AlignWith` has been renamed to ' \
+                     '`EnforcedStyleAlignWith`'
+      },
+      {
+        cop: 'Lint/DefEndAlignment',
+        parameter: 'AlignWith',
+        alternative: '`AlignWith` has been renamed to ' \
+                     '`EnforcedStyleAlignWith`'
+      },
+      {
+        cop: 'Rails/UniqBeforePluck',
+        parameter: 'EnforcedMode',
+        alternative: '`EnforcedMode` has been renamed to ' \
+                     '`EnforcedStyle`'
+      }
+    ].freeze
 
     attr_reader :loaded_path
 
@@ -159,9 +210,8 @@ module RuboCop
         ConfigLoader.default_configuration.key?(key)
       end
 
-      reject_obsolete_cops
+      reject_obsolete_cops_and_parameters
       warn_about_unrecognized_cops(invalid_cop_names)
-      reject_obsolete_parameters
       check_target_ruby
       validate_parameter_names(valid_cop_names)
       validate_enforced_styles(valid_cop_names)
@@ -300,31 +350,36 @@ module RuboCop
       end
     end
 
-    def reject_obsolete_parameters
-      check_obsolete_parameter('Style/SpaceAroundOperators',
-                               'MultiSpaceAllowedForOperators',
-                               'If your intention was to allow extra spaces ' \
-                               'for alignment, please use AllowForAlignment: ' \
-                               'true instead.')
-      check_obsolete_parameter('AllCops', 'RunRailsCops',
-                               "Use the following configuration instead:\n" \
-                               "Rails:\n  Enabled: true")
+    def reject_obsolete_cops_and_parameters
+      messages = [
+        obsolete_cops,
+        obsolete_parameters
+      ].flatten.compact
+      return if messages.empty?
+
+      raise ValidationError, messages.join("\n")
     end
 
-    def check_obsolete_parameter(cop, parameter, alternative = nil)
+    def obsolete_parameters
+      OBSOLETE_PARAMETERS.map do |params|
+        obsolete_parameter_message(params[:cop], params[:parameter],
+                                   params[:alternative])
+      end
+    end
+
+    def obsolete_parameter_message(cop, parameter, alternative)
       return unless self[cop] && self[cop].key?(parameter)
 
-      raise ValidationError, "obsolete parameter #{parameter} (for #{cop}) " \
-                            "found in #{loaded_path}" \
-                            "#{"\n" if alternative}#{alternative}"
+      "obsolete parameter #{parameter} (for #{cop}) " \
+        "found in #{loaded_path}" \
+        "\n#{alternative}"
     end
 
-    def reject_obsolete_cops
-      OBSOLETE_COPS.each do |cop_name, message|
+    def obsolete_cops
+      OBSOLETE_COPS.map do |cop_name, message|
         next unless key?(cop_name) || key?(Cop::Badge.parse(cop_name).cop_name)
-        message += "\n(obsolete configuration found in #{loaded_path}, please" \
+        message + "\n(obsolete configuration found in #{loaded_path}, please" \
                    ' update it)'
-        raise ValidationError, message
       end
     end
 
