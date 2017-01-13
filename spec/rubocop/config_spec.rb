@@ -166,9 +166,64 @@ describe RuboCop::Config do
                     ])
       end
 
-      it 'does not raise validation error' do
+      it 'raises validation error' do
         expect { configuration.validate }
           .to raise_error(RuboCop::ValidationError, /itisinvalid/)
+      end
+    end
+
+    context 'when the configuration includes an obsolete cop' do
+      before do
+        create_file(configuration_path, [
+                      'Style/MethodCallParentheses:',
+                      '  Enabled: true'
+                    ])
+      end
+
+      it 'raises validation error' do
+        expect { configuration.validate }
+          .to raise_error(RuboCop::ValidationError,
+                          %r{Style/MethodCallWithoutArgsParentheses})
+      end
+    end
+
+    context 'when the configuration includes an obsolete parameter' do
+      before do
+        create_file(configuration_path, [
+                      'Rails/UniqBeforePluck:',
+                      '  EnforcedMode: conservative'
+                    ])
+      end
+
+      it 'raises validation error' do
+        expect { configuration.validate }
+          .to raise_error(RuboCop::ValidationError, /EnforcedStyle/)
+      end
+    end
+
+    context 'when the configuration includes obsolete parameters and cops' do
+      before do
+        create_file(configuration_path, [
+                      'Rails/UniqBeforePluck:',
+                      '  EnforcedMode: conservative',
+                      'Style/MethodCallParentheses:',
+                      '  Enabled: false',
+                      'Lint/BlockAlignment:',
+                      '  AlignWith: either',
+                      'Style/SpaceBeforeModifierKeyword:',
+                      '  Enabled: false'
+                    ])
+      end
+
+      it 'raises validation error' do
+        message_matcher = lambda do |message|
+          message.include?('EnforcedStyle') &&
+            message.include?('MethodCallWithoutArgsParentheses') &&
+            message.include?('EnforcedStyleAlignWith') &&
+            message.include?('Style/SpaceAroundKeyword')
+        end
+        expect { configuration.validate }
+          .to raise_error(RuboCop::ValidationError, message_matcher)
       end
     end
   end
