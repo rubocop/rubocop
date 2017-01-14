@@ -20,6 +20,7 @@
 * Renamed `MethodCallParentheses` to `MethodCallWithoutArgsParentheses`. ([@dominh][])
 * [#3854](https://github.com/bbatsov/rubocop/pull/3854): Add new `Rails/ReversibleMigration` cop. ([@sue445][])
 * [#3872](https://github.com/bbatsov/rubocop/pull/3872): Detect `String#%` with hash literal. ([@backus][])
+* [#2731](https://github.com/bbatsov/rubocop/issues/2731): Allow configuration of method calls that create methods for `Lint/UselessAccessModifier`. ([@pat][])
 
 ### Changes
 
@@ -2584,3 +2585,4 @@
 [@sue445]: https://github.com/sue445
 [@zverok]: https://github.com/zverok
 [@backus]: https://github.com/backus
+[@pat]: https://github.com/pat

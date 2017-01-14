@@ -78,6 +78,18 @@ module RuboCop
       #     def some_other_private_method
       #     end
       #   end
+      #
+      # @example
+      #   # Lint/UselessAccessModifier:
+      #   #   MethodCreatingMethods:
+      #   #     - delegate
+      #   require 'active_support/core_ext/module/delegation'
+      #   class Foo
+      #     # this is not redundant because `delegate` creates methods
+      #     private
+      #
+      #     delegate :method_a, to: :method_b
+      #   end
       class UselessAccessModifier < Cop
         MSG = 'Useless `%s` access modifier.'.freeze
 
@@ -170,7 +182,22 @@ module RuboCop
         end
 
         def method_definition?(child)
-          static_method_definition?(child) || dynamic_method_definition?(child)
+          static_method_definition?(child) ||
+            dynamic_method_definition?(child) ||
+            any_method_definition?(child)
+        end
+
+        def any_method_definition?(child)
+          cop_config.fetch('MethodCreatingMethods', []).any? do |m|
+            matcher_name = "#{m}_method?".to_sym
+            unless respond_to?(matcher_name)
+              self.class.def_node_matcher matcher_name, <<-PATTERN
+                {def (send nil :#{m} ...)}
+              PATTERN
+            end
+
+            send(matcher_name, child)
+          end
         end
 
         def start_of_new_scope?(child)

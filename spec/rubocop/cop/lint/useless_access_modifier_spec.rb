@@ -347,6 +347,36 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
     end
   end
 
+  context 'when using a known method-creating method' do
+    let(:config) do
+      RuboCop::Config.new(
+        'Lint/UselessAccessModifier' => {
+          'MethodCreatingMethods' => ['delegate']
+        }
+      )
+    end
+    it 'is aware that this creates a new method' do
+      src = ['class SomeClass',
+             '  private',
+             '  ',
+             '  delegate :foo, to: :bar',
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'still points out redundant uses within the module' do
+      src = ['class SomeClass',
+             '  delegate :foo, to: :bar',
+             '  ',
+             '  private',
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.line).to eq(4)
+    end
+  end
+
   shared_examples 'at the top of the body' do |keyword|
     it 'registers an offense for `public`' do
       src = ["#{keyword} A",
