@@ -25,7 +25,7 @@ module RuboCop
 
       # Checks whether this `hash` element is on the same line as `other`.
       #
-      # @node A multiline element is considered to be on the same line if it
+      # @note A multiline element is considered to be on the same line if it
       #       shares any of its lines with `other`
       #
       # @return [Boolean] whether this element is on the same line as `other`
