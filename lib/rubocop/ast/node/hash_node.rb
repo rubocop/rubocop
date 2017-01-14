@@ -75,7 +75,7 @@ module RuboCop
       # Checks whether any of the key value pairs in the `hash` literal are on
       # the same line.
       #
-      # @node A multiline `pair` is considered to be on the same line if it
+      # @note A multiline `pair` is considered to be on the same line if it
       #       shares any of its lines with another `pair`
       #
       # @return [Boolean] whether any `pair` nodes are on the same line
