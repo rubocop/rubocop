@@ -40,11 +40,14 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            method, args, _body = *node
+            method, args, body = *node
             corrector.replace(method.loc.selector, 'each_with_object')
             first_arg, second_arg = *args
             corrector.replace(first_arg.loc.expression, second_arg.source)
             corrector.replace(second_arg.loc.expression, first_arg.source)
+
+            return_value = return_value(body)
+            corrector.remove(return_value.loc.expression)
           end
         end
 
