@@ -6,7 +6,7 @@ module RuboCop
     # The precise location of the problem is shown together with the
     # relevant source code.
     class ClangStyleFormatter < SimpleTextFormatter
-      ELLIPSES = Rainbow('...').yellow.freeze
+      ELLIPSES = '...'.freeze
 
       def report_file(file, offenses)
         offenses.each { |offense| report_offense(file, offense) }
@@ -41,7 +41,7 @@ module RuboCop
         if location.first_line == location.last_line
           output.puts(source_line)
         else
-          output.puts("#{source_line} #{ELLIPSES}")
+          output.puts("#{source_line} #{yellow(ELLIPSES)}")
         end
       end
 
