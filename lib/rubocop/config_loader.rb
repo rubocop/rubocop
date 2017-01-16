@@ -33,11 +33,13 @@ module RuboCop
         path = File.absolute_path(path)
         hash = load_yaml_configuration(path)
 
+        # Resolve requires first in case they define additional cops
+        resolve_requires(path, hash)
+
         add_missing_namespaces(path, hash)
 
         resolve_inheritance_from_gems(hash, hash.delete('inherit_gem'))
         resolve_inheritance(path, hash)
-        resolve_requires(path, hash)
 
         hash.delete('inherit_from')
         config = Config.new(hash, path)
