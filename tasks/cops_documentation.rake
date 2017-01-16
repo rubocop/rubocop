@@ -151,6 +151,7 @@ task generate_cops_documentation: :yard do
 
   cops   = RuboCop::Cop::Cop.registry
   config = RuboCop::ConfigLoader.default_configuration
+  config['Rails']['Enabled'] = true
 
   YARD::Registry.load!
   cops.departments.sort!.each do |department|

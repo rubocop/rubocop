@@ -4,7 +4,7 @@
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop enforces the consistent use of action filter methods.
 
@@ -24,7 +24,7 @@ Include | app/controllers/\*\*/\*.rb
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop checks for the correct use of Date methods,
 such as Date.today, Date.current etc.
@@ -74,7 +74,7 @@ SupportedStyles | strict, flexible
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop looks for delegations, that could have been created
 automatically with delegate method.
@@ -109,7 +109,7 @@ end
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop looks for delegations that pass :allow_blank as an option
 instead of :allow_nil. :allow_blank is not a valid option to pass
@@ -129,7 +129,7 @@ delegate :foo, to: :bar, allow_nil: true
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks dynamic `find_by_*` methods.
 Use `find_by` instead of dynamic method.
@@ -168,7 +168,7 @@ Whitelist | find_by_sql
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop looks for duplicate values in enum declarations.
 
@@ -199,7 +199,7 @@ Include | app/models/\*\*/\*.rb
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop enforces that 'exit' calls are not used within a rails app.
 Valid options are instead to raise an error, break, return or some
@@ -227,7 +227,7 @@ Exclude | lib/\*\*/\*.rake
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop is used to identify usages of file path joining process
 to use `Rails.root.join` clause.
@@ -248,7 +248,7 @@ Rails.root.join('app', 'models', 'goober')
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop is used to identify usages of `where.first` and
 change them to use `find_by` instead.
@@ -275,7 +275,7 @@ Include | app/models/\*\*/\*.rb
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop is used to identify usages of `all.each` and
 change them to use `all.find_each` instead.
@@ -301,7 +301,7 @@ Include | app/models/\*\*/\*.rb
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop checks for the use of the has_and_belongs_to_many macro.
 
@@ -316,7 +316,7 @@ Include | app/models/\*\*/\*.rb
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop is used to identify usages of http methods like `get`, `post`,
 `put`, `patch` without the usage of keyword arguments in your tests and
@@ -343,7 +343,7 @@ Include | spec/\*\*/\*, test/\*\*/\*
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop checks for add_column call with NOT NULL constraint
 in migration file.
@@ -373,7 +373,7 @@ Include | db/migrate/\*.rb
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop checks for the use of output calls like puts and print
 
@@ -388,7 +388,7 @@ Include | app/\*\*/\*.rb, config/\*\*/\*.rb, db/\*\*/\*.rb, lib/\*\*/\*.rb
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop checks for the use of output safety calls like html_safe and
 raw.
@@ -419,7 +419,7 @@ safe_join(out)
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for correct grammar when using ActiveSupport's
 core extensions to the numeric classes.
@@ -440,7 +440,7 @@ core extensions to the numeric classes.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for the use of the read_attribute or
 write_attribute methods.
@@ -468,7 +468,7 @@ Include | app/models/\*\*/\*.rb
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for consistent uses of request.referrer or
 request.referrer, depending on configuration.
@@ -485,7 +485,7 @@ SupportedStyles | referer, referrer
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop checks whether the change method of the migration file is
 reversible.
@@ -589,7 +589,7 @@ Include | db/migrate/\*.rb
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop converts usages of `try!` to `&.`. It can also be configured
 to convert `try`. It will convert code to use safe navigation if the
@@ -682,7 +682,7 @@ end
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop checks for scope calls where it was passed
 a method (usually a scope) instead of a lambda/proc.
@@ -708,7 +708,7 @@ Include | app/models/\*\*/\*.rb
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop checks for the use of methods which skip
 validations which are listed in
@@ -745,7 +745,7 @@ Blacklist | decrement!, decrement_counter, increment!, increment_counter, toggle
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop checks for the use of Time methods without zone.
 
@@ -788,7 +788,7 @@ SupportedStyles | strict, flexible
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 Prefer the use of uniq (or distinct), before pluck instead of after.
 
@@ -837,7 +837,7 @@ AutoCorrect | false
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks for the use of old-style attribute validation macros.
 
