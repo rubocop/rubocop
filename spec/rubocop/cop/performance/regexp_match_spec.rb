@@ -160,6 +160,30 @@ describe RuboCop::Cop::Performance::RegexpMatch, :config do
       END2
 
       include_examples :offense,
+                       "#{name} in class method" \
+                       ", `#{var}` is in other method", <<-END, <<-END2
+        def self.foo
+          if #{cond}
+            do_something2
+          end
+        end
+
+        def self.bar
+          do_something(#{var})
+        end
+      END
+        def self.foo
+          if #{correction}
+            do_something2
+          end
+        end
+
+        def self.bar
+          do_something(#{var})
+        end
+      END2
+
+      include_examples :offense,
                        "#{name} in class" \
                        ", `#{var}` is in method", <<-END, <<-END2
         class Foo
@@ -173,6 +197,30 @@ describe RuboCop::Cop::Performance::RegexpMatch, :config do
         end
       END
         class Foo
+          if #{correction}
+            do_something
+          end
+
+          def foo
+            #{var}
+          end
+        end
+      END2
+
+      include_examples :offense,
+                       "#{name} in module" \
+                       ", `#{var}` is in method", <<-END, <<-END2
+        module Foo
+          if #{cond}
+            do_something
+          end
+
+          def foo
+            #{var}
+          end
+        end
+      END
+        module Foo
           if #{correction}
             do_something
           end

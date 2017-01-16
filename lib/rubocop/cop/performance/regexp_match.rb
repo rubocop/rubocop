@@ -172,12 +172,19 @@ module RuboCop
         end
 
         def scope_body(node)
-          node.children[2]
+          children = node.children
+          case node.type
+          when :module
+            children[1]
+          else
+            children[2]
+          end
         end
 
         def scope_root(node)
           node.each_ancestor.find do |ancestor|
             ancestor.def_type? ||
+              ancestor.defs_type? ||
               ancestor.class_type? ||
               ancestor.module_type?
           end
