@@ -84,6 +84,12 @@ describe RuboCop::NodePattern do
       let(:ruby) { '@ivar' }
       it_behaves_like :nonmatching
     end
+
+    context 'on a node with a matching, hyphenated type' do
+      let(:pattern) { 'op-asgn' }
+      let(:ruby) { 'a += 1' } # this is an (op-asgn ...) node
+      it_behaves_like :matching
+    end
   end
 
   describe 'literals' do
