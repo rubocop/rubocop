@@ -42,26 +42,21 @@ module RuboCop
         private
 
         def on_conditionals(node)
-          condition_node, = *node
-
-          condition_node.each_node(*LOGICAL_OPERATOR_NODES) do |logical_node|
+          node.condition.each_node(*LOGICAL_OPERATOR_NODES) do |logical_node|
             process_logical_op(logical_node)
           end
         end
 
         def process_logical_op(node)
-          op = node.loc.operator.source
-          op_type = node.type.to_s
-          return unless op == op_type
+          return if node.logical_operator?
 
-          add_offense(node, :operator, format(MSG, OPS[op], op))
+          add_offense(node, :operator,
+                      format(MSG, node.alternate_operator, node.operator))
         end
 
         def autocorrect(node)
-          expr1, expr2 = *node
-          replacement = (node.and_type? ? '&&' : '||')
           lambda do |corrector|
-            [expr1, expr2].each do |expr|
+            [*node].each do |expr|
               if expr.send_type?
                 correct_send(expr, corrector)
               elsif expr.return_type?
@@ -70,7 +65,8 @@ module RuboCop
                 correct_other(expr, corrector)
               end
             end
-            corrector.replace(node.loc.operator, replacement)
+
+            corrector.replace(node.loc.operator, node.alternate_operator)
           end
         end
 
