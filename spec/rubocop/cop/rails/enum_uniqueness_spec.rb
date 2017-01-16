@@ -64,11 +64,37 @@ describe RuboCop::Cop::Rails::EnumUniqueness, :config do
   end
 
   context 'when receiving a variable' do
-    it 'does not register an offence' do
+    it 'does not register an offense' do
       inspect_source(cop, ['var = { status: { active: 0, archived: 1 } }',
                            'enum var'])
 
       expect(cop.offenses).to be_empty
+    end
+  end
+
+  context 'when receiving a hash without literal values' do
+    context 'when value is a variable' do
+      it 'does not register an offense' do
+        inspect_source(cop, 'enum status: statuses')
+
+        expect(cop.offenses).to be_empty
+      end
+    end
+
+    context 'when value is a method chain' do
+      it 'does not register an offense' do
+        inspect_source(cop, 'enum status: User.statuses.keys')
+
+        expect(cop.offenses).to be_empty
+      end
+    end
+
+    context 'when value is a constant' do
+      it 'does not register an offense' do
+        inspect_source(cop, 'enum status: STATUSES')
+
+        expect(cop.offenses).to be_empty
+      end
     end
   end
 end
