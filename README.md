@@ -5,7 +5,7 @@
 [![Code Climate](https://codeclimate.com/github/bbatsov/rubocop/badges/gpa.svg)](https://codeclimate.com/github/bbatsov/rubocop)
 [![Inline docs](http://inch-ci.org/github/bbatsov/rubocop.svg)](http://inch-ci.org/github/bbatsov/rubocop)
 [![Gratipay Team](https://img.shields.io/gratipay/team/rubocop.svg?maxAge=2592000)](https://gratipay.com/rubocop/)
-[![OpenCollective](https://opencollective.com/rubocop/backers/badge.svg)](#backers) 
+[![OpenCollective](https://opencollective.com/rubocop/backers/badge.svg)](#backers)
 [![OpenCollective](https://opencollective.com/rubocop/sponsors/badge.svg)](#sponsors)
 
 
@@ -54,7 +54,7 @@ haven't reached version 1.0 yet). To prevent an unwanted RuboCop update you
 might want to use a conservative version locking in your `Gemfile`:
 
 ```rb
-gem 'rubocop', '~> 0.46.0', require: false
+gem 'rubocop', '~> 0.47.0', require: false
 ```
 
 ## Quickstart

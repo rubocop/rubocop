@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.47.0 (2017-01-16)
+
 ### New features
 
 * [#3822](https://github.com/bbatsov/rubocop/pull/3822): Add `Rails/FilePath` cop. ([@iguchi1124][])
