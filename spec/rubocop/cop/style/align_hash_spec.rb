@@ -294,6 +294,14 @@ describe RuboCop::Cop::Style::AlignHash, :config do
                              '}'])
         expect(cop.offenses).to be_empty
       end
+
+      it 'accepts hashes that use different separators and double splats' do
+        inspect_source(cop, ['hash = {',
+                             '  a: 1,',
+                             '  **kw',
+                             '}'])
+        expect(cop.offenses).to be_empty
+      end
     end
 
     it 'registers an offense for misaligned hash values' do

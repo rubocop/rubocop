@@ -42,10 +42,10 @@ module RuboCop
         private
 
         def separator_delta(first_pair, current_pair, key_delta)
-          if current_pair.colon?
-            0
-          else
+          if current_pair.hash_rocket?
             hash_rocket_delta(first_pair, current_pair) - key_delta
+          else
+            0
           end
         end
       end
@@ -80,6 +80,8 @@ module RuboCop
         end
 
         def value_delta(first_pair, current_pair)
+          return 0 if current_pair.kwsplat_type?
+
           correct_value_column = first_pair.key.loc.column +
                                  current_pair.delimiter(true).length +
                                  max_key_width

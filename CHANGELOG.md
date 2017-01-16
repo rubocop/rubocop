@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#3911](https://github.com/bbatsov/rubocop/issues/3911): Prevent a crash in `Performance/RegexpMatch` cop with module definition. ([@pocke][])
+* [#3908](https://github.com/bbatsov/rubocop/issues/3908): Prevent `Style/AlignHash` from breaking on a keyword splat when using enforced `table` style. ([@drenmi][])
 
 ## 0.47.0 (2017-01-16)
 
