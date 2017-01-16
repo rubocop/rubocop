@@ -14,12 +14,14 @@ module RuboCop
     #   root_node = parser.parse(buffer)
     class Builder < Parser::Builders::Default
       NODE_MAP = {
+        AndNode          => [:and],
         ArrayNode        => [:array],
         CaseNode         => [:case],
         ForNode          => [:for],
         HashNode         => [:hash],
         IfNode           => [:if],
         KeywordSplatNode => [:kwsplat],
+        OrNode           => [:or],
         PairNode         => [:pair],
         UntilNode        => [:until, :until_post],
         WhenNode         => [:when],
