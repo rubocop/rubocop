@@ -8,6 +8,7 @@
 * [#3908](https://github.com/bbatsov/rubocop/issues/3908): Prevent `Style/AlignHash` from breaking on a keyword splat when using enforced `table` style. ([@drenmi][])
 * [#3918](https://github.com/bbatsov/rubocop/issues/3918): Prevent `Rails/EnumUniqueness` from breaking on a non-literal hash value. ([@drenmi][])
 * [#3914](https://github.com/bbatsov/rubocop/pull/3914): Fix department resolution for third party cops required through configuration. ([@backus][])
+* [#3846](https://github.com/bbatsov/rubocop/issues/3846): `NodePattern` works for hyphenated node types. ([@alexdowad][])
 
 ## 0.47.0 (2017-01-16)
 

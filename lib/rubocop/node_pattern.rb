@@ -19,7 +19,7 @@ module RuboCop
   #               value of the block through.
   # - With no block, but one capture: the capture is returned.
   # - With no block, but multiple captures: captures are returned as an array.
-  # - With no captures: #match returns `true`.
+  # - With no block and no captures: #match returns `true`.
   #
   # ## Pattern string format examples
   #
@@ -29,6 +29,7 @@ module RuboCop
   #    'send'              # matches (send ...)
   #    '(send)'            # matches (send)
   #    '(send ...)'        # matches (send ...)
+  #    '(op-asgn)'         # node types with hyphenated names also work
   #    '{send class}'      # matches (send ...) or (class ...)
   #    '({send class})'    # matches (send) or (class)
   #    '(send const)'      # matches (send (const ...))
@@ -98,11 +99,11 @@ module RuboCop
     # Builds Ruby code which implements a pattern
     class Compiler
       RSYM    = %r{:(?:[\w+@*/?!<>=~|%^-]+|\[\]=?)}
-      ID_CHAR = /[a-zA-Z_]/
+      ID_CHAR = /[a-zA-Z_-]/
       META    = /\(|\)|\{|\}|\[|\]|\$\.\.\.|\$|!|\^|\.\.\./
       NUMBER  = /-?\d+(?:\.\d+)?/
       TOKEN   =
-        /\G(?:[\s,]+|#{META}|\#?#{ID_CHAR}+[\!\?]?\(?|%\d*|#{NUMBER}|#{RSYM}|.)/
+        /\G(?:[\s,]+|#{META}|%\d*|#{NUMBER}|\#?#{ID_CHAR}+[\!\?]?\(?|#{RSYM}|.)/
 
       NODE      = /\A#{ID_CHAR}+\Z/
       PREDICATE = /\A#{ID_CHAR}+\?\(?\Z/
@@ -367,7 +368,7 @@ module RuboCop
       end
 
       def compile_nodetype(cur_node, type)
-        "(#{cur_node} && #{cur_node}.#{type}_type?)"
+        "(#{cur_node} && #{cur_node}.#{type.tr('-', '_')}_type?)"
       end
 
       def compile_param(cur_node, number, seq_head)
