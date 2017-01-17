@@ -94,6 +94,11 @@ describe RuboCop::Cop::Style::NegatedIf do
     expect(cop.offenses).to be_empty
   end
 
+  it 'does not blow up on a negated ternary operator' do
+    inspect_source(cop, '!foo.empty? ? :bar : :baz')
+    expect(cop.offenses).to be_empty
+  end
+
   it 'does not blow up for empty if condition' do
     inspect_source(cop,
                    ['if ()',
