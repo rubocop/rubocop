@@ -1299,6 +1299,11 @@ Lint/UnusedMethodArgument:
 
 #################### Performance ###########################
 
+Performance/DoubleStartEndWith:
+  # Used to check for `starts_with?` and `ends_with?`.
+  # These methods are defined by `ActiveSupport`.
+  IncludeActiveSupportAliases: false
+
 Performance/RedundantMerge:
   # Max number of key-value pairs to consider an offense
   MaxKeyValuePairs: 2

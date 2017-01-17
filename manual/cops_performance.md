@@ -232,6 +232,13 @@ var2 = ...
 str.end_with?(var1, var2)
 ```
 
+### Important attributes
+
+Attribute | Value
+--- | ---
+IncludeActiveSupportAliases | false
+
+
 ## Performance/EndWith
 
 Enabled by default | Supports autocorrection

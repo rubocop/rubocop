@@ -30,7 +30,7 @@ module RuboCop
           receiver,
           method,
           first_call_args,
-          second_call_args = two_start_end_with_calls(node)
+          second_call_args = process_source(node)
 
           return unless receiver && second_call_args.all?(&:pure?)
 
@@ -40,6 +40,14 @@ module RuboCop
         end
 
         private
+
+        def process_source(node)
+          if check_for_active_support_aliases?
+            check_with_active_support_aliases(node)
+          else
+            two_start_end_with_calls(node)
+          end
+        end
 
         def combine_args(first_call_args, second_call_args)
           (first_call_args + second_call_args).map(&:source).join(', ')
@@ -57,9 +65,21 @@ module RuboCop
                       ))
         end
 
+        def check_for_active_support_aliases?
+          cop_config['IncludeActiveSupportAliases']
+        end
+
         def_node_matcher :two_start_end_with_calls, <<-END
           (or
             (send $_recv [{:start_with? :end_with?} $_method] $...)
+            (send _recv _method $...))
+        END
+
+        def_node_matcher :check_with_active_support_aliases, <<-END
+          (or
+            (send $_recv
+                    [{:start_with? :starts_with? :end_with? :ends_with?} $_method]
+                  $...)
             (send _recv _method $...))
         END
       end
