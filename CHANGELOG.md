@@ -10,6 +10,7 @@
 * [#3914](https://github.com/bbatsov/rubocop/pull/3914): Fix department resolution for third party cops required through configuration. ([@backus][])
 * [#3846](https://github.com/bbatsov/rubocop/issues/3846): `NodePattern` works for hyphenated node types. ([@alexdowad][])
 * [#3922](https://github.com/bbatsov/rubocop/issues/3922): Prevent `Style/NegatedIf` from breaking on negated ternary. ([@drenmi][])
+* [#3915](https://github.com/bbatsov/rubocop/issues/3915): Fix a false positive in `Lint/SafeNavigationChain` cop with `try` method. ([@pocke][])
 
 ## 0.47.0 (2017-01-16)
 

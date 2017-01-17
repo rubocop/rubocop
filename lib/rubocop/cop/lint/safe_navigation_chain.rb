@@ -29,7 +29,7 @@ module RuboCop
         MSG = 'Do not chain ordinary method call' \
               ' after safe navigation operator.'.freeze
 
-        ADDITIONAL_NIL_METHODS = %i(present? blank?).freeze
+        ADDITIONAL_NIL_METHODS = %i(present? blank? try).freeze
 
         def_node_matcher :bad_method?, <<-PATTERN
           (send (csend ...) $_ ...)
