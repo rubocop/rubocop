@@ -176,6 +176,51 @@ describe RuboCop::ConfigLoader do
       end
     end
 
+    context 'when a third party require defines a new gem' do
+      before do
+        allow(RuboCop::Cop::Cop)
+          .to receive(:registry)
+          .and_return(
+            RuboCop::Cop::Registry.new(RuboCop::Cop::Cop.registry.cops)
+          )
+
+        create_file('third_party/gem.rb',
+                    ['module RuboCop',
+                     '  module Cop',
+                     '    module Custom',
+                     '      class FilePath < Cop',
+                     '      end',
+                     '    end',
+                     '  end',
+                     'end'])
+
+        create_file('.rubocop.yml',
+                    ['Custom/FilePath:',
+                     '  Enabled: false'])
+
+        create_file('.rubocop_with_require.yml',
+                    ['require: ./third_party/gem',
+                     'Custom/FilePath:',
+                     '  Enabled: false'])
+      end
+
+      it 'does not emit a warning' do
+        aggregate_failures('loads requires before resolving namespace') do
+          expect { described_class.configuration_from_file('.rubocop.yml') }
+            .to output(
+              a_string_including(
+                '.rubocop.yml: Custom/FilePath has the ' \
+                "wrong namespace - should be Rails\n"
+              )
+            ).to_stderr
+
+          expect do
+            described_class.configuration_from_file('.rubocop_with_require.yml')
+          end.not_to output.to_stderr
+        end
+      end
+    end
+
     context 'when a file inherits from a parent and grandparent file' do
       let(:file_path) { 'dir/subdir/.rubocop.yml' }
 
