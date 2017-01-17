@@ -11,7 +11,7 @@ module RuboCop
         MSG = 'Favor `%s` over `%s` for negative conditions.'.freeze
 
         def on_if(node)
-          return if node.elsif?
+          return if node.elsif? || node.ternary?
 
           check_negative_conditional(node)
         end
