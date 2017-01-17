@@ -50,6 +50,7 @@ describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
       ['safe navigation with `nil?` method', 'x&.foo.nil?'],
       ['safe navigation with `present?` method', 'x&.foo.present?'],
       ['safe navigation with `blank?` method', 'x&.foo.blank?'],
+      ['safe navigation with `try` method', 'a&.b.try(:c)'],
       ['safe navigation with assignment method', 'x&.foo = bar'],
       ['safe navigation with self assignment method', 'x&.foo += bar']
     ].each do |name, code|
