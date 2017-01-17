@@ -57,7 +57,7 @@ AllCops:
   # opt-out. Note that when `DisabledByDefault` is `true`, cops in user
   # configuration will be enabled even if they don't set the Enabled parameter.
   DisabledByDefault: false
-  # Enables the result cache if `true`. Can be overridden by the `--cache command`
+  # Enables the result cache if `true`. Can be overridden by the `--cache` command
   # line option.
   UseCache: true
   # Threshold for how many files can be stored in the result cache before some
