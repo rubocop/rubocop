@@ -1246,6 +1246,17 @@ Lint/BlockAlignment:
     - start_of_block
     - start_of_line
 
+Lint/DefEndAlignment:
+  # The value `def` means that `end` should be aligned with the def keyword.
+  # The value `start_of_line` means that `end` should be aligned with method
+  # calls like `private`, `public`, etc, if present in front of the `def`
+  # keyword on the same line.
+  EnforcedStyleAlignWith: start_of_line
+  SupportedStylesAlignWith:
+    - start_of_line
+    - def
+  AutoCorrect: false
+
 # Align ends correctly.
 Lint/EndAlignment:
   # The value `keyword` means that `end` should be aligned with the matching
@@ -1260,17 +1271,6 @@ Lint/EndAlignment:
     - keyword
     - variable
     - start_of_line
-  AutoCorrect: false
-
-Lint/DefEndAlignment:
-  # The value `def` means that `end` should be aligned with the def keyword.
-  # The value `start_of_line` means that `end` should be aligned with method
-  # calls like `private`, `public`, etc, if present in front of the `def`
-  # keyword on the same line.
-  EnforcedStyleAlignWith: start_of_line
-  SupportedStylesAlignWith:
-    - start_of_line
-    - def
   AutoCorrect: false
 
 Lint/InheritException:
