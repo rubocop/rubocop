@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#3923](https://github.com/bbatsov/rubocop/issues/3923): Allow asciibetical sorting in `Bundler/OrderedGems`. ([@mikegee][])
+
 ## 0.47.1 (2017-01-18)
 
 ### Bug fixes
