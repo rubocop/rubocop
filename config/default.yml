@@ -702,36 +702,8 @@ Style/LambdaCall:
     - call
     - braces
 
-Style/Next:
-  # With `always` all conditions at the end of an iteration needs to be
-  # replaced by next - with `skip_modifier_ifs` the modifier if like this one
-  # are ignored: [1, 2].each { |a| return 'yes' if a == 1 }
-  EnforcedStyle: skip_modifier_ifs
-  # `MinBodyLength` defines the number of lines of the a body of an `if` or `unless`
-  # needs to have to trigger this cop
-  MinBodyLength: 3
-  SupportedStyles:
-    - skip_modifier_ifs
-    - always
-
-Style/NonNilCheck:
-  # With `IncludeSemanticChanges` set to `true`, this cop reports offenses for
-  # `!x.nil?` and autocorrects that and `x != nil` to solely `x`, which is
-  # **usually** OK, but might change behavior.
-  #
-  # With `IncludeSemanticChanges` set to `false`, this cop does not report
-  # offenses for `!x.nil?` and does no changes that might change behavior.
-  IncludeSemanticChanges: false
-
-Style/NumericPredicate:
-  EnforcedStyle: predicate
-  SupportedStyles:
-    - predicate
-    - comparison
-  # Exclude RSpec specs because assertions like `expect(1).to be > 0` cause
-  # false positives.
-  Exclude:
-    - 'spec/**/*'
+Style/MethodCallWithArgsParentheses:
+  IgnoredMethods: []
 
 Style/MethodDefParentheses:
   EnforcedStyle: require_parentheses
@@ -739,9 +711,6 @@ Style/MethodDefParentheses:
     - require_parentheses
     - require_no_parentheses
     - require_no_parentheses_except_multiline
-
-Style/MethodCallWithArgsParentheses:
-  IgnoredMethods: []
 
 Style/MethodName:
   EnforcedStyle: snake_case
@@ -832,6 +801,27 @@ Style/MultilineOperationIndentation:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
+Style/Next:
+  # With `always` all conditions at the end of an iteration needs to be
+  # replaced by next - with `skip_modifier_ifs` the modifier if like this one
+  # are ignored: [1, 2].each { |a| return 'yes' if a == 1 }
+  EnforcedStyle: skip_modifier_ifs
+  # `MinBodyLength` defines the number of lines of the a body of an `if` or `unless`
+  # needs to have to trigger this cop
+  MinBodyLength: 3
+  SupportedStyles:
+    - skip_modifier_ifs
+    - always
+
+Style/NonNilCheck:
+  # With `IncludeSemanticChanges` set to `true`, this cop reports offenses for
+  # `!x.nil?` and autocorrects that and `x != nil` to solely `x`, which is
+  # **usually** OK, but might change behavior.
+  #
+  # With `IncludeSemanticChanges` set to `false`, this cop does not report
+  # offenses for `!x.nil?` and does no changes that might change behavior.
+  IncludeSemanticChanges: false
+
 Style/NumericLiterals:
   MinDigits: 5
 
@@ -840,6 +830,16 @@ Style/NumericLiteralPrefix:
   SupportedOctalStyles:
     - zero_with_o
     - zero_only
+
+Style/NumericPredicate:
+  EnforcedStyle: predicate
+  SupportedStyles:
+    - predicate
+    - comparison
+  # Exclude RSpec specs because assertions like `expect(1).to be > 0` cause
+  # false positives.
+  Exclude:
+    - 'spec/**/*'
 
 Style/OptionHash:
   # A list of parameter names that will be flagged by this cop.
