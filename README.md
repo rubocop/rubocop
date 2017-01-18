@@ -118,10 +118,13 @@ While RuboCop is free software and will always be, the project would benefit imm
 Raising a monthly budget of a couple of thousand dollars would make it possible to pay people to work on
 certain complex features, fund other development related stuff (e.g. hardware, conference trips) and so on.
 Raising a monthly budget of over $5000 would open the possibility of someone working full-time on the project
-which would speed up the work on the project significantly.
+which would speed up the pace of development significantly.
 
-We welcome both individual and corporate sponsors! We also offer a wide array of funding channels to account
-for your preferences (although currently Open Collective is our preferred funding platform).
+We welcome both individual and corporate sponsors! We also offer a
+wide array of funding channels to account for your preferences
+(although
+currently [Open Collective](https://opencollective.com/rubocop) is our
+preferred funding platform).
 
 If you're working in a company that's making significant use of RuboCop we'd appreciate it if you suggest to your company
 to become a RuboCop sponsor.
