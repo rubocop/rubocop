@@ -420,7 +420,7 @@ Style/DotPosition:
 # Warn on empty else statements
 # empty - warn only on empty `else`
 # nil - warn on `else` with nil in it
-# both - warn on empty `else` and `else` with nil in it
+# both - warn on empty `else` and `else` with `nil` in it
 Style/EmptyElse:
   EnforcedStyle: both
   SupportedStyles:
@@ -990,7 +990,7 @@ Style/SpaceInsideBlockBraces:
   SupportedStylesForEmptyBraces:
     - space
     - no_space
-  # Space between { and |. Overrides EnforcedStyle if there is a conflict.
+  # Space between `{` and `|`. Overrides `EnforcedStyle` if there is a conflict.
   SpaceBeforeBlockParameters: true
 
 Style/SpaceInsideHashLiteralBraces:
@@ -1098,7 +1098,7 @@ Style/TrailingCommaInLiteral:
     - consistent_comma
     - no_comma
 
-# TrivialAccessors requires exact name matches and doesn't allow
+# `TrivialAccessors` requires exact name matches and doesn't allow
 # predicated methods by default.
 Style/TrivialAccessors:
   # When set to `false` the cop will suggest the use of accessor methods
