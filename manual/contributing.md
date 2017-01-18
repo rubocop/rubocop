@@ -49,10 +49,22 @@ $ mkdocs serve
 If you want to make changes to the manual's page structure you'll have to edit
 [mkdocs.yml](https://github.com/bbatsov/rubocop/blob/master/mkdocs.yml).
 
-## Donations
+## Funding
+
+While RuboCop is free software and will always be, the project would benefit immensely from some funding.
+Raising a monthly budget of a couple of thousand dollars would make it possible to pay people to work on
+certain complex features, fund other development related stuff (e.g. hardware, conference trips) and so on.
+Raising a monthly budget of over $5000 would open the possibility of someone working full-time on the project
+which would speed up the work on the project significantly.
+
+We welcome both individual and corporate sponsors! We also offer a wide array of funding channels to account
+for your preferences (although currently Open Collective is our preferred funding platform).
+
+If you're working in a company that's making significant use of RuboCop we'd appreciate it if you suggest to your company
+to become a RuboCop sponsor.
 
 You can support the development of RuboCop via
-[Salt](https://salt.bountysource.com/teams/rubocop) and
-[Gratipay](https://www.gratipay.com/rubocop).
+[Salt](https://salt.bountysource.com/teams/rubocop),
+[Gratipay](https://www.gratipay.com/rubocop) and [Open Collective](https://opencollective.com/rubocop).
 
 [![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.1.3/dist/gratipay.png)](https://gratipay.com/rubocop)
