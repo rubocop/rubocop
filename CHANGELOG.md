@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.47.1 (2017-01-18)
+
 ### Bug fixes
 
 * [#3911](https://github.com/bbatsov/rubocop/issues/3911): Prevent a crash in `Performance/RegexpMatch` cop with module definition. ([@pocke][])
