@@ -122,7 +122,7 @@ You can also support my work on RuboCop via
 
 [![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.1.3/dist/gratipay.png)](https://gratipay.com/rubocop/)
 
-## Open Collective Backers
+### Open Collective Backers
 
 Support us with a monthly donation and help us continue our activities. [[Become a backer](https://opencollective.com/rubocop#backer)]
 
@@ -157,8 +157,7 @@ Support us with a monthly donation and help us continue our activities. [[Become
 <a href="https://opencollective.com/rubocop/backer/28/website" target="_blank"><img src="https://opencollective.com/rubocop/backer/28/avatar.svg"></a>
 <a href="https://opencollective.com/rubocop/backer/29/website" target="_blank"><img src="https://opencollective.com/rubocop/backer/29/avatar.svg"></a>
 
-
-## Open Collective Sponsors
+### Open Collective Sponsors
 
 Become a sponsor and get your logo on our README on Github with a link to your site. [[Become a sponsor](https://opencollective.com/rubocop#sponsor)]
 
