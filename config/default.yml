@@ -951,11 +951,66 @@ Style/SingleLineBlockParams:
 Style/SingleLineMethods:
   AllowIfMethodIsEmpty: true
 
+Style/SpaceAroundBlockParameters:
+  EnforcedStyleInsidePipes: no_space
+  SupportedStylesInsidePipes:
+    - space
+    - no_space
+
+Style/SpaceAroundEqualsInParameterDefault:
+  EnforcedStyle: space
+  SupportedStyles:
+    - space
+    - no_space
+
+Style/SpaceAroundOperators:
+  # When `true`, allows most uses of extra spacing if the intent is to align
+  # with an operator on the previous or next line, not counting empty lines
+  # or comment lines.
+  AllowForAlignment: true
+
+Style/SpaceBeforeBlockBraces:
+  EnforcedStyle: space
+  SupportedStyles:
+    - space
+    - no_space
+
 Style/SpaceBeforeFirstArg:
   # When `true`, allows most uses of extra spacing if the intent is to align
   # things with the previous or next line, not counting empty lines or comment
   # lines.
   AllowForAlignment: true
+
+Style/SpaceInsideBlockBraces:
+  EnforcedStyle: space
+  SupportedStyles:
+    - space
+    - no_space
+  EnforcedStyleForEmptyBraces: no_space
+  SupportedStylesForEmptyBraces:
+    - space
+    - no_space
+  # Space between { and |. Overrides EnforcedStyle if there is a conflict.
+  SpaceBeforeBlockParameters: true
+
+Style/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: space
+  SupportedStyles:
+    - space
+    - no_space
+    # 'compact' normally requires a space inside hash braces, with the exception
+    # that successive left braces or right braces are collapsed together
+    - compact
+  EnforcedStyleForEmptyBraces: no_space
+  SupportedStylesForEmptyBraces:
+    - space
+    - no_space
+
+Style/SpaceInsideStringInterpolation:
+  EnforcedStyle: no_space
+  SupportedStyles:
+    - space
+    - no_space
 
 Style/SpecialGlobalVars:
   EnforcedStyle: use_english_names
@@ -993,61 +1048,6 @@ Style/StringMethods:
   #     intern: to_sym
   PreferredMethods:
     intern: to_sym
-
-Style/SpaceAroundBlockParameters:
-  EnforcedStyleInsidePipes: no_space
-  SupportedStylesInsidePipes:
-    - space
-    - no_space
-
-Style/SpaceAroundEqualsInParameterDefault:
-  EnforcedStyle: space
-  SupportedStyles:
-    - space
-    - no_space
-
-Style/SpaceAroundOperators:
-  # When `true`, allows most uses of extra spacing if the intent is to align
-  # with an operator on the previous or next line, not counting empty lines
-  # or comment lines.
-  AllowForAlignment: true
-
-Style/SpaceBeforeBlockBraces:
-  EnforcedStyle: space
-  SupportedStyles:
-    - space
-    - no_space
-
-Style/SpaceInsideBlockBraces:
-  EnforcedStyle: space
-  SupportedStyles:
-    - space
-    - no_space
-  EnforcedStyleForEmptyBraces: no_space
-  SupportedStylesForEmptyBraces:
-    - space
-    - no_space
-  # Space between { and |. Overrides EnforcedStyle if there is a conflict.
-  SpaceBeforeBlockParameters: true
-
-Style/SpaceInsideHashLiteralBraces:
-  EnforcedStyle: space
-  SupportedStyles:
-    - space
-    - no_space
-    # 'compact' normally requires a space inside hash braces, with the exception
-    # that successive left braces or right braces are collapsed together
-    - compact
-  EnforcedStyleForEmptyBraces: no_space
-  SupportedStylesForEmptyBraces:
-    - space
-    - no_space
-
-Style/SpaceInsideStringInterpolation:
-  EnforcedStyle: no_space
-  SupportedStyles:
-    - space
-    - no_space
 
 Style/SymbolArray:
   EnforcedStyle: percent
