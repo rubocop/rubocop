@@ -128,7 +128,7 @@ to become a RuboCop sponsor.
 
 You can support the development of RuboCop via
 [Salt](https://salt.bountysource.com/teams/rubocop),
-[Gratipay](https://www.gratipay.com/rubocop) and Open Collective.
+[Gratipay](https://www.gratipay.com/rubocop) and [Open Collective](https://opencollective.com/rubocop).
 
 [![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.1.3/dist/gratipay.png)](https://gratipay.com/rubocop)
 
