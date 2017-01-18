@@ -34,7 +34,7 @@ module RuboCop
         end
 
         def case_insensitive_out_of_order?(string_a, string_b)
-          1 > string_a.casecmp(string_b)
+          string_a.downcase < string_b.downcase
         end
 
         def consecutive_lines(previous, current)

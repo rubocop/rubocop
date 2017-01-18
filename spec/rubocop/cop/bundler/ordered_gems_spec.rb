@@ -168,6 +168,18 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
     end
   end
 
+  context 'When gems are asciibetically sorted' do
+    let(:source) { <<-END }
+      gem 'paper_trail'
+      gem 'paperclip'
+    END
+
+    it 'does not register an offense' do
+      inspect_source(cop, source)
+      expect(cop.offenses).to be_empty
+    end
+  end
+
   context 'When a gem that starts with a capital letter is sorted' do
     let(:source) { <<-END }
       gem 'a'
