@@ -1583,6 +1583,8 @@ Rails/Validation:
   Description: 'Use validates :attribute, hash of validations.'
   Enabled: true
 
+##################### Security ##################################
+
 Security/Eval:
   Description: 'The use of eval represents a serious security risk.'
   Enabled: true
