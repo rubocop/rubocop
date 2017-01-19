@@ -4,6 +4,7 @@
 [![Coverage Status](https://img.shields.io/codeclimate/coverage/github/bbatsov/rubocop.svg)](https://codeclimate.com/github/bbatsov/rubocop)
 [![Code Climate](https://codeclimate.com/github/bbatsov/rubocop/badges/gpa.svg)](https://codeclimate.com/github/bbatsov/rubocop)
 [![Inline docs](http://inch-ci.org/github/bbatsov/rubocop.svg)](http://inch-ci.org/github/bbatsov/rubocop)
+
 [![Gratipay Team](https://img.shields.io/gratipay/team/rubocop.svg?maxAge=2592000)](https://gratipay.com/rubocop/)
 [![OpenCollective](https://opencollective.com/rubocop/backers/badge.svg)](#backers)
 [![OpenCollective](https://opencollective.com/rubocop/sponsors/badge.svg)](#sponsors)
