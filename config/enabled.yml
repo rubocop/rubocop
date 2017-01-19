@@ -966,7 +966,7 @@ Style/ZeroLengthPredicate:
   Description: 'Use #empty? when testing for objects of length 0.'
   Enabled: true
 
-#################### Metrics ################################
+#################### Metrics ###############################
 
 Metrics/AbcSize:
   Description: >-
@@ -1019,7 +1019,7 @@ Metrics/PerceivedComplexity:
                  human reader.
   Enabled: true
 
-#################### Lint ################################
+#################### Lint ##################################
 ### Warnings
 
 Lint/AmbiguousOperator:
@@ -1302,7 +1302,7 @@ Lint/Void:
   Description: 'Possible use of operator/literal/variable in void context.'
   Enabled: true
 
-##################### Performance #############################
+#################### Performance ###########################
 
 Performance/Casecmp:
   Description: >-
@@ -1459,7 +1459,7 @@ Performance/TimesMap:
   Description: 'Checks for .times.map calls.'
   Enabled: true
 
-##################### Rails ##################################
+#################### Rails #################################
 
 Rails/ActionFilter:
   Description: 'Enforces consistent use of action filter methods.'
@@ -1583,7 +1583,7 @@ Rails/Validation:
   Description: 'Use validates :attribute, hash of validations.'
   Enabled: true
 
-##################### Security ##################################
+#################### Security ##############################
 
 Security/Eval:
   Description: 'The use of eval represents a serious security risk.'
@@ -1613,7 +1613,7 @@ Security/YAMLLoad:
   Reference: 'https://ruby-doc.org/stdlib-2.3.3/libdoc/yaml/rdoc/YAML.html#module-YAML-label-Security'
   Enabled: true
 
-##################### Bundler #############################
+#################### Bundler ###############################
 
 Bundler/DuplicatedGem:
   Description: 'Checks for duplicate gem entries in Gemfile.'
