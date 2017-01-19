@@ -1171,7 +1171,7 @@ Style/WordArray:
   # The regular expression `WordRegex` decides what is considered a word.
   WordRegex: !ruby/regexp '/\A[\p{Word}\n\t]+\z/'
 
-##################### Metrics ##################################
+#################### Metrics ###############################
 
 Metrics/AbcSize:
   # The ABC size is a calculated magnitude, so this number can be an Integer or
@@ -1227,7 +1227,7 @@ Metrics/ParameterLists:
 Metrics/PerceivedComplexity:
   Max: 7
 
-##################### Lint ##################################
+#################### Lint ##################################
 
 # Allow safe assignment in conditions.
 Lint/AssignmentInCondition:
@@ -1290,13 +1290,13 @@ Lint/UnusedMethodArgument:
   AllowUnusedKeywordArguments: false
   IgnoreEmptyMethods: true
 
-##################### Performance ############################
+#################### Performance ###########################
 
 Performance/RedundantMerge:
   # Max number of key-value pairs to consider an offense
   MaxKeyValuePairs: 2
 
-##################### Rails ##################################
+#################### Rails #################################
 
 Rails/ActionFilter:
   EnforcedStyle: action
