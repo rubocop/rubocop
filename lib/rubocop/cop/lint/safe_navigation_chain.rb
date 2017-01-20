@@ -29,8 +29,6 @@ module RuboCop
         MSG = 'Do not chain ordinary method call' \
               ' after safe navigation operator.'.freeze
 
-        ADDITIONAL_NIL_METHODS = %i(present? blank? try).freeze
-
         def_node_matcher :bad_method?, <<-PATTERN
           (send (csend ...) $_ ...)
         PATTERN
@@ -58,7 +56,11 @@ module RuboCop
         private
 
         def nil_methods
-          nil.methods + ADDITIONAL_NIL_METHODS
+          nil.methods + whitelist
+        end
+
+        def whitelist
+          cop_config['Whitelist'].map(&:to_sym)
         end
       end
     end
