@@ -75,6 +75,10 @@ describe RuboCop::Cop::Style::TernaryParentheses, :config do
       it_behaves_like 'code with offense',
                       'foo = bar? ? a : b',
                       'foo = (bar?) ? a : b'
+
+      it_behaves_like 'code with offense',
+                      'foo = yield ? a : b',
+                      'foo = (yield) ? a : b'
     end
 
     context 'with a complex condition' do
@@ -126,6 +130,10 @@ describe RuboCop::Cop::Style::TernaryParentheses, :config do
       it_behaves_like 'code with offense',
                       'foo = (bar?) ? a : b',
                       'foo = bar? ? a : b'
+
+      it_behaves_like 'code with offense',
+                      'foo = (yield) ? a : b',
+                      'foo = yield ? a : b'
     end
 
     context 'with a complex condition' do
@@ -202,6 +210,10 @@ describe RuboCop::Cop::Style::TernaryParentheses, :config do
       it_behaves_like 'code with offense',
                       'foo = (bar?) ? a : b',
                       'foo = bar? ? a : b'
+
+      it_behaves_like 'code with offense',
+                      'foo = (yield) ? a : b',
+                      'foo = yield ? a : b'
     end
 
     context 'with a complex condition' do
