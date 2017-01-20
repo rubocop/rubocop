@@ -81,12 +81,9 @@ str.casecmp('ABC').zero?
 'abc'.casecmp(str).zero?
 ```
 
-### Important attributes
+### References
 
-Attribute | Value
---- | ---
-Reference | https://github.com/JuanitoFatas/fast-ruby#stringcasecmp-vs-stringdowncase---code
-
+* [https://github.com/JuanitoFatas/fast-ruby#stringcasecmp-vs-stringdowncase---code](https://github.com/JuanitoFatas/fast-ruby#stringcasecmp-vs-stringdowncase---code)
 
 ## Performance/CompareWithBlock
 
@@ -200,9 +197,12 @@ considered unsafe.
 
 Attribute | Value
 --- | ---
-Reference | https://github.com/JuanitoFatas/fast-ruby#enumerabledetect-vs-enumerableselectfirst-code
 SafeMode | true
 
+
+### References
+
+* [https://github.com/JuanitoFatas/fast-ruby#enumerabledetect-vs-enumerableselectfirst-code](https://github.com/JuanitoFatas/fast-ruby#enumerabledetect-vs-enumerableselectfirst-code)
 
 ## Performance/DoubleStartEndWith
 
@@ -257,9 +257,12 @@ would suffice.
 
 Attribute | Value
 --- | ---
-Reference | https://github.com/JuanitoFatas/fast-ruby#stringmatch-vs-stringstart_withstringend_with-code-start-code-end
 AutoCorrect | false
 
+
+### References
+
+* [https://github.com/JuanitoFatas/fast-ruby#stringmatch-vs-stringstart_withstringend_with-code-start-code-end](https://github.com/JuanitoFatas/fast-ruby#stringmatch-vs-stringstart_withstringend_with-code-start-code-end)
 
 ## Performance/FixedSize
 
@@ -294,9 +297,12 @@ This cop is used to identify usages of
 
 Attribute | Value
 --- | ---
-Reference | https://github.com/JuanitoFatas/fast-ruby#enumerablemaparrayflatten-vs-enumerableflat_map-code
 EnabledForFlattenWithoutParams | false
 
+
+### References
+
+* [https://github.com/JuanitoFatas/fast-ruby#enumerablemaparrayflatten-vs-enumerableflat_map-code](https://github.com/JuanitoFatas/fast-ruby#enumerablemaparrayflatten-vs-enumerableflat_map-code)
 
 ## Performance/HashEachMethods
 
@@ -326,6 +332,10 @@ Attribute | Value
 --- | ---
 AutoCorrect | false
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#hash-each](https://github.com/bbatsov/ruby-style-guide#hash-each)
 
 ## Performance/LstripRstrip
 
@@ -364,12 +374,9 @@ desired result:
 
     ('a'..'z').cover?('yellow') # => true
 
-### Important attributes
+### References
 
-Attribute | Value
---- | ---
-Reference | https://github.com/JuanitoFatas/fast-ruby#cover-vs-include-code
-
+* [https://github.com/JuanitoFatas/fast-ruby#cover-vs-include-code](https://github.com/JuanitoFatas/fast-ruby#cover-vs-include-code)
 
 ## Performance/RedundantBlockCall
 
@@ -400,12 +407,9 @@ def another
 end
 ```
 
-### Important attributes
+### References
 
-Attribute | Value
---- | ---
-Reference | https://github.com/JuanitoFatas/fast-ruby#proccall-vs-yield-code
-
+* [https://github.com/JuanitoFatas/fast-ruby#proccall-vs-yield-code](https://github.com/JuanitoFatas/fast-ruby#proccall-vs-yield-code)
 
 ## Performance/RedundantMatch
 
@@ -451,9 +455,12 @@ hash.merge!(a: 1, b: 2)
 
 Attribute | Value
 --- | ---
-Reference | https://github.com/JuanitoFatas/fast-ruby#hashmerge-vs-hash-code
 MaxKeyValuePairs | 2
 
+
+### References
+
+* [https://github.com/JuanitoFatas/fast-ruby#hashmerge-vs-hash-code](https://github.com/JuanitoFatas/fast-ruby#hashmerge-vs-hash-code)
 
 ## Performance/RedundantSortBy
 
@@ -561,12 +568,9 @@ change them to use `reverse_each` instead.
 [].reverse_each
 ```
 
-### Important attributes
+### References
 
-Attribute | Value
---- | ---
-Reference | https://github.com/JuanitoFatas/fast-ruby#enumerablereverseeach-vs-enumerablereverse_each-code
-
+* [https://github.com/JuanitoFatas/fast-ruby#enumerablereverseeach-vs-enumerablereverse_each-code](https://github.com/JuanitoFatas/fast-ruby#enumerablereverseeach-vs-enumerablereverse_each-code)
 
 ## Performance/Sample
 
@@ -599,12 +603,9 @@ and `shuffle[]` and change them to use `sample` instead.
 [1, 2, 3].shuffle(random: Random.new)
 ```
 
-### Important attributes
+### References
 
-Attribute | Value
---- | ---
-Reference | https://github.com/JuanitoFatas/fast-ruby#arrayshufflefirst-vs-arraysample-code
-
+* [https://github.com/JuanitoFatas/fast-ruby#arrayshufflefirst-vs-arraysample-code](https://github.com/JuanitoFatas/fast-ruby#arrayshufflefirst-vs-arraysample-code)
 
 ## Performance/Size
 
@@ -637,12 +638,9 @@ have been assigned to an array or a hash.
 [1, 2, 3].count { |e| e > 2 }
 ```
 
-### Important attributes
+### References
 
-Attribute | Value
---- | ---
-Reference | https://github.com/JuanitoFatas/fast-ruby#arraycount-vs-arraysize-code
-
+* [https://github.com/JuanitoFatas/fast-ruby#arraycount-vs-arraysize-code](https://github.com/JuanitoFatas/fast-ruby#arraycount-vs-arraysize-code)
 
 ## Performance/StartWith
 
@@ -669,9 +667,12 @@ This cop identifies unnecessary use of a regex where
 
 Attribute | Value
 --- | ---
-Reference | https://github.com/JuanitoFatas/fast-ruby#stringmatch-vs-stringstart_withstringend_with-code-start-code-end
 AutoCorrect | false
 
+
+### References
+
+* [https://github.com/JuanitoFatas/fast-ruby#stringmatch-vs-stringstart_withstringend_with-code-start-code-end](https://github.com/JuanitoFatas/fast-ruby#stringmatch-vs-stringstart_withstringend_with-code-start-code-end)
 
 ## Performance/StringReplacement
 
@@ -698,12 +699,9 @@ This cop identifies places where `gsub` can be replaced by
 'a b c'.delete(' ')
 ```
 
-### Important attributes
+### References
 
-Attribute | Value
---- | ---
-Reference | https://github.com/JuanitoFatas/fast-ruby#stringgsub-vs-stringtr-code
-
+* [https://github.com/JuanitoFatas/fast-ruby#stringgsub-vs-stringtr-code](https://github.com/JuanitoFatas/fast-ruby#stringgsub-vs-stringtr-code)
 
 ## Performance/TimesMap
 

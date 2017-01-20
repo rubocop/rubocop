@@ -18,6 +18,10 @@ SupportedStyles | outdent, indent
 IndentationWidth | 
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#indent-public-private-protected](https://github.com/bbatsov/ruby-style-guide#indent-public-private-protected)
+
 ## Style/AccessorMethodName
 
 Enabled by default | Supports autocorrection
@@ -42,6 +46,10 @@ def get_attribute ...
 def attribute ...
 ```
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#accessor_mutator_method_names](https://github.com/bbatsov/ruby-style-guide#accessor_mutator_method_names)
+
 ## Style/Alias
 
 Enabled by default | Supports autocorrection
@@ -61,6 +69,10 @@ EnforcedStyle | prefer_alias
 SupportedStyles | prefer_alias, prefer_alias_method
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#alias-method](https://github.com/bbatsov/ruby-style-guide#alias-method)
+
 ## Style/AlignArray
 
 Enabled by default | Supports autocorrection
@@ -69,6 +81,10 @@ Enabled | Yes
 
 Here we check if the elements of a multi-line array literal are
 aligned.
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#align-multiline-arrays](https://github.com/bbatsov/ruby-style-guide#align-multiline-arrays)
 
 ## Style/AlignHash
 
@@ -201,6 +217,10 @@ SupportedStyles | with_first_parameter, with_fixed_indentation
 IndentationWidth | 
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-double-indent](https://github.com/bbatsov/ruby-style-guide#no-double-indent)
+
 ## Style/AndOr
 
 Enabled by default | Supports autocorrection
@@ -217,6 +237,10 @@ EnforcedStyle | always
 SupportedStyles | always, conditionals
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-and-or-or](https://github.com/bbatsov/ruby-style-guide#no-and-or-or)
+
 ## Style/ArrayJoin
 
 Enabled by default | Supports autocorrection
@@ -229,6 +253,10 @@ Not all cases can reliably checked, due to Ruby's dynamic
 types, so we consider only cases when the first argument is an
 array literal or the second is a string literal.
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#array-join](https://github.com/bbatsov/ruby-style-guide#array-join)
+
 ## Style/AsciiComments
 
 Enabled by default | Supports autocorrection
@@ -238,6 +266,10 @@ Enabled | No
 This cop checks for non-ascii (non-English) characters
 in comments.
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#english-comments](https://github.com/bbatsov/ruby-style-guide#english-comments)
+
 ## Style/AsciiIdentifiers
 
 Enabled by default | Supports autocorrection
@@ -246,6 +278,10 @@ Enabled | No
 
 This cop checks for non-ascii characters in identifier names.
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#english-identifiers](https://github.com/bbatsov/ruby-style-guide#english-identifiers)
+
 ## Style/Attr
 
 Enabled by default | Supports autocorrection
@@ -253,6 +289,10 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 This cop checks for uses of Module#attr.
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#attr](https://github.com/bbatsov/ruby-style-guide#attr)
 
 ## Style/AutoResourceCleanup
 
@@ -292,6 +332,10 @@ EnforcedStyle | bare_percent
 SupportedStyles | percent_q, bare_percent
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#percent-q-shorthand](https://github.com/bbatsov/ruby-style-guide#percent-q-shorthand)
+
 ## Style/BeginBlock
 
 Enabled by default | Supports autocorrection
@@ -300,6 +344,10 @@ Enabled | No
 
 This cop checks for BEGIN blocks.
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-BEGIN-blocks](https://github.com/bbatsov/ruby-style-guide#no-BEGIN-blocks)
+
 ## Style/BlockComments
 
 Enabled by default | Supports autocorrection
@@ -307,6 +355,10 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 This cop looks for uses of block comments (=begin...=end).
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-block-comments](https://github.com/bbatsov/ruby-style-guide#no-block-comments)
 
 ## Style/BlockDelimiters
 
@@ -327,6 +379,10 @@ ProceduralMethods | benchmark, bm, bmbm, create, each_with_object, measure, new,
 FunctionalMethods | let, let!, subject, watch
 IgnoredMethods | lambda, proc, it
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#single-line-blocks](https://github.com/bbatsov/ruby-style-guide#single-line-blocks)
 
 ## Style/BlockEndNewline
 
@@ -384,6 +440,10 @@ Enabled | No
 
 This cop checks for uses of the case equality operator(===).
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-case-equality](https://github.com/bbatsov/ruby-style-guide#no-case-equality)
+
 ## Style/CaseIndentation
 
 Enabled by default | Supports autocorrection
@@ -405,6 +465,10 @@ IndentOneStep | false
 IndentationWidth | 
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#indent-when-to-case](https://github.com/bbatsov/ruby-style-guide#indent-when-to-case)
+
 ## Style/CharacterLiteral
 
 Enabled by default | Supports autocorrection
@@ -412,6 +476,10 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 Checks for uses of the character literal ?x.
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-character-literals](https://github.com/bbatsov/ruby-style-guide#no-character-literals)
 
 ## Style/ClassAndModuleCamelCase
 
@@ -421,6 +489,10 @@ Enabled | No
 
 This cops checks for class and module names with
 an underscore in them.
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#camelcase-classes](https://github.com/bbatsov/ruby-style-guide#camelcase-classes)
 
 ## Style/ClassAndModuleChildren
 
@@ -494,6 +566,10 @@ class SomeClass
 end
 ```
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#def-self-class-methods](https://github.com/bbatsov/ruby-style-guide#def-self-class-methods)
+
 ## Style/ClassVars
 
 Enabled by default | Supports autocorrection
@@ -503,6 +579,10 @@ Enabled | No
 This cop checks for uses of class variables. Offenses
 are signaled only on assignment to class variables to
 reduced the number of offenses that would be reported.
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-class-vars](https://github.com/bbatsov/ruby-style-guide#no-class-vars)
 
 ## Style/ClosingParenthesisIndentation
 
@@ -555,6 +635,10 @@ Attribute | Value
 PreferredMethods | {"collect"=>"map", "collect!"=>"map!", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select"}
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#map-find-select-reduce-size](https://github.com/bbatsov/ruby-style-guide#map-find-select-reduce-size)
+
 ## Style/ColonMethodCall
 
 Enabled by default | Supports autocorrection
@@ -563,6 +647,10 @@ Enabled | Yes
 
 This cop checks for methods invoked via the :: operator instead
 of the . operator (like FileUtils::rmdir instead of FileUtils.rmdir).
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#double-colons](https://github.com/bbatsov/ruby-style-guide#double-colons)
 
 ## Style/CommandLiteral
 
@@ -606,6 +694,10 @@ SupportedStyles | backticks, percent_x, mixed
 AllowInnerBackticks | false
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#percent-x](https://github.com/bbatsov/ruby-style-guide#percent-x)
+
 ## Style/CommentAnnotation
 
 Enabled by default | Supports autocorrection
@@ -621,6 +713,10 @@ Attribute | Value
 --- | ---
 Keywords | TODO, FIXME, OPTIMIZE, HACK, REVIEW
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#annotate-keywords](https://github.com/bbatsov/ruby-style-guide#annotate-keywords)
 
 ## Style/CommentIndentation
 
@@ -757,6 +853,10 @@ SCREAMING_SNAKE_CASE.
 To avoid false positives, it ignores cases in which we cannot know
 for certain the type of value that would be assigned to a constant.
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#screaming-snake-case](https://github.com/bbatsov/ruby-style-guide#screaming-snake-case)
+
 ## Style/Copyright
 
 Enabled by default | Supports autocorrection
@@ -792,6 +892,10 @@ Enabled | Yes
 This cop checks for parentheses in the definition of a method,
 that does not take any arguments. Both instance and
 class/singleton methods are checked.
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#method-parens](https://github.com/bbatsov/ruby-style-guide#method-parens)
 
 ## Style/Documentation
 
@@ -892,6 +996,10 @@ EnforcedStyle | leading
 SupportedStyles | leading, trailing
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#consistent-multi-line-chains](https://github.com/bbatsov/ruby-style-guide#consistent-multi-line-chains)
+
 ## Style/DoubleNegation
 
 Enabled by default | Supports autocorrection
@@ -916,6 +1024,10 @@ this is rarely a problem in practice.
 # good
 !something.nil?
 ```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-bang-bang](https://github.com/bbatsov/ruby-style-guide#no-bang-bang)
 
 ## Style/EachForSimpleLoop
 
@@ -1121,6 +1233,10 @@ Attribute | Value
 AllowAdjacentOneLineDefs | false
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#empty-lines-between-methods](https://github.com/bbatsov/ruby-style-guide#empty-lines-between-methods)
+
 ## Style/EmptyLines
 
 Enabled by default | Supports autocorrection
@@ -1287,6 +1403,10 @@ Enabled | Yes
 This cop checks for the use of a method, the result of which
 would be a literal, like an empty array, hash or string.
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#literal-array-hash](https://github.com/bbatsov/ruby-style-guide#literal-array-hash)
+
 ## Style/EmptyMethod
 
 Enabled by default | Supports autocorrection
@@ -1340,6 +1460,10 @@ EnforcedStyle | compact
 SupportedStyles | compact, expanded
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-single-line-methods](https://github.com/bbatsov/ruby-style-guide#no-single-line-methods)
+
 ## Style/Encoding
 
 Enabled by default | Supports autocorrection
@@ -1366,6 +1490,10 @@ SupportedStyles | when_needed, always, never
 AutoCorrectEncodingComment | # encoding: utf-8
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#utf-8](https://github.com/bbatsov/ruby-style-guide#utf-8)
+
 ## Style/EndBlock
 
 Enabled by default | Supports autocorrection
@@ -1374,6 +1502,10 @@ Enabled | No
 
 This cop checks for END blocks.
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-END-blocks](https://github.com/bbatsov/ruby-style-guide#no-END-blocks)
+
 ## Style/EndOfLine
 
 Enabled by default | Supports autocorrection
@@ -1381,6 +1513,10 @@ Enabled by default | Supports autocorrection
 Enabled | No
 
 This cop checks for Windows-style line endings in the source code.
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#crlf](https://github.com/bbatsov/ruby-style-guide#crlf)
 
 ## Style/EvenOdd
 
@@ -1400,6 +1536,10 @@ if x % 2 == 0
 # good
 if x.even?
 ```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#predicate-methods](https://github.com/bbatsov/ruby-style-guide#predicate-methods)
 
 ## Style/ExtraSpacing
 
@@ -1452,6 +1592,10 @@ Regex |
 IgnoreExecutableScripts | true
 AllowedAcronyms | CLI, DSL, ACL, API, ASCII, CPU, CSS, DNS, EOF, GUID, HTML, HTTP, HTTPS, ID, IP, JSON, LHS, QPS, RAM, RHS, RPC, SLA, SMTP, SQL, SSH, TCP, TLS, TTL, UDP, UI, UID, UUID, URI, URL, UTF8, VM, XML, XMPP, XSRF, XSS
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#snake-case-files](https://github.com/bbatsov/ruby-style-guide#snake-case-files)
 
 ## Style/FirstArrayElementLineBreak
 
@@ -1596,6 +1740,10 @@ Enabled | No
 
 This cop looks for uses of flip flop operator
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-flip-flops](https://github.com/bbatsov/ruby-style-guide#no-flip-flops)
+
 ## Style/For
 
 Enabled by default | Supports autocorrection
@@ -1614,6 +1762,10 @@ Attribute | Value
 EnforcedStyle | each
 SupportedStyles | for, each
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-for-loops](https://github.com/bbatsov/ruby-style-guide#no-for-loops)
 
 ## Style/FormatString
 
@@ -1636,6 +1788,10 @@ Attribute | Value
 EnforcedStyle | format
 SupportedStyles | format, sprintf, percent
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#sprintf](https://github.com/bbatsov/ruby-style-guide#sprintf)
 
 ## Style/FrozenStringLiteralComment
 
@@ -1674,9 +1830,13 @@ Note that backreferences like $1, $2, etc are not global variables.
 
 Attribute | Value
 --- | ---
-Reference | http://www.zenspider.com/Languages/Ruby/QuickRef.html
 AllowedVariables | 
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#instance-vars](https://github.com/bbatsov/ruby-style-guide#instance-vars)
+* [http://www.zenspider.com/Languages/Ruby/QuickRef.html](http://www.zenspider.com/Languages/Ruby/QuickRef.html)
 
 ## Style/GuardClause
 
@@ -1726,6 +1886,10 @@ Attribute | Value
 --- | ---
 MinBodyLength | 1
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-nested-conditionals](https://github.com/bbatsov/ruby-style-guide#no-nested-conditionals)
 
 ## Style/HashSyntax
 
@@ -1805,6 +1969,10 @@ SupportedStyles | ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
 UseHashRocketsWithSymbolValues | false
 PreferHashRocketsForNonAlnumEndingSymbols | false
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#hash-literals](https://github.com/bbatsov/ruby-style-guide#hash-literals)
 
 ## Style/IdenticalConditionalBranches
 
@@ -1904,6 +2072,10 @@ Attribute | Value
 MaxLineLength | 80
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#if-as-a-modifier](https://github.com/bbatsov/ruby-style-guide#if-as-a-modifier)
+
 ## Style/IfUnlessModifierOfIfUnless
 
 Enabled by default | Supports autocorrection
@@ -1939,6 +2111,10 @@ Enabled by default | Supports autocorrection
 Enabled | No
 
 Checks for uses of semicolon in if statements.
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-semicolon-ifs](https://github.com/bbatsov/ruby-style-guide#no-semicolon-ifs)
 
 ## Style/ImplicitRuntimeError
 
@@ -2148,6 +2324,10 @@ Attribute | Value
 Width | 2
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#spaces-indentation](https://github.com/bbatsov/ruby-style-guide#spaces-indentation)
+
 ## Style/InfiniteLoop
 
 Enabled by default | Supports autocorrection
@@ -2169,6 +2349,10 @@ loop do
   work
 end
 ```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#infinite-loop](https://github.com/bbatsov/ruby-style-guide#infinite-loop)
 
 ## Style/InitialIndentation
 
@@ -2269,6 +2453,10 @@ EnforcedStyle | line_count_dependent
 SupportedStyles | line_count_dependent, lambda, literal
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#lambda-multi-line](https://github.com/bbatsov/ruby-style-guide#lambda-multi-line)
+
 ## Style/LambdaCall
 
 Enabled by default | Supports autocorrection
@@ -2295,6 +2483,10 @@ EnforcedStyle | call
 SupportedStyles | call, braces
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#proc-call](https://github.com/bbatsov/ruby-style-guide#proc-call)
+
 ## Style/LeadingCommentSpace
 
 Enabled by default | Supports autocorrection
@@ -2306,6 +2498,10 @@ after the # denoting the start of the comment. The
 leading space is not required for some RDoc special syntax,
 like #++, #--, #:nodoc, etc. Neither is it required for
 =begin/=end comments.
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#hash-space](https://github.com/bbatsov/ruby-style-guide#hash-space)
 
 ## Style/LineEndConcatenation
 
@@ -2363,6 +2559,10 @@ Attribute | Value
 IgnoredMethods | 
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#method-invocation-parens](https://github.com/bbatsov/ruby-style-guide#method-invocation-parens)
+
 ## Style/MethodCallWithoutArgsParentheses
 
 Enabled by default | Supports autocorrection
@@ -2380,6 +2580,10 @@ object.some_method()
 # good
 object.some_method
 ```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#method-invocation-parens](https://github.com/bbatsov/ruby-style-guide#method-invocation-parens)
 
 ## Style/MethodCalledOnDoEndBlock
 
@@ -2399,6 +2603,10 @@ a do
 end.c
 ```
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#single-line-blocks](https://github.com/bbatsov/ruby-style-guide#single-line-blocks)
+
 ## Style/MethodDefParentheses
 
 Enabled by default | Supports autocorrection
@@ -2415,6 +2623,10 @@ Attribute | Value
 EnforcedStyle | require_parentheses
 SupportedStyles | require_parentheses, require_no_parentheses, require_no_parentheses_except_multiline
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#method-parens](https://github.com/bbatsov/ruby-style-guide#method-parens)
 
 ## Style/MethodMissing
 
@@ -2444,6 +2656,10 @@ def method_missing(...)
 end
 ```
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-method-missing](https://github.com/bbatsov/ruby-style-guide#no-method-missing)
+
 ## Style/MethodName
 
 Enabled by default | Supports autocorrection
@@ -2461,6 +2677,10 @@ Attribute | Value
 EnforcedStyle | snake_case
 SupportedStyles | snake_case, camelCase
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#snake-case-symbols-methods-vars](https://github.com/bbatsov/ruby-style-guide#snake-case-symbols-methods-vars)
 
 ## Style/MissingElse
 
@@ -2543,6 +2763,10 @@ Attribute | Value
 EnforcedStyle | module_function
 SupportedStyles | module_function, extend_self
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#module-function](https://github.com/bbatsov/ruby-style-guide#module-function)
 
 ## Style/MultilineArrayBraceLayout
 
@@ -2659,6 +2883,10 @@ EnforcedStyle | new_line
 SupportedStyles | same_line, new_line
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#indent-conditional-assignment](https://github.com/bbatsov/ruby-style-guide#indent-conditional-assignment)
+
 ## Style/MultilineBlockChain
 
 Enabled by default | Supports autocorrection
@@ -2677,6 +2905,10 @@ end.map do |t|
   t.object_id
 end
 ```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#single-line-blocks](https://github.com/bbatsov/ruby-style-guide#single-line-blocks)
 
 ## Style/MultilineBlockLayout
 
@@ -2809,6 +3041,10 @@ Checks for uses of if/unless modifiers with multiple-lines bodies.
 { result: 'ok' } if cond
 ```
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-multiline-if-modifiers](https://github.com/bbatsov/ruby-style-guide#no-multiline-if-modifiers)
+
 ## Style/MultilineIfThen
 
 Enabled by default | Supports autocorrection
@@ -2828,6 +3064,10 @@ if cond then a
 elsif cond then b
 end
 ```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-then](https://github.com/bbatsov/ruby-style-guide#no-then)
 
 ## Style/MultilineMemoization
 
@@ -3073,6 +3313,10 @@ Enabled | No
 
 This cop checks for multi-line ternary op expressions.
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-multiline-ternary](https://github.com/bbatsov/ruby-style-guide#no-multiline-ternary)
+
 ## Style/MutableConstant
 
 Enabled by default | Supports autocorrection
@@ -3101,6 +3345,10 @@ Enabled | Yes
 Checks for uses of if with a negated condition. Only ifs
 without else are considered.
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#unless-for-negatives](https://github.com/bbatsov/ruby-style-guide#unless-for-negatives)
+
 ## Style/NegatedWhile
 
 Enabled by default | Supports autocorrection
@@ -3108,6 +3356,10 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 Checks for uses of while with a negated condition.
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#until-for-negatives](https://github.com/bbatsov/ruby-style-guide#until-for-negatives)
 
 ## Style/NestedModifier
 
@@ -3127,6 +3379,10 @@ something if a if b
 # good
 something if b && a
 ```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-nested-modifiers](https://github.com/bbatsov/ruby-style-guide#no-nested-modifiers)
 
 ## Style/NestedParenthesizedCalls
 
@@ -3154,6 +3410,10 @@ Enabled by default | Supports autocorrection
 Enabled | No
 
 This cop checks for nested ternary op expressions.
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-nested-ternary](https://github.com/bbatsov/ruby-style-guide#no-nested-ternary)
 
 ## Style/Next
 
@@ -3189,6 +3449,10 @@ MinBodyLength | 3
 SupportedStyles | skip_modifier_ifs, always
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-nested-conditionals](https://github.com/bbatsov/ruby-style-guide#no-nested-conditionals)
+
 ## Style/NilComparison
 
 Enabled by default | Supports autocorrection
@@ -3206,6 +3470,10 @@ if x == nil
 # good
 if x.nil?
 ```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#predicate-methods](https://github.com/bbatsov/ruby-style-guide#predicate-methods)
 
 ## Style/NonNilCheck
 
@@ -3243,6 +3511,10 @@ Attribute | Value
 IncludeSemanticChanges | false
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-non-nil-checks](https://github.com/bbatsov/ruby-style-guide#no-non-nil-checks)
+
 ## Style/Not
 
 Enabled by default | Supports autocorrection
@@ -3250,6 +3522,10 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 This cop checks for uses if the keyword *not* instead of !.
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#bang-not-not](https://github.com/bbatsov/ruby-style-guide#bang-not-not)
 
 ## Style/NumericLiteralPrefix
 
@@ -3273,6 +3549,10 @@ EnforcedOctalStyle | zero_with_o
 SupportedOctalStyles | zero_with_o, zero_only
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#numeric-literal-prefixes](https://github.com/bbatsov/ruby-style-guide#numeric-literal-prefixes)
+
 ## Style/NumericLiterals
 
 Enabled by default | Supports autocorrection
@@ -3288,6 +3568,10 @@ Attribute | Value
 --- | ---
 MinDigits | 5
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#underscores-in-numerics](https://github.com/bbatsov/ruby-style-guide#underscores-in-numerics)
 
 ## Style/NumericPredicate
 
@@ -3347,6 +3631,10 @@ SupportedStyles | predicate, comparison
 Exclude | spec/\*\*/\*
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#predicate-methods](https://github.com/bbatsov/ruby-style-guide#predicate-methods)
+
 ## Style/OneLineConditional
 
 Enabled by default | Supports autocorrection
@@ -3355,6 +3643,10 @@ Enabled | Yes
 
 TODO: Make configurable.
 Checks for uses of if/then/else/end on a single line.
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#ternary-operator](https://github.com/bbatsov/ruby-style-guide#ternary-operator)
 
 ## Style/OpMethod
 
@@ -3374,6 +3666,10 @@ def +(amount); end
 # good
 def +(other); end
 ```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#other-arg](https://github.com/bbatsov/ruby-style-guide#other-arg)
 
 ## Style/OptionHash
 
@@ -3432,6 +3728,10 @@ def foobar(a = 1, b = 2, c = 3)
 end
 ```
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#optional-arguments](https://github.com/bbatsov/ruby-style-guide#optional-arguments)
+
 ## Style/ParallelAssignment
 
 Enabled by default | Supports autocorrection
@@ -3459,6 +3759,10 @@ b = 2
 c = 3
 ```
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#parallel-assignment](https://github.com/bbatsov/ruby-style-guide#parallel-assignment)
+
 ## Style/ParenthesesAroundCondition
 
 Enabled by default | Supports autocorrection
@@ -3475,6 +3779,10 @@ Attribute | Value
 AllowSafeAssignment | true
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-parens-around-condition](https://github.com/bbatsov/ruby-style-guide#no-parens-around-condition)
+
 ## Style/PercentLiteralDelimiters
 
 Enabled by default | Supports autocorrection
@@ -3489,6 +3797,10 @@ Attribute | Value
 --- | ---
 PreferredDelimiters | {"%"=>"()", "%i"=>"()", "%I"=>"()", "%q"=>"()", "%Q"=>"()", "%r"=>"{}", "%s"=>"()", "%w"=>"()", "%W"=>"()", "%x"=>"()"}
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#percent-literal-braces](https://github.com/bbatsov/ruby-style-guide#percent-literal-braces)
 
 ## Style/PercentQLiterals
 
@@ -3514,6 +3826,10 @@ Enabled | Yes
 
 This cop looks for uses of Perl-style regexp match
 backreferences like $1, $2, etc.
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-perl-regexp-last-matchers](https://github.com/bbatsov/ruby-style-guide#no-perl-regexp-last-matchers)
 
 ## Style/PredicateName
 
@@ -3548,6 +3864,10 @@ NamePrefixBlacklist | is_, has_, have_
 NameWhitelist | is_a?
 Exclude | spec/\*\*/\*
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#bool-methods-qmark](https://github.com/bbatsov/ruby-style-guide#bool-methods-qmark)
 
 ## Style/PreferredHashMethods
 
@@ -3593,6 +3913,10 @@ EnforcedStyle | short
 SupportedStyles | short, verbose
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#hash-key](https://github.com/bbatsov/ruby-style-guide#hash-key)
+
 ## Style/Proc
 
 Enabled by default | Supports autocorrection
@@ -3601,6 +3925,10 @@ Enabled | Yes
 
 This cops checks for uses of Proc.new where Kernel#proc
 would be more appropriate.
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#proc](https://github.com/bbatsov/ruby-style-guide#proc)
 
 ## Style/RaiseArgs
 
@@ -3652,6 +3980,10 @@ EnforcedStyle | exploded
 SupportedStyles | compact, exploded
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#exception-class-messages](https://github.com/bbatsov/ruby-style-guide#exception-class-messages)
+
 ## Style/RedundantBegin
 
 Enabled by default | Supports autocorrection
@@ -3682,6 +4014,10 @@ rescue StandardError => e
 end
 ```
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#begin-implicit](https://github.com/bbatsov/ruby-style-guide#begin-implicit)
+
 ## Style/RedundantException
 
 Enabled by default | Supports autocorrection
@@ -3704,6 +4040,10 @@ raise RuntimeError.new('message')
 # Good
 raise 'message'
 ```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-explicit-runtimeerror](https://github.com/bbatsov/ruby-style-guide#no-explicit-runtimeerror)
 
 ## Style/RedundantFreeze
 
@@ -3774,6 +4114,10 @@ Attribute | Value
 AllowMultipleReturnValues | false
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-explicit-return](https://github.com/bbatsov/ruby-style-guide#no-explicit-return)
+
 ## Style/RedundantSelf
 
 Enabled by default | Supports autocorrection
@@ -3820,6 +4164,10 @@ Special cases:
 We allow uses of `self` with operators because it would be awkward
 otherwise.
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-self-unless-required](https://github.com/bbatsov/ruby-style-guide#no-self-unless-required)
+
 ## Style/RegexpLiteral
 
 Enabled by default | Supports autocorrection
@@ -3864,6 +4212,10 @@ SupportedStyles | slashes, percent_r, mixed
 AllowInnerSlashes | false
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#percent-r](https://github.com/bbatsov/ruby-style-guide#percent-r)
+
 ## Style/RescueEnsureAlignment
 
 Enabled by default | Supports autocorrection
@@ -3898,6 +4250,10 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 This cop checks for uses of rescue in its modifier form.
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-rescue-modifiers](https://github.com/bbatsov/ruby-style-guide#no-rescue-modifiers)
 
 ## Style/SafeNavigation
 
@@ -3974,6 +4330,10 @@ x = x + 1
 x += 1
 ```
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#self-assignment](https://github.com/bbatsov/ruby-style-guide#self-assignment)
+
 ## Style/Semicolon
 
 Enabled by default | Supports autocorrection
@@ -3990,6 +4350,10 @@ Attribute | Value
 AllowAsExpressionSeparator | false
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-semicolon](https://github.com/bbatsov/ruby-style-guide#no-semicolon)
+
 ## Style/Send
 
 Enabled by default | Supports autocorrection
@@ -3997,6 +4361,10 @@ Enabled by default | Supports autocorrection
 Disabled | No
 
 This cop checks for the use of the send method.
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#prefer-public-send](https://github.com/bbatsov/ruby-style-guide#prefer-public-send)
 
 ## Style/SignalException
 
@@ -4013,6 +4381,10 @@ Attribute | Value
 EnforcedStyle | only_raise
 SupportedStyles | only_raise, only_fail, semantic
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#prefer-raise-over-fail](https://github.com/bbatsov/ruby-style-guide#prefer-raise-over-fail)
 
 ## Style/SingleLineBlockParams
 
@@ -4049,6 +4421,10 @@ Attribute | Value
 AllowIfMethodIsEmpty | true
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-single-line-methods](https://github.com/bbatsov/ruby-style-guide#no-single-line-methods)
+
 ## Style/SpaceAfterColon
 
 Enabled by default | Supports autocorrection
@@ -4059,6 +4435,10 @@ Checks for colon (:) not followed by some kind of space.
 N.B. this cop does not handle spaces after a ternary operator, which are
 instead handled by Style/SpaceAroundOperators.
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#spaces-operators](https://github.com/bbatsov/ruby-style-guide#spaces-operators)
+
 ## Style/SpaceAfterComma
 
 Enabled by default | Supports autocorrection
@@ -4066,6 +4446,10 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 Checks for comma (,) not followed by some kind of space.
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#spaces-operators](https://github.com/bbatsov/ruby-style-guide#spaces-operators)
 
 ## Style/SpaceAfterMethodName
 
@@ -4085,6 +4469,10 @@ def func (x) ... end
 def func(x) ... end
 ```
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#parens-no-spaces](https://github.com/bbatsov/ruby-style-guide#parens-no-spaces)
+
 ## Style/SpaceAfterNot
 
 Enabled by default | Supports autocorrection
@@ -4103,6 +4491,10 @@ This cop checks for space after `!`.
 !something
 ```
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-space-bang](https://github.com/bbatsov/ruby-style-guide#no-space-bang)
+
 ## Style/SpaceAfterSemicolon
 
 Enabled by default | Supports autocorrection
@@ -4110,6 +4502,10 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 Checks for semicolon (;) not followed by some kind of space.
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#spaces-operators](https://github.com/bbatsov/ruby-style-guide#spaces-operators)
 
 ## Style/SpaceAroundBlockParameters
 
@@ -4153,6 +4549,10 @@ Attribute | Value
 EnforcedStyle | space
 SupportedStyles | space, no_space
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#spaces-around-equals](https://github.com/bbatsov/ruby-style-guide#spaces-around-equals)
 
 ## Style/SpaceAroundKeyword
 
@@ -4199,6 +4599,10 @@ Attribute | Value
 --- | ---
 AllowForAlignment | true
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#spaces-operators](https://github.com/bbatsov/ruby-style-guide#spaces-operators)
 
 ## Style/SpaceBeforeBlockBraces
 
@@ -4357,6 +4761,10 @@ Enabled | Yes
 
 Checks for spaces inside square brackets.
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-spaces-braces](https://github.com/bbatsov/ruby-style-guide#no-spaces-braces)
+
 ## Style/SpaceInsideHashLiteralBraces
 
 Enabled by default | Supports autocorrection
@@ -4376,6 +4784,10 @@ EnforcedStyleForEmptyBraces | no_space
 SupportedStylesForEmptyBraces | space, no_space
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#spaces-operators](https://github.com/bbatsov/ruby-style-guide#spaces-operators)
+
 ## Style/SpaceInsideParens
 
 Enabled by default | Supports autocorrection
@@ -4383,6 +4795,10 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 Checks for spaces inside ordinary round parentheses.
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-spaces-braces](https://github.com/bbatsov/ruby-style-guide#no-spaces-braces)
 
 ## Style/SpaceInsidePercentLiteralDelimiters
 
@@ -4430,6 +4846,10 @@ Checks for spaces inside range literals.
 'a'..'z'
 ```
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-space-inside-range-literals](https://github.com/bbatsov/ruby-style-guide#no-space-inside-range-literals)
+
 ## Style/SpaceInsideStringInterpolation
 
 Enabled by default | Supports autocorrection
@@ -4456,6 +4876,10 @@ EnforcedStyle | no_space
 SupportedStyles | space, no_space
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#string-interpolation](https://github.com/bbatsov/ruby-style-guide#string-interpolation)
+
 ## Style/SpecialGlobalVars
 
 Enabled by default | Supports autocorrection
@@ -4471,6 +4895,10 @@ Attribute | Value
 EnforcedStyle | use_english_names
 SupportedStyles | use_perl_names, use_english_names
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-cryptic-perlisms](https://github.com/bbatsov/ruby-style-guide#no-cryptic-perlisms)
 
 ## Style/StabbyLambdaParentheses
 
@@ -4505,6 +4933,10 @@ EnforcedStyle | require_parentheses
 SupportedStyles | require_parentheses, require_no_parentheses
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#stabby-lambda-with-args](https://github.com/bbatsov/ruby-style-guide#stabby-lambda-with-args)
+
 ## Style/StringLiterals
 
 Enabled by default | Supports autocorrection
@@ -4521,6 +4953,10 @@ EnforcedStyle | single_quotes
 SupportedStyles | single_quotes, double_quotes
 ConsistentQuotesInMultiline | false
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#consistent-string-literals](https://github.com/bbatsov/ruby-style-guide#consistent-string-literals)
 
 ## Style/StringLiteralsInInterpolation
 
@@ -4573,6 +5009,10 @@ end
 Person = Struct.new(:first_name, :last_name)
 ```
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-extend-struct-new](https://github.com/bbatsov/ruby-style-guide#no-extend-struct-new)
+
 ## Style/SymbolArray
 
 Enabled by default | Supports autocorrection
@@ -4593,6 +5033,10 @@ Attribute | Value
 EnforcedStyle | percent
 SupportedStyles | percent, brackets
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#percent-i](https://github.com/bbatsov/ruby-style-guide#percent-i)
 
 ## Style/SymbolLiteral
 
@@ -4644,6 +5088,10 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 This cop checks for tabs inside the source code.
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#spaces-indentation](https://github.com/bbatsov/ruby-style-guide#spaces-indentation)
 
 ## Style/TernaryParentheses
 
@@ -4723,6 +5171,10 @@ EnforcedStyle | final_newline
 SupportedStyles | final_newline, final_blank_line
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#newline-eof](https://github.com/bbatsov/ruby-style-guide#newline-eof)
+
 ## Style/TrailingCommaInArguments
 
 Enabled by default | Supports autocorrection
@@ -4763,6 +5215,10 @@ Attribute | Value
 EnforcedStyleForMultiline | no_comma
 SupportedStylesForMultiline | comma, consistent_comma, no_comma
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-trailing-params-comma](https://github.com/bbatsov/ruby-style-guide#no-trailing-params-comma)
 
 ## Style/TrailingCommaInLiteral
 
@@ -4805,6 +5261,10 @@ EnforcedStyleForMultiline | no_comma
 SupportedStylesForMultiline | comma, consistent_comma, no_comma
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-trailing-array-commas](https://github.com/bbatsov/ruby-style-guide#no-trailing-array-commas)
+
 ## Style/TrailingUnderscoreVariable
 
 Enabled by default | Supports autocorrection
@@ -4844,6 +5304,10 @@ Enabled | Yes
 
 This cop looks for trailing whitespace in the source code.
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-trailing-whitespace](https://github.com/bbatsov/ruby-style-guide#no-trailing-whitespace)
+
 ## Style/TrivialAccessors
 
 Enabled by default | Supports autocorrection
@@ -4864,6 +5328,10 @@ IgnoreClassMethods | false
 Whitelist | to_ary, to_a, to_c, to_enum, to_h, to_hash, to_i, to_int, to_io, to_open, to_path, to_proc, to_r, to_regexp, to_str, to_s, to_sym
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#attr_family](https://github.com/bbatsov/ruby-style-guide#attr_family)
+
 ## Style/UnlessElse
 
 Enabled by default | Supports autocorrection
@@ -4871,6 +5339,10 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 This cop looks for *unless* expressions with *else* clauses.
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-else-with-unless](https://github.com/bbatsov/ruby-style-guide#no-else-with-unless)
 
 ## Style/UnneededCapitalW
 
@@ -4909,6 +5381,10 @@ Enabled | Yes
 
 This cop checks for usage of the %q/%Q syntax when '' or "" would do.
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#percent-q](https://github.com/bbatsov/ruby-style-guide#percent-q)
+
 ## Style/VariableInterpolation
 
 Enabled by default | Supports autocorrection
@@ -4916,6 +5392,10 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 This cop checks for variable interpolation (like "#@ivar").
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#curlies-interpolate](https://github.com/bbatsov/ruby-style-guide#curlies-interpolate)
 
 ## Style/VariableName
 
@@ -4933,6 +5413,10 @@ Attribute | Value
 EnforcedStyle | snake_case
 SupportedStyles | snake_case, camelCase
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#snake-case-symbols-methods-vars](https://github.com/bbatsov/ruby-style-guide#snake-case-symbols-methods-vars)
 
 ## Style/VariableNumber
 
@@ -5000,6 +5484,10 @@ Enabled | Yes
 
 This cop checks for *when;* uses in *case* expressions.
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#one-line-cases](https://github.com/bbatsov/ruby-style-guide#one-line-cases)
+
 ## Style/WhileUntilDo
 
 Enabled by default | Supports autocorrection
@@ -5007,6 +5495,10 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 Checks for uses of `do` in multi-line `while/until` statements.
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-multiline-while-do](https://github.com/bbatsov/ruby-style-guide#no-multiline-while-do)
 
 ## Style/WhileUntilModifier
 
@@ -5024,6 +5516,10 @@ Attribute | Value
 --- | ---
 MaxLineLength | 80
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#while-as-a-modifier](https://github.com/bbatsov/ruby-style-guide#while-as-a-modifier)
 
 ## Style/WordArray
 
@@ -5046,6 +5542,10 @@ SupportedStyles | percent, brackets
 MinSize | 0
 WordRegex | (?-mix:\A[\p{Word}\n\t]+\z)
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#percent-w](https://github.com/bbatsov/ruby-style-guide#percent-w)
 
 ## Style/ZeroLengthPredicate
 

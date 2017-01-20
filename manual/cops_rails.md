@@ -164,6 +164,10 @@ Attribute | Value
 Whitelist | find_by_sql
 
 
+### References
+
+* [https://github.com/bbatsov/rails-style-guide#find_by](https://github.com/bbatsov/rails-style-guide#find_by)
+
 ## Rails/EnumUniqueness
 
 Enabled by default | Supports autocorrection
@@ -271,6 +275,10 @@ Attribute | Value
 Include | app/models/\*\*/\*.rb
 
 
+### References
+
+* [https://github.com/bbatsov/rails-style-guide#find_by](https://github.com/bbatsov/rails-style-guide#find_by)
+
 ## Rails/FindEach
 
 Enabled by default | Supports autocorrection
@@ -297,6 +305,10 @@ Attribute | Value
 Include | app/models/\*\*/\*.rb
 
 
+### References
+
+* [https://github.com/bbatsov/rails-style-guide#find-each](https://github.com/bbatsov/rails-style-guide#find-each)
+
 ## Rails/HasAndBelongsToMany
 
 Enabled by default | Supports autocorrection
@@ -311,6 +323,10 @@ Attribute | Value
 --- | ---
 Include | app/models/\*\*/\*.rb
 
+
+### References
+
+* [https://github.com/bbatsov/rails-style-guide#has-many-through](https://github.com/bbatsov/rails-style-guide#has-many-through)
 
 ## Rails/HttpPositionalArguments
 
@@ -466,6 +482,10 @@ Attribute | Value
 Include | app/models/\*\*/\*.rb
 
 
+### References
+
+* [https://github.com/bbatsov/rails-style-guide#read-attribute](https://github.com/bbatsov/rails-style-guide#read-attribute)
+
 ## Rails/RequestReferer
 
 Enabled by default | Supports autocorrection
@@ -583,9 +603,13 @@ end
 
 Attribute | Value
 --- | ---
-Reference | http://api.rubyonrails.org/classes/ActiveRecord/Migration/CommandRecorder.html
 Include | db/migrate/\*.rb
 
+
+### References
+
+* [https://github.com/bbatsov/rails-style-guide#reversible-migration](https://github.com/bbatsov/rails-style-guide#reversible-migration)
+* [http://api.rubyonrails.org/classes/ActiveRecord/Migration/CommandRecorder.html](http://api.rubyonrails.org/classes/ActiveRecord/Migration/CommandRecorder.html)
 
 ## Rails/SafeNavigation
 
@@ -680,6 +704,10 @@ unless user.persisted?
 end
 ```
 
+### References
+
+* [https://github.com/bbatsov/rails-style-guide#save-bang](https://github.com/bbatsov/rails-style-guide#save-bang)
+
 ## Rails/ScopeArgs
 
 Enabled by default | Supports autocorrection
@@ -739,9 +767,12 @@ user.update_attributes(website: 'example.com')
 
 Attribute | Value
 --- | ---
-Reference | http://guides.rubyonrails.org/active_record_validations.html#skipping-validations
 Blacklist | decrement!, decrement_counter, increment!, increment_counter, toggle!, touch, update_all, update_attribute, update_column, update_columns, update_counters
 
+
+### References
+
+* [http://guides.rubyonrails.org/active_record_validations.html#skipping-validations](http://guides.rubyonrails.org/active_record_validations.html#skipping-validations)
 
 ## Rails/TimeZone
 
@@ -781,10 +812,14 @@ Time.at(timestamp).in_time_zone
 
 Attribute | Value
 --- | ---
-Reference | http://danilenko.org/2012/7/6/rails_timezones
 EnforcedStyle | flexible
 SupportedStyles | strict, flexible
 
+
+### References
+
+* [https://github.com/bbatsov/rails-style-guide#time](https://github.com/bbatsov/rails-style-guide#time)
+* [http://danilenko.org/2012/7/6/rails_timezones](http://danilenko.org/2012/7/6/rails_timezones)
 
 ## Rails/UniqBeforePluck
 

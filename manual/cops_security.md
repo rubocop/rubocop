@@ -48,9 +48,12 @@ JSON.parse("{}")
 
 Attribute | Value
 --- | ---
-Reference | http://ruby-doc.org/stdlib-2.3.0/libdoc/json/rdoc/JSON.html#method-i-load
 AutoCorrect | false
 
+
+### References
+
+* [http://ruby-doc.org/stdlib-2.3.0/libdoc/json/rdoc/JSON.html#method-i-load](http://ruby-doc.org/stdlib-2.3.0/libdoc/json/rdoc/JSON.html#method-i-load)
 
 ## Security/MarshalLoad
 
@@ -73,12 +76,9 @@ Marshal.restore("{}")
 Marshal.dump("{}")
 ```
 
-### Important attributes
+### References
 
-Attribute | Value
---- | ---
-Reference | http://ruby-doc.org/core-2.3.3/Marshal.html#module-Marshal-label-Security+considerations
-
+* [http://ruby-doc.org/core-2.3.3/Marshal.html#module-Marshal-label-Security+considerations](http://ruby-doc.org/core-2.3.3/Marshal.html#module-Marshal-label-Security+considerations)
 
 ## Security/YAMLLoad
 
@@ -101,9 +101,6 @@ YAML.safe_load("--- foo")
 YAML.dump("foo")
 ```
 
-### Important attributes
+### References
 
-Attribute | Value
---- | ---
-Reference | https://ruby-doc.org/stdlib-2.3.3/libdoc/yaml/rdoc/YAML.html#module-YAML-label-Security
-
+* [https://ruby-doc.org/stdlib-2.3.3/libdoc/yaml/rdoc/YAML.html#module-YAML-label-Security](https://ruby-doc.org/stdlib-2.3.3/libdoc/yaml/rdoc/YAML.html#module-YAML-label-Security)

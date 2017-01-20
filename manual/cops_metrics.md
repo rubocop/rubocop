@@ -14,9 +14,12 @@ configured maximum. The ABC size is based on assignments, branches
 
 Attribute | Value
 --- | ---
-Reference | http://c2.com/cgi/wiki?AbcMetric
 Max | 15
 
+
+### References
+
+* [http://c2.com/cgi/wiki?AbcMetric](http://c2.com/cgi/wiki?AbcMetric)
 
 ## Metrics/BlockLength
 
@@ -60,6 +63,10 @@ Attribute | Value
 CountBlocks | false
 Max | 3
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#three-is-the-number-thou-shalt-count](https://github.com/bbatsov/ruby-style-guide#three-is-the-number-thou-shalt-count)
 
 ## Metrics/ClassLength
 
@@ -124,6 +131,10 @@ IgnoreCopDirectives | false
 IgnoredPatterns | 
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#80-character-limits](https://github.com/bbatsov/ruby-style-guide#80-character-limits)
+
 ## Metrics/MethodLength
 
 Enabled by default | Supports autocorrection
@@ -141,6 +152,10 @@ Attribute | Value
 CountComments | false
 Max | 10
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#short-methods](https://github.com/bbatsov/ruby-style-guide#short-methods)
 
 ## Metrics/ModuleLength
 
@@ -178,6 +193,10 @@ Attribute | Value
 Max | 5
 CountKeywordArgs | true
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#too-many-params](https://github.com/bbatsov/ruby-style-guide#too-many-params)
 
 ## Metrics/PerceivedComplexity
 
