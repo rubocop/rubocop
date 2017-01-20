@@ -25,7 +25,7 @@ module RuboCop
       #   Time.zone.today
       #   Time.zone.today - 1.day
       #
-      #   # acceptable
+      #   # flexible
       #   Date.current
       #   Date.yesterday
       #
