@@ -25,6 +25,10 @@ do_something *some_array
 do_something(*some_array)
 ```
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#method-invocation-parens](https://github.com/bbatsov/ruby-style-guide#method-invocation-parens)
+
 ## Lint/AmbiguousRegexpLiteral
 
 Enabled by default | Supports autocorrection
@@ -83,6 +87,10 @@ Attribute | Value
 --- | ---
 AllowSafeAssignment | true
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#safe-assignment-in-condition](https://github.com/bbatsov/ruby-style-guide#safe-assignment-in-condition)
 
 ## Lint/BlockAlignment
 
@@ -228,6 +236,10 @@ if some_condition
   do_something
 end
 ```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#same-line-condition](https://github.com/bbatsov/ruby-style-guide#same-line-condition)
 
 ## Lint/Debugger
 
@@ -725,6 +737,10 @@ ensure
 end
 ```
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-return-ensure](https://github.com/bbatsov/ruby-style-guide#no-return-ensure)
+
 ## Lint/FloatOutOfRange
 
 Enabled by default | Supports autocorrection
@@ -817,6 +833,10 @@ rescue
   handle_exception
 end
 ```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#dont-hide-exceptions](https://github.com/bbatsov/ruby-style-guide#dont-hide-exceptions)
 
 ## Lint/ImplicitStringConcatenation
 
@@ -1059,6 +1079,10 @@ until some_condition
 end
 ```
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#loop-with-break](https://github.com/bbatsov/ruby-style-guide#loop-with-break)
+
 ## Lint/MultipleCompare
 
 Enabled by default | Supports autocorrection
@@ -1124,6 +1148,10 @@ def foo
   end
 end
 ```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-nested-methods](https://github.com/bbatsov/ruby-style-guide#no-nested-methods)
 
 ## Lint/NextWithoutAccumulator
 
@@ -1211,6 +1239,10 @@ puts (x + y)
 
 puts(x + y)
 ```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#parens-no-spaces](https://github.com/bbatsov/ruby-style-guide#parens-no-spaces)
 
 ## Lint/PercentStringArray
 
@@ -1346,6 +1378,10 @@ rescue ArgumentError
 end
 ```
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-blind-rescues](https://github.com/bbatsov/ruby-style-guide#no-blind-rescues)
+
 ## Lint/SafeNavigationChain
 
 Enabled by default | Supports autocorrection
@@ -1473,6 +1509,10 @@ which is redundant.
 
 "result is #{something}"
 ```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-to-s](https://github.com/bbatsov/ruby-style-guide#no-to-s)
 
 ## Lint/UnderscorePrefixedVariableName
 
@@ -1676,6 +1716,10 @@ IgnoreEmptyBlocks | true
 AllowUnusedKeywordArguments | false
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#underscore-unused-vars](https://github.com/bbatsov/ruby-style-guide#underscore-unused-vars)
+
 ## Lint/UnusedMethodArgument
 
 Enabled by default | Supports autocorrection
@@ -1708,6 +1752,10 @@ Attribute | Value
 AllowUnusedKeywordArguments | false
 IgnoreEmptyMethods | true
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#underscore-unused-vars](https://github.com/bbatsov/ruby-style-guide#underscore-unused-vars)
 
 ## Lint/UselessAccessModifier
 
@@ -1846,6 +1894,10 @@ def some_method
   do_something(some_var)
 end
 ```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#underscore-unused-vars](https://github.com/bbatsov/ruby-style-guide#underscore-unused-vars)
 
 ## Lint/UselessComparison
 
