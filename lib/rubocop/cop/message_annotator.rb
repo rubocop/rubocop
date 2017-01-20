@@ -51,10 +51,14 @@ module RuboCop
         message = "#{name}: #{message}" if display_cop_names?
         message += " #{details}" if extra_details?
         if display_style_guide?
-          links = [style_guide_url, reference_url].compact.join(', ')
+          links = urls.join(', ')
           message = "#{message} (#{links})"
         end
         message
+      end
+
+      def urls
+        [style_guide_url, reference_url].compact
       end
 
       private
@@ -70,7 +74,7 @@ module RuboCop
       end
 
       def display_style_guide?
-        (style_guide_url || reference_url) &&
+        !urls.empty? &&
           (options[:display_style_guide] ||
             config.for_all_cops['DisplayStyleGuide'])
       end

@@ -16,6 +16,7 @@ task generate_cops_documentation: :yard do
     content << "#{description}\n"
     content << examples(examples_objects) if examples_objects.count > 0
     content << default_settings(pars)
+    content << references(config, cop)
     content
   end
 
@@ -74,6 +75,17 @@ task generate_cops_documentation: :yard do
          .gsub('*', '\*')
   end
 
+  def references(config, cop)
+    cop_config = config.for_cop(cop)
+    urls = RuboCop::Cop::MessageAnnotator.new(config, cop_config, {}).urls
+    return '' if urls.empty?
+
+    content = h3('References')
+    content << urls.map { |url| "* [#{url}](#{url})" }.join("\n")
+    content << "\n"
+    content
+  end
+
   def print_cops_of_department(cops, department, config)
     selected_cops = cops_of_department(cops, department)
     content = "# #{department}\n".dup
@@ -88,7 +100,8 @@ task generate_cops_documentation: :yard do
 
   def print_cop_with_doc(cop, config)
     t = config.for_cop(cop)
-    pars = t.reject { |k| %w(Description Enabled StyleGuide).include? k }
+    non_display_keys = %w(Description Enabled StyleGuide Reference)
+    pars = t.reject { |k| non_display_keys.include? k }
     description = 'No documentation'
     examples_object = []
     YARD::Registry.all(:class).detect do |code_object|

@@ -5,11 +5,11 @@ require 'spec_helper'
 describe RuboCop::Cop::MessageAnnotator do
   let(:options) { {} }
   let(:config) { RuboCop::Config.new({}) }
-  let(:formatter) { described_class.new(config, config['Cop/Cop'], options) }
+  let(:annotator) { described_class.new(config, config['Cop/Cop'], options) }
 
   describe '#annotate' do
     subject(:annotate) do
-      formatter.annotate('message', 'Cop/Cop')
+      annotator.annotate('message', 'Cop/Cop')
     end
 
     context 'with default options' do
@@ -45,7 +45,7 @@ describe RuboCop::Cop::MessageAnnotator do
 
   describe 'with style guide url' do
     subject(:annotate) do
-      formatter.annotate('', 'Cop/Cop')
+      annotator.annotate('', 'Cop/Cop')
     end
 
     let(:options) do
@@ -112,6 +112,41 @@ describe RuboCop::Cop::MessageAnnotator do
         config['Cop/Cop'] = { 'StyleGuide' => 'http://other.org#absolute_url' }
         expect(annotate).to include('http://other.org#absolute_url')
       end
+    end
+  end
+
+  describe '#urls' do
+    let(:urls) { annotator.urls }
+    let(:config) do
+      RuboCop::Config.new(
+        'AllCops' => {
+          'StyleGuideBaseURL' => 'http://example.org/styleguide'
+        }
+      )
+    end
+
+    it 'returns an empty array without StyleGuide URL' do
+      expect(urls).to be_empty
+    end
+
+    it 'returns style guide url when it is specified' do
+      config['Cop/Cop'] = { 'StyleGuide' => '#target_based_url' }
+      expect(urls).to eq(%w(http://example.org/styleguide#target_based_url))
+    end
+
+    it 'returns reference url when it is specified' do
+      config['Cop/Cop'] = {
+        'Reference' => 'https://example.com/some_style_guide'
+      }
+      expect(urls).to eq(%w(https://example.com/some_style_guide))
+    end
+
+    it 'returns style guide and reference url when they are specified' do
+      config['Cop/Cop'] = {
+        'StyleGuide' => '#target_based_url',
+        'Reference' => 'https://example.com/some_style_guide'
+      }
+      expect(urls).to eq(%w(http://example.org/styleguide#target_based_url https://example.com/some_style_guide))
     end
   end
 end
