@@ -1374,6 +1374,13 @@ x&.foo&.bar
 x&.foo || bar
 ```
 
+### Important attributes
+
+Attribute | Value
+--- | ---
+Whitelist | present?, blank?, presence, try
+
+
 ## Lint/ShadowedException
 
 Enabled by default | Supports autocorrection

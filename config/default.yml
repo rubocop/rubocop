@@ -1280,6 +1280,13 @@ Lint/InheritException:
     - runtime_error
     - standard_error
 
+Lint/SafeNavigationChain:
+  Whitelist:
+    - present?
+    - blank?
+    - presence
+    - try
+
 # Checks for unused block arguments
 Lint/UnusedBlockArgument:
   IgnoreEmptyBlocks: true

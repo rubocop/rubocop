@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#3915](https://github.com/bbatsov/rubocop/issues/3915): Make configurable whitelist for `Lint/SafeNavigationChain` cop. ([@pocke][])
+
 ### Bug fixes
 
 * [#3923](https://github.com/bbatsov/rubocop/issues/3923): Allow asciibetical sorting in `Bundler/OrderedGems`. ([@mikegee][])
