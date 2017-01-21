@@ -23,7 +23,8 @@ module RuboCop
       #   # good
       #   raise StandardError, "message"
       #   fail "message"
-      #   raise RuntimeError.new(arg1, arg2, arg3)
+      #   raise MyCustomError.new(arg1, arg2, arg3)
+      #   raise MyKwArgError.new(key1: val1, key2: val2)
       #
       # @example
       #
@@ -35,7 +36,7 @@ module RuboCop
       #
       #   # good
       #   raise StandardError.new("message")
-      #   raise RuntimeError.new(arg1, arg2, arg3)
+      #   raise MyCustomError.new(arg1, arg2, arg3)
       #   fail "message"
       class RaiseArgs < Cop
         include ConfigurableEnforcedStyle
@@ -111,16 +112,25 @@ module RuboCop
           return unless arg.send_type? && arg.loc.selector.is?('new')
           _receiver, _selector, *constructor_args = *arg
 
-          # Allow code like `raise Ex.new(arg1, arg2)`.
-          return unless constructor_args.size <= 1
-
-          # Allow code like `raise Ex.new(*args)`
-          first_arg = constructor_args.first
-          return if first_arg && first_arg.splat_type?
+          return if acceptable_exploded_args?(constructor_args)
 
           add_offense(node, :expression, message(selector)) do
             opposite_style_detected
           end
+        end
+
+        def acceptable_exploded_args?(args)
+          # Allow code like `raise Ex.new(arg1, arg2)`.
+          return true if args.size > 1
+
+          # Disallow zero arguments.
+          return false if args.empty?
+
+          arg = args.first
+
+          # Allow code like `raise Ex.new(kw: arg)`.
+          # Allow code like `raise Ex.new(*args)`.
+          arg.hash_type? || arg.splat_type?
         end
 
         def message(method)
