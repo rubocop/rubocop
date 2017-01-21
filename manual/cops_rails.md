@@ -50,7 +50,7 @@ and only 'to_time' is reported as warning.
 Time.zone.today
 Time.zone.today - 1.day
 
-# acceptable
+# flexible
 Date.current
 Date.yesterday
 
@@ -802,7 +802,7 @@ Time.parse('2015-03-02 19:05:37')
 Time.zone.now
 Time.zone.parse('2015-03-02 19:05:37')
 
-# no offense only if style is 'acceptable'
+# no offense only if style is 'flexible'
 Time.current
 DateTime.strptime(str, "%Y-%m-%d %H:%M %Z").in_time_zone
 Time.at(timestamp).in_time_zone
