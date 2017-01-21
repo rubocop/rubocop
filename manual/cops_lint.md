@@ -1186,11 +1186,16 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | No
 
-This cop checks for non-local exit from iterator, without return value.
-It warns only when satisfies all of these: `return` doesn't have return
-value, the block is preceded by a method chain, the block has arguments,
-and the method which receives the block is not `define_method`
-or `define_singleton_method`.
+This cop checks for non-local exits from iterators without a return
+value. It registers an offense under these conditions:
+
+ - No value is returned,
+ - the block is preceded by a method chain,
+ - the block has arguments,
+ - the method which receives the block is not `define_method`
+   or `define_singleton_method`,
+ - the return is not contained in an inner scope, e.g. a lambda or a
+   method definition.
 
 ### Example
 

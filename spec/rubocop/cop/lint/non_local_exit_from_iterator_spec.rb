@@ -174,5 +174,31 @@ describe RuboCop::Cop::Lint::NonLocalExitFromIterator do
 
       it { expect(cop.offenses).to be_empty }
     end
+
+    context 'when the return is within a nested method definition' do
+      context 'with an instance method definition' do
+        let(:source) { <<-END }
+          Foo.configure do |c|
+            def bar
+              return if baz?
+            end
+          end
+        END
+
+        it { expect(cop.offenses).to be_empty }
+      end
+
+      context 'with a class method definition' do
+        let(:source) { <<-END }
+          Foo.configure do |c|
+            def self.bar
+              return if baz?
+            end
+          end
+        END
+
+        it { expect(cop.offenses).to be_empty }
+      end
+    end
   end
 end
