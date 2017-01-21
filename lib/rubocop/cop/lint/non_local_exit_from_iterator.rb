@@ -3,11 +3,16 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for non-local exit from iterator, without return value.
-      # It warns only when satisfies all of these: `return` doesn't have return
-      # value, the block is preceded by a method chain, the block has arguments,
-      # and the method which receives the block is not `define_method`
-      # or `define_singleton_method`.
+      # This cop checks for non-local exits from iterators without a return
+      # value. It registers an offense under these conditions:
+      #
+      #  - No value is returned,
+      #  - the block is preceded by a method chain,
+      #  - the block has arguments,
+      #  - the method which receives the block is not `define_method`
+      #    or `define_singleton_method`,
+      #  - the return is not contained in an inner scope, e.g. a lambda or a
+      #    method definition.
       #
       # @example
       #
@@ -40,17 +45,19 @@ module RuboCop
 
         def on_return(return_node)
           return if return_value?(return_node)
-          return_node.each_ancestor(:block) do |block_node|
-            send_node, args_node, _body_node = *block_node
 
-            # `return` does not exit to outside of lambda block, this is safe.
-            break if block_node.lambda?
+          return_node.each_ancestor(:block, :def, :defs) do |node|
+            break if scoped_node?(node)
+
+            send_node, args_node, _body_node = *node
+
             # if a proc is passed to `Module#define_method` or
             # `Object#define_singleton_method`, `return` will not cause a
             # non-local exit error
             break if define_method?(send_node)
 
             next if args_node.children.empty?
+
             if chained_send?(send_node)
               add_offense(return_node, :keyword)
               break
@@ -58,19 +65,20 @@ module RuboCop
           end
         end
 
+        private
+
+        def scoped_node?(node)
+          node.def_type? || node.defs_type? || node.lambda?
+        end
+
         def return_value?(return_node)
           !return_node.children.empty?
         end
 
-        def chained_send?(send_node)
-          receiver_node, _selector_node = *send_node
-          !receiver_node.nil?
-        end
-
-        def define_method?(send_node)
-          _receiver, selector = *send_node
-          %i(define_method define_singleton_method).include? selector
-        end
+        def_node_matcher :chained_send?, '(send !nil ...)'
+        def_node_matcher :define_method?, <<-PATTERN
+          (send _ {:define_method :define_singleton_method} _)
+        PATTERN
       end
     end
   end
