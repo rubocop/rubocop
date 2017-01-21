@@ -138,12 +138,17 @@ describe RuboCop::Cop::Style::RaiseArgs, :config do
     end
 
     it 'accepts exception constructor with more than 1 argument' do
-      inspect_source(cop, 'raise RuntimeError.new(a1, a2, a3)')
+      inspect_source(cop, 'raise MyCustomError.new(a1, a2, a3)')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts exception constructor with keyword arguments' do
+      inspect_source(cop, 'raise MyKwArgError.new(a: 1, b: 2)')
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts a raise with splatted arguments' do
-      inspect_source(cop, 'raise RuntimeError.new(*args)')
+      inspect_source(cop, 'raise MyCustomError.new(*args)')
       expect(cop.offenses).to be_empty
     end
 

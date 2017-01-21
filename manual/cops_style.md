@@ -3957,7 +3957,8 @@ raise StandardError.new("message")
 # good
 raise StandardError, "message"
 fail "message"
-raise RuntimeError.new(arg1, arg2, arg3)
+raise MyCustomError.new(arg1, arg2, arg3)
+raise MyKwArgError.new(key1: val1, key2: val2)
 ```
 ```ruby
 # EnforcedStyle: compact
@@ -3968,7 +3969,7 @@ raise RuntimeError, arg1, arg2, arg3
 
 # good
 raise StandardError.new("message")
-raise RuntimeError.new(arg1, arg2, arg3)
+raise MyCustomError.new(arg1, arg2, arg3)
 fail "message"
 ```
 
