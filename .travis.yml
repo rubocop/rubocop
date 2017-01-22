@@ -16,7 +16,9 @@ matrix:
     - rvm: ruby-head
     - rvm: rbx-3
   fast_finish: true
-before_install: gem update --remote bundler
+before_install:
+  - gem update --remote bundler
+  - gem update --system
 install:
   - bundle install --retry=3
 script:
