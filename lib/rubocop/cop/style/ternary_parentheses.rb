@@ -113,7 +113,7 @@ module RuboCop
         def non_complex_type?(condition)
           condition.variable? || condition.const_type? ||
             (condition.send_type? && !operator?(condition.method_name)) ||
-            condition.defined_type?
+            condition.defined_type? || condition.yield_type?
         end
 
         def message(node)
