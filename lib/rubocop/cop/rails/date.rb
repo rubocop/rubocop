@@ -112,7 +112,7 @@ module RuboCop
         def safe_to_time?(node)
           receiver, _method_name, *args = *node
           if receiver.str_type?
-            zone_regexp = /[+-][\d:]+$/
+            zone_regexp = /[+-][\d:]+\z/
             receiver.str_content.match(zone_regexp)
           else
             args.length == 1
