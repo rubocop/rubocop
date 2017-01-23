@@ -93,6 +93,11 @@ describe RuboCop::Cop::Style::MutableConstant do
       new_source = autocorrect_source(cop, 'XXX = YYY, ZZZ')
       expect(new_source).to eq 'XXX = [YYY, ZZZ].freeze'
     end
+
+    it 'does not add brackets to %w() arrays' do
+      new_source = autocorrect_source(cop, 'XXX = %w(YYY ZZZ)')
+      expect(new_source).to eq 'XXX = %w(YYY ZZZ).freeze'
+    end
   end
 
   context 'when the constant is a frozen string literal' do
