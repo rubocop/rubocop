@@ -5558,7 +5558,7 @@ This cop checks for numeric comparisons that can be replaced
 by a predicate method, such as receiver.length == 0,
 receiver.length > 0, receiver.length != 0,
 receiver.length < 1 and receiver.size == 0 that can be
-replaced by receiver.empty? and !receiver.empty
+replaced by receiver.empty? and !receiver.empty.
 
 ### Example
 
