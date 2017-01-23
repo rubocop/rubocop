@@ -208,7 +208,7 @@ SafeMode | true
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | No
+Enabled | Yes
 
 This cop checks for double `#start_with?` or `#end_with?` calls
 separated by `||`. In some cases such calls can be replaced
