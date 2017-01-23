@@ -16,6 +16,7 @@
 * [#3923](https://github.com/bbatsov/rubocop/issues/3923): Allow asciibetical sorting in `Bundler/OrderedGems`. ([@mikegee][])
 * [#3855](https://github.com/bbatsov/rubocop/issues/3855): Make `Lint/NonLocalExitFromIterator` aware of method definitions. ([@drenmi][])
 * [#2643](https://github.com/bbatsov/rubocop/issues/2643): Allow uppercase and dashes in `MagicComment`. ([@mikegee][])
+* [#3959](https://github.com/bbatsov/rubocop/issues/3959): Don't wrap "percent arrays" with extra brackets when autocorrecting `Style/MutableConstant`. ([@mikegee][])
 
 ## 0.47.1 (2017-01-18)
 

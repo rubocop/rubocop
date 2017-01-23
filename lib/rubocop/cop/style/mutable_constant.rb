@@ -46,13 +46,17 @@ module RuboCop
           expr = node.source_range
 
           lambda do |corrector|
-            if node.array_type? && !node.square_brackets?
+            if unbracketed_array?(node)
               corrector.insert_before(expr, '[')
               corrector.insert_after(expr, '].freeze')
             else
               corrector.insert_after(expr, '.freeze')
             end
           end
+        end
+
+        def unbracketed_array?(node)
+          node.array_type? && !node.square_brackets? && !node.percent_literal?
         end
 
         def_node_matcher :splat_value, <<-PATTERN
