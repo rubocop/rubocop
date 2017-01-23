@@ -6,6 +6,7 @@
 
 * [#3915](https://github.com/bbatsov/rubocop/issues/3915): Make configurable whitelist for `Lint/SafeNavigationChain` cop. ([@pocke][])
 * [#3944](https://github.com/bbatsov/rubocop/issues/3944): Allow keyword arguments in `Style/RaiseArgs` cop. ([@mikegee][])
+* [#3951](https://github.com/bbatsov/rubocop/pull/3951): Make `Rails/Date` cop to register an offence for the string without zone. ([@sinsoku][])
 
 ### New features
 
