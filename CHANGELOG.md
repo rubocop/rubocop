@@ -2,16 +2,16 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#3893](https://github.com/bbatsov/rubocop/issues/3893): Add a new configuration, `IncludeActiveSupportAliases`, to `Performance/DoublStartEndWith`. This configuration will check for ActiveSupport's `starts_with?` and `ends_with?`. ([@rrosenblum][])
+
 ### Changes
 
 * [#3915](https://github.com/bbatsov/rubocop/issues/3915): Make configurable whitelist for `Lint/SafeNavigationChain` cop. ([@pocke][])
 * [#3944](https://github.com/bbatsov/rubocop/issues/3944): Allow keyword arguments in `Style/RaiseArgs` cop. ([@mikegee][])
 * Add auto-correct to `Performance/DoubleStartEndWith`. ([@rrosenblum][])
 * [#3951](https://github.com/bbatsov/rubocop/pull/3951): Make `Rails/Date` cop to register an offence for a string without timezone. ([@sinsoku][])
-
-### New features
-
-* [#3893](https://github.com/bbatsov/rubocop/issues/3893): Add a new configuration, `IncludeActiveSupportAliases`, to `Performance/DoublStartEndWith`. This configuration will check for ActiveSupport's `starts_with?` and `ends_with?`. ([@rrosenblum][])
 
 ### Bug fixes
 
