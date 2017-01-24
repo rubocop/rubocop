@@ -54,13 +54,13 @@ module RuboCop
         end
 
         def on_send(node)
-          receiver, method_name, *args = *node
+          receiver, method_name = *node
           return unless receiver && bad_methods.include?(method_name)
 
           chain = extract_method_chain(node)
           return if safe_chain?(chain)
 
-          return if method_name == :to_time && args.length == 1
+          return if method_name == :to_time && safe_to_time?(node)
 
           add_offense(node, :selector,
                       format(MSG_SEND,
@@ -107,6 +107,16 @@ module RuboCop
 
         def safe_chain?(chain)
           (chain & bad_methods).empty? || !(chain & good_methods).empty?
+        end
+
+        def safe_to_time?(node)
+          receiver, _method_name, *args = *node
+          if receiver.str_type?
+            zone_regexp = /[+-][\d:]+\z/
+            receiver.str_content.match(zone_regexp)
+          else
+            args.length == 1
+          end
         end
 
         def good_days

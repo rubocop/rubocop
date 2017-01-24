@@ -49,6 +49,20 @@ describe RuboCop::Cop::Rails::Date, :config do
       end
     end
 
+    context 'when a string literal with timezone' do
+      it 'does not register an offense' do
+        inspect_source(cop, '"2016-07-12 14:36:31 +0100".to_time(:utc)')
+        expect(cop.offenses).to be_empty
+      end
+    end
+
+    context 'when a string literal without timezone' do
+      it 'registers an offense' do
+        inspect_source(cop, '"2016-07-12 14:36:31".to_time(:utc)')
+        expect(cop.offenses.size).to eq(1)
+      end
+    end
+
     it 'does not blow up in the presence of a single constant to inspect' do
       inspect_source(cop, 'A')
       expect(cop.offenses).to be_empty
