@@ -39,6 +39,20 @@ module RuboCop
           add_offense_for_double_call(node, receiver, method, combined_args)
         end
 
+        def autocorrect(node)
+          _receiver, _method,
+          first_call_args, second_call_args = process_source(node)
+
+          combined_args = combine_args(first_call_args, second_call_args)
+          first_argument = first_call_args.first.loc.expression
+          last_argument = second_call_args.last.loc.expression
+          range = first_argument.join(last_argument)
+
+          lambda do |corrector|
+            corrector.replace(range, combined_args)
+          end
+        end
+
         private
 
         def process_source(node)
