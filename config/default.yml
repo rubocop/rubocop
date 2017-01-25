@@ -474,8 +474,12 @@ Style/Encoding:
   AutoCorrectEncodingComment: '# encoding: utf-8'
 
 Style/EndOfLine:
-  EnforcedStyle: lf
+  # The `native` style means that CR+LF (Carriage Return + Line Feed) is
+  # enforced on Windows, and LF is enforced on other platforms. The other styles
+  # mean LF and CR+LF, respectively.
+  EnforcedStyle: native
   SupportedStyles:
+    - native
     - lf
     - crlf
 
