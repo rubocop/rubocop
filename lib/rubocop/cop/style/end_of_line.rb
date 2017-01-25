@@ -36,7 +36,12 @@ module RuboCop
         end
 
         def offense_message(line)
-          case style
+          effective_style = if style == :native
+                              Platform.windows? ? :crlf : :lf
+                            else
+                              style
+                            end
+          case effective_style
           when :lf then MSG_DETECTED if line =~ /\r$/
           else MSG_MISSING if line !~ /\r$/
           end

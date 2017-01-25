@@ -104,6 +104,9 @@ describe RuboCop::CLI, :isolated_environment do
     it 'reports an offense' do
       create_file('example.rb', ["x = 0\r",
                                  "puts x\r"])
+      # Make Style/EndOfLine give same output regardless of platform.
+      create_file('.rubocop.yml', ['Style/EndOfLine:',
+                                   '  EnforcedStyle: lf'])
       result = cli.run(['--format', 'simple', 'example.rb'])
       expect(result).to eq(1)
       expect($stdout.string)

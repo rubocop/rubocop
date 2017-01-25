@@ -1244,6 +1244,10 @@ class Person
 end
 ```
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#separate-magic-comments-from-code](https://github.com/bbatsov/ruby-style-guide#separate-magic-comments-from-code)
+
 ## Style/EmptyLineBetweenDefs
 
 Enabled by default | Supports autocorrection
@@ -1540,6 +1544,14 @@ Enabled by default | Supports autocorrection
 Enabled | No
 
 This cop checks for Windows-style line endings in the source code.
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+EnforcedStyle | native
+SupportedStyles | native, lf, crlf
+
 
 ### References
 

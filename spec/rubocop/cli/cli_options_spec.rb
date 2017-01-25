@@ -1095,6 +1095,9 @@ describe RuboCop::CLI, :isolated_environment do
     it 'detects CR at end of line' do
       begin
         create_file('example.rb', "puts 'hello world'\r")
+        # Make Style/EndOfLine give same output regardless of platform.
+        create_file('.rubocop.yml', ['Style/EndOfLine:',
+                                     '  EnforcedStyle: lf'])
         File.open('example.rb') do |file|
           # We must use a File object to simulate the behavior of
           # STDIN, which is an IO object. StringIO won't do in this

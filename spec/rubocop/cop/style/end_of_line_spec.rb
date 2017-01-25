@@ -21,6 +21,21 @@ describe RuboCop::Cop::Style::EndOfLine, :config do
     end
   end
 
+  context 'when EnforcedStyle is native' do
+    let(:cop_config) { { 'EnforcedStyle' => 'native' } }
+    let(:messages) do
+      ['Carriage return character ' \
+        "#{RuboCop::Platform.windows? ? 'missing' : 'detected'}."]
+    end
+
+    it 'registers an offense for an incorrect EOL' do
+      inspect_source_file(cop, ['x=0', '', "y=1\r"])
+      expect(cop.messages).to eq(messages)
+      expect(cop.offenses.map(&:line))
+        .to eq([RuboCop::Platform.windows? ? 1 : 3])
+    end
+  end
+
   context 'when EnforcedStyle is crlf' do
     let(:cop_config) { { 'EnforcedStyle' => 'crlf' } }
     let(:messages) { ['Carriage return character missing.'] }

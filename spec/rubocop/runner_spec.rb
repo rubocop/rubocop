@@ -82,6 +82,12 @@ describe RuboCop::Runner, :isolated_environment do
     end
 
     context 'if -s/--stdin is used with an offense' do
+      before do
+        # Make Style/EndOfLine give same output regardless of platform.
+        create_file('.rubocop.yml', ['Style/EndOfLine:',
+                                     '  EnforcedStyle: lf'])
+      end
+
       let(:options) do
         {
           formatters: [['progress', formatter_output_path]],
