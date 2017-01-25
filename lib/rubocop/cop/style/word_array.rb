@@ -15,6 +15,10 @@ module RuboCop
         ARRAY_MSG = 'Use `[]` for an array of words.'.freeze
         QUESTION_MARK_SIZE = '?'.size
 
+        class << self
+          attr_accessor :largest_brackets
+        end
+
         def on_array(node)
           if bracketed_array_of?(:str, node)
             check_bracketed(node)
@@ -132,13 +136,13 @@ module RuboCop
         end
 
         def largest_brackets_size(style, ary_size)
-          @largest_brackets ||= -Float::INFINITY
+          self.class.largest_brackets ||= -Float::INFINITY
 
-          if style == :brackets && ary_size > @largest_brackets
-            @largest_brackets = ary_size
+          if style == :brackets && ary_size > self.class.largest_brackets
+            self.class.largest_brackets = ary_size
           end
 
-          @largest_brackets
+          self.class.largest_brackets
         end
 
         def smallest_percent_size(style, ary_size)
