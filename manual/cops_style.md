@@ -5138,7 +5138,7 @@ EnforcedStyle: require_no_parentheses (default)
 
 # bad
 foo = (bar?) ? a : b
-foo = (bar.baz) ? a : b
+foo = (bar.baz?) ? a : b
 foo = (bar && baz) ? a : b
 
 # good
@@ -5156,7 +5156,7 @@ foo = bar && baz ? a : b
 
 # good
 foo = (bar?) ? a : b
-foo = (bar.baz) ? a : b
+foo = (bar.baz?) ? a : b
 foo = (bar && baz) ? a : b
 ```
 ```ruby
@@ -5169,7 +5169,7 @@ foo = bar && baz ? a : b
 
 # good
 foo = bar? ? a : b
-foo = bar.baz ? a : b
+foo = bar.baz? ? a : b
 foo = (bar && baz) ? a : b
 ```
 
