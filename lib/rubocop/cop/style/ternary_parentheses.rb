@@ -13,7 +13,7 @@ module RuboCop
       #
       #   @bad
       #   foo = (bar?) ? a : b
-      #   foo = (bar.baz) ? a : b
+      #   foo = (bar.baz?) ? a : b
       #   foo = (bar && baz) ? a : b
       #
       #   @good
@@ -32,7 +32,7 @@ module RuboCop
       #
       #   @good
       #   foo = (bar?) ? a : b
-      #   foo = (bar.baz) ? a : b
+      #   foo = (bar.baz?) ? a : b
       #   foo = (bar && baz) ? a : b
       #
       # @example
@@ -46,7 +46,7 @@ module RuboCop
       #
       #   @good
       #   foo = bar? ? a : b
-      #   foo = bar.baz ? a : b
+      #   foo = bar.baz? ? a : b
       #   foo = (bar && baz) ? a : b
       class TernaryParentheses < Cop
         include SafeAssignment
