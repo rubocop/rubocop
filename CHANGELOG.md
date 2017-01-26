@@ -22,6 +22,7 @@
 * [#2643](https://github.com/bbatsov/rubocop/issues/2643): Allow uppercase and dashes in `MagicComment`. ([@mikegee][])
 * [#3959](https://github.com/bbatsov/rubocop/issues/3959): Don't wrap "percent arrays" with extra brackets when autocorrecting `Style/MutableConstant`. ([@mikegee][])
 * [#3978](https://github.com/bbatsov/rubocop/pull/3978): Fix false positive in `Performance/RegexpMatch` with `English` module. ([@pocke][])
+* [#3242](https://github.com/bbatsov/rubocop/issues/3242): Ignore `Errno::ENOENT` during cache cleanup from `File.mtime` too. ([@mikegee][])
 
 ## 0.47.1 (2017-01-18)
 
