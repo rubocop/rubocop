@@ -102,7 +102,7 @@ module RuboCop
             (send (const nil :Regexp) :last_match)
             (send (const nil :Regexp) :last_match _)
             ({back_ref nth_ref} _)
-            (gvar #dollar_tilde)
+            (gvar #match_gvar?)
           }
         PATTERN
 
@@ -190,8 +190,15 @@ module RuboCop
           end
         end
 
-        def dollar_tilde(sym)
-          sym == :$~
+        def match_gvar?(sym)
+          %i(
+            $~
+            $MATCH
+            $PREMATCH
+            $POSTMATCH
+            $LAST_PAREN_MATCH
+            $LAST_MATCH_INFO
+          ).include?(sym)
         end
 
         def correct_operator(corrector, recv, arg)
