@@ -48,7 +48,7 @@ module RuboCop
           return if t1.pos.line < t2.pos.line
           return if t2.type == :tCOMMENT # Also indicates there's a line break.
 
-          is_empty_braces = t1.text == '{' && t2.text == '}'
+          is_empty_braces = left_brace?(t1) && right_brace?(t2)
           expect_space    = expect_space?(t1, t2)
 
           if offense?(t1, t2, expect_space)
@@ -59,8 +59,8 @@ module RuboCop
         end
 
         def expect_space?(t1, t2)
-          is_same_braces  = t1.text == t2.text
-          is_empty_braces = t1.text == '{' && t2.text == '}'
+          is_same_braces  = t1.type == t2.type
+          is_empty_braces = left_brace?(t1) && right_brace?(t2)
 
           if is_same_braces && style == :compact
             false
