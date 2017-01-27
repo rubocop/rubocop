@@ -96,6 +96,7 @@ describe RuboCop::Cop::Performance::RegexpMatch, :config do
 
     %w(
       $& $' $` $~ $1 $2 $100
+      $MATCH
       Regexp.last_match Regexp.last_match(1)
     ).each do |var|
       include_examples :accepts, "#{name} in method with `#{var}`", <<-END
