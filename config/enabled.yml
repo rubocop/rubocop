@@ -426,6 +426,11 @@ Style/MethodMissing:
   StyleGuide: '#no-method-missing'
   Enabled: true
 
+Style/MixinGrouping:
+  Description: 'Checks for grouping of mixins in `class` and `module` bodies.'
+  StyleGuide: '#mixin-grouping'
+  Enabled: true
+
 Style/ModuleFunction:
   Description: 'Checks for usage of `extend self` in modules.'
   StyleGuide: '#module-function'
