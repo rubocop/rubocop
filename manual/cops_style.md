@@ -1284,6 +1284,33 @@ Enabled | Yes
 
 Access modifiers should be surrounded by blank lines.
 
+## Style/EmptyLinesAroundBeginBody
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cops checks if empty lines exist around the bodies of begin-end
+blocks.
+
+### Example
+
+```ruby
+# good
+
+begin
+  ...
+end
+
+# bad
+
+begin
+
+  ...
+
+end
+```
+
 ## Style/EmptyLinesAroundBlockBody
 
 Enabled by default | Supports autocorrection
