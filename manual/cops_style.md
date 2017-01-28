@@ -2765,6 +2765,54 @@ EnforcedStyle | both
 SupportedStyles | if, case, both
 
 
+## Style/MixinGrouping
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks for grouping of mixins in `class` and `module` bodies.
+By default it enforces mixins to be placed in separate declarations,
+but it can be configured to enforce grouping them in one declaration.
+
+### Example
+
+```ruby
+EnforcedStyle: separated (default)
+
+# bad
+class Foo
+  include Bar, Qox
+end
+
+# good
+class Foo
+  include Bar
+  include Qox
+end
+
+EnforcedStyle: grouped
+
+# bad
+class Foo
+  extend Bar
+  extend Qox
+end
+
+# good
+class Foo
+  extend Bar, Qox
+end
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+EnforcedStyle | separated
+SupportedStyles | separated, grouped
+
+
 ## Style/ModuleFunction
 
 Enabled by default | Supports autocorrection

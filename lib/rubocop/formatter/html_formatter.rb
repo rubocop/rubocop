@@ -61,7 +61,8 @@ module RuboCop
 
       # This class provides helper methods used in the ERB template.
       class ERBContext
-        include PathUtil, TextUtil
+        include PathUtil
+        include TextUtil
 
         SEVERITY_COLORS = {
           refactor:   Color.new(0xED, 0x9C, 0x28, 1.0),

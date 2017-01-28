@@ -308,6 +308,7 @@ In the following section you find all available cops:
 * [Style/MethodMissing](cops_style.md#stylemethodmissing)
 * [Style/MethodName](cops_style.md#stylemethodname)
 * [Style/MissingElse](cops_style.md#stylemissingelse)
+* [Style/MixinGrouping](cops_style.md#stylemixingrouping)
 * [Style/ModuleFunction](cops_style.md#stylemodulefunction)
 * [Style/MultilineArrayBraceLayout](cops_style.md#stylemultilinearraybracelayout)
 * [Style/MultilineAssignmentLayout](cops_style.md#stylemultilineassignmentlayout)

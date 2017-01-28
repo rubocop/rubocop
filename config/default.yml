@@ -728,6 +728,16 @@ Style/MethodName:
     - snake_case
     - camelCase
 
+# Checks the grouping of mixins (`include`, `extend`, `prepend`) in `class` and
+# `module` bodies.
+Style/MixinGrouping:
+  EnforcedStyle: separated
+  SupportedStyles:
+    # separated: each mixed in module goes in a separate statement.
+    # grouped: mixed in modules are grouped into a single statement.
+    - separated
+    - grouped
+
 Style/ModuleFunction:
   EnforcedStyle: module_function
   SupportedStyles:
