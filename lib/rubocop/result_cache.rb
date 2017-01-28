@@ -44,20 +44,20 @@ module RuboCop
           puts "Removing the #{remove_count} oldest files from #{cache_root}"
         end
         sorted = files.sort_by { |path| File.mtime(path) }
-        remove_files(sorted, dirs, remove_count, verbose)
+        remove_files(sorted, dirs, remove_count)
+      rescue Errno::ENOENT
+        # This can happen if parallel RuboCop invocations try to remove the
+        # same files. No problem.
+        puts $ERROR_INFO if verbose
       end
 
-      def remove_files(files, dirs, remove_count, verbose)
+      def remove_files(files, dirs, remove_count)
         # Batch file deletions, deleting over 130,000+ files will crash
         # File.delete.
         files[0, remove_count].each_slice(10_000).each do |files_slice|
           File.delete(*files_slice)
         end
         dirs.each { |dir| Dir.rmdir(dir) if Dir["#{dir}/*"].empty? }
-      rescue Errno::ENOENT
-        # This can happen if parallel RuboCop invocations try to remove the
-        # same files. No problem.
-        puts $ERROR_INFO if verbose
       end
     end
 
