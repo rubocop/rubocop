@@ -191,6 +191,7 @@ In the following section you find all available cops:
 * [Rails/OutputSafety](cops_rails.md#railsoutputsafety)
 * [Rails/PluralizationGrammar](cops_rails.md#railspluralizationgrammar)
 * [Rails/ReadWriteAttribute](cops_rails.md#railsreadwriteattribute)
+* [Rails/RelativeDateConstant](cops_rails.md#railsrelativedateconstant)
 * [Rails/RequestReferer](cops_rails.md#railsrequestreferer)
 * [Rails/ReversibleMigration](cops_rails.md#railsreversiblemigration)
 * [Rails/SafeNavigation](cops_rails.md#railssafenavigation)
