@@ -8,21 +8,21 @@ describe RuboCop::Cop::Style::EachForSimpleLoop do
   OFFENSE_MSG = 'Use `Integer#times` for a simple loop ' \
                 'which iterates a fixed number of times.'.freeze
 
-  it 'registers offense for exclusive end range' do
+  it 'registers offense for inclusive end range' do
     inspect_source(cop, '(0..10).each {}')
     expect(cop.offenses.size).to eq 1
     expect(cop.messages).to eq([OFFENSE_MSG])
     expect(cop.highlights).to eq(['(0..10).each'])
   end
 
-  it 'registers offense for inclusive end range' do
+  it 'registers offense for exclusive end range' do
     inspect_source(cop, '(0...10).each {}')
     expect(cop.offenses.size).to eq 1
     expect(cop.messages).to eq([OFFENSE_MSG])
     expect(cop.highlights).to eq(['(0...10).each'])
   end
 
-  it 'registers offense for inclusive end range with do ... end syntax' do
+  it 'registers offense for exclusive end range with do ... end syntax' do
     inspect_source(cop, ['(0...10).each do',
                          'end'])
     expect(cop.offenses.size).to eq 1
