@@ -6,8 +6,8 @@
 [![Inline docs](http://inch-ci.org/github/bbatsov/rubocop.svg)](http://inch-ci.org/github/bbatsov/rubocop)
 
 [![Gratipay Team](https://img.shields.io/gratipay/team/rubocop.svg?maxAge=2592000)](https://gratipay.com/rubocop/)
-[![OpenCollective](https://opencollective.com/rubocop/backers/badge.svg)](#backers)
-[![OpenCollective](https://opencollective.com/rubocop/sponsors/badge.svg)](#sponsors)
+[![OpenCollective](https://opencollective.com/rubocop/backers/badge.svg)](#open-collective-backers)
+[![OpenCollective](https://opencollective.com/rubocop/sponsors/badge.svg)](#open-collective-sponsors)
 
 
 <p align="center">
