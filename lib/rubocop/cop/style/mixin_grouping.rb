@@ -38,17 +38,31 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         MIXIN_METHODS = [:extend, :include, :prepend].freeze
+        PARENT_NODES_FOR_MIXIN_METHODS = [:class, :module].freeze
         MSG = 'Put `%s` mixins in %s.'.freeze
 
         def on_send(node)
-          _reciever, method_name, *_args = *node
+          _receiver, method_name, *_args = *node
 
           return unless MIXIN_METHODS.include?(method_name)
+          return unless called_in_module_or_class?(node)
 
           check(node)
         end
 
         private
+
+        def called_in_module_or_class?(node)
+          type = node.parent.type
+
+          if PARENT_NODES_FOR_MIXIN_METHODS.include?(type)
+            true
+          elsif type == :begin
+            called_in_module_or_class?(node.parent)
+          else
+            false
+          end
+        end
 
         def check(send_node)
           if separated_style?
@@ -65,7 +79,7 @@ module RuboCop
         end
 
         def check_separated_style(send_node)
-          _reciever, _method_name, *args = *send_node
+          _receiver, _method_name, *args = *send_node
 
           return if args.one?
 
