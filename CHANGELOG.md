@@ -18,6 +18,7 @@
 * Add new `Style/InverseMethods` cop. ([@rrosenblum][])
 * [#4038](https://github.com/bbatsov/rubocop/pull/4038): Allow `default` key in the `Style/PercentLiteralDelimiters` cop config to set all preferred delimiters. ([@kddeisz][])
 * Add `IgnoreMacros` option to `Style/MethodCallWithArgsParentheses`. ([@drenmi][])
+* [#3937](https://github.com/bbatsov/rubocop/issues/3937): Add new `Rails/ActiveSupportAliases` cop. ([@tdeo][])
 
 ### Changes
 

@@ -1503,6 +1503,13 @@ Rails/ActionFilter:
   Description: 'Enforces consistent use of action filter methods.'
   Enabled: true
 
+Rails/ActiveSupportAliases:
+  Description: >-
+                  Avoid ActiveSupport aliases of standard ruby methods:
+                  `String#starts_with?`, `String#ends_with?`,
+                  `Array#append`, `Array#prepend`.
+  Enabled: true
+
 Rails/Date:
   Description: >-
                   Checks the correct usage of date aware methods,
