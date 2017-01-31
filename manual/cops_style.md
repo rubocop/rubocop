@@ -2813,6 +2813,10 @@ EnforcedStyle | separated
 SupportedStyles | separated, grouped
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#mixin-grouping](https://github.com/bbatsov/ruby-style-guide#mixin-grouping)
+
 ## Style/ModuleFunction
 
 Enabled by default | Supports autocorrection
