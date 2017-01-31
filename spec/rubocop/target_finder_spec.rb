@@ -8,6 +8,7 @@ describe RuboCop::TargetFinder, :isolated_environment do
   subject(:target_finder) do
     described_class.new(config_store, options)
   end
+
   let(:config_store) { RuboCop::ConfigStore.new }
   let(:options) { { force_exclusion: force_exclusion, debug: debug } }
   let(:force_exclusion) { false }
@@ -62,11 +63,43 @@ describe RuboCop::TargetFinder, :isolated_environment do
       end
     end
 
-    context 'when a file is passed' do
+    context 'when a non-ruby file is passed' do
       let(:args) { ['dir2/file'] }
 
-      it 'picks the file' do
-        expect(found_basenames).to eq(['file'])
+      it "doesn't pick the file" do
+        expect(found_basenames).to be_empty
+      end
+    end
+
+    context 'when files with a ruby extension are passed' do
+      let(:args) { RuboCop::RUBY_EXTENSIONS.map { |ext| "dir2/file#{ext}" } }
+
+      it 'picks all the ruby files' do
+        expect(found_basenames).to eq(
+          RuboCop::RUBY_EXTENSIONS.map { |ext| "file#{ext}" }
+        )
+      end
+    end
+
+    context 'when a file with a ruby filename is passed' do
+      let(:args) { RuboCop::RUBY_FILENAMES.map { |name| "dir2/#{name}" } }
+
+      it 'picks all the ruby files' do
+        expect(found_basenames).to eq(RuboCop::RUBY_FILENAMES)
+      end
+    end
+
+    context 'when files with ruby interpreters are passed' do
+      let(:args) { RuboCop::RUBY_INTERPRETERS.map { |name| "dir2/#{name}" } }
+
+      before do
+        RuboCop::RUBY_INTERPRETERS.each do |interpreter|
+          create_file("dir2/#{interpreter}", "#!/usr/bin/#{interpreter}")
+        end
+      end
+
+      it 'picks all the ruby files' do
+        expect(found_basenames).to eq(RuboCop::RUBY_INTERPRETERS)
       end
     end
 
