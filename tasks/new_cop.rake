@@ -52,7 +52,7 @@ module RuboCop
         MSG = 'Message of #{badge.cop_name}'.freeze
 
         def_node_matcher :bad_method?, <<-PATTERN
-          (:send nil :bad_method ...)
+          (send nil :bad_method ...)
         PATTERN
 
         def on_send(node)
