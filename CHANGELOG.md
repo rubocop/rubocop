@@ -9,6 +9,7 @@
 * [#3800](https://github.com/bbatsov/rubocop/issues/3800): Make `Style/EndOfLine` configurable with `lf`, `crlf`, and `native` (default) styles. ([@jonas054][])
 * [#3936](https://github.com/bbatsov/rubocop/issues/3936): Add new `Style/MixinGrouping` cop. ([@drenmi][])
 * [#3984](https://github.com/bbatsov/rubocop/pull/3984): Add new `Style/EmptyLinesAroundBeginBody` cop. ([@pocke][])
+* [#3995](https://github.com/bbatsov/rubocop/pull/3995): Add new `Style/EmptyLinesAroundExceptionHandlingKeywords` cop. ([@pocke][])
 
 ### Changes
 

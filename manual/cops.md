@@ -262,6 +262,7 @@ In the following section you find all available cops:
 * [Style/EmptyLinesAroundBeginBody](cops_style.md#styleemptylinesaroundbeginbody)
 * [Style/EmptyLinesAroundBlockBody](cops_style.md#styleemptylinesaroundblockbody)
 * [Style/EmptyLinesAroundClassBody](cops_style.md#styleemptylinesaroundclassbody)
+* [Style/EmptyLinesAroundExceptionHandlingKeywords](cops_style.md#styleemptylinesaroundexceptionhandlingkeywords)
 * [Style/EmptyLinesAroundMethodBody](cops_style.md#styleemptylinesaroundmethodbody)
 * [Style/EmptyLinesAroundModuleBody](cops_style.md#styleemptylinesaroundmodulebody)
 * [Style/EmptyLiteral](cops_style.md#styleemptyliteral)
