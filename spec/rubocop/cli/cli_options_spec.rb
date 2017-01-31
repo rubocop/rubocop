@@ -23,6 +23,7 @@ describe RuboCop::CLI, :isolated_environment do
 
     context 'when there are some files' do
       before do
+        create_file('show.rabl2', 'object @user => :person')
         create_file('show.rabl', 'object @user => :person')
         create_file('app.rb', 'puts "hello world"')
         create_file('Gemfile', ['source "https://rubygems.org"',
@@ -34,7 +35,7 @@ describe RuboCop::CLI, :isolated_environment do
         it 'prints known ruby files' do
           cli.run ['-L']
           expect($stdout.string.split("\n")).to contain_exactly(
-            'app.rb', 'Gemfile', 'lib/helper.rb'
+            'app.rb', 'Gemfile', 'lib/helper.rb', 'show.rabl'
           )
         end
       end
@@ -45,13 +46,13 @@ describe RuboCop::CLI, :isolated_environment do
                                        '  Exclude:',
                                        '    - Gemfile',
                                        '  Include:',
-                                       '    - "**/*.rabl"'])
+                                       '    - "**/*.rabl2"'])
         end
 
         it 'prints the included files and not the excluded ones' do
           cli.run ['--list-target-files']
           expect($stdout.string.split("\n")).to contain_exactly(
-            'app.rb', 'lib/helper.rb', 'show.rabl'
+            'app.rb', 'lib/helper.rb', 'show.rabl', 'show.rabl2'
           )
         end
       end
@@ -999,19 +1000,34 @@ describe RuboCop::CLI, :isolated_environment do
   end
 
   describe '--force-exclusion' do
-    let(:target_file) { 'example.rb' }
+    context 'when explicitely excluded' do
+      let(:target_file) { 'example.rb' }
 
-    before do
-      create_file(target_file, '#' * 90)
+      before do
+        create_file(target_file, '#' * 90)
 
-      create_file('.rubocop.yml', ['AllCops:',
-                                   '  Exclude:',
-                                   "    - #{target_file}"])
+        create_file('.rubocop.yml', ['AllCops:',
+                                     '  Exclude:',
+                                     "    - #{target_file}"])
+      end
+
+      it 'excludes files specified in the configuration Exclude ' \
+         'even if they are explicitly passed as arguments' do
+        expect(cli.run(['--force-exclusion', target_file])).to eq(0)
+      end
     end
 
-    it 'excludes files specified in the configuration Exclude ' \
-       'even if they are explicitly passed as arguments' do
-      expect(cli.run(['--force-exclusion', target_file])).to eq(0)
+    context 'with already excluded by default' do
+      let(:target_file) { 'TODO.md' }
+
+      before do
+        create_file(target_file, '- one')
+      end
+
+      it 'excludes files excluded by default even if they are ' \
+         'explicitly passed as arguments' do
+        expect(cli.run(['--force-exclusion', target_file])).to eq(0)
+      end
     end
   end
 

@@ -3,6 +3,53 @@
 require 'set'
 
 module RuboCop
+  RUBY_EXTENSIONS = %w(.rb
+                       .builder
+                       .fcgi
+                       .gemspec
+                       .god
+                       .jbuilder
+                       .mspec
+                       .pluginspec
+                       .podspec
+                       .rabl
+                       .rake
+                       .rbuild
+                       .rbw
+                       .rbx
+                       .ru
+                       .ruby
+                       .spec
+                       .thor
+                       .watchr).freeze
+
+  RUBY_INTERPRETERS = %w(ruby
+                         macruby
+                         rake
+                         jruby
+                         rbx).freeze
+
+  RUBY_FILENAMES = %w(.irbrc
+                      .pryrc
+                      Appraisals
+                      Berksfile
+                      Brewfile
+                      Buildfile
+                      Dangerfile
+                      Deliverfile
+                      Fastfile
+                      Gemfile
+                      Guardfile
+                      Jarfile
+                      Mavenfile
+                      Podfile
+                      Puppetfile
+                      Rakefile
+                      Snapfile
+                      Thorfile
+                      Vagrantfile
+                      buildfile).freeze
+
   # This class finds target files to inspect by scanning the directory tree
   # and picking ruby files.
   class TargetFinder
@@ -73,10 +120,7 @@ module RuboCop
 
     def to_inspect?(file, hidden_files, base_dir_config)
       return false if base_dir_config.file_to_exclude?(file)
-      unless hidden_files.include?(file)
-        return true if File.extname(file) == '.rb'
-        return true if ruby_executable?(file)
-      end
+      return true if !hidden_files.include?(file) && ruby_file?(file)
       base_dir_config.file_to_include?(file)
     end
 
@@ -116,17 +160,31 @@ module RuboCop
       dir_tree_excludes.map { |pattern| pattern.sub(%r{/\*\*/\*$}, '') }
     end
 
+    def ruby_extension?(file)
+      RUBY_EXTENSIONS.include?(File.extname(file))
+    end
+
+    def ruby_filename?(file)
+      RUBY_FILENAMES.include?(File.basename(file))
+    end
+
     def ruby_executable?(file)
-      return false unless File.extname(file).empty?
+      return false unless File.extname(file).empty? && File.exist?(file)
       first_line = File.open(file, &:readline)
-      first_line =~ /#!.*ruby/
+      !(first_line =~ /#!.*(#{RUBY_INTERPRETERS.join('|')})/).nil?
     rescue EOFError, ArgumentError => e
       warn "Unprocessable file #{file}: #{e.class}, #{e.message}" if debug?
       false
     end
 
+    def ruby_file?(file)
+      ruby_extension?(file) || ruby_filename?(file) || ruby_executable?(file)
+    end
+
     def process_explicit_path(path)
       files = path.include?('*') ? Dir[path] : [path]
+
+      files.select! { |file| ruby_file?(file) }
 
       return files unless force_exclusion?
 
