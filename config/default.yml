@@ -701,6 +701,27 @@ Style/IndentHeredoc:
     - powerpack
     - unindent
 
+Style/InverseMethods:
+  Enabled: true
+  # `InverseMethods` are methods that can be inverted by a not (`not` or `!`)
+  # The relationship of inverse methods only needs to be defined in one direction.
+  # Keys and values both need to be defined as symbols.
+  InverseMethods:
+    :any?: :none?
+    :even?: :odd?
+    :==: :!=
+    :=~: :!~
+    :<: :>=
+    :>: :<=
+    # `ActiveSupport` defines some common inverse methods. They are listed below,
+    # and not enabled by default.
+    #:present?: :blank?,
+    #:include?: :exclude?
+  # `InverseBlocks` are methods that are inverted by inverting the return
+  # of the block that is passed to the method
+  InverseBlocks:
+    :select: :reject
+
 Style/Lambda:
   EnforcedStyle: line_count_dependent
   SupportedStyles:
