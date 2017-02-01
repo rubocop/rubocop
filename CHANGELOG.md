@@ -14,6 +14,7 @@
 * [#4019](https://github.com/bbatsov/rubocop/pull/4019): Make configurable `Style/MultilineMemoization` cop. ([@pocke][])
 * [#4018](https://github.com/bbatsov/rubocop/pull/4018): Add autocorrect `Lint/EmptyEnsure` cop. ([@pocke][])
 * [#4028](https://github.com/bbatsov/rubocop/pull/4028): Add new `Style/IndentHeredoc` cop. ([@pocke][])
+* Add new `Style/InverseMethods` cop. ([@rrosenblum][])
 
 ### Changes
 
