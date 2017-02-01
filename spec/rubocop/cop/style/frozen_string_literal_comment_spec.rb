@@ -41,7 +41,8 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
        'on the top line' do
       inspect_source(cop, 'puts 1')
 
-      expect(cop.messages).to eq(['Missing frozen string literal comment.'])
+      expect(cop.messages)
+        .to eq(['Missing magic comment `# frozen_string_literal: true`.'])
     end
 
     it 'registers an offense for not having a frozen string literal comment ' \
@@ -49,7 +50,8 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       inspect_source(cop, ['#!/usr/bin/env ruby',
                            'puts 1'])
 
-      expect(cop.messages).to eq(['Missing frozen string literal comment.'])
+      expect(cop.messages)
+        .to eq(['Missing magic comment `# frozen_string_literal: true`.'])
     end
 
     it 'accepts a frozen string literal below a shebang comment' do
@@ -73,7 +75,8 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       inspect_source(cop, ['# encoding: utf-8',
                            'puts 1'])
 
-      expect(cop.messages).to eq(['Missing frozen string literal comment.'])
+      expect(cop.messages)
+        .to eq(['Missing magic comment `# frozen_string_literal: true`.'])
     end
 
     it 'accepts a frozen string literal below an encoding comment' do
@@ -98,7 +101,8 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
                            '# encoding: utf-8',
                            'puts 1'])
 
-      expect(cop.messages).to eq(['Missing frozen string literal comment.'])
+      expect(cop.messages)
+        .to eq(['Missing magic comment `# frozen_string_literal: true`.'])
     end
 
     it 'accepts a frozen string literal comment below shebang and encoding ' \
@@ -326,28 +330,28 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
           inspect_source(cop, '"x".freeze')
 
           expect(cop.messages)
-            .to eq(['Missing frozen string literal comment.'])
+            .to eq(['Missing magic comment `# frozen_string_literal: true`.'])
         end
 
         it 'accepts calling << on a string' do
           inspect_source(cop, '"x" << "y"')
 
           expect(cop.messages)
-            .to eq(['Missing frozen string literal comment.'])
+            .to eq(['Missing magic comment `# frozen_string_literal: true`.'])
         end
 
         it 'accepts freezing a string with interpolation' do
           inspect_source(cop, '"#{foo}bar".freeze')
 
           expect(cop.messages)
-            .to eq(['Missing frozen string literal comment.'])
+            .to eq(['Missing magic comment `# frozen_string_literal: true`.'])
         end
 
         it 'accepts calling << on a string with interpolation' do
           inspect_source(cop, '"#{foo}bar" << "baz"')
 
           expect(cop.messages)
-            .to eq(['Missing frozen string literal comment.'])
+            .to eq(['Missing magic comment `# frozen_string_literal: true`.'])
         end
       end
     end
