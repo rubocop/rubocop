@@ -8,6 +8,7 @@
 * [#3889](https://github.com/bbatsov/rubocop/pull/3889): Add new `Style/EmptyLineAfterMagicComment` cop. ([@backus][])
 * [#3800](https://github.com/bbatsov/rubocop/issues/3800): Make `Style/EndOfLine` configurable with `lf`, `crlf`, and `native` (default) styles. ([@jonas054][])
 * [#3936](https://github.com/bbatsov/rubocop/issues/3936): Add new `Style/MixinGrouping` cop. ([@drenmi][])
+* [#4003](https://github.com/bbatsov/rubocop/issues/4003): Add new `Rails/RelativeDateConstant` cop. ([@sinsoku][])
 
 ### Changes
 
