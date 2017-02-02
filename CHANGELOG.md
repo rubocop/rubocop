@@ -27,6 +27,7 @@
 
 ### Bug fixes
 
+* [#4007](https://github.com/bbatsov/rubocop/pull/4007): Skip `Rails/SkipsModelValidations` for methods that don't accept arguments. ([@dorian][])
 * [#3923](https://github.com/bbatsov/rubocop/issues/3923): Allow asciibetical sorting in `Bundler/OrderedGems`. ([@mikegee][])
 * [#3855](https://github.com/bbatsov/rubocop/issues/3855): Make `Lint/NonLocalExitFromIterator` aware of method definitions. ([@drenmi][])
 * [#2643](https://github.com/bbatsov/rubocop/issues/2643): Allow uppercase and dashes in `MagicComment`. ([@mikegee][])
