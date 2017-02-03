@@ -33,6 +33,26 @@ describe RuboCop::AST::HashNode do
     end
   end
 
+  describe '#empty?' do
+    context 'with an empty hash' do
+      let(:source) { '{}' }
+
+      it { expect(hash_node).to be_empty }
+    end
+
+    context 'with a hash containing pairs' do
+      let(:source) { '{ a: 1, b: 2 }' }
+
+      it { expect(hash_node).to_not be_empty }
+    end
+
+    context 'with a hash containing a keyword splat' do
+      let(:source) { '{ **foo }' }
+
+      it { expect(hash_node).to_not be_empty }
+    end
+  end
+
   describe '#keys' do
     context 'with an empty hash' do
       let(:source) { '{}' }
