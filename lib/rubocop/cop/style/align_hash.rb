@@ -106,7 +106,7 @@ module RuboCop
         def on_send(node)
           return if double_splat?(node)
 
-          last_argument = node.children.last
+          last_argument = node.last_argument
 
           return unless last_argument.hash_type? &&
                         ignore_hash_argument?(last_argument)

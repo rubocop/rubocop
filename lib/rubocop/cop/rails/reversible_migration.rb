@@ -202,8 +202,7 @@ module RuboCop
         end
 
         def all_hash_key?(args, *keys)
-          return false unless args
-          return false unless args.hash_type?
+          return false unless args && args.hash_type?
 
           hash_keys = args.to_a.map do |arg|
             arg.to_a.first.children.first.to_sym

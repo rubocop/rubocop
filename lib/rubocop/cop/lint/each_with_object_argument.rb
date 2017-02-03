@@ -28,7 +28,9 @@ module RuboCop
 
         def on_send(node)
           each_with_object?(node) do |arg|
-            add_offense(node, :expression) if arg.immutable_literal?
+            return unless arg.immutable_literal?
+
+            add_offense(node, :expression)
           end
         end
       end

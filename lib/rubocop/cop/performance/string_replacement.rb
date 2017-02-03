@@ -27,22 +27,22 @@ module RuboCop
         SINGLE_QUOTE = "'".freeze
 
         def_node_matcher :string_replacement?, <<-PATTERN
-          (send _ ${:gsub :gsub!}
+          (send _ {:gsub :gsub!}
                     ${regexp str (send (const nil :Regexp) {:new :compile} _)}
                     $str)
         PATTERN
 
         def on_send(node)
-          string_replacement?(node) do |method, first_param, second_param|
+          string_replacement?(node) do |first_param, second_param|
             return if accept_second_param?(second_param)
             return if accept_first_param?(first_param)
 
-            offense(node, method, first_param, second_param)
+            offense(node, first_param, second_param)
           end
         end
 
         def autocorrect(node)
-          _string, method, first_param, second_param = *node
+          _string, _method, first_param, second_param = *node
           first_source, = first_source(first_param)
           second_source, = *second_param
 
@@ -51,7 +51,7 @@ module RuboCop
           end
 
           replacement_method =
-            replacement_method(method, first_source, second_source)
+            replacement_method(node, first_source, second_source)
 
           replace_method(node, first_source, second_source, first_param,
                          replacement_method)
@@ -93,13 +93,13 @@ module RuboCop
           first_source.length != 1
         end
 
-        def offense(node, method, first_param, second_param)
+        def offense(node, first_param, second_param)
           first_source, = first_source(first_param)
           unless first_param.str_type?
             first_source = interpret_string_escapes(first_source)
           end
           second_source, = *second_param
-          message = message(method, first_source, second_source)
+          message = message(node, first_source, second_source)
 
           add_offense(node, range(node), message)
         end
@@ -137,26 +137,21 @@ module RuboCop
           range_between(node.loc.selector.begin_pos, node.source_range.end_pos)
         end
 
-        def replacement_method(method, first_source, second_source)
+        def replacement_method(node, first_source, second_source)
           replacement = if second_source.empty? && first_source.length == 1
                           DELETE
                         else
                           TR
                         end
 
-          "#{replacement}#{BANG if bang_method?(method)}"
+          "#{replacement}#{BANG if node.bang_method?}"
         end
 
-        def message(method, first_source, second_source)
-          replacement_method = replacement_method(method,
-                                                  first_source,
-                                                  second_source)
+        def message(node, first_source, second_source)
+          replacement_method =
+            replacement_method(node, first_source, second_source)
 
-          format(MSG, replacement_method, method)
-        end
-
-        def bang_method?(method)
-          method.to_s.end_with?(BANG)
+          format(MSG, replacement_method, node.method_name)
         end
 
         def method_suffix(node)

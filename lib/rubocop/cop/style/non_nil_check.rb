@@ -46,13 +46,13 @@ module RuboCop
 
         def unless_and_nil_check?(send_node)
           parent = send_node.parent
+
           nil_check?(send_node) && unless_check?(parent) && !parent.ternary? &&
             parent.unless?
         end
 
         def message(node)
-          _receiver, method, _args = *node
-          if method == :!=
+          if node.method?(:!=)
             'Prefer `!expression.nil?` over `expression != nil`.'
           else
             'Explicit non-nil checks are usually redundant.'
@@ -75,15 +75,13 @@ module RuboCop
         end
 
         def autocorrect(node)
-          receiver, method, _args = *node
-
-          case method
+          case node.method_name
           when :!=
             autocorrect_comparison(node)
           when :!
-            autocorrect_non_nil(node, receiver)
+            autocorrect_non_nil(node, node.receiver)
           when :nil?
-            autocorrect_unless_nil(node, receiver)
+            autocorrect_unless_nil(node, node.receiver)
           end
         end
 
@@ -103,9 +101,8 @@ module RuboCop
 
         def autocorrect_non_nil(node, inner_node)
           lambda do |corrector|
-            receiver, _method, _args = *inner_node
-            if receiver
-              corrector.replace(node.source_range, receiver.source)
+            if inner_node.receiver
+              corrector.replace(node.source_range, inner_node.receiver.source)
             else
               corrector.replace(node.source_range, 'self')
             end

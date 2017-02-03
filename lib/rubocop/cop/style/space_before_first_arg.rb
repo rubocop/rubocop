@@ -22,13 +22,14 @@ module RuboCop
               'the first argument.'.freeze
 
         def on_send(node)
-          return unless regular_method_call_with_params?(node)
+          return unless regular_method_call_with_arguments?(node)
           return unless expect_params_after_method_name?(node)
 
-          _receiver, _method_name, *args = *node
-          arg1 = args.first.source_range
-          arg1_with_space = range_with_surrounding_space(arg1, :left)
-          space = range_between(arg1_with_space.begin_pos, arg1.begin_pos)
+          first_arg = node.first_argument.source_range
+          first_arg_with_space = range_with_surrounding_space(first_arg, :left)
+          space = range_between(first_arg_with_space.begin_pos,
+                                first_arg.begin_pos)
+
           add_offense(space, space) if space.length > 1
         end
 
@@ -38,20 +39,18 @@ module RuboCop
 
         private
 
-        def regular_method_call_with_params?(node)
-          _receiver, method_name, *args = *node
-
-          !(args.empty? || operator?(method_name) || node.asgn_method_call?)
+        def regular_method_call_with_arguments?(node)
+          node.arguments? && !node.operator_method? && !node.setter_method?
         end
 
         def expect_params_after_method_name?(node)
-          return false if parentheses?(node)
+          return false if node.parenthesized?
 
-          _receiver, _method_name, *args = *node
-          arg1 = args.first.source_range
+          first_arg = node.first_argument
 
-          arg1.line == node.loc.line &&
-            !(allow_for_alignment? && aligned_with_something?(arg1))
+          same_line?(first_arg, node) &&
+            !(allow_for_alignment? &&
+              aligned_with_something?(first_arg.source_range))
         end
       end
     end

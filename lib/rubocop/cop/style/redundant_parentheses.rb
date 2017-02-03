@@ -191,8 +191,7 @@ module RuboCop
         def call_chain_starts_with_int?(begin_node, send_node)
           recv = first_part_of_call_chain(send_node)
           recv && recv.int_type? && (parent = begin_node.parent) &&
-            parent.send_type? &&
-            (parent.method_name == :-@ || parent.method_name == :+@)
+            parent.send_type? && (parent.method?(:-@) || parent.method?(:+@))
         end
       end
     end

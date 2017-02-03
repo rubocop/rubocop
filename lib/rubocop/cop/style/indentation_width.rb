@@ -69,16 +69,15 @@ module RuboCop
         def on_send(node)
           super
           return unless modifier_and_def_on_same_line?(node)
-          _, _, *args = *node
 
-          *_, body = *args.first
+          *_, body = *node.first_argument
 
           def_end_config = config.for_cop('Lint/DefEndAlignment')
           style = def_end_config['EnforcedStyleAlignWith'] || 'start_of_line'
-          base = style == 'def' ? args.first : node
+          base = style == 'def' ? node.first_argument : node
 
           check_indentation(base.source_range, body)
-          ignore_node(args.first)
+          ignore_node(node.first_argument)
         end
 
         def on_method_def(node, _method_name, _args, body)

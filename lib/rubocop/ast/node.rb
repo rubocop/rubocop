@@ -398,6 +398,10 @@ module RuboCop
         SPECIAL_KEYWORDS.include?(source)
       end
 
+      def operator_keyword?
+        OPERATOR_KEYWORDS.include?(type)
+      end
+
       def keyword_not?
         _receiver, method_name, *args = *self
         args.empty? && method_name == :! && loc.selector.is?('not'.freeze)
@@ -439,8 +443,7 @@ module RuboCop
         [{(send nil {:raise :fail} ...) return break next} single_line?]
       PATTERN
 
-      def_matcher :command?, '(send nil %1 ...)'
-      def_matcher :lambda?,  '(block (send nil :lambda) ...)'
+      def_matcher :lambda?, '(block (send nil :lambda) ...)'
       def_matcher :proc?, <<-PATTERN
         {(block (send nil :proc) ...)
          (block (send (const nil :Proc) :new) ...)

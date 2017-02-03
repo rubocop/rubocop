@@ -8,7 +8,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         def on_send(node)
-          return unless node.loc.dot
+          return unless node.dot?
 
           if proper_dot_position?(node)
             correct_style_detected
@@ -30,9 +30,7 @@ module RuboCop
         end
 
         def proper_dot_position?(node)
-          receiver, _method_name, *_args = *node
-
-          receiver_line = receiver.source_range.end.line
+          receiver_line = node.receiver.source_range.end.line
           selector_line = selector_range(node).line
 
           # receiver and selector are on the same line
@@ -61,15 +59,13 @@ module RuboCop
         end
 
         def autocorrect(node)
-          receiver, _method_name, *_args = *node
-
           lambda do |corrector|
             corrector.remove(node.loc.dot)
             case style
             when :leading
               corrector.insert_before(selector_range(node), '.')
             when :trailing
-              corrector.insert_after(receiver.source_range, '.')
+              corrector.insert_after(node.receiver.source_range, '.')
             end
           end
         end

@@ -88,22 +88,18 @@ module RuboCop
           @local_variables_scopes[node] << lhs
         end
 
-        # Detect offenses
-
         def on_send(node)
-          receiver, method_name, *_args = *node
-          return unless receiver && receiver.self_type?
-          return unless regular_method_call?(node)
+          return unless node.self_receiver? && regular_method_call?(node)
 
           return if @allowed_send_nodes.include?(node) ||
-                    @local_variables_scopes[node].include?(method_name)
+                    @local_variables_scopes[node].include?(node.method_name)
+
           add_offense(node, :expression)
         end
 
         def autocorrect(node)
-          receiver, _method_name, *_args = *node
           lambda do |corrector|
-            corrector.remove(receiver.source_range)
+            corrector.remove(node.receiver.source_range)
             corrector.remove(node.loc.dot)
           end
         end
@@ -118,13 +114,11 @@ module RuboCop
         end
 
         def regular_method_call?(node)
-          _receiver, method_name, *_args = *node
-
-          !(operator?(method_name) ||
-            keyword?(method_name) ||
-            constant_name?(method_name) ||
-            node.asgn_method_call? ||
-            braces_style_call?(node))
+          !(operator?(node.method_name) ||
+            keyword?(node.method_name) ||
+            node.camel_case_method? ||
+            node.setter_method? ||
+            node.implicit_call?)
         end
 
         def on_argument(node)
@@ -140,20 +134,8 @@ module RuboCop
            :yield].include?(method_name)
         end
 
-        def constant_name?(method_name)
-          method_name.match(/^[A-Z]/)
-        end
-
-        def braces_style_call?(node)
-          node.loc.selector.nil?
-        end
-
         def allow_self(node)
-          return unless node.send_type?
-
-          receiver, _method_name, *_args = *node
-
-          return unless receiver && receiver.self_type?
+          return unless node.send_type? && node.self_receiver?
 
           @allowed_send_nodes << node
         end

@@ -30,21 +30,19 @@ module RuboCop
               'precedence.'.freeze
 
         def on_send(node)
-          _receiver, method_name, *args = *node
+          return if !node.arguments? || node.parenthesized?
 
-          return if parentheses?(node) || args.empty?
-
-          if args.first.if_type? && args.first.ternary?
-            check_ternary(args.first, node)
-          elsif method_name.to_s.end_with?('?')
-            check_predicate(args.last, node)
+          if node.first_argument.if_type? && node.first_argument.ternary?
+            check_ternary(node.first_argument, node)
+          elsif node.predicate_method?
+            check_predicate(node.last_argument, node)
           end
         end
 
         private
 
         def check_ternary(ternary, node)
-          return unless offense?(ternary.condition)
+          return unless ternary.condition.operator_keyword?
 
           range = range_between(node.source_range.begin_pos,
                                 ternary.condition.source_range.end_pos)
@@ -53,13 +51,9 @@ module RuboCop
         end
 
         def check_predicate(predicate, node)
-          return unless offense?(predicate)
+          return unless predicate.operator_keyword?
 
           add_offense(node, :expression)
-        end
-
-        def offense?(node)
-          [:and, :or].include?(node.type)
         end
       end
     end

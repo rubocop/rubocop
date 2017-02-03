@@ -23,23 +23,17 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         def on_send(node)
-          _receiver, method_name, *args = *node
-          return if args.empty?
-          return if operator?(method_name)
+          return if !node.arguments? || node.operator_method?
 
-          base_indentation = if special_inner_call_indentation?(node)
-                               column_of(base_range(node, args.first))
-                             else
-                               previous_code_line(args.first.loc.line) =~ /\S/
-                             end
-          check_alignment([args.first],
-                          base_indentation + configured_indentation_width)
+          indent = base_indentation(node) + configured_indentation_width
+
+          check_alignment([node.first_argument], indent)
         end
 
         private
 
         def message(arg_node)
-          return 'Bad indentation of the first parameter.' if arg_node.nil?
+          return 'Bad indentation of the first parameter.' unless arg_node
 
           send_node = arg_node.parent
           text = base_range(send_node, arg_node).source.strip
@@ -53,18 +47,22 @@ module RuboCop
           format('Indent the first parameter one step more than %s.', base)
         end
 
+        def base_indentation(node)
+          if special_inner_call_indentation?(node)
+            column_of(base_range(node, node.first_argument))
+          else
+            previous_code_line(node.first_argument.loc.line) =~ /\S/
+          end
+        end
+
         def special_inner_call_indentation?(node)
           return false if style == :consistent
 
           parent = node.parent
-          return false unless parent
-          return false unless parent.send_type?
 
-          _receiver, method_name, *_args = *parent
-          # :[]= is a send node, but we want to treat it as an assignment.
-          return false if method_name == :[]=
-
-          return false if !parentheses?(parent) &&
+          return false unless parent && parent.send_type? &&
+                              !parent.method?(:[]=)
+          return false if !parent.parenthesized? &&
                           style == :special_for_inner_method_call_in_parentheses
 
           # The node must begin inside the parent, otherwise node is the first

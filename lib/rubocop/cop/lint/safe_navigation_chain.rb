@@ -40,12 +40,14 @@ module RuboCop
             return if nil_methods.include?(method)
 
             loc = node.loc.dot || :selector
+
             add_offense(node, loc)
           end
         end
 
         def autocorrect(node)
           dot = node.loc.dot
+
           return unless dot
 
           lambda do |corrector|

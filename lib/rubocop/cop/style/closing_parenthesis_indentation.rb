@@ -34,8 +34,7 @@ module RuboCop
         MSG_ALIGN = 'Align `)` with `(`.'.freeze
 
         def on_send(node)
-          _receiver, _method_name, *args = *node
-          check(node, args)
+          check(node, node.arguments)
         end
 
         def on_begin(node)
@@ -50,15 +49,17 @@ module RuboCop
 
         def check(node, elements)
           right_paren = node.loc.end
-          return unless right_paren
-          return unless begins_its_line?(right_paren)
+
+          return unless right_paren && begins_its_line?(right_paren)
 
           correct_column = expected_column(node, elements)
           @column_delta = correct_column - right_paren.column
+
           return if @column_delta.zero?
 
           left_paren = node.loc.begin
           msg = correct_column == left_paren.column ? MSG_ALIGN : MSG_INDENT
+
           add_offense(right_paren, right_paren, msg)
         end
 

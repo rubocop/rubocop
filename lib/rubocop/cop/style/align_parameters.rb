@@ -16,23 +16,23 @@ module RuboCop
           'following the first line of a multi-line method %s.'.freeze
 
         def on_send(node)
-          _receiver, method, *args = *node
+          return if node.arguments.size < 2 || node.method?(:[]=)
 
-          return if method == :[]=
-          return if args.size < 2
-
-          check_alignment(args, base_column(node, args))
+          check_alignment(node.arguments, base_column(node, node.arguments))
         end
 
         def on_method_def(node, _method_name, args, _body)
           args = args.children
+
           return if args.size < 2
+
           check_alignment(args, base_column(node, args))
         end
 
         def message(node)
           type = node && node.parent.send_type? ? 'call' : 'definition'
           msg = fixed_indentation? ? FIXED_INDENT_MSG : ALIGN_PARAMS_MSG
+
           format(msg, type)
         end
 

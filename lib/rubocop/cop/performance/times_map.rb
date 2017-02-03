@@ -45,11 +45,11 @@ module RuboCop
         def autocorrect(node)
           send_node = node.send_type? ? node : node.each_descendant(:send).first
 
-          receiver, _method_name, *args = *send_node
-          count, = *receiver
+          count, = *send_node.receiver
 
-          replacement = "Array.new(#{count.source}" \
-                        "#{args.map { |arg| ", #{arg.source}" }.join})"
+          replacement =
+            "Array.new(#{count.source}" \
+            "#{send_node.arguments.map { |arg| ", #{arg.source}" }.join})"
 
           lambda do |corrector|
             corrector.replace(send_node.loc.expression, replacement)

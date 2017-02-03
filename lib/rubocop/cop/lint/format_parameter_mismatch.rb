@@ -33,7 +33,9 @@ module RuboCop
         NAMED_INTERPOLATION = /%(?:<\w+>|\{\w+\})/
 
         def on_send(node)
-          add_offense(node, :selector) if offending_node?(node)
+          return unless offending_node?(node)
+
+          add_offense(node, :selector)
         end
 
         private
@@ -41,7 +43,7 @@ module RuboCop
         def offending_node?(node)
           return false unless called_on_string?(node)
           return false unless method_with_format_args?(node)
-          return false if named_mode?(node) || node_with_splat_args?(node)
+          return false if named_mode?(node) || splat_args?(node)
 
           num_of_format_args, num_of_expected_fields = count_matches(node)
 
@@ -82,18 +84,14 @@ module RuboCop
           !relevant_node.source.scan(NAMED_FIELD_REGEX).empty?
         end
 
-        def node_with_splat_args?(node)
+        def splat_args?(node)
           return false if percent?(node)
 
-          _receiver_node, _method_name, *args = *node
-
-          args.butfirst.any?(&:splat_type?)
+          node.arguments.butfirst.any?(&:splat_type?)
         end
 
         def heredoc?(node)
-          _receiver, _name, args = *node
-
-          args.source[0, 2] == SHOVEL
+          node.first_argument.source[0, 2] == SHOVEL
         end
 
         def count_matches(node)
@@ -154,13 +152,13 @@ module RuboCop
         end
 
         def percent?(node)
-          receiver_node, method_name, *arg_nodes = *node
+          receiver = node.receiver
 
-          percent = method_name == :% &&
-                    (STRING_TYPES.include?(receiver_node.type) ||
-                     arg_nodes[0].array_type?)
+          percent = node.method_name == :% &&
+                    (STRING_TYPES.include?(receiver.type) ||
+                     node.first_argument.array_type?)
 
-          if percent && STRING_TYPES.include?(receiver_node.type)
+          if percent && STRING_TYPES.include?(receiver.type)
             return false if heredoc?(node)
           end
 
@@ -168,10 +166,14 @@ module RuboCop
         end
 
         def message(node)
-          _receiver, method_name, *_args = *node
           num_args_for_format, num_expected_fields = count_matches(node)
 
-          method_name = 'String#%' if PERCENT == method_name.to_s
+          method_name = if node.method_name.to_s == PERCENT
+                          'String#%'
+                        else
+                          node.method_name
+                        end
+
           format(MSG, num_args_for_format, method_name, num_expected_fields)
         end
       end

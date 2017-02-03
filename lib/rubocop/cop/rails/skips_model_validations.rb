@@ -26,19 +26,19 @@ module RuboCop
         MSG = 'Avoid using `%s` because it skips validations.'.freeze
 
         def on_send(node)
-          _receiver, method_name = *node
+          return unless blacklist.include?(node.method_name.to_s)
 
-          return unless blacklist.include?(method_name.to_s)
-
-          add_offense(node,
-                      node.loc.selector,
-                      format(MSG, method_name))
+          add_offense(node, :selector)
         end
 
         private
 
+        def message(node)
+          format(MSG, node.method_name)
+        end
+
         def blacklist
-          cop_config['Blacklist']
+          cop_config['Blacklist'] || []
         end
       end
     end

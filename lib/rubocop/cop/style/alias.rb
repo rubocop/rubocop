@@ -15,7 +15,7 @@ module RuboCop
         MSG_SYMBOL_ARGS  = 'Use `alias %s` instead of `alias %s`.'.freeze
 
         def on_send(node)
-          return unless node.method_name == :alias_method && node.receiver.nil?
+          return unless node.command?(:alias_method)
           return if style == :prefer_alias_method
           return if scope_type(node) == :dynamic
 
@@ -86,14 +86,14 @@ module RuboCop
         end
 
         def bareword?(sym_node)
-          sym_node.source[0] != ':'
+          !sym_node.source.start_with?(':')
         end
 
-        def correct_alias_method_to_alias(node)
+        def correct_alias_method_to_alias(send_node)
           lambda do |corrector|
-            new, old = *node.method_args
+            new, old = *send_node.arguments
             replacement = "alias #{new.children.first} #{old.children.first}"
-            corrector.replace(node.source_range, replacement)
+            corrector.replace(send_node.source_range, replacement)
           end
         end
 

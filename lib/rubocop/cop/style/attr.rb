@@ -5,16 +5,19 @@ module RuboCop
     module Style
       # This cop checks for uses of Module#attr.
       class Attr < Cop
-        def on_send(node)
-          return unless node.command?(:attr)
-          _receiver, _method_name, *args = *node
-          msg = "Do not use `attr`. Use `#{replacement_method(node)}` instead."
+        MSG = 'Do not use `attr`. Use `%s` instead.'.freeze
 
-          add_offense(node, :selector, msg) if args.any?
+        def on_send(node)
+          return unless node.command?(:attr) && node.arguments?
+
+          add_offense(node, :selector)
         end
 
+        private
+
         def autocorrect(node)
-          _receiver, _method_name, attr_name, setter = *node
+          attr_name, setter = *node.arguments
+
           node_expr = node.source_range
           attr_expr = attr_name.source_range
 
@@ -24,14 +27,17 @@ module RuboCop
 
           lambda do |corrector|
             corrector.replace(node.loc.selector, replacement_method(node))
-            corrector.replace(remove, '') if remove
+            corrector.remove(remove) if remove
           end
         end
 
-        private
+        def message(node)
+          format(MSG, replacement_method(node))
+        end
 
         def replacement_method(node)
-          _receiver, _method_name, _attr_name, setter = *node
+          setter = node.last_argument
+
           if setter && (setter.true_type? || setter.false_type?)
             setter.true_type? ? 'attr_accessor' : 'attr_reader'
           else

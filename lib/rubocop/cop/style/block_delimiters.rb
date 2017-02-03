@@ -9,11 +9,10 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         def on_send(node)
-          _receiver, method_name, *args = *node
-          return if args.empty?
-          return if parentheses?(node) || operator?(method_name)
+          return unless node.arguments?
+          return if node.parenthesized? || node.operator_method?
 
-          args.each do |arg|
+          node.arguments.each do |arg|
             get_blocks(arg) do |block|
               # If there are no parentheses around the arguments, then braces
               # and do-end have different meaning due to how they bind, so we
@@ -116,16 +115,15 @@ module RuboCop
           when :block
             yield node
           when :send
-            receiver, _method_name, *_args = *node
-            get_blocks(receiver, &block) if receiver
+            get_blocks(node.receiver, &block) if node.receiver
           when :hash
             # A hash which is passed as method argument may have no braces
             # In that case, one of the K/V pairs could contain a block node
             # which could change in meaning if do...end replaced {...}
             return if node.loc.begin
-            node.children.each { |child| get_blocks(child, &block) }
+            node.each_child_node { |child| get_blocks(child, &block) }
           when :pair
-            node.children.each { |child| get_blocks(child, &block) }
+            node.each_child_node { |child| get_blocks(child, &block) }
           end
           nil
         end
@@ -146,6 +144,7 @@ module RuboCop
 
         def semantic_block_style?(node)
           method_name = node.method_name
+
           return true if ignored_method?(method_name)
 
           block_begin = node.loc.begin.source
@@ -169,7 +168,7 @@ module RuboCop
         end
 
         def return_value_chaining?(node)
-          node.parent && node.parent.send_type? && node.parent.loc.dot
+          node.parent && node.parent.send_type? && node.parent.dot?
         end
 
         def correction_would_break_code?(node)
@@ -178,8 +177,8 @@ module RuboCop
           # Converting `obj.method arg do |x| end` to use `{}` would cause
           # a syntax error.
           send = node.children.first
-          _receiver, _method_name, *args = *send
-          !args.empty? && !parentheses?(send)
+
+          send.arguments? && !send.parenthesized?
         end
 
         def ignored_method?(method_name)
