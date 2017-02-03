@@ -48,7 +48,7 @@ module RuboCop
         # of the last argument.
         def braces_will_be_removed?(args)
           brace_config = config.for_cop('Style/BracesAroundHashParameters')
-          return false unless brace_config['Enabled']
+          return false unless brace_config.fetch('Enabled')
           return false if brace_config['AutoCorrect'] == false
 
           brace_style = brace_config['EnforcedStyle']

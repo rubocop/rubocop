@@ -75,7 +75,7 @@ module RuboCop
         end
 
         def unless_else_cop_enabled?
-          unless_else_config['Enabled'] if unless_else_config
+          unless_else_config.fetch('Enabled')
         end
 
         def unless_else_config
@@ -83,11 +83,12 @@ module RuboCop
         end
 
         def empty_else_cop_enabled?
-          empty_else_config['Enabled'] if empty_else_config
+          empty_else_config.fetch('Enabled')
         end
 
         def empty_else_style
-          empty_else_config['EnforcedStyle'].to_sym if empty_else_config
+          return unless empty_else_config.key?('EnforcedStyle')
+          empty_else_config['EnforcedStyle'].to_sym
         end
 
         def empty_else_config

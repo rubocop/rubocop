@@ -5,6 +5,10 @@ describe RuboCop::CLI, :isolated_environment do
 
   subject(:cli) { described_class.new }
 
+  before(:each) do
+    RuboCop::ConfigLoader.default_configuration = nil
+  end
+
   it 'does not correct ExtraSpacing in a hash that would be changed back' do
     create_file('.rubocop.yml', ['Style/AlignHash:',
                                  '  EnforcedColonStyle: table'])

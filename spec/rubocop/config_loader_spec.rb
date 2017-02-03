@@ -118,7 +118,8 @@ describe RuboCop::ConfigLoader do
       end
 
       it 'disables cops by default' do
-        expect(configuration_from_file['Style/Alias']['Enabled']).to be(false)
+        cop_options = configuration_from_file['Style/Alias']
+        expect(cop_options.fetch('Enabled')).to be(false)
       end
     end
 
@@ -478,6 +479,58 @@ describe RuboCop::ConfigLoader do
 
       it 'fails to load the resulting path' do
         expect { configuration_from_file }.to raise_error(Errno::ENOENT)
+      end
+    end
+
+    context 'EnabledByDefault / DisabledByDefault' do
+      def cop_enabled?(cop_class)
+        configuration_from_file.for_cop(cop_class).fetch('Enabled')
+      end
+
+      let(:file_path) { '.rubocop.yml' }
+
+      before do
+        create_file(file_path, config)
+      end
+
+      context 'when DisabledByDefault is true' do
+        let(:config) do
+          ['AllCops:',
+           '  DisabledByDefault: true',
+           'Style/Copyright:',
+           '  Exclude:',
+           '  - foo']
+        end
+
+        it 'enables cops that are explicitly in the config file '\
+          'even if they are disabled by default' do
+          cop_class = RuboCop::Cop::Style::Copyright
+          expect(cop_enabled?(cop_class)).to be true
+        end
+
+        it 'disables cops that are normally enabled by default' do
+          cop_class = RuboCop::Cop::Style::TrailingWhitespace
+          expect(cop_enabled?(cop_class)).to be false
+        end
+      end
+
+      context 'when EnabledByDefault is true' do
+        let(:config) do
+          ['AllCops:',
+           '  EnabledByDefault: true',
+           'Style/TrailingWhitespace:',
+           '  Enabled: false']
+        end
+
+        it 'enables cops that are disabled by default' do
+          cop_class = RuboCop::Cop::Style::FirstMethodArgumentLineBreak
+          expect(cop_enabled?(cop_class)).to be true
+        end
+
+        it 'respects cops that are disbled in the config' do
+          cop_class = RuboCop::Cop::Style::TrailingWhitespace
+          expect(cop_enabled?(cop_class)).to be false
+        end
       end
     end
   end

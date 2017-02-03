@@ -5,6 +5,10 @@ describe RuboCop::CLI, :isolated_environment do
 
   subject(:cli) { described_class.new }
 
+  before(:each) do
+    RuboCop::ConfigLoader.default_configuration = nil
+  end
+
   describe '--list-target-files' do
     context 'when there are no files' do
       it 'prints nothing with -L' do

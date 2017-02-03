@@ -51,6 +51,8 @@ shared_context 'config', :config do
                        .merge(cop_config)
     end
 
+    hash = other_cops.merge hash if respond_to?(:other_cops)
+
     RuboCop::Config.new(hash, "#{Dir.pwd}/.rubocop.yml")
   end
 end

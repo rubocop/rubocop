@@ -118,7 +118,7 @@ module RuboCop
     def add_unneeded_disables(file, offenses, source)
       if check_for_unneded_disables?(source)
         config = @config_store.for(file)
-        if config.cop_enabled?(Cop::Lint::UnneededDisable)
+        if config.for_cop(Cop::Lint::UnneededDisable).fetch('Enabled')
           cop = Cop::Lint::UnneededDisable.new(config, @options)
           if cop.relevant_file?(file)
             cop.check(offenses, source.disabled_line_ranges, source.comments)

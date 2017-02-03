@@ -514,6 +514,10 @@ describe RuboCop::CLI, :isolated_environment do
   end
 
   describe 'rails cops' do
+    before(:each) do
+      RuboCop::ConfigLoader.default_configuration = nil
+    end
+
     describe 'enabling/disabling' do
       it 'by default does not run rails cops' do
         create_file('app/models/example1.rb', 'read_attribute(:test)')
@@ -638,6 +642,10 @@ describe RuboCop::CLI, :isolated_environment do
   end
 
   describe 'configuration from file' do
+    before(:each) do
+      RuboCop::ConfigLoader.default_configuration = nil
+    end
+
     context 'when configured for rails style indentation' do
       it 'accepts rails style indentation' do
         create_file('.rubocop.yml', ['Style/IndentationConsistency:',

@@ -131,20 +131,28 @@ module RuboCop
       # Merges the given configuration with the default one. If
       # AllCops:DisabledByDefault is true, it changes the Enabled params so
       # that only cops from user configuration are enabled.
+      # If AllCops::EnabledByDefault is true, it changes the Enabled params
+      # so that only cops explicitly disabled in user configuration are
+      # disabled.
       def merge_with_default(config, config_file)
-        configs =
-          if config.for_all_cops['DisabledByDefault']
-            disabled_default = transform(default_configuration) do |params|
-              params.merge('Enabled' => false) # Overwrite with false.
-            end
-            enabled_user_config = transform(config) do |params|
-              { 'Enabled' => true }.merge(params) # Set true if not set.
-            end
-            [disabled_default, enabled_user_config]
-          else
-            [default_configuration, config]
+        default_configuration = self.default_configuration
+
+        disabled_by_default = config.for_all_cops['DisabledByDefault']
+        enabled_by_default = config.for_all_cops['EnabledByDefault']
+
+        if disabled_by_default || enabled_by_default
+          default_configuration = transform(default_configuration) do |params|
+            params.merge('Enabled' => !disabled_by_default)
           end
-        Config.new(merge(configs.first, configs.last), config_file)
+        end
+
+        if disabled_by_default
+          config = transform(config) do |params|
+            { 'Enabled' => true }.merge(params) # Set true if not set.
+          end
+        end
+
+        Config.new(merge(default_configuration, config), config_file)
       end
 
       def target_ruby_version_to_f!(hash)
