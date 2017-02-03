@@ -32,7 +32,16 @@ describe RuboCop::Cop::Rails::FilePath do
     end
   end
 
-  context 'when using Rails.root called by double quoted string' do
+  context 'when using Rails.root without path called by double quoted string' do
+    let(:source) { '"#{Rails.root}"' }
+
+    it 'does not registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  context 'when using Rails.root with path called by double quoted string' do
     let(:source) { '"#{Rails.root}/app/models/goober"' }
 
     it 'registers an offense' do
