@@ -13,6 +13,13 @@ module RuboCop
         each_pair.to_a
       end
 
+      # Checks whether the `hash` node contains any `pair`- or `kwsplat` nodes.
+      #
+      # @return[Boolean] whether the `hash` is empty
+      def empty?
+        children.empty?
+      end
+
       # Calls the given block for each `pair` node in the `hash` literal.
       # If no block is given, an `Enumerator` is returned.
       #
@@ -95,7 +102,7 @@ module RuboCop
       #
       # @return [Boolean] whether the `hash` literal is enclosed in braces
       def braces?
-        loc.end
+        loc.end && loc.end.is?('}')
       end
     end
   end
