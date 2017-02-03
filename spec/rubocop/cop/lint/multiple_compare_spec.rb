@@ -14,7 +14,7 @@ describe RuboCop::Cop::Lint::MultipleCompare do
       inspect_source(cop, bad_source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(['Use `&&` operator to compare multiple value.'])
+        .to eq(['Use the `&&` operator to compare multiple values.'])
     end
 
     it 'autocorrects' do
