@@ -7,6 +7,13 @@ describe RuboCop::Cop::Style::TernaryParentheses, :config do
     inspect_source(cop, source)
   end
 
+  let(:redundant_parens_enabled) { false }
+  let(:other_cops) do
+    {
+      'Style/RedundantParentheses' => { 'Enabled' => redundant_parens_enabled }
+    }
+  end
+
   shared_examples 'code with offense' do |code, expected|
     context "when checking #{code}" do
       let(:source) { code }
@@ -339,14 +346,12 @@ describe RuboCop::Cop::Style::TernaryParentheses, :config do
   end
 
   context 'when `RedundantParenthesis` would cause an infinite loop' do
-    let(:config) do
-      RuboCop::Config.new(
-        'Style/RedundantParentheses' => { 'Enabled' => true },
-        'Style/TernaryParentheses' => {
-          'EnforcedStyle' => 'require_parentheses',
-          'SupportedStyles' => %w(require_parentheses require_no_parentheses)
-        }
-      )
+    let(:redundant_parens_enabled) { true }
+    let(:cop_config) do
+      {
+        'EnforcedStyle' => 'require_parentheses',
+        'SupportedStyles' => %w(require_parentheses require_no_parentheses)
+      }
     end
 
     it_behaves_like 'code without offense',

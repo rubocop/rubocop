@@ -97,7 +97,10 @@ module RuboCop
     def initialize(hash = {}, loaded_path = nil)
       @loaded_path = loaded_path
       @for_cop = Hash.new do |h, cop|
-        h[cop] = self[Cop::Cop.qualified_cop_name(cop, loaded_path)] || {}
+        qualified_cop_name = Cop::Cop.qualified_cop_name(cop, loaded_path)
+        cop_options = self[qualified_cop_name] || {}
+        cop_options['Enabled'] = enable_cop?(qualified_cop_name, cop_options)
+        h[cop] = cop_options
       end
       @hash = hash
     end
@@ -193,14 +196,6 @@ module RuboCop
       @for_all_cops ||= self['AllCops'] || {}
     end
 
-    def cop_enabled?(cop)
-      if (dept_config = self[cop.department.to_s])
-        return false if dept_config['Enabled'] == false
-      end
-
-      for_cop(cop).empty? || for_cop(cop).fetch('Enabled', true)
-    end
-
     def validate
       # Don't validate RuboCop's own files. Avoids infinite recursion.
       base_config_path = File.expand_path(File.join(ConfigLoader::RUBOCOP_HOME,
@@ -216,6 +211,7 @@ module RuboCop
       check_target_ruby
       validate_parameter_names(valid_cop_names)
       validate_enforced_styles(valid_cop_names)
+      reject_mutually_exclusive_defaults
     end
 
     def file_to_include?(file)
@@ -404,6 +400,29 @@ module RuboCop
       msg += "\nKnown versions: #{KNOWN_RUBIES.join(', ')}"
 
       raise ValidationError, msg
+    end
+
+    def reject_mutually_exclusive_defaults
+      disabled_by_default = for_all_cops['DisabledByDefault']
+      enabled_by_default = for_all_cops['EnabledByDefault']
+      return unless disabled_by_default && enabled_by_default
+
+      msg = 'Cops cannot be both enabled by default and disabled by default'
+      raise ValidationError, msg
+    end
+
+    def enable_cop?(qualified_cop_name, cop_options)
+      cop_department, cop_name = qualified_cop_name.split('/')
+      department = cop_name.nil?
+
+      unless department
+        department_options = self[cop_department]
+        if department_options && department_options.fetch('Enabled') == false
+          return false
+        end
+      end
+
+      cop_options.fetch('Enabled', true)
     end
   end
 end

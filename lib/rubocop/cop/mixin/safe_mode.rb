@@ -15,7 +15,7 @@ module RuboCop
       end
 
       def rails?
-        config['Rails'] && config['Rails']['Enabled']
+        config['Rails'] && config['Rails'].fetch('Enabled')
       end
     end
   end

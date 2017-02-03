@@ -129,8 +129,8 @@ module RuboCop
         end
 
         def missing_else_style
-          missing_config = config.for_cop('Style/MissingElse')
-          missing_config['Enabled'] ? missing_config['EnforcedStyle'] : nil
+          missing_cfg = config.for_cop('Style/MissingElse')
+          missing_cfg.fetch('Enabled') ? missing_cfg['EnforcedStyle'] : nil
         end
       end
     end

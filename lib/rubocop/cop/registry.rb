@@ -72,7 +72,7 @@ module RuboCop
       # @example namespaces bare cop identifiers
       #
       #   cops = RuboCop::Cop::Cop.all
-      #   cops.qualified_cop_name('IndentArray') # => 'IndentArray'
+      #   cops.qualified_cop_name('IndentArray') # => 'Style/IndentArray'
       #
       # @example passes back unrecognized cop names
       #
@@ -115,7 +115,7 @@ module RuboCop
 
       def enabled(config, only)
         select do |cop|
-          config.cop_enabled?(cop) || only.include?(cop.cop_name)
+          config.for_cop(cop).fetch('Enabled') || only.include?(cop.cop_name)
         end
       end
 

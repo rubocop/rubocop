@@ -30,7 +30,8 @@ task generate_cops_documentation: :yard do
   def properties(config, cop)
     content = "Enabled by default | Supports autocorrection\n".dup
     content << "--- | ---\n"
-    default_status = config.cop_enabled?(cop) ? 'Enabled' : 'Disabled'
+    enabled_by_default = config.for_cop(cop).fetch('Enabled')
+    default_status = enabled_by_default ? 'Enabled' : 'Disabled'
     supports_autocorrect = cop.new.support_autocorrect? ? 'Yes' : 'No'
     content << "#{default_status} | #{supports_autocorrect}"
     content

@@ -51,11 +51,17 @@ AllCops:
   # the `--only-guide-cops` option.
   StyleGuideCopsOnly: false
   # All cops except the ones in disabled.yml are enabled by default. Change
-  # this behavior by overriding `DisabledByDefault`. When `DisabledByDefault` is
-  # `true`, all cops in the default configuration are disabled, and only cops
-  # in user configuration are enabled. This makes cops opt-in instead of
-  # opt-out. Note that when `DisabledByDefault` is `true`, cops in user
-  # configuration will be enabled even if they don't set the Enabled parameter.
+  # this behavior by overriding either `DisabledByDefault` or `EnabledByDefault`.
+  # When `DisabledByDefault` is `true`, all cops in the default configuration
+  # are disabled, and only cops in user configuration are enabled. This makes
+  # cops opt-in instead of opt-out. Note that when `DisabledByDefault` is `true`,
+  # cops in user configuration will be enabled even if they don't set the
+  # Enabled parameter.
+  # When `EnabledByDefault` is `true`, all cops, even those in disabled.yml,
+  # are enabled by default.  Cops can still be disabled in user configuration.
+  # Note that it is invalid to set both EnabledByDefault and DisabledByDefault
+  # to true in the same configuration.
+  EnabledByDefault: false
   DisabledByDefault: false
   # Enables the result cache if `true`. Can be overridden by the `--cache` command
   # line option.
