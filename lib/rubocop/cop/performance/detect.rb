@@ -96,7 +96,8 @@ module RuboCop
         end
 
         def lazy?(node)
-          return false if node.nil?
+          return false unless node
+
           receiver, method, _args = *node
           method == :lazy && !receiver.nil?
         end

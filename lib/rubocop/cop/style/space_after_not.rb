@@ -15,22 +15,21 @@ module RuboCop
         MSG = 'Do not leave space between `!` and its argument.'.freeze
 
         def on_send(node)
-          return unless node.keyword_bang? && whitespace_after_bang_op?(node)
+          return unless node.keyword_bang? && whitespace_after_operator?(node)
 
           add_offense(node, :expression)
         end
 
-        def whitespace_after_bang_op?(node)
-          receiver, _method_name, *_args = *node
-          receiver.loc.column - node.loc.column > 1
+        def whitespace_after_operator?(node)
+          node.receiver.loc.column - node.loc.column > 1
         end
 
         def autocorrect(node)
           lambda do |corrector|
-            receiver, _method_name, *_args = *node
-            space_range = range_between(node.loc.selector.end_pos,
-                                        receiver.source_range.begin_pos)
-            corrector.remove(space_range)
+            corrector.remove(
+              range_between(node.loc.selector.end_pos,
+                            node.receiver.source_range.begin_pos)
+            )
           end
         end
       end

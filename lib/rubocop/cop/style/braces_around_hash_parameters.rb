@@ -11,26 +11,21 @@ module RuboCop
         MSG = '%s curly braces around a hash parameter.'.freeze
 
         def on_send(node)
-          return if node.asgn_method_call?
+          return if node.asgn_method_call? || node.operator_method?
 
-          _receiver, method_name, *args = *node
+          return unless node.arguments? && node.last_argument.hash_type? &&
+                        !node.last_argument.empty?
 
-          return if operator?(method_name)
-          return if args.empty?
-
-          return unless args.last.hash_type? && !args.last.pairs.empty?
-
-          check(args.last, args)
+          check(node.last_argument, node.arguments)
         end
 
         private
 
         def check(arg, args)
           if style == :braces && !arg.braces?
-            add_offense(arg.parent, arg.source_range, format(MSG, 'Missing'))
+            add_arg_offense(arg, :missing)
           elsif style == :no_braces && arg.braces?
-            add_offense(arg.parent, arg.source_range,
-                        format(MSG, 'Redundant'))
+            add_arg_offense(arg, :redundant)
           elsif style == :context_dependent
             check_context_dependent(arg, args)
           end
@@ -38,14 +33,19 @@ module RuboCop
 
         def check_context_dependent(arg, args)
           braces_around_second_from_end = args.size > 1 && args[-2].hash_type?
+
           if arg.braces?
             unless braces_around_second_from_end
-              add_offense(arg.parent, arg.source_range,
-                          format(MSG, 'Redundant'))
+              add_arg_offense(arg, :redundant)
             end
           elsif braces_around_second_from_end
-            add_offense(arg.parent, arg.source_range, format(MSG, 'Missing'))
+            add_arg_offense(arg, :missing)
           end
+        end
+
+        def add_arg_offense(arg, type)
+          add_offense(arg.parent, arg.source_range,
+                      format(MSG, type.to_s.capitalize))
         end
 
         # We let AutocorrectUnlessChangingAST#autocorrect work with the send
@@ -53,13 +53,13 @@ module RuboCop
         # the AST has changed, a braceless hash would not be parsed as a hash
         # otherwise.
         def autocorrect(send_node)
-          _receiver, _method_name, *args = *send_node
-          node = args.last
+          hash_node = send_node.last_argument
+
           lambda do |corrector|
-            if node.braces?
-              remove_braces_with_whitespace(corrector, node)
+            if hash_node.braces?
+              remove_braces_with_whitespace(corrector, hash_node)
             else
-              add_braces(corrector, node)
+              add_braces(corrector, hash_node)
             end
           end
         end
@@ -97,10 +97,6 @@ module RuboCop
         def add_braces(corrector, node)
           corrector.insert_before(node.source_range, '{')
           corrector.insert_after(node.source_range, '}')
-        end
-
-        def braces?(arg)
-          arg.loc.begin
         end
       end
     end

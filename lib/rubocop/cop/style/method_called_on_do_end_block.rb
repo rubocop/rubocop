@@ -27,12 +27,15 @@ module RuboCop
 
         def on_send(node)
           return if ignored_node?(node)
-          receiver, _method_name, *_args = *node
+
+          receiver = node.receiver
+
           return unless receiver && receiver.block_type? &&
                         receiver.loc.end.is?('end')
 
           range = range_between(receiver.loc.end.begin_pos,
                                 node.source_range.end_pos)
+
           add_offense(nil, range)
         end
       end

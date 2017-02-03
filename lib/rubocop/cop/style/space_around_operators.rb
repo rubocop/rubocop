@@ -8,6 +8,8 @@ module RuboCop
       class SpaceAroundOperators < Cop
         include PrecedingFollowingAlignment
 
+        IRREGULAR_METHODS = [:[], :!, :[]=].freeze
+
         def on_pair(node)
           return unless node.hash_rocket?
 
@@ -25,32 +27,31 @@ module RuboCop
 
         def on_resbody(node)
           return unless node.loc.assoc
+
           _, variable, = *node
 
           check_operator(node.loc.assoc, variable.source_range)
         end
 
         def on_send(node)
-          if node.loc.operator # aref assignment, attribute assignment
+          if node.setter_method?
             on_special_asgn(node)
-          elsif !node.unary_operation? && !called_with_dot?(node)
-            op = node.method_name
-            if operator_with_regular_syntax?(op)
-              _, _, right, = *node
-              check_operator(node.loc.selector, right.source_range)
-            end
+          elsif regular_operator?(node)
+            check_operator(node.loc.selector, node.first_argument.source_range)
           end
         end
 
         def on_binary(node)
-          _, right, = *node
-          return if right.nil?
-          check_operator(node.loc.operator, right.source_range)
+          _, rhs, = *node
+
+          return unless rhs
+
+          check_operator(node.loc.operator, rhs.source_range)
         end
 
         def on_special_asgn(node)
-          return unless node.loc.operator
           _, _, right, = *node
+
           check_operator(node.loc.operator, right.source_range)
         end
 
@@ -69,12 +70,14 @@ module RuboCop
 
         private
 
-        def called_with_dot?(node)
-          node.loc.dot
+        def regular_operator?(send_node)
+          !send_node.unary_operation? && !send_node.dot? &&
+            operator_with_regular_syntax?(send_node)
         end
 
-        def operator_with_regular_syntax?(op)
-          ![:[], :!, :[]=].include?(op) && operator?(op)
+        def operator_with_regular_syntax?(send_node)
+          send_node.operator_method? &&
+            !IRREGULAR_METHODS.include?(send_node.method_name)
         end
 
         def check_operator(op, right_operand)

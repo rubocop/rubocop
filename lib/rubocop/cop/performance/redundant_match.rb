@@ -35,17 +35,18 @@ module RuboCop
           return unless match_call?(node) &&
                         (!node.value_used? || only_truthiness_matters?(node)) &&
                         !(node.parent && node.parent.block_type?)
-          add_offense(node, :expression, MSG)
+
+          add_offense(node, :expression)
         end
 
         def autocorrect(node)
-          receiver, _method, arg = *node
-
           # Regexp#match can take a second argument, but this cop doesn't
           # register an offense in that case
-          return unless arg.regexp_type?
+          return unless node.first_argument.regexp_type?
 
-          new_source = receiver.source + ' =~ ' + arg.source
+          new_source =
+            node.receiver.source + ' =~ ' + node.first_argument.source
+
           ->(corrector) { corrector.replace(node.source_range, new_source) }
         end
       end

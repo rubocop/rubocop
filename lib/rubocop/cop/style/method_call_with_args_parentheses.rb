@@ -22,11 +22,9 @@ module RuboCop
         MSG = 'Use parentheses for method calls with arguments.'.freeze
 
         def on_send(node)
-          _receiver, method_name, *args = *node
-          return if ignored_list.include?(method_name)
-          return if args.empty?
+          return if ignored_list.include?(node.method_name)
+          return unless node.arguments? && !node.parenthesized?
           return if operator_call?(node)
-          return if parentheses?(node)
 
           add_offense(node, :selector)
         end
@@ -64,11 +62,7 @@ module RuboCop
         end
 
         def operator_call?(node)
-          node.loc.operator || (reciever?(node) && !node.loc.dot)
-        end
-
-        def reciever?(node)
-          !node.children[0].nil?
+          node.operator_method?
         end
 
         def args_begin(node)

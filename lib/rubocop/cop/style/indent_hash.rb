@@ -63,7 +63,8 @@ module RuboCop
           return if ignored_node?(hash_node)
 
           left_brace = hash_node.loc.begin
-          first_pair = hash_node.children.first
+          first_pair = hash_node.pairs.first
+
           if first_pair
             return if first_pair.source_range.line == left_brace.line
 

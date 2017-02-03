@@ -19,23 +19,20 @@ module RuboCop
       class AutoResourceCleanup < Cop
         MSG = 'Use the block version of `%s.%s`.'.freeze
 
-        TARGET_METHODS = [
-          [:File, :open]
-        ].freeze
+        TARGET_METHODS = {
+          File: :open
+        }.freeze
 
         def on_send(node)
-          receiver_node, method_name, *arg_nodes = *node
-
-          TARGET_METHODS.each do |(target_class, target_method)|
+          TARGET_METHODS.each do |target_class, target_method|
             target_receiver = s(:const, nil, target_class)
 
-            next if receiver_node != target_receiver
-            next if method_name != target_method
+            next if node.receiver != target_receiver
+            next if node.method_name != target_method
             next if node.parent && node.parent.block_type?
-            next if !arg_nodes.empty? && arg_nodes.last.block_pass_type?
+            next if node.block_argument?
 
-            add_offense(node,
-                        :expression,
+            add_offense(node, :expression,
                         format(MSG, target_class, target_method))
           end
         end

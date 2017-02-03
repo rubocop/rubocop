@@ -63,8 +63,9 @@ module RuboCop
         private
 
         def autocorrect(node)
-          _receiver, _try, method_node, *params = *node
+          method_node, *params = *node.arguments
           method = method_node.source[1..-1]
+
           range = range_between(node.loc.dot.begin_pos,
                                 node.loc.expression.end_pos)
 

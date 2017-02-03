@@ -29,42 +29,43 @@ module RuboCop
         MSG = 'Prefer `%s.%s`.'.freeze
 
         def on_send(node)
-          receiver, method_name, *_args = *node
-          return unless duration_method?(method_name)
-          return unless literal_number?(receiver)
+          return unless duration_method?(node.method_name)
+          return unless literal_number?(node.receiver)
 
-          number, = *receiver
-          if expect_singular_method?(number, method_name)
-            add_offense(node,
-                        :expression,
-                        format(MSG, number, singularize(method_name)))
-          elsif expect_plural_method?(number, method_name)
-            add_offense(node,
-                        :expression,
-                        format(MSG, number, pluralize(method_name)))
-          end
+          return unless offense?(node)
+
+          add_offense(node, :expression)
         end
 
         private
 
+        def message(node)
+          number, = *node.receiver
+
+          format(MSG, number, correct_method(node.method_name.to_s))
+        end
+
         def autocorrect(node)
           lambda do |corrector|
             method_name = node.loc.selector.source
-            replacement = if plural_method?(method_name)
-                            singularize(method_name)
-                          else
-                            pluralize(method_name)
-                          end
-            corrector.replace(node.loc.selector, replacement)
+
+            corrector.replace(node.loc.selector, correct_method(method_name))
           end
         end
 
-        def expect_singular_method?(number, method_name)
-          singular_receiver?(number) && plural_method?(method_name)
+        def correct_method(method_name)
+          if plural_method?(method_name)
+            singularize(method_name)
+          else
+            pluralize(method_name)
+          end
         end
 
-        def expect_plural_method?(number, method_name)
-          plural_receiver?(number) && singular_method?(method_name)
+        def offense?(node)
+          number, = *node.receiver
+
+          singular_receiver?(number) && plural_method?(node.method_name) ||
+            plural_receiver?(number) && singular_method?(node.method_name)
         end
 
         def plural_method?(method_name)

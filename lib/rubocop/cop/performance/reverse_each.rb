@@ -26,7 +26,8 @@ module RuboCop
             end_location = node.loc.selector.end_pos
 
             range = range_between(location_of_reverse, end_location)
-            add_offense(node, range, MSG)
+
+            add_offense(node, range)
           end
         end
 

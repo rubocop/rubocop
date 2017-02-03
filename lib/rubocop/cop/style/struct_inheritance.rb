@@ -22,21 +22,10 @@ module RuboCop
           add_offense(node, superclass.source_range, MSG)
         end
 
-        private
-
-        def struct_constructor?(node)
-          return false unless node
-
-          send_node = node.block_type? ? node.children.first : node
-          return false unless send_node.send_type?
-
-          receiver, method_name = *send_node
-
-          receiver &&
-            receiver.const_type? &&
-            receiver.children.last == :Struct &&
-            method_name == :new
-        end
+        def_node_matcher :struct_constructor?, <<-PATTERN
+           {(send (const nil :Struct) :new ...)
+            (block (send (const nil :Struct) :new ...) ...)}
+        PATTERN
       end
     end
   end

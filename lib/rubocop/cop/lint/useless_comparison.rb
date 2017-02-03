@@ -14,12 +14,13 @@ module RuboCop
         MSG = 'Comparison of something with itself detected.'.freeze
         OPS = %w(== === != < > <= >= <=>).freeze
 
-        def_node_matcher :comparison?, "(send $_ {:#{OPS.join(' :')}} $_)"
+        def_node_matcher :useless_comparison?,
+                         "(send $_match {:#{OPS.join(' :')}} $_match)"
 
         def on_send(node)
-          comparison?(node) do |receiver, args|
-            add_offense(node, :selector) if receiver == args
-          end
+          return unless useless_comparison?(node)
+
+          add_offense(node, :selector)
         end
       end
     end

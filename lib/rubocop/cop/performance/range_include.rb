@@ -27,7 +27,9 @@ module RuboCop
         END
 
         def on_send(node)
-          add_offense(node, :selector, MSG) if range_include(node)
+          return unless range_include(node)
+
+          add_offense(node, :selector)
         end
 
         def autocorrect(node)

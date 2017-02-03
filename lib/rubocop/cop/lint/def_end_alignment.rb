@@ -48,7 +48,8 @@ module RuboCop
 
         def on_send(node)
           return unless modifier_and_def_on_same_line?(node)
-          _, _, method_def = *node
+
+          method_def = node.first_argument
           expr = node.source_range
 
           line_start = range_between(expr.begin_pos,

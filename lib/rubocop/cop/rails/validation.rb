@@ -21,21 +21,19 @@ module RuboCop
         ).freeze
 
         BLACKLIST = TYPES.map { |p| "validates_#{p}_of".to_sym }.freeze
-
         WHITELIST = TYPES.map { |p| "validates :column, #{p}: value" }.freeze
 
         def on_send(node)
-          receiver, method_name, *_args = *node
-          return unless receiver.nil? && BLACKLIST.include?(method_name)
+          return unless !node.receiver && BLACKLIST.include?(node.method_name)
 
-          add_offense(node,
-                      :selector,
-                      format(MSG,
-                             preferred_method(method_name),
-                             method_name))
+          add_offense(node, :selector)
         end
 
         private
+
+        def message(node)
+          format(MSG, preferred_method(node.method_name), node.method_name)
+        end
 
         def preferred_method(method)
           WHITELIST[BLACKLIST.index(method.to_sym)]
@@ -49,9 +47,8 @@ module RuboCop
         end
 
         def correct_validate_type(corrector, node)
-          _receiver, method_name, *args = *node
-          options = args.find { |arg| !arg.sym_type? }
-          validate_type = method_name.to_s.split('_')[1]
+          options = node.arguments.find { |arg| !arg.sym_type? }
+          validate_type = node.method_name.to_s.split('_')[1]
 
           if options
             corrector.replace(options.loc.expression,

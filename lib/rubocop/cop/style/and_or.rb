@@ -71,19 +71,17 @@ module RuboCop
         end
 
         def correct_send(node, corrector)
-          receiver, method_name, *args = *node
-          return correct_not(node, receiver, corrector) if method_name == :!
-          return correct_setter(node, corrector) if setter_method?(method_name)
+          return correct_not(node, node.receiver, corrector) if node.method?(:!)
+          return correct_setter(node, corrector) if node.setter_method?
           return unless correctable_send?(node)
 
           corrector.replace(whitespace_before_arg(node), '('.freeze)
-          corrector.insert_after(args.last.source_range, ')'.freeze)
+          corrector.insert_after(node.last_argument.source_range, ')'.freeze)
         end
 
         def correct_setter(node, corrector)
-          receiver, _method_name, *args = *node
-          corrector.insert_before(receiver.source_range, '('.freeze)
-          corrector.insert_after(args.last.source_range, ')'.freeze)
+          corrector.insert_before(node.receiver.source_range, '('.freeze)
+          corrector.insert_after(node.last_argument.source_range, ')'.freeze)
         end
 
         # ! is a special case:
@@ -91,7 +89,7 @@ module RuboCop
         # recurse down a level and add parens to 'obj.method arg'
         # however, 'not x' also parses as (send x :!)
         def correct_not(node, receiver, corrector)
-          if node.loc.selector.source == '!'
+          if node.keyword_bang?
             return unless receiver.send_type?
 
             correct_send(receiver, corrector)
@@ -103,23 +101,14 @@ module RuboCop
         end
 
         def correct_other(node, corrector)
-          return unless node.source_range.begin.source != '('
+          return if node.source_range.begin.is?('(')
+
           corrector.insert_before(node.source_range, '(')
           corrector.insert_after(node.source_range, ')')
         end
 
-        def setter_method?(method_name)
-          method_name.to_s.end_with?('=')
-        end
-
         def correctable_send?(node)
-          _receiver, method_name, *args = *node
-          # don't clobber if we already have a starting paren
-          return false unless !node.loc.begin || node.loc.begin.source != '('
-          # don't touch anything unless we are sure it is a method call.
-          return false unless args.last && method_name.to_s =~ /[a-z]/
-
-          true
+          !node.parenthesized? && node.arguments?
         end
 
         def whitespace_before_arg(node)

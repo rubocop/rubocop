@@ -54,23 +54,18 @@ module RuboCop
         end
 
         def on_send(node)
-          receiver, method_name = *node
-          return unless receiver && bad_methods.include?(method_name)
+          return unless node.receiver && bad_methods.include?(node.method_name)
 
-          chain = extract_method_chain(node)
-          return if safe_chain?(chain)
+          return if safe_chain?(node) || safe_to_time?(node)
 
-          return if method_name == :to_time && safe_to_time?(node)
-
-          add_offense(node, :selector,
-                      format(MSG_SEND,
-                             method_name))
+          add_offense(node, :selector, format(MSG_SEND, node.method_name))
         end
 
         private
 
         def check_date_node(node)
           chain = extract_method_chain(node)
+
           return if (chain & bad_days).empty?
 
           method_name = (chain & bad_days).join('.')
@@ -82,17 +77,7 @@ module RuboCop
         end
 
         def extract_method_chain(node)
-          chain = []
-          while !node.nil? && node.send_type?
-            chain << extract_method(node)
-            node = node.parent
-          end
-          chain
-        end
-
-        def extract_method(node)
-          _receiver, method_name, *_args = *node
-          method_name
+          [node, *node.each_ancestor(:send)].map(&:method_name)
         end
 
         # checks that parent node of send_type
@@ -100,22 +85,24 @@ module RuboCop
         def method_send?(node)
           return false unless node.parent && node.parent.send_type?
 
-          receiver, _method_name, *_args = *node.parent
-
-          receiver == node
+          node.parent.receiver == node
         end
 
-        def safe_chain?(chain)
+        def safe_chain?(node)
+          chain = extract_method_chain(node)
+
           (chain & bad_methods).empty? || !(chain & good_methods).empty?
         end
 
         def safe_to_time?(node)
-          receiver, _method_name, *args = *node
-          if receiver.str_type?
+          return unless node.method?(:to_time)
+
+          if node.receiver.str_type?
             zone_regexp = /[+-][\d:]+\z/
-            receiver.str_content.match(zone_regexp)
+
+            node.receiver.str_content.match(zone_regexp)
           else
-            args.length == 1
+            node.arguments.one?
           end
         end
 

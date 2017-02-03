@@ -23,6 +23,7 @@ module RuboCop
         KeywordSplatNode => [:kwsplat],
         OrNode           => [:or],
         PairNode         => [:pair],
+        SendNode         => [:send],
         UntilNode        => [:until, :until_post],
         WhenNode         => [:when],
         WhileNode        => [:while, :while_post]

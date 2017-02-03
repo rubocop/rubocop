@@ -24,12 +24,13 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          return unless (selector = formatter(node))
+          formatter(node) do |selector|
+            detected_style = selector == :% ? :percent : selector
 
-          detected_style = selector == :% ? :percent : selector
-          return if detected_style == style
+            return if detected_style == style
 
-          add_offense(node, :selector, message(detected_style))
+            add_offense(node, :selector, message(detected_style))
+          end
         end
 
         def message(detected_style)

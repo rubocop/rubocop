@@ -21,8 +21,8 @@ module RuboCop
         end
 
         def on_send(node)
-          _receiver, _method_name, *args = *node
-          return unless args.one? && args.first.block_pass_type?
+          return unless node.arguments.one? &&
+                        node.first_argument.block_pass_type?
 
           check_method_node(node)
         end
@@ -36,14 +36,14 @@ module RuboCop
 
         private
 
-        def check_method_node(node)
-          _receiver, method_name, *_args = *node
+        def message(node)
+          format(MSG, preferred_method(node.method_name), node.method_name)
+        end
 
-          return unless preferred_methods[method_name]
-          add_offense(node, :selector,
-                      format(MSG,
-                             preferred_method(method_name),
-                             method_name))
+        def check_method_node(node)
+          return unless preferred_methods[node.method_name]
+
+          add_offense(node, :selector)
         end
       end
     end

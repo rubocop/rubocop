@@ -127,25 +127,26 @@ module RuboCop
         end
 
         def safe_method(method_name, node)
-          _receiver, _method_name, *args = *node
           return method_name unless method_name == 'new'
 
-          if args.empty?
-            'now'
-          else
+          if node.arguments?
             'local'
+          else
+            'now'
           end
         end
 
         def check_localtime(node)
           selector_node = node
-          while !node.nil? && node.send_type?
+
+          while node && node.send_type?
             break if extract_method(node) == :localtime
             node = node.parent
           end
-          _receiver, _method, args = *node
 
-          add_offense(selector_node, :selector, MSG_LOCALTIME) if args.nil?
+          return if node.arguments?
+
+          add_offense(selector_node, :selector, MSG_LOCALTIME)
         end
 
         def danger_chain?(chain)
@@ -186,8 +187,7 @@ module RuboCop
         # Example:
         # Time.new(1988, 3, 15, 3, 0, 0, "-05:00")
         def offset_provided?(node)
-          _, _, *args = *node
-          args.length >= 7
+          node.arguments.size >= 7
         end
       end
     end

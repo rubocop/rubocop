@@ -14,14 +14,13 @@ module RuboCop
         def on_send(node)
           class_check?(node) do |method_name|
             return if style == method_name
+
             add_offense(node, :selector)
           end
         end
 
         def message(node)
-          _receiver, method_name, *_args = *node
-
-          if method_name == :is_a?
+          if node.method?(:is_a?)
             format(MSG, 'kind_of?', 'is_a?')
           else
             format(MSG, 'is_a?', 'kind_of?')
@@ -29,11 +28,10 @@ module RuboCop
         end
 
         def autocorrect(node)
-          _receiver, method_name, *_args = *node
-
           lambda do |corrector|
-            corrector.replace(node.loc.selector,
-                              method_name == :is_a? ? 'kind_of?' : 'is_a?')
+            replacement = node.method?(:is_a?) ? 'kind_of?' : 'is_a?'
+
+            corrector.replace(node.loc.selector, replacement)
           end
         end
       end

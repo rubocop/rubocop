@@ -16,10 +16,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         def on_send(node)
-          _receiver, selector, = *node
-
-          # we care only about `call` methods
-          return unless selector == :call
+          return unless node.receiver && node.method?(:call)
 
           if offense?(node)
             add_offense(node, :expression) { opposite_style_detected }
@@ -31,17 +28,16 @@ module RuboCop
         private
 
         def offense?(node)
-          # lambda.() does not have a selector
-          style == :call && node.loc.selector.nil? ||
-            style == :braces && node.loc.selector
+          explicit_style? && node.implicit_call? ||
+            implicit_style? && !node.implicit_call?
         end
 
         def autocorrect(node)
           lambda do |corrector|
-            if style == :call
-              receiver_node, = *node
-              receiver = receiver_node.source
+            if explicit_style?
+              receiver = node.receiver.source
               replacement = node.source.sub("#{receiver}.", "#{receiver}.call")
+
               corrector.replace(node.source_range, replacement)
             else
               corrector.remove(node.loc.selector)
@@ -50,11 +46,19 @@ module RuboCop
         end
 
         def message(_node)
-          if style == :call
+          if explicit_style?
             'Prefer the use of `lambda.call(...)` over `lambda.(...)`.'
           else
             'Prefer the use of `lambda.(...)` over `lambda.call(...)`.'
           end
+        end
+
+        def implicit_style?
+          style == :braces
+        end
+
+        def explicit_style?
+          style == :call
         end
       end
     end
