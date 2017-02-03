@@ -11,6 +11,7 @@
 
 ### Changes
 
+* [#4012](https://github.com/bbatsov/rubocop/pull/4012): Mark `foo[:bar]` as not complex in `Style/TernaryParentheses` cop with `require_parentheses_when_complex` style. ([@onk][])
 * [#3915](https://github.com/bbatsov/rubocop/issues/3915): Make configurable whitelist for `Lint/SafeNavigationChain` cop. ([@pocke][])
 * [#3944](https://github.com/bbatsov/rubocop/issues/3944): Allow keyword arguments in `Style/RaiseArgs` cop. ([@mikegee][])
 * Add auto-correct to `Performance/DoubleStartEndWith`. ([@rrosenblum][])
@@ -2626,3 +2627,4 @@
 [@backus]: https://github.com/backus
 [@pat]: https://github.com/pat
 [@sinsoku]: https://github.com/sinsoku
+[@onk]: https://github.com/onk
