@@ -113,7 +113,8 @@ module RuboCop
         def non_complex_type?(condition)
           condition.variable? || condition.const_type? ||
             (condition.send_type? && !operator?(condition.method_name)) ||
-            condition.defined_type? || condition.yield_type?
+            condition.defined_type? || condition.yield_type? ||
+            square_brackets?(condition)
         end
 
         def message(node)
@@ -165,6 +166,9 @@ module RuboCop
           {(:defined? $...)
            (send {(send ...) nil} _ $(send nil _)...)}
         PATTERN
+
+        def_node_matcher :square_brackets?,
+                         '(send {(send _recv _msg) str array hash} :[] ...)'
       end
     end
   end
