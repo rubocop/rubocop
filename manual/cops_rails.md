@@ -279,6 +279,25 @@ Include | app/models/\*\*/\*.rb
 
 * [https://github.com/bbatsov/rails-style-guide#find_by](https://github.com/bbatsov/rails-style-guide#find_by)
 
+## Rails/FindByArg
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop is used to identify usages of `find_by(arg)` and
+change them to use `find_by(column: arg)` instead.
+
+### Example
+
+```ruby
+# bad
+User.find_by(1)
+
+# good
+User.find_by(id: 1)
+```
+
 ## Rails/FindEach
 
 Enabled by default | Supports autocorrection

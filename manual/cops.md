@@ -183,6 +183,7 @@ In the following section you find all available cops:
 * [Rails/Exit](cops_rails.md#railsexit)
 * [Rails/FilePath](cops_rails.md#railsfilepath)
 * [Rails/FindBy](cops_rails.md#railsfindby)
+* [Rails/FindByArg](cops_rails.md#railsfindbyarg)
 * [Rails/FindEach](cops_rails.md#railsfindeach)
 * [Rails/HasAndBelongsToMany](cops_rails.md#railshasandbelongstomany)
 * [Rails/HttpPositionalArguments](cops_rails.md#railshttppositionalarguments)
