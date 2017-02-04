@@ -6,10 +6,11 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBeginBody do
   let(:config) { RuboCop::Config.new }
   subject(:cop) { described_class.new(config) }
 
-  shared_examples :offense do |name, code, correction|
+  shared_examples :offense do |name, message, code, correction|
     it "registers an offense for #{name} with a blank" do
       inspect_source(cop, code.strip_indent)
-      expect(cop.offenses.size).to eq(1)
+      message = "Extra empty line detected at `begin` body #{message}."
+      expect(cop.messages).to eq([message])
     end
 
     it "autocorrects for #{name} with a blank" do
@@ -25,7 +26,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBeginBody do
     end
   end
 
-  include_examples :offense, 'begin body starting', <<-CODE, <<-CORRECTION
+  include_examples :offense, 'begin body starting', 'beginning', <<-CODE, <<-CORRECTION
     begin
 
       foo
@@ -35,7 +36,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBeginBody do
       foo
     end
   CORRECTION
-  include_examples :offense, 'begin body ending', <<-CODE, <<-CORRECTION
+  include_examples :offense, 'begin body ending', 'end', <<-CODE, <<-CORRECTION
     begin
       foo
 
@@ -46,7 +47,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBeginBody do
     end
   CORRECTION
   include_examples :offense,
-                   'begin body starting in method', <<-CODE, <<-CORRECTION
+                   'begin body starting in method', 'beginning', <<-CODE, <<-CORRECTION
     def bar
       begin
 
@@ -61,7 +62,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBeginBody do
     end
   CORRECTION
   include_examples :offense,
-                   'begin body ending in method', <<-CODE, <<-CORRECTION
+                   'begin body ending in method', 'end', <<-CODE, <<-CORRECTION
     def bar
       begin
         foo
@@ -77,7 +78,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBeginBody do
   CORRECTION
 
   include_examples :offense,
-                   'begin body starting with rescue', <<-CODE, <<-CORRECTION
+                   'begin body starting with rescue', 'beginning', <<-CODE, <<-CORRECTION
     begin
 
       foo
@@ -91,7 +92,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBeginBody do
       bar
     end
   CORRECTION
-  include_examples :offense, 'rescue body ending', <<-CODE, <<-CORRECTION
+  include_examples :offense, 'rescue body ending', 'end', <<-CODE, <<-CORRECTION
     begin
       foo
     rescue
@@ -106,7 +107,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBeginBody do
     end
   CORRECTION
 
-  include_examples :offense, 'else body ending', <<-CODE, <<-CORRECTION
+  include_examples :offense, 'else body ending', 'end', <<-CODE, <<-CORRECTION
     begin
       foo
     rescue
@@ -124,7 +125,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBeginBody do
       baz
     end
   CORRECTION
-  include_examples :offense, 'ensure body ending', <<-CODE, <<-CORRECTION
+  include_examples :offense, 'ensure body ending', 'end', <<-CODE, <<-CORRECTION
     begin
       foo
     ensure
