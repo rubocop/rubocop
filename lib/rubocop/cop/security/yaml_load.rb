@@ -23,8 +23,8 @@ module RuboCop
         END
 
         def on_send(node)
-          yaml_load(node) do |method|
-            add_offense(node, :selector, format(MSG, method))
+          yaml_load(node) do
+            add_offense(node, :selector)
           end
         end
 
