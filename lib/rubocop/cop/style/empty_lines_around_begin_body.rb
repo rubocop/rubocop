@@ -25,7 +25,7 @@ module RuboCop
       class EmptyLinesAroundBeginBody < Cop
         include EmptyLinesAroundBody
 
-        KIND = 'begin'.freeze
+        KIND = '`begin`'.freeze
 
         def on_kwbegin(node)
           check(node, nil)

@@ -8,13 +8,13 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBeginBody do
 
   shared_examples :offense do |name, code, correction|
     it "registers an offense for #{name} with a blank" do
-      inspect_source(cop, code)
+      inspect_source(cop, code.strip_indent)
       expect(cop.offenses.size).to eq(1)
     end
 
     it "autocorrects for #{name} with a blank" do
-      corrected = autocorrect_source(cop, code)
-      expect(corrected).to eq(correction)
+      corrected = autocorrect_source(cop, code.strip_indent)
+      expect(corrected).to eq(correction.strip_indent)
     end
   end
 
@@ -26,151 +26,151 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBeginBody do
   end
 
   include_examples :offense, 'begin body starting', <<-CODE, <<-CORRECTION
-begin
+    begin
 
-  foo
-end
+      foo
+    end
   CODE
-begin
-  foo
-end
+    begin
+      foo
+    end
   CORRECTION
   include_examples :offense, 'begin body ending', <<-CODE, <<-CORRECTION
-begin
-  foo
+    begin
+      foo
 
-end
+    end
   CODE
-begin
-  foo
-end
+    begin
+      foo
+    end
   CORRECTION
   include_examples :offense,
                    'begin body starting in method', <<-CODE, <<-CORRECTION
-def bar
-  begin
+    def bar
+      begin
 
-    foo
-  end
-end
+        foo
+      end
+    end
   CODE
-def bar
-  begin
-    foo
-  end
-end
+    def bar
+      begin
+        foo
+      end
+    end
   CORRECTION
   include_examples :offense,
                    'begin body ending in method', <<-CODE, <<-CORRECTION
-def bar
-  begin
-    foo
+    def bar
+      begin
+        foo
 
-  end
-end
+      end
+    end
   CODE
-def bar
-  begin
-    foo
-  end
-end
+    def bar
+      begin
+        foo
+      end
+    end
   CORRECTION
 
   include_examples :offense,
                    'begin body starting with rescue', <<-CODE, <<-CORRECTION
-begin
+    begin
 
-  foo
-rescue
-  bar
-end
+      foo
+    rescue
+      bar
+    end
   CODE
-begin
-  foo
-rescue
-  bar
-end
+    begin
+      foo
+    rescue
+      bar
+    end
   CORRECTION
   include_examples :offense, 'rescue body ending', <<-CODE, <<-CORRECTION
-begin
-  foo
-rescue
-  bar
+    begin
+      foo
+    rescue
+      bar
 
-end
+    end
   CODE
-begin
-  foo
-rescue
-  bar
-end
+    begin
+      foo
+    rescue
+      bar
+    end
   CORRECTION
 
   include_examples :offense, 'else body ending', <<-CODE, <<-CORRECTION
-begin
-  foo
-rescue
-  bar
-else
-  baz
+    begin
+      foo
+    rescue
+      bar
+    else
+      baz
 
-end
+    end
   CODE
-begin
-  foo
-rescue
-  bar
-else
-  baz
-end
+    begin
+      foo
+    rescue
+      bar
+    else
+      baz
+    end
   CORRECTION
   include_examples :offense, 'ensure body ending', <<-CODE, <<-CORRECTION
-begin
-  foo
-ensure
-  bar
+    begin
+      foo
+    ensure
+      bar
 
-end
+    end
   CODE
-begin
-  foo
-ensure
-  bar
-end
+    begin
+      foo
+    ensure
+      bar
+    end
   CORRECTION
 
   context 'with complex begin-end' do
-    let(:source) { <<-END }
-begin
+    let(:source) { <<-END.strip_indent }
+      begin
 
-  do_something1
-rescue RuntimeError
-  do_something2
-rescue ArgumentError => ex
-  do_something3
-rescue
-  do_something3
-else
-  do_something4
-ensure
-  do_something4
+        do_something1
+      rescue RuntimeError
+        do_something2
+      rescue ArgumentError => ex
+        do_something3
+      rescue
+        do_something3
+      else
+        do_something4
+      ensure
+        do_something4
 
-end
+      end
     END
-    let(:correction) { <<-END }
-begin
-  do_something1
-rescue RuntimeError
-  do_something2
-rescue ArgumentError => ex
-  do_something3
-rescue
-  do_something3
-else
-  do_something4
-ensure
-  do_something4
-end
+    let(:correction) { <<-END.strip_indent }
+      begin
+        do_something1
+      rescue RuntimeError
+        do_something2
+      rescue ArgumentError => ex
+        do_something3
+      rescue
+        do_something3
+      else
+        do_something4
+      ensure
+        do_something4
+      end
     END
 
     it 'registers many offenses' do
@@ -185,16 +185,16 @@ end
   end
 
   include_examples :accepts, 'begin block without empty line', <<-END
-begin
-  foo
-end
+    begin
+      foo
+    end
   END
   include_examples :accepts,
                    'begin block without empty line in a method', <<-END
-def foo
-  begin
-    bar
-  end
-end
+    def foo
+      begin
+        bar
+      end
+    end
   END
 end
