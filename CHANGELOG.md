@@ -2627,3 +2627,4 @@
 [@backus]: https://github.com/backus
 [@pat]: https://github.com/pat
 [@sinsoku]: https://github.com/sinsoku
+[@konumashuri]: https://github.com/konumashuri
