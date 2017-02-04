@@ -26,7 +26,8 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBeginBody do
     end
   end
 
-  include_examples :offense, 'begin body starting', 'beginning', <<-CODE, <<-CORRECTION
+  include_examples :offense, 'begin body starting', 'beginning',
+                   <<-CODE, <<-CORRECTION
     begin
 
       foo
@@ -47,7 +48,8 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBeginBody do
     end
   CORRECTION
   include_examples :offense,
-                   'begin body starting in method', 'beginning', <<-CODE, <<-CORRECTION
+                   'begin body starting in method', 'beginning',
+                   <<-CODE, <<-CORRECTION
     def bar
       begin
 
@@ -78,7 +80,8 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBeginBody do
   CORRECTION
 
   include_examples :offense,
-                   'begin body starting with rescue', 'beginning', <<-CODE, <<-CORRECTION
+                   'begin body starting with rescue', 'beginning',
+                   <<-CODE, <<-CORRECTION
     begin
 
       foo
