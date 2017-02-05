@@ -693,6 +693,14 @@ Style/IndentHash:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
+Style/IndentHeredoc:
+  EnforcedStyle: ruby23
+  SupportedStyles:
+    - ruby23
+    - active_support
+    - powerpack
+    - unindent
+
 Style/Lambda:
   EnforcedStyle: line_count_dependent
   SupportedStyles:
