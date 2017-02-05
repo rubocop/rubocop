@@ -18,6 +18,7 @@
 * [#3944](https://github.com/bbatsov/rubocop/issues/3944): Allow keyword arguments in `Style/RaiseArgs` cop. ([@mikegee][])
 * Add auto-correct to `Performance/DoubleStartEndWith`. ([@rrosenblum][])
 * [#3951](https://github.com/bbatsov/rubocop/pull/3951): Make `Rails/Date` cop to register an offence for a string without timezone. ([@sinsoku][])
+* [#4020](https://github.com/bbatsov/rubocop/pull/4020): Fixed `new_cop.rake` suggested path. ([@dabroz][])
 
 ### Bug fixes
 
@@ -2630,3 +2631,4 @@
 [@pat]: https://github.com/pat
 [@sinsoku]: https://github.com/sinsoku
 [@onk]: https://github.com/onk
+[@dabroz]: https://github.com/dabroz
