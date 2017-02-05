@@ -2213,6 +2213,27 @@ This cop checks for multi-line ternary op expressions.
 
 * [https://github.com/bbatsov/ruby-style-guide#no-multiline-ternary](https://github.com/bbatsov/ruby-style-guide#no-multiline-ternary)
 
+## Style/MultipleComparison
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks against comparing a variable with multiple items, where
+`Array#include?` could be used instead to avoid code repetition.
+
+### Example
+
+```ruby
+# bad
+a = 'a'
+foo if a == 'a' || a == 'b' || a == 'c'
+
+# good
+a = 'a'
+foo if ['a', 'b', 'c'].include?(a)
+```
+
 ## Style/MutableConstant
 
 Enabled by default | Supports autocorrection
@@ -4073,12 +4094,18 @@ way as they would be ordered in spoken English.
 # bad
 99 == foo
 "bar" == foo
+42 >= foo
 ```
 ```ruby
 # good
 foo == 99
 foo == "bar"
+for <= 42
 ```
+
+### References
+
+* [https://en.wikipedia.org/wiki/Yoda_conditions](https://en.wikipedia.org/wiki/Yoda_conditions)
 
 ## Style/ZeroLengthPredicate
 

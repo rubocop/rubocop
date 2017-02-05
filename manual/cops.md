@@ -381,6 +381,7 @@ In the following section you find all available cops:
 * [Style/MultilineIfThen](cops_style.md#stylemultilineifthen)
 * [Style/MultilineMemoization](cops_style.md#stylemultilinememoization)
 * [Style/MultilineTernaryOperator](cops_style.md#stylemultilineternaryoperator)
+* [Style/MultipleComparison](cops_style.md#stylemultiplecomparison)
 * [Style/MutableConstant](cops_style.md#stylemutableconstant)
 * [Style/NegatedIf](cops_style.md#stylenegatedif)
 * [Style/NegatedWhile](cops_style.md#stylenegatedwhile)

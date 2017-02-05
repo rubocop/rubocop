@@ -680,6 +680,12 @@ Style/MultilineTernaryOperator:
   StyleGuide: '#no-multiline-ternary'
   Enabled: true
 
+Style/MultipleComparison:
+  Description: >-
+                 Avoid comparing a variable with multiple items in a conditional,
+                 use Array#include? instead.
+  Enabled: true
+
 Style/MutableConstant:
   Description: 'Do not assign mutable objects to constants.'
   Enabled: true
