@@ -9,9 +9,11 @@
 * [#3800](https://github.com/bbatsov/rubocop/issues/3800): Make `Style/EndOfLine` configurable with `lf`, `crlf`, and `native` (default) styles. ([@jonas054][])
 * [#3936](https://github.com/bbatsov/rubocop/issues/3936): Add new `Style/MixinGrouping` cop. ([@drenmi][])
 * [#3994](https://github.com/bbatsov/rubocop/issues/3994): Add new cop `Rails/FindByArg` checks for invalid arguments for `find_by`. ([@konumashuri][])
+* [#3984](https://github.com/bbatsov/rubocop/pull/3984): Add new `Style/EmptyLinesAroundBeginBody` cop. ([@pocke][])
 
 ### Changes
 
+* [#4012](https://github.com/bbatsov/rubocop/pull/4012): Mark `foo[:bar]` as not complex in `Style/TernaryParentheses` cop with `require_parentheses_when_complex` style. ([@onk][])
 * [#3915](https://github.com/bbatsov/rubocop/issues/3915): Make configurable whitelist for `Lint/SafeNavigationChain` cop. ([@pocke][])
 * [#3944](https://github.com/bbatsov/rubocop/issues/3944): Allow keyword arguments in `Style/RaiseArgs` cop. ([@mikegee][])
 * Add auto-correct to `Performance/DoubleStartEndWith`. ([@rrosenblum][])
@@ -2628,3 +2630,4 @@
 [@pat]: https://github.com/pat
 [@sinsoku]: https://github.com/sinsoku
 [@konumashuri]: https://github.com/konumashuri
+[@onk]: https://github.com/onk

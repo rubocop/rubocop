@@ -223,6 +223,10 @@ Style/EmptyLinesAroundAccessModifier:
   Description: "Keep blank lines around access modifiers."
   Enabled: true
 
+Style/EmptyLinesAroundBeginBody:
+  Description: "Keeps track of empty lines around begin-end bodies."
+  Enabled: true
+
 Style/EmptyLinesAroundBlockBody:
   Description: "Keeps track of empty lines around block bodies."
   Enabled: true
