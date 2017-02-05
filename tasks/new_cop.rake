@@ -107,7 +107,7 @@ created
 Do 4 steps
 - Add an entry to `New feature` section in CHANGELOG.md
   - e.g. Add new `#{badge.cop_name}` cop. ([@your_id][])
-- Add `require '#{cop_path.gsub(/\.rb$/, '')}'` into lib/rubocop.rb
+- Add `require '#{cop_path.gsub(/\.rb$/, '').gsub(%r{^lib/}, '')}'` into lib/rubocop.rb
 - Add an entry into config/enabled.yml or config/disabled.yml
 - Implement a new cop to the generated file!
   END
