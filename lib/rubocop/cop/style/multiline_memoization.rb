@@ -3,10 +3,11 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks that multiline memoizations are wrapped in a `begin`
-      # and `end` block.
+      # This cop checks expressions wrapping styles for multiline memoization.
       #
       # @example
+      #
+      #   # EnforcedStyle: keyword (default)
       #
       #   @bad
       #   foo ||= (
@@ -19,13 +20,31 @@ module RuboCop
       #     bar
       #     baz
       #   end
+      #
+      # @example
+      #
+      #   # EnforcedStyle: braces
+      #
+      #   @bad
+      #   foo ||= begin
+      #     bar
+      #     baz
+      #   end
+      #
+      #   @good
+      #   foo ||= (
+      #     bar
+      #     baz
+      #   )
       class MultilineMemoization < Cop
+        include ConfigurableEnforcedStyle
+
         MSG = 'Wrap multiline memoization blocks in `begin` and `end`.'.freeze
 
         def on_or_asgn(node)
           _lhs, rhs = *node
 
-          return unless rhs.multiline? && rhs.begin_type?
+          return unless bad_rhs?(rhs)
 
           add_offense(rhs, node.source_range, MSG)
         end
@@ -34,8 +53,22 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            corrector.replace(node.loc.begin, 'begin')
-            corrector.replace(node.loc.end, 'end')
+            if style == :keyword
+              corrector.replace(node.loc.begin, 'begin')
+              corrector.replace(node.loc.end, 'end')
+            else
+              corrector.replace(node.loc.begin, '(')
+              corrector.replace(node.loc.end, ')')
+            end
+          end
+        end
+
+        def bad_rhs?(rhs)
+          return false unless rhs.multiline?
+          if style == :keyword
+            rhs.begin_type?
+          else
+            rhs.kwbegin_type?
           end
         end
       end

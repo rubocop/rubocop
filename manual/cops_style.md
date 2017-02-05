@@ -3257,12 +3257,13 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
-This cop checks that multiline memoizations are wrapped in a `begin`
-and `end` block.
+This cop checks expressions wrapping styles for multiline memoization.
 
 ### Example
 
 ```ruby
+# EnforcedStyle: keyword (default)
+
 # bad
 foo ||= (
   bar
@@ -3275,6 +3276,29 @@ foo ||= begin
   baz
 end
 ```
+```ruby
+# EnforcedStyle: braces
+
+# bad
+foo ||= begin
+  bar
+  baz
+end
+
+# good
+foo ||= (
+  bar
+  baz
+)
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+EnforcedStyle | keyword
+SupportedStyles | keyword, braces
+
 
 ## Style/MultilineMethodCallBraceLayout
 

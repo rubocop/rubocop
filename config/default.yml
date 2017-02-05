@@ -782,6 +782,12 @@ Style/MultilineHashBraceLayout:
     - new_line
     - same_line
 
+Style/MultilineMemoization:
+  EnforcedStyle: keyword
+  SupportedStyles:
+    - keyword
+    - braces
+
 Style/MultilineMethodCallBraceLayout:
   EnforcedStyle: symmetrical
   SupportedStyles:
