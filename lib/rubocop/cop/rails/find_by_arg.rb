@@ -15,12 +15,12 @@ module RuboCop
       class FindByArg < Cop
         MSG = '`find_by(arg)` may not work.' \
               'Use `find_by(column: arg)` instead.'.freeze
-        METHODS = [:find_by, :find_by!]
+        METHODS = [:find_by, :find_by!].freeze
 
         def on_send(node)
           _receiver, method_name, *args = *node
           return unless METHODS.any? { |method| method == method_name }
-          return if args.all? { |arg| arg.hash_type? }
+          return if args.all?(&:hash_type?)
           add_offense(node, :expression)
         end
       end
