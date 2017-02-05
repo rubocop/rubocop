@@ -1522,6 +1522,10 @@ Rails/FindBy:
   StyleGuide: 'https://github.com/bbatsov/rails-style-guide#find_by'
   Enabled: true
 
+Rails/FindByArg:
+  Description: '`find_by(arg)` may not work. Use find_by(column: arg) instead.'
+  Enabled: true
+
 Rails/FindEach:
   Description: 'Prefer all.find_each over all.find.'
   StyleGuide: 'https://github.com/bbatsov/rails-style-guide#find-each'
