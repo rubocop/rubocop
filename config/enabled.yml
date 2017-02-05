@@ -1108,6 +1108,7 @@ Lint/ElseLayout:
 Lint/EmptyEnsure:
   Description: 'Checks for empty ensure block.'
   Enabled: true
+  AutoCorrect: false
 
 Lint/EmptyExpression:
   Description: 'Checks for empty expressions.'
