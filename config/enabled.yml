@@ -390,6 +390,11 @@ Style/IndentHash:
   Description: 'Checks the indentation of the first key in a hash literal.'
   Enabled: true
 
+Style/IndentHeredoc:
+  Description: 'This cops checks the indentation of the here document bodies.'
+  StyleGuide: '#squiggly-heredocs'
+  Enabled: true
+
 Style/InfiniteLoop:
   Description: 'Use Kernel#loop for infinite loops.'
   StyleGuide: '#infinite-loop'

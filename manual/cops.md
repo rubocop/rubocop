@@ -295,6 +295,7 @@ In the following section you find all available cops:
 * [Style/IndentArray](cops_style.md#styleindentarray)
 * [Style/IndentAssignment](cops_style.md#styleindentassignment)
 * [Style/IndentHash](cops_style.md#styleindenthash)
+* [Style/IndentHeredoc](cops_style.md#styleindentheredoc)
 * [Style/IndentationConsistency](cops_style.md#styleindentationconsistency)
 * [Style/IndentationWidth](cops_style.md#styleindentationwidth)
 * [Style/InfiniteLoop](cops_style.md#styleinfiniteloop)

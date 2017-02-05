@@ -2434,6 +2434,49 @@ SupportedStyles | special_inside_parentheses, consistent, align_braces
 IndentationWidth | 
 
 
+## Style/IndentHeredoc
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cops checks the indentation of the here document bodies. The bodies
+are indented one step.
+In Ruby 2.3 or newer, squiggly heredocs (`<<~`) should be used. If you
+use the older rubies, you should introduce some library to your project
+(e.g. ActiveSupport, Powerpack or Unindent).
+
+### Example
+
+```ruby
+# bad
+<<-END
+something
+END
+
+# good
+<<~END
+  something
+END
+
+# good
+<<~END.strip_heredoc
+  something
+END
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+EnforcedStyle | ruby23
+SupportedStyles | ruby23, active_support, powerpack, unindent
+
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#squiggly-heredocs](https://github.com/bbatsov/ruby-style-guide#squiggly-heredocs)
+
 ## Style/IndentationConsistency
 
 Enabled by default | Supports autocorrection
