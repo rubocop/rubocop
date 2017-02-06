@@ -227,6 +227,14 @@ describe RuboCop::Cop::Style::WordArray, :config do
     end
   end
 
+  context 'when the WordRegex configuration is not a Regexp' do
+    let(:cop_config) { { 'WordRegex' => 'just_a_string' } }
+
+    it 'still parses the code without raising an error' do
+      expect { inspect_source(cop, '') }.to_not raise_error
+    end
+  end
+
   context 'with a WordRegex configuration which accepts almost anything' do
     let(:cop_config) { { 'MinSize' => 0, 'WordRegex' => /\S+/ } }
 

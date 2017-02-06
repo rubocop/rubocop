@@ -32,6 +32,7 @@
 * [#3242](https://github.com/bbatsov/rubocop/issues/3242): Ignore `Errno::ENOENT` during cache cleanup from `File.mtime` too. ([@mikegee][])
 * [#3958](https://github.com/bbatsov/rubocop/issues/3958): `Style/SpaceInsideHashLiteralBraces` doesn't add and offence when checking an hash where a value is a left brace string (e.g. { k: '{' }). ([@nodo][])
 * [#4006](https://github.com/bbatsov/rubocop/issues/4006): Prevent `Style/WhileUntilModifier` from breaking on a multiline modifier. ([@drenmi][])
+* [#3345](https://github.com/bbatsov/rubocop/issues/3345): Allow `Style/WordArray`'s `WordRegex` configuration value to be an instance of `String`. ([@mikegee][])
 
 ## 0.47.1 (2017-01-18)
 
