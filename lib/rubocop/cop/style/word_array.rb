@@ -81,7 +81,7 @@ module RuboCop
         end
 
         def word_regex
-          cop_config['WordRegex']
+          Regexp.new(cop_config['WordRegex'])
         end
 
         def correct_percent(node)
