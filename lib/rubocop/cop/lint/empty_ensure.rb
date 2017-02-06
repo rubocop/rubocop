@@ -50,6 +50,12 @@ module RuboCop
 
           add_offense(node, :keyword) unless ensure_body
         end
+
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.remove(node.loc.keyword)
+          end
+        end
       end
     end
   end

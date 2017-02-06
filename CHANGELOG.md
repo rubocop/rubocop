@@ -8,13 +8,19 @@
 * [#3889](https://github.com/bbatsov/rubocop/pull/3889): Add new `Style/EmptyLineAfterMagicComment` cop. ([@backus][])
 * [#3800](https://github.com/bbatsov/rubocop/issues/3800): Make `Style/EndOfLine` configurable with `lf`, `crlf`, and `native` (default) styles. ([@jonas054][])
 * [#3936](https://github.com/bbatsov/rubocop/issues/3936): Add new `Style/MixinGrouping` cop. ([@drenmi][])
+* [#3984](https://github.com/bbatsov/rubocop/pull/3984): Add new `Style/EmptyLinesAroundBeginBody` cop. ([@pocke][])
+* [#3995](https://github.com/bbatsov/rubocop/pull/3995): Add new `Style/EmptyLinesAroundExceptionHandlingKeywords` cop. ([@pocke][])
+* [#4019](https://github.com/bbatsov/rubocop/pull/4019): Make configurable `Style/MultilineMemoization` cop. ([@pocke][])
+* [#4018](https://github.com/bbatsov/rubocop/pull/4018): Add autocorrect `Lint/EmptyEnsure` cop. ([@pocke][])
 
 ### Changes
 
+* [#4012](https://github.com/bbatsov/rubocop/pull/4012): Mark `foo[:bar]` as not complex in `Style/TernaryParentheses` cop with `require_parentheses_when_complex` style. ([@onk][])
 * [#3915](https://github.com/bbatsov/rubocop/issues/3915): Make configurable whitelist for `Lint/SafeNavigationChain` cop. ([@pocke][])
 * [#3944](https://github.com/bbatsov/rubocop/issues/3944): Allow keyword arguments in `Style/RaiseArgs` cop. ([@mikegee][])
 * Add auto-correct to `Performance/DoubleStartEndWith`. ([@rrosenblum][])
 * [#3951](https://github.com/bbatsov/rubocop/pull/3951): Make `Rails/Date` cop to register an offence for a string without timezone. ([@sinsoku][])
+* [#4020](https://github.com/bbatsov/rubocop/pull/4020): Fixed `new_cop.rake` suggested path. ([@dabroz][])
 
 ### Bug fixes
 
@@ -24,6 +30,8 @@
 * [#3959](https://github.com/bbatsov/rubocop/issues/3959): Don't wrap "percent arrays" with extra brackets when autocorrecting `Style/MutableConstant`. ([@mikegee][])
 * [#3978](https://github.com/bbatsov/rubocop/pull/3978): Fix false positive in `Performance/RegexpMatch` with `English` module. ([@pocke][])
 * [#3242](https://github.com/bbatsov/rubocop/issues/3242): Ignore `Errno::ENOENT` during cache cleanup from `File.mtime` too. ([@mikegee][])
+* [#3958](https://github.com/bbatsov/rubocop/issues/3958): `Style/SpaceInsideHashLiteralBraces` doesn't add and offence when checking an hash where a value is a left brace string (e.g. { k: '{' }). ([@nodo][])
+* [#4006](https://github.com/bbatsov/rubocop/issues/4006): Prevent `Style/WhileUntilModifier` from breaking on a multiline modifier. ([@drenmi][])
 
 ## 0.47.1 (2017-01-18)
 
@@ -2625,3 +2633,6 @@
 [@backus]: https://github.com/backus
 [@pat]: https://github.com/pat
 [@sinsoku]: https://github.com/sinsoku
+[@nodo]: https://github.com/nodo
+[@onk]: https://github.com/onk
+[@dabroz]: https://github.com/dabroz

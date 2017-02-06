@@ -388,7 +388,6 @@ describe RuboCop::CLI, :isolated_environment do
                  '  BlockB do |_portfolio|',
                  '    foo',
                  '  end',
-                 '',
                  'rescue => e # some problem',
                  '  bar',
                  'end',

@@ -214,4 +214,12 @@ describe RuboCop::Cop::Style::SpaceInsideHashLiteralBraces, :config do
       expect(cop.offenses).to be_empty
     end
   end
+
+  context 'on { key: "{" }' do
+    # regression test; see GH issue 3958
+    it 'does not register an offense' do
+      inspect_source(cop, '{ key: "{" }')
+      expect(cop.offenses).to be_empty
+    end
+  end
 end
