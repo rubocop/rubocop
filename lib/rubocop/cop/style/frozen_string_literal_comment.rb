@@ -12,7 +12,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include FrozenStringLiteral
 
-        MSG = 'Missing frozen string literal comment.'.freeze
+        MSG = 'Missing magic comment `# frozen_string_literal: true`.'.freeze
         MSG_UNNECESSARY = 'Unnecessary frozen string literal comment.'.freeze
         SHEBANG = '#!'.freeze
 

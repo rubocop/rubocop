@@ -223,12 +223,20 @@ Style/EmptyLinesAroundAccessModifier:
   Description: "Keep blank lines around access modifiers."
   Enabled: true
 
+Style/EmptyLinesAroundBeginBody:
+  Description: "Keeps track of empty lines around begin-end bodies."
+  Enabled: true
+
 Style/EmptyLinesAroundBlockBody:
   Description: "Keeps track of empty lines around block bodies."
   Enabled: true
 
 Style/EmptyLinesAroundClassBody:
   Description: "Keeps track of empty lines around class bodies."
+  Enabled: true
+
+Style/EmptyLinesAroundExceptionHandlingKeywords:
+  Description: "Keeps track of empty lines around exception handling keywords."
   Enabled: true
 
 Style/EmptyLinesAroundModuleBody:
@@ -424,6 +432,11 @@ Style/MethodName:
 Style/MethodMissing:
   Description: 'Avoid using `method_missing`.'
   StyleGuide: '#no-method-missing'
+  Enabled: true
+
+Style/MixinGrouping:
+  Description: 'Checks for grouping of mixins in `class` and `module` bodies.'
+  StyleGuide: '#mixin-grouping'
   Enabled: true
 
 Style/ModuleFunction:

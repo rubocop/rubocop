@@ -9,7 +9,8 @@ module RuboCop
     # Offenses are displayed at compact form - just the
     # location of the problem and the associated message.
     class SimpleTextFormatter < BaseFormatter
-      include Colorizable, PathUtil
+      include Colorizable
+      include PathUtil
 
       COLOR_FOR_SEVERITY = {
         refactor:   :yellow,
@@ -90,7 +91,8 @@ module RuboCop
 
       # A helper class for building the report summary text.
       class Report
-        include Colorizable, TextUtil
+        include Colorizable
+        include TextUtil
 
         def initialize(file_count, offense_count, correction_count, rainbow)
           @file_count = file_count

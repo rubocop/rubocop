@@ -57,7 +57,7 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
                       'end'])
       expect(cop.messages)
         .to eq(['Assignment Branch Condition size for method_name is too ' \
-                'high. [6.4/0]']) # sqrt(1*1 + 5*5 + 2*2) => 6.4
+                'high. [6.4/0]']) # sqrt(1*1 + 6*6 + 2*2) => 6.4
     end
 
     context 'target_ruby_version >= 2.3', :ruby23 do

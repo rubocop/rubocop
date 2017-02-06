@@ -1284,6 +1284,33 @@ Enabled | Yes
 
 Access modifiers should be surrounded by blank lines.
 
+## Style/EmptyLinesAroundBeginBody
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cops checks if empty lines exist around the bodies of begin-end
+blocks.
+
+### Example
+
+```ruby
+# good
+
+begin
+  ...
+end
+
+# bad
+
+begin
+
+  ...
+
+end
+```
+
 ## Style/EmptyLinesAroundBlockBody
 
 Enabled by default | Supports autocorrection
@@ -1355,6 +1382,70 @@ Attribute | Value
 EnforcedStyle | no_empty_lines
 SupportedStyles | empty_lines, empty_lines_except_namespace, empty_lines_special, no_empty_lines
 
+
+## Style/EmptyLinesAroundExceptionHandlingKeywords
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cops checks if empty lines exist around the bodies of `begin`
+sections. This cop doesn't check empty lines at `begin` body
+beginning/end and around method definition body.
+`Style/EmptyLinesAroundBeginBody` or `Style/EmptyLinesAroundMethodBody`
+can be used for this purpose.
+
+### Example
+
+```ruby
+# good
+
+begin
+  do_something
+rescue
+  do_something2
+else
+  do_something3
+ensure
+  do_something4
+end
+
+# good
+
+def foo
+  do_something
+rescue
+  do_something2
+end
+
+# bad
+
+begin
+  do_something
+
+rescue
+
+  do_something2
+
+else
+
+  do_something3
+
+ensure
+
+  do_something4
+end
+
+# bad
+
+def foo
+  do_something
+
+rescue
+
+  do_something2
+end
+```
 
 ## Style/EmptyLinesAroundMethodBody
 
@@ -2764,6 +2855,58 @@ Attribute | Value
 EnforcedStyle | both
 SupportedStyles | if, case, both
 
+
+## Style/MixinGrouping
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks for grouping of mixins in `class` and `module` bodies.
+By default it enforces mixins to be placed in separate declarations,
+but it can be configured to enforce grouping them in one declaration.
+
+### Example
+
+```ruby
+EnforcedStyle: separated (default)
+
+# bad
+class Foo
+  include Bar, Qox
+end
+
+# good
+class Foo
+  include Bar
+  include Qox
+end
+
+EnforcedStyle: grouped
+
+# bad
+class Foo
+  extend Bar
+  extend Qox
+end
+
+# good
+class Foo
+  extend Bar, Qox
+end
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+EnforcedStyle | separated
+SupportedStyles | separated, grouped
+
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#mixin-grouping](https://github.com/bbatsov/ruby-style-guide#mixin-grouping)
 
 ## Style/ModuleFunction
 
