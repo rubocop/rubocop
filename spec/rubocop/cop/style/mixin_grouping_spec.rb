@@ -120,6 +120,22 @@ describe RuboCop::Cop::Style::MixinGrouping, :config do
                          'end'].join("\n")
       end
     end
+
+    context 'with module class' do
+      it_behaves_like 'code without offense',
+                      ['module Foo',
+                       '  include Bar',
+                       '  prepend Baz',
+                       '  extend Baz',
+                       'end'].join("\n")
+    end
+
+    context 'when not using Module methods' do
+      it_behaves_like 'code without offense',
+                      ['RSpec.configure do |config|',
+                       '  config.include MyHelpers, type: :controller',
+                       'end'].join("\n")
+    end
   end
 
   context 'when configured with grouped style' do
@@ -205,6 +221,24 @@ describe RuboCop::Cop::Style::MixinGrouping, :config do
                          '  include Bar',
                          '  prepend Baz',
                          '  extend Baz',
+                         'end'].join("\n")
+      end
+    end
+
+    context 'when not using Module methods' do
+      context 'when using a instance method named `include`' do
+        it_behaves_like 'code without offense',
+                        ['RSpec.configure do |config|',
+                         '  config.include Foo',
+                         '  config.include Bar',
+                         'end'].join("\n")
+      end
+
+      context 'when using a method with literal node arguments' do
+        it_behaves_like 'code without offense',
+                        ['RSpec.configure do |config|',
+                         '  config.include Foo: :bar',
+                         '  config.include Foo',
                          'end'].join("\n")
       end
     end
