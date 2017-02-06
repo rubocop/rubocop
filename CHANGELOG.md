@@ -28,6 +28,7 @@
 * [#3959](https://github.com/bbatsov/rubocop/issues/3959): Don't wrap "percent arrays" with extra brackets when autocorrecting `Style/MutableConstant`. ([@mikegee][])
 * [#3978](https://github.com/bbatsov/rubocop/pull/3978): Fix false positive in `Performance/RegexpMatch` with `English` module. ([@pocke][])
 * [#3242](https://github.com/bbatsov/rubocop/issues/3242): Ignore `Errno::ENOENT` during cache cleanup from `File.mtime` too. ([@mikegee][])
+* [#3958](https://github.com/bbatsov/rubocop/issues/3958): `Style/SpaceInsideHashLiteralBraces` doesn't add and offence when checking an hash where a value is a left brace string (e.g. { k: '{' }). ([@nodo][])
 * [#4006](https://github.com/bbatsov/rubocop/issues/4006): Prevent `Style/WhileUntilModifier` from breaking on a multiline modifier. ([@drenmi][])
 
 ## 0.47.1 (2017-01-18)
@@ -2630,5 +2631,6 @@
 [@backus]: https://github.com/backus
 [@pat]: https://github.com/pat
 [@sinsoku]: https://github.com/sinsoku
+[@nodo]: https://github.com/nodo
 [@onk]: https://github.com/onk
 [@dabroz]: https://github.com/dabroz
