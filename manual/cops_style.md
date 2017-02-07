@@ -1276,6 +1276,10 @@ Enabled | Yes
 
 This cops checks for two or more consecutive blank lines.
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#two-or-more-empty-lines](https://github.com/bbatsov/ruby-style-guide#two-or-more-empty-lines)
+
 ## Style/EmptyLinesAroundAccessModifier
 
 Enabled by default | Supports autocorrection
@@ -1283,6 +1287,10 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 Access modifiers should be surrounded by blank lines.
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#empty-lines-around-access-modifier](https://github.com/bbatsov/ruby-style-guide#empty-lines-around-access-modifier)
 
 ## Style/EmptyLinesAroundBeginBody
 
@@ -1310,6 +1318,10 @@ begin
 
 end
 ```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#empty-lines-around-bodies](https://github.com/bbatsov/ruby-style-guide#empty-lines-around-bodies)
 
 ## Style/EmptyLinesAroundBlockBody
 
@@ -1350,6 +1362,10 @@ EnforcedStyle | no_empty_lines
 SupportedStyles | empty_lines, no_empty_lines
 
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#empty-lines-around-bodies](https://github.com/bbatsov/ruby-style-guide#empty-lines-around-bodies)
+
 ## Style/EmptyLinesAroundClassBody
 
 Enabled by default | Supports autocorrection
@@ -1382,6 +1398,10 @@ Attribute | Value
 EnforcedStyle | no_empty_lines
 SupportedStyles | empty_lines, empty_lines_except_namespace, empty_lines_special, no_empty_lines
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#empty-lines-around-bodies](https://github.com/bbatsov/ruby-style-guide#empty-lines-around-bodies)
 
 ## Style/EmptyLinesAroundExceptionHandlingKeywords
 
@@ -1447,6 +1467,10 @@ rescue
 end
 ```
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#empty-lines-around-bodies](https://github.com/bbatsov/ruby-style-guide#empty-lines-around-bodies)
+
 ## Style/EmptyLinesAroundMethodBody
 
 Enabled by default | Supports autocorrection
@@ -1472,6 +1496,10 @@ def bar
 
 end
 ```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#empty-lines-around-bodies](https://github.com/bbatsov/ruby-style-guide#empty-lines-around-bodies)
 
 ## Style/EmptyLinesAroundModuleBody
 
@@ -1515,6 +1543,10 @@ Attribute | Value
 EnforcedStyle | no_empty_lines
 SupportedStyles | empty_lines, empty_lines_except_namespace, empty_lines_special, no_empty_lines
 
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#empty-lines-around-bodies](https://github.com/bbatsov/ruby-style-guide#empty-lines-around-bodies)
 
 ## Style/EmptyLiteral
 
