@@ -3,7 +3,8 @@
 module RuboCop
   module Cop
     module Rails
-      # This cop checks whether constant are relative date.
+      # This cop checks whether constant value isn't relative date.
+      # Because the relative date will be evaluated only once.
       #
       # @example
       #   # bad
