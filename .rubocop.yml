@@ -16,6 +16,9 @@ Style/Encoding:
 Style/FrozenStringLiteralComment:
   EnforcedStyle: always
 
+Style/IndentHeredoc:
+  EnforcedStyle: powerpack
+
 Metrics/BlockLength:
   Exclude:
     - 'Rakefile'

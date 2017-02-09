@@ -91,25 +91,25 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
 
   describe '.patch' do
     let(:source) do
-      <<-EOS
-patch :update,
-          id: @user.id,
-          ac: {
-            article_id: @article1.id,
-            profile_id: @profile1.id,
-            content: 'Some Text'
-          }
-EOS
+      <<-EOS.strip_indent
+        patch :update,
+                  id: @user.id,
+                  ac: {
+                    article_id: @article1.id,
+                    profile_id: @profile1.id,
+                    content: 'Some Text'
+                  }
+      EOS
     end
 
     let(:corrected_result) do
-      <<-EOS
-patch :update, params: { id: @user.id, ac: {
-            article_id: @article1.id,
-            profile_id: @profile1.id,
-            content: 'Some Text'
-          } }
-EOS
+      <<-EOS.strip_indent
+        patch :update, params: { id: @user.id, ac: {
+                    article_id: @article1.id,
+                    profile_id: @profile1.id,
+                    content: 'Some Text'
+                  } }
+      EOS
     end
 
     it 'registers an offense' do
@@ -125,24 +125,24 @@ EOS
 
   describe '.post' do
     let(:source) do
-      <<-EOS
-post :create,
-          id: @user.id,
-          ac: {
-            article_id: @article1.id,
-            profile_id: @profile1.id,
-            content: 'Some Text'
-          }
+      <<-EOS.strip_indent
+        post :create,
+                  id: @user.id,
+                  ac: {
+                    article_id: @article1.id,
+                    profile_id: @profile1.id,
+                    content: 'Some Text'
+                  }
       EOS
     end
 
     let(:corrected_result) do
-      <<-EOS
-post :create, params: { id: @user.id, ac: {
-            article_id: @article1.id,
-            profile_id: @profile1.id,
-            content: 'Some Text'
-          } }
+      <<-EOS.strip_indent
+        post :create, params: { id: @user.id, ac: {
+                    article_id: @article1.id,
+                    profile_id: @profile1.id,
+                    content: 'Some Text'
+                  } }
       EOS
     end
 
