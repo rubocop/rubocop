@@ -24,24 +24,27 @@ module RuboCop
         RELATIVE_DATE_METHODS = %i(ago from_now since until).freeze
 
         def on_casgn(node)
-          value = node.child_nodes.last
-          check(value)
+          bad_node = node.descendants.find { |n| bad_method?(n) }
+          return unless bad_node
+
+          add_offense(node, :expression, format(MSG, bad_node.method_name))
         end
 
         private
-
-        def check(node)
-          if bad_method?(node)
-            add_offense(node, :expression, format(MSG, node.method_name))
-          else
-            node.each_child_node { |n| check(n) }
-          end
-        end
 
         def bad_method?(node)
           node.send_type? &&
             RELATIVE_DATE_METHODS.include?(node.method_name) &&
             node.method_args.empty?
+        end
+
+        def autocorrect(node)
+          _scope, const_name, value = *node
+          indent = ' ' * node.loc.column
+          new_code = ["def self.#{const_name.downcase}",
+                      "#{indent}#{value.source}",
+                      'end'].join("\n#{indent}")
+          ->(corrector) { corrector.replace(node.source_range, new_code) }
         end
       end
     end

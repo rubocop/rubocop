@@ -36,4 +36,16 @@ describe RuboCop::Cop::Rails::RelativeDateConstant do
                     'end'])
     expect(cop.offenses.size).to eq(1)
   end
+
+  it 'autocorrects' do
+    new_source = autocorrect_source(cop,
+                                    ['class SomeClass',
+                                     '  EXPIRED_AT = 1.week.since',
+                                     'end'])
+    expect(new_source).to eq(['class SomeClass',
+                              '  def self.expired_at',
+                              '    1.week.since',
+                              '  end',
+                              'end'].join("\n"))
+  end
 end

@@ -490,7 +490,7 @@ Include | app/models/\*\*/\*.rb
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | No
+Enabled | Yes
 
 This cop checks whether constant are relative date.
 
