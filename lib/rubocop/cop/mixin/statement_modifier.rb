@@ -13,7 +13,8 @@ module RuboCop
       end
 
       def non_eligible_node?(node)
-        line_count(node) > 3 || commented?(node.loc.end)
+        line_count(node) > 3 ||
+          !node.modifier_form? && commented?(node.loc.end)
       end
 
       def non_eligible_body?(body)

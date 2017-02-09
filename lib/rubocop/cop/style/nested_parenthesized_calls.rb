@@ -19,34 +19,36 @@ module RuboCop
                           :start_with, :end_with, :include, :raise_error].freeze
 
         def on_send(node)
-          return unless parenthesized_call?(node)
+          return unless node.parenthesized?
 
           node.each_child_node(:send) do |nested|
-            next if nested.method_args.empty? ||
-                    parenthesized_call?(nested) ||
-                    operator?(nested.method_name) ||
-                    rspec_matcher?(node, nested) ||
-                    nested.asgn_method_call?
+            next if allowed_omission?(nested)
+
             add_offense(nested, nested.source_range, format(MSG, nested.source))
           end
         end
 
         private
 
-        def rspec_matcher?(parent, send)
-          parent.method_args.one? && # .to, .not_to, etc
-            RSPEC_MATCHERS.include?(send.method_name) &&
-            send.method_args.one?
+        def allowed_omission?(send_node)
+          !send_node.arguments? || send_node.parenthesized? ||
+            send_node.setter_method? || send_node.operator_method? ||
+            rspec_matcher?(send_node)
+        end
+
+        # TODO: Relegate this from RuboCop core
+        def rspec_matcher?(send_node)
+          send_node.parent.arguments.one? && # .to, .not_to, etc
+            RSPEC_MATCHERS.include?(send_node.method_name) &&
+            send_node.arguments.one?
         end
 
         def autocorrect(nested)
-          _scope, _method_name, *args = *nested
+          first_arg = nested.first_argument.source_range
+          last_arg = nested.last_argument.source_range
 
-          first_arg = args.first.source_range
-          last_arg = args.last.source_range
-
-          first_arg_with_space = range_with_surrounding_space(first_arg, :left)
-          leading_space = first_arg_with_space.begin.resize(1)
+          leading_space =
+            range_with_surrounding_space(first_arg, :left).begin.resize(1)
 
           lambda do |corrector|
             corrector.replace(leading_space, '(')

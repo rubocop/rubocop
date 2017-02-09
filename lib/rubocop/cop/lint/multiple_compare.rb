@@ -22,7 +22,7 @@ module RuboCop
       #   x < y && y < z
       #   10 <= x && x <= 20
       class MultipleCompare < Cop
-        MSG = 'Use `&&` operator to compare multiple value.'.freeze
+        MSG = 'Use the `&&` operator to compare multiple values.'.freeze
 
         def_node_matcher :multiple_compare?, <<-PATTERN
           (send (send _ {:< :> :<= :>=} $_) {:< :> :<= :>=} _)
@@ -30,13 +30,15 @@ module RuboCop
 
         def on_send(node)
           return unless multiple_compare?(node)
+
           add_offense(node, :expression)
         end
 
         def autocorrect(node)
+          center = multiple_compare?(node)
+          new_center = "#{center.source} && #{center.source}"
+
           lambda do |corrector|
-            center = multiple_compare?(node)
-            new_center = "#{center.source} && #{center.source}"
             corrector.replace(center.source_range, new_center)
           end
         end

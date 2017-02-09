@@ -11,13 +11,13 @@ module RuboCop
       end
 
       def on_send(node)
-        # we only want to indent relative to the receiver
-        # when the method called looks like a setter
-        return unless node.asgn_method_call?
+        return unless node.setter_method?
 
-        # This will match if, case, begin, blocks, etc.
         rhs = extract_rhs(node)
-        check_assignment(node, rhs) if rhs.is_a?(AST::Node)
+
+        return unless rhs
+
+        check_assignment(node, rhs)
       end
 
       module_function
@@ -30,7 +30,7 @@ module RuboCop
         elsif Util::ASGN_NODES.include?(node.type)
           _lhs, rhs = *node
         elsif node.send_type?
-          rhs = node.children.last
+          rhs = node.last_argument
         end
 
         rhs

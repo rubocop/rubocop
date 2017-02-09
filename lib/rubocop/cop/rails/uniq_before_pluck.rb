@@ -59,10 +59,11 @@ module RuboCop
         end
 
         def autocorrect(node)
-          send_pluck, method, *_args = *node
           lambda do |corrector|
+            method = node.method_name
+
             corrector.remove(dot_method_with_whitespace(method, node))
-            corrector.insert_before(send_pluck.loc.dot.begin, ".#{method}")
+            corrector.insert_before(node.receiver.loc.dot.begin, ".#{method}")
           end
         end
 

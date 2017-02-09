@@ -18,4 +18,4 @@ Before submitting the PR make sure the following are checked:
   and description in grammatically correct, complete sentences.
 * [ ] Updated cop documentation with `rake generate_cops_documentation` (required only when you've added a new cop or changed the configuration/documentation of an existing cop).
 
-[1]: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
+[1]: http://chris.beams.io/posts/git-commit/

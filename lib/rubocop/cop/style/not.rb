@@ -26,11 +26,10 @@ module RuboCop
 
         def autocorrect(node)
           range = range_with_surrounding_space(node.loc.selector, :right)
-          child = node.children.first
 
-          if opposite_method?(child)
-            correct_opposite_method(range, child)
-          elsif requires_parens?(child)
+          if opposite_method?(node.receiver)
+            correct_opposite_method(range, node.receiver)
+          elsif requires_parens?(node.receiver)
             correct_with_parens(range, node)
           else
             correct_without_parens(range)

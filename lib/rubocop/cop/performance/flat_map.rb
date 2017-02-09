@@ -27,8 +27,7 @@ module RuboCop
         def on_send(node)
           flat_map_candidate?(node) do |map_node, first_method, flatten, params|
             flatten_level, = *params.first
-            if cop_config['EnabledForFlattenWithoutParams'] &&
-               flatten_level.nil?
+            if cop_config['EnabledForFlattenWithoutParams'] && !flatten_level
               offense_for_levels(node, map_node, first_method, flatten)
             elsif flatten_level == 1
               offense_for_method(node, map_node, first_method, flatten)
@@ -39,12 +38,13 @@ module RuboCop
         def autocorrect(node)
           map_node, _first_method, _flatten, params = flat_map_candidate?(node)
           flatten_level, = *params.first
-          return if flatten_level.nil?
+
+          return unless flatten_level
+
+          range = range_between(node.loc.dot.begin_pos,
+                                node.source_range.end_pos)
 
           lambda do |corrector|
-            range = range_between(node.loc.dot.begin_pos,
-                                  node.source_range.end_pos)
-
             corrector.remove(range)
             corrector.replace(map_node.loc.selector, 'flat_map')
           end

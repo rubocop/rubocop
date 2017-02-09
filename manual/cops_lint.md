@@ -498,7 +498,7 @@ end
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | No
+Enabled | Yes
 
 This cop checks for empty `ensure` blocks
 
@@ -538,6 +538,13 @@ ensure
   do_something_else
 end
 ```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+AutoCorrect | false
+
 
 ## Lint/EmptyExpression
 

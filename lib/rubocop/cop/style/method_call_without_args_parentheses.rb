@@ -18,13 +18,10 @@ module RuboCop
         ASGN_NODES = [:lvasgn, :masgn] + SHORTHAND_ASGN_NODES
 
         def on_send(node)
-          _receiver, method_name, *args = *node
-
-          # methods starting with a capital letter should be skipped
-          return if method_name =~ /\A[A-Z]/
-          return unless args.empty? && node.loc.begin
+          return if node.camel_case_method?
+          return unless !node.arguments? && node.parenthesized?
           return if same_name_assignment?(node)
-          return if lambda_call_syntax?(node)
+          return if node.implicit_call?
           return if node.keyword_not?
 
           add_offense(node, :begin)
@@ -40,14 +37,12 @@ module RuboCop
         private
 
         def same_name_assignment?(node)
-          _receiver, method_name, *_args = *node
-
           any_assignment?(node) do |asgn_node|
             if asgn_node.masgn_type?
-              next variable_in_mass_assignment?(method_name, asgn_node)
+              next variable_in_mass_assignment?(node.method_name, asgn_node)
             end
 
-            asgn_node.loc.name.source == method_name.to_s
+            asgn_node.loc.name.source == node.method_name.to_s
           end
         end
 
@@ -73,11 +68,6 @@ module RuboCop
           var_nodes = *mlhs_node
 
           var_nodes.map { |n| n.to_a.first }.include?(variable_name)
-        end
-
-        # don't check `lambda.()` syntax; the Style/LambdaCall cop does that
-        def lambda_call_syntax?(node)
-          node.method_name == :call && node.loc.selector.nil?
         end
       end
     end

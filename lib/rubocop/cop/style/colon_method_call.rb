@@ -18,17 +18,10 @@ module RuboCop
           # ignore Java interop code like Java::int
           return if java_type_node?(node)
 
-          receiver, method_name, *_args = *node
-
-          # discard methods with nil receivers and op methods(like [])
-          return unless receiver && node.loc.dot && node.loc.dot.is?('::')
-          return if allowed_name(method_name.to_s)
+          return unless node.receiver && node.double_colon?
+          return if node.camel_case_method?
 
           add_offense(node, :dot)
-        end
-
-        def allowed_name(method_name)
-          method_name.match(/^[A-Z]/)
         end
 
         def autocorrect(node)

@@ -27,7 +27,7 @@ module RuboCop
               'multi-line method argument list.'.freeze
 
         def on_send(node)
-          _receiver, _name, *args = *node
+          args = node.arguments
 
           # If there is a trailing hash arg without explicit braces, like this:
           #

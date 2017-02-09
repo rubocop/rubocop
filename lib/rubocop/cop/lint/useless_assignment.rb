@@ -89,7 +89,8 @@ module RuboCop
           return unless assignment.meta_assignment_node
                                   .equal?(return_value_node)
 
-          " Use just operator `#{assignment.operator.sub(/=$/, '')}`."
+          " Use `#{assignment.operator.sub(/=$/, '')}` " \
+          "instead of `#{assignment.operator}`."
         end
 
         def similar_name_message(variable)

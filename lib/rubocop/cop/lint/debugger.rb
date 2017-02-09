@@ -53,7 +53,14 @@ module RuboCop
 
         def on_send(node)
           return unless debugger_call?(node) || binding_irb?(node)
-          add_offense(node, :expression, format(MSG, node.source))
+
+          add_offense(node, :expression)
+        end
+
+        private
+
+        def message(node)
+          format(MSG, node.source)
         end
 
         def autocorrect(node)

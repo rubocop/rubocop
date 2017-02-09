@@ -25,20 +25,19 @@ module RuboCop
         def on_dstr(node)
           node.each_child_node(:begin) do |begin_node|
             final_node = begin_node.children.last
-            next unless final_node && final_node.send_type?
 
-            receiver, method_name, *args = *final_node
-            next unless method_name == :to_s && args.empty?
+            next unless final_node && final_node.send_type? &&
+                        final_node.method?(:to_s) && !final_node.arguments?
 
-            add_offense(
-              final_node,
-              :selector,
-              receiver ? MSG_DEFAULT : MSG_SELF
-            )
+            add_offense(final_node, :selector)
           end
         end
 
         private
+
+        def message(node)
+          node.receiver ? MSG_DEFAULT : MSG_SELF
+        end
 
         def autocorrect(node)
           lambda do |corrector|

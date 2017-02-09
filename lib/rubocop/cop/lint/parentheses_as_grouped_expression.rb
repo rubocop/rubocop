@@ -21,23 +21,22 @@ module RuboCop
         MSG = '`(...)` interpreted as grouped expression.'.freeze
 
         def on_send(node)
-          _receiver, method_name, *args = *node
-          return unless args.one?
-          return if operator?(method_name) || node.asgn_method_call?
+          return unless node.arguments.one?
+          return if node.operator_method? || node.setter_method?
 
-          first_arg = args.first
-          return unless first_arg.source.start_with?('(')
+          return unless node.first_argument.source.start_with?('(')
 
           space_length = spaces_before_left_parenthesis(node)
           return unless space_length > 0
 
-          add_offense(nil, space_range(first_arg.source_range, space_length))
+          add_offense(nil, space_range(node.first_argument.source_range,
+                                       space_length))
         end
 
         private
 
         def spaces_before_left_parenthesis(node)
-          receiver, method_name, _args = *node
+          receiver = node.receiver
           receiver_length = if receiver
                               receiver.source.length
                             else
@@ -46,7 +45,7 @@ module RuboCop
           without_receiver = node.source[receiver_length..-1]
 
           # Escape question mark if any.
-          method_regexp = Regexp.escape(method_name)
+          method_regexp = Regexp.escape(node.method_name)
 
           match = without_receiver.match(/^\s*\.?\s*#{method_regexp}(\s+)\(/)
           match ? match.captures[0].length : 0

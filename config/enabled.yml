@@ -217,26 +217,42 @@ Style/EmptyLineBetweenDefs:
 
 Style/EmptyLines:
   Description: "Don't use several empty lines in a row."
+  StyleGuide: '#two-or-more-empty-lines'
   Enabled: true
 
 Style/EmptyLinesAroundAccessModifier:
   Description: "Keep blank lines around access modifiers."
+  StyleGuide: '#empty-lines-around-access-modifier'
+  Enabled: true
+
+Style/EmptyLinesAroundBeginBody:
+  Description: "Keeps track of empty lines around begin-end bodies."
+  StyleGuide: '#empty-lines-around-bodies'
   Enabled: true
 
 Style/EmptyLinesAroundBlockBody:
   Description: "Keeps track of empty lines around block bodies."
+  StyleGuide: '#empty-lines-around-bodies'
   Enabled: true
 
 Style/EmptyLinesAroundClassBody:
   Description: "Keeps track of empty lines around class bodies."
+  StyleGuide: '#empty-lines-around-bodies'
+  Enabled: true
+
+Style/EmptyLinesAroundExceptionHandlingKeywords:
+  Description: "Keeps track of empty lines around exception handling keywords."
+  StyleGuide: '#empty-lines-around-bodies'
   Enabled: true
 
 Style/EmptyLinesAroundModuleBody:
   Description: "Keeps track of empty lines around module bodies."
+  StyleGuide: '#empty-lines-around-bodies'
   Enabled: true
 
 Style/EmptyLinesAroundMethodBody:
   Description: "Keeps track of empty lines around method bodies."
+  StyleGuide: '#empty-lines-around-bodies'
   Enabled: true
 
 Style/EmptyLiteral:
@@ -1100,6 +1116,7 @@ Lint/ElseLayout:
 Lint/EmptyEnsure:
   Description: 'Checks for empty ensure block.'
   Enabled: true
+  AutoCorrect: false
 
 Lint/EmptyExpression:
   Description: 'Checks for empty expressions.'

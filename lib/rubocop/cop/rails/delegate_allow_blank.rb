@@ -16,7 +16,7 @@ module RuboCop
       class DelegateAllowBlank < Cop
         MSG = '`allow_blank` is not a valid option, use `allow_nil`.'.freeze
 
-        def_node_matcher :delegate, <<-PATTERN
+        def_node_matcher :delegate_options, <<-PATTERN
           (send nil :delegate _ $hash)
         PATTERN
 
@@ -29,7 +29,7 @@ module RuboCop
 
           return unless offending_node
 
-          add_offense(offending_node, :expression, MSG)
+          add_offense(offending_node, :expression)
         end
 
         private
@@ -41,11 +41,9 @@ module RuboCop
         end
 
         def allow_blank_option(node)
-          options_hash = delegate(node)
-
-          return unless options_hash
-
-          options_hash.pairs.find { |opt| allow_blank_option?(opt) }
+          delegate_options(node) do |hash|
+            hash.pairs.find { |opt| allow_blank_option?(opt) }
+          end
         end
       end
     end

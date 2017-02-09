@@ -4,6 +4,8 @@ module RuboCop
   module Cop
     # Common code for cops that deal with preferred methods.
     module MethodPreference
+      private
+
       def preferred_method(method)
         preferred_methods[method.to_sym]
       end

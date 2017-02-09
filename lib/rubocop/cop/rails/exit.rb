@@ -30,11 +30,9 @@ module RuboCop
         private
 
         def offending_node?(node)
-          receiver_node, method_name, *arg_nodes = *node
-
-          right_method_name?(method_name) &&
-            right_argument_count?(arg_nodes) &&
-            right_receiver?(receiver_node)
+          right_method_name?(node.method_name) &&
+            right_argument_count?(node.arguments) &&
+            right_receiver?(node.receiver)
         end
 
         def right_method_name?(method_name)
@@ -44,15 +42,17 @@ module RuboCop
         # More than 1 argument likely means it is a different
         # `exit` implementation than the one we are preventing.
         def right_argument_count?(arg_nodes)
-          arg_nodes.length <= 1
+          arg_nodes.size <= 1
         end
 
         # Only register if exit is being called explicitly on
         # Kernel or Process or if receiver node is nil for plain
         # `exit` calls.
         def right_receiver?(receiver_node)
-          return true if receiver_node.nil?
+          return true unless receiver_node
+
           _a, receiver_node_class, _c = *receiver_node
+
           EXPLICIT_RECEIVERS.include?(receiver_node_class)
         end
       end

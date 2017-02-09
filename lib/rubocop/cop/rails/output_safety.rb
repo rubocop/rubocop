@@ -30,8 +30,8 @@ module RuboCop
               'prefer `safe_join` or other Rails tag helpers instead.'.freeze
 
         def on_send(node)
-          _receiver, method_name, *_args = *node
-          ignore_node(node) if method_name == :safe_join
+          ignore_node(node) if node.method?(:safe_join)
+
           return unless !part_of_ignored_node?(node) &&
                         (looks_like_rails_html_safe?(node) ||
                         looks_like_rails_raw?(node))
@@ -42,15 +42,11 @@ module RuboCop
         private
 
         def looks_like_rails_html_safe?(node)
-          receiver, method_name, *args = *node
-
-          receiver && method_name == :html_safe && args.empty?
+          node.receiver && node.method?(:html_safe) && !node.arguments?
         end
 
         def looks_like_rails_raw?(node)
-          receiver, method_name, *args = *node
-
-          receiver.nil? && method_name == :raw && args.one?
+          node.command?(:raw) && node.arguments.one?
         end
       end
     end

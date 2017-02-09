@@ -149,7 +149,7 @@ module RuboCop
           # `lhs` is an assignment method call like `obj.attr=` or `ary[idx]=`.
           # Does `rhs` access the same value which is assigned by `lhs`?
           def accesses?(rhs, lhs)
-            if lhs.method_name == :[]=
+            if lhs.method?(:[]=)
               matching_calls(rhs, lhs.receiver, :[]).any? do |args|
                 args == lhs.method_args
               end

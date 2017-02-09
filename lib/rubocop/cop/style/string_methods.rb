@@ -11,16 +11,21 @@ module RuboCop
         MSG = 'Prefer `%s` over `%s`.'.freeze
 
         def on_send(node)
-          _receiver, method_name, *_args = *node
-          return unless preferred_methods[method_name]
-          add_offense(node, :selector,
-                      format(MSG, preferred_method(method_name), method_name))
+          return unless preferred_method(node.method_name)
+
+          add_offense(node, :selector)
+        end
+
+        private
+
+        def message(node)
+          format(MSG, preferred_method(node.method_name), node.method_name)
         end
 
         def autocorrect(node)
           lambda do |corrector|
             corrector.replace(node.loc.selector,
-                              preferred_method(node.loc.selector.source))
+                              preferred_method(node.method_name))
           end
         end
       end

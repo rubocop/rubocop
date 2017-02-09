@@ -26,15 +26,15 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          read_write_attribute?(node) do
-            add_offense(node, :selector)
-          end
+          return unless read_write_attribute?(node)
+
+          add_offense(node, :selector)
         end
 
-        def message(node)
-          _receiver, method_name, *_args = *node
+        private
 
-          if method_name == :read_attribute
+        def message(node)
+          if node.method?(:read_attribute)
             format(MSG, 'self[:attr]', 'read_attribute(:attr)')
           else
             format(MSG, 'self[:attr] = val', 'write_attribute(:attr, val)')
@@ -42,9 +42,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          _receiver, method_name, _body = *node
-
-          case method_name
+          case node.method_name
           when :read_attribute
             replacement = read_attribute_replacement(node)
           when :write_attribute
@@ -54,19 +52,12 @@ module RuboCop
           ->(corrector) { corrector.replace(node.source_range, replacement) }
         end
 
-        private
-
         def read_attribute_replacement(node)
-          _receiver, _method_name, body = *node
-
-          "self[#{body.source}]"
+          "self[#{node.first_argument.source}]"
         end
 
         def write_attribute_replacement(node)
-          _receiver, _method_name, *args = *node
-          name, value = *args
-
-          "self[#{name.source}] = #{value.source}"
+          "self[#{node.first_argument.source}] = #{node.last_argument.source}"
         end
       end
     end

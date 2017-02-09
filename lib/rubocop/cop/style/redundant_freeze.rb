@@ -17,13 +17,11 @@ module RuboCop
         MSG = 'Do not freeze immutable objects, as freezing them has no ' \
               'effect.'.freeze
 
-        def_node_matcher :freezing?, '(send $_ :freeze)'
-
         def on_send(node)
-          freezing?(node) do |receiver|
-            return unless immutable_literal?(receiver)
-            add_offense(node, :expression)
-          end
+          return unless node.receiver && node.method?(:freeze) &&
+                        immutable_literal?(node.receiver)
+
+          add_offense(node, :expression)
         end
 
         def autocorrect(node)
@@ -36,8 +34,8 @@ module RuboCop
         private
 
         def immutable_literal?(node)
-          return false unless node
           return true if node.immutable_literal?
+
           FROZEN_STRING_LITERAL_TYPES.include?(node.type) &&
             frozen_string_literals_enabled?
         end

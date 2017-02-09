@@ -39,12 +39,9 @@ module RuboCop
         end
 
         def eligible_node?(node)
-          receiver, method, args = *node
+          return false unless node.method?(:count) && !node.arguments?
 
-          return false unless method == :count
-          return false if args
-
-          eligible_receiver?(receiver) && !allowed_parent?(node.parent)
+          eligible_receiver?(node.receiver) && !allowed_parent?(node.parent)
         end
 
         def eligible_receiver?(node)
@@ -58,17 +55,15 @@ module RuboCop
         end
 
         def array?(node)
-          receiver, method = *node
-          _, constant = *receiver
+          _, constant = *node.receiver
 
-          node.array_type? || constant == :Array || method == :to_a
+          node.array_type? || constant == :Array || node.method_name == :to_a
         end
 
         def hash?(node)
-          receiver, method = *node
-          _, constant = *receiver
+          _, constant = *node.receiver
 
-          node.hash_type? || constant == :Hash || method == :to_h
+          node.hash_type? || constant == :Hash || node.method_name == :to_h
         end
       end
     end

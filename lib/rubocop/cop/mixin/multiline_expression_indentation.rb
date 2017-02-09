@@ -6,13 +6,10 @@ module RuboCop
     # operations.
     module MultilineExpressionIndentation
       def on_send(node)
+        return if !node.receiver || node.method?(:[])
         return unless relevant_node?(node)
 
-        receiver, method_name, *_args = *node
-        return unless receiver
-        return if method_name == :[] # Don't check parameters inside [].
-
-        lhs = left_hand_side(receiver)
+        lhs = left_hand_side(node.receiver)
         rhs = right_hand_side(node)
         range = offending_range(node, lhs, rhs, style)
         check(range, node, lhs, rhs)
@@ -29,9 +26,8 @@ module RuboCop
       end
 
       def right_hand_side(send_node)
-        _, method_name, *args = *send_node
-        if operator?(method_name) && args.any?
-          args.first.source_range # not used for method calls
+        if send_node.operator_method? && send_node.arguments?
+          send_node.first_argument.source_range # not used for method calls
         else
           regular_method_right_hand_side(send_node)
         end
@@ -40,12 +36,11 @@ module RuboCop
       def regular_method_right_hand_side(send_node)
         dot = send_node.loc.dot
         selector = send_node.loc.selector
-        if dot && selector && dot.line == selector.line
+        if send_node.dot? && selector && dot.line == selector.line
           dot.join(selector)
         elsif selector
           selector
-        elsif dot.line == send_node.loc.begin.line
-          # lambda.(args)
+        elsif send_node.implicit_call?
           dot.join(send_node.loc.begin)
         end
       end
@@ -116,9 +111,9 @@ module RuboCop
           # is an argument in a method call. It doesn't count.
           break false if a.block_type?
 
-          _, method_name, *args = *a
-          next if assignment_call?(method_name)
-          args.any? { |arg| within_node?(node, arg) }
+          next if a.setter_method?
+
+          a.arguments.any? { |arg| within_node?(node, arg) }
         end
       end
 
@@ -139,18 +134,12 @@ module RuboCop
 
       # The []= operator and setters (a.b = c) are parsed as :send nodes.
       def valid_method_rhs_candidate?(candidate, node)
-        _receiver, method_name, *args = *node
-
-        assignment_call?(method_name) &&
-          valid_rhs_candidate?(candidate, args.last)
+        node.setter_method? &&
+          valid_rhs_candidate?(candidate, node.last_argument)
       end
 
       def valid_rhs_candidate?(candidate, node)
         !candidate || within_node?(candidate, node)
-      end
-
-      def assignment_call?(method_name)
-        method_name == :[]= || method_name.to_s =~ /^\w.*=$/
       end
 
       def part_of_block_body?(candidate, node)
@@ -162,14 +151,14 @@ module RuboCop
         case node.type
         when :casgn   then _scope, _lhs, rhs = *node
         when :op_asgn then _lhs, _op, rhs = *node
-        when :send    then _receiver, _method_name, *_args, rhs = *node
+        when :send    then rhs = node.last_argument
         else               _lhs, rhs = *node
         end
         rhs
       end
 
       def not_for_this_cop?(node)
-        node.each_ancestor.any? do |ancestor|
+        node.ancestors.any? do |ancestor|
           grouped_expression?(ancestor) ||
             inside_arg_list_parentheses?(node, ancestor)
         end
@@ -180,11 +169,10 @@ module RuboCop
       end
 
       def inside_arg_list_parentheses?(node, ancestor)
-        a = ancestor.loc
-        return false unless ancestor.send_type? && a.begin &&
-                            a.begin.is?('(')
-        n = node.source_range
-        n.begin_pos > a.begin.begin_pos && n.end_pos < a.end.end_pos
+        return false unless ancestor.send_type? && ancestor.parenthesized?
+
+        node.source_range.begin_pos > ancestor.loc.begin.begin_pos &&
+          node.source_range.end_pos < ancestor.loc.end.end_pos
       end
     end
   end

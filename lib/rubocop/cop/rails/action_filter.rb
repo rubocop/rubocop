@@ -51,9 +51,7 @@ module RuboCop
         end
 
         def on_send(node)
-          receiver, _method_name, *_args = *node
-
-          check_method_node(node) if receiver.nil?
+          check_method_node(node) unless node.receiver
         end
 
         def autocorrect(node)
@@ -66,17 +64,13 @@ module RuboCop
         private
 
         def check_method_node(node)
-          _receiver, method_name, *_args = *node
-          return unless offending_method?(method_name)
+          return unless bad_methods.include?(node.method_name)
 
-          add_offense(node, :selector,
-                      format(MSG,
-                             preferred_method(method_name),
-                             method_name))
+          add_offense(node, :selector)
         end
 
-        def offending_method?(method_name)
-          bad_methods.include?(method_name)
+        def message(node)
+          format(MSG, preferred_method(node.method_name), node.method_name)
         end
 
         def bad_methods

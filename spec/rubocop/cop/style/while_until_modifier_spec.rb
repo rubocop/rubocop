@@ -96,6 +96,16 @@ describe RuboCop::Cop::Style::WhileUntilModifier do
     expect(cop.offenses).to be_empty
   end
 
+  # Regression: https://github.com/bbatsov/rubocop/issues/4006
+  context 'when the modifier condition is multiline' do
+    it 'registers an offense' do
+      inspect_source(cop,
+                     ['foo while bar ||',
+                      '  baz'].join("\n"))
+      expect(cop.offenses.size).to eq(1)
+    end
+  end
+
   context 'when the maximum line length is specified by the cop itself' do
     let(:config) do
       hash = {

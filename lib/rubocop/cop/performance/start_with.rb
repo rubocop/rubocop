@@ -35,7 +35,9 @@ module RuboCop
         end
 
         def on_send(node)
-          add_offense(node, :expression, MSG) if redundant_regex?(node)
+          return unless redundant_regex?(node)
+
+          add_offense(node, :expression)
         end
 
         def autocorrect(node)

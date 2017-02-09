@@ -4,12 +4,13 @@ require 'spec_helper'
 
 describe RuboCop::Cop::Style::MultilineMemoization, :config do
   subject(:cop) { described_class.new(config) }
+  let(:message) { described_class::MSG }
 
   before do
     inspect_source(cop, source)
   end
 
-  shared_examples 'code with offense' do |code, expected = nil|
+  shared_examples 'code with offense' do |code, expected|
     let(:source) { code }
 
     it 'registers an offense' do
@@ -17,14 +18,8 @@ describe RuboCop::Cop::Style::MultilineMemoization, :config do
       expect(cop.messages).to eq([message])
     end
 
-    if expected
-      it 'auto-corrects' do
-        expect(autocorrect_source(cop, code)).to eq(expected)
-      end
-    else
-      it 'does not auto-correct' do
-        expect(autocorrect_source(cop, code)).to eq(code)
-      end
+    it 'auto-corrects' do
+      expect(autocorrect_source(cop, code)).to eq(expected)
     end
   end
 
@@ -36,95 +31,155 @@ describe RuboCop::Cop::Style::MultilineMemoization, :config do
     end
   end
 
-  let(:message) { described_class::MSG }
+  shared_examples 'with all enforced styles' do
+    context 'with a single line memoization' do
+      it_behaves_like 'code without offense',
+                      'foo ||= bar'
 
-  context 'with a single line memoization' do
-    it_behaves_like 'code without offense',
-                    'foo ||= bar'
+      it_behaves_like 'code without offense',
+                      ['foo ||=',
+                       '  bar'].join("\n")
+    end
 
-    it_behaves_like 'code without offense',
-                    ['foo ||=',
-                     '  bar'].join("\n")
+    context 'with a multiline memoization' do
+      context 'without a `begin` and `end` block' do
+        context 'when there is another block on the first line' do
+          it_behaves_like 'code without offense',
+                          ['foo ||= bar.each do |b|',
+                           '  b.baz',
+                           '  bb.ax',
+                           'end'].join("\n")
+        end
+
+        context 'when there is another block on the following line' do
+          it_behaves_like 'code without offense',
+                          ['foo ||=',
+                           '  bar.each do |b|',
+                           '    b.baz',
+                           '    b.bax',
+                           '  end'].join("\n")
+        end
+
+        context 'when there is a conditional on the first line' do
+          it_behaves_like 'code without offense',
+                          ['foo ||= if bar',
+                           '          baz',
+                           '        else',
+                           '          bax',
+                           '        end'].join("\n")
+        end
+
+        context 'when there is a conditional on the following line' do
+          it_behaves_like 'code without offense',
+                          ['foo ||=',
+                           '  if bar',
+                           '    baz',
+                           '  else',
+                           '    bax',
+                           '  end'].join("\n")
+        end
+      end
+    end
   end
 
-  context 'with a multiline memoization' do
-    context 'without a `begin` and `end` block' do
-      context 'when the expression is wrapped in parentheses' do
-        it_behaves_like 'code with offense',
-                        ['foo ||= (',
-                         '  bar',
-                         '  baz',
-                         ')'].join("\n"),
+  context 'EnforcedStyle: keyword' do
+    let(:cop_config) { { 'EnforcedStyle' => 'keyword' } }
+    include_examples 'with all enforced styles'
+
+    context 'with a multiline memoization' do
+      context 'without a `begin` and `end` block' do
+        context 'when the expression is wrapped in parentheses' do
+          it_behaves_like 'code with offense',
+                          ['foo ||= (',
+                           '  bar',
+                           '  baz',
+                           ')'].join("\n"),
+                          ['foo ||= begin',
+                           '  bar',
+                           '  baz',
+                           'end'].join("\n")
+
+          it_behaves_like 'code with offense',
+                          ['foo ||=',
+                           '  (',
+                           '    bar',
+                           '    baz',
+                           '  )'].join("\n"),
+                          ['foo ||=',
+                           '  begin',
+                           '    bar',
+                           '    baz',
+                           '  end'].join("\n")
+        end
+      end
+
+      context 'with a `begin` and `end` block on the first line' do
+        it_behaves_like 'code without offense',
                         ['foo ||= begin',
                          '  bar',
                          '  baz',
                          'end'].join("\n")
+      end
 
-        it_behaves_like 'code with offense',
-                        ['foo ||=',
-                         '  (',
-                         '    bar',
-                         '    baz',
-                         '  )'].join("\n"),
+      context 'with a `begin` and `end` block on the following line' do
+        it_behaves_like 'code without offense',
                         ['foo ||=',
                          '  begin',
-                         '    bar',
-                         '    baz',
-                         '  end'].join("\n")
-      end
-
-      context 'when there is another block on the first line' do
-        it_behaves_like 'code without offense',
-                        ['foo ||= bar.each do |b|',
-                         '  b.baz',
-                         '  bb.ax',
+                         '  bar',
+                         '  baz',
                          'end'].join("\n")
       end
+    end
+  end
 
-      context 'when there is another block on the following line' do
+  context 'EnforcedStyle: braces' do
+    let(:cop_config) { { 'EnforcedStyle' => 'braces' } }
+    include_examples 'with all enforced styles'
+
+    context 'with a multiline memoization' do
+      context 'without braces' do
+        context 'when the expression is wrapped in' \
+                ' `begin` and `end` keywords' do
+          it_behaves_like 'code with offense',
+                          ['foo ||= begin',
+                           '  bar',
+                           '  baz',
+                           'end'].join("\n"),
+                          ['foo ||= (',
+                           '  bar',
+                           '  baz',
+                           ')'].join("\n")
+
+          it_behaves_like 'code with offense',
+                          ['foo ||=',
+                           '  begin',
+                           '    bar',
+                           '    baz',
+                           '  end'].join("\n"),
+                          ['foo ||=',
+                           '  (',
+                           '    bar',
+                           '    baz',
+                           '  )'].join("\n")
+        end
+      end
+
+      context 'with parentheses on the first line' do
+        it_behaves_like 'code without offense',
+                        ['foo ||= (',
+                         '  bar',
+                         '  baz',
+                         ')'].join("\n")
+      end
+
+      context 'with parentheses block on the following line' do
         it_behaves_like 'code without offense',
                         ['foo ||=',
-                         '  bar.each do |b|',
-                         '    b.baz',
-                         '    b.bax',
-                         '  end'].join("\n")
+                         '  (',
+                         '  bar',
+                         '  baz',
+                         ')'].join("\n")
       end
-
-      context 'when there is a conditional on the first line' do
-        it_behaves_like 'code without offense',
-                        ['foo ||= if bar',
-                         '          baz',
-                         '        else',
-                         '          bax',
-                         '        end'].join("\n")
-      end
-
-      context 'when there is a conditional on the following line' do
-        it_behaves_like 'code without offense',
-                        ['foo ||=',
-                         '  if bar',
-                         '    baz',
-                         '  else',
-                         '    bax',
-                         '  end'].join("\n")
-      end
-    end
-
-    context 'with a `begin` and `end` block on the first line' do
-      it_behaves_like 'code without offense',
-                      ['foo ||= begin',
-                       '  bar',
-                       '  baz',
-                       'end'].join("\n")
-    end
-
-    context 'with a `begin` and `end` block on the following line' do
-      it_behaves_like 'code without offense',
-                      ['foo ||=',
-                       '  begin',
-                       '  bar',
-                       '  baz',
-                       'end'].join("\n")
     end
   end
 end

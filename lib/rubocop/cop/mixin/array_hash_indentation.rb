@@ -5,11 +5,11 @@ module RuboCop
     # Common code for indenting literal arrays and hashes.
     module ArrayHashIndentation
       def each_argument_node(node, type)
-        _receiver, _method_name, *args = *node
         left_parenthesis = node.loc.begin
+
         return unless left_parenthesis
 
-        args.each do |arg|
+        node.arguments.each do |arg|
           on_node(type, arg, :send) do |type_node|
             left_brace = type_node.loc.begin
             if left_brace && left_brace.line == left_parenthesis.line
