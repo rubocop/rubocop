@@ -18,8 +18,8 @@ module RuboCop
       #     end
       #   end
       class RelativeDateConstant < Cop
-        MSG = 'Do not use `%s` in constant variable, because they ' \
-              'are evaluated only once at system running.'.freeze
+        MSG = 'Do not assign %s to constants as it will be evaluated only ' \
+              'once.'.freeze
 
         RELATIVE_DATE_METHODS = %i(ago from_now since until).freeze
 
