@@ -326,6 +326,7 @@ In the following section you find all available cops:
 * [Style/MultilineMethodDefinitionBraceLayout](cops_style.md#stylemultilinemethoddefinitionbracelayout)
 * [Style/MultilineOperationIndentation](cops_style.md#stylemultilineoperationindentation)
 * [Style/MultilineTernaryOperator](cops_style.md#stylemultilineternaryoperator)
+* [Style/MultipleComparison](cops_style.md#stylemultiplecomparison)
 * [Style/MutableConstant](cops_style.md#stylemutableconstant)
 * [Style/NegatedIf](cops_style.md#stylenegatedif)
 * [Style/NegatedWhile](cops_style.md#stylenegatedwhile)

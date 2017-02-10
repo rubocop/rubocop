@@ -13,6 +13,7 @@
 * [#3995](https://github.com/bbatsov/rubocop/pull/3995): Add new `Style/EmptyLinesAroundExceptionHandlingKeywords` cop. ([@pocke][])
 * [#4019](https://github.com/bbatsov/rubocop/pull/4019): Make configurable `Style/MultilineMemoization` cop. ([@pocke][])
 * [#4018](https://github.com/bbatsov/rubocop/pull/4018): Add autocorrect `Lint/EmptyEnsure` cop. ([@pocke][])
+* [#4021](https://github.com/bbatsov/rubocop/pull/4021): Add new `Style/MultipleComparison` cop. ([@dabroz][])
 
 ### Changes
 
