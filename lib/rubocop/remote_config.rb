@@ -27,17 +27,29 @@ module RuboCop
 
     private
 
-    def request
-      http = Net::HTTP.new(@uri.hostname, @uri.port)
-      http.use_ssl = true if @uri.instance_of? URI::HTTPS
+    def request(uri = @uri, limit = 10, &block)
+      raise ArgumentError, 'HTTP redirect too deep' if limit.zero?
 
-      request = Net::HTTP::Get.new(@uri.request_uri)
+      http = Net::HTTP.new(uri.hostname, uri.port)
+      http.use_ssl = true if uri.instance_of? URI::HTTPS
+
+      request = Net::HTTP::Get.new(uri.request_uri)
       if cache_path_exists?
         request['If-Modified-Since'] = File.stat(cache_path).mtime.rfc2822
       end
 
-      response = http.request(request)
-      yield response if response.is_a?(Net::HTTPSuccess)
+      handle_response(http.request(request), &block)
+    end
+
+    def handle_response(response, &block)
+      case response
+      when Net::HTTPSuccess
+        yield response
+      when Net::HTTPRedirection
+        request(URI.parse(response['location']), limit - 1, &block)
+      else
+        response.error!
+      end
     end
 
     def cache_path
