@@ -101,6 +101,15 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts an assignment by `for` statement' do
+    inspect_source(cop,
+                   ['for a in [] do; end',
+                    'for A in [] do; end',
+                    'for @a in [] do; end',
+                    'for @@a in [] do; end'])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'accepts an operator called with method syntax' do
     inspect_source(cop, 'Date.today.+(1).to_s')
     expect(cop.offenses).to be_empty
@@ -382,7 +391,8 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
                            'a,b=0',
                            'A=0',
                            'x[3]=0',
-                           '$A=0'])
+                           '$A=0',
+                           'A||=0'])
       expect(cop.messages)
         .to eq(['Surrounding space missing for operator `||=`.',
                 'Surrounding space missing for operator `&&=`.',
@@ -392,7 +402,8 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
                 'Surrounding space missing for operator `=`.',
                 'Surrounding space missing for operator `=`.',
                 'Surrounding space missing for operator `=`.',
-                'Surrounding space missing for operator `=`.'])
+                'Surrounding space missing for operator `=`.',
+                'Surrounding space missing for operator `||=`.'])
     end
 
     it 'registers an offense for equality operators without space' do
@@ -616,7 +627,9 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
                            'a,b    =   0',
                            'A  = 0',
                            'x[3]   = 0',
-                           '$A    =   0'])
+                           '$A    =   0',
+                           'A  ||=  0',
+                           'A  +=    0'])
       expect(cop.messages)
         .to eq(['Operator `||=` should be surrounded by a single space.',
                 'Operator `&&=` should be surrounded by a single space.',
@@ -626,7 +639,9 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
                 'Operator `=` should be surrounded by a single space.',
                 'Operator `=` should be surrounded by a single space.',
                 'Operator `=` should be surrounded by a single space.',
-                'Operator `=` should be surrounded by a single space.'])
+                'Operator `=` should be surrounded by a single space.',
+                'Operator `||=` should be surrounded by a single space.',
+                'Operator `+=` should be surrounded by a single space.'])
     end
 
     it 'registers an offense for equality operators with too many spaces' do

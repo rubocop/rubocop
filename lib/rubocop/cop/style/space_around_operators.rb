@@ -52,6 +52,7 @@ module RuboCop
         def on_special_asgn(node)
           _, _, right, = *node
 
+          return unless right
           check_operator(node.loc.operator, right.source_range)
         end
 
