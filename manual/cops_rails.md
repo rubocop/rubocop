@@ -486,6 +486,31 @@ Include | app/models/\*\*/\*.rb
 
 * [https://github.com/bbatsov/rails-style-guide#read-attribute](https://github.com/bbatsov/rails-style-guide#read-attribute)
 
+## Rails/RelativeDateConstant
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks whether constant value isn't relative date.
+Because the relative date will be evaluated only once.
+
+### Example
+
+```ruby
+# bad
+class SomeClass
+  EXPIRED_AT = 1.week.since
+end
+
+# good
+class SomeClass
+  def self.expired_at
+    1.week.since
+  end
+end
+```
+
 ## Rails/RequestReferer
 
 Enabled by default | Supports autocorrection

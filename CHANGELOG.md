@@ -8,6 +8,7 @@
 * [#3889](https://github.com/bbatsov/rubocop/pull/3889): Add new `Style/EmptyLineAfterMagicComment` cop. ([@backus][])
 * [#3800](https://github.com/bbatsov/rubocop/issues/3800): Make `Style/EndOfLine` configurable with `lf`, `crlf`, and `native` (default) styles. ([@jonas054][])
 * [#3936](https://github.com/bbatsov/rubocop/issues/3936): Add new `Style/MixinGrouping` cop. ([@drenmi][])
+* [#4003](https://github.com/bbatsov/rubocop/issues/4003): Add new `Rails/RelativeDateConstant` cop. ([@sinsoku][])
 * [#3984](https://github.com/bbatsov/rubocop/pull/3984): Add new `Style/EmptyLinesAroundBeginBody` cop. ([@pocke][])
 * [#3995](https://github.com/bbatsov/rubocop/pull/3995): Add new `Style/EmptyLinesAroundExceptionHandlingKeywords` cop. ([@pocke][])
 * [#4019](https://github.com/bbatsov/rubocop/pull/4019): Make configurable `Style/MultilineMemoization` cop. ([@pocke][])

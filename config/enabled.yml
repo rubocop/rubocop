@@ -1571,6 +1571,10 @@ Rails/ReadWriteAttribute:
   StyleGuide: 'https://github.com/bbatsov/rails-style-guide#read-attribute'
   Enabled: true
 
+Rails/RelativeDateConstant:
+  Description: 'Do not assign relative date to constants.'
+  Enabled: true
+
 Rails/RequestReferer:
   Description: 'Use consistent syntax for request.referer.'
   Enabled: true
