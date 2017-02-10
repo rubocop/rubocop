@@ -2455,12 +2455,16 @@ something
 END
 
 # good
+# When EnforcedStyle is ruby23, bad code is auto-corrected to the
+# following code.
 <<~END
   something
 END
 
 # good
-<<~END.strip_heredoc
+# When EnforcedStyle is active_support, bad code is auto-corrected to
+# the following code.
+<<-END.strip_heredoc
   something
 END
 ```

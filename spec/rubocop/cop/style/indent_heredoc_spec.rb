@@ -114,6 +114,40 @@ describe RuboCop::Cop::Style::IndentHeredoc, :config do
         end
       END
 
+      it 'displays message without how to configure' do
+        inspect_source(cop, <<-END.strip_indent)
+          <<-END2
+          foo
+          END2
+        END
+        expect(cop.messages).to eq(
+          [
+            'Use 2 spaces for indentation in a heredoc by using ' \
+            '`String#strip_heredoc` that is provided by ActiveSupport.'
+          ]
+        )
+      end
+
+      context 'EnforcedStyle is not configured' do
+        let(:cop_config) do
+          {}
+        end
+        it 'displays message about how to configure' do
+          inspect_source(cop, <<-END.strip_indent)
+          <<-END2
+          foo
+          END2
+          END
+          expect(cop.messages).to eq(
+            [
+              'Use 2 spaces for indentation in a heredoc by using ' \
+              '`String#strip_heredoc` that is provided by ActiveSupport. ' \
+              'You need to configure EnforcedStyle to use auto-correction.'
+            ]
+          )
+        end
+      end
+
       context 'Ruby 2.3', :ruby23 do
         let(:cop_config) do
           { 'EnforcedStyle' => :ruby23 }
@@ -166,6 +200,33 @@ describe RuboCop::Cop::Style::IndentHeredoc, :config do
             something
           END2
         END
+
+        it 'displays message to use `<<~` instead of `<<`' do
+          inspect_source(cop, <<-END.strip_indent)
+          <<END2
+          foo
+          END2
+          END
+          expect(cop.messages).to eq(
+            [
+              'Use 2 spaces for indentation in a heredoc by using `<<~` ' \
+              'instead of `<<`.'
+            ]
+          )
+        end
+        it 'displays message to use `<<~` instead of `<<-`' do
+          inspect_source(cop, <<-END.strip_indent)
+          <<-END2
+          foo
+          END2
+          END
+          expect(cop.messages).to eq(
+            [
+              'Use 2 spaces for indentation in a heredoc by using `<<~` ' \
+              'instead of `<<-`.'
+            ]
+          )
+        end
       end
     end
   end

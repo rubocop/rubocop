@@ -17,20 +17,29 @@ module RuboCop
       #   END
       #
       #   # good
+      #   # When EnforcedStyle is ruby23, bad code is auto-corrected to the
+      #   # following code.
       #   <<~END
       #     something
       #   END
       #
       #   # good
-      #   <<~END.strip_heredoc
+      #   # When EnforcedStyle is active_support, bad code is auto-corrected to
+      #   # the following code.
+      #   <<-END.strip_heredoc
       #     something
       #   END
       class IndentHeredoc < Cop
         include ConfigurableEnforcedStyle
 
-        MSG = 'Use %d spaces for indentation in a heredoc, ' \
-              'relative to the start of the line where the ' \
-              'heredoc delimiter is.'.freeze
+        # TODO: <<-
+        RUBY23_MSG = 'Use %d spaces for indentation in a heredoc by using ' \
+                     '`<<~` instead of `%s`.'.freeze
+        LIBRARY_MSG = 'Use %d spaces for indentation in a heredoc by using ' \
+                      '`String#strip_heredoc` that is provided by ' \
+                      'ActiveSupport.'.freeze
+        HOW_TO_CONFIGURE_MSG = 'You need to configure EnforcedStyle to use ' \
+                               'auto-correction.'.freeze
         StripMethods = {
           unindent: 'unindent',
           active_support: 'strip_heredoc',
@@ -43,13 +52,13 @@ module RuboCop
           body_indent_level = body_indent_level(node)
 
           if heredoc_indent_type(node) == '~'
-            expected_indent_level = base_indnet_level(node) + indentation_width
+            expected_indent_level = base_indent_level(node) + indentation_width
             return if expected_indent_level == body_indent_level
           else
             return unless body_indent_level.zero?
           end
 
-          add_offense(node, :heredoc_body, format(MSG, indentation_width))
+          add_offense(node, :heredoc_body)
         end
 
         alias on_dstr on_str
@@ -65,6 +74,22 @@ module RuboCop
         end
 
         private
+
+        def message(node)
+          if target_ruby_version < 2.3
+            if style == :ruby23
+              [
+                format(LIBRARY_MSG, indentation_width),
+                HOW_TO_CONFIGURE_MSG
+              ].join(' ')
+            else
+              format(LIBRARY_MSG, indentation_width)
+            end
+          else
+            current_indent_type = "<<#{heredoc_indent_type(node)}"
+            format(RUBY23_MSG, indentation_width, current_indent_type)
+          end
+        end
 
         def correct_by_ruby23(node)
           return if target_ruby_version < 2.3
@@ -94,7 +119,7 @@ module RuboCop
         def indented_body(node)
           body = node.loc.heredoc_body.source
           body_indent_level = body_indent_level(node)
-          correct_indent_level = base_indnet_level(node) + indentation_width
+          correct_indent_level = base_indent_level(node) + indentation_width
           body.gsub(/^\s{#{body_indent_level}}/, ' ' * correct_indent_level)
         end
 
@@ -103,7 +128,7 @@ module RuboCop
           indent_level(body)
         end
 
-        def base_indnet_level(node)
+        def base_indent_level(node)
           base_line_num = node.loc.expression.line
           base_line = processed_source.lines[base_line_num - 1]
           indent_level(base_line)
