@@ -372,7 +372,7 @@ end
 # good
 
 case x
-when 'first
+when 'first'
   do_something
 when 'second'
   do_something_else
