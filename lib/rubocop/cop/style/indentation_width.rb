@@ -27,7 +27,7 @@ module RuboCop
         end
 
         def on_ensure(node)
-          ensure_body = node.children.last
+          *_, ensure_body = *node
           check_indentation(node.loc.keyword, ensure_body)
         end
 
