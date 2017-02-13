@@ -7,22 +7,6 @@ module RuboCop
       #
       # @example
       #
-      #   #good
-      #
-      #   do_something do |used, unused|
-      #     puts used
-      #   end
-      #
-      #   do_something do
-      #     puts :foo
-      #   end
-      #
-      #   define_method(:foo) do |_bar|
-      #     puts :baz
-      #   end
-      #
-      # @example
-      #
       #   # bad
       #
       #   do_something do |used, _unused|
@@ -34,6 +18,22 @@ module RuboCop
       #   end
       #
       #   define_method(:foo) do |bar|
+      #     puts :baz
+      #   end
+      #
+      # @example
+      #
+      #   #good
+      #
+      #   do_something do |used, unused|
+      #     puts used
+      #   end
+      #
+      #   do_something do
+      #     puts :foo
+      #   end
+      #
+      #   define_method(:foo) do |_bar|
       #     puts :baz
       #   end
       class UnusedBlockArgument < Cop
