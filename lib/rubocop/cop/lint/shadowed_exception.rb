@@ -31,6 +31,8 @@ module RuboCop
       #     handle_exception
       #   end
       class ShadowedException < Cop
+        include RescueNode
+
         MSG = 'Do not shadow rescued Exceptions.'.freeze
 
         def on_rescue(node)
@@ -66,12 +68,6 @@ module RuboCop
                     end
 
           range_between(first_rescue.loc.expression.begin_pos, end_pos)
-        end
-
-        def rescue_modifier?(node)
-          node && node.rescue_type? &&
-            (node.parent.nil? || !(node.parent.kwbegin_type? ||
-             node.parent.ensure_type?))
         end
 
         def contains_multiple_levels_of_exceptions?(group)

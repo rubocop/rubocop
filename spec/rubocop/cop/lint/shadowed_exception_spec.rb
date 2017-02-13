@@ -64,6 +64,17 @@ describe RuboCop::Cop::Lint::ShadowedException do
       expect(cop.offenses).to be_empty
     end
 
+    it 'registers an offense rescuing exceptions that are ' \
+      'ancestors of each other ' do
+      inspect_source(cop, ['def',
+                           '  something',
+                           'rescue StandardError, RuntimeError',
+                           '  handle_exception',
+                           'end'])
+
+      expect(cop.messages).to eq(['Do not shadow rescued Exceptions.'])
+    end
+
     it 'registers an offense rescuing Exception with any other error or ' \
        'exception' do
       inspect_source(cop, ['begin',
