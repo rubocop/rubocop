@@ -23,6 +23,8 @@ module RuboCop
       #   b = 2
       #   c = 3
       class ParallelAssignment < Cop
+        include RescueNode
+
         MSG = 'Do not use parallel assignment.'.freeze
 
         def on_masgn(node)
@@ -80,9 +82,10 @@ module RuboCop
         end
 
         def assignment_corrector(node, order)
+          _assignment, modifier = *node.parent
           if modifier_statement?(node.parent)
             ModifierCorrector.new(node, config, order)
-          elsif rescue_modifier?(node.parent)
+          elsif rescue_modifier?(modifier)
             RescueCorrector.new(node, config, order)
           else
             GenericCorrector.new(node, config, order)
@@ -172,7 +175,7 @@ module RuboCop
             node.modifier_form?
         end
 
-        def rescue_modifier?(node)
+        def rescue_modifier_old?(node)
           node && node.rescue_type? &&
             (node.parent.nil? || !(node.parent.kwbegin_type? ||
             node.parent.ensure_type?))

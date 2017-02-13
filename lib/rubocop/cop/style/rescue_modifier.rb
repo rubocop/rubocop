@@ -6,18 +6,12 @@ module RuboCop
       # This cop checks for uses of rescue in its modifier form.
       class RescueModifier < Cop
         include AutocorrectAlignment
+        include RescueNode
 
         MSG = 'Avoid using `rescue` in its modifier form.'.freeze
 
-        def investigate(processed_source)
-          @modifier_locations = processed_source
-                                .tokens
-                                .select { |t| t.type == :kRESCUE_MOD }
-                                .map(&:pos)
-        end
-
         def on_resbody(node)
-          return unless modifier?(node)
+          return unless rescue_modifier?(node)
           add_offense(node.parent, :expression)
         end
 
@@ -36,12 +30,6 @@ module RuboCop
           lambda do |corrector|
             corrector.replace(node.source_range, correction)
           end
-        end
-
-        private
-
-        def modifier?(node)
-          @modifier_locations.include?(node.loc.keyword)
         end
       end
     end
