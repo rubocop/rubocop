@@ -84,8 +84,8 @@ module RuboCop
         end
 
         def on_lvasgn(node)
-          lhs, _rhs = *node
-          @local_variables_scopes[node] << lhs
+          lhs, rhs = *node
+          @local_variables_scopes[rhs] << lhs
         end
 
         def on_send(node)
