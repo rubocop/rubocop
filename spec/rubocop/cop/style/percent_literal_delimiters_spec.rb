@@ -4,20 +4,28 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:cop_config) do
-    {
-      'PreferredDelimiters' => {
-        '%'  => '[]',
-        '%i' => '[]',
-        '%I' => '[]',
-        '%q' => '[]',
-        '%Q' => '[]',
-        '%r' => '[]',
-        '%s' => '[]',
-        '%w' => '[]',
-        '%W' => '[]',
-        '%x' => '[]'
+    { 'PreferredDelimiters' => { 'all' => '[]' } }
+  end
+
+  context '`all` override' do
+    let(:cop_config) do
+      {
+        'PreferredDelimiters' => {
+          'all' => '[]',
+          '%'   => '()'
+        }
       }
-    }
+    end
+
+    it 'allows all preferred delimiters to be set with one key' do
+      inspect_source(cop, '%w[string] + %i[string]')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'allows individual preferred delimiters to override `all`' do
+      inspect_source(cop, '%w[string] + [%(string)]')
+      expect(cop.offenses).to be_empty
+    end
   end
 
   context '`%` interpolated string' do

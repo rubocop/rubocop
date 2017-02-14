@@ -912,16 +912,8 @@ Style/ParenthesesAroundCondition:
 
 Style/PercentLiteralDelimiters:
   PreferredDelimiters:
-    '%':  ()
-    '%i': ()
-    '%I': ()
-    '%q': ()
-    '%Q': ()
+    all: ()
     '%r': '{}'
-    '%s': ()
-    '%w': ()
-    '%W': ()
-    '%x': ()
 
 Style/PercentQLiterals:
   EnforcedStyle: lower_case_q

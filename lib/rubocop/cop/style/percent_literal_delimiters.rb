@@ -4,6 +4,7 @@ module RuboCop
   module Cop
     module Style
       # This cop enforces the consistent usage of `%`-literal delimiters.
+      # Specify the 'all' key to set all preferred delimiters at once.
       class PercentLiteralDelimiters < Cop
         include PercentLiteral
 
@@ -30,7 +31,7 @@ module RuboCop
 
         def message(node)
           type = type(node)
-          delimiters = preferred_delimiters(type)
+          delimiters = preferred_delimiters_for(type)
 
           "`#{type}`-literals should be delimited by " \
           "`#{delimiters[0]}` and `#{delimiters[1]}`."
@@ -41,7 +42,7 @@ module RuboCop
         def autocorrect(node)
           type = type(node)
 
-          opening_delimiter, closing_delimiter = preferred_delimiters(type)
+          opening_delimiter, closing_delimiter = preferred_delimiters_for(type)
 
           lambda do |corrector|
             corrector.replace(node.loc.begin, "#{type}#{opening_delimiter}")
@@ -57,16 +58,28 @@ module RuboCop
           add_offense(node, :expression)
         end
 
-        def preferred_delimiters(type)
-          cop_config['PreferredDelimiters'][type].split(//)
+        def preferred_delimiters
+          @preferred_delimiters ||=
+            if cop_config['PreferredDelimiters'].key?('all')
+              Hash[%w(% %i %I %q %Q %r %s %w %W %x).map do |type|
+                [type, cop_config['PreferredDelimiters'][type] ||
+                  cop_config['PreferredDelimiters']['all']]
+              end]
+            else
+              cop_config['PreferredDelimiters']
+            end
+        end
+
+        def preferred_delimiters_for(type)
+          preferred_delimiters[type].split(//)
         end
 
         def uses_preferred_delimiter?(node, type)
-          preferred_delimiters(type)[0] == begin_source(node)[-1]
+          preferred_delimiters_for(type)[0] == begin_source(node)[-1]
         end
 
         def contains_preferred_delimiter?(node, type)
-          preferred_delimiters = preferred_delimiters(type)
+          preferred_delimiters = preferred_delimiters_for(type)
           node
             .children.map { |n| string_source(n) }.compact
             .any? { |s| preferred_delimiters.any? { |d| s.include?(d) } }
