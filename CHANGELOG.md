@@ -17,7 +17,7 @@
 
 ### Changes
 
-* [#4007](https://github.com/bbatsov/rubocop/pull/4007): Include all ruby files by default and exclude non-ruby files. ([@dorian][])
+* [#3997](https://github.com/bbatsov/rubocop/pull/3997): Include all ruby files by default and exclude non-ruby files. ([@dorian][])
 * [#4012](https://github.com/bbatsov/rubocop/pull/4012): Mark `foo[:bar]` as not complex in `Style/TernaryParentheses` cop with `require_parentheses_when_complex` style. ([@onk][])
 * [#3915](https://github.com/bbatsov/rubocop/issues/3915): Make configurable whitelist for `Lint/SafeNavigationChain` cop. ([@pocke][])
 * [#3944](https://github.com/bbatsov/rubocop/issues/3944): Allow keyword arguments in `Style/RaiseArgs` cop. ([@mikegee][])
