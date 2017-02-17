@@ -17,7 +17,7 @@ module RuboCop
       #   END
       #
       #   # good
-      #   # When EnforcedStyle is ruby23, bad code is auto-corrected to the
+      #   # When EnforcedStyle is squiggly, bad code is auto-corrected to the
       #   # following code.
       #   <<~END
       #     something
@@ -31,15 +31,12 @@ module RuboCop
       #   END
       class IndentHeredoc < Cop
         include ConfigurableEnforcedStyle
+        include SafeMode
 
-        # TODO: <<-
         RUBY23_MSG = 'Use %d spaces for indentation in a heredoc by using ' \
                      '`<<~` instead of `%s`.'.freeze
-        LIBRARY_MSG = 'Use %d spaces for indentation in a heredoc by using ' \
-                      '`String#strip_heredoc` that is provided by ' \
-                      'ActiveSupport.'.freeze
-        HOW_TO_CONFIGURE_MSG = 'You need to configure EnforcedStyle to use ' \
-                               'auto-correction.'.freeze
+        LIBRARY_MSG = 'Use %d spaces for indentation in a heredoc by using %s.'
+                      .freeze
         StripMethods = {
           unindent: 'unindent',
           active_support: 'strip_heredoc',
@@ -65,9 +62,11 @@ module RuboCop
         alias on_xstr on_str
 
         def autocorrect(node)
+          check_style!
+
           case style
-          when :ruby23
-            correct_by_ruby23(node)
+          when :squiggly
+            correct_by_squiggly(node)
           else
             correct_by_library(node)
           end
@@ -75,23 +74,32 @@ module RuboCop
 
         private
 
-        def message(node)
-          if target_ruby_version < 2.3
-            if style == :ruby23
-              [
-                format(LIBRARY_MSG, indentation_width),
-                HOW_TO_CONFIGURE_MSG
-              ].join(' ')
-            else
-              format(LIBRARY_MSG, indentation_width)
-            end
-          else
-            current_indent_type = "<<#{heredoc_indent_type(node)}"
-            format(RUBY23_MSG, indentation_width, current_indent_type)
+        def style
+          style = super
+          return style unless style == :auto_detection
+
+          if target_ruby_version >= 2.3
+            :squiggly
+          elsif rails?
+            :active_support
           end
         end
 
-        def correct_by_ruby23(node)
+        def message(node)
+          case style
+          when :squiggly
+            current_indent_type = "<<#{heredoc_indent_type(node)}"
+            format(RUBY23_MSG, indentation_width, current_indent_type)
+          when nil
+            method = "some library(e.g. ActiveSupport's `String#strip_heredoc`)"
+            format(LIBRARY_MSG, indentation_width, method)
+          else
+            method = "`String##{StripMethods[style]}`"
+            format(LIBRARY_MSG, indentation_width, method)
+          end
+        end
+
+        def correct_by_squiggly(node)
           return if target_ruby_version < 2.3
           lambda do |corrector|
             if heredoc_indent_type(node) == '~'
@@ -109,6 +117,19 @@ module RuboCop
             corrector.replace(node.loc.heredoc_body, indented_body(node))
             corrected = ".#{StripMethods[style]}"
             corrector.insert_after(node.loc.expression, corrected)
+          end
+        end
+
+        def check_style!
+          case style
+          when nil
+            raise Warning, "Auto Correction does not work for #{cop_name}. " \
+                           'Please configure EnforcedStyle.'
+          when :squiggly
+            if target_ruby_version < 2.3
+              raise Warning, '`squiggly` style is selectable only Ruby 2.3 ' \
+                             "or higher for #{cop_name}."
+            end
           end
         end
 

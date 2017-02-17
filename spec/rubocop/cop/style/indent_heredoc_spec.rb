@@ -24,6 +24,30 @@ describe RuboCop::Cop::Style::IndentHeredoc, :config do
     end
   end
 
+  shared_examples :check_message do |name, message|
+    it "displays a message with #{name}" do
+      inspect_source(cop, <<-END.strip_indent)
+        <<-END2
+        foo
+        END2
+      END
+      expect(cop.messages).to eq(message)
+    end
+  end
+
+  shared_examples :warning do |message|
+    it 'warns' do
+      correct = lambda do
+        autocorrect_source(cop, <<-END.strip_indent)
+          <<-END2
+          foo
+          END2
+        END
+      end
+      expect(&correct).to raise_error(RuboCop::Warning, message)
+    end
+  end
+
   shared_examples :all_heredoc_type do |quote|
     context "quoted by #{quote}" do
       let(:cop_config) do
@@ -114,43 +138,62 @@ describe RuboCop::Cop::Style::IndentHeredoc, :config do
         end
       END
 
-      it 'displays message without how to configure' do
-        inspect_source(cop, <<-END.strip_indent)
-          <<-END2
-          foo
-          END2
-        END
-        expect(cop.messages).to eq(
-          [
-            'Use 2 spaces for indentation in a heredoc by using ' \
-            '`String#strip_heredoc` that is provided by ActiveSupport.'
-          ]
-        )
-      end
+      include_examples :check_message, 'suggestion powerpack',
+                       [
+                         'Use 2 spaces for indentation in a heredoc by using ' \
+                         '`String#strip_indent`.'
+                       ]
 
-      context 'EnforcedStyle is not configured' do
+      context 'EnforcedStyle is `auto_detection`' do
         let(:cop_config) do
-          {}
+          { 'EnforcedStyle' => :auto_detection }
         end
-        it 'displays message about how to configure' do
-          inspect_source(cop, <<-END.strip_indent)
-          <<-END2
-          foo
-          END2
+
+        message = 'Use 2 spaces for indentation in a heredoc by using ' \
+                  "some library(e.g. ActiveSupport's `String#strip_heredoc`)."
+        include_examples :check_message, 'some library', [message]
+        warning = 'Auto Correction does not work for Style/IndentHeredoc. ' \
+                  'Please configure EnforcedStyle.'
+        include_examples :warning, warning
+
+        context 'Ruby 2.3', :ruby23 do
+          message = 'Use 2 spaces for indentation in a heredoc by using ' \
+                    '`<<~` instead of `<<-`.'
+          include_examples :check_message, 'squiggly heredoc', [message]
+          include_examples :offense, 'not indented', <<-END, <<-CORRECTION
+            <<#{quote}END2#{quote}
+            \#{foo}
+            bar
+            END2
           END
-          expect(cop.messages).to eq(
-            [
-              'Use 2 spaces for indentation in a heredoc by using ' \
-              '`String#strip_heredoc` that is provided by ActiveSupport. ' \
-              'You need to configure EnforcedStyle to use auto-correction.'
-            ]
-          )
+            <<~#{quote}END2#{quote}
+              \#{foo}
+              bar
+            END2
+          CORRECTION
+        end
+
+        context 'Rails', :enabled_rails do
+          message = 'Use 2 spaces for indentation in a heredoc by using ' \
+                    '`String#strip_heredoc`.'
+          include_examples :check_message, 'suggestion ActiveSupport', [message]
+          include_examples :offense, 'not indented', <<-END, <<-CORRECTION
+            <<#{quote}END2#{quote}
+            \#{foo}
+            bar
+            END2
+          END
+            <<#{quote}END2#{quote}.strip_heredoc
+              \#{foo}
+              bar
+            END2
+          CORRECTION
         end
       end
 
-      context 'Ruby 2.3', :ruby23 do
+      context 'EnforcedStyle is `squiggly`', :ruby23 do
         let(:cop_config) do
-          { 'EnforcedStyle' => :ruby23 }
+          { 'EnforcedStyle' => :squiggly }
         end
 
         include_examples :offense, 'not indented', <<-END, <<-CORRECTION
@@ -226,6 +269,12 @@ describe RuboCop::Cop::Style::IndentHeredoc, :config do
               'instead of `<<-`.'
             ]
           )
+        end
+
+        context 'Ruby 2.2', :ruby22 do
+          warning = '`squiggly` style is selectable only Ruby 2.3 or higher ' \
+                    'for Style/IndentHeredoc.'
+          include_examples :warning, warning
         end
       end
     end

@@ -2455,7 +2455,7 @@ something
 END
 
 # good
-# When EnforcedStyle is ruby23, bad code is auto-corrected to the
+# When EnforcedStyle is squiggly, bad code is auto-corrected to the
 # following code.
 <<~END
   something
@@ -2473,8 +2473,8 @@ END
 
 Attribute | Value
 --- | ---
-EnforcedStyle | ruby23
-SupportedStyles | ruby23, active_support, powerpack, unindent
+EnforcedStyle | auto_detection
+SupportedStyles | auto_detection, squiggly, active_support, powerpack, unindent
 
 
 ### References
