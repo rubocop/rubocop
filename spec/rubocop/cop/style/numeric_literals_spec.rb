@@ -18,9 +18,15 @@ describe RuboCop::Cop::Style::NumericLiterals, :config do
     expect(cop.config_to_allow_offenses).to eq('MinDigits' => 7)
   end
 
+  it 'accepts integers with less than three places at the end' do
+    inspect_source(cop, ['a = 123_456_789_00',
+                         'b = 819_2'])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'registers an offense for an integer with misplaced underscore' do
     inspect_source(cop, ['a = 123_456_78_90_00',
-                         'b = 819_2'])
+                         'b = 1_8192'])
     expect(cop.offenses.size).to eq(2)
     expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
   end
@@ -77,5 +83,21 @@ describe RuboCop::Cop::Style::NumericLiterals, :config do
   it 'autocorrects negative floating-point numbers' do
     corrected = autocorrect_source(cop, ['a = -123456.78'])
     expect(corrected).to eq 'a = -123_456.78'
+  end
+
+  context 'strict' do
+    let(:cop_config) do
+      {
+        'MinDigits' => 5,
+        'Strict' => true
+      }
+    end
+
+    it 'registers an offense for an integer with misplaced underscore' do
+      inspect_source(cop, ['a = 123_456_78_90_00',
+                           'b = 81_92'])
+      expect(cop.offenses.size).to eq(2)
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+    end
   end
 end

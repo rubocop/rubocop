@@ -5,6 +5,24 @@ module RuboCop
     module Style
       # This cop checks for big numeric literals without _ between groups
       # of digits in them.
+      #
+      # @example
+      #
+      #   # bad
+      #
+      #   1000000
+      #   1_00_000
+      #   1_0000
+      #
+      #   # good
+      #
+      #   1_000_000
+      #   1000
+      #
+      #   # good unless Strict is set
+      #
+      #   10_000_00 # typical representation of $10,000 in cents
+      #
       class NumericLiterals < Cop
         # The parameter is called MinDigits (meaning the minimum number of
         # digits for which an offense can be registered), but essentially it's
@@ -12,8 +30,8 @@ module RuboCop
         include ConfigurableMax
         include IntegerNode
 
-        MSG = 'Separate every 3 digits in the integer portion of a number ' \
-              'with underscores(_).'.freeze
+        MSG = 'Use underscores(_) as decimal mark and ' \
+              'separate every 3 digits with them.'.freeze
 
         def on_int(node)
           check(node)
@@ -39,11 +57,15 @@ module RuboCop
           case int
           when /^\d+$/
             add_offense(node, :expression) { self.max = int.size + 1 }
-          when /\d{4}/, /_\d{1,2}(_|$)/
+          when /\d{4}/, short_group_regex
             add_offense(node, :expression) do
               self.config_to_allow_offenses = { 'Enabled' => false }
             end
           end
+        end
+
+        def short_group_regex
+          cop_config['Strict'] ? /_\d{1,2}(_|$)/ : /_\d{1,2}_/
         end
 
         def autocorrect(node)
