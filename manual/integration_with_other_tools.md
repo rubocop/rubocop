@@ -52,6 +52,12 @@ provides LightTable integration.
 The [rubocop-for-rubymine](https://github.com/sirlantis/rubocop-for-rubymine) plugin
 provides basic RuboCop integration for RubyMine/IntelliJ IDEA.
 
+### Visual Studio Code
+
+The [ruby](https://marketplace.visualstudio.com/items?itemName=rebornix.Ruby) extension
+provides RuboCop integration for Visual Studio Code. RuboCop is also used for the formatting
+capabilities of this extension.
+
 ### Other Editors
 
 Here's one great opportunity to contribute to RuboCop - implement
