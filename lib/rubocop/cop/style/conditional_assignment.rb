@@ -361,7 +361,7 @@ module RuboCop
 
           statements = branches.map { |branch| tail(branch) }
 
-          lhs_all_match?(statements) && !statements.any?(&:masgn_type?) &&
+          lhs_all_match?(statements) && statements.none?(&:masgn_type?) &&
             assignment_types_match?(*statements)
         end
 
