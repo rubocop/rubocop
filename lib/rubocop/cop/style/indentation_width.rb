@@ -27,8 +27,7 @@ module RuboCop
         end
 
         def on_ensure(node)
-          *_, ensure_body = *node
-          check_indentation(node.loc.keyword, ensure_body)
+          check_indentation(node.loc.keyword, node.body)
         end
 
         alias on_resbody on_ensure
