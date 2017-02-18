@@ -15,6 +15,8 @@ module RuboCop
         def_node_matcher :array_node, '(send (const nil :Array) :new)'
         def_node_matcher :hash_node, '(send (const nil :Hash) :new)'
         def_node_matcher :str_node, '(send (const nil :String) :new)'
+        def_node_matcher :array_with_block,
+                         '(block (send (const nil :Array) :new) args _)'
 
         def on_send(node)
           array_node(node) { add_offense(node, :expression, ARR_MSG) }
@@ -36,7 +38,8 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            corrector.replace(replacement_range(node), correction(node))
+            result = correction(node)
+            corrector.replace(replacement_range(node), result) if result
           end
         end
 
@@ -77,8 +80,12 @@ module RuboCop
           end
         end
 
+        def array_need_correction?(node)
+          array_node(node) && !array_with_block(node.parent)
+        end
+
         def correction(node)
-          if array_node(node)
+          if array_need_correction?(node)
             '[]'
           elsif str_node(node)
             preferred_string_literal

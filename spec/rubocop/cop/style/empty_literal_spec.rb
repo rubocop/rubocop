@@ -27,6 +27,24 @@ describe RuboCop::Cop::Style::EmptyLiteral do
       new_source = autocorrect_source(cop, 'test = Array.new')
       expect(new_source).to eq('test = []')
     end
+
+    it 'not auto-corrects Array.new with block' do
+      source = 'test = Array.new { 1 }'
+      new_source = autocorrect_source(cop, source)
+      expect(new_source).to eq(source)
+    end
+
+    it 'auto-corrects Array.new in block' do
+      source = 'puts { Array.new }'
+      new_source = autocorrect_source(cop, source)
+      expect(new_source).to eq('puts { [] }')
+    end
+
+    it 'not auto-corrects Array.new with block in other block' do
+      source = 'puts { Array.new { 1 } }'
+      new_source = autocorrect_source(cop, source)
+      expect(new_source).to eq(source)
+    end
   end
 
   describe 'Empty Hash' do
