@@ -37,9 +37,12 @@ module RuboCop
         end
 
         def autocorrect(node)
+          result = correction(node)
+
+          return unless result
+
           lambda do |corrector|
-            result = correction(node)
-            corrector.replace(replacement_range(node), result) if result
+            corrector.replace(replacement_range(node), result)
           end
         end
 
