@@ -28,7 +28,7 @@ describe RuboCop::Cop::Style::EmptyLiteral do
       expect(new_source).to eq('test = []')
     end
 
-    it 'not auto-corrects Array.new with block' do
+    it 'does not auto-correct Array.new with block' do
       source = 'test = Array.new { 1 }'
       new_source = autocorrect_source(cop, source)
       expect(new_source).to eq(source)
@@ -40,7 +40,7 @@ describe RuboCop::Cop::Style::EmptyLiteral do
       expect(new_source).to eq('puts { [] }')
     end
 
-    it 'not auto-corrects Array.new with block in other block' do
+    it 'does not auto-correct Array.new with block in other block' do
       source = 'puts { Array.new { 1 } }'
       new_source = autocorrect_source(cop, source)
       expect(new_source).to eq(source)
