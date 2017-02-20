@@ -11,6 +11,12 @@ describe RuboCop::Cop::Style::RedundantSelf do
     expect(cop.offenses.size).to eq(1)
   end
 
+  it 'does not report an offense when receiver and lvalue have the same name' do
+    src = 'a = self.a'
+    inspect_source(cop, src)
+    expect(cop.offenses).to be_empty
+  end
+
   it 'accepts a self receiver on an lvalue of an assignment' do
     src = 'self.a = b'
     inspect_source(cop, src)
