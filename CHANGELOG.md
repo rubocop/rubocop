@@ -39,6 +39,7 @@
 * [#4006](https://github.com/bbatsov/rubocop/issues/4006): Prevent `Style/WhileUntilModifier` from breaking on a multiline modifier. ([@drenmi][])
 * [#3345](https://github.com/bbatsov/rubocop/issues/3345): Allow `Style/WordArray`'s `WordRegex` configuration value to be an instance of `String`. ([@mikegee][])
 * [#4013](https://github.com/bbatsov/rubocop/pull/4013): Follow redirects for RemoteConfig. ([@buenaventure][])
+* [#3917](https://github.com/bbatsov/rubocop/issues/3917): Rails/FilePath Match nodes in a method call only once. ([@unmanbearpig][])
 * [#3673](https://github.com/bbatsov/rubocop/issues/3673): Fix regression on `Style/RedundantSelf` when assigning to same local variable. ([@bankair][])
 * [#4047](https://github.com/bbatsov/rubocop/issues/4047): Allow `find_zone` and `find_zone!` methods in `Rails/TimeZone`. ([@attilahorvath][])
 
