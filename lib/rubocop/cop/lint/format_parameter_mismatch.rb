@@ -129,7 +129,7 @@ module RuboCop
           node
             .source
             .scan(FIELD_REGEX)
-            .select { |x| x.first != PERCENT_PERCENT }
+            .reject { |x| x.first == PERCENT_PERCENT }
             .reduce(0) { |acc, elem| acc + (elem[2] =~ /\*/ ? 2 : 1) }
         end
 

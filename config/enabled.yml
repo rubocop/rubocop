@@ -400,6 +400,12 @@ Style/InfiniteLoop:
   StyleGuide: '#infinite-loop'
   Enabled: true
 
+Style/InverseMethods:
+  Description: >-
+                 Use the inverse method instead of `!.method`
+                 if an inverse method is defined.
+  Enabled: true
+
 Style/Lambda:
   Description: 'Use the new lambda literal syntax for single-line blocks.'
   StyleGuide: '#lambda-multi-line'

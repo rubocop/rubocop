@@ -168,7 +168,7 @@ module RuboCop
             SafeYAML.load(yaml_code, filename,
                           whitelisted_tags: %w(!ruby/regexp))
           else
-            YAML.safe_load(yaml_code, [Regexp], [], false, filename)
+            YAML.safe_load(yaml_code, [Regexp, Symbol], [], false, filename)
           end
         else
           YAML.load(yaml_code, filename) # rubocop:disable Security/YAMLLoad

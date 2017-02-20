@@ -22,18 +22,16 @@ module RuboCop
         SPECIAL_MODIFIERS = %w(private protected).freeze
 
         def on_rescue(node)
-          _begin_node, *rescue_nodes, else_node = *node
-          rescue_nodes.each do |rescue_node|
-            _, _, body = *rescue_node
-            check_indentation(rescue_node.loc.keyword, body)
-          end
+          _begin_node, *_rescue_nodes, else_node = *node
           check_indentation(node.loc.else, else_node)
         end
 
         def on_ensure(node)
-          _body, ensure_body = *node
-          check_indentation(node.loc.keyword, ensure_body)
+          check_indentation(node.loc.keyword, node.body)
         end
+
+        alias on_resbody on_ensure
+        alias on_for     on_ensure
 
         def on_kwbegin(node)
           # Check indentation against end keyword but only if it's first on its
@@ -82,10 +80,6 @@ module RuboCop
 
         def on_method_def(node, _method_name, _args, body)
           check_indentation(node.loc.keyword, body) unless ignored_node?(node)
-        end
-
-        def on_for(node)
-          check_indentation(node.loc.keyword, node.body)
         end
 
         def on_while(node, base = node)

@@ -42,6 +42,8 @@ module RuboCop
 
         TIMECLASS = [:Time, :DateTime].freeze
 
+        GOOD_METHODS = [:zone, :zone_default, :find_zone, :find_zone!].freeze
+
         DANGEROUS_METHODS = [:now, :local, :new, :strftime,
                              :parse, :at, :current].freeze
 
@@ -163,9 +165,9 @@ module RuboCop
 
         def good_methods
           if style == :strict
-            [:zone, :zone_default]
+            GOOD_METHODS
           else
-            [:zone, :zone_default, :current] + ACCEPTED_METHODS
+            GOOD_METHODS + [:current] + ACCEPTED_METHODS
           end
         end
 

@@ -14,9 +14,11 @@
 * [#4019](https://github.com/bbatsov/rubocop/pull/4019): Make configurable `Style/MultilineMemoization` cop. ([@pocke][])
 * [#4018](https://github.com/bbatsov/rubocop/pull/4018): Add autocorrect `Lint/EmptyEnsure` cop. ([@pocke][])
 * [#4028](https://github.com/bbatsov/rubocop/pull/4028): Add new `Style/IndentHeredoc` cop. ([@pocke][])
+* Add new `Style/InverseMethods` cop. ([@rrosenblum][])
 
 ### Changes
 
+* [#3997](https://github.com/bbatsov/rubocop/pull/3997): Include all ruby files by default and exclude non-ruby files. ([@dorian][])
 * [#4012](https://github.com/bbatsov/rubocop/pull/4012): Mark `foo[:bar]` as not complex in `Style/TernaryParentheses` cop with `require_parentheses_when_complex` style. ([@onk][])
 * [#3915](https://github.com/bbatsov/rubocop/issues/3915): Make configurable whitelist for `Lint/SafeNavigationChain` cop. ([@pocke][])
 * [#3944](https://github.com/bbatsov/rubocop/issues/3944): Allow keyword arguments in `Style/RaiseArgs` cop. ([@mikegee][])
@@ -26,6 +28,7 @@
 
 ### Bug fixes
 
+* [#4007](https://github.com/bbatsov/rubocop/pull/4007): Skip `Rails/SkipsModelValidations` for methods that don't accept arguments. ([@dorian][])
 * [#3923](https://github.com/bbatsov/rubocop/issues/3923): Allow asciibetical sorting in `Bundler/OrderedGems`. ([@mikegee][])
 * [#3855](https://github.com/bbatsov/rubocop/issues/3855): Make `Lint/NonLocalExitFromIterator` aware of method definitions. ([@drenmi][])
 * [#2643](https://github.com/bbatsov/rubocop/issues/2643): Allow uppercase and dashes in `MagicComment`. ([@mikegee][])
@@ -37,6 +40,7 @@
 * [#3345](https://github.com/bbatsov/rubocop/issues/3345): Allow `Style/WordArray`'s `WordRegex` configuration value to be an instance of `String`. ([@mikegee][])
 * [#4013](https://github.com/bbatsov/rubocop/pull/4013): Follow redirects for RemoteConfig. ([@buenaventure][])
 * [#3673](https://github.com/bbatsov/rubocop/issues/3673): Fix regression on `Style/RedundantSelf` when assigning to same local variable. ([@bankair][])
+* [#4047](https://github.com/bbatsov/rubocop/issues/4047): Allow `find_zone` and `find_zone!` methods in `Rails/TimeZone`. ([@attilahorvath][])
 
 ## 0.47.1 (2017-01-18)
 
@@ -2642,3 +2646,5 @@
 [@onk]: https://github.com/onk
 [@dabroz]: https://github.com/dabroz
 [@buenaventure]: https://github.com/buenaventure
+[@dorian]: https://github.com/dorian
+[@attilahorvath]: https://github.com/attilahorvath

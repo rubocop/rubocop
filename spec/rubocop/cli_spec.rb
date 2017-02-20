@@ -920,10 +920,10 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'does not consider Include parameters in subdirectories' do
-      create_file('dir/example.ruby', 'x=0')
+      create_file('dir/example.ruby3', 'x=0')
       create_file('dir/.rubocop.yml', ['AllCops:',
                                        '  Include:',
-                                       '    - "*.ruby"'])
+                                       '    - "*.ruby3"'])
       expect(cli.run(%w(--format simple))).to eq(0)
       expect($stderr.string).to eq('')
       expect($stdout.string)
