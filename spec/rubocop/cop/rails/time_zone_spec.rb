@@ -186,6 +186,36 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts Time.find_zone(time_zone).now' do
+      inspect_source(cop, "Time.find_zone('EST').now")
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts Time.find_zone(time_zone).today' do
+      inspect_source(cop, "Time.find_zone('EST').today")
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts Time.find_zone(time_zone).local' do
+      inspect_source(cop, "Time.find_zone('EST').local(2012, 6, 10, 12, 00)")
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts Time.find_zone!(time_zone).now' do
+      inspect_source(cop, "Time.find_zone!('EST').now")
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts Time.find_zone!(time_zone).today' do
+      inspect_source(cop, "Time.find_zone!('EST').today")
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts Time.find_zone!(time_zone).local' do
+      inspect_source(cop, "Time.find_zone!('EST').local(2012, 6, 10, 12, 00)")
+      expect(cop.offenses).to be_empty
+    end
+
     described_class::DANGEROUS_METHODS.each do |a_method|
       it "accepts Some::Time.#{a_method}" do
         inspect_source(cop, "Some::Time.#{a_method}")
@@ -231,6 +261,16 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
 
       it "accepts #{klass}.zone_default.now" do
         inspect_source(cop, "#{klass}.zone_default.now")
+        expect(cop.offenses).to be_empty
+      end
+
+      it "accepts #{klass}.find_zone(time_zone).now" do
+        inspect_source(cop, "#{klass}.find_zone('EST').now")
+        expect(cop.offenses).to be_empty
+      end
+
+      it "accepts #{klass}.find_zone!(time_zone).now" do
+        inspect_source(cop, "#{klass}.find_zone!('EST').now")
         expect(cop.offenses).to be_empty
       end
 
