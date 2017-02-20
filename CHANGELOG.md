@@ -39,6 +39,7 @@
 * [#4006](https://github.com/bbatsov/rubocop/issues/4006): Prevent `Style/WhileUntilModifier` from breaking on a multiline modifier. ([@drenmi][])
 * [#3345](https://github.com/bbatsov/rubocop/issues/3345): Allow `Style/WordArray`'s `WordRegex` configuration value to be an instance of `String`. ([@mikegee][])
 * [#4013](https://github.com/bbatsov/rubocop/pull/4013): Follow redirects for RemoteConfig. ([@buenaventure][])
+* [#4047](https://github.com/bbatsov/rubocop/issues/4047): Allow `find_zone` and `find_zone!` methods in `Rails/TimeZone`. ([@attilahorvath][])
 
 ## 0.47.1 (2017-01-18)
 
@@ -2645,3 +2646,4 @@
 [@dabroz]: https://github.com/dabroz
 [@buenaventure]: https://github.com/buenaventure
 [@dorian]: https://github.com/dorian
+[@attilahorvath]: https://github.com/attilahorvath
