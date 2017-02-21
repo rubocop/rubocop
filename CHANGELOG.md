@@ -25,6 +25,7 @@
 * Add auto-correct to `Performance/DoubleStartEndWith`. ([@rrosenblum][])
 * [#3951](https://github.com/bbatsov/rubocop/pull/3951): Make `Rails/Date` cop to register an offence for a string without timezone. ([@sinsoku][])
 * [#4020](https://github.com/bbatsov/rubocop/pull/4020): Fixed `new_cop.rake` suggested path. ([@dabroz][])
+* [#4055](https://github.com/bbatsov/rubocop/pull/4055): Add parameters count to offense message for `Metrics/ParameterLists` cop. ([@pocke][])
 
 ### Bug fixes
 
