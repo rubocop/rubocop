@@ -8,7 +8,7 @@ module RuboCop
     class EnsureNode < Node
       # Returns the body of the `ensure` clause.
       #
-      # @return [Node, nil] The body of the `for` loop.
+      # @return [Node, nil] The body of the `ensure`.
       def body
         node_parts[1]
       end

@@ -8,7 +8,7 @@ module RuboCop
     class ResbodyNode < Node
       # Returns the body of the `rescue` clause.
       #
-      # @return [Node, nil] The body of the `for` loop.
+      # @return [Node, nil] The body of the `resbody`.
       def body
         node_parts[2]
       end
