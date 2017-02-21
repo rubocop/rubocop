@@ -121,11 +121,10 @@ module RuboCop
     #
     # @example Emacs style comment
     #   comment = RuboCop::MagicComment.parse(
-    #     '# -*- encoding: ASCII-8BIT; frozen_string_literal: true -*-'
+    #     '# -*- encoding: ASCII-8BIT -*-'
     #   )
     #
-    #   comment.encoding              # => 'ascii-8bit'
-    #   comment.frozen_string_literal # => true
+    #   comment.encoding # => 'ascii-8bit'
     #
     # @see https://www.gnu.org/software/emacs/manual/html_node/emacs/Specify-Coding.html
     # @see https://git.io/vMCXh Emacs handling in Ruby's parse.y
