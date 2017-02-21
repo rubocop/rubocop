@@ -170,4 +170,16 @@ describe 'RuboCop Project' do
       end
     end
   end
+
+  describe 'requiring all of `lib` with verbose warnings enabled' do
+    it 'emits no warnings' do
+      whitelisted = ->(line) { line =~ /warning: private attribute\?$/ }
+
+      warnings = `ruby -Ilib -w -W2 lib/rubocop.rb 2>&1`
+                 .lines
+                 .grep(%r{/lib/rubocop}) # ignore warnings from dependencies
+                 .reject(&whitelisted)
+      expect(warnings).to be_empty
+    end
+  end
 end
