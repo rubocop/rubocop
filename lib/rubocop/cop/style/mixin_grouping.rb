@@ -18,8 +18,8 @@ module RuboCop
       #
       #   @good
       #   class Foo
-      #     include Bar
       #     include Qox
+      #     include Bar
       #   end
       #
       #   EnforcedStyle: grouped
@@ -32,7 +32,7 @@ module RuboCop
       #
       #   @good
       #   class Foo
-      #     extend Bar, Qox
+      #     extend Qox, Bar
       #   end
       class MixinGrouping < Cop
         include ConfigurableEnforcedStyle
@@ -41,9 +41,7 @@ module RuboCop
         MSG = 'Put `%s` mixins in %s.'.freeze
 
         def on_send(node)
-          _reciever, method_name, *_args = *node
-
-          return unless MIXIN_METHODS.include?(method_name)
+          return unless MIXIN_METHODS.include?(node.method_name)
 
           check(node)
         end
@@ -65,9 +63,7 @@ module RuboCop
         end
 
         def check_separated_style(send_node)
-          _reciever, _method_name, *args = *send_node
-
-          return if args.one?
+          return if send_node.arguments.one?
 
           add_offense(send_node, :expression)
         end

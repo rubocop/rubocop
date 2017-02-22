@@ -2994,8 +2994,8 @@ end
 
 # good
 class Foo
-  include Bar
   include Qox
+  include Bar
 end
 
 EnforcedStyle: grouped
@@ -3008,7 +3008,7 @@ end
 
 # good
 class Foo
-  extend Bar, Qox
+  extend Qox, Bar
 end
 ```
 
