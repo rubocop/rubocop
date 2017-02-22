@@ -86,20 +86,23 @@ describe RuboCop::Cop::Performance::Casecmp do
     it "formats the error message correctly for str.#{selector} ==" do
       inspect_source(cop, "str.#{selector} == 'string'")
       expect(cop.highlights).to eq(["#{selector} =="])
-      expect(cop.messages).to eq(["Use `casecmp` instead of `#{selector} ==`."])
+      expect(cop.messages).to eq(['Use `casecmp` and `zero?` instead of '\
+                                  "`#{selector} ==`."])
     end
 
     it "formats the error message correctly for == str.#{selector}" do
       inspect_source(cop, "'string' == str.#{selector}")
       expect(cop.highlights).to eq(["== str.#{selector}"])
-      expect(cop.messages).to eq(["Use `casecmp` instead of `== #{selector}`."])
+      expect(cop.messages).to eq(['Use `casecmp` and `zero?` instead of '\
+                                  "`== #{selector}`."])
     end
 
     it 'formats the error message correctly for ' \
        "obj.#{selector} == str.#{selector}" do
       inspect_source(cop, "obj.#{selector} == str.#{selector}")
       expect(cop.highlights).to eq(["obj.#{selector} == str.#{selector}"])
-      expect(cop.messages).to eq(["Use `casecmp` instead of `#{selector} ==`."])
+      expect(cop.messages).to eq(['Use `casecmp` and `zero?` instead of '\
+                                  "`#{selector} ==`."])
     end
 
     it "doesn't report an offense for variable == str.#{selector}" do
