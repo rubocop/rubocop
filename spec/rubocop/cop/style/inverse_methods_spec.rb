@@ -17,7 +17,8 @@ describe RuboCop::Cop::Style::InverseMethods do
           :> => :<=
         },
         'InverseBlocks' => {
-          select: :reject
+          select: :reject,
+          select!: :reject!
         }
       }
     )
@@ -147,7 +148,9 @@ describe RuboCop::Cop::Style::InverseMethods do
 
   context 'inverse blocks' do
     { select: :reject,
-      reject: :select }.each do |method, inverse|
+      reject: :select,
+      select!: :reject!,
+      reject!: :select! }.each do |method, inverse|
       it "registers an offense for foo.#{method} { |e| !e }" do
         inspect_source(cop, "foo.#{method} { |e| !e }")
 
