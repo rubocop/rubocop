@@ -11,7 +11,7 @@ module RuboCop
     COPS_PATTERN = "(all|#{COP_NAMES_PATTERN})".freeze
 
     COMMENT_DIRECTIVE_REGEXP = Regexp.new(
-      ('\A# rubocop : ((?:dis|en)able)\b ' + COPS_PATTERN).gsub(' ', '\s*')
+      ('# rubocop : ((?:dis|en)able)\b ' + COPS_PATTERN).gsub(' ', '\s*')
     )
 
     CopAnalysis = Struct.new(:line_ranges, :start_line_number)
