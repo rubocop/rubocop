@@ -177,6 +177,7 @@ In the following section you find all available cops:
 
 * [Rails/ActionFilter](cops_rails.md#railsactionfilter)
 * [Rails/ActiveSupportAliases](cops_rails.md#railsactivesupportaliases)
+* [Rails/Blank](cops_rails.md#railsblank)
 * [Rails/Date](cops_rails.md#railsdate)
 * [Rails/Delegate](cops_rails.md#railsdelegate)
 * [Rails/DelegateAllowBlank](cops_rails.md#railsdelegateallowblank)

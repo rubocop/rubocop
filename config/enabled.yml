@@ -1522,6 +1522,16 @@ Rails/ActiveSupportAliases:
                   `Array#append`, `Array#prepend`.
   Enabled: true
 
+Rails/Blank:
+  Description: 'Enforce using `blank?` and `present?`.'
+  Enabled: true
+  # Convert checks for `nil` or `empty?` to `blank?`
+  NilOrEmpty: true
+  # Convert usages of not `present?` to `blank?`
+  NotPresent: true
+  # Convert usages of `unless` `present?` to `if` `blank?`
+  UnlessPresent: true
+
 Rails/Date:
   Description: >-
                   Checks the correct usage of date aware methods,
