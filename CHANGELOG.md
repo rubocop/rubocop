@@ -47,6 +47,7 @@
 * [#4047](https://github.com/bbatsov/rubocop/issues/4047): Allow `find_zone` and `find_zone!` methods in `Rails/TimeZone`. ([@attilahorvath][])
 * [#3457](https://github.com/bbatsov/rubocop/issues/3457): Clear a warning and prevent new warnings. ([@mikegee][])
 * [#4066](https://github.com/bbatsov/rubocop/issues/4066): Register an offense in `Lint/ShadowedException` when an exception is shadowed and there is an implicit begin. ([@rrosenblum][])
+* [#4001](https://github.com/bbatsov/rubocop/issues/4001): Lint/UnneededDisable of Metrics/LineLength that isn't unneeded. ([@wkurniawan07][])
 
 ## 0.47.1 (2017-01-18)
 
@@ -2655,3 +2656,4 @@
 [@dorian]: https://github.com/dorian
 [@attilahorvath]: https://github.com/attilahorvath
 [@droptheplot]: https://github.com/droptheplot
+[@wkurniawan07]: https://github.com/wkurniawan07

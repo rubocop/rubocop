@@ -305,6 +305,38 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
         inspect_source(cop, source)
         expect(cop.highlights).to eq(['bcd'])
       end
+
+      context 'and the source contains non-directive # as comment' do
+        let(:source) { <<-END }
+          aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa # bbbbbbbbbbbbbb # rubocop:enable Style/ClassVars'
+        END
+
+        it 'registers an offense for the line' do
+          inspect_source(cop, source)
+          expect(cop.offenses.size).to eq(1)
+        end
+
+        it 'highlights only the non-directive part' do
+          inspect_source(cop, source)
+          expect(cop.highlights).to eq(['bbbbbbb'])
+        end
+      end
+
+      context 'and the source contains non-directive #s as non-comment' do
+        let(:source) { <<-END }
+          LARGE_DATA_STRING_PATTERN = %r{\A([A-Za-z0-9\+\/#]*\={0,2})#([A-Za-z0-9\+\/#]*\={0,2})#([A-Za-z0-9\+\/#]*\={0,2})\z} # rubocop:disable LineLength
+        END
+
+        it 'registers an offense for the line' do
+          inspect_source(cop, source)
+          expect(cop.offenses.size).to eq(1)
+        end
+
+        it 'highlights only the non-directive part' do
+          inspect_source(cop, source)
+          expect(cop.highlights).to eq([']*={0,2})#([A-Za-z0-9+/#]*={0,2})z}'])
+        end
+      end
     end
   end
 end
