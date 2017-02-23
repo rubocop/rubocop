@@ -721,6 +721,7 @@ Style/InverseMethods:
   # of the block that is passed to the method
   InverseBlocks:
     :select: :reject
+    :select!: :reject!
 
 Style/Lambda:
   EnforcedStyle: line_count_dependent
