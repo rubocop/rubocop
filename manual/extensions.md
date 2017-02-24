@@ -30,6 +30,8 @@ other cop.
   RSpec-specific analysis
 * [rubocop-cask](https://github.com/caskroom/rubocop-cask) - Analysis
   for Homebrew-Cask files.
+* [rubocop-thread_safety](https://github.com/covermymeds/rubocop-thread_safety) -
+  Thread-safety analysis
 
 ### Custom Formatters
 
