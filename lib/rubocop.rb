@@ -121,6 +121,7 @@ require 'rubocop/cop/mixin/unused_argument'
 require 'rubocop/cop/bundler/duplicated_gem'
 require 'rubocop/cop/bundler/ordered_gems'
 
+require 'rubocop/cop/lint/ambiguous_block_association'
 require 'rubocop/cop/lint/ambiguous_operator'
 require 'rubocop/cop/lint/ambiguous_regexp_literal'
 require 'rubocop/cop/lint/assignment_in_condition'

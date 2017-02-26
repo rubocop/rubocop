@@ -74,6 +74,7 @@ In the following section you find all available cops:
 
 #### Department [Lint](cops_lint.md)
 
+* [Lint/AmbiguousBlockAssociation](cops_lint.md#lintambiguousblockassociation)
 * [Lint/AmbiguousOperator](cops_lint.md#lintambiguousoperator)
 * [Lint/AmbiguousRegexpLiteral](cops_lint.md#lintambiguousregexpliteral)
 * [Lint/AssignmentInCondition](cops_lint.md#lintassignmentincondition)
