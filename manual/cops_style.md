@@ -2629,7 +2629,7 @@ foo == bar
 Attribute | Value
 --- | ---
 InverseMethods | {:any?=>:none?, :even?=>:odd?, :===>:!=, :=~=>:!~, :<=>:>=, :>=>:<=}
-InverseBlocks | {:select=>:reject}
+InverseBlocks | {:select=>:reject, :select!=>:reject!}
 
 
 ## Style/Lambda
