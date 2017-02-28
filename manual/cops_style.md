@@ -4999,6 +4999,10 @@ config parameter is true.
 # bad
 something  x
 something   y, z
+
+# good
+something x
+something y, z
 ```
 
 ### Important attributes
