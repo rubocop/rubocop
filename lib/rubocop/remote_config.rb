@@ -38,10 +38,10 @@ module RuboCop
         request['If-Modified-Since'] = File.stat(cache_path).mtime.rfc2822
       end
 
-      handle_response(http.request(request), &block)
+      handle_response(http.request(request), limit, &block)
     end
 
-    def handle_response(response, &block)
+    def handle_response(response, limit, &block)
       case response
       when Net::HTTPSuccess
         yield response
