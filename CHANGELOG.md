@@ -27,7 +27,6 @@
 * [#3951](https://github.com/bbatsov/rubocop/pull/3951): Make `Rails/Date` cop to register an offence for a string without timezone. ([@sinsoku][])
 * [#4020](https://github.com/bbatsov/rubocop/pull/4020): Fixed `new_cop.rake` suggested path. ([@dabroz][])
 * [#4055](https://github.com/bbatsov/rubocop/pull/4055): Add parameters count to offense message for `Metrics/ParameterLists` cop. ([@pocke][])
-* [#4077](https://github.com/bbatsov/rubocop/pull/4077): Generate Style::InverseMethods document ([@ota42y][])
 
 ### Bug fixes
 
@@ -2654,4 +2653,3 @@
 [@buenaventure]: https://github.com/buenaventure
 [@dorian]: https://github.com/dorian
 [@attilahorvath]: https://github.com/attilahorvath
-[@ota42y]: https://github.com/ota42y
