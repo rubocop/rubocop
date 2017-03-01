@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::Cop::Badge do
   subject(:badge) { described_class.new('Test', 'ModuleMustBeAClassCop') }
 

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::Cop::Lint::Syntax do
   describe '.offense_from_diagnostic' do
     subject(:offense) do

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::Cop::Performance::HashEachMethods do
   subject(:cop) { described_class.new }
 

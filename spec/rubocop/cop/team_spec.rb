@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::Cop::Team do
   subject(:team) { described_class.new(cop_classes, config, options) }
 

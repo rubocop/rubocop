@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::Cop::Force do
   subject(:force) { described_class.new(cops) }
   let(:cops) { [double('cop1'), double('cop2')] }

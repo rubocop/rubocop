@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::Cop::Util do
   class TestUtil
     include RuboCop::Cop::Util

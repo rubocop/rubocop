@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::PathUtil do
   describe '#relative_path' do
     it 'builds paths relative to PWD by default as a stop-gap' do

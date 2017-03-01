@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe 'isolated environment', :isolated_environment do
   include_context 'cli spec behavior'
 

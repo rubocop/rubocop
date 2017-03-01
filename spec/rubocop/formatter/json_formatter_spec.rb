@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 module RuboCop
   describe Formatter::JSONFormatter do
     subject(:formatter) { described_class.new(output) }

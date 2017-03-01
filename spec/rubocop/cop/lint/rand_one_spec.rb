@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::Cop::Lint::RandOne do
   subject(:cop) { described_class.new }
   before { inspect_source(cop, source) }

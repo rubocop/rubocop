@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::AST::Node do
   describe '#asgn_method_call?' do
     it 'does not match ==' do

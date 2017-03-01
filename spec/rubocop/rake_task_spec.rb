@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
 require 'support/file_helper'
 require 'rubocop/rake_task'
 

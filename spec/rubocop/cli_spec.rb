@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
 require 'timeout'
 
 describe RuboCop::CLI, :isolated_environment do

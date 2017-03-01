@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::ConfigStore do
   subject(:config_store) { described_class.new }
 
