@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::Cop::Style::CollectionMethods, :config do
   cop_config = {
     'PreferredMethods' => {

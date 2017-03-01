@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::Cop::Style::EmptyLinesAroundExceptionHandlingKeywords do
   let(:config) { RuboCop::Config.new }
   subject(:cop) { described_class.new(config) }

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
 require 'rubocop/ast/sexp'
 
 describe RuboCop::Cop::VariableForce::Variable do

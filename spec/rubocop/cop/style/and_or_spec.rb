@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::Cop::Style::AndOr, :config do
   context 'when style is conditionals' do
     cop_config = {

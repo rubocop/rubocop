@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::Cop::Lint::Void do
   subject(:cop) { described_class.new }
 

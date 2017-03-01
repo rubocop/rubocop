@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::Token do
   describe '.from_parser_token' do
     subject(:token) { described_class.from_parser_token(parser_token) }

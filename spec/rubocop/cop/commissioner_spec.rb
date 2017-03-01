@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::Cop::Commissioner do
   describe '#investigate' do
     let(:cop) do

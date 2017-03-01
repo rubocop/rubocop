@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::Cop::Style::Alias, :config do
   subject(:cop) { described_class.new(config) }
 

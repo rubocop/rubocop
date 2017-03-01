@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::CommentConfig do
   subject(:comment_config) { described_class.new(parse_source(source)) }
 

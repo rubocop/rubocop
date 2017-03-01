@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::Cop::Offense do
   let(:location) do
     source_buffer = Parser::Source::Buffer.new('test', 1)

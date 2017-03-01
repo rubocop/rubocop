@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
 require 'parser/current'
 
 describe RuboCop::NodePattern do

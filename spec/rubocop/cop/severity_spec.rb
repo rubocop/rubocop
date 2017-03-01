@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::Cop::Severity do
   let(:refactor) { described_class.new(:refactor) }
   let(:convention) { described_class.new(:convention) }

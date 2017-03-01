@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 #   do_something if str.match(/regex/)
 #   while regex.match('str')
 #     do_something

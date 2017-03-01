@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 module RuboCop
   class Runner
     attr_writer :errors # Needed only for testing.

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::Cop::VariableForce::Locatable do
   include RuboCop::AST::Sexp
 

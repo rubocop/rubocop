@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 RSpec.describe RuboCop::MagicComment do
   shared_examples 'magic comment' do |comment, expectations = {}|
     encoding = expectations[:encoding]

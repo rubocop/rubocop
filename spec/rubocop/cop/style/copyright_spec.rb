@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper.rb'
-
 def unindent(s)
   s.gsub(/^#{s.scan(/^[ \t]+(?=\S)/).min}/, '')
 end

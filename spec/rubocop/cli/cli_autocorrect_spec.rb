@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::CLI, :isolated_environment do
   include_context 'cli spec behavior'
 

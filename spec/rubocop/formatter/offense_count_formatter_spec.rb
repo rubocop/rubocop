@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 module RuboCop
   module Formatter
     describe OffenseCountFormatter do

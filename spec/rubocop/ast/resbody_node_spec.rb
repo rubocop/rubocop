@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::AST::ResbodyNode do
   let(:resbody_node) do
     begin_node = parse_source(source).ast

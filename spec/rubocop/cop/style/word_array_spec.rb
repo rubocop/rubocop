@@ -1,8 +1,6 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::Cop::Style::WordArray, :config do
   subject(:cop) { described_class.new(config) }
 

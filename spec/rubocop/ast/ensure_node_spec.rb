@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::AST::EnsureNode do
   let(:ensure_node) { parse_source(source).ast.children.first }
 

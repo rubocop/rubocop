@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::Cop::MessageAnnotator do
   let(:options) { {} }
   let(:config) { RuboCop::Config.new({}) }

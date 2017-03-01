@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::TargetFinder, :isolated_environment do
   include FileHelper
 

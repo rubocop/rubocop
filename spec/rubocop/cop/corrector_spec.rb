@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::Cop::Corrector do
   describe '#rewrite' do
     it 'allows removal of a range' do

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::Cop::Lint::FormatParameterMismatch do
   subject(:cop) { described_class.new }
 

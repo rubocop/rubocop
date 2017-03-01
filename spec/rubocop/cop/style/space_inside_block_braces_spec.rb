@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::Cop::Style::SpaceInsideBlockBraces, :config do
   SUPPORTED_STYLES = %w(space no_space).freeze
 

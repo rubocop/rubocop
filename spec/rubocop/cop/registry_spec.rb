@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe RuboCop::Cop::Registry do
   subject(:registry) { described_class.new(cops) }
 
