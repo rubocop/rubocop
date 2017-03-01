@@ -21,5 +21,10 @@ describe RuboCop::Cop::Security::MarshalLoad, :config do
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.message).to include("Marshal.#{method}")
     end
+
+    it "accepts Marshal.#{method} if argument is a Marshal.dump" do
+      inspect_source(cop, "Marshal.#{method}(Marshal.dump({}))")
+      expect(cop.offenses).to be_empty
+    end
   end
 end

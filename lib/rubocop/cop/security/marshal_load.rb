@@ -15,11 +15,15 @@ module RuboCop
       #   # good
       #   Marshal.dump("{}")
       #
+      #   # okish - deep copy hack
+      #   Marshal.load(Marshal.dump({}))
+      #
       class MarshalLoad < Cop
         MSG = 'Avoid using `Marshal.%s`.'.freeze
 
         def_node_matcher :marshal_load, <<-END
-          (send (const nil :Marshal) ${:load :restore} ...)
+          (send (const nil :Marshal) ${:load :restore}
+          !(send (const nil :Marshal) :dump ...))
         END
 
         def on_send(node)

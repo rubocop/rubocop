@@ -27,6 +27,7 @@
 * [#3951](https://github.com/bbatsov/rubocop/pull/3951): Make `Rails/Date` cop to register an offence for a string without timezone. ([@sinsoku][])
 * [#4020](https://github.com/bbatsov/rubocop/pull/4020): Fixed `new_cop.rake` suggested path. ([@dabroz][])
 * [#4055](https://github.com/bbatsov/rubocop/pull/4055): Add parameters count to offense message for `Metrics/ParameterLists` cop. ([@pocke][])
+* [#4081](https://github.com/bbatsov/rubocop/pull/4081): Allow `Marshal.load` if argument is a `Marshal.dump` in `Security/MarshalLoad` cop. ([@droptheplot][])
 
 ### Bug fixes
 
@@ -2653,3 +2654,4 @@
 [@buenaventure]: https://github.com/buenaventure
 [@dorian]: https://github.com/dorian
 [@attilahorvath]: https://github.com/attilahorvath
+[@droptheplot]: https://github.com/droptheplot

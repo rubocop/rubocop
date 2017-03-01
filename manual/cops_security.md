@@ -74,6 +74,9 @@ Marshal.restore("{}")
 
 # good
 Marshal.dump("{}")
+
+# okish - deep copy hack
+Marshal.load(Marshal.dump({}))
 ```
 
 ### References
