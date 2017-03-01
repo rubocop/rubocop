@@ -15,6 +15,10 @@ module RuboCop
       #   something  x
       #   something   y, z
       #
+      #   @good
+      #   something x
+      #   something y, z
+      #
       class SpaceBeforeFirstArg < Cop
         include PrecedingFollowingAlignment
 
