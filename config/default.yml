@@ -462,17 +462,6 @@ Style/EmptyMethod:
     - compact
     - expanded
 
-# Checks whether the source file has a utf-8 encoding comment or not
-# AutoCorrectEncodingComment must match the regex
-# /#.*coding\s?[:=]\s?(?:UTF|utf)-8/
-Style/Encoding:
-  EnforcedStyle: never
-  SupportedStyles:
-    - when_needed
-    - always
-    - never
-  AutoCorrectEncodingComment: '# encoding: utf-8'
-
 Style/EndOfLine:
   # The `native` style means that CR+LF (Carriage Return + Line Feed) is
   # enforced on Windows, and LF is enforced on other platforms. The other styles
@@ -583,21 +572,6 @@ Style/FormatString:
     - format
     - sprintf
     - percent
-
-Style/FrozenStringLiteralComment:
-  EnforcedStyle: when_needed
-  SupportedStyles:
-    # `when_needed` will add the frozen string literal comment to files
-    # only when the `TargetRubyVersion` is set to 2.3+.
-    - when_needed
-    # `always` will always add the frozen string literal comment to a file
-    # regardless of the Ruby version or if `freeze` or `<<` are called on a
-    # string literal. If you run code against multiple versions of Ruby, it is
-    # possible that this will create errors in Ruby 2.3.0+.
-    - always
-    # `never` will enforce that the frozen string literal comment does not
-    # exist in a file.
-    - never
 
 # Built-in global variables are allowed by default.
 Style/GlobalVars:
@@ -1226,6 +1200,34 @@ Style/WordArray:
   MinSize: 0
   # The regular expression `WordRegex` decides what is considered a word.
   WordRegex: !ruby/regexp '/\A[\p{Word}\n\t]+\z/'
+
+#################### MagicComments #########################
+
+# Checks whether the source file has a utf-8 encoding comment or not
+# AutoCorrectEncodingComment must match the regex
+# /#.*coding\s?[:=]\s?(?:UTF|utf)-8/
+MagicComments/Encoding:
+  EnforcedStyle: never
+  SupportedStyles:
+    - when_needed
+    - always
+    - never
+  AutoCorrectEncodingComment: '# encoding: utf-8'
+
+MagicComments/FrozenStringLiteral:
+  EnforcedStyle: when_needed
+  SupportedStyles:
+    # `when_needed` will add the frozen string literal comment to files
+    # only when the `TargetRubyVersion` is set to 2.3+.
+    - when_needed
+    # `always` will always add the frozen string literal comment to a file
+    # regardless of the Ruby version or if `freeze` or `<<` are called on a
+    # string literal. If you run code against multiple versions of Ruby, it is
+    # possible that this will create errors in Ruby 2.3.0+.
+    - always
+    # `never` will enforce that the frozen string literal comment does not
+    # exist in a file.
+    - never
 
 #################### Metrics ###############################
 

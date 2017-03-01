@@ -5,6 +5,11 @@
 Rails:
   Enabled: false
 
+MagicComments/Encoding:
+  Description: 'Use UTF-8 as the source file encoding.'
+  StyleGuide: '#utf-8'
+  Enabled: false
+
 Rails/SaveBang:
   Description: 'Identifies possible cases where Active Record save! or related should be used.'
   StyleGuide: 'https://github.com/bbatsov/rails-style-guide#save-bang'
@@ -29,11 +34,6 @@ Style/DocumentationMethod:
   Exclude:
     - 'spec/**/*'
     - 'test/**/*'
-
-Style/Encoding:
-  Description: 'Use UTF-8 as the source file encoding.'
-  StyleGuide: '#utf-8'
-  Enabled: false
 
 Style/FirstArrayElementLineBreak:
   Description: >-

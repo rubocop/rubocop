@@ -19,6 +19,12 @@ module RuboCop
     DEFAULT_RUBY_VERSION = 2.1
     KNOWN_RUBIES = [1.9, 2.0, 2.1, 2.2, 2.3, 2.4].freeze
     OBSOLETE_COPS = {
+      'Style/Encoding' =>
+        'The `Style/Encoding` cop no longer exists. It has been renamed to ' \
+        'MagicComments/Encoding.',
+      'Style/FrozenStringLiteralComment' =>
+        'The `Style/FrozenStringLiteralComment` cop no longer exists. ' \
+        'It has been renamed to MagicComments/FrozenStringLiteral.',
       'Style/TrailingComma' =>
         'The `Style/TrailingComma` cop no longer exists. Please use ' \
         '`Style/TrailingCommaInLiteral` and/or ' \

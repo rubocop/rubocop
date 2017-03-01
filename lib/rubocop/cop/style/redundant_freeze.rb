@@ -12,7 +12,7 @@ module RuboCop
       #   # good
       #   CONST = 1
       class RedundantFreeze < Cop
-        include FrozenStringLiteral
+        include FrozenStringLiteralHelp
 
         MSG = 'Do not freeze immutable objects, as freezing them has no ' \
               'effect.'.freeze

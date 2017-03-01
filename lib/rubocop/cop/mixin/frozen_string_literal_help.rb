@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     # Common functionality for dealing with frozen string literals.
-    module FrozenStringLiteral
+    module FrozenStringLiteralHelp
       module_function
 
       FROZEN_STRING_LITERAL = '# frozen_string_literal:'.freeze

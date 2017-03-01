@@ -77,15 +77,15 @@ describe RuboCop::ConfigLoader do
       let(:file_path) { '.rubocop.yml' }
 
       before do
-        create_file(file_path, ['Style/Encoding:',
+        create_file(file_path, ['MagicComments/Encoding:',
                                 '  Enabled: false'])
       end
 
       it 'returns a configuration inheriting from default.yml' do
-        config = default_config['Style/Encoding'].dup
+        config = default_config['MagicComments/Encoding'].dup
         config['Enabled'] = false
         expect(configuration_from_file.to_h)
-          .to eql(default_config.merge('Style/Encoding' => config))
+          .to eql(default_config.merge('MagicComments/Encoding' => config))
       end
     end
 
@@ -457,7 +457,8 @@ describe RuboCop::ConfigLoader do
 
       before do
         stub_request(:get, /example.com/)
-          .to_return(status: 200, body: "Style/Encoding:\n    Enabled: true")
+          .to_return(status: 200,
+                     body: "MagicComments/Encoding:\n    Enabled: true")
 
         create_file(file_path, ['inherit_from: http://example.com/rubocop.yml'])
       end
@@ -494,11 +495,11 @@ describe RuboCop::ConfigLoader do
 
     it 'returns a configuration loaded from the passed path' do
       create_file(configuration_path, [
-                    'Style/Encoding:',
+                    'MagicComments/Encoding:',
                     '  Enabled: true'
                   ])
       configuration = load_file
-      expect(configuration['Style/Encoding']).to eq(
+      expect(configuration['MagicComments/Encoding']).to eq(
         'Enabled' => true
       )
     end
@@ -512,10 +513,11 @@ describe RuboCop::ConfigLoader do
 
     it 'loads configuration properly when it includes non-ascii characters ' do
       create_file(configuration_path, ['# All these cops of mine are ❤',
-                                       'Style/Encoding:',
+                                       'MagicComments/Encoding:',
                                        '  Enabled: false'])
 
-      expect(load_file.to_h).to eq('Style/Encoding' => { 'Enabled' => false })
+      expect(load_file.to_h)
+        .to eq('MagicComments/Encoding' => { 'Enabled' => false })
     end
 
     it 'returns an empty configuration loaded from an empty file' do

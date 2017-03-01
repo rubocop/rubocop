@@ -289,12 +289,6 @@ Style/FileName:
   StyleGuide: '#snake-case-files'
   Enabled: true
 
-Style/FrozenStringLiteralComment:
-  Description: >-
-                 Add the frozen_string_literal comment to the top of files
-                 to help transition from Ruby 2.3.0 to Ruby 3.0.
-  Enabled: true
-
 Style/InitialIndentation:
   Description: >-
     Checks the indentation of the first non-blank non-comment line in a file.
@@ -1001,6 +995,14 @@ Style/WordArray:
 
 Style/ZeroLengthPredicate:
   Description: 'Use #empty? when testing for objects of length 0.'
+  Enabled: true
+
+#################### MagicComments #########################
+
+MagicComments/FrozenStringLiteral:
+  Description: >-
+                 Add the frozen_string_literal comment to the top of files
+                 to help transition from Ruby 2.3.0 to Ruby 3.0.
   Enabled: true
 
 #################### Metrics ###############################

@@ -13,7 +13,7 @@ module RuboCop
       #   # good
       #   CONST = [1, 2, 3].freeze
       class MutableConstant < Cop
-        include FrozenStringLiteral
+        include FrozenStringLiteralHelp
 
         MSG = 'Freeze mutable objects assigned to constants.'.freeze
 

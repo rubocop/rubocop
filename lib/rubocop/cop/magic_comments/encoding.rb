@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module MagicComments
       # This cop checks whether the source file has a utf-8 encoding
       # comment or not.
       # Setting this check to "always" and "when_needed" makes sense only
