@@ -72,8 +72,6 @@ task :new_cop, [:cop] do |_task, args|
   spec_code = <<-END.strip_indent
     # frozen_string_literal: true
 
-    require 'spec_helper'
-
     describe RuboCop::Cop::#{badge.department}::#{badge.cop_name} do
       let(:config) { RuboCop::Config.new }
       subject(:cop) { described_class.new(config) }
