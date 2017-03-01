@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#4083](https://github.com/bbatsov/rubocop/pull/4083): Add new configuration `NumberOfEmptyLines` for `Style/EmptyLineBetweenDefs`. ([@dorian][])
 * [#4045](https://github.com/bbatsov/rubocop/pull/4045): Add new configuration `Strict` for `Style/NumericLiteral` to make the change to this cop in 0.47.0 configurable. ([@iGEL][])
 * [#3893](https://github.com/bbatsov/rubocop/issues/3893): Add a new configuration, `IncludeActiveSupportAliases`, to `Performance/DoublStartEndWith`. This configuration will check for ActiveSupport's `starts_with?` and `ends_with?`. ([@rrosenblum][])
 * [#3889](https://github.com/bbatsov/rubocop/pull/3889): Add new `Style/EmptyLineAfterMagicComment` cop. ([@backus][])
@@ -19,6 +20,7 @@
 
 ### Changes
 
+* [#4083](https://github.com/bbatsov/rubocop/pull/4083): `Style/EmptyLineBetweenDefs` doesn't allow more than one empty line between method definitions by default (see `NumberOfEmptyLines`). ([@dorian][])
 * [#3997](https://github.com/bbatsov/rubocop/pull/3997): Include all ruby files by default and exclude non-ruby files. ([@dorian][])
 * [#4012](https://github.com/bbatsov/rubocop/pull/4012): Mark `foo[:bar]` as not complex in `Style/TernaryParentheses` cop with `require_parentheses_when_complex` style. ([@onk][])
 * [#3915](https://github.com/bbatsov/rubocop/issues/3915): Make configurable whitelist for `Lint/SafeNavigationChain` cop. ([@pocke][])
