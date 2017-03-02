@@ -94,17 +94,17 @@ Check that the keys, separators, and values of a multi-line hash
 literal are aligned according to configuration. The configuration
 options are:
 
-- key (left align keys)
-- separator (align hash rockets and colons, right align keys)
-- table (left align keys, hash rockets, and values)
+* key (left align keys)
+* separator (align hash rockets and colons, right align keys)
+* table (left align keys, hash rockets, and values)
 
 The treatment of hashes passed as the last argument to a method call
 can also be configured. The options are:
 
-- always_inspect
-- always_ignore
-- ignore_implicit (without curly braces)
-- ignore_explicit (with curly braces)
+* always_inspect
+* always_ignore
+* ignore_implicit (without curly braces)
+* ignore_explicit (with curly braces)
 
 ### Example
 
