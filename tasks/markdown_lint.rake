@@ -8,7 +8,10 @@ task :markdown_lint do
     'MD002', # First header should be a top level header
     'MD013', # Line length
     'MD024', # Multiple headers with the same content
-    'MD033'  # Inline HTML
+    'MD033', # Inline HTML
+    'MD038', # Spaces inside code span elements
+    'MD014', # Dollar signs used before commands without showing output
+    'MD029'  # Ordered list item prefix
   ]
 
   ruleset = MarkdownLint::RuleSet.new
