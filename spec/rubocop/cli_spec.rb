@@ -173,6 +173,19 @@ describe RuboCop::CLI, :isolated_environment do
               ''].join("\n"))
   end
 
+  it 'registers an offense for an invalid character syntax' do
+    create_file('example.rb', ["p(?\t)"])
+    expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
+    expect($stdout.string)
+      .to eq(["#{abs('example.rb')}:1:3: W: invalid character syntax; use ?\\t " \
+              '(Using Ruby 2.1 parser; configure using `TargetRubyVersion` ' \
+              'parameter, under `AllCops`)',
+              "#{abs('example.rb')}:1:3: E: unexpected token tEH " \
+              '(Using Ruby 2.1 parser; configure using `TargetRubyVersion` ' \
+              'parameter, under `AllCops`)',
+              ''].join("\n"))
+  end
+
   it 'registers an offense for Parser warnings' do
     create_file('example.rb', ['puts *test', 'if a then b else c end'])
     aggregate_failures('CLI output') do
