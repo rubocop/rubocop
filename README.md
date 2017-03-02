@@ -9,7 +9,6 @@
 [![OpenCollective](https://opencollective.com/rubocop/backers/badge.svg)](#open-collective-backers)
 [![OpenCollective](https://opencollective.com/rubocop/sponsors/badge.svg)](#open-collective-sponsors)
 
-
 <p align="center">
   <img src="https://raw.githubusercontent.com/bbatsov/rubocop/master/logo/rubo-logo-horizontal.png" alt="RuboCop Logo"/>
 </p>

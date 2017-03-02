@@ -50,7 +50,6 @@ Attribute | Value
 --- | ---
 AutoCorrect | false
 
-
 ### References
 
 * [http://ruby-doc.org/stdlib-2.3.0/libdoc/json/rdoc/JSON.html#method-i-load](http://ruby-doc.org/stdlib-2.3.0/libdoc/json/rdoc/JSON.html#method-i-load)

@@ -16,7 +16,6 @@ Attribute | Value
 --- | ---
 Max | 15
 
-
 ### References
 
 * [http://c2.com/cgi/wiki?AbcMetric](http://c2.com/cgi/wiki?AbcMetric)
@@ -38,8 +37,7 @@ Attribute | Value
 --- | ---
 CountComments | false
 Max | 25
-ExcludedMethods | 
-
+ExcludedMethods |
 
 ## Metrics/BlockNesting
 
@@ -63,7 +61,6 @@ Attribute | Value
 CountBlocks | false
 Max | 3
 
-
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#three-is-the-number-thou-shalt-count](https://github.com/bbatsov/ruby-style-guide#three-is-the-number-thou-shalt-count)
@@ -84,7 +81,6 @@ Attribute | Value
 --- | ---
 CountComments | false
 Max | 100
-
 
 ## Metrics/CyclomaticComplexity
 
@@ -109,7 +105,6 @@ Attribute | Value
 --- | ---
 Max | 6
 
-
 ## Metrics/LineLength
 
 Enabled by default | Supports autocorrection
@@ -128,8 +123,7 @@ AllowHeredoc | true
 AllowURI | true
 URISchemes | http, https
 IgnoreCopDirectives | false
-IgnoredPatterns | 
-
+IgnoredPatterns |
 
 ### References
 
@@ -152,7 +146,6 @@ Attribute | Value
 CountComments | false
 Max | 10
 
-
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#short-methods](https://github.com/bbatsov/ruby-style-guide#short-methods)
@@ -174,7 +167,6 @@ Attribute | Value
 CountComments | false
 Max | 100
 
-
 ## Metrics/ParameterLists
 
 Enabled by default | Supports autocorrection
@@ -192,7 +184,6 @@ Attribute | Value
 --- | ---
 Max | 5
 CountKeywordArgs | true
-
 
 ### References
 
@@ -235,4 +226,3 @@ end                             # 7 complexity points
 Attribute | Value
 --- | ---
 Max | 7
-
