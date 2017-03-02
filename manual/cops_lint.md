@@ -1859,8 +1859,8 @@ end
 
 Attribute | Value
 --- | ---
-ContextCreatingMethods | 
-MethodCreatingMethods | 
+ContextCreatingMethods |
+MethodCreatingMethods |
 
 ## Lint/UselessAssignment
 

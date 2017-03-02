@@ -15,7 +15,7 @@ Attribute | Value
 --- | ---
 EnforcedStyle | indent
 SupportedStyles | outdent, indent
-IndentationWidth | 
+IndentationWidth |
 
 ### References
 
@@ -211,7 +211,7 @@ Attribute | Value
 --- | ---
 EnforcedStyle | with_first_parameter
 SupportedStyles | with_first_parameter, with_fixed_indentation
-IndentationWidth | 
+IndentationWidth |
 
 ### References
 
@@ -454,7 +454,7 @@ Attribute | Value
 EnforcedStyle | case
 SupportedStyles | case, end
 IndentOneStep | false
-IndentationWidth | 
+IndentationWidth |
 
 ### References
 
@@ -865,7 +865,7 @@ an offense is reported.
 Attribute | Value
 --- | ---
 Notice | ^Copyright (\(c\) )?2[0-9]{3} .+
-AutocorrectNotice | 
+AutocorrectNotice |
 
 ## Style/DefWithParentheses
 
@@ -1720,9 +1720,9 @@ first line) are ignored.
 
 Attribute | Value
 --- | ---
-Exclude | 
+Exclude |
 ExpectMatchingDefinition | false
-Regex | 
+Regex |
 IgnoreExecutableScripts | true
 AllowedAcronyms | CLI, DSL, ACL, API, ASCII, CPU, CSS, DNS, EOF, GUID, HTML, HTTP, HTTPS, ID, IP, JSON, LHS, QPS, RAM, RHS, RPC, SLA, SMTP, SQL, SSH, TCP, TLS, TTL, UDP, UI, UID, UUID, URI, URL, UTF8, VM, XML, XMPP, XSRF, XSS
 
@@ -1862,7 +1862,7 @@ Attribute | Value
 --- | ---
 EnforcedStyle | special_for_inner_method_call_in_parentheses
 SupportedStyles | consistent, special_for_inner_method_call, special_for_inner_method_call_in_parentheses
-IndentationWidth | 
+IndentationWidth |
 
 ## Style/FlipFlop
 
@@ -1959,7 +1959,7 @@ Note that backreferences like $1, $2, etc are not global variables.
 
 Attribute | Value
 --- | ---
-AllowedVariables | 
+AllowedVariables |
 
 ### References
 
@@ -2309,7 +2309,7 @@ Attribute | Value
 --- | ---
 EnforcedStyle | special_inside_parentheses
 SupportedStyles | special_inside_parentheses, consistent, align_brackets
-IndentationWidth | 
+IndentationWidth |
 
 ## Style/IndentAssignment
 
@@ -2343,7 +2343,7 @@ end
 
 Attribute | Value
 --- | ---
-IndentationWidth | 
+IndentationWidth |
 
 ## Style/IndentHash
 
@@ -2392,7 +2392,7 @@ Attribute | Value
 --- | ---
 EnforcedStyle | special_inside_parentheses
 SupportedStyles | special_inside_parentheses, consistent, align_braces
-IndentationWidth | 
+IndentationWidth |
 
 ## Style/IndentHeredoc
 
@@ -2756,7 +2756,7 @@ puts 'test'
 
 Attribute | Value
 --- | ---
-IgnoredMethods | 
+IgnoredMethods |
 
 ### References
 
@@ -3470,7 +3470,7 @@ Attribute | Value
 --- | ---
 EnforcedStyle | aligned
 SupportedStyles | aligned, indented, indented_relative_to_receiver
-IndentationWidth | 
+IndentationWidth |
 
 ## Style/MultilineMethodDefinitionBraceLayout
 
@@ -3565,7 +3565,7 @@ Attribute | Value
 --- | ---
 EnforcedStyle | aligned
 SupportedStyles | aligned, indented
-IndentationWidth | 
+IndentationWidth |
 
 ## Style/MultilineTernaryOperator
 

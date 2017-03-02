@@ -37,7 +37,7 @@ Attribute | Value
 --- | ---
 CountComments | false
 Max | 25
-ExcludedMethods | 
+ExcludedMethods |
 
 ## Metrics/BlockNesting
 
@@ -123,7 +123,7 @@ AllowHeredoc | true
 AllowURI | true
 URISchemes | http, https
 IgnoreCopDirectives | false
-IgnoredPatterns | 
+IgnoredPatterns |
 
 ### References
 
