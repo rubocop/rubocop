@@ -87,7 +87,6 @@ Attribute | Value
 --- | ---
 AllowSafeAssignment | true
 
-
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#safe-assignment-in-condition](https://github.com/bbatsov/ruby-style-guide#safe-assignment-in-condition)
@@ -159,7 +158,6 @@ Attribute | Value
 --- | ---
 EnforcedStyleAlignWith | either
 SupportedStylesAlignWith | either, start_of_block, start_of_line
-
 
 ## Lint/CircularArgumentReference
 
@@ -324,7 +322,6 @@ Attribute | Value
 EnforcedStyleAlignWith | start_of_line
 SupportedStylesAlignWith | start_of_line, def
 AutoCorrect | false
-
 
 ## Lint/DeprecatedClassMethods
 
@@ -545,7 +542,6 @@ Attribute | Value
 --- | ---
 AutoCorrect | false
 
-
 ## Lint/EmptyExpression
 
 Enabled by default | Supports autocorrection
@@ -681,7 +677,6 @@ Attribute | Value
 EnforcedStyleAlignWith | keyword
 SupportedStylesAlignWith | keyword, variable, start_of_line
 AutoCorrect | false
-
 
 ## Lint/EndInMethod
 
@@ -960,7 +955,6 @@ Attribute | Value
 --- | ---
 EnforcedStyle | runtime_error
 SupportedStyles | runtime_error, standard_error
-
 
 ## Lint/InvalidCharacterLiteral
 
@@ -1428,7 +1422,6 @@ Attribute | Value
 --- | ---
 Whitelist | present?, blank?, presence, try
 
-
 ## Lint/ShadowedException
 
 Enabled by default | Supports autocorrection
@@ -1727,7 +1720,6 @@ Attribute | Value
 IgnoreEmptyBlocks | true
 AllowUnusedKeywordArguments | false
 
-
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#underscore-unused-vars](https://github.com/bbatsov/ruby-style-guide#underscore-unused-vars)
@@ -1763,7 +1755,6 @@ Attribute | Value
 --- | ---
 AllowUnusedKeywordArguments | false
 IgnoreEmptyMethods | true
-
 
 ### References
 
@@ -1870,7 +1861,6 @@ Attribute | Value
 --- | ---
 ContextCreatingMethods | 
 MethodCreatingMethods | 
-
 
 ## Lint/UselessAssignment
 

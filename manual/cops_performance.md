@@ -163,7 +163,6 @@ Attribute | Value
 --- | ---
 SafeMode | true
 
-
 ## Performance/Detect
 
 Enabled by default | Supports autocorrection
@@ -198,7 +197,6 @@ considered unsafe.
 Attribute | Value
 --- | ---
 SafeMode | true
-
 
 ### References
 
@@ -238,7 +236,6 @@ Attribute | Value
 --- | ---
 IncludeActiveSupportAliases | false
 
-
 ## Performance/EndWith
 
 Enabled by default | Supports autocorrection
@@ -265,7 +262,6 @@ would suffice.
 Attribute | Value
 --- | ---
 AutoCorrect | false
-
 
 ### References
 
@@ -306,7 +302,6 @@ Attribute | Value
 --- | ---
 EnabledForFlattenWithoutParams | false
 
-
 ### References
 
 * [https://github.com/JuanitoFatas/fast-ruby#enumerablemaparrayflatten-vs-enumerableflat_map-code](https://github.com/JuanitoFatas/fast-ruby#enumerablemaparrayflatten-vs-enumerableflat_map-code)
@@ -338,7 +333,6 @@ hash.each_value { |v| p v }
 Attribute | Value
 --- | ---
 AutoCorrect | false
-
 
 ### References
 
@@ -463,7 +457,6 @@ hash.merge!(a: 1, b: 2)
 Attribute | Value
 --- | ---
 MaxKeyValuePairs | 2
-
 
 ### References
 
@@ -675,7 +668,6 @@ This cop identifies unnecessary use of a regex where
 Attribute | Value
 --- | ---
 AutoCorrect | false
-
 
 ### References
 
