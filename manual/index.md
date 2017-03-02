@@ -3,7 +3,7 @@
 </p>
 
 > Role models are important. <br/>
-> -- Officer Alex J. Murphy / RoboCop
+> ― Officer Alex J. Murphy / RoboCop
 
 **RuboCop** is a Ruby static code analyzer. Out of the box it will
 enforce many of the guidelines outlined in the community
