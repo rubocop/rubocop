@@ -131,7 +131,7 @@ Enabled | Yes
 
 This cop checks dynamic `find_by_*` methods.
 Use `find_by` instead of dynamic method.
-See. https://github.com/bbatsov/rails-style-guide#find_by
+See. [rails-style-guide#find_by](https://github.com/bbatsov/rails-style-guide#find_by)
 
 ### Example
 
@@ -755,7 +755,7 @@ Enabled | No
 
 This cop checks for the use of methods which skip
 validations which are listed in
-http://guides.rubyonrails.org/active_record_validations.html#skipping-validations
+[guides.rubyonrails.org/active_record_validations](http://guides.rubyonrails.org/active_record_validations.html#skipping-validations)
 
 ### Example
 
@@ -794,8 +794,10 @@ Enabled | No
 
 This cop checks for the use of Time methods without zone.
 
-Built on top of Ruby on Rails style guide (https://github.com/bbatsov/rails-style-guide#time)
-and the article http://danilenko.org/2012/7/6/rails_timezones/ .
+Built on top of Ruby on Rails style guide
+[rails-style-guide#time](https://github.com/bbatsov/rails-style-guide#time)
+and the article
+[danilenko.org/2012/7/6/rails_timezones](http://danilenko.org/2012/7/6/rails_timezones/).
 
 Two styles are supported for this cop. When EnforcedStyle is 'strict'
 then only use of Time.zone is allowed.
