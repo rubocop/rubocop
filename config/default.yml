@@ -912,7 +912,7 @@ Style/ParenthesesAroundCondition:
 
 Style/PercentLiteralDelimiters:
   PreferredDelimiters:
-    all: ()
+    default: ()
     '%r': '{}'
 
 Style/PercentQLiterals:

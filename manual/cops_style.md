@@ -4131,13 +4131,15 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 This cop enforces the consistent usage of `%`-literal delimiters.
-Specify the 'all' key to set all preferred delimiters at once.
+Specify the 'default' key to set all preferred delimiters at once. You
+can continue to specify individual preferred delimiters to override the
+default.
 
 ### Important attributes
 
 Attribute | Value
 --- | ---
-PreferredDelimiters | {"all"=>"()", "%r"=>"{}"}
+PreferredDelimiters | {"default"=>"()", "%r"=>"{}"}
 
 
 ### References

@@ -4,7 +4,9 @@ module RuboCop
   module Cop
     module Style
       # This cop enforces the consistent usage of `%`-literal delimiters.
-      # Specify the 'all' key to set all preferred delimiters at once.
+      # Specify the 'default' key to set all preferred delimiters at once. You
+      # can continue to specify individual preferred delimiters to override the
+      # default.
       class PercentLiteralDelimiters < Cop
         include PercentLiteral
 
@@ -60,10 +62,10 @@ module RuboCop
 
         def preferred_delimiters
           @preferred_delimiters ||=
-            if cop_config['PreferredDelimiters'].key?('all')
+            if cop_config['PreferredDelimiters'].key?('default')
               Hash[%w(% %i %I %q %Q %r %s %w %W %x).map do |type|
                 [type, cop_config['PreferredDelimiters'][type] ||
-                  cop_config['PreferredDelimiters']['all']]
+                  cop_config['PreferredDelimiters']['default']]
               end]
             else
               cop_config['PreferredDelimiters']
