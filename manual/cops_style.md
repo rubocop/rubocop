@@ -3761,10 +3761,12 @@ This cop checks for non-nil checks, which are usually redundant.
 
 Non-nil checks are allowed if they are the final nodes of predicate.
 
- # good
- def signed_in?
-   !current_user.nil?
- end
+```
+# good
+def signed_in?
+  !current_user.nil?
+end
+```
 
 ### Example
 
