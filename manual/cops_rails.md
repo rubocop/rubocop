@@ -556,6 +556,7 @@ def change
   end
 end
 ```
+
 ```ruby
 # drop_table
 
@@ -571,6 +572,7 @@ def change
   end
 end
 ```
+
 ```ruby
 # change_column_default
 
@@ -584,6 +586,7 @@ def change
   change_column_default(:posts, :state, from: nil, to: "draft")
 end
 ```
+
 ```ruby
 # remove_column
 
@@ -597,6 +600,7 @@ def change
   remove_column(:suppliers, :qualification, :string)
 end
 ```
+
 ```ruby
 # remove_foreign_key
 
@@ -860,6 +864,7 @@ Model.pluck(:id).uniq
 # good
 Model.uniq.pluck(:id)
 ```
+
 ```ruby
 # this will return a Relation that pluck is called on
 Model.where(...).pluck(:id).uniq
@@ -889,4 +894,3 @@ This cop checks for the use of old-style attribute validation macros.
 Attribute | Value
 --- | ---
 Include | app/models/\*\*/\*.rb
-

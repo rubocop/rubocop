@@ -69,4 +69,3 @@ gem 'rspec'
 Attribute | Value
 --- | ---
 Include | \*\*/Gemfile, \*\*/gems.rb
-

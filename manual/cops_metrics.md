@@ -226,4 +226,3 @@ end                             # 7 complexity points
 Attribute | Value
 --- | ---
 Max | 7
-

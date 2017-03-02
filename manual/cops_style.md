@@ -132,6 +132,7 @@ can also be configured. The options are:
    :ba => baz
 }
 ```
+
 ```ruby
 # EnforcedHashRocketStyle: separator
 # EnforcedColonStyle: separator
@@ -160,6 +161,7 @@ can also be configured. The options are:
   :ba  => baz
 }
 ```
+
 ```ruby
 # EnforcedHashRocketStyle: table
 # EnforcedColonStyle: table
@@ -1031,6 +1033,7 @@ This check only applies if the block takes no parameters.
 # good
 5.times { }
 ```
+
 ```ruby
 # bad
 (0...10).each {}
@@ -1141,6 +1144,7 @@ if condition
   statement
 end
 ```
+
 ```ruby
 # empty - warn only on empty else
 
@@ -1157,6 +1161,7 @@ else
   nil
 end
 ```
+
 ```ruby
 # nil - warn on else with nil in it
 
@@ -1173,6 +1178,7 @@ if condition
 else
 end
 ```
+
 ```ruby
 # both - warn on empty else and else with nil in it
 
@@ -2054,6 +2060,7 @@ The supported styles are:
 {:a => 2}
 {b: 1, :c => 2}
 ```
+
 ```ruby
 "EnforcedStyle => 'hash_rockets'"
 
@@ -2064,6 +2071,7 @@ The supported styles are:
 {a: 1, b: 2}
 {c: 1, 'd' => 5}
 ```
+
 ```ruby
 "EnforcedStyle => 'no_mixed_keys'"
 
@@ -2075,6 +2083,7 @@ The supported styles are:
 {:a => 1, b: 2}
 {c: 1, 'd' => 2}
 ```
+
 ```ruby
 "EnforcedStyle => 'ruby19_no_mixed_keys'"
 
@@ -2616,6 +2625,7 @@ f = lambda do |x|
       x
     end
 ```
+
 ```ruby
 # EnforcedStyle: lambda
 
@@ -2631,6 +2641,7 @@ f = lambda do |x|
       x
     end
 ```
+
 ```ruby
 # EnforcedStyle: literal
 
@@ -2899,6 +2910,7 @@ if condition
   statement
 end
 ```
+
 ```ruby
 # bad
 case var
@@ -2906,6 +2918,7 @@ when condition
   statement
 end
 ```
+
 ```ruby
 # good
 if condition
@@ -3302,6 +3315,7 @@ Checks for uses of the `then` keyword in multi-line if statements.
 if cond then
 end
 ```
+
 ```ruby
 if cond then a
 elsif cond then b
@@ -3337,6 +3351,7 @@ foo ||= begin
   baz
 end
 ```
+
 ```ruby
 # EnforcedStyle: braces
 
@@ -3882,6 +3897,7 @@ foo.zero?
 foo.negative?
 bar.baz.positive?
 ```
+
 ```ruby
 # EnforcedStyle: comparison
 
@@ -4164,6 +4180,7 @@ Hash#has_value?
 Hash#key?
 Hash#value?
 ```
+
 ```ruby
 # EnforcedStyle: verbose
 
@@ -4230,6 +4247,7 @@ fail "message"
 raise MyCustomError.new(arg1, arg2, arg3)
 raise MyKwArgError.new(key1: val1, key2: val2)
 ```
+
 ```ruby
 # EnforcedStyle: compact
 
@@ -4956,6 +4974,7 @@ EnforcedStyle: require_no_space (default)
   # good
   a = ->(x, y) { x + y }
 ```
+
 ```ruby
 EnforcedStyle: require_space
 
@@ -5369,6 +5388,7 @@ foo = bar? ? a : b
 foo = bar.baz? ? a : b
 foo = bar && baz ? a : b
 ```
+
 ```ruby
 EnforcedStyle: require_parentheses
 
@@ -5382,6 +5402,7 @@ foo = (bar?) ? a : b
 foo = (bar.baz?) ? a : b
 foo = (bar && baz) ? a : b
 ```
+
 ```ruby
 EnforcedStyle: require_parentheses_when_complex
 
@@ -5688,6 +5709,7 @@ variable1 = 1
 
 variable_1 = 1
 ```
+
 ```ruby
 "EnforcedStyle => 'normalcase'"
 
@@ -5699,6 +5721,7 @@ variable_1 = 1
 
 variable1 = 1
 ```
+
 ```ruby
 "EnforcedStyle => 'non_integer'"
 

@@ -18,6 +18,7 @@ method invocation without parentheses.
 # a `*` method invocation (i.e. `do_something.*(some_array)`).
 do_something *some_array
 ```
+
 ```ruby
 # good
 
@@ -48,6 +49,7 @@ a method invocation without parentheses.
 # (i.e. `do_something./(pattern)./(i)`)
 do_something /pattern/i
 ```
+
 ```ruby
 # good
 
@@ -73,6 +75,7 @@ if some_var = true
   do_something
 end
 ```
+
 ```ruby
 # good
 
@@ -122,6 +125,7 @@ foo.bar
      baz
        end
 ```
+
 ```ruby
 # EnforcedStyleAlignWith: either (default)
 
@@ -131,6 +135,7 @@ variable = lambda do |i|
   i
 end
 ```
+
 ```ruby
 # EnforcedStyleAlignWith: start_of_block
 
@@ -141,6 +146,7 @@ foo.bar
      baz
    end
 ```
+
 ```ruby
 # EnforcedStyleAlignWith: start_of_line
 
@@ -179,6 +185,7 @@ def bake(pie: pie)
   pie.heat_up
 end
 ```
+
 ```ruby
 # good
 
@@ -186,6 +193,7 @@ def bake(pie:)
   pie.refrigerate
 end
 ```
+
 ```ruby
 # good
 
@@ -193,6 +201,7 @@ def bake(pie: self.pie)
   pie.feed_to(user)
 end
 ```
+
 ```ruby
 # bad
 
@@ -200,6 +209,7 @@ def cook(dry_ingredients = dry_ingredients)
   dry_ingredients.reduce(&:+)
 end
 ```
+
 ```ruby
 # good
 
@@ -227,6 +237,7 @@ if
   do_something
 end
 ```
+
 ```ruby
 # good
 
@@ -258,6 +269,7 @@ def some_method
   do_something
 end
 ```
+
 ```ruby
 # bad (ok during development)
 
@@ -267,6 +279,7 @@ def some_method
   do_something
 end
 ```
+
 ```ruby
 # good
 
@@ -298,6 +311,7 @@ keyword is. If it's set to `def`, the `end` shall be aligned with the
 private def foo
             end
 ```
+
 ```ruby
 # EnforcedStyleAlignWith: start_of_line (default)
 
@@ -306,6 +320,7 @@ private def foo
 private def foo
 end
 ```
+
 ```ruby
 # EnforcedStyleAlignWith: def
 
@@ -338,6 +353,7 @@ This cop checks for uses of the deprecated class method usages.
 
 File.exists?(some_path)
 ```
+
 ```ruby
 # good
 
@@ -365,6 +381,7 @@ when 'first'
   do_something_else
 end
 ```
+
 ```ruby
 # good
 
@@ -398,6 +415,7 @@ def duplicated
   2
 end
 ```
+
 ```ruby
 # good
 
@@ -427,6 +445,7 @@ This cop mirrors a warning in Ruby 2.2.
 
 hash = { food: 'apple', food: 'orange' }
 ```
+
 ```ruby
 # good
 
@@ -452,6 +471,7 @@ It's definitely a bug.
 
 sum = numbers.each_with_object(0) { |e, a| a += e }
 ```
+
 ```ruby
 # good
 
@@ -480,6 +500,7 @@ else do_this
   do_that
 end
 ```
+
 ```ruby
 # good
 
@@ -509,6 +530,7 @@ def some_method
 ensure
 end
 ```
+
 ```ruby
 # bad
 
@@ -517,6 +539,7 @@ begin
 ensure
 end
 ```
+
 ```ruby
 # good
 
@@ -526,6 +549,7 @@ ensure
   do_something_else
 end
 ```
+
 ```ruby
 # good
 
@@ -560,6 +584,7 @@ if ()
   bar
 end
 ```
+
 ```ruby
 # good
 
@@ -584,6 +609,7 @@ This cop checks for empty interpolation.
 
 "result is #{}"
 ```
+
 ```ruby
 # good
 
@@ -608,6 +634,7 @@ when bar then 1
 when baz then # nothing
 end
 ```
+
 ```ruby
 # good
 
@@ -645,6 +672,7 @@ start of the line where the matching keyword appears.
 variable = if true
     end
 ```
+
 ```ruby
 # EnforcedStyleAlignWith: keyword (default)
 
@@ -653,6 +681,7 @@ variable = if true
 variable = if true
            end
 ```
+
 ```ruby
 # EnforcedStyleAlignWith: variable
 
@@ -661,6 +690,7 @@ variable = if true
 variable = if true
 end
 ```
+
 ```ruby
 # EnforcedStyleAlignWith: start_of_line
 
@@ -695,6 +725,7 @@ def some_method
   END { do_something }
 end
 ```
+
 ```ruby
 # good
 
@@ -702,6 +733,7 @@ def some_method
   at_exit { do_something }
 end
 ```
+
 ```ruby
 # good
 
@@ -729,6 +761,7 @@ ensure
   return
 end
 ```
+
 ```ruby
 # good
 
@@ -760,6 +793,7 @@ that big. If you need a float that big, something is wrong with you.
 
 float = 3.0e400
 ```
+
 ```ruby
 # good
 
@@ -783,6 +817,7 @@ passed as arguments.
 
 format('A value: %s and another: %i', a_value)
 ```
+
 ```ruby
 # good
 
@@ -808,6 +843,7 @@ rescue
   # do nothing
 end
 ```
+
 ```ruby
 # bad
 
@@ -817,6 +853,7 @@ rescue
   # do nothing
 end
 ```
+
 ```ruby
 # good
 
@@ -826,6 +863,7 @@ rescue
   handle_exception
 end
 ```
+
 ```ruby
 # good
 
@@ -856,6 +894,7 @@ which are on the same line.
 
 array = ['Item 1' 'Item 2']
 ```
+
 ```ruby
 # good
 
@@ -891,6 +930,7 @@ class C
   end
 end
 ```
+
 ```ruby
 # good
 
@@ -902,6 +942,7 @@ class C
   private_class_method :method
 end
 ```
+
 ```ruby
 # good
 
@@ -934,6 +975,7 @@ and its standard library subclasses, excluding subclasses of
 
 class C < Exception; end
 ```
+
 ```ruby
 # EnforcedStyle: runtime_error (default)
 
@@ -941,6 +983,7 @@ class C < Exception; end
 
 class C < RuntimeError; end
 ```
+
 ```ruby
 # EnforcedStyle: standard_error
 
@@ -1001,6 +1044,7 @@ if 20
   do_something
 end
 ```
+
 ```ruby
 # bad
 
@@ -1008,6 +1052,7 @@ if some_var && true
   do_something
 end
 ```
+
 ```ruby
 # good
 
@@ -1031,6 +1076,7 @@ This cop checks for interpolated literals.
 
 "result is #{10}"
 ```
+
 ```ruby
 # good
 
@@ -1055,6 +1101,7 @@ begin
   do_something
 end while some_condition
 ```
+
 ```ruby
 # bad
 
@@ -1063,6 +1110,7 @@ begin
   do_something
 end until some_condition
 ```
+
 ```ruby
 # good
 
@@ -1071,6 +1119,7 @@ while some_condition
   do_something
 end
 ```
+
 ```ruby
 # good
 
@@ -1103,6 +1152,7 @@ comparison operators.
 x < y < z
 10 <= x <= 20
 ```
+
 ```ruby
 # good
 
@@ -1131,6 +1181,7 @@ def foo
   end
 end
 ```
+
 ```ruby
 # good
 
@@ -1139,6 +1190,7 @@ def foo
   bar.call
 end
 ```
+
 ```ruby
 # good
 
@@ -1172,6 +1224,7 @@ result = (1..4).reduce(0) do |acc, i|
   acc + i
 end
 ```
+
 ```ruby
 # good
 
@@ -1240,6 +1293,7 @@ parenthesis.
 
 puts (x + y)
 ```
+
 ```ruby
 # good
 
@@ -1269,6 +1323,7 @@ rather than meant to be part of the resulting strings.
 
 %w('foo', "bar")
 ```
+
 ```ruby
 # good
 
@@ -1294,6 +1349,7 @@ rather than meant to be part of the resulting symbols.
 
 %i(:foo, :bar)
 ```
+
 ```ruby
 # good
 
@@ -1319,6 +1375,7 @@ Kernel.rand(-1)
 rand 1.0
 rand(-1.0)
 ```
+
 ```ruby
 # good
 
@@ -1349,6 +1406,7 @@ if day.is? :tuesday && month == :jan
   ...
 end
 ```
+
 ```ruby
 # good
 
@@ -1374,6 +1432,7 @@ rescue Exception
   handle_exception
 end
 ```
+
 ```ruby
 # good
 
@@ -1409,6 +1468,7 @@ x&.foo.bar
 x&.foo + bar
 x&.foo[bar]
 ```
+
 ```ruby
 # good
 
@@ -1445,6 +1505,7 @@ rescue StandardError
   handle_standard_error
 end
 ```
+
 ```ruby
 # good
 
@@ -1481,6 +1542,7 @@ def some_method
   end
 end
 ```
+
 ```ruby
 # good
 
@@ -1509,6 +1571,7 @@ which is redundant.
 
 "result is #{something.to_s}"
 ```
+
 ```ruby
 # good
 
@@ -1537,6 +1600,7 @@ used.
   do_something(_num)
 end
 ```
+
 ```ruby
 # good
 
@@ -1544,6 +1608,7 @@ end
   do_something(num)
 end
 ```
+
 ```ruby
 # good
 
@@ -1568,6 +1633,7 @@ This cop checks for using Fixnum or Bignum constant.
 1.is_a?(Fixnum)
 1.is_a?(Bignum)
 ```
+
 ```ruby
 # good
 
@@ -1620,6 +1686,7 @@ else
   baz
 end
 ```
+
 ```ruby
 # good
 
@@ -1664,6 +1731,7 @@ def some_method
   do_something
 end
 ```
+
 ```ruby
 # good
 
@@ -1697,6 +1765,7 @@ define_method(:foo) do |bar|
   puts :baz
 end
 ```
+
 ```ruby
 #good
 
@@ -1741,6 +1810,7 @@ def some_method(used, unused, _unused_but_allowed)
   puts used
 end
 ```
+
 ```ruby
 # good
 
@@ -1788,6 +1858,7 @@ class Foo
   private # this is redundant (no following methods are defined)
 end
 ```
+
 ```ruby
 class Foo
   # The following is not redundant (conditionally defined methods are
@@ -1819,6 +1890,7 @@ class Foo
   end
 end
 ```
+
 ```ruby
 # Lint/UselessAccessModifier:
 #   ContextCreatingMethods:
@@ -1842,6 +1914,7 @@ class Foo
   end
 end
 ```
+
 ```ruby
 # Lint/UselessAccessModifier:
 #   MethodCreatingMethods:
@@ -1888,6 +1961,7 @@ def some_method
   do_something
 end
 ```
+
 ```ruby
 # good
 
@@ -1936,6 +2010,7 @@ else
   do_something_else # This will never be run.
 end
 ```
+
 ```ruby
 # good
 
@@ -1967,6 +2042,7 @@ def something
   x.attr = 5
 end
 ```
+
 ```ruby
 # good
 
@@ -1996,6 +2072,7 @@ def some_method
   do_something
 end
 ```
+
 ```ruby
 # bad
 
@@ -2004,6 +2081,7 @@ def some_method
   do_something
 end
 ```
+
 ```ruby
 # good
 
@@ -2012,6 +2090,7 @@ def some_method
   some_num * 10
 end
 ```
+
 ```ruby
 # good
 
