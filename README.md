@@ -9,13 +9,12 @@
 [![OpenCollective](https://opencollective.com/rubocop/backers/badge.svg)](#open-collective-backers)
 [![OpenCollective](https://opencollective.com/rubocop/sponsors/badge.svg)](#open-collective-sponsors)
 
-
 <p align="center">
   <img src="https://raw.githubusercontent.com/bbatsov/rubocop/master/logo/rubo-logo-horizontal.png" alt="RuboCop Logo"/>
 </p>
 
-> Role models are important. <br/>
-> -- Officer Alex J. Murphy / RoboCop
+> Role models are important.<br>
+> ― Officer Alex J. Murphy / RoboCop
 
 **RuboCop** is a Ruby static code analyzer. Out of the box it will
 enforce many of the guidelines outlined in the community
@@ -29,7 +28,7 @@ automatically fix some of the problems for you.
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/bbatsov/rubocop?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-**Please consider [supporting financially its ongoing development](#funding).**
+- **Please consider [supporting financially its ongoing development](#funding).**
 
 ## Installation
 

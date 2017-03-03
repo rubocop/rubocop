@@ -63,9 +63,9 @@ server and shared between many projects.
 
 The remote config file is cached locally and is only updated if:
 
-- The file does not exist.
-- The file has not been updated in the last 24 hours.
-- The remote copy has a newer modification time than the local copy.
+* The file does not exist.
+* The file has not been updated in the last 24 hours.
+* The remote copy has a newer modification time than the local copy.
 
 You can inherit from both remote and local files in the same config and the
 same inheritance rules apply to remote URLs and inheriting from local

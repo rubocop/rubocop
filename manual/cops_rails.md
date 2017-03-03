@@ -19,7 +19,6 @@ EnforcedStyle | action
 SupportedStyles | action, filter
 Include | app/controllers/\*\*/\*.rb
 
-
 ## Rails/Date
 
 Enabled by default | Supports autocorrection
@@ -68,7 +67,6 @@ Attribute | Value
 --- | ---
 EnforcedStyle | flexible
 SupportedStyles | strict, flexible
-
 
 ## Rails/Delegate
 
@@ -133,7 +131,7 @@ Enabled | Yes
 
 This cop checks dynamic `find_by_*` methods.
 Use `find_by` instead of dynamic method.
-See. https://github.com/bbatsov/rails-style-guide#find_by
+See. [rails-style-guide#find_by](https://github.com/bbatsov/rails-style-guide#find_by)
 
 ### Example
 
@@ -162,7 +160,6 @@ User.find_by!(email: email)
 Attribute | Value
 --- | ---
 Whitelist | find_by_sql
-
 
 ### References
 
@@ -198,7 +195,6 @@ Attribute | Value
 --- | ---
 Include | app/models/\*\*/\*.rb
 
-
 ## Rails/Exit
 
 Enabled by default | Supports autocorrection
@@ -211,13 +207,13 @@ other form of stopping execution of current request.
 
 There are two obvious cases where 'exit' is particularly harmful:
 
-- Usage in library code for your application. Even though rails will
-rescue from a SystemExit and continue on, unit testing that library
-code will result in specs exiting (potentially silently if exit(0)
-is used.)
-- Usage in application code outside of the web process could result in
-the program exiting, which could result in the code failing to run and
-do its job.
+* Usage in library code for your application. Even though rails will
+  rescue from a SystemExit and continue on, unit testing that library
+  code will result in specs exiting (potentially silently if exit(0)
+  is used.)
+* Usage in application code outside of the web process could result in
+  the program exiting, which could result in the code failing to run and
+  do its job.
 
 ### Important attributes
 
@@ -225,7 +221,6 @@ Attribute | Value
 --- | ---
 Include | app/\*\*/\*.rb, config/\*\*/\*.rb, lib/\*\*/\*.rb
 Exclude | lib/\*\*/\*.rake
-
 
 ## Rails/FilePath
 
@@ -274,7 +269,6 @@ Attribute | Value
 --- | ---
 Include | app/models/\*\*/\*.rb
 
-
 ### References
 
 * [https://github.com/bbatsov/rails-style-guide#find_by](https://github.com/bbatsov/rails-style-guide#find_by)
@@ -304,7 +298,6 @@ Attribute | Value
 --- | ---
 Include | app/models/\*\*/\*.rb
 
-
 ### References
 
 * [https://github.com/bbatsov/rails-style-guide#find-each](https://github.com/bbatsov/rails-style-guide#find-each)
@@ -322,7 +315,6 @@ This cop checks for the use of the has_and_belongs_to_many macro.
 Attribute | Value
 --- | ---
 Include | app/models/\*\*/\*.rb
-
 
 ### References
 
@@ -356,7 +348,6 @@ Attribute | Value
 --- | ---
 Include | spec/\*\*/\*, test/\*\*/\*
 
-
 ## Rails/NotNullColumn
 
 Enabled by default | Supports autocorrection
@@ -386,7 +377,6 @@ Attribute | Value
 --- | ---
 Include | db/migrate/\*.rb
 
-
 ## Rails/Output
 
 Enabled by default | Supports autocorrection
@@ -400,7 +390,6 @@ This cop checks for the use of output calls like puts and print
 Attribute | Value
 --- | ---
 Include | app/\*\*/\*.rb, config/\*\*/\*.rb, db/\*\*/\*.rb, lib/\*\*/\*.rb
-
 
 ## Rails/OutputSafety
 
@@ -481,7 +470,6 @@ Attribute | Value
 --- | ---
 Include | app/models/\*\*/\*.rb
 
-
 ### References
 
 * [https://github.com/bbatsov/rails-style-guide#read-attribute](https://github.com/bbatsov/rails-style-guide#read-attribute)
@@ -527,7 +515,6 @@ Attribute | Value
 EnforcedStyle | referer
 SupportedStyles | referer, referrer
 
-
 ## Rails/ReversibleMigration
 
 Enabled by default | Supports autocorrection
@@ -569,6 +556,7 @@ def change
   end
 end
 ```
+
 ```ruby
 # drop_table
 
@@ -584,6 +572,7 @@ def change
   end
 end
 ```
+
 ```ruby
 # change_column_default
 
@@ -597,6 +586,7 @@ def change
   change_column_default(:posts, :state, from: nil, to: "draft")
 end
 ```
+
 ```ruby
 # remove_column
 
@@ -610,6 +600,7 @@ def change
   remove_column(:suppliers, :qualification, :string)
 end
 ```
+
 ```ruby
 # remove_foreign_key
 
@@ -629,7 +620,6 @@ end
 Attribute | Value
 --- | ---
 Include | db/migrate/\*.rb
-
 
 ### References
 
@@ -686,7 +676,6 @@ target Ruby version is set to 2.3+
 Attribute | Value
 --- | ---
 ConvertTry | false
-
 
 ## Rails/SaveBang
 
@@ -758,7 +747,6 @@ Attribute | Value
 --- | ---
 Include | app/models/\*\*/\*.rb
 
-
 ## Rails/SkipsModelValidations
 
 Enabled by default | Supports autocorrection
@@ -767,7 +755,7 @@ Enabled | No
 
 This cop checks for the use of methods which skip
 validations which are listed in
-http://guides.rubyonrails.org/active_record_validations.html#skipping-validations
+[guides.rubyonrails.org/active_record_validations](http://guides.rubyonrails.org/active_record_validations.html#skipping-validations)
 
 ### Example
 
@@ -794,7 +782,6 @@ Attribute | Value
 --- | ---
 Blacklist | decrement!, decrement_counter, increment!, increment_counter, toggle!, touch, update_all, update_attribute, update_column, update_columns, update_counters
 
-
 ### References
 
 * [http://guides.rubyonrails.org/active_record_validations.html#skipping-validations](http://guides.rubyonrails.org/active_record_validations.html#skipping-validations)
@@ -807,8 +794,10 @@ Enabled | No
 
 This cop checks for the use of Time methods without zone.
 
-Built on top of Ruby on Rails style guide (https://github.com/bbatsov/rails-style-guide#time)
-and the article http://danilenko.org/2012/7/6/rails_timezones/ .
+Built on top of Ruby on Rails style guide
+[rails-style-guide#time](https://github.com/bbatsov/rails-style-guide#time)
+and the article
+[danilenko.org/2012/7/6/rails_timezones](http://danilenko.org/2012/7/6/rails_timezones/).
 
 Two styles are supported for this cop. When EnforcedStyle is 'strict'
 then only use of Time.zone is allowed.
@@ -839,7 +828,6 @@ Attribute | Value
 --- | ---
 EnforcedStyle | flexible
 SupportedStyles | strict, flexible
-
 
 ### References
 
@@ -878,6 +866,7 @@ Model.pluck(:id).uniq
 # good
 Model.uniq.pluck(:id)
 ```
+
 ```ruby
 # this will return a Relation that pluck is called on
 Model.where(...).pluck(:id).uniq
@@ -894,7 +883,6 @@ EnforcedStyle | conservative
 SupportedStyles | conservative, aggressive
 AutoCorrect | false
 
-
 ## Rails/Validation
 
 Enabled by default | Supports autocorrection
@@ -908,4 +896,3 @@ This cop checks for the use of old-style attribute validation macros.
 Attribute | Value
 --- | ---
 Include | app/models/\*\*/\*.rb
-

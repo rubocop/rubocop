@@ -110,7 +110,7 @@ lib/bar.rb:13:14: W: File.exists? is deprecated in favor of File.exist?.
 
 ### Emacs Style Formatter
 
-**Machine-parsable**
+- **Machine-parsable**
 
 The `emacs` formatter displays the offenses in a format suitable for consumption by `Emacs` (and possibly other tools).
 
@@ -138,7 +138,7 @@ W:  4:  5: end at 4, 4 is not aligned with if at 2, 2
 
 ### File List Formatter
 
- **Machine-parsable**
+- **Machine-parsable**
 
 Sometimes you might want to just open all files with offenses in your
 favorite editor. This formatter outputs just the names of the files
@@ -150,7 +150,7 @@ $ rubocop --format files | xargs vim
 
 ### JSON Formatter
 
-**Machine-parsable**
+- **Machine-parsable**
 
 You can get RuboCop's inspection result in JSON format by passing `--format json` option in command line.
 The JSON structure is like the following example:

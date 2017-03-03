@@ -39,7 +39,6 @@ Attribute | Value
 --- | ---
 Include | \*\*/Gemfile, \*\*/gems.rb
 
-
 ## Bundler/OrderedGems
 
 Enabled by default | Supports autocorrection
@@ -70,4 +69,3 @@ gem 'rspec'
 Attribute | Value
 --- | ---
 Include | \*\*/Gemfile, \*\*/gems.rb
-

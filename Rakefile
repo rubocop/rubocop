@@ -29,7 +29,7 @@ end
 desc 'Run RuboCop over itself'
 RuboCop::RakeTask.new(:internal_investigation)
 
-task default: [:spec, :ascii_spec, :internal_investigation]
+task default: [:spec, :ascii_spec, :internal_investigation, :markdown_lint]
 
 require 'yard'
 YARD::Rake::YardocTask.new

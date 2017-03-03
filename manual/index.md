@@ -2,8 +2,8 @@
   <img src="https://raw.githubusercontent.com/bbatsov/rubocop/master/logo/rubo-logo-horizontal.png" alt="RuboCop Logo"/>
 </p>
 
-> Role models are important. <br/>
-> -- Officer Alex J. Murphy / RoboCop
+> Role models are important.<br>
+> ― Officer Alex J. Murphy / RoboCop
 
 **RuboCop** is a Ruby static code analyzer. Out of the box it will
 enforce many of the guidelines outlined in the community
