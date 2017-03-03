@@ -80,4 +80,34 @@ describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     inspect_source(cop, 'puts :test')
     expect(cop.offenses).to be_empty
   end
+
+  context 'with DSL like methods' do
+    let(:cop_config) do
+      { 'IgnoreDslMethods' => 'true' }
+    end
+
+    context 'in a class body' do
+      it 'does not register an offense' do
+        inspect_source(cop, [
+          'class Foo',
+          '  bar :baz',
+          'end'
+        ].join("\n"))
+
+        expect(cop.offenses).to be_empty
+      end
+    end
+
+    context 'in a module body' do
+      it 'does not register an offense' do
+        inspect_source(cop, [
+          'module Foo',
+          '  bar :baz',
+          'end'
+        ].join("\n"))
+
+        expect(cop.offenses).to be_empty
+      end
+    end
+  end
 end
