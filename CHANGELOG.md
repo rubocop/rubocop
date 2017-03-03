@@ -16,6 +16,7 @@
 * [#4018](https://github.com/bbatsov/rubocop/pull/4018): Add autocorrect `Lint/EmptyEnsure` cop. ([@pocke][])
 * [#4028](https://github.com/bbatsov/rubocop/pull/4028): Add new `Style/IndentHeredoc` cop. ([@pocke][])
 * Add new `Style/InverseMethods` cop. ([@rrosenblum][])
+* [#4038](https://github.com/bbatsov/rubocop/pull/4038): Allow `default` key in the `Style/PercentLiteralDelimiters` cop config to set all preferred delimiters. ([@kddeisz][])
 
 ### Changes
 
@@ -2657,3 +2658,4 @@
 [@attilahorvath]: https://github.com/attilahorvath
 [@droptheplot]: https://github.com/droptheplot
 [@wkurniawan07]: https://github.com/wkurniawan07
+[@kddeisz]: https://github.com/kddeisz

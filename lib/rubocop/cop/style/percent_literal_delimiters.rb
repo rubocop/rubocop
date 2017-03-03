@@ -4,8 +4,29 @@ module RuboCop
   module Cop
     module Style
       # This cop enforces the consistent usage of `%`-literal delimiters.
+      #
+      # Specify the 'default' key to set all preferred delimiters at once. You
+      # can continue to specify individual preferred delimiters to override the
+      # default.
+      #
+      # @example
+      #   # Style/PercentLiteralDelimiters:
+      #   #   PreferredDelimiters:
+      #   #     default: ()
+      #   #     %i:      []
+      #
+      #   # good
+      #   %w(alpha beta) + %i[gamma delta]
+      #
+      #   # bad
+      #   %W[alpha #{beta}]
+      #
+      #   # bad
+      #   %I[alpha beta]
       class PercentLiteralDelimiters < Cop
         include PercentLiteral
+
+        PERCENT_LITERAL_TYPES = %w(% %i %I %q %Q %r %s %w %W %x).freeze
 
         def on_array(node)
           process(node, '%w', '%W', '%i', '%I')
@@ -30,7 +51,7 @@ module RuboCop
 
         def message(node)
           type = type(node)
-          delimiters = preferred_delimiters(type)
+          delimiters = preferred_delimiters_for(type)
 
           "`#{type}`-literals should be delimited by " \
           "`#{delimiters[0]}` and `#{delimiters[1]}`."
@@ -41,7 +62,7 @@ module RuboCop
         def autocorrect(node)
           type = type(node)
 
-          opening_delimiter, closing_delimiter = preferred_delimiters(type)
+          opening_delimiter, closing_delimiter = preferred_delimiters_for(type)
 
           lambda do |corrector|
             corrector.replace(node.loc.begin, "#{type}#{opening_delimiter}")
@@ -57,16 +78,41 @@ module RuboCop
           add_offense(node, :expression)
         end
 
-        def preferred_delimiters(type)
-          cop_config['PreferredDelimiters'][type].split(//)
+        def preferred_delimiters
+          @preferred_delimiters ||=
+            begin
+              ensure_valid_preferred_delimiters
+
+              if cop_config['PreferredDelimiters'].key?('default')
+                Hash[PERCENT_LITERAL_TYPES.map do |type|
+                  [type, cop_config['PreferredDelimiters'][type] ||
+                    cop_config['PreferredDelimiters']['default']]
+                end]
+              else
+                cop_config['PreferredDelimiters']
+              end
+            end
+        end
+
+        def ensure_valid_preferred_delimiters
+          invalid = cop_config['PreferredDelimiters'].keys -
+                    (PERCENT_LITERAL_TYPES + %w(default))
+          return if invalid.empty?
+
+          raise ArgumentError,
+                "Invalid preferred delimiter config key: #{invalid.join(', ')}"
+        end
+
+        def preferred_delimiters_for(type)
+          preferred_delimiters[type].split(//)
         end
 
         def uses_preferred_delimiter?(node, type)
-          preferred_delimiters(type)[0] == begin_source(node)[-1]
+          preferred_delimiters_for(type)[0] == begin_source(node)[-1]
         end
 
         def contains_preferred_delimiter?(node, type)
-          preferred_delimiters = preferred_delimiters(type)
+          preferred_delimiters = preferred_delimiters_for(type)
           node
             .children.map { |n| string_source(n) }.compact
             .any? { |s| preferred_delimiters.any? { |d| s.include?(d) } }

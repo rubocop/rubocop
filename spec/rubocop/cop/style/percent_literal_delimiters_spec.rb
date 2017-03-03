@@ -4,20 +4,36 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:cop_config) do
-    {
-      'PreferredDelimiters' => {
-        '%'  => '[]',
-        '%i' => '[]',
-        '%I' => '[]',
-        '%q' => '[]',
-        '%Q' => '[]',
-        '%r' => '[]',
-        '%s' => '[]',
-        '%w' => '[]',
-        '%W' => '[]',
-        '%x' => '[]'
+    { 'PreferredDelimiters' => { 'default' => '[]' } }
+  end
+
+  context '`default` override' do
+    let(:cop_config) do
+      {
+        'PreferredDelimiters' => {
+          'default' => '[]',
+          '%'       => '()'
+        }
       }
-    }
+    end
+
+    it 'allows all preferred delimiters to be set with one key' do
+      inspect_source(cop, '%w[string] + %i[string]')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'allows individual preferred delimiters to override `default`' do
+      inspect_source(cop, '%w[string] + [%(string)]')
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  context 'invalid cop config' do
+    let(:cop_config) { { 'PreferredDelimiters' => { 'foobar' => '()' } } }
+
+    it 'raises an error when invalid configuration is specified' do
+      expect { inspect_source(cop, '%w[string]') }.to raise_error(ArgumentError)
+    end
   end
 
   context '`%` interpolated string' do
