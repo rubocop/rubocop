@@ -12,7 +12,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
       {
         'PreferredDelimiters' => {
           'default' => '[]',
-          '%'   => '()'
+          '%'       => '()'
         }
       }
     end
@@ -25,6 +25,14 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     it 'allows individual preferred delimiters to override `default`' do
       inspect_source(cop, '%w[string] + [%(string)]')
       expect(cop.offenses).to be_empty
+    end
+  end
+
+  context 'invalid cop config' do
+    let(:cop_config) { { 'PreferredDelimiters' => { 'foobar' => '()' } } }
+
+    it 'raises an error when invalid configuration is specified' do
+      expect { inspect_source(cop, '%w[string]') }.to raise_error(ArgumentError)
     end
   end
 
