@@ -6,6 +6,8 @@ module RuboCop
     # node when the builder constructs the AST, making its methods available
     # to all `send` nodes within RuboCop.
     class SendNode < Node
+      DSL_PARENT_NODES = [:class, :module].freeze
+
       # The receiving node of the method invocation.
       #
       # @return [Node, nil] the receiver of the invoked method or `nil`
@@ -26,6 +28,15 @@ module RuboCop
       # @return [Boolean] whether the method name matches the argument
       def method?(name)
         method_name == name.to_sym
+      end
+
+      # Checks whether the method is a DSL method. A DSL method is defined as
+      # a method that sits in a class- or module body and has an implicit
+      # receiver.
+      #
+      # @return [Boolean] whether the method is a DSL method
+      def dsl?
+        !receiver && DSL_PARENT_NODES.include?(parent && parent.type)
       end
 
       # Checks whether the method name matches the argument and has an

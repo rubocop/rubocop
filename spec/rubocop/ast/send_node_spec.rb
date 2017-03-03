@@ -85,6 +85,78 @@ describe RuboCop::AST::SendNode do
     end
   end
 
+  describe '#dsl?' do
+    context 'without a receiver' do
+      context 'when parent is a class' do
+        let(:send_node) { parse_source(source).ast.children[2] }
+
+        let(:source) do
+          ['class Foo',
+           '  bar :baz',
+           'end'].join("\n")
+        end
+
+        it { expect(send_node.dsl?).to be_truthy }
+      end
+
+      context 'when parent is a module' do
+        let(:send_node) { parse_source(source).ast.children[1] }
+
+        let(:source) do
+          ['module Foo',
+           '  bar :baz',
+           'end'].join("\n")
+        end
+
+        it { expect(send_node.dsl?).to be_truthy }
+      end
+
+      context 'when parent is a method definition' do
+        let(:send_node) { parse_source(source).ast.children[2] }
+
+        let(:source) do
+          ['def foo',
+           '  bar :baz',
+           'end'].join("\n")
+        end
+
+        it { expect(send_node.dsl?).to be_falsey }
+      end
+
+      context 'without a parent' do
+        let(:source) { 'bar :baz' }
+
+        it { expect(send_node.dsl?).to be_falsey }
+      end
+    end
+
+    context 'with a receiver' do
+      context 'when parent is a class' do
+        let(:send_node) { parse_source(source).ast.children[2] }
+
+        let(:source) do
+          ['class Foo',
+           '  qux.bar :baz',
+           'end'].join("\n")
+        end
+
+        it { expect(send_node.dsl?).to be_falsey }
+      end
+
+      context 'when parent is a module' do
+        let(:send_node) { parse_source(source).ast.children[1] }
+
+        let(:source) do
+          ['module Foo',
+           '  qux.bar :baz',
+           'end'].join("\n")
+        end
+
+        it { expect(send_node.dsl?).to be_falsey }
+      end
+    end
+  end
+
   describe '#command?' do
     context 'when argument is a symbol' do
       context 'with an explicit receiver' do
