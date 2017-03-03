@@ -85,7 +85,7 @@ describe RuboCop::AST::SendNode do
     end
   end
 
-  describe '#dsl?' do
+  describe '#macro?' do
     context 'without a receiver' do
       context 'when parent is a class' do
         let(:send_node) { parse_source(source).ast.children[2] }
@@ -96,7 +96,7 @@ describe RuboCop::AST::SendNode do
            'end'].join("\n")
         end
 
-        it { expect(send_node.dsl?).to be_truthy }
+        it { expect(send_node.macro?).to be_truthy }
       end
 
       context 'when parent is a module' do
@@ -108,7 +108,7 @@ describe RuboCop::AST::SendNode do
            'end'].join("\n")
         end
 
-        it { expect(send_node.dsl?).to be_truthy }
+        it { expect(send_node.macro?).to be_truthy }
       end
 
       context 'when parent is a method definition' do
@@ -120,13 +120,13 @@ describe RuboCop::AST::SendNode do
            'end'].join("\n")
         end
 
-        it { expect(send_node.dsl?).to be_falsey }
+        it { expect(send_node.macro?).to be_falsey }
       end
 
       context 'without a parent' do
         let(:source) { 'bar :baz' }
 
-        it { expect(send_node.dsl?).to be_falsey }
+        it { expect(send_node.macro?).to be_falsey }
       end
     end
 
@@ -140,7 +140,7 @@ describe RuboCop::AST::SendNode do
            'end'].join("\n")
         end
 
-        it { expect(send_node.dsl?).to be_falsey }
+        it { expect(send_node.macro?).to be_falsey }
       end
 
       context 'when parent is a module' do
@@ -152,7 +152,7 @@ describe RuboCop::AST::SendNode do
            'end'].join("\n")
         end
 
-        it { expect(send_node.dsl?).to be_falsey }
+        it { expect(send_node.macro?).to be_falsey }
       end
     end
   end

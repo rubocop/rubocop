@@ -743,7 +743,7 @@ Style/LambdaCall:
     - braces
 
 Style/MethodCallWithArgsParentheses:
-  IgnoreDslMethods: true
+  IgnoreMacros: true
   IgnoredMethods: []
 
 Style/MethodDefParentheses:

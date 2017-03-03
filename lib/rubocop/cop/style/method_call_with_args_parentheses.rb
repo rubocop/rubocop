@@ -4,20 +4,33 @@ module RuboCop
   module Cop
     module Style
       # This cop checks presence of parentheses in method calls containing
-      # parameters.
-      # As in popular Ruby's frameworks a lot of methods should always be
-      # called without parentheses,
-      # users can ignore them by passing their names to IgnoredMethods option.
+      # parameters. By default, macro methods are ignored. Additional methods
+      # can be added to the `IgnoredMethods` list.
       #
       # @example
+      #
       #   # bad
       #   array.delete e
       #
       #   # good
       #   array.delete(e)
       #
-      #   # good if `puts` is listed in IgnoredMethods
+      #   # okay with `puts` listed in `IgnoredMethods`
       #   puts 'test'
+      #
+      #   # IgnoreMacros: true (default)
+      #
+      #   # good
+      #   class Foo
+      #     bar :baz
+      #   end
+      #
+      #   # IgnoreMacros: false
+      #
+      #   # bad
+      #   class Foo
+      #     bar :baz
+      #   end
       class MethodCallWithArgsParentheses < Cop
         MSG = 'Use parentheses for method calls with arguments.'.freeze
 
@@ -25,6 +38,7 @@ module RuboCop
           return if ignored_list.include?(node.method_name)
           return unless node.arguments? && !node.parenthesized?
           return if operator_call?(node)
+          return if ignore_macros? && node.macro?
 
           add_offense(node, :selector)
         end
@@ -55,6 +69,10 @@ module RuboCop
 
         def ignored_list
           cop_config['IgnoredMethods'].map(&:to_sym)
+        end
+
+        def ignore_macros?
+          cop_config['IgnoreMacros']
         end
 
         def parentheses?(node)
