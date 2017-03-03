@@ -19,7 +19,6 @@ EnforcedStyle | action
 SupportedStyles | action, filter
 Include | app/controllers/\*\*/\*.rb
 
-
 ## Rails/Date
 
 Enabled by default | Supports autocorrection
@@ -68,7 +67,6 @@ Attribute | Value
 --- | ---
 EnforcedStyle | flexible
 SupportedStyles | strict, flexible
-
 
 ## Rails/Delegate
 
@@ -163,7 +161,6 @@ Attribute | Value
 --- | ---
 Whitelist | find_by_sql
 
-
 ### References
 
 * [https://github.com/bbatsov/rails-style-guide#find_by](https://github.com/bbatsov/rails-style-guide#find_by)
@@ -198,7 +195,6 @@ Attribute | Value
 --- | ---
 Include | app/models/\*\*/\*.rb
 
-
 ## Rails/Exit
 
 Enabled by default | Supports autocorrection
@@ -225,7 +221,6 @@ Attribute | Value
 --- | ---
 Include | app/\*\*/\*.rb, config/\*\*/\*.rb, lib/\*\*/\*.rb
 Exclude | lib/\*\*/\*.rake
-
 
 ## Rails/FilePath
 
@@ -274,7 +269,6 @@ Attribute | Value
 --- | ---
 Include | app/models/\*\*/\*.rb
 
-
 ### References
 
 * [https://github.com/bbatsov/rails-style-guide#find_by](https://github.com/bbatsov/rails-style-guide#find_by)
@@ -304,7 +298,6 @@ Attribute | Value
 --- | ---
 Include | app/models/\*\*/\*.rb
 
-
 ### References
 
 * [https://github.com/bbatsov/rails-style-guide#find-each](https://github.com/bbatsov/rails-style-guide#find-each)
@@ -322,7 +315,6 @@ This cop checks for the use of the has_and_belongs_to_many macro.
 Attribute | Value
 --- | ---
 Include | app/models/\*\*/\*.rb
-
 
 ### References
 
@@ -356,7 +348,6 @@ Attribute | Value
 --- | ---
 Include | spec/\*\*/\*, test/\*\*/\*
 
-
 ## Rails/NotNullColumn
 
 Enabled by default | Supports autocorrection
@@ -386,7 +377,6 @@ Attribute | Value
 --- | ---
 Include | db/migrate/\*.rb
 
-
 ## Rails/Output
 
 Enabled by default | Supports autocorrection
@@ -400,7 +390,6 @@ This cop checks for the use of output calls like puts and print
 Attribute | Value
 --- | ---
 Include | app/\*\*/\*.rb, config/\*\*/\*.rb, db/\*\*/\*.rb, lib/\*\*/\*.rb
-
 
 ## Rails/OutputSafety
 
@@ -481,7 +470,6 @@ Attribute | Value
 --- | ---
 Include | app/models/\*\*/\*.rb
 
-
 ### References
 
 * [https://github.com/bbatsov/rails-style-guide#read-attribute](https://github.com/bbatsov/rails-style-guide#read-attribute)
@@ -526,7 +514,6 @@ Attribute | Value
 --- | ---
 EnforcedStyle | referer
 SupportedStyles | referer, referrer
-
 
 ## Rails/ReversibleMigration
 
@@ -630,7 +617,6 @@ Attribute | Value
 --- | ---
 Include | db/migrate/\*.rb
 
-
 ### References
 
 * [https://github.com/bbatsov/rails-style-guide#reversible-migration](https://github.com/bbatsov/rails-style-guide#reversible-migration)
@@ -686,7 +672,6 @@ target Ruby version is set to 2.3+
 Attribute | Value
 --- | ---
 ConvertTry | false
-
 
 ## Rails/SaveBang
 
@@ -758,7 +743,6 @@ Attribute | Value
 --- | ---
 Include | app/models/\*\*/\*.rb
 
-
 ## Rails/SkipsModelValidations
 
 Enabled by default | Supports autocorrection
@@ -793,7 +777,6 @@ user.update_attributes(website: 'example.com')
 Attribute | Value
 --- | ---
 Blacklist | decrement!, decrement_counter, increment!, increment_counter, toggle!, touch, update_all, update_attribute, update_column, update_columns, update_counters
-
 
 ### References
 
@@ -839,7 +822,6 @@ Attribute | Value
 --- | ---
 EnforcedStyle | flexible
 SupportedStyles | strict, flexible
-
 
 ### References
 
@@ -894,7 +876,6 @@ EnforcedStyle | conservative
 SupportedStyles | conservative, aggressive
 AutoCorrect | false
 
-
 ## Rails/Validation
 
 Enabled by default | Supports autocorrection
@@ -908,4 +889,3 @@ This cop checks for the use of old-style attribute validation macros.
 Attribute | Value
 --- | ---
 Include | app/models/\*\*/\*.rb
-
