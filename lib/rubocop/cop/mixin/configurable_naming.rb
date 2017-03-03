@@ -8,8 +8,8 @@ module RuboCop
       include ConfigurableFormatting
 
       FORMATS = {
-        snake_case: /^@{0,2}[\da-z_]+[!?=]?$/,
-        camelCase:  /^@{0,2}_?[a-z][\da-zA-Z]+[!?=]?$/
+        snake_case: /^@{0,2}[\d[[:lower:]]_]+[!?=]?$/,
+        camelCase:  /^@{0,2}_?[[:lower:]][\d[[:lower:]][[:upper:]]]+[!?=]?$/
       }.freeze
     end
   end
