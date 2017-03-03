@@ -2734,10 +2734,8 @@ Enabled by default | Supports autocorrection
 Disabled | Yes
 
 This cop checks presence of parentheses in method calls containing
-parameters.
-As in popular Ruby's frameworks a lot of methods should always be
-called without parentheses,
-users can ignore them by passing their names to IgnoredMethods option.
+parameters. By default, macro methods are ignored. Additional methods
+can be added to the `IgnoredMethods` list.
 
 ### Example
 
@@ -2748,14 +2746,29 @@ array.delete e
 # good
 array.delete(e)
 
-# good if `puts` is listed in IgnoredMethods
+# okay with `puts` listed in `IgnoredMethods`
 puts 'test'
+
+# IgnoreMacros: true (default)
+
+# good
+class Foo
+  bar :baz
+end
+
+# IgnoreMacros: false
+
+# bad
+class Foo
+  bar :baz
+end
 ```
 
 ### Important attributes
 
 Attribute | Value
 --- | ---
+IgnoreMacros | true
 IgnoredMethods |
 
 ### References

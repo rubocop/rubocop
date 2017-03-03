@@ -81,9 +81,9 @@ describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     expect(cop.offenses).to be_empty
   end
 
-  context 'with DSL like methods' do
+  context 'when inspecting macro methods' do
     let(:cop_config) do
-      { 'IgnoreDslMethods' => 'true' }
+      { 'IgnoreMacros' => 'true' }
     end
 
     context 'in a class body' do
