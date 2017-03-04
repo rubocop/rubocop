@@ -1,4 +1,3 @@
-# encoding: utf-8
 # frozen_string_literal: true
 
 describe RuboCop::Cop::Style::IndentationConsistency, :config do
