@@ -20,20 +20,38 @@ module RuboCop
       #   # With parentheses, there's no ambiguity.
       #   some_method(a) { |val| puts val }
       class AmbiguousBlockAssociation < Cop
-        MSG = 'Parenthesize the param to make sure that block will be '\
-              'associated with method call.'.freeze
+        MSG = 'Parenthesize the param `%s` to make sure that block will be '\
+              'associated with `%s` method call.'.freeze
 
         def on_send(node)
-          return unless node.arguments?
+          _klass, method_name, args = node.children
 
-          first_argument = node.arguments.first
-          return unless first_argument.block_type?
+          return if method_name == :[]
+          return if node.parenthesized? || node.assignment?
+          return unless method_with_block?(args)
 
-          first_child = first_argument.children.first
-          return unless first_child.is_a?(RuboCop::AST::Node)
-          return unless first_child.send_type?
+          first_param = args.children.first
+          return unless method_as_param?(first_param)
 
-          add_offense(node, :expression)
+          add_offense(node, :expression, format_error(first_param, method_name))
+        end
+
+        private
+
+        def method_with_block?(args)
+          return false unless args
+
+          args.block_type?
+        end
+
+        def method_as_param?(node)
+          return false unless node.is_a?(RuboCop::AST::Node)
+
+          node.send_type? && node.children.size <= 2
+        end
+
+        def format_error(param, method_name)
+          format(MSG, param.children[1], method_name)
         end
       end
     end
