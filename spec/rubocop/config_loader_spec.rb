@@ -630,6 +630,31 @@ describe RuboCop::ConfigLoader do
     end
   end
 
+  describe 'configuration for CharacterLiteral', :isolated_environment do
+    let(:dir_path) { 'test/blargh' }
+
+    let(:config) do
+      config_path = described_class.configuration_file_for(dir_path)
+      described_class.configuration_from_file(config_path)
+    end
+
+    context 'when .rubocop.yml inherits from a file with a name starting ' \
+            'with .rubocop' do
+      before do
+        create_file('test/.rubocop_rules.yml', ['Style/CharacterLiteral:',
+                                                '  Exclude:',
+                                                '    - blargh/blah.rb'])
+        create_file('test/.rubocop.yml', 'inherit_from: .rubocop_rules.yml')
+      end
+
+      it 'gets an Exclude relative to the inherited file converted to ' \
+         'absolute' do
+        expect(config.for_cop(RuboCop::Cop::Style::CharacterLiteral)['Exclude'])
+          .to eq([File.join(Dir.pwd, 'test/blargh/blah.rb')])
+      end
+    end
+  end
+
   describe 'configuration for AssignmentInCondition' do
     describe 'AllowSafeAssignment' do
       it 'is enabled by default' do
