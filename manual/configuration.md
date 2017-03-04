@@ -160,7 +160,11 @@ AllCops:
 # ...
 ```
 
-Files and directories are specified relative to the `.rubocop.yml` file.
+In `.rubocop.yml` and any other configuration file beginning with `.rubocop`,
+files and directories are specified relative to the directory where the
+configuration file is. In configuration files that don't begin with `.rubocop`,
+e.g. `our_company_defaults.yml`, paths are relative to the directory where
+`rubocop` is run.
 
 **Note**: Patterns that are just a file name, e.g. `Rakefile`, will match
 that file name in any directory, but this pattern style is deprecated. The
