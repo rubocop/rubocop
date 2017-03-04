@@ -10,7 +10,7 @@ AllCops:
   TargetRubyVersion: 2.1
 
 Style/Encoding:
-  EnforcedStyle: when_needed
+  EnforcedStyle: never
   Enabled: true
 
 Style/FrozenStringLiteralComment:
