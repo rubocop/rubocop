@@ -152,7 +152,7 @@ describe RuboCop::Cop::Style::IndentHeredoc, :config do
         message = 'Use 2 spaces for indentation in a heredoc by using ' \
                   "some library(e.g. ActiveSupport's `String#strip_heredoc`)."
         include_examples :check_message, 'some library', [message]
-        warning = 'Auto Correction does not work for Style/IndentHeredoc. ' \
+        warning = 'Auto-correction does not work for Style/IndentHeredoc. ' \
                   'Please configure EnforcedStyle.'
         include_examples :warning, warning
 
@@ -272,8 +272,8 @@ describe RuboCop::Cop::Style::IndentHeredoc, :config do
         end
 
         context 'Ruby 2.2', :ruby22 do
-          warning = '`squiggly` style is selectable only Ruby 2.3 or higher ' \
-                    'for Style/IndentHeredoc.'
+          warning = '`squiggly` style is selectable only on Ruby 2.3 or ' \
+                    'higher for Style/IndentHeredoc.'
           include_examples :warning, warning
         end
       end

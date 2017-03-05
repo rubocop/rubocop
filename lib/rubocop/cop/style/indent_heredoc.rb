@@ -123,12 +123,12 @@ module RuboCop
         def check_style!
           case style
           when nil
-            raise Warning, "Auto Correction does not work for #{cop_name}. " \
+            raise Warning, "Auto-correction does not work for #{cop_name}. " \
                            'Please configure EnforcedStyle.'
           when :squiggly
             if target_ruby_version < 2.3
-              raise Warning, '`squiggly` style is selectable only Ruby 2.3 ' \
-                             "or higher for #{cop_name}."
+              raise Warning, '`squiggly` style is selectable only on Ruby ' \
+                             "2.3 or higher for #{cop_name}."
             end
           end
         end
