@@ -2415,12 +2415,16 @@ something
 END
 
 # good
+# When EnforcedStyle is squiggly, bad code is auto-corrected to the
+# following code.
 <<~END
   something
 END
 
 # good
-<<~END.strip_heredoc
+# When EnforcedStyle is active_support, bad code is auto-corrected to
+# the following code.
+<<-END.strip_heredoc
   something
 END
 ```
@@ -2429,8 +2433,8 @@ END
 
 Attribute | Value
 --- | ---
-EnforcedStyle | ruby23
-SupportedStyles | ruby23, active_support, powerpack, unindent
+EnforcedStyle | auto_detection
+SupportedStyles | auto_detection, squiggly, active_support, powerpack, unindent
 
 ### References
 

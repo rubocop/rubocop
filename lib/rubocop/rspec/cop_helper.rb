@@ -7,6 +7,7 @@ module CopHelper
   extend RSpec::SharedContext
 
   let(:ruby_version) { 2.2 }
+  let(:enabled_rails) { false }
 
   def inspect_source_file(cop, source)
     Tempfile.open('tmp') { |f| inspect_source(cop, source, f) }

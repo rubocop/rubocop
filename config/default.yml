@@ -694,9 +694,10 @@ Style/IndentHash:
   IndentationWidth: ~
 
 Style/IndentHeredoc:
-  EnforcedStyle: ruby23
+  EnforcedStyle: auto_detection
   SupportedStyles:
-    - ruby23
+    - auto_detection
+    - squiggly
     - active_support
     - powerpack
     - unindent
