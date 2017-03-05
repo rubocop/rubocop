@@ -26,14 +26,13 @@ module RuboCop
         def on_send(node)
           _klass, method_name, args = node.children
 
-          return if method_name == :[]
-          return if node.parenthesized? || node.assignment?
+          return if node.parenthesized? || node.assignment? || node.method?(:[])
+
           return unless method_with_block?(args)
+          first_arg = args.children.first
+          return unless method_as_param?(first_arg)
 
-          first_param = args.children.first
-          return unless method_as_param?(first_param)
-
-          add_offense(node, :expression, format_error(first_param, method_name))
+          add_offense(node, :expression, format_error(first_arg, method_name))
         end
 
         private
@@ -47,7 +46,7 @@ module RuboCop
         def method_as_param?(node)
           return false unless node.is_a?(RuboCop::AST::Node)
 
-          node.send_type? && node.children.size <= 2
+          node.send_type? && !node.arguments?
         end
 
         def format_error(param, method_name)
