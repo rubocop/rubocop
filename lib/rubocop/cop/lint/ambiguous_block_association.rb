@@ -24,15 +24,15 @@ module RuboCop
               'associated with `%s` method call.'.freeze
 
         def on_send(node)
-          _klass, method_name, args = node.children
-
           return if node.parenthesized? || node.assignment? || node.method?(:[])
 
-          return unless method_with_block?(args)
-          first_arg = args.children.first
-          return unless method_as_param?(first_arg)
+          return unless method_with_block?(node.first_argument)
+          first_child = node.first_argument.children.first
+          return unless method_as_param?(first_child)
 
-          add_offense(node, :expression, format_error(first_arg, method_name))
+          add_offense(
+            node, :expression, format_error(first_child, node.method_name)
+          )
         end
 
         private
