@@ -24,3 +24,6 @@ Metrics/BlockLength:
     - 'Rakefile'
     - '**/*.rake'
     - 'spec/**/*.rb'
+AmbiguousBlockAssociation:
+  Exclude:
+    - 'spec/**/*.rb'

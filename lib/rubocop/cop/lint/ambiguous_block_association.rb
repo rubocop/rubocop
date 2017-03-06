@@ -17,8 +17,8 @@ module RuboCop
       #   # With parentheses, there's no ambiguity.
       #   some_method(a) { |val| puts val }
       class AmbiguousBlockAssociation < Cop
-        MSG = 'Parenthesize the param `%s` to make sure that block will be '\
-              'associated with the `%s` method call.'.freeze
+        MSG = 'Parenthesize the param `%s` to make sure that the block will be'\
+              ' associated with the `%s` method call.'.freeze
 
         def on_send(node)
           return if node.parenthesized? || node.assignment? || node.method?(:[])
