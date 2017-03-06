@@ -6,186 +6,90 @@ describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
   subject(:cop) { described_class.new }
   subject(:error_message) do
     'Parenthesize the param `%s` to make sure that block will be associated'\
-      ' with `%s` method call.'
+      ' with the `%s` method call.'
   end
 
   before do
     inspect_source(cop, source)
   end
 
-  context 'method without params and block' do
+  shared_examples 'accepts' do |code|
+    let(:source) { code }
+
+    it 'does not register an offense' do
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  it_behaves_like 'accepts', 'some_method(a) { |el| puts el }'
+  it_behaves_like 'accepts', 'some_method(a) do;puts a;end'
+  it_behaves_like 'accepts', 'some_method a do;puts "dev";end'
+  it_behaves_like 'accepts', 'some_method a do |e|;puts e;end'
+  it_behaves_like 'accepts', 'Foo.bar(a) { |el| puts el }'
+  it_behaves_like 'accepts', 'env ENV.fetch("ENV") { "dev" }'
+  it_behaves_like 'accepts', 'env(ENV.fetch("ENV") { "dev" })'
+  it_behaves_like 'accepts', '{ f: "b"}.fetch(:a) do |e|;puts e;end'
+  it_behaves_like 'accepts', 'Hash[some_method(a) { |el| el }]'
+  it_behaves_like 'accepts', 'foo = lambda do |diagnostic|;end'
+  it_behaves_like 'accepts', 'Proc.new { puts "proc" }'
+  it_behaves_like('accepts', 'expect { order.save }.to(change { orders.size })')
+  it_behaves_like(
+    'accepts',
+    'allow(cop).to receive(:on_int) { raise RuntimeError }'
+  )
+  it_behaves_like(
+    'accepts',
+    'allow(cop).to(receive(:on_int) { raise RuntimeError })'
+  )
+
+  context 'without parentheses' do
     context 'without receiver' do
-      context 'without parentheses' do
-        let(:source) { 'some_method a { |el| puts el }' }
+      let(:source) { 'some_method a { |el| puts el }' }
 
-        it 'registers an offense' do
-          expect(cop.offenses.size).to eq(1)
-          expect(cop.offenses.first.message).to(
-            eq(format(error_message, 'a', 'some_method'))
-          )
-        end
-      end
-
-      context 'with parentheses' do
-        let(:source) { 'some_method(a) { |el| puts el }' }
-
-        it 'accepts' do
-          expect(cop.offenses).to be_empty
-        end
+      it 'registers an offense' do
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.offenses.first.message).to(
+          eq(format(error_message, 'a', 'some_method'))
+        )
       end
     end
 
     context 'with receiver' do
-      context 'without parentheses' do
-        let(:source) { 'Foo.some_method a { |el| puts el }' }
+      let(:source) { 'Foo.some_method a { |el| puts el }' }
 
-        it 'registers an offense' do
-          expect(cop.offenses.size).to eq(1)
-          expect(cop.offenses.first.message).to(
-            eq(format(error_message, 'a', 'some_method'))
-          )
-        end
-      end
-
-      context 'with a parentheses' do
-        let(:source) { 'Foo.some_method(a) { |el| puts el }' }
-
-        it 'accepts' do
-          expect(cop.offenses).to be_empty
-        end
-      end
-    end
-  end
-
-  context 'method with arguments and block' do
-    context 'without parantheses' do
-      context 'with receiver' do
-        let(:source) { 'environment ENV.fetch("RAILS_ENV") { "development" }' }
-
-        it 'accepts' do
-          expect(cop.offenses).to be_empty
-        end
-      end
-
-      context 'witout receiver' do
-        let(:source) { 'allow(cop).to receive(:on_int) { raise RuntimeError }' }
-
-        it 'accepts' do
-          expect(cop.offenses).to be_empty
-        end
-      end
-    end
-
-    context 'with parantheses' do
-      context 'with receiver' do
-        let(:source) { 'environment(ENV.fetch("RAILS_ENV") { "development" })' }
-
-        it 'accepts' do
-          expect(cop.offenses).to be_empty
-        end
-      end
-
-      context 'witout receiver' do
-        let(:source) { 'allow(cop).to(receive(:on_i) { raise RuntimeError })' }
-
-        it 'accepts' do
-          expect(cop.offenses).to be_empty
-        end
-      end
-    end
-  end
-
-  context 'multiline blocks' do
-    context 'without parentheses' do
-      context 'without block param' do
-        let(:source) { ['some_method a do', 'puts "here"', 'end'] }
-
-        it 'accepts' do
-          expect(cop.offenses).to be_empty
-        end
-      end
-
-      context 'with block param' do
-        let(:source) { ['some_method a do |el|', 'puts el', 'end'] }
-
-        it 'accepts' do
-          expect(cop.offenses).to be_empty
-        end
+      it 'registers an offense' do
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.offenses.first.message).to(
+          eq(format(error_message, 'a', 'some_method'))
+        )
       end
     end
 
     context 'rspec expect {}.to change {}' do
-      context 'without parentheses' do
-        let(:source) do
-          'expect { order.expire }.not_to change { order.unpublished_events }'
-        end
-
-        it 'registers an offense' do
-          expect(cop.offenses.size).to eq(1)
-          expect(cop.offenses.first.message).to(
-            eq(format(error_message, 'change', 'not_to'))
-          )
-        end
-      end
-
-      context 'with parentheses' do
-        let(:source) do
-          'expect { order.expire }.not_to(change { order.unpublished_events })'
-        end
-
-        it 'accepts' do
-          expect(cop.offenses).to be_empty
-        end
-      end
-    end
-
-    context 'with parentheses' do
-      context 'without block param' do
-        let(:source) do
-          ['some_method(a) do', 'puts "here"', 'end']
-        end
-
-        it 'accepts' do
-          expect(cop.offenses).to be_empty
-        end
-      end
-
-      context 'with block param' do
-        let(:source) do
-          ['{ foo: "bar"}.fetch(:a) do |el|', 'puts el', 'end']
-        end
-
-        it 'accepts' do
-          expect(cop.offenses).to be_empty
-        end
-      end
-    end
-  end
-
-  context 'inside Hash' do
-    context 'method with a block' do
       let(:source) do
-        'Hash[some_method(a) { |el| el }]'
+        'expect { order.expire }.to change { order.events }'
       end
 
-      it 'accepts' do
-        expect(cop.offenses).to be_empty
-      end
-    end
-  end
-
-  context 'with assignment' do
-    context 'with lambda' do
-      let(:source) do
-        ['foo = lambda do |diagnostic|', 'end']
-      end
-
-      it 'accepts' do
-        expect(cop.offenses).to be_empty
+      it 'registers an offense' do
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.offenses.first.message).to(
+          eq(format(error_message, 'change', 'to'))
+        )
       end
     end
 
-    context 'variable assignment' do
+    context 'as a hash key' do
+      let(:source) { 'Hash[some_method a { |el| el }]' }
+
+      it 'registers an offense' do
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.offenses.first.message).to(
+          eq(format(error_message, 'a', 'some_method'))
+        )
+      end
+    end
+
+    context 'with assignment' do
       let(:source) { 'foo = some_method a { |el| puts el }' }
 
       it 'registers an offense' do
