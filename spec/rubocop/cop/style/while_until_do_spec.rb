@@ -25,13 +25,13 @@ describe RuboCop::Cop::Style::WhileUntilDo do
     expect(cop.offenses).to be_empty
   end
 
-  it 'it accepts multi-line while without do' do
+  it 'accepts multi-line while without do' do
     inspect_source(cop, ['while cond',
                          'end'])
     expect(cop.offenses).to be_empty
   end
 
-  it 'it accepts multi-line until without do' do
+  it 'accepts multi-line until without do' do
     inspect_source(cop, ['until cond',
                          'end'])
     expect(cop.offenses).to be_empty
