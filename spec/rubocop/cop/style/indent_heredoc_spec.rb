@@ -241,6 +241,14 @@ describe RuboCop::Cop::Style::IndentHeredoc, :config do
             something
           END2
         END
+        include_examples :accept, 'include empty line', <<-END
+          <<~#{quote}MSG#{quote}
+            foo
+
+              bar
+
+          MSG
+        END
 
         it 'displays message to use `<<~` instead of `<<`' do
           inspect_source(cop, <<-END.strip_indent)
