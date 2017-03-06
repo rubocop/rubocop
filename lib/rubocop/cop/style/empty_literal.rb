@@ -19,7 +19,7 @@ module RuboCop
                          '(block (send (const nil :Array) :new) args _)'
 
         def on_send(node)
-          array_node(node) { add_offense(node, :expression, ARR_MSG) }
+          add_offense(node, :expression, ARR_MSG) if offence_array_node?(node)
 
           hash_node(node) do
             # If Hash.new takes a block, it can't be changed to {}.
@@ -83,12 +83,12 @@ module RuboCop
           end
         end
 
-        def array_need_correction?(node)
+        def offence_array_node?(node)
           array_node(node) && !array_with_block(node.parent)
         end
 
         def correction(node)
-          if array_need_correction?(node)
+          if offence_array_node?(node)
             '[]'
           elsif str_node(node)
             preferred_string_literal

@@ -28,22 +28,22 @@ describe RuboCop::Cop::Style::EmptyLiteral do
       expect(new_source).to eq('test = []')
     end
 
-    it 'does not auto-correct Array.new with block' do
+    it 'does not registers an offence Array.new with block' do
       source = 'test = Array.new { 1 }'
-      new_source = autocorrect_source(cop, source)
-      expect(new_source).to eq(source)
+      inspect_source(cop, source)
+      expect(cop.offenses.size).to eq(0)
     end
 
-    it 'auto-corrects Array.new in block' do
+    it 'registers an offence when Array.new in block' do
       source = 'puts { Array.new }'
-      new_source = autocorrect_source(cop, source)
-      expect(new_source).to eq('puts { [] }')
+      inspect_source(cop, source)
+      expect(cop.offenses.size).to eq(1)
     end
 
-    it 'does not auto-correct Array.new with block in other block' do
+    it 'does not register Array.new with block in other block' do
       source = 'puts { Array.new { 1 } }'
-      new_source = autocorrect_source(cop, source)
-      expect(new_source).to eq(source)
+      inspect_source(cop, source)
+      expect(cop.offenses.size).to eq(0)
     end
   end
 
