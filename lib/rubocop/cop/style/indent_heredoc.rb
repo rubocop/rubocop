@@ -156,7 +156,7 @@ module RuboCop
         end
 
         def indent_level(str)
-          str.scan(/^\s*/).min_by(&:size).size
+          str.scan(/^\s*/).reject { |line| line == "\n" }.min_by(&:size).size
         end
 
         # Returns '~', '-' or nil
