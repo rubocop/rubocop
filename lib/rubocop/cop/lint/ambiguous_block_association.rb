@@ -27,9 +27,7 @@ module RuboCop
           first_param = node.first_argument.children.first
           return unless method_as_param?(first_param)
 
-          add_offense(
-            node, :expression, format_error(first_param, node.method_name)
-          )
+          add_offense(node, :expression, message(first_param, node.method_name))
         end
 
         private
@@ -41,12 +39,12 @@ module RuboCop
         end
 
         def method_as_param?(param)
-          return false unless param.is_a?(RuboCop::AST::Node)
+          return false unless param
 
           param.send_type? && !param.arguments?
         end
 
-        def format_error(param, method_name)
+        def message(param, method_name)
           format(MSG, param.children[1], method_name)
         end
       end
