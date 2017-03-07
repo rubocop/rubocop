@@ -1,5 +1,33 @@
 # Lint
 
+## Lint/AmbiguousBlockAssociation
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks for ambiguous block association with method
+when param passed without parentheses.
+
+### Example
+
+```ruby
+# bad
+
+# It's ambiguous because there is no parentheses around `a` param
+some_method a { |val| puts val }
+```
+```ruby
+# good
+
+# With parentheses, there's no ambiguity.
+some_method(a) { |val| puts val }
+```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#syntax](https://github.com/bbatsov/ruby-style-guide#syntax)
+
 ## Lint/AmbiguousOperator
 
 Enabled by default | Supports autocorrection
