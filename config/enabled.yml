@@ -1059,6 +1059,13 @@ Metrics/PerceivedComplexity:
 #################### Lint ##################################
 ### Warnings
 
+Lint/AmbiguousBlockAssociation:
+  Description: >-
+                 Checks for ambiguous block association with method when param passed without
+                 parentheses.
+  StyleGuide: '#syntax'
+  Enabled: true
+
 Lint/AmbiguousOperator:
   Description: >-
                  Checks for ambiguous operators in the first argument of a

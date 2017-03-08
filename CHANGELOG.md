@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#4083](https://github.com/bbatsov/rubocop/pull/4083): Add new configuration `NumberOfEmptyLines` for `Style/EmptyLineBetweenDefs`. ([@dorian][])
 * [#4045](https://github.com/bbatsov/rubocop/pull/4045): Add new configuration `Strict` for `Style/NumericLiteral` to make the change to this cop in 0.47.0 configurable. ([@iGEL][])
 * [#3893](https://github.com/bbatsov/rubocop/issues/3893): Add a new configuration, `IncludeActiveSupportAliases`, to `Performance/DoublStartEndWith`. This configuration will check for ActiveSupport's `starts_with?` and `ends_with?`. ([@rrosenblum][])
 * [#3889](https://github.com/bbatsov/rubocop/pull/3889): Add new `Style/EmptyLineAfterMagicComment` cop. ([@backus][])
@@ -15,6 +16,7 @@
 * [#4019](https://github.com/bbatsov/rubocop/pull/4019): Make configurable `Style/MultilineMemoization` cop. ([@pocke][])
 * [#4018](https://github.com/bbatsov/rubocop/pull/4018): Add autocorrect `Lint/EmptyEnsure` cop. ([@pocke][])
 * [#4028](https://github.com/bbatsov/rubocop/pull/4028): Add new `Style/IndentHeredoc` cop. ([@pocke][])
+* [#3931](https://github.com/bbatsov/rubocop/issues/3931): Add new `Lint/AmbiguousBlockAssociation` cop. ([@smakagon][])
 * Add new `Style/InverseMethods` cop. ([@rrosenblum][])
 * [#4038](https://github.com/bbatsov/rubocop/pull/4038): Allow `default` key in the `Style/PercentLiteralDelimiters` cop config to set all preferred delimiters. ([@kddeisz][])
 * Add `IgnoreMacros` option to `Style/MethodCallWithArgsParentheses`. ([@drenmi][])
@@ -22,6 +24,7 @@
 
 ### Changes
 
+* [#4083](https://github.com/bbatsov/rubocop/pull/4083): `Style/EmptyLineBetweenDefs` doesn't allow more than one empty line between method definitions by default (see `NumberOfEmptyLines`). ([@dorian][])
 * [#3997](https://github.com/bbatsov/rubocop/pull/3997): Include all ruby files by default and exclude non-ruby files. ([@dorian][])
 * [#4012](https://github.com/bbatsov/rubocop/pull/4012): Mark `foo[:bar]` as not complex in `Style/TernaryParentheses` cop with `require_parentheses_when_complex` style. ([@onk][])
 * [#3915](https://github.com/bbatsov/rubocop/issues/3915): Make configurable whitelist for `Lint/SafeNavigationChain` cop. ([@pocke][])
@@ -2664,3 +2667,4 @@
 [@wkurniawan07]: https://github.com/wkurniawan07
 [@kddeisz]: https://github.com/kddeisz
 [@ota42y]: https://github.com/ota42y
+[@smakagon]: https://github.com/smakagon
