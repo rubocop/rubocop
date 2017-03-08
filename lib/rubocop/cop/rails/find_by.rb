@@ -50,10 +50,14 @@ module RuboCop
         private
 
         def where_with_method_as_param?(node)
-          where = node.children.find { |el| el.method?(:where) }
+          where = node.each_child_node(:send).find { |n| n.method?(:where) }
           return unless where
 
-          where.arguments.size == 1 && where.arguments.first.send_type?
+          where.arguments.one? && variable_or_method?(where.first_argument)
+        end
+
+        def variable_or_method?(param)
+          param.send_type? || param.lvar_type? || param.ivar_type?
         end
       end
     end
