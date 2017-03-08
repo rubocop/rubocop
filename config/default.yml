@@ -433,6 +433,8 @@ Style/EmptyLineBetweenDefs:
   # If `true`, this parameter means that single line method definitions don't
   # need an empty line between them.
   AllowAdjacentOneLineDefs: false
+  # Can be array to specify minimum and maximum number of empty lines, e.g. [1, 2]
+  NumberOfEmptyLines: 1
 
 Style/EmptyLinesAroundBlockBody:
   EnforcedStyle: no_empty_lines

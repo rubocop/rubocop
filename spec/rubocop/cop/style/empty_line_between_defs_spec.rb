@@ -166,10 +166,10 @@ describe RuboCop::Cop::Style::EmptyLineBetweenDefs, :config do
   # Only one def, so rule about empty line *between* defs does not
   # apply.
   it 'accepts a def that follows code and a comment' do
-    source = ['  x = 0',
-              '  # 123',
-              '  def m',
-              '  end']
+    source = ['x = 0',
+              '# 123',
+              'def m',
+              'end']
     inspect_source(cop, source)
     expect(cop.offenses).to be_empty
   end
@@ -228,23 +228,47 @@ describe RuboCop::Cop::Style::EmptyLineBetweenDefs, :config do
   end
 
   it 'auto-corrects adjacent one-liners by default' do
-    corrected = autocorrect_source(cop, ['  def a; end',
-                                         '  def b; end'])
-    expect(corrected).to eq(['  def a; end',
+    corrected = autocorrect_source(cop, ['def a; end',
+                                         'def b; end'])
+    expect(corrected).to eq(['def a; end',
                              '',
-                             '  def b; end'].join("\n"))
+                             'def b; end'].join("\n"))
+  end
+
+  it 'auto-corrects when there are too many new lines' do
+    corrected = autocorrect_source(cop, ['def a; end',
+                                         '',
+                                         '',
+                                         '',
+                                         'def b; end'])
+    expect(corrected).to eq(['def a; end',
+                             '',
+                             'def b; end'].join("\n"))
   end
 
   it 'treats lines with whitespaces as blank' do
-    source = ['  class J',
-              '    def n',
-              '    end',
-              '    ',
-              '    def o',
-              '    end',
-              '  end']
+    source = ['class J',
+              '  def n',
+              '  end',
+              '  ',
+              '  def o',
+              '  end',
+              'end']
     inspect_source(cop, source)
     expect(cop.offenses).to be_empty
+  end
+
+  it "doesn't allow more than the required number of newlines" do
+    source = ['class A',
+              '  def n',
+              '  end',
+              '',
+              '',
+              '  def o',
+              '  end',
+              'end']
+    inspect_source(cop, source)
+    expect(cop.offenses.size).to eq(1)
   end
 
   context 'when AllowAdjacentOneLineDefs is enabled' do
@@ -266,6 +290,116 @@ describe RuboCop::Cop::Style::EmptyLineBetweenDefs, :config do
                 'def d; end']
       inspect_source(cop, source)
       expect(cop.offenses.map(&:line)).to eq([3, 5])
+    end
+  end
+
+  context 'when a maximum of empty lines is specified' do
+    let(:cop_config) { { 'NumberOfEmptyLines' => [0, 1] } }
+
+    it 'finds no offense for no empty line' do
+      source = ['def n',
+                'end',
+                'def o',
+                'end']
+      inspect_source(cop, source)
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'finds no offense for one empty line' do
+      source = ['def n',
+                'end',
+                '',
+                'def o',
+                ' end']
+      inspect_source(cop, source)
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'finds an  offense for two empty lines' do
+      source = ['def n',
+                'end',
+                '',
+                '',
+                'def o',
+                'end']
+      inspect_source(cop, source)
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it 'auto-corrects' do
+      source = ['def n',
+                'end',
+                '',
+                '',
+                'def o',
+                'end']
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq(['def n',
+                               'end',
+                               '',
+                               'def o',
+                               'end'].join("\n"))
+    end
+  end
+
+  context 'when multiple lines between defs are allowed' do
+    let(:cop_config) { { 'NumberOfEmptyLines' => 2 } }
+
+    it 'treats lines with whitespaces as blank' do
+      source = ['def n',
+                'end',
+                '',
+                'def o',
+                'end']
+      inspect_source(cop, source)
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it 'auto-corrects when there are no new lines' do
+      source = ['def n',
+                'end',
+                'def o',
+                'end']
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq(['def n',
+                               'end',
+                               '',
+                               '',
+                               'def o',
+                               'end'].join("\n"))
+    end
+
+    it 'auto-corrects when there are too few new lines' do
+      source = ['def n',
+                'end',
+                '',
+                'def o',
+                'end']
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq(['def n',
+                               'end',
+                               '',
+                               '',
+                               'def o',
+                               'end'].join("\n"))
+    end
+
+    it 'auto-corrects when there are too many new lines' do
+      source = ['def n',
+                'end',
+                '',
+                '',
+                '',
+                '',
+                'def o',
+                'end']
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq(['def n',
+                               'end',
+                               '',
+                               '',
+                               'def o',
+                               'end'].join("\n"))
     end
   end
 end
