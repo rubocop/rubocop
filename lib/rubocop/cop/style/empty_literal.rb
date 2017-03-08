@@ -21,9 +21,9 @@ module RuboCop
                          '(block (send (const nil :Hash) :new) args _)'
 
         def on_send(node)
-          add_offense(node, :expression, ARR_MSG) if offence_array_node?(node)
+          add_offense(node, :expression, ARR_MSG) if offense_array_node?(node)
 
-          add_offense(node, :expression, HASH_MSG) if offence_hash_node?(node)
+          add_offense(node, :expression, HASH_MSG) if offense_hash_node?(node)
 
           str_node(node) do
             return if frozen_string_literals_enabled?
@@ -76,21 +76,21 @@ module RuboCop
           end
         end
 
-        def offence_array_node?(node)
+        def offense_array_node?(node)
           array_node(node) && !array_with_block(node.parent)
         end
 
-        def offence_hash_node?(node)
+        def offense_hash_node?(node)
           # If Hash.new takes a block, it can't be changed to {}.
           hash_node(node) && !hash_with_block(node.parent)
         end
 
         def correction(node)
-          if offence_array_node?(node)
+          if offense_array_node?(node)
             '[]'
           elsif str_node(node)
             preferred_string_literal
-          elsif offence_hash_node?(node)
+          elsif offense_hash_node?(node)
             if first_argument_unparenthesized?(node)
               # `some_method {}` is not same as `some_method Hash.new`
               # because the braces are interpreted as a block. We will have
