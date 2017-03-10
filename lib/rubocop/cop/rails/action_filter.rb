@@ -7,7 +7,11 @@ module RuboCop
       #
       # The cop is configurable and can enforce the use of the older
       # something_filter methods or the newer something_action methods.
+      #
+      # If the TargetRailsVersion is set to less than 4.0, the cop will enforce
+      # the use of filter methods.
       class ActionFilter < Cop
+        extend TargetRailsVersion
         include ConfigurableEnforcedStyle
 
         MSG = 'Prefer `%s` over `%s`.'.freeze
@@ -43,6 +47,8 @@ module RuboCop
           :skip_before_action,
           :skip_action_callback
         ].freeze
+
+        minimum_target_rails_version 4.0
 
         def on_block(node)
           method, _args, _body = *node

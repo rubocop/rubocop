@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#4107](https://github.com/bbatsov/rubocop/pull/4107): New `TargetRailsVersion` configuration parameter can be used to specify which version of Rails the inspected code is intended to run on. ([@maxbeizer][])
 * [#4083](https://github.com/bbatsov/rubocop/pull/4083): Add new configuration `NumberOfEmptyLines` for `Style/EmptyLineBetweenDefs`. ([@dorian][])
 * [#4045](https://github.com/bbatsov/rubocop/pull/4045): Add new configuration `Strict` for `Style/NumericLiteral` to make the change to this cop in 0.47.0 configurable. ([@iGEL][])
 * [#3893](https://github.com/bbatsov/rubocop/issues/3893): Add a new configuration, `IncludeActiveSupportAliases`, to `Performance/DoublStartEndWith`. This configuration will check for ActiveSupport's `starts_with?` and `ends_with?`. ([@rrosenblum][])
@@ -2674,3 +2675,4 @@
 [@smakagon]: https://github.com/smakagon
 [@musialik]: https://github.com/musialik
 [@twe4ked]: https://github.com/twe4ked
+[@maxbeizer]: https://github.com/maxbeizer

@@ -43,6 +43,7 @@ shared_context 'config', :config do
 
     hash = { 'AllCops' => { 'TargetRubyVersion' => ruby_version } }
     hash['Rails'] = { 'Enabled' => true } if enabled_rails
+    hash['AllCops']['TargetRailsVersion'] = rails_version if rails_version
     if respond_to?(:cop_config)
       cop_name = described_class.cop_name
       hash[cop_name] = RuboCop::ConfigLoader
@@ -80,4 +81,16 @@ end
 
 shared_context 'with Rails', :enabled_rails do
   let(:enabled_rails) { true }
+end
+
+shared_context 'with Rails 3', :rails3 do
+  let(:rails_version) { 3.0 }
+end
+
+shared_context 'with Rails 4', :rails4 do
+  let(:rails_version) { 4.0 }
+end
+
+shared_context 'with Rails 5', :rails5 do
+  let(:rails_version) { 5.0 }
 end

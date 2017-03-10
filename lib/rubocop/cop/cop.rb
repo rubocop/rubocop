@@ -151,6 +151,10 @@ module RuboCop
         @config.target_ruby_version
       end
 
+      def target_rails_version
+        @config.target_rails_version
+      end
+
       def parse(source, path = nil)
         ProcessedSource.new(source, target_ruby_version, path)
       end
