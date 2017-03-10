@@ -13,13 +13,10 @@ when param passed without parentheses.
 
 ```ruby
 # bad
-
-# It's ambiguous because there is no parentheses around `a` param
 some_method a { |val| puts val }
 ```
 ```ruby
 # good
-
 # With parentheses, there's no ambiguity.
 some_method(a) { |val| puts val }
 ```

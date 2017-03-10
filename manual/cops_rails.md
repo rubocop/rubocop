@@ -11,6 +11,9 @@ This cop enforces the consistent use of action filter methods.
 The cop is configurable and can enforce the use of the older
 something_filter methods or the newer something_action methods.
 
+If the TargetRailsVersion is set to less than 4.0, the cop will enforce
+the use of filter methods.
+
 ### Important attributes
 
 Attribute | Value
@@ -353,9 +356,10 @@ Enabled | Yes
 
 This cop is used to identify usages of http methods like `get`, `post`,
 `put`, `patch` without the usage of keyword arguments in your tests and
-change them to use keyword args.  This cop only applies to Rails >= 5
-If you are not running Rails >=5 you should disable
-the Rails/HttpPositionalArguments cop.
+change them to use keyword args.  This cop only applies to Rails >= 5 .
+If you are not running Rails < 5 you should disable # the
+Rails/HttpPositionalArguments cop or set your TargetRailsVersion in your
+.rubocop.yml file to 4.0, etc.
 
 ### Example
 
