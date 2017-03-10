@@ -73,6 +73,10 @@ module RuboCop
           cop.class.respond_to?(:support_target_ruby_version?) &&
             !cop.class.support_target_ruby_version?(cop.target_ruby_version)
         end
+        @cops.reject! do |cop|
+          cop.class.respond_to?(:support_target_rails_version?) &&
+            !cop.class.support_target_rails_version?(cop.target_rails_version)
+        end
       end
 
       def reset_callbacks

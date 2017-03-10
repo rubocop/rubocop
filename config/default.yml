@@ -82,6 +82,7 @@ AllCops:
   # Else if .ruby-version exists and it contains an MRI version it is used.
   # Otherwise we fallback to the oldest officially supported Ruby version (2.1).
   TargetRubyVersion: ~
+  TargetRailsVersion: 5.0
 
 # Indent private/protected/public as deep as method definitions
 Style/AccessModifierIndentation:
