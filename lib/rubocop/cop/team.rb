@@ -11,7 +11,8 @@ module RuboCop
         Style::SpaceBeforeBlockBraces => [Style::SymbolProc],
         Style::LineEndConcatenation => [Style::UnneededInterpolation],
         Style::UnneededInterpolation => [Style::LineEndConcatenation],
-        Style::SelfAssignment => [Style::SpaceAroundOperators]
+        Style::SelfAssignment => [Style::SpaceAroundOperators],
+        Style::SpaceAroundOperators => [Style::SelfAssignment]
       }.freeze
 
       DEFAULT_OPTIONS = {
