@@ -93,7 +93,7 @@ module RuboCop
 
         def accept_child_double_quotes?(nodes)
           nodes.any? do |n|
-            n.dstr_type? || double_quotes_acceptable?(n.str_content)
+            n.dstr_type? || double_quotes_required?(n.source)
           end
         end
       end

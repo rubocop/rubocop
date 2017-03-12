@@ -219,16 +219,6 @@ module RuboCop
         string =~ /'|(?<! \\) \\{2}* \\ (?![\\"])/x
       end
 
-      # If double quoted string literals are found in Ruby code, and they are
-      # not the preferred style, should they be flagged?
-      def double_quotes_acceptable?(string)
-        needs_escaping?(string) || hard_to_type?(string)
-      end
-
-      def hard_to_type?(string)
-        string.codepoints.any? { |cp| cp < 32 || cp > 126 }
-      end
-
       def needs_escaping?(string)
         double_quotes_required?(escape_string(string))
       end

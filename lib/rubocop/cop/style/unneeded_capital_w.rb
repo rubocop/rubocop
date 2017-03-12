@@ -25,8 +25,7 @@ module RuboCop
         def requires_interpolation?(node)
           node.child_nodes.any? do |string|
             string.dstr_type? ||
-              double_quotes_acceptable?(string.str_content) ||
-              string.source == '\s'
+              double_quotes_required?(string.source)
           end
         end
 

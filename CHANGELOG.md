@@ -56,6 +56,7 @@
 * [#4001](https://github.com/bbatsov/rubocop/issues/4001): Lint/UnneededDisable of Metrics/LineLength that isn't unneeded. ([@wkurniawan07][])
 * [#3960](https://github.com/bbatsov/rubocop/issues/3960): Let `Include`/`Exclude` paths in all files beginning with `.rubocop` be relative to the configuration file's directory and not to the current directory. ([@jonas054][])
 * [#4049](https://github.com/bbatsov/rubocop/pull/4049): Bugfix for `Style/EmptyLiteral` cop. ([@ota42y][])
+* [#4112](https://github.com/bbatsov/rubocop/pull/4112): Fix false positives about double quotes in `Style/StringLiterals`, `Style/UnneededCapitalW` and `Style/UnneededPercentQ` cops. ([@pocke][])
 
 ## 0.47.1 (2017-01-18)
 

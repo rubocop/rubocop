@@ -110,8 +110,14 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
       expect(cop.messages).to be_empty
     end
 
-    it 'accepts a string with double quotes and an escape' do
+    it 'accepts a string with double quotes and an escaped special character' do
       inspect_source(cop, '%Q("\\thi")')
+
+      expect(cop.messages).to be_empty
+    end
+
+    it 'accepts a string with double quotes and an escaped normal character' do
+      inspect_source(cop, '%Q("\\!thi")')
 
       expect(cop.messages).to be_empty
     end
