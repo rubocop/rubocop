@@ -1023,4 +1023,20 @@ describe RuboCop::CLI, :isolated_environment do
                                          'foo.each { bar; }',
                                          ''].join("\n"))
   end
+
+  it 'corrects BracesAroundHashParameters offenses leaving the ' \
+     'MultilineHashBraceLayout offense unchanged' do
+    create_file('example.rb', ['def method_a',
+                               '  do_something({ a: 1,',
+                               '  })',
+                               'end',
+                               ''])
+
+    expect($stderr.string).to eq('')
+    expect(cli.run(%w(--auto-correct))).to eq(0)
+    expect(IO.read('example.rb')).to eq(['def method_a',
+                                         '  do_something(a: 1)',
+                                         'end',
+                                         ''].join("\n"))
+  end
 end

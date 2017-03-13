@@ -57,6 +57,8 @@
 * [#3960](https://github.com/bbatsov/rubocop/issues/3960): Let `Include`/`Exclude` paths in all files beginning with `.rubocop` be relative to the configuration file's directory and not to the current directory. ([@jonas054][])
 * [#4049](https://github.com/bbatsov/rubocop/pull/4049): Bugfix for `Style/EmptyLiteral` cop. ([@ota42y][])
 * [#4109](https://github.com/bbatsov/rubocop/issues/4109): Fix incorrect auto correction in `Style/SelfAssignment` cop. ([@pocke][])
+* [#4110](https://github.com/bbatsov/rubocop/issues/4110): Fix incorrect auto correction in `Style/BracesAroundHashParameters` cop. ([@musialik][])
+
 
 ## 0.47.1 (2017-01-18)
 
@@ -2669,3 +2671,4 @@
 [@kddeisz]: https://github.com/kddeisz
 [@ota42y]: https://github.com/ota42y
 [@smakagon]: https://github.com/smakagon
+[@musialik]: https://github.com/musialik
