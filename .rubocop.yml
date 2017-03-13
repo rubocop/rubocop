@@ -7,7 +7,7 @@ AllCops:
     - 'vendor/**/*'
     - 'spec/fixtures/**/*'
     - 'tmp/**/*'
-  TargetRubyVersion: 2.1
+  TargetRubyVersion: 2.0
 
 Style/Encoding:
   EnforcedStyle: never

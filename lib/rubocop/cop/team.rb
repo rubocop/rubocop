@@ -10,7 +10,10 @@ module RuboCop
         Style::SymbolProc => [Style::SpaceBeforeBlockBraces],
         Style::SpaceBeforeBlockBraces => [Style::SymbolProc],
         Style::LineEndConcatenation => [Style::UnneededInterpolation],
-        Style::UnneededInterpolation => [Style::LineEndConcatenation]
+        Style::UnneededInterpolation => [Style::LineEndConcatenation],
+        Style::SelfAssignment => [Style::SpaceAroundOperators],
+        Style::SpaceAroundOperators => [Style::SelfAssignment],
+        Style::BracesAroundHashParameters => [Style::MultilineHashBraceLayout]
       }.freeze
 
       DEFAULT_OPTIONS = {
