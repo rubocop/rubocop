@@ -1604,6 +1604,16 @@ Rails/PluralizationGrammar:
   Description: 'Checks for incorrect grammar when using methods like `3.day.ago`.'
   Enabled: true
 
+Rails/Present:
+  Description: 'Enforce using `blank?` and `present?`.'
+  Enabled: true
+  NotNilAndNotEmpty: true
+  # Convert checks for not `nil` and not `empty?` to `present?`
+  NotBlank: true
+  # Convert usages of not `blank?` to `present?`
+  UnlessBlank: true
+  # Convert usages of `unless` `blank?` to `if` `present?`
+
 Rails/ReadWriteAttribute:
   Description: >-
                  Checks for read_attribute(:attr) and
