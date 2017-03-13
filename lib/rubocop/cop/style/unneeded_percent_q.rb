@@ -88,7 +88,7 @@ module RuboCop
           src = node.source
           src.include?(QUOTE) &&
             (src =~ STRING_INTERPOLATION_REGEXP ||
-            (node.str_type? && double_quotes_acceptable?(node.str_content)))
+            (node.str_type? && double_quotes_required?(src)))
         end
       end
     end
