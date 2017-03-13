@@ -25,6 +25,7 @@
 * Add `IgnoreMacros` option to `Style/MethodCallWithArgsParentheses`. ([@drenmi][])
 * [#3937](https://github.com/bbatsov/rubocop/issues/3937): Add new `Rails/ActiveSupportAliases` cop. ([@tdeo][])
 * Add new `Rails/Blank` cop. ([@rrosenblum][])
+* Add new `Rails/Present` cop. ([@rrosenblum][])
 
 ### Changes
 

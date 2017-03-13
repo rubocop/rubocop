@@ -193,6 +193,7 @@ In the following section you find all available cops:
 * [Rails/Output](cops_rails.md#railsoutput)
 * [Rails/OutputSafety](cops_rails.md#railsoutputsafety)
 * [Rails/PluralizationGrammar](cops_rails.md#railspluralizationgrammar)
+* [Rails/Present](cops_rails.md#railspresent)
 * [Rails/ReadWriteAttribute](cops_rails.md#railsreadwriteattribute)
 * [Rails/RelativeDateConstant](cops_rails.md#railsrelativedateconstant)
 * [Rails/RequestReferer](cops_rails.md#railsrequestreferer)
