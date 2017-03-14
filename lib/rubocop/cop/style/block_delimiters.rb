@@ -129,6 +129,8 @@ module RuboCop
         end
 
         def proper_block_style?(node)
+          return true if ignored_method?(node.method_name)
+
           case style
           when :line_count_based    then line_count_based_block_style?(node)
           when :semantic            then semantic_block_style?(node)
@@ -144,9 +146,6 @@ module RuboCop
 
         def semantic_block_style?(node)
           method_name = node.method_name
-
-          return true if ignored_method?(method_name)
-
           block_begin = node.loc.begin.source
 
           if block_begin == '{'

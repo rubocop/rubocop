@@ -106,6 +106,7 @@
 * Add missing examples in `Lint` cops documentation. ([@enriikke][])
 * Make `Style/EmptyMethod` cop aware of class methods. ([@drenmi][])
 * [#3871](https://github.com/bbatsov/rubocop/pull/3871): Add check for void `defined?` and `self` by `Lint/Void` cop. ([@pocke][])
+* Allow ignoring methods in `Style/BlockDelimiters` when using any style. ([@twe4ked][])
 
 ### Bug fixes
 
@@ -2672,3 +2673,4 @@
 [@ota42y]: https://github.com/ota42y
 [@smakagon]: https://github.com/smakagon
 [@musialik]: https://github.com/musialik
+[@twe4ked]: https://github.com/twe4ked
