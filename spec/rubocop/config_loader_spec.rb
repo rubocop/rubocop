@@ -507,6 +507,13 @@ describe RuboCop::ConfigLoader do
       )
     end
 
+    it 'changes target ruby version with a patch to float' do
+      create_file(configuration_path, ['AllCops:',
+                                       '  TargetRubyVersion: 2.3.4'])
+
+      expect(load_file.to_h).to eq('AllCops' => { 'TargetRubyVersion' => 2.3 })
+    end
+
     it 'loads configuration properly when it includes non-ascii characters ' do
       create_file(configuration_path, ['# All these cops of mine are ❤',
                                        'Style/Encoding:',
