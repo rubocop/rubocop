@@ -27,7 +27,7 @@ module RuboCop
         'The `Rails/DefaultScope` cop no longer exists.',
       'Style/SingleSpaceBeforeFirstArg' =>
         'The `Style/SingleSpaceBeforeFirstArg` cop has been renamed to ' \
-        '`Style/SpaceBeforeFirstArg.`',
+        '`Style/SpaceBeforeFirstArg`.',
       'Lint/SpaceBeforeFirstArg' =>
         'The `Lint/SpaceBeforeFirstArg` cop has been removed, since it was a ' \
         'duplicate of `Style/SpaceBeforeFirstArg`. Please use ' \
