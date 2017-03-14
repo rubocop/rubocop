@@ -283,7 +283,12 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
   end
 
   context 'line count-based style' do
-    let(:cop_config) { { 'EnforcedStyle' => 'line_count_based' } }
+    cop_config = {
+      'EnforcedStyle' => 'line_count_based',
+      'IgnoredMethods' => %w(proc)
+    }
+
+    let(:cop_config) { cop_config }
 
     include_examples 'syntactic styles'
 
@@ -333,6 +338,14 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
                '}']
         inspect_source(cop, src)
         expect(cop.offenses).to be_empty
+      end
+
+      it 'accepts a multi-line functional block with {} if it is ' \
+         'an ignored method' do
+        inspect_source(cop, ['foo = proc {',
+                             '  puts 42',
+                             '}'])
+        expect(cop.messages).to be_empty
       end
 
       it 'registers an offense for braces if do-end would not change ' \
@@ -402,7 +415,12 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
   end
 
   context 'braces for chaining style' do
-    let(:cop_config) { { 'EnforcedStyle' => 'braces_for_chaining' } }
+    cop_config = {
+      'EnforcedStyle' => 'braces_for_chaining',
+      'IgnoredMethods' => %w(proc)
+    }
+
+    let(:cop_config) { cop_config }
 
     include_examples 'syntactic styles'
 
@@ -419,6 +437,14 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
              'end.map(&:to_s)']
       new_source = autocorrect_source(cop, src)
       expect(new_source).to eq("each { |x|\n}.map(&:to_s)")
+    end
+
+    it 'accepts a multi-line functional block with {} if it is ' \
+       'an ignored method' do
+      inspect_source(cop, ['foo = proc {',
+                           '  puts 42',
+                           '}'])
+      expect(cop.messages).to be_empty
     end
 
     context 'when there are braces around a multi-line block' do
