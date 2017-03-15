@@ -201,6 +201,12 @@ describe RuboCop::Cop::Style::TernaryParentheses, :config do
       it_behaves_like 'code without offense',
                       '(foo..bar).include?(baz) ? a : b'
     end
+
+    context 'with no space between the parentheses and question mark' do
+      it_behaves_like 'code with offense',
+                      '(foo)? a : b',
+                      'foo ? a : b'
+    end
   end
 
   context 'configured for parentheses on complex and there are parens' do
