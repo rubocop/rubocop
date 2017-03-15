@@ -70,7 +70,8 @@ module RuboCop
           range_with_surrounding_space(range, :right, false)
         end
 
-        def each_unneeded_disable(cop_disabled_line_ranges, offenses, comments)
+        def each_unneeded_disable(cop_disabled_line_ranges, offenses, comments,
+                                  &block)
           disabled_ranges = cop_disabled_line_ranges[COP_NAME] || [0..0]
 
           cop_disabled_line_ranges.each do |cop, line_ranges|
@@ -78,17 +79,23 @@ module RuboCop
               yield comment, cop
             end
 
-            line_ranges.each_with_index do |line_range, ix|
-              comment = comments.find { |c| c.loc.line == line_range.begin }
+            each_line_range(line_ranges, disabled_ranges, offenses, comments,
+                            cop, &block)
+          end
+        end
 
-              unless all_disabled?(comment)
-                next if ignore_offense?(disabled_ranges, line_range)
-              end
+        def each_line_range(line_ranges, disabled_ranges, offenses, comments,
+                            cop)
+          line_ranges.each_with_index do |line_range, ix|
+            comment = comments.find { |c| c.loc.line == line_range.begin }
 
-              unneeded_cop = find_unneeded(comment, offenses, cop, line_range,
-                                           line_ranges[ix + 1])
-              yield comment, unneeded_cop if unneeded_cop
+            unless all_disabled?(comment)
+              next if ignore_offense?(disabled_ranges, line_range)
             end
+
+            unneeded_cop = find_unneeded(comment, offenses, cop, line_range,
+                                         line_ranges[ix + 1])
+            yield comment, unneeded_cop if unneeded_cop
           end
         end
 
