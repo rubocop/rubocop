@@ -305,7 +305,9 @@ describe RuboCop::CLI, :isolated_environment do
               '  # rubocop:disable Metrics/MethodLength',
               '  def func',
               '    x = foo # rubocop:disable Lint/UselessAssignment,Style/For',
-              '    bar',
+              '    # rubocop:disable all',
+              '    # rubocop:disable Style/ClassVars',
+              '    @@bar = "3"',
               '  end',
               'end',
               ''].join("\n")
@@ -317,13 +319,16 @@ describe RuboCop::CLI, :isolated_environment do
               'W:  2:  3: [Corrected] Unnecessary disabling of ' \
               'Metrics/MethodLength.',
               'W:  4: 54: [Corrected] Unnecessary disabling of Style/For.',
+              'W:  6:  5: [Corrected] Unnecessary disabling of ' \
+              'Style/ClassVars.',
               '',
-              '1 file inspected, 3 offenses detected, 2 offenses corrected',
+              '1 file inspected, 4 offenses detected, 3 offenses corrected',
               ''].join("\n"))
     corrected = ['class A',
                  '  def func',
                  '    x = foo # rubocop:disable Lint/UselessAssignment',
-                 '    bar',
+                 '    # rubocop:disable all',
+                 '    @@bar = "3"',
                  '  end',
                  'end',
                  '']

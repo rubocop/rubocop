@@ -282,16 +282,12 @@ describe RuboCop::Cop::Lint::UnneededDisable do
         end
         let(:cop_name) { 'Style/ClassVars' }
         let(:offenses) do
-          [
+          offense_lines.map do |line|
             RuboCop::Cop::Offense.new(:convention,
-                                      OpenStruct.new(line: 3, column: 3),
-                                      message,
-                                      cop_name),
-            RuboCop::Cop::Offense.new(:convention,
-                                      OpenStruct.new(line: 8, column: 3),
+                                      OpenStruct.new(line: line, column: 3),
                                       message,
                                       cop_name)
-          ]
+          end
         end
 
         context 'and a comment disables' do
@@ -307,8 +303,30 @@ describe RuboCop::Cop::Lint::UnneededDisable do
                '  @@class_var = 2',
                'end'].join("\n")
             end
+            let(:offense_lines) { [3, 8] }
             let(:cop_disabled_line_ranges) do
               { 'Style/ClassVars' => [2..7, 7..9] }
+            end
+
+            it 'returns an offense' do
+              expect(cop.messages)
+                .to eq(['Unnecessary disabling of `Style/ClassVars`.'])
+              expect(cop.highlights)
+                .to eq(['# rubocop:disable Style/ClassVars'])
+            end
+          end
+
+          context 'one cop and then all cops' do
+            let(:source) do
+              ['class One',
+               '  # rubocop:disable Style/ClassVars',
+               '  # rubocop:disable all',
+               '  @@class_var = 1',
+               'end'].join("\n")
+            end
+            let(:offense_lines) { [4] }
+            let(:cop_disabled_line_ranges) do
+              { 'Style/ClassVars' => [2..3, 3..Float::INFINITY] }
             end
 
             it 'returns an offense' do
