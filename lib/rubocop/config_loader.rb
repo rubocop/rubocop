@@ -37,11 +37,17 @@ module RuboCop
         resolve_requires(path, hash)
 
         add_missing_namespaces(path, hash)
+        target_ruby_version_to_f!(hash)
 
         resolve_inheritance_from_gems(hash, hash.delete('inherit_gem'))
         resolve_inheritance(path, hash)
 
         hash.delete('inherit_from')
+
+        create_config(hash, path)
+      end
+
+      def create_config(hash, path)
         config = Config.new(hash, path)
 
         config.deprecation_check do |deprecation_message|
@@ -139,6 +145,13 @@ module RuboCop
             [default_configuration, config]
           end
         Config.new(merge(configs.first, configs.last), config_file)
+      end
+
+      def target_ruby_version_to_f!(hash)
+        version = 'TargetRubyVersion'
+        return unless hash['AllCops'] && hash['AllCops'][version]
+
+        hash['AllCops'][version] = hash['AllCops'][version].to_f
       end
 
       private
