@@ -25,6 +25,7 @@
 
 ### Changes
 
+* [#4100](https://github.com/bbatsov/rubocop/issues/4100): Rails/SaveBang should flag `update_attributes`. ([@andriymosin][])
 * [#4083](https://github.com/bbatsov/rubocop/pull/4083): `Style/EmptyLineBetweenDefs` doesn't allow more than one empty line between method definitions by default (see `NumberOfEmptyLines`). ([@dorian][])
 * [#3997](https://github.com/bbatsov/rubocop/pull/3997): Include all ruby files by default and exclude non-ruby files. ([@dorian][])
 * [#4012](https://github.com/bbatsov/rubocop/pull/4012): Mark `foo[:bar]` as not complex in `Style/TernaryParentheses` cop with `require_parentheses_when_complex` style. ([@onk][])
@@ -2676,3 +2677,4 @@
 [@musialik]: https://github.com/musialik
 [@twe4ked]: https://github.com/twe4ked
 [@maxbeizer]: https://github.com/maxbeizer
+[@andriymosin]: https://github.com/andriymosin

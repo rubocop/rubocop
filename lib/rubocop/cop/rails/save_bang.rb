@@ -46,7 +46,8 @@ module RuboCop
 
         CREATE_PERSIST_METHODS = [:create,
                                   :first_or_create, :find_or_create_by].freeze
-        MODIFY_PERSIST_METHODS = [:save, :update, :destroy].freeze
+        MODIFY_PERSIST_METHODS = [:save,
+                                  :update, :update_attributes, :destroy].freeze
         PERSIST_METHODS = (CREATE_PERSIST_METHODS +
                            MODIFY_PERSIST_METHODS).freeze
 
