@@ -51,6 +51,7 @@ module RuboCop
       class TernaryParentheses < Cop
         include SafeAssignment
         include ConfigurableEnforcedStyle
+        include SurroundingSpace
 
         MSG = '%s parentheses for ternary conditions.'.freeze
         MSG_COMPLEX = '%s parentheses for ternary expressions with' \
@@ -87,14 +88,10 @@ module RuboCop
                         (safe_assignment?(condition) ||
                         unsafe_autocorrect?(condition))
 
-          lambda do |corrector|
-            if parenthesized?(condition)
-              corrector.remove(condition.loc.begin)
-              corrector.remove(condition.loc.end)
-            else
-              corrector.insert_before(condition.source_range, '(')
-              corrector.insert_after(condition.source_range, ')')
-            end
+          if parenthesized?(condition)
+            correct_parenthesized(condition)
+          else
+            correct_unparenthesized(condition)
           end
         end
 
@@ -169,6 +166,33 @@ module RuboCop
 
         def_node_matcher :square_brackets?,
                          '(send {(send _recv _msg) str array hash} :[] ...)'
+
+        def correct_parenthesized(condition)
+          lambda do |corrector|
+            corrector.remove(condition.loc.begin)
+            corrector.remove(condition.loc.end)
+
+            # Ruby allows no space between the question mark and parentheses.
+            # If we remove the parentheses, we need to add a space or we'll
+            # generate invalid code.
+            unless whitespace_after?(condition)
+              corrector.insert_after(condition.loc.end, ' ')
+            end
+          end
+        end
+
+        def correct_unparenthesized(condition)
+          lambda do |corrector|
+            corrector.insert_before(condition.source_range, '(')
+            corrector.insert_after(condition.source_range, ')')
+          end
+        end
+
+        def whitespace_after?(node)
+          index = index_of_last_token(node)
+          last_token, next_token = processed_source.tokens[index, 2]
+          space_between?(last_token, next_token)
+        end
       end
     end
   end
