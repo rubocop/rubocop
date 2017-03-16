@@ -8,15 +8,15 @@ module RuboCop
       #
       # @example
       #   # bad
-      #   while a
+      #   while myvariable
       #   .b
-      #     something
+      #     # do something
       #   end
       #
       #   # good, EnforcedStyle: aligned
-      #   while a
+      #   while myvariable
       #         .b
-      #     something
+      #     # do something
       #   end
       #
       #   # good, EnforcedStyle: aligned
@@ -24,11 +24,29 @@ module RuboCop
       #        .b
       #        .c
       #
-      #   # good, EnforcedStyle: indented
-      #   while a
-      #       .b
-      #     something
+      #   # good, EnforcedStyle:    indented,
+      #           IndentationWidth: 2
+      #   while myvariable
+      #     .b
+      #
+      #     # do something
       #   end
+      #
+      #   # good, EnforcedStyle:    indented_relative_to_receiver,
+      #           IndentationWidth: 2
+      #   while myvariable
+      #           .a
+      #           .b
+      #
+      #     # do something
+      #   end
+      #
+      #   # good, EnforcedStyle:    indented_relative_to_receiver,
+      #           IndentationWidth: 2
+      #   myvariable = Thing
+      #                  .a
+      #                  .b
+      #                  .c
       class MultilineMethodCallIndentation < Cop
         include ConfigurableEnforcedStyle
         include AutocorrectAlignment
@@ -112,15 +130,15 @@ module RuboCop
         end
 
         def alignment_base(node, rhs, given_style)
-          return nil if given_style == :indented
-
-          if given_style == :indented_relative_to_receiver
-            receiver_base = receiver_alignment_base(node)
-            return receiver_base if receiver_base
+          case given_style
+          when :aligned
+            semantic_alignment_base(node, rhs) ||
+              syntactic_alignment_base(node, rhs)
+          when :indented
+            nil
+          when :indented_relative_to_receiver
+            receiver_alignment_base(node)
           end
-
-          semantic_alignment_base(node, rhs) ||
-            syntactic_alignment_base(node, rhs)
         end
 
         def syntactic_alignment_base(lhs, rhs)
@@ -162,10 +180,11 @@ module RuboCop
         #   .b
         #   .c
         def receiver_alignment_base(node)
-          node = semantic_alignment_node(node)
-          return unless node
+          node = node.receiver while node.receiver
+          node = node.parent
+          node = node.parent until node.loc.dot
 
-          node.receiver.source_range
+          node.receiver.source_range if node
         end
 
         def semantic_alignment_node(node)

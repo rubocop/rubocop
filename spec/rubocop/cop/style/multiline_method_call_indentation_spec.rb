@@ -50,24 +50,6 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
       expect(cop.messages).to be_empty
     end
 
-    it 'registers an offense for one space indentation of second line' do
-      inspect_source(cop,
-                     ['a',
-                      ' .b'])
-      expect(cop.messages).to eq(['Use 2 (not 1) spaces for indenting an ' \
-                                  'expression spanning multiple lines.'])
-      expect(cop.highlights).to eq(['.b'])
-    end
-
-    it 'registers an offense for proc call without a selector' do
-      inspect_source(cop,
-                     ['a',
-                      ' .(args)'])
-      expect(cop.messages).to eq(['Use 2 (not 1) spaces for indenting an ' \
-                                  'expression spanning multiple lines.'])
-      expect(cop.highlights).to eq(['.('])
-    end
-
     it 'accepts no extra indentation of third line' do
       inspect_source(cop,
                      ['   a.',
@@ -100,31 +82,12 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
       expect(cop.messages).to be_empty
     end
 
-    it 'accepts even indentation of consecutive lines in typical RSpec code' do
-      inspect_source(cop,
-                     ['expect { Foo.new }.',
-                      '  to change { Bar.count }.',
-                      '  from(1).to(2)'])
-      expect(cop.messages).to be_empty
-    end
-
     it 'accepts any indentation of parameters to #[]' do
       inspect_source(cop,
                      ['payment = Models::IncomingPayments[',
                       "        id:      input['incoming-payment-id'],",
                       '           user_id: @user[:id]]'])
       expect(cop.messages).to be_empty
-    end
-
-    it 'registers an offense for extra indentation of 3rd line in typical ' \
-       'RSpec code' do
-      inspect_source(cop,
-                     ['expect { Foo.new }.',
-                      '  to change { Bar.count }.',
-                      '      from(1).to(2)'])
-      expect(cop.messages).to eq(['Use 2 (not 6) spaces for indenting an ' \
-                                  'expression spanning multiple lines.'])
-      expect(cop.highlights).to eq(['from'])
     end
 
     it "doesn't fail on unary operators" do
@@ -138,6 +101,14 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
   end
 
   shared_examples 'common for aligned and indented' do
+    it 'accepts even indentation of consecutive lines in typical RSpec code' do
+      inspect_source(cop,
+                     ['expect { Foo.new }.',
+                      '  to change { Bar.count }.',
+                      '  from(1).to(2)'])
+      expect(cop.messages).to be_empty
+    end
+
     it 'registers an offense for no indentation of second line' do
       inspect_source(cop,
                      ['a.',
@@ -182,6 +153,35 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
         .to eq(['Use 2 (not 0) spaces for indenting an expression spanning ' \
                 'multiple lines.'])
       expect(cop.highlights).to eq(['b'])
+    end
+
+    it 'registers an offense for extra indentation of 3rd line in typical ' \
+       'RSpec code' do
+      inspect_source(cop,
+                     ['expect { Foo.new }.',
+                      '  to change { Bar.count }.',
+                      '      from(1).to(2)'])
+      expect(cop.messages).to eq(['Use 2 (not 6) spaces for indenting an ' \
+                                  'expression spanning multiple lines.'])
+      expect(cop.highlights).to eq(['from'])
+    end
+
+    it 'registers an offense for proc call without a selector' do
+      inspect_source(cop,
+                     ['a',
+                      ' .(args)'])
+      expect(cop.messages).to eq(['Use 2 (not 1) spaces for indenting an ' \
+                                  'expression spanning multiple lines.'])
+      expect(cop.highlights).to eq(['.('])
+    end
+
+    it 'registers an offense for one space indentation of second line' do
+      inspect_source(cop,
+                     ['a',
+                      ' .b'])
+      expect(cop.messages).to eq(['Use 2 (not 1) spaces for indenting an ' \
+                                  'expression spanning multiple lines.'])
+      expect(cop.highlights).to eq(['.b'])
     end
   end
 
@@ -531,6 +531,19 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts indentation of consecutive lines in typical RSpec code' do
+      inspect_source(cop,
+                     ['expect { Foo.new }.',
+                      '  to change { Bar.count }.',
+                      '       from(1).to(2)'])
+      expect(cop.messages).to be_empty
+
+      inspect_source(cop,
+                     ['expect { Foo.new }.to change { Bar.count }',
+                      '                        .from(1).to(2)'])
+      expect(cop.messages).to be_empty
+    end
+
     it 'registers an offense for no indentation of second line' do
       inspect_source(cop,
                      ['a.',
@@ -538,6 +551,35 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
       expect(cop.messages)
         .to eq(['Indent `b` 2 spaces more than `a` on line 1.'])
       expect(cop.highlights).to eq(['b'])
+    end
+
+    it 'registers an offense for extra indentation of 3rd line in typical ' \
+       'RSpec code' do
+      inspect_source(cop,
+                     ['expect { Foo.new }.',
+                      '  to change { Bar.count }.',
+                      '      from(1).to(2)'])
+      expect(cop.messages).to eq(['Indent `from` 2 spaces more than `change ' \
+                                  '{ Bar.count }` on line 2.'])
+      expect(cop.highlights).to eq(['from'])
+    end
+
+    it 'registers an offense for proc call without a selector' do
+      inspect_source(cop,
+                     ['a',
+                      ' .(args)'])
+      expect(cop.messages).to eq(['Indent `.(` 2 spaces more than `a` on ' \
+                                  'line 1.'])
+      expect(cop.highlights).to eq(['.('])
+    end
+
+    it 'registers an offense for one space indentation of second line' do
+      inspect_source(cop,
+                     ['a',
+                      ' .b'])
+      expect(cop.messages).to eq(['Indent `.b` 2 spaces more than `a` on ' \
+                                  'line 1.'])
+      expect(cop.highlights).to eq(['.b'])
     end
 
     it 'registers an offense for 3 spaces indentation of second line' do
