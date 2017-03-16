@@ -46,6 +46,13 @@ describe RuboCop::Cop::Style::SymbolArray, :config do
       inspect_source(cop, '[:one, :two, :"space here"]')
       expect(cop.offenses).to be_empty
     end
+
+    context 'Ruby 1.9', :ruby19 do
+      it 'accepts arrays of smybols' do
+        inspect_source(cop, '[:one, :two, :three]')
+        expect(cop.offenses).to be_empty
+      end
+    end
   end
 
   context 'when EnforcedStyle is array' do
