@@ -4,10 +4,11 @@ describe RuboCop::Cop::Style::EmptyLinesAroundExceptionHandlingKeywords do
   let(:config) { RuboCop::Config.new }
   subject(:cop) { described_class.new(config) }
 
-  shared_examples :offense do |name, code, correction|
+  shared_examples :offense do |name, message, code, correction|
     it "registers an offense for #{name} with a blank" do
       inspect_source(cop, code.strip_indent)
       expect(cop.offenses.size).to eq(1)
+      expect(cop.messages).to eq(["Extra empty line detected #{message}."])
     end
 
     it "autocorrects for #{name} with a blank" do
@@ -23,7 +24,10 @@ describe RuboCop::Cop::Style::EmptyLinesAroundExceptionHandlingKeywords do
     end
   end
 
-  include_examples :offense, 'above rescue keyword', <<-CODE, <<-CORRECTION
+  include_examples :offense,
+                   'above rescue keyword',
+                   'before the `rescue`',
+                   <<-CODE, <<-CORRECTION
     begin
       f1
 
@@ -37,7 +41,11 @@ describe RuboCop::Cop::Style::EmptyLinesAroundExceptionHandlingKeywords do
       f2
     end
   CORRECTION
-  include_examples :offense, 'rescue section starting', <<-CODE, <<-CORRECTION
+
+  include_examples :offense,
+                   'rescue section starting',
+                   'after the `rescue`',
+                   <<-CODE, <<-CORRECTION
     begin
       f1
     rescue
@@ -51,7 +59,11 @@ describe RuboCop::Cop::Style::EmptyLinesAroundExceptionHandlingKeywords do
       f2
     end
   CORRECTION
-  include_examples :offense, 'rescue section ending', <<-CODE, <<-CORRECTION
+
+  include_examples :offense,
+                   'rescue section ending',
+                   'before the `else`',
+                   <<-CODE, <<-CORRECTION
     begin
       f1
     rescue
@@ -69,8 +81,10 @@ describe RuboCop::Cop::Style::EmptyLinesAroundExceptionHandlingKeywords do
       f3
     end
   CORRECTION
+
   include_examples :offense,
                    'rescue section ending for method definition',
+                   'before the `else`',
                    <<-CODE, <<-CORRECTION
     def foo
       f1
@@ -101,17 +115,20 @@ describe RuboCop::Cop::Style::EmptyLinesAroundExceptionHandlingKeywords do
       f4
     end
   END
-  include_examples :accepts, 'empty liens around begin body', <<-END
+
+  include_examples :accepts, 'empty lines around begin body', <<-END
     begin
 
       f1
 
     end
   END
+
   include_examples :accepts, 'empty begin', <<-END
     begin
     end
   END
+
   include_examples :accepts, 'empty method definition', <<-END
     def foo
     end
@@ -145,6 +162,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundExceptionHandlingKeywords do
 
       end
     END
+
     let(:correction) { <<-END.strip_indent }
       begin
 
@@ -202,6 +220,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundExceptionHandlingKeywords do
 
       end
     END
+
     let(:correction) { <<-END.strip_indent }
       def foo
 

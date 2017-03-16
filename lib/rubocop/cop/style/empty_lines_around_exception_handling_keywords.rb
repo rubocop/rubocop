@@ -80,10 +80,13 @@ module RuboCop
           locations.each do |loc|
             line = loc.line
             keyword = loc.source
-            # on the keyword
-            check_line(style, line, format(MSG, 'before', keyword), &:empty?)
-            # under the keyword
-            check_line(style, line - 2, format(MSG, 'after', keyword), &:empty?)
+            # below the keyword
+            check_line(style, line, format(MSG, 'after', keyword), &:empty?)
+            # above the keyword
+            check_line(style,
+                       line - 2,
+                       format(MSG, 'before', keyword),
+                       &:empty?)
           end
         end
 
