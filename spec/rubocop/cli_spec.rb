@@ -1439,26 +1439,6 @@ describe RuboCop::CLI, :isolated_environment do
         )
       end
     end
-
-    context 'when set to 1.9 and Style/SymbolArray is using percent style' do
-      it 'fails with an error message' do
-        create_file('example1.rb', "puts 'hello'")
-        create_file('.rubocop.yml', ['AllCops:',
-                                     '  TargetRubyVersion: 1.9',
-                                     'Style/SymbolArray:',
-                                     '  EnforcedStyle: percent',
-                                     '  Enabled: true'])
-        expect(cli.run(['example1.rb'])).to eq(2)
-        expect($stderr.string.strip).to eq(
-          ['Error: The default `percent` style for the `Style/SymbolArray` ' \
-           'cop is only compatible with Ruby 2.0 and up, but the target Ruby' \
-           ' version for your project is 1.9.',
-           'Please either disable this cop, configure it to use `array` ' \
-           'style, or adjust the `TargetRubyVersion` parameter in your ' \
-           'configuration.'].join("\n")
-        )
-      end
-    end
   end
 
   describe 'obsolete cops' do
