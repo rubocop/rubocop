@@ -12,6 +12,15 @@ describe RuboCop::Cop::Rails::Output do
     expect(cop.offenses.size).to eq(4)
   end
 
+  it 'records an offense when printing various types' do
+    source = ['p 1',
+              'puts String.new',
+              'print :a, :b',
+              'pp Class.new']
+    inspect_source(cop, source)
+    expect(cop.offenses.size).to eq(4)
+  end
+
   it 'does not record an offense for methods with a receiver' do
     source = ['obj.print',
               'something.p',
