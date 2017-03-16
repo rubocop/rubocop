@@ -41,19 +41,20 @@ module RuboCop
         def reference!(node)
           reference = Reference.new(node, @scope)
           @references << reference
-          consumed_branch_ids = Set.new
+          consumed_branches = Set.new
 
           @assignments.reverse_each do |assignment|
-            next if consumed_branch_ids.include?(assignment.branch_id)
+            next if consumed_branches.include?(assignment.branch)
 
             unless assignment.run_exclusively_with?(reference)
               assignment.reference!
             end
 
-            break unless assignment.inside_of_branch?
-            break if assignment.branch_id == reference.branch_id
-            next if assignment.reference_penetrable?
-            consumed_branch_ids << assignment.branch_id
+            break if !assignment.branch || assignment.branch == reference.branch
+
+            unless assignment.branch.may_run_incompletely?
+              consumed_branches << assignment.branch
+            end
           end
         end
 

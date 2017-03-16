@@ -5,10 +5,9 @@ module RuboCop
     class VariableForce
       # This class represents each assignment of a variable.
       class Assignment
-        include Locatable
+        include Branchable
 
         MULTIPLE_LEFT_HAND_SIDE_TYPE = :mlhs
-        REFERENCE_PENETRABLE_BRANCH_TYPES = %w(rescue_main ensure_main).freeze
 
         attr_reader :node, :variable, :referenced
         alias referenced? referenced
@@ -23,8 +22,6 @@ module RuboCop
           @node = node
           @variable = variable
           @referenced = false
-
-          super
         end
 
         def name
@@ -41,10 +38,6 @@ module RuboCop
 
         def used?
           @variable.captured_by_block? || @referenced
-        end
-
-        def reference_penetrable?
-          REFERENCE_PENETRABLE_BRANCH_TYPES.include?(branch_type)
         end
 
         def regexp_named_capture?
