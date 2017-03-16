@@ -5,7 +5,7 @@ module RuboCop
     class VariableForce
       # This class represents each reference of a variable.
       class Reference
-        include Locatable
+        include Branchable
 
         VARIABLE_REFERENCE_TYPES = (
           [VARIABLE_REFERENCE_TYPE] +
@@ -24,8 +24,6 @@ module RuboCop
 
           @node = node
           @scope = scope
-
-          super
         end
 
         # There's an implicit variable reference by the zero-arity `super`:
