@@ -3,36 +3,66 @@
 describe RuboCop::Cop::Security::JSONLoad, :config do
   subject(:cop) { described_class.new(config) }
 
-  it 'accepts JSON.parse' do
-    inspect_source(cop, 'JSON.parse("{}")')
-    expect(cop.offenses).to be_empty
+  before do
+    inspect_source(cop, source)
   end
 
-  it 'accepts Module::JSON.parse' do
-    inspect_source(cop, 'Module::JSON.parse("{}")')
-    expect(cop.offenses).to be_empty
-  end
+  shared_examples 'code with offense' do |code, message, expected|
+    context "when checking #{code}" do
+      let(:source) { code }
 
-  it 'accepts JSON.dump' do
-    inspect_source(cop, 'JSON.dump({})')
-    expect(cop.offenses).to be_empty
-  end
+      it 'registers an offense' do
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.offenses.first.message).to eq(message)
+      end
 
-  it 'accepts Module::JSON.dump' do
-    inspect_source(cop, 'Module::JSON.load({})')
-    expect(cop.offenses).to be_empty
-  end
-
-  [:load, :restore].each do |method|
-    it "registers an offense for JSON.#{method}" do
-      inspect_source(cop, "JSON.#{method}('{}')")
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.first.message).to include("JSON.#{method}")
-    end
-
-    it "autocorrects '.#{method}' to '.parse'" do
-      corrected = autocorrect_source(cop, "JSON.#{method}('{}')")
-      expect(corrected).to eq("JSON.parse('{}')")
+      it 'auto-corrects' do
+        expect(autocorrect_source(cop, code)).to eq expected
+      end
     end
   end
+
+  shared_examples 'code without offense' do |code|
+    context "when checking #{code}" do
+      let(:source) { code }
+
+      it 'does not register any offense' do
+        expect(cop.offenses).to be_empty
+      end
+    end
+  end
+
+  shared_examples 'accepted method' do |method|
+    include_examples 'code without offense',
+                     "JSON.#{method}(arg)"
+
+    include_examples 'code without offense',
+                     "::JSON.#{method}(arg)"
+
+    include_examples 'code without offense',
+                     "Module::JSON.#{method}(arg)"
+  end
+
+  shared_examples 'offensive method' do |method|
+    include_examples 'code with offense',
+                     "JSON.#{method}(arg)",
+                     "Prefer `JSON.parse` over `JSON.#{method}`.",
+                     'JSON.parse(arg)'
+
+    include_examples 'code with offense',
+                     "::JSON.#{method}(arg)",
+                     "Prefer `JSON.parse` over `JSON.#{method}`.",
+                     '::JSON.parse(arg)'
+
+    include_examples 'code without offense',
+                     "Module::JSON.#{method}(arg)"
+  end
+
+  include_examples 'accepted method', :parse
+
+  include_examples 'accepted method', :dump
+
+  include_examples 'offensive method', :load
+
+  include_examples 'offensive method', :restore
 end

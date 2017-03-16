@@ -62,6 +62,7 @@
 * [#4109](https://github.com/bbatsov/rubocop/issues/4109): Fix incorrect auto correction in `Style/SelfAssignment` cop. ([@pocke][])
 * [#4110](https://github.com/bbatsov/rubocop/issues/4110): Fix incorrect auto correction in `Style/BracesAroundHashParameters` cop. ([@musialik][])
 * [#4084](https://github.com/bbatsov/rubocop/issues/4084): Fix incorrect auto correction in `Style/TernaryParentheses` cop. ([@musialik][])
+* [#4102](https://github.com/bbatsov/rubocop/issues/4102): Fix `Security/JSONLoad`, `Security/MarshalLoad` and `Security/YAMLLoad` cops patterns not matching ::Const. ([@musialik][])
 
 ## 0.47.1 (2017-01-18)
 
