@@ -26,6 +26,8 @@ RSpec.configure do |config|
   config.filter_run :focus
   config.run_all_when_everything_filtered = true
 
+  config.example_status_persistence_file_path = 'spec/examples.txt'
+
   config.order = :random
   Kernel.srand config.seed
 
