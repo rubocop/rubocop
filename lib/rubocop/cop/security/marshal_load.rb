@@ -22,8 +22,8 @@ module RuboCop
         MSG = 'Avoid using `Marshal.%s`.'.freeze
 
         def_node_matcher :marshal_load, <<-END
-          (send (const nil :Marshal) ${:load :restore}
-          !(send (const nil :Marshal) :dump ...))
+          (send (const {nil cbase} :Marshal) ${:load :restore}
+          !(send (const {nil cbase} :Marshal) :dump ...))
         END
 
         def on_send(node)

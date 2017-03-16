@@ -19,7 +19,7 @@ module RuboCop
         MSG = 'Prefer using `YAML.safe_load` over `YAML.load`.'.freeze
 
         def_node_matcher :yaml_load, <<-END
-          (send (const nil :YAML) :load ...)
+          (send (const {nil cbase} :YAML) :load ...)
         END
 
         def on_send(node)
