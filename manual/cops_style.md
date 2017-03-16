@@ -3484,15 +3484,15 @@ that span more than one line.
 
 ```ruby
 # bad
-while a
+while myvariable
 .b
-  something
+  # do something
 end
 
 # good, EnforcedStyle: aligned
-while a
+while myvariable
       .b
-  something
+  # do something
 end
 
 # good, EnforcedStyle: aligned
@@ -3500,11 +3500,29 @@ Thing.a
      .b
      .c
 
-# good, EnforcedStyle: indented
-while a
-    .b
-  something
+# good, EnforcedStyle:    indented,
+        IndentationWidth: 2
+while myvariable
+  .b
+
+  # do something
 end
+
+# good, EnforcedStyle:    indented_relative_to_receiver,
+        IndentationWidth: 2
+while myvariable
+        .a
+        .b
+
+  # do something
+end
+
+# good, EnforcedStyle:    indented_relative_to_receiver,
+        IndentationWidth: 2
+myvariable = Thing
+               .a
+               .b
+               .c
 ```
 
 ### Important attributes
