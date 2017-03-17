@@ -3,14 +3,47 @@
 module RuboCop
   module Cop
     module Style
-      # This cops checks for indentation that doesn't use two spaces.
+      # This cops checks for indentation that doesn't use the specified number
+      # of spaces.
+      #
+      # See also the IndentationConsistency cop which is the companion to this
+      # one.
       #
       # @example
-      #
+      #   # bad, Width: 2
       #   class A
       #    def test
       #     puts 'hello'
       #    end
+      #   end
+      #
+      #   # bad, Width: 2,
+      #          IgnoredPatterns:
+      #            - '^\s*module'
+      #   module A
+      #   class B
+      #     def test
+      #     puts 'hello'
+      #     end
+      #   end
+      #   end
+      #
+      #   # good, Width: 2
+      #   class A
+      #     def test
+      #       puts 'hello'
+      #     end
+      #   end
+      #
+      #   # good, Width: 2,
+      #           IgnoredPatterns:
+      #             - '^\s*module'
+      #   module A
+      #   class B
+      #     def test
+      #       puts 'hello'
+      #     end
+      #   end
       #   end
       class IndentationWidth < Cop
         include EndKeywordAlignment
@@ -18,6 +51,7 @@ module RuboCop
         include OnMethodDef
         include CheckAssignment
         include AccessModifierNode
+        include IgnoredPattern
 
         SPECIAL_MODIFIERS = %w(private protected).freeze
 
@@ -223,17 +257,7 @@ module RuboCop
         end
 
         def indentation_to_check?(base_loc, body_node)
-          return false unless body_node
-
-          # Don't check if expression is on same line as "then" keyword, etc.
-          return false if body_node.loc.line == base_loc.line
-
-          return false if starts_with_access_modifier?(body_node)
-
-          # Don't check indentation if the line doesn't start with the body.
-          # For example, lines like "else do_something".
-          first_char_pos_on_line = body_node.source_range.source_line =~ /\S/
-          return false unless body_node.loc.column == first_char_pos_on_line
+          return false if skip_check?(base_loc, body_node)
 
           if %i(rescue ensure).include?(body_node.type)
             block_body, = *body_node
@@ -241,6 +265,21 @@ module RuboCop
           end
 
           true
+        end
+
+        def skip_check?(base_loc, body_node)
+          return true if ignored_line?(base_loc)
+          return true unless body_node
+
+          # Don't check if expression is on same line as "then" keyword, etc.
+          return true if body_node.loc.line == base_loc.line
+
+          return true if starts_with_access_modifier?(body_node)
+
+          # Don't check indentation if the line doesn't start with the body.
+          # For example, lines like "else do_something".
+          first_char_pos_on_line = body_node.source_range.source_line =~ /\S/
+          return true unless body_node.loc.column == first_char_pos_on_line
         end
 
         def offending_range(body_node, indentation)

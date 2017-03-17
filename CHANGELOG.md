@@ -40,6 +40,7 @@
 * [#4081](https://github.com/bbatsov/rubocop/pull/4081): Allow `Marshal.load` if argument is a `Marshal.dump` in `Security/MarshalLoad` cop. ([@droptheplot][])
 * [#4124](https://github.com/bbatsov/rubocop/issues/4124): Make `Style/SymbolArray` cop to enable by default. ([@pocke][])
 * [#3331](https://github.com/bbatsov/rubocop/issues/3331): Change `Style/MultilineMethodCallIndentation` `indented_relative_to_receiver` to indent relative to the reciever and not relative to the caller. ([@jfelchner][])
+* [#4137](https://github.com/bbatsov/rubocop/pull/4137): Allow lines to be exempted from `IndentationWidth` by regex. ([@jfelchner][])
 
 ### Bug fixes
 
