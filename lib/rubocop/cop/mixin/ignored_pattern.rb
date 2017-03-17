@@ -6,6 +6,12 @@ module RuboCop
     # parsing.
     module IgnoredPattern
       def ignored_line?(line)
+        line = if line.respond_to?(:source_line)
+                 line.source_line
+               elsif line.respond_to?(:node)
+                 line.node.source_range.source_line
+               end
+
         matches_ignored_pattern?(line)
       end
 

@@ -651,6 +651,7 @@ Style/IndentationConsistency:
 Style/IndentationWidth:
   # Number of spaces for each indentation level.
   Width: 2
+  IgnoredPatterns: []
 
 # Checks the indentation of the first element in an array literal.
 Style/IndentArray:

@@ -31,6 +31,32 @@ describe RuboCop::Cop::Style::IndentationWidth do
       end
     end
 
+    context 'with ignored patterns set' do
+      let(:cop_config) do
+        {
+          'Width' => 4,
+          'IgnoredPatterns' => ['^\s*module', '^\s*(els)?if.*[A-Z][a-z]+']
+        }
+      end
+
+      it 'accepts unindented lines for those keywords' do
+        inspect_source(cop, ['module Foo',
+                             'class Test',
+                             '    if blah',
+                             '        if blah == Apple',
+                             'puts "sweet"',
+                             '        elsif blah == Lemon',
+                             'puts "sour"',
+                             '        elsif blah == popcorn',
+                             '            puts "salty"',
+                             '        end',
+                             '    end',
+                             'end',
+                             'end'])
+        expect(cop.offenses).to be_empty
+      end
+    end
+
     context 'with if statement' do
       it 'registers an offense for bad indentation of an if body' do
         inspect_source(cop,
