@@ -12,6 +12,7 @@ module RuboCop
       class SymbolArray < Cop
         include ConfigurableEnforcedStyle
         include ArraySyntax
+        include PercentLiteral
         extend TargetRubyVersion
 
         minimum_target_ruby_version 2.0
@@ -59,32 +60,19 @@ module RuboCop
         end
 
         def autocorrect(node)
-          syms = node.children.map { |c| c.children[0].to_s }
-          corrected = if style == :percent
-                        percent_replacement(syms)
-                      else
-                        bracket_replacement(syms)
-                      end
+          if style == :percent
+            correct_percent(node, 'i')
+          else
+            correct_bracketed(node)
+          end
+        end
+
+        def correct_bracketed(node)
+          syms = node.children.map { |c| to_symbol_literal(c.children[0].to_s) }
 
           lambda do |corrector|
-            corrector.replace(node.source_range, corrected)
+            corrector.replace(node.source_range, "[#{syms.join(', ')}]")
           end
-        end
-
-        def percent_replacement(syms)
-          escape = syms.any? { |s| needs_escaping?(s) }
-          syms = syms.map { |s| escape_string(s) } if escape
-          syms = syms.map { |s| s.gsub(/\)/, '\\)') }
-          if escape
-            "%I(#{syms.join(' ')})"
-          else
-            "%i(#{syms.join(' ')})"
-          end
-        end
-
-        def bracket_replacement(syms)
-          syms = syms.map { |s| to_symbol_literal(s) }
-          "[#{syms.join(', ')}]"
         end
       end
     end
