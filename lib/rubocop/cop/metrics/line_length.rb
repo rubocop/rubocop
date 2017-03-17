@@ -9,6 +9,7 @@ module RuboCop
       # The maximum length is configurable.
       class LineLength < Cop
         include ConfigurableMax
+        include IgnoredPattern
 
         MSG = 'Line is too long. [%d/%d]'.freeze
 
@@ -84,14 +85,6 @@ module RuboCop
             range.cover?(line_number) &&
               (allowed_heredoc == true || allowed_heredoc.include?(delimiter))
           end
-        end
-
-        def matches_ignored_pattern?(line)
-          ignored_patterns.any? { |pattern| Regexp.new(pattern).match(line) }
-        end
-
-        def ignored_patterns
-          cop_config['IgnoredPatterns'] || []
         end
 
         def allow_uri?
