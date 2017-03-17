@@ -17,6 +17,11 @@ describe RuboCop::Cop::Style::SymbolArray, :config do
       expect(new_source).to eq('%i(one two three)')
     end
 
+    it 'autocorrects arrays of symbols with new line' do
+      new_source = autocorrect_source(cop, "[:one,\n:two, :three,\n:four]")
+      expect(new_source).to eq("%i(one \ntwo three \nfour)")
+    end
+
     it 'uses %I when appropriate' do
       new_source = autocorrect_source(cop, '[:"\\t", :"\\n", :three]')
       expect(new_source).to eq('%I(\\t \\n three)')
