@@ -2361,8 +2361,8 @@ end
 # good
 value =
   if foo
-  'bar'
-end
+    'bar'
+  end
 ```
 
 ### Important attributes
