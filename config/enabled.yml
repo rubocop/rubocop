@@ -892,6 +892,11 @@ Style/StructInheritance:
   StyleGuide: '#no-extend-struct-new'
   Enabled: true
 
+Style/SymbolArray:
+  Description: 'Use %i or %I for arrays of symbols.'
+  StyleGuide: '#percent-i'
+  Enabled: true
+
 Style/SymbolLiteral:
   Description: 'Use plain symbols instead of string symbols when possible.'
   Enabled: true

@@ -36,6 +36,7 @@
 * [#4020](https://github.com/bbatsov/rubocop/pull/4020): Fixed `new_cop.rake` suggested path. ([@dabroz][])
 * [#4055](https://github.com/bbatsov/rubocop/pull/4055): Add parameters count to offense message for `Metrics/ParameterLists` cop. ([@pocke][])
 * [#4081](https://github.com/bbatsov/rubocop/pull/4081): Allow `Marshal.load` if argument is a `Marshal.dump` in `Security/MarshalLoad` cop. ([@droptheplot][])
+* [#4124](https://github.com/bbatsov/rubocop/issues/4124): Make `Style/SymbolArray` cop to enable by default. ([@pocke][])
 
 ### Bug fixes
 
@@ -64,6 +65,7 @@
 * [#4084](https://github.com/bbatsov/rubocop/issues/4084): Fix incorrect auto correction in `Style/TernaryParentheses` cop. ([@musialik][])
 * [#4102](https://github.com/bbatsov/rubocop/issues/4102): Fix `Security/JSONLoad`, `Security/MarshalLoad` and `Security/YAMLLoad` cops patterns not matching ::Const. ([@musialik][])
 * [#3580](https://github.com/bbatsov/rubocop/issues/3580): Handle combinations of `# rubocop:disable all` and `# rubocop:disable SomeCop`. ([@jonas054][])
+* [#4124](https://github.com/bbatsov/rubocop/issues/4124): Fix auto correction bugs in `Style/SymbolArray` cop. ([@pocke][])
 
 ## 0.47.1 (2017-01-18)
 
