@@ -82,7 +82,7 @@ module RuboCop
         end
 
         def method_argument?
-          argument? && [:def, :defs].include?(@scope.node.type)
+          argument? && %i(def defs).include?(@scope.node.type)
         end
 
         def block_argument?
@@ -90,7 +90,7 @@ module RuboCop
         end
 
         def keyword_argument?
-          [:kwarg, :kwoptarg].include?(@declaration_node.type)
+          %i(kwarg kwoptarg).include?(@declaration_node.type)
         end
 
         def explicit_block_local_variable?

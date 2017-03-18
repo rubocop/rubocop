@@ -26,7 +26,7 @@ module RuboCop
         def replacement(node)
           return to_ternary(node) unless node.parent
 
-          if [:and, :or].include?(node.parent.type)
+          if %i(and or).include?(node.parent.type)
             return "(#{to_ternary(node)})"
           end
 
@@ -48,7 +48,7 @@ module RuboCop
         end
 
         def requires_parentheses?(node)
-          return true if [:and, :or, :if].include?(node.type)
+          return true if %i(and or if).include?(node.type)
           return true if node.assignment?
           return true if method_call_with_changed_precedence?(node)
 

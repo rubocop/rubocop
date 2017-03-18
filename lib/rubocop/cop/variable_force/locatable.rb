@@ -6,10 +6,10 @@ module RuboCop
       # This module provides a way to locate the conditional branch the node is
       # in. This is intended to be used as mix-in.
       module Locatable
-        BRANCH_TYPES = [:if, :case].freeze
+        BRANCH_TYPES = %i(if case).freeze
         CONDITION_INDEX_OF_BRANCH_NODE = 0
 
-        LOGICAL_OPERATOR_TYPES = [:and, :or].freeze
+        LOGICAL_OPERATOR_TYPES = %i(and or).freeze
         LEFT_SIDE_INDEX_OF_LOGICAL_OPERATOR_NODE = 0
 
         ENSURE_TYPE = :ensure

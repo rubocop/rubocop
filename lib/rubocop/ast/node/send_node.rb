@@ -6,7 +6,7 @@ module RuboCop
     # node when the builder constructs the AST, making its methods available
     # to all `send` nodes within RuboCop.
     class SendNode < Node
-      MACRO_PARENT_NODES = [:class, :module].freeze
+      MACRO_PARENT_NODES = %i(class module).freeze
 
       # The receiving node of the method invocation.
       #

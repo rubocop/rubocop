@@ -95,7 +95,7 @@ module RuboCop
 
         def looks_like_trivial_writer?(args, body)
           args.children.one? &&
-            ![:restarg, :blockarg].include?(args.children[0].type) &&
+            !%i(restarg blockarg).include?(args.children[0].type) &&
             body && body.ivasgn_type? &&
             body.children[1] && body.children[1].lvar_type?
         end

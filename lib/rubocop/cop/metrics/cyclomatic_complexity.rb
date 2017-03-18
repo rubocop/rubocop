@@ -17,8 +17,8 @@ module RuboCop
         include MethodComplexity
 
         MSG = 'Cyclomatic complexity for %s is too high. [%d/%d]'.freeze
-        COUNTED_NODES = [:if, :while, :until, :for,
-                         :rescue, :when, :and, :or].freeze
+        COUNTED_NODES = %i(if while until for
+                           rescue when and or).freeze
 
         private
 

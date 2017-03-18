@@ -14,7 +14,7 @@ module RuboCop
       #   x += 1
       class SelfAssignment < Cop
         MSG = 'Use self-assignment shorthand `%s=`.'.freeze
-        OPS = [:+, :-, :*, :**, :/, :|, :&].freeze
+        OPS = %i(+ - * ** / | &).freeze
 
         def on_lvasgn(node)
           check(node, :lvar)
@@ -36,7 +36,7 @@ module RuboCop
 
           if rhs.send_type?
             check_send_node(node, rhs, var_name, var_type)
-          elsif [:and, :or].include?(rhs.type)
+          elsif %i(and or).include?(rhs.type)
             check_boolean_node(node, rhs, var_name, var_type)
           end
         end
@@ -66,7 +66,7 @@ module RuboCop
 
           if rhs.send_type?
             autocorrect_send_node(node, rhs)
-          elsif [:and, :or].include?(rhs.type)
+          elsif %i(and or).include?(rhs.type)
             autocorrect_boolean_node(node, rhs)
           end
         end

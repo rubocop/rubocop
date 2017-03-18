@@ -24,7 +24,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          return if [:kwarg, :kwoptarg].include?(node.type)
+          return if %i(kwarg kwoptarg).include?(node.type)
 
           if node.blockarg_type?
             lambda do |corrector|

@@ -15,7 +15,7 @@ module RuboCop
         MSG = 'Do not use parentheses for method calls with ' \
               'no arguments.'.freeze
 
-        ASGN_NODES = [:lvasgn, :masgn] + SHORTHAND_ASGN_NODES
+        ASGN_NODES = %i(lvasgn masgn) + SHORTHAND_ASGN_NODES
 
         def on_send(node)
           return if node.camel_case_method?

@@ -91,7 +91,7 @@ module RuboCop
           return nil if node.nil?
           name = namespace.pop
 
-          on_node([:class, :module, :casgn], node) do |child|
+          on_node(%i(class module casgn), node) do |child|
             next unless (const = child.defined_module)
 
             const_namespace, const_name = *const
