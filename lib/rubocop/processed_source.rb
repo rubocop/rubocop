@@ -70,7 +70,7 @@ module RuboCop
 
     def valid_syntax?
       return false if @parser_error
-      @diagnostics.none? { |d| [:error, :fatal].include?(d.level) }
+      @diagnostics.none? { |d| %i(error fatal).include?(d.level) }
     end
 
     # Raw source checksum for tracking infinite loops.

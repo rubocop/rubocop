@@ -224,7 +224,7 @@ describe RuboCop::CLI, :isolated_environment do
     expect(IO.read('example.rb')).to eq(corrected.join("\n"))
   end
 
-  [:line_count_based, :semantic, :braces_for_chaining].each do |style|
+  %i(line_count_based semantic braces_for_chaining).each do |style|
     context "when BlockDelimiters has #{style} style" do
       it 'corrects SpaceBeforeBlockBraces, SpaceInsideBlockBraces offenses' do
         source = ['r = foo.map{|a|',

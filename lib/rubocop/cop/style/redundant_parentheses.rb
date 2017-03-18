@@ -16,7 +16,7 @@ module RuboCop
       class RedundantParentheses < Cop
         include Parentheses
 
-        ALLOWED_LITERALS = [:irange, :erange].freeze
+        ALLOWED_LITERALS = %i(irange erange).freeze
 
         def_node_matcher :square_brackets?,
                          '(send {(send _recv _msg) str array hash} :[] ...)'

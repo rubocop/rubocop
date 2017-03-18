@@ -7,8 +7,8 @@ module RuboCop
       include Comparable
 
       # @api private
-      COMPARISON_ATTRIBUTES = [:line, :column, :cop_name,
-                               :message, :severity].freeze
+      COMPARISON_ATTRIBUTES = %i(line column cop_name
+                                 message severity).freeze
 
       # @api public
       #

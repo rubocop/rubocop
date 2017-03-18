@@ -42,7 +42,7 @@ describe RuboCop::Cop::Offense do
     expect(offense).to be_frozen
   end
 
-  [:severity, :location, :message, :cop_name].each do |a|
+  %i(severity location message cop_name).each do |a|
     describe "##{a}" do
       it 'is frozen' do
         expect(offense.send(a)).to be_frozen

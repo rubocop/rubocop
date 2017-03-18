@@ -8,7 +8,7 @@ module RuboCop
 
       FROZEN_STRING_LITERAL = '# frozen_string_literal:'.freeze
       FROZEN_STRING_LITERAL_ENABLED = '# frozen_string_literal: true'.freeze
-      FROZEN_STRING_LITERAL_TYPES = [:str, :dstr].freeze
+      FROZEN_STRING_LITERAL_TYPES = %i(str dstr).freeze
 
       def frozen_string_literal_comment_exists?
         leading_comment_lines.any? do |line|

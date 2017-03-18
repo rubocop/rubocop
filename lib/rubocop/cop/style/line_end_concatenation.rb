@@ -22,11 +22,11 @@ module RuboCop
       class LineEndConcatenation < Cop
         MSG = 'Use `\\` instead of `+` or `<<` to concatenate ' \
               'those strings.'.freeze
-        CONCAT_TOKEN_TYPES = [:tPLUS, :tLSHFT].freeze
+        CONCAT_TOKEN_TYPES = %i(tPLUS tLSHFT).freeze
         SIMPLE_STRING_TOKEN_TYPE = :tSTRING
-        COMPLEX_STRING_EDGE_TOKEN_TYPES = [:tSTRING_BEG, :tSTRING_END].freeze
-        HIGH_PRECEDENCE_OP_TOKEN_TYPES = [:tSTAR2, :tPERCENT, :tDOT,
-                                          :tLBRACK2].freeze
+        COMPLEX_STRING_EDGE_TOKEN_TYPES = %i(tSTRING_BEG tSTRING_END).freeze
+        HIGH_PRECEDENCE_OP_TOKEN_TYPES = %i(tSTAR2 tPERCENT tDOT
+                                            tLBRACK2).freeze
         QUOTE_DELIMITERS = %w(' ").freeze
 
         def investigate(processed_source)

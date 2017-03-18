@@ -95,16 +95,16 @@ module RuboCop
         end
       end
 
-      [
-        :black,
-        :red,
-        :green,
-        :yellow,
-        :blue,
-        :magenta,
-        :cyan,
-        :white
-      ].each do |color|
+      %i(
+        black
+        red
+        green
+        yellow
+        blue
+        magenta
+        cyan
+        white
+      ).each do |color|
         describe "##{color}" do
           it "invokes #colorize(string, #{color}" do
             expect(formatter).to receive(:colorize).with('foo', color)

@@ -18,7 +18,7 @@ module RuboCop
       #   "result is 10"
       class LiteralInInterpolation < Cop
         MSG = 'Literal interpolation detected.'.freeze
-        COMPOSITE = [:array, :hash, :pair, :irange, :erange].freeze
+        COMPOSITE = %i(array hash pair irange erange).freeze
 
         def on_dstr(node)
           node.each_child_node(:begin) do |begin_node|

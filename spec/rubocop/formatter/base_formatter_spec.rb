@@ -35,7 +35,7 @@ module RuboCop
         describe 'invocation order' do
           subject(:formatter) do
             formatter = double('formatter')
-            [:started, :file_started, :file_finished, :finished, :output]
+            %i(started file_started file_finished finished output)
               .each do |message|
               allow(formatter).to receive(message) do
                 puts message.to_s unless message == :output

@@ -32,7 +32,7 @@ module RuboCop
           if ancestor.block_type?
             return true if ancestor.class_constructor?
           elsif !ancestor.begin_type?
-            return [:casgn, :sclass, :class, :module].include?(ancestor.type)
+            return %i(casgn sclass class module).include?(ancestor.type)
           end
         end
       end

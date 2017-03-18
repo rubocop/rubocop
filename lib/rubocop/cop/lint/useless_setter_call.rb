@@ -28,7 +28,7 @@ module RuboCop
         include OnMethodDef
 
         MSG = 'Useless setter call to local variable `%s`.'.freeze
-        ASSIGNMENT_TYPES = [:lvasgn, :ivasgn, :cvasgn, :gvasgn].freeze
+        ASSIGNMENT_TYPES = %i(lvasgn ivasgn cvasgn gvasgn).freeze
 
         private
 

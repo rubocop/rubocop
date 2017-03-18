@@ -6,7 +6,7 @@ require 'shellwords'
 module RuboCop
   # This class handles command line options.
   class Options
-    EXITING_OPTIONS = [:version, :verbose_version, :show_cops].freeze
+    EXITING_OPTIONS = %i(version verbose_version show_cops).freeze
     DEFAULT_MAXIMUM_EXCLUSION_ITEMS = 15
 
     def initialize

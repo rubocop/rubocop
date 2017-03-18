@@ -16,37 +16,37 @@ module RuboCop
 
         MSG = 'Prefer `%s` over `%s`.'.freeze
 
-        FILTER_METHODS = [
-          :after_filter,
-          :append_after_filter,
-          :append_around_filter,
-          :append_before_filter,
-          :around_filter,
-          :before_filter,
-          :prepend_after_filter,
-          :prepend_around_filter,
-          :prepend_before_filter,
-          :skip_after_filter,
-          :skip_around_filter,
-          :skip_before_filter,
-          :skip_filter
-        ].freeze
+        FILTER_METHODS = %i(
+          after_filter
+          append_after_filter
+          append_around_filter
+          append_before_filter
+          around_filter
+          before_filter
+          prepend_after_filter
+          prepend_around_filter
+          prepend_before_filter
+          skip_after_filter
+          skip_around_filter
+          skip_before_filter
+          skip_filter
+        ).freeze
 
-        ACTION_METHODS = [
-          :after_action,
-          :append_after_action,
-          :append_around_action,
-          :append_before_action,
-          :around_action,
-          :before_action,
-          :prepend_after_action,
-          :prepend_around_action,
-          :prepend_before_action,
-          :skip_after_action,
-          :skip_around_action,
-          :skip_before_action,
-          :skip_action_callback
-        ].freeze
+        ACTION_METHODS = %i(
+          after_action
+          append_after_action
+          append_around_action
+          append_before_action
+          around_action
+          before_action
+          prepend_after_action
+          prepend_around_action
+          prepend_before_action
+          skip_after_action
+          skip_around_action
+          skip_before_action
+          skip_action_callback
+        ).freeze
 
         minimum_target_rails_version 4.0
 
