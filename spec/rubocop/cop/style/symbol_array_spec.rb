@@ -75,8 +75,8 @@ describe RuboCop::Cop::Style::SymbolArray, :config do
     end
 
     it 'autocorrects an array starting with %i' do
-      new_source = autocorrect_source(cop, '%i(one two three)')
-      expect(new_source).to eq('[:one, :two, :three]')
+      new_source = autocorrect_source(cop, '%i(one @two $three four-five)')
+      expect(new_source).to eq("[:one, :@two, :$three, :'four-five']")
     end
   end
 end
