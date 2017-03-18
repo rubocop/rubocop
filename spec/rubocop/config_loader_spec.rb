@@ -597,45 +597,6 @@ describe RuboCop::ConfigLoader do
     end
   end
 
-  describe 'configuration for SymbolArray', :isolated_environment do
-    let(:config) do
-      config_path = described_class.configuration_file_for('.')
-      described_class.configuration_from_file(config_path)
-    end
-
-    context 'when no config file exists for the target file' do
-      it 'is disabled' do
-        expect(
-          config.cop_enabled?(RuboCop::Cop::Style::SymbolArray)
-        ).to be_falsey
-      end
-    end
-
-    context 'when a config file which does not mention SymbolArray exists' do
-      it 'is disabled' do
-        create_file('.rubocop.yml', [
-                      'Metrics/LineLength:',
-                      '  Max: 80'
-                    ])
-        expect(
-          config.cop_enabled?(RuboCop::Cop::Style::SymbolArray)
-        ).to be_falsey
-      end
-    end
-
-    context 'when a config file which explicitly enables SymbolArray exists' do
-      it 'is enabled' do
-        create_file('.rubocop.yml', [
-                      'Style/SymbolArray:',
-                      '  Enabled: true'
-                    ])
-        expect(
-          config.cop_enabled?(RuboCop::Cop::Style::SymbolArray)
-        ).to be_truthy
-      end
-    end
-  end
-
   describe 'configuration for CharacterLiteral', :isolated_environment do
     let(:dir_path) { 'test/blargh' }
 

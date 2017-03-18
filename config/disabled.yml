@@ -114,11 +114,6 @@ Style/StringMethods:
   Description: 'Checks if configured preferred methods are used over non-preferred.'
   Enabled: false
 
-Style/SymbolArray:
-  Description: 'Use %i or %I for arrays of symbols.'
-  StyleGuide: '#percent-i'
-  Enabled: false
-
 Style/SingleLineBlockParams:
   Description: 'Enforces the names of some block params.'
   Enabled: false
