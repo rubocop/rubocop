@@ -42,7 +42,8 @@ module RuboCop
            (send (const nil :Pry) :rescue ...)
            (send nil {:save_and_open_page
                       :save_and_open_screenshot
-                      :save_screenshot} ...)}
+                      :save_screenshot} ...)
+           (send nil {:focus})}
         END
 
         def_node_matcher :binding_irb_call?, <<-END
