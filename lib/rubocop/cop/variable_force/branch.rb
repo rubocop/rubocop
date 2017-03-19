@@ -11,12 +11,14 @@ module RuboCop
             return nil unless scope.include?(node)
             klass = CLASSES_BY_TYPE[node.parent.type]
             next unless klass
-            branch = klass.new(node)
+            branch = klass.new(node, scope)
             return branch if branch.branched?
           end
 
           nil
         end
+
+        # rubocop:disable Metrics/BlockLength
 
         # Abstract base class for branch classes.
         # A branch represents a conditional branch in a scope.
@@ -37,7 +39,9 @@ module RuboCop
         #
         #     do_something     # no branch
         #   end
-        Base = Struct.new(:child_node) do # rubocop:disable Metrics/BlockLength
+        Base = Struct.new(:child_node, :scope) do
+          # rubocop:enable Metrics/BlockLength
+
           def self.classes
             @classes ||= []
           end
@@ -68,6 +72,21 @@ module RuboCop
             child_node.parent
           end
 
+          def parent
+            return @parent if instance_variable_defined?(:@parent)
+            @branch = Branch.of(control_node, scope: scope)
+          end
+
+          def each_ancestor(include_self: false, &block)
+            unless block_given?
+              return to_enum(__method__, include_self: include_self)
+            end
+
+            yield self if include_self
+            scan_ancestors(&block)
+            self
+          end
+
           def branched?
             !always_run?
           end
@@ -86,10 +105,19 @@ module RuboCop
 
           def exclusive_with?(other)
             return false unless other
-            return false unless control_node.equal?(other.control_node)
-            return false if child_node.equal?(other.child_node)
             return false if may_jump_to_other_branch?
-            true
+
+            other.each_ancestor(include_self: true) do |other_ancestor|
+              if control_node.equal?(other_ancestor.control_node)
+                return !child_node.equal?(other_ancestor.child_node)
+              end
+            end
+
+            if parent
+              parent.exclusive_with?(other)
+            else
+              false
+            end
           end
 
           def ==(other)
@@ -102,6 +130,16 @@ module RuboCop
 
           def hash
             control_node.object_id.hash ^ child_node.object_id.hash
+          end
+
+          private
+
+          def scan_ancestors
+            branch = self
+
+            while (branch = branch.parent)
+              yield branch
+            end
           end
         end
 

@@ -846,7 +846,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    pending 'registers an offense for the reassignment in the if branch' do
+    it 'registers an offense for the reassignment in the if branch' do
       inspect_source(cop, source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.message)
@@ -877,7 +877,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    pending 'registers an offense for the reassignment in the if branch' do
+    it 'registers an offense for the reassignment in the if branch' do
       inspect_source(cop, source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.message)
@@ -885,6 +885,25 @@ describe RuboCop::Cop::Lint::UselessAssignment do
       expect(cop.offenses.first.line).to eq(6)
       expect(cop.highlights).to eq(['foo'])
     end
+  end
+
+  context 'when an assignment in a if branch is referenced ' \
+          'in another if branch' do
+    let(:source) do
+      [
+        'def some_method(flag_a, flag_b)',
+        '  if flag_a',
+        '    foo = 1',
+        '  end',
+        '',
+        '  if flag_b',
+        '    puts foo',
+        '  end',
+        'end'
+      ]
+    end
+
+    include_examples 'accepts'
   end
 
   context 'when a variable is assigned in branch of modifier if ' \
