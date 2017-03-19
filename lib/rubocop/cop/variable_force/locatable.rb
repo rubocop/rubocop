@@ -166,7 +166,7 @@ module RuboCop
 
         def ancestor_nodes_in_scope
           node.each_ancestor.take_while do |ancestor_node|
-            !ancestor_node.equal?(scope.node)
+            scope.include?(ancestor_node)
           end
         end
 
