@@ -3648,7 +3648,35 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 Checks for uses of if with a negated condition. Only ifs
-without else are considered.
+without else are considered. There are three different styles:
+
+both - enforces `unless` for `prefix` and `postfix` conditionals
+  unless foo
+    bar
+  end
+
+  bar unless foo
+
+prefix - enforces `unless` for just `prefix` conditionals
+  unless foo
+    bar
+  end
+
+  bar if !foo
+
+postfix - enforces `unless` for just `postfix` conditionals
+  if !foo
+    bar
+  end
+
+  bar unless foo
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+EnforcedStyle | both
+SupportedStyles | both, prefix, postfix
 
 ### References
 
