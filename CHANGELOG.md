@@ -74,6 +74,7 @@
 * [#4124](https://github.com/bbatsov/rubocop/issues/4124): Fix auto correction bugs in `Style/SymbolArray` cop. ([@pocke][])
 * [#4128](https://github.com/bbatsov/rubocop/issues/4128): Prevent `Style/CaseIndentation` cop from registering offenses on single-line case statements. ([@drenmi][])
 * [#4143](https://github.com/bbatsov/rubocop/issues/4143): Prevent `Style/IdenticalConditionalBranches` from registering offenses when a case statement has an empty when. ([@dpostorivo][])
+* [#4160](https://github.com/bbatsov/rubocop/pull/4160): Fix a regression where `UselessAssignment` cop may not properly detect useless assignments when there's only a single conditional expression in the top level scope. ([@yujinakayama][])
 
 ## 0.47.1 (2017-01-18)
 

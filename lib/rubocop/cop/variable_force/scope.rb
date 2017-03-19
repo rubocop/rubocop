@@ -15,14 +15,18 @@ module RuboCop
           block:  0..0
         }.freeze
 
-        attr_reader :node, :variables
+        attr_reader :node, :variables, :naked_top_level
+        alias naked_top_level? naked_top_level
 
         def initialize(node)
-          # Accept any node type for top level scope
-          unless SCOPE_TYPES.include?(node.type) || !node.parent
-            raise ArgumentError,
-                  "Node type must be any of #{SCOPE_TYPES}, " \
-                  "passed #{node.type}"
+          unless SCOPE_TYPES.include?(node.type)
+            # Accept any node type for top level scope
+            if node.parent
+              raise ArgumentError,
+                    "Node type must be any of #{SCOPE_TYPES}, " \
+                    "passed #{node.type}"
+            end
+            @naked_top_level = true
           end
           @node = node
           @variables = {}
@@ -41,37 +45,43 @@ module RuboCop
         end
 
         def body_node
-          child_index = case @node.type
-                        when :module, :sclass     then 1
-                        when :def, :class, :block then 2
-                        when :defs                then 3
-                        end
+          if naked_top_level?
+            node
+          else
+            child_index = case node.type
+                          when :module, :sclass     then 1
+                          when :def, :class, :block then 2
+                          when :defs                then 3
+                          end
 
-          child_index ? @node.children[child_index] : @node
+            node.children[child_index]
+          end
+        end
+
+        def include?(target_node)
+          !belong_to_outer_scope?(target_node) &&
+            !belong_to_inner_scope?(target_node)
         end
 
         def each_node(&block)
           return to_enum(__method__) unless block_given?
+          yield node if naked_top_level?
           scan_node(node, &block)
         end
 
         private
 
         def scan_node(node, &block)
-          yield node unless node.parent
-
           node.each_child_node do |child_node|
-            next if belong_to_another_scope?(child_node)
+            next unless include?(child_node)
             yield child_node
             scan_node(child_node, &block)
           end
         end
 
-        def belong_to_another_scope?(node)
-          belong_to_outer_scope?(node) || belong_to_inner_scope?(node)
-        end
-
         def belong_to_outer_scope?(target_node)
+          return true if !naked_top_level? && target_node.equal?(node)
+          return true if ancestor_node?(target_node)
           return false unless target_node.parent.equal?(node)
           indices = OUTER_SCOPE_CHILD_INDICES[target_node.parent.type]
           return false unless indices
@@ -79,11 +89,17 @@ module RuboCop
         end
 
         def belong_to_inner_scope?(target_node)
-          return false if target_node.parent.equal?(node)
+          return false if !target_node.parent || target_node.parent.equal?(node)
           return false unless SCOPE_TYPES.include?(target_node.parent.type)
           indices = OUTER_SCOPE_CHILD_INDICES[target_node.parent.type]
           return true unless indices
           !indices.include?(target_node.sibling_index)
+        end
+
+        def ancestor_node?(target_node)
+          node.each_ancestor.any? do |ancestor_node|
+            ancestor_node.equal?(target_node)
+          end
         end
       end
     end
