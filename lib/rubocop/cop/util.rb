@@ -90,7 +90,7 @@ module RuboCop
       def source_range(source_buffer, line_number, column, length = 1)
         if column.is_a?(Range)
           column_index = column.begin
-          length = numeric_range_size(column)
+          length = column.size
         else
           column_index = column
         end
@@ -197,14 +197,6 @@ module RuboCop
           end
         end
         node
-      end
-
-      # Range#size is not available prior to Ruby 2.0.
-      def numeric_range_size(range)
-        size = range.end - range.begin
-        size += 1 unless range.exclude_end?
-        size = 0 if size < 0
-        size
       end
 
       # If converting a string to Ruby string literal source code, must
