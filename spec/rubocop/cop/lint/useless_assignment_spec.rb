@@ -829,6 +829,64 @@ describe RuboCop::Cop::Lint::UselessAssignment do
     end
   end
 
+  context "when there's an unreferenced reassignment in a if branch " \
+          'while the variable is referenced in the paired elsif branch' do
+    let(:source) do
+      [
+        'def some_method(flag_a, flag_b)',
+        '  foo = 1',
+        '',
+        '  if flag_a',
+        '    puts foo',
+        '    foo = 2',
+        '  elsif flag_b',
+        '    puts foo',
+        '  end',
+        'end'
+      ]
+    end
+
+    pending 'registers an offense for the reassignment in the if branch' do
+      inspect_source(cop, source)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
+        .to eq('Useless assignment to variable - `foo`.')
+      expect(cop.offenses.first.line).to eq(6)
+      expect(cop.highlights).to eq(['foo'])
+    end
+  end
+
+  context "when there's an unreferenced reassignment in a if branch " \
+          'while the variable is referenced in a case branch ' \
+          'in the paired else branch' do
+    let(:source) do
+      [
+        'def some_method(flag_a, flag_b)',
+        '  foo = 1',
+        '',
+        '  if flag_a',
+        '    puts foo',
+        '    foo = 2',
+        '  else',
+        '    case',
+        '    when flag_b',
+        '      puts foo',
+        '    end',
+        '  end',
+        'end'
+      ]
+    end
+
+    pending 'registers an offense for the reassignment in the if branch' do
+      inspect_source(cop, source)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
+        .to eq('Useless assignment to variable - `foo`.')
+      expect(cop.offenses.first.line).to eq(6)
+      expect(cop.highlights).to eq(['foo'])
+    end
+  end
+
   context 'when a variable is assigned in branch of modifier if ' \
           'that references the variable in its conditional clause' \
           'and referenced after the branching' do
