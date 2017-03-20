@@ -72,6 +72,9 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
                     '',
                     '  def each *args',
                     '  end',
+                    '',
+                    '  def self.search *args',
+                    '  end',
                     ''])
     expect(cop.messages).to be_empty
   end
