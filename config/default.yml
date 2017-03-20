@@ -1498,3 +1498,6 @@ Rails/SkipsModelValidations:
 Rails/Validation:
   Include:
     - app/models/**/*.rb
+
+Bundler/OrderedGems:
+  TreatCommentsAsGroupSeparators: true

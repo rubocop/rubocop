@@ -45,7 +45,7 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
-Gems in consecutive lines should be alphabetically sorted
+Gems should be alphabetically sorted within groups.
 
 ### Example
 
@@ -62,6 +62,12 @@ gem 'rubocop'
 gem 'rubocop'
 
 gem 'rspec'
+
+# good only if TreatCommentsAsGroupSeparators is true
+# For code quality
+gem 'rubocop'
+# For tests
+gem 'rspec'
 ```
 
 ### Important attributes
@@ -69,3 +75,4 @@ gem 'rspec'
 Attribute | Value
 --- | ---
 Include | \*\*/Gemfile, \*\*/gems.rb
+TreatCommentsAsGroupSeparators | true

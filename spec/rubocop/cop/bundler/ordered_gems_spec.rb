@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 describe RuboCop::Cop::Bundler::OrderedGems, :config do
+  let(:cop_config) do
+    {
+      'TreatCommentsAsGroupSeparators' => treat_comments_as_group_separators,
+      'Include' => nil
+    }
+  end
+  let(:treat_comments_as_group_separators) { false }
   subject(:cop) { described_class.new(config) }
 
   context 'When gems are alphabetically sorted' do
@@ -29,8 +36,8 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
     it 'has the correct offense message' do
       inspect_source(cop, source)
       expect(cop.messages)
-        .to eq(['Gems should be sorted in an alphabetical '\
-                'order within their section of the Gemfile. '\
+        .to eq(['Gems should be sorted in an alphabetical ' \
+                'order within their section of the Gemfile. ' \
                 'Gem `rspec` should appear before `rubocop`.'])
     end
 
@@ -131,17 +138,52 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
     end
   end
 
-  context 'When gem groups is separated by comment' do
+  context 'When gem groups is separated by multiline comment' do
     let(:source) { <<-END }
       # For code quality
       gem 'rubocop'
-      # For test
+      # For
+      # test
       gem 'rspec'
     END
 
-    it 'accepts' do
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+    context 'with TreatCommentsAsGroupSeparators: true' do
+      let(:treat_comments_as_group_separators) { true }
+
+      it 'accepts' do
+        inspect_source(cop, source)
+        expect(cop.offenses).to be_empty
+      end
+    end
+
+    context 'with TreatCommentsAsGroupSeparators: false' do
+      it 'registers an offense' do
+        inspect_source(cop, source)
+        expect(cop.offenses.size).to eq(1)
+      end
+
+      it 'has the correct offense message' do
+        inspect_source(cop, source)
+        expect(cop.messages)
+          .to eq(['Gems should be sorted in an alphabetical ' \
+                  'order within their section of the Gemfile. ' \
+                  'Gem `rspec` should appear before `rubocop`.'])
+      end
+
+      it 'highlights the second gem' do
+        inspect_source(cop, source)
+        expect(cop.highlights).to eq(["gem 'rspec'"])
+      end
+
+      it 'autocorrects' do
+        new_source = autocorrect_source_with_loop(cop, source)
+        expect(new_source).to eq(['      # For',
+                                  '      # test',
+                                  "      gem 'rspec'",
+                                  '      # For code quality',
+                                  "      gem 'rubocop'",
+                                  ''].join("\n"))
+      end
     end
   end
 
