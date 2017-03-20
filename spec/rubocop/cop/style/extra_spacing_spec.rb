@@ -4,6 +4,20 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
   subject(:cop) { described_class.new(config) }
 
   shared_examples 'common behavior' do
+    it 'registers an offense, even when the = aligns with the superclass' do
+      inspect_source(cop, ['class FooClass < SuperClass',
+                           '  CONSTANT       = :foo',
+                           'end'])
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it 'registers an offense, even when the = aligns subclassing <' do
+      inspect_source(cop, ['class FooClass < SuperClass',
+                           '  CONSTANT     = :foo',
+                           'end'])
+      expect(cop.offenses.size).to eq(1)
+    end
+
     it 'registers an offense for alignment with token not preceded by space' do
       # The = and the ( are on the same column, but this is not for alignment,
       # it's just a mistake.
