@@ -3651,25 +3651,60 @@ Checks for uses of if with a negated condition. Only ifs
 without else are considered. There are three different styles:
 
 both - enforces `unless` for `prefix` and `postfix` conditionals
+
+  # good
+
   unless foo
     bar
   end
 
-  bar unless foo
+  # bad
 
-prefix - enforces `unless` for just `prefix` conditionals
-  unless foo
-    bar
-  end
-
-  bar if !foo
-
-postfix - enforces `unless` for just `postfix` conditionals
   if !foo
     bar
   end
 
+  # good
+
   bar unless foo
+
+  # bad
+
+  bar if !foo
+
+prefix - enforces `unless` for just `prefix` conditionals
+
+  # good
+
+  unless foo
+    bar
+  end
+
+  # bad
+
+  if !foo
+    bar
+  end
+
+  # good
+
+  bar if !foo
+
+postfix - enforces `unless` for just `postfix` conditionals
+
+  # good
+
+  bar unless foo
+
+  # bad
+
+  bar if !foo
+
+  # good
+
+  if !foo
+    bar
+  end
 
 ### Important attributes
 
@@ -5372,21 +5407,26 @@ Alternatively, it checks for symbol arrays using the %i() syntax on
 projects which do not want to use that syntax, perhaps because they
 support a version of Ruby lower than 2.0.
 
-# EnforcedStyle: percent (default)
+### Example
+
+```ruby
+EnforcedStyle: percent (default)
 
 # good
 %i[foo bar baz]
 
 # bad
 [:foo, :bar, :baz]
-
-# EnforcedStyle: brackets
+```
+```ruby
+EnforcedStyle: brackets
 
 # good
 [:foo, :bar, :baz]
 
 # bad
 %i[foo bar baz]
+```
 
 ### Important attributes
 

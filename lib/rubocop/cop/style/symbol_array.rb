@@ -11,24 +11,22 @@ module RuboCop
       # support a version of Ruby lower than 2.0.
       #
       # @example
+      #   EnforcedStyle: percent (default)
       #
-      # # EnforcedStyle: percent (default)
+      #   # good
+      #   %i[foo bar baz]
       #
-      # # good
-      # %i[foo bar baz]
-      #
-      # # bad
-      # [:foo, :bar, :baz]
+      #   # bad
+      #   [:foo, :bar, :baz]
       #
       # @example
+      #   EnforcedStyle: brackets
       #
-      # # EnforcedStyle: brackets
+      #   # good
+      #   [:foo, :bar, :baz]
       #
-      # # good
-      # [:foo, :bar, :baz]
-      #
-      # # bad
-      # %i[foo bar baz]
+      #   # bad
+      #   %i[foo bar baz]
       class SymbolArray < Cop
         include ConfigurableEnforcedStyle
         include ArraySyntax
