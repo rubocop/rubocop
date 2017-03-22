@@ -14,6 +14,8 @@ module RuboCop
         MSG = 'Indent `when` %s `%s`.'.freeze
 
         def on_case(case_node)
+          return if case_node.single_line?
+
           case_node.each_when do |when_node|
             check_when(when_node)
           end

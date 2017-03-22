@@ -68,6 +68,7 @@
 * [#4102](https://github.com/bbatsov/rubocop/issues/4102): Fix `Security/JSONLoad`, `Security/MarshalLoad` and `Security/YAMLLoad` cops patterns not matching ::Const. ([@musialik][])
 * [#3580](https://github.com/bbatsov/rubocop/issues/3580): Handle combinations of `# rubocop:disable all` and `# rubocop:disable SomeCop`. ([@jonas054][])
 * [#4124](https://github.com/bbatsov/rubocop/issues/4124): Fix auto correction bugs in `Style/SymbolArray` cop. ([@pocke][])
+* [#4128](https://github.com/bbatsov/rubocop/issues/4128): Prevent `Style/CaseIndentation` cop from registering offenses on single-line case statements. ([@drenmi][])
 
 ## 0.47.1 (2017-01-18)
 
