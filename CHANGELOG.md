@@ -71,6 +71,7 @@
 * [#3580](https://github.com/bbatsov/rubocop/issues/3580): Handle combinations of `# rubocop:disable all` and `# rubocop:disable SomeCop`. ([@jonas054][])
 * [#4124](https://github.com/bbatsov/rubocop/issues/4124): Fix auto correction bugs in `Style/SymbolArray` cop. ([@pocke][])
 * [#4128](https://github.com/bbatsov/rubocop/issues/4128): Prevent `Style/CaseIndentation` cop from registering offenses on single-line case statements. ([@drenmi][])
+* [#4143](https://github.com/bbatsov/rubocop/issues/4143): Prevent `Style/IdenticalConditionalBranches` from registering offenses when a case statement has an empty when. ([@dpostorivo][])
 
 ## 0.47.1 (2017-01-18)
 
@@ -2690,3 +2691,4 @@
 [@andriymosin]: https://github.com/andriymosin
 [@brandonweiss]: https://github.com/brandonweiss
 [@betesh]: https://github.com/betesh
+[@dpostorivo]: https://github.com/dpostorivo

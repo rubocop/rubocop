@@ -196,4 +196,22 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
       expect(cop.offenses).to be_empty
     end
   end
+
+  context 'on case with empty when' do
+    let(:source) do
+      ['case something',
+       'when :a',
+       '  do_x',
+       '  do_y',
+       'when :b',
+       'else',
+       '  do_x',
+       '  do_z',
+       'end']
+    end
+
+    it "doesn't register an offense" do
+      expect(cop.offenses).to be_empty
+    end
+  end
 end

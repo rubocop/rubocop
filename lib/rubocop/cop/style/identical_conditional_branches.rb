@@ -40,6 +40,28 @@ module RuboCop
       #   else
       #     do_y
       #   end
+      #
+      #   @bad
+      #   switch foo
+      #   when 1
+      #     do_x
+      #   when 2
+      #     do_x
+      #   else
+      #     do_x
+      #   end
+      #
+      #   @good
+      #   switch foo
+      #   when 1
+      #     do_x
+      #     do_y
+      #   when 2
+      #     # nothing
+      #   else
+      #     do_x
+      #     do_z
+      #   end
       class IdenticalConditionalBranches < Cop
         MSG = 'Move `%s` out of the conditional.'.freeze
 
@@ -58,7 +80,11 @@ module RuboCop
         def on_case(node)
           return unless node.else? && node.else_branch
 
-          check_branches(node.when_branches.map(&:body).push(node.else_branch))
+          branches = node.when_branches.map(&:body).push(node.else_branch)
+
+          return if branches.any?(&:nil?)
+
+          check_branches(branches)
         end
 
         private
