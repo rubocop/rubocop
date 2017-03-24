@@ -2171,6 +2171,28 @@ if condition
 else
   do_y
 end
+
+# bad
+switch foo
+when 1
+  do_x
+when 2
+  do_x
+else
+  do_x
+end
+
+# good
+switch foo
+when 1
+  do_x
+  do_y
+when 2
+  # nothing
+else
+  do_x
+  do_z
+end
 ```
 
 ## Style/IfInsideElse
