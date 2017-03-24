@@ -9,7 +9,7 @@ module RuboCop
       #
       #   # bad
       #
-      #   do_something do |used, _unused|
+      #   do_something do |used, unused|
       #     puts used
       #   end
       #
@@ -25,7 +25,7 @@ module RuboCop
       #
       #   #good
       #
-      #   do_something do |used, unused|
+      #   do_something do |used, _unused|
       #     puts used
       #   end
       #

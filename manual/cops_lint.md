@@ -1710,7 +1710,7 @@ This cop checks for unused block arguments.
 ```ruby
 # bad
 
-do_something do |used, _unused|
+do_something do |used, unused|
   puts used
 end
 
@@ -1725,7 +1725,7 @@ end
 ```ruby
 #good
 
-do_something do |used, unused|
+do_something do |used, _unused|
   puts used
 end
 
