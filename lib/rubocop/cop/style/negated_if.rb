@@ -6,9 +6,14 @@ module RuboCop
       # Checks for uses of if with a negated condition. Only ifs
       # without else are considered. There are three different styles:
       #
+      #   - both
+      #   - prefix
+      #   - postfix
+      #
       # @example
       #
-      # both - enforces `unless` for `prefix` and `postfix` conditionals
+      #   # EnforcedStyle: both
+      #   # enforces `unless` for `prefix` and `postfix` conditionals
       #
       #   # good
       #
@@ -30,7 +35,10 @@ module RuboCop
       #
       #   bar if !foo
       #
-      # prefix - enforces `unless` for just `prefix` conditionals
+      # @example
+      #
+      #   # EnforcedStyle: prefix
+      #   # enforces `unless` for just `prefix` conditionals
       #
       #   # good
       #
@@ -48,7 +56,10 @@ module RuboCop
       #
       #   bar if !foo
       #
-      # postfix - enforces `unless` for just `postfix` conditionals
+      # @example
+      #
+      #   # EnforcedStyle: postfix
+      #   # enforces `unless` for just `postfix` conditionals
       #
       #   # good
       #

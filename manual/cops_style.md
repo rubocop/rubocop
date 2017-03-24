@@ -3725,61 +3725,74 @@ Enabled | Yes
 Checks for uses of if with a negated condition. Only ifs
 without else are considered. There are three different styles:
 
-both - enforces `unless` for `prefix` and `postfix` conditionals
+  - both
+  - prefix
+  - postfix
 
-  # good
+### Example
 
-  unless foo
-    bar
-  end
+```ruby
+# EnforcedStyle: both
+# enforces `unless` for `prefix` and `postfix` conditionals
 
-  # bad
+# good
 
-  if !foo
-    bar
-  end
+unless foo
+  bar
+end
 
-  # good
+# bad
 
-  bar unless foo
+if !foo
+  bar
+end
 
-  # bad
+# good
 
-  bar if !foo
+bar unless foo
 
-prefix - enforces `unless` for just `prefix` conditionals
+# bad
 
-  # good
+bar if !foo
+```
+```ruby
+# EnforcedStyle: prefix
+# enforces `unless` for just `prefix` conditionals
 
-  unless foo
-    bar
-  end
+# good
 
-  # bad
+unless foo
+  bar
+end
 
-  if !foo
-    bar
-  end
+# bad
 
-  # good
+if !foo
+  bar
+end
 
-  bar if !foo
+# good
 
-postfix - enforces `unless` for just `postfix` conditionals
+bar if !foo
+```
+```ruby
+# EnforcedStyle: postfix
+# enforces `unless` for just `postfix` conditionals
 
-  # good
+# good
 
-  bar unless foo
+bar unless foo
 
-  # bad
+# bad
 
-  bar if !foo
+bar if !foo
 
-  # good
+# good
 
-  if !foo
-    bar
-  end
+if !foo
+  bar
+end
+```
 
 ### Important attributes
 
