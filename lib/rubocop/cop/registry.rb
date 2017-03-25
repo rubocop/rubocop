@@ -80,7 +80,7 @@ module RuboCop
       #   cops.qualified_cop_name('NotACop') # => 'NotACop'
       #
       # @param name [String] Cop name extracted from config
-      # @param path [String] Path of file that `name` was extracted from
+      # @param path [String, nil] Path of file that `name` was extracted from
       #
       # @raise [AmbiguousCopName]
       #   if a bare identifier with two possible namespaces is provided
