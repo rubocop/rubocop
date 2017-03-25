@@ -28,7 +28,7 @@ module RuboCop
       # @option cop_config [String] :Reference Full reference URL
       # @option cop_config [String] :Details
       #
-      # @param [Hash] options
+      # @param [Hash, nil] optional options
       # @option option [Boolean] :display_style_guide
       #   Include style guide and reference URLs
       # @option option [Boolean] :extra_details
