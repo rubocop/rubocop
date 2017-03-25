@@ -72,7 +72,7 @@ module RuboCop
       # @return [Boolean]
       #   whether this offense is automatically corrected.
       def corrected
-        @status == :unsupported ? nil : @status == :corrected
+        @status == :unsupported ? false : @status == :corrected
       end
       alias corrected? corrected
 
