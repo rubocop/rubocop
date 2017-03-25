@@ -101,7 +101,7 @@ describe RuboCop::Cop::Cop do
 
       it 'is not specified (set to nil)' do
         cop.add_offense(nil, location, 'message')
-        expect(cop.offenses.first.corrected?).to be_nil
+        expect(cop.offenses.first.corrected?).to be(false)
       end
     end
 
