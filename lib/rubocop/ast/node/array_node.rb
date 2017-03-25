@@ -29,9 +29,12 @@ module RuboCop
       #
       # @overload percent_literal?
       #   Check for any percent literal.
+      #
       # @overload percent_literal?(type)
       #   Check for percent literaly of type `type`.
-      # @param type [Symbol] an optional percent literal type
+      #
+      #   @param type [Symbol] an optional percent literal type
+      #
       # @return [Boolean] whether the array is enclosed in percent brackets
       def percent_literal?(type = nil)
         if type
