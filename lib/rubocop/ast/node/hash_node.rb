@@ -37,7 +37,7 @@ module RuboCop
 
       # Returns an array of all the keys in the `hash` literal.
       #
-      # @return [Node] an array of keys in the `hash` literal
+      # @return [Array<Node>] an array of keys in the `hash` literal
       def keys
         each_key.to_a
       end
@@ -59,7 +59,7 @@ module RuboCop
 
       # Returns an array of all the values in the `hash` literal.
       #
-      # @return [Node] an array of values in the `hash` literal
+      # @return [Array<Node>] an array of values in the `hash` literal
       def values
         each_pair.map(&:value)
       end
