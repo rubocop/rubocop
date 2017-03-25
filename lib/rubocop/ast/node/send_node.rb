@@ -24,7 +24,7 @@ module RuboCop
 
       # Checks whether the method name matches the argument.
       #
-      # @param [Symbol|String] name the method name to check for
+      # @param [Symbol, String] name the method name to check for
       # @return [Boolean] whether the method name matches the argument
       def method?(name)
         method_name == name.to_sym
@@ -44,7 +44,7 @@ module RuboCop
       # Checks whether the method name matches the argument and has an
       # implicit receiver.
       #
-      # @param [Symbol|String] name the method name to check for
+      # @param [Symbol, String] name the method name to check for
       # @return [Boolean] whether the method name matches the argument
       def command?(name)
         !receiver && method?(name)
