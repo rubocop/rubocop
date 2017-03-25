@@ -4057,6 +4057,29 @@ WordRegex | (?-mix:\A[\p{Word}\n\t]+\z)
 
 * [https://github.com/bbatsov/ruby-style-guide#percent-w](https://github.com/bbatsov/ruby-style-guide#percent-w)
 
+## Style/YodaCondition
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for Yoda conditions, i.e. comparison operations where
+readability is reduced because the operands are not ordered the same
+way as they would be ordered in spoken English.
+
+### Example
+
+```ruby
+# bad
+99 == foo
+"bar" == foo
+```
+```ruby
+# good
+foo == 99
+foo == "bar"
+```
+
 ## Style/ZeroLengthPredicate
 
 Enabled by default | Supports autocorrection

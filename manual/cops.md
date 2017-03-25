@@ -447,6 +447,7 @@ In the following section you find all available cops:
 * [Style/WhileUntilDo](cops_style.md#stylewhileuntildo)
 * [Style/WhileUntilModifier](cops_style.md#stylewhileuntilmodifier)
 * [Style/WordArray](cops_style.md#stylewordarray)
+* [Style/YodaCondition](cops_style.md#styleyodacondition)
 * [Style/ZeroLengthPredicate](cops_style.md#stylezerolengthpredicate)
 
 <!-- END_COP_LIST -->

@@ -11,6 +11,7 @@
 * [#4314](https://github.com/bbatsov/rubocop/pull/4314): Check slow hash accessing in `Array#sort` by `Performance/CompareWithBlock`. ([@pocke][])
 * [#3438](https://github.com/bbatsov/rubocop/issues/3438): Add new `Style/FormatStringToken` cop. ([@backus][])
 * [#4342](https://github.com/bbatsov/rubocop/pull/4342): Add new `Lint/ScriptPermission` cop. ([@yhirano55][])
+* [#4145](https://github.com/bbatsov/rubocop/issues/4145): Add new `Style/YodaCondition` cop. ([@smakagon][])
 
 ### Changes
 

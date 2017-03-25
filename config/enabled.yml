@@ -1013,6 +1013,10 @@ Style/WordArray:
   StyleGuide: '#percent-w'
   Enabled: true
 
+Style/YodaCondition:
+  Description: 'Do not use literals as the first operand of a comparison'
+  Enabled: true
+
 Style/ZeroLengthPredicate:
   Description: 'Use #empty? when testing for objects of length 0.'
   Enabled: true
