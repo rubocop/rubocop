@@ -44,7 +44,7 @@ module RuboCop
 
       # Returns the body of the `when` node.
       #
-      # @return [Node] the body of the `when` node
+      # @return [Node, nil] the body of the `when` node
       def body
         node_parts[-1]
       end
