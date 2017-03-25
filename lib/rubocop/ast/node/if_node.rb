@@ -104,6 +104,7 @@ module RuboCop
       # @note This is normalized for `unless` nodes.
       #
       # @return [Node] the truthy branch node of the `if` node
+      # @return [nil] if the truthy branch is empty
       def if_branch
         node_parts[1]
       end
@@ -114,6 +115,7 @@ module RuboCop
       # @note This is normalized for `unless` nodes.
       #
       # @return [Node] the falsey branch node of the `if` node
+      # @return [nil] when there is no else branch
       def else_branch
         node_parts[2]
       end
