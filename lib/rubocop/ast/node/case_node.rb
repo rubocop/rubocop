@@ -40,6 +40,7 @@ module RuboCop
       # Returns the else branch of the `case` statement, if any.
       #
       # @return [Node] the else branch node of the `case` statement
+      # @return [nil] if the case statement does not have an else branch.
       def else_branch
         node_parts[-1]
       end
