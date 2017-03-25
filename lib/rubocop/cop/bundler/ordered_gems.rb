@@ -3,7 +3,8 @@
 module RuboCop
   module Cop
     module Bundler
-      # Gems in consecutive lines should be alphabetically sorted
+      # Gems should be alphabetically sorted within groups.
+      #
       # @example
       #   # bad
       #   gem 'rubocop'
@@ -17,7 +18,15 @@ module RuboCop
       #   gem 'rubocop'
       #
       #   gem 'rspec'
+      #
+      #   # good only if TreatCommentsAsGroupSeparators is true
+      #   # For code quality
+      #   gem 'rubocop'
+      #   # For tests
+      #   gem 'rspec'
       class OrderedGems < Cop
+        include ConfigurableEnforcedStyle
+
         MSG = 'Gems should be sorted in an alphabetical order within their '\
               'section of the Gemfile. '\
               'Gem `%s` should appear before `%s`.'.freeze
@@ -39,7 +48,8 @@ module RuboCop
         end
 
         def consecutive_lines(previous, current)
-          previous.source_range.last_line == current.source_range.first_line - 1
+          first_line = get_source_range(current).first_line
+          previous.source_range.last_line == first_line - 1
         end
 
         def register_offense(previous, current)
@@ -67,7 +77,7 @@ module RuboCop
 
         def declaration_with_comment(node)
           buffer = processed_source.buffer
-          begin_pos = node.loc.expression.begin_pos
+          begin_pos = get_source_range(node).begin_pos
           end_line = buffer.line_for_position(node.loc.expression.end_pos)
           end_pos = buffer.line_range(end_line).end_pos
           Parser::Source::Range.new(buffer, begin_pos, end_pos)
@@ -84,6 +94,14 @@ module RuboCop
           declarations = gem_declarations(processed_source.ast)
           node_index = declarations.find_index(node)
           declarations.to_a[node_index - 1]
+        end
+
+        def get_source_range(node)
+          unless cop_config['TreatCommentsAsGroupSeparators']
+            first_comment = processed_source.ast_with_comments[node].first
+            return first_comment.loc.expression unless first_comment.nil?
+          end
+          node.source_range
         end
 
         def_node_search :gem_declarations, <<-PATTERN

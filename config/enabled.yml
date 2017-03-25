@@ -1705,8 +1705,7 @@ Bundler/DuplicatedGem:
 
 Bundler/OrderedGems:
   Description: >-
-                 Sort alphabetically gems appearing within a contiguous set
-                 of lines in the Gemfile
+                 Gems within groups in the Gemfile should be alphabetically sorted.
   Enabled: true
   Include:
     - '**/Gemfile'

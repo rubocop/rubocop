@@ -26,6 +26,7 @@
 * [#3937](https://github.com/bbatsov/rubocop/issues/3937): Add new `Rails/ActiveSupportAliases` cop. ([@tdeo][])
 * Add new `Rails/Blank` cop. ([@rrosenblum][])
 * Add new `Rails/Present` cop. ([@rrosenblum][])
+* [#4004](https://github.com/bbatsov/rubocop/issues/4004): Allow not treating comment lines as group separators in `Bundler/OrderedGems` cop. ([@konto-andrzeja][])
 
 ### Changes
 
@@ -2696,3 +2697,4 @@
 [@brandonweiss]: https://github.com/brandonweiss
 [@betesh]: https://github.com/betesh
 [@dpostorivo]: https://github.com/dpostorivo
+[@konto-andrzeja]: https://github.com/konto-andrzeja
