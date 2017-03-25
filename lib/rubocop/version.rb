@@ -7,9 +7,7 @@ module RuboCop
 
     MSG = '%s (using Parser %s, running on %s %s %s)'.freeze
 
-    module_function
-
-    def version(debug = false)
+    def self.version(debug = false)
       if debug
         format(MSG, STRING, Parser::VERSION,
                RUBY_ENGINE, RUBY_VERSION, RUBY_PLATFORM)
