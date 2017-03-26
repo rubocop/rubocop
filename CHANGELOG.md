@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.48.0 (2017-03-26)
+
 ### New features
 
 * [#4107](https://github.com/bbatsov/rubocop/pull/4107): New `TargetRailsVersion` configuration parameter can be used to specify which version of Rails the inspected code is intended to run on. ([@maxbeizer][])
