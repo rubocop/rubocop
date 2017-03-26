@@ -63,128 +63,222 @@ describe RuboCop::CLI, :isolated_environment do
                                          '}'].join("\n") + "\n")
   end
 
-  shared_examples 'trailing comma adder' do |comma_style, brace_configs, corr|
-    Array(brace_configs).each do |brace_config|
-      context "with #{comma_style} and #{brace_config} configuration" do
-        it 'corrects TrailingCommaInLiteral and TrailingCommaInArguments ' \
-           'without producing a double comma' do
-          create_file('.rubocop.yml',
-                      ['Style/TrailingCommaInArguments:',
-                       "  EnforcedStyleForMultiline: #{comma_style}",
-                       '',
-                       'Style/TrailingCommaInLiteral:',
-                       "  EnforcedStyleForMultiline: #{comma_style}",
-                       '',
-                       'Style/BracesAroundHashParameters:',
-                       "  #{brace_config}"])
-          source = ['func({',
-                    '  @abc => 0,',
-                    '  @xyz => 1',
-                    '})',
-                    'func(',
-                    '  {',
-                    '    abc: 0',
-                    '  }',
-                    ')',
-                    'func(',
-                    '  {},',
-                    '  {',
-                    '    xyz: 1',
-                    '  }',
-                    ')']
-          create_file('example.rb', source)
-          cli.run(['--auto-correct'])
-          expect(IO.read('example.rb')).to eq(corr.join("\n") + "\n")
-          expect($stderr.string).to eq('')
+  describe 'trailing comma cops' do
+    let(:source) do
+      ['func({',
+       '  @abc => 0,',
+       '  @xyz => 1',
+       '})',
+       'func(',
+       '  {',
+       '    abc: 0',
+       '  }',
+       ')',
+       'func(',
+       '  {},',
+       '  {',
+       '    xyz: 1',
+       '  }',
+       ')']
+    end
+
+    let(:config) do
+      {
+        'Style/TrailingCommaInArguments' => {
+          'EnforcedStyleForMultiline' => comma_style
+        },
+        'Style/TrailingCommaInLiteral' => {
+          'EnforcedStyleForMultiline' => comma_style
+        },
+        'Style/BracesAroundHashParameters' =>
+          braces_around_hash_parameters_config
+      }
+    end
+
+    before do
+      create_file('example.rb', source)
+    end
+
+    before do
+      create_file('.rubocop.yml', YAML.dump(config))
+    end
+
+    shared_examples 'corrects offenses without producing a double comma' do
+      it 'corrects TrailingCommaInLiteral and TrailingCommaInArguments ' \
+         'without producing a double comma' do
+        cli.run(['--auto-correct'])
+
+        expect(IO.read('example.rb'))
+          .to eq(expected_corrected_source.join("\n") + "\n")
+
+        expect($stderr.string).to eq('')
+      end
+    end
+
+    context 'when the style is `comma`' do
+      let(:comma_style) do
+        'comma'
+      end
+
+      context 'and Style/BracesAroundHashParameters is disabled' do
+        let(:braces_around_hash_parameters_config) do
+          {
+            'Enabled' => false,
+            'AutoCorrect' => false,
+            'EnforcedStyle' => 'braces'
+          }
         end
+
+        let(:expected_corrected_source) do
+          ['func({',
+           '       @abc => 0,',
+           '       @xyz => 1,', # comma added
+           '     })',
+           'func(',
+           '  {',
+           '    abc: 0,', # comma added
+           '  },', # comma added
+           ')',
+           'func(',
+           '  {},',
+           '  {',
+           '    xyz: 1,', # comma added
+           '  },', # comma added
+           ')']
+        end
+
+        include_examples 'corrects offenses without producing a double comma'
+      end
+
+      context 'and BracesAroundHashParameters style is `no_braces`' do
+        let(:braces_around_hash_parameters_config) do
+          {
+            'EnforcedStyle' => 'no_braces'
+          }
+        end
+
+        let(:expected_corrected_source) do
+          ['func(@abc => 0,',
+           '     @xyz => 1)',
+           'func(',
+           '  abc: 0,', # comma added
+           ')',
+           'func(',
+           '  {},',
+           '  xyz: 1,', # comma added
+           ')']
+        end
+
+        include_examples 'corrects offenses without producing a double comma'
+      end
+
+      context 'and BracesAroundHashParameters style is `context_dependent`' do
+        let(:braces_around_hash_parameters_config) do
+          {
+            'EnforcedStyle' => 'context_dependent'
+          }
+        end
+
+        let(:expected_corrected_source) do
+          ['func(@abc => 0,',
+           '     @xyz => 1)',
+           'func(',
+           '  abc: 0,', # comma added
+           ')',
+           'func(',
+           '  {},',
+           '  {',
+           '    xyz: 1,', # comma added
+           '  },', # comma added
+           ')']
+        end
+
+        include_examples 'corrects offenses without producing a double comma'
+      end
+    end
+
+    context 'when the style is `consistent_comma`' do
+      let(:comma_style) do
+        'consistent_comma'
+      end
+
+      context 'and Style/BracesAroundHashParameters is disabled' do
+        let(:braces_around_hash_parameters_config) do
+          {
+            'Enabled' => false,
+            'AutoCorrect' => false,
+            'EnforcedStyle' => 'braces'
+          }
+        end
+
+        let(:expected_corrected_source) do
+          ['func({',
+           '       @abc => 0,',
+           '       @xyz => 1,', # comma added
+           '     },)', # comma added
+           'func(',
+           '  {',
+           '    abc: 0,', # comma added
+           '  },', # comma added
+           ')',
+           'func(',
+           '  {},',
+           '  {',
+           '    xyz: 1,', # comma added
+           '  },', # comma added
+           ')']
+        end
+
+        include_examples 'corrects offenses without producing a double comma'
+      end
+
+      context 'and BracesAroundHashParameters style is `no_braces`' do
+        let(:braces_around_hash_parameters_config) do
+          {
+            'EnforcedStyle' => 'no_braces'
+          }
+        end
+
+        let(:expected_corrected_source) do
+          ['func(@abc => 0,',
+           '     @xyz => 1,)', # comma added
+           'func(',
+           '  abc: 0,', # comma added
+           ')',
+           'func(',
+           '  {},',
+           '  xyz: 1,', # comma added
+           ')']
+        end
+
+        include_examples 'corrects offenses without producing a double comma'
+      end
+
+      context 'and BracesAroundHashParameters style is `context_dependent`' do
+        let(:braces_around_hash_parameters_config) do
+          {
+            'EnforcedStyle' => 'context_dependent'
+          }
+        end
+
+        let(:expected_corrected_source) do
+          ['func(@abc => 0,',
+           '     @xyz => 1,)', # comma added
+           'func(',
+           '  abc: 0,', # comma added
+           ')',
+           'func(',
+           '  {},',
+           '  {',
+           '    xyz: 1,', # comma added
+           '  },', # comma added
+           ')']
+        end
+
+        include_examples 'corrects offenses without producing a double comma'
       end
     end
   end
-
-  it_behaves_like 'trailing comma adder', :comma, ['Enabled: false',
-                                                   'AutoCorrect: false',
-                                                   'EnforcedStyle: braces'],
-                  ['func({',
-                   '       @abc => 0,',
-                   '       @xyz => 1,', # comma added
-                   '     })',
-                   'func(',
-                   '  {',
-                   '    abc: 0,', # comma added
-                   '  },', # comma added
-                   ')',
-                   'func(',
-                   '  {},',
-                   '  {',
-                   '    xyz: 1,', # comma added
-                   '  },', # comma added
-                   ')']
-  it_behaves_like 'trailing comma adder', :comma, 'EnforcedStyle: no_braces',
-                  ['func(@abc => 0,',
-                   '     @xyz => 1)',
-                   'func(',
-                   '  abc: 0,', # comma added
-                   ')',
-                   'func(',
-                   '  {},',
-                   '  xyz: 1,', # comma added
-                   ')']
-  it_behaves_like 'trailing comma adder', :comma,
-                  'EnforcedStyle: context_dependent',
-                  ['func(@abc => 0,',
-                   '     @xyz => 1)',
-                   'func(',
-                   '  abc: 0,', # comma added
-                   ')',
-                   'func(',
-                   '  {},',
-                   '  {',
-                   '    xyz: 1,', # comma added
-                   '  },', # comma added
-                   ')']
-  it_behaves_like 'trailing comma adder', :consistent_comma,
-                  ['Enabled: false',
-                   'AutoCorrect: false',
-                   'EnforcedStyle: braces'],
-                  ['func({',
-                   '       @abc => 0,',
-                   '       @xyz => 1,', # comma added
-                   '     },)', # comma added
-                   'func(',
-                   '  {',
-                   '    abc: 0,', # comma added
-                   '  },', # comma added
-                   ')',
-                   'func(',
-                   '  {},',
-                   '  {',
-                   '    xyz: 1,', # comma added
-                   '  },', # comma added
-                   ')']
-  it_behaves_like 'trailing comma adder', :consistent_comma,
-                  'EnforcedStyle: no_braces',
-                  ['func(@abc => 0,',
-                   '     @xyz => 1,)', # comma added
-                   'func(',
-                   '  abc: 0,', # comma added
-                   ')',
-                   'func(',
-                   '  {},',
-                   '  xyz: 1,', # comma added
-                   ')']
-  it_behaves_like 'trailing comma adder', :consistent_comma,
-                  'EnforcedStyle: context_dependent',
-                  ['func(@abc => 0,',
-                   '     @xyz => 1,)', # comma added
-                   'func(',
-                   '  abc: 0,', # comma added
-                   ')',
-                   'func(',
-                   '  {},',
-                   '  {',
-                   '    xyz: 1,', # comma added
-                   '  },', # comma added
-                   ')']
 
   it 'corrects IndentationWidth, RedundantBegin, and ' \
      'RescueEnsureAlignment offenses' do
