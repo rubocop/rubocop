@@ -253,8 +253,7 @@ would suffice.
 'abc'.match(/bc\Z/)
 
 # good
-'abc' =~ /ab/
-'abc' =~ /\w*\Z/
+'abc'.end_with?('bc')
 ```
 
 ### Important attributes
