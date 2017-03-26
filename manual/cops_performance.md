@@ -659,8 +659,7 @@ This cop identifies unnecessary use of a regex where
 'abc'.match(/\Aab/)
 
 # good
-'abc' =~ /ab/
-'abc' =~ /\A\w*/
+'abc'.start_with?('ab')
 ```
 
 ### Important attributes

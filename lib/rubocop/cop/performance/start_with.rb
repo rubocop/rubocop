@@ -12,8 +12,7 @@ module RuboCop
       #   'abc'.match(/\Aab/)
       #
       #   @good
-      #   'abc' =~ /ab/
-      #   'abc' =~ /\A\w*/
+      #   'abc'.start_with?('ab')
       class StartWith < Cop
         MSG = 'Use `String#start_with?` instead of a regex match anchored to ' \
               'the beginning of the string.'.freeze
