@@ -15,6 +15,7 @@ require 'unicode/display_width'
 require 'rubocop/version'
 
 require 'rubocop/path_util'
+require 'rubocop/pathfinder'
 require 'rubocop/platform'
 require 'rubocop/string_util'
 require 'rubocop/name_similarity'

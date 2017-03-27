@@ -17,6 +17,7 @@ module RuboCop
 
     class << self
       include ConfigLoaderResolver
+      include Pathfinder
 
       attr_accessor :debug, :auto_gen_config
       attr_writer :root_level # The upwards search is stopped at this level.
@@ -205,20 +206,7 @@ module RuboCop
       end
 
       def config_files_in_path(target)
-        possible_config_files = dirs_to_search(target).map do |dir|
-          File.join(dir, DOTFILE)
-        end
-        possible_config_files.select { |config_file| File.exist?(config_file) }
-      end
-
-      def dirs_to_search(target_dir)
-        dirs_to_search = []
-        Pathname.new(File.expand_path(target_dir)).ascend do |dir_pathname|
-          break if dir_pathname.to_s == @root_level
-          dirs_to_search << dir_pathname.to_s
-        end
-        dirs_to_search << Dir.home if ENV.key? 'HOME'
-        dirs_to_search
+        files_in_path(target, DOTFILE)
       end
     end
 
