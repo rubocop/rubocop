@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#4171](https://github.com/bbatsov/rubocop/pull/4171): Prevent `Rails/Blank` from breaking when RHS of `or` is a naked falsiness check. ([@drenmi][])
+
 ## 0.48.0 (2017-03-26)
 
 ### New features

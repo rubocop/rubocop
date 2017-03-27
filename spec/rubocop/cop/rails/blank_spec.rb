@@ -41,6 +41,13 @@ describe RuboCop::Cop::Rails::Blank, :config do
       expect(cop.offenses).to be_empty
     end
 
+    # Bug: https://github.com/bbatsov/rubocop/issues/4171
+    it 'does not break when RHS of `or` is a naked falsiness check' do
+      inspect_source(cop, 'foo.empty? || bar')
+
+      expect(cop.offenses).to be_empty
+    end
+
     context 'nil or empty' do
       it_behaves_like :offense, 'foo.nil? || foo.empty?',
                       'foo.blank?',
