@@ -67,6 +67,7 @@ describe RuboCop::CLI, :isolated_environment do
                 '',
                 '# Offense count: 1',
                 '# Cop supports --auto-correct.',
+                '# Configuration parameters: Strict.',
                 'Style/NumericLiterals:',
                 '  MinDigits: 7',
                 '',

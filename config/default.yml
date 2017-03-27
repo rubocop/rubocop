@@ -902,6 +902,7 @@ Style/NonNilCheck:
 
 Style/NumericLiterals:
   MinDigits: 5
+  Strict: false
 
 Style/NumericLiteralPrefix:
   EnforcedOctalStyle: zero_with_o
