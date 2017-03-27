@@ -20,6 +20,7 @@
 * [#4198](https://github.com/bbatsov/rubocop/pull/4198): Make `Lint/AmbguousBlockAssociation` aware of operator methods. ([@drenmi][])
 * [#4152](https://github.com/bbatsov/rubocop/pull/4152): Make `Style/MethodCallWithArgsParentheses` not require parens on setter methods. ([@drenmi][])
 * [#4226](https://github.com/bbatsov/rubocop/pull/4226): Show in `--help` output that `--stdin` takes a file name argument. ([@jonas054][])
+* [#3947](https://github.com/bbatsov/rubocop/issues/3947): Fix a false positive in `Rails/FilePath` cop for Rails.root without path in dstr. ([@jspanjers][], [@lucascaton][])
 
 ## 0.48.0 (2017-03-26)
 
@@ -2720,3 +2721,4 @@
 [@dpostorivo]: https://github.com/dpostorivo
 [@konto-andrzeja]: https://github.com/konto-andrzeja
 [@sadovnik]: https://github.com/sadovnik
+[@lucascaton]: https://github.com/lucascaton
