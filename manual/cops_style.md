@@ -4039,6 +4039,7 @@ of digits in them.
 Attribute | Value
 --- | ---
 MinDigits | 5
+Strict | false
 
 ### References
 
