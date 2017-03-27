@@ -58,6 +58,11 @@ describe RuboCop::Cop::Style::MixinGrouping, :config do
                          '  include Qux',
                          'end'].join("\n")
       end
+
+      context 'when include call is an argument to another method' do
+        it_behaves_like 'code without offense',
+                        'expect(foo).to include(bar, baz)'
+      end
     end
 
     context 'when using `extend`' do
@@ -141,6 +146,12 @@ describe RuboCop::Cop::Style::MixinGrouping, :config do
                         ['class Foo',
                          '  include Bar, Qux',
                          'end'].join("\n")
+      end
+
+      context 'when include has an explicit receiver' do
+        it_behaves_like 'code without offense',
+                        ['config.include Foo',
+                         'config.include Bar'].join("\n")
       end
     end
 

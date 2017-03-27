@@ -88,11 +88,12 @@ describe RuboCop::AST::SendNode do
   describe '#macro?' do
     context 'without a receiver' do
       context 'when parent is a class' do
-        let(:send_node) { parse_source(source).ast.children[2] }
+        let(:send_node) { parse_source(source).ast.children[2].children[0] }
 
         let(:source) do
           ['class Foo',
            '  bar :baz',
+           '  bar :qux',
            'end'].join("\n")
         end
 
@@ -100,11 +101,12 @@ describe RuboCop::AST::SendNode do
       end
 
       context 'when parent is a module' do
-        let(:send_node) { parse_source(source).ast.children[1] }
+        let(:send_node) { parse_source(source).ast.children[1].children[0] }
 
         let(:source) do
           ['module Foo',
            '  bar :baz',
+           '  bar :qux',
            'end'].join("\n")
         end
 

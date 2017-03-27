@@ -41,7 +41,7 @@ module RuboCop
         MSG = 'Put `%s` mixins in %s.'.freeze
 
         def on_send(node)
-          return unless MIXIN_METHODS.include?(node.method_name)
+          return unless node.macro? && MIXIN_METHODS.include?(node.method_name)
 
           check(node)
         end
