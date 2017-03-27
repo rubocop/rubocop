@@ -118,6 +118,11 @@ describe RuboCop::Cop::Style::MixinGrouping, :config do
                          'end'].join("\n")
       end
     end
+
+    context "when using a rspec's include-expectation" do
+      it_behaves_like 'code without offense',
+                      'expect([1, 2, 3]).to include(1, 2)'
+    end
   end
 
   context 'when configured with grouped style' do

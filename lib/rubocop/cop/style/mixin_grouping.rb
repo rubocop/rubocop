@@ -64,6 +64,7 @@ module RuboCop
 
         def check_separated_style(send_node)
           return if send_node.arguments.one?
+          return unless send_node.arguments.all?(&:const_type?)
 
           add_offense(send_node, :expression)
         end

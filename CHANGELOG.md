@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#4172](https://github.com/bbatsov/rubocop/issues/4172): Fix false positives in `Style/MixinGrouping`. ([@sinsoku][])
+
 ## 0.48.0 (2017-03-26)
 
 ### New features
