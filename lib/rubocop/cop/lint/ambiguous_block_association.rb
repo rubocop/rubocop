@@ -22,6 +22,7 @@ module RuboCop
 
         def on_send(node)
           return if node.parenthesized? || node.assignment? || node.method?(:[])
+          return if lambda_argument?(node.first_argument)
 
           return unless method_with_block?(node.first_argument)
           first_param = node.first_argument.children.first
@@ -47,6 +48,10 @@ module RuboCop
         def message(param, method_name)
           format(MSG, param.children[1], method_name)
         end
+
+        def_node_matcher :lambda_argument?, <<-PATTERN
+          (block (send _ :lambda) ...)
+        PATTERN
       end
     end
   end

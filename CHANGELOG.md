@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#4171](https://github.com/bbatsov/rubocop/pull/4171): Prevent `Rails/Blank` from breaking when RHS of `or` is a naked falsiness check. ([@drenmi][])
+* [#4189](https://github.com/bbatsov/rubocop/pull/4189): Make `Lint/AmbiguousBlockAssociation` aware of lambdas passed as arguments. ([@drenmi][])
 * [#4179](https://github.com/bbatsov/rubocop/pull/4179): Prevent `Rails/Blank` from breaking when LHS of `or` is a naked falsiness check. ([@rrosenblum][])
 
 ## 0.48.0 (2017-03-26)
