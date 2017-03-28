@@ -75,7 +75,7 @@ module RuboCop
 
         def on_or(node)
           return unless cop_config['NilOrEmpty']
-          return unless node.rhs.receiver
+          return unless node.lhs.receiver && node.rhs.receiver
 
           nil_or_empty?(node) do |variable1, variable2|
             return unless variable1 == variable2
