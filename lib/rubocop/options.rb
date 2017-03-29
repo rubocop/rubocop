@@ -142,7 +142,7 @@ module RuboCop
       end
       option(opts, '-a', '--auto-correct')
 
-      option(opts, '-n', '--[no-]color') { |c| @options[:color] = c }
+      option(opts, '--[no-]color') { |c| @options[:color] = c }
 
       option(opts, '-v', '--version')
       option(opts, '-V', '--verbose-version')

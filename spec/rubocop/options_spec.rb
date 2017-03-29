@@ -90,7 +90,7 @@ describe RuboCop::Options, :isolated_environment do
               -R, --rails                      Run extra Rails cops.
               -l, --lint                       Run only lint cops.
               -a, --auto-correct               Auto-correct offenses.
-              -n, --[no-]color                 Force color output on or off.
+                  --[no-]color                 Force color output on or off.
               -v, --version                    Display version.
               -V, --verbose-version            Display verbose version.
               -s, --stdin                      Pipe source from STDIN.
