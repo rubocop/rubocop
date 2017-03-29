@@ -8,7 +8,7 @@ describe RuboCop::Cop::Style::EmptyLineAfterMagicComment do
     inspect_source(cop, ['# frozen_string_literal: true',
                          'class Foo; end'])
     expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(['Add a space after magic comments.'])
+    expect(cop.messages).to eq(['Add an empty line after magic comments.'])
   end
 
   it 'registers an offense for documentation immediately following comment' do
@@ -16,7 +16,7 @@ describe RuboCop::Cop::Style::EmptyLineAfterMagicComment do
                          '# Documentation for Foo',
                          'class Foo; end'])
     expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(['Add a space after magic comments.'])
+    expect(cop.messages).to eq(['Add an empty line after magic comments.'])
   end
 
   it 'registers an offense when multiple magic comments without empty line' do
@@ -24,7 +24,7 @@ describe RuboCop::Cop::Style::EmptyLineAfterMagicComment do
                          '# frozen_string_literal: true',
                          'class Foo; end'])
     expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(['Add a space after magic comments.'])
+    expect(cop.messages).to eq(['Add an empty line after magic comments.'])
   end
 
   it 'accepts code that separates the comment from the code with a newline' do
