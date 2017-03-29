@@ -566,7 +566,7 @@ Style/NestedTernaryOperator:
   Enabled: true
 
 Style/EmptyLineAfterMagicComment:
-  Description: 'Add a newline after magic comments to separate them from code.'
+  Description: 'Add an empty line after magic comments to separate them from code.'
   StyleGuide: '#separate-magic-comments-from-code'
   Enabled: true
 

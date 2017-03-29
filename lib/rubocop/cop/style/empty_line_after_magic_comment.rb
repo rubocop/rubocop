@@ -21,7 +21,7 @@ module RuboCop
       #     # Some code
       #   end
       class EmptyLineAfterMagicComment < Cop
-        MSG = 'Add a space after magic comments.'.freeze
+        MSG = 'Add an empty line after magic comments.'.freeze
         BLANK_LINE = /\A\s*\z/
 
         def investigate(source)
