@@ -8,6 +8,16 @@ describe RuboCop::Cop::Style::WordArray, :config do
     described_class.largest_brackets = -Float::INFINITY
   end
 
+  let(:other_cops) do
+    {
+      'Style/PercentLiteralDelimiters' => {
+        'PreferredDelimiters' => {
+          'default' => '()'
+        }
+      }
+    }
+  end
+
   context 'when EnforcedStyle is percent' do
     let(:cop_config) do
       { 'MinSize' => 0,
@@ -255,8 +265,25 @@ describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it "doesn't break when words contain delimiters" do
-      new_source = autocorrect_source(cop, "[')', ']']")
-      expect(new_source).to eq('%w(\\) ])')
+      new_source = autocorrect_source(cop, "[')', ']', '(']")
+      expect(new_source).to eq('%w(\\) ] \\()')
+    end
+
+    context 'when PreferredDelimiters is specified' do
+      let(:other_cops) do
+        {
+          'Style/PercentLiteralDelimiters' => {
+            'PreferredDelimiters' => {
+              'default' => '[]'
+            }
+          }
+        }
+      end
+
+      it 'autocorrects an array with delimiters' do
+        new_source = autocorrect_source(cop, "[')', ']', '(', '[']")
+        expect(new_source).to eq('%w[) \\] ( \\[]')
+      end
     end
   end
 end

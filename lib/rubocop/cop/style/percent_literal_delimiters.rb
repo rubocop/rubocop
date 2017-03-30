@@ -26,8 +26,6 @@ module RuboCop
       class PercentLiteralDelimiters < Cop
         include PercentLiteral
 
-        PERCENT_LITERAL_TYPES = %w(% %i %I %q %Q %r %s %w %W %x).freeze
-
         def on_array(node)
           process(node, '%w', '%W', '%i', '%I')
         end
@@ -76,35 +74,6 @@ module RuboCop
                     contains_preferred_delimiter?(node, type)
 
           add_offense(node, :expression)
-        end
-
-        def preferred_delimiters
-          @preferred_delimiters ||=
-            begin
-              ensure_valid_preferred_delimiters
-
-              if cop_config['PreferredDelimiters'].key?('default')
-                Hash[PERCENT_LITERAL_TYPES.map do |type|
-                  [type, cop_config['PreferredDelimiters'][type] ||
-                    cop_config['PreferredDelimiters']['default']]
-                end]
-              else
-                cop_config['PreferredDelimiters']
-              end
-            end
-        end
-
-        def ensure_valid_preferred_delimiters
-          invalid = cop_config['PreferredDelimiters'].keys -
-                    (PERCENT_LITERAL_TYPES + %w(default))
-          return if invalid.empty?
-
-          raise ArgumentError,
-                "Invalid preferred delimiter config key: #{invalid.join(', ')}"
-        end
-
-        def preferred_delimiters_for(type)
-          preferred_delimiters[type].split(//)
         end
 
         def uses_preferred_delimiter?(node, type)
