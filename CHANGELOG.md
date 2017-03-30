@@ -8,6 +8,7 @@
 * [#4189](https://github.com/bbatsov/rubocop/pull/4189): Make `Lint/AmbiguousBlockAssociation` aware of lambdas passed as arguments. ([@drenmi][])
 * [#4179](https://github.com/bbatsov/rubocop/pull/4179): Prevent `Rails/Blank` from breaking when LHS of `or` is a naked falsiness check. ([@rrosenblum][])
 * [#4172](https://github.com/bbatsov/rubocop/pull/4172): Fix false positives in `Style/MixinGrouping` cop. ([@drenmi][])
+* [#4185](https://github.com/bbatsov/rubocop/pull/4185): Make `Lint/NestedMethodDefinition` aware of `#*_exec` class of methods. ([@drenmi][])
 
 ## 0.48.0 (2017-03-26)
 

@@ -56,6 +56,18 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
     expect(cop.offenses).to be_empty
   end
 
+  it 'does not register offense for nested definition inside instance_exec' do
+    inspect_source(cop, ['class Foo',
+                         '  def x(obj)',
+                         '    obj.instance_exec do',
+                         '      def y',
+                         '      end',
+                         '    end',
+                         '  end',
+                         'end'])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'does not register offense for definition of method on local var' do
     inspect_source(cop, ['class Foo',
                          '  def x(obj)',
@@ -78,10 +90,34 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
     expect(cop.offenses).to be_empty
   end
 
+  it 'does not register offense for nested definition inside class_exec' do
+    inspect_source(cop, ['class Foo',
+                         '  def x(klass)',
+                         '    klass.class_exec do',
+                         '      def y',
+                         '      end',
+                         '    end',
+                         '  end',
+                         'end'])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'does not register offense for nested definition inside module_eval' do
     inspect_source(cop, ['class Foo',
                          '  def self.define(mod)',
                          '    mod.module_eval do',
+                         '      def y',
+                         '      end',
+                         '    end',
+                         '  end',
+                         'end'])
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'does not register offense for nested definition inside module_eval' do
+    inspect_source(cop, ['class Foo',
+                         '  def self.define(mod)',
+                         '    mod.module_exec do',
                          '      def y',
                          '      end',
                          '    end',
