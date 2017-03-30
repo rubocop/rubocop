@@ -21,6 +21,12 @@ describe RuboCop::Cop::Style::RedundantSelf do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts a self receiver on an lvalue of a parallel assignment' do
+    src = 'a, self.b = c, d'
+    inspect_source(cop, src)
+    expect(cop.offenses).to be_empty
+  end
+
   it 'accepts a self receiver on an lvalue of an or-assignment' do
     src = 'self.logger ||= Rails.logger'
     inspect_source(cop, src)

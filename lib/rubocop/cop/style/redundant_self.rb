@@ -71,9 +71,7 @@ module RuboCop
           add_scope(node)
         end
 
-        def on_defs(node)
-          add_scope(node)
-        end
+        alias on_defs on_def
 
         def on_args(node)
           node.children.each { |arg| on_argument(arg) }
@@ -90,6 +88,7 @@ module RuboCop
 
         def on_send(node)
           return unless node.self_receiver? && regular_method_call?(node)
+          return if node.parent && node.parent.mlhs_type?
 
           return if @allowed_send_nodes.include?(node) ||
                     @local_variables_scopes[node].include?(node.method_name)
