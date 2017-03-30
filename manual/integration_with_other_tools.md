@@ -49,7 +49,7 @@ provides LightTable integration.
 
 ### RubyMine / Intellij IDEA
 
-RuboCop is [available](https://www.jetbrains.com/help/idea/2017.1/rubocop.html) as of the 2017.1 releases.
+RuboCop support is [available](https://www.jetbrains.com/help/idea/2017.1/rubocop.html) as of the 2017.1 releases.
 
 ### Visual Studio Code
 
