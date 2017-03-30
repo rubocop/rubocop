@@ -635,8 +635,26 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
-This cop checks for consistent uses of request.referrer or
-request.referrer, depending on configuration.
+This cop checks for consistent uses of `request.referer` or
+`request.referrer`, depending on the cop's configuration.
+
+### Example
+
+```ruby
+# EnforcedStyle: referer
+# bad
+request.referrer
+
+# good
+request.referer
+
+# EnforcedStyle: referrer
+# bad
+request.referer
+
+# good
+request.referrer
+```
 
 ### Important attributes
 

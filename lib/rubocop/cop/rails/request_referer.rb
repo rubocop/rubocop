@@ -3,8 +3,23 @@
 module RuboCop
   module Cop
     module Rails
-      # This cop checks for consistent uses of request.referrer or
-      # request.referrer, depending on configuration.
+      # This cop checks for consistent uses of `request.referer` or
+      # `request.referrer`, depending on the cop's configuration.
+      #
+      # @example
+      #   # EnforcedStyle: referer
+      #   # bad
+      #   request.referrer
+      #
+      #   # good
+      #   request.referer
+      #
+      #   # EnforcedStyle: referrer
+      #   # bad
+      #   request.referer
+      #
+      #   # good
+      #   request.referrer
       class RequestReferer < Cop
         include ConfigurableEnforcedStyle
 
