@@ -3,6 +3,16 @@
 describe RuboCop::Cop::Style::SymbolArray, :config do
   subject(:cop) { described_class.new(config) }
 
+  let(:other_cops) do
+    {
+      'Style/PercentLiteralDelimiters' => {
+        'PreferredDelimiters' => {
+          'default' => '()'
+        }
+      }
+    }
+  end
+
   context 'when EnforcedStyle is percent' do
     let(:cop_config) { { 'EnforcedStyle' => 'percent' } }
 
@@ -28,8 +38,9 @@ describe RuboCop::Cop::Style::SymbolArray, :config do
     end
 
     it "doesn't break when a symbol contains )" do
-      new_source = autocorrect_source(cop, '[:one, :")", :three]')
-      expect(new_source).to eq('%i(one \\) three)')
+      source = '[:one, :")", :three, :"(", :"]", :"["]'
+      new_source = autocorrect_source(cop, source)
+      expect(new_source).to eq('%i(one \\) three \\( ] [)')
     end
 
     it 'does not register an offense for array with non-syms' do
@@ -56,6 +67,24 @@ describe RuboCop::Cop::Style::SymbolArray, :config do
       it 'accepts arrays of smybols' do
         inspect_source(cop, '[:one, :two, :three]')
         expect(cop.offenses).to be_empty
+      end
+    end
+
+    context 'when PreferredDelimiters is specified' do
+      let(:other_cops) do
+        {
+          'Style/PercentLiteralDelimiters' => {
+            'PreferredDelimiters' => {
+              'default' => '[]'
+            }
+          }
+        }
+      end
+
+      it 'autocorrects an array with delimiters' do
+        source = '[:one, :")", :three, :"(", :"]", :"["]'
+        new_source = autocorrect_source(cop, source)
+        expect(new_source).to eq('%i[one ) three ( \\] \\[]')
       end
     end
   end

@@ -10,6 +10,7 @@
 * [#4172](https://github.com/bbatsov/rubocop/pull/4172): Fix false positives in `Style/MixinGrouping` cop. ([@drenmi][])
 * [#4185](https://github.com/bbatsov/rubocop/pull/4185): Make `Lint/NestedMethodDefinition` aware of `#*_exec` class of methods. ([@drenmi][])
 * [#4197](https://github.com/bbatsov/rubocop/pull/4197): Fix false positive in `Style/RedundantSelf` cop with parallel assignment. ([@drenmi][])
+* [#4199](https://github.com/bbatsov/rubocop/issues/4199): Fix incorrect auto correction in `Style/SymbolArray` and `Style/WordArray` cop. ([@pocke][])
 
 ## 0.48.0 (2017-03-26)
 

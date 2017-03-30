@@ -4,6 +4,8 @@ module RuboCop
   module Cop
     # Common functionality for handling percent literals.
     module PercentLiteral
+      PERCENT_LITERAL_TYPES = %w(% %i %I %q %Q %r %s %w %W %x).freeze
+
       private
 
       def percent_literal?(node)
@@ -35,14 +37,18 @@ module RuboCop
         words = node.children
         escape = words.any? { |w| needs_escaping?(w.children[0]) }
         char = char.upcase if escape
-        contents = autocorrect_words(words, escape, node.loc.line)
+        delimiters = preferred_delimiters_for("%#{char}")
+        contents = autocorrect_words(words, escape, node.loc.line, delimiters)
 
         lambda do |corrector|
-          corrector.replace(node.source_range, "%#{char}(#{contents})")
+          corrector.replace(
+            node.source_range,
+            "%#{char}#{delimiters[0]}#{contents}#{delimiters[1]}"
+          )
         end
       end
 
-      def autocorrect_words(word_nodes, escape, base_line_number)
+      def autocorrect_words(word_nodes, escape, base_line_number, delimiters)
         previous_node_line_number = base_line_number
         word_nodes.map do |node|
           number_of_line_breaks = node.loc.line - previous_node_line_number
@@ -50,9 +56,44 @@ module RuboCop
           previous_node_line_number = node.loc.line
           content = node.children.first.to_s
           content = escape ? escape_string(content) : content
-          content.gsub!(/\)/, '\\)')
+          delimiters.each do |delimiter|
+            content.gsub!(delimiter, "\\#{delimiter}")
+          end
           line_breaks + content
         end.join(' ')
+      end
+
+      def ensure_valid_preferred_delimiters
+        invalid = preferred_delimiters_config.keys -
+                  (PERCENT_LITERAL_TYPES + %w(default))
+        return if invalid.empty?
+
+        raise ArgumentError,
+              "Invalid preferred delimiter config key: #{invalid.join(', ')}"
+      end
+
+      def preferred_delimiters
+        @preferred_delimiters ||=
+          begin
+            ensure_valid_preferred_delimiters
+
+            if preferred_delimiters_config.key?('default')
+              Hash[PERCENT_LITERAL_TYPES.map do |type|
+                [type, preferred_delimiters_config[type] ||
+                  preferred_delimiters_config['default']]
+              end]
+            else
+              preferred_delimiters_config
+            end
+          end
+      end
+
+      def preferred_delimiters_config
+        @config.for_cop('Style/PercentLiteralDelimiters')['PreferredDelimiters']
+      end
+
+      def preferred_delimiters_for(type)
+        preferred_delimiters[type].split(//)
       end
     end
   end
