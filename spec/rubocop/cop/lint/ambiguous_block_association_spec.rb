@@ -16,6 +16,7 @@ describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
     end
   end
 
+  it_behaves_like 'accepts', 'foo == bar { baz a }'
   it_behaves_like 'accepts', 'foo ->(a) { bar a }'
   it_behaves_like 'accepts', 'some_method(a) { |el| puts el }'
   it_behaves_like 'accepts', 'some_method(a) do;puts a;end'
