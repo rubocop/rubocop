@@ -47,10 +47,9 @@ The [linter-rubocop](https://github.com/AtomLinter/linter-rubocop) plugin for At
 The [lt-rubocop](https://github.com/seancaffery/lt-rubocop) plugin
 provides LightTable integration.
 
-### RubyMine
+### RubyMine / Intellij IDEA
 
-The [rubocop-for-rubymine](https://github.com/sirlantis/rubocop-for-rubymine) plugin
-provides basic RuboCop integration for RubyMine/IntelliJ IDEA.
+RuboCop support is [available](https://www.jetbrains.com/help/idea/2017.1/rubocop.html) as of the 2017.1 releases.
 
 ### Visual Studio Code
 
