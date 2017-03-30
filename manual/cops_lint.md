@@ -1173,6 +1173,13 @@ def foo
     end
   end
 end
+
+def foo
+  self.module_exec do
+    def bar
+    end
+  end
+end
 ```
 
 ### References
