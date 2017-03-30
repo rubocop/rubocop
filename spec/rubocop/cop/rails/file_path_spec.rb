@@ -56,4 +56,13 @@ describe RuboCop::Cop::Rails::FilePath do
       expect(cop.offenses.size).to eq(1)
     end
   end
+
+  context 'Rails.root.join with a non-string argument including "/"' do
+    let(:source) { 'Rails.root.join("tmp", "data", index/3, "data.csv")' }
+
+    it 'does not register an offense' do
+      inspect_source(cop, source)
+      expect(cop.offenses).to be_empty
+    end
+  end
 end
