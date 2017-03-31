@@ -2874,6 +2874,14 @@ array.delete e
 # good
 array.delete(e)
 
+# good
+# Operators don't need parens
+foo == bar
+
+# good
+# Setter methods don't need parens
+foo.bar = baz
+
 # okay with `puts` listed in `IgnoredMethods`
 puts 'test'
 

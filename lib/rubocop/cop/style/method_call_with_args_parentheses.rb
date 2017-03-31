@@ -15,6 +15,14 @@ module RuboCop
       #   # good
       #   array.delete(e)
       #
+      #   # good
+      #   # Operators don't need parens
+      #   foo == bar
+      #
+      #   # good
+      #   # Setter methods don't need parens
+      #   foo.bar = baz
+      #
       #   # okay with `puts` listed in `IgnoredMethods`
       #   puts 'test'
       #
@@ -35,10 +43,8 @@ module RuboCop
         MSG = 'Use parentheses for method calls with arguments.'.freeze
 
         def on_send(node)
-          return if ignored_list.include?(node.method_name)
+          return if ignored_method?(node)
           return unless node.arguments? && !node.parenthesized?
-          return if operator_call?(node)
-          return if ignore_macros? && node.macro?
 
           add_offense(node, :selector)
         end
@@ -67,6 +73,12 @@ module RuboCop
 
         private
 
+        def ignored_method?(node)
+          node.operator_method? || node.setter_method? ||
+            ignore_macros? && node.macro? ||
+            ignored_list.include?(node.method_name)
+        end
+
         def ignored_list
           cop_config['IgnoredMethods'].map(&:to_sym)
         end
@@ -77,10 +89,6 @@ module RuboCop
 
         def parentheses?(node)
           node.loc.begin
-        end
-
-        def operator_call?(node)
-          node.operator_method?
         end
 
         def args_begin(node)

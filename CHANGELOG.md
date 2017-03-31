@@ -17,6 +17,7 @@
 * [#4199](https://github.com/bbatsov/rubocop/issues/4199): Fix incorrect auto correction in `Style/SymbolArray` and `Style/WordArray` cop. ([@pocke][])
 * [#4218](https://github.com/bbatsov/rubocop/pull/4218): Make `Lint/NestedMethodDefinition` aware of class shovel scope. ([@drenmi][])
 * [#4198](https://github.com/bbatsov/rubocop/pull/4198): Make `Lint/AmbguousBlockAssociation` aware of operator methods. ([@drenmi][])
+* [#4152](https://github.com/bbatsov/rubocop/pull/4152): Make `Style/MethodCallWithArgsParentheses` not require parens on setter methods. ([@drenmi][])
 
 ## 0.48.0 (2017-03-26)
 
