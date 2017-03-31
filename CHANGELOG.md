@@ -5,6 +5,7 @@
 ### Changes
 
 * [#4219](https://github.com/bbatsov/rubocop/issues/4219): Add a link to style guide for `Style/IndentationConsistency` cop. ([@pocke][])
+* [#4168](https://github.com/bbatsov/rubocop/issues/4168): Removed `-n` option. ([@sadovnik][])
 
 ### Bug fixes
 
@@ -2717,3 +2718,4 @@
 [@betesh]: https://github.com/betesh
 [@dpostorivo]: https://github.com/dpostorivo
 [@konto-andrzeja]: https://github.com/konto-andrzeja
+[@sadovnik]: https://github.com/sadovnik
