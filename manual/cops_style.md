@@ -2551,6 +2551,10 @@ Attribute | Value
 EnforcedStyle | normal
 SupportedStyles | normal, rails
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#spaces-indentation](https://github.com/bbatsov/ruby-style-guide#spaces-indentation)
+
 ## Style/IndentationWidth
 
 Enabled by default | Supports autocorrection

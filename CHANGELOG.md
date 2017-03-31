@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#4219](https://github.com/bbatsov/rubocop/issues/4219): Add a link to style guide for `Style/IndentationConsistency` cop. ([@pocke][])
+
 ### Bug fixes
 
 * [#4171](https://github.com/bbatsov/rubocop/pull/4171): Prevent `Rails/Blank` from breaking when RHS of `or` is a naked falsiness check. ([@drenmi][])
