@@ -16,12 +16,20 @@ module RuboCop
       #   # good
       #   # With parentheses, there's no ambiguity.
       #   some_method(a) { |val| puts val }
+      #
+      #   # good
+      #   # Operator methods require no disambiguation
+      #   foo == bar { |b| b.baz }
+      #
+      #   # good
+      #   # Lambda arguments require no disambiguation
+      #   foo = ->(bar) { bar.baz }
       class AmbiguousBlockAssociation < Cop
         MSG = 'Parenthesize the param `%s` to make sure that the block will be'\
               ' associated with the `%s` method call.'.freeze
 
         def on_send(node)
-          return if node.parenthesized? || node.assignment? || node.method?(:[])
+          return if node.parenthesized? || allowed_method?(node)
           return if lambda_argument?(node.first_argument)
 
           return unless method_with_block?(node.first_argument)
@@ -33,16 +41,16 @@ module RuboCop
 
         private
 
-        def method_with_block?(param)
-          return false unless param
+        def allowed_method?(node)
+          node.assignment? || node.operator_method? || node.method?(:[])
+        end
 
-          param.block_type?
+        def method_with_block?(param)
+          param && param.block_type?
         end
 
         def method_as_param?(param)
-          return false unless param
-
-          param.send_type? && !param.arguments?
+          param && param.send_type? && !param.arguments?
         end
 
         def message(param, method_name)
