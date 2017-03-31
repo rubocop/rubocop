@@ -126,6 +126,18 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
     expect(cop.offenses).to be_empty
   end
 
+  it 'does not register offense for nested definition inside class shovel' do
+    inspect_source(cop, ['class Foo',
+                         '  def bar',
+                         '    class << self',
+                         '      def baz',
+                         '      end',
+                         '    end',
+                         '  end',
+                         'end'])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'does not register offense for nested definition inside Class.new' do
     ['(S)', ''].each do |constructor_args|
       inspect_source(cop, ['class Foo',
