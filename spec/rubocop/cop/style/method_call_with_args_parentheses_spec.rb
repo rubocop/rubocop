@@ -16,48 +16,53 @@ describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     expect(cop.offenses).to be_empty
   end
 
-  it 'register an offence for method call without parens' do
+  it 'register an offense for method call without parens' do
     inspect_source(cop, 'top.test a, b')
     expect(cop.offenses.size).to eq(1)
   end
 
-  it 'register an offence for non-reciever method call without parens' do
+  it 'register an offense for non-reciever method call without parens' do
     inspect_source(cop, 'test a, b')
     expect(cop.offenses.size).to eq(1)
   end
 
-  it 'register an offence for methods starting with a capital without parens' do
+  it 'register an offense for methods starting with a capital without parens' do
     inspect_source(cop, 'Test a, b')
     expect(cop.offenses.size).to eq(1)
   end
 
-  it 'register an offence for superclass call without parens' do
+  it 'register an offense for superclass call without parens' do
     inspect_source(cop, 'super a')
     expect(cop.offenses.size).to eq(1)
   end
 
-  it 'register no offence for superclass call without args' do
+  it 'register no offense for superclass call without args' do
     inspect_source(cop, 'super')
     expect(cop.offenses).to be_empty
   end
 
-  it 'register no offence for yield without args' do
+  it 'register no offense for yield without args' do
     inspect_source(cop, 'yield')
     expect(cop.offenses).to be_empty
   end
 
-  it 'register no offence for superclass call with parens' do
+  it 'register no offense for superclass call with parens' do
     inspect_source(cop, 'super(a)')
     expect(cop.offenses).to be_empty
   end
 
-  it 'register an offence for yield without parens' do
+  it 'register an offense for yield without parens' do
     inspect_source(cop, 'yield a')
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'accepts no parens for operators' do
     inspect_source(cop, 'top.test + a')
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts no parens for setter methods' do
+    inspect_source(cop, 'top.test = a')
     expect(cop.offenses).to be_empty
   end
 
