@@ -1189,6 +1189,16 @@ def foo
   end
 end
 ```
+```ruby
+# good
+
+def foo
+  class << self
+    def bar
+    end
+  end
+end
+```
 
 ### References
 

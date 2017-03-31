@@ -43,6 +43,17 @@ module RuboCop
       #       end
       #     end
       #   end
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   def foo
+      #     class << self
+      #       def bar
+      #       end
+      #     end
+      #   end
       class NestedMethodDefinition < Cop
         include OnMethodDef
         extend RuboCop::NodePattern::Macros
@@ -73,7 +84,7 @@ module RuboCop
         private
 
         def scoping_method_call?(child)
-          eval_call?(child) || exec_call?(child) ||
+          eval_call?(child) || exec_call?(child) || child.sclass_type? ||
             class_or_module_or_struct_new_call?(child)
         end
 
