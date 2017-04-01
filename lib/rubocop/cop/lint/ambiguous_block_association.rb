@@ -32,11 +32,11 @@ module RuboCop
           return if node.parenthesized? || allowed_method?(node)
           return if lambda_argument?(node.first_argument)
 
-          return unless method_with_block?(node.first_argument)
-          first_param = node.first_argument.children.first
-          return unless method_as_param?(first_param)
+          return unless method_with_block?(node.last_argument)
+          last_param = node.last_argument.children.first
+          return unless method_as_param?(last_param)
 
-          add_offense(node, :expression, message(first_param, node.method_name))
+          add_offense(node, :expression, message(last_param, node.method_name))
         end
 
         private
