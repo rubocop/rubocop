@@ -30,7 +30,38 @@ describe RuboCop::Cop::Rails::FilePath do
     end
   end
 
-  context 'when using Rails.root called by double quoted string' do
+  context 'when using Rails.root without path called by double quoted string' do
+    let(:source) { '"#{Rails.root}"' }
+
+    it 'does not registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  context 'when interpolating Rails.root in a rm system call' do
+    let :source do
+      'system "rm -rf #{Rails.root.join(\'public\', \'system\')}"'
+    end
+
+    it 'does not registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  context 'when interpolating Rails.root in a wheneverize system call' do
+    let :source do
+      'system "wheneverize \'#{Rails.root}\'" unless File.exist? @filepath'
+    end
+
+    it 'does not registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  context 'when using Rails.root with path called by double quoted string' do
     let(:source) { '"#{Rails.root}/app/models/goober"' }
 
     it 'registers an offense' do

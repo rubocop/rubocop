@@ -29,9 +29,14 @@ module RuboCop
           (send (send (const nil :Rails) :root) :join ...)
         PATTERN
 
+        def_node_matcher :dstr_rails_root_with_str_node?, <<-PATTERN
+          (dstr (begin (send (const nil :Rails) :root)) str)
+        PATTERN
+
         def on_dstr(node)
-          return unless rails_root_nodes?(node)
-          register_offense(node)
+          return unless dstr_rails_root_with_str_node?(node)
+
+          register_offense(node) if node.child_nodes[1].source[0] == '/'
         end
 
         def on_send(node)
