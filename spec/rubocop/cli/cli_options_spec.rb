@@ -1061,9 +1061,7 @@ describe RuboCop::CLI, :isolated_environment do
                   '--format=simple',
                   '--stdin']
         expect(cli.run(argv)).to eq(2)
-        expect($stderr.string).to include(
-          '-s/--stdin requires exactly one path.'
-        )
+        expect($stderr.string).to include('missing argument: --stdin')
       ensure
         $stdin = STDIN
       end
