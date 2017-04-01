@@ -93,8 +93,8 @@ describe RuboCop::Options, :isolated_environment do
                   --[no-]color                 Force color output on or off.
               -v, --version                    Display version.
               -V, --verbose-version            Display verbose version.
-              -s, --stdin                      Pipe source from STDIN.
-                                               This is useful for editor integration.
+              -s, --stdin FILE                 Pipe source from STDIN, using FILE in offense
+                                               reports. This is useful for editor integration.
         END
 
         expect($stdout.string).to eq(expected_help)
@@ -247,7 +247,8 @@ describe RuboCop::Options, :isolated_environment do
       end
 
       it 'fails if no paths are given' do
-        expect { options.parse %w(-s) }.to raise_error(ArgumentError)
+        expect { options.parse %w(-s) }
+          .to raise_error(OptionParser::MissingArgument)
       end
 
       it 'succeeds with exactly one path' do

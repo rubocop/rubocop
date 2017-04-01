@@ -23,8 +23,16 @@ module RuboCop
 
       @validator.validate_compatibility
 
-      if @options[:stdin] && !args.one?
-        raise ArgumentError, '-s/--stdin requires exactly one path.'
+      if @options[:stdin]
+        # The parser has put the file name given after --stdin into
+        # @options[:stdin]. The args array should be empty.
+        if args.any?
+          raise ArgumentError, '-s/--stdin requires exactly one path.'
+        end
+        # We want the STDIN contents in @options[:stdin] and the file name in
+        # args to simplify the rest of the processing.
+        args = [@options[:stdin]]
+        @options[:stdin] = $stdin.binmode.read
       end
 
       [@options, args]
@@ -58,6 +66,8 @@ module RuboCop
         add_severity_option(opts)
         add_flags_with_optional_args(opts)
         add_boolean_flags(opts)
+
+        option(opts, '-s', '--stdin FILE')
       end
     end
 
@@ -146,7 +156,6 @@ module RuboCop
 
       option(opts, '-v', '--version')
       option(opts, '-V', '--verbose-version')
-      option(opts, '-s', '--stdin') { @options[:stdin] = $stdin.binmode.read }
     end
 
     def add_list_options(opts)
@@ -314,8 +323,8 @@ module RuboCop
       no_color:              'Force color output on or off.',
       version:               'Display version.',
       verbose_version:       'Display verbose version.',
-      stdin:                ['Pipe source from STDIN.',
-                             'This is useful for editor integration.']
+      stdin:                ['Pipe source from STDIN, using FILE in offense',
+                             'reports. This is useful for editor integration.']
     }.freeze
   end
 end
