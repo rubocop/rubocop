@@ -5,7 +5,8 @@ module RuboCop
     module Style
       # This cop checks for the presence of parentheses around ternary
       # conditions. It is configurable to enforce inclusion or omission of
-      # parentheses using `EnforcedStyle`.
+      # parentheses using `EnforcedStyle`. Omission is only enforced when
+      # removing the parentheses won't cause a different behaviour.
       #
       # @example
       #
@@ -161,7 +162,7 @@ module RuboCop
 
         def_node_matcher :method_call_argument, <<-PATTERN
           {(:defined? $...)
-           (send {(send ...) nil} _ $(send nil _)...)}
+           (send {_ nil} _ $(send nil _)...)}
         PATTERN
 
         def_node_matcher :square_brackets?,

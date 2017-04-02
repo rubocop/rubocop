@@ -198,6 +198,16 @@ describe RuboCop::Cop::Style::TernaryParentheses, :config do
                         'foo = (baz.foo? bar) ? a : b'
       end
 
+      context 'when calling method on a literal receiver' do
+        it_behaves_like 'code with offense',
+                        'foo = ("bar".foo? bar) ? a : b'
+      end
+
+      context 'when calling method on a constant receiver' do
+        it_behaves_like 'code with offense',
+                        'foo = (Bar.foo? bar) ? a : b'
+      end
+
       context 'when calling method with multiple arguments' do
         it_behaves_like 'code with offense',
                         'foo = (baz.foo? bar, baz) ? a : b'
