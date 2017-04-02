@@ -19,12 +19,17 @@ Style/FrozenStringLiteralComment:
 Style/IndentHeredoc:
   EnforcedStyle: powerpack
 
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - 'spec/**/*.rb'
+
+Lint/UselessAccessModifier:
+  MethodCreatingMethods:
+    - 'def_matcher'
+    - 'def_node_matcher'
+
 Metrics/BlockLength:
   Exclude:
     - 'Rakefile'
     - '**/*.rake'
-    - 'spec/**/*.rb'
-
-AmbiguousBlockAssociation:
-  Exclude:
     - 'spec/**/*.rb'
