@@ -6,7 +6,7 @@ module RuboCop
     module DefNode
       extend NodePattern::Macros
 
-      NON_PUBLIC_MODIFIERS = %w(private protected).freeze
+      NON_PUBLIC_MODIFIERS = %w[private protected].freeze
 
       def non_public?(node)
         non_public_modifier?(node.parent) ||

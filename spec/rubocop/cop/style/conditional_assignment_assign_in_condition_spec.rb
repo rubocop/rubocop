@@ -553,8 +553,8 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                             'SingleLineConditionsOnly' => true,
                             'IncludeTernaryExpressions' => true,
                             'EnforcedStyle' => 'assign_inside_condition',
-                            'SupportedStyles' => %w(assign_to_condition
-                                                    assign_inside_condition)
+                            'SupportedStyles' => %w[assign_to_condition
+                                                    assign_inside_condition]
                           },
                           'Lint/EndAlignment' => {
                             'EnforcedStyleAlignWith' => 'keyword',
@@ -744,8 +744,8 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                             'SingleLineConditionsOnly' => false,
                             'IncludeTernaryExpressions' => true,
                             'EnforcedStyle' => 'assign_inside_condition',
-                            'SupportedStyles' => %w(assign_to_condition
-                                                    assign_inside_condition)
+                            'SupportedStyles' => %w[assign_to_condition
+                                                    assign_inside_condition]
                           },
                           'Lint/EndAlignment' => {
                             'EnforcedStyleAlignWith' => 'keyword',
@@ -997,8 +997,8 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                             'SingleLineConditionsOnly' => true,
                             'IncludeTernaryExpressions' => false,
                             'EnforcedStyle' => 'assign_inside_condition',
-                            'SupportedStyles' => %w(assign_to_condition
-                                                    assign_inside_condition)
+                            'SupportedStyles' => %w[assign_to_condition
+                                                    assign_inside_condition]
                           },
                           'Lint/EndAlignment' => {
                             'EnforcedStyleAlignWith' => 'keyword',

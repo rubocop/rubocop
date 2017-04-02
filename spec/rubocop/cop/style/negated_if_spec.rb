@@ -4,7 +4,7 @@ describe RuboCop::Cop::Style::NegatedIf do
   subject(:cop) do
     config = RuboCop::Config.new(
       'Style/NegatedIf' => {
-        'SupportedStyles' => %w(both prefix postfix),
+        'SupportedStyles' => %w[both prefix postfix],
         'EnforcedStyle' => 'both'
       }
     )
@@ -133,7 +133,7 @@ describe RuboCop::Cop::Style::NegatedIf do
     subject(:cop) do
       config = RuboCop::Config.new(
         'Style/NegatedIf' => {
-          'SupportedStyles' => %w(both prefix postfix),
+          'SupportedStyles' => %w[both prefix postfix],
           'EnforcedStyle' => 'prefix'
         }
       )
@@ -173,7 +173,7 @@ describe RuboCop::Cop::Style::NegatedIf do
     subject(:cop) do
       config = RuboCop::Config.new(
         'Style/NegatedIf' => {
-          'SupportedStyles' => %w(both prefix postfix),
+          'SupportedStyles' => %w[both prefix postfix],
           'EnforcedStyle' => 'postfix'
         }
       )

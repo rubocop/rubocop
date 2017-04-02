@@ -939,7 +939,11 @@ Style/PercentLiteralDelimiters:
   # an individual key
   PreferredDelimiters:
     default: ()
+    '%i': '[]'
+    '%I': '[]'
     '%r': '{}'
+    '%w': '[]'
+    '%W': '[]'
 
 Style/PercentQLiterals:
   EnforcedStyle: lower_case_q

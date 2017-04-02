@@ -3,7 +3,7 @@
 describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) do
-    { 'IgnoredMethods' => %w(puts) }
+    { 'IgnoredMethods' => %w[puts] }
   end
 
   it 'accepts no parens in method call without args' do

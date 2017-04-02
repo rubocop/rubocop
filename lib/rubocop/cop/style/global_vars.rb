@@ -14,7 +14,7 @@ module RuboCop
 
         # predefined global variables their English aliases
         # http://www.zenspider.com/Languages/Ruby/QuickRef.html
-        BUILT_IN_VARS = %w(
+        BUILT_IN_VARS = %w[
           $: $LOAD_PATH
           $" $LOADED_FEATURES
           $0 $PROGRAM_NAME
@@ -41,7 +41,7 @@ module RuboCop
           $DEBUG $FILENAME $VERBOSE $SAFE
           $-0 $-a $-d $-F $-i $-I $-l $-p $-v $-w
           $CLASSPATH $JRUBY_VERSION $JRUBY_REVISION $ENV_JAVA
-        ).map(&:to_sym)
+        ].map(&:to_sym)
 
         def user_vars
           cop_config['AllowedVariables'].map(&:to_sym)

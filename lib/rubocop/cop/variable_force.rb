@@ -35,7 +35,7 @@ module RuboCop
         :shadowarg # This means block local variable (obj.each { |arg; this| }).
       ].freeze
 
-      LOGICAL_OPERATOR_ASSIGNMENT_TYPES = %i(or_asgn and_asgn).freeze
+      LOGICAL_OPERATOR_ASSIGNMENT_TYPES = %i[or_asgn and_asgn].freeze
       OPERATOR_ASSIGNMENT_TYPES =
         (LOGICAL_OPERATOR_ASSIGNMENT_TYPES + [:op_asgn]).freeze
 
@@ -43,15 +43,15 @@ module RuboCop
 
       VARIABLE_REFERENCE_TYPE = :lvar
 
-      POST_CONDITION_LOOP_TYPES = %i(while_post until_post).freeze
-      LOOP_TYPES = (POST_CONDITION_LOOP_TYPES + %i(while until for)).freeze
+      POST_CONDITION_LOOP_TYPES = %i[while_post until_post].freeze
+      LOOP_TYPES = (POST_CONDITION_LOOP_TYPES + %i[while until for]).freeze
 
       RESCUE_TYPE = :rescue
 
       ZERO_ARITY_SUPER_TYPE = :zsuper
 
-      TWISTED_SCOPE_TYPES = %i(block class sclass defs).freeze
-      SCOPE_TYPES = (TWISTED_SCOPE_TYPES + %i(module def)).freeze
+      TWISTED_SCOPE_TYPES = %i[block class sclass defs].freeze
+      SCOPE_TYPES = (TWISTED_SCOPE_TYPES + %i[module def]).freeze
 
       SEND_TYPE = :send
 
@@ -376,14 +376,14 @@ module RuboCop
       end
 
       # Hooks invoked by VariableTable.
-      %i(
+      %i[
         before_entering_scope
         after_entering_scope
         before_leaving_scope
         after_leaving_scope
         before_declaring_variable
         after_declaring_variable
-      ).each do |hook|
+      ].each do |hook|
         define_method(hook) do |arg|
           # Invoke hook in cops.
           run_hook(hook, arg, variable_table)

@@ -381,14 +381,14 @@ describe RuboCop::CLI, :isolated_environment do
 
   it 'finds a file with no .rb extension but has a shebang line' do
     create_file('example', ['#!/usr/bin/env ruby', 'x = 0', 'puts x'])
-    expect(cli.run(%w(--format simple))).to eq(0)
+    expect(cli.run(%w[--format simple])).to eq(0)
     expect($stdout.string)
       .to eq(['', '1 file inspected, no offenses detected', ''].join("\n"))
   end
 
   it 'does not register any offenses for an empty file' do
     create_file('example.rb', '')
-    expect(cli.run(%w(--format simple))).to eq(0)
+    expect(cli.run(%w[--format simple])).to eq(0)
     expect($stdout.string)
       .to eq(['', '1 file inspected, no offenses detected', ''].join("\n"))
   end
@@ -548,7 +548,7 @@ describe RuboCop::CLI, :isolated_environment do
                                           'Rails/ReadWriteAttribute:',
                                           '  Include:',
                                           '    - app/models/**/*.rb'])
-        expect(cli.run(%w(--format simple dir1 dir2))).to eq(1)
+        expect(cli.run(%w[--format simple dir1 dir2])).to eq(1)
         expect($stdout.string)
           .to eq(['== dir1/app/models/example1.rb ==',
                   'C:  1:  1: Prefer self[:attr] over read_attribute' \
@@ -610,7 +610,7 @@ describe RuboCop::CLI, :isolated_environment do
         # match.
         create_file('dir2/app/models/example4.rb', source)
 
-        expect(cli.run(%w(--format simple dir1 dir2))).to eq(1)
+        expect(cli.run(%w[--format simple dir1 dir2])).to eq(1)
         expect($stdout.string)
           .to eq(['== dir1/app/models/example1.rb ==',
                   'C:  1:  1: Prefer self[:attr] over read_attribute' \
@@ -634,7 +634,7 @@ describe RuboCop::CLI, :isolated_environment do
                                    '    - !ruby/regexp /regexp.rb\z/',
                                    '    - "exclude_*"',
                                    '    - "dir/*"'])
-      expect(cli.run(%w(--format simple))).to eq(0)
+      expect(cli.run(%w[--format simple])).to eq(0)
       expect($stdout.string)
         .to eq(['', '4 files inspected, no offenses detected',
                 ''].join("\n"))
@@ -669,7 +669,7 @@ describe RuboCop::CLI, :isolated_environment do
                                    '      rand < 0.8',
                                    '    end',
                                    'end'])
-        result = cli.run(%w(--format simple))
+        result = cli.run(%w[--format simple])
         expect($stderr.string).to eq('')
         expect(result).to eq(0)
         expect($stdout.string)
@@ -677,7 +677,7 @@ describe RuboCop::CLI, :isolated_environment do
                   ''].join("\n"))
       end
 
-      %w(class module).each do |parent|
+      %w[class module].each do |parent|
         it "registers offense for normal indentation in #{parent}" do
           create_file('.rubocop.yml', ['Style/IndentationConsistency:',
                                        '  EnforcedStyle: rails'])
@@ -704,7 +704,7 @@ describe RuboCop::CLI, :isolated_environment do
                                      '    rand < 0.8',
                                      '  end',
                                      'end'])
-          result = cli.run(%w(--format simple))
+          result = cli.run(%w[--format simple])
           expect($stderr.string).to eq('')
           expect(result).to eq(1)
           expect($stdout.string)
@@ -767,7 +767,7 @@ describe RuboCop::CLI, :isolated_environment do
       create_file('example.rb', ['x = 0', 'puts x'])
       create_file('.rubocop.yml', [])
 
-      expect(cli.run(%w(--format simple -c .rubocop.yml))).to eq(0)
+      expect(cli.run(%w[--format simple -c .rubocop.yml])).to eq(0)
       expect($stdout.string)
         .to eq(['', '1 file inspected, no offenses detected',
                 ''].join("\n"))
@@ -791,13 +791,13 @@ describe RuboCop::CLI, :isolated_environment do
       end
 
       context 'when no config file specified' do
-        let(:args) { %w(--format simple --force-default-config) }
+        let(:args) { %w[--format simple --force-default-config] }
         include_examples 'ignores config file'
       end
 
       context 'when config file specified with -c' do
         let(:args) do
-          %w(--format simple --force-default-config -c .rubocop.yml)
+          %w[--format simple --force-default-config -c .rubocop.yml]
         end
         include_examples 'ignores config file'
       end
@@ -814,7 +814,7 @@ describe RuboCop::CLI, :isolated_environment do
       create_file('dir/.rubocop.yml', ['AllCops:',
                                        '  DisplayCopNames: true'])
 
-      expect(cli.run(%w(--format simple))).to eq(1)
+      expect(cli.run(%w[--format simple])).to eq(1)
       expect($stdout.string)
         .to eq(['== example1.rb ==',
                 'C:  1:  6: Trailing whitespace detected.',
@@ -839,7 +839,7 @@ describe RuboCop::CLI, :isolated_environment do
 
       url = 'https://github.com/bbatsov/ruby-style-guide#no-trailing-whitespace'
 
-      expect(cli.run(%w(--format simple))).to eq(1)
+      expect(cli.run(%w[--format simple])).to eq(1)
       expect($stdout.string)
         .to eq(['== example1.rb ==',
                 'C:  1:  6: Trailing whitespace detected.',
@@ -877,7 +877,7 @@ describe RuboCop::CLI, :isolated_environment do
                                    '    - "**/*.rake"',
                                    '    - !ruby/regexp /regexp$/',
                                    '    - .dot1/**/*'])
-      expect(cli.run(%w(--format files))).to eq(1)
+      expect(cli.run(%w[--format files])).to eq(1)
       expect($stderr.string).to eq('')
       expect($stdout.string.split($RS).sort).to eq([abs('.dot1/file.rb'),
                                                     abs('example'),
@@ -894,7 +894,7 @@ describe RuboCop::CLI, :isolated_environment do
                                    '    - example.rb',
                                    '    - !ruby/regexp /regexp.rb$/',
                                    '    - "exclude_*"'])
-      expect(cli.run(%w(--format simple))).to eq(0)
+      expect(cli.run(%w[--format simple])).to eq(0)
       expect($stdout.string)
         .to eq(['', '0 files inspected, no offenses detected',
                 ''].join("\n"))
@@ -916,7 +916,7 @@ describe RuboCop::CLI, :isolated_environment do
       create_file('.rubocop.yml', ['AllCops:',
                                    '  Include:',
                                    '    - .other/**/*'])
-      expect(cli.run(%w(--format simple))).to eq(1)
+      expect(cli.run(%w[--format simple])).to eq(1)
       expect($stderr.string).to eq('')
       expect($stdout.string)
         .to eq(['== .other/example.rb ==',
@@ -931,7 +931,7 @@ describe RuboCop::CLI, :isolated_environment do
       create_file('dir/.rubocop.yml', ['AllCops:',
                                        '  Include:',
                                        '    - "*.ruby3"'])
-      expect(cli.run(%w(--format simple))).to eq(0)
+      expect(cli.run(%w[--format simple])).to eq(0)
       expect($stderr.string).to eq('')
       expect($stdout.string)
         .to eq(['',
@@ -947,7 +947,7 @@ describe RuboCop::CLI, :isolated_environment do
                                    '    - "*.dsl"',
                                    '  Exclude:',
                                    '    - example.rb'])
-      expect(cli.run(%w(--format simple .))).to eq(1)
+      expect(cli.run(%w[--format simple .])).to eq(1)
       expect($stdout.string)
         .to eq(['== special.dsl ==',
                 "C:  1:  9: Prefer single-quoted strings when you don't " \
@@ -960,7 +960,7 @@ describe RuboCop::CLI, :isolated_environment do
     # With rubinius 2.0.0.rc1 + rspec 2.13.1,
     # File.stub(:open).and_call_original causes SystemStackError.
     it 'does not read files in excluded list', broken: :rbx do
-      %w(rb.rb non-rb.ext without-ext).each do |filename|
+      %w[rb.rb non-rb.ext without-ext].each do |filename|
         create_file("example/ignored/#{filename}", '#' * 90)
       end
 
@@ -969,7 +969,7 @@ describe RuboCop::CLI, :isolated_environment do
                                            '    - ignored/**'])
       expect(File).not_to receive(:open).with(%r{/ignored/})
       allow(File).to receive(:open).and_call_original
-      expect(cli.run(%w(--format simple example))).to eq(0)
+      expect(cli.run(%w[--format simple example])).to eq(0)
       expect($stdout.string)
         .to eq(['', '0 files inspected, no offenses detected',
                 ''].join("\n"))
@@ -1136,13 +1136,13 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'can have different config files in different directories' do
-      %w(src lib).each do |dir|
+      %w[src lib].each do |dir|
         create_file("example/#{dir}/example1.rb", '#' * 90)
       end
       create_file('example/src/.rubocop.yml', ['Metrics/LineLength:',
                                                '  Enabled: true',
                                                '  Max: 100'])
-      expect(cli.run(%w(--format simple example))).to eq(1)
+      expect(cli.run(%w[--format simple example])).to eq(1)
       expect($stdout.string).to eq(['== example/lib/example1.rb ==',
                                     'C:  1: 81: Line is too long. [90/80]',
                                     '',
@@ -1165,7 +1165,7 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'can exclude directories relative to .rubocop.yml' do
-      %w(src etc/test etc/spec tmp/test tmp/spec).each do |dir|
+      %w[src etc/test etc/spec tmp/test tmp/spec].each do |dir|
         create_file("example/#{dir}/example1.rb", '#' * 90)
       end
 
@@ -1178,7 +1178,7 @@ describe RuboCop::CLI, :isolated_environment do
                                            '    - etc/**/*',
                                            '    - tmp/spec/**'])
 
-      expect(cli.run(%w(--format simple example))).to eq(1)
+      expect(cli.run(%w[--format simple example])).to eq(1)
       expect($stderr.string).to eq('')
       expect($stdout.string).to eq(['== example/tmp/test/example1.rb ==',
                                     'C:  1: 81: Line is too long. [90/80]',
@@ -1201,7 +1201,7 @@ describe RuboCop::CLI, :isolated_environment do
                    '  Exclude:',
                    '    - vendor/**/*'])
 
-      cli.run(%w(--format simple))
+      cli.run(%w[--format simple])
       expect($stdout.string)
         .to eq(['', '0 files inspected, no offenses detected',
                 ''].join("\n"))
@@ -1210,7 +1210,7 @@ describe RuboCop::CLI, :isolated_environment do
     it 'excludes the vendor directory by default' do
       create_file('vendor/ex.rb', '#' * 90)
 
-      cli.run(%w(--format simple))
+      cli.run(%w[--format simple])
       expect($stdout.string)
         .to eq(['', '0 files inspected, no offenses detected',
                 ''].join("\n"))
@@ -1233,7 +1233,7 @@ describe RuboCop::CLI, :isolated_environment do
                    '  Exclude:',
                    '    - vendor/**/*'])
 
-      cli.run(%w(--format simple))
+      cli.run(%w[--format simple])
       expect($stderr.string).to eq('')
       expect($stdout.string)
         .to eq(['', '0 files inspected, no offenses detected',
@@ -1260,7 +1260,7 @@ describe RuboCop::CLI, :isolated_environment do
                    '  Exclude:',
                    '    - vendor/**/*'])
 
-      cli.run(%w(--format simple))
+      cli.run(%w[--format simple])
       expect($stdout.string)
         .to eq(['', '0 files inspected, no offenses detected',
                 ''].join("\n"))
@@ -1273,7 +1273,7 @@ describe RuboCop::CLI, :isolated_environment do
                                            '  Enabled: true',
                                            '  Max: 100'])
 
-      expect(cli.run(%w(--format simple example))).to eq(1)
+      expect(cli.run(%w[--format simple example])).to eq(1)
       expect($stderr.string)
         .to eq(['Warning: unrecognized cop Style/LyneLenth found in ' +
                 abs('example/.rubocop.yml'),
@@ -1287,7 +1287,7 @@ describe RuboCop::CLI, :isolated_environment do
                                            '  Enabled: true',
                                            '  Min: 10'])
 
-      expect(cli.run(%w(--format simple example))).to eq(1)
+      expect(cli.run(%w[--format simple example])).to eq(1)
       expect($stderr.string)
         .to eq(['Warning: unrecognized parameter Metrics/LineLength:Min ' \
                 'found in ' + abs('example/.rubocop.yml'),
@@ -1299,7 +1299,7 @@ describe RuboCop::CLI, :isolated_environment do
       create_file('example/.rubocop.yml', ['Style/BracesAroundHashParameters:',
                                            '  EnforcedStyle: context'])
 
-      expect(cli.run(%w(--format simple example))).to eq(2)
+      expect(cli.run(%w[--format simple example])).to eq(2)
       expect($stderr.string)
         .to eq(["Error: invalid EnforcedStyle 'context' for " \
                 'Style/BracesAroundHashParameters found in ' +
@@ -1316,7 +1316,7 @@ describe RuboCop::CLI, :isolated_environment do
                                   '  Exclude:',
                                   '    - !ruby/regexp /example1\.rb$/'])
 
-      cli.run(%w(--format simple -c rubocop.yml))
+      cli.run(%w[--format simple -c rubocop.yml])
       expect($stdout.string)
         .to eq(['', '0 files inspected, no offenses detected',
                 ''].join("\n"))
@@ -1330,7 +1330,7 @@ describe RuboCop::CLI, :isolated_environment do
                                   '  Exclude:',
                                   '    - example/**'])
 
-      cli.run(%w(--format simple -c rubocop.yml))
+      cli.run(%w[--format simple -c rubocop.yml])
       expect($stdout.string)
         .to eq(['', '0 files inspected, no offenses detected',
                 ''].join("\n"))
@@ -1342,7 +1342,7 @@ describe RuboCop::CLI, :isolated_environment do
       create_file('rubocop.yml', ['Metrics/LineLength:',
                                   '  Severity: error'])
 
-      cli.run(%w(--format simple -c rubocop.yml))
+      cli.run(%w[--format simple -c rubocop.yml])
       expect($stdout.string)
         .to eq(['== example/example1.rb ==',
                 'E:  1: 81: Line is too long. [90/80]',
@@ -1358,7 +1358,7 @@ describe RuboCop::CLI, :isolated_environment do
       create_file('rubocop.yml', ['Metrics/LineLength:',
                                   '  Severity: superbad'])
 
-      cli.run(%w(--format simple -c rubocop.yml))
+      cli.run(%w[--format simple -c rubocop.yml])
       expect($stderr.string)
         .to eq(["Warning: Invalid severity 'superbad'. " \
                 'Valid severities are refactor, convention, ' \
@@ -1407,7 +1407,7 @@ describe RuboCop::CLI, :isolated_environment do
 
     it 'shows an error if the input file cannot be found' do
       begin
-        cli.run(%w(/tmp/not_a_file))
+        cli.run(%w[/tmp/not_a_file])
       rescue SystemExit => e
         expect(e.status).to eq(1)
         expect(e.message)

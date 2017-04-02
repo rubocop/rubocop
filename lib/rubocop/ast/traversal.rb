@@ -13,21 +13,21 @@ module RuboCop
         nil
       end
 
-      NO_CHILD_NODES    = %i(true false nil int float complex
+      NO_CHILD_NODES    = %i[true false nil int float complex
                              rational str sym regopt self lvar
                              ivar cvar gvar nth_ref back_ref cbase
                              arg restarg blockarg shadowarg
-                             kwrestarg zsuper lambda redo retry).freeze
-      ONE_CHILD_NODE    = %i(splat kwsplat block_pass not break next
+                             kwrestarg zsuper lambda redo retry].freeze
+      ONE_CHILD_NODE    = %i[splat kwsplat block_pass not break next
                              preexe postexe match_current_line defined?
-                             arg_expr).freeze
-      MANY_CHILD_NODES  = %i(dstr dsym xstr regexp array hash pair
+                             arg_expr].freeze
+      MANY_CHILD_NODES  = %i[dstr dsym xstr regexp array hash pair
                              irange erange mlhs masgn or_asgn and_asgn
                              undef alias args super yield or and
                              while_post until_post iflipflop eflipflop
-                             match_with_lvasgn begin kwbegin return).freeze
-      SECOND_CHILD_ONLY = %i(lvasgn ivasgn cvasgn gvasgn optarg kwarg
-                             kwoptarg).freeze
+                             match_with_lvasgn begin kwbegin return].freeze
+      SECOND_CHILD_ONLY = %i[lvasgn ivasgn cvasgn gvasgn optarg kwarg
+                             kwoptarg].freeze
 
       NO_CHILD_NODES.each do |type|
         module_eval("def on_#{type}(node); end")

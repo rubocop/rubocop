@@ -132,7 +132,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       end
     end
 
-    %w(post get patch put delete).each do |keyword|
+    %w[post get patch put delete].each do |keyword|
       it 'does not register an offense when keyword' do
         source = "@user.#{keyword}.id = ''"
         inspect_source(cop, source)
@@ -405,7 +405,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       end
     end
 
-    %w(post get patch put delete).each do |keyword|
+    %w[post get patch put delete].each do |keyword|
       it 'does not register an offense when keyword' do
         source = "@user.#{keyword}.id = ''"
         inspect_source(cop, source)

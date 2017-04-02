@@ -92,11 +92,11 @@ describe RuboCop::Cop::Performance::RegexpMatch, :config do
       end
     END2
 
-    %w(
+    %w[
       $& $' $` $~ $1 $2 $100
       $MATCH
       Regexp.last_match Regexp.last_match(1)
-    ).each do |var|
+    ].each do |var|
       include_examples :accepts, "#{name} in method with `#{var}`", <<-END
         def foo
           if #{cond}

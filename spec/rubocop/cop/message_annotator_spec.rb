@@ -129,14 +129,14 @@ describe RuboCop::Cop::MessageAnnotator do
 
     it 'returns style guide url when it is specified' do
       config['Cop/Cop'] = { 'StyleGuide' => '#target_based_url' }
-      expect(urls).to eq(%w(http://example.org/styleguide#target_based_url))
+      expect(urls).to eq(%w[http://example.org/styleguide#target_based_url])
     end
 
     it 'returns reference url when it is specified' do
       config['Cop/Cop'] = {
         'Reference' => 'https://example.com/some_style_guide'
       }
-      expect(urls).to eq(%w(https://example.com/some_style_guide))
+      expect(urls).to eq(%w[https://example.com/some_style_guide])
     end
 
     it 'returns style guide and reference url when they are specified' do
@@ -144,7 +144,8 @@ describe RuboCop::Cop::MessageAnnotator do
         'StyleGuide' => '#target_based_url',
         'Reference' => 'https://example.com/some_style_guide'
       }
-      expect(urls).to eq(%w(http://example.org/styleguide#target_based_url https://example.com/some_style_guide))
+      expect(urls).to eq(%w[http://example.org/styleguide#target_based_url
+                            https://example.com/some_style_guide])
     end
   end
 end

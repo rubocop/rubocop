@@ -37,7 +37,7 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
     it_behaves_like :offense, 'snake_case', '@camelCase1', :normalcase
     it_behaves_like :offense, 'snake_case', '_unused1', :normalcase
     it_behaves_like :offense, 'snake_case', 'aB1', :normalcase
-    it_behaves_like :offense, 'snake_case', %w(a1 a_2), nil
+    it_behaves_like :offense, 'snake_case', %w[a1 a_2], nil
 
     it_behaves_like :accepts, 'snake_case', 'local_1'
     it_behaves_like :accepts, 'snake_case', 'local_12'
@@ -77,7 +77,7 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
     it_behaves_like :offense, 'normalcase', '_myLocal_1', :snake_case
     it_behaves_like :offense, 'normalcase', 'localFOO_1', :snake_case
     it_behaves_like :offense, 'normalcase', 'local_FOO_1', :snake_case
-    it_behaves_like :offense, 'normalcase', %w(a_1 a2), nil
+    it_behaves_like :offense, 'normalcase', %w[a_1 a2], nil
 
     it_behaves_like :accepts, 'normalcase', 'local1'
     it_behaves_like :accepts, 'normalcase', 'local_'
@@ -120,7 +120,7 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
     it_behaves_like :offense, 'non_integer', '@myAttribute1', :normalcase
     it_behaves_like :offense, 'non_integer', '_myLocal_1', :snake_case
     it_behaves_like :offense, 'non_integer', '_myLocal1', :normalcase
-    it_behaves_like :offense, 'non_integer', %w(a_1 aone), nil
+    it_behaves_like :offense, 'non_integer', %w[a_1 aone], nil
 
     it_behaves_like :accepts, 'non_integer', 'localone'
     it_behaves_like :accepts, 'non_integer', 'local_one'

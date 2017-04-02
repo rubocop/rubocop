@@ -200,7 +200,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   context 'when only a constant or local variable is defined after the ' \
     'modifier' do
-    %w(CONSTANT some_var).each do |binding_name|
+    %w[CONSTANT some_var].each do |binding_name|
       let(:source) do
         [
           'class SomeClass',
@@ -542,7 +542,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
   end
 
   shared_examples 'conditionally defined method' do |keyword, modifier|
-    %w(if unless).each do |conditional_type|
+    %w[if unless].each do |conditional_type|
       it "doesn't register an offense for #{conditional_type}" do
         src = ["#{keyword} A",
                "  #{modifier}",
@@ -558,7 +558,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
   end
 
   shared_examples 'methods defined in an iteration' do |keyword, modifier|
-    %w(each map).each do |iteration_method|
+    %w[each map].each do |iteration_method|
       it "doesn't register an offense for #{iteration_method}" do
         src = ["#{keyword} A",
                "  #{modifier}",
@@ -585,7 +585,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
       expect(cop.offenses).to be_empty
     end
 
-    %w(lambda proc ->).each do |proc_type|
+    %w[lambda proc ->].each do |proc_type|
       it "doesn't register an offense if a #{proc_type} is passed" do
         src = ["#{keyword} A",
                "  #{modifier}",
@@ -862,23 +862,23 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
     end
   end
 
-  %w(protected private).each do |modifier|
+  %w[protected private].each do |modifier|
     it_behaves_like('method defined using class_eval', modifier)
     it_behaves_like('method defined using instance_eval', modifier)
   end
 
-  %w(Class Module Struct).each do |klass|
-    %w(protected private).each do |modifier|
+  %w[Class Module Struct].each do |klass|
+    %w[protected private].each do |modifier|
       it_behaves_like('def in new block', klass, modifier)
     end
   end
 
-  %w(module class).each do |keyword|
+  %w[module class].each do |keyword|
     it_behaves_like('at the top of the body', keyword)
     it_behaves_like('non-repeated visibility modifiers', keyword)
     it_behaves_like('unused visibility modifiers', keyword)
 
-    %w(public protected private).each do |modifier|
+    %w[public protected private].each do |modifier|
       it_behaves_like('repeated visibility modifiers', keyword, modifier)
       it_behaves_like('at the end of the body', keyword, modifier)
       it_behaves_like('nested in a begin..end block', keyword, modifier)

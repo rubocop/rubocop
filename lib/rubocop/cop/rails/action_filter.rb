@@ -16,7 +16,7 @@ module RuboCop
 
         MSG = 'Prefer `%s` over `%s`.'.freeze
 
-        FILTER_METHODS = %i(
+        FILTER_METHODS = %i[
           after_filter
           append_after_filter
           append_around_filter
@@ -30,9 +30,9 @@ module RuboCop
           skip_around_filter
           skip_before_filter
           skip_filter
-        ).freeze
+        ].freeze
 
-        ACTION_METHODS = %i(
+        ACTION_METHODS = %i[
           after_action
           append_after_action
           append_around_action
@@ -46,7 +46,7 @@ module RuboCop
           skip_around_action
           skip_before_action
           skip_action_callback
-        ).freeze
+        ].freeze
 
         minimum_target_rails_version 4.0
 

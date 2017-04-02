@@ -12,17 +12,17 @@ module RuboCop
       # @example
       #   # Style/PercentLiteralDelimiters:
       #   #   PreferredDelimiters:
-      #   #     default: ()
-      #   #     %i:      []
+      #   #     default: []
+      #   #     %i:      ()
       #
       #   # good
-      #   %w(alpha beta) + %i[gamma delta]
+      #   %w[alpha beta] + %i(gamma delta)
       #
       #   # bad
-      #   %W[alpha #{beta}]
+      #   %W(alpha #{beta})
       #
       #   # bad
-      #   %I[alpha beta]
+      #   %I(alpha beta)
       class PercentLiteralDelimiters < Cop
         include PercentLiteral
 

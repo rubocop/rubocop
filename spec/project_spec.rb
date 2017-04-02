@@ -14,7 +14,7 @@ describe 'RuboCop Project' do
     include_context 'configuration file', 'config/default.yml'
 
     it 'has configuration for all cops' do
-      expect(configuration_keys).to match_array(%w(AllCops Rails) + cop_names)
+      expect(configuration_keys).to match_array(%w[AllCops Rails] + cop_names)
     end
 
     it 'has a nicely formatted description for all cops' do

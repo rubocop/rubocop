@@ -3,7 +3,7 @@
 describe RuboCop::Cop::Rails::DynamicFindBy, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) do
-    { 'Whitelist' => %w(find_by_sql) }
+    { 'Whitelist' => %w[find_by_sql] }
   end
 
   shared_examples 'register an offense and auto correct' do |message, corrected|

@@ -20,16 +20,16 @@ describe RuboCop::Cop::Commissioner do
     context 'when a cop has no interest in the file' do
       it 'returns all offenses except the ones of the cop' do
         cops = []
-        cops << double('cop A', offenses: %w(foo), excluded_file?: false)
+        cops << double('cop A', offenses: %w[foo], excluded_file?: false)
         cops << double('cop B', excluded_file?: true)
-        cops << double('cop C', offenses: %w(baz), excluded_file?: false)
+        cops << double('cop C', offenses: %w[baz], excluded_file?: false)
         cops.each(&:as_null_object)
 
         commissioner = described_class.new(cops, [])
         source = []
         processed_source = parse_source(source)
 
-        expect(commissioner.investigate(processed_source)).to eq %w(foo baz)
+        expect(commissioner.investigate(processed_source)).to eq %w[foo baz]
       end
     end
 

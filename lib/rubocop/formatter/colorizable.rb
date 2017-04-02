@@ -22,7 +22,7 @@ module RuboCop
         rainbow.wrap(string).color(*args)
       end
 
-      %i(
+      %i[
         black
         red
         green
@@ -31,7 +31,7 @@ module RuboCop
         magenta
         cyan
         white
-      ).each do |color|
+      ].each do |color|
         define_method(color) do |string|
           colorize(string, color)
         end

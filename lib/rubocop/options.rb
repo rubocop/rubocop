@@ -6,7 +6,7 @@ require 'shellwords'
 module RuboCop
   # This class handles command line options.
   class Options
-    EXITING_OPTIONS = %i(version verbose_version show_cops).freeze
+    EXITING_OPTIONS = %i[version verbose_version show_cops].freeze
     DEFAULT_MAXIMUM_EXCLUSION_ITEMS = 15
 
     def initialize
@@ -193,7 +193,7 @@ module RuboCop
       names.each do |name|
         next if Cop::Cop.registry.names.include?(name)
         next if departments.include?(name)
-        next if %w(Syntax Lint/Syntax).include?(name)
+        next if %w[Syntax Lint/Syntax].include?(name)
 
         raise ArgumentError, "Unrecognized cop or department: #{name}."
       end
@@ -224,16 +224,16 @@ module RuboCop
 
     def only_includes_unneeded_disable?
       @options.key?(:only) &&
-        (@options[:only] & %w(Lint/UnneededDisable UnneededDisable)).any?
+        (@options[:only] & %w[Lint/UnneededDisable UnneededDisable]).any?
     end
 
     def except_syntax?
       @options.key?(:except) &&
-        (@options[:except] & %w(Lint/Syntax Syntax)).any?
+        (@options[:except] & %w[Lint/Syntax Syntax]).any?
     end
 
     def boolean_or_empty_cache?
-      !@options.key?(:cache) || %w(true false).include?(@options[:cache])
+      !@options.key?(:cache) || %w[true false].include?(@options[:cache])
     end
 
     def no_offense_counts_without_auto_gen_config?

@@ -44,10 +44,10 @@ module RuboCop
         CREATE_CONDITIONAL_MSG = '`%s` returns a model which is always truthy.'
                                  .freeze
 
-        CREATE_PERSIST_METHODS = %i(create
-                                    first_or_create find_or_create_by).freeze
-        MODIFY_PERSIST_METHODS = %i(save
-                                    update update_attributes destroy).freeze
+        CREATE_PERSIST_METHODS = %i[create
+                                    first_or_create find_or_create_by].freeze
+        MODIFY_PERSIST_METHODS = %i[save
+                                    update update_attributes destroy].freeze
         PERSIST_METHODS = (CREATE_PERSIST_METHODS +
                            MODIFY_PERSIST_METHODS).freeze
 

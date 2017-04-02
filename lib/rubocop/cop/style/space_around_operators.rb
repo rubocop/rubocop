@@ -8,7 +8,7 @@ module RuboCop
       class SpaceAroundOperators < Cop
         include PrecedingFollowingAlignment
 
-        IRREGULAR_METHODS = %i([] ! []=).freeze
+        IRREGULAR_METHODS = %i[[] ! []=].freeze
 
         def on_pair(node)
           return unless node.hash_rocket?

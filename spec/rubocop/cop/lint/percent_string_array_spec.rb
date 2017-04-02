@@ -11,7 +11,7 @@ describe RuboCop::Cop::Lint::PercentStringArray do
   end
 
   context 'detecting quotes or commas in a %w/%W string' do
-    %w(w W).each do |char|
+    %w[w W].each do |char|
       it 'accepts tokens without quotes or commas' do
         inspect_source(cop, "%#{char}(foo bar baz)")
 

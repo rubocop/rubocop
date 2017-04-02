@@ -6,7 +6,7 @@ module RuboCop
     let(:output) { StringIO.new }
 
     let(:files) do
-      %w(lib/rubocop.rb spec/spec_helper.rb bin/rubocop).map do |path|
+      %w[lib/rubocop.rb spec/spec_helper.rb bin/rubocop].map do |path|
         File.expand_path(path)
       end
     end

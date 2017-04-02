@@ -5,12 +5,12 @@ describe RuboCop::Cop::Lint::Debugger, :config do
 
   include_examples 'debugger', 'debugger', 'debugger'
   include_examples 'debugger', 'byebug', 'byebug'
-  include_examples 'debugger', 'pry binding', %w(binding.pry binding.remote_pry
-                                                 binding.pry_remote)
+  include_examples 'debugger', 'pry binding', %w[binding.pry binding.remote_pry
+                                                 binding.pry_remote]
   include_examples 'debugger',
-                   'capybara debug method', %w(save_and_open_page
+                   'capybara debug method', %w[save_and_open_page
                                                save_and_open_screenshot
-                                               save_screenshot)
+                                               save_screenshot]
   include_examples 'debugger', 'debugger with an argument', 'debugger foo'
   include_examples 'debugger', 'byebug with an argument', 'byebug foo'
   include_examples 'debugger',
@@ -24,9 +24,9 @@ describe RuboCop::Cop::Lint::Debugger, :config do
                     'save_screenshot foo']
   include_examples 'non-debugger', 'a non-pry binding', 'binding.pirate'
 
-  ALL_COMMANDS = %w(debugger byebug pry remote_pry pry_remote irb
+  ALL_COMMANDS = %w[debugger byebug pry remote_pry pry_remote irb
                     save_and_open_page save_and_open_screenshot
-                    save_screenshot).freeze
+                    save_screenshot].freeze
 
   ALL_COMMANDS.each do |src|
     include_examples 'non-debugger', "a #{src} in comments", "# #{src}"

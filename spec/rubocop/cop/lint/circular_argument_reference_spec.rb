@@ -165,7 +165,7 @@ describe RuboCop::Cop::Lint::CircularArgumentReference do
             .to eq('Circular argument reference - `some_arg`.')
           expect(cop.offenses.last.message)
             .to eq('Circular argument reference - `other_arg`.')
-          expect(cop.highlights).to eq %w(some_arg other_arg)
+          expect(cop.highlights).to eq %w[some_arg other_arg]
         end
       end
     end

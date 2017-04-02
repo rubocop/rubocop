@@ -7,7 +7,7 @@ module RuboCop
       class Validation < Cop
         MSG = 'Prefer the new style validations `%s` over `%s`.'.freeze
 
-        TYPES = %w(
+        TYPES = %w[
           acceptance
           confirmation
           exclusion
@@ -18,7 +18,7 @@ module RuboCop
           presence
           size
           uniqueness
-        ).freeze
+        ].freeze
 
         BLACKLIST = TYPES.map { |p| "validates_#{p}_of".to_sym }.freeze
         WHITELIST = TYPES.map { |p| "validates :column, #{p}: value" }.freeze

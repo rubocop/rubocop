@@ -3,7 +3,7 @@
 require 'set'
 
 module RuboCop
-  RUBY_EXTENSIONS = %w(.rb
+  RUBY_EXTENSIONS = %w[.rb
                        .builder
                        .fcgi
                        .gemspec
@@ -21,15 +21,15 @@ module RuboCop
                        .ruby
                        .spec
                        .thor
-                       .watchr).freeze
+                       .watchr].freeze
 
-  RUBY_INTERPRETERS = %w(ruby
+  RUBY_INTERPRETERS = %w[ruby
                          macruby
                          rake
                          jruby
-                         rbx).freeze
+                         rbx].freeze
 
-  RUBY_FILENAMES = %w(.irbrc
+  RUBY_FILENAMES = %w[.irbrc
                       .pryrc
                       Appraisals
                       Berksfile
@@ -48,7 +48,7 @@ module RuboCop
                       Snapfile
                       Thorfile
                       Vagrantfile
-                      buildfile).freeze
+                      buildfile].freeze
 
   # This class finds target files to inspect by scanning the directory tree
   # and picking ruby files.

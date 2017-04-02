@@ -21,10 +21,10 @@ module RuboCop
 
         MSG = 'Use keyword arguments instead of ' \
               'positional arguments for http call: `%s`.'.freeze
-        KEYWORD_ARGS = %i(
+        KEYWORD_ARGS = %i[
           headers env params body flash as xhr session method
-        ).freeze
-        HTTP_METHODS = %i(get post put patch delete head).freeze
+        ].freeze
+        HTTP_METHODS = %i[get post put patch delete head].freeze
 
         minimum_target_rails_version 5.0
 

@@ -29,7 +29,7 @@ describe RuboCop::Cop::Lint::Void do
     end
   end
 
-  %w(var @var @@var VAR).each do |var|
+  %w[var @var @@var VAR].each do |var|
     it "registers an offense for void var #{var} if not on last line" do
       inspect_source(cop,
                      ["#{var} = 5",

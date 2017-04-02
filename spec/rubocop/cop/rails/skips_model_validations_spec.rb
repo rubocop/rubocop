@@ -2,7 +2,7 @@
 
 describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
   cop_config = {
-    'Blacklist' => %w(decrement!
+    'Blacklist' => %w[decrement!
                       decrement_counter
                       increment!
                       increment_counter
@@ -12,7 +12,7 @@ describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
                       update_attribute
                       update_column
                       update_columns
-                      update_counters)
+                      update_counters]
   }
 
   subject(:cop) { described_class.new(config) }
@@ -54,7 +54,7 @@ describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
 
   context 'with `update_attribute` method in blacklist' do
     let(:cop_config) do
-      { 'Blacklist' => %w(update_attribute) }
+      { 'Blacklist' => %w[update_attribute] }
     end
 
     whitelist = cop_config['Blacklist'].reject do |val|

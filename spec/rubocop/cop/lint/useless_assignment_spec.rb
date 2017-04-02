@@ -262,7 +262,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
         .to eq('Useless assignment to variable - `foo`.')
       expect(cop.offenses[1].line).to eq(4)
 
-      expect(cop.highlights).to eq(%w(foo foo))
+      expect(cop.highlights).to eq(%w[foo foo])
     end
   end
 

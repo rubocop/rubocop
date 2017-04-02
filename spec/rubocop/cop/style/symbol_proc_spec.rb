@@ -3,7 +3,7 @@
 describe RuboCop::Cop::Style::SymbolProc, :config do
   subject(:cop) { described_class.new(config) }
 
-  let(:cop_config) { { 'IgnoredMethods' => %w(respond_to) } }
+  let(:cop_config) { { 'IgnoredMethods' => %w[respond_to] } }
 
   it 'registers an offense for a block with parameterless method call on ' \
      'param' do

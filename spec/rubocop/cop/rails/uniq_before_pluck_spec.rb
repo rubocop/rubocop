@@ -67,7 +67,7 @@ describe RuboCop::Cop::Rails::UniqBeforePluck, :config do
                     "instance.assoc.#{method}.pluck(:id)"
   end
 
-  %w(uniq distinct).each do |method|
+  %w[uniq distinct].each do |method|
     context 'when the enforced mode is conservative' do
       let(:cop_config) do
         { 'EnforcedStyle' => 'conservative', 'AutoCorrect' => true }

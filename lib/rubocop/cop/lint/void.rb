@@ -48,7 +48,7 @@ module RuboCop
         SELF_MSG = '`self` used in void context.'.freeze
         DEFINED_MSG = '`%s` used in void context.'.freeze
 
-        OPS = %w(* / % + - == === != < > <= >= <=>).freeze
+        OPS = %w[* / % + - == === != < > <= >= <=>].freeze
 
         def on_begin(node)
           check_begin(node)

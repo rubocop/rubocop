@@ -32,9 +32,9 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
   context 'Semantic style' do
     cop_config = {
       'EnforcedStyle' => 'semantic',
-      'ProceduralMethods' => %w(tap),
-      'FunctionalMethods' => %w(let),
-      'IgnoredMethods' => %w(lambda)
+      'ProceduralMethods' => %w[tap],
+      'FunctionalMethods' => %w[let],
+      'IgnoredMethods' => %w[lambda]
     }
 
     let(:cop_config) { cop_config }
@@ -285,7 +285,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
   context 'line count-based style' do
     cop_config = {
       'EnforcedStyle' => 'line_count_based',
-      'IgnoredMethods' => %w(proc)
+      'IgnoredMethods' => %w[proc]
     }
 
     let(:cop_config) { cop_config }
@@ -417,7 +417,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
   context 'braces for chaining style' do
     cop_config = {
       'EnforcedStyle' => 'braces_for_chaining',
-      'IgnoredMethods' => %w(proc)
+      'IgnoredMethods' => %w[proc]
     }
 
     let(:cop_config) { cop_config }

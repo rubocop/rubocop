@@ -22,7 +22,7 @@ module RuboCop
         MSG = 'Do not assign %s to constants as it will be evaluated only ' \
               'once.'.freeze
 
-        RELATIVE_DATE_METHODS = %i(ago from_now since until).freeze
+        RELATIVE_DATE_METHODS = %i[ago from_now since until].freeze
 
         def on_casgn(node)
           bad_node = node.descendants.find { |n| bad_method?(n) }

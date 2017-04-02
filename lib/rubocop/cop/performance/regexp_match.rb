@@ -191,14 +191,14 @@ module RuboCop
         end
 
         def match_gvar?(sym)
-          %i(
+          %i[
             $~
             $MATCH
             $PREMATCH
             $POSTMATCH
             $LAST_PAREN_MATCH
             $LAST_MATCH_INFO
-          ).include?(sym)
+          ].include?(sym)
         end
 
         def correct_operator(corrector, recv, arg)

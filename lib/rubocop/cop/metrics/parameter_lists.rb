@@ -28,7 +28,7 @@ module RuboCop
           if count_keyword_args?
             node.children.size
           else
-            node.children.count { |a| !%i(kwoptarg kwarg).include?(a.type) }
+            node.children.count { |a| !%i[kwoptarg kwarg].include?(a.type) }
           end
         end
 

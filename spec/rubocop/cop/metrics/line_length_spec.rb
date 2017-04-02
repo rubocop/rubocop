@@ -81,7 +81,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
     context 'and an error other than URI::InvalidURIError is raised ' \
             'while validating an URI-ish string' do
       let(:cop_config) do
-        { 'Max' => 80, 'AllowURI' => true, 'URISchemes' => %w(LDAP) }
+        { 'Max' => 80, 'AllowURI' => true, 'URISchemes' => %w[LDAP] }
       end
 
       let(:source) { <<-END }
@@ -105,7 +105,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
 
       context 'and the scheme has been configured' do
         let(:cop_config) do
-          { 'Max' => 80, 'AllowURI' => true, 'URISchemes' => %w(otherprotocol) }
+          { 'Max' => 80, 'AllowURI' => true, 'URISchemes' => %w[otherprotocol] }
         end
 
         it 'accepts the line' do
@@ -163,7 +163,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
 
     context 'and only certain heredoc delimiters are whitelisted' do
       let(:cop_config) do
-        { 'Max' => 80, 'AllowHeredoc' => %w(SQL OK), 'IgnoredPatterns' => [] }
+        { 'Max' => 80, 'AllowHeredoc' => %w[SQL OK], 'IgnoredPatterns' => [] }
       end
 
       let(:source) { <<-END }

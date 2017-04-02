@@ -4,7 +4,7 @@ describe RuboCop::Cop::Style::Documentation do
   subject(:cop) { described_class.new(config) }
   let(:config) do
     RuboCop::Config.new('Style/CommentAnnotation' => {
-                          'Keywords' => %w(TODO FIXME OPTIMIZE HACK REVIEW)
+                          'Keywords' => %w[TODO FIXME OPTIMIZE HACK REVIEW]
                         })
   end
 
@@ -201,7 +201,7 @@ describe RuboCop::Cop::Style::Documentation do
   end
 
   context 'sparse and trailing comments' do
-    %w(class module).each do |keyword|
+    %w[class module].each do |keyword|
       it "ignores comments after #{keyword} node end" do
         inspect_source(cop,
                        ['module TestModule',
@@ -229,7 +229,7 @@ describe RuboCop::Cop::Style::Documentation do
   end
 
   context 'with # :nodoc:' do
-    %w(class module).each do |keyword|
+    %w[class module].each do |keyword|
       it "accepts non-namespace #{keyword} without documentation" do
         inspect_source(cop,
                        ["#{keyword} Test #:nodoc:",

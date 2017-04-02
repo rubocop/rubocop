@@ -118,7 +118,7 @@ describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
     end
   end
 
-  %w(super binding).each do |keyword|
+  %w[super binding].each do |keyword|
     context "in a method calling `#{keyword}` without arguments" do
       context 'when an underscore-prefixed argument is not used explicitly' do
         let(:source) { <<-END }
