@@ -31,16 +31,16 @@ module RuboCop
         DO = 'do'.freeze
         SAFE_NAVIGATION = '&.'.freeze
         ACCEPT_LEFT_PAREN =
-          %w(break defined? next not rescue return super yield).freeze
+          %w[break defined? next not rescue return super yield].freeze
         ACCEPT_LEFT_SQUARE_BRACKET =
-          %w(super yield).freeze
+          %w[super yield].freeze
 
         def on_and(node)
           check(node, [:operator].freeze) if node.keyword?
         end
 
         def on_block(node)
-          check(node, %i(begin end).freeze)
+          check(node, %i[begin end].freeze)
         end
 
         def on_break(node)
@@ -48,7 +48,7 @@ module RuboCop
         end
 
         def on_case(node)
-          check(node, %i(keyword else).freeze)
+          check(node, %i[keyword else].freeze)
         end
 
         def on_ensure(node)
@@ -56,15 +56,15 @@ module RuboCop
         end
 
         def on_for(node)
-          check(node, %i(begin end).freeze)
+          check(node, %i[begin end].freeze)
         end
 
         def on_if(node)
-          check(node, %i(keyword else begin end).freeze, 'then'.freeze)
+          check(node, %i[keyword else begin end].freeze, 'then'.freeze)
         end
 
         def on_kwbegin(node)
-          check(node, %i(begin end).freeze, nil)
+          check(node, %i[begin end].freeze, nil)
         end
 
         def on_next(node)
@@ -108,7 +108,7 @@ module RuboCop
         end
 
         def on_until(node)
-          check(node, %i(begin end keyword).freeze)
+          check(node, %i[begin end keyword].freeze)
         end
 
         def on_when(node)
@@ -116,7 +116,7 @@ module RuboCop
         end
 
         def on_while(node)
-          check(node, %i(begin end keyword).freeze)
+          check(node, %i[begin end keyword].freeze)
         end
 
         def on_yield(node)

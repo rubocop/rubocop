@@ -3,7 +3,7 @@
 describe RuboCop::Cop::Style::ImplicitRuntimeError do
   subject(:cop) { described_class.new }
 
-  %w(raise fail).each do |method|
+  %w[raise fail].each do |method|
     it "registers an offense for #{method} 'message'" do
       inspect_source(cop, "#{method} 'message'")
       expect(cop.offenses.size).to eq 1

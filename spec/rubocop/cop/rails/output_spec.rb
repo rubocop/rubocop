@@ -21,7 +21,7 @@ describe RuboCop::Cop::Rails::Output do
   end
 
   it 'does not record an offense for methods without arguments' do
-    source = %w(print pp puts)
+    source = %w[print pp puts]
     inspect_source(cop, source)
     expect(cop.offenses).to be_empty
   end

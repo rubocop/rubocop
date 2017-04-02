@@ -21,28 +21,28 @@ module RuboCop
     class Node < Parser::AST::Node # rubocop:disable Metrics/ClassLength
       include RuboCop::AST::Sexp
 
-      COMPARISON_OPERATORS = %i(! == === != <= >= > < <=>).freeze
+      COMPARISON_OPERATORS = %i[! == === != <= >= > < <=>].freeze
 
-      TRUTHY_LITERALS = %i(str dstr xstr int float sym dsym array
+      TRUTHY_LITERALS = %i[str dstr xstr int float sym dsym array
                            hash regexp true irange erange complex
-                           rational regopt).freeze
-      FALSEY_LITERALS = %i(false nil).freeze
+                           rational regopt].freeze
+      FALSEY_LITERALS = %i[false nil].freeze
       LITERALS = (TRUTHY_LITERALS + FALSEY_LITERALS).freeze
-      COMPOSITE_LITERALS = %i(dstr xstr dsym array hash irange
-                              erange regexp).freeze
+      COMPOSITE_LITERALS = %i[dstr xstr dsym array hash irange
+                              erange regexp].freeze
       BASIC_LITERALS = (LITERALS - COMPOSITE_LITERALS).freeze
-      MUTABLE_LITERALS = %i(str dstr xstr array hash).freeze
+      MUTABLE_LITERALS = %i[str dstr xstr array hash].freeze
       IMMUTABLE_LITERALS = (LITERALS - MUTABLE_LITERALS).freeze
 
-      VARIABLES = %i(ivar gvar cvar lvar).freeze
-      REFERENCES = %i(nth_ref back_ref).freeze
-      KEYWORDS = %i(alias and break case class def defs defined?
+      VARIABLES = %i[ivar gvar cvar lvar].freeze
+      REFERENCES = %i[nth_ref back_ref].freeze
+      KEYWORDS = %i[alias and break case class def defs defined?
                     kwbegin do else ensure for if module next
                     not or postexe redo rescue retry return self
                     super zsuper then undef until when while
-                    yield).freeze
-      OPERATOR_KEYWORDS = %i(and or).freeze
-      SPECIAL_KEYWORDS = %w(__FILE__ __LINE__ __ENCODING__).freeze
+                    yield].freeze
+      OPERATOR_KEYWORDS = %i[and or].freeze
+      SPECIAL_KEYWORDS = %w[__FILE__ __LINE__ __ENCODING__].freeze
 
       # def_matcher can be used to define a pattern-matching method on Node
       class << self
@@ -361,7 +361,7 @@ module RuboCop
         IMMUTABLE_LITERALS.include?(type)
       end
 
-      %i(literal basic_literal).each do |kind|
+      %i[literal basic_literal].each do |kind|
         recursive_kind = :"recursive_#{kind}?"
         kind_filter = :"#{kind}?"
         define_method(recursive_kind) do

@@ -90,7 +90,7 @@ module RuboCop
 
         def setter_method?(method_name)
           method_name.to_s.end_with?(EQUAL) &&
-            !%i(!= == === >= <=).include?(method_name)
+            !%i[!= == === >= <=].include?(method_name)
         end
 
         def assignment_rhs_exist?(node)
@@ -205,9 +205,9 @@ module RuboCop
         ASSIGN_TO_CONDITION_MSG =
           'Assign variables inside of conditionals'.freeze
         VARIABLE_ASSIGNMENT_TYPES =
-          %i(casgn cvasgn gvasgn ivasgn lvasgn).freeze
+          %i[casgn cvasgn gvasgn ivasgn lvasgn].freeze
         ASSIGNMENT_TYPES = VARIABLE_ASSIGNMENT_TYPES +
-                           %i(and_asgn or_asgn op_asgn masgn).freeze
+                           %i[and_asgn or_asgn op_asgn masgn].freeze
         LINE_LENGTH = 'Metrics/LineLength'.freeze
         INDENTATION_WIDTH = 'Style/IndentationWidth'.freeze
         ENABLED = 'Enabled'.freeze

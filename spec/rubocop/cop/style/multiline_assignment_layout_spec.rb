@@ -2,7 +2,7 @@
 
 describe RuboCop::Cop::Style::MultilineAssignmentLayout, :config do
   subject(:cop) { described_class.new(config) }
-  let(:supported_types) { %w(if) }
+  let(:supported_types) { %w[if] }
 
   let(:cop_config) do
     {
@@ -39,7 +39,7 @@ describe RuboCop::Cop::Style::MultilineAssignmentLayout, :config do
     end
 
     context 'configured supported types' do
-      let(:supported_types) { %w(array) }
+      let(:supported_types) { %w[array] }
 
       it 'allows supported types to be configured' do
         inspect_source(cop, ['a, b = 4,',
@@ -103,7 +103,7 @@ describe RuboCop::Cop::Style::MultilineAssignmentLayout, :config do
     end
 
     context 'configured supported types' do
-      let(:supported_types) { %w(array) }
+      let(:supported_types) { %w[array] }
 
       it 'allows supported types to be configured' do
         inspect_source(cop, ['a, b =',

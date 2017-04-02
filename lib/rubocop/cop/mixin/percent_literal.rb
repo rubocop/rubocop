@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     # Common functionality for handling percent literals.
     module PercentLiteral
-      PERCENT_LITERAL_TYPES = %w(% %i %I %q %Q %r %s %w %W %x).freeze
+      PERCENT_LITERAL_TYPES = %w[% %i %I %q %Q %r %s %w %W %x].freeze
 
       private
 
@@ -65,7 +65,7 @@ module RuboCop
 
       def ensure_valid_preferred_delimiters
         invalid = preferred_delimiters_config.keys -
-                  (PERCENT_LITERAL_TYPES + %w(default))
+                  (PERCENT_LITERAL_TYPES + %w[default])
         return if invalid.empty?
 
         raise ArgumentError,

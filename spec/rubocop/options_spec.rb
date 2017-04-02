@@ -129,47 +129,47 @@ describe RuboCop::Options, :isolated_environment do
     describe 'incompatible cli options' do
       it 'rejects using -v with -V' do
         msg = 'Incompatible cli options: [:version, :verbose_version]'
-        expect { options.parse %w(-vV) }
+        expect { options.parse %w[-vV] }
           .to raise_error(ArgumentError, msg)
       end
 
       it 'rejects using -v with --show-cops' do
         msg = 'Incompatible cli options: [:version, :show_cops]'
-        expect { options.parse %w(-v --show-cops) }
+        expect { options.parse %w[-v --show-cops] }
           .to raise_error(ArgumentError, msg)
       end
 
       it 'rejects using -V with --show-cops' do
         msg = 'Incompatible cli options: [:verbose_version, :show_cops]'
-        expect { options.parse %w(-V --show-cops) }
+        expect { options.parse %w[-V --show-cops] }
           .to raise_error(ArgumentError, msg)
       end
 
       it 'mentions all incompatible options when more than two are used' do
         msg = ['Incompatible cli options: [:version, :verbose_version,',
                ' :show_cops]'].join
-        expect { options.parse %w(-vV --show-cops) }
+        expect { options.parse %w[-vV --show-cops] }
           .to raise_error(ArgumentError, msg)
       end
     end
 
     describe '--fail-level' do
       it 'accepts full severity names' do
-        %w(refactor convention warning error fatal).each do |severity|
+        %w[refactor convention warning error fatal].each do |severity|
           expect { options.parse(['--fail-level', severity]) }
             .not_to raise_error
         end
       end
 
       it 'accepts severity initial letters' do
-        %w(R C W E F).each do |severity|
+        %w[R C W E F].each do |severity|
           expect { options.parse(['--fail-level', severity]) }
             .not_to raise_error
         end
       end
 
       it 'accepts the "fake" severities A/autocorrect' do
-        %w(autocorrect A).each do |severity|
+        %w[autocorrect A].each do |severity|
           expect { options.parse(['--fail-level', severity]) }
             .not_to raise_error
         end
@@ -193,48 +193,48 @@ describe RuboCop::Options, :isolated_environment do
 
     describe '--cache' do
       it 'fails if no argument is given' do
-        expect { options.parse %w(--cache) }
+        expect { options.parse %w[--cache] }
           .to raise_error(OptionParser::MissingArgument)
       end
 
       it 'fails if unrecognized argument is given' do
-        expect { options.parse %w(--cache maybe) }.to raise_error(ArgumentError)
+        expect { options.parse %w[--cache maybe] }.to raise_error(ArgumentError)
       end
 
       it 'accepts true as argument' do
-        expect { options.parse %w(--cache true) }.not_to raise_error
+        expect { options.parse %w[--cache true] }.not_to raise_error
       end
 
       it 'accepts false as argument' do
-        expect { options.parse %w(--cache false) }.not_to raise_error
+        expect { options.parse %w[--cache false] }.not_to raise_error
       end
     end
 
     describe '--exclude-limit' do
       it 'fails if given last without argument' do
-        expect { options.parse %w(--auto-gen-config --exclude-limit) }
+        expect { options.parse %w[--auto-gen-config --exclude-limit] }
           .to raise_error(OptionParser::MissingArgument)
       end
 
       it 'fails if given alone without argument' do
-        expect { options.parse %w(--exclude-limit) }
+        expect { options.parse %w[--exclude-limit] }
           .to raise_error(OptionParser::MissingArgument)
       end
 
       it 'fails if given first without argument' do
-        expect { options.parse %w(--exclude-limit --auto-gen-config) }
+        expect { options.parse %w[--exclude-limit --auto-gen-config] }
           .to raise_error(OptionParser::MissingArgument)
       end
 
       it 'fails if given without --auto-gen-config' do
-        expect { options.parse %w(--exclude-limit 10) }
+        expect { options.parse %w[--exclude-limit 10] }
           .to raise_error(ArgumentError)
       end
     end
 
     describe '--auto-gen-config' do
       it 'accepts other options' do
-        expect { options.parse %w(--auto-gen-config --rails) }
+        expect { options.parse %w[--auto-gen-config --rails] }
           .not_to raise_error
       end
     end
@@ -247,16 +247,16 @@ describe RuboCop::Options, :isolated_environment do
       end
 
       it 'fails if no paths are given' do
-        expect { options.parse %w(-s) }
+        expect { options.parse %w[-s] }
           .to raise_error(OptionParser::MissingArgument)
       end
 
       it 'succeeds with exactly one path' do
-        expect { options.parse %w(--stdin foo) }.not_to raise_error
+        expect { options.parse %w[--stdin foo] }.not_to raise_error
       end
 
       it 'fails if more than one path is given' do
-        expect { options.parse %w(--stdin foo bar) }
+        expect { options.parse %w[--stdin foo bar] }
           .to raise_error(ArgumentError)
       end
     end
@@ -269,13 +269,13 @@ describe RuboCop::Options, :isolated_environment do
     ensure
       ENV.delete('RUBOCOP_OPTS')
     end
-    let(:command_line_options) { %w(--no-color) }
+    let(:command_line_options) { %w[--no-color] }
 
     subject { options.parse(command_line_options).first }
 
     context '.rubocop file' do
       before do
-        create_file('.rubocop', %w(--color --fail-level C))
+        create_file('.rubocop', %w[--color --fail-level C])
       end
 
       it 'has lower precedence then command line options' do
@@ -307,7 +307,7 @@ describe RuboCop::Options, :isolated_environment do
       end
 
       it 'has higher precedence then options from .rubocop file' do
-        create_file('.rubocop', %w(--color --fail-level C))
+        create_file('.rubocop', %w[--color --fail-level C])
 
         with_env_options '--fail-level W' do
           is_expected.to eq(color: false, fail_level: :warning)

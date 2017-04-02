@@ -100,7 +100,7 @@ module RuboCop
           replacement = if slash_literal?(node)
                           ['%r', ''].zip(preferred_delimiters).map(&:join)
                         else
-                          %w(/ /)
+                          %w[/ /]
                         end
 
           lambda do |corrector|

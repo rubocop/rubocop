@@ -16,7 +16,7 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
                              'b(0O1234)'])
         expect(cop.offenses.size).to eq(2)
         expect(cop.messages.uniq).to eq(['Use 0o for octal literals.'])
-        expect(cop.highlights).to eq(%w(01234 0O1234))
+        expect(cop.highlights).to eq(%w[01234 0O1234])
       end
 
       it 'does not register offense for lowercase prefix' do
@@ -48,7 +48,7 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
                              'b(0o1234)'])
         expect(cop.offenses.size).to eq(2)
         expect(cop.messages.uniq).to eq(['Use 0 for octal literals.'])
-        expect(cop.highlights).to eq(%w(0O1234 0o1234))
+        expect(cop.highlights).to eq(%w[0O1234 0o1234])
       end
 
       it 'does not register offense for prefix `0`' do
@@ -75,7 +75,7 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
                            'b(0XABC)'])
       expect(cop.offenses.size).to eq(2)
       expect(cop.messages.uniq).to eq(['Use 0x for hexadecimal literals.'])
-      expect(cop.highlights).to eq(%w(0X1AC 0XABC))
+      expect(cop.highlights).to eq(%w[0X1AC 0XABC])
     end
 
     it 'does not register offense for lowercase prefix' do
@@ -95,7 +95,7 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
                            'b(0B111)'])
       expect(cop.offenses.size).to eq(2)
       expect(cop.messages.uniq).to eq(['Use 0b for binary literals.'])
-      expect(cop.highlights).to eq(%w(0B10101 0B111))
+      expect(cop.highlights).to eq(%w[0B10101 0B111])
     end
 
     it 'does not register offense for lowercase prefix' do
@@ -116,7 +116,7 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
       expect(cop.offenses.size).to eq(2)
       expect(cop.messages.uniq)
         .to eq(['Do not use prefixes for decimal literals.'])
-      expect(cop.highlights).to eq(%w(0d1234 0D1234))
+      expect(cop.highlights).to eq(%w[0d1234 0D1234])
     end
 
     it 'does not register offense for no prefix' do

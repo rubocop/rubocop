@@ -259,7 +259,7 @@ describe RuboCop::ConfigLoader do
               'Max' => 77,
               'AllowHeredoc' => true,
               'AllowURI' => true,
-              'URISchemes' => %w(http https),
+              'URISchemes' => %w[http https],
               'IgnoreCopDirectives' => false,
               'IgnoredPatterns' => []
             },
@@ -340,7 +340,7 @@ describe RuboCop::ConfigLoader do
               'Max' => 120,             # overridden in line_length.yml
               'AllowHeredoc' => false,  # overridden in rubocop.yml
               'AllowURI' => true,
-              'URISchemes' => %w(http https),
+              'URISchemes' => %w[http https],
               'IgnoreCopDirectives' => false,
               'IgnoredPatterns' => []
             }
@@ -428,7 +428,7 @@ describe RuboCop::ConfigLoader do
 
       it 'returns values from the gem config with local overrides' do
         gem_class = Struct.new(:gem_dir)
-        %w(gemone gemtwo).each do |gem_name|
+        %w[gemone gemtwo].each do |gem_name|
           mock_spec = gem_class.new(gem_name)
           expect(Gem::Specification).to receive(:find_by_name)
             .at_least(:once).with(gem_name).and_return(mock_spec)

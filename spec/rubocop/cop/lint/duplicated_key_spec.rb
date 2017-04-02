@@ -25,7 +25,7 @@ describe RuboCop::Cop::Lint::DuplicatedKey do
       inspect_source(cop, source)
       expect(cop.offenses.size).to eq(2)
       expect(cop.messages).to eq(['Duplicated key in hash literal.'] * 2)
-      expect(cop.highlights).to eq %w(veg fruit)
+      expect(cop.highlights).to eq %w[veg fruit]
     end
   end
 
@@ -38,7 +38,7 @@ describe RuboCop::Cop::Lint::DuplicatedKey do
       inspect_source(cop, source)
       expect(cop.offenses.size).to eq(2)
       expect(cop.messages).to eq(['Duplicated key in hash literal.'] * 2)
-      expect(cop.highlights).to eq %w(1 1)
+      expect(cop.highlights).to eq %w[1 1]
     end
   end
 

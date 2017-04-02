@@ -13,8 +13,8 @@ module RuboCop
               'Another good alternative is the usage of control flow ' \
               '`&&`/`||`.'.freeze
 
-        ASSIGNMENT_TYPES = %i(lvasgn casgn cvasgn
-                              gvasgn ivasgn masgn).freeze
+        ASSIGNMENT_TYPES = %i[lvasgn casgn cvasgn
+                              gvasgn ivasgn masgn].freeze
 
         def on_if(node)
           return unless eligible_node?(node)

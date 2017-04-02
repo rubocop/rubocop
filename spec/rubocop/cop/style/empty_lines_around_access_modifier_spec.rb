@@ -3,7 +3,7 @@
 describe RuboCop::Cop::Style::EmptyLinesAroundAccessModifier do
   subject(:cop) { described_class.new }
 
-  %w(private protected public module_function).each do |access_modifier|
+  %w[private protected public module_function].each do |access_modifier|
     it "requires blank line before #{access_modifier}" do
       inspect_source(cop,
                      ['class Test',

@@ -19,7 +19,7 @@ module RuboCop
       #   'abc'.casecmp(str).zero?
       class Casecmp < Cop
         MSG = 'Use `casecmp` instead of `%s %s`.'.freeze
-        CASE_METHODS = %i(downcase upcase).freeze
+        CASE_METHODS = %i[downcase upcase].freeze
 
         def_node_matcher :downcase_eq, <<-END
           (send

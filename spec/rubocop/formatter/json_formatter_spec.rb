@@ -4,10 +4,10 @@ module RuboCop
   describe Formatter::JSONFormatter do
     subject(:formatter) { described_class.new(output) }
     let(:output) { StringIO.new }
-    let(:files) { %w(/path/to/file1 /path/to/file2) }
+    let(:files) { %w[/path/to/file1 /path/to/file2] }
     let(:location) do
       source_buffer = Parser::Source::Buffer.new('test', 1)
-      source_buffer.source = %w(a b cdefghi).join("\n")
+      source_buffer.source = %w[a b cdefghi].join("\n")
       Parser::Source::Range.new(source_buffer, 9, 10)
     end
     let(:offense) do
@@ -20,7 +20,7 @@ module RuboCop
 
       it 'sets target file count in summary' do
         expect(summary[:target_file_count]).to be_nil
-        formatter.started(%w(/path/to/file1 /path/to/file2))
+        formatter.started(%w[/path/to/file1 /path/to/file2])
         expect(summary[:target_file_count]).to eq(2)
       end
     end
@@ -66,7 +66,7 @@ module RuboCop
 
       it 'sets inspected file count in summary' do
         expect(summary[:inspected_file_count]).to be_nil
-        formatter.finished(%w(/path/to/file1 /path/to/file2))
+        formatter.finished(%w[/path/to/file1 /path/to/file2])
         expect(summary[:inspected_file_count]).to eq(2)
       end
 

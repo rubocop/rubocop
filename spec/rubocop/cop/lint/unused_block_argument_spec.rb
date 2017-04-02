@@ -46,7 +46,7 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
             "You can omit all the arguments if you don't care about them."
           )
           expect(cop.offenses.first.line).to eq(2)
-          expect(cop.highlights).to eq(%w(key value))
+          expect(cop.highlights).to eq(%w[key value])
         end
       end
     end
@@ -126,7 +126,7 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
 
           )
           expect(cop.offenses.first.line).to eq(1)
-          expect(cop.highlights).to eq(%w(foo bar))
+          expect(cop.highlights).to eq(%w[foo bar])
         end
       end
 
@@ -259,7 +259,7 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
         it 'registers offenses' do
           expect(cop.offenses.size).to eq 2
           expect(cop.offenses.first.line).to eq(1)
-          expect(cop.highlights).to eq(%w(key value))
+          expect(cop.highlights).to eq(%w[key value])
         end
       end
     end
@@ -275,7 +275,7 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
         it 'registers an offense' do
           expect(cop.offenses.size).to eq(2)
           expect(cop.offenses.first.line).to eq(1)
-          expect(cop.highlights).to eq(%w(key value))
+          expect(cop.highlights).to eq(%w[key value])
         end
       end
     end

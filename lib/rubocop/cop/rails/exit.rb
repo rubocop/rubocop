@@ -20,8 +20,8 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         MSG = 'Do not use `exit` in Rails applications.'.freeze
-        TARGET_METHODS = %i(exit exit!).freeze
-        EXPLICIT_RECEIVERS = %i(Kernel Process).freeze
+        TARGET_METHODS = %i[exit exit!].freeze
+        EXPLICIT_RECEIVERS = %i[Kernel Process].freeze
 
         def on_send(node)
           add_offense(node, :selector) if offending_node?(node)

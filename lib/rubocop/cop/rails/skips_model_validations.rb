@@ -25,7 +25,7 @@ module RuboCop
       class SkipsModelValidations < Cop
         MSG = 'Avoid using `%s` because it skips validations.'.freeze
 
-        METHODS_WITH_ARGUMENTS = %w(decrement!
+        METHODS_WITH_ARGUMENTS = %w[decrement!
                                     decrement_counter
                                     increment!
                                     increment_counter
@@ -34,7 +34,7 @@ module RuboCop
                                     update_attribute
                                     update_column
                                     update_columns
-                                    update_counters).freeze
+                                    update_counters].freeze
 
         def on_send(node)
           return unless blacklist.include?(node.method_name.to_s)

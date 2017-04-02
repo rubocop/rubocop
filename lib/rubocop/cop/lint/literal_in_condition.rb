@@ -108,7 +108,7 @@ module RuboCop
         def handle_node(node)
           if node.literal?
             add_offense(node, :expression)
-          elsif %i(send and or begin).include?(node.type)
+          elsif %i[send and or begin].include?(node.type)
             check_node(node)
           end
         end

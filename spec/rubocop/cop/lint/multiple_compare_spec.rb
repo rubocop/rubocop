@@ -26,7 +26,7 @@ describe RuboCop::Cop::Lint::MultipleCompare do
     end
   end
 
-  %w(< > <= >=).repeated_permutation(2) do |op1, op2|
+  %w[< > <= >=].repeated_permutation(2) do |op1, op2|
     include_examples 'Check to use two comparison operator', op1, op2
   end
 

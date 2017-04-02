@@ -132,7 +132,7 @@ describe RuboCop::Cop::Lint::NonLocalExitFromIterator do
         expect(cop.offenses[1].message).to eq(message)
         expect(cop.offenses[1].severity.name).to eq(:warning)
         expect(cop.offenses[1].line).to eq(6)
-        expect(cop.highlights).to eq(%w(return return))
+        expect(cop.highlights).to eq(%w[return return])
       end
     end
 

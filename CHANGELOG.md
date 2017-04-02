@@ -6,6 +6,7 @@
 
 * [#4219](https://github.com/bbatsov/rubocop/issues/4219): Add a link to style guide for `Style/IndentationConsistency` cop. ([@pocke][])
 * [#4168](https://github.com/bbatsov/rubocop/issues/4168): Removed `-n` option. ([@sadovnik][])
+* [#4039](https://github.com/bbatsov/rubocop/pull/4039): Change `Style/PercentLiteralDelimiters` default configuration to match Style Guide update. ([@drenmi][])
 
 ### Bug fixes
 

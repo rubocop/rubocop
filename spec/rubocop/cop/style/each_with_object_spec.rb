@@ -17,7 +17,7 @@ describe RuboCop::Cop::Style::EachWithObject do
     expect(cop.messages)
       .to eq(['Use `each_with_object` instead of `inject`.',
               'Use `each_with_object` instead of `reduce`.'])
-    expect(cop.highlights).to eq(%w(inject reduce))
+    expect(cop.highlights).to eq(%w[inject reduce])
   end
 
   it 'correctly autocorrects' do

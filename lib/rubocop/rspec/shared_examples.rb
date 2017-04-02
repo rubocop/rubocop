@@ -22,7 +22,7 @@ shared_examples_for 'mimics MRI 2.1' do |grep_mri_warning|
         offense_by_mri = offenses_by_mri[index]
         # Exclude column attribute since MRI does not
         # output column number.
-        %i(severity line cop_name).each do |a|
+        %i[severity line cop_name].each do |a|
           expect(offense_by_cop.send(a)).to eq(offense_by_mri.send(a))
         end
       end

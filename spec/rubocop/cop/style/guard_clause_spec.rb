@@ -23,7 +23,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
       expect(cop.messages)
         .to eq(['Use a guard clause instead of wrapping ' \
                 'the code inside a conditional expression.'] * 2)
-      expect(cop.highlights).to eq(%w(if unless))
+      expect(cop.highlights).to eq(%w[if unless])
     end
 
     it 'reports an offense if method body is if / unless without else' do
@@ -44,7 +44,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
       expect(cop.messages)
         .to eq(['Use a guard clause instead of wrapping ' \
                 'the code inside a conditional expression.'] * 2)
-      expect(cop.highlights).to eq(%w(if unless))
+      expect(cop.highlights).to eq(%w[if unless])
     end
 
     it 'reports an offense if method body ends with if / unless without else' do
@@ -67,7 +67,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
       expect(cop.messages)
         .to eq(['Use a guard clause instead of wrapping ' \
                 'the code inside a conditional expression.'] * 2)
-      expect(cop.highlights).to eq(%w(if unless))
+      expect(cop.highlights).to eq(%w[if unless])
     end
   end
 
@@ -177,7 +177,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
       expect(cop.messages)
         .to eq(['Use a guard clause instead of wrapping ' \
                 'the code inside a conditional expression.'] * 2)
-      expect(cop.highlights).to eq(%w(if unless))
+      expect(cop.highlights).to eq(%w[if unless])
     end
   end
 

@@ -6,7 +6,7 @@ module RuboCop
       subject(:formatter_set) { described_class.new }
 
       it 'responds to all formatter API methods' do
-        %i(started file_started file_finished finished).each do |method|
+        %i[started file_started file_finished finished].each do |method|
           expect(formatter_set).to respond_to(method)
         end
       end

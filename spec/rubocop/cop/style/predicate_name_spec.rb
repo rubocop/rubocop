@@ -5,11 +5,11 @@ describe RuboCop::Cop::Style::PredicateName, :config do
 
   context 'with blacklisted prefixes' do
     let(:cop_config) do
-      { 'NamePrefix' => %w(has_ is_),
-        'NamePrefixBlacklist' => %w(has_ is_) }
+      { 'NamePrefix' => %w[has_ is_],
+        'NamePrefixBlacklist' => %w[has_ is_] }
     end
 
-    %w(has is).each do |prefix|
+    %w[has is].each do |prefix|
       it 'registers an offense when method name starts with known prefix' do
         inspect_source(cop, ["def #{prefix}_attr",
                              '  # ...',
@@ -30,10 +30,10 @@ describe RuboCop::Cop::Style::PredicateName, :config do
 
   context 'without blacklisted prefixes' do
     let(:cop_config) do
-      { 'NamePrefix' => %w(has_ is_), 'NamePrefixBlacklist' => [] }
+      { 'NamePrefix' => %w[has_ is_], 'NamePrefixBlacklist' => [] }
     end
 
-    %w(has is).each do |prefix|
+    %w[has is].each do |prefix|
       it 'registers an offense when method name starts with known prefix' do
         inspect_source(cop, ["def #{prefix}_attr",
                              '  # ...',
@@ -55,8 +55,8 @@ describe RuboCop::Cop::Style::PredicateName, :config do
 
   context 'with whitelisted predicate names' do
     let(:cop_config) do
-      { 'NamePrefix' => %w(is_), 'NamePrefixBlacklist' => %w(is_),
-        'NameWhitelist' => %w(is_a?) }
+      { 'NamePrefix' => %w[is_], 'NamePrefixBlacklist' => %w[is_],
+        'NameWhitelist' => %w[is_a?] }
     end
 
     it 'accepts method name which is in whitelist' do

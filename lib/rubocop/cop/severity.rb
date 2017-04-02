@@ -7,7 +7,7 @@ module RuboCop
       include Comparable
 
       # @api private
-      NAMES = %i(refactor convention warning error fatal).freeze
+      NAMES = %i[refactor convention warning error fatal].freeze
 
       # @api private
       CODE_TABLE = { R: :refactor, C: :convention,

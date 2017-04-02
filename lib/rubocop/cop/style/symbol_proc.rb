@@ -13,7 +13,7 @@ module RuboCop
       #   something.map(&:upcase)
       class SymbolProc < Cop
         MSG = 'Pass `&:%s` as an argument to `%s` instead of a block.'.freeze
-        SUPER_TYPES = %i(super zsuper).freeze
+        SUPER_TYPES = %i[super zsuper].freeze
 
         def_node_matcher :proc_node?, '(send (const nil :Proc) :new)'
         def_node_matcher :symbol_proc?, <<-PATTERN
@@ -31,7 +31,7 @@ module RuboCop
             # configurable - https://github.com/bbatsov/rubocop/issues/1485
             # we should ignore lambdas & procs
             return if proc_node?(send_or_super)
-            return if %i(lambda proc).include?(block_method_name)
+            return if %i[lambda proc].include?(block_method_name)
             return if ignored_method?(block_method_name)
             return unless can_shorten?(block_args, block_body)
 

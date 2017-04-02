@@ -4,8 +4,8 @@ describe RuboCop::Cop::Style::SingleLineBlockParams, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) do
     { 'Methods' =>
-      [{ 'reduce' => %w(a e) },
-       { 'test' => %w(x y) }] }
+      [{ 'reduce' => %w[a e] },
+       { 'test' => %w[x y] }] }
   end
 
   it 'finds wrong argument names in calls with different syntax' do

@@ -9,7 +9,7 @@ module RuboCop
 
         def specifics
           [
-            %i(tLBRACK tLBRACK2),
+            %i[tLBRACK tLBRACK2],
             :tRBRACK,
             'square brackets'
           ]

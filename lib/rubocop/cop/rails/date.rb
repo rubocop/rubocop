@@ -43,7 +43,7 @@ module RuboCop
         MSG_SEND = 'Do not use `%s` on Date objects, because they ' \
                    'know nothing about the time zone in use.'.freeze
 
-        BAD_DAYS = %i(today current yesterday tomorrow).freeze
+        BAD_DAYS = %i[today current yesterday tomorrow].freeze
 
         def on_const(node)
           mod, klass = *node.children
@@ -107,7 +107,7 @@ module RuboCop
         end
 
         def good_days
-          style == :strict ? [] : %i(current yesterday tomorrow)
+          style == :strict ? [] : %i[current yesterday tomorrow]
         end
 
         def bad_days
@@ -115,7 +115,7 @@ module RuboCop
         end
 
         def bad_methods
-          style == :strict ? %i(to_time to_time_in_current_zone) : [:to_time]
+          style == :strict ? %i[to_time to_time_in_current_zone] : [:to_time]
         end
 
         def good_methods

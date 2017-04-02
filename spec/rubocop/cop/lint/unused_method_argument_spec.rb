@@ -202,7 +202,7 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
         it 'registers offenses' do
           expect(cop.offenses.size).to eq 2
           expect(cop.offenses.first.line).to eq(1)
-          expect(cop.highlights).to eq(%w(foo bar))
+          expect(cop.highlights).to eq(%w[foo bar])
         end
       end
     end

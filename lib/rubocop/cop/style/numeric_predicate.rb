@@ -108,7 +108,7 @@ module RuboCop
         end
 
         def replacement_supported?(operator)
-          if %i(> <).include?(operator)
+          if %i[> <].include?(operator)
             target_ruby_version >= 2.3
           else
             true

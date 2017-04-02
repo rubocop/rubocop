@@ -43,7 +43,7 @@ describe RuboCop::Cop::Style::MethodName, :config do
       expect(cop.offenses).to be_empty
     end
 
-    %w(class module).each do |kind|
+    %w[class module].each do |kind|
       it "accepts class emitter method in a #{kind}" do
         inspect_source(cop, ["#{kind} Sequel",
                              '  def self.Model(source)',

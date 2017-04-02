@@ -101,7 +101,7 @@ task generate_cops_documentation: :yard do
 
   def print_cop_with_doc(cop, config)
     t = config.for_cop(cop)
-    non_display_keys = %w(Description Enabled StyleGuide Reference)
+    non_display_keys = %w[Description Enabled StyleGuide Reference]
     pars = t.reject { |k| non_display_keys.include? k }
     description = 'No documentation'
     examples_object = []

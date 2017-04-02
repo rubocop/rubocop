@@ -29,7 +29,7 @@ module RuboCop
         SHOVEL = '<<'.freeze
         PERCENT = '%'.freeze
         PERCENT_PERCENT = '%%'.freeze
-        STRING_TYPES = %i(str dstr).freeze
+        STRING_TYPES = %i[str dstr].freeze
         NAMED_INTERPOLATION = /%(?:<\w+>|\{\w+\})/
 
         def on_send(node)

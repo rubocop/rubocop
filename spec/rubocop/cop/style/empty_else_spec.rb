@@ -11,7 +11,7 @@ describe RuboCop::Cop::Style::EmptyElse do
       end
     end
 
-    %w(both if case).each do |missing_else_style|
+    %w[both if case].each do |missing_else_style|
       context "MissingElse is #{missing_else_style}" do
         let(:missing_else_config) do
           { 'Enabled' => true,
@@ -48,7 +48,7 @@ describe RuboCop::Cop::Style::EmptyElse do
     let(:config) do
       RuboCop::Config.new('Style/EmptyElse' => {
                             'EnforcedStyle' => 'empty',
-                            'SupportedStyles' => %w(empty nil both)
+                            'SupportedStyles' => %w[empty nil both]
                           },
                           'Style/MissingElse' => missing_else_config)
     end
@@ -170,7 +170,7 @@ describe RuboCop::Cop::Style::EmptyElse do
     let(:config) do
       RuboCop::Config.new('Style/EmptyElse' => {
                             'EnforcedStyle' => 'nil',
-                            'SupportedStyles' => %w(empty nil both)
+                            'SupportedStyles' => %w[empty nil both]
                           },
                           'Style/MissingElse' => missing_else_config)
     end
@@ -359,7 +359,7 @@ describe RuboCop::Cop::Style::EmptyElse do
     let(:config) do
       RuboCop::Config.new('Style/EmptyElse' => {
                             'EnforcedStyle' => 'both',
-                            'SupportedStyles' => %w(empty nil both)
+                            'SupportedStyles' => %w[empty nil both]
                           },
                           'Style/MissingElse' => missing_else_config)
     end

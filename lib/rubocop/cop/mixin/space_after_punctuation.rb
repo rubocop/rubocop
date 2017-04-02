@@ -33,7 +33,7 @@ module RuboCop
       end
 
       def allowed_type?(token)
-        %i(tRPAREN tRBRACK tPIPE).include?(token.type)
+        %i[tRPAREN tRBRACK tPIPE].include?(token.type)
       end
 
       def space_forbidden_before_rcurly?

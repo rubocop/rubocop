@@ -3,8 +3,8 @@
 describe RuboCop::Cop::Style::SpaceInsidePercentLiteralDelimiters do
   subject(:cop) { described_class.new }
 
-  %w(i I w W x).each do |type|
-    [%w({ }), %w{( )}, %w([ ]), %w(! !)].each do |(ldelim, rdelim)|
+  %w[i I w W x].each do |type|
+    [%w[{ }], %w[( )], %w([ ]), %w[! !]].each do |(ldelim, rdelim)|
       context "for #{type} type and #{[ldelim, rdelim]} delimiters" do
         define_method(:code_example) do |content|
           ['%', type, ldelim, content, rdelim].join
@@ -89,7 +89,7 @@ describe RuboCop::Cop::Style::SpaceInsidePercentLiteralDelimiters do
   end
 
   it 'accepts other percent literals' do
-    %w(q r s).each do |type|
+    %w[q r s].each do |type|
       inspect_source(cop, "%#{type}( a  b c )")
       expect(cop.messages).to be_empty
     end

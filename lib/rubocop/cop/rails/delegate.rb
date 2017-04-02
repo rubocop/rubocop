@@ -94,7 +94,7 @@ module RuboCop
         end
 
         def private_or_protected_before(line)
-          (processed_source[0..line].map(&:strip) & %w(private protected)).any?
+          (processed_source[0..line].map(&:strip) & %w[private protected]).any?
         end
 
         def private_or_protected_inline(line)

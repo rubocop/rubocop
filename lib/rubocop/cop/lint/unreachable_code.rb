@@ -26,8 +26,8 @@ module RuboCop
       class UnreachableCode < Cop
         MSG = 'Unreachable code detected.'.freeze
 
-        NODE_TYPES = %i(return next break retry redo).freeze
-        FLOW_COMMANDS = %i(throw raise fail).freeze
+        NODE_TYPES = %i[return next break retry redo].freeze
+        FLOW_COMMANDS = %i[throw raise fail].freeze
 
         def on_begin(node)
           expressions = *node

@@ -18,7 +18,7 @@ module RuboCop
       #   [1, 2].each_with_object({}) { |e, a| a[e] = e }
       class EachWithObject < Cop
         MSG = 'Use `each_with_object` instead of `%s`.'.freeze
-        METHODS = %i(inject reduce).freeze
+        METHODS = %i[inject reduce].freeze
 
         def_node_matcher :each_with_object_candidate?, <<-PATTERN
           (block $(send _ {:inject :reduce} _) $_ $_)

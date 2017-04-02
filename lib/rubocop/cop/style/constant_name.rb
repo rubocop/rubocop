@@ -19,7 +19,7 @@ module RuboCop
           # NewClass = something_that_returns_a_class
           # It's also ok to assign a class constant another class constant
           # SomeClass = SomeOtherClass
-          return if value && %i(send block const).include?(value.type)
+          return if value && %i[send block const].include?(value.type)
 
           add_offense(node, :name) if const_name !~ SNAKE_CASE
         end

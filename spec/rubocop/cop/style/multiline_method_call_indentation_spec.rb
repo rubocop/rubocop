@@ -128,7 +128,7 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
       expect(cop.messages)
         .to eq(['Use 2 (not 3) spaces for indenting an expression spanning ' \
                 'multiple lines.'] * 2)
-      expect(cop.highlights).to eq(%w(b d))
+      expect(cop.highlights).to eq(%w[b d])
     end
 
     it 'registers an offense for extra indentation of third line' do
@@ -591,7 +591,7 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
       expect(cop.messages)
         .to eq(['Indent `b` 2 spaces more than `a` on line 1.',
                 'Indent `d` 2 spaces more than `c` on line 3.'])
-      expect(cop.highlights).to eq(%w(b d))
+      expect(cop.highlights).to eq(%w[b d])
     end
 
     it 'registers an offense for extra indentation of third line' do
@@ -701,10 +701,10 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
     end
 
     [
-      %w(an if),
-      %w(an unless),
-      %w(a while),
-      %w(an until)
+      %w[an if],
+      %w[an unless],
+      %w[a while],
+      %w[an until]
     ].each do |article, keyword|
       it "accepts double indentation of #{keyword} condition" do
         inspect_source(cop,
@@ -738,7 +738,7 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
       end
     end
 
-    %w(unless if).each do |keyword|
+    %w[unless if].each do |keyword|
       it "accepts special indentation of return #{keyword} condition" do
         inspect_source(cop,
                        ["return #{keyword} receiver.nil? &&",
@@ -786,7 +786,7 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
                       '    d'])
       expect(cop.messages).to eq(['Use 2 (not 4) spaces for indenting an ' \
                                   'expression spanning multiple lines.'])
-      expect(cop.highlights).to eq(%w(d))
+      expect(cop.highlights).to eq(%w[d])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
@@ -849,10 +849,10 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
       end
 
       [
-        %w(an if),
-        %w(an unless),
-        %w(a while),
-        %w(an until)
+        %w[an if],
+        %w[an unless],
+        %w[a while],
+        %w[an until]
       ].each do |article, keyword|
         it "accepts indentation of #{keyword} condition which is offset " \
            'by a single normal indentation step' do

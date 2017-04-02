@@ -23,12 +23,12 @@ module RuboCop
         include MinBodyLength
 
         MSG = 'Use `next` to skip iteration.'.freeze
-        EXIT_TYPES = %i(break return).freeze
+        EXIT_TYPES = %i[break return].freeze
         EACH_ = 'each_'.freeze
-        ENUMERATORS = %i(collect collect_concat detect downto each
+        ENUMERATORS = %i[collect collect_concat detect downto each
                          find find_all find_index inject loop map!
                          map reduce reject reject! reverse_each select
-                         select! times upto).freeze
+                         select! times upto].freeze
 
         def investigate(_processed_source)
           # When correcting nested offenses, we need to keep track of how much

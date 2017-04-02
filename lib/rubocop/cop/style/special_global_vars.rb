@@ -19,19 +19,19 @@ module RuboCop
           :$0 => [:$PROGRAM_NAME],
           :$! => [:$ERROR_INFO],
           :$@ => [:$ERROR_POSITION],
-          :$; => %i($FIELD_SEPARATOR $FS),
-          :$, => %i($OUTPUT_FIELD_SEPARATOR $OFS),
-          :$/ => %i($INPUT_RECORD_SEPARATOR $RS),
-          :$\ => %i($OUTPUT_RECORD_SEPARATOR $ORS),
-          :$. => %i($INPUT_LINE_NUMBER $NR),
+          :$; => %i[$FIELD_SEPARATOR $FS],
+          :$, => %i[$OUTPUT_FIELD_SEPARATOR $OFS],
+          :$/ => %i[$INPUT_RECORD_SEPARATOR $RS],
+          :$\ => %i[$OUTPUT_RECORD_SEPARATOR $ORS],
+          :$. => %i[$INPUT_LINE_NUMBER $NR],
           :$_ => [:$LAST_READ_LINE],
           :$> => [:$DEFAULT_OUTPUT],
           :$< => [:$DEFAULT_INPUT],
-          :$$ => %i($PROCESS_ID $PID),
+          :$$ => %i[$PROCESS_ID $PID],
           :$? => [:$CHILD_STATUS],
           :$~ => [:$LAST_MATCH_INFO],
           :$= => [:$IGNORECASE],
-          :$* => %i($ARGV ARGV),
+          :$* => %i[$ARGV ARGV],
           :$& => [:$MATCH],
           :$` => [:$PREMATCH],
           :$' => [:$POSTMATCH],
@@ -51,12 +51,12 @@ module RuboCop
         PERL_VARS.each { |_, v| v.freeze }.freeze
 
         # Anything *not* in this set is provided by the English library.
-        NON_ENGLISH_VARS = Set.new(%i(
+        NON_ENGLISH_VARS = Set.new(%i[
                                      $LOAD_PATH
                                      $LOADED_FEATURES
                                      $PROGRAM_NAME
                                      ARGV
-                                   )).freeze
+                                   ]).freeze
 
         def on_gvar(node)
           global_var, = *node
@@ -126,7 +126,7 @@ module RuboCop
           parent_type = node.parent && node.parent.type
           preferred_name = preferred_names(global_var).first
 
-          unless %i(dstr xstr regexp).include?(parent_type)
+          unless %i[dstr xstr regexp].include?(parent_type)
             return preferred_name.to_s
           end
 

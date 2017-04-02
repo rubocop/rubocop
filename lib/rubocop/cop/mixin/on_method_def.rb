@@ -37,7 +37,7 @@ module RuboCop
         !send_node.receiver &&
           send_node.method_name != :def &&
           send_node.arguments.one? &&
-          %i(def defs).include?(send_node.first_argument.type)
+          %i[def defs].include?(send_node.first_argument.type)
       end
     end
   end

@@ -7,8 +7,8 @@ describe RuboCop::Cop::Style::FirstParameterIndentation do
       .new('Style/FirstParameterIndentation' => {
              'EnforcedStyle' => style,
              'SupportedStyles' =>
-               %w(consistent special_for_inner_method_call
-                  special_for_inner_method_call_in_parentheses)
+               %w[consistent special_for_inner_method_call
+                  special_for_inner_method_call_in_parentheses]
            },
            'Style/IndentationWidth' => { 'Width' => indentation_width })
   end
@@ -217,8 +217,8 @@ describe RuboCop::Cop::Style::FirstParameterIndentation do
           .new('Style/FirstParameterIndentation' => {
                  'EnforcedStyle' => style,
                  'SupportedStyles' =>
-                   %w(consistent special_for_inner_method_call
-                      special_for_inner_method_call_in_parentheses),
+                   %w[consistent special_for_inner_method_call
+                      special_for_inner_method_call_in_parentheses],
                  'IndentationWidth' => 4
                },
                'Style/IndentationWidth' => { 'Width' => 2 })

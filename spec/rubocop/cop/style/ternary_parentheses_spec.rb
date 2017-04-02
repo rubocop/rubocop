@@ -350,7 +350,7 @@ describe RuboCop::Cop::Style::TernaryParentheses, :config do
     let(:cop_config) do
       {
         'EnforcedStyle' => 'require_parentheses',
-        'SupportedStyles' => %w(require_parentheses require_no_parentheses)
+        'SupportedStyles' => %w[require_parentheses require_no_parentheses]
       }
     end
 

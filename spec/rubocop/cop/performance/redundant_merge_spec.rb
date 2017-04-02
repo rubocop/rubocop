@@ -132,7 +132,7 @@ describe RuboCop::Cop::Performance::RedundantMerge, :config do
     end
   end
 
-  %w(if unless while until).each do |kw|
+  %w[if unless while until].each do |kw|
     context "when there is a modifier #{kw}, and more than 1 pair" do
       it "autocorrects it to an #{kw} block" do
         new_source = autocorrect_source(

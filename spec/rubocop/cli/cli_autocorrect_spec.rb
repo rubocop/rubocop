@@ -228,7 +228,7 @@ describe RuboCop::CLI, :isolated_environment do
     expect(IO.read('example.rb')).to eq(corrected.join("\n"))
   end
 
-  %i(line_count_based semantic braces_for_chaining).each do |style|
+  %i[line_count_based semantic braces_for_chaining].each do |style|
     context "when BlockDelimiters has #{style} style" do
       it 'corrects SpaceBeforeBlockBraces, SpaceInsideBlockBraces offenses' do
         source = ['r = foo.map{|a|',
@@ -316,7 +316,7 @@ describe RuboCop::CLI, :isolated_environment do
               'end',
               ''].join("\n")
     create_file('example.rb', source)
-    expect(cli.run(%w(--auto-correct --format simple))).to eq(1)
+    expect(cli.run(%w[--auto-correct --format simple])).to eq(1)
     expect($stdout.string)
       .to eq(['== example.rb ==',
               'C:  1:  1: Missing top-level class documentation comment.',
@@ -487,7 +487,7 @@ describe RuboCop::CLI, :isolated_environment do
               '  raise',
               'end']
     create_file('example.rb', source)
-    expect(cli.run(%w(--only IndentationWidth --auto-correct))).to eq(0)
+    expect(cli.run(%w[--only IndentationWidth --auto-correct])).to eq(0)
     corrected = ['foo = if bar',
                  '        something',
                  'elsif baz',
@@ -634,7 +634,7 @@ describe RuboCop::CLI, :isolated_environment do
   it 'can handle spaces when removing braces' do
     create_file('example.rb',
                 ["assert_post_status_code 400, 's', {:type => 'bad'}"])
-    expect(cli.run(%w(--auto-correct --format emacs))).to eq(0)
+    expect(cli.run(%w[--auto-correct --format emacs])).to eq(0)
     expect(IO.read('example.rb'))
       .to eq(["assert_post_status_code 400, 's', type: 'bad'",
               ''].join("\n"))
@@ -675,11 +675,11 @@ describe RuboCop::CLI, :isolated_environment do
                                'private',
                                '  A = ["git", "path",]',
                                'end'])
-    expect(cli.run(%w(--auto-correct --format emacs))).to eq(1)
+    expect(cli.run(%w[--auto-correct --format emacs])).to eq(1)
     expect(IO.read('example.rb')).to eq(['class Dsl',
                                          '  private',
                                          '',
-                                         '  A = %w(git path).freeze',
+                                         '  A = %w[git path].freeze',
                                          'end',
                                          ''].join("\n"))
     e = abs('example.rb')
@@ -726,7 +726,7 @@ describe RuboCop::CLI, :isolated_environment do
   it 'can correct single line methods' do
     create_file('example.rb', ['def func1; do_something end # comment',
                                'def func2() do_1; do_2; end'])
-    expect(cli.run(%w(--auto-correct --format offenses))).to eq(0)
+    expect(cli.run(%w[--auto-correct --format offenses])).to eq(0)
     expect(IO.read('example.rb')).to eq(['# comment',
                                          'def func1',
                                          '  do_something',
@@ -819,7 +819,7 @@ describe RuboCop::CLI, :isolated_environment do
                 ['def primes limit',
                  '  1.upto(limit).select { |i| i.even? }',
                  'end'])
-    expect(cli.run(%w(-D --auto-correct))).to eq(0)
+    expect(cli.run(%w[-D --auto-correct])).to eq(0)
     expect($stderr.string).to eq('')
     expect(IO.read('example.rb'))
       .to eq(['def primes(limit)',
@@ -851,7 +851,7 @@ describe RuboCop::CLI, :isolated_environment do
     create_file('example.rb',
                 ["f(type: ['offline','offline_payment'],",
                  "  bar_colors: ['958c12','953579','ff5800','0085cc'])"])
-    expect(cli.run(%w(-D --auto-correct --format o))).to eq(0)
+    expect(cli.run(%w[-D --auto-correct --format o])).to eq(0)
     expect($stdout.string)
       .to eq(['',
               '4  Style/SpaceAfterComma',
@@ -861,15 +861,15 @@ describe RuboCop::CLI, :isolated_environment do
               '',
               ''].join("\n"))
     expect(IO.read('example.rb'))
-      .to eq(['f(type: %w(offline offline_payment),',
-              '  bar_colors: %w(958c12 953579 ff5800 0085cc))',
+      .to eq(['f(type: %w[offline offline_payment],',
+              '  bar_colors: %w[958c12 953579 ff5800 0085cc])',
               ''].join("\n"))
   end
 
   it 'can correct SpaceAfterComma and HashSyntax offenses' do
     create_file('example.rb',
                 "I18n.t('description',:property_name => property.name)")
-    expect(cli.run(%w(-D --auto-correct --format emacs))).to eq(0)
+    expect(cli.run(%w[-D --auto-correct --format emacs])).to eq(0)
     expect($stdout.string)
       .to eq(["#{abs('example.rb')}:1:21: C: [Corrected] " \
               'Style/SpaceAfterComma: Space missing after comma.',
@@ -882,7 +882,7 @@ describe RuboCop::CLI, :isolated_environment do
 
   it 'can correct HashSyntax and SpaceAroundOperators offenses' do
     create_file('example.rb', '{ :b=>1 }')
-    expect(cli.run(%w(-D --auto-correct --format emacs))).to eq(0)
+    expect(cli.run(%w[-D --auto-correct --format emacs])).to eq(0)
     expect(IO.read('example.rb')).to eq("{ b: 1 }\n")
     expect($stdout.string)
       .to eq(["#{abs('example.rb')}:1:3: C: [Corrected] " \
@@ -895,8 +895,8 @@ describe RuboCop::CLI, :isolated_environment do
 
   it 'can correct HashSyntax when --only is used' do
     create_file('example.rb', '{ :b=>1 }')
-    expect(cli.run(%w(--auto-correct -f emacs
-                      --only Style/HashSyntax))).to eq(0)
+    expect(cli.run(%w[--auto-correct -f emacs
+                      --only Style/HashSyntax])).to eq(0)
     expect($stderr.string).to eq('')
     expect(IO.read('example.rb')).to eq("{ b: 1 }\n")
     expect($stdout.string)
@@ -912,7 +912,7 @@ describe RuboCop::CLI, :isolated_environment do
                  '  ',
                  '',
                  ''])
-    expect(cli.run(%w(--auto-correct --format emacs))).to eq(0)
+    expect(cli.run(%w[--auto-correct --format emacs])).to eq(0)
     expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
                                          ''].join("\n"))
     expect($stdout.string)
@@ -925,7 +925,7 @@ describe RuboCop::CLI, :isolated_environment do
 
   it 'can correct MethodCallWithoutArgsParentheses and EmptyLiteral offenses' do
     create_file('example.rb', 'Hash.new()')
-    expect(cli.run(%w(--auto-correct --format emacs))).to eq(0)
+    expect(cli.run(%w[--auto-correct --format emacs])).to eq(0)
     expect($stderr.string).to eq('')
     expect(IO.read('example.rb')).to eq("{}\n")
     expect($stdout.string)
@@ -947,7 +947,7 @@ describe RuboCop::CLI, :isolated_environment do
     create_file('.rubocop.yml',
                 ['Style/AlignHash:',
                  '  EnforcedColonStyle: separator'])
-    expect(cli.run(%w(--auto-correct))).to eq(0)
+    expect(cli.run(%w[--auto-correct])).to eq(0)
     expect(IO.read('example.rb'))
       .to eq(['CONVERSION_CORRESPONDENCE = {',
               '                match_for_should: :match,',
@@ -978,7 +978,7 @@ describe RuboCop::CLI, :isolated_environment do
     create_file('.rubocop.yml', ['AllCops:',
                                  '  TargetRubyVersion: 2.1'])
     create_file('example.rb', src)
-    expect(cli.run(%w(-a -f simple))).to eq(1)
+    expect(cli.run(%w[-a -f simple])).to eq(1)
     expect($stderr.string).to eq('')
     expect(IO.read('example.rb')).to eq(corrected.join("\n") + "\n")
     expect($stdout.string)
@@ -988,7 +988,7 @@ describe RuboCop::CLI, :isolated_environment do
   it 'does not hang SpaceAfterPunctuation and SpaceInsideParens' do
     create_file('example.rb', 'some_method(a, )')
     Timeout.timeout(10) do
-      expect(cli.run(%w(--auto-correct))).to eq(0)
+      expect(cli.run(%w[--auto-correct])).to eq(0)
     end
     expect($stderr.string).to eq('')
     expect(IO.read('example.rb')).to eq("some_method(a)\n")
@@ -997,7 +997,7 @@ describe RuboCop::CLI, :isolated_environment do
   it 'does not hang SpaceAfterPunctuation and SpaceInsideBrackets' do
     create_file('example.rb', 'puts [1, ]')
     Timeout.timeout(10) do
-      expect(cli.run(%w(--auto-correct))).to eq(0)
+      expect(cli.run(%w[--auto-correct])).to eq(0)
     end
     expect($stderr.string).to eq('')
     expect(IO.read('example.rb')).to eq("puts [1]\n")
@@ -1007,7 +1007,7 @@ describe RuboCop::CLI, :isolated_environment do
     create_file('example.rb', 'puts "Hello", 123456')
     create_file('.rubocop.yml', ['Style/StringLiterals:',
                                  '  AutoCorrect: false'])
-    expect(cli.run(%w(--auto-correct))).to eq(1)
+    expect(cli.run(%w[--auto-correct])).to eq(1)
     expect($stderr.string).to eq('')
     expect(IO.read('example.rb')).to eq("puts \"Hello\", 123_456\n")
   end
@@ -1025,7 +1025,7 @@ describe RuboCop::CLI, :isolated_environment do
                   'Style/TrailingCommaInLiteral:',
                   '  EnforcedStyleForMultiline: consistent_comma'
                 ])
-    expect(cli.run(%w(--auto-correct))).to eq(1)
+    expect(cli.run(%w[--auto-correct])).to eq(1)
     expect($stderr.string).to eq('')
     expect(IO.read('example.rb')).to eq(['{foo: bar,',
                                          ' bar: baz,}',
@@ -1042,7 +1042,7 @@ describe RuboCop::CLI, :isolated_environment do
                                ''])
 
     expect($stderr.string).to eq('')
-    expect(cli.run(%w(--auto-correct))).to eq(0)
+    expect(cli.run(%w[--auto-correct])).to eq(0)
     expect(IO.read('example.rb')).to eq(['def method_a',
                                          '  do_something(a: 1)',
                                          'end',

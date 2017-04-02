@@ -53,7 +53,7 @@ module RuboCop
         include AccessModifierNode
         include IgnoredPattern
 
-        SPECIAL_MODIFIERS = %w(private protected).freeze
+        SPECIAL_MODIFIERS = %w[private protected].freeze
 
         def on_rescue(node)
           _begin_node, *_rescue_nodes, else_node = *node
@@ -259,7 +259,7 @@ module RuboCop
         def indentation_to_check?(base_loc, body_node)
           return false if skip_check?(base_loc, body_node)
 
-          if %i(rescue ensure).include?(body_node.type)
+          if %i[rescue ensure].include?(body_node.type)
             block_body, = *body_node
             return unless block_body
           end

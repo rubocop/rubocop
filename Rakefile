@@ -29,7 +29,7 @@ end
 desc 'Run RuboCop over itself'
 RuboCop::RakeTask.new(:internal_investigation)
 
-task default: %i(spec ascii_spec internal_investigation)
+task default: %i[spec ascii_spec internal_investigation]
 
 require 'yard'
 YARD::Rake::YardocTask.new
@@ -43,7 +43,7 @@ task :repl do
 end
 
 desc 'Benchmark a cop on given source file/dir'
-task :bench_cop, %i(cop srcpath times) do |_task, args|
+task :bench_cop, %i[cop srcpath times] do |_task, args|
   require 'benchmark'
   require 'rubocop'
   include RuboCop
