@@ -184,7 +184,7 @@ module RuboCop
         [*self]
       end
 
-      private # rubocop:disable Lint/UselessAccessModifier
+      private
 
       def_matcher :macro_scope?, <<-PATTERN
         {^({class module} ...)
