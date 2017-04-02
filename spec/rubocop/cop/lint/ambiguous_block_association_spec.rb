@@ -32,6 +32,18 @@ describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
   it_behaves_like('accepts', 'expect { order.save }.to(change { orders.size })')
   it_behaves_like(
     'accepts',
+    'assert_equal posts.find { |p| p.title == "Foo" }, results.first'
+  )
+  it_behaves_like(
+    'accepts',
+    'assert_equal(posts.find { |p| p.title == "Foo" }, results.first)'
+  )
+  it_behaves_like(
+    'accepts',
+    'assert_equal(results.first, posts.find { |p| p.title == "Foo" })'
+  )
+  it_behaves_like(
+    'accepts',
     'allow(cop).to receive(:on_int) { raise RuntimeError }'
   )
   it_behaves_like(
