@@ -25,9 +25,11 @@ module RuboCop
         RELATIVE_DATE_METHODS = %i[ago from_now since until].freeze
 
         def on_casgn(node)
-          return if node.children.last.lambda_or_proc?
+          _scope, _constant, rhs = *node
 
-          bad_node = node.descendants.find { |n| bad_method?(n) }
+          return if rhs.lambda_or_proc?
+
+          bad_node = node.descendants.find { |n| relative_date_method?(n) }
           return unless bad_node
 
           add_offense(node, :expression, format(MSG, bad_node.method_name))
@@ -35,7 +37,7 @@ module RuboCop
 
         private
 
-        def bad_method?(node)
+        def relative_date_method?(node)
           node.send_type? &&
             RELATIVE_DATE_METHODS.include?(node.method_name) &&
             node.method_args.empty?
