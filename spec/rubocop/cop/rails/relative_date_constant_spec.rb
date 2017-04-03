@@ -19,6 +19,22 @@ describe RuboCop::Cop::Rails::RelativeDateConstant do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts a lambda' do
+    inspect_source(cop,
+                   ['class SomeClass',
+                    '  EXPIRED_AT = -> { 1.year.ago }',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts a proc' do
+    inspect_source(cop,
+                   ['class SomeClass',
+                    '  EXPIRED_AT = Proc.new { 1.year.ago }',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'registers an offense for exclusive end range' do
     inspect_source(cop,
                    ['class SomeClass',

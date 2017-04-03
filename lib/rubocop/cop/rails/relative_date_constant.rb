@@ -25,6 +25,8 @@ module RuboCop
         RELATIVE_DATE_METHODS = %i[ago from_now since until].freeze
 
         def on_casgn(node)
+          return if node.children.last.lambda_or_proc?
+
           bad_node = node.descendants.find { |n| bad_method?(n) }
           return unless bad_node
 

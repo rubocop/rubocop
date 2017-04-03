@@ -25,6 +25,7 @@
 * [#4217](https://github.com/bbatsov/rubocop/pull/4217): Fix false positive in `Rails/FilePath` cop with non string argument. ([@soutaro][])
 * [#4106](https://github.com/bbatsov/rubocop/pull/4106): Make `Style/TernaryParentheses` unsafe autocorrect detector aware of literals and constants. ([@drenmi][])
 * [#4228](https://github.com/bbatsov/rubocop/pull/4228): Fix false positive in `Lint/AmbiguousBlockAssociation` cop. ([@smakagon][])
+* [#4234](https://github.com/bbatsov/rubocop/pull/4234): Fix false positive in `Rails/RelativeDate` for lambdas and procs. ([@smakagon][])
 
 ## 0.48.0 (2017-03-26)
 
