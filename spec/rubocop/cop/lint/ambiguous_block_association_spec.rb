@@ -58,7 +58,7 @@ describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
       it 'registers an offense' do
         expect(cop.offenses.size).to eq(1)
         expect(cop.offenses.first.message).to(
-          eq(format(error_message, 'a', 'some_method'))
+          eq(format(error_message, 'a { |el| puts el }', 'a'))
         )
       end
     end
@@ -69,7 +69,7 @@ describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
       it 'registers an offense' do
         expect(cop.offenses.size).to eq(1)
         expect(cop.offenses.first.message).to(
-          eq(format(error_message, 'a', 'some_method'))
+          eq(format(error_message, 'a { |el| puts el }', 'a'))
         )
       end
     end
@@ -82,7 +82,7 @@ describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
       it 'registers an offense' do
         expect(cop.offenses.size).to eq(1)
         expect(cop.offenses.first.message).to(
-          eq(format(error_message, 'change', 'to'))
+          eq(format(error_message, 'change { order.events }', 'change'))
         )
       end
     end
@@ -93,7 +93,7 @@ describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
       it 'registers an offense' do
         expect(cop.offenses.size).to eq(1)
         expect(cop.offenses.first.message).to(
-          eq(format(error_message, 'a', 'some_method'))
+          eq(format(error_message, 'a { |el| el }', 'a'))
         )
       end
     end
@@ -104,7 +104,7 @@ describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
       it 'registers an offense' do
         expect(cop.offenses.size).to eq(1)
         expect(cop.offenses.first.message).to(
-          eq(format(error_message, 'a', 'some_method'))
+          eq(format(error_message, 'a { |el| puts el }', 'a'))
         )
       end
     end
