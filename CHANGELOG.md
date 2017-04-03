@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.48.1 (2017-04-03)
+
 ### Changes
 
 * [#4219](https://github.com/bbatsov/rubocop/issues/4219): Add a link to style guide for `Style/IndentationConsistency` cop. ([@pocke][])
