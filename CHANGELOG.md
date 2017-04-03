@@ -2,6 +2,9 @@
 
 ## master (unreleased)
 
+### Bug fixes
+* [#4237](https://github.com/bbatsov/rubocop/pull/4237): Fix false positive in `Lint/AmbiguousBlockAssociation` cop for lambdas. ([@smakagon][])
+
 ## 0.48.1 (2017-04-03)
 
 ### Changes
