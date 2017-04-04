@@ -143,7 +143,7 @@ describe RuboCop::Cop::Style::DocumentationMethod, :config do
 
     context 'with documentation comment' do
       it_behaves_like 'code without offense', <<-CODE
-                      # Documenation
+                      # Documentation
                       def foo
                         puts 'bar'
                       end
@@ -169,7 +169,7 @@ describe RuboCop::Cop::Style::DocumentationMethod, :config do
       CODE
 
       it_behaves_like 'code without offense', <<-CODE
-                      # Documenation
+                      # Documentation
                       def foo
                         puts 'bar'
                       end
@@ -185,7 +185,7 @@ describe RuboCop::Cop::Style::DocumentationMethod, :config do
         let(:require_for_non_public_methods) { true }
 
         it_behaves_like 'code with offense', <<-CODE
-                        # Documenation
+                        # Documentation
                         def foo
                           puts 'bar'
                         end
