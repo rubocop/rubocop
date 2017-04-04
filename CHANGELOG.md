@@ -5,6 +5,7 @@
 ### New features
 
 * [#117](https://github.com/bbatsov/rubocop/issues/117): Add `--parallel` option for running RuboCop in multiple processes or threads. ([@jonas054][])
+* Add auto-correct support to `Style/MixinGrouping`. ([@rrosenblum][])
 
 ### Changes
 
