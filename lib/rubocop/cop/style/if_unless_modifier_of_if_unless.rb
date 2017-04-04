@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # Checks for if and unless statements used as modifers of other if or
+      # Checks for if and unless statements used as modifiers of other if or
       # unless statements.
       #
       # @example

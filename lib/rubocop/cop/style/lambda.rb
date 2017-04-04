@@ -189,13 +189,13 @@ module RuboCop
         def remove_unparenthesized_whitespaces(corrector, node)
           block_method, args = *node
           return unless unparenthesized_literal_args?(args)
-          # First, remove leading whitespaces (beetween arrow and args)
+          # First, remove leading whitespaces (between arrow and args)
           corrector.remove_preceding(
             args.source_range,
             args.source_range.begin_pos - block_method.source_range.end_pos
           )
 
-          # Then, remove trailing whitespaces (beetween args and 'do')
+          # Then, remove trailing whitespaces (between args and 'do')
           delta = node.loc.begin.begin_pos - args.source_range.end_pos - 1
           corrector.remove_preceding(node.loc.begin, delta)
         end

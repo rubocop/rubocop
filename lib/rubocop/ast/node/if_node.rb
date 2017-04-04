@@ -36,7 +36,7 @@ module RuboCop
       # Checks whether the `if` node has an `else` clause.
       #
       # @note This returns `true` for nodes containing an `elsif` clause.
-      #       This is legacy behaviour, and many cops rely on it.
+      #       This is legacy behavior, and many cops rely on it.
       #
       # @return [Boolean] whether the node has an `else` clause
       def else?

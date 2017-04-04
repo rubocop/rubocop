@@ -43,7 +43,7 @@ module RuboCop
       #     end
       #   end
       #
-      #   # Documenation
+      #   # Documentation
       #   def foo.bar
       #     puts baz
       #   end

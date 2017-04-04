@@ -171,7 +171,7 @@ describe RuboCop::AST::IfNode do
          'end'].join("\n")
       end
 
-      # Note: This is a legacy behaviour.
+      # Note: This is a legacy behavior.
       it { expect(if_node.else?).to be_truthy }
     end
 

@@ -105,8 +105,8 @@ module RuboCop
             if heredoc_indent_type(node) == '~'
               corrector.replace(node.loc.heredoc_body, indented_body(node))
             else
-              heredoc_begenning = node.loc.expression.source
-              corrected = heredoc_begenning.sub(/<<-?/, '<<~')
+              heredoc_beginning = node.loc.expression.source
+              corrected = heredoc_beginning.sub(/<<-?/, '<<~')
               corrector.replace(node.loc.expression, corrected)
             end
           end

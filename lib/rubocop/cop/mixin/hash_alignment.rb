@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    # Common funcitonality for checking hash alignment.
+    # Common functionality for checking hash alignment.
     module HashAlignment
       # Handles calculation of deltas when the enforced style is 'key'.
       class KeyAlignment
