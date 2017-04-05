@@ -27,15 +27,36 @@ module RuboCop
         def on_casgn(node)
           _scope, _constant, rhs = *node
 
-          return if rhs.lambda_or_proc?
+          # rhs would be nil in a or_asgn node
+          return unless rhs
 
-          bad_node = node.descendants.find { |n| relative_date_method?(n) }
-          return unless bad_node
+          check_node(rhs)
+        end
 
-          add_offense(node, :expression, format(MSG, bad_node.method_name))
+        def on_or_asgn(node)
+          lhs, rhs = *node
+
+          return unless lhs.casgn_type?
+
+          check_node(rhs)
         end
 
         private
+
+        def check_node(node)
+          return unless node.irange_type? ||
+                        node.erange_type? ||
+                        node.send_type?
+
+          # for range nodes we need to check both their boundaries
+          nodes = node.send_type? ? [node] : node.children
+
+          nodes.each do |n|
+            if relative_date_method?(n)
+              add_offense(node.parent, :expression, format(MSG, n.method_name))
+            end
+          end
+        end
 
         def relative_date_method?(node)
           node.send_type? &&
