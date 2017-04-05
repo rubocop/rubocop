@@ -30,7 +30,7 @@ module RuboCop
 
         def on_send(node)
           return if node.parenthesized? || allowed_method?(node)
-          return if lambda_argument?(node.first_argument)
+          return if lambda_argument?(node.last_argument)
 
           return unless method_with_block?(node.last_argument)
           last_param = node.last_argument.children.first
