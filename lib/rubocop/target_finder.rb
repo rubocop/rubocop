@@ -35,6 +35,7 @@ module RuboCop
                       Berksfile
                       Brewfile
                       Buildfile
+                      Capfile
                       Dangerfile
                       Deliverfile
                       Fastfile

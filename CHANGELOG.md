@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#4237](https://github.com/bbatsov/rubocop/pull/4237): Fix false positive in `Lint/AmbiguousBlockAssociation` cop for lambdas. ([@smakagon][])
+* [#4242](https://github.com/bbatsov/rubocop/issues/4242): Add `Capfile` to the list of known Ruby filenames. ([@bbatsov][])
 
 ## 0.48.1 (2017-04-03)
 
