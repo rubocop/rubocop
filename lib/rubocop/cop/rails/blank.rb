@@ -39,7 +39,7 @@ module RuboCop
       #     end
       class Blank < Cop
         MSG_NIL_OR_EMPTY = 'Use `%s.blank?` instead of `%s`.'.freeze
-        MSG_NOT_PRESENT = 'Use `%s.blank?` instead of `%s`.'.freeze
+        MSG_NOT_PRESENT = 'Use `%s` instead of `%s`.'.freeze
         MSG_UNLESS_PRESENT = 'Use `if %s.blank?` instead of `%s`.'.freeze
 
         def_node_matcher :nil_or_empty?, <<-PATTERN
@@ -69,7 +69,9 @@ module RuboCop
           not_present?(node) do |receiver|
             add_offense(node,
                         :expression,
-                        format(MSG_NOT_PRESENT, receiver.source, node.source))
+                        format(MSG_NOT_PRESENT,
+                               replacement(receiver),
+                               node.source))
           end
         end
 
@@ -113,7 +115,7 @@ module RuboCop
               range = node.loc.expression
             end
 
-            corrector.replace(range, "#{variable1.source}.blank?")
+            corrector.replace(range, replacement(variable1))
           end
         end
 
@@ -125,6 +127,10 @@ module RuboCop
           else
             node.loc.expression.begin.join(method_call.loc.expression)
           end
+        end
+
+        def replacement(node)
+          node.respond_to?(:source) ? "#{node.source}.blank?" : 'blank?'
         end
       end
     end

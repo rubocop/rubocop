@@ -128,6 +128,9 @@ describe RuboCop::Cop::Rails::Blank, :config do
     it_behaves_like :offense, 'not foo.present?',
                     'foo.blank?',
                     'Use `foo.blank?` instead of `not foo.present?`.'
+    it_behaves_like :offense, '!present?',
+                    'blank?',
+                    'Use `blank?` instead of `!present?`.'
   end
 
   context 'UnlessPresent set to true' do
