@@ -35,7 +35,7 @@ module RuboCop
       #     # good
       #     something if  foo.present?
       class Present < Cop
-        MSG_NOT_BLANK = 'Use `%s.present?` instead of `%s`.'.freeze
+        MSG_NOT_BLANK = 'Use `%s` instead of `%s`.'.freeze
         MSG_EXISTS_AND_NOT_EMPTY = 'Use `%s.present?` instead of `%s`.'.freeze
         MSG_UNLESS_BLANK = 'Use `if %s.present?` instead of `%s`.'.freeze
 
@@ -65,7 +65,9 @@ module RuboCop
           not_blank?(node) do |receiver|
             add_offense(node,
                         :expression,
-                        format(MSG_NOT_BLANK, receiver.source, node.source))
+                        format(MSG_NOT_BLANK,
+                               replacement(receiver),
+                               node.source))
           end
         end
 
@@ -118,7 +120,7 @@ module RuboCop
               range = node.loc.expression
             end
 
-            corrector.replace(range, "#{variable1.source}.present?")
+            corrector.replace(range, replacement(variable1))
           end
         end
 
@@ -130,6 +132,10 @@ module RuboCop
           else
             node.loc.expression.begin.join(method_call.loc.expression)
           end
+        end
+
+        def replacement(node)
+          node.respond_to?(:source) ? "#{node.source}.present?" : 'present?'
         end
       end
     end
