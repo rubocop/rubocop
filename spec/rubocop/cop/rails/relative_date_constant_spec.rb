@@ -35,7 +35,7 @@ describe RuboCop::Cop::Rails::RelativeDateConstant do
     expect(cop.offenses).to be_empty
   end
 
-  it 'register an offense for relative date in ||=' do
+  it 'registers an offense for relative date in ||=' do
     inspect_source(cop,
                    ['class SomeClass',
                     '  EXPIRED_AT ||= 1.week.since',
