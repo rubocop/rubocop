@@ -350,7 +350,7 @@ describe RuboCop::AST::Node do
       end
 
       context 'with no interpolation' do
-        let(:src) { URI.regexp.inspect }
+        let(:src) { URI::Parser.new.regexp.inspect }
         it 'returns true' do
           expect(node).to be_pure
         end
