@@ -11,6 +11,8 @@ require 'rubocop'
 
 require 'webmock/rspec'
 
+require 'powerpack/string/strip_margin'
+
 # Require supporting files exposed for testing.
 require 'rubocop/rspec/support'
 
