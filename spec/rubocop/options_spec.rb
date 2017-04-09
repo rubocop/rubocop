@@ -146,8 +146,8 @@ describe RuboCop::Options, :isolated_environment do
       end
 
       it 'mentions all incompatible options when more than two are used' do
-        msg = ['Incompatible cli options: [:version, :verbose_version,',
-               ' :show_cops]'].join
+        msg = 'Incompatible cli options: [:version, :verbose_version,' \
+              ' :show_cops]'
         expect { options.parse %w[-vV --show-cops] }
           .to raise_error(ArgumentError, msg)
       end

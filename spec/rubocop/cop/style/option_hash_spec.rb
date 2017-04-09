@@ -5,11 +5,11 @@ describe RuboCop::Cop::Style::OptionHash, :config do
   let(:cop_config) { { 'SuspiciousParamNames' => ['options'] } }
 
   let(:source) do
-    [
-      'def some_method(options = {})',
-      '  puts some_arg',
-      'end'
-    ]
+    <<-END.strip_indent
+      def some_method(options = {})
+        puts some_arg
+      end
+    END
   end
 
   it 'registers an offense' do
@@ -22,12 +22,12 @@ describe RuboCop::Cop::Style::OptionHash, :config do
 
   context 'when the last argument is an options hash named something else' do
     let(:source) do
-      [
-        'def steep(flavor, duration, config={})',
-        '  mug = config.fetch(:mug)',
-        '  prep(flavor, duration, mug)',
-        'end'
-      ]
+      <<-END.strip_indent
+        def steep(flavor, duration, config={})
+          mug = config.fetch(:mug)
+          prep(flavor, duration, mug)
+        end
+      END
     end
 
     it 'does not register an offense' do
@@ -53,12 +53,12 @@ describe RuboCop::Cop::Style::OptionHash, :config do
     end
 
     let(:source) do
-      [
-        'def meditate',
-        '  puts true',
-        '  puts true',
-        'end'
-      ]
+      <<-END.strip_indent
+        def meditate
+          puts true
+          puts true
+        end
+      END
     end
 
     it 'does not register an offense' do
@@ -72,11 +72,11 @@ describe RuboCop::Cop::Style::OptionHash, :config do
     end
 
     let(:source) do
-      [
-        'def cook(instructions, ingredients = { hot: [], cold: [] })',
-        '  prep(ingredients)',
-        'end'
-      ]
+      <<-END.strip_indent
+        def cook(instructions, ingredients = { hot: [], cold: [] })
+          prep(ingredients)
+        end
+      END
     end
 
     it 'does not register an offense' do

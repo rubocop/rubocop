@@ -11,8 +11,10 @@ describe RuboCop::Cop::Style::IndentAssignment, :config do
   let(:cop_indent) { nil } # use indentation with from Style/IndentationWidth
 
   it 'registers an offense for incorrectly indented rhs' do
-    inspect_source(cop, ['a =',
-                         'if b ; end'])
+    inspect_source(cop, <<-END.strip_indent)
+      a =
+      if b ; end
+    END
 
     expect(cop.offenses.length).to eq(1)
     expect(cop.highlights).to eq(['if b ; end'])
@@ -20,31 +22,39 @@ describe RuboCop::Cop::Style::IndentAssignment, :config do
   end
 
   it 'allows assignments that do not start on a newline' do
-    inspect_source(cop, ['a = if b',
-                         '      foo',
-                         '    end'])
+    inspect_source(cop, <<-END.strip_indent)
+      a = if b
+            foo
+          end
+    END
 
     expect(cop.offenses).to be_empty
   end
 
   it 'allows a properly indented rhs' do
-    inspect_source(cop, ['a =',
-                         '  if b ; end'])
+    inspect_source(cop, <<-END.strip_indent)
+      a =
+        if b ; end
+    END
 
     expect(cop.offenses).to be_empty
   end
 
   it 'allows a properly indented rhs with fullwidth characters' do
-    inspect_source(cop, ["f 'Ｒｕｂｙ', a =",
-                         '                b'])
+    inspect_source(cop, <<-END.strip_indent)
+      f 'Ｒｕｂｙ', a =
+                      b
+    END
 
     expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for multi-lhs' do
-    inspect_source(cop, ['a,',
-                         'b =',
-                         'if b ; end'])
+    inspect_source(cop, <<-END.strip_indent)
+      a,
+      b =
+      if b ; end
+    END
 
     expect(cop.offenses.length).to eq(1)
     expect(cop.highlights).to eq(['if b ; end'])
@@ -52,42 +62,54 @@ describe RuboCop::Cop::Style::IndentAssignment, :config do
   end
 
   it 'ignores comparison operators' do
-    inspect_source(cop, ['a ===',
-                         'if b ; end'])
+    inspect_source(cop, <<-END.strip_indent)
+      a ===
+      if b ; end
+    END
 
     expect(cop.offenses).to be_empty
   end
 
   it 'auto-corrects indentation' do
     new_source = autocorrect_source(
-      cop, ['a =',
-            'if b ; end']
+      cop, <<-END.strip_indent
+        a =
+        if b ; end
+      END
     )
 
     expect(new_source)
-      .to eq(['a =',
-              '  if b ; end'].join("\n"))
+      .to eq(<<-END.strip_indent)
+        a =
+          if b ; end
+      END
   end
 
   context 'when indentation width is overridden for this cop only' do
     let(:cop_indent) { 7 }
 
     it 'allows a properly indented rhs' do
-      inspect_source(cop, ['a =',
-                           '       if b ; end'])
+      inspect_source(cop, <<-END.strip_indent)
+        a =
+               if b ; end
+      END
 
       expect(cop.offenses).to be_empty
     end
 
     it 'auto-corrects indentation' do
       new_source = autocorrect_source(
-        cop, ['a =',
-              '  if b ; end']
+        cop, <<-END.strip_indent
+          a =
+            if b ; end
+        END
       )
 
       expect(new_source)
-        .to eq(['a =',
-                '       if b ; end'].join("\n"))
+        .to eq(<<-END.strip_indent)
+          a =
+                 if b ; end
+        END
     end
   end
 end

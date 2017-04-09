@@ -5,8 +5,10 @@ describe RuboCop::Cop::Rails::OutputSafety do
 
   it 'registers an offense for html_safe methods with a receiver and no ' \
      'arguments' do
-    source = ['foo.html_safe',
-              '"foo".html_safe']
+    source = <<-END.strip_indent
+      foo.html_safe
+      "foo".html_safe
+    END
     inspect_source(cop, source)
     expect(cop.offenses.size).to eq(2)
   end
@@ -18,22 +20,28 @@ describe RuboCop::Cop::Rails::OutputSafety do
   end
 
   it 'accepts html_safe methods with arguments' do
-    source = ['foo.html_safe one',
-              '"foo".html_safe two']
+    source = <<-END.strip_indent
+      foo.html_safe one
+      "foo".html_safe two
+    END
     inspect_source(cop, source)
     expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for raw methods without a receiver' do
-    source = ['raw(foo)',
-              'raw "foo"']
+    source = <<-END.strip_indent
+      raw(foo)
+      raw "foo"
+    END
     inspect_source(cop, source)
     expect(cop.offenses.size).to eq(2)
   end
 
   it 'accepts raw methods with a receiver' do
-    source = ['foo.raw(foo)',
-              '"foo".raw "foo"']
+    source = <<-END.strip_indent
+      foo.raw(foo)
+      "foo".raw "foo"
+    END
     inspect_source(cop, source)
     expect(cop.offenses).to be_empty
   end
@@ -51,8 +59,10 @@ describe RuboCop::Cop::Rails::OutputSafety do
   end
 
   it 'accepts comments' do
-    source = ['# foo.html_safe',
-              '# raw foo']
+    source = <<-END.strip_indent
+      # foo.html_safe
+      # raw foo
+    END
     inspect_source(cop, source)
     expect(cop.offenses).to be_empty
   end

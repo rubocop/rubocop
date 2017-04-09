@@ -22,11 +22,13 @@ describe RuboCop::Cop::Style::RaiseArgs, :config do
 
     context 'with correct + opposite' do
       it 'reports an offense' do
-        inspect_source(cop, ['if a',
-                             '  raise RuntimeError, msg',
-                             'else',
-                             '  raise Ex.new(msg)',
-                             'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          if a
+            raise RuntimeError, msg
+          else
+            raise Ex.new(msg)
+          end
+        END
         expect(cop.offenses.size).to eq(1)
         expect(cop.messages)
           .to eq(['Provide an exception object as an argument to `raise`.'])
@@ -34,16 +36,20 @@ describe RuboCop::Cop::Style::RaiseArgs, :config do
       end
 
       it 'auto-corrects to compact style' do
-        new_source = autocorrect_source(cop, ['if a',
-                                              '  raise RuntimeError, msg',
-                                              'else',
-                                              '  raise Ex.new(msg)',
-                                              'end'])
-        expect(new_source).to eq(['if a',
-                                  '  raise RuntimeError.new(msg)',
-                                  'else',
-                                  '  raise Ex.new(msg)',
-                                  'end'].join("\n"))
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          if a
+            raise RuntimeError, msg
+          else
+            raise Ex.new(msg)
+          end
+        END
+        expect(new_source).to eq(<<-END.strip_indent)
+          if a
+            raise RuntimeError.new(msg)
+          else
+            raise Ex.new(msg)
+          end
+        END
       end
     end
 
@@ -112,26 +118,32 @@ describe RuboCop::Cop::Style::RaiseArgs, :config do
 
     context 'with opposite + correct' do
       it 'reports an offense for opposite + correct' do
-        inspect_source(cop, ['if a',
-                             '  raise RuntimeError, msg',
-                             'else',
-                             '  raise Ex.new(msg)',
-                             'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          if a
+            raise RuntimeError, msg
+          else
+            raise Ex.new(msg)
+          end
+        END
         expect(cop.offenses.size).to eq(1)
         expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
       end
 
       it 'auto-corrects to exploded style' do
-        new_source = autocorrect_source(cop, ['if a',
-                                              '  raise RuntimeError, msg',
-                                              'else',
-                                              '  raise Ex.new(msg)',
-                                              'end'])
-        expect(new_source).to eq(['if a',
-                                  '  raise RuntimeError, msg',
-                                  'else',
-                                  '  raise Ex, msg',
-                                  'end'].join("\n"))
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          if a
+            raise RuntimeError, msg
+          else
+            raise Ex.new(msg)
+          end
+        END
+        expect(new_source).to eq(<<-END.strip_indent)
+          if a
+            raise RuntimeError, msg
+          else
+            raise Ex, msg
+          end
+        END
       end
     end
 

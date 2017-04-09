@@ -4,46 +4,50 @@ describe RuboCop::Cop::Lint::ElseLayout do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for expr on same line as else' do
-    inspect_source(cop,
-                   ['if something',
-                    '  test',
-                    'else ala',
-                    '  something',
-                    '  test',
-                    'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      if something
+        test
+      else ala
+        something
+        test
+      end
+    END
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'accepts proper else' do
-    inspect_source(cop,
-                   ['if something',
-                    '  test',
-                    'else',
-                    '  something',
-                    '  test',
-                    'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      if something
+        test
+      else
+        something
+        test
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts single-expr else regardless of layout' do
-    inspect_source(cop,
-                   ['if something',
-                    '  test',
-                    'else bala',
-                    'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      if something
+        test
+      else bala
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
   it 'can handle elsifs' do
-    inspect_source(cop,
-                   ['if something',
-                    '  test',
-                    'elsif something',
-                    '  bala',
-                    'else ala',
-                    '  something',
-                    '  test',
-                    'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      if something
+        test
+      elsif something
+        bala
+      else ala
+        something
+        test
+      end
+    END
     expect(cop.offenses.size).to eq(1)
   end
 

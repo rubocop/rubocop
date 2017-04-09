@@ -30,10 +30,11 @@ describe RuboCop::Cop::Style::MethodMissing do
       'fall back on `super`.'
     end
 
-    it_behaves_like 'code with offense',
-                    ['class Test',
-                     '  def method_missing; end',
-                     'end'].join("\n")
+    it_behaves_like 'code with offense', <<-END.strip_indent
+      class Test
+        def method_missing; end
+      end
+    END
   end
 
   describe 'when not implementing #respond_to_missing?' do
@@ -41,12 +42,13 @@ describe RuboCop::Cop::Style::MethodMissing do
       'When using `method_missing`, define `respond_to_missing?`.'
     end
 
-    it_behaves_like 'code with offense',
-                    ['class Test',
-                     '  def method_missing',
-                     '    super',
-                     '  end',
-                     'end'].join("\n")
+    it_behaves_like 'code with offense', <<-END.strip_indent
+      class Test
+        def method_missing
+          super
+        end
+      end
+    END
   end
 
   describe 'when not calling #super' do
@@ -54,32 +56,35 @@ describe RuboCop::Cop::Style::MethodMissing do
       'When using `method_missing`, fall back on `super`.'
     end
 
-    it_behaves_like 'code with offense',
-                    ['class Test',
-                     '  def respond_to_missing?; end',
-                     '  def method_missing; end',
-                     'end'].join("\n")
+    it_behaves_like 'code with offense', <<-END.strip_indent
+      class Test
+        def respond_to_missing?; end
+        def method_missing; end
+      end
+    END
   end
 
   describe 'when implementing #respond_to_missing? and calling #super' do
     context 'when implemented as instance methods' do
-      it_behaves_like 'code without offense',
-                      ['class Test',
-                       '  def respond_to_missing?; end',
-                       '  def method_missing',
-                       '    super',
-                       '  end',
-                       'end'].join("\n")
+      it_behaves_like 'code without offense', <<-END.strip_indent
+        class Test
+          def respond_to_missing?; end
+          def method_missing
+            super
+          end
+        end
+      END
     end
 
     context 'when implemented as class methods' do
-      it_behaves_like 'code without offense',
-                      ['class Test',
-                       '  def self.respond_to_missing?; end',
-                       '  def self.method_missing',
-                       '    super',
-                       '  end',
-                       'end'].join("\n")
+      it_behaves_like 'code without offense', <<-END.strip_indent
+        class Test
+          def self.respond_to_missing?; end
+          def self.method_missing
+            super
+          end
+        end
+      END
     end
 
     context 'when implemented with different scopes' do
@@ -87,13 +92,14 @@ describe RuboCop::Cop::Style::MethodMissing do
         'When using `method_missing`, define `respond_to_missing?`.'
       end
 
-      it_behaves_like 'code with offense',
-                      ['class Test',
-                       '  def respond_to_missing?; end',
-                       '  def self.method_missing',
-                       '    super',
-                       '  end',
-                       'end'].join("\n")
+      it_behaves_like 'code with offense', <<-END.strip_indent
+        class Test
+          def respond_to_missing?; end
+          def self.method_missing
+            super
+          end
+        end
+      END
     end
   end
 end

@@ -11,10 +11,10 @@ describe RuboCop::Cop::Lint::AmbiguousOperator do
     context 'without parentheses' do
       context 'without whitespaces on the right of the operator' do
         let(:source) do
-          [
-            'array = [1, 2, 3]',
-            'puts *array'
-          ]
+          <<-END.strip_indent
+            array = [1, 2, 3]
+            puts *array
+          END
         end
 
         it 'registers an offense' do
@@ -32,10 +32,10 @@ describe RuboCop::Cop::Lint::AmbiguousOperator do
 
       context 'with a whitespace on the right of the operator' do
         let(:source) do
-          [
-            'array = [1, 2, 3]',
-            'puts * array'
-          ]
+          <<-END.strip_indent
+            array = [1, 2, 3]
+            puts * array
+          END
         end
 
         it 'accepts' do
@@ -46,10 +46,10 @@ describe RuboCop::Cop::Lint::AmbiguousOperator do
 
     context 'with parentheses' do
       let(:source) do
-        [
-          'array = [1, 2, 3]',
-          'puts(*array)'
-        ]
+        <<-END.strip_indent
+          array = [1, 2, 3]
+          puts(*array)
+        END
       end
 
       it 'accepts' do
@@ -62,10 +62,10 @@ describe RuboCop::Cop::Lint::AmbiguousOperator do
     context 'without parentheses' do
       context 'without whitespaces on the right of the operator' do
         let(:source) do
-          [
-            'process = proc { do_something }',
-            '2.times &process'
-          ]
+          <<-END.strip_indent
+            process = proc { do_something }
+            2.times &process
+          END
         end
 
         it 'registers an offense' do
@@ -83,10 +83,10 @@ describe RuboCop::Cop::Lint::AmbiguousOperator do
 
       context 'with a whitespace on the right of the operator' do
         let(:source) do
-          [
-            'process = proc { do_something }',
-            '2.times & process'
-          ]
+          <<-END.strip_indent
+            process = proc { do_something }
+            2.times & process
+          END
         end
 
         it 'accepts' do
@@ -97,10 +97,10 @@ describe RuboCop::Cop::Lint::AmbiguousOperator do
 
     context 'with parentheses' do
       let(:source) do
-        [
-          'process = proc { do_something }',
-          '2.times(&process)'
-        ]
+        <<-END.strip_indent
+          process = proc { do_something }
+          2.times(&process)
+        END
       end
 
       it 'accepts' do

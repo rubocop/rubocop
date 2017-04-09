@@ -25,9 +25,11 @@ describe RuboCop::Cop::Style::IfUnlessModifierOfIfUnless do
 
   context 'conditional with modifier' do
     let(:source) do
-      ['unless condition',
-       '  then_part',
-       'end if external_condition']
+      <<-END.strip_indent
+        unless condition
+          then_part
+        end if external_condition
+      END
     end
 
     it 'registers an offense' do
@@ -38,9 +40,11 @@ describe RuboCop::Cop::Style::IfUnlessModifierOfIfUnless do
 
   context 'conditional with modifier in body' do
     let(:source) do
-      ['if condition',
-       '  then_part if maybe?',
-       'end']
+      <<-END.strip_indent
+        if condition
+          then_part if maybe?
+        end
+      END
     end
 
     it 'accepts' do
@@ -51,11 +55,13 @@ describe RuboCop::Cop::Style::IfUnlessModifierOfIfUnless do
 
   context 'nested conditionals' do
     let(:source) do
-      ['if external_condition',
-       '  if condition',
-       '    then_part',
-       '  end',
-       'end']
+      <<-END.strip_indent
+        if external_condition
+          if condition
+            then_part
+          end
+        end
+      END
     end
 
     it 'accepts' do

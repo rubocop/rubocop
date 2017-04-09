@@ -9,10 +9,11 @@ describe RuboCop::Cop::Style::SingleLineMethods do
   let(:cop_config) { { 'AllowIfMethodIsEmpty' => true } }
 
   it 'registers an offense for a single-line method' do
-    inspect_source(cop,
-                   ['def some_method; body end',
-                    'def link_to(name, url); {:name => name}; end',
-                    'def @table.columns; super; end'])
+    inspect_source(cop, <<-END.strip_indent)
+      def some_method; body end
+      def link_to(name, url); {:name => name}; end
+      def @table.columns; super; end
+    END
     expect(cop.messages).to eq(
       ['Avoid single-line method definitions.'] * 3
     )
@@ -22,9 +23,11 @@ describe RuboCop::Cop::Style::SingleLineMethods do
     let(:cop_config) { { 'AllowIfMethodIsEmpty' => false } }
 
     it 'registers an offense for an empty method' do
-      inspect_source(cop, ['def no_op; end',
-                           'def self.resource_class=(klass); end',
-                           'def @table.columns; end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def no_op; end
+        def self.resource_class=(klass); end
+        def @table.columns; end
+      END
       expect(cop.offenses.size).to eq(3)
     end
 
@@ -39,23 +42,29 @@ describe RuboCop::Cop::Style::SingleLineMethods do
     let(:cop_config) { { 'AllowIfMethodIsEmpty' => true } }
 
     it 'accepts a single-line empty method' do
-      inspect_source(cop, ['def no_op; end',
-                           'def self.resource_class=(klass); end',
-                           'def @table.columns; end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def no_op; end
+        def self.resource_class=(klass); end
+        def @table.columns; end
+      END
       expect(cop.offenses).to be_empty
     end
   end
 
   it 'accepts a multi-line method' do
-    inspect_source(cop, ['def some_method',
-                         '  body',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      def some_method
+        body
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
   it 'does not crash on an method with a capitalized name' do
-    inspect_source(cop, ['def NoSnakeCase',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      def NoSnakeCase
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 

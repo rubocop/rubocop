@@ -29,15 +29,18 @@ describe RuboCop::Cop::Style::LeadingCommentSpace do
   end
 
   it 'does not register an offense for #! on first line' do
-    inspect_source(cop,
-                   ['#!/usr/bin/ruby',
-                    'test'])
+    inspect_source(cop, <<-END.strip_indent)
+      #!/usr/bin/ruby
+      test
+    END
     expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for #! after the first line' do
-    inspect_source(cop, ['test',
-                         '#!/usr/bin/ruby'])
+    inspect_source(cop, <<-END.strip_indent)
+      test
+      #!/usr/bin/ruby
+    END
     expect(cop.offenses.size).to eq(1)
   end
 
@@ -78,10 +81,11 @@ describe RuboCop::Cop::Style::LeadingCommentSpace do
   end
 
   it 'accepts rdoc syntax' do
-    inspect_source(cop,
-                   ['#++',
-                    '#--',
-                    '#:nodoc:'])
+    inspect_source(cop, <<-END.strip_indent)
+      #++
+      #--
+      #:nodoc:
+    END
 
     expect(cop.offenses).to be_empty
   end
@@ -97,9 +101,11 @@ describe RuboCop::Cop::Style::LeadingCommentSpace do
   end
 
   it 'accepts =begin/=end comments' do
-    inspect_source(cop, ['=begin',
-                         '#blahblah',
-                         '=end'])
+    inspect_source(cop, <<-END.strip_indent)
+      =begin
+      #blahblah
+      =end
+    END
     expect(cop.offenses).to be_empty
   end
 end

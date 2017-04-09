@@ -63,8 +63,10 @@ describe RuboCop::Cop::Rails::EnumUniqueness, :config do
 
   context 'when receiving a variable' do
     it 'does not register an offense' do
-      inspect_source(cop, ['var = { status: { active: 0, archived: 1 } }',
-                           'enum var'])
+      inspect_source(cop, <<-END.strip_indent)
+        var = { status: { active: 0, archived: 1 } }
+        enum var
+      END
 
       expect(cop.offenses).to be_empty
     end

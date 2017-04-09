@@ -11,10 +11,13 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
 
   context 'multiline if that fits on one line' do
     let(:source) do
-      ["if #{condition}",
-       "  #{body}",
-       '', # Empty lines should make no difference.
-       'end']
+      # Empty lines should make no difference.
+      <<-END.strip_indent
+        if #{condition}
+          #{body}
+
+        end
+      END
     end
 
     let(:condition) { 'a' * 38 }
@@ -35,14 +38,16 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
 
     it 'does auto-correction' do
       corrected = autocorrect_source(cop, source)
-      expect(corrected).to eq "#{body} if #{condition}"
+      expect(corrected).to eq "#{body} if #{condition}\n"
     end
 
     context 'and has two statements separated by semicolon' do
       let(:source) do
-        ['if condition',
-         '  do_this; do_that',
-         'end']
+        <<-END.strip_indent
+          if condition
+            do_this; do_that
+          end
+        END
       end
 
       it 'accepts' do
@@ -54,9 +59,11 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
 
   context 'multiline if that fits on one line with comment on first line' do
     let(:source) do
-      ['if a # comment',
-       '  b',
-       'end']
+      <<-END.strip_indent
+        if a # comment
+          b
+        end
+      END
     end
 
     it 'registers an offense' do
@@ -70,19 +77,21 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
 
     it 'does auto-correction and preserves comment' do
       corrected = autocorrect_source(cop, source)
-      expect(corrected).to eq 'b if a # comment'
+      expect(corrected).to eq "b if a # comment\n"
     end
   end
 
   context 'multiline if that fits on one line with comment near end' do
     let(:source) do
-      ['if a',
-       '  b',
-       'end # comment',
-       'if a',
-       '  b',
-       '  # comment',
-       'end']
+      <<-END.strip_indent
+        if a
+          b
+        end # comment
+        if a
+          b
+          # comment
+        end
+      END
     end
 
     it 'accepts' do
@@ -93,19 +102,21 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
 
   context 'short multiline if near an else etc' do
     let(:source) do
-      ['if x',
-       '  y',
-       'elsif x1',
-       '  y1',
-       'else',
-       '  z',
-       'end',
-       'n = a ? 0 : 1',
-       'm = 3 if m0',
-       '',
-       'if a',
-       '  b',
-       'end']
+      <<-END.strip_indent
+        if x
+          y
+        elsif x1
+          y1
+        else
+          z
+        end
+        n = a ? 0 : 1
+        m = 3 if m0
+
+        if a
+          b
+        end
+      END
     end
 
     it 'registers an offense' do
@@ -115,17 +126,19 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
 
     it 'does auto-correction' do
       corrected = autocorrect_source(cop, source)
-      expect(corrected).to eq(['if x',
-                               '  y',
-                               'elsif x1',
-                               '  y1',
-                               'else',
-                               '  z',
-                               'end',
-                               'n = a ? 0 : 1',
-                               'm = 3 if m0',
-                               '',
-                               'b if a'].join("\n"))
+      expect(corrected).to eq(<<-END.strip_indent)
+        if x
+          y
+        elsif x1
+          y1
+        else
+          z
+        end
+        n = a ? 0 : 1
+        m = 3 if m0
+
+        b if a
+      END
     end
   end
 
@@ -139,9 +152,11 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
 
   context 'multiline unless that fits on one line' do
     let(:source) do
-      ['unless a',
-       '  b',
-       'end']
+      <<-END.strip_indent
+        unless a
+          b
+        end
+      END
     end
 
     it 'registers an offense' do
@@ -155,14 +170,16 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
 
     it 'does auto-correction' do
       corrected = autocorrect_source(cop, source)
-      expect(corrected).to eq 'b unless a'
+      expect(corrected).to eq "b unless a\n"
     end
   end
 
   it 'accepts code with EOL comment since user might want to keep it' do
-    inspect_source(cop, ['unless a',
-                         '  b # A comment',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      unless a
+        b # A comment
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
@@ -179,21 +196,23 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it 'accepts if/elsif' do
-    inspect_source(cop, ['if test',
-                         '  something',
-                         'elsif test2',
-                         '  something_else',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      if test
+        something
+      elsif test2
+        something_else
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
   context 'with implicit match conditional' do
     let(:source) do
-      [
-        "  if #{conditional}",
-        "    #{body}",
-        '  end'
-      ]
+      <<-END.strip_margin('|')
+        |  if #{conditional}
+        |    #{body}
+        |  end
+      END
     end
 
     let(:body) { 'b' * 36 }
@@ -210,7 +229,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
 
       it 'does auto-correction' do
         corrected = autocorrect_source(cop, source)
-        expect(corrected).to eq "  #{body} if #{conditional}"
+        expect(corrected).to eq "  #{body} if #{conditional}\n"
       end
     end
 
@@ -245,77 +264,97 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it 'accepts if-end followed by a chained call' do
-    inspect_source(cop, ['if test',
-                         '  something',
-                         'end.inspect'])
+    inspect_source(cop, <<-END.strip_indent)
+      if test
+        something
+      end.inspect
+    END
     expect(cop.messages).to be_empty
   end
 
   it "doesn't break if-end when used as RHS of local var assignment" do
-    corrected = autocorrect_source(cop, ['a = if b',
-                                         '  1',
-                                         'end'])
-    expect(corrected).to eq 'a = (1 if b)'
+    corrected = autocorrect_source(cop, <<-END.strip_indent)
+      a = if b
+        1
+      end
+    END
+    expect(corrected).to eq "a = (1 if b)\n"
   end
 
   it "doesn't break if-end when used as RHS of instance var assignment" do
-    corrected = autocorrect_source(cop, ['@a = if b',
-                                         '  1',
-                                         'end'])
-    expect(corrected).to eq '@a = (1 if b)'
+    corrected = autocorrect_source(cop, <<-END.strip_indent)
+      @a = if b
+        1
+      end
+    END
+    expect(corrected).to eq "@a = (1 if b)\n"
   end
 
   it "doesn't break if-end when used as RHS of class var assignment" do
-    corrected = autocorrect_source(cop, ['@@a = if b',
-                                         '  1',
-                                         'end'])
-    expect(corrected).to eq '@@a = (1 if b)'
+    corrected = autocorrect_source(cop, <<-END.strip_indent)
+      @@a = if b
+        1
+      end
+    END
+    expect(corrected).to eq "@@a = (1 if b)\n"
   end
 
   it "doesn't break if-end when used as RHS of constant assignment" do
-    corrected = autocorrect_source(cop, ['A = if b',
-                                         '  1',
-                                         'end'])
-    expect(corrected).to eq 'A = (1 if b)'
+    corrected = autocorrect_source(cop, <<-END.strip_indent)
+      A = if b
+        1
+      end
+    END
+    expect(corrected).to eq "A = (1 if b)\n"
   end
 
   it "doesn't break if-end when used as RHS of binary arithmetic" do
-    corrected = autocorrect_source(cop, ['a + if b',
-                                         '  1',
-                                         'end'])
-    expect(corrected).to eq 'a + (1 if b)'
+    corrected = autocorrect_source(cop, <<-END.strip_indent)
+      a + if b
+        1
+      end
+    END
+    expect(corrected).to eq "a + (1 if b)\n"
   end
 
   it 'accepts if-end when used as LHS of binary arithmetic' do
-    inspect_source(cop, ['if test',
-                         '  1',
-                         'end + 2'])
+    inspect_source(cop, <<-END.strip_indent)
+      if test
+        1
+      end + 2
+    END
     expect(cop.messages).to be_empty
   end
 
   context 'if-end is argument to a parenthesized method call' do
     it "doesn't add redundant parentheses" do
-      corrected = autocorrect_source(cop, ['puts("string", if a',
-                                           '  1',
-                                           'end)'])
-      expect(corrected).to eq 'puts("string", 1 if a)'
+      corrected = autocorrect_source(cop, <<-END.strip_indent)
+        puts("string", if a
+          1
+        end)
+      END
+      expect(corrected).to eq "puts(\"string\", 1 if a)\n"
     end
   end
 
   context 'if-end is argument to a non-parenthesized method call' do
     it 'adds parentheses so as not to change meaning' do
-      corrected = autocorrect_source(cop, ['puts "string", if a',
-                                           '  1',
-                                           'end'])
-      expect(corrected).to eq 'puts "string", (1 if a)'
+      corrected = autocorrect_source(cop, <<-END.strip_indent)
+        puts "string", if a
+          1
+        end
+      END
+      expect(corrected).to eq "puts \"string\", (1 if a)\n"
     end
   end
 
   context 'if-end with conditional as body' do
     let(:source) do
-      ['if condition',
-       '  foo ? "bar" : "baz"',
-       'end']
+      <<-END.strip_indent
+        if condition
+          foo ? "bar" : "baz"
+        end
+      END
     end
 
     it 'accepts' do
@@ -326,9 +365,11 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
 
   context 'unless-end with conditional as body' do
     let(:source) do
-      ['unless condition',
-       '  foo ? "bar" : "baz"',
-       'end']
+      <<-END.strip_indent
+        unless condition
+          foo ? "bar" : "baz"
+        end
+      END
     end
 
     it 'accepts' do

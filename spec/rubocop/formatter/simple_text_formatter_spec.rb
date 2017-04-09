@@ -74,66 +74,60 @@ module RuboCop
         context 'when no files inspected' do
           it 'handles pluralization correctly' do
             formatter.report_summary(0, 0, 0)
-            expect(output.string).to eq(
-              ['',
-               '0 files inspected, no offenses detected',
-               ''].join("\n")
-            )
+            expect(output.string).to eq(<<-END.strip_indent)
+
+              0 files inspected, no offenses detected
+            END
           end
         end
 
         context 'when a file inspected and no offenses detected' do
           it 'handles pluralization correctly' do
             formatter.report_summary(1, 0, 0)
-            expect(output.string).to eq(
-              ['',
-               '1 file inspected, no offenses detected',
-               ''].join("\n")
-            )
+            expect(output.string).to eq(<<-END.strip_indent)
+
+              1 file inspected, no offenses detected
+            END
           end
         end
 
         context 'when a offense detected' do
           it 'handles pluralization correctly' do
             formatter.report_summary(1, 1, 0)
-            expect(output.string).to eq(
-              ['',
-               '1 file inspected, 1 offense detected',
-               ''].join("\n")
-            )
+            expect(output.string).to eq(<<-END.strip_indent)
+
+              1 file inspected, 1 offense detected
+            END
           end
         end
 
         context 'when 2 offenses detected' do
           it 'handles pluralization correctly' do
             formatter.report_summary(2, 2, 0)
-            expect(output.string).to eq(
-              ['',
-               '2 files inspected, 2 offenses detected',
-               ''].join("\n")
-            )
+            expect(output.string).to eq(<<-END.strip_indent)
+
+              2 files inspected, 2 offenses detected
+            END
           end
         end
 
         context 'when an offense is corrected' do
           it 'prints about correction' do
             formatter.report_summary(1, 1, 1)
-            expect(output.string).to eq(
-              ['',
-               '1 file inspected, 1 offense detected, 1 offense corrected',
-               ''].join("\n")
-            )
+            expect(output.string).to eq(<<-END.strip_indent)
+
+              1 file inspected, 1 offense detected, 1 offense corrected
+            END
           end
         end
 
         context 'when 2 offenses are corrected' do
           it 'handles pluralization correctly' do
             formatter.report_summary(1, 1, 2)
-            expect(output.string).to eq(
-              ['',
-               '1 file inspected, 1 offense detected, 2 offenses corrected',
-               ''].join("\n")
-            )
+            expect(output.string).to eq(<<-END.strip_indent)
+
+              1 file inspected, 1 offense detected, 2 offenses corrected
+            END
           end
         end
       end

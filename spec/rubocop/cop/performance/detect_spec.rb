@@ -44,17 +44,21 @@ describe RuboCop::Cop::Performance::Detect do
     end
 
     it "registers an offense when first is called on multiline #{method}" do
-      inspect_source(cop, ["[1, 2, 3].#{method} do |i|",
-                           '  i % 2 == 0',
-                           'end.first'])
+      inspect_source(cop, <<-END.strip_indent)
+        [1, 2, 3].#{method} do |i|
+          i % 2 == 0
+        end.first
+      END
 
       expect(cop.messages).to eq(["Use `detect` instead of `#{method}.first`."])
     end
 
     it "registers an offense when last is called on multiline #{method}" do
-      inspect_source(cop, ["[1, 2, 3].#{method} do |i|",
-                           '  i % 2 == 0',
-                           'end.last'])
+      inspect_source(cop, <<-END.strip_indent)
+        [1, 2, 3].#{method} do |i|
+          i % 2 == 0
+        end.last
+      END
 
       expect(cop.messages)
         .to eq(["Use `reverse.detect` instead of `#{method}.last`."])
@@ -159,47 +163,59 @@ describe RuboCop::Cop::Performance::Detect do
           end
 
           it "corrects #{method}.first to #{preferred_method} (multiline)" do
-            source = ["[1, 2, 3].#{method} do |i|",
-                      '  i % 2 == 0',
-                      'end.first']
+            source = <<-END.strip_indent
+              [1, 2, 3].#{method} do |i|
+                i % 2 == 0
+              end.first
+            END
             new_source = autocorrect_source(cop, source)
 
-            expect(new_source).to eq(["[1, 2, 3].#{preferred_method} do |i|",
-                                      '  i % 2 == 0',
-                                      'end'].join("\n"))
+            expect(new_source).to eq(<<-END.strip_indent)
+              [1, 2, 3].#{preferred_method} do |i|
+                i % 2 == 0
+              end
+            END
           end
 
           it "corrects #{method}.last to reverse.#{preferred_method} " \
              '(multiline)' do
-            source = ["[1, 2, 3].#{method} do |i|",
-                      '  i % 2 == 0',
-                      'end.last']
+            source = <<-END.strip_indent
+              [1, 2, 3].#{method} do |i|
+                i % 2 == 0
+              end.last
+            END
             new_source = autocorrect_source(cop, source)
 
             expect(new_source)
-              .to eq(["[1, 2, 3].reverse.#{preferred_method} do |i|",
-                      '  i % 2 == 0',
-                      'end'].join("\n"))
+              .to eq(<<-END.strip_indent)
+                [1, 2, 3].reverse.#{preferred_method} do |i|
+                  i % 2 == 0
+                end
+              END
           end
 
           it "corrects multiline #{method} to #{preferred_method} " \
              "with 'first' on the last line" do
-            source = ["[1, 2, 3].#{method} { true }",
-                      ".first['x']"]
+            source = <<-END.strip_indent
+              [1, 2, 3].#{method} { true }
+              .first['x']
+            END
             new_source = autocorrect_source(cop, source)
 
             expect(new_source)
-              .to eq("[1, 2, 3].#{preferred_method} { true }['x']")
+              .to eq("[1, 2, 3].#{preferred_method} { true }['x']\n")
           end
 
           it "corrects multiline #{method} to #{preferred_method} " \
              "with 'first' on the last line (short syntax)" do
-            source = ["[1, 2, 3].#{method}(&:blank?)",
-                      ".first['x']"]
+            source = <<-END.strip_indent
+              [1, 2, 3].#{method}(&:blank?)
+              .first['x']
+            END
             new_source = autocorrect_source(cop, source)
 
             expect(new_source)
-              .to eq("[1, 2, 3].#{preferred_method}(&:blank?)['x']")
+              .to eq("[1, 2, 3].#{preferred_method}(&:blank?)['x']\n")
           end
         end
       end

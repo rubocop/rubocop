@@ -273,20 +273,24 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'fixes a string array in a scope' do
-      new_source = autocorrect_source(cop, ['module Foo',
-                                            '   class Bar',
-                                            '     def baz',
-                                            '       %(one two)',
-                                            '     end',
-                                            '   end',
-                                            ' end'])
-      expect(new_source).to eq(['module Foo',
-                                '   class Bar',
-                                '     def baz',
-                                '       %[one two]',
-                                '     end',
-                                '   end',
-                                ' end'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        module Foo
+           class Bar
+             def baz
+               %(one two)
+             end
+           end
+         end
+      END
+      expect(new_source).to eq(<<-END.strip_indent)
+        module Foo
+           class Bar
+             def baz
+               %[one two]
+             end
+           end
+         end
+      END
     end
 
     it 'fixes a regular expression' do
@@ -314,43 +318,50 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'preserves line breaks when fixing a multiline array' do
-      new_source = autocorrect_source(cop, ['%w(', 'some', 'words', ')'])
-      expect(new_source).to eq(['%w[',
-                                'some',
-                                'words',
-                                ']'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        %w(
+        some
+        words
+        )
+      END
+      expect(new_source).to eq(<<-END.strip_indent)
+        %w[
+        some
+        words
+        ]
+      END
     end
 
     it 'preserves indentation when correcting a multiline array' do
-      original_source = [
-        '  array = %w(',
-        '    first',
-        '    second',
-        '  )'
-      ]
-      corrected_source = [
-        '  array = %w[',
-        '    first',
-        '    second',
-        '  ]'
-      ].join("\n")
+      original_source = <<-END.strip_margin('|')
+        |  array = %w(
+        |    first
+        |    second
+        |  )
+      END
+      corrected_source = <<-END.strip_margin('|')
+        |  array = %w[
+        |    first
+        |    second
+        |  ]
+      END
       new_source = autocorrect_source(cop, original_source)
       expect(new_source).to eq(corrected_source)
     end
 
     it 'preserves irregular indentation when correcting a multiline array' do
-      original_source = [
-        '  array = %w(',
-        '    first',
-        '  second',
-        ')'
-      ]
-      corrected_source = [
-        '  array = %w[',
-        '    first',
-        '  second',
-        ']'
-      ].join("\n")
+      original_source = <<-END.strip_indent
+          array = %w(
+            first
+          second
+        )
+      END
+      corrected_source = <<-END.strip_indent
+          array = %w[
+            first
+          second
+        ]
+      END
       new_source = autocorrect_source(cop, original_source)
       expect(new_source).to eq(corrected_source)
     end

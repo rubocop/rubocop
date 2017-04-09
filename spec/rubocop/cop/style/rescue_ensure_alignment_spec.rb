@@ -6,51 +6,61 @@ describe RuboCop::Cop::Style::RescueEnsureAlignment do
   shared_examples 'common behavior' do |keyword|
     context 'bad alignment' do
       it 'registers an offense when used with begin' do
-        inspect_source(cop, ['begin',
-                             '  something',
-                             "    #{keyword}",
-                             '    error',
-                             'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          begin
+            something
+              #{keyword}
+              error
+          end
+        END
         expect(cop.messages).to eq(["`#{keyword}` at 3, 4 is not aligned with" \
                                     ' `end` at 5, 0.'])
       end
 
       it 'registers an offense when used with def' do
-        inspect_source(cop, ['def test',
-                             '  something',
-                             "    #{keyword}",
-                             '    error',
-                             'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          def test
+            something
+              #{keyword}
+              error
+          end
+        END
         expect(cop.messages).to eq(["`#{keyword}` at 3, 4 is not aligned with" \
                                     ' `end` at 5, 0.'])
       end
 
       it 'registers an offense when used with defs' do
-        inspect_source(cop, ['def Test.test',
-                             '  something',
-                             "    #{keyword}",
-                             '    error',
-                             'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          def Test.test
+            something
+              #{keyword}
+              error
+          end
+        END
         expect(cop.messages).to eq(["`#{keyword}` at 3, 4 is not aligned with" \
                                     ' `end` at 5, 0.'])
       end
 
       it 'registers an offense when used with class' do
-        inspect_source(cop, ['class C',
-                             '  something',
-                             "    #{keyword}",
-                             '    error',
-                             'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          class C
+            something
+              #{keyword}
+              error
+          end
+        END
         expect(cop.messages).to eq(["`#{keyword}` at 3, 4 is not aligned with" \
                                     ' `end` at 5, 0.'])
       end
 
       it 'registers an offense when used with module' do
-        inspect_source(cop, ['module M',
-                             '  something',
-                             "    #{keyword}",
-                             '    error',
-                             'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          module M
+            something
+              #{keyword}
+              error
+          end
+        END
         expect(cop.messages).to eq(["`#{keyword}` at 3, 4 is not aligned with" \
                                     ' `end` at 5, 0.'])
       end
@@ -62,16 +72,20 @@ describe RuboCop::Cop::Style::RescueEnsureAlignment do
       end
 
       it 'auto-corrects' do
-        corrected = autocorrect_source(cop, ['begin',
-                                             '  something',
-                                             "    #{keyword}",
-                                             '    error',
-                                             'end'])
-        expect(corrected).to eq ['begin',
-                                 '  something',
-                                 keyword,
-                                 '    error',
-                                 'end'].join("\n")
+        corrected = autocorrect_source(cop, <<-END.strip_indent)
+          begin
+            something
+              #{keyword}
+              error
+          end
+        END
+        expect(corrected).to eq(<<-END.strip_indent)
+          begin
+            something
+          #{keyword}
+              error
+          end
+        END
       end
     end
 
@@ -108,11 +122,13 @@ describe RuboCop::Cop::Style::RescueEnsureAlignment do
     subject(:cop) { described_class.new(config) }
 
     it 'processes excluded files with issue' do
-      inspect_source_file(cop, ['begin',
-                                '  foo',
-                                'rescue',
-                                '  bar',
-                                'end'])
+      inspect_source_file(cop, <<-END.strip_indent)
+        begin
+          foo
+        rescue
+          bar
+        end
+      END
 
       expect(cop.messages).to be_empty
     end

@@ -22,7 +22,7 @@ describe RuboCop::Cop::Style::Lambda, :config do
 
   shared_examples 'does not auto-correct' do
     it 'does not autocorrect' do
-      expect(autocorrect_source(cop, source)).to eq(source.join("\n"))
+      expect(autocorrect_source(cop, source)).to eq(source)
       expect(cop.offenses.map(&:corrected?)).to eq [false]
     end
   end
@@ -51,30 +51,38 @@ describe RuboCop::Cop::Style::Lambda, :config do
     context 'with a multiline lambda literal' do
       context 'with arguments' do
         let(:source) do
-          ['f = ->(x) do',
-           '  x',
-           'end']
+          <<-END.strip_indent
+            f = ->(x) do
+              x
+            end
+          END
         end
 
         it_behaves_like 'registers an offense',
                         'Use the `lambda` method for all lambdas.'
-        it_behaves_like 'auto-correct', ['f = lambda do |x|',
-                                         '  x',
-                                         'end'].join("\n")
+        it_behaves_like 'auto-correct', <<-END.strip_indent
+          f = lambda do |x|
+            x
+          end
+        END
       end
 
       context 'without arguments' do
         let(:source) do
-          ['f = -> do',
-           '  x',
-           'end']
+          <<-END.strip_indent
+            f = -> do
+              x
+            end
+          END
         end
 
         it_behaves_like 'registers an offense',
                         'Use the `lambda` method for all lambdas.'
-        it_behaves_like 'auto-correct', ['f = lambda do',
-                                         '  x',
-                                         'end'].join("\n")
+        it_behaves_like 'auto-correct', <<-END.strip_indent
+          f = lambda do
+            x
+          end
+        END
       end
     end
   end
@@ -105,32 +113,40 @@ describe RuboCop::Cop::Style::Lambda, :config do
     context 'with a multiline lambda method call' do
       context 'with arguments' do
         let(:source) do
-          ['f = lambda do |x|',
-           '  x',
-           'end']
+          <<-END.strip_indent
+            f = lambda do |x|
+              x
+            end
+          END
         end
 
         it_behaves_like 'registers an offense',
                         'Use the `-> { ... }` lambda literal syntax for ' \
                         'all lambdas.'
-        it_behaves_like 'auto-correct', ['f = ->(x) do',
-                                         '  x',
-                                         'end'].join("\n")
+        it_behaves_like 'auto-correct', <<-END.strip_indent
+          f = ->(x) do
+            x
+          end
+        END
       end
 
       context 'without arguments' do
         let(:source) do
-          ['f = lambda do',
-           '  x',
-           'end']
+          <<-END.strip_indent
+            f = lambda do
+              x
+            end
+          END
         end
 
         it_behaves_like 'registers an offense',
                         'Use the `-> { ... }` lambda literal syntax for ' \
                         'all lambdas.'
-        it_behaves_like 'auto-correct', ['f = -> do',
-                                         '  x',
-                                         'end'].join("\n")
+        it_behaves_like 'auto-correct', <<-END.strip_indent
+          f = -> do
+            x
+          end
+        END
       end
     end
   end
@@ -160,17 +176,21 @@ describe RuboCop::Cop::Style::Lambda, :config do
 
     context 'with a multiline lambda method call' do
       it 'does not register an offense' do
-        inspect_source(cop, ['l = lambda do |x|',
-                             '  x',
-                             'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          l = lambda do |x|
+            x
+          end
+        END
         expect(cop.offenses).to be_empty
       end
     end
 
     context 'with a single line lambda literal' do
       it 'does not register an offense' do
-        inspect_source(cop, ['lambda = ->(x) { x }',
-                             'lambda.(1)'])
+        inspect_source(cop, <<-END.strip_indent)
+          lambda = ->(x) { x }
+          lambda.(1)
+        END
         expect(cop.offenses).to be_empty
       end
     end
@@ -178,30 +198,38 @@ describe RuboCop::Cop::Style::Lambda, :config do
     context 'with a multiline lambda literal' do
       context 'with arguments' do
         let(:source) do
-          ['f = ->(x) do',
-           '  x',
-           'end']
+          <<-END.strip_indent
+            f = ->(x) do
+              x
+            end
+          END
         end
 
         it_behaves_like 'registers an offense',
                         'Use the `lambda` method for multiline lambdas.'
-        it_behaves_like 'auto-correct', ['f = lambda do |x|',
-                                         '  x',
-                                         'end'].join("\n")
+        it_behaves_like 'auto-correct', <<-END.strip_indent
+          f = lambda do |x|
+            x
+          end
+        END
       end
 
       context 'without arguments' do
         let(:source) do
-          ['f = -> do',
-           '  x',
-           'end']
+          <<-END.strip_indent
+            f = -> do
+              x
+            end
+          END
         end
 
         it_behaves_like 'registers an offense',
                         'Use the `lambda` method for multiline lambdas.'
-        it_behaves_like 'auto-correct', ['f = lambda do',
-                                         '  x',
-                                         'end'].join("\n")
+        it_behaves_like 'auto-correct', <<-END.strip_indent
+          f = lambda do
+            x
+          end
+        END
       end
     end
 
@@ -213,117 +241,153 @@ describe RuboCop::Cop::Style::Lambda, :config do
       # Tests correction of an issue resulting in `lambdado` syntax errors.
       context 'without any spacing' do
         let(:source) do
-          ['->(x)do',
-           '  x',
-           'end']
+          <<-END.strip_indent
+            ->(x)do
+              x
+            end
+          END
         end
 
-        it_behaves_like 'auto-correct', ['lambda do |x|',
-                                         '  x',
-                                         'end'].join("\n")
+        it_behaves_like 'auto-correct', <<-END.strip_indent
+          lambda do |x|
+            x
+          end
+        END
       end
 
       context 'without spacing after arguments' do
         let(:source) do
-          ['-> (x)do',
-           '  x',
-           'end']
+          <<-END.strip_indent
+            -> (x)do
+              x
+            end
+          END
         end
 
-        it_behaves_like 'auto-correct', ['lambda do |x|',
-                                         '  x',
-                                         'end'].join("\n")
+        it_behaves_like 'auto-correct', <<-END.strip_indent
+          lambda do |x|
+            x
+          end
+        END
       end
 
       context 'without spacing before arguments' do
         let(:source) do
-          ['->(x) do',
-           '  x',
-           'end']
+          <<-END.strip_indent
+            ->(x) do
+              x
+            end
+          END
         end
 
-        it_behaves_like 'auto-correct', ['lambda do |x|',
-                                         '  x',
-                                         'end'].join("\n")
+        it_behaves_like 'auto-correct', <<-END.strip_indent
+          lambda do |x|
+            x
+          end
+        END
       end
 
       context 'with a multiline lambda literal' do
         context 'with empty arguments' do
           let(:source) do
-            ['->()do',
-             '  x',
-             'end']
+            <<-END.strip_indent
+              ->()do
+                x
+              end
+            END
           end
 
-          it_behaves_like 'auto-correct', ['lambda do',
-                                           '  x',
-                                           'end'].join("\n")
+          it_behaves_like 'auto-correct', <<-END.strip_indent
+            lambda do
+              x
+            end
+          END
         end
 
         context 'with no arguments and bad spacing' do
           let(:source) do
-            ['-> ()do',
-             '  x',
-             'end']
+            <<-END.strip_indent
+              -> ()do
+                x
+              end
+            END
           end
 
-          it_behaves_like 'auto-correct', ['lambda do',
-                                           '  x',
-                                           'end'].join("\n")
+          it_behaves_like 'auto-correct', <<-END.strip_indent
+            lambda do
+              x
+            end
+          END
         end
 
         context 'with no arguments and no spacing' do
           let(:source) do
-            ['->do',
-             '  x',
-             'end']
+            <<-END.strip_indent
+              ->do
+                x
+              end
+            END
           end
 
-          it_behaves_like 'auto-correct', ['lambda do',
-                                           '  x',
-                                           'end'].join("\n")
+          it_behaves_like 'auto-correct', <<-END.strip_indent
+            lambda do
+              x
+            end
+          END
         end
 
         context 'without parentheses' do
           let(:source) do
-            ['-> hello do',
-             '  puts hello',
-             'end']
+            <<-END.strip_indent
+              -> hello do
+                puts hello
+              end
+            END
           end
 
           it_behaves_like 'registers an offense',
                           'Use the `lambda` method for multiline lambdas.'
-          it_behaves_like 'auto-correct', ['lambda do |hello|',
-                                           '  puts hello',
-                                           'end'].join("\n")
+          it_behaves_like 'auto-correct', <<-END.strip_indent
+            lambda do |hello|
+              puts hello
+            end
+          END
         end
 
         context 'with no parentheses and bad spacing' do
           let(:source) do
-            ['->   hello  do',
-             '  puts hello',
-             'end']
+            <<-END.strip_indent
+              ->   hello  do
+                puts hello
+              end
+            END
           end
 
           it_behaves_like 'registers an offense',
                           'Use the `lambda` method for multiline lambdas.'
-          it_behaves_like 'auto-correct', ['lambda do |hello|',
-                                           '  puts hello',
-                                           'end'].join("\n")
+          it_behaves_like 'auto-correct', <<-END.strip_indent
+            lambda do |hello|
+              puts hello
+            end
+          END
         end
 
         context 'with no parentheses and many args' do
           let(:source) do
-            ['->   hello, user  do',
-             '  puts hello',
-             'end']
+            <<-END.strip_indent
+              ->   hello, user  do
+                puts hello
+              end
+            END
           end
 
           it_behaves_like 'registers an offense',
                           'Use the `lambda` method for multiline lambdas.'
-          it_behaves_like 'auto-correct', ['lambda do |hello, user|',
-                                           '  puts hello',
-                                           'end'].join("\n")
+          it_behaves_like 'auto-correct', <<-END.strip_indent
+            lambda do |hello, user|
+              puts hello
+            end
+          END
         end
       end
     end
@@ -337,9 +401,11 @@ describe RuboCop::Cop::Style::Lambda, :config do
 
     context 'with a multiline lambda literal as an argument' do
       let(:source) do
-        ['has_many :kittens, -> do',
-         '  where(cats: Cat.young.where_values_hash)',
-         'end, source: cats']
+        <<-END.strip_indent
+          has_many :kittens, -> do
+            where(cats: Cat.young.where_values_hash)
+          end, source: cats
+        END
       end
 
       it_behaves_like 'registers an offense',
@@ -349,9 +415,11 @@ describe RuboCop::Cop::Style::Lambda, :config do
 
     context 'with a multiline lambda literal as a keyword argument' do
       let(:source) do
-        ['has_many opt: -> do',
-         '  where(cats: Cat.young.where_values_hash)',
-         'end']
+        <<-END.strip_indent
+          has_many opt: -> do
+            where(cats: Cat.young.where_values_hash)
+          end
+        END
       end
 
       it_behaves_like 'registers an offense',

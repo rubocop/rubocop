@@ -69,12 +69,13 @@ module RuboCop
           it 'lists disabled cops by file' do
             formatter.finished(files)
             expect(output.string)
-              .to eq(['',
-                      'Cops disabled line ranges:',
-                      '',
-                      'lib/rubocop.rb:1..1: LineLength',
-                      'lib/rubocop.rb:1..Infinity: ClassLength',
-                      ''].join("\n"))
+              .to eq(<<-END.strip_indent)
+
+                Cops disabled line ranges:
+
+                lib/rubocop.rb:1..1: LineLength
+                lib/rubocop.rb:1..Infinity: ClassLength
+              END
           end
         end
       end

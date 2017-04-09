@@ -46,17 +46,16 @@ module RuboCop
 
           it 'is called in the proper sequence' do
             run
-            expect(output).to eq([
-              'started',
-              'file_started',
-              'file_finished',
-              'file_started',
-              'file_finished',
-              'file_started',
-              'file_finished',
-              'finished',
-              ''
-            ].join("\n"))
+            expect(output).to eq(<<-END.strip_indent)
+              started
+              file_started
+              file_finished
+              file_started
+              file_finished
+              file_started
+              file_finished
+              finished
+            END
           end
         end
 

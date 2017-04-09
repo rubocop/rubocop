@@ -5,9 +5,11 @@ describe RuboCop::Cop::Lint::RequireParentheses do
 
   it 'registers an offense for missing parentheses around expression with ' \
      '&& operator' do
-    inspect_source(cop, ["if day.is? 'monday' && month == :jan",
-                         '  foo',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      if day.is? 'monday' && month == :jan
+        foo
+      end
+    END
     expect(cop.highlights).to eq(["day.is? 'monday' && month == :jan"])
     expect(cop.messages)
       .to eq(['Use parentheses in the method call to avoid confusion about ' \
@@ -27,34 +29,44 @@ describe RuboCop::Cop::Lint::RequireParentheses do
   end
 
   it 'accepts missing parentheses around expression with + operator' do
-    inspect_source(cop, ["if day_is? 'tuesday' + rest",
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      if day_is? 'tuesday' + rest
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts method calls without parentheses followed by keyword and/or' do
-    inspect_source(cop, ["if day.is? 'tuesday' and month == :jan",
-                         'end',
-                         "if day.is? 'tuesday' or month == :jan",
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      if day.is? 'tuesday' and month == :jan
+      end
+      if day.is? 'tuesday' or month == :jan
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts method calls that are all operations' do
-    inspect_source(cop, ['if current_level == max + 1',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      if current_level == max + 1
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts condition that is not a call' do
-    inspect_source(cop, ['if @debug',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      if @debug
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts parentheses around expression with boolean operator' do
-    inspect_source(cop, ["if day.is?('tuesday' && true == true)",
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      if day.is?('tuesday' && true == true)
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 

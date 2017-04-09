@@ -8,10 +8,11 @@ describe RuboCop::Cop::Style::InfiniteLoop do
 
   %w(1 2.0 [1] {}).each do |lit|
     it "registers an offense for a while loop with #{lit} as condition" do
-      inspect_source(cop,
-                     ["while #{lit}",
-                      '  top',
-                      'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        while #{lit}
+          top
+        end
+      END
       expect(cop.messages).to eq(['Use `Kernel#loop` for infinite loops.'])
       expect(cop.highlights).to eq(['while'])
     end
@@ -19,10 +20,11 @@ describe RuboCop::Cop::Style::InfiniteLoop do
 
   %w[false nil].each do |lit|
     it "registers an offense for a until loop with #{lit} as condition" do
-      inspect_source(cop,
-                     ["until #{lit}",
-                      '  top',
-                      'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        until #{lit}
+          top
+        end
+      END
       expect(cop.messages).to eq(['Use `Kernel#loop` for infinite loops.'])
       expect(cop.highlights).to eq(['until'])
     end
@@ -47,38 +49,49 @@ describe RuboCop::Cop::Style::InfiniteLoop do
       end
 
       it "auto-corrects multi-line modifier #{keyword} and indents correctly" do
-        new_source = autocorrect_source(cop, ['# comment',
-                                              'something 1, # comment 1',
-                                              '    # comment 2',
-                                              "    2 #{keyword} #{lit}"])
-        expect(new_source).to eq(['# comment',
-                                  'loop do',
-                                  '    something 1, # comment 1',
-                                  '        # comment 2',
-                                  '        2',
-                                  'end'].join("\n"))
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          # comment
+          something 1, # comment 1
+              # comment 2
+              2 #{keyword} #{lit}
+        END
+        expect(new_source).to eq(<<-END.strip_indent)
+          # comment
+          loop do
+              something 1, # comment 1
+                  # comment 2
+                  2
+          end
+        END
       end
     end
 
     it "auto-corrects begin-end-#{keyword} with one statement" do
-      new_source = autocorrect_source(cop,
-                                      ['  begin # comment 1',
-                                       '    something += 1 # comment 2',
-                                       "  end #{keyword} #{lit} # comment 3"])
-      expect(new_source).to eq(['  loop do # comment 1',
-                                '    something += 1 # comment 2',
-                                '  end # comment 3'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_margin('|'))
+        |  begin # comment 1
+        |    something += 1 # comment 2
+        |  end #{keyword} #{lit} # comment 3
+      END
+      expect(new_source).to eq(<<-END.strip_margin('|'))
+        |  loop do # comment 1
+        |    something += 1 # comment 2
+        |  end # comment 3
+      END
     end
 
     it "auto-corrects begin-end-#{keyword} with two statements" do
-      new_source = autocorrect_source(cop, [' begin',
-                                            '  something += 1',
-                                            '  something_else += 1',
-                                            " end #{keyword} #{lit}"])
-      expect(new_source).to eq([' loop do',
-                                '  something += 1',
-                                '  something_else += 1',
-                                ' end'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_margin('|'))
+        | begin
+        |  something += 1
+        |  something_else += 1
+        | end #{keyword} #{lit}
+      END
+      expect(new_source).to eq(<<-END.strip_margin('|'))
+        | loop do
+        |  something += 1
+        |  something_else += 1
+        | end
+      END
     end
 
     it "auto-corrects single line modifier #{keyword} with and" do
@@ -89,17 +102,25 @@ describe RuboCop::Cop::Style::InfiniteLoop do
     end
 
     it "auto-corrects the usage of #{keyword} with do" do
-      new_source = autocorrect_source(cop, ["#{keyword} #{lit} do",
-                                            'end'])
-      expect(new_source).to eq(['loop do',
-                                'end'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        #{keyword} #{lit} do
+        end
+      END
+      expect(new_source).to eq(<<-END.strip_indent)
+        loop do
+        end
+      END
     end
 
     it "auto-corrects the usage of #{keyword} without do" do
-      new_source = autocorrect_source(cop, ["#{keyword} #{lit}",
-                                            'end'])
-      expect(new_source).to eq(['loop do',
-                                'end'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        #{keyword} #{lit}
+        end
+      END
+      expect(new_source).to eq(<<-END.strip_indent)
+        loop do
+        end
+      END
     end
   end
 

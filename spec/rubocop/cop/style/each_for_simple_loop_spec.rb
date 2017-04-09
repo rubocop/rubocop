@@ -21,16 +21,20 @@ describe RuboCop::Cop::Style::EachForSimpleLoop do
   end
 
   it 'registers offense for exclusive end range with do ... end syntax' do
-    inspect_source(cop, ['(0...10).each do',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      (0...10).each do
+      end
+    END
     expect(cop.offenses.size).to eq 1
     expect(cop.messages).to eq([OFFENSE_MSG])
     expect(cop.highlights).to eq(['(0...10).each'])
   end
 
   it 'registers an offense for range not starting with zero' do
-    inspect_source(cop, ['(3..7).each do',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      (3..7).each do
+      end
+    END
     expect(cop.offenses.size).to eq 1
     expect(cop.messages).to eq([OFFENSE_MSG])
     expect(cop.highlights).to eq(['(3..7).each'])
@@ -52,8 +56,10 @@ describe RuboCop::Cop::Style::EachForSimpleLoop do
   end
 
   it 'does not register offense for multiline block with parameters' do
-    inspect_source(cop, ['(0..10).each do |n|',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      (0..10).each do |n|
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
@@ -69,21 +75,36 @@ describe RuboCop::Cop::Style::EachForSimpleLoop do
     end
 
     it 'autocorrects the source with multiline block' do
-      corrected = autocorrect_source(cop, ['(0..10).each do',
-                                           'end'])
-      expect(corrected).to eq "11.times do\nend"
+      corrected = autocorrect_source(cop, <<-END.strip_indent)
+        (0..10).each do
+        end
+      END
+
+      expect(corrected).to eq <<-END.strip_indent
+        11.times do
+        end
+      END
     end
 
     it 'autocorrects the range not starting with zero' do
-      corrected = autocorrect_source(cop, ['(3..7).each do',
-                                           'end'])
-      expect(corrected).to eq "5.times do\nend"
+      corrected = autocorrect_source(cop, <<-END.strip_indent)
+        (3..7).each do
+        end
+      END
+
+      expect(corrected).to eq <<-END.strip_indent
+        5.times do
+        end
+      END
     end
 
     it 'does not autocorrect range not starting with zero and using param' do
-      corrected = autocorrect_source(cop, ['(3..7).each do |n|',
-                                           'end'])
-      expect(corrected).to eq "(3..7).each do |n|\nend"
+      source = <<-END.strip_indent
+        (3..7).each do |n|
+        end
+      END
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq(source)
     end
   end
 
@@ -94,21 +115,36 @@ describe RuboCop::Cop::Style::EachForSimpleLoop do
     end
 
     it 'autocorrects the source with multiline block' do
-      corrected = autocorrect_source(cop, ['(0...10).each do',
-                                           'end'])
-      expect(corrected).to eq "10.times do\nend"
+      corrected = autocorrect_source(cop, <<-END.strip_indent)
+        (0...10).each do
+        end
+      END
+
+      expect(corrected).to eq <<-END.strip_indent
+        10.times do
+        end
+      END
     end
 
     it 'autocorrects the range not starting with zero' do
-      corrected = autocorrect_source(cop, ['(3...7).each do',
-                                           'end'])
-      expect(corrected).to eq "4.times do\nend"
+      corrected = autocorrect_source(cop, <<-END.strip_indent)
+        (3...7).each do
+        end
+      END
+
+      expect(corrected).to eq <<-END.strip_indent
+        4.times do
+        end
+      END
     end
 
     it 'does not autocorrect range not starting with zero and using param' do
-      corrected = autocorrect_source(cop, ['(3...7).each do |n|',
-                                           'end'])
-      expect(corrected).to eq "(3...7).each do |n|\nend"
+      source = <<-END.strip_indent
+        (3...7).each do |n|
+        end
+      END
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq(source)
     end
   end
 end

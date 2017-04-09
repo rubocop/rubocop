@@ -37,8 +37,10 @@ describe RuboCop::Cop::Style::VariableName, :config do
     end
 
     it 'registers an offense for correct + opposite' do
-      inspect_source(cop, ['my_local = 1',
-                           'myLocal = 1'])
+      inspect_source(cop, <<-END.strip_indent)
+        my_local = 1
+        myLocal = 1
+      END
       expect(cop.highlights).to eq(['myLocal'])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
@@ -82,8 +84,10 @@ describe RuboCop::Cop::Style::VariableName, :config do
     end
 
     it 'registers an offense for opposite + correct' do
-      inspect_source(cop, ['my_local = 1',
-                           'myLocal = 1'])
+      inspect_source(cop, <<-END.strip_indent)
+        my_local = 1
+        myLocal = 1
+      END
       expect(cop.highlights).to eq(['my_local'])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end

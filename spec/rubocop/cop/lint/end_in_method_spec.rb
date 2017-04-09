@@ -4,17 +4,21 @@ describe RuboCop::Cop::Lint::EndInMethod do
   subject(:cop) { described_class.new }
 
   it 'reports an offense for def with an END inside' do
-    src = ['def test',
-           '  END { something }',
-           'end']
+    src = <<-END.strip_indent
+      def test
+        END { something }
+      end
+    END
     inspect_source(cop, src)
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'reports an offense for defs with an END inside' do
-    src = ['def self.test',
-           '  END { something }',
-           'end']
+    src = <<-END.strip_indent
+      def self.test
+        END { something }
+      end
+    END
     inspect_source(cop, src)
     expect(cop.offenses.size).to eq(1)
   end

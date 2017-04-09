@@ -31,9 +31,11 @@ describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
   end
 
   it 'accepts a chain of method calls' do
-    inspect_source(cop, ['a.b',
-                         'a.b 1',
-                         'a.b(1)'])
+    inspect_source(cop, <<-END.strip_indent)
+      a.b
+      a.b 1
+      a.b(1)
+    END
     expect(cop.offenses).to be_empty
   end
 
@@ -43,8 +45,10 @@ describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
   end
 
   it 'accepts an operator call with argument in parentheses' do
-    inspect_source(cop, ['a % (b + c)',
-                         'a.b = (c == d)'])
+    inspect_source(cop, <<-END.strip_indent)
+      a % (b + c)
+      a.b = (c == d)
+    END
     expect(cop.offenses).to be_empty
   end
 

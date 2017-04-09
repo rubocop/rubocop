@@ -51,12 +51,14 @@ describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses do
     end
 
     it 'accepts parens in complex assignment' do
-      inspect_source(cop, ['test = begin',
-                           '  case a',
-                           '  when b',
-                           '    c = test() if d',
-                           '  end',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        test = begin
+          case a
+          when b
+            c = test() if d
+          end
+        end
+      END
       expect(cop.offenses).to be_empty
     end
   end
@@ -84,13 +86,17 @@ describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses do
   # These will be offenses for the EmptyLiteral cop. The autocorrect loop will
   # handle that.
   it 'auto-corrects calls that could be empty literals' do
-    original = ['Hash.new()',
-                'Array.new()',
-                'String.new()']
+    original = <<-END.strip_indent
+      Hash.new()
+      Array.new()
+      String.new()
+    END
     new_source = autocorrect_source(cop, original)
-    expect(new_source).to eq(['Hash.new',
-                              'Array.new',
-                              'String.new'].join("\n"))
+    expect(new_source).to eq(<<-END.strip_indent)
+      Hash.new
+      Array.new
+      String.new
+    END
   end
 
   context 'method call as argument' do

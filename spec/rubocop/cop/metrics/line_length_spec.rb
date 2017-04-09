@@ -125,12 +125,14 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
     end
 
     let(:source) do
-      ['class ExampleTest < TestCase',
-       "  test 'some really long test description which exceeds length' do",
-       '  end',
-       '  def test_some_other_long_test_description_which_exceeds_length',
-       '  end',
-       'end']
+      <<-END.strip_indent
+        class ExampleTest < TestCase
+          test 'some really long test description which exceeds length' do
+          end
+          def test_some_other_long_test_description_which_exceeds_length
+          end
+        end
+      END
     end
 
     it 'accepts long lines matching a pattern but not other long lines' do

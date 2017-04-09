@@ -36,18 +36,22 @@ describe RuboCop::Cop::Style::WhileUntilModifier do
   end
 
   it 'accepts oneline while when condition has local variable assignment' do
-    inspect_source(cop, ['lines = %w{first second third}',
-                         'while (line = lines.shift)',
-                         '  puts line',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      lines = %w{first second third}
+      while (line = lines.shift)
+        puts line
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
   context 'oneline while when assignment is in body' do
     let(:source) do
-      ['while true',
-       '  x = 0',
-       'end']
+      <<-END.strip_indent
+        while true
+          x = 0
+        end
+      END
     end
 
     it 'registers an offense' do
@@ -57,7 +61,7 @@ describe RuboCop::Cop::Style::WhileUntilModifier do
 
     it 'does auto-correction' do
       corrected = autocorrect_source(cop, source)
-      expect(corrected).to eq 'x = 0 while true'
+      expect(corrected).to eq "x = 0 while true\n"
     end
   end
 
@@ -97,9 +101,10 @@ describe RuboCop::Cop::Style::WhileUntilModifier do
   # Regression: https://github.com/bbatsov/rubocop/issues/4006
   context 'when the modifier condition is multiline' do
     it 'registers an offense' do
-      inspect_source(cop,
-                     ['foo while bar ||',
-                      '  baz'].join("\n"))
+      inspect_source(cop, <<-END.strip_indent)
+        foo while bar ||
+          baz
+      END
       expect(cop.offenses.size).to eq(1)
     end
   end

@@ -40,10 +40,11 @@ describe RuboCop::Cop::Style::ConstantName do
   end
 
   it 'does not check names if rhs is a method call with block' do
-    inspect_source(cop,
-                   ['AnythingGoes = test do',
-                    '  do_something',
-                    'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      AnythingGoes = test do
+        do_something
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
@@ -54,9 +55,10 @@ describe RuboCop::Cop::Style::ConstantName do
   end
 
   it 'checks qualified const names' do
-    inspect_source(cop,
-                   ['::AnythingGoes = 30',
-                    'a::Bar_foo = 10'])
+    inspect_source(cop, <<-END.strip_indent)
+      ::AnythingGoes = 30
+      a::Bar_foo = 10
+    END
     expect(cop.offenses.size).to eq(2)
   end
 end

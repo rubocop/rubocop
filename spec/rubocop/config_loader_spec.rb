@@ -74,8 +74,10 @@ describe RuboCop::ConfigLoader do
       let(:file_path) { '.rubocop.yml' }
 
       before do
-        create_file(file_path, ['Style/Encoding:',
-                                '  Enabled: false'])
+        create_file(file_path, <<-END.strip_indent)
+          Style/Encoding:
+            Enabled: false
+        END
       end
 
       it 'returns a configuration inheriting from default.yml' do
@@ -90,14 +92,16 @@ describe RuboCop::ConfigLoader do
       let(:file_path) { 'dir/.rubocop.yml' }
 
       before do
-        create_file('.rubocop.yml',
-                    ['AllCops:',
-                     '  Exclude:',
-                     '    - vendor/**'])
+        create_file('.rubocop.yml', <<-END.strip_indent)
+          AllCops:
+            Exclude:
+              - vendor/**
+        END
 
-        create_file(file_path,
-                    ['AllCops:',
-                     '  Exclude: []'])
+        create_file(file_path, <<-END.strip_indent)
+          AllCops:
+            Exclude: []
+        END
       end
 
       it 'gets AllCops/Exclude from the highest directory level' do
@@ -110,9 +114,10 @@ describe RuboCop::ConfigLoader do
       let(:file_path) { '.rubocop.yml' }
 
       before do
-        create_file('disable.yml',
-                    ['AllCops:',
-                     '  DisabledByDefault: true'])
+        create_file('disable.yml', <<-END.strip_indent)
+          AllCops:
+            DisabledByDefault: true
+        END
 
         create_file(file_path, ['inherit_from: disable.yml'])
       end
@@ -127,11 +132,12 @@ describe RuboCop::ConfigLoader do
       let(:file_path) { 'dir/.rubocop.yml' }
 
       before do
-        create_file('.rubocop.yml',
-                    ['AllCops:',
-                     '  Exclude:',
-                     '    - vendor/**',
-                     '    - !ruby/regexp /[A-Z]/'])
+        create_file('.rubocop.yml', <<-END.strip_indent)
+          AllCops:
+            Exclude:
+              - vendor/**
+              - !ruby/regexp /[A-Z]/
+        END
 
         create_file(file_path, ['inherit_from: ../.rubocop.yml'])
       end
@@ -160,10 +166,11 @@ describe RuboCop::ConfigLoader do
       let(:file_path) { 'dir/.rubocop.yml' }
 
       before do
-        create_file('src/.rubocop.yml',
-                    ['AllCops:',
-                     '  Exclude:',
-                     '    - vendor/**'])
+        create_file('src/.rubocop.yml', <<-END.strip_indent)
+          AllCops:
+            Exclude:
+              - vendor/**
+        END
 
         create_file(file_path, ['inherit_from: ../src/.rubocop.yml'])
       end
@@ -182,24 +189,27 @@ describe RuboCop::ConfigLoader do
             RuboCop::Cop::Registry.new(RuboCop::Cop::Cop.registry.cops)
           )
 
-        create_file('third_party/gem.rb',
-                    ['module RuboCop',
-                     '  module Cop',
-                     '    module Custom',
-                     '      class FilePath < Cop',
-                     '      end',
-                     '    end',
-                     '  end',
-                     'end'])
+        create_file('third_party/gem.rb', <<-END.strip_indent)
+          module RuboCop
+            module Cop
+              module Custom
+                class FilePath < Cop
+                end
+              end
+            end
+          end
+        END
 
-        create_file('.rubocop.yml',
-                    ['Custom/FilePath:',
-                     '  Enabled: false'])
+        create_file('.rubocop.yml', <<-END.strip_indent)
+          Custom/FilePath:
+            Enabled: false
+        END
 
-        create_file('.rubocop_with_require.yml',
-                    ['require: ./third_party/gem',
-                     'Custom/FilePath:',
-                     '  Enabled: false'])
+        create_file('.rubocop_with_require.yml', <<-END.strip_indent)
+          require: ./third_party/gem
+          Custom/FilePath:
+            Enabled: false
+        END
       end
 
       it 'does not emit a warning' do
@@ -225,27 +235,30 @@ describe RuboCop::ConfigLoader do
       before do
         create_file('dir/subdir/example.rb', '')
 
-        create_file('.rubocop.yml',
-                    ['Metrics/LineLength:',
-                     '  Enabled: false',
-                     '  Max: 77'])
+        create_file('.rubocop.yml', <<-END.strip_indent)
+          Metrics/LineLength:
+            Enabled: false
+            Max: 77
+        END
 
-        create_file('dir/.rubocop.yml',
-                    ['inherit_from: ../.rubocop.yml',
-                     '',
-                     'Metrics/MethodLength:',
-                     '  Enabled: true',
-                     '  CountComments: false',
-                     '  Max: 10'])
+        create_file('dir/.rubocop.yml', <<-END.strip_indent)
+          inherit_from: ../.rubocop.yml
 
-        create_file(file_path,
-                    ['inherit_from: ../.rubocop.yml',
-                     '',
-                     'Metrics/LineLength:',
-                     '  Enabled: true',
-                     '',
-                     'Metrics/MethodLength:',
-                     '  Max: 5'])
+          Metrics/MethodLength:
+            Enabled: true
+            CountComments: false
+            Max: 10
+        END
+
+        create_file(file_path, <<-END.strip_indent)
+          inherit_from: ../.rubocop.yml
+
+          Metrics/LineLength:
+            Enabled: true
+
+          Metrics/MethodLength:
+            Max: 5
+        END
       end
 
       it 'returns the ancestor configuration plus local overrides' do
@@ -282,24 +295,27 @@ describe RuboCop::ConfigLoader do
       before do
         create_file('example.rb', '')
 
-        create_file('normal.yml',
-                    ['Metrics/MethodLength:',
-                     '  Enabled: false',
-                     '  CountComments: true',
-                     '  Max: 80'])
+        create_file('normal.yml', <<-END.strip_indent)
+          Metrics/MethodLength:
+            Enabled: false
+            CountComments: true
+            Max: 80
+        END
 
-        create_file('special.yml',
-                    ['Metrics/MethodLength:',
-                     '  Enabled: false',
-                     '  Max: 200'])
+        create_file('special.yml', <<-END.strip_indent)
+          Metrics/MethodLength:
+            Enabled: false
+            Max: 200
+        END
 
-        create_file(file_path,
-                    ['inherit_from:',
-                     '  - normal.yml',
-                     '  - special.yml',
-                     '',
-                     'Metrics/MethodLength:',
-                     '  Enabled: true'])
+        create_file(file_path, <<-END.strip_indent)
+          inherit_from:
+            - normal.yml
+            - special.yml
+
+          Metrics/MethodLength:
+            Enabled: true
+        END
       end
 
       it 'returns values from the last one when possible' do
@@ -317,16 +333,18 @@ describe RuboCop::ConfigLoader do
       before do
         create_file('example.rb', '')
 
-        create_file('line_length.yml',
-                    ['LineLength:',
-                     '  Max: 120'])
+        create_file('line_length.yml', <<-END.strip_indent)
+          LineLength:
+            Max: 120
+        END
 
-        create_file(file_path,
-                    ['inherit_from:',
-                     '  - line_length.yml',
-                     '',
-                     'LineLength:',
-                     '  AllowHeredoc: false'])
+        create_file(file_path, <<-END.strip_indent)
+          inherit_from:
+            - line_length.yml
+
+          LineLength:
+            AllowHeredoc: false
+        END
       end
 
       it 'returns includes both of the cop changes' do
@@ -367,9 +385,10 @@ describe RuboCop::ConfigLoader do
       let(:file_path) { '.rubocop.yml' }
 
       before do
-        create_file(file_path,
-                    ['inherit_gem:',
-                     '  not_a_real_gem: config/rubocop.yml'])
+        create_file(file_path, <<-END.strip_indent)
+          inherit_gem:
+            not_a_real_gem: config/rubocop.yml
+        END
       end
 
       it 'fails to load' do
@@ -381,9 +400,10 @@ describe RuboCop::ConfigLoader do
       let(:file_path) { '.rubocop.yml' }
 
       before do
-        create_file(file_path,
-                    ['inherit_gem:',
-                     '  rubocop: config/default.yml'])
+        create_file(file_path, <<-END.strip_indent)
+          inherit_gem:
+            rubocop: config/default.yml
+        END
       end
 
       it 'fails to load' do
@@ -395,35 +415,40 @@ describe RuboCop::ConfigLoader do
       let(:file_path) { '.rubocop.yml' }
 
       before do
-        create_file('gemone/config/rubocop.yml',
-                    ['Metrics/MethodLength:',
-                     '  Enabled: false',
-                     '  Max: 200',
-                     '  CountComments: false'])
-        create_file('gemtwo/config/default.yml',
-                    ['Metrics/LineLength:',
-                     '  Enabled: true'])
-        create_file('gemtwo/config/strict.yml',
-                    ['Metrics/LineLength:',
-                     '  Max: 72',
-                     '  AllowHeredoc: false'])
-        create_file('local.yml',
-                    ['Metrics/MethodLength:',
-                     '  CountComments: true'])
-        create_file(file_path,
-                    ['inherit_gem:',
-                     '  gemone: config/rubocop.yml',
-                     '  gemtwo:',
-                     '    - config/default.yml',
-                     '    - config/strict.yml',
-                     '',
-                     'inherit_from: local.yml',
-                     '',
-                     'Metrics/MethodLength:',
-                     '  Enabled: true',
-                     '',
-                     'Metrics/LineLength:',
-                     '  AllowURI: false'])
+        create_file('gemone/config/rubocop.yml', <<-END.strip_indent)
+          Metrics/MethodLength:
+            Enabled: false
+            Max: 200
+            CountComments: false
+        END
+        create_file('gemtwo/config/default.yml', <<-END.strip_indent)
+          Metrics/LineLength:
+            Enabled: true
+        END
+        create_file('gemtwo/config/strict.yml', <<-END.strip_indent)
+          Metrics/LineLength:
+            Max: 72
+            AllowHeredoc: false
+        END
+        create_file('local.yml', <<-END.strip_indent)
+          Metrics/MethodLength:
+            CountComments: true
+        END
+        create_file(file_path, <<-END.strip_indent)
+          inherit_gem:
+            gemone: config/rubocop.yml
+            gemtwo:
+              - config/default.yml
+              - config/strict.yml
+
+          inherit_from: local.yml
+
+          Metrics/MethodLength:
+            Enabled: true
+
+          Metrics/LineLength:
+            AllowURI: false
+        END
       end
 
       it 'returns values from the gem config with local overrides' do
@@ -495,11 +520,13 @@ describe RuboCop::ConfigLoader do
 
       context 'when DisabledByDefault is true' do
         let(:config) do
-          ['AllCops:',
-           '  DisabledByDefault: true',
-           'Style/Copyright:',
-           '  Exclude:',
-           '  - foo']
+          <<-END.strip_indent
+            AllCops:
+              DisabledByDefault: true
+            Style/Copyright:
+              Exclude:
+              - foo
+          END
         end
 
         it 'enables cops that are explicitly in the config file '\
@@ -516,10 +543,12 @@ describe RuboCop::ConfigLoader do
 
       context 'when EnabledByDefault is true' do
         let(:config) do
-          ['AllCops:',
-           '  EnabledByDefault: true',
-           'Style/TrailingWhitespace:',
-           '  Enabled: false']
+          <<-END.strip_indent
+            AllCops:
+              EnabledByDefault: true
+            Style/TrailingWhitespace:
+              Enabled: false
+          END
         end
 
         it 'enables cops that are disabled by default' do
@@ -543,10 +572,10 @@ describe RuboCop::ConfigLoader do
     let(:configuration_path) { '.rubocop.yml' }
 
     it 'returns a configuration loaded from the passed path' do
-      create_file(configuration_path, [
-                    'Style/Encoding:',
-                    '  Enabled: true'
-                  ])
+      create_file(configuration_path, <<-END.strip_indent)
+        Style/Encoding:
+          Enabled: true
+      END
       configuration = load_file
       expect(configuration['Style/Encoding']).to eq(
         'Enabled' => true
@@ -561,16 +590,20 @@ describe RuboCop::ConfigLoader do
     end
 
     it 'changes target ruby version with a patch to float' do
-      create_file(configuration_path, ['AllCops:',
-                                       '  TargetRubyVersion: 2.3.4'])
+      create_file(configuration_path, <<-END.strip_indent)
+        AllCops:
+          TargetRubyVersion: 2.3.4
+      END
 
       expect(load_file.to_h).to eq('AllCops' => { 'TargetRubyVersion' => 2.3 })
     end
 
     it 'loads configuration properly when it includes non-ascii characters ' do
-      create_file(configuration_path, ['# All these cops of mine are ❤',
-                                       'Style/Encoding:',
-                                       '  Enabled: false'])
+      create_file(configuration_path, <<-END.strip_indent)
+        # All these cops of mine are ❤
+        Style/Encoding:
+          Enabled: false
+      END
 
       expect(load_file.to_h).to eq('Style/Encoding' => { 'Enabled' => false })
     end
@@ -583,10 +616,10 @@ describe RuboCop::ConfigLoader do
 
     context 'when SafeYAML is required' do
       before do
-        create_file(configuration_path, [
-                      'Style/WordArray:',
-                      "  WordRegex: !ruby/regexp '/\\A[\\p{Word}]+\\z/'"
-                    ])
+        create_file(configuration_path, <<-END.strip_indent)
+          Style/WordArray:
+            WordRegex: !ruby/regexp '/\\A[\\p{Word}]+\\z/'
+        END
       end
 
       context 'when it is fully required' do
@@ -661,9 +694,11 @@ describe RuboCop::ConfigLoader do
     context 'when .rubocop.yml inherits from a file with a name starting ' \
             'with .rubocop' do
       before do
-        create_file('test/.rubocop_rules.yml', ['Style/CharacterLiteral:',
-                                                '  Exclude:',
-                                                '    - blargh/blah.rb'])
+        create_file('test/.rubocop_rules.yml', <<-END.strip_indent)
+          Style/CharacterLiteral:
+            Exclude:
+              - blargh/blah.rb
+        END
         create_file('test/.rubocop.yml', 'inherit_from: .rubocop_rules.yml')
       end
 

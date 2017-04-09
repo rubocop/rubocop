@@ -34,20 +34,26 @@ describe RuboCop::Cop::Lint::Debugger, :config do
   end
 
   it 'reports an offense for a Pry.rescue call' do
-    inspect_source(cop, ['def method',
-                         '  Pry.rescue { puts 1 }',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      def method
+        Pry.rescue { puts 1 }
+      end
+    END
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages).to eq(['Remove debugger entry point `Pry.rescue`.'])
   end
 
   it 'can autocorrect Pry.rescue' do
-    new_source = autocorrect_source(cop, ['def method',
-                                          '  Pry.rescue { puts 1 }',
-                                          'end'])
-    expect(new_source).to eq(['def method',
-                              '  puts 1',
-                              'end'].join("\n"))
+    new_source = autocorrect_source(cop, <<-END.strip_indent)
+      def method
+        Pry.rescue { puts 1 }
+      end
+    END
+    expect(new_source).to eq(<<-END.strip_indent)
+      def method
+        puts 1
+      end
+    END
   end
 
   context 'target_ruby_version >= 2.4', :ruby24 do

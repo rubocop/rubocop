@@ -222,16 +222,15 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       expect(new_source).to eq(source)
     end
 
-    it 'auto-corrects http action when params is a lvar' do
-      source = [
-        'params = { id: 1 }',
-        'post user_attrs, params'
-      ]
+    it 'does not auto-correct when params is a lvar' do
+      source = <<-END.strip_indent
+        params = { id: 1 }
+        post user_attrs, params
+      END
       inspect_source(cop, source)
       expect(cop.offenses.size).to eq(0)
       new_source = autocorrect_source(cop, source)
-      expected = "params = { id: 1 }\npost user_attrs, params"
-      expect(new_source).to eq(expected)
+      expect(new_source).to eq(source)
     end
 
     it 'does not auto-correct http action when params is a method call' do
@@ -506,15 +505,17 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
     end
 
     it 'auto-corrects http action when params is a lvar' do
-      source = [
-        'params = { id: 1 }',
-        'post user_attrs, params'
-      ]
+      source = <<-END.strip_indent
+        params = { id: 1 }
+        post user_attrs, params
+      END
       inspect_source(cop, source)
       expect(cop.offenses.size).to eq(1)
       new_source = autocorrect_source(cop, source)
-      expected = "params = { id: 1 }\npost user_attrs, params: params"
-      expect(new_source).to eq(expected)
+      expect(new_source).to eq(<<-END.strip_indent)
+        params = { id: 1 }
+        post user_attrs, params: params
+      END
     end
 
     it 'auto-corrects http action when params is a method call' do

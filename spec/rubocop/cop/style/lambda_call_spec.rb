@@ -14,9 +14,10 @@ describe RuboCop::Cop::Style::LambdaCall, :config do
     end
 
     it 'registers an offense for correct + opposite' do
-      inspect_source(cop,
-                     ['x.call(a, b)',
-                      'x.(a, b)'])
+      inspect_source(cop, <<-END.strip_indent)
+        x.call(a, b)
+        x.(a, b)
+      END
       expect(cop.offenses.size).to eq(1)
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
@@ -43,9 +44,10 @@ describe RuboCop::Cop::Style::LambdaCall, :config do
     end
 
     it 'registers an offense for opposite + correct' do
-      inspect_source(cop,
-                     ['x.call(a, b)',
-                      'x.(a, b)'])
+      inspect_source(cop, <<-END.strip_indent)
+        x.call(a, b)
+        x.(a, b)
+      END
       expect(cop.offenses.size).to eq(1)
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end

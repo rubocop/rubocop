@@ -30,9 +30,11 @@ describe RuboCop::Cop::Style::SpaceAfterColon do
   end
 
   it 'accepts if' do
-    inspect_source(cop, ['x = if w',
-                         '      a',
-                         '    end'])
+    inspect_source(cop, <<-END.strip_indent)
+      x = if w
+            a
+          end
+    END
     expect(cop.messages).to be_empty
   end
 
@@ -42,21 +44,27 @@ describe RuboCop::Cop::Style::SpaceAfterColon do
   end
 
   it 'accepts required keyword arguments' do
-    inspect_source(cop, ['def f(x:, y:)',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      def f(x:, y:)
+      end
+    END
     expect(cop.messages).to be_empty
   end
 
   if RUBY_VERSION >= '2.1'
     it 'accepts colons denoting required keyword argument' do
-      inspect_source(cop, ['def initialize(table:, nodes:)',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def initialize(table:, nodes:)
+        end
+      END
       expect(cop.messages).to be_empty
     end
 
     it 'registers an offence if an keyword optional argument has no space' do
-      inspect_source(cop, ['def m(var:1, other_var: 2)',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def m(var:1, other_var: 2)
+        end
+      END
       expect(cop.messages).to eq(['Space missing after colon.'])
     end
   end

@@ -58,97 +58,111 @@ describe RuboCop::Cop::Style::RedundantSelf do
   end
 
   it 'accepts a self receiver for methods named like ruby keywords' do
-    src = ['a = self.class',
-           'self.for(deps, [], true)',
-           'self.and(other)',
-           'self.or(other)',
-           'self.alias',
-           'self.begin',
-           'self.break',
-           'self.case',
-           'self.def',
-           'self.defined?',
-           'self.do',
-           'self.else',
-           'self.elsif',
-           'self.end',
-           'self.ensure',
-           'self.false',
-           'self.if',
-           'self.in',
-           'self.module',
-           'self.next',
-           'self.nil',
-           'self.not',
-           'self.redo',
-           'self.rescue',
-           'self.retry',
-           'self.return',
-           'self.self',
-           'self.super',
-           'self.then',
-           'self.true',
-           'self.undef',
-           'self.unless',
-           'self.until',
-           'self.when',
-           'self.while',
-           'self.yield']
+    src = <<-END.strip_indent
+      a = self.class
+      self.for(deps, [], true)
+      self.and(other)
+      self.or(other)
+      self.alias
+      self.begin
+      self.break
+      self.case
+      self.def
+      self.defined?
+      self.do
+      self.else
+      self.elsif
+      self.end
+      self.ensure
+      self.false
+      self.if
+      self.in
+      self.module
+      self.next
+      self.nil
+      self.not
+      self.redo
+      self.rescue
+      self.retry
+      self.return
+      self.self
+      self.super
+      self.then
+      self.true
+      self.undef
+      self.unless
+      self.until
+      self.when
+      self.while
+      self.yield
+    END
     inspect_source(cop, src)
     expect(cop.offenses).to be_empty
   end
 
   describe 'instance methods' do
     it 'accepts a self receiver used to distinguish from blockarg' do
-      src = ['def requested_specs(&groups)',
-             '  some_method(self.groups)',
-             'end']
+      src = <<-END.strip_indent
+        def requested_specs(&groups)
+          some_method(self.groups)
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts a self receiver used to distinguish from argument' do
-      src = ['def requested_specs(groups)',
-             '  some_method(self.groups)',
-             'end']
+      src = <<-END.strip_indent
+        def requested_specs(groups)
+          some_method(self.groups)
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts a self receiver used to distinguish from optional argument' do
-      src = ['def requested_specs(final = true)',
-             '  something if self.final != final',
-             'end']
+      src = <<-END.strip_indent
+        def requested_specs(final = true)
+          something if self.final != final
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts a self receiver used to distinguish from local variable' do
-      src = ['def requested_specs',
-             '  @requested_specs ||= begin',
-             '    groups = self.groups - Bundler.settings.without',
-             '    groups.map! { |g| g.to_sym }',
-             '    specs_for(groups)',
-             '  end',
-             'end']
+      src = <<-END.strip_indent
+        def requested_specs
+          @requested_specs ||= begin
+            groups = self.groups - Bundler.settings.without
+            groups.map! { |g| g.to_sym }
+            specs_for(groups)
+          end
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts a self receiver used to distinguish from an argument' do
-      src = ['def foo(bar)',
-             '  puts bar, self.bar',
-             'end']
+      src = <<-END.strip_indent
+        def foo(bar)
+          puts bar, self.bar
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts a self receiver used to distinguish from an argument' \
       ' when an inner method is defined' do
-      src = ['def foo(bar)',
-             '  def inner_method(); end',
-             '  puts bar, self.bar',
-             'end']
+      src = <<-END.strip_indent
+        def foo(bar)
+          def inner_method(); end
+          puts bar, self.bar
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
@@ -156,37 +170,45 @@ describe RuboCop::Cop::Style::RedundantSelf do
 
   describe 'class methods' do
     it 'accepts a self receiver used to distinguish from blockarg' do
-      src = ['def self.requested_specs(&groups)',
-             '  some_method(self.groups)',
-             'end']
+      src = <<-END.strip_indent
+        def self.requested_specs(&groups)
+          some_method(self.groups)
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts a self receiver used to distinguish from argument' do
-      src = ['def self.requested_specs(groups)',
-             '  some_method(self.groups)',
-             'end']
+      src = <<-END.strip_indent
+        def self.requested_specs(groups)
+          some_method(self.groups)
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts a self receiver used to distinguish from optional argument' do
-      src = ['def self.requested_specs(final = true)',
-             '  something if self.final != final',
-             'end']
+      src = <<-END.strip_indent
+        def self.requested_specs(final = true)
+          something if self.final != final
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts a self receiver used to distinguish from local variable' do
-      src = ['def self.requested_specs',
-             '  @requested_specs ||= begin',
-             '    groups = self.groups - Bundler.settings.without',
-             '    groups.map! { |g| g.to_sym }',
-             '    specs_for(groups)',
-             '  end',
-             'end']
+      src = <<-END.strip_indent
+        def self.requested_specs
+          @requested_specs ||= begin
+            groups = self.groups - Bundler.settings.without
+            groups.map! { |g| g.to_sym }
+            specs_for(groups)
+          end
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end

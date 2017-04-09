@@ -5,27 +5,33 @@ describe RuboCop::Cop::Style::MethodName, :config do
 
   shared_examples 'never accepted' do
     it 'registers an offense for mixed snake case and camel case' do
-      inspect_source(cop, ['def visit_Arel_Nodes_SelectStatement',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def visit_Arel_Nodes_SelectStatement
+        end
+      END
       expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['visit_Arel_Nodes_SelectStatement'])
     end
 
     it 'registers an offense for capitalized camel case' do
-      inspect_source(cop, ['class MyClass',
-                           '  def MyMethod',
-                           '  end',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        class MyClass
+          def MyMethod
+          end
+        end
+      END
       expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['MyMethod'])
     end
 
     it 'registers an offense for singleton upper case method without ' \
        'corresponding class' do
-      inspect_source(cop, ['module Sequel',
-                           '  def self.Model(source)',
-                           '  end',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        module Sequel
+          def self.Model(source)
+          end
+        end
+      END
       expect(cop.highlights).to eq(['Model'])
     end
   end
@@ -37,38 +43,44 @@ describe RuboCop::Cop::Style::MethodName, :config do
     end
 
     it 'accepts operator definitions' do
-      inspect_source(cop, ['def +(other)',
-                           '  # ...',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def +(other)
+          # ...
+        end
+      END
       expect(cop.offenses).to be_empty
     end
 
     %w[class module].each do |kind|
       it "accepts class emitter method in a #{kind}" do
-        inspect_source(cop, ["#{kind} Sequel",
-                             '  def self.Model(source)',
-                             '  end',
-                             '',
-                             '  class Model',
-                             '  end',
-                             'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          #{kind} Sequel
+            def self.Model(source)
+            end
+
+            class Model
+            end
+          end
+        END
         expect(cop.offenses).to be_empty
       end
 
       it "accepts class emitter method in a #{kind}, even when it is " \
          'defined inside another method' do
-        inspect_source(cop, ['module DPN',
-                             '  module Flow',
-                             '    module BaseFlow',
-                             '      class Start',
-                             '      end',
-                             '      def self.included(base)',
-                             '        def base.Start(aws_env, *args)',
-                             '        end',
-                             '      end',
-                             '    end',
-                             '  end',
-                             'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          module DPN
+            module Flow
+              module BaseFlow
+                class Start
+                end
+                def self.included(base)
+                  def base.Start(aws_env, *args)
+                  end
+                end
+              end
+            end
+          end
+        END
         expect(cop.offenses).to be_empty
       end
     end
@@ -78,9 +90,11 @@ describe RuboCop::Cop::Style::MethodName, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'snake_case' } }
 
     it 'registers an offense for camel case in instance method name' do
-      inspect_source(cop, ['def myMethod',
-                           '  # ...',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def myMethod
+          # ...
+        end
+      END
       expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['myMethod'])
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
@@ -88,33 +102,41 @@ describe RuboCop::Cop::Style::MethodName, :config do
     end
 
     it 'registers an offense for opposite + correct' do
-      inspect_source(cop, ['def my_method',
-                           'end',
-                           'def myMethod',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def my_method
+        end
+        def myMethod
+        end
+      END
       expect(cop.highlights).to eq(['myMethod'])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'registers an offense for camel case in singleton method name' do
-      inspect_source(cop, ['def self.myMethod',
-                           '  # ...',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def self.myMethod
+          # ...
+        end
+      END
       expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['myMethod'])
     end
 
     it 'accepts snake case in names' do
-      inspect_source(cop, ['def my_method',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def my_method
+        end
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for singleton camelCase method within class' do
-      inspect_source(cop, ['class Sequel',
-                           '  def self.fooBar',
-                           '  end',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        class Sequel
+          def self.fooBar
+          end
+        end
+      END
       expect(cop.highlights).to eq(['fooBar'])
     end
 
@@ -126,22 +148,28 @@ describe RuboCop::Cop::Style::MethodName, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'camelCase' } }
 
     it 'accepts camel case in instance method name' do
-      inspect_source(cop, ['def myMethod',
-                           '  # ...',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def myMethod
+          # ...
+        end
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts camel case in singleton method name' do
-      inspect_source(cop, ['def self.myMethod',
-                           '  # ...',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def self.myMethod
+          # ...
+        end
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for snake case in names' do
-      inspect_source(cop, ['def my_method',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def my_method
+        end
+      END
       expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['my_method'])
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
@@ -149,19 +177,23 @@ describe RuboCop::Cop::Style::MethodName, :config do
     end
 
     it 'registers an offense for correct + opposite' do
-      inspect_source(cop, ['def my_method',
-                           'end',
-                           'def myMethod',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def my_method
+        end
+        def myMethod
+        end
+      END
       expect(cop.highlights).to eq(['my_method'])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'registers an offense for singleton snake_case method within class' do
-      inspect_source(cop, ['class Sequel',
-                           '  def self.foo_bar',
-                           '  end',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        class Sequel
+          def self.foo_bar
+          end
+        end
+      END
       expect(cop.highlights).to eq(['foo_bar'])
     end
 

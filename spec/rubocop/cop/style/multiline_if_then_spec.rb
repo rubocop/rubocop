@@ -6,9 +6,11 @@ describe RuboCop::Cop::Style::MultilineIfThen do
   # if
 
   it 'does not get confused by empty elsif branch' do
-    inspect_source(cop, ['if cond',
-                         'elsif cond',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      if cond
+      elsif cond
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
@@ -30,73 +32,85 @@ describe RuboCop::Cop::Style::MultilineIfThen do
   end
 
   it 'registers an offense for then in multiline elsif' do
-    inspect_source(cop, ['if cond1',
-                         '  a',
-                         'elsif cond2 then',
-                         '  b',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      if cond1
+        a
+      elsif cond2 then
+        b
+      end
+    END
     expect(cop.offenses.map(&:line)).to eq([3])
     expect(cop.highlights).to eq(['then'])
     expect(cop.messages).to eq(['Do not use `then` for multi-line `elsif`.'])
   end
 
   it 'accepts multiline if without then' do
-    inspect_source(cop, ['if cond',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      if cond
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts table style if/then/elsif/ends' do
-    inspect_source(cop,
-                   ['if    @io == $stdout then str << "$stdout"',
-                    'elsif @io == $stdin  then str << "$stdin"',
-                    'elsif @io == $stderr then str << "$stderr"',
-                    'else                      str << @io.class.to_s',
-                    'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      if    @io == $stdout then str << "$stdout"
+      elsif @io == $stdin  then str << "$stdin"
+      elsif @io == $stderr then str << "$stderr"
+      else                      str << @io.class.to_s
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
   it 'does not get confused by a then in a when' do
-    inspect_source(cop,
-                   ['if a',
-                    '  case b',
-                    '  when c then',
-                    '  end',
-                    'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      if a
+        case b
+        when c then
+        end
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
   it 'does not get confused by a commented-out then' do
-    inspect_source(cop,
-                   ['if a # then',
-                    '  b',
-                    'end',
-                    'if c # then',
-                    'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      if a # then
+        b
+      end
+      if c # then
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
   it 'does not raise an error for an implicit match if' do
     expect do
-      inspect_source(cop,
-                     ['if //',
-                      'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        if //
+        end
+      END
     end.not_to raise_error
   end
 
   # unless
 
   it 'registers an offense for then in multiline unless' do
-    inspect_source(cop, ['unless cond then',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      unless cond then
+      end
+    END
     expect(cop.messages).to eq(
       ['Do not use `then` for multi-line `unless`.']
     )
   end
 
   it 'accepts multiline unless without then' do
-    inspect_source(cop, ['unless cond',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      unless cond
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
@@ -106,27 +120,33 @@ describe RuboCop::Cop::Style::MultilineIfThen do
   end
 
   it 'does not get confused by a nested postfix unless' do
-    inspect_source(cop,
-                   ['if two',
-                    '  puts 1',
-                    'end unless two'])
+    inspect_source(cop, <<-END.strip_indent)
+      if two
+        puts 1
+      end unless two
+    END
     expect(cop.offenses).to be_empty
   end
 
   it 'does not raise an error for an implicit match unless' do
     expect do
-      inspect_source(cop,
-                     ['unless //',
-                      'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        unless //
+        end
+      END
     end.not_to raise_error
   end
 
   it 'auto-corrects the usage of "then" in multiline if' do
-    new_source = autocorrect_source(cop, ['if cond then',
-                                          '  something',
-                                          'end'])
-    expect(new_source).to eq(['if cond',
-                              '  something',
-                              'end'].join("\n"))
+    new_source = autocorrect_source(cop, <<-END.strip_indent)
+      if cond then
+        something
+      end
+    END
+    expect(new_source).to eq(<<-END.strip_indent)
+      if cond
+        something
+      end
+    END
   end
 end

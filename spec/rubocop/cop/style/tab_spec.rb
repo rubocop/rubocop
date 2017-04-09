@@ -19,9 +19,11 @@ describe RuboCop::Cop::Style::Tab do
   end
 
   it 'registers offenses before __END__ but not after' do
-    inspect_source(cop, ["\tx = 0",
-                         '__END__',
-                         "\tx = 0"])
+    inspect_source(cop, <<-END.strip_indent)
+      \tx = 0
+      __END__
+      \tx = 0
+    END
     expect(cop.messages).to eq(['Tab detected.'])
   end
 

@@ -5,8 +5,10 @@ describe RuboCop::Cop::Style::FirstMethodArgumentLineBreak do
 
   context 'args listed on the first line' do
     let(:source) do
-      ['foo(bar,',
-       '  baz)']
+      <<-END.strip_indent
+        foo(bar,
+          baz)
+      END
     end
 
     it 'detects the offense' do
@@ -20,18 +22,21 @@ describe RuboCop::Cop::Style::FirstMethodArgumentLineBreak do
     it 'autocorrects the offense' do
       new_source = autocorrect_source(cop, source)
 
-      expect(new_source).to eq(
-        "foo(\n" \
-        "bar,\n" \
-        '  baz)'
-      )
+      expect(new_source).to eq([
+        'foo(',
+        'bar,',
+        '  baz)',
+        ''
+      ].join("\n"))
     end
   end
 
   context 'hash arg spanning multiple lines' do
     let(:source) do
-      ['something(3, bar: 1,',
-       'baz: 2)']
+      <<-END.strip_indent
+        something(3, bar: 1,
+        baz: 2)
+      END
     end
 
     it 'detects the offense' do
@@ -45,18 +50,21 @@ describe RuboCop::Cop::Style::FirstMethodArgumentLineBreak do
     it 'autocorrects the offense' do
       new_source = autocorrect_source(cop, source)
 
-      expect(new_source).to eq(
-        "something(\n" \
-        "3, bar: 1,\n" \
-        'baz: 2)'
-      )
+      expect(new_source).to eq([
+        'something(',
+        '3, bar: 1,',
+        'baz: 2)',
+        ''
+      ].join("\n"))
     end
   end
 
   context 'hash arg without a line break before the first pair' do
     let(:source) do
-      ['something(bar: 1,',
-       'baz: 2)']
+      <<-END.strip_indent
+        something(bar: 1,
+        baz: 2)
+      END
     end
 
     it 'detects the offense' do
@@ -70,11 +78,12 @@ describe RuboCop::Cop::Style::FirstMethodArgumentLineBreak do
     it 'autocorrects the offense' do
       new_source = autocorrect_source(cop, source)
 
-      expect(new_source).to eq(
-        "something(\n" \
-        "bar: 1,\n" \
-        'baz: 2)'
-      )
+      expect(new_source).to eq([
+        'something(',
+        'bar: 1,',
+        'baz: 2)',
+        ''
+      ].join("\n"))
     end
   end
 
@@ -87,8 +96,10 @@ describe RuboCop::Cop::Style::FirstMethodArgumentLineBreak do
   it 'ignores arguments without parens' do
     inspect_source(
       cop,
-      ['foo bar,',
-       '  baz']
+      <<-END.strip_indent
+        foo bar,
+          baz
+      END
     )
 
     expect(cop.offenses).to be_empty

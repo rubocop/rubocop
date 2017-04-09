@@ -34,47 +34,52 @@ describe RuboCop::Cop::Style::MultilineMemoization, :config do
       it_behaves_like 'code without offense',
                       'foo ||= bar'
 
-      it_behaves_like 'code without offense',
-                      ['foo ||=',
-                       '  bar'].join("\n")
+      it_behaves_like 'code without offense', <<-END.strip_indent
+        foo ||=
+          bar
+      END
     end
 
     context 'with a multiline memoization' do
       context 'without a `begin` and `end` block' do
         context 'when there is another block on the first line' do
-          it_behaves_like 'code without offense',
-                          ['foo ||= bar.each do |b|',
-                           '  b.baz',
-                           '  bb.ax',
-                           'end'].join("\n")
+          it_behaves_like 'code without offense', <<-END.strip_indent
+            foo ||= bar.each do |b|
+              b.baz
+              bb.ax
+            end
+          END
         end
 
         context 'when there is another block on the following line' do
-          it_behaves_like 'code without offense',
-                          ['foo ||=',
-                           '  bar.each do |b|',
-                           '    b.baz',
-                           '    b.bax',
-                           '  end'].join("\n")
+          it_behaves_like 'code without offense', <<-END.strip_indent
+            foo ||=
+              bar.each do |b|
+                b.baz
+                b.bax
+              end
+          END
         end
 
         context 'when there is a conditional on the first line' do
-          it_behaves_like 'code without offense',
-                          ['foo ||= if bar',
-                           '          baz',
-                           '        else',
-                           '          bax',
-                           '        end'].join("\n")
+          it_behaves_like 'code without offense', <<-END.strip_indent
+            foo ||= if bar
+                      baz
+                    else
+                      bax
+                    end
+          END
         end
 
         context 'when there is a conditional on the following line' do
-          it_behaves_like 'code without offense',
-                          ['foo ||=',
-                           '  if bar',
-                           '    baz',
-                           '  else',
-                           '    bax',
-                           '  end'].join("\n")
+          it_behaves_like 'code without offense', <<-END.strip_indent
+            foo ||=
+              if bar
+                baz
+              else
+                bax
+              end
+          END
         end
       end
     end
@@ -88,44 +93,54 @@ describe RuboCop::Cop::Style::MultilineMemoization, :config do
       context 'without a `begin` and `end` block' do
         context 'when the expression is wrapped in parentheses' do
           it_behaves_like 'code with offense',
-                          ['foo ||= (',
-                           '  bar',
-                           '  baz',
-                           ')'].join("\n"),
-                          ['foo ||= begin',
-                           '  bar',
-                           '  baz',
-                           'end'].join("\n")
+                          <<-END.strip_indent,
+                            foo ||= (
+                              bar
+                              baz
+                            )
+                          END
+                          <<-END.strip_indent
+                            foo ||= begin
+                              bar
+                              baz
+                            end
+                          END
 
           it_behaves_like 'code with offense',
-                          ['foo ||=',
-                           '  (',
-                           '    bar',
-                           '    baz',
-                           '  )'].join("\n"),
-                          ['foo ||=',
-                           '  begin',
-                           '    bar',
-                           '    baz',
-                           '  end'].join("\n")
+                          <<-END.strip_indent,
+                            foo ||=
+                              (
+                                bar
+                                baz
+                              )
+                          END
+                          <<-END.strip_indent
+                            foo ||=
+                              begin
+                                bar
+                                baz
+                              end
+                          END
         end
       end
 
       context 'with a `begin` and `end` block on the first line' do
-        it_behaves_like 'code without offense',
-                        ['foo ||= begin',
-                         '  bar',
-                         '  baz',
-                         'end'].join("\n")
+        it_behaves_like 'code without offense', <<-END.strip_indent
+          foo ||= begin
+            bar
+            baz
+          end
+        END
       end
 
       context 'with a `begin` and `end` block on the following line' do
-        it_behaves_like 'code without offense',
-                        ['foo ||=',
-                         '  begin',
-                         '  bar',
-                         '  baz',
-                         'end'].join("\n")
+        it_behaves_like 'code without offense', <<-END.strip_indent
+          foo ||=
+            begin
+            bar
+            baz
+          end
+        END
       end
     end
   end
@@ -139,44 +154,54 @@ describe RuboCop::Cop::Style::MultilineMemoization, :config do
         context 'when the expression is wrapped in' \
                 ' `begin` and `end` keywords' do
           it_behaves_like 'code with offense',
-                          ['foo ||= begin',
-                           '  bar',
-                           '  baz',
-                           'end'].join("\n"),
-                          ['foo ||= (',
-                           '  bar',
-                           '  baz',
-                           ')'].join("\n")
+                          <<-END.strip_indent,
+                            foo ||= begin
+                              bar
+                              baz
+                            end
+                          END
+                          <<-END.strip_indent
+                            foo ||= (
+                              bar
+                              baz
+                            )
+                          END
 
           it_behaves_like 'code with offense',
-                          ['foo ||=',
-                           '  begin',
-                           '    bar',
-                           '    baz',
-                           '  end'].join("\n"),
-                          ['foo ||=',
-                           '  (',
-                           '    bar',
-                           '    baz',
-                           '  )'].join("\n")
+                          <<-END.strip_indent,
+                            foo ||=
+                              begin
+                                bar
+                                baz
+                              end
+                          END
+                          <<-END.strip_indent
+                            foo ||=
+                              (
+                                bar
+                                baz
+                              )
+                          END
         end
       end
 
       context 'with parentheses on the first line' do
-        it_behaves_like 'code without offense',
-                        ['foo ||= (',
-                         '  bar',
-                         '  baz',
-                         ')'].join("\n")
+        it_behaves_like 'code without offense', <<-END.strip_indent
+          foo ||= (
+            bar
+            baz
+          )
+        END
       end
 
       context 'with parentheses block on the following line' do
-        it_behaves_like 'code without offense',
-                        ['foo ||=',
-                         '  (',
-                         '  bar',
-                         '  baz',
-                         ')'].join("\n")
+        it_behaves_like 'code without offense', <<-END.strip_indent
+          foo ||=
+            (
+            bar
+            baz
+          )
+        END
       end
     end
   end

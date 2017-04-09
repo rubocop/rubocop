@@ -35,10 +35,12 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
 
     it 'accepts rescue clause' do
       # The list of rescued classes is an array.
-      inspect_source(cop, ['begin',
-                           '  do_something',
-                           'rescue RuntimeError',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        begin
+          do_something
+        rescue RuntimeError
+        end
+      END
       expect(cop.offenses).to be_empty
     end
 
@@ -93,44 +95,54 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'no_comma' } }
 
       it 'registers an offense for trailing comma in an Array literal' do
-        inspect_source(cop, ['VALUES = [',
-                             '           1001,',
-                             '           2020,',
-                             '           3333,',
-                             '         ]'])
+        inspect_source(cop, <<-END.strip_indent)
+          VALUES = [
+                     1001,
+                     2020,
+                     3333,
+                   ]
+        END
         expect(cop.highlights).to eq([','])
       end
 
       it 'registers an offense for trailing comma in a Hash literal' do
-        inspect_source(cop, ['MAP = { a: 1001,',
-                             '        b: 2020,',
-                             '        c: 3333,',
-                             '      }'])
+        inspect_source(cop, <<-END.strip_indent)
+          MAP = { a: 1001,
+                  b: 2020,
+                  c: 3333,
+                }
+        END
         expect(cop.highlights).to eq([','])
       end
 
       it 'accepts an Array literal with no trailing comma' do
-        inspect_source(cop, ['VALUES = [ 1001,',
-                             '           2020,',
-                             '           3333 ]'])
+        inspect_source(cop, <<-END.strip_indent)
+          VALUES = [ 1001,
+                     2020,
+                     3333 ]
+        END
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts a Hash literal with no trailing comma' do
-        inspect_source(cop, ['MAP = {',
-                             '        a: 1001,',
-                             '        b: 2020,',
-                             '        c: 3333',
-                             '      }'])
+        inspect_source(cop, <<-END.strip_indent)
+          MAP = {
+                  a: 1001,
+                  b: 2020,
+                  c: 3333
+                }
+        END
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts comma inside a heredoc parameters at the end' do
-        inspect_source(cop, ['route(help: {',
-                             "  'auth' => <<-HELP.chomp",
-                             ',',
-                             'HELP',
-                             '})'])
+        inspect_source(cop, <<-END.strip_indent)
+          route(help: {
+            'auth' => <<-HELP.chomp
+          ,
+          HELP
+          })
+        END
         expect(cop.offenses).to be_empty
       end
 
@@ -143,27 +155,35 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
       end
 
       it 'auto-corrects unwanted comma in an Array literal' do
-        new_source = autocorrect_source(cop, ['VALUES = [',
-                                              '           1001,',
-                                              '           2020,',
-                                              '           3333,',
-                                              '         ]'])
-        expect(new_source).to eq(['VALUES = [',
-                                  '           1001,',
-                                  '           2020,',
-                                  '           3333',
-                                  '         ]'].join("\n"))
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          VALUES = [
+                     1001,
+                     2020,
+                     3333,
+                   ]
+        END
+        expect(new_source).to eq(<<-END.strip_indent)
+          VALUES = [
+                     1001,
+                     2020,
+                     3333
+                   ]
+        END
       end
 
       it 'auto-corrects unwanted comma in a Hash literal' do
-        new_source = autocorrect_source(cop, ['MAP = { a: 1001,',
-                                              '        b: 2020,',
-                                              '        c: 3333,',
-                                              '      }'])
-        expect(new_source).to eq(['MAP = { a: 1001,',
-                                  '        b: 2020,',
-                                  '        c: 3333',
-                                  '      }'].join("\n"))
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          MAP = { a: 1001,
+                  b: 2020,
+                  c: 3333,
+                }
+        END
+        expect(new_source).to eq(<<-END.strip_indent)
+          MAP = { a: 1001,
+                  b: 2020,
+                  c: 3333
+                }
+        END
       end
     end
 
@@ -172,141 +192,177 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
 
       context 'when closing bracket is on same line as last value' do
         it 'accepts Array literal with no trailing comma' do
-          inspect_source(cop, ['VALUES = [',
-                               '           1001,',
-                               '           2020,',
-                               '           3333]'])
+          inspect_source(cop, <<-END.strip_indent)
+            VALUES = [
+                       1001,
+                       2020,
+                       3333]
+          END
           expect(cop.offenses).to be_empty
         end
 
         it 'accepts a Hash literal with no trailing comma' do
-          inspect_source(cop, ['VALUES = {',
-                               '           a: "b",',
-                               '           c: "d",',
-                               '           e: "f"}'])
+          inspect_source(cop, <<-END.strip_indent)
+            VALUES = {
+                       a: "b",
+                       c: "d",
+                       e: "f"}
+          END
           expect(cop.offenses).to be_empty
         end
       end
 
       it 'accepts Array literal with two of the values on the same line' do
-        inspect_source(cop, ['VALUES = [',
-                             '           1001, 2020,',
-                             '           3333',
-                             '         ]'])
+        inspect_source(cop, <<-END.strip_indent)
+          VALUES = [
+                     1001, 2020,
+                     3333
+                   ]
+        END
         expect(cop.offenses).to be_empty
       end
 
       it 'registers an offense for an Array literal with two of the values ' \
          'on the same line and a trailing comma' do
-        inspect_source(cop, ['VALUES = [',
-                             '           1001, 2020,',
-                             '           3333,',
-                             '         ]'])
+        inspect_source(cop, <<-END.strip_indent)
+          VALUES = [
+                     1001, 2020,
+                     3333,
+                   ]
+        END
         expect(cop.messages)
           .to eq(['Avoid comma after the last item of an array, unless each ' \
                   'item is on its own line.'])
       end
 
       it 'registers an offense for no trailing comma in a Hash literal' do
-        inspect_source(cop, ['MAP = { a: 1001,',
-                             '        b: 2020,',
-                             '        c: 3333',
-                             '}'])
+        inspect_source(cop, <<-END.strip_indent)
+          MAP = { a: 1001,
+                  b: 2020,
+                  c: 3333
+          }
+        END
         expect(cop.messages)
           .to eq(['Put a comma after the last item of a multiline hash.'])
         expect(cop.highlights).to eq(['c: 3333'])
       end
 
       it 'registers an offense for trailing comma in a comment in Hash' do
-        inspect_source(cop, ['MAP = { a: 1001,',
-                             '        b: 2020,',
-                             '        c: 3333 # ,',
-                             '}'])
+        inspect_source(cop, <<-END.strip_indent)
+          MAP = { a: 1001,
+                  b: 2020,
+                  c: 3333 # ,
+          }
+        END
         expect(cop.messages)
           .to eq(['Put a comma after the last item of a multiline hash.'])
         expect(cop.highlights).to eq(['c: 3333'])
       end
 
       it 'accepts trailing comma in an Array literal' do
-        inspect_source(cop, ['VALUES = [1001,',
-                             '          2020,',
-                             '          3333,',
-                             '         ]'])
+        inspect_source(cop, <<-END.strip_indent)
+          VALUES = [1001,
+                    2020,
+                    3333,
+                   ]
+        END
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts trailing comma in a Hash literal' do
-        inspect_source(cop, ['MAP = {',
-                             '        a: 1001,',
-                             '        b: 2020,',
-                             '        c: 3333,',
-                             '      }'])
+        inspect_source(cop, <<-END.strip_indent)
+          MAP = {
+                  a: 1001,
+                  b: 2020,
+                  c: 3333,
+                }
+        END
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts a multiline word array' do
-        inspect_source(cop, ['ingredients = %w(',
-                             '  sausage',
-                             '  anchovies',
-                             '  olives',
-                             ')'])
+        inspect_source(cop, <<-END.strip_indent)
+          ingredients = %w(
+            sausage
+            anchovies
+            olives
+          )
+        END
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts missing comma after a heredoc' do
         # A heredoc that's the last item in a literal or parameter list can not
         # have a trailing comma. It's a syntax error.
-        inspect_source(cop, ['route(help: {',
-                             "  'auth' => <<-HELP.chomp",
-                             '...',
-                             'HELP',
-                             '})'])
+        inspect_source(cop, <<-END.strip_indent)
+          route(help: {
+            'auth' => <<-HELP.chomp
+          ...
+          HELP
+          })
+        END
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts an empty hash being passed as a method argument' do
         inspect_source(cop, 'Foo.new({})')
-        inspect_source(cop, ['Foo.new({',
-                             '         })'])
-        inspect_source(cop, ['Foo.new([',
-                             '         ])'])
+        inspect_source(cop, <<-END.strip_indent)
+          Foo.new({
+                   })
+        END
+        inspect_source(cop, <<-END.strip_indent)
+          Foo.new([
+                   ])
+        END
         expect(cop.offenses).to be_empty
       end
 
       it 'auto-corrects an Array literal with two of the values on the same' \
          ' line and a trailing comma' do
-        new_source = autocorrect_source(cop, ['VALUES = [',
-                                              '           1001, 2020,',
-                                              '           3333',
-                                              '         ]'])
-        expect(new_source).to eq(['VALUES = [',
-                                  '           1001, 2020,',
-                                  '           3333',
-                                  '         ]'].join("\n"))
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          VALUES = [
+                     1001, 2020,
+                     3333
+                   ]
+        END
+        expect(new_source).to eq(<<-END.strip_indent)
+          VALUES = [
+                     1001, 2020,
+                     3333
+                   ]
+        END
       end
 
       it 'auto-corrects missing comma in a Hash literal' do
-        new_source = autocorrect_source(cop, ['MAP = { a: 1001,',
-                                              '        b: 2020,',
-                                              '        c: 3333',
-                                              '}'])
-        expect(new_source).to eq(['MAP = { a: 1001,',
-                                  '        b: 2020,',
-                                  '        c: 3333,',
-                                  '}'].join("\n"))
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          MAP = { a: 1001,
+                  b: 2020,
+                  c: 3333
+          }
+        END
+        expect(new_source).to eq(<<-END.strip_indent)
+          MAP = { a: 1001,
+                  b: 2020,
+                  c: 3333,
+          }
+        END
       end
 
       it 'accepts a multiline array with a single item and trailing comma' do
-        inspect_source(cop, ['foo = [',
-                             '  1,',
-                             ']'])
+        inspect_source(cop, <<-END.strip_indent)
+          foo = [
+            1,
+          ]
+        END
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts a multiline hash with a single pair and trailing comma' do
-        inspect_source(cop, ['bar = {',
-                             '  a: 123,',
-                             '}'])
+        inspect_source(cop, <<-END.strip_indent)
+          bar = {
+            a: 123,
+          }
+        END
         expect(cop.offenses).to be_empty
       end
     end
@@ -316,148 +372,186 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
 
       context 'when closing bracket is on same line as last value' do
         it 'registers an offense for an Array literal with no trailing comma' do
-          inspect_source(cop, ['VALUES = [',
-                               '           1001,',
-                               '           2020,',
-                               '           3333]'])
+          inspect_source(cop, <<-END.strip_indent)
+            VALUES = [
+                       1001,
+                       2020,
+                       3333]
+          END
           expect(cop.messages)
             .to eq(['Put a comma after the last item of a multiline array.'])
         end
 
         it 'registers an offense for a Hash literal with no trailing comma' do
-          inspect_source(cop, ['VALUES = {',
-                               '           a: "b",',
-                               '           b: "c",',
-                               '           d: "e"}'])
+          inspect_source(cop, <<-END.strip_indent)
+            VALUES = {
+                       a: "b",
+                       b: "c",
+                       d: "e"}
+          END
           expect(cop.messages)
             .to eq(['Put a comma after the last item of a multiline hash.'])
         end
 
         it 'auto-corrects a missing comma in a Hash literal' do
-          new_source = autocorrect_source(cop, ['MAP = { a: 1001,',
-                                                '        b: 2020,',
-                                                '        c: 3333}'])
-          expect(new_source).to eq(['MAP = { a: 1001,',
-                                    '        b: 2020,',
-                                    '        c: 3333,}'].join("\n"))
+          new_source = autocorrect_source(cop, <<-END.strip_indent)
+            MAP = { a: 1001,
+                    b: 2020,
+                    c: 3333}
+          END
+          expect(new_source).to eq(<<-END.strip_indent)
+            MAP = { a: 1001,
+                    b: 2020,
+                    c: 3333,}
+          END
         end
       end
 
       it 'accepts Array literal with two of the values on the same line' do
-        inspect_source(cop, ['VALUES = [',
-                             '           1001, 2020,',
-                             '           3333,',
-                             '         ]'])
+        inspect_source(cop, <<-END.strip_indent)
+          VALUES = [
+                     1001, 2020,
+                     3333,
+                   ]
+        END
         expect(cop.offenses).to be_empty
       end
 
       it 'registers an offense for an Array literal with two of the values ' \
          'on the same line and no trailing comma' do
-        inspect_source(cop, ['VALUES = [',
-                             '           1001, 2020,',
-                             '           3333',
-                             '         ]'])
+        inspect_source(cop, <<-END.strip_indent)
+          VALUES = [
+                     1001, 2020,
+                     3333
+                   ]
+        END
         expect(cop.messages)
           .to eq(['Put a comma after the last item of a multiline array.'])
       end
 
       it 'registers an offense for no trailing comma in a Hash literal' do
-        inspect_source(cop, ['MAP = { a: 1001,',
-                             '        b: 2020,',
-                             '        c: 3333',
-                             '}'])
+        inspect_source(cop, <<-END.strip_indent)
+          MAP = { a: 1001,
+                  b: 2020,
+                  c: 3333
+          }
+        END
         expect(cop.messages)
           .to eq(['Put a comma after the last item of a multiline hash.'])
         expect(cop.highlights).to eq(['c: 3333'])
       end
 
       it 'accepts trailing comma in an Array literal' do
-        inspect_source(cop, ['VALUES = [1001,',
-                             '          2020,',
-                             '          3333,',
-                             '         ]'])
+        inspect_source(cop, <<-END.strip_indent)
+          VALUES = [1001,
+                    2020,
+                    3333,
+                   ]
+        END
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts trailing comma in a Hash literal' do
-        inspect_source(cop, ['MAP = {',
-                             '        a: 1001,',
-                             '        b: 2020,',
-                             '        c: 3333,',
-                             '      }'])
+        inspect_source(cop, <<-END.strip_indent)
+          MAP = {
+                  a: 1001,
+                  b: 2020,
+                  c: 3333,
+                }
+        END
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts a multiline word array' do
-        inspect_source(cop, ['ingredients = %w(',
-                             '  sausage',
-                             '  anchovies',
-                             '  olives',
-                             ')'])
+        inspect_source(cop, <<-END.strip_indent)
+          ingredients = %w(
+            sausage
+            anchovies
+            olives
+          )
+        END
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts missing comma after a heredoc' do
         # A heredoc that's the last item in a literal or parameter list can not
         # have a trailing comma. It's a syntax error.
-        inspect_source(cop, ['route(help: {',
-                             "  'auth' => <<-HELP.chomp",
-                             '...',
-                             'HELP',
-                             '})'])
+        inspect_source(cop, <<-END.strip_indent)
+          route(help: {
+            'auth' => <<-HELP.chomp
+          ...
+          HELP
+          })
+        END
         expect(cop.offenses).to be_empty
       end
 
       it 'auto-corrects an Array literal with two of the values on the same' \
          ' line and a trailing comma' do
-        new_source = autocorrect_source(cop, ['VALUES = [',
-                                              '           1001, 2020,',
-                                              '           3333',
-                                              '         ]'])
-        expect(new_source).to eq(['VALUES = [',
-                                  '           1001, 2020,',
-                                  '           3333,',
-                                  '         ]'].join("\n"))
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          VALUES = [
+                     1001, 2020,
+                     3333
+                   ]
+        END
+        expect(new_source).to eq(<<-END.strip_indent)
+          VALUES = [
+                     1001, 2020,
+                     3333,
+                   ]
+        END
       end
 
       it 'auto-corrects missing comma in a Hash literal' do
-        new_source = autocorrect_source(cop, ['MAP = { a: 1001,',
-                                              '        b: 2020,',
-                                              '        c: 3333',
-                                              '}'])
-        expect(new_source).to eq(['MAP = { a: 1001,',
-                                  '        b: 2020,',
-                                  '        c: 3333,',
-                                  '}'].join("\n"))
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          MAP = { a: 1001,
+                  b: 2020,
+                  c: 3333
+          }
+        END
+        expect(new_source).to eq(<<-END.strip_indent)
+          MAP = { a: 1001,
+                  b: 2020,
+                  c: 3333,
+          }
+        END
       end
 
       it 'accepts a multiline array with a single item and trailing comma' do
-        inspect_source(cop, ['foo = [',
-                             '  1,',
-                             ']'])
+        inspect_source(cop, <<-END.strip_indent)
+          foo = [
+            1,
+          ]
+        END
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts a multiline hash with a single pair and trailing comma' do
-        inspect_source(cop, ['bar = {',
-                             '  a: 123,',
-                             '}'])
+        inspect_source(cop, <<-END.strip_indent)
+          bar = {
+            a: 123,
+          }
+        END
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts a multiline array with items on a single line and' \
          'trailing comma' do
-        inspect_source(cop, ['foo = [',
-                             '  1, 2,',
-                             ']'])
+        inspect_source(cop, <<-END.strip_indent)
+          foo = [
+            1, 2,
+          ]
+        END
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts a multiline hash with pairs on a single line and' \
          'trailing comma' do
-        inspect_source(cop, ['bar = {',
-                             '  a: 1001, b: 2020,',
-                             '}'])
+        inspect_source(cop, <<-END.strip_indent)
+          bar = {
+            a: 1001, b: 2020,
+          }
+        END
         expect(cop.offenses).to be_empty
       end
     end

@@ -19,13 +19,14 @@ module RuboCop
                           'message 2')
 
           formatter.report_file('test', cop.offenses)
-          expect(output.string).to eq ['test:1:1: C: message 1',
-                                       'aa',
-                                       '^^',
-                                       'test:11:1: C: message 2',
-                                       'ak',
-                                       '^^',
-                                       ''].join("\n")
+          expect(output.string).to eq <<-END.strip_indent
+            test:1:1: C: message 1
+            aa
+            ^^
+            test:11:1: C: message 2
+            ak
+            ^^
+          END
         end
 
         context 'when the source line is blank' do
@@ -41,19 +42,22 @@ module RuboCop
                             'message 2')
 
             formatter.report_file('test', cop.offenses)
-            expect(output.string).to eq ['test:1:1: C: message 1',
-                                         'test:2:1: C: message 2',
-                                         'yaba',
-                                         '^^^^',
-                                         ''].join("\n")
+            expect(output.string).to eq <<-END.strip_indent
+              test:1:1: C: message 1
+              test:2:1: C: message 2
+              yaba
+              ^^^^
+            END
           end
         end
 
         context 'when the offending source spans multiple lines' do
           it 'displays the first line with ellipses' do
-            source = ['do_something([this,',
-                      '              is,',
-                      '              target])'].join($RS)
+            source = <<-END.strip_indent
+              do_something([this,
+                            is,
+                            target])
+            END
 
             source_buffer = Parser::Source::Buffer.new('test', 1)
             source_buffer.source = source
@@ -67,10 +71,11 @@ module RuboCop
 
             formatter.report_file('test', cop.offenses)
             expect(output.string)
-              .to eq ['test:1:14: C: message 1',
-                      "do_something([this, #{described_class::ELLIPSES}",
-                      '             ^^^^^^',
-                      ''].join("\n")
+              .to eq <<-END.strip_indent
+                test:1:14: C: message 1
+                do_something([this, #{described_class::ELLIPSES}
+                             ^^^^^^
+              END
           end
         end
 

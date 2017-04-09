@@ -4,13 +4,15 @@ describe RuboCop::Cop::Lint::DefEndAlignment, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:source) do
-    ['foo def a',
-     '  a1',
-     'end',
-     '',
-     'foo def b',
-     '      b1',
-     '    end']
+    <<-END.strip_indent
+      foo def a
+        a1
+      end
+
+      foo def b
+            b1
+          end
+    END
   end
 
   context 'when EnforcedStyleAlignWith is start_of_line' do
@@ -45,13 +47,15 @@ describe RuboCop::Cop::Lint::DefEndAlignment, :config do
 
       it 'does auto-correction' do
         corrected = autocorrect_source(cop, source)
-        expect(corrected).to eq(['foo def a',
-                                 '  a1',
-                                 'end',
-                                 '',
-                                 'foo def b',
-                                 '      b1',
-                                 'end'].join("\n"))
+        expect(corrected).to eq(<<-END.strip_indent)
+          foo def a
+            a1
+          end
+
+          foo def b
+                b1
+          end
+        END
       end
     end
   end
@@ -88,13 +92,15 @@ describe RuboCop::Cop::Lint::DefEndAlignment, :config do
 
         it 'does auto-correction' do
           corrected = autocorrect_source(cop, source)
-          expect(corrected).to eq(['foo def a',
-                                   '  a1',
-                                   '    end',
-                                   '',
-                                   'foo def b',
-                                   '      b1',
-                                   '    end'].join("\n"))
+          expect(corrected).to eq(<<-END.strip_indent)
+            foo def a
+              a1
+                end
+
+            foo def b
+                  b1
+                end
+          END
         end
       end
     end

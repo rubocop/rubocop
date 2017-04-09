@@ -16,8 +16,10 @@ describe RuboCop::Cop::Style::IfWithSemicolon do
   end
 
   it 'can handle modifier conditionals' do
-    inspect_source(cop, ['class Hash',
-                         'end if RUBY_VERSION < "1.8.7"'])
+    inspect_source(cop, <<-END.strip_indent)
+      class Hash
+      end if RUBY_VERSION < "1.8.7"
+    END
     expect(cop.messages).to be_empty
   end
 end

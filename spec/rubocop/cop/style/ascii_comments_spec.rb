@@ -4,9 +4,10 @@ describe RuboCop::Cop::Style::AsciiComments do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for a comment with non-ascii chars' do
-    inspect_source(cop,
-                   ['# encoding: utf-8',
-                    '# 这是什么？'])
+    inspect_source(cop, <<-END.strip_indent)
+      # encoding: utf-8
+      # 这是什么？
+    END
     expect(cop.offenses.size).to eq(1)
     expect(cop.highlights).to eq(['这是什么？'])
     expect(cop.messages)
@@ -14,9 +15,10 @@ describe RuboCop::Cop::Style::AsciiComments do
   end
 
   it 'registers an offense for commentes with mixed chars' do
-    inspect_source(cop,
-                   ['# encoding: utf-8',
-                    '# foo ∂ bar'])
+    inspect_source(cop, <<-END.strip_indent)
+      # encoding: utf-8
+      # foo ∂ bar
+    END
     expect(cop.offenses.size).to eq(1)
     expect(cop.highlights).to eq(['∂'])
     expect(cop.messages)

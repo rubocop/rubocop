@@ -24,22 +24,24 @@ describe RuboCop::Cop::Style::UnneededCapitalW do
   end
 
   it 'registers no offense for %W with special characters' do
-    source = ['def dangerous_characters',
-              '  %W(\000) +',
-              '  %W(\001) +',
-              '  %W(\027) +',
-              '  %W(\002) +',
-              '  %W(\003) +',
-              '  %W(\004) +',
-              '  %W(\005) +',
-              '  %W(\006) +',
-              '  %W(\007) +',
-              '  %W(\00) +',
-              '  %W(\a)',
-              '  %W(\s)',
-              '  %W(\n)',
-              '  %W(\!)',
-              'end']
+    source = <<-'END'.strip_indent
+      def dangerous_characters
+        %W(\000) +
+        %W(\001) +
+        %W(\027) +
+        %W(\002) +
+        %W(\003) +
+        %W(\004) +
+        %W(\005) +
+        %W(\006) +
+        %W(\007) +
+        %W(\00) +
+        %W(\a)
+        %W(\s)
+        %W(\n)
+        %W(\!)
+      end
+    END
     inspect_source(cop, source)
     expect(cop.offenses).to be_empty
   end

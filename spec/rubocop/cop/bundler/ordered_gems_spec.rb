@@ -11,7 +11,7 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'When gems are alphabetically sorted' do
-    let(:source) { <<-END }
+    let(:source) { <<-END.strip_indent }
       gem 'rspec'
       gem 'rubocop'
     END
@@ -23,7 +23,7 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When gems are not alphabetically sorted' do
-    let(:source) { <<-END }
+    let(:source) { <<-END.strip_indent }
       gem 'rubocop'
       gem 'rspec'
     END
@@ -48,14 +48,15 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
 
     it 'autocorrects' do
       new_source = autocorrect_source_with_loop(cop, source)
-      expect(new_source).to eq(["      gem 'rspec'",
-                                "      gem 'rubocop'",
-                                ''].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        gem 'rspec'
+        gem 'rubocop'
+      END
     end
   end
 
   context 'When each individual group of line is sorted' do
-    let(:source) { <<-END }
+    let(:source) { <<-END.strip_indent }
       gem 'rspec'
       gem 'rubocop'
 
@@ -70,7 +71,7 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When a gem declaration takes several lines' do
-    let(:source) { <<-END }
+    let(:source) { <<-END.strip_indent }
       gem 'rubocop',
           '0.1.1'
       gem 'rspec'
@@ -83,15 +84,16 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
 
     it 'autocorrects' do
       new_source = autocorrect_source_with_loop(cop, source)
-      expect(new_source).to eq(["      gem 'rspec'",
-                                "      gem 'rubocop',",
-                                "          '0.1.1'",
-                                ''].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        gem 'rspec'
+        gem 'rubocop',
+            '0.1.1'
+      END
     end
   end
 
   context 'When the gemfile is empty' do
-    let(:source) { <<-END }
+    let(:source) { <<-END.strip_indent }
       # Gemfile
     END
 
@@ -102,7 +104,7 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When each individual group of line is not sorted' do
-    let(:source) { <<-END }
+    let(:source) { <<-END.strip_indent }
         gem "d"
         gem "b"
         gem "e"
@@ -123,23 +125,24 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
 
     it 'autocorrects' do
       new_source = autocorrect_source_with_loop(cop, source)
-      expect(new_source).to eq(['        gem "a"',
-                                '        gem "b"',
-                                '        gem "c"',
-                                '        gem "d"',
-                                '        gem "e"',
-                                '',
-                                '        gem "f"',
-                                '        gem "g"',
-                                '        gem "h"',
-                                '        gem "i"',
-                                '        gem "j"',
-                                ''].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        gem "a"
+        gem "b"
+        gem "c"
+        gem "d"
+        gem "e"
+
+        gem "f"
+        gem "g"
+        gem "h"
+        gem "i"
+        gem "j"
+      END
     end
   end
 
   context 'When gem groups is separated by multiline comment' do
-    let(:source) { <<-END }
+    let(:source) { <<-END.strip_indent }
       # For code quality
       gem 'rubocop'
       # For
@@ -177,18 +180,19 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
 
       it 'autocorrects' do
         new_source = autocorrect_source_with_loop(cop, source)
-        expect(new_source).to eq(['      # For',
-                                  '      # test',
-                                  "      gem 'rspec'",
-                                  '      # For code quality',
-                                  "      gem 'rubocop'",
-                                  ''].join("\n"))
+        expect(new_source).to eq(<<-END.strip_indent)
+          # For
+          # test
+          gem 'rspec'
+          # For code quality
+          gem 'rubocop'
+        END
       end
     end
   end
 
   context 'When gems have an inline comment, and not sorted' do
-    let(:source) { <<-END }
+    let(:source) { <<-END.strip_indent }
       gem 'rubocop' # For code quality
       gem 'pry'
       gem 'rspec'   # For test
@@ -201,15 +205,16 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
 
     it 'autocorrects' do
       new_source = autocorrect_source_with_loop(cop, source)
-      expect(new_source).to eq(["      gem 'pry'",
-                                "      gem 'rspec'   # For test",
-                                "      gem 'rubocop' # For code quality",
-                                ''].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        gem 'pry'
+        gem 'rspec'   # For test
+        gem 'rubocop' # For code quality
+      END
     end
   end
 
   context 'When gems are asciibetically sorted' do
-    let(:source) { <<-END }
+    let(:source) { <<-END.strip_indent }
       gem 'paper_trail'
       gem 'paperclip'
     END
@@ -221,7 +226,7 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When a gem that starts with a capital letter is sorted' do
-    let(:source) { <<-END }
+    let(:source) { <<-END.strip_indent }
       gem 'a'
       gem 'Z'
     END
@@ -233,7 +238,7 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When a gem that starts with a capital letter is not sorted' do
-    let(:source) { <<-END }
+    let(:source) { <<-END.strip_indent }
       gem 'Z'
       gem 'a'
     END
@@ -245,9 +250,10 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
 
     it 'autocorrects' do
       new_source = autocorrect_source_with_loop(cop, source)
-      expect(new_source).to eq(["      gem 'a'",
-                                "      gem 'Z'",
-                                ''].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        gem 'a'
+        gem 'Z'
+      END
     end
   end
 end

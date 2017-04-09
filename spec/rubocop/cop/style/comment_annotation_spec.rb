@@ -104,16 +104,19 @@ describe RuboCop::Cop::Style::CommentAnnotation, :config do
   end
 
   it 'accepts a keyword that is just the beginning of a sentence' do
-    inspect_source(cop,
-                   ["# Optimize if you want. I wouldn't recommend it.",
-                    '# Hack is a fun game.'])
+    inspect_source(cop, <<-END.strip_indent)
+      # Optimize if you want. I wouldn't recommend it.
+      # Hack is a fun game.
+    END
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts a keyword that is somewhere in a sentence' do
-    src = ['# Example: There are three reviews, with ranks 1, 2, and 3. A new',
-           '# review is saved with rank 2. The two reviews that originally had',
-           '# ranks 2 and 3 will have their ranks increased to 3 and 4.']
+    src = <<-END.strip_indent
+      # Example: There are three reviews, with ranks 1, 2, and 3. A new
+      # review is saved with rank 2. The two reviews that originally had
+      # ranks 2 and 3 will have their ranks increased to 3 and 4.
+    END
     inspect_source(cop, src)
     expect(cop.offenses).to be_empty
   end

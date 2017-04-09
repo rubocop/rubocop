@@ -26,9 +26,10 @@ describe RuboCop::Cop::Style::IndentHash do
 
   shared_examples 'right brace' do
     it 'registers an offense for incorrectly indented }' do
-      inspect_source(cop,
-                     ['a << {',
-                      '  }'])
+      inspect_source(cop, <<-END.strip_indent)
+        a << {
+          }
+      END
       expect(cop.highlights).to eq(['}'])
       expect(cop.messages)
         .to eq(['Indent the right brace the same as the start of the line ' \
@@ -47,20 +48,22 @@ describe RuboCop::Cop::Style::IndentHash do
     end
 
     it 'accepts correctly indented first pair' do
-      inspect_source(cop,
-                     ['a << {',
-                      '    a: 1,',
-                      '  aaa: 222',
-                      '}'])
+      inspect_source(cop, <<-END.strip_indent)
+        a << {
+            a: 1,
+          aaa: 222
+        }
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for incorrectly indented first pair with :' do
-      inspect_source(cop,
-                     ['a << {',
-                      '       a: 1,',
-                      '     aaa: 222',
-                      '}'])
+      inspect_source(cop, <<-END.strip_indent)
+        a << {
+               a: 1,
+             aaa: 222
+        }
+      END
       expect(cop.highlights).to eq(['a: 1'])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
@@ -78,20 +81,22 @@ describe RuboCop::Cop::Style::IndentHash do
     end
 
     it 'accepts correctly indented first pair' do
-      inspect_source(cop,
-                     ['a << {',
-                      "    'a' => 1,",
-                      "  'aaa' => 222",
-                      '}'])
+      inspect_source(cop, <<-END.strip_indent)
+        a << {
+            'a' => 1,
+          'aaa' => 222
+        }
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for incorrectly indented first pair with =>' do
-      inspect_source(cop,
-                     ['a << {',
-                      "   'a' => 1,",
-                      " 'aaa' => 222",
-                      '}'])
+      inspect_source(cop, <<-END.strip_indent)
+        a << {
+           'a' => 1,
+         'aaa' => 222
+        }
+      END
       expect(cop.highlights).to eq(["'a' => 1"])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
@@ -101,29 +106,35 @@ describe RuboCop::Cop::Style::IndentHash do
 
   context 'when hash is operand' do
     it 'accepts correctly indented first pair' do
-      inspect_source(cop,
-                     ['a << {',
-                      '  a: 1',
-                      '}'])
+      inspect_source(cop, <<-END.strip_indent)
+        a << {
+          a: 1
+        }
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for incorrectly indented first pair' do
-      inspect_source(cop,
-                     ['a << {',
-                      ' a: 1',
-                      '}'])
+      inspect_source(cop, <<-END.strip_indent)
+        a << {
+         a: 1
+        }
+      END
       expect(cop.highlights).to eq(['a: 1'])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'auto-corrects incorrectly indented first pair' do
-      corrected = autocorrect_source(cop, ['a << {',
-                                           ' a: 1',
-                                           '}'])
-      expect(corrected).to eq ['a << {',
-                               '  a: 1',
-                               '}'].join("\n")
+      corrected = autocorrect_source(cop, <<-END.strip_indent)
+        a << {
+         a: 1
+        }
+      END
+      expect(corrected).to eq <<-END.strip_indent
+        a << {
+          a: 1
+        }
+      END
     end
 
     include_examples 'right brace'
@@ -131,22 +142,24 @@ describe RuboCop::Cop::Style::IndentHash do
 
   context 'when hash is argument to setter' do
     it 'accepts correctly indented first pair' do
-      inspect_source(cop,
-                     ['   config.rack_cache = {',
-                      '     :metastore => "rails:/",',
-                      '     :entitystore => "rails:/",',
-                      '     :verbose => false',
-                      '   }'])
+      inspect_source(cop, <<-END.strip_margin('|'))
+        |   config.rack_cache = {
+        |     :metastore => "rails:/",
+        |     :entitystore => "rails:/",
+        |     :verbose => false
+        |   }
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for incorrectly indented first pair' do
-      inspect_source(cop,
-                     ['   config.rack_cache = {',
-                      '   :metastore => "rails:/",',
-                      '   :entitystore => "rails:/",',
-                      '   :verbose => false',
-                      '   }'])
+      inspect_source(cop, <<-END.strip_margin('|'))
+        |   config.rack_cache = {
+        |   :metastore => "rails:/",
+        |   :entitystore => "rails:/",
+        |   :verbose => false
+        |   }
+      END
       expect(cop.highlights).to eq([':metastore => "rails:/"'])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
@@ -154,11 +167,13 @@ describe RuboCop::Cop::Style::IndentHash do
 
   context 'when hash is right hand side in assignment' do
     it 'registers an offense for incorrectly indented first pair' do
-      inspect_source(cop, ['a = {',
-                           '    a: 1,',
-                           '  b: 2,',
-                           ' c: 3',
-                           '}'])
+      inspect_source(cop, <<-END.strip_indent)
+        a = {
+            a: 1,
+          b: 2,
+         c: 3
+        }
+      END
       expect(cop.messages)
         .to eq(['Use 2 spaces for indentation in a hash, relative to the ' \
                 'start of the line where the left curly brace is.'])
@@ -167,38 +182,45 @@ describe RuboCop::Cop::Style::IndentHash do
     end
 
     it 'auto-corrects incorrectly indented first pair' do
-      corrected = autocorrect_source(cop, ['a = {',
-                                           '    a: 1,',
-                                           '  b: 2,',
-                                           ' c: 3',
-                                           '}'])
-      expect(corrected).to eq ['a = {',
-                               '  a: 1,',
-                               '  b: 2,',
-                               ' c: 3',
-                               '}'].join("\n")
+      corrected = autocorrect_source(cop, <<-END.strip_indent)
+        a = {
+            a: 1,
+          b: 2,
+         c: 3
+        }
+      END
+      expect(corrected).to eq <<-END.strip_indent
+        a = {
+          a: 1,
+          b: 2,
+         c: 3
+        }
+      END
     end
 
     it 'accepts correctly indented first pair' do
-      inspect_source(cop,
-                     ['a = {',
-                      '  a: 1',
-                      '}'])
+      inspect_source(cop, <<-END.strip_indent)
+        a = {
+          a: 1
+        }
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts several pairs per line' do
-      inspect_source(cop,
-                     ['a = {',
-                      '  a: 1, b: 2',
-                      '}'])
+      inspect_source(cop, <<-END.strip_indent)
+        a = {
+          a: 1, b: 2
+        }
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts a first pair on the same line as the left brace' do
-      inspect_source(cop,
-                     ['a = { "a" => 1,',
-                      '      "b" => 2 }'])
+      inspect_source(cop, <<-END.strip_indent)
+        a = { "a" => 1,
+              "b" => 2 }
+      END
       expect(cop.offenses).to be_empty
     end
 
@@ -218,23 +240,28 @@ describe RuboCop::Cop::Style::IndentHash do
       let(:cop_indent) { 3 }
 
       it 'auto-corrects incorrectly indented first pair' do
-        corrected = autocorrect_source(cop, ['a = {',
-                                             '    a: 1,',
-                                             '  b: 2,',
-                                             ' c: 3',
-                                             '}'])
-        expect(corrected).to eq ['a = {',
-                                 '   a: 1,',
-                                 '  b: 2,',
-                                 ' c: 3',
-                                 '}'].join("\n")
+        corrected = autocorrect_source(cop, <<-END.strip_indent)
+          a = {
+              a: 1,
+            b: 2,
+           c: 3
+          }
+        END
+        expect(corrected).to eq <<-END.strip_indent
+          a = {
+             a: 1,
+            b: 2,
+           c: 3
+          }
+        END
       end
 
       it 'accepts correctly indented first pair' do
-        inspect_source(cop,
-                       ['a = {',
-                        '   a: 1',
-                        '}'])
+        inspect_source(cop, <<-END.strip_indent)
+          a = {
+             a: 1
+          }
+        END
         expect(cop.offenses).to be_empty
       end
     end
@@ -244,33 +271,32 @@ describe RuboCop::Cop::Style::IndentHash do
     context 'and arguments are surrounded by parentheses' do
       context 'and EnforcedStyle is special_inside_parentheses' do
         it 'accepts special indentation for first argument' do
-          inspect_source(cop,
-                         # Only the function calls are affected by
-                         # EnforcedStyle setting. Other indentation shall be
-                         # the same regardless of EnforcedStyle.
-                         ['h = {',
-                          '  a: 1',
-                          '}',
-                          'func({',
-                          '       a: 1',
-                          '     })',
-                          'func(x, {',
-                          '       a: 1',
-                          '     })',
-                          'h = { a: 1',
-                          '}',
-                          'func({ a: 1',
-                          '     })',
-                          'func(x, { a: 1',
-                          '     })'])
+          inspect_source(cop, <<-END.strip_indent)
+            h = {
+              a: 1
+            }
+            func({
+                   a: 1
+                 })
+            func(x, {
+                   a: 1
+                 })
+            h = { a: 1
+            }
+            func({ a: 1
+                 })
+            func(x, { a: 1
+                 })
+          END
           expect(cop.offenses).to be_empty
         end
 
         it "registers an offense for 'consistent' indentation" do
-          inspect_source(cop,
-                         ['func({',
-                          '  a: 1',
-                          '})'])
+          inspect_source(cop, <<-END.strip_indent)
+            func({
+              a: 1
+            })
+          END
           expect(cop.messages)
             .to eq(['Use 2 spaces for indentation in a hash, relative to the' \
                     ' first position after the preceding left parenthesis.',
@@ -281,10 +307,11 @@ describe RuboCop::Cop::Style::IndentHash do
         end
 
         it "registers an offense for 'align_braces' indentation" do
-          inspect_source(cop,
-                         ['var = {',
-                          '        a: 1',
-                          '      }'])
+          inspect_source(cop, <<-END.strip_indent)
+            var = {
+                    a: 1
+                  }
+          END
           # since there are no parens, warning message is for 'consistent' style
           expect(cop.messages)
             .to eq(['Use 2 spaces for indentation in a hash, relative to the' \
@@ -296,28 +323,34 @@ describe RuboCop::Cop::Style::IndentHash do
         end
 
         it 'auto-corrects incorrectly indented first pair' do
-          corrected = autocorrect_source(cop, ['func({',
-                                               '  a: 1',
-                                               '})'])
-          expect(corrected).to eq ['func({',
-                                   '       a: 1',
-                                   '     })'].join("\n")
+          corrected = autocorrect_source(cop, <<-END.strip_indent)
+            func({
+              a: 1
+            })
+          END
+          expect(corrected).to eq <<-END.strip_indent
+            func({
+                   a: 1
+                 })
+          END
         end
 
         it 'accepts special indentation for second argument' do
-          inspect_source(cop,
-                         ['body.should have_tag("input", :attributes => {',
-                          '                       :name => /q\[(id_eq)\]/ })'])
+          inspect_source(cop, <<-'END'.strip_indent)
+            body.should have_tag("input", :attributes => {
+                                   :name => /q\[(id_eq)\]/ })
+          END
           expect(cop.offenses).to be_empty
         end
 
         it 'accepts normal indentation for hash within hash' do
-          inspect_source(cop,
-                         ['scope = scope.where(',
-                          '  klass.table_name => {',
-                          '    reflection.type => model.base_class.sti_name',
-                          '  }',
-                          ')'])
+          inspect_source(cop, <<-END.strip_indent)
+            scope = scope.where(
+              klass.table_name => {
+                reflection.type => model.base_class.sti_name
+              }
+            )
+          END
           expect(cop.offenses).to be_empty
         end
       end
@@ -326,33 +359,32 @@ describe RuboCop::Cop::Style::IndentHash do
         let(:cop_config) { { 'EnforcedStyle' => 'consistent' } }
 
         it 'accepts normal indentation for first argument' do
-          inspect_source(cop,
-                         # Only the function calls are affected by
-                         # EnforcedStyle setting. Other indentation shall be
-                         # the same regardless of EnforcedStyle.
-                         ['h = {',
-                          '  a: 1',
-                          '}',
-                          'func({',
-                          '  a: 1',
-                          '})',
-                          'func(x, {',
-                          '  a: 1',
-                          '})',
-                          'h = { a: 1',
-                          '}',
-                          'func({ a: 1',
-                          '})',
-                          'func(x, { a: 1',
-                          '})'])
+          inspect_source(cop, <<-END.strip_indent)
+            h = {
+              a: 1
+            }
+            func({
+              a: 1
+            })
+            func(x, {
+              a: 1
+            })
+            h = { a: 1
+            }
+            func({ a: 1
+            })
+            func(x, { a: 1
+            })
+          END
           expect(cop.offenses).to be_empty
         end
 
         it 'registers an offense for incorrect indentation' do
-          inspect_source(cop,
-                         ['func({',
-                          '       a: 1',
-                          '     })'])
+          inspect_source(cop, <<-END.strip_indent)
+            func({
+                   a: 1
+                 })
+          END
           expect(cop.messages)
             .to eq(['Use 2 spaces for indentation in a hash, relative to the' \
                     ' start of the line where the left curly brace is.',
@@ -364,9 +396,10 @@ describe RuboCop::Cop::Style::IndentHash do
         end
 
         it 'accepts normal indentation for second argument' do
-          inspect_source(cop,
-                         ['body.should have_tag("input", :attributes => {',
-                          '  :name => /q\[(id_eq)\]/ })'])
+          inspect_source(cop, <<-'END'.strip_indent)
+            body.should have_tag("input", :attributes => {
+              :name => /q\[(id_eq)\]/ })
+          END
           expect(cop.offenses).to be_empty
         end
       end
@@ -386,17 +419,19 @@ describe RuboCop::Cop::Style::IndentHash do
       end
 
       it 'accepts a correctly indented multi-line hash with braces' do
-        inspect_source(cop,
-                       ['func x, {',
-                        '  a: 1, b: 2 }'])
+        inspect_source(cop, <<-END.strip_indent)
+          func x, {
+            a: 1, b: 2 }
+        END
         expect(cop.offenses).to be_empty
       end
 
       it 'registers an offense for incorrectly indented multi-line hash ' \
          'with braces' do
-        inspect_source(cop,
-                       ['func x, {',
-                        '       a: 1, b: 2 }'])
+        inspect_source(cop, <<-END.strip_indent)
+          func x, {
+                 a: 1, b: 2 }
+        END
         expect(cop.messages)
           .to eq(['Use 2 spaces for indentation in a hash, relative to the ' \
                   'start of the line where the left curly brace is.'])
@@ -410,25 +445,28 @@ describe RuboCop::Cop::Style::IndentHash do
     let(:cop_config) { { 'EnforcedStyle' => 'align_braces' } }
 
     it 'accepts correctly indented first pair' do
-      inspect_source(cop,
-                     ['a = {',
-                      '      a: 1',
-                      '    }'])
+      inspect_source(cop, <<-END.strip_indent)
+        a = {
+              a: 1
+            }
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts several pairs per line' do
-      inspect_source(cop,
-                     ['a = {',
-                      '      a: 1, b: 2',
-                      '    }'])
+      inspect_source(cop, <<-END.strip_indent)
+        a = {
+              a: 1, b: 2
+            }
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts a first pair on the same line as the left brace' do
-      inspect_source(cop,
-                     ['a = { "a" => 1,',
-                      '      "b" => 2 }'])
+      inspect_source(cop, <<-END.strip_indent)
+        a = { "a" => 1,
+              "b" => 2 }
+      END
       expect(cop.offenses).to be_empty
     end
 
@@ -446,10 +484,11 @@ describe RuboCop::Cop::Style::IndentHash do
 
     context "when 'consistent' style is used" do
       it 'registers an offense for incorrect indentation' do
-        inspect_source(cop,
-                       ['func({',
-                        '  a: 1',
-                        '})'])
+        inspect_source(cop, <<-END.strip_indent)
+          func({
+            a: 1
+          })
+        END
         expect(cop.messages)
           .to eq(['Use 2 spaces for indentation in a hash, relative to the' \
                   ' position of the opening brace.',
@@ -459,24 +498,29 @@ describe RuboCop::Cop::Style::IndentHash do
       end
 
       it 'auto-corrects incorrectly indented first pair' do
-        corrected = autocorrect_source(cop, ['var = {',
-                                             '  a: 1',
-                                             '}'])
-        expect(corrected).to eq ['var = {',
-                                 '        a: 1',
-                                 '      }'].join("\n")
+        corrected = autocorrect_source(cop, <<-END.strip_indent)
+          var = {
+            a: 1
+          }
+        END
+        expect(corrected).to eq <<-END.strip_indent
+          var = {
+                  a: 1
+                }
+        END
       end
     end
 
     context "when 'special_inside_parentheses' style is used" do
       it 'registers an offense for incorrect indentation' do
-        inspect_source(cop,
-                       ['var = {',
-                        '  a: 1',
-                        '}',
-                        'func({',
-                        '       a: 1',
-                        '     })'])
+        inspect_source(cop, <<-END.strip_indent)
+          var = {
+            a: 1
+          }
+          func({
+                 a: 1
+               })
+        END
         expect(cop.messages)
           .to eq(['Use 2 spaces for indentation in a hash, relative to the' \
                   ' position of the opening brace.',
@@ -487,9 +531,10 @@ describe RuboCop::Cop::Style::IndentHash do
     end
 
     it 'registers an offense for incorrectly indented }' do
-      inspect_source(cop,
-                     ['a << {',
-                      '  }'])
+      inspect_source(cop, <<-END.strip_indent)
+        a << {
+          }
+      END
       expect(cop.highlights).to eq(['}'])
       expect(cop.messages)
         .to eq(['Indent the right brace the same as the left brace.'])

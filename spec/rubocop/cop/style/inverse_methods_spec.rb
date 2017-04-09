@@ -158,10 +158,12 @@ describe RuboCop::Cop::Style::InverseMethods do
 
       it 'registers an offense for a multiline method call where the last ' \
         'method is inverted' do
-        inspect_source(cop, ["foo.#{method} do |e|",
-                             '  something',
-                             '  !e.bar',
-                             'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          foo.#{method} do |e|
+            something
+            !e.bar
+          end
+        END
 
         expect(cop.messages)
           .to eq(["Use `#{inverse}` instead of inverting `#{method}`."])
@@ -175,11 +177,13 @@ describe RuboCop::Cop::Style::InverseMethods do
       end
 
       it 'registers an offense for a multiline inverted equality block' do
-        inspect_source(cop, ["foo.#{method} do |e|",
-                             '  something',
-                             '  something_else',
-                             '  e != 2',
-                             'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          foo.#{method} do |e|
+            something
+            something_else
+            e != 2
+          end
+        END
 
         expect(cop.messages)
           .to eq(["Use `#{inverse}` instead of inverting `#{method}`."])
@@ -205,27 +209,35 @@ describe RuboCop::Cop::Style::InverseMethods do
       end
 
       it 'corrects an inverted do end method call' do
-        new_source = autocorrect_source(cop, ["foo.#{method} do |e|",
-                                              '  !e.bar',
-                                              'end'])
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          foo.#{method} do |e|
+            !e.bar
+          end
+        END
 
-        expect(new_source).to eq(["foo.#{inverse} do |e|",
-                                  '  e.bar',
-                                  'end'].join("\n"))
+        expect(new_source).to eq(<<-END.strip_indent)
+          foo.#{inverse} do |e|
+            e.bar
+          end
+        END
       end
 
       it 'corrects a multiline method call where the last method is inverted' do
-        new_source = autocorrect_source(cop, ["foo.#{method} do |e|",
-                                              '  something',
-                                              '  something_else',
-                                              '  !e.bar',
-                                              'end'])
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          foo.#{method} do |e|
+            something
+            something_else
+            !e.bar
+          end
+        END
 
-        expect(new_source).to eq(["foo.#{inverse} do |e|",
-                                  '  something',
-                                  '  something_else',
-                                  '  e.bar',
-                                  'end'].join("\n"))
+        expect(new_source).to eq(<<-END.strip_indent)
+          foo.#{inverse} do |e|
+            something
+            something_else
+            e.bar
+          end
+        END
       end
 
       it 'corrects an offense for an inverted equality block' do
@@ -235,17 +247,21 @@ describe RuboCop::Cop::Style::InverseMethods do
       end
 
       it 'corrects an offense for a multiline inverted equality block' do
-        new_source = autocorrect_source(cop, ["foo.#{method} do |e|",
-                                              '  something',
-                                              '  something_else',
-                                              '  e != 2',
-                                              'end'])
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          foo.#{method} do |e|
+            something
+            something_else
+            e != 2
+          end
+        END
 
-        expect(new_source).to eq(["foo.#{inverse} do |e|",
-                                  '  something',
-                                  '  something_else',
-                                  '  e == 2',
-                                  'end'].join("\n"))
+        expect(new_source).to eq(<<-END.strip_indent)
+          foo.#{inverse} do |e|
+            something
+            something_else
+            e == 2
+          end
+        END
       end
     end
   end

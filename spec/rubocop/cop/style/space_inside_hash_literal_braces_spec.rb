@@ -47,9 +47,10 @@ describe RuboCop::Cop::Style::SpaceInsideHashLiteralBraces, :config do
   end
 
   it 'registers an offense for hashes with no spaces if so configured' do
-    inspect_source(cop,
-                   ['h = {a: 1, b: 2}',
-                    'h = {a => 1}'])
+    inspect_source(cop, <<-END.strip_indent)
+      h = {a: 1, b: 2}
+      h = {a => 1}
+    END
     expect(cop.messages).to eq(['Space inside { missing.',
                                 'Space inside } missing.',
                                 'Space inside { missing.',
@@ -66,10 +67,14 @@ describe RuboCop::Cop::Style::SpaceInsideHashLiteralBraces, :config do
   end
 
   it 'auto-corrects missing space' do
-    new_source = autocorrect_source(cop, ['h = {a: 1, b: 2}',
-                                          'h = {a => 1 }'])
-    expect(new_source).to eq(['h = { a: 1, b: 2 }',
-                              'h = { a => 1 }'].join("\n"))
+    new_source = autocorrect_source(cop, <<-END.strip_indent)
+      h = {a: 1, b: 2}
+      h = {a => 1 }
+    END
+    expect(new_source).to eq(<<-END.strip_indent)
+      h = { a: 1, b: 2 }
+      h = { a => 1 }
+    END
   end
 
   context 'when EnforcedStyle is no_space' do
@@ -92,34 +97,41 @@ describe RuboCop::Cop::Style::SpaceInsideHashLiteralBraces, :config do
     end
 
     it 'auto-corrects unwanted space' do
-      new_source = autocorrect_source(cop, ['h = { a: 1, b: 2 }',
-                                            'h = {a => 1 }'])
-      expect(new_source).to eq(['h = {a: 1, b: 2}',
-                                'h = {a => 1}'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        h = { a: 1, b: 2 }
+        h = {a => 1 }
+      END
+      expect(new_source).to eq(<<-END.strip_indent)
+        h = {a: 1, b: 2}
+        h = {a => 1}
+      END
     end
 
     it 'accepts hashes with no spaces' do
-      inspect_source(cop,
-                     ['h = {a: 1, b: 2}',
-                      'h = {a => 1}'])
+      inspect_source(cop, <<-END.strip_indent)
+        h = {a: 1, b: 2}
+        h = {a => 1}
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts multiline hash' do
-      inspect_source(cop,
-                     ['h = {',
-                      '      a: 1,',
-                      '      b: 2,',
-                      '}'])
+      inspect_source(cop, <<-END.strip_indent)
+        h = {
+              a: 1,
+              b: 2,
+        }
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts multiline hash with comment' do
-      inspect_source(cop,
-                     ['h = { # Comment',
-                      '      a: 1,',
-                      '      b: 2,',
-                      '}'])
+      inspect_source(cop, <<-END.strip_indent)
+        h = { # Comment
+              a: 1,
+              b: 2,
+        }
+      END
       expect(cop.offenses).to be_empty
     end
   end
@@ -147,49 +159,61 @@ describe RuboCop::Cop::Style::SpaceInsideHashLiteralBraces, :config do
     end
 
     it 'auto-corrects hashes with no space' do
-      new_source = autocorrect_source(cop, ['h = {a: 1, b: 2}',
-                                            'h = {a => 1 }'])
-      expect(new_source).to eq(['h = { a: 1, b: 2 }',
-                                'h = { a => 1 }'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        h = {a: 1, b: 2}
+        h = {a => 1 }
+      END
+      expect(new_source).to eq(<<-END.strip_indent)
+        h = { a: 1, b: 2 }
+        h = { a => 1 }
+      END
     end
 
     it 'auto-corrects nested hashes with spaces' do
-      new_source = autocorrect_source(cop, ['h = { a: { a: 1, b: 2 } }',
-                                            'h = {a => method { 1 } }'])
-      expect(new_source).to eq(['h = { a: { a: 1, b: 2 }}',
-                                'h = { a => method { 1 }}'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        h = { a: { a: 1, b: 2 } }
+        h = {a => method { 1 } }
+      END
+      expect(new_source).to eq(<<-END.strip_indent)
+        h = { a: { a: 1, b: 2 }}
+        h = { a => method { 1 }}
+      END
     end
 
     it 'registers offenses for hashes with no spaces' do
-      inspect_source(cop,
-                     ['h = {a: 1, b: 2}',
-                      'h = {a => 1}'])
+      inspect_source(cop, <<-END.strip_indent)
+        h = {a: 1, b: 2}
+        h = {a => 1}
+      END
       expect(cop.offenses.size).to eq 4
     end
 
     it 'accepts multiline hash' do
-      inspect_source(cop,
-                     ['h = {',
-                      '      a: 1,',
-                      '      b: 2,',
-                      '}'])
+      inspect_source(cop, <<-END.strip_indent)
+        h = {
+              a: 1,
+              b: 2,
+        }
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts multiline hash with comment' do
-      inspect_source(cop,
-                     ['h = { # Comment',
-                      '      a: 1,',
-                      '      b: 2,',
-                      '}'])
+      inspect_source(cop, <<-END.strip_indent)
+        h = { # Comment
+              a: 1,
+              b: 2,
+        }
+      END
       expect(cop.offenses).to be_empty
     end
   end
 
   it 'accepts hashes with spaces by default' do
-    inspect_source(cop,
-                   ['h = { a: 1, b: 2 }',
-                    'h = { a => 1 }'])
+    inspect_source(cop, <<-END.strip_indent)
+      h = { a: 1, b: 2 }
+      h = { a => 1 }
+    END
     expect(cop.offenses).to be_empty
   end
 

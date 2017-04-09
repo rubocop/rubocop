@@ -33,11 +33,15 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
   it_behaves_like('offenses', 'a, b = a, b')
   it_behaves_like('offenses',
                   'a, b = foo.map { |e| e.id }, bar.map { |e| e.id }')
-  it_behaves_like('offenses', ['array = [1, 2, 3]',
-                               'a, b, c, = 8, 9, array'].join("\n"))
-  it_behaves_like('offenses', ['if true',
-                               '  a, b = 1, 2',
-                               'end'].join("\n"))
+  it_behaves_like('offenses', <<-END.strip_indent)
+    array = [1, 2, 3]
+    a, b, c, = 8, 9, array
+  END
+  it_behaves_like('offenses', <<-END.strip_indent)
+    if true
+      a, b = 1, 2
+    end
+  END
   it_behaves_like('offenses', 'a, b = Float::INFINITY, Float::INFINITY')
   it_behaves_like('offenses', 'Float::INFINITY, Float::INFINITY = 1, 2')
   it_behaves_like('offenses', 'a[0], a[1] = a[1], a[2]')
@@ -73,12 +77,18 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
   it_behaves_like('allowed', 'a, b, c = *node, 1, 2')
   it_behaves_like('allowed', 'begin_token, end_token = CONSTANT')
   it_behaves_like('allowed', 'CONSTANT, = 1, 2')
-  it_behaves_like('allowed', ['a = 1',
-                              'b = 2'].join("\n"))
-  it_behaves_like('allowed', ['foo = [1, 2, 3]',
-                              'a, b, c = foo'].join("\n"))
-  it_behaves_like('allowed', ['array = [1, 2, 3]',
-                              'a, = array'].join("\n"))
+  it_behaves_like('allowed', <<-END.strip_indent)
+    a = 1
+    b = 2
+  END
+  it_behaves_like('allowed', <<-END.strip_indent)
+    foo = [1, 2, 3]
+    a, b, c = foo
+  END
+  it_behaves_like('allowed', <<-END.strip_indent)
+    array = [1, 2, 3]
+    a, = array
+  END
   it_behaves_like('allowed', 'a, b = Float::INFINITY')
   it_behaves_like('allowed', 'a[0], a[1] = a[1], a[0]')
   it_behaves_like('allowed', 'obj.attr1, obj.attr2 = obj.attr2, obj.attr1')
@@ -102,274 +112,371 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
   describe 'autocorrect' do
     it 'corrects when the number of left hand variables matches ' \
       'the number of right hand variables' do
-        new_source = autocorrect_source(cop, 'a, b, c = 1, 2, 3')
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          a, b, c = 1, 2, 3
+        END
 
-        expect(new_source).to eq(['a = 1',
-                                  'b = 2',
-                                  'c = 3'].join("\n"))
+        expect(new_source).to eq(<<-END.strip_indent)
+          a = 1
+          b = 2
+          c = 3
+        END
       end
 
     it 'corrects when the right variable is an array' do
-      new_source = autocorrect_source(cop, 'a, b, c = ["1", "2", :c]')
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        a, b, c = ["1", "2", :c]
+      END
 
-      expect(new_source).to eq(['a = "1"',
-                                'b = "2"',
-                                'c = :c'].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        a = "1"
+        b = "2"
+        c = :c
+      END
     end
 
     it 'corrects when the right variable is a word array' do
-      new_source = autocorrect_source(cop, 'a, b, c = %w(1 2 3)')
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        a, b, c = %w(1 2 3)
+      END
 
-      expect(new_source).to eq(["a = '1'",
-                                "b = '2'",
-                                "c = '3'"].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        a = '1'
+        b = '2'
+        c = '3'
+      END
     end
 
     it 'corrects when the right variable is a symbol array' do
-      new_source = autocorrect_source(cop, 'a, b, c = %i(a b c)')
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        a, b, c = %i(a b c)
+      END
 
-      expect(new_source).to eq(['a = :a',
-                                'b = :b',
-                                'c = :c'].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        a = :a
+        b = :b
+        c = :c
+      END
     end
 
     it 'corrects when assigning to method returns' do
-      new_source = autocorrect_source(cop, 'a, b = foo(), bar()')
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        a, b = foo(), bar()
+      END
 
-      expect(new_source).to eq(['a = foo()',
-                                'b = bar()'].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        a = foo()
+        b = bar()
+      END
     end
 
     it 'corrects when assigning from multiple methods with blocks' do
-      source = 'a, b = foo() { |c| puts c }, bar() { |d| puts d }'
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        a, b = foo() { |c| puts c }, bar() { |d| puts d }
+      END
 
-      expect(new_source).to eq(['a = foo() { |c| puts c }',
-                                'b = bar() { |d| puts d }'].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        a = foo() { |c| puts c }
+        b = bar() { |d| puts d }
+      END
     end
 
     it 'corrects when using constants' do
-      source = 'CONSTANT1, CONSTANT2 = CONSTANT3, CONSTANT4'
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        CONSTANT1, CONSTANT2 = CONSTANT3, CONSTANT4
+      END
 
-      expect(new_source).to eq(['CONSTANT1 = CONSTANT3',
-                                'CONSTANT2 = CONSTANT4'].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        CONSTANT1 = CONSTANT3
+        CONSTANT2 = CONSTANT4
+      END
     end
 
     it 'corrects when the expression is missing spaces' do
-      new_source = autocorrect_source(cop, 'a,b,c=1,2,3')
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        a,b,c=1,2,3
+      END
 
-      expect(new_source).to eq(['a = 1',
-                                'b = 2',
-                                'c = 3'].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        a = 1
+        b = 2
+        c = 3
+      END
     end
 
     it 'corrects when using single indentation' do
-      new_source = autocorrect_source(cop, ['def foo',
-                                            '  a, b, c = 1, 2, 3',
-                                            'end'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        def foo
+          a, b, c = 1, 2, 3
+        end
+      END
 
-      expect(new_source).to eq(['def foo',
-                                '  a = 1',
-                                '  b = 2',
-                                '  c = 3',
-                                'end'].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        def foo
+          a = 1
+          b = 2
+          c = 3
+        end
+      END
     end
 
     it 'corrects when using nested indentation' do
-      new_source = autocorrect_source(cop, ['def foo',
-                                            '  if true',
-                                            '    a, b, c = 1, 2, 3',
-                                            '  end',
-                                            'end'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        def foo
+          if true
+            a, b, c = 1, 2, 3
+          end
+        end
+      END
 
-      expect(new_source).to eq(['def foo',
-                                '  if true',
-                                '    a = 1',
-                                '    b = 2',
-                                '    c = 3',
-                                '  end',
-                                'end'].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        def foo
+          if true
+            a = 1
+            b = 2
+            c = 3
+          end
+        end
+      END
     end
 
     it 'corrects when the expression uses a modifier if statement' do
-      new_source = autocorrect_source(cop, 'a, b = 1, 2 if foo')
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        a, b = 1, 2 if foo
+      END
 
-      expect(new_source).to eq(['if foo',
-                                '  a = 1',
-                                '  b = 2',
-                                'end'].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        if foo
+          a = 1
+          b = 2
+        end
+      END
     end
 
     it 'corrects when the expression uses a modifier if statement ' \
        'inside a method' do
-      new_source = autocorrect_source(cop, ['def foo',
-                                            '  a, b = 1, 2 if foo',
-                                            'end'])
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        def foo
+          a, b = 1, 2 if foo
+        end
+      END
 
-      expect(new_source).to eq(['def foo',
-                                '  if foo',
-                                '    a = 1',
-                                '    b = 2',
-                                '  end',
-                                'end'].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        def foo
+          if foo
+            a = 1
+            b = 2
+          end
+        end
+      END
     end
 
     it 'corrects parallel assignment in if statements' do
-      new_source = autocorrect_source(cop, ['if foo',
-                                            '  a, b = 1, 2',
-                                            'end'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        if foo
+          a, b = 1, 2
+        end
+      END
 
-      expect(new_source).to eq(['if foo',
-                                '  a = 1',
-                                '  b = 2',
-                                'end'].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        if foo
+          a = 1
+          b = 2
+        end
+      END
     end
 
     it 'corrects when the expression uses a modifier unless statement' do
-      new_source = autocorrect_source(cop, 'a, b = 1, 2 unless foo')
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        a, b = 1, 2 unless foo
+      END
 
-      expect(new_source).to eq(['unless foo',
-                                '  a = 1',
-                                '  b = 2',
-                                'end'].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        unless foo
+          a = 1
+          b = 2
+        end
+      END
     end
 
     it 'corrects parallel assignment in unless statements' do
-      new_source = autocorrect_source(cop, ['unless foo',
-                                            '  a, b = 1, 2',
-                                            'end'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        unless foo
+          a, b = 1, 2
+        end
+      END
 
-      expect(new_source).to eq(['unless foo',
-                                '  a = 1',
-                                '  b = 2',
-                                'end'].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        unless foo
+          a = 1
+          b = 2
+        end
+      END
     end
 
     it 'corrects when the expression uses a modifier while statement' do
-      new_source = autocorrect_source(cop, 'a, b = 1, 2 while foo')
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        a, b = 1, 2 while foo
+      END
 
-      expect(new_source).to eq(['while foo',
-                                '  a = 1',
-                                '  b = 2',
-                                'end'].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        while foo
+          a = 1
+          b = 2
+        end
+      END
     end
 
     it 'corrects parallel assignment in while statements' do
-      new_source = autocorrect_source(cop, ['while foo',
-                                            '  a, b = 1, 2',
-                                            'end'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        while foo
+          a, b = 1, 2
+        end
+      END
 
-      expect(new_source).to eq(['while foo',
-                                '  a = 1',
-                                '  b = 2',
-                                'end'].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        while foo
+          a = 1
+          b = 2
+        end
+      END
     end
 
     it 'corrects when the expression uses a modifier until statement' do
-      new_source = autocorrect_source(cop, 'a, b = 1, 2 until foo')
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        a, b = 1, 2 until foo
+      END
 
-      expect(new_source).to eq(['until foo',
-                                '  a = 1',
-                                '  b = 2',
-                                'end'].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        until foo
+          a = 1
+          b = 2
+        end
+      END
     end
 
     it 'corrects parallel assignment in until statements' do
-      new_source = autocorrect_source(cop, ['until foo',
-                                            '  a, b = 1, 2',
-                                            'end'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        until foo
+          a, b = 1, 2
+        end
+      END
 
-      expect(new_source).to eq(['until foo',
-                                '  a = 1',
-                                '  b = 2',
-                                'end'].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        until foo
+          a = 1
+          b = 2
+        end
+      END
     end
 
     it 'corrects when the expression uses a modifier rescue statement' do
-      new_source = autocorrect_source(cop, 'a, b = 1, 2 rescue foo')
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        a, b = 1, 2 rescue foo
+      END
 
-      expect(new_source).to eq(['begin',
-                                '  a = 1',
-                                '  b = 2',
-                                'rescue',
-                                '  foo',
-                                'end'].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        begin
+          a = 1
+          b = 2
+        rescue
+          foo
+        end
+      END
     end
 
     it 'corrects parallel assignment inside rescue statements '\
        'within method definitions' do
-      new_source = autocorrect_source(cop, ['def bar',
-                                            '  a, b = 1, 2',
-                                            'rescue',
-                                            "  'foo'",
-                                            'end'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        def bar
+          a, b = 1, 2
+        rescue
+          'foo'
+        end
+      END
 
-      expect(new_source).to eq(['def bar',
-                                '  a = 1',
-                                '  b = 2',
-                                'rescue',
-                                "  'foo'",
-                                'end'].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        def bar
+          a = 1
+          b = 2
+        rescue
+          'foo'
+        end
+      END
     end
 
     it 'corrects parallel assignment in rescue statements '\
        'within begin ... rescue' do
-      new_source = autocorrect_source(cop, ['begin',
-                                            '  a, b = 1, 2',
-                                            'rescue',
-                                            "  'foo'",
-                                            'end'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        begin
+          a, b = 1, 2
+        rescue
+          'foo'
+        end
+      END
 
-      expect(new_source).to eq(['begin',
-                                '  a = 1',
-                                '  b = 2',
-                                'rescue',
-                                "  'foo'",
-                                'end'].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        begin
+          a = 1
+          b = 2
+        rescue
+          'foo'
+        end
+      END
     end
 
     it 'corrects when the expression uses a modifier rescue statement ' \
        'as the only thing inside of a method' do
-      new_source = autocorrect_source(cop, ['def foo',
-                                            '  a, b = 1, 2 rescue foo',
-                                            'end'])
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        def foo
+          a, b = 1, 2 rescue foo
+        end
+      END
 
-      expect(new_source).to eq(['def foo',
-                                '  a = 1',
-                                '  b = 2',
-                                'rescue',
-                                '  foo',
-                                'end'].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        def foo
+          a = 1
+          b = 2
+        rescue
+          foo
+        end
+      END
     end
 
     it 'corrects when the expression uses a modifier rescue statement ' \
        'inside of a method' do
-      new_source = autocorrect_source(cop, ['def foo',
-                                            '  a, b = %w(1 2) rescue foo',
-                                            '  something_else',
-                                            'end'])
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        def foo
+          a, b = %w(1 2) rescue foo
+          something_else
+        end
+      END
 
-      expect(new_source).to eq(['def foo',
-                                '  begin',
-                                "    a = '1'",
-                                "    b = '2'",
-                                '  rescue',
-                                '    foo',
-                                '  end',
-                                '  something_else',
-                                'end'].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        def foo
+          begin
+            a = '1'
+            b = '2'
+          rescue
+            foo
+          end
+          something_else
+        end
+      END
     end
 
     it 'corrects when assignments must be reordered to avoid changing ' \
        'meaning' do
-      new_source = autocorrect_source(cop, ['a, b, c, d = 1, a + 1, b + 1, ' \
-        'a + b + c'])
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        a, b, c, d = 1, a + 1, b + 1, a + b + c
+      END
 
-      expect(new_source).to eq(['d = a + b + c',
-                                'c = b + 1',
-                                'b = a + 1',
-                                'a = 1'].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        d = a + b + c
+        c = b + 1
+        b = a + 1
+        a = 1
+      END
     end
 
     shared_examples('no correction') do |description, source|
@@ -390,9 +497,10 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
                     'a, b = 1, 2, 3'
 
     it_behaves_like 'no correction',
-                    'when expanding an assigned variable',
-                    ['foo = [1, 2, 3]',
-                     'a, b, c = foo'].join("\n")
+                    'when expanding an assigned variable', <<-END.strip_indent
+      foo = [1, 2, 3]
+      a, b, c = foo
+    END
 
     describe 'using custom indentation width' do
       let(:config) do
@@ -406,47 +514,63 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
       end
 
       it 'works with standard correction' do
-        new_source = autocorrect_source(cop, 'a, b, c = 1, 2, 3')
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          a, b, c = 1, 2, 3
+        END
 
-        expect(new_source).to eq(['a = 1',
-                                  'b = 2',
-                                  'c = 3'].join("\n"))
+        expect(new_source).to eq(<<-END.strip_indent)
+          a = 1
+          b = 2
+          c = 3
+        END
       end
 
       it 'works with guard clauses' do
-        new_source = autocorrect_source(cop, 'a, b = 1, 2 if foo')
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          a, b = 1, 2 if foo
+        END
 
-        expect(new_source).to eq(['if foo',
-                                  '   a = 1',
-                                  '   b = 2',
-                                  'end'].join("\n"))
+        expect(new_source).to eq(<<-END.strip_indent)
+          if foo
+             a = 1
+             b = 2
+          end
+        END
       end
 
       it 'works with rescue' do
-        new_source = autocorrect_source(cop, 'a, b = 1, 2 rescue foo')
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          a, b = 1, 2 rescue foo
+        END
 
-        expect(new_source).to eq(['begin',
-                                  '   a = 1',
-                                  '   b = 2',
-                                  'rescue',
-                                  '   foo',
-                                  'end'].join("\n"))
+        expect(new_source).to eq(<<-END.strip_indent)
+          begin
+             a = 1
+             b = 2
+          rescue
+             foo
+          end
+        END
       end
 
       it 'works with nesting' do
-        new_source = autocorrect_source(cop, ['def foo',
-                                              '   if true',
-                                              '      a, b, c = 1, 2, 3',
-                                              '   end',
-                                              'end'].join("\n"))
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          def foo
+             if true
+                a, b, c = 1, 2, 3
+             end
+          end
+        END
 
-        expect(new_source).to eq(['def foo',
-                                  '   if true',
-                                  '      a = 1',
-                                  '      b = 2',
-                                  '      c = 3',
-                                  '   end',
-                                  'end'].join("\n"))
+        expect(new_source).to eq(<<-END.strip_indent)
+          def foo
+             if true
+                a = 1
+                b = 2
+                c = 3
+             end
+          end
+        END
       end
     end
   end

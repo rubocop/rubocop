@@ -352,30 +352,38 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     let(:cop_config) { { 'IgnoreEmptyMethods' => true } }
 
     it 'accepts an empty method with a single unused parameter' do
-      inspect_source(cop, ['def method(arg)',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def method(arg)
+        end
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for a non-empty method with a single unused ' \
         'parameter' do
-      inspect_source(cop, ['def method(arg)',
-                           '  1',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def method(arg)
+          1
+        end
+      END
       expect(cop.offenses.size).to eq 1
     end
 
     it 'accepts an empty method with multiple unused parameters' do
-      inspect_source(cop, ['def method(a, b, *others)',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def method(a, b, *others)
+        end
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for a non-empty method with multiple unused ' \
        'parameters' do
-      inspect_source(cop, ['def method(a, b, *others)',
-                           '  1',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def method(a, b, *others)
+          1
+        end
+      END
       expect(cop.offenses.size).to eq 3
     end
   end
