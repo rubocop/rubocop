@@ -6,17 +6,17 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   context 'when an access modifier has no effect' do
     let(:source) do
-      [
-        'class SomeClass',
-        '  def some_method',
-        '    puts 10',
-        '  end',
-        '  private',
-        '  def self.some_method',
-        '    puts 10',
-        '  end',
-        'end'
-      ]
+      <<-END.strip_indent
+        class SomeClass
+          def some_method
+            puts 10
+          end
+          private
+          def self.some_method
+            puts 10
+          end
+        end
+      END
     end
 
     it 'registers an offense' do
@@ -31,14 +31,14 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   context 'when an access modifier has no methods' do
     let(:source) do
-      [
-        'class SomeClass',
-        '  def some_method',
-        '    puts 10',
-        '  end',
-        '  protected',
-        'end'
-      ]
+      <<-END.strip_indent
+        class SomeClass
+          def some_method
+            puts 10
+          end
+          protected
+        end
+      END
     end
 
     it 'registers an offense' do
@@ -53,18 +53,18 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   context 'when an access modifier is followed by attr_*' do
     let(:source) do
-      [
-        'class SomeClass',
-        '  protected',
-        '  attr_accessor :some_property',
-        '  public',
-        '  attr_reader :another_one',
-        '  private',
-        '  attr :yet_again, true',
-        '  protected',
-        '  attr_writer :just_for_good_measure',
-        'end'
-      ]
+      <<-END.strip_indent
+        class SomeClass
+          protected
+          attr_accessor :some_property
+          public
+          attr_reader :another_one
+          private
+          attr :yet_again, true
+          protected
+          attr_writer :just_for_good_measure
+        end
+      END
     end
 
     it 'does not register an offense' do
@@ -76,13 +76,13 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
   context 'when an access modifier is followed by a ' \
     'class method defined on constant' do
     let(:source) do
-      [
-        'class SomeClass',
-        '  protected',
-        '  def SomeClass.some_method',
-        '  end',
-        'end'
-      ]
+      <<-END.strip_indent
+        class SomeClass
+          protected
+          def SomeClass.some_method
+          end
+        end
+      END
     end
 
     it 'registers an offense' do
@@ -97,18 +97,18 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   context 'when there are consecutive access modifiers' do
     let(:source) do
-      [
-        'class SomeClass',
-        ' private',
-        ' private',
-        '  def some_method',
-        '    puts 10',
-        '  end',
-        '  def some_other_method',
-        '    puts 10',
-        '  end',
-        'end'
-      ]
+      <<-END.strip_indent
+        class SomeClass
+         private
+         private
+          def some_method
+            puts 10
+          end
+          def some_other_method
+            puts 10
+          end
+        end
+      END
     end
 
     it 'registers an offense' do
@@ -123,14 +123,14 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   context 'when passing method as symbol' do
     let(:source) do
-      [
-        'class SomeClass',
-        '  def some_method',
-        '    puts 10',
-        '  end',
-        '  private :some_method',
-        'end'
-      ]
+      <<-END.strip_indent
+        class SomeClass
+          def some_method
+            puts 10
+          end
+          private :some_method
+        end
+      END
     end
 
     it 'does not register an offense' do
@@ -141,11 +141,11 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   context 'when class is empty save modifier' do
     let(:source) do
-      [
-        'class SomeClass',
-        '  private',
-        'end'
-      ]
+      <<-END.strip_indent
+        class SomeClass
+          private
+        end
+      END
     end
 
     it 'registers an offense' do
@@ -160,13 +160,13 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   context 'when multiple class definitions in file but only one has offense' do
     let(:source) do
-      [
-        'class SomeClass',
-        '  private',
-        'end',
-        'class SomeOtherClass',
-        'end'
-      ]
+      <<-END.strip_indent
+        class SomeClass
+          private
+        end
+        class SomeOtherClass
+        end
+      END
     end
 
     it 'registers an offense' do
@@ -182,13 +182,13 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
   if RUBY_ENGINE == 'ruby' && RUBY_VERSION.start_with?('2.1')
     context 'ruby 2.1 style modifiers' do
       let(:source) do
-        [
-          'class SomeClass',
-          '  private def some_method',
-          '    puts 10',
-          '  end',
-          'end'
-        ]
+        <<-END.strip_indent
+          class SomeClass
+            private def some_method
+              puts 10
+            end
+          end
+        END
       end
 
       it 'does not register an offense' do
@@ -202,12 +202,12 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
     'modifier' do
     %w[CONSTANT some_var].each do |binding_name|
       let(:source) do
-        [
-          'class SomeClass',
-          '  private',
-          "  #{binding_name} = 1",
-          'end'
-        ]
+        <<-END.strip_indent
+          class SomeClass
+            private
+            #{binding_name} = 1
+          end
+        END
       end
 
       it 'registers an offense' do
@@ -219,14 +219,14 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   context 'when a def is an argument to a method call' do
     let(:source) do
-      [
-        'class SomeClass',
-        '  private',
-        '  helper_method def some_method',
-        '    puts 10',
-        '  end',
-        'end'
-      ]
+      <<-END.strip_indent
+        class SomeClass
+          private
+          helper_method def some_method
+            puts 10
+          end
+        end
+      END
     end
 
     it 'does not register an offense' do
@@ -244,50 +244,54 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
       )
     end
     it 'is aware that this creates a new scope' do
-      src = ['class SomeClass',
-             '  concerning :FirstThing do',
-             '    def foo',
-             '    end',
-             '    private',
-             '',
-             '    def method',
-             '    end',
-             '  end',
-             '',
-             '  concerning :SecondThing do',
-             '    def omg',
-             '    end',
-             '    private',
-             '    def method',
-             '    end',
-             '  end',
-             ' end']
+      src = <<-END.strip_indent
+        class SomeClass
+          concerning :FirstThing do
+            def foo
+            end
+            private
+
+            def method
+            end
+          end
+
+          concerning :SecondThing do
+            def omg
+            end
+            private
+            def method
+            end
+          end
+         end
+      END
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
 
     it 'still points out redundant uses within the block' do
-      src = ['class SomeClass',
-             '  concerning :FirstThing do',
-             '    def foo',
-             '    end',
-             '    private',
-             '',
-             '    def method',
-             '    end',
-             '  end',
-             '',
-             '  concerning :SecondThing do',
-             '    def omg',
-             '    end',
-             '    private',
-             '    def method',
-             '    end',
-             '    private',
-             '    def another_method',
-             '    end',
-             '  end',
-             ' end']
+      src = <<-END.strip_indent
+        class SomeClass
+          concerning :FirstThing do
+            def foo
+            end
+            private
+
+            def method
+            end
+          end
+
+          concerning :SecondThing do
+            def omg
+            end
+            private
+            def method
+            end
+            private
+            def another_method
+            end
+          end
+         end
+      END
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.line).to eq(17)
@@ -296,21 +300,23 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   context 'when using ActiveSupport behavior when Rails is not eabled' do
     it 'reports offenses' do
-      src = ['module SomeModule',
-             '  extend ActiveSupport::Concern',
-             '  class_methods do',
-             '    def some_public_class_method',
-             '    end',
-             '    private',
-             '    def some_private_class_method',
-             '    end',
-             '  end',
-             '  def some_public_instance_method',
-             '  end',
-             '  private',
-             '  def some_private_instance_method',
-             '  end',
-             'end']
+      src = <<-END.strip_indent
+        module SomeModule
+          extend ActiveSupport::Concern
+          class_methods do
+            def some_public_class_method
+            end
+            private
+            def some_private_class_method
+            end
+          end
+          def some_public_instance_method
+          end
+          private
+          def some_private_instance_method
+          end
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
     end
@@ -325,21 +331,23 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
       )
     end
     it 'is aware that this creates a new scope' do
-      src = ['module SomeModule',
-             '  extend ActiveSupport::Concern',
-             '  class_methods do',
-             '    def some_public_class_method',
-             '    end',
-             '    private',
-             '    def some_private_class_method',
-             '    end',
-             '  end',
-             '  def some_public_instance_method',
-             '  end',
-             '  private',
-             '  def some_private_instance_method',
-             '  end',
-             'end']
+      src = <<-END.strip_indent
+        module SomeModule
+          extend ActiveSupport::Concern
+          class_methods do
+            def some_public_class_method
+            end
+            private
+            def some_private_class_method
+            end
+          end
+          def some_public_instance_method
+          end
+          private
+          def some_private_instance_method
+          end
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
@@ -354,21 +362,25 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
       )
     end
     it 'is aware that this creates a new method' do
-      src = ['class SomeClass',
-             '  private',
-             '  ',
-             '  delegate :foo, to: :bar',
-             'end']
+      src = <<-END.strip_indent
+        class SomeClass
+          private
+
+          delegate :foo, to: :bar
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
 
     it 'still points out redundant uses within the module' do
-      src = ['class SomeClass',
-             '  delegate :foo, to: :bar',
-             '  ',
-             '  private',
-             'end']
+      src = <<-END.strip_indent
+        class SomeClass
+          delegate :foo, to: :bar
+
+          private
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.line).to eq(4)
@@ -377,31 +389,37 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   shared_examples 'at the top of the body' do |keyword|
     it 'registers an offense for `public`' do
-      src = ["#{keyword} A",
-             '  public',
-             '  def method',
-             '  end',
-             'end']
+      src = <<-END.strip_indent
+        #{keyword} A
+          public
+          def method
+          end
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
     end
 
     it "doesn't register an offense for `protected`" do
-      src = ["#{keyword} A",
-             '  protected',
-             '  def method',
-             '  end',
-             'end']
+      src = <<-END.strip_indent
+        #{keyword} A
+          protected
+          def method
+          end
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
 
     it "doesn't register an offense for `private`" do
-      src = ["#{keyword} A",
-             '  private',
-             '  def method',
-             '  end',
-             'end']
+      src = <<-END.strip_indent
+        #{keyword} A
+          private
+          def method
+          end
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
@@ -409,15 +427,17 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   shared_examples 'repeated visibility modifiers' do |keyword, modifier|
     it "registers an offense when `#{modifier}` is repeated" do
-      src = ["#{keyword} A",
-             "  #{modifier == 'private' ? 'protected' : 'private'}",
-             '  def method1',
-             '  end',
-             "  #{modifier}",
-             "  #{modifier}",
-             '  def method2',
-             '  end',
-             'end']
+      src = <<-END.strip_indent
+        #{keyword} A
+          #{modifier == 'private' ? 'protected' : 'private'}
+          def method1
+          end
+          #{modifier}
+          #{modifier}
+          def method2
+          end
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
     end
@@ -425,37 +445,43 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   shared_examples 'non-repeated visibility modifiers' do |keyword|
     it 'registers an offense even when `public` is not repeated' do
-      src = ["#{keyword} A",
-             '  def method1',
-             '  end',
-             '  public',
-             '  def method2',
-             '  end',
-             'end']
+      src = <<-END.strip_indent
+        #{keyword} A
+          def method1
+          end
+          public
+          def method2
+          end
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
     end
 
     it "doesn't register an offense when `protected` is not repeated" do
-      src = ["#{keyword} A",
-             '  def method1',
-             '  end',
-             '  protected',
-             '  def method2',
-             '  end',
-             'end']
+      src = <<-END.strip_indent
+        #{keyword} A
+          def method1
+          end
+          protected
+          def method2
+          end
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
 
     it "doesn't register an offense when `private` is not repeated" do
-      src = ["#{keyword} A",
-             '  def method1',
-             '  end',
-             '  private',
-             '  def method2',
-             '  end',
-             'end']
+      src = <<-END.strip_indent
+        #{keyword} A
+          def method1
+          end
+          private
+          def method2
+          end
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
@@ -463,13 +489,15 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   shared_examples 'at the end of the body' do |keyword, modifier|
     it "registers an offense for trailing `#{modifier}`" do
-      src = ["#{keyword} A",
-             '  def method1',
-             '  end',
-             '  def method2',
-             '  end',
-             "  #{modifier}",
-             'end']
+      src = <<-END.strip_indent
+        #{keyword} A
+          def method1
+          end
+          def method2
+          end
+          #{modifier}
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
     end
@@ -477,32 +505,36 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   shared_examples 'nested in a begin..end block' do |keyword, modifier|
     it "still flags repeated `#{modifier}`" do
-      src = ["#{keyword} A",
-             "  #{modifier == 'private' ? 'protected' : 'private'}",
-             '  def blah',
-             '  end',
-             '  begin',
-             '    def method1',
-             '    end',
-             "    #{modifier}",
-             "    #{modifier}",
-             '    def method2',
-             '    end',
-             '  end',
-             'end']
+      src = <<-END.strip_indent
+        #{keyword} A
+          #{modifier == 'private' ? 'protected' : 'private'}
+          def blah
+          end
+          begin
+            def method1
+            end
+            #{modifier}
+            #{modifier}
+            def method2
+            end
+          end
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
     end
 
     unless modifier == 'public'
       it "doesn't flag an access modifier from surrounding scope" do
-        src = ["#{keyword} A",
-               "  #{modifier}",
-               '  begin',
-               '    def method1',
-               '    end',
-               '  end',
-               'end']
+        src = <<-END.strip_indent
+          #{keyword} A
+            #{modifier}
+            begin
+              def method1
+              end
+            end
+          end
+        END
         inspect_source(cop, src)
         expect(cop.offenses).to be_empty
       end
@@ -512,15 +544,17 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
   shared_examples 'unused visibility modifiers' do |keyword|
     it 'registers an error when visibility is immediately changed ' \
        'without any intervening defs' do
-      src = ["#{keyword} A",
-             '  private',
-             '  def method1',
-             '  end',
-             '  public', # bad
-             '  private',
-             '  def method2',
-             '  end',
-             'end']
+      src = <<-END.strip_indent
+        #{keyword} A
+          private
+          def method1
+          end
+          public # bad
+          private
+          def method2
+          end
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
     end
@@ -528,14 +562,16 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   shared_examples 'access modifiers with argument' do |keyword|
     it "doesn't register an offense" do
-      src = ["#{keyword} A",
-             '  def method1',
-             '  end',
-             '  private :method1',
-             '  def method2',
-             '  end',
-             '  public :method2',
-             'end']
+      src = <<-END.strip_indent
+        #{keyword} A
+          def method1
+          end
+          private :method1
+          def method2
+          end
+          public :method2
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
@@ -544,13 +580,15 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
   shared_examples 'conditionally defined method' do |keyword, modifier|
     %w[if unless].each do |conditional_type|
       it "doesn't register an offense for #{conditional_type}" do
-        src = ["#{keyword} A",
-               "  #{modifier}",
-               "  #{conditional_type} x",
-               '    def method1',
-               '    end',
-               '  end',
-               'end']
+        src = <<-END.strip_indent
+          #{keyword} A
+            #{modifier}
+            #{conditional_type} x
+              def method1
+              end
+            end
+          end
+        END
         inspect_source(cop, src)
         expect(cop.offenses).to be_empty
       end
@@ -576,21 +614,25 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   shared_examples 'method defined with define_method' do |keyword, modifier|
     it "doesn't register an offense if a block is passed" do
-      src = ["#{keyword} A",
-             "  #{modifier}",
-             '  define_method(:method1) do',
-             '  end',
-             'end']
+      src = <<-END.strip_indent
+        #{keyword} A
+          #{modifier}
+          define_method(:method1) do
+          end
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
 
     %w[lambda proc ->].each do |proc_type|
       it "doesn't register an offense if a #{proc_type} is passed" do
-        src = ["#{keyword} A",
-               "  #{modifier}",
-               "  define_method(:method1, #{proc_type} { })",
-               'end']
+        src = <<-END.strip_indent
+          #{keyword} A
+            #{modifier}
+            define_method(:method1, #{proc_type} { })
+          end
+        END
         inspect_source(cop, src)
         expect(cop.offenses).to be_empty
       end
@@ -600,64 +642,74 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
   shared_examples 'method defined on a singleton class' do |keyword, modifier|
     context 'inside a class' do
       it "doesn't register an offense if a method is defined" do
-        src = ["#{keyword} A",
-               '  class << self',
-               "    #{modifier}",
-               '    define_method(:method1) do',
-               '    end',
-               '  end',
-               'end']
+        src = <<-END.strip_indent
+          #{keyword} A
+            class << self
+              #{modifier}
+              define_method(:method1) do
+              end
+            end
+          end
+        END
         inspect_source(cop, src)
         expect(cop.offenses).to be_empty
       end
 
       it "doesn't register an offense if the modifier is the same as " \
         'outside the meta-class' do
-        src = ["#{keyword} A",
-               "  #{modifier}",
-               '  def method1',
-               '  end',
-               '  class << self',
-               "    #{modifier}",
-               '    def method2',
-               '    end',
-               '  end',
-               'end']
+        src = <<-END.strip_indent
+          #{keyword} A
+            #{modifier}
+            def method1
+            end
+            class << self
+              #{modifier}
+              def method2
+              end
+            end
+          end
+        END
         inspect_source(cop, src)
         expect(cop.offenses).to be_empty
       end
 
       it 'registers an offense if no method is defined' do
-        src = ["#{keyword} A",
-               '  class << self',
-               "    #{modifier}",
-               '  end',
-               'end']
+        src = <<-END.strip_indent
+          #{keyword} A
+            class << self
+              #{modifier}
+            end
+          end
+        END
         inspect_source(cop, src)
         expect(cop.offenses.size).to eq(1)
       end
 
       it 'registers an offense if no method is defined after the modifier' do
-        src = ["#{keyword} A",
-               '  class << self',
-               '    def method1',
-               '    end',
-               "    #{modifier}",
-               '  end',
-               'end']
+        src = <<-END.strip_indent
+          #{keyword} A
+            class << self
+              def method1
+              end
+              #{modifier}
+            end
+          end
+        END
         inspect_source(cop, src)
         expect(cop.offenses.size).to eq(1)
       end
 
       it 'registers an offense even if a non-singleton-class method is ' \
         'defined' do
-        src = ["#{keyword} A",
-               '  def method1',
-               '  end',
-               '  class << self',
-               "    #{modifier}",
-               '  end',
-               'end']
+        src = <<-END.strip_indent
+          #{keyword} A
+            def method1
+            end
+            class << self
+              #{modifier}
+            end
+          end
+        END
         inspect_source(cop, src)
         expect(cop.offenses.size).to eq(1)
       end
@@ -665,29 +717,35 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
     context 'outside a class' do
       it "doesn't register an offense if a method is defined" do
-        src = ['class << A',
-               "  #{modifier}",
-               '  define_method(:method1) do',
-               '  end',
-               'end']
+        src = <<-END.strip_indent
+          class << A
+            #{modifier}
+            define_method(:method1) do
+            end
+          end
+        END
         inspect_source(cop, src)
         expect(cop.offenses).to be_empty
       end
 
       it 'registers an offense if no method is defined' do
-        src = ['class << A',
-               "  #{modifier}",
-               'end']
+        src = <<-END.strip_indent
+          class << A
+            #{modifier}
+          end
+        END
         inspect_source(cop, src)
         expect(cop.offenses.size).to eq(1)
       end
 
       it 'registers an offense if no method is defined after the modifier' do
-        src = ['class << A',
-               '  def method1',
-               '  end',
-               "  #{modifier}",
-               'end']
+        src = <<-END.strip_indent
+          class << A
+            def method1
+            end
+            #{modifier}
+          end
+        END
         inspect_source(cop, src)
         expect(cop.offenses.size).to eq(1)
       end
@@ -696,19 +754,23 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   shared_examples 'method defined using class_eval' do |modifier|
     it "doesn't register an offense if a method is defined" do
-      src = ['A.class_eval do',
-             "  #{modifier}",
-             '  define_method(:method1) do',
-             '  end',
-             'end']
+      src = <<-END.strip_indent
+        A.class_eval do
+          #{modifier}
+          define_method(:method1) do
+          end
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense if no method is defined' do
-      src = ['A.class_eval do',
-             "  #{modifier}",
-             'end']
+      src = <<-END.strip_indent
+        A.class_eval do
+          #{modifier}
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
     end
@@ -716,25 +778,29 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
     context 'inside a class' do
       it 'registers an offense when a modifier is ouside the block and a ' \
         'method is defined only inside the block' do
-        src = ['class A',
-               "  #{modifier}",
-               '  A.class_eval do',
-               '    def method1',
-               '    end',
-               '  end',
-               'end']
+        src = <<-END.strip_indent
+          class A
+            #{modifier}
+            A.class_eval do
+              def method1
+              end
+            end
+          end
+        END
         inspect_source(cop, src)
         expect(cop.offenses.size).to eq(1)
       end
 
       it 'registers two offenses when a modifier is inside and outside the ' \
         ' and no method is defined' do
-        src = ['class A',
-               "  #{modifier}",
-               '  A.class_eval do',
-               "    #{modifier}",
-               '  end',
-               'end']
+        src = <<-END.strip_indent
+          class A
+            #{modifier}
+            A.class_eval do
+              #{modifier}
+            end
+          end
+        END
         inspect_source(cop, src)
         expect(cop.offenses.size).to eq(2)
       end
@@ -743,19 +809,23 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   shared_examples 'def in new block' do |klass, modifier|
     it "doesn't register an offense if a method is defined in #{klass}.new" do
-      src = ["#{klass}.new do",
-             "  #{modifier}",
-             '  def foo',
-             '  end',
-             'end']
+      src = <<-END.strip_indent
+        #{klass}.new do
+          #{modifier}
+          def foo
+          end
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
 
     it "registers an offense if no method is defined in #{klass}.new" do
-      src = ["#{klass}.new do",
-             "  #{modifier}",
-             'end']
+      src = <<-END.strip_indent
+        #{klass}.new do
+          #{modifier}
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
     end
@@ -763,19 +833,23 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   shared_examples 'method defined using instance_eval' do |modifier|
     it "doesn't register an offense if a method is defined" do
-      src = ['A.instance_eval do',
-             "  #{modifier}",
-             '  define_method(:method1) do',
-             '  end',
-             'end']
+      src = <<-END.strip_indent
+        A.instance_eval do
+          #{modifier}
+          define_method(:method1) do
+          end
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense if no method is defined' do
-      src = ['A.instance_eval do',
-             "  #{modifier}",
-             'end']
+      src = <<-END.strip_indent
+        A.instance_eval do
+          #{modifier}
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
     end
@@ -783,25 +857,29 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
     context 'inside a class' do
       it 'registers an offense when a modifier is ouside the block and a ' \
         'method is defined only inside the block' do
-        src = ['class A',
-               "  #{modifier}",
-               '  self.instance_eval do',
-               '    def method1',
-               '    end',
-               '  end',
-               'end']
+        src = <<-END.strip_indent
+          class A
+            #{modifier}
+            self.instance_eval do
+              def method1
+              end
+            end
+          end
+        END
         inspect_source(cop, src)
         expect(cop.offenses.size).to eq(1)
       end
 
       it 'registers two offenses when a modifier is inside and outside the ' \
         ' and no method is defined' do
-        src = ['class A',
-               "  #{modifier}",
-               '  self.instance_eval do',
-               "    #{modifier}",
-               '  end',
-               'end']
+        src = <<-END.strip_indent
+          class A
+            #{modifier}
+            self.instance_eval do
+              #{modifier}
+            end
+          end
+        END
         inspect_source(cop, src)
         expect(cop.offenses.size).to eq(2)
       end
@@ -810,52 +888,60 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   shared_examples 'nested modules' do |keyword, modifier|
     it "doesn't register an offense for nested #{keyword}s" do
-      src = ["#{keyword} A",
-             "  #{modifier}",
-             '  def method1',
-             '  end',
-             "  #{keyword} B",
-             '    def method2',
-             '    end',
-             "    #{modifier}",
-             '    def method3',
-             '    end',
-             '  end',
-             'end']
+      src = <<-END.strip_indent
+        #{keyword} A
+          #{modifier}
+          def method1
+          end
+          #{keyword} B
+            def method2
+            end
+            #{modifier}
+            def method3
+            end
+          end
+        end
+      END
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
 
     context 'unused modifiers' do
       it "registers an offense with a nested #{keyword}" do
-        src = ["#{keyword} A",
-               "  #{modifier}",
-               "  #{keyword} B",
-               "    #{modifier}",
-               '  end',
-               'end']
+        src = <<-END.strip_indent
+          #{keyword} A
+            #{modifier}
+            #{keyword} B
+              #{modifier}
+            end
+          end
+        END
         inspect_source(cop, src)
         expect(cop.offenses.size).to eq(2)
       end
 
       it "registers an offense when outside a nested #{keyword}" do
-        src = ["#{keyword} A",
-               "  #{modifier}",
-               "  #{keyword} B",
-               '    def method1',
-               '    end',
-               '  end',
-               'end']
+        src = <<-END.strip_indent
+          #{keyword} A
+            #{modifier}
+            #{keyword} B
+              def method1
+              end
+            end
+          end
+        END
         inspect_source(cop, src)
         expect(cop.offenses.size).to eq(1)
       end
 
       it "registers an offense when inside a nested #{keyword}" do
-        src = ["#{keyword} A",
-               "  #{keyword} B",
-               "    #{modifier}",
-               '  end',
-               'end']
+        src = <<-END.strip_indent
+          #{keyword} A
+            #{keyword} B
+              #{modifier}
+            end
+          end
+        END
         inspect_source(cop, src)
         expect(cop.offenses.size).to eq(1)
       end

@@ -4,9 +4,11 @@ describe RuboCop::Cop::Style::Attr do
   subject(:cop) { described_class.new }
 
   it 'registers an offense attr' do
-    inspect_source(cop, ['class SomeClass',
-                         '  attr :name',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      class SomeClass
+        attr :name
+      end
+    END
     expect(cop.offenses.size).to eq(1)
   end
 

@@ -39,11 +39,13 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
     it 'allows object checks in the condition of an elsif statement ' \
       'and a method call on that object in the body' do
-      inspect_source(cop, ['if foo',
-                           '  something',
-                           'elsif bar',
-                           '  bar.baz',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        if foo
+          something
+        elsif bar
+          bar.baz
+        end
+      END
 
       expect(cop.offenses).to be_empty
     end
@@ -185,47 +187,57 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
       context 'if expression' do
         it 'registers an offense for a single method call inside of a check ' \
           'for the object' do
-          inspect_source(cop, ["if #{variable}",
-                               "  #{variable}.bar",
-                               'end'])
+          inspect_source(cop, <<-END.strip_indent)
+            if #{variable}
+              #{variable}.bar
+            end
+          END
 
           expect(cop.messages).to eq([described_class::MSG])
         end
 
         it 'registers an offense for a single method call inside of a ' \
           'non-nil check for the object' do
-          inspect_source(cop, ["if !#{variable}.nil?",
-                               "  #{variable}.bar",
-                               'end'])
+          inspect_source(cop, <<-END.strip_indent)
+            if !#{variable}.nil?
+              #{variable}.bar
+            end
+          END
 
           expect(cop.messages).to eq([described_class::MSG])
         end
 
         it 'registers an offense for a single method call inside of an ' \
           'unless nil check for the object' do
-          inspect_source(cop, ["unless #{variable}.nil?",
-                               "  #{variable}.bar",
-                               'end'])
+          inspect_source(cop, <<-END.strip_indent)
+            unless #{variable}.nil?
+              #{variable}.bar
+            end
+          END
 
           expect(cop.messages).to eq([described_class::MSG])
         end
 
         it 'registers an offense for a single method call inside of an ' \
           'unless negative check for the object' do
-          inspect_source(cop, ["unless !#{variable}",
-                               "  #{variable}.bar",
-                               'end'])
+          inspect_source(cop, <<-END.strip_indent)
+            unless !#{variable}
+              #{variable}.bar
+            end
+          END
 
           expect(cop.messages).to eq([described_class::MSG])
         end
 
         it 'accepts a single method call inside of a check for the object ' \
            'with an else' do
-          inspect_source(cop, ["if #{variable}",
-                               "  #{variable}.bar",
-                               'else',
-                               '  something',
-                               'end'])
+          inspect_source(cop, <<-END.strip_indent)
+            if #{variable}
+              #{variable}.bar
+            else
+              something
+            end
+          END
 
           expect(cop.offenses).to be_empty
         end
@@ -308,9 +320,11 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
           it 'registers an offense for a check for the object followed by a ' \
             'method call in the condition for an if expression' do
-            inspect_source(cop, ["if #{variable} && #{variable}.bar",
-                                 '  something',
-                                 'end'])
+            inspect_source(cop, <<-END.strip_indent)
+              if #{variable} && #{variable}.bar
+                something
+              end
+            END
 
             expect(cop.messages).to eq([described_class::MSG])
           end
@@ -381,9 +395,11 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
           it 'registers an offense for a check for the object followed by a ' \
             'method call in the condition for an if expression' do
-            inspect_source(cop, ["if #{variable} && #{variable}.bar",
-                                 '  something',
-                                 'end'])
+            inspect_source(cop, <<-END.strip_indent)
+              if #{variable} && #{variable}.bar
+                something
+              end
+            END
 
             expect(cop.offenses).to be_empty
           end
@@ -649,154 +665,186 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
         context 'if expression' do
           it 'corrects a single method call inside of a check for the object' do
-            new_source = autocorrect_source(cop, ["if #{variable}",
-                                                  "  #{variable}.bar",
-                                                  'end'])
+            new_source = autocorrect_source(cop, <<-END.strip_indent)
+              if #{variable}
+                #{variable}.bar
+              end
+            END
 
-            expect(new_source).to eq("#{variable}&.bar")
+            expect(new_source).to eq("#{variable}&.bar\n")
           end
 
           it 'corrects a single method call with params inside of a check ' \
             'for the object' do
-            new_source = autocorrect_source(cop, ["if #{variable}",
-                                                  "  #{variable}.bar(baz)",
-                                                  'end'])
+            new_source = autocorrect_source(cop, <<-END.strip_indent)
+              if #{variable}
+                #{variable}.bar(baz)
+              end
+            END
 
-            expect(new_source).to eq("#{variable}&.bar(baz)")
+            expect(new_source).to eq("#{variable}&.bar(baz)\n")
           end
 
           it 'corrects a single method call with a block inside of a check ' \
             'for the object' do
-            source = ["if #{variable}",
-                      "  #{variable}.bar { |e| e.qux }",
-                      'end']
+            source = <<-END.strip_indent
+              if #{variable}
+                #{variable}.bar { |e| e.qux }
+              end
+            END
             new_source = autocorrect_source(cop, source)
 
-            expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
+            expect(new_source).to eq("#{variable}&.bar { |e| e.qux }\n")
           end
 
           it 'corrects a single method call with params and a block inside ' \
             'of a check for the object' do
-            source = ["if #{variable}",
-                      "  #{variable}.bar(baz) { |e| e.qux }",
-                      'end']
+            source = <<-END.strip_indent
+              if #{variable}
+                #{variable}.bar(baz) { |e| e.qux }
+              end
+            END
             new_source = autocorrect_source(cop, source)
 
-            expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }")
+            expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }\n")
           end
 
           it 'corrects a single method call inside of a non-nil check for ' \
             'the object' do
-            new_source = autocorrect_source(cop, ["if !#{variable}.nil?",
-                                                  "  #{variable}.bar",
-                                                  'end'])
+            new_source = autocorrect_source(cop, <<-END.strip_indent)
+              if !#{variable}.nil?
+                #{variable}.bar
+              end
+            END
 
-            expect(new_source).to eq("#{variable}&.bar")
+            expect(new_source).to eq("#{variable}&.bar\n")
           end
 
           it 'corrects a single method call with params inside of a non-nil ' \
             'check for the object' do
-            new_source = autocorrect_source(cop, ["if !#{variable}.nil?",
-                                                  "  #{variable}.bar(baz)",
-                                                  'end'])
+            new_source = autocorrect_source(cop, <<-END.strip_indent)
+              if !#{variable}.nil?
+                #{variable}.bar(baz)
+              end
+            END
 
-            expect(new_source).to eq("#{variable}&.bar(baz)")
+            expect(new_source).to eq("#{variable}&.bar(baz)\n")
           end
 
           it 'corrects a single method call with a block inside of a non-nil ' \
             'check for the object' do
-            source = ["if !#{variable}.nil?",
-                      "  #{variable}.bar { |e| e.qux }",
-                      'end']
+            source = <<-END.strip_indent
+              if !#{variable}.nil?
+                #{variable}.bar { |e| e.qux }
+              end
+            END
             new_source = autocorrect_source(cop, source)
 
-            expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
+            expect(new_source).to eq("#{variable}&.bar { |e| e.qux }\n")
           end
 
           it 'corrects a single method call with params and a block inside ' \
             'of a non-nil check for the object' do
-            source = ["if !#{variable}.nil?",
-                      "  #{variable}.bar(baz) { |e| e.qux }",
-                      'end']
+            source = <<-END.strip_indent
+              if !#{variable}.nil?
+                #{variable}.bar(baz) { |e| e.qux }
+              end
+            END
             new_source = autocorrect_source(cop, source)
 
-            expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }")
+            expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }\n")
           end
 
           it 'corrects a single method call inside of an unless nil check ' \
             'for the object' do
-            new_source = autocorrect_source(cop, ["unless #{variable}.nil?",
-                                                  "  #{variable}.bar",
-                                                  'end'])
+            new_source = autocorrect_source(cop, <<-END.strip_indent)
+              unless #{variable}.nil?
+                #{variable}.bar
+              end
+            END
 
-            expect(new_source).to eq("#{variable}&.bar")
+            expect(new_source).to eq("#{variable}&.bar\n")
           end
 
           it 'corrects a single method call with params inside of an unless ' \
             'nil check for the object' do
-            new_source = autocorrect_source(cop, ["unless #{variable}.nil?",
-                                                  "  #{variable}.bar(baz)",
-                                                  'end'])
+            new_source = autocorrect_source(cop, <<-END.strip_indent)
+              unless #{variable}.nil?
+                #{variable}.bar(baz)
+              end
+            END
 
-            expect(new_source).to eq("#{variable}&.bar(baz)")
+            expect(new_source).to eq("#{variable}&.bar(baz)\n")
           end
 
           it 'corrects a single method call with a block inside of an unless ' \
             'nil check for the object' do
-            source = ["unless #{variable}.nil?",
-                      "  #{variable}.bar { |e| e.qux }",
-                      'end']
+            source = <<-END.strip_indent
+              unless #{variable}.nil?
+                #{variable}.bar { |e| e.qux }
+              end
+            END
             new_source = autocorrect_source(cop, source)
 
-            expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
+            expect(new_source).to eq("#{variable}&.bar { |e| e.qux }\n")
           end
 
           it 'corrects a single method call with params and a block inside ' \
             'of an unless nil check for the object' do
-            source = ["unless #{variable}.nil?",
-                      "  #{variable}.bar(baz) { |e| e.qux }",
-                      'end']
+            source = <<-END.strip_indent
+              unless #{variable}.nil?
+                #{variable}.bar(baz) { |e| e.qux }
+              end
+            END
             new_source = autocorrect_source(cop, source)
 
-            expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }")
+            expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }\n")
           end
 
           it 'corrects a single method call inside of an unless negative ' \
             'check for the object' do
-            new_source = autocorrect_source(cop, ["unless !#{variable}",
-                                                  "  #{variable}.bar",
-                                                  'end'])
+            new_source = autocorrect_source(cop, <<-END.strip_indent)
+              unless !#{variable}
+                #{variable}.bar
+              end
+            END
 
-            expect(new_source).to eq("#{variable}&.bar")
+            expect(new_source).to eq("#{variable}&.bar\n")
           end
 
           it 'corrects a single method call with params inside of an unless ' \
             'negative check for the object' do
-            new_source = autocorrect_source(cop, ["unless !#{variable}",
-                                                  "  #{variable}.bar(baz)",
-                                                  'end'])
+            new_source = autocorrect_source(cop, <<-END.strip_indent)
+              unless !#{variable}
+                #{variable}.bar(baz)
+              end
+            END
 
-            expect(new_source).to eq("#{variable}&.bar(baz)")
+            expect(new_source).to eq("#{variable}&.bar(baz)\n")
           end
 
           it 'corrects a single method call with a block inside of an unless ' \
             'negative check for the object' do
-            source = ["unless !#{variable}",
-                      "  #{variable}.bar { |e| e.qux }",
-                      'end']
+            source = <<-END.strip_indent
+              unless !#{variable}
+                #{variable}.bar { |e| e.qux }
+              end
+            END
             new_source = autocorrect_source(cop, source)
 
-            expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
+            expect(new_source).to eq("#{variable}&.bar { |e| e.qux }\n")
           end
 
           it 'corrects a single method call with params and a block inside ' \
             'of an unless negative check for the object' do
-            source = ["unless !#{variable}",
-                      "  #{variable}.bar(baz) { |e| e.qux }",
-                      'end']
+            source = <<-END.strip_indent
+              unless !#{variable}
+                #{variable}.bar(baz) { |e| e.qux }
+              end
+            END
             new_source = autocorrect_source(cop, source)
 
-            expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }")
+            expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }\n")
           end
         end
 

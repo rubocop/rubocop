@@ -35,29 +35,32 @@ describe RuboCop::Cop::Style::Semicolon, :config do
   end
 
   it 'accepts one line method definitions' do
-    inspect_source(cop,
-                   ['def foo1; x(3) end',
-                    'def initialize(*_); end',
-                    'def foo2() x(3); end',
-                    'def foo3; x(3); end'])
+    inspect_source(cop, <<-END.strip_indent)
+      def foo1; x(3) end
+      def initialize(*_); end
+      def foo2() x(3); end
+      def foo3; x(3); end
+    END
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts one line empty class definitions' do
-    inspect_source(cop,
-                   ['# Prefer a single-line format for class ...',
-                    'class Foo < Exception; end',
-                    '',
-                    'class Bar; end'])
+    inspect_source(cop, <<-END.strip_indent)
+      # Prefer a single-line format for class ...
+      class Foo < Exception; end
+
+      class Bar; end
+    END
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts one line empty method definitions' do
-    inspect_source(cop,
-                   ['# One exception to the rule are empty-body methods',
-                    'def no_op; end',
-                    '',
-                    'def foo; end'])
+    inspect_source(cop, <<-END.strip_indent)
+      # One exception to the rule are empty-body methods
+      def no_op; end
+
+      def foo; end
+    END
     expect(cop.offenses).to be_empty
   end
 
@@ -74,9 +77,10 @@ describe RuboCop::Cop::Style::Semicolon, :config do
   end
 
   it 'accept semicolons inside strings' do
-    inspect_source(cop,
-                   ['string = ";',
-                    'multi-line string"'])
+    inspect_source(cop, <<-END.strip_indent)
+      string = ";
+      multi-line string"
+    END
     expect(cop.offenses).to be_empty
   end
 
@@ -87,18 +91,21 @@ describe RuboCop::Cop::Style::Semicolon, :config do
 
   it 'auto-corrects semicolons when syntactically possible' do
     corrected =
-      autocorrect_source(cop,
-                         ['module Foo; end;',
-                          'puts "this is a test";',
-                          'puts "this is a test"; puts "So is this"',
-                          'def foo(a) x(1); y(2); z(3); end',
-                          ';puts 1'])
+      autocorrect_source(cop, <<-END.strip_indent)
+        module Foo; end;
+        puts "this is a test";
+        puts "this is a test"; puts "So is this"
+        def foo(a) x(1); y(2); z(3); end
+        ;puts 1
+      END
     expect(corrected)
-      .to eq(['module Foo; end',
-              'puts "this is a test"',
-              'puts "this is a test"; puts "So is this"',
-              'def foo(a) x(1); y(2); z(3); end',
-              'puts 1'].join("\n"))
+      .to eq(<<-END.strip_indent)
+        module Foo; end
+        puts "this is a test"
+        puts "this is a test"; puts "So is this"
+        def foo(a) x(1); y(2); z(3); end
+        puts 1
+      END
   end
 
   context 'when AllowAsExpressionSeparator is true' do

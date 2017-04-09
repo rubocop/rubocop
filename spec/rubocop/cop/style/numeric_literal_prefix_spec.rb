@@ -12,16 +12,20 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
       end
 
       it 'registers an offense for prefixes `0` and `0O`' do
-        inspect_source(cop, ['a = 01234',
-                             'b(0O1234)'])
+        inspect_source(cop, <<-END.strip_indent)
+          a = 01234
+          b(0O1234)
+        END
         expect(cop.offenses.size).to eq(2)
         expect(cop.messages.uniq).to eq(['Use 0o for octal literals.'])
         expect(cop.highlights).to eq(%w[01234 0O1234])
       end
 
       it 'does not register offense for lowercase prefix' do
-        inspect_source(cop, ['a = 0o101',
-                             'b = 0o567'])
+        inspect_source(cop, <<-END.strip_indent)
+          a = 0o101
+          b = 0o567
+        END
         expect(cop.messages).to be_empty
       end
 
@@ -44,8 +48,10 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
       end
 
       it 'registers an offense for prefix `0O` and `0o`' do
-        inspect_source(cop, ['a = 0O1234',
-                             'b(0o1234)'])
+        inspect_source(cop, <<-END.strip_indent)
+          a = 0O1234
+          b(0o1234)
+        END
         expect(cop.offenses.size).to eq(2)
         expect(cop.messages.uniq).to eq(['Use 0 for octal literals.'])
         expect(cop.highlights).to eq(%w[0O1234 0o1234])
@@ -57,9 +63,15 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
       end
 
       it 'autocorrects an octal literal starting with 0O or 0o' do
-        corrected = autocorrect_source(cop, ['a = 0O1234',
-                                             'b(0o1234)'])
-        expect(corrected).to eq "a = 01234\nb(01234)"
+        corrected = autocorrect_source(cop, <<-END.strip_indent)
+          a = 0O1234
+          b(0o1234)
+        END
+
+        expect(corrected).to eq <<-END.strip_indent
+          a = 01234
+          b(01234)
+        END
       end
 
       it 'does not autocorrect an octal literal starting with 0' do
@@ -71,8 +83,10 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
 
   context 'hex literals' do
     it 'registers an offense for uppercase prefix' do
-      inspect_source(cop, ['a = 0X1AC',
-                           'b(0XABC)'])
+      inspect_source(cop, <<-END.strip_indent)
+        a = 0X1AC
+        b(0XABC)
+      END
       expect(cop.offenses.size).to eq(2)
       expect(cop.messages.uniq).to eq(['Use 0x for hexadecimal literals.'])
       expect(cop.highlights).to eq(%w[0X1AC 0XABC])
@@ -91,8 +105,10 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
 
   context 'binary literals' do
     it 'registers an offense for uppercase prefix' do
-      inspect_source(cop, ['a = 0B10101',
-                           'b(0B111)'])
+      inspect_source(cop, <<-END.strip_indent)
+        a = 0B10101
+        b(0B111)
+      END
       expect(cop.offenses.size).to eq(2)
       expect(cop.messages.uniq).to eq(['Use 0b for binary literals.'])
       expect(cop.highlights).to eq(%w[0B10101 0B111])
@@ -111,8 +127,10 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
 
   context 'decimal literals' do
     it 'registers an offense for prefixes' do
-      inspect_source(cop, ['a = 0d1234',
-                           'b(0D1234)'])
+      inspect_source(cop, <<-END.strip_indent)
+        a = 0d1234
+        b(0D1234)
+      END
       expect(cop.offenses.size).to eq(2)
       expect(cop.messages.uniq)
         .to eq(['Do not use prefixes for decimal literals.'])

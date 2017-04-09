@@ -5,10 +5,12 @@ describe RuboCop::Cop::Style::FirstMethodParameterLineBreak do
 
   context 'params listed on the first line' do
     let(:source) do
-      ['def foo(bar,',
-       '  baz)',
-       '  do_something',
-       'end']
+      <<-END.strip_indent
+        def foo(bar,
+          baz)
+          do_something
+        end
+      END
     end
 
     it 'detects the offense' do
@@ -22,22 +24,25 @@ describe RuboCop::Cop::Style::FirstMethodParameterLineBreak do
     it 'autocorrects the offense' do
       new_source = autocorrect_source(cop, source)
 
-      expect(new_source).to eq(
-        "def foo(\n" \
-        "bar,\n" \
-        "  baz)\n" \
-        "  do_something\n" \
-        'end'
-      )
+      expect(new_source).to eq([
+        'def foo(',
+        'bar,',
+        '  baz)',
+        '  do_something',
+        'end',
+        ''
+      ].join("\n"))
     end
   end
 
   context 'params on first line of singleton method' do
     let(:source) do
-      ['def self.foo(bar,',
-       '  baz)',
-       '  do_something',
-       'end']
+      <<-END.strip_indent
+        def self.foo(bar,
+          baz)
+          do_something
+        end
+      END
     end
 
     it 'detects the offense' do
@@ -51,22 +56,25 @@ describe RuboCop::Cop::Style::FirstMethodParameterLineBreak do
     it 'autocorrects the offense' do
       new_source = autocorrect_source(cop, source)
 
-      expect(new_source).to eq(
-        "def self.foo(\n" \
-        "bar,\n" \
-        "  baz)\n" \
-        "  do_something\n" \
-        'end'
-      )
+      expect(new_source).to eq([
+        'def self.foo(',
+        'bar,',
+        '  baz)',
+        '  do_something',
+        'end',
+        ''
+      ].join("\n"))
     end
   end
 
   it 'ignores params listed on a single line' do
     inspect_source(
       cop,
-      ['def foo(bar, baz, bing)',
-       '  do_something',
-       'end']
+      <<-END.strip_indent
+        def foo(bar, baz, bing)
+          do_something
+        end
+      END
     )
 
     expect(cop.offenses).to be_empty
@@ -75,10 +83,12 @@ describe RuboCop::Cop::Style::FirstMethodParameterLineBreak do
   it 'ignores params without parens' do
     inspect_source(
       cop,
-      ['def foo bar,',
-       '  baz',
-       '  do_something',
-       'end']
+      <<-END.strip_indent
+        def foo bar,
+          baz
+          do_something
+        end
+      END
     )
 
     expect(cop.offenses).to be_empty
@@ -96,9 +106,11 @@ describe RuboCop::Cop::Style::FirstMethodParameterLineBreak do
   it 'ignores methods without params' do
     inspect_source(
       cop,
-      ['def foo',
-       '  bing',
-       'end']
+      <<-END.strip_indent
+        def foo
+          bing
+        end
+      END
     )
 
     expect(cop.offenses).to be_empty
@@ -106,10 +118,12 @@ describe RuboCop::Cop::Style::FirstMethodParameterLineBreak do
 
   context 'params with default values' do
     let(:source) do
-      ['def foo(bar = [],',
-       '  baz = 2)',
-       '  do_something',
-       'end']
+      <<-END.strip_indent
+        def foo(bar = [],
+          baz = 2)
+          do_something
+        end
+      END
     end
 
     it 'detects the offense' do
@@ -123,13 +137,14 @@ describe RuboCop::Cop::Style::FirstMethodParameterLineBreak do
     it 'autocorrects the offense' do
       new_source = autocorrect_source(cop, source)
 
-      expect(new_source).to eq(
-        "def foo(\n" \
-        "bar = [],\n" \
-        "  baz = 2)\n" \
-        "  do_something\n" \
-        'end'
-      )
+      expect(new_source).to eq([
+        'def foo(',
+        'bar = [],',
+        '  baz = 2)',
+        '  do_something',
+        'end',
+        ''
+      ].join("\n"))
     end
   end
 end

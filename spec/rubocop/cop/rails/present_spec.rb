@@ -145,17 +145,21 @@ describe RuboCop::Cop::Rails::Present, :config do
     end
 
     it 'accepts normal if blank?' do
-      inspect_source(cop, ['if foo.blank?',
-                           '  something',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        if foo.blank?
+          something
+        end
+      END
 
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts normal unless present?' do
-      inspect_source(cop, ['unless foo.present?',
-                           '  something',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        unless foo.present?
+          something
+        end
+      END
 
       expect(cop.offenses).to be_empty
     end
@@ -181,9 +185,11 @@ describe RuboCop::Cop::Rails::Present, :config do
 
       context 'normal unless blank?' do
         let(:source) do
-          ['unless foo.blank?',
-           '  something',
-           'end']
+          <<-END.strip_indent
+            unless foo.blank?
+              something
+            end
+          END
         end
 
         it 'registers an offense' do
@@ -197,19 +203,23 @@ describe RuboCop::Cop::Rails::Present, :config do
         it 'auto-corrects' do
           new_source = autocorrect_source(cop, source)
 
-          expect(new_source).to eq(['if foo.present?',
-                                    '  something',
-                                    'end'].join("\n"))
+          expect(new_source).to eq(<<-END.strip_indent)
+            if foo.present?
+              something
+            end
+          END
         end
       end
 
       context 'unless blank? with an else' do
         let(:source) do
-          ['unless foo.blank?',
-           '  something',
-           'else',
-           '  something_else',
-           'end']
+          <<-END.strip_indent
+            unless foo.blank?
+              something
+            else
+              something_else
+            end
+          END
         end
 
         it 'registers an offense' do
@@ -223,11 +233,13 @@ describe RuboCop::Cop::Rails::Present, :config do
         it 'auto-corrects' do
           new_source = autocorrect_source(cop, source)
 
-          expect(new_source).to eq(['if foo.present?',
-                                    '  something',
-                                    'else',
-                                    '  something_else',
-                                    'end'].join("\n"))
+          expect(new_source).to eq(<<-END.strip_indent)
+            if foo.present?
+              something
+            else
+              something_else
+            end
+          END
         end
       end
     end

@@ -135,10 +135,12 @@ describe RuboCop::Cop::Offense do
   context 'offenses that span multiple lines' do
     let(:location) do
       source_buffer = Parser::Source::Buffer.new('test', 1)
-      source_buffer.source = ['def foo',
-                              '  something',
-                              '  something_else',
-                              'end'].join("\n")
+      source_buffer.source = <<-END.strip_indent
+        def foo
+          something
+          something_else
+        end
+      END
       Parser::Source::Range.new(source_buffer, 0, source_buffer.source.length)
     end
 
@@ -156,10 +158,12 @@ describe RuboCop::Cop::Offense do
   context 'offenses that span part of a line' do
     let(:location) do
       source_buffer = Parser::Source::Buffer.new('test', 1)
-      source_buffer.source = ['def Foo',
-                              '  something',
-                              '  something_else',
-                              'end'].join("\n")
+      source_buffer.source = <<-END.strip_indent
+        def Foo
+          something
+          something_else
+        end
+      END
       Parser::Source::Range.new(source_buffer, 4, 7)
     end
 

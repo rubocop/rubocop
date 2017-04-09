@@ -39,100 +39,112 @@ describe RuboCop::Cop::Lint::EmptyWhen, :config do
   let(:message) { described_class::MSG }
 
   context 'when a `when` body is missing' do
-    it_behaves_like 'code with offense',
-                    ['case foo',
-                     'when :bar then 1',
-                     'when :baz # nothing',
-                     'end'].join("\n")
+    it_behaves_like 'code with offense', <<-END.strip_indent
+      case foo
+      when :bar then 1
+      when :baz # nothing
+      end
+    END
 
-    it_behaves_like 'code with offense',
-                    ['case foo',
-                     'when :bar then 1',
-                     'when :baz # nothing',
-                     'else 3',
-                     'end'].join("\n")
+    it_behaves_like 'code with offense', <<-END.strip_indent
+      case foo
+      when :bar then 1
+      when :baz # nothing
+      else 3
+      end
+    END
 
-    it_behaves_like 'code with offense',
-                    ['case foo',
-                     'when :bar then 1',
-                     'when :baz then # nothing',
-                     'end'].join("\n")
+    it_behaves_like 'code with offense', <<-END.strip_indent
+      case foo
+      when :bar then 1
+      when :baz then # nothing
+      end
+    END
 
-    it_behaves_like 'code with offense',
-                    ['case foo',
-                     'when :bar then 1',
-                     'when :baz then # nothing',
-                     'else 3',
-                     'end'].join("\n")
+    it_behaves_like 'code with offense', <<-END.strip_indent
+      case foo
+      when :bar then 1
+      when :baz then # nothing
+      else 3
+      end
+    END
 
-    it_behaves_like 'code with offense',
-                    ['case foo',
-                     'when :bar',
-                     '  1',
-                     'when :baz',
-                     '  # nothing',
-                     'end'].join("\n")
+    it_behaves_like 'code with offense', <<-END.strip_indent
+      case foo
+      when :bar
+        1
+      when :baz
+        # nothing
+      end
+    END
 
-    it_behaves_like 'code with offense',
-                    ['case foo',
-                     'when :bar',
-                     '  1',
-                     'when :baz',
-                     '  # nothing',
-                     'else',
-                     '  3',
-                     'end'].join("\n")
+    it_behaves_like 'code with offense', <<-END.strip_indent
+      case foo
+      when :bar
+        1
+      when :baz
+        # nothing
+      else
+        3
+      end
+    END
 
-    it_behaves_like 'code with offense',
-                    ['case',
-                     'when :bar',
-                     '  1',
-                     'when :baz',
-                     '  # nothing',
-                     'else',
-                     '  3',
-                     'end'].join("\n")
+    it_behaves_like 'code with offense', <<-END.strip_indent
+      case
+      when :bar
+        1
+      when :baz
+        # nothing
+      else
+        3
+      end
+    END
   end
 
   context 'when a `when` body is present' do
-    it_behaves_like 'code without offense',
-                    ['case foo',
-                     'when :bar then 1',
-                     'when :baz then 2',
-                     'end'].join("\n")
+    it_behaves_like 'code without offense', <<-END.strip_indent
+      case foo
+      when :bar then 1
+      when :baz then 2
+      end
+    END
 
-    it_behaves_like 'code without offense',
-                    ['case foo',
-                     'when :bar then 1',
-                     'when :baz then 2',
-                     'else 3',
-                     'end'].join("\n")
+    it_behaves_like 'code without offense', <<-END.strip_indent
+      case foo
+      when :bar then 1
+      when :baz then 2
+      else 3
+      end
+    END
 
-    it_behaves_like 'code without offense',
-                    ['case foo',
-                     'when :bar',
-                     '  1',
-                     'when :baz',
-                     '  2',
-                     'end'].join("\n")
+    it_behaves_like 'code without offense', <<-END.strip_indent
+      case foo
+      when :bar
+        1
+      when :baz
+        2
+      end
+    END
 
-    it_behaves_like 'code without offense',
-                    ['case foo',
-                     'when :bar',
-                     '  1',
-                     'when :baz',
-                     '  2',
-                     'else',
-                     '  3',
-                     'end'].join("\n")
-    it_behaves_like 'code without offense',
-                    ['case',
-                     'when :bar',
-                     '  1',
-                     'when :baz',
-                     '  2',
-                     'else',
-                     '  3',
-                     'end'].join("\n")
+    it_behaves_like 'code without offense', <<-END.strip_indent
+      case foo
+      when :bar
+        1
+      when :baz
+        2
+      else
+        3
+      end
+    END
+    it_behaves_like 'code without offense', <<-END.strip_indent
+      case
+      when :bar
+        1
+      when :baz
+        2
+      else
+        3
+      end
+    END
   end
 end

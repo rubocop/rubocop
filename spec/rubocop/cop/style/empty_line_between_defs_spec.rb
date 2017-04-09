@@ -5,19 +5,21 @@ describe RuboCop::Cop::Style::EmptyLineBetweenDefs, :config do
   let(:cop_config) { { 'AllowAdjacentOneLineDefs' => false } }
 
   it 'finds offenses in inner classes' do
-    source = ['class K',
-              '  def m',
-              '  end',
-              '  class J',
-              '    def n',
-              '    end',
-              '    def o',
-              '    end',
-              '  end',
-              '  # checks something',
-              '  def p',
-              '  end',
-              'end']
+    source = <<-END.strip_indent
+      class K
+        def m
+        end
+        class J
+          def n
+          end
+          def o
+          end
+        end
+        # checks something
+        def p
+        end
+      end
+    END
     inspect_source(cop, source)
     expect(cop.offenses.size).to eq(1)
     expect(cop.offenses.map(&:line).sort).to eq([7])
@@ -25,14 +27,16 @@ describe RuboCop::Cop::Style::EmptyLineBetweenDefs, :config do
 
   context 'when there are only comments between defs' do
     let(:source) do
-      ['class J',
-       '  def n',
-       '  end # n-related',
-       '  # checks something o-related',
-       '  # and more',
-       '  def o',
-       '  end',
-       'end']
+      <<-END.strip_indent
+        class J
+          def n
+          end # n-related
+          # checks something o-related
+          # and more
+          def o
+          end
+        end
+      END
     end
 
     it 'registers an offense' do
@@ -42,46 +46,52 @@ describe RuboCop::Cop::Style::EmptyLineBetweenDefs, :config do
 
     it 'auto-corrects' do
       corrected = autocorrect_source(cop, source)
-      expect(corrected).to eq(['class J',
-                               '  def n',
-                               '  end # n-related',
-                               '',
-                               '  # checks something o-related',
-                               '  # and more',
-                               '  def o',
-                               '  end',
-                               'end'].join("\n"))
+      expect(corrected).to eq(<<-END.strip_indent)
+        class J
+          def n
+          end # n-related
+
+          # checks something o-related
+          # and more
+          def o
+          end
+        end
+      END
     end
   end
 
   context 'conditional method definitions' do
     it 'accepts defs inside a conditional without blank lines in between' do
-      source = ['if condition',
-                '  def foo',
-                '    true',
-                '  end',
-                'else',
-                '  def foo',
-                '    false',
-                '  end',
-                'end']
+      source = <<-END.strip_indent
+        if condition
+          def foo
+            true
+          end
+        else
+          def foo
+            false
+          end
+        end
+      END
       inspect_source(cop, source)
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for consecutive defs inside a conditional' do
-      source = ['if condition',
-                '  def foo',
-                '    true',
-                '  end',
-                '  def bar',
-                '    true',
-                '  end',
-                'else',
-                '  def foo',
-                '    false',
-                '  end',
-                'end']
+      source = <<-END.strip_indent
+        if condition
+          def foo
+            true
+          end
+          def bar
+            true
+          end
+        else
+          def foo
+            false
+          end
+        end
+      END
       inspect_source(cop, source)
       expect(cop.offenses.size).to eq(1)
     end
@@ -90,14 +100,16 @@ describe RuboCop::Cop::Style::EmptyLineBetweenDefs, :config do
   context 'class methods' do
     context 'adjacent class methods' do
       let(:offending_source) do
-        ['class Test',
-         '  def self.foo',
-         '    true',
-         '  end',
-         '  def self.bar',
-         '    true',
-         '  end',
-         'end']
+        <<-END.strip_indent
+          class Test
+            def self.foo
+              true
+            end
+            def self.bar
+              true
+            end
+          end
+        END
       end
 
       it 'registers an offense for missing blank line between methods' do
@@ -107,29 +119,32 @@ describe RuboCop::Cop::Style::EmptyLineBetweenDefs, :config do
 
       it 'autocorrects it' do
         corrected = autocorrect_source(cop, offending_source)
-        expect(corrected).to eq(['class Test',
-                                 '  def self.foo',
-                                 '    true',
-                                 '  end',
-                                 '',
-                                 '  def self.bar',
-                                 '    true',
-                                 '  end',
-                                 'end']
-                                 .join("\n"))
+        expect(corrected).to eq(<<-END.strip_indent)
+          class Test
+            def self.foo
+              true
+            end
+
+            def self.bar
+              true
+            end
+          end
+        END
       end
     end
 
     context 'mixed instance and class methods' do
       let(:offending_source) do
-        ['class Test',
-         '  def foo',
-         '    true',
-         '  end',
-         '  def self.bar',
-         '    true',
-         '  end',
-         'end']
+        <<-END.strip_indent
+          class Test
+            def foo
+              true
+            end
+            def self.bar
+              true
+            end
+          end
+        END
       end
 
       it 'registers an offense for missing blank line between methods' do
@@ -139,16 +154,17 @@ describe RuboCop::Cop::Style::EmptyLineBetweenDefs, :config do
 
       it 'autocorrects it' do
         corrected = autocorrect_source(cop, offending_source)
-        expect(corrected).to eq(['class Test',
-                                 '  def foo',
-                                 '    true',
-                                 '  end',
-                                 '',
-                                 '  def self.bar',
-                                 '    true',
-                                 '  end',
-                                 'end']
-                                 .join("\n"))
+        expect(corrected).to eq(<<-END.strip_indent)
+          class Test
+            def foo
+              true
+            end
+
+            def self.bar
+              true
+            end
+          end
+        END
       end
     end
   end
@@ -156,9 +172,11 @@ describe RuboCop::Cop::Style::EmptyLineBetweenDefs, :config do
   # Only one def, so rule about empty line *between* defs does not
   # apply.
   it 'accepts a def that follows a line with code' do
-    source = ['x = 0',
-              'def m',
-              'end']
+    source = <<-END.strip_indent
+      x = 0
+      def m
+      end
+    END
     inspect_source(cop, source)
     expect(cop.offenses).to be_empty
   end
@@ -166,107 +184,131 @@ describe RuboCop::Cop::Style::EmptyLineBetweenDefs, :config do
   # Only one def, so rule about empty line *between* defs does not
   # apply.
   it 'accepts a def that follows code and a comment' do
-    source = ['x = 0',
-              '# 123',
-              'def m',
-              'end']
+    source = <<-END.strip_indent
+      x = 0
+      # 123
+      def m
+      end
+    END
     inspect_source(cop, source)
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts the first def without leading empty line in a class' do
-    source = ['class K',
-              '  def m',
-              '  end',
-              'end']
+    source = <<-END.strip_indent
+      class K
+        def m
+        end
+      end
+    END
     inspect_source(cop, source)
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts a def that follows an empty line and then a comment' do
-    source = ['class A',
-              '  # calculates value',
-              '  def m',
-              '  end',
-              '',
-              '  private',
-              '  # calculates size',
-              '  def n',
-              '  end',
-              'end']
+    source = <<-END.strip_indent
+      class A
+        # calculates value
+        def m
+        end
+
+        private
+        # calculates size
+        def n
+        end
+      end
+    END
     inspect_source(cop, source)
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts a def that is the first of a module' do
-    source = ['module Util',
-              '  public',
-              '  #',
-              '  def html_escape(s)',
-              '  end',
-              'end']
+    source = <<-END.strip_indent
+      module Util
+        public
+        #
+        def html_escape(s)
+        end
+      end
+    END
     inspect_source(cop, source)
     expect(cop.messages).to be_empty
   end
 
   it 'accepts a nested def' do
-    source = ['def mock_model(*attributes)',
-              '  Class.new do',
-              '    def initialize(attrs)',
-              '    end',
-              '  end',
-              'end']
+    source = <<-END.strip_indent
+      def mock_model(*attributes)
+        Class.new do
+          def initialize(attrs)
+          end
+        end
+      end
+    END
     inspect_source(cop, source)
     expect(cop.messages).to be_empty
   end
 
   it 'registers an offense for adjacent one-liners by default' do
-    source = ['def a; end',
-              'def b; end']
+    source = <<-END.strip_indent
+      def a; end
+      def b; end
+    END
     inspect_source(cop, source)
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'auto-corrects adjacent one-liners by default' do
-    corrected = autocorrect_source(cop, ['def a; end',
-                                         'def b; end'])
-    expect(corrected).to eq(['def a; end',
-                             '',
-                             'def b; end'].join("\n"))
+    corrected = autocorrect_source(cop, <<-END.strip_indent)
+      def a; end
+      def b; end
+    END
+    expect(corrected).to eq(<<-END.strip_indent)
+      def a; end
+
+      def b; end
+    END
   end
 
   it 'auto-corrects when there are too many new lines' do
-    corrected = autocorrect_source(cop, ['def a; end',
-                                         '',
-                                         '',
-                                         '',
-                                         'def b; end'])
-    expect(corrected).to eq(['def a; end',
-                             '',
-                             'def b; end'].join("\n"))
+    corrected = autocorrect_source(cop, <<-END.strip_indent)
+      def a; end
+
+
+
+      def b; end
+    END
+    expect(corrected).to eq(<<-END.strip_indent)
+      def a; end
+
+      def b; end
+    END
   end
 
   it 'treats lines with whitespaces as blank' do
-    source = ['class J',
-              '  def n',
-              '  end',
-              '  ',
-              '  def o',
-              '  end',
-              'end']
+    source = <<-END.strip_indent
+      class J
+        def n
+        end
+
+        def o
+        end
+      end
+    END
     inspect_source(cop, source)
     expect(cop.offenses).to be_empty
   end
 
   it "doesn't allow more than the required number of newlines" do
-    source = ['class A',
-              '  def n',
-              '  end',
-              '',
-              '',
-              '  def o',
-              '  end',
-              'end']
+    source = <<-END.strip_indent
+      class A
+        def n
+        end
+
+
+        def o
+        end
+      end
+    END
     inspect_source(cop, source)
     expect(cop.offenses.size).to eq(1)
   end
@@ -275,19 +317,22 @@ describe RuboCop::Cop::Style::EmptyLineBetweenDefs, :config do
     let(:cop_config) { { 'AllowAdjacentOneLineDefs' => true } }
 
     it 'accepts adjacent one-liners' do
-      source = ['def a; end',
-                'def b; end']
+      source = <<-END.strip_indent
+        def a; end
+        def b; end
+      END
       inspect_source(cop, source)
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for adjacent defs if some are multi-line' do
-      source = ['def a; end',
-                'def b; end',
-                'def c', # Not a one-liner, so this is an offense.
-                'end',
-                # Also an offense since previous was multi-line:
-                'def d; end']
+      source = <<-END.strip_indent
+        def a; end
+        def b; end
+        def c # Not a one-liner, so this is an offense.
+        end
+        def d; end # Also an offense since previous was multi-line:
+      END
       inspect_source(cop, source)
       expect(cop.offenses.map(&:line)).to eq([3, 5])
     end
@@ -297,48 +342,58 @@ describe RuboCop::Cop::Style::EmptyLineBetweenDefs, :config do
     let(:cop_config) { { 'NumberOfEmptyLines' => [0, 1] } }
 
     it 'finds no offense for no empty line' do
-      source = ['def n',
-                'end',
-                'def o',
-                'end']
+      source = <<-END.strip_indent
+        def n
+        end
+        def o
+        end
+      END
       inspect_source(cop, source)
       expect(cop.offenses).to be_empty
     end
 
     it 'finds no offense for one empty line' do
-      source = ['def n',
-                'end',
-                '',
-                'def o',
-                ' end']
+      source = <<-END.strip_indent
+        def n
+        end
+
+        def o
+         end
+      END
       inspect_source(cop, source)
       expect(cop.offenses).to be_empty
     end
 
     it 'finds an  offense for two empty lines' do
-      source = ['def n',
-                'end',
-                '',
-                '',
-                'def o',
-                'end']
+      source = <<-END.strip_indent
+        def n
+        end
+
+
+        def o
+        end
+      END
       inspect_source(cop, source)
       expect(cop.offenses.size).to eq(1)
     end
 
     it 'auto-corrects' do
-      source = ['def n',
-                'end',
-                '',
-                '',
-                'def o',
-                'end']
+      source = <<-END.strip_indent
+        def n
+        end
+
+
+        def o
+        end
+      END
       corrected = autocorrect_source(cop, source)
-      expect(corrected).to eq(['def n',
-                               'end',
-                               '',
-                               'def o',
-                               'end'].join("\n"))
+      expect(corrected).to eq(<<-END.strip_indent)
+        def n
+        end
+
+        def o
+        end
+      END
     end
   end
 
@@ -346,60 +401,74 @@ describe RuboCop::Cop::Style::EmptyLineBetweenDefs, :config do
     let(:cop_config) { { 'NumberOfEmptyLines' => 2 } }
 
     it 'treats lines with whitespaces as blank' do
-      source = ['def n',
-                'end',
-                '',
-                'def o',
-                'end']
+      source = <<-END.strip_indent
+        def n
+        end
+
+        def o
+        end
+      END
       inspect_source(cop, source)
       expect(cop.offenses.size).to eq(1)
     end
 
     it 'auto-corrects when there are no new lines' do
-      source = ['def n',
-                'end',
-                'def o',
-                'end']
+      source = <<-END.strip_indent
+        def n
+        end
+        def o
+        end
+      END
       corrected = autocorrect_source(cop, source)
-      expect(corrected).to eq(['def n',
-                               'end',
-                               '',
-                               '',
-                               'def o',
-                               'end'].join("\n"))
+      expect(corrected).to eq(<<-END.strip_indent)
+        def n
+        end
+
+
+        def o
+        end
+      END
     end
 
     it 'auto-corrects when there are too few new lines' do
-      source = ['def n',
-                'end',
-                '',
-                'def o',
-                'end']
+      source = <<-END.strip_indent
+        def n
+        end
+
+        def o
+        end
+      END
       corrected = autocorrect_source(cop, source)
-      expect(corrected).to eq(['def n',
-                               'end',
-                               '',
-                               '',
-                               'def o',
-                               'end'].join("\n"))
+      expect(corrected).to eq(<<-END.strip_indent)
+        def n
+        end
+
+
+        def o
+        end
+      END
     end
 
     it 'auto-corrects when there are too many new lines' do
-      source = ['def n',
-                'end',
-                '',
-                '',
-                '',
-                '',
-                'def o',
-                'end']
+      source = <<-END.strip_indent
+        def n
+        end
+
+
+
+
+        def o
+        end
+      END
       corrected = autocorrect_source(cop, source)
-      expect(corrected).to eq(['def n',
-                               'end',
-                               '',
-                               '',
-                               'def o',
-                               'end'].join("\n"))
+      expect(corrected).to eq(<<-END.strip_indent)
+        def n
+        end
+
+
+        def o
+        end
+      END
     end
   end
 end

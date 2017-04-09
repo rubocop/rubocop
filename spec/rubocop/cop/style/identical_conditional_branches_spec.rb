@@ -9,11 +9,13 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
 
   context 'on if..else with identical bodies' do
     let(:source) do
-      ['if something',
-       '  do_x',
-       'else',
-       '  do_x',
-       'end']
+      <<-END.strip_indent
+        if something
+          do_x
+        else
+          do_x
+        end
+      END
     end
 
     it 'registers an offense' do
@@ -27,13 +29,15 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
 
   context 'on if..else with identical trailing lines' do
     let(:source) do
-      ['if something',
-       '  method_call_here(1, 2, 3)',
-       '  do_x',
-       'else',
-       '  1 + 2 + 3',
-       '  do_x',
-       'end']
+      <<-END.strip_indent
+        if something
+          method_call_here(1, 2, 3)
+          do_x
+        else
+          1 + 2 + 3
+          do_x
+        end
+      END
     end
 
     it 'registers an offense' do
@@ -47,13 +51,15 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
 
   context 'on if..else with identical leading lines' do
     let(:source) do
-      ['if something',
-       '  do_x',
-       '  method_call_here(1, 2, 3)',
-       'else',
-       '  do_x',
-       '  1 + 2 + 3',
-       'end']
+      <<-END.strip_indent
+        if something
+          do_x
+          method_call_here(1, 2, 3)
+        else
+          do_x
+          1 + 2 + 3
+        end
+      END
     end
 
     it 'registers an offense' do
@@ -67,11 +73,13 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
 
   context 'on if..elsif with no else' do
     let(:source) do
-      ['if something',
-       '  do_x',
-       'elsif something_else',
-       '  do_x',
-       'end']
+      <<-END.strip_indent
+        if something
+          do_x
+        elsif something_else
+          do_x
+        end
+      END
     end
 
     it "doesn't register an offense" do
@@ -81,11 +89,13 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
 
   context 'on if..else with slightly different trailing lines' do
     let(:source) do
-      ['if something',
-       '  do_x(1)',
-       'else',
-       '  do_x(2)',
-       'end']
+      <<-END.strip_indent
+        if something
+          do_x(1)
+        else
+          do_x(2)
+        end
+      END
     end
 
     it "doesn't register an offense" do
@@ -95,14 +105,16 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
 
   context 'on case with identical bodies' do
     let(:source) do
-      ['case something',
-       'when :a',
-       '  do_x',
-       'when :b',
-       '  do_x',
-       'else',
-       '  do_x',
-       'end']
+      <<-END.strip_indent
+        case something
+        when :a
+          do_x
+        when :b
+          do_x
+        else
+          do_x
+        end
+      END
     end
 
     it 'registers an offense' do
@@ -118,13 +130,15 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
   # Regression: https://github.com/bbatsov/rubocop/issues/3868
   context 'when one of the case branches is empty' do
     let(:source) do
-      ['case value',
-       'when cond1',
-       'else',
-       '  if cond2',
-       '  else',
-       '  end',
-       'end']
+      <<-END.strip_indent
+        case value
+        when cond1
+        else
+          if cond2
+          else
+          end
+        end
+      END
     end
 
     it 'does not register an offense' do
@@ -134,17 +148,19 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
 
   context 'on case with identical trailing lines' do
     let(:source) do
-      ['case something',
-       'when :a',
-       '  x1',
-       '  do_x',
-       'when :b',
-       '  x2',
-       '  do_x',
-       'else',
-       '  x3',
-       '  do_x',
-       'end']
+      <<-END.strip_indent
+        case something
+        when :a
+          x1
+          do_x
+        when :b
+          x2
+          do_x
+        else
+          x3
+          do_x
+        end
+      END
     end
 
     it 'registers an offense' do
@@ -159,17 +175,19 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
 
   context 'on case with identical leading lines' do
     let(:source) do
-      ['case something',
-       'when :a',
-       '  do_x',
-       '  x1',
-       'when :b',
-       '  do_x',
-       '  x2',
-       'else',
-       '  do_x',
-       '  x3',
-       'end']
+      <<-END.strip_indent
+        case something
+        when :a
+          do_x
+          x1
+        when :b
+          do_x
+          x2
+        else
+          do_x
+          x3
+        end
+      END
     end
 
     it 'registers an offense' do
@@ -184,12 +202,14 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
 
   context 'on case without else' do
     let(:source) do
-      ['case something',
-       'when :a',
-       '  do_x',
-       'when :b',
-       '  do_x',
-       'end']
+      <<-END.strip_indent
+        case something
+        when :a
+          do_x
+        when :b
+          do_x
+        end
+      END
     end
 
     it "doesn't register an offense" do
@@ -199,15 +219,17 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
 
   context 'on case with empty when' do
     let(:source) do
-      ['case something',
-       'when :a',
-       '  do_x',
-       '  do_y',
-       'when :b',
-       'else',
-       '  do_x',
-       '  do_z',
-       'end']
+      <<-END.strip_indent
+        case something
+        when :a
+          do_x
+          do_y
+        when :b
+        else
+          do_x
+          do_z
+        end
+      END
     end
 
     it "doesn't register an offense" do

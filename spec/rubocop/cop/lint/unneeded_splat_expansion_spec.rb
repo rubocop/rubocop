@@ -36,8 +36,10 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
   end
 
   it 'accepts expanding a variable as a method parameter' do
-    inspect_source(cop, ['foo = [1, 2, 3]',
-                         'array.push(*foo)'])
+    inspect_source(cop, <<-END.strip_indent)
+      foo = [1, 2, 3]
+      array.push(*foo)
+    END
 
     expect(cop.offenses).to be_empty
   end
@@ -96,83 +98,99 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
 
   context 'expanding an array literal in a when condition' do
     it 'registers an offense for an array using []' do
-      inspect_source(cop, ['case foo',
-                           'when *[first, second]',
-                           '  bar',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        case foo
+        when *[first, second]
+          bar
+        end
+      END
 
       expect(cop.messages).to eq([message])
       expect(cop.highlights).to eq(['*[first, second]'])
     end
 
     it 'registers an offense for an array using %w' do
-      inspect_source(cop, ['case foo',
-                           'when *%w(first second)',
-                           '  bar',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        case foo
+        when *%w(first second)
+          bar
+        end
+      END
 
       expect(cop.messages).to eq([message])
       expect(cop.highlights).to eq(['*%w(first second)'])
     end
 
     it 'registers an offense for an array using %W' do
-      inspect_source(cop, ['case foo',
-                           'when *%W(#{first} second)',
-                           '  bar',
-                           'end'])
+      inspect_source(cop, <<-'END'.strip_indent)
+        case foo
+        when *%W(#{first} second)
+          bar
+        end
+      END
 
       expect(cop.messages).to eq([message])
       expect(cop.highlights).to eq(['*%W(#{first} second)'])
     end
 
     it 'allows an array that is assigned to a variable' do
-      inspect_source(cop, ['baz = [1, 2, 3]',
-                           'case foo',
-                           'when *baz',
-                           '  bar',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        baz = [1, 2, 3]
+        case foo
+        when *baz
+          bar
+        end
+      END
 
       expect(cop.offenses).to be_empty
     end
 
     it 'allows an array using a constructor' do
-      inspect_source(cop, ['case foo',
-                           'when *Array.new(3) { 42 }',
-                           '  bar',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        case foo
+        when *Array.new(3) { 42 }
+          bar
+        end
+      END
 
       expect(cop.offenses).to be_empty
     end
   end
 
   it 'registers an offense for an array literal being expanded in a rescue' do
-    inspect_source(cop, ['begin',
-                         '  foo',
-                         'rescue *[First, Second]',
-                         '  bar',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      begin
+        foo
+      rescue *[First, Second]
+        bar
+      end
+    END
 
     expect(cop.messages).to eq([message])
     expect(cop.highlights).to eq(['*[First, Second]'])
   end
 
   it 'allows expansions of an array that is assigned to a variable in rescue' do
-    inspect_source(cop, ['ERRORS = [FirstError, SecondError]',
-                         'begin',
-                         '  foo',
-                         'rescue *ERRORS',
-                         '  bar',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      ERRORS = [FirstError, SecondError]
+      begin
+        foo
+      rescue *ERRORS
+        bar
+      end
+    END
 
     expect(cop.offenses).to be_empty
   end
 
   it 'allows an array using a constructor' do
-    inspect_source(cop, ['begin',
-                         '  foo',
-                         'rescue *Array.new(3) { 42 }',
-                         '  bad_example',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      begin
+        foo
+      rescue *Array.new(3) { 42 }
+        bad_example
+      end
+    END
 
     expect(cop.offenses).to be_empty
   end
@@ -238,55 +256,71 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
 
     context 'splat expansion in when condition' do
       it 'removes the square brackets' do
-        new_source = autocorrect_source(cop, ['case foo',
-                                              'when *[1, 2, 3]',
-                                              '  bar',
-                                              'end'])
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          case foo
+          when *[1, 2, 3]
+            bar
+          end
+        END
 
-        expect(new_source).to eq(['case foo',
-                                  'when 1, 2, 3',
-                                  '  bar',
-                                  'end'].join("\n"))
+        expect(new_source).to eq(<<-END.strip_indent)
+          case foo
+          when 1, 2, 3
+            bar
+          end
+        END
       end
 
       it 'changes %w to a list of words' do
-        new_source = autocorrect_source(cop, ['case foo',
-                                              'when *%w(one two three)',
-                                              '  bar',
-                                              'end'])
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          case foo
+          when *%w(one two three)
+            bar
+          end
+        END
 
-        expect(new_source).to eq(['case foo',
-                                  "when 'one', 'two', 'three'",
-                                  '  bar',
-                                  'end'].join("\n"))
+        expect(new_source).to eq(<<-END.strip_indent)
+          case foo
+          when 'one', 'two', 'three'
+            bar
+          end
+        END
       end
 
       it 'changes %W to a list of words' do
-        new_source = autocorrect_source(cop, ['case foo',
-                                              'when *%W(one #{two} three)',
-                                              '  bar',
-                                              'end'])
+        new_source = autocorrect_source(cop, <<-'END'.strip_indent)
+          case foo
+          when *%W(one #{two} three)
+            bar
+          end
+        END
 
-        expect(new_source).to eq(['case foo',
-                                  'when "one", "#{two}", "three"',
-                                  '  bar',
-                                  'end'].join("\n"))
+        expect(new_source).to eq(<<-'END'.strip_indent)
+          case foo
+          when "one", "#{two}", "three"
+            bar
+          end
+        END
       end
     end
 
     context 'rescuing splat expansion' do
       it 'changes an array literal to a list of constants' do
-        new_source = autocorrect_source(cop, ['begin',
-                                              '  foo',
-                                              'rescue *[First, Second]',
-                                              '  bar',
-                                              'end'])
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          begin
+            foo
+          rescue *[First, Second]
+            bar
+          end
+        END
 
-        expect(new_source).to eq(['begin',
-                                  '  foo',
-                                  'rescue First, Second',
-                                  '  bar',
-                                  'end'].join("\n"))
+        expect(new_source).to eq(<<-END.strip_indent)
+          begin
+            foo
+          rescue First, Second
+            bar
+          end
+        END
       end
     end
 
@@ -338,12 +372,14 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
     context 'arrays being expanded with %i variants using splat expansion' do
       it 'registers an offense for an array literal being expanded in a ' \
         'when condition' do
-        inspect_source(cop, ['case foo',
-                             'when *%i(first second)',
-                             '  bar',
-                             'when *%I(#{first} second)',
-                             '  baz',
-                             'end'])
+        inspect_source(cop, <<-'END'.strip_indent)
+          case foo
+          when *%i(first second)
+            bar
+          when *%I(#{first} second)
+            baz
+          end
+        END
 
         expect(cop.offenses.size).to eq(2)
         expect(cop.highlights).to eq(['*%i(first second)',
@@ -368,27 +404,35 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
 
       context 'autocorrect' do
         it 'changes %i to a list of symbols' do
-          new_source = autocorrect_source(cop, ['case foo',
-                                                'when *%i(first second)',
-                                                '  baz',
-                                                'end'])
+          new_source = autocorrect_source(cop, <<-END.strip_indent)
+            case foo
+            when *%i(first second)
+              baz
+            end
+          END
 
-          expect(new_source).to eq(['case foo',
-                                    'when :first, :second',
-                                    '  baz',
-                                    'end'].join("\n"))
+          expect(new_source).to eq(<<-END.strip_indent)
+            case foo
+            when :first, :second
+              baz
+            end
+          END
         end
 
         it 'changes %I to a list of symbols' do
-          new_source = autocorrect_source(cop, ['case foo',
-                                                'when *%I(#{first} second)',
-                                                '  baz',
-                                                'end'])
+          new_source = autocorrect_source(cop, <<-'END'.strip_indent)
+            case foo
+            when *%I(#{first} second)
+              baz
+            end
+          END
 
-          expect(new_source).to eq(['case foo',
-                                    'when :"#{first}", :"second"',
-                                    '  baz',
-                                    'end'].join("\n"))
+          expect(new_source).to eq(<<-'END'.strip_indent)
+            case foo
+            when :"#{first}", :"second"
+              baz
+            end
+          END
         end
       end
 

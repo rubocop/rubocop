@@ -4,10 +4,11 @@ describe RuboCop::Cop::Style::SpaceInsideRangeLiteral do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for space inside .. literal' do
-    inspect_source(cop,
-                   ['1 .. 2',
-                    '1.. 2',
-                    '1 ..2'])
+    inspect_source(cop, <<-END.strip_indent)
+      1 .. 2
+      1.. 2
+      1 ..2
+    END
     expect(cop.offenses.size).to eq(3)
     expect(cop.messages)
       .to eq(['Space inside range literal.'] * 3)
@@ -19,10 +20,11 @@ describe RuboCop::Cop::Style::SpaceInsideRangeLiteral do
   end
 
   it 'registers an offense for space inside ... literal' do
-    inspect_source(cop,
-                   ['1 ... 2',
-                    '1... 2',
-                    '1 ...2'])
+    inspect_source(cop, <<-END.strip_indent)
+      1 ... 2
+      1... 2
+      1 ...2
+    END
     expect(cop.offenses.size).to eq(3)
     expect(cop.messages)
       .to eq(['Space inside range literal.'] * 3)
@@ -39,14 +41,18 @@ describe RuboCop::Cop::Style::SpaceInsideRangeLiteral do
   end
 
   it 'accepts multiline range literal with no space in it' do
-    inspect_source(cop, ['x = 0..',
-                         '    10'])
+    inspect_source(cop, <<-END.strip_indent)
+      x = 0..
+          10
+    END
     expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense in multiline range literal with space in it' do
-    inspect_source(cop, ['x = 0 ..',
-                         '    10'])
+    inspect_source(cop, <<-END.strip_indent)
+      x = 0 ..
+          10
+    END
     expect(cop.offenses.size).to eq(1)
   end
 

@@ -80,8 +80,10 @@ describe RuboCop::Cop::Performance::FixedSize do
       end
 
       it "accepts calling #{method} on a variable " do
-        inspect_source(cop, ['foo = "abc"',
-                             "foo.#{method}"])
+        inspect_source(cop, <<-END.strip_indent)
+          foo = "abc"
+          foo.#{method}
+        END
 
         expect(cop.messages).to be_empty
       end
@@ -147,8 +149,10 @@ describe RuboCop::Cop::Performance::FixedSize do
       end
 
       it "accepts calling #{method} on array that is set to a variable" do
-        inspect_source(cop, ['foo = [1, 2, 3]',
-                             "foo.#{method}"])
+        inspect_source(cop, <<-END.strip_indent)
+          foo = [1, 2, 3]
+          foo.#{method}
+        END
 
         expect(cop.messages).to be_empty
       end
@@ -169,8 +173,10 @@ describe RuboCop::Cop::Performance::FixedSize do
       end
 
       it "accepts calling #{method} on a hash set to a variable" do
-        inspect_source(cop, ['foo = {a: 1, b: 2}',
-                             "foo.#{method}"])
+        inspect_source(cop, <<-END.strip_indent)
+          foo = {a: 1, b: 2}
+          foo.#{method}
+        END
 
         expect(cop.messages).to be_empty
       end

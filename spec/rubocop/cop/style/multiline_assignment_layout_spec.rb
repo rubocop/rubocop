@@ -15,8 +15,10 @@ describe RuboCop::Cop::Style::MultilineAssignmentLayout, :config do
     let(:enforced_style) { 'new_line' }
 
     it 'registers an offense when the rhs is on the same line' do
-      inspect_source(cop, ['blarg = if true',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        blarg = if true
+        end
+      END
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.line).to eq(1)
@@ -25,15 +27,23 @@ describe RuboCop::Cop::Style::MultilineAssignmentLayout, :config do
     end
 
     it 'auto-corrects offenses' do
-      new_source = autocorrect_source(cop, ['blarg = if true',
-                                            'end'])
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        blarg = if true
+        end
+      END
 
-      expect(new_source).to eq("blarg =\n if true\nend")
+      expect(new_source).to eq(<<-END.strip_indent)
+        blarg =
+         if true
+        end
+      END
     end
 
     it 'ignores arrays' do
-      inspect_source(cop, ['a, b = 4,',
-                           '5'])
+      inspect_source(cop, <<-END.strip_indent)
+        a, b = 4,
+        5
+      END
 
       expect(cop.offenses).to be_empty
     end
@@ -42,8 +52,10 @@ describe RuboCop::Cop::Style::MultilineAssignmentLayout, :config do
       let(:supported_types) { %w[array] }
 
       it 'allows supported types to be configured' do
-        inspect_source(cop, ['a, b = 4,',
-                             '5'])
+        inspect_source(cop, <<-END.strip_indent)
+          a, b = 4,
+          5
+        END
 
         expect(cop.offenses.size).to eq(1)
         expect(cop.offenses.first.line).to eq(1)
@@ -53,17 +65,21 @@ describe RuboCop::Cop::Style::MultilineAssignmentLayout, :config do
     end
 
     it 'allows multi-line assignments on separate lines' do
-      inspect_source(cop, ['blarg=',
-                           'if true',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        blarg=
+        if true
+        end
+      END
 
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for masgn with multi-line lhs' do
-      inspect_source(cop, ['a,',
-                           'b = if foo',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        a,
+        b = if foo
+        end
+      END
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.line).to eq(1)
@@ -76,9 +92,11 @@ describe RuboCop::Cop::Style::MultilineAssignmentLayout, :config do
     let(:enforced_style) { 'same_line' }
 
     it 'registers an offense when the rhs is a different line' do
-      inspect_source(cop, ['blarg =',
-                           'if true',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        blarg =
+        if true
+        end
+      END
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.line).to eq(1)
@@ -87,17 +105,24 @@ describe RuboCop::Cop::Style::MultilineAssignmentLayout, :config do
     end
 
     it 'auto-corrects offenses' do
-      new_source = autocorrect_source(cop, ['blarg =',
-                                            'if true',
-                                            'end'])
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        blarg =
+        if true
+        end
+      END
 
-      expect(new_source).to eq("blarg = if true\nend")
+      expect(new_source).to eq(<<-END.strip_indent)
+        blarg = if true
+        end
+      END
     end
 
     it 'ignores arrays' do
-      inspect_source(cop, ['a, b =',
-                           '4,',
-                           '5'])
+      inspect_source(cop, <<-END.strip_indent)
+        a, b =
+        4,
+        5
+      END
 
       expect(cop.offenses).to be_empty
     end
@@ -106,9 +131,11 @@ describe RuboCop::Cop::Style::MultilineAssignmentLayout, :config do
       let(:supported_types) { %w[array] }
 
       it 'allows supported types to be configured' do
-        inspect_source(cop, ['a, b =',
-                             '4,',
-                             '5'])
+        inspect_source(cop, <<-END.strip_indent)
+          a, b =
+          4,
+          5
+        END
 
         expect(cop.offenses.size).to eq(1)
         expect(cop.offenses.first.line).to eq(1)
@@ -118,17 +145,21 @@ describe RuboCop::Cop::Style::MultilineAssignmentLayout, :config do
     end
 
     it 'allows multi-line assignments on the same line' do
-      inspect_source(cop, ['blarg= if true',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        blarg= if true
+        end
+      END
 
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for masgn with multi-line lhs' do
-      inspect_source(cop, ['a,',
-                           'b =',
-                           'if foo',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        a,
+        b =
+        if foo
+        end
+      END
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.line).to eq(1)

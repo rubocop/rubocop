@@ -4,12 +4,14 @@ describe RuboCop::Cop::Style::AlignArray do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for misaligned array elements' do
-    inspect_source(cop, ['array = [',
-                         '  a,',
-                         '   b,',
-                         '  c,',
-                         '   d',
-                         ']'])
+    inspect_source(cop, <<-END.strip_indent)
+      array = [
+        a,
+         b,
+        c,
+         d
+      ]
+    END
     expect(cop.messages).to eq(['Align the elements of an array ' \
                                 'literal if they span more than ' \
                                 'one line.'] * 2)
@@ -17,12 +19,14 @@ describe RuboCop::Cop::Style::AlignArray do
   end
 
   it 'accepts aligned array keys' do
-    inspect_source(cop, ['array = [',
-                         '  a,',
-                         '  b,',
-                         '  c,',
-                         '  d',
-                         ']'])
+    inspect_source(cop, <<-END.strip_indent)
+      array = [
+        a,
+        b,
+        c,
+        d
+      ]
+    END
     expect(cop.offenses).to be_empty
   end
 
@@ -32,96 +36,118 @@ describe RuboCop::Cop::Style::AlignArray do
   end
 
   it 'accepts several elements per line' do
-    inspect_source(cop, ['array = [ a, b,',
-                         '          c, d ]'])
+    inspect_source(cop, <<-END.strip_indent)
+      array = [ a, b,
+                c, d ]
+    END
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts aligned array with fullwidth characters' do
-    inspect_source(cop, ["puts 'Ｒｕｂｙ', [ a,",
-                         '                   b ]'])
+    inspect_source(cop, <<-END.strip_indent)
+      puts 'Ｒｕｂｙ', [ a,
+                         b ]
+    END
     expect(cop.offenses).to be_empty
   end
 
   it 'auto-corrects alignment' do
-    new_source = autocorrect_source(cop, ['array = [',
-                                          '  a,',
-                                          '   b,',
-                                          '  c,',
-                                          ' d',
-                                          ']'])
-    expect(new_source).to eq(['array = [',
-                              '  a,',
-                              '  b,',
-                              '  c,',
-                              '  d',
-                              ']'].join("\n"))
+    new_source = autocorrect_source(cop, <<-END.strip_indent)
+      array = [
+        a,
+         b,
+        c,
+       d
+      ]
+    END
+    expect(new_source).to eq(<<-END.strip_indent)
+      array = [
+        a,
+        b,
+        c,
+        d
+      ]
+    END
   end
 
   it 'does not auto-correct array within array with too much indentation' do
-    original_source = ['[:l1,',
-                       '  [:l2,',
-                       '',
-                       '    [:l3,',
-                       '     [:l4]]]]']
+    original_source = <<-END.strip_indent
+      [:l1,
+        [:l2,
+
+          [:l3,
+           [:l4]]]]
+    END
     new_source = autocorrect_source(cop, original_source)
-    expect(new_source).to eq(['[:l1,',
-                              ' [:l2,', # Corrected
-                              '',
-                              '   [:l3,', # Not corrected
-                              '    [:l4]]]]'].join("\n"))
+    expect(new_source).to eq(<<-END.strip_indent)
+      [:l1,
+       [:l2,
+
+         [:l3,
+          [:l4]]]]
+    END
   end
 
   it 'does not auto-correct array within array with too little indentation' do
-    original_source = ['[:l1,',
-                       '[:l2,',
-                       '',
-                       '  [:l3,',
-                       '   [:l4]]]]']
+    original_source = <<-END.strip_indent
+      [:l1,
+      [:l2,
+
+        [:l3,
+         [:l4]]]]
+    END
     new_source = autocorrect_source(cop, original_source)
-    expect(new_source).to eq(['[:l1,',
-                              ' [:l2,', # Corrected
-                              '',
-                              '   [:l3,', # Not corrected
-                              '    [:l4]]]]'].join("\n"))
+    expect(new_source).to eq(<<-END.strip_indent)
+      [:l1,
+       [:l2,
+
+         [:l3,
+          [:l4]]]]
+    END
   end
 
   it 'auto-corrects only elements that begin a line' do
-    original_source = ['array = [:bar, {',
-                       '         whiz: 2, bang: 3 }, option: 3]']
+    original_source = <<-END.strip_indent
+      array = [:bar, {
+               whiz: 2, bang: 3 }, option: 3]
+    END
     new_source = autocorrect_source(cop, original_source)
-    expect(new_source).to eq(original_source.join("\n"))
+    expect(new_source).to eq(original_source)
   end
 
   it 'does not indent heredoc strings in autocorrect' do
-    original_source = ['var = [',
-                       "       { :type => 'something',",
-                       '         :sql => <<EOF',
-                       'Select something',
-                       'from atable',
-                       'EOF',
-                       '       },',
-                       "      { :type => 'something',",
-                       '        :sql => <<EOF',
-                       'Select something',
-                       'from atable',
-                       'EOF',
-                       '      }',
-                       ']']
+    original_source = <<-END.strip_indent
+      var = [
+             { :type => 'something',
+               :sql => <<EOF
+      Select something
+      from atable
+      EOF
+             },
+            { :type => 'something',
+              :sql => <<EOF
+      Select something
+      from atable
+      EOF
+            }
+      ]
+    END
     new_source = autocorrect_source(cop, original_source)
-    expect(new_source).to eq(['var = [',
-                              "       { :type => 'something',",
-                              '         :sql => <<EOF',
-                              'Select something',
-                              'from atable',
-                              'EOF',
-                              '       },',
-                              "       { :type => 'something',",
-                              '         :sql => <<EOF',
-                              'Select something',
-                              'from atable',
-                              'EOF',
-                              '       }',
-                              ']'].join("\n"))
+    expect(new_source).to eq(<<-END.strip_indent)
+      var = [
+             { :type => 'something',
+               :sql => <<EOF
+      Select something
+      from atable
+      EOF
+             },
+             { :type => 'something',
+               :sql => <<EOF
+      Select something
+      from atable
+      EOF
+             }
+      ]
+    END
   end
 end

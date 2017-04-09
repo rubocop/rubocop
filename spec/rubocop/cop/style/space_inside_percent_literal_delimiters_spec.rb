@@ -55,28 +55,34 @@ describe RuboCop::Cop::Style::SpaceInsidePercentLiteralDelimiters do
         end
 
         it 'accepts multi-line literals' do
-          inspect_source(cop, ["%#{type}(",
-                               '  a',
-                               '  b',
-                               '  c',
-                               ')'])
+          inspect_source(cop, <<-END.strip_indent)
+            %#{type}(
+              a
+              b
+              c
+            )
+          END
           expect(cop.messages).to be_empty
         end
 
         it 'accepts multi-line literals within a method' do
-          inspect_source(cop, ['def foo',
-                               "  %#{type}(",
-                               '    a',
-                               '    b',
-                               '    c',
-                               '  )',
-                               'end'])
+          inspect_source(cop, <<-END.strip_indent)
+            def foo
+              %#{type}(
+                a
+                b
+                c
+              )
+            end
+          END
           expect(cop.messages).to be_empty
         end
 
         it 'accepts newlines and additional following alignment spaces' do
-          inspect_source(cop, ["%#{type}(a b",
-                               '   c)'])
+          inspect_source(cop, <<-END.strip_indent)
+            %#{type}(a b
+               c)
+          END
           expect(cop.messages).to be_empty
         end
 

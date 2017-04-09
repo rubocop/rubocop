@@ -154,13 +154,17 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
   end
 
   it 'auto-corrects correctly when args have a trailing comma' do
-    corrected = autocorrect_source(cop, ['mail(',
-                                         "  to: 'foo',",
-                                         "  subject: 'bar',",
-                                         ') { |format| format.text }'])
-    expect(corrected).to eq(['mail(',
-                             "  to: 'foo',",
-                             "  subject: 'bar', &:text",
-                             ')'].join("\n"))
+    corrected = autocorrect_source(cop, <<-END.strip_indent)
+      mail(
+        to: 'foo',
+        subject: 'bar',
+      ) { |format| format.text }
+    END
+    expect(corrected).to eq(<<-END.strip_indent)
+      mail(
+        to: 'foo',
+        subject: 'bar', &:text
+      )
+    END
   end
 end

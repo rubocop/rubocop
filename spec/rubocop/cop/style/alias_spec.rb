@@ -41,13 +41,15 @@ describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'does not register an offense for alias in an instance_eval block' do
-      inspect_source(cop, ['module M',
-                           '  def foo',
-                           '    instance_eval {',
-                           '      alias bar baz',
-                           '    }',
-                           '  end',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        module M
+          def foo
+            instance_eval {
+              alias bar baz
+            }
+          end
+        end
+      END
       expect(cop.offenses).to be_empty
     end
   end
@@ -85,77 +87,99 @@ describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'registers an offense for alias_method in a class block' do
-      inspect_source(cop, ['class C',
-                           '  alias_method :ala, :bala',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        class C
+          alias_method :ala, :bala
+        end
+      END
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Use `alias` instead of `alias_method` in a class body.'])
     end
 
     it 'autocorrects alias_method in a class block' do
-      corrected = autocorrect_source(cop, ['class C',
-                                           '  alias_method :ala, :bala',
-                                           'end'])
-      expect(corrected).to eq(['class C',
-                               '  alias ala bala',
-                               'end'].join("\n"))
+      corrected = autocorrect_source(cop, <<-END.strip_indent)
+        class C
+          alias_method :ala, :bala
+        end
+      END
+      expect(corrected).to eq(<<-END.strip_indent)
+        class C
+          alias ala bala
+        end
+      END
     end
 
     it 'registers an offense for alias_method in a module block' do
-      inspect_source(cop, ['module M',
-                           '  alias_method :ala, :bala',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        module M
+          alias_method :ala, :bala
+        end
+      END
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Use `alias` instead of `alias_method` in a module body.'])
     end
 
     it 'autocorrects alias_method in a module block' do
-      corrected = autocorrect_source(cop, ['module M',
-                                           '  alias_method :ala, :bala',
-                                           'end'])
-      expect(corrected).to eq(['module M',
-                               '  alias ala bala',
-                               'end'].join("\n"))
+      corrected = autocorrect_source(cop, <<-END.strip_indent)
+        module M
+          alias_method :ala, :bala
+        end
+      END
+      expect(corrected).to eq(<<-END.strip_indent)
+        module M
+          alias ala bala
+        end
+      END
     end
 
     it 'does not register an offense for alias_method with explicit receiver' do
-      inspect_source(cop, ['class C',
-                           '  receiver.alias_method :ala, :bala',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        class C
+          receiver.alias_method :ala, :bala
+        end
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'does not register an offense for alias_method in a method def' do
-      inspect_source(cop, ['def method',
-                           '  alias_method :ala, :bala',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def method
+          alias_method :ala, :bala
+        end
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'does not register an offense for alias_method in self.method def' do
-      inspect_source(cop, ['def self.method',
-                           '  alias_method :ala, :bala',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def self.method
+          alias_method :ala, :bala
+        end
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'does not register an offense for alias_method in a block' do
-      inspect_source(cop, ['dsl_method do',
-                           '  alias_method :ala, :bala',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        dsl_method do
+          alias_method :ala, :bala
+        end
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'does not register an offense for alias in an instance_eval block' do
-      inspect_source(cop, ['module M',
-                           '  def foo',
-                           '    instance_eval {',
-                           '      alias bar baz',
-                           '    }',
-                           '  end',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        module M
+          def foo
+            instance_eval {
+              alias bar baz
+            }
+          end
+        end
+      END
       expect(cop.offenses).to be_empty
     end
   end

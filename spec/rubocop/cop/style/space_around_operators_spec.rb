@@ -49,30 +49,32 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
   end
 
   it 'accepts exclamation point definition' do
-    inspect_source(cop, ['  def !',
-                         '    !__getobj__',
-                         '  end'])
+    inspect_source(cop, <<-END.strip_margin('|'))
+      |  def !
+      |    !__getobj__
+      |  end
+    END
     expect(cop.offenses).to be_empty
     expect(cop.messages).to be_empty
   end
 
   it 'accepts a unary' do
-    inspect_source(cop,
-                   ['  def bm(label_width = 0, *labels, &blk)',
-                    '    benchmark(CAPTION, label_width, FORMAT,',
-                    '              *labels, &blk)',
-                    '  end',
-                    '',
-                    '  def each &block',
-                    '    +11',
-                    '  end',
-                    '',
-                    '  def self.search *args',
-                    '  end',
-                    '',
-                    '  def each *args',
-                    '  end',
-                    ''])
+    inspect_source(cop, <<-END.strip_indent)
+        def bm(label_width = 0, *labels, &blk)
+          benchmark(CAPTION, label_width, FORMAT,
+                    *labels, &blk)
+        end
+
+        def each &block
+          +11
+        end
+
+        def self.search *args
+        end
+
+        def each *args
+        end
+    END
     expect(cop.messages).to be_empty
   end
 
@@ -82,15 +84,18 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
   end
 
   it 'accepts def of operator' do
-    inspect_source(cop, ['def +(other); end',
-                         'def self.===(other); end'])
+    inspect_source(cop, <<-END.strip_indent)
+      def +(other); end
+      def self.===(other); end
+    END
     expect(cop.messages).to be_empty
   end
 
   it 'accepts an operator at the end of a line' do
-    inspect_source(cop,
-                   ["['Favor unless over if for negative ' +",
-                    " 'conditions.'] * 2"])
+    inspect_source(cop, <<-END.strip_indent)
+      ['Favor unless over if for negative ' +
+       'conditions.'] * 2
+    END
     expect(cop.messages).to eq([])
   end
 
@@ -100,11 +105,12 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
   end
 
   it 'accepts an assignment by `for` statement' do
-    inspect_source(cop,
-                   ['for a in [] do; end',
-                    'for A in [] do; end',
-                    'for @a in [] do; end',
-                    'for @@a in [] do; end'])
+    inspect_source(cop, <<-END.strip_indent)
+      for a in [] do; end
+      for A in [] do; end
+      for @a in [] do; end
+      for @@a in [] do; end
+    END
     expect(cop.offenses).to be_empty
   end
 
@@ -114,16 +120,19 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
   end
 
   it 'accepts operators with spaces' do
-    inspect_source(cop,
-                   ['x += a + b - c * d / e % f ^ g | h & i || j',
-                    'y -= k && l'])
+    inspect_source(cop, <<-END.strip_indent)
+      x += a + b - c * d / e % f ^ g | h & i || j
+      y -= k && l
+    END
     expect(cop.messages).to eq([])
   end
 
   it "accepts some operators that are exceptions & don't need spaces" do
-    inspect_source(cop, ['(1..3)',
-                         'ActionController::Base',
-                         'each { |s, t| }'])
+    inspect_source(cop, <<-END.strip_indent)
+      (1..3)
+      ActionController::Base
+      each { |s, t| }
+    END
     expect(cop.messages).to eq([])
   end
 
@@ -146,10 +155,14 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
   end
 
   it 'auto-corrects unwanted space around **' do
-    new_source = autocorrect_source(cop, ['x = a * b ** 2',
-                                          'y = a * b** 2'])
-    expect(new_source).to eq(['x = a * b**2',
-                              'y = a * b**2'].join("\n"))
+    new_source = autocorrect_source(cop, <<-END.strip_indent)
+      x = a * b ** 2
+      y = a * b** 2
+    END
+    expect(new_source).to eq(<<-END.strip_indent)
+      x = a * b**2
+      y = a * b**2
+    END
   end
 
   it 'accepts exponent operator without spaces' do
@@ -158,11 +171,13 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
   end
 
   it 'accepts unary operators without space' do
-    inspect_source(cop, ['[].map(&:size)',
-                         'a.(b)',
-                         '-3',
-                         'arr.collect { |e| -e }',
-                         'x = +2'])
+    inspect_source(cop, <<-END.strip_indent)
+      [].map(&:size)
+      a.(b)
+      -3
+      arr.collect { |e| -e }
+      x = +2
+    END
     expect(cop.messages).to eq([])
   end
 
@@ -184,23 +199,28 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
   it 'accepts argument default values without space' do
     # These are handled by SpaceAroundEqualsInParameterDefault,
     # so SpaceAroundOperators leaves them alone.
-    inspect_source(cop,
-                   ['def init(name=nil)',
-                    'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      def init(name=nil)
+      end
+    END
     expect(cop.messages).to be_empty
   end
 
   it 'accepts the construct class <<self with no space after <<' do
-    inspect_source(cop, ['class <<self',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      class <<self
+      end
+    END
     expect(cop.messages).to be_empty
   end
 
   describe 'missing space around operators' do
     shared_examples 'modifier with missing space' do |keyword|
       it "registers an offense in presence of modifier #{keyword} statement" do
-        src = ["a=1 #{keyword} condition",
-               'c=2']
+        src = <<-END.strip_indent
+          a=1 #{keyword} condition
+          c=2
+        END
         inspect_source(cop, src)
         expect(cop.offenses.map(&:line)).to eq([1, 2])
         expect(cop.messages).to eq(
@@ -208,8 +228,10 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
         )
 
         new_source = autocorrect_source(cop, src)
-        expect(new_source)
-          .to eq(src.map { |line| line.sub('=', ' = ') }.join("\n"))
+        expect(new_source).to eq(<<-END.strip_indent)
+          a = 1 #{keyword} condition
+          c = 2
+        END
       end
     end
 
@@ -292,9 +314,10 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
     end
 
     it 'registers an offense for operators without spaces' do
-      inspect_source(cop,
-                     ['x+= a+b-c*d/e%f^g|h&i||j',
-                      'y -=k&&l'])
+      inspect_source(cop, <<-END.strip_indent)
+        x+= a+b-c*d/e%f^g|h&i||j
+        y -=k&&l
+      END
       expect(cop.messages)
         .to eq(['Surrounding space missing for operator `+=`.',
                 'Surrounding space missing for operator `+`.',
@@ -311,10 +334,14 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
     end
 
     it 'auto-corrects missing space' do
-      new_source = autocorrect_source(cop, ['x+= a+b-c*d/e%f^g|h&i||j',
-                                            'y -=k&&l'])
-      expect(new_source).to eq(['x += a + b - c * d / e % f ^ g | h & i || j',
-                                'y -= k && l'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        x+= a+b-c*d/e%f^g|h&i||j
+        y -=k&&l
+      END
+      expect(new_source).to eq(<<-END.strip_indent)
+        x += a + b - c * d / e % f ^ g | h & i || j
+        y -= k && l
+      END
     end
 
     it 'registers an offense for a setter call without spaces' do
@@ -348,10 +375,12 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
 
     context 'when a hash literal is on multiple lines' do
       before do
-        inspect_source(cop, ['{',
-                             '  1=>2,',
-                             '  a: b',
-                             '}'])
+        inspect_source(cop, <<-END.strip_indent)
+          {
+            1=>2,
+            a: b
+          }
+        END
       end
 
       context 'and Style/AlignHash:EnforcedHashRocketStyle is key' do
@@ -373,24 +402,28 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
     end
 
     it 'registers an offense for match operators without space' do
-      inspect_source(cop, ['x=~/abc/',
-                           'y !~/abc/'])
+      inspect_source(cop, <<-END.strip_indent)
+        x=~/abc/
+        y !~/abc/
+      END
       expect(cop.messages)
         .to eq(['Surrounding space missing for operator `=~`.',
                 'Surrounding space missing for operator `!~`.'])
     end
 
     it 'registers an offense for various assignments without space' do
-      inspect_source(cop, ['x||=0',
-                           'y&&=0',
-                           'z*=2',
-                           '@a=0',
-                           '@@a=0',
-                           'a,b=0',
-                           'A=0',
-                           'x[3]=0',
-                           '$A=0',
-                           'A||=0'])
+      inspect_source(cop, <<-END.strip_indent)
+        x||=0
+        y&&=0
+        z*=2
+        @a=0
+        @@a=0
+        a,b=0
+        A=0
+        x[3]=0
+        $A=0
+        A||=0
+      END
       expect(cop.messages)
         .to eq(['Surrounding space missing for operator `||=`.',
                 'Surrounding space missing for operator `&&=`.',
@@ -419,33 +452,43 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
     end
 
     it 'registers an offense for inheritance < without space' do
-      inspect_source(cop, ['class ShowSourceTestClass<ShowSourceTestSuperClass',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        class ShowSourceTestClass<ShowSourceTestSuperClass
+        end
+      END
       expect(cop.messages)
         .to eq(['Surrounding space missing for operator `<`.'])
     end
 
     it 'registers an offense for hash rocket without space at rescue' do
-      inspect_source(cop, ['begin',
-                           'rescue Exception=>e',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        begin
+        rescue Exception=>e
+        end
+      END
       expect(cop.messages)
         .to eq(['Surrounding space missing for operator `=>`.'])
     end
 
     it "doesn't eat a newline when auto-correcting" do
-      new_source = autocorrect_source(cop, ["'Here is a'+",
-                                            "'joined string'+",
-                                            "'across three lines'"])
-      expect(new_source).to eq(["'Here is a' +",
-                                "'joined string' +",
-                                "'across three lines'"].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        'Here is a'+
+        'joined string'+
+        'across three lines'
+      END
+      expect(new_source).to eq(<<-END.strip_indent)
+        'Here is a' +
+        'joined string' +
+        'across three lines'
+      END
     end
 
     it "doesn't register an offense for operators with newline on right" do
-      inspect_source(cop, ["'Here is a' +",
-                           "'joined string' +",
-                           "'across three lines'"])
+      inspect_source(cop, <<-END.strip_indent)
+        'Here is a' +
+        'joined string' +
+        'across three lines'
+      END
       expect(cop.offenses).to be_empty
     end
   end
@@ -453,8 +496,10 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
   describe 'extra space around operators' do
     shared_examples 'modifier with extra space' do |keyword|
       it "registers an offense in presence of modifier #{keyword} statement" do
-        src = ["a =  1 #{keyword} condition",
-               'c =   2']
+        src = <<-END.strip_indent
+          a =  1 #{keyword} condition
+          c =   2
+        END
         inspect_source(cop, src)
         expect(cop.offenses.map(&:line)).to eq([1, 2])
         expect(cop.messages).to eq(
@@ -462,15 +507,19 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
         )
 
         new_source = autocorrect_source(cop, src)
-        expect(new_source)
-          .to eq(src.map { |line| line.sub(/\s*=\s*/, ' = ') }.join("\n"))
+        expect(new_source).to eq(<<-END.strip_indent)
+          a = 1 #{keyword} condition
+          c = 2
+        END
       end
     end
 
     it 'registers an offense for assignment with many spaces on either side' do
-      inspect_source(cop, ['x   = 0',
-                           'y +=   0',
-                           'z[0]  =  0'])
+      inspect_source(cop, <<-END.strip_indent)
+        x   = 0
+        y +=   0
+        z[0]  =  0
+      END
       expect(cop.messages)
         .to eq(['Operator `=` should be surrounded by a single space.',
                 'Operator `+=` should be surrounded by a single space.',
@@ -478,10 +527,16 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
     end
 
     it 'auto-corrects assignment with too many spaces on either side' do
-      new_source = autocorrect_source(cop, ['x  = 0',
-                                            'y =   0',
-                                            'z  =   0'])
-      expect(new_source).to eq(['x = 0', 'y = 0', 'z = 0'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        x  = 0
+        y =   0
+        z  =   0
+      END
+      expect(new_source).to eq(<<-END.strip_indent)
+        x = 0
+        y = 0
+        z = 0
+      END
     end
 
     it 'registers an offense for ternary operator with too many spaces' do
@@ -503,9 +558,11 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
     it_behaves_like 'modifier with extra space', 'until'
 
     it 'registers an offense for binary operators that could be unary' do
-      inspect_source(cop, ['a -  3',
-                           'x &   0xff',
-                           'z +  0'])
+      inspect_source(cop, <<-END.strip_indent)
+        a -  3
+        x &   0xff
+        z +  0
+      END
       expect(cop.messages).to eq(
         ['Operator `-` should be surrounded by a single space.',
          'Operator `&` should be surrounded by a single space.',
@@ -514,10 +571,16 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
     end
 
     it 'auto-corrects missing space in binary operators that could be unary' do
-      new_source = autocorrect_source(cop, ['a -  3',
-                                            'x &   0xff',
-                                            'z +  0'])
-      expect(new_source).to eq(['a - 3', 'x & 0xff', 'z + 0'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        a -  3
+        x &   0xff
+        z +  0
+      END
+      expect(new_source).to eq(<<-END.strip_indent)
+        a - 3
+        x & 0xff
+        z + 0
+      END
     end
 
     it 'registers an offense for arguments to a method' do
@@ -533,9 +596,10 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
     end
 
     it 'registers an offense for operators with too many spaces' do
-      inspect_source(cop,
-                     ['x +=  a  + b -  c  * d /  e  % f  ^ g   | h &  i  ||  j',
-                      'y  -=  k   &&        l'])
+      inspect_source(cop, <<-END.strip_indent)
+        x +=  a  + b -  c  * d /  e  % f  ^ g   | h &  i  ||  j
+        y  -=  k   &&        l
+      END
       expect(cop.messages)
         .to eq(['Operator `+=` should be surrounded by a single space.',
                 'Operator `+` should be surrounded by a single space.',
@@ -554,11 +618,15 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
     it 'auto-corrects missing space' do
       new_source = autocorrect_source(
         cop,
-        ['x +=  a  + b -  c  * d /  e  % f  ^ g   | h &  i  ||  j',
-         'y  -=  k   &&        l']
+        <<-END.strip_indent
+          x +=  a  + b -  c  * d /  e  % f  ^ g   | h &  i  ||  j
+          y  -=  k   &&        l
+        END
       )
-      expect(new_source).to eq(['x += a + b - c * d / e % f ^ g | h & i || j',
-                                'y -= k && l'].join("\n"))
+      expect(new_source).to eq(<<-END.strip_indent)
+        x += a + b - c * d / e % f ^ g | h & i || j
+        y -= k && l
+      END
     end
 
     it 'registers an offense for a setter call with too many spaces' do
@@ -577,9 +645,11 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
 
     it 'registers an offense for a hash rocket with an extra space' \
       'on multiple line' do
-      inspect_source(cop, ['{',
-                           '  1 =>  2',
-                           '}'])
+      inspect_source(cop, <<-END.strip_indent)
+        {
+          1 =>  2
+        }
+      END
       expect(cop.messages).to eq(
         ['Operator `=>` should be surrounded by a single space.']
       )
@@ -587,10 +657,12 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
 
     it 'accepts for a hash rocket with an extra space for alignment' \
       'on multiple line' do
-      inspect_source(cop, ['{',
-                           '  1 =>  2,',
-                           '  11 => 3',
-                           '}'])
+      inspect_source(cop, <<-END.strip_indent)
+        {
+          1 =>  2,
+          11 => 3
+        }
+      END
       expect(cop.offenses).to be_empty
     end
 
@@ -598,10 +670,12 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
       let(:allow_for_alignment) { false }
 
       it 'accepts an extra space' do
-        inspect_source(cop, ['{',
-                             '  1 =>  2,',
-                             '  11 => 3',
-                             '}'])
+        inspect_source(cop, <<-END.strip_indent)
+          {
+            1 =>  2,
+            11 => 3
+          }
+        END
         expect(cop.messages).to eq(
           ['Operator `=>` should be surrounded by a single space.']
         )
@@ -609,25 +683,29 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
     end
 
     it 'registers an offense for match operators with too many spaces' do
-      inspect_source(cop, ['x  =~ /abc/',
-                           'y !~   /abc/'])
+      inspect_source(cop, <<-END.strip_indent)
+        x  =~ /abc/
+        y !~   /abc/
+      END
       expect(cop.messages)
         .to eq(['Operator `=~` should be surrounded by a single space.',
                 'Operator `!~` should be surrounded by a single space.'])
     end
 
     it 'registers an offense for various assignments with too many spaces' do
-      inspect_source(cop, ['x ||=  0',
-                           'y  &&=  0',
-                           'z  *=   2',
-                           '@a   = 0',
-                           '@@a   = 0',
-                           'a,b    =   0',
-                           'A  = 0',
-                           'x[3]   = 0',
-                           '$A    =   0',
-                           'A  ||=  0',
-                           'A  +=    0'])
+      inspect_source(cop, <<-END.strip_indent)
+        x ||=  0
+        y  &&=  0
+        z  *=   2
+        @a   = 0
+        @@a   = 0
+        a,b    =   0
+        A  = 0
+        x[3]   = 0
+        $A    =   0
+        A  ||=  0
+        A  +=    0
+      END
       expect(cop.messages)
         .to eq(['Operator `||=` should be surrounded by a single space.',
                 'Operator `&&=` should be surrounded by a single space.',
@@ -658,17 +736,20 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
     end
 
     it 'registers an offense for inheritance < with too many spaces' do
-      inspect_source(cop,
-                     ['class ShowSourceTestClass  <  ShowSourceTestSuperClass',
-                      'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        class ShowSourceTestClass  <  ShowSourceTestSuperClass
+        end
+      END
       expect(cop.messages)
         .to eq(['Operator `<` should be surrounded by a single space.'])
     end
 
     it 'registers an offense for hash rocket with too many spaces at rescue' do
-      inspect_source(cop, ['begin',
-                           'rescue Exception   =>      e',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        begin
+        rescue Exception   =>      e
+        end
+      END
       expect(cop.messages)
         .to eq(['Operator `=>` should be surrounded by a single space.'])
     end

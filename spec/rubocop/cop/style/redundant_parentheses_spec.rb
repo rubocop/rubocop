@@ -239,18 +239,22 @@ describe RuboCop::Cop::Style::RedundantParentheses do
   end
 
   it 'accepts parentheses around the error passed to rescue' do
-    inspect_source(cop, ['begin',
-                         '  some_method',
-                         'rescue(StandardError)',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      begin
+        some_method
+      rescue(StandardError)
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts parentheses around a constant passed to when' do
-    source = ['case foo',
-              'when(Const)',
-              '  bar',
-              'end']
+    source = <<-END.strip_indent
+      case foo
+      when(Const)
+        bar
+      end
+    END
 
     inspect_source(cop, source)
 

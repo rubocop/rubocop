@@ -13,11 +13,12 @@ describe RuboCop::Cop::Style::NegatedIf do
 
   describe 'with “both” style' do
     it 'registers an offense for if with exclamation point condition' do
-      inspect_source(cop,
-                     ['if !a_condition',
-                      '  some_method',
-                      'end',
-                      'some_method if !a_condition'])
+      inspect_source(cop, <<-END.strip_indent)
+        if !a_condition
+          some_method
+        end
+        some_method if !a_condition
+      END
       expect(cop.messages).to eq(
         ['Favor `unless` over `if` for negative ' \
          'conditions.'] * 2
@@ -25,21 +26,23 @@ describe RuboCop::Cop::Style::NegatedIf do
     end
 
     it 'registers an offense for unless with exclamation point condition' do
-      inspect_source(cop,
-                     ['unless !a_condition',
-                      '  some_method',
-                      'end',
-                      'some_method unless !a_condition'])
+      inspect_source(cop, <<-END.strip_indent)
+        unless !a_condition
+          some_method
+        end
+        some_method unless !a_condition
+      END
       expect(cop.messages).to eq(['Favor `if` over `unless` for negative ' \
                                   'conditions.'] * 2)
     end
 
     it 'registers an offense for if with "not" condition' do
-      inspect_source(cop,
-                     ['if not a_condition',
-                      '  some_method',
-                      'end',
-                      'some_method if not a_condition'])
+      inspect_source(cop, <<-END.strip_indent)
+        if not a_condition
+          some_method
+        end
+        some_method if not a_condition
+      END
       expect(cop.messages).to eq(
         ['Favor `unless` over `if` for negative ' \
          'conditions.'] * 2
@@ -48,50 +51,54 @@ describe RuboCop::Cop::Style::NegatedIf do
     end
 
     it 'accepts an if/else with negative condition' do
-      inspect_source(cop,
-                     ['if !a_condition',
-                      '  some_method',
-                      'else',
-                      '  something_else',
-                      'end',
-                      'if not a_condition',
-                      '  some_method',
-                      'elsif other_condition',
-                      '  something_else',
-                      'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        if !a_condition
+          some_method
+        else
+          something_else
+        end
+        if not a_condition
+          some_method
+        elsif other_condition
+          something_else
+        end
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts an if where only part of the condition is negated' do
-      inspect_source(cop,
-                     ['if !condition && another_condition',
-                      '  some_method',
-                      'end',
-                      'if not condition or another_condition',
-                      '  some_method',
-                      'end',
-                      'some_method if not condition or another_condition'])
+      inspect_source(cop, <<-END.strip_indent)
+        if !condition && another_condition
+          some_method
+        end
+        if not condition or another_condition
+          some_method
+        end
+        some_method if not condition or another_condition
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts an if where the condition is doubly negated' do
-      inspect_source(cop,
-                     ['if !!condition',
-                      '  some_method',
-                      'end',
-                      'some_method if !!condition'])
+      inspect_source(cop, <<-END.strip_indent)
+        if !!condition
+          some_method
+        end
+        some_method if !!condition
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'is not confused by negated elsif' do
-      inspect_source(cop,
-                     ['if test.is_a?(String)',
-                      '  3',
-                      'elsif test.is_a?(Array)',
-                      '  2',
-                      'elsif !test.nil?',
-                      '  1',
-                      'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        if test.is_a?(String)
+          3
+        elsif test.is_a?(Array)
+          2
+        elsif !test.nil?
+          1
+        end
+      END
 
       expect(cop.offenses).to be_empty
     end
@@ -118,14 +125,15 @@ describe RuboCop::Cop::Style::NegatedIf do
     end
 
     it 'autocorrects for prefix' do
-      corrected = autocorrect_source(cop,
-                                     ['if !foo',
-                                      'end'])
+      corrected = autocorrect_source(cop, <<-END.strip_indent)
+        if !foo
+        end
+      END
 
-      expect(corrected).to eq [
-        'unless foo',
-        'end'
-      ].join("\n")
+      expect(corrected).to eq <<-END.strip_indent
+        unless foo
+        end
+      END
     end
   end
 
@@ -142,9 +150,10 @@ describe RuboCop::Cop::Style::NegatedIf do
     end
 
     it 'registers an offence for prefix' do
-      inspect_source(cop,
-                     ['if !foo',
-                      'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        if !foo
+        end
+      END
 
       expect(cop.messages).to eq(
         ['Favor `unless` over `if` for negative conditions.']
@@ -158,14 +167,15 @@ describe RuboCop::Cop::Style::NegatedIf do
     end
 
     it 'autocorrects for prefix' do
-      corrected = autocorrect_source(cop,
-                                     ['if !foo',
-                                      'end'])
+      corrected = autocorrect_source(cop, <<-END.strip_indent)
+        if !foo
+        end
+      END
 
-      expect(corrected).to eq [
-        'unless foo',
-        'end'
-      ].join("\n")
+      expect(corrected).to eq <<-END.strip_indent
+        unless foo
+        end
+      END
     end
   end
 
@@ -190,9 +200,10 @@ describe RuboCop::Cop::Style::NegatedIf do
     end
 
     it 'does not register an offence for prefix' do
-      inspect_source(cop,
-                     ['if !foo',
-                      'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        if !foo
+        end
+      END
 
       expect(cop.offenses).to be_empty
     end
@@ -215,16 +226,18 @@ describe RuboCop::Cop::Style::NegatedIf do
   end
 
   it 'does not blow up for empty if condition' do
-    inspect_source(cop,
-                   ['if ()',
-                    'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      if ()
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
   it 'does not blow up for empty unless condition' do
-    inspect_source(cop,
-                   ['unless ()',
-                    'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      unless ()
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 end

@@ -9,13 +9,13 @@ describe RuboCop::Cop::Lint::UselessElseWithoutRescue do
 
   context 'with `else` without `rescue`' do
     let(:source) do
-      [
-        'begin',
-        '  do_something',
-        'else',
-        '  handle_unknown_errors',
-        'end'
-      ]
+      <<-END.strip_indent
+        begin
+          do_something
+        else
+          handle_unknown_errors
+        end
+      END
     end
 
     it 'registers an offense' do
@@ -28,15 +28,15 @@ describe RuboCop::Cop::Lint::UselessElseWithoutRescue do
 
   context 'with `else` with `rescue`' do
     let(:source) do
-      [
-        'begin',
-        '  do_something',
-        'rescue ArgumentError',
-        '  handle_argument_error',
-        'else',
-        '  handle_unknown_errors',
-        'end'
-      ]
+      <<-END.strip_indent
+        begin
+          do_something
+        rescue ArgumentError
+          handle_argument_error
+        else
+          handle_unknown_errors
+        end
+      END
     end
 
     it 'accepts' do

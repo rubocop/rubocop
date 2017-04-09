@@ -13,59 +13,69 @@ describe RuboCop::Cop::Style::EmptyLinesAroundClassBody, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'no_empty_lines' } }
 
     it 'registers an offense for class body starting with a blank' do
-      inspect_source(cop,
-                     ['class SomeClass',
-                      '',
-                      '  do_something',
-                      'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        class SomeClass
+
+          do_something
+        end
+      END
       expect(cop.messages)
         .to eq(['Extra empty line detected at class body beginning.'])
     end
 
     it 'autocorrects class body containing only a blank' do
-      corrected = autocorrect_source(cop,
-                                     ['class SomeClass',
-                                      '',
-                                      'end'])
-      expect(corrected).to eq ['class SomeClass',
-                               'end'].join("\n")
+      corrected = autocorrect_source(cop, <<-END.strip_indent)
+        class SomeClass
+
+        end
+      END
+      expect(corrected).to eq <<-END.strip_indent
+        class SomeClass
+        end
+      END
     end
 
     it 'registers an offense for class body ending with a blank' do
-      inspect_source(cop,
-                     ['class SomeClass',
-                      '  do_something',
-                      '',
-                      'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        class SomeClass
+          do_something
+
+        end
+      END
       expect(cop.messages)
         .to eq(['Extra empty line detected at class body end.'])
     end
 
     it 'registers an offense for singleton class body starting with a blank' do
-      inspect_source(cop,
-                     ['class << self',
-                      '',
-                      '  do_something',
-                      'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        class << self
+
+          do_something
+        end
+      END
       expect(cop.messages)
         .to eq(['Extra empty line detected at class body beginning.'])
     end
 
     it 'autocorrects singleton class body containing only a blank' do
-      corrected = autocorrect_source(cop,
-                                     ['class << self',
-                                      '',
-                                      'end'])
-      expect(corrected).to eq ['class << self',
-                               'end'].join("\n")
+      corrected = autocorrect_source(cop, <<-END.strip_indent)
+        class << self
+
+        end
+      END
+      expect(corrected).to eq <<-END.strip_indent
+        class << self
+        end
+      END
     end
 
     it 'registers an offense for singleton class body ending with a blank' do
-      inspect_source(cop,
-                     ['class << self',
-                      '  do_something',
-                      '',
-                      'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        class << self
+          do_something
+
+        end
+      END
       expect(cop.messages)
         .to eq(['Extra empty line detected at class body end.'])
     end
@@ -76,10 +86,11 @@ describe RuboCop::Cop::Style::EmptyLinesAroundClassBody, :config do
 
     it 'registers an offense for class body not starting or ending with a ' \
        'blank' do
-      inspect_source(cop,
-                     ['class SomeClass',
-                      '  do_something',
-                      'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        class SomeClass
+          do_something
+        end
+      END
       expect(cop.messages).to eq(['Empty line missing at class body beginning.',
                                   'Empty line missing at class body end.'])
     end
@@ -91,23 +102,27 @@ describe RuboCop::Cop::Style::EmptyLinesAroundClassBody, :config do
     end
 
     it 'autocorrects beginning and end' do
-      new_source = autocorrect_source(cop,
-                                      ['class SomeClass',
-                                       '  do_something',
-                                       'end'])
-      expect(new_source).to eq(['class SomeClass',
-                                '',
-                                '  do_something',
-                                '',
-                                'end'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        class SomeClass
+          do_something
+        end
+      END
+      expect(new_source).to eq(<<-END.strip_indent)
+        class SomeClass
+
+          do_something
+
+        end
+      END
     end
 
     it 'registers an offense for singleton class body not starting or ending ' \
        'with a blank' do
-      inspect_source(cop,
-                     ['class << self',
-                      '  do_something',
-                      'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        class << self
+          do_something
+        end
+      END
       expect(cop.messages).to eq(['Empty line missing at class body beginning.',
                                   'Empty line missing at class body end.'])
     end
@@ -119,15 +134,18 @@ describe RuboCop::Cop::Style::EmptyLinesAroundClassBody, :config do
     end
 
     it 'autocorrects beginning and end for `class << self`' do
-      new_source = autocorrect_source(cop,
-                                      ['class << self',
-                                       '  do_something',
-                                       'end'])
-      expect(new_source).to eq(['class << self',
-                                '',
-                                '  do_something',
-                                '',
-                                'end'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        class << self
+          do_something
+        end
+      END
+      expect(new_source).to eq(<<-END.strip_indent)
+        class << self
+
+          do_something
+
+        end
+      END
     end
   end
 
@@ -136,151 +154,164 @@ describe RuboCop::Cop::Style::EmptyLinesAroundClassBody, :config do
 
     context 'when only child is class' do
       it 'requires no empty lines for namespace' do
-        inspect_source(cop,
-                       ['class Parent < Base',
-                        '  class Child',
-                        '',
-                        '    do_something',
-                        '',
-                        '  end',
-                        'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          class Parent < Base
+            class Child
+
+              do_something
+
+            end
+          end
+        END
         expect(cop.messages).to eq([])
       end
 
       it 'registers offence for namespace body starting with a blank' do
-        inspect_source(cop,
-                       ['class Parent',
-                        '',
-                        '  class Child',
-                        '',
-                        '    do_something',
-                        '',
-                        '  end',
-                        'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          class Parent
+
+            class Child
+
+              do_something
+
+            end
+          end
+        END
         expect(cop.messages).to eq([extra_begin])
       end
 
       it 'registers offence for namespace body ending with a blank' do
-        inspect_source(cop,
-                       ['class Parent',
-                        '  class Child',
-                        '',
-                        '    do_something',
-                        '',
-                        '  end',
-                        '',
-                        'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          class Parent
+            class Child
+
+              do_something
+
+            end
+
+          end
+        END
         expect(cop.messages).to eq([extra_end])
       end
 
       it 'registers offences for namespaced class body not starting '\
           'with a blank' do
-        inspect_source(cop,
-                       ['class Parent',
-                        '  class Child',
-                        '    do_something',
-                        '',
-                        '  end',
-                        'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          class Parent
+            class Child
+              do_something
+
+            end
+          end
+        END
         expect(cop.messages).to eq([missing_begin])
       end
 
       it 'registers offences for namespaced class body not ending '\
           'with a blank' do
-        inspect_source(cop,
-                       ['class Parent',
-                        '  class Child',
-                        '',
-                        '    do_something',
-                        '  end',
-                        'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          class Parent
+            class Child
+
+              do_something
+            end
+          end
+        END
         expect(cop.messages).to eq([missing_end])
       end
 
       it 'autocorrects beginning and end' do
-        new_source = autocorrect_source(cop,
-                                        ['class Parent < Base',
-                                         '',
-                                         '  class Child',
-                                         '    do_something',
-                                         '  end',
-                                         '',
-                                         'end'])
-        expect(new_source).to eq(['class Parent < Base',
-                                  '  class Child',
-                                  '',
-                                  '    do_something',
-                                  '',
-                                  '  end',
-                                  'end'].join("\n"))
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          class Parent < Base
+
+            class Child
+              do_something
+            end
+
+          end
+        END
+        expect(new_source).to eq(<<-END.strip_indent)
+          class Parent < Base
+            class Child
+
+              do_something
+
+            end
+          end
+        END
       end
     end
 
     context 'when only child is module' do
       it 'requires no empty lines for namespace' do
-        inspect_source(cop,
-                       ['class Parent',
-                        '  module Child',
-                        '    do_something',
-                        '  end',
-                        'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          class Parent
+            module Child
+              do_something
+            end
+          end
+        END
         expect(cop.messages).to eq([])
       end
 
       it 'registers offence for namespace body starting with a blank' do
-        inspect_source(cop,
-                       ['class Parent',
-                        '',
-                        '  module Child',
-                        '    do_something',
-                        '  end',
-                        'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          class Parent
+
+            module Child
+              do_something
+            end
+          end
+        END
         expect(cop.messages).to eq([extra_begin])
       end
 
       it 'registers offence for namespace body ending with a blank' do
-        inspect_source(cop,
-                       ['class Parent',
-                        '  module Child',
-                        '    do_something',
-                        '  end',
-                        '',
-                        'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          class Parent
+            module Child
+              do_something
+            end
+
+          end
+        END
         expect(cop.messages).to eq([extra_end])
       end
     end
 
     context 'when has multiple child classes' do
       it 'requires empty lines for namespace' do
-        inspect_source(cop,
-                       ['class Parent',
-                        '',
-                        '  class Mom',
-                        '',
-                        '    do_something',
-                        '',
-                        '  end',
-                        '  class Dad',
-                        '',
-                        '  end',
-                        '',
-                        'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          class Parent
+
+            class Mom
+
+              do_something
+
+            end
+            class Dad
+
+            end
+
+          end
+        END
         expect(cop.messages).to eq([])
       end
 
       it 'registers offences for namespace body starting '\
         'and ending without a blank' do
-        inspect_source(cop,
-                       ['class Parent',
-                        '  class Mom',
-                        '',
-                        '    do_something',
-                        '',
-                        '  end',
-                        '  class Dad',
-                        '',
-                        '  end',
-                        'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          class Parent
+            class Mom
+
+              do_something
+
+            end
+            class Dad
+
+            end
+          end
+        END
         expect(cop.messages).to eq([missing_begin, missing_end])
       end
     end

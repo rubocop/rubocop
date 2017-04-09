@@ -4,8 +4,10 @@ describe RuboCop::Cop::Style::SpaceInsideBrackets do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for an array literal with spaces inside' do
-    inspect_source(cop, ['a = [1, 2 ]',
-                         'b = [ 1, 2]'])
+    inspect_source(cop, <<-END.strip_indent)
+      a = [1, 2 ]
+      b = [ 1, 2]
+    END
     expect(cop.messages).to eq(
       ['Space inside square brackets detected.',
        'Space inside square brackets detected.']
@@ -13,8 +15,10 @@ describe RuboCop::Cop::Style::SpaceInsideBrackets do
   end
 
   it 'registers an offense for Hash#[] with symbol key and spaces inside' do
-    inspect_source(cop, ['a[ :key]',
-                         'b[:key ]'])
+    inspect_source(cop, <<-END.strip_indent)
+      a[ :key]
+      b[:key ]
+    END
     expect(cop.messages).to eq(
       ['Space inside square brackets detected.',
        'Space inside square brackets detected.']
@@ -22,8 +26,10 @@ describe RuboCop::Cop::Style::SpaceInsideBrackets do
   end
 
   it 'registers an offense for Hash#[] with string key and spaces inside' do
-    inspect_source(cop, ['a[\'key\' ]',
-                         'b[ \'key\']'])
+    inspect_source(cop, <<-END.strip_indent)
+      a[\'key\' ]
+      b[ \'key\']
+    END
     expect(cop.messages).to eq(
       ['Space inside square brackets detected.',
        'Space inside square brackets detected.']
@@ -31,28 +37,36 @@ describe RuboCop::Cop::Style::SpaceInsideBrackets do
   end
 
   it 'accepts space inside strings within square brackets' do
-    inspect_source(cop, ["['Encoding:',",
-                         " '  Enabled: false']"])
+    inspect_source(cop, <<-END.strip_indent)
+      ['Encoding:',
+       '  Enabled: false']
+    END
     expect(cop.messages).to be_empty
   end
 
   it 'accepts space inside square brackets if on its own row' do
-    inspect_source(cop, ['a = [',
-                         '     1, 2',
-                         '    ]'])
+    inspect_source(cop, <<-END.strip_indent)
+      a = [
+           1, 2
+          ]
+    END
     expect(cop.messages).to be_empty
   end
 
   it 'accepts space inside square brackets if with comment' do
-    inspect_source(cop, ['a = [ # Comment',
-                         '     1, 2',
-                         '    ]'])
+    inspect_source(cop, <<-END.strip_indent)
+      a = [ # Comment
+           1, 2
+          ]
+    END
     expect(cop.messages).to be_empty
   end
 
   it 'accepts square brackets as method name' do
-    inspect_source(cop, ['def Vector.[](*array)',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      def Vector.[](*array)
+      end
+    END
     expect(cop.messages).to be_empty
   end
 
@@ -69,17 +83,21 @@ describe RuboCop::Cop::Style::SpaceInsideBrackets do
   end
 
   it 'auto-corrects unwanted space' do
-    new_source = autocorrect_source(cop, ['a = [1, 2 ]',
-                                          'b = [ 1, 2]',
-                                          'c[ :key]',
-                                          'd[:key ]',
-                                          'e["key" ]',
-                                          'f[ "key"]'])
-    expect(new_source).to eq(['a = [1, 2]',
-                              'b = [1, 2]',
-                              'c[:key]',
-                              'd[:key]',
-                              'e["key"]',
-                              'f["key"]'].join("\n"))
+    new_source = autocorrect_source(cop, <<-END.strip_indent)
+      a = [1, 2 ]
+      b = [ 1, 2]
+      c[ :key]
+      d[:key ]
+      e["key" ]
+      f[ "key"]
+    END
+    expect(new_source).to eq(<<-END.strip_indent)
+      a = [1, 2]
+      b = [1, 2]
+      c[:key]
+      d[:key]
+      e["key"]
+      f["key"]
+    END
   end
 end

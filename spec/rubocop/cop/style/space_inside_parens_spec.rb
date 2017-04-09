@@ -4,15 +4,18 @@ describe RuboCop::Cop::Style::SpaceInsideParens do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for spaces inside parens' do
-    inspect_source(cop, ['f( 3)',
-                         'g = (a + 3 )'])
+    inspect_source(cop, <<-END.strip_indent)
+      f( 3)
+      g = (a + 3 )
+    END
     expect(cop.messages).to eq(['Space inside parentheses detected.'] * 2)
   end
 
   it 'accepts parentheses in block parameter list' do
-    inspect_source(cop,
-                   ['list.inject(Tms.new) { |sum, (label, item)|',
-                    '}'])
+    inspect_source(cop, <<-END.strip_indent)
+      list.inject(Tms.new) { |sum, (label, item)|
+      }
+    END
     expect(cop.messages).to be_empty
   end
 
@@ -22,21 +25,29 @@ describe RuboCop::Cop::Style::SpaceInsideParens do
   end
 
   it 'accepts parentheses with line break' do
-    inspect_source(cop, ['f(',
-                         '  1)'])
+    inspect_source(cop, <<-END.strip_indent)
+      f(
+        1)
+    END
     expect(cop.messages).to be_empty
   end
 
   it 'accepts parentheses with comment and line break' do
-    inspect_source(cop, ['f( # Comment',
-                         '  1)'])
+    inspect_source(cop, <<-END.strip_indent)
+      f( # Comment
+        1)
+    END
     expect(cop.messages).to be_empty
   end
 
   it 'auto-corrects unwanted space' do
-    new_source = autocorrect_source(cop, ['f( 3)',
-                                          'g = ( a + 3 )'])
-    expect(new_source).to eq(['f(3)',
-                              'g = (a + 3)'].join("\n"))
+    new_source = autocorrect_source(cop, <<-END.strip_indent)
+      f( 3)
+      g = ( a + 3 )
+    END
+    expect(new_source).to eq(<<-END.strip_indent)
+      f(3)
+      g = (a + 3)
+    END
   end
 end

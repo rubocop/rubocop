@@ -2,15 +2,19 @@
 
 module StatementModifierHelper
   def check_empty(cop, keyword)
-    inspect_source(cop, ["#{keyword} cond",
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      #{keyword} cond
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
   def check_really_short(cop, keyword)
-    inspect_source(cop, ["#{keyword} a",
-                         '  b',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      #{keyword} a
+        b
+      end
+    END
     expect(cop.messages).to eq(
       ["Favor modifier `#{keyword}` usage when having a single-line body."]
     )
@@ -18,11 +22,12 @@ module StatementModifierHelper
   end
 
   def autocorrect_really_short(cop, keyword)
-    corrected = autocorrect_source(cop,
-                                   ["#{keyword} a",
-                                    '  b',
-                                    'end'])
-    expect(corrected).to eq "b #{keyword} a"
+    corrected = autocorrect_source(cop, <<-END.strip_indent)
+      #{keyword} a
+        b
+      end
+    END
+    expect(corrected).to eq "b #{keyword} a\n"
   end
 
   def check_too_long(cop, keyword)
@@ -31,20 +36,22 @@ module StatementModifierHelper
     body = 'b' * 37
     expect("  #{body} #{keyword} #{condition}".length).to eq(81)
 
-    inspect_source(cop,
-                   ["  #{keyword} #{condition}",
-                    "    #{body}",
-                    '  end'])
+    inspect_source(cop, <<-END.strip_margin('|'))
+      |  #{keyword} #{condition}
+      |    #{body}
+      |  end
+    END
 
     expect(cop.offenses).to be_empty
   end
 
   def check_short_multiline(cop, keyword)
-    inspect_source(cop,
-                   ["#{keyword} ENV['COVERAGE']",
-                    "  require 'simplecov'",
-                    '  SimpleCov.start',
-                    'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      #{keyword} ENV['COVERAGE']
+        require 'simplecov'
+        SimpleCov.start
+      end
+    END
     expect(cop.messages).to be_empty
   end
 end

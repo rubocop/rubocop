@@ -122,12 +122,14 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
 
   context 'correct + opposite' do
     let(:source) do
-      ['x = if a',
-       '      a1',
-       '    end',
-       'y = if b',
-       '  b1',
-       'end']
+      <<-END.strip_indent
+        x = if a
+              a1
+            end
+        y = if b
+          b1
+        end
+      END
     end
 
     it 'registers an offense' do
@@ -141,19 +143,23 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
 
     it 'does auto-correction' do
       corrected = autocorrect_source(cop, source)
-      expect(corrected).to eq(['x = if a',
-                               '      a1',
-                               '    end',
-                               'y = if b',
-                               '  b1',
-                               '    end'].join("\n"))
+      expect(corrected).to eq(<<-END.strip_indent)
+        x = if a
+              a1
+            end
+        y = if b
+          b1
+            end
+      END
     end
   end
 
   context 'when end is preceded by something else than whitespace' do
     let(:source) do
-      ['module A',
-       'puts a end']
+      <<-END.strip_indent
+        module A
+        puts a end
+      END
     end
 
     it 'registers an offense' do
@@ -166,7 +172,7 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
 
     it "doesn't auto-correct" do
       expect(autocorrect_source(cop, source))
-        .to eq(source.join("\n"))
+        .to eq(source)
       expect(cop.offenses.map(&:corrected?)).to eq [false]
     end
   end

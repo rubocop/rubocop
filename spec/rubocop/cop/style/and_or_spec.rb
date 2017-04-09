@@ -95,19 +95,27 @@ describe RuboCop::Cop::Style::AndOr, :config do
     end
 
     it 'auto-corrects "or" with ||' do
-      new_source = autocorrect_source(cop, ['x = 12345',
-                                            'true or false'])
-      expect(new_source).to eq(['x = 12345',
-                                'true || false'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        x = 12345
+        true or false
+      END
+      expect(new_source).to eq(<<-END.strip_indent)
+        x = 12345
+        true || false
+      END
     end
 
     it 'auto-corrects "or" with || inside def' do
-      new_source = autocorrect_source(cop, ['def z(a, b)',
-                                            '  return true if a or b',
-                                            'end'])
-      expect(new_source).to eq(['def z(a, b)',
-                                '  return true if a || b',
-                                'end'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        def z(a, b)
+          return true if a or b
+        end
+      END
+      expect(new_source).to eq(<<-END.strip_indent)
+        def z(a, b)
+          return true if a || b
+        end
+      END
     end
 
     it 'autocorrects "or" with an assignment on the left' do
@@ -330,45 +338,57 @@ describe RuboCop::Cop::Style::AndOr, :config do
     context 'within a nested begin node' do
       # regression test; see GH issue 2531
       it 'autocorrects "and" with && and adds parens' do
-        new_source = autocorrect_source(cop, ['def x',
-                                              'end',
-                                              '',
-                                              'def y',
-                                              '  a = b and a.c',
-                                              'end'])
-        expect(new_source).to eq(['def x',
-                                  'end',
-                                  '',
-                                  'def y',
-                                  '  (a = b) && a.c',
-                                  'end'].join("\n"))
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          def x
+          end
+
+          def y
+            a = b and a.c
+          end
+        END
+        expect(new_source).to eq(<<-END.strip_indent)
+          def x
+          end
+
+          def y
+            (a = b) && a.c
+          end
+        END
       end
     end
 
     context 'within a nested begin node with one child only' do
       # regression test; see GH issue 2531
       it 'autocorrects "and" with && and adds parens' do
-        new_source = autocorrect_source(cop, ['(def y',
-                                              '  a = b and a.c',
-                                              'end)'])
-        expect(new_source).to eq(['(def y',
-                                  '  (a = b) && a.c',
-                                  'end)'].join("\n"))
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          (def y
+            a = b and a.c
+          end)
+        END
+        expect(new_source).to eq(<<-END.strip_indent)
+          (def y
+            (a = b) && a.c
+          end)
+        END
       end
     end
 
     context 'with a file which contains __FILE__' do
       let(:source) do
-        ["APP_ROOT = Pathname.new File.expand_path('../../', __FILE__)",
-         "system('bundle check') or system!('bundle install')"]
+        <<-END.strip_indent
+          APP_ROOT = Pathname.new File.expand_path('../../', __FILE__)
+          system('bundle check') or system!('bundle install')
+        END
       end
 
       # regression test; see GH issue 2609
       it 'autocorrects "or" with ||' do
         new_source = autocorrect_source(cop, source)
         expect(new_source).to eq(
-          ["APP_ROOT = Pathname.new File.expand_path('../../', __FILE__)",
-           "system('bundle check') || system!('bundle install')"].join("\n")
+          <<-END.strip_indent
+            APP_ROOT = Pathname.new File.expand_path('../../', __FILE__)
+            system('bundle check') || system!('bundle install')
+          END
         )
       end
     end

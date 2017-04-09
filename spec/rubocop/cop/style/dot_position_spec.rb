@@ -7,25 +7,31 @@ describe RuboCop::Cop::Style::DotPosition, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'leading' } }
 
     it 'registers an offense for trailing dot in multi-line call' do
-      inspect_source(cop, ['something.',
-                           '  method_name'])
+      inspect_source(cop, <<-END.strip_indent)
+        something.
+          method_name
+      END
       expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['.'])
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'trailing')
     end
 
     it 'registers an offense for correct + opposite' do
-      inspect_source(cop, ['something',
-                           '  .method_name',
-                           'something.',
-                           '  method_name'])
+      inspect_source(cop, <<-END.strip_indent)
+        something
+          .method_name
+        something.
+          method_name
+      END
       expect(cop.offenses.size).to eq(1)
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'accepts leading do in multi-line method call' do
-      inspect_source(cop, ['something',
-                           '  .method_name'])
+      inspect_source(cop, <<-END.strip_indent)
+        something
+          .method_name
+      END
       expect(cop.offenses).to be_empty
     end
 
@@ -35,8 +41,10 @@ describe RuboCop::Cop::Style::DotPosition, :config do
     end
 
     it 'does not err on method call without a method name' do
-      inspect_source(cop, ['l.',
-                           '(1)'])
+      inspect_source(cop, <<-END.strip_indent)
+        l.
+        (1)
+      END
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -46,44 +54,60 @@ describe RuboCop::Cop::Style::DotPosition, :config do
     end
 
     it 'auto-corrects trailing dot in multi-line call' do
-      new_source = autocorrect_source(cop, ['something.',
-                                            '  method_name'])
-      expect(new_source).to eq(['something',
-                                '  .method_name'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        something.
+          method_name
+      END
+      expect(new_source).to eq(<<-END.strip_indent)
+        something
+          .method_name
+      END
     end
 
     it 'auto-corrects trailing dot in multi-line call without selector' do
-      new_source = autocorrect_source(cop, ['something.',
-                                            '  (1)'])
-      expect(new_source).to eq(['something',
-                                '  .(1)'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        something.
+          (1)
+      END
+      expect(new_source).to eq(<<-END.strip_indent)
+        something
+          .(1)
+      END
     end
 
     it 'auto-corrects correct + opposite style' do
-      new_source = autocorrect_source(cop, ['something',
-                                            '  .method_name',
-                                            'something.',
-                                            '  method_name'])
-      expect(new_source).to eq(['something',
-                                '  .method_name',
-                                'something',
-                                '  .method_name'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        something
+          .method_name
+        something.
+          method_name
+      END
+      expect(new_source).to eq(<<-END.strip_indent)
+        something
+          .method_name
+        something
+          .method_name
+      END
     end
 
     context 'when there is an intervening line comment' do
       it 'does not register offense' do
-        inspect_source(cop, ['something.',
-                             '# a comment here',
-                             '  method_name'])
+        inspect_source(cop, <<-END.strip_indent)
+          something.
+          # a comment here
+            method_name
+        END
         expect(cop.offenses).to be_empty
       end
     end
 
     context 'when there is an intervening blank line' do
       it 'does not register offense' do
-        inspect_source(cop, ['something.',
-                             '',
-                             '  method_name'])
+        inspect_source(cop, <<-END.strip_indent)
+          something.
+
+            method_name
+        END
         expect(cop.offenses).to be_empty
       end
     end
@@ -93,8 +117,10 @@ describe RuboCop::Cop::Style::DotPosition, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'trailing' } }
 
     it 'registers an offense for leading dot in multi-line call' do
-      inspect_source(cop, ['something',
-                           '  .method_name'])
+      inspect_source(cop, <<-END.strip_indent)
+        something
+          .method_name
+      END
       expect(cop.messages)
         .to eq(['Place the . on the previous line, together with the method ' \
                 'call receiver.'])
@@ -103,8 +129,10 @@ describe RuboCop::Cop::Style::DotPosition, :config do
     end
 
     it 'accepts trailing dot in multi-line method call' do
-      inspect_source(cop, ['something.',
-                           '  method_name'])
+      inspect_source(cop, <<-END.strip_indent)
+        something.
+          method_name
+      END
       expect(cop.offenses).to be_empty
     end
 
@@ -114,8 +142,10 @@ describe RuboCop::Cop::Style::DotPosition, :config do
     end
 
     it 'does not err on method call without a method name' do
-      inspect_source(cop, ['l',
-                           '.(1)'])
+      inspect_source(cop, <<-END.strip_indent)
+        l
+        .(1)
+      END
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -125,24 +155,34 @@ describe RuboCop::Cop::Style::DotPosition, :config do
     end
 
     it 'does not get confused by several lines of chained methods' do
-      inspect_source(cop, ['File.new(something).',
-                           'readlines.map.',
-                           'compact.join("\n")'])
+      inspect_source(cop, <<-END.strip_indent)
+        File.new(something).
+        readlines.map.
+        compact.join("\n")
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'auto-corrects leading dot in multi-line call' do
-      new_source = autocorrect_source(cop, ['something',
-                                            '  .method_name'])
-      expect(new_source).to eq(['something.',
-                                '  method_name'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        something
+          .method_name
+      END
+      expect(new_source).to eq(<<-END.strip_indent)
+        something.
+          method_name
+      END
     end
 
     it 'auto-corrects leading dot in multi-line call without selector' do
-      new_source = autocorrect_source(cop, ['something',
-                                            '  .(1)'])
-      expect(new_source).to eq(['something.',
-                                '  (1)'].join("\n"))
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        something
+          .(1)
+      END
+      expect(new_source).to eq(<<-END.strip_indent)
+        something.
+          (1)
+      END
     end
   end
 end

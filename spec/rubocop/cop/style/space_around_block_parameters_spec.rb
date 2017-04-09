@@ -56,9 +56,11 @@ describe RuboCop::Cop::Style::SpaceAroundBlockParameters, :config do
     end
 
     it 'accepts line break after closing pipe' do
-      inspect_source(cop, ['{}.each do |x, y|',
-                           '  puts x',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        {}.each do |x, y|
+          puts x
+        end
+      END
       expect(cop.offenses).to be_empty
     end
 
@@ -145,9 +147,11 @@ describe RuboCop::Cop::Style::SpaceAroundBlockParameters, :config do
     end
 
     it 'accepts line break after closing pipe' do
-      inspect_source(cop, ['{}.each do | x, y |',
-                           '  puts x',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        {}.each do | x, y |
+          puts x
+        end
+      END
       expect(cop.offenses).to be_empty
     end
 

@@ -101,14 +101,18 @@ describe RuboCop::Cop::Performance::Casecmp do
     end
 
     it "doesn't report an offense for variable == str.#{selector}" do
-      inspect_source(cop, ['var = "a"',
-                           "var == str.#{selector}"])
+      inspect_source(cop, <<-END.strip_indent)
+        var = "a"
+        var == str.#{selector}
+      END
       expect(cop.offenses).to be_empty
     end
 
     it "doesn't report an offense for str.#{selector} == variable" do
-      inspect_source(cop, ['var = "a"',
-                           "str.#{selector} == var"])
+      inspect_source(cop, <<-END.strip_indent)
+        var = "a"
+        str.#{selector} == var
+      END
       expect(cop.offenses).to be_empty
     end
 

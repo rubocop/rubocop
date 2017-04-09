@@ -16,15 +16,19 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
     end
 
     it 'accepts a multi-line block with do-end' do
-      inspect_source(cop, ['each do |x|',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        each do |x|
+        end
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts a multi-line block that needs braces to be valid ruby' do
-      inspect_source(cop, ['puts [1, 2, 3].map { |n|',
-                           '  n * n',
-                           '}, 1'])
+      inspect_source(cop, <<-END.strip_indent)
+        puts [1, 2, 3].map { |n|
+          n * n
+        }, 1
+      END
       expect(cop.messages).to be_empty
     end
   end
@@ -41,78 +45,96 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     it 'accepts a multi-line block with braces if the return value is ' \
        'assigned' do
-      inspect_source(cop, ['foo = map { |x|',
-                           '  x',
-                           '}'])
+      inspect_source(cop, <<-END.strip_indent)
+        foo = map { |x|
+          x
+        }
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts a multi-line block with braces if it is the return value ' \
        'of its scope' do
-      inspect_source(cop, ['block do',
-                           '  map { |x|',
-                           '    x',
-                           '  }',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        block do
+          map { |x|
+            x
+          }
+        end
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts a multi-line block with braces when passed to a method' do
-      inspect_source(cop, ['puts map { |x|',
-                           '  x',
-                           '}'])
+      inspect_source(cop, <<-END.strip_indent)
+        puts map { |x|
+          x
+        }
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts a multi-line block with braces when chained' do
-      inspect_source(cop, ['map { |x|',
-                           '  x',
-                           '}.inspect'])
+      inspect_source(cop, <<-END.strip_indent)
+        map { |x|
+          x
+        }.inspect
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts a multi-line block with braces when passed to a known ' \
        'functional method' do
-      inspect_source(cop, ['let(:foo) {',
-                           '  x',
-                           '}'])
+      inspect_source(cop, <<-END.strip_indent)
+        let(:foo) {
+          x
+        }
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for a multi-line block with braces if the ' \
        'return value is not used' do
-      inspect_source(cop, ['each { |x|',
-                           '  x',
-                           '}'])
+      inspect_source(cop, <<-END.strip_indent)
+        each { |x|
+          x
+        }
+      END
       expect(cop.messages)
         .to eq(['Prefer `do...end` over `{...}` for procedural blocks.'])
     end
 
     it 'registers an offense for a multi-line block with do-end if the ' \
        'return value is assigned' do
-      inspect_source(cop, ['foo = map do |x|',
-                           '  x',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        foo = map do |x|
+          x
+        end
+      END
       expect(cop.messages)
         .to eq(['Prefer `{...}` over `do...end` for functional blocks.'])
     end
 
     it 'registers an offense for a multi-line block with do-end if the ' \
        'return value is passed to a method' do
-      inspect_source(cop, ['puts (map do |x|',
-                           '  x',
-                           'end)'])
+      inspect_source(cop, <<-END.strip_indent)
+        puts (map do |x|
+          x
+        end)
+      END
       expect(cop.messages)
         .to eq(['Prefer `{...}` over `do...end` for functional blocks.'])
     end
 
     it 'accepts a multi-line block with do-end if it is the return value ' \
        'of its scope' do
-      inspect_source(cop, ['block do',
-                           '  map do |x|',
-                           '    x',
-                           '  end',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        block do
+          map do |x|
+            x
+          end
+        end
+      END
       expect(cop.messages).to be_empty
     end
 
@@ -148,17 +170,21 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     it 'accepts a multi-line functional block with do-end if it is ' \
        'a known procedural method' do
-      inspect_source(cop, ['foo = bar.tap do |x|',
-                           '  x.age = 3',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        foo = bar.tap do |x|
+          x.age = 3
+        end
+      END
       expect(cop.messages).to be_empty
     end
 
     it 'accepts a multi-line functional block with do-end if it is ' \
        'an ignored method' do
-      inspect_source(cop, ['foo = lambda do',
-                           '  puts 42',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        foo = lambda do
+          puts 42
+        end
+      END
       expect(cop.messages).to be_empty
     end
 
@@ -304,71 +330,83 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
     end
 
     it 'does not auto-correct {} if do-end would change the meaning' do
-      src = ['foo :bar, :baz, qux: lambda { |a|',
-             '  bar a',
-             '}'].join("\n")
+      src = <<-END.strip_indent
+        foo :bar, :baz, qux: lambda { |a|
+          bar a
+        }
+      END
       new_source = autocorrect_source(cop, src)
       expect(new_source).to eq(src)
     end
 
     context 'when there are braces around a multi-line block' do
       it 'registers an offense in the simple case' do
-        inspect_source(cop, ['each { |x|',
-                             '}'])
+        inspect_source(cop, <<-END.strip_indent)
+          each { |x|
+          }
+        END
         expect(cop.messages)
           .to eq(['Avoid using `{...}` for multi-line blocks.'])
       end
 
       it 'accepts braces if do-end would change the meaning' do
-        src = ['scope :foo, lambda { |f|',
-               '  where(condition: "value")',
-               '}',
-               '',
-               'expect { something }.to raise_error(ErrorClass) { |error|',
-               '  # ...',
-               '}',
-               '',
-               'expect { x }.to change {',
-               '  Counter.count',
-               '}.from(0).to(1)',
-               '',
-               'cr.stubs client: mock {',
-               '  expects(:email_disabled=).with(true)',
-               '  expects :save',
-               '}']
+        src = <<-END.strip_indent
+          scope :foo, lambda { |f|
+            where(condition: "value")
+          }
+
+          expect { something }.to raise_error(ErrorClass) { |error|
+            # ...
+          }
+
+          expect { x }.to change {
+            Counter.count
+          }.from(0).to(1)
+
+          cr.stubs client: mock {
+            expects(:email_disabled=).with(true)
+            expects :save
+          }
+        END
         inspect_source(cop, src)
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts a multi-line functional block with {} if it is ' \
          'an ignored method' do
-        inspect_source(cop, ['foo = proc {',
-                             '  puts 42',
-                             '}'])
+        inspect_source(cop, <<-END.strip_indent)
+          foo = proc {
+            puts 42
+          }
+        END
         expect(cop.messages).to be_empty
       end
 
       it 'registers an offense for braces if do-end would not change ' \
          'the meaning' do
-        src = ['scope :foo, (lambda { |f|',
-               '  where(condition: "value")',
-               '})',
-               '',
-               'expect { something }.to(raise_error(ErrorClass) { |error|',
-               '  # ...',
-               '})']
+        src = <<-END.strip_indent
+          scope :foo, (lambda { |f|
+            where(condition: "value")
+          })
+
+          expect { something }.to(raise_error(ErrorClass) { |error|
+            # ...
+          })
+        END
         inspect_source(cop, src)
         expect(cop.offenses.size).to eq(2)
       end
 
       it 'can handle special method names such as []= and done?' do
-        src = ['h2[k2] = Hash.new { |h3,k3|',
-               '  h3[k3] = 0',
-               '}',
-               '',
-               'x = done? list.reject { |e|',
-               '  e.nil?',
-               '}']
+        src = <<-END.strip_indent
+          h2[k2] = Hash.new { |h3,k3|
+            h3[k3] = 0
+          }
+
+          x = done? list.reject { |e|
+            e.nil?
+          }
+        END
         inspect_source(cop, src)
         expect(cop.messages)
           .to eq(['Avoid using `{...}` for multi-line blocks.'])
@@ -394,20 +432,26 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
       end
 
       it 'auto-corrects adjacent curly braces correctly' do
-        source = ['(0..3).each { |a| a.times {',
-                  '  puts a',
-                  '}}']
+        source = <<-END.strip_indent
+          (0..3).each { |a| a.times {
+            puts a
+          }}
+        END
 
         new_source = autocorrect_source(cop, source)
-        expect(new_source).to eq(['(0..3).each do |a| a.times do',
-                                  '  puts a',
-                                  'end end'].join("\n"))
+        expect(new_source).to eq(<<-END.strip_indent)
+          (0..3).each do |a| a.times do
+            puts a
+          end end
+        END
       end
 
       it 'does not auto-correct {} if do-end would introduce a syntax error' do
-        src = ['my_method :arg1, arg2: proc {',
-               '  something',
-               '}, arg3: :another_value'].join("\n")
+        src = <<-END.strip_indent
+          my_method :arg1, arg2: proc {
+            something
+          }, arg3: :another_value
+        END
         new_source = autocorrect_source(cop, src)
         expect(new_source).to eq(src)
       end
@@ -425,39 +469,52 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
     include_examples 'syntactic styles'
 
     it 'registers an offense for multi-line chained do-end blocks' do
-      inspect_source(cop, ['each do |x|',
-                           'end.map(&:to_s)'])
+      inspect_source(cop, <<-END.strip_indent)
+        each do |x|
+        end.map(&:to_s)
+      END
       expect(cop.messages).to eq(
         ['Prefer `{...}` over `do...end` for multi-line chained blocks.']
       )
     end
 
     it 'auto-corrects do-end for chained blocks' do
-      src = ['each do |x|',
-             'end.map(&:to_s)']
+      src = <<-END.strip_indent
+        each do |x|
+        end.map(&:to_s)
+      END
       new_source = autocorrect_source(cop, src)
-      expect(new_source).to eq("each { |x|\n}.map(&:to_s)")
+      expect(new_source).to eq(<<-END.strip_indent)
+        each { |x|
+        }.map(&:to_s)
+      END
     end
 
     it 'accepts a multi-line functional block with {} if it is ' \
        'an ignored method' do
-      inspect_source(cop, ['foo = proc {',
-                           '  puts 42',
-                           '}'])
+      inspect_source(cop, <<-END.strip_indent)
+        foo = proc {
+          puts 42
+        }
+      END
       expect(cop.messages).to be_empty
     end
 
     context 'when there are braces around a multi-line block' do
       it 'registers an offense in the simple case' do
-        inspect_source(cop, ['each { |x|',
-                             '}'])
+        inspect_source(cop, <<-END.strip_indent)
+          each { |x|
+          }
+        END
         expect(cop.messages)
           .to eq(['Prefer `do...end` for multi-line blocks without chaining.'])
       end
 
       it 'allows when the block is being chained' do
-        inspect_source(cop, ['each { |x|',
-                             '}.map(&:to_sym)'])
+        inspect_source(cop, <<-END.strip_indent)
+          each { |x|
+          }.map(&:to_sym)
+        END
         expect(cop.offenses).to be_empty
       end
     end

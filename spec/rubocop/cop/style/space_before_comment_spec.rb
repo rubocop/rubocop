@@ -19,9 +19,11 @@ describe RuboCop::Cop::Style::SpaceBeforeComment do
   end
 
   it 'accepts a doc comment' do
-    inspect_source(cop, ['=begin',
-                         'Doc comment',
-                         '=end'])
+    inspect_source(cop, <<-END.strip_indent)
+      =begin
+      Doc comment
+      =end
+    END
     expect(cop.offenses).to be_empty
   end
 

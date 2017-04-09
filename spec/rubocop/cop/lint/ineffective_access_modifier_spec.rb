@@ -9,13 +9,15 @@ describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
 
   context 'when `private` is applied to a class method' do
     let(:source) do
-      ['class C',
-       '  private',
-       '',
-       '  def self.method',
-       '    puts "hi"',
-       '  end',
-       'end']
+      <<-END.strip_indent
+        class C
+          private
+
+          def self.method
+            puts "hi"
+          end
+        end
+      END
     end
 
     it 'registers an offense' do
@@ -31,13 +33,15 @@ describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
 
   context 'when `protected` is applied to a class method' do
     let(:source) do
-      ['class C',
-       '  protected',
-       '',
-       '  def self.method',
-       '    puts "hi"',
-       '  end',
-       'end']
+      <<-END.strip_indent
+        class C
+          protected
+
+          def self.method
+            puts "hi"
+          end
+        end
+      END
     end
 
     it 'registers an offense' do
@@ -52,15 +56,17 @@ describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
 
   context 'when `private_class_method` is used' do
     let(:source) do
-      ['class C',
-       '  private',
-       '',
-       '  def self.method',
-       '    puts "hi"',
-       '  end',
-       '',
-       '  private_class_method :method',
-       'end']
+      <<-END.strip_indent
+        class C
+          private
+
+          def self.method
+            puts "hi"
+          end
+
+          private_class_method :method
+        end
+      END
     end
 
     it "doesn't register an offense" do
@@ -70,15 +76,17 @@ describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
 
   context 'when a `class << self` block is used' do
     let(:source) do
-      ['class C',
-       '  private',
-       '',
-       '  class << self',
-       '    def self.method',
-       '      puts "hi"',
-       '    end',
-       '  end',
-       'end']
+      <<-END.strip_indent
+        class C
+          private
+
+          class << self
+            def self.method
+              puts "hi"
+            end
+          end
+        end
+      END
     end
 
     it "doesn't register an offense" do
@@ -88,17 +96,19 @@ describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
 
   context 'when there is an intervening instance method' do
     let(:source) do
-      ['class C',
-       '',
-       '  private',
-       '',
-       '  def instance_method',
-       '  end',
-       '',
-       '  def self.method',
-       '    puts "hi"',
-       '  end',
-       'end']
+      <<-END.strip_indent
+        class C
+
+          private
+
+          def instance_method
+          end
+
+          def self.method
+            puts "hi"
+          end
+        end
+      END
     end
 
     it 'still registers an offense' do

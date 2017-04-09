@@ -4,14 +4,18 @@ describe RuboCop::Cop::Style::InitialIndentation do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for indented method definition ' do
-    inspect_source(cop, ['  def f',
-                         '  end'])
+    inspect_source(cop, <<-END.strip_margin('|'))
+      |  def f
+      |  end
+    END
     expect(cop.messages).to eq(['Indentation of first line in file detected.'])
   end
 
   it 'accepts unindented method definition' do
-    inspect_source(cop, ['def f',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      def f
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
@@ -41,28 +45,40 @@ describe RuboCop::Cop::Style::InitialIndentation do
   end
 
   it 'registers an offense for indented assignment disregarding comment' do
-    inspect_source(cop, [' # comment',
-                         ' x = 1'])
+    inspect_source(cop, <<-END.strip_margin('|'))
+      | # comment
+      | x = 1
+    END
     expect(cop.highlights).to eq(['x'])
   end
 
   it 'accepts unindented comment + assignment' do
-    inspect_source(cop, ['# comment',
-                         'x = 1'])
+    inspect_source(cop, <<-END.strip_indent)
+      # comment
+      x = 1
+    END
     expect(cop.offenses).to be_empty
   end
 
   it 'auto-corrects indented method definition' do
-    corrected = autocorrect_source(cop, ['  def f',
-                                         '  end'])
-    expect(corrected).to eq ['def f',
-                             '  end'].join("\n")
+    corrected = autocorrect_source(cop, <<-END.strip_margin('|'))
+      |  def f
+      |  end
+    END
+    expect(corrected).to eq <<-END.strip_indent
+      def f
+        end
+    END
   end
 
   it 'auto-corrects indented assignment but not comment' do
-    corrected = autocorrect_source(cop, ['  # comment',
-                                         '  x = 1'])
-    expect(corrected).to eq ['  # comment',
-                             'x = 1'].join("\n")
+    corrected = autocorrect_source(cop, <<-END.strip_margin('|'))
+      |  # comment
+      |  x = 1
+    END
+    expect(corrected).to eq <<-END.strip_indent
+        # comment
+      x = 1
+    END
   end
 end

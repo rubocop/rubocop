@@ -10,8 +10,10 @@ describe RuboCop::Cop::Metrics::ParameterLists, :config do
   end
 
   it 'registers an offense for a method def with 5 parameters' do
-    inspect_source(cop, ['def meth(a, b, c, d, e)',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      def meth(a, b, c, d, e)
+      end
+    END
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages).to eq(
       ['Avoid parameter lists longer than 4 parameters. [5/4]']
@@ -20,15 +22,19 @@ describe RuboCop::Cop::Metrics::ParameterLists, :config do
   end
 
   it 'accepts a method def with 4 parameters' do
-    inspect_source(cop, ['def meth(a, b, c, d)',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      def meth(a, b, c, d)
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
   context 'When CountKeywordArgs is true' do
     it 'counts keyword arguments as well' do
-      inspect_source(cop, ['def meth(a, b, c, d: 1, e: 2)',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def meth(a, b, c, d: 1, e: 2)
+        end
+      END
       expect(cop.messages).to eq(
         ['Avoid parameter lists longer than 4 parameters. [5/4]']
       )
@@ -40,14 +46,18 @@ describe RuboCop::Cop::Metrics::ParameterLists, :config do
     before { cop_config['CountKeywordArgs'] = false }
 
     it 'does not count keyword arguments' do
-      inspect_source(cop, ['def meth(a, b, c, d: 1, e: 2)',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def meth(a, b, c, d: 1, e: 2)
+        end
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'does not count keyword arguments without default values', ruby: 2.1 do
-      inspect_source(cop, ['def meth(a, b, c, d:, e:)',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def meth(a, b, c, d:, e:)
+        end
+      END
       expect(cop.offenses).to be_empty
     end
   end

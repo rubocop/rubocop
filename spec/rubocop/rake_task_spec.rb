@@ -109,8 +109,10 @@ describe RuboCop::RakeTask do
 
     it 'uses the default formatter from .rubocop.yml if no formatter ' \
        'option is given', :isolated_environment do
-      create_file('.rubocop.yml', ['AllCops:',
-                                   '  DefaultFormatter: offenses'])
+      create_file('.rubocop.yml', <<-END.strip_indent)
+        AllCops:
+          DefaultFormatter: offenses
+      END
       create_file('test.rb', '$:')
 
       described_class.new do |task|
@@ -119,11 +121,14 @@ describe RuboCop::RakeTask do
 
       expect { Rake::Task['rubocop'].execute }.to raise_error(SystemExit)
 
-      expect($stdout.string.strip).to eq(['Running RuboCop...',
-                                          '',
-                                          '1  Style/SpecialGlobalVars',
-                                          '--',
-                                          '1  Total'].join("\n"))
+      expect($stdout.string).to eq(<<-END.strip_indent)
+        Running RuboCop...
+
+        1  Style/SpecialGlobalVars
+        --
+        1  Total
+
+      END
       expect($stderr.string.strip).to eq 'RuboCop failed!'
     end
 

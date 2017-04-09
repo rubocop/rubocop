@@ -6,18 +6,19 @@ describe RuboCop::Cop::Style::GuardClause, :config do
 
   shared_examples 'reports offense' do |body|
     it 'reports an offense if method body is if / unless without else' do
-      inspect_source(cop,
-                     ['def func',
-                      '  if something',
-                      "    #{body}",
-                      '  end',
-                      'end',
-                      '',
-                      'def func',
-                      '  unless something',
-                      "    #{body}",
-                      '  end',
-                      'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def func
+          if something
+            #{body}
+          end
+        end
+
+        def func
+          unless something
+            #{body}
+          end
+        end
+      END
       expect(cop.offenses.size).to eq(2)
       expect(cop.offenses.map(&:line).sort).to eq([2, 8])
       expect(cop.messages)
@@ -27,18 +28,19 @@ describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it 'reports an offense if method body is if / unless without else' do
-      inspect_source(cop,
-                     ['def func',
-                      '  if something',
-                      "    #{body}",
-                      '  end',
-                      'end',
-                      '',
-                      'def func',
-                      '  unless something',
-                      "    #{body}",
-                      '  end',
-                      'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def func
+          if something
+            #{body}
+          end
+        end
+
+        def func
+          unless something
+            #{body}
+          end
+        end
+      END
       expect(cop.offenses.size).to eq(2)
       expect(cop.offenses.map(&:line).sort).to eq([2, 8])
       expect(cop.messages)
@@ -48,20 +50,21 @@ describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it 'reports an offense if method body ends with if / unless without else' do
-      inspect_source(cop,
-                     ['def func',
-                      '  test',
-                      '  if something',
-                      "    #{body}",
-                      '  end',
-                      'end',
-                      '',
-                      'def func',
-                      '  test',
-                      '  unless something',
-                      "    #{body}",
-                      '  end',
-                      'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def func
+          test
+          if something
+            #{body}
+          end
+        end
+
+        def func
+          test
+          unless something
+            #{body}
+          end
+        end
+      END
       expect(cop.offenses.size).to eq(2)
       expect(cop.offenses.map(&:line).sort).to eq([3, 10])
       expect(cop.messages)
@@ -75,82 +78,87 @@ describe RuboCop::Cop::Style::GuardClause, :config do
   it_behaves_like('reports offense', '# TODO')
 
   it 'does not report an offense if body is if..elsif..end' do
-    inspect_source(cop,
-                   ['def func',
-                    '  if something',
-                    '    a',
-                    '  elsif something_else',
-                    '    b',
-                    '  end',
-                    'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      def func
+        if something
+          a
+        elsif something_else
+          b
+        end
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
   it "doesn't report an offense if condition has multiple lines" do
-    inspect_source(cop,
-                   ['def func',
-                    '  if something &&',
-                    '       something_else',
-                    '    work',
-                    '  end',
-                    'end',
-                    '',
-                    'def func',
-                    '  unless something &&',
-                    '           something_else',
-                    '    work',
-                    '  end',
-                    'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      def func
+        if something &&
+             something_else
+          work
+        end
+      end
+
+      def func
+        unless something &&
+                 something_else
+          work
+        end
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts a method which body is if / unless with else' do
-    inspect_source(cop,
-                   ['def func',
-                    '  if something',
-                    '    work',
-                    '  else',
-                    '    test',
-                    '  end',
-                    'end',
-                    '',
-                    'def func',
-                    '  unless something',
-                    '    work',
-                    '  else',
-                    '    test',
-                    '  end',
-                    'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      def func
+        if something
+          work
+        else
+          test
+        end
+      end
+
+      def func
+        unless something
+          work
+        else
+          test
+        end
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts a method which body does not end with if / unless' do
-    inspect_source(cop,
-                   ['def func',
-                    '  if something',
-                    '    work',
-                    '  end',
-                    '  test',
-                    'end',
-                    '',
-                    'def func',
-                    '  unless something',
-                    '    work',
-                    '  end',
-                    '  test',
-                    'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      def func
+        if something
+          work
+        end
+        test
+      end
+
+      def func
+        unless something
+          work
+        end
+        test
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts a method whose body is a modifier if / unless' do
-    inspect_source(cop,
-                   ['def func',
-                    '  work if something',
-                    'end',
-                    '',
-                    'def func',
-                    '  work if something',
-                    'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      def func
+        work if something
+      end
+
+      def func
+        work if something
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 
@@ -160,18 +168,19 @@ describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it 'reports an offense for if whose body has 1 line' do
-      inspect_source(cop,
-                     ['def func',
-                      '  if something',
-                      '    work',
-                      '  end',
-                      'end',
-                      '',
-                      'def func',
-                      '  unless something',
-                      '    work',
-                      '  end',
-                      'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def func
+          if something
+            work
+          end
+        end
+
+        def func
+          unless something
+            work
+          end
+        end
+      END
       expect(cop.offenses.size).to eq(2)
       expect(cop.offenses.map(&:line).sort).to eq([2, 8])
       expect(cop.messages)
@@ -187,22 +196,23 @@ describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it 'accepts a method whose body has 3 lines' do
-      inspect_source(cop,
-                     ['def func',
-                      '  if something',
-                      '    work',
-                      '    work',
-                      '    work',
-                      '  end',
-                      'end',
-                      '',
-                      'def func',
-                      '  unless something',
-                      '    work',
-                      '    work',
-                      '    work',
-                      '  end',
-                      'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        def func
+          if something
+            work
+            work
+            work
+          end
+        end
+
+        def func
+          unless something
+            work
+            work
+            work
+          end
+        end
+      END
       expect(cop.offenses).to be_empty
     end
   end
@@ -213,11 +223,13 @@ describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it 'fails with an error' do
-      source = ['def func',
-                '  if something',
-                '    work',
-                '  end',
-                'end']
+      source = <<-END.strip_indent
+        def func
+          if something
+            work
+          end
+        end
+      END
 
       expect { inspect_source(cop, source) }
         .to raise_error('MinBodyLength needs to be a positive integer!')
@@ -226,56 +238,64 @@ describe RuboCop::Cop::Style::GuardClause, :config do
 
   shared_examples 'on if nodes which exit current scope' do |kw|
     it "registers an error with #{kw} in the if branch" do
-      inspect_source(cop, ['if something',
-                           "  #{kw}",
-                           'else',
-                           '  puts "hello"',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        if something
+          #{kw}
+        else
+          puts "hello"
+        end
+      END
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Use a guard clause instead of wrapping ' \
                                   'the code inside a conditional expression.'])
     end
 
     it "registers an error with #{kw} in the else branch" do
-      inspect_source(cop, ['if something',
-                           ' puts "hello"',
-                           'else',
-                           "  #{kw}",
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        if something
+         puts "hello"
+        else
+          #{kw}
+        end
+      END
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Use a guard clause instead of wrapping ' \
                                   'the code inside a conditional expression.'])
     end
 
     it "doesn't register an error if condition has multiple lines" do
-      inspect_source(cop, ['if something &&',
-                           '     something_else',
-                           "  #{kw}",
-                           'else',
-                           '  puts "hello"',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        if something &&
+             something_else
+          #{kw}
+        else
+          puts "hello"
+        end
+      END
       expect(cop.offenses).to be_empty
     end
 
     it "does not report an offense if #{kw} is inside elsif" do
-      inspect_source(cop,
-                     ['if something',
-                      '  a',
-                      'elsif something_else',
-                      "  #{kw}",
-                      'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        if something
+          a
+        elsif something_else
+          #{kw}
+        end
+      END
       expect(cop.offenses).to be_empty
     end
 
     it "does not report an offense if #{kw} is inside if..elsif..else..end" do
-      inspect_source(cop,
-                     ['if something',
-                      '  a',
-                      'elsif something_else',
-                      '  b',
-                      'else',
-                      "  #{kw}",
-                      'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        if something
+          a
+        elsif something_else
+          b
+        else
+          #{kw}
+        end
+      END
       expect(cop.offenses).to be_empty
     end
 
@@ -307,24 +327,28 @@ describe RuboCop::Cop::Style::GuardClause, :config do
 
   context 'method in module' do
     it 'registers an offense for instance method' do
-      inspect_source(cop, ['module CopTest',
-                           '  def test',
-                           '    if something',
-                           '      work',
-                           '    end',
-                           '  end',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        module CopTest
+          def test
+            if something
+              work
+            end
+          end
+        end
+      END
       expect(cop.offenses.size).to eq(1)
     end
 
     it 'registers an offense for singleton methods' do
-      inspect_source(cop, ['module CopTest',
-                           '  def self.test',
-                           '    if something',
-                           '      work',
-                           '    end',
-                           '  end',
-                           'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        module CopTest
+          def self.test
+            if something
+              work
+            end
+          end
+        end
+      END
       expect(cop.offenses.size).to eq(1)
     end
   end

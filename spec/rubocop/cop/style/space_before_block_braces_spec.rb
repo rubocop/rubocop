@@ -19,18 +19,21 @@ describe RuboCop::Cop::Style::SpaceBeforeBlockBraces, :config do
     end
 
     it 'registers an offense for opposite + correct style' do
-      inspect_source(cop,
-                     ['each{ puts }',
-                      'each { puts }'])
+      inspect_source(cop, <<-END.strip_indent)
+        each{ puts }
+        each { puts }
+      END
       expect(cop.messages).to eq(['Space missing to the left of {.'])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'registers an offense for multiline block where left brace has no ' \
        'outer space' do
-      inspect_source(cop, ['foo.map{ |a|',
-                           '  a.bar.to_s',
-                           '}'])
+      inspect_source(cop, <<-END.strip_indent)
+        foo.map{ |a|
+          a.bar.to_s
+        }
+      END
       expect(cop.messages).to eq(['Space missing to the left of {.'])
       expect(cop.highlights).to eq(['{'])
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'no_space')
@@ -53,9 +56,10 @@ describe RuboCop::Cop::Style::SpaceBeforeBlockBraces, :config do
     end
 
     it 'registers an offense for correct + opposite style' do
-      inspect_source(cop,
-                     ['each{ puts }',
-                      'each { puts }'])
+      inspect_source(cop, <<-END.strip_indent)
+        each{ puts }
+        each { puts }
+      END
       expect(cop.messages).to eq(['Space detected to the left of {.'])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end

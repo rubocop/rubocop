@@ -94,23 +94,25 @@ describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'does not register an offense for an array with comments in it' do
-      inspect_source(cop,
-                     ['[',
-                      '"foo", # comment here',
-                      '"bar", # this thing was done because of a bug',
-                      '"baz" # do not delete this line',
-                      ']'])
+      inspect_source(cop, <<-END.strip_indent)
+        [
+        "foo", # comment here
+        "bar", # this thing was done because of a bug
+        "baz" # do not delete this line
+        ]
+      END
 
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for an array with comments outside of it' do
-      inspect_source(cop,
-                     ['[',
-                      '"foo",',
-                      '"bar",',
-                      '"baz"',
-                      '] # test'])
+      inspect_source(cop, <<-END.strip_indent)
+        [
+        "foo",
+        "bar",
+        "baz"
+        ] # test
+      END
 
       expect(cop.offenses.size).to eq(1)
     end
@@ -134,9 +136,10 @@ describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'detects right value of MinSize to use for --auto-gen-config' do
-      inspect_source(cop,
-                     ["['one', 'two', 'three']",
-                      '%w(a b c d)'])
+      inspect_source(cop, <<-END.strip_indent)
+        ['one', 'two', 'three']
+        %w(a b c d)
+      END
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Use `%w` or `%W` for an array of words.'])
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'percent',
@@ -144,9 +147,10 @@ describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'detects when the cop must be disabled to avoid offenses' do
-      inspect_source(cop,
-                     ["['one', 'two', 'three']",
-                      '%w(a b)'])
+      inspect_source(cop, <<-END.strip_indent)
+        ['one', 'two', 'three']
+        %w(a b)
+      END
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Use `%w` or `%W` for an array of words.'])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
@@ -206,13 +210,15 @@ describe RuboCop::Cop::Style::WordArray, :config do
 
     it "doesn't fail on strings which are not valid UTF-8" do
       # Regression test, see GH issue 2671
-      inspect_source(cop, ['["\xC0",',
-                           ' "\xC2\x4a",',
-                           ' "\xC2\xC2",',
-                           ' "\x4a\x82",',
-                           ' "\x82\x82",',
-                           ' "\xe1\x82\x4a",',
-                           ']'])
+      inspect_source(cop, <<-'END'.strip_indent)
+        ["\xC0",
+         "\xC2\x4a",
+         "\xC2\xC2",
+         "\x4a\x82",
+         "\x82\x82",
+         "\xe1\x82\x4a",
+        ]
+      END
       # Currently, this cop completely ignores strings with invalid encoding
       # If it could handle them and still report an offense when appropriate,
       # that would be even better

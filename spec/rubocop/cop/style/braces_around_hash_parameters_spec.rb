@@ -144,15 +144,19 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
 
     context 'with a comment following the last key-value pair' do
       it 'corrects and leaves line breaks' do
-        src = ['r = opts.merge({',
-               '  p1: opts[:a],',
-               '  p2: (opts[:b] || opts[:c]) # a comment',
-               '})']
+        src = <<-END.strip_indent
+          r = opts.merge({
+            p1: opts[:a],
+            p2: (opts[:b] || opts[:c]) # a comment
+          })
+        END
         corrected = autocorrect_source(cop, src)
-        expect(corrected).to eq(['r = opts.merge(',
-                                 '  p1: opts[:a],',
-                                 '  p2: (opts[:b] || opts[:c]) # a comment',
-                                 ')'].join("\n"))
+        expect(corrected).to eq(<<-END.strip_indent)
+          r = opts.merge(
+            p1: opts[:a],
+            p2: (opts[:b] || opts[:c]) # a comment
+          )
+        END
       end
     end
 

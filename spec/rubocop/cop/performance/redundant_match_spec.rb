@@ -23,32 +23,44 @@ describe RuboCop::Cop::Performance::RedundantMatch do
   end
 
   it 'autocorrects .match in while condition' do
-    new_source = autocorrect_source(cop, ['while str.match(/regex/)',
-                                          '  do_something',
-                                          'end'])
-    expect(new_source).to eq(['while str =~ /regex/',
-                              '  do_something',
-                              'end'].join("\n"))
+    new_source = autocorrect_source(cop, <<-END.strip_indent)
+      while str.match(/regex/)
+        do_something
+      end
+    END
+    expect(new_source).to eq(<<-END.strip_indent)
+      while str =~ /regex/
+        do_something
+      end
+    END
   end
 
   it 'autocorrects .match in until condition' do
-    new_source = autocorrect_source(cop, ['until str.match(/regex/)',
-                                          '  do_something',
-                                          'end'])
-    expect(new_source).to eq(['until str =~ /regex/',
-                              '  do_something',
-                              'end'].join("\n"))
+    new_source = autocorrect_source(cop, <<-END.strip_indent)
+      until str.match(/regex/)
+        do_something
+      end
+    END
+    expect(new_source).to eq(<<-END.strip_indent)
+      until str =~ /regex/
+        do_something
+      end
+    END
   end
 
   it 'autocorrects .match in method body (but not tail position)' do
-    new_source = autocorrect_source(cop, ['def method(str)',
-                                          '  str.match(/regex/)',
-                                          '  true',
-                                          'end'])
-    expect(new_source).to eq(['def method(str)',
-                              '  str =~ /regex/',
-                              '  true',
-                              'end'].join("\n"))
+    new_source = autocorrect_source(cop, <<-END.strip_indent)
+      def method(str)
+        str.match(/regex/)
+        true
+      end
+    END
+    expect(new_source).to eq(<<-END.strip_indent)
+      def method(str)
+        str =~ /regex/
+        true
+      end
+    END
   end
 
   it 'does not autocorrect if .match has a string agrgument' do
@@ -58,33 +70,41 @@ describe RuboCop::Cop::Performance::RedundantMatch do
 
   it 'does not register an error when return value of .match is passed ' \
      'to another method' do
-    inspect_source(cop, ['def method(str)',
-                         ' something(str.match(/regex/))',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      def method(str)
+       something(str.match(/regex/))
+      end
+    END
     expect(cop.messages).to be_empty
   end
 
   it 'does not register an error when return value of .match is stored in an ' \
      'instance variable' do
-    inspect_source(cop, ['def method(str)',
-                         ' @var = str.match(/regex/)',
-                         ' true',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      def method(str)
+       @var = str.match(/regex/)
+       true
+      end
+    END
     expect(cop.messages).to be_empty
   end
 
   it 'does not register an error when return value of .match is returned from' \
      ' surrounding method' do
-    inspect_source(cop, ['def method(str)',
-                         ' str.match(/regex/)',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      def method(str)
+       str.match(/regex/)
+      end
+    END
     expect(cop.messages).to be_empty
   end
 
   it 'does not register an offense when match has a block' do
-    inspect_source(cop, ['/regex/.match(str) do |m|',
-                         '  something(m)',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      /regex/.match(str) do |m|
+        something(m)
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 

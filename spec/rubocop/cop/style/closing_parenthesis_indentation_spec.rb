@@ -12,49 +12,65 @@ describe RuboCop::Cop::Style::ClosingParenthesisIndentation do
   context 'for method calls' do
     context 'with line break before 1st parameter' do
       it 'registers an offense for misaligned )' do
-        inspect_source(cop, ['some_method(',
-                             '  a',
-                             '  )'])
+        inspect_source(cop, <<-END.strip_indent)
+          some_method(
+            a
+            )
+        END
         expect(cop.messages)
           .to eq(['Indent `)` the same as the start of the line where `(` is.'])
         expect(cop.highlights).to eq([')'])
       end
 
       it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(cop, ['some_method(',
-                                             '  a',
-                                             '  )'])
-        expect(corrected).to eq ['some_method(',
-                                 '  a',
-                                 ')'].join("\n")
+        corrected = autocorrect_source(cop, <<-END.strip_indent)
+          some_method(
+            a
+            )
+        END
+        expect(corrected).to eq <<-END.strip_indent
+          some_method(
+            a
+          )
+        END
       end
 
       it 'accepts a correctly aligned )' do
-        inspect_source(cop, ['some_method(',
-                             '  a',
-                             ')'])
+        inspect_source(cop, <<-END.strip_indent)
+          some_method(
+            a
+          )
+        END
         expect(cop.offenses).to be_empty
       end
     end
 
     context 'with no line break before 1st parameter' do
       it 'registers an offense for misaligned )' do
-        inspect_source(cop, ['some_method(a',
-                             ')'])
+        inspect_source(cop, <<-END.strip_indent)
+          some_method(a
+          )
+        END
         expect(cop.messages).to eq(['Align `)` with `(`.'])
         expect(cop.highlights).to eq([')'])
       end
 
       it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(cop, ['some_method(a',
-                                             ')'])
-        expect(corrected).to eq ['some_method(a',
-                                 '           )'].join("\n")
+        corrected = autocorrect_source(cop, <<-END.strip_indent)
+          some_method(a
+          )
+        END
+        expect(corrected).to eq <<-END.strip_indent
+          some_method(a
+                     )
+        END
       end
 
       it 'accepts a correctly aligned )' do
-        inspect_source(cop, ['some_method(a',
-                             '           )'])
+        inspect_source(cop, <<-END.strip_indent)
+          some_method(a
+                     )
+        END
         expect(cop.offenses).to be_empty
       end
 
@@ -67,31 +83,37 @@ describe RuboCop::Cop::Style::ClosingParenthesisIndentation do
         let(:align_parameters_config) { 'with_fixed_indentation' }
 
         it 'accepts a correctly indented )' do
-          inspect_source(cop, ['some_method(a,',
-                               '  x: 1,',
-                               '  y: 2',
-                               ')',
-                               'b =',
-                               '  some_method(a,',
-                               '  )'])
+          inspect_source(cop, <<-END.strip_indent)
+            some_method(a,
+              x: 1,
+              y: 2
+            )
+            b =
+              some_method(a,
+              )
+          END
           expect(cop.offenses).to be_empty
         end
 
         it 'autocorrects misindented )' do
-          corrected = autocorrect_source(cop, ['some_method(a,',
-                                               '  x: 1,',
-                                               '  y: 2',
-                                               '           )',
-                                               'b =',
-                                               '  some_method(a,',
-                                               '             )'])
-          expect(corrected).to eq ['some_method(a,',
-                                   '  x: 1,',
-                                   '  y: 2',
-                                   ')',
-                                   'b =',
-                                   '  some_method(a,',
-                                   '  )'].join("\n")
+          corrected = autocorrect_source(cop, <<-END.strip_indent)
+            some_method(a,
+              x: 1,
+              y: 2
+                       )
+            b =
+              some_method(a,
+                         )
+          END
+          expect(corrected).to eq <<-END.strip_indent
+            some_method(a,
+              x: 1,
+              y: 2
+            )
+            b =
+              some_method(a,
+              )
+          END
         end
       end
     end
@@ -100,63 +122,81 @@ describe RuboCop::Cop::Style::ClosingParenthesisIndentation do
   context 'for method definitions' do
     context 'with line break before 1st parameter' do
       it 'registers an offense for misaligned )' do
-        inspect_source(cop, ['def some_method(',
-                             '  a',
-                             '  )',
-                             'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          def some_method(
+            a
+            )
+          end
+        END
         expect(cop.messages)
           .to eq(['Indent `)` the same as the start of the line where `(` is.'])
         expect(cop.highlights).to eq([')'])
       end
 
       it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(cop, ['def some_method(',
-                                             '  a',
-                                             '  )',
-                                             'end'])
-        expect(corrected).to eq ['def some_method(',
-                                 '  a',
-                                 ')',
-                                 'end'].join("\n")
+        corrected = autocorrect_source(cop, <<-END.strip_indent)
+          def some_method(
+            a
+            )
+          end
+        END
+        expect(corrected).to eq <<-END.strip_indent
+          def some_method(
+            a
+          )
+          end
+        END
       end
 
       it 'accepts a correctly aligned )' do
-        inspect_source(cop, ['def some_method(',
-                             '  a',
-                             ')',
-                             'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          def some_method(
+            a
+          )
+          end
+        END
         expect(cop.offenses).to be_empty
       end
     end
 
     context 'with no line break before 1st parameter' do
       it 'registers an offense for misaligned )' do
-        inspect_source(cop, ['def some_method(a',
-                             ')',
-                             'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          def some_method(a
+          )
+          end
+        END
         expect(cop.messages).to eq(['Align `)` with `(`.'])
         expect(cop.highlights).to eq([')'])
       end
 
       it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(cop, ['def some_method(a',
-                                             ')',
-                                             'end'])
-        expect(corrected).to eq ['def some_method(a',
-                                 '               )',
-                                 'end'].join("\n")
+        corrected = autocorrect_source(cop, <<-END.strip_indent)
+          def some_method(a
+          )
+          end
+        END
+        expect(corrected).to eq <<-END.strip_indent
+          def some_method(a
+                         )
+          end
+        END
       end
 
       it 'accepts a correctly aligned )' do
-        inspect_source(cop, ['def some_method(a',
-                             '               )',
-                             'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          def some_method(a
+                         )
+          end
+        END
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts empty ()' do
-        inspect_source(cop, ['def some_method()',
-                             'end'])
+        inspect_source(cop, <<-END.strip_indent)
+          def some_method()
+          end
+        END
         expect(cop.offenses).to be_empty
       end
     end
@@ -165,65 +205,85 @@ describe RuboCop::Cop::Style::ClosingParenthesisIndentation do
   context 'for grouped expressions' do
     context 'with line break before 1st operand' do
       it 'registers an offense for misaligned )' do
-        inspect_source(cop, ['w = x * (',
-                             '  y + z',
-                             '  )'])
+        inspect_source(cop, <<-END.strip_indent)
+          w = x * (
+            y + z
+            )
+        END
         expect(cop.messages)
           .to eq(['Indent `)` the same as the start of the line where `(` is.'])
         expect(cop.highlights).to eq([')'])
       end
 
       it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(cop, ['w = x * (',
-                                             '  y + z',
-                                             '  )'])
-        expect(corrected).to eq ['w = x * (',
-                                 '  y + z',
-                                 ')'].join("\n")
+        corrected = autocorrect_source(cop, <<-END.strip_indent)
+          w = x * (
+            y + z
+            )
+        END
+        expect(corrected).to eq <<-END.strip_indent
+          w = x * (
+            y + z
+          )
+        END
       end
 
       it 'accepts a correctly aligned )' do
-        inspect_source(cop, ['w = x * (',
-                             '  y + z',
-                             ')'])
+        inspect_source(cop, <<-END.strip_indent)
+          w = x * (
+            y + z
+          )
+        END
         expect(cop.offenses).to be_empty
       end
     end
 
     context 'with no line break before 1st operand' do
       it 'registers an offense for misaligned )' do
-        inspect_source(cop, ['w = x * (y + z',
-                             ')'])
+        inspect_source(cop, <<-END.strip_indent)
+          w = x * (y + z
+          )
+        END
         expect(cop.messages).to eq(['Align `)` with `(`.'])
         expect(cop.highlights).to eq([')'])
       end
 
       it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(cop, ['w = x * (y + z',
-                                             '  )'])
-        expect(corrected).to eq ['w = x * (y + z',
-                                 '        )'].join("\n")
+        corrected = autocorrect_source(cop, <<-END.strip_indent)
+          w = x * (y + z
+            )
+        END
+        expect(corrected).to eq <<-END.strip_indent
+          w = x * (y + z
+                  )
+        END
       end
 
       it 'accepts a correctly aligned )' do
-        inspect_source(cop, ['w = x * (y + z',
-                             '        )'])
+        inspect_source(cop, <<-END.strip_indent)
+          w = x * (y + z
+                  )
+        END
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts ) that does not begin its line' do
-        inspect_source(cop, ['w = x * (y + z +',
-                             '        a)'])
+        inspect_source(cop, <<-END.strip_indent)
+          w = x * (y + z +
+                  a)
+        END
         expect(cop.offenses).to be_empty
       end
     end
   end
 
   it 'accepts begin nodes that are not grouped expressions' do
-    inspect_source(cop, ['def a',
-                         '  x',
-                         '  y',
-                         'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      def a
+        x
+        y
+      end
+    END
     expect(cop.offenses).to be_empty
   end
 end

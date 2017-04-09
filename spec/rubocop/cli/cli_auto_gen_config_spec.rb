@@ -18,8 +18,10 @@ describe RuboCop::CLI, :isolated_environment do
                                   '#' * 85,
                                   'y ',
                                   'puts x'])
-      create_file('.rubocop_todo.yml', ['Metrics/LineLength:',
-                                        '  Enabled: false'])
+      create_file('.rubocop_todo.yml', <<-END.strip_indent)
+        Metrics/LineLength:
+          Enabled: false
+      END
       create_file('.rubocop.yml', ['inherit_from: .rubocop_todo.yml'])
       expect(cli.run(['--auto-gen-config'])).to eq(1)
       expect(IO.readlines('.rubocop_todo.yml')[8..-1].map(&:chomp))
@@ -85,14 +87,16 @@ describe RuboCop::CLI, :isolated_environment do
                                   '#' * 85,
                                   'y ',
                                   'puts x'])
-      create_file('example2.rb', ['# encoding: utf-8',
-                                  '',
-                                  "\tx = 0",
-                                  'puts x',
-                                  '',
-                                  'class A',
-                                  '  def a; end',
-                                  'end'])
+      create_file('example2.rb', <<-END.strip_indent)
+        # encoding: utf-8
+
+        \tx = 0
+        puts x
+
+        class A
+          def a; end
+        end
+      END
       # Make ConfigLoader reload the default configuration so that its
       # absolute Exclude paths will point into this example's work directory.
       RuboCop::ConfigLoader.default_configuration = nil
@@ -267,14 +271,18 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'does not generate configuration for the Syntax cop' do
-      create_file('example1.rb', ['# encoding: utf-8',
-                                  '',
-                                  'x = < ', # Syntax error
-                                  'puts x'])
-      create_file('example2.rb', ['# encoding: utf-8',
-                                  '',
-                                  "\tx = 0",
-                                  'puts x'])
+      create_file('example1.rb', <<-END.strip_indent)
+        # encoding: utf-8
+
+        x = <  # Syntax error
+        puts x
+      END
+      create_file('example2.rb', <<-END.strip_indent)
+        # encoding: utf-8
+
+        \tx = 0
+        puts x
+      END
       expect(cli.run(['--auto-gen-config'])).to eq(1)
       expect($stderr.string).to eq('')
       expected =
@@ -367,14 +375,16 @@ describe RuboCop::CLI, :isolated_environment do
                                   '#' * 85,
                                   'y ',
                                   'puts x'])
-      create_file('example2.rb', ['# encoding: utf-8',
-                                  '',
-                                  "\tx = 0",
-                                  'puts x',
-                                  '',
-                                  'class A',
-                                  '  def a; end',
-                                  'end'])
+      create_file('example2.rb', <<-END.strip_indent)
+        # encoding: utf-8
+
+        \tx = 0
+        puts x
+
+        class A
+          def a; end
+        end
+      END
       # Make ConfigLoader reload the default configuration so that its
       # absolute Exclude paths will point into this example's work directory.
       RuboCop::ConfigLoader.default_configuration = nil
@@ -466,29 +476,31 @@ describe RuboCop::CLI, :isolated_environment do
       it 'disables cop if --exclude-limit is exceeded' do
         expect(cli.run(['--auto-gen-config', '--exclude-limit', '1'])).to eq(1)
         expect(IO.readlines('.rubocop_todo.yml')[8..-1].join)
-          .to eq(['# Offense count: 2',
-                  '# Cop supports --auto-correct.',
-                  '# Configuration parameters: EnforcedStyle, SupportedStyles.',
-                  '# SupportedStyles: use_perl_names, use_english_names',
-                  'Style/SpecialGlobalVars:',
-                  '  Enabled: false',
-                  ''].join("\n"))
+          .to eq(<<-END.strip_indent)
+            # Offense count: 2
+            # Cop supports --auto-correct.
+            # Configuration parameters: EnforcedStyle, SupportedStyles.
+            # SupportedStyles: use_perl_names, use_english_names
+            Style/SpecialGlobalVars:
+              Enabled: false
+          END
       end
 
       it 'generates Exclude list if --exclude-limit is not exceeded' do
         create_file('example4.rb', ['$!'])
         expect(cli.run(['--auto-gen-config', '--exclude-limit', '10'])).to eq(1)
         expect(IO.readlines('.rubocop_todo.yml')[8..-1].join)
-          .to eq(['# Offense count: 3',
-                  '# Cop supports --auto-correct.',
-                  '# Configuration parameters: EnforcedStyle, SupportedStyles.',
-                  '# SupportedStyles: use_perl_names, use_english_names',
-                  'Style/SpecialGlobalVars:',
-                  '  Exclude:',
-                  "    - 'example1.rb'",
-                  "    - 'example2.rb'",
-                  "    - 'example4.rb'",
-                  ''].join("\n"))
+          .to eq(<<-END.strip_indent)
+            # Offense count: 3
+            # Cop supports --auto-correct.
+            # Configuration parameters: EnforcedStyle, SupportedStyles.
+            # SupportedStyles: use_perl_names, use_english_names
+            Style/SpecialGlobalVars:
+              Exclude:
+                - 'example1.rb'
+                - 'example2.rb'
+                - 'example4.rb'
+          END
       end
     end
 

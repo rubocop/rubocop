@@ -74,23 +74,25 @@ describe RuboCop::Cop::Rails::DynamicFindBy, :config do
 
   context 'with dynamic find_by_*_and_*_and_* with newline' do
     let(:source) do
-      [
-        'User.find_by_name_and_email_and_token(',
-        '  name,',
-        '  email,',
-        '  token',
-        ')'
-      ]
+      <<-END.strip_indent
+        User.find_by_name_and_email_and_token(
+          name,
+          email,
+          token
+        )
+      END
     end
 
     include_examples(
       'register an offense and auto correct',
       'Use `find_by` instead of dynamic `find_by_name_and_email_and_token`.',
-      "User.find_by(\n" \
-      "  name: name,\n" \
-      "  email: email,\n" \
-      "  token: token\n" \
-      ')' \
+      <<-END.strip_indent
+        User.find_by(
+          name: name,
+          email: email,
+          token: token
+        )
+      END
     )
   end
 

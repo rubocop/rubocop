@@ -37,10 +37,12 @@ describe RuboCop::Cop::Performance::CompareWithBlock do
     end
 
     it "autocorrects array.#{method} do |a, b| a.foo <=> b.foo end" do
-      new_source = autocorrect_source(cop, ["array.#{method} do |a, b|",
-                                            '  a.foo <=> b.foo',
-                                            'end'])
-      expect(new_source).to eq "array.#{method}_by(&:foo)"
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        array.#{method} do |a, b|
+          a.foo <=> b.foo
+        end
+      END
+      expect(new_source).to eq "array.#{method}_by(&:foo)\n"
     end
 
     it 'formats the error message correctly for ' \

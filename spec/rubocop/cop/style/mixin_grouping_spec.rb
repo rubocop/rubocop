@@ -45,18 +45,20 @@ describe RuboCop::Cop::Style::MixinGrouping, :config do
       let(:message) { 'Put `include` mixins in separate statements.' }
 
       context 'with several mixins in one call' do
-        it_behaves_like 'code with offense',
-                        ['class Foo',
-                         '  include Bar, Qux',
-                         'end'].join("\n")
+        it_behaves_like 'code with offense', <<-END.strip_indent
+          class Foo
+            include Bar, Qux
+          end
+        END
       end
 
       context 'with several mixins in separate calls' do
-        it_behaves_like 'code without offense',
-                        ['class Foo',
-                         '  include Bar',
-                         '  include Qux',
-                         'end'].join("\n")
+        it_behaves_like 'code without offense', <<-END.strip_indent
+          class Foo
+            include Bar
+            include Qux
+          end
+        END
       end
 
       context 'when include call is an argument to another method' do
@@ -69,18 +71,20 @@ describe RuboCop::Cop::Style::MixinGrouping, :config do
       let(:message) { 'Put `extend` mixins in separate statements.' }
 
       context 'with several mixins in one call' do
-        it_behaves_like 'code with offense',
-                        ['class Foo',
-                         '  extend Bar, Qux',
-                         'end'].join("\n")
+        it_behaves_like 'code with offense', <<-END.strip_indent
+          class Foo
+            extend Bar, Qux
+          end
+        END
       end
 
       context 'with several mixins in separate calls' do
-        it_behaves_like 'code without offense',
-                        ['class Foo',
-                         '  extend Bar',
-                         '  extend Qux',
-                         'end'].join("\n")
+        it_behaves_like 'code without offense', <<-END.strip_indent
+          class Foo
+            extend Bar
+            extend Qux
+          end
+        END
       end
     end
 
@@ -88,18 +92,20 @@ describe RuboCop::Cop::Style::MixinGrouping, :config do
       let(:message) { 'Put `prepend` mixins in separate statements.' }
 
       context 'with several mixins in one call' do
-        it_behaves_like 'code with offense',
-                        ['class Foo',
-                         '  prepend Bar, Qux',
-                         'end'].join("\n")
+        it_behaves_like 'code with offense', <<-END.strip_indent
+          class Foo
+            prepend Bar, Qux
+          end
+        END
       end
 
       context 'with several mixins in separate calls' do
-        it_behaves_like 'code without offense',
-                        ['class Foo',
-                         '  prepend Bar',
-                         '  prepend Qux',
-                         'end'].join("\n")
+        it_behaves_like 'code without offense', <<-END.strip_indent
+          class Foo
+            prepend Bar
+            prepend Qux
+          end
+        END
       end
     end
 
@@ -107,20 +113,22 @@ describe RuboCop::Cop::Style::MixinGrouping, :config do
       context 'with some calls having several mixins' do
         let(:message) { 'Put `include` mixins in separate statements.' }
 
-        it_behaves_like 'code with offense',
-                        ['class Foo',
-                         '  include Bar, Baz',
-                         '  extend Qux',
-                         'end'].join("\n")
+        it_behaves_like 'code with offense', <<-END.strip_indent
+          class Foo
+            include Bar, Baz
+            extend Qux
+          end
+        END
       end
 
       context 'with all calls having one mixin' do
-        it_behaves_like 'code without offense',
-                        ['class Foo',
-                         '  include Bar',
-                         '  prepend Baz',
-                         '  extend Baz',
-                         'end'].join("\n")
+        it_behaves_like 'code without offense', <<-END.strip_indent
+          class Foo
+            include Bar
+            prepend Baz
+            extend Baz
+          end
+        END
       end
     end
   end
@@ -133,25 +141,28 @@ describe RuboCop::Cop::Style::MixinGrouping, :config do
         let(:offenses) { 3 }
         let(:message) { 'Put `include` mixins in a single statement.' }
 
-        it_behaves_like 'code with offense',
-                        ['class Foo',
-                         '  include Bar',
-                         '  include Baz',
-                         '  include Qux',
-                         'end'].join("\n")
+        it_behaves_like 'code with offense', <<-END.strip_indent
+          class Foo
+            include Bar
+            include Baz
+            include Qux
+          end
+        END
       end
 
       context 'with several mixins in separate calls' do
-        it_behaves_like 'code without offense',
-                        ['class Foo',
-                         '  include Bar, Qux',
-                         'end'].join("\n")
+        it_behaves_like 'code without offense', <<-END.strip_indent
+          class Foo
+            include Bar, Qux
+          end
+        END
       end
 
       context 'when include has an explicit receiver' do
-        it_behaves_like 'code without offense',
-                        ['config.include Foo',
-                         'config.include Bar'].join("\n")
+        it_behaves_like 'code without offense', <<-END.strip_indent
+          config.include Foo
+          config.include Bar
+        END
       end
     end
 
@@ -160,18 +171,20 @@ describe RuboCop::Cop::Style::MixinGrouping, :config do
         let(:offenses) { 2 }
         let(:message) { 'Put `extend` mixins in a single statement.' }
 
-        it_behaves_like 'code with offense',
-                        ['class Foo',
-                         '  extend Bar',
-                         '  extend Baz',
-                         'end'].join("\n")
+        it_behaves_like 'code with offense', <<-END.strip_indent
+          class Foo
+            extend Bar
+            extend Baz
+          end
+        END
       end
 
       context 'with several mixins in separate calls' do
-        it_behaves_like 'code without offense',
-                        ['class Foo',
-                         '  extend Bar, Qux',
-                         'end'].join("\n")
+        it_behaves_like 'code without offense', <<-END.strip_indent
+          class Foo
+            extend Bar, Qux
+          end
+        END
       end
     end
 
@@ -180,18 +193,20 @@ describe RuboCop::Cop::Style::MixinGrouping, :config do
         let(:offenses) { 2 }
         let(:message) { 'Put `prepend` mixins in a single statement.' }
 
-        it_behaves_like 'code with offense',
-                        ['class Foo',
-                         '  prepend Bar',
-                         '  prepend Baz',
-                         'end'].join("\n")
+        it_behaves_like 'code with offense', <<-END.strip_indent
+          class Foo
+            prepend Bar
+            prepend Baz
+          end
+        END
       end
 
       context 'with several mixins in separate calls' do
-        it_behaves_like 'code without offense',
-                        ['class Foo',
-                         '  prepend Bar, Qux',
-                         'end'].join("\n")
+        it_behaves_like 'code without offense', <<-END.strip_indent
+          class Foo
+            prepend Bar, Qux
+          end
+        END
       end
     end
 
@@ -200,21 +215,23 @@ describe RuboCop::Cop::Style::MixinGrouping, :config do
         let(:offenses) { 2 }
         let(:message) { 'Put `include` mixins in a single statement.' }
 
-        it_behaves_like 'code with offense',
-                        ['class Foo',
-                         '  include Bar',
-                         '  include Baz',
-                         '  extend Baz',
-                         'end'].join("\n")
+        it_behaves_like 'code with offense', <<-END.strip_indent
+          class Foo
+            include Bar
+            include Baz
+            extend Baz
+          end
+        END
       end
 
       context 'with all different mixin methods' do
-        it_behaves_like 'code without offense',
-                        ['class Foo',
-                         '  include Bar',
-                         '  prepend Baz',
-                         '  extend Baz',
-                         'end'].join("\n")
+        it_behaves_like 'code without offense', <<-END.strip_indent
+          class Foo
+            include Bar
+            prepend Baz
+            extend Baz
+          end
+        END
       end
     end
   end

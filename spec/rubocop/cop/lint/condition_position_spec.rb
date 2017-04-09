@@ -13,29 +13,32 @@ describe RuboCop::Cop::Lint::ConditionPosition do
     end
 
     it 'accepts condition on the same line' do
-      inspect_source(cop,
-                     ["#{keyword} x == 10",
-                      ' bala',
-                      'end'])
+      inspect_source(cop, <<-END.strip_indent)
+        #{keyword} x == 10
+         bala
+        end
+      END
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts condition on a different line for modifiers' do
-      inspect_source(cop,
-                     ["do_something #{keyword}",
-                      '  something && something_else'])
+      inspect_source(cop, <<-END.strip_indent)
+        do_something #{keyword}
+          something && something_else
+      END
       expect(cop.offenses).to be_empty
     end
   end
 
   it 'registers an offense for elsif condition on the next line' do
-    inspect_source(cop,
-                   ['if something',
-                    '  test',
-                    'elsif',
-                    '  something',
-                    '  test',
-                    'end'])
+    inspect_source(cop, <<-END.strip_indent)
+      if something
+        test
+      elsif
+        something
+        test
+      end
+    END
     expect(cop.offenses.size).to eq(1)
   end
 

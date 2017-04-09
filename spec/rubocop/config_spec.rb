@@ -16,11 +16,11 @@ describe RuboCop::Config do
 
     context 'when the configuration includes any unrecognized cop name' do
       before do
-        create_file(configuration_path, [
-                      'LyneLenth:',
-                      '  Enabled: true',
-                      '  Max: 100'
-                    ])
+        create_file(configuration_path, <<-END.strip_indent)
+          LyneLenth:
+            Enabled: true
+            Max: 100
+        END
         $stderr = StringIO.new
       end
 
@@ -59,10 +59,10 @@ describe RuboCop::Config do
 
     context 'when the configuration is in the base RuboCop config folder' do
       before do
-        create_file(configuration_path, [
-                      'InvalidProperty:',
-                      '  Enabled: true'
-                    ])
+        create_file(configuration_path, <<-END.strip_indent)
+          InvalidProperty:
+            Enabled: true
+        END
         stub_const('RuboCop::ConfigLoader::RUBOCOP_HOME', rubocop_home_path)
       end
 
@@ -76,11 +76,11 @@ describe RuboCop::Config do
 
     context 'when the configuration includes any unrecognized parameter' do
       before do
-        create_file(configuration_path, [
-                      'Metrics/LineLength:',
-                      '  Enabled: true',
-                      '  Min: 10'
-                    ])
+        create_file(configuration_path, <<-END.strip_indent)
+          Metrics/LineLength:
+            Enabled: true
+            Min: 10
+        END
         $stderr = StringIO.new
       end
 
@@ -100,15 +100,15 @@ describe RuboCop::Config do
       # Common parameters are parameters that are not in the default
       # configuration, but are nonetheless allowed for any cop.
       before do
-        create_file(configuration_path, [
-                      'Metrics/ModuleLength:',
-                      '  Exclude:',
-                      '    - lib/file.rb',
-                      '  Include:',
-                      '    - lib/file.xyz',
-                      '  Severity: warning',
-                      '  StyleGuide: https://example.com/some-style.html'
-                    ])
+        create_file(configuration_path, <<-END.strip_indent)
+          Metrics/ModuleLength:
+            Exclude:
+              - lib/file.rb
+            Include:
+              - lib/file.xyz
+            Severity: warning
+            StyleGuide: https://example.com/some-style.html
+        END
       end
 
       it 'does not raise validation error' do
@@ -118,10 +118,10 @@ describe RuboCop::Config do
 
     context 'when the configuration includes a valid EnforcedStyle' do
       before do
-        create_file(configuration_path, [
-                      'Style/AndOr:',
-                      '  EnforcedStyle: conditionals'
-                    ])
+        create_file(configuration_path, <<-END.strip_indent)
+          Style/AndOr:
+            EnforcedStyle: conditionals
+        END
       end
 
       it 'does not raise validation error' do
@@ -131,10 +131,10 @@ describe RuboCop::Config do
 
     context 'when the configration includes an invalid EnforcedStyle' do
       before do
-        create_file(configuration_path, [
-                      'Style/AndOr:',
-                      '  EnforcedStyle: itisinvalid'
-                    ])
+        create_file(configuration_path, <<-END.strip_indent)
+          Style/AndOr:
+            EnforcedStyle: itisinvalid
+        END
       end
 
       it 'raises validation error' do
@@ -145,10 +145,10 @@ describe RuboCop::Config do
 
     context 'when the configration includes a valid Enforced.+Style' do
       before do
-        create_file(configuration_path, [
-                      'Style/SpaceAroundBlockParameters:',
-                      '  EnforcedStyleInsidePipes: space'
-                    ])
+        create_file(configuration_path, <<-END.strip_indent)
+          Style/SpaceAroundBlockParameters:
+            EnforcedStyleInsidePipes: space
+        END
       end
 
       it 'does not raise validation error' do
@@ -158,10 +158,10 @@ describe RuboCop::Config do
 
     context 'when the configration includes an invalid Enforced.+Style' do
       before do
-        create_file(configuration_path, [
-                      'Style/SpaceAroundBlockParameters:',
-                      '  EnforcedStyleInsidePipes: itisinvalid'
-                    ])
+        create_file(configuration_path, <<-END.strip_indent)
+          Style/SpaceAroundBlockParameters:
+            EnforcedStyleInsidePipes: itisinvalid
+        END
       end
 
       it 'raises validation error' do
@@ -172,10 +172,10 @@ describe RuboCop::Config do
 
     context 'when the configuration includes an obsolete cop' do
       before do
-        create_file(configuration_path, [
-                      'Style/MethodCallParentheses:',
-                      '  Enabled: true'
-                    ])
+        create_file(configuration_path, <<-END.strip_indent)
+          Style/MethodCallParentheses:
+            Enabled: true
+        END
       end
 
       it 'raises validation error' do
@@ -187,10 +187,10 @@ describe RuboCop::Config do
 
     context 'when the configuration includes an obsolete parameter' do
       before do
-        create_file(configuration_path, [
-                      'Rails/UniqBeforePluck:',
-                      '  EnforcedMode: conservative'
-                    ])
+        create_file(configuration_path, <<-END.strip_indent)
+          Rails/UniqBeforePluck:
+            EnforcedMode: conservative
+        END
       end
 
       it 'raises validation error' do
@@ -201,16 +201,16 @@ describe RuboCop::Config do
 
     context 'when the configuration includes obsolete parameters and cops' do
       before do
-        create_file(configuration_path, [
-                      'Rails/UniqBeforePluck:',
-                      '  EnforcedMode: conservative',
-                      'Style/MethodCallParentheses:',
-                      '  Enabled: false',
-                      'Lint/BlockAlignment:',
-                      '  AlignWith: either',
-                      'Style/SpaceBeforeModifierKeyword:',
-                      '  Enabled: false'
-                    ])
+        create_file(configuration_path, <<-END.strip_indent)
+          Rails/UniqBeforePluck:
+            EnforcedMode: conservative
+          Style/MethodCallParentheses:
+            Enabled: false
+          Lint/BlockAlignment:
+            AlignWith: either
+          Style/SpaceBeforeModifierKeyword:
+            Enabled: false
+        END
       end
 
       it 'raises validation error' do
@@ -227,11 +227,11 @@ describe RuboCop::Config do
 
     context 'when all cops are both Enabled and Disabled by default' do
       before do
-        create_file(configuration_path, [
-                      'AllCops:',
-                      '  EnabledByDefault: true',
-                      '  DisabledByDefault: true'
-                    ])
+        create_file(configuration_path, <<-END.strip_indent)
+          AllCops:
+            EnabledByDefault: true
+            DisabledByDefault: true
+        END
       end
 
       it 'raises validation error' do

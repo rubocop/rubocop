@@ -27,8 +27,10 @@ describe RuboCop::Cop::Style::Encoding, :config do
 
     it 'registers an offense when encoding present but only ASCII ' \
        'characters' do
-      inspect_source(cop, ['# encoding: utf-8',
-                           'def foo() end'])
+      inspect_source(cop, <<-END.strip_indent)
+        # encoding: utf-8
+        def foo() end
+      END
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(
@@ -43,23 +45,29 @@ describe RuboCop::Cop::Style::Encoding, :config do
     end
 
     it 'accepts encoding on first line' do
-      inspect_source(cop, ['# encoding: utf-8',
-                           'def foo() \'ä\' end'])
+      inspect_source(cop, <<-END.strip_indent)
+        # encoding: utf-8
+        def foo() \'ä\' end
+      END
 
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts encoding on second line when shebang present' do
-      inspect_source(cop, ['#!/usr/bin/env ruby',
-                           '# encoding: utf-8',
-                           'def foo() \'ä\' end'])
+      inspect_source(cop, <<-END.strip_indent)
+        #!/usr/bin/env ruby
+        # encoding: utf-8
+        def foo() \'ä\' end
+      END
 
       expect(cop.messages).to be_empty
     end
 
     it 'registers an offense when encoding is in the wrong place' do
-      inspect_source(cop, ['def foo() \'ä\' end',
-                           '# encoding: utf-8'])
+      inspect_source(cop, <<-END.strip_indent)
+        def foo() \'ä\' end
+        # encoding: utf-8
+      END
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(
@@ -68,31 +76,44 @@ describe RuboCop::Cop::Style::Encoding, :config do
     end
 
     it 'accepts encoding inserted by magic_encoding gem' do
-      inspect_source(cop, ['# -*- encoding : utf-8 -*-',
-                           'def foo() \'ä\' end'])
+      inspect_source(cop, <<-END.strip_indent)
+        # -*- encoding : utf-8 -*-
+        def foo() \'ä\' end
+      END
 
       expect(cop.messages).to be_empty
     end
 
     it 'accepts vim-style encoding comments' do
-      inspect_source(cop, ['# vim:filetype=ruby, fileencoding=utf-8',
-                           'def foo() \'ä\' end'])
+      inspect_source(cop, <<-END.strip_indent)
+        # vim:filetype=ruby, fileencoding=utf-8
+        def foo() \'ä\' end
+      END
       expect(cop.messages).to be_empty
     end
 
     context 'auto-correct' do
       it 'inserts an encoding comment on the first line when there are ' \
          'non ASCII characters in the file' do
-        new_source = autocorrect_source(cop, 'def foo() \'ä\' end')
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          def foo() 'ä' end
+        END
 
-        expect(new_source).to eq(['# encoding: utf-8',
-                                  'def foo() \'ä\' end'].join("\n"))
+        expect(new_source).to eq(<<-END.strip_indent)
+          # encoding: utf-8
+          def foo() 'ä' end
+        END
       end
 
       it "removes encoding comment on first line when it's not needed" do
-        new_source = autocorrect_source(cop, "# encoding: utf-8\nblah")
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          # encoding: utf-8
+          blah
+        END
 
-        expect(new_source).to eq('blah')
+        expect(new_source).to eq(<<-END.strip_indent)
+          blah
+        END
       end
     end
   end
@@ -118,23 +139,29 @@ describe RuboCop::Cop::Style::Encoding, :config do
     end
 
     it 'accepts encoding on first line' do
-      inspect_source(cop, ['# encoding: utf-8',
-                           'def foo() end'])
+      inspect_source(cop, <<-END.strip_indent)
+        # encoding: utf-8
+        def foo() end
+      END
 
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts encoding on second line when shebang present' do
-      inspect_source(cop, ['#!/usr/bin/env ruby',
-                           '# encoding: utf-8',
-                           'def foo() end'])
+      inspect_source(cop, <<-END.strip_indent)
+        #!/usr/bin/env ruby
+        # encoding: utf-8
+        def foo() end
+      END
 
       expect(cop.messages).to be_empty
     end
 
     it 'books an offense when encoding is in the wrong place' do
-      inspect_source(cop, ['def foo() end',
-                           '# encoding: utf-8'])
+      inspect_source(cop, <<-END.strip_indent)
+        def foo() end
+        # encoding: utf-8
+      END
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(
@@ -143,15 +170,19 @@ describe RuboCop::Cop::Style::Encoding, :config do
     end
 
     it 'accepts encoding inserted by magic_encoding gem' do
-      inspect_source(cop, ['# -*- encoding : utf-8 -*-',
-                           'def foo() end'])
+      inspect_source(cop, <<-END.strip_indent)
+        # -*- encoding : utf-8 -*-
+        def foo() end
+      END
 
       expect(cop.messages).to be_empty
     end
 
     it 'accepts vim-style encoding comments' do
-      inspect_source(cop, ['# vim:filetype=ruby, fileencoding=utf-8',
-                           'def foo() end'])
+      inspect_source(cop, <<-END.strip_indent)
+        # vim:filetype=ruby, fileencoding=utf-8
+        def foo() end
+      END
       expect(cop.messages).to be_empty
     end
 
@@ -168,34 +199,46 @@ describe RuboCop::Cop::Style::Encoding, :config do
         it 'inserts an encoding comment on the first line and leaves ' \
            'the wrong encoding line when encoding is in the wrong place' do
           cop_config['AutoCorrectEncodingComment'] = '# encoding: utf-8'
-          new_source = autocorrect_source(cop, ['def foo() end',
-                                                '# encoding: utf-8'])
+          new_source = autocorrect_source(cop, <<-END.strip_indent)
+            def foo() end
+            # encoding: utf-8
+          END
 
-          expect(new_source).to eq(['# encoding: utf-8',
-                                    'def foo() end',
-                                    '# encoding: utf-8'].join("\n"))
+          expect(new_source).to eq(<<-END.strip_indent)
+            # encoding: utf-8
+            def foo() end
+            # encoding: utf-8
+          END
         end
 
         it 'inserts an encoding comment on the second line when the first ' \
            'line is a shebang' do
-          new_source = autocorrect_source(cop, ['#!/usr/bin/env ruby',
-                                                'def foo',
-                                                'end'])
+          new_source = autocorrect_source(cop, <<-END.strip_indent)
+            #!/usr/bin/env ruby
+            def foo
+            end
+          END
 
-          expect(new_source).to eq(['#!/usr/bin/env ruby',
-                                    '# encoding: utf-8',
-                                    'def foo',
-                                    'end'].join("\n"))
+          expect(new_source).to eq(<<-END.strip_indent)
+            #!/usr/bin/env ruby
+            # encoding: utf-8
+            def foo
+            end
+          END
         end
 
         it "doesn't infinite-loop when the first line is blank" do
-          new_source = autocorrect_source(cop, ['',
-                                                'module Toto',
-                                                'end'])
-          expect(new_source).to eq(['# encoding: utf-8',
-                                    '',
-                                    'module Toto',
-                                    'end'].join("\n"))
+          new_source = autocorrect_source(cop, <<-END.strip_indent)
+
+            module Toto
+            end
+          END
+          expect(new_source).to eq(<<-END.strip_indent)
+            # encoding: utf-8
+
+            module Toto
+            end
+          END
         end
       end
 
@@ -231,8 +274,10 @@ describe RuboCop::Cop::Style::Encoding, :config do
 
     it 'registers an offense when encoding present but only ASCII ' \
        'characters' do
-      inspect_source(cop, ['# encoding: utf-8',
-                           'def foo() end'])
+      inspect_source(cop, <<-END.strip_indent)
+        # encoding: utf-8
+        def foo() end
+      END
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(
