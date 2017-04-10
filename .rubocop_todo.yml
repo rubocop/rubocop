@@ -10,7 +10,23 @@
 InternalAffairs/NodeDestructuring:
   Enabled: false
 
-# Offense count: 57
+# Offense count: 12
+# Cop supports --auto-correct.
+Lint/UnneededCopDisableDirective:
+  Exclude:
+    - 'lib/rubocop.rb'
+    - 'lib/rubocop/cop/layout/indent_first_argument.rb'
+    - 'lib/rubocop/cop/lint/unneeded_cop_enable_directive.rb'
+    - 'lib/rubocop/formatter/base_formatter.rb'
+    - 'lib/rubocop/options.rb'
+    - 'spec/project_spec.rb'
+    - 'spec/rubocop/cop/layout/empty_lines_around_exception_handling_keywords_spec.rb'
+    - 'spec/rubocop/cop/layout/multiline_method_definition_brace_layout_spec.rb'
+    - 'spec/rubocop/cop/layout/space_around_equals_in_parameter_default_spec.rb'
+    - 'spec/rubocop/cop/lint/multiple_compare_spec.rb'
+    - 'spec/rubocop/formatter/disabled_config_formatter_spec.rb'
+
+# Offense count: 58
 Metrics/AbcSize:
   Max: 17
 
@@ -19,7 +35,11 @@ Metrics/AbcSize:
 Metrics/ClassLength:
   Max: 174
 
-# Offense count: 219
+# Offense count: 1
+Metrics/CyclomaticComplexity:
+  Max: 7
+
+# Offense count: 218
 # Configuration parameters: CountComments, ExcludedMethods.
 Metrics/MethodLength:
   Max: 14
@@ -29,7 +49,11 @@ Metrics/MethodLength:
 Metrics/ModuleLength:
   Max: 141
 
-# Offense count: 9
+# Offense count: 1
+Metrics/PerceivedComplexity:
+  Max: 8
+
+# Offense count: 7
 RSpec/AnyInstance:
   Exclude:
     - 'spec/rubocop/cli_spec.rb'
@@ -37,13 +61,13 @@ RSpec/AnyInstance:
     - 'spec/rubocop/cop/team_spec.rb'
     - 'spec/rubocop/target_finder_spec.rb'
 
-# Offense count: 1096
+# Offense count: 1088
 # Configuration parameters: Prefixes.
 # Prefixes: when, with, without
 RSpec/ContextWording:
   Enabled: false
 
-# Offense count: 3343
+# Offense count: 3334
 # Configuration parameters: Max.
 RSpec/ExampleLength:
   Enabled: false
@@ -62,15 +86,39 @@ RSpec/ExpectOutput:
     - 'spec/rubocop/result_cache_spec.rb'
     - 'spec/rubocop/target_finder_spec.rb'
 
-# Offense count: 463
+# Offense count: 461
 # Configuration parameters: AggregateFailuresByDefault.
 RSpec/MultipleExpectations:
   Max: 25
 
-# Offense count: 11
+# Offense count: 3
+# Configuration parameters: IgnoreSharedExamples.
+RSpec/NamedSubject:
+  Exclude:
+    - 'spec/rubocop/cli/cli_disable_uncorrectable_spec.rb'
+
+# Offense count: 13
 RSpec/SubjectStub:
   Exclude:
     - 'spec/rubocop/config_spec.rb'
     - 'spec/rubocop/cop/cop_spec.rb'
     - 'spec/rubocop/formatter/json_formatter_spec.rb'
     - 'spec/rubocop/formatter/progress_formatter_spec.rb'
+
+# Offense count: 2
+# Configuration parameters: IgnoreNameless, IgnoreSymbolicNames.
+RSpec/VerifiedDoubles:
+  Exclude:
+    - 'spec/rubocop/cop/cop_spec.rb'
+
+# Offense count: 95
+# Cop supports --auto-correct.
+Style/IfUnlessModifier:
+  Enabled: false
+
+# Offense count: 1
+# Cop supports --auto-correct.
+# Configuration parameters: AutoCorrect, AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
+# URISchemes: http, https
+Metrics/LineLength:
+  Max: 136
