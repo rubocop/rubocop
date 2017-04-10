@@ -45,6 +45,9 @@ describe RuboCop::Options, :isolated_environment do
                   --exclude-limit COUNT        Used together with --auto-gen-config to
                                                set the limit for how many Exclude
                                                properties to generate. Default is 15.
+                  --disable-uncorrectable      Used with --auto-correct to annotate any
+                                               offenses that do not support autocorrect
+                                               with `rubocop:disable` comments.
                   --force-exclusion            Force excluding files specified in the
                                                configuration `Exclude` even if they are
                                                explicitly passed as arguments.

@@ -103,6 +103,30 @@ describe RuboCop::Cop::Cop do
         cop.add_offense(nil, location, 'message')
         expect(cop.offenses.first.corrected?).to be(false)
       end
+
+      context 'when autocorrect is requested' do
+        before do
+          allow(cop).to receive(:autocorrect_requested?).and_return(true)
+        end
+
+        it 'is not specified (set to nil)' do
+          cop.add_offense(nil, location, 'message')
+          expect(cop.offenses.first.corrected?).to be(false)
+        end
+
+        context 'when disable_uncorrectable is enabled' do
+          before do
+            allow(cop).to receive(:disable_uncorrectable?).and_return(true)
+          end
+
+          let(:node) { double(location: double(expression: location)) }
+
+          it 'is set to true' do
+            cop.add_offense(node, location, 'message')
+            expect(cop.offenses.first.corrected?).to be(true)
+          end
+        end
+      end
     end
 
     context 'when cop supports autocorrection' do
@@ -210,10 +234,12 @@ describe RuboCop::Cop::Cop do
     let(:config) { RuboCop::Config.new({}) }
     let(:cop) { described_class.new(config, options) }
     let(:support_autocorrect) { true }
+    let(:disable_uncorrectable) { false }
     subject { cop.autocorrect? }
 
     before do
       allow(cop).to receive(:support_autocorrect?) { support_autocorrect }
+      allow(cop).to receive(:disable_uncorrectable?) { disable_uncorrectable }
     end
 
     context 'when the option is not given' do
@@ -228,6 +254,11 @@ describe RuboCop::Cop::Cop do
       context 'when cop does not support autocorrection' do
         let(:support_autocorrect) { false }
         it { is_expected.to be(false) }
+
+        context 'when disable_uncorrectable is enabled' do
+          let(:disable_uncorrectable) { true }
+          it { is_expected.to be(true) }
+        end
       end
 
       context 'when the cop is set to not autocorrect' do

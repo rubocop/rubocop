@@ -99,6 +99,8 @@ module RuboCop
         @validator.validate_exclude_limit_option(args)
       end
 
+      option(opts, '--disable-uncorrectable')
+
       option(opts, '--force-exclusion')
 
       option(opts, '--force-default-config')
@@ -300,6 +302,10 @@ module RuboCop
       exclude_limit:        ['Used together with --auto-gen-config to',
                              'set the limit for how many Exclude',
                              "properties to generate. Default is #{MAX_EXCL}."],
+      disable_uncorrectable:
+                            ['Used with --auto-correct to annotate any',
+                             'offenses that do not support autocorrect',
+                             'with `rubocop:disable` comments.'],
       force_exclusion:      ['Force excluding files specified in the',
                              'configuration `Exclude` even if they are',
                              'explicitly passed as arguments.'],
