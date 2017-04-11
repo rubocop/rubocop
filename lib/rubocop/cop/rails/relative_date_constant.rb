@@ -33,6 +33,16 @@ module RuboCop
           check_node(rhs)
         end
 
+        def on_masgn(node)
+          lhs, rhs = *node
+
+          return unless rhs && rhs.array_type?
+
+          lhs.children.zip(rhs.children).each do |(name, value)|
+            check_node(value) if name.casgn_type?
+          end
+        end
+
         def on_or_asgn(node)
           lhs, rhs = *node
 

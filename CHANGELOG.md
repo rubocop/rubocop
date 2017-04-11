@@ -8,6 +8,7 @@
 * [#4242](https://github.com/bbatsov/rubocop/issues/4242): Add `Capfile` to the list of known Ruby filenames. ([@bbatsov][])
 * [#4240](https://github.com/bbatsov/rubocop/issues/4240): Handle `||=` in `Rails/RelativeDateConstant`. ([@bbatsov][])
 * [#4241](https://github.com/bbatsov/rubocop/issues/4241): Prevent `Rails/Blank` and `Rails/Present` from breaking when there is no explicit receiver. ([@rrosenblum][])
+* [#4249](https://github.com/bbatsov/rubocop/issues/4249): Handle multiple assignment in `Rails/RelativeDateConstant`. ([@bbatsov][])
 
 ## 0.48.1 (2017-04-03)
 

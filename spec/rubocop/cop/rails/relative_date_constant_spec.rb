@@ -48,6 +48,15 @@ describe RuboCop::Cop::Rails::RelativeDateConstant do
     expect(cop.offenses.size).to eq(1)
   end
 
+  it 'registers an offense for relative date in multiple assignment' do
+    inspect_source(cop, <<-END.strip_indent)
+      class SomeClass
+        START, A, x = 2.weeks.ago, 1.week.since, 5
+      end
+    END
+    expect(cop.offenses.size).to eq(1)
+  end
+
   it 'registers an offense for exclusive end range' do
     inspect_source(cop, <<-END.strip_indent)
       class SomeClass
