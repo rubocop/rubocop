@@ -5,6 +5,34 @@ module RuboCop
     module Style
       # Here we check if the parameters on a multi-line method call or
       # definition are aligned.
+      #
+      # @example
+      #
+      #   # EnforcedStyle: with_first_parameter
+      #
+      #   # good
+      #
+      #   foo :bar,
+      #       :baz
+      #
+      #   # bad
+      #
+      #   foo :bar,
+      #     :baz
+      #
+      # @example
+      #
+      #   # EnforcedStyle: with_fixed_indentation
+      #
+      #   # good
+      #
+      #   foo :bar,
+      #     :baz
+      #
+      #   # bad
+      #
+      #   foo :bar,
+      #       :baz
       class AlignParameters < Cop
         include AutocorrectAlignment
         include OnMethodDef
