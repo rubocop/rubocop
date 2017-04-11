@@ -1,5 +1,26 @@
 # Performance
 
+## Performance/Caller
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop identifies places where `caller[n]`
+can be replaced by `caller(n..n).first`.
+
+### Example
+
+```ruby
+# bad
+caller[n]
+caller.first
+
+# good
+caller(n..n).first
+caller(1..1).first
+```
+
 ## Performance/CaseWhenSplat
 
 Enabled by default | Supports autocorrection

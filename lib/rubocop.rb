@@ -269,6 +269,7 @@ require 'rubocop/cop/metrics/module_length'
 require 'rubocop/cop/metrics/parameter_lists'
 require 'rubocop/cop/metrics/perceived_complexity'
 
+require 'rubocop/cop/performance/caller'
 require 'rubocop/cop/performance/case_when_splat'
 require 'rubocop/cop/performance/casecmp'
 require 'rubocop/cop/performance/count'

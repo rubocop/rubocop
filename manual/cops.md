@@ -222,6 +222,7 @@ In the following section you find all available cops:
 
 #### Department [Performance](cops_performance.md)
 
+* [Performance/Caller](cops_performance.md#performancecaller)
 * [Performance/CaseWhenSplat](cops_performance.md#performancecasewhensplat)
 * [Performance/Casecmp](cops_performance.md#performancecasecmp)
 * [Performance/CompareWithBlock](cops_performance.md#performancecomparewithblock)
