@@ -52,8 +52,8 @@ module RuboCop
                 "#{compiler.emit_param_list});" \
                 "#{compiler.emit_method_code};end"
 
-          file, lineno = *caller.first.split(':')
-          class_eval(src, file, lineno.to_i)
+          location = caller_locations(1, 1).first
+          class_eval(src, location.path, location.lineno)
         end
       end
 

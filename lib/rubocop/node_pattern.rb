@@ -475,8 +475,8 @@ module RuboCop
               "#{compiler.emit_trailing_params});" \
               "#{compiler.emit_method_code};end"
 
-        file, lineno = *caller.first.split(':')
-        class_eval(src, file, lineno.to_i)
+        location = caller_locations(1, 1).first
+        class_eval(src, location.path, location.lineno)
       end
 
       # Define a method which recurses over the descendants of an AST node,
@@ -487,7 +487,7 @@ module RuboCop
       # yield all descendants which match.
       def def_node_search(method_name, pattern_str)
         compiler = RuboCop::NodePattern::Compiler.new(pattern_str, 'node')
-        called_from = caller.first.split(':')
+        called_from = caller(1..1).first.split(':')
 
         if method_name.to_s.end_with?('?')
           node_search_first(method_name, compiler, called_from)
