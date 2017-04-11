@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#4262](https://github.com/bbatsov/rubocop/pull/4262): Add new `MinSize` configuration to `Style/SymbolArray`, consistent with the same configuration in `Style/WordArray`. ([@scottmatthewman][])
+
 ### Bug fixes
 
 * [#4237](https://github.com/bbatsov/rubocop/pull/4237): Fix false positive in `Lint/AmbiguousBlockAssociation` cop for lambdas. ([@smakagon][])

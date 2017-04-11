@@ -1155,6 +1155,7 @@ Style/StringMethods:
 
 Style/SymbolArray:
   EnforcedStyle: percent
+  MinSize: 0
   SupportedStyles:
     - percent
     - brackets

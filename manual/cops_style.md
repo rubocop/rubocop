@@ -5571,6 +5571,7 @@ EnforcedStyle: brackets
 Attribute | Value
 --- | ---
 EnforcedStyle | percent
+MinSize | 0
 SupportedStyles | percent, brackets
 
 ### References

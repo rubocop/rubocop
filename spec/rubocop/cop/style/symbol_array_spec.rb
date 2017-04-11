@@ -3,6 +3,11 @@
 describe RuboCop::Cop::Style::SymbolArray, :config do
   subject(:cop) { described_class.new(config) }
 
+  before(:each) do
+    # Reset data which is shared by all instances of SymbolArray
+    described_class.largest_brackets = -Float::INFINITY
+  end
+
   let(:other_cops) do
     {
       'Style/PercentLiteralDelimiters' => {
@@ -14,12 +19,16 @@ describe RuboCop::Cop::Style::SymbolArray, :config do
   end
 
   context 'when EnforcedStyle is percent' do
-    let(:cop_config) { { 'EnforcedStyle' => 'percent' } }
+    let(:cop_config) do
+      { 'MinSize' => 0,
+        'EnforcedStyle' => 'percent' }
+    end
 
     it 'registers an offense for arrays of symbols' do
       inspect_source(cop, '[:one, :two, :three]')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Use `%i` or `%I` for an array of symbols.'])
+      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'brackets')
     end
 
     it 'autocorrects arrays of symbols' do
@@ -63,6 +72,28 @@ describe RuboCop::Cop::Style::SymbolArray, :config do
       expect(cop.offenses).to be_empty
     end
 
+    it 'detects right value for MinSize to use for --auto-gen-config' do
+      inspect_source(cop, <<-END.strip_indent)
+        [:one, :two, :three]
+        %i(a b c d)
+      END
+
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages).to eq(['Use `%i` or `%I` for an array of symbols.'])
+      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'percent',
+                                                 'MinSize' => 4)
+    end
+
+    it 'detects when the cop must be disabled to avoid offenses' do
+      inspect_source(cop, <<-END.strip_indent)
+        [:one, :two, :three]
+        %i(a b)
+      END
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages).to eq(['Use `%i` or `%I` for an array of symbols.'])
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+    end
+
     context 'Ruby 1.9', :ruby19 do
       it 'accepts arrays of smybols' do
         inspect_source(cop, '[:one, :two, :three]')
@@ -90,7 +121,7 @@ describe RuboCop::Cop::Style::SymbolArray, :config do
   end
 
   context 'when EnforcedStyle is array' do
-    let(:cop_config) { { 'EnforcedStyle' => 'brackets' } }
+    let(:cop_config) { { 'EnforcedStyle' => 'brackets', 'MinSize' => 0 } }
 
     it 'does not register an offense for arrays of symbols' do
       inspect_source(cop, '[:one, :two, :three]')
