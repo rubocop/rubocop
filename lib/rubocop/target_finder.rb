@@ -10,6 +10,7 @@ module RuboCop
                        .god
                        .jbuilder
                        .mspec
+                       .opal
                        .pluginspec
                        .podspec
                        .rabl
@@ -36,6 +37,7 @@ module RuboCop
                       Brewfile
                       Buildfile
                       Capfile
+                      Cheffile
                       Dangerfile
                       Deliverfile
                       Fastfile
@@ -48,6 +50,7 @@ module RuboCop
                       Rakefile
                       Snapfile
                       Thorfile
+                      Vagabondfile
                       Vagrantfile
                       buildfile].freeze
 
