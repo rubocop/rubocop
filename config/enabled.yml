@@ -1359,6 +1359,11 @@ Lint/Void:
 
 #################### Performance ###########################
 
+Performance/Caller:
+  Description: >-
+             Use `caller(n..n)` instead of `caller`.
+  Enabled: true
+
 Performance/Casecmp:
   Description: >-
              Use `casecmp` rather than `downcase ==`, `upcase ==`, `== downcase`, or `== upcase`..
