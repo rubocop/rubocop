@@ -2738,3 +2738,4 @@
 [@dpostorivo]: https://github.com/dpostorivo
 [@konto-andrzeja]: https://github.com/konto-andrzeja
 [@sadovnik]: https://github.com/sadovnik
+[@cjlarose]: https://github.com/cjlarose
