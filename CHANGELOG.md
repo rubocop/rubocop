@@ -2,11 +2,9 @@
 
 ## master (unreleased)
 
-### New features
-* [#4265](https://github.com/bbatsov/rubocop/pull/4265): Require a space before first argument of a method call. ([@cjlarose][])
-
 ### Bug fixes
 
+* [#4265](https://github.com/bbatsov/rubocop/pull/4265): Require a space before first argument of a method call in `Style/SpaceBeforeFirstArg` cop. ([@cjlarose][])
 * [#4237](https://github.com/bbatsov/rubocop/pull/4237): Fix false positive in `Lint/AmbiguousBlockAssociation` cop for lambdas. ([@smakagon][])
 * [#4242](https://github.com/bbatsov/rubocop/issues/4242): Add `Capfile` to the list of known Ruby filenames. ([@bbatsov][])
 * [#4240](https://github.com/bbatsov/rubocop/issues/4240): Handle `||=` in `Rails/RelativeDateConstant`. ([@bbatsov][])
