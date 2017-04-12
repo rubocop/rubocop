@@ -9,6 +9,39 @@ describe RuboCop::CLI, :isolated_environment do
     RuboCop::ConfigLoader.default_configuration = nil
   end
 
+  describe '--parallel' do
+    if RuboCop::Platform.windows?
+      context 'on Windows' do
+        it 'prints a warning' do
+          cli.run ['-P']
+          expect($stderr.string)
+            .to include('Process.fork is not supported by this Ruby')
+        end
+      end
+    else
+      context 'combined with AllCops:UseCache:false' do
+        before do
+          create_file('.rubocop.yml', ['AllCops:',
+                                       '  UseCache: false'])
+        end
+        it 'fails with an error message' do
+          cli.run %w[-P]
+          expect($stderr.string)
+            .to include('-P/--parallel uses caching to speed up execution, ' \
+                        'so combining with AllCops: UseCache: false is not ' \
+                        'allowed.')
+        end
+      end
+
+      context 'on Unix-like systems' do
+        it 'prints a message' do
+          cli.run ['--parallel']
+          expect($stdout.string).to match(/Running parallel inspection/)
+        end
+      end
+    end
+  end
+
   describe '--list-target-files' do
     context 'when there are no files' do
       it 'prints nothing with -L' do

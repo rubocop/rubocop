@@ -156,6 +156,7 @@ module RuboCop
 
       option(opts, '-v', '--version')
       option(opts, '-V', '--verbose-version')
+      option(opts, '-P', '--parallel')
     end
 
     def add_list_options(opts)
@@ -217,9 +218,23 @@ module RuboCop
         raise ArgumentError, '--no-offense-counts can only be used together ' \
                              'with --auto-gen-config.'
       end
+      validate_parallel
+
       return if incompatible_options.size <= 1
       raise ArgumentError, 'Incompatible cli options: ' \
                            "#{incompatible_options.inspect}"
+    end
+
+    def validate_parallel
+      if parallel_without_caching?
+        raise ArgumentError, '-P/--parallel uses caching to speed up ' \
+                             'execution, so combining with --cache false is ' \
+                             'not allowed.'
+      end
+
+      return unless parallel_with_autocorrect?
+      raise ArgumentError, '-P/--parallel can not be combined with ' \
+                           '--auto-correct.'
     end
 
     def only_includes_unneeded_disable?
@@ -238,6 +253,14 @@ module RuboCop
 
     def no_offense_counts_without_auto_gen_config?
       @options.key?(:no_offense_counts) && !@options.key?(:auto_gen_config)
+    end
+
+    def parallel_without_caching?
+      @options.key?(:parallel) && @options[:cache] == 'false'
+    end
+
+    def parallel_with_autocorrect?
+      @options.key?(:parallel) && @options.key?(:auto_correct)
     end
 
     def incompatible_options
@@ -323,6 +346,8 @@ module RuboCop
       no_color:              'Force color output on or off.',
       version:               'Display version.',
       verbose_version:       'Display verbose version.',
+      parallel:             ['Use available CPUs to execute inspection in',
+                             'parallel.'],
       stdin:                ['Pipe source from STDIN, using FILE in offense',
                              'reports. This is useful for editor integration.']
     }.freeze

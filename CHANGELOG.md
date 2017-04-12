@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#117](https://github.com/bbatsov/rubocop/issues/117): Add `--parallel` option for running RuboCop in multiple processes or threads. ([@jonas054][])
+
 ### Changes
 
 * [#4262](https://github.com/bbatsov/rubocop/pull/4262): Add new `MinSize` configuration to `Style/SymbolArray`, consistent with the same configuration in `Style/WordArray`. ([@scottmatthewman][])

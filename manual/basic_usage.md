@@ -79,6 +79,7 @@ Command flag              | Description
 `--fail-level`            | Minimum [severity](#severity) for exit with error code. Full severity name or upper case initial can be given. Normally, auto-corrected offenses are ignored. Use `A` or `autocorrect` if you'd like them to trigger failure.
 `-s/--stdin`              | Pipe source from STDIN. This is useful for editor integration.
 `--[no-]color`            | Force color output on or off.
+`--parallel`              | Use available CPUs to execute inspection in parallel.
 
 Default command-line options are loaded from `.rubocop` and `RUBOCOP_OPTS` and are combined with command-line options that are explicitly passed to `rubocop`.
 Thus, the options have the following order of precedence (from highest to lowest):
