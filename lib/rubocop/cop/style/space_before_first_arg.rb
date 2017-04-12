@@ -14,6 +14,7 @@ module RuboCop
       #   @bad
       #   something  x
       #   something   y, z
+      #   something'hello'
       #
       #   @good
       #   something x

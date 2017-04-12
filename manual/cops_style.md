@@ -986,7 +986,7 @@ module Foo
   end
 end
 
-# Documenation
+# Documentation
 def foo.bar
   puts baz
 end
@@ -2292,7 +2292,7 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | No
 
-Checks for if and unless statements used as modifers of other if or
+Checks for if and unless statements used as modifiers of other if or
 unless statements.
 
 ### Example
@@ -4318,24 +4318,24 @@ default.
 ```ruby
 # Style/PercentLiteralDelimiters:
 #   PreferredDelimiters:
-#     default: ()
-#     %i:      []
+#     default: []
+#     %i:      ()
 
 # good
-%w(alpha beta) + %i[gamma delta]
+%w[alpha beta] + %i(gamma delta)
 
 # bad
-%W[alpha #{beta}]
+%W(alpha #{beta})
 
 # bad
-%I[alpha beta]
+%I(alpha beta)
 ```
 
 ### Important attributes
 
 Attribute | Value
 --- | ---
-PreferredDelimiters | {"default"=>"()", "%r"=>"{}"}
+PreferredDelimiters | {"default"=>"()", "%i"=>"[]", "%I"=>"[]", "%r"=>"{}", "%w"=>"[]", "%W"=>"[]"}
 
 ### References
 
@@ -5182,10 +5182,12 @@ config parameter is true.
 # bad
 something  x
 something   y, z
+something'hello'
 
 # good
 something x
 something y, z
+something 'hello'
 ```
 
 ### Important attributes
@@ -5640,7 +5642,7 @@ Enabled | Yes
 This cop checks for the presence of parentheses around ternary
 conditions. It is configurable to enforce inclusion or omission of
 parentheses using `EnforcedStyle`. Omission is only enforced when
-removing the parentheses won't cause a different behaviour.
+removing the parentheses won't cause a different behavior.
 
 ### Example
 
