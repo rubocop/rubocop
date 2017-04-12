@@ -986,7 +986,7 @@ module Foo
   end
 end
 
-# Documenation
+# Documentation
 def foo.bar
   puts baz
 end
@@ -2292,7 +2292,7 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | No
 
-Checks for if and unless statements used as modifers of other if or
+Checks for if and unless statements used as modifiers of other if or
 unless statements.
 
 ### Example
@@ -4318,24 +4318,24 @@ default.
 ```ruby
 # Style/PercentLiteralDelimiters:
 #   PreferredDelimiters:
-#     default: ()
-#     %i:      []
+#     default: []
+#     %i:      ()
 
 # good
-%w(alpha beta) + %i[gamma delta]
+%w[alpha beta] + %i(gamma delta)
 
 # bad
-%W[alpha #{beta}]
+%W(alpha #{beta})
 
 # bad
-%I[alpha beta]
+%I(alpha beta)
 ```
 
 ### Important attributes
 
 Attribute | Value
 --- | ---
-PreferredDelimiters | {"default"=>"()", "%r"=>"{}"}
+PreferredDelimiters | {"default"=>"()", "%i"=>"[]", "%I"=>"[]", "%r"=>"{}", "%w"=>"[]", "%W"=>"[]"}
 
 ### References
 
@@ -5545,6 +5545,11 @@ Alternatively, it checks for symbol arrays using the %i() syntax on
 projects which do not want to use that syntax, perhaps because they
 support a version of Ruby lower than 2.0.
 
+Configuration option: MinSize
+If set, arrays with fewer elements than this value will not trigger the
+cop. For example, a `MinSize of `3` will not enforce a style on an array
+of 2 or fewer elements.
+
 ### Example
 
 ```ruby
@@ -5641,7 +5646,7 @@ Enabled | Yes
 This cop checks for the presence of parentheses around ternary
 conditions. It is configurable to enforce inclusion or omission of
 parentheses using `EnforcedStyle`. Omission is only enforced when
-removing the parentheses won't cause a different behaviour.
+removing the parentheses won't cause a different behavior.
 
 ### Example
 
@@ -6066,6 +6071,32 @@ strings, that are not using the %w() syntax.
 
 Alternatively, it can check for uses of the %w() syntax, in projects
 which do not want to include that syntax.
+
+Configuration option: MinSize
+If set, arrays with fewer elements than this value will not trigger the
+cop. For example, a `MinSize of `3` will not enforce a style on an array
+of 2 or fewer elements.
+
+### Example
+
+```ruby
+EnforcedStyle: percent (default)
+
+# good
+%w[foo bar baz]
+
+# bad
+['foo', 'bar', 'baz']
+```
+```ruby
+EnforcedStyle: brackets
+
+# good
+['foo', 'bar', 'baz']
+
+# bad
+%w[foo bar baz]
+```
 
 ### Important attributes
 
