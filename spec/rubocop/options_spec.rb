@@ -93,6 +93,8 @@ describe RuboCop::Options, :isolated_environment do
                   --[no-]color                 Force color output on or off.
               -v, --version                    Display version.
               -V, --verbose-version            Display verbose version.
+              -P, --parallel                   Use available CPUs to execute inspection in
+                                               parallel.
               -s, --stdin FILE                 Pipe source from STDIN, using FILE in offense
                                                reports. This is useful for editor integration.
         END
@@ -150,6 +152,25 @@ describe RuboCop::Options, :isolated_environment do
               ' :show_cops]'
         expect { options.parse %w[-vV --show-cops] }
           .to raise_error(ArgumentError, msg)
+      end
+    end
+
+    describe '--parallel' do
+      context 'combined with --cache false' do
+        it 'fails with an error message' do
+          msg = ['-P/--parallel uses caching to speed up execution, so ',
+                 'combining with --cache false is not allowed.'].join
+          expect { options.parse %w[--parallel --cache false] }
+            .to raise_error(ArgumentError, msg)
+        end
+      end
+
+      context 'combined with --auto-correct' do
+        it 'fails with an error message' do
+          msg = '-P/--parallel can not be combined with --auto-correct.'
+          expect { options.parse %w[--parallel --auto-correct] }
+            .to raise_error(ArgumentError, msg)
+        end
       end
     end
 

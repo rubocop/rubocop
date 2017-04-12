@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'parallel'
+
 module RuboCop
   # This class handles the processing of files, which includes dealing with
   # formatters and letting cops inspect the files.
@@ -33,6 +35,7 @@ module RuboCop
       if @options[:list_target_files]
         list_files(target_files)
       else
+        warm_cache(target_files) if @options[:parallel]
         inspect_files(target_files)
       end
     end
@@ -42,6 +45,13 @@ module RuboCop
     end
 
     private
+
+    # Warms up the RuboCop cache by forking a suitable number of rubocop
+    # instances that each inspects its alotted group of files.
+    def warm_cache(target_files)
+      puts 'Running parallel inspection'
+      Parallel.each(target_files, &method(:file_offenses))
+    end
 
     def find_target_files(paths)
       target_finder = TargetFinder.new(@config_store, @options)

@@ -21,6 +21,7 @@ module RuboCop
     # @return [Integer] UNIX exit code
     def run(args = ARGV)
       @options, paths = Options.new.parse(args)
+      validate_options_vs_config
       act_on_options
       apply_default_formatter
 
@@ -46,6 +47,15 @@ module RuboCop
     end
 
     private
+
+    def validate_options_vs_config
+      if @options[:parallel] &&
+         !@config_store.for(Dir.pwd).for_all_cops['UseCache']
+        raise ArgumentError, '-P/--parallel uses caching to speed up ' \
+                             'execution, so combining with AllCops: ' \
+                             'UseCache: false is not allowed.'
+      end
+    end
 
     def act_on_options
       handle_exiting_options

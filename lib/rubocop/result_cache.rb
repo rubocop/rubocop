@@ -9,7 +9,7 @@ module RuboCop
   # Provides functionality for caching rubocop runs.
   class ResultCache
     NON_CHANGING = %i[color format formatters out debug fail_level
-                      cache fail_fast stdin].freeze
+                      cache fail_fast stdin parallel].freeze
 
     # Remove old files so that the cache doesn't grow too big. When the
     # threshold MaxFilesInCache has been exceeded, the oldest 50% of all the
