@@ -5182,10 +5182,12 @@ config parameter is true.
 # bad
 something  x
 something   y, z
+something'hello'
 
 # good
 something x
 something y, z
+something 'hello'
 ```
 
 ### Important attributes
