@@ -18,6 +18,7 @@ module RuboCop
       #   @good
       #   something x
       #   something y, z
+      #   something 'hello'
       #
       class SpaceBeforeFirstArg < Cop
         include PrecedingFollowingAlignment
@@ -34,7 +35,7 @@ module RuboCop
           space = range_between(first_arg_with_space.begin_pos,
                                 first_arg.begin_pos)
 
-          add_offense(space, space) if space.length > 1
+          add_offense(space, space) if space.length != 1
         end
 
         def autocorrect(range)

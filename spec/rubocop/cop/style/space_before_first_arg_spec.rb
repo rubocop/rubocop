@@ -28,6 +28,28 @@ describe RuboCop::Cop::Style::SpaceBeforeFirstArg, :config do
       END
     end
 
+    it 'registers an offense for method call with no spaces before the '\
+       'first arg' do
+      inspect_source(cop, <<-END.strip_indent)
+        something'hello'
+        a.something'hello world'
+      END
+      expect(cop.messages)
+        .to eq(['Put one space between the method name and the first ' \
+                'argument.'] * 2)
+    end
+
+    it 'auto-corrects missing space' do
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        something'hello'
+        a.something'hello world'
+      END
+      expect(new_source).to eq(<<-END.strip_indent)
+        something 'hello'
+        a.something 'hello world'
+      END
+    end
+
     it 'accepts a method call with one space before the first arg' do
       inspect_source(cop, <<-END.strip_indent)
         something x

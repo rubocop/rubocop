@@ -2,6 +2,9 @@
 
 ## master (unreleased)
 
+### New features
+* [#4265](https://github.com/bbatsov/rubocop/pull/4265): Require a space before first argument of a method call. ([@cjlarose][])
+
 ### Bug fixes
 
 * [#4237](https://github.com/bbatsov/rubocop/pull/4237): Fix false positive in `Lint/AmbiguousBlockAssociation` cop for lambdas. ([@smakagon][])
