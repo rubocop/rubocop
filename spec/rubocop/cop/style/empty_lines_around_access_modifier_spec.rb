@@ -121,6 +121,26 @@ describe RuboCop::Cop::Style::EmptyLinesAroundAccessModifier do
       END
     end
 
+    it 'autocorrects blank line after #{access_modifier} with comment' do
+      corrected = autocorrect_source(cop, <<-END.strip_indent)
+        class Test
+          something
+
+          #{access_modifier} # let's modify the rest
+          def test; end
+        end
+      END
+      expect(corrected).to eq(<<-END.strip_indent)
+        class Test
+          something
+
+          #{access_modifier} # let's modify the rest
+
+          def test; end
+        end
+      END
+    end
+
     it 'accepts missing blank line when at the beginning of class/module' do
       inspect_source(cop, <<-END.strip_indent)
         class Test
