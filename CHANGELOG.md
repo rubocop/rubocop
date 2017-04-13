@@ -5,6 +5,7 @@
 ### New features
 
 * [#117](https://github.com/bbatsov/rubocop/issues/117): Add `--parallel` option for running RuboCop in multiple processes or threads. ([@jonas054][])
+* [#4153](https://github.com/bbatsov/rubocop/issues/4153): New cop `Lint/ReturnInVoidContext` checks for the use of a return with a value in a context where it will be ignored. ([@harold-s][])
 
 ### Changes
 
@@ -2747,3 +2748,4 @@
 [@konto-andrzeja]: https://github.com/konto-andrzeja
 [@sadovnik]: https://github.com/sadovnik
 [@cjlarose]: https://github.com/cjlarose
+[@harold-s]: https://github.com/harold-s

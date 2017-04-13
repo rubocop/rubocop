@@ -52,8 +52,8 @@ module RuboCop
       def detected_style=(style)
         Formatter::DisabledConfigFormatter.detected_styles[cop_name] = style
 
-        return no_acceptable_style! if style.nil?
-        return no_acceptable_style! if style.empty?
+        no_acceptable_style! && return if style.nil?
+        no_acceptable_style! && return if style.empty?
 
         config_to_allow_offenses[style_parameter_name] = style.first
       end
