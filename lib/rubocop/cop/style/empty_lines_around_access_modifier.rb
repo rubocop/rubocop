@@ -23,7 +23,7 @@ module RuboCop
             send_line = node.loc.line
             previous_line = processed_source[send_line - 2]
             next_line = processed_source[send_line]
-            line = line_range(node)
+            line = range_by_whole_lines(node.source_range)
 
             unless previous_line_empty?(previous_line)
               corrector.insert_before(line, "\n")
@@ -36,11 +36,6 @@ module RuboCop
         end
 
         private
-
-        def line_range(node)
-          range_between(node.source_range.begin_pos - node.loc.column,
-                        node.source_range.end_pos)
-        end
 
         def previous_line_ignoring_comments(processed_source, send_line)
           processed_source[0..send_line - 2].reverse.find do |line|

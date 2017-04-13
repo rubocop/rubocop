@@ -99,6 +99,107 @@ describe RuboCop::Cop::Util do
     end
   end
 
+  describe 'source indicated by #range_by_whole_lines' do
+    let(:source) { <<-END.strip_indent }
+      puts 'example'
+      puts 'another example'
+
+      something_else
+    END
+    let(:processed_source) { parse_source(source) }
+
+    # `input_source` defined in contexts
+    let(:begin_pos) { source.index(input_source) }
+    let(:end_pos) { begin_pos + input_source.length }
+    let(:input_range) do
+      Parser::Source::Range.new(processed_source.buffer, begin_pos, end_pos)
+    end
+
+    let(:include_final_newline) { false }
+    let(:output_range) do
+      obj = TestUtil.new
+      obj.instance_exec(processed_source) { |src| @processed_source = src }
+      obj.send(:range_by_whole_lines,
+               input_range,
+               include_final_newline: include_final_newline)
+    end
+    subject do
+      r = output_range
+      processed_source.buffer.source[r.begin_pos...r.end_pos]
+    end
+
+    shared_examples 'final newline behavior' do
+      context 'without include_final_newline' do
+        let(:include_final_newline) { false }
+        it { is_expected.to eq(expected) }
+      end
+
+      context 'with include_final_newline' do
+        let(:include_final_newline) { true }
+        it { is_expected.to eq(expected + "\n") }
+      end
+    end
+
+    context 'when part of a single line is selected' do
+      let(:input_source) { "'example'" }
+      let(:expected) { "puts 'example'" }
+      include_examples 'final newline behavior'
+    end
+
+    context 'with a whole line except newline selected' do
+      let(:input_source) { "puts 'example'" }
+      let(:expected) { "puts 'example'" }
+      include_examples 'final newline behavior'
+    end
+
+    context 'with a whole line plus beginning of next line' do
+      let(:input_source) { "puts 'example'\n" }
+      let(:expected) { "puts 'example'\nputs 'another example'" }
+      include_examples 'final newline behavior'
+    end
+
+    context 'with end of one line' do
+      let(:begin_pos) { 14 }
+      let(:end_pos) { 14 }
+      let(:expected) { "puts 'example'" }
+      include_examples 'final newline behavior'
+    end
+
+    context 'with beginning of one line' do
+      let(:begin_pos) { 15 }
+      let(:end_pos) { 15 }
+      let(:expected) { "puts 'another example'" }
+      include_examples 'final newline behavior'
+    end
+
+    context 'with parts of two lines' do
+      let(:input_source) { "'example'\nputs 'another" }
+      let(:expected) { "puts 'example'\nputs 'another example'" }
+      include_examples 'final newline behavior'
+    end
+
+    context 'with parts of four lines' do
+      let(:input_source) { "'example'\nputs 'another example'\n\nso" }
+      let(:expected) { source.chomp }
+      include_examples 'final newline behavior'
+    end
+
+    context "when source doesn't end with a newline" do
+      let(:source) { "example\nwith\nno\nnewline_at_end" }
+      let(:input_source) { 'line_at_e' }
+
+      context 'without include_final_newline' do
+        let(:include_final_newline) { false }
+        it { is_expected.to eq('newline_at_end') }
+      end
+
+      context 'with include_final_newline' do
+        let(:include_final_newline) { true }
+        it { is_expected.to eq('newline_at_end') }
+      end
+    end
+  end
+
   describe '#to_symbol_literal' do
     [
       ['foo', ':foo'],

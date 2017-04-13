@@ -20,6 +20,7 @@
 * [#4241](https://github.com/bbatsov/rubocop/issues/4241): Prevent `Rails/Blank` and `Rails/Present` from breaking when there is no explicit receiver. ([@rrosenblum][])
 * [#4249](https://github.com/bbatsov/rubocop/issues/4249): Handle multiple assignment in `Rails/RelativeDateConstant`. ([@bbatsov][])
 * [#4250](https://github.com/bbatsov/rubocop/issues/4250): Improve a bit the Ruby code detection config. ([@bbatsov][])
+* [#4268](https://github.com/bbatsov/rubocop/issues/4268): Handle end-of-line comments when autocorrecting Style/EmptyLinesAroundAccessModifier. ([@vergenzt][])
 
 ## 0.48.1 (2017-04-03)
 
