@@ -116,6 +116,7 @@ In the following section you find all available cops:
 * [Lint/RandOne](cops_lint.md#lintrandone)
 * [Lint/RequireParentheses](cops_lint.md#lintrequireparentheses)
 * [Lint/RescueException](cops_lint.md#lintrescueexception)
+* [Lint/ReturnInVoidContext](cops_lint.md#lintreturninvoidcontext)
 * [Lint/SafeNavigationChain](cops_lint.md#lintsafenavigationchain)
 * [Lint/ShadowedException](cops_lint.md#lintshadowedexception)
 * [Lint/ShadowingOuterLocalVariable](cops_lint.md#lintshadowingouterlocalvariable)

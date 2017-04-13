@@ -1438,6 +1438,41 @@ end
 
 * [https://github.com/bbatsov/ruby-style-guide#no-blind-rescues](https://github.com/bbatsov/ruby-style-guide#no-blind-rescues)
 
+## Lint/ReturnInVoidContext
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks for the use of a return with a value in a context
+where it the value will be ignored. (initialize and setter methods)
+
+ # good
+  def initialize
+    foo
+    return if bar?
+    baz
+  end
+
+  def foo=(bar)
+    return
+  end
+
+### Example
+
+```ruby
+# bad
+def initialize
+  foo
+  return :qux if bar?
+  baz
+end
+
+def foo=(bar)
+  return 42
+end
+```
+
 ## Lint/SafeNavigationChain
 
 Enabled by default | Supports autocorrection
