@@ -47,6 +47,50 @@ are not used.
 [1, 2, 'a'].prepend('b')
 ```
 
+## Rails/ApplicationJob
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks that jobs subclass ApplicationJob with Rails 5.0.
+
+### Example
+
+```ruby
+# good
+class Rails5Job < ApplicationJob
+  ...
+end
+
+# bad
+class Rails4Job < ActiveJob::Base
+  ...
+end
+```
+
+## Rails/ApplicationRecord
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks that models subclass ApplicationRecord with Rails 5.0.
+
+### Example
+
+```ruby
+# good
+class Rails5Model < ApplicationRecord
+  ...
+end
+
+# bad
+class Rails4Model < ActiveRecord::Base
+  ...
+end
+```
+
 ## Rails/Blank
 
 Enabled by default | Supports autocorrection
