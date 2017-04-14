@@ -1516,6 +1516,14 @@ Rails/ActionFilter:
   Description: 'Enforces consistent use of action filter methods.'
   Enabled: true
 
+Rails/ApplicationJob:
+  Description: 'Check that jobs subclass ApplicationJob.'
+  Enabled: true
+
+Rails/ApplicationRecord:
+  Description: 'Check that models subclass ApplicationRecord.'
+  Enabled: true
+
 Rails/ActiveSupportAliases:
   Description: >-
                   Avoid ActiveSupport aliases of standard ruby methods:

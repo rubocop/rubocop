@@ -6,6 +6,7 @@
 
 * [#117](https://github.com/bbatsov/rubocop/issues/117): Add `--parallel` option for running RuboCop in multiple processes or threads. ([@jonas054][])
 * Add auto-correct support to `Style/MixinGrouping`. ([@rrosenblum][])
+* [#4236](https://github.com/bbatsov/rubocop/issues/4236): Add new `Rails/ApplicationJob` and `Rails/ApplicationRecord` cops. ([@tjwp][])
 
 ### Changes
 
