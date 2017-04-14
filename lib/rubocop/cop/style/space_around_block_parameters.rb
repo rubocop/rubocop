@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # Checks the spacing inside and after block parameters pipes.
       #
       # @example

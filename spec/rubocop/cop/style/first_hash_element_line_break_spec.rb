@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::FirstHashElementLineBreak do
+describe RuboCop::Cop::Layout::FirstHashElementLineBreak do
   subject(:cop) { described_class.new }
 
   context 'elements listed on the first line' do

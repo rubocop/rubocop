@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # This cop checks how the *when*s of a *case* expression
       # are indented in relation to its *case* or *end* keyword.
       #

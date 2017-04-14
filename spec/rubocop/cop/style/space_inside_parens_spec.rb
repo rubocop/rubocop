@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::SpaceInsideParens do
+describe RuboCop::Cop::Layout::SpaceInsideParens do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for spaces inside parens' do

@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # This cop checks for spaces between -> and opening parameter
       # brace in lambda literals.
       #

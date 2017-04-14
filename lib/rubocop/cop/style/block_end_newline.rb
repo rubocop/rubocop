@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # This cop checks whether the end statement of a do..end block
       # is on its own line.
       #

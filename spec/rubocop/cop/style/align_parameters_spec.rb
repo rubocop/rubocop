@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::AlignParameters do
+describe RuboCop::Cop::Layout::AlignParameters do
   subject(:cop) { described_class.new(config) }
   let(:config) do
-    RuboCop::Config.new('Style/AlignParameters' => cop_config,
-                        'Style/IndentationWidth' => {
+    RuboCop::Config.new('Layout/AlignParameters' => cop_config,
+                        'Layout/IndentationWidth' => {
                           'Width' => indentation_width
                         })
   end
@@ -750,7 +750,7 @@ describe RuboCop::Cop::Style::AlignParameters do
 
       context 'with AlignParameters:IndentationWidth set to 4' do
         let(:config) do
-          RuboCop::Config.new('Style/AlignParameters' =>
+          RuboCop::Config.new('Layout/AlignParameters' =>
                               cop_config.merge('IndentationWidth' => 4))
         end
 

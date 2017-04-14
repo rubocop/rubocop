@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::FirstParameterIndentation do
+describe RuboCop::Cop::Layout::FirstParameterIndentation do
   subject(:cop) { described_class.new(config) }
   let(:config) do
     RuboCop::Config
-      .new('Style/FirstParameterIndentation' => {
+      .new('Layout/FirstParameterIndentation' => {
              'EnforcedStyle' => style,
              'SupportedStyles' =>
                %w[consistent special_for_inner_method_call
                   special_for_inner_method_call_in_parentheses]
            },
-           'Style/IndentationWidth' => { 'Width' => indentation_width })
+           'Layout/IndentationWidth' => { 'Width' => indentation_width })
   end
 
   shared_examples 'common behavior' do
@@ -258,14 +258,14 @@ describe RuboCop::Cop::Style::FirstParameterIndentation do
     context 'when indentation width is overridden for this cop only' do
       let(:config) do
         RuboCop::Config
-          .new('Style/FirstParameterIndentation' => {
+          .new('Layout/FirstParameterIndentation' => {
                  'EnforcedStyle' => style,
                  'SupportedStyles' =>
                    %w[consistent special_for_inner_method_call
                       special_for_inner_method_call_in_parentheses],
                  'IndentationWidth' => 4
                },
-               'Style/IndentationWidth' => { 'Width' => 2 })
+               'Layout/IndentationWidth' => { 'Width' => 2 })
       end
 
       it 'accepts a correctly indented first parameter' do

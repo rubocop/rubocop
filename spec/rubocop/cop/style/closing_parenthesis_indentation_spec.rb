@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::ClosingParenthesisIndentation do
+describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
   subject(:cop) { described_class.new(config) }
   let(:config) do
-    RuboCop::Config.new('Style/AlignParameters' => {
+    RuboCop::Config.new('Layout/AlignParameters' => {
                           'EnforcedStyle' => align_parameters_config
                         })
   end

@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # This cops checks for indentation of the first non-blank non-comment
       # line in a file.
       class InitialIndentation < Cop

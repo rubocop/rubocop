@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::EndOfLine, :config do
+describe RuboCop::Cop::Layout::EndOfLine, :config do
   subject(:cop) { described_class.new(config) }
 
   shared_examples 'all configurations' do

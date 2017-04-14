@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::MultilineOperationIndentation do
+describe RuboCop::Cop::Layout::MultilineOperationIndentation do
   subject(:cop) { described_class.new(config) }
   let(:config) do
     merged = RuboCop::ConfigLoader
-             .default_configuration['Style/MultilineOperationIndentation']
+             .default_configuration['Layout/MultilineOperationIndentation']
              .merge(cop_config)
              .merge('IndentationWidth' => cop_indent)
     RuboCop::Config
-      .new('Style/MultilineOperationIndentation' => merged,
-           'Style/IndentationWidth' => { 'Width' => indentation_width })
+      .new('Layout/MultilineOperationIndentation' => merged,
+           'Layout/IndentationWidth' => { 'Width' => indentation_width })
   end
   let(:indentation_width) { 2 }
-  let(:cop_indent) { nil } # use indentation width from Style/IndentationWidth
+  let(:cop_indent) { nil } # use indentation width from Layout/IndentationWidth
 
   shared_examples 'common' do
     it 'accepts indented operands in ordinary statement' do

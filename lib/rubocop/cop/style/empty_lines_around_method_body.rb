@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # This cops checks if empty lines exist around the bodies of methods.
       #
       # @example

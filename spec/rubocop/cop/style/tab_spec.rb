@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::Tab do
+describe RuboCop::Cop::Layout::Tab do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for a line indented with tab' do

@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # This cop checks the indentation of the right hand side operand in
       # binary operations that span more than one line.
       #
@@ -28,7 +28,7 @@ module RuboCop
         def validate_config
           return unless style == :aligned && cop_config['IndentationWidth']
 
-          raise ValidationError, 'The `Style/MultilineOperationIndentation`' \
+          raise ValidationError, 'The `Layout/MultilineOperationIndentation`' \
                                 ' cop only accepts an `IndentationWidth` ' \
                                 'configuration parameter when ' \
                                 '`EnforcedStyle` is `indented`.'

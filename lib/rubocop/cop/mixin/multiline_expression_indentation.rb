@@ -49,7 +49,7 @@ module RuboCop
         if kw_node_with_special_indentation(node)
           # This cop could have its own IndentationWidth configuration
           configured_indentation_width +
-            @config.for_cop('Style/IndentationWidth')['Width']
+            @config.for_cop('Layout/IndentationWidth')['Width']
         else
           configured_indentation_width
         end

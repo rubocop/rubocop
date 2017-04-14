@@ -2,10 +2,10 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # Checks for colon (:) not followed by some kind of space.
       # N.B. this cop does not handle spaces after a ternary operator, which are
-      # instead handled by Style/SpaceAroundOperators.
+      # instead handled by Layout/SpaceAroundOperators.
       class SpaceAfterColon < Cop
         MSG = 'Space missing after colon.'.freeze
 

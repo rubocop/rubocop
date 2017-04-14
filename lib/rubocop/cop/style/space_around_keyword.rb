@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # Checks the spacing around the keywords.
       #
       # @example

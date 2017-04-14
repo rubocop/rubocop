@@ -7,13 +7,13 @@ module RuboCop
       # If these cops try to autocorrect the same file at the same time,
       # bad things are liable to happen
       INCOMPATIBLE_COPS = {
-        Style::SymbolProc => [Style::SpaceBeforeBlockBraces],
-        Style::SpaceBeforeBlockBraces => [Style::SymbolProc],
+        Style::SymbolProc => [Layout::SpaceBeforeBlockBraces],
+        Layout::SpaceBeforeBlockBraces => [Style::SymbolProc],
         Style::LineEndConcatenation => [Style::UnneededInterpolation],
         Style::UnneededInterpolation => [Style::LineEndConcatenation],
-        Style::SelfAssignment => [Style::SpaceAroundOperators],
-        Style::SpaceAroundOperators => [Style::SelfAssignment],
-        Style::BracesAroundHashParameters => [Style::MultilineHashBraceLayout]
+        Style::SelfAssignment => [Layout::SpaceAroundOperators],
+        Layout::SpaceAroundOperators => [Style::SelfAssignment],
+        Style::BracesAroundHashParameters => [Layout::MultilineHashBraceLayout]
       }.freeze
 
       DEFAULT_OPTIONS = {

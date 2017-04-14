@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::BlockEndNewline do
+describe RuboCop::Cop::Layout::BlockEndNewline do
   subject(:cop) { described_class.new }
 
   it 'does not register an offense for a one-liner' do

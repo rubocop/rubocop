@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # This cop checks whether comments have a leading space
       # after the # denoting the start of the comment. The
       # leading space is not required for some RDoc special syntax,

@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::SpaceAroundOperators do
+describe RuboCop::Cop::Layout::SpaceAroundOperators do
   subject(:cop) { described_class.new(config) }
   let(:config) do
     RuboCop::Config
       .new(
-        'Style/AlignHash' => { 'EnforcedHashRocketStyle' => hash_style },
-        'Style/SpaceAroundOperators' => {
+        'Layout/AlignHash' => { 'EnforcedHashRocketStyle' => hash_style },
+        'Layout/SpaceAroundOperators' => {
           'AllowForAlignment' => allow_for_alignment
         }
       )
@@ -354,7 +354,7 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
     context 'when a hash literal is on a single line' do
       before { inspect_source(cop, '{ 1=>2, a: b }') }
 
-      context 'and Style/AlignHash:EnforcedHashRocketStyle is key' do
+      context 'and Layout/AlignHash:EnforcedHashRocketStyle is key' do
         let(:hash_style) { 'key' }
 
         it 'registers an offense for a hash rocket without spaces' do
@@ -363,7 +363,7 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
         end
       end
 
-      context 'and Style/AlignHash:EnforcedHashRocketStyle is table' do
+      context 'and Layout/AlignHash:EnforcedHashRocketStyle is table' do
         let(:hash_style) { 'table' }
 
         it 'registers an offense for a hash rocket without spaces' do
@@ -383,7 +383,7 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
         END
       end
 
-      context 'and Style/AlignHash:EnforcedHashRocketStyle is key' do
+      context 'and Layout/AlignHash:EnforcedHashRocketStyle is key' do
         let(:hash_style) { 'key' }
 
         it 'registers an offense for a hash rocket without spaces' do
@@ -392,7 +392,7 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
         end
       end
 
-      context 'and Style/AlignHash:EnforcedHashRocketStyle is table' do
+      context 'and Layout/AlignHash:EnforcedHashRocketStyle is table' do
         let(:hash_style) { 'table' }
 
         it "doesn't register an offense for a hash rocket without spaces" do

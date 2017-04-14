@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # Checks that exactly one space is used between a method name and the
       # first argument for method calls without parentheses.
       #

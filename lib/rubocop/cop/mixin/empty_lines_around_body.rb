@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # Common functionality for checking if presence/absence of empty lines
       # around some kind of body matches the configuration.
       module EmptyLinesAroundBody

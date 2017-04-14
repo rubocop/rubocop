@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::SpaceInsideArrayPercentLiteral do
+describe RuboCop::Cop::Layout::SpaceInsideArrayPercentLiteral do
   subject(:cop) { described_class.new }
 
   %w[i I w W].each do |type|

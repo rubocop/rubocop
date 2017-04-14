@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::MultilineAssignmentLayout, :config do
+describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
   subject(:cop) { described_class.new(config) }
   let(:supported_types) { %w[if] }
 

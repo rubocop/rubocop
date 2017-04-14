@@ -209,7 +209,7 @@ module RuboCop
         ASSIGNMENT_TYPES = VARIABLE_ASSIGNMENT_TYPES +
                            %i[and_asgn or_asgn op_asgn masgn].freeze
         LINE_LENGTH = 'Metrics/LineLength'.freeze
-        INDENTATION_WIDTH = 'Style/IndentationWidth'.freeze
+        INDENTATION_WIDTH = 'Layout/IndentationWidth'.freeze
         ENABLED = 'Enabled'.freeze
         MAX = 'Max'.freeze
         SINGLE_LINE_CONDITIONS_ONLY = 'SingleLineConditionsOnly'.freeze

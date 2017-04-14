@@ -4,7 +4,7 @@ require 'set'
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # This cops checks for two or more consecutive blank lines.
       class EmptyLines < Cop
         MSG = 'Extra blank line detected.'.freeze

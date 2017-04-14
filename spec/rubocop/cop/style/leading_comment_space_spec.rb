@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::LeadingCommentSpace do
+describe RuboCop::Cop::Layout::LeadingCommentSpace do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for comment without leading space' do

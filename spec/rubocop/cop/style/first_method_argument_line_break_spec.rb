@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::FirstMethodArgumentLineBreak do
+describe RuboCop::Cop::Layout::FirstMethodArgumentLineBreak do
   subject(:cop) { described_class.new }
 
   context 'args listed on the first line' do

@@ -4,7 +4,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:config) do
-    RuboCop::Config.new('Style/IndentationWidth' => { 'Width' => 2 })
+    RuboCop::Config.new('Layout/IndentationWidth' => { 'Width' => 2 })
   end
 
   shared_examples('offenses') do |source|
@@ -507,7 +507,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
         RuboCop::Config.new('Performance/ParallelAssignment' => {
                               'Enabled' => true
                             },
-                            'Style/IndentationWidth' => {
+                            'Layout/IndentationWidth' => {
                               'Enabled' => true,
                               'Width' => 3
                             })

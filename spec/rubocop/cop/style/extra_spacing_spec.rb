@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::ExtraSpacing, :config do
+describe RuboCop::Cop::Layout::ExtraSpacing, :config do
   subject(:cop) { described_class.new(config) }
 
   shared_examples 'common behavior' do

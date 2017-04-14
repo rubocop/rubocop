@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # Checks for semicolon (;) preceded by space.
       class SpaceBeforeSemicolon < Cop
         include SpaceBeforePunctuation

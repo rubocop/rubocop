@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # This cop checks the indentation of the first element in an array literal
       # where the opening bracket and the first element are on separate lines.
       # The other elements' indentations are handled by the AlignArray cop.

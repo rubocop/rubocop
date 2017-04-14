@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # Here we check if the elements of a multi-line array literal are
       # aligned.
       class AlignArray < Cop

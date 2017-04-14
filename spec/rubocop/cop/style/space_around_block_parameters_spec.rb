@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::SpaceAroundBlockParameters, :config do
+describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
   subject(:cop) { described_class.new(config) }
 
   shared_examples 'common behavior' do
@@ -31,7 +31,7 @@ describe RuboCop::Cop::Style::SpaceAroundBlockParameters, :config do
     end
 
     it 'accepts a block parameter without preceding space' do
-      # This is checked by Style/SpaceAfterComma.
+      # This is checked by Layout/SpaceAfterComma.
       inspect_source(cop, '{}.each { |x,y| puts x }')
       expect(cop.offenses).to be_empty
     end
@@ -108,7 +108,7 @@ describe RuboCop::Cop::Style::SpaceAroundBlockParameters, :config do
     end
 
     it 'accepts a block parameter without preceding space' do
-      # This is checked by Style/SpaceAfterComma.
+      # This is checked by Layout/SpaceAfterComma.
       inspect_source(cop, '{}.each { | x,y | puts x }')
       expect(cop.offenses).to be_empty
     end

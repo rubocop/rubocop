@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::AlignHash, :config do
+describe RuboCop::Cop::Layout::AlignHash, :config do
   subject(:cop) { described_class.new(config) }
 
   shared_examples 'not on separate lines' do

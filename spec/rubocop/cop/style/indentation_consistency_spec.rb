@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::IndentationConsistency, :config do
+describe RuboCop::Cop::Layout::IndentationConsistency, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:cop_config) { { 'EnforcedStyle' => 'normal' } }
@@ -456,7 +456,7 @@ describe RuboCop::Cop::Style::IndentationConsistency, :config do
 
                         # Here we go back an indentation level again. This is a
                         # violation of the Rails style, but it's not for this
-                        # cop to report. Style/IndentationWidth will handle it.
+                        # cop to report. Layout/IndentationWidth will handle it.
             def meow_at_3am?
               rand < 0.8
             end

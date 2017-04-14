@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # Checks for comma (,) preceded by space.
       class SpaceBeforeComma < Cop
         include SpaceBeforePunctuation

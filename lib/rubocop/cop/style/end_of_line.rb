@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # This cop checks for Windows-style line endings in the source code.
       class EndOfLine < Cop
         include ConfigurableEnforcedStyle

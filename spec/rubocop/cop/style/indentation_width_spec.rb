@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::IndentationWidth do
+describe RuboCop::Cop::Layout::IndentationWidth do
   subject(:cop) { described_class.new(config) }
   let(:config) do
-    RuboCop::Config.new('Style/IndentationWidth' => cop_config,
-                        'Style/IndentationConsistency' => consistency_config,
+    RuboCop::Config.new('Layout/IndentationWidth' => cop_config,
+                        'Layout/IndentationConsistency' => consistency_config,
                         'Lint/EndAlignment' => end_alignment_config,
                         'Lint/DefEndAlignment' => def_end_alignment_config)
   end

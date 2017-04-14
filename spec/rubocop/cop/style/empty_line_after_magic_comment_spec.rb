@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::EmptyLineAfterMagicComment do
+describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment do
   let(:config) { RuboCop::Config.new }
   subject(:cop) { described_class.new(config) }
 

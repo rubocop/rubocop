@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::EmptyLinesAroundClassBody, :config do
+describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
   subject(:cop) { described_class.new(config) }
   let(:extra_begin) { 'Extra empty line detected at class body beginning.' }
   let(:extra_end) { 'Extra empty line detected at class body end.' }

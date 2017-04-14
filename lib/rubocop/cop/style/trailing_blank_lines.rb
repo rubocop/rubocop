@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # This cop looks for trailing blank lines and a final newline in the
       # source code.
       class TrailingBlankLines < Cop

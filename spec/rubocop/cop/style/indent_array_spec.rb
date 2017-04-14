@@ -1,20 +1,20 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::IndentArray do
+describe RuboCop::Cop::Layout::IndentArray do
   subject(:cop) { described_class.new(config) }
   let(:config) do
     supported_styles = {
       'SupportedStyles' => %w[special_inside_parentheses consistent
                               align_brackets]
     }
-    RuboCop::Config.new('Style/IndentArray' =>
+    RuboCop::Config.new('Layout/IndentArray' =>
                         cop_config.merge(supported_styles).merge(
                           'IndentationWidth' => cop_indent
                         ),
-                        'Style/IndentationWidth' => { 'Width' => 2 })
+                        'Layout/IndentationWidth' => { 'Width' => 2 })
   end
   let(:cop_config) { { 'EnforcedStyle' => 'special_inside_parentheses' } }
-  let(:cop_indent) { nil } # use indent from Style/IndentationWidth
+  let(:cop_indent) { nil } # use indent from Layout/IndentationWidth
 
   context 'when array is operand' do
     it 'accepts correctly indented first element' do

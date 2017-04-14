@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # This cops checks the indentation of comments.
       class CommentIndentation < Cop
         include AutocorrectAlignment

@@ -146,7 +146,7 @@ describe RuboCop::Config do
     context 'when the configration includes a valid Enforced.+Style' do
       before do
         create_file(configuration_path, <<-END.strip_indent)
-          Style/SpaceAroundBlockParameters:
+          Layout/SpaceAroundBlockParameters:
             EnforcedStyleInsidePipes: space
         END
       end
@@ -159,7 +159,7 @@ describe RuboCop::Config do
     context 'when the configration includes an invalid Enforced.+Style' do
       before do
         create_file(configuration_path, <<-END.strip_indent)
-          Style/SpaceAroundBlockParameters:
+          Layout/SpaceAroundBlockParameters:
             EnforcedStyleInsidePipes: itisinvalid
         END
       end
@@ -208,7 +208,7 @@ describe RuboCop::Config do
             Enabled: false
           Lint/BlockAlignment:
             AlignWith: either
-          Style/SpaceBeforeModifierKeyword:
+          Layout/SpaceBeforeModifierKeyword:
             Enabled: false
         END
       end
@@ -218,7 +218,7 @@ describe RuboCop::Config do
           message.include?('EnforcedStyle') &&
             message.include?('MethodCallWithoutArgsParentheses') &&
             message.include?('EnforcedStyleAlignWith') &&
-            message.include?('Style/SpaceAroundKeyword')
+            message.include?('Layout/SpaceAroundKeyword')
         end
         expect { configuration.validate }
           .to raise_error(RuboCop::ValidationError, message_matcher)
@@ -506,13 +506,13 @@ describe RuboCop::Config do
       context 'but an individual cop is enabled' do
         let(:hash) do
           {
-            'Style' => { 'Enabled' => false },
-            'Style/TrailingWhitespace' => { 'Enabled' => true }
+            'Layout' => { 'Enabled' => false },
+            'Layout/TrailingWhitespace' => { 'Enabled' => true }
           }
         end
 
         it 'still disables the cop' do
-          cop_class = RuboCop::Cop::Style::TrailingWhitespace
+          cop_class = RuboCop::Cop::Layout::TrailingWhitespace
           expect(cop_enabled(cop_class)).to be false
         end
       end
@@ -523,12 +523,12 @@ describe RuboCop::Config do
         let(:hash) do
           {
             'Style' => { 'Enabled' => true },
-            'Style/TrailingWhitespace' => { 'Enabled' => false }
+            'Layout/TrailingWhitespace' => { 'Enabled' => false }
           }
         end
 
         it 'still disables the cop' do
-          cop_class = RuboCop::Cop::Style::TrailingWhitespace
+          cop_class = RuboCop::Cop::Layout::TrailingWhitespace
           expect(cop_enabled(cop_class)).to be false
         end
       end
@@ -537,12 +537,12 @@ describe RuboCop::Config do
     context 'when a cop has configuration but no explicit Enabled setting' do
       let(:hash) do
         {
-          'Style/TrailingWhitespace' => { 'Exclude' => ['foo'] }
+          'Layout/TrailingWhitespace' => { 'Exclude' => ['foo'] }
         }
       end
 
       it 'enables the cop by default' do
-        cop_class = RuboCop::Cop::Style::TrailingWhitespace
+        cop_class = RuboCop::Cop::Layout::TrailingWhitespace
         expect(cop_enabled(cop_class)).to be true
       end
     end

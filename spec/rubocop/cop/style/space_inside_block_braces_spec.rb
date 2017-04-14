@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::SpaceInsideBlockBraces, :config do
+describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
   SUPPORTED_STYLES = %w[space no_space].freeze
 
   subject(:cop) { described_class.new(config) }
@@ -212,7 +212,7 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces, :config do
     context 'and BlockDelimiters cop enabled' do
       let(:config) do
         RuboCop::Config.new('Style/BlockDelimiters' => { 'Enabled' => true },
-                            'Style/SpaceInsideBlockBraces' => cop_config)
+                            'Layout/SpaceInsideBlockBraces' => cop_config)
       end
 
       it 'does auto-correction for single-line blocks' do

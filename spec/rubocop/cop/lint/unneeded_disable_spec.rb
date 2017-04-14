@@ -345,14 +345,14 @@ describe RuboCop::Cop::Lint::UnneededDisable do
             RuboCop::Cop::Offense.new(:convention,
                                       OpenStruct.new(line: 7, column: 0),
                                       'Tab detected.',
-                                      'Style/Tab')
+                                      'Layout/Tab')
           ]
         end
 
         context 'and a comment disables' do
           context 'that cop' do
-            let(:source) { '# rubocop:disable Style/Tab' }
-            let(:cop_disabled_line_ranges) { { 'Style/Tab' => [1..100] } }
+            let(:source) { '# rubocop:disable Layout/Tab' }
+            let(:cop_disabled_line_ranges) { { 'Layout/Tab' => [1..100] } }
 
             it 'returns an empty array' do
               expect(cop.offenses).to be_empty
@@ -360,13 +360,13 @@ describe RuboCop::Cop::Lint::UnneededDisable do
           end
 
           context 'that cop but on other lines' do
-            let(:source) { ("\n" * 9) << '# rubocop:disable Style/Tab' }
-            let(:cop_disabled_line_ranges) { { 'Style/Tab' => [10..12] } }
+            let(:source) { ("\n" * 9) << '# rubocop:disable Layout/Tab' }
+            let(:cop_disabled_line_ranges) { { 'Layout/Tab' => [10..12] } }
 
             it 'returns an offense' do
               expect(cop.messages)
-                .to eq(['Unnecessary disabling of `Style/Tab`.'])
-              expect(cop.highlights).to eq(['# rubocop:disable Style/Tab'])
+                .to eq(['Unnecessary disabling of `Layout/Tab`.'])
+              expect(cop.highlights).to eq(['# rubocop:disable Layout/Tab'])
             end
           end
 

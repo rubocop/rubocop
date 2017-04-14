@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # Checks for space between a method name and a left parenthesis in defs.
       #
       # @example

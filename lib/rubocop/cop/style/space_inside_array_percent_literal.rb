@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # Checks for unnecessary additional spaces inside array percent literals
       # (i.e. %i/%w).
       #

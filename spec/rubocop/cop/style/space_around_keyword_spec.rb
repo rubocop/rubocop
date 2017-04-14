@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::SpaceAroundKeyword do
+describe RuboCop::Cop::Layout::SpaceAroundKeyword do
   subject(:cop) { described_class.new }
 
   shared_examples 'missing before' do |highlight, expr, correct|
@@ -170,10 +170,10 @@ describe RuboCop::Cop::Style::SpaceAroundKeyword do
   it_behaves_like 'accept after', '[', 'super[1]'
   it_behaves_like 'accept after', '[', 'yield[1]'
 
-  # Style/SpaceAroundBlockParameters
+  # Layout/SpaceAroundBlockParameters
   it_behaves_like 'accept before', '|', 'loop { |x|break }'
 
-  # Style/SpaceAroundOperators
+  # Layout/SpaceAroundOperators
   it_behaves_like 'accept before', '=', 'a=begin end'
   it_behaves_like 'accept before', '==', 'a==begin end'
   it_behaves_like 'accept before', '+', 'a+begin end'
@@ -188,27 +188,27 @@ describe RuboCop::Cop::Style::SpaceAroundKeyword do
   it_behaves_like 'accept before', '||', 'a||begin end'
   it_behaves_like 'accept before', '=*', 'a=*begin end'
 
-  # Style/SpaceBeforeBlockBraces
+  # Layout/SpaceBeforeBlockBraces
   it_behaves_like 'accept after', '{', 'loop{}'
 
-  # Style/SpaceBeforeComma, Style/SpaceAfterComma
+  # Layout/SpaceBeforeComma, Layout/SpaceAfterComma
   it_behaves_like 'accept around', ',', 'a 1,next,1'
 
-  # Style/SpaceBeforeComment
+  # Layout/SpaceBeforeComment
   it_behaves_like 'accept after', '#', 'next#comment'
 
-  # Style/SpaceBeforeSemicolon, Style/SpaceAfterSemicolon
+  # Layout/SpaceBeforeSemicolon, Layout/SpaceAfterSemicolon
   it_behaves_like 'accept around', ';', 'test do;end'
 
-  # Style/SpaceInsideBlockBraces
+  # Layout/SpaceInsideBlockBraces
   it_behaves_like 'accept around', '{}', 'loop {next}'
 
-  # Style/SpaceInsideBrackets
+  # Layout/SpaceInsideBrackets
   it_behaves_like 'accept around', '[]', '[begin end]'
 
-  # Style/SpaceInsideHashLiteralBraces
+  # Layout/SpaceInsideHashLiteralBraces
   it_behaves_like 'accept around', '{}', '{a: begin end}'
 
-  # Style/SpaceInsideStringInterpolation
+  # Layout/SpaceInsideStringInterpolation
   it_behaves_like 'accept around', '{}', '"#{begin end}"'
 end

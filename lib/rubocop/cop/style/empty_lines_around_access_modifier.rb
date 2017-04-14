@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # Access modifiers should be surrounded by blank lines.
       class EmptyLinesAroundAccessModifier < Cop
         include AccessModifierNode

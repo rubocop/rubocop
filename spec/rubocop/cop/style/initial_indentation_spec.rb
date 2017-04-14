@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::InitialIndentation do
+describe RuboCop::Cop::Layout::InitialIndentation do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for indented method definition ' do

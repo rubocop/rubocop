@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # This cops checks the indentation of hanging closing parentheses in
       # method calls, method definitions, and grouped expressions. A hanging
       # closing parenthesis means `)` preceded by a line break.
@@ -75,7 +75,7 @@ module RuboCop
         end
 
         def fixed_parameter_indentation?
-          config.for_cop('Style/AlignParameters')['EnforcedStyle'] ==
+          config.for_cop('Layout/AlignParameters')['EnforcedStyle'] ==
             'with_fixed_indentation'
         end
 

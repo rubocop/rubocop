@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # This cop checks that the closing brace in a method definition is either
       # on the same line as the last method parameter, or a new line.
       #

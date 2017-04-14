@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # This cop checks whether the rescue and ensure keywords are aligned
       # properly.
       #

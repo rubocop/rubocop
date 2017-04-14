@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # Checks that the equals signs in parameter default assignments
       # have or don't have surrounding space depending on configuration.
       class SpaceAroundEqualsInParameterDefault < Cop

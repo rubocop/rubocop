@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # This cop checks that the closing brace in a hash literal is either
       # on the same line as the last hash element, or a new line.
       #

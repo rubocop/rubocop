@@ -4,7 +4,7 @@ require 'set'
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # This cop checks for extra/unnecessary whitespace.
       #
       # @example

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::MultilineBlockLayout do
+describe RuboCop::Cop::Layout::MultilineBlockLayout do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for missing newline in do/end block w/o params' do

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::FirstMethodParameterLineBreak do
+describe RuboCop::Cop::Layout::FirstMethodParameterLineBreak do
   subject(:cop) { described_class.new }
 
   context 'params listed on the first line' do

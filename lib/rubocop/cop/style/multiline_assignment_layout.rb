@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # This cop checks whether the multiline assignments have a newline
       # after the assignment operator.
       #

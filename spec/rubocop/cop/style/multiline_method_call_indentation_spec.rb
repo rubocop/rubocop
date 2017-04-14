@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
+describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
   subject(:cop) { described_class.new(config) }
   let(:config) do
     merged = RuboCop::ConfigLoader
-             .default_configuration['Style/MultilineMethodCallIndentation']
+             .default_configuration['Layout/MultilineMethodCallIndentation']
              .merge(cop_config)
              .merge('IndentationWidth' => cop_indent)
     RuboCop::Config
-      .new('Style/MultilineMethodCallIndentation' => merged,
-           'Style/IndentationWidth' => { 'Width' => indentation_width })
+      .new('Layout/MultilineMethodCallIndentation' => merged,
+           'Layout/IndentationWidth' => { 'Width' => indentation_width })
   end
   let(:indentation_width) { 2 }
-  let(:cop_indent) { nil } # use indentation width from Style/IndentationWidth
+  let(:cop_indent) { nil } # use indentation width from Layout/IndentationWidth
 
   shared_examples 'common' do
     it 'accepts indented methods in LHS of []= assignment' do

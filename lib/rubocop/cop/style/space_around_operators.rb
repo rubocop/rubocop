@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # Checks that operators have space around them, except for **
       # which should not have surrounding space.
       class SpaceAroundOperators < Cop
@@ -129,7 +129,7 @@ module RuboCop
         end
 
         def align_hash_cop_config
-          config.for_cop('Style/AlignHash')
+          config.for_cop('Layout/AlignHash')
         end
 
         def hash_table_style?

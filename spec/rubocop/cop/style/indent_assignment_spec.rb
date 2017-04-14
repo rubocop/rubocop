@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::IndentAssignment, :config do
+describe RuboCop::Cop::Layout::IndentAssignment, :config do
   subject(:cop) { described_class.new(config) }
   let(:config) do
-    RuboCop::Config.new('Style/IndentAssignment' => {
+    RuboCop::Config.new('Layout/IndentAssignment' => {
                           'IndentationWidth' => cop_indent
                         },
-                        'Style/IndentationWidth' => { 'Width' => 2 })
+                        'Layout/IndentationWidth' => { 'Width' => 2 })
   end
-  let(:cop_indent) { nil } # use indentation with from Style/IndentationWidth
+  let(:cop_indent) { nil } # use indentation with from Layout/IndentationWidth
 
   it 'registers an offense for incorrectly indented rhs' do
     inspect_source(cop, <<-END.strip_indent)

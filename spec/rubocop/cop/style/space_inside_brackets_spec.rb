@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::SpaceInsideBrackets do
+describe RuboCop::Cop::Layout::SpaceInsideBrackets do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for an array literal with spaces inside' do

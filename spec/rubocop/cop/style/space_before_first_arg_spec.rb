@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::SpaceBeforeFirstArg, :config do
+describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) { { 'AllowForAlignment' => true } }
 

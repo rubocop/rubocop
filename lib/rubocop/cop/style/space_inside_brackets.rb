@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # Checks for spaces inside square brackets.
       class SpaceInsideBrackets < Cop
         include SpaceInside

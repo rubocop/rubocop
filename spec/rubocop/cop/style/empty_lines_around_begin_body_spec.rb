@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::EmptyLinesAroundBeginBody do
+describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
   let(:config) { RuboCop::Config.new }
   subject(:cop) { described_class.new(config) }
 

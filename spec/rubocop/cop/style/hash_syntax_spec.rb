@@ -10,7 +10,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
                               'TargetRubyVersion' => ruby_version
                             },
                             'Style/HashSyntax' => cop_config,
-                            'Style/SpaceAroundOperators' => {
+                            'Layout/SpaceAroundOperators' => {
                               'Enabled' => true
                             })
       end
@@ -146,7 +146,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
                               'SupportedStyles' => %w[ruby19 hash_rockets],
                               'UseHashRocketsWithSymbolValues' => false
                             },
-                            'Style/SpaceAroundOperators' => {
+                            'Layout/SpaceAroundOperators' => {
                               'Enabled' => false
                             })
       end

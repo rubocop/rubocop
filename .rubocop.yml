@@ -16,7 +16,7 @@ Style/Encoding:
 Style/FrozenStringLiteralComment:
   EnforcedStyle: always
 
-Style/IndentHeredoc:
+Layout/IndentHeredoc:
   EnforcedStyle: powerpack
 
 Lint/AmbiguousBlockAssociation:

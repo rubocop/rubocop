@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::CaseIndentation do
+describe RuboCop::Cop::Layout::CaseIndentation do
   subject(:cop) { described_class.new(config) }
   let(:config) do
     merged = RuboCop::ConfigLoader
-             .default_configuration['Style/CaseIndentation'].merge(cop_config)
-    RuboCop::Config.new('Style/CaseIndentation' => merged,
-                        'Style/IndentationWidth' => { 'Width' => 2 })
+             .default_configuration['Layout/CaseIndentation'].merge(cop_config)
+    RuboCop::Config.new('Layout/CaseIndentation' => merged,
+                        'Layout/IndentationWidth' => { 'Width' => 2 })
   end
 
   context 'with EnforcedStyle: case' do

@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # This cop checks for missing space between a token and a comment on the
       # same line.
       class SpaceBeforeComment < Cop

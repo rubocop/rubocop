@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::ElseAlignment do
+describe RuboCop::Cop::Layout::ElseAlignment do
   subject(:cop) { described_class.new(config) }
   let(:config) do
     RuboCop::Config.new('Lint/EndAlignment' => end_alignment_config)

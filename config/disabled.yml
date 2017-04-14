@@ -35,25 +35,25 @@ Style/Encoding:
   StyleGuide: '#utf-8'
   Enabled: false
 
-Style/FirstArrayElementLineBreak:
+Layout/FirstArrayElementLineBreak:
   Description: >-
                  Checks for a line break before the first element in a
                  multi-line array.
   Enabled: false
 
-Style/FirstHashElementLineBreak:
+Layout/FirstHashElementLineBreak:
   Description: >-
                  Checks for a line break before the first element in a
                  multi-line hash.
   Enabled: false
 
-Style/FirstMethodArgumentLineBreak:
+Layout/FirstMethodArgumentLineBreak:
   Description: >-
                  Checks for a line break before the first argument in a
                  multi-line method call.
   Enabled: false
 
-Style/FirstMethodParameterLineBreak:
+Layout/FirstMethodParameterLineBreak:
   Description: >-
                  Checks for a line break before the first parameter in a
                  multi-line method parameter definition.
@@ -96,7 +96,7 @@ Style/MissingElse:
     - case
     - both
 
-Style/MultilineAssignmentLayout:
+Layout/MultilineAssignmentLayout:
   Description: 'Check for a newline after the assignment operator in multi-line assignments.'
   StyleGuide: '#indent-conditional-assignment'
   Enabled: false

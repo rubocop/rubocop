@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # Checks for unnecessary additional spaces inside the delimiters of
       # %i/%w/%x literals.
       #

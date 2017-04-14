@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # This cops checks for indentation that doesn't use the specified number
       # of spaces.
       #
@@ -173,7 +173,7 @@ module RuboCop
         end
 
         def indentation_consistency_style
-          config.for_cop('Style/IndentationConsistency')['EnforcedStyle']
+          config.for_cop('Layout/IndentationConsistency')['EnforcedStyle']
         end
 
         def check_assignment(node, rhs)

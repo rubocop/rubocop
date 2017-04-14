@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::SpaceInsideStringInterpolation, :config do
+describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:irregular_source) do

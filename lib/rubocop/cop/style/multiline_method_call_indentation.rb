@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # This cop checks the indentation of the method name part in method calls
       # that span more than one line.
       #
@@ -56,7 +56,7 @@ module RuboCop
           return unless style == :aligned && cop_config['IndentationWidth']
 
           raise ValidationError,
-                'The `Style/MultilineMethodCallIndentation`' \
+                'The `Layout/MultilineMethodCallIndentation`' \
                 ' cop only accepts an `IndentationWidth` ' \
                 'configuration parameter when ' \
                 '`EnforcedStyle` is `indented`.'

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::SpaceAfterSemicolon do
+describe RuboCop::Cop::Layout::SpaceAfterSemicolon do
   subject(:cop) { described_class.new(config) }
   let(:config) do
-    RuboCop::Config.new('Style/SpaceInsideBlockBraces' => brace_config)
+    RuboCop::Config.new('Layout/SpaceInsideBlockBraces' => brace_config)
   end
   let(:brace_config) { {} }
 
