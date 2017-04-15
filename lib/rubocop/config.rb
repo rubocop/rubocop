@@ -28,17 +28,23 @@ module RuboCop
         'The `Rails/DefaultScope` cop no longer exists.',
       'Style/SingleSpaceBeforeFirstArg' =>
         'The `Style/SingleSpaceBeforeFirstArg` cop has been renamed to ' \
-        '`Style/SpaceBeforeFirstArg`.',
+        '`Layout/SpaceBeforeFirstArg`.',
       'Lint/SpaceBeforeFirstArg' =>
         'The `Lint/SpaceBeforeFirstArg` cop has been removed, since it was a ' \
-        'duplicate of `Style/SpaceBeforeFirstArg`. Please use ' \
-        '`Style/SpaceBeforeFirstArg` instead.',
+        'duplicate of `Layout/SpaceBeforeFirstArg`. Please use ' \
+        '`Layout/SpaceBeforeFirstArg` instead.',
+      'Layout/SpaceAfterControlKeyword' =>
+        'The `Layout/SpaceAfterControlKeyword` cop has been removed. Please ' \
+        'use `Layout/SpaceAroundKeyword` instead.',
+      'Layout/SpaceBeforeModifierKeyword' =>
+        'The `Layout/SpaceBeforeModifierKeyword` cop has been removed. ' \
+        'Please use `Layout/SpaceAroundKeyword` instead.',
       'Style/SpaceAfterControlKeyword' =>
         'The `Style/SpaceAfterControlKeyword` cop has been removed. Please ' \
-        'use `Style/SpaceAroundKeyword` instead.',
+        'use `Layout/SpaceAroundKeyword` instead.',
       'Style/SpaceBeforeModifierKeyword' =>
         'The `Style/SpaceBeforeModifierKeyword` cop has been removed. Please ' \
-        'use `Style/SpaceAroundKeyword` instead.',
+        'use `Layout/SpaceAroundKeyword` instead.',
       'Style/MethodCallParentheses' =>
         'The `Style/MethodCallParentheses` cop has been renamed to ' \
           '`Style/MethodCallWithoutArgsParentheses`.',
@@ -47,6 +53,13 @@ module RuboCop
     }.freeze
 
     OBSOLETE_PARAMETERS = [
+      {
+        cop: 'Layout/SpaceAroundOperators',
+        parameter: 'MultiSpaceAllowedForOperators',
+        alternative: 'If your intention was to allow extra spaces ' \
+                     'for alignment, please use AllowForAlignment: ' \
+                     'true instead.'
+      },
       {
         cop: 'Style/SpaceAroundOperators',
         parameter: 'MultiSpaceAllowedForOperators',
@@ -61,7 +74,7 @@ module RuboCop
                      "Rails:\n  Enabled: true"
       },
       {
-        cop: 'Style/CaseIndentation',
+        cop: 'Layout/CaseIndentation',
         parameter: 'IndentWhenRelativeTo',
         alternative: '`IndentWhenRelativeTo` has been renamed to ' \
                      '`EnforcedStyle`'

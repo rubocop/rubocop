@@ -2,7 +2,7 @@
 
 describe RuboCop::Cop::Style::RescueModifier do
   let(:config) do
-    RuboCop::Config.new('Style/IndentationWidth' => {
+    RuboCop::Config.new('Layout/IndentationWidth' => {
                           'Width' => 2
                         })
   end

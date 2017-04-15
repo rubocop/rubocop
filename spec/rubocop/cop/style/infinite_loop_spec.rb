@@ -3,7 +3,7 @@
 describe RuboCop::Cop::Style::InfiniteLoop do
   subject(:cop) { described_class.new(config) }
   let(:config) do
-    RuboCop::Config.new('Style/IndentationWidth' => { 'Width' => 2 })
+    RuboCop::Config.new('Layout/IndentationWidth' => { 'Width' => 2 })
   end
 
   %w(1 2.0 [1] {}).each do |lit|
@@ -45,7 +45,7 @@ describe RuboCop::Cop::Style::InfiniteLoop do
 
     context 'with non-default indentation width' do
       let(:config) do
-        RuboCop::Config.new('Style/IndentationWidth' => { 'Width' => 4 })
+        RuboCop::Config.new('Layout/IndentationWidth' => { 'Width' => 4 })
       end
 
       it "auto-corrects multi-line modifier #{keyword} and indents correctly" do

@@ -222,16 +222,16 @@ describe RuboCop::CLI, :isolated_environment do
         create_file('example.rb',
                     ['x = 0 ',
                      # Disabling comments still apply.
-                     '# rubocop:disable Style/TrailingWhitespace',
+                     '# rubocop:disable Layout/TrailingWhitespace',
                      'y = 1  '])
 
         create_file('.rubocop.yml', <<-END.strip_indent)
-          Style/TrailingWhitespace:
+          Layout/TrailingWhitespace:
             Enabled: false
         END
 
         expect(cli.run(['--format', 'simple',
-                        '--only', 'Style/TrailingWhitespace',
+                        '--only', 'Layout/TrailingWhitespace',
                         'example.rb'])).to eq(1)
         expect($stderr.string).to eq('')
         expect($stdout.string)
@@ -251,8 +251,8 @@ describe RuboCop::CLI, :isolated_environment do
                                    'end'])
         expect(cli.run(['--format', 'simple',
                         '--only',
-                        'Style/IfUnlessModifier,Style/Tab,' \
-                        'Style/SpaceAroundOperators',
+                        'Style/IfUnlessModifier,Layout/Tab,' \
+                        'Layout/SpaceAroundOperators',
                         'example.rb'])).to eq(1)
         expect($stderr.string).to eq('')
         expect($stdout.string)
@@ -277,7 +277,7 @@ describe RuboCop::CLI, :isolated_environment do
               Enabled: false
           END
           expect(cli.run(['--format', 'simple',
-                          '--only', 'Style/Tab,Style/SpaceAroundOperators',
+                          '--only', 'Layout/Tab,Layout/SpaceAroundOperators',
                           '--lint',
                           'example.rb'])).to eq(1)
           expect($stdout.string)
@@ -310,26 +310,27 @@ describe RuboCop::CLI, :isolated_environment do
       end
     end
 
-    context 'when two namespaces are given' do
+    context 'when three namespaces are given' do
       it 'runs all enabled cops in those namespaces' do
         create_file('example.rb', ['if x== 100000000000000 ',
                                    '  # ' + '-' * 98,
                                    "\ty",
                                    'end'])
         create_file('.rubocop.yml', <<-END.strip_indent)
-          Style/SpaceAroundOperators:
+          Layout/SpaceAroundOperators:
             Enabled: false
         END
-        expect(cli.run(%w[-f o --only Metrics,Style example.rb])).to eq(1)
+        expect(cli.run(%w[-f o --only Metrics,Style,Layout example.rb]))
+          .to eq(1)
         expect($stdout.string)
           .to eq(<<-END.strip_indent)
 
+            1  Layout/CommentIndentation
+            1  Layout/IndentationWidth
+            1  Layout/Tab
+            1  Layout/TrailingWhitespace
             1  Metrics/LineLength
-            1  Style/CommentIndentation
-            1  Style/IndentationWidth
             1  Style/NumericLiterals
-            1  Style/Tab
-            1  Style/TrailingWhitespace
             --
             6  Total
 
@@ -380,11 +381,11 @@ describe RuboCop::CLI, :isolated_environment do
         expect($stdout.string)
           .to eq(<<-END.strip_indent)
 
-            1  Style/IndentationWidth
+            1  Layout/IndentationWidth
+            1  Layout/SpaceAroundOperators
+            1  Layout/Tab
+            1  Layout/TrailingWhitespace
             1  Style/NumericPredicate
-            1  Style/SpaceAroundOperators
-            1  Style/Tab
-            1  Style/TrailingWhitespace
             --
             5  Total
 
@@ -420,16 +421,16 @@ describe RuboCop::CLI, :isolated_environment do
                                      'end # rubocop:disable all'])
           expect(cli.run(['--format', 'offenses',
                           '--except',
-                          'Style/IfUnlessModifier,Style/Tab,' \
-                          "Style/SpaceAroundOperators,#{cop_name}",
+                          'Style/IfUnlessModifier,Layout/Tab,' \
+                          "Layout/SpaceAroundOperators,#{cop_name}",
                           'example.rb'])).to eq(1)
           expect($stderr.string).to eq('')
           expect($stdout.string)
             .to eq(<<-END.strip_indent)
 
-              1  Style/IndentationWidth
+              1  Layout/IndentationWidth
+              1  Layout/TrailingWhitespace
               1  Style/NumericLiterals
-              1  Style/TrailingWhitespace
               --
               3  Total
 
@@ -443,7 +444,7 @@ describe RuboCop::CLI, :isolated_environment do
     it 'runs only lint cops' do
       create_file('example.rb', ['if 0 ',
                                  "\ty",
-                                 "\tz # rubocop:disable Style/Tab",
+                                 "\tz # rubocop:disable Layout/Tab",
                                  'end'])
       # IfUnlessModifier depends on the configuration of LineLength.
 
@@ -480,7 +481,7 @@ describe RuboCop::CLI, :isolated_environment do
                       '--debug',
                       'example1.rb'])).to eq(1)
       expect($stdout.string.lines.to_a[-1])
-        .to eq("#{file}:1:7: C: Style/TrailingWhitespace: Trailing " \
+        .to eq("#{file}:1:7: C: Layout/TrailingWhitespace: Trailing " \
                "whitespace detected.\n")
     end
   end
@@ -495,7 +496,7 @@ describe RuboCop::CLI, :isolated_environment do
       expect($stdout.string)
         .to eq(["#{file}:1:8: W: Lint/UnneededDisable: Unnecessary " \
                 'disabling of `Style/NumericLiterals`.',
-                "#{file}:1:41: C: Style/TrailingWhitespace: Trailing " \
+                "#{file}:1:41: C: Layout/TrailingWhitespace: Trailing " \
                 'whitespace detected.',
                 ''].join("\n"))
     end
@@ -664,12 +665,12 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     context 'with one cop given' do
-      let(:cop_list) { ['Style/Tab'] }
+      let(:cop_list) { ['Layout/Tab'] }
 
       it 'prints that cop and nothing else' do
         expect(stdout).to match(
           ['# Supports --auto-correct',
-           'Style/Tab:',
+           'Layout/Tab:',
            '  Description: No hard tabs.',
            /^  StyleGuide: ('|")#spaces-indentation('|")$/,
            '  Enabled: true',
@@ -682,17 +683,17 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     context 'with two cops given' do
-      let(:cop_list) { ['Style/Tab,Metrics/LineLength'] }
+      let(:cop_list) { ['Layout/Tab,Metrics/LineLength'] }
       include_examples :prints_config
     end
 
     context 'with one of the cops misspelled' do
-      let(:cop_list) { ['Style/Tab,Lint/X123'] }
+      let(:cop_list) { ['Layout/Tab,Lint/X123'] }
 
       it 'skips the unknown cop' do
         expect(stdout).to match(
           ['# Supports --auto-correct',
-           'Style/Tab:',
+           'Layout/Tab:',
            '  Description: No hard tabs.',
            /^  StyleGuide: ('|")#spaces-indentation('|")$/,
            '  Enabled: true',
@@ -1065,7 +1066,7 @@ describe RuboCop::CLI, :isolated_environment do
     it 'succeeds when there is only a disabled offense' do
       create_file(target_file, <<-END.strip_indent)
         def f
-         x # rubocop:disable Style/IndentationWidth
+         x # rubocop:disable Layout/IndentationWidth
         end
       END
 
@@ -1189,7 +1190,7 @@ describe RuboCop::CLI, :isolated_environment do
         create_file('example.rb', "puts 'hello world'\r")
         # Make Style/EndOfLine give same output regardless of platform.
         create_file('.rubocop.yml', <<-END.strip_indent)
-          Style/EndOfLine:
+          Layout/EndOfLine:
             EnforcedStyle: lf
         END
         File.open('example.rb') do |file|
@@ -1198,7 +1199,7 @@ describe RuboCop::CLI, :isolated_environment do
           # case, as its read() method doesn't handle line endings the
           # same way IO#read() does.
           $stdin = file
-          argv = ['--only=Style/EndOfLine',
+          argv = ['--only=Layout/EndOfLine',
                   '--format=simple',
                   '--stdin',
                   'fake.rb']

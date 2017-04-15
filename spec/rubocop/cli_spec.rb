@@ -108,7 +108,7 @@ describe RuboCop::CLI, :isolated_environment do
       END
       # Make Style/EndOfLine give same output regardless of platform.
       create_file('.rubocop.yml', <<-END.strip_indent)
-        Style/EndOfLine:
+        Layout/EndOfLine:
           EnforcedStyle: lf
       END
       result = cli.run(['--format', 'simple', 'example.rb'])
@@ -264,7 +264,7 @@ describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(['--format', 'offenses', '-a', 'example.rb'])).to eq(0)
         expect($stdout.string).to eq(<<-END.strip_indent)
 
-          1  Style/EmptyLineAfterMagicComment
+          1  Layout/EmptyLineAfterMagicComment
           1  Style/FrozenStringLiteralComment
           --
           2  Total
@@ -714,7 +714,7 @@ describe RuboCop::CLI, :isolated_environment do
     context 'when configured for rails style indentation' do
       it 'accepts rails style indentation' do
         create_file('.rubocop.yml', <<-END.strip_indent)
-          Style/IndentationConsistency:
+          Layout/IndentationConsistency:
             EnforcedStyle: rails
         END
         create_file('example.rb', <<-END.strip_indent)
@@ -749,7 +749,7 @@ describe RuboCop::CLI, :isolated_environment do
       %w[class module].each do |parent|
         it "registers offense for normal indentation in #{parent}" do
           create_file('.rubocop.yml', <<-END.strip_indent)
-            Style/IndentationConsistency:
+            Layout/IndentationConsistency:
               EnforcedStyle: rails
           END
           create_file('example.rb', <<-END.strip_indent)
@@ -795,14 +795,14 @@ describe RuboCop::CLI, :isolated_environment do
     context 'when obsolete MultiSpaceAllowedForOperators param is used' do
       it 'displays a warning' do
         create_file('.rubocop.yml', <<-END.strip_indent)
-          Style/SpaceAroundOperators:
+          Layout/SpaceAroundOperators:
             MultiSpaceAllowedForOperators:
               - "="
         END
         expect(cli.run([])).to eq(2)
         expect($stderr.string).to include('obsolete parameter ' \
                                           'MultiSpaceAllowedForOperators ' \
-                                          '(for Style/SpaceAroundOperators)' \
+                                          '(for Layout/SpaceAroundOperators)' \
                                           ' found')
       end
     end
@@ -812,14 +812,14 @@ describe RuboCop::CLI, :isolated_environment do
       it 'fails with an error message' do
         create_file('example.rb', 'puts 1')
         create_file('.rubocop.yml', <<-END.strip_indent)
-          Style/MultilineMethodCallIndentation:
+          Layout/MultilineMethodCallIndentation:
             EnforcedStyle: aligned
             IndentationWidth: 1
         END
         expect(cli.run(['example.rb'])).to eq(2)
         expect($stderr.string.strip).to eq(
-          'Error: The `Style/MultilineMethodCallIndentation` cop only accepts' \
-          ' an `IndentationWidth` configuration parameter when ' \
+          'Error: The `Layout/MultilineMethodCallIndentation` cop only ' \
+          'accepts an `IndentationWidth` configuration parameter when ' \
           '`EnforcedStyle` is `indented`.'
         )
       end
@@ -830,13 +830,13 @@ describe RuboCop::CLI, :isolated_environment do
       it 'fails with an error message' do
         create_file('example.rb', 'puts 1')
         create_file('.rubocop.yml', <<-END.strip_indent)
-          Style/MultilineOperationIndentation:
+          Layout/MultilineOperationIndentation:
             EnforcedStyle: aligned
             IndentationWidth: 1
         END
         expect(cli.run(['example.rb'])).to eq(2)
         expect($stderr.string.strip).to eq(
-          'Error: The `Style/MultilineOperationIndentation` cop only accepts' \
+          'Error: The `Layout/MultilineOperationIndentation` cop only accepts' \
           ' an `IndentationWidth` configuration parameter when ' \
           '`EnforcedStyle` is `indented`.'
         )
@@ -858,7 +858,7 @@ describe RuboCop::CLI, :isolated_environment do
         it 'ignores config file' do
           create_file('example.rb', ['x = 0 ', 'puts x'])
           create_file('.rubocop.yml', <<-END.strip_indent)
-            Style/TrailingWhitespace:
+            Layout/TrailingWhitespace:
               Enabled: false
           END
 
@@ -904,7 +904,7 @@ describe RuboCop::CLI, :isolated_environment do
         .to eq(['== example1.rb ==',
                 'C:  1:  6: Trailing whitespace detected.',
                 '== dir/example2.rb ==',
-                'C:  1:  6: Style/TrailingWhitespace: Trailing whitespace' \
+                'C:  1:  6: Layout/TrailingWhitespace: Trailing whitespace' \
                 ' detected.',
                 '',
                 '2 files inspected, 2 offenses detected',
@@ -950,7 +950,7 @@ describe RuboCop::CLI, :isolated_environment do
       expect($stdout.string)
         .to eq(<<-END.strip_indent)
 
-          1  Style/TrailingWhitespace
+          1  Layout/TrailingWhitespace
           --
           1  Total
 
@@ -1011,7 +1011,7 @@ describe RuboCop::CLI, :isolated_environment do
       # The .other directory is explicitly included, so the configuration file
       # is read, and modifies the behavior.
       create_file('.other/.rubocop.yml', <<-END.strip_indent)
-        Style/SpaceAroundOperators:
+        Layout/SpaceAroundOperators:
           Enabled: false
       END
       create_file('.rubocop.yml', <<-END.strip_indent)
@@ -1092,7 +1092,7 @@ describe RuboCop::CLI, :isolated_environment do
         Style/Encoding:
           Enabled: false
 
-        Style/CaseIndentation:
+        Layout/CaseIndentation:
           Enabled: false
       END
       expect(cli.run(['--format', 'simple',
@@ -1242,7 +1242,7 @@ describe RuboCop::CLI, :isolated_environment do
         Style/Encoding:
           Enabled: false
 
-        Style/CaseIndentation:
+        Layout/CaseIndentation:
           Enabled: false
       END
       expect(cli.run(['--format', 'simple',

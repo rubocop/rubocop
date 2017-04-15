@@ -1,5 +1,34 @@
 # These are all the cops that are disabled in the default configuration.
 
+Layout/FirstArrayElementLineBreak:
+  Description: >-
+                 Checks for a line break before the first element in a
+                 multi-line array.
+  Enabled: false
+
+Layout/FirstHashElementLineBreak:
+  Description: >-
+                 Checks for a line break before the first element in a
+                 multi-line hash.
+  Enabled: false
+
+Layout/FirstMethodArgumentLineBreak:
+  Description: >-
+                 Checks for a line break before the first argument in a
+                 multi-line method call.
+  Enabled: false
+
+Layout/FirstMethodParameterLineBreak:
+  Description: >-
+                 Checks for a line break before the first parameter in a
+                 multi-line method parameter definition.
+  Enabled: false
+
+Layout/MultilineAssignmentLayout:
+  Description: 'Check for a newline after the assignment operator in multi-line assignments.'
+  StyleGuide: '#indent-conditional-assignment'
+  Enabled: false
+
 # By default, the rails cops are not run. Override in project or home
 # directory .rubocop.yml files, or by giving the -R/--rails option.
 Rails:
@@ -33,30 +62,6 @@ Style/DocumentationMethod:
 Style/Encoding:
   Description: 'Use UTF-8 as the source file encoding.'
   StyleGuide: '#utf-8'
-  Enabled: false
-
-Style/FirstArrayElementLineBreak:
-  Description: >-
-                 Checks for a line break before the first element in a
-                 multi-line array.
-  Enabled: false
-
-Style/FirstHashElementLineBreak:
-  Description: >-
-                 Checks for a line break before the first element in a
-                 multi-line hash.
-  Enabled: false
-
-Style/FirstMethodArgumentLineBreak:
-  Description: >-
-                 Checks for a line break before the first argument in a
-                 multi-line method call.
-  Enabled: false
-
-Style/FirstMethodParameterLineBreak:
-  Description: >-
-                 Checks for a line break before the first parameter in a
-                 multi-line method parameter definition.
   Enabled: false
 
 Style/ImplicitRuntimeError:
@@ -95,11 +100,6 @@ Style/MissingElse:
     - if
     - case
     - both
-
-Style/MultilineAssignmentLayout:
-  Description: 'Check for a newline after the assignment operator in multi-line assignments.'
-  StyleGuide: '#indent-conditional-assignment'
-  Enabled: false
 
 Style/OptionHash:
   Description: "Don't use option hashes when you can use keyword arguments."

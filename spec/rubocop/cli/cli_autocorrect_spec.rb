@@ -11,7 +11,7 @@ describe RuboCop::CLI, :isolated_environment do
 
   it 'does not correct ExtraSpacing in a hash that would be changed back' do
     create_file('.rubocop.yml', <<-END.strip_indent)
-      Style/AlignHash:
+      Layout/AlignHash:
         EnforcedColonStyle: table
     END
     source = <<-END.strip_indent
@@ -37,7 +37,7 @@ describe RuboCop::CLI, :isolated_environment do
       Style/HashSyntax:
         EnforcedStyle: hash_rockets
 
-      Style/AlignHash:
+      Layout/AlignHash:
         EnforcedHashRocketStyle: table
     END
     source = <<-END.strip_indent
@@ -799,12 +799,12 @@ describe RuboCop::CLI, :isolated_environment do
         assert_post_status_code 400, 's', type: 'bad'
       END
     e = abs('example.rb')
+    # TODO: Don't report that a problem is corrected when it
+    # actually went away due to another correction.
     expect($stdout.string)
-      .to eq(["#{e}:1:35: C: [Corrected] Redundant curly braces around " \
+      .to eq(["#{e}:1:35: C: [Corrected] Space inside { missing.",
+              "#{e}:1:35: C: [Corrected] Redundant curly braces around " \
               'a hash parameter.',
-              # TODO: Don't report that a problem is corrected when it
-              # actually went away due to another correction.
-              "#{e}:1:35: C: [Corrected] Space inside { missing.",
               "#{e}:1:36: C: [Corrected] Use the new Ruby 1.9 hash " \
               'syntax.',
               "#{e}:1:50: C: [Corrected] Space inside } missing.",
@@ -911,11 +911,11 @@ describe RuboCop::CLI, :isolated_environment do
     END
     expect($stdout.string).to eq(<<-END.strip_indent)
 
-      6   Style/TrailingWhitespace
+      6   Layout/TrailingWhitespace
       3   Style/Semicolon
       2   Style/SingleLineMethods
+      1   Layout/EmptyLineBetweenDefs
       1   Style/DefWithParentheses
-      1   Style/EmptyLineBetweenDefs
       --
       13  Total
 
@@ -1034,7 +1034,7 @@ describe RuboCop::CLI, :isolated_environment do
     expect($stdout.string)
       .to eq(<<-END.strip_indent)
 
-        4  Style/SpaceAfterComma
+        4  Layout/SpaceAfterComma
         2  Style/WordArray
         --
         6  Total
@@ -1053,7 +1053,7 @@ describe RuboCop::CLI, :isolated_environment do
     expect(cli.run(%w[-D --auto-correct --format emacs])).to eq(0)
     expect($stdout.string)
       .to eq(["#{abs('example.rb')}:1:21: C: [Corrected] " \
-              'Style/SpaceAfterComma: Space missing after comma.',
+              'Layout/SpaceAfterComma: Space missing after comma.',
               "#{abs('example.rb')}:1:22: C: [Corrected] " \
               'Style/HashSyntax: Use the new Ruby 1.9 hash syntax.',
               ''].join("\n"))
@@ -1069,7 +1069,7 @@ describe RuboCop::CLI, :isolated_environment do
       .to eq(["#{abs('example.rb')}:1:3: C: [Corrected] " \
               'Style/HashSyntax: Use the new Ruby 1.9 hash syntax.',
               "#{abs('example.rb')}:1:5: C: [Corrected] " \
-              'Style/SpaceAroundOperators: Surrounding space missing for ' \
+              'Layout/SpaceAroundOperators: Surrounding space missing for ' \
               'operator `=>`.',
               ''].join("\n"))
   end
@@ -1128,7 +1128,7 @@ describe RuboCop::CLI, :isolated_environment do
       }
     END
     create_file('.rubocop.yml', <<-END.strip_indent)
-      Style/AlignHash:
+      Layout/AlignHash:
         EnforcedColonStyle: separator
     END
     expect(cli.run(%w[--auto-correct])).to eq(0)
@@ -1213,9 +1213,9 @@ describe RuboCop::CLI, :isolated_environment do
       foo.each {bar;}
     END
     create_file('.rubocop.yml', <<-END.strip_indent)
-      Style/SpaceInsideBlockBraces:
+      Layout/SpaceInsideBlockBraces:
         EnforcedStyle: space
-      Style/SpaceInsideHashLiteralBraces:
+      Layout/SpaceInsideHashLiteralBraces:
         EnforcedStyle: no_space
       Style/TrailingCommaInLiteral:
         EnforcedStyleForMultiline: consistent_comma

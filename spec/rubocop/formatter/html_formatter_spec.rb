@@ -18,7 +18,7 @@ module RuboCop
         path = File.expand_path('result.html')
         # Run without Style/EndOfLine as it gives different results on
         # different platforms.
-        CLI.new.run(['--except', 'Style/EndOfLine', '--format', 'html',
+        CLI.new.run(['--except', 'Layout/EndOfLine', '--format', 'html',
                      '--out', path])
         path
       end
@@ -26,7 +26,7 @@ module RuboCop
       let(:actual_html_path_cached) do
         path = File.expand_path('result_cached.html')
         2.times do
-          CLI.new.run(['--except', 'Style/EndOfLine', '--format', 'html',
+          CLI.new.run(['--except', 'Layout/EndOfLine', '--format', 'html',
                        '--out', path])
         end
         path

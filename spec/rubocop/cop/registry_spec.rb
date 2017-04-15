@@ -26,7 +26,7 @@ describe RuboCop::Cop::Registry do
     [
       RuboCop::Cop::Lint::ConditionPosition,
       RuboCop::Cop::Lint::DuplicateMethods,
-      RuboCop::Cop::Style::IndentArray,
+      RuboCop::Cop::Layout::IndentArray,
       RuboCop::Cop::Metrics::MethodLength,
       RuboCop::Cop::RSpec::Foo,
       RuboCop::Cop::Test::IndentArray
@@ -49,7 +49,7 @@ describe RuboCop::Cop::Registry do
   end
 
   it 'exposes cop departments' do
-    expect(registry.departments).to eql(%i[Lint Style Metrics RSpec Test])
+    expect(registry.departments).to eql(%i[Lint Layout Metrics RSpec Test])
   end
 
   it 'can filter down to one type' do
@@ -76,8 +76,8 @@ describe RuboCop::Cop::Registry do
     let(:origin) { '/app/.rubocop.yml' }
 
     it 'gives back already properly qualified names' do
-      expect(registry.qualified_cop_name('Style/IndentArray', origin))
-        .to eql('Style/IndentArray')
+      expect(registry.qualified_cop_name('Layout/IndentArray', origin))
+        .to eql('Layout/IndentArray')
     end
 
     it 'qualifies names without a namespace' do
@@ -105,7 +105,7 @@ describe RuboCop::Cop::Registry do
       expect { registry.qualified_cop_name('IndentArray', origin) }
         .to raise_error(RuboCop::Cop::AmbiguousCopName).with_message(
           'Ambiguous cop name `IndentArray` used in /app/.rubocop.yml needs ' \
-          'department qualifier. Did you mean Style/IndentArray or ' \
+          'department qualifier. Did you mean Layout/IndentArray or ' \
           'Test/IndentArray?'
         )
     end
@@ -119,7 +119,7 @@ describe RuboCop::Cop::Registry do
     expect(registry.to_h).to eql(
       'Lint/ConditionPosition' => [RuboCop::Cop::Lint::ConditionPosition],
       'Lint/DuplicateMethods'  => [RuboCop::Cop::Lint::DuplicateMethods],
-      'Style/IndentArray'      => [RuboCop::Cop::Style::IndentArray],
+      'Layout/IndentArray'     => [RuboCop::Cop::Layout::IndentArray],
       'Metrics/MethodLength'   => [RuboCop::Cop::Metrics::MethodLength],
       'Test/IndentArray'       => [RuboCop::Cop::Test::IndentArray],
       'RSpec/Foo'              => [RuboCop::Cop::RSpec::Foo]
@@ -155,7 +155,7 @@ describe RuboCop::Cop::Registry do
       [
         'Lint/ConditionPosition',
         'Lint/DuplicateMethods',
-        'Style/IndentArray',
+        'Layout/IndentArray',
         'Metrics/MethodLength',
         'RSpec/Foo',
         'Test/IndentArray'

@@ -83,7 +83,7 @@ describe RuboCop::Runner, :isolated_environment do
       before do
         # Make Style/EndOfLine give same output regardless of platform.
         create_file('.rubocop.yml', <<-END.strip_indent)
-          Style/EndOfLine:
+          Layout/EndOfLine:
             EnforcedStyle: lf
         END
       end

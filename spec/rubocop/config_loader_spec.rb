@@ -536,7 +536,7 @@ describe RuboCop::ConfigLoader do
         end
 
         it 'disables cops that are normally enabled by default' do
-          cop_class = RuboCop::Cop::Style::TrailingWhitespace
+          cop_class = RuboCop::Cop::Layout::TrailingWhitespace
           expect(cop_enabled?(cop_class)).to be false
         end
       end
@@ -546,18 +546,18 @@ describe RuboCop::ConfigLoader do
           <<-END.strip_indent
             AllCops:
               EnabledByDefault: true
-            Style/TrailingWhitespace:
+            Layout/TrailingWhitespace:
               Enabled: false
           END
         end
 
         it 'enables cops that are disabled by default' do
-          cop_class = RuboCop::Cop::Style::FirstMethodArgumentLineBreak
+          cop_class = RuboCop::Cop::Layout::FirstMethodArgumentLineBreak
           expect(cop_enabled?(cop_class)).to be true
         end
 
         it 'respects cops that are disbled in the config' do
-          cop_class = RuboCop::Cop::Style::TrailingWhitespace
+          cop_class = RuboCop::Cop::Layout::TrailingWhitespace
           expect(cop_enabled?(cop_class)).to be false
         end
       end
