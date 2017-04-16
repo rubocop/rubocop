@@ -226,26 +226,23 @@ module RuboCop
     end
 
     def validate_parallel
-      if parallel_without_caching?
+      return unless @options.key?(:parallel)
+
+      if @options[:cache] == 'false'
         raise ArgumentError, '-P/--parallel uses caching to speed up ' \
                              'execution, so combining with --cache false is ' \
                              'not allowed.'
       end
 
-      if parallel_with_auto_gen_config?
-        raise ArgumentError, '-P/--parallel uses caching to speed up ' \
-                             'execution, while --auto-gen-config needs a ' \
-                             'non-cached run, so they cannot be combined.'
-      end
+      combos = {
+        auto_gen_config: '-P/--parallel uses caching to speed up execution, ' \
+                         'while --auto-gen-config needs a non-cached run, ' \
+                         'so they cannot be combined.',
+        fail_fast: '-P/--parallel can not be combined with -F/--fail-fast.',
+        auto_correct: '-P/--parallel can not be combined with --auto-correct.'
+      }
 
-      if parallel_with_fail_fast?
-        raise ArgumentError, '-P/--parallel can not be combined with ' \
-                             '-F/--fail-fast.'
-      end
-
-      return unless parallel_with_autocorrect?
-      raise ArgumentError, '-P/--parallel can not be combined with ' \
-                           '--auto-correct.'
+      combos.each { |key, msg| raise ArgumentError, msg if @options.key?(key) }
     end
 
     def only_includes_unneeded_disable?
@@ -264,22 +261,6 @@ module RuboCop
 
     def no_offense_counts_without_auto_gen_config?
       @options.key?(:no_offense_counts) && !@options.key?(:auto_gen_config)
-    end
-
-    def parallel_without_caching?
-      @options.key?(:parallel) && @options[:cache] == 'false'
-    end
-
-    def parallel_with_fail_fast?
-      @options.key?(:parallel) && @options.key?(:fail_fast)
-    end
-
-    def parallel_with_auto_gen_config?
-      @options.key?(:parallel) && @options.key?(:auto_gen_config)
-    end
-
-    def parallel_with_autocorrect?
-      @options.key?(:parallel) && @options.key?(:auto_correct)
     end
 
     def incompatible_options
