@@ -172,6 +172,24 @@ describe RuboCop::Options, :isolated_environment do
             .to raise_error(ArgumentError, msg)
         end
       end
+
+      context 'combined with --auto-gen-config' do
+        it 'fails with an error message' do
+          msg = '-P/--parallel uses caching to speed up execution, while ' \
+                '--auto-gen-config needs a non-cached run, so they cannot be ' \
+                'combined.'
+          expect { options.parse %w[--parallel --auto-gen-config] }
+            .to raise_error(ArgumentError, msg)
+        end
+      end
+
+      context 'combined with --fail-fast' do
+        it 'fails with an error message' do
+          msg = '-P/--parallel can not be combined with -F/--fail-fast.'
+          expect { options.parse %w[--parallel --fail-fast] }
+            .to raise_error(ArgumentError, msg)
+        end
+      end
     end
 
     describe '--fail-level' do
