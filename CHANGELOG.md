@@ -7,12 +7,12 @@
 * [#117](https://github.com/bbatsov/rubocop/issues/117): Add `--parallel` option for running RuboCop in multiple processes or threads. ([@jonas054][])
 * Add auto-correct support to `Style/MixinGrouping`. ([@rrosenblum][])
 * [#4236](https://github.com/bbatsov/rubocop/issues/4236): Add new `Rails/ApplicationJob` and `Rails/ApplicationRecord` cops. ([@tjwp][])
+* [#4078](https://github.com/bbatsov/rubocop/pull/4078): Add new `Performance/Caller` cop. ([@alpaca-tc][])
 
 ### Changes
 
 * [#4262](https://github.com/bbatsov/rubocop/pull/4262): Add new `MinSize` configuration to `Style/SymbolArray`, consistent with the same configuration in `Style/WordArray`. ([@scottmatthewman][])
 * [#4278](https://github.com/bbatsov/rubocop/pull/4278): Move all cops dealing with whitespace into a new department called `Layout`. ([@jonas054][])
-* [#4078](https://github.com/bbatsov/rubocop/pull/4078): Add new `Performance/Caller` cop. ([@alpaca-tc][])
 
 ### Bug fixes
 
