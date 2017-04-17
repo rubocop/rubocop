@@ -532,6 +532,32 @@ Layout/SpaceInsideStringInterpolation:
     - space
     - no_space
 
+Layout/ClassStructure:
+  Description: 'Enforces a configured order of definitions within a class body.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#consistent-classes'
+  Enabled: false
+  # All `Categories` can be used in the ExpectedOrder. The following classifications are also provided:
+  # - constant
+  # - class_method
+  # - instance_method
+  # - initialize
+  # - private_method
+  # - protected_method
+  ExpectedOrder:
+    - includes
+    - constant
+    - public_class_method
+    - initialize
+    - instance_method
+    - protected_method
+    - private_method
+  # Mapping categories allows to group code macros and classifications to reuse in the `ExpectedOrder`.
+  Categories:
+    includes:
+      - include
+      - prepend
+      - extend
+
 Layout/Tab:
   # By default, the indentation width from Layout/IndentationWidth is used
   # But it can be overridden by setting this parameter

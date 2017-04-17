@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+* [#1575](https://github.com/bbatsov/rubocop/issues/1575): Add new `Layout/ClassStructure` cop that checks whether definitions in a class are in the configured order. This cop is disabled by default. ([@jonatas][])
+
 ### New features
 
 * [#5101](https://github.com/bbatsov/rubocop/pull/5101): Allow to specify `TargetRubyVersion` 2.5. ([@walf443][])

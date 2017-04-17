@@ -110,6 +110,7 @@ In the following section you find all available cops:
 * [Layout/AlignParameters](cops_layout.md#layoutalignparameters)
 * [Layout/BlockEndNewline](cops_layout.md#layoutblockendnewline)
 * [Layout/CaseIndentation](cops_layout.md#layoutcaseindentation)
+* [Layout/ClassStructure](cops_layout.md#layoutclassstructure)
 * [Layout/ClosingParenthesisIndentation](cops_layout.md#layoutclosingparenthesisindentation)
 * [Layout/CommentIndentation](cops_layout.md#layoutcommentindentation)
 * [Layout/DotPosition](cops_layout.md#layoutdotposition)

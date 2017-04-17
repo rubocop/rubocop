@@ -32,6 +32,21 @@ Style/FormatStringToken:
 Layout/EndOfLine:
   EnforcedStyle: lf
 
+Layout/ClassStructure:
+  Enabled: true
+  Categories:
+    include:
+      - prepend
+  ExpectedOrder:
+      - extend
+      - include
+      - constant
+      - public_class_method
+      - initialize
+      - instance_method
+      - protected_method
+      - private_method
+
 Layout/IndentHeredoc:
   EnforcedStyle: powerpack
 
