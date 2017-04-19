@@ -156,6 +156,10 @@ Layout/LeadingCommentSpace:
   StyleGuide: '#hash-space'
   Enabled: true
 
+Layout/EmptyComment:
+  Description: 'Checks for empty comments.'
+  Enabled: true
+
 Layout/MultilineArrayBraceLayout:
   Description: >-
                  Checks that the closing brace in an array literal is

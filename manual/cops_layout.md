@@ -320,6 +320,14 @@ be aligned with an if/unless/while/until/begin/def keyword, but there
 are special cases when they should follow the same rules as the
 alignment of end.
 
+## Layout/EmptyComment
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for any empty comments.
+
 ## Layout/EmptyLineAfterMagicComment
 
 Enabled by default | Supports autocorrection
