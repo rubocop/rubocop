@@ -93,7 +93,8 @@ module RuboCop
 
         def args_begin(node)
           loc = node.loc
-          selector = node.super_type? ? loc.keyword : loc.selector
+          selector =
+            node.super_type? || node.yield_type? ? loc.keyword : loc.selector
           selector.end.resize(1)
         end
 
