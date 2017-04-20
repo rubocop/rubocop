@@ -49,7 +49,10 @@ module RuboCop
         'The `Style/MethodCallParentheses` cop has been renamed to ' \
           '`Style/MethodCallWithoutArgsParentheses`.',
       'Lint/Eval' =>
-        'The `Lint/Eval` cop has been renamed to `Security/Eval`.'
+        'The `Lint/Eval` cop has been renamed to `Security/Eval`.',
+      'Style/DeprecatedHashMethods' =>
+        'The `Style/DeprecatedHashMethods` cop has been renamed to ' \
+          '`Style/PreferredHashMethods`.'
     }.freeze
 
     OBSOLETE_PARAMETERS = [
