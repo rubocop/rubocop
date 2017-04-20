@@ -81,6 +81,11 @@ describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     expect(new_source).to eq('super(a)')
   end
 
+  it 'auto-corrects superclass call by adding needed braces' do
+    new_source = autocorrect_source(cop, 'yield a')
+    expect(new_source).to eq('yield(a)')
+  end
+
   it 'ignores method listed in IgnoredMethods' do
     inspect_source(cop, 'puts :test')
     expect(cop.offenses).to be_empty
