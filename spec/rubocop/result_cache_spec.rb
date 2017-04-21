@@ -30,7 +30,7 @@ describe RuboCop::ResultCache, :isolated_environment do
       x = 1
     END
     allow(config_store).to receive(:for).with('example.rb')
-      .and_return(RuboCop::Config.new)
+                                        .and_return(RuboCop::Config.new)
   end
 
   describe 'cached result that was saved with no command line option' do

@@ -105,7 +105,7 @@ module RuboCop
         end
       end
 
-      def argument_in_method_call(node)
+      def argument_in_method_call(node, kind)
         node.each_ancestor(:send, :block).find do |a|
           # If the node is inside a block, it makes no difference if that block
           # is an argument in a method call. It doesn't count.
@@ -113,7 +113,11 @@ module RuboCop
 
           next if a.setter_method?
 
-          a.arguments.any? { |arg| within_node?(node, arg) }
+          a.arguments.any? do |arg|
+            within_node?(node, arg) && (kind == :with_or_without_parentheses ||
+                                        kind == :with_parentheses &&
+                                        parentheses?(node.parent))
+          end
         end
       end
 
