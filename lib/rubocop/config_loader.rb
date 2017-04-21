@@ -17,7 +17,7 @@ module RuboCop
 
     class << self
       include ConfigLoaderResolver
-      include Pathfinder
+      include FileFinder
 
       attr_accessor :debug, :auto_gen_config
       attr_writer :root_level # The upwards search is stopped at this level.

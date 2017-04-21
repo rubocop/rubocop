@@ -12,7 +12,7 @@ module RuboCop
   # directories are inspected.
   class Config
     include PathUtil
-    include Pathfinder
+    include FileFinder
 
     COMMON_PARAMS = %w[Exclude Include Severity
                        AutoCorrect StyleGuide Details].freeze

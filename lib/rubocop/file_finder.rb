@@ -2,7 +2,7 @@
 
 module RuboCop
   # Common methods for searching file upwards in the directory structure.
-  module Pathfinder
+  module FileFinder
     private
 
     def files_in_path(target_path, target_file)
