@@ -80,5 +80,9 @@ describe RuboCop::PathUtil do
       expect(described_class.match_path?(/^d.*e$/, 'dir/file')).to be_truthy
       expect(described_class.match_path?(/^d.*e$/, 'dir/filez')).to be_falsey
     end
+
+    it 'does not match invalid UTF-8 paths' do
+      expect(described_class.match_path?(/^d.*$/, "dir/file\xBF")).to be_falsey
+    end
   end
 end

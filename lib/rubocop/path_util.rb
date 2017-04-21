@@ -19,7 +19,12 @@ module RuboCop
       when String
         File.fnmatch?(pattern, path, File::FNM_PATHNAME)
       when Regexp
-        path =~ pattern
+        begin
+          path =~ pattern
+        rescue ArgumentError => e
+          return false if e.message.start_with?('invalid byte sequence')
+          raise e
+        end
       end
     end
 
