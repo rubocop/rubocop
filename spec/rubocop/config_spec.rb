@@ -129,7 +129,7 @@ describe RuboCop::Config do
       end
     end
 
-    context 'when the configration includes an invalid EnforcedStyle' do
+    context 'when the configuration includes an invalid EnforcedStyle' do
       before do
         create_file(configuration_path, <<-END.strip_indent)
           Style/AndOr:
@@ -143,7 +143,7 @@ describe RuboCop::Config do
       end
     end
 
-    context 'when the configration includes a valid Enforced.+Style' do
+    context 'when the configuration includes a valid Enforced.+Style' do
       before do
         create_file(configuration_path, <<-END.strip_indent)
           Layout/SpaceAroundBlockParameters:
@@ -156,7 +156,7 @@ describe RuboCop::Config do
       end
     end
 
-    context 'when the configration includes an invalid Enforced.+Style' do
+    context 'when the configuration includes an invalid Enforced.+Style' do
       before do
         create_file(configuration_path, <<-END.strip_indent)
           Layout/SpaceAroundBlockParameters:
@@ -580,6 +580,8 @@ describe RuboCop::Config do
   end
 
   describe '#target_ruby_version' do
+    let(:ruby_version_file) { '.ruby-version' }
+
     context 'when TargetRubyVersion is set' do
       let(:ruby_version) { 2.1 }
 
@@ -592,7 +594,7 @@ describe RuboCop::Config do
       end
 
       before do
-        allow(File).to receive(:file?).with('.ruby-version')
+        allow(File).to receive(:file?).with(ruby_version_file)
       end
 
       it 'uses TargetRubyVersion' do
@@ -601,17 +603,23 @@ describe RuboCop::Config do
 
       it 'does not read .ruby-version' do
         configuration.target_ruby_version
-        expect(File).not_to have_received(:file?).with('.ruby-version')
+        expect(File).not_to have_received(:file?).with(ruby_version_file)
       end
     end
 
     context 'when TargetRubyVersion is not set' do
+      before do
+        allow(configuration)
+          .to receive(:ruby_version_file)
+          .and_return ruby_version_file
+      end
+
       context 'when .ruby-version is present' do
         before do
-          allow(File).to receive(:file?).with('.ruby-version').and_return true
+          allow(File).to receive(:file?).with(ruby_version_file).and_return true
           allow(File)
             .to receive(:read)
-            .with('.ruby-version')
+            .with(ruby_version_file)
             .and_return ruby_version
         end
 
@@ -672,7 +680,10 @@ describe RuboCop::Config do
 
       context 'when .ruby-version is not present' do
         before do
-          allow(File).to receive(:file?).with('.ruby-version').and_return false
+          allow(File)
+            .to receive(:file?)
+            .with(ruby_version_file)
+            .and_return false
         end
 
         it 'uses the default target ruby version' do
