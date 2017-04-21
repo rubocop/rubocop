@@ -54,7 +54,7 @@ task generate_cops_documentation: :yard do
   def code_example(ruby_code)
     content = "```ruby\n".dup
     content << ruby_code.text.gsub('@good', '# good')
-               .gsub('@bad', '# bad').strip
+                        .gsub('@bad', '# bad').strip
     content << "\n```\n"
     content
   end

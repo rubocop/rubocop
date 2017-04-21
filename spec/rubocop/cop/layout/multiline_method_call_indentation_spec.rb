@@ -220,6 +220,21 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
         expect(cop.offenses).to be_empty
       end
 
+      it 'accepts method being aligned with method that is an argument' do
+        inspect_source(cop,
+                       ['authorize scope.includes(:user)',
+                        '               .order(:name)'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'accepts method being aligned with method that is an argument in ' \
+         'assignment' do
+        inspect_source(cop,
+                       ['user = authorize scope.includes(:user)',
+                        '                      .order(:name)'])
+        expect(cop.offenses).to be_empty
+      end
+
       it 'accepts method being aligned with method in assignment' do
         inspect_source(cop, <<-END.strip_indent)
           age = User.all.first
@@ -404,17 +419,6 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       expect(cop.messages).to eq(['Align `b` with `a.` on line 1.'])
       expect(cop.highlights).to eq(['b'])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
-    end
-
-    it 'falls back to indentation in complicated cases' do
-      inspect_source(cop, <<-END.strip_indent)
-        expect(RuboCop::ConfigLoader).to receive(:file).once
-            .with('dir')
-      END
-      expect(cop.messages)
-        .to eq(['Use 2 (not 4) spaces for indenting an expression spanning ' \
-                'multiple lines.'])
-      expect(cop.highlights).to eq(['.with'])
     end
 
     it 'does not check binary operations when string wrapped with backslash' do

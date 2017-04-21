@@ -188,7 +188,7 @@ module RuboCop
         end
 
         def semantic_alignment_node(node)
-          return if argument_in_method_call(node)
+          return if argument_in_method_call(node, :with_parentheses)
 
           # descend to root of method chain
           node = node.receiver while node.receiver
