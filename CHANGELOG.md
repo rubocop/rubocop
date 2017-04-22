@@ -23,6 +23,7 @@
 * [#4241](https://github.com/bbatsov/rubocop/issues/4241): Prevent `Rails/Blank` and `Rails/Present` from breaking when there is no explicit receiver. ([@rrosenblum][])
 * [#4249](https://github.com/bbatsov/rubocop/issues/4249): Handle multiple assignment in `Rails/RelativeDateConstant`. ([@bbatsov][])
 * [#4250](https://github.com/bbatsov/rubocop/issues/4250): Improve a bit the Ruby code detection config. ([@bbatsov][])
+* [#4283](https://github.com/bbatsov/rubocop/issues/4283): Fix `Style/EmptyCaseCondition` autocorrect bug - when first `when` branch includes comma-delimited alternatives. ([@ilansh][])
 * [#4268](https://github.com/bbatsov/rubocop/issues/4268): Handle end-of-line comments when autocorrecting Style/EmptyLinesAroundAccessModifier. ([@vergenzt][])
 * [#4275](https://github.com/bbatsov/rubocop/issues/4275): Prevent `Style/MethodCallWithArgsParentheses` from blowing up on `yield`. ([@drenmi][])
 * [#3969](https://github.com/bbatsov/rubocop/issues/3969): Handle multiline method call alignment for arguments to methods. ([@jonas054][])
@@ -2755,3 +2756,4 @@
 [@sadovnik]: https://github.com/sadovnik
 [@cjlarose]: https://github.com/cjlarose
 [@alpaca-tc]: https://github.com/alpaca-tc
+[@ilansh]: https://github.com/ilansh

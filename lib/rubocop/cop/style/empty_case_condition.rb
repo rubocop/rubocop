@@ -57,11 +57,11 @@ module RuboCop
         end
 
         def correct_case_when(corrector, case_node, when_nodes)
-          case_range = case_node.loc.keyword.join(when_nodes.shift.loc.keyword)
+          case_range = case_node.loc.keyword.join(when_nodes.first.loc.keyword)
 
           corrector.replace(case_range, 'if')
 
-          when_nodes.each do |when_node|
+          when_nodes[1..-1].each do |when_node|
             corrector.replace(when_node.loc.keyword, 'elsif')
           end
         end
