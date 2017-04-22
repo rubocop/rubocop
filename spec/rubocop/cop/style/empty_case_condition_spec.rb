@@ -167,5 +167,29 @@ describe RuboCop::Cop::Style::EmptyCaseCondition do
 
       it_behaves_like 'detect/correct empty case, accept non-empty case'
     end
+
+    context 'with first when branch including comma-delimited alternatives' do
+      let(:source) do
+        <<-END.strip_indent
+          case
+          when my.foo?, my.bar?
+            something
+          when my.baz?
+            something_else
+          end
+        END
+      end
+      let(:corrected_source) do
+        <<-END.strip_indent
+          if my.foo? || my.bar?
+            something
+          elsif my.baz?
+            something_else
+          end
+        END
+      end
+
+      it_behaves_like 'detect/correct empty case, accept non-empty case'
+    end
   end
 end
