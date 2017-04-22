@@ -9,6 +9,38 @@ Enabled | Yes
 Modifiers should be indented as deep as method definitions, or as deep
 as the class/module keyword, depending on configuration.
 
+### Example
+
+```ruby
+# EnforcedStyle: indent (default)
+
+# bad
+class Plumbus
+private
+  def smooth; end
+end
+
+# good
+class Plumbus
+  private
+  def smooth; end
+end
+
+# EnforcedStyle: outdent
+
+# bad
+class Plumbus
+  private
+  def smooth; end
+end
+
+# good
+class Plumbus
+private
+  def smooth; end
+end
+```
+
 ### Important attributes
 
 Attribute | Value
@@ -29,6 +61,24 @@ Enabled | Yes
 
 Here we check if the elements of a multi-line array literal are
 aligned.
+
+### Example
+
+```ruby
+# bad
+a = [1, 2, 3
+  4, 5, 6]
+array = ['run',
+     'forrest',
+     'run']
+
+# good
+a = [1, 2, 3
+     4, 5, 6]
+a = ['run',
+     'forrest',
+     'run']
+```
 
 ### References
 
@@ -237,6 +287,72 @@ This cop checks how the *when*s of a *case* expression
 are indented in relation to its *case* or *end* keyword.
 
 It will register a separate offense for each misaligned *when*.
+
+### Example
+
+```ruby
+# If Layout/EndAlignment is set to keyword style (default)
+# *case* and *end* should always be aligned to same depth,
+# and therefore *when* should always be aligned to both -
+# regardless of configuration.
+
+# bad for all styles
+case n
+  when 0
+    x * 2
+  else
+    y / 3
+end
+
+# good for all styles
+case n
+when 0
+  x * 2
+else
+  y / 3
+end
+```
+```ruby
+# if EndAlignment is set to other style such as
+# start_of_line (as shown below), then *when* alignment
+# configuration does have an effect.
+
+# EnforcedStyle: case (default)
+
+# bad
+a = case n
+when 0
+  x * 2
+else
+  y / 3
+end
+
+# good
+a = case n
+    when 0
+      x * 2
+    else
+      y / 3
+end
+
+# EnforcedStyle: end
+
+# bad
+a = case n
+    when 0
+      x * 2
+    else
+      y / 3
+end
+
+# good
+a = case n
+when 0
+  x * 2
+else
+  y / 3
+end
+```
 
 ### Important attributes
 

@@ -5,6 +5,35 @@ module RuboCop
     module Layout
       # Modifiers should be indented as deep as method definitions, or as deep
       # as the class/module keyword, depending on configuration.
+      #
+      # @example
+      #   # EnforcedStyle: indent (default)
+      #
+      #   # bad
+      #   class Plumbus
+      #   private
+      #     def smooth; end
+      #   end
+      #
+      #   # good
+      #   class Plumbus
+      #     private
+      #     def smooth; end
+      #   end
+      #
+      #   # EnforcedStyle: outdent
+      #
+      #   # bad
+      #   class Plumbus
+      #     private
+      #     def smooth; end
+      #   end
+      #
+      #   # good
+      #   class Plumbus
+      #   private
+      #     def smooth; end
+      #   end
       class AccessModifierIndentation < Cop
         include AutocorrectAlignment
         include ConfigurableEnforcedStyle
