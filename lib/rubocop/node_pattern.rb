@@ -23,55 +23,55 @@ module RuboCop
   #
   # ## Pattern string format examples
   #
-  #    ':sym'              # matches a literal symbol
-  #    '1'                 # matches a literal integer
-  #    'nil'               # matches a literal nil
-  #    'send'              # matches (send ...)
-  #    '(send)'            # matches (send)
-  #    '(send ...)'        # matches (send ...)
-  #    '(op-asgn)'         # node types with hyphenated names also work
-  #    '{send class}'      # matches (send ...) or (class ...)
-  #    '({send class})'    # matches (send) or (class)
-  #    '(send const)'      # matches (send (const ...))
-  #    '(send _ :new)'     # matches (send <anything> :new)
-  #    '(send $_ :new)'    # as above, but whatever matches the $_ is captured
-  #    '(send $_ $_)'      # you can use as many captures as you want
-  #    '(send !const ...)' # ! negates the next part of the pattern
-  #    '$(send const ...)' # arbitrary matching can be performed on a capture
-  #    '(send _recv _msg)' # wildcards can be named (for readability)
-  #    '(send ... :new)'   # you can specifically match against the last child
-  #                        # (this only works for the very last)
-  #    '(send $...)'       # capture all the children as an array
-  #    '(send $... int)'   # capture all children but the last as an array
-  #    '(send _x :+ _x)'   # unification is performed on named wildcards
-  #                        # (like Prolog variables...)
-  #                        # (#== is used to see if values unify)
-  #    '(int odd?)'        # words which end with a ? are predicate methods,
-  #                        # are are called on the target to see if it matches
-  #                        # any Ruby method which the matched object supports
-  #                        # can be used
-  #                        # if a truthy value is returned, the match succeeds
-  #    '(int [!1 !2])'     # [] contains multiple patterns, ALL of which must
-  #                        # match in that position
-  #                        # in other words, while {} is pattern union (logical
-  #                        # OR), [] is intersection (logical AND)
-  #    '(send %1 _)'       # % stands for a parameter which must be supplied to
-  #                        # #match at matching time
-  #                        # it will be compared to the corresponding value in
-  #                        # the AST using #==
-  #                        # a bare '%' is the same as '%1'
-  #                        # the number of extra parameters passed to #match
-  #                        # must equal the highest % value in the pattern
-  #                        # for consistency, %0 is the 'root node' which is
-  #                        # passed as the 1st argument to #match, where the
-  #                        # matching process starts
-  #    '^^send'            # each ^ ascends one level in the AST
-  #                        # so this matches against the grandparent node
-  #    '#method'           # we call this a 'funcall'; it calls a method in the
-  #                        # context where a pattern-matching method is defined
-  #                        # if that returns a truthy value, the match succeeds
-  #    'equal?(%1)'        # predicates can be given 1 or more extra args
-  #    '#method(%0, 1)'    # funcalls can also be given 1 or more extra args
+  #     ':sym'              # matches a literal symbol
+  #     '1'                 # matches a literal integer
+  #     'nil'               # matches a literal nil
+  #     'send'              # matches (send ...)
+  #     '(send)'            # matches (send)
+  #     '(send ...)'        # matches (send ...)
+  #     '(op-asgn)'         # node types with hyphenated names also work
+  #     '{send class}'      # matches (send ...) or (class ...)
+  #     '({send class})'    # matches (send) or (class)
+  #     '(send const)'      # matches (send (const ...))
+  #     '(send _ :new)'     # matches (send <anything> :new)
+  #     '(send $_ :new)'    # as above, but whatever matches the $_ is captured
+  #     '(send $_ $_)'      # you can use as many captures as you want
+  #     '(send !const ...)' # ! negates the next part of the pattern
+  #     '$(send const ...)' # arbitrary matching can be performed on a capture
+  #     '(send _recv _msg)' # wildcards can be named (for readability)
+  #     '(send ... :new)'   # you can specifically match against the last child
+  #                         # (this only works for the very last)
+  #     '(send $...)'       # capture all the children as an array
+  #     '(send $... int)'   # capture all children but the last as an array
+  #     '(send _x :+ _x)'   # unification is performed on named wildcards
+  #                         # (like Prolog variables...)
+  #                         # (#== is used to see if values unify)
+  #     '(int odd?)'        # words which end with a ? are predicate methods,
+  #                         # are are called on the target to see if it matches
+  #                         # any Ruby method which the matched object supports
+  #                         # can be used
+  #                         # if a truthy value is returned, the match succeeds
+  #     '(int [!1 !2])'     # [] contains multiple patterns, ALL of which must
+  #                         # match in that position
+  #                         # in other words, while {} is pattern union (logical
+  #                         # OR), [] is intersection (logical AND)
+  #     '(send %1 _)'       # % stands for a parameter which must be supplied to
+  #                         # #match at matching time
+  #                         # it will be compared to the corresponding value in
+  #                         # the AST using #==
+  #                         # a bare '%' is the same as '%1'
+  #                         # the number of extra parameters passed to #match
+  #                         # must equal the highest % value in the pattern
+  #                         # for consistency, %0 is the 'root node' which is
+  #                         # passed as the 1st argument to #match, where the
+  #                         # matching process starts
+  #     '^^send'            # each ^ ascends one level in the AST
+  #                         # so this matches against the grandparent node
+  #     '#method'           # we call this a 'funcall'; it calls a method in the
+  #                         # context where a pattern-matching method is defined
+  #                         # if that returns a truthy value, the match succeeds
+  #     'equal?(%1)'        # predicates can be given 1 or more extra args
+  #     '#method(%0, 1)'    # funcalls can also be given 1 or more extra args
   #
   # You can nest arbitrarily deep:
   #

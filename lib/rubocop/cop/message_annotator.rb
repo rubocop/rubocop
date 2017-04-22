@@ -28,14 +28,14 @@ module RuboCop
       # @option cop_config [String] :Reference Full reference URL
       # @option cop_config [String] :Details
       #
-      # @param [Hash, nil] optional options
-      # @option option [Boolean] :display_style_guide
+      # @param [Hash, nil] options optional
+      # @option options [Boolean] :display_style_guide
       #   Include style guide and reference URLs
-      # @option option [Boolean] :extra_details
+      # @option options [Boolean] :extra_details
       #   Include cop specific details
-      # @option option [Boolean] :debug
+      # @option options [Boolean] :debug
       #   Include debug output
-      # @option option [Boolean] :display_cop_names
+      # @option options [Boolean] :display_cop_names
       #   Include cop name
       def initialize(config, cop_config, options)
         @config = config

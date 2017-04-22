@@ -629,8 +629,8 @@ Check that a copyright notice was given in each source file.
 The default regexp for an acceptable copyright notice can be found in
 config/default.yml.  The default can be changed as follows:
 
-Style/Copyright:
-  Notice: '^Copyright (\(c\) )?2\d{3} Acme Inc'
+    Style/Copyright:
+      Notice: '^Copyright (\(c\) )?2\d{3} Acme Inc'
 
 This regex string is treated as an unanchored regex.  For each file
 that RuboCop scans, a comment that matches this regex must be found or
@@ -1269,7 +1269,7 @@ A separate offense is registered for each problematic pair.
 
 The supported styles are:
 
-* ruby19 - forces use of the 1.9 syntax (e.g. {a: 1}) when hashes have
+* ruby19 - forces use of the 1.9 syntax (e.g. `{a: 1}`) when hashes have
   all symbols for keys
 * hash_rockets - forces use of hash rockets for all hashes
 * no_mixed_keys - simply checks for hashes with mixed syntaxes
