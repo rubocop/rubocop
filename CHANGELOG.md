@@ -26,6 +26,7 @@
 * [#4268](https://github.com/bbatsov/rubocop/issues/4268): Handle end-of-line comments when autocorrecting Style/EmptyLinesAroundAccessModifier. ([@vergenzt][])
 * [#4275](https://github.com/bbatsov/rubocop/issues/4275): Prevent `Style/MethodCallWithArgsParentheses` from blowing up on `yield`. ([@drenmi][])
 * [#3969](https://github.com/bbatsov/rubocop/issues/3969): Handle multiline method call alignment for arguments to methods. ([@jonas054][])
+* [#4304](https://github.com/bbatsov/rubocop/pull/4304): Allow enabling whole departments when `DisabledByDefault` is `true`. ([@jonas054][])
 
 ## 0.48.1 (2017-04-03)
 

@@ -147,9 +147,7 @@ module RuboCop
         end
 
         if disabled_by_default
-          config = transform(config) do |params|
-            { 'Enabled' => true }.merge(params) # Set true if not set.
-          end
+          config = handle_disabled_by_default(config, default_configuration)
         end
 
         Config.new(merge(default_configuration, config), config_file)
@@ -163,6 +161,24 @@ module RuboCop
       end
 
       private
+
+      def handle_disabled_by_default(config, new_default_configuration)
+        department_config = config.to_hash.reject { |cop| cop.include?('/') }
+        department_config.each do |dept, dept_params|
+          next unless dept_params['Enabled']
+
+          new_default_configuration.each do |cop, params|
+            next unless cop.start_with?(dept + '/')
+
+            # Retain original default configuration for cops in the department.
+            params['Enabled'] = default_configuration[cop]['Enabled']
+          end
+        end
+
+        transform(config) do |params|
+          { 'Enabled' => true }.merge(params) # Set true if not set.
+        end
+      end
 
       # Returns a new hash where the parameters of the given config hash have
       # been replaced by parameters returned by the given block.
