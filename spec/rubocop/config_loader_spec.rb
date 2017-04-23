@@ -539,6 +539,32 @@ describe RuboCop::ConfigLoader do
           cop_class = RuboCop::Cop::Layout::TrailingWhitespace
           expect(cop_enabled?(cop_class)).to be false
         end
+
+        context 'and a department is enabled' do
+          let(:config) do
+            <<-END.strip_indent
+              AllCops:
+                DisabledByDefault: true
+              Style:
+                Enabled: true
+            END
+          end
+
+          it 'enables cops in that department' do
+            cop_class = RuboCop::Cop::Style::Alias
+            expect(cop_enabled?(cop_class)).to be true
+          end
+
+          it 'disables cops in other departments' do
+            cop_class = RuboCop::Cop::Layout::AlignHash
+            expect(cop_enabled?(cop_class)).to be false
+          end
+
+          it 'keeps cops that are disabled in default configuration disabled' do
+            cop_class = RuboCop::Cop::Style::AutoResourceCleanup
+            expect(cop_enabled?(cop_class)).to be false
+          end
+        end
       end
 
       context 'when EnabledByDefault is true' do
