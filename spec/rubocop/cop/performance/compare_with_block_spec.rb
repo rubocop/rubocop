@@ -9,6 +9,26 @@ describe RuboCop::Cop::Performance::CompareWithBlock do
       expect(cop.offenses.size).to eq(1)
     end
 
+    it "registers an offense for #{method} with [:foo]" do
+      inspect_source(cop, "array.#{method} { |a, b| a[:foo] <=> b[:foo] }")
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it "registers an offense for #{method} with ['foo']" do
+      inspect_source(cop, "array.#{method} { |a, b| a['foo'] <=> b['foo'] }")
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it "registers an offense for #{method} with [1]" do
+      inspect_source(cop, "array.#{method} { |a, b| a[1] <=> b[1] }")
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it 'highlights compare method' do
+      inspect_source(cop, "array.#{method} { |a, b| a.foo <=> b.foo }")
+      expect(cop.highlights).to eq(["#{method} { |a, b| a.foo <=> b.foo }"])
+    end
+
     it "accepts valid #{method} usage" do
       inspect_source(cop, "array.#{method} { |a, b| b <=> a }")
       expect(cop.offenses).to be_empty
@@ -45,11 +65,43 @@ describe RuboCop::Cop::Performance::CompareWithBlock do
       expect(new_source).to eq "array.#{method}_by(&:foo)\n"
     end
 
+    it "autocorrects array.#{method} { |a, b| a[:foo] <=> b[:foo] }" do
+      new_source = autocorrect_source(
+        cop,
+        "array.#{method} { |a, b| a[:foo] <=> b[:foo] }"
+      )
+      expect(new_source).to eq "array.#{method}_by { |a| a[:foo] }"
+    end
+
+    it "autocorrects array.#{method} { |a, b| a['foo'] <=> b['foo'] }" do
+      new_source = autocorrect_source(
+        cop,
+        "array.#{method} { |a, b| a['foo'] <=> b['foo'] }"
+      )
+      expect(new_source).to eq "array.#{method}_by { |a| a['foo'] }"
+    end
+
+    it "autocorrects array.#{method} { |a, b| a[1] <=> b[1] }" do
+      new_source = autocorrect_source(
+        cop,
+        "array.#{method} { |a, b| a[1] <=> b[1] }"
+      )
+      expect(new_source).to eq "array.#{method}_by { |a| a[1] }"
+    end
+
     it 'formats the error message correctly for ' \
       "array.#{method} { |a, b| a.foo <=> b.foo }" do
       inspect_source(cop, "array.#{method} { |a, b| a.foo <=> b.foo }")
       expect(cop.messages).to eq(["Use `#{method}_by(&:foo)` instead of " \
                                   "`#{method} { |a, b| a.foo <=> b.foo }`."])
+    end
+
+    it 'formats the error message correctly for ' \
+      "array.#{method} { |a, b| a[:foo] <=> b[:foo] }" do
+      inspect_source(cop, "array.#{method} { |a, b| a[:foo] <=> b[:foo] }")
+      expected = ["Use `#{method}_by { |a| a[:foo] }` instead of " \
+                  "`#{method} { |a, b| a[:foo] <=> b[:foo] }`."]
+      expect(cop.messages).to eq(expected)
     end
   end
 
