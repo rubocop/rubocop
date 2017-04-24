@@ -12,6 +12,7 @@ module RuboCop
       #   array.sort { |a, b| a.foo <=> b.foo }
       #   array.max { |a, b| a.foo <=> b.foo }
       #   array.min { |a, b| a.foo <=> b.foo }
+      #   array.sort { |a, b| a[:foo] <=> b[:foo] }
       #
       #   @good
       #   array.sort_by(&:foo)
@@ -21,36 +22,81 @@ module RuboCop
       #   end
       #   array.max_by(&:foo)
       #   array.min_by(&:foo)
+      #   array.sort_by { |a| a[:foo] }
       class CompareWithBlock < Cop
-        MSG = 'Use `%s_by(&:%s)` instead of ' \
-              '`%s { |%s, %s| %s.%s <=> %s.%s }`.'.freeze
+        MSG = 'Use `%s_by%s` instead of ' \
+              '`%s { |%s, %s| %s <=> %s }`.'.freeze
 
         def_node_matcher :compare?, <<-END
-          (block $(send _ {:sort :min :max}) (args (arg $_a) (arg $_b)) (send (send (lvar _a) $_m) :<=> (send (lvar _b) $_m)))
+          (block
+            $(send _ {:sort :min :max})
+            (args (arg $_a) (arg $_b))
+            $send)
+        END
+
+        def_node_matcher :replaceable_body?, <<-END
+          (send
+            (send (lvar %1) $_method $...)
+            :<=>
+            (send (lvar %2) _method $...))
         END
 
         def on_block(node)
-          compare?(node) do |send, var_a, var_b, method|
-            range = compare_range(send, node)
-            compare_method = send.method_name
-            add_offense(node, range,
-                        format(MSG, compare_method, method,
-                               compare_method, var_a, var_b,
-                               var_a, method, var_b, method))
+          compare?(node) do |send, var_a, var_b, body|
+            replaceable_body?(body, var_a, var_b) do |method, args_a, args_b|
+              return unless slow_compare?(method, args_a, args_b)
+              range = compare_range(send, node)
+              add_offense(node, range,
+                          message(send, method, var_a, var_b, args_a))
+            end
           end
         end
 
         def autocorrect(node)
-          send, = *node
-
           lambda do |corrector|
-            method = node.children.last.children.last.children.last
+            send, var_a, var_b, body = compare?(node)
+            method, arg, = replaceable_body?(body, var_a, var_b)
+            replacement =
+              if method == :[]
+                "#{send.method_name}_by { |a| a[#{arg.first.source}] }"
+              else
+                "#{send.method_name}_by(&:#{method})"
+              end
             corrector.replace(compare_range(send, node),
-                              "#{send.method_name}_by(&:#{method})")
+                              replacement)
           end
         end
 
         private
+
+        def slow_compare?(method, args_a, args_b)
+          return false unless args_a == args_b
+          if method == :[]
+            return false unless args_a.size == 1
+            key = args_a.first
+            return false unless %i[sym str int].include?(key.type)
+          else
+            return false unless args_a.empty?
+          end
+          true
+        end
+
+        def message(send, method, var_a, var_b, args)
+          compare_method = send.method_name
+          if method == :[]
+            key = args.first
+            instead = " { |a| a[#{key.source}] }"
+            str_a = "#{var_a}[#{key.source}]"
+            str_b = "#{var_b}[#{key.source}]"
+          else
+            instead = "(&:#{method})"
+            str_a = "#{var_a}.#{method}"
+            str_b = "#{var_b}.#{method}"
+          end
+          format(MSG, compare_method, instead,
+                 compare_method, var_a, var_b,
+                 str_a, str_b)
+        end
 
         def compare_range(send, node)
           range_between(send.loc.selector.begin_pos, node.loc.end.end_pos)
