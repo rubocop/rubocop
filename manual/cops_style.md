@@ -1383,7 +1383,7 @@ else
 end
 
 # bad
-switch foo
+case foo
 when 1
   do_x
 when 2
@@ -1393,7 +1393,7 @@ else
 end
 
 # good
-switch foo
+case foo
 when 1
   do_x
   do_y
