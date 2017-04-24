@@ -10,7 +10,7 @@ module RuboCop
       #   # bad
       #   def change
       #     change_table :users do |t|
-      #       t.column :name, :string
+      #       t.remove :name
       #     end
       #   end
       #
@@ -90,12 +90,49 @@ module RuboCop
       #     remove_foreign_key :accounts, :branches
       #   end
       #
+      # @example
+      #   # change_table
+      #
+      #   # bad
+      #   def change
+      #     change_table :users do |t|
+      #       t.remove :name
+      #       t.change_default :authorized, 1
+      #       t.change :price, :string
+      #     end
+      #   end
+      #
+      #   # good
+      #   def change
+      #     change_table :users do |t|
+      #       t.string :name
+      #     end
+      #   end
+      #
+      #   # good
+      #   def change
+      #     reversible do |dir|
+      #       change_table :users do |t|
+      #         dir.up do
+      #           t.change :price, :string
+      #         end
+      #
+      #         dir.down do
+      #           t.change :price, :integer
+      #         end
+      #       end
+      #     end
+      #   end
+      #
       # @see http://api.rubyonrails.org/classes/ActiveRecord/Migration/CommandRecorder.html
       class ReversibleMigration < Cop
         MSG = '%s is not reversible.'.freeze
+        IRREVERSIBLE_CHANGE_TABLE_CALLS = %i[
+          change change_default remove
+        ].freeze
 
         def_node_matcher :irreversible_schema_statement_call, <<-END
-          (send nil ${:change_table :change_table_comment :execute :remove_belongs_to} ...)
+          (send nil ${:change_table_comment :execute :remove_belongs_to} ...)
         END
 
         def_node_matcher :drop_table_call, <<-END
@@ -114,6 +151,10 @@ module RuboCop
           (send nil :remove_foreign_key _ $_)
         END
 
+        def_node_matcher :change_table_call, <<-END
+          (send nil :change_table $_ ...)
+        END
+
         def on_send(node)
           return unless within_change_method?(node)
           return if within_reversible_block?(node)
@@ -123,6 +164,14 @@ module RuboCop
           check_change_column_default_node(node)
           check_remove_column_node(node)
           check_remove_foreign_key_node(node)
+        end
+
+        def on_block(node)
+          return unless within_change_method?(node)
+          return if within_reversible_block?(node)
+
+          method, _, block = *node
+          check_change_table_node(method, block)
         end
 
         private
@@ -175,6 +224,33 @@ module RuboCop
               )
             end
           end
+        end
+
+        def check_change_table_node(node, block)
+          change_table_call(node) do |arg|
+            if target_rails_version < 4.0
+              add_offense(
+                node, :expression,
+                format(MSG, 'change_table')
+              )
+            elsif block.send_type?
+              check_change_table_offense(arg, block)
+            else
+              block.each_child_node do |child_node|
+                check_change_table_offense(arg, child_node)
+              end
+            end
+          end
+        end
+
+        def check_change_table_offense(receiver, node)
+          method_name = node.method_name
+          return if receiver != node.receiver &&
+                    !IRREVERSIBLE_CHANGE_TABLE_CALLS.include?(method_name)
+          add_offense(
+            node, :expression,
+            format(MSG, "change_table(with #{method_name})")
+          )
         end
 
         def within_change_method?(node)

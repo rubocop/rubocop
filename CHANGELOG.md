@@ -34,6 +34,7 @@
 * [#4304](https://github.com/bbatsov/rubocop/pull/4304): Allow enabling whole departments when `DisabledByDefault` is `true`. ([@jonas054][])
 * [#4264](https://github.com/bbatsov/rubocop/issues/4264): Prevent `Rails/SaveBang` from blowing up when using the assigned variable in a hash. ([@drenmi][])
 * [#4310](https://github.com/bbatsov/rubocop/pull/4310): Treat paths containing invalid byte sequences as non-matches. ([@mclark][])
+* [#4063](https://github.com/bbatsov/rubocop/issues/4063): Fix Rails/ReversibleMigration misdetection. ([@gprado][])
 
 ## 0.48.1 (2017-04-03)
 
@@ -2766,3 +2767,4 @@
 [@ilansh]: https://github.com/ilansh
 [@mclark]: https://github.com/mclark
 [@klesse413]: https://github.com/klesse413
+[@gprado]: https://github.com/gprado

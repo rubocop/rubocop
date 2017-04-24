@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Rails::ReversibleMigration do
-  subject(:cop) { described_class.new }
+describe RuboCop::Cop::Rails::ReversibleMigration, :config do
+  subject(:cop) { described_class.new(config) }
 
   let(:source) do
     <<-RUBY
@@ -39,10 +39,8 @@ describe RuboCop::Cop::Rails::ReversibleMigration do
     end
   RUBY
 
-  it_behaves_like :offense, 'change_table', <<-RUBY
-    change_table :users do |t|
-      t.column :name, :string
-    end
+  it_behaves_like :offense, 'execute', <<-RUBY
+    execute "ALTER TABLE `pages_linked_pages` ADD UNIQUE `page_id_linked_page_id` (`page_id`,`linked_page_id`)"
   RUBY
 
   context 'within block' do
@@ -54,26 +52,22 @@ describe RuboCop::Cop::Rails::ReversibleMigration do
       end
     RUBY
 
-    it_behaves_like :offense, 'change_table', <<-RUBY
-      [:users, :articles].each do |table|
-        change_table table do |t|
-          t.column :name, :string
-        end
+    it_behaves_like :offense, 'execute', <<-RUBY
+      [:pages_linked_pages, :pages_unlinked_pages].each do |table|
+        execute "ALTER TABLE `table` ADD UNIQUE `page_id_linked_page_id` (`page_id`,`linked_page_id`)"
       end
     RUBY
   end
 
   context 'within #reversible' do
-    it_behaves_like :accepts, 'change_table', <<-RUBY
+    it_behaves_like :accepts, 'execute', <<-RUBY
       reversible do |dir|
-        change_table :users do |t|
-          dir.up do
-            t.column :name, :string
-          end
+        dir.up do
+          execute "ALTER TABLE `pages_linked_pages` ADD UNIQUE `page_id_linked_page_id` (`page_id`,`linked_page_id`)"
+        end
 
-          dir.down do
-            t.remove :name
-          end
+        dir.down do
+          execute "ALTER TABLE `pages_linked_pages` DROP INDEX `page_id_linked_page_id`"
         end
       end
     RUBY
@@ -125,5 +119,63 @@ describe RuboCop::Cop::Rails::ReversibleMigration do
     it_behaves_like :offense, 'remove_foreign_key(without table)', <<-RUBY
       remove_foreign_key :accounts, column: :owner_id
     RUBY
+  end
+
+  context 'change_table' do
+    context 'Rails < 4.0', :rails3 do
+      it_behaves_like :offense, 'change_table', <<-RUBY
+        change_table :users do |t|
+          t.column :name, :string
+          t.text :description
+          t.boolean :authorized
+        end
+      RUBY
+
+      it_behaves_like :offense, 'change_table', <<-RUBY
+        change_table :users do |t|
+          t.change :description, :text
+        end
+      RUBY
+
+      it_behaves_like :offense, 'change_table', <<-RUBY
+        change_table :users do |t|
+          t.change_default :authorized, 1
+        end
+      RUBY
+
+      it_behaves_like :offense, 'change_table', <<-RUBY
+        change_table :users do |t|
+          t.remove :qualification
+        end
+      RUBY
+    end
+
+    context 'Rails >= 4.0', :rails4 do
+      it_behaves_like :accepts, 'change_table(with reversible calls)', <<-RUBY
+        change_table :users do |t|
+          t.column :name, :string
+          t.text :description
+          t.boolean :authorized
+        end
+      RUBY
+
+      it_behaves_like :offense, 'change_table(with change)', <<-RUBY
+        change_table :users do |t|
+          t.change :description, :text
+        end
+      RUBY
+
+      it_behaves_like :offense, 'change_table(with change_default)', <<-RUBY
+        change_table :users do |t|
+          t.change_default :authorized, 1
+        end
+      RUBY
+
+      it_behaves_like :offense, 'change_table(with remove)', <<-RUBY
+        change_table :users do |t|
+          t.remove :qualification
+        end
+      RUBY
+    end
   end
 end
