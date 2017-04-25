@@ -18,6 +18,7 @@ pages:
 - Contributing: contributing.md
 - Development: development.md
 - Cops Documentation:
+    - Layout Cops: cops_layout.md
     - Linting Cops: cops_lint.md
     - Metrics Cops: cops_metrics.md
     - Performance Cops: cops_performance.md
