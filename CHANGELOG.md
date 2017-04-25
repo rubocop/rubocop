@@ -8,6 +8,7 @@
 * Add auto-correct support to `Style/MixinGrouping`. ([@rrosenblum][])
 * [#4236](https://github.com/bbatsov/rubocop/issues/4236): Add new `Rails/ApplicationJob` and `Rails/ApplicationRecord` cops. ([@tjwp][])
 * [#4078](https://github.com/bbatsov/rubocop/pull/4078): Add new `Performance/Caller` cop. ([@alpaca-tc][])
+* [#4274](https://github.com/bbatsov/rubocop/issues/4274): Add new `Layout/EmptyComment` cop. ([@tejasbubane][])
 
 ### Changes
 

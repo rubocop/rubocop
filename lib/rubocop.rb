@@ -196,6 +196,7 @@ require 'rubocop/cop/layout/space_inside_string_interpolation'
 require 'rubocop/cop/layout/tab'
 require 'rubocop/cop/layout/trailing_blank_lines'
 require 'rubocop/cop/layout/trailing_whitespace'
+require 'rubocop/cop/layout/empty_comment'
 
 require 'rubocop/cop/lint/ambiguous_block_association'
 require 'rubocop/cop/lint/ambiguous_operator'
