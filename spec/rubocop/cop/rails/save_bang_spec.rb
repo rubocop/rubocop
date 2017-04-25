@@ -129,6 +129,19 @@ describe RuboCop::Cop::Rails::SaveBang do
       inspect_source(cop, ['def foo', "object.#{method}", 'end'])
       expect(cop.messages).to be_empty
     end
+
+    # Bug: https://github.com/bbatsov/rubocop/issues/4264
+    it 'when using the assigned variable as value in a hash' do
+      inspect_source(cop, ['def foo',
+                           "  foo = Foo.#{method}",
+                           '  render json: foo',
+                           'end'])
+      if pass
+        expect(cop.offenses).to be_empty
+      else
+        expect(cop.offenses.size).to eq(1)
+      end
+    end
   end
 
   described_class::MODIFY_PERSIST_METHODS.each do |method|

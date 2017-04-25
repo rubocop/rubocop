@@ -107,9 +107,14 @@ module RuboCop
 
         def persisted_referenced?(assignment)
           return unless assignment.referenced?
+
           assignment.variable.references.any? do |reference|
-            reference.node.parent.method?(:persisted?)
+            call_to_persisted?(reference.node.parent)
           end
+        end
+
+        def call_to_persisted?(node)
+          node.send_type? && node.method?(:persisted?)
         end
 
         def check_used_in_conditional(node)
@@ -130,7 +135,7 @@ module RuboCop
         end
 
         def last_call_of_method?(node)
-          node.parent && node.parent.children.count == node.sibling_index + 1
+          node.parent && node.parent.children.size == node.sibling_index + 1
         end
 
         # Ignore simple assignment or if condition
