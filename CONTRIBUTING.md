@@ -24,13 +24,13 @@ $ rubocop -V
 
 ## Pull requests
 
-* Read [how to properly contribute to open source projects on Github][2].
+* Read [how to properly contribute to open source projects on GitHub][2].
 * Fork the project.
 * Use a topic/feature branch to easily amend a pull request later, if necessary.
 * Write [good commit messages][3].
 * Use the same coding conventions as the rest of the project.
 * Commit and push until you are happy with your contribution.
-* If your change has a corresponding open Github issue, prefix the commit message with `[Fix #github-issue-number]`.
+* If your change has a corresponding open GitHub issue, prefix the commit message with `[Fix #github-issue-number]`.
 * Make sure to add tests for it. This is important so I don't break it
   in a future version unintentionally.
 * Add an entry to the [Changelog](CHANGELOG.md) accordingly. See [changelog entry format](#changelog-entry-format).
