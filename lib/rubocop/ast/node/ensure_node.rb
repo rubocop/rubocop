@@ -18,7 +18,7 @@ module RuboCop
       #
       # @return [Array<Node>] the different parts of the `ensure` statement
       def node_parts
-        [*self]
+        to_a
       end
     end
   end
