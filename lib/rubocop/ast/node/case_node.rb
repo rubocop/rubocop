@@ -57,7 +57,7 @@ module RuboCop
       #
       # @return [Array<Node>] the different parts of the `case` statement
       def node_parts
-        [*self]
+        to_a
       end
     end
   end

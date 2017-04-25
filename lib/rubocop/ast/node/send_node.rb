@@ -181,7 +181,7 @@ module RuboCop
       #
       # @return [Array] the different parts of the `send` node
       def node_parts
-        [*self]
+        to_a
       end
 
       private
