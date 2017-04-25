@@ -28,6 +28,7 @@
 * [#4275](https://github.com/bbatsov/rubocop/issues/4275): Prevent `Style/MethodCallWithArgsParentheses` from blowing up on `yield`. ([@drenmi][])
 * [#3969](https://github.com/bbatsov/rubocop/issues/3969): Handle multiline method call alignment for arguments to methods. ([@jonas054][])
 * [#4304](https://github.com/bbatsov/rubocop/pull/4304): Allow enabling whole departments when `DisabledByDefault` is `true`. ([@jonas054][])
+* [#4264](https://github.com/bbatsov/rubocop/issues/4264): Prevent `Rails/SaveBang` from blowing up when using the assigned variable in a hash. ([@drenmi][])
 
 ## 0.48.1 (2017-04-03)
 
