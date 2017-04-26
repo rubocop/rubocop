@@ -515,7 +515,7 @@ describe RuboCop::CLI, :isolated_environment do
                       'example1.rb'])).to eq(1)
       expect($stdout.string)
         .to eq(["#{file}:1:8: W: Unnecessary disabling of " \
-                '`Style/NumericLiterals`. ',
+                '`Style/NumericLiterals`.',
                 "#{file}:1:41: C: Trailing " \
                 'whitespace detected. Trailing space is just sloppy.',
                 ''].join("\n"))

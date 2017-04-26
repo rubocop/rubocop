@@ -49,7 +49,7 @@ module RuboCop
       # @return [String] annotated message
       def annotate(message, name)
         message = "#{name}: #{message}" if display_cop_names?
-        message += " #{details}" if extra_details?
+        message += " #{details}" if extra_details? && details
         if display_style_guide?
           links = urls.join(', ')
           message = "#{message} (#{links})"
