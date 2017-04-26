@@ -103,6 +103,13 @@ module RuboCop
         RuboCop::Cop::Util::OPERATOR_METHODS.include?(method_name)
       end
 
+      # Checks whether the invoked method is a comparison method.
+      #
+      # @return [Boolean] whether the involed method is a comparison
+      def comparison_method?
+        COMPARISON_OPERATORS.include?(method_name)
+      end
+
       # Checks whether the method call uses a dot to connect the receiver and
       # the method name.
       #
