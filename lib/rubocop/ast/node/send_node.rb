@@ -110,6 +110,13 @@ module RuboCop
         COMPARISON_OPERATORS.include?(method_name)
       end
 
+      # Checks whether the invoked method is an assignment method.
+      #
+      # @return [Boolean] whether the invoked method is an assignment.
+      def assignment_method?
+        !comparison_method? && method_name.to_s.end_with?('=')
+      end
+
       # Checks whether the method call uses a dot to connect the receiver and
       # the method name.
       #

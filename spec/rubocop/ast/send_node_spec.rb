@@ -413,6 +413,32 @@ describe RuboCop::AST::SendNode do
     end
   end
 
+  describe '#assignment_method?' do
+    context 'with an assignment method' do
+      let(:source) { 'foo.bar = :baz' }
+
+      it { expect(send_node.assignment_method?).to be_truthy }
+    end
+
+    context 'with a bracket assignment method' do
+      let(:source) { 'foo.bar[:baz] = :qux' }
+
+      it { expect(send_node.assignment_method?).to be_truthy }
+    end
+
+    context 'with a comparison method' do
+      let(:source) { 'foo.bar == :qux' }
+
+      it { expect(send_node.assignment_method?).to be_falsey }
+    end
+
+    context 'with a regular method' do
+      let(:source) { 'foo.bar(:baz)' }
+
+      it { expect(send_node.assignment_method?).to be_falsey }
+    end
+  end
+
   describe '#dot?' do
     context 'with a dot' do
       let(:source) { 'foo.+ 1' }
