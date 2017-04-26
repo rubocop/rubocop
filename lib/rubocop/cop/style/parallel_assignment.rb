@@ -142,11 +142,16 @@ module RuboCop
 
             @assignments.each do |other|
               _other_lhs, other_rhs = *other
-              if ((var = var_name(my_lhs)) && uses_var?(other_rhs, var)) ||
-                 (my_lhs.asgn_method_call? && accesses?(other_rhs, my_lhs))
-                yield other
-              end
+
+              next unless dependency?(my_lhs, other_rhs)
+
+              yield other
             end
+          end
+
+          def dependency?(lhs, rhs)
+            uses_var?(rhs, var_name(lhs)) ||
+              lhs.asgn_method_call? && accesses?(rhs, lhs)
           end
 
           # `lhs` is an assignment method call like `obj.attr=` or `ary[idx]=`.
@@ -164,21 +169,7 @@ module RuboCop
         end
 
         def modifier_statement?(node)
-          node &&
-            ((node.if_type? && node.modifier_form?) ||
-            ((node.while_type? || node.until_type?) && modifier_while?(node)))
-        end
-
-        def modifier_while?(node)
-          node.loc.respond_to?(:keyword) &&
-            %w[while until].include?(node.loc.keyword.source) &&
-            node.modifier_form?
-        end
-
-        def rescue_modifier_old?(node)
-          node && node.rescue_type? &&
-            (node.parent.nil? || !(node.parent.kwbegin_type? ||
-            node.parent.ensure_type?))
+          node && %i(if while until).include?(node.type) && node.modifier_form?
         end
 
         # An internal class for correcting parallel assignment
