@@ -45,7 +45,7 @@ module RuboCop
         MSG = '%s curly braces around a hash parameter.'.freeze
 
         def on_send(node)
-          return if node.asgn_method_call? || node.operator_method?
+          return if node.assignment_method? || node.operator_method?
 
           return unless node.arguments? && node.last_argument.hash_type? &&
                         !node.last_argument.empty?

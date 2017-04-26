@@ -151,7 +151,7 @@ module RuboCop
 
           def dependency?(lhs, rhs)
             uses_var?(rhs, var_name(lhs)) ||
-              lhs.asgn_method_call? && accesses?(rhs, lhs)
+              lhs.send_type? && lhs.assignment_method? && accesses?(rhs, lhs)
           end
 
           # `lhs` is an assignment method call like `obj.attr=` or `ary[idx]=`.
@@ -169,7 +169,7 @@ module RuboCop
         end
 
         def modifier_statement?(node)
-          node && %i(if while until).include?(node.type) && node.modifier_form?
+          node && %i[if while until].include?(node.type) && node.modifier_form?
         end
 
         # An internal class for correcting parallel assignment
