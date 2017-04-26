@@ -67,31 +67,31 @@ describe RuboCop::Cop::Rails::OutputSafety do
     expect(cop.offenses).to be_empty
   end
 
-  it 'accepts raw methods when wrapped in a safe_join' do
+  it 'does not accept raw methods when wrapped in a safe_join' do
     source = 'safe_join([raw(i18n_text),
               raw(i18n_mode_additional_markup(key))])'
     inspect_source(cop, source)
-    expect(cop.offenses).to be_empty
+    expect(cop.offenses.size).to eq(2)
   end
 
-  it 'accepts html_safe methods when wrapped in a safe_join' do
+  it 'does not accept html_safe methods when wrapped in a safe_join' do
     source = 'safe_join([i18n_text.html_safe,
               i18n_mode_additional_markup(key).html_safe])'
     inspect_source(cop, source)
-    expect(cop.offenses).to be_empty
+    expect(cop.offenses.size).to eq(2)
   end
 
-  it 'accepts raw methods when wrapped in safe_join when not at the root' do
+  it 'does not accept html_safe methods wrapped in safe_join not at root' do
     source = 'foo(safe_join([i18n_text.html_safe,
               i18n_mode_additional_markup(key).html_safe]))'
     inspect_source(cop, source)
-    expect(cop.offenses).to be_empty
+    expect(cop.offenses.size).to eq(2)
   end
 
-  it 'accepts raw methods when wrapped in a safe_join when not at the root' do
+  it 'does not accept raw methods wrapped in a safe_join not at root' do
     source = 'foo(safe_join([raw(i18n_text),
               raw(i18n_mode_additional_markup(key))]))'
     inspect_source(cop, source)
-    expect(cop.offenses).to be_empty
+    expect(cop.offenses.size).to eq(2)
   end
 end

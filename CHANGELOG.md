@@ -14,6 +14,7 @@
 
 * [#4262](https://github.com/bbatsov/rubocop/pull/4262): Add new `MinSize` configuration to `Style/SymbolArray`, consistent with the same configuration in `Style/WordArray`. ([@scottmatthewman][])
 * [#4278](https://github.com/bbatsov/rubocop/pull/4278): Move all cops dealing with whitespace into a new department called `Layout`. ([@jonas054][])
+* [#4320](https://github.com/bbatsov/rubocop/pull/4320): Update `Rails/OutputSafety` to disallow wrapping `raw` or `html_safe` with `safe_join`. ([@klesse413][])
 
 ### Bug fixes
 
@@ -2762,3 +2763,4 @@
 [@alpaca-tc]: https://github.com/alpaca-tc
 [@ilansh]: https://github.com/ilansh
 [@mclark]: https://github.com/mclark
+[@klesse413]: https://github.com/klesse413

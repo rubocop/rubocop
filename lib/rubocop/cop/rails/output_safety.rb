@@ -4,7 +4,9 @@ module RuboCop
   module Cop
     module Rails
       # This cop checks for the use of output safety calls like html_safe and
-      # raw.
+      # raw. These methods do not escape content. They simply return a
+      # SafeBuffer containing the content as is. Instead, use safe_join
+      # to escape content and ensure its safety.
       #
       # @example
       #   # bad
@@ -25,16 +27,18 @@ module RuboCop
       #   out << content_tag(:li, "two")
       #   safe_join(out)
       #
+      #   # bad
+      #   (person.login + " " + content_tag(:span, person.email)).html_safe
+      #
+      #   # good
+      #   safe_join([person.login, " ", content_tag(:span, person.email)])
+      #
       class OutputSafety < Cop
-        MSG = 'Tagging a string as html safe may be a security risk, ' \
-              'prefer `safe_join` or other Rails tag helpers instead.'.freeze
+        MSG = 'Tagging a string as html safe may be a security risk.'.freeze
 
         def on_send(node)
-          ignore_node(node) if node.method?(:safe_join)
-
-          return unless !part_of_ignored_node?(node) &&
-                        (looks_like_rails_html_safe?(node) ||
-                        looks_like_rails_raw?(node))
+          return unless looks_like_rails_html_safe?(node) ||
+                        looks_like_rails_raw?(node)
 
           add_offense(node, :selector)
         end
