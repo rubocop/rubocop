@@ -66,6 +66,7 @@ module RuboCop
 
       ConfigLoader.debug = @options[:debug]
       ConfigLoader.auto_gen_config = @options[:auto_gen_config]
+      ConfigLoader.ignore_parent_exclusion = @options[:ignore_parent_exclusion]
 
       @config_store.options_config = @options[:config] if @options[:config]
       @config_store.force_default_config! if @options[:force_default_config]
