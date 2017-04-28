@@ -15,6 +15,12 @@ module RuboCop
     class MessageAnnotator
       attr_reader :options, :config, :cop_config
 
+      @style_guide_urls = {}
+
+      class << self
+        attr_reader :style_guide_urls
+      end
+
       # @param config [RuboCop::Config] Check configs for all cops
       #   @note Message Annotator specifically checks the
       #     following config options for_all_cops
@@ -67,16 +73,20 @@ module RuboCop
         url = cop_config['StyleGuide']
         return nil if url.nil? || url.empty?
 
-        base_url = config.for_all_cops['StyleGuideBaseURL']
-        return url if base_url.nil? || base_url.empty?
-
-        URI.join(base_url, url).to_s
+        self.class.style_guide_urls[url] ||= begin
+          base_url = config.for_all_cops['StyleGuideBaseURL']
+          if base_url.nil? || base_url.empty?
+            url
+          else
+            URI.join(base_url, url).to_s
+          end
+        end
       end
 
       def display_style_guide?
-        !urls.empty? &&
-          (options[:display_style_guide] ||
-            config.for_all_cops['DisplayStyleGuide'])
+        (options[:display_style_guide] ||
+         config.for_all_cops['DisplayStyleGuide']) &&
+          !urls.empty?
       end
 
       def reference_url
