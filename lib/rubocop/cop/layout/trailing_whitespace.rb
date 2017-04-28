@@ -9,7 +9,7 @@ module RuboCop
 
         def investigate(processed_source)
           processed_source.lines.each_with_index do |line, index|
-            next unless line =~ /.*[ \t]+$/
+            next unless line.end_with?(' ', "\t")
 
             range = source_range(processed_source.buffer,
                                  index + 1,
