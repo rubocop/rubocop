@@ -16,16 +16,16 @@ describe RuboCop::Cop::Style::AndOr, :config do
       end
 
       {
-        'if'                     => 'if %{conditional}; %{body}; end',
-        'while'                  => 'while %{conditional}; %{body}; end',
-        'until'                  => 'until %{conditional}; %{body}; end',
-        'post-conditional while' => 'begin; %{body}; end while %{conditional}',
-        'post-conditional until' => 'begin; %{body}; end until %{conditional}'
+        'if'                     => 'if %<condition>s; %<body>s; end',
+        'while'                  => 'while %<condition>s; %<body>s; end',
+        'until'                  => 'until %<condition>s; %<body>s; end',
+        'post-conditional while' => 'begin; %<body>s; end while %<condition>s',
+        'post-conditional until' => 'begin; %<body>s; end until %<condition>s'
       }.each do |type, snippet_format|
         it "registers an offense for \"#{operator}\" in #{type} conditional" do
           elements = {
-            conditional: "a #{operator} b",
-            body:        'do_something'
+            condition: "a #{operator} b",
+            body:      'do_something'
           }
           source = format(snippet_format, elements)
 
@@ -35,8 +35,8 @@ describe RuboCop::Cop::Style::AndOr, :config do
 
         it "accepts \"#{operator}\" in #{type} body" do
           elements = {
-            conditional: 'some_condition',
-            body:        "do_something #{operator} return"
+            condition: 'some_condition',
+            body:      "do_something #{operator} return"
           }
           source = format(snippet_format, elements)
 

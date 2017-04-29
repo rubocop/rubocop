@@ -123,7 +123,7 @@ describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'auto-corrects an array of words and character constants' do
-      new_source = autocorrect_source(cop, '[%{one}, %Q(two), ?\n, ?\t]')
+      new_source = autocorrect_source(cop, '[%|one|, %Q(two), ?\n, ?\t]')
       expect(new_source).to eq('%W(one two \n \t)')
     end
 

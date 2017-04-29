@@ -9,10 +9,10 @@ describe RuboCop::Cop::Style::UnneededInterpolation do
     expect(cop.highlights).to eq(['"#{1 + 1}"'])
   end
 
-  it 'registers an offense for "%{#{1 + 1}}"' do
-    inspect_source(cop, '%{#{1 + 1}}')
+  it 'registers an offense for "%|#{1 + 1}|"' do
+    inspect_source(cop, '%|#{1 + 1}|')
     expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['%{#{1 + 1}}'])
+    expect(cop.highlights).to eq(['%|#{1 + 1}|'])
   end
 
   it 'registers an offense for "%Q(#{1 + 1})"' do
