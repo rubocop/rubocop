@@ -545,6 +545,10 @@ Style/FormatString:
   StyleGuide: '#sprintf'
   Enabled: true
 
+Style/FormatStringToken:
+  Description: 'Use a consistent style for format string tokens.'
+  Enabled: true
+
 Style/GlobalVars:
   Description: 'Do not introduce global variables.'
   StyleGuide: '#instance-vars'

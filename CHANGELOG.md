@@ -9,6 +9,7 @@
 * [#4236](https://github.com/bbatsov/rubocop/issues/4236): Add new `Rails/ApplicationJob` and `Rails/ApplicationRecord` cops. ([@tjwp][])
 * [#4078](https://github.com/bbatsov/rubocop/pull/4078): Add new `Performance/Caller` cop. ([@alpaca-tc][])
 * [#4314](https://github.com/bbatsov/rubocop/pull/4314): Check slow hash accessing in `Array#sort` by `Performance/CompareWithBlock`. ([@pocke][])
+* [#3438](https://github.com/bbatsov/rubocop/issues/3438): Add new `Style/FormatStringToken` cop. ([@backus][])
 
 ### Changes
 

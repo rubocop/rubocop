@@ -1159,6 +1159,60 @@ SupportedStyles | format, sprintf, percent
 
 * [https://github.com/bbatsov/ruby-style-guide#sprintf](https://github.com/bbatsov/ruby-style-guide#sprintf)
 
+## Style/FormatStringToken
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+Use a consistent style for format string tokens.
+
+### Example
+
+```ruby
+EnforcedStyle: unnamed
+
+# bad
+
+format('%<greeting>s', greeting: 'Hello')
+format('%{greeting}', greeting: 'Hello')
+
+# good
+
+format('%s', 'Hello')
+```
+```ruby
+EnforcedStyle: named
+
+# bad
+
+format('%{greeting}', greeting: 'Hello')
+format('%s', 'Hello')
+
+# good
+
+format('%<greeting>s', greeting: 'Hello')
+```
+```ruby
+EnforcedStyle: template
+
+# bad
+
+format('%<greeting>s', greeting: 'Hello')
+format('%s', 'Hello')
+
+# good
+
+format('%{greeting}', greeting: 'Hello')
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+EnforcedStyle | unnamed
+SupportedStyles | unnamed, named, template
+
 ## Style/FrozenStringLiteralComment
 
 Enabled by default | Supports autocorrection
