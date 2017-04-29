@@ -27,7 +27,7 @@ module RuboCop
       #   foo != bar
       #   foo == bar
       class InverseMethods < Cop
-        MSG = 'Use `%{inverse}` instead of inverting `%{method}`.'.freeze
+        MSG = 'Use `%<inverse>s` instead of inverting `%<method>s`.'.freeze
         EQUALITY_METHODS = %i[== != =~ !~ <= >= < >].freeze
 
         def_node_matcher :inverse_candidate?, <<-PATTERN
