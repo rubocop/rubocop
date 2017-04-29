@@ -15,6 +15,7 @@
 * [#4403](https://github.com/bbatsov/rubocop/pull/4403): Add public API `Cop.autocorrect_incompatible_with` for specifying other cops that should not autocorrect together. ([@backus][])
 * [#4354](https://github.com/bbatsov/rubocop/pull/4354): Add autocorrect to `Style/FormatString`. ([@hoshinotsuyoshi][])
 * [#4021](https://github.com/bbatsov/rubocop/pull/4021): Add new `Style/MultipleComparison` cop. ([@dabroz][])
+* New `Lint/RescueType` cop. ([@rrosenblum][])
 
 ### Changes
 
