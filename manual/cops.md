@@ -335,6 +335,7 @@ In the following section you find all available cops:
 * [Style/FlipFlop](cops_style.md#styleflipflop)
 * [Style/For](cops_style.md#stylefor)
 * [Style/FormatString](cops_style.md#styleformatstring)
+* [Style/FormatStringToken](cops_style.md#styleformatstringtoken)
 * [Style/FrozenStringLiteralComment](cops_style.md#stylefrozenstringliteralcomment)
 * [Style/GlobalVars](cops_style.md#styleglobalvars)
 * [Style/GuardClause](cops_style.md#styleguardclause)

@@ -848,6 +848,16 @@ Style/FormatString:
     - sprintf
     - percent
 
+# Enforce using either `%<token>s` or `%{token}`
+Style/FormatStringToken:
+  EnforcedStyle: annotated
+  SupportedStyles:
+    # Prefer tokens which contain a sprintf like type annotation like
+    # `%<name>s`, `%<age>d`, `%<score>f`
+    - annotated
+    # Prefer simple looking "template" style tokens like `%{name}`, `%{age}`
+    - template
+
 Style/FrozenStringLiteralComment:
   EnforcedStyle: when_needed
   SupportedStyles:
