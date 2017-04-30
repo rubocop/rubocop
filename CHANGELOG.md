@@ -15,6 +15,7 @@
 
 * [#4262](https://github.com/bbatsov/rubocop/pull/4262): Add new `MinSize` configuration to `Style/SymbolArray`, consistent with the same configuration in `Style/WordArray`. ([@scottmatthewman][])
 * [#4278](https://github.com/bbatsov/rubocop/pull/4278): Move all cops dealing with whitespace into a new department called `Layout`. ([@jonas054][])
+* [#4282](https://github.com/bbatsov/rubocop/pull/4282): Support multiple `# rubocop:disable <cops...>` comments per line. ([@vergenzt][])
 
 ### Bug fixes
 

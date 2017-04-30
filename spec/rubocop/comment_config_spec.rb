@@ -54,7 +54,21 @@ describe RuboCop::CommentConfig do
         '[1, 2, 3, 4].map { |e| [e, e] }.flatten(1)',
         '# rubocop:enable FlatMap',
         '# rubocop:disable RSpec/Example',
-        '# rubocop:disable Custom2/Number9'                  # 48
+        '# rubocop:disable Custom2/Number9',                 # 48
+        "puts 'multiple disables' # rubocop:disable Test/Something" \
+        ' # rubocop:disable Test/SomethingElse',             # 49
+        "puts 'multiple disables'" \
+        ' # rubocop:disable Test/Thing1, Test/Thing2' \
+        ' # rubocop:disable Test/Thing3,Test/Thing4',        # 50
+        "puts 'multiple disables with comments'" \
+        ' # rubocop:disable Test/Thing1,Test/Thing2 with comment' \
+        ' # rubocop:disable Test/Thing3, Test/Thing4 another comment', # 51
+        '',
+        "puts 'disabled then enabled' # rubocop:disable Test/Cop" \
+        ' # rubocop:enable Test/Cop',                        # 53
+        '',
+        "puts 'enabled then disabled' # rubocop:enable Test/Cop" \
+        ' # rubocop:disable Test/Cop'                        # 55
       ]
     end
 
@@ -160,6 +174,29 @@ describe RuboCop::CommentConfig do
 
     it 'supports disabling cops with numbers in their name' do
       expect(disabled_lines_of_cop('Custom2/Number9')).to include(48)
+    end
+
+    it 'supports multiple disable statements in a single line' do
+      expect(disabled_lines_of_cop('Test/Something')).to include(49)
+      expect(disabled_lines_of_cop('Test/SomethingElse')).to include(49)
+      expect(disabled_lines_of_cop('Test/Thing1')).to include(50)
+      expect(disabled_lines_of_cop('Test/Thing2')).to include(50)
+      expect(disabled_lines_of_cop('Test/Thing3')).to include(50)
+      expect(disabled_lines_of_cop('Test/Thing4')).to include(50)
+    end
+
+    it 'supports multiple commented disable statements in a single line' do
+      expect(disabled_lines_of_cop('Test/Thing1')).to include(51)
+      expect(disabled_lines_of_cop('Test/Thing2')).to include(51)
+      expect(disabled_lines_of_cop('Test/Thing3')).to include(51)
+      expect(disabled_lines_of_cop('Test/Thing4')).to include(51)
+    end
+
+    context 'when a cop is enabled and disabled on the same line' do
+      it 'disables the cop' do
+        expect(disabled_lines_of_cop('Test/Cop')).to include(53)
+        expect(disabled_lines_of_cop('Test/Cop')).to include(55)
+      end
     end
   end
 end
