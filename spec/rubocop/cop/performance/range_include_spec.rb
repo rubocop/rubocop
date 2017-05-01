@@ -24,9 +24,9 @@ describe RuboCop::Cop::Performance::RangeInclude do
   end
 
   it 'formats the error message correctly for (a..b).include? 1' do
-    inspect_source(cop, '(a..b).include? 1')
-    expect(cop.messages).to eq(
-      ['Use `Range#cover?` instead of `Range#include?`.']
-    )
+    expect_offense(<<-RUBY.strip_indent)
+      (a..b).include? 1
+             ^^^^^^^^ Use `Range#cover?` instead of `Range#include?`.
+    RUBY
   end
 end

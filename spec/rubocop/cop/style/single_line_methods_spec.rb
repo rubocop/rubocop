@@ -9,14 +9,14 @@ describe RuboCop::Cop::Style::SingleLineMethods do
   let(:cop_config) { { 'AllowIfMethodIsEmpty' => true } }
 
   it 'registers an offense for a single-line method' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-END.strip_indent)
       def some_method; body end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
       def link_to(name, url); {:name => name}; end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
       def @table.columns; super; end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
     END
-    expect(cop.messages).to eq(
-      ['Avoid single-line method definitions.'] * 3
-    )
   end
 
   context 'when AllowIfMethodIsEmpty is disabled' do

@@ -19,21 +19,24 @@ describe RuboCop::Cop::Performance::Size do
 
   describe 'on array' do
     it 'registers an offense when calling count' do
-      inspect_source(cop, '[1, 2, 3].count')
-
-      expect(cop.messages).to eq(['Use `size` instead of `count`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        [1, 2, 3].count
+                  ^^^^^ Use `size` instead of `count`.
+      RUBY
     end
 
     it 'registers an offense when calling count on to_a' do
-      inspect_source(cop, '(1..3).to_a.count')
-
-      expect(cop.messages).to eq(['Use `size` instead of `count`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        (1..3).to_a.count
+                    ^^^^^ Use `size` instead of `count`.
+      RUBY
     end
 
     it 'registers an offense when calling count on Array[]' do
-      inspect_source(cop, 'Array[*1..5].count')
-
-      expect(cop.messages).to eq(['Use `size` instead of `count`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        Array[*1..5].count
+                     ^^^^^ Use `size` instead of `count`.
+      RUBY
     end
 
     it 'does not register an offense when calling size' do
@@ -83,21 +86,24 @@ describe RuboCop::Cop::Performance::Size do
 
   describe 'on hash' do
     it 'registers an offense when calling count' do
-      inspect_source(cop, '{a: 1, b: 2, c: 3}.count')
-
-      expect(cop.messages).to eq(['Use `size` instead of `count`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        {a: 1, b: 2, c: 3}.count
+                           ^^^^^ Use `size` instead of `count`.
+      RUBY
     end
 
     it 'registers an offense when calling count on to_h' do
-      inspect_source(cop, '[[:foo, :bar], [1, 2]].to_h.count')
-
-      expect(cop.messages).to eq(['Use `size` instead of `count`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        [[:foo, :bar], [1, 2]].to_h.count
+                                    ^^^^^ Use `size` instead of `count`.
+      RUBY
     end
 
     it 'registers an offense when calling count on Hash[]' do
-      inspect_source(cop, "Hash[*('a'..'z')].count")
-
-      expect(cop.messages).to eq(['Use `size` instead of `count`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        Hash[*('a'..'z')].count
+                          ^^^^^ Use `size` instead of `count`.
+      RUBY
     end
 
     it 'does not register an offense when calling size' do

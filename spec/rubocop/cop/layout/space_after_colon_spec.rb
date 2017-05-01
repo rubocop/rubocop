@@ -61,11 +61,11 @@ describe RuboCop::Cop::Layout::SpaceAfterColon do
     end
 
     it 'registers an offence if an keyword optional argument has no space' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         def m(var:1, other_var: 2)
+                 ^ Space missing after colon.
         end
       END
-      expect(cop.messages).to eq(['Space missing after colon.'])
     end
   end
 

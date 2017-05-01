@@ -4,39 +4,35 @@ describe RuboCop::Cop::Layout::MultilineBlockLayout do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for missing newline in do/end block w/o params' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-END.strip_indent)
       test do foo
+              ^^^ Block body expression is on the same line as the block start.
       end
     END
-    expect(cop.messages)
-      .to eq(['Block body expression is on the same line as the block start.'])
   end
 
   it 'registers an offense for missing newline in {} block w/o params' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-END.strip_indent)
       test { foo
+             ^^^ Block body expression is on the same line as the block start.
       }
     END
-    expect(cop.messages)
-      .to eq(['Block body expression is on the same line as the block start.'])
   end
 
   it 'registers an offense for missing newline in do/end block with params' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-END.strip_indent)
       test do |x| foo
+                  ^^^ Block body expression is on the same line as the block start.
       end
     END
-    expect(cop.messages)
-      .to eq(['Block body expression is on the same line as the block start.'])
   end
 
   it 'registers an offense for missing newline in {} block with params' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-END.strip_indent)
       test { |x| foo
+                 ^^^ Block body expression is on the same line as the block start.
       }
     END
-    expect(cop.messages)
-      .to eq(['Block body expression is on the same line as the block start.'])
   end
 
   it 'does not register an offense for one-line do/end blocks' do
@@ -91,25 +87,21 @@ describe RuboCop::Cop::Layout::MultilineBlockLayout do
   end
 
   it 'registers an offense for line-break before arguments' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-END.strip_indent)
       test do
         |x| play_with(x)
+        ^^^ Block argument expression is not on the same line as the block start.
       end
     END
-    expect(cop.messages)
-      .to eq(['Block argument expression is not on the same line as the ' \
-              'block start.'])
   end
 
   it 'registers an offense for line-break before arguments with empty block' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-END.strip_indent)
       test do
         |x|
+        ^^^ Block argument expression is not on the same line as the block start.
       end
     END
-    expect(cop.messages)
-      .to eq(['Block argument expression is not on the same line as the ' \
-              'block start.'])
   end
 
   it 'registers an offense for line-break within arguments' do

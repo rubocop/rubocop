@@ -353,25 +353,23 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
 
       context 'when closing bracket is on same line as last value' do
         it 'registers an offense for an Array literal with no trailing comma' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_offense(<<-END.strip_indent)
             VALUES = [
                        1001,
                        2020,
                        3333]
+                       ^^^^ Put a comma after the last item of a multiline array.
           END
-          expect(cop.messages)
-            .to eq(['Put a comma after the last item of a multiline array.'])
         end
 
         it 'registers an offense for a Hash literal with no trailing comma' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_offense(<<-END.strip_indent)
             VALUES = {
                        a: "b",
                        b: "c",
                        d: "e"}
+                       ^^^^^^ Put a comma after the last item of a multiline hash.
           END
-          expect(cop.messages)
-            .to eq(['Put a comma after the last item of a multiline hash.'])
         end
 
         it 'auto-corrects a missing comma in a Hash literal' do

@@ -113,8 +113,9 @@ describe RuboCop::Cop::Performance::RedundantMatch do
   end
 
   it 'formats error message correctly for something if str.match(/regex/)' do
-    inspect_source(cop, 'something if str.match(/regex/)')
-    expect(cop.messages).to eq(['Use `=~` in places where the `MatchData` ' \
-                                'returned by `#match` will not be used.'])
+    expect_offense(<<-RUBY.strip_indent)
+      something if str.match(/regex/)
+                   ^^^^^^^^^^^^^^^^^^ Use `=~` in places where the `MatchData` returned by `#match` will not be used.
+    RUBY
   end
 end

@@ -4,9 +4,10 @@ describe RuboCop::Cop::Lint::EachWithObjectArgument do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for fixnum argument' do
-    inspect_source(cop, 'collection.each_with_object(0) { |e, a| a + e }')
-    expect(cop.messages)
-      .to eq(['The argument to each_with_object can not be immutable.'])
+    expect_offense(<<-RUBY.strip_indent)
+      collection.each_with_object(0) { |e, a| a + e }
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The argument to each_with_object can not be immutable.
+    RUBY
   end
 
   it 'registers an offense for float argument' do

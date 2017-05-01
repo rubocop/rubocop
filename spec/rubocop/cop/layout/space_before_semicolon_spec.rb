@@ -8,10 +8,10 @@ describe RuboCop::Cop::Layout::SpaceBeforeSemicolon do
   let(:brace_config) { {} }
 
   it 'registers an offense for space before semicolon' do
-    inspect_source(cop, 'x = 1 ; y = 2')
-    expect(cop.messages).to eq(
-      ['Space found before semicolon.']
-    )
+    expect_offense(<<-RUBY.strip_indent)
+      x = 1 ; y = 2
+           ^ Space found before semicolon.
+    RUBY
   end
 
   it 'does not register an offense for no space before semicolons' do

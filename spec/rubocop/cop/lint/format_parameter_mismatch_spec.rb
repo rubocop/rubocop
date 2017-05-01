@@ -249,12 +249,11 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
 
     context 'and multiple arguments' do
       it 'registers an offense' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-END.strip_indent)
           params = { y: '2015', m: '01', d: '01' }
           puts format('%{y}-%{m}-%{d}', 2015, 1, 1)
+               ^^^^^^ Number of arguments (3) to `format` doesn't match the number of fields (1).
         END
-        expect(cop.messages).to eq(['Number of arguments (3) to `format` ' \
-                                    "doesn't match the number of fields (1)."])
       end
     end
   end
@@ -271,12 +270,11 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
 
     context 'and multiple arguments' do
       it 'registers an offense' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-END.strip_indent)
           params = { y: '2015', m: '01', d: '01' }
           puts format('%<y>d-%<m>d-%<d>d', 2015, 1, 1)
+               ^^^^^^ Number of arguments (3) to `format` doesn't match the number of fields (1).
         END
-        expect(cop.messages).to eq(['Number of arguments (3) to `format` ' \
-                                    "doesn't match the number of fields (1)."])
       end
     end
   end

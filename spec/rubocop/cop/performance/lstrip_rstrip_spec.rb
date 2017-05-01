@@ -14,7 +14,9 @@ describe RuboCop::Cop::Performance::LstripRstrip do
   end
 
   it 'formats the error message correctly for str.lstrip.rstrip' do
-    inspect_source(cop, 'str.lstrip.rstrip')
-    expect(cop.messages).to eq(['Use `strip` instead of `lstrip.rstrip`.'])
+    expect_offense(<<-RUBY.strip_indent)
+      str.lstrip.rstrip
+          ^^^^^^^^^^^^^ Use `strip` instead of `lstrip.rstrip`.
+    RUBY
   end
 end

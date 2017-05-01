@@ -8,10 +8,10 @@ describe RuboCop::Cop::Layout::SpaceAfterSemicolon do
   let(:brace_config) { {} }
 
   it 'registers an offense for semicolon without space after it' do
-    inspect_source(cop, 'x = 1;y = 2')
-    expect(cop.messages).to eq(
-      ['Space missing after semicolon.']
-    )
+    expect_offense(<<-RUBY.strip_indent)
+      x = 1;y = 2
+           ^ Space missing after semicolon.
+    RUBY
   end
 
   it 'does not crash if semicolon is the last character of the file' do

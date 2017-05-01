@@ -19,8 +19,10 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'backticks' } }
 
     it 'registers an offense' do
-      inspect_source(cop, '%x$ls$')
-      expect(cop.messages).to eq(['Use backticks around command string.'])
+      expect_offense(<<-RUBY.strip_indent)
+        %x$ls$
+        ^^^^^^ Use backticks around command string.
+      RUBY
     end
   end
 

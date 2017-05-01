@@ -43,28 +43,26 @@ describe RuboCop::Cop::Layout::CommentIndentation do
     end
 
     it 'registers an offense for each incorrectly indented comment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         # a
+        ^^^ Incorrect indentation detected (column 0 instead of 2).
           # b
+          ^^^ Incorrect indentation detected (column 2 instead of 4).
             # c
+            ^^^ Incorrect indentation detected (column 4 instead of 0).
         # d
         def test; end
       END
-      expect(cop.messages)
-        .to eq(['Incorrect indentation detected (column 0 instead of 2).',
-                'Incorrect indentation detected (column 2 instead of 4).',
-                'Incorrect indentation detected (column 4 instead of 0).'])
     end
   end
 
   it 'registers offenses before __END__ but not after' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-END.strip_indent)
        #
+       ^ Incorrect indentation detected (column 1 instead of 0).
       __END__
         #
     END
-    expect(cop.messages)
-      .to eq(['Incorrect indentation detected (column 1 instead of 0).'])
   end
 
   context 'around program structure keywords' do
