@@ -24,21 +24,19 @@ describe RuboCop::Cop::Style::AccessorMethodName do
   end
 
   it 'accepts method get_something with args' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def get_something(arg)
         # ...
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts singleton method get_something with args' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def self.get_something(arg)
         # ...
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for method set_something with one arg' do
@@ -62,38 +60,34 @@ describe RuboCop::Cop::Style::AccessorMethodName do
   end
 
   it 'accepts method set_something with no args' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def set_something
         # ...
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts singleton method set_something with no args' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def self.set_something
         # ...
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts method set_something with two args' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def set_something(arg1, arg2)
         # ...
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts singleton method set_something with two args' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def self.get_something(arg1, arg2)
         # ...
       end
     END
-    expect(cop.offenses).to be_empty
   end
 end

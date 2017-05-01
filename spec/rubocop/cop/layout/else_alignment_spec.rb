@@ -82,7 +82,7 @@ describe RuboCop::Cop::Layout::ElseAlignment do
     end
 
     it 'accepts a correctly aligned if/elsif/else/end' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         if a1
           b1
         elsif a2
@@ -91,14 +91,13 @@ describe RuboCop::Cop::Layout::ElseAlignment do
           c
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     context 'for a file with byte order mark' do
       let(:bom) { "\xef\xbb\xbf" }
 
       it 'accepts a correctly aligned if/elsif/else/end' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           #{bom}if a1
             b1
           elsif a2
@@ -107,7 +106,6 @@ describe RuboCop::Cop::Layout::ElseAlignment do
             c
           end
         END
-        expect(cop.offenses).to be_empty
       end
     end
 
@@ -115,18 +113,17 @@ describe RuboCop::Cop::Layout::ElseAlignment do
       context 'when alignment style is variable' do
         context 'and end is aligned with variable' do
           it 'accepts an if-else with end aligned with setter' do
-            inspect_source(cop, <<-END.strip_indent)
+            expect_no_offenses(<<-END.strip_indent)
               foo.bar = if baz
                 derp1
               else
                 derp2
               end
             END
-            expect(cop.offenses).to be_empty
           end
 
           it 'accepts an if-elsif-else with end aligned with setter' do
-            inspect_source(cop, <<-END.strip_indent)
+            expect_no_offenses(<<-END.strip_indent)
               foo.bar = if baz
                 derp1
               elsif meh
@@ -135,49 +132,44 @@ describe RuboCop::Cop::Layout::ElseAlignment do
                 derp3
               end
             END
-            expect(cop.offenses).to be_empty
           end
 
           it 'accepts an if with end aligned with element assignment' do
-            inspect_source(cop, <<-END.strip_indent)
+            expect_no_offenses(<<-END.strip_indent)
               foo[bar] = if baz
                 derp
               end
             END
-            expect(cop.offenses).to be_empty
           end
 
           it 'accepts an if/else' do
-            inspect_source(cop, <<-END.strip_indent)
+            expect_no_offenses(<<-END.strip_indent)
               var = if a
                 0
               else
                 1
               end
             END
-            expect(cop.offenses).to be_empty
           end
 
           it 'accepts an if/else with chaining after the end' do
-            inspect_source(cop, <<-END.strip_indent)
+            expect_no_offenses(<<-END.strip_indent)
               var = if a
                 0
               else
                 1
               end.abc.join("")
             END
-            expect(cop.offenses).to be_empty
           end
 
           it 'accepts an if/else with chaining with a block after the end' do
-            inspect_source(cop, <<-END.strip_indent)
+            expect_no_offenses(<<-END.strip_indent)
               var = if a
                 0
               else
                 1
               end.abc.tap {}
             END
-            expect(cop.offenses).to be_empty
           end
         end
 
@@ -253,27 +245,25 @@ describe RuboCop::Cop::Layout::ElseAlignment do
 
         context 'and end is aligned with keyword' do
           it 'accepts an if in assignment' do
-            inspect_source(cop, <<-END.strip_indent)
+            expect_no_offenses(<<-END.strip_indent)
               var = if a
                       0
                     end
             END
-            expect(cop.offenses).to be_empty
           end
 
           it 'accepts an if/else in assignment' do
-            inspect_source(cop, <<-END.strip_indent)
+            expect_no_offenses(<<-END.strip_indent)
               var = if a
                       0
                     else
                       1
                     end
             END
-            expect(cop.offenses).to be_empty
           end
 
           it 'accepts an if/else in assignment on next line' do
-            inspect_source(cop, <<-END.strip_indent)
+            expect_no_offenses(<<-END.strip_indent)
               var =
                 if a
                   0
@@ -281,25 +271,22 @@ describe RuboCop::Cop::Layout::ElseAlignment do
                   1
                 end
             END
-            expect(cop.offenses).to be_empty
           end
 
           it 'accepts a while in assignment' do
-            inspect_source(cop, <<-END.strip_indent)
+            expect_no_offenses(<<-END.strip_indent)
               var = while a
                       b
                     end
             END
-            expect(cop.offenses).to be_empty
           end
 
           it 'accepts an until in assignment' do
-            inspect_source(cop, <<-END.strip_indent)
+            expect_no_offenses(<<-END.strip_indent)
               var = until a
                       b
                     end
             END
-            expect(cop.offenses).to be_empty
           end
         end
       end
@@ -316,14 +303,13 @@ describe RuboCop::Cop::Layout::ElseAlignment do
     it 'accepts an if/else branches with rescue clauses' do
       # Because of how the rescue clauses come out of Parser, these are
       # special and need to be tested.
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         if a
           a rescue nil
         else
           a rescue nil
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
@@ -340,20 +326,18 @@ describe RuboCop::Cop::Layout::ElseAlignment do
     end
 
     it 'accepts a correctly aligned else in an otherwise empty unless' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         unless a
         else
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts an empty unless' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         unless a
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
@@ -373,7 +357,7 @@ describe RuboCop::Cop::Layout::ElseAlignment do
     end
 
     it 'accepts correctly aligned case/when/else' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         case a
         when b
           c
@@ -383,11 +367,10 @@ describe RuboCop::Cop::Layout::ElseAlignment do
           f
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts case without else' do
-      inspect_source(cop, <<-'END'.strip_indent)
+      expect_no_offenses(<<-'END'.strip_indent)
         case superclass
         when /\A(#{NAMESPACEMATCH})(?:\s|\Z)/
           $1
@@ -395,13 +378,12 @@ describe RuboCop::Cop::Layout::ElseAlignment do
           namespace.path
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts else aligned with when but not with case' do
       # "Indent when as deep as case" is the job of another cop, and this is
       # one of the possible styles supported by configuration.
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         case code_type
           when 'ruby', 'sql', 'plain'
             code_type
@@ -413,31 +395,28 @@ describe RuboCop::Cop::Layout::ElseAlignment do
             'plain'
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
   context 'with def/defs' do
     it 'accepts an empty def body' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def test
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts an empty defs body' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def self.test
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     if RUBY_VERSION >= '2.1'
       context 'when modifier and def are on the same line' do
         it 'accepts a correctly aligned body' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_no_offenses(<<-END.strip_indent)
             private def test
               something
             rescue
@@ -446,7 +425,6 @@ describe RuboCop::Cop::Layout::ElseAlignment do
               something_else
             end
           END
-          expect(cop.offenses).to be_empty
         end
 
         it 'registers an offense for else not aligned with private' do
@@ -487,7 +465,7 @@ describe RuboCop::Cop::Layout::ElseAlignment do
     end
 
     it 'accepts a correctly aligned else' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         begin
           raise StandardError.new('Fail') if rand(2).odd?
         rescue StandardError => error
@@ -496,13 +474,12 @@ describe RuboCop::Cop::Layout::ElseAlignment do
           $stdout.puts 'Lucky you!'
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
   context 'with def/rescue/else/ensure/end' do
     it 'accepts a correctly aligned else' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def my_func(string)
           puts string
         rescue => e
@@ -513,7 +490,6 @@ describe RuboCop::Cop::Layout::ElseAlignment do
           puts 'I love methods that print'
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for misaligned else' do

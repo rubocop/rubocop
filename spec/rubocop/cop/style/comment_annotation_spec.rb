@@ -101,11 +101,10 @@ describe RuboCop::Cop::Style::CommentAnnotation, :config do
   end
 
   it 'accepts a keyword that is just the beginning of a sentence' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       # Optimize if you want. I wouldn't recommend it.
       # Hack is a fun game.
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts a keyword that is somewhere in a sentence' do

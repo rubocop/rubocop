@@ -46,18 +46,17 @@ describe RuboCop::Cop::Style::SignalException, :config do
     end
 
     it 'accepts raise in rescue section' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         begin
           fail
         rescue Exception
           raise RuntimeError
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts raise in def with multiple rescues' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def test
           fail
         rescue StandardError
@@ -66,7 +65,6 @@ describe RuboCop::Cop::Style::SignalException, :config do
           raise
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for fail in def rescue section' do
@@ -108,25 +106,23 @@ describe RuboCop::Cop::Style::SignalException, :config do
     end
 
     it 'accepts raise in def rescue section' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def test
           fail
         rescue Exception
           raise
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts `raise` and `fail` with explicit receiver' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def test
           test.raise
         rescue Exception
           test.fail
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for `raise` and `fail` with `Kernel` as ' \
@@ -264,7 +260,7 @@ describe RuboCop::Cop::Style::SignalException, :config do
     end
 
     it 'accepts `fail` if a custom `fail` instance method is defined' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         class A
           def fail(arg)
           end
@@ -273,11 +269,10 @@ describe RuboCop::Cop::Style::SignalException, :config do
           end
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts `fail` if a custom `fail` singleton method is defined' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         class A
           def self.fail(arg)
           end
@@ -286,7 +281,6 @@ describe RuboCop::Cop::Style::SignalException, :config do
           end
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts `fail` with explicit receiver' do

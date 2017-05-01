@@ -22,31 +22,25 @@ describe RuboCop::Cop::Layout::IndentAssignment, :config do
   end
 
   it 'allows assignments that do not start on a newline' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       a = if b
             foo
           end
     END
-
-    expect(cop.offenses).to be_empty
   end
 
   it 'allows a properly indented rhs' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       a =
         if b ; end
     END
-
-    expect(cop.offenses).to be_empty
   end
 
   it 'allows a properly indented rhs with fullwidth characters' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       f 'Ｒｕｂｙ', a =
                       b
     END
-
-    expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for multi-lhs' do
@@ -62,12 +56,10 @@ describe RuboCop::Cop::Layout::IndentAssignment, :config do
   end
 
   it 'ignores comparison operators' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       a ===
       if b ; end
     END
-
-    expect(cop.offenses).to be_empty
   end
 
   it 'auto-corrects indentation' do
@@ -89,12 +81,10 @@ describe RuboCop::Cop::Layout::IndentAssignment, :config do
     let(:cop_indent) { 7 }
 
     it 'allows a properly indented rhs' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a =
                if b ; end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'auto-corrects indentation' do

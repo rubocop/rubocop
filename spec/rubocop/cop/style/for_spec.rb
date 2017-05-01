@@ -35,14 +35,13 @@ describe RuboCop::Cop::Style::For, :config do
     end
 
     it 'accepts multiline each' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def func
           [1, 2, 3].each do |n|
             puts n
           end
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts :for' do
@@ -58,14 +57,13 @@ describe RuboCop::Cop::Style::For, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'for' } }
 
     it 'accepts for' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def func
           for n in [1, 2, 3] do
             puts n
           end
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for multiline each' do
@@ -97,12 +95,11 @@ describe RuboCop::Cop::Style::For, :config do
     end
 
     it 'accepts single line each' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def func
           [1, 2, 3].each { |n| puts n }
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 end

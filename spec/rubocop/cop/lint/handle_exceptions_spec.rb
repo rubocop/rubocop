@@ -17,7 +17,7 @@ describe RuboCop::Cop::Lint::HandleExceptions do
   end
 
   it 'does not register an offense for rescue with body' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       begin
         something
         return
@@ -25,6 +25,5 @@ describe RuboCop::Cop::Lint::HandleExceptions do
         file.close
       end
     END
-    expect(cop.offenses).to be_empty
   end
 end

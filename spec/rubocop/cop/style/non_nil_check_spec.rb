@@ -31,41 +31,37 @@ describe RuboCop::Cop::Style::NonNilCheck, :config do
     end
 
     it 'does not register an offense if only expression in predicate' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def signed_in?
           !current_user.nil?
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'does not register an offense if only expression in class predicate' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def Test.signed_in?
           current_user != nil
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'does not register an offense if last expression in predicate' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def signed_in?
           something
           current_user != nil
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'does not register an offense if last expression in class predicate' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def Test.signed_in?
           something
           current_user != nil
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'autocorrects by changing `!= nil` to `!x.nil?`' do

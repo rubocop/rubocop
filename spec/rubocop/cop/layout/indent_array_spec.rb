@@ -18,12 +18,11 @@ describe RuboCop::Cop::Layout::IndentArray do
 
   context 'when array is operand' do
     it 'accepts correctly indented first element' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a << [
           1
         ]
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for incorrectly indented first element' do
@@ -65,12 +64,11 @@ describe RuboCop::Cop::Layout::IndentArray do
       let(:cop_indent) { 4 }
 
       it 'accepts correctly indented first element' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           a << [
               1
           ]
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'registers an offense for incorrectly indented first element' do
@@ -144,29 +142,26 @@ describe RuboCop::Cop::Layout::IndentArray do
     end
 
     it 'accepts correctly indented first element' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a = [
           1
         ]
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts several elements per line' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a = [
           1, 2
         ]
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts a first element on the same line as the left bracket' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a = [1,
              2]
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts single line array' do
@@ -190,7 +185,7 @@ describe RuboCop::Cop::Layout::IndentArray do
     context 'and arguments are surrounded by parentheses' do
       context 'and EnforcedStyle is special_inside_parentheses' do
         it 'accepts special indentation for first argument' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_no_offenses(<<-END.strip_indent)
             h = [
               1
             ]
@@ -207,7 +202,6 @@ describe RuboCop::Cop::Layout::IndentArray do
             func(x, [1
                  ])
           END
-          expect(cop.offenses).to be_empty
         end
 
         it "registers an offense for 'consistent' indentation" do
@@ -255,22 +249,20 @@ describe RuboCop::Cop::Layout::IndentArray do
         end
 
         it 'accepts special indentation for second argument' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_no_offenses(<<-END.strip_indent)
             body.should have_tag("input", [
                                    :name])
           END
-          expect(cop.offenses).to be_empty
         end
 
         it 'accepts normal indentation for array within array' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_no_offenses(<<-END.strip_indent)
             puts(
               [
                 [1, 2]
               ]
             )
           END
-          expect(cop.offenses).to be_empty
         end
       end
 
@@ -278,7 +270,7 @@ describe RuboCop::Cop::Layout::IndentArray do
         let(:cop_config) { { 'EnforcedStyle' => 'consistent' } }
 
         it 'accepts normal indentation for first argument' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_no_offenses(<<-END.strip_indent)
             h = [
               1
             ]
@@ -295,7 +287,6 @@ describe RuboCop::Cop::Layout::IndentArray do
             func(x, [1
             ])
           END
-          expect(cop.offenses).to be_empty
         end
 
         it 'registers an offense for incorrect indentation' do
@@ -315,11 +306,10 @@ describe RuboCop::Cop::Layout::IndentArray do
         end
 
         it 'accepts normal indentation for second argument' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_no_offenses(<<-END.strip_indent)
             body.should have_tag("input", [
               :name])
           END
-          expect(cop.offenses).to be_empty
         end
       end
     end
@@ -334,11 +324,10 @@ describe RuboCop::Cop::Layout::IndentArray do
       end
 
       it 'accepts a correctly indented multi-line array with brackets' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           func x, [
             1, 2]
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'registers an offense for incorrectly indented multi-line array ' \
@@ -360,29 +349,26 @@ describe RuboCop::Cop::Layout::IndentArray do
     let(:cop_config) { { 'EnforcedStyle' => 'align_brackets' } }
 
     it 'accepts correctly indented first element' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a = [
               1
             ]
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts several elements per line' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a = [
               1, 2
             ]
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts a first element on the same line as the left bracket' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a = [1,
              2]
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts single line array' do
@@ -464,12 +450,11 @@ describe RuboCop::Cop::Layout::IndentArray do
       let(:cop_indent) { 4 }
 
       it 'accepts correctly indented first element' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           a = [
                   1
               ]
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'autocorrects indentation which does not match IndentationWidth' do

@@ -38,7 +38,7 @@ describe RuboCop::Cop::Metrics::MethodLength, :config do
   end
 
   it 'accepts a method with less than 5 lines' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def m()
         a = 1
         a = 2
@@ -46,7 +46,6 @@ describe RuboCop::Cop::Metrics::MethodLength, :config do
         a = 4
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts a method with multiline arguments ' \
@@ -65,7 +64,7 @@ describe RuboCop::Cop::Metrics::MethodLength, :config do
   end
 
   it 'does not count blank lines' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def m()
         a = 1
         a = 2
@@ -76,19 +75,17 @@ describe RuboCop::Cop::Metrics::MethodLength, :config do
         a = 7
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts empty methods' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def m()
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'is not fooled by one-liner methods, syntax #1' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def one_line; 10 end
       def self.m()
         a = 1
@@ -98,11 +95,10 @@ describe RuboCop::Cop::Metrics::MethodLength, :config do
         a = 6
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'is not fooled by one-liner methods, syntax #2' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def one_line(test) 10 end
       def self.m()
         a = 1
@@ -112,7 +108,6 @@ describe RuboCop::Cop::Metrics::MethodLength, :config do
         a = 6
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'checks class methods, syntax #1' do
@@ -165,7 +160,7 @@ describe RuboCop::Cop::Metrics::MethodLength, :config do
   end
 
   it 'does not count commented lines by default' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def m()
         a = 1
         #a = 2
@@ -175,7 +170,6 @@ describe RuboCop::Cop::Metrics::MethodLength, :config do
         a = 6
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   context 'when CountComments is enabled' do

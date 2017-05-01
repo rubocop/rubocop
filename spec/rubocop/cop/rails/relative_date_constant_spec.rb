@@ -13,30 +13,27 @@ describe RuboCop::Cop::Rails::RelativeDateConstant do
   end
 
   it 'accepts a method with arguments' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       class SomeClass
         EXPIRED_AT = 1.week.since(base)
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts a lambda' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       class SomeClass
         EXPIRED_AT = -> { 1.year.ago }
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts a proc' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       class SomeClass
         EXPIRED_AT = Proc.new { 1.year.ago }
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for relative date in ||=' do

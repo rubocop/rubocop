@@ -39,7 +39,7 @@ describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'does not register an offense for alias in an instance_eval block' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         module M
           def foo
             instance_eval {
@@ -48,7 +48,6 @@ describe RuboCop::Cop::Style::Alias, :config do
           end
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
@@ -132,43 +131,39 @@ describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'does not register an offense for alias_method with explicit receiver' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         class C
           receiver.alias_method :ala, :bala
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'does not register an offense for alias_method in a method def' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def method
           alias_method :ala, :bala
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'does not register an offense for alias_method in self.method def' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def self.method
           alias_method :ala, :bala
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'does not register an offense for alias_method in a block' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         dsl_method do
           alias_method :ala, :bala
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'does not register an offense for alias in an instance_eval block' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         module M
           def foo
             instance_eval {
@@ -177,7 +172,6 @@ describe RuboCop::Cop::Style::Alias, :config do
           end
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 end

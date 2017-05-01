@@ -230,13 +230,12 @@ describe RuboCop::Cop::Style::RedundantParentheses do
   end
 
   it 'accepts parentheses around the error passed to rescue' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       begin
         some_method
       rescue(StandardError)
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts parentheses around a constant passed to when' do

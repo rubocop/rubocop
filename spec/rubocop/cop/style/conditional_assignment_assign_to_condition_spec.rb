@@ -1718,14 +1718,13 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
       context 'with different indices' do
         it "doesn't register an offense" do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_no_offenses(<<-END.strip_indent)
             if something
               array[1, 2] = 1
             else
               array[1, 3] = 2
             end
           END
-          expect(cop.offenses).to be_empty
         end
       end
     end
@@ -1750,32 +1749,30 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
       context 'with different receivers' do
         it "doesn't register an offense" do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_no_offenses(<<-END.strip_indent)
             if something
               obj1.attribute = 1
             else
               obj2.attribute = 2
             end
           END
-          expect(cop.offenses).to be_empty
         end
       end
     end
 
     context 'multiple assignment' do
       it 'does not register an offense in if else' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           if something
             a, b = 1, 2
           else
             a, b = 2, 1
           end
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'does not register an offense in case when' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           case foo
           when bar
             a, b = 1, 2
@@ -1783,7 +1780,6 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
             a, b = 2, 1
           end
         END
-        expect(cop.offenses).to be_empty
       end
     end
   end

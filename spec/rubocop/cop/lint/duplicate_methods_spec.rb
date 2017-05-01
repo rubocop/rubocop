@@ -323,7 +323,7 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
   end
 
   it 'ignores Class.new blocks which are assigned to local variables' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       a = Class.new do
         def foo
         end
@@ -333,6 +333,5 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
         end
       end
     END
-    expect(cop.offenses).to be_empty
   end
 end

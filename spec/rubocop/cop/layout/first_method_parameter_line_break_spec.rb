@@ -68,30 +68,20 @@ describe RuboCop::Cop::Layout::FirstMethodParameterLineBreak do
   end
 
   it 'ignores params listed on a single line' do
-    inspect_source(
-      cop,
-      <<-END.strip_indent
+    expect_no_offenses(<<-END.strip_indent)
         def foo(bar, baz, bing)
           do_something
         end
       END
-    )
-
-    expect(cop.offenses).to be_empty
   end
 
   it 'ignores params without parens' do
-    inspect_source(
-      cop,
-      <<-END.strip_indent
+    expect_no_offenses(<<-END.strip_indent)
         def foo bar,
           baz
           do_something
         end
       END
-    )
-
-    expect(cop.offenses).to be_empty
   end
 
   it 'ignores single-line methods' do
@@ -99,16 +89,11 @@ describe RuboCop::Cop::Layout::FirstMethodParameterLineBreak do
   end
 
   it 'ignores methods without params' do
-    inspect_source(
-      cop,
-      <<-END.strip_indent
+    expect_no_offenses(<<-END.strip_indent)
         def foo
           bing
         end
       END
-    )
-
-    expect(cop.offenses).to be_empty
   end
 
   context 'params with default values' do

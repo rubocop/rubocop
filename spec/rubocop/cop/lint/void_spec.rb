@@ -74,26 +74,23 @@ describe RuboCop::Cop::Lint::Void do
   end
 
   it 'accepts short call syntax' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       lambda.(a)
       top
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts backtick commands' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       `touch x`
       nil
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts percent-x commands' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       %x(touch x)
       nil
     END
-    expect(cop.offenses).to be_empty
   end
 end

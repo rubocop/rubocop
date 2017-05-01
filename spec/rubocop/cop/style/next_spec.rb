@@ -261,25 +261,21 @@ describe RuboCop::Cop::Style::Next, :config do
     end
 
     it 'allows loops with conditional break' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         loop do
           puts ''
           break #{condition} o == 1
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'allows loops with conditional return' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         loop do
           puts ''
           return #{condition} o == 1
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it "allows loops with #{condition} being the entire body with else" do
@@ -477,34 +473,28 @@ describe RuboCop::Cop::Style::Next, :config do
   it_behaves_like 'iterators', 'unless'
 
   it 'allows empty blocks' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       [].each do
       end
       [].each { }
     END
-
-    expect(cop.offenses).to be_empty
   end
 
   it 'allows loops with conditions at the end with ternary op' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       [].each do |o|
         o == x ? y : z
       end
     END
-
-    expect(cop.offenses).to be_empty
   end
 
   it 'allows super nodes' do
     # https://github.com/bbatsov/rubocop/issues/1115
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def foo
         super(a, a) { a }
       end
     END
-
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not blow up on empty body until block' do
@@ -520,22 +510,20 @@ describe RuboCop::Cop::Style::Next, :config do
   end
 
   it 'does not crash with an empty body branch' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       loop do
         if true
         end
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not crash with empty brackets' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       loop do
         ()
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   context 'MinBodyLength: 3' do
@@ -544,15 +532,13 @@ describe RuboCop::Cop::Style::Next, :config do
     end
 
     it 'accepts if whose body has 1 line' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         arr.each do |e|
           if something
             work
           end
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
   end
 

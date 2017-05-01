@@ -26,12 +26,10 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
   end
 
   it 'accepts expanding a variable as a method parameter' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       foo = [1, 2, 3]
       array.push(*foo)
     END
-
-    expect(cop.offenses).to be_empty
   end
 
   shared_examples 'splat literal assignment' do |literal|
@@ -124,26 +122,22 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
     end
 
     it 'allows an array that is assigned to a variable' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         baz = [1, 2, 3]
         case foo
         when *baz
           bar
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'allows an array using a constructor' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         case foo
         when *Array.new(3) { 42 }
           bar
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
   end
 
@@ -161,7 +155,7 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
   end
 
   it 'allows expansions of an array that is assigned to a variable in rescue' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       ERRORS = [FirstError, SecondError]
       begin
         foo
@@ -169,20 +163,16 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
         bar
       end
     END
-
-    expect(cop.offenses).to be_empty
   end
 
   it 'allows an array using a constructor' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       begin
         foo
       rescue *Array.new(3) { 42 }
         bad_example
       end
     END
-
-    expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for the expansion of an array literal' \

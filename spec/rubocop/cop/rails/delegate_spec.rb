@@ -46,70 +46,63 @@ describe RuboCop::Cop::Rails::Delegate do
   end
 
   it 'ignores class methods' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def self.fox
         new.fox
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'ignores non trivial delegate' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def fox
         bar.foo.fox
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'ignores trivial delegate with mismatched arguments' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def fox(baz)
         bar.fox(foo)
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'ignores trivial delegate with optional argument with a default value' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def fox(foo = nil)
         bar.fox(foo || 5)
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'ignores trivial delegate with mismatched number of arguments' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def fox(a, baz)
         bar.fox(a)
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'ignores trivial delegate with other prefix' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def fox_foo
         bar.foo
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'ignores methods with arguments' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def fox(bar)
         bar.fox
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'ignores private delegations' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
         private def fox # leading spaces are on purpose
           bar.fox
         end
@@ -120,11 +113,10 @@ describe RuboCop::Cop::Rails::Delegate do
           bar.fox
         end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'ignores protected delegations' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
         protected def fox # leading spaces are on purpose
           bar.fox
         end
@@ -135,26 +127,23 @@ describe RuboCop::Cop::Rails::Delegate do
           bar.fox
         end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'ignores delegation with assignment' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def new
         @bar = Foo.new
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'ignores delegation to constant' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       FOO = []
       def size
         FOO.size
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   describe '#autocorrect' do

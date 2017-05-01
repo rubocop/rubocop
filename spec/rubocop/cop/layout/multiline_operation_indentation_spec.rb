@@ -58,7 +58,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'does not check method calls' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a
          .(args)
 
@@ -74,7 +74,6 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
           to change { Bar.count }.
               from(1).to(2)
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for three spaces indentation of second line' do
@@ -245,7 +244,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'accepts indented operands inside block + assignment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a = b.map do |c|
           c +
             d
@@ -256,7 +255,6 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
             s.loc.expression.source =~ REGEXP
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for indented second part of string' do
@@ -345,12 +343,11 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'accepts aligned operands in assignment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a = b +
             c +
             d
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts aligned or:ed operands in assignment' do
@@ -443,13 +440,12 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'accepts normal indentation inside grouped expression' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         arg_array.size == a.size && (
           arg_array == a ||
           arg_array.map(&:children) == a.map(&:children)
         )
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for aligned code on LHS of equality operator' do

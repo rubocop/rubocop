@@ -28,11 +28,10 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
   end
 
   it 'accepts parentheses if there is no space between the keyword and (.' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       if(x > 5) then something end
       do_something until(x > 5)
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'auto-corrects parentheses around condition' do
@@ -69,7 +68,7 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
   end
 
   it 'accepts condition without parentheses' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       if x > 10
       end
       unless x > 10
@@ -83,7 +82,6 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
       x += 1 while x < 10
       x += 1 until x < 10
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts parentheses around condition in a ternary' do
@@ -95,11 +93,10 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
   end
 
   it 'is not confused by unbalanced parentheses' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       if (a + b).c()
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   %w[rescue if unless while until].each do |op|
@@ -118,44 +115,39 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
   end
 
   it 'does not blow up for empty if condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       if ()
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not blow up for empty unless condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       unless ()
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   context 'safe assignment is allowed' do
     it 'accepts variable assignment in condition surrounded with parentheses' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         if (test = 10)
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts element assignment in condition surrounded with parentheses' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         if (test[0] = 10)
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts setter in condition surrounded with parentheses' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         if (self.test = 10)
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 

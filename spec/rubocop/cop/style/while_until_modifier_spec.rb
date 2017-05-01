@@ -36,13 +36,12 @@ describe RuboCop::Cop::Style::WhileUntilModifier do
   end
 
   it 'accepts oneline while when condition has local variable assignment' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       lines = %w{first second third}
       while (line = lines.shift)
         puts line
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   context 'oneline while when assignment is in body' do

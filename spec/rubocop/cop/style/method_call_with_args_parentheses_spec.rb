@@ -89,25 +89,21 @@ describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
 
     context 'in a class body' do
       it 'does not register an offense' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           class Foo
             bar :baz
           end
         END
-
-        expect(cop.offenses).to be_empty
       end
     end
 
     context 'in a module body' do
       it 'does not register an offense' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           module Foo
             bar :baz
           end
         END
-
-        expect(cop.offenses).to be_empty
       end
     end
   end

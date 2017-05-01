@@ -34,12 +34,11 @@ describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment do
   end
 
   it 'accepts code that separates the comment from the code with a newline' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       # frozen_string_literal: true
 
       class Foo; end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts an empty source file' do

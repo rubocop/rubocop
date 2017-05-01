@@ -240,11 +240,10 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
   context 'on format with %{} interpolations' do
     context 'and 1 argument' do
       it 'does not register an offense' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           params = { y: '2015', m: '01', d: '01' }
           puts format('%{y}-%{m}-%{d}', params)
         END
-        expect(cop.offenses).to be_empty
       end
     end
 
@@ -263,11 +262,10 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
   context 'on format with %<> interpolations' do
     context 'and 1 argument' do
       it 'does not register an offense' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           params = { y: '2015', m: '01', d: '01' }
           puts format('%<y>d-%<m>d-%<d>d', params)
         END
-        expect(cop.offenses).to be_empty
       end
     end
 

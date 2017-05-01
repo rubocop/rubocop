@@ -16,11 +16,10 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
 
   shared_examples 'common' do
     it 'accepts indented methods in LHS of []= assignment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a
           .b[c] = 0
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts indented methods inside and outside a block' do
@@ -38,12 +37,11 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     end
 
     it 'accepts indentation relative to first receiver' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         node
           .children.map { |n| string_source(n) }.compact
           .any? { |s| preferred.any? { |d| s.include?(d) } }
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts indented methods in ordinary statement' do
@@ -213,11 +211,10 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     # a chain of calls, and that first dot does not begin its line.
     context 'for semantic alignment' do
       it 'accepts method being aligned with method' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           User.all.first
               .age.to_s
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts method being aligned with method that is an argument' do
@@ -236,29 +233,26 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       end
 
       it 'accepts method being aligned with method in assignment' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           age = User.all.first
                     .age.to_s
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts aligned method even when an aref is in the chain' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           foo = '123'.a
                      .b[1]
                      .c
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts aligned method even when an aref is first in the chain' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           foo = '123'[1].a
                         .b
                         .c
         END
-        expect(cop.offenses).to be_empty
       end
 
       it "doesn't fail on a chain of aref calls" do
@@ -266,22 +260,20 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       end
 
       it 'accepts aligned method with blocks in operation assignment' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           @comment_lines ||=
             src.comments
                .select { |c| begins_its_line?(c) }
                .map { |c| c.loc.line }
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts 3 aligned methods' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           a_class.new(severity, location, 'message', 'CopName')
                  .severity
                  .level
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'registers an offense for unaligned methods' do
@@ -319,17 +311,16 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     end
 
     it 'accepts correctly aligned methods in operands' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         1 + a
             .b
             .c + d.
                  e
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts correctly aligned methods in assignment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def investigate(processed_source)
           @modifier = processed_source
                       .tokens
@@ -337,11 +328,10 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
                       .map(&:pos)
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts aligned methods in if + assignment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         KeyMap = Hash.new do |map, key|
           value = if key.respond_to?(:to_str)
             key
@@ -353,15 +343,13 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
           keymap_mutex.synchronize { map[key] = value }
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts indented method when there is nothing to align with' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         expect { custom_formatter_class('NonExistentClass') }
           .to raise_error(NameError)
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for one space indentation of third line' do
@@ -379,12 +367,11 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     it 'accepts indented and aligned methods in binary operation' do
       # b is indented relative to a
       # .d is aligned with c
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a.
           b + c
               .d
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts aligned methods in if condition' do
@@ -429,12 +416,11 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     end
 
     it 'does not check binary operations when string wrapped with +' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         flash[:error] = 'Here is a string ' +
                         'That spans' <<
           'multiple lines'
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for misaligned method in []= call' do
@@ -483,23 +469,21 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     end
 
     it 'accepts aligned method in return' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def a
           return b.
                  c
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts aligned method in assignment + block + assignment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a = b do
           c.d = e.
                 f
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts aligned methods in assignment' do
@@ -523,20 +507,18 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     end
 
     it 'accepts aligned methods in constant assignment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         A = b
             .c
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts aligned methods in operator assignment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a +=
           b
           .c
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for unaligned methods in assignment' do
@@ -917,12 +899,11 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       let(:cop_indent) { 7 }
 
       it 'accepts indented methods' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           User.a
                  .c
                  .b
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts correctly indented methods in operation' do

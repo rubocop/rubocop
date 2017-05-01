@@ -34,13 +34,11 @@ describe RuboCop::Cop::Rails::ScopeArgs do
   end
 
   it 'accepts a lambda with a multiline block' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       scope :active, (lambda do |active|
                        where(active: active)
                      end)
     END
-
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts a proc' do

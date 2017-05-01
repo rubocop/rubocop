@@ -24,11 +24,10 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
     end
 
     it 'accepts multiline braces with content' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         each { %(
         ) }
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts empty braces with comment and line break inside' do
@@ -159,12 +158,11 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
 
     context 'for multi-line blocks' do
       it 'accepts left brace with inner space' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           each { |x|
           puts
           }
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'registers an offense for left brace without inner space' do

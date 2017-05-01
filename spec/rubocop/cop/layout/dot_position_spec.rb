@@ -28,11 +28,10 @@ describe RuboCop::Cop::Layout::DotPosition, :config do
     end
 
     it 'accepts leading do in multi-line method call' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         something
           .method_name
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'does not err on method call with no dots' do
@@ -90,23 +89,21 @@ describe RuboCop::Cop::Layout::DotPosition, :config do
 
     context 'when there is an intervening line comment' do
       it 'does not register offense' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           something.
           # a comment here
             method_name
         END
-        expect(cop.offenses).to be_empty
       end
     end
 
     context 'when there is an intervening blank line' do
       it 'does not register offense' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           something.
 
             method_name
         END
-        expect(cop.offenses).to be_empty
       end
     end
   end
@@ -127,11 +124,10 @@ describe RuboCop::Cop::Layout::DotPosition, :config do
     end
 
     it 'accepts trailing dot in multi-line method call' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         something.
           method_name
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'does not err on method call with no dots' do
@@ -151,12 +147,11 @@ describe RuboCop::Cop::Layout::DotPosition, :config do
     end
 
     it 'does not get confused by several lines of chained methods' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         File.new(something).
         readlines.map.
         compact.join("\n")
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'auto-corrects leading dot in multi-line call' do

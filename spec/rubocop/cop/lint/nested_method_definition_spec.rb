@@ -43,17 +43,16 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
   end
 
   it 'does not register an offense for a lambda definition inside method' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def foo
         bar = -> { puts  }
         bar.call
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not register offense for nested definition inside instance_eval' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       class Foo
         def x(obj)
           obj.instance_eval do
@@ -63,11 +62,10 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
         end
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not register offense for nested definition inside instance_exec' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       class Foo
         def x(obj)
           obj.instance_exec do
@@ -77,11 +75,10 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
         end
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not register offense for definition of method on local var' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       class Foo
         def x(obj)
           def obj.y
@@ -89,11 +86,10 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
         end
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not register offense for nested definition inside class_eval' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       class Foo
         def x(klass)
           klass.class_eval do
@@ -103,11 +99,10 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
         end
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not register offense for nested definition inside class_exec' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       class Foo
         def x(klass)
           klass.class_exec do
@@ -117,11 +112,10 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
         end
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not register offense for nested definition inside module_eval' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       class Foo
         def self.define(mod)
           mod.module_eval do
@@ -131,11 +125,10 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
         end
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not register offense for nested definition inside module_eval' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       class Foo
         def self.define(mod)
           mod.module_exec do
@@ -145,11 +138,10 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
         end
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not register offense for nested definition inside class shovel' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       class Foo
         def bar
           class << self
@@ -159,7 +151,6 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
         end
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not register offense for nested definition inside Class.new' do
@@ -179,7 +170,7 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
   end
 
   it 'does not register offense for nested definition inside Module.new' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       class Foo
         def self.define
           Module.new do
@@ -189,7 +180,6 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
         end
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not register offense for nested definition inside Struct.new' do

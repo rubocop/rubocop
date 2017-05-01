@@ -36,12 +36,11 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'accepts a correctly aligned )' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           some_method(
             a
           )
         END
-        expect(cop.offenses).to be_empty
       end
     end
 
@@ -67,11 +66,10 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'accepts a correctly aligned )' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           some_method(a
                      )
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts empty ()' do
@@ -82,7 +80,7 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
         let(:align_parameters_config) { 'with_fixed_indentation' }
 
         it 'accepts a correctly indented )' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_no_offenses(<<-END.strip_indent)
             some_method(a,
               x: 1,
               y: 2
@@ -91,7 +89,6 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
               some_method(a,
               )
           END
-          expect(cop.offenses).to be_empty
         end
 
         it 'autocorrects misindented )' do
@@ -148,13 +145,12 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'accepts a correctly aligned )' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           def some_method(
             a
           )
           end
         END
-        expect(cop.offenses).to be_empty
       end
     end
 
@@ -183,20 +179,18 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'accepts a correctly aligned )' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           def some_method(a
                          )
           end
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts empty ()' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           def some_method()
           end
         END
-        expect(cop.offenses).to be_empty
       end
     end
   end
@@ -228,12 +222,11 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'accepts a correctly aligned )' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           w = x * (
             y + z
           )
         END
-        expect(cop.offenses).to be_empty
       end
     end
 
@@ -259,30 +252,27 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'accepts a correctly aligned )' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           w = x * (y + z
                   )
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts ) that does not begin its line' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           w = x * (y + z +
                   a)
         END
-        expect(cop.offenses).to be_empty
       end
     end
   end
 
   it 'accepts begin nodes that are not grouped expressions' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def a
         x
         y
       end
     END
-    expect(cop.offenses).to be_empty
   end
 end

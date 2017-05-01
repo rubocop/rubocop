@@ -133,23 +133,19 @@ describe RuboCop::Cop::Rails::Present, :config do
     end
 
     it 'accepts normal if blank?' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         if foo.blank?
           something
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts normal unless present?' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         unless foo.present?
           something
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     context 'unless blank?' do

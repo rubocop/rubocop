@@ -5,12 +5,10 @@ describe RuboCop::Cop::Layout::MultilineMethodCallBraceLayout, :config do
   let(:cop_config) { { 'EnforcedStyle' => 'symmetrical' } }
 
   it 'ignores implicit calls' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       foo 1,
       2
     END
-
-    expect(cop.offenses).to be_empty
   end
 
   it 'ignores single-line calls' do
@@ -26,12 +24,10 @@ describe RuboCop::Cop::Layout::MultilineMethodCallBraceLayout, :config do
   end
 
   it 'ignores calls with a multiline empty brace ' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       puts(
       )
     END
-
-    expect(cop.offenses).to be_empty
   end
 
   include_examples 'multiline literal brace layout' do
@@ -52,20 +48,18 @@ describe RuboCop::Cop::Layout::MultilineMethodCallBraceLayout, :config do
     end
 
     it 'ignores single-line calls with multi-line receiver' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         [
         ].join(" ")
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'ignores single-line calls with multi-line receiver with leading dot' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         [
         ]
         .join(" ")
       END
-      expect(cop.offenses).to be_empty
     end
   end
 end

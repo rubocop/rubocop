@@ -36,11 +36,10 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
     end
 
     it 'accepts chained single-line method calls' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         target
           .some_method(a)
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'auto-corrects unwanted comma in a method call' do
@@ -103,14 +102,13 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       end
 
       it 'accepts comma inside a heredoc parameter at the end' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           route(help: {
             'auth' => <<-HELP.chomp
           ,
           HELP
           })
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'auto-corrects unwanted comma in a method call with hash parameters' \
@@ -163,11 +161,10 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       end
 
       it 'accepts a method call with two parameters on the same line' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           some_method(a, b
                      )
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts trailing comma in a method call with hash' \
@@ -241,12 +238,11 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       end
 
       it 'accepts a multiline call with a single argument and trailing comma' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           method(
             1,
           )
         END
-        expect(cop.offenses).to be_empty
       end
     end
 
@@ -347,13 +343,12 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       it 'accepts missing comma after a heredoc' do
         # A heredoc that's the last item in a literal or parameter list can not
         # have a trailing comma. It's a syntax error.
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           route(1, <<-HELP.chomp
           ...
           HELP
           )
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'auto-corrects missing comma in a method call with hash parameters' \
@@ -377,12 +372,11 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       end
 
       it 'accepts a multiline call with a single argument and trailing comma' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           method(
             1,
           )
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts a multiline call with arguments on a single line and' \

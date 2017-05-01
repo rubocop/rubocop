@@ -35,29 +35,26 @@ describe RuboCop::Cop::Layout::AlignParameters do
     end
 
     it 'accepts multiline []= method call' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         Test.config["something"] =
          true
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts correctly aligned parameters' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         function(a,
                  0, 1,
                  (x + y),
                  if b then c else d end)
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts correctly aligned parameters with fullwidth characters' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         f 'Ｒｕｂｙ', g(a,
                         b)
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts calls that only span one line' do
@@ -65,11 +62,10 @@ describe RuboCop::Cop::Layout::AlignParameters do
     end
 
     it "doesn't get confused by a symbol argument" do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         add_offense(index,
                     MSG % kind)
       END
-      expect(cop.offenses).to be_empty
     end
 
     it "doesn't get confused by splat operator" do
@@ -100,27 +96,24 @@ describe RuboCop::Cop::Layout::AlignParameters do
     end
 
     it 'can handle a correctly aligned string literal as first argument' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         add_offense(x,
                     a)
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'can handle a string literal as other argument' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         add_offense(
                     "", a)
       END
-      expect(cop.offenses).to be_empty
     end
 
     it "doesn't get confused by a line break inside a parameter" do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         read(path, { headers:    true,
                      converters: :numeric })
       END
-      expect(cop.offenses).to be_empty
     end
 
     it "doesn't get confused by symbols with embedded expressions" do
@@ -132,11 +125,10 @@ describe RuboCop::Cop::Layout::AlignParameters do
     end
 
     it 'accepts braceless hashes' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         run(collection, :entry_name => label,
                         :paginator  => paginator)
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts the first parameter being on a new row' do
@@ -150,7 +142,7 @@ describe RuboCop::Cop::Layout::AlignParameters do
     end
 
     it 'can handle heredoc strings' do
-      inspect_source(cop, <<-'END'.strip_indent)
+      expect_no_offenses(<<-'END'.strip_indent)
         class_eval(<<-EOS, __FILE__, __LINE__ + 1)
                     def run_#{name}_callbacks(*args)
                       a = 1
@@ -158,17 +150,15 @@ describe RuboCop::Cop::Layout::AlignParameters do
                     end
                     EOS
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'can handle a method call within a method call' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a(a1,
           b(b1,
             b2),
           a2)
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'can handle a call embedded in a string' do
@@ -204,12 +194,11 @@ describe RuboCop::Cop::Layout::AlignParameters do
     end
 
     it 'can handle a multiline hash as second parameter' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         tag(:input, {
           :value => value
         })
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'can handle method calls without parentheses' do
@@ -260,38 +249,34 @@ describe RuboCop::Cop::Layout::AlignParameters do
       end
 
       it 'accepts parameter lists on a single line' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           def method(a, b)
           end
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts proper indentation' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           def method(a,
                      b)
           end
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts the first parameter being on a new row' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           def method(
             a,
             b)
           end
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts a method definition without parameters' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           def method
           end
         END
-        expect(cop.offenses).to be_empty
       end
 
       it "doesn't get confused by splat" do
@@ -330,12 +315,11 @@ describe RuboCop::Cop::Layout::AlignParameters do
         end
 
         it 'accepts proper indentation' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_no_offenses(<<-END.strip_indent)
             def self.method(a,
                             b)
             end
           END
-          expect(cop.offenses).to be_empty
         end
 
         it 'auto-corrects alignment' do
@@ -601,38 +585,34 @@ describe RuboCop::Cop::Layout::AlignParameters do
       end
 
       it 'accepts parameter lists on a single line' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           def method(a, b)
           end
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts proper indentation' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           def method(a,
             b)
           end
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts the first parameter being on a new row' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           def method(
             a,
             b)
           end
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts a method definition without parameters' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           def method
           end
         END
-        expect(cop.offenses).to be_empty
       end
 
       it "doesn't get confused by splat" do
@@ -671,12 +651,11 @@ describe RuboCop::Cop::Layout::AlignParameters do
         end
 
         it 'accepts proper indentation' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_no_offenses(<<-END.strip_indent)
             def self.method(a,
               b)
             end
           END
-          expect(cop.offenses).to be_empty
         end
 
         it 'auto-corrects alignment' do

@@ -29,7 +29,7 @@ describe RuboCop::Cop::Lint::EmptyEnsure do
   end
 
   it 'does not register an offense for non-empty ensure' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       begin
         something
         return
@@ -37,6 +37,5 @@ describe RuboCop::Cop::Lint::EmptyEnsure do
         file.close
       end
     END
-    expect(cop.offenses).to be_empty
   end
 end

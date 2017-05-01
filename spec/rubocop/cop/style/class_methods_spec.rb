@@ -32,18 +32,17 @@ describe RuboCop::Cop::Style::ClassMethods do
   end
 
   it 'does not register an offense for methods using self' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       module Test
         def self.some_method
           do_something
         end
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not register an offense for other top-level singleton methods' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       class Test
         X = Something.new
 
@@ -52,16 +51,14 @@ describe RuboCop::Cop::Style::ClassMethods do
         end
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not register an offense outside class/module bodies' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def Test.some_method
         do_something
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'autocorrects class name to self' do

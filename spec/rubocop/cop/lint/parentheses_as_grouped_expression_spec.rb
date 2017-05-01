@@ -29,12 +29,11 @@ describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
   end
 
   it 'accepts a chain of method calls' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       a.b
       a.b 1
       a.b(1)
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts method with parens as arg to method without' do
@@ -42,11 +41,10 @@ describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
   end
 
   it 'accepts an operator call with argument in parentheses' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       a % (b + c)
       a.b = (c == d)
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts a space inside opening paren followed by left paren' do

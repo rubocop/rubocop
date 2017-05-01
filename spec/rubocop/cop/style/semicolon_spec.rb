@@ -31,33 +31,30 @@ describe RuboCop::Cop::Style::Semicolon, :config do
   end
 
   it 'accepts one line method definitions' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def foo1; x(3) end
       def initialize(*_); end
       def foo2() x(3); end
       def foo3; x(3); end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts one line empty class definitions' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       # Prefer a single-line format for class ...
       class Foo < Exception; end
 
       class Bar; end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts one line empty method definitions' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       # One exception to the rule are empty-body methods
       def no_op; end
 
       def foo; end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts one line empty module definitions' do
@@ -71,11 +68,10 @@ describe RuboCop::Cop::Style::Semicolon, :config do
   end
 
   it 'accept semicolons inside strings' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       string = ";
       multi-line string"
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for a semicolon at the beginning of a line' do

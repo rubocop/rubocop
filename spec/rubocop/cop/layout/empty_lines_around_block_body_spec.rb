@@ -47,12 +47,11 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
       end
 
       it 'is not fooled by single line blocks' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           some_method #{open} do_something #{close}
 
           something_else
         END
-        expect(cop.offenses).to be_empty
       end
     end
 
@@ -89,11 +88,10 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
       end
 
       it 'is not fooled by single line blocks' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           some_method #{open} do_something #{close}
           something_else
         END
-        expect(cop.offenses).to be_empty
       end
     end
   end

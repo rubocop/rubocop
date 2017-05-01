@@ -17,11 +17,10 @@ describe RuboCop::Cop::Style::NumericLiterals, :config do
   end
 
   it 'accepts integers with less than three places at the end' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       a = 123_456_789_00
       b = 819_2
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for an integer with misplaced underscore' do
@@ -60,12 +59,11 @@ describe RuboCop::Cop::Style::NumericLiterals, :config do
   end
 
   it 'ignores non-decimal literals' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       a = 0b1010101010101
       b = 01717171717171
       c = 0xab11111111bb
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'autocorrects a long integer offense' do

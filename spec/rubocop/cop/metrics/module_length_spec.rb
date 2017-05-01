@@ -37,7 +37,7 @@ describe RuboCop::Cop::Metrics::ModuleLength, :config do
   end
 
   it 'accepts a module with 5 lines' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       module Test
         a = 1
         a = 2
@@ -46,11 +46,10 @@ describe RuboCop::Cop::Metrics::ModuleLength, :config do
         a = 5
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts a module with less than 5 lines' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       module Test
         a = 1
         a = 2
@@ -58,11 +57,10 @@ describe RuboCop::Cop::Metrics::ModuleLength, :config do
         a = 4
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not count blank lines' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       module Test
         a = 1
         a = 2
@@ -73,20 +71,18 @@ describe RuboCop::Cop::Metrics::ModuleLength, :config do
         a = 7
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts empty modules' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       module Test
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   context 'when a module has inner modules' do
     it 'does not count lines of inner modules' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         module NamespaceModule
           module TestOne
             a = 1
@@ -109,7 +105,6 @@ describe RuboCop::Cop::Metrics::ModuleLength, :config do
           a = 5
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'rejects a module with 6 lines that belong to the module directly' do
@@ -143,7 +138,7 @@ describe RuboCop::Cop::Metrics::ModuleLength, :config do
 
   context 'when a module has inner classes' do
     it 'does not count lines of inner classes' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         module NamespaceModule
           class TestOne
             a = 1
@@ -166,7 +161,6 @@ describe RuboCop::Cop::Metrics::ModuleLength, :config do
           a = 5
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'rejects a module with 6 lines that belong to the module directly' do

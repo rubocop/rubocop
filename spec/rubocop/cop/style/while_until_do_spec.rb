@@ -28,19 +28,17 @@ describe RuboCop::Cop::Style::WhileUntilDo do
   end
 
   it 'accepts multi-line while without do' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       while cond
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts multi-line until without do' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       until cond
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'auto-corrects the usage of "do" in multiline while' do

@@ -98,60 +98,54 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'accepts non-trivial reader' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def test
         some_function_call
         @test
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts non-trivial writer' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def test(val)
         some_function_call(val)
         @test = val
         log(val)
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts splats' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def splatomatic(*values)
         @splatomatic = values
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts blocks' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def something(&block)
         @b = block
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts expressions within reader' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def bar
         @bar + foo
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts expressions within writer' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def bar(val)
         @bar = val + foo
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts an initialize method looking like a writer' do
@@ -164,37 +158,33 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'accepts reader with different ivar name' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def foo
         @fo
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts writer with different ivar name' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def foo(val)
         @fo = val
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts writer in a module' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       module Foo
         def bar=(bar)
           @bar = bar
         end
       end
     END
-
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts writer nested within a module' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       module Foo
         begin
           if RUBY_VERSION > "2.0"
@@ -205,12 +195,10 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
         end
       end
     END
-
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts reader nested within a module' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       module Foo
         begin
           if RUBY_VERSION > "2.0"
@@ -221,12 +209,10 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
         end
       end
     END
-
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts writer nested within an instance_eval call' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       something.instance_eval do
         begin
           if RUBY_VERSION > "2.0"
@@ -237,12 +223,10 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
         end
       end
     END
-
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts reader nested within an instance_eval calll' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       something.instance_eval do
         begin
           if RUBY_VERSION > "2.0"
@@ -253,8 +237,6 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
         end
       end
     END
-
-    expect(cop.offenses).to be_empty
   end
 
   it 'flags a reader inside a class, inside an instance_eval call' do
@@ -314,12 +296,11 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
     let(:cop_config) { { 'AllowPredicates' => true } }
 
     it 'accepts predicate-like reader' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def foo?
           @foo
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
@@ -365,12 +346,11 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
     let(:cop_config) { { 'AllowDSLWriters' => true } }
 
     it 'accepts DSL-style writer' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def foo(val)
          @foo = val
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
@@ -378,21 +358,19 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
     let(:cop_config) { { 'IgnoreClassMethods' => true } }
 
     it 'accepts class reader' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def self.foo
           @foo
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts class writer' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def self.foo(val)
           @foo = val
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 

@@ -32,17 +32,16 @@ describe RuboCop::Cop::Metrics::BlockLength, :config do
   end
 
   it 'accepts a block with less than 3 lines' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       something do
         a = 1
         a = 2
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not count blank lines' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       something do
         a = 1
 
@@ -50,11 +49,10 @@ describe RuboCop::Cop::Metrics::BlockLength, :config do
         a = 4
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts a block with multiline receiver and less than 3 lines of body' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       [
         :a,
         :b,
@@ -64,15 +62,13 @@ describe RuboCop::Cop::Metrics::BlockLength, :config do
         a = 2
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts empty blocks' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       something do
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'rejects brace blocks too' do
@@ -102,7 +98,7 @@ describe RuboCop::Cop::Metrics::BlockLength, :config do
   end
 
   it 'does not count commented lines by default' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       something do
         a = 1
         #a = 2
@@ -110,7 +106,6 @@ describe RuboCop::Cop::Metrics::BlockLength, :config do
         a = 4
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   context 'when CountComments is enabled' do
@@ -144,14 +139,13 @@ describe RuboCop::Cop::Metrics::BlockLength, :config do
     end
 
     it 'accepts the foo method with a long block' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         foo do
           a = 1
           a = 2
           a = 3
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 end

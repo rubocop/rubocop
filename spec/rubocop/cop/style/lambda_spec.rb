@@ -176,22 +176,20 @@ describe RuboCop::Cop::Style::Lambda, :config do
 
     context 'with a multiline lambda method call' do
       it 'does not register an offense' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           l = lambda do |x|
             x
           end
         END
-        expect(cop.offenses).to be_empty
       end
     end
 
     context 'with a single line lambda literal' do
       it 'does not register an offense' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           lambda = ->(x) { x }
           lambda.(1)
         END
-        expect(cop.offenses).to be_empty
       end
     end
 

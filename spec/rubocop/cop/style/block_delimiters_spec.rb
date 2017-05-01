@@ -15,11 +15,10 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
     end
 
     it 'accepts a multi-line block with do-end' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         each do |x|
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts a multi-line block that needs braces to be valid ruby' do
@@ -65,21 +64,19 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
     end
 
     it 'accepts a multi-line block with braces when passed to a method' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         puts map { |x|
           x
         }
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts a multi-line block with braces when chained' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         map { |x|
           x
         }.inspect
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts a multi-line block with braces when passed to a known ' \
@@ -510,11 +507,10 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
       end
 
       it 'allows when the block is being chained' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           each { |x|
           }.map(&:to_sym)
         END
-        expect(cop.offenses).to be_empty
       end
     end
   end

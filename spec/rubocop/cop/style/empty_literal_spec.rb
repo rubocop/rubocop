@@ -163,13 +163,11 @@ describe RuboCop::Cop::Style::EmptyLiteral do
       let(:ruby_version) { 2.3 }
 
       it 'does not register an offense for String.new' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           # encoding: utf-8
           # frozen_string_literal: true
           test = String.new
         END
-
-        expect(cop.offenses).to be_empty
       end
     end
   end

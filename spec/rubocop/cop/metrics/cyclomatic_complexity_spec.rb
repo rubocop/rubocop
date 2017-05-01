@@ -7,16 +7,15 @@ describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     let(:cop_config) { { 'Max' => 1 } }
 
     it 'accepts a method with no decision points' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def method_name
           call_foo
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts complex code outside of methods' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def method_name
           call_foo
         end
@@ -26,7 +25,6 @@ describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
           call_bar if fourth_condition || fifth_condition
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for an if modifier' do

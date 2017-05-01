@@ -225,11 +225,10 @@ describe RuboCop::Cop::Performance::RedundantMerge, :config do
   end
 
   it "doesn't register an error when return value is used" do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       variable = hash.merge!(a: 1)
       puts variable
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'formats the error message correctly for hash.merge!(a: 1)' do
@@ -245,11 +244,10 @@ describe RuboCop::Cop::Performance::RedundantMerge, :config do
     end
 
     it "doesn't register errors for multi-value hash merges" do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         hash = {}
         hash.merge!(a: 1, b: 2)
       END
-      expect(cop.offenses).to be_empty
     end
   end
 end

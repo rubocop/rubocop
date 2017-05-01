@@ -175,12 +175,11 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it 'accepts code with EOL comment since user might want to keep it' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       unless a
         b # A comment
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts if-else-end' do
@@ -196,14 +195,13 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it 'accepts if/elsif' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       if test
         something
       elsif test2
         something_else
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   context 'with implicit match conditional' do

@@ -7,11 +7,10 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
     let(:cop_config) { { 'Max' => 0 } }
 
     it 'accepts an empty method' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def method_name
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for an if modifier' do
@@ -85,13 +84,12 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
     let(:cop_config) { { 'Max' => 2 } }
 
     it 'accepts two assignments' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def method_name
           x = 1
           y = 2
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
@@ -99,12 +97,11 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
     let(:cop_config) { { 'Max' => 1.8 } }
 
     it 'accepts a total score of 1.7' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def method_name
           y = 1 if y == 1
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
