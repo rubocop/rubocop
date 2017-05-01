@@ -185,9 +185,10 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
     end
 
     it 'registers an offense for a single line procedural block' do
-      inspect_source(cop, 'each { |x| puts x }')
-      expect(cop.messages)
-        .to eq(['Prefer `do...end` over `{...}` for procedural blocks.'])
+      expect_offense(<<-RUBY.strip_indent)
+        each { |x| puts x }
+             ^ Prefer `do...end` over `{...}` for procedural blocks.
+      RUBY
     end
 
     it 'accepts a single line block with do-end if it is procedural' do
@@ -337,12 +338,11 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     context 'when there are braces around a multi-line block' do
       it 'registers an offense in the simple case' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-END.strip_indent)
           each { |x|
+               ^ Avoid using `{...}` for multi-line blocks.
           }
         END
-        expect(cop.messages)
-          .to eq(['Avoid using `{...}` for multi-line blocks.'])
       end
 
       it 'accepts braces if do-end would change the meaning' do
@@ -465,13 +465,11 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
     include_examples 'syntactic styles'
 
     it 'registers an offense for multi-line chained do-end blocks' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         each do |x|
+             ^^ Prefer `{...}` over `do...end` for multi-line chained blocks.
         end.map(&:to_s)
       END
-      expect(cop.messages).to eq(
-        ['Prefer `{...}` over `do...end` for multi-line chained blocks.']
-      )
     end
 
     it 'auto-corrects do-end for chained blocks' do
@@ -498,12 +496,11 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     context 'when there are braces around a multi-line block' do
       it 'registers an offense in the simple case' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-END.strip_indent)
           each { |x|
+               ^ Prefer `do...end` for multi-line blocks without chaining.
           }
         END
-        expect(cop.messages)
-          .to eq(['Prefer `do...end` for multi-line blocks without chaining.'])
       end
 
       it 'allows when the block is being chained' do

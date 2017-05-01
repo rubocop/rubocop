@@ -175,39 +175,39 @@ describe RuboCop::Cop::Layout::ElseAlignment do
 
         context 'and end is aligned with keyword' do
           it 'registers offenses for an if with setter' do
-            inspect_source(cop, <<-END.strip_indent)
+            expect_offense(<<-END.strip_indent)
               foo.bar = if baz
                           derp1
                         elsif meh
+                        ^^^^^ Align `elsif` with `foo.bar`.
                           derp2
                         else
+                        ^^^^ Align `else` with `foo.bar`.
                           derp3
                         end
             END
-            expect(cop.messages).to eq(['Align `elsif` with `foo.bar`.',
-                                        'Align `else` with `foo.bar`.'])
           end
 
           it 'registers an offense for an if with element assignment' do
-            inspect_source(cop, <<-END.strip_indent)
+            expect_offense(<<-END.strip_indent)
               foo[bar] = if baz
                            derp1
                          else
+                         ^^^^ Align `else` with `foo[bar]`.
                            derp2
                          end
             END
-            expect(cop.messages).to eq(['Align `else` with `foo[bar]`.'])
           end
 
           it 'registers an offense for an if' do
-            inspect_source(cop, <<-END.strip_indent)
+            expect_offense(<<-END.strip_indent)
               var = if a
                       0
                     else
+                    ^^^^ Align `else` with `var`.
                       1
                     end
             END
-            expect(cop.messages).to eq(['Align `else` with `var`.'])
           end
         end
       end
@@ -215,14 +215,14 @@ describe RuboCop::Cop::Layout::ElseAlignment do
       shared_examples 'assignment and if with keyword alignment' do
         context 'and end is aligned with variable' do
           it 'registers an offense for an if' do
-            inspect_source(cop, <<-END.strip_indent)
+            expect_offense(<<-END.strip_indent)
               var = if a
                 0
               elsif b
+              ^^^^^ Align `elsif` with `if`.
                 1
               end
             END
-            expect(cop.messages).to eq(['Align `elsif` with `if`.'])
           end
 
           it 'autocorrects bad alignment' do
@@ -315,14 +315,14 @@ describe RuboCop::Cop::Layout::ElseAlignment do
 
   context 'with unless' do
     it 'registers an offense for misaligned else' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         unless cond
            func1
          else
+         ^^^^ Align `else` with `unless`.
            func2
         end
       END
-      expect(cop.messages).to eq(['Align `else` with `unless`.'])
     end
 
     it 'accepts a correctly aligned else in an otherwise empty unless' do
@@ -343,17 +343,17 @@ describe RuboCop::Cop::Layout::ElseAlignment do
 
   context 'with case' do
     it 'registers an offense for misaligned else' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         case a
         when b
           c
         when d
           e
          else
+         ^^^^ Align `else` with `when`.
           f
         end
       END
-      expect(cop.messages).to eq(['Align `else` with `when`.'])
     end
 
     it 'accepts correctly aligned case/when/else' do
@@ -428,16 +428,16 @@ describe RuboCop::Cop::Layout::ElseAlignment do
         end
 
         it 'registers an offense for else not aligned with private' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_offense(<<-END.strip_indent)
             private def test
                       something
                     rescue
                       handling
                     else
+                    ^^^^ Align `else` with `private`.
                       something_else
                     end
           END
-          expect(cop.messages).to eq(['Align `else` with `private`.'])
         end
       end
     end
@@ -445,7 +445,7 @@ describe RuboCop::Cop::Layout::ElseAlignment do
 
   context 'with begin/rescue/else/ensure/end' do
     it 'registers an offense for misaligned else' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         def my_func
           puts 'do something outside block'
           begin
@@ -455,13 +455,13 @@ describe RuboCop::Cop::Layout::ElseAlignment do
           rescue
             puts 'wrongly intended error handling'
         else
+        ^^^^ Align `else` with `begin`.
             puts 'wrongly intended normal case handling'
           ensure
             puts 'wrongly intended common handling'
           end
         end
       END
-      expect(cop.messages).to eq(['Align `else` with `begin`.'])
     end
 
     it 'accepts a correctly aligned else' do
@@ -493,18 +493,18 @@ describe RuboCop::Cop::Layout::ElseAlignment do
     end
 
     it 'registers an offense for misaligned else' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         def my_func(string)
           puts string
         rescue => e
           puts e
           else
+          ^^^^ Align `else` with `def`.
           puts e
         ensure
           puts 'I love methods that print'
         end
       END
-      expect(cop.messages).to eq(['Align `else` with `def`.'])
     end
   end
 
@@ -525,7 +525,7 @@ describe RuboCop::Cop::Layout::ElseAlignment do
     end
 
     it 'registers an offense for misaligned else' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         def my_func
           puts 'do something error prone'
         rescue SomeException
@@ -533,10 +533,10 @@ describe RuboCop::Cop::Layout::ElseAlignment do
         rescue
           puts 'error handling'
           else
+          ^^^^ Align `else` with `def`.
           puts 'normal handling'
         end
       END
-      expect(cop.messages).to eq(['Align `else` with `def`.'])
     end
   end
 end

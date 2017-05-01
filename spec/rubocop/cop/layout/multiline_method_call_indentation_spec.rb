@@ -870,14 +870,16 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     end
 
     it 'registers an offense for aligned operators in assignment' do
-      inspect_source(cop, <<-END.strip_indent)
+      msg = 'Use %d (not %d) spaces for indenting an expression ' \
+              'in an assignment spanning multiple lines.'
+
+      expect_offense(<<-END.strip_indent)
         formatted_int = int_part
                         .abs
+                        ^^^^ #{format(msg, 2, 16)}
                         .reverse
+                        ^^^^^^^^ #{format(msg, 2, 16)}
       END
-      expect(cop.messages).to eq(['Use 2 (not 16) spaces for indenting an ' \
-                                  'expression in an assignment spanning ' \
-                                  'multiple lines.'] * 2)
     end
 
     it 'auto-corrects' do

@@ -19,21 +19,19 @@ describe RuboCop::Cop::Layout::BlockEndNewline do
   end
 
   it 'registers an offense when multiline block end is not on its own line' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-END.strip_indent)
       test do
         foo end
+            ^^^ Expression at 2, 7 should be on its own line.
     END
-    expect(cop.messages)
-      .to eq(['Expression at 2, 7 should be on its own line.'])
   end
 
   it 'registers an offense when multiline block } is not on its own line' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-END.strip_indent)
       test {
         foo }
+            ^ Expression at 2, 7 should be on its own line.
     END
-    expect(cop.messages)
-      .to eq(['Expression at 2, 7 should be on its own line.'])
   end
 
   it 'autocorrects a do/end block where the end is not on its own line' do

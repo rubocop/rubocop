@@ -23,7 +23,9 @@ describe RuboCop::Cop::Performance::RedundantSortBy do
   end
 
   it 'formats the error message correctly for array.sort_by { |x| x }' do
-    inspect_source(cop, 'array.sort_by { |x| x }')
-    expect(cop.messages).to eq(['Use `sort` instead of `sort_by { |x| x }`.'])
+    expect_offense(<<-RUBY.strip_indent)
+      array.sort_by { |x| x }
+            ^^^^^^^^^^^^^^^^^ Use `sort` instead of `sort_by { |x| x }`.
+    RUBY
   end
 end

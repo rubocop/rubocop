@@ -4,11 +4,12 @@ describe RuboCop::Cop::Layout::SpaceInsideParens do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for spaces inside parens' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-END.strip_indent)
       f( 3)
+        ^ Space inside parentheses detected.
       g = (a + 3 )
+                ^ Space inside parentheses detected.
     END
-    expect(cop.messages).to eq(['Space inside parentheses detected.'] * 2)
   end
 
   it 'accepts parentheses in block parameter list' do

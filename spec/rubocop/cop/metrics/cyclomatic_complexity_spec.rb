@@ -40,18 +40,18 @@ describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     end
 
     it 'registers an offense for an unless modifier' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         def method_name
+        ^^^ Cyclomatic complexity for method_name is too high. [2/1]
           call_foo unless some_condition
         end
       END
-      expect(cop.messages)
-        .to eq(['Cyclomatic complexity for method_name is too high. [2/1]'])
     end
 
     it 'registers an offense for an elsif block' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         def method_name
+        ^^^ Cyclomatic complexity for method_name is too high. [3/1]
           if first_condition then
             call_foo
           elsif second_condition then
@@ -61,59 +61,54 @@ describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
           end
         end
       END
-      expect(cop.messages)
-        .to eq(['Cyclomatic complexity for method_name is too high. [3/1]'])
     end
 
     it 'registers an offense for a ternary operator' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         def method_name
+        ^^^ Cyclomatic complexity for method_name is too high. [2/1]
           value = some_condition ? 1 : 2
         end
       END
-      expect(cop.messages)
-        .to eq(['Cyclomatic complexity for method_name is too high. [2/1]'])
     end
 
     it 'registers an offense for a while block' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         def method_name
+        ^^^ Cyclomatic complexity for method_name is too high. [2/1]
           while some_condition do
             call_foo
           end
         end
       END
-      expect(cop.messages)
-        .to eq(['Cyclomatic complexity for method_name is too high. [2/1]'])
     end
 
     it 'registers an offense for an until block' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         def method_name
+        ^^^ Cyclomatic complexity for method_name is too high. [2/1]
           until some_condition do
             call_foo
           end
         end
       END
-      expect(cop.messages)
-        .to eq(['Cyclomatic complexity for method_name is too high. [2/1]'])
     end
 
     it 'registers an offense for a for block' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         def method_name
+        ^^^ Cyclomatic complexity for method_name is too high. [2/1]
           for i in 1..2 do
             call_method
           end
         end
       END
-      expect(cop.messages)
-        .to eq(['Cyclomatic complexity for method_name is too high. [2/1]'])
     end
 
     it 'registers an offense for a rescue block' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         def method_name
+        ^^^ Cyclomatic complexity for method_name is too high. [2/1]
           begin
             call_foo
           rescue Exception
@@ -121,13 +116,12 @@ describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
           end
         end
       END
-      expect(cop.messages)
-        .to eq(['Cyclomatic complexity for method_name is too high. [2/1]'])
     end
 
     it 'registers an offense for a case/when block' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         def method_name
+        ^^^ Cyclomatic complexity for method_name is too high. [3/1]
           case value
           when 1
             call_foo
@@ -136,76 +130,68 @@ describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
           end
         end
       END
-      expect(cop.messages)
-        .to eq(['Cyclomatic complexity for method_name is too high. [3/1]'])
     end
 
     it 'registers an offense for &&' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         def method_name
+        ^^^ Cyclomatic complexity for method_name is too high. [2/1]
           call_foo && call_bar
         end
       END
-      expect(cop.messages)
-        .to eq(['Cyclomatic complexity for method_name is too high. [2/1]'])
     end
 
     it 'registers an offense for and' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         def method_name
+        ^^^ Cyclomatic complexity for method_name is too high. [2/1]
           call_foo and call_bar
         end
       END
-      expect(cop.messages)
-        .to eq(['Cyclomatic complexity for method_name is too high. [2/1]'])
     end
 
     it 'registers an offense for ||' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         def method_name
+        ^^^ Cyclomatic complexity for method_name is too high. [2/1]
           call_foo || call_bar
         end
       END
-      expect(cop.messages)
-        .to eq(['Cyclomatic complexity for method_name is too high. [2/1]'])
     end
 
     it 'registers an offense for or' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         def method_name
+        ^^^ Cyclomatic complexity for method_name is too high. [2/1]
           call_foo or call_bar
         end
       END
-      expect(cop.messages)
-        .to eq(['Cyclomatic complexity for method_name is too high. [2/1]'])
     end
 
     it 'deals with nested if blocks containing && and ||' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         def method_name
+        ^^^ Cyclomatic complexity for method_name is too high. [6/1]
           if first_condition then
             call_foo if second_condition && third_condition
             call_bar if fourth_condition || fifth_condition
           end
         end
       END
-      expect(cop.messages)
-        .to eq(['Cyclomatic complexity for method_name is too high. [6/1]'])
     end
 
     it 'counts only a single method' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         def method_name_1
+        ^^^ Cyclomatic complexity for method_name_1 is too high. [2/1]
           call_foo if some_condition
         end
 
         def method_name_2
+        ^^^ Cyclomatic complexity for method_name_2 is too high. [2/1]
           call_foo if some_condition
         end
       END
-      expect(cop.messages)
-        .to eq(['Cyclomatic complexity for method_name_1 is too high. [2/1]',
-                'Cyclomatic complexity for method_name_2 is too high. [2/1]'])
     end
   end
 
@@ -213,8 +199,9 @@ describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     let(:cop_config) { { 'Max' => 2 } }
 
     it 'counts stupid nested if and else blocks' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         def method_name
+        ^^^ Cyclomatic complexity for method_name is too high. [5/2]
           if first_condition then
             call_foo
           else
@@ -227,8 +214,6 @@ describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
           end
         end
       END
-      expect(cop.messages)
-        .to eq(['Cyclomatic complexity for method_name is too high. [5/2]'])
     end
   end
 end

@@ -232,10 +232,10 @@ describe RuboCop::Cop::Performance::RedundantMerge, :config do
   end
 
   it 'formats the error message correctly for hash.merge!(a: 1)' do
-    inspect_source(cop, 'hash.merge!(a: 1)')
-    expect(cop.messages).to eq(
-      ['Use `hash[:a] = 1` instead of `hash.merge!(a: 1)`.']
-    )
+    expect_offense(<<-RUBY.strip_indent)
+      hash.merge!(a: 1)
+      ^^^^^^^^^^^^^^^^^ Use `hash[:a] = 1` instead of `hash.merge!(a: 1)`.
+    RUBY
   end
 
   context 'with MaxKeyValuePairs of 1' do

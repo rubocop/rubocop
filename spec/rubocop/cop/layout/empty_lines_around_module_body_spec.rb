@@ -66,13 +66,13 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
     end
 
     it 'registers an offense for module body not ending with a blank' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         module SomeModule
 
           do_something
         end
+        ^ Empty line missing at module body end.
       END
-      expect(cop.messages).to eq(['Empty line missing at module body end.'])
     end
 
     it 'autocorrects beginning and end' do

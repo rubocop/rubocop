@@ -136,12 +136,12 @@ describe RuboCop::Cop::Performance::RedundantBlockCall do
   end
 
   it 'formats the error message for func.call(1) correctly' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-END.strip_indent)
       def method(&func)
         func.call(1)
+        ^^^^^^^^^^^^ Use `yield` instead of `func.call`.
       end
     END
-    expect(cop.messages).to eq(['Use `yield` instead of `func.call`.'])
   end
 
   it 'autocorrects using parentheses when block.call uses parentheses' do

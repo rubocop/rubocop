@@ -7,39 +7,39 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
 
   context 'with if statement' do
     it 'registers an offense for bad indentation in an if body' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         if cond
          func
           func
+          ^^^^ Inconsistent indentation detected.
         end
       END
-      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
     it 'registers an offense for bad indentation in an else body' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         if cond
           func1
         else
          func2
           func2
+          ^^^^^ Inconsistent indentation detected.
         end
       END
-      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
     it 'registers an offense for bad indentation in an elsif body' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         if a1
           b1
         elsif a2
          b2
         b3
+        ^^ Inconsistent indentation detected.
         else
           c
         end
       END
-      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
     it 'autocorrects bad indentation' do
@@ -222,13 +222,13 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
 
   context 'with unless' do
     it 'registers an offense for bad indentation in an unless body' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         unless cond
          func
           func
+          ^^^^ Inconsistent indentation detected.
         end
       END
-      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
     it 'accepts an empty unless' do
@@ -242,18 +242,18 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
 
   context 'with case' do
     it 'registers an offense for bad indentation in a case/when body' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         case a
         when b
          c
             d
+            ^ Inconsistent indentation detected.
         end
       END
-      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
     it 'registers an offense for bad indentation in a case/else body' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         case a
         when b
           c
@@ -262,9 +262,9 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
         else
            f
           g
+          ^ Inconsistent indentation detected.
         end
       END
-      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
     it 'accepts correctly indented case/when/else' do
@@ -318,33 +318,33 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
 
   context 'with while/until' do
     it 'registers an offense for bad indentation in a while body' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         while cond
          func
           func
+          ^^^^ Inconsistent indentation detected.
         end
       END
-      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
     it 'registers an offense for bad indentation in begin/end/while' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         something = begin
          func1
            func2
+           ^^^^^ Inconsistent indentation detected.
         end while cond
       END
-      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
     it 'registers an offense for bad indentation in an until body' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         until cond
          func
           func
+          ^^^^ Inconsistent indentation detected.
         end
       END
-      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
     it 'accepts an empty while' do
@@ -357,13 +357,13 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
 
   context 'with for' do
     it 'registers an offense for bad indentation in a for body' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         for var in 1..10
          func
         func
+        ^^^^ Inconsistent indentation detected.
         end
       END
-      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
     it 'accepts an empty for' do
@@ -376,24 +376,23 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
 
   context 'with def/defs' do
     it 'registers an offense for bad indentation in a def body' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         def test
             func1
              func2
+             ^^^^^ Inconsistent indentation detected.
         end
       END
-      expect(cop.messages)
-        .to eq(['Inconsistent indentation detected.'])
     end
 
     it 'registers an offense for bad indentation in a defs body' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         def self.test
            func
             func
+            ^^^^ Inconsistent indentation detected.
         end
       END
-      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
     it 'accepts an empty def body' do
@@ -542,23 +541,23 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
 
   context 'with block' do
     it 'registers an offense for bad indentation in a do/end body' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         a = func do
          b
           c
+          ^ Inconsistent indentation detected.
         end
       END
-      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
     it 'registers an offense for bad indentation in a {} body' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         func {
            b
           c
+          ^ Inconsistent indentation detected.
         }
       END
-      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
     it 'accepts a correctly indented block body' do

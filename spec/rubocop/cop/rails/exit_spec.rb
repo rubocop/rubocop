@@ -4,15 +4,17 @@ describe RuboCop::Cop::Rails::Exit, :config do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for an exit call with no receiver' do
-    inspect_source(cop,
-                   'exit')
-    expect(cop.messages).to eq([RuboCop::Cop::Rails::Exit::MSG])
+    expect_offense(<<-RUBY.strip_indent)
+      exit
+      ^^^^ Do not use `exit` in Rails applications.
+    RUBY
   end
 
   it 'registers an offense for an exit! call with no receiver' do
-    inspect_source(cop,
-                   'exit!')
-    expect(cop.messages).to eq([RuboCop::Cop::Rails::Exit::MSG])
+    expect_offense(<<-RUBY.strip_indent)
+      exit!
+      ^^^^^ Do not use `exit` in Rails applications.
+    RUBY
   end
 
   context 'exit calls on objects' do
@@ -46,15 +48,17 @@ describe RuboCop::Cop::Rails::Exit, :config do
 
   context 'explicit calls' do
     it 'does register an offense for explicit Kernel.exit calls' do
-      inspect_source(cop,
-                     'Kernel.exit')
-      expect(cop.messages).to eq([RuboCop::Cop::Rails::Exit::MSG])
+      expect_offense(<<-RUBY.strip_indent)
+        Kernel.exit
+               ^^^^ Do not use `exit` in Rails applications.
+      RUBY
     end
 
     it 'does register an offense for explicit Process.exit calls' do
-      inspect_source(cop,
-                     'Process.exit')
-      expect(cop.messages).to eq([RuboCop::Cop::Rails::Exit::MSG])
+      expect_offense(<<-RUBY.strip_indent)
+        Process.exit
+                ^^^^ Do not use `exit` in Rails applications.
+      RUBY
     end
   end
 end

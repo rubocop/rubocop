@@ -8,12 +8,11 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
 
   context 'when the block has no arguments' do
     it 'registers an offense for mismatched block end' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         test do
           end
+          ^^^ `end` at 2, 2 is not aligned with `test do` at 1, 0.
       END
-      expect(cop.messages)
-        .to eq(['`end` at 2, 2 is not aligned with `test do` at 1, 0.'])
     end
 
     it 'auto-corrects alignment' do
@@ -31,12 +30,11 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
 
   context 'when the block has arguments' do
     it 'registers an offense for mismatched block end' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         test do |ala|
           end
+          ^^^ `end` at 2, 2 is not aligned with `test do |ala|` at 1, 0.
       END
-      expect(cop.messages)
-        .to eq(['`end` at 2, 2 is not aligned with `test do |ala|` at 1, 0.'])
     end
 
     it 'auto-corrects alignment' do
@@ -81,13 +79,11 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
 
   context 'when there is an assignment chain' do
     it 'registers an offense for an end aligned with the 2nd variable' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         a = b = c = test do |ala|
             end
+            ^^^ `end` at 2, 4 is not aligned with `a = b = c = test do |ala|` at 1, 0.
       END
-      expect(cop.messages)
-        .to eq(['`end` at 2, 4 is not aligned with' \
-                ' `a = b = c = test do |ala|` at 1, 0.'])
     end
 
     it 'accepts end aligned with the first variable' do
@@ -121,13 +117,11 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
   end
 
   it 'registers an offense for mismatched block end with a variable' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-END.strip_indent)
       variable = test do |ala|
         end
+        ^^^ `end` at 2, 2 is not aligned with `variable = test do |ala|` at 1, 0.
     END
-    expect(cop.messages)
-      .to eq(['`end` at 2, 2 is not aligned with `variable = test do |ala|`' \
-              ' at 1, 0.'])
   end
 
   context 'when the block is defined on the next line' do
@@ -141,15 +135,13 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
     end
 
     it 'registers an offenses for mismatched end alignment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         variable =
           a_long_method_that_dont_fit_on_the_line do |v|
             v.foo
         end
+        ^^^ `end` at 4, 0 is not aligned with `a_long_method_that_dont_fit_on_the_line do |v|` at 2, 2.
       END
-      expect(cop.messages)
-        .to eq(['`end` at 4, 0 is not aligned with' \
-                ' `a_long_method_that_dont_fit_on_the_line do |v|` at 2, 2.'])
     end
 
     it 'auto-corrects alignment' do
@@ -357,13 +349,11 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
   end
 
   it 'registers an offense for mismatched block end with a class variable' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-END.strip_indent)
       @@variable = test do |ala|
         end
+        ^^^ `end` at 2, 2 is not aligned with `@@variable = test do |ala|` at 1, 0.
     END
-    expect(cop.messages)
-      .to eq(['`end` at 2, 2 is not aligned with `@@variable = test do |ala|`' \
-              ' at 1, 0.'])
   end
 
   it 'accepts end aligned with a global variable' do
@@ -374,13 +364,11 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
   end
 
   it 'registers an offense for mismatched block end with a global variable' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-END.strip_indent)
       $variable = test do |ala|
         end
+        ^^^ `end` at 2, 2 is not aligned with `$variable = test do |ala|` at 1, 0.
     END
-    expect(cop.messages)
-      .to eq(['`end` at 2, 2 is not aligned with `$variable = test do |ala|`' \
-              ' at 1, 0.'])
   end
 
   it 'accepts end aligned with a constant' do
@@ -391,13 +379,11 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
   end
 
   it 'registers an offense for mismatched block end with a constant' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-END.strip_indent)
       Module::CONSTANT = test do |ala|
         end
+        ^^^ `end` at 2, 2 is not aligned with `Module::CONSTANT = test do |ala|` at 1, 0.
     END
-    expect(cop.messages)
-      .to eq(['`end` at 2, 2 is not aligned with' \
-              ' `Module::CONSTANT = test do |ala|` at 1, 0.'])
   end
 
   it 'accepts end aligned with a method call' do
@@ -409,14 +395,12 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
   end
 
   it 'registers an offense for mismatched block end with a method call' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-END.strip_indent)
       parser.children << lambda do |token|
         token << 1
         end
+        ^^^ `end` at 3, 2 is not aligned with `parser.children << lambda do |token|` at 1, 0.
     END
-    expect(cop.messages)
-      .to eq(['`end` at 3, 2 is not aligned with' \
-              ' `parser.children << lambda do |token|` at 1, 0.'])
   end
 
   it 'accepts end aligned with a method call with arguments' do
@@ -472,13 +456,12 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
   end
 
   it 'registers an offense for mismatched block end with an op-asgn (+=, -=)' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-END.strip_indent)
       rb += files.select do |file|
         file << something
         end
+        ^^^ `end` at 3, 2 is not aligned with `rb` at 1, 0.
     END
-    expect(cop.messages)
-      .to eq(['`end` at 3, 2 is not aligned with `rb` at 1, 0.'])
   end
 
   it 'accepts end aligned with an and-asgn (&&=)' do
@@ -489,13 +472,11 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
   end
 
   it 'registers an offense for mismatched block end with an and-asgn (&&=)' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-END.strip_indent)
       variable &&= test do |ala|
         end
+        ^^^ `end` at 2, 2 is not aligned with `variable &&= test do |ala|` at 1, 0.
     END
-    expect(cop.messages)
-      .to eq(['`end` at 2, 2 is not aligned with `variable &&= test do |ala|`' \
-              ' at 1, 0.'])
   end
 
   it 'accepts end aligned with an or-asgn (||=)' do
@@ -506,13 +487,11 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
   end
 
   it 'registers an offense for mismatched block end with an or-asgn (||=)' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-END.strip_indent)
       variable ||= test do |ala|
         end
+        ^^^ `end` at 2, 2 is not aligned with `variable ||= test do |ala|` at 1, 0.
     END
-    expect(cop.messages)
-      .to eq(['`end` at 2, 2 is not aligned with `variable ||= test do |ala|`' \
-              ' at 1, 0.'])
   end
 
   it 'accepts end aligned with a mass assignment' do
@@ -532,13 +511,12 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
   end
 
   it 'registers an offense for mismatched block end with a mass assignment' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-END.strip_indent)
       var1, var2 = lambda do |test|
         [1, 2]
         end
+        ^^^ `end` at 3, 2 is not aligned with `var1, var2` at 1, 0.
     END
-    expect(cop.messages)
-      .to eq(['`end` at 3, 2 is not aligned with `var1, var2` at 1, 0.'])
   end
 
   context 'when multiple similar-looking blocks have misaligned ends' do
@@ -683,12 +661,11 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
 
   context 'when the block is terminated by }' do
     it 'mentions } (not end) in the message' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-END.strip_indent)
         test {
           }
+          ^ `}` at 2, 2 is not aligned with `test {` at 1, 0.
       END
-      expect(cop.messages)
-        .to eq(['`}` at 2, 2 is not aligned with `test {` at 1, 0.'])
     end
   end
 

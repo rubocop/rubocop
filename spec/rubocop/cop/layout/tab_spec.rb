@@ -19,12 +19,12 @@ describe RuboCop::Cop::Layout::Tab do
   end
 
   it 'registers offenses before __END__ but not after' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-END.strip_indent)
       \tx = 0
+      ^ Tab detected.
       __END__
       \tx = 0
     END
-    expect(cop.messages).to eq(['Tab detected.'])
   end
 
   it 'accepts a line with tab in a string' do

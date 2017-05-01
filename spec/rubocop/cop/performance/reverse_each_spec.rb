@@ -4,10 +4,10 @@ describe RuboCop::Cop::Performance::ReverseEach do
   subject(:cop) { described_class.new }
 
   it 'registers an offense when each is called on reverse' do
-    inspect_source(cop, '[1, 2, 3].reverse.each { |e| puts e }')
-
-    expect(cop.messages)
-      .to eq(['Use `reverse_each` instead of `reverse.each`.'])
+    expect_offense(<<-RUBY.strip_indent)
+      [1, 2, 3].reverse.each { |e| puts e }
+                ^^^^^^^^^^^^ Use `reverse_each` instead of `reverse.each`.
+    RUBY
   end
 
   it 'does not register an offense when reverse is used without each' do
