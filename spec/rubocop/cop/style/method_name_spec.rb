@@ -38,8 +38,7 @@ describe RuboCop::Cop::Style::MethodName, :config do
 
   shared_examples 'always accepted' do
     it 'accepts one line methods' do
-      inspect_source(cop, "def body; '' end")
-      expect(cop.offenses).to be_empty
+      expect_no_offenses("def body; '' end")
     end
 
     it 'accepts operator definitions' do

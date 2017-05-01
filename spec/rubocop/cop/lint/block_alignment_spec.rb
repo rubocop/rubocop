@@ -451,9 +451,7 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
   end
 
   it 'does not raise an error for nested block in a method call' do
-    inspect_source(cop,
-                   'expect(arr.all? { |o| o.valid? })')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('expect(arr.all? { |o| o.valid? })')
   end
 
   it 'accepts end aligned with the block when the block is a method argument' do

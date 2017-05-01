@@ -95,12 +95,7 @@ describe RuboCop::Cop::Layout::FirstMethodParameterLineBreak do
   end
 
   it 'ignores single-line methods' do
-    inspect_source(
-      cop,
-      'def foo(bar, baz) ; bing ; end'
-    )
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('def foo(bar, baz) ; bing ; end')
   end
 
   it 'ignores methods without params' do

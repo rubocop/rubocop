@@ -53,23 +53,19 @@ describe RuboCop::Cop::Style::SymbolArray, :config do
     end
 
     it 'does not register an offense for array with non-syms' do
-      inspect_source(cop, '[:one, :two, "three"]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('[:one, :two, "three"]')
     end
 
     it 'does not register an offense for array starting with %i' do
-      inspect_source(cop, '%i(one two three)')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('%i(one two three)')
     end
 
     it 'does not register an offense for array with one element' do
-      inspect_source(cop, '[:three]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('[:three]')
     end
 
     it 'does not register an offense if symbol contains whitespace' do
-      inspect_source(cop, '[:one, :two, :"space here"]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('[:one, :two, :"space here"]')
     end
 
     it 'detects right value for MinSize to use for --auto-gen-config' do
@@ -96,8 +92,7 @@ describe RuboCop::Cop::Style::SymbolArray, :config do
 
     context 'Ruby 1.9', :ruby19 do
       it 'accepts arrays of smybols' do
-        inspect_source(cop, '[:one, :two, :three]')
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('[:one, :two, :three]')
       end
     end
 
@@ -124,8 +119,7 @@ describe RuboCop::Cop::Style::SymbolArray, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'brackets', 'MinSize' => 0 } }
 
     it 'does not register an offense for arrays of symbols' do
-      inspect_source(cop, '[:one, :two, :three]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('[:one, :two, :three]')
     end
 
     it 'registers an offense for array starting with %i' do

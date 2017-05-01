@@ -161,9 +161,7 @@ describe RuboCop::Cop::Style::NegatedIf do
     end
 
     it 'does not register an offence for postfix' do
-      inspect_source(cop, 'foo if !bar')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('foo if !bar')
     end
 
     it 'autocorrects for prefix' do
@@ -216,13 +214,11 @@ describe RuboCop::Cop::Style::NegatedIf do
   end
 
   it 'does not blow up for ternary ops' do
-    inspect_source(cop, 'a ? b : c')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('a ? b : c')
   end
 
   it 'does not blow up on a negated ternary operator' do
-    inspect_source(cop, '!foo.empty? ? :bar : :baz')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('!foo.empty? ? :bar : :baz')
   end
 
   it 'does not blow up for empty if condition' do

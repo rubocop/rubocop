@@ -225,15 +225,11 @@ describe RuboCop::Cop::Layout::IndentHash do
     end
 
     it 'accepts single line hash' do
-      inspect_source(cop,
-                     'a = { a: 1, b: 2 }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('a = { a: 1, b: 2 }')
     end
 
     it 'accepts an empty hash' do
-      inspect_source(cop,
-                     'a = {}')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('a = {}')
     end
 
     context 'when indentation width is overridden for this cop' do
@@ -407,15 +403,11 @@ describe RuboCop::Cop::Layout::IndentHash do
 
     context 'and argument are not surrounded by parentheses' do
       it 'accepts braceless hash' do
-        inspect_source(cop,
-                       'func a: 1, b: 2')
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('func a: 1, b: 2')
       end
 
       it 'accepts single line hash with braces' do
-        inspect_source(cop,
-                       'func x, { a: 1, b: 2 }')
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('func x, { a: 1, b: 2 }')
       end
 
       it 'accepts a correctly indented multi-line hash with braces' do
@@ -471,15 +463,11 @@ describe RuboCop::Cop::Layout::IndentHash do
     end
 
     it 'accepts single line hash' do
-      inspect_source(cop,
-                     'a = { a: 1, b: 2 }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('a = { a: 1, b: 2 }')
     end
 
     it 'accepts an empty hash' do
-      inspect_source(cop,
-                     'a = {}')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('a = {}')
     end
 
     context "when 'consistent' style is used" do

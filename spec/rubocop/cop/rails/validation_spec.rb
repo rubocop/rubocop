@@ -29,8 +29,7 @@ describe RuboCop::Cop::Rails::Validation do
   end
 
   it 'accepts new style validations' do
-    inspect_source(cop, 'validates :name')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('validates :name')
   end
 
   it 'autocorrect validates_length_of' do

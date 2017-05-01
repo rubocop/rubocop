@@ -31,9 +31,7 @@ describe RuboCop::Cop::Style::ArrayJoin do
   end
 
   it 'does not register an offense for numbers' do
-    inspect_source(cop,
-                   '%w(one two three) * 4')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('%w(one two three) * 4')
   end
 
   it 'does not register an offense for ambiguous cases' do

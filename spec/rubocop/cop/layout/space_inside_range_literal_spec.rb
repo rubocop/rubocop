@@ -15,8 +15,7 @@ describe RuboCop::Cop::Layout::SpaceInsideRangeLiteral do
   end
 
   it 'accepts no space inside .. literal' do
-    inspect_source(cop, '1..2')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('1..2')
   end
 
   it 'registers an offense for space inside ... literal' do
@@ -31,13 +30,11 @@ describe RuboCop::Cop::Layout::SpaceInsideRangeLiteral do
   end
 
   it 'accepts no space inside ... literal' do
-    inspect_source(cop, '1...2')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('1...2')
   end
 
   it 'accepts complex range literal with space in it' do
-    inspect_source(cop, '0...(line - 1)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('0...(line - 1)')
   end
 
   it 'accepts multiline range literal with no space in it' do

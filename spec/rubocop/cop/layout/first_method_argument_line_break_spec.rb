@@ -88,9 +88,7 @@ describe RuboCop::Cop::Layout::FirstMethodArgumentLineBreak do
   end
 
   it 'ignores arguments listed on a single line' do
-    inspect_source(cop, 'foo(bar, baz, bing)')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('foo(bar, baz, bing)')
   end
 
   it 'ignores arguments without parens' do
@@ -106,8 +104,6 @@ describe RuboCop::Cop::Layout::FirstMethodArgumentLineBreak do
   end
 
   it 'ignores methods without arguments' do
-    inspect_source(cop, 'foo')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('foo')
   end
 end

@@ -14,15 +14,11 @@ describe RuboCop::Cop::Layout::MultilineArrayBraceLayout, :config do
   end
 
   it 'ignores single-line arrays' do
-    inspect_source(cop, '[a, b, c]')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('[a, b, c]')
   end
 
   it 'ignores empty arrays' do
-    inspect_source(cop, '[]')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('[]')
   end
 
   include_examples 'multiline literal brace layout' do

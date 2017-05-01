@@ -85,21 +85,15 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   end
 
   it 'accepts = in a block that is called in a condition' do
-    inspect_source(cop,
-                   'return 1 if any_errors? { o = inspect(file) }')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('return 1 if any_errors? { o = inspect(file) }')
   end
 
   it 'accepts = in a block followed by method call' do
-    inspect_source(cop,
-                   'return 1 if any_errors? { o = file }.present?')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('return 1 if any_errors? { o = file }.present?')
   end
 
   it 'accepts ||= in condition' do
-    inspect_source(cop,
-                   'raise StandardError unless foo ||= bar')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('raise StandardError unless foo ||= bar')
   end
 
   it 'registers an offense for assignment after ||= in condition' do

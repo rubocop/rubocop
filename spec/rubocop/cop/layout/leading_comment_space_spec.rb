@@ -9,23 +9,19 @@ describe RuboCop::Cop::Layout::LeadingCommentSpace do
   end
 
   it 'does not register an offense for # followed by no text' do
-    inspect_source(cop, '#')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('#')
   end
 
   it 'does not register an offense for more than one space' do
-    inspect_source(cop, '#   heavily indented')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('#   heavily indented')
   end
 
   it 'does not register an offense for more than one #' do
-    inspect_source(cop, '###### heavily indented')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('###### heavily indented')
   end
 
   it 'does not register an offense for only #s' do
-    inspect_source(cop, '######')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('######')
   end
 
   it 'does not register an offense for #! on first line' do
@@ -91,8 +87,7 @@ describe RuboCop::Cop::Layout::LeadingCommentSpace do
   end
 
   it 'accepts sprockets directives' do
-    inspect_source(cop, '#= require_tree .')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('#= require_tree .')
   end
 
   it 'auto-corrects missing space' do

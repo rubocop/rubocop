@@ -87,13 +87,11 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
   end
 
   it 'accepts parentheses around condition in a ternary' do
-    inspect_source(cop, '(a == 0) ? b : a')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('(a == 0) ? b : a')
   end
 
   it 'is not confused by leading parentheses in subexpression' do
-    inspect_source(cop, '(a > b) && other ? one : two')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('(a > b) && other ? one : two')
   end
 
   it 'is not confused by unbalanced parentheses' do

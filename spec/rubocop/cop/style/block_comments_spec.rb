@@ -13,9 +13,7 @@ describe RuboCop::Cop::Style::BlockComments do
   end
 
   it 'accepts regular comments' do
-    inspect_source(cop,
-                   '# comment')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('# comment')
   end
 
   it 'auto-corrects a block comment into a regular comment' do

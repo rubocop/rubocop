@@ -11,8 +11,7 @@ describe RuboCop::Cop::Style::Send do
       end
 
       it 'does not register an offense for an invocation without args' do
-        inspect_source(cop, 'Object.send')
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('Object.send')
       end
     end
 
@@ -23,8 +22,7 @@ describe RuboCop::Cop::Style::Send do
       end
 
       it 'does not register an offense for an invocation without args' do
-        inspect_source(cop, 'send')
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('send')
       end
     end
   end

@@ -39,9 +39,7 @@ describe RuboCop::Cop::Style::InverseMethods do
   end
 
   it 'allows a method call without a not' do
-    inspect_source(cop, 'foo.none?')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('foo.none?')
   end
 
   context 'auto-correct' do

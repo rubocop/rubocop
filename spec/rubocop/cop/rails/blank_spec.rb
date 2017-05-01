@@ -24,34 +24,24 @@ describe RuboCop::Cop::Rails::Blank, :config do
     end
 
     it 'accepts checking nil?' do
-      inspect_source(cop, 'foo.nil?')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('foo.nil?')
     end
 
     it 'accepts checking empty?' do
-      inspect_source(cop, 'foo.empty?')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('foo.empty?')
     end
 
     it 'accepts checking nil? || empty? on different objects' do
-      inspect_source(cop, 'foo.nil? || bar.empty?')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('foo.nil? || bar.empty?')
     end
 
     # Bug: https://github.com/bbatsov/rubocop/issues/4171
     it 'does not break when RHS of `or` is a naked falsiness check' do
-      inspect_source(cop, 'foo.empty? || bar')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('foo.empty? || bar')
     end
 
     it 'does not break when LHS of `or` is a naked falsiness check' do
-      inspect_source(cop, 'bar || foo.empty?')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('bar || foo.empty?')
     end
 
     context 'nil or empty' do
@@ -139,15 +129,11 @@ describe RuboCop::Cop::Rails::Blank, :config do
     end
 
     it 'accepts modifier if present?' do
-      inspect_source(cop, 'something if foo.present?')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('something if foo.present?')
     end
 
     it 'accepts modifier unless blank?' do
-      inspect_source(cop, 'something unless foo.blank?')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('something unless foo.blank?')
     end
 
     it 'accepts normal if present?' do
@@ -269,9 +255,7 @@ describe RuboCop::Cop::Rails::Blank, :config do
     end
 
     it 'accepts checking nil? || empty?' do
-      inspect_source(cop, 'foo.nil? || foo.empty?')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('foo.nil? || foo.empty?')
     end
   end
 
@@ -283,9 +267,7 @@ describe RuboCop::Cop::Rails::Blank, :config do
     end
 
     it 'accepts !present?' do
-      inspect_source(cop, '!foo.present?')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('!foo.present?')
     end
   end
 
@@ -297,9 +279,7 @@ describe RuboCop::Cop::Rails::Blank, :config do
     end
 
     it 'accepts unless present?' do
-      inspect_source(cop, 'something unless foo.present?')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('something unless foo.present?')
     end
   end
 end

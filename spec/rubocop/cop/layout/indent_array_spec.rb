@@ -170,27 +170,19 @@ describe RuboCop::Cop::Layout::IndentArray do
     end
 
     it 'accepts single line array' do
-      inspect_source(cop,
-                     'a = [1, 2]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('a = [1, 2]')
     end
 
     it 'accepts an empty array' do
-      inspect_source(cop,
-                     'a = []')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('a = []')
     end
 
     it 'accepts multi-assignments with brackets' do
-      inspect_source(cop,
-                     'a, b = [b, a]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('a, b = [b, a]')
     end
 
     it 'accepts multi-assignments with no brackets' do
-      inspect_source(cop,
-                     'a, b = b, a')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('a, b = b, a')
     end
   end
 
@@ -334,15 +326,11 @@ describe RuboCop::Cop::Layout::IndentArray do
 
     context 'and argument are not surrounded by parentheses' do
       it 'accepts bracketless array' do
-        inspect_source(cop,
-                       'func 1, 2')
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('func 1, 2')
       end
 
       it 'accepts single line array with brackets' do
-        inspect_source(cop,
-                       'func x, [1, 2]')
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('func x, [1, 2]')
       end
 
       it 'accepts a correctly indented multi-line array with brackets' do
@@ -398,27 +386,19 @@ describe RuboCop::Cop::Layout::IndentArray do
     end
 
     it 'accepts single line array' do
-      inspect_source(cop,
-                     'a = [1, 2]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('a = [1, 2]')
     end
 
     it 'accepts an empty array' do
-      inspect_source(cop,
-                     'a = []')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('a = []')
     end
 
     it 'accepts multi-assignments with brackets' do
-      inspect_source(cop,
-                     'a, b = [b, a]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('a, b = [b, a]')
     end
 
     it 'accepts multi-assignments with no brackets' do
-      inspect_source(cop,
-                     'a, b = b, a')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('a, b = b, a')
     end
 
     context "when 'consistent' style is used" do

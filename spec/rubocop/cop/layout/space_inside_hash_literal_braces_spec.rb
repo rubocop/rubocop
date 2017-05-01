@@ -218,30 +218,26 @@ describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
   end
 
   it 'accepts hash literals with no braces' do
-    inspect_source(cop, 'x(a: b.c)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('x(a: b.c)')
   end
 
   it 'can handle interpolation in a braceless hash literal' do
     # A tricky special case where the closing brace of the
     # interpolation risks getting confused for a hash literal brace.
-    inspect_source(cop, 'f(get: "#{x}")')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('f(get: "#{x}")')
   end
 
   context 'on Hash[{ x: 1 } => [1]]' do
     # regression test; see GH issue 2436
     it 'does not register an offense' do
-      inspect_source(cop, 'Hash[{ x: 1 } => [1]]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('Hash[{ x: 1 } => [1]]')
     end
   end
 
   context 'on { key: "{" }' do
     # regression test; see GH issue 3958
     it 'does not register an offense' do
-      inspect_source(cop, '{ key: "{" }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('{ key: "{" }')
     end
   end
 end

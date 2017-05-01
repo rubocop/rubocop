@@ -31,13 +31,11 @@ describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'does not register an offense for alias_method' do
-      inspect_source(cop, 'alias_method :ala, :bala')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('alias_method :ala, :bala')
     end
 
     it 'does not register an offense for alias with gvars' do
-      inspect_source(cop, 'alias $ala $bala')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('alias $ala $bala')
     end
 
     it 'does not register an offense for alias in an instance_eval block' do
@@ -70,8 +68,7 @@ describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'does not register an offense for alias with bareword args' do
-      inspect_source(cop, 'alias ala bala')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('alias ala bala')
     end
 
     it 'registers an offense for alias_method at the top level' do

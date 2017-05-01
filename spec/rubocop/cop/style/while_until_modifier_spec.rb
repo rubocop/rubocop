@@ -89,13 +89,11 @@ describe RuboCop::Cop::Style::WhileUntilModifier do
   end
 
   it 'accepts modifier while' do
-    inspect_source(cop, 'ala while bala')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('ala while bala')
   end
 
   it 'accepts modifier until' do
-    inspect_source(cop, 'ala until bala')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('ala until bala')
   end
 
   # Regression: https://github.com/bbatsov/rubocop/issues/4006

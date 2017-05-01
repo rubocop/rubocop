@@ -11,7 +11,6 @@ describe RuboCop::Cop::Style::ClassVars do
   end
 
   it 'does not register an offense for class variable usage' do
-    inspect_source(cop, '@@test.test(20)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('@@test.test(20)')
   end
 end

@@ -10,14 +10,10 @@ describe RuboCop::Cop::Style::AutoResourceCleanup do
   end
 
   it 'does not register an offense for File.open with block' do
-    inspect_source(cop, 'File.open("file") { |f| something }')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('File.open("file") { |f| something }')
   end
 
   it 'does not register an offense for File.open with block-pass' do
-    inspect_source(cop, 'File.open("file", &:read)')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('File.open("file", &:read)')
   end
 end

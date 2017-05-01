@@ -42,9 +42,7 @@ describe RuboCop::Cop::Style::SingleLineBlockParams, :config do
   end
 
   it 'allows an unused parameter to have a leading underscore' do
-    inspect_source(cop,
-                   'File.foreach(filename).reduce(0) { |a, _e| a + 1 }')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('File.foreach(filename).reduce(0) { |a, _e| a + 1 }')
   end
 
   it 'finds incorrectly named parameters with leading underscores' do

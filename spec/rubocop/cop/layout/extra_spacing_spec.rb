@@ -103,13 +103,11 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'ignores whitespace at the beginning of the line' do
-      inspect_source(cop, '  m = "hello"')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('  m = "hello"')
     end
 
     it 'ignores whitespace inside a string' do
-      inspect_source(cop, 'm = "hello   this"')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('m = "hello   this"')
     end
 
     it 'ignores trailing whitespace' do

@@ -71,9 +71,7 @@ describe RuboCop::Cop::Rails::SafeNavigation, :config do
                          'foo.try!(baz, bar)'].join("\n")
 
         it 'accepts usages of try! without receiver' do
-          inspect_source(cop, 'try!(:something)')
-
-          expect(cop.offenses).to be_empty
+          expect_no_offenses('try!(:something)')
         end
       end
 

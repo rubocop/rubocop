@@ -66,8 +66,7 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
     end
 
     it 'accepts a one line if statement' do
-      inspect_source(cop, 'if cond then func1 else func2 end')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('if cond then func1 else func2 end')
     end
 
     it 'accepts a correctly aligned if/elsif/else/end' do

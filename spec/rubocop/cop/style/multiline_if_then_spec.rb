@@ -115,8 +115,7 @@ describe RuboCop::Cop::Style::MultilineIfThen do
   end
 
   it 'does not get confused by a postfix unless' do
-    inspect_source(cop, 'two unless one')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('two unless one')
   end
 
   it 'does not get confused by a nested postfix unless' do

@@ -721,9 +721,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     it_behaves_like('multiline all assignment types', '<<', [])
 
     it 'allows a method call in the subject of a ternary operator' do
-      inspect_source(cop, 'bar << foo? ? 1 : 2')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('bar << foo? ? 1 : 2')
     end
 
     it 'registers an offense for assignment using a method that ends with ' \
@@ -1151,9 +1149,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'allows assigning any variable type to ternary' do
-      inspect_source(cop, 'bar = foo? ? 1 : 2')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('bar = foo? ? 1 : 2')
     end
   end
 end

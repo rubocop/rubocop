@@ -36,8 +36,7 @@ describe RuboCop::Cop::Layout::DotPosition, :config do
     end
 
     it 'does not err on method call with no dots' do
-      inspect_source(cop, 'puts something')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('puts something')
     end
 
     it 'does not err on method call without a method name' do
@@ -49,8 +48,7 @@ describe RuboCop::Cop::Layout::DotPosition, :config do
     end
 
     it 'does not err on method call on same line' do
-      inspect_source(cop, 'something.method_name')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('something.method_name')
     end
 
     it 'auto-corrects trailing dot in multi-line call' do
@@ -137,8 +135,7 @@ describe RuboCop::Cop::Layout::DotPosition, :config do
     end
 
     it 'does not err on method call with no dots' do
-      inspect_source(cop, 'puts something')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('puts something')
     end
 
     it 'does not err on method call without a method name' do
@@ -150,8 +147,7 @@ describe RuboCop::Cop::Layout::DotPosition, :config do
     end
 
     it 'does not err on method call on same line' do
-      inspect_source(cop, 'something.method_name')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('something.method_name')
     end
 
     it 'does not get confused by several lines of chained methods' do

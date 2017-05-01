@@ -12,8 +12,6 @@ describe RuboCop::Cop::Style::InlineComment do
   end
 
   it 'does not register an offense for a standalone comment' do
-    inspect_source(cop, '# A standalone comment')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('# A standalone comment')
   end
 end

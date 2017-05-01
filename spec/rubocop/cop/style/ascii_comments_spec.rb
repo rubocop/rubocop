@@ -26,7 +26,6 @@ describe RuboCop::Cop::Style::AsciiComments do
   end
 
   it 'accepts comments with only ascii chars' do
-    inspect_source(cop, '# AZaz1@$%~,;*_`|')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('# AZaz1@$%~,;*_`|')
   end
 end

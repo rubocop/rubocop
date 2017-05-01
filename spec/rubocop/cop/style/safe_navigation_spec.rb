@@ -6,21 +6,15 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
   context 'target_ruby_version > 2.3', :ruby23 do
     it 'allows calls to methods not safeguarded by respond_to' do
-      inspect_source(cop, 'foo.bar')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('foo.bar')
     end
 
     it 'allows calls using safe navigation' do
-      inspect_source(cop, 'foo&.bar')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('foo&.bar')
     end
 
     it 'allows calls on nil' do
-      inspect_source(cop, 'nil&.bar')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('nil&.bar')
     end
 
     it 'allows method calls that nil responds to safe guarded by ' \
@@ -472,9 +466,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
     context 'respond_to?' do
       it 'allows method calls safeguarded by a respond_to check' do
-        inspect_source(cop, 'foo.bar if foo.respond_to?(:bar)')
-
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('foo.bar if foo.respond_to?(:bar)')
       end
 
       it 'allows method calls safeguarded by a respond_to check to a ' \
@@ -947,9 +939,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
   context 'target_ruby_version < 2.3', :ruby19 do
     it 'allows a method call safeguarded by a check for the variable' do
-      inspect_source(cop, 'foo.bar if foo')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('foo.bar if foo')
     end
   end
 end

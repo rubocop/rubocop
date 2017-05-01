@@ -40,13 +40,11 @@ describe RuboCop::Cop::Layout::MultilineBlockLayout do
   end
 
   it 'does not register an offense for one-line do/end blocks' do
-    inspect_source(cop, 'test do foo end')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('test do foo end')
   end
 
   it 'does not register an offense for one-line {} blocks' do
-    inspect_source(cop, 'test { foo }')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('test { foo }')
   end
 
   it 'does not register offenses when there is a newline for do/end block' do

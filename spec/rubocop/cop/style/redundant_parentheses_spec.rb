@@ -173,28 +173,23 @@ describe RuboCop::Cop::Style::RedundantParentheses do
   end
 
   it 'accepts parentheses inside an irange' do
-    inspect_source(cop, '(a)..(b)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('(a)..(b)')
   end
 
   it 'accepts parentheses inside an erange' do
-    inspect_source(cop, '(a)...(b)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('(a)...(b)')
   end
 
   it 'accepts parentheses around an irange' do
-    inspect_source(cop, '(a..b)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('(a..b)')
   end
 
   it 'accepts parentheses around an erange' do
-    inspect_source(cop, '(a...b)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('(a...b)')
   end
 
   it 'accepts parentheses around operator keywords' do
-    inspect_source(cop, '(1 and 2) and (3 or 4)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('(1 and 2) and (3 or 4)')
   end
 
   it 'registers an offense when there is space around the parentheses' do
@@ -203,19 +198,16 @@ describe RuboCop::Cop::Style::RedundantParentheses do
   end
 
   it 'accepts parentheses when they touch the preceding keyword' do
-    inspect_source(cop, 'if x; y else(1) end')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('if x; y else(1) end')
   end
 
   it 'accepts parentheses when they touch the following keyword' do
-    inspect_source(cop, 'if x; y else (1)end')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('if x; y else (1)end')
   end
 
   context 'when a hash literal is the first argument in a method call' do
     it 'accepts parentheses if the argument list is not parenthesized ' do
-      inspect_source(cop, 'x ({ y: 1 }), z')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('x ({ y: 1 }), z')
     end
 
     it 'registers an offense if the argument list is parenthesized ' do
@@ -233,8 +225,7 @@ describe RuboCop::Cop::Style::RedundantParentheses do
 
   context 'when a non-parenthesized call has an arg and a block' do
     it 'accepts parens around the arg' do
-      inspect_source(cop, 'method (:arg) { blah }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('method (:arg) { blah }')
     end
   end
 

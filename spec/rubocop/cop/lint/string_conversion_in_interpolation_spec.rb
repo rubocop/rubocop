@@ -16,13 +16,11 @@ describe RuboCop::Cop::Lint::StringConversionInInterpolation do
   end
 
   it 'accepts #to_s with arguments in an interpolation' do
-    inspect_source(cop, '"this is a #{result.to_s(8)}"')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('"this is a #{result.to_s(8)}"')
   end
 
   it 'accepts interpolation without #to_s' do
-    inspect_source(cop, '"this is the #{result}"')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('"this is the #{result}"')
   end
 
   it 'does not explode on implicit receiver' do
@@ -33,8 +31,7 @@ describe RuboCop::Cop::Lint::StringConversionInInterpolation do
   end
 
   it 'does not explode on empty interpolation' do
-    inspect_source(cop, '"this is #{} silly"')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('"this is #{} silly"')
   end
 
   it 'autocorrects by removing the redundant to_s' do

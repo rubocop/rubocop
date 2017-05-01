@@ -97,8 +97,7 @@ describe RuboCop::Cop::Style::EachWithObject do
   end
 
   it 'does not blow up for reduce with no arguments' do
-    inspect_source(cop, '[1, 2, 3].inject { |a, e| a + e }')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('[1, 2, 3].inject { |a, e| a + e }')
   end
 
   it 'ignores inject/reduce with assignment to accumulator param in block' do
@@ -113,8 +112,7 @@ describe RuboCop::Cop::Style::EachWithObject do
 
   context 'when a simple literal is passed as initial value' do
     it 'ignores inject/reduce' do
-      inspect_source(cop, 'array.reduce(0) { |a, e| a }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('array.reduce(0) { |a, e| a }')
     end
   end
 end

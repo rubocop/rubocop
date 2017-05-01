@@ -15,9 +15,7 @@ describe RuboCop::Cop::Style::PreferredHashMethods, :config do
     end
 
     it 'accepts has_key? with no args' do
-      inspect_source(cop,
-                     'o.has_key?')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('o.has_key?')
     end
 
     it 'registers an offense for has_value? with one arg' do
@@ -29,9 +27,7 @@ describe RuboCop::Cop::Style::PreferredHashMethods, :config do
     end
 
     it 'accepts has_value? with no args' do
-      inspect_source(cop,
-                     'o.has_value?')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('o.has_value?')
     end
 
     it 'auto-corrects has_key? with key?' do
@@ -57,9 +53,7 @@ describe RuboCop::Cop::Style::PreferredHashMethods, :config do
     end
 
     it 'accepts key? with no args' do
-      inspect_source(cop,
-                     'o.key?')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('o.key?')
     end
 
     it 'registers an offense for value? with one arg' do
@@ -71,9 +65,7 @@ describe RuboCop::Cop::Style::PreferredHashMethods, :config do
     end
 
     it 'accepts value? with no args' do
-      inspect_source(cop,
-                     'o.value?')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('o.value?')
     end
 
     it 'auto-corrects key? with has_key?' do

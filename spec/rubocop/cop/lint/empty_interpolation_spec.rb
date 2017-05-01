@@ -16,8 +16,7 @@ describe RuboCop::Cop::Lint::EmptyInterpolation do
   end
 
   it 'accepts non-empty interpolation' do
-    inspect_source(cop, '"this is #{top} silly"')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('"this is #{top} silly"')
   end
 
   it 'autocorrects empty interpolation' do

@@ -17,9 +17,7 @@ describe RuboCop::Cop::Rails::Exit, :config do
 
   context 'exit calls on objects' do
     it 'does not register an offense for an explicit exit call on an object' do
-      inspect_source(cop,
-                     'Object.new.exit')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('Object.new.exit')
     end
 
     it 'does not register an offense for an explicit exit call '\
@@ -30,9 +28,7 @@ describe RuboCop::Cop::Rails::Exit, :config do
     end
 
     it 'does not register an offense for an explicit exit! call on an object' do
-      inspect_source(cop,
-                     'Object.new.exit!(0)')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('Object.new.exit!(0)')
     end
   end
 
@@ -44,9 +40,7 @@ describe RuboCop::Cop::Rails::Exit, :config do
     end
 
     it 'ignores exit calls with unexpected number of parameters' do
-      inspect_source(cop,
-                     'exit(1, 2)')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('exit(1, 2)')
     end
   end
 

@@ -9,45 +9,37 @@ describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses do
   end
 
   it 'accepts parentheses for methods starting with an upcase letter' do
-    inspect_source(cop, 'Test()')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('Test()')
   end
 
   it 'accepts no parens in method call without args' do
-    inspect_source(cop, 'top.test')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('top.test')
   end
 
   it 'accepts parens in method call with args' do
-    inspect_source(cop, 'top.test(a)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('top.test(a)')
   end
 
   it 'accepts special lambda call syntax' do
     # Style/LambdaCall checks for this syntax
-    inspect_source(cop, 'thing.()')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('thing.()')
   end
 
   it 'accepts parens after not' do
-    inspect_source(cop, 'not(something)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('not(something)')
   end
 
   context 'assignment to a variable with the same name' do
     it 'accepts parens in local variable assignment ' do
-      inspect_source(cop, 'test = test()')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('test = test()')
     end
 
     it 'accepts parens in shorthand assignment' do
-      inspect_source(cop, 'test ||= test()')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('test ||= test()')
     end
 
     it 'accepts parens in parallel assignment' do
-      inspect_source(cop, 'one, test = 1, test()')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('one, test = 1, test()')
     end
 
     it 'accepts parens in complex assignment' do
@@ -101,8 +93,7 @@ describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses do
 
   context 'method call as argument' do
     it 'accepts without parens' do
-      inspect_source(cop, '_a = c(d.e)')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('_a = c(d.e)')
     end
 
     it 'registers an offense with empty parens' do

@@ -214,8 +214,7 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       include_examples 'no_braces and context_dependent non-offenses'
 
       it 'accepts two hash parameters with braces' do
-        inspect_source(cop, 'where({ x: 1 }, { y: 2 })')
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('where({ x: 1 }, { y: 2 })')
       end
     end
 

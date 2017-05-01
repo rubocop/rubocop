@@ -9,12 +9,10 @@ describe RuboCop::Cop::Style::DoubleNegation do
   end
 
   it 'does not register an offense for !' do
-    inspect_source(cop, '!test.something')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('!test.something')
   end
 
   it 'does not register an offense for not not' do
-    inspect_source(cop, 'not not test.something')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('not not test.something')
   end
 end

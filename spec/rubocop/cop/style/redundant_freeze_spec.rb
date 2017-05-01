@@ -39,8 +39,7 @@ describe RuboCop::Cop::Style::RedundantFreeze do
   it_behaves_like :mutable_objects, '"top#{1 + 2}"'
 
   it 'allows .freeze on  method call' do
-    inspect_source(cop, 'TOP_TEST = Something.new.freeze')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('TOP_TEST = Something.new.freeze')
   end
 
   context 'when the receiver is a frozen string literal' do

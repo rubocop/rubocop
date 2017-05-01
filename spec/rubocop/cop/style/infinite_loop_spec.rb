@@ -31,9 +31,7 @@ describe RuboCop::Cop::Style::InfiniteLoop do
   end
 
   it 'accepts Kernel#loop' do
-    inspect_source(cop,
-                   'loop { break if something }')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('loop { break if something }')
   end
 
   shared_examples_for 'auto-corrector' do |keyword, lit|

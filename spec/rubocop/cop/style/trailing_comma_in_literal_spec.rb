@@ -19,18 +19,15 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
     end
 
     it 'accepts Array literal without trailing comma' do
-      inspect_source(cop, 'VALUES = [1001, 2020, 3333]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('VALUES = [1001, 2020, 3333]')
     end
 
     it 'accepts single element Array literal without trailing comma' do
-      inspect_source(cop, 'VALUES = [1001]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('VALUES = [1001]')
     end
 
     it 'accepts empty Array literal' do
-      inspect_source(cop, 'VALUES = []')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('VALUES = []')
     end
 
     it 'accepts rescue clause' do
@@ -45,18 +42,15 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
     end
 
     it 'accepts Hash literal without trailing comma' do
-      inspect_source(cop, 'MAP = { a: 1001, b: 2020, c: 3333 }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('MAP = { a: 1001, b: 2020, c: 3333 }')
     end
 
     it 'accepts single element Hash literal without trailing comma' do
-      inspect_source(cop, 'MAP = { a: 10001 }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('MAP = { a: 10001 }')
     end
 
     it 'accepts empty Hash literal' do
-      inspect_source(cop, 'MAP = {}')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('MAP = {}')
     end
 
     it 'auto-corrects unwanted comma in an Array literal' do

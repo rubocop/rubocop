@@ -22,8 +22,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
     end
 
     it 'accepts method call without trailing comma' do
-      inspect_source(cop, 'some_method(a, b, c)')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('some_method(a, b, c)')
     end
 
     it 'accepts method call without trailing comma with single element hash' \
@@ -33,8 +32,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
     end
 
     it 'accepts method call without parameters' do
-      inspect_source(cop, 'some_method')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('some_method')
     end
 
     it 'accepts chained single-line method calls' do

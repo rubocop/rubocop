@@ -16,9 +16,7 @@ describe RuboCop::Cop::Layout::EmptyLines do
   end
 
   it 'works when there are no tokens' do
-    inspect_source(cop,
-                   '#comment')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('#comment')
   end
 
   it 'handles comments' do

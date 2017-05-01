@@ -36,7 +36,6 @@ describe RuboCop::Cop::Style::StructInheritance do
   end
 
   it 'accepts assignment to Struct.new' do
-    inspect_source(cop, 'Person = Struct.new(:first_name, :last_name)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('Person = Struct.new(:first_name, :last_name)')
   end
 end

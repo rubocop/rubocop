@@ -25,9 +25,7 @@ describe RuboCop::Cop::Rails::EnumUniqueness, :config do
 
     context 'with no duplicated enum values' do
       it 'does not register an offense for unique enum values' do
-        inspect_source(cop, 'enum status: [:active, :archived]')
-
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('enum status: [:active, :archived]')
       end
     end
   end
@@ -54,9 +52,7 @@ describe RuboCop::Cop::Rails::EnumUniqueness, :config do
 
     context 'with no duplicated enum values' do
       it 'does not register an offense' do
-        inspect_source(cop, 'enum status: { active: 0, pending: 1 }')
-
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('enum status: { active: 0, pending: 1 }')
       end
     end
   end
@@ -75,25 +71,19 @@ describe RuboCop::Cop::Rails::EnumUniqueness, :config do
   context 'when receiving a hash without literal values' do
     context 'when value is a variable' do
       it 'does not register an offense' do
-        inspect_source(cop, 'enum status: statuses')
-
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('enum status: statuses')
       end
     end
 
     context 'when value is a method chain' do
       it 'does not register an offense' do
-        inspect_source(cop, 'enum status: User.statuses.keys')
-
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('enum status: User.statuses.keys')
       end
     end
 
     context 'when value is a constant' do
       it 'does not register an offense' do
-        inspect_source(cop, 'enum status: STATUSES')
-
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('enum status: STATUSES')
       end
     end
   end

@@ -121,8 +121,7 @@ describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
     end
 
     it 'accepts a method call with space after the left parenthesis' do
-      inspect_source(cop, 'something(  x  )')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('something(  x  )')
     end
   end
 end

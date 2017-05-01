@@ -22,69 +22,47 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
   end
 
   it 'accepts block with more than 1 arguments' do
-    inspect_source(cop, 'something { |x, y| x.method }')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('something { |x, y| x.method }')
   end
 
   it 'accepts lambda with 1 argument' do
-    inspect_source(cop, '->(x) { x.method }')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('->(x) { x.method }')
   end
 
   it 'accepts proc with 1 argument' do
-    inspect_source(cop, 'proc { |x| x.method }')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('proc { |x| x.method }')
   end
 
   it 'accepts Proc.new with 1 argument' do
-    inspect_source(cop, 'Proc.new { |x| x.method }')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('Proc.new { |x| x.method }')
   end
 
   it 'accepts ignored method' do
-    inspect_source(cop, 'respond_to { |format| format.xml }')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('respond_to { |format| format.xml }')
   end
 
   it 'accepts block with no arguments' do
-    inspect_source(cop, 'something { x.method }')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('something { x.method }')
   end
 
   it 'accepts empty block body' do
-    inspect_source(cop, 'something { |x| }')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('something { |x| }')
   end
 
   it 'accepts block with more than 1 expression in body' do
-    inspect_source(cop, 'something { |x| x.method; something_else }')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('something { |x| x.method; something_else }')
   end
 
   it 'accepts block when method in body is not called on block arg' do
-    inspect_source(cop, 'something { |x| y.method }')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('something { |x| y.method }')
   end
 
   it 'accepts block with a block argument ' do
-    inspect_source(cop, 'something { |&x| x.call }')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('something { |&x| x.call }')
   end
 
   it 'accepts block with splat params' do
-    inspect_source(cop, 'something { |*x| x.first }')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('something { |*x| x.first }')
   end
 
   context 'when the method has arguments' do

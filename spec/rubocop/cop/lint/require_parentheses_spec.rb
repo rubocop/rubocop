@@ -71,22 +71,18 @@ describe RuboCop::Cop::Lint::RequireParentheses do
   end
 
   it 'accepts method call with parentheses in ternary' do
-    inspect_source(cop, "wd.include?('tuesday' && true == true) ? a : b")
-    expect(cop.offenses).to be_empty
+    expect_no_offenses("wd.include?('tuesday' && true == true) ? a : b")
   end
 
   it 'accepts missing parentheses when method is not a predicate' do
-    inspect_source(cop, "weekdays.foo 'tuesday' && true == true")
-    expect(cop.offenses).to be_empty
+    expect_no_offenses("weekdays.foo 'tuesday' && true == true")
   end
 
   it 'accepts calls to methods that are setters' do
-    inspect_source(cop, 's.version = @version || ">= 1.8.5"')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('s.version = @version || ">= 1.8.5"')
   end
 
   it 'accepts calls to methods that are operators' do
-    inspect_source(cop, 'a[b || c]')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('a[b || c]')
   end
 end

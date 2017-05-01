@@ -100,8 +100,7 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
   end
 
   it 'accepts an assignment with spaces' do
-    inspect_source(cop, 'x = 0')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('x = 0')
   end
 
   it 'accepts an assignment by `for` statement' do
@@ -115,8 +114,7 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
   end
 
   it 'accepts an operator called with method syntax' do
-    inspect_source(cop, 'Date.today.+(1).to_s')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('Date.today.+(1).to_s')
   end
 
   it 'accepts operators with spaces' do
@@ -166,8 +164,7 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
   end
 
   it 'accepts exponent operator without spaces' do
-    inspect_source(cop, 'x = a * b**2')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('x = a * b**2')
   end
 
   it 'accepts unary operators without space' do

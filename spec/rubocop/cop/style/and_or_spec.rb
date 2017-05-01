@@ -80,13 +80,11 @@ describe RuboCop::Cop::Style::AndOr, :config do
     end
 
     it 'accepts ||' do
-      inspect_source(cop, 'test if a || b')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('test if a || b')
     end
 
     it 'accepts &&' do
-      inspect_source(cop, 'test if a && b')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('test if a && b')
     end
 
     it 'auto-corrects "and" with &&' do

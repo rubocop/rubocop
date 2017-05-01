@@ -18,13 +18,11 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'allows all preferred delimiters to be set with one key' do
-      inspect_source(cop, '%w[string] + %i[string]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('%w[string] + %i[string]')
     end
 
     it 'allows individual preferred delimiters to override `default`' do
-      inspect_source(cop, '%w[string] + [%(string)]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('%w[string] + [%(string)]')
     end
   end
 
@@ -38,8 +36,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
   context '`%` interpolated string' do
     it 'does not register an offense for preferred delimiters' do
-      inspect_source(cop, '%[string]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('%[string]')
     end
 
     it 'registers an offense for other delimiters' do
@@ -64,8 +61,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
   context '`%q` string' do
     it 'does not register an offense for preferred delimiters' do
-      inspect_source(cop, '%q[string]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('%q[string]')
     end
 
     it 'registers an offense for other delimiters' do
@@ -84,8 +80,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
   context '`%Q` interpolated string' do
     it 'does not register an offense for preferred delimiters' do
-      inspect_source(cop, '%Q[string]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('%Q[string]')
     end
 
     it 'registers an offense for other delimiters' do
@@ -110,8 +105,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
   context '`%w` string array' do
     it 'does not register an offense for preferred delimiters' do
-      inspect_source(cop, '%w[some words]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('%w[some words]')
     end
 
     it 'registers an offense for other delimiters' do
@@ -130,8 +124,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
   context '`%W` interpolated string array' do
     it 'does not register an offense for preferred delimiters' do
-      inspect_source(cop, '%W[some words]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('%W[some words]')
     end
 
     it 'registers an offense for other delimiters' do
@@ -156,8 +149,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
   context '`%r` interpolated regular expression' do
     it 'does not register an offense for preferred delimiters' do
-      inspect_source(cop, '%r[regexp]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('%r[regexp]')
     end
 
     it 'registers an offense for other delimiters' do
@@ -182,8 +174,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
   context '`%i` symbol array' do
     it 'does not register an offense for preferred delimiters' do
-      inspect_source(cop, '%i[some symbols]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('%i[some symbols]')
     end
 
     it 'registers an offense for other delimiters' do
@@ -196,8 +187,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
   context '`%I` interpolated symbol array' do
     it 'does not register an offense for preferred delimiters' do
-      inspect_source(cop, '%I[some words]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('%I[some words]')
     end
 
     it 'registers an offense for other delimiters' do
@@ -218,8 +208,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
   context '`%s` symbol' do
     it 'does not register an offense for preferred delimiters' do
-      inspect_source(cop, '%s[symbol]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('%s[symbol]')
     end
 
     it 'registers an offense for other delimiters' do
@@ -232,8 +221,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
   context '`%x` interpolated system call' do
     it 'does not register an offense for preferred delimiters' do
-      inspect_source(cop, '%x[command]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('%x[command]')
     end
 
     it 'registers an offense for other delimiters' do

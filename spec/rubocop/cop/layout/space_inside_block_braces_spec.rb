@@ -16,13 +16,11 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
     let(:cop_config) { { 'EnforcedStyleForEmptyBraces' => 'no_space' } }
 
     it 'accepts empty braces with no space inside' do
-      inspect_source(cop, 'each {}')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('each {}')
     end
 
     it 'accepts braces with something inside' do
-      inspect_source(cop, 'each { "f" }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('each { "f" }')
     end
 
     it 'accepts multiline braces with content' do
@@ -76,8 +74,7 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
     let(:cop_config) { { 'EnforcedStyleForEmptyBraces' => 'space' } }
 
     it 'accepts empty braces with space inside' do
-      inspect_source(cop, 'each { }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('each { }')
     end
 
     it 'registers an offense for empty braces with no space inside' do
@@ -102,13 +99,11 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
   end
 
   it 'accepts braces surrounded by spaces' do
-    inspect_source(cop, 'each { puts }')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('each { puts }')
   end
 
   it 'accepts left brace without outer space' do
-    inspect_source(cop, 'each{ puts }')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('each{ puts }')
   end
 
   it 'registers an offense for left brace without inner space' do
@@ -151,8 +146,7 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
   context 'with passed in parameters' do
     context 'for single-line blocks' do
       it 'accepts left brace with inner space' do
-        inspect_source(cop, 'each { |x| puts }')
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('each { |x| puts }')
       end
 
       it 'registers an offense for left brace without inner space' do
@@ -200,8 +194,7 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
     end
 
     it 'accepts new lambda syntax' do
-      inspect_source(cop, '->(x) { x }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('->(x) { x }')
     end
 
     it 'auto-corrects missing space' do
@@ -252,8 +245,7 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
       end
 
       it 'accepts new lambda syntax' do
-        inspect_source(cop, '->(x) { x }')
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('->(x) { x }')
       end
 
       it 'auto-corrects unwanted space' do
@@ -262,8 +254,7 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
       end
 
       it 'accepts left brace without inner space' do
-        inspect_source(cop, 'each {|x| puts }')
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('each {|x| puts }')
       end
     end
   end
@@ -278,8 +269,7 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
     end
 
     it 'accepts braces without spaces inside' do
-      inspect_source(cop, 'each {puts}')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('each {puts}')
     end
 
     it 'registers an offense for left brace with inner space' do
@@ -306,8 +296,7 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
     end
 
     it 'accepts left brace without outer space' do
-      inspect_source(cop, 'each{puts}')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('each{puts}')
     end
 
     it 'auto-corrects unwanted space' do
@@ -331,8 +320,7 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
         end
 
         it 'accepts new lambda syntax' do
-          inspect_source(cop, '->(x) {x}')
-          expect(cop.offenses).to be_empty
+          expect_no_offenses('->(x) {x}')
         end
 
         it 'auto-corrects missing space' do
@@ -358,8 +346,7 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
         end
 
         it 'accepts new lambda syntax' do
-          inspect_source(cop, '->(x) {x}')
-          expect(cop.offenses).to be_empty
+          expect_no_offenses('->(x) {x}')
         end
 
         it 'auto-corrects unwanted space' do

@@ -100,28 +100,23 @@ describe RuboCop::Cop::Style::UnneededInterpolation do
   end
 
   it 'accepts strings with characters before the interpolation' do
-    inspect_source(cop, '"this is #{@sparta}"')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('"this is #{@sparta}"')
   end
 
   it 'accepts strings with characters after the interpolation' do
-    inspect_source(cop, '"#{@sparta} this is"')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('"#{@sparta} this is"')
   end
 
   it 'accepts strings implicitly concatenated with a later string' do
-    inspect_source(cop, %q("#{sparta}" ' this is'))
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(%q("#{sparta}" ' this is'))
   end
 
   it 'accepts strings implicitly concatenated with an earlier string' do
-    inspect_source(cop, %q('this is ' "#{sparta}"))
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(%q('this is ' "#{sparta}"))
   end
 
   it 'accepts strings that are part of a %W()' do
-    inspect_source(cop, '%W(#{@var} foo)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('%W(#{@var} foo)')
   end
 
   it 'autocorrects "#{1 + 1; 2 + 2}"' do

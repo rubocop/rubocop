@@ -5,9 +5,7 @@ describe RuboCop::Cop::Lint::ShadowedException do
 
   context 'modifier rescue' do
     it 'accepts rescue in its modifier form' do
-      inspect_source(cop, 'foo rescue nil')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('foo rescue nil')
     end
   end
 

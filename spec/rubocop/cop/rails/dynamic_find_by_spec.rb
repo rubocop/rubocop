@@ -129,8 +129,7 @@ describe RuboCop::Cop::Rails::DynamicFindBy, :config do
   end
 
   it 'accepts' do
-    inspect_source(cop, 'User.find_by(name: name)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('User.find_by(name: name)')
   end
 
   it 'accepts method in whitelist' do

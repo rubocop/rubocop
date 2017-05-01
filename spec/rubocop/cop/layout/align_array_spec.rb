@@ -31,8 +31,7 @@ describe RuboCop::Cop::Layout::AlignArray do
   end
 
   it 'accepts single line array' do
-    inspect_source(cop, 'array = [ a, b ]')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('array = [ a, b ]')
   end
 
   it 'accepts several elements per line' do

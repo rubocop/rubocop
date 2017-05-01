@@ -26,27 +26,19 @@ describe RuboCop::Cop::Rails::Present, :config do
     end
 
     it 'accepts checking nil?' do
-      inspect_source(cop, 'foo.nil?')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('foo.nil?')
     end
 
     it 'accepts checking empty?' do
-      inspect_source(cop, 'foo.empty?')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('foo.empty?')
     end
 
     it 'accepts checking nil? || empty? on different objects' do
-      inspect_source(cop, 'foo.nil? || bar.empty?')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('foo.nil? || bar.empty?')
     end
 
     it 'accepts checking existance && not empty? on different objects' do
-      inspect_source(cop, 'foo && !bar.empty?')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('foo && !bar.empty?')
     end
 
     it_behaves_like :offense, 'foo && !foo.empty?',
@@ -133,15 +125,11 @@ describe RuboCop::Cop::Rails::Present, :config do
     end
 
     it 'accepts modifier if blank?' do
-      inspect_source(cop, 'something if foo.blank?')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('something if foo.blank?')
     end
 
     it 'accepts modifier unless present?' do
-      inspect_source(cop, 'something unless foo.present?')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('something unless foo.present?')
     end
 
     it 'accepts normal if blank?' do
@@ -253,9 +241,7 @@ describe RuboCop::Cop::Rails::Present, :config do
     end
 
     it 'accepts checking nil? || empty?' do
-      inspect_source(cop, 'foo.nil? || foo.empty?')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('foo.nil? || foo.empty?')
     end
   end
 
@@ -267,9 +253,7 @@ describe RuboCop::Cop::Rails::Present, :config do
     end
 
     it 'accepts !...blank?' do
-      inspect_source(cop, '!foo.blank?')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('!foo.blank?')
     end
   end
 
@@ -281,9 +265,7 @@ describe RuboCop::Cop::Rails::Present, :config do
     end
 
     it 'accepts unless blank?' do
-      inspect_source(cop, 'something unless foo.blank?')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('something unless foo.blank?')
     end
   end
 end

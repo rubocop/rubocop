@@ -10,15 +10,11 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     end
 
     it 'accepts an empty source' do
-      inspect_source(cop, '')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('')
     end
 
     it 'accepts a source with no tokens' do
-      inspect_source(cop, ' ')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(' ')
     end
 
     it 'accepts a frozen string literal on the top line' do
@@ -281,24 +277,18 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     end
 
     it 'accepts an empty source' do
-      inspect_source(cop, '')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('')
     end
 
     if RUBY_VERSION >= '2.3.0'
       context 'ruby >= 2.3' do
         context 'no frozen string literal comment' do
           it 'accepts not modifing a string' do
-            inspect_source(cop, 'puts "x"')
-
-            expect(cop.offenses).to be_empty
+            expect_no_offenses('puts "x"')
           end
 
           it 'accepts calling + on a string' do
-            inspect_source(cop, '"x" + "y"')
-
-            expect(cop.offenses).to be_empty
+            expect_no_offenses('"x" + "y"')
           end
 
           it 'accepts calling freeze on a variable' do
@@ -320,15 +310,11 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
           end
 
           it 'accepts freezing a string' do
-            inspect_source(cop, '"x".freeze')
-
-            expect(cop.offenses).to be_empty
+            expect_no_offenses('"x".freeze')
           end
 
           it 'accepts when << is called on a string literal' do
-            inspect_source(cop, '"x" << "y"')
-
-            expect(cop.offenses).to be_empty
+            expect_no_offenses('"x" << "y"')
           end
         end
 
@@ -357,27 +343,19 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     context 'ruby < 2.3' do
       context 'target_ruby_version < 2.3', :ruby19 do
         it 'accepts freezing a string' do
-          inspect_source(cop, '"x".freeze')
-
-          expect(cop.offenses).to be_empty
+          expect_no_offenses('"x".freeze')
         end
 
         it 'accepts calling << on a string' do
-          inspect_source(cop, '"x" << "y"')
-
-          expect(cop.offenses).to be_empty
+          expect_no_offenses('"x" << "y"')
         end
 
         it 'accepts freezing a string with interpolation' do
-          inspect_source(cop, '"#{foo}bar".freeze')
-
-          expect(cop.offenses).to be_empty
+          expect_no_offenses('"#{foo}bar".freeze')
         end
 
         it 'accepts calling << on a string with interpolation' do
-          inspect_source(cop, '"#{foo}bar" << "baz"')
-
-          expect(cop.offenses).to be_empty
+          expect_no_offenses('"#{foo}bar" << "baz"')
         end
       end
 
@@ -420,15 +398,11 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     end
 
     it 'accepts an empty source' do
-      inspect_source(cop, '')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('')
     end
 
     it 'accepts a source with no tokens' do
-      inspect_source(cop, ' ')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(' ')
     end
 
     it 'registers an offense for a frozen string literal comment ' \
@@ -454,9 +428,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     end
 
     it 'accepts not having a frozen string literal comment on the top line' do
-      inspect_source(cop, 'puts 1')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('puts 1')
     end
 
     it 'accepts not having not having a frozen string literal comment ' \

@@ -6,33 +6,23 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
   let(:array_param_message) { 'Pass array contents as separate arguments.' }
 
   it 'allows assigning to a splat' do
-    inspect_source(cop, '*, rhs = *node')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('*, rhs = *node')
   end
 
   it 'allows assigning to a splat variable' do
-    inspect_source(cop, 'lhs, *args = *node')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('lhs, *args = *node')
   end
 
   it 'allows assigning a variable to a splat expansion of a variable' do
-    inspect_source(cop, 'a = *b')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('a = *b')
   end
 
   it 'allows assigning to an expanded range' do
-    inspect_source(cop, 'a = *1..10')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('a = *1..10')
   end
 
   it 'allows splat expansion inside of an array' do
-    inspect_source(cop, 'a = [10, 11, *1..9]')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('a = [10, 11, *1..9]')
   end
 
   it 'accepts expanding a variable as a method parameter' do
@@ -204,9 +194,7 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
   end
 
   it 'allows expanding a method call on an array literal' do
-    inspect_source(cop, '[1, 2, *[3, 4, 5].map(&:to_s), 6, 7]')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('[1, 2, *[3, 4, 5].map(&:to_s), 6, 7]')
   end
 
   context 'autocorrect' do
