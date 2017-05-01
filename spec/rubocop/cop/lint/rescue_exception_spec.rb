@@ -48,7 +48,7 @@ describe RuboCop::Cop::Lint::RescueException do
   end
 
   it 'does not register an offense for rescue with no class' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       begin
         something
         return
@@ -56,11 +56,10 @@ describe RuboCop::Cop::Lint::RescueException do
         file.close
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not register an offense for rescue with no class and => e' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       begin
         something
         return
@@ -68,11 +67,10 @@ describe RuboCop::Cop::Lint::RescueException do
         file.close
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not register an offense for rescue with other class' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       begin
         something
         return
@@ -80,11 +78,10 @@ describe RuboCop::Cop::Lint::RescueException do
         file.close
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not register an offense for rescue with other classes' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       begin
         something
         return
@@ -92,11 +89,10 @@ describe RuboCop::Cop::Lint::RescueException do
         file.close
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not register an offense for rescue with a module prefix' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       begin
         something
         return
@@ -104,11 +100,10 @@ describe RuboCop::Cop::Lint::RescueException do
         file.close
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not crash when the splat operator is used in a rescue' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       ERRORS = [Exception]
       begin
         a = 3 / 0
@@ -116,7 +111,6 @@ describe RuboCop::Cop::Lint::RescueException do
         puts e
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not crash when the namespace of a rescued class is in a local ' \

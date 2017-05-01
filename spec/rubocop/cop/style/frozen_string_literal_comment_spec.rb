@@ -18,21 +18,17 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     end
 
     it 'accepts a frozen string literal on the top line' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         # frozen_string_literal: true
         puts 1
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts a disabled frozen string literal on the top line' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         # frozen_string_literal: false
         puts 1
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for not having a frozen string literal comment ' \
@@ -55,23 +51,19 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     end
 
     it 'accepts a frozen string literal below a shebang comment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         #!/usr/bin/env ruby
         # frozen_string_literal: true
         puts 1
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts a disabled frozen string literal below a shebang comment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         #!/usr/bin/env ruby
         # frozen_string_literal: false
         puts 1
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for not having a frozen string literal comment ' \
@@ -86,23 +78,19 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     end
 
     it 'accepts a frozen string literal below an encoding comment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         # encoding: utf-8
         # frozen_string_literal: true
         puts 1
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts a dsabled frozen string literal below an encoding comment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         # encoding: utf-8
         # frozen_string_literal: false
         puts 1
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for not having a frozen string literal comment ' \
@@ -166,17 +154,12 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     end
 
     it 'accepts an emacs style combined magic comment' do
-      inspect_source(
-        cop,
-        <<-END.strip_indent
+      expect_no_offenses(<<-END.strip_indent)
           #!/usr/bin/env ruby
           # -*- encoding: UTF-8; frozen_string_literal: true -*-
           # encoding: utf-8
           puts 1
         END
-      )
-
-      expect(cop.offenses).to be_empty
     end
 
     context 'auto-correct' do
@@ -292,21 +275,17 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
           end
 
           it 'accepts calling freeze on a variable' do
-            inspect_source(cop, <<-END.strip_indent)
+            expect_no_offenses(<<-END.strip_indent)
               foo = "x"
                 foo.freeze
             END
-
-            expect(cop.offenses).to be_empty
           end
 
           it 'accepts calling shovel on a variable' do
-            inspect_source(cop, <<-END.strip_indent)
+            expect_no_offenses(<<-END.strip_indent)
               foo = "x"
                 foo << "y"
             END
-
-            expect(cop.offenses).to be_empty
           end
 
           it 'accepts freezing a string' do

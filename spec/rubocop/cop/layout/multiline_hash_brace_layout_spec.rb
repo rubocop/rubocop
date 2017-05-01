@@ -5,12 +5,10 @@ describe RuboCop::Cop::Layout::MultilineHashBraceLayout, :config do
   let(:cop_config) { { 'EnforcedStyle' => 'symmetrical' } }
 
   it 'ignores implicit hashes' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       foo(a: 1,
       b: 2)
     END
-
-    expect(cop.offenses).to be_empty
   end
 
   it 'ignores single-line hashes' do

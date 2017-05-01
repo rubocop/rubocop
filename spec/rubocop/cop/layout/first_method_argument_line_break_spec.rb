@@ -92,15 +92,10 @@ describe RuboCop::Cop::Layout::FirstMethodArgumentLineBreak do
   end
 
   it 'ignores arguments without parens' do
-    inspect_source(
-      cop,
-      <<-END.strip_indent
-        foo bar,
-          baz
-      END
-    )
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(<<-END.strip_indent)
+      foo bar,
+        baz
+    END
   end
 
   it 'ignores methods without arguments' do

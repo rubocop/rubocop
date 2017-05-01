@@ -51,7 +51,7 @@ describe RuboCop::Cop::Style::NegatedIf do
     end
 
     it 'accepts an if/else with negative condition' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         if !a_condition
           some_method
         else
@@ -63,11 +63,10 @@ describe RuboCop::Cop::Style::NegatedIf do
           something_else
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts an if where only part of the condition is negated' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         if !condition && another_condition
           some_method
         end
@@ -76,21 +75,19 @@ describe RuboCop::Cop::Style::NegatedIf do
         end
         some_method if not condition or another_condition
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts an if where the condition is doubly negated' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         if !!condition
           some_method
         end
         some_method if !!condition
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'is not confused by negated elsif' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         if test.is_a?(String)
           3
         elsif test.is_a?(Array)
@@ -99,8 +96,6 @@ describe RuboCop::Cop::Style::NegatedIf do
           1
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'autocorrects for postfix' do
@@ -198,12 +193,10 @@ describe RuboCop::Cop::Style::NegatedIf do
     end
 
     it 'does not register an offence for prefix' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         if !foo
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'autocorrects for postfix' do
@@ -222,18 +215,16 @@ describe RuboCop::Cop::Style::NegatedIf do
   end
 
   it 'does not blow up for empty if condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       if ()
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not blow up for empty unless condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       unless ()
       end
     END
-    expect(cop.offenses).to be_empty
   end
 end

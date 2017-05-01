@@ -93,12 +93,11 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
 
         context 'with line break' do
           it 'accepts a correctly indented first parameter' do
-            inspect_source(cop, <<-END.strip_indent)
+            expect_no_offenses(<<-END.strip_indent)
               x =
                 run(
                   :foo)
             END
-            expect(cop.offenses).to be_empty
           end
 
           it 'registers an offense for an under-indented first parameter' do
@@ -113,22 +112,20 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
       end
 
       it 'accepts a first parameter that is not preceded by a line break' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           run :foo,
               bar: 3
         END
-        expect(cop.offenses).to be_empty
       end
 
       context 'when the receiver contains a line break' do
         it 'accepts a correctly indented first parameter' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_no_offenses(<<-END.strip_indent)
             puts x.
               merge(
                 b: 2
               )
           END
-          expect(cop.offenses).to be_empty
         end
 
         it 'registers an offense for an over-indented first parameter' do
@@ -158,14 +155,13 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
 
         context 'when preceded by a comment line' do
           it 'accepts a correctly indented first parameter' do
-            inspect_source(cop, <<-END.strip_indent)
+            expect_no_offenses(<<-END.strip_indent)
               puts x.
                 merge( # EOL comment
                   # comment
                   b: 2
                 )
             END
-            expect(cop.offenses).to be_empty
           end
 
           it 'registers an offense for an under-indented first parameter' do
@@ -185,29 +181,26 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
       end
 
       it 'accepts method calls with no parameters' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           run()
           run_again
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts operator calls' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           params = default_cfg.keys - %w(Description) -
                    cfg.keys
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'does not view []= as an outer method call' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           @subject_results[subject] = original.update(
             mutation_results: (dup << mutation_result),
             tests:            test_result.tests
           )
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'does not view chained call as an outer method call' do
@@ -269,13 +262,12 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
       end
 
       it 'accepts a correctly indented first parameter' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           run(
               :foo,
               bar: 3
           )
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'auto-corrects an over-indented first parameter' do
@@ -314,11 +306,10 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
 
       context 'without outer parentheses' do
         it 'accepts a first parameter with special indentation' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_no_offenses(<<-END.strip_indent)
             run :foo, defaults.merge(
                         bar: 3)
           END
-          expect(cop.offenses).to be_empty
         end
       end
 
@@ -367,7 +358,7 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
         end
 
         it 'accepts a correctly indented first parameter in interpolation' do
-          inspect_source(cop, <<-'END'.strip_indent)
+          expect_no_offenses(<<-'END'.strip_indent)
             puts %(
               <p>
                 #{Array(
@@ -376,7 +367,6 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
               </p>
             )
           END
-          expect(cop.offenses).to be_empty
         end
 
         it 'accepts a correctly indented first parameter with fullwidth ' \
@@ -391,11 +381,10 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
 
       context 'without outer parentheses' do
         it 'accepts a first parameter with consistent style indentation' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_no_offenses(<<-END.strip_indent)
             run :foo, defaults.merge(
               bar: 3)
           END
-          expect(cop.offenses).to be_empty
         end
       end
 

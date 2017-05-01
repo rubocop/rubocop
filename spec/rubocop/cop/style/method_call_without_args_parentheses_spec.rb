@@ -43,7 +43,7 @@ describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses do
     end
 
     it 'accepts parens in complex assignment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         test = begin
           case a
           when b
@@ -51,7 +51,6 @@ describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses do
           end
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 

@@ -55,7 +55,7 @@ describe RuboCop::Cop::Style::IfInsideElse do
   end
 
   it "isn't offended if there is a statement following the if node" do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       if a
         blah
       else
@@ -65,11 +65,10 @@ describe RuboCop::Cop::Style::IfInsideElse do
         bar
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it "isn't offended if there is a statement preceding the if node" do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       if a
         blah
       else
@@ -79,11 +78,10 @@ describe RuboCop::Cop::Style::IfInsideElse do
         end
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it "isn't offended by if..elsif..else" do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       if a
         blah
       elsif b
@@ -92,11 +90,10 @@ describe RuboCop::Cop::Style::IfInsideElse do
         blah
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'ignores unless inside else' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       if a
         blah
       else
@@ -105,18 +102,16 @@ describe RuboCop::Cop::Style::IfInsideElse do
         end
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'ignores if inside unless' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       unless a
         if b
           foo
         end
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'ignores nested ternary expressions' do
@@ -124,13 +119,12 @@ describe RuboCop::Cop::Style::IfInsideElse do
   end
 
   it 'ignores ternary inside if..else' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       if a
         blah
       else
         a ? b : c
       end
     END
-    expect(cop.offenses).to be_empty
   end
 end

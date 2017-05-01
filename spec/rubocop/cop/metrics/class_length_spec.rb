@@ -38,7 +38,7 @@ describe RuboCop::Cop::Metrics::ClassLength, :config do
   end
 
   it 'accepts a class with 5 lines' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       class Test
         a = 1
         a = 2
@@ -47,11 +47,10 @@ describe RuboCop::Cop::Metrics::ClassLength, :config do
         a = 5
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts a class with less than 5 lines' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       class Test
         a = 1
         a = 2
@@ -59,11 +58,10 @@ describe RuboCop::Cop::Metrics::ClassLength, :config do
         a = 4
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not count blank lines' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       class Test
         a = 1
         a = 2
@@ -74,20 +72,18 @@ describe RuboCop::Cop::Metrics::ClassLength, :config do
         a = 7
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts empty classes' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       class Test
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   context 'when a class has inner classes' do
     it 'does not count lines of inner classes' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         class NamespaceClass
           class TestOne
             a = 1
@@ -110,7 +106,6 @@ describe RuboCop::Cop::Metrics::ClassLength, :config do
           a = 5
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'rejects a class with 6 lines that belong to the class directly' do

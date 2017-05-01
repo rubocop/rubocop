@@ -34,12 +34,11 @@ describe RuboCop::Cop::Style::ConstantName do
   end
 
   it 'does not check names if rhs is a method call with block' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       AnythingGoes = test do
         do_something
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not check if rhs is another constant' do

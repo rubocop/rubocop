@@ -27,7 +27,7 @@ describe RuboCop::Cop::Style::SingleLineBlockParams, :config do
   end
 
   it 'allows calls with proper argument names' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def m
         [0, 1].reduce { |a, e| a + e }
         [0, 1].reduce{ |a, e| a + e }
@@ -38,7 +38,6 @@ describe RuboCop::Cop::Style::SingleLineBlockParams, :config do
         ala.test { |x, y| bala }
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'allows an unused parameter to have a leading underscore' do
@@ -52,40 +51,36 @@ describe RuboCop::Cop::Style::SingleLineBlockParams, :config do
   end
 
   it 'ignores do..end blocks' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def m
         [0, 1].reduce do |c, d|
           c + d
         end
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'ignores :reduce symbols' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def m
         call_method(:reduce) { |a, b| a + b}
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not report when destructuring is used' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def m
         test.reduce { |a, (id, _)| a + id}
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not report if no block arguments are present' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def m
         test.reduce { true }
       end
     END
-    expect(cop.offenses).to be_empty
   end
 end

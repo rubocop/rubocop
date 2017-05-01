@@ -19,7 +19,7 @@ describe RuboCop::Cop::Layout::AlignArray do
   end
 
   it 'accepts aligned array keys' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       array = [
         a,
         b,
@@ -27,7 +27,6 @@ describe RuboCop::Cop::Layout::AlignArray do
         d
       ]
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts single line array' do
@@ -35,19 +34,17 @@ describe RuboCop::Cop::Layout::AlignArray do
   end
 
   it 'accepts several elements per line' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       array = [ a, b,
                 c, d ]
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts aligned array with fullwidth characters' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       puts 'Ｒｕｂｙ', [ a,
                          b ]
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'auto-corrects alignment' do

@@ -79,18 +79,16 @@ describe RuboCop::Cop::Style::NegatedWhile do
   end
 
   it 'does not blow up for empty while condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       while ()
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not blow up for empty until condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       until ()
       end
     END
-    expect(cop.offenses).to be_empty
   end
 end

@@ -20,14 +20,13 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
   end
 
   it 'accepts `Max` levels of nesting' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       if a
         if b
           puts b
         end
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   context '`Max + 1` levels of `if` nesting' do
@@ -171,21 +170,20 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
   end
 
   it 'accepts if/elsif' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       if a
       elsif b
       elsif c
       elsif d
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   context 'when CountBlocks is false' do
     let(:cop_config) { { 'Max' => 2, 'CountBlocks' => false } }
 
     it 'accepts nested multiline blocks' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         if a
           if b
             [1, 2].each do |c|
@@ -194,18 +192,16 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
           end
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts nested inline blocks' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         if a
           if b
             [1, 2].each { |c| puts c }
           end
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 

@@ -108,31 +108,28 @@ describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
     end
 
     it 'accepts hashes with no spaces' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         h = {a: 1, b: 2}
         h = {a => 1}
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts multiline hash' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         h = {
               a: 1,
               b: 2,
         }
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts multiline hash with comment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         h = { # Comment
               a: 1,
               b: 2,
         }
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
@@ -189,32 +186,29 @@ describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
     end
 
     it 'accepts multiline hash' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         h = {
               a: 1,
               b: 2,
         }
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts multiline hash with comment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         h = { # Comment
               a: 1,
               b: 2,
         }
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
   it 'accepts hashes with spaces by default' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       h = { a: 1, b: 2 }
       h = { a => 1 }
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts hash literals with no braces' do

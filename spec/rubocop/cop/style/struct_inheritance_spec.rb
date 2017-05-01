@@ -20,19 +20,17 @@ describe RuboCop::Cop::Style::StructInheritance do
   end
 
   it 'accepts plain class' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       class Person
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts extending DelegateClass' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       class Person < DelegateClass(Animal)
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts assignment to Struct.new' do

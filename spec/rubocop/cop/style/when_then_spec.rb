@@ -13,16 +13,15 @@ describe RuboCop::Cop::Style::WhenThen do
   end
 
   it 'accepts when x then' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       case a
       when b then c
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts ; separating statements in the body of when' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       case a
       when b then c; d
       end
@@ -32,7 +31,6 @@ describe RuboCop::Cop::Style::WhenThen do
         g; h
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'auto-corrects "when x;" with "when x then"' do
@@ -51,13 +49,11 @@ describe RuboCop::Cop::Style::WhenThen do
   # Regression: https://github.com/bbatsov/rubocop/issues/3868
   context 'when inspecting a case statement with an empty branch' do
     it 'does not register an offense' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         case value
         when cond1
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
   end
 end

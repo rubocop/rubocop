@@ -9,11 +9,10 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts several pairs per line' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         func(a: 1, bb: 2,
              ccc: 3, dddd: 4)
       END
-      expect(cop.offenses).to be_empty
     end
 
     it "does not auto-correct pairs that don't start a line" do
@@ -65,19 +64,17 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts misaligned keys in implicit hash' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         func(a: 0,
           b: 1)
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts misaligned keys in explicit hash' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         func({a: 0,
           b: 1})
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
@@ -89,11 +86,10 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts misaligned keys in implicit hash' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         func(a: 0,
           b: 1)
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers offense for misaligned keys in explicit hash' do
@@ -121,11 +117,10 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts misaligned keys in explicit hash' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         func({a: 0,
           b: 1})
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
@@ -164,7 +159,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts aligned hash keys' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         hash1 = {
           a: 0,
           bb: 1,
@@ -174,7 +169,6 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
           'dddd'  =>  2
         }
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for separator alignment' do
@@ -206,11 +200,10 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
       end
 
       it 'accepts aligned hash keys' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           func(a: 0,
                b: 1)
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts an empty hash' do
@@ -295,7 +288,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     include_examples 'not on separate lines'
 
     it 'accepts aligned hash keys and values' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         hash1 = {
           'a'   => 0,
           'bbb' => 1
@@ -305,7 +298,6 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
           bbb: 1
         }
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts an empty hash' do
@@ -313,7 +305,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts a multiline array of single line hashes' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def self.scenarios_order
             [
               { before:   %w( l k ) },
@@ -323,39 +315,35 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
             ]
           end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts hashes that use different separators' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         hash = {
           a: 1,
           'bbb' => 2
         }
       END
-      expect(cop.offenses).to be_empty
     end
 
     context 'ruby >= 2.0', :ruby20 do
       it 'accepts hashes that use different separators and double splats' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           hash = {
             a: 1,
             'bbb' => 2,
             **foo
           }
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts hashes that use different separators and double splats' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           hash = {
             a: 1,
             **kw
           }
         END
-        expect(cop.offenses).to be_empty
       end
     end
 
@@ -461,7 +449,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts aligned hash keys' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         hash1 = {
             a: 0,
           bbb: 1
@@ -471,7 +459,6 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
           'bbb' => 1
         }
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts an empty hash' do
@@ -500,13 +487,11 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
 
     context 'ruby >= 2.0', :ruby20 do
       it 'accepts hashes with different separators' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           {a: 1,
             'b' => 2,
              **params}
         END
-
-        expect(cop.offenses).to be_empty
       end
     end
 
@@ -569,7 +554,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts aligned entries' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         hash1 = {
             a: 0,
           bbb: 1
@@ -579,7 +564,6 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
           'bbb' => 1
         }
       END
-      expect(cop.offenses).to be_empty
     end
   end
 end

@@ -50,7 +50,7 @@ describe RuboCop::Cop::Style::EachWithObject do
   end
 
   it 'ignores inject and reduce with passed in, but not returned hash' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       [].inject({}) do |a, e|
         a + e
       end
@@ -59,21 +59,19 @@ describe RuboCop::Cop::Style::EachWithObject do
         my_method e, a
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'ignores inject and reduce with empty body' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       [].inject({}) do |a, e|
       end
 
       [].reduce({}) { |a, e| }
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'ignores inject and reduce with condition as body' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       [].inject({}) do |a, e|
         a = e if e
       end
@@ -88,7 +86,6 @@ describe RuboCop::Cop::Style::EachWithObject do
         a = e ? e : 2
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'ignores inject and reduce passed in symbol' do
@@ -101,13 +98,12 @@ describe RuboCop::Cop::Style::EachWithObject do
   end
 
   it 'ignores inject/reduce with assignment to accumulator param in block' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       r = [1, 2, 3].reduce({}) do |memo, item|
         memo += item > 2 ? item : 0
         memo
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   context 'when a simple literal is passed as initial value' do

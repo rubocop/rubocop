@@ -102,13 +102,12 @@ describe RuboCop::Cop::Layout::CommentIndentation do
 
     context 'with a blank line following the comment' do
       it 'accepts a correctly indented comment' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           def m
             # comment
 
           end
         END
-        expect(cop.offenses).to be_empty
       end
     end
   end

@@ -46,7 +46,7 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
     end
 
     it 'accepts nested children' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         class FooClass
           class BarClass
           end
@@ -57,11 +57,10 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
           end
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts :: in parent class on inheritance' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         class FooClass
           class BarClass
           end
@@ -70,7 +69,6 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
         class BazClass < FooClass::BarClass
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
@@ -106,18 +104,17 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
     end
 
     it 'accepts compact style for classes/modules' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         class FooClass::BarClass
         end
 
         module FooClass::BarModule
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts nesting for classes/modules with more than one child' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         class FooClass
           class BarClass
           end
@@ -132,27 +129,24 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
           end
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts class/module with single method' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         class FooClass
           def bar_method
           end
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts nesting for classes with an explicit superclass' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         class FooClass < Super
           class BarClass
           end
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 end

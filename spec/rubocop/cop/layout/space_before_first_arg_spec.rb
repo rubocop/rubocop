@@ -51,47 +51,42 @@ describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
     end
 
     it 'accepts a method call with one space before the first arg' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         something x
         a.something y, z
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts + operator' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         something +
           x
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts setter call' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         something.x =
           y
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts multiple space containing line break' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         something \\
           x
       END
-      expect(cop.offenses).to be_empty
     end
 
     context 'when AllowForAlignment is true' do
       it 'accepts method calls with aligned first arguments' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           form.inline_input   :full_name,     as: :string
           form.disabled_input :password,      as: :passwd
           form.masked_input   :zip_code,      as: :string
           form.masked_input   :email_address, as: :email
           form.masked_input   :phone_number,  as: :tel
         END
-        expect(cop.offenses).to be_empty
       end
     end
 
@@ -113,11 +108,10 @@ describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
 
   context 'for method calls with parentheses' do
     it 'accepts a method call without space' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         something(x)
         a.something(y, z)
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts a method call with space after the left parenthesis' do

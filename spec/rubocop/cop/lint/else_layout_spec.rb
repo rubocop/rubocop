@@ -16,7 +16,7 @@ describe RuboCop::Cop::Lint::ElseLayout do
   end
 
   it 'accepts proper else' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       if something
         test
       else
@@ -24,17 +24,15 @@ describe RuboCop::Cop::Lint::ElseLayout do
         test
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts single-expr else regardless of layout' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       if something
         test
       else bala
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'can handle elsifs' do

@@ -29,45 +29,40 @@ describe RuboCop::Cop::Lint::RequireParentheses do
   end
 
   it 'accepts missing parentheses around expression with + operator' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       if day_is? 'tuesday' + rest
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts method calls without parentheses followed by keyword and/or' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       if day.is? 'tuesday' and month == :jan
       end
       if day.is? 'tuesday' or month == :jan
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts method calls that are all operations' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       if current_level == max + 1
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts condition that is not a call' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       if @debug
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts parentheses around expression with boolean operator' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       if day.is?('tuesday' && true == true)
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts method call with parentheses in ternary' do

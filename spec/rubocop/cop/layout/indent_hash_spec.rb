@@ -48,13 +48,12 @@ describe RuboCop::Cop::Layout::IndentHash do
     end
 
     it 'accepts correctly indented first pair' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a << {
             a: 1,
           aaa: 222
         }
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for incorrectly indented first pair with :' do
@@ -81,13 +80,12 @@ describe RuboCop::Cop::Layout::IndentHash do
     end
 
     it 'accepts correctly indented first pair' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a << {
             'a' => 1,
           'aaa' => 222
         }
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for incorrectly indented first pair with =>' do
@@ -106,12 +104,11 @@ describe RuboCop::Cop::Layout::IndentHash do
 
   context 'when hash is operand' do
     it 'accepts correctly indented first pair' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a << {
           a: 1
         }
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for incorrectly indented first pair' do
@@ -199,29 +196,26 @@ describe RuboCop::Cop::Layout::IndentHash do
     end
 
     it 'accepts correctly indented first pair' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a = {
           a: 1
         }
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts several pairs per line' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a = {
           a: 1, b: 2
         }
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts a first pair on the same line as the left brace' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a = { "a" => 1,
               "b" => 2 }
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts single line hash' do
@@ -253,12 +247,11 @@ describe RuboCop::Cop::Layout::IndentHash do
       end
 
       it 'accepts correctly indented first pair' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           a = {
              a: 1
           }
         END
-        expect(cop.offenses).to be_empty
       end
     end
   end
@@ -267,7 +260,7 @@ describe RuboCop::Cop::Layout::IndentHash do
     context 'and arguments are surrounded by parentheses' do
       context 'and EnforcedStyle is special_inside_parentheses' do
         it 'accepts special indentation for first argument' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_no_offenses(<<-END.strip_indent)
             h = {
               a: 1
             }
@@ -284,7 +277,6 @@ describe RuboCop::Cop::Layout::IndentHash do
             func(x, { a: 1
                  })
           END
-          expect(cop.offenses).to be_empty
         end
 
         it "registers an offense for 'consistent' indentation" do
@@ -332,22 +324,20 @@ describe RuboCop::Cop::Layout::IndentHash do
         end
 
         it 'accepts special indentation for second argument' do
-          inspect_source(cop, <<-'END'.strip_indent)
+          expect_no_offenses(<<-'END'.strip_indent)
             body.should have_tag("input", :attributes => {
                                    :name => /q\[(id_eq)\]/ })
           END
-          expect(cop.offenses).to be_empty
         end
 
         it 'accepts normal indentation for hash within hash' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_no_offenses(<<-END.strip_indent)
             scope = scope.where(
               klass.table_name => {
                 reflection.type => model.base_class.sti_name
               }
             )
           END
-          expect(cop.offenses).to be_empty
         end
       end
 
@@ -355,7 +345,7 @@ describe RuboCop::Cop::Layout::IndentHash do
         let(:cop_config) { { 'EnforcedStyle' => 'consistent' } }
 
         it 'accepts normal indentation for first argument' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_no_offenses(<<-END.strip_indent)
             h = {
               a: 1
             }
@@ -372,7 +362,6 @@ describe RuboCop::Cop::Layout::IndentHash do
             func(x, { a: 1
             })
           END
-          expect(cop.offenses).to be_empty
         end
 
         it 'registers an offense for incorrect indentation' do
@@ -392,11 +381,10 @@ describe RuboCop::Cop::Layout::IndentHash do
         end
 
         it 'accepts normal indentation for second argument' do
-          inspect_source(cop, <<-'END'.strip_indent)
+          expect_no_offenses(<<-'END'.strip_indent)
             body.should have_tag("input", :attributes => {
               :name => /q\[(id_eq)\]/ })
           END
-          expect(cop.offenses).to be_empty
         end
       end
     end
@@ -411,11 +399,10 @@ describe RuboCop::Cop::Layout::IndentHash do
       end
 
       it 'accepts a correctly indented multi-line hash with braces' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           func x, {
             a: 1, b: 2 }
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'registers an offense for incorrectly indented multi-line hash ' \
@@ -437,29 +424,26 @@ describe RuboCop::Cop::Layout::IndentHash do
     let(:cop_config) { { 'EnforcedStyle' => 'align_braces' } }
 
     it 'accepts correctly indented first pair' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a = {
               a: 1
             }
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts several pairs per line' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a = {
               a: 1, b: 2
             }
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts a first pair on the same line as the left brace' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a = { "a" => 1,
               "b" => 2 }
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts single line hash' do

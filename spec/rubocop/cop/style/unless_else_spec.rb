@@ -73,12 +73,11 @@ describe RuboCop::Cop::Style::UnlessElse do
 
   context 'unless without else' do
     it 'does not register an offense' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         unless x
           a = 1
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 end

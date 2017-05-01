@@ -63,28 +63,25 @@ describe RuboCop::Cop::Style::MultilineBlockChain do
   end
 
   it 'accepts a chain of blocks spanning one line' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       a { b }.c { d }
       w do x end.y do z end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts a multi-line block chained with calls on one line' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       a do
         b
       end.c.d
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts a chain of calls followed by a multi-line block' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       a1.a2.a3 do
         b
       end
     END
-    expect(cop.offenses).to be_empty
   end
 end

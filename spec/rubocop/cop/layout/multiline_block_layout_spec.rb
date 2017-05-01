@@ -48,29 +48,26 @@ describe RuboCop::Cop::Layout::MultilineBlockLayout do
   end
 
   it 'does not register offenses when there is a newline for do/end block' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       test do
         foo
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not error out when the block is empty' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       test do |x|
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not register offenses when there is a newline for {} block' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       test {
         foo
       }
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'registers offenses for lambdas as expected' do

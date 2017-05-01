@@ -12,11 +12,10 @@ describe RuboCop::Cop::Layout::InitialIndentation do
   end
 
   it 'accepts unindented method definition' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def f
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   context 'for a file with byte order mark' do
@@ -52,11 +51,10 @@ describe RuboCop::Cop::Layout::InitialIndentation do
   end
 
   it 'accepts unindented comment + assignment' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       # comment
       x = 1
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'auto-corrects indented method definition' do

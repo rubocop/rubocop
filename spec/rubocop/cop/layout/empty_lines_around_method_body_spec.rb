@@ -89,11 +89,10 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody do
   end
 
   it 'is not fooled by single line methods' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def some_method; do_something; end
 
       something_else
     END
-    expect(cop.offenses).to be_empty
   end
 end

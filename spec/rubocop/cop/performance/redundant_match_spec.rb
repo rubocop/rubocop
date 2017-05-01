@@ -100,12 +100,11 @@ describe RuboCop::Cop::Performance::RedundantMatch do
   end
 
   it 'does not register an offense when match has a block' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       /regex/.match(str) do |m|
         something(m)
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not register an error when there is no receiver to the match call' do

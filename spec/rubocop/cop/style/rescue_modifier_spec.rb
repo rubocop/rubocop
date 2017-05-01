@@ -57,18 +57,17 @@ describe RuboCop::Cop::Style::RescueModifier do
   end
 
   it 'does not register an offense for normal rescue' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       begin
         test
       rescue
         handle
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not register an offense for normal rescue with ensure' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       begin
         test
       rescue
@@ -77,11 +76,10 @@ describe RuboCop::Cop::Style::RescueModifier do
         cleanup
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not register an offense for nested normal rescue' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       begin
         begin
           test
@@ -92,19 +90,17 @@ describe RuboCop::Cop::Style::RescueModifier do
         handle_outer
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   context 'when an instance method has implicit begin' do
     it 'accepts normal rescue' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def some_method
           test
         rescue
           handle
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'handles modifier rescue in body of implicit begin' do
@@ -123,14 +119,13 @@ describe RuboCop::Cop::Style::RescueModifier do
 
   context 'when a singleton method has implicit begin' do
     it 'accepts normal rescue' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def self.some_method
           test
         rescue
           handle
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'handles modifier rescue in body of implicit begin' do

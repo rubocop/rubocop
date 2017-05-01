@@ -23,12 +23,11 @@ describe RuboCop::Cop::Style::PredicateName, :config do
     end
 
     it 'accepts method name that starts with unknown prefix' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def have_attr
           # ...
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
@@ -52,12 +51,11 @@ describe RuboCop::Cop::Style::PredicateName, :config do
     end
 
     it 'accepts method name that starts with unknown prefix' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def have_attr
           # ...
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
@@ -68,12 +66,11 @@ describe RuboCop::Cop::Style::PredicateName, :config do
     end
 
     it 'accepts method name which is in whitelist' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def is_a?
           # ...
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 end

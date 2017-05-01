@@ -11,63 +11,53 @@ describe RuboCop::Cop::Lint::ShadowedException do
 
   context 'single rescue' do
     it 'accepts an empty rescue' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         begin
           something
         rescue
           handle_exception
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts rescuing a single exception' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         begin
           something
         rescue Exception
           handle_exception
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts rescuing a single custom exception' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         begin
           something
         rescue NonStandardException
           handle_exception
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts rescuing a custom exception and a standard exception' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         begin
           something
         rescue Error, NonStandardException
           handle_exception
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts rescuing multiple custom exceptions' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         begin
           something
         rescue CustomError, NonStandardException
           handle_exception
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense rescuing exceptions that are ' \
@@ -97,19 +87,17 @@ describe RuboCop::Cop::Lint::ShadowedException do
     end
 
     it 'accepts rescuing a single exception that is assigned to a variable' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         begin
           something
         rescue Exception => e
           handle_exception(e)
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts rescuing a single exception that has an ensure' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         begin
           something
         rescue Exception
@@ -118,12 +106,10 @@ describe RuboCop::Cop::Lint::ShadowedException do
           everything_is_ok
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts rescuing a single exception that has an else' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         begin
           something
         rescue Exception
@@ -132,8 +118,6 @@ describe RuboCop::Cop::Lint::ShadowedException do
           handle_non_exception
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts rescuing a multiple exceptions that are not ancestors that ' \
@@ -195,39 +179,33 @@ describe RuboCop::Cop::Lint::ShadowedException do
     end
 
     it 'accepts splat arguments passed to rescue' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         begin
           a
         rescue *FOO
           b
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts rescuing nil' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         begin
           a
         rescue nil
           b
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts rescuing nil and another exception' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         begin
           a
         rescue nil, Exception
           b
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense when rescuing nil multiple exceptions of ' \
@@ -305,7 +283,7 @@ describe RuboCop::Cop::Lint::ShadowedException do
     end
 
     it 'accepts rescuing exceptions in order of level' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         begin
           something
         rescue StandardError
@@ -314,12 +292,10 @@ describe RuboCop::Cop::Lint::ShadowedException do
           handle_exception
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts many (>= 7) rescue groups' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         begin
           something
         rescue StandardError
@@ -338,8 +314,6 @@ describe RuboCop::Cop::Lint::ShadowedException do
           handle_error
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts rescuing exceptions in order of level with multiple ' \
@@ -373,7 +347,7 @@ describe RuboCop::Cop::Lint::ShadowedException do
     end
 
     it 'accepts rescuing custom exceptions in multiple rescue groups' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         begin
           something
         rescue NonStandardError, OtherError
@@ -382,13 +356,11 @@ describe RuboCop::Cop::Lint::ShadowedException do
           handle_exception
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     context 'splat arguments' do
       it 'accepts splat arguments passed to multiple rescues' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           begin
             a
           rescue *FOO
@@ -397,8 +369,6 @@ describe RuboCop::Cop::Lint::ShadowedException do
             c
           end
         END
-
-        expect(cop.offenses).to be_empty
       end
 
       it 'registers an offense for splat arguments rescued after ' \
@@ -437,7 +407,7 @@ describe RuboCop::Cop::Lint::ShadowedException do
 
     context 'exceptions from different ancestry chains' do
       it 'accepts rescuing exceptions in one order' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           begin
             a
           rescue ArgumentError
@@ -446,12 +416,10 @@ describe RuboCop::Cop::Lint::ShadowedException do
             c
           end
         END
-
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts rescuing exceptions in another order' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           begin
             a
           rescue Interrupt
@@ -460,13 +428,11 @@ describe RuboCop::Cop::Lint::ShadowedException do
             c
           end
         END
-
-        expect(cop.offenses).to be_empty
       end
     end
 
     it 'accepts rescuing nil before another exception' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         begin
           a
         rescue nil
@@ -475,12 +441,10 @@ describe RuboCop::Cop::Lint::ShadowedException do
           c
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts rescuing nil after another exception' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         begin
           a
         rescue
@@ -489,12 +453,10 @@ describe RuboCop::Cop::Lint::ShadowedException do
           c
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts rescuing a known exception after an unknown exceptions' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         begin
           a
         rescue UnknownException
@@ -503,12 +465,10 @@ describe RuboCop::Cop::Lint::ShadowedException do
           c
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts rescuing a known exception before an unknown exceptions' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         begin
           a
         rescue StandardError
@@ -517,12 +477,10 @@ describe RuboCop::Cop::Lint::ShadowedException do
           c
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts rescuing a known exception between unknown exceptions' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         begin
           a
         rescue UnknownException
@@ -533,8 +491,6 @@ describe RuboCop::Cop::Lint::ShadowedException do
           d
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense rescuing Exception before an unknown exceptions' do
@@ -555,7 +511,7 @@ describe RuboCop::Cop::Lint::ShadowedException do
     end
 
     it 'ignores expressions of non-const' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         begin
           a
         rescue foo
@@ -564,8 +520,6 @@ describe RuboCop::Cop::Lint::ShadowedException do
           c
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     context 'last rescue does not specify exception class' do

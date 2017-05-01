@@ -45,44 +45,41 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
 
   context 'with method ending with ivar assignment' do
     it 'accepts' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def test
           something
           @top = 5
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
   context 'with method ending with setter call on ivar' do
     it 'accepts' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def test
           something
           @top.attr = 5
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
   context 'with method ending with setter call on argument' do
     it 'accepts' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def test(some_arg)
           unrelated_local_variable = Top.new
           some_arg.attr = 5
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
   context 'when a lvar contains an object passed as argument ' \
           'at the end of the method' do
     it 'accepts the setter call on the lvar' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def test(some_arg)
           @some_ivar = some_arg
           @some_ivar.do_something
@@ -91,20 +88,18 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
           some_lvar.attr = 5
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
   context 'when a lvar contains an object passed as argument ' \
           'by multiple-assignment at the end of the method' do
     it 'accepts the setter call on the lvar' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def test(some_arg)
           _first, some_lvar, _third  = 1, some_arg, 3
           some_lvar.attr = 5
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
@@ -124,14 +119,13 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
   context 'when a lvar possibly contains an object passed as argument ' \
           'by logical-operator-assignment at the end of the method' do
     it 'accepts the setter call on the lvar' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def test(some_arg)
           some_lvar = nil
           some_lvar ||= some_arg
           some_lvar.attr = 5
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
@@ -176,27 +170,25 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
 
   context 'when a lvar contains a non-local object returned by a method' do
     it 'accepts' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def test
           some_lvar = Foo.shared_object
           some_lvar[:attr] = 1
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
   it 'is not confused by operators ending with =' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def test
         top.attr == 5
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'handles exception assignments without exploding' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def foo(bar)
         begin
         rescue StandardError => _
@@ -204,6 +196,5 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
         bar[:baz] = true
       end
     END
-    expect(cop.offenses).to be_empty
   end
 end

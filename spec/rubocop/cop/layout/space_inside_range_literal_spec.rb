@@ -38,11 +38,10 @@ describe RuboCop::Cop::Layout::SpaceInsideRangeLiteral do
   end
 
   it 'accepts multiline range literal with no space in it' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       x = 0..
           10
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense in multiline range literal with space in it' do

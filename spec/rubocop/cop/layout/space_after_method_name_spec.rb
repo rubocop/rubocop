@@ -22,39 +22,35 @@ describe RuboCop::Cop::Layout::SpaceAfterMethodName do
   end
 
   it 'accepts a def without arguments' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def func
         a
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts a defs without arguments' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def self.func
         a
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts a def with arguments but no parentheses' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def func x
         a
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts a defs with arguments but no parentheses' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def self.func x
         a
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'auto-corrects unwanted space' do

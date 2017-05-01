@@ -104,13 +104,12 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
   end
 
   it 'accepts an assignment by `for` statement' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       for a in [] do; end
       for A in [] do; end
       for @a in [] do; end
       for @@a in [] do; end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts an operator called with method syntax' do
@@ -481,12 +480,11 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it "doesn't register an offense for operators with newline on right" do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         'Here is a' +
         'joined string' +
         'across three lines'
       END
-      expect(cop.offenses).to be_empty
     end
   end
 

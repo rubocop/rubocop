@@ -134,21 +134,19 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
   end
 
   it 'accepts array literal in case, if it has non-literal elements' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       case [1, 2, x]
       when [1, 2, 5] then top
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts array literal in case, if it has nested non-literal element' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       case [1, 2, [x, 1]]
       when [1, 2, 5] then top
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for case with a primitive array condition' do
@@ -161,11 +159,10 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
   end
 
   it 'accepts dstr literal in case' do
-    inspect_source(cop, <<-'END'.strip_indent)
+    expect_no_offenses(<<-'END'.strip_indent)
       case "#{x}"
       when [1, 2, 5] then top
       end
     END
-    expect(cop.offenses).to be_empty
   end
 end

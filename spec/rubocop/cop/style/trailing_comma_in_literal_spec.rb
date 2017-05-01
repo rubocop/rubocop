@@ -32,13 +32,12 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
 
     it 'accepts rescue clause' do
       # The list of rescued classes is an array.
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         begin
           do_something
         rescue RuntimeError
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts Hash literal without trailing comma' do
@@ -110,34 +109,31 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
       end
 
       it 'accepts an Array literal with no trailing comma' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           VALUES = [ 1001,
                      2020,
                      3333 ]
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts a Hash literal with no trailing comma' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           MAP = {
                   a: 1001,
                   b: 2020,
                   c: 3333
                 }
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts comma inside a heredoc parameters at the end' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           route(help: {
             'auth' => <<-HELP.chomp
           ,
           HELP
           })
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts comma in comment after last value item' do
@@ -186,34 +182,31 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
 
       context 'when closing bracket is on same line as last value' do
         it 'accepts Array literal with no trailing comma' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_no_offenses(<<-END.strip_indent)
             VALUES = [
                        1001,
                        2020,
                        3333]
           END
-          expect(cop.offenses).to be_empty
         end
 
         it 'accepts a Hash literal with no trailing comma' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_no_offenses(<<-END.strip_indent)
             VALUES = {
                        a: "b",
                        c: "d",
                        e: "f"}
           END
-          expect(cop.offenses).to be_empty
         end
       end
 
       it 'accepts Array literal with two of the values on the same line' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           VALUES = [
                      1001, 2020,
                      3333
                    ]
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'registers an offense for an Array literal with two of the values ' \
@@ -254,48 +247,44 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
       end
 
       it 'accepts trailing comma in an Array literal' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           VALUES = [1001,
                     2020,
                     3333,
                    ]
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts trailing comma in a Hash literal' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           MAP = {
                   a: 1001,
                   b: 2020,
                   c: 3333,
                 }
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts a multiline word array' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           ingredients = %w(
             sausage
             anchovies
             olives
           )
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts missing comma after a heredoc' do
         # A heredoc that's the last item in a literal or parameter list can not
         # have a trailing comma. It's a syntax error.
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           route(help: {
             'auth' => <<-HELP.chomp
           ...
           HELP
           })
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts an empty hash being passed as a method argument' do
@@ -343,21 +332,19 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
       end
 
       it 'accepts a multiline array with a single item and trailing comma' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           foo = [
             1,
           ]
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts a multiline hash with a single pair and trailing comma' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           bar = {
             a: 123,
           }
         END
-        expect(cop.offenses).to be_empty
       end
     end
 
@@ -402,13 +389,12 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
       end
 
       it 'accepts Array literal with two of the values on the same line' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           VALUES = [
                      1001, 2020,
                      3333,
                    ]
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'registers an offense for an Array literal with two of the values ' \
@@ -436,48 +422,44 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
       end
 
       it 'accepts trailing comma in an Array literal' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           VALUES = [1001,
                     2020,
                     3333,
                    ]
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts trailing comma in a Hash literal' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           MAP = {
                   a: 1001,
                   b: 2020,
                   c: 3333,
                 }
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts a multiline word array' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           ingredients = %w(
             sausage
             anchovies
             olives
           )
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts missing comma after a heredoc' do
         # A heredoc that's the last item in a literal or parameter list can not
         # have a trailing comma. It's a syntax error.
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           route(help: {
             'auth' => <<-HELP.chomp
           ...
           HELP
           })
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'auto-corrects an Array literal with two of the values on the same' \
@@ -512,21 +494,19 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
       end
 
       it 'accepts a multiline array with a single item and trailing comma' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           foo = [
             1,
           ]
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts a multiline hash with a single pair and trailing comma' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           bar = {
             a: 123,
           }
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'accepts a multiline array with items on a single line and' \

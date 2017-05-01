@@ -60,53 +60,33 @@ describe RuboCop::Cop::Layout::FirstHashElementLineBreak do
   end
 
   it 'ignores implicit hashes in method calls with parens' do
-    inspect_source(
-      cop,
-      <<-END.strip_indent
-        method(
-          foo: 1,
-          bar: 2)
-      END
-    )
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(<<-END.strip_indent)
+      method(
+        foo: 1,
+        bar: 2)
+    END
   end
 
   it 'ignores implicit hashes in method calls without parens' do
-    inspect_source(
-      cop,
-      <<-END.strip_indent
-        method foo: 1,
-         bar:2
-      END
-    )
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(<<-END.strip_indent)
+      method foo: 1,
+       bar:2
+    END
   end
 
   it 'ignores implicit hashes in method calls that are improperly formatted' do
     # These are covered by Style/FirstMethodArgumentLineBreak
-    inspect_source(
-      cop,
-      <<-END.strip_indent
-        method(foo: 1,
-          bar: 2)
-      END
-    )
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(<<-END.strip_indent)
+      method(foo: 1,
+        bar: 2)
+    END
   end
 
   it 'ignores elements listed on a single line' do
-    inspect_source(
-      cop,
-      <<-END.strip_indent
-        b = {
-          a: 1,
-          b: 2}
-      END
-    )
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(<<-END.strip_indent)
+      b = {
+        a: 1,
+        b: 2}
+    END
   end
 end

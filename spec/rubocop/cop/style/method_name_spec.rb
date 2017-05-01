@@ -42,12 +42,11 @@ describe RuboCop::Cop::Style::MethodName, :config do
     end
 
     it 'accepts operator definitions' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def +(other)
           # ...
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     %w[class module].each do |kind|
@@ -122,11 +121,10 @@ describe RuboCop::Cop::Style::MethodName, :config do
     end
 
     it 'accepts snake case in names' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def my_method
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for singleton camelCase method within class' do
@@ -147,21 +145,19 @@ describe RuboCop::Cop::Style::MethodName, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'camelCase' } }
 
     it 'accepts camel case in instance method name' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def myMethod
           # ...
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts camel case in singleton method name' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def self.myMethod
           # ...
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for snake case in names' do

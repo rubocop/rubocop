@@ -62,23 +62,21 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
 
   context 'when the block is a logical operand' do
     it 'accepts a correctly aligned block end' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         (value.is_a? Array) && value.all? do |subvalue|
           type_check_value(subvalue, array_type)
         end
         a || b do
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
   it 'accepts end aligned with a variable' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       variable = test do |ala|
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   context 'when there is an assignment chain' do
@@ -93,11 +91,10 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
     end
 
     it 'accepts end aligned with the first variable' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a = b = c = test do |ala|
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'auto-corrects alignment to the first variable' do
@@ -115,12 +112,11 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
 
   context 'and the block is an operand' do
     it 'accepts end aligned with a variable' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         b = 1 + preceding_line.reduce(0) do |a, e|
           a + e.length + newline_length
         end + 1
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
@@ -136,13 +132,12 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
 
   context 'when the block is defined on the next line' do
     it 'accepts end aligned with the block expression' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         variable =
           a_long_method_that_dont_fit_on_the_line do |v|
             v.foo
           end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offenses for mismatched end alignment' do
@@ -337,11 +332,10 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
   end
 
   it 'accepts end aligned with an instance variable' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       @variable = test do |ala|
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for mismatched block end with' \
@@ -356,11 +350,10 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
   end
 
   it 'accepts end aligned with a class variable' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       @@variable = test do |ala|
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for mismatched block end with a class variable' do
@@ -374,11 +367,10 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
   end
 
   it 'accepts end aligned with a global variable' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       $variable = test do |ala|
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for mismatched block end with a global variable' do
@@ -392,11 +384,10 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
   end
 
   it 'accepts end aligned with a constant' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       CONSTANT = test do |ala|
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for mismatched block end with a constant' do
@@ -410,12 +401,11 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
   end
 
   it 'accepts end aligned with a method call' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       parser.children << lambda do |token|
         token << 1
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for mismatched block end with a method call' do
@@ -430,12 +420,11 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
   end
 
   it 'accepts end aligned with a method call with arguments' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       @h[:f] = f.each_pair.map do |f, v|
         v = 1
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for mismatched end with a method call' \
@@ -455,12 +444,11 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
   end
 
   it 'accepts end aligned with the block when the block is a method argument' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       expect(arr.all? do |o|
                o.valid?
              end)
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for mismatched end not aligned with the block' \
@@ -476,12 +464,11 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
   end
 
   it 'accepts end aligned with an op-asgn (+=, -=)' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       rb += files.select do |file|
         file << something
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for mismatched block end with an op-asgn (+=, -=)' do
@@ -495,11 +482,10 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
   end
 
   it 'accepts end aligned with an and-asgn (&&=)' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       variable &&= test do |ala|
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for mismatched block end with an and-asgn (&&=)' do
@@ -513,11 +499,10 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
   end
 
   it 'accepts end aligned with an or-asgn (||=)' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       variable ||= test do |ala|
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for mismatched block end with an or-asgn (||=)' do
@@ -531,21 +516,19 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
   end
 
   it 'accepts end aligned with a mass assignment' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       var1, var2 = lambda do |test|
         [1, 2]
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts end aligned with a call chain left hand side' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       parser.diagnostics.consumer = lambda do |diagnostic|
         diagnostics << diagnostic
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for mismatched block end with a mass assignment' do
@@ -572,14 +555,13 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
 
   context 'on a splatted method call' do
     it 'aligns end with the splat operator' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def get_gems_by_name
           @gems ||= Hash[*get_latest_gems.map { |gem|
                            [gem.name, gem, gem.full_name, gem]
                          }.flatten]
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'autocorrects' do
@@ -605,14 +587,13 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
 
   context 'on a bit-flipped method call' do
     it 'aligns end with the ~ operator' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def abc
           @abc ||= A[~xyz { |x|
                        x
                      }.flatten]
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'autocorrects' do
@@ -638,14 +619,13 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
 
   context 'on a logically negated method call' do
     it 'aligns end with the ! operator' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def abc
           @abc ||= A[!xyz { |x|
                        x
                      }.flatten]
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'autocorrects' do
@@ -671,14 +651,13 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
 
   context 'on an arithmetically negated method call' do
     it 'aligns end with the - operator' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def abc
           @abc ||= A[-xyz { |x|
                        x
                      }.flatten]
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'autocorrects' do

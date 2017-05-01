@@ -89,15 +89,13 @@ describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'does not register an offense for an array with comments in it' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         [
         "foo", # comment here
         "bar", # this thing was done because of a bug
         "baz" # do not delete this line
         ]
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for an array with comments outside of it' do
@@ -203,7 +201,7 @@ describe RuboCop::Cop::Style::WordArray, :config do
 
     it "doesn't fail on strings which are not valid UTF-8" do
       # Regression test, see GH issue 2671
-      inspect_source(cop, <<-'END'.strip_indent)
+      expect_no_offenses(<<-'END'.strip_indent)
         ["\xC0",
          "\xC2\x4a",
          "\xC2\xC2",
@@ -212,10 +210,6 @@ describe RuboCop::Cop::Style::WordArray, :config do
          "\xe1\x82\x4a",
         ]
       END
-      # Currently, this cop completely ignores strings with invalid encoding
-      # If it could handle them and still report an offense when appropriate,
-      # that would be even better
-      expect(cop.offenses).to be_empty
     end
   end
 

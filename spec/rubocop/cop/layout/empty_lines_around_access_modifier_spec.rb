@@ -142,14 +142,13 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     end
 
     it 'accepts missing blank line when at the beginning of class/module' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         class Test
           #{access_modifier}
 
           def test; end
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it "requires blank line after, but not before, #{access_modifier} " \
@@ -169,25 +168,23 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     context 'at the beginning of block' do
       context 'for blocks defined with do' do
         it 'accepts missing blank line' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_no_offenses(<<-END.strip_indent)
             included do
               #{access_modifier}
 
               def test; end
             end
           END
-          expect(cop.offenses).to be_empty
         end
 
         it 'accepts missing blank line with arguments' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_no_offenses(<<-END.strip_indent)
             included do |foo|
               #{access_modifier}
 
               def test; end
             end
           END
-          expect(cop.offenses).to be_empty
         end
 
         it "requires blank line after, but not before, #{access_modifier}" do
@@ -206,42 +203,39 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
 
       context 'for blocks defined with {}' do
         it 'accepts missing blank line' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_no_offenses(<<-END.strip_indent)
             included {
               #{access_modifier}
 
               def test; end
             }
           END
-          expect(cop.offenses).to be_empty
         end
 
         it 'accepts missing blank line with arguments' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_no_offenses(<<-END.strip_indent)
             included { |foo|
               #{access_modifier}
 
               def test; end
             }
           END
-          expect(cop.offenses).to be_empty
         end
       end
     end
 
     it 'accepts missing blank line when at the end of block' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         class Test
           def test; end
 
           #{access_modifier}
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'recognizes blank lines with DOS style line endings' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         class Test\r
         \r
           #{access_modifier}\r
@@ -249,7 +243,6 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
           def test; end\r
         end\r
       END
-      expect(cop.offenses).to be_empty
     end
   end
 end

@@ -40,12 +40,10 @@ describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     end
 
     it 'ignores arrays' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a, b = 4,
         5
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     context 'configured supported types' do
@@ -65,13 +63,11 @@ describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     end
 
     it 'allows multi-line assignments on separate lines' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         blarg=
         if true
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for masgn with multi-line lhs' do
@@ -118,13 +114,11 @@ describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     end
 
     it 'ignores arrays' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a, b =
         4,
         5
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     context 'configured supported types' do
@@ -145,12 +139,10 @@ describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     end
 
     it 'allows multi-line assignments on the same line' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         blarg= if true
         end
       END
-
-      expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for masgn with multi-line lhs' do

@@ -17,12 +17,11 @@ describe RuboCop::Cop::Layout::SpaceBeforeComment do
   end
 
   it 'accepts a doc comment' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       =begin
       Doc comment
       =end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'auto-corrects missing space' do

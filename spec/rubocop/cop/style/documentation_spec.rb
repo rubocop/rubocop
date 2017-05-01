@@ -53,14 +53,13 @@ describe RuboCop::Cop::Style::Documentation do
   end
 
   it 'accepts non-empty class with documentation' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       # class comment
       class My_Class
         def method
         end
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for non-empty class with annotation comment' do
@@ -121,7 +120,7 @@ describe RuboCop::Cop::Style::Documentation do
   end
 
   it 'accepts non-empty class with comment that ends with an annotation' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       # Does fooing.
       # FIXME: Not yet implemented.
       class Foo
@@ -129,50 +128,45 @@ describe RuboCop::Cop::Style::Documentation do
         end
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts non-empty module with documentation' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       # class comment
       module My_Class
         def method
         end
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts empty class without documentation' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       class My_Class
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts namespace module without documentation' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       module Test
         class A; end
         class B; end
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts namespace class without documentation' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       class Test
         class A; end
         class B; end
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts namespace class which defines constants' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       class Test
         A = Class.new
         B = Class.new(A)
@@ -180,11 +174,10 @@ describe RuboCop::Cop::Style::Documentation do
         D = 1
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts namespace module which defines constants' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       module Test
         A = Class.new
         B = Class.new(A)
@@ -192,7 +185,6 @@ describe RuboCop::Cop::Style::Documentation do
         D = 1
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not raise an error for an implicit match conditional' do
@@ -293,13 +285,12 @@ describe RuboCop::Cop::Style::Documentation do
 
     context 'on a subclass' do
       it 'accepts non-namespace subclass without documentation' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           class Test < Parent #:nodoc:
             def method
             end
           end
         END
-        expect(cop.offenses).to be_empty
       end
 
       it 'registers an offense for nested subclass without documentation' do
@@ -317,7 +308,7 @@ describe RuboCop::Cop::Style::Documentation do
 
       context 'with `all` modifier' do
         it 'accepts nested subclass without documentation' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_no_offenses(<<-END.strip_indent)
             module A #:nodoc: all
               module B
                 TEST = 20
@@ -327,7 +318,6 @@ describe RuboCop::Cop::Style::Documentation do
               end
             end
           END
-          expect(cop.offenses).to be_empty
         end
       end
     end

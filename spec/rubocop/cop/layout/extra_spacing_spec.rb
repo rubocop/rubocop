@@ -279,32 +279,29 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'does not register an offense if assignments are separated by blanks' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a = 1
 
         bb = 2
 
         ccc = 3
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'does not register an offense if assignments are aligned' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         a   = 1
         bb  = 2
         ccc = 3
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'aligns the first assignment with the following assignment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         # comment
         a   = 1
         bb  = 2
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'autocorrects consecutive assignments which are not aligned' do

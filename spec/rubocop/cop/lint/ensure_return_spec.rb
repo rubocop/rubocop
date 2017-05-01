@@ -16,7 +16,7 @@ describe RuboCop::Cop::Lint::EnsureReturn do
   end
 
   it 'does not register an offense for return outside ensure' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       begin
         something
         return
@@ -24,7 +24,6 @@ describe RuboCop::Cop::Lint::EnsureReturn do
         file.close
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not check when ensure block has no body' do

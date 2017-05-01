@@ -148,29 +148,19 @@ describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
   end
 
   it 'ignores properly formatted implicit arrays' do
-    inspect_source(
-      cop,
-      <<-END.strip_indent
-        a, b,
-        c =
-        1, 2,
-        3
-      END
-    )
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(<<-END.strip_indent)
+      a, b,
+      c =
+      1, 2,
+      3
+    END
   end
 
   it 'ignores elements listed on a single line' do
-    inspect_source(
-      cop,
-      <<-END.strip_indent
-        b = [
-          :a,
-          :b]
-      END
-    )
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(<<-END.strip_indent)
+      b = [
+        :a,
+        :b]
+    END
   end
 end

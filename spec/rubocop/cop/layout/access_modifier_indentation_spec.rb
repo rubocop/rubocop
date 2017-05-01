@@ -165,7 +165,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
     end
 
     it 'accepts properly indented private' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         class Test
 
           private
@@ -173,11 +173,10 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
           def test; end
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts properly indented protected' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         class Test
 
           protected
@@ -185,26 +184,23 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
           def test; end
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts an empty class' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         class Test
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts methods with a body' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         module Test
           def test
             foo
           end
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'handles properly nested classes' do
@@ -255,7 +251,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
       let(:indentation_width) { 4 }
 
       it 'accepts properly indented private' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           class Test
 
               private
@@ -263,7 +259,6 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
               def test; end
           end
         END
-        expect(cop.offenses).to be_empty
       end
     end
 
@@ -273,7 +268,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
       end
 
       it 'accepts properly indented private' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-END.strip_indent)
           class Test
 
               private
@@ -281,7 +276,6 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
             def test; end
           end
         END
-        expect(cop.offenses).to be_empty
       end
     end
   end
@@ -372,7 +366,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
     end
 
     it 'accepts private indented to the containing class indent level' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         class Test
 
         private
@@ -380,11 +374,10 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
           def test; end
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts protected indented to the containing class indent level' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         class Test
 
         protected
@@ -392,7 +385,6 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
           def test; end
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'handles properly nested classes' do

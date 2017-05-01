@@ -163,7 +163,7 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
   end
 
   it 'allows splat expansion on an array literal' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       case foo
       when *[1, 2]
         bar
@@ -173,19 +173,15 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
         baz
       end
     END
-
-    expect(cop.offenses).to be_empty
   end
 
   it 'allows splat expansion on array literal as the last condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       case foo
       when *[1, 2]
         bar
       end
     END
-
-    expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for a splat on a variable that proceeds a splat ' \

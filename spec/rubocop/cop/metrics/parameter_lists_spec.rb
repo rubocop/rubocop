@@ -22,11 +22,10 @@ describe RuboCop::Cop::Metrics::ParameterLists, :config do
   end
 
   it 'accepts a method def with 4 parameters' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       def meth(a, b, c, d)
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   context 'When CountKeywordArgs is true' do
@@ -46,11 +45,10 @@ describe RuboCop::Cop::Metrics::ParameterLists, :config do
     before { cop_config['CountKeywordArgs'] = false }
 
     it 'does not count keyword arguments' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         def meth(a, b, c, d: 1, e: 2)
         end
       END
-      expect(cop.offenses).to be_empty
     end
 
     it 'does not count keyword arguments without default values', ruby: 2.1 do

@@ -18,12 +18,11 @@ describe RuboCop::Cop::Style::ModuleFunction, :config do
     end
 
     it 'accepts `extend self` in a class' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         class Test
           extend self
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 
@@ -42,13 +41,12 @@ describe RuboCop::Cop::Style::ModuleFunction, :config do
     end
 
     it 'accepts module_function with an argument' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-END.strip_indent)
         module Test
           def test; end
           module_function :test
         end
       END
-      expect(cop.offenses).to be_empty
     end
   end
 end

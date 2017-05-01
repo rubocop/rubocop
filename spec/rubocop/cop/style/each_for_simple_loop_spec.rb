@@ -53,11 +53,10 @@ describe RuboCop::Cop::Style::EachForSimpleLoop do
   end
 
   it 'does not register offense for multiline block with parameters' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-END.strip_indent)
       (0..10).each do |n|
       end
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'does not register offense for character range' do
