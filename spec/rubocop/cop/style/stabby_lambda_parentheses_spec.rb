@@ -5,18 +5,15 @@ describe RuboCop::Cop::Style::StabbyLambdaParentheses, :config do
 
   shared_examples 'common' do
     it 'does not check the old lambda syntax' do
-      inspect_source(cop, 'lambda(&:nil?)')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('lambda(&:nil?)')
     end
 
     it 'does not check a stabby lambda without arguments' do
-      inspect_source(cop, '-> { true }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('-> { true }')
     end
 
     it 'does not check a method call named lambda' do
-      inspect_source(cop, 'o.lambda')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('o.lambda')
     end
   end
 
@@ -33,8 +30,7 @@ describe RuboCop::Cop::Style::StabbyLambdaParentheses, :config do
     end
 
     it 'does not register an offense for a stabby lambda with parentheses' do
-      inspect_source(cop, '->(a,b,c) { a + b + c }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('->(a,b,c) { a + b + c }')
     end
 
     it 'autocorrects when a stabby lambda has no parentheses' do

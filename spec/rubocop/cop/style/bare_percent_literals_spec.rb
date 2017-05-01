@@ -5,33 +5,27 @@ describe RuboCop::Cop::Style::BarePercentLiterals, :config do
 
   shared_examples 'accepts other delimiters' do
     it 'accepts __FILE__' do
-      inspect_source(cop, '__FILE__')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('__FILE__')
     end
 
     it 'accepts regular expressions' do
-      inspect_source(cop, '/%Q?/')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('/%Q?/')
     end
 
     it 'accepts ""' do
-      inspect_source(cop, '""')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('""')
     end
 
     it 'accepts "" string with interpolation' do
-      inspect_source(cop, '"#{file}hi"')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('"#{file}hi"')
     end
 
     it "accepts ''" do
-      inspect_source(cop, "'hi'")
-      expect(cop.offenses).to be_empty
+      expect_no_offenses("'hi'")
     end
 
     it 'accepts %q' do
-      inspect_source(cop, '%q(hi)')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('%q(hi)')
     end
 
     it 'accepts heredoc' do
@@ -60,8 +54,7 @@ describe RuboCop::Cop::Style::BarePercentLiterals, :config do
       end
 
       it 'accepts %Q()' do
-        inspect_source(cop, '%Q(hi)')
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('%Q(hi)')
       end
 
       include_examples 'accepts other delimiters'
@@ -79,8 +72,7 @@ describe RuboCop::Cop::Style::BarePercentLiterals, :config do
       end
 
       it 'accepts %Q()' do
-        inspect_source(cop, '%Q(#{x})')
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('%Q(#{x})')
       end
 
       include_examples 'accepts other delimiters'
@@ -103,8 +95,7 @@ describe RuboCop::Cop::Style::BarePercentLiterals, :config do
       end
 
       it 'accepts %()' do
-        inspect_source(cop, '%(hi)')
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('%(hi)')
       end
 
       include_examples 'accepts other delimiters'
@@ -122,8 +113,7 @@ describe RuboCop::Cop::Style::BarePercentLiterals, :config do
       end
 
       it 'accepts %()' do
-        inspect_source(cop, '%(#{x})')
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('%(#{x})')
       end
 
       include_examples 'accepts other delimiters'

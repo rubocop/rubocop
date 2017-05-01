@@ -32,23 +32,19 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
     end
 
     it 'accepts single quotes' do
-      inspect_source(cop, "a = 'x'")
-      expect(cop.offenses).to be_empty
+      expect_no_offenses("a = 'x'")
     end
 
     it 'accepts single quotes in interpolation' do
-      inspect_source(cop, %q("hello#{hash['there']}"))
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(%q("hello#{hash['there']}"))
     end
 
     it 'accepts %q and %Q quotes' do
-      inspect_source(cop, 'a = %q(x) + %Q[x]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('a = %q(x) + %Q[x]')
     end
 
     it 'accepts % quotes' do
-      inspect_source(cop, 'a = %(x)')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('a = %(x)')
     end
 
     it 'accepts heredocs' do
@@ -61,8 +57,7 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
     end
 
     it 'accepts double quotes when new line is used' do
-      inspect_source(cop, '"\n"')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('"\n"')
     end
 
     it 'accepts double quotes when interpolating & quotes in multiple lines' do
@@ -72,38 +67,31 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
     end
 
     it 'accepts double quotes when single quotes are used' do
-      inspect_source(cop, '"\'"')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('"\'"')
     end
 
     it 'accepts double quotes when interpolating an instance variable' do
-      inspect_source(cop, '"#@test"')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('"#@test"')
     end
 
     it 'accepts double quotes when interpolating a global variable' do
-      inspect_source(cop, '"#$test"')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('"#$test"')
     end
 
     it 'accepts double quotes when interpolating a class variable' do
-      inspect_source(cop, '"#@@test"')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('"#@@test"')
     end
 
     it 'accepts double quotes when control characters are used' do
-      inspect_source(cop, '"\e"')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('"\e"')
     end
 
     it 'accepts double quotes when unicode control sequence is used' do
-      inspect_source(cop, '"Espa\u00f1a"')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('"Espa\u00f1a"')
     end
 
     it 'accepts double quotes at the start of regexp literals' do
-      inspect_source(cop, 's = /"((?:[^\\"]|\\.)*)"/')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('s = /"((?:[^\\"]|\\.)*)"/')
     end
 
     it 'accepts double quotes with some other special symbols' do
@@ -116,13 +104,11 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
     end
 
     it 'accepts " in a %w' do
-      inspect_source(cop, '%w(")')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('%w(")')
     end
 
     it 'accepts \\\\\n in a string' do # this would be: "\\\n"
-      inspect_source(cop, '"foo \\\\\n bar"')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('"foo \\\\\n bar"')
     end
 
     it 'accepts double quotes in interpolation' do
@@ -213,23 +199,19 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
     end
 
     it 'accepts double quotes' do
-      inspect_source(cop, 'a = "x"')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('a = "x"')
     end
 
     it 'accepts single quotes in interpolation' do
-      inspect_source(cop, %q("hello#{hash['there']}"))
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(%q("hello#{hash['there']}"))
     end
 
     it 'accepts %q and %Q quotes' do
-      inspect_source(cop, 'a = %q(x) + %Q[x]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('a = %q(x) + %Q[x]')
     end
 
     it 'accepts % quotes' do
-      inspect_source(cop, 'a = %(x)')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('a = %(x)')
     end
 
     it 'accepts heredocs' do
@@ -255,13 +237,11 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
     end
 
     it 'accepts single quotes at the start of regexp literals' do
-      inspect_source(cop, "s = /'((?:[^\\']|\\.)*)'/")
-      expect(cop.offenses).to be_empty
+      expect_no_offenses("s = /'((?:[^\\']|\\.)*)'/")
     end
 
     it "accepts ' in a %w" do
-      inspect_source(cop, "%w(')")
-      expect(cop.offenses).to be_empty
+      expect_no_offenses("%w(')")
     end
 
     it 'can handle a built-in constant parsed as string' do

@@ -19,8 +19,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'slashes' } }
 
     it 'ignores the slashes that do not belong // regex' do
-      inspect_source(cop, 'x =~ /\s{#{x[/\s+/].length}}/')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('x =~ /\s{#{x[/\s+/].length}}/')
     end
   end
 

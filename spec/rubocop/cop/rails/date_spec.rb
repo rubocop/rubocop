@@ -42,15 +42,13 @@ describe RuboCop::Cop::Rails::Date, :config do
 
     context 'when a zone is provided' do
       it 'does not register an offense' do
-        inspect_source(cop, 'date.to_time(:utc)')
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('date.to_time(:utc)')
       end
     end
 
     context 'when a string literal with timezone' do
       it 'does not register an offense' do
-        inspect_source(cop, '"2016-07-12 14:36:31 +0100".to_time(:utc)')
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('"2016-07-12 14:36:31 +0100".to_time(:utc)')
       end
     end
 
@@ -62,8 +60,7 @@ describe RuboCop::Cop::Rails::Date, :config do
     end
 
     it 'does not blow up in the presence of a single constant to inspect' do
-      inspect_source(cop, 'A')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('A')
     end
 
     RuboCop::Cop::Rails::TimeZone::ACCEPTED_METHODS.each do |a_method|
@@ -97,8 +94,7 @@ describe RuboCop::Cop::Rails::Date, :config do
     end
 
     it 'accepts #to_time_in_current_zone' do
-      inspect_source(cop, 'date.to_time_in_current_zone')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('date.to_time_in_current_zone')
     end
   end
 end

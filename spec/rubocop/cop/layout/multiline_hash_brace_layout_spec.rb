@@ -14,15 +14,11 @@ describe RuboCop::Cop::Layout::MultilineHashBraceLayout, :config do
   end
 
   it 'ignores single-line hashes' do
-    inspect_source(cop, '{a: 1, b: 2}')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('{a: 1, b: 2}')
   end
 
   it 'ignores empty hashes' do
-    inspect_source(cop, '{}')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('{}')
   end
 
   include_examples 'multiline literal brace layout' do

@@ -9,13 +9,11 @@ describe RuboCop::Cop::Style::Proc do
   end
 
   it 'accepts the proc method' do
-    inspect_source(cop, 'f = proc { |x| puts x }')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('f = proc { |x| puts x }')
   end
 
   it 'accepts the Proc.new call outside of block' do
-    inspect_source(cop, 'p = Proc.new')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('p = Proc.new')
   end
 
   it 'auto-corrects Proc.new to proc' do

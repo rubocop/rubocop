@@ -13,13 +13,11 @@ describe RuboCop::Cop::Style::Attr do
   end
 
   it 'accepts attr when it does not take arguments' do
-    inspect_source(cop, 'func(attr)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('func(attr)')
   end
 
   it 'accepts attr when it has a receiver' do
-    inspect_source(cop, 'x.attr arg')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('x.attr arg')
   end
 
   context 'auto-corrects' do

@@ -31,7 +31,6 @@ describe RuboCop::Cop::Lint::MultipleCompare do
   end
 
   it 'accepts to use one compare operator' do
-    inspect_source(cop, 'x < 1')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('x < 1')
   end
 end

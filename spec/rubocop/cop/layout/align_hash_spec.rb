@@ -5,8 +5,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
 
   shared_examples 'not on separate lines' do
     it 'accepts single line hash' do
-      inspect_source(cop, 'func(a: 0, bb: 1)')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('func(a: 0, bb: 1)')
     end
 
     it 'accepts several pairs per line' do
@@ -215,8 +214,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
       end
 
       it 'accepts an empty hash' do
-        inspect_source(cop, 'h = {}')
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('h = {}')
       end
     end
 
@@ -311,8 +309,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts an empty hash' do
-      inspect_source(cop, 'h = {}')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('h = {}')
     end
 
     it 'accepts a multiline array of single line hashes' do
@@ -433,8 +430,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts a single method argument entry with colon' do
-      inspect_source(cop, 'merge(parent: nil)')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('merge(parent: nil)')
     end
   end
 
@@ -479,8 +475,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts an empty hash' do
-      inspect_source(cop, 'h = {}')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('h = {}')
     end
 
     it 'registers an offense for misaligned hash values' do

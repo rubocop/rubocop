@@ -74,9 +74,7 @@ describe RuboCop::Cop::Lint::PercentStringArray do
     end
 
     it 'accepts if tokens contain invalid byte sequence only' do
-      inspect_source(cop, '%W(\255)')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('%W(\255)')
     end
   end
 end

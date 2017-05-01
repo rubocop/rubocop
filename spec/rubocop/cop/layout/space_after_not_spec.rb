@@ -12,15 +12,11 @@ describe RuboCop::Cop::Layout::SpaceAfterNot do
   end
 
   it 'accepts no space after !' do
-    inspect_source(cop, '!something')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('!something')
   end
 
   it 'accepts space after not keyword' do
-    inspect_source(cop, 'not something')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('not something')
   end
 
   it 'reports an offense for space after ! with the negated receiver ' \

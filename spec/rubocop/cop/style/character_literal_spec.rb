@@ -14,13 +14,11 @@ describe RuboCop::Cop::Style::CharacterLiteral do
   end
 
   it 'accepts literals like ?\C-\M-d' do
-    inspect_source(cop, 'x = ?\C-\M-d')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('x = ?\C-\M-d')
   end
 
   it 'accepts ? in a %w literal' do
-    inspect_source(cop, '%w{? A}')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('%w{? A}')
   end
 
   it "auto-corrects ?x to 'x'" do

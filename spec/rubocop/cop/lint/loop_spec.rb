@@ -14,12 +14,10 @@ describe RuboCop::Cop::Lint::Loop do
   end
 
   it 'accepts normal while' do
-    inspect_source(cop, 'while test; one; two; end')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('while test; one; two; end')
   end
 
   it 'accepts normal until' do
-    inspect_source(cop, 'until test; one; two; end')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('until test; one; two; end')
   end
 end

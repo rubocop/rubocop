@@ -43,8 +43,7 @@ describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
     end
 
     it 'does not register an offense for backrefs like $1' do
-      inspect_source(cop, 'puts $1')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('puts $1')
     end
 
     it 'auto-corrects $: to $LOAD_PATH' do
@@ -116,8 +115,7 @@ describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
     end
 
     it 'does not register an offense for backrefs like $1' do
-      inspect_source(cop, 'puts $1')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('puts $1')
     end
 
     it 'auto-corrects $LOAD_PATH to $:' do

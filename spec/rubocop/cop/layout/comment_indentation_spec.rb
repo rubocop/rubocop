@@ -10,13 +10,11 @@ describe RuboCop::Cop::Layout::CommentIndentation do
 
   context 'on outer level' do
     it 'accepts a correctly indented comment' do
-      inspect_source(cop, '# comment')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('# comment')
     end
 
     it 'accepts a comment that follows code' do
-      inspect_source(cop, 'hello # comment')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('hello # comment')
     end
 
     it 'accepts a documentation comment' do

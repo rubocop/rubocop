@@ -4,23 +4,19 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
   subject(:cop) { described_class.new }
 
   it 'accepts empty interpolation' do
-    inspect_source(cop, '"this is #{a} silly"')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('"this is #{a} silly"')
   end
 
   it 'accepts interpolation of xstr' do
-    inspect_source(cop, '"this is #{`a`} silly"')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('"this is #{`a`} silly"')
   end
 
   it 'accepts interpolation of irange where endpoints are not literals' do
-    inspect_source(cop, '"this is an irange: #{var1..var2}"')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('"this is an irange: #{var1..var2}"')
   end
 
   it 'accepts interpolation of erange where endpoints are not literals' do
-    inspect_source(cop, '"this is an erange: #{var1...var2}"')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('"this is an erange: #{var1...var2}"')
   end
 
   shared_examples 'literal interpolation' do |literal, expected = literal|

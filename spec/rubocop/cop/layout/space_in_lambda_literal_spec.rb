@@ -12,8 +12,7 @@ describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
     end
 
     it 'does not register an offense for a space between -> and (' do
-      inspect_source(cop, 'a = -> (b, c) { b + c }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('a = -> (b, c) { b + c }')
     end
 
     it 'does not register an offense for multi-line lambdas' do
@@ -27,8 +26,7 @@ describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
     end
 
     it 'does not register an offense for no space between -> and {' do
-      inspect_source(cop, 'a = ->{ b + c }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('a = ->{ b + c }')
     end
 
     it 'registers an offense for no space in the inner nested lambda' do
@@ -80,8 +78,7 @@ describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
     end
 
     it 'does not register an offense for no space between -> and (' do
-      inspect_source(cop, 'a = ->(b, c) { b + c }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('a = ->(b, c) { b + c }')
     end
 
     it 'does not register an offense for multi-line lambdas' do
@@ -95,8 +92,7 @@ describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
     end
 
     it 'does not register an offense for a space between -> and {' do
-      inspect_source(cop, 'a = -> { b + c }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('a = -> { b + c }')
     end
 
     it 'registers an offense for spaces between -> and (' do

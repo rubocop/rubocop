@@ -78,18 +78,15 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
   end
 
   it 'does not register an offense when arguments and fields match' do
-    inspect_source(cop, 'format("%s %d %i", 1, 2, 3)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('format("%s %d %i", 1, 2, 3)')
   end
 
   it 'correctly ignores double percent' do
-    inspect_source(cop, "format('%s %s %% %s %%%% %%%%%%', 1, 2, 3)")
-    expect(cop.offenses).to be_empty
+    expect_no_offenses("format('%s %s %% %s %%%% %%%%%%', 1, 2, 3)")
   end
 
   it 'constants do not register offenses' do
-    inspect_source(cop, 'format(A_CONST, 1, 2, 3)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('format(A_CONST, 1, 2, 3)')
   end
 
   it 'registers offense with sprintf' do
@@ -102,9 +99,7 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
   end
 
   it 'correctly parses different sprintf formats' do
-    inspect_source(cop,
-                   'sprintf("%020x%+g:% g %%%#20.8x %#.0e", 1, 2, 3, 4, 5)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('sprintf("%020x%+g:% g %%%#20.8x %#.0e", 1, 2, 3, 4, 5)')
   end
 
   it 'registers an offense for String#%' do
@@ -117,13 +112,11 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
   end
 
   it 'does not register offense for `String#%` when arguments, fields match' do
-    inspect_source(cop, '"%s %s" % [1, 2]')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('"%s %s" % [1, 2]')
   end
 
   it 'does not register an offense when single argument is a hash' do
-    inspect_source(cop, 'puts "%s" % {"a" => 1}')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('puts "%s" % {"a" => 1}')
   end
 
   it 'does not register an offense when single argument is not an array' do
@@ -167,42 +160,36 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
     context 'and a single variable argument is passed' do
       it 'does not register an offense' do
         # the variable could evaluate to an array
-        inspect_source(cop, 'puts "%s %s" % var')
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('puts "%s %s" % var')
       end
     end
 
     context 'and a single send node is passed' do
       it 'does not register an offense' do
-        inspect_source(cop, 'puts "%s %s" % ("ab".chars)')
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('puts "%s %s" % ("ab".chars)')
       end
     end
   end
 
   context 'when format is not a string literal' do
     it 'does not register an offense' do
-      inspect_source(cop, 'puts str % [1, 2]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('puts str % [1, 2]')
     end
   end
 
   # Regression: https://github.com/bbatsov/rubocop/issues/3869
   context 'when passed an empty array' do
     it 'does not register an offense' do
-      inspect_source(cop, "'%' % []")
-      expect(cop.offenses).to be_empty
+      expect_no_offenses("'%' % []")
     end
   end
 
   it 'ignores percent right next to format string' do
-    inspect_source(cop, 'format("%0.1f%% percent", 22.5)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('format("%0.1f%% percent", 22.5)')
   end
 
   it 'accepts an extra argument for dynamic width' do
-    inspect_source(cop, 'format("%*d", max_width, id)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('format("%*d", max_width, id)')
   end
 
   it 'registers an offense if extra argument for dynamic width not given' do
@@ -213,13 +200,11 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
   end
 
   it 'accepts an extra arg for dynamic width with other preceding flags' do
-    inspect_source(cop, 'format("%0*x", max_width, id)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('format("%0*x", max_width, id)')
   end
 
   it 'accepts an extra arg for dynamic width with other following flags' do
-    inspect_source(cop, 'format("%*0x", max_width, id)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('format("%*0x", max_width, id)')
   end
 
   it 'does not register an offense argument is the result of a message send' do
@@ -231,13 +216,11 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
   end
 
   it 'does not register an offense when using named parameters' do
-    inspect_source(cop, '"foo %{bar} baz" % { bar: 42 }')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('"foo %{bar} baz" % { bar: 42 }')
   end
 
   it 'identifies correctly digits for spacing in format' do
-    inspect_source(cop, '"duration: %10.fms" % 42')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('"duration: %10.fms" % 42')
   end
 
   it 'finds faults even when the string looks like a HEREDOC' do
@@ -247,13 +230,11 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
   end
 
   it 'does not register an offense for sprintf with splat argument' do
-    inspect_source(cop, 'sprintf("%d%d", *test)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('sprintf("%d%d", *test)')
   end
 
   it 'does not register an offense for format with splat argument' do
-    inspect_source(cop, 'format("%d%d", *test)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('format("%d%d", *test)')
   end
 
   context 'on format with %{} interpolations' do

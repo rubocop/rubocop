@@ -11,8 +11,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
     end
 
     it 'accepts a single line block with braces' do
-      inspect_source(cop, 'each { |x| }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('each { |x| }')
     end
 
     it 'accepts a multi-line block with do-end' do

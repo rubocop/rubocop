@@ -21,19 +21,15 @@ describe RuboCop::Cop::Lint::EachWithObjectArgument do
   end
 
   it 'accepts a variable argument' do
-    inspect_source(cop, 'collection.each_with_object(x) { |e, a| a.add(e) }')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('collection.each_with_object(x) { |e, a| a.add(e) }')
   end
 
   it 'accepts two arguments' do
     # Two arguments would indicate that this is not Enumerable#each_with_object.
-    inspect_source(cop, 'collection.each_with_object(1, 2) { |e, a| a.add(e) }')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('collection.each_with_object(1, 2) { |e, a| a.add(e) }')
   end
 
   it 'accepts a string argument' do
-    inspect_source(cop,
-                   "collection.each_with_object('') { |e, a| a << e.to_s }")
-    expect(cop.offenses).to be_empty
+    expect_no_offenses("collection.each_with_object('') { |e, a| a << e.to_s }")
   end
 end

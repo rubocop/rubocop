@@ -290,8 +290,7 @@ describe RuboCop::Cop::Style::SignalException, :config do
     end
 
     it 'accepts `fail` with explicit receiver' do
-      inspect_source(cop, 'test.fail')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('test.fail')
     end
 
     it 'registers an offense for `fail` with `Kernel` as explicit receiver' do
@@ -362,8 +361,7 @@ describe RuboCop::Cop::Style::SignalException, :config do
     end
 
     it 'accepts `raise` with explicit receiver' do
-      inspect_source(cop, 'test.raise')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('test.raise')
     end
 
     it 'registers an offense for `raise` with `Kernel` as explicit receiver' do

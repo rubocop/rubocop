@@ -40,8 +40,7 @@ describe RuboCop::Cop::Layout::InitialIndentation do
   end
 
   it 'accepts empty file' do
-    inspect_source(cop, '')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('')
   end
 
   it 'registers an offense for indented assignment disregarding comment' do

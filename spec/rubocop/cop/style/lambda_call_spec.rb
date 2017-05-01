@@ -23,8 +23,7 @@ describe RuboCop::Cop::Style::LambdaCall, :config do
     end
 
     it 'accepts x.call()' do
-      inspect_source(cop, 'x.call(a, b)')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('x.call(a, b)')
     end
 
     it 'auto-corrects x.() to x.call()' do
@@ -53,13 +52,11 @@ describe RuboCop::Cop::Style::LambdaCall, :config do
     end
 
     it 'accepts x.()' do
-      inspect_source(cop, 'x.(a, b)')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('x.(a, b)')
     end
 
     it 'accepts a call without receiver' do
-      inspect_source(cop, 'call(a, b)')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('call(a, b)')
     end
 
     it 'auto-corrects x.call() to x.()' do

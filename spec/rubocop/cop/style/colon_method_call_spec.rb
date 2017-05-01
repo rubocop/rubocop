@@ -24,28 +24,23 @@ describe RuboCop::Cop::Style::ColonMethodCall do
   end
 
   it 'does not register an offense for constant access' do
-    inspect_source(cop, 'Tip::Top::SOME_CONST')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('Tip::Top::SOME_CONST')
   end
 
   it 'does not register an offense for nested class' do
-    inspect_source(cop, 'Tip::Top.some_method')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('Tip::Top.some_method')
   end
 
   it 'does not register an offense for op methods' do
-    inspect_source(cop, 'Tip::Top.some_method[3]')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('Tip::Top.some_method[3]')
   end
 
   it 'does not register an offense when for constructor methods' do
-    inspect_source(cop, 'Tip::Top(some_arg)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('Tip::Top(some_arg)')
   end
 
   it 'does not register an offense for Java static types' do
-    inspect_source(cop, 'Java::int')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('Java::int')
   end
 
   it 'auto-corrects "::" with "."' do

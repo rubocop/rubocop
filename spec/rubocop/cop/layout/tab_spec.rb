@@ -28,18 +28,15 @@ describe RuboCop::Cop::Layout::Tab do
   end
 
   it 'accepts a line with tab in a string' do
-    inspect_source(cop, "(x = \"\t\")")
-    expect(cop.offenses).to be_empty
+    expect_no_offenses("(x = \"\t\")")
   end
 
   it 'accepts a line which begins with tab in a string' do
-    inspect_source(cop, "x = '\n\thello'")
-    expect(cop.offenses).to be_empty
+    expect_no_offenses("x = '\n\thello'")
   end
 
   it 'accepts a line which begins with tab in a heredoc' do
-    inspect_source(cop, "x = <<HELLO\n\thello\nHELLO")
-    expect(cop.offenses).to be_empty
+    expect_no_offenses("x = <<HELLO\n\thello\nHELLO")
   end
 
   it 'auto-corrects a line indented with tab' do

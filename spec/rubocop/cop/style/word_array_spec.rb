@@ -63,28 +63,23 @@ describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'does not register an offense for array of non-words' do
-      inspect_source(cop, '["one space", "two", "three"]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('["one space", "two", "three"]')
     end
 
     it 'does not register an offense for array containing non-string' do
-      inspect_source(cop, '["one", "two", 3]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('["one", "two", 3]')
     end
 
     it 'does not register an offense for array starting with %w' do
-      inspect_source(cop, '%w(one two three)')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('%w(one two three)')
     end
 
     it 'does not register an offense for array with one element' do
-      inspect_source(cop, '["three"]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('["three"]')
     end
 
     it 'does not register an offense for array with empty strings' do
-      inspect_source(cop, '["", "two", "three"]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('["", "two", "three"]')
     end
 
     it 'does not register offense for array with allowed number of strings' do
@@ -179,13 +174,11 @@ describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'does not register an offense for arrays of single quoted strings' do
-      inspect_source(cop, "['one', 'two', 'three']")
-      expect(cop.offenses).to be_empty
+      expect_no_offenses("['one', 'two', 'three']")
     end
 
     it 'does not register an offense for arrays of double quoted strings' do
-      inspect_source(cop, '["one", "two", "three"]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('["one", "two", "three"]')
     end
 
     it 'registers an offense for a %w() array' do

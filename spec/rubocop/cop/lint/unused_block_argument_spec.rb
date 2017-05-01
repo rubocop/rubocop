@@ -348,8 +348,7 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
     let(:cop_config) { { 'IgnoreEmptyBlocks' => true } }
 
     it 'accepts an empty block with a single unused parameter' do
-      inspect_source(cop, '->(arg) { }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('->(arg) { }')
     end
 
     it 'registers an offense for a non-empty block with an unused parameter' do
@@ -358,8 +357,7 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
     end
 
     it 'accepts an empty block with multiple unused parameters' do
-      inspect_source(cop, '->(arg1, arg2, *others) { }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('->(arg1, arg2, *others) { }')
     end
 
     it 'registers an offense for a non-empty block with multiple unused args' do

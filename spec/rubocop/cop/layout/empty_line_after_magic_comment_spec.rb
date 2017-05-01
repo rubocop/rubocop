@@ -43,13 +43,11 @@ describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment do
   end
 
   it 'accepts an empty source file' do
-    inspect_source(cop, '')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('')
   end
 
   it 'accepts a source file with only a magic comment' do
-    inspect_source(cop, '# frozen_string_literal: true')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('# frozen_string_literal: true')
   end
 
   it 'autocorrects by adding a newline' do

@@ -71,9 +71,7 @@ describe RuboCop::Cop::Style::VariableInterpolation do
   end
 
   it 'does not register an offense for variables in expressions' do
-    inspect_source(cop,
-                   'puts "this is a #{@test} #{@@t} #{$t} #{$1} #{$+}"')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('puts "this is a #{@test} #{@@t} #{$t} #{$1} #{$+}"')
   end
 
   it 'autocorrects by adding the missing {}' do

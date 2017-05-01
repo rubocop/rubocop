@@ -20,13 +20,11 @@ describe RuboCop::Cop::Style::WhileUntilDo do
   end
 
   it 'accepts do in single-line while' do
-    inspect_source(cop, 'while cond do something end')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('while cond do something end')
   end
 
   it 'accepts do in single-line until' do
-    inspect_source(cop, 'until cond do something end')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('until cond do something end')
   end
 
   it 'accepts multi-line while without do' do

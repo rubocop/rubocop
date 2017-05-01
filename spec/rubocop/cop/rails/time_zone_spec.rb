@@ -122,96 +122,77 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
     end
 
     it 'accepts Time.zone.now' do
-      inspect_source(cop, 'Time.zone.now')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('Time.zone.now')
     end
 
     it 'accepts Time.zone.today' do
-      inspect_source(cop, 'Time.zone.today')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('Time.zone.today')
     end
 
     it 'accepts Time.zone.local' do
-      inspect_source(cop, 'Time.zone.local(2012, 6, 10, 12, 00)')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('Time.zone.local(2012, 6, 10, 12, 00)')
     end
 
     it 'accepts Time.zone.parse' do
-      inspect_source(cop, 'Time.zone.parse("2012-03-02 16:05:37")')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('Time.zone.parse("2012-03-02 16:05:37")')
     end
 
     it 'accepts Time.zone.at' do
-      inspect_source(cop, 'Time.zone.at(ts)')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('Time.zone.at(ts)')
     end
 
     it 'accepts Time.strptime' do
-      inspect_source(cop, 'Time.strptime(datetime, format).in_time_zone')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('Time.strptime(datetime, format).in_time_zone')
     end
 
     it 'accepts Time.zone.strftime' do
-      inspect_source(
-        cop,
+      expect_no_offenses(
         'Time.zone.strftime(time_string, "%Y-%m-%dT%H:%M:%S%z")'
       )
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts Time.zone.parse.localtime' do
-      inspect_source(cop, "Time.zone.parse('12:00').localtime")
-      expect(cop.offenses).to be_empty
+      expect_no_offenses("Time.zone.parse('12:00').localtime")
     end
 
     it 'accepts Time.zone.parse.localtime(offset)' do
-      inspect_source(cop, "Time.zone.parse('12:00').localtime('+03:00')")
-      expect(cop.offenses).to be_empty
+      expect_no_offenses("Time.zone.parse('12:00').localtime('+03:00')")
     end
 
     it 'accepts Time.zone_default.now' do
-      inspect_source(cop, 'Time.zone_default.now')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('Time.zone_default.now')
     end
 
     it 'accepts Time.zone_default.today' do
-      inspect_source(cop, 'Time.zone_default.today')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('Time.zone_default.today')
     end
 
     it 'accepts Time.zone_default.local' do
-      inspect_source(cop, 'Time.zone_default.local(2012, 6, 10, 12, 00)')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('Time.zone_default.local(2012, 6, 10, 12, 00)')
     end
 
     it 'accepts Time.find_zone(time_zone).now' do
-      inspect_source(cop, "Time.find_zone('EST').now")
-      expect(cop.offenses).to be_empty
+      expect_no_offenses("Time.find_zone('EST').now")
     end
 
     it 'accepts Time.find_zone(time_zone).today' do
-      inspect_source(cop, "Time.find_zone('EST').today")
-      expect(cop.offenses).to be_empty
+      expect_no_offenses("Time.find_zone('EST').today")
     end
 
     it 'accepts Time.find_zone(time_zone).local' do
-      inspect_source(cop, "Time.find_zone('EST').local(2012, 6, 10, 12, 00)")
-      expect(cop.offenses).to be_empty
+      expect_no_offenses("Time.find_zone('EST').local(2012, 6, 10, 12, 00)")
     end
 
     it 'accepts Time.find_zone!(time_zone).now' do
-      inspect_source(cop, "Time.find_zone!('EST').now")
-      expect(cop.offenses).to be_empty
+      expect_no_offenses("Time.find_zone!('EST').now")
     end
 
     it 'accepts Time.find_zone!(time_zone).today' do
-      inspect_source(cop, "Time.find_zone!('EST').today")
-      expect(cop.offenses).to be_empty
+      expect_no_offenses("Time.find_zone!('EST').today")
     end
 
     it 'accepts Time.find_zone!(time_zone).local' do
-      inspect_source(cop, "Time.find_zone!('EST').local(2012, 6, 10, 12, 00)")
-      expect(cop.offenses).to be_empty
+      expect_no_offenses("Time.find_zone!('EST').local(2012, 6, 10, 12, 00)")
     end
 
     described_class::DANGEROUS_METHODS.each do |a_method|
@@ -281,21 +262,17 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
     end
 
     it 'accepts Time.strftime.in_time_zone' do
-      inspect_source(
-        cop,
+      expect_no_offenses(
         'Time.strftime(time_string, "%Y-%m-%dT%H:%M:%S%z").in_time_zone'
       )
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts Time.parse.localtime(offset)' do
-      inspect_source(cop, "Time.parse('12:00').localtime('+03:00')")
-      expect(cop.offenses).to be_empty
+      expect_no_offenses("Time.parse('12:00').localtime('+03:00')")
     end
 
     it 'does not blow up in the presence of a single constant to inspect' do
-      inspect_source(cop, 'A')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('A')
     end
   end
 end

@@ -21,13 +21,11 @@ describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
   end
 
   it 'accepts a method call without arguments' do
-    inspect_source(cop, 'func')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('func')
   end
 
   it 'accepts a method call with arguments but no parentheses' do
-    inspect_source(cop, 'puts x')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('puts x')
   end
 
   it 'accepts a chain of method calls' do
@@ -40,8 +38,7 @@ describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
   end
 
   it 'accepts method with parens as arg to method without' do
-    inspect_source(cop, 'a b(c)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('a b(c)')
   end
 
   it 'accepts an operator call with argument in parentheses' do
@@ -53,13 +50,11 @@ describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
   end
 
   it 'accepts a space inside opening paren followed by left paren' do
-    inspect_source(cop, 'a( (b) )')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('a( (b) )')
   end
 
   it "doesn't register an offense for a call with multiple arguments" do
     # there is no ambiguity here
-    inspect_source(cop, 'assert_equal (0..1.9), acceleration.domain')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('assert_equal (0..1.9), acceleration.domain')
   end
 end

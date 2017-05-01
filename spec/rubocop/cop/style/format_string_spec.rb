@@ -22,9 +22,7 @@ describe RuboCop::Cop::Style::FormatString, :config do
     end
 
     it 'does not register an offense for numbers' do
-      inspect_source(cop,
-                     'puts 10 % 4')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('puts 10 % 4')
     end
 
     it 'does not register an offense for ambiguous cases' do
@@ -90,9 +88,7 @@ describe RuboCop::Cop::Style::FormatString, :config do
     end
 
     it 'does not register an offense for numbers' do
-      inspect_source(cop,
-                     'puts 10 % 4')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('puts 10 % 4')
     end
 
     it 'does not register an offense for ambiguous cases' do
@@ -158,33 +154,23 @@ describe RuboCop::Cop::Style::FormatString, :config do
     end
 
     it 'accepts format with 1 argument' do
-      inspect_source(cop,
-                     'format :xml')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('format :xml')
     end
 
     it 'accepts sprintf with 1 argument' do
-      inspect_source(cop,
-                     'sprintf :xml')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('sprintf :xml')
     end
 
     it 'accepts format without arguments' do
-      inspect_source(cop,
-                     'format')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('format')
     end
 
     it 'accepts sprintf without arguments' do
-      inspect_source(cop,
-                     'sprintf')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('sprintf')
     end
 
     it 'accepts String#%' do
-      inspect_source(cop,
-                     'puts "%d" % 10')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('puts "%d" % 10')
     end
   end
 end

@@ -19,18 +19,15 @@ describe RuboCop::Cop::Style::NonNilCheck, :config do
     end
 
     it 'does not register an offense for != 0' do
-      inspect_source(cop, 'x != 0')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('x != 0')
     end
 
     it 'does not register an offense for !x.nil?' do
-      inspect_source(cop, '!x.nil?')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('!x.nil?')
     end
 
     it 'does not register an offense for not x.nil?' do
-      inspect_source(cop, 'not x.nil?')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('not x.nil?')
     end
 
     it 'does not register an offense if only expression in predicate' do
@@ -120,13 +117,11 @@ describe RuboCop::Cop::Style::NonNilCheck, :config do
     end
 
     it 'does not register an offense for `x.nil?`' do
-      inspect_source(cop, 'x.nil?')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('x.nil?')
     end
 
     it 'does not register an offense for `!x`' do
-      inspect_source(cop, '!x')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('!x')
     end
 
     it 'registers an offense for `not x.nil?`' do
@@ -136,8 +131,7 @@ describe RuboCop::Cop::Style::NonNilCheck, :config do
     end
 
     it 'does not blow up with ternary operators' do
-      inspect_source(cop, 'my_var.nil? ? 1 : 0')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('my_var.nil? ? 1 : 0')
     end
 
     it 'autocorrects by changing unless x.nil? to if x' do

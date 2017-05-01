@@ -89,18 +89,15 @@ describe RuboCop::Cop::Style::CommentAnnotation, :config do
   end
 
   it 'accepts upper case keyword with colon, space and note' do
-    inspect_source(cop, '# REVIEW: not sure about this')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('# REVIEW: not sure about this')
   end
 
   it 'accepts upper case keyword alone' do
-    inspect_source(cop, '# OPTIMIZE')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('# OPTIMIZE')
   end
 
   it 'accepts a comment that is obviously a code example' do
-    inspect_source(cop, '# Todo.destroy(1)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('# Todo.destroy(1)')
   end
 
   it 'accepts a keyword that is just the beginning of a sentence' do
@@ -127,8 +124,7 @@ describe RuboCop::Cop::Style::CommentAnnotation, :config do
     end
 
     it 'accepts the word without colon' do
-      inspect_source(cop, '# TODO make better')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('# TODO make better')
     end
   end
 end

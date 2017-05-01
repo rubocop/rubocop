@@ -22,21 +22,15 @@ describe RuboCop::Cop::Style::ConstantName do
   end
 
   it 'allows screaming snake case in const name' do
-    inspect_source(cop,
-                   'TOP_TEST = 5')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('TOP_TEST = 5')
   end
 
   it 'allows screaming snake case in multiple const assignment' do
-    inspect_source(cop,
-                   'TOP_TEST, TEST_2 = 5, 6')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('TOP_TEST, TEST_2 = 5, 6')
   end
 
   it 'does not check names if rhs is a method call' do
-    inspect_source(cop,
-                   'AnythingGoes = test')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('AnythingGoes = test')
   end
 
   it 'does not check names if rhs is a method call with block' do
@@ -49,9 +43,7 @@ describe RuboCop::Cop::Style::ConstantName do
   end
 
   it 'does not check if rhs is another constant' do
-    inspect_source(cop,
-                   'Parser::CurrentRuby = Parser::Ruby20')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('Parser::CurrentRuby = Parser::Ruby20')
   end
 
   it 'checks qualified const names' do

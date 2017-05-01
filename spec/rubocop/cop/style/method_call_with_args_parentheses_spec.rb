@@ -7,13 +7,11 @@ describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
   end
 
   it 'accepts no parens in method call without args' do
-    inspect_source(cop, 'top.test')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('top.test')
   end
 
   it 'accepts parens in method call with args' do
-    inspect_source(cop, 'top.test(a, b)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('top.test(a, b)')
   end
 
   it 'register an offense for method call without parens' do
@@ -37,18 +35,15 @@ describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
   end
 
   it 'register no offense for superclass call without args' do
-    inspect_source(cop, 'super')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('super')
   end
 
   it 'register no offense for yield without args' do
-    inspect_source(cop, 'yield')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('yield')
   end
 
   it 'register no offense for superclass call with parens' do
-    inspect_source(cop, 'super(a)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('super(a)')
   end
 
   it 'register an offense for yield without parens' do
@@ -57,18 +52,15 @@ describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
   end
 
   it 'accepts no parens for operators' do
-    inspect_source(cop, 'top.test + a')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('top.test + a')
   end
 
   it 'accepts no parens for setter methods' do
-    inspect_source(cop, 'top.test = a')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('top.test = a')
   end
 
   it 'accepts no parens for unary operators' do
-    inspect_source(cop, '!test')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('!test')
   end
 
   it 'auto-corrects call by adding needed braces' do
@@ -87,8 +79,7 @@ describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
   end
 
   it 'ignores method listed in IgnoredMethods' do
-    inspect_source(cop, 'puts :test')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('puts :test')
   end
 
   context 'when inspecting macro methods' do

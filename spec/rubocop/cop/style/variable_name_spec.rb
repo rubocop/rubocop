@@ -5,23 +5,19 @@ describe RuboCop::Cop::Style::VariableName, :config do
 
   shared_examples 'always accepted' do
     it 'accepts screaming snake case globals' do
-      inspect_source(cop, '$MY_GLOBAL = 0')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('$MY_GLOBAL = 0')
     end
 
     it 'accepts screaming snake case constants' do
-      inspect_source(cop, 'MY_CONSTANT = 0')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('MY_CONSTANT = 0')
     end
 
     it 'accepts assigning to camel case constant' do
-      inspect_source(cop, 'Paren = Struct.new :left, :right, :kind')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('Paren = Struct.new :left, :right, :kind')
     end
 
     it 'accepts assignment with indexing of self' do
-      inspect_source(cop, 'self[:a] = b')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('self[:a] = b')
     end
   end
 
@@ -93,18 +89,15 @@ describe RuboCop::Cop::Style::VariableName, :config do
     end
 
     it 'accepts camel case in local variable name' do
-      inspect_source(cop, 'myLocal = 1')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('myLocal = 1')
     end
 
     it 'accepts camel case in instance variable name' do
-      inspect_source(cop, '@myAttribute = 3')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('@myAttribute = 3')
     end
 
     it 'accepts camel case in class variable name' do
-      inspect_source(cop, '@@myAttr = 2')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('@@myAttr = 2')
     end
 
     it 'registers an offense for snake case in method parameter' do
@@ -114,8 +107,7 @@ describe RuboCop::Cop::Style::VariableName, :config do
     end
 
     it 'accepts camel case local variables marked as unused' do
-      inspect_source(cop, '_myLocal = 1')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('_myLocal = 1')
     end
 
     include_examples 'always accepted'

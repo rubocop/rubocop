@@ -41,13 +41,11 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
   include_examples 'aligned', 'puts 1; case',   'a when b', '        end'
 
   it 'can handle ternary if' do
-    inspect_source(cop, 'a = cond ? x : y')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('a = cond ? x : y')
   end
 
   it 'can handle modifier if' do
-    inspect_source(cop, 'a = x if cond')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('a = x if cond')
   end
 
   context 'when EnforcedStyleAlignWith is start_of_line' do

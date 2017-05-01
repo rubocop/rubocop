@@ -10,34 +10,27 @@ describe RuboCop::Cop::Rails::ScopeArgs do
   end
 
   it 'accepts a non send argument' do
-    inspect_source(cop, 'scope :active, "adsf"')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('scope :active, "adsf"')
   end
 
   it 'accepts a stabby lambda' do
-    inspect_source(cop, 'scope :active, -> { where(active: true) }')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('scope :active, -> { where(active: true) }')
   end
 
   it 'accepts a stabby lambda with arguments' do
-    inspect_source(cop, 'scope :active, ->(active) { where(active: active) }')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(
+      'scope :active, ->(active) { where(active: active) }'
+    )
   end
 
   it 'accepts a lambda' do
-    inspect_source(cop, 'scope :active, lambda { where(active: true) }')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('scope :active, lambda { where(active: true) }')
   end
 
   it 'accepts a lambda with a block argument' do
-    inspect_source(cop,
-                   'scope :active, lambda { |active| where(active: active) }')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(
+      'scope :active, lambda { |active| where(active: active) }'
+    )
   end
 
   it 'accepts a lambda with a multiline block' do
@@ -51,8 +44,6 @@ describe RuboCop::Cop::Rails::ScopeArgs do
   end
 
   it 'accepts a proc' do
-    inspect_source(cop, 'scope :active, proc { where(active: true) }')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('scope :active, proc { where(active: true) }')
   end
 end

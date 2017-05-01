@@ -59,19 +59,16 @@ describe RuboCop::Cop::Style::MutableConstant do
   it_behaves_like :immutable_objects, ':sym'
 
   it 'allows method call assignments' do
-    inspect_source(cop, 'TOP_TEST = Something.new')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('TOP_TEST = Something.new')
   end
 
   context 'when performing a splat assignment' do
     it 'allows an immutable value' do
-      inspect_source(cop, 'FOO = *(1...10)')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('FOO = *(1...10)')
     end
 
     it 'allows a frozen array value' do
-      inspect_source(cop, 'FOO = *[1...10].freeze')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('FOO = *[1...10].freeze')
     end
 
     it 'registers an offense for a mutable value' do

@@ -78,9 +78,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
   end
 
   it 'allows modifier if' do
-    inspect_source(cop, 'return if a == 1')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('return if a == 1')
   end
 
   it 'allows modifier if inside of if else' do

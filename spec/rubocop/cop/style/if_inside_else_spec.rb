@@ -120,8 +120,7 @@ describe RuboCop::Cop::Style::IfInsideElse do
   end
 
   it 'ignores nested ternary expressions' do
-    inspect_source(cop, 'a ? b : c ? d : e')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('a ? b : c ? d : e')
   end
 
   it 'ignores ternary inside if..else' do

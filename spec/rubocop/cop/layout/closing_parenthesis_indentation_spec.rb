@@ -75,8 +75,7 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'accepts empty ()' do
-        inspect_source(cop, 'some_method()')
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('some_method()')
       end
 
       context 'with fixed indentation of parameters' do

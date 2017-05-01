@@ -68,9 +68,7 @@ describe RuboCop::Cop::Style::LineEndConcatenation do
   end
 
   it 'accepts string concat on the same line' do
-    inspect_source(cop,
-                   'top = "test" + "top"')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('top = "test" + "top"')
   end
 
   it 'accepts string concat with a return value of method on a string' do

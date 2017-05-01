@@ -23,15 +23,11 @@ describe RuboCop::Cop::Style::Semicolon, :config do
   end
 
   it 'accepts semicolon before end if so configured' do
-    inspect_source(cop,
-                   'def foo(a) z(3); end')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('def foo(a) z(3); end')
   end
 
   it 'accepts semicolon after params if so configured' do
-    inspect_source(cop,
-                   'def foo(a); z(3) end')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('def foo(a); z(3) end')
   end
 
   it 'accepts one line method definitions' do
@@ -65,9 +61,7 @@ describe RuboCop::Cop::Style::Semicolon, :config do
   end
 
   it 'accepts one line empty module definitions' do
-    inspect_source(cop,
-                   'module Foo; end')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('module Foo; end')
   end
 
   it 'registers an offense for semicolon at the end no matter what' do
@@ -112,15 +106,11 @@ describe RuboCop::Cop::Style::Semicolon, :config do
     let(:cop_config) { { 'AllowAsExpressionSeparator' => true } }
 
     it 'accepts several expressions' do
-      inspect_source(cop,
-                     'puts "this is a test"; puts "So is this"')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('puts "this is a test"; puts "So is this"')
     end
 
     it 'accepts one line method with two statements' do
-      inspect_source(cop,
-                     'def foo(a) x(1); y(2); z(3); end')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('def foo(a) x(1); y(2); z(3); end')
     end
   end
 end

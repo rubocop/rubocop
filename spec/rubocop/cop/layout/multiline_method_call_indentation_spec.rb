@@ -262,8 +262,7 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       end
 
       it "doesn't fail on a chain of aref calls" do
-        inspect_source(cop, 'a[1][2][3]')
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('a[1][2][3]')
       end
 
       it 'accepts aligned method with blocks in operation assignment' do

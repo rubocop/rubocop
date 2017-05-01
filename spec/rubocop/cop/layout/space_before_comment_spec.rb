@@ -9,13 +9,11 @@ describe RuboCop::Cop::Layout::SpaceBeforeComment do
   end
 
   it 'accepts an EOL comment with a preceding space' do
-    inspect_source(cop, 'a += 1 # increment')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('a += 1 # increment')
   end
 
   it 'accepts a comment that begins a line' do
-    inspect_source(cop, '# comment')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('# comment')
   end
 
   it 'accepts a doc comment' do

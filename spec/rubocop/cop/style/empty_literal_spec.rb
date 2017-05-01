@@ -19,8 +19,7 @@ describe RuboCop::Cop::Style::EmptyLiteral do
     end
 
     it 'does not register an offense for Array.new(3)' do
-      inspect_source(cop, 'test = Array.new(3)')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('test = Array.new(3)')
     end
 
     it 'auto-corrects Array.new to []' do
@@ -63,13 +62,11 @@ describe RuboCop::Cop::Style::EmptyLiteral do
     end
 
     it 'does not register an offense for Hash.new(3)' do
-      inspect_source(cop, 'test = Hash.new(3)')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('test = Hash.new(3)')
     end
 
     it 'does not register an offense for Hash.new { block }' do
-      inspect_source(cop, 'test = Hash.new { block }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('test = Hash.new { block }')
     end
 
     it 'auto-corrects Hash.new to {}' do
@@ -129,9 +126,7 @@ describe RuboCop::Cop::Style::EmptyLiteral do
     end
 
     it 'does not register an offense for String.new("top")' do
-      inspect_source(cop, 'test = String.new("top")')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('test = String.new("top")')
     end
 
     it 'auto-corrects String.new to empty string literal' do

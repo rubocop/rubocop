@@ -10,8 +10,7 @@ describe RuboCop::Cop::Layout::ElseAlignment do
   end
 
   it 'accepts a ternary if' do
-    inspect_source(cop, 'cond ? func1 : func2')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('cond ? func1 : func2')
   end
 
   context 'with if statement' do
@@ -79,8 +78,7 @@ describe RuboCop::Cop::Layout::ElseAlignment do
     end
 
     it 'accepts a one line if statement' do
-      inspect_source(cop, 'if cond then func1 else func2 end')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('if cond then func1 else func2 end')
     end
 
     it 'accepts a correctly aligned if/elsif/else/end' do

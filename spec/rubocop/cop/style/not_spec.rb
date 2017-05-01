@@ -9,8 +9,7 @@ describe RuboCop::Cop::Style::Not, :config do
   end
 
   it 'does not register an offense for !' do
-    inspect_source(cop, '!test')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('!test')
   end
 
   it 'auto-corrects "not" with !' do

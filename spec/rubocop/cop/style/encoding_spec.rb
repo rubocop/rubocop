@@ -39,9 +39,7 @@ describe RuboCop::Cop::Style::Encoding, :config do
     end
 
     it 'accepts an empty file' do
-      inspect_source(cop, '')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('')
     end
 
     it 'accepts encoding on first line' do
@@ -133,9 +131,7 @@ describe RuboCop::Cop::Style::Encoding, :config do
     end
 
     it 'accepts an empty file' do
-      inspect_source(cop, '')
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('')
     end
 
     it 'accepts encoding on first line' do

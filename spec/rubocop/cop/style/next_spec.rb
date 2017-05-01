@@ -508,21 +508,15 @@ describe RuboCop::Cop::Style::Next, :config do
   end
 
   it 'does not blow up on empty body until block' do
-    inspect_source(cop, 'until sup; end')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('until sup; end')
   end
 
   it 'does not blow up on empty body while block' do
-    inspect_source(cop, 'while sup; end')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('while sup; end')
   end
 
   it 'does not blow up on empty body for block' do
-    inspect_source(cop, 'for x in y; end')
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('for x in y; end')
   end
 
   it 'does not crash with an empty body branch' do

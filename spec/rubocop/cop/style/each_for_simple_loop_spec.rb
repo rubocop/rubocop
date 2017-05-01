@@ -41,18 +41,15 @@ describe RuboCop::Cop::Style::EachForSimpleLoop do
   end
 
   it 'does not register offense if range startpoint is not constant' do
-    inspect_source(cop, '(a..10).each {}')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('(a..10).each {}')
   end
 
   it 'does not register offense if range endpoint is not constant' do
-    inspect_source(cop, '(0..b).each {}')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('(0..b).each {}')
   end
 
   it 'does not register offense for inline block with parameters' do
-    inspect_source(cop, '(0..10).each { |n| puts n }')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('(0..10).each { |n| puts n }')
   end
 
   it 'does not register offense for multiline block with parameters' do
@@ -64,8 +61,7 @@ describe RuboCop::Cop::Style::EachForSimpleLoop do
   end
 
   it 'does not register offense for character range' do
-    inspect_source(cop, "('a'..'b').each {}")
-    expect(cop.offenses).to be_empty
+    expect_no_offenses("('a'..'b').each {}")
   end
 
   context 'when using an inclusive range' do

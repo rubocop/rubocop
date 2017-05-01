@@ -394,8 +394,7 @@ describe RuboCop::Cop::Style::Lambda, :config do
 
     context 'when calling a lambda method without a block' do
       it 'does not register an offense' do
-        inspect_source(cop, 'l = lambda.test')
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('l = lambda.test')
       end
     end
 

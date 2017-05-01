@@ -5,13 +5,11 @@ describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
 
   shared_examples 'common behavior' do
     it 'accepts an empty block' do
-      inspect_source(cop, '{}.each {}')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('{}.each {}')
     end
 
     it 'skips lambda without args' do
-      inspect_source(cop, '->() { puts "a" }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('->() { puts "a" }')
     end
   end
 
@@ -21,19 +19,16 @@ describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
     include_examples 'common behavior'
 
     it 'accepts a block with spaces in the right places' do
-      inspect_source(cop, '{}.each { |x, y| puts x }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('{}.each { |x, y| puts x }')
     end
 
     it 'accepts a block with parameters but no body' do
-      inspect_source(cop, '{}.each { |x, y| }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('{}.each { |x, y| }')
     end
 
     it 'accepts a block parameter without preceding space' do
       # This is checked by Layout/SpaceAfterComma.
-      inspect_source(cop, '{}.each { |x,y| puts x }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('{}.each { |x,y| puts x }')
     end
 
     it 'registers an offense for space before first parameter' do
@@ -80,8 +75,7 @@ describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       end
 
       it 'accepts no space after the last comma' do
-        inspect_source(cop, '{}.each { |x,| puts x }')
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('{}.each { |x,| puts x }')
       end
     end
 
@@ -98,19 +92,16 @@ describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
     include_examples 'common behavior'
 
     it 'accepts a block with spaces in the right places' do
-      inspect_source(cop, '{}.each { | x, y | puts x }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('{}.each { | x, y | puts x }')
     end
 
     it 'accepts a block with parameters but no body' do
-      inspect_source(cop, '{}.each { | x, y | }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('{}.each { | x, y | }')
     end
 
     it 'accepts a block parameter without preceding space' do
       # This is checked by Layout/SpaceAfterComma.
-      inspect_source(cop, '{}.each { | x,y | puts x }')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('{}.each { | x,y | puts x }')
     end
 
     it 'registers an offense for no space before first parameter' do
@@ -164,8 +155,7 @@ describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
 
     context 'trailing comma' do
       it 'accepts space after the last comma' do
-        inspect_source(cop, '{}.each { | x, | puts x }')
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('{}.each { | x, | puts x }')
       end
 
       it 'registers an offense for no space after the last comma' do

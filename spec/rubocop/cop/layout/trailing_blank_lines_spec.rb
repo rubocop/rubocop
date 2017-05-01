@@ -12,8 +12,7 @@ describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
     end
 
     it 'accepts an empty file' do
-      inspect_source(cop, '')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('')
     end
 
     it 'accepts final blank lines if they come after __END__' do

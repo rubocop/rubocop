@@ -14,8 +14,7 @@ describe RuboCop::Cop::Style::GlobalVars, :config do
   end
 
   it 'allows user whitelisted variables' do
-    inspect_source(cop, 'puts $allowed')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('puts $allowed')
   end
 
   described_class::BUILT_IN_VARS.each do |var|
@@ -26,7 +25,6 @@ describe RuboCop::Cop::Style::GlobalVars, :config do
   end
 
   it 'does not register an offense for backrefs like $1' do
-    inspect_source(cop, 'puts $1')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('puts $1')
   end
 end

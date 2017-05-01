@@ -64,13 +64,11 @@ describe RuboCop::Cop::Style::EvenOdd do
   end
 
   it 'accepts x % 3 == 0' do
-    inspect_source(cop, 'x % 3 == 0')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('x % 3 == 0')
   end
 
   it 'accepts x % 3 != 0' do
-    inspect_source(cop, 'x % 3 != 0')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('x % 3 != 0')
   end
 
   it 'converts x % 2 == 0 to #even?' do
