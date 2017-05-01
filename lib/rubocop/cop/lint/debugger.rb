@@ -63,21 +63,6 @@ module RuboCop
           format(MSG, node.source)
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            if pry_rescue?(node)
-              block = node.parent
-              body  = block.children[2] # (block <send> <parameters> <body>)
-              corrector.replace(block.source_range, body.source)
-            else
-              range = node.source_range
-              range = range_with_surrounding_space(range, :left, false)
-              range = range_with_surrounding_space(range, :right, true)
-              corrector.remove(range)
-            end
-          end
-        end
-
         def binding_irb?(node)
           target_ruby_version >= 2.4 && binding_irb_call?(node)
         end

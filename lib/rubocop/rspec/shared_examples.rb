@@ -82,14 +82,6 @@ shared_examples_for 'debugger' do |name, src|
       .to eq(src.map { |s| "Remove debugger entry point `#{s}`." })
     expect(cop.highlights).to eq(src)
   end
-
-  it "can autocorrect a #{name} call" do
-    lines = src.is_a?(String) ? src : src.join("\n")
-    new_source = autocorrect_source(cop, ['def a',
-                                          "  #{lines}",
-                                          'end'].join("\n"))
-    expect(new_source).to eq("def a\nend")
-  end
 end
 
 shared_examples_for 'non-debugger' do |name, src|
