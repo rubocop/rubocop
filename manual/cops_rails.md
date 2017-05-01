@@ -523,7 +523,7 @@ Enabled by default | Supports autocorrection
 Enabled | No
 
 This cop checks for the use of output safety calls like html_safe and
-raw.
+raw. These methods do not escape content. They simply return a `SafeBuffer` containing the content as is. Instead, use `safe_join` to escape content and ensure its safety. 
 
 ### Example
 
@@ -545,6 +545,12 @@ out = []
 out << content_tag(:li, "one")
 out << content_tag(:li, "two")
 safe_join(out)
+
+# bad
+(person.login + " " + content_tag(:span, person.email)).html_safe
+
+# good
+safe_join([person.login, " ", content_tag(:span, person.email)])
 ```
 
 ## Rails/PluralizationGrammar
