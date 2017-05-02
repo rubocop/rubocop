@@ -19,8 +19,8 @@ module RuboCop
 
     def resolve_inheritance(path, hash)
       base_configs(path, hash['inherit_from']).reverse_each do |base_config|
-        base_config.each do |k, v|
-          hash[k] = hash.key?(k) ? merge(v, hash[k]) : v if v.is_a?(Hash)
+        base_config.each do |key, value|
+          hash[key] = hash.key?(key) ? merge(value, hash[key]) : value if value.is_a?(Hash)
         end
       end
     end
