@@ -8,7 +8,7 @@ module RuboCop
       # @example
       #   # bad
       #   [1, 2].each do |a|
-      #     if a == 1 do
+      #     if a == 1
       #       puts a
       #     end
       #   end

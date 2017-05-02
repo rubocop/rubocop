@@ -1165,24 +1165,12 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | No
 
-Use a consistent style for format string tokens.
+Use a consistent style for named format string tokens.
 
 ### Example
 
 ```ruby
-EnforcedStyle: unnamed
-
-# bad
-
-format('%<greeting>s', greeting: 'Hello')
-format('%{greeting}', greeting: 'Hello')
-
-# good
-
-format('%s', 'Hello')
-```
-```ruby
-EnforcedStyle: named
+EnforcedStyle: annotated
 
 # bad
 
@@ -1210,8 +1198,8 @@ format('%{greeting}', greeting: 'Hello')
 
 Attribute | Value
 --- | ---
-EnforcedStyle | unnamed
-SupportedStyles | unnamed, named, template
+EnforcedStyle | annotated
+SupportedStyles | annotated, template
 
 ## Style/FrozenStringLiteralComment
 
@@ -2412,7 +2400,7 @@ Use `next` to skip iteration instead of a condition at the end.
 ```ruby
 # bad
 [1, 2].each do |a|
-  if a == 1 do
+  if a == 1
     puts a
   end
 end

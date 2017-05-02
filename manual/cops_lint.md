@@ -276,7 +276,7 @@ end
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | Yes
+Enabled | No
 
 This cop checks for calls to debugger or pry.
 

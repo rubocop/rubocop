@@ -523,7 +523,9 @@ Enabled by default | Supports autocorrection
 Enabled | No
 
 This cop checks for the use of output safety calls like html_safe and
-raw. These methods do not escape content. They simply return a `SafeBuffer` containing the content as is. Instead, use `safe_join` to escape content and ensure its safety. 
+raw. These methods do not escape content. They simply return a
+SafeBuffer containing the content as is. Instead, use safe_join
+to escape content and ensure its safety.
 
 ### Example
 
