@@ -14,16 +14,19 @@ module RuboCop
     describe '#with_color' do
       around do |example|
         original_state = formatter.rainbow.enabled
+        original_flag = ENV['CI']
 
         begin
           example.run
         ensure
           formatter.rainbow.enabled = original_state
+          ENV['CI'] = original_flag
         end
       end
 
       context 'when color is enabled' do
         before do
+          ENV['CI'] = 'false'
           formatter.rainbow.enabled = true
         end
 
@@ -35,7 +38,20 @@ module RuboCop
 
       context 'when color is enabled' do
         before do
+          ENV['CI'] = 'false'
           formatter.rainbow.enabled = false
+        end
+
+        it 'outputs nothing' do
+          formatter.with_color { formatter.output.write 'foo' }
+          expect(output.string).to eq('foo')
+        end
+      end
+
+      context 'when CI flag is enabled' do
+        before do
+          ENV['CI'] = 'true'
+          formatter.rainbow.enabled = true
         end
 
         it 'outputs nothing' do

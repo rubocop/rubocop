@@ -32,7 +32,8 @@ module RuboCop
           output: output,
           total: target_files.count,
           format: bar_format,
-          autostart: false
+          autostart: false,
+          throttle_rate: continuous_integration? ? 1.0 : nil
         )
         with_color { @progressbar.start }
       end
@@ -59,7 +60,7 @@ module RuboCop
       end
 
       def with_color
-        if rainbow.enabled
+        if rainbow.enabled && !continuous_integration?
           output.write colorize('', progressbar_color).chomp(RESET_SEQUENCE)
           yield
           output.write RESET_SEQUENCE
@@ -74,6 +75,14 @@ module RuboCop
         else
           :green
         end
+      end
+
+      private
+
+      def continuous_integration?
+        @continuous_integration ||= !(ENV['CI'].nil? ||
+                                      ENV['CI'] == '' ||
+                                      ENV['CI'] == 'false')
       end
     end
   end
