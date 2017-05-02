@@ -6,7 +6,7 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | No
 
-This cop checks for the use of *Kernel#eval*.
+This cop checks for the use of `Kernel#eval` and `Binding#eval`.
 
 ### Example
 
@@ -14,6 +14,7 @@ This cop checks for the use of *Kernel#eval*.
 # bad
 
 eval(something)
+binding.eval(something)
 ```
 
 ## Security/JSONLoad
