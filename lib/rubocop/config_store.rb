@@ -16,13 +16,11 @@ module RuboCop
 
       # @object_cache maps configuration file paths to
       # configuration objects so we only need to load them once.
-      @object_cache = {}
+      @object_cache = Hash.new
     end
 
     def options_config=(options_config)
-      loaded_config = ConfigLoader.load_file(options_config)
-      @options_config = ConfigLoader.merge_with_default(loaded_config,
-                                                        options_config)
+      loaded_config, @options_config = ConfigLoader.load_file(options_config), ConfigLoader.merge_with_default(loaded_config, options_config)
     end
 
     def force_default_config!
