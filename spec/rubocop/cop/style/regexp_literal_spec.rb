@@ -204,6 +204,11 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
           expect(new_source).to eq(source.join("\n"))
         end
       end
+      
+      it 'ignores slashes do not belong regexp' do
+        inspect_source(cop, ['x =~ /\s{#{x[/\s+/].length}}/'])
+        expect(cop.offences).to be_empty
+      end
     end
   end
 
