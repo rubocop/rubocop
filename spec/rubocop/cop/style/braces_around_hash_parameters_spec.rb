@@ -203,6 +203,11 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
         corrected = autocorrect_source(cop, ['where(1, { x: 1 }, { y: 2 })'])
         expect(corrected).to eq('where(1, { x: 1 }, y: 2)')
       end
+
+      it 'one hash parameter with braces and a trailing comma' do
+        corrected = autocorrect_source(cop, ["where({ x: 1, y: 2, })"])
+        expect(corrected).to eq "where( x: 1, y: 2 )"
+      end
     end
   end
 
