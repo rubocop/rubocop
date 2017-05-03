@@ -7,13 +7,14 @@ module RuboCop
       # %i/%w/%x literals.
       #
       # @example
-      #   @good
+      #
+      #   # good
       #   %i(foo bar baz)
       #
-      #   @bad
+      #   # bad
       #   %w( foo bar baz )
       #
-      #   @bad
+      #   # bad
       #   %x(  ls -l )
       class SpaceInsidePercentLiteralDelimiters < Cop
         include MatchRange
@@ -27,11 +28,11 @@ module RuboCop
           process(node, '%i', '%I', '%w', '%W')
         end
 
-        def on_percent_literal(node)
-          add_offenses_for_unnecessary_spaces(node)
+        def on_xstr(node)
+          process(node, '%x')
         end
 
-        def on_xstr(node)
+        def on_percent_literal(node)
           add_offenses_for_unnecessary_spaces(node)
         end
 
