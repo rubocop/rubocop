@@ -1,32 +1,42 @@
 ## Cops
 
-In RuboCop lingo the various checks performed on the code are called cops. There are several cop departments.
+In RuboCop lingo the various checks performed on the code are called cops.
+Each cop is responsible for detecting one particular offense. There are several
+cop departments, grouping the cops by class of offense. A short description of
+the different departments is provided below.
+
+Many of the Style and Layout cops have configuration options, allowing them to
+enforce different coding conventions.
 
 You can also load [custom cops](extensions.md#custom-cops).
 
 ### Style
 
-Most of the cops in RuboCop are so called style cops that check for
-stylistic problems in your code. Almost all of the them are based on
-the Ruby Style Guide. Many of the style cops have configurations
-options allowing them to support different popular coding
-conventions.
+Style cops check for stylistic consistency of your code. Many of the them are
+based on the [Ruby Style Guide](https://github.com/bbatsov/ruby-style-guide).
+
+### Layout
+
+Layout cops inspect your code for consistent use of indentation, alignment,
+and white space.
 
 ### Lint
 
-Lint cops check for possible errors and very bad practices in your
-code. RuboCop implements in a portable way all built-in MRI lint
-checks (`ruby -wc`) and adds a lot of extra lint checks of its
-own. You can run only the lint cops like this:
+Lint cops check for ambiguities and possible errors in your code.
+
+RuboCop implements, in a portable way, all built-in MRI lint checks
+(`ruby -wc`) and adds a lot of extra lint checks of its own.
+
+You can run only the Lint cops like this:
 
 ```sh
 $ rubocop -l
 ```
 
 The `-l`/`--lint` option can be used together with `--only` to run all the
-enabled lint cops plus a selection of other cops.
+enabled Lint cops plus a selection of other cops.
 
-Disabling any of the lint cops is generally a bad idea.
+Disabling Lint cops is generally a bad idea.
 
 ### Metrics
 
@@ -38,14 +48,18 @@ found for the inspected code.
 
 ### Performance
 
-Performance cops catch Ruby idioms which are known to be slower than another
-equivalent (and equally readable) idiom.
+Performance cops catch Ruby idioms which are known to be slower than another,
+semantically equivalent idiom.
+
+### Security
+
+Security cops checks for method calls and constructs which are known to be
+associated with potential security issues.
 
 ### Rails
 
-Rails cops are specific to the Ruby on Rails framework. Unlike all
-other cop types they are not used by default and you have to request
-them specifically:
+Rails cops are specific to the Ruby on Rails framework. Unlike all other cop
+types they are not used by default, and you have to request them explicity:
 
 ```sh
 $ rubocop -R
