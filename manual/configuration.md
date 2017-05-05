@@ -314,6 +314,23 @@ Then you can start removing the entries in the generated
 `.rubocop_todo.yml` file one by one as you work through all the offenses
 in the code.
 
+### Updating the configuration file
+
+When you update RuboCop version, sometimes you need to change `.rubocop.yml`.
+If you use [mry](https://github.com/pocke/mry), you can update `.rubocop.yml`
+to latest version automatically.
+
+
+```bash
+$ gem install mry
+# Update to latest version
+$ mry .rubocop.yml
+# Update to specified version
+$ mry --target=0.48.0 .rubocop.yml
+```
+
+See [https://github.com/pocke/mry](https://github.com/pocke/mry) for more information.
+
 ## Disabling Cops within Source Code
 
 One or more individual cops can be disabled locally in a section of a
@@ -337,5 +354,5 @@ One or more cops can be disabled on a single line with an end-of-line
 comment.
 
 ```ruby
-for x in (0..19) # rubocop:disable Style/AvoidFor
+for x in (0..19) # rubocop:disable Style/For
 ```
