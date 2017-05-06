@@ -147,7 +147,7 @@ module RuboCop
         end
 
         def directive_count(comment)
-          match = comment.text.match(CommentConfig::COMMENT_DIRECTIVE_REGEXP)
+          match = comment.text.match(CommentDirective::COMMENT_DIRECTIVE_REGEXP)
           _, cops_string = match.captures
           cops_string.split(/,\s*/).size
         end

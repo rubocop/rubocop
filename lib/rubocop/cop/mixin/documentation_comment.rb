@@ -39,7 +39,7 @@ module RuboCop
       end
 
       def rubocop_directive_comment?(comment)
-        comment.text =~ CommentConfig::COMMENT_DIRECTIVE_REGEXP
+        CommentDirective.from_comment(comment) != nil
       end
     end
   end
