@@ -12,6 +12,7 @@
 * [#3438](https://github.com/bbatsov/rubocop/issues/3438): Add new `Style/FormatStringToken` cop. ([@backus][])
 * [#4342](https://github.com/bbatsov/rubocop/pull/4342): Add new `Lint/ScriptPermission` cop. ([@yhirano55][])
 * [#4403](https://github.com/bbatsov/rubocop/pull/4403): Add public API `Cop.autocorrect_incompatible_with` for specifying other cops that should not autocorrect together. ([@backus][])
+* [#4354](https://github.com/bbatsov/rubocop/pull/4354): Add autocorrect to `Style/FormatString`. ([@hoshinotsuyoshi][])
 
 ### Changes
 
@@ -2781,3 +2782,4 @@
 [@klesse413]: https://github.com/klesse413
 [@gprado]: https://github.com/gprado
 [@yhirano55]: https://github.com/yhirano55
+[@hoshinotsuyoshi]: https://github.com/hoshinotsuyoshi

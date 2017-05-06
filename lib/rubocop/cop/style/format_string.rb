@@ -40,6 +40,55 @@ module RuboCop
         def method_name(style_name)
           style_name == :percent ? 'String#%' : style_name
         end
+
+        def autocorrect(node)
+          lambda do |corrector|
+            _receiver, detected_method = *node
+
+            case detected_method
+            when :%
+              autocorrect_from_percent(corrector, node)
+            when :format, :sprintf
+              case style
+              when :percent
+                autocorrect_to_percent(corrector, node)
+              when :format, :sprintf
+                corrector.replace(node.loc.selector, style.to_s)
+              end
+            end
+          end
+        end
+
+        private
+
+        def autocorrect_from_percent(corrector, node)
+          receiver, _method, args = *node
+          format = receiver.source
+          args = if args.array_type? || args.hash_type?
+                   args.children.map(&:source).join(', ')
+                 else
+                   args.source
+                 end
+          corrected = "#{style}(#{format}, #{args})"
+          corrector.replace(node.loc.expression, corrected)
+        end
+
+        def autocorrect_to_percent(corrector, node)
+          _nil, _method, format, *args = *node
+          format = format.source
+          args   = if args.one?
+                     arg = args.first
+                     if arg.hash_type?
+                       "{ #{arg.source} }"
+                     else
+                       arg.source
+                     end
+                   else
+                     "[#{args.map(&:source).join(', ')}]"
+                   end
+          corrected = "#{format} % #{args}"
+          corrector.replace(node.loc.expression, corrected)
+        end
       end
     end
   end

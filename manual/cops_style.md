@@ -1138,7 +1138,7 @@ SupportedStyles | for, each
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | No
+Enabled | Yes
 
 This cop enforces the use of a single string formatting utility.
 Valid options include Kernel#format, Kernel#sprintf and String#%.
