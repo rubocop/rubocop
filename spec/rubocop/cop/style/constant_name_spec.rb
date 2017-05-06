@@ -61,4 +61,14 @@ describe RuboCop::Cop::Style::ConstantName do
     END
     expect(cop.offenses.size).to eq(2)
   end
+
+  it 'auto-corrects camel case to screaming snake case' do
+    new_source = autocorrect_source(cop, 'ConstantName = 5')
+    expect(new_source).to eq 'CONSTANT_NAME = 5'
+  end
+
+  it 'correctly auto-corrects camel cased initialisms' do
+    new_source = autocorrect_source(cop, 'ConstantCSV = 5')
+    expect(new_source).to eq 'CONSTANT_CSV = 5'
+  end
 end

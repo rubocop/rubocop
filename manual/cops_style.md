@@ -606,7 +606,7 @@ IncludeTernaryExpressions | true
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | No
+Enabled | Yes
 
 This cop checks whether constant names are written using
 SCREAMING_SNAKE_CASE.
