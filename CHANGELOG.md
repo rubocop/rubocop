@@ -17,6 +17,7 @@
 * [#3400](https://github.com/bbatsov/rubocop/issues/3400): Remove auto-correct support from Lint/Debugger. ([@ilansh][])
 * [#4278](https://github.com/bbatsov/rubocop/pull/4278): Move all cops dealing with whitespace into a new department called `Layout`. ([@jonas054][])
 * [#4320](https://github.com/bbatsov/rubocop/pull/4320): Update `Rails/OutputSafety` to disallow wrapping `raw` or `html_safe` with `safe_join`. ([@klesse413][])
+* [#4349](https://github.com/bbatsov/rubocop/pull/4349): Add Autocorrect support to `Style/ConstantName`. ([@bardec][])
 
 ### Bug fixes
 
@@ -2769,3 +2770,4 @@
 [@ilansh]: https://github.com/ilansh
 [@mclark]: https://github.com/mclark
 [@klesse413]: https://github.com/klesse413
+[@bardec]: https://github.com/bardec
