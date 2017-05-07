@@ -3,6 +3,14 @@
 describe RuboCop::Cop::Rails::OutputSafety do
   subject(:cop) { described_class.new }
 
+  it 'registers an offense for safe_concat methods' do
+    source = <<-END.strip_indent
+      foo.safe_concat('bar')
+    END
+    inspect_source(cop, source)
+    expect(cop.offenses.size).to eq(1)
+  end
+
   it 'registers an offense for html_safe methods with a receiver and no ' \
      'arguments' do
     source = <<-END.strip_indent
@@ -65,6 +73,13 @@ describe RuboCop::Cop::Rails::OutputSafety do
     END
     inspect_source(cop, source)
     expect(cop.offenses).to be_empty
+  end
+
+  it 'does not accept safe_concat methods when wrapped in a safe_join' do
+    source = 'safe_join([i18n_text.safe_concat(i18n_text),
+              i18n_text.safe_concat(i18n_mode_additional_markup(key))])'
+    inspect_source(cop, source)
+    expect(cop.offenses.size).to eq(2)
   end
 
   it 'does not accept raw methods when wrapped in a safe_join' do
