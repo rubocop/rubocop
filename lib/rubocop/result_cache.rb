@@ -2,7 +2,6 @@
 
 require 'digest/md5'
 require 'find'
-require 'tmpdir'
 require 'etc'
 
 module RuboCop
@@ -63,11 +62,13 @@ module RuboCop
 
     def self.cache_root(config_store)
       root = config_store.for('.').for_all_cops['CacheRootDirectory']
-      if root == '/tmp'
-        tmpdir = File.realpath(Dir.tmpdir)
-        # Include user ID in the path to make sure the user has write access.
-        root = File.join(tmpdir, Process.uid.to_s)
-      end
+      root ||= if ENV.key?('XDG_CACHE_HOME')
+                 # Include user ID in the path to make sure the user has write
+                 # access.
+                 File.join(ENV['XDG_CACHE_HOME'], Process.uid.to_s)
+               else
+                 File.join(ENV['HOME'], '.cache')
+               end
       File.join(root, 'rubocop_cache')
     end
 
