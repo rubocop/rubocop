@@ -197,20 +197,56 @@ describe RuboCop::ResultCache, :isolated_environment do
     end
   end
 
-  context 'the cache path when using a temp directory' do
+  describe 'the cache path' do
     let(:config_store) { double('config_store') }
-    let(:tmpdir) { File.realpath(Dir.tmpdir) }
     let(:puid) { Process.uid.to_s }
 
     before do
-      allow(config_store).to receive(:for).with('.').and_return(
-        RuboCop::Config.new('AllCops' => { 'CacheRootDirectory' => '/tmp' })
-      )
+      all_cops = {
+        'AllCops' => { 'CacheRootDirectory' => cache_root_directory }
+      }
+      config = RuboCop::Config.new(all_cops)
+      allow(config_store).to receive(:for).with('.').and_return(config)
     end
 
-    it 'contains the process uid' do
-      cacheroot = RuboCop::ResultCache.cache_root(config_store)
-      expect(cacheroot).to eq(File.join(tmpdir, puid, 'rubocop_cache'))
+    context 'when CacheRootDirectory not set' do
+      let(:cache_root_directory) { nil }
+
+      context 'and XDG_CACHE_HOME is not set' do
+        before { ENV['XDG_CACHE_HOME'] = nil }
+
+        it 'contains $HOME/.cache' do
+          cacheroot = RuboCop::ResultCache.cache_root(config_store)
+          expect(cacheroot)
+            .to eq(File.join(Dir.home, '.cache', 'rubocop_cache'))
+        end
+      end
+
+      context 'and XDG_CACHE_HOME is set' do
+        around do |example|
+          ENV['XDG_CACHE_HOME'] = '/etc/rccache'
+          begin
+            example.run
+          ensure
+            ENV.delete('XDG_CACHE_HOME')
+          end
+        end
+
+        it 'contains the given path and UID' do
+          cacheroot = RuboCop::ResultCache.cache_root(config_store)
+          expect(cacheroot)
+            .to eq(File.join(ENV['XDG_CACHE_HOME'], puid, 'rubocop_cache'))
+        end
+      end
+    end
+
+    context 'when CacheRootDirectory is set' do
+      let(:cache_root_directory) { '/opt' }
+
+      it 'contains the given root' do
+        cacheroot = RuboCop::ResultCache.cache_root(config_store)
+        expect(cacheroot).to eq(File.join('/opt', 'rubocop_cache'))
+      end
     end
   end
 end

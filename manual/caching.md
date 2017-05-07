@@ -30,14 +30,15 @@ overrides the setting.
 
 ### Cache Path
 
-By default, the cache is stored in a subdirectory of the temporary
-directory, `/tmp/rubocop_cache/` on Unix-like systems. The
-configuration parameter `AllCops: CacheRootDirectory` can be used to
-set it to a different path. One reason to use this option could be
-that there's a network disk where users on different machines want to
-have a common RuboCop cache. Another could be that a Continuous
-Integration system allows directories, but not a temporary directory,
-to be saved between runs.
+By default, the cache is stored in either
+`$XDG_CACHE_HOME/rubocop_cache` if `$XDG_CACHE_HOME` is set, or in
+`$HOME/.cache/rubocop_cache/` if it's not.  The configuration parameter
+`AllCops: CacheRootDirectory` can be used to set the root to a
+different path. One reason to use this option could be that there's a
+network disk where users on different machines want to have a common
+RuboCop cache. Another could be that a Continuous Integration system
+allows directories, but not a temporary directory, to be saved between
+runs.
 
 ### Cache Pruning
 
