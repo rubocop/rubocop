@@ -6,7 +6,7 @@ module RuboCop
     UNNEEDED_DISABLE = 'Lint/UnneededDisable'.freeze
 
     # The available keywords to come after `# rubocop:`.
-    KEYWORDS = %i[disable enable].freeze
+    KEYWORDS = %i[disable enable todo end_todo].freeze
 
     KEYWORD_PATTERN = "(#{KEYWORDS.join('|')})\\b".freeze
     COP_NAME_PATTERN = '([A-Z]\w+/)?(?:[A-Z]\w+)'.freeze
@@ -59,7 +59,14 @@ module RuboCop
     end
 
     def disable?
-      keyword == :disable
+      keyword == :disable || keyword == :todo
+    end
+
+    def open_keyword
+      case keyword
+      when :disable, :enable then :disable
+      when :todo, :end_todo then :todo
+      end
     end
 
     private

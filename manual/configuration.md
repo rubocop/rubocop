@@ -356,3 +356,22 @@ comment.
 ```ruby
 for x in (0..19) # rubocop:disable Style/For
 ```
+
+Cops can also be disabled with the intention of coming back to fix them later by
+using `# rubocop:todo` in the same patterns as `# rubocop:disable`.
+
+For example, using an end-of-line directive:
+
+```ruby
+class SomeLongClass # rubocop:todo Metrics/ClassLength
+  [...]
+end
+```
+
+Or using multiline directives:
+
+```ruby
+# rubocop:todo Metrics/LineLength need to reformat this section
+[...]
+# rubocop:end_todo Metrics/LineLength
+```

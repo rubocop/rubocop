@@ -24,10 +24,10 @@ module RuboCop
 
     private
 
-    CopAnalysis = Struct.new(:disabled_ranges, :unclosed_directive)
+    CopAnalysis = Struct.new(:disabled_ranges, :unclosed_directives)
 
     def analyze
-      analyses = Hash.new { |hash, key| hash[key] = CopAnalysis.new([], nil) }
+      analyses = Hash.new { |hash, key| hash[key] = CopAnalysis.new([], {}) }
 
       each_directive do |directive|
         directive.cop_names.each do |cop_name|
@@ -62,19 +62,30 @@ module RuboCop
       # Lint::UnneededDisable#each_already_disabled relies on this behavior.
       close_unclosed_directive!(analysis, directive)
 
-      analysis.unclosed_directive = directive
+      analysis.unclosed_directives[directive.keyword] = directive
     end
 
     def close_unclosed_directive!(analysis, end_directive)
-      return unless analysis.unclosed_directive
+      open_keyword = end_directive.open_keyword
+      unclosed_directive = analysis.unclosed_directives[open_keyword]
+      return unless unclosed_directive
 
-      range = CommentConfigRange.new(analysis.unclosed_directive, end_directive)
+      range = CommentConfigRange.new(unclosed_directive, end_directive)
       analysis.disabled_ranges << range
-      analysis.unclosed_directive = nil
+      analysis.unclosed_directives[open_keyword] = nil
+    end
+
+    def close_all_unclosed_directives!(analysis)
+      analysis.unclosed_directives.each do |_open_keyword, unclosed_directive|
+        next unless unclosed_directive
+        range = CommentConfigRange.new(unclosed_directive, nil)
+        analysis.disabled_ranges << range
+      end
+      analysis.unclosed_directives = {}
     end
 
     def cop_line_ranges(analysis)
-      close_unclosed_directive!(analysis, nil)
+      close_all_unclosed_directives!(analysis)
       analysis.disabled_ranges
     end
 

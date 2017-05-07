@@ -54,7 +54,30 @@ describe RuboCop::CommentConfig do
         '[1, 2, 3, 4].map { |e| [e, e] }.flatten(1)',
         '# rubocop:enable FlatMap',
         '# rubocop:disable RSpec/Example',
-        '# rubocop:disable Custom2/Number9'                  # 48
+        '# rubocop:disable Custom2/Number9',                 # 48
+        '',
+        '# rubocop:todo Style/TestTodo',                     # 50
+        'def is_example',
+        '  puts "Yep."',
+        'end',
+        '# rubocop:end_todo Style/TestTodo',                 # 54
+        '',
+        'asdf # rubocop:todo Style/TestTodoSingleLine',      # 56
+        '',
+        '# rubocop:disable Style/TestTodo2',                 # 58
+        'def is_another_example',
+        '  # rubocop:end_todo Style/TestTodo2',
+        '  puts "Also yep."',
+        'end',
+        '# rubocop:enable Style/TestTodo2',                  # 63
+        '',
+        '# rubocop:disable Style/TestTodo3',                 # 65
+        '# rubocop:todo Style/TestTodo3',
+        'def is_another_example',
+        '  # rubocop:enable Style/TestTodo3',
+        '  puts "Also yep."',
+        'end',
+        '# rubocop:end_todo Style/TestTodo3',                # 71
       ]
     end
 
@@ -160,6 +183,19 @@ describe RuboCop::CommentConfig do
 
     it 'supports disabling cops with numbers in their name' do
       expect(disabled_lines_of_cop('Custom2/Number9')).to include(48)
+    end
+
+    it 'supports using rubocop:todo on a section' do
+      expect(disabled_lines_of_cop('Style/TestTodo')).to eq((50..54).to_a)
+    end
+
+    it 'supports using single line rubocop:todo' do
+      expect(disabled_lines_of_cop('Style/TestTodoSingleLine')).to eq([56])
+    end
+
+    it 'supports using rubocop:todo independently of rubocop:disable' do
+      expect(disabled_lines_of_cop('Style/TestTodo2')).to eq((58..63).to_a)
+      expect(disabled_lines_of_cop('Style/TestTodo3')).to eq((65..71).to_a)
     end
   end
 end
