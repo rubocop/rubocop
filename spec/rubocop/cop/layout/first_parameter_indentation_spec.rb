@@ -294,13 +294,11 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
     context 'for method calls within method calls' do
       context 'with outer parentheses' do
         it 'registers an offense for an over-indented first parameter' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_offense(<<-RUBY.strip_indent)
             run(:foo, defaults.merge(
                                     bar: 3))
-          END
-          expect(cop.messages).to eq(['Indent the first parameter one step ' \
-                                      'more than `defaults.merge(`.'])
-          expect(cop.highlights).to eq(['bar: 3'])
+                                    ^^^^^^ Indent the first parameter one step more than `defaults.merge(`.
+          RUBY
         end
       end
 
@@ -336,25 +334,20 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
     context 'for method calls within method calls' do
       context 'with outer parentheses' do
         it 'registers an offense for an over-indented first parameter' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_offense(<<-RUBY.strip_indent)
             run(:foo, defaults.merge(
                                     bar: 3))
-          END
-          expect(cop.messages).to eq(['Indent the first parameter one step ' \
-                                      'more than `defaults.merge(`.'])
-          expect(cop.highlights).to eq(['bar: 3'])
+                                    ^^^^^^ Indent the first parameter one step more than `defaults.merge(`.
+          RUBY
         end
 
         it 'registers an offense for an under-indented first parameter' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_offense(<<-RUBY.strip_indent)
             run(:foo, defaults.
                       merge(
               bar: 3))
-          END
-          expect(cop.messages).to eq(['Indent the first parameter one step ' \
-                                      'more than the start of the ' \
-                                      'previous line.'])
-          expect(cop.highlights).to eq(['bar: 3'])
+              ^^^^^^ Indent the first parameter one step more than the start of the previous line.
+          RUBY
         end
 
         it 'accepts a correctly indented first parameter in interpolation' do
@@ -409,14 +402,11 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
 
     context 'for method calls within method calls' do
       it 'registers an offense for an over-indented first parameter' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           run(:foo, defaults.merge(
                       bar: 3))
-        END
-        expect(cop.messages).to eq(['Indent the first parameter one step ' \
-                                    'more than the start of the ' \
-                                    'previous line.'])
-        expect(cop.highlights).to eq(['bar: 3'])
+                      ^^^^^^ Indent the first parameter one step more than the start of the previous line.
+        RUBY
       end
 
       it 'accepts first parameter indented relative to previous line' do

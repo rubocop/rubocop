@@ -4,9 +4,10 @@ describe RuboCop::Cop::Layout::SpaceAfterColon do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for colon without space after it' do
-    inspect_source(cop, '{a:3}')
-    expect(cop.messages).to eq(['Space missing after colon.'])
-    expect(cop.highlights).to eq([':'])
+    expect_offense(<<-RUBY.strip_indent)
+      {a:3}
+        ^ Space missing after colon.
+    RUBY
   end
 
   it 'accepts colons in symbols' do

@@ -18,20 +18,19 @@ describe RuboCop::Cop::Layout::AlignParameters do
     end
 
     it 'registers an offense for parameters with single indent' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         function(a,
           if b then c else d end)
-      END
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['if b then c else d end'])
+          ^^^^^^^^^^^^^^^^^^^^^^ Align the parameters of a method call if they span more than one line.
+      RUBY
     end
 
     it 'registers an offense for parameters with double indent' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         function(a,
             if b then c else d end)
-      END
-      expect(cop.offenses.size).to eq(1)
+            ^^^^^^^^^^^^^^^^^^^^^^ Align the parameters of a method call if they span more than one line.
+      RUBY
     end
 
     it 'accepts multiline []= method call' do
@@ -69,30 +68,24 @@ describe RuboCop::Cop::Layout::AlignParameters do
     end
 
     it "doesn't get confused by splat operator" do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         func1(*a,
               *b,
               c)
         func2(a,
              *b,
+             ^^ Align the parameters of a method call if they span more than one line.
               c)
         func3(*a)
-      END
-      expect(cop.offenses.map(&:to_s))
-        .to eq(['C:  5:  6: Align the parameters of a method call if ' \
-                'they span more than one line.'])
-      expect(cop.highlights).to eq(['*b'])
+      RUBY
     end
 
     it "doesn't get confused by extra comma at the end" do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         func1(a,
              b,)
-      END
-      expect(cop.offenses.map(&:to_s))
-        .to eq(['C:  2:  6: Align the parameters of a method call if ' \
-                'they span more than one line.'])
-      expect(cop.highlights).to eq(['b'])
+             ^ Align the parameters of a method call if they span more than one line.
+      RUBY
     end
 
     it 'can handle a correctly aligned string literal as first argument' do
@@ -230,22 +223,21 @@ describe RuboCop::Cop::Layout::AlignParameters do
 
     context 'method definitions' do
       it 'registers an offense for parameters with single indent' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           def method(a,
             b)
+            ^ Align the parameters of a method definition if they span more than one line.
           end
-        END
-        expect(cop.offenses.size).to eq 1
-        expect(cop.offenses.first.to_s).to match(/method definition/)
+        RUBY
       end
 
       it 'registers an offense for parameters with double indent' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           def method(a,
               b)
+              ^ Align the parameters of a method definition if they span more than one line.
           end
-        END
-        expect(cop.offenses.size).to eq 1
+        RUBY
       end
 
       it 'accepts parameter lists on a single line' do
@@ -280,14 +272,13 @@ describe RuboCop::Cop::Layout::AlignParameters do
       end
 
       it "doesn't get confused by splat" do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           def func2(a,
                    *b,
+                   ^^ Align the parameters of a method definition if they span more than one line.
                     c)
           end
-        END
-        expect(cop.offenses.size).to eq 1
-        expect(cop.highlights).to eq(['*b'])
+        RUBY
       end
 
       it 'auto-corrects alignment' do
@@ -305,13 +296,12 @@ describe RuboCop::Cop::Layout::AlignParameters do
 
       context 'defining self.method' do
         it 'registers an offense for parameters with single indent' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_offense(<<-RUBY.strip_indent)
             def self.method(a,
               b)
+              ^ Align the parameters of a method definition if they span more than one line.
             end
-          END
-          expect(cop.offenses.size).to eq 1
-          expect(cop.offenses.first.to_s).to match(/method definition/)
+          RUBY
         end
 
         it 'accepts proper indentation' do
@@ -516,15 +506,17 @@ describe RuboCop::Cop::Layout::AlignParameters do
       end
 
       it 'registers offenses for double indentation from relevant method' do
-        inspect_source(cop, <<-END.strip_margin('|'))
-          | something
-          |   .method_name(
-          |       a,
-          |       b,
-          |       c
-          |   )
-        END
-        expect(cop.offenses.size).to eq(3)
+        expect_offense(<<-RUBY.strip_indent)
+           something
+             .method_name(
+                 a,
+                 ^ Use one level of indentation for parameters following the first line of a multi-line method call.
+                 b,
+                 ^ Use one level of indentation for parameters following the first line of a multi-line method call.
+                 c
+                 ^ Use one level of indentation for parameters following the first line of a multi-line method call.
+             )
+        RUBY
       end
 
       it 'does not err on method call without a method name' do
@@ -563,25 +555,21 @@ describe RuboCop::Cop::Layout::AlignParameters do
 
     context 'method definitions' do
       it 'registers an offense for parameters aligned to first param' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           def method(a,
                      b)
+                     ^ Use one level of indentation for parameters following the first line of a multi-line method definition.
           end
-        END
-        expect(cop.offenses.size).to eq 1
-        expect(cop.messages)
-          .to eq(['Use one level of indentation for parameters ' \
-                  'following the first line of a multi-line method ' \
-                  'definition.'])
+        RUBY
       end
 
       it 'registers an offense for parameters with double indent' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           def method(a,
               b)
+              ^ Use one level of indentation for parameters following the first line of a multi-line method definition.
           end
-        END
-        expect(cop.offenses.size).to eq 1
+        RUBY
       end
 
       it 'accepts parameter lists on a single line' do
@@ -616,14 +604,14 @@ describe RuboCop::Cop::Layout::AlignParameters do
       end
 
       it "doesn't get confused by splat" do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           def func2(a,
                    *b,
+                   ^^ Use one level of indentation for parameters following the first line of a multi-line method definition.
                     c)
+                    ^ Use one level of indentation for parameters following the first line of a multi-line method definition.
           end
-        END
-        expect(cop.offenses).not_to be_empty
-        expect(cop.highlights).to include '*b'
+        RUBY
       end
 
       it 'auto-corrects alignment' do
@@ -641,13 +629,12 @@ describe RuboCop::Cop::Layout::AlignParameters do
 
       context 'defining self.method' do
         it 'registers an offense for parameters aligned to first param' do
-          inspect_source(cop, <<-END.strip_indent)
+          expect_offense(<<-RUBY.strip_indent)
             def self.method(a,
                             b)
+                            ^ Use one level of indentation for parameters following the first line of a multi-line method definition.
             end
-          END
-          expect(cop.offenses.size).to eq 1
-          expect(cop.offenses.first.to_s).to match(/method definition/)
+          RUBY
         end
 
         it 'accepts proper indentation' do

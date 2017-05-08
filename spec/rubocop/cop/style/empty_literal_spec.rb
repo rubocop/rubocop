@@ -5,17 +5,17 @@ describe RuboCop::Cop::Style::EmptyLiteral do
 
   describe 'Empty Array' do
     it 'registers an offense for Array.new()' do
-      inspect_source(cop, 'test = Array.new()')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Use array literal `[]` instead of `Array.new`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        test = Array.new()
+               ^^^^^^^^^^^ Use array literal `[]` instead of `Array.new`.
+      RUBY
     end
 
     it 'registers an offense for Array.new' do
-      inspect_source(cop, 'test = Array.new')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Use array literal `[]` instead of `Array.new`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        test = Array.new
+               ^^^^^^^^^ Use array literal `[]` instead of `Array.new`.
+      RUBY
     end
 
     it 'does not register an offense for Array.new(3)' do
@@ -48,17 +48,17 @@ describe RuboCop::Cop::Style::EmptyLiteral do
 
   describe 'Empty Hash' do
     it 'registers an offense for Hash.new()' do
-      inspect_source(cop, 'test = Hash.new()')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Use hash literal `{}` instead of `Hash.new`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        test = Hash.new()
+               ^^^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
+      RUBY
     end
 
     it 'registers an offense for Hash.new' do
-      inspect_source(cop, 'test = Hash.new')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Use hash literal `{}` instead of `Hash.new`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        test = Hash.new
+               ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
+      RUBY
     end
 
     it 'does not register an offense for Hash.new(3)' do
@@ -110,19 +110,17 @@ describe RuboCop::Cop::Style::EmptyLiteral do
 
   describe 'Empty String' do
     it 'registers an offense for String.new()' do
-      inspect_source(cop, 'test = String.new()')
-
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(["Use string literal `''` instead of `String.new`."])
+      expect_offense(<<-RUBY.strip_indent)
+        test = String.new()
+               ^^^^^^^^^^^^ Use string literal `''` instead of `String.new`.
+      RUBY
     end
 
     it 'registers an offense for String.new' do
-      inspect_source(cop, 'test = String.new')
-
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(["Use string literal `''` instead of `String.new`."])
+      expect_offense(<<-RUBY.strip_indent)
+        test = String.new
+               ^^^^^^^^^^ Use string literal `''` instead of `String.new`.
+      RUBY
     end
 
     it 'does not register an offense for String.new("top")' do
@@ -146,11 +144,10 @@ describe RuboCop::Cop::Style::EmptyLiteral do
       subject(:cop) { described_class.new(config) }
 
       it 'registers an offense for String.new' do
-        inspect_source(cop, 'test = String.new')
-
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages)
-          .to eq(['Use string literal `""` instead of `String.new`.'])
+        expect_offense(<<-RUBY.strip_indent)
+          test = String.new
+                 ^^^^^^^^^^ Use string literal `""` instead of `String.new`.
+        RUBY
       end
 
       it 'auto-corrects String.new to a double-quoted empty string literal' do

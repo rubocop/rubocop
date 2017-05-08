@@ -4,8 +4,9 @@ describe RuboCop::Cop::Style::CaseEquality do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for ===' do
-    inspect_source(cop, 'Array === var')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['==='])
+    expect_offense(<<-RUBY.strip_indent)
+      Array === var
+            ^^^ Avoid the use of the case equality operator `===`.
+    RUBY
   end
 end

@@ -60,15 +60,11 @@ describe RuboCop::Cop::Style::Encoding, :config do
     end
 
     it 'registers an offense when encoding is in the wrong place' do
-      inspect_source(cop, <<-END.strip_indent)
-        def foo() \'ä\' end
+      expect_offense(<<-RUBY.strip_indent)
+        def foo() 'ä' end
+        ^^^^^^^^^^^^^^^^^ Missing utf-8 encoding comment.
         # encoding: utf-8
-      END
-
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(
-        ['Missing utf-8 encoding comment.']
-      )
+      RUBY
     end
 
     it 'accepts encoding inserted by magic_encoding gem' do
@@ -120,12 +116,10 @@ describe RuboCop::Cop::Style::Encoding, :config do
     end
 
     it 'registers an offense when no encoding present' do
-      inspect_source(cop, 'def foo() end')
-
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(
-        ['Missing utf-8 encoding comment.']
-      )
+      expect_offense(<<-RUBY.strip_indent)
+        def foo() end
+        ^^^^^^^^^^^^^ Missing utf-8 encoding comment.
+      RUBY
     end
 
     it 'accepts an empty file' do
@@ -150,15 +144,11 @@ describe RuboCop::Cop::Style::Encoding, :config do
     end
 
     it 'books an offense when encoding is in the wrong place' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def foo() end
+        ^^^^^^^^^^^^^ Missing utf-8 encoding comment.
         # encoding: utf-8
-      END
-
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(
-        ['Missing utf-8 encoding comment.']
-      )
+      RUBY
     end
 
     it 'accepts encoding inserted by magic_encoding gem' do

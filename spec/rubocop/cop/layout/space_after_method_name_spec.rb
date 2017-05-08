@@ -4,21 +4,21 @@ describe RuboCop::Cop::Layout::SpaceAfterMethodName do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for def with space before the parenthesis' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       def func (x)
+              ^ Do not put a space between a method name and the opening parenthesis.
         a
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'registers an offense for defs with space before the parenthesis' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       def self.func (x)
+                   ^ Do not put a space between a method name and the opening parenthesis.
         a
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'accepts a def without arguments' do

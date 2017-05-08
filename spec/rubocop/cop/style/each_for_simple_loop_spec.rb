@@ -7,37 +7,33 @@ describe RuboCop::Cop::Style::EachForSimpleLoop do
                 'which iterates a fixed number of times.'.freeze
 
   it 'registers offense for inclusive end range' do
-    inspect_source(cop, '(0..10).each {}')
-    expect(cop.offenses.size).to eq 1
-    expect(cop.messages).to eq([OFFENSE_MSG])
-    expect(cop.highlights).to eq(['(0..10).each'])
+    expect_offense(<<-RUBY.strip_indent)
+      (0..10).each {}
+      ^^^^^^^^^^^^ Use `Integer#times` for a simple loop which iterates a fixed number of times.
+    RUBY
   end
 
   it 'registers offense for exclusive end range' do
-    inspect_source(cop, '(0...10).each {}')
-    expect(cop.offenses.size).to eq 1
-    expect(cop.messages).to eq([OFFENSE_MSG])
-    expect(cop.highlights).to eq(['(0...10).each'])
+    expect_offense(<<-RUBY.strip_indent)
+      (0...10).each {}
+      ^^^^^^^^^^^^^ Use `Integer#times` for a simple loop which iterates a fixed number of times.
+    RUBY
   end
 
   it 'registers offense for exclusive end range with do ... end syntax' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       (0...10).each do
+      ^^^^^^^^^^^^^ Use `Integer#times` for a simple loop which iterates a fixed number of times.
       end
-    END
-    expect(cop.offenses.size).to eq 1
-    expect(cop.messages).to eq([OFFENSE_MSG])
-    expect(cop.highlights).to eq(['(0...10).each'])
+    RUBY
   end
 
   it 'registers an offense for range not starting with zero' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       (3..7).each do
+      ^^^^^^^^^^^ Use `Integer#times` for a simple loop which iterates a fixed number of times.
       end
-    END
-    expect(cop.offenses.size).to eq 1
-    expect(cop.messages).to eq([OFFENSE_MSG])
-    expect(cop.highlights).to eq(['(3..7).each'])
+    RUBY
   end
 
   it 'does not register offense if range startpoint is not constant' do

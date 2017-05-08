@@ -42,9 +42,10 @@ describe RuboCop::Cop::Style::BarePercentLiterals, :config do
 
     context 'and strings are static' do
       it 'registers an offense for %()' do
-        inspect_source(cop, '%(hi)')
-        expect(cop.messages).to eq(['Use `%Q` instead of `%`.'])
-        expect(cop.highlights).to eq(['%('])
+        expect_offense(<<-RUBY.strip_indent)
+          %(hi)
+          ^^ Use `%Q` instead of `%`.
+        RUBY
       end
 
       it 'auto-corrects' do
@@ -61,8 +62,10 @@ describe RuboCop::Cop::Style::BarePercentLiterals, :config do
 
     context 'and strings are dynamic' do
       it 'registers an offense for %()' do
-        inspect_source(cop, '%(#{x})')
-        expect(cop.messages).to eq(['Use `%Q` instead of `%`.'])
+        expect_offense(<<-'RUBY'.strip_indent)
+          %(#{x})
+          ^^ Use `%Q` instead of `%`.
+        RUBY
       end
 
       it 'auto-corrects' do
@@ -83,9 +86,10 @@ describe RuboCop::Cop::Style::BarePercentLiterals, :config do
 
     context 'and strings are static' do
       it 'registers an offense for %Q()' do
-        inspect_source(cop, '%Q(hi)')
-        expect(cop.messages).to eq(['Use `%` instead of `%Q`.'])
-        expect(cop.highlights).to eq(['%Q('])
+        expect_offense(<<-RUBY.strip_indent)
+          %Q(hi)
+          ^^^ Use `%` instead of `%Q`.
+        RUBY
       end
 
       it 'auto-corrects' do
@@ -102,8 +106,10 @@ describe RuboCop::Cop::Style::BarePercentLiterals, :config do
 
     context 'and strings are dynamic' do
       it 'registers an offense for %Q()' do
-        inspect_source(cop, '%Q(#{x})')
-        expect(cop.messages).to eq(['Use `%` instead of `%Q`.'])
+        expect_offense(<<-'RUBY'.strip_indent)
+          %Q(#{x})
+          ^^^ Use `%` instead of `%Q`.
+        RUBY
       end
 
       it 'auto-corrects' do

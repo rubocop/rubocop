@@ -4,12 +4,12 @@ describe RuboCop::Cop::Style::Attr do
   subject(:cop) { described_class.new }
 
   it 'registers an offense attr' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       class SomeClass
         attr :name
+        ^^^^ Do not use `attr`. Use `attr_reader` instead.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'accepts attr when it does not take arguments' do

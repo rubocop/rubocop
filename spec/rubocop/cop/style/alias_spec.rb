@@ -7,10 +7,10 @@ describe RuboCop::Cop::Style::Alias, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'prefer_alias_method' } }
 
     it 'registers an offense for alias with symbol args' do
-      inspect_source(cop, 'alias :ala :bala')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Use `alias_method` instead of `alias`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        alias :ala :bala
+        ^^^^^ Use `alias_method` instead of `alias`.
+      RUBY
     end
 
     it 'autocorrects alias with symbol args' do
@@ -19,10 +19,10 @@ describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'registers an offense for alias with bareword args' do
-      inspect_source(cop, 'alias ala bala')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Use `alias_method` instead of `alias`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        alias ala bala
+        ^^^^^ Use `alias_method` instead of `alias`.
+      RUBY
     end
 
     it 'autocorrects alias with bareword args' do
@@ -55,10 +55,10 @@ describe RuboCop::Cop::Style::Alias, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'prefer_alias' } }
 
     it 'registers an offense for alias with symbol args' do
-      inspect_source(cop, 'alias :ala :bala')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Use `alias ala bala` instead of `alias :ala :bala`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        alias :ala :bala
+              ^^^^^^^^^^ Use `alias ala bala` instead of `alias :ala :bala`.
+      RUBY
     end
 
     it 'autocorrects alias with symbol args' do
@@ -71,10 +71,10 @@ describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'registers an offense for alias_method at the top level' do
-      inspect_source(cop, 'alias_method :ala, :bala')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Use `alias` instead of `alias_method` at the top level.'])
+      expect_offense(<<-RUBY.strip_indent)
+        alias_method :ala, :bala
+        ^^^^^^^^^^^^ Use `alias` instead of `alias_method` at the top level.
+      RUBY
     end
 
     it 'autocorrects alias_method at the top level' do
@@ -83,14 +83,12 @@ describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'registers an offense for alias_method in a class block' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         class C
           alias_method :ala, :bala
+          ^^^^^^^^^^^^ Use `alias` instead of `alias_method` in a class body.
         end
-      END
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Use `alias` instead of `alias_method` in a class body.'])
+      RUBY
     end
 
     it 'autocorrects alias_method in a class block' do
@@ -107,14 +105,12 @@ describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'registers an offense for alias_method in a module block' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         module M
           alias_method :ala, :bala
+          ^^^^^^^^^^^^ Use `alias` instead of `alias_method` in a module body.
         end
-      END
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Use `alias` instead of `alias_method` in a module body.'])
+      RUBY
     end
 
     it 'autocorrects alias_method in a module block' do

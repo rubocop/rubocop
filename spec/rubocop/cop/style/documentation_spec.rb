@@ -9,13 +9,13 @@ describe RuboCop::Cop::Style::Documentation do
   end
 
   it 'registers an offense for non-empty class' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       class My_Class
+      ^^^^^ Missing top-level class documentation comment.
         def method
         end
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'does not consider comment followed by empty line to be class ' \
@@ -33,23 +33,23 @@ describe RuboCop::Cop::Style::Documentation do
   end
 
   it 'registers an offense for non-namespace' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       module My_Class
+      ^^^^^^ Missing top-level module documentation comment.
         def method
         end
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'registers an offense for empty module without documentation' do
     # Because why would you have an empty module? It requires some
     # explanation.
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       module Test
+      ^^^^^^ Missing top-level module documentation comment.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'accepts non-empty class with documentation' do
@@ -63,47 +63,47 @@ describe RuboCop::Cop::Style::Documentation do
   end
 
   it 'registers an offense for non-empty class with annotation comment' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       # OPTIMIZE: Make this faster.
       class My_Class
+      ^^^^^ Missing top-level class documentation comment.
         def method
         end
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'registers an offense for non-empty class with directive comment' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       # rubocop:disable Style/For
       class My_Class
+      ^^^^^ Missing top-level class documentation comment.
         def method
         end
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'registers offense for non-empty class with frozen string comment' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       # frozen_string_literal: true
       class My_Class
+      ^^^^^ Missing top-level class documentation comment.
         def method
         end
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'registers an offense for non-empty class with encoding comment' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       # encoding: ascii-8bit
       class My_Class
+      ^^^^^ Missing top-level class documentation comment.
         def method
         end
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'accepts non-empty class with annotation comment followed by other ' \
@@ -199,16 +199,16 @@ describe RuboCop::Cop::Style::Documentation do
   end
 
   it 'registers an offense if the comment line contains code' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       module A # The A Module
         class B
+        ^^^^^ Missing top-level class documentation comment.
           C = 1
           def method
           end
         end
       end
-    END
-    expect(cop.offenses.size).to eq 1
+    RUBY
   end
 
   context 'sparse and trailing comments' do
@@ -294,16 +294,16 @@ describe RuboCop::Cop::Style::Documentation do
       end
 
       it 'registers an offense for nested subclass without documentation' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           module TestModule #:nodoc:
             TEST = 20
             class Test < Parent
+            ^^^^^ Missing top-level class documentation comment.
               def method
               end
             end
           end
-        END
-        expect(cop.offenses.size).to eq(1)
+        RUBY
       end
 
       context 'with `all` modifier' do

@@ -40,8 +40,10 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers an offense for hash rockets in method calls' do
-        inspect_source(cop, 'func(3, :a => 0)')
-        expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+        expect_offense(<<-RUBY.strip_indent)
+          func(3, :a => 0)
+                  ^^^^^ Use the new Ruby 1.9 hash syntax.
+        RUBY
       end
 
       it 'accepts hash rockets when keys have different types' do
@@ -63,20 +65,26 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
 
       context 'ruby >= 2.2', :ruby22 do
         it 'registers an offense when symbol keys have strings in them' do
-          inspect_source(cop, 'x = { :"string" => 0 }')
-          expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+          expect_offense(<<-RUBY.strip_indent)
+            x = { :"string" => 0 }
+                  ^^^^^^^^^^^^ Use the new Ruby 1.9 hash syntax.
+          RUBY
         end
       end
 
       context 'if PreferHashRocketsForNonAlnumEndingSymbols is false' do
         it 'registers an offense for hash rockets when symbols end with ?' do
-          inspect_source(cop, 'x = { :a? => 0 }')
-          expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+          expect_offense(<<-RUBY.strip_indent)
+            x = { :a? => 0 }
+                  ^^^^^^ Use the new Ruby 1.9 hash syntax.
+          RUBY
         end
 
         it 'registers an offense for hash rockets when symbols end with !' do
-          inspect_source(cop, 'x = { :a! => 0 }')
-          expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+          expect_offense(<<-RUBY.strip_indent)
+            x = { :a! => 0 }
+                  ^^^^^^ Use the new Ruby 1.9 hash syntax.
+          RUBY
         end
       end
 
@@ -109,8 +117,10 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers offense when keys start with an uppercase letter' do
-        inspect_source(cop, 'x = { :A => 0 }')
-        expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+        expect_offense(<<-RUBY.strip_indent)
+          x = { :A => 0 }
+                ^^^^^ Use the new Ruby 1.9 hash syntax.
+        RUBY
       end
 
       it 'accepts new syntax in a hash literal' do
@@ -188,9 +198,11 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers an offense when any element uses a symbol for the value' do
-        inspect_source(cop, 'x = { a: 1, b: :c }')
-        expect(cop.messages)
-          .to eq(['Use hash rockets syntax.', 'Use hash rockets syntax.'])
+        expect_offense(<<-RUBY.strip_indent)
+          x = { a: 1, b: :c }
+                ^^ Use hash rockets syntax.
+                      ^^ Use hash rockets syntax.
+        RUBY
       end
 
       it 'registers an offense when any element has a symbol value ' \
@@ -208,9 +220,12 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers an offense for hashes with elements on multiple lines' do
-        inspect_source(cop, "x = { a: :b,\n c: :d }")
-        expect(cop.messages)
-          .to eq(['Use hash rockets syntax.', 'Use hash rockets syntax.'])
+        expect_offense(<<-RUBY.strip_indent)
+          x = { a: :b,
+                ^^ Use hash rockets syntax.
+           c: :d }
+           ^^ Use hash rockets syntax.
+        RUBY
       end
 
       it 'auto-corrects to ruby19 style when there are no symbol values' do
@@ -260,8 +275,10 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
     end
 
     it 'registers an offense for 1.9 style in method calls' do
-      inspect_source(cop, 'func(3, a: 0)')
-      expect(cop.messages).to eq(['Use hash rockets syntax.'])
+      expect_offense(<<-RUBY.strip_indent)
+        func(3, a: 0)
+                ^^ Use hash rockets syntax.
+      RUBY
     end
 
     it 'accepts hash rockets in a hash literal' do
@@ -333,8 +350,10 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers an offense for hash rockets in method calls' do
-        inspect_source(cop, 'func(3, :a => 0)')
-        expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+        expect_offense(<<-RUBY.strip_indent)
+          func(3, :a => 0)
+                  ^^^^^ Use the new Ruby 1.9 hash syntax.
+        RUBY
       end
 
       it 'accepts hash rockets when keys have different types' do
@@ -391,18 +410,24 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
 
       context 'ruby >= 2.2', :ruby22 do
         it 'registers an offense when keys have whitespaces in them' do
-          inspect_source(cop, 'x = { :"t o" => 0 }')
-          expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+          expect_offense(<<-RUBY.strip_indent)
+            x = { :"t o" => 0 }
+                  ^^^^^^^^^ Use the new Ruby 1.9 hash syntax.
+          RUBY
         end
 
         it 'registers an offense when keys have special symbols in them' do
-          inspect_source(cop, 'x = { :"\tab" => 1 }')
-          expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+          expect_offense(<<-'RUBY'.strip_indent)
+            x = { :"\tab" => 1 }
+                  ^^^^^^^^^^ Use the new Ruby 1.9 hash syntax.
+          RUBY
         end
 
         it 'registers an offense when keys start with a digit' do
-          inspect_source(cop, 'x = { :"1" => 1 }')
-          expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+          expect_offense(<<-RUBY.strip_indent)
+            x = { :"1" => 1 }
+                  ^^^^^^^ Use the new Ruby 1.9 hash syntax.
+          RUBY
         end
       end
 
@@ -427,9 +452,11 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers an offense when any element uses a symbol for the value' do
-        inspect_source(cop, 'x = { a: 1, b: :c }')
-        expect(cop.messages)
-          .to eq(['Use hash rockets syntax.', 'Use hash rockets syntax.'])
+        expect_offense(<<-RUBY.strip_indent)
+          x = { a: 1, b: :c }
+                ^^ Use hash rockets syntax.
+                      ^^ Use hash rockets syntax.
+        RUBY
       end
 
       it 'registers an offense when any element has a symbol value ' \
@@ -474,8 +501,10 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers an offense for hash rockets in method calls' do
-        inspect_source(cop, 'func(3, :a => 0)')
-        expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+        expect_offense(<<-RUBY.strip_indent)
+          func(3, :a => 0)
+                  ^^^^^ Use the new Ruby 1.9 hash syntax.
+        RUBY
       end
 
       it 'accepts hash rockets when keys have different types' do
@@ -532,18 +561,24 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
 
       context 'ruby >= 2.2', :ruby22 do
         it 'registers an offense when keys have whitespaces in them' do
-          inspect_source(cop, 'x = { :"t o" => 0 }')
-          expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+          expect_offense(<<-RUBY.strip_indent)
+            x = { :"t o" => 0 }
+                  ^^^^^^^^^ Use the new Ruby 1.9 hash syntax.
+          RUBY
         end
 
         it 'registers an offense when keys have special symbols in them' do
-          inspect_source(cop, 'x = { :"\tab" => 1 }')
-          expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+          expect_offense(<<-'RUBY'.strip_indent)
+            x = { :"\tab" => 1 }
+                  ^^^^^^^^^^ Use the new Ruby 1.9 hash syntax.
+          RUBY
         end
 
         it 'registers an offense when keys start with a digit' do
-          inspect_source(cop, 'x = { :"1" => 1 }')
-          expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+          expect_offense(<<-RUBY.strip_indent)
+            x = { :"1" => 1 }
+                  ^^^^^^^ Use the new Ruby 1.9 hash syntax.
+          RUBY
         end
       end
 

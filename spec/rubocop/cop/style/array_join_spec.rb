@@ -4,9 +4,10 @@ describe RuboCop::Cop::Style::ArrayJoin do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for an array followed by string' do
-    inspect_source(cop,
-                   '%w(one two three) * ", "')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      %w(one two three) * ", "
+                        ^ Favor `Array#join` over `Array#*`.
+    RUBY
   end
 
   it "autocorrects '*' to 'join' when there are spaces" do

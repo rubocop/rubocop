@@ -4,23 +4,21 @@ describe RuboCop::Cop::Style::AccessorMethodName do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for method get_... with no args' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       def get_attr
+          ^^^^^^^^ Do not prefix reader method names with `get_`.
         # ...
       end
-    END
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['get_attr'])
+    RUBY
   end
 
   it 'registers an offense for singleton method get_... with no args' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       def self.get_attr
+               ^^^^^^^^ Do not prefix reader method names with `get_`.
         # ...
       end
-    END
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['get_attr'])
+    RUBY
   end
 
   it 'accepts method get_something with args' do
@@ -40,23 +38,21 @@ describe RuboCop::Cop::Style::AccessorMethodName do
   end
 
   it 'registers an offense for method set_something with one arg' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       def set_attr(arg)
+          ^^^^^^^^ Do not prefix writer method names with `set_`.
         # ...
       end
-    END
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['set_attr'])
+    RUBY
   end
 
   it 'registers an offense for singleton method set_... with one args' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       def self.set_attr(arg)
+               ^^^^^^^^ Do not prefix writer method names with `set_`.
         # ...
       end
-    END
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['set_attr'])
+    RUBY
   end
 
   it 'accepts method set_something with no args' do

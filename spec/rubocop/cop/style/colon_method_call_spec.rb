@@ -4,23 +4,31 @@ describe RuboCop::Cop::Style::ColonMethodCall do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for instance method call' do
-    inspect_source(cop, 'test::method_name')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      test::method_name
+          ^^ Do not use `::` for method calls.
+    RUBY
   end
 
   it 'registers an offense for instance method call with arg' do
-    inspect_source(cop, 'test::method_name(arg)')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      test::method_name(arg)
+          ^^ Do not use `::` for method calls.
+    RUBY
   end
 
   it 'registers an offense for class method call' do
-    inspect_source(cop, 'Class::method_name')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      Class::method_name
+           ^^ Do not use `::` for method calls.
+    RUBY
   end
 
   it 'registers an offense for class method call with arg' do
-    inspect_source(cop, 'Class::method_name(arg, arg2)')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      Class::method_name(arg, arg2)
+           ^^ Do not use `::` for method calls.
+    RUBY
   end
 
   it 'does not register an offense for constant access' do

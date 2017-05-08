@@ -18,28 +18,29 @@ describe RuboCop::Cop::Layout::CommentIndentation do
     end
 
     it 'accepts a documentation comment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         =begin
         Doc comment
         =end
           hello
          #
+         ^ Incorrect indentation detected (column 1 instead of 0).
         hi
-      END
-      expect(cop.highlights).to eq(['#'])
+      RUBY
     end
 
     it 'registers an offense for an incorrectly indented (1) comment' do
-      inspect_source(cop, ' # comment')
-      expect(cop.messages)
-        .to eq(['Incorrect indentation detected (column 1 instead of 0).'])
-      expect(cop.highlights).to eq(['# comment'])
+      expect_offense(<<-RUBY.strip_margin('|'))
+        | # comment
+        | ^^^^^^^^^ Incorrect indentation detected (column 1 instead of 0).
+      RUBY
     end
 
     it 'registers an offense for an incorrectly indented (2) comment' do
-      inspect_source(cop, '  # comment')
-      expect(cop.messages)
-        .to eq(['Incorrect indentation detected (column 2 instead of 0).'])
+      expect_offense(<<-RUBY.strip_margin('|'))
+        |  # comment
+        |  ^^^^^^^^^ Incorrect indentation detected (column 2 instead of 0).
+      RUBY
     end
 
     it 'registers an offense for each incorrectly indented comment' do
@@ -133,11 +134,10 @@ describe RuboCop::Cop::Layout::CommentIndentation do
     end
 
     it 'is unaffected by closing bracket that does not begin a line' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         #
         result = []
-      END
-      expect(cop.messages).to eq([])
+      RUBY
     end
   end
 

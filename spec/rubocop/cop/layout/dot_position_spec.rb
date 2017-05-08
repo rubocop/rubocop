@@ -39,11 +39,11 @@ describe RuboCop::Cop::Layout::DotPosition, :config do
     end
 
     it 'does not err on method call without a method name' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         l.
+         ^ Place the . on the next line, together with the method name.
         (1)
-      END
-      expect(cop.offenses.size).to eq(1)
+      RUBY
     end
 
     it 'does not err on method call on same line' do
@@ -135,11 +135,11 @@ describe RuboCop::Cop::Layout::DotPosition, :config do
     end
 
     it 'does not err on method call without a method name' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         l
         .(1)
-      END
-      expect(cop.offenses.size).to eq(1)
+        ^ Place the . on the previous line, together with the method call receiver.
+      RUBY
     end
 
     it 'does not err on method call on same line' do

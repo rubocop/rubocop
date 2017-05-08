@@ -277,25 +277,23 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       end
 
       it 'registers an offense for unaligned methods' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           User.a
             .b
+            ^^ Align `.b` with `.a` on line 1.
            .c
-        END
-        expect(cop.messages).to eq(['Align `.b` with `.a` on line 1.',
-                                    'Align `.c` with `.a` on line 1.'])
-        expect(cop.highlights).to eq(['.b', '.c'])
+           ^^ Align `.c` with `.a` on line 1.
+        RUBY
       end
 
       it 'registers an offense for unaligned method in block body' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           a do
             b.c
               .d
+              ^^ Align `.d` with `.c` on line 2.
           end
-        END
-        expect(cop.messages).to eq(['Align `.d` with `.c` on line 2.'])
-        expect(cop.highlights).to eq(['.d'])
+        RUBY
       end
 
       it 'auto-corrects' do
@@ -353,15 +351,12 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     end
 
     it 'registers an offense for one space indentation of third line' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a
           .b
          .c
-      END
-      expect(cop.messages)
-        .to eq(['Use 2 (not 1) spaces for indenting an expression spanning ' \
-                'multiple lines.'])
-      expect(cop.highlights).to eq(['.c'])
+         ^^ Use 2 (not 1) spaces for indenting an expression spanning multiple lines.
+      RUBY
     end
 
     it 'accepts indented and aligned methods in binary operation' do
@@ -424,14 +419,12 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     end
 
     it 'registers an offense for misaligned method in []= call' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         flash[:error] = here_is_a_string.
                         that_spans.
            multiple_lines
-      END
-      expect(cop.messages)
-        .to eq(['Align `multiple_lines` with `here_is_a_string.` on line 1.'])
-      expect(cop.highlights).to eq(['multiple_lines'])
+           ^^^^^^^^^^^^^^ Align `multiple_lines` with `here_is_a_string.` on line 1.
+      RUBY
     end
 
     it 'registers an offense for misaligned methods in unless condition' do
@@ -447,25 +440,23 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     end
 
     it 'registers an offense for misaligned methods in while condition' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         while a.
             b
+            ^ Align `b` with `a.` on line 1.
           something
         end
-      END
-      expect(cop.messages).to eq(['Align `b` with `a.` on line 1.'])
-      expect(cop.highlights).to eq(['b'])
+      RUBY
     end
 
     it 'registers an offense for misaligned methods in until condition' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         until a.
             b
+            ^ Align `b` with `a.` on line 1.
           something
         end
-      END
-      expect(cop.messages).to eq(['Align `b` with `a.` on line 1.'])
-      expect(cop.highlights).to eq(['b'])
+      RUBY
     end
 
     it 'accepts aligned method in return' do
@@ -522,13 +513,12 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     end
 
     it 'registers an offense for unaligned methods in assignment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         bar = Foo
           .a
+          ^^ Align `.a` with `Foo` on line 1.
               .b(c)
-      END
-      expect(cop.messages).to eq(['Align `.a` with `Foo` on line 1.'])
-      expect(cop.highlights).to eq(['.a'])
+      RUBY
     end
 
     it 'auto-corrects' do
@@ -597,13 +587,11 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     end
 
     it 'registers an offense for no indentation of second line' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a.
         b
-      END
-      expect(cop.messages)
-        .to eq(['Indent `b` 2 spaces more than `a` on line 1.'])
-      expect(cop.highlights).to eq(['b'])
+        ^ Indent `b` 2 spaces more than `a` on line 1.
+      RUBY
     end
 
     it 'registers an offense for extra indentation of 3rd line in typical ' \
@@ -619,47 +607,39 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     end
 
     it 'registers an offense for proc call without a selector' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a
          .(args)
-      END
-      expect(cop.messages).to eq(['Indent `.(` 2 spaces more than `a` on ' \
-                                  'line 1.'])
-      expect(cop.highlights).to eq(['.('])
+         ^^ Indent `.(` 2 spaces more than `a` on line 1.
+      RUBY
     end
 
     it 'registers an offense for one space indentation of second line' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a
          .b
-      END
-      expect(cop.messages).to eq(['Indent `.b` 2 spaces more than `a` on ' \
-                                  'line 1.'])
-      expect(cop.highlights).to eq(['.b'])
+         ^^ Indent `.b` 2 spaces more than `a` on line 1.
+      RUBY
     end
 
     it 'registers an offense for 3 spaces indentation of second line' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a.
            b
+           ^ Indent `b` 2 spaces more than `a` on line 1.
         c.
            d
-      END
-      expect(cop.messages)
-        .to eq(['Indent `b` 2 spaces more than `a` on line 1.',
-                'Indent `d` 2 spaces more than `c` on line 3.'])
-      expect(cop.highlights).to eq(%w[b d])
+           ^ Indent `d` 2 spaces more than `c` on line 3.
+      RUBY
     end
 
     it 'registers an offense for extra indentation of third line' do
-      inspect_source(cop, <<-END.strip_margin('|'))
-        |   a.
-        |     b.
-        |       c
-      END
-      expect(cop.messages)
-        .to eq(['Indent `c` 2 spaces more than `a` on line 1.'])
-      expect(cop.highlights).to eq(['c'])
+      expect_offense(<<-RUBY.strip_indent)
+           a.
+             b.
+               c
+               ^ Indent `c` 2 spaces more than `a` on line 1.
+      RUBY
     end
 
     it 'registers an offense for the emacs ruby-mode 1.1 indentation of an ' \
@@ -709,14 +689,12 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     end
 
     it 'registers an offense for one space indentation of third line' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a
           .b
          .c
-      END
-      expect(cop.messages).to eq(['Use 2 (not 1) spaces for indenting an ' \
-                                  'expression spanning multiple lines.'])
-      expect(cop.highlights).to eq(['.c'])
+         ^^ Use 2 (not 1) spaces for indenting an expression spanning multiple lines.
+      RUBY
     end
 
     it 'accepts indented methods in if condition' do
@@ -824,15 +802,12 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     end
 
     it 'registers an offense for wrong indentation of for expression' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         for n in a.
           b
+          ^ Use 4 (not 2) spaces for indenting a collection in a `for` statement spanning multiple lines.
         end
-      END
-      expect(cop.messages).to eq(['Use 4 (not 2) spaces for indenting a ' \
-                                  'collection in a `for` statement spanning ' \
-                                  'multiple lines.'])
-      expect(cop.highlights).to eq(['b'])
+      RUBY
     end
 
     it 'accepts special indentation of for expression' do

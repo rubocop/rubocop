@@ -452,16 +452,15 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
 
     context 'with normal style configured' do
       it 'registers an offense for bad indentation in a class body' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           class Test
               def func1
               end
             def func2
+            ^^^^^^^^^ Inconsistent indentation detected.
             end
           end
-        END
-        expect(cop.messages)
-          .to eq(['Inconsistent indentation detected.'])
+        RUBY
       end
 
       it 'accepts an empty class body' do
@@ -520,15 +519,15 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
 
   context 'with module' do
     it 'registers an offense for bad indentation in a module body' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         module Test
             def func1
             end
              def func2
+             ^^^^^^^^^ Inconsistent indentation detected.
              end
         end
-      END
-      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
+      RUBY
     end
 
     it 'accepts an empty module body' do

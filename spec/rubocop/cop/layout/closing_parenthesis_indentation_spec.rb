@@ -12,14 +12,12 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
   context 'for method calls' do
     context 'with line break before 1st parameter' do
       it 'registers an offense for misaligned )' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           some_method(
             a
             )
-        END
-        expect(cop.messages)
-          .to eq(['Indent `)` the same as the start of the line where `(` is.'])
-        expect(cop.highlights).to eq([')'])
+            ^ Indent `)` the same as the start of the line where `(` is.
+        RUBY
       end
 
       it 'autocorrects misaligned )' do
@@ -46,12 +44,11 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
 
     context 'with no line break before 1st parameter' do
       it 'registers an offense for misaligned )' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           some_method(a
           )
-        END
-        expect(cop.messages).to eq(['Align `)` with `(`.'])
-        expect(cop.highlights).to eq([')'])
+          ^ Align `)` with `(`.
+        RUBY
       end
 
       it 'autocorrects misaligned )' do
@@ -118,15 +115,13 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
   context 'for method definitions' do
     context 'with line break before 1st parameter' do
       it 'registers an offense for misaligned )' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           def some_method(
             a
             )
+            ^ Indent `)` the same as the start of the line where `(` is.
           end
-        END
-        expect(cop.messages)
-          .to eq(['Indent `)` the same as the start of the line where `(` is.'])
-        expect(cop.highlights).to eq([')'])
+        RUBY
       end
 
       it 'autocorrects misaligned )' do
@@ -156,13 +151,12 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
 
     context 'with no line break before 1st parameter' do
       it 'registers an offense for misaligned )' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           def some_method(a
           )
+          ^ Align `)` with `(`.
           end
-        END
-        expect(cop.messages).to eq(['Align `)` with `(`.'])
-        expect(cop.highlights).to eq([')'])
+        RUBY
       end
 
       it 'autocorrects misaligned )' do
@@ -198,14 +192,12 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
   context 'for grouped expressions' do
     context 'with line break before 1st operand' do
       it 'registers an offense for misaligned )' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           w = x * (
             y + z
             )
-        END
-        expect(cop.messages)
-          .to eq(['Indent `)` the same as the start of the line where `(` is.'])
-        expect(cop.highlights).to eq([')'])
+            ^ Indent `)` the same as the start of the line where `(` is.
+        RUBY
       end
 
       it 'autocorrects misaligned )' do
@@ -232,12 +224,11 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
 
     context 'with no line break before 1st operand' do
       it 'registers an offense for misaligned )' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           w = x * (y + z
           )
-        END
-        expect(cop.messages).to eq(['Align `)` with `(`.'])
-        expect(cop.highlights).to eq([')'])
+          ^ Align `)` with `(`.
+        RUBY
       end
 
       it 'autocorrects misaligned )' do

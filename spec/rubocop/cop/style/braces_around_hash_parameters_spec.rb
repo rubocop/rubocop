@@ -186,8 +186,10 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       end
 
       it 'registers an offense for two hash parameters with braces' do
-        inspect_source(cop, 'where({ x: 1 }, { y: 2 })')
-        expect(cop.highlights).to eq(['{ y: 2 }'])
+        expect_offense(<<-RUBY.strip_indent)
+          where({ x: 1 }, { y: 2 })
+                          ^^^^^^^^ Redundant curly braces around a hash parameter.
+        RUBY
       end
     end
 
@@ -274,8 +276,10 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       end
 
       it 'registers an offense for one hash parameter without braces' do
-        inspect_source(cop, 'where(x: "y")')
-        expect(cop.highlights).to eq(['x: "y"'])
+        expect_offense(<<-RUBY.strip_indent)
+          where(x: "y")
+                ^^^^^^ Missing curly braces around a hash parameter.
+        RUBY
       end
 
       it 'registers an offense for one hash parameter with multiple keys and ' \

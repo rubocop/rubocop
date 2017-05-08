@@ -4,31 +4,25 @@ describe RuboCop::Cop::Style::ClassMethods do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for methods using a class name' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       class Test
         def Test.some_method
+            ^^^^ Use `self.some_method` instead of `Test.some_method`.
           do_something
         end
       end
-    END
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['Use `self.some_method` instead of `Test.some_method`.'])
-    expect(cop.highlights).to eq(['Test'])
+    RUBY
   end
 
   it 'registers an offense for methods using a module name' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       module Test
         def Test.some_method
+            ^^^^ Use `self.some_method` instead of `Test.some_method`.
           do_something
         end
       end
-    END
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['Use `self.some_method` instead of `Test.some_method`.'])
-    expect(cop.highlights).to eq(['Test'])
+    RUBY
   end
 
   it 'does not register an offense for methods using self' do

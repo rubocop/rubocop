@@ -4,21 +4,17 @@ describe RuboCop::Cop::Style::EachWithObject do
   subject(:cop) { described_class.new }
 
   it 'finds inject and reduce with passed in and returned hash' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       [].inject({}) { |a, e| a }
+         ^^^^^^ Use `each_with_object` instead of `inject`.
 
       [].reduce({}) do |a, e|
+         ^^^^^^ Use `each_with_object` instead of `reduce`.
         a[e] = 1
         a[e] = 1
         a
       end
-    END
-    expect(cop.offenses.size).to eq(2)
-    expect(cop.offenses.map(&:line).sort).to eq([1, 3])
-    expect(cop.messages)
-      .to eq(['Use `each_with_object` instead of `inject`.',
-              'Use `each_with_object` instead of `reduce`.'])
-    expect(cop.highlights).to eq(%w[inject reduce])
+    RUBY
   end
 
   it 'correctly autocorrects' do

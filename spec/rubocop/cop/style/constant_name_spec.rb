@@ -4,21 +4,25 @@ describe RuboCop::Cop::Style::ConstantName do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for camel case in const name' do
-    inspect_source(cop,
-                   'TopCase = 5')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      TopCase = 5
+      ^^^^^^^ Use SCREAMING_SNAKE_CASE for constants.
+    RUBY
   end
 
   it 'registers offenses for camel case in multiple const assignment' do
-    inspect_source(cop,
-                   'TopCase, Test2, TEST_3 = 5, 6, 7')
-    expect(cop.offenses.size).to eq(2)
+    expect_offense(<<-RUBY.strip_indent)
+      TopCase, Test2, TEST_3 = 5, 6, 7
+      ^^^^^^^ Use SCREAMING_SNAKE_CASE for constants.
+               ^^^^^ Use SCREAMING_SNAKE_CASE for constants.
+    RUBY
   end
 
   it 'registers an offense for snake case in const name' do
-    inspect_source(cop,
-                   'TOP_test = 5')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      TOP_test = 5
+      ^^^^^^^^ Use SCREAMING_SNAKE_CASE for constants.
+    RUBY
   end
 
   it 'allows screaming snake case in const name' do
@@ -46,10 +50,11 @@ describe RuboCop::Cop::Style::ConstantName do
   end
 
   it 'checks qualified const names' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       ::AnythingGoes = 30
+        ^^^^^^^^^^^^ Use SCREAMING_SNAKE_CASE for constants.
       a::Bar_foo = 10
-    END
-    expect(cop.offenses.size).to eq(2)
+         ^^^^^^^ Use SCREAMING_SNAKE_CASE for constants.
+    RUBY
   end
 end

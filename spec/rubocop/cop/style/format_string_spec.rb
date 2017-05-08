@@ -6,19 +6,17 @@ describe RuboCop::Cop::Style::FormatString, :config do
   context 'when enforced style is sprintf' do
     let(:cop_config) { { 'EnforcedStyle' => 'sprintf' } }
     it 'registers an offense for a string followed by something' do
-      inspect_source(cop,
-                     'puts "%d" % 10')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Favor `sprintf` over `String#%`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        puts "%d" % 10
+                  ^ Favor `sprintf` over `String#%`.
+      RUBY
     end
 
     it 'registers an offense for something followed by an array' do
-      inspect_source(cop,
-                     'puts x % [10, 11]')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Favor `sprintf` over `String#%`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        puts x % [10, 11]
+               ^ Favor `sprintf` over `String#%`.
+      RUBY
     end
 
     it 'does not register an offense for numbers' do
@@ -36,27 +34,24 @@ describe RuboCop::Cop::Style::FormatString, :config do
     end
 
     it 'works if the first operand contains embedded expressions' do
-      inspect_source(cop,
-                     'puts "#{x * 5} %d #{@test}" % 10')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Favor `sprintf` over `String#%`.'])
+      expect_offense(<<-'RUBY'.strip_indent)
+        puts "#{x * 5} %d #{@test}" % 10
+                                    ^ Favor `sprintf` over `String#%`.
+      RUBY
     end
 
     it 'registers an offense for format' do
-      inspect_source(cop,
-                     'format(something, a, b)')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Favor `sprintf` over `format`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        format(something, a, b)
+        ^^^^^^ Favor `sprintf` over `format`.
+      RUBY
     end
 
     it 'registers an offense for format with 2 arguments' do
-      inspect_source(cop,
-                     'format("%X", 123)')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Favor `sprintf` over `format`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        format("%X", 123)
+        ^^^^^^ Favor `sprintf` over `format`.
+      RUBY
     end
   end
 
@@ -64,27 +59,24 @@ describe RuboCop::Cop::Style::FormatString, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'format' } }
 
     it 'registers an offense for a string followed by something' do
-      inspect_source(cop,
-                     'puts "%d" % 10')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Favor `format` over `String#%`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        puts "%d" % 10
+                  ^ Favor `format` over `String#%`.
+      RUBY
     end
 
     it 'registers an offense for something followed by an array' do
-      inspect_source(cop,
-                     'puts x % [10, 11]')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Favor `format` over `String#%`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        puts x % [10, 11]
+               ^ Favor `format` over `String#%`.
+      RUBY
     end
 
     it 'registers an offense for something followed by a hash' do
-      inspect_source(cop,
-                     'puts x % { a: 10, b: 11 }')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Favor `format` over `String#%`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        puts x % { a: 10, b: 11 }
+               ^ Favor `format` over `String#%`.
+      RUBY
     end
 
     it 'does not register an offense for numbers' do
@@ -102,27 +94,24 @@ describe RuboCop::Cop::Style::FormatString, :config do
     end
 
     it 'works if the first operand contains embedded expressions' do
-      inspect_source(cop,
-                     'puts "#{x * 5} %d #{@test}" % 10')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Favor `format` over `String#%`.'])
+      expect_offense(<<-'RUBY'.strip_indent)
+        puts "#{x * 5} %d #{@test}" % 10
+                                    ^ Favor `format` over `String#%`.
+      RUBY
     end
 
     it 'registers an offense for sprintf' do
-      inspect_source(cop,
-                     'sprintf(something, a, b)')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Favor `format` over `sprintf`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        sprintf(something, a, b)
+        ^^^^^^^ Favor `format` over `sprintf`.
+      RUBY
     end
 
     it 'registers an offense for sprintf with 2 arguments' do
-      inspect_source(cop,
-                     "sprintf('%020d', 123)")
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Favor `format` over `sprintf`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        sprintf('%020d', 123)
+        ^^^^^^^ Favor `format` over `sprintf`.
+      RUBY
     end
   end
 
@@ -130,27 +119,24 @@ describe RuboCop::Cop::Style::FormatString, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'percent' } }
 
     it 'registers an offense for format' do
-      inspect_source(cop,
-                     'format(something, a, b)')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Favor `String#%` over `format`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        format(something, a, b)
+        ^^^^^^ Favor `String#%` over `format`.
+      RUBY
     end
 
     it 'registers an offense for sprintf' do
-      inspect_source(cop,
-                     'sprintf(something, a, b)')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Favor `String#%` over `sprintf`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        sprintf(something, a, b)
+        ^^^^^^^ Favor `String#%` over `sprintf`.
+      RUBY
     end
 
     it 'registers an offense for sprintf with 3 arguments' do
-      inspect_source(cop,
-                     'format("%d %04x", 123, 123)')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Favor `String#%` over `format`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        format("%d %04x", 123, 123)
+        ^^^^^^ Favor `String#%` over `format`.
+      RUBY
     end
 
     it 'accepts format with 1 argument' do

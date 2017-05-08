@@ -4,25 +4,19 @@ describe RuboCop::Cop::Style::AsciiIdentifiers do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for a variable name with non-ascii chars' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       # encoding: utf-8
       älg = 1
-    END
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['ä'])
-    expect(cop.messages)
-      .to eq(['Use only ascii symbols in identifiers.'])
+      ^ Use only ascii symbols in identifiers.
+    RUBY
   end
 
   it 'registers an offense for a variable name with mixed chars' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       # encoding: utf-8
       foo∂∂bar = baz
-    END
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['∂∂'])
-    expect(cop.messages)
-      .to eq(['Use only ascii symbols in identifiers.'])
+         ^^ Use only ascii symbols in identifiers.
+    RUBY
   end
 
   it 'accepts identifiers with only ascii chars' do

@@ -295,14 +295,12 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'registers an offense for misaligned string operand when plus is used' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         Error = 'Here is a string ' +
                 'That spans' <<
           'multiple lines'
-      END
-      expect(cop.messages).to eq(['Align the operands of an expression in an ' \
-                                  'assignment spanning multiple lines.'])
-      expect(cop.highlights).to eq(["'multiple lines'"])
+          ^^^^^^^^^^^^^^^^ Align the operands of an expression in an assignment spanning multiple lines.
+      RUBY
     end
 
     it 'registers an offense for misaligned operands in unless condition' do
@@ -359,14 +357,12 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'registers an offense for unaligned operands in op-assignment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         bar *= Foo +
           a +
+          ^ Align the operands of an expression in an assignment spanning multiple lines.
                b(c)
-      END
-      expect(cop.messages).to eq(['Align the operands of an expression in an ' \
-                                  'assignment spanning multiple lines.'])
-      expect(cop.highlights).to eq(['a'])
+      RUBY
     end
 
     it 'auto-corrects' do
@@ -449,12 +445,13 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'registers an offense for aligned code on LHS of equality operator' do
-      inspect_source(cop, ['def config_to_allow_offenses',
-                           '  a +',
-                           '  b == c ',
-                           'end'])
-      expect(cop.messages).to eq(['Use 2 (not 0) spaces for indenting an ' \
-                                  'expression spanning multiple lines.'])
+      expect_offense(<<-RUBY.strip_indent)
+        def config_to_allow_offenses
+          a +
+          b == c
+          ^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
+        end
+      RUBY
     end
 
     [
@@ -514,15 +511,12 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'registers an offense for wrong indentation of for expression' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         for n in a +
           b
+          ^ Use 4 (not 2) spaces for indenting a collection in a `for` statement spanning multiple lines.
         end
-      END
-      expect(cop.messages).to eq(['Use 4 (not 2) spaces for indenting a ' \
-                                  'collection in a `for` statement spanning ' \
-                                  'multiple lines.'])
-      expect(cop.highlights).to eq(['b'])
+      RUBY
     end
 
     it 'accepts special indentation of for expression' do
