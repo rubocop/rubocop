@@ -4,8 +4,10 @@ describe RuboCop::Cop::Layout::LeadingCommentSpace do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for comment without leading space' do
-    inspect_source(cop, '#missing space')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      #missing space
+      ^^^^^^^^^^^^^^ Missing space after #.
+    RUBY
   end
 
   it 'does not register an offense for # followed by no text' do
@@ -32,11 +34,11 @@ describe RuboCop::Cop::Layout::LeadingCommentSpace do
   end
 
   it 'registers an offense for #! after the first line' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       test
       #!/usr/bin/ruby
-    END
-    expect(cop.offenses.size).to eq(1)
+      ^^^^^^^^^^^^^^^ Missing space after #.
+    RUBY
   end
 
   context 'file named config.ru' do

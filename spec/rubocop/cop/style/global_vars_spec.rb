@@ -9,8 +9,10 @@ describe RuboCop::Cop::Style::GlobalVars, :config do
   let(:cop_config) { cop_config }
 
   it 'registers an offense for $custom' do
-    inspect_source(cop, 'puts $custom')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      puts $custom
+           ^^^^^^^ Do not introduce global variables.
+    RUBY
   end
 
   it 'allows user whitelisted variables' do

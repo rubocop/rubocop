@@ -174,8 +174,17 @@ describe RuboCop::Cop::Layout::CaseIndentation do
         end
 
         it 'registers an offense' do
-          inspect_source(cop, source)
-          expect(cop.messages).to eq(['Indent `when` as deep as `case`.'] * 2)
+          expect_offense(<<-RUBY.strip_indent)
+            case a
+                when 0 then return
+                ^^^^ Indent `when` as deep as `case`.
+                else
+                    case b
+                     when 1 then return
+                     ^^^^ Indent `when` as deep as `case`.
+                    end
+            end
+          RUBY
         end
 
         it 'does auto-correction' do
@@ -316,9 +325,15 @@ describe RuboCop::Cop::Layout::CaseIndentation do
           end
 
           it 'registers an offense' do
-            inspect_source(cop, source)
-            expect(cop.messages)
-              .to eq(['Indent `when` one step more than `case`.'])
+            expect_offense(<<-RUBY.strip_indent)
+              output = case variable
+                       when 'value1'
+                       ^^^^ Indent `when` one step more than `case`.
+                         'output1'
+                       else
+                         'output2'
+                       end
+            RUBY
           end
 
           it 'does auto-correction' do
@@ -360,9 +375,24 @@ describe RuboCop::Cop::Layout::CaseIndentation do
         end
 
         it 'registers an offense' do
-          inspect_source(cop, source)
-          expect(cop.messages)
-            .to eq(['Indent `when` one step more than `case`.'] * 5)
+          expect_offense(<<-RUBY.strip_indent)
+            y = case a
+                when 0 then break
+                ^^^^ Indent `when` one step more than `case`.
+                when 0 then return
+                ^^^^ Indent `when` one step more than `case`.
+                  z = case b
+                      when 1 then return
+                      ^^^^ Indent `when` one step more than `case`.
+                      when 1 then break
+                      ^^^^ Indent `when` one step more than `case`.
+                      end
+                end
+            case c
+            when 2 then encoding
+            ^^^^ Indent `when` one step more than `case`.
+            end
+          RUBY
         end
 
         it 'does auto-correction' do
@@ -467,8 +497,15 @@ describe RuboCop::Cop::Layout::CaseIndentation do
           end
 
           it 'registers an offense' do
-            inspect_source(cop, source)
-            expect(cop.messages).to eq(['Indent `when` as deep as `end`.'])
+            expect_offense(<<-RUBY.strip_indent)
+              output = case variable
+                when 'value1'
+                ^^^^ Indent `when` as deep as `end`.
+                  'output1'
+                else
+                  'output2'
+              end
+            RUBY
           end
 
           it 'does auto-correction' do
@@ -596,8 +633,11 @@ describe RuboCop::Cop::Layout::CaseIndentation do
     end
 
     it 'registers an offense' do
-      inspect_source(cop, source)
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        case test when something
+                  ^^^^ Indent `when` as deep as `case`.
+        end
+      RUBY
     end
 
     it "doesn't auto-correct" do

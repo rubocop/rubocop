@@ -40,8 +40,17 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
     end
 
     it 'registers an offense' do
-      inspect_source(cop, source)
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        class J
+          def n
+          end # n-related
+          # checks something o-related
+          # and more
+          def o
+          ^^^ Use empty lines between method definitions.
+          end
+        end
+      RUBY
     end
 
     it 'auto-corrects' do
@@ -113,8 +122,17 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
       end
 
       it 'registers an offense for missing blank line between methods' do
-        inspect_source(cop, offending_source)
-        expect(cop.offenses.size).to eq(1)
+        expect_offense(<<-RUBY.strip_indent)
+          class Test
+            def self.foo
+              true
+            end
+            def self.bar
+            ^^^ Use empty lines between method definitions.
+              true
+            end
+          end
+        RUBY
       end
 
       it 'autocorrects it' do
@@ -148,8 +166,17 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
       end
 
       it 'registers an offense for missing blank line between methods' do
-        inspect_source(cop, offending_source)
-        expect(cop.offenses.size).to eq(1)
+        expect_offense(<<-RUBY.strip_indent)
+          class Test
+            def foo
+              true
+            end
+            def self.bar
+            ^^^ Use empty lines between method definitions.
+              true
+            end
+          end
+        RUBY
       end
 
       it 'autocorrects it' do

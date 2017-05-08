@@ -4,11 +4,11 @@ describe RuboCop::Cop::Layout::InitialIndentation do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for indented method definition ' do
-    inspect_source(cop, <<-END.strip_margin('|'))
+    expect_offense(<<-RUBY.strip_margin('|'))
       |  def f
+      |  ^^^ Indentation of first line in file detected.
       |  end
-    END
-    expect(cop.messages).to eq(['Indentation of first line in file detected.'])
+    RUBY
   end
 
   it 'accepts unindented method definition' do
@@ -27,14 +27,18 @@ describe RuboCop::Cop::Layout::InitialIndentation do
     end
 
     it 'registers an offense for indented method call' do
-      inspect_source(cop, bom + '  puts 1')
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        ﻿  puts 1
+           ^^^^ Indentation of first line in file detected.
+      RUBY
     end
 
     it 'registers an offense for indented method call after comment' do
-      inspect_source(cop, [bom + '# comment',
-                           '  puts 1'])
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        ﻿# comment
+          puts 1
+          ^^^^ Indentation of first line in file detected.
+      RUBY
     end
   end
 
@@ -43,11 +47,11 @@ describe RuboCop::Cop::Layout::InitialIndentation do
   end
 
   it 'registers an offense for indented assignment disregarding comment' do
-    inspect_source(cop, <<-END.strip_margin('|'))
-      | # comment
-      | x = 1
-    END
-    expect(cop.highlights).to eq(['x'])
+    expect_offense(<<-RUBY.strip_margin('|'))
+      |   # comment
+      |   x = 1
+      |   ^ Indentation of first line in file detected.
+    RUBY
   end
 
   it 'accepts unindented comment + assignment' do

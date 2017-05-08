@@ -8,9 +8,10 @@ describe RuboCop::Cop::Style::CommentAnnotation, :config do
 
   context 'missing colon' do
     it 'registers an offense' do
-      inspect_source(cop, '# TODO make better')
-      expect(cop.messages).to eq([format(described_class::MSG, 'TODO')])
-      expect(cop.highlights).to eq(['TODO '])
+      expect_offense(<<-RUBY.strip_indent)
+        # TODO make better
+          ^^^^^ Annotation keywords like `TODO` should be all upper case, followed by a colon, and a space, then a note describing the problem.
+      RUBY
     end
 
     it 'autocorrects' do
@@ -23,9 +24,10 @@ describe RuboCop::Cop::Style::CommentAnnotation, :config do
     let(:cop_config) { { 'Keywords' => %w[ISSUE] } }
 
     it 'registers an offense for a missing colon after the word' do
-      inspect_source(cop, '# ISSUE wrong order')
-      expect(cop.messages).to eq([format(described_class::MSG, 'ISSUE')])
-      expect(cop.highlights).to eq(['ISSUE '])
+      expect_offense(<<-RUBY.strip_indent)
+        # ISSUE wrong order
+          ^^^^^^ Annotation keywords like `ISSUE` should be all upper case, followed by a colon, and a space, then a note describing the problem.
+      RUBY
     end
 
     it 'autocorrects a missing colon after keyword' do
@@ -36,9 +38,10 @@ describe RuboCop::Cop::Style::CommentAnnotation, :config do
 
   context 'missing space after colon' do
     it 'registers an offense' do
-      inspect_source(cop, '# TODO:make better')
-      expect(cop.messages).to eq([format(described_class::MSG, 'TODO')])
-      expect(cop.highlights).to eq(['TODO:'])
+      expect_offense(<<-RUBY.strip_indent)
+        # TODO:make better
+          ^^^^^ Annotation keywords like `TODO` should be all upper case, followed by a colon, and a space, then a note describing the problem.
+      RUBY
     end
 
     it 'autocorrects' do
@@ -49,9 +52,10 @@ describe RuboCop::Cop::Style::CommentAnnotation, :config do
 
   context 'lower case keyword' do
     it 'registers an offense' do
-      inspect_source(cop, '# fixme: does not work')
-      expect(cop.messages).to eq([format(described_class::MSG, 'fixme')])
-      expect(cop.highlights).to eq(['fixme: '])
+      expect_offense(<<-RUBY.strip_indent)
+        # fixme: does not work
+          ^^^^^^^ Annotation keywords like `fixme` should be all upper case, followed by a colon, and a space, then a note describing the problem.
+      RUBY
     end
 
     it 'autocorrects' do
@@ -62,9 +66,10 @@ describe RuboCop::Cop::Style::CommentAnnotation, :config do
 
   context 'capitalized keyword' do
     it 'registers an offense' do
-      inspect_source(cop, '# Optimize: does not work')
-      expect(cop.messages).to eq([format(described_class::MSG, 'Optimize')])
-      expect(cop.highlights).to eq(['Optimize: '])
+      expect_offense(<<-RUBY.strip_indent)
+        # Optimize: does not work
+          ^^^^^^^^^^ Annotation keywords like `Optimize` should be all upper case, followed by a colon, and a space, then a note describing the problem.
+      RUBY
     end
 
     it 'autocorrects' do
@@ -75,10 +80,10 @@ describe RuboCop::Cop::Style::CommentAnnotation, :config do
 
   context 'upper case keyword with colon by no note' do
     it 'registers an offense' do
-      inspect_source(cop, '# HACK:')
-      expect(cop.messages)
-        .to eq(['Annotation comment, with keyword `HACK`, is missing a note.'])
-      expect(cop.highlights).to eq(['HACK:'])
+      expect_offense(<<-RUBY.strip_indent)
+        # HACK:
+          ^^^^^ Annotation comment, with keyword `HACK`, is missing a note.
+      RUBY
     end
 
     it 'does not autocorrects' do

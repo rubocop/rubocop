@@ -4,25 +4,27 @@ describe RuboCop::Cop::Style::ClassAndModuleCamelCase do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for underscore in class and module name' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       class My_Class
+            ^^^^^^^^ Use CamelCase for classes and modules.
       end
 
       module My_Module
+             ^^^^^^^^^ Use CamelCase for classes and modules.
       end
-    END
-    expect(cop.offenses.size).to eq(2)
+    RUBY
   end
 
   it 'is not fooled by qualified names' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       class Top::My_Class
+            ^^^^^^^^^^^^^ Use CamelCase for classes and modules.
       end
 
       module My_Module::Ala
+             ^^^^^^^^^^^^^^ Use CamelCase for classes and modules.
       end
-    END
-    expect(cop.offenses.size).to eq(2)
+    RUBY
   end
 
   it 'accepts CamelCase names' do

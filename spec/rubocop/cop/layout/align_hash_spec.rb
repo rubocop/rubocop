@@ -40,19 +40,19 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'registers offense for misaligned keys in implicit hash' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         func(a: 0,
           b: 1)
-      END
-      expect(cop.offenses.size).to eq(1)
+          ^^^^ Align the elements of a hash literal if they span more than one line.
+      RUBY
     end
 
     it 'registers offense for misaligned keys in explicit hash' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         func({a: 0,
           b: 1})
-      END
-      expect(cop.offenses.size).to eq(1)
+          ^^^^ Align the elements of a hash literal if they span more than one line.
+      RUBY
     end
   end
 
@@ -93,11 +93,11 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'registers offense for misaligned keys in explicit hash' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         func({a: 0,
           b: 1})
-      END
-      expect(cop.offenses.size).to eq(1)
+          ^^^^ Align the elements of a hash literal if they span more than one line.
+      RUBY
     end
   end
 
@@ -109,11 +109,11 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'registers offense for misaligned keys in implicit hash' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         func(a: 0,
           b: 1)
-      END
-      expect(cop.offenses.size).to eq(1)
+          ^^^^ Align the elements of a hash literal if they span more than one line.
+      RUBY
     end
 
     it 'accepts misaligned keys in explicit hash' do
@@ -133,29 +133,26 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
 
   context 'with default configuration' do
     it 'registers an offense for misaligned hash keys' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         hash1 = {
           a: 0,
            bb: 1
+           ^^^^^ Align the elements of a hash literal if they span more than one line.
         }
         hash2 = {
           'ccc' => 2,
          'dddd'  =>  2
+         ^^^^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
         }
-      END
-      expect(cop.messages).to eq(['Align the elements of a hash ' \
-                                  'literal if they span more than ' \
-                                  'one line.'] * 2)
-      expect(cop.highlights).to eq(['bb: 1',
-                                    "'dddd'  =>  2"])
+      RUBY
     end
 
     it 'registers an offense for misaligned mixed multiline hash keys' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         hash = { a: 1, b: 2,
                 c: 3 }
-      END
-      expect(cop.offenses.size).to eq(1)
+                ^^^^ Align the elements of a hash literal if they span more than one line.
+      RUBY
     end
 
     it 'accepts aligned hash keys' do
@@ -172,31 +169,30 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'registers an offense for separator alignment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         hash = {
             'a' => 0,
           'bbb' => 1
+          ^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
         }
-      END
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(["'bbb' => 1"])
+      RUBY
     end
 
     context 'with implicit hash as last argument' do
       it 'registers an offense for misaligned hash keys' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           func(a: 0,
             b: 1)
-        END
-        expect(cop.offenses.size).to eq(1)
+            ^^^^ Align the elements of a hash literal if they span more than one line.
+        RUBY
       end
 
       it 'registers an offense for right alignment of keys' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           func(a: 0,
              bbb: 1)
-        END
-        expect(cop.offenses.size).to eq(1)
+             ^^^^^^ Align the elements of a hash literal if they span more than one line.
+        RUBY
       end
 
       it 'accepts aligned hash keys' do
@@ -348,45 +344,45 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'registers an offense for misaligned hash values' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         hash1 = {
           'a'   =>  0,
+          ^^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
           'bbb' => 1
         }
         hash2 = {
           a:   0,
           bbb:1
+          ^^^^^ Align the elements of a hash literal if they span more than one line.
         }
-      END
-      expect(cop.highlights).to eq(["'a'   =>  0",
-                                    'bbb:1'])
+      RUBY
     end
 
     it 'registers an offense for misaligned hash keys' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         hash1 = {
           'a'   =>  0,
+          ^^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
          'bbb'  =>  1
+         ^^^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
         }
         hash2 = {
            a:  0,
+           ^^^^^ Align the elements of a hash literal if they span more than one line.
           bbb: 1
+          ^^^^^^ Align the elements of a hash literal if they span more than one line.
         }
-      END
-      expect(cop.highlights).to eq(["'a'   =>  0",
-                                    "'bbb'  =>  1",
-                                    'a:  0',
-                                    'bbb: 1'])
+      RUBY
     end
 
     it 'registers an offense for misaligned hash rockets' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         hash = {
           'a'   => 0,
           'bbb'  => 1
+          ^^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
         }
-      END
-      expect(cop.offenses.size).to eq(1)
+      RUBY
     end
 
     it 'auto-corrects alignment' do
@@ -466,23 +462,23 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'registers an offense for misaligned hash values' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         hash = {
             'a' =>  0,
           'bbb' => 1
+          ^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
         }
-      END
-      expect(cop.offenses.size).to eq(1)
+      RUBY
     end
 
     it 'registers an offense for misaligned hash rockets' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         hash = {
             'a'  => 0,
           'bbb' =>  1
+          ^^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
         }
-      END
-      expect(cop.offenses.size).to eq(1)
+      RUBY
     end
 
     context 'ruby >= 2.0', :ruby20 do
@@ -540,17 +536,18 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'registers offenses for misaligned entries' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         hash1 = {
           a:   0,
           bbb: 1
+          ^^^^^^ Align the elements of a hash literal if they span more than one line.
         }
         hash2 = {
             'a' => 0,
           'bbb' => 1
+          ^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
         }
-      END
-      expect(cop.highlights).to eq(['bbb: 1', "'bbb' => 1"])
+      RUBY
     end
 
     it 'accepts aligned entries' do

@@ -4,25 +4,19 @@ describe RuboCop::Cop::Style::AsciiComments do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for a comment with non-ascii chars' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       # encoding: utf-8
       # 这是什么？
-    END
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['这是什么？'])
-    expect(cop.messages)
-      .to eq(['Use only ascii symbols in comments.'])
+        ^^^^^ Use only ascii symbols in comments.
+    RUBY
   end
 
   it 'registers an offense for commentes with mixed chars' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       # encoding: utf-8
       # foo ∂ bar
-    END
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['∂'])
-    expect(cop.messages)
-      .to eq(['Use only ascii symbols in comments.'])
+            ^ Use only ascii symbols in comments.
+    RUBY
   end
 
   it 'accepts comments with only ascii chars' do

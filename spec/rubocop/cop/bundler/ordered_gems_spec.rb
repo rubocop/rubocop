@@ -8,6 +8,10 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
     }
   end
   let(:treat_comments_as_group_separators) { false }
+  let(:message) do
+    'Gems should be sorted in an alphabetical order within their ' \
+      'section of the Gemfile. Gem `%s` should appear before `%s`.'
+  end
   subject(:cop) { described_class.new(config) }
 
   context 'When gems are alphabetically sorted' do
@@ -29,21 +33,11 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
     END
 
     it 'registers an offense' do
-      inspect_source(cop, source)
-      expect(cop.offenses.size).to eq(1)
-    end
-
-    it 'has the correct offense message' do
-      inspect_source(cop, source)
-      expect(cop.messages)
-        .to eq(['Gems should be sorted in an alphabetical ' \
-                'order within their section of the Gemfile. ' \
-                'Gem `rspec` should appear before `rubocop`.'])
-    end
-
-    it 'highlights the second gem' do
-      inspect_source(cop, source)
-      expect(cop.highlights).to eq(["gem 'rspec'"])
+      expect_offense(<<-RUBY.strip_indent)
+        gem 'rubocop'
+        gem 'rspec'
+        ^^^^^^^^^^^ #{format(message, 'rspec', 'rubocop')}
+      RUBY
     end
 
     it 'autocorrects' do
@@ -78,8 +72,12 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
     END
 
     it 'registers an offense' do
-      inspect_source(cop, source)
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        gem 'rubocop',
+            '0.1.1'
+        gem 'rspec'
+        ^^^^^^^^^^^ #{format(message, 'rspec', 'rubocop')}
+      RUBY
     end
 
     it 'autocorrects' do
@@ -119,8 +117,23 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
     END
 
     it 'registers some offenses' do
-      inspect_source(cop, source)
-      expect(cop.offenses).not_to be_empty
+      expect_offense(<<-RUBY.strip_indent)
+        gem "d"
+        gem "b"
+        ^^^^^^^ #{format(message, 'b', 'd')}
+        gem "e"
+        gem "a"
+        ^^^^^^^ #{format(message, 'a', 'e')}
+        gem "c"
+
+        gem "h"
+        gem "g"
+        ^^^^^^^ #{format(message, 'g', 'h')}
+        gem "j"
+        gem "f"
+        ^^^^^^^ #{format(message, 'f', 'j')}
+        gem "i"
+      RUBY
     end
 
     it 'autocorrects' do
@@ -161,21 +174,14 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
 
     context 'with TreatCommentsAsGroupSeparators: false' do
       it 'registers an offense' do
-        inspect_source(cop, source)
-        expect(cop.offenses.size).to eq(1)
-      end
-
-      it 'has the correct offense message' do
-        inspect_source(cop, source)
-        expect(cop.messages)
-          .to eq(['Gems should be sorted in an alphabetical ' \
-                  'order within their section of the Gemfile. ' \
-                  'Gem `rspec` should appear before `rubocop`.'])
-      end
-
-      it 'highlights the second gem' do
-        inspect_source(cop, source)
-        expect(cop.highlights).to eq(["gem 'rspec'"])
+        expect_offense(<<-RUBY.strip_indent)
+          # For code quality
+          gem 'rubocop'
+          # For
+          # test
+          gem 'rspec'
+          ^^^^^^^^^^^ #{format(message, 'rspec', 'rubocop')}
+        RUBY
       end
 
       it 'autocorrects' do
@@ -199,8 +205,12 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
     END
 
     it 'registers an offense' do
-      inspect_source(cop, source)
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        gem 'rubocop' # For code quality
+        gem 'pry'
+        ^^^^^^^^^ #{format(message, 'pry', 'rubocop')}
+        gem 'rspec'   # For test
+      RUBY
     end
 
     it 'autocorrects' do
@@ -244,8 +254,11 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
     END
 
     it 'registers an offense' do
-      inspect_source(cop, source)
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        gem 'Z'
+        gem 'a'
+        ^^^^^^^ #{format(message, 'a', 'Z')}
+      RUBY
     end
 
     it 'autocorrects' do

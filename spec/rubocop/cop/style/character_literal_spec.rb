@@ -4,13 +4,17 @@ describe RuboCop::Cop::Style::CharacterLiteral do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for character literals' do
-    inspect_source(cop, 'x = ?x')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      x = ?x
+          ^^ Do not use the character literal - use string literal instead.
+    RUBY
   end
 
   it 'registers an offense for literals like \n' do
-    inspect_source(cop, 'x = ?\n')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-'RUBY'.strip_indent)
+      x = ?\n
+          ^^^ Do not use the character literal - use string literal instead.
+    RUBY
   end
 
   it 'accepts literals like ?\C-\M-d' do

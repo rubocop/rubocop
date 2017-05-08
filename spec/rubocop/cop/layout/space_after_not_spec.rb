@@ -4,11 +4,10 @@ describe RuboCop::Cop::Layout::SpaceAfterNot do
   subject(:cop) { described_class.new }
 
   it 'reports an offense for space after !' do
-    inspect_source(cop, '! something')
-
-    expect(cop.messages)
-      .to eq(['Do not leave space between `!` and its argument.'])
-    expect(cop.highlights).to eq(['! something'])
+    expect_offense(<<-RUBY.strip_indent)
+      ! something
+      ^^^^^^^^^^^ Do not leave space between `!` and its argument.
+    RUBY
   end
 
   it 'accepts no space after !' do

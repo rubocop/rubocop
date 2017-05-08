@@ -163,25 +163,21 @@ describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it 'reports an offense for if whose body has 1 line' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def func
           if something
+          ^^ Use a guard clause instead of wrapping the code inside a conditional expression.
             work
           end
         end
 
         def func
           unless something
+          ^^^^^^ Use a guard clause instead of wrapping the code inside a conditional expression.
             work
           end
         end
-      END
-      expect(cop.offenses.size).to eq(2)
-      expect(cop.offenses.map(&:line).sort).to eq([2, 8])
-      expect(cop.messages)
-        .to eq(['Use a guard clause instead of wrapping ' \
-                'the code inside a conditional expression.'] * 2)
-      expect(cop.highlights).to eq(%w[if unless])
+      RUBY
     end
   end
 
@@ -320,29 +316,29 @@ describe RuboCop::Cop::Style::GuardClause, :config do
 
   context 'method in module' do
     it 'registers an offense for instance method' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         module CopTest
           def test
             if something
+            ^^ Use a guard clause instead of wrapping the code inside a conditional expression.
               work
             end
           end
         end
-      END
-      expect(cop.offenses.size).to eq(1)
+      RUBY
     end
 
     it 'registers an offense for singleton methods' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         module CopTest
           def self.test
             if something
+            ^^ Use a guard clause instead of wrapping the code inside a conditional expression.
               work
             end
           end
         end
-      END
-      expect(cop.offenses.size).to eq(1)
+      RUBY
     end
   end
 end

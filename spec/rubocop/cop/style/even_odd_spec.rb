@@ -4,63 +4,73 @@ describe RuboCop::Cop::Style::EvenOdd do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for x % 2 == 0' do
-    inspect_source(cop, 'x % 2 == 0')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(['Replace with `Integer#even?`.'])
+    expect_offense(<<-RUBY.strip_indent)
+      x % 2 == 0
+      ^^^^^^^^^^ Replace with `Integer#even?`.
+    RUBY
   end
 
   it 'registers an offense for x % 2 != 0' do
-    inspect_source(cop, 'x % 2 != 0')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(['Replace with `Integer#odd?`.'])
+    expect_offense(<<-RUBY.strip_indent)
+      x % 2 != 0
+      ^^^^^^^^^^ Replace with `Integer#odd?`.
+    RUBY
   end
 
   it 'registers an offense for (x % 2) == 0' do
-    inspect_source(cop, '(x % 2) == 0')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(['Replace with `Integer#even?`.'])
+    expect_offense(<<-RUBY.strip_indent)
+      (x % 2) == 0
+      ^^^^^^^^^^^^ Replace with `Integer#even?`.
+    RUBY
   end
 
   it 'registers an offense for (x % 2) != 0' do
-    inspect_source(cop, '(x % 2) != 0')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(['Replace with `Integer#odd?`.'])
+    expect_offense(<<-RUBY.strip_indent)
+      (x % 2) != 0
+      ^^^^^^^^^^^^ Replace with `Integer#odd?`.
+    RUBY
   end
 
   it 'registers an offense for x % 2 == 1' do
-    inspect_source(cop, 'x % 2 == 1')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(['Replace with `Integer#odd?`.'])
+    expect_offense(<<-RUBY.strip_indent)
+      x % 2 == 1
+      ^^^^^^^^^^ Replace with `Integer#odd?`.
+    RUBY
   end
 
   it 'registers an offense for x % 2 != 1' do
-    inspect_source(cop, 'x % 2 != 1')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(['Replace with `Integer#even?`.'])
+    expect_offense(<<-RUBY.strip_indent)
+      x % 2 != 1
+      ^^^^^^^^^^ Replace with `Integer#even?`.
+    RUBY
   end
 
   it 'registers an offense for (x % 2) == 1' do
-    inspect_source(cop, '(x % 2) == 1')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(['Replace with `Integer#odd?`.'])
+    expect_offense(<<-RUBY.strip_indent)
+      (x % 2) == 1
+      ^^^^^^^^^^^^ Replace with `Integer#odd?`.
+    RUBY
   end
 
   it 'registers an offense for (x % 2) != 1' do
-    inspect_source(cop, '(x % 2) != 1')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(['Replace with `Integer#even?`.'])
+    expect_offense(<<-RUBY.strip_indent)
+      (x % 2) != 1
+      ^^^^^^^^^^^^ Replace with `Integer#even?`.
+    RUBY
   end
 
   it 'registers an offense for (x.y % 2) != 1' do
-    inspect_source(cop, '(x.y % 2) != 1')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(['Replace with `Integer#even?`.'])
+    expect_offense(<<-RUBY.strip_indent)
+      (x.y % 2) != 1
+      ^^^^^^^^^^^^^^ Replace with `Integer#even?`.
+    RUBY
   end
 
   it 'registers an offense for (x(y) % 2) != 1' do
-    inspect_source(cop, '(x(y) % 2) != 1')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(['Replace with `Integer#even?`.'])
+    expect_offense(<<-RUBY.strip_indent)
+      (x(y) % 2) != 1
+      ^^^^^^^^^^^^^^^ Replace with `Integer#even?`.
+    RUBY
   end
 
   it 'accepts x % 3 == 0' do

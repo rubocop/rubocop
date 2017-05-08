@@ -65,8 +65,10 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
       let(:source) { 'foo = `echo \`ls\``' }
 
       it 'registers an offense' do
-        inspect_source(cop, source)
-        expect(cop.messages).to eq(['Use `%x` around command string.'])
+        expect_offense(<<-'RUBY'.strip_indent)
+          foo = `echo \`ls\``
+                ^^^^^^^^^^^^^ Use `%x` around command string.
+        RUBY
       end
 
       it 'cannot auto-correct' do
@@ -107,8 +109,13 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
       end
 
       it 'registers an offense' do
-        inspect_source(cop, source)
-        expect(cop.messages).to eq(['Use `%x` around command string.'])
+        expect_offense(<<-'RUBY'.strip_indent)
+          foo = `
+                ^ Use `%x` around command string.
+            echo \`ls\`
+            echo \`ls -l\`
+          `
+        RUBY
       end
 
       it 'cannot auto-correct' do
@@ -130,8 +137,10 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
       let(:source) { 'foo = %x(ls)' }
 
       it 'registers an offense' do
-        inspect_source(cop, source)
-        expect(cop.messages).to eq(['Use backticks around command string.'])
+        expect_offense(<<-RUBY.strip_indent)
+          foo = %x(ls)
+                ^^^^^^ Use backticks around command string.
+        RUBY
       end
 
       it 'auto-corrects' do
@@ -152,8 +161,10 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
         before { cop_config['AllowInnerBackticks'] = true }
 
         it 'registers an offense' do
-          inspect_source(cop, source)
-          expect(cop.messages).to eq(['Use backticks around command string.'])
+          expect_offense(<<-RUBY.strip_indent)
+            foo = %x(echo `ls`)
+                  ^^^^^^^^^^^^^ Use backticks around command string.
+          RUBY
         end
 
         it 'cannot auto-correct' do
@@ -172,8 +183,13 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
       end
 
       it 'registers an offense' do
-        inspect_source(cop, source)
-        expect(cop.messages).to eq(['Use backticks around command string.'])
+        expect_offense(<<-RUBY.strip_indent)
+          foo = %x(
+                ^^^ Use backticks around command string.
+            ls
+            ls -l
+          )
+        RUBY
       end
 
       it 'auto-corrects' do
@@ -199,8 +215,13 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
         before { cop_config['AllowInnerBackticks'] = true }
 
         it 'registers an offense' do
-          inspect_source(cop, source)
-          expect(cop.messages).to eq(['Use backticks around command string.'])
+          expect_offense(<<-RUBY.strip_indent)
+            foo = %x(
+                  ^^^ Use backticks around command string.
+              echo `ls`
+              echo `ls -l`
+            )
+          RUBY
         end
 
         it 'cannot auto-correct' do
@@ -218,8 +239,10 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
       let(:source) { 'foo = `ls`' }
 
       it 'registers an offense' do
-        inspect_source(cop, source)
-        expect(cop.messages).to eq(['Use `%x` around command string.'])
+        expect_offense(<<-RUBY.strip_indent)
+          foo = `ls`
+                ^^^^ Use `%x` around command string.
+        RUBY
       end
 
       it 'auto-corrects' do
@@ -232,8 +255,10 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
       let(:source) { 'foo = `echo \`ls\``' }
 
       it 'registers an offense' do
-        inspect_source(cop, source)
-        expect(cop.messages).to eq(['Use `%x` around command string.'])
+        expect_offense(<<-'RUBY'.strip_indent)
+          foo = `echo \`ls\``
+                ^^^^^^^^^^^^^ Use `%x` around command string.
+        RUBY
       end
 
       it 'cannot auto-correct' do
@@ -251,8 +276,13 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
       end
 
       it 'registers an offense' do
-        inspect_source(cop, source)
-        expect(cop.messages).to eq(['Use `%x` around command string.'])
+        expect_offense(<<-'RUBY'.strip_indent)
+          foo = `
+                ^ Use `%x` around command string.
+            ls
+            ls -l
+          `
+        RUBY
       end
 
       it 'auto-corrects' do
@@ -270,8 +300,13 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
       end
 
       it 'registers an offense' do
-        inspect_source(cop, source)
-        expect(cop.messages).to eq(['Use `%x` around command string.'])
+        expect_offense(<<-'RUBY'.strip_indent)
+          foo = `
+                ^ Use `%x` around command string.
+            echo \`ls\`
+            echo \`ls -l\`
+          `
+        RUBY
       end
 
       it 'cannot auto-correct' do
@@ -343,8 +378,10 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
       let(:source) { 'foo = `echo \`ls\``' }
 
       it 'registers an offense' do
-        inspect_source(cop, source)
-        expect(cop.messages).to eq(['Use `%x` around command string.'])
+        expect_offense(<<-'RUBY'.strip_indent)
+          foo = `echo \`ls\``
+                ^^^^^^^^^^^^^ Use `%x` around command string.
+        RUBY
       end
 
       it 'cannot auto-correct' do
@@ -371,8 +408,13 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
       end
 
       it 'registers an offense' do
-        inspect_source(cop, source)
-        expect(cop.messages).to eq(['Use `%x` around command string.'])
+        expect_offense(<<-RUBY.strip_indent)
+          foo = `
+                ^ Use `%x` around command string.
+            ls
+            ls -l
+          `
+        RUBY
       end
 
       it 'auto-corrects' do
@@ -390,8 +432,13 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
       end
 
       it 'registers an offense' do
-        inspect_source(cop, source)
-        expect(cop.messages).to eq(['Use `%x` around command string.'])
+        expect_offense(<<-'RUBY'.strip_indent)
+          foo = `
+                ^ Use `%x` around command string.
+            echo \`ls\`
+            echo \`ls -l\`
+          `
+        RUBY
       end
 
       it 'cannot auto-correct' do
@@ -404,8 +451,10 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
       let(:source) { 'foo = %x(ls)' }
 
       it 'registers an offense' do
-        inspect_source(cop, source)
-        expect(cop.messages).to eq(['Use backticks around command string.'])
+        expect_offense(<<-RUBY.strip_indent)
+          foo = %x(ls)
+                ^^^^^^ Use backticks around command string.
+        RUBY
       end
 
       it 'auto-corrects' do
@@ -426,8 +475,10 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
         before { cop_config['AllowInnerBackticks'] = true }
 
         it 'registers an offense' do
-          inspect_source(cop, source)
-          expect(cop.messages).to eq(['Use backticks around command string.'])
+          expect_offense(<<-RUBY.strip_indent)
+            foo = %x(echo `ls`)
+                  ^^^^^^^^^^^^^ Use backticks around command string.
+          RUBY
         end
 
         it 'cannot auto-correct' do

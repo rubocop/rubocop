@@ -15,27 +15,25 @@ describe RuboCop::Cop::Layout::ElseAlignment do
 
   context 'with if statement' do
     it 'registers an offense for misaligned else' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         if cond
           func1
          else
+         ^^^^ Align `else` with `if`.
          func2
         end
-      END
-      expect(cop.messages).to eq(['Align `else` with `if`.'])
-      expect(cop.highlights).to eq(['else'])
+      RUBY
     end
 
     it 'registers an offense for misaligned elsif' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
           if a1
             b1
         elsif a2
+        ^^^^^ Align `elsif` with `if`.
             b2
           end
-      END
-      expect(cop.messages).to eq(['Align `elsif` with `if`.'])
-      expect(cop.highlights).to eq(['elsif'])
+      RUBY
     end
 
     it 'accepts indentation after else when if is on new line after ' \

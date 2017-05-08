@@ -4,18 +4,16 @@ describe RuboCop::Cop::Layout::AlignArray do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for misaligned array elements' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       array = [
         a,
          b,
+         ^ Align the elements of an array literal if they span more than one line.
         c,
          d
+         ^ Align the elements of an array literal if they span more than one line.
       ]
-    END
-    expect(cop.messages).to eq(['Align the elements of an array ' \
-                                'literal if they span more than ' \
-                                'one line.'] * 2)
-    expect(cop.highlights).to eq(%w[b d])
+    RUBY
   end
 
   it 'accepts aligned array keys' do

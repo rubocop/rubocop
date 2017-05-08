@@ -7,11 +7,10 @@ describe RuboCop::Cop::Style::ClassCheck, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'is_a?' } }
 
     it 'registers an offense for kind_of?' do
-      inspect_source(cop, 'x.kind_of? y')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['kind_of?'])
-      expect(cop.messages)
-        .to eq(['Prefer `Object#is_a?` over `Object#kind_of?`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        x.kind_of? y
+          ^^^^^^^^ Prefer `Object#is_a?` over `Object#kind_of?`.
+      RUBY
     end
 
     it 'auto-corrects kind_of? to is_a?' do
@@ -24,11 +23,10 @@ describe RuboCop::Cop::Style::ClassCheck, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'kind_of?' } }
 
     it 'registers an offense for is_a?' do
-      inspect_source(cop, 'x.is_a? y')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['is_a?'])
-      expect(cop.messages)
-        .to eq(['Prefer `Object#kind_of?` over `Object#is_a?`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        x.is_a? y
+          ^^^^^ Prefer `Object#kind_of?` over `Object#is_a?`.
+      RUBY
     end
 
     it 'auto-corrects is_a? to kind_of?' do

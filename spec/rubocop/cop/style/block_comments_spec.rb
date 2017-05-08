@@ -4,12 +4,12 @@ describe RuboCop::Cop::Style::BlockComments do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for block comments' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       =begin
+      ^^^^^^ Do not use block comments.
       comment
       =end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'accepts regular comments' do

@@ -68,15 +68,17 @@ describe RuboCop::Cop::Style::AndOr, :config do
     let(:cop_config) { cop_config }
 
     it 'registers an offense for "or"' do
-      inspect_source(cop, 'test if a or b')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Use `||` instead of `or`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        test if a or b
+                  ^^ Use `||` instead of `or`.
+      RUBY
     end
 
     it 'registers an offense for "and"' do
-      inspect_source(cop, 'test if a and b')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Use `&&` instead of `and`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        test if a and b
+                  ^^^ Use `&&` instead of `and`.
+      RUBY
     end
 
     it 'accepts ||' do
@@ -135,51 +137,59 @@ describe RuboCop::Cop::Style::AndOr, :config do
     end
 
     it 'warns on short-circuit (and)' do
-      inspect_source(cop, 'x = a + b and return x')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Use `&&` instead of `and`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        x = a + b and return x
+                  ^^^ Use `&&` instead of `and`.
+      RUBY
     end
 
     it 'also warns on non short-circuit (and)' do
-      inspect_source(cop, 'x = a + b if a and b')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Use `&&` instead of `and`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        x = a + b if a and b
+                       ^^^ Use `&&` instead of `and`.
+      RUBY
     end
 
     it 'also warns on non short-circuit (and) (unless)' do
-      inspect_source(cop, 'x = a + b unless a and b')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Use `&&` instead of `and`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        x = a + b unless a and b
+                           ^^^ Use `&&` instead of `and`.
+      RUBY
     end
 
     it 'warns on short-circuit (or)' do
-      inspect_source(cop, 'x = a + b or return x')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Use `||` instead of `or`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        x = a + b or return x
+                  ^^ Use `||` instead of `or`.
+      RUBY
     end
 
     it 'also warns on non short-circuit (or)' do
-      inspect_source(cop, 'x = a + b if a or b')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Use `||` instead of `or`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        x = a + b if a or b
+                       ^^ Use `||` instead of `or`.
+      RUBY
     end
 
     it 'also warns on non short-circuit (or) (unless)' do
-      inspect_source(cop, 'x = a + b unless a or b')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Use `||` instead of `or`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        x = a + b unless a or b
+                           ^^ Use `||` instead of `or`.
+      RUBY
     end
 
     it 'also warns on while (or)' do
-      inspect_source(cop, 'x = a + b while a or b')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Use `||` instead of `or`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        x = a + b while a or b
+                          ^^ Use `||` instead of `or`.
+      RUBY
     end
 
     it 'also warns on until (or)' do
-      inspect_source(cop, 'x = a + b until a or b')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Use `||` instead of `or`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        x = a + b until a or b
+                          ^^ Use `||` instead of `or`.
+      RUBY
     end
 
     it 'auto-corrects "or" with || in method calls' do
@@ -328,8 +338,10 @@ describe RuboCop::Cop::Style::AndOr, :config do
     context 'with !variable on left' do
       it "doesn't crash and burn" do
         # regression test; see GH issue 2482
-        inspect_source(cop, '!var or var.empty?')
-        expect(cop.offenses.size).to eq(1)
+        expect_offense(<<-RUBY.strip_indent)
+          !var or var.empty?
+               ^^ Use `||` instead of `or`.
+        RUBY
       end
     end
 

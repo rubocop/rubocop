@@ -7,42 +7,27 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'nested' } }
 
     it 'registers an offense for not nested classes' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         class FooClass::BarClass
+              ^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
         end
-      END
-
-      expect(cop.offenses.size).to eq 1
-      expect(cop.messages).to eq [
-        'Use nested module/class definitions instead of compact style.'
-      ]
-      expect(cop.highlights).to eq ['FooClass::BarClass']
+      RUBY
     end
 
     it 'registers an offense for not nested classes with explicit superclass' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         class FooClass::BarClass < Super
+              ^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
         end
-      END
-
-      expect(cop.offenses.size).to eq 1
-      expect(cop.messages).to eq [
-        'Use nested module/class definitions instead of compact style.'
-      ]
-      expect(cop.highlights).to eq ['FooClass::BarClass']
+      RUBY
     end
 
     it 'registers an offense for not nested modules' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         module FooModule::BarModule
+               ^^^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
         end
-      END
-
-      expect(cop.offenses.size).to eq 1
-      expect(cop.messages).to eq [
-        'Use nested module/class definitions instead of compact style.'
-      ]
-      expect(cop.highlights).to eq ['FooModule::BarModule']
+      RUBY
     end
 
     it 'accepts nested children' do
@@ -76,31 +61,23 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'compact' } }
 
     it 'registers a offense for classes with nested children' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         class FooClass
+              ^^^^^^^^ Use compact module/class definition instead of nested style.
           class BarClass
           end
         end
-      END
-      expect(cop.offenses.size).to eq 1
-      expect(cop.messages).to eq [
-        'Use compact module/class definition instead of nested style.'
-      ]
-      expect(cop.highlights).to eq ['FooClass']
+      RUBY
     end
 
     it 'registers a offense for modules with nested children' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         module FooModule
+               ^^^^^^^^^ Use compact module/class definition instead of nested style.
           module BarModule
           end
         end
-      END
-      expect(cop.offenses.size).to eq 1
-      expect(cop.messages).to eq [
-        'Use compact module/class definition instead of nested style.'
-      ]
-      expect(cop.highlights).to eq ['FooModule']
+      RUBY
     end
 
     it 'accepts compact style for classes/modules' do

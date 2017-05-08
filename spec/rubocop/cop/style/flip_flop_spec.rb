@@ -4,20 +4,20 @@ describe RuboCop::Cop::Style::FlipFlop do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for inclusive flip flops' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       DATA.each_line do |line|
       print line if (line =~ /begin/)..(line =~ /end/)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid the use of flip flop operators.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'registers an offense for exclusive flip flops' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       DATA.each_line do |line|
       print line if (line =~ /begin/)...(line =~ /end/)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid the use of flip flop operators.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 end

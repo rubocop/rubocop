@@ -67,23 +67,21 @@ describe RuboCop::Cop::Layout::MultilineBlockLayout do
   end
 
   it 'registers offenses for lambdas as expected' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       -> (x) do foo
+                ^^^ Block body expression is on the same line as the block start.
         bar
       end
-    END
-    expect(cop.messages)
-      .to eq(['Block body expression is on the same line as the block start.'])
+    RUBY
   end
 
   it 'registers offenses for new lambda literal syntax as expected' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       -> x do foo
+              ^^^ Block body expression is on the same line as the block start.
         bar
       end
-    END
-    expect(cop.messages)
-      .to eq(['Block body expression is on the same line as the block start.'])
+    RUBY
   end
 
   it 'registers an offense for line-break before arguments' do
@@ -105,14 +103,12 @@ describe RuboCop::Cop::Layout::MultilineBlockLayout do
   end
 
   it 'registers an offense for line-break within arguments' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       test do |x,
+              ^^^ Block argument expression is not on the same line as the block start.
         y|
       end
-    END
-    expect(cop.messages)
-      .to eq(['Block argument expression is not on the same line as the ' \
-              'block start.'])
+    RUBY
   end
 
   it 'auto-corrects a do/end block with params that is missing newlines' do
