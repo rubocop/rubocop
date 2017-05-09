@@ -4,15 +4,17 @@ describe RuboCop::Cop::Lint::EmptyInterpolation do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for #{} in interpolation' do
-    inspect_source(cop, '"this is the #{}"')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['#{}'])
+    expect_offense(<<-'RUBY'.strip_indent)
+      "this is the #{}"
+                   ^^^ Empty interpolation detected.
+    RUBY
   end
 
   it 'registers an offense for #{ } in interpolation' do
-    inspect_source(cop, '"this is the #{ }"')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['#{ }'])
+    expect_offense(<<-'RUBY'.strip_indent)
+      "this is the #{ }"
+                   ^^^^ Empty interpolation detected.
+    RUBY
   end
 
   it 'accepts non-empty interpolation' do

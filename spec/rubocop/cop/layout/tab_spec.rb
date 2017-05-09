@@ -4,18 +4,24 @@ describe RuboCop::Cop::Layout::Tab do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for a line indented with tab' do
-    inspect_source(cop, "\tx = 0")
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      	x = 0
+      ^ Tab detected.
+    RUBY
   end
 
   it 'registers an offense for a line indented with multiple tabs' do
-    inspect_source(cop, "\t\t\tx = 0")
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      			x = 0
+      ^^^ Tab detected.
+    RUBY
   end
 
   it 'registers an offense for a line indented with mixed whitespace' do
-    inspect_source(cop, " \tx = 0")
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+       	x = 0
+       ^ Tab detected.
+    RUBY
   end
 
   it 'registers offenses before __END__ but not after' do

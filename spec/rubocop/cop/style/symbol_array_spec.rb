@@ -123,9 +123,10 @@ describe RuboCop::Cop::Style::SymbolArray, :config do
     end
 
     it 'registers an offense for array starting with %i' do
-      inspect_source(cop, '%i(one two three)')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Use `[]` for an array of symbols.'])
+      expect_offense(<<-RUBY.strip_indent)
+        %i(one two three)
+        ^^^^^^^^^^^^^^^^^ Use `[]` for an array of symbols.
+      RUBY
     end
 
     it 'autocorrects an array starting with %i' do

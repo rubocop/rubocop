@@ -21,13 +21,21 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'registers an offense on instance reader' do
-    inspect_source(cop, trivial_reader)
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      def foo
+      ^^^ Use `attr_reader` to define trivial reader methods.
+        @foo
+      end
+    RUBY
   end
 
   it 'registers an offense on instance writer' do
-    inspect_source(cop, trivial_writer)
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      def foo=(val)
+      ^^^ Use `attr_writer` to define trivial writer methods.
+        @foo = val
+      end
+    RUBY
   end
 
   it 'show correct message on reader' do
@@ -43,58 +51,62 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'registers an offense on class reader' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       def self.foo
+      ^^^ Use `attr_reader` to define trivial reader methods.
         @foo
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'registers an offense on class writer' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       def self.foo(val)
+      ^^^ Use `attr_writer` to define trivial writer methods.
         @foo = val
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'registers an offense on reader with braces' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       def foo()
+      ^^^ Use `attr_reader` to define trivial reader methods.
         @foo
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'registers an offense on writer without braces' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       def foo= val
+      ^^^ Use `attr_writer` to define trivial writer methods.
         @foo = val
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'registers an offense on one-liner reader' do
-    inspect_source(cop, 'def foo; @foo; end')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      def foo; @foo; end
+      ^^^ Use `attr_reader` to define trivial reader methods.
+    RUBY
   end
 
   it 'registers an offense on one-liner writer' do
-    inspect_source(cop, 'def foo(val); @foo=val; end')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      def foo(val); @foo=val; end
+      ^^^ Use `attr_writer` to define trivial writer methods.
+    RUBY
   end
 
   it 'register an offense on DSL-style trivial writer' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       def foo(val)
+      ^^^ Use `attr_writer` to define trivial writer methods.
        @foo = val
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'accepts non-trivial reader' do
@@ -240,42 +252,38 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'flags a reader inside a class, inside an instance_eval call' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       something.instance_eval do
         class << @blah
           begin
             def bar
+            ^^^ Use `attr_reader` to define trivial reader methods.
               @bar
             end
           end
         end
       end
-    END
-
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(
-      ['Use `attr_reader` to define trivial reader methods.']
-    )
+    RUBY
   end
   context 'exact name match disabled' do
     let(:cop_config) { { 'ExactNameMatch' => false } }
 
     it 'registers an offense when names mismatch in writer' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def foo(val)
+        ^^^ Use `attr_writer` to define trivial writer methods.
           @f = val
         end
-      END
-      expect(cop.offenses.size).to eq(1)
+      RUBY
     end
 
     it 'registers an offense when names mismatch in reader' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def foo
+        ^^^ Use `attr_reader` to define trivial reader methods.
           @f
         end
-      END
-      expect(cop.offenses.size).to eq(1)
+      RUBY
     end
   end
 
@@ -283,12 +291,12 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
     let(:cop_config) { { 'AllowPredicates' => false } }
 
     it 'does not accept predicate-like reader' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def foo?
+        ^^^ Use `attr_reader` to define trivial reader methods.
           @foo
         end
-      END
-      expect(cop.offenses.size).to eq(1)
+      RUBY
     end
   end
 

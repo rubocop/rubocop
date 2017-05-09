@@ -7,42 +7,36 @@ describe RuboCop::Cop::Style::SignalException, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'semantic' } }
 
     it 'registers an offense for raise in begin section' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         begin
           raise
+          ^^^^^ Use `fail` instead of `raise` to signal exceptions.
         rescue Exception
           #do nothing
         end
-      END
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Use `fail` instead of `raise` to signal exceptions.'])
+      RUBY
     end
 
     it 'registers an offense for raise in def body' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def test
           raise
+          ^^^^^ Use `fail` instead of `raise` to signal exceptions.
         rescue Exception
           #do nothing
         end
-      END
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Use `fail` instead of `raise` to signal exceptions.'])
+      RUBY
     end
 
     it 'registers an offense for fail in rescue section' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         begin
           fail
         rescue Exception
           fail
+          ^^^^ Use `raise` instead of `fail` to rethrow exceptions.
         end
-      END
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Use `raise` instead of `fail` to rethrow exceptions.'])
+      RUBY
     end
 
     it 'accepts raise in rescue section' do
@@ -68,41 +62,37 @@ describe RuboCop::Cop::Style::SignalException, :config do
     end
 
     it 'registers an offense for fail in def rescue section' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def test
           fail
         rescue Exception
           fail
+          ^^^^ Use `raise` instead of `fail` to rethrow exceptions.
         end
-      END
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Use `raise` instead of `fail` to rethrow exceptions.'])
+      RUBY
     end
 
     it 'registers an offense for fail in second rescue' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def test
           fail
         rescue StandardError
           # handle error
         rescue Exception
           fail
+          ^^^^ Use `raise` instead of `fail` to rethrow exceptions.
         end
-      END
-      expect(cop.offenses.size).to eq(1)
+      RUBY
     end
 
     it 'registers only offense for one raise that should be fail' do
       # This is a special case that has caused double reporting.
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         map do
           raise 'I'
+          ^^^^^ Use `fail` instead of `raise` to signal exceptions.
         end.flatten.compact
-      END
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Use `fail` instead of `raise` to signal exceptions.'])
+      RUBY
     end
 
     it 'accepts raise in def rescue section' do
@@ -141,16 +131,14 @@ describe RuboCop::Cop::Style::SignalException, :config do
     end
 
     it 'registers an offense for raise not in a begin/rescue/end' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         case cop_config['EnforcedStyle']
         when 'single_quotes' then true
         when 'double_quotes' then false
         else raise 'Unknown StringLiterals style'
+             ^^^^^ Use `fail` instead of `raise` to signal exceptions.
         end
-      END
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Use `fail` instead of `raise` to signal exceptions.'])
+      RUBY
     end
 
     it 'registers one offense for each raise' do
@@ -221,42 +209,36 @@ describe RuboCop::Cop::Style::SignalException, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'only_raise' } }
 
     it 'registers an offense for fail in begin section' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         begin
           fail
+          ^^^^ Always use `raise` to signal exceptions.
         rescue Exception
           #do nothing
         end
-      END
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Always use `raise` to signal exceptions.'])
+      RUBY
     end
 
     it 'registers an offense for fail in def body' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def test
           fail
+          ^^^^ Always use `raise` to signal exceptions.
         rescue Exception
           #do nothing
         end
-      END
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Always use `raise` to signal exceptions.'])
+      RUBY
     end
 
     it 'registers an offense for fail in rescue section' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         begin
           raise
         rescue Exception
           fail
+          ^^^^ Always use `raise` to signal exceptions.
         end
-      END
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Always use `raise` to signal exceptions.'])
+      RUBY
     end
 
     it 'accepts `fail` if a custom `fail` instance method is defined' do
@@ -288,10 +270,10 @@ describe RuboCop::Cop::Style::SignalException, :config do
     end
 
     it 'registers an offense for `fail` with `Kernel` as explicit receiver' do
-      inspect_source(cop, 'Kernel.fail')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Always use `raise` to signal exceptions.'])
+      expect_offense(<<-RUBY.strip_indent)
+        Kernel.fail
+               ^^^^ Always use `raise` to signal exceptions.
+      RUBY
     end
 
     it 'auto-corrects fail to raise always' do
@@ -316,42 +298,36 @@ describe RuboCop::Cop::Style::SignalException, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'only_fail' } }
 
     it 'registers an offense for raise in begin section' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         begin
           raise
+          ^^^^^ Always use `fail` to signal exceptions.
         rescue Exception
           #do nothing
         end
-      END
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Always use `fail` to signal exceptions.'])
+      RUBY
     end
 
     it 'registers an offense for raise in def body' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def test
           raise
+          ^^^^^ Always use `fail` to signal exceptions.
         rescue Exception
           #do nothing
         end
-      END
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Always use `fail` to signal exceptions.'])
+      RUBY
     end
 
     it 'registers an offense for raise in rescue section' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         begin
           fail
         rescue Exception
           raise
+          ^^^^^ Always use `fail` to signal exceptions.
         end
-      END
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Always use `fail` to signal exceptions.'])
+      RUBY
     end
 
     it 'accepts `raise` with explicit receiver' do
@@ -359,10 +335,10 @@ describe RuboCop::Cop::Style::SignalException, :config do
     end
 
     it 'registers an offense for `raise` with `Kernel` as explicit receiver' do
-      inspect_source(cop, 'Kernel.raise')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Always use `fail` to signal exceptions.'])
+      expect_offense(<<-RUBY.strip_indent)
+        Kernel.raise
+               ^^^^^ Always use `fail` to signal exceptions.
+      RUBY
     end
 
     it 'auto-corrects raise to fail always' do

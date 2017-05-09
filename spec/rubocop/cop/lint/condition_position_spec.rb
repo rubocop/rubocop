@@ -5,11 +5,12 @@ describe RuboCop::Cop::Lint::ConditionPosition do
 
   %w[if unless while until].each do |keyword|
     it 'registers an offense for condition on the next line' do
-      inspect_source(cop,
-                     [keyword,
-                      'x == 10',
-                      'end'])
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        #{keyword}
+        x == 10
+        ^^^^^^^ Place the condition on the same line as `#{keyword}`.
+        end
+      RUBY
     end
 
     it 'accepts condition on the same line' do
@@ -29,15 +30,15 @@ describe RuboCop::Cop::Lint::ConditionPosition do
   end
 
   it 'registers an offense for elsif condition on the next line' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       if something
         test
       elsif
         something
+        ^^^^^^^^^ Place the condition on the same line as `elsif`.
         test
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'handles ternary ops' do

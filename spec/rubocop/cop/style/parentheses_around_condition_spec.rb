@@ -110,8 +110,10 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
   end
 
   it 'does not blow up when the condition is a ternary op' do
-    inspect_source(cop, 'x if (a ? b : c)')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      x if (a ? b : c)
+           ^^^^^^^^^^^ Don't use parentheses around the condition of an `if`.
+    RUBY
   end
 
   it 'does not blow up for empty if condition' do

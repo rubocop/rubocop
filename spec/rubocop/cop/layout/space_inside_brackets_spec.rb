@@ -70,10 +70,10 @@ describe RuboCop::Cop::Layout::SpaceInsideBrackets do
   end
 
   it 'only reports a single space once' do
-    inspect_source(cop, '[ ]')
-    expect(cop.messages).to eq(
-      ['Space inside square brackets detected.']
-    )
+    expect_offense(<<-RUBY.strip_indent)
+      [ ]
+       ^ Space inside square brackets detected.
+    RUBY
   end
 
   it 'auto-corrects unwanted space' do

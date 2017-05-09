@@ -94,14 +94,17 @@ describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
       let(:cop_config) { { 'AllowForAlignment' => false } }
 
       it 'does not accept method calls with aligned first arguments' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           form.inline_input   :full_name,     as: :string
+                           ^^^ Put one space between the method name and the first argument.
           form.disabled_input :password,      as: :passwd
           form.masked_input   :zip_code,      as: :string
+                           ^^^ Put one space between the method name and the first argument.
           form.masked_input   :email_address, as: :email
+                           ^^^ Put one space between the method name and the first argument.
           form.masked_input   :phone_number,  as: :tel
-        END
-        expect(cop.offenses.size).to eq(4)
+                           ^^^ Put one space between the method name and the first argument.
+        RUBY
       end
     end
   end

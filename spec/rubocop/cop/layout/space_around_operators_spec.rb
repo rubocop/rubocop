@@ -42,10 +42,10 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
   end
 
   it 'accepts exclamation point negation' do
-    inspect_source(cop, 'x = !a&&!b')
-    expect(cop.messages).to eq(
-      ['Surrounding space missing for operator `&&`.']
-    )
+    expect_offense(<<-RUBY.strip_indent)
+      x = !a&&!b
+            ^^ Surrounding space missing for operator `&&`.
+    RUBY
   end
 
   it 'accepts exclamation point definition' do
@@ -145,10 +145,10 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
   end
 
   it 'registers an offenses for exponent operator with spaces' do
-    inspect_source(cop, 'x = a * b ** 2')
-    expect(cop.messages).to eq(
-      ['Space around operator `**` detected.']
-    )
+    expect_offense(<<-RUBY.strip_indent)
+      x = a * b ** 2
+                ^^ Space around operator `**` detected.
+    RUBY
   end
 
   it 'auto-corrects unwanted space around **' do
@@ -232,11 +232,14 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'registers an offense for assignment without space on both sides' do
-      inspect_source(cop, ['x=0', 'y+= 0', 'z[0] =0'])
-      expect(cop.messages)
-        .to eq(['Surrounding space missing for operator `=`.',
-                'Surrounding space missing for operator `+=`.',
-                'Surrounding space missing for operator `=`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        x=0
+         ^ Surrounding space missing for operator `=`.
+        y+= 0
+         ^^ Surrounding space missing for operator `+=`.
+        z[0] =0
+             ^ Surrounding space missing for operator `=`.
+      RUBY
     end
 
     it 'auto-corrects assignment without space on both sides' do
@@ -246,30 +249,27 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
 
     context 'ternary operators' do
       it 'registers an offense for operators with no spaces' do
-        inspect_source(cop, 'x == 0?1:2')
-
-        expect(cop.messages).to eq(
-          ['Surrounding space missing for operator `?`.',
-           'Surrounding space missing for operator `:`.']
-        )
+        expect_offense(<<-RUBY.strip_indent)
+          x == 0?1:2
+                  ^ Surrounding space missing for operator `:`.
+                ^ Surrounding space missing for operator `?`.
+        RUBY
       end
 
       it 'registers an offense for operators with just a trailing space' do
-        inspect_source(cop, 'x == 0? 1: 2')
-
-        expect(cop.messages).to eq(
-          ['Surrounding space missing for operator `?`.',
-           'Surrounding space missing for operator `:`.']
-        )
+        expect_offense(<<-RUBY.strip_indent)
+          x == 0? 1: 2
+                   ^ Surrounding space missing for operator `:`.
+                ^ Surrounding space missing for operator `?`.
+        RUBY
       end
 
       it 'registers an offense for operators with just a leading space' do
-        inspect_source(cop, 'x == 0 ?1 :2')
-
-        expect(cop.messages).to eq(
-          ['Surrounding space missing for operator `?`.',
-           'Surrounding space missing for operator `:`.']
-        )
+        expect_offense(<<-RUBY.strip_indent)
+          x == 0 ?1 :2
+                    ^ Surrounding space missing for operator `:`.
+                 ^ Surrounding space missing for operator `?`.
+        RUBY
       end
 
       it 'auto-corrects a ternary operator without space' do
@@ -284,12 +284,14 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
     it_behaves_like 'modifier with missing space', 'until'
 
     it 'registers an offense for binary operators that could be unary' do
-      inspect_source(cop, ['a-3', 'x&0xff', 'z+0'])
-      expect(cop.messages).to eq(
-        ['Surrounding space missing for operator `-`.',
-         'Surrounding space missing for operator `&`.',
-         'Surrounding space missing for operator `+`.']
-      )
+      expect_offense(<<-RUBY.strip_indent)
+        a-3
+         ^ Surrounding space missing for operator `-`.
+        x&0xff
+         ^ Surrounding space missing for operator `&`.
+        z+0
+         ^ Surrounding space missing for operator `+`.
+      RUBY
     end
 
     it 'auto-corrects missing space in binary operators that could be unary' do
@@ -298,10 +300,10 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'registers an offense for arguments to a method' do
-      inspect_source(cop, 'puts 1+2')
-      expect(cop.messages).to eq(
-        ['Surrounding space missing for operator `+`.']
-      )
+      expect_offense(<<-RUBY.strip_indent)
+        puts 1+2
+              ^ Surrounding space missing for operator `+`.
+      RUBY
     end
 
     it 'auto-corrects missing space in arguments to a method' do
@@ -340,10 +342,10 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'registers an offense for a setter call without spaces' do
-      inspect_source(cop, 'x.y=2')
-      expect(cop.messages).to eq(
-        ['Surrounding space missing for operator `=`.']
-      )
+      expect_offense(<<-RUBY.strip_indent)
+        x.y=2
+           ^ Surrounding space missing for operator `=`.
+      RUBY
     end
 
     context 'when a hash literal is on a single line' do
@@ -431,17 +433,21 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'registers an offense for equality operators without space' do
-      inspect_source(cop, ['x==0', 'y!=0', 'Hash===z'])
-      expect(cop.messages)
-        .to eq(['Surrounding space missing for operator `==`.',
-                'Surrounding space missing for operator `!=`.',
-                'Surrounding space missing for operator `===`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        x==0
+         ^^ Surrounding space missing for operator `==`.
+        y!=0
+         ^^ Surrounding space missing for operator `!=`.
+        Hash===z
+            ^^^ Surrounding space missing for operator `===`.
+      RUBY
     end
 
     it 'registers an offense for - without space with negative lhs operand' do
-      inspect_source(cop, '-1-arg')
-      expect(cop.messages)
-        .to eq(['Surrounding space missing for operator `-`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        -1-arg
+          ^ Surrounding space missing for operator `-`.
+      RUBY
     end
 
     it 'registers an offense for inheritance < without space' do
@@ -529,11 +535,11 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'registers an offense for ternary operator with too many spaces' do
-      inspect_source(cop, 'x == 0  ? 1 :  2')
-      expect(cop.messages).to eq(
-        ['Operator `?` should be surrounded by a single space.',
-         'Operator `:` should be surrounded by a single space.']
-      )
+      expect_offense(<<-RUBY.strip_indent)
+        x == 0  ? 1 :  2
+                    ^ Operator `:` should be surrounded by a single space.
+                ^ Operator `?` should be surrounded by a single space.
+      RUBY
     end
 
     it 'auto-corrects a ternary operator too many spaces' do
@@ -571,10 +577,10 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'registers an offense for arguments to a method' do
-      inspect_source(cop, 'puts 1 +  2')
-      expect(cop.messages).to eq(
-        ['Operator `+` should be surrounded by a single space.']
-      )
+      expect_offense(<<-RUBY.strip_indent)
+        puts 1 +  2
+               ^ Operator `+` should be surrounded by a single space.
+      RUBY
     end
 
     it 'auto-corrects missing space in arguments to a method' do
@@ -625,17 +631,17 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'registers an offense for a setter call with too many spaces' do
-      inspect_source(cop, 'x.y  =  2')
-      expect(cop.messages).to eq(
-        ['Operator `=` should be surrounded by a single space.']
-      )
+      expect_offense(<<-RUBY.strip_indent)
+        x.y  =  2
+             ^ Operator `=` should be surrounded by a single space.
+      RUBY
     end
 
     it 'registers an offense for a hash rocket with too many spaces' do
-      inspect_source(cop, '{ 1  =>   2, a: b }')
-      expect(cop.messages).to eq(
-        ['Operator `=>` should be surrounded by a single space.']
-      )
+      expect_offense(<<-RUBY.strip_indent)
+        { 1  =>   2, a: b }
+             ^^ Operator `=>` should be surrounded by a single space.
+      RUBY
     end
 
     it 'registers an offense for a hash rocket with an extra space' \
@@ -712,11 +718,14 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'registers an offense for equality operators with too many spaces' do
-      inspect_source(cop, ['x  ==  0', 'y   != 0', 'Hash   ===   z'])
-      expect(cop.messages)
-        .to eq(['Operator `==` should be surrounded by a single space.',
-                'Operator `!=` should be surrounded by a single space.',
-                'Operator `===` should be surrounded by a single space.'])
+      expect_offense(<<-RUBY.strip_indent)
+        x  ==  0
+           ^^ Operator `==` should be surrounded by a single space.
+        y   != 0
+            ^^ Operator `!=` should be surrounded by a single space.
+        Hash   ===   z
+               ^^^ Operator `===` should be surrounded by a single space.
+      RUBY
     end
 
     it 'registers an offense for - with too many spaces with ' \

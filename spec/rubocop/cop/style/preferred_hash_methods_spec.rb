@@ -7,11 +7,10 @@ describe RuboCop::Cop::Style::PreferredHashMethods, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'short' } }
 
     it 'registers an offense for has_key? with one arg' do
-      inspect_source(cop,
-                     'o.has_key?(o)')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Use `Hash#key?` instead of `Hash#has_key?`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        o.has_key?(o)
+          ^^^^^^^^ Use `Hash#key?` instead of `Hash#has_key?`.
+      RUBY
     end
 
     it 'accepts has_key? with no args' do
@@ -19,11 +18,10 @@ describe RuboCop::Cop::Style::PreferredHashMethods, :config do
     end
 
     it 'registers an offense for has_value? with one arg' do
-      inspect_source(cop,
-                     'o.has_value?(o)')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Use `Hash#value?` instead of `Hash#has_value?`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        o.has_value?(o)
+          ^^^^^^^^^^ Use `Hash#value?` instead of `Hash#has_value?`.
+      RUBY
     end
 
     it 'accepts has_value? with no args' do
@@ -45,11 +43,10 @@ describe RuboCop::Cop::Style::PreferredHashMethods, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'verbose' } }
 
     it 'registers an offense for key? with one arg' do
-      inspect_source(cop,
-                     'o.key?(o)')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Use `Hash#has_key?` instead of `Hash#key?`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        o.key?(o)
+          ^^^^ Use `Hash#has_key?` instead of `Hash#key?`.
+      RUBY
     end
 
     it 'accepts key? with no args' do
@@ -57,11 +54,10 @@ describe RuboCop::Cop::Style::PreferredHashMethods, :config do
     end
 
     it 'registers an offense for value? with one arg' do
-      inspect_source(cop,
-                     'o.value?(o)')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Use `Hash#has_value?` instead of `Hash#value?`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        o.value?(o)
+          ^^^^^^ Use `Hash#has_value?` instead of `Hash#value?`.
+      RUBY
     end
 
     it 'accepts value? with no args' do

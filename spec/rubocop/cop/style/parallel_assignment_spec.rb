@@ -98,15 +98,17 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
   it_behaves_like('allowed', 'self.a, self.b = b, a')
 
   it 'highlights the entire expression' do
-    inspect_source(cop, 'a, b = 1, 2')
-
-    expect(cop.highlights).to eq(['a, b = 1, 2'])
+    expect_offense(<<-RUBY.strip_indent)
+      a, b = 1, 2
+      ^^^^^^^^^^^ Do not use parallel assignment.
+    RUBY
   end
 
   it 'does not highlight the modifier statement' do
-    inspect_source(cop, 'a, b = 1, 2 if true')
-
-    expect(cop.highlights).to eq(['a, b = 1, 2'])
+    expect_offense(<<-RUBY.strip_indent)
+      a, b = 1, 2 if true
+      ^^^^^^^^^^^ Do not use parallel assignment.
+    RUBY
   end
 
   describe 'autocorrect' do

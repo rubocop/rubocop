@@ -302,8 +302,20 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
     end
 
     it 'registers an offense' do
-      inspect_source(cop, src)
-      expect(cop.offenses.size).to eq 3
+      expect_offense(<<-RUBY.strip_indent)
+        def func
+          if x
+            return 1
+            ^^^^^^ Redundant `return` detected.
+          elsif y
+            return 2
+            ^^^^^^ Redundant `return` detected.
+          else
+            return 3
+            ^^^^^^ Redundant `return` detected.
+          end
+        end
+      RUBY
     end
 
     it 'auto-corrects' do
@@ -338,8 +350,20 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
     end
 
     it 'registers an offense' do
-      inspect_source(cop, src)
-      expect(cop.offenses.size).to eq 3
+      expect_offense(<<-RUBY.strip_indent)
+        def func
+          case x
+          when y then return 1
+                      ^^^^^^ Redundant `return` detected.
+          when z then return 2
+                      ^^^^^^ Redundant `return` detected.
+          when q
+          else
+            return 3
+            ^^^^^^ Redundant `return` detected.
+          end
+        end
+      RUBY
     end
 
     it 'auto-corrects' do

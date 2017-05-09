@@ -137,45 +137,37 @@ describe RuboCop::Cop::Lint::ShadowedException do
 
     context 'when there are multiple levels of exceptions in the same rescue' do
       it 'registers an offense for two exceptions' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           begin
             something
           rescue StandardError, NameError
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not shadow rescued Exceptions.
             foo
           end
-        END
-
-        expect(cop.messages).to eq(['Do not shadow rescued Exceptions.'])
-        expect(cop.highlights).to eq(['rescue StandardError, NameError'])
+        RUBY
       end
 
       it 'registers an offense for more than two exceptions' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           begin
             something
           rescue StandardError, NameError, NoMethodError
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not shadow rescued Exceptions.
             foo
           end
-        END
-
-        expect(cop.messages).to eq(['Do not shadow rescued Exceptions.'])
-        expect(cop.highlights)
-          .to eq(['rescue StandardError, NameError, NoMethodError'])
+        RUBY
       end
     end
 
     it 'registers an offense for the same exception multiple times' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         begin
           something
         rescue NameError, NameError
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not shadow rescued Exceptions.
           foo
         end
-      END
-
-      expect(cop.messages).to eq(['Do not shadow rescued Exceptions.'])
-      expect(cop.highlights)
-        .to eq(['rescue NameError, NameError'])
+      RUBY
     end
 
     it 'accepts splat arguments passed to rescue' do

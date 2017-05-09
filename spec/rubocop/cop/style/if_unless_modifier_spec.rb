@@ -67,12 +67,12 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
     end
 
     it 'registers an offense' do
-      inspect_source(cop, source)
-      expect(cop.messages).to eq(
-        ['Favor modifier `if` usage when having a single-line' \
-         ' body. Another good alternative is the usage of control flow' \
-         ' `&&`/`||`.']
-      )
+      expect_offense(<<-RUBY.strip_indent)
+        if a # comment
+        ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+          b
+        end
+      RUBY
     end
 
     it 'does auto-correction and preserves comment' do
@@ -120,8 +120,22 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
     end
 
     it 'registers an offense' do
-      inspect_source(cop, source)
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        if x
+          y
+        elsif x1
+          y1
+        else
+          z
+        end
+        n = a ? 0 : 1
+        m = 3 if m0
+
+        if a
+        ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+          b
+        end
+      RUBY
     end
 
     it 'does auto-correction' do
@@ -160,12 +174,12 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
     end
 
     it 'registers an offense' do
-      inspect_source(cop, source)
-      expect(cop.messages).to eq(
-        ['Favor modifier `unless` usage when having a single-line' \
-         ' body. Another good alternative is the usage of control flow' \
-         ' `&&`/`||`.']
-      )
+      expect_offense(<<-RUBY.strip_indent)
+        unless a
+        ^^^^^^ Favor modifier `unless` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+          b
+        end
+      RUBY
     end
 
     it 'does auto-correction' do

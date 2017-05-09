@@ -37,9 +37,10 @@ describe RuboCop::Cop::Style::MissingElse do
 
       context 'with no else-clause' do
         it 'registers an offense' do
-          inspect_source(cop, 'if cond; foo end')
-          expect(cop.messages)
-            .to eq(['`if` condition requires an `else`-clause.'])
+          expect_offense(<<-RUBY.strip_indent)
+            if cond; foo end
+            ^^^^^^^^^^^^^^^^ `if` condition requires an `else`-clause.
+          RUBY
         end
       end
     end
@@ -98,9 +99,10 @@ describe RuboCop::Cop::Style::MissingElse do
 
       context 'with no else-clause' do
         it 'registers an offense' do
-          inspect_source(cop, 'case v; when a; foo; when b; bar; end')
-          expect(cop.messages)
-            .to eq(['`case` condition requires an `else`-clause.'])
+          expect_offense(<<-RUBY.strip_indent)
+            case v; when a; foo; when b; bar; end
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `case` condition requires an `else`-clause.
+          RUBY
         end
       end
     end
@@ -140,9 +142,10 @@ describe RuboCop::Cop::Style::MissingElse do
 
       context 'with no else-clause' do
         it 'registers an offense' do
-          inspect_source(cop, 'if cond; foo end')
-          expect(cop.messages)
-            .to eq(['`if` condition requires an `else`-clause.'])
+          expect_offense(<<-RUBY.strip_indent)
+            if cond; foo end
+            ^^^^^^^^^^^^^^^^ `if` condition requires an `else`-clause.
+          RUBY
         end
       end
     end
@@ -171,9 +174,10 @@ describe RuboCop::Cop::Style::MissingElse do
 
       context 'with no else-clause' do
         it 'registers an offense' do
-          inspect_source(cop, 'unless cond; foo end')
-          expect(cop.messages)
-            .to eq(['`if` condition requires an `else`-clause.'])
+          expect_offense(<<-RUBY.strip_indent)
+            unless cond; foo end
+            ^^^^^^^^^^^^^^^^^^^^ `if` condition requires an `else`-clause.
+          RUBY
         end
       end
     end
@@ -202,9 +206,10 @@ describe RuboCop::Cop::Style::MissingElse do
 
       context 'with no else-clause' do
         it 'registers an offense' do
-          inspect_source(cop, 'case v; when a; foo; when b; bar; end')
-          expect(cop.messages)
-            .to eq(['`case` condition requires an `else`-clause.'])
+          expect_offense(<<-RUBY.strip_indent)
+            case v; when a; foo; when b; bar; end
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `case` condition requires an `else`-clause.
+          RUBY
         end
       end
     end
@@ -257,8 +262,10 @@ describe RuboCop::Cop::Style::MissingElse do
         end
 
         it 'highlights' do
-          inspect_source(cop, 'if cond; foo end')
-          expect(cop.highlights).to eq(['if cond; foo end'])
+          expect_offense(<<-RUBY.strip_indent)
+            if cond; foo end
+            ^^^^^^^^^^^^^^^^ `if` condition requires an `else`-clause with `nil` in it.
+          RUBY
         end
       end
     end
@@ -368,9 +375,10 @@ describe RuboCop::Cop::Style::MissingElse do
 
       context 'with no else-clause' do
         it 'registers an offense' do
-          inspect_source(cop, 'if cond; foo end')
-          expect(cop.messages)
-            .to eq(['`if` condition requires an empty `else`-clause.'])
+          expect_offense(<<-RUBY.strip_indent)
+            if cond; foo end
+            ^^^^^^^^^^^^^^^^ `if` condition requires an empty `else`-clause.
+          RUBY
         end
       end
     end
@@ -399,9 +407,10 @@ describe RuboCop::Cop::Style::MissingElse do
 
       context 'with no else-clause' do
         it 'registers an offense' do
-          inspect_source(cop, 'unless cond; foo end')
-          expect(cop.messages)
-            .to eq(['`if` condition requires an empty `else`-clause.'])
+          expect_offense(<<-RUBY.strip_indent)
+            unless cond; foo end
+            ^^^^^^^^^^^^^^^^^^^^ `if` condition requires an empty `else`-clause.
+          RUBY
         end
       end
     end
@@ -430,9 +439,10 @@ describe RuboCop::Cop::Style::MissingElse do
 
       context 'with no else-clause' do
         it 'registers an offense' do
-          inspect_source(cop, 'case v; when a; foo; when b; bar; end')
-          expect(cop.messages)
-            .to eq(['`case` condition requires an empty `else`-clause.'])
+          expect_offense(<<-RUBY.strip_indent)
+            case v; when a; foo; when b; bar; end
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `case` condition requires an empty `else`-clause.
+          RUBY
         end
       end
     end
@@ -478,9 +488,10 @@ describe RuboCop::Cop::Style::MissingElse do
 
       context 'with no else-clause' do
         it 'registers an offense' do
-          inspect_source(cop, 'if cond; foo end')
-          expect(cop.messages)
-            .to eq(['`if` condition requires an empty `else`-clause.'])
+          expect_offense(<<-RUBY.strip_indent)
+            if cond; foo end
+            ^^^^^^^^^^^^^^^^ `if` condition requires an empty `else`-clause.
+          RUBY
         end
       end
     end
@@ -509,9 +520,10 @@ describe RuboCop::Cop::Style::MissingElse do
 
       context 'with no else-clause' do
         it 'registers an offense' do
-          inspect_source(cop, 'unless cond; foo end')
-          expect(cop.messages)
-            .to eq(['`if` condition requires an empty `else`-clause.'])
+          expect_offense(<<-RUBY.strip_indent)
+            unless cond; foo end
+            ^^^^^^^^^^^^^^^^^^^^ `if` condition requires an empty `else`-clause.
+          RUBY
         end
       end
     end
@@ -647,9 +659,10 @@ describe RuboCop::Cop::Style::MissingElse do
 
       context 'with no else-clause' do
         it 'registers an offense' do
-          inspect_source(cop, 'case v; when a; foo; when b; bar; end')
-          expect(cop.messages)
-            .to eq(['`case` condition requires an empty `else`-clause.'])
+          expect_offense(<<-RUBY.strip_indent)
+            case v; when a; foo; when b; bar; end
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `case` condition requires an empty `else`-clause.
+          RUBY
         end
       end
     end

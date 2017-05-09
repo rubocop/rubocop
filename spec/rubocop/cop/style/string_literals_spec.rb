@@ -143,16 +143,17 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
     end
 
     it 'registers an offense for "\""' do
-      inspect_source(cop, '"\\""')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Prefer single-quoted strings when you ' \
-                                  "don't need string interpolation or " \
-                                  'special symbols.'])
+      expect_offense(<<-'RUBY'.strip_indent)
+        "\""
+        ^^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.
+      RUBY
     end
 
     it 'registers an offense for words with non-ascii chars' do
-      inspect_source(cop, '"España"')
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        "España"
+        ^^^^^^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.
+      RUBY
     end
 
     it 'autocorrects words with non-ascii chars' do

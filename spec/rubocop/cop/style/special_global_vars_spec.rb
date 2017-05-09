@@ -7,39 +7,38 @@ describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'use_english_names' } }
 
     it 'registers an offense for $:' do
-      inspect_source(cop, 'puts $:')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Prefer `$LOAD_PATH` over `$:`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        puts $:
+             ^^ Prefer `$LOAD_PATH` over `$:`.
+      RUBY
     end
 
     it 'registers an offense for $"' do
-      inspect_source(cop, 'puts $"')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Prefer `$LOADED_FEATURES` over `$"`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        puts $"
+             ^^ Prefer `$LOADED_FEATURES` over `$"`.
+      RUBY
     end
 
     it 'registers an offense for $0' do
-      inspect_source(cop, 'puts $0')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Prefer `$PROGRAM_NAME` over `$0`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        puts $0
+             ^^ Prefer `$PROGRAM_NAME` over `$0`.
+      RUBY
     end
 
     it 'registers an offense for $$' do
-      inspect_source(cop, 'puts $$')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Prefer `$PROCESS_ID` or `$PID` from the stdlib \'English\' ' \
-                'module (don\'t forget to require it) over `$$`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        puts $$
+             ^^ Prefer `$PROCESS_ID` or `$PID` from the stdlib 'English' module (don't forget to require it) over `$$`.
+      RUBY
     end
 
     it 'is clear about variables from the English library vs those not' do
-      inspect_source(cop, 'puts $*')
-      expect(cop.messages)
-        .to eq(['Prefer `$ARGV` from the stdlib \'English\' module ' \
-                '(don\'t forget to require it), or `ARGV` over `$*`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        puts $*
+             ^^ Prefer `$ARGV` from the stdlib 'English' module (don't forget to require it), or `ARGV` over `$*`.
+      RUBY
     end
 
     it 'does not register an offense for backrefs like $1' do
@@ -83,35 +82,38 @@ describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'use_perl_names' } }
 
     it 'registers an offense for $LOAD_PATH' do
-      inspect_source(cop, 'puts $LOAD_PATH')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Prefer `$:` over `$LOAD_PATH`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        puts $LOAD_PATH
+             ^^^^^^^^^^ Prefer `$:` over `$LOAD_PATH`.
+      RUBY
     end
 
     it 'registers an offense for $LOADED_FEATURES' do
-      inspect_source(cop, 'puts $LOADED_FEATURES')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Prefer `$"` over `$LOADED_FEATURES`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        puts $LOADED_FEATURES
+             ^^^^^^^^^^^^^^^^ Prefer `$"` over `$LOADED_FEATURES`.
+      RUBY
     end
 
     it 'registers an offense for $PROGRAM_NAME' do
-      inspect_source(cop, 'puts $PROGRAM_NAME')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Prefer `$0` over `$PROGRAM_NAME`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        puts $PROGRAM_NAME
+             ^^^^^^^^^^^^^ Prefer `$0` over `$PROGRAM_NAME`.
+      RUBY
     end
 
     it 'registers an offense for $PID' do
-      inspect_source(cop, 'puts $PID')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Prefer `$$` over `$PID`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        puts $PID
+             ^^^^ Prefer `$$` over `$PID`.
+      RUBY
     end
 
     it 'registers an offense for $PROCESS_ID' do
-      inspect_source(cop, 'puts $PROCESS_ID')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Prefer `$$` over `$PROCESS_ID`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        puts $PROCESS_ID
+             ^^^^^^^^^^^ Prefer `$$` over `$PROCESS_ID`.
+      RUBY
     end
 
     it 'does not register an offense for backrefs like $1' do

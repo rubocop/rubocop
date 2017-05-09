@@ -4,19 +4,19 @@ describe RuboCop::Cop::Style::StructInheritance do
   subject(:cop) { described_class.new }
 
   it 'registers an offense when extending instance of Struct' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       class Person < Struct.new(:first_name, :last_name)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'registers an offense when extending instance of Struct with do ... end' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       class Person < Struct.new(:first_name, :last_name) do end
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'accepts plain class' do

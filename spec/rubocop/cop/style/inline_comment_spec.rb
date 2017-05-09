@@ -4,11 +4,10 @@ describe RuboCop::Cop::Style::InlineComment do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for a trailing inline comment' do
-    inspect_source(cop, 'two = 1 + 1 # A trailing inline comment')
-
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(['Avoid trailing inline comments.'])
-    expect(cop.highlights).to eq(['# A trailing inline comment'])
+    expect_offense(<<-RUBY.strip_indent)
+      two = 1 + 1 # A trailing inline comment
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid trailing inline comments.
+    RUBY
   end
 
   it 'does not register an offense for a standalone comment' do

@@ -4,8 +4,10 @@ describe RuboCop::Cop::Style::PerlBackrefs do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for $1' do
-    inspect_source(cop, 'puts $1')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      puts $1
+           ^^ Avoid the use of Perl-style backrefs.
+    RUBY
   end
 
   it 'auto-corrects $1 to Regexp.last_match[1]' do

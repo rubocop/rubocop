@@ -4,8 +4,10 @@ describe RuboCop::Cop::Layout::SpaceBeforeComment do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for missing space before an EOL comment' do
-    inspect_source(cop, 'a += 1# increment')
-    expect(cop.highlights).to eq(['# increment'])
+    expect_offense(<<-RUBY.strip_indent)
+      a += 1# increment
+            ^^^^^^^^^^^ Put a space before an end-of-line comment.
+    RUBY
   end
 
   it 'accepts an EOL comment with a preceding space' do

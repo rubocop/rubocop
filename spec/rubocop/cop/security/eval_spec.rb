@@ -4,27 +4,31 @@ describe RuboCop::Cop::Security::Eval do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for eval as function' do
-    inspect_source(cop, 'eval(something)')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights) .to eq(['eval'])
+    expect_offense(<<-RUBY.strip_indent)
+      eval(something)
+      ^^^^ The use of `eval` is a serious security risk.
+    RUBY
   end
 
   it 'registers an offense for eval as command' do
-    inspect_source(cop, 'eval something')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['eval'])
+    expect_offense(<<-RUBY.strip_indent)
+      eval something
+      ^^^^ The use of `eval` is a serious security risk.
+    RUBY
   end
 
   it 'registers an offense `Binding#eval`' do
-    inspect_source(cop, 'binding.eval something')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['eval'])
+    expect_offense(<<-RUBY.strip_indent)
+      binding.eval something
+              ^^^^ The use of `eval` is a serious security risk.
+    RUBY
   end
 
   it 'registers an offense for eval with string that has an interpolation' do
-    inspect_source(cop, 'eval "something#{foo}"')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['eval'])
+    expect_offense(<<-'RUBY'.strip_indent)
+      eval "something#{foo}"
+      ^^^^ The use of `eval` is a serious security risk.
+    RUBY
   end
 
   it 'accepts eval as variable' do
@@ -62,15 +66,17 @@ describe RuboCop::Cop::Security::Eval do
 
   context 'with an explicit binding, filename, and line number' do
     it 'registers an offense for eval as function' do
-      inspect_source(cop, 'eval(something, binding, "test.rb", 1)')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights) .to eq(['eval'])
+      expect_offense(<<-RUBY.strip_indent)
+        eval(something, binding, "test.rb", 1)
+        ^^^^ The use of `eval` is a serious security risk.
+      RUBY
     end
 
     it 'registers an offense for eval as command' do
-      inspect_source(cop, 'eval something, binding, "test.rb", 1')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['eval'])
+      expect_offense(<<-RUBY.strip_indent)
+        eval something, binding, "test.rb", 1
+        ^^^^ The use of `eval` is a serious security risk.
+      RUBY
     end
 
     it 'accepts eval on a literal string' do

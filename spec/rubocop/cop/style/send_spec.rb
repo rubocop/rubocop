@@ -6,8 +6,10 @@ describe RuboCop::Cop::Style::Send do
   context 'with send' do
     context 'and with a receiver' do
       it 'registers an offense for an invocation with args' do
-        inspect_source(cop, 'Object.send(:inspect)')
-        expect(cop.offenses.size).to eq(1)
+        expect_offense(<<-RUBY.strip_indent)
+          Object.send(:inspect)
+                 ^^^^ Prefer `Object#__send__` or `Object#public_send` to `send`.
+        RUBY
       end
 
       it 'does not register an offense for an invocation without args' do
@@ -17,8 +19,10 @@ describe RuboCop::Cop::Style::Send do
 
     context 'and without a receiver' do
       it 'registers an offense for an invocation with args' do
-        inspect_source(cop, 'send(:inspect)')
-        expect(cop.offenses.size).to eq(1)
+        expect_offense(<<-RUBY.strip_indent)
+          send(:inspect)
+          ^^^^ Prefer `Object#__send__` or `Object#public_send` to `send`.
+        RUBY
       end
 
       it 'does not register an offense for an invocation without args' do

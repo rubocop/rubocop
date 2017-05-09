@@ -4,15 +4,15 @@ describe RuboCop::Cop::Lint::EnsureReturn do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for return in ensure' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       begin
         something
       ensure
         file.close
         return
+        ^^^^^^ Do not return from an `ensure` block.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'does not register an offense for return outside ensure' do

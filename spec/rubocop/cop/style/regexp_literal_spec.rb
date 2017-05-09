@@ -27,8 +27,10 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'slashes' } }
 
     it 'registers an offense' do
-      inspect_source(cop, '%r_ls_')
-      expect(cop.messages).to eq(['Use `//` around regular expression.'])
+      expect_offense(<<-RUBY.strip_indent)
+        %r_ls_
+        ^^^^^^ Use `//` around regular expression.
+      RUBY
     end
   end
 
@@ -60,8 +62,10 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       let(:source) { 'foo = /home\//' }
 
       it 'registers an offense' do
-        inspect_source(cop, source)
-        expect(cop.messages).to eq(['Use `%r` around regular expression.'])
+        expect_offense(<<-'RUBY'.strip_indent)
+          foo = /home\//
+                ^^^^^^^^ Use `%r` around regular expression.
+        RUBY
       end
 
       it 'cannot auto-correct' do
@@ -125,8 +129,10 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       let(:source) { 'foo = %r{a}' }
 
       it 'registers an offense' do
-        inspect_source(cop, source)
-        expect(cop.messages).to eq(['Use `//` around regular expression.'])
+        expect_offense(<<-RUBY.strip_indent)
+          foo = %r{a}
+                ^^^^^ Use `//` around regular expression.
+        RUBY
       end
 
       it 'auto-corrects' do
@@ -147,8 +153,10 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
         before { cop_config['AllowInnerSlashes'] = true }
 
         it 'registers an offense' do
-          inspect_source(cop, source)
-          expect(cop.messages).to eq(['Use `//` around regular expression.'])
+          expect_offense(<<-RUBY.strip_indent)
+            foo = %r{home/}
+                  ^^^^^^^^^ Use `//` around regular expression.
+          RUBY
         end
 
         it 'cannot auto-correct' do
@@ -213,8 +221,10 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       let(:source) { 'foo = /a/' }
 
       it 'registers an offense' do
-        inspect_source(cop, source)
-        expect(cop.messages).to eq(['Use `%r` around regular expression.'])
+        expect_offense(<<-RUBY.strip_indent)
+          foo = /a/
+                ^^^ Use `%r` around regular expression.
+        RUBY
       end
 
       it 'auto-corrects' do
@@ -227,8 +237,10 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       let(:source) { 'foo = /home\//' }
 
       it 'registers an offense' do
-        inspect_source(cop, source)
-        expect(cop.messages).to eq(['Use `%r` around regular expression.'])
+        expect_offense(<<-'RUBY'.strip_indent)
+          foo = /home\//
+                ^^^^^^^^ Use `%r` around regular expression.
+        RUBY
       end
 
       it 'cannot auto-correct' do
@@ -338,8 +350,10 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       let(:source) { 'foo = /home\//' }
 
       it 'registers an offense' do
-        inspect_source(cop, source)
-        expect(cop.messages).to eq(['Use `%r` around regular expression.'])
+        expect_offense(<<-'RUBY'.strip_indent)
+          foo = /home\//
+                ^^^^^^^^ Use `%r` around regular expression.
+        RUBY
       end
 
       it 'cannot auto-correct' do
@@ -399,8 +413,10 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       let(:source) { 'foo = %r{a}' }
 
       it 'registers an offense' do
-        inspect_source(cop, source)
-        expect(cop.messages).to eq(['Use `//` around regular expression.'])
+        expect_offense(<<-RUBY.strip_indent)
+          foo = %r{a}
+                ^^^^^ Use `//` around regular expression.
+        RUBY
       end
 
       it 'auto-corrects' do
@@ -421,8 +437,10 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
         before { cop_config['AllowInnerSlashes'] = true }
 
         it 'registers an offense' do
-          inspect_source(cop, source)
-          expect(cop.messages).to eq(['Use `//` around regular expression.'])
+          expect_offense(<<-RUBY.strip_indent)
+            foo = %r{home/}
+                  ^^^^^^^^^ Use `//` around regular expression.
+          RUBY
         end
 
         it 'cannot auto-correct' do

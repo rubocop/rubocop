@@ -4,19 +4,19 @@ describe RuboCop::Cop::Style::WhileUntilDo do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for do in multiline while' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       while cond do
+                 ^^ Do not use `do` with multi-line `while`.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'registers an offense for do in multiline until' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       until cond do
+                 ^^ Do not use `do` with multi-line `until`.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'accepts do in single-line while' do

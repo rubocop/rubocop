@@ -4,45 +4,30 @@ describe RuboCop::Cop::Rails::Delegate do
   subject(:cop) { described_class.new }
 
   it 'finds trivial delegate' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       def foo
+      ^^^ Use `delegate` to define delegations.
         bar.foo
       end
-    END
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.offenses
-            .map(&:line).sort).to eq([1])
-    expect(cop.messages)
-      .to eq(['Use `delegate` to define delegations.'])
-    expect(cop.highlights).to eq(['def'])
+    RUBY
   end
 
   it 'finds trivial delegate with arguments' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       def foo(baz)
+      ^^^ Use `delegate` to define delegations.
         bar.foo(baz)
       end
-    END
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.offenses
-            .map(&:line).sort).to eq([1])
-    expect(cop.messages)
-      .to eq(['Use `delegate` to define delegations.'])
-    expect(cop.highlights).to eq(['def'])
+    RUBY
   end
 
   it 'finds trivial delegate with prefix' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       def bar_foo
+      ^^^ Use `delegate` to define delegations.
         bar.foo
       end
-    END
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.offenses
-            .map(&:line).sort).to eq([1])
-    expect(cop.messages)
-      .to eq(['Use `delegate` to define delegations.'])
-    expect(cop.highlights).to eq(['def'])
+    RUBY
   end
 
   it 'ignores class methods' do

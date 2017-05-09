@@ -4,13 +4,17 @@ describe RuboCop::Cop::Lint::Loop do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for begin/end/while' do
-    inspect_source(cop, 'begin something; top; end while test')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      begin something; top; end while test
+                                ^^^^^ Use `Kernel#loop` with `break` rather than `begin/end/until`(or `while`).
+    RUBY
   end
 
   it 'registers an offense for begin/end/until' do
-    inspect_source(cop, 'begin something; top; end until test')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      begin something; top; end until test
+                                ^^^^^ Use `Kernel#loop` with `break` rather than `begin/end/until`(or `while`).
+    RUBY
   end
 
   it 'accepts normal while' do

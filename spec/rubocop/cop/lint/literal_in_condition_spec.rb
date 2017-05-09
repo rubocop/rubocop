@@ -150,12 +150,12 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
   end
 
   it 'registers an offense for case with a primitive array condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       case [1, 2, [3, 4]]
+           ^^^^^^^^^^^^^^ Literal `[1, 2, [3, 4]]` appeared in a condition.
       when [1, 2, 5] then top
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'accepts dstr literal in case' do

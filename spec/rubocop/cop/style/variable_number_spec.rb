@@ -52,9 +52,10 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
     it_behaves_like :accepts, 'snake_case', '@__foo__'
 
     it 'registers an offense for normal case numbering in method parameter' do
-      inspect_source(cop, 'def method(arg1); end')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['arg1'])
+      expect_offense(<<-RUBY.strip_indent)
+        def method(arg1); end
+                   ^^^^ Use snake_case for variable numbers.
+      RUBY
     end
 
     it 'registers an offense for normal case numbering in method camel case
@@ -94,9 +95,10 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
     it_behaves_like :accepts, 'normalcase', '@__foo__'
 
     it 'registers an offense for snake case numbering in method parameter' do
-      inspect_source(cop, 'def method(arg_1); end')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['arg_1'])
+      expect_offense(<<-RUBY.strip_indent)
+        def method(arg_1); end
+                   ^^^^^ Use normalcase for variable numbers.
+      RUBY
     end
 
     it 'registers an offense for snake case numbering in method camel case
@@ -133,15 +135,17 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
     it_behaves_like :accepts, 'non_integer', '@__foo__'
 
     it 'registers an offense for snake case numbering in method parameter' do
-      inspect_source(cop, 'def method(arg_1); end')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['arg_1'])
+      expect_offense(<<-RUBY.strip_indent)
+        def method(arg_1); end
+                   ^^^^^ Use non_integer for variable numbers.
+      RUBY
     end
 
     it 'registers an offense for normal case numbering in method parameter' do
-      inspect_source(cop, 'def method(arg1); end')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['arg1'])
+      expect_offense(<<-RUBY.strip_indent)
+        def method(arg1); end
+                   ^^^^ Use non_integer for variable numbers.
+      RUBY
     end
 
     it 'registers an offense for snake case numbering in method camel case

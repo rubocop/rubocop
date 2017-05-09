@@ -34,10 +34,10 @@ describe RuboCop::Cop::Style::PercentQLiterals, :config do
       end
 
       it 'registers offense for %Q' do
-        inspect_source(cop, '%Q(hi)')
-        expect(cop.messages)
-          .to eq(['Do not use `%Q` unless interpolation is needed.  Use `%q`.'])
-        expect(cop.highlights).to eq(['%Q('])
+        expect_offense(<<-RUBY.strip_indent)
+          %Q(hi)
+          ^^^ Do not use `%Q` unless interpolation is needed.  Use `%q`.
+        RUBY
       end
 
       it 'auto-corrects' do
@@ -68,9 +68,10 @@ describe RuboCop::Cop::Style::PercentQLiterals, :config do
 
     context 'without interpolation' do
       it 'registers offense for %q' do
-        inspect_source(cop, '%q(hi)')
-        expect(cop.messages).to eq(['Use `%Q` instead of `%q`.'])
-        expect(cop.highlights).to eq(['%q('])
+        expect_offense(<<-RUBY.strip_indent)
+          %q(hi)
+          ^^^ Use `%Q` instead of `%q`.
+        RUBY
       end
 
       it 'accepts %Q' do

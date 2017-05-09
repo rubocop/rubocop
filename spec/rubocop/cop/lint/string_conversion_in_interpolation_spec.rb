@@ -4,15 +4,17 @@ describe RuboCop::Cop::Lint::StringConversionInInterpolation do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for #to_s in interpolation' do
-    inspect_source(cop, '"this is the #{result.to_s}"')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['Redundant use of `Object#to_s` in interpolation.'])
+    expect_offense(<<-'RUBY'.strip_indent)
+      "this is the #{result.to_s}"
+                            ^^^^ Redundant use of `Object#to_s` in interpolation.
+    RUBY
   end
 
   it 'detects #to_s in an interpolation with several expressions' do
-    inspect_source(cop, '"this is the #{top; result.to_s}"')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-'RUBY'.strip_indent)
+      "this is the #{top; result.to_s}"
+                                 ^^^^ Redundant use of `Object#to_s` in interpolation.
+    RUBY
   end
 
   it 'accepts #to_s with arguments in an interpolation' do
@@ -24,10 +26,10 @@ describe RuboCop::Cop::Lint::StringConversionInInterpolation do
   end
 
   it 'does not explode on implicit receiver' do
-    inspect_source(cop, '"#{to_s}"')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['Use `self` instead of `Object#to_s` in interpolation.'])
+    expect_offense(<<-'RUBY'.strip_indent)
+      "#{to_s}"
+         ^^^^ Use `self` instead of `Object#to_s` in interpolation.
+    RUBY
   end
 
   it 'does not explode on empty interpolation' do

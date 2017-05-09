@@ -22,7 +22,9 @@ describe RuboCop::Cop::Lint::UselessComparison do
   end
 
   it 'works with lambda.()' do
-    inspect_source(cop, 'a.(x) > a.(x)')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      a.(x) > a.(x)
+            ^ Comparison of something with itself detected.
+    RUBY
   end
 end

@@ -13,10 +13,10 @@ describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
     end
 
     it 'registers an offense for empty braces with space inside' do
-      inspect_source(cop, 'h = { }')
-      expect(cop.messages)
-        .to eq(['Space inside empty hash literal braces detected.'])
-      expect(cop.highlights).to eq([' '])
+      expect_offense(<<-RUBY.strip_indent)
+        h = { }
+             ^ Space inside empty hash literal braces detected.
+      RUBY
     end
 
     it 'auto-corrects unwanted space' do
@@ -34,10 +34,10 @@ describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
     end
 
     it 'registers an offense for empty braces with no space inside' do
-      inspect_source(cop, 'h = {}')
-      expect(cop.messages)
-        .to eq(['Space inside empty hash literal braces missing.'])
-      expect(cop.highlights).to eq(['{'])
+      expect_offense(<<-RUBY.strip_indent)
+        h = {}
+            ^ Space inside empty hash literal braces missing.
+      RUBY
     end
 
     it 'auto-corrects missing space' do
@@ -143,9 +143,10 @@ describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
     end
 
     it 'registers an offense for nested hashes with spaces' do
-      inspect_source(cop, 'h = { a: { a: 1, b: 2 } }')
-      expect(cop.offenses.size).to eq 1
-      expect(cop.messages).to eq(['Space inside } detected.'])
+      expect_offense(<<-RUBY.strip_indent)
+        h = { a: { a: 1, b: 2 } }
+                               ^ Space inside } detected.
+      RUBY
     end
 
     it 'registers an offense for opposite + correct' do
@@ -178,11 +179,14 @@ describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
     end
 
     it 'registers offenses for hashes with no spaces' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         h = {a: 1, b: 2}
+                       ^ Space inside } missing.
+            ^ Space inside { missing.
         h = {a => 1}
-      END
-      expect(cop.offenses.size).to eq 4
+                   ^ Space inside } missing.
+            ^ Space inside { missing.
+      RUBY
     end
 
     it 'accepts multiline hash' do

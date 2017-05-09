@@ -4,54 +4,42 @@ describe RuboCop::Cop::Style::IfInsideElse do
   subject(:cop) { described_class.new }
 
   it 'catches an if node nested inside an else' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       if a
         blah
       else
         if b
+        ^^ Convert `if` nested inside `else` to `elsif`.
           foo
         end
       end
-    END
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(
-      ['Convert `if` nested inside `else` to `elsif`.']
-    )
-    expect(cop.highlights).to eq(['if'])
+    RUBY
   end
 
   it 'catches an if..else nested inside an else' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       if a
         blah
       else
         if b
+        ^^ Convert `if` nested inside `else` to `elsif`.
           foo
         else
           bar
         end
       end
-    END
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(
-      ['Convert `if` nested inside `else` to `elsif`.']
-    )
-    expect(cop.highlights).to eq(['if'])
+    RUBY
   end
 
   it 'catches a modifier if nested inside an else' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       if a
         blah
       else
         foo if b
+            ^^ Convert `if` nested inside `else` to `elsif`.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(
-      ['Convert `if` nested inside `else` to `elsif`.']
-    )
-    expect(cop.highlights).to eq(['if'])
+    RUBY
   end
 
   it "isn't offended if there is a statement following the if node" do

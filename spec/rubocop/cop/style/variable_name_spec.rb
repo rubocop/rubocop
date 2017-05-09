@@ -42,27 +42,31 @@ describe RuboCop::Cop::Style::VariableName, :config do
     end
 
     it 'registers an offense for camel case in instance variable name' do
-      inspect_source(cop, '@myAttribute = 3')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['@myAttribute'])
+      expect_offense(<<-RUBY.strip_indent)
+        @myAttribute = 3
+        ^^^^^^^^^^^^ Use snake_case for variable names.
+      RUBY
     end
 
     it 'registers an offense for camel case in class variable name' do
-      inspect_source(cop, '@@myAttr = 2')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['@@myAttr'])
+      expect_offense(<<-RUBY.strip_indent)
+        @@myAttr = 2
+        ^^^^^^^^ Use snake_case for variable names.
+      RUBY
     end
 
     it 'registers an offense for camel case in method parameter' do
-      inspect_source(cop, 'def method(funnyArg); end')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['funnyArg'])
+      expect_offense(<<-RUBY.strip_indent)
+        def method(funnyArg); end
+                   ^^^^^^^^ Use snake_case for variable names.
+      RUBY
     end
 
     it 'registers an offense for camel case local variables marked as unused' do
-      inspect_source(cop, '_myLocal = 1')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['_myLocal'])
+      expect_offense(<<-RUBY.strip_indent)
+        _myLocal = 1
+        ^^^^^^^^ Use snake_case for variable names.
+      RUBY
     end
 
     include_examples 'always accepted'
@@ -101,9 +105,10 @@ describe RuboCop::Cop::Style::VariableName, :config do
     end
 
     it 'registers an offense for snake case in method parameter' do
-      inspect_source(cop, 'def method(funny_arg); end')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['funny_arg'])
+      expect_offense(<<-RUBY.strip_indent)
+        def method(funny_arg); end
+                   ^^^^^^^^^ Use camelCase for variable names.
+      RUBY
     end
 
     it 'accepts camel case local variables marked as unused' do

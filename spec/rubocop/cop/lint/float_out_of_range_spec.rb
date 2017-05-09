@@ -3,10 +3,6 @@
 describe RuboCop::Cop::Lint::FloatOutOfRange do
   subject(:cop) { described_class.new }
 
-  before do
-    inspect_source(cop, source)
-  end
-
   context 'on 0.0' do
     let(:source) { '0.0' }
 
@@ -35,8 +31,10 @@ describe RuboCop::Cop::Lint::FloatOutOfRange do
     let(:source) { '9.9999e999' }
 
     it 'registers an offense' do
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Float out of range.'])
+      expect_offense(<<-RUBY.strip_indent)
+        9.9999e999
+        ^^^^^^^^^^ Float out of range.
+      RUBY
     end
   end
 
@@ -44,8 +42,10 @@ describe RuboCop::Cop::Lint::FloatOutOfRange do
     let(:source) { '1.0e-400' }
 
     it 'registers an offense' do
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Float out of range.'])
+      expect_offense(<<-RUBY.strip_indent)
+        1.0e-400
+        ^^^^^^^^ Float out of range.
+      RUBY
     end
   end
 end

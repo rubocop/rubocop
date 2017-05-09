@@ -4,31 +4,31 @@ describe RuboCop::Cop::Performance::HashEachMethods do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for Hash#keys.each' do
-    inspect_source(cop, 'hash.keys.each { |k| p k }')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['Use `each_key` instead of `keys.each`.'])
+    expect_offense(<<-RUBY.strip_indent)
+      hash.keys.each { |k| p k }
+           ^^^^^^^^^ Use `each_key` instead of `keys.each`.
+    RUBY
   end
 
   it 'registers an offense for Hash#values.each' do
-    inspect_source(cop, 'hash.values.each { |v| p v }')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['Use `each_value` instead of `values.each`.'])
+    expect_offense(<<-RUBY.strip_indent)
+      hash.values.each { |v| p v }
+           ^^^^^^^^^^^ Use `each_value` instead of `values.each`.
+    RUBY
   end
 
   it 'registers an offense for Hash#each with unused value' do
-    inspect_source(cop, 'hash.each { |k, _v| p k }')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['Use `each_key` instead of `each`.'])
+    expect_offense(<<-RUBY.strip_indent)
+      hash.each { |k, _v| p k }
+      ^^^^^^^^^ Use `each_key` instead of `each`.
+    RUBY
   end
 
   it 'registers an offense for Hash#each with unused key' do
-    inspect_source(cop, 'hash.each { |_k, v| p v }')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['Use `each_value` instead of `each`.'])
+    expect_offense(<<-RUBY.strip_indent)
+      hash.each { |_k, v| p v }
+      ^^^^^^^^^ Use `each_value` instead of `each`.
+    RUBY
   end
 
   it 'does not register an offense for Hash#each_key' do

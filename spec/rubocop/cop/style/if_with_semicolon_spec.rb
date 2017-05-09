@@ -4,10 +4,10 @@ describe RuboCop::Cop::Style::IfWithSemicolon do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for one line if/;/end' do
-    inspect_source(cop, 'if cond; run else dont end')
-    expect(cop.messages).to eq(
-      ['Do not use if x; Use the ternary operator instead.']
-    )
+    expect_offense(<<-RUBY.strip_indent)
+      if cond; run else dont end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use if x; Use the ternary operator instead.
+    RUBY
   end
 
   it 'accepts one line if/then/end' do

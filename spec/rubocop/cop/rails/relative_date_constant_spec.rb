@@ -4,12 +4,12 @@ describe RuboCop::Cop::Rails::RelativeDateConstant do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for ActiveSupport::Duration.since' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       class SomeClass
         EXPIRED_AT = 1.week.since
+        ^^^^^^^^^^^^^^^^^^^^^^^^^ Do not assign since to constants as it will be evaluated only once.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'accepts a method with arguments' do
@@ -37,39 +37,39 @@ describe RuboCop::Cop::Rails::RelativeDateConstant do
   end
 
   it 'registers an offense for relative date in ||=' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       class SomeClass
         EXPIRED_AT ||= 1.week.since
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not assign since to constants as it will be evaluated only once.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'registers an offense for relative date in multiple assignment' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       class SomeClass
         START, A, x = 2.weeks.ago, 1.week.since, 5
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not assign ago to constants as it will be evaluated only once.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'registers an offense for exclusive end range' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       class SomeClass
         TRIAL_PERIOD = DateTime.current..1.day.since
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not assign since to constants as it will be evaluated only once.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'registers an offense for inclusive end range' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       class SomeClass
         TRIAL_PERIOD = DateTime.current...1.day.since
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not assign since to constants as it will be evaluated only once.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'autocorrects' do

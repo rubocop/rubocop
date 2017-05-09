@@ -16,8 +16,10 @@ describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
   end
 
   it 'registers an offense for math expression' do
-    inspect_source(cop, 'puts (2 + 3) * 4')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      puts (2 + 3) * 4
+          ^ `(...)` interpreted as grouped expression.
+    RUBY
   end
 
   it 'accepts a method call without arguments' do

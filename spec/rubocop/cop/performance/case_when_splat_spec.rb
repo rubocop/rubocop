@@ -49,45 +49,39 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
   end
 
   it 'registers an offense for case when with a splat in the first condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       case foo
       when *cond
+      ^^^^^^^^^^ Place `when` conditions with a splat at the end of the `when` branches.
         bar
       when 4
         foobar
       else
         baz
       end
-    END
-
-    expect(cop.messages).to eq([described_class::MSG])
-    expect(cop.highlights).to eq(['when *cond'])
+    RUBY
   end
 
   it 'registers an offense for case when with a splat without an else' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       case foo
       when *baz
+      ^^^^^^^^^ Place `when` conditions with a splat at the end of the `when` branches.
         bar
       when 4
         foobar
       end
-    END
-
-    expect(cop.messages).to eq([described_class::MSG])
-    expect(cop.highlights).to eq(['when *baz'])
+    RUBY
   end
 
   it 'registers an offense for splat conditions in when then' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       case foo
       when *cond then bar
+      ^^^^^^^^^^ Place `when` conditions with a splat at the end of the `when` branches.
       when 4 then baz
       end
-    END
-
-    expect(cop.messages).to eq([described_class::MSG])
-    expect(cop.highlights).to eq(['when *cond'])
+    RUBY
   end
 
   it 'registers an offense for a single when with splat expansion followed ' \
@@ -103,51 +97,51 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
   end
 
   it 'registers an offense for multiple splat conditions at the beginning' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       case foo
       when *cond1
+      ^^^^^^^^^^^ Place `when` conditions with a splat at the end of the `when` branches.
         bar
       when *cond2
+      ^^^^^^^^^^^ Place `when` conditions with a splat at the end of the `when` branches.
         doo
       when 4
         foobar
       else
         baz
       end
-    END
-
-    expect(cop.messages).to eq([described_class::MSG, described_class::MSG])
-    expect(cop.highlights).to eq(['when *cond1', 'when *cond2'])
+    RUBY
   end
 
   it 'registers an offense for multiple out of order splat conditions' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       case foo
       when *cond1
+      ^^^^^^^^^^^ Place `when` conditions with a splat at the end of the `when` branches.
         bar
       when 8
         barfoo
       when *SOME_CONSTANT
+      ^^^^^^^^^^^^^^^^^^^ Place `when` conditions with a splat at the end of the `when` branches.
         doo
       when 4
         foobar
       else
         baz
       end
-    END
-
-    expect(cop.messages).to eq([described_class::MSG, described_class::MSG])
-    expect(cop.highlights).to eq(['when *cond1', 'when *SOME_CONSTANT'])
+    RUBY
   end
 
   it 'registers an offense for splat condition that do not appear at the end' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       case foo
       when *cond1
+      ^^^^^^^^^^^ Place `when` conditions with a splat at the end of the `when` branches.
         bar
       when 8
         barfoo
       when *cond2
+      ^^^^^^^^^^^ Place `when` conditions with a splat at the end of the `when` branches.
         doo
       when 4
         foobar
@@ -156,10 +150,7 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
       else
         baz
       end
-    END
-
-    expect(cop.messages).to eq([described_class::MSG, described_class::MSG])
-    expect(cop.highlights).to eq(['when *cond1', 'when *cond2'])
+    RUBY
   end
 
   it 'allows splat expansion on an array literal' do
@@ -200,17 +191,15 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
   end
 
   it 'registers an offense when splat is part of the condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       case foo
       when cond1, *cond2
+      ^^^^^^^^^^^^^^^^^^ Place `when` conditions with a splat at the end of the `when` branches.
         bar
       when cond3
         baz
       end
-    END
-
-    expect(cop.messages).to eq([described_class::MSG])
-    expect(cop.highlights).to eq(['when cond1, *cond2'])
+    RUBY
   end
 
   context 'autocorrect' do

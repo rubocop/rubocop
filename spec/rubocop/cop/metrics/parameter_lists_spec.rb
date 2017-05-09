@@ -30,14 +30,11 @@ describe RuboCop::Cop::Metrics::ParameterLists, :config do
 
   context 'When CountKeywordArgs is true' do
     it 'counts keyword arguments as well' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def meth(a, b, c, d: 1, e: 2)
+                ^^^^^^^^^^^^^^^^^^^^^ Avoid parameter lists longer than 4 parameters. [5/4]
         end
-      END
-      expect(cop.messages).to eq(
-        ['Avoid parameter lists longer than 4 parameters. [5/4]']
-      )
-      expect(cop.offenses.size).to eq(1)
+      RUBY
     end
   end
 
