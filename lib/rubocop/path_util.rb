@@ -14,6 +14,17 @@ module RuboCop
       path_name.relative_path_from(Pathname.new(base_dir)).to_s
     end
 
+    def smart_path(path)
+      # Ideally, we calculate this relative to the project root.
+      base_dir = Dir.pwd
+
+      if path.start_with? base_dir
+        relative_path(path, base_dir)
+      else
+        path
+      end
+    end
+
     def match_path?(pattern, path)
       case pattern
       when String

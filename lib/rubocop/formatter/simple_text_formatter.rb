@@ -64,17 +64,6 @@ module RuboCop
         @total_correction_count += offenses.count(&:corrected?)
       end
 
-      def smart_path(path)
-        # Ideally, we calculate this relative to the project root.
-        base_dir = Dir.pwd
-
-        if path.start_with? base_dir
-          relative_path(path, base_dir)
-        else
-          path
-        end
-      end
-
       def colored_severity_code(offense)
         color = COLOR_FOR_SEVERITY[offense.severity.name]
         colorize(offense.severity.code, color)

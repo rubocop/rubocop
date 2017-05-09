@@ -334,4 +334,40 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
       end
     END
   end
+
+  context 'when path is in the project root' do
+    before do
+      allow(Dir).to receive(:pwd).and_return('/path/to/project/root')
+      allow_any_instance_of(Parser::Source::Buffer).to receive(:name)
+        .and_return('/path/to/project/root/lib/foo.rb')
+    end
+
+    it 'adds a message with relative path' do
+      expect_offense(<<-END.strip_indent)
+        def something
+        end
+        def something
+        ^^^ Method `Object#something` is defined at both lib/foo.rb:1 and lib/foo.rb:3.
+        end
+      END
+    end
+  end
+
+  context 'when path is not in the project root' do
+    before do
+      allow(Dir).to receive(:pwd).and_return('/path/to/project/root')
+      allow_any_instance_of(Parser::Source::Buffer).to receive(:name)
+        .and_return('/no/project/root/foo.rb')
+    end
+
+    it 'adds a message with absolute path' do
+      expect_offense(<<-END.strip_indent)
+        def something
+        end
+        def something
+        ^^^ Method `Object#something` is defined at both /no/project/root/foo.rb:1 and /no/project/root/foo.rb:3.
+        end
+      END
+    end
+  end
 end
