@@ -611,6 +611,50 @@ describe RuboCop::AST::SendNode do
     end
   end
 
+  describe '#block_literal?' do
+    context 'with a block literal' do
+      let(:send_node) { parse_source(source).ast.children[0] }
+
+      let(:source) { 'foo.bar { |q| baz(q) }' }
+
+      it { expect(send_node.block_literal?).to be_truthy }
+    end
+
+    context 'with a block argument' do
+      let(:source) { 'foo.bar(&baz)' }
+
+      it { expect(send_node.block_literal?).to be_falsey }
+    end
+
+    context 'with no block' do
+      let(:source) { 'foo.bar' }
+
+      it { expect(send_node.block_literal?).to be_falsey }
+    end
+  end
+
+  describe '#block_node' do
+    context 'with a block literal' do
+      let(:send_node) { parse_source(source).ast.children[0] }
+
+      let(:source) { 'foo.bar { |q| baz(q) }' }
+
+      it { expect(send_node.block_node).to be_block_type }
+    end
+
+    context 'with a block argument' do
+      let(:source) { 'foo.bar(&baz)' }
+
+      it { expect(send_node.block_node).to be_nil }
+    end
+
+    context 'with no block' do
+      let(:source) { 'foo.bar' }
+
+      it { expect(send_node.block_node).to be_nil }
+    end
+  end
+
   describe '#splat_argument?' do
     context 'with a splat argument' do
       let(:source) { 'foo.bar(*baz)' }

@@ -28,22 +28,27 @@ module RuboCop
         MSG = 'Expression at %d, %d should be on its own line.'.freeze
 
         def on_block(node)
+          return if node.single_line?
+
           end_loc = node.loc.end
-          do_loc = node.loc.begin # Actually it's either do or {.
-          return if do_loc.line == end_loc.line # Ignore one-liners.
 
           # If the end is on its own line, there is no offense
           return if end_loc.source_line =~ /^\s*#{end_loc.source}/
 
-          msg = format(MSG, end_loc.line, end_loc.column + 1)
-          add_offense(node, end_loc, msg)
+          add_offense(node, end_loc)
         end
+
+        private
 
         def autocorrect(node)
           lambda do |corrector|
             indentation = indentation_of_block_start_line(node)
             corrector.insert_before(node.loc.end, "\n" + (' ' * indentation))
           end
+        end
+
+        def message(node)
+          format(MSG, node.loc.end.line, node.loc.end.column + 1)
         end
 
         def indentation_of_block_start_line(node)

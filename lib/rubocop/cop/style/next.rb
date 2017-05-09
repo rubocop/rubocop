@@ -24,11 +24,6 @@ module RuboCop
 
         MSG = 'Use `next` to skip iteration.'.freeze
         EXIT_TYPES = %i[break return].freeze
-        EACH_ = 'each_'.freeze
-        ENUMERATORS = %i[collect collect_concat detect downto each
-                         find find_all find_index inject loop map!
-                         map reduce reject reject! reverse_each select
-                         select! times upto].freeze
 
         def investigate(_processed_source)
           # When correcting nested offenses, we need to keep track of how much
@@ -37,32 +32,26 @@ module RuboCop
         end
 
         def on_block(node)
-          block_owner, _, body = *node
-          return unless block_owner.send_type?
-          return unless body && ends_with_condition?(body)
+          return unless node.send_node.send_type? &&
+                        node.send_node.enumerator_method?
 
-          _, method_name = *block_owner
-          return unless enumerator?(method_name)
-
-          offense_node = offense_node(body)
-          add_offense(offense_node, offense_location(offense_node), MSG)
+          check(node)
         end
 
         def on_while(node)
-          return unless node.body && ends_with_condition?(node.body)
-
-          offending_node = offense_node(node.body)
-
-          add_offense(offending_node, offense_location(offending_node), MSG)
+          check(node)
         end
         alias on_until on_while
         alias on_for on_while
 
         private
 
-        def enumerator?(method_name)
-          ENUMERATORS.include?(method_name) ||
-            method_name.to_s.start_with?(EACH_)
+        def check(node)
+          return unless node.body && ends_with_condition?(node.body)
+
+          offending_node = offense_node(node.body)
+
+          add_offense(offending_node, offense_location(offending_node))
         end
 
         def ends_with_condition?(body)

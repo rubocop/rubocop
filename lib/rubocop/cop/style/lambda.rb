@@ -73,15 +73,15 @@ module RuboCop
         def_node_matcher :lambda_node?, '(block $(send nil :lambda) ...)'
 
         def on_block(node)
-          lambda_node?(node) do |block_method|
-            selector = block_method.source
+          return unless node.lambda?
 
-            return unless offending_selector?(node, selector)
+          selector = node.send_node.source
 
-            add_offense(node,
-                        block_method.source_range,
-                        message(node, selector))
-          end
+          return unless offending_selector?(node, selector)
+
+          add_offense(node,
+                      node.send_node.source_range,
+                      message(node, selector))
         end
 
         private

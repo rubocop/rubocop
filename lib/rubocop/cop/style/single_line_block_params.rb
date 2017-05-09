@@ -9,32 +9,34 @@ module RuboCop
       # For instance one can configure `reduce`(`inject`) to use |a, e| as
       # parameters.
       class SingleLineBlockParams < Cop
+        MSG = 'Name `%s` block params `|%s|`.'.freeze
+
         def on_block(node)
-          # we care only for single line blocks
-          return unless block_length(node).zero?
+          return unless node.single_line?
 
-          method_node, args_node, _body_node = *node
-          receiver, method_name, _method_args = *method_node
+          send_node = node.send_node
 
-          # discard other scenarios
-          return unless receiver
-          return unless method_names.include?(method_name)
+          return unless send_node.receiver
+          return unless method_names.include?(send_node.method_name)
 
-          args = *args_node
+          return unless node.arguments?
 
-          return if args.empty?
+          arguments = node.arguments.to_a
+
           # discard cases with argument destructuring
-          return true unless args.all?(&:arg_type?)
-          return if args_match?(method_name, args)
+          return true unless arguments.all?(&:arg_type?)
+          return if args_match?(send_node.method_name, arguments)
 
-          add_offense(args_node, :expression, message(method_name))
+          add_offense(node.arguments, :expression)
         end
 
         private
 
-        def message(method_name)
-          args = target_args(method_name).join(', ')
-          "Name `#{method_name}` block params `|#{args}|`."
+        def message(node)
+          method_name = node.parent.send_node.method_name
+          arguments   = target_args(method_name).join(', ')
+
+          format(MSG, method_name, arguments)
         end
 
         def methods
@@ -42,12 +44,16 @@ module RuboCop
         end
 
         def method_names
-          methods.map { |e| e.keys.first.to_sym }
+          methods.map { |method| method_name(method).to_sym }
+        end
+
+        def method_name(method)
+          method.keys.first
         end
 
         def target_args(method_name)
           method_name = method_name.to_s
-          method_hash = methods.find { |m| m.keys.first == method_name }
+          method_hash = methods.find { |m| method_name(m) == method_name }
           method_hash[method_name]
         end
 
