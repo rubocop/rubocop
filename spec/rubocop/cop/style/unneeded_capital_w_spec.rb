@@ -12,8 +12,10 @@ describe RuboCop::Cop::Style::UnneededCapitalW do
   end
 
   it 'registers an offense for misused %W' do
-    inspect_source(cop, '%W(cat dog)')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      %W(cat dog)
+      ^^^^^^^^^^^ Do not use `%W` unless interpolation is needed. If not, use `%w`.
+    RUBY
   end
 
   it 'registers no offense for %W with interpolation' do

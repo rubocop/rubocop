@@ -3,10 +3,6 @@
 describe RuboCop::Cop::Style::IdenticalConditionalBranches do
   subject(:cop) { described_class.new }
 
-  before do
-    inspect_source(cop, source)
-  end
-
   context 'on if..else with identical bodies' do
     let(:source) do
       <<-END.strip_indent
@@ -19,11 +15,15 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
     end
 
     it 'registers an offense' do
-      expect(cop.offenses.size).to eq(2)
-      expect(cop.messages).to eq([
-                                   'Move `do_x` out of the conditional.',
-                                   'Move `do_x` out of the conditional.'
-                                 ])
+      expect_offense(<<-RUBY.strip_indent)
+        if something
+          do_x
+          ^^^^ Move `do_x` out of the conditional.
+        else
+          do_x
+          ^^^^ Move `do_x` out of the conditional.
+        end
+      RUBY
     end
   end
 
@@ -41,11 +41,17 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
     end
 
     it 'registers an offense' do
-      expect(cop.offenses.size).to eq(2)
-      expect(cop.messages).to eq([
-                                   'Move `do_x` out of the conditional.',
-                                   'Move `do_x` out of the conditional.'
-                                 ])
+      expect_offense(<<-RUBY.strip_indent)
+        if something
+          method_call_here(1, 2, 3)
+          do_x
+          ^^^^ Move `do_x` out of the conditional.
+        else
+          1 + 2 + 3
+          do_x
+          ^^^^ Move `do_x` out of the conditional.
+        end
+      RUBY
     end
   end
 
@@ -63,11 +69,17 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
     end
 
     it 'registers an offense' do
-      expect(cop.offenses.size).to eq(2)
-      expect(cop.messages).to eq([
-                                   'Move `do_x` out of the conditional.',
-                                   'Move `do_x` out of the conditional.'
-                                 ])
+      expect_offense(<<-RUBY.strip_indent)
+        if something
+          do_x
+          ^^^^ Move `do_x` out of the conditional.
+          method_call_here(1, 2, 3)
+        else
+          do_x
+          ^^^^ Move `do_x` out of the conditional.
+          1 + 2 + 3
+        end
+      RUBY
     end
   end
 
@@ -118,12 +130,19 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
     end
 
     it 'registers an offense' do
-      expect(cop.offenses.size).to eq(3)
-      expect(cop.messages).to eq([
-                                   'Move `do_x` out of the conditional.',
-                                   'Move `do_x` out of the conditional.',
-                                   'Move `do_x` out of the conditional.'
-                                 ])
+      expect_offense(<<-RUBY.strip_indent)
+        case something
+        when :a
+          do_x
+          ^^^^ Move `do_x` out of the conditional.
+        when :b
+          do_x
+          ^^^^ Move `do_x` out of the conditional.
+        else
+          do_x
+          ^^^^ Move `do_x` out of the conditional.
+        end
+      RUBY
     end
   end
 
@@ -164,12 +183,22 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
     end
 
     it 'registers an offense' do
-      expect(cop.offenses.size).to eq(3)
-      expect(cop.messages).to eq([
-                                   'Move `do_x` out of the conditional.',
-                                   'Move `do_x` out of the conditional.',
-                                   'Move `do_x` out of the conditional.'
-                                 ])
+      expect_offense(<<-RUBY.strip_indent)
+        case something
+        when :a
+          x1
+          do_x
+          ^^^^ Move `do_x` out of the conditional.
+        when :b
+          x2
+          do_x
+          ^^^^ Move `do_x` out of the conditional.
+        else
+          x3
+          do_x
+          ^^^^ Move `do_x` out of the conditional.
+        end
+      RUBY
     end
   end
 
@@ -191,12 +220,22 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
     end
 
     it 'registers an offense' do
-      expect(cop.offenses.size).to eq(3)
-      expect(cop.messages).to eq([
-                                   'Move `do_x` out of the conditional.',
-                                   'Move `do_x` out of the conditional.',
-                                   'Move `do_x` out of the conditional.'
-                                 ])
+      expect_offense(<<-RUBY.strip_indent)
+        case something
+        when :a
+          do_x
+          ^^^^ Move `do_x` out of the conditional.
+          x1
+        when :b
+          do_x
+          ^^^^ Move `do_x` out of the conditional.
+          x2
+        else
+          do_x
+          ^^^^ Move `do_x` out of the conditional.
+          x3
+        end
+      RUBY
     end
   end
 

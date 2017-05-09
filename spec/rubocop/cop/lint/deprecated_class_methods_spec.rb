@@ -4,17 +4,17 @@ describe RuboCop::Cop::Lint::DeprecatedClassMethods do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for File.exists?' do
-    inspect_source(cop, 'File.exists?(o)')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['`File.exists?` is deprecated in favor of `File.exist?`.'])
+    expect_offense(<<-RUBY.strip_indent)
+      File.exists?(o)
+           ^^^^^^^ `File.exists?` is deprecated in favor of `File.exist?`.
+    RUBY
   end
 
   it 'registers an offense for ::File.exists?' do
-    inspect_source(cop, '::File.exists?(o)')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['`File.exists?` is deprecated in favor of `File.exist?`.'])
+    expect_offense(<<-RUBY.strip_indent)
+      ::File.exists?(o)
+             ^^^^^^^ `File.exists?` is deprecated in favor of `File.exist?`.
+    RUBY
   end
 
   it 'does not register an offense for File.exist?' do
@@ -23,10 +23,10 @@ describe RuboCop::Cop::Lint::DeprecatedClassMethods do
   end
 
   it 'registers an offense for Dir.exists?' do
-    inspect_source(cop, 'Dir.exists?(o)')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['`Dir.exists?` is deprecated in favor of `Dir.exist?`.'])
+    expect_offense(<<-RUBY.strip_indent)
+      Dir.exists?(o)
+          ^^^^^^^ `Dir.exists?` is deprecated in favor of `Dir.exist?`.
+    RUBY
   end
 
   it 'auto-corrects File.exists? with File.exist?' do

@@ -54,8 +54,12 @@ describe RuboCop::Cop::Style::WhileUntilModifier do
     end
 
     it 'registers an offense' do
-      inspect_source(cop, source)
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        while true
+        ^^^^^ Favor modifier `while` usage when having a single-line body.
+          x = 0
+        end
+      RUBY
     end
 
     it 'does auto-correction' do
@@ -98,11 +102,11 @@ describe RuboCop::Cop::Style::WhileUntilModifier do
   # Regression: https://github.com/bbatsov/rubocop/issues/4006
   context 'when the modifier condition is multiline' do
     it 'registers an offense' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         foo while bar ||
+            ^^^^^ Favor modifier `while` usage when having a single-line body.
           baz
-      END
-      expect(cop.offenses.size).to eq(1)
+      RUBY
     end
   end
 

@@ -4,8 +4,10 @@ describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for parens in method call without args' do
-    inspect_source(cop, 'top.test()')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      top.test()
+              ^ Do not use parentheses for method calls with no arguments.
+    RUBY
   end
 
   it 'accepts parentheses for methods starting with an upcase letter' do
@@ -55,18 +57,24 @@ describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses do
   end
 
   it 'registers an offense for `obj.method ||= func()`' do
-    inspect_source(cop, 'obj.method ||= func()')
-    expect(cop.offenses.size).to eq 1
+    expect_offense(<<-RUBY.strip_indent)
+      obj.method ||= func()
+                         ^ Do not use parentheses for method calls with no arguments.
+    RUBY
   end
 
   it 'registers an offense for `obj.method &&= func()`' do
-    inspect_source(cop, 'obj.method &&= func()')
-    expect(cop.offenses.size).to eq 1
+    expect_offense(<<-RUBY.strip_indent)
+      obj.method &&= func()
+                         ^ Do not use parentheses for method calls with no arguments.
+    RUBY
   end
 
   it 'registers an offense for `obj.method += func()`' do
-    inspect_source(cop, 'obj.method += func()')
-    expect(cop.offenses.size).to eq 1
+    expect_offense(<<-RUBY.strip_indent)
+      obj.method += func()
+                        ^ Do not use parentheses for method calls with no arguments.
+    RUBY
   end
 
   it 'auto-corrects by removing unneeded braces' do
@@ -96,13 +104,17 @@ describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses do
     end
 
     it 'registers an offense with empty parens' do
-      inspect_source(cop, '_a = c(d())')
-      expect(cop.offenses.size).to eq 1
+      expect_offense(<<-RUBY.strip_indent)
+        _a = c(d())
+                ^ Do not use parentheses for method calls with no arguments.
+      RUBY
     end
 
     it 'registers an empty parens offense for multiple assignment' do
-      inspect_source(cop, '_a, _b, _c = d(e())')
-      expect(cop.offenses.size).to eq 1
+      expect_offense(<<-RUBY.strip_indent)
+        _a, _b, _c = d(e())
+                        ^ Do not use parentheses for method calls with no arguments.
+      RUBY
     end
   end
 end

@@ -5,24 +5,24 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
 
   context 'with %q strings' do
     it 'registers an offense for only single quotes' do
-      inspect_source(cop, "%q('hi')")
-
-      expect(cop.messages).to eq(['Use `%q` only for strings that contain ' \
-                                  'both single quotes and double quotes.'])
+      expect_offense(<<-RUBY.strip_indent)
+        %q('hi')
+        ^^^^^^^^ Use `%q` only for strings that contain both single quotes and double quotes.
+      RUBY
     end
 
     it 'registers an offense for only double quotes' do
-      inspect_source(cop, '%q("hi")')
-
-      expect(cop.messages).to eq(['Use `%q` only for strings that contain ' \
-                                  'both single quotes and double quotes.'])
+      expect_offense(<<-RUBY.strip_indent)
+        %q("hi")
+        ^^^^^^^^ Use `%q` only for strings that contain both single quotes and double quotes.
+      RUBY
     end
 
     it 'registers an offense for no quotes' do
-      inspect_source(cop, '%q(hi)')
-
-      expect(cop.messages).to eq(['Use `%q` only for strings that contain ' \
-                                  'both single quotes and double quotes.'])
+      expect_offense(<<-RUBY.strip_indent)
+        %q(hi)
+        ^^^^^^ Use `%q` only for strings that contain both single quotes and double quotes.
+      RUBY
     end
 
     it 'accepts a string with single quotes and double quotes' do
@@ -78,30 +78,24 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
 
   context 'with %Q strings' do
     it 'registers an offense for static string without quotes' do
-      inspect_source(cop, '%Q(hi)')
-
-      expect(cop.messages).to eq(['Use `%Q` only for strings that contain ' \
-                                  'both single quotes and double quotes, or ' \
-                                  'for dynamic strings that contain double ' \
-                                  'quotes.'])
+      expect_offense(<<-RUBY.strip_indent)
+        %Q(hi)
+        ^^^^^^ Use `%Q` only for strings that contain both single quotes and double quotes, or for dynamic strings that contain double quotes.
+      RUBY
     end
 
     it 'registers an offense for static string with only double quotes' do
-      inspect_source(cop, '%Q("hi")')
-
-      expect(cop.messages).to eq(['Use `%Q` only for strings that contain ' \
-                                  'both single quotes and double quotes, or ' \
-                                  'for dynamic strings that contain double ' \
-                                  'quotes.'])
+      expect_offense(<<-RUBY.strip_indent)
+        %Q("hi")
+        ^^^^^^^^ Use `%Q` only for strings that contain both single quotes and double quotes, or for dynamic strings that contain double quotes.
+      RUBY
     end
 
     it 'registers an offense for dynamic string without quotes' do
-      inspect_source(cop, "%Q(hi\#{4})")
-
-      expect(cop.messages).to eq(['Use `%Q` only for strings that contain ' \
-                                  'both single quotes and double quotes, or ' \
-                                  'for dynamic strings that contain double ' \
-                                  'quotes.'])
+      expect_offense(<<-'RUBY'.strip_indent)
+        %Q(hi#{4})
+        ^^^^^^^^^^ Use `%Q` only for strings that contain both single quotes and double quotes, or for dynamic strings that contain double quotes.
+      RUBY
     end
 
     it 'accepts a string with single quotes and double quotes' do

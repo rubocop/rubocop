@@ -81,8 +81,9 @@ describe RuboCop::Cop::Style::NestedModifier do
   end
 
   it 'registers one offense for more than two modifiers' do
-    inspect_source(cop, 'something until a while b unless c if d')
-    expect(cop.messages).to eq(['Avoid using nested modifiers.'])
-    expect(cop.highlights).to eq(['unless'])
+    expect_offense(<<-RUBY.strip_indent)
+      something until a while b unless c if d
+                                ^^^^^^ Avoid using nested modifiers.
+    RUBY
   end
 end

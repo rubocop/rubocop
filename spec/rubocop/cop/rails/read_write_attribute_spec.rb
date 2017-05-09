@@ -5,9 +5,10 @@ describe RuboCop::Cop::Rails::ReadWriteAttribute do
 
   context 'read_attribute' do
     it 'registers an offense' do
-      inspect_source(cop, 'res = read_attribute(:test)')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['read_attribute'])
+      expect_offense(<<-RUBY.strip_indent)
+        res = read_attribute(:test)
+              ^^^^^^^^^^^^^^ Prefer `self[:attr]` over `read_attribute(:attr)`.
+      RUBY
     end
 
     it 'registers no offense with explicit receiver' do
@@ -17,9 +18,10 @@ describe RuboCop::Cop::Rails::ReadWriteAttribute do
 
   context 'write_attribute' do
     it 'registers an offense' do
-      inspect_source(cop, 'write_attribute(:test, val)')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['write_attribute'])
+      expect_offense(<<-RUBY.strip_indent)
+        write_attribute(:test, val)
+        ^^^^^^^^^^^^^^^ Prefer `self[:attr] = val` over `write_attribute(:attr, val)`.
+      RUBY
     end
 
     it 'registers no offense with explicit receiver' do

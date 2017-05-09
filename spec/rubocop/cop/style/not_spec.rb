@@ -4,8 +4,10 @@ describe RuboCop::Cop::Style::Not, :config do
   subject(:cop) { described_class.new(config) }
 
   it 'registers an offense for not' do
-    inspect_source(cop, 'not test')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      not test
+      ^^^ Use `!` instead of `not`.
+    RUBY
   end
 
   it 'does not register an offense for !' do

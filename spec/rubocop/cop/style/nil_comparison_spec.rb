@@ -4,15 +4,17 @@ describe RuboCop::Cop::Style::NilComparison do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for == nil' do
-    inspect_source(cop, 'x == nil')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['=='])
+    expect_offense(<<-RUBY.strip_indent)
+      x == nil
+        ^^ Prefer the use of the `nil?` predicate.
+    RUBY
   end
 
   it 'registers an offense for === nil' do
-    inspect_source(cop, 'x === nil')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['==='])
+    expect_offense(<<-RUBY.strip_indent)
+      x === nil
+        ^^^ Prefer the use of the `nil?` predicate.
+    RUBY
   end
 
   it 'autocorrects by replacing == nil with .nil?' do

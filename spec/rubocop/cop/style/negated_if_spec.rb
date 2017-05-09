@@ -185,11 +185,10 @@ describe RuboCop::Cop::Style::NegatedIf do
     end
 
     it 'registers an offence for postfix' do
-      inspect_source(cop, 'foo if !bar')
-
-      expect(cop.messages).to eq(
-        ['Favor `unless` over `if` for negative conditions.']
-      )
+      expect_offense(<<-RUBY.strip_indent)
+        foo if !bar
+        ^^^^^^^^^^^ Favor `unless` over `if` for negative conditions.
+      RUBY
     end
 
     it 'does not register an offence for prefix' do

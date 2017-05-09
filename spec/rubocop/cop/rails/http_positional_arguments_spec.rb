@@ -315,8 +315,10 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       end
 
       it 'registers an offense' do
-        inspect_source(cop, source)
-        expect(cop.offenses.size).to eq(1)
+        expect_offense(<<-RUBY.strip_indent)
+          get :new, user_id: @user.id
+          ^^^ Use keyword arguments instead of positional arguments for http call: `get`.
+        RUBY
       end
 
       it 'autocorrects offense' do
@@ -360,8 +362,16 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       end
 
       it 'registers an offense' do
-        inspect_source(cop, source)
-        expect(cop.offenses.size).to eq(1)
+        expect_offense(<<-RUBY.strip_indent)
+          patch :update,
+          ^^^^^ Use keyword arguments instead of positional arguments for http call: `patch`.
+                    id: @user.id,
+                    ac: {
+                      article_id: @article1.id,
+                      profile_id: @profile1.id,
+                      content: 'Some Text'
+                    }
+        RUBY
       end
 
       it 'autocorrects offense' do
@@ -394,8 +404,16 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       end
 
       it 'registers an offense' do
-        inspect_source(cop, source)
-        expect(cop.offenses.size).to eq(1)
+        expect_offense(<<-RUBY.strip_indent)
+          post :create,
+          ^^^^ Use keyword arguments instead of positional arguments for http call: `post`.
+                    id: @user.id,
+                    ac: {
+                      article_id: @article1.id,
+                      profile_id: @profile1.id,
+                      content: 'Some Text'
+                    }
+        RUBY
       end
 
       it 'autocorrects offense' do

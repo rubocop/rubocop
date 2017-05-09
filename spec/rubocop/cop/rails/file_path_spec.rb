@@ -16,8 +16,10 @@ describe RuboCop::Cop::Rails::FilePath do
     let(:source) { "File.join(Rails.root, 'app', 'models')" }
 
     it 'registers an offense' do
-      inspect_source(cop, source)
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        File.join(Rails.root, 'app', 'models')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please use `Rails.root.join('path', 'to')` instead.
+      RUBY
     end
   end
 
@@ -25,8 +27,10 @@ describe RuboCop::Cop::Rails::FilePath do
     let(:source) { "Rails.root.join('app/models/goober')" }
 
     it 'registers an offense' do
-      inspect_source(cop, source)
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        Rails.root.join('app/models/goober')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please use `Rails.root.join('path', 'to')` instead.
+      RUBY
     end
   end
 
@@ -34,8 +38,10 @@ describe RuboCop::Cop::Rails::FilePath do
     let(:source) { '"#{Rails.root}/app/models/goober"' }
 
     it 'registers an offense' do
-      inspect_source(cop, source)
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-'RUBY'.strip_indent)
+        "#{Rails.root}/app/models/goober"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please use `Rails.root.join('path', 'to')` instead.
+      RUBY
     end
   end
 
@@ -43,8 +49,10 @@ describe RuboCop::Cop::Rails::FilePath do
     let(:source) { 'foo(bar(File.join(Rails.root, "app", "models")))' }
 
     it 'registers an offense once' do
-      inspect_source(cop, source)
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        foo(bar(File.join(Rails.root, "app", "models")))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please use `Rails.root.join('path', 'to')` instead.
+      RUBY
     end
   end
 
@@ -52,8 +60,10 @@ describe RuboCop::Cop::Rails::FilePath do
     let(:source) { 'foo(Rails.root.join(\'app/models\'))' }
 
     it 'registers an offense once' do
-      inspect_source(cop, source)
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        foo(Rails.root.join('app/models'))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please use `Rails.root.join('path', 'to')` instead.
+      RUBY
     end
   end
 

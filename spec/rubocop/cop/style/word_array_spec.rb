@@ -33,18 +33,24 @@ describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'registers an offense for arrays of double quoted strings' do
-      inspect_source(cop, '["one", "two", "three"]')
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        ["one", "two", "three"]
+        ^^^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
+      RUBY
     end
 
     it 'registers an offense for arrays of unicode word characters' do
-      inspect_source(cop, '["ВУЗ", "вуз", "中文网"]')
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        ["ВУЗ", "вуз", "中文网"]
+        ^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
+      RUBY
     end
 
     it 'registers an offense for arrays with character constants' do
-      inspect_source(cop, '["one", ?\n]')
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-'RUBY'.strip_indent)
+        ["one", ?\n]
+        ^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
+      RUBY
     end
 
     it 'registers an offense for strings with embedded newlines and tabs' do
@@ -53,8 +59,10 @@ describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'registers an offense for strings with newline and tab escapes' do
-      inspect_source(cop, %(["one\\n", "hi\\tthere"]))
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-'RUBY'.strip_indent)
+        ["one\n", "hi\tthere"]
+        ^^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
+      RUBY
     end
 
     it 'uses %W when autocorrecting strings with newlines and tabs' do
@@ -180,8 +188,10 @@ describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'registers an offense for a %w() array' do
-      inspect_source(cop, '%w(one two three)')
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        %w(one two three)
+        ^^^^^^^^^^^^^^^^^ Use `[]` for an array of words.
+      RUBY
     end
 
     it 'auto-corrects a %w() array' do
@@ -217,8 +227,10 @@ describe RuboCop::Cop::Style::WordArray, :config do
     let(:cop_config) { { 'MinSize' => 0, 'WordRegex' => /\A[\w@.]+\z/ } }
 
     it 'registers an offense for arrays of email addresses' do
-      inspect_source(cop, "['a@example.com', 'b@example.com']")
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        ['a@example.com', 'b@example.com']
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
+      RUBY
     end
 
     it 'auto-corrects an array of email addresses' do

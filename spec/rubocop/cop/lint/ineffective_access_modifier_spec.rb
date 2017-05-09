@@ -3,10 +3,6 @@
 describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
   subject(:cop) { described_class.new }
 
-  before do
-    inspect_source(cop, source)
-  end
-
   context 'when `private` is applied to a class method' do
     let(:source) do
       <<-END.strip_indent
@@ -21,13 +17,16 @@ describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
     end
 
     it 'registers an offense' do
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(
-        ['`private` (on line 2) does not make singleton methods private. ' \
-         'Use `private_class_method` or `private` inside a `class << self` ' \
-         'block instead.']
-      )
-      expect(cop.highlights).to eq(['def'])
+      expect_offense(<<-RUBY.strip_indent)
+        class C
+          private
+
+          def self.method
+          ^^^ `private` (on line 2) does not make singleton methods private. Use `private_class_method` or `private` inside a `class << self` block instead.
+            puts "hi"
+          end
+        end
+      RUBY
     end
   end
 
@@ -45,12 +44,16 @@ describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
     end
 
     it 'registers an offense' do
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(
-        ['`protected` (on line 2) does not make singleton methods protected. ' \
-         'Use `protected` inside a `class << self` block instead.']
-      )
-      expect(cop.highlights).to eq(['def'])
+      expect_offense(<<-RUBY.strip_indent)
+        class C
+          protected
+
+          def self.method
+          ^^^ `protected` (on line 2) does not make singleton methods protected. Use `protected` inside a `class << self` block instead.
+            puts "hi"
+          end
+        end
+      RUBY
     end
   end
 
@@ -112,13 +115,20 @@ describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
     end
 
     it 'still registers an offense' do
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(
-        ['`private` (on line 3) does not make singleton methods private. ' \
-         'Use `private_class_method` or `private` inside a `class << self` ' \
-         'block instead.']
-      )
-      expect(cop.highlights).to eq(['def'])
+      expect_offense(<<-RUBY.strip_indent)
+        class C
+
+          private
+
+          def instance_method
+          end
+
+          def self.method
+          ^^^ `private` (on line 3) does not make singleton methods private. Use `private_class_method` or `private` inside a `class << self` block instead.
+            puts "hi"
+          end
+        end
+      RUBY
     end
   end
 end

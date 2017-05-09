@@ -11,11 +11,10 @@ describe RuboCop::Cop::Style::NonNilCheck, :config do
     end
 
     it 'registers an offense for != nil' do
-      inspect_source(cop, 'x != nil')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['!='])
-      expect(cop.messages)
-        .to eq(['Prefer `!expression.nil?` over `expression != nil`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        x != nil
+          ^^ Prefer `!expression.nil?` over `expression != nil`.
+      RUBY
     end
 
     it 'does not register an offense for != 0' do
@@ -98,18 +97,17 @@ describe RuboCop::Cop::Style::NonNilCheck, :config do
     end
 
     it 'registers an offense for `!x.nil?`' do
-      inspect_source(cop, '!x.nil?')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Explicit non-nil checks are usually redundant.'])
-      expect(cop.highlights).to eq(['!x.nil?'])
+      expect_offense(<<-RUBY.strip_indent)
+        !x.nil?
+        ^^^^^^^ Explicit non-nil checks are usually redundant.
+      RUBY
     end
 
     it 'registers an offense for unless x.nil?' do
-      inspect_source(cop, 'puts b unless x.nil?')
-      expect(cop.messages)
-        .to eq(['Explicit non-nil checks are usually redundant.'])
-      expect(cop.highlights).to eq(['x.nil?'])
+      expect_offense(<<-RUBY.strip_indent)
+        puts b unless x.nil?
+                      ^^^^^^ Explicit non-nil checks are usually redundant.
+      RUBY
     end
 
     it 'does not register an offense for `x.nil?`' do
@@ -121,9 +119,10 @@ describe RuboCop::Cop::Style::NonNilCheck, :config do
     end
 
     it 'registers an offense for `not x.nil?`' do
-      inspect_source(cop, 'not x.nil?')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['not x.nil?'])
+      expect_offense(<<-RUBY.strip_indent)
+        not x.nil?
+        ^^^^^^^^^^ Explicit non-nil checks are usually redundant.
+      RUBY
     end
 
     it 'does not blow up with ternary operators' do

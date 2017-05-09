@@ -18,8 +18,10 @@ describe RuboCop::Cop::Style::IfUnlessModifierOfIfUnless do
     end
 
     it 'registers an offense' do
-      inspect_source(cop, source)
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        condition ? then_part : else_part unless external_condition
+                                          ^^^^^^ Avoid modifier `unless` after another conditional.
+      RUBY
     end
   end
 
@@ -33,8 +35,12 @@ describe RuboCop::Cop::Style::IfUnlessModifierOfIfUnless do
     end
 
     it 'registers an offense' do
-      inspect_source(cop, source)
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        unless condition
+          then_part
+        end if external_condition
+            ^^ Avoid modifier `if` after another conditional.
+      RUBY
     end
   end
 

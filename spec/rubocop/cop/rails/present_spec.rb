@@ -153,11 +153,10 @@ describe RuboCop::Cop::Rails::Present, :config do
         let(:source) { 'something unless foo.blank?' }
 
         it 'registers an offense' do
-          inspect_source(cop, source)
-
-          expect(cop.messages)
-            .to eq(['Use `if foo.present?` instead of `unless foo.blank?`.'])
-          expect(cop.highlights).to eq(['unless foo.blank?'])
+          expect_offense(<<-RUBY.strip_indent)
+            something unless foo.blank?
+                      ^^^^^^^^^^^^^^^^^ Use `if foo.present?` instead of `unless foo.blank?`.
+          RUBY
         end
 
         it 'auto-corrects' do
@@ -177,11 +176,12 @@ describe RuboCop::Cop::Rails::Present, :config do
         end
 
         it 'registers an offense' do
-          inspect_source(cop, source)
-
-          expect(cop.messages)
-            .to eq(['Use `if foo.present?` instead of `unless foo.blank?`.'])
-          expect(cop.highlights).to eq(['unless foo.blank?'])
+          expect_offense(<<-RUBY.strip_indent)
+            unless foo.blank?
+            ^^^^^^^^^^^^^^^^^ Use `if foo.present?` instead of `unless foo.blank?`.
+              something
+            end
+          RUBY
         end
 
         it 'auto-corrects' do
@@ -207,11 +207,14 @@ describe RuboCop::Cop::Rails::Present, :config do
         end
 
         it 'registers an offense' do
-          inspect_source(cop, source)
-
-          expect(cop.messages)
-            .to eq(['Use `if foo.present?` instead of `unless foo.blank?`.'])
-          expect(cop.highlights).to eq(['unless foo.blank?'])
+          expect_offense(<<-RUBY.strip_indent)
+            unless foo.blank?
+            ^^^^^^^^^^^^^^^^^ Use `if foo.present?` instead of `unless foo.blank?`.
+              something
+            else
+              something_else
+            end
+          RUBY
         end
 
         it 'auto-corrects' do

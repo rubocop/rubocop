@@ -88,24 +88,24 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'no_comma' } }
 
       it 'registers an offense for trailing comma in an Array literal' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           VALUES = [
                      1001,
                      2020,
                      3333,
+                         ^ Avoid comma after the last item of an array.
                    ]
-        END
-        expect(cop.highlights).to eq([','])
+        RUBY
       end
 
       it 'registers an offense for trailing comma in a Hash literal' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           MAP = { a: 1001,
                   b: 2020,
                   c: 3333,
+                         ^ Avoid comma after the last item of a hash.
                 }
-        END
-        expect(cop.highlights).to eq([','])
+        RUBY
       end
 
       it 'accepts an Array literal with no trailing comma' do
@@ -223,27 +223,23 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
       end
 
       it 'registers an offense for no trailing comma in a Hash literal' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           MAP = { a: 1001,
                   b: 2020,
                   c: 3333
+                  ^^^^^^^ Put a comma after the last item of a multiline hash.
           }
-        END
-        expect(cop.messages)
-          .to eq(['Put a comma after the last item of a multiline hash.'])
-        expect(cop.highlights).to eq(['c: 3333'])
+        RUBY
       end
 
       it 'registers an offense for trailing comma in a comment in Hash' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           MAP = { a: 1001,
                   b: 2020,
                   c: 3333 # ,
+                  ^^^^^^^ Put a comma after the last item of a multiline hash.
           }
-        END
-        expect(cop.messages)
-          .to eq(['Put a comma after the last item of a multiline hash.'])
-        expect(cop.highlights).to eq(['c: 3333'])
+        RUBY
       end
 
       it 'accepts trailing comma in an Array literal' do
@@ -408,15 +404,13 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
       end
 
       it 'registers an offense for no trailing comma in a Hash literal' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           MAP = { a: 1001,
                   b: 2020,
                   c: 3333
+                  ^^^^^^^ Put a comma after the last item of a multiline hash.
           }
-        END
-        expect(cop.messages)
-          .to eq(['Put a comma after the last item of a multiline hash.'])
-        expect(cop.highlights).to eq(['c: 3333'])
+        RUBY
       end
 
       it 'accepts trailing comma in an Array literal' do

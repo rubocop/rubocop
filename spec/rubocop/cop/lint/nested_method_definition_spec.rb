@@ -4,8 +4,10 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for a nested method definition' do
-    inspect_source(cop, 'def x; def y; end; end')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      def x; def y; end; end
+             ^^^^^^^^^^ Method definitions must not be nested. Use `lambda` instead.
+    RUBY
   end
 
   it 'registers an offense for a nested singleton method definition' do
@@ -22,12 +24,12 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
   end
 
   it 'registers an offense for a nested method definition inside lambda' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       def foo
         bar = -> { def baz; puts; end }
+                   ^^^^^^^^^^^^^^^^^^ Method definitions must not be nested. Use `lambda` instead.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'registers an offense for a nested class method definition' do

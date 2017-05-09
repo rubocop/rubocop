@@ -15,32 +15,44 @@ describe RuboCop::Cop::Performance::Caller do
   end
 
   it 'registers an offense when :first is called on caller' do
-    inspect_source(cop, 'caller.first')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      caller.first
+             ^^^^^ Use `caller(n..n)` instead of `caller[n]`.
+    RUBY
   end
 
   it 'registers an offense when :first is called on caller with 1' do
-    inspect_source(cop, 'caller(1).first')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      caller(1).first
+                ^^^^^ Use `caller(n..n)` instead of `caller[n]`.
+    RUBY
   end
 
   it 'registers an offense when :first is called on caller with 2' do
-    inspect_source(cop, 'caller(2).first')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      caller(2).first
+                ^^^^^ Use `caller(n..n)` instead of `caller[n]`.
+    RUBY
   end
 
   it 'registers an offense when :[] is called on caller' do
-    inspect_source(cop, 'caller[1]')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      caller[1]
+            ^^^ Use `caller(n..n)` instead of `caller[n]`.
+    RUBY
   end
 
   it 'registers an offense when :[] is called on caller with 1' do
-    inspect_source(cop, 'caller(1)[1]')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      caller(1)[1]
+               ^^^ Use `caller(n..n)` instead of `caller[n]`.
+    RUBY
   end
 
   it 'registers an offense when :[] is called on caller with 2' do
-    inspect_source(cop, 'caller(2)[1]')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      caller(2)[1]
+               ^^^ Use `caller(n..n)` instead of `caller[n]`.
+    RUBY
   end
 end

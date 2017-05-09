@@ -18,14 +18,12 @@ describe RuboCop::Cop::Style::OpMethod do
   end
 
   it 'works properly even if the argument not surrounded with braces' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       def + another
+            ^^^^^^^ When defining the `+` operator, name its argument `other`.
         another
       end
-    END
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['When defining the `+` operator, name its argument `other`.'])
+    RUBY
   end
 
   it 'does not register an offense for arg named other' do

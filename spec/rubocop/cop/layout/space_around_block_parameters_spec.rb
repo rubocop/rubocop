@@ -32,22 +32,24 @@ describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
     end
 
     it 'registers an offense for space before first parameter' do
-      inspect_source(cop, '{}.each { | x| puts x }')
-      expect(cop.messages)
-        .to eq(['Space before first block parameter detected.'])
-      expect(cop.highlights).to eq([' '])
+      expect_offense(<<-RUBY.strip_indent)
+        {}.each { | x| puts x }
+                   ^ Space before first block parameter detected.
+      RUBY
     end
 
     it 'registers an offense for space after last parameter' do
-      inspect_source(cop, '{}.each { |x, y  | puts x }')
-      expect(cop.messages).to eq(['Space after last block parameter detected.'])
-      expect(cop.highlights).to eq(['  '])
+      expect_offense(<<-RUBY.strip_indent)
+        {}.each { |x, y  | puts x }
+                       ^^ Space after last block parameter detected.
+      RUBY
     end
 
     it 'registers an offense for no space after closing pipe' do
-      inspect_source(cop, '{}.each { |x, y|puts x }')
-      expect(cop.messages).to eq(['Space after closing `|` missing.'])
-      expect(cop.highlights).to eq(['|'])
+      expect_offense(<<-RUBY.strip_indent)
+        {}.each { |x, y|puts x }
+                       ^ Space after closing `|` missing.
+      RUBY
     end
 
     it 'accepts line break after closing pipe' do
@@ -59,18 +61,18 @@ describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
     end
 
     it 'registers an offense for multiple spaces before parameter' do
-      inspect_source(cop, '{}.each { |x,   y| puts x }')
-      expect(cop.messages)
-        .to eq(['Extra space before block parameter detected.'])
-      expect(cop.highlights).to eq(['  '])
+      expect_offense(<<-RUBY.strip_indent)
+        {}.each { |x,   y| puts x }
+                     ^^ Extra space before block parameter detected.
+      RUBY
     end
 
     context 'trailing comma' do
       it 'registers an offense for space after the last comma' do
-        inspect_source(cop, '{}.each { |x, | puts x }')
-        expect(cop.messages)
-          .to eq(['Space after last block parameter detected.'])
-        expect(cop.highlights).to eq([' '])
+        expect_offense(<<-RUBY.strip_indent)
+          {}.each { |x, | puts x }
+                       ^ Space after last block parameter detected.
+        RUBY
       end
 
       it 'accepts no space after the last comma' do
@@ -104,36 +106,38 @@ describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
     end
 
     it 'registers an offense for no space before first parameter' do
-      inspect_source(cop, '{}.each { |x | puts x }')
-      expect(cop.messages)
-        .to eq(['Space before first block parameter missing.'])
-      expect(cop.highlights).to eq(['x'])
+      expect_offense(<<-RUBY.strip_indent)
+        {}.each { |x | puts x }
+                   ^ Space before first block parameter missing.
+      RUBY
     end
 
     it 'registers an offense for no space after last parameter' do
-      inspect_source(cop, '{}.each { | x, y| puts x }')
-      expect(cop.messages).to eq(['Space after last block parameter missing.'])
-      expect(cop.highlights).to eq(['y'])
+      expect_offense(<<-RUBY.strip_indent)
+        {}.each { | x, y| puts x }
+                       ^ Space after last block parameter missing.
+      RUBY
     end
 
     it 'registers an offense for extra space before first parameter' do
-      inspect_source(cop, '{}.each { |  x | puts x }')
-      expect(cop.messages)
-        .to eq(['Extra space before first block parameter detected.'])
-      expect(cop.highlights).to eq([' '])
+      expect_offense(<<-RUBY.strip_indent)
+        {}.each { |  x | puts x }
+                   ^ Extra space before first block parameter detected.
+      RUBY
     end
 
     it 'registers an offense for multiple spaces after last parameter' do
-      inspect_source(cop, '{}.each { | x, y   | puts x }')
-      expect(cop.messages)
-        .to eq(['Extra space after last block parameter detected.'])
-      expect(cop.highlights).to eq(['  '])
+      expect_offense(<<-RUBY.strip_indent)
+        {}.each { | x, y   | puts x }
+                         ^^ Extra space after last block parameter detected.
+      RUBY
     end
 
     it 'registers an offense for no space after closing pipe' do
-      inspect_source(cop, '{}.each { | x, y |puts x }')
-      expect(cop.messages).to eq(['Space after closing `|` missing.'])
-      expect(cop.highlights).to eq(['|'])
+      expect_offense(<<-RUBY.strip_indent)
+        {}.each { | x, y |puts x }
+                         ^ Space after closing `|` missing.
+      RUBY
     end
 
     it 'accepts line break after closing pipe' do
@@ -145,10 +149,10 @@ describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
     end
 
     it 'registers an offense for multiple spaces before parameter' do
-      inspect_source(cop, '{}.each { | x,   y | puts x }')
-      expect(cop.messages)
-        .to eq(['Extra space before block parameter detected.'])
-      expect(cop.highlights).to eq(['  '])
+      expect_offense(<<-RUBY.strip_indent)
+        {}.each { | x,   y | puts x }
+                      ^^ Extra space before block parameter detected.
+      RUBY
     end
 
     context 'trailing comma' do
@@ -157,10 +161,10 @@ describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       end
 
       it 'registers an offense for no space after the last comma' do
-        inspect_source(cop, '{}.each { | x,| puts x }')
-        expect(cop.messages)
-          .to eq(['Space after last block parameter missing.'])
-        expect(cop.highlights).to eq(['x'])
+        expect_offense(<<-RUBY.strip_indent)
+          {}.each { | x,| puts x }
+                      ^ Space after last block parameter missing.
+        RUBY
       end
     end
 

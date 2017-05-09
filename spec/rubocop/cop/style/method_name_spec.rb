@@ -111,13 +111,12 @@ describe RuboCop::Cop::Style::MethodName, :config do
     end
 
     it 'registers an offense for camel case in singleton method name' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def self.myMethod
+                 ^^^^^^^^ Use snake_case for method names.
           # ...
         end
-      END
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['myMethod'])
+      RUBY
     end
 
     it 'accepts snake case in names' do
@@ -128,13 +127,13 @@ describe RuboCop::Cop::Style::MethodName, :config do
     end
 
     it 'registers an offense for singleton camelCase method within class' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         class Sequel
           def self.fooBar
+                   ^^^^^^ Use snake_case for method names.
           end
         end
-      END
-      expect(cop.highlights).to eq(['fooBar'])
+      RUBY
     end
 
     include_examples 'never accepted'
@@ -183,13 +182,13 @@ describe RuboCop::Cop::Style::MethodName, :config do
     end
 
     it 'registers an offense for singleton snake_case method within class' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         class Sequel
           def self.foo_bar
+                   ^^^^^^^ Use camelCase for method names.
           end
         end
-      END
-      expect(cop.highlights).to eq(['foo_bar'])
+      RUBY
     end
 
     include_examples 'always accepted'

@@ -10,26 +10,24 @@ describe RuboCop::Cop::Style::RescueModifier do
   subject(:cop) { described_class.new(config) }
 
   it 'registers an offense for modifier rescue' do
-    inspect_source(cop, 'method rescue handle')
-
-    expect(cop.messages)
-      .to eq(['Avoid using `rescue` in its modifier form.'])
-    expect(cop.highlights).to eq(['method rescue handle'])
+    expect_offense(<<-RUBY.strip_indent)
+      method rescue handle
+      ^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
+    RUBY
   end
 
   it 'registers an offense for modifier rescue around parallel assignment' do
-    inspect_source(cop, 'a, b = 1, 2 rescue nil')
-
-    expect(cop.messages)
-      .to eq(['Avoid using `rescue` in its modifier form.'])
+    expect_offense(<<-RUBY.strip_indent)
+      a, b = 1, 2 rescue nil
+      ^^^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
+    RUBY
   end
 
   it 'handles more complex expression with modifier rescue' do
-    inspect_source(cop, 'method1 or method2 rescue handle')
-
-    expect(cop.messages)
-      .to eq(['Avoid using `rescue` in its modifier form.'])
-    expect(cop.highlights).to eq(['method1 or method2 rescue handle'])
+    expect_offense(<<-RUBY.strip_indent)
+      method1 or method2 rescue handle
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
+    RUBY
   end
 
   it 'handles modifier rescue in normal rescue' do

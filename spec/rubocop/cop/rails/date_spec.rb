@@ -54,8 +54,10 @@ describe RuboCop::Cop::Rails::Date, :config do
 
     context 'when a string literal without timezone' do
       it 'registers an offense' do
-        inspect_source(cop, '"2016-07-12 14:36:31".to_time(:utc)')
-        expect(cop.offenses.size).to eq(1)
+        expect_offense(<<-RUBY.strip_indent)
+          "2016-07-12 14:36:31".to_time(:utc)
+                                ^^^^^^^ Do not use `to_time` on Date objects, because they know nothing about the time zone in use.
+        RUBY
       end
     end
 
@@ -82,8 +84,10 @@ describe RuboCop::Cop::Rails::Date, :config do
     end
 
     it 'registers an offense for Date.today' do
-      inspect_source(cop, 'Date.today')
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        Date.today
+             ^^^^^ Do not use `Date.today` without zone. Use `Time.zone.today` instead.
+      RUBY
     end
 
     RuboCop::Cop::Rails::TimeZone::ACCEPTED_METHODS.each do |a_method|

@@ -23,10 +23,10 @@ describe RuboCop::Cop::Style::StabbyLambdaParentheses, :config do
     it_behaves_like 'common'
 
     it 'registers an offense for a stabby lambda without parentheses' do
-      inspect_source(cop, '->a,b,c { a + b + c }')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Wrap stabby lambda arguments with parentheses.'])
+      expect_offense(<<-RUBY.strip_indent)
+        ->a,b,c { a + b + c }
+          ^^^^^ Wrap stabby lambda arguments with parentheses.
+      RUBY
     end
 
     it 'does not register an offense for a stabby lambda with parentheses' do
@@ -45,10 +45,10 @@ describe RuboCop::Cop::Style::StabbyLambdaParentheses, :config do
     it_behaves_like 'common'
 
     it 'registers an offense for a stabby lambda with parentheses' do
-      inspect_source(cop, '->(a,b,c) { a + b + c }')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Do not wrap stabby lambda arguments with parentheses.'])
+      expect_offense(<<-RUBY.strip_indent)
+        ->(a,b,c) { a + b + c }
+          ^^^^^^^ Do not wrap stabby lambda arguments with parentheses.
+      RUBY
     end
 
     it 'autocorrects when a stabby lambda does not parentheses' do

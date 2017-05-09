@@ -5,41 +5,39 @@ describe RuboCop::Cop::Style::MultilineBlockChain do
 
   context 'with multi-line block chaining' do
     it 'registers an offense for a simple case' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a do
           b
         end.c do
+        ^^^^^ Avoid multi-line chains of blocks.
           d
         end
-      END
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['end.c'])
+      RUBY
     end
 
     it 'registers an offense for a slightly more complicated case' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a do
           b
         end.c1.c2 do
+        ^^^^^^^^^ Avoid multi-line chains of blocks.
           d
         end
-      END
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['end.c1.c2'])
+      RUBY
     end
 
     it 'registers two offenses for a chain of three blocks' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a do
           b
         end.c do
+        ^^^^^ Avoid multi-line chains of blocks.
           d
         end.e do
+        ^^^^^ Avoid multi-line chains of blocks.
           f
         end
-      END
-      expect(cop.offenses.size).to eq(2)
-      expect(cop.highlights).to eq(['end.c', 'end.e'])
+      RUBY
     end
 
     it 'registers an offense for a chain where the second block is ' \

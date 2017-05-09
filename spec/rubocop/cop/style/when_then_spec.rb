@@ -4,12 +4,12 @@ describe RuboCop::Cop::Style::WhenThen do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for when x;' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       case a
       when b; c
+            ^ Do not use `when x;`. Use `when x then` instead.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'accepts when x then' do

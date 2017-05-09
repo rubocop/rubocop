@@ -23,12 +23,14 @@ describe RuboCop::Cop::Style::SingleLineMethods do
     let(:cop_config) { { 'AllowIfMethodIsEmpty' => false } }
 
     it 'registers an offense for an empty method' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def no_op; end
+        ^^^^^^^^^^^^^^ Avoid single-line method definitions.
         def self.resource_class=(klass); end
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
         def @table.columns; end
-      END
-      expect(cop.offenses.size).to eq(3)
+        ^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
+      RUBY
     end
 
     it 'auto-corrects an empty method' do

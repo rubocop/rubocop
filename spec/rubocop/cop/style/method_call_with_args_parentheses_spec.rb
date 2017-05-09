@@ -15,23 +15,31 @@ describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
   end
 
   it 'register an offense for method call without parens' do
-    inspect_source(cop, 'top.test a, b')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      top.test a, b
+          ^^^^ Use parentheses for method calls with arguments.
+    RUBY
   end
 
   it 'register an offense for non-reciever method call without parens' do
-    inspect_source(cop, 'test a, b')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      test a, b
+      ^^^^ Use parentheses for method calls with arguments.
+    RUBY
   end
 
   it 'register an offense for methods starting with a capital without parens' do
-    inspect_source(cop, 'Test a, b')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      Test a, b
+      ^^^^ Use parentheses for method calls with arguments.
+    RUBY
   end
 
   it 'register an offense for superclass call without parens' do
-    inspect_source(cop, 'super a')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      super a
+      ^^^^^ Use parentheses for method calls with arguments.
+    RUBY
   end
 
   it 'register no offense for superclass call without args' do
@@ -47,8 +55,10 @@ describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
   end
 
   it 'register an offense for yield without parens' do
-    inspect_source(cop, 'yield a')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      yield a
+      ^^^^^ Use parentheses for method calls with arguments.
+    RUBY
   end
 
   it 'accepts no parens for operators' do

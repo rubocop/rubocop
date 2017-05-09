@@ -25,17 +25,17 @@ describe RuboCop::Cop::Style::InverseMethods do
   subject(:cop) { described_class.new(config) }
 
   it 'registers an offense for calling !.none? with a symbol proc' do
-    inspect_source(cop, '!foo.none?(&:even?)')
-
-    expect(cop.messages).to eq(['Use `any?` instead of inverting `none?`.'])
-    expect(cop.highlights).to eq(['!foo.none?(&:even?)'])
+    expect_offense(<<-RUBY.strip_indent)
+      !foo.none?(&:even?)
+      ^^^^^^^^^^^^^^^^^^^ Use `any?` instead of inverting `none?`.
+    RUBY
   end
 
   it 'registers an offense for calling !.none? with a block' do
-    inspect_source(cop, '!foo.none? { |f| f.even? }')
-
-    expect(cop.messages).to eq(['Use `any?` instead of inverting `none?`.'])
-    expect(cop.highlights).to eq(['!foo.none? { |f| f.even? }'])
+    expect_offense(<<-RUBY.strip_indent)
+      !foo.none? { |f| f.even? }
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `any?` instead of inverting `none?`.
+    RUBY
   end
 
   it 'allows a method call without a not' do
@@ -168,10 +168,10 @@ describe RuboCop::Cop::Style::InverseMethods do
       end
 
       it 'registers an offense for an inverted equality block' do
-        inspect_source(cop, "foo.#{method} { |e| e != 2 }")
-
-        expect(cop.messages)
-          .to eq(["Use `#{inverse}` instead of inverting `#{method}`."])
+        expect_offense(<<-RUBY.strip_indent)
+          foo.select { |e| e != 2 }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^ Use `reject` instead of inverting `select`.
+        RUBY
       end
 
       it 'registers an offense for a multiline inverted equality block' do

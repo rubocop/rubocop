@@ -34,13 +34,12 @@ describe RuboCop::Cop::Lint::Debugger, :config do
   end
 
   it 'reports an offense for a Pry.rescue call' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       def method
         Pry.rescue { puts 1 }
+        ^^^^^^^^^^ Remove debugger entry point `Pry.rescue`.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(['Remove debugger entry point `Pry.rescue`.'])
+    RUBY
   end
 
   context 'target_ruby_version >= 2.4', :ruby24 do

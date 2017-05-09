@@ -27,11 +27,11 @@ describe RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault, :config do
     end
 
     it 'registers an offense for assignment of empty list without space' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def f(x, y=[])
+                  ^ Surrounding space missing in default value assignment.
         end
-      END
-      expect(cop.offenses.size).to eq(1)
+      RUBY
     end
 
     it 'accepts default value assignment with space' do
@@ -91,11 +91,11 @@ describe RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault, :config do
     end
 
     it 'registers an offense for assignment of empty list with space' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def f(x, y = [])
+                  ^^^ Surrounding space detected in default value assignment.
         end
-      END
-      expect(cop.offenses.size).to eq(1)
+      RUBY
     end
 
     it 'accepts default value assignment without space' do

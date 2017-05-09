@@ -36,9 +36,10 @@ describe RuboCop::Cop::Rails::Exit, :config do
 
   context 'with arguments' do
     it 'registers an offense for an exit(0) call with no receiver' do
-      inspect_source(cop,
-                     'exit(0)')
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        exit(0)
+        ^^^^ Do not use `exit` in Rails applications.
+      RUBY
     end
 
     it 'ignores exit calls with unexpected number of parameters' do

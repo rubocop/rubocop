@@ -3,10 +3,6 @@
 describe RuboCop::Cop::Style::NestedParenthesizedCalls do
   subject(:cop) { described_class.new }
 
-  before do
-    inspect_source(cop, source)
-  end
-
   context 'on a non-parenthesized method call' do
     let(:source) { 'puts 1, 2' }
 
@@ -36,11 +32,10 @@ describe RuboCop::Cop::Style::NestedParenthesizedCalls do
       let(:source) { 'puts(compute something)' }
 
       it 'registers an offense' do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages).to eq(
-          ['Add parentheses to nested method call `compute something`.']
-        )
-        expect(cop.highlights).to eq(['compute something'])
+        expect_offense(<<-RUBY.strip_indent)
+          puts(compute something)
+               ^^^^^^^^^^^^^^^^^ Add parentheses to nested method call `compute something`.
+        RUBY
       end
 
       it 'auto-corrects by adding parentheses' do
@@ -53,11 +48,10 @@ describe RuboCop::Cop::Style::NestedParenthesizedCalls do
       let(:source) { 'puts(compute first, second)' }
 
       it 'registers an offense' do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages).to eq(
-          ['Add parentheses to nested method call `compute first, second`.']
-        )
-        expect(cop.highlights).to eq(['compute first, second'])
+        expect_offense(<<-RUBY.strip_indent)
+          puts(compute first, second)
+               ^^^^^^^^^^^^^^^^^^^^^ Add parentheses to nested method call `compute first, second`.
+        RUBY
       end
 
       it 'auto-corrects by adding parentheses' do

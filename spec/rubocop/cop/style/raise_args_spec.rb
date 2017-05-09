@@ -55,8 +55,10 @@ describe RuboCop::Cop::Style::RaiseArgs, :config do
 
     context 'with a raise with 3 args' do
       it 'reports an offense' do
-        inspect_source(cop, 'raise RuntimeError, msg, caller')
-        expect(cop.offenses.size).to eq(1)
+        expect_offense(<<-RUBY.strip_indent)
+          raise RuntimeError, msg, caller
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
+        RUBY
       end
 
       it 'auto-corrects to compact style' do

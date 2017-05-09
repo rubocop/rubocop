@@ -61,13 +61,12 @@ describe RuboCop::Cop::Layout::IndentationWidth do
 
     context 'with if statement' do
       it 'registers an offense for bad indentation of an if body' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           if cond
            func
+          ^ Use 4 (not 1) spaces for indentation.
           end
-        END
-        expect(cop.messages).to eq(['Use 4 (not 1) spaces for indentation.'])
-        expect(cop.highlights).to eq([' '])
+        RUBY
       end
     end
 
@@ -103,25 +102,23 @@ describe RuboCop::Cop::Layout::IndentationWidth do
 
     context 'with if statement' do
       it 'registers an offense for bad indentation of an if body' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           if cond
            func
+          ^ Use 2 (not 1) spaces for indentation.
           end
-        END
-        expect(cop.messages).to eq(['Use 2 (not 1) spaces for indentation.'])
-        expect(cop.highlights).to eq([' '])
+        RUBY
       end
 
       it 'registers an offense for bad indentation of an else body' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           if cond
             func1
           else
            func2
+          ^ Use 2 (not 1) spaces for indentation.
           end
-        END
-        expect(cop.messages).to eq(['Use 2 (not 1) spaces for indentation.'])
-        expect(cop.highlights).to eq([' '])
+        RUBY
       end
 
       it 'registers an offense for bad indentation of an elsif body' do
@@ -138,16 +135,14 @@ describe RuboCop::Cop::Layout::IndentationWidth do
       end
 
       it 'registers offense for bad indentation of ternary inside else' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           if a
             b
           else
                x ? y : z
+          ^^^^^ Use 2 (not 5) spaces for indentation.
           end
-        END
-        expect(cop.messages)
-          .to eq(['Use 2 (not 5) spaces for indentation.'])
-        expect(cop.highlights).to eq(['     '])
+        RUBY
       end
 
       it 'registers offense for bad indentation of modifier if in else' do

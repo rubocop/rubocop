@@ -4,18 +4,14 @@ describe RuboCop::Cop::Rails::NotNullColumn, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) { { 'Include' => nil } }
 
-  before do
-    inspect_source(cop, source)
-  end
-
   context 'with add_column call' do
     context 'with null: false' do
       let(:source) { 'add_column :users, :name, :string, null: false' }
       it 'reports an offense' do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages).to eq(
-          ['Do not add a NOT NULL column without a default value.']
-        )
+        expect_offense(<<-RUBY.strip_indent)
+          add_column :users, :name, :string, null: false
+                                             ^^^^^^^^^^^ Do not add a NOT NULL column without a default value.
+        RUBY
       end
     end
 
@@ -31,10 +27,10 @@ describe RuboCop::Cop::Rails::NotNullColumn, :config do
         'add_column :users, :name, :string, null: false, default: nil'
       end
       it 'reports an offense' do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages).to eq(
-          ['Do not add a NOT NULL column without a default value.']
-        )
+        expect_offense(<<-RUBY.strip_indent)
+          add_column :users, :name, :string, null: false, default: nil
+                                             ^^^^^^^^^^^ Do not add a NOT NULL column without a default value.
+        RUBY
       end
     end
 
@@ -80,10 +76,10 @@ describe RuboCop::Cop::Rails::NotNullColumn, :config do
     context 'with null: false' do
       let(:source) { 'add_reference :products, :category, null: false' }
       it 'reports an offense' do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages).to eq(
-          ['Do not add a NOT NULL column without a default value.']
-        )
+        expect_offense(<<-RUBY.strip_indent)
+          add_reference :products, :category, null: false
+                                              ^^^^^^^^^^^ Do not add a NOT NULL column without a default value.
+        RUBY
       end
     end
 

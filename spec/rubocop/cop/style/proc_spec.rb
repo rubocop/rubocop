@@ -4,8 +4,10 @@ describe RuboCop::Cop::Style::Proc do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for a Proc.new call' do
-    inspect_source(cop, 'f = Proc.new { |x| puts x }')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      f = Proc.new { |x| puts x }
+          ^^^^^^^^ Use `proc` instead of `Proc.new`.
+    RUBY
   end
 
   it 'accepts the proc method' do

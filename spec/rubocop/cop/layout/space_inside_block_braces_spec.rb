@@ -48,9 +48,10 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
     end
 
     it 'registers an offense for empty braces with space inside' do
-      inspect_source(cop, 'each { }')
-      expect(cop.messages).to eq(['Space inside empty braces detected.'])
-      expect(cop.highlights).to eq([' '])
+      expect_offense(<<-RUBY.strip_indent)
+        each { }
+              ^ Space inside empty braces detected.
+      RUBY
     end
 
     it 'auto-corrects unwanted space' do
@@ -77,9 +78,10 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
     end
 
     it 'registers an offense for empty braces with no space inside' do
-      inspect_source(cop, 'each {}')
-      expect(cop.messages).to eq(['Space missing inside empty braces.'])
-      expect(cop.highlights).to eq(['{}'])
+      expect_offense(<<-RUBY.strip_indent)
+        each {}
+             ^^ Space missing inside empty braces.
+      RUBY
     end
 
     it 'auto-corrects missing space' do

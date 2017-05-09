@@ -157,9 +157,10 @@ describe RuboCop::Cop::Layout::EndOfLine, :config do
 
     context 'and source is a string' do
       it 'registers an offense' do
-        inspect_source(cop, "x=0\r")
-
-        expect(cop.messages).to eq(['Carriage return character detected.'])
+        expect_offense(<<-RUBY.strip_indent)
+          x=0\r
+          ^^^ Carriage return character detected.
+        RUBY
       end
     end
   end

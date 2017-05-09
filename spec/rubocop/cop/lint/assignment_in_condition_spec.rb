@@ -5,67 +5,67 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   let(:cop_config) { { 'AllowSafeAssignment' => true } }
 
   it 'registers an offense for lvar assignment in condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       if test = 10
+              ^ Assignment in condition - you probably meant to use `==`.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'registers an offense for lvar assignment in while condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       while test = 10
+                 ^ Assignment in condition - you probably meant to use `==`.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'registers an offense for lvar assignment in until condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       until test = 10
+                 ^ Assignment in condition - you probably meant to use `==`.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'registers an offense for ivar assignment in condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       if @test = 10
+               ^ Assignment in condition - you probably meant to use `==`.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'registers an offense for clvar assignment in condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       if @@test = 10
+                ^ Assignment in condition - you probably meant to use `==`.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'registers an offense for gvar assignment in condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       if $test = 10
+               ^ Assignment in condition - you probably meant to use `==`.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'registers an offense for constant assignment in condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       if TEST = 10
+              ^ Assignment in condition - you probably meant to use `==`.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'registers an offense for collection element assignment in condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       if a[3] = 10
+              ^ Assignment in condition - you probably meant to use `==`.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'accepts == in condition' do
@@ -76,11 +76,11 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   end
 
   it 'registers an offense for assignment after == in condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       if test == 10 || foobar = 1
+                              ^ Assignment in condition - you probably meant to use `==`.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'accepts = in a block that is called in a condition' do
@@ -96,17 +96,18 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   end
 
   it 'registers an offense for assignment after ||= in condition' do
-    inspect_source(cop,
-                   'raise StandardError unless (foo ||= bar) || a = b')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      raise StandardError unless (foo ||= bar) || a = b
+                                                    ^ Assignment in condition - you probably meant to use `==`.
+    RUBY
   end
 
   it 'registers an offense for assignment methods' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       if test.method = 10
+                     ^ Assignment in condition - you probably meant to use `==`.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'does not blow up for empty if condition' do
@@ -143,19 +144,19 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
     let(:cop_config) { { 'AllowSafeAssignment' => false } }
 
     it 'does not accept = in condition surrounded with braces' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         if (test = 10)
+                 ^ Assignment in condition - you probably meant to use `==`.
         end
-      END
-      expect(cop.offenses.size).to eq(1)
+      RUBY
     end
 
     it 'does not accept []= in condition surrounded with braces' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         if (test[0] = 10)
+                    ^ Assignment in condition - you probably meant to use `==`.
         end
-      END
-      expect(cop.offenses.size).to eq(1)
+      RUBY
     end
   end
 end

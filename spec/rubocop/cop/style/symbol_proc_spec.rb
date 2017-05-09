@@ -15,10 +15,10 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
   end
 
   it 'registers an offense for a block when method in body is unary -/=' do
-    inspect_source(cop, 'something.map { |x| -x }')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['Pass `&:-@` as an argument to `map` instead of a block.'])
+    expect_offense(<<-RUBY.strip_indent)
+      something.map { |x| -x }
+                    ^^^^^^^^^^ Pass `&:-@` as an argument to `map` instead of a block.
+    RUBY
   end
 
   it 'accepts block with more than 1 arguments' do
@@ -69,9 +69,10 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
     let(:source) { 'method(one, 2) { |x| x.test }' }
 
     it 'registers an offense' do
-      inspect_source(cop, source)
-      expect(cop.messages)
-        .to eq(['Pass `&:test` as an argument to `method` instead of a block.'])
+      expect_offense(<<-RUBY.strip_indent)
+        method(one, 2) { |x| x.test }
+                       ^^^^^^^^^^^^^^ Pass `&:test` as an argument to `method` instead of a block.
+      RUBY
     end
 
     it 'auto-corrects' do
@@ -105,9 +106,10 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
     let(:source) { 'super(one, two) { |x| x.test }' }
 
     it 'registers an offense' do
-      inspect_source(cop, source)
-      expect(cop.messages)
-        .to eq(['Pass `&:test` as an argument to `super` instead of a block.'])
+      expect_offense(<<-RUBY.strip_indent)
+        super(one, two) { |x| x.test }
+                        ^^^^^^^^^^^^^^ Pass `&:test` as an argument to `super` instead of a block.
+      RUBY
     end
 
     it 'auto-corrects' do
@@ -120,9 +122,10 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
     let(:source) { 'super { |x| x.test }' }
 
     it 'registers an offense' do
-      inspect_source(cop, source)
-      expect(cop.messages)
-        .to eq(['Pass `&:test` as an argument to `super` instead of a block.'])
+      expect_offense(<<-RUBY.strip_indent)
+        super { |x| x.test }
+              ^^^^^^^^^^^^^^ Pass `&:test` as an argument to `super` instead of a block.
+      RUBY
     end
 
     it 'auto-corrects' do

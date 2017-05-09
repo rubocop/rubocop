@@ -45,9 +45,10 @@ describe RuboCop::Cop::Style::SingleLineBlockParams, :config do
   end
 
   it 'finds incorrectly named parameters with leading underscores' do
-    inspect_source(cop,
-                   'File.foreach(filename).reduce(0) { |_x, _y| }')
-    expect(cop.messages).to eq(['Name `reduce` block params `|a, e|`.'])
+    expect_offense(<<-RUBY.strip_indent)
+      File.foreach(filename).reduce(0) { |_x, _y| }
+                                         ^^^^^^^^ Name `reduce` block params `|a, e|`.
+    RUBY
   end
 
   it 'ignores do..end blocks' do

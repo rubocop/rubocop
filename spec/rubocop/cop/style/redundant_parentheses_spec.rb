@@ -193,8 +193,10 @@ describe RuboCop::Cop::Style::RedundantParentheses do
   end
 
   it 'registers an offense when there is space around the parentheses' do
-    inspect_source(cop, 'if x; y else (1) end')
-    expect(cop.offenses.size).to eq 1
+    expect_offense(<<-RUBY.strip_indent)
+      if x; y else (1) end
+                   ^^^ Don't use parentheses around a literal.
+    RUBY
   end
 
   it 'accepts parentheses when they touch the preceding keyword' do
@@ -211,15 +213,19 @@ describe RuboCop::Cop::Style::RedundantParentheses do
     end
 
     it 'registers an offense if the argument list is parenthesized ' do
-      inspect_source(cop, 'x(({ y: 1 }), z)')
-      expect(cop.offenses.size).to eq 1
+      expect_offense(<<-RUBY.strip_indent)
+        x(({ y: 1 }), z)
+          ^^^^^^^^^^ Don't use parentheses around a literal.
+      RUBY
     end
   end
 
   context 'when a hash literal is the second argument in a method call' do
     it 'registers an offense' do
-      inspect_source(cop, 'x ({ y: 1 }), ({ y: 1 })')
-      expect(cop.offenses.size).to eq 1
+      expect_offense(<<-RUBY.strip_indent)
+        x ({ y: 1 }), ({ y: 1 })
+                      ^^^^^^^^^^ Don't use parentheses around a literal.
+      RUBY
     end
   end
 

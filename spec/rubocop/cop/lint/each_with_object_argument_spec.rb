@@ -11,14 +11,17 @@ describe RuboCop::Cop::Lint::EachWithObjectArgument do
   end
 
   it 'registers an offense for float argument' do
-    inspect_source(cop, 'collection.each_with_object(0.1) { |e, a| a + e }')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      collection.each_with_object(0.1) { |e, a| a + e }
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The argument to each_with_object can not be immutable.
+    RUBY
   end
 
   it 'registers an offense for bignum argument' do
-    inspect_source(cop,
-                   'c.each_with_object(100000000000000000000) { |e, o| o + e }')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      c.each_with_object(100000000000000000000) { |e, o| o + e }
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The argument to each_with_object can not be immutable.
+    RUBY
   end
 
   it 'accepts a variable argument' do

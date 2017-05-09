@@ -51,26 +51,28 @@ describe RuboCop::Cop::Lint::Void do
   end
 
   it 'registers an offense for void `self` if not on last line' do
-    inspect_source(cop, 'self; top')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      self; top
+      ^^^^ `self` used in void context.
+    RUBY
   end
 
   it 'registers an offense for void `defined?` if not on last line' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       defined?(x)
+      ^^^^^^^^^^^ `defined?(x)` used in void context.
       top
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'handles explicit begin blocks' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       begin
        1
+       ^ Literal `1` used in void context.
        2
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'accepts short call syntax' do

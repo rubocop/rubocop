@@ -133,9 +133,10 @@ describe RuboCop::Cop::Performance::StringReplacement do
   describe 'deterministic regex' do
     describe 'regex literal' do
       it 'registers an offense when using space' do
-        inspect_source(cop, %('abc'.gsub(/ /, '')))
-
-        expect(cop.messages).to eq(['Use `delete` instead of `gsub`.'])
+        expect_offense(<<-RUBY.strip_indent)
+          'abc'.gsub(/ /, '')
+                ^^^^^^^^^^^^^ Use `delete` instead of `gsub`.
+        RUBY
       end
 
       %w[a b c ' " % ! = < > # & ; : ` ~ 1 2 3 - _ , \r \\\\ \y \u1234
@@ -165,29 +166,33 @@ describe RuboCop::Cop::Performance::StringReplacement do
       end
 
       it 'registers an offense when using %r notation' do
-        inspect_source(cop, %('/abc'.gsub(%r{a}, 'd')))
-
-        expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])
+        expect_offense(<<-RUBY.strip_indent)
+          '/abc'.gsub(%r{a}, 'd')
+                 ^^^^^^^^^^^^^^^^ Use `tr` instead of `gsub`.
+        RUBY
       end
     end
 
     describe 'regex constructor' do
       it 'registers an offense when only using word characters' do
-        inspect_source(cop, "'abc'.gsub(Regexp.new('b'), '2')")
-
-        expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])
+        expect_offense(<<-RUBY.strip_indent)
+          'abc'.gsub(Regexp.new('b'), '2')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `tr` instead of `gsub`.
+        RUBY
       end
 
       it 'registers an offense when regex is built from regex' do
-        inspect_source(cop, "'abc'.gsub(Regexp.new(/b/), '2')")
-
-        expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])
+        expect_offense(<<-RUBY.strip_indent)
+          'abc'.gsub(Regexp.new(/b/), '2')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `tr` instead of `gsub`.
+        RUBY
       end
 
       it 'registers an offense when using compile' do
-        inspect_source(cop, "'123'.gsub(Regexp.compile('1'), 'a')")
-
-        expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])
+        expect_offense(<<-RUBY.strip_indent)
+          '123'.gsub(Regexp.compile('1'), 'a')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `tr` instead of `gsub`.
+        RUBY
       end
     end
   end
@@ -317,10 +322,10 @@ describe RuboCop::Cop::Performance::StringReplacement do
   end
 
   it 'registers an offense for gsub! when deleting one characters' do
-    inspect_source(cop, "'abc'.gsub!('a', '')")
-
-    expect(cop.messages).to eq(['Use `delete!` instead of `gsub!`.'])
-    expect(cop.highlights).to eq(["gsub!('a', '')"])
+    expect_offense(<<-RUBY.strip_indent)
+      'abc'.gsub!('a', '')
+            ^^^^^^^^^^^^^^ Use `delete!` instead of `gsub!`.
+    RUBY
   end
 
   it 'registers an offense when using escape characters in the replacement' do

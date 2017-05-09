@@ -4,15 +4,15 @@ describe RuboCop::Cop::Lint::ElseLayout do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for expr on same line as else' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       if something
         test
       else ala
+           ^^^ Odd `else` layout detected. Did you mean to use `elsif`?
         something
         test
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'accepts proper else' do
@@ -36,17 +36,17 @@ describe RuboCop::Cop::Lint::ElseLayout do
   end
 
   it 'can handle elsifs' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       if something
         test
       elsif something
         bala
       else ala
+           ^^^ Odd `else` layout detected. Did you mean to use `elsif`?
         something
         test
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'handles ternary ops' do

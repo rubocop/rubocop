@@ -521,13 +521,14 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
 
   context 'when multiple similar-looking blocks have misaligned ends' do
     it 'registers an offense for each of them' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a = test do
          end
+         ^^^ `end` at 2, 1 is not aligned with `a = test do` at 1, 0.
         b = test do
          end
-      END
-      expect(cop.offenses.size).to eq 2
+         ^^^ `end` at 4, 1 is not aligned with `b = test do` at 3, 0.
+      RUBY
     end
   end
 

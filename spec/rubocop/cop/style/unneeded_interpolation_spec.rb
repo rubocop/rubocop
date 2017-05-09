@@ -4,99 +4,115 @@ describe RuboCop::Cop::Style::UnneededInterpolation do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for "#{1 + 1}"' do
-    inspect_source(cop, '"#{1 + 1}"')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['"#{1 + 1}"'])
+    expect_offense(<<-'RUBY'.strip_indent)
+      "#{1 + 1}"
+      ^^^^^^^^^^ Prefer `to_s` over string interpolation.
+    RUBY
   end
 
   it 'registers an offense for "%|#{1 + 1}|"' do
-    inspect_source(cop, '%|#{1 + 1}|')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['%|#{1 + 1}|'])
+    expect_offense(<<-'RUBY'.strip_indent)
+      %|#{1 + 1}|
+      ^^^^^^^^^^^ Prefer `to_s` over string interpolation.
+    RUBY
   end
 
   it 'registers an offense for "%Q(#{1 + 1})"' do
-    inspect_source(cop, '%Q(#{1 + 1})')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['%Q(#{1 + 1})'])
+    expect_offense(<<-'RUBY'.strip_indent)
+      %Q(#{1 + 1})
+      ^^^^^^^^^^^^ Prefer `to_s` over string interpolation.
+    RUBY
   end
 
   it 'registers an offense for "#{1 + 1; 2 + 2}"' do
-    inspect_source(cop, '"#{1 + 1; 2 + 2}"')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['"#{1 + 1; 2 + 2}"'])
+    expect_offense(<<-'RUBY'.strip_indent)
+      "#{1 + 1; 2 + 2}"
+      ^^^^^^^^^^^^^^^^^ Prefer `to_s` over string interpolation.
+    RUBY
   end
 
   it 'registers an offense for "#{@var}"' do
-    inspect_source(cop, '"#{@var}"')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['"#{@var}"'])
+    expect_offense(<<-'RUBY'.strip_indent)
+      "#{@var}"
+      ^^^^^^^^^ Prefer `to_s` over string interpolation.
+    RUBY
   end
 
   it 'registers an offense for "#@var"' do
-    inspect_source(cop, '"#@var"')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['"#@var"'])
+    expect_offense(<<-'RUBY'.strip_indent)
+      "#@var"
+      ^^^^^^^ Prefer `to_s` over string interpolation.
+    RUBY
   end
 
   it 'registers an offense for "#{@@var}"' do
-    inspect_source(cop, '"#{@@var}"')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['"#{@@var}"'])
+    expect_offense(<<-'RUBY'.strip_indent)
+      "#{@@var}"
+      ^^^^^^^^^^ Prefer `to_s` over string interpolation.
+    RUBY
   end
 
   it 'registers an offense for "#@@var"' do
-    inspect_source(cop, '"#@@var"')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['"#@@var"'])
+    expect_offense(<<-'RUBY'.strip_indent)
+      "#@@var"
+      ^^^^^^^^ Prefer `to_s` over string interpolation.
+    RUBY
   end
 
   it 'registers an offense for "#{$var}"' do
-    inspect_source(cop, '"#{$var}"')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['"#{$var}"'])
+    expect_offense(<<-'RUBY'.strip_indent)
+      "#{$var}"
+      ^^^^^^^^^ Prefer `to_s` over string interpolation.
+    RUBY
   end
 
   it 'registers an offense for "#$var"' do
-    inspect_source(cop, '"#$var"')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['"#$var"'])
+    expect_offense(<<-'RUBY'.strip_indent)
+      "#$var"
+      ^^^^^^^ Prefer `to_s` over string interpolation.
+    RUBY
   end
 
   it 'registers an offense for "#{$1}"' do
-    inspect_source(cop, '"#{$1}"')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['"#{$1}"'])
+    expect_offense(<<-'RUBY'.strip_indent)
+      "#{$1}"
+      ^^^^^^^ Prefer `to_s` over string interpolation.
+    RUBY
   end
 
   it 'registers an offense for "#$1"' do
-    inspect_source(cop, '"#$1"')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['"#$1"'])
+    expect_offense(<<-'RUBY'.strip_indent)
+      "#$1"
+      ^^^^^ Prefer `to_s` over string interpolation.
+    RUBY
   end
 
   it 'registers an offense for "#{$+}"' do
-    inspect_source(cop, '"#{$+}"')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['"#{$+}"'])
+    expect_offense(<<-'RUBY'.strip_indent)
+      "#{$+}"
+      ^^^^^^^ Prefer `to_s` over string interpolation.
+    RUBY
   end
 
   it 'registers an offense for "#$+"' do
-    inspect_source(cop, '"#$+"')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['"#$+"'])
+    expect_offense(<<-'RUBY'.strip_indent)
+      "#$+"
+      ^^^^^ Prefer `to_s` over string interpolation.
+    RUBY
   end
 
   it 'registers an offense for "#{var}"' do
-    inspect_source(cop, 'var = 1; "#{var}"')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['"#{var}"'])
+    expect_offense(<<-'RUBY'.strip_indent)
+      var = 1; "#{var}"
+               ^^^^^^^^ Prefer `to_s` over string interpolation.
+    RUBY
   end
 
   it 'registers an offense for ["#{@var}"]' do
-    inspect_source(cop, '["#{@var}", \'foo\']')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['"#{@var}"'])
+    expect_offense(<<-'RUBY'.strip_indent)
+      ["#{@var}", 'foo']
+       ^^^^^^^^^ Prefer `to_s` over string interpolation.
+    RUBY
   end
 
   it 'accepts strings with characters before the interpolation' do

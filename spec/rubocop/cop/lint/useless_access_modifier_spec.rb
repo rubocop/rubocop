@@ -211,8 +211,13 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
       end
 
       it 'registers an offense' do
-        inspect_source(cop, source)
-        expect(cop.offenses.size).to eq(1)
+        expect_offense(<<-RUBY.strip_indent)
+          class SomeClass
+            private
+            ^^^^^^^ Useless `private` access modifier.
+            #{binding_name} = 1
+          end
+        RUBY
       end
     end
   end

@@ -7,14 +7,13 @@ describe RuboCop::Cop::Style::ModuleFunction, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'module_function' } }
 
     it 'registers an offense for `extend self` in a module' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         module Test
           extend self
+          ^^^^^^^^^^^ Use `module_function` instead of `extend self`.
           def test; end
         end
-      END
-      expect(cop.messages).to eq([described_class::MODULE_FUNCTION_MSG])
-      expect(cop.highlights).to eq(['extend self'])
+      RUBY
     end
 
     it 'accepts `extend self` in a class' do
@@ -30,14 +29,13 @@ describe RuboCop::Cop::Style::ModuleFunction, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'extend_self' } }
 
     it 'registers an offense for `module_function` without an argument' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         module Test
           module_function
+          ^^^^^^^^^^^^^^^ Use `extend self` instead of `module_function`.
           def test; end
         end
-      END
-      expect(cop.messages).to eq([described_class::EXTEND_SELF_MSG])
-      expect(cop.highlights).to eq(['module_function'])
+      RUBY
     end
 
     it 'accepts module_function with an argument' do

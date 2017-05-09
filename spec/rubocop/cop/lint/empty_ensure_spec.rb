@@ -4,13 +4,13 @@ describe RuboCop::Cop::Lint::EmptyEnsure do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for empty ensure' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       begin
         something
       ensure
+      ^^^^^^ Empty `ensure` block detected.
       end
-    END
-    expect(cop.offenses.size).to eq(1)
+    RUBY
   end
 
   it 'autocorrects for empty ensure' do

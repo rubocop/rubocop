@@ -77,48 +77,42 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
 
   context 'assignment to splat expansion' do
     it 'registers an offense for an array using a constructor' do
-      inspect_source(cop, 'a = *Array.new(3) { 42 }')
-
-      expect(cop.messages).to eq([message])
-      expect(cop.highlights).to eq(['*Array.new(3) { 42 }'])
+      expect_offense(<<-RUBY.strip_indent)
+        a = *Array.new(3) { 42 }
+            ^^^^^^^^^^^^^^^^^^^^ Unnecessary splat expansion.
+      RUBY
     end
   end
 
   context 'expanding an array literal in a when condition' do
     it 'registers an offense for an array using []' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         case foo
         when *[first, second]
+             ^^^^^^^^^^^^^^^^ Unnecessary splat expansion.
           bar
         end
-      END
-
-      expect(cop.messages).to eq([message])
-      expect(cop.highlights).to eq(['*[first, second]'])
+      RUBY
     end
 
     it 'registers an offense for an array using %w' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         case foo
         when *%w(first second)
+             ^^^^^^^^^^^^^^^^^ Unnecessary splat expansion.
           bar
         end
-      END
-
-      expect(cop.messages).to eq([message])
-      expect(cop.highlights).to eq(['*%w(first second)'])
+      RUBY
     end
 
     it 'registers an offense for an array using %W' do
-      inspect_source(cop, <<-'END'.strip_indent)
+      expect_offense(<<-'RUBY'.strip_indent)
         case foo
         when *%W(#{first} second)
+             ^^^^^^^^^^^^^^^^^^^^ Unnecessary splat expansion.
           bar
         end
-      END
-
-      expect(cop.messages).to eq([message])
-      expect(cop.highlights).to eq(['*%W(#{first} second)'])
+      RUBY
     end
 
     it 'allows an array that is assigned to a variable' do
@@ -142,16 +136,14 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
   end
 
   it 'registers an offense for an array literal being expanded in a rescue' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       begin
         foo
       rescue *[First, Second]
+             ^^^^^^^^^^^^^^^^ Unnecessary splat expansion.
         bar
       end
-    END
-
-    expect(cop.messages).to eq([message])
-    expect(cop.highlights).to eq(['*[First, Second]'])
+    RUBY
   end
 
   it 'allows expansions of an array that is assigned to a variable in rescue' do
@@ -366,17 +358,17 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
 
       context 'splat expansion of method parameters' do
         it 'registers an offense for an array literal %i' do
-          inspect_source(cop, 'array.push(*%i(first second))')
-
-          expect(cop.messages).to eq([array_param_message])
-          expect(cop.highlights).to eq(['*%i(first second)'])
+          expect_offense(<<-RUBY.strip_indent)
+            array.push(*%i(first second))
+                       ^^^^^^^^^^^^^^^^^ Pass array contents as separate arguments.
+          RUBY
         end
 
         it 'registers an offense for an array literal %I' do
-          inspect_source(cop, 'array.push(*%I(#{first} second))')
-
-          expect(cop.messages).to eq([array_param_message])
-          expect(cop.highlights).to eq(['*%I(#{first} second)'])
+          expect_offense(<<-'RUBY'.strip_indent)
+            array.push(*%I(#{first} second))
+                       ^^^^^^^^^^^^^^^^^^^^ Pass array contents as separate arguments.
+          RUBY
         end
       end
 

@@ -16,10 +16,11 @@ describe RuboCop::Cop::Rails::EnumUniqueness, :config do
 
     context 'with several duplicated enum values' do
       it 'registers two offenses' do
-        inspect_source(cop,
-                       'enum status: [:active, :archived, :active, :active]')
-
-        expect(cop.offenses.size).to eq(2)
+        expect_offense(<<-RUBY.strip_indent)
+          enum status: [:active, :archived, :active, :active]
+                                                     ^^^^^^^ Duplicate value `:active` found in `status` enum declaration.
+                                            ^^^^^^^ Duplicate value `:active` found in `status` enum declaration.
+        RUBY
       end
     end
 
@@ -43,10 +44,11 @@ describe RuboCop::Cop::Rails::EnumUniqueness, :config do
 
     context 'with several duplicated enum values' do
       it 'registers two offenses' do
-        inspect_source(cop,
-                       'enum status: { active: 0, pending: 0, archived: 0 }')
-
-        expect(cop.offenses.size).to eq(2)
+        expect_offense(<<-RUBY.strip_indent)
+          enum status: { active: 0, pending: 0, archived: 0 }
+                                                          ^ Duplicate value `0` found in `status` enum declaration.
+                                             ^ Duplicate value `0` found in `status` enum declaration.
+        RUBY
       end
     end
 

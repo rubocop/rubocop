@@ -63,62 +63,73 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
     end
 
     it 'registers an offense for Time.parse' do
-      inspect_source(cop, 'Time.parse("2012-03-02 16:05:37")')
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        Time.parse("2012-03-02 16:05:37")
+             ^^^^^ Do not use `Time.parse` without zone. Use `Time.zone.parse` instead.
+      RUBY
     end
 
     it 'registers an offense for Time.strftime' do
-      inspect_source(cop, 'Time.strftime(time_string, "%Y-%m-%dT%H:%M:%S%z")')
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        Time.strftime(time_string, "%Y-%m-%dT%H:%M:%S%z")
+             ^^^^^^^^ Do not use `Time.strftime` without zone. Use `Time.zone.strftime` instead.
+      RUBY
     end
 
     it 'registers an offense for Time.strftime.in_time_zone' do
-      inspect_source(
-        cop,
-        'Time.strftime(time_string, "%Y-%m-%dT%H:%M:%S%z").in_time_zone'
-      )
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        Time.strftime(time_string, "%Y-%m-%dT%H:%M:%S%z").in_time_zone
+             ^^^^^^^^ Do not use `Time.strftime` without zone. Use `Time.zone.strftime` instead.
+      RUBY
     end
 
     it 'registers an offense for Time.strftime with nested Time.zone' do
-      inspect_source(
-        cop,
-        'Time.strftime(Time.zone.now.to_s, "%Y-%m-%dT%H:%M:%S%z")'
-      )
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        Time.strftime(Time.zone.now.to_s, "%Y-%m-%dT%H:%M:%S%z")
+             ^^^^^^^^ Do not use `Time.strftime` without zone. Use `Time.zone.strftime` instead.
+      RUBY
     end
 
     it 'registers an offense for Time.zone.strftime with nested Time.now' do
-      inspect_source(
-        cop,
-        'Time.zone.strftime(Time.now.to_s, "%Y-%m-%dT%H:%M:%S%z")'
-      )
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        Time.zone.strftime(Time.now.to_s, "%Y-%m-%dT%H:%M:%S%z")
+                                ^^^ Do not use `Time.now.strftime` without zone. Use `Time.zone.now.strftime` instead.
+      RUBY
     end
 
     it 'registers an offense for Time.at' do
-      inspect_source(cop, 'Time.at(ts)')
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        Time.at(ts)
+             ^^ Do not use `Time.at` without zone. Use `Time.zone.at` instead.
+      RUBY
     end
 
     it 'registers an offense for Time.at.in_time_zone' do
-      inspect_source(cop, 'Time.at(ts).in_time_zone')
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        Time.at(ts).in_time_zone
+             ^^ Do not use `Time.at` without zone. Use `Time.zone.at` instead.
+      RUBY
     end
 
     it 'registers an offense for Time.parse.localtime(offset)' do
-      inspect_source(cop, "Time.parse('12:00').localtime('+03:00')")
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        Time.parse('12:00').localtime('+03:00')
+             ^^^^^ Do not use `Time.parse` without zone. Use `Time.zone.parse` instead.
+      RUBY
     end
 
     it 'registers an offense for Time.parse.localtime' do
-      inspect_source(cop, "Time.parse('12:00').localtime")
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        Time.parse('12:00').localtime
+             ^^^^^ Do not use `Time.parse` without zone. Use `Time.zone.parse` instead.
+      RUBY
     end
 
     it 'registers an offense for Time.parse in return' do
-      inspect_source(cop, 'return Foo, Time.parse("2012-03-02 16:05:37")')
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        return Foo, Time.parse("2012-03-02 16:05:37")
+                         ^^^^^ Do not use `Time.parse` without zone. Use `Time.zone.parse` instead.
+      RUBY
     end
 
     it 'accepts Time.zone.now' do

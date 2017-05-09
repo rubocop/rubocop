@@ -69,10 +69,10 @@ describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
     end
 
     it 'registers an offense for `update_attribute`' do
-      inspect_source(cop, 'user.update_attribute(\'website\': \'example.com\')')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq([format(msg, 'update_attribute')])
+      expect_offense(<<-RUBY.strip_indent)
+        user.update_attribute('website': 'example.com')
+             ^^^^^^^^^^^^^^^^ Avoid using `update_attribute` because it skips validations.
+      RUBY
     end
   end
 end
