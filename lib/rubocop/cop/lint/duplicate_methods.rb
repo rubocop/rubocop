@@ -143,7 +143,8 @@ module RuboCop
 
         def source_location(node)
           range = node.location.expression
-          "#{range.source_buffer.name}:#{range.line}"
+          path = smart_path(range.source_buffer.name)
+          "#{path}:#{range.line}"
         end
       end
     end
