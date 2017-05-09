@@ -31,9 +31,7 @@ module RuboCop
         KIND = 'block'.freeze
 
         def on_block(node)
-          _send, _args, body = *node
-
-          check(node, body)
+          check(node, node.body)
         end
       end
     end

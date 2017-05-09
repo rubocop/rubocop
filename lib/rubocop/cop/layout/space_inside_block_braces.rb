@@ -12,7 +12,7 @@ module RuboCop
         include SurroundingSpace
 
         def on_block(node)
-          return if node.loc.begin.is?('do') # No braces.
+          return if node.keywords?
 
           left_brace = node.loc.begin
           right_brace = node.loc.end
@@ -46,8 +46,7 @@ module RuboCop
         end
 
         def braces_with_contents_inside(node, inner)
-          _method, args, _body = *node
-          args_delimiter = args.loc.begin # Can be ( | or nil.
+          args_delimiter = node.arguments.loc.begin # Can be ( | or nil.
 
           check_left_brace(inner, node.loc.begin, args_delimiter)
           check_right_brace(inner, node.loc.end, block_length(node))

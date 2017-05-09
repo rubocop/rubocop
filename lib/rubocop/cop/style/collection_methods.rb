@@ -15,9 +15,7 @@ module RuboCop
         MSG = 'Prefer `%s` over `%s`.'.freeze
 
         def on_block(node)
-          method, _args, _body = *node
-
-          check_method_node(method)
+          check_method_node(node.send_node)
         end
 
         def on_send(node)

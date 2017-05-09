@@ -104,7 +104,7 @@ module RuboCop
         def on_block(node)
           return unless eval_call?(node)
 
-          check_node(node.children[2]) # block body
+          check_node(node.body)
         end
 
         def on_sclass(node)

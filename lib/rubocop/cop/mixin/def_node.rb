@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    # Common functionality for checking if nodes.
+    # Common functionality for checking def nodes.
     module DefNode
       extend NodePattern::Macros
 

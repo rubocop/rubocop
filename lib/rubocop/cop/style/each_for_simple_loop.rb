@@ -29,7 +29,8 @@ module RuboCop
         def on_block(node)
           return unless offending_each_range(node)
 
-          send_node, = *node
+          send_node = node.send_node
+
           range = send_node.receiver.source_range.join(send_node.loc.selector)
 
           add_offense(node, range)

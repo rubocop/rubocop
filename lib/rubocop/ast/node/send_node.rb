@@ -6,6 +6,11 @@ module RuboCop
     # node when the builder constructs the AST, making its methods available
     # to all `send` nodes within RuboCop.
     class SendNode < Node
+      ENUMERATOR_METHODS = %i[collect collect_concat detect downto each
+                              find find_all find_index inject loop map!
+                              map reduce reject reject! reverse_each select
+                              select! times upto].freeze
+
       # The receiving node of the method invocation.
       #
       # @return [Node, nil] the receiver of the invoked method or `nil`
@@ -117,6 +122,14 @@ module RuboCop
         !comparison_method? && method_name.to_s.end_with?('=')
       end
 
+      # Checks whether the invoked method is an enumerator method.
+      #
+      # @return [Boolean] whether the invoked method is an enumerator.
+      def enumerator_method?
+        ENUMERATOR_METHODS.include?(method_name) ||
+          method_name.to_s.start_with?('each_')
+      end
+
       # Checks whether the method call uses a dot to connect the receiver and
       # the method name.
       #
@@ -180,6 +193,21 @@ module RuboCop
       # @return [Boolean] whether the invoked method is a block pass
       def block_argument?
         arguments? && last_argument.block_pass_type?
+      end
+
+      # Whether this method invocation has an explicit block.
+      #
+      # @return [Boolean] whether the invoked method has a block
+      def block_literal?
+        parent && parent.block_type? && eql?(parent.send_node)
+      end
+
+      # The block node associated with this method call, if any.
+      #
+      # @return [BlockNode, nil] the `block` node associated with this method
+      #                          call or `nil`
+      def block_node
+        parent if block_literal?
       end
 
       # Checks whether any argument of the method invocation is a splat

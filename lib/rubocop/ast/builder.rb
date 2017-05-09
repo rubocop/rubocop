@@ -15,7 +15,9 @@ module RuboCop
     class Builder < Parser::Builders::Default
       NODE_MAP = {
         AndNode          => [:and],
+        ArgsNode         => [:args],
         ArrayNode        => [:array],
+        BlockNode        => [:block],
         CaseNode         => [:case],
         EnsureNode       => [:ensure],
         ForNode          => [:for],

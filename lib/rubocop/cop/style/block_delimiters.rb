@@ -71,7 +71,7 @@ module RuboCop
         def autocorrect(node)
           return if correction_would_break_code?(node)
 
-          if node.loc.begin.is?('{')
+          if node.braces?
             replace_braces_with_do_end(node.loc)
           else
             replace_do_end_with_braces(node.loc)
@@ -97,17 +97,18 @@ module RuboCop
 
           lambda do |corrector|
             corrector.insert_after(b, ' ') unless whitespace_after?(b, 2)
+
             corrector.replace(b, '{')
             corrector.replace(e, '}')
           end
         end
 
-        def whitespace_before?(node)
-          node.source_buffer.source[node.begin_pos - 1, 1] =~ /\s/
+        def whitespace_before?(range)
+          range.source_buffer.source[range.begin_pos - 1, 1] =~ /\s/
         end
 
-        def whitespace_after?(node, length = 1)
-          node.source_buffer.source[node.begin_pos + length, 1] =~ /\s/
+        def whitespace_after?(range, length = 1)
+          range.source_buffer.source[range.begin_pos + length, 1] =~ /\s/
         end
 
         def get_blocks(node, &block)
@@ -120,7 +121,7 @@ module RuboCop
             # A hash which is passed as method argument may have no braces
             # In that case, one of the K/V pairs could contain a block node
             # which could change in meaning if do...end replaced {...}
-            return if node.loc.begin
+            return if node.braces?
             node.each_child_node { |child| get_blocks(child, &block) }
           when :pair
             node.each_child_node { |child| get_blocks(child, &block) }
@@ -139,16 +140,13 @@ module RuboCop
         end
 
         def line_count_based_block_style?(node)
-          block_begin = node.loc.begin.source
-
-          (block_length(node) > 0) ^ (block_begin == '{')
+          node.multiline? ^ node.braces?
         end
 
         def semantic_block_style?(node)
           method_name = node.method_name
-          block_begin = node.loc.begin.source
 
-          if block_begin == '{'
+          if node.braces?
             functional_method?(method_name) || functional_block?(node)
           else
             procedural_method?(method_name) || !return_value_used?(node)
@@ -171,13 +169,9 @@ module RuboCop
         end
 
         def correction_would_break_code?(node)
-          return unless node.loc.begin.is?('do')
+          return unless node.keywords?
 
-          # Converting `obj.method arg do |x| end` to use `{}` would cause
-          # a syntax error.
-          send = node.children.first
-
-          send.arguments? && !send.parenthesized?
+          node.send_node.arguments? && !node.send_node.parenthesized?
         end
 
         def ignored_method?(method_name)

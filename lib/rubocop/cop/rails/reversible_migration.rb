@@ -170,8 +170,7 @@ module RuboCop
           return unless within_change_method?(node)
           return if within_reversible_block?(node)
 
-          method, _, block = *node
-          check_change_table_node(method, block)
+          check_change_table_node(node.send_node, node.body)
         end
 
         private
@@ -254,27 +253,16 @@ module RuboCop
         end
 
         def within_change_method?(node)
-          parent = node.parent
-          while parent
-            if parent.def_type?
-              method_name, = *parent
-              return true if method_name == :change
-            end
-            parent = parent.parent
+          node.each_ancestor(:def).any? do |ancestor|
+            method_name, = *ancestor
+            method_name == :change
           end
-          false
         end
 
         def within_reversible_block?(node)
-          parent = node.parent
-          while parent
-            if parent.block_type?
-              _, block_name = *parent.to_a.first
-              return true if block_name == :reversible
-            end
-            parent = parent.parent
+          node.each_ancestor(:block).any? do |ancestor|
+            ancestor.block_type? && ancestor.send_node.method?(:reversible)
           end
-          false
         end
 
         def all_hash_key?(args, *keys)

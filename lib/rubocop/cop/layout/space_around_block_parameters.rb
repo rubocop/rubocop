@@ -16,15 +16,17 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         def on_block(node)
-          _method, args, body = *node
+          return unless node.arguments?
+
+          args = node.arguments
+
           opening_pipe = args.loc.begin
           closing_pipe = args.loc.end
-          return unless !args.children.empty? && opening_pipe
 
           check_inside_pipes(args.children, opening_pipe, closing_pipe)
 
-          if body
-            check_space(closing_pipe.end_pos, body.source_range.begin_pos,
+          if node.body
+            check_space(closing_pipe.end_pos, node.body.source_range.begin_pos,
                         closing_pipe, 'after closing `|`')
           end
 

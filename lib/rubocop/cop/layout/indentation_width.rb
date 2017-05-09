@@ -45,7 +45,7 @@ module RuboCop
       #     end
       #   end
       #   end
-      class IndentationWidth < Cop # rubocop:disable Metrics/ClassLength
+      class IndentationWidth < Cop
         include EndKeywordAlignment
         include AutocorrectAlignment
         include OnMethodDef
@@ -75,17 +75,15 @@ module RuboCop
         end
 
         def on_block(node)
-          _method, _args, body = *node
-          # Check body against end/} indentation. Checking against variable
-          # assignments, etc, would be more difficult. The end/} must be at the
-          # beginning of its line.
-          loc = node.loc
-          return unless begins_its_line?(loc.end)
+          end_loc = node.loc.end
 
-          check_indentation(loc.end, body)
+          return unless begins_its_line?(end_loc)
+
+          check_indentation(end_loc, node.body)
+
           return unless indentation_consistency_style == 'rails'
 
-          check_members(loc.end, [body])
+          check_members(end_loc, [node.body])
         end
 
         def on_module(node)

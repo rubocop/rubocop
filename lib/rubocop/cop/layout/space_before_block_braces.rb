@@ -9,7 +9,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         def on_block(node)
-          return if node.loc.begin.is?('do') # No braces.
+          return if node.keywords?
 
           left_brace = node.loc.begin
           space_plus_brace = range_with_surrounding_space(left_brace)

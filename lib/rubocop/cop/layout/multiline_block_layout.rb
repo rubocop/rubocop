@@ -42,32 +42,22 @@ module RuboCop
                   'block start.'.freeze
 
         def on_block(node)
-          return if oneliner?(node)
+          return if node.single_line?
 
-          # A block node has three children: the block start,
-          # the arguments, and the expression. We care if the block start
-          # with arguments and the expression start on the same line.
-          _block_start, args, last_expression = node.children
-          do_loc = node.loc.begin # Actually it's either do or {.
-
-          if args_on_different_line?(do_loc.line, args)
-            add_offense_for_expression(node, args, ARG_MSG)
+          unless args_on_beginning_line?(node)
+            add_offense_for_expression(node, node.arguments, ARG_MSG)
           end
 
-          return unless last_expression
-          expression_loc = last_expression.loc
-          return unless do_loc.line == expression_loc.line
-          add_offense_for_expression(node, last_expression, MSG)
+          return unless node.body && node.loc.begin.line == node.body.loc.line
+
+          add_offense_for_expression(node, node.body, MSG)
         end
 
-        def oneliner?(node)
-          node.loc.begin.line == node.loc.end.line
-        end
+        private
 
-        def args_on_different_line?(do_line, args)
-          return false if args.children.empty?
-
-          do_line != args.loc.last_line
+        def args_on_beginning_line?(node)
+          !node.arguments? ||
+            node.loc.begin.line == node.arguments.loc.last_line
         end
 
         def add_offense_for_expression(node, expr, msg)
@@ -79,31 +69,26 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            _method, args, block_body = *node
-            unless arguments_on_different_line?(node, args)
-              autocorrect_arguments(corrector, node, args)
-              expr_before_body = args.source_range.end
+            unless args_on_beginning_line?(node)
+              autocorrect_arguments(corrector, node)
+              expr_before_body = node.arguments.source_range.end
             end
 
-            return unless block_body
+            return unless node.body
 
             expr_before_body ||= node.loc.begin
-            if expr_before_body.line == block_body.loc.line
-              autocorrect_body(corrector, node, block_body)
+
+            if expr_before_body.line == node.body.loc.line
+              autocorrect_body(corrector, node, node.body)
             end
           end
         end
 
-        def arguments_on_different_line?(node, args)
-          args.children.empty? || args.loc.last_line == node.loc.line
-        end
-
-        def autocorrect_arguments(corrector, node, args)
-          end_pos =
-            range_with_surrounding_space(args.source_range, :right, false)
-            .end_pos
+        def autocorrect_arguments(corrector, node)
+          end_pos = range_with_surrounding_space(node.arguments.source_range,
+                                                 :right, false).end_pos
           range = range_between(node.loc.begin.end.begin_pos, end_pos)
-          corrector.replace(range, " |#{block_arg_string(args)}|")
+          corrector.replace(range, " |#{block_arg_string(node.arguments)}|")
         end
 
         def autocorrect_body(corrector, node, block_body)
