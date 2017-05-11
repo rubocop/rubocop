@@ -201,15 +201,6 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
   context 'when only a constant or local variable is defined after the ' \
     'modifier' do
     %w[CONSTANT some_var].each do |binding_name|
-      let(:source) do
-        <<-END.strip_indent
-          class SomeClass
-            private
-            #{binding_name} = 1
-          end
-        END
-      end
-
       it 'registers an offense' do
         expect_offense(<<-RUBY.strip_indent)
           class SomeClass
@@ -562,23 +553,6 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
       END
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
-    end
-  end
-
-  shared_examples 'access modifiers with argument' do |keyword|
-    it "doesn't register an offense" do
-      src = <<-END.strip_indent
-        #{keyword} A
-          def method1
-          end
-          private :method1
-          def method2
-          end
-          public :method2
-        end
-      END
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
     end
   end
 

@@ -115,7 +115,6 @@ describe RuboCop::Cop::Util do
       Parser::Source::Range.new(processed_source.buffer, begin_pos, end_pos)
     end
 
-    let(:include_final_newline) { false }
     let(:output_range) do
       obj = TestUtil.new
       obj.instance_exec(processed_source) { |src| @processed_source = src }

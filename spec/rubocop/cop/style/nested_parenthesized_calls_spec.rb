@@ -4,26 +4,20 @@ describe RuboCop::Cop::Style::NestedParenthesizedCalls do
   subject(:cop) { described_class.new }
 
   context 'on a non-parenthesized method call' do
-    let(:source) { 'puts 1, 2' }
-
     it "doesn't register an offense" do
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('puts 1, 2')
     end
   end
 
   context 'on a method call with no arguments' do
-    let(:source) { 'puts' }
-
     it "doesn't register an offense" do
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('puts')
     end
   end
 
   context 'on a nested, parenthesized method call' do
-    let(:source) { 'puts(compute(something))' }
-
     it "doesn't register an offense" do
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('puts(compute(something))')
     end
   end
 
@@ -45,8 +39,6 @@ describe RuboCop::Cop::Style::NestedParenthesizedCalls do
     end
 
     context 'with multiple arguments to the nested call' do
-      let(:source) { 'puts(compute first, second)' }
-
       it 'registers an offense' do
         expect_offense(<<-RUBY.strip_indent)
           puts(compute first, second)
@@ -62,42 +54,32 @@ describe RuboCop::Cop::Style::NestedParenthesizedCalls do
   end
 
   context 'on a call with no arguments, nested in a parenthesized one' do
-    let(:source) { 'puts(compute)' }
-
     it "doesn't register an offense" do
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('puts(compute)')
     end
   end
 
   context 'on an aref, nested in a parenthesized method call' do
-    let(:source) { 'method(obj[1])' }
-
     it "doesn't register an offense" do
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('method(obj[1])')
     end
   end
 
   context 'on a deeply nested argument' do
-    let(:source) { 'method(block_taker { another_method 1 })' }
-
     it "doesn't register an offense" do
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('method(block_taker { another_method 1 })')
     end
   end
 
   context 'on an RSpec matcher' do
-    let(:source) { 'expect(obj).to(be true)' }
-
     it "doesn't register an offense" do
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('expect(obj).to(be true)')
     end
   end
 
   context 'on a call to a setter method' do
-    let(:source) { 'expect(object1.attr = 1).to eq 1' }
-
     it "doesn't register an offense" do
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('expect(object1.attr = 1).to eq 1')
     end
   end
 end

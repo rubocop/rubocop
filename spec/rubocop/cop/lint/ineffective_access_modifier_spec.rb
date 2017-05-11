@@ -4,18 +4,6 @@ describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
   subject(:cop) { described_class.new }
 
   context 'when `private` is applied to a class method' do
-    let(:source) do
-      <<-END.strip_indent
-        class C
-          private
-
-          def self.method
-            puts "hi"
-          end
-        end
-      END
-    end
-
     it 'registers an offense' do
       expect_offense(<<-RUBY.strip_indent)
         class C
@@ -31,18 +19,6 @@ describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
   end
 
   context 'when `protected` is applied to a class method' do
-    let(:source) do
-      <<-END.strip_indent
-        class C
-          protected
-
-          def self.method
-            puts "hi"
-          end
-        end
-      END
-    end
-
     it 'registers an offense' do
       expect_offense(<<-RUBY.strip_indent)
         class C
@@ -58,8 +34,8 @@ describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
   end
 
   context 'when `private_class_method` is used' do
-    let(:source) do
-      <<-END.strip_indent
+    it "doesn't register an offense" do
+      expect_no_offenses(<<-END.strip_indent)
         class C
           private
 
@@ -71,15 +47,11 @@ describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
         end
       END
     end
-
-    it "doesn't register an offense" do
-      expect(cop.offenses).to be_empty
-    end
   end
 
   context 'when a `class << self` block is used' do
-    let(:source) do
-      <<-END.strip_indent
+    it "doesn't register an offense" do
+      expect_no_offenses(<<-END.strip_indent)
         class C
           private
 
@@ -91,29 +63,9 @@ describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
         end
       END
     end
-
-    it "doesn't register an offense" do
-      expect(cop.offenses).to be_empty
-    end
   end
 
   context 'when there is an intervening instance method' do
-    let(:source) do
-      <<-END.strip_indent
-        class C
-
-          private
-
-          def instance_method
-          end
-
-          def self.method
-            puts "hi"
-          end
-        end
-      END
-    end
-
     it 'still registers an offense' do
       expect_offense(<<-RUBY.strip_indent)
         class C

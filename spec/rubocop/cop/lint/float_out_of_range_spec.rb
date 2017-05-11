@@ -3,28 +3,16 @@
 describe RuboCop::Cop::Lint::FloatOutOfRange do
   subject(:cop) { described_class.new }
 
-  context 'on 0.0' do
-    let(:source) { '0.0' }
-
-    it "doesn't register an offense" do
-      expect(cop.offenses).to be_empty
-    end
+  it 'does not register an offense for 0.0' do
+    expect_no_offenses('0.0')
   end
 
-  context 'on tiny little itty bitty floats' do
-    let(:source) { '1.1e-100' }
-
-    it "doesn't register an offense" do
-      expect(cop.offenses).to be_empty
-    end
+  it 'does not register an offense for tiny little itty bitty floats' do
+    expect_no_offenses('1.1e-100')
   end
 
-  context 'on respectably sized floats' do
-    let(:source) { '55.7e89' }
-
-    it "doesn't register an offense" do
-      expect(cop.offenses).to be_empty
-    end
+  it 'does not register an offense for respectably sized floats' do
+    expect_no_offenses('55.7e89')
   end
 
   context 'on whopping big floats which tip the scales' do
