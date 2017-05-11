@@ -22,6 +22,41 @@ $ rubocop -V
 
 * Include any relevant code to the issue summary.
 
+## Creating Cops
+
+### Create the cop files
+
+1) Create your cop in `./lib/rubocop/cop/{type}/{name}.rb`
+2) Require your cop in `./lib/rubocop.rb`
+3) Your test should be created at `./spec/rubocop/cop/{type}/{name}_spec.rb`
+4) Add your rule to either the `config/disabled.yml` or `config/enabled.yml` file depending on if it should be enabled by default or not. Cops that are not based on style guide rules should be disabled (normally) by default.
+
+### Finding your offenses
+
+#### Investigate
+
+The [investigate method](lib/rubocop/cop/style/semicolon.rb#L11) gets passed a [processed source](lib/rubocop/processed_source.rb). This object can be asked questions about the source, retrieve all of the source tokens and get specific lines as strings.
+
+#### On specific nodes
+
+Special methods get triggered, if they exist, for individual nodes. You can target a specific node to get to a single method using this. Defining a method `on_class`, for example, would get triggered everytime a class node is found in the source, and that node is passed in.
+
+A [list of node types](https://github.com/whitequark/parser/blob/master/lib/parser/meta.rb) are available at the [parser](https://github.com/whitequark/parser) repo.
+
+#### Variable Force
+
+Yeah, I got nothing. What's this do?
+
+### Auto Correct
+
+Rubocop allows you to auto correct code based on your rules. You add a lambda to an array of `corrections`, which then get processed. Your lambda will be passed a [corrector](lib/rubocop/cop/corrector.rb) instance, and has access to the node that was passed into the main `autocorrect` method.
+
+### Tests
+
+~~~ bash
+$ rake && rubocop
+~~~
+
 ## Pull requests
 
 * Read [how to properly contribute to open source projects on GitHub][2].
