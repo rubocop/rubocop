@@ -43,6 +43,7 @@
 * [#4327](https://github.com/bbatsov/rubocop/issues/4327): Prevent `Layout/SpaceInsidePercentLiteralDelimiters` from registering offenses on execute-strings. ([@drenmi][])
 * [#4371](https://github.com/bbatsov/rubocop/issues/4371): Prevent `Style/MethodName` from complaining about unary operator definitions. ([@drenmi][])
 * [#4366](https://github.com/bbatsov/rubocop/issues/4366): Prevent `Performance/RedundantMerge` from blowing up on double splat arguments. ([@drenmi][])
+* [#4352](https://github.com/bbatsov/rubocop/issues/4352): Fix the auto-correct of `Style/AndOr` when Enumerable accessors (`[]`) are used. ([@rrosenblum][])
 
 ## 0.48.1 (2017-04-03)
 

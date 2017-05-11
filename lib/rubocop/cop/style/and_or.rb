@@ -108,7 +108,7 @@ module RuboCop
         end
 
         def correctable_send?(node)
-          !node.parenthesized? && node.arguments?
+          !node.parenthesized? && !node.method?(:[]) && node.arguments?
         end
 
         def whitespace_before_arg(node)

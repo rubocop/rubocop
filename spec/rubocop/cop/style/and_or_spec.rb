@@ -136,6 +136,12 @@ describe RuboCop::Cop::Style::AndOr, :config do
       expect(new_source).to eq('(x = a + b) && (return x)')
     end
 
+    it 'autocorrects "and" with an Enumerable accessor on either side' do
+      src = 'foo[:bar] and foo[:baz]'
+      new_source = autocorrect_source(cop, src)
+      expect(new_source).to eq('foo[:bar] && foo[:baz]')
+    end
+
     it 'warns on short-circuit (and)' do
       expect_offense(<<-RUBY.strip_indent)
         x = a + b and return x
