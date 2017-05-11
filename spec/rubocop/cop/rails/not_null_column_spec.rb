@@ -6,7 +6,6 @@ describe RuboCop::Cop::Rails::NotNullColumn, :config do
 
   context 'with add_column call' do
     context 'with null: false' do
-      let(:source) { 'add_column :users, :name, :string, null: false' }
       it 'reports an offense' do
         expect_offense(<<-RUBY.strip_indent)
           add_column :users, :name, :string, null: false
@@ -23,9 +22,6 @@ describe RuboCop::Cop::Rails::NotNullColumn, :config do
     end
 
     context 'with null: false and default: nil' do
-      let(:source) do
-        'add_column :users, :name, :string, null: false, default: nil'
-      end
       it 'reports an offense' do
         expect_offense(<<-RUBY.strip_indent)
           add_column :users, :name, :string, null: false, default: nil
@@ -74,7 +70,6 @@ describe RuboCop::Cop::Rails::NotNullColumn, :config do
 
   context 'with add_reference call' do
     context 'with null: false' do
-      let(:source) { 'add_reference :products, :category, null: false' }
       it 'reports an offense' do
         expect_offense(<<-RUBY.strip_indent)
           add_reference :products, :category, null: false

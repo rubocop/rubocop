@@ -13,10 +13,6 @@ describe RuboCop::Cop::Style::IfUnlessModifierOfIfUnless do
   end
 
   context 'ternary with modifier' do
-    let(:source) do
-      'condition ? then_part : else_part unless external_condition'
-    end
-
     it 'registers an offense' do
       expect_offense(<<-RUBY.strip_indent)
         condition ? then_part : else_part unless external_condition
@@ -26,14 +22,6 @@ describe RuboCop::Cop::Style::IfUnlessModifierOfIfUnless do
   end
 
   context 'conditional with modifier' do
-    let(:source) do
-      <<-END.strip_indent
-        unless condition
-          then_part
-        end if external_condition
-      END
-    end
-
     it 'registers an offense' do
       expect_offense(<<-RUBY.strip_indent)
         unless condition

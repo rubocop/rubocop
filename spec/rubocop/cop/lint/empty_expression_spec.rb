@@ -28,14 +28,6 @@ describe RuboCop::Cop::Lint::EmptyExpression, :config do
     end
   end
 
-  shared_examples 'code without offense' do |code|
-    let(:source) { code }
-
-    it 'does not register an offense' do
-      expect(cop.offenses).to be_empty
-    end
-  end
-
   let(:message) { described_class::MSG }
 
   context 'when used as a standalone expression' do
