@@ -6,6 +6,8 @@ module RuboCop
     # node when the builder constructs the AST, making its methods available
     # to all `send` nodes within RuboCop.
     class SendNode < Node
+      include ParameterizedNode
+
       ENUMERATOR_METHODS = %i[collect collect_concat detect downto each
                               find find_all find_index inject loop map!
                               map reduce reject reject! reverse_each select
@@ -23,6 +25,13 @@ module RuboCop
       # @return [Symbol] the name of the invoked method
       def method_name
         node_parts[1]
+      end
+
+      # An array containing the arguments of the method invocation.
+      #
+      # @return [Array<Node>] the arguments of the method invocation or `nil`
+      def arguments
+        node_parts[2..-1]
       end
 
       # Checks whether the method name matches the argument.
@@ -51,47 +60,6 @@ module RuboCop
       # @return [Boolean] whether the method name matches the argument
       def command?(name)
         !receiver && method?(name)
-      end
-
-      # An array containing the arguments of the method invocation.
-      #
-      # @return [Array<Node>] the arguments of the method invocation or `nil`
-      def arguments
-        node_parts[2..-1]
-      end
-
-      # A shorthand for getting the first argument of the method invocation.
-      # Equivalent to `arguments.first`.
-      #
-      # @return [Node, nil] the first argument of the method invocation,
-      #                     or `nil` if there are no arguments
-      def first_argument
-        arguments[0]
-      end
-
-      # A shorthand for getting the last argument of the method invocation.
-      # Equivalent to `arguments.last`.
-      #
-      # @return [Node, nil] the last argument of the method invocation,
-      #                     or `nil` if there are no arguments
-      def last_argument
-        arguments[-1]
-      end
-
-      # Checks whether this method was invoked with arguments.
-      #
-      # @return [Boolean] whether this method was invoked with arguments
-      def arguments?
-        !arguments.empty?
-      end
-
-      # Checks whether this method invocation's arguments are wrapped in
-      # parentheses.
-      #
-      # @return [Boolean] whether this method invocation's arguments are
-      #                   wrapped in parentheses
-      def parenthesized?
-        loc.end && loc.end.is?(')')
       end
 
       # Checks whether the invoked method is a setter method.
@@ -185,37 +153,6 @@ module RuboCop
       # @return [Boolean] whether the invoked method is a camel case method
       def camel_case_method?
         method_name.to_s =~ /\A[A-Z]/
-      end
-
-      # Whether the last argument of the method invocation is a block pass,
-      # i.e. `&block`.
-      #
-      # @return [Boolean] whether the invoked method is a block pass
-      def block_argument?
-        arguments? && last_argument.block_pass_type?
-      end
-
-      # Whether this method invocation has an explicit block.
-      #
-      # @return [Boolean] whether the invoked method has a block
-      def block_literal?
-        parent && parent.block_type? && eql?(parent.send_node)
-      end
-
-      # The block node associated with this method call, if any.
-      #
-      # @return [BlockNode, nil] the `block` node associated with this method
-      #                          call or `nil`
-      def block_node
-        parent if block_literal?
-      end
-
-      # Checks whether any argument of the method invocation is a splat
-      # argument, i.e. `*splat`.
-      #
-      # @return [Boolean] whether the invoked method is a splat argument
-      def splat_argument?
-        arguments? && arguments.any?(&:splat_type?)
       end
 
       # Custom destructuring method. This can be used to normalize
