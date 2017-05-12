@@ -2785,8 +2785,8 @@ default.
 ```ruby
 # Style/PercentLiteralDelimiters:
 #   PreferredDelimiters:
-#     default: []
-#     %i:      ()
+#     default: '[]'
+#     '%i':    '()'
 
 # good
 %w[alpha beta] + %i(gamma delta)
