@@ -279,6 +279,28 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
         end
       end
     end
+
+    context 'with an empty block' do
+      let(:source) { <<-END }
+        super { |bar| }
+      END
+
+      context 'when not configured to ignore empty blocks' do
+        let(:cop_config) { { 'IgnoreEmptyBlocks' => false } }
+
+        it 'does not register an offense' do
+          expect(cop.offenses.size).to eq(1)
+        end
+      end
+
+      context 'when configured to ignore empty blocks' do
+        let(:cop_config) { { 'IgnoreEmptyBlocks' => true } }
+
+        it 'does not register an offense' do
+          expect(cop.offenses).to be_empty
+        end
+      end
+    end
   end
 
   context 'auto-correct' do

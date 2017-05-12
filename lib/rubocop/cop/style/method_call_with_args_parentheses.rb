@@ -50,8 +50,7 @@ module RuboCop
         end
 
         def on_super(node)
-          # super nodetype implies call with arguments.
-          return if parentheses?(node)
+          return if node.parenthesized?
 
           add_offense(node, :keyword)
         end

@@ -28,6 +28,7 @@ module RuboCop
         PairNode         => [:pair],
         ResbodyNode      => [:resbody],
         SendNode         => [:send],
+        SuperNode        => %i[super zsuper],
         UntilNode        => %i[until until_post],
         WhenNode         => [:when],
         WhileNode        => %i[while while_post]
