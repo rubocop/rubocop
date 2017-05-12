@@ -6,11 +6,20 @@ module RuboCop
     # place of a plain node when the builder constructs the AST, making its
     # methods available to all `super`- and `zsuper` nodes within RuboCop.
     class SuperNode < Node
+      include ParameterizedNode
+
       # The method name of this `super` node. Always `:super`.
       #
       # @return [Symbol] the method name of `super`
       def method_name
         :super
+      end
+
+      # An array containing the arguments of the super invocation.
+      #
+      # @return [Array<Node>] the arguments of the super invocation
+      def arguments
+        node_parts
       end
 
       # Checks whether the method name matches the argument.
@@ -19,15 +28,6 @@ module RuboCop
       # @return [Boolean] whether the method name matches the argument
       def method?(name)
         method_name == name.to_sym
-      end
-
-      # Checks whether this super invocation's arguments are wrapped in
-      # parentheses.
-      #
-      # @return [Boolean] whether this super invocation's arguments are
-      #                   wrapped in parentheses
-      def parenthesized?
-        loc.end && loc.end.is?(')')
       end
 
       # Custom destructuring method. This can be used to normalize
