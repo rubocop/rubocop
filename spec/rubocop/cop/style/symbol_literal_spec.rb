@@ -11,18 +11,15 @@ describe RuboCop::Cop::Style::SymbolLiteral do
   end
 
   it 'accepts string syntax when symbols have whitespaces in them' do
-    inspect_source(cop, 'x = { :"t o" => 0 }')
-    expect(cop.messages).to be_empty
+    expect_no_offenses('x = { :"t o" => 0 }')
   end
 
   it 'accepts string syntax when symbols have special chars in them' do
-    inspect_source(cop, 'x = { :"\tab" => 1 }')
-    expect(cop.messages).to be_empty
+    expect_no_offenses('x = { :"\\tab" => 1 }')
   end
 
   it 'accepts string syntax when symbol start with a digit' do
-    inspect_source(cop, 'x = { :"1" => 1 }')
-    expect(cop.messages).to be_empty
+    expect_no_offenses('x = { :"1" => 1 }')
   end
 
   it 'auto-corrects by removing quotes' do

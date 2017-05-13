@@ -83,7 +83,6 @@ describe RuboCop::Cop::Layout::SpaceInsideArrayPercentLiteral do
   end
 
   it 'accepts non array percent literals' do
-    inspect_source(cop, '%q( a  b c )')
-    expect(cop.messages).to be_empty
+    expect_no_offenses('%q( a  b c )')
   end
 end

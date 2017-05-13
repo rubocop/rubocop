@@ -55,8 +55,10 @@ describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
       end
 
       it 'does not register an offense for excess literal spacing' do
-        inspect_source(cop, source)
-        expect(cop.messages).to be_empty
+        expect_no_offenses(<<-'RUBY'.strip_indent)
+          "Variable is    #{var}      "
+          "  Variable is  #{var}"
+        RUBY
       end
 
       it 'does not correct valid string interpolations' do
@@ -66,8 +68,7 @@ describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
     end
 
     it 'accepts empty interpolation' do
-      inspect_source(cop, '"#{}"')
-      expect(cop.messages).to be_empty
+      expect_no_offenses("\"\#{}\"")
     end
   end
 
@@ -98,8 +99,10 @@ describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
       end
 
       it 'does not register an offense for excess literal spacing' do
-        inspect_source(cop, source)
-        expect(cop.messages).to be_empty
+        expect_no_offenses(<<-'RUBY'.strip_indent)
+          "Variable is    #{ var }      "
+          "  Variable is  #{ var }"
+        RUBY
       end
 
       it 'does not correct valid string interpolations' do
@@ -109,8 +112,7 @@ describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
     end
 
     it 'accepts empty interpolation' do
-      inspect_source(cop, '"#{}"')
-      expect(cop.messages).to be_empty
+      expect_no_offenses("\"\#{}\"")
     end
   end
 end

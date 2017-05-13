@@ -25,8 +25,7 @@ describe RuboCop::Cop::Layout::SpaceBeforeComma do
   end
 
   it 'does not register an offense for no spaces before comma' do
-    inspect_source(cop, 'a(1, 2)')
-    expect(cop.messages).to be_empty
+    expect_no_offenses('a(1, 2)')
   end
 
   it 'auto-corrects space before comma' do

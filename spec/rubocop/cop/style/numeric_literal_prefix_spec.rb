@@ -22,11 +22,10 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
       end
 
       it 'does not register offense for lowercase prefix' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           a = 0o101
           b = 0o567
-        END
-        expect(cop.messages).to be_empty
+        RUBY
       end
 
       it 'autocorrects an octal literal starting with 0' do
@@ -58,8 +57,7 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
       end
 
       it 'does not register offense for prefix `0`' do
-        inspect_source(cop, 'b = 0567')
-        expect(cop.messages).to be_empty
+        expect_no_offenses('b = 0567')
       end
 
       it 'autocorrects an octal literal starting with 0O or 0o' do
@@ -93,8 +91,7 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
     end
 
     it 'does not register offense for lowercase prefix' do
-      inspect_source(cop, 'a = 0x101')
-      expect(cop.messages).to be_empty
+      expect_no_offenses('a = 0x101')
     end
 
     it 'autocorrects literals with uppercase prefix' do
@@ -115,8 +112,7 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
     end
 
     it 'does not register offense for lowercase prefix' do
-      inspect_source(cop, 'a = 0b101')
-      expect(cop.messages).to be_empty
+      expect_no_offenses('a = 0b101')
     end
 
     it 'autocorrects literals with uppercase prefix' do
@@ -138,8 +134,7 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
     end
 
     it 'does not register offense for no prefix' do
-      inspect_source(cop, 'a = 101')
-      expect(cop.messages).to be_empty
+      expect_no_offenses('a = 101')
     end
 
     it 'autocorrects literals with prefix' do

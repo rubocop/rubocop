@@ -78,8 +78,7 @@ describe RuboCop::Cop::Layout::SpaceAfterComma do
       it_behaves_like 'common behavior'
 
       it 'accepts no space between a comma and a closing brace' do
-        inspect_source(cop, '{foo:bar,}')
-        expect(cop.messages).to be_empty
+        expect_no_offenses('{foo:bar,}')
       end
     end
   end

@@ -103,8 +103,7 @@ describe RuboCop::Cop::Layout::RescueEnsureAlignment do
     it_behaves_like 'common behavior', 'rescue'
 
     it 'accepts the modifier form' do
-      inspect_source(cop, 'test rescue nil')
-      expect(cop.messages).to be_empty
+      expect_no_offenses('test rescue nil')
     end
   end
 

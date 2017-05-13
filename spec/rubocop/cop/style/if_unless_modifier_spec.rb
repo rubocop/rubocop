@@ -197,10 +197,9 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it 'accepts if-else-end' do
-    inspect_source(cop,
-                   'if args.last.is_a? Hash then args.pop else ' \
-                   'Hash.new end')
-    expect(cop.messages).to be_empty
+    expect_no_offenses(<<-RUBY.strip_indent)
+      if args.last.is_a? Hash then args.pop else Hash.new end
+    RUBY
   end
 
   it 'accepts an empty condition' do
@@ -276,12 +275,11 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it 'accepts if-end followed by a chained call' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if test
         something
       end.inspect
-    END
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it "doesn't break if-end when used as RHS of local var assignment" do
@@ -330,12 +328,11 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it 'accepts if-end when used as LHS of binary arithmetic' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if test
         1
       end + 2
-    END
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   context 'if-end is argument to a parenthesized method call' do

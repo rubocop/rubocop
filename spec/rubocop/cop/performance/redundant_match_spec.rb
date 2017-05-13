@@ -108,8 +108,7 @@ describe RuboCop::Cop::Performance::RedundantMatch do
   end
 
   it 'does not register an error when there is no receiver to the match call' do
-    inspect_source(cop, 'match("bar")')
-    expect(cop.messages).to be_empty
+    expect_no_offenses('match("bar")')
   end
 
   it 'formats error message correctly for something if str.match(/regex/)' do

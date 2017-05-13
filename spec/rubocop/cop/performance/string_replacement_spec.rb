@@ -4,9 +4,7 @@ describe RuboCop::Cop::Performance::StringReplacement do
   subject(:cop) { described_class.new }
 
   it 'accepts methods other than gsub' do
-    inspect_source(cop, "'abc'.insert(2, 'a')")
-
-    expect(cop.messages).to be_empty
+    expect_no_offenses("'abc'.insert(2, 'a')")
   end
 
   shared_examples 'accepts' do |method|
@@ -199,102 +197,72 @@ describe RuboCop::Cop::Performance::StringReplacement do
 
   describe 'non deterministic regex' do
     it 'allows regex containing a +' do
-      inspect_source(cop, %('abc'.gsub(/a+/, 'def')))
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses("'abc'.gsub(/a+/, 'def')")
     end
 
     it 'allows regex containing a *' do
-      inspect_source(cop, %('abc'.gsub(/a*/, 'def')))
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses("'abc'.gsub(/a*/, 'def')")
     end
 
     it 'allows regex containing a ^' do
-      inspect_source(cop, %('abc'.gsub(/^/, '')))
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses("'abc'.gsub(/^/, '')")
     end
 
     it 'allows regex containing a $' do
-      inspect_source(cop, %('abc'.gsub(/$/, '')))
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses("'abc'.gsub(/$/, '')")
     end
 
     it 'allows regex containing a ?' do
-      inspect_source(cop, %('abc'.gsub(/a?/, 'def')))
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses("'abc'.gsub(/a?/, 'def')")
     end
 
     it 'allows regex containing a .' do
-      inspect_source(cop, %('abc'.gsub(/./, 'a')))
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses("'abc'.gsub(/./, 'a')")
     end
 
     it 'allows regex containing a |' do
-      inspect_source(cop, %('abc'.gsub(/a|b/, 'd')))
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses("'abc'.gsub(/a|b/, 'd')")
     end
 
     it 'allows regex containing ()' do
-      inspect_source(cop, %('abc'.gsub(/(ab)/, 'd')))
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses("'abc'.gsub(/(ab)/, 'd')")
     end
 
     it 'allows regex containing escaped ()' do
-      inspect_source(cop, %('(abc)'.gsub(/\(ab\)/, 'd')))
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses("'(abc)'.gsub(/(ab)/, 'd')")
     end
 
     it 'allows regex containing {}' do
-      inspect_source(cop, %('abc'.gsub(/a{3,}/, 'd')))
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses("'abc'.gsub(/a{3,}/, 'd')")
     end
 
     it 'allows regex containing []' do
-      inspect_source(cop, %('abc'.gsub(/[a-z]/, 'd')))
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses("'abc'.gsub(/[a-z]/, 'd')")
     end
 
     it 'allows regex containing a backslash' do
-      inspect_source(cop, '"abc".gsub(/\s/, "d")')
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses('"abc".gsub(/\\s/, "d")')
     end
 
     it 'allows regex literal containing interpolations' do
-      inspect_source(cop, <<-'END'.strip_indent)
+      expect_no_offenses(<<-'RUBY'.strip_indent)
         foo = 'a'
         "abc".gsub(/#{foo}/, "d")
-      END
-
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'allows regex constructor containing a string with interpolations' do
-      inspect_source(cop, <<-'END'.strip_indent)
+      expect_no_offenses(<<-'RUBY'.strip_indent)
         foo = 'a'
         "abc".gsub(Regexp.new("#{foo}"), "d")
-      END
-
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'allows regex constructor containing regex with interpolations' do
-      inspect_source(cop, <<-'END'.strip_indent)
+      expect_no_offenses(<<-'RUBY'.strip_indent)
         foo = 'a'
         "abc".gsub(Regexp.new(/#{foo}/), "d")
-      END
-
-      expect(cop.messages).to be_empty
+      RUBY
     end
   end
 

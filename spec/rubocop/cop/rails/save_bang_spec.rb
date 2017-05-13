@@ -174,8 +174,6 @@ describe RuboCop::Cop::Rails::SaveBang do
   end
 
   it 'properly ignores lvasign without right hand side' do
-    inspect_source(cop, 'variable += 1')
-
-    expect(cop.messages).to be_empty
+    expect_no_offenses('variable += 1')
   end
 end

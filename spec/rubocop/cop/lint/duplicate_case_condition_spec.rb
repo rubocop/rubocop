@@ -72,29 +72,27 @@ describe RuboCop::Cop::Lint::DuplicateCaseCondition do
   end
 
   it 'accepts trivial case expressions' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       case x
       when false
         first_method
       end
-    END
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'accepts non-redundant case expressions' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       case x
       when false
         first_method
       when true
         second_method
       end
-    END
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'accepts non-redundant case expressions with an else expression' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       case x
       when false
         method_name
@@ -103,19 +101,17 @@ describe RuboCop::Cop::Lint::DuplicateCaseCondition do
       else
         third_method
       end
-    END
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'accepts similar but not equivalent && expressions' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       case x
       when something && another && other
         first_method
       when something && another
         second_method
       end
-    END
-    expect(cop.messages).to be_empty
+    RUBY
   end
 end

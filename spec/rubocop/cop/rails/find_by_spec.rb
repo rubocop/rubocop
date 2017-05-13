@@ -16,9 +16,7 @@ describe RuboCop::Cop::Rails::FindBy do
   it_behaves_like('registers_offense', 'take')
 
   it 'does not register an offense when using find_by' do
-    inspect_source(cop, 'User.find_by(id: x)')
-
-    expect(cop.messages).to be_empty
+    expect_no_offenses('User.find_by(id: x)')
   end
 
   it 'autocorrects where.take to find_by' do

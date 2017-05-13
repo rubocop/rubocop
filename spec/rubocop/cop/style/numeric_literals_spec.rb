@@ -33,29 +33,25 @@ describe RuboCop::Cop::Style::NumericLiterals, :config do
   end
 
   it 'accepts long numbers with underscore' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       a = 123_456
       b = 123_456.55
-    END
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'accepts a short integer without underscore' do
-    inspect_source(cop, 'a = 123')
-    expect(cop.messages).to be_empty
+    expect_no_offenses('a = 123')
   end
 
   it 'does not count a leading minus sign as a digit' do
-    inspect_source(cop, 'a = -1230')
-    expect(cop.messages).to be_empty
+    expect_no_offenses('a = -1230')
   end
 
   it 'accepts short numbers without underscore' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       a = 123
       b = 123.456
-    END
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'ignores non-decimal literals' do

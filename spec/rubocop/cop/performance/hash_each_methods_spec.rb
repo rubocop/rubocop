@@ -32,23 +32,19 @@ describe RuboCop::Cop::Performance::HashEachMethods do
   end
 
   it 'does not register an offense for Hash#each_key' do
-    inspect_source(cop, 'hash.each_key { |k| p k }')
-    expect(cop.messages).to be_empty
+    expect_no_offenses('hash.each_key { |k| p k }')
   end
 
   it 'does not register an offense for Hash#each_value' do
-    inspect_source(cop, 'hash.each_value { |v| p v }')
-    expect(cop.messages).to be_empty
+    expect_no_offenses('hash.each_value { |v| p v }')
   end
 
   it 'does not register an offense for Hash#each if both key/value are used' do
-    inspect_source(cop, 'hash.each { |k, v| p "#{k}_#{v}" }')
-    expect(cop.messages).to be_empty
+    expect_no_offenses("hash.each { |k, v| p \"\#{k}_\#{v}\" }")
   end
 
   it 'does not register an offense for Hash#each if block takes only one arg' do
-    inspect_source(cop, 'hash.each { |kv| p kv }')
-    expect(cop.messages).to be_empty
+    expect_no_offenses('hash.each { |kv| p kv }')
   end
 
   it 'auto-corrects Hash#keys.each with Hash#each_key' do

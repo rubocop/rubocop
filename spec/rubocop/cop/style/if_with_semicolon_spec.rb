@@ -11,15 +11,13 @@ describe RuboCop::Cop::Style::IfWithSemicolon do
   end
 
   it 'accepts one line if/then/end' do
-    inspect_source(cop, 'if cond then run else dont end')
-    expect(cop.messages).to be_empty
+    expect_no_offenses('if cond then run else dont end')
   end
 
   it 'can handle modifier conditionals' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       class Hash
       end if RUBY_VERSION < "1.8.7"
-    END
-    expect(cop.messages).to be_empty
+    RUBY
   end
 end

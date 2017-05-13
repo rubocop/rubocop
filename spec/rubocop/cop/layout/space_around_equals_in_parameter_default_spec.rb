@@ -35,11 +35,10 @@ describe RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault, :config do
     end
 
     it 'accepts default value assignment with space' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def f(x, y = 0, z = {})
         end
-      END
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'auto-corrects missing space' do
@@ -48,11 +47,10 @@ describe RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault, :config do
     end
 
     it 'accepts default value assignment with spaces and unary + operator' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def f(x, y = +1, z = {})
         end
-      END
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'auto-corrects missing space for arguments with unary operators' do
@@ -99,11 +97,10 @@ describe RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault, :config do
     end
 
     it 'accepts default value assignment without space' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def f(x, y=0, z={})
         end
-      END
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'auto-corrects unwanted space' do
