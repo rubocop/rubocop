@@ -37,21 +37,15 @@ describe RuboCop::Cop::Performance::DoubleStartEndWith do
         end
 
         context 'one of the parameters of the second call is not pure' do
-          let(:source) { 'x.start_with?(a, "b") || x.start_with?(C, d)' }
-
           it "doesn't register an offense" do
-            inspect_source(cop, source)
-            expect(cop.offenses).to be_empty
+            expect_no_offenses('x.start_with?(a, "b") || x.start_with?(C, d)')
           end
         end
       end
 
       context 'with different receivers' do
-        let(:source) { 'x.start_with?("a") || y.start_with?("b")' }
-
         it "doesn't register an offense" do
-          inspect_source(cop, source)
-          expect(cop.offenses).to be_empty
+          expect_no_offenses('x.start_with?("a") || y.start_with?("b")')
         end
       end
     end
@@ -81,49 +75,34 @@ describe RuboCop::Cop::Performance::DoubleStartEndWith do
         end
 
         context 'one of the parameters of the second call is not pure' do
-          let(:source) { 'x.end_with?(a, "b") || x.end_with?(C, d)' }
-
           it "doesn't register an offense" do
-            inspect_source(cop, source)
-            expect(cop.offenses).to be_empty
+            expect_no_offenses('x.end_with?(a, "b") || x.end_with?(C, d)')
           end
         end
       end
 
       context 'with different receivers' do
-        let(:source) { 'x.end_with?("a") || y.end_with?("b")' }
-
         it "doesn't register an offense" do
-          inspect_source(cop, source)
-          expect(cop.offenses).to be_empty
+          expect_no_offenses('x.end_with?("a") || y.end_with?("b")')
         end
       end
     end
 
     context 'a .start_with? and .end_with? call with the same receiver' do
-      let(:source) { 'x.start_with?("a") || x.end_with?("b")' }
-
       it "doesn't register an offense" do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('x.start_with?("a") || x.end_with?("b")')
       end
     end
 
     context 'two #starts_with? calls' do
-      let(:source) { 'x.starts_with?(a, b) || x.starts_with?("c", D)' }
-
       it "doesn't register an offense" do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('x.starts_with?(a, b) || x.starts_with?("c", D)')
       end
     end
 
     context 'two #ends_with? calls' do
-      let(:source) { 'x.ends_with?(a, b) || x.ends_with?("c", D)' }
-
       it "doesn't register an offense" do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('x.ends_with?(a, b) || x.ends_with?("c", D)')
       end
     end
   end
@@ -210,21 +189,17 @@ describe RuboCop::Cop::Performance::DoubleStartEndWith do
         end
 
         context 'one of the parameters of the second call is not pure' do
-          let(:source) { 'x.starts_with?(a, "b") || x.starts_with?(C, d)' }
-
           it "doesn't register an offense" do
-            inspect_source(cop, source)
-            expect(cop.offenses).to be_empty
+            expect_no_offenses(<<-RUBY.strip_indent)
+              x.starts_with?(a, "b") || x.starts_with?(C, d)
+            RUBY
           end
         end
       end
 
       context 'with different receivers' do
-        let(:source) { 'x.starts_with?("a") || y.starts_with?("b")' }
-
         it "doesn't register an offense" do
-          inspect_source(cop, source)
-          expect(cop.offenses).to be_empty
+          expect_no_offenses('x.starts_with?("a") || y.starts_with?("b")')
         end
       end
     end
@@ -254,21 +229,15 @@ describe RuboCop::Cop::Performance::DoubleStartEndWith do
         end
 
         context 'one of the parameters of the second call is not pure' do
-          let(:source) { 'x.ends_with?(a, "b") || x.ends_with?(C, d)' }
-
           it "doesn't register an offense" do
-            inspect_source(cop, source)
-            expect(cop.offenses).to be_empty
+            expect_no_offenses('x.ends_with?(a, "b") || x.ends_with?(C, d)')
           end
         end
       end
 
       context 'with different receivers' do
-        let(:source) { 'x.ends_with?("a") || y.ends_with?("b")' }
-
         it "doesn't register an offense" do
-          inspect_source(cop, source)
-          expect(cop.offenses).to be_empty
+          expect_no_offenses('x.ends_with?("a") || y.ends_with?("b")')
         end
       end
     end

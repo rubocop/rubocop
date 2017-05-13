@@ -51,11 +51,10 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
   end
 
   it 'accepts a block end that does not begin its line' do
-    inspect_source(cop, <<-END.strip_margin('|'))
-      |  scope :bar, lambda { joins(:baz)
-      |                       .distinct }
-    END
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(<<-RUBY.strip_indent)
+        scope :bar, lambda { joins(:baz)
+                             .distinct }
+    RUBY
   end
 
   context 'when the block is a logical operand' do

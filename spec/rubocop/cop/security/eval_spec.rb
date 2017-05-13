@@ -48,13 +48,10 @@ describe RuboCop::Cop::Security::Eval do
   end
 
   it 'accepts eval with a multiline string' do
-    expect_no_offenses(<<-END.strip_indent)
-      eval "something
-      something2"
-    END
+    expect_no_offenses('eval "something\nsomething2"')
   end
 
-  it 'accepts eval with a string that is interpolated a literal' do
+  it 'accepts eval with a string that interpolates a literal' do
     expect_no_offenses('eval "something#{2}"')
   end
 
@@ -74,9 +71,7 @@ describe RuboCop::Cop::Security::Eval do
     end
 
     it 'accepts eval on a literal string' do
-      expect_no_offenses(<<-RUBY.strip_indent)
-        eval("puts 1", binding, "test.rb", 1)
-      RUBY
+      expect_no_offenses('eval("puts 1", binding, "test.rb", 1)')
     end
   end
 end

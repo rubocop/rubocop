@@ -161,12 +161,11 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'accepts an initialize method looking like a writer' do
-    inspect_source(cop, <<-END.strip_margin('|'))
-      | def initialize(value)
-      |   @top = value
-      | end
-    END
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(<<-RUBY.strip_indent)
+       def initialize(value)
+         @top = value
+       end
+    RUBY
   end
 
   it 'accepts reader with different ivar name' do
@@ -316,21 +315,19 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
     let(:cop_config) { { 'Whitelist' => ['to_foo', 'bar='] } }
 
     it 'accepts whitelisted reader' do
-      inspect_source(cop, <<-END.strip_margin('|'))
-        | def to_foo
-        |   @foo
-        | end
-      END
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+         def to_foo
+           @foo
+         end
+      RUBY
     end
 
     it 'accepts whitelisted writer' do
-      inspect_source(cop, <<-END.strip_margin('|'))
-        | def bar=(bar)
-        |   @bar = bar
-        | end
-      END
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+         def bar=(bar)
+           @bar = bar
+         end
+      RUBY
     end
 
     context 'with AllowPredicates: false' do
@@ -340,12 +337,11 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
       end
 
       it 'accepts whitelisted predicate' do
-        inspect_source(cop, <<-END.strip_margin('|'))
-          | def foo?
-          |   @foo
-          | end
-        END
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+           def foo?
+             @foo
+           end
+        RUBY
       end
     end
   end

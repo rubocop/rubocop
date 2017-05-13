@@ -79,23 +79,16 @@ describe RuboCop::Cop::Style::LineEndConcatenation do
   end
 
   it 'accepts string concat with a return value of method on a string' do
-    inspect_source(cop,
-                   [
-                     # What we want here is 'content   ', not '
-                     # content content content '.
-                     'content_and_three_spaces = "content" +',
-                     '  " " * 3',
-                     # Method call with dot on a string literal.
-                     "a_thing = 'a ' +",
-                     "  'gniht'.reverse",
-                     # Formatting operator.
-                     "output = 'value: ' +",
-                     "  '%d' % value",
-                     # Index operator.
-                     "'letter: ' +",
-                     "  'abcdefghij'[ix]"
-                   ])
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(<<-RUBY.strip_indent)
+      content_and_three_spaces = "content" +
+        " " * 3
+      a_thing = 'a ' +
+        'gniht'.reverse
+      output = 'value: ' +
+        '%d' % value
+      'letter: ' +
+        'abcdefghij'[ix]
+    RUBY
   end
 
   it 'accepts string concat with a return value of method on an interpolated ' \
@@ -109,32 +102,32 @@ describe RuboCop::Cop::Style::LineEndConcatenation do
   end
 
   it 'accepts string concat at line end when followed by comment' do
-    inspect_source(cop,
-                   ['top = "test" + # something',
-                    '"top"'])
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(<<-RUBY.strip_indent)
+      top = "test" + # something
+      "top"
+    RUBY
   end
 
   it 'accepts string concat at line end when followed by a comment line' do
-    inspect_source(cop,
-                   ['top = "test" +',
-                    '# something',
-                    '"top"'])
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(<<-RUBY.strip_indent)
+      top = "test" +
+      # something
+      "top"
+    RUBY
   end
 
   it 'accepts string concat at line end when % literals are involved' do
-    inspect_source(cop,
-                   ['top = %(test) +',
-                    '"top"'])
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(<<-RUBY.strip_indent)
+      top = %(test) +
+      "top"
+    RUBY
   end
 
   it 'accepts string concat at line end for special strings like __FILE__' do
-    inspect_source(cop,
-                   ['top = __FILE__ +',
-                    '"top"'])
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(<<-RUBY.strip_indent)
+      top = __FILE__ +
+      "top"
+    RUBY
   end
 
   it 'registers offenses only for the appropriate lines in chained concats' do

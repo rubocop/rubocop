@@ -218,10 +218,10 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       end
 
       it 'accepts method being aligned with method that is an argument' do
-        inspect_source(cop,
-                       ['authorize scope.includes(:user)',
-                        '               .order(:name)'])
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          authorize scope.includes(:user)
+                         .order(:name)
+        RUBY
       end
 
       it 'accepts method being aligned with method that is an argument in ' \
@@ -401,11 +401,11 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     end
 
     it 'does not check binary operations when string wrapped with backslash' do
-      inspect_source(cop,
-                     ["flash[:error] = 'Here is a string ' \\",
-                      "                'That spans' <<",
-                      "  'multiple lines'"])
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        flash[:error] = 'Here is a string ' \
+                        'That spans' <<
+          'multiple lines'
+      RUBY
     end
 
     it 'does not check binary operations when string wrapped with +' do

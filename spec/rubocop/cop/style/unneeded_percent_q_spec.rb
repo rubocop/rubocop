@@ -132,11 +132,12 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
   end
 
   it 'accepts a heredoc string that contains %q' do
-    inspect_source(cop, ['  s = <<END',
-                         "%q('hi') # line 1",
-                         '%q("hi")',
-                         'END'])
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(<<-RUBY.strip_indent)
+        s = <<END
+      %q('hi') # line 1
+      %q("hi")
+      END
+    RUBY
   end
 
   it 'accepts %q at the beginning of a double quoted string ' \

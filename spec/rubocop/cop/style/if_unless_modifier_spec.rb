@@ -42,17 +42,12 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
     end
 
     context 'and has two statements separated by semicolon' do
-      let(:source) do
-        <<-END.strip_indent
+      it 'accepts' do
+        expect_no_offenses(<<-RUBY.strip_indent)
           if condition
             do_this; do_that
           end
-        END
-      end
-
-      it 'accepts' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        RUBY
       end
     end
   end
@@ -82,8 +77,8 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   context 'multiline if that fits on one line with comment near end' do
-    let(:source) do
-      <<-END.strip_indent
+    it 'accepts' do
+      expect_no_offenses(<<-RUBY.strip_indent)
         if a
           b
         end # comment
@@ -91,12 +86,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
           b
           # comment
         end
-      END
-    end
-
-    it 'accepts' do
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
   end
 
@@ -358,32 +348,22 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   context 'if-end with conditional as body' do
-    let(:source) do
-      <<-END.strip_indent
+    it 'accepts' do
+      expect_no_offenses(<<-RUBY.strip_indent)
         if condition
           foo ? "bar" : "baz"
         end
-      END
-    end
-
-    it 'accepts' do
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
   end
 
   context 'unless-end with conditional as body' do
-    let(:source) do
-      <<-END.strip_indent
+    it 'accepts' do
+      expect_no_offenses(<<-RUBY.strip_indent)
         unless condition
           foo ? "bar" : "baz"
         end
-      END
-    end
-
-    it 'accepts' do
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
   end
 end

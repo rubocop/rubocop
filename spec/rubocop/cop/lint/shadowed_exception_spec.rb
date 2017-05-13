@@ -533,8 +533,16 @@ describe RuboCop::Cop::Lint::ShadowedException do
       end
 
       it 'highlights range ending at rescue keyword' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          begin
+          rescue A, B
+            do_something
+          rescue C
+            do_something
+          rescue
+            do_something
+          end
+        RUBY
       end
     end
   end

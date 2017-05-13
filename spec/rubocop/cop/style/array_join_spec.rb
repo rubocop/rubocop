@@ -36,12 +36,6 @@ describe RuboCop::Cop::Style::ArrayJoin do
   end
 
   it 'does not register an offense for ambiguous cases' do
-    inspect_source(cop,
-                   'test * ", "')
-    expect(cop.offenses).to be_empty
-
-    inspect_source(cop,
-                   '%w(one two three) * test')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('%w(one two three) * test')
   end
 end

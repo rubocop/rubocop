@@ -410,11 +410,10 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
       end
 
       it 'accepts first parameter indented relative to previous line' do
-        inspect_source(cop, <<-END.strip_margin('|'))
-          |  @diagnostics.process(Diagnostic.new(
-          |    :error, :token, { :token => name }, location))
-        END
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+            @diagnostics.process(Diagnostic.new(
+              :error, :token, { :token => name }, location))
+        RUBY
       end
 
       it 'auto-corrects an over-indented first parameter' do

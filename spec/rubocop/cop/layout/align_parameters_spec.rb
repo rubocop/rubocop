@@ -125,13 +125,12 @@ describe RuboCop::Cop::Layout::AlignParameters do
     end
 
     it 'accepts the first parameter being on a new row' do
-      inspect_source(cop, <<-END.strip_margin('|'))
-        |  match(
-        |    a,
-        |    b
-        |  )
-      END
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+          match(
+            a,
+            b
+          )
+      RUBY
     end
 
     it 'can handle heredoc strings' do
@@ -159,12 +158,11 @@ describe RuboCop::Cop::Layout::AlignParameters do
     end
 
     it 'can handle do-end' do
-      inspect_source(cop, <<-END.strip_margin('|'))
-        |      run(lambda do |e|
-        |        w = e['warden']
-        |      end)
-      END
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+              run(lambda do |e|
+                w = e['warden']
+              end)
+      RUBY
     end
 
     it 'can handle a call with a block inside another call' do
@@ -329,24 +327,22 @@ describe RuboCop::Cop::Layout::AlignParameters do
 
     context 'assigned methods' do
       it 'accepts the first parameter being on a new row' do
-        inspect_source(cop, <<-END.strip_margin('|'))
-          | assigned_value = match(
-          |   a,
-          |   b,
-          |   c
-          | )
-        END
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+           assigned_value = match(
+             a,
+             b,
+             c
+           )
+        RUBY
       end
 
       it 'accepts the first parameter being on method row' do
-        inspect_source(cop, <<-END.strip_margin('|'))
-          | assigned_value = match(a,
-          |                        b,
-          |                        c
-          |                  )
-        END
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+           assigned_value = match(a,
+                                  b,
+                                  c
+                            )
+        RUBY
       end
     end
 
@@ -494,15 +490,14 @@ describe RuboCop::Cop::Layout::AlignParameters do
 
     context 'multi-line method calls' do
       it 'can handle existing indentation from multi-line method calls' do
-        inspect_source(cop, <<-END.strip_margin('|'))
-          | something
-          |   .method_name(
-          |     a,
-          |     b,
-          |     c
-          |   )
-        END
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+           something
+             .method_name(
+               a,
+               b,
+               c
+             )
+        RUBY
       end
 
       it 'registers offenses for double indentation from relevant method' do
@@ -520,15 +515,14 @@ describe RuboCop::Cop::Layout::AlignParameters do
       end
 
       it 'does not err on method call without a method name' do
-        inspect_source(cop, <<-END.strip_margin('|'))
-          | something
-          |   .(
-          |     a,
-          |     b,
-          |     c
-          |   )
-        END
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+           something
+             .(
+               a,
+               b,
+               c
+             )
+        RUBY
       end
 
       it 'autocorrects relative to position of relevant method call' do
@@ -665,24 +659,22 @@ describe RuboCop::Cop::Layout::AlignParameters do
         let(:indentation_width) { 4 }
 
         it 'accepts the first parameter being on a new row' do
-          inspect_source(cop, <<-END.strip_margin('|'))
-            | assigned_value = match(
-            |     a,
-            |     b,
-            |     c
-            | )
-          END
-          expect(cop.offenses).to be_empty
+          expect_no_offenses(<<-RUBY.strip_indent)
+             assigned_value = match(
+                 a,
+                 b,
+                 c
+             )
+          RUBY
         end
 
         it 'accepts the first parameter being on method row' do
-          inspect_source(cop, <<-END.strip_margin('|'))
-            | assigned_value = match(a,
-            |     b,
-            |     c
-            | )
-          END
-          expect(cop.offenses).to be_empty
+          expect_no_offenses(<<-RUBY.strip_indent)
+             assigned_value = match(a,
+                 b,
+                 c
+             )
+          RUBY
         end
 
         it 'autocorrects even when first argument is in wrong position' do
@@ -714,24 +706,22 @@ describe RuboCop::Cop::Layout::AlignParameters do
         end
 
         it 'accepts the first parameter being on a new row' do
-          inspect_source(cop, <<-END.strip_margin('|'))
-            | assigned_value = match(
-            |     a,
-            |     b,
-            |     c
-            | )
-          END
-          expect(cop.offenses).to be_empty
+          expect_no_offenses(<<-RUBY.strip_indent)
+             assigned_value = match(
+                 a,
+                 b,
+                 c
+             )
+          RUBY
         end
 
         it 'accepts the first parameter being on method row' do
-          inspect_source(cop, <<-END.strip_margin('|'))
-            | assigned_value = match(a,
-            |     b,
-            |     c
-            | )
-          END
-          expect(cop.offenses).to be_empty
+          expect_no_offenses(<<-RUBY.strip_indent)
+             assigned_value = match(a,
+                 b,
+                 c
+             )
+          RUBY
         end
       end
     end

@@ -1849,8 +1849,8 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   # regression test, from problem in Locatable
   context 'when a variable is assigned in 2 identical if branches' do
-    let(:source) do
-      <<-END.strip_indent
+    it "doesn't think 1 of the 2 assignments is useless" do
+      expect_no_offenses(<<-RUBY.strip_indent)
         def foo
           if bar
             foo = 1
@@ -1859,12 +1859,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
           end
           foo.bar.baz
         end
-      END
-    end
-
-    it "doesn't think 1 of the 2 assignments is useless" do
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
   end
 

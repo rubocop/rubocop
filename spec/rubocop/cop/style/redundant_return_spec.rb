@@ -383,8 +383,8 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
   end
 
   context 'when case nodes are empty' do
-    let(:src) do
-      <<-END.strip_indent
+    it 'accepts empty when nodes' do
+      expect_no_offenses(<<-RUBY.strip_indent)
         def func
           case x
           when y then 1
@@ -393,12 +393,7 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
             3
           end
         end
-      END
-    end
-
-    it 'accepts empty when nodes' do
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
   end
 end

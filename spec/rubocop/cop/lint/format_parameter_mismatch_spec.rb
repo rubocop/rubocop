@@ -120,30 +120,12 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
   end
 
   it 'does not register an offense when single argument is not an array' do
-    inspect_source(cop, 'puts "%s" % 42')
-    expect(cop.offenses).to be_empty
-
-    inspect_source(cop, 'puts "%s" % "1"')
-    expect(cop.offenses).to be_empty
-
-    inspect_source(cop, 'puts "%s" % 1.2')
-    expect(cop.offenses).to be_empty
-
-    inspect_source(cop, 'puts "%s" % :a')
-    expect(cop.offenses).to be_empty
-
-    inspect_source(cop, 'puts "%s" % CONST')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('puts "%s" % CONST')
   end
 
   context 'when splat argument is present' do
     it 'does not register an offense when args count is less than expected' do
-      inspect_source(cop, '"%s, %s, %s" % [1, *arr]')
-      expect(cop.offenses).to be_empty
-      inspect_source(cop, 'format("%s, %s, %s", 1, *arr)')
-      expect(cop.offenses).to be_empty
-      inspect_source(cop, 'sprintf("%s, %s, %s", 1, *arr)')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('sprintf("%s, %s, %s", 1, *arr)')
     end
 
     it 'does register an offense when args count is more than expected' do
@@ -208,11 +190,7 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
   end
 
   it 'does not register an offense argument is the result of a message send' do
-    inspect_source(cop, '"%s" % "a b c".gsub(" ", "_")')
-    expect(cop.offenses).to be_empty
-
-    inspect_source(cop, 'format("%s", "a b c".gsub(" ", "_"))')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('format("%s", "a b c".gsub(" ", "_"))')
   end
 
   it 'does not register an offense when using named parameters' do

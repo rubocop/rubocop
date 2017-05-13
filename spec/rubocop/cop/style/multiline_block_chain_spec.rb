@@ -52,11 +52,11 @@ describe RuboCop::Cop::Style::MultilineBlockChain do
     end
 
     it 'accepts a chain where the first block is single-line' do
-      inspect_source(cop,
-                     ['Thread.list.find_all { |t| t.alive? }.map { |t| ',
-                      '  t.object_id',
-                      '}'])
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        Thread.list.find_all { |t| t.alive? }.map { |t|
+          t.object_id
+        }
+      RUBY
     end
   end
 

@@ -31,11 +31,10 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
     end
 
     it 'accepts empty braces with comment and line break inside' do
-      inspect_source(cop, <<-END.strip_margin('|'))
-        |  each { # Comment
-        |  }
-      END
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+          each { # Comment
+          }
+      RUBY
     end
 
     it 'registers an offense for empty braces with line break inside' do
