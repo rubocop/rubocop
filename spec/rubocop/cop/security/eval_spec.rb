@@ -32,36 +32,30 @@ describe RuboCop::Cop::Security::Eval do
   end
 
   it 'accepts eval as variable' do
-    inspect_source(cop, 'eval = something')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('eval = something')
   end
 
   it 'accepts eval as method' do
-    inspect_source(cop, 'something.eval')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('something.eval')
   end
 
   it 'accepts eval on a literal string' do
-    inspect_source(cop, 'eval("puts 1")')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('eval("puts 1")')
   end
 
   it 'accepts eval with no arguments' do
-    inspect_source(cop, 'eval')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('eval')
   end
 
   it 'accepts eval with a multiline string' do
-    inspect_source(cop, <<-END)
+    expect_no_offenses(<<-END.strip_indent)
       eval "something
       something2"
     END
-    expect(cop.offenses).to be_empty
   end
 
   it 'accepts eval with a string that is interpolated a literal' do
-    inspect_source(cop, 'eval "something#{2}"')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('eval "something#{2}"')
   end
 
   context 'with an explicit binding, filename, and line number' do
@@ -80,8 +74,9 @@ describe RuboCop::Cop::Security::Eval do
     end
 
     it 'accepts eval on a literal string' do
-      inspect_source(cop, 'eval("puts 1", binding, "test.rb", 1)')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        eval("puts 1", binding, "test.rb", 1)
+      RUBY
     end
   end
 end

@@ -3,60 +3,46 @@
 describe RuboCop::Cop::Security::MarshalLoad, :config do
   subject(:cop) { described_class.new(config) }
 
-  before do
-    inspect_source(cop, source)
+  it 'registers an offense for using Marshal.load' do
+    expect_offense(<<-RUBY.strip_indent)
+      Marshal.load('{}')
+              ^^^^ Avoid using `Marshal.load`.
+      ::Marshal.load('{}')
+                ^^^^ Avoid using `Marshal.load`.
+    RUBY
   end
 
-  shared_examples 'code with offense' do |code, message|
-    context "when checking #{code}" do
-      let(:source) { code }
-
-      it 'registers an offense' do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.offenses.first.message).to eq(message)
-      end
-    end
+  it 'registers an offense for using Marshal.restore' do
+    expect_offense(<<-RUBY.strip_indent)
+      Marshal.restore('{}')
+              ^^^^^^^ Avoid using `Marshal.restore`.
+      ::Marshal.restore('{}')
+                ^^^^^^^ Avoid using `Marshal.restore`.
+    RUBY
   end
 
-  shared_examples 'code without offense' do |code|
-    context "when checking #{code}" do
-      let(:source) { code }
-
-      it 'does not register any offense' do
-        expect(cop.offenses).to be_empty
-      end
-    end
+  it 'does not register an offense for Marshal.dump' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      Marshal.dump({})
+      ::Marshal.dump({})
+    RUBY
   end
 
-  shared_examples 'offensive method' do |method|
-    include_examples 'code with offense',
-                     "Marshal.#{method}('{}')",
-                     "Avoid using `Marshal.#{method}`."
-
-    include_examples 'code with offense',
-                     "::Marshal.#{method}('{}')",
-                     "Avoid using `Marshal.#{method}`."
-
-    include_examples 'code without offense',
-                     "Module::Marshal.#{method}('{}')"
-
-    include_examples 'code without offense',
-                     "Marshal.#{method}(Marshal.dump({}))"
-
-    include_examples 'code without offense',
-                     "::Marshal.#{method}(::Marshal.dump({}))"
+  it 'does not register an offense Marshal methods under another namespace' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      SomeNamespace::Marshal.load('')
+      SomeNamespace::Marshal.restore('')
+      SomeNamespace::Marshal.dump('')
+      ::SomeNamespace::Marshal.load('')
+      ::SomeNamespace::Marshal.restore('')
+      ::SomeNamespace::Marshal.dump('')
+    RUBY
   end
 
-  include_examples 'code without offense',
-                   'Marshal.dump({})'
-
-  include_examples 'code without offense',
-                   '::Marshal.dump({})'
-
-  include_examples 'code without offense',
-                   'Module::Marshal.dump({})'
-
-  include_examples 'offensive method', :load
-
-  include_examples 'offensive method', :restore
+  it 'allows using dangerous Marshal methods for deep cloning' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      Marshal.load(Marshal.dump({}))
+      Marshal.restore(Marshal.dump({}))
+    RUBY
+  end
 end

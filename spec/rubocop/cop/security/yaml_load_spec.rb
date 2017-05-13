@@ -3,54 +3,35 @@
 describe RuboCop::Cop::Security::YAMLLoad, :config do
   subject(:cop) { described_class.new(config) }
 
-  before do
-    inspect_source(cop, source)
+  it 'does not register an offense for YAML.dump' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      YAML.dump("foo")
+      ::YAML.dump("foo")
+      Module::YAML.dump("foo")
+    RUBY
   end
 
-  shared_examples 'code with offense' do |code, message, expected|
-    context "when checking #{code}" do
-      let(:source) { code }
-
-      it 'registers an offense' do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.offenses.first.message).to eq(message)
-      end
-
-      it 'auto-corrects' do
-        expect(autocorrect_source(cop, code)).to eq expected
-      end
-    end
+  it 'does not register an offense for YAML.load under a different namespace' do
+    expect_no_offenses('Module::YAML.load("foo")')
   end
 
-  shared_examples 'code without offense' do |code|
-    context "when checking #{code}" do
-      let(:source) { code }
-
-      it 'does not register any offense' do
-        expect(cop.offenses).to be_empty
-      end
-    end
+  it 'registers an offense for load with a literal string' do
+    expect_offense(<<-RUBY.strip_indent)
+      YAML.load("--- foo")
+           ^^^^ Prefer using `YAML.safe_load` over `YAML.load`.
+    RUBY
   end
 
-  include_examples 'code without offense',
-                   'YAML.dump("foo")'
+  it 'registers an offense for a fully qualified ::YAML.load' do
+    expect_offense(<<-RUBY.strip_indent)
+      ::YAML.load("--- foo")
+             ^^^^ Prefer using `YAML.safe_load` over `YAML.load`.
+    RUBY
+  end
 
-  include_examples 'code without offense',
-                   '::YAML.dump("foo")'
-
-  include_examples 'code without offense',
-                   'Module::YAML.dump("foo")'
-
-  include_examples 'code with offense',
-                   'YAML.load("--- foo")',
-                   'Prefer using `YAML.safe_load` over `YAML.load`.',
-                   'YAML.safe_load("--- foo")'
-
-  include_examples 'code with offense',
-                   '::YAML.load("--- foo")',
-                   'Prefer using `YAML.safe_load` over `YAML.load`.',
-                   '::YAML.safe_load("--- foo")'
-
-  include_examples 'code without offense',
-                   'Module::YAML.load("foo")'
+  it 'autocorrects load to safe_load' do
+    expect(autocorrect_source(cop, '::YAML.load("-- foo")')).to eq(
+      '::YAML.safe_load("-- foo")'
+    )
+  end
 end
