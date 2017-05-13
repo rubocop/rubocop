@@ -20,18 +20,22 @@ describe RuboCop::Cop::Layout::EmptyLines do
   end
 
   it 'handles comments' do
-    inspect_source(cop,
-                   ['test', '', '#comment', 'top'])
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(<<-RUBY.strip_indent)
+      test
+
+      #comment
+      top
+    RUBY
   end
 
   it 'does not register an offense for empty lines in a string' do
-    inspect_source(cop, 'result = "test
+    expect_no_offenses(<<-RUBY.strip_indent)
+      result = "test
 
 
 
-                                  string"')
-    expect(cop.offenses).to be_empty
+                                        string"
+    RUBY
   end
 
   it 'does not register an offense for heredocs with empty lines inside' do

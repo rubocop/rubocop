@@ -31,8 +31,12 @@ describe RuboCop::Cop::Style::OptionHash, :config do
     end
 
     it 'does not register an offense' do
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def steep(flavor, duration, config={})
+          mug = config.fetch(:mug)
+          prep(flavor, duration, mug)
+        end
+      RUBY
     end
 
     it 'registers an offense when in SuspiciousParamNames list' do

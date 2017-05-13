@@ -43,13 +43,10 @@ describe RuboCop::Cop::Lint::DuplicatedKey do
   end
 
   context 'When there is no duplicated key in the hash' do
-    let(:source) do
-      "hash = { ['one', 'two'] => ['hello, bye'], ['two'] => ['yes, no'] }"
-    end
-
     it 'does not register an offense' do
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        hash = { ['one', 'two'] => ['hello, bye'], ['two'] => ['yes, no'] }
+      RUBY
     end
   end
 

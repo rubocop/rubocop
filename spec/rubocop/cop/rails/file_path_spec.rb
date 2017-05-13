@@ -4,11 +4,8 @@ describe RuboCop::Cop::Rails::FilePath do
   subject(:cop) { described_class.new }
 
   context 'when using Rails.root.join with some path strings' do
-    let(:source) { "Rails.root.join('app', 'models', 'user.rb')" }
-
     it 'does not registers an offense' do
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses("Rails.root.join('app', 'models', 'user.rb')")
     end
   end
 

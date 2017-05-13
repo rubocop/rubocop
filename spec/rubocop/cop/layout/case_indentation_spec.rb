@@ -16,11 +16,8 @@ describe RuboCop::Cop::Layout::CaseIndentation do
       end
 
       context 'with everything on a single line' do
-        let(:source) { 'case foo; when :bar then 1; else 0; end' }
-
         it 'does not register an offense' do
-          inspect_source(cop, source)
-          expect(cop.offenses).to be_empty
+          expect_no_offenses('case foo; when :bar then 1; else 0; end')
         end
       end
 
@@ -36,20 +33,15 @@ describe RuboCop::Cop::Layout::CaseIndentation do
           END
         end
 
-        let(:source) do
-          <<-END.strip_indent
+        it 'accepts a correctly indented assignment' do
+          expect_no_offenses(<<-RUBY.strip_indent)
             output = case variable
                      when 'value1'
                        'output1'
                      else
                        'output2'
                      end
-          END
-        end
-
-        it 'accepts a correctly indented assignment' do
-          inspect_source(cop, source)
-          expect(cop.offenses).to be_empty
+          RUBY
         end
 
         context 'an assignment indented as end' do
@@ -276,29 +268,21 @@ describe RuboCop::Cop::Layout::CaseIndentation do
       end
 
       context 'with everything on a single line' do
-        let(:source) { 'case foo; when :bar then 1; else 0; end' }
-
         it 'does not register an offense' do
-          inspect_source(cop, source)
-          expect(cop.offenses).to be_empty
+          expect_no_offenses('case foo; when :bar then 1; else 0; end')
         end
-      end
-
-      let(:correct_source) do
-        <<-END.strip_indent
-          output = case variable
-                     when 'value1'
-                       'output1'
-                     else
-                       'output2'
-                   end
-        END
       end
 
       context 'regarding assignment where the right hand side is a case' do
         it 'accepts a correctly indented assignment' do
-          inspect_source(cop, correct_source)
-          expect(cop.offenses).to be_empty
+          expect_no_offenses(<<-RUBY.strip_indent)
+            output = case variable
+                       when 'value1'
+                         'output1'
+                       else
+                         'output2'
+                     end
+          RUBY
         end
 
         context 'an assignment indented some other way' do
@@ -422,20 +406,15 @@ describe RuboCop::Cop::Layout::CaseIndentation do
           }
         end
 
-        let(:source) do
-          <<-END.strip_indent
+        it 'respects cop-specific IndentationWidth' do
+          expect_no_offenses(<<-RUBY.strip_indent)
             output = case variable
                           when 'value1'
                          'output1'
                           else
                          'output2'
                      end
-          END
-        end
-
-        it 'respects cop-specific IndentationWidth' do
-          inspect_source(cop, source)
-          expect(cop.offenses).to be_empty
+          RUBY
         end
       end
     end
@@ -448,29 +427,21 @@ describe RuboCop::Cop::Layout::CaseIndentation do
       end
 
       context 'with everything on a single line' do
-        let(:source) { 'case foo; when :bar then 1; else 0; end' }
-
         it 'does not register an offense' do
-          inspect_source(cop, source)
-          expect(cop.offenses).to be_empty
+          expect_no_offenses('case foo; when :bar then 1; else 0; end')
         end
-      end
-
-      let(:correct_source) do
-        <<-END.strip_indent
-          output = case variable
-          when 'value1'
-            'output1'
-          else
-            'output2'
-          end
-        END
       end
 
       context 'regarding assignment where the right hand side is a case' do
         it 'accepts a correctly indented assignment' do
-          inspect_source(cop, correct_source)
-          expect(cop.offenses).to be_empty
+          expect_no_offenses(<<-RUBY.strip_indent)
+            output = case variable
+            when 'value1'
+              'output1'
+            else
+              'output2'
+            end
+          RUBY
         end
 
         context 'an assignment indented some other way' do
@@ -522,29 +493,21 @@ describe RuboCop::Cop::Layout::CaseIndentation do
       end
 
       context 'with everything on a single line' do
-        let(:source) { 'case foo; when :bar then 1; else 0; end' }
-
         it 'does not register an offense' do
-          inspect_source(cop, source)
-          expect(cop.offenses).to be_empty
+          expect_no_offenses('case foo; when :bar then 1; else 0; end')
         end
-      end
-
-      let(:correct_source) do
-        <<-END.strip_indent
-          output = case variable
-            when 'value1'
-              'output1'
-            else
-              'output2'
-          end
-        END
       end
 
       context 'regarding assignment where the right hand side is a case' do
         it 'accepts a correctly indented assignment' do
-          inspect_source(cop, correct_source)
-          expect(cop.offenses).to be_empty
+          expect_no_offenses(<<-RUBY.strip_indent)
+            output = case variable
+              when 'value1'
+                'output1'
+              else
+                'output2'
+            end
+          RUBY
         end
 
         context 'an assignment indented as case' do

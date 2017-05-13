@@ -205,16 +205,10 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       end
 
       it 'accepts an empty hash being passed as a method argument' do
-        inspect_source(cop, 'Foo.new({})')
-        inspect_source(cop, <<-END.strip_indent)
-          Foo.new({
-                   })
-        END
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           Foo.new([
                    ])
-        END
-        expect(cop.offenses).to be_empty
+        RUBY
       end
 
       it 'auto-corrects missing comma in a method call with hash parameters' \

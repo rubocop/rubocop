@@ -52,8 +52,8 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
   end
 
   context 'when an access modifier is followed by attr_*' do
-    let(:source) do
-      <<-END.strip_indent
+    it 'does not register an offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
         class SomeClass
           protected
           attr_accessor :some_property
@@ -64,12 +64,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           protected
           attr_writer :just_for_good_measure
         end
-      END
-    end
-
-    it 'does not register an offense' do
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
   end
 
@@ -122,20 +117,15 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
   end
 
   context 'when passing method as symbol' do
-    let(:source) do
-      <<-END.strip_indent
+    it 'does not register an offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
         class SomeClass
           def some_method
             puts 10
           end
           private :some_method
         end
-      END
-    end
-
-    it 'does not register an offense' do
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
   end
 

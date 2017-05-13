@@ -235,11 +235,12 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'accepts indented code on LHS of equality operator' do
-      inspect_source(cop, ['def config_to_allow_offenses',
-                           '  a +',
-                           '    b == c ',
-                           'end'])
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def config_to_allow_offenses
+          a +
+            b == c
+        end
+      RUBY
     end
 
     it 'accepts indented operands inside block + assignment' do

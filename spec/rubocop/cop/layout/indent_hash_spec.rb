@@ -139,14 +139,13 @@ describe RuboCop::Cop::Layout::IndentHash do
 
   context 'when hash is argument to setter' do
     it 'accepts correctly indented first pair' do
-      inspect_source(cop, <<-END.strip_margin('|'))
-        |   config.rack_cache = {
-        |     :metastore => "rails:/",
-        |     :entitystore => "rails:/",
-        |     :verbose => false
-        |   }
-      END
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+           config.rack_cache = {
+             :metastore => "rails:/",
+             :entitystore => "rails:/",
+             :verbose => false
+           }
+      RUBY
     end
 
     it 'registers an offense for incorrectly indented first pair' do

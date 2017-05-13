@@ -58,13 +58,21 @@ describe RuboCop::Cop::Lint::NextWithoutAccumulator do
 
   context 'given an unrelated block' do
     it 'accepts a bare next' do
-      inspect_source(cop, code_without_accumulator(:foo))
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+              (1..4).foo(0) do |acc, i|
+                next if i.odd?
+                acc + i
+              end
+      RUBY
     end
 
     it 'accepts next with a value' do
-      inspect_source(cop, code_with_accumulator(:foo))
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+              (1..4).foo(0) do |acc, i|
+                next acc if i.odd?
+                acc + i
+              end
+      RUBY
     end
   end
 end

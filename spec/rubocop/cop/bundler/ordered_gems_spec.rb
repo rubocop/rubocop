@@ -15,14 +15,11 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'When gems are alphabetically sorted' do
-    let(:source) { <<-END.strip_indent }
-      gem 'rspec'
-      gem 'rubocop'
-    END
-
     it 'does not register any offenses' do
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        gem 'rspec'
+        gem 'rubocop'
+      RUBY
     end
   end
 
@@ -50,17 +47,14 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When each individual group of line is sorted' do
-    let(:source) { <<-END.strip_indent }
-      gem 'rspec'
-      gem 'rubocop'
-
-      gem 'hello'
-      gem 'world'
-    END
-
     it 'does not register any offenses' do
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        gem 'rspec'
+        gem 'rubocop'
+
+        gem 'hello'
+        gem 'world'
+      RUBY
     end
   end
 
@@ -167,8 +161,13 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
       let(:treat_comments_as_group_separators) { true }
 
       it 'accepts' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          # For code quality
+          gem 'rubocop'
+          # For
+          # test
+          gem 'rspec'
+        RUBY
       end
     end
 
@@ -224,26 +223,20 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When gems are asciibetically sorted' do
-    let(:source) { <<-END.strip_indent }
-      gem 'paper_trail'
-      gem 'paperclip'
-    END
-
     it 'does not register an offense' do
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        gem 'paper_trail'
+        gem 'paperclip'
+      RUBY
     end
   end
 
   context 'When a gem that starts with a capital letter is sorted' do
-    let(:source) { <<-END.strip_indent }
-      gem 'a'
-      gem 'Z'
-    END
-
     it 'does not register an offense' do
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        gem 'a'
+        gem 'Z'
+      RUBY
     end
   end
 

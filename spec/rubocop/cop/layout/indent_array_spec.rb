@@ -85,14 +85,13 @@ describe RuboCop::Cop::Layout::IndentArray do
 
   context 'when array is argument to setter' do
     it 'accepts correctly indented first element' do
-      inspect_source(cop, <<-END.strip_margin('|'))
-        |   config.rack_cache = [
-        |     "rails:/",
-        |     "rails:/",
-        |     false
-        |   ]
-      END
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+           config.rack_cache = [
+             "rails:/",
+             "rails:/",
+             false
+           ]
+      RUBY
     end
 
     it 'registers an offense for incorrectly indented first element' do

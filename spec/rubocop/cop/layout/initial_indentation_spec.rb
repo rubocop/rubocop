@@ -19,11 +19,8 @@ describe RuboCop::Cop::Layout::InitialIndentation do
   end
 
   context 'for a file with byte order mark' do
-    let(:bom) { "\xef\xbb\xbf" }
-
     it 'accepts unindented method call' do
-      inspect_source(cop, bom + 'puts 1')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('﻿puts 1')
     end
 
     it 'registers an offense for indented method call' do

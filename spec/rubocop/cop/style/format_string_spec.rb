@@ -24,13 +24,7 @@ describe RuboCop::Cop::Style::FormatString, :config do
     end
 
     it 'does not register an offense for ambiguous cases' do
-      inspect_source(cop,
-                     'puts x % 4')
-      expect(cop.offenses).to be_empty
-
-      inspect_source(cop,
-                     'puts x % Y')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('puts x % Y')
     end
 
     it 'works if the first operand contains embedded expressions' do
@@ -84,13 +78,7 @@ describe RuboCop::Cop::Style::FormatString, :config do
     end
 
     it 'does not register an offense for ambiguous cases' do
-      inspect_source(cop,
-                     'puts x % 4')
-      expect(cop.offenses).to be_empty
-
-      inspect_source(cop,
-                     'puts x % Y')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('puts x % Y')
     end
 
     it 'works if the first operand contains embedded expressions' do

@@ -137,11 +137,12 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
       end
 
       it 'accepts comma in comment after last value item' do
-        inspect_source(cop, ['{ ',
-                             "  foo: 'foo',",
-                             "  bar: 'bar'.delete(',')#,",
-                             '}'])
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          {
+            foo: 'foo',
+            bar: 'bar'.delete(',')#,
+          }
+        RUBY
       end
 
       it 'auto-corrects unwanted comma in an Array literal' do
@@ -284,16 +285,10 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
       end
 
       it 'accepts an empty hash being passed as a method argument' do
-        inspect_source(cop, 'Foo.new({})')
-        inspect_source(cop, <<-END.strip_indent)
-          Foo.new({
-                   })
-        END
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           Foo.new([
                    ])
-        END
-        expect(cop.offenses).to be_empty
+        RUBY
       end
 
       it 'auto-corrects an Array literal with two of the values on the same' \
