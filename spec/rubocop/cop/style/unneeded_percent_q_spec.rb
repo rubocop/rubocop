@@ -26,9 +26,7 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
     end
 
     it 'accepts a string with single quotes and double quotes' do
-      inspect_source(cop, %q(%q('"hi"')))
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses("%q('\"hi\"')")
     end
 
     it 'registers an offfense for a string containing escaped backslashes' do
@@ -38,21 +36,15 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
     end
 
     it 'accepts a string with escaped non-backslash characters' do
-      inspect_source(cop, "%q(\\'foo\\')")
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses("%q(\\'foo\\')")
     end
 
     it 'accepts a string with escaped backslash and non-backslash characters' do
-      inspect_source(cop, "%q(\\\\ \\'foo\\' \\\\)") # This is \\ \'foo\' \\
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses("%q(\\\\ \\'foo\\' \\\\)")
     end
 
     it 'accepts regular expressions starting with %q' do
-      inspect_source(cop, '/%q?/')
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses('/%q?/')
     end
 
     context 'auto-correct' do
@@ -99,33 +91,23 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
     end
 
     it 'accepts a string with single quotes and double quotes' do
-      inspect_source(cop, %q(%Q('"hi"')))
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses("%Q('\"hi\"')")
     end
 
     it 'accepts a string with double quotes and an escaped special character' do
-      inspect_source(cop, '%Q("\\thi")')
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses('%Q("\\thi")')
     end
 
     it 'accepts a string with double quotes and an escaped normal character' do
-      inspect_source(cop, '%Q("\\!thi")')
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses('%Q("\\!thi")')
     end
 
     it 'accepts a dynamic %Q string with double quotes' do
-      inspect_source(cop, '%Q("hi#{4}")')
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses("%Q(\"hi\#{4}\")")
     end
 
     it 'accepts regular expressions starting with %Q' do
-      inspect_source(cop, '/%Q?/')
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses('/%Q?/')
     end
 
     context 'auto-correct' do
@@ -186,8 +168,6 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
   end
 
   it 'accepts %q containing string interpolation' do
-    inspect_source(cop, %(%q(foo \#{'bar'} baz)))
-
-    expect(cop.messages).to be_empty
+    expect_no_offenses("%q(foo \#{'bar'} baz)")
   end
 end

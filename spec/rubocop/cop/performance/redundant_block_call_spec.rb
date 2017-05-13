@@ -71,68 +71,61 @@ describe RuboCop::Cop::Performance::RedundantBlockCall do
   end
 
   it 'accepts a block that is not `call`ed' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def method(&block)
        something.call
       end
-    END
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'accepts an empty method body' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def method(&block)
       end
-    END
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'accepts another block being passed as the only arg' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def method(&block)
         block.call(&some_proc)
       end
-    END
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'accepts another block being passed along with other args' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def method(&block)
         block.call(1, &some_proc)
       end
-    END
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'accepts another block arg in at least one occurance of block.call' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def method(&block)
         block.call(1, &some_proc)
         block.call(2)
       end
-    END
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'accepts an optional block that is defaulted' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def method(&block)
         block ||= ->(i) { puts i }
         block.call(1)
       end
-    END
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'accepts an optional block that is overridden' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def method(&block)
         block = ->(i) { puts i }
         block.call(1)
       end
-    END
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'formats the error message for func.call(1) correctly' do

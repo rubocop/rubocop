@@ -114,9 +114,7 @@ describe RuboCop::Cop::Performance::Detect do
   end
 
   it 'does not register an offense when detect is used' do
-    inspect_source(cop, '[1, 2, 3].detect { |i| i % 2 == 0 }')
-
-    expect(cop.messages).to be_empty
+    expect_no_offenses('[1, 2, 3].detect { |i| i % 2 == 0 }')
   end
 
   context 'autocorrect' do

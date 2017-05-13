@@ -4,8 +4,7 @@ describe RuboCop::Cop::Layout::BlockEndNewline do
   subject(:cop) { described_class.new }
 
   it 'does not register an offense for a one-liner' do
-    inspect_source(cop, 'test do foo end')
-    expect(cop.messages).to be_empty
+    expect_no_offenses('test do foo end')
   end
 
   it 'does not register an offense for multiline blocks with newlines before '\

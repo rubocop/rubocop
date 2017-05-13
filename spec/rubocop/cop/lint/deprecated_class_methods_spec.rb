@@ -18,8 +18,7 @@ describe RuboCop::Cop::Lint::DeprecatedClassMethods do
   end
 
   it 'does not register an offense for File.exist?' do
-    inspect_source(cop, 'File.exist?(o)')
-    expect(cop.messages).to be_empty
+    expect_no_offenses('File.exist?(o)')
   end
 
   it 'registers an offense for Dir.exists?' do

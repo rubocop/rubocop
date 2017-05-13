@@ -370,24 +370,22 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     end
 
     it 'accepts aligned methods in if condition' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if a.
            b
           something
         end
-      END
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'accepts aligned methods in a begin..end block' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         @dependencies ||= begin
           DEFAULT_DEPENDENCIES
             .reject { |e| e }
             .map { |e| e }
         end
-      END
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'registers an offense for misaligned methods in if condition' do
@@ -478,13 +476,12 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     end
 
     it 'accepts aligned methods in assignment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         formatted_int = int_part
                         .to_s
                         .reverse
-                        .gsub(/...(?=.)/, '\&_')
-      END
-      expect(cop.messages).to be_empty
+                        .gsub(/...(?=.)/, '&_')
+      RUBY
     end
 
     it 'registers an offense for misaligned methods in local variable ' \
@@ -572,18 +569,10 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     end
 
     it 'accepts indentation of consecutive lines in typical RSpec code' do
-      inspect_source(cop, <<-END.strip_indent)
-        expect { Foo.new }.
-          to change { Bar.count }.
-               from(1).to(2)
-      END
-      expect(cop.messages).to be_empty
-
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         expect { Foo.new }.to change { Bar.count }
                                 .from(1).to(2)
-      END
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'registers an offense for no indentation of second line' do
@@ -698,13 +687,12 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     end
 
     it 'accepts indented methods in if condition' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if a.
             b
           something
         end
-      END
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'registers an offense for aligned methods in if condition' do
@@ -722,31 +710,28 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     end
 
     it 'accepts normal indentation of method parameters' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         Parser::Source::Range.new(expr.source_buffer,
                                   begin_pos,
                                   begin_pos + line.length)
-      END
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'accepts any indentation of method parameters' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         a(b.
             c
         .d)
-      END
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'accepts normal indentation inside grouped expression' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         arg_array.size == a.size && (
           arg_array == a ||
           arg_array.map(&:children) == a.map(&:children)
         )
-      END
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     [
@@ -811,24 +796,22 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     end
 
     it 'accepts special indentation of for expression' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         for n in a.
             b
         end
-      END
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'accepts indentation of assignment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         formatted_int = int_part
           .abs
           .to_s
           .reverse
-          .gsub(/...(?=.)/, '\&_')
+          .gsub(/...(?=.)/, '&_')
           .reverse
-      END
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'registers an offense for correct + unrecognized style' do
@@ -894,23 +877,21 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       end
 
       it 'accepts indented methods in if condition' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           if a.
                    b
             something
           end
-        END
-        expect(cop.messages).to be_empty
+        RUBY
       end
 
       it 'accepts indentation of assignment' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           formatted_int = int_part
                  .abs
                  .to_s
                  .reverse
-        END
-        expect(cop.messages).to be_empty
+        RUBY
       end
 
       [

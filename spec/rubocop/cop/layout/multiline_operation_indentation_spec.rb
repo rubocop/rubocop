@@ -213,13 +213,12 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     include_examples 'common'
 
     it 'accepts aligned operands in if condition' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if a +
            b
           something
         end
-      END
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'registers an offense for indented operands in if condition' do
@@ -349,11 +348,10 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'accepts aligned or:ed operands in assignment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         tmp_dir = ENV['TMPDIR'] || ENV['TMP'] || ENV['TEMP'] ||
                   Etc.systmpdir || '/tmp'
-      END
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'registers an offense for unaligned operands in op-assignment' do
@@ -387,13 +385,12 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     include_examples 'common'
 
     it 'accepts indented operands in if condition' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if a +
             b
           something
         end
-      END
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'registers an offense for aligned operands in if condition' do
@@ -411,28 +408,26 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'accepts the indentation of a broken string' do
-      inspect_source(cop,
-                     ["MSG = 'Use 2 (not %d) spaces for indenting a ' \\",
-                      "      'broken line.'"])
-      expect(cop.messages).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        MSG = 'Use 2 (not %d) spaces for indenting a ' \
+              'broken line.'
+      RUBY
     end
 
     it 'accepts normal indentation of method parameters' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         Parser::Source::Range.new(expr.source_buffer,
                                   begin_pos,
                                   begin_pos + line.length)
-      END
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'accepts any indentation of method parameters' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         a(b +
             c +
         d)
-      END
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'accepts normal indentation inside grouped expression' do
@@ -520,21 +515,19 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'accepts special indentation of for expression' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         for n in a +
             b
         end
-      END
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'accepts indentation of assignment' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         a = b +
           c +
           d
-      END
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'registers an offense for correct + unrecognized style' do
@@ -581,13 +574,12 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
       let(:cop_indent) { 6 }
 
       it 'accepts indented operands in if condition' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           if a +
                   b
             something
           end
-        END
-        expect(cop.messages).to be_empty
+        RUBY
       end
 
       [

@@ -40,21 +40,15 @@ describe RuboCop::Cop::Performance::Size do
     end
 
     it 'does not register an offense when calling size' do
-      inspect_source(cop, '[1, 2, 3].size')
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses('[1, 2, 3].size')
     end
 
     it 'does not register an offense when calling another method' do
-      inspect_source(cop, '[1, 2, 3].each')
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses('[1, 2, 3].each')
     end
 
     it 'does not register an offense when calling count with a block' do
-      inspect_source(cop, '[1, 2, 3].count { |e| e > 3 }')
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses('[1, 2, 3].count { |e| e > 3 }')
     end
 
     it 'does not register an offense when calling count with a to_proc block' do
@@ -107,21 +101,15 @@ describe RuboCop::Cop::Performance::Size do
     end
 
     it 'does not register an offense when calling size' do
-      inspect_source(cop, '{a: 1, b: 2, c: 3}.size')
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses('{a: 1, b: 2, c: 3}.size')
     end
 
     it 'does not register an offense when calling another method' do
-      inspect_source(cop, '{a: 1, b: 2, c: 3}.each')
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses('{a: 1, b: 2, c: 3}.each')
     end
 
     it 'does not register an offense when calling count with a block' do
-      inspect_source(cop, '{a: 1, b: 2, c: 3}.count { |e| e > 3 }')
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses('{a: 1, b: 2, c: 3}.count { |e| e > 3 }')
     end
 
     it 'does not register an offense when calling count with a to_proc block' do

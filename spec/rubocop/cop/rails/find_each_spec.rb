@@ -35,9 +35,7 @@ describe RuboCop::Cop::Rails::FindEach do
   it_behaves_like('register_offense', 'where.not(name: name)')
 
   it 'does not register an offense when using find_by' do
-    inspect_source(cop, 'User.all.find_each { |u| u.x }')
-
-    expect(cop.messages).to be_empty
+    expect_no_offenses('User.all.find_each { |u| u.x }')
   end
 
   it 'auto-corrects each to find_each' do

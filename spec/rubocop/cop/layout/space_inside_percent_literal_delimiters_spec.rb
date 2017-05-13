@@ -102,8 +102,6 @@ describe RuboCop::Cop::Layout::SpaceInsidePercentLiteralDelimiters do
   end
 
   it 'accepts execute-string literals' do
-    inspect_source(cop, '` curl `')
-
-    expect(cop.messages).to be_empty
+    expect_no_offenses('` curl `')
   end
 end

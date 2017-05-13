@@ -137,9 +137,7 @@ describe RuboCop::Cop::Performance::Count do
 
   context 'ActiveRecord select' do
     it 'allows usage of select with a string' do
-      inspect_source(cop, "Model.select('field AS field_one').count")
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses("Model.select('field AS field_one').count")
     end
 
     it 'allows usage of select with multiple strings' do
@@ -150,44 +148,32 @@ describe RuboCop::Cop::Performance::Count do
     end
 
     it 'allows usage of select with a symbol' do
-      inspect_source(cop, 'Model.select(:field).count')
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses('Model.select(:field).count')
     end
 
     it 'allows usage of select with multiple symbols' do
-      inspect_source(cop, 'Model.select(:field, :other_field).count')
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses('Model.select(:field, :other_field).count')
     end
   end
 
   it 'allows usage of another method with size' do
-    inspect_source(cop, '[1, 2, 3].map { |e| e + 1 }.size')
-
-    expect(cop.messages).to be_empty
+    expect_no_offenses('[1, 2, 3].map { |e| e + 1 }.size')
   end
 
   it 'allows usage of size on an array' do
-    inspect_source(cop, '[1, 2, 3].size')
-
-    expect(cop.messages).to be_empty
+    expect_no_offenses('[1, 2, 3].size')
   end
 
   it 'allows usage of count on an array' do
-    inspect_source(cop, '[1, 2, 3].count')
-
-    expect(cop.messages).to be_empty
+    expect_no_offenses('[1, 2, 3].count')
   end
 
   it 'allows usage of count on an interstitial method called on select' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       Data = Struct.new(:value)
       array = [Data.new(2), Data.new(3), Data.new(2)]
       puts array.select(&:value).uniq.count
-    END
-
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'allows usage of count on an interstitial method with blocks ' \
@@ -202,18 +188,14 @@ describe RuboCop::Cop::Performance::Count do
   end
 
   it 'allows usage of size called on an assigned variable' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       nodes = [1]
       nodes.size
-    END
-
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'allows usage of methods called on size' do
-    inspect_source(cop, 'shorter.size.to_f')
-
-    expect(cop.messages).to be_empty
+    expect_no_offenses('shorter.size.to_f')
   end
 
   context 'properly parses non related code' do

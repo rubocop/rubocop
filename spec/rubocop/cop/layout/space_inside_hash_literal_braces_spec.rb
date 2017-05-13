@@ -8,8 +8,7 @@ describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
     let(:cop_config) { { 'EnforcedStyleForEmptyBraces' => 'no_space' } }
 
     it 'accepts empty braces with no space inside' do
-      inspect_source(cop, 'h = {}')
-      expect(cop.messages).to be_empty
+      expect_no_offenses('h = {}')
     end
 
     it 'registers an offense for empty braces with space inside' do
@@ -29,8 +28,7 @@ describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
     let(:cop_config) { { 'EnforcedStyleForEmptyBraces' => 'space' } }
 
     it 'accepts empty braces with space inside' do
-      inspect_source(cop, 'h = { }')
-      expect(cop.messages).to be_empty
+      expect_no_offenses('h = { }')
     end
 
     it 'registers an offense for empty braces with no space inside' do

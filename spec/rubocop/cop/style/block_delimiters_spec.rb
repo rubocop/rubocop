@@ -135,33 +135,27 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
     end
 
     it 'accepts a single line block with {} if used in an if statement' do
-      inspect_source(cop, 'return if any? { |x| x }')
-      expect(cop.messages).to be_empty
+      expect_no_offenses('return if any? { |x| x }')
     end
 
     it 'accepts a single line block with {} if used in a logical or' do
-      inspect_source(cop, 'any? { |c| c } || foo')
-      expect(cop.messages).to be_empty
+      expect_no_offenses('any? { |c| c } || foo')
     end
 
     it 'accepts a single line block with {} if used in a logical and' do
-      inspect_source(cop, 'any? { |c| c } && foo')
-      expect(cop.messages).to be_empty
+      expect_no_offenses('any? { |c| c } && foo')
     end
 
     it 'accepts a single line block with {} if used in an array' do
-      inspect_source(cop, '[detect { true }, other]')
-      expect(cop.messages).to be_empty
+      expect_no_offenses('[detect { true }, other]')
     end
 
     it 'accepts a single line block with {} if used in an irange' do
-      inspect_source(cop, 'detect { true }..other')
-      expect(cop.messages).to be_empty
+      expect_no_offenses('detect { true }..other')
     end
 
     it 'accepts a single line block with {} if used in an erange' do
-      inspect_source(cop, 'detect { true }...other')
-      expect(cop.messages).to be_empty
+      expect_no_offenses('detect { true }...other')
     end
 
     it 'accepts a multi-line functional block with do-end if it is ' \
@@ -192,8 +186,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
     end
 
     it 'accepts a single line block with do-end if it is procedural' do
-      inspect_source(cop, 'each do |x| puts x; end')
-      expect(cop.messages).to be_empty
+      expect_no_offenses('each do |x| puts x; end')
     end
 
     context 'with a procedural block' do

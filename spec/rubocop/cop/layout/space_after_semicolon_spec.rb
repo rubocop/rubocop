@@ -15,8 +15,7 @@ describe RuboCop::Cop::Layout::SpaceAfterSemicolon do
   end
 
   it 'does not crash if semicolon is the last character of the file' do
-    inspect_source(cop, 'x = 1;')
-    expect(cop.messages).to be_empty
+    expect_no_offenses('x = 1;')
   end
 
   it 'auto-corrects missing space' do
@@ -54,8 +53,7 @@ describe RuboCop::Cop::Layout::SpaceAfterSemicolon do
       it_behaves_like 'common behavior'
 
       it 'accepts no space between a semicolon and a closing brace' do
-        inspect_source(cop, 'test { ;}')
-        expect(cop.messages).to be_empty
+        expect_no_offenses('test { ;}')
       end
     end
   end

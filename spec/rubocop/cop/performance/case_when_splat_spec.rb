@@ -4,20 +4,18 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
   subject(:cop) { described_class.new }
 
   it 'allows case when without splat' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       case foo
       when 1
         bar
       else
         baz
       end
-    END
-
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'allows splat on a variable in the last when condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       case foo
       when 4
         foobar
@@ -26,13 +24,11 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
       else
         baz
       end
-    END
-
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'allows multiple splat conditions on variables at the end' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       case foo
       when 4
         foobar
@@ -43,9 +39,7 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
       else
         baz
       end
-    END
-
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'registers an offense for case when with a splat in the first condition' do

@@ -29,13 +29,10 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
     end
 
     describe 'when using process' do
-      let(:source) do
-        'process :new, method: :get, params: { user_id: @user.id }'
-      end
-
       it 'does not register an offense' do
-        inspect_source(cop, source)
-        expect(cop.messages).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          process :new, method: :get, params: { user_id: @user.id }
+        RUBY
       end
     end
 
@@ -277,13 +274,10 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
     end
 
     describe 'when using process' do
-      let(:source) do
-        'process :new, method: :get, params: { user_id: @user.id }'
-      end
-
       it 'does not register an offense' do
-        inspect_source(cop, source)
-        expect(cop.messages).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          process :new, method: :get, params: { user_id: @user.id }
+        RUBY
       end
     end
 

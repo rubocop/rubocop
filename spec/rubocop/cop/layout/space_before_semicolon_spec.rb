@@ -15,8 +15,7 @@ describe RuboCop::Cop::Layout::SpaceBeforeSemicolon do
   end
 
   it 'does not register an offense for no space before semicolons' do
-    inspect_source(cop, 'x = 1; y = 2')
-    expect(cop.messages).to be_empty
+    expect_no_offenses('x = 1; y = 2')
   end
 
   it 'auto-corrects space before semicolon' do
@@ -45,8 +44,7 @@ describe RuboCop::Cop::Layout::SpaceBeforeSemicolon do
       it_behaves_like 'common behavior'
 
       it 'accepts a space between an opening brace and a semicolon' do
-        inspect_source(cop, 'test { ; }')
-        expect(cop.messages).to be_empty
+        expect_no_offenses('test { ; }')
       end
     end
 

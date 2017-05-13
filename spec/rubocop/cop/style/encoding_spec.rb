@@ -50,13 +50,11 @@ describe RuboCop::Cop::Style::Encoding, :config do
     end
 
     it 'accepts encoding on second line when shebang present' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         # encoding: utf-8
-        def foo() \'ä\' end
-      END
-
-      expect(cop.messages).to be_empty
+        def foo() 'ä' end
+      RUBY
     end
 
     it 'registers an offense when encoding is in the wrong place' do
@@ -68,20 +66,17 @@ describe RuboCop::Cop::Style::Encoding, :config do
     end
 
     it 'accepts encoding inserted by magic_encoding gem' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         # -*- encoding : utf-8 -*-
-        def foo() \'ä\' end
-      END
-
-      expect(cop.messages).to be_empty
+        def foo() 'ä' end
+      RUBY
     end
 
     it 'accepts vim-style encoding comments' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         # vim:filetype=ruby, fileencoding=utf-8
-        def foo() \'ä\' end
-      END
-      expect(cop.messages).to be_empty
+        def foo() 'ä' end
+      RUBY
     end
 
     context 'auto-correct' do
@@ -134,13 +129,11 @@ describe RuboCop::Cop::Style::Encoding, :config do
     end
 
     it 'accepts encoding on second line when shebang present' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         # encoding: utf-8
         def foo() end
-      END
-
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'books an offense when encoding is in the wrong place' do
@@ -152,20 +145,17 @@ describe RuboCop::Cop::Style::Encoding, :config do
     end
 
     it 'accepts encoding inserted by magic_encoding gem' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         # -*- encoding : utf-8 -*-
         def foo() end
-      END
-
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'accepts vim-style encoding comments' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         # vim:filetype=ruby, fileencoding=utf-8
         def foo() end
-      END
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     context 'auto-correct' do

@@ -47,19 +47,16 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'accepts hash rockets when keys have different types' do
-        inspect_source(cop, 'x = { :a => 0, "b" => 1 }')
-        expect(cop.messages).to be_empty
+        expect_no_offenses('x = { :a => 0, "b" => 1 }')
       end
 
       it 'accepts an empty hash' do
-        inspect_source(cop, '{}')
-        expect(cop.messages).to be_empty
+        expect_no_offenses('{}')
       end
 
       context 'ruby < 2.2', :ruby21 do
         it 'accepts hash rockets when symbol keys have string in them' do
-          inspect_source(cop, 'x = { :"string" => 0 }')
-          expect(cop.messages).to be_empty
+          expect_no_offenses('x = { :"string" => 0 }')
         end
       end
 
@@ -96,24 +93,20 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
         end
 
         it 'accepts hash rockets when symbols end with ?' do
-          inspect_source(cop, 'x = { :a? => 0 }')
-          expect(cop.messages).to be_empty
+          expect_no_offenses('x = { :a? => 0 }')
         end
 
         it 'accepts hash rockets when symbols end with !' do
-          inspect_source(cop, 'x = { :a! => 0 }')
-          expect(cop.messages).to be_empty
+          expect_no_offenses('x = { :a! => 0 }')
         end
       end
 
       it 'accepts hash rockets when symbol keys end with =' do
-        inspect_source(cop, 'x = { :a= => 0 }')
-        expect(cop.messages).to be_empty
+        expect_no_offenses('x = { :a= => 0 }')
       end
 
       it 'accepts hash rockets when symbol characters are not supported' do
-        inspect_source(cop, 'x = { :[] => 0 }')
-        expect(cop.messages).to be_empty
+        expect_no_offenses('x = { :[] => 0 }')
       end
 
       it 'registers offense when keys start with an uppercase letter' do
@@ -124,13 +117,11 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'accepts new syntax in a hash literal' do
-        inspect_source(cop, 'x = { a: 0, b: 1 }')
-        expect(cop.messages).to be_empty
+        expect_no_offenses('x = { a: 0, b: 1 }')
       end
 
       it 'accepts new syntax in method calls' do
-        inspect_source(cop, 'func(3, a: 0)')
-        expect(cop.messages).to be_empty
+        expect_no_offenses('func(3, a: 0)')
       end
 
       it 'auto-corrects old to new style' do
@@ -177,8 +168,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'accepts ruby19 syntax when no elements have symbol values' do
-        inspect_source(cop, 'x = { a: 1, b: 2 }')
-        expect(cop.messages).to be_empty
+        expect_no_offenses('x = { a: 1, b: 2 }')
       end
 
       it 'accepts ruby19 syntax when no elements have symbol values ' \
@@ -188,13 +178,11 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'accepts new syntax in method calls' do
-        inspect_source(cop, 'func(3, a: 0)')
-        expect(cop.messages).to be_empty
+        expect_no_offenses('func(3, a: 0)')
       end
 
       it 'accepts an empty hash' do
-        inspect_source(cop, '{}')
-        expect(cop.messages).to be_empty
+        expect_no_offenses('{}')
       end
 
       it 'registers an offense when any element uses a symbol for the value' do
@@ -282,18 +270,15 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
     end
 
     it 'accepts hash rockets in a hash literal' do
-      inspect_source(cop, 'x = { :a => 0, :b => 1 }')
-      expect(cop.messages).to be_empty
+      expect_no_offenses('x = { :a => 0, :b => 1 }')
     end
 
     it 'accepts hash rockets in method calls' do
-      inspect_source(cop, 'func(3, :a => 0)')
-      expect(cop.messages).to be_empty
+      expect_no_offenses('func(3, :a => 0)')
     end
 
     it 'accepts an empty hash' do
-      inspect_source(cop, '{}')
-      expect(cop.messages).to be_empty
+      expect_no_offenses('{}')
     end
 
     it 'auto-corrects new style to hash rockets' do
@@ -311,8 +296,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'does not register an offense when there is a symbol value' do
-        inspect_source(cop, '{ :a => :b, :c => :d }')
-        expect(cop.messages).to be_empty
+        expect_no_offenses('{ :a => :b, :c => :d }')
       end
     end
   end
@@ -327,8 +311,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'accepts new syntax in a hash literal' do
-        inspect_source(cop, 'x = { a: 0, b: 1 }')
-        expect(cop.messages).to be_empty
+        expect_no_offenses('x = { a: 0, b: 1 }')
       end
 
       it 'registers offense for hash rocket syntax when new is possible' do
@@ -345,8 +328,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'accepts new syntax in method calls' do
-        inspect_source(cop, 'func(3, a: 0)')
-        expect(cop.messages).to be_empty
+        expect_no_offenses('func(3, a: 0)')
       end
 
       it 'registers an offense for hash rockets in method calls' do
@@ -357,13 +339,11 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'accepts hash rockets when keys have different types' do
-        inspect_source(cop, 'x = { :a => 0, "b" => 1 }')
-        expect(cop.messages).to be_empty
+        expect_no_offenses('x = { :a => 0, "b" => 1 }')
       end
 
       it 'accepts an empty hash' do
-        inspect_source(cop, '{}')
-        expect(cop.messages).to be_empty
+        expect_no_offenses('{}')
       end
 
       it 'registers an offense when keys have different types and styles' do
@@ -374,8 +354,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
 
       context 'ruby < 2.2', :ruby21 do
         it 'accepts hash rockets when keys have whitespaces in them' do
-          inspect_source(cop, 'x = { :"t o" => 0, :b => 1 }')
-          expect(cop.messages).to be_empty
+          expect_no_offenses('x = { :"t o" => 0, :b => 1 }')
         end
 
         it 'registers an offense when keys have whitespaces and mix styles' do
@@ -385,8 +364,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
         end
 
         it 'accepts hash rockets when keys have special symbols in them' do
-          inspect_source(cop, 'x = { :"\tab" => 1, :b => 1 }')
-          expect(cop.messages).to be_empty
+          expect_no_offenses('x = { :"\\tab" => 1, :b => 1 }')
         end
 
         it 'registers an offense when keys have special symbols and '\
@@ -397,8 +375,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
         end
 
         it 'accepts hash rockets when keys start with a digit' do
-          inspect_source(cop, 'x = { :"1" => 1, :b => 1 }')
-          expect(cop.messages).to be_empty
+          expect_no_offenses('x = { :"1" => 1, :b => 1 }')
         end
 
         it 'registers an offense when keys start with a digit and mix styles' do
@@ -478,8 +455,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'accepts new syntax in a hash literal' do
-        inspect_source(cop, 'x = { a: 0, b: 1 }')
-        expect(cop.messages).to be_empty
+        expect_no_offenses('x = { a: 0, b: 1 }')
       end
 
       it 'registers offense for hash rocket syntax when new is possible' do
@@ -496,8 +472,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'accepts new syntax in method calls' do
-        inspect_source(cop, 'func(3, a: 0)')
-        expect(cop.messages).to be_empty
+        expect_no_offenses('func(3, a: 0)')
       end
 
       it 'registers an offense for hash rockets in method calls' do
@@ -508,13 +483,11 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'accepts hash rockets when keys have different types' do
-        inspect_source(cop, 'x = { :a => 0, "b" => 1 }')
-        expect(cop.messages).to be_empty
+        expect_no_offenses('x = { :a => 0, "b" => 1 }')
       end
 
       it 'accepts an empty hash' do
-        inspect_source(cop, '{}')
-        expect(cop.messages).to be_empty
+        expect_no_offenses('{}')
       end
 
       it 'registers an offense when keys have different types and styles' do
@@ -525,8 +498,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
 
       context 'ruby < 2.2', :ruby21 do
         it 'accepts hash rockets when keys have whitespaces in them' do
-          inspect_source(cop, 'x = { :"t o" => 0, :b => 1 }')
-          expect(cop.messages).to be_empty
+          expect_no_offenses('x = { :"t o" => 0, :b => 1 }')
         end
 
         it 'registers an offense when keys have whitespaces and mix styles' do
@@ -536,8 +508,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
         end
 
         it 'accepts hash rockets when keys have special symbols in them' do
-          inspect_source(cop, 'x = { :"\tab" => 1, :b => 1 }')
-          expect(cop.messages).to be_empty
+          expect_no_offenses('x = { :"\\tab" => 1, :b => 1 }')
         end
 
         it 'registers an offense when keys have special symbols and ' \
@@ -548,8 +519,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
         end
 
         it 'accepts hash rockets when keys start with a digit' do
-          inspect_source(cop, 'x = { :"1" => 1, :b => 1 }')
-          expect(cop.messages).to be_empty
+          expect_no_offenses('x = { :"1" => 1, :b => 1 }')
         end
 
         it 'registers an offense when keys start with a digit and mix styles' do
@@ -603,13 +573,11 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
     end
 
     it 'accepts new syntax in a hash literal' do
-      inspect_source(cop, 'x = { a: 0, b: 1 }')
-      expect(cop.messages).to be_empty
+      expect_no_offenses('x = { a: 0, b: 1 }')
     end
 
     it 'accepts the hash rocket syntax when new is possible' do
-      inspect_source(cop, 'x = { :a => 0 }')
-      expect(cop.messages).to be_empty
+      expect_no_offenses('x = { :a => 0 }')
     end
 
     it 'registers an offense for mixed syntax when new is possible' do
@@ -619,23 +587,19 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
     end
 
     it 'accepts new syntax in method calls' do
-      inspect_source(cop, 'func(3, a: 0)')
-      expect(cop.messages).to be_empty
+      expect_no_offenses('func(3, a: 0)')
     end
 
     it 'accepts hash rockets in method calls' do
-      inspect_source(cop, 'func(3, :a => 0)')
-      expect(cop.messages).to be_empty
+      expect_no_offenses('func(3, :a => 0)')
     end
 
     it 'accepts hash rockets when keys have different types' do
-      inspect_source(cop, 'x = { :a => 0, "b" => 1 }')
-      expect(cop.messages).to be_empty
+      expect_no_offenses('x = { :a => 0, "b" => 1 }')
     end
 
     it 'accepts an empty hash' do
-      inspect_source(cop, '{}')
-      expect(cop.messages).to be_empty
+      expect_no_offenses('{}')
     end
 
     it 'registers an offense when keys have different types and styles' do
@@ -645,8 +609,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
     end
 
     it 'accepts hash rockets when keys have whitespaces in them' do
-      inspect_source(cop, 'x = { :"t o" => 0, :b => 1 }')
-      expect(cop.messages).to be_empty
+      expect_no_offenses('x = { :"t o" => 0, :b => 1 }')
     end
 
     it 'registers an offense when keys have whitespaces and mix styles' do
@@ -656,8 +619,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
     end
 
     it 'accepts hash rockets when keys have special symbols in them' do
-      inspect_source(cop, 'x = { :"\tab" => 1, :b => 1 }')
-      expect(cop.messages).to be_empty
+      expect_no_offenses('x = { :"\\tab" => 1, :b => 1 }')
     end
 
     it 'registers an offense when keys have special symbols and '\
@@ -668,8 +630,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
     end
 
     it 'accepts hash rockets when keys start with a digit' do
-      inspect_source(cop, 'x = { :"1" => 1, :b => 1 }')
-      expect(cop.messages).to be_empty
+      expect_no_offenses('x = { :"1" => 1, :b => 1 }')
     end
 
     it 'registers an offense when keys start with a digit and mix styles' do

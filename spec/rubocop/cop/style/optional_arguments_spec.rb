@@ -27,68 +27,54 @@ describe RuboCop::Cop::Style::OptionalArguments do
   end
 
   it 'allows methods without arguments' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def foo
       end
-    END
-
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'allows methods with only one required argument' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def foo(a)
       end
-    END
-
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'allows methods with only required arguments' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def foo(a, b, c)
       end
-    END
-
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'allows methods with only one optional argument' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def foo(a = 1)
       end
-    END
-
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'allows methods with only optional arguments' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def foo(a = 1, b = 2, c = 3)
       end
-    END
-
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'allows methods with multiple optional arguments at the end' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def foo(a, b = 2, c = 3)
       end
-    END
-
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   context 'named params' do
     context 'with default values', :ruby20 do
       it 'allows optional arguments before an optional named argument' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           def foo(a = 1, b: 2)
           end
-        END
-
-        expect(cop.messages).to be_empty
+        RUBY
       end
     end
 
@@ -105,12 +91,10 @@ describe RuboCop::Cop::Style::OptionalArguments do
       end
 
       it 'allows optional arguments before required named arguments' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           def foo(a = 1, b:)
           end
-        END
-
-        expect(cop.messages).to be_empty
+        RUBY
       end
 
       it 'allows optional arguments to come before a mix of required and ' \

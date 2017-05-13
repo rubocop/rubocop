@@ -11,15 +11,11 @@ describe RuboCop::Cop::Rails::DelegateAllowBlank do
   end
 
   it 'does not register an offense when using allow_nil' do
-    inspect_source(cop, 'delegate :foo, to: :bar, allow_nil: true')
-
-    expect(cop.messages).to be_empty
+    expect_no_offenses('delegate :foo, to: :bar, allow_nil: true')
   end
 
   it 'does not register an offense when no extra options given' do
-    inspect_source(cop, 'delegate :foo, to: :bar')
-
-    expect(cop.messages).to be_empty
+    expect_no_offenses('delegate :foo, to: :bar')
   end
 
   it 'autocorrects allow_blank to allow_nil' do

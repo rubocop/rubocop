@@ -13,32 +13,28 @@ describe RuboCop::Cop::Layout::SpaceInsideParens do
   end
 
   it 'accepts parentheses in block parameter list' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       list.inject(Tms.new) { |sum, (label, item)|
       }
-    END
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'accepts parentheses with no spaces' do
-    inspect_source(cop, 'split("\n")')
-    expect(cop.messages).to be_empty
+    expect_no_offenses('split("\\n")')
   end
 
   it 'accepts parentheses with line break' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       f(
         1)
-    END
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'accepts parentheses with comment and line break' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       f( # Comment
         1)
-    END
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'auto-corrects unwanted space' do

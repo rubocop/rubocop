@@ -508,7 +508,7 @@ describe RuboCop::Cop::Layout::ElseAlignment do
 
   context 'with def/rescue/else/end' do
     it 'accepts a correctly aligned else' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def my_func
           puts 'do something error prone'
         rescue SomeException
@@ -518,8 +518,7 @@ describe RuboCop::Cop::Layout::ElseAlignment do
         else
           puts 'normal handling'
         end
-      END
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'registers an offense for misaligned else' do

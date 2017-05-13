@@ -15,18 +15,15 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
   let(:allow_for_alignment) { true }
 
   it 'accepts operator surrounded by tabs' do
-    inspect_source(cop, "a\t+\tb")
-    expect(cop.messages).to be_empty
+    expect_no_offenses("a\t+\tb")
   end
 
   it 'accepts operator symbols' do
-    inspect_source(cop, 'func(:-)')
-    expect(cop.messages).to be_empty
+    expect_no_offenses('func(:-)')
   end
 
   it 'accepts ranges' do
-    inspect_source(cop, 'a, b = (1..2), (1...3)')
-    expect(cop.messages).to be_empty
+    expect_no_offenses('a, b = (1..2), (1...3)')
   end
 
   it 'accepts scope operator' do
@@ -59,36 +56,33 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
   end
 
   it 'accepts a unary' do
-    inspect_source(cop, <<-END.strip_indent)
-        def bm(label_width = 0, *labels, &blk)
-          benchmark(CAPTION, label_width, FORMAT,
-                    *labels, &blk)
-        end
+    expect_no_offenses(<<-RUBY.strip_indent)
+      def bm(label_width = 0, *labels, &blk)
+        benchmark(CAPTION, label_width, FORMAT,
+                  *labels, &blk)
+      end
 
-        def each &block
-          +11
-        end
+      def each &block
+        +11
+      end
 
-        def self.search *args
-        end
+      def self.search *args
+      end
 
-        def each *args
-        end
-    END
-    expect(cop.messages).to be_empty
+      def each *args
+      end
+    RUBY
   end
 
   it 'accepts splat operator' do
-    inspect_source(cop, 'return *list if options')
-    expect(cop.messages).to be_empty
+    expect_no_offenses('return *list if options')
   end
 
   it 'accepts def of operator' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def +(other); end
       def self.===(other); end
-    END
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'accepts an operator at the end of a line' do
@@ -195,19 +189,17 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
   it 'accepts argument default values without space' do
     # These are handled by SpaceAroundEqualsInParameterDefault,
     # so SpaceAroundOperators leaves them alone.
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def init(name=nil)
       end
-    END
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'accepts the construct class <<self with no space after <<' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       class <<self
       end
-    END
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   describe 'missing space around operators' do

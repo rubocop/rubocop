@@ -40,7 +40,7 @@ describe RuboCop::Cop::Style::NegatedWhile do
   end
 
   it 'accepts a while where only part of the condition is negated' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       while !a_condition && another_condition
         some_method
       end
@@ -48,18 +48,16 @@ describe RuboCop::Cop::Style::NegatedWhile do
         some_method
       end
       some_method while not a_condition or other_cond
-    END
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'accepts a while where the condition is doubly negated' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       while !!a_condition
         some_method
       end
       some_method while !!a_condition
-    END
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'autocorrects by replacing while not with until' do

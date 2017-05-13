@@ -11,15 +11,11 @@ describe RuboCop::Cop::Performance::ReverseEach do
   end
 
   it 'does not register an offense when reverse is used without each' do
-    inspect_source(cop, '[1, 2, 3].reverse')
-
-    expect(cop.messages).to be_empty
+    expect_no_offenses('[1, 2, 3].reverse')
   end
 
   it 'does not register an offense when each is used without reverse' do
-    inspect_source(cop, '[1, 2, 3].each { |e| puts e }')
-
-    expect(cop.messages).to be_empty
+    expect_no_offenses('[1, 2, 3].each { |e| puts e }')
   end
 
   context 'autocorrect' do
