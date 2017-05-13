@@ -3,66 +3,42 @@
 describe RuboCop::Cop::Security::JSONLoad, :config do
   subject(:cop) { described_class.new(config) }
 
-  before do
-    inspect_source(cop, source)
+  it 'registers an offense for JSON.load' do
+    expect_offense(<<-RUBY.strip_indent)
+      JSON.load(arg)
+           ^^^^ Prefer `JSON.parse` over `JSON.load`.
+      ::JSON.load(arg)
+             ^^^^ Prefer `JSON.parse` over `JSON.load`.
+    RUBY
   end
 
-  shared_examples 'code with offense' do |code, message, expected|
-    context "when checking #{code}" do
-      let(:source) { code }
-
-      it 'registers an offense' do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.offenses.first.message).to eq(message)
-      end
-
-      it 'auto-corrects' do
-        expect(autocorrect_source(cop, code)).to eq expected
-      end
-    end
+  it 'registers an offense for JSON.restore' do
+    expect_offense(<<-RUBY.strip_indent)
+      JSON.restore(arg)
+           ^^^^^^^ Prefer `JSON.parse` over `JSON.restore`.
+      ::JSON.restore(arg)
+             ^^^^^^^ Prefer `JSON.parse` over `JSON.restore`.
+    RUBY
   end
 
-  shared_examples 'code without offense' do |code|
-    context "when checking #{code}" do
-      let(:source) { code }
-
-      it 'does not register any offense' do
-        expect(cop.offenses).to be_empty
-      end
-    end
+  it 'does not register an offense for JSON under another namespace' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      SomeModule::JSON.load(arg)
+      SomeModule::JSON.restore(arg)
+    RUBY
   end
 
-  shared_examples 'accepted method' do |method|
-    include_examples 'code without offense',
-                     "JSON.#{method}(arg)"
-
-    include_examples 'code without offense',
-                     "::JSON.#{method}(arg)"
-
-    include_examples 'code without offense',
-                     "Module::JSON.#{method}(arg)"
+  it 'allows JSON.parse' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      JSON.parse(arg)
+      ::JSON.parse(arg)
+    RUBY
   end
 
-  shared_examples 'offensive method' do |method|
-    include_examples 'code with offense',
-                     "JSON.#{method}(arg)",
-                     "Prefer `JSON.parse` over `JSON.#{method}`.",
-                     'JSON.parse(arg)'
-
-    include_examples 'code with offense',
-                     "::JSON.#{method}(arg)",
-                     "Prefer `JSON.parse` over `JSON.#{method}`.",
-                     '::JSON.parse(arg)'
-
-    include_examples 'code without offense',
-                     "Module::JSON.#{method}(arg)"
+  it 'allows JSON.dump' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      JSON.dump(arg)
+      ::JSON.dump(arg)
+    RUBY
   end
-
-  include_examples 'accepted method', :parse
-
-  include_examples 'accepted method', :dump
-
-  include_examples 'offensive method', :load
-
-  include_examples 'offensive method', :restore
 end
