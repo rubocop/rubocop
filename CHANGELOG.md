@@ -11,6 +11,7 @@
 
 * [#7170](https://github.com/rubocop-hq/rubocop/issues/7170): Fix a false positive for `Layout/RescueEnsureAlignment` when def line is preceded with `private_class_method`. ([@tatsuyafw][])
 * [#7186](https://github.com/rubocop-hq/rubocop/issues/7186): Fix a false positive for `Style/MixinUsage` when using inside multiline block and `if` condition is after `include`. ([@koic][])
+* [#4374](https://github.com/rubocop-hq/rubocop/issues/4374): Fix Regression of [#1566](https://github.com/rubocop-hq/rubocop/issues/1566) --auto-correct on windows changes the line-ending. ([@dreamnite][], [@DavidS][])
 
 ### Changes
 
@@ -4119,3 +4120,5 @@
 [@malyshkosergey]: https://github.com/malyshkosergey
 [@fwitzke]: https://github.com/fwitzke
 [@okuramasafumi]: https://github.com/okuramasafumi
+[@dreamnite]: https://github.com/dreamnite
+[@DavidS]: https://github.com/DavidS

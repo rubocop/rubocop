@@ -9,12 +9,13 @@ module FileHelper
     dir_path = File.dirname(file_path)
     FileUtils.makedirs dir_path unless File.exist?(dir_path)
 
-    File.open(file_path, 'w') do |file|
+    File.open(file_path, 'wb') do |file|
       case content
       when String
         file.puts content
       when Array
-        file.puts content.join("\n")
+        eol = RuboCop::Platform.windows? ? "\r\n" : "\n"
+        file.puts content.join(eol)
       end
     end
   end
