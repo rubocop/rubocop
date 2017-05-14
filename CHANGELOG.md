@@ -54,6 +54,8 @@
 * [#4394](https://github.com/bbatsov/rubocop/issues/4394): Prevent some cops from breaking on safe navigation operator. ([@drenmi][])
 * [#4260](https://github.com/bbatsov/rubocop/issues/4260): Prevent `Rails/SkipsModelValidations` from registering an offense for `FileUtils.touch`. ([@rrosenblum][])
 
+* [#4374](https://github.com/bbatsov/rubocop/issues/4374): Fix Regression of [#1566](https://github.com/bbatsov/rubocop/issues/1566) --auto-correct on windows changes the line-ending ([@dreamnite][])
+ 
 ## 0.48.1 (2017-04-03)
 
 ### Changes
