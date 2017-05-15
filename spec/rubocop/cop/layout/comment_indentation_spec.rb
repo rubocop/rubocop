@@ -68,7 +68,7 @@ describe RuboCop::Cop::Layout::CommentIndentation do
 
   context 'around program structure keywords' do
     it 'accepts correctly indented comments' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         #
         def m
           #
@@ -95,8 +95,7 @@ describe RuboCop::Cop::Layout::CommentIndentation do
           #
         end
         #
-      END
-      expect(cop.offenses).to eq([])
+      RUBY
     end
 
     context 'with a blank line following the comment' do
@@ -113,7 +112,7 @@ describe RuboCop::Cop::Layout::CommentIndentation do
 
   context 'near various kinds of brackets' do
     it 'accepts correctly indented comments' do
-      inspect_source(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         #
         a = {
           #
@@ -129,8 +128,7 @@ describe RuboCop::Cop::Layout::CommentIndentation do
           #
         }
         #
-      END
-      expect(cop.offenses).to eq([])
+      RUBY
     end
 
     it 'is unaffected by closing bracket that does not begin a line' do

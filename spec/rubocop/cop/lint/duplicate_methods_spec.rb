@@ -310,16 +310,16 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
   end
 
   it 'ignores method definitions in RSpec `describe` blocks' do
-    inspect_source(cop,
-                   ['describe "something" do',
-                    '  def some_method',
-                    '    implement 1',
-                    '  end',
-                    '  def some_method',
-                    '    implement 2',
-                    '  end',
-                    'end'], 'test.rb')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(<<-RUBY.strip_indent)
+      describe "something" do
+        def some_method
+          implement 1
+        end
+        def some_method
+          implement 2
+        end
+      end
+    RUBY
   end
 
   it 'ignores Class.new blocks which are assigned to local variables' do

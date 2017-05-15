@@ -32,8 +32,8 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
 
     it 'accepts empty braces with comment and line break inside' do
       expect_no_offenses(<<-RUBY.strip_indent)
-          each { # Comment
-          }
+        each { # Comment
+        }
       RUBY
     end
 
@@ -306,9 +306,7 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
     context 'with passed in parameters' do
       context 'and space before block parameters allowed' do
         it 'accepts left brace with inner space' do
-          inspect_source(cop, 'each { |x| puts}')
-          expect(cop.messages).to eq([])
-          expect(cop.highlights).to eq([])
+          expect_no_offenses('each { |x| puts}')
         end
 
         it 'registers an offense for left brace without inner space' do

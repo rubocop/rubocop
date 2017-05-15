@@ -15,27 +15,25 @@ describe RuboCop::Cop::Rails::Output do
   end
 
   it 'does not record an offense for methods with a receiver' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       obj.print
       something.p
       nothing.pp
-    END
-    inspect_source(cop, source)
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it 'does not record an offense for methods without arguments' do
-    source = %w[print pp puts]
-    inspect_source(cop, source)
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(<<-RUBY.strip_indent)
+      print
+      pp
+      puts
+    RUBY
   end
 
   it 'does not record an offense for comments' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       # print "test"
       # p
-    END
-    inspect_source(cop, source)
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 end

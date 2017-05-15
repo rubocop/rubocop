@@ -133,8 +133,8 @@ describe RuboCop::Cop::Rails::DynamicFindBy, :config do
   end
 
   it 'accepts method in whitelist' do
-    source = 'User.find_by_sql(["select * from users where name = ?", name])'
-    inspect_source(cop, source)
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(<<-RUBY.strip_indent)
+      User.find_by_sql(["select * from users where name = ?", name])
+    RUBY
   end
 end

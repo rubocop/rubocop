@@ -141,10 +141,9 @@ describe RuboCop::Cop::Performance::Count do
     end
 
     it 'allows usage of select with multiple strings' do
-      source = "Model.select('field AS field_one', 'other AS field_two').count"
-      inspect_source(cop, source)
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        Model.select('field AS field_one', 'other AS field_two').count
+      RUBY
     end
 
     it 'allows usage of select with a symbol' do

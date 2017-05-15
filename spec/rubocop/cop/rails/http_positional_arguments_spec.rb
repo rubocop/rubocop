@@ -5,27 +5,19 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
     subject(:cop) { described_class.new(config) }
 
     it 'does not register an offense for post method' do
-      source = 'post :create, user_id: @user.id'
-      inspect_source(cop, source)
-      expect(cop.offenses.size).to eq(0)
+      expect_no_offenses('post :create, user_id: @user.id')
     end
 
     it 'does not register an offense for patch method' do
-      source = 'patch :update, user_id: @user.id'
-      inspect_source(cop, source)
-      expect(cop.offenses.size).to eq(0)
+      expect_no_offenses('patch :update, user_id: @user.id')
     end
 
     it 'does not register an offense for delete method' do
-      source = 'delete :destroy, id: @user.id'
-      inspect_source(cop, source)
-      expect(cop.offenses.size).to eq(0)
+      expect_no_offenses('delete :destroy, id: @user.id')
     end
 
     it 'accepts for not HTTP method' do
-      source = 'puts :create, user_id: @user.id'
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('puts :create, user_id: @user.id')
     end
 
     describe 'when using process' do
@@ -60,8 +52,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       end
 
       it 'does not register an offense' do
-        inspect_source(cop, source)
-        expect(cop.offenses.size).to eq(0)
+        expect_no_offenses('get :new, user_id: @user.id')
       end
 
       it 'does not auto-correct' do
@@ -70,13 +61,8 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       end
 
       describe 'no params' do
-        let(:source) do
-          'get :new'
-        end
-
         it 'does not register an offense' do
-          inspect_source(cop, source)
-          expect(cop.offenses.size).to eq(0)
+          expect_no_offenses('get :new')
         end
       end
     end
@@ -95,8 +81,15 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       end
 
       it 'does not register an offense' do
-        inspect_source(cop, source)
-        expect(cop.offenses.size).to eq(0)
+        expect_no_offenses(<<-RUBY.strip_indent)
+          patch :update,
+                    id: @user.id,
+                    ac: {
+                      article_id: @article1.id,
+                      profile_id: @profile1.id,
+                      content: 'Some Text'
+                    }
+        RUBY
       end
 
       it 'does not auto-correct' do
@@ -119,8 +112,15 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       end
 
       it 'does not register an offense' do
-        inspect_source(cop, source)
-        expect(cop.offenses.size).to eq(0)
+        expect_no_offenses(<<-RUBY.strip_indent)
+          post :create,
+                    id: @user.id,
+                    ac: {
+                      article_id: @article1.id,
+                      profile_id: @profile1.id,
+                      content: 'Some Text'
+                    }
+        RUBY
       end
 
       it 'does not auto-correct' do
@@ -162,9 +162,11 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
     end
 
     it 'does not register when post is found' do
-      source = "if post.stint_title.present? \n true\n end"
-      inspect_source(cop, source)
-      expect(cop.offenses.size).to eq(0)
+      expect_no_offenses(<<-RUBY.strip_indent)
+        if post.stint_title.present?
+         true
+         end
+      RUBY
     end
 
     it 'does not remove quotes when single quoted' do
@@ -268,9 +270,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
     end
 
     it 'accepts for not HTTP method' do
-      source = 'puts :create, user_id: @user.id'
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('puts :create, user_id: @user.id')
     end
 
     describe 'when using process' do
@@ -321,13 +321,8 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       end
 
       describe 'no params' do
-        let(:source) do
-          'get :new'
-        end
-
         it 'does not register an offense' do
-          inspect_source(cop, source)
-          expect(cop.offenses.size).to eq(0)
+          expect_no_offenses('get :new')
         end
       end
     end
@@ -452,9 +447,11 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
     end
 
     it 'does not register when post is found' do
-      source = "if post.stint_title.present? \n true\n end"
-      inspect_source(cop, source)
-      expect(cop.offenses.size).to eq(0)
+      expect_no_offenses(<<-RUBY.strip_indent)
+        if post.stint_title.present?
+         true
+         end
+      RUBY
     end
 
     it 'does not remove quotes when single quoted' do

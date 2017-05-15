@@ -7,57 +7,53 @@ describe RuboCop::Cop::Rails::ApplicationJob do
     subject(:cop) { described_class.new(config) }
 
     it 'allows ApplicationJob to be defined' do
-      source = "class ApplicationJob < ActiveJob::Base\nend"
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class ApplicationJob < ActiveJob::Base
+        end
+      RUBY
     end
 
     it 'allows jobs that subclass ActiveJob::Base' do
-      source = "class MyJob < ActiveJob::Base\nend"
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class MyJob < ActiveJob::Base
+        end
+      RUBY
     end
 
     it 'allows a single-line class definitions' do
-      source = 'class MyJob < ActiveJob::Base; end'
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('class MyJob < ActiveJob::Base; end')
     end
 
     it 'allows namespaced jobs that subclass ActiveJob::Base' do
-      source = "module Nested\n  class MyJob < ActiveJob::Base\n  end\nend"
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        module Nested
+          class MyJob < ActiveJob::Base
+          end
+        end
+      RUBY
     end
 
     it 'allows jobs defined using nested constants' do
-      source = "class Nested::MyJob < ActiveJob::Base\nend"
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class Nested::MyJob < ActiveJob::Base
+        end
+      RUBY
     end
 
     it 'allows jobs defined using Class.new' do
-      source = 'MyJob = Class.new(ActiveJob::Base)'
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('MyJob = Class.new(ActiveJob::Base)')
     end
 
     it 'allows nested jobs defined using Class.new' do
-      source = 'Nested::MyJob = Class.new(ActiveJob::Base)'
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('Nested::MyJob = Class.new(ActiveJob::Base)')
     end
 
     it 'allows anonymous jobs' do
-      source = 'Class.new(ActiveJob::Base) {}'
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('Class.new(ActiveJob::Base) {}')
     end
 
     it 'allows ApplicationJob defined using Class.new' do
-      source = 'ApplicationJob = Class.new(ActiveJob::Base)'
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('ApplicationJob = Class.new(ActiveJob::Base)')
     end
   end
 
@@ -65,9 +61,10 @@ describe RuboCop::Cop::Rails::ApplicationJob do
     subject(:cop) { described_class.new }
 
     it 'allows ApplicationJob to be defined' do
-      source = "class ApplicationJob < ActiveJob::Base\nend"
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class ApplicationJob < ActiveJob::Base
+        end
+      RUBY
     end
 
     it 'corrects jobs that subclass ActiveJob::Base' do
@@ -134,9 +131,7 @@ describe RuboCop::Cop::Rails::ApplicationJob do
     end
 
     it 'allows ApplicationJob defined using Class.new' do
-      source = 'ApplicationJob = Class.new(ActiveJob::Base)'
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('ApplicationJob = Class.new(ActiveJob::Base)')
     end
   end
 end

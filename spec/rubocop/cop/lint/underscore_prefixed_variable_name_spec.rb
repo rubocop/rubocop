@@ -3,10 +3,6 @@
 describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
   subject(:cop) { described_class.new }
 
-  before do
-    inspect_source(cop, source)
-  end
-
   context 'when an underscore-prefixed variable is used' do
     let(:source) { <<-END }
       def some_method
@@ -16,6 +12,7 @@ describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
     END
 
     it 'registers an offense' do
+      inspect_source(cop, source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.message)
         .to eq('Do not use prefix `_` for a variable that is used.')
@@ -26,28 +23,24 @@ describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
   end
 
   context 'when non-underscore-prefixed variable is used' do
-    let(:source) { <<-END }
-      def some_method
-        foo = 1
-        puts foo
-      end
-    END
-
     it 'accepts' do
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def some_method
+          foo = 1
+          puts foo
+        end
+      RUBY
     end
   end
 
   context 'when an underscore-prefixed variable is reassigned' do
-    let(:source) { <<-END }
-      def some_method
-        _foo = 1
-        _foo = 2
-      end
-    END
-
     it 'accepts' do
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def some_method
+          _foo = 1
+          _foo = 2
+        end
+      RUBY
     end
   end
 
@@ -59,6 +52,7 @@ describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
     END
 
     it 'registers an offense' do
+      inspect_source(cop, source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.line).to eq(1)
       expect(cop.highlights).to eq(['_foo'])
@@ -73,6 +67,7 @@ describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
     END
 
     it 'registers an offense' do
+      inspect_source(cop, source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.line).to eq(1)
       expect(cop.highlights).to eq(['_foo'])
@@ -86,6 +81,7 @@ describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
     END
 
     it 'registers an offense' do
+      inspect_source(cop, source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.line).to eq(1)
       expect(cop.highlights).to eq(['_foo'])
@@ -93,15 +89,13 @@ describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
   end
 
   context 'when an underscore-prefixed variable is captured by a block' do
-    let(:source) { <<-END }
-      _foo = 1
-      1.times do
-        _foo = 2
-      end
-    END
-
     it 'accepts' do
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        _foo = 1
+        1.times do
+          _foo = 2
+        end
+      RUBY
     end
   end
 
@@ -112,6 +106,7 @@ describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
     END
 
     it 'registers an offense' do
+      inspect_source(cop, source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.line).to eq(1)
       expect(cop.highlights).to eq(['/(?<_foo>\\w+)/'])
@@ -128,6 +123,7 @@ describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
         END
 
         it 'accepts' do
+          inspect_source(cop, source)
           expect(cop.offenses).to be_empty
         end
       end
@@ -141,6 +137,7 @@ describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
         END
 
         it 'registers an offense' do
+          inspect_source(cop, source)
           expect(cop.offenses.size).to eq(1)
           expect(cop.offenses.first.line).to eq(1)
           expect(cop.highlights).to eq(['_'])
@@ -157,6 +154,7 @@ describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
         END
 
         it 'accepts' do
+          inspect_source(cop, source)
           expect(cop.offenses).to be_empty
         end
       end
@@ -169,6 +167,7 @@ describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
         END
 
         it 'registers an offense' do
+          inspect_source(cop, source)
           expect(cop.offenses.size).to eq(1)
           expect(cop.offenses.first.line).to eq(1)
           expect(cop.highlights).to eq(['_'])

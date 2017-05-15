@@ -48,12 +48,11 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
     end
 
     it 'accepts heredocs' do
-      inspect_source(cop,
-                     ['execute <<-SQL',
-                      '  SELECT name from users',
-                      'SQL'])
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        execute <<-SQL
+          SELECT name from users
+        SQL
+      RUBY
     end
 
     it 'accepts double quotes when new line is used' do
@@ -61,9 +60,9 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
     end
 
     it 'accepts double quotes when interpolating & quotes in multiple lines' do
-      inspect_source(cop, '"#{encode_severity}:' \
-                          '#{sprintf(\'%3d\', line_number)}: #{m}"')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-'RUBY'.strip_indent)
+        "#{encode_severity}:#{sprintf('%3d', line_number)}: #{m}"
+      RUBY
     end
 
     it 'accepts double quotes when single quotes are used' do
@@ -97,10 +96,10 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
     it 'accepts double quotes with some other special symbols' do
       # "Substitutions in double-quoted strings"
       # http://www.ruby-doc.org/docs/ProgrammingRuby/html/language.html
-      src = ['g = "\xf9"',
-             'copyright = "\u00A9"']
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-'RUBY'.strip_indent)
+        g = "\xf9"
+        copyright = "\u00A9"
+      RUBY
     end
 
     it 'accepts " in a %w' do
@@ -112,9 +111,7 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
     end
 
     it 'accepts double quotes in interpolation' do
-      src = '"#{"A"}"'
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses("\"\#{\"A\"}\"")
     end
 
     it 'detects unneeded double quotes within concatenated string' do
@@ -125,16 +122,14 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
 
     it 'can handle a built-in constant parsed as string' do
       # Parser will produce str nodes for constants such as __FILE__.
-      src = ['if __FILE__ == $PROGRAM_NAME',
-             'end']
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        if __FILE__ == $PROGRAM_NAME
+        end
+      RUBY
     end
 
     it 'can handle character literals' do
-      src = 'a = ?/'
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('a = ?/')
     end
 
     it 'auto-corrects " with \'' do
@@ -216,20 +211,19 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
     end
 
     it 'accepts heredocs' do
-      inspect_source(cop,
-                     ['execute <<-SQL',
-                      '  SELECT name from users',
-                      'SQL'])
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        execute <<-SQL
+          SELECT name from users
+        SQL
+      RUBY
     end
 
     it 'accepts single quotes when they are needed' do
-      src = ["a = '\\n'",
-             "b = '\"'",
-             "c = '\#{x}'"]
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-'RUBY'.strip_indent)
+        a = '\n'
+        b = '"'
+        c = '#{x}'
+      RUBY
     end
 
     it 'flags single quotes with plain # (not #@var or #{interpolation}' do
@@ -247,10 +241,10 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
 
     it 'can handle a built-in constant parsed as string' do
       # Parser will produce str nodes for constants such as __FILE__.
-      src = ['if __FILE__ == $PROGRAM_NAME',
-             'end']
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        if __FILE__ == $PROGRAM_NAME
+        end
+      RUBY
     end
 
     it "auto-corrects ' with \"" do
@@ -290,9 +284,10 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
       end
 
       it 'accepts continued strings using all single quotes' do
-        inspect_source(cop, ["'abc' \\",
-                             "'def'"])
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          'abc' \
+          'def'
+        RUBY
       end
 
       it 'registers an offense for mixed quote styles in a continued string' do
@@ -314,35 +309,40 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
       end
 
       it "doesn't register offense for double quotes with interpolation" do
-        inspect_source(cop, ['"abc" \\',
-                             '"def#{1}"'])
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-'RUBY'.strip_indent)
+          "abc" \
+          "def#{1}"
+        RUBY
       end
 
       it "doesn't register offense for double quotes with embedded single" do
-        inspect_source(cop, ['"abc\'" \\',
-                             '"def"'])
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          "abc'" \
+          "def"
+        RUBY
       end
 
       it 'accepts for double quotes with an escaped special character' do
-        inspect_source(cop, ['"abc\\t" \\',
-                             '"def"'])
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-'RUBY'.strip_indent)
+          "abc\t" \
+          "def"
+        RUBY
       end
 
       it 'accepts for double quotes with an escaped normal character' do
-        inspect_source(cop, ['"abc\\!" \\',
-                             '"def"'])
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-'RUBY'.strip_indent)
+          "abc\!" \
+          "def"
+        RUBY
       end
 
       it "doesn't choke on heredocs with inconsistent indentation" do
-        inspect_source(cop, ['<<-QUERY_STRING',
-                             '  DEFINE',
-                             '    BLAH',
-                             'QUERY_STRING'])
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          <<-QUERY_STRING
+            DEFINE
+              BLAH
+          QUERY_STRING
+        RUBY
       end
     end
 
@@ -355,9 +355,10 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
       end
 
       it 'accepts continued strings using all double quotes' do
-        inspect_source(cop, ['"abc" \\',
-                             '"def"'])
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          "abc" \
+          "def"
+        RUBY
       end
 
       it 'registers an offense for mixed quote styles in a continued string' do
@@ -379,9 +380,10 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
       end
 
       it "doesn't register offense for single quotes with embedded double" do
-        inspect_source(cop, ["'abc\"' \\",
-                             "'def'"])
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          'abc"' \
+          'def'
+        RUBY
       end
     end
   end

@@ -27,15 +27,11 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
   end
 
   it 'accepts scope operator' do
-    source = '@io.class == Zlib::GzipWriter'
-    inspect_source(cop, source)
-    expect(cop.messages).to be_empty
+    expect_no_offenses('@io.class == Zlib::GzipWriter')
   end
 
   it 'accepts ::Kernel::raise' do
-    source = '::Kernel::raise IllegalBlockError.new'
-    inspect_source(cop, source)
-    expect(cop.messages).to be_empty
+    expect_no_offenses('::Kernel::raise IllegalBlockError.new')
   end
 
   it 'accepts exclamation point negation' do
@@ -46,13 +42,11 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
   end
 
   it 'accepts exclamation point definition' do
-    inspect_source(cop, <<-END.strip_margin('|'))
-      |  def !
-      |    !__getobj__
-      |  end
-    END
-    expect(cop.offenses).to be_empty
-    expect(cop.messages).to be_empty
+    expect_no_offenses(<<-RUBY.strip_indent)
+      def !
+        !__getobj__
+      end
+    RUBY
   end
 
   it 'accepts a unary' do
@@ -86,11 +80,10 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
   end
 
   it 'accepts an operator at the end of a line' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       ['Favor unless over if for negative ' +
        'conditions.'] * 2
-    END
-    expect(cop.messages).to eq([])
+    RUBY
   end
 
   it 'accepts an assignment with spaces' do
@@ -111,31 +104,32 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
   end
 
   it 'accepts operators with spaces' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       x += a + b - c * d / e % f ^ g | h & i || j
       y -= k && l
-    END
-    expect(cop.messages).to eq([])
+    RUBY
   end
 
   it "accepts some operators that are exceptions & don't need spaces" do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       (1..3)
       ActionController::Base
       each { |s, t| }
-    END
-    expect(cop.messages).to eq([])
+    RUBY
   end
 
   it 'accepts an assignment followed by newline' do
-    inspect_source(cop, ['x =', '0'])
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(<<-RUBY.strip_indent)
+      x =
+      0
+    RUBY
   end
 
   it 'accepts an operator at the beginning of a line' do
-    inspect_source(cop, ['a = b \\',
-                         '    && c'])
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(<<-'RUBY'.strip_indent)
+      a = b \
+          && c
+    RUBY
   end
 
   it 'registers an offenses for exponent operator with spaces' do
@@ -161,29 +155,25 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
   end
 
   it 'accepts unary operators without space' do
-    inspect_source(cop, <<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       [].map(&:size)
       a.(b)
       -3
       arr.collect { |e| -e }
       x = +2
-    END
-    expect(cop.messages).to eq([])
+    RUBY
   end
 
   it 'accepts [arg] without space' do
-    inspect_source(cop, 'files[2]')
-    expect(cop.messages).to eq([])
+    expect_no_offenses('files[2]')
   end
 
   it 'accepts [] without space' do
-    inspect_source(cop, 'files[]')
-    expect(cop.messages).to eq([])
+    expect_no_offenses('files[]')
   end
 
   it 'accepts []= without space' do
-    inspect_source(cop, 'files[:key], files[:another] = method')
-    expect(cop.messages).to eq([])
+    expect_no_offenses('files[:key], files[:another] = method')
   end
 
   it 'accepts argument default values without space' do
@@ -385,7 +375,12 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
         let(:hash_style) { 'table' }
 
         it "doesn't register an offense for a hash rocket without spaces" do
-          expect(cop.offenses).to be_empty
+          expect_no_offenses(<<-RUBY.strip_indent)
+            {
+              1=>2,
+              a: b
+            }
+          RUBY
         end
       end
     end

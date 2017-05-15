@@ -121,15 +121,13 @@ describe RuboCop::Cop::Layout::RescueEnsureAlignment do
     subject(:cop) { described_class.new(config) }
 
     it 'processes excluded files with issue' do
-      inspect_source_file(cop, <<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         begin
           foo
         rescue
           bar
         end
-      END
-
-      expect(cop.messages).to be_empty
+      RUBY
     end
   end
 end

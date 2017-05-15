@@ -24,8 +24,7 @@ describe RuboCop::Cop::Rails::ActiveSupportAliases do
 
     describe '#start_with?' do
       it 'is not registered as an offense' do
-        inspect_source(cop, "'some_string'.start_with?('prefix')")
-        expect(cop.offenses.size).to eq(0)
+        expect_no_offenses("'some_string'.start_with?('prefix')")
       end
     end
 
@@ -47,8 +46,7 @@ describe RuboCop::Cop::Rails::ActiveSupportAliases do
 
     describe '#end_with?' do
       it 'is not registered as an offense' do
-        inspect_source(cop, "'some_string'.end_with?('prefix')")
-        expect(cop.offenses.size).to eq(0)
+        expect_no_offenses("'some_string'.end_with?('prefix')")
       end
     end
   end
@@ -71,8 +69,7 @@ describe RuboCop::Cop::Rails::ActiveSupportAliases do
 
     describe '#<<' do
       it 'is not registered as an offense' do
-        inspect_source(cop, "[1, 'a', 3] << 'element'")
-        expect(cop.offenses.size).to eq(0)
+        expect_no_offenses("[1, 'a', 3] << 'element'")
       end
     end
 
@@ -94,8 +91,7 @@ describe RuboCop::Cop::Rails::ActiveSupportAliases do
 
     describe '#unshift' do
       it 'is not registered as an offense' do
-        inspect_source(cop, "[1, 'a', 3].unshift('element')")
-        expect(cop.offenses.size).to eq(0)
+        expect_no_offenses("[1, 'a', 3].unshift('element')")
       end
     end
   end

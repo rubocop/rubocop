@@ -95,10 +95,11 @@ describe RuboCop::Cop::Layout::SpaceInsidePercentLiteralDelimiters do
   end
 
   it 'accepts other percent literals' do
-    %w[q r s].each do |type|
-      inspect_source(cop, "%#{type}( a  b c )")
-      expect(cop.messages).to be_empty
-    end
+    expect_no_offenses(<<-RUBY)
+      %q( a  b c )
+      %r( a  b c )
+      %s( a  b c )
+    RUBY
   end
 
   it 'accepts execute-string literals' do

@@ -38,7 +38,7 @@ describe RuboCop::Cop::Style::RedundantBegin do
   end
 
   it 'accepts a def with required begin block' do
-    src = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       def func
         begin
           ala
@@ -47,13 +47,11 @@ describe RuboCop::Cop::Style::RedundantBegin do
         end
         something
       end
-    END
-    inspect_source(cop, src)
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it 'accepts a defs with required begin block' do
-    src = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       def Test.func
         begin
           ala
@@ -62,9 +60,7 @@ describe RuboCop::Cop::Style::RedundantBegin do
         end
         something
       end
-    END
-    inspect_source(cop, src)
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it 'auto-corrects source separated by newlines ' \

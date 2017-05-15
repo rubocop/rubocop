@@ -243,9 +243,7 @@ describe RuboCop::Cop::Style::RescueModifier do
     subject(:cop) { described_class.new(config) }
 
     it 'processes excluded files with issue' do
-      inspect_source_file(cop, 'foo rescue bar')
-
-      expect(cop.messages).to be_empty
+      expect_no_offenses('foo rescue bar')
     end
   end
 end

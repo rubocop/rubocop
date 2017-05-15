@@ -154,7 +154,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
     context 'when only child is class' do
       it 'requires no empty lines for namespace' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           class Parent < Base
             class Child
 
@@ -162,8 +162,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
             end
           end
-        END
-        expect(cop.messages).to eq([])
+        RUBY
       end
 
       it 'registers offence for namespace body starting with a blank' do
@@ -244,14 +243,13 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
     context 'when only child is module' do
       it 'requires no empty lines for namespace' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           class Parent
             module Child
               do_something
             end
           end
-        END
-        expect(cop.messages).to eq([])
+        RUBY
       end
 
       it 'registers offence for namespace body starting with a blank' do
@@ -281,7 +279,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
     context 'when has multiple child classes' do
       it 'requires empty lines for namespace' do
-        inspect_source(cop, <<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           class Parent
 
             class Mom
@@ -294,8 +292,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
             end
 
           end
-        END
-        expect(cop.messages).to eq([])
+        RUBY
       end
 
       it 'registers offences for namespace body starting '\

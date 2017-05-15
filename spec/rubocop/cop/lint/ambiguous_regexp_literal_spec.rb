@@ -3,15 +3,12 @@
 describe RuboCop::Cop::Lint::AmbiguousRegexpLiteral do
   subject(:cop) { described_class.new }
 
-  before do
-    inspect_source(cop, source)
-  end
-
   context 'with a regexp literal in the first argument' do
     context 'without parentheses' do
       let(:source) { 'p /pattern/' }
 
       it 'registers an offense' do
+        inspect_source(cop, source)
         expect(cop.offenses.size).to eq(1)
         expect(cop.offenses.first.message).to eq(
           'Ambiguous regexp literal. Parenthesize the method arguments ' \
@@ -23,10 +20,8 @@ describe RuboCop::Cop::Lint::AmbiguousRegexpLiteral do
     end
 
     context 'with parentheses' do
-      let(:source) { 'p(/pattern/)' }
-
       it 'accepts' do
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('p(/pattern/)')
       end
     end
   end

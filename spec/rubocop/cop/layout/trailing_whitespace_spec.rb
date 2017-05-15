@@ -63,9 +63,7 @@ describe RuboCop::Cop::Layout::TrailingWhitespace do
   end
 
   it 'accepts a line without trailing whitespace' do
-    inspect_source(cop, ['x = 0',
-                         ''])
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('x = 0')
   end
 
   it 'auto-corrects unwanted space' do

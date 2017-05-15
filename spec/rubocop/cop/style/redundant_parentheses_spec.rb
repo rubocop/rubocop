@@ -245,15 +245,11 @@ describe RuboCop::Cop::Style::RedundantParentheses do
   end
 
   it 'accepts parentheses around a constant passed to when' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       case foo
       when(Const)
         bar
       end
-    END
-
-    inspect_source(cop, source)
-
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 end

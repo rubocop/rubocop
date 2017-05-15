@@ -22,7 +22,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
   end
 
   it 'counts array assignment when determining multiple assignment' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       if foo
         array[1] = 1
         a = 1
@@ -30,44 +30,31 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         array[1] = 2
         a = 2
       end
-    END
-
-    inspect_source(cop, source)
-
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it 'allows method calls in conditionals' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       if line.is_a?(String)
         expect(actual[ix]).to eq(line)
       else
         expect(actual[ix]).to match(line)
       end
-    END
-    inspect_source(cop, source)
-
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it 'allows if else without variable assignment' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       if foo
         1
       else
         2
       end
-    END
-    inspect_source(cop, source)
-
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it 'allows assignment to the result of a ternary operation' do
-    source = 'bar = foo? ? "a" : "b"'
-    inspect_source(cop, source)
-
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('bar = foo? ? "a" : "b"')
   end
 
   it 'registers an offense for assignment in ternary operation' do
@@ -82,17 +69,13 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
   end
 
   it 'allows modifier if inside of if else' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       if foo
         a unless b
       else
         c unless d
       end
-    END
-
-    inspect_source(cop, source)
-
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it "doesn't crash when assignment statement uses chars which have " \
@@ -164,20 +147,17 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
   context 'empty branch' do
     it 'allows an empty if statement' do
-      source = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         if foo
           # comment
         else
           do_something
         end
-      END
-      inspect_source(cop, source)
-
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'allows an empty elsif statement' do
-      source = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         if foo
           bar = 1
         elsif baz
@@ -185,64 +165,48 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         else
           bar = 2
         end
-      END
-      inspect_source(cop, source)
-
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'allows if elsif without else' do
-      source = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         if foo
           bar = 'some string'
         elsif bar
           bar = 'another string'
         end
-      END
-
-      inspect_source(cop, source)
-
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'allows assignment in if without an else' do
-      source = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         if foo
           bar = 1
         end
-      END
-      inspect_source(cop, source)
-
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'allows assignment in unless without an else' do
-      source = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         unless foo
           bar = 1
         end
-      END
-      inspect_source(cop, source)
-
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'allows assignment in case when without an else' do
-      source = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         case foo
         when "a"
           bar = 1
         when "b"
           bar = 2
         end
-      END
-      inspect_source(cop, source)
-
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'allows an empty when branch with an else' do
-      source = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         case foo
         when "a"
           # empty
@@ -251,55 +215,43 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         else
           bar = 3
         end
-      END
-      inspect_source(cop, source)
-
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'allows case with an empty else' do
-      source = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         case foo
         when "b"
           bar = 2
         else
           # empty
         end
-      END
-      inspect_source(cop, source)
-
-      expect(cop.offenses).to be_empty
+      RUBY
     end
   end
 
   it 'allows assignment of different variables in if else' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       if foo
         bar = 1
       else
         baz = 1
       end
-    END
-    inspect_source(cop, source)
-
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it 'allows method calls in if else' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       if foo
         bar
       else
         baz
       end
-    END
-    inspect_source(cop, source)
-
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it 'allows if elsif else with the same assignment only in if else' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       if foo
         bar = 1
       elsif foobar
@@ -307,14 +259,11 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       else
         bar = 1
       end
-    END
-    inspect_source(cop, source)
-
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it 'allows if elsif else with the same assignment only in if elsif' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       if foo
         bar = 1
       elsif foobar
@@ -322,14 +271,11 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       else
         baz = 1
       end
-    END
-    inspect_source(cop, source)
-
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it 'allows if elsif else with the same assignment only in elsif else' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       if foo
         bar = 1
       elsif foobar
@@ -337,53 +283,41 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       else
         baz = 1
       end
-    END
-    inspect_source(cop, source)
-
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it 'allows assignment using different operators in if else' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       if foo
         bar = 1
       else
         bar << 2
       end
-    END
-    inspect_source(cop, source)
-
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it 'allows assignment using different (method) operators in if..else' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       if foo
         bar[index] = 1
       else
         bar << 2
       end
-    END
-    inspect_source(cop, source)
-
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'allows aref assignment with different indices in if..else' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       if foo
         bar[1] = 1
       else
         bar[2] = 2
       end
-    END
-    inspect_source(cop, source)
-
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'allows assignment using different operators in if elsif else' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       if foo
         bar = 1
       elsif foobar
@@ -391,24 +325,18 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       else
         bar << 3
       end
-    END
-    inspect_source(cop, source)
-
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it 'allows assignment of different variables in case when else' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       case foo
       when "a"
         bar = 1
       else
         baz = 2
       end
-    END
-    inspect_source(cop, source)
-
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   context 'correction would exceed max line length' do
@@ -728,7 +656,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
   context 'assignment as the last statement' do
     it 'allows more than variable assignment in if else' do
-      source = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         if foo
           method_call
           bar = 1
@@ -736,14 +664,11 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           method_call
           bar = 2
         end
-      END
-      inspect_source(cop, source)
-
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'allows more than variable assignment in if elsif else' do
-      source = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         if foo
           method_call
           bar = 1
@@ -754,14 +679,11 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           method_call
           bar = 3
         end
-      END
-      inspect_source(cop, source)
-
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'allows multiple assignment in if else' do
-      source = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         if baz
           foo = 1
           bar = 1
@@ -769,14 +691,11 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           foo = 2
           bar = 2
         end
-      END
-      inspect_source(cop, source)
-
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'allows multiple assignment in if elsif else' do
-      source = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         if baz
           foo = 1
           bar = 1
@@ -787,14 +706,11 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           foo = 3
           bar = 3
         end
-      END
-      inspect_source(cop, source)
-
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'allows multiple assignment in if elsif elsif else' do
-      source = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         if baz
           foo = 1
           bar = 1
@@ -808,10 +724,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           foo = 4
           bar = 4
         end
-      END
-      inspect_source(cop, source)
-
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'allows multiple assignment in if elsif else when the last ' \
@@ -856,7 +769,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'allows out of order multiple assignment in if elsif else' do
-      source = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         if baz
           bar = 1
           foo = 1
@@ -867,14 +780,11 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           foo = 3
           bar = 3
         end
-      END
-      inspect_source(cop, source)
-
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'allows multiple assignment in unless else' do
-      source = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         unless baz
           foo = 1
           bar = 1
@@ -882,14 +792,11 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           foo = 2
           bar = 2
         end
-      END
-      inspect_source(cop, source)
-
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'allows multiple assignments in case when with only one when' do
-      source = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         case foo
         when foobar
           foo = 1
@@ -898,14 +805,11 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           foo = 3
           bar = 3
         end
-      END
-      inspect_source(cop, source)
-
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'allows multiple assignments in case when with multiple whens' do
-      source = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         case foo
         when foobar
           foo = 1
@@ -917,10 +821,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           foo = 3
           bar = 3
         end
-      END
-      inspect_source(cop, source)
-
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'allows multiple assignments in case when if there are uniq ' \
@@ -1023,7 +924,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
     context 'multiple assignment in only one branch' do
       it 'allows multiple assignment is in if' do
-        source = <<-END.strip_indent
+        expect_no_offenses(<<-RUBY.strip_indent)
           if foo
             baz = 1
             bar = 1
@@ -1034,14 +935,11 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
             other_method
             bar = 3
           end
-        END
-        inspect_source(cop, source)
-
-        expect(cop.offenses).to be_empty
+        RUBY
       end
 
       it 'allows multiple assignment is in elsif' do
-        source = <<-END.strip_indent
+        expect_no_offenses(<<-RUBY.strip_indent)
           if foo
             method_call
             bar = 1
@@ -1052,14 +950,11 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
             other_method
             bar = 3
           end
-        END
-        inspect_source(cop, source)
-
-        expect(cop.offenses).to be_empty
+        RUBY
       end
 
       it 'registers an offense when multiple assignment is in else' do
-        source = <<-END.strip_indent
+        expect_no_offenses(<<-RUBY.strip_indent)
           if foo
             method_call
             bar = 1
@@ -1070,10 +965,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
             baz = 3
             bar = 3
           end
-        END
-        inspect_source(cop, source)
-
-        expect(cop.offenses).to be_empty
+        RUBY
       end
     end
   end
@@ -1131,17 +1023,14 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
   end
 
   it 'allows different assignment types in case with when when else' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       case foo
       when foobar
         bar = 1
       else
         bar << 2
       end
-    END
-    inspect_source(cop, source)
-
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it 'allows assignment in multiple branches when it is ' \
@@ -1895,7 +1784,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       end
 
       it 'allows out of order multiple assignment in if elsif else' do
-        source = <<-END.strip_indent
+        expect_no_offenses(<<-RUBY.strip_indent)
           if baz
             bar = 1
             foo = 1
@@ -1906,10 +1795,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
             foo = 3
             bar = 3
           end
-        END
-        inspect_source(cop, source)
-
-        expect(cop.offenses).to be_empty
+        RUBY
       end
 
       it 'allows multiple assignment in unless else' do
@@ -2420,10 +2306,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'allows assignment in ternary operation' do
-      source = 'foo? ? bar = "a" : bar = "b"'
-      inspect_source(cop, source)
-
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('foo? ? bar = "a" : bar = "b"')
     end
   end
 end

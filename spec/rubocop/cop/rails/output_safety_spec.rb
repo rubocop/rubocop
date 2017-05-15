@@ -22,18 +22,14 @@ describe RuboCop::Cop::Rails::OutputSafety do
   end
 
   it 'accepts html_safe methods without a receiver' do
-    source = 'html_safe'
-    inspect_source(cop, source)
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('html_safe')
   end
 
   it 'accepts html_safe methods with arguments' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       foo.html_safe one
       "foo".html_safe two
-    END
-    inspect_source(cop, source)
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it 'registers an offense for raw methods without a receiver' do
@@ -46,33 +42,25 @@ describe RuboCop::Cop::Rails::OutputSafety do
   end
 
   it 'accepts raw methods with a receiver' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       foo.raw(foo)
       "foo".raw "foo"
-    END
-    inspect_source(cop, source)
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it 'accepts raw methods without arguments' do
-    source = 'raw'
-    inspect_source(cop, source)
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('raw')
   end
 
   it 'accepts raw methods with more than one arguments' do
-    source = 'raw one, two'
-    inspect_source(cop, source)
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('raw one, two')
   end
 
   it 'accepts comments' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       # foo.html_safe
       # raw foo
-    END
-    inspect_source(cop, source)
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it 'does not accept safe_concat methods when wrapped in a safe_join' do

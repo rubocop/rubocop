@@ -33,34 +33,24 @@ describe RuboCop::Cop::Style::IfUnlessModifierOfIfUnless do
   end
 
   context 'conditional with modifier in body' do
-    let(:source) do
-      <<-END.strip_indent
+    it 'accepts' do
+      expect_no_offenses(<<-RUBY.strip_indent)
         if condition
           then_part if maybe?
         end
-      END
-    end
-
-    it 'accepts' do
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
   end
 
   context 'nested conditionals' do
-    let(:source) do
-      <<-END.strip_indent
+    it 'accepts' do
+      expect_no_offenses(<<-RUBY.strip_indent)
         if external_condition
           if condition
             then_part
           end
         end
-      END
-    end
-
-    it 'accepts' do
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
   end
 end

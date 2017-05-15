@@ -19,12 +19,12 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody do
   # two cops registering offense for the line with only spaces would cause
   # havoc in auto-correction.
   it 'accepts method body starting with a line with spaces' do
-    inspect_source(cop,
-                   ['def some_method',
-                    '  ',
-                    '  do_something',
-                    'end'])
-    expect(cop.offenses).to be_empty
+    expect_no_offenses([
+                         'def some_method',
+                         '  ',
+                         '  do_something',
+                         'end'
+                       ])
   end
 
   it 'autocorrects method body starting with a blank' do

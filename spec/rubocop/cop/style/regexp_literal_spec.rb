@@ -50,11 +50,8 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'slashes' } }
 
     describe 'a single-line `//` regex without slashes' do
-      let(:source) { 'foo = /a/' }
-
       it 'is accepted' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('foo = /a/')
       end
     end
 
@@ -77,23 +74,19 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
         before { cop_config['AllowInnerSlashes'] = true }
 
         it 'is accepted' do
-          inspect_source(cop, source)
-          expect(cop.offenses).to be_empty
+          expect_no_offenses('foo = /home\\//')
         end
       end
     end
 
     describe 'a multi-line `//` regex without slashes' do
-      let(:source) do
-        ['foo = /',
-         '  foo',
-         '  bar',
-         '/x']
-      end
-
       it 'is accepted' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          foo = /
+            foo
+            bar
+          /x
+        RUBY
       end
     end
 
@@ -119,8 +112,12 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
         before { cop_config['AllowInnerSlashes'] = true }
 
         it 'is accepted' do
-          inspect_source(cop, source)
-          expect(cop.offenses).to be_empty
+          expect_no_offenses(<<-'RUBY'.strip_indent)
+            foo = /
+              https?:\/\/
+              example\.com
+            /x
+          RUBY
         end
       end
     end
@@ -145,8 +142,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       let(:source) { 'foo = %r{home/}' }
 
       it 'is accepted' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('foo = %r{home/}')
       end
 
       describe 'when configured to allow inner slashes' do
@@ -194,8 +190,12 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       end
 
       it 'is accepted' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          foo = %r{
+            https?://
+            example\.com
+          }x
+        RUBY
       end
 
       describe 'when configured to allow inner slashes' do
@@ -288,48 +288,36 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
     end
 
     describe 'a single-line %r regex without slashes' do
-      let(:source) { 'foo = %r{a}' }
-
       it 'is accepted' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('foo = %r{a}')
       end
     end
 
     describe 'a single-line %r regex with slashes' do
-      let(:source) { 'foo = %r{home/}' }
-
       it 'is accepted' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('foo = %r{home/}')
       end
     end
 
     describe 'a multi-line %r regex without slashes' do
-      let(:source) do
-        ['foo = %r{',
-         '  foo',
-         '  bar',
-         '}x']
-      end
-
       it 'is accepted' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          foo = %r{
+            foo
+            bar
+          }x
+        RUBY
       end
     end
 
     describe 'a multi-line %r regex with slashes' do
-      let(:source) do
-        ['foo = %r{',
-         '  https?://',
-         '  example\.com',
-         '}x']
-      end
-
       it 'is accepted' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          foo = %r{
+            https?://
+            example\.com
+          }x
+        RUBY
       end
     end
   end
@@ -338,11 +326,8 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'mixed' } }
 
     describe 'a single-line `//` regex without slashes' do
-      let(:source) { 'foo = /a/' }
-
       it 'is accepted' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('foo = /a/')
       end
     end
 
@@ -365,8 +350,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
         before { cop_config['AllowInnerSlashes'] = true }
 
         it 'is accepted' do
-          inspect_source(cop, source)
-          expect(cop.offenses).to be_empty
+          expect_no_offenses('foo = /home\\//')
         end
       end
     end
@@ -429,8 +413,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       let(:source) { 'foo = %r{home/}' }
 
       it 'is accepted' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('foo = %r{home/}')
       end
 
       describe 'when configured to allow inner slashes' do
@@ -451,30 +434,24 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
     end
 
     describe 'a multi-line %r regex without slashes' do
-      let(:source) do
-        ['foo = %r{',
-         '  foo',
-         '  bar',
-         '}x']
-      end
-
       it 'is accepted' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          foo = %r{
+            foo
+            bar
+          }x
+        RUBY
       end
     end
 
     describe 'a multi-line %r regex with slashes' do
-      let(:source) do
-        ['foo = %r{',
-         '  https?://',
-         '  example\.com',
-         '}x']
-      end
-
       it 'is accepted' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          foo = %r{
+            https?://
+            example\.com
+          }x
+        RUBY
       end
     end
   end
