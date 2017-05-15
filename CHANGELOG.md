@@ -40,6 +40,7 @@
 * [#4339](https://github.com/bbatsov/rubocop/pull/4339): Fix false positive in `Security/Eval` cop for multiline string lietral. ([@pocke][])
 * [#4339](https://github.com/bbatsov/rubocop/pull/4339): Fix false negative in `Security/Eval` cop for `Binding#eval`. ([@pocke][])
 * [#4327](https://github.com/bbatsov/rubocop/issues/4327): Prevent `Layout/SpaceInsidePercentLiteralDelimiters` from registering offenses on execute-strings. ([@drenmi][])
+* [#4366](https://github.com/bbatsov/rubocop/issues/4366): Prevent `Performance/RedundantMerge` from blowing up on double splat arguments. ([@drenmi][])
 
 ## 0.48.1 (2017-04-03)
 
