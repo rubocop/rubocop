@@ -45,6 +45,14 @@ describe RuboCop::Cop::Performance::RedundantMerge, :config do
     end
   end
 
+  context 'when any argument is a double splat' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        foo.merge!(baz: qux, **bar)
+      RUBY
+    end
+  end
+
   context 'when internal to each_with_object' do
     it 'autocorrects when the receiver is the object being built' do
       source = <<-END.strip_indent

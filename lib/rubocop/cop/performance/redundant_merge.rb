@@ -21,6 +21,8 @@ module RuboCop
 
         def on_send(node)
           each_redundant_merge(node) do |receiver, pairs|
+            return if pairs.any?(&:kwsplat_type?)
+
             assignments = to_assignments(receiver, pairs).join('; ')
             message = format(MSG, assignments, node.source)
             add_offense(node, :expression, message)
