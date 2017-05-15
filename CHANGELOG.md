@@ -10,6 +10,7 @@
 * [#4078](https://github.com/bbatsov/rubocop/pull/4078): Add new `Performance/Caller` cop. ([@alpaca-tc][])
 * [#4314](https://github.com/bbatsov/rubocop/pull/4314): Check slow hash accessing in `Array#sort` by `Performance/CompareWithBlock`. ([@pocke][])
 * [#3438](https://github.com/bbatsov/rubocop/issues/3438): Add new `Style/FormatStringToken` cop. ([@backus][])
+* [#4355](https://github.com/bbatsov/rubocop/pull/4355): Add `rubocop:todo` directive alongside `rubocop:disable`. ([@vergenzt][])
 
 ### Changes
 

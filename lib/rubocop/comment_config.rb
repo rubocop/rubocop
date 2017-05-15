@@ -4,18 +4,6 @@ module RuboCop
   # This class parses the special `rubocop:disable` comments in a source
   # and provides a way to check if each cop is enabled at arbitrary line.
   class CommentConfig
-    UNNEEDED_DISABLE = 'Lint/UnneededDisable'.freeze
-
-    COP_NAME_PATTERN = '([A-Z]\w+/)?(?:[A-Z]\w+)'.freeze
-    COP_NAMES_PATTERN = "(?:#{COP_NAME_PATTERN} , )*#{COP_NAME_PATTERN}".freeze
-    COPS_PATTERN = "(all|#{COP_NAMES_PATTERN})".freeze
-
-    COMMENT_DIRECTIVE_REGEXP = Regexp.new(
-      ('# rubocop : ((?:dis|en)able)\b ' + COPS_PATTERN).gsub(' ', '\s*')
-    )
-
-    CopAnalysis = Struct.new(:line_ranges, :start_line_number)
-
     attr_reader :processed_source
 
     def initialize(processed_source)
@@ -36,12 +24,15 @@ module RuboCop
 
     private
 
-    def analyze
-      analyses = Hash.new { |hash, key| hash[key] = CopAnalysis.new([], nil) }
+    CopAnalysis = Struct.new(:disabled_ranges, :unclosed_directives)
 
-      each_mentioned_cop do |cop_name, disabled, line, single_line|
-        analyses[cop_name] =
-          analyze_cop(analyses[cop_name], disabled, line, single_line)
+    def analyze
+      analyses = Hash.new { |hash, key| hash[key] = CopAnalysis.new([], {}) }
+
+      each_directive do |directive|
+        directive.cop_names.each do |cop_name|
+          analyze_cop(analyses[cop_name], directive)
+        end
       end
 
       analyses.each_with_object({}) do |element, hash|
@@ -50,96 +41,65 @@ module RuboCop
       end
     end
 
-    def analyze_cop(analysis, disabled, line, single_line)
-      if single_line
-        analyze_single_line(analysis, line, disabled)
-      elsif disabled
-        analyze_disabled(analysis, line)
+    def analyze_cop(analysis, directive)
+      if single_line_directive?(directive)
+        analyze_single_line(analysis, directive)
+      elsif directive.disable?
+        open_directive!(analysis, directive)
       else
-        analyze_rest(analysis, line)
+        close_unclosed_directive!(analysis, directive)
       end
     end
 
-    def analyze_single_line(analysis, line, disabled)
-      return analysis unless disabled
-
-      CopAnalysis.new(analysis.line_ranges + [(line..line)],
-                      analysis.start_line_number)
+    def analyze_single_line(analysis, directive)
+      return unless directive.disable?
+      analysis.disabled_ranges << CommentConfigRange.new(directive, directive)
     end
 
-    def analyze_disabled(analysis, line)
-      if (start_line = analysis.start_line_number)
-        # Cop already disabled on this line, so we end the current disabled
-        # range before we start a new range.
-        return CopAnalysis.new(analysis.line_ranges + [start_line..line], line)
-      end
+    def open_directive!(analysis, directive)
+      # If a directive is already open on this line (i.e. a cop is already
+      # disabled), then close it before we start a new range.
+      # Lint::UnneededDisable#each_already_disabled relies on this behavior.
+      close_unclosed_directive!(analysis, directive)
 
-      CopAnalysis.new(analysis.line_ranges, line)
+      analysis.unclosed_directives[directive.keyword] = directive
     end
 
-    def analyze_rest(analysis, line)
-      if (start_line = analysis.start_line_number)
-        return CopAnalysis.new(analysis.line_ranges + [start_line..line], nil)
-      end
+    def close_unclosed_directive!(analysis, end_directive)
+      open_keyword = end_directive.open_keyword
+      unclosed_directive = analysis.unclosed_directives[open_keyword]
+      return unless unclosed_directive
 
-      CopAnalysis.new(analysis.line_ranges, nil)
+      range = CommentConfigRange.new(unclosed_directive, end_directive)
+      analysis.disabled_ranges << range
+      analysis.unclosed_directives[open_keyword] = nil
+    end
+
+    def close_all_unclosed_directives!(analysis)
+      analysis.unclosed_directives.each do |_open_keyword, unclosed_directive|
+        next unless unclosed_directive
+        range = CommentConfigRange.new(unclosed_directive, nil)
+        analysis.disabled_ranges << range
+      end
+      analysis.unclosed_directives = {}
     end
 
     def cop_line_ranges(analysis)
-      return analysis.line_ranges unless analysis.start_line_number
-
-      analysis.line_ranges + [(analysis.start_line_number..Float::INFINITY)]
-    end
-
-    def each_mentioned_cop
-      each_directive do |comment, cop_names, disabled|
-        comment_line_number = comment.loc.expression.line
-        single_line = !comment_only_line?(comment_line_number)
-
-        cop_names.each do |cop_name|
-          yield qualified_cop_name(cop_name), disabled, comment_line_number,
-                single_line
-        end
-      end
+      close_all_unclosed_directives!(analysis)
+      analysis.disabled_ranges
     end
 
     def each_directive
       return if processed_source.comments.nil?
 
       processed_source.comments.each do |comment|
-        directive = directive_parts(comment)
-        next unless directive
-
-        yield comment, *directive
+        directive = CommentDirective.from_comment(comment)
+        yield directive if directive
       end
     end
 
-    def directive_parts(comment)
-      match = comment.text.match(COMMENT_DIRECTIVE_REGEXP)
-      return unless match
-
-      switch, cops_string = match.captures
-
-      cop_names =
-        cops_string == 'all' ? all_cop_names : cops_string.split(/,\s*/)
-
-      disabled = (switch == 'disable')
-
-      [cop_names, disabled]
-    end
-
-    def qualified_cop_name(cop_name)
-      Cop::Cop.qualified_cop_name(cop_name.strip, processed_source.buffer.name)
-    end
-
-    def all_cop_names
-      @all_cop_names ||= Cop::Cop.registry.names - [UNNEEDED_DISABLE]
-    end
-
-    def comment_only_line?(line_number)
-      non_comment_token_line_numbers.none? do |non_comment_line_number|
-        non_comment_line_number == line_number
-      end
+    def single_line_directive?(directive)
+      non_comment_token_line_numbers.include?(directive.line)
     end
 
     def non_comment_token_line_numbers
