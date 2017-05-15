@@ -11,16 +11,22 @@ module RuboCop
 
         def on_def(node)
           name, = *node
-          check_name(node, name, node.loc.name)
+          check_name(node, sanitize_name(name), node.loc.name)
         end
 
         def on_defs(node)
           _object, name, = *node
-          check_name(node, name, node.loc.name)
+          check_name(node, sanitize_name(name), node.loc.name)
         end
+
+        private
 
         def message(style)
           format('Use %s for method names.', style)
+        end
+
+        def sanitize_name(name)
+          name.to_s.delete('@').to_sym
         end
       end
     end
