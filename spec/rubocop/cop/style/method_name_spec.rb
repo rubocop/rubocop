@@ -49,6 +49,16 @@ describe RuboCop::Cop::Style::MethodName, :config do
       END
     end
 
+    it 'accepts unary operator definitions' do
+      expect_no_offenses(<<-END.strip_indent)
+        def ~@; end
+      END
+
+      expect_no_offenses(<<-END.strip_indent)
+        def !@; end
+      END
+    end
+
     %w[class module].each do |kind|
       it "accepts class emitter method in a #{kind}" do
         inspect_source(cop, <<-END.strip_indent)
