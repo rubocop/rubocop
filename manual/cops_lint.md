@@ -1472,6 +1472,15 @@ Attribute | Value
 --- | ---
 Whitelist | present?, blank?, presence, try
 
+## Lint/ScriptPermission
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks if a file which has a shebang line as
+its first line is granted execute permission.
+
 ## Lint/ShadowedException
 
 Enabled by default | Supports autocorrection

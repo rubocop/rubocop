@@ -407,6 +407,8 @@ describe RuboCop::CLI, :isolated_environment do
   end
 
   it 'finds a file with no .rb extension but has a shebang line' do
+    allow_any_instance_of(File::Stat)
+      .to receive(:executable?).and_return(true)
     create_file('example', ['#!/usr/bin/env ruby', 'x = 0', 'puts x'])
     expect(cli.run(%w[--format simple])).to eq(0)
     expect($stdout.string)
@@ -699,6 +701,8 @@ describe RuboCop::CLI, :isolated_environment do
             - "exclude_*"
             - "dir/*"
       END
+      allow_any_instance_of(File::Stat)
+        .to receive(:executable?).and_return(true)
       expect(cli.run(%w[--format simple])).to eq(0)
       expect($stdout.string)
         .to eq(['', '4 files inspected, no offenses detected',
