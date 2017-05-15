@@ -40,7 +40,15 @@ describe RuboCop::Cop::Lint::UselessElseWithoutRescue do
     end
 
     it 'accepts' do
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        begin
+          do_something
+        rescue ArgumentError
+          handle_argument_error
+        else
+          handle_unknown_errors
+        end
+      RUBY
     end
   end
 end

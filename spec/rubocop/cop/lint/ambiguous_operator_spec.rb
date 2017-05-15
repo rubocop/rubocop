@@ -3,10 +3,6 @@
 describe RuboCop::Cop::Lint::AmbiguousOperator do
   subject(:cop) { described_class.new }
 
-  before do
-    inspect_source(cop, source)
-  end
-
   context 'with a splat operator in the first argument' do
     context 'without parentheses' do
       context 'without whitespaces on the right of the operator' do
@@ -18,6 +14,7 @@ describe RuboCop::Cop::Lint::AmbiguousOperator do
         end
 
         it 'registers an offense' do
+          inspect_source(cop, source)
           expect(cop.offenses.size).to eq(1)
           expect(cop.offenses.first.message).to eq(
             'Ambiguous splat operator. ' \
@@ -31,29 +28,21 @@ describe RuboCop::Cop::Lint::AmbiguousOperator do
       end
 
       context 'with a whitespace on the right of the operator' do
-        let(:source) do
-          <<-END.strip_indent
+        it 'accepts' do
+          expect_no_offenses(<<-RUBY.strip_indent)
             array = [1, 2, 3]
             puts * array
-          END
-        end
-
-        it 'accepts' do
-          expect(cop.offenses).to be_empty
+          RUBY
         end
       end
     end
 
     context 'with parentheses' do
-      let(:source) do
-        <<-END.strip_indent
+      it 'accepts' do
+        expect_no_offenses(<<-RUBY.strip_indent)
           array = [1, 2, 3]
           puts(*array)
-        END
-      end
-
-      it 'accepts' do
-        expect(cop.offenses).to be_empty
+        RUBY
       end
     end
   end
@@ -69,6 +58,7 @@ describe RuboCop::Cop::Lint::AmbiguousOperator do
         end
 
         it 'registers an offense' do
+          inspect_source(cop, source)
           expect(cop.offenses.size).to eq(1)
           expect(cop.offenses.first.message).to eq(
             'Ambiguous block operator. ' \
@@ -82,29 +72,21 @@ describe RuboCop::Cop::Lint::AmbiguousOperator do
       end
 
       context 'with a whitespace on the right of the operator' do
-        let(:source) do
-          <<-END.strip_indent
+        it 'accepts' do
+          expect_no_offenses(<<-RUBY.strip_indent)
             process = proc { do_something }
             2.times & process
-          END
-        end
-
-        it 'accepts' do
-          expect(cop.offenses).to be_empty
+          RUBY
         end
       end
     end
 
     context 'with parentheses' do
-      let(:source) do
-        <<-END.strip_indent
+      it 'accepts' do
+        expect_no_offenses(<<-RUBY.strip_indent)
           process = proc { do_something }
           2.times(&process)
-        END
-      end
-
-      it 'accepts' do
-        expect(cop.offenses).to be_empty
+        RUBY
       end
     end
   end

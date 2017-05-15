@@ -55,11 +55,10 @@ describe RuboCop::Cop::Rails::FilePath do
   end
 
   context 'Rails.root.join with a non-string argument including "/"' do
-    let(:source) { 'Rails.root.join("tmp", "data", index/3, "data.csv")' }
-
     it 'does not register an offense' do
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        Rails.root.join("tmp", "data", index/3, "data.csv")
+      RUBY
     end
   end
 end

@@ -52,8 +52,8 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
 
   it 'accepts a block end that does not begin its line' do
     expect_no_offenses(<<-RUBY.strip_indent)
-        scope :bar, lambda { joins(:baz)
-                             .distinct }
+      scope :bar, lambda { joins(:baz)
+                           .distinct }
     RUBY
   end
 
@@ -167,21 +167,19 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
   context 'when the method part is a call chain that spans several lines' do
     # Example from issue 346 of bbatsov/rubocop on github:
     it 'accepts pretty alignment style' do
-      src = [
-        'def foo(bar)',
-        '  bar.get_stuffs',
-        '      .reject do |stuff| ',
-        '        stuff.with_a_very_long_expression_that_doesnt_fit_the_line',
-        '      end.select do |stuff|',
-        '        stuff.another_very_long_expression_that_doesnt_fit_the_line',
-        '      end',
-        '      .select do |stuff|',
-        '        stuff.another_very_long_expression_that_doesnt_fit_the_line',
-        '      end',
-        'end'
-      ]
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def foo(bar)
+          bar.get_stuffs
+              .reject do |stuff|
+                stuff.with_a_very_long_expression_that_doesnt_fit_the_line
+              end.select do |stuff|
+                stuff.another_very_long_expression_that_doesnt_fit_the_line
+              end
+              .select do |stuff|
+                stuff.another_very_long_expression_that_doesnt_fit_the_line
+              end
+        end
+      RUBY
     end
 
     it 'registers offenses for misaligned ends' do
@@ -210,24 +208,22 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
 
     # Example from issue 393 of bbatsov/rubocop on github:
     it 'accepts end indented as the start of the block' do
-      src = <<-END.strip_indent
-        my_object.chaining_this_very_long_method(with_a_parameter)
-            .and_one_with_a_block do
-          do_something
-        end
- # Other variant:
-        my_object.chaining_this_very_long_method(
-            with_a_parameter).and_one_with_a_block do
-          do_something
-        end
-      END
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+               my_object.chaining_this_very_long_method(with_a_parameter)
+                   .and_one_with_a_block do
+                 do_something
+               end
+        # Other variant:
+               my_object.chaining_this_very_long_method(
+                   with_a_parameter).and_one_with_a_block do
+                 do_something
+               end
+      RUBY
     end
 
     # Example from issue 447 of bbatsov/rubocop on github:
     it 'accepts two kinds of end alignment' do
-      src = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         # Aligned with start of line where do is:
         params = default_options.merge(options)
                   .delete_if { |k, v| v.nil? }
@@ -240,9 +236,7 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
                   .each_with_object({}) do |(k, v), new_hash|
                     new_hash[k.to_s] = v.to_s
         end
-      END
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'auto-corrects misaligned ends with the start of the expression' do
@@ -281,14 +275,12 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
 
   context 'when variables of a mass assignment spans several lines' do
     it 'accepts end aligned with the variables' do
-      src = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         e,
         f = [5, 6].map do |i|
           i - 5
         end
-      END
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'registers an offense for end aligned with the block' do
@@ -675,14 +667,12 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
     end
 
     it 'allows when start_of_line aligned' do
-      src = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         foo.bar
           .each do
             baz
         end
-      END
-      inspect_source(cop, src)
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'errors when do aligned' do
@@ -723,14 +713,12 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
     end
 
     it 'allows when do aligned' do
-      src = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         foo.bar
           .each do
             baz
           end
-      END
-      inspect_source(cop, src)
-      expect(cop.messages).to be_empty
+      RUBY
     end
 
     it 'errors when start_of_line aligned' do

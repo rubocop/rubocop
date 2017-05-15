@@ -35,7 +35,11 @@ describe RuboCop::Cop::Lint::CircularArgumentReference do
       end
 
       it 'does not register an offense' do
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          def omg_wow(msg)
+            puts msg
+          end
+        RUBY
       end
     end
 
@@ -49,7 +53,11 @@ describe RuboCop::Cop::Lint::CircularArgumentReference do
       end
 
       it 'does not register an offense' do
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          def omg_wow(msg = self.msg)
+            puts msg
+          end
+        RUBY
       end
     end
   end
@@ -87,7 +95,11 @@ describe RuboCop::Cop::Lint::CircularArgumentReference do
         end
 
         it 'does not register an offense' do
-          expect(cop.offenses).to be_empty
+          expect_no_offenses(<<-RUBY.strip_indent)
+            def some_method(some_arg: nil)
+              puts some_arg
+            end
+          RUBY
         end
       end
 
@@ -100,7 +112,11 @@ describe RuboCop::Cop::Lint::CircularArgumentReference do
           END
         end
         it 'does not register an offense' do
-          expect(cop.offenses).to be_empty
+          expect_no_offenses(<<-RUBY.strip_indent)
+            def some_method(some_arg: some_method)
+              puts some_arg
+            end
+          RUBY
         end
       end
 
@@ -131,7 +147,11 @@ describe RuboCop::Cop::Lint::CircularArgumentReference do
         end
 
         it 'does not register an offense' do
-          expect(cop.offenses).to be_empty
+          expect_no_offenses(<<-RUBY.strip_indent)
+            def puts_value(value: self.class.value, smile: self.smile)
+              puts value
+            end
+          RUBY
         end
       end
 
@@ -146,7 +166,11 @@ describe RuboCop::Cop::Lint::CircularArgumentReference do
         end
 
         it 'does not register an offense' do
-          expect(cop.offenses).to be_empty
+          expect_no_offenses(<<-RUBY.strip_indent)
+            def puts_length(length: mystring.length)
+              puts length
+            end
+          RUBY
         end
       end
 

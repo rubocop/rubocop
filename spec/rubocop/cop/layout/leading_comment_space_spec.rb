@@ -43,11 +43,10 @@ describe RuboCop::Cop::Layout::LeadingCommentSpace do
 
   context 'file named config.ru' do
     it 'does not register an offense for #\ on first line' do
-      inspect_source(cop,
-                     ['#\ -w -p 8765',
-                      'test'],
-                     '/some/dir/config.ru')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        #\ -w -p 8765
+        test
+      RUBY
     end
 
     it 'registers an offense for #\ after the first line' do

@@ -204,20 +204,15 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
   end
 
   context 'when a def is an argument to a method call' do
-    let(:source) do
-      <<-END.strip_indent
+    it 'does not register an offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
         class SomeClass
           private
           helper_method def some_method
             puts 10
           end
         end
-      END
-    end
-
-    it 'does not register an offense' do
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
   end
 
@@ -230,7 +225,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
       )
     end
     it 'is aware that this creates a new scope' do
-      src = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         class SomeClass
           concerning :FirstThing do
             def foo
@@ -249,9 +244,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
             end
           end
          end
-      END
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'still points out redundant uses within the block' do
@@ -317,7 +310,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
       )
     end
     it 'is aware that this creates a new scope' do
-      src = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         module SomeModule
           extend ActiveSupport::Concern
           class_methods do
@@ -333,9 +326,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           def some_private_instance_method
           end
         end
-      END
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
   end
 
@@ -348,15 +339,13 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
       )
     end
     it 'is aware that this creates a new method' do
-      src = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         class SomeClass
           private
 
           delegate :foo, to: :bar
         end
-      END
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'still points out redundant uses within the module' do

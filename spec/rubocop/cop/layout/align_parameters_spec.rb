@@ -126,10 +126,10 @@ describe RuboCop::Cop::Layout::AlignParameters do
 
     it 'accepts the first parameter being on a new row' do
       expect_no_offenses(<<-RUBY.strip_indent)
-          match(
-            a,
-            b
-          )
+        match(
+          a,
+          b
+        )
       RUBY
     end
 
@@ -159,21 +159,19 @@ describe RuboCop::Cop::Layout::AlignParameters do
 
     it 'can handle do-end' do
       expect_no_offenses(<<-RUBY.strip_indent)
-              run(lambda do |e|
-                w = e['warden']
-              end)
+        run(lambda do |e|
+          w = e['warden']
+        end)
       RUBY
     end
 
     it 'can handle a call with a block inside another call' do
-      src = <<-'END'.strip_indent
+      expect_no_offenses(<<-'RUBY'.strip_indent)
         new(table_name,
             exec_query("info('#{row['name']}')").map { |col|
               col['name']
             })
-      END
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'can handle a ternary condition with a block reference' do
@@ -197,9 +195,9 @@ describe RuboCop::Cop::Layout::AlignParameters do
     end
 
     it 'can handle other method calls without parentheses' do
-      src = 'chars(Unicode.apply_mapping @wrapped_string, :uppercase)'
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        chars(Unicode.apply_mapping @wrapped_string, :uppercase)
+      RUBY
     end
 
     it "doesn't crash and burn when there are nested issues" do

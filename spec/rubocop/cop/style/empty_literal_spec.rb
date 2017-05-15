@@ -34,15 +34,11 @@ describe RuboCop::Cop::Style::EmptyLiteral do
     end
 
     it 'does not registers an offense Array.new with block' do
-      source = 'test = Array.new { 1 }'
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('test = Array.new { 1 }')
     end
 
     it 'does not register Array.new with block in other block' do
-      source = 'puts { Array.new { 1 } }'
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('puts { Array.new { 1 } }')
     end
   end
 

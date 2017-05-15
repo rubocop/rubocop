@@ -156,7 +156,11 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
       END
 
       it 'accepts' do
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          1.times do |_index|
+            puts 'foo'
+          end
+        RUBY
       end
     end
 
@@ -182,7 +186,11 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
           let(:cop_config) { { 'AllowUnusedKeywordArguments' => true } }
 
           it 'does not care' do
-            expect(cop.offenses).to be_empty
+            expect_no_offenses(<<-RUBY.strip_indent)
+              define_method(:foo) do |bar: 'default'|
+                puts 'bar'
+              end
+            RUBY
           end
         end
       end
@@ -207,7 +215,11 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
           let(:cop_config) { { 'AllowUnusedKeywordArguments' => true } }
 
           it 'does not care' do
-            expect(cop.offenses).to be_empty
+            expect_no_offenses(<<-RUBY.strip_indent)
+              foo(:foo) do |bar: 'default'|
+                puts 'bar'
+              end
+            RUBY
           end
         end
       end
@@ -220,7 +232,10 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
       END
 
       it 'does not care' do
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          def some_method(foo)
+          end
+        RUBY
       end
     end
 
@@ -232,7 +247,11 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
       END
 
       it 'does not care' do
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          1.times do
+            foo = 1
+          end
+        RUBY
       end
     end
 
@@ -244,7 +263,11 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
       END
 
       it 'accepts all arguments' do
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          test do |key, value|
+            puts something(binding)
+          end
+        RUBY
       end
 
       context 'inside a method definition' do
@@ -297,7 +320,7 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
         let(:cop_config) { { 'IgnoreEmptyBlocks' => true } }
 
         it 'does not register an offense' do
-          expect(cop.offenses).to be_empty
+          expect_no_offenses('        super { |bar| }')
         end
       end
     end

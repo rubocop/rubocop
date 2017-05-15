@@ -84,8 +84,7 @@ describe RuboCop::Cop::Style::FormatStringToken, :config do
   end
 
   it 'ignores xstr' do
-    inspect_source(cop, '`echo "%s %<annotated>s %{template}"`')
-    expect(cop.offenses).to eql([])
+    expect_no_offenses('`echo "%s %<annotated>s %{template}"`')
   end
 
   it 'handles dstrs' do
@@ -94,8 +93,7 @@ describe RuboCop::Cop::Style::FormatStringToken, :config do
   end
 
   it 'handles __FILE__' do
-    inspect_source(cop, '__FILE__')
-    expect(cop.offenses).to eql([])
+    expect_no_offenses('__FILE__')
   end
 
   it_behaves_like 'enforced styles for format string tokens', 'A'

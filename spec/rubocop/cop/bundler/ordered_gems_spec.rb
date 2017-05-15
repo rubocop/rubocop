@@ -85,13 +85,8 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When the gemfile is empty' do
-    let(:source) { <<-END.strip_indent }
-      # Gemfile
-    END
-
     it 'does not register any offenses' do
-      inspect_source(cop, source)
-      expect(cop.offenses.size).to eq(0)
+      expect_no_offenses('# Gemfile')
     end
   end
 

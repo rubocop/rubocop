@@ -24,11 +24,10 @@ describe RuboCop::Cop::Style::AsciiIdentifiers do
   end
 
   it 'does not get confused by a byte order mark' do
-    bom = "\xef\xbb\xbf"
-    inspect_source(cop,
-                   [bom + '# encoding: utf-8',
-                    "puts 'foo'"])
-    expect(cop.offenses).to be_empty
+    expect_no_offenses(<<-RUBY.strip_indent)
+      ﻿# encoding: utf-8
+      puts 'foo'
+    RUBY
   end
 
   it 'does not get confused by an empty file' do

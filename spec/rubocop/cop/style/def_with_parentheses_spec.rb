@@ -22,18 +22,14 @@ describe RuboCop::Cop::Style::DefWithParentheses do
   end
 
   it 'accepts def with arg and parens' do
-    src = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       def func(a)
       end
-    END
-    inspect_source(cop, src)
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it 'accepts empty parentheses in one liners' do
-    src = "def to_s() join '/' end"
-    inspect_source(cop, src)
-    expect(cop.offenses).to be_empty
+    expect_no_offenses("def to_s() join '/' end")
   end
 
   it 'auto-removes unneeded parens' do

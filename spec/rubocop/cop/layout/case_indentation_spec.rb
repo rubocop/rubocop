@@ -194,7 +194,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
       end
 
       it "accepts a when clause that's equally indented with case" do
-        source = <<-END.strip_indent
+        expect_no_offenses(<<-RUBY.strip_indent)
           y = case a
               when 0 then break
               when 0 then return
@@ -207,24 +207,20 @@ describe RuboCop::Cop::Layout::CaseIndentation do
           case c
           when 2 then encoding
           end
-        END
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        RUBY
       end
 
       it "doesn't get confused by strings with case in them" do
-        source = <<-END.strip_indent
+        expect_no_offenses(<<-RUBY.strip_indent)
           a = "case"
           case x
           when 0
           end
-        END
-        inspect_source(cop, source)
-        expect(cop.messages).to be_empty
+        RUBY
       end
 
       it "doesn't get confused by symbols named case or when" do
-        source = <<-END.strip_indent
+        expect_no_offenses(<<-RUBY.strip_indent)
           KEYWORDS = { :case => true, :when => true }
           case type
           when 0
@@ -232,13 +228,11 @@ describe RuboCop::Cop::Layout::CaseIndentation do
           when 1
             MethodCallNode
           end
-        END
-        inspect_source(cop, source)
-        expect(cop.messages).to be_empty
+        RUBY
       end
 
       it 'accepts correctly indented whens in complex combinations' do
-        source = <<-END.strip_indent
+        expect_no_offenses(<<-RUBY.strip_indent)
           each {
             case state
             when 0
@@ -256,9 +250,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
           case s
           when Array
           end
-        END
-        inspect_source(cop, source)
-        expect(cop.messages).to be_empty
+        RUBY
       end
     end
 
@@ -328,7 +320,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
       end
 
       it "accepts a when clause that's 2 spaces deeper than case" do
-        source = <<-END.strip_indent
+        expect_no_offenses(<<-RUBY.strip_indent)
           case a
             when 0 then return
             else
@@ -336,9 +328,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
                     when 1 then return
                   end
           end
-        END
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        RUBY
       end
 
       context "a when clause that's equally indented with case" do

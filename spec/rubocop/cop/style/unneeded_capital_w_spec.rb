@@ -23,7 +23,7 @@ describe RuboCop::Cop::Style::UnneededCapitalW do
   end
 
   it 'registers no offense for %W with special characters' do
-    source = <<-'END'.strip_indent
+    expect_no_offenses(<<-'RUBY'.strip_indent)
       def dangerous_characters
         %W(\000) +
         %W(\001) +
@@ -40,9 +40,7 @@ describe RuboCop::Cop::Style::UnneededCapitalW do
         %W(\n)
         %W(\!)
       end
-    END
-    inspect_source(cop, source)
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it 'registers no offense for %w without interpolation' do

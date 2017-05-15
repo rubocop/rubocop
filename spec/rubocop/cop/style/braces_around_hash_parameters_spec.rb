@@ -256,16 +256,18 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       after { expect(cop.offenses).to be_empty }
 
       it 'accepts one hash parameter with braces' do
-        inspect_source(cop, 'where({ x: 1 })')
+        expect_no_offenses('where({ x: 1 })')
       end
 
       it 'accepts multiple hash parameters with braces' do
-        inspect_source(cop, 'where({ x: 1 }, { y: 2 })')
+        expect_no_offenses('where({ x: 1 }, { y: 2 })')
       end
 
       it 'accepts one hash parameter with braces and whitespace' do
-        inspect_source(cop, ["where( \t    {  x: 1 ",
-                             '  }   )'])
+        expect_no_offenses(<<-RUBY.strip_indent)
+          where( 	    {  x: 1
+            }   )
+        RUBY
       end
     end
 

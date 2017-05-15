@@ -52,39 +52,23 @@ describe RuboCop::Cop::Style::OptionHash, :config do
   end
 
   context 'when there are no arguments' do
-    before do
-      inspect_source(cop, source)
-    end
-
-    let(:source) do
-      <<-END.strip_indent
+    it 'does not register an offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
         def meditate
           puts true
           puts true
         end
-      END
-    end
-
-    it 'does not register an offense' do
-      expect(cop.offenses).to be_empty
+      RUBY
     end
   end
 
   context 'when the last argument is a non-options-hash optional hash' do
-    before do
-      inspect_source(cop, source)
-    end
-
-    let(:source) do
-      <<-END.strip_indent
+    it 'does not register an offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
         def cook(instructions, ingredients = { hot: [], cold: [] })
           prep(ingredients)
         end
-      END
-    end
-
-    it 'does not register an offense' do
-      expect(cop.offenses).to be_empty
+      RUBY
     end
   end
 end

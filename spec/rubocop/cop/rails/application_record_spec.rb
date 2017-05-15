@@ -7,57 +7,53 @@ describe RuboCop::Cop::Rails::ApplicationRecord do
     subject(:cop) { described_class.new(config) }
 
     it 'allows ApplicationRecord to be defined' do
-      source = "class ApplicationRecord < ActiveRecord::Base\nend"
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class ApplicationRecord < ActiveRecord::Base
+        end
+      RUBY
     end
 
     it 'allows models that subclass ActiveRecord::Base' do
-      source = "class MyModel < ActiveRecord::Base\nend"
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class MyModel < ActiveRecord::Base
+        end
+      RUBY
     end
 
     it 'allows a single-line class definitions' do
-      source = 'class MyModel < ActiveRecord::Base; end'
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('class MyModel < ActiveRecord::Base; end')
     end
 
     it 'allows namespaced models that subclass ActiveRecord::Base' do
-      source = "module Nested\n  class MyModel < ActiveRecord::Base\n  end\nend"
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        module Nested
+          class MyModel < ActiveRecord::Base
+          end
+        end
+      RUBY
     end
 
     it 'allows models defined using nested constants' do
-      source = "class Nested::MyModel < ActiveRecord::Base\nend"
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class Nested::MyModel < ActiveRecord::Base
+        end
+      RUBY
     end
 
     it 'allows models defined using Class.new' do
-      source = 'MyModel = Class.new(ActiveRecord::Base)'
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('MyModel = Class.new(ActiveRecord::Base)')
     end
 
     it 'allows nested models defined using Class.new' do
-      source = 'Nested::MyModel = Class.new(ActiveRecord::Base)'
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('Nested::MyModel = Class.new(ActiveRecord::Base)')
     end
 
     it 'allows anonymous models' do
-      source = 'Class.new(ActiveRecord::Base) {}'
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('Class.new(ActiveRecord::Base) {}')
     end
 
     it 'allows ApplicationRecord defined using Class.new' do
-      source = 'ApplicationRecord = Class.new(ActiveRecord::Base)'
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('ApplicationRecord = Class.new(ActiveRecord::Base)')
     end
   end
 
@@ -65,9 +61,10 @@ describe RuboCop::Cop::Rails::ApplicationRecord do
     subject(:cop) { described_class.new }
 
     it 'allows ApplicationRecord to be defined' do
-      source = "class ApplicationRecord < ActiveRecord::Base\nend"
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class ApplicationRecord < ActiveRecord::Base
+        end
+      RUBY
     end
 
     it 'corrects models that subclass ActiveRecord::Base' do
@@ -134,9 +131,7 @@ describe RuboCop::Cop::Rails::ApplicationRecord do
     end
 
     it 'allows ApplicationRecord defined using Class.new' do
-      source = 'ApplicationRecord = Class.new(ActiveRecord::Base)'
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('ApplicationRecord = Class.new(ActiveRecord::Base)')
     end
   end
 end

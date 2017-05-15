@@ -5,15 +5,12 @@ describe RuboCop::Cop::Bundler::DuplicatedGem, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'when investigating Ruby files' do
-    let(:source) { <<-END }
-      # cop will not read these contents
-      gem('rubocop')
-      gem('rubocop')
-    END
-
     it 'does not register any offenses' do
-      inspect_source_file(cop, source)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        # cop will not read these contents
+        gem('rubocop')
+        gem('rubocop')
+      RUBY
     end
   end
 
@@ -31,14 +28,11 @@ describe RuboCop::Cop::Bundler::DuplicatedGem, :config do
     end
 
     context 'and no duplicate gems are present' do
-      let(:source) { <<-GEM }
-        gem 'rubocop'
-        gem 'flog'
-      GEM
-
       it 'does not register any offenses' do
-        inspect_gemfile(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent, 'Gemfile')
+          gem 'rubocop'
+          gem 'flog'
+        RUBY
       end
     end
 

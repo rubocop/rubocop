@@ -92,8 +92,7 @@ describe RuboCop::Cop::Style::WordArray, :config do
 
     it 'does not register offense for array with allowed number of strings' do
       cop_config['MinSize'] = 4
-      inspect_source(cop, '["one", "two", "three"]')
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('["one", "two", "three"]')
     end
 
     it 'does not register an offense for an array with comments in it' do

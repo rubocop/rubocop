@@ -71,7 +71,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
 
   context 'conditional method definitions' do
     it 'accepts defs inside a conditional without blank lines in between' do
-      source = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         if condition
           def foo
             true
@@ -81,9 +81,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
             false
           end
         end
-      END
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'registers an offense for consecutive defs inside a conditional' do
@@ -199,41 +197,35 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
   # Only one def, so rule about empty line *between* defs does not
   # apply.
   it 'accepts a def that follows a line with code' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       x = 0
       def m
       end
-    END
-    inspect_source(cop, source)
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   # Only one def, so rule about empty line *between* defs does not
   # apply.
   it 'accepts a def that follows code and a comment' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       x = 0
       # 123
       def m
       end
-    END
-    inspect_source(cop, source)
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it 'accepts the first def without leading empty line in a class' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       class K
         def m
         end
       end
-    END
-    inspect_source(cop, source)
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it 'accepts a def that follows an empty line and then a comment' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       class A
         # calculates value
         def m
@@ -244,35 +236,29 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
         def n
         end
       end
-    END
-    inspect_source(cop, source)
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it 'accepts a def that is the first of a module' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       module Util
         public
         #
         def html_escape(s)
         end
       end
-    END
-    inspect_source(cop, source)
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'accepts a nested def' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       def mock_model(*attributes)
         Class.new do
           def initialize(attrs)
           end
         end
       end
-    END
-    inspect_source(cop, source)
-    expect(cop.messages).to be_empty
+    RUBY
   end
 
   it 'registers an offense for adjacent one-liners by default' do
@@ -312,7 +298,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
   end
 
   it 'treats lines with whitespaces as blank' do
-    source = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       class J
         def n
         end
@@ -320,9 +306,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
         def o
         end
       end
-    END
-    inspect_source(cop, source)
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it "doesn't allow more than the required number of newlines" do
@@ -344,12 +328,10 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
     let(:cop_config) { { 'AllowAdjacentOneLineDefs' => true } }
 
     it 'accepts adjacent one-liners' do
-      source = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         def a; end
         def b; end
-      END
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'registers an offense for adjacent defs if some are multi-line' do
@@ -369,26 +351,22 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
     let(:cop_config) { { 'NumberOfEmptyLines' => [0, 1] } }
 
     it 'finds no offense for no empty line' do
-      source = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         def n
         end
         def o
         end
-      END
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'finds no offense for one empty line' do
-      source = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         def n
         end
 
         def o
          end
-      END
-      inspect_source(cop, source)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'finds an  offense for two empty lines' do

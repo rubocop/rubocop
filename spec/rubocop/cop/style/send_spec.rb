@@ -36,21 +36,21 @@ describe RuboCop::Cop::Style::Send do
 
     context 'and with a receiver' do
       it 'does not register an offense for an invocation with args' do
-        inspect_source(cop, 'Object.__send__(:inspect)')
+        expect_no_offenses('Object.__send__(:inspect)')
       end
 
       it 'does not register an offense for an invocation without args' do
-        inspect_source(cop, 'Object.__send__')
+        expect_no_offenses('Object.__send__')
       end
     end
 
     context 'and without a receiver' do
       it 'does not register an offense for an invocation with args' do
-        inspect_source(cop, '__send__(:inspect)')
+        expect_no_offenses('__send__(:inspect)')
       end
 
       it 'does not register an offense for an invocation without args' do
-        inspect_source(cop, '__send__')
+        expect_no_offenses('__send__')
       end
     end
   end
@@ -60,21 +60,21 @@ describe RuboCop::Cop::Style::Send do
 
     context 'and with a receiver' do
       it 'does not register an offense for an invocation with args' do
-        inspect_source(cop, 'Object.public_send(:inspect)')
+        expect_no_offenses('Object.public_send(:inspect)')
       end
 
       it 'does not register an offense for an invocation without args' do
-        inspect_source(cop, 'Object.public_send')
+        expect_no_offenses('Object.public_send')
       end
     end
 
     context 'and without a receiver' do
       it 'does not register an offense for an invocation with args' do
-        inspect_source(cop, 'public_send(:inspect)')
+        expect_no_offenses('public_send(:inspect)')
       end
 
       it 'does not register an offense for an invocation without args' do
-        inspect_source(cop, 'public_send')
+        expect_no_offenses('public_send')
       end
     end
   end

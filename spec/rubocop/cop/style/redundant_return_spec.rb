@@ -49,35 +49,29 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
   end
 
   it 'accepts return in a non-final position' do
-    src = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       def func
         return something if something_else
       end
-    END
-    inspect_source(cop, src)
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it 'does not blow up on empty method body' do
-    src = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       def func
       end
-    END
-    inspect_source(cop, src)
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it 'does not blow up on empty if body' do
-    src = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       def func
         if x
         elsif y
         else
         end
       end
-    END
-    inspect_source(cop, src)
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   it 'auto-corrects by removing redundant returns' do
@@ -232,47 +226,39 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
     let(:cop_config) { { 'AllowMultipleReturnValues' => true } }
 
     it 'accepts def with only a return' do
-      src = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         def func
           return something, test
         end
-      END
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'accepts defs with only a return' do
-      src = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         def Test.func
           return something, test
         end
-      END
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'accepts def ending with return' do
-      src = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         def func
           one
           two
           return something, test
         end
-      END
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'accepts defs ending with return' do
-      src = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         def self.func
           one
           two
           return something, test
         end
-      END
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'does not auto-correct' do

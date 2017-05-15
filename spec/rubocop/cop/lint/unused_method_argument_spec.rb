@@ -84,7 +84,11 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
         let(:cop_config) { { 'AllowUnusedKeywordArguments' => true } }
 
         it 'does not care' do
-          expect(cop.offenses).to be_empty
+          expect_no_offenses(<<-RUBY.strip_indent)
+            def self.some_method(foo, bar: 1)
+              puts foo
+            end
+          RUBY
         end
       end
     end
@@ -109,7 +113,10 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       END
 
       it 'accepts' do
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          def some_method(_foo)
+          end
+        RUBY
       end
     end
 
@@ -121,7 +128,11 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       END
 
       it 'accepts' do
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          def some_method(foo)
+            puts foo
+          end
+        RUBY
       end
     end
 
@@ -133,7 +144,11 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       END
 
       it 'does not care' do
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          def some_method
+            foo = 1
+          end
+        RUBY
       end
     end
 
@@ -144,7 +159,10 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       END
 
       it 'does not care' do
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          1.times do |foo|
+          end
+        RUBY
       end
     end
 
@@ -187,7 +205,11 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       END
 
       it 'accepts all arguments' do
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          def some_method(foo, bar)
+            do_something binding
+          end
+        RUBY
       end
 
       context 'inside another method definition' do

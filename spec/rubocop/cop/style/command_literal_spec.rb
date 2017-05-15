@@ -42,10 +42,11 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'backticks' } }
 
     it 'is ignored' do
-      inspect_source(cop, ['<<`COMMAND`',
-                           '  ls',
-                           'COMMAND'])
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        <<`COMMAND`
+          ls
+        COMMAND
+      RUBY
     end
   end
 
@@ -53,11 +54,8 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'backticks' } }
 
     describe 'a single-line ` string without backticks' do
-      let(:source) { 'foo = `ls`' }
-
       it 'is accepted' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('foo = `ls`')
       end
     end
 
@@ -80,23 +78,19 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
         before { cop_config['AllowInnerBackticks'] = true }
 
         it 'is accepted' do
-          inspect_source(cop, source)
-          expect(cop.offenses).to be_empty
+          expect_no_offenses('foo = `echo \\`ls\\``')
         end
       end
     end
 
     describe 'a multi-line ` string without backticks' do
-      let(:source) do
-        ['foo = `',
-         '  ls',
-         '  ls -l',
-         '`']
-      end
-
       it 'is accepted' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          foo = `
+            ls
+            ls -l
+          `
+        RUBY
       end
     end
 
@@ -127,8 +121,12 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
         before { cop_config['AllowInnerBackticks'] = true }
 
         it 'is accepted' do
-          inspect_source(cop, source)
-          expect(cop.offenses).to be_empty
+          expect_no_offenses(<<-'RUBY'.strip_indent)
+            foo = `
+              echo \`ls\`
+              echo \`ls -l\`
+            `
+          RUBY
         end
       end
     end
@@ -153,8 +151,7 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
       let(:source) { 'foo = %x(echo `ls`)' }
 
       it 'is accepted' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('foo = %x(echo `ls`)')
       end
 
       describe 'when configured to allow inner backticks' do
@@ -207,8 +204,12 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
       end
 
       it 'is accepted' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          foo = %x(
+            echo `ls`
+            echo `ls -l`
+          )
+        RUBY
       end
 
       describe 'when configured to allow inner backticks' do
@@ -316,48 +317,36 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
     end
 
     describe 'a single-line %x string without backticks' do
-      let(:source) { 'foo = %x(ls)' }
-
       it 'is accepted' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('foo = %x(ls)')
       end
     end
 
     describe 'a single-line %x string with backticks' do
-      let(:source) { 'foo = %x(echo `ls`)' }
-
       it 'is accepted' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('foo = %x(echo `ls`)')
       end
     end
 
     describe 'a multi-line %x string without backticks' do
-      let(:source) do
-        ['foo = %x(',
-         '  ls',
-         '  ls -l',
-         ')']
-      end
-
       it 'is accepted' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          foo = %x(
+            ls
+            ls -l
+          )
+        RUBY
       end
     end
 
     describe 'a multi-line %x string with backticks' do
-      let(:source) do
-        ['foo = %x(',
-         '  echo `ls`',
-         '  echo `ls -l`',
-         ')']
-      end
-
       it 'is accepted' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          foo = %x(
+            echo `ls`
+            echo `ls -l`
+          )
+        RUBY
       end
     end
   end
@@ -366,11 +355,8 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'mixed' } }
 
     describe 'a single-line ` string without backticks' do
-      let(:source) { 'foo = `ls`' }
-
       it 'is accepted' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('foo = `ls`')
       end
     end
 
@@ -393,8 +379,7 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
         before { cop_config['AllowInnerBackticks'] = true }
 
         it 'is accepted' do
-          inspect_source(cop, source)
-          expect(cop.offenses).to be_empty
+          expect_no_offenses('foo = `echo \\`ls\\``')
         end
       end
     end
@@ -467,8 +452,7 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
       let(:source) { 'foo = %x(echo `ls`)' }
 
       it 'is accepted' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses('foo = %x(echo `ls`)')
       end
 
       describe 'when configured to allow inner backticks' do
@@ -489,30 +473,24 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
     end
 
     describe 'a multi-line %x string without backticks' do
-      let(:source) do
-        ['foo = %x(',
-         '  ls',
-         '  ls -l',
-         ')']
-      end
-
       it 'is accepted' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          foo = %x(
+            ls
+            ls -l
+          )
+        RUBY
       end
     end
 
     describe 'a multi-line %x string with backticks' do
-      let(:source) do
-        ['foo = %x(',
-         '  echo `ls`',
-         '  echo `ls -l`',
-         ')']
-      end
-
       it 'is accepted' do
-        inspect_source(cop, source)
-        expect(cop.offenses).to be_empty
+        expect_no_offenses(<<-RUBY.strip_indent)
+          foo = %x(
+            echo `ls`
+            echo `ls -l`
+          )
+        RUBY
       end
     end
   end

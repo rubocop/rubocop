@@ -6,9 +6,7 @@ describe RuboCop::Cop::Layout::SpaceBeforeBlockBraces, :config do
 
   context 'when EnforcedStyle is space' do
     it 'accepts braces surrounded by spaces' do
-      inspect_source(cop, 'each { puts }')
-      expect(cop.messages).to be_empty
-      expect(cop.highlights).to be_empty
+      expect_no_offenses('each { puts }')
     end
 
     it 'registers an offense for left brace without outer space' do
@@ -70,9 +68,7 @@ describe RuboCop::Cop::Layout::SpaceBeforeBlockBraces, :config do
     end
 
     it 'accepts left brace without outer space' do
-      inspect_source(cop, 'each{ puts }')
-      expect(cop.messages).to be_empty
-      expect(cop.highlights).to be_empty
+      expect_no_offenses('each{ puts }')
     end
   end
 end

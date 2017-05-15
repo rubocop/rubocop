@@ -24,39 +24,35 @@ describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
     end
 
     it 'accepts double quotes on a static string' do
-      src = '"A"'
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('"A"')
     end
 
     it 'accepts double quotes on a broken static string' do
-      src = ['"A" \\',
-             '  "B"']
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        "A" \
+          "B"
+      RUBY
     end
 
     it 'accepts double quotes on static strings within a method' do
-      src = ['def m',
-             '  puts "A"',
-             '  puts "B"',
-             'end']
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def m
+          puts "A"
+          puts "B"
+        end
+      RUBY
     end
 
     it 'can handle a built-in constant parsed as string' do
       # Parser will produce str nodes for constants such as __FILE__.
-      src = ['if __FILE__ == $PROGRAM_NAME',
-             'end']
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        if __FILE__ == $PROGRAM_NAME
+        end
+      RUBY
     end
 
     it 'can handle character literals' do
-      src = 'a = ?/'
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      expect_no_offenses('a = ?/')
     end
 
     it 'auto-corrects " with \'' do

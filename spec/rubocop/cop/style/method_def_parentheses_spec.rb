@@ -39,12 +39,10 @@ describe RuboCop::Cop::Style::MethodDefParentheses, :config do
     end
 
     it 'accepts def with no args and no parens' do
-      src = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         def func
         end
-      END
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'auto-adds required parens for a def' do

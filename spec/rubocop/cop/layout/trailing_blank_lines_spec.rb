@@ -7,8 +7,7 @@ describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'final_newline' } }
 
     it 'accepts final newline' do
-      inspect_source(cop, ['x = 0', ''])
-      expect(cop.offenses).to be_empty
+      expect_no_offenses("x = 0\n")
     end
 
     it 'accepts an empty file' do
@@ -16,13 +15,20 @@ describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
     end
 
     it 'accepts final blank lines if they come after __END__' do
-      inspect_source(cop, ['x = 0', '', '__END__', '', ''])
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        x = 0
+
+        __END__
+
+      RUBY
     end
 
     it 'accepts final blank lines if they come after __END__ in empty file' do
-      inspect_source(cop, ['__END__', '', '', ''])
-      expect(cop.offenses).to be_empty
+      expect_no_offenses(<<-RUBY.strip_indent)
+        __END__
+
+
+      RUBY
     end
 
     it 'registers an offense for multiple trailing blank lines' do
@@ -95,8 +101,7 @@ describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
     end
 
     it 'accepts final blank line' do
-      inspect_source(cop, ['x = 0', '', ''])
-      expect(cop.offenses).to be_empty
+      expect_no_offenses("x = 0\n\n")
     end
 
     it 'auto-corrects unwanted blank lines' do

@@ -10,55 +10,39 @@ describe RuboCop::Cop::Style::RedundantSelf do
   end
 
   it 'does not report an offense when receiver and lvalue have the same name' do
-    src = 'a = self.a'
-    inspect_source(cop, src)
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('a = self.a')
   end
 
   it 'accepts a self receiver on an lvalue of an assignment' do
-    src = 'self.a = b'
-    inspect_source(cop, src)
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('self.a = b')
   end
 
   it 'accepts a self receiver on an lvalue of a parallel assignment' do
-    src = 'a, self.b = c, d'
-    inspect_source(cop, src)
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('a, self.b = c, d')
   end
 
   it 'accepts a self receiver on an lvalue of an or-assignment' do
-    src = 'self.logger ||= Rails.logger'
-    inspect_source(cop, src)
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('self.logger ||= Rails.logger')
   end
 
   it 'accepts a self receiver on an lvalue of an and-assignment' do
-    src = 'self.flag &&= value'
-    inspect_source(cop, src)
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('self.flag &&= value')
   end
 
   it 'accepts a self receiver on an lvalue of a plus-assignment' do
-    src = 'self.sum += 10'
-    inspect_source(cop, src)
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('self.sum += 10')
   end
 
   it 'accepts a self receiver with the square bracket operator' do
-    src = 'self[a]'
-    inspect_source(cop, src)
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('self[a]')
   end
 
   it 'accepts a self receiver with the double less-than operator' do
-    src = 'self << a'
-    inspect_source(cop, src)
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('self << a')
   end
 
   it 'accepts a self receiver for methods named like ruby keywords' do
-    src = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       a = self.class
       self.for(deps, [], true)
       self.and(other)
@@ -95,44 +79,36 @@ describe RuboCop::Cop::Style::RedundantSelf do
       self.when
       self.while
       self.yield
-    END
-    inspect_source(cop, src)
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   describe 'instance methods' do
     it 'accepts a self receiver used to distinguish from blockarg' do
-      src = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         def requested_specs(&groups)
           some_method(self.groups)
         end
-      END
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'accepts a self receiver used to distinguish from argument' do
-      src = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         def requested_specs(groups)
           some_method(self.groups)
         end
-      END
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'accepts a self receiver used to distinguish from optional argument' do
-      src = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         def requested_specs(final = true)
           something if self.final != final
         end
-      END
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'accepts a self receiver used to distinguish from local variable' do
-      src = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         def requested_specs
           @requested_specs ||= begin
             groups = self.groups - Bundler.settings.without
@@ -140,19 +116,15 @@ describe RuboCop::Cop::Style::RedundantSelf do
             specs_for(groups)
           end
         end
-      END
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'accepts a self receiver used to distinguish from an argument' do
-      src = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         def foo(bar)
           puts bar, self.bar
         end
-      END
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'accepts a self receiver used to distinguish from an argument' \
@@ -170,37 +142,31 @@ describe RuboCop::Cop::Style::RedundantSelf do
 
   describe 'class methods' do
     it 'accepts a self receiver used to distinguish from blockarg' do
-      src = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         def self.requested_specs(&groups)
           some_method(self.groups)
         end
-      END
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'accepts a self receiver used to distinguish from argument' do
-      src = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         def self.requested_specs(groups)
           some_method(self.groups)
         end
-      END
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'accepts a self receiver used to distinguish from optional argument' do
-      src = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         def self.requested_specs(final = true)
           something if self.final != final
         end
-      END
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
 
     it 'accepts a self receiver used to distinguish from local variable' do
-      src = <<-END.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         def self.requested_specs
           @requested_specs ||= begin
             groups = self.groups - Bundler.settings.without
@@ -208,22 +174,16 @@ describe RuboCop::Cop::Style::RedundantSelf do
             specs_for(groups)
           end
         end
-      END
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      RUBY
     end
   end
 
   it 'accepts a self receiver used to distinguish from constant' do
-    src = 'self.Foo'
-    inspect_source(cop, src)
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('self.Foo')
   end
 
   it 'accepts a self receiver of .()' do
-    src = 'self.()'
-    inspect_source(cop, src)
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('self.()')
   end
 
   it 'reports an offence a self receiver of .call' do

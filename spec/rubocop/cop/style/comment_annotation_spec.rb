@@ -113,13 +113,11 @@ describe RuboCop::Cop::Style::CommentAnnotation, :config do
   end
 
   it 'accepts a keyword that is somewhere in a sentence' do
-    src = <<-END.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       # Example: There are three reviews, with ranks 1, 2, and 3. A new
       # review is saved with rank 2. The two reviews that originally had
       # ranks 2 and 3 will have their ranks increased to 3 and 4.
-    END
-    inspect_source(cop, src)
-    expect(cop.offenses).to be_empty
+    RUBY
   end
 
   context 'when a keyword is not in the configuration' do

@@ -85,8 +85,7 @@ describe RuboCop::Cop::Style::EachWithObject do
   end
 
   it 'ignores inject and reduce passed in symbol' do
-    inspect_source(cop, '[].inject(:+)', '[].reduce(:+)')
-    expect(cop.offenses).to be_empty
+    expect_no_offenses('[].inject(:+)')
   end
 
   it 'does not blow up for reduce with no arguments' do
