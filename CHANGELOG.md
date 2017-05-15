@@ -10,6 +10,7 @@
 * [#4078](https://github.com/bbatsov/rubocop/pull/4078): Add new `Performance/Caller` cop. ([@alpaca-tc][])
 * [#4314](https://github.com/bbatsov/rubocop/pull/4314): Check slow hash accessing in `Array#sort` by `Performance/CompareWithBlock`. ([@pocke][])
 * [#3438](https://github.com/bbatsov/rubocop/issues/3438): Add new `Style/FormatStringToken` cop. ([@backus][])
+* [#4342](https://github.com/bbatsov/rubocop/pull/4342): Add new `Lint/ScriptPermission` cop. ([@yhirano55][])
 
 ### Changes
 
@@ -2775,3 +2776,4 @@
 [@mclark]: https://github.com/mclark
 [@klesse413]: https://github.com/klesse413
 [@gprado]: https://github.com/gprado
+[@yhirano55]: https://github.com/yhirano55
