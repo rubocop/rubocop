@@ -13,7 +13,7 @@ module RuboCop
       #   f = File.open('file')
       #
       #   # good
-      #   f = File.open('file') do
+      #   File.open('file') do |f|
       #     ...
       #   end
       class AutoResourceCleanup < Cop
