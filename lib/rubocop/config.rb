@@ -116,6 +116,9 @@ module RuboCop
         qualified_cop_name = Cop::Cop.qualified_cop_name(cop, loaded_path)
         cop_options = self[qualified_cop_name] || {}
         cop_options['Enabled'] = enable_cop?(qualified_cop_name, cop_options)
+        if (severity = for_all_cops['Severity']) && !cop_options['Severity']
+          cop_options['Severity'] = severity
+        end
         h[cop] = cop_options
       end
       @hash = hash
