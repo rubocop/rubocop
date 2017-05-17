@@ -16,6 +16,9 @@ Style/Encoding:
 Style/FrozenStringLiteralComment:
   EnforcedStyle: always
 
+Layout/EndOfLine:
+  EnforcedStyle: lf
+
 Layout/IndentHeredoc:
   EnforcedStyle: powerpack
 
