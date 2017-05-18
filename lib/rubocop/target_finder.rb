@@ -8,6 +8,7 @@ module RuboCop
                        .fcgi
                        .gemspec
                        .god
+                       .jb
                        .jbuilder
                        .mspec
                        .opal
