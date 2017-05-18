@@ -20,6 +20,7 @@
 * [#4320](https://github.com/bbatsov/rubocop/pull/4320): Update `Rails/OutputSafety` to disallow wrapping `raw` or `html_safe` with `safe_join`. ([@klesse413][])
 * [#4336](https://github.com/bbatsov/rubocop/issues/4336): Store `rubocop_cache` in safer directories. ([@jonas054][])
 * [#4361](https://github.com/bbatsov/rubocop/pull/4361): Use relative path for offense message in `Lint/DuplicateMethods`. ([@pocke][])
+* [#4385](https://github.com/bbatsov/rubocop/pull/4385): Include `.jb` file by default. ([@pocke][])
 
 ### Bug fixes
 
