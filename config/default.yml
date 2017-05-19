@@ -1550,6 +1550,10 @@ Rails/ReversibleMigration:
   Include:
     - db/migrate/*.rb
 
+Rails/IndexTrue:
+   Include:
+    - db/migrate/*.rb
+
 Rails/SafeNavigation:
   # This will convert usages of `try` to use safe navigation as well as `try!`.
   # `try` and `try!` work slighly differently. `try!` and safe navigation will
