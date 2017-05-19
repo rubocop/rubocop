@@ -1,3 +1,4 @@
+# encoding: utf-8
 # frozen_string_literal: true
 
 describe RuboCop::Cop::Style::VariableName, :config do
@@ -69,6 +70,11 @@ describe RuboCop::Cop::Style::VariableName, :config do
       RUBY
     end
 
+    it 'does not register an offence for non-ascii variable names' do
+      inspect_source(cop, 'рубо_коп = 1')
+      expect(cop.offenses.size).to eq(0)
+    end
+
     include_examples 'always accepted'
   end
 
@@ -113,6 +119,11 @@ describe RuboCop::Cop::Style::VariableName, :config do
 
     it 'accepts camel case local variables marked as unused' do
       expect_no_offenses('_myLocal = 1')
+    end
+
+    it 'does not register an offence for non-ascii variable names' do
+      inspect_source(cop, 'рубоKоп = 1')
+      expect(cop.offenses.size).to eq(0)
     end
 
     include_examples 'always accepted'
