@@ -7,8 +7,8 @@ matrix:
        env: JRUBY_OPTS='--debug' # get more accurate coverage data
      - rvm: 2.0.0
      - rvm: 2.1.10
-     - rvm: 2.2.6
-     - rvm: 2.3.3
+     - rvm: 2.2.7
+     - rvm: 2.3.4
      - rvm: 2.4.1
      - rvm: ruby-head
      - rvm: rbx-3
