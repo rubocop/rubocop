@@ -59,7 +59,7 @@ associated with potential security issues.
 ### Rails
 
 Rails cops are specific to the Ruby on Rails framework. Unlike all other cop
-types they are not used by default, and you have to request them explicity:
+types they are not used by default, and you have to request them explicitly:
 
 ```sh
 $ rubocop -R
