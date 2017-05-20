@@ -126,7 +126,7 @@ module RuboCop
     end
 
     def add_unneeded_disables(file, offenses, source)
-      if check_for_unneded_disables?(source)
+      if check_for_unneeded_disables?(source)
         config = @config_store.for(file)
         if config.for_cop(Cop::Lint::UnneededDisable).fetch('Enabled')
           cop = Cop::Lint::UnneededDisable.new(config, @options)
@@ -142,7 +142,7 @@ module RuboCop
       offenses.sort.reject(&:disabled?).freeze
     end
 
-    def check_for_unneded_disables?(source)
+    def check_for_unneeded_disables?(source)
       !source.disabled_line_ranges.empty? && !filtered_run?
     end
 
