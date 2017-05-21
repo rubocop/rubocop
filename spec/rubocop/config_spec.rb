@@ -497,6 +497,56 @@ describe RuboCop::Config do
     end
   end
 
+  context 'whether the cop inherits Severity from AllCops' do
+    def cop_severity_level(cop_class)
+      configuration.for_cop(cop_class)['Severity']
+    end
+
+    context 'when AllCops define Severity as fatal' do
+      context 'and tested Cop does not define its own Severity' do
+        let(:hash) do
+          {
+            'AllCops' => { 'Severity' => 'fatal' },
+            'Layout/TrailingWhitespace' => { 'Enabled' => true }
+          }
+        end
+        it 'successfully inherits Severity' do
+          cop_class = RuboCop::Cop::Layout::TrailingWhitespace
+          expect(cop_severity_level(cop_class)).to be 'fatal'
+        end
+      end
+      context 'and tested Cop does define its own Severity' do
+        let(:hash) do
+          {
+            'AllCops' => { 'Severity' => 'fatal' },
+            'Layout/TrailingWhitespace' => {
+              'Enabled' => true,
+              'Severity' => 'error'
+            }
+          }
+        end
+        it 'successfully inherits Severity' do
+          cop_class = RuboCop::Cop::Layout::TrailingWhitespace
+          expect(cop_severity_level(cop_class)).to be 'error'
+        end
+      end
+      context 'and tested Cop does define its own Severity' do
+        let(:hash) do
+          {
+            'AllCops' => {},
+            'Layout/TrailingWhitespace' => {
+              'Enabled' => true
+            }
+          }
+        end
+        it 'successfully inherits Severity' do
+          cop_class = RuboCop::Cop::Layout::TrailingWhitespace
+          expect(cop_severity_level(cop_class)).to be nil
+        end
+      end
+    end
+  end
+
   context 'whether the cop is enabled' do
     def cop_enabled(cop_class)
       configuration.for_cop(cop_class).fetch('Enabled')

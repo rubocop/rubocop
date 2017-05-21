@@ -246,6 +246,17 @@ to. The level is `warning` for `Lint` and `convention` for all the others.
 Cops can customize their severity level. Allowed params are `refactor`,
 `convention`, `warning`, `error` and `fatal`.
 
+You can also override Severity in all Cops like:
+```yaml
+AllCops:
+  Severity: error
+```
+
+If you specify Severity in particular Cop cofiguration, it will take over 
+Severity value from AllCops config. So basically Severity from most important 
+to least looks like this: explicit value for particular Cop from `.rubocop.yml`,
+AllCops value from `.rubocop.yml`, internal value and default value.
+
 There is one exception from the general rule above and that is `Lint/Syntax`, a
 special cop that checks for syntax errors before the other cops are invoked. It
 can not be disabled and its severity (`fatal`) can not be changed in
