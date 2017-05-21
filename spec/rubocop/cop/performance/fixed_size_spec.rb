@@ -3,38 +3,42 @@
 describe RuboCop::Cop::Performance::FixedSize do
   subject(:cop) { described_class.new }
 
+  let(:message) do
+    'Do not compute the size of statically sized objects.'
+  end
+
   shared_examples :common_functionality do |method|
     context 'strings' do
       it "registers an offense when calling #{method} on a single quoted " \
          'string' do
         inspect_source(cop, "'a'.#{method}")
 
-        expect(cop.messages).to eq([described_class::MSG])
+        expect(cop.messages).to eq([message])
       end
 
       it "registers an offense when calling #{method} on a double quoted " \
          'string' do
         inspect_source(cop, "\"a\".#{method}")
 
-        expect(cop.messages).to eq([described_class::MSG])
+        expect(cop.messages).to eq([message])
       end
 
       it "registers an offense when calling #{method} on a %q string" do
         inspect_source(cop, "%q(a).#{method}")
 
-        expect(cop.messages).to eq([described_class::MSG])
+        expect(cop.messages).to eq([message])
       end
 
       it "registers an offense when calling #{method} on a %Q string" do
         inspect_source(cop, "%Q(a).#{method}")
 
-        expect(cop.messages).to eq([described_class::MSG])
+        expect(cop.messages).to eq([message])
       end
 
       it "registers an offense when calling #{method} on a % string" do
         inspect_source(cop, "%(a).#{method}")
 
-        expect(cop.messages).to eq([described_class::MSG])
+        expect(cop.messages).to eq([message])
       end
 
       it "accepts calling #{method} on a double quoted string that " \
@@ -93,13 +97,13 @@ describe RuboCop::Cop::Performance::FixedSize do
       it "registers an offense when calling #{method} on a symbol" do
         inspect_source(cop, ":foo.#{method}")
 
-        expect(cop.messages).to eq([described_class::MSG])
+        expect(cop.messages).to eq([message])
       end
 
       it "registers an offense when calling #{method} on a quoted symbol" do
         inspect_source(cop, ":'foo-bar'.#{method}")
 
-        expect(cop.messages).to eq([described_class::MSG])
+        expect(cop.messages).to eq([message])
       end
 
       it "accepts calling #{method} on an interpolated quoted symbol" do
@@ -111,7 +115,7 @@ describe RuboCop::Cop::Performance::FixedSize do
       it "registers an offense when calling #{method} on %s" do
         inspect_source(cop, "%s(foo-bar).#{method}")
 
-        expect(cop.messages).to eq([described_class::MSG])
+        expect(cop.messages).to eq([message])
       end
 
       it "accepts calling #{method} on a symbol that is assigned " \
@@ -126,19 +130,19 @@ describe RuboCop::Cop::Performance::FixedSize do
       it "registers an offense when calling #{method} on an array using []" do
         inspect_source(cop, "[1, 2, foo].#{method}")
 
-        expect(cop.messages).to eq([described_class::MSG])
+        expect(cop.messages).to eq([message])
       end
 
       it "registers an offense when calling #{method} on an array using %w" do
         inspect_source(cop, "%w(1, 2, foo).#{method}")
 
-        expect(cop.messages).to eq([described_class::MSG])
+        expect(cop.messages).to eq([message])
       end
 
       it "registers an offense when calling #{method} on an array using %W" do
         inspect_source(cop, "%W(1, 2, foo).#{method}")
 
-        expect(cop.messages).to eq([described_class::MSG])
+        expect(cop.messages).to eq([message])
       end
 
       it "accepts calling #{method} on an array using [] that contains " \
@@ -169,7 +173,7 @@ describe RuboCop::Cop::Performance::FixedSize do
       it "registers an offense when calling #{method} on a hash using {}" do
         inspect_source(cop, "{a: 1, b: 2}.#{method}")
 
-        expect(cop.messages).to eq([described_class::MSG])
+        expect(cop.messages).to eq([message])
       end
 
       it "accepts calling #{method} on a hash set to a variable" do
@@ -218,7 +222,7 @@ describe RuboCop::Cop::Performance::FixedSize do
     it 'registers an offense when calling count with a string' do
       inspect_source(cop, "#{variable}.count('o')")
 
-      expect(cop.messages).to eq([described_class::MSG])
+      expect(cop.messages).to eq([message])
     end
 
     it 'accepts calling count with a block' do

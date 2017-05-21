@@ -3,6 +3,11 @@
 describe RuboCop::Cop::Performance::CaseWhenSplat do
   subject(:cop) { described_class.new }
 
+  let(:message) do
+    'Place `when` conditions with a splat at ' \
+      'the end of the `when` branches.'
+  end
+
   it 'allows case when without splat' do
     expect_no_offenses(<<-RUBY.strip_indent)
       case foo
@@ -86,7 +91,7 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
         nil
       end
     END
-    expect(cop.messages).to eq([described_class::MSG])
+    expect(cop.messages).to eq([message])
     expect(cop.highlights).to eq(['when *Foo'])
   end
 
@@ -180,7 +185,7 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
       end
     END
 
-    expect(cop.messages).to eq([described_class::MSG])
+    expect(cop.messages).to eq([message])
     expect(cop.highlights).to eq(['when *cond'])
   end
 

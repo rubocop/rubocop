@@ -36,7 +36,7 @@ describe RuboCop::Cop::Lint::EmptyWhen, :config do
     end
   end
 
-  let(:message) { described_class::MSG }
+  let(:message) { 'Avoid `when` branches without a body.' }
 
   context 'when a `when` body is missing' do
     it_behaves_like 'code with offense', <<-END.strip_indent

@@ -3,6 +3,10 @@
 describe RuboCop::Cop::Layout::SpaceInsideArrayPercentLiteral do
   subject(:cop) { described_class.new }
 
+  let(:message) do
+    'Use only a single space inside array percent literal.'
+  end
+
   %w[i I w W].each do |type|
     [%w[{ }], %w[( )], %w([ ]), %w[! !]].each do |(ldelim, rdelim)|
       context "for #{type} type and #{[ldelim, rdelim]} delimiters" do
@@ -19,7 +23,7 @@ describe RuboCop::Cop::Layout::SpaceInsideArrayPercentLiteral do
           inspect_source(cop, source)
           expect(cop.offenses.size).to eq(1)
           expect(cop.highlights).to eq(['   '])
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([message])
           expect_corrected(source, code_example('1 2'))
         end
 

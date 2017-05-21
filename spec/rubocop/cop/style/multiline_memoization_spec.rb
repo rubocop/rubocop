@@ -2,7 +2,7 @@
 
 describe RuboCop::Cop::Style::MultilineMemoization, :config do
   subject(:cop) { described_class.new(config) }
-  let(:message) { described_class::MSG }
+  let(:message) { 'Wrap multiline memoization blocks in `begin` and `end`.' }
 
   before do
     inspect_source(cop, source)

@@ -3,10 +3,15 @@
 describe RuboCop::Cop::Lint::PercentStringArray do
   subject(:cop) { described_class.new }
 
+  let(:message) do
+    "Within `%w`/`%W`, quotes and ',' are unnecessary and may be " \
+      'unwanted in the resulting strings.'
+  end
+
   def expect_offense(source)
     inspect_source(cop, source)
 
-    expect(cop.offenses.map(&:message)).to eq([described_class::MSG])
+    expect(cop.offenses.map(&:message)).to eq([message])
     expect(cop.highlights).to eq([source])
   end
 

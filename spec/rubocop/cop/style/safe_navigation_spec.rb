@@ -4,6 +4,11 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) { { 'ConvertCodeThatCanStartToReturnNil' => false } }
 
+  let(:message) do
+    'Use safe navigation (`&.`) instead of checking if an object ' \
+      'exists before calling the method.'
+  end
+
   context 'target_ruby_version > 2.3', :ruby23 do
     it 'allows calls to methods not safeguarded by respond_to' do
       expect_no_offenses('foo.bar')
@@ -50,28 +55,28 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
           'safeguarded by a check for the accessed variable' do
           inspect_source(cop, "#{variable}[1].bar if #{variable}[1]")
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call safeguarded with a check ' \
           'for the object' do
           inspect_source(cop, "#{variable}.bar if #{variable}")
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call with params safeguarded ' \
           'with a check for the object' do
           inspect_source(cop, "#{variable}.bar(baz) if #{variable}")
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call with a block safeguarded ' \
           'with a check for the object' do
           inspect_source(cop, "#{variable}.bar { |e| e.qux } if #{variable}")
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call with params and a block ' \
@@ -79,21 +84,21 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
           inspect_source(cop,
                          "#{variable}.bar(baz) { |e| e.qux } if #{variable}")
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call safeguarded with a ' \
           'negative check for the object' do
           inspect_source(cop, "#{variable}.bar unless !#{variable}")
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call with params safeguarded ' \
           'with a negative check for the object' do
           inspect_source(cop, "#{variable}.bar(baz) unless !#{variable}")
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call with a block safeguarded ' \
@@ -101,7 +106,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
           inspect_source(cop,
                          "#{variable}.bar { |e| e.qux } unless !#{variable}")
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call with params and a block ' \
@@ -110,21 +115,21 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
           inspect_source(cop, source)
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call safeguarded with a nil ' \
           'check for the object' do
           inspect_source(cop, "#{variable}.bar unless #{variable}.nil?")
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call with params safeguarded ' \
           'with a nil check for the object' do
           inspect_source(cop, "#{variable}.bar(baz) unless #{variable}.nil?")
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call with a block safeguarded ' \
@@ -133,7 +138,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
           inspect_source(cop, source)
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call with params and a block ' \
@@ -142,21 +147,21 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
           inspect_source(cop, source)
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call safeguarded with a ' \
           'negative nil check for the object' do
           inspect_source(cop, "#{variable}.bar if !#{variable}.nil?")
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call with params safeguarded ' \
           'with a negative nil check for the object' do
           inspect_source(cop, "#{variable}.bar(baz) if !#{variable}.nil?")
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call with a block safeguarded ' \
@@ -165,7 +170,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
           inspect_source(cop, source)
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call with params and a block ' \
@@ -174,7 +179,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
           inspect_source(cop, source)
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([message])
         end
       end
 
@@ -187,7 +192,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             end
           END
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a single method call inside of a ' \
@@ -198,7 +203,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             end
           END
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a single method call inside of an ' \
@@ -209,7 +214,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             end
           END
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a single method call inside of an ' \
@@ -220,7 +225,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             end
           END
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([message])
         end
 
         it 'accepts a single method call inside of a check for the object ' \
@@ -254,14 +259,14 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             'method call' do
             inspect_source(cop, "!#{variable}.nil? && #{variable}.bar")
 
-            expect(cop.messages).to eq([described_class::MSG])
+            expect(cop.messages).to eq([message])
           end
 
           it 'registers an offense for a non-nil object check followed by a ' \
             'method call with params' do
             inspect_source(cop, "!#{variable}.nil? && #{variable}.bar(baz)")
 
-            expect(cop.messages).to eq([described_class::MSG])
+            expect(cop.messages).to eq([message])
           end
 
           it 'registers an offense for a non-nil object check followed by a ' \
@@ -270,7 +275,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
             inspect_source(cop, source)
 
-            expect(cop.messages).to eq([described_class::MSG])
+            expect(cop.messages).to eq([message])
           end
 
           it 'registers an offense for a non-nil object check followed by a ' \
@@ -279,28 +284,28 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
             inspect_source(cop, source)
 
-            expect(cop.messages).to eq([described_class::MSG])
+            expect(cop.messages).to eq([message])
           end
 
           it 'registers an offense for an object check followed by a ' \
             'method call' do
             inspect_source(cop, "#{variable} && #{variable}.bar")
 
-            expect(cop.messages).to eq([described_class::MSG])
+            expect(cop.messages).to eq([message])
           end
 
           it 'registers an offense for an object check followed by a ' \
             'method call with params' do
             inspect_source(cop, "#{variable} && #{variable}.bar(baz)")
 
-            expect(cop.messages).to eq([described_class::MSG])
+            expect(cop.messages).to eq([message])
           end
 
           it 'registers an offense for an object check followed by a ' \
             'method call with a block' do
             inspect_source(cop, "#{variable} && #{variable}.bar { |e| e.qux }")
 
-            expect(cop.messages).to eq([described_class::MSG])
+            expect(cop.messages).to eq([message])
           end
 
           it 'registers an offense for an object check followed by a ' \
@@ -309,7 +314,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
             inspect_source(cop, source)
 
-            expect(cop.messages).to eq([described_class::MSG])
+            expect(cop.messages).to eq([message])
           end
 
           it 'registers an offense for a check for the object followed by a ' \
@@ -320,7 +325,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
               end
             END
 
-            expect(cop.messages).to eq([described_class::MSG])
+            expect(cop.messages).to eq([message])
           end
         end
 

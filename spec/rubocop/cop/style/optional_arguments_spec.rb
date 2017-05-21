@@ -3,6 +3,10 @@
 describe RuboCop::Cop::Style::OptionalArguments do
   subject(:cop) { described_class.new }
 
+  let(:message) do
+    'Optional arguments should appear at the end of the argument list.'
+  end
+
   it 'registers an offense when an optional argument is followed by a ' \
      'required argument' do
     inspect_source(cop, <<-END.strip_indent)
@@ -10,8 +14,7 @@ describe RuboCop::Cop::Style::OptionalArguments do
       end
     END
 
-    expect(cop.messages)
-      .to eq([described_class::MSG])
+    expect(cop.messages).to eq([message])
     expect(cop.highlights).to eq(['a = 1'])
   end
 
@@ -22,7 +25,7 @@ describe RuboCop::Cop::Style::OptionalArguments do
       end
     END
 
-    expect(cop.messages).to eq([described_class::MSG, described_class::MSG])
+    expect(cop.messages).to eq([message, message])
     expect(cop.highlights).to eq(['a = 1', 'b = 2'])
   end
 
@@ -86,7 +89,7 @@ describe RuboCop::Cop::Style::OptionalArguments do
           end
         END
 
-        expect(cop.messages).to eq([described_class::MSG])
+        expect(cop.messages).to eq([message])
         expect(cop.highlights).to eq(['a = 1'])
       end
 
