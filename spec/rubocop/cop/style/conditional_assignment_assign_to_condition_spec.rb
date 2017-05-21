@@ -21,6 +21,11 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                         })
   end
 
+  let(:message) do
+    'Use the return of the conditional ' \
+    'for variable assignment and comparison.'
+  end
+
   it 'counts array assignment when determining multiple assignment' do
     expect_no_offenses(<<-RUBY.strip_indent)
       if foo
@@ -61,7 +66,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     source = 'foo? ? bar = "a" : bar = "b"'
     inspect_source(cop, source)
 
-    expect(cop.messages).to eq([described_class::MSG])
+    expect(cop.messages).to eq([message])
   end
 
   it 'allows modifier if' do
@@ -106,7 +111,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
       inspect_source(cop, source)
 
-      expect(cop.messages).to eq([described_class::MSG])
+      expect(cop.messages).to eq([message])
     end
 
     it 'registers an offense for comparison methods in unless else' do
@@ -120,7 +125,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
       inspect_source(cop, source)
 
-      expect(cop.messages).to eq([described_class::MSG])
+      expect(cop.messages).to eq([message])
     end
 
     it 'registers an offense for comparison methods in case when' do
@@ -135,7 +140,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
       inspect_source(cop, source)
 
-      expect(cop.messages).to eq([described_class::MSG])
+      expect(cop.messages).to eq([message])
     end
   end
 
@@ -393,7 +398,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     it 'registers an offense assigning any variable type in ternary' do
       inspect_source(cop, "foo? ? #{variable} = 1 : #{variable} = 2")
 
-      expect(cop.messages).to eq([described_class::MSG])
+      expect(cop.messages).to eq([message])
     end
 
     it 'registers an offense assigning any variable type in if else' do
@@ -406,7 +411,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       END
       inspect_source(cop, source)
 
-      expect(cop.messages).to eq([described_class::MSG])
+      expect(cop.messages).to eq([message])
     end
 
     it 'registers an offense assigning any variable type in case when' do
@@ -420,7 +425,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       END
       inspect_source(cop, source)
 
-      expect(cop.messages).to eq([described_class::MSG])
+      expect(cop.messages).to eq([message])
     end
 
     it 'allows assignment to the return of if else' do
@@ -477,7 +482,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           source = "foo? ? #{name} #{assignment} 1 : #{name} #{assignment} 2"
           inspect_source(cop, source)
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([message])
         end
 
         it "allows assignment using #{assignment} to ternary" do
@@ -498,7 +503,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           END
           inspect_source(cop, source)
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([message])
         end
 
         it "registers an offense for assignment using #{assignment} in "\
@@ -513,7 +518,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           END
           inspect_source(cop, source)
 
-          expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([message])
         end
 
         it "autocorrects for assignment using #{assignment} in if else" do
@@ -573,7 +578,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     END
     inspect_source(cop, source)
 
-    expect(cop.messages).to eq([described_class::MSG])
+    expect(cop.messages).to eq([message])
   end
 
   it 'registers an offense for assignment in if elsif elsif else' do
@@ -590,7 +595,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     END
     inspect_source(cop, source)
 
-    expect(cop.messages).to eq([described_class::MSG])
+    expect(cop.messages).to eq([message])
   end
 
   it 'registers an offense for assignment in if else when the assignment ' \
@@ -613,7 +618,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     END
     inspect_source(cop, source)
 
-    expect(cop.messages).to eq([described_class::MSG])
+    expect(cop.messages).to eq([message])
   end
 
   it 'autocorrects assignment in if else when the assignment ' \
@@ -978,7 +983,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     END
     inspect_source(cop, source)
 
-    expect(cop.messages).to eq([described_class::MSG])
+    expect(cop.messages).to eq([message])
   end
 
   it 'registers an offense for assignment in unless else' do
@@ -991,7 +996,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     END
     inspect_source(cop, source)
 
-    expect(cop.messages).to eq([described_class::MSG])
+    expect(cop.messages).to eq([message])
   end
 
   it 'registers an offense for assignment in case when then else' do
@@ -1003,7 +1008,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     END
     inspect_source(cop, source)
 
-    expect(cop.messages).to eq([described_class::MSG])
+    expect(cop.messages).to eq([message])
   end
 
   it 'registers an offense for assignment in case with when when else' do
@@ -1019,7 +1024,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     END
     inspect_source(cop, source)
 
-    expect(cop.messages).to eq([described_class::MSG])
+    expect(cop.messages).to eq([message])
   end
 
   it 'allows different assignment types in case with when when else' do
@@ -1707,7 +1712,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         END
         inspect_source(cop, source)
 
-        expect(cop.messages).to eq([described_class::MSG])
+        expect(cop.messages).to eq([message])
       end
 
       it 'registers an offense in if elsif else with more than ' \
@@ -1726,7 +1731,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         END
         inspect_source(cop, source)
 
-        expect(cop.messages).to eq([described_class::MSG])
+        expect(cop.messages).to eq([message])
       end
 
       it 'register an offense for multiple assignment in if else' do
@@ -1741,7 +1746,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         END
         inspect_source(cop, source)
 
-        expect(cop.messages).to eq([described_class::MSG])
+        expect(cop.messages).to eq([message])
       end
 
       it 'registers an offense for multiple assignment in if elsif else' do
@@ -1759,7 +1764,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         END
         inspect_source(cop, source)
 
-        expect(cop.messages).to eq([described_class::MSG])
+        expect(cop.messages).to eq([message])
       end
 
       it 'allows multiple assignment in if elsif elsif else' do
@@ -1780,7 +1785,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         END
         inspect_source(cop, source)
 
-        expect(cop.messages).to eq([described_class::MSG])
+        expect(cop.messages).to eq([message])
       end
 
       it 'allows out of order multiple assignment in if elsif else' do
@@ -1810,7 +1815,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         END
         inspect_source(cop, source)
 
-        expect(cop.messages).to eq([described_class::MSG])
+        expect(cop.messages).to eq([message])
       end
 
       it 'allows multiple assignments in case when with only one when' do
@@ -1826,7 +1831,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         END
         inspect_source(cop, source)
 
-        expect(cop.messages).to eq([described_class::MSG])
+        expect(cop.messages).to eq([message])
       end
 
       it 'allows multiple assignments in case when with multiple whens' do
@@ -1845,7 +1850,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         END
         inspect_source(cop, source)
 
-        expect(cop.messages).to eq([described_class::MSG])
+        expect(cop.messages).to eq([message])
       end
 
       it 'registers an offense in if elsif else with some branches only ' \
@@ -1866,7 +1871,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         END
         inspect_source(cop, source)
 
-        expect(cop.messages).to eq([described_class::MSG])
+        expect(cop.messages).to eq([message])
       end
 
       it 'registers an offense in unless else with more than ' \
@@ -1882,7 +1887,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         END
         inspect_source(cop, source)
 
-        expect(cop.messages).to eq([described_class::MSG])
+        expect(cop.messages).to eq([message])
       end
 
       it 'registers an offense in case when else with more than ' \
@@ -1900,7 +1905,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
         inspect_source(cop, source)
 
-        expect(cop.messages).to eq([described_class::MSG])
+        expect(cop.messages).to eq([message])
       end
 
       context 'multiple assignment in only one branch' do
@@ -1989,7 +1994,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       END
       inspect_source(cop, source)
 
-      expect(cop.messages).to eq([described_class::MSG])
+      expect(cop.messages).to eq([message])
     end
 
     context 'auto-correct' do

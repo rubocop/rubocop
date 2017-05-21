@@ -3,10 +3,15 @@
 describe RuboCop::Cop::Lint::PercentSymbolArray do
   subject(:cop) { described_class.new }
 
+  let(:message) do
+    "Within `%i`/`%I`, ':' and ',' are unnecessary and may be " \
+      'unwanted in the resulting symbols.'
+  end
+
   def expect_offense(source)
     inspect_source(cop, source)
 
-    expect(cop.offenses.map(&:message)).to eq([described_class::MSG])
+    expect(cop.offenses.map(&:message)).to eq([message])
     expect(cop.highlights).to eq([source])
   end
 

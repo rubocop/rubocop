@@ -4,7 +4,10 @@ require 'spec_helper'
 
 describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
   subject(:cop) { described_class.new }
-  subject(:error_message) { described_class::MSG }
+  let(:error_message) do
+    'Parenthesize the param `%s` to make sure that the block will be ' \
+      'associated with the `%s` method call.'
+  end
 
   before { inspect_source(cop, source) }
 

@@ -10,6 +10,10 @@ describe RuboCop::Cop::Layout::IndentAssignment, :config do
   end
   let(:cop_indent) { nil } # use indentation with from Layout/IndentationWidth
 
+  let(:message) do
+    'Indent the first line of the right-hand-side of a multi-line assignment.'
+  end
+
   it 'registers an offense for incorrectly indented rhs' do
     inspect_source(cop, <<-END.strip_indent)
       a =
@@ -18,7 +22,7 @@ describe RuboCop::Cop::Layout::IndentAssignment, :config do
 
     expect(cop.offenses.length).to eq(1)
     expect(cop.highlights).to eq(['if b ; end'])
-    expect(cop.message).to eq(described_class::MSG)
+    expect(cop.message).to eq(message)
   end
 
   it 'allows assignments that do not start on a newline' do
@@ -52,7 +56,7 @@ describe RuboCop::Cop::Layout::IndentAssignment, :config do
 
     expect(cop.offenses.length).to eq(1)
     expect(cop.highlights).to eq(['if b ; end'])
-    expect(cop.message).to eq(described_class::MSG)
+    expect(cop.message).to eq(message)
   end
 
   it 'ignores comparison operators' do
