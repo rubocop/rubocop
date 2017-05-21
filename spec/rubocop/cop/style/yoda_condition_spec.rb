@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe RuboCop::Cop::Style::YodaCondition do
   subject(:cop) { described_class.new }
-  subject(:error_message) { described_class::MSG }
+  let(:error_message) { 'Reverse the order of the operands `%s`.' }
 
   # needed because of usage of safe navigation operator
   let(:ruby_version) { 2.3 }

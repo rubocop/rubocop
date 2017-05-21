@@ -1,7 +1,14 @@
 # frozen_string_literal: true
 
 describe 'RuboCop Project' do
-  let(:cop_names) { RuboCop::Cop::Cop.all.map(&:cop_name) }
+  let(:cop_names) do
+    RuboCop::Cop::Cop
+      .registry
+      .without_department(:Test)
+      .without_department(:InternalAffairs)
+      .cops
+      .map(&:cop_name)
+  end
 
   shared_context 'configuration file' do |config_path|
     subject(:config) { RuboCop::ConfigLoader.load_file(config_path) }
