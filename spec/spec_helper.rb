@@ -8,6 +8,7 @@ Rainbow.enabled = false
 require 'support/coverage'
 
 require 'rubocop'
+require 'rubocop/cop/internal_affairs'
 
 require 'webmock/rspec'
 
