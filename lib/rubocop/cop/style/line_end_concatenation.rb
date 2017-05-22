@@ -29,6 +29,10 @@ module RuboCop
                                             tLBRACK2].freeze
         QUOTE_DELIMITERS = %w[' "].freeze
 
+        def self.autocorrect_incompatible_with
+          [Style::UnneededInterpolation]
+        end
+
         def investigate(processed_source)
           processed_source.tokens.each_index do |index|
             check_token_set(index)

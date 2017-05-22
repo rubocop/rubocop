@@ -4,18 +4,6 @@ module RuboCop
   module Cop
     # FIXME
     class Team
-      # If these cops try to autocorrect the same file at the same time,
-      # bad things are liable to happen
-      INCOMPATIBLE_COPS = {
-        Style::SymbolProc => [Layout::SpaceBeforeBlockBraces],
-        Layout::SpaceBeforeBlockBraces => [Style::SymbolProc],
-        Style::LineEndConcatenation => [Style::UnneededInterpolation],
-        Style::UnneededInterpolation => [Style::LineEndConcatenation],
-        Style::SelfAssignment => [Layout::SpaceAroundOperators],
-        Layout::SpaceAroundOperators => [Style::SelfAssignment],
-        Style::BracesAroundHashParameters => [Layout::MultilineHashBraceLayout]
-      }.freeze
-
       DEFAULT_OPTIONS = {
         auto_correct: false,
         debug: false
@@ -135,8 +123,7 @@ module RuboCop
           next if cop.corrections.empty?
           next if skip.include?(cop.class)
           corrector.corrections.concat(cop.corrections)
-          incompatible = INCOMPATIBLE_COPS[cop.class]
-          skip.merge(incompatible) if incompatible
+          skip.merge(cop.class.autocorrect_incompatible_with)
         end
 
         if !corrector.corrections.empty?

@@ -11,6 +11,7 @@
 * [#4314](https://github.com/bbatsov/rubocop/pull/4314): Check slow hash accessing in `Array#sort` by `Performance/CompareWithBlock`. ([@pocke][])
 * [#3438](https://github.com/bbatsov/rubocop/issues/3438): Add new `Style/FormatStringToken` cop. ([@backus][])
 * [#4342](https://github.com/bbatsov/rubocop/pull/4342): Add new `Lint/ScriptPermission` cop. ([@yhirano55][])
+* [#4403](https://github.com/bbatsov/rubocop/pull/4403): Add public API `Cop.autocorrect_incompatible_with` for specifying other cops that should not autocorrect together. ([@backus][])
 
 ### Changes
 
