@@ -8,6 +8,10 @@ module RuboCop
       class SpaceBeforeBlockBraces < Cop
         include ConfigurableEnforcedStyle
 
+        def self.autocorrect_incompatible_with
+          [Style::SymbolProc]
+        end
+
         def on_block(node)
           return if node.keywords?
 

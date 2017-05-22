@@ -10,6 +10,10 @@ module RuboCop
 
         IRREGULAR_METHODS = %i[[] ! []=].freeze
 
+        def self.autocorrect_incompatible_with
+          [Style::SelfAssignment]
+        end
+
         def on_pair(node)
           return unless node.hash_rocket?
 

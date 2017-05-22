@@ -81,6 +81,16 @@ module RuboCop
           given_names.include?(department.to_s)
       end
 
+      # List of cops that should not try to autocorrect at the same
+      # time as this cop
+      #
+      # @return [Array<RuboCop::Cop::Cop>]
+      #
+      # @api public
+      def self.autocorrect_incompatible_with
+        []
+      end
+
       def initialize(config = nil, options = nil)
         @config = config || Config.new
         @options = options || { debug: false }
