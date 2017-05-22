@@ -424,4 +424,16 @@ describe RuboCop::Cop::Style::Lambda, :config do
       it_behaves_like 'does not auto-correct'
     end
   end
+
+  context 'when using safe navigation operator' do
+    let(:ruby_version) { 2.3 }
+
+    it 'does not break' do
+      expect_no_offenses(<<-END.strip_indent)
+        foo&.bar do |_|
+          baz
+        end
+      END
+    end
+  end
 end
