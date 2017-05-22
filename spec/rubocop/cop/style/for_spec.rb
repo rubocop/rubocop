@@ -101,5 +101,17 @@ describe RuboCop::Cop::Style::For, :config do
         end
       END
     end
+
+    context 'when using safe navigation operator' do
+      let(:ruby_version) { 2.3 }
+
+      it 'does not break' do
+        expect_no_offenses(<<-END.strip_indent)
+          def func
+            [1, 2, 3]&.each { |n| puts n }
+          end
+        END
+      end
+    end
   end
 end
