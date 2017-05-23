@@ -28,7 +28,7 @@ module RuboCop
           '<=' => '>=',
           '>' => '<',
           '>=' => '<='
-        }
+        }.freeze
 
         def on_send(node)
           return unless yoda_condition?(node)
