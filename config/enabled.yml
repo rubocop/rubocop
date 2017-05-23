@@ -1291,6 +1291,10 @@ Lint/RescueException:
   StyleGuide: '#no-blind-rescues'
   Enabled: true
 
+Lint/RescueType:
+  Description: 'Avoid rescuing from non constants that could result in a `TypeError`.'
+  Enabled: true
+
 Lint/SafeNavigationChain:
   Description: 'Do not chain ordinary method call after safe navigation operator.'
   Enabled: true
