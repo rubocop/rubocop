@@ -3,10 +3,14 @@
 describe RuboCop::Cop::Style::EmptyCaseCondition do
   subject(:cop) { described_class.new }
 
+  let(:message) do
+    'Do not use empty `case` condition, instead use an `if` expression.'
+  end
+
   shared_examples 'detect/correct empty case, accept non-empty case' do
     it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.messages).to eq [described_class::MSG]
+      expect(cop.messages).to eq [message]
     end
 
     it 'correctly autocorrects' do

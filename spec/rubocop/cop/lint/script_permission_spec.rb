@@ -14,10 +14,16 @@ describe RuboCop::Cop::Lint::ScriptPermission do
     let(:execution) { false }
 
     it 'registers an offense for script permission' do
-      expect_offense(<<-RUBY.strip_indent)
-        #!/usr/bin/ruby
-        ^^^^^^^^^^^^^^^ Script file example.rb doesn't have execute permission.
-      RUBY
+      if RuboCop::Platform.windows?
+        expect_no_offenses(<<-RUBY.strip_indent)
+          #!/usr/bin/ruby
+        RUBY
+      else
+        expect_offense(<<-RUBY.strip_indent)
+          #!/usr/bin/ruby
+          ^^^^^^^^^^^^^^^ Script file example.rb doesn't have execute permission.
+        RUBY
+      end
     end
   end
 

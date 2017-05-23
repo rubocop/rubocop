@@ -10,6 +10,7 @@ module RuboCop
         SHEBANG = '#!'.freeze
 
         def investigate(processed_source)
+          return if Platform.windows?
           return unless start_with_shebang?(processed_source)
           return if executable?(processed_source)
           comment = processed_source.comments[0]

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe RuboCop::Cop::Rails::ApplicationRecord do
-  let(:msgs) { [described_class::MSG] }
+  let(:msgs) { ['Models should subclass `ApplicationRecord`.'] }
 
   context 'rails 4', :rails4, :config do
     subject(:cop) { described_class.new(config) }

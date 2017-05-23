@@ -4,9 +4,18 @@ describe RuboCop::AST::SendNode do
   let(:send_node) { parse_source(source).ast }
 
   describe '.new' do
-    let(:source) { 'foo.bar(:baz)' }
+    context 'with a regular method send' do
+      let(:source) { 'foo.bar(:baz)' }
 
-    it { expect(send_node).to be_a(described_class) }
+      it { expect(send_node).to be_a(described_class) }
+    end
+
+    context 'with a safe navigation method send' do
+      let(:ruby_version) { 2.3 }
+      let(:source) { 'foo&.bar(:baz)' }
+
+      it { expect(send_node).to be_a(described_class) }
+    end
   end
 
   describe '#receiver' do

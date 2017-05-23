@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe RuboCop::Cop::Rails::ApplicationJob do
-  let(:msgs) { [described_class::MSG] }
+  let(:msgs) { ['Jobs should subclass `ApplicationJob`.'] }
 
   context 'rails 4', :rails4, :config do
     subject(:cop) { described_class.new(config) }

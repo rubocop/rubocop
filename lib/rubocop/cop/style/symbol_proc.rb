@@ -23,6 +23,10 @@ module RuboCop
             $(send lvar $_))
         PATTERN
 
+        def self.autocorrect_incompatible_with
+          [Layout::SpaceBeforeBlockBraces]
+        end
+
         def on_block(node)
           symbol_proc?(node) do |send_or_super, block_args, block_body, method|
             block_method_name = resolve_block_method_name(send_or_super)

@@ -39,7 +39,7 @@ describe RuboCop::Cop::Style::DocumentationMethod, :config do
     )
   end
 
-  let(:message) { described_class::MSG }
+  let(:message) { 'Missing method documentation comment.' }
 
   context 'when declaring methods outside a class' do
     context 'without documentation comment' do

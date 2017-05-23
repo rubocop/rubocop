@@ -523,9 +523,10 @@ Enabled by default | Supports autocorrection
 Enabled | No
 
 This cop checks for the use of output safety calls like html_safe,
-raw, and safe_concat. These methods do not escape content. They simply return a
-SafeBuffer containing the content as is. Instead, use safe_join to join content
-and escape it and concat to concatenate content and escape it, ensuring its safety.
+raw, and safe_concat. These methods do not escape content. They
+simply return a SafeBuffer containing the content as is. Instead,
+use safe_join to join content and escape it and concat to
+concatenate content and escape it, ensuring its safety.
 
 ### Example
 
@@ -534,35 +535,41 @@ user_content = "<b>hi</b>"
 
 # bad
 "<p>#{user_content}</p>".html_safe
-=> ActiveSupport::SafeBuffer "<p><b>hi</b></p>"
+=> ActiveSupport::SafeBuffer
+"<p><b>hi</b></p>"
 
 # good
 content_tag(:p, user_content)
-=> ActiveSupport::SafeBuffer "<p>&lt;b&gt;hi&lt;/b&gt;</p>"
+=> ActiveSupport::SafeBuffer
+"<p>&lt;b&gt;hi&lt;/b&gt;</p>"
 
 # bad
 out = ""
 out << "<li>#{user_content}</li>"
 out << "<li>#{user_content}</li>"
 out.html_safe
-=> ActiveSupport::SafeBuffer "<li><b>hi</b></li><li><b>hi</b></li>"
+=> ActiveSupport::SafeBuffer
+"<li><b>hi</b></li><li><b>hi</b></li>"
 
 # good
 out = []
 out << content_tag(:li, user_content)
 out << content_tag(:li, user_content)
 safe_join(out)
-=> ActiveSupport::SafeBuffer "<li>&lt;b&gt;hi&lt;/b&gt;</li><li>&lt;b&gt;hi&lt;/b&gt;</li>"
+=> ActiveSupport::SafeBuffer
+"<li>&lt;b&gt;hi&lt;/b&gt;</li><li>&lt;b&gt;hi&lt;/b&gt;</li>"
 
 # bad
 out = "<h1>trusted content</h1>".html_safe
 out.safe_concat(user_content)
-=> ActiveSupport::SafeBuffer "<h1>trusted_content</h1><b>hi</b>"
+=> ActiveSupport::SafeBuffer
+"<h1>trusted_content</h1><b>hi</b>"
 
 # good
 out = "<h1>trusted content</h1>".html_safe
 out.concat(user_content)
-=> ActiveSupport::SafeBuffer "<h1>trusted_content</h1>&lt;b&gt;hi&lt;/b&gt;"
+=> ActiveSupport::SafeBuffer
+"<h1>trusted_content</h1>&lt;b&gt;hi&lt;/b&gt;"
 
 # safe, though maybe not good style
 out = "trusted content"
@@ -574,11 +581,13 @@ result = out.concat(user_content)
 
 # bad
 (user_content + " " + content_tag(:span, user_content)).html_safe
-=> ActiveSupport::SafeBuffer "<b>hi</b> <span><b>hi</b></span>"
+=> ActiveSupport::SafeBuffer
+"<b>hi</b> <span><b>hi</b></span>"
 
 # good
 safe_join([user_content, " ", content_tag(:span, user_content)])
-=> ActiveSupport::SafeBuffer "&lt;b&gt;hi&lt;/b&gt; <span>&lt;b&gt;hi&lt;/b&gt;</span>"
+=> ActiveSupport::SafeBuffer
+"&lt;b&gt;hi&lt;/b&gt; <span>&lt;b&gt;hi&lt;/b&gt;</span>"
 ```
 
 ## Rails/PluralizationGrammar
@@ -756,7 +765,7 @@ reversible.
 # bad
 def change
   change_table :users do |t|
-    t.column :name, :string
+    t.remove :name
   end
 end
 
@@ -834,6 +843,40 @@ end
 # good
 def change
   remove_foreign_key :accounts, :branches
+end
+```
+```ruby
+# change_table
+
+# bad
+def change
+  change_table :users do |t|
+    t.remove :name
+    t.change_default :authorized, 1
+    t.change :price, :string
+  end
+end
+
+# good
+def change
+  change_table :users do |t|
+    t.string :name
+  end
+end
+
+# good
+def change
+  reversible do |dir|
+    change_table :users do |t|
+      dir.up do
+        t.change :price, :string
+      end
+
+      dir.down do
+        t.change :price, :integer
+      end
+    end
+  end
 end
 ```
 

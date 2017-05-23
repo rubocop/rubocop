@@ -27,7 +27,7 @@ module RuboCop
         OrNode           => [:or],
         PairNode         => [:pair],
         ResbodyNode      => [:resbody],
-        SendNode         => [:send],
+        SendNode         => %i[csend send],
         SuperNode        => %i[super zsuper],
         UntilNode        => %i[until until_post],
         WhenNode         => [:when],

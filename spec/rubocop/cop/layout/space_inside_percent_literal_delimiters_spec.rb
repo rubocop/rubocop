@@ -3,6 +3,10 @@
 describe RuboCop::Cop::Layout::SpaceInsidePercentLiteralDelimiters do
   subject(:cop) { described_class.new }
 
+  let(:message) do
+    'Do not use spaces inside percent literal delimiters.'
+  end
+
   %w[i I w W x].each do |type|
     [%w[{ }], %w[( )], %w([ ]), %w[! !]].each do |(ldelim, rdelim)|
       context "for #{type} type and #{[ldelim, rdelim]} delimiters" do
@@ -18,7 +22,7 @@ describe RuboCop::Cop::Layout::SpaceInsidePercentLiteralDelimiters do
           source = code_example(' 1 2  ')
           inspect_source(cop, source)
           expect(cop.offenses.size).to eq(2)
-          expect(cop.messages.uniq).to eq([described_class::MSG])
+          expect(cop.messages.uniq).to eq([message])
           expect(cop.highlights).to eq([' ', '  '])
           expect_corrected(source, code_example('1 2'))
         end

@@ -12,7 +12,7 @@ describe RuboCop::Cop::Team do
     RuboCop::ConfigLoader.default_configuration = nil
   end
 
-  describe 'INCOMPATIBLE_COPS' do
+  context 'when incompatible cops are correcting together' do
     include FileHelper
 
     let(:options) { { formatters: [], auto_correct: true } }

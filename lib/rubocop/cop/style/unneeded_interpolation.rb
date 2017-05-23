@@ -20,6 +20,10 @@ module RuboCop
 
         MSG = 'Prefer `to_s` over string interpolation.'.freeze
 
+        def self.autocorrect_incompatible_with
+          [Style::LineEndConcatenation]
+        end
+
         def on_dstr(node)
           add_offense(node, :expression, MSG) if single_interpolation?(node)
         end

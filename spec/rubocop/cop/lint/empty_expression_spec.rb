@@ -28,7 +28,7 @@ describe RuboCop::Cop::Lint::EmptyExpression, :config do
     end
   end
 
-  let(:message) { described_class::MSG }
+  let(:message) { 'Avoid empty expressions.' }
 
   context 'when used as a standalone expression' do
     it_behaves_like 'code with offense',

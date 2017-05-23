@@ -12,8 +12,8 @@ module RuboCop
       # @example
       #   # Style/PercentLiteralDelimiters:
       #   #   PreferredDelimiters:
-      #   #     default: []
-      #   #     %i:      ()
+      #   #     default: '[]'
+      #   #     '%i':    '()'
       #
       #   # good
       #   %w[alpha beta] + %i(gamma delta)

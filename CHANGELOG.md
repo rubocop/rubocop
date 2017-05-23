@@ -12,6 +12,8 @@
 * [#3438](https://github.com/bbatsov/rubocop/issues/3438): Add new `Style/FormatStringToken` cop. ([@backus][])
 * [#4342](https://github.com/bbatsov/rubocop/pull/4342): Add new `Lint/ScriptPermission` cop. ([@yhirano55][])
 * [#4145](https://github.com/bbatsov/rubocop/issues/4145): Add new `Style/YodaCondition` cop. ([@smakagon][])
+* [#4403](https://github.com/bbatsov/rubocop/pull/4403): Add public API `Cop.autocorrect_incompatible_with` for specifying other cops that should not autocorrect together. ([@backus][])
+* [#4354](https://github.com/bbatsov/rubocop/pull/4354): Add autocorrect to `Style/FormatString`. ([@hoshinotsuyoshi][])
 
 ### Changes
 
@@ -21,6 +23,7 @@
 * [#4320](https://github.com/bbatsov/rubocop/pull/4320): Update `Rails/OutputSafety` to disallow wrapping `raw` or `html_safe` with `safe_join`. ([@klesse413][])
 * [#4336](https://github.com/bbatsov/rubocop/issues/4336): Store `rubocop_cache` in safer directories. ([@jonas054][])
 * [#4361](https://github.com/bbatsov/rubocop/pull/4361): Use relative path for offense message in `Lint/DuplicateMethods`. ([@pocke][])
+* [#4385](https://github.com/bbatsov/rubocop/pull/4385): Include `.jb` file by default. ([@pocke][])
 
 ### Bug fixes
 
@@ -45,6 +48,7 @@
 * [#4371](https://github.com/bbatsov/rubocop/issues/4371): Prevent `Style/MethodName` from complaining about unary operator definitions. ([@drenmi][])
 * [#4366](https://github.com/bbatsov/rubocop/issues/4366): Prevent `Performance/RedundantMerge` from blowing up on double splat arguments. ([@drenmi][])
 * [#4352](https://github.com/bbatsov/rubocop/issues/4352): Fix the auto-correct of `Style/AndOr` when Enumerable accessors (`[]`) are used. ([@rrosenblum][])
+* [#4394](https://github.com/bbatsov/rubocop/issues/4394): [Fix #4394] Prevent some cops from breaking on safe navigation operator. ([@drenmi][])
 
 ## 0.48.1 (2017-04-03)
 
@@ -2779,3 +2783,4 @@
 [@klesse413]: https://github.com/klesse413
 [@gprado]: https://github.com/gprado
 [@yhirano55]: https://github.com/yhirano55
+[@hoshinotsuyoshi]: https://github.com/hoshinotsuyoshi
