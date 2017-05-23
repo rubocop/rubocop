@@ -50,6 +50,7 @@
 * [#4366](https://github.com/bbatsov/rubocop/issues/4366): Prevent `Performance/RedundantMerge` from blowing up on double splat arguments. ([@drenmi][])
 * [#4352](https://github.com/bbatsov/rubocop/issues/4352): Fix the auto-correct of `Style/AndOr` when Enumerable accessors (`[]`) are used. ([@rrosenblum][])
 * [#4394](https://github.com/bbatsov/rubocop/issues/4394): [Fix #4394] Prevent some cops from breaking on safe navigation operator. ([@drenmi][])
+* [#4393](https://github.com/bbatsov/rubocop/issues/4393): Prevent `Style/InverseMethods` from registering an offense for methods that are double negated. ([@rrosenblum][])
 
 ## 0.48.1 (2017-04-03)
 

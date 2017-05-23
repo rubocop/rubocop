@@ -42,6 +42,14 @@ describe RuboCop::Cop::Style::InverseMethods do
     expect_no_offenses('foo.none?')
   end
 
+  it 'allows an inverse method when double negation is used' do
+    expect_no_offenses('!!(string =~ /^\w+$/)')
+  end
+
+  it 'allows an inverse method with a block when double negation is used' do
+    expect_no_offenses('!!foo.reject { |e| !e }')
+  end
+
   context 'auto-correct' do
     it 'corrects !.none? wiht a symbol proc to any?' do
       new_source = autocorrect_source(cop, '!foo.none?(&:even?)')
