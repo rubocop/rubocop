@@ -1039,6 +1039,7 @@ Post.update_counters 5, comment_count: -1, action_count: 1
 
 # good
 user.update_attributes(website: 'example.com')
+FileUtils.touch('file')
 ```
 
 ### Important attributes

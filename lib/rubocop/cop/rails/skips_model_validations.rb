@@ -22,6 +22,7 @@ module RuboCop
       #
       #   # good
       #   user.update_attributes(website: 'example.com')
+      #   FileUtils.touch('file')
       class SkipsModelValidations < Cop
         MSG = 'Avoid using `%s` because it skips validations.'.freeze
 
@@ -36,6 +37,10 @@ module RuboCop
                                     update_columns
                                     update_counters].freeze
 
+        def_node_matcher :good_touch?, <<-PATTERN
+          (send (const nil :FileUtils) :touch ...)
+        PATTERN
+
         def on_send(node)
           return unless blacklist.include?(node.method_name.to_s)
 
@@ -44,6 +49,8 @@ module RuboCop
           if METHODS_WITH_ARGUMENTS.include?(method_name.to_s) && args.empty?
             return
           end
+
+          return if good_touch?(node)
 
           add_offense(node, :selector)
         end
