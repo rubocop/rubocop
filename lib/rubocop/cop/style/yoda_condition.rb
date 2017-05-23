@@ -12,15 +12,23 @@ module RuboCop
       #   # bad
       #   99 == foo
       #   "bar" == foo
+      #   42 >= foo
       #
       # @example
       #
       #   # good
       #   foo == 99
       #   foo == "bar"
+      #   for <= 42
       class YodaCondition < Cop
-        MSG = 'Reverse the order in conditional statement: `%s`.'.freeze
+        MSG = 'Reverse the order of the operands `%s`.'.freeze
         WHITELIST_TYPES = %i[lvar ivar send const regexp begin].freeze
+        REVERSE_COMPARISON = {
+          '<' => '>',
+          '<=' => '>=',
+          '>' => '<',
+          '>=' => '<='
+        }
 
         def on_send(node)
           return unless yoda_condition?(node)
@@ -62,9 +70,7 @@ module RuboCop
         end
 
         def reverse_comparison(operator)
-          {
-            '<' => '>', '<=' => '>=', '>' => '<', '>=' => '<='
-          }.fetch(operator.to_s, operator)
+          REVERSE_COMPARISON.fetch(operator.to_s, operator)
         end
       end
     end

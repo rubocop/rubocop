@@ -1014,7 +1014,8 @@ Style/WordArray:
   Enabled: true
 
 Style/YodaCondition:
-  Description: 'Do not use literals as the first operand of a comparison'
+  Description: 'Do not use literals as the first operand of a comparison.'
+  Reference: 'https://en.wikipedia.org/wiki/Yoda_conditions'
   Enabled: true
 
 Style/ZeroLengthPredicate:
