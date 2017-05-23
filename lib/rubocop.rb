@@ -440,6 +440,7 @@ require 'rubocop/cop/style/when_then'
 require 'rubocop/cop/style/while_until_do'
 require 'rubocop/cop/style/while_until_modifier'
 require 'rubocop/cop/style/word_array'
+require 'rubocop/cop/style/yoda_condition'
 require 'rubocop/cop/style/zero_length_predicate'
 
 require 'rubocop/cop/rails/action_filter'
