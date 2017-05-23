@@ -1642,6 +1642,7 @@ foo.blank?
 foo.any? { |f| f.even? }
 foo != bar
 foo == bar
+!!('foo' =~ /^\w+$/)
 ```
 
 ### Important attributes

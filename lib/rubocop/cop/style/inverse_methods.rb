@@ -26,6 +26,7 @@ module RuboCop
       #   foo.any? { |f| f.even? }
       #   foo != bar
       #   foo == bar
+      #   !!('foo' =~ /^\w+$/)
       class InverseMethods < Cop
         MSG = 'Use `%<inverse>s` instead of inverting `%<method>s`.'.freeze
         EQUALITY_METHODS = %i[== != =~ !~ <= >= < >].freeze
@@ -49,6 +50,7 @@ module RuboCop
         def on_send(node)
           inverse_candidate?(node) do |_method_call, method|
             return unless inverse_methods.key?(method)
+            return if negated?(node)
 
             add_offense(node,
                         :expression,
@@ -60,6 +62,7 @@ module RuboCop
         def on_block(node)
           inverse_block?(node) do |_method_call, method, _block|
             return unless inverse_blocks.key?(method)
+            return if negated?(node) && negated?(node.parent)
 
             add_offense(node,
                         :expression,
@@ -103,6 +106,8 @@ module RuboCop
           end
         end
 
+        private
+
         def inverse_methods
           @inverse_methods ||= cop_config['InverseMethods']
                                .merge(cop_config['InverseMethods'].invert)
@@ -111,6 +116,10 @@ module RuboCop
         def inverse_blocks
           @inverse_blocks ||= cop_config['InverseBlocks']
                               .merge(cop_config['InverseBlocks'].invert)
+        end
+
+        def negated?(node)
+          node.parent.respond_to?(:method?) && node.parent.method?(:!)
         end
 
         def not_to_receiver(node, method_call)
