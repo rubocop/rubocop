@@ -30,6 +30,10 @@ describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
           .to eq([format(msg, method_name)])
       end
     end
+
+    it 'accepts FileUtils.touch' do
+      expect_no_offenses("FileUtils.touch('file')")
+    end
   end
 
   context 'with methods that require at least an argument' do
