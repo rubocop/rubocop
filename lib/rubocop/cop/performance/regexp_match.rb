@@ -69,7 +69,7 @@ module RuboCop
         def_node_matcher :match_method?, <<-PATTERN
           {
             (send _recv :match _)
-            (send _recv :match _ (:int ...))
+            (send _recv :match _ (int ...))
           }
         PATTERN
 

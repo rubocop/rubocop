@@ -4,8 +4,9 @@
 
 ### Bug fixes
 
-[#4411](https://github.com/bbatsov/rubocop/issues/4411): Handle properly safe navigation in `Style/YodaCondition`. ([@bbatsov])
-Handle properly class variables and global variables in `Style/YodaCondition`. ([@bbatsov])
+* [#4411](https://github.com/bbatsov/rubocop/issues/4411): Handle properly safe navigation in `Style/YodaCondition`. ([@bbatsov][])
+* Handle properly class variables and global variables in `Style/YodaCondition`. ([@bbatsov][])
+* [#4407](https://github.com/bbatsov/rubocop/issues/4407): Prevent `Performance/RegexpMatch` from blowing up on `match` without arguments. ([@pocke][])
 
 ## 0.49.0 (2017-05-24)
 

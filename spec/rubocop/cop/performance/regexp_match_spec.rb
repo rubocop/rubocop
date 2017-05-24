@@ -307,5 +307,9 @@ describe RuboCop::Cop::Performance::RegexpMatch, :config do
         do_something
       end
     END
+
+    include_examples :accepts, '`match` without arguments', <<-END
+      code if match
+    END
   end
 end
