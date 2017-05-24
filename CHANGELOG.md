@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.49.0 (2017-05-24)
+
 ### New features
 
 * [#117](https://github.com/bbatsov/rubocop/issues/117): Add `--parallel` option for running RuboCop in multiple processes or threads. ([@jonas054][])
