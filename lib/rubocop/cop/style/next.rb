@@ -153,7 +153,7 @@ module RuboCop
         def end_range(node)
           source_buffer = node.source_range.source_buffer
           end_pos = node.loc.end.end_pos
-          begin_pos = node.loc.end.begin_pos - node.source_range.column
+          begin_pos = node.loc.end.begin_pos - node.loc.end.column
           begin_pos -= 1 if end_followed_by_whitespace_only?(source_buffer,
                                                              end_pos)
 

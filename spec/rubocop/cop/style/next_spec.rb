@@ -385,6 +385,31 @@ describe RuboCop::Cop::Style::Next, :config do
         END
       end
     end
+
+    it 'auto-corrects a misaligned end' do
+      new_source = autocorrect_source(cop, <<-END.strip_indent)
+        [1, 2, 3, 4].each do |num|
+          if !opts.nil?
+            puts num
+            if num != 2
+              puts 'hello'
+              puts 'world'
+            end
+         end
+        end
+      END
+
+      expect(new_source).to eq(<<-END.strip_indent)
+        [1, 2, 3, 4].each do |num|
+          next unless !opts.nil?
+          puts num
+          if num != 2
+            puts 'hello'
+            puts 'world'
+          end
+        end
+      END
+    end
   end
 
   it 'keeps comments when autocorrecting' do
