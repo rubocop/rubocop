@@ -37,11 +37,16 @@ describe RuboCop::Cop::Style::YodaCondition do
     end
   end
 
+  it_behaves_like 'accepts', 'b.value == 2'
+  it_behaves_like 'accepts', 'b&.value == 2'
+  it_behaves_like 'accepts', '@value == 2'
+  it_behaves_like 'accepts', '@@value == 2'
+  it_behaves_like 'accepts', 'b = 1; b == 2'
+  it_behaves_like 'accepts', '$var == 5'
   it_behaves_like 'accepts', 'foo == "bar"'
   it_behaves_like 'accepts', 'foo[0] > "bar" || baz != "baz"'
   it_behaves_like 'accepts', 'node = last_node.parent'
   it_behaves_like 'accepts', '(first_line - second_line) > 0'
-  it_behaves_like 'accepts', 'b&.value == 2'
 
   it_behaves_like 'offense', '"foo" == bar'
   it_behaves_like 'offense', 'nil == bar'
