@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#4411](https://github.com/bbatsov/rubocop/issues/4411): Handle properly safe navigation in `Style/YodaCondition`. ([@bbatsov][])
+* [#4412](https://github.com/bbatsov/rubocop/issues/4412): Handle properly literal comparisons in `Style/YodaCondition`. ([@bbatsov][])
 * Handle properly class variables and global variables in `Style/YodaCondition`. ([@bbatsov][])
 * [#4392](https://github.com/bbatsov/rubocop/issues/4392): Fix the auto-correct of `Style/Next` when the `end` is misaligned. ([@rrosenblum][])
 * [#4407](https://github.com/bbatsov/rubocop/issues/4407): Prevent `Performance/RegexpMatch` from blowing up on `match` without arguments. ([@pocke][])

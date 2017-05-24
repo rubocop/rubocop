@@ -47,6 +47,8 @@ describe RuboCop::Cop::Style::YodaCondition do
   it_behaves_like 'accepts', 'foo[0] > "bar" || baz != "baz"'
   it_behaves_like 'accepts', 'node = last_node.parent'
   it_behaves_like 'accepts', '(first_line - second_line) > 0'
+  it_behaves_like 'accepts', '5 == 6'
+  it_behaves_like 'accepts', '[1, 2, 3] <=> [4, 5, 6]'
 
   it_behaves_like 'offense', '"foo" == bar'
   it_behaves_like 'offense', 'nil == bar'

@@ -22,7 +22,7 @@ module RuboCop
       #   for <= 42
       class YodaCondition < Cop
         MSG = 'Reverse the order of the operands `%s`.'.freeze
-        WHITELIST_TYPES = %i[lvar ivar cvar gvar csend send const begin].freeze
+
         REVERSE_COMPARISON = {
           '<' => '>',
           '<=' => '>=',
@@ -41,7 +41,7 @@ module RuboCop
         def yoda_condition?(node)
           return false unless comparison_operator?(node)
 
-          !WHITELIST_TYPES.include?(node.receiver.type)
+          node.receiver.literal? && !node.arguments.first.literal?
         end
 
         def comparison_operator?(node)
