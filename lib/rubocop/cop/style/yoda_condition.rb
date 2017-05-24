@@ -22,7 +22,7 @@ module RuboCop
       #   for <= 42
       class YodaCondition < Cop
         MSG = 'Reverse the order of the operands `%s`.'.freeze
-        WHITELIST_TYPES = %i[lvar ivar send const regexp begin].freeze
+        WHITELIST_TYPES = %i[lvar ivar csend send const regexp begin].freeze
         REVERSE_COMPARISON = {
           '<' => '>',
           '<=' => '>=',

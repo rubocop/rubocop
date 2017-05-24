@@ -6,6 +6,9 @@ describe RuboCop::Cop::Style::YodaCondition do
   subject(:cop) { described_class.new }
   subject(:error_message) { described_class::MSG }
 
+  # needed because of usage of safe navigation operator
+  let(:ruby_version) { 2.3 }
+
   before { inspect_source(cop, source) }
 
   shared_examples 'accepts' do |code|
@@ -38,6 +41,7 @@ describe RuboCop::Cop::Style::YodaCondition do
   it_behaves_like 'accepts', 'foo[0] > "bar" || baz != "baz"'
   it_behaves_like 'accepts', 'node = last_node.parent'
   it_behaves_like 'accepts', '(first_line - second_line) > 0'
+  it_behaves_like 'accepts', 'b&.value == 2'
 
   it_behaves_like 'offense', '"foo" == bar'
   it_behaves_like 'offense', 'nil == bar'
