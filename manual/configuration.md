@@ -229,7 +229,19 @@ AllCops:
 
 All cops are then disabled by default, and only cops appearing in user
 configuration files are enabled. `Enabled: true` does not have to be
-set for cops in user configuration. They will be enabled anyway.
+set for cops in user configuration. They will be enabled anyway. It is also
+possible to enable entire departments by adding for example
+
+```yaml
+Style:
+  Enabled: true
+```
+
+The exception to the rule is the `Rails` department, which can not be enabled
+in its entirety this way. Setting `Rails: Enabled: true` will have the same
+effect as running with the `--rails` command line option, which in the context
+of `DisabledByDefault: true` means to make it possible to enable Rails cops
+individually.
 
 ```yaml
 AllCops:

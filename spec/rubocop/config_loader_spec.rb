@@ -565,6 +565,52 @@ describe RuboCop::ConfigLoader do
             expect(cop_enabled?(cop_class)).to be false
           end
         end
+
+        context 'and the Rails department is enabled' do
+          let(:config) do
+            <<-END.strip_indent
+              AllCops:
+                DisabledByDefault: true
+              Rails:
+                Enabled: true
+              Rails/ActionFilter:
+                EnforcedStyle: filter
+            END
+          end
+
+          it 'enables explicitly mentioned cops in that department' do
+            cop_class = RuboCop::Cop::Rails::ActionFilter
+            expect(cop_enabled?(cop_class)).to be true
+          end
+
+          it 'disables unmentioned cops in that department' do
+            cop_class = RuboCop::Cop::Rails::Date
+            expect(cop_enabled?(cop_class)).to be false
+          end
+        end
+
+        context 'and the Rails department is disabled' do
+          let(:config) do
+            <<-END.strip_indent
+              AllCops:
+                DisabledByDefault: true
+              Rails:
+                Enabled: false
+              Rails/ActionFilter:
+                Enabled: true
+            END
+          end
+
+          it 'disables explicitly mentioned cops in that department' do
+            cop_class = RuboCop::Cop::Rails::ActionFilter
+            expect(cop_enabled?(cop_class)).to be false
+          end
+
+          it 'disables unmentioned cops in that department' do
+            cop_class = RuboCop::Cop::Rails::Date
+            expect(cop_enabled?(cop_class)).to be false
+          end
+        end
       end
 
       context 'when EnabledByDefault is true' do
