@@ -10,6 +10,7 @@
 * [#4392](https://github.com/bbatsov/rubocop/issues/4392): Fix the auto-correct of `Style/Next` when the `end` is misaligned. ([@rrosenblum][])
 * [#4407](https://github.com/bbatsov/rubocop/issues/4407): Prevent `Performance/RegexpMatch` from blowing up on `match` without arguments. ([@pocke][])
 * [#4414](https://github.com/bbatsov/rubocop/issues/4414): Handle pseudo-assignments in `for` loops in `Style/ConditionalAssignment`. ([@bbatsov][])
+* [#4419](https://github.com/bbatsov/rubocop/issues/4419): Handle combination `AllCops: DisabledByDefault: true` and `Rails: Enabled: true`. ([@jonas054][])
 
 ## 0.49.0 (2017-05-24)
 

@@ -165,6 +165,12 @@ module RuboCop
       def handle_disabled_by_default(config, new_default_configuration)
         department_config = config.to_hash.reject { |cop| cop.include?('/') }
         department_config.each do |dept, dept_params|
+          # Rails is always disabled by default and the department's Enabled
+          # flag works like the --rails command line option, which is that when
+          # AllCops:DisabledByDefault is true, each Rails cop must still be
+          # explicitly mentioned in user configuration in order to be enabled.
+          next if dept == 'Rails'
+
           next unless dept_params['Enabled']
 
           new_default_configuration.each do |cop, params|
