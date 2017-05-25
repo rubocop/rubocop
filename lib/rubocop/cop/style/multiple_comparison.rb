@@ -15,7 +15,7 @@ module RuboCop
       #   a = 'a'
       #   foo if ['a', 'b', 'c'].include?(a)
       class MultipleComparison < Cop
-        MSG = 'Avoid comparing a variable with multiple items' \
+        MSG = 'Avoid comparing a variable with multiple items ' \
           'in a conditional, use `Array#include?` instead.'.freeze
 
         def on_if(node)
