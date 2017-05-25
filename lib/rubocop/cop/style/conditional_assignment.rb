@@ -301,6 +301,9 @@ module RuboCop
         def assignment_node(node)
           *_variable, assignment = *node
 
+          # ignore pseudo-assignments without rhs in for nodes
+          return if node.parent && node.parent.for_type?
+
           if assignment.begin_type? && assignment.children.one?
             assignment, = *assignment
           end

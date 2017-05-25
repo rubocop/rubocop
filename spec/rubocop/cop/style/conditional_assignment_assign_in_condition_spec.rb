@@ -767,6 +767,12 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       expect(cop.messages).to eq([described_class::ASSIGN_TO_CONDITION_MSG])
     end
 
+    context 'for loop' do
+      it 'ignores pseudo assignments in a for loop' do
+        expect_no_offenses('for i in [1, 2, 3]; puts i; end')
+      end
+    end
+
     context 'auto-correct' do
       it_behaves_like('single line condition auto-correct')
 
