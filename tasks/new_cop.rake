@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'rubocop'
+require 'rubocop/rspec/expect_offense'
+require 'parser/current'
 
 desc 'Generate a new cop template'
 task :new_cop, [:cop] do |_task, args|
@@ -12,6 +14,14 @@ task :new_cop, [:cop] do |_task, args|
       .downcase
   end
 
+  def prefix_lines_with(string, prefix)
+    string.gsub(/^/, prefix)
+  end
+
+  def indent(string, spaces)
+    prefix_lines_with(string, ' ' * spaces)
+  end
+
   cop_name = args[:cop] # Department/Name
   raise ArgumentError, 'One argument is required' unless cop_name
 
@@ -20,6 +30,26 @@ task :new_cop, [:cop] do |_task, args|
   unless badge.qualified?
     raise ArgumentError, 'Specify a cop name with Department/Name style'
   end
+
+  puts <<-END.strip_indent
+    Provide an example of code that you would like RuboCop to register an offense for.
+    For example, if you wanted to enforce using fail instead of raise:
+
+        raise
+        ^^^^^ Use `fail` instead of `raise` to signal exceptions.
+
+    Hit CTRL-d when you are done:
+
+  END
+
+  example = $stdin.read.chomp
+
+  indented_example = indent(example, 10)
+  annotated        =
+    RuboCop::RSpec::ExpectOffense::AnnotatedSource.parse(example)
+  plain_source     = indent(annotated.plain_source, 3).chomp
+  comment_example  = indent(prefix_lines_with(plain_source, '#'), 10)
+  node_pattern     = indent(Parser::CurrentRuby.parse(plain_source).to_s, 14)
 
   cop_code = <<-END.strip_indent
     # frozen_string_literal: true
@@ -32,10 +62,7 @@ task :new_cop, [:cop] do |_task, args|
           #
           # @example
           #   # bad
-          #   bad_method()
-          #
-          #   # bad
-          #   bad_method(args)
+#{comment_example}
           #
           #   # good
           #   good_method()
@@ -52,7 +79,7 @@ task :new_cop, [:cop] do |_task, args|
             MSG = 'Message of #{badge.cop_name}'.freeze
 
             def_node_matcher :bad_method?, <<-PATTERN
-              (send nil :bad_method ...)
+#{node_pattern}
             PATTERN
 
             def on_send(node)
@@ -80,10 +107,9 @@ task :new_cop, [:cop] do |_task, args|
       #
       # For example
       it 'registers an offense for offending code' do
-        inspect_source(cop, 'bad_method')
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages)
-          .to eq(['Message of #{badge.cop_name}'])
+        expect_offense(<<-RUBY.strip_indent)
+#{indented_example}
+        RUBY
       end
 
       it 'accepts' do
