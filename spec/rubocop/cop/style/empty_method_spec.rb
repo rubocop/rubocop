@@ -182,5 +182,16 @@ describe RuboCop::Cop::Style::EmptyMethod, :config do
                        '  # bar',
                        'end']
     end
+
+    context 'when method is nested in class scope' do
+      it_behaves_like 'code with offense',
+                      ['class Foo',
+                       '  def bar; end',
+                       'end'].join("\n"),
+                      ['class Foo',
+                       '  def bar',
+                       '  end',
+                       'end'].join("\n")
+    end
   end
 end
