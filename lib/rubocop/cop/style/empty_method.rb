@@ -75,9 +75,10 @@ module RuboCop
         def corrected(node)
           method_name, args, _body, scope = method_def_node_parts(node)
 
-          arguments = args.source unless args.children.empty?
-          joint = compact_style? ? '; ' : "\n"
-          scope = scope ? 'self.' : ''
+          arguments = !args.children.empty? ? args.source : ''
+          indent    = ' ' * node.loc.column
+          joint     = compact_style? ? '; ' : "\n#{indent}"
+          scope     = scope ? 'self.' : ''
 
           ["def #{scope}#{method_name}#{arguments}", 'end'].join(joint)
         end
