@@ -34,9 +34,14 @@ describe RuboCop::CLI, :isolated_environment do
       end
 
       context 'on Unix-like systems' do
-        it 'prints a message' do
-          cli.run ['--parallel']
+        it 'prints a message if --debug is specified' do
+          cli.run ['--parallel', '--debug']
           expect($stdout.string).to match(/Running parallel inspection/)
+        end
+
+        it 'does not print a message if --debug is not specified' do
+          cli.run ['--parallel']
+          expect($stdout.string).not_to match(/Running parallel inspection/)
         end
       end
     end
