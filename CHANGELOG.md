@@ -14,6 +14,10 @@
 * [#4422](https://github.com/bbatsov/rubocop/issues/4422): Fix missing space in message for `Style/MultipleComparison`. ([@timrogers][])
 * [#4420](https://github.com/bbatsov/rubocop/issues/4420): Ensure `Style/EmptyMethod` honours indentation when auto-correcting. ([@drenmi][])
 
+### Changes
+
+* [#4436](https://github.com/bbatsov/rubocop/pull/4436): Display 'Running parallel inspection' only with --debug. ([@pocke][])
+
 ## 0.49.0 (2017-05-24)
 
 ### New features
