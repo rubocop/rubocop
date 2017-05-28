@@ -63,6 +63,7 @@ require 'rubocop/cop/commissioner'
 require 'rubocop/cop/corrector'
 require 'rubocop/cop/force'
 require 'rubocop/cop/severity'
+require 'rubocop/cop/generator'
 
 require 'rubocop/cop/variable_force'
 require 'rubocop/cop/variable_force/branch'
