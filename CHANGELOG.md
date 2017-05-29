@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.49.1 (2017-05-29)
+
 ### Bug fixes
 
 * [#4411](https://github.com/bbatsov/rubocop/issues/4411): Handle properly safe navigation in `Style/YodaCondition`. ([@bbatsov][])
