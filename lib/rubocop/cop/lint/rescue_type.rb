@@ -53,22 +53,29 @@ module RuboCop
                       format(MSG, invalid_exceptions.map(&:source).join(', ')))
         end
 
+        private
+
         def autocorrect(node)
           rescued, _, _body = *node
-          exceptions = *rescued
-          valid_exceptions = exceptions - invalid_exceptions(exceptions)
-          correction = valid_exceptions.map(&:source).join(', ')
-          correction = " #{correction}" unless correction.empty?
           range = Parser::Source::Range.new(node.loc.expression,
                                             node.loc.keyword.end_pos,
                                             rescued.loc.expression.end_pos)
 
           lambda do |corrector|
-            corrector.replace(range, correction)
+            corrector.replace(range, correction(*rescued))
           end
         end
 
-        private
+        def correction(*exceptions)
+          correction = valid_exceptions(exceptions).map(&:source).join(', ')
+          correction = " #{correction}" unless correction.empty?
+
+          correction
+        end
+
+        def valid_exceptions(exceptions)
+          exceptions - invalid_exceptions(exceptions)
+        end
 
         def invalid_exceptions(exceptions)
           exceptions.select do |exception|
