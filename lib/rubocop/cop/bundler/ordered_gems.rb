@@ -30,18 +30,21 @@ module RuboCop
         MSG = 'Gems should be sorted in an alphabetical order within their '\
               'section of the Gemfile. '\
               'Gem `%s` should appear before `%s`.'.freeze
+
         def investigate(processed_source)
           return if processed_source.ast.nil?
           gem_declarations(processed_source.ast)
             .each_cons(2) do |previous, current|
             next unless consecutive_lines(previous, current)
             next unless case_insensitive_out_of_order?(
-              current.children[2].children.first.to_s,
-              previous.children[2].children.first.to_s
+              gem_name(current),
+              gem_name(previous)
             )
             register_offense(previous, current)
           end
         end
+
+        private
 
         def case_insensitive_out_of_order?(string_a, string_b)
           string_a.downcase < string_b.downcase
@@ -53,15 +56,12 @@ module RuboCop
         end
 
         def register_offense(previous, current)
-          add_offense(
-            current,
-            current.source_range,
-            format(
-              MSG,
-              current.children[2].children.first,
-              previous.children[2].children.first
-            )
-          )
+          add_offense(current, :expression,
+                      format(MSG, gem_name(current), gem_name(previous)))
+        end
+
+        def gem_name(declaration_node)
+          declaration_node.first_argument.str_content
         end
 
         def autocorrect(node)
@@ -105,7 +105,7 @@ module RuboCop
         end
 
         def_node_search :gem_declarations, <<-PATTERN
-          (:send, nil, :gem, ...)
+          (:send nil :gem ...)
         PATTERN
       end
     end
