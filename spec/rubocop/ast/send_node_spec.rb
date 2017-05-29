@@ -526,6 +526,26 @@ describe RuboCop::AST::SendNode do
     end
   end
 
+  describe '#const_receiver?' do
+    context 'with a self receiver' do
+      let(:source) { 'self.bar' }
+
+      it { expect(send_node.const_receiver?).to be_falsey }
+    end
+
+    context 'with a non-constant receiver' do
+      let(:source) { 'foo.bar' }
+
+      it { expect(send_node.const_receiver?).to be_falsey }
+    end
+
+    context 'with a constant receiver' do
+      let(:source) { 'Foo.bar' }
+
+      it { expect(send_node.const_receiver?).to be_truthy }
+    end
+  end
+
   describe '#implicit_call?' do
     context 'with an implicit call method' do
       let(:source) { 'foo.(:bar)' }

@@ -125,6 +125,14 @@ module RuboCop
         receiver && receiver.self_type?
       end
 
+      # Checks whether the receiver of this method invocation is a `const` node.
+      #
+      # @return [Boolean] whether the receiver of this method invocation
+      #                   is a `const` node
+      def const_receiver?
+        receiver && receiver.const_type?
+      end
+
       # Checks whether the method call is of the implicit form of `#call`,
       # e.g. `foo.(bar)`.
       #
