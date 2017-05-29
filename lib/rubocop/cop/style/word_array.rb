@@ -93,7 +93,8 @@ module RuboCop
         def complex_content?(strings)
           strings.any? do |s|
             string = s.str_content
-            !string.valid_encoding? || string !~ word_regex || string =~ / /
+            !string.dup.force_encoding(::Encoding::UTF_8).valid_encoding? ||
+              string !~ word_regex || string =~ / /
           end
         end
 

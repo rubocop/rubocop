@@ -220,6 +220,20 @@ describe RuboCop::Cop::Style::WordArray, :config do
         ]
       END
     end
+
+    it "doesn't fail on strings which are not valid UTF-8" \
+       'and encoding: binary is specified' do
+      expect_no_offenses(<<-'END'.strip_indent)
+        # -*- encoding: binary -*-
+        ["\xC0",
+         "\xC2\x4a",
+         "\xC2\xC2",
+         "\x4a\x82",
+         "\x82\x82",
+         "\xe1\x82\x4a",
+        ]
+      END
+    end
   end
 
   context 'with a custom WordRegex configuration' do
