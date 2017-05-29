@@ -7,11 +7,27 @@ module RuboCop
       #
       # @example
       #
+      #   # EnforcedStyleInsidePipes: no_space (default)
+      #
       #   # bad
       #   {}.each { | x,  y |puts x }
+      #   ->( x,  y ) { puts x }
       #
       #   # good
       #   {}.each { |x, y| puts x }
+      #   ->(x, y) { puts x }
+      #
+      # @example
+      #
+      #   # EnforcedStyleInsidePipes: space
+      #
+      #   # bad
+      #   {}.each { |x,  y| puts x }
+      #   ->(x,  y) { puts x }
+      #
+      #   # good
+      #   {}.each { | x, y | puts x }
+      #   ->( x, y ) { puts x }
       class SpaceAroundBlockParameters < Cop
         include ConfigurableEnforcedStyle
 
@@ -22,6 +38,7 @@ module RuboCop
 
           opening_pipe = args.loc.begin
           closing_pipe = args.loc.end
+          return if opening_pipe.nil? || closing_pipe.nil?
 
           check_inside_pipes(args.children, opening_pipe, closing_pipe)
 
