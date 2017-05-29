@@ -787,7 +787,7 @@ describe RuboCop::CLI, :isolated_environment do
                                       'y ',
                                       'puts x'])
           create_file('example2.rb', <<-END.strip_indent)
-            # encoding: utf-8
+            # frozen_string_literal: true
 
             \tx
             def a
@@ -822,8 +822,8 @@ describe RuboCop::CLI, :isolated_environment do
                     ' ^',
                     'example2.rb:1:1: C: Incorrect indentation detected' \
                     ' (column 0 instead of 1).',
-                    '# encoding: utf-8',
-                    '^^^^^^^^^^^^^^^^^',
+                    '# frozen_string_literal: true',
+                    '^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',
                     'example2.rb:3:1: C: Tab detected.',
                     "\tx",
                     '^',
@@ -863,13 +863,13 @@ describe RuboCop::CLI, :isolated_environment do
 
       context 'when emacs format is specified' do
         it 'outputs with emacs format' do
-          create_file('example1.rb', ['# encoding: utf-8',
+          create_file('example1.rb', ['# frozen_string_literal: true',
                                       '',
                                       'x= 0 ',
                                       'y ',
                                       'puts x'])
           create_file('example2.rb', <<-END.strip_indent)
-            # encoding: utf-8
+            # frozen_string_literal: true
 
             \tx = 0
             puts x

@@ -21,7 +21,7 @@ describe RuboCop::Runner, :isolated_environment do
     subject(:runner) { described_class.new(options, RuboCop::ConfigStore.new) }
     context 'if there are no offenses in inspected files' do
       let(:source) { <<-END.strip_indent }
-        # coding: utf-8
+        # frozen_string_literal: true
 
         def valid_code; end
       END
@@ -33,7 +33,7 @@ describe RuboCop::Runner, :isolated_environment do
 
     context 'if there is an offense in an inspected file' do
       let(:source) { <<-END.strip_indent }
-        # coding: utf-8
+        # frozen_string_literal: true
 
         def INVALID_CODE; end
       END
@@ -92,7 +92,7 @@ describe RuboCop::Runner, :isolated_environment do
         {
           formatters: [['progress', formatter_output_path]],
           stdin: <<-END.strip_indent
-            # coding: utf-8
+            # frozen_string_literal: true
 
             def INVALID_CODE; end
           END
@@ -146,7 +146,7 @@ describe RuboCop::Runner, :isolated_environment do
 
     context 'if there is an offense in an inspected file' do
       let(:source) { <<-END.strip_indent }
-        # coding: utf-8
+        # frozen_string_literal: true
         class Klass
         end
       END

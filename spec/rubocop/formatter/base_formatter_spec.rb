@@ -15,7 +15,7 @@ module RuboCop
 
           create_file('4_offenses.rb', ['puts x ', 'test;', 'top;', '#' * 90])
 
-          create_file('no_offense.rb', '# encoding: utf-8')
+          create_file('no_offense.rb', '# frozen_string_literal: true')
 
           allow(SimpleTextFormatter).to receive(:new).and_return(formatter)
           $stdout = StringIO.new

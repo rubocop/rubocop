@@ -59,11 +59,6 @@ Style/DocumentationMethod:
     - 'spec/**/*'
     - 'test/**/*'
 
-Style/Encoding:
-  Description: 'Use UTF-8 as the source file encoding.'
-  StyleGuide: '#utf-8'
-  Enabled: false
-
 Style/ImplicitRuntimeError:
   Description: >-
                  Use `raise` or `fail` with an explicit exception class and

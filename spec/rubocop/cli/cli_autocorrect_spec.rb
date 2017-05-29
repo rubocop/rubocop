@@ -1088,14 +1088,14 @@ describe RuboCop::CLI, :isolated_environment do
 
   it 'can correct TrailingBlankLines and TrailingWhitespace offenses' do
     create_file('example.rb',
-                ['# encoding: utf-8',
+                ['# frozen_string_literal: true',
                  '',
                  '  ',
                  '',
                  ''])
     expect(cli.run(%w[--auto-correct --format emacs])).to eq(0)
     expect(IO.read('example.rb')).to eq(<<-END.strip_indent)
-      # encoding: utf-8
+      # frozen_string_literal: true
     END
     expect($stdout.string)
       .to eq(["#{abs('example.rb')}:2:1: C: [Corrected] 3 trailing " \

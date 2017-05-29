@@ -6,6 +6,10 @@
 
 * [#4443](https://github.com/bbatsov/rubocop/pull/4443): Prevent `Style/YodaCondition` from breaking `not LITERAL`. ([@pocke][])
 
+### Changes
+
+* [#4444](https://github.com/bbatsov/rubocop/pull/4444): Make `Style/Encoding` cop enabled by default. ([@deivid-rodriguez][])
+
 ## 0.49.1 (2017-05-29)
 
 ### Bug fixes
