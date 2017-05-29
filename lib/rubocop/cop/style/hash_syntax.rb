@@ -70,18 +70,18 @@ module RuboCop
         MSG_HASH_ROCKETS = 'Use hash rockets syntax.'.freeze
 
         def on_hash(node)
-          return if node.pairs.empty?
+          pairs = node.pairs
 
-          @force_hash_rockets = force_hash_rockets?(node.pairs)
+          return if pairs.empty?
 
-          if style == :hash_rockets || @force_hash_rockets
-            hash_rockets_check(node.pairs)
+          if style == :hash_rockets || force_hash_rockets?(pairs)
+            hash_rockets_check(pairs)
           elsif style == :ruby19_no_mixed_keys
-            ruby19_no_mixed_keys_check(node.pairs)
+            ruby19_no_mixed_keys_check(pairs)
           elsif style == :no_mixed_keys
-            no_mixed_keys_check(node.pairs)
+            no_mixed_keys_check(pairs)
           else
-            ruby19_check(node.pairs)
+            ruby19_check(pairs)
           end
         end
 
@@ -94,7 +94,7 @@ module RuboCop
         end
 
         def ruby19_no_mixed_keys_check(pairs)
-          if @force_hash_rockets
+          if force_hash_rockets?
             check(pairs, ':', MSG_HASH_ROCKETS)
           elsif sym_indices?(pairs)
             check(pairs, '=>', MSG_19)
@@ -113,7 +113,7 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            if style == :hash_rockets || @force_hash_rockets
+            if style == :hash_rockets || force_hash_rockets?
               autocorrect_hash_rockets(corrector, node)
             elsif style == :ruby19_no_mixed_keys || style == :no_mixed_keys
               autocorrect_no_mixed_keys(corrector, node)
@@ -202,7 +202,7 @@ module RuboCop
           end
         end
 
-        def force_hash_rockets?(pairs)
+        def force_hash_rockets?(pairs = [])
           @force_hash_rockets ||= begin
             cop_config['UseHashRocketsWithSymbolValues'] &&
               pairs.map(&:value).any?(&:sym_type?)
