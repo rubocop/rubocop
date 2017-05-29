@@ -13,6 +13,8 @@
 * [#4419](https://github.com/bbatsov/rubocop/issues/4419): Handle combination `AllCops: DisabledByDefault: true` and `Rails: Enabled: true`. ([@jonas054][])
 * [#4422](https://github.com/bbatsov/rubocop/issues/4422): Fix missing space in message for `Style/MultipleComparison`. ([@timrogers][])
 * [#4420](https://github.com/bbatsov/rubocop/issues/4420): Ensure `Style/EmptyMethod` honours indentation when auto-correcting. ([@drenmi][])
+* [#4441](https://github.com/bbatsov/rubocop/pull/4441): Prevent `Layout/SpaceAroundBlockParameters` from breaking on lambda. ([@pocke][])
+
 
 ### Changes
 

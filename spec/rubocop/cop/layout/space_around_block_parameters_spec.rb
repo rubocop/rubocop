@@ -11,6 +11,10 @@ describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
     it 'skips lambda without args' do
       expect_no_offenses('->() { puts "a" }')
     end
+
+    it 'skips lambda without parens' do
+      expect_no_offenses('->a { puts a }')
+    end
   end
 
   context 'when EnforcedStyleInsidePipes is no_space' do
@@ -31,6 +35,10 @@ describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       expect_no_offenses('{}.each { |x,y| puts x }')
     end
 
+    it 'accepts a lambda with spaces in the right places' do
+      expect_no_offenses('->(x, y) { puts x }')
+    end
+
     it 'registers an offense for space before first parameter' do
       expect_offense(<<-RUBY.strip_indent)
         {}.each { | x| puts x }
@@ -49,6 +57,20 @@ describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       expect_offense(<<-RUBY.strip_indent)
         {}.each { |x, y|puts x }
                        ^ Space after closing `|` missing.
+      RUBY
+    end
+
+    it 'registers an offense to a lambda for space before first parameter' do
+      expect_offense(<<-RUBY.strip_indent)
+        ->( x, y) { puts x }
+           ^ Space before first block parameter detected.
+      RUBY
+    end
+
+    it 'registers an offense to a lambda for space after last parameter' do
+      expect_offense(<<-RUBY.strip_indent)
+        ->(x, y  ) { puts x }
+               ^^ Space after last block parameter detected.
       RUBY
     end
 
@@ -85,6 +107,12 @@ describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
                                       '{}.each { |  x=5,  (y,*z) |puts x }')
       expect(new_source).to eq('{}.each { |x=5, (y,*z)| puts x }')
     end
+
+    it 'auto-corrects offenses for a lambda' do
+      new_source = autocorrect_source(cop,
+                                      '->(  a,  b, c) { puts a }')
+      expect(new_source).to eq('->(a, b, c) { puts a }')
+    end
   end
 
   context 'when EnforcedStyleInsidePipes is space' do
@@ -103,6 +131,10 @@ describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
     it 'accepts a block parameter without preceding space' do
       # This is checked by Layout/SpaceAfterComma.
       expect_no_offenses('{}.each { | x,y | puts x }')
+    end
+
+    it 'accepts a lambda with spaces in the right places' do
+      expect_no_offenses('->( x, y ) { puts x }')
     end
 
     it 'registers an offense for no space before first parameter' do
@@ -140,6 +172,36 @@ describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       RUBY
     end
 
+    it 'registers an offense to a lambda for no space before first parameter' do
+      expect_offense(<<-RUBY.strip_indent)
+        ->(x ) { puts x }
+           ^ Space before first block parameter missing.
+      RUBY
+    end
+
+    it 'registers an offense to a lambda for no space after last parameter' do
+      expect_offense(<<-RUBY.strip_indent)
+        ->( x, y) { puts x }
+               ^ Space after last block parameter missing.
+      RUBY
+    end
+
+    it 'registers an offense to a lambda for extra space' \
+       'before first parameter' do
+      expect_offense(<<-RUBY.strip_indent)
+        ->(  x ) { puts x }
+           ^ Extra space before first block parameter detected.
+      RUBY
+    end
+
+    it 'registers an offense to a lambda for multiple spaces' \
+       'after last parameter' do
+      expect_offense(<<-RUBY.strip_indent)
+        ->( x, y   ) { puts x }
+                 ^^ Extra space after last block parameter detected.
+      RUBY
+    end
+
     it 'accepts line break after closing pipe' do
       expect_no_offenses(<<-END.strip_indent)
         {}.each do | x, y |
@@ -172,6 +234,12 @@ describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       new_source = autocorrect_source(cop,
                                       '{}.each { |  x=5,  (y,*z)|puts x }')
       expect(new_source).to eq('{}.each { | x=5, (y,*z) | puts x }')
+    end
+
+    it 'auto-corrects offenses' do
+      new_source = autocorrect_source(cop,
+                                      '->(  x,  y) { puts x }')
+      expect(new_source).to eq('->( x, y ) { puts x }')
     end
   end
 end
