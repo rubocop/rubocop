@@ -514,6 +514,11 @@ Style/EndBlock:
   StyleGuide: '#no-END-blocks'
   Enabled: true
 
+Style/Encoding:
+  Description: 'Use UTF-8 as the source file encoding.'
+  StyleGuide: '#utf-8'
+  Enabled: true
+
 Style/EvenOdd:
   Description: 'Favor the use of Integer#even? && Integer#odd?'
   StyleGuide: '#predicate-methods'

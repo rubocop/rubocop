@@ -10,10 +10,6 @@ AllCops:
     - 'tmp/**/*'
   TargetRubyVersion: 2.0
 
-Style/Encoding:
-  EnforcedStyle: never
-  Enabled: true
-
 Style/FrozenStringLiteralComment:
   EnforcedStyle: always
 

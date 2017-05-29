@@ -12,7 +12,7 @@ describe 'isolated environment', :isolated_environment do
   # rspec.
   it 'is not affected by a config file above the work directory' do
     create_file('../.rubocop.yml', ['inherit_from: missing_file.yml'])
-    create_file('ex.rb', ['# encoding: utf-8'])
+    create_file('ex.rb', ['# frozen_string_literal: true'])
     # A return value of 0 means that the erroneous config file was not read.
     expect(cli.run([])).to eq(0)
   end

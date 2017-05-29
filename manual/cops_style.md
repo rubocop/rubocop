@@ -1021,7 +1021,7 @@ SupportedStyles | compact, expanded
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks whether the source file has a utf-8 encoding
 comment or not.

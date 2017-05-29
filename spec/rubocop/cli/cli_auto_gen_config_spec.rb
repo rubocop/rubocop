@@ -88,7 +88,7 @@ describe RuboCop::CLI, :isolated_environment do
                                   'y ',
                                   'puts x'])
       create_file('example2.rb', <<-END.strip_indent)
-        # encoding: utf-8
+        # frozen_string_literal: true
 
         \tx = 0
         puts x
@@ -193,7 +193,7 @@ describe RuboCop::CLI, :isolated_environment do
                                   '#' * 85,
                                   'y ',
                                   'puts x'])
-      create_file('example2.rb', ['# encoding: utf-8',
+      create_file('example2.rb', ['# frozen_string_literal: true',
                                   '',
                                   '#' * 85,
                                   "\tx = 0",
@@ -272,13 +272,13 @@ describe RuboCop::CLI, :isolated_environment do
 
     it 'does not generate configuration for the Syntax cop' do
       create_file('example1.rb', <<-END.strip_indent)
-        # encoding: utf-8
+        # frozen_string_literal: true
 
         x = <  # Syntax error
         puts x
       END
       create_file('example2.rb', <<-END.strip_indent)
-        # encoding: utf-8
+        # frozen_string_literal: true
 
         \tx = 0
         puts x
@@ -376,7 +376,7 @@ describe RuboCop::CLI, :isolated_environment do
                                   'y ',
                                   'puts x'])
       create_file('example2.rb', <<-END.strip_indent)
-        # encoding: utf-8
+        # frozen_string_literal: true
 
         \tx = 0
         puts x
