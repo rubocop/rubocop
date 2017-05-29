@@ -6,7 +6,7 @@ describe RuboCop::Cop::Layout::LeadingCommentSpace do
   it 'registers an offense for comment without leading space' do
     expect_offense(<<-RUBY.strip_indent)
       #missing space
-      ^^^^^^^^^^^^^^ Missing space after #.
+      ^^^^^^^^^^^^^^ Missing space after `#`.
     RUBY
   end
 
@@ -37,42 +37,42 @@ describe RuboCop::Cop::Layout::LeadingCommentSpace do
     expect_offense(<<-RUBY.strip_indent)
       test
       #!/usr/bin/ruby
-      ^^^^^^^^^^^^^^^ Missing space after #.
+      ^^^^^^^^^^^^^^^ Missing space after `#`.
     RUBY
   end
 
   context 'file named config.ru' do
     it 'does not register an offense for #\ on first line' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-'RUBY'.strip_indent, 'config.ru')
         #\ -w -p 8765
         test
       RUBY
     end
 
     it 'registers an offense for #\ after the first line' do
-      inspect_source(cop,
-                     ['test',
-                      '#\ -w -p 8765'],
-                     '/some/dir/config.ru')
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-'RUBY'.strip_indent, 'config.ru')
+        test
+        #\ -w -p 8765
+        ^^^^^^^^^^^^^ Missing space after `#`.
+      RUBY
     end
   end
 
   context 'file not named config.ru' do
     it 'registers an offense for #\ on first line' do
-      inspect_source(cop,
-                     ['#\ -w -p 8765',
-                      'test'],
-                     '/some/dir/test_case.rb')
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-'RUBY'.strip_indent, 'test/test_case.rb')
+        #\ -w -p 8765
+        ^^^^^^^^^^^^^ Missing space after `#`.
+        test
+       RUBY
     end
 
     it 'registers an offense for #\ after the first line' do
-      inspect_source(cop,
-                     ['test',
-                      '#\ -w -p 8765'],
-                     '/some/dir/test_case.rb')
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-'RUBY'.strip_indent, 'test/test_case.rb')
+        test
+        #\ -w -p 8765
+        ^^^^^^^^^^^^^ Missing space after `#`.
+      RUBY
     end
   end
 
