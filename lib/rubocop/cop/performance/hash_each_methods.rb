@@ -43,6 +43,8 @@ module RuboCop
           end
         end
 
+        private
+
         def check_argument(variable)
           return unless variable.block_argument?
           (@args ||= {})[variable.name] = variable.used?
@@ -51,12 +53,10 @@ module RuboCop
         def autocorrect(node)
           receiver, _second_method = *node
           caller, first_method = *receiver
+
           lambda do |corrector|
-            if first_method == :hash
-              method = @args.values.first ? :key : :value
-              new_source = receiver.source + ".each_#{method}"
-              corrector.replace(node.loc.expression, new_source)
-              correct_args(node, corrector)
+            if receiver.method?(:hash)
+              correct_hash(node, corrector)
             else
               new_source = caller.source + ".each_#{first_method[0..-2]}"
               corrector.replace(node.loc.expression, new_source)
@@ -64,14 +64,20 @@ module RuboCop
           end
         end
 
-        private
+        def correct_hash(node, corrector)
+          method = @args.values.first ? :key : :value
+          new_source = node.receiver.source + ".each_#{method}"
+
+          corrector.replace(node.loc.expression, new_source)
+
+          correct_args(node, corrector)
+        end
 
         def correct_args(node, corrector)
           args = node.parent.children[1]
           used_arg = "|#{@args.detect { |_k, v| v }.first}|"
-          args_range = range_between(args.loc.begin.begin_pos,
-                                     args.loc.end.end_pos)
-          corrector.replace(args_range, used_arg)
+
+          corrector.replace(args.source_range, used_arg)
         end
 
         def range(outer_node)
