@@ -28,13 +28,22 @@ module RuboCop
         return if children.size < 2
 
         line = start.loc.line
-        min = children.min_by { |n| n.loc.first_line }
+
+        min = first_by_line(children)
         return if line != min.loc.first_line
 
-        max = children.max_by { |n| n.loc.last_line }
+        max = last_by_line(children)
         return if line == max.loc.last_line
 
-        add_offense(min, :expression, self.class::MSG)
+        add_offense(min, :expression)
+      end
+
+      def first_by_line(nodes)
+        nodes.min_by { |n| n.loc.first_line }
+      end
+
+      def last_by_line(nodes)
+        nodes.max_by { |n| n.loc.last_line }
       end
     end
   end
