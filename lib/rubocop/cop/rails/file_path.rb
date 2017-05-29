@@ -57,7 +57,7 @@ module RuboCop
         end
 
         def string_with_slash?(node)
-          node.type == :str && node.source =~ %r{/}
+          node.str_type? && node.source =~ %r{/}
         end
 
         def register_offense(node)

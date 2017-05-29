@@ -99,7 +99,7 @@ module RuboCop
         # If the condition is parenthesized we recurse and check for any
         # complex expressions within it.
         def complex_condition?(condition)
-          if condition.type == :begin
+          if condition.begin_type?
             condition.to_a.any? { |x| complex_condition?(x) }
           else
             non_complex_type?(condition) ? false : true

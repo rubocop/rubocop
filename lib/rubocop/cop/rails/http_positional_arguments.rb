@@ -56,11 +56,11 @@ module RuboCop
         end
 
         def special_keyword_arg?(node)
-          KEYWORD_ARGS.include?(node.children.first) if node.type == :sym
+          KEYWORD_ARGS.include?(node.children.first) if node.sym_type?
         end
 
         def format_arg?(node)
-          node.children.first == :format if node.type == :sym
+          node.children.first == :format if node.sym_type?
         end
 
         def convert_hash_data(data, type)
