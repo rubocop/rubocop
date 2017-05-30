@@ -19,7 +19,8 @@ module RuboCop
         'files'    => FileListFormatter,
         'offenses' => OffenseCountFormatter,
         'disabled' => DisabledLinesFormatter,
-        'worst'    => WorstOffendersFormatter
+        'worst'    => WorstOffendersFormatter,
+        'tap'      => TapFormatter
       }.freeze
 
       FORMATTER_APIS = %i[started finished].freeze

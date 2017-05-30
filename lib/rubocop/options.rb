@@ -319,6 +319,7 @@ module RuboCop
                              '  [fi]les',
                              '  [o]ffenses',
                              '  [w]orst',
+                             '  [t]ap',
                              '  custom formatter class name'],
       out:                  ['Write output to a file instead of STDOUT.',
                              'This option applies to the previously',
