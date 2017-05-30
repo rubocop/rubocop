@@ -127,7 +127,7 @@ module RuboCop
           block_method, args = *node
 
           # Check for unparenthesized args' preceding and trailing whitespaces.
-          remove_unparenthesized_whitespaces(corrector, node)
+          remove_unparenthesized_whitespace(corrector, node)
 
           # Avoid correcting to `lambdado` by inserting whitespace
           # if none exists before or after the lambda arguments.
@@ -186,18 +186,28 @@ module RuboCop
           arg_node.sibling_index > 1
         end
 
-        def remove_unparenthesized_whitespaces(corrector, node)
-          block_method, args = *node
-          return unless unparenthesized_literal_args?(args)
-          # First, remove leading whitespaces (between arrow and args)
-          corrector.remove_preceding(
-            args.source_range,
-            args.source_range.begin_pos - block_method.source_range.end_pos
-          )
+        def remove_unparenthesized_whitespace(corrector, node)
+          args = node.arguments
 
-          # Then, remove trailing whitespaces (between args and 'do')
-          delta = node.loc.begin.begin_pos - args.source_range.end_pos - 1
-          corrector.remove_preceding(node.loc.begin, delta)
+          return unless unparenthesized_literal_args?(args)
+
+          remove_leading_whitespace(node, corrector)
+          remove_trailing_whitespace(node, corrector)
+        end
+
+        def remove_leading_whitespace(node, corrector)
+          corrector.remove_preceding(
+            node.arguments.source_range,
+            node.arguments.source_range.begin_pos -
+              node.send_node.source_range.end_pos
+          )
+        end
+
+        def remove_trailing_whitespace(node, corrector)
+          corrector.remove_preceding(
+            node.loc.begin,
+            node.loc.begin.begin_pos - node.arguments.source_range.end_pos - 1
+          )
         end
 
         def unparenthesized_literal_args?(args)
