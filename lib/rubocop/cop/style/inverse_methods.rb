@@ -30,6 +30,7 @@ module RuboCop
       class InverseMethods < Cop
         MSG = 'Use `%<inverse>s` instead of inverting `%<method>s`.'.freeze
         EQUALITY_METHODS = %i[== != =~ !~ <= >= < >].freeze
+        NEGATED_EQUALITY_METHODS = %i[!= !~].freeze
 
         def_node_matcher :inverse_candidate?, <<-PATTERN
           {
@@ -91,18 +92,22 @@ module RuboCop
 
         def correct_inverse_block(node)
           method_call, method, block = inverse_block?(node)
-          selector = block.loc.selector.source
 
           lambda do |corrector|
             corrector.replace(method_call.loc.selector,
                               inverse_blocks[method].to_s)
+            correct_inverse_selector(block, corrector)
+          end
+        end
 
-            if ['!=', '!~'].include?(selector)
-              selector[0] = '='
-              corrector.replace(block.loc.selector, selector)
-            else
-              corrector.remove(block.loc.selector)
-            end
+        def correct_inverse_selector(block, corrector)
+          selector = block.loc.selector.source
+
+          if NEGATED_EQUALITY_METHODS.include?(selector.to_sym)
+            selector[0] = '='
+            corrector.replace(block.loc.selector, selector)
+          else
+            corrector.remove(block.loc.selector)
           end
         end
 
