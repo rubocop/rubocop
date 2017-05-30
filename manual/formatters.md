@@ -247,3 +247,28 @@ Useful for CI environments. It will create an HTML report like [this](http://f.c
 ```sh
 $ rubocop --format html -o rubocop.html
 ```
+
+### TAP Formatter
+
+ **Machine-parsable**
+
+Useful for CI environments, it will format report following the [Test Anything Protocol](http://testanything.org).
+
+```sh
+$ rubocop --format tap
+1..3
+not ok 1 - lib/rubocop.rb
+# lib/rubocop.rb:2:3: C: foo
+# This is line 2.
+#   ^
+ok 2 - spec/spec_helper.rb
+not ok 3 - bin/rubocop
+# bin/rubocop:5:2: E: bar
+# This is line 5.
+#  ^
+# bin/rubocop:6:1: C: foo
+# This is line 6.
+# ^
+
+3 files inspected, 3 offenses detected
+```
