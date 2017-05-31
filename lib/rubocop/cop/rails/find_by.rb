@@ -23,6 +23,7 @@ module RuboCop
 
         def on_send(node)
           return unless where_first?(node)
+          return if where_with_method_as_param?(node)
 
           range = range_between(node.receiver.loc.selector.begin_pos,
                                 node.loc.selector.end_pos)
@@ -44,6 +45,19 @@ module RuboCop
             corrector.replace(where_loc, 'find_by')
             corrector.replace(first_loc, '')
           end
+        end
+
+        private
+
+        def where_with_method_as_param?(node)
+          where = node.each_child_node(:send).find { |n| n.method?(:where) }
+          return unless where
+
+          where.arguments.one? && variable_or_method?(where.first_argument)
+        end
+
+        def variable_or_method?(param)
+          param.send_type? || param.lvar_type? || param.ivar_type?
         end
       end
     end
