@@ -1451,6 +1451,12 @@ Rails/Date:
     - strict
     - flexible
 
+Rails/Delegate:
+  # When set to true, using the target object as a prefix of the
+  # method name without using the `delegate` method will be a
+  # violation. When set to false, this case is legal.
+  EnforceForPrefixed: true
+
 Rails/DynamicFindBy:
   Whitelist:
     - find_by_sql

@@ -198,8 +198,13 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
-This cop looks for delegations, that could have been created
-automatically with delegate method.
+This cop looks for delegations that could have been created
+automatically with the `delegate` method.
+
+The `EnforceForPrefixed` option (defaulted to `true`) means that
+using the target object as a prefix of the method name
+without using the `delegate` method will be a violation.
+When set to `false`, this case is legal.
 
 ### Example
 
@@ -212,6 +217,13 @@ end
 # good
 delegate :bar, to: :foo
 
+# good
+private
+def bar
+  foo.bar
+end
+
+# EnforceForPrefixed: true
 # bad
 def foo_bar
   foo.bar
@@ -219,13 +231,22 @@ end
 
 # good
 delegate :bar, to: :foo, prefix: true
-
+  
+# EnforceForPrefixed: false
 # good
-private
-def bar
+def foo_bar
   foo.bar
 end
+
+# good
+delegate :bar, to: :foo, prefix: true
 ```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+EnforceForPrefixed | true
 
 ## Rails/DelegateAllowBlank
 

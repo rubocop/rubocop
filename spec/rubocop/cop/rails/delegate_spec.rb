@@ -1,7 +1,13 @@
 # frozen_string_literal: true
 
 describe RuboCop::Cop::Rails::Delegate do
-  subject(:cop) { described_class.new }
+  subject(:cop) { described_class.new(config) }
+  let(:cop_config) { { 'EnforceForPrefixed' => true } }
+  let(:config) do
+    merged = RuboCop::ConfigLoader
+             .default_configuration['Rails/Delegate'].merge(cop_config)
+    RuboCop::Config.new('Rails/Delegate' => merged)
+  end
 
   it 'finds trivial delegate' do
     expect_offense(<<-RUBY.strip_indent)
@@ -131,6 +137,20 @@ describe RuboCop::Cop::Rails::Delegate do
     RUBY
   end
 
+  context 'with EnforceForPrefixed: false' do
+    let(:cop_config) do
+      { 'EnforceForPrefixed' => false }
+    end
+
+    it 'ignores trivial delegate with prefix' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def bar_foo
+          bar.foo
+        end
+      RUBY
+    end
+  end
+
   describe '#autocorrect' do
     context 'trivial delegation' do
       let(:source) do
@@ -169,6 +189,16 @@ describe RuboCop::Cop::Rails::Delegate do
 
       it 'autocorrects' do
         expect(autocorrect_source(cop, source)).to eq(corrected_source)
+      end
+
+      context 'with EnforceForPrefixed: false' do
+        let(:cop_config) do
+          { 'EnforceForPrefixed' => false }
+        end
+
+        it 'does not autocorrect' do
+          expect(autocorrect_source(cop, source)).to eq(source)
+        end
       end
     end
   end
