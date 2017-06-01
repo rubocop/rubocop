@@ -9,6 +9,7 @@
 ### Changes
 
 * [#4444](https://github.com/bbatsov/rubocop/pull/4444): Make `Style/Encoding` cop enabled by default. ([@deivid-rodriguez][])
+* [#4452](https://github.com/bbatsov/rubocop/pull/4452): Add option to `Rails/Delegate` for enforcing the prefixed method name case. ([@klesse413][])
 
 ## 0.49.1 (2017-05-29)
 

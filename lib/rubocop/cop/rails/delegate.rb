@@ -3,8 +3,13 @@
 module RuboCop
   module Cop
     module Rails
-      # This cop looks for delegations, that could have been created
-      # automatically with delegate method.
+      # This cop looks for delegations that could have been created
+      # automatically with the `delegate` method.
+      #
+      # The `EnforceForPrefixed` option (defaulted to `true`) means that
+      # using the target object as a prefix of the method name
+      # without using the `delegate` method will be a violation.
+      # When set to `false`, this case is legal.
       #
       # @example
       #   # bad
@@ -15,6 +20,13 @@ module RuboCop
       #   # good
       #   delegate :bar, to: :foo
       #
+      #   # good
+      #   private
+      #   def bar
+      #     foo.bar
+      #   end
+      #
+      #   # EnforceForPrefixed: true
       #   # bad
       #   def foo_bar
       #     foo.bar
@@ -23,11 +35,14 @@ module RuboCop
       #   # good
       #   delegate :bar, to: :foo, prefix: true
       #
+      #   # EnforceForPrefixed: false
       #   # good
-      #   private
-      #   def bar
+      #   def foo_bar
       #     foo.bar
       #   end
+      #
+      #   # good
+      #   delegate :bar, to: :foo, prefix: true
       class Delegate < Cop
         MSG = 'Use `delegate` to define delegations.'.freeze
 
@@ -78,7 +93,12 @@ module RuboCop
         def method_name_matches?(method_name, body)
           _receiver, property_name, *_args = *body
           method_name == property_name ||
-            method_name == prefixed_method_name(body)
+            (include_prefix_case? &&
+              method_name == prefixed_method_name(body))
+        end
+
+        def include_prefix_case?
+          cop_config['EnforceForPrefixed']
         end
 
         def prefixed_method_name(body)
