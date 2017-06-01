@@ -119,19 +119,25 @@ module RuboCop
 
       def autocorrect_all_cops(buffer, cops)
         corrector = Corrector.new(buffer)
-        skip = Set.new
 
-        cops.each do |cop|
-          next if cop.corrections.empty?
-          next if skip.include?(cop.class)
-          corrector.corrections.concat(cop.corrections)
-          skip.merge(cop.class.autocorrect_incompatible_with)
-        end
+        collate_corrections(corrector, cops)
 
         if !corrector.corrections.empty?
           corrector.rewrite
         else
           buffer.source
+        end
+      end
+
+      def collate_corrections(corrector, cops)
+        skips = Set.new
+
+        cops.each do |cop|
+          next if cop.corrections.empty?
+          next if skips.include?(cop.class)
+
+          corrector.corrections.concat(cop.corrections)
+          skips.merge(cop.class.autocorrect_incompatible_with)
         end
       end
 
