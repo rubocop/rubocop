@@ -158,6 +158,20 @@ describe RuboCop::Cop::Style::Alias, :config do
       END
     end
 
+    it 'does not register an offense for alias_method with non-literal '\
+       'argument' do
+      expect_no_offenses(<<-END.strip_indent)
+        alias_method :bar, FOO
+      END
+    end
+
+    it 'does not register an offense for alias_method with non-literal ' \
+       'argument' do
+      expect_no_offenses(<<-END.strip_indent)
+        alias_method :baz, foo.bar
+      END
+    end
+
     it 'does not register an offense for alias in an instance_eval block' do
       expect_no_offenses(<<-END.strip_indent)
         module M

@@ -34,10 +34,31 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
-This cop finds uses of `alias` where `alias_method` would be more
-appropriate (or is simply preferred due to configuration), and vice
-versa.
-It also finds uses of `alias :symbol` rather than `alias bareword`.
+This cop enforces the use of either `#alias` or `#alias_method`
+depending on configuration.
+It also flags uses of `alias :symbol` rather than `alias bareword`.
+
+### Example
+
+```ruby
+# EnforcedStyle: prefer_alias
+
+# good
+alias bar foo
+
+# bad
+alias_method :bar, :foo
+alias :bar :foo
+```
+```ruby
+# EnforcedStyle: prefer_alias_method
+
+# good
+alias_method :bar, :foo
+
+# bad
+alias bar foo
+```
 
 ### Important attributes
 
