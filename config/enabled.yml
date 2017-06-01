@@ -867,6 +867,10 @@ Style/RedundantBegin:
   StyleGuide: '#begin-implicit'
   Enabled: true
 
+Style/RedundantConditional:
+  Description: "Don't return true/false from a conditional."
+  Enabled: true
+
 Style/RedundantException:
   Description: "Checks for an obsolete RuntimeException argument in raise/fail."
   StyleGuide: '#no-explicit-runtimeerror'

@@ -2960,6 +2960,37 @@ end
 
 * [https://github.com/bbatsov/ruby-style-guide#begin-implicit](https://github.com/bbatsov/ruby-style-guide#begin-implicit)
 
+## Style/RedundantConditional
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for redundant returning of true/false in conditionals.
+
+### Example
+
+```ruby
+# bad
+x == y ? true : false
+
+# bad
+if x == y
+  true
+else
+  false
+end
+
+# good
+x == y
+
+# bad
+x == y ? false : true
+
+# good
+x != y
+```
+
 ## Style/RedundantException
 
 Enabled by default | Supports autocorrection
