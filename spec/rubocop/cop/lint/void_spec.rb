@@ -5,21 +5,21 @@ describe RuboCop::Cop::Lint::Void do
 
   described_class::OPS.each do |op|
     it "registers an offense for void op #{op} if not on last line" do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         a #{op} b
         a #{op} b
         a #{op} b
-      END
+      RUBY
       expect(cop.offenses.size).to eq(2)
     end
   end
 
   described_class::OPS.each do |op|
     it "accepts void op #{op} if on last line" do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         something
         a #{op} b
-      END
+      RUBY
       expect(cop.offenses).to be_empty
     end
   end
@@ -31,7 +31,7 @@ describe RuboCop::Cop::Lint::Void do
     end
   end
 
-  %w[var @var @@var VAR].each do |var|
+  %w[var @var @@var VAR $var].each do |var|
     it "registers an offense for void var #{var} if not on last line" do
       inspect_source(cop,
                      ["#{var} = 5",
@@ -65,6 +65,38 @@ describe RuboCop::Cop::Lint::Void do
     RUBY
   end
 
+  it 'registers an offense for void literal in a method definition' do
+    expect_offense(<<-RUBY.strip_indent)
+      def something
+        42
+        ^^ Literal `42` used in void context.
+        42
+      end
+    RUBY
+  end
+
+  it 'registers two offenses for void literals in an initialize method' do
+    expect_offense(<<-RUBY.strip_indent)
+      def initialize
+        42
+        ^^ Literal `42` used in void context.
+        42
+        ^^ Literal `42` used in void context.
+      end
+    RUBY
+  end
+
+  it 'registers two offenses for void literals in a setter method' do
+    expect_offense(<<-RUBY.strip_indent)
+      def foo=(rhs)
+        42
+        ^^ Literal `42` used in void context.
+        42
+        ^^ Literal `42` used in void context.
+      end
+    RUBY
+  end
+
   it 'handles explicit begin blocks' do
     expect_offense(<<-RUBY.strip_indent)
       begin
@@ -76,23 +108,23 @@ describe RuboCop::Cop::Lint::Void do
   end
 
   it 'accepts short call syntax' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       lambda.(a)
       top
-    END
+    RUBY
   end
 
   it 'accepts backtick commands' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       `touch x`
       nil
-    END
+    RUBY
   end
 
   it 'accepts percent-x commands' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       %x(touch x)
       nil
-    END
+    RUBY
   end
 end

@@ -19,7 +19,7 @@ module RuboCop
       #
       #   # bad
       #
-      #   def some_method
+      #   def some_method(some_var)
       #     some_var
       #     do_something
       #   end
@@ -37,7 +37,7 @@ module RuboCop
       #
       #   # good
       #
-      #   def some_method
+      #   def some_method(some_var)
       #     do_something
       #     some_var
       #   end
@@ -62,8 +62,10 @@ module RuboCop
 
         def check_begin(node)
           expressions = *node
-
-          expressions.drop_last(1).each do |expr|
+          unless in_void_context_method?(node)
+            expressions = expressions.drop_last(1)
+          end
+          expressions.each do |expr|
             check_for_void_op(expr)
             check_for_literal(expr)
             check_for_var(expr)
@@ -101,6 +103,17 @@ module RuboCop
           return unless node.defined_type?
 
           add_offense(node, :expression, format(DEFINED_MSG, node.source))
+        end
+
+        # `initialize` and setter methods do not return value of last
+        # expression.
+        def in_void_context_method?(node)
+          parent = node.parent
+          return false unless parent
+          method = parent.children.first
+          parent.def_type? &&
+            (method == :initialize || method.to_s.end_with?('=')) &&
+            parent.children.last == node
         end
       end
     end

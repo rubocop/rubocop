@@ -2099,7 +2099,7 @@ end
 ```ruby
 # bad
 
-def some_method
+def some_method(some_var)
   some_var
   do_something
 end
@@ -2115,7 +2115,7 @@ end
 ```ruby
 # good
 
-def some_method
+def some_method(some_var)
   do_something
   some_var
 end
