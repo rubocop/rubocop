@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'parallel'
 
 require 'parallel'
 
@@ -60,31 +61,21 @@ module RuboCop
     end
 
     def inspect_files(files)
-      inspected_files = []
-
+      results = []
       formatter_set.started(files)
 
-      each_inspected_file(files) { |file| inspected_files << file }
+      options = {
+        start: method(:file_started),
+        finish: method(:file_finished)
+      }
+
+      results = Parallel.map(files, options, &method(:process_file))
+      results.all? { |result| result[:passed] }
     ensure
       ResultCache.cleanup(@config_store, @options[:debug]) if cached_run?
+      inspected_files = results.map { |result| result[:file] }
       formatter_set.finished(inspected_files.freeze)
       formatter_set.close_output_files
-    end
-
-    def each_inspected_file(files)
-      files.reduce(true) do |all_passed, file|
-        break false if aborting?
-
-        offenses = process_file(file)
-        yield file
-
-        if offenses.any? { |o| considered_failure?(o) }
-          break false if @options[:fail_fast]
-          next false
-        end
-
-        all_passed
-      end
     end
 
     def list_files(paths)
@@ -94,15 +85,17 @@ module RuboCop
     end
 
     def process_file(file)
-      puts "Scanning #{file}" if @options[:debug]
-      file_started(file)
+      raise Parallel::Break if aborting?
 
-      offenses = file_offenses(file)
-      formatter_set.file_finished(file, offenses)
-      offenses
-    rescue InfiniteCorrectionLoop => e
-      formatter_set.file_finished(file, e.offenses.compact.sort.freeze)
-      raise
+      begin
+        offenses = file_offenses(file)
+      rescue InfiniteCorrectionLoop => e
+        offenses = e.offenses.compact.sort.freeze
+      end
+
+      passed = offenses.any? { |o| considered_failure?(o) }
+      raise Parallel::Break if !passed && @options[:fail_fast]
+      { file: file, offenses: offenses, passed: passed }
     end
 
     def file_offenses(file)
@@ -160,10 +153,15 @@ module RuboCop
       ).autocorrect(source.buffer, [cop])
     end
 
-    def file_started(file)
+    def file_started(file, _index)
+      puts "Scanning #{file}" if @options[:debug]
       formatter_set.file_started(file,
                                  cli_options: @options,
                                  config_store: @config_store)
+    end
+
+    def file_finished(file, _index, result)
+      formatter_set.file_finished(file, result[:offenses])
     end
 
     def cached_run?
