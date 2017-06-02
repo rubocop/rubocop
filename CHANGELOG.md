@@ -11,6 +11,7 @@
 * [#4443](https://github.com/bbatsov/rubocop/pull/4443): Prevent `Style/YodaCondition` from breaking `not LITERAL`. ([@pocke][])
 * [#4434](https://github.com/bbatsov/rubocop/issues/4434): Prevent bad auto-correct in `Style/Alias` for non-literal arguments. ([@drenmi][])
 * [#4451](https://github.com/bbatsov/rubocop/issues/4451): Make `Style/AndOr` cop aware of comparison methods. ([@drenmi][])
+* [#4457](https://github.com/bbatsov/rubocop/pull/4457): Fix false negative in `Lint/Void` with initialize and setter methods. ([@pocke][])
 
 ### Changes
 
