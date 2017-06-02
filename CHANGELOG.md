@@ -13,6 +13,7 @@
 ### Changes
 
 * [#4444](https://github.com/bbatsov/rubocop/pull/4444): Make `Style/Encoding` cop enabled by default. ([@deivid-rodriguez][])
+* [#4456](https://github.com/bbatsov/rubocop/pull/4456): Save remote config file cache to under the `.rubocop` directory. ([@unasuke][])
 
 ## 0.49.1 (2017-05-29)
 
@@ -2823,3 +2824,4 @@
 [@yhirano55]: https://github.com/yhirano55
 [@hoshinotsuyoshi]: https://github.com/hoshinotsuyoshi
 [@timrogers]: https://github.com/timrogers
+[@unasuke]: https://github.com/unasuke

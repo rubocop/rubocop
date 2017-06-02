@@ -11,6 +11,8 @@ module RuboCop
     def initialize(url, base_dir)
       @uri = URI.parse(url)
       @base_dir = base_dir
+      @cache_dir = File.join(@base_dir, '.rubocop')
+      Dir.mkdir(@cache_dir) unless Dir.exist?(@cache_dir)
     end
 
     def file
@@ -53,7 +55,7 @@ module RuboCop
     end
 
     def cache_path
-      File.expand_path(".rubocop-#{cache_name_from_uri}", @base_dir)
+      File.expand_path(File.join(@cache_dir, cache_name_from_uri), @base_dir)
     end
 
     def cache_path_exists?
