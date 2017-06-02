@@ -373,6 +373,18 @@ describe RuboCop::Cop::Style::AndOr, :config do
       end
     end
 
+    context 'when left hand side is a comparison method' do
+      # Regression: https://github.com/bbatsov/rubocop/issues/4451
+      it 'autocorrects "and" with && and adds parens' do
+        new_source = autocorrect_source(cop, <<-END.strip_indent)
+          foo == bar and baz
+        END
+        expect(new_source).to eq(<<-END.strip_indent)
+          (foo == bar) && baz
+        END
+      end
+    end
+
     context 'within a nested begin node with one child only' do
       # regression test; see GH issue 2531
       it 'autocorrects "and" with && and adds parens' do
