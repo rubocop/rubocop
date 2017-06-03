@@ -36,7 +36,9 @@ module RuboCop
       def inspect_file(processed_source)
         # If we got any syntax errors, return only the syntax offenses.
         unless processed_source.valid_syntax?
-          return Lint::Syntax.offenses_from_processed_source(processed_source)
+          return Lint::Syntax.offenses_from_processed_source(
+            processed_source, @config, @options
+          )
         end
 
         offenses(processed_source)
