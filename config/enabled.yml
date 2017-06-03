@@ -419,6 +419,7 @@ Style/ClassAndModuleCamelCase:
 
 Style/ClassAndModuleChildren:
   Description: 'Checks style of children classes and modules.'
+  StyleGuide: '#namespace-definition'
   Enabled: true
 
 Style/ClassCheck:
