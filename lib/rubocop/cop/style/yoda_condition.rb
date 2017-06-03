@@ -29,8 +29,6 @@ module RuboCop
           '>' => '<',
           '>=' => '<='
         }.freeze
-        COMPARISON_OPERATORS = RuboCop::AST::Node::COMPARISON_OPERATORS
-                               .reject { |op| op == :! }.freeze
 
         def on_send(node)
           return unless yoda_condition?(node)
@@ -41,13 +39,9 @@ module RuboCop
         private
 
         def yoda_condition?(node)
-          return false unless comparison_operator?(node)
+          return false unless node.comparison_method?
 
           node.receiver.literal? && !node.arguments.first.literal?
-        end
-
-        def comparison_operator?(node)
-          COMPARISON_OPERATORS.include?(node.method_name)
         end
 
         def register_offense(node)

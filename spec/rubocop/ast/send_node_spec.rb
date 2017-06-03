@@ -420,6 +420,12 @@ describe RuboCop::AST::SendNode do
 
       it { expect(send_node.comparison_method?).to be_falsey }
     end
+
+    context 'with a negation method' do
+      let(:source) { '!foo' }
+
+      it { expect(send_node.comparison_method?).to be_falsey }
+    end
   end
 
   describe '#assignment_method?' do
