@@ -227,6 +227,7 @@ module RuboCop
       check_target_ruby
       validate_parameter_names(valid_cop_names)
       validate_enforced_styles(valid_cop_names)
+      validate_syntax_cop(valid_cop_names)
       reject_mutually_exclusive_defaults
     end
 
@@ -317,18 +318,21 @@ module RuboCop
 
     def warn_about_unrecognized_cops(invalid_cop_names)
       invalid_cop_names.each do |name|
-        if name == 'Syntax'
-          raise ValidationError,
-                "configuration for Syntax cop found in #{loaded_path}\n" \
-                'This cop cannot be configured.'
-        end
-
         # There could be a custom cop with this name. If so, don't warn
         next if Cop::Cop.registry.contains_cop_matching?([name])
 
         warn Rainbow("Warning: unrecognized cop #{name} found in " \
                      "#{loaded_path}").yellow
       end
+    end
+
+    def validate_syntax_cop(valid_cop_names)
+      return unless valid_cop_names.include?('Lint/Syntax') ||
+                    valid_cop_names.include?('Syntax')
+
+      raise ValidationError,
+            "configuration for Syntax cop found in #{loaded_path}\n" \
+            'This cop cannot be configured.'
     end
 
     def validate_section_presence(name)

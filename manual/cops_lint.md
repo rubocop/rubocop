@@ -1619,6 +1619,15 @@ which is redundant.
 
 * [https://github.com/bbatsov/ruby-style-guide#no-to-s](https://github.com/bbatsov/ruby-style-guide#no-to-s)
 
+## Lint/Syntax
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This is actually not a cop and inspects nothing. It just provides
+methods to repack Parser's diagnostics/errors into RuboCop's offenses.
+
 ## Lint/UnderscorePrefixedVariableName
 
 Enabled by default | Supports autocorrection

@@ -1,38 +1,76 @@
 # frozen_string_literal: true
 
 describe RuboCop::Cop::Lint::Syntax do
-  describe '.offense_from_diagnostic' do
-    subject(:offense) do
-      described_class.offense_from_diagnostic(diagnostic, 2.0)
-    end
-    let(:diagnostic) { Parser::Diagnostic.new(level, reason, args, location) }
-    let(:level) { :warning }
-    let(:reason) { :odd_hash }
-    let(:args) { [] }
-    let(:location) { double('location').as_null_object }
+  let(:options) { nil }
+  let(:ruby_version) { 2.4 }
+  let(:path) { 'test.rb' }
+  let(:processed_source) do
+    RuboCop::ProcessedSource.new(source, ruby_version, path)
+  end
 
-    it 'returns an offense' do
-      expect(offense).to be_a(RuboCop::Cop::Offense)
-    end
-
-    it "sets diagnostic's level to offense's severity" do
-      expect(offense.severity).to eq(level)
+  describe '.offenses_from_processed_source' do
+    let(:offenses) do
+      described_class.offenses_from_processed_source(processed_source,
+                                                     nil, options)
     end
 
-    it "sets diagnostic's message to offense's message" do
-      expect(offense.message).to eq(
-        ['odd number of entries for a hash',
-         '(Using Ruby 2.0 parser; configure using `TargetRubyVersion` ' \
-         'parameter, under `AllCops`)'].join("\n")
-      )
+    context 'with a diagnostic error' do
+      let(:source) { '(' }
+
+      it 'returns an offense' do
+        expect(offenses.size).to eq(1)
+        message = <<-MESSAGE.chomp.strip_indent
+          unexpected token $end
+          (Using Ruby 2.4 parser; configure using `TargetRubyVersion` parameter, under `AllCops`)
+        MESSAGE
+        offense = offenses.first
+        expect(offense.message).to eq(message)
+        expect(offense.severity).to eq(:error)
+      end
+
+      context 'with --display-cop-names option' do
+        let(:options) { { display_cop_names: true } }
+
+        it 'returns an offense with cop name' do
+          expect(offenses.size).to eq(1)
+          message = <<-MESSAGE.chomp.strip_indent
+            Lint/Syntax: unexpected token $end
+            (Using Ruby 2.4 parser; configure using `TargetRubyVersion` parameter, under `AllCops`)
+          MESSAGE
+          offense = offenses.first
+          expect(offense.message).to eq(message)
+          expect(offense.severity).to eq(:error)
+        end
+      end
     end
 
-    it "sets diagnostic's location to offense's location" do
-      expect(offense.location).to eq(location)
-    end
+    context 'with a parser error' do
+      let(:source) { <<-END }
+        # encoding: utf-8
+        # \xf9
+      END
 
-    it 'sets Syntax as a cop name' do
-      expect(offense.cop_name).to eq('Syntax')
+      it 'returns an offense' do
+        expect(offenses.size).to eq(1)
+        offense = offenses.first
+        expect(offense.message).to eq('Invalid byte sequence in utf-8.')
+        expect(offense.severity).to eq(:fatal)
+        expect(offense.location).to eq(described_class::ERROR_SOURCE_RANGE)
+      end
+
+      context 'with --display-cop-names option' do
+        let(:options) { { display_cop_names: true } }
+
+        it 'returns an offense with cop name' do
+          expect(offenses.size).to eq(1)
+          message = <<-MESSAGE.chomp.strip_indent
+            Lint/Syntax: Invalid byte sequence in utf-8.
+          MESSAGE
+          offense = offenses.first
+          expect(offense.message).to eq(message)
+          expect(offense.severity).to eq(:fatal)
+        end
+      end
     end
   end
 end

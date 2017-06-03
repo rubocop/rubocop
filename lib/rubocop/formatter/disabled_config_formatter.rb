@@ -50,7 +50,7 @@ module RuboCop
         output.puts HEADING % command
 
         # Syntax isn't a real cop and it can't be disabled.
-        @cops_with_offenses.delete('Syntax')
+        @cops_with_offenses.delete('Lint/Syntax')
 
         output_offenses
 
