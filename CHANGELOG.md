@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#4464](https://github.com/bbatsov/rubocop/pull/4464): Add `EnforcedStyleForEmptyBraces` parameter to `Layout/SpaceBeforeBlockBraces` cop. ([@palkan][])
 * [#4453](https://github.com/bbatsov/rubocop/pull/4453): New cop `Style/RedundantConditional` checks for conditionals that return true/false. ([@petehamilton][])
 * [#4448](https://github.com/bbatsov/rubocop/pull/4448): Add new `TapFormatter`. ([@cyberdelia][])
 * Add new `Style/HeredocDelimiters` cop. ([@drenmi][])

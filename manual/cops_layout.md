@@ -2062,6 +2062,7 @@ Attribute | Value
 --- | ---
 EnforcedStyle | space
 SupportedStyles | space, no_space
+SupportedStylesForEmptyBraces | space, no_space
 
 ## Layout/SpaceBeforeComma
 
