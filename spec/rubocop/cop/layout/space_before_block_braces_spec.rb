@@ -71,4 +71,65 @@ describe RuboCop::Cop::Layout::SpaceBeforeBlockBraces, :config do
       expect_no_offenses('each{ puts }')
     end
   end
+
+  context 'with space before empty braces not allowed' do
+    let(:cop_config) do
+      {
+        'EnforcedStyle' => 'space',
+        'EnforcedStyleForEmptyBraces' => 'no_space'
+      }
+    end
+
+    it 'accepts empty braces without outer space' do
+      expect_no_offenses('->{}')
+    end
+
+    it 'registers an offense for empty braces' do
+      inspect_source('-> {}')
+      expect(cop.messages).to eq(['Space detected to the left of {.'])
+      expect(cop.highlights).to eq([' '])
+      expect(cop.config_to_allow_offenses)
+        .to eq('EnforcedStyleForEmptyBraces' => 'space')
+    end
+
+    it 'auto-corrects unwanted space' do
+      new_source = autocorrect_source('-> {}')
+      expect(new_source).to eq('->{}')
+    end
+  end
+
+  context 'with space before empty braces allowed' do
+    let(:cop_config) do
+      {
+        'EnforcedStyle' => 'no_space',
+        'EnforcedStyleForEmptyBraces' => 'space'
+      }
+    end
+
+    it 'accepts empty braces with outer space' do
+      expect_no_offenses('-> {}')
+    end
+
+    it 'registers an offense for empty braces' do
+      inspect_source('->{}')
+      expect(cop.messages).to eq(['Space missing to the left of {.'])
+      expect(cop.highlights).to eq(['{'])
+      expect(cop.config_to_allow_offenses)
+        .to eq('EnforcedStyleForEmptyBraces' => 'no_space')
+    end
+
+    it 'auto-corrects missing space' do
+      new_source = autocorrect_source('->{}')
+      expect(new_source).to eq('-> {}')
+    end
+  end
+
+  context 'with invalid value for EnforcedStyleForEmptyBraces' do
+    let(:cop_config) { { 'EnforcedStyleForEmptyBraces' => 'unknown' } }
+
+    it 'fails with an error' do
+      expect { inspect_source('each {}') }
+        .to raise_error('Unknown EnforcedStyleForEmptyBraces selected!')
+    end
+  end
 end
