@@ -52,13 +52,28 @@ module RuboCop
         private
 
         def autocorrect(node)
+          b = node.loc.begin
+          e = node.loc.end
+
           lambda do |corrector|
             if style == :keyword
-              corrector.replace(node.loc.begin, 'begin')
-              corrector.replace(node.loc.end, 'end')
+              replacement = if newline_after?(node, b.end_pos)
+                              'begin'
+                            else
+                              "begin\n" + (' ' * b.begin_pos)
+                            end
+              corrector.replace(b, replacement)
+
+              replacement = if newline_before?(node)
+                              "\n" + (' ' * b.begin_pos) + 'end'
+                            else
+                              'end'
+                            end
+
+              corrector.replace(e, replacement)
             else
-              corrector.replace(node.loc.begin, '(')
-              corrector.replace(node.loc.end, ')')
+              corrector.replace(b, '(')
+              corrector.replace(e, ')')
             end
           end
         end
@@ -70,6 +85,15 @@ module RuboCop
           else
             rhs.kwbegin_type?
           end
+        end
+
+        def newline_after?(node, pos)
+          node.source_range.source_buffer.source[pos] == "\n"
+        end
+
+        def newline_before?(node)
+          node.source_range.source_buffer.source_line(node.loc.end.line) =~
+           /[^\s\)]/
         end
       end
     end
