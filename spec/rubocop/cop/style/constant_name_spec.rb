@@ -38,11 +38,11 @@ describe RuboCop::Cop::Style::ConstantName do
   end
 
   it 'does not check names if rhs is a method call with block' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       AnythingGoes = test do
         do_something
       end
-    END
+    RUBY
   end
 
   it 'does not check if rhs is another constant' do

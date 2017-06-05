@@ -17,11 +17,11 @@ describe RuboCop::Cop::Style::ModuleFunction, :config do
     end
 
     it 'accepts `extend self` in a class' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         class Test
           extend self
         end
-      END
+      RUBY
     end
   end
 
@@ -39,12 +39,12 @@ describe RuboCop::Cop::Style::ModuleFunction, :config do
     end
 
     it 'accepts module_function with an argument' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         module Test
           def test; end
           module_function :test
         end
-      END
+      RUBY
     end
   end
 end

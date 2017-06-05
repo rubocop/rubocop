@@ -133,19 +133,19 @@ describe RuboCop::Cop::Rails::Present, :config do
     end
 
     it 'accepts normal if blank?' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if foo.blank?
           something
         end
-      END
+      RUBY
     end
 
     it 'accepts normal unless present?' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         unless foo.present?
           something
         end
-      END
+      RUBY
     end
 
     context 'unless blank?' do
@@ -168,11 +168,11 @@ describe RuboCop::Cop::Rails::Present, :config do
 
       context 'normal unless blank?' do
         let(:source) do
-          <<-END.strip_indent
+          <<-RUBY.strip_indent
             unless foo.blank?
               something
             end
-          END
+          RUBY
         end
 
         it 'registers an offense' do
@@ -187,23 +187,23 @@ describe RuboCop::Cop::Rails::Present, :config do
         it 'auto-corrects' do
           new_source = autocorrect_source(cop, source)
 
-          expect(new_source).to eq(<<-END.strip_indent)
+          expect(new_source).to eq(<<-RUBY.strip_indent)
             if foo.present?
               something
             end
-          END
+          RUBY
         end
       end
 
       context 'unless blank? with an else' do
         let(:source) do
-          <<-END.strip_indent
+          <<-RUBY.strip_indent
             unless foo.blank?
               something
             else
               something_else
             end
-          END
+          RUBY
         end
 
         it 'registers an offense' do
@@ -220,13 +220,13 @@ describe RuboCop::Cop::Rails::Present, :config do
         it 'auto-corrects' do
           new_source = autocorrect_source(cop, source)
 
-          expect(new_source).to eq(<<-END.strip_indent)
+          expect(new_source).to eq(<<-RUBY.strip_indent)
             if foo.present?
               something
             else
               something_else
             end
-          END
+          RUBY
         end
       end
     end

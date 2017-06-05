@@ -9,14 +9,14 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts several pairs per line' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         func(a: 1, bb: 2,
              ccc: 3, dddd: 4)
-      END
+      RUBY
     end
 
     it "does not auto-correct pairs that don't start a line" do
-      source = <<-END.strip_indent
+      source = <<-RUBY.strip_indent
         render :json => {:a => messages,
                          :b => :json}, :status => 404
         def example
@@ -26,7 +26,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
               f: g
             ), h: :i)
         end
-      END
+      RUBY
       new_source = autocorrect_source(cop, source)
       expect(new_source).to eq(source)
     end
@@ -64,17 +64,17 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts misaligned keys in implicit hash' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         func(a: 0,
           b: 1)
-      END
+      RUBY
     end
 
     it 'accepts misaligned keys in explicit hash' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         func({a: 0,
           b: 1})
-      END
+      RUBY
     end
   end
 
@@ -86,10 +86,10 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts misaligned keys in implicit hash' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         func(a: 0,
           b: 1)
-      END
+      RUBY
     end
 
     it 'registers offense for misaligned keys in explicit hash' do
@@ -117,10 +117,10 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts misaligned keys in explicit hash' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         func({a: 0,
           b: 1})
-      END
+      RUBY
     end
   end
 
@@ -156,7 +156,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts aligned hash keys' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         hash1 = {
           a: 0,
           bb: 1,
@@ -165,7 +165,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
           'ccc' => 2,
           'dddd'  =>  2
         }
-      END
+      RUBY
     end
 
     it 'registers an offense for separator alignment' do
@@ -196,10 +196,10 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
       end
 
       it 'accepts aligned hash keys' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           func(a: 0,
                b: 1)
-        END
+        RUBY
       end
 
       it 'accepts an empty hash' do
@@ -208,65 +208,65 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'auto-corrects alignment' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         hash1 = { a: 0,
              bb: 1,
                    ccc: 2 }
         hash2 = { :a   => 0,
              :bb  => 1,
                   :ccc  =>2 }
-      END
+      RUBY
 
       # Separator and value are not corrected in 'key' mode.
-      expect(new_source).to eq(<<-END.strip_indent)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         hash1 = { a: 0,
                   bb: 1,
                   ccc: 2 }
         hash2 = { :a   => 0,
                   :bb  => 1,
                   :ccc  =>2 }
-      END
+      RUBY
     end
 
     it 'auto-corrects alignment for mixed multiline hash keys' do
-      new_sources = autocorrect_source(cop, <<-END.strip_indent)
+      new_sources = autocorrect_source(cop, <<-RUBY.strip_indent)
         hash = { a: 1, b: 2,
                 c: 3 }
-      END
-      expect(new_sources).to eq(<<-END.strip_indent)
+      RUBY
+      expect(new_sources).to eq(<<-RUBY.strip_indent)
         hash = { a: 1, b: 2,
                  c: 3 }
-      END
+      RUBY
     end
 
     context 'ruby >= 2.0', :ruby20 do
       it 'auto-corrects alignment when using double splat ' \
          'in an explicit hash' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           Hash(foo: 'bar',
                  **extra_params
           )
-        END
+        RUBY
 
-        expect(new_source).to eq(<<-END.strip_indent)
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           Hash(foo: 'bar',
                **extra_params
           )
-        END
+        RUBY
       end
 
       it 'auto-corrects alignment when using double splat in braces' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           {foo: 'bar',
                  **extra_params
           }
-        END
+        RUBY
 
-        expect(new_source).to eq(<<-END.strip_indent)
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           {foo: 'bar',
            **extra_params
           }
-        END
+        RUBY
       end
     end
   end
@@ -284,7 +284,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     include_examples 'not on separate lines'
 
     it 'accepts aligned hash keys and values' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         hash1 = {
           'a'   => 0,
           'bbb' => 1
@@ -293,7 +293,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
           a:   0,
           bbb: 1
         }
-      END
+      RUBY
     end
 
     it 'accepts an empty hash' do
@@ -301,7 +301,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts a multiline array of single line hashes' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def self.scenarios_order
             [
               { before:   %w( l k ) },
@@ -310,36 +310,36 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
               { after:    %w( n o ) }
             ]
           end
-      END
+      RUBY
     end
 
     it 'accepts hashes that use different separators' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         hash = {
           a: 1,
           'bbb' => 2
         }
-      END
+      RUBY
     end
 
     context 'ruby >= 2.0', :ruby20 do
       it 'accepts hashes that use different separators and double splats' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           hash = {
             a: 1,
             'bbb' => 2,
             **foo
           }
-        END
+        RUBY
       end
 
       it 'accepts hashes that use different separators and double splats' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           hash = {
             a: 1,
             **kw
           }
-        END
+        RUBY
       end
     end
 
@@ -386,22 +386,22 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'auto-corrects alignment' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         hash1 = { a: 0,
              bb:   1,
                    ccc: 2 }
         hash2 = { 'a' => 0,
              'bb' =>   1,
                    'ccc'  =>2 }
-      END
-      expect(new_source).to eq(<<-END.strip_indent)
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         hash1 = { a:   0,
                   bb:  1,
                   ccc: 2 }
         hash2 = { 'a'   => 0,
                   'bb'  => 1,
                   'ccc' => 2 }
-      END
+      RUBY
     end
   end
 
@@ -426,12 +426,12 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
       }
     end
     it 'fails' do
-      src = <<-END.strip_indent
+      src = <<-RUBY.strip_indent
         hash = {
           a: 0,
           bb: 1
         }
-      END
+      RUBY
       expect { inspect_source(cop, src) }.to raise_error(RuntimeError)
     end
   end
@@ -445,7 +445,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts aligned hash keys' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         hash1 = {
             a: 0,
           bbb: 1
@@ -454,7 +454,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
             'a' => 0,
           'bbb' => 1
         }
-      END
+      RUBY
     end
 
     it 'accepts an empty hash' do
@@ -483,33 +483,33 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
 
     context 'ruby >= 2.0', :ruby20 do
       it 'accepts hashes with different separators' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           {a: 1,
             'b' => 2,
              **params}
-        END
+        RUBY
       end
     end
 
     include_examples 'not on separate lines'
 
     it 'auto-corrects alignment' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         hash1 = { a: 0,
              bb:    1,
                    ccc: 2 }
         hash2 = { a => 0,
              bb =>    1,
                    ccc  =>2 }
-      END
-      expect(new_source).to eq(<<-END.strip_indent)
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         hash1 = { a: 0,
                  bb: 1,
                 ccc: 2 }
         hash2 = { a => 0,
                  bb => 1,
                 ccc => 2 }
-      END
+      RUBY
     end
 
     it "doesn't break code by moving long keys too far left" do
@@ -551,7 +551,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts aligned entries' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         hash1 = {
             a: 0,
           bbb: 1
@@ -560,7 +560,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
           'a' => 0,
           'bbb' => 1
         }
-      END
+      RUBY
     end
   end
 end

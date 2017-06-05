@@ -90,11 +90,11 @@ describe RuboCop::Cop::Rails::SaveBang do
     end
 
     it "when using #{method} with multiple conditional" do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         if true && object.active? && object.#{method}
           something
         end
-      END
+      RUBY
       if pass
         expect(cop.messages).to be_empty
       else

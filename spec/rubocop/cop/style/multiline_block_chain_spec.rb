@@ -42,11 +42,11 @@ describe RuboCop::Cop::Style::MultilineBlockChain do
 
     it 'registers an offense for a chain where the second block is ' \
        'single-line' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         Thread.list.find_all { |t|
           t.alive?
         }.map { |thread| thread.object_id }
-      END
+      RUBY
       expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['}.map'])
     end
@@ -61,25 +61,25 @@ describe RuboCop::Cop::Style::MultilineBlockChain do
   end
 
   it 'accepts a chain of blocks spanning one line' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       a { b }.c { d }
       w do x end.y do z end
-    END
+    RUBY
   end
 
   it 'accepts a multi-line block chained with calls on one line' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       a do
         b
       end.c.d
-    END
+    RUBY
   end
 
   it 'accepts a chain of calls followed by a multi-line block' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       a1.a2.a3 do
         b
       end
-    END
+    RUBY
   end
 end

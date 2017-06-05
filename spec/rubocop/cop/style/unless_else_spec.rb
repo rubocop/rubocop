@@ -5,13 +5,13 @@ describe RuboCop::Cop::Style::UnlessElse do
 
   context 'unless with else' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         unless x # negative 1
           a = 1 # negative 2
         else # positive 1
           a = 0 # positive 2
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -21,19 +21,19 @@ describe RuboCop::Cop::Style::UnlessElse do
 
     it 'auto-corrects' do
       corrected = autocorrect_source(cop, source)
-      expect(corrected).to eq(<<-END.strip_indent)
+      expect(corrected).to eq(<<-RUBY.strip_indent)
         if x # positive 1
           a = 0 # positive 2
         else # negative 1
           a = 1 # negative 2
         end
-      END
+      RUBY
     end
   end
 
   context 'unless with nested if-else' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         unless(x)
           if(y == 0)
             a = 0
@@ -45,7 +45,7 @@ describe RuboCop::Cop::Style::UnlessElse do
         else
           a = 3
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -55,7 +55,7 @@ describe RuboCop::Cop::Style::UnlessElse do
 
     it 'auto-corrects' do
       corrected = autocorrect_source(cop, source)
-      expect(corrected).to eq(<<-END.strip_indent)
+      expect(corrected).to eq(<<-RUBY.strip_indent)
         if(x)
           a = 3
         else
@@ -67,17 +67,17 @@ describe RuboCop::Cop::Style::UnlessElse do
             a = 2
           end
         end
-      END
+      RUBY
     end
   end
 
   context 'unless without else' do
     it 'does not register an offense' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         unless x
           a = 1
         end
-      END
+      RUBY
     end
   end
 end

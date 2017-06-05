@@ -15,9 +15,9 @@ describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
 
     it 'registers an offense for double quotes within embedded expression in ' \
        'a heredoc string' do
-      src = ['<<END',
+      src = ['<<RUBY',
              '#{"A"}',
-             'END']
+             'RUBY']
       inspect_source(cop, src)
       expect(cop.messages)
         .to eq(['Prefer single-quoted strings inside interpolations.'])
@@ -73,9 +73,9 @@ describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
 
     it 'registers an offense for single quotes within embedded expression in ' \
        'a heredoc string' do
-      src = ['<<END',
+      src = ['<<RUBY',
              '#{\'A\'}',
-             'END']
+             'RUBY']
       inspect_source(cop, src)
       expect(cop.messages)
         .to eq(['Prefer double-quoted strings inside interpolations.'])

@@ -24,11 +24,11 @@ describe RuboCop::Cop::Layout::IndentHeredoc, :config do
 
   shared_examples :check_message do |name, message|
     it "displays a message with #{name}" do
-      inspect_source(cop, <<-END.strip_indent)
-        <<-END2
+      inspect_source(cop, <<-RUBY.strip_indent)
+        <<-RUBY2
         foo
-        END2
-      END
+        RUBY2
+      RUBY
       expect(cop.messages).to eq(message)
     end
   end
@@ -36,11 +36,11 @@ describe RuboCop::Cop::Layout::IndentHeredoc, :config do
   shared_examples :warning do |message|
     it 'warns' do
       correct = lambda do
-        autocorrect_source(cop, <<-END.strip_indent)
-          <<-END2
+        autocorrect_source(cop, <<-RUBY.strip_indent)
+          <<-RUBY2
           foo
-          END2
-        END
+          RUBY2
+        RUBY
       end
       expect(&correct).to raise_error(RuboCop::Warning, message)
     end
@@ -52,89 +52,90 @@ describe RuboCop::Cop::Layout::IndentHeredoc, :config do
         { 'EnforcedStyle' => :powerpack }
       end
 
-      include_examples :offense, 'not indented', <<-END, <<-CORRECTION
-        <<#{quote}END2#{quote}
+      include_examples :offense, 'not indented', <<-RUBY, <<-CORRECTION
+        <<#{quote}RUBY2#{quote}
         \#{foo}
         bar
-        END2
-      END
-        <<#{quote}END2#{quote}.strip_indent
+        RUBY2
+      RUBY
+        <<#{quote}RUBY2#{quote}.strip_indent
           \#{foo}
           bar
-        END2
+        RUBY2
       CORRECTION
-      include_examples :offense, 'minus level indented', <<-END, <<-CORRECTION
+      include_examples :offense, 'minus level indented', <<-RUBY, <<-CORRECTION
         def foo
-          <<#{quote}END2#{quote}
+          <<#{quote}RUBY2#{quote}
         \#{foo}
         bar
-        END2
+        RUBY2
         end
-      END
+      RUBY
         def foo
-          <<#{quote}END2#{quote}.strip_indent
+          <<#{quote}RUBY2#{quote}.strip_indent
             \#{foo}
             bar
-        END2
+        RUBY2
         end
       CORRECTION
-      include_examples :offense, 'not indented, with `-`', <<-END, <<-CORRECTION
-        <<-#{quote}END2#{quote}
+      include_examples :offense, 'not indented, with `-`',
+                       <<-RUBY, <<-CORRECTION
+        <<-#{quote}RUBY2#{quote}
         \#{foo}
         bar
-        END2
-      END
-        <<-#{quote}END2#{quote}.strip_indent
+        RUBY2
+      RUBY
+        <<-#{quote}RUBY2#{quote}.strip_indent
           \#{foo}
           bar
-        END2
+        RUBY2
       CORRECTION
       include_examples :offense, 'minus level indented, with `-`',
-                       <<-END, <<-CORRECTION
+                       <<-RUBY, <<-CORRECTION
         def foo
-          <<-#{quote}END2#{quote}
+          <<-#{quote}RUBY2#{quote}
         \#{foo}
         bar
-          END2
+          RUBY2
         end
-      END
+      RUBY
         def foo
-          <<-#{quote}END2#{quote}.strip_indent
+          <<-#{quote}RUBY2#{quote}.strip_indent
             \#{foo}
             bar
-          END2
+          RUBY2
         end
       CORRECTION
 
       include_examples :accept, 'not indented but with whitespace, with `-`',
-                       <<-END
+                       <<-RUBY
         def foo
-          <<-#{quote}END2#{quote}
+          <<-#{quote}RUBY2#{quote}
           something
-          END2
+          RUBY2
         end
-      END
-      include_examples :accept, 'indented, but with `-`', <<-END
+      RUBY
+      include_examples :accept, 'indented, but with `-`', <<-RUBY
         def foo
-          <<-#{quote}END2#{quote}
+          <<-#{quote}RUBY2#{quote}
             something
-          END2
+          RUBY2
         end
-      END
-      include_examples :accept, 'not indented but with whitespace', <<-END
+      RUBY
+      include_examples :accept, 'not indented but with whitespace', <<-RUBY
         def foo
-          <<#{quote}END2#{quote}
+          <<#{quote}RUBY2#{quote}
           something
-        END2
+        RUBY2
         end
-      END
-      include_examples :accept, 'indented, but without `~`', <<-END
+      RUBY
+      include_examples :accept, 'indented, but without `~`', <<-RUBY
         def foo
-          <<#{quote}END2#{quote}
+          <<#{quote}RUBY2#{quote}
             something
-        END2
+        RUBY2
         end
-      END
+      RUBY
 
       include_examples :check_message, 'suggestion powerpack',
                        [
@@ -158,16 +159,16 @@ describe RuboCop::Cop::Layout::IndentHeredoc, :config do
           message = 'Use 2 spaces for indentation in a heredoc by using ' \
                     '`<<~` instead of `<<-`.'
           include_examples :check_message, 'squiggly heredoc', [message]
-          include_examples :offense, 'not indented', <<-END, <<-CORRECTION
-            <<#{quote}END2#{quote}
+          include_examples :offense, 'not indented', <<-RUBY, <<-CORRECTION
+            <<#{quote}RUBY2#{quote}
             \#{foo}
             bar
-            END2
-          END
-            <<~#{quote}END2#{quote}
+            RUBY2
+          RUBY
+            <<~#{quote}RUBY2#{quote}
               \#{foo}
               bar
-            END2
+            RUBY2
           CORRECTION
         end
 
@@ -175,16 +176,16 @@ describe RuboCop::Cop::Layout::IndentHeredoc, :config do
           message = 'Use 2 spaces for indentation in a heredoc by using ' \
                     '`String#strip_heredoc`.'
           include_examples :check_message, 'suggestion ActiveSupport', [message]
-          include_examples :offense, 'not indented', <<-END, <<-CORRECTION
-            <<#{quote}END2#{quote}
+          include_examples :offense, 'not indented', <<-RUBY, <<-CORRECTION
+            <<#{quote}RUBY2#{quote}
             \#{foo}
             bar
-            END2
-          END
-            <<#{quote}END2#{quote}.strip_heredoc
+            RUBY2
+          RUBY
+            <<#{quote}RUBY2#{quote}.strip_heredoc
               \#{foo}
               bar
-            END2
+            RUBY2
           CORRECTION
         end
       end
@@ -194,68 +195,69 @@ describe RuboCop::Cop::Layout::IndentHeredoc, :config do
           { 'EnforcedStyle' => :squiggly }
         end
 
-        include_examples :offense, 'not indented', <<-END, <<-CORRECTION
-          <<~#{quote}END2#{quote}
+        include_examples :offense, 'not indented', <<-RUBY, <<-CORRECTION
+          <<~#{quote}RUBY2#{quote}
           something
-          END2
-        END
-          <<~#{quote}END2#{quote}
+          RUBY2
+        RUBY
+          <<~#{quote}RUBY2#{quote}
             something
-          END2
+          RUBY2
         CORRECTION
-        include_examples :offense, 'minus level indented', <<-END, <<-CORRECTION
+        include_examples :offense, 'minus level indented',
+                         <<-RUBY, <<-CORRECTION
           def foo
-            <<~#{quote}END2#{quote}
+            <<~#{quote}RUBY2#{quote}
           something
-            END2
+            RUBY2
           end
-        END
+        RUBY
           def foo
-            <<~#{quote}END2#{quote}
+            <<~#{quote}RUBY2#{quote}
               something
-            END2
+            RUBY2
           end
         CORRECTION
-        include_examples :offense, 'too deep indented', <<-END, <<-CORRECTION
-          <<~#{quote}END2#{quote}
+        include_examples :offense, 'too deep indented', <<-RUBY, <<-CORRECTION
+          <<~#{quote}RUBY2#{quote}
               something
-          END2
-        END
-          <<~#{quote}END2#{quote}
+          RUBY2
+        RUBY
+          <<~#{quote}RUBY2#{quote}
             something
-          END2
+          RUBY2
         CORRECTION
         include_examples :offense, 'not indented, without `~`',
-                         <<-END, <<-CORRECTION
-          <<#{quote}END2#{quote}
+                         <<-RUBY, <<-CORRECTION
+          <<#{quote}RUBY2#{quote}
           foo
-          END2
-        END
-          <<~#{quote}END2#{quote}
+          RUBY2
+        RUBY
+          <<~#{quote}RUBY2#{quote}
             foo
-          END2
+          RUBY2
         CORRECTION
 
-        include_examples :accept, 'indentaed, with `~`', <<-END
-          <<~#{quote}END2#{quote}
+        include_examples :accept, 'indentaed, with `~`', <<-RUBY
+          <<~#{quote}RUBY2#{quote}
             something
-          END2
-        END
-        include_examples :accept, 'include empty line', <<-END
+          RUBY2
+        RUBY
+        include_examples :accept, 'include empty line', <<-RUBY
           <<~#{quote}MSG#{quote}
             foo
 
               bar
 
           MSG
-        END
+        RUBY
 
         it 'displays message to use `<<~` instead of `<<`' do
-          inspect_source(cop, <<-END.strip_indent)
-          <<END2
+          inspect_source(cop, <<-RUBY.strip_indent)
+          <<RUBY2
           foo
-          END2
-          END
+          RUBY2
+          RUBY
           expect(cop.messages).to eq(
             [
               'Use 2 spaces for indentation in a heredoc by using `<<~` ' \
@@ -264,11 +266,11 @@ describe RuboCop::Cop::Layout::IndentHeredoc, :config do
           )
         end
         it 'displays message to use `<<~` instead of `<<-`' do
-          inspect_source(cop, <<-END.strip_indent)
-          <<-END2
+          inspect_source(cop, <<-RUBY.strip_indent)
+          <<-RUBY2
           foo
-          END2
-          END
+          RUBY2
+          RUBY
           expect(cop.messages).to eq(
             [
               'Use 2 spaces for indentation in a heredoc by using `<<~` ' \

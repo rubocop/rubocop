@@ -27,10 +27,10 @@ describe RuboCop::Cop::Style::Encoding, :config do
 
     it 'registers an offense when encoding present but only ASCII ' \
        'characters' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         # encoding: utf-8
         def foo() end
-      END
+      RUBY
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(
@@ -43,10 +43,10 @@ describe RuboCop::Cop::Style::Encoding, :config do
     end
 
     it 'accepts encoding on first line' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         # encoding: utf-8
         def foo() \'ä\' end
-      END
+      RUBY
     end
 
     it 'accepts encoding on second line when shebang present' do
@@ -82,25 +82,25 @@ describe RuboCop::Cop::Style::Encoding, :config do
     context 'auto-correct' do
       it 'inserts an encoding comment on the first line when there are ' \
          'non ASCII characters in the file' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           def foo() 'ä' end
-        END
+        RUBY
 
-        expect(new_source).to eq(<<-END.strip_indent)
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           # encoding: utf-8
           def foo() 'ä' end
-        END
+        RUBY
       end
 
       it "removes encoding comment on first line when it's not needed" do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           # encoding: utf-8
           blah
-        END
+        RUBY
 
-        expect(new_source).to eq(<<-END.strip_indent)
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           blah
-        END
+        RUBY
       end
     end
   end
@@ -122,10 +122,10 @@ describe RuboCop::Cop::Style::Encoding, :config do
     end
 
     it 'accepts encoding on first line' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         # encoding: utf-8
         def foo() end
-      END
+      RUBY
     end
 
     it 'accepts encoding on second line when shebang present' do
@@ -171,46 +171,46 @@ describe RuboCop::Cop::Style::Encoding, :config do
         it 'inserts an encoding comment on the first line and leaves ' \
            'the wrong encoding line when encoding is in the wrong place' do
           cop_config['AutoCorrectEncodingComment'] = '# encoding: utf-8'
-          new_source = autocorrect_source(cop, <<-END.strip_indent)
+          new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
             def foo() end
             # encoding: utf-8
-          END
+          RUBY
 
-          expect(new_source).to eq(<<-END.strip_indent)
+          expect(new_source).to eq(<<-RUBY.strip_indent)
             # encoding: utf-8
             def foo() end
             # encoding: utf-8
-          END
+          RUBY
         end
 
         it 'inserts an encoding comment on the second line when the first ' \
            'line is a shebang' do
-          new_source = autocorrect_source(cop, <<-END.strip_indent)
+          new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
             #!/usr/bin/env ruby
             def foo
             end
-          END
+          RUBY
 
-          expect(new_source).to eq(<<-END.strip_indent)
+          expect(new_source).to eq(<<-RUBY.strip_indent)
             #!/usr/bin/env ruby
             # encoding: utf-8
             def foo
             end
-          END
+          RUBY
         end
 
         it "doesn't infinite-loop when the first line is blank" do
-          new_source = autocorrect_source(cop, <<-END.strip_indent)
+          new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
 
             module Toto
             end
-          END
-          expect(new_source).to eq(<<-END.strip_indent)
+          RUBY
+          expect(new_source).to eq(<<-RUBY.strip_indent)
             # encoding: utf-8
 
             module Toto
             end
-          END
+          RUBY
         end
       end
 
@@ -246,10 +246,10 @@ describe RuboCop::Cop::Style::Encoding, :config do
 
     it 'registers an offense when encoding present but only ASCII ' \
        'characters' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         # encoding: utf-8
         def foo() end
-      END
+      RUBY
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(

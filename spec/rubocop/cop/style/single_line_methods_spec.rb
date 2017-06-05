@@ -9,14 +9,14 @@ describe RuboCop::Cop::Style::SingleLineMethods do
   let(:cop_config) { { 'AllowIfMethodIsEmpty' => true } }
 
   it 'registers an offense for a single-line method' do
-    expect_offense(<<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       def some_method; body end
       ^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
       def link_to(name, url); {:name => name}; end
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
       def @table.columns; super; end
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
-    END
+    RUBY
   end
 
   context 'when AllowIfMethodIsEmpty is disabled' do
@@ -44,27 +44,27 @@ describe RuboCop::Cop::Style::SingleLineMethods do
     let(:cop_config) { { 'AllowIfMethodIsEmpty' => true } }
 
     it 'accepts a single-line empty method' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def no_op; end
         def self.resource_class=(klass); end
         def @table.columns; end
-      END
+      RUBY
     end
   end
 
   it 'accepts a multi-line method' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def some_method
         body
       end
-    END
+    RUBY
   end
 
   it 'does not crash on an method with a capitalized name' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def NoSnakeCase
       end
-    END
+    RUBY
   end
 
   it 'auto-corrects def with semicolon after method name' do

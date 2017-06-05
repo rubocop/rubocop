@@ -18,10 +18,10 @@ describe RuboCop::CLI, :isolated_environment do
                                   '#' * 85,
                                   'y ',
                                   'puts x'])
-      create_file('.rubocop_todo.yml', <<-END.strip_indent)
+      create_file('.rubocop_todo.yml', <<-YAML.strip_indent)
         Metrics/LineLength:
           Enabled: false
-      END
+      YAML
       create_file('.rubocop.yml', ['inherit_from: .rubocop_todo.yml'])
       expect(cli.run(['--auto-gen-config'])).to eq(1)
       expect(IO.readlines('.rubocop_todo.yml')[8..-1].map(&:chomp))
@@ -87,7 +87,7 @@ describe RuboCop::CLI, :isolated_environment do
                                   '#' * 85,
                                   'y ',
                                   'puts x'])
-      create_file('example2.rb', <<-END.strip_indent)
+      create_file('example2.rb', <<-RUBY.strip_indent)
         # frozen_string_literal: true
 
         \tx = 0
@@ -96,7 +96,7 @@ describe RuboCop::CLI, :isolated_environment do
         class A
           def a; end
         end
-      END
+      RUBY
       # Make ConfigLoader reload the default configuration so that its
       # absolute Exclude paths will point into this example's work directory.
       RuboCop::ConfigLoader.default_configuration = nil
@@ -271,18 +271,18 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'does not generate configuration for the Syntax cop' do
-      create_file('example1.rb', <<-END.strip_indent)
+      create_file('example1.rb', <<-RUBY.strip_indent)
         # frozen_string_literal: true
 
         x = <  # Syntax error
         puts x
-      END
-      create_file('example2.rb', <<-END.strip_indent)
+      RUBY
+      create_file('example2.rb', <<-RUBY.strip_indent)
         # frozen_string_literal: true
 
         \tx = 0
         puts x
-      END
+      RUBY
       expect(cli.run(['--auto-gen-config'])).to eq(1)
       expect($stderr.string).to eq('')
       expected =
@@ -375,7 +375,7 @@ describe RuboCop::CLI, :isolated_environment do
                                   '#' * 85,
                                   'y ',
                                   'puts x'])
-      create_file('example2.rb', <<-END.strip_indent)
+      create_file('example2.rb', <<-RUBY.strip_indent)
         # frozen_string_literal: true
 
         \tx = 0
@@ -384,7 +384,7 @@ describe RuboCop::CLI, :isolated_environment do
         class A
           def a; end
         end
-      END
+      RUBY
       # Make ConfigLoader reload the default configuration so that its
       # absolute Exclude paths will point into this example's work directory.
       RuboCop::ConfigLoader.default_configuration = nil
@@ -476,21 +476,21 @@ describe RuboCop::CLI, :isolated_environment do
       it 'disables cop if --exclude-limit is exceeded' do
         expect(cli.run(['--auto-gen-config', '--exclude-limit', '1'])).to eq(1)
         expect(IO.readlines('.rubocop_todo.yml')[8..-1].join)
-          .to eq(<<-END.strip_indent)
+          .to eq(<<-YAML.strip_indent)
             # Offense count: 2
             # Cop supports --auto-correct.
             # Configuration parameters: EnforcedStyle, SupportedStyles.
             # SupportedStyles: use_perl_names, use_english_names
             Style/SpecialGlobalVars:
               Enabled: false
-          END
+          YAML
       end
 
       it 'generates Exclude list if --exclude-limit is not exceeded' do
         create_file('example4.rb', ['$!'])
         expect(cli.run(['--auto-gen-config', '--exclude-limit', '10'])).to eq(1)
         expect(IO.readlines('.rubocop_todo.yml')[8..-1].join)
-          .to eq(<<-END.strip_indent)
+          .to eq(<<-YAML.strip_indent)
             # Offense count: 3
             # Cop supports --auto-correct.
             # Configuration parameters: EnforcedStyle, SupportedStyles.
@@ -500,7 +500,7 @@ describe RuboCop::CLI, :isolated_environment do
                 - 'example1.rb'
                 - 'example2.rb'
                 - 'example4.rb'
-          END
+          YAML
       end
     end
 

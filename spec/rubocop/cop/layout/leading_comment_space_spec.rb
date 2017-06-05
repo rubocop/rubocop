@@ -27,10 +27,10 @@ describe RuboCop::Cop::Layout::LeadingCommentSpace do
   end
 
   it 'does not register an offense for #! on first line' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       #!/usr/bin/ruby
       test
-    END
+    RUBY
   end
 
   it 'registers an offense for #! after the first line' do
@@ -77,11 +77,11 @@ describe RuboCop::Cop::Layout::LeadingCommentSpace do
   end
 
   it 'accepts rdoc syntax' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       #++
       #--
       #:nodoc:
-    END
+    RUBY
   end
 
   it 'accepts sprockets directives' do
@@ -94,10 +94,10 @@ describe RuboCop::Cop::Layout::LeadingCommentSpace do
   end
 
   it 'accepts =begin/=end comments' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       =begin
       #blahblah
       =end
-    END
+    RUBY
   end
 end

@@ -17,17 +17,17 @@ describe RuboCop::Cop::Style::NumericLiterals, :config do
   end
 
   it 'accepts integers with less than three places at the end' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       a = 123_456_789_00
       b = 819_2
-    END
+    RUBY
   end
 
   it 'registers an offense for an integer with misplaced underscore' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       a = 123_456_78_90_00
       b = 1_8192
-    END
+    RUBY
     expect(cop.offenses.size).to eq(2)
     expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
   end
@@ -55,11 +55,11 @@ describe RuboCop::Cop::Style::NumericLiterals, :config do
   end
 
   it 'ignores non-decimal literals' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       a = 0b1010101010101
       b = 01717171717171
       c = 0xab11111111bb
-    END
+    RUBY
   end
 
   it 'autocorrects a long integer offense' do
@@ -96,10 +96,10 @@ describe RuboCop::Cop::Style::NumericLiterals, :config do
     end
 
     it 'registers an offense for an integer with misplaced underscore' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         a = 123_456_78_90_00
         b = 81_92
-      END
+      RUBY
       expect(cop.offenses.size).to eq(2)
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end

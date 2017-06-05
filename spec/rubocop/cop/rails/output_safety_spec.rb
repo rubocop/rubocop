@@ -4,19 +4,19 @@ describe RuboCop::Cop::Rails::OutputSafety do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for safe_concat methods' do
-    source = <<-END.strip_indent
+    source = <<-RUBY.strip_indent
       foo.safe_concat('bar')
-    END
+    RUBY
     inspect_source(cop, source)
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'registers an offense for html_safe methods with a receiver and no ' \
      'arguments' do
-    source = <<-END.strip_indent
+    source = <<-RUBY.strip_indent
       foo.html_safe
       "foo".html_safe
-    END
+    RUBY
     inspect_source(cop, source)
     expect(cop.offenses.size).to eq(2)
   end
@@ -33,10 +33,10 @@ describe RuboCop::Cop::Rails::OutputSafety do
   end
 
   it 'registers an offense for raw methods without a receiver' do
-    source = <<-END.strip_indent
+    source = <<-RUBY.strip_indent
       raw(foo)
       raw "foo"
-    END
+    RUBY
     inspect_source(cop, source)
     expect(cop.offenses.size).to eq(2)
   end

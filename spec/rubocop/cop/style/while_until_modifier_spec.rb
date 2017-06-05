@@ -36,21 +36,21 @@ describe RuboCop::Cop::Style::WhileUntilModifier do
   end
 
   it 'accepts oneline while when condition has local variable assignment' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       lines = %w{first second third}
       while (line = lines.shift)
         puts line
       end
-    END
+    RUBY
   end
 
   context 'oneline while when assignment is in body' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         while true
           x = 0
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do

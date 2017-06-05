@@ -16,23 +16,23 @@ describe RuboCop::Cop::Lint::ElseLayout do
   end
 
   it 'accepts proper else' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if something
         test
       else
         something
         test
       end
-    END
+    RUBY
   end
 
   it 'accepts single-expr else regardless of layout' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if something
         test
       else bala
       end
-    END
+    RUBY
   end
 
   it 'can handle elsifs' do

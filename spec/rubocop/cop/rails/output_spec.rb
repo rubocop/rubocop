@@ -4,12 +4,12 @@ describe RuboCop::Cop::Rails::Output do
   subject(:cop) { described_class.new }
 
   it 'records an offense for methods without a receiver' do
-    source = <<-END.strip_indent
+    source = <<-RUBY.strip_indent
       p "edmond dantes"
       puts "sinbad"
       print "abbe busoni"
       pp "monte cristo"
-    END
+    RUBY
     inspect_source(cop, source)
     expect(cop.offenses.size).to eq(4)
   end

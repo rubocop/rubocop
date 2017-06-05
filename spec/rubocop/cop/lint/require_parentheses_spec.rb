@@ -5,11 +5,11 @@ describe RuboCop::Cop::Lint::RequireParentheses do
 
   it 'registers an offense for missing parentheses around expression with ' \
      '&& operator' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       if day.is? 'monday' && month == :jan
         foo
       end
-    END
+    RUBY
     expect(cop.highlights).to eq(["day.is? 'monday' && month == :jan"])
     expect(cop.messages)
       .to eq(['Use parentheses in the method call to avoid confusion about ' \
@@ -29,40 +29,40 @@ describe RuboCop::Cop::Lint::RequireParentheses do
   end
 
   it 'accepts missing parentheses around expression with + operator' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if day_is? 'tuesday' + rest
       end
-    END
+    RUBY
   end
 
   it 'accepts method calls without parentheses followed by keyword and/or' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if day.is? 'tuesday' and month == :jan
       end
       if day.is? 'tuesday' or month == :jan
       end
-    END
+    RUBY
   end
 
   it 'accepts method calls that are all operations' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if current_level == max + 1
       end
-    END
+    RUBY
   end
 
   it 'accepts condition that is not a call' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if @debug
       end
-    END
+    RUBY
   end
 
   it 'accepts parentheses around expression with boolean operator' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if day.is?('tuesday' && true == true)
       end
-    END
+    RUBY
   end
 
   it 'accepts method call with parentheses in ternary' do

@@ -51,8 +51,8 @@ describe RuboCop::Cop::Style::HeredocDelimiters, :config do
 
   context 'with a squiggly heredoc', :ruby23 do
     it 'registers an offense with a non-meaningful delimiter' do
-      expect_offense(<<~RUBY.strip_indent)
-        <<-'END'
+      expect_offense(<<-RUBY.strip_indent)
+        <<~END
           foo
         END
         ^^^ Use meaningful heredoc delimiters.
@@ -60,8 +60,8 @@ describe RuboCop::Cop::Style::HeredocDelimiters, :config do
     end
 
     it 'does not register an offense with a meaningful delimiter' do
-      expect_no_offenses(<<~RUBY.strip_indent)
-        <<-'SQL'
+      expect_no_offenses(<<-RUBY.strip_indent)
+        <<~SQL
           foo
         SQL
       RUBY

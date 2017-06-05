@@ -11,12 +11,12 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
 
     context 'when a block takes multiple arguments' do
       context 'and an argument is unused' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           hash = { foo: 'FOO', bar: 'BAR' }
           hash.each do |key, value|
             puts key
           end
-        END
+        RUBY
 
         it 'registers an offense' do
           expect(cop.offenses.size).to eq(1)
@@ -32,12 +32,12 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
       end
 
       context 'and all the arguments are unused' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           hash = { foo: 'FOO', bar: 'BAR' }
           hash.each do |key, value|
             puts :something
           end
-        END
+        RUBY
 
         it 'registers offenses and suggests omitting them' do
           expect(cop.offenses.size).to eq(2)
@@ -53,11 +53,11 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
 
     context 'when a block takes single argument' do
       context 'and the argument is unused' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           1.times do |index|
             puts :something
           end
-        END
+        RUBY
 
         it 'registers an offense and suggests omitting that' do
           expect(cop.offenses.size).to eq(1)
@@ -71,11 +71,11 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
       end
 
       context 'and the method call is `define_method`' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           define_method(:foo) do |bar|
             puts 'baz'
           end
-        END
+        RUBY
 
         it 'registers an offense' do
           expect(cop.offenses.size).to eq(1)
@@ -91,11 +91,11 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
 
     context 'when a block have a block local variable' do
       context 'and the variable is unused' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           1.times do |index; block_local_variable|
             puts index
           end
-        END
+        RUBY
 
         it 'registers an offense' do
           expect(cop.offenses.size).to eq(1)
@@ -110,9 +110,9 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
 
     context 'when a lambda block takes arguments' do
       context 'and all the arguments are unused' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           -> (foo, bar) { do_something }
-        END
+        RUBY
 
         it 'registers offenses and suggests using a proc' do
           expect(cop.offenses.size).to eq(2)
@@ -131,9 +131,9 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
       end
 
       context 'and an argument is unused' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           -> (foo, bar) { puts bar }
-        END
+        RUBY
 
         it 'registers an offense' do
           expect(cop.offenses.size).to eq(1)
@@ -149,11 +149,11 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
     end
 
     context 'when an underscore-prefixed block argument is not used' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         1.times do |_index|
           puts 'foo'
         end
-      END
+      RUBY
 
       it 'accepts' do
         expect_no_offenses(<<-RUBY.strip_indent)
@@ -166,11 +166,11 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
 
     context 'when an optional keyword argument is unused' do
       context 'when the method call is `define_method`' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           define_method(:foo) do |bar: 'default'|
             puts 'bar'
           end
-        END
+        RUBY
 
         it 'registers an offense' do
           expect(cop.offenses.size).to eq(1)
@@ -196,11 +196,11 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
       end
 
       context 'when the method call is not `define_method`' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           foo(:foo) do |bar: 'default'|
             puts 'bar'
           end
-        END
+        RUBY
 
         it 'registers an offense' do
           expect(cop.offenses.size).to eq(1)
@@ -226,10 +226,10 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
     end
 
     context 'when a method argument is not used' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         def some_method(foo)
         end
-      END
+      RUBY
 
       it 'does not care' do
         expect_no_offenses(<<-RUBY.strip_indent)
@@ -240,11 +240,11 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
     end
 
     context 'when a variable is not used' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         1.times do
           foo = 1
         end
-      END
+      RUBY
 
       it 'does not care' do
         expect_no_offenses(<<-RUBY.strip_indent)
@@ -256,11 +256,11 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
     end
 
     context 'in a method calling `binding` without arguments' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         test do |key, value|
           puts something(binding)
         end
-      END
+      RUBY
 
       it 'accepts all arguments' do
         expect_no_offenses(<<-RUBY.strip_indent)
@@ -271,13 +271,13 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
       end
 
       context 'inside a method definition' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           test do |key, value|
             def other(a)
               puts something(binding)
             end
           end
-        END
+        RUBY
 
         it 'registers offenses' do
           expect(cop.offenses.size).to eq 2
@@ -289,11 +289,11 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
 
     context 'in a method calling `binding` with arguments' do
       context 'when a method argument is unused' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           test do |key, value|
             puts something(binding(:other))
           end
-        END
+        RUBY
 
         it 'registers an offense' do
           expect(cop.offenses.size).to eq(2)
@@ -304,9 +304,9 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
     end
 
     context 'with an empty block' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         super { |bar| }
-      END
+      RUBY
 
       context 'when not configured to ignore empty blocks' do
         let(:cop_config) { { 'IgnoreEmptyBlocks' => false } }

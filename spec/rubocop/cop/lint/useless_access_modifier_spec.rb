@@ -6,7 +6,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   context 'when an access modifier has no effect' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         class SomeClass
           def some_method
             puts 10
@@ -16,7 +16,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
             puts 10
           end
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -31,14 +31,14 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   context 'when an access modifier has no methods' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         class SomeClass
           def some_method
             puts 10
           end
           protected
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -71,13 +71,13 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
   context 'when an access modifier is followed by a ' \
     'class method defined on constant' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         class SomeClass
           protected
           def SomeClass.some_method
           end
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -92,7 +92,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   context 'when there are consecutive access modifiers' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         class SomeClass
          private
          private
@@ -103,7 +103,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
             puts 10
           end
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -131,11 +131,11 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   context 'when class is empty save modifier' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         class SomeClass
           private
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -150,13 +150,13 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   context 'when multiple class definitions in file but only one has offense' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         class SomeClass
           private
         end
         class SomeOtherClass
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -172,13 +172,13 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
   if RUBY_ENGINE == 'ruby' && RUBY_VERSION.start_with?('2.1')
     context 'ruby 2.1 style modifiers' do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           class SomeClass
             private def some_method
               puts 10
             end
           end
-        END
+        RUBY
       end
 
       it 'does not register an offense' do
@@ -248,7 +248,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
     end
 
     it 'still points out redundant uses within the block' do
-      src = <<-END.strip_indent
+      src = <<-RUBY.strip_indent
         class SomeClass
           concerning :FirstThing do
             def foo
@@ -270,7 +270,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
             end
           end
          end
-      END
+      RUBY
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.line).to eq(17)
@@ -279,7 +279,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   context 'when using ActiveSupport behavior when Rails is not eabled' do
     it 'reports offenses' do
-      src = <<-END.strip_indent
+      src = <<-RUBY.strip_indent
         module SomeModule
           extend ActiveSupport::Concern
           class_methods do
@@ -295,7 +295,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           def some_private_instance_method
           end
         end
-      END
+      RUBY
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
     end
@@ -349,13 +349,13 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
     end
 
     it 'still points out redundant uses within the module' do
-      src = <<-END.strip_indent
+      src = <<-RUBY.strip_indent
         class SomeClass
           delegate :foo, to: :bar
 
           private
         end
-      END
+      RUBY
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.line).to eq(4)
@@ -364,37 +364,37 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   shared_examples 'at the top of the body' do |keyword|
     it 'registers an offense for `public`' do
-      src = <<-END.strip_indent
+      src = <<-RUBY.strip_indent
         #{keyword} A
           public
           def method
           end
         end
-      END
+      RUBY
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
     end
 
     it "doesn't register an offense for `protected`" do
-      src = <<-END.strip_indent
+      src = <<-RUBY.strip_indent
         #{keyword} A
           protected
           def method
           end
         end
-      END
+      RUBY
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
 
     it "doesn't register an offense for `private`" do
-      src = <<-END.strip_indent
+      src = <<-RUBY.strip_indent
         #{keyword} A
           private
           def method
           end
         end
-      END
+      RUBY
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
@@ -402,7 +402,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   shared_examples 'repeated visibility modifiers' do |keyword, modifier|
     it "registers an offense when `#{modifier}` is repeated" do
-      src = <<-END.strip_indent
+      src = <<-RUBY.strip_indent
         #{keyword} A
           #{modifier == 'private' ? 'protected' : 'private'}
           def method1
@@ -412,7 +412,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           def method2
           end
         end
-      END
+      RUBY
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
     end
@@ -420,7 +420,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   shared_examples 'non-repeated visibility modifiers' do |keyword|
     it 'registers an offense even when `public` is not repeated' do
-      src = <<-END.strip_indent
+      src = <<-RUBY.strip_indent
         #{keyword} A
           def method1
           end
@@ -428,13 +428,13 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           def method2
           end
         end
-      END
+      RUBY
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
     end
 
     it "doesn't register an offense when `protected` is not repeated" do
-      src = <<-END.strip_indent
+      src = <<-RUBY.strip_indent
         #{keyword} A
           def method1
           end
@@ -442,13 +442,13 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           def method2
           end
         end
-      END
+      RUBY
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
 
     it "doesn't register an offense when `private` is not repeated" do
-      src = <<-END.strip_indent
+      src = <<-RUBY.strip_indent
         #{keyword} A
           def method1
           end
@@ -456,7 +456,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           def method2
           end
         end
-      END
+      RUBY
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
@@ -464,7 +464,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   shared_examples 'at the end of the body' do |keyword, modifier|
     it "registers an offense for trailing `#{modifier}`" do
-      src = <<-END.strip_indent
+      src = <<-RUBY.strip_indent
         #{keyword} A
           def method1
           end
@@ -472,7 +472,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
           #{modifier}
         end
-      END
+      RUBY
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
     end
@@ -480,7 +480,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   shared_examples 'nested in a begin..end block' do |keyword, modifier|
     it "still flags repeated `#{modifier}`" do
-      src = <<-END.strip_indent
+      src = <<-RUBY.strip_indent
         #{keyword} A
           #{modifier == 'private' ? 'protected' : 'private'}
           def blah
@@ -494,14 +494,14 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
             end
           end
         end
-      END
+      RUBY
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
     end
 
     unless modifier == 'public'
       it "doesn't flag an access modifier from surrounding scope" do
-        src = <<-END.strip_indent
+        src = <<-RUBY.strip_indent
           #{keyword} A
             #{modifier}
             begin
@@ -509,7 +509,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
               end
             end
           end
-        END
+        RUBY
         inspect_source(cop, src)
         expect(cop.offenses).to be_empty
       end
@@ -519,7 +519,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
   shared_examples 'unused visibility modifiers' do |keyword|
     it 'registers an error when visibility is immediately changed ' \
        'without any intervening defs' do
-      src = <<-END.strip_indent
+      src = <<-RUBY.strip_indent
         #{keyword} A
           private
           def method1
@@ -529,7 +529,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           def method2
           end
         end
-      END
+      RUBY
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
     end
@@ -538,7 +538,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
   shared_examples 'conditionally defined method' do |keyword, modifier|
     %w[if unless].each do |conditional_type|
       it "doesn't register an offense for #{conditional_type}" do
-        src = <<-END.strip_indent
+        src = <<-RUBY.strip_indent
           #{keyword} A
             #{modifier}
             #{conditional_type} x
@@ -546,7 +546,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
               end
             end
           end
-        END
+        RUBY
         inspect_source(cop, src)
         expect(cop.offenses).to be_empty
       end
@@ -572,25 +572,25 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   shared_examples 'method defined with define_method' do |keyword, modifier|
     it "doesn't register an offense if a block is passed" do
-      src = <<-END.strip_indent
+      src = <<-RUBY.strip_indent
         #{keyword} A
           #{modifier}
           define_method(:method1) do
           end
         end
-      END
+      RUBY
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
 
     %w[lambda proc ->].each do |proc_type|
       it "doesn't register an offense if a #{proc_type} is passed" do
-        src = <<-END.strip_indent
+        src = <<-RUBY.strip_indent
           #{keyword} A
             #{modifier}
             define_method(:method1, #{proc_type} { })
           end
-        END
+        RUBY
         inspect_source(cop, src)
         expect(cop.offenses).to be_empty
       end
@@ -600,7 +600,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
   shared_examples 'method defined on a singleton class' do |keyword, modifier|
     context 'inside a class' do
       it "doesn't register an offense if a method is defined" do
-        src = <<-END.strip_indent
+        src = <<-RUBY.strip_indent
           #{keyword} A
             class << self
               #{modifier}
@@ -608,14 +608,14 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
               end
             end
           end
-        END
+        RUBY
         inspect_source(cop, src)
         expect(cop.offenses).to be_empty
       end
 
       it "doesn't register an offense if the modifier is the same as " \
         'outside the meta-class' do
-        src = <<-END.strip_indent
+        src = <<-RUBY.strip_indent
           #{keyword} A
             #{modifier}
             def method1
@@ -626,25 +626,25 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
               end
             end
           end
-        END
+        RUBY
         inspect_source(cop, src)
         expect(cop.offenses).to be_empty
       end
 
       it 'registers an offense if no method is defined' do
-        src = <<-END.strip_indent
+        src = <<-RUBY.strip_indent
           #{keyword} A
             class << self
               #{modifier}
             end
           end
-        END
+        RUBY
         inspect_source(cop, src)
         expect(cop.offenses.size).to eq(1)
       end
 
       it 'registers an offense if no method is defined after the modifier' do
-        src = <<-END.strip_indent
+        src = <<-RUBY.strip_indent
           #{keyword} A
             class << self
               def method1
@@ -652,14 +652,14 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
               #{modifier}
             end
           end
-        END
+        RUBY
         inspect_source(cop, src)
         expect(cop.offenses.size).to eq(1)
       end
 
       it 'registers an offense even if a non-singleton-class method is ' \
         'defined' do
-        src = <<-END.strip_indent
+        src = <<-RUBY.strip_indent
           #{keyword} A
             def method1
             end
@@ -667,7 +667,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
               #{modifier}
             end
           end
-        END
+        RUBY
         inspect_source(cop, src)
         expect(cop.offenses.size).to eq(1)
       end
@@ -675,35 +675,35 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
     context 'outside a class' do
       it "doesn't register an offense if a method is defined" do
-        src = <<-END.strip_indent
+        src = <<-RUBY.strip_indent
           class << A
             #{modifier}
             define_method(:method1) do
             end
           end
-        END
+        RUBY
         inspect_source(cop, src)
         expect(cop.offenses).to be_empty
       end
 
       it 'registers an offense if no method is defined' do
-        src = <<-END.strip_indent
+        src = <<-RUBY.strip_indent
           class << A
             #{modifier}
           end
-        END
+        RUBY
         inspect_source(cop, src)
         expect(cop.offenses.size).to eq(1)
       end
 
       it 'registers an offense if no method is defined after the modifier' do
-        src = <<-END.strip_indent
+        src = <<-RUBY.strip_indent
           class << A
             def method1
             end
             #{modifier}
           end
-        END
+        RUBY
         inspect_source(cop, src)
         expect(cop.offenses.size).to eq(1)
       end
@@ -712,23 +712,23 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   shared_examples 'method defined using class_eval' do |modifier|
     it "doesn't register an offense if a method is defined" do
-      src = <<-END.strip_indent
+      src = <<-RUBY.strip_indent
         A.class_eval do
           #{modifier}
           define_method(:method1) do
           end
         end
-      END
+      RUBY
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense if no method is defined' do
-      src = <<-END.strip_indent
+      src = <<-RUBY.strip_indent
         A.class_eval do
           #{modifier}
         end
-      END
+      RUBY
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
     end
@@ -736,7 +736,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
     context 'inside a class' do
       it 'registers an offense when a modifier is ouside the block and a ' \
         'method is defined only inside the block' do
-        src = <<-END.strip_indent
+        src = <<-RUBY.strip_indent
           class A
             #{modifier}
             A.class_eval do
@@ -744,21 +744,21 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
               end
             end
           end
-        END
+        RUBY
         inspect_source(cop, src)
         expect(cop.offenses.size).to eq(1)
       end
 
       it 'registers two offenses when a modifier is inside and outside the ' \
         ' and no method is defined' do
-        src = <<-END.strip_indent
+        src = <<-RUBY.strip_indent
           class A
             #{modifier}
             A.class_eval do
               #{modifier}
             end
           end
-        END
+        RUBY
         inspect_source(cop, src)
         expect(cop.offenses.size).to eq(2)
       end
@@ -767,23 +767,23 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   shared_examples 'def in new block' do |klass, modifier|
     it "doesn't register an offense if a method is defined in #{klass}.new" do
-      src = <<-END.strip_indent
+      src = <<-RUBY.strip_indent
         #{klass}.new do
           #{modifier}
           def foo
           end
         end
-      END
+      RUBY
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
 
     it "registers an offense if no method is defined in #{klass}.new" do
-      src = <<-END.strip_indent
+      src = <<-RUBY.strip_indent
         #{klass}.new do
           #{modifier}
         end
-      END
+      RUBY
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
     end
@@ -791,23 +791,23 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   shared_examples 'method defined using instance_eval' do |modifier|
     it "doesn't register an offense if a method is defined" do
-      src = <<-END.strip_indent
+      src = <<-RUBY.strip_indent
         A.instance_eval do
           #{modifier}
           define_method(:method1) do
           end
         end
-      END
+      RUBY
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense if no method is defined' do
-      src = <<-END.strip_indent
+      src = <<-RUBY.strip_indent
         A.instance_eval do
           #{modifier}
         end
-      END
+      RUBY
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
     end
@@ -815,7 +815,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
     context 'inside a class' do
       it 'registers an offense when a modifier is ouside the block and a ' \
         'method is defined only inside the block' do
-        src = <<-END.strip_indent
+        src = <<-RUBY.strip_indent
           class A
             #{modifier}
             self.instance_eval do
@@ -823,21 +823,21 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
               end
             end
           end
-        END
+        RUBY
         inspect_source(cop, src)
         expect(cop.offenses.size).to eq(1)
       end
 
       it 'registers two offenses when a modifier is inside and outside the ' \
         ' and no method is defined' do
-        src = <<-END.strip_indent
+        src = <<-RUBY.strip_indent
           class A
             #{modifier}
             self.instance_eval do
               #{modifier}
             end
           end
-        END
+        RUBY
         inspect_source(cop, src)
         expect(cop.offenses.size).to eq(2)
       end
@@ -846,7 +846,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   shared_examples 'nested modules' do |keyword, modifier|
     it "doesn't register an offense for nested #{keyword}s" do
-      src = <<-END.strip_indent
+      src = <<-RUBY.strip_indent
         #{keyword} A
           #{modifier}
           def method1
@@ -859,27 +859,27 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
             end
           end
         end
-      END
+      RUBY
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
 
     context 'unused modifiers' do
       it "registers an offense with a nested #{keyword}" do
-        src = <<-END.strip_indent
+        src = <<-RUBY.strip_indent
           #{keyword} A
             #{modifier}
             #{keyword} B
               #{modifier}
             end
           end
-        END
+        RUBY
         inspect_source(cop, src)
         expect(cop.offenses.size).to eq(2)
       end
 
       it "registers an offense when outside a nested #{keyword}" do
-        src = <<-END.strip_indent
+        src = <<-RUBY.strip_indent
           #{keyword} A
             #{modifier}
             #{keyword} B
@@ -887,19 +887,19 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
               end
             end
           end
-        END
+        RUBY
         inspect_source(cop, src)
         expect(cop.offenses.size).to eq(1)
       end
 
       it "registers an offense when inside a nested #{keyword}" do
-        src = <<-END.strip_indent
+        src = <<-RUBY.strip_indent
           #{keyword} A
             #{keyword} B
               #{modifier}
             end
           end
-        END
+        RUBY
         inspect_source(cop, src)
         expect(cop.offenses.size).to eq(1)
       end

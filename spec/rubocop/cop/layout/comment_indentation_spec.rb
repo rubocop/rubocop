@@ -44,7 +44,7 @@ describe RuboCop::Cop::Layout::CommentIndentation do
     end
 
     it 'registers an offense for each incorrectly indented comment' do
-      expect_offense(<<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         # a
         ^^^ Incorrect indentation detected (column 0 instead of 2).
           # b
@@ -53,17 +53,17 @@ describe RuboCop::Cop::Layout::CommentIndentation do
             ^^^ Incorrect indentation detected (column 4 instead of 0).
         # d
         def test; end
-      END
+      RUBY
     end
   end
 
-  it 'registers offenses before __END__ but not after' do
-    expect_offense(<<-END.strip_indent)
+  it 'registers offenses before __RUBY__ but not after' do
+    expect_offense(<<-RUBY.strip_indent)
        #
        ^ Incorrect indentation detected (column 1 instead of 0).
       __END__
         #
-    END
+    RUBY
   end
 
   context 'around program structure keywords' do
@@ -100,12 +100,12 @@ describe RuboCop::Cop::Layout::CommentIndentation do
 
     context 'with a blank line following the comment' do
       it 'accepts a correctly indented comment' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           def m
             # comment
 
           end
-        END
+        RUBY
       end
     end
   end
@@ -140,7 +140,7 @@ describe RuboCop::Cop::Layout::CommentIndentation do
   end
 
   it 'auto-corrects' do
-    new_source = autocorrect_source(cop, <<-END.strip_indent)
+    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
        # comment
       hash1 = { a: 0,
            # comment
@@ -165,8 +165,8 @@ describe RuboCop::Cop::Layout::CommentIndentation do
            #
           b
         end
-    END
-    expect(new_source).to eq(<<-END.strip_indent)
+    RUBY
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       # comment
       hash1 = { a: 0,
                 # comment
@@ -191,6 +191,6 @@ describe RuboCop::Cop::Layout::CommentIndentation do
           #
           b
         end
-    END
+    RUBY
   end
 end

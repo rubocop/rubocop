@@ -20,11 +20,11 @@ describe RuboCop::Runner, :isolated_environment do
     let(:options) { { formatters: [['progress', formatter_output_path]] } }
     subject(:runner) { described_class.new(options, RuboCop::ConfigStore.new) }
     context 'if there are no offenses in inspected files' do
-      let(:source) { <<-END.strip_indent }
+      let(:source) { <<-RUBY.strip_indent }
         # frozen_string_literal: true
 
         def valid_code; end
-      END
+      RUBY
 
       it 'returns true' do
         expect(runner.run([])).to be true
@@ -32,11 +32,11 @@ describe RuboCop::Runner, :isolated_environment do
     end
 
     context 'if there is an offense in an inspected file' do
-      let(:source) { <<-END.strip_indent }
+      let(:source) { <<-RUBY.strip_indent }
         # frozen_string_literal: true
 
         def INVALID_CODE; end
-      END
+      RUBY
 
       it 'returns false' do
         expect(runner.run([])).to be false
@@ -44,7 +44,7 @@ describe RuboCop::Runner, :isolated_environment do
 
       it 'sends the offense to a formatter' do
         runner.run([])
-        expect(formatter_output).to eq <<-END.strip_indent
+        expect(formatter_output).to eq <<-RESULT.strip_indent
           Inspecting 1 file
           C
 
@@ -55,7 +55,7 @@ describe RuboCop::Runner, :isolated_environment do
               ^^^^^^^^^^^^
 
           1 file inspected, 1 offense detected
-        END
+        RESULT
       end
     end
 
@@ -82,20 +82,20 @@ describe RuboCop::Runner, :isolated_environment do
     context 'if -s/--stdin is used with an offense' do
       before do
         # Make Style/EndOfLine give same output regardless of platform.
-        create_file('.rubocop.yml', <<-END.strip_indent)
+        create_file('.rubocop.yml', <<-YAML.strip_indent)
           Layout/EndOfLine:
             EnforcedStyle: lf
-        END
+        YAML
       end
 
       let(:options) do
         {
           formatters: [['progress', formatter_output_path]],
-          stdin: <<-END.strip_indent
+          stdin: <<-RUBY.strip_indent
             # frozen_string_literal: true
 
             def INVALID_CODE; end
-          END
+          RUBY
         }
       end
       let(:source) { '' }
@@ -106,7 +106,7 @@ describe RuboCop::Runner, :isolated_environment do
 
       it 'sends the offense to a formatter' do
         runner.run([])
-        expect(formatter_output).to eq <<-END.strip_indent
+        expect(formatter_output).to eq <<-RESULT.strip_indent
           Inspecting 1 file
           C
 
@@ -117,7 +117,7 @@ describe RuboCop::Runner, :isolated_environment do
               ^^^^^^^^^^^^
 
           1 file inspected, 1 offense detected
-        END
+        RESULT
       end
     end
   end
@@ -145,11 +145,11 @@ describe RuboCop::Runner, :isolated_environment do
     end
 
     context 'if there is an offense in an inspected file' do
-      let(:source) { <<-END.strip_indent }
+      let(:source) { <<-RUBY.strip_indent }
         # frozen_string_literal: true
         class Klass
         end
-      END
+      RUBY
 
       it 'aborts because of an infinite loop' do
         expect do

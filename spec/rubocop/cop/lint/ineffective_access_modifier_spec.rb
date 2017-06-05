@@ -35,7 +35,7 @@ describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
 
   context 'when `private_class_method` is used' do
     it "doesn't register an offense" do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         class C
           private
 
@@ -45,13 +45,13 @@ describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
 
           private_class_method :method
         end
-      END
+      RUBY
     end
   end
 
   context 'when a `class << self` block is used' do
     it "doesn't register an offense" do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         class C
           private
 
@@ -61,7 +61,7 @@ describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
             end
           end
         end
-      END
+      RUBY
     end
   end
 

@@ -12,12 +12,12 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
   context 'multiline if that fits on one line' do
     let(:source) do
       # Empty lines should make no difference.
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         if #{condition}
           #{body}
 
         end
-      END
+      RUBY
     end
 
     let(:condition) { 'a' * 38 }
@@ -54,11 +54,11 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
 
   context 'multiline if that fits on one line with comment on first line' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         if a # comment
           b
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -92,7 +92,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
 
   context 'short multiline if near an else etc' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         if x
           y
         elsif x1
@@ -106,7 +106,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
         if a
           b
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -130,7 +130,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
 
     it 'does auto-correction' do
       corrected = autocorrect_source(cop, source)
-      expect(corrected).to eq(<<-END.strip_indent)
+      expect(corrected).to eq(<<-RUBY.strip_indent)
         if x
           y
         elsif x1
@@ -142,7 +142,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
         m = 3 if m0
 
         b if a
-      END
+      RUBY
     end
   end
 
@@ -156,11 +156,11 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
 
   context 'multiline unless that fits on one line' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         unless a
           b
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -179,11 +179,11 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it 'accepts code with EOL comment since user might want to keep it' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       unless a
         b # A comment
       end
-    END
+    RUBY
   end
 
   it 'accepts if-else-end' do
@@ -198,22 +198,22 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it 'accepts if/elsif' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if test
         something
       elsif test2
         something_else
       end
-    END
+    RUBY
   end
 
   context 'with implicit match conditional' do
     let(:source) do
-      <<-END.strip_margin('|')
+      <<-RUBY.strip_margin('|')
         |  if #{conditional}
         |    #{body}
         |  end
-      END
+      RUBY
     end
 
     let(:body) { 'b' * 36 }
@@ -273,47 +273,47 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it "doesn't break if-end when used as RHS of local var assignment" do
-    corrected = autocorrect_source(cop, <<-END.strip_indent)
+    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
       a = if b
         1
       end
-    END
+    RUBY
     expect(corrected).to eq "a = (1 if b)\n"
   end
 
   it "doesn't break if-end when used as RHS of instance var assignment" do
-    corrected = autocorrect_source(cop, <<-END.strip_indent)
+    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
       @a = if b
         1
       end
-    END
+    RUBY
     expect(corrected).to eq "@a = (1 if b)\n"
   end
 
   it "doesn't break if-end when used as RHS of class var assignment" do
-    corrected = autocorrect_source(cop, <<-END.strip_indent)
+    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
       @@a = if b
         1
       end
-    END
+    RUBY
     expect(corrected).to eq "@@a = (1 if b)\n"
   end
 
   it "doesn't break if-end when used as RHS of constant assignment" do
-    corrected = autocorrect_source(cop, <<-END.strip_indent)
+    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
       A = if b
         1
       end
-    END
+    RUBY
     expect(corrected).to eq "A = (1 if b)\n"
   end
 
   it "doesn't break if-end when used as RHS of binary arithmetic" do
-    corrected = autocorrect_source(cop, <<-END.strip_indent)
+    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
       a + if b
         1
       end
-    END
+    RUBY
     expect(corrected).to eq "a + (1 if b)\n"
   end
 
@@ -327,22 +327,22 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
 
   context 'if-end is argument to a parenthesized method call' do
     it "doesn't add redundant parentheses" do
-      corrected = autocorrect_source(cop, <<-END.strip_indent)
+      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
         puts("string", if a
           1
         end)
-      END
+      RUBY
       expect(corrected).to eq "puts(\"string\", 1 if a)\n"
     end
   end
 
   context 'if-end is argument to a non-parenthesized method call' do
     it 'adds parentheses so as not to change meaning' do
-      corrected = autocorrect_source(cop, <<-END.strip_indent)
+      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
         puts "string", if a
           1
         end
-      END
+      RUBY
       expect(corrected).to eq "puts \"string\", (1 if a)\n"
     end
   end

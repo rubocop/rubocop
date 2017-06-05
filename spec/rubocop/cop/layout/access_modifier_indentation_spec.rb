@@ -14,14 +14,14 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
     let(:cop_config) { { 'EnforcedStyle' => 'indent' } }
 
     it 'registers an offense for misaligned private' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         class Test
 
         private
 
           def test; end
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Indent access modifiers like `private`.'])
@@ -29,14 +29,14 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
     end
 
     it 'registers an offense for misaligned private in module' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         module Test
 
          private
 
           def test; end
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Indent access modifiers like `private`.'])
       # Not aligned according to `indent` or `outdent` style:
@@ -44,14 +44,14 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
     end
 
     it 'registers an offense for misaligned module_function in module' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         module Test
 
          module_function
 
           def test; end
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Indent access modifiers like `module_function`.'])
@@ -60,7 +60,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
     end
 
     it 'registers an offense for correct + opposite alignment' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         module Test
 
           public
@@ -69,7 +69,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
 
           def test; end
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Indent access modifiers like `private`.'])
       # No EnforcedStyle can allow both alignments:
@@ -77,7 +77,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
     end
 
     it 'registers an offense for opposite + correct alignment' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         module Test
 
         public
@@ -86,7 +86,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
 
           def test; end
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Indent access modifiers like `public`.'])
       # No EnforcedStyle can allow both alignments:
@@ -107,14 +107,14 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
 
     it 'registers an offense for misaligned private in class ' \
        'defined with Class.new' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         Test = Class.new do
 
         private
 
           def test; end
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Indent access modifiers like `private`.'])
@@ -122,27 +122,27 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
 
     it 'accepts misaligned private in blocks that are not recognized as ' \
        'class/module definitions' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         Test = func do
 
         private
 
           def test; end
         end
-      END
+      RUBY
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for misaligned private in module ' \
        'defined with Module.new' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         Test = Module.new do
 
         private
 
           def test; end
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Indent access modifiers like `private`.'])
@@ -161,42 +161,42 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
     end
 
     it 'accepts properly indented private' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         class Test
 
           private
 
           def test; end
         end
-      END
+      RUBY
     end
 
     it 'accepts properly indented protected' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         class Test
 
           protected
 
           def test; end
         end
-      END
+      RUBY
     end
 
     it 'accepts an empty class' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         class Test
         end
-      END
+      RUBY
     end
 
     it 'accepts methods with a body' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         module Test
           def test
             foo
           end
         end
-      END
+      RUBY
     end
 
     it 'handles properly nested classes' do
@@ -219,7 +219,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
     end
 
     it 'auto-corrects incorrectly indented access modifiers' do
-      corrected = autocorrect_source(cop, <<-END.strip_indent)
+      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
         class Test
 
         public
@@ -228,8 +228,8 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
 
           def test; end
         end
-      END
-      expect(corrected).to eq(<<-END.strip_indent)
+      RUBY
+      expect(corrected).to eq(<<-RUBY.strip_indent)
         class Test
 
           public
@@ -238,21 +238,21 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
 
           def test; end
         end
-      END
+      RUBY
     end
 
     context 'when 4 spaces per indent level are used' do
       let(:indentation_width) { 4 }
 
       it 'accepts properly indented private' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           class Test
 
               private
 
               def test; end
           end
-        END
+        RUBY
       end
     end
 
@@ -262,14 +262,14 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
       end
 
       it 'accepts properly indented private' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           class Test
 
               private
 
             def test; end
           end
-        END
+        RUBY
       end
     end
   end
@@ -279,14 +279,14 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
     let(:indent_msg) { 'Outdent access modifiers like `private`.' }
 
     it 'registers offense for private indented to method depth in a class' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         class Test
 
           private
 
           def test; end
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq([indent_msg])
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'indent')
@@ -318,66 +318,66 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
 
     it 'registers offense for private indented to method depth in singleton' \
        'class' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         class << self
 
           private
 
           def test; end
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq([indent_msg])
     end
 
     it 'registers offense for private indented to method depth in class ' \
        'defined with Class.new' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         Test = Class.new do
 
           private
 
           def test; end
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq([indent_msg])
     end
 
     it 'registers offense for private indented to method depth in module ' \
        'defined with Module.new' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         Test = Module.new do
 
           private
 
           def test; end
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq([indent_msg])
     end
 
     it 'accepts private indented to the containing class indent level' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         class Test
 
         private
 
           def test; end
         end
-      END
+      RUBY
     end
 
     it 'accepts protected indented to the containing class indent level' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         class Test
 
         protected
 
           def test; end
         end
-      END
+      RUBY
     end
 
     it 'handles properly nested classes' do
@@ -400,7 +400,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
     end
 
     it 'auto-corrects incorrectly indented access modifiers' do
-      corrected = autocorrect_source(cop, <<-END.strip_indent)
+      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
         module M
           class Test
 
@@ -411,8 +411,8 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
             def test; end
           end
         end
-      END
-      expect(corrected).to eq(<<-END.strip_indent)
+      RUBY
+      expect(corrected).to eq(<<-RUBY.strip_indent)
         module M
           class Test
 
@@ -423,11 +423,11 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
             def test; end
           end
         end
-      END
+      RUBY
     end
 
     it 'auto-corrects private in complicated case' do
-      corrected = autocorrect_source(cop, <<-END.strip_indent)
+      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
         class Hello
           def foo
             'hi'
@@ -444,8 +444,8 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
             end
           end
         end
-      END
-      expect(corrected).to eq(<<-END.strip_indent)
+      RUBY
+      expect(corrected).to eq(<<-RUBY.strip_indent)
         class Hello
           def foo
             'hi'
@@ -462,7 +462,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
             end
           end
         end
-      END
+      RUBY
     end
   end
 end

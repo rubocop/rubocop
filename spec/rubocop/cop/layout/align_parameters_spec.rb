@@ -34,26 +34,26 @@ describe RuboCop::Cop::Layout::AlignParameters do
     end
 
     it 'accepts multiline []= method call' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         Test.config["something"] =
          true
-      END
+      RUBY
     end
 
     it 'accepts correctly aligned parameters' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         function(a,
                  0, 1,
                  (x + y),
                  if b then c else d end)
-      END
+      RUBY
     end
 
     it 'accepts correctly aligned parameters with fullwidth characters' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         f 'Ｒｕｂｙ', g(a,
                         b)
-      END
+      RUBY
     end
 
     it 'accepts calls that only span one line' do
@@ -61,10 +61,10 @@ describe RuboCop::Cop::Layout::AlignParameters do
     end
 
     it "doesn't get confused by a symbol argument" do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         add_offense(index,
                     MSG % kind)
-      END
+      RUBY
     end
 
     it "doesn't get confused by splat operator" do
@@ -89,24 +89,24 @@ describe RuboCop::Cop::Layout::AlignParameters do
     end
 
     it 'can handle a correctly aligned string literal as first argument' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         add_offense(x,
                     a)
-      END
+      RUBY
     end
 
     it 'can handle a string literal as other argument' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         add_offense(
                     "", a)
-      END
+      RUBY
     end
 
     it "doesn't get confused by a line break inside a parameter" do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         read(path, { headers:    true,
                      converters: :numeric })
-      END
+      RUBY
     end
 
     it "doesn't get confused by symbols with embedded expressions" do
@@ -118,10 +118,10 @@ describe RuboCop::Cop::Layout::AlignParameters do
     end
 
     it 'accepts braceless hashes' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         run(collection, :entry_name => label,
                         :paginator  => paginator)
-      END
+      RUBY
     end
 
     it 'accepts the first parameter being on a new row' do
@@ -134,23 +134,23 @@ describe RuboCop::Cop::Layout::AlignParameters do
     end
 
     it 'can handle heredoc strings' do
-      expect_no_offenses(<<-'END'.strip_indent)
+      expect_no_offenses(<<-'RUBY'.strip_indent)
         class_eval(<<-EOS, __FILE__, __LINE__ + 1)
                     def run_#{name}_callbacks(*args)
                       a = 1
                       return value
                     end
                     EOS
-      END
+      RUBY
     end
 
     it 'can handle a method call within a method call' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         a(a1,
           b(b1,
             b2),
           a2)
-      END
+      RUBY
     end
 
     it 'can handle a call embedded in a string' do
@@ -183,11 +183,11 @@ describe RuboCop::Cop::Layout::AlignParameters do
     end
 
     it 'can handle a multiline hash as second parameter' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         tag(:input, {
           :value => value
         })
-      END
+      RUBY
     end
 
     it 'can handle method calls without parentheses' do
@@ -202,7 +202,7 @@ describe RuboCop::Cop::Layout::AlignParameters do
 
     it "doesn't crash and burn when there are nested issues" do
       # regression test; see GH issue 2441
-      src = <<-END.strip_indent
+      src = <<-RUBY.strip_indent
         build(:house,
           :rooms => [
             build(:bedroom,
@@ -213,7 +213,7 @@ describe RuboCop::Cop::Layout::AlignParameters do
             )
           ]
         )
-      END
+      RUBY
       expect { inspect_source(cop, src) }.not_to raise_error
     end
 
@@ -237,34 +237,34 @@ describe RuboCop::Cop::Layout::AlignParameters do
       end
 
       it 'accepts parameter lists on a single line' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           def method(a, b)
           end
-        END
+        RUBY
       end
 
       it 'accepts proper indentation' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           def method(a,
                      b)
           end
-        END
+        RUBY
       end
 
       it 'accepts the first parameter being on a new row' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           def method(
             a,
             b)
           end
-        END
+        RUBY
       end
 
       it 'accepts a method definition without parameters' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           def method
           end
-        END
+        RUBY
       end
 
       it "doesn't get confused by splat" do
@@ -278,16 +278,16 @@ describe RuboCop::Cop::Layout::AlignParameters do
       end
 
       it 'auto-corrects alignment' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           def method(a,
               b)
           end
-        END
-        expect(new_source).to eq(<<-END.strip_indent)
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           def method(a,
                      b)
           end
-        END
+        RUBY
       end
 
       context 'defining self.method' do
@@ -301,24 +301,24 @@ describe RuboCop::Cop::Layout::AlignParameters do
         end
 
         it 'accepts proper indentation' do
-          expect_no_offenses(<<-END.strip_indent)
+          expect_no_offenses(<<-RUBY.strip_indent)
             def self.method(a,
                             b)
             end
-          END
+          RUBY
         end
 
         it 'auto-corrects alignment' do
-          new_source = autocorrect_source(cop, <<-END.strip_indent)
+          new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
             def self.method(a,
                 b)
             end
-          END
-          expect(new_source).to eq(<<-END.strip_indent)
+          RUBY
+          expect(new_source).to eq(<<-RUBY.strip_indent)
             def self.method(a,
                             b)
             end
-          END
+          RUBY
         end
       end
     end
@@ -345,80 +345,80 @@ describe RuboCop::Cop::Layout::AlignParameters do
     end
 
     it 'auto-corrects alignment' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         func(a,
                b,
         c)
-      END
-      expect(new_source).to eq(<<-END.strip_indent)
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         func(a,
              b,
              c)
-      END
+      RUBY
     end
 
     it 'auto-corrects each line of a multi-line parameter to the right' do
       new_source =
-        autocorrect_source(cop, <<-END.strip_indent)
+        autocorrect_source(cop, <<-RUBY.strip_indent)
           create :transaction, :closed,
                 account:          account,
                 open_price:       1.29,
                 close_price:      1.30
-        END
+        RUBY
       expect(new_source)
-        .to eq(<<-END.strip_indent)
+        .to eq(<<-RUBY.strip_indent)
           create :transaction, :closed,
                  account:          account,
                  open_price:       1.29,
                  close_price:      1.30
-        END
+        RUBY
     end
 
     it 'auto-corrects each line of a multi-line parameter to the left' do
       new_source =
-        autocorrect_source(cop, <<-END.strip_indent)
+        autocorrect_source(cop, <<-RUBY.strip_indent)
           create :transaction, :closed,
                    account:          account,
                    open_price:       1.29,
                    close_price:      1.30
-        END
+        RUBY
       expect(new_source)
-        .to eq(<<-END.strip_indent)
+        .to eq(<<-RUBY.strip_indent)
           create :transaction, :closed,
                  account:          account,
                  open_price:       1.29,
                  close_price:      1.30
-        END
+        RUBY
     end
 
     it 'auto-corrects only parameters that begin a line' do
-      original_source = <<-END.strip_indent
+      original_source = <<-RUBY.strip_indent
         foo(:bar, {
             whiz: 2, bang: 3 }, option: 3)
-      END
+      RUBY
       new_source = autocorrect_source(cop, original_source)
       expect(new_source).to eq(original_source)
     end
 
     it 'does not crash in autocorrect on dynamic string in parameter value' do
-      src = <<-'END'.strip_indent
+      src = <<-'RUBY'.strip_indent
         class MyModel < ActiveRecord::Base
           has_many :other_models,
             class_name: "legacy_name",
             order: "#{legacy_name.table_name}.published DESC"
 
         end
-      END
+      RUBY
       new_source = autocorrect_source(cop, src)
       expect(new_source)
-        .to eq <<-'END'.strip_indent
+        .to eq <<-'RUBY'.strip_indent
           class MyModel < ActiveRecord::Base
             has_many :other_models,
                      class_name: "legacy_name",
                      order: "#{legacy_name.table_name}.published DESC"
 
           end
-        END
+        RUBY
     end
   end
 
@@ -430,12 +430,12 @@ describe RuboCop::Cop::Layout::AlignParameters do
     end
 
     let(:correct_source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         create :transaction, :closed,
           account:     account,
           open_price:  1.29,
           close_price: 1.30
-      END
+      RUBY
     end
 
     it 'does not autocorrect correct source' do
@@ -444,43 +444,43 @@ describe RuboCop::Cop::Layout::AlignParameters do
     end
 
     it 'autocorrects by outdenting when indented too far' do
-      original_source = <<-END.strip_indent
+      original_source = <<-RUBY.strip_indent
         create :transaction, :closed,
                account:     account,
                open_price:  1.29,
                close_price: 1.30
-      END
+      RUBY
 
       expect(autocorrect_source(cop, original_source))
         .to eq(correct_source)
     end
 
     it 'autocorrects by indenting when not indented' do
-      original_source = <<-END.strip_indent
+      original_source = <<-RUBY.strip_indent
         create :transaction, :closed,
         account:     account,
         open_price:  1.29,
         close_price: 1.30
-      END
+      RUBY
 
       expect(autocorrect_source(cop, original_source))
         .to eq(correct_source)
     end
 
     it 'autocorrects when first line is indented' do
-      original_source = <<-END.strip_margin('|')
+      original_source = <<-RUBY.strip_margin('|')
         |  create :transaction, :closed,
         |  account:     account,
         |  open_price:  1.29,
         |  close_price: 1.30
-      END
+      RUBY
 
-      correct_source = <<-END.strip_margin('|')
+      correct_source = <<-RUBY.strip_margin('|')
         |  create :transaction, :closed,
         |    account:     account,
         |    open_price:  1.29,
         |    close_price: 1.30
-      END
+      RUBY
 
       expect(autocorrect_source(cop, original_source))
         .to eq(correct_source)
@@ -524,22 +524,22 @@ describe RuboCop::Cop::Layout::AlignParameters do
       end
 
       it 'autocorrects relative to position of relevant method call' do
-        original_source = <<-END.strip_margin('|')
+        original_source = <<-RUBY.strip_margin('|')
           | something
           |   .method_name(
           |       a,
           |          b,
           |            c
           |   )
-        END
-        correct_source = <<-END.strip_margin('|')
+        RUBY
+        correct_source = <<-RUBY.strip_margin('|')
           | something
           |   .method_name(
           |     a,
           |     b,
           |     c
           |   )
-        END
+        RUBY
         expect(autocorrect_source(cop, original_source))
           .to eq(correct_source)
       end
@@ -565,34 +565,34 @@ describe RuboCop::Cop::Layout::AlignParameters do
       end
 
       it 'accepts parameter lists on a single line' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           def method(a, b)
           end
-        END
+        RUBY
       end
 
       it 'accepts proper indentation' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           def method(a,
             b)
           end
-        END
+        RUBY
       end
 
       it 'accepts the first parameter being on a new row' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           def method(
             a,
             b)
           end
-        END
+        RUBY
       end
 
       it 'accepts a method definition without parameters' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           def method
           end
-        END
+        RUBY
       end
 
       it "doesn't get confused by splat" do
@@ -607,16 +607,16 @@ describe RuboCop::Cop::Layout::AlignParameters do
       end
 
       it 'auto-corrects alignment' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           def method(a,
               b)
           end
-        END
-        expect(new_source).to eq(<<-END.strip_indent)
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           def method(a,
             b)
           end
-        END
+        RUBY
       end
 
       context 'defining self.method' do
@@ -630,24 +630,24 @@ describe RuboCop::Cop::Layout::AlignParameters do
         end
 
         it 'accepts proper indentation' do
-          expect_no_offenses(<<-END.strip_indent)
+          expect_no_offenses(<<-RUBY.strip_indent)
             def self.method(a,
               b)
             end
-          END
+          RUBY
         end
 
         it 'auto-corrects alignment' do
-          new_source = autocorrect_source(cop, <<-END.strip_indent)
+          new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
             def self.method(a,
                 b)
             end
-          END
-          expect(new_source).to eq(<<-END.strip_indent)
+          RUBY
+          expect(new_source).to eq(<<-RUBY.strip_indent)
             def self.method(a,
               b)
             end
-          END
+          RUBY
         end
       end
     end
@@ -676,21 +676,21 @@ describe RuboCop::Cop::Layout::AlignParameters do
         end
 
         it 'autocorrects even when first argument is in wrong position' do
-          original_source = <<-END.strip_margin('|')
+          original_source = <<-RUBY.strip_margin('|')
             | assigned_value = match(
             |         a,
             |            b,
             |                    c
             | )
-          END
+          RUBY
 
-          correct_source = <<-END.strip_margin('|')
+          correct_source = <<-RUBY.strip_margin('|')
             | assigned_value = match(
             |     a,
             |     b,
             |     c
             | )
-          END
+          RUBY
 
           expect(autocorrect_source(cop, original_source))
             .to eq(correct_source)

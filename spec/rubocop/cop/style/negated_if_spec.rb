@@ -13,12 +13,12 @@ describe RuboCop::Cop::Style::NegatedIf do
 
   describe 'with “both” style' do
     it 'registers an offense for if with exclamation point condition' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         if !a_condition
           some_method
         end
         some_method if !a_condition
-      END
+      RUBY
       expect(cop.messages).to eq(
         ['Favor `unless` over `if` for negative ' \
          'conditions.'] * 2
@@ -26,23 +26,23 @@ describe RuboCop::Cop::Style::NegatedIf do
     end
 
     it 'registers an offense for unless with exclamation point condition' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         unless !a_condition
           some_method
         end
         some_method unless !a_condition
-      END
+      RUBY
       expect(cop.messages).to eq(['Favor `if` over `unless` for negative ' \
                                   'conditions.'] * 2)
     end
 
     it 'registers an offense for if with "not" condition' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         if not a_condition
           some_method
         end
         some_method if not a_condition
-      END
+      RUBY
       expect(cop.messages).to eq(
         ['Favor `unless` over `if` for negative ' \
          'conditions.'] * 2
@@ -51,7 +51,7 @@ describe RuboCop::Cop::Style::NegatedIf do
     end
 
     it 'accepts an if/else with negative condition' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if !a_condition
           some_method
         else
@@ -62,11 +62,11 @@ describe RuboCop::Cop::Style::NegatedIf do
         elsif other_condition
           something_else
         end
-      END
+      RUBY
     end
 
     it 'accepts an if where only part of the condition is negated' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if !condition && another_condition
           some_method
         end
@@ -74,20 +74,20 @@ describe RuboCop::Cop::Style::NegatedIf do
           some_method
         end
         some_method if not condition or another_condition
-      END
+      RUBY
     end
 
     it 'accepts an if where the condition is doubly negated' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if !!condition
           some_method
         end
         some_method if !!condition
-      END
+      RUBY
     end
 
     it 'is not confused by negated elsif' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if test.is_a?(String)
           3
         elsif test.is_a?(Array)
@@ -95,7 +95,7 @@ describe RuboCop::Cop::Style::NegatedIf do
         elsif !test.nil?
           1
         end
-      END
+      RUBY
     end
 
     it 'autocorrects for postfix' do
@@ -120,15 +120,15 @@ describe RuboCop::Cop::Style::NegatedIf do
     end
 
     it 'autocorrects for prefix' do
-      corrected = autocorrect_source(cop, <<-END.strip_indent)
+      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
         if !foo
         end
-      END
+      RUBY
 
-      expect(corrected).to eq <<-END.strip_indent
+      expect(corrected).to eq <<-RUBY.strip_indent
         unless foo
         end
-      END
+      RUBY
     end
   end
 
@@ -145,10 +145,10 @@ describe RuboCop::Cop::Style::NegatedIf do
     end
 
     it 'registers an offence for prefix' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         if !foo
         end
-      END
+      RUBY
 
       expect(cop.messages).to eq(
         ['Favor `unless` over `if` for negative conditions.']
@@ -160,15 +160,15 @@ describe RuboCop::Cop::Style::NegatedIf do
     end
 
     it 'autocorrects for prefix' do
-      corrected = autocorrect_source(cop, <<-END.strip_indent)
+      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
         if !foo
         end
-      END
+      RUBY
 
-      expect(corrected).to eq <<-END.strip_indent
+      expect(corrected).to eq <<-RUBY.strip_indent
         unless foo
         end
-      END
+      RUBY
     end
   end
 
@@ -192,10 +192,10 @@ describe RuboCop::Cop::Style::NegatedIf do
     end
 
     it 'does not register an offence for prefix' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if !foo
         end
-      END
+      RUBY
     end
 
     it 'autocorrects for postfix' do
@@ -214,16 +214,16 @@ describe RuboCop::Cop::Style::NegatedIf do
   end
 
   it 'does not blow up for empty if condition' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if ()
       end
-    END
+    RUBY
   end
 
   it 'does not blow up for empty unless condition' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       unless ()
       end
-    END
+    RUBY
   end
 end

@@ -7,17 +7,17 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
 
   context 'with if statement' do
     it 'registers an offense for bad indentation in an if body' do
-      expect_offense(<<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         if cond
          func
           func
           ^^^^ Inconsistent indentation detected.
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for bad indentation in an else body' do
-      expect_offense(<<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         if cond
           func1
         else
@@ -25,11 +25,11 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
           func2
           ^^^^^ Inconsistent indentation detected.
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for bad indentation in an elsif body' do
-      expect_offense(<<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         if a1
           b1
         elsif a2
@@ -39,11 +39,11 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
         else
           c
         end
-      END
+      RUBY
     end
 
     it 'autocorrects bad indentation' do
-      corrected = autocorrect_source(cop, <<-END.strip_indent)
+      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
         if a1
            b1
         elsif a2
@@ -52,8 +52,8 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
         else
             c
         end
-      END
-      expect(corrected).to eq <<-END.strip_indent
+      RUBY
+      expect(corrected).to eq <<-RUBY.strip_indent
         if a1
            b1
         elsif a2
@@ -62,7 +62,7 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
         else
             c
         end
-      END
+      RUBY
     end
 
     it 'accepts a one line if statement' do
@@ -70,7 +70,7 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
     end
 
     it 'accepts a correctly aligned if/elsif/else/end' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if a1
           b1
         elsif a2
@@ -78,46 +78,46 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
         else
           c
         end
-      END
+      RUBY
     end
 
     it 'accepts if/elsif/else/end laid out as a table' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if    @io == $stdout then str << "$stdout"
         elsif @io == $stdin  then str << "$stdin"
         elsif @io == $stderr then str << "$stderr"
         else                      str << @io.class.to_s
         end
-      END
+      RUBY
     end
 
     it 'accepts if/then/else/end laid out as another table' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if File.exist?('config.save')
         then ConfigTable.load
         else ConfigTable.new
         end
-      END
+      RUBY
     end
 
     it 'accepts if/elsif/else/end with fullwidth characters' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         p 'Ｒｕｂｙ', if a then b
                                 c
                       end
-      END
+      RUBY
     end
 
     it 'accepts an empty if' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if a
         else
         end
-      END
+      RUBY
     end
 
     it 'accepts an if in assignment with end aligned with variable' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         var = if a
           0
         end
@@ -139,121 +139,121 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
         VAR = if a
           0
         end
-      END
+      RUBY
     end
 
     it 'accepts an if/else in assignment with end aligned with variable' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         var = if a
           0
         else
           1
         end
-      END
+      RUBY
     end
 
     it 'accepts an if/else in assignment with end aligned with variable ' \
        'and chaining after the end' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         var = if a
           0
         else
           1
         end.abc.join("")
-      END
+      RUBY
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts an if/else in assignment with end aligned with variable ' \
        'and chaining with a block after the end' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         var = if a
           0
         else
           1
         end.abc.tap {}
-      END
+      RUBY
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts an if in assignment with end aligned with if' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         var = if a
                 0
               end
-      END
+      RUBY
     end
 
     it 'accepts an if/else in assignment with end aligned with if' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         var = if a
                 0
               else
                 1
               end
-      END
+      RUBY
     end
 
     it 'accepts an if/else in assignment on next line with end aligned ' \
        'with if' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         var =
           if a
             0
           else
             1
           end
-      END
+      RUBY
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts an if/else branches with rescue clauses' do
       # Because of how the rescue clauses come out of Parser, these are
       # special and need to be tested.
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if a
           a rescue nil
         else
           a rescue nil
         end
-      END
+      RUBY
     end
   end
 
   context 'with unless' do
     it 'registers an offense for bad indentation in an unless body' do
-      expect_offense(<<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         unless cond
          func
           func
           ^^^^ Inconsistent indentation detected.
         end
-      END
+      RUBY
     end
 
     it 'accepts an empty unless' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         unless a
         else
         end
-      END
+      RUBY
     end
   end
 
   context 'with case' do
     it 'registers an offense for bad indentation in a case/when body' do
-      expect_offense(<<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         case a
         when b
          c
             d
             ^ Inconsistent indentation detected.
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for bad indentation in a case/else body' do
-      expect_offense(<<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         case a
         when b
           c
@@ -264,11 +264,11 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
           g
           ^ Inconsistent indentation detected.
         end
-      END
+      RUBY
     end
 
     it 'accepts correctly indented case/when/else' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         case a
         when b
           c
@@ -277,31 +277,31 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
         else
           f
         end
-      END
+      RUBY
     end
 
     it 'accepts case/when/else laid out as a table' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         case sexp.loc.keyword.source
         when 'if'     then cond, body, _else = *sexp
         when 'unless' then cond, _else, body = *sexp
         else               cond, body = *sexp
         end
-      END
+      RUBY
     end
 
     it 'accepts case/when/else with then beginning a line' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         case sexp.loc.keyword.source
         when 'if'
         then cond, body, _else = *sexp
         end
-      END
+      RUBY
     end
 
     it 'accepts indented when/else plus indented body' do
       # "Indent when as deep as case" is the job of another cop.
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         case code_type
           when 'ruby', 'sql', 'plain'
             code_type
@@ -312,101 +312,101 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
           else
             'plain'
         end
-      END
+      RUBY
     end
   end
 
   context 'with while/until' do
     it 'registers an offense for bad indentation in a while body' do
-      expect_offense(<<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         while cond
          func
           func
           ^^^^ Inconsistent indentation detected.
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for bad indentation in begin/end/while' do
-      expect_offense(<<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         something = begin
          func1
            func2
            ^^^^^ Inconsistent indentation detected.
         end while cond
-      END
+      RUBY
     end
 
     it 'registers an offense for bad indentation in an until body' do
-      expect_offense(<<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         until cond
          func
           func
           ^^^^ Inconsistent indentation detected.
         end
-      END
+      RUBY
     end
 
     it 'accepts an empty while' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         while a
         end
-      END
+      RUBY
     end
   end
 
   context 'with for' do
     it 'registers an offense for bad indentation in a for body' do
-      expect_offense(<<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         for var in 1..10
          func
         func
         ^^^^ Inconsistent indentation detected.
         end
-      END
+      RUBY
     end
 
     it 'accepts an empty for' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         for var in 1..10
         end
-      END
+      RUBY
     end
   end
 
   context 'with def/defs' do
     it 'registers an offense for bad indentation in a def body' do
-      expect_offense(<<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def test
             func1
              func2
              ^^^^^ Inconsistent indentation detected.
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for bad indentation in a defs body' do
-      expect_offense(<<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def self.test
            func
             func
             ^^^^ Inconsistent indentation detected.
         end
-      END
+      RUBY
     end
 
     it 'accepts an empty def body' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def test
         end
-      END
+      RUBY
     end
 
     it 'accepts an empty defs body' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def self.test
         end
-      END
+      RUBY
     end
   end
 
@@ -415,7 +415,7 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
       let(:cop_config) { { 'EnforcedStyle' => 'rails' } }
 
       it 'accepts different indentation in different visibility sections' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           class Cat
             def meow
               puts('Meow!')
@@ -446,7 +446,7 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
               rand < 0.8
             end
           end
-        END
+        RUBY
       end
     end
 
@@ -464,14 +464,14 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
       end
 
       it 'accepts an empty class body' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           class Test
           end
-        END
+        RUBY
       end
 
       it 'accepts indented public, protected, and private' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           class Test
             public
 
@@ -488,12 +488,12 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
             def g
             end
           end
-        END
+        RUBY
       end
 
       it 'registers an offense for bad indentation in def but not for ' \
          'outdented public, protected, and private' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           class Test
           public
 
@@ -510,7 +510,7 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
            def g
            end
           end
-        END
+        RUBY
         expect(cop.messages).to eq(['Inconsistent indentation detected.'])
         expect(cop.highlights).to eq(["def g\n end"])
       end
@@ -531,52 +531,52 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
     end
 
     it 'accepts an empty module body' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         module Test
         end
-      END
+      RUBY
     end
   end
 
   context 'with block' do
     it 'registers an offense for bad indentation in a do/end body' do
-      expect_offense(<<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a = func do
          b
           c
           ^ Inconsistent indentation detected.
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for bad indentation in a {} body' do
-      expect_offense(<<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         func {
            b
           c
           ^ Inconsistent indentation detected.
         }
-      END
+      RUBY
     end
 
     it 'accepts a correctly indented block body' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         a = func do
           b
           c
         end
-      END
+      RUBY
     end
 
     it 'accepts an empty block body' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         a = func do
         end
-      END
+      RUBY
     end
 
     it 'does not auto-correct an offense within another offense' do
-      corrected = autocorrect_source(cop, <<-END.strip_indent)
+      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
         require 'spec_helper'
         describe ArticlesController do
           render_views
@@ -589,11 +589,11 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
                 end
             end
         end
-      END
+      RUBY
       expect(cop.offenses.map(&:line)).to eq [4, 7] # Two offenses are found.
 
       # The offense on line 4 is corrected, affecting lines 4 to 11.
-      expect(corrected).to eq <<-END.strip_indent
+      expect(corrected).to eq <<-RUBY.strip_indent
         require 'spec_helper'
         describe ArticlesController do
           render_views
@@ -606,7 +606,7 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
               end
           end
         end
-      END
+      RUBY
     end
   end
 end

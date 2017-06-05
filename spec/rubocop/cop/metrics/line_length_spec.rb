@@ -33,10 +33,10 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
 
     context 'and all the excessive characters are part of an URL' do
       # This code example is allowed by AllowURI feature itself :).
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         # Some documentation comment...
         # See: https://github.com/bbatsov/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c
-      END
+      RUBY
 
       it 'accepts the line' do
         inspect_source(cop, source)
@@ -45,9 +45,9 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
     end
 
     context 'and the excessive characters include a complete URL' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         # See: http://google.com/, http://gmail.com/, https://maps.google.com/, http://plus.google.com/
-      END
+      RUBY
 
       it 'registers an offense for the line' do
         inspect_source(cop, source)
@@ -62,10 +62,10 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
 
     context 'and the excessive characters include part of an URL ' \
             'and another word' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         # See: https://github.com/bbatsov/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c and
         #   http://google.com/
-      END
+      RUBY
 
       it 'registers an offense for the line' do
         inspect_source(cop, source)
@@ -84,9 +84,9 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
         { 'Max' => 80, 'AllowURI' => true, 'URISchemes' => %w[LDAP] }
       end
 
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         xxxxxxxxxxxxxxxxxxxxxxxxxxxxzxxxxxxxxxxx = LDAP::DEFAULT_GROUP_UNIQUE_MEMBER_LIST_KEY
-      END
+      RUBY
 
       it 'does not crash' do
         expect { inspect_source(cop, source) }.not_to raise_error
@@ -94,9 +94,9 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
     end
 
     context 'and the URL does not have a http(s) scheme' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         xxxxxxxxxxxxxxxxxxxxxxxxxxxxzxxxxxxxxxxx = 'otherprotocol://a.very.long.line.which.violates.LineLength/sadf'
-      END
+      RUBY
 
       it 'rejects the line' do
         inspect_source(cop, source)
@@ -125,14 +125,14 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
     end
 
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         class ExampleTest < TestCase
           test 'some really long test description which exceeds length' do
           end
           def test_some_other_long_test_description_which_exceeds_length
           end
         end
-      END
+      RUBY
     end
 
     it 'accepts long lines matching a pattern but not other long lines' do
@@ -144,11 +144,11 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
   context 'when AllowHeredoc option is enabled' do
     let(:cop_config) { { 'Max' => 80, 'AllowHeredoc' => true } }
 
-    let(:source) { <<-END }
+    let(:source) { <<-RUBY }
       <<-SQL
         SELECT posts.id, posts.title, users.name FROM posts LEFT JOIN users ON posts.user_id = users.id;
       SQL
-    END
+    RUBY
 
     it 'accepts long lines in heredocs' do
       inspect_source(cop, source)
@@ -168,7 +168,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
         { 'Max' => 80, 'AllowHeredoc' => %w[SQL OK], 'IgnoredPatterns' => [] }
       end
 
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         foo(<<-DOC, <<-SQL, <<-FOO)
           1st offence: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
           \#{<<-OK}
@@ -188,7 +188,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
           SQL
           4th offence: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
         FOO
-      END
+      RUBY
 
       it 'rejects long lines in heredocs with not whitelisted delimiters' do
         inspect_source(cop, source)
@@ -201,9 +201,9 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
     let(:cop_config) { { 'Max' => 80, 'AllowURI' => false } }
 
     context 'and all the excessive characters are part of an URL' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         # See: https://github.com/bbatsov/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c
-      END
+      RUBY
 
       it 'registers an offense for the line' do
         inspect_source(cop, source)
@@ -259,9 +259,9 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
     let(:cop_config) { { 'Max' => 80, 'IgnoreCopDirectives' => true } }
 
     context 'and the Rubocop directive is excessively long' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         # rubocop:disable Metrics/SomeReallyLongMetricNameThatShouldBeMuchShorterAndNeedsANameChange
-      END
+      RUBY
 
       it 'accepts the line' do
         inspect_source(cop, source)
@@ -270,11 +270,11 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
     end
 
     context 'and the Rubocop directive causes an excessive line length' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         def method_definition_that_is_just_under_the_line_length_limit(foo, bar) # rubocop:disable Metrics/AbcSize
           # complex method
         end
-      END
+      RUBY
 
       it 'accepts the line' do
         inspect_source(cop, source)
@@ -282,11 +282,11 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
       end
 
       context 'and has explanatory text' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           def method_definition_that_is_just_under_the_line_length_limit(foo) # rubocop:disable Metrics/AbcSize inherently complex!
             # complex
           end
-        END
+        RUBY
 
         it 'accepts the line' do
           inspect_source(cop, source)
@@ -309,9 +309,9 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
       end
 
       context 'and the source contains non-directive # as comment' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa # bbbbbbbbbbbbbb # rubocop:enable Style/ClassVars'
-        END
+        RUBY
 
         it 'registers an offense for the line' do
           inspect_source(cop, source)
@@ -325,9 +325,9 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
       end
 
       context 'and the source contains non-directive #s as non-comment' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           LARGE_DATA_STRING_PATTERN = %r{\A([A-Za-z0-9\+\/#]*\={0,2})#([A-Za-z0-9\+\/#]*\={0,2})#([A-Za-z0-9\+\/#]*\={0,2})\z} # rubocop:disable LineLength
-        END
+        RUBY
 
         it 'registers an offense for the line' do
           inspect_source(cop, source)

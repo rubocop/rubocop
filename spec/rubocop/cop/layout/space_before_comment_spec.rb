@@ -19,11 +19,11 @@ describe RuboCop::Cop::Layout::SpaceBeforeComment do
   end
 
   it 'accepts a doc comment' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       =begin
       Doc comment
       =end
-    END
+    RUBY
   end
 
   it 'auto-corrects missing space' do

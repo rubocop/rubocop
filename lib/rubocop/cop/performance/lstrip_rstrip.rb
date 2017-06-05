@@ -16,10 +16,10 @@ module RuboCop
       class LstripRstrip < Cop
         MSG = 'Use `strip` instead of `%s.%s`.'.freeze
 
-        def_node_matcher :lstrip_rstrip, <<-END
+        def_node_matcher :lstrip_rstrip, <<-PATTERN
           {(send $(send _ $:rstrip) $:lstrip)
            (send $(send _ $:lstrip) $:rstrip)}
-        END
+        PATTERN
 
         def on_send(node)
           lstrip_rstrip(node) do |first_send, method_one, method_two|

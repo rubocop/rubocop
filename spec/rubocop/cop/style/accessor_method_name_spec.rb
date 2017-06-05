@@ -22,19 +22,19 @@ describe RuboCop::Cop::Style::AccessorMethodName do
   end
 
   it 'accepts method get_something with args' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def get_something(arg)
         # ...
       end
-    END
+    RUBY
   end
 
   it 'accepts singleton method get_something with args' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def self.get_something(arg)
         # ...
       end
-    END
+    RUBY
   end
 
   it 'registers an offense for method set_something with one arg' do
@@ -56,34 +56,34 @@ describe RuboCop::Cop::Style::AccessorMethodName do
   end
 
   it 'accepts method set_something with no args' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def set_something
         # ...
       end
-    END
+    RUBY
   end
 
   it 'accepts singleton method set_something with no args' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def self.set_something
         # ...
       end
-    END
+    RUBY
   end
 
   it 'accepts method set_something with two args' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def set_something(arg1, arg2)
         # ...
       end
-    END
+    RUBY
   end
 
   it 'accepts singleton method set_something with two args' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def self.get_something(arg1, arg2)
         # ...
       end
-    END
+    RUBY
   end
 end

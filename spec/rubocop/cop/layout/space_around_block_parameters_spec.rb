@@ -75,11 +75,11 @@ describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
     end
 
     it 'accepts line break after closing pipe' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         {}.each do |x, y|
           puts x
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for multiple spaces before parameter' do
@@ -203,11 +203,11 @@ describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
     end
 
     it 'accepts line break after closing pipe' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         {}.each do | x, y |
           puts x
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for multiple spaces before parameter' do

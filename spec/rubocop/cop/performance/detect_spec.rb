@@ -44,21 +44,21 @@ describe RuboCop::Cop::Performance::Detect do
     end
 
     it "registers an offense when first is called on multiline #{method}" do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         [1, 2, 3].#{method} do |i|
           i % 2 == 0
         end.first
-      END
+      RUBY
 
       expect(cop.messages).to eq(["Use `detect` instead of `#{method}.first`."])
     end
 
     it "registers an offense when last is called on multiline #{method}" do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         [1, 2, 3].#{method} do |i|
           i % 2 == 0
         end.last
-      END
+      RUBY
 
       expect(cop.messages)
         .to eq(["Use `reverse.detect` instead of `#{method}.last`."])
@@ -161,43 +161,43 @@ describe RuboCop::Cop::Performance::Detect do
           end
 
           it "corrects #{method}.first to #{preferred_method} (multiline)" do
-            source = <<-END.strip_indent
+            source = <<-RUBY.strip_indent
               [1, 2, 3].#{method} do |i|
                 i % 2 == 0
               end.first
-            END
+            RUBY
             new_source = autocorrect_source(cop, source)
 
-            expect(new_source).to eq(<<-END.strip_indent)
+            expect(new_source).to eq(<<-RUBY.strip_indent)
               [1, 2, 3].#{preferred_method} do |i|
                 i % 2 == 0
               end
-            END
+            RUBY
           end
 
           it "corrects #{method}.last to reverse.#{preferred_method} " \
              '(multiline)' do
-            source = <<-END.strip_indent
+            source = <<-RUBY.strip_indent
               [1, 2, 3].#{method} do |i|
                 i % 2 == 0
               end.last
-            END
+            RUBY
             new_source = autocorrect_source(cop, source)
 
             expect(new_source)
-              .to eq(<<-END.strip_indent)
+              .to eq(<<-RUBY.strip_indent)
                 [1, 2, 3].reverse.#{preferred_method} do |i|
                   i % 2 == 0
                 end
-              END
+              RUBY
           end
 
           it "corrects multiline #{method} to #{preferred_method} " \
              "with 'first' on the last line" do
-            source = <<-END.strip_indent
+            source = <<-RUBY.strip_indent
               [1, 2, 3].#{method} { true }
               .first['x']
-            END
+            RUBY
             new_source = autocorrect_source(cop, source)
 
             expect(new_source)
@@ -206,10 +206,10 @@ describe RuboCop::Cop::Performance::Detect do
 
           it "corrects multiline #{method} to #{preferred_method} " \
              "with 'first' on the last line (short syntax)" do
-            source = <<-END.strip_indent
+            source = <<-RUBY.strip_indent
               [1, 2, 3].#{method}(&:blank?)
               .first['x']
-            END
+            RUBY
             new_source = autocorrect_source(cop, source)
 
             expect(new_source)

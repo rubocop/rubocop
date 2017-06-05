@@ -12,10 +12,10 @@ describe RuboCop::Cop::Layout::InitialIndentation do
   end
 
   it 'accepts unindented method definition' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def f
       end
-    END
+    RUBY
   end
 
   context 'for a file with byte order mark' do
@@ -52,31 +52,31 @@ describe RuboCop::Cop::Layout::InitialIndentation do
   end
 
   it 'accepts unindented comment + assignment' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       # comment
       x = 1
-    END
+    RUBY
   end
 
   it 'auto-corrects indented method definition' do
-    corrected = autocorrect_source(cop, <<-END.strip_margin('|'))
+    corrected = autocorrect_source(cop, <<-RUBY.strip_margin('|'))
       |  def f
       |  end
-    END
-    expect(corrected).to eq <<-END.strip_indent
+    RUBY
+    expect(corrected).to eq <<-RUBY.strip_indent
       def f
         end
-    END
+    RUBY
   end
 
   it 'auto-corrects indented assignment but not comment' do
-    corrected = autocorrect_source(cop, <<-END.strip_margin('|'))
+    corrected = autocorrect_source(cop, <<-RUBY.strip_margin('|'))
       |  # comment
       |  x = 1
-    END
-    expect(corrected).to eq <<-END.strip_indent
+    RUBY
+    expect(corrected).to eq <<-RUBY.strip_indent
         # comment
       x = 1
-    END
+    RUBY
   end
 end

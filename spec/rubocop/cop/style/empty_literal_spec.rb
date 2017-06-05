@@ -78,17 +78,17 @@ describe RuboCop::Cop::Style::EmptyLiteral do
 
     it 'auto-corrects Hash.new to {} in various contexts' do
       new_source =
-        autocorrect_source(cop, <<-END.strip_indent)
+        autocorrect_source(cop, <<-RUBY.strip_indent)
           test = Hash.new
           Hash.new.merge("a" => 3)
           yadayada.map { a }.reduce(Hash.new, :merge)
-        END
+        RUBY
       expect(new_source)
-        .to eq(<<-END.strip_indent)
+        .to eq(<<-RUBY.strip_indent)
           test = {}
           {}.merge("a" => 3)
           yadayada.map { a }.reduce({}, :merge)
-        END
+        RUBY
     end
 
     it 'auto-correct Hash.new to {} as the only parameter to a method' do
@@ -156,11 +156,11 @@ describe RuboCop::Cop::Style::EmptyLiteral do
       let(:ruby_version) { 2.3 }
 
       it 'does not register an offense for String.new' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           # encoding: utf-8
           # frozen_string_literal: true
           test = String.new
-        END
+        RUBY
       end
     end
   end

@@ -5,10 +5,10 @@ describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
 
   context 'elements listed on the first line' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         a = [:a,
              :b]
-      END
+      RUBY
     end
     it 'detects the offense' do
       inspect_source(cop, source)
@@ -22,20 +22,20 @@ describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
       new_source = autocorrect_source(cop, source)
       # Alignment for the first element is set by IndentationWidth cop,
       # the rest of the elements should be aligned using the AlignArray cop.
-      expect(new_source).to eq(<<-END.strip_indent)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         a = [
         :a,
              :b]
-      END
+      RUBY
     end
   end
 
   context 'word arrays' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         %w(a b
            c d)
-      END
+      RUBY
     end
 
     it 'detects the offense' do
@@ -48,20 +48,20 @@ describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
 
     it 'autocorrects the offense' do
       new_source = autocorrect_source(cop, source)
-      expect(new_source).to eq(<<-END.strip_indent)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         %w(
         a b
            c d)
-      END
+      RUBY
     end
   end
 
   context 'array nested in a method call' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         method([:foo,
                 :bar])
-      END
+      RUBY
     end
 
     it 'detects the offense' do
@@ -75,21 +75,21 @@ describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
     it 'autocorrects the offense' do
       new_source = autocorrect_source(cop, source)
 
-      expect(new_source).to eq(<<-END.strip_indent)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         method([
         :foo,
                 :bar])
-      END
+      RUBY
     end
   end
 
   context 'masgn implicit arrays' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         a, b,
         c = 1,
         2, 3
-      END
+      RUBY
     end
 
     let(:correct_source) do
@@ -117,11 +117,11 @@ describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
 
   context 'send implicit arrays' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         a
         .c = 1,
         2, 3
-      END
+      RUBY
     end
 
     let(:correct_source) do
@@ -148,19 +148,19 @@ describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
   end
 
   it 'ignores properly formatted implicit arrays' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       a, b,
       c =
       1, 2,
       3
-    END
+    RUBY
   end
 
   it 'ignores elements listed on a single line' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       b = [
         :a,
         :b]
-    END
+    RUBY
   end
 end

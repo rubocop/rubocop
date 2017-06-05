@@ -21,24 +21,24 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(cop, <<-END.strip_indent)
+        corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
           some_method(
             a
             )
-        END
-        expect(corrected).to eq <<-END.strip_indent
+        RUBY
+        expect(corrected).to eq <<-RUBY.strip_indent
           some_method(
             a
           )
-        END
+        RUBY
       end
 
       it 'accepts a correctly aligned )' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           some_method(
             a
           )
-        END
+        RUBY
       end
     end
 
@@ -52,21 +52,21 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(cop, <<-END.strip_indent)
+        corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
           some_method(a
           )
-        END
-        expect(corrected).to eq <<-END.strip_indent
+        RUBY
+        expect(corrected).to eq <<-RUBY.strip_indent
           some_method(a
                      )
-        END
+        RUBY
       end
 
       it 'accepts a correctly aligned )' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           some_method(a
                      )
-        END
+        RUBY
       end
 
       it 'accepts empty ()' do
@@ -77,7 +77,7 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
         let(:align_parameters_config) { 'with_fixed_indentation' }
 
         it 'accepts a correctly indented )' do
-          expect_no_offenses(<<-END.strip_indent)
+          expect_no_offenses(<<-RUBY.strip_indent)
             some_method(a,
               x: 1,
               y: 2
@@ -85,11 +85,11 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
             b =
               some_method(a,
               )
-          END
+          RUBY
         end
 
         it 'autocorrects misindented )' do
-          corrected = autocorrect_source(cop, <<-END.strip_indent)
+          corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
             some_method(a,
               x: 1,
               y: 2
@@ -97,8 +97,8 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
             b =
               some_method(a,
                          )
-          END
-          expect(corrected).to eq <<-END.strip_indent
+          RUBY
+          expect(corrected).to eq <<-RUBY.strip_indent
             some_method(a,
               x: 1,
               y: 2
@@ -106,7 +106,7 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
             b =
               some_method(a,
               )
-          END
+          RUBY
         end
       end
     end
@@ -125,27 +125,27 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(cop, <<-END.strip_indent)
+        corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
           def some_method(
             a
             )
           end
-        END
-        expect(corrected).to eq <<-END.strip_indent
+        RUBY
+        expect(corrected).to eq <<-RUBY.strip_indent
           def some_method(
             a
           )
           end
-        END
+        RUBY
       end
 
       it 'accepts a correctly aligned )' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           def some_method(
             a
           )
           end
-        END
+        RUBY
       end
     end
 
@@ -160,31 +160,31 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(cop, <<-END.strip_indent)
+        corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
           def some_method(a
           )
           end
-        END
-        expect(corrected).to eq <<-END.strip_indent
+        RUBY
+        expect(corrected).to eq <<-RUBY.strip_indent
           def some_method(a
                          )
           end
-        END
+        RUBY
       end
 
       it 'accepts a correctly aligned )' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           def some_method(a
                          )
           end
-        END
+        RUBY
       end
 
       it 'accepts empty ()' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           def some_method()
           end
-        END
+        RUBY
       end
     end
   end
@@ -201,24 +201,24 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(cop, <<-END.strip_indent)
+        corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
           w = x * (
             y + z
             )
-        END
-        expect(corrected).to eq <<-END.strip_indent
+        RUBY
+        expect(corrected).to eq <<-RUBY.strip_indent
           w = x * (
             y + z
           )
-        END
+        RUBY
       end
 
       it 'accepts a correctly aligned )' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           w = x * (
             y + z
           )
-        END
+        RUBY
       end
     end
 
@@ -232,38 +232,38 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(cop, <<-END.strip_indent)
+        corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
           w = x * (y + z
             )
-        END
-        expect(corrected).to eq <<-END.strip_indent
+        RUBY
+        expect(corrected).to eq <<-RUBY.strip_indent
           w = x * (y + z
                   )
-        END
+        RUBY
       end
 
       it 'accepts a correctly aligned )' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           w = x * (y + z
                   )
-        END
+        RUBY
       end
 
       it 'accepts ) that does not begin its line' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           w = x * (y + z +
                   a)
-        END
+        RUBY
       end
     end
   end
 
   it 'accepts begin nodes that are not grouped expressions' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def a
         x
         y
       end
-    END
+    RUBY
   end
 end

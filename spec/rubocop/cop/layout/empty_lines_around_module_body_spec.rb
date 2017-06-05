@@ -13,40 +13,40 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'no_empty_lines' } }
 
     it 'registers an offense for module body starting with a blank' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         module SomeModule
 
           do_something
         end
-      END
+      RUBY
       expect(cop.messages)
         .to eq(['Extra empty line detected at module body beginning.'])
     end
 
     it 'registers an offense for module body ending with a blank' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         module SomeModule
           do_something
 
         end
-      END
+      RUBY
       expect(cop.messages)
         .to eq(['Extra empty line detected at module body end.'])
     end
 
     it 'autocorrects beginning and end' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         module SomeModule
 
           do_something
 
         end
-      END
-      expect(new_source).to eq(<<-END.strip_indent)
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         module SomeModule
           do_something
         end
-      END
+      RUBY
     end
   end
 
@@ -55,39 +55,39 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
 
     it 'registers an offense for module body not starting or ending with a ' \
        'blank' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         module SomeModule
           do_something
         end
-      END
+      RUBY
       expect(cop.messages)
         .to eq(['Empty line missing at module body beginning.',
                 'Empty line missing at module body end.'])
     end
 
     it 'registers an offense for module body not ending with a blank' do
-      expect_offense(<<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         module SomeModule
 
           do_something
         end
         ^ Empty line missing at module body end.
-      END
+      RUBY
     end
 
     it 'autocorrects beginning and end' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         module SomeModule
           do_something
         end
-      END
-      expect(new_source).to eq(<<-END.strip_indent)
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         module SomeModule
 
           do_something
 
         end
-      END
+      RUBY
     end
 
     it 'ignores modules with an empty body' do
@@ -114,7 +114,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
       end
 
       it 'registers offence for namespace body starting with a blank' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           module Parent
 
             module Child
@@ -123,12 +123,12 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
 
             end
           end
-        END
+        RUBY
         expect(cop.messages).to eq([extra_begin])
       end
 
       it 'registers offence for namespace body ending with a blank' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           module Parent
             module Child
 
@@ -137,38 +137,38 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
             end
 
           end
-        END
+        RUBY
         expect(cop.messages).to eq([extra_end])
       end
 
       it 'registers offences for namespaced module body not starting '\
           'with a blank' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           module Parent
             module Child
               do_something
 
             end
           end
-        END
+        RUBY
         expect(cop.messages).to eq([missing_begin])
       end
 
       it 'registers offences for namespaced module body not ending '\
           'with a blank' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           module Parent
             module Child
 
               do_something
             end
           end
-        END
+        RUBY
         expect(cop.messages).to eq([missing_end])
       end
 
       it 'autocorrects beginning and end' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           module Parent
 
             module Child
@@ -176,8 +176,8 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
             end
 
           end
-        END
-        expect(new_source).to eq(<<-END.strip_indent)
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           module Parent
             module Child
 
@@ -185,7 +185,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
 
             end
           end
-        END
+        RUBY
       end
     end
 
@@ -201,26 +201,26 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
       end
 
       it 'registers offence for namespace body starting with a blank' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           module Parent
 
             class SomeClass
               do_something
             end
           end
-        END
+        RUBY
         expect(cop.messages).to eq([extra_begin])
       end
 
       it 'registers offence for namespace body ending with a blank' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           module Parent
             class SomeClass
               do_something
             end
 
           end
-        END
+        RUBY
         expect(cop.messages).to eq([extra_end])
       end
     end
@@ -245,7 +245,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
 
       it 'registers offences for namespace body starting '\
         'and ending without a blank' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           module Parent
             module Mom
 
@@ -256,7 +256,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
 
             end
           end
-        END
+        RUBY
         expect(cop.messages).to eq([missing_begin, missing_end])
       end
     end

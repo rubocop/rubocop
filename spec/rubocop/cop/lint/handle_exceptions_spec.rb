@@ -15,13 +15,13 @@ describe RuboCop::Cop::Lint::HandleExceptions do
   end
 
   it 'does not register an offense for rescue with body' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       begin
         something
         return
       rescue
         file.close
       end
-    END
+    RUBY
   end
 end

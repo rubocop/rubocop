@@ -26,87 +26,88 @@ describe RuboCop::Cop::Performance::RegexpMatch, :config do
   end
 
   shared_examples :all_legacy_match_methods do |name, cond, correction|
-    include_examples :offense, "#{name} in if condition", <<-END, <<-END2
+    include_examples :offense, "#{name} in if condition", <<-RUBY, <<-RUBY2
       if #{cond}
         do_something
       end
-    END
+    RUBY
       if #{correction}
         do_something
       end
-    END2
+    RUBY2
 
-    include_examples :offense, "#{name} in unless condition", <<-END, <<-END2
+    include_examples :offense, "#{name} in unless condition", <<-RUBY, <<-RUBY2
       unless #{cond}
         do_something
       end
-    END
+    RUBY
       unless #{correction}
         do_something
       end
-    END2
+    RUBY2
 
-    include_examples :offense, "#{name} in elsif condition", <<-END, <<-END2
+    include_examples :offense, "#{name} in elsif condition", <<-RUBY, <<-RUBY2
       if cond
         do_something
       elsif #{cond}
         do_something2
       end
-    END
+    RUBY
       if cond
         do_something
       elsif #{correction}
         do_something2
       end
-    END2
+    RUBY2
 
-    include_examples :offense, "#{name} in case condition", <<-END, <<-END2
+    include_examples :offense, "#{name} in case condition", <<-RUBY, <<-RUBY2
       case
       when #{cond}
         do_something
       end
-    END
+    RUBY
       case
       when #{correction}
         do_something
       end
-    END2
+    RUBY2
 
-    include_examples :offense, "#{name} in ternary operator", <<-END, <<-END2
+    include_examples :offense, "#{name} in ternary operator", <<-RUBY, <<-RUBY2
       #{cond} ? do_something : do_something2
-    END
+    RUBY
       #{correction} ? do_something : do_something2
-    END2
+    RUBY2
 
-    include_examples :offense, "#{name} in method definition", <<-END, <<-END2
+    include_examples :offense, "#{name} in method definition",
+                     <<-RUBY, <<-RUBY2
       def foo
         if #{cond}
           do_something
         end
       end
-    END
+    RUBY
       def foo
         if #{correction}
           do_something
         end
       end
-    END2
+    RUBY2
 
     %w[
       $& $' $` $~ $1 $2 $100
       $MATCH
       Regexp.last_match Regexp.last_match(1)
     ].each do |var|
-      include_examples :accepts, "#{name} in method with `#{var}`", <<-END
+      include_examples :accepts, "#{name} in method with `#{var}`", <<-RUBY
         def foo
           if #{cond}
             do_something(#{var})
           end
         end
-      END
+      RUBY
 
       include_examples :accepts,
-                       "#{name} in method with `#{var}` in block", <<-END
+                       "#{name} in method with `#{var}` in block", <<-RUBY
         def foo
           bar do
             if #{cond}
@@ -115,28 +116,28 @@ describe RuboCop::Cop::Performance::RegexpMatch, :config do
           end
           puts #{var}
         end
-      END
+      RUBY
 
       include_examples :offense,
-                       "#{name} in method before `#{var}`", <<-END, <<-END2
+                       "#{name} in method before `#{var}`", <<-RUBY, <<-RUBY2
         def foo
           do_something(#{var})
           if #{cond}
             do_something2
           end
         end
-      END
+      RUBY
         def foo
           do_something(#{var})
           if #{correction}
             do_something2
           end
         end
-      END2
+      RUBY2
 
       include_examples :offense,
                        "#{name} in method" \
-                       ", `#{var}` is in other method", <<-END, <<-END2
+                       ", `#{var}` is in other method", <<-RUBY, <<-RUBY2
         def foo
           if #{cond}
             do_something2
@@ -146,7 +147,7 @@ describe RuboCop::Cop::Performance::RegexpMatch, :config do
         def bar
           do_something(#{var})
         end
-      END
+      RUBY
         def foo
           if #{correction}
             do_something2
@@ -156,11 +157,11 @@ describe RuboCop::Cop::Performance::RegexpMatch, :config do
         def bar
           do_something(#{var})
         end
-      END2
+      RUBY2
 
       include_examples :offense,
                        "#{name} in class method" \
-                       ", `#{var}` is in other method", <<-END, <<-END2
+                       ", `#{var}` is in other method", <<-RUBY, <<-RUBY2
         def self.foo
           if #{cond}
             do_something2
@@ -170,7 +171,7 @@ describe RuboCop::Cop::Performance::RegexpMatch, :config do
         def self.bar
           do_something(#{var})
         end
-      END
+      RUBY
         def self.foo
           if #{correction}
             do_something2
@@ -180,11 +181,11 @@ describe RuboCop::Cop::Performance::RegexpMatch, :config do
         def self.bar
           do_something(#{var})
         end
-      END2
+      RUBY2
 
       include_examples :offense,
                        "#{name} in class" \
-                       ", `#{var}` is in method", <<-END, <<-END2
+                       ", `#{var}` is in method", <<-RUBY, <<-RUBY2
         class Foo
           if #{cond}
             do_something
@@ -194,7 +195,7 @@ describe RuboCop::Cop::Performance::RegexpMatch, :config do
             #{var}
           end
         end
-      END
+      RUBY
         class Foo
           if #{correction}
             do_something
@@ -204,11 +205,11 @@ describe RuboCop::Cop::Performance::RegexpMatch, :config do
             #{var}
           end
         end
-      END2
+      RUBY2
 
       include_examples :offense,
                        "#{name} in module" \
-                       ", `#{var}` is in method", <<-END, <<-END2
+                       ", `#{var}` is in method", <<-RUBY, <<-RUBY2
         module Foo
           if #{cond}
             do_something
@@ -218,7 +219,7 @@ describe RuboCop::Cop::Performance::RegexpMatch, :config do
             #{var}
           end
         end
-      END
+      RUBY
         module Foo
           if #{correction}
             do_something
@@ -228,39 +229,39 @@ describe RuboCop::Cop::Performance::RegexpMatch, :config do
             #{var}
           end
         end
-      END2
+      RUBY2
 
-      include_examples :offense,
-                       "#{name}, #{var} reference is overrided", <<-END, <<-END2
+      include_examples :offense, "#{name}, #{var} reference is overrided",
+                       <<-RUBY, <<-RUBY2
         if #{cond}
           do_something
           #{cond}
           #{var}
         end
-      END
+      RUBY
         if #{correction}
           do_something
           #{cond}
           #{var}
         end
-      END2
+      RUBY2
     end
   end
 
   context 'target ruby version < 2.4', :ruby23 do
     [
-      ['match method call in if condition', <<-END],
+      ['match method call in if condition', <<-RUBY],
         if foo.match(/re/)
           do_something
         end
-      END
-      ['match method call in elsif condition', <<-END],
+      RUBY
+      ['match method call in elsif condition', <<-RUBY],
         if cond
           do_something
         elsif foo.match(/re/)
           do_something2
         end
-      END
+      RUBY
     ].each do |name, code|
       include_examples :accepts, name, code
     end
@@ -296,20 +297,20 @@ describe RuboCop::Cop::Performance::RegexpMatch, :config do
       include_examples :all_legacy_match_methods, name, code, correction
     end
 
-    include_examples :accepts, '`Regexp#match?` method call', <<-END
+    include_examples :accepts, '`Regexp#match?` method call', <<-RUBY
       if /re/.match?(str)
         do_something
       end
-    END
+    RUBY
 
-    include_examples :accepts, '`String#match?` method call', <<-END
+    include_examples :accepts, '`String#match?` method call', <<-RUBY
       if str.match?(/re/)
         do_something
       end
-    END
+    RUBY
 
-    include_examples :accepts, '`match` without arguments', <<-END
+    include_examples :accepts, '`match` without arguments', <<-RUBY
       code if match
-    END
+    RUBY
   end
 end

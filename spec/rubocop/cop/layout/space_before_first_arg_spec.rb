@@ -7,10 +7,10 @@ describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
   context 'for method calls without parentheses' do
     it 'registers an offense for method call with two spaces before the ' \
        'first arg' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         something  x
         a.something  y, z
-      END
+      RUBY
       expect(cop.messages)
         .to eq(['Put one space between the method name and the first ' \
                 'argument.'] * 2)
@@ -18,75 +18,75 @@ describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
     end
 
     it 'auto-corrects extra space' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         something  x
         a.something   y, z
-      END
-      expect(new_source).to eq(<<-END.strip_indent)
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         something x
         a.something y, z
-      END
+      RUBY
     end
 
     it 'registers an offense for method call with no spaces before the '\
        'first arg' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         something'hello'
         a.something'hello world'
-      END
+      RUBY
       expect(cop.messages)
         .to eq(['Put one space between the method name and the first ' \
                 'argument.'] * 2)
     end
 
     it 'auto-corrects missing space' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         something'hello'
         a.something'hello world'
-      END
-      expect(new_source).to eq(<<-END.strip_indent)
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         something 'hello'
         a.something 'hello world'
-      END
+      RUBY
     end
 
     it 'accepts a method call with one space before the first arg' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         something x
         a.something y, z
-      END
+      RUBY
     end
 
     it 'accepts + operator' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         something +
           x
-      END
+      RUBY
     end
 
     it 'accepts setter call' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         something.x =
           y
-      END
+      RUBY
     end
 
     it 'accepts multiple space containing line break' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         something \\
           x
-      END
+      RUBY
     end
 
     context 'when AllowForAlignment is true' do
       it 'accepts method calls with aligned first arguments' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           form.inline_input   :full_name,     as: :string
           form.disabled_input :password,      as: :passwd
           form.masked_input   :zip_code,      as: :string
           form.masked_input   :email_address, as: :email
           form.masked_input   :phone_number,  as: :tel
-        END
+        RUBY
       end
     end
 
@@ -111,10 +111,10 @@ describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
 
   context 'for method calls with parentheses' do
     it 'accepts a method call without space' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         something(x)
         a.something(y, z)
-      END
+      RUBY
     end
 
     it 'accepts a method call with space after the left parenthesis' do

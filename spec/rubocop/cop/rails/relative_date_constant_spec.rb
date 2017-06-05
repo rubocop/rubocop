@@ -13,27 +13,27 @@ describe RuboCop::Cop::Rails::RelativeDateConstant do
   end
 
   it 'accepts a method with arguments' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       class SomeClass
         EXPIRED_AT = 1.week.since(base)
       end
-    END
+    RUBY
   end
 
   it 'accepts a lambda' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       class SomeClass
         EXPIRED_AT = -> { 1.year.ago }
       end
-    END
+    RUBY
   end
 
   it 'accepts a proc' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       class SomeClass
         EXPIRED_AT = Proc.new { 1.year.ago }
       end
-    END
+    RUBY
   end
 
   it 'registers an offense for relative date in ||=' do
@@ -73,17 +73,17 @@ describe RuboCop::Cop::Rails::RelativeDateConstant do
   end
 
   it 'autocorrects' do
-    new_source = autocorrect_source(cop, <<-END.strip_indent)
+    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
       class SomeClass
         EXPIRED_AT = 1.week.since
       end
-    END
-    expect(new_source).to eq(<<-END.strip_indent)
+    RUBY
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       class SomeClass
         def self.expired_at
           1.week.since
         end
       end
-    END
+    RUBY
   end
 end

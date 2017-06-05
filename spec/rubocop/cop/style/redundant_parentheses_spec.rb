@@ -125,46 +125,46 @@ describe RuboCop::Cop::Style::RedundantParentheses do
   it_behaves_like 'plausible', 'x += (foo; bar)'
   it_behaves_like 'plausible', 'x + (foo; bar)'
   it_behaves_like 'plausible', 'x((foo; bar))'
-  it_behaves_like 'redundant', <<-END, <<-END2, 'a method call', '(foo; bar)'
+  it_behaves_like 'redundant', <<-RUBY, <<-RUBY2, 'a method call', '(foo; bar)'
     def x
       (foo; bar)
     end
-  END
+  RUBY
     def x
       foo; bar
     end
-  END2
-  it_behaves_like 'redundant', <<-END, <<-END2, 'a method call', '(foo; bar)'
+  RUBY2
+  it_behaves_like 'redundant', <<-RUBY, <<-RUBY2, 'a method call', '(foo; bar)'
     def x
       baz
       (foo; bar)
     end
-  END
+  RUBY
     def x
       baz
       foo; bar
     end
-  END2
-  it_behaves_like 'redundant', <<-END, <<-END2, 'a method call', '(foo; bar)'
+  RUBY2
+  it_behaves_like 'redundant', <<-RUBY, <<-RUBY2, 'a method call', '(foo; bar)'
     x do
       (foo; bar)
     end
-  END
+  RUBY
     x do
       foo; bar
     end
-  END2
-  it_behaves_like 'redundant', <<-END, <<-END2, 'a method call', '(foo; bar)'
+  RUBY2
+  it_behaves_like 'redundant', <<-RUBY, <<-RUBY2, 'a method call', '(foo; bar)'
     x do
       baz
       (foo; bar)
     end
-  END
+  RUBY
     x do
       baz
       foo; bar
     end
-  END2
+  RUBY2
 
   it 'accepts parentheses around a method call with unparenthesized ' \
      'arguments' do
@@ -236,12 +236,12 @@ describe RuboCop::Cop::Style::RedundantParentheses do
   end
 
   it 'accepts parentheses around the error passed to rescue' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       begin
         some_method
       rescue(StandardError)
       end
-    END
+    RUBY
   end
 
   it 'accepts parentheses around a constant passed to when' do

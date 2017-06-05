@@ -16,15 +16,15 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
 
   shared_examples 'common' do
     it 'accepts indented operands in ordinary statement' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         a +
           b
-      END
+      RUBY
       expect(cop.messages).to be_empty
     end
 
     it 'accepts indented operands inside and outside a block' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         a = b.map do |c|
           c +
             b +
@@ -33,32 +33,32 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
                 y
             end
         end
-      END
+      RUBY
       expect(cop.messages).to be_empty
     end
 
     it 'registers an offense for no indentation of second line' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         a +
         b
-      END
+      RUBY
       expect(cop.messages).to eq(['Use 2 (not 0) spaces for indenting an ' \
                                   'expression spanning multiple lines.'])
       expect(cop.highlights).to eq(['b'])
     end
 
     it 'registers an offense for one space indentation of second line' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         a +
          b
-      END
+      RUBY
       expect(cop.messages).to eq(['Use 2 (not 1) spaces for indenting an ' \
                                   'expression spanning multiple lines.'])
       expect(cop.highlights).to eq(['b'])
     end
 
     it 'does not check method calls' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         a
          .(args)
 
@@ -73,27 +73,27 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
         expect { Foo.new }.
           to change { Bar.count }.
               from(1).to(2)
-      END
+      RUBY
     end
 
     it 'registers an offense for three spaces indentation of second line' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         a ||
            b
         c and
            d
-      END
+      RUBY
       expect(cop.messages).to eq(['Use 2 (not 3) spaces for indenting an ' \
                                   'expression spanning multiple lines.'] * 2)
       expect(cop.highlights).to eq(%w[b d])
     end
 
     it 'registers an offense for extra indentation of third line' do
-      inspect_source(cop, <<-END.strip_margin('|'))
+      inspect_source(cop, <<-RUBY.strip_margin('|'))
         |   a ||
         |     b ||
         |       c
-      END
+      RUBY
       expect(cop.messages).to eq(['Use 2 (not 4) spaces for indenting an ' \
                                   'expression spanning multiple lines.'])
       expect(cop.highlights).to eq(['c'])
@@ -101,106 +101,106 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
 
     it 'registers an offense for the emacs ruby-mode 1.1 indentation of an ' \
        'expression in an array' do
-      inspect_source(cop, <<-END.strip_margin('|'))
+      inspect_source(cop, <<-RUBY.strip_margin('|'))
         |  [
         |   a +
         |   b
         |  ]
-      END
+      RUBY
       expect(cop.messages).to eq(['Use 2 (not 0) spaces for indenting an ' \
                                   'expression spanning multiple lines.'])
       expect(cop.highlights).to eq(['b'])
     end
 
     it 'accepts indented operands in an array' do
-      inspect_source(cop, <<-END.strip_margin('|'))
+      inspect_source(cop, <<-RUBY.strip_margin('|'))
         |    dm[i][j] = [
         |      dm[i-1][j-1] +
         |        (this[j-1] == that[i-1] ? 0 : sub),
         |      dm[i][j-1] + ins,
         |      dm[i-1][j] + del
         |    ].min
-      END
+      RUBY
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts two spaces indentation in assignment of local variable' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         a =
           'foo' +
           'bar'
-      END
+      RUBY
       expect(cop.messages).to be_empty
     end
 
     it 'accepts two spaces indentation in assignment of array element' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         a['test'] =
           'foo' +
           'bar'
-      END
+      RUBY
       expect(cop.messages).to be_empty
     end
 
     it 'accepts two spaces indentation of second line' do
-      inspect_source(cop, <<-END.strip_margin('|'))
+      inspect_source(cop, <<-RUBY.strip_margin('|'))
         |   a ||
         |     b
-      END
+      RUBY
       expect(cop.messages).to be_empty
     end
 
     it 'accepts no extra indentation of third line' do
-      inspect_source(cop, <<-END.strip_margin('|'))
+      inspect_source(cop, <<-RUBY.strip_margin('|'))
         |   a &&
         |     b &&
         |     c
-      END
+      RUBY
       expect(cop.messages).to be_empty
     end
 
     it 'accepts indented operands in for body' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         for x in a
           something &&
             something_else
         end
-      END
+      RUBY
       expect(cop.highlights).to be_empty
     end
 
     it 'accepts alignment inside a grouped expression' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         (a +
          b)
-      END
+      RUBY
       expect(cop.messages).to be_empty
     end
 
     it 'accepts an expression where the first operand spans multiple lines' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         subject.each do |item|
           result = resolve(locale) and return result
         end and nil
-      END
+      RUBY
       expect(cop.messages).to be_empty
     end
 
     it 'accepts any indentation of parameters to #[]' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         payment = Models::IncomingPayments[
                 id:      input['incoming-payment-id'],
                    user_id: @user[:id]]
-      END
+      RUBY
       expect(cop.messages).to be_empty
     end
 
     it 'registers an offense for an unindented multiline operation that is ' \
        'the left operand in another operation' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         a +
         b < 3
-      END
+      RUBY
       expect(cop.messages).to eq(['Use 2 (not 0) spaces for indenting an ' \
                                   'expression spanning multiple lines.'])
       expect(cop.highlights).to eq(['b'])
@@ -222,12 +222,12 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'registers an offense for indented operands in if condition' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         if a +
             b
           something
         end
-      END
+      RUBY
       expect(cop.messages).to eq(['Align the operands of a condition in an ' \
                                   '`if` statement spanning multiple lines.'])
       expect(cop.highlights).to eq(['b'])
@@ -244,7 +244,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'accepts indented operands inside block + assignment' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         a = b.map do |c|
           c +
             d
@@ -254,16 +254,16 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
           s.type == :dstr ||
             s.loc.expression.source =~ REGEXP
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for indented second part of string' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         it "should convert " +
           "a to " +
           "b" do
         end
-      END
+      RUBY
       expect(cop.messages).to eq(['Align the operands of an expression ' \
                                   'spanning multiple lines.'] * 2)
       expect(cop.highlights).to eq(['"a to "', '"b"'])
@@ -271,10 +271,10 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'registers an offense for indented operand in second argument' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         puts a, 1 +
           2
-      END
+      RUBY
       expect(cop.messages)
         .to eq(['Align the operands of an expression spanning multiple lines.'])
       expect(cop.highlights).to eq(['2'])
@@ -304,12 +304,12 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'registers an offense for misaligned operands in unless condition' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         unless a +
           b
           something
         end
-      END
+      RUBY
       expect(cop.messages).to eq(['Align the operands of a condition in an ' \
                                   '`unless` statement spanning multiple ' \
                                   'lines.'])
@@ -325,12 +325,12 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     ].each do |article, keyword|
       it "registers an offense for misaligned operands in #{keyword} " \
          'condition' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           #{keyword} a or
               b
             something
           end
-        END
+        RUBY
         expect(cop.messages).to eq(['Align the operands of a condition in ' \
                                     "#{article} `#{keyword}` statement " \
                                     'spanning multiple lines.'])
@@ -341,11 +341,11 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'accepts aligned operands in assignment' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         a = b +
             c +
             d
-      END
+      RUBY
     end
 
     it 'accepts aligned or:ed operands in assignment' do
@@ -365,18 +365,18 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'auto-corrects' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         until a +
             b
           something
         end
-      END
-      expect(new_source).to eq(<<-END.strip_indent)
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         until a +
               b
           something
         end
-      END
+      RUBY
     end
   end
 
@@ -395,12 +395,12 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'registers an offense for aligned operands in if condition' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         if a +
            b
           something
         end
-      END
+      RUBY
       expect(cop.messages).to eq(['Use 4 (not 3) spaces for indenting a ' \
                                   'condition in an `if` statement spanning ' \
                                   'multiple lines.'])
@@ -432,12 +432,12 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'accepts normal indentation inside grouped expression' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         arg_array.size == a.size && (
           arg_array == a ||
           arg_array.map(&:children) == a.map(&:children)
         )
-      END
+      RUBY
     end
 
     it 'registers an offense for aligned code on LHS of equality operator' do
@@ -457,7 +457,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
       %w[an until]
     ].each do |article, keyword|
       it "accepts double indentation of #{keyword} condition" do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           #{keyword} receiver.nil? &&
               !args.empty? &&
               BLACKLIST.include?(method_name)
@@ -465,18 +465,18 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
           #{keyword} receiver.
               nil?
           end
-        END
+        RUBY
         expect(cop.messages).to be_empty
       end
 
       it "registers an offense for a 2 space indentation of #{keyword} " \
          'condition' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           #{keyword} receiver.nil? &&
             !args.empty? &&
             BLACKLIST.include?(method_name)
           end
-        END
+        RUBY
         expect(cop.highlights).to eq(['!args.empty?',
                                       'BLACKLIST.include?(method_name)'])
         expect(cop.messages).to eq(['Use 4 (not 2) spaces for indenting a ' \
@@ -485,23 +485,23 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
       end
 
       it "accepts indented operands in #{keyword} body" do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           #{keyword} a
             something &&
               something_else
           end
-        END
+        RUBY
         expect(cop.highlights).to be_empty
       end
     end
 
     %w[unless if].each do |keyword|
       it "accepts special indentation of return #{keyword} condition" do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           return #{keyword} receiver.nil? &&
               !args.empty? &&
               BLACKLIST.include?(method_name)
-        END
+        RUBY
         expect(cop.messages).to be_empty
       end
     end
@@ -532,12 +532,12 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'registers an offense for correct + unrecognized style' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         a ||
           b
         c and
             d
-      END
+      RUBY
       expect(cop.messages).to eq(['Use 2 (not 4) spaces for indenting an ' \
                                   'expression spanning multiple lines.'])
       expect(cop.highlights).to eq(%w[d])
@@ -547,28 +547,28 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     it 'registers an offense for aligned operators in assignment' do
       msg = 'Use %d (not %d) spaces for indenting an expression in ' \
               'an assignment spanning multiple lines.'
-      expect_offense(<<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a = b +
             c +
             ^ #{format(msg, 2, 4)}
             d
             ^ #{format(msg, 2, 4)}
-      END
+      RUBY
     end
 
     it 'auto-corrects' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         until a +
               b
           something
         end
-      END
-      expect(new_source).to eq(<<-END.strip_indent)
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         until a +
             b
           something
         end
-      END
+      RUBY
     end
 
     context 'when indentation width is overridden for this cop' do
@@ -594,7 +594,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
           # normal code indentation is 2 spaces, and we have configured
           # multiline method indentation to 6 spaces
           # so in this case, 8 spaces are required
-          inspect_source(cop, <<-END.strip_indent)
+          inspect_source(cop, <<-RUBY.strip_indent)
             #{keyword} receiver.nil? &&
                     !args.empty? &&
                     BLACKLIST.include?(method_name)
@@ -602,18 +602,18 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
             #{keyword} receiver.
                     nil?
             end
-          END
+          RUBY
           expect(cop.messages).to be_empty
         end
 
         it "registers an offense for a 4 space indentation of #{keyword} " \
            'condition' do
-          inspect_source(cop, <<-END.strip_indent)
+          inspect_source(cop, <<-RUBY.strip_indent)
             #{keyword} receiver.nil? &&
                 !args.empty? &&
                 BLACKLIST.include?(method_name)
             end
-          END
+          RUBY
           expect(cop.highlights).to eq(['!args.empty?',
                                         'BLACKLIST.include?(method_name)'])
           expect(cop.messages).to eq(['Use 8 (not 4) spaces for indenting a ' \
@@ -622,29 +622,29 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
         end
 
         it "accepts indented operands in #{keyword} body" do
-          inspect_source(cop, <<-END.strip_indent)
+          inspect_source(cop, <<-RUBY.strip_indent)
             #{keyword} a
               something &&
                     something_else
             end
-          END
+          RUBY
           expect(cop.highlights).to be_empty
         end
       end
 
       it 'auto-corrects' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           until a +
                 b
             something
           end
-        END
-        expect(new_source).to eq(<<-END.strip_indent)
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           until a +
                   b
             something
           end
-        END
+        RUBY
       end
     end
   end

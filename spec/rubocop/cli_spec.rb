@@ -70,12 +70,12 @@ describe RuboCop::CLI, :isolated_environment do
           expect(cli.run(['--format', 'simple', checked_path])).to eq(1)
         end
         expect($stdout.string)
-          .to eq(<<-END.strip_indent)
+          .to eq(<<-RESULT.strip_indent)
             == #{abs('Rakefile')} ==
             W:  1:  1: Useless assignment to variable - x.
 
             1 file inspected, 1 offense detected
-          END
+        RESULT
       end
     end
 
@@ -102,24 +102,24 @@ describe RuboCop::CLI, :isolated_environment do
 
   context 'when lines end with CR+LF' do
     it 'reports an offense' do
-      create_file('example.rb', <<-END.strip_indent)
+      create_file('example.rb', <<-RUBY.strip_indent)
         x = 0\r
         puts x\r
-      END
+      RUBY
       # Make Style/EndOfLine give same output regardless of platform.
-      create_file('.rubocop.yml', <<-END.strip_indent)
+      create_file('.rubocop.yml', <<-YAML.strip_indent)
         Layout/EndOfLine:
           EnforcedStyle: lf
-      END
+      YAML
       result = cli.run(['--format', 'simple', 'example.rb'])
       expect(result).to eq(1)
       expect($stdout.string)
-        .to eq(<<-END.strip_indent)
+        .to eq(<<-RESULT.strip_indent)
           == example.rb ==
           C:  1:  1: Carriage return character detected.
 
           1 file inspected, 1 offense detected
-        END
+      RESULT
     end
   end
 
@@ -128,15 +128,15 @@ describe RuboCop::CLI, :isolated_environment do
       create_file('example.rb', ['x = 0', 'puts x'])
       expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(0)
       expect($stdout.string)
-        .to eq(<<-END.strip_indent)
+        .to eq(<<-RESULT.strip_indent)
 
           1 file inspected, no offenses detected
-        END
+      RESULT
     end
 
     context 'when super is used with a block' do
       it 'still returns 0' do
-        create_file('example.rb', <<-END.strip_indent)
+        create_file('example.rb', <<-RUBY.strip_indent)
           # frozen_string_literal: true
 
           # this is a class
@@ -149,17 +149,17 @@ describe RuboCop::CLI, :isolated_environment do
               super(arg1, arg2) { |response| }
             end
           end
-        END
-        create_file('.rubocop.yml', <<-END.strip_indent)
+        RUBY
+        create_file('.rubocop.yml', <<-YAML.strip_indent)
           Lint/UnusedBlockArgument:
             IgnoreEmptyBlocks: true
-        END
+        YAML
         expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(0)
         expect($stdout.string)
-          .to eq(<<-END.strip_indent)
+          .to eq(<<-RESULT.strip_indent)
 
             1 file inspected, no offenses detected
-          END
+        RESULT
       end
     end
   end
@@ -168,12 +168,12 @@ describe RuboCop::CLI, :isolated_environment do
     create_file('example.rb', ['x = 0 ', 'puts x'])
     expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(1)
     expect($stdout.string)
-      .to eq <<-END.strip_indent
+      .to eq <<-RESULT.strip_indent
         == example.rb ==
         C:  1:  6: Trailing whitespace detected.
 
         1 file inspected, 1 offense detected
-      END
+    RESULT
   end
 
   it 'registers an offense for a syntax error' do
@@ -206,9 +206,9 @@ describe RuboCop::CLI, :isolated_environment do
     create_file('example.rb', ["# #{'f9'.hex.chr}#{'29'.hex.chr}"])
     expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
     expect($stdout.string)
-      .to eq(<<-END.strip_indent)
+      .to eq(<<-RESULT.strip_indent)
         #{abs('example.rb')}:1:1: F: Invalid byte sequence in utf-8.
-      END
+    RESULT
   end
 
   context 'when errors are raised while processing files due to bugs' do
@@ -256,26 +256,26 @@ describe RuboCop::CLI, :isolated_environment do
       it 'does not trigger UnneededDisable due to lines moving around' do
         src = ['a = 1 # rubocop:disable Lint/UselessAssignment']
         create_file('example.rb', src)
-        create_file('.rubocop.yml', <<-END.strip_indent)
+        create_file('.rubocop.yml', <<-YAML.strip_indent)
           Style/FrozenStringLiteralComment:
             Enabled: true
             EnforcedStyle: always
-        END
+        YAML
         expect(cli.run(['--format', 'offenses', '-a', 'example.rb'])).to eq(0)
-        expect($stdout.string).to eq(<<-END.strip_indent)
+        expect($stdout.string).to eq(<<-RESULT.strip_indent)
 
           1  Layout/EmptyLineAfterMagicComment
           1  Style/FrozenStringLiteralComment
           --
           2  Total
 
-        END
+        RESULT
         expect(IO.read('example.rb'))
-          .to eq(<<-END.strip_indent)
+          .to eq(<<-RUBY.strip_indent)
             # frozen_string_literal: true
 
             a = 1 # rubocop:disable Lint/UselessAssignment
-          END
+        RUBY
       end
     end
 
@@ -322,9 +322,9 @@ describe RuboCop::CLI, :isolated_environment do
                    'Style/NumericLiterals'])
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       expect($stdout.string)
-        .to eq(<<-END.strip_indent)
+        .to eq(<<-RESULT.strip_indent)
           #{abs('example.rb')}:2:81: C: Line is too long. [95/80]
-        END
+      RESULT
     end
 
     context 'without using namespace' do
@@ -335,9 +335,9 @@ describe RuboCop::CLI, :isolated_environment do
                      'y("123") # rubocop:disable StringLiterals'])
         expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
         expect($stdout.string)
-          .to eq(<<-END.strip_indent)
+          .to eq(<<-RESULT.strip_indent)
             #{abs('example.rb')}:2:81: C: Line is too long. [95/80]
-          END
+        RESULT
       end
     end
 
@@ -380,29 +380,29 @@ describe RuboCop::CLI, :isolated_environment do
             expect(cli.run(['--format', 'emacs'])).to eq(1)
             expect($stderr.string).to eq('')
             expect($stdout.string)
-              .to eq(<<-END.strip_indent)
+              .to eq(<<-RESULT.strip_indent)
                 #{abs('example.rb')}:1:81: C: Line is too long. [95/80]
-              END
+              RESULT
           end
         end
       end
 
       include_examples 'UnneededDisable not run',
-                       'individually disabled', <<-END.strip_indent
+                       'individually disabled', <<-YAML.strip_indent
         Lint/UnneededDisable:
           Enabled: false
-      END
+      YAML
       include_examples 'UnneededDisable not run',
-                       'individually excluded', <<-END.strip_indent
+                       'individually excluded', <<-YAML.strip_indent
         Lint/UnneededDisable:
           Exclude:
             - example.rb
-      END
+      YAML
       include_examples 'UnneededDisable not run',
-                       'disabled through department', <<-END.strip_indent
+                       'disabled through department', <<-YAML.strip_indent
         Lint:
           Enabled: false
-      END
+      YAML
     end
   end
 
@@ -427,12 +427,12 @@ describe RuboCop::CLI, :isolated_environment do
       describe '--only-guide-cops' do
         it 'skips cops that have no link to a style guide' do
           create_file('example.rb', 'raise')
-          create_file('.rubocop.yml', <<-END.strip_indent)
+          create_file('.rubocop.yml', <<-YAML.strip_indent)
             Metrics/LineLength:
               Enabled: true
               StyleGuide: ~
               Max: 2
-          END
+          YAML
 
           expect(cli.run(['--format', 'simple', '--only-guide-cops',
                           'example.rb'])).to eq(0)
@@ -440,35 +440,35 @@ describe RuboCop::CLI, :isolated_environment do
 
         it 'runs cops for rules that link to a style guide' do
           create_file('example.rb', 'raise')
-          create_file('.rubocop.yml', <<-END.strip_indent)
+          create_file('.rubocop.yml', <<-YAML.strip_indent)
             Metrics/LineLength:
               Enabled: true
               StyleGuide: "http://an.example/url"
               Max: 2
-          END
+          YAML
 
           expect(cli.run(['--format', 'simple', '--only-guide-cops',
                           'example.rb'])).to eq(1)
 
           expect($stdout.string)
-            .to eq(<<-END.strip_indent)
+            .to eq(<<-RESULT.strip_indent)
               == example.rb ==
               C:  1:  3: Line is too long. [5/2]
 
               1 file inspected, 1 offense detected
-            END
+            RESULT
         end
 
         it 'overrides configuration of AllCops/StyleGuideCopsOnly' do
           create_file('example.rb', 'raise')
-          create_file('.rubocop.yml', <<-END.strip_indent)
+          create_file('.rubocop.yml', <<-YAML.strip_indent)
             AllCops:
               StyleGuideCopsOnly: false
             Metrics/LineLength:
               Enabled: true
               StyleGuide: ~
               Max: 2
-          END
+          YAML
 
           expect(cli.run(['--format', 'simple', '--only-guide-cops',
                           'example.rb'])).to eq(0)
@@ -479,7 +479,7 @@ describe RuboCop::CLI, :isolated_environment do
     context 'via the config' do
       before do
         create_file('example.rb', 'do_something or raise')
-        create_file('.rubocop.yml', <<-END.strip_indent)
+        create_file('.rubocop.yml', <<-YAML.strip_indent)
           AllCops:
             StyleGuideCopsOnly: #{guide_cops_only}
             DisabledByDefault: #{disabled_by_default}
@@ -487,7 +487,7 @@ describe RuboCop::CLI, :isolated_environment do
             Enabled: true
             StyleGuide: ~
             Max: 2
-        END
+        YAML
       end
 
       describe 'AllCops/StyleGuideCopsOnly' do
@@ -499,13 +499,13 @@ describe RuboCop::CLI, :isolated_environment do
           it 'skips cops that have no link to a style guide' do
             expect(cli.run(['--format', 'offenses', 'example.rb'])).to eq(1)
 
-            expect($stdout.string).to eq(<<-END.strip_indent)
+            expect($stdout.string).to eq(<<-RESULT.strip_indent)
 
               1  Style/AndOr
               --
               1  Total
 
-            END
+            RESULT
           end
         end
 
@@ -515,14 +515,14 @@ describe RuboCop::CLI, :isolated_environment do
           it 'runs cops for rules regardless of any link to the style guide' do
             expect(cli.run(['--format', 'offenses', 'example.rb'])).to eq(1)
 
-            expect($stdout.string).to eq(<<-END.strip_indent)
+            expect($stdout.string).to eq(<<-RESULT.strip_indent)
 
               1  Metrics/LineLength
               1  Style/AndOr
               --
               2  Total
 
-            END
+            RESULT
           end
         end
       end
@@ -536,13 +536,13 @@ describe RuboCop::CLI, :isolated_environment do
           it 'runs only the cop configured in .rubocop.yml' do
             expect(cli.run(['--format', 'offenses', 'example.rb'])).to eq(1)
 
-            expect($stdout.string).to eq(<<-END.strip_indent)
+            expect($stdout.string).to eq(<<-RESULT.strip_indent)
 
               1  Metrics/LineLength
               --
               1  Total
 
-            END
+            RESULT
           end
         end
 
@@ -552,14 +552,14 @@ describe RuboCop::CLI, :isolated_environment do
           it 'runs all cops that are enabled in default configuration' do
             expect(cli.run(['--format', 'offenses', 'example.rb'])).to eq(1)
 
-            expect($stdout.string).to eq(<<-END.strip_indent)
+            expect($stdout.string).to eq(<<-RESULT.strip_indent)
 
               1  Metrics/LineLength
               1  Style/AndOr
               --
               2  Total
 
-            END
+            RESULT
           end
         end
       end
@@ -588,23 +588,23 @@ describe RuboCop::CLI, :isolated_environment do
       it 'with configuration option true in one dir runs rails cops there' do
         source = 'read_attribute(:test)'
         create_file('dir1/app/models/example1.rb', source)
-        create_file('dir1/.rubocop.yml', <<-END.strip_indent)
+        create_file('dir1/.rubocop.yml', <<-YAML.strip_indent)
           Rails:
             Enabled: true
 
           Rails/ReadWriteAttribute:
             Include:
               - app/models/**/*.rb
-        END
+        YAML
         create_file('dir2/app/models/example2.rb', source)
-        create_file('dir2/.rubocop.yml', <<-END.strip_indent)
+        create_file('dir2/.rubocop.yml', <<-YAML.strip_indent)
           Rails:
             Enabled: false
 
           Rails/ReadWriteAttribute:
             Include:
               - app/models/**/*.rb
-        END
+        YAML
         expect(cli.run(%w[--format simple dir1 dir2])).to eq(1)
         expect($stdout.string)
           .to eq(['== dir1/app/models/example1.rb ==',
@@ -617,10 +617,10 @@ describe RuboCop::CLI, :isolated_environment do
 
       it 'with configuration option false but -R given runs rails cops' do
         create_file('app/models/example1.rb', 'read_attribute(:test)')
-        create_file('.rubocop.yml', <<-END.strip_indent)
+        create_file('.rubocop.yml', <<-YAML.strip_indent)
           Rails:
             Enabled: false
-        END
+        YAML
         expect(cli.run(['--format', 'simple', '-R', 'app/models/example1.rb']))
           .to eq(1)
         expect($stdout.string).to include('Prefer self[:attr]')
@@ -628,10 +628,10 @@ describe RuboCop::CLI, :isolated_environment do
 
       context 'with obsolete RunRailsCops config option' do
         it 'prints a warning' do
-          create_file('.rubocop.yml', <<-END.strip_indent)
+          create_file('.rubocop.yml', <<-YAML.strip_indent)
             AllCops:
               RunRailsCops: false
-          END
+          YAML
           expect(cli.run([])).to eq(2)
           expect($stderr.string).to include('obsolete parameter RunRailsCops ' \
                                             '(for AllCops) found')
@@ -643,11 +643,11 @@ describe RuboCop::CLI, :isolated_environment do
       it 'honors Exclude settings in .rubocop_todo.yml one level up' do
         create_file('lib/example.rb', 'puts %x(ls)')
         create_file('.rubocop.yml', 'inherit_from: .rubocop_todo.yml')
-        create_file('.rubocop_todo.yml', <<-END.strip_indent)
+        create_file('.rubocop_todo.yml', <<-YAML.strip_indent)
           Style/CommandLiteral:
             Exclude:
               - lib/example.rb
-        END
+        YAML
         Dir.chdir('lib') { expect(cli.run([])).to eq(0) }
         expect($stdout.string).to include('no offenses detected')
       end
@@ -662,14 +662,14 @@ describe RuboCop::CLI, :isolated_environment do
         # The .rubocop.yml file inherits from default.yml where the Include
         # config parameter is set for the rails cops. The paths are interpreted
         # as relative to dir1 because .rubocop.yml is placed there.
-        create_file('dir1/.rubocop.yml', <<-END.strip_indent)
+        create_file('dir1/.rubocop.yml', <<-YAML.strip_indent)
           Rails:
             Enabled: true
 
           Rails/ReadWriteAttribute:
             Exclude:
               - "**/example2.rb"
-        END
+        YAML
         # No .rubocop.yml file in dir2 means that the paths from default.yml
         # are interpreted as relative to the current directory, so they don't
         # match.
@@ -693,14 +693,14 @@ describe RuboCop::CLI, :isolated_environment do
       create_file('regexp.rb', 'x = 0')
       create_file('exclude_glob.rb', ['#!/usr/bin/env ruby', 'x = 0'])
       create_file('dir/thing.rb', 'x = 0')
-      create_file('.rubocop.yml', <<-'END'.strip_indent)
+      create_file('.rubocop.yml', <<-'YAML'.strip_indent)
         Lint/UselessAssignment:
           Exclude:
             - example.rb
             - !ruby/regexp /regexp.rb\z/
             - "exclude_*"
             - "dir/*"
-      END
+      YAML
       allow_any_instance_of(File::Stat)
         .to receive(:executable?).and_return(true)
       expect(cli.run(%w[--format simple])).to eq(0)
@@ -717,11 +717,11 @@ describe RuboCop::CLI, :isolated_environment do
 
     context 'when configured for rails style indentation' do
       it 'accepts rails style indentation' do
-        create_file('.rubocop.yml', <<-END.strip_indent)
+        create_file('.rubocop.yml', <<-YAML.strip_indent)
           Layout/IndentationConsistency:
             EnforcedStyle: rails
-        END
-        create_file('example.rb', <<-END.strip_indent)
+        YAML
+        create_file('example.rb', <<-RUBY.strip_indent)
 
           # A feline creature
           class Cat
@@ -741,7 +741,7 @@ describe RuboCop::CLI, :isolated_environment do
                 rand < 0.8
               end
           end
-        END
+        RUBY
         result = cli.run(%w[--format simple])
         expect($stderr.string).to eq('')
         expect(result).to eq(0)
@@ -752,11 +752,11 @@ describe RuboCop::CLI, :isolated_environment do
 
       %w[class module].each do |parent|
         it "registers offense for normal indentation in #{parent}" do
-          create_file('.rubocop.yml', <<-END.strip_indent)
+          create_file('.rubocop.yml', <<-YAML.strip_indent)
             Layout/IndentationConsistency:
               EnforcedStyle: rails
-          END
-          create_file('example.rb', <<-END.strip_indent)
+          YAML
+          create_file('example.rb', <<-RUBY.strip_indent)
 
             # A feline creature
             #{parent} Cat
@@ -780,29 +780,29 @@ describe RuboCop::CLI, :isolated_environment do
                 rand < 0.8
               end
             end
-          END
+          RUBY
           result = cli.run(%w[--format simple])
           expect($stderr.string).to eq('')
           expect(result).to eq(1)
           expect($stdout.string)
-            .to eq(<<-END.strip_indent)
+            .to eq(<<-RESULT.strip_indent)
               == example.rb ==
               C: 10:  3: Use 2 (not 0) spaces for rails indentation.
               C: 16:  3: Use 2 (not 0) spaces for rails indentation.
 
               1 file inspected, 2 offenses detected
-            END
+          RESULT
         end
       end
     end
 
     context 'when obsolete MultiSpaceAllowedForOperators param is used' do
       it 'displays a warning' do
-        create_file('.rubocop.yml', <<-END.strip_indent)
+        create_file('.rubocop.yml', <<-YAML.strip_indent)
           Layout/SpaceAroundOperators:
             MultiSpaceAllowedForOperators:
               - "="
-        END
+        YAML
         expect(cli.run([])).to eq(2)
         expect($stderr.string).to include('obsolete parameter ' \
                                           'MultiSpaceAllowedForOperators ' \
@@ -815,11 +815,11 @@ describe RuboCop::CLI, :isolated_environment do
             'style and IndentationWidth parameter' do
       it 'fails with an error message' do
         create_file('example.rb', 'puts 1')
-        create_file('.rubocop.yml', <<-END.strip_indent)
+        create_file('.rubocop.yml', <<-YAML.strip_indent)
           Layout/MultilineMethodCallIndentation:
             EnforcedStyle: aligned
             IndentationWidth: 1
-        END
+        YAML
         expect(cli.run(['example.rb'])).to eq(2)
         expect($stderr.string.strip).to eq(
           'Error: The `Layout/MultilineMethodCallIndentation` cop only ' \
@@ -833,11 +833,11 @@ describe RuboCop::CLI, :isolated_environment do
             'style and IndentationWidth parameter' do
       it 'fails with an error message' do
         create_file('example.rb', 'puts 1')
-        create_file('.rubocop.yml', <<-END.strip_indent)
+        create_file('.rubocop.yml', <<-YAML.strip_indent)
           Layout/MultilineOperationIndentation:
             EnforcedStyle: aligned
             IndentationWidth: 1
-        END
+        YAML
         expect(cli.run(['example.rb'])).to eq(2)
         expect($stderr.string.strip).to eq(
           'Error: The `Layout/MultilineOperationIndentation` cop only accepts' \
@@ -861,19 +861,19 @@ describe RuboCop::CLI, :isolated_environment do
       shared_examples 'ignores config file' do
         it 'ignores config file' do
           create_file('example.rb', ['x = 0 ', 'puts x'])
-          create_file('.rubocop.yml', <<-END.strip_indent)
+          create_file('.rubocop.yml', <<-YAML.strip_indent)
             Layout/TrailingWhitespace:
               Enabled: false
-          END
+          YAML
 
           expect(cli.run(args)).to eq(1)
           expect($stdout.string)
-            .to eq(<<-END.strip_indent)
+            .to eq(<<-RESULT.strip_indent)
               == example.rb ==
               C:  1:  6: Trailing whitespace detected.
 
               1 file inspected, 1 offense detected
-            END
+            RESULT
         end
       end
 
@@ -898,10 +898,10 @@ describe RuboCop::CLI, :isolated_environment do
       create_file('.rubocop.yml', [])
 
       create_file('dir/example2.rb', source)
-      create_file('dir/.rubocop.yml', <<-END.strip_indent)
+      create_file('dir/.rubocop.yml', <<-YAML.strip_indent)
         AllCops:
           DisplayCopNames: true
-      END
+      YAML
 
       expect(cli.run(%w[--format simple])).to eq(1)
       expect($stdout.string)
@@ -923,10 +923,10 @@ describe RuboCop::CLI, :isolated_environment do
       create_file('.rubocop.yml', [])
 
       create_file('dir/example2.rb', source)
-      create_file('dir/.rubocop.yml', <<-END.strip_indent)
+      create_file('dir/.rubocop.yml', <<-YAML.strip_indent)
         AllCops:
           DisplayStyleGuide: true
-      END
+      YAML
 
       url = 'https://github.com/bbatsov/ruby-style-guide#no-trailing-whitespace'
 
@@ -945,20 +945,20 @@ describe RuboCop::CLI, :isolated_environment do
     it 'uses the DefaultFormatter if another formatter is not specified' do
       source = ['x = 0 ', 'puts x']
       create_file('example1.rb', source)
-      create_file('.rubocop.yml', <<-END.strip_indent)
+      create_file('.rubocop.yml', <<-YAML.strip_indent)
         AllCops:
           DefaultFormatter: offenses
-      END
+      YAML
 
       expect(cli.run([])).to eq(1)
       expect($stdout.string)
-        .to eq(<<-END.strip_indent)
+        .to eq(<<-RESULT.strip_indent)
 
           1  Layout/TrailingWhitespace
           --
           1  Total
 
-        END
+        RESULT
     end
 
     it 'finds included files' do
@@ -968,14 +968,14 @@ describe RuboCop::CLI, :isolated_environment do
       create_file('.dot1/file.rb', 'x=0') # Hidden but explicitly included
       create_file('.dot2/file.rb', 'x=0') # Hidden, excluded by default
       create_file('.dot3/file.rake', 'x=0') # Hidden, not included by wildcard
-      create_file('.rubocop.yml', <<-END.strip_indent)
+      create_file('.rubocop.yml', <<-YAML.strip_indent)
         AllCops:
           Include:
             - example
             - "**/*.rake"
             - !ruby/regexp /regexp$/
             - .dot1/**/*
-      END
+      YAML
       expect(cli.run(%w[--format files])).to eq(1)
       expect($stderr.string).to eq('')
       expect($stdout.string.split($RS).sort).to eq([abs('.dot1/file.rb'),
@@ -988,13 +988,13 @@ describe RuboCop::CLI, :isolated_environment do
       create_file('example.rb', ['x = 0', 'puts x'])
       create_file('regexp.rb', ['x = 0', 'puts x'])
       create_file('exclude_glob.rb', ['#!/usr/bin/env ruby', 'x = 0', 'puts x'])
-      create_file('.rubocop.yml', <<-END.strip_indent)
+      create_file('.rubocop.yml', <<-YAML.strip_indent)
         AllCops:
           Exclude:
             - example.rb
             - !ruby/regexp /regexp.rb$/
             - "exclude_*"
-      END
+      YAML
       expect(cli.run(%w[--format simple])).to eq(0)
       expect($stdout.string)
         .to eq(['', '0 files inspected, no offenses detected',
@@ -1006,60 +1006,60 @@ describe RuboCop::CLI, :isolated_environment do
       # This file contains configuration for an unknown cop. This would cause a
       # warning to be printed on stderr if the file was read. But it's in a
       # hidden directory, so it's not read.
-      create_file('.hidden/.rubocop.yml', <<-END.strip_indent)
+      create_file('.hidden/.rubocop.yml', <<-YAML.strip_indent)
         SymbolName:
           Enabled: false
-      END
+      YAML
 
       create_file('.other/example.rb', 'x=0')
       # The .other directory is explicitly included, so the configuration file
       # is read, and modifies the behavior.
-      create_file('.other/.rubocop.yml', <<-END.strip_indent)
+      create_file('.other/.rubocop.yml', <<-YAML.strip_indent)
         Layout/SpaceAroundOperators:
           Enabled: false
-      END
-      create_file('.rubocop.yml', <<-END.strip_indent)
+      YAML
+      create_file('.rubocop.yml', <<-YAML.strip_indent)
         AllCops:
           Include:
             - .other/**/*
-      END
+      YAML
       expect(cli.run(%w[--format simple])).to eq(1)
       expect($stderr.string).to eq('')
       expect($stdout.string)
-        .to eq(<<-END.strip_indent)
+        .to eq(<<-RESULT.strip_indent)
           == .other/example.rb ==
           W:  1:  1: Useless assignment to variable - x.
 
           1 file inspected, 1 offense detected
-        END
+        RESULT
     end
 
     it 'does not consider Include parameters in subdirectories' do
       create_file('dir/example.ruby3', 'x=0')
-      create_file('dir/.rubocop.yml', <<-END.strip_indent)
+      create_file('dir/.rubocop.yml', <<-YAML.strip_indent)
         AllCops:
           Include:
             - "*.ruby3"
-      END
+      YAML
       expect(cli.run(%w[--format simple])).to eq(0)
       expect($stderr.string).to eq('')
       expect($stdout.string)
-        .to eq(<<-END.strip_indent)
+        .to eq(<<-RESULT.strip_indent)
 
           0 files inspected, no offenses detected
-        END
+        RESULT
     end
 
     it 'matches included/excluded files correctly when . argument is given' do
       create_file('example.rb', 'x = 0')
       create_file('special.dsl', 'setup { "stuff" }')
-      create_file('.rubocop.yml', <<-END.strip_indent)
+      create_file('.rubocop.yml', <<-YAML.strip_indent)
         AllCops:
           Include:
             - "*.dsl"
           Exclude:
             - example.rb
-      END
+      YAML
       expect(cli.run(%w[--format simple .])).to eq(1)
       expect($stdout.string)
         .to eq(['== special.dsl ==',
@@ -1077,11 +1077,11 @@ describe RuboCop::CLI, :isolated_environment do
         create_file("example/ignored/#{filename}", '#' * 90)
       end
 
-      create_file('example/.rubocop.yml', <<-END.strip_indent)
+      create_file('example/.rubocop.yml', <<-YAML.strip_indent)
         AllCops:
           Exclude:
             - ignored/**
-      END
+      YAML
       expect(File).not_to receive(:open).with(%r{/ignored/})
       allow(File).to receive(:open).and_call_original
       expect(cli.run(%w[--format simple example])).to eq(0)
@@ -1092,68 +1092,68 @@ describe RuboCop::CLI, :isolated_environment do
 
     it 'can be configured with option to disable a certain error' do
       create_file('example1.rb', 'puts 0 ')
-      create_file('rubocop.yml', <<-END.strip_indent)
+      create_file('rubocop.yml', <<-YAML.strip_indent)
         Style/Encoding:
           Enabled: false
 
         Layout/CaseIndentation:
           Enabled: false
-      END
+      YAML
       expect(cli.run(['--format', 'simple',
                       '-c', 'rubocop.yml', 'example1.rb'])).to eq(1)
       expect($stdout.string)
-        .to eq(<<-END.strip_indent)
+        .to eq(<<-RESULT.strip_indent)
           == example1.rb ==
           C:  1:  7: Trailing whitespace detected.
 
           1 file inspected, 1 offense detected
-        END
+        RESULT
     end
 
     context 'without using namespace' do
       it 'can be configured with option to disable a certain error' do
         create_file('example1.rb', 'puts 0 ')
-        create_file('rubocop.yml', <<-END.strip_indent)
+        create_file('rubocop.yml', <<-YAML.strip_indent)
           Encoding:
             Enabled: false
 
           CaseIndentation:
             Enabled: false
-        END
+        YAML
         expect(cli.run(['--format', 'simple',
                         '-c', 'rubocop.yml', 'example1.rb'])).to eq(1)
         expect($stdout.string)
-          .to eq(<<-END.strip_indent)
+          .to eq(<<-RESULT.strip_indent)
             == example1.rb ==
             C:  1:  7: Trailing whitespace detected.
 
             1 file inspected, 1 offense detected
-          END
+          RESULT
       end
     end
 
     it 'can disable parser-derived offenses with warning severity' do
       # `-' interpreted as argument prefix
       create_file('example.rb', 'puts -1')
-      create_file('.rubocop.yml', <<-END.strip_indent)
+      create_file('.rubocop.yml', <<-YAML.strip_indent)
         Style/Encoding:
           Enabled: false
 
         Lint/AmbiguousOperator:
           Enabled: false
-      END
+      YAML
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(0)
     end
 
     it 'cannot disable Syntax offenses' do
       create_file('example.rb', 'class Test')
-      create_file('.rubocop.yml', <<-END.strip_indent)
+      create_file('.rubocop.yml', <<-YAML.strip_indent)
         Style/Encoding:
           Enabled: false
 
         Syntax:
           Enabled: false
-      END
+      YAML
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(2)
       expect($stderr.string).to include(
         'Error: configuration for Syntax cop found'
@@ -1165,12 +1165,12 @@ describe RuboCop::CLI, :isolated_environment do
       create_file('example1.rb', ['puts %w(a b c)', 'puts %q|hi|'])
       # We want to change the preferred delimiters for word arrays. The other
       # settings from default.yml are unchanged.
-      create_file('rubocop.yml', <<-END.strip_indent)
+      create_file('rubocop.yml', <<-YAML.strip_indent)
         Style/PercentLiteralDelimiters:
           PreferredDelimiters:
             '%w': '[]'
             '%W': '[]'
-      END
+      YAML
       cli.run(['--format', 'simple', '-c', 'rubocop.yml', 'example1.rb'])
       expect($stdout.string)
         .to eq(['== example1.rb ==',
@@ -1185,18 +1185,18 @@ describe RuboCop::CLI, :isolated_environment do
 
     it 'can be configured to override a parameter that is a hash in a ' \
        'special case' do
-      create_file('example1.rb', <<-END.strip_indent)
+      create_file('example1.rb', <<-RUBY.strip_indent)
         arr.select { |e| e > 0 }.collect { |e| e * 2 }
         a2.find_all { |e| e > 0 }
-      END
+      RUBY
       # We prefer find_all over select. This setting overrides the default
       # select over find_all. Other preferred methods appearing in the default
       # config (e.g., map over collect) are kept.
-      create_file('rubocop.yml', <<-END.strip_indent)
+      create_file('rubocop.yml', <<-YAML.strip_indent)
         Style/CollectionMethods:
           PreferredMethods:
             select: find_all
-      END
+      YAML
       cli.run(['--format',
                'simple',
                '-c',
@@ -1205,28 +1205,28 @@ describe RuboCop::CLI, :isolated_environment do
                'CollectionMethods',
                'example1.rb'])
       expect($stdout.string)
-        .to eq(<<-END.strip_indent)
+        .to eq(<<-RESULT.strip_indent)
           == example1.rb ==
           C:  1:  5: Prefer find_all over select.
           C:  1: 26: Prefer map over collect.
 
           1 file inspected, 2 offenses detected
-        END
+        RESULT
     end
 
     it 'works when a cop that others depend on is disabled' do
-      create_file('example1.rb', <<-END.strip_indent)
+      create_file('example1.rb', <<-RUBY.strip_indent)
         if a
           b
         end
-      END
-      create_file('rubocop.yml', <<-END.strip_indent)
+      RUBY
+      create_file('rubocop.yml', <<-YAML.strip_indent)
         Style/Encoding:
           Enabled: false
 
         Metrics/LineLength:
           Enabled: false
-      END
+      YAML
       result = cli.run(['--format', 'simple',
                         '-c', 'rubocop.yml', 'example1.rb'])
       expect($stdout.string)
@@ -1242,31 +1242,31 @@ describe RuboCop::CLI, :isolated_environment do
 
     it 'can be configured with project config to disable a certain error' do
       create_file('example_src/example1.rb', 'puts 0 ')
-      create_file('example_src/.rubocop.yml', <<-END.strip_indent)
+      create_file('example_src/.rubocop.yml', <<-YAML.strip_indent)
         Style/Encoding:
           Enabled: false
 
         Layout/CaseIndentation:
           Enabled: false
-      END
+      YAML
       expect(cli.run(['--format', 'simple',
                       'example_src/example1.rb'])).to eq(1)
       expect($stdout.string)
-        .to eq(<<-END.strip_indent)
+        .to eq(<<-RESULT.strip_indent)
           == example_src/example1.rb ==
           C:  1:  7: Trailing whitespace detected.
 
           1 file inspected, 1 offense detected
-        END
+        RESULT
     end
 
     it 'can use an alternative max line length from a config file' do
       create_file('example_src/example1.rb', '#' * 90)
-      create_file('example_src/.rubocop.yml', <<-END.strip_indent)
+      create_file('example_src/.rubocop.yml', <<-YAML.strip_indent)
         Metrics/LineLength:
           Enabled: true
           Max: 100
-      END
+      YAML
       expect(cli.run(['--format', 'simple',
                       'example_src/example1.rb'])).to eq(0)
       expect($stdout.string)
@@ -1277,32 +1277,32 @@ describe RuboCop::CLI, :isolated_environment do
       %w[src lib].each do |dir|
         create_file("example/#{dir}/example1.rb", '#' * 90)
       end
-      create_file('example/src/.rubocop.yml', <<-END.strip_indent)
+      create_file('example/src/.rubocop.yml', <<-YAML.strip_indent)
         Metrics/LineLength:
           Enabled: true
           Max: 100
-      END
+      YAML
       expect(cli.run(%w[--format simple example])).to eq(1)
-      expect($stdout.string).to eq(<<-END.strip_indent)
+      expect($stdout.string).to eq(<<-RESULT.strip_indent)
         == example/lib/example1.rb ==
         C:  1: 81: Line is too long. [90/80]
 
         2 files inspected, 1 offense detected
-      END
+      RESULT
     end
 
     it 'prefers a config file in ancestor directory to another in home' do
       create_file('example_src/example1.rb', '#' * 90)
-      create_file('example_src/.rubocop.yml', <<-END.strip_indent)
+      create_file('example_src/.rubocop.yml', <<-YAML.strip_indent)
         Metrics/LineLength:
           Enabled: true
           Max: 100
-      END
-      create_file("#{Dir.home}/.rubocop.yml", <<-END.strip_indent)
+      YAML
+      create_file("#{Dir.home}/.rubocop.yml", <<-YAML.strip_indent)
         Metrics/LineLength:
           Enabled: true
           Max: 80
-      END
+      YAML
       expect(cli.run(['--format', 'simple',
                       'example_src/example1.rb'])).to eq(0)
       expect($stdout.string)
@@ -1317,42 +1317,42 @@ describe RuboCop::CLI, :isolated_environment do
       # Hidden subdirectories should also be excluded.
       create_file('example/etc/.dot/example1.rb', '#' * 90)
 
-      create_file('example/.rubocop.yml', <<-END.strip_indent)
+      create_file('example/.rubocop.yml', <<-YAML.strip_indent)
         AllCops:
           Exclude:
             - src/**
             - etc/**/*
             - tmp/spec/**
-      END
+      YAML
 
       expect(cli.run(%w[--format simple example])).to eq(1)
       expect($stderr.string).to eq('')
-      expect($stdout.string).to eq(<<-END.strip_indent)
+      expect($stdout.string).to eq(<<-RESULT.strip_indent)
         == example/tmp/test/example1.rb ==
         C:  1: 81: Line is too long. [90/80]
 
         1 file inspected, 1 offense detected
-      END
+      RESULT
     end
 
     it 'can exclude a typical vendor directory' do
       create_file(
         'vendor/bundle/ruby/1.9.1/gems/parser-2.0.0/.rubocop.yml',
-        <<-END.strip_indent
+        <<-YAML.strip_indent
           AllCops:
             Exclude:
               - lib/parser/lexer.rb
-        END
+        YAML
       )
 
       create_file('vendor/bundle/ruby/1.9.1/gems/parser-2.0.0/lib/ex.rb',
                   '#' * 90)
 
-      create_file('.rubocop.yml', <<-END.strip_indent)
+      create_file('.rubocop.yml', <<-YAML.strip_indent)
         AllCops:
           Exclude:
             - vendor/**/*
-      END
+      YAML
 
       cli.run(%w[--format simple])
       expect($stdout.string)
@@ -1381,11 +1381,11 @@ describe RuboCop::CLI, :isolated_environment do
       create_file('vendor/bundle/ruby/1.9.1/gems/parser-2.0.0/lib/ex.rb',
                   '#' * 90)
 
-      create_file('.rubocop.yml', <<-END.strip_indent)
+      create_file('.rubocop.yml', <<-YAML.strip_indent)
         AllCops:
           Exclude:
             - vendor/**/*
-      END
+      YAML
 
       cli.run(%w[--format simple])
       expect($stderr.string).to eq('')
@@ -1400,11 +1400,11 @@ describe RuboCop::CLI, :isolated_environment do
     it 'can exclude a vendor directory indirectly' do
       create_file(
         'vendor/bundle/ruby/1.9.1/gems/parser-2.0.0/.rubocop.yml',
-        <<-END.strip_indent
+        <<-YAML.strip_indent
           AllCops:
             Exclude:
               - lib/parser/lexer.rb
-        END
+        YAML
       )
 
       create_file('vendor/bundle/ruby/1.9.1/gems/parser-2.0.0/lib/ex.rb',
@@ -1413,11 +1413,11 @@ describe RuboCop::CLI, :isolated_environment do
       create_file('.rubocop.yml',
                   ['inherit_from: config/default.yml'])
 
-      create_file('config/default.yml', <<-END.strip_indent)
+      create_file('config/default.yml', <<-YAML.strip_indent)
         AllCops:
           Exclude:
             - vendor/**/*
-      END
+      YAML
 
       cli.run(%w[--format simple])
       expect($stdout.string)
@@ -1428,11 +1428,11 @@ describe RuboCop::CLI, :isolated_environment do
     it 'prints a warning for an unrecognized cop name in .rubocop.yml' do
       create_file('example/example1.rb', '#' * 90)
 
-      create_file('example/.rubocop.yml', <<-END.strip_indent)
+      create_file('example/.rubocop.yml', <<-YAML.strip_indent)
         Style/LyneLenth:
           Enabled: true
           Max: 100
-      END
+      YAML
 
       expect(cli.run(%w[--format simple example])).to eq(1)
       expect($stderr.string)
@@ -1444,11 +1444,11 @@ describe RuboCop::CLI, :isolated_environment do
     it 'prints a warning for an unrecognized configuration parameter' do
       create_file('example/example1.rb', '#' * 90)
 
-      create_file('example/.rubocop.yml', <<-END.strip_indent)
+      create_file('example/.rubocop.yml', <<-YAML.strip_indent)
         Metrics/LineLength:
           Enabled: true
           Min: 10
-      END
+      YAML
 
       expect(cli.run(%w[--format simple example])).to eq(1)
       expect($stderr.string)
@@ -1459,10 +1459,10 @@ describe RuboCop::CLI, :isolated_environment do
 
     it 'prints an error message for an unrecognized EnforcedStyle' do
       create_file('example/example1.rb', 'puts "hello"')
-      create_file('example/.rubocop.yml', <<-END.strip_indent)
+      create_file('example/.rubocop.yml', <<-YAML.strip_indent)
         Style/BracesAroundHashParameters:
           EnforcedStyle: context
-      END
+      YAML
 
       expect(cli.run(%w[--format simple example])).to eq(2)
       expect($stderr.string)
@@ -1477,11 +1477,11 @@ describe RuboCop::CLI, :isolated_environment do
        'with regexp' do
       create_file('example/example1.rb', '#' * 90)
 
-      create_file('rubocop.yml', <<-'END'.strip_indent)
+      create_file('rubocop.yml', <<-'YAML'.strip_indent)
         AllCops:
           Exclude:
             - !ruby/regexp /example1\.rb$/
-      END
+      YAML
 
       cli.run(%w[--format simple -c rubocop.yml])
       expect($stdout.string)
@@ -1493,11 +1493,11 @@ describe RuboCop::CLI, :isolated_environment do
        'with strings' do
       create_file('example/example1.rb', '#' * 90)
 
-      create_file('rubocop.yml', <<-END.strip_indent)
+      create_file('rubocop.yml', <<-YAML.strip_indent)
         AllCops:
           Exclude:
             - example/**
-      END
+      YAML
 
       cli.run(%w[--format simple -c rubocop.yml])
       expect($stdout.string)
@@ -1508,29 +1508,29 @@ describe RuboCop::CLI, :isolated_environment do
     it 'works when a configuration file specifies a Severity' do
       create_file('example/example1.rb', '#' * 90)
 
-      create_file('rubocop.yml', <<-END.strip_indent)
+      create_file('rubocop.yml', <<-YAML.strip_indent)
         Metrics/LineLength:
           Severity: error
-      END
+      YAML
 
       cli.run(%w[--format simple -c rubocop.yml])
       expect($stdout.string)
-        .to eq(<<-END.strip_indent)
+        .to eq(<<-RESULT.strip_indent)
           == example/example1.rb ==
           E:  1: 81: Line is too long. [90/80]
 
           1 file inspected, 1 offense detected
-        END
+      RESULT
       expect($stderr.string).to eq('')
     end
 
     it 'fails when a configuration file specifies an invalid Severity' do
       create_file('example/example1.rb', '#' * 90)
 
-      create_file('rubocop.yml', <<-END.strip_indent)
+      create_file('rubocop.yml', <<-YAML.strip_indent)
         Metrics/LineLength:
           Severity: superbad
-      END
+      YAML
 
       cli.run(%w[--format simple -c rubocop.yml])
       expect($stderr.string)
@@ -1541,11 +1541,11 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'fails when a configuration file has invalid YAML syntax' do
-      create_file('example/.rubocop.yml', <<-END.strip_indent)
+      create_file('example/.rubocop.yml', <<-YAML.strip_indent)
         AllCops:
           Exclude:
             - **/*_old.rb
-      END
+      YAML
 
       cli.run(['example'])
       # MRI and JRuby return slightly different error messages.
@@ -1556,11 +1556,11 @@ describe RuboCop::CLI, :isolated_environment do
 
     context 'when a file inherits from a higher level' do
       before do
-        create_file('.rubocop.yml', <<-END.strip_indent)
+        create_file('.rubocop.yml', <<-YAML.strip_indent)
           Metrics/LineLength:
             Exclude:
               - dir/example.rb
-        END
+        YAML
         create_file('dir/.rubocop.yml', 'inherit_from: ../.rubocop.yml')
         create_file('dir/example.rb', '#' * 90)
       end
@@ -1572,11 +1572,11 @@ describe RuboCop::CLI, :isolated_environment do
 
     context 'when configuration is taken from $HOME/.rubocop.yml' do
       before do
-        create_file("#{Dir.home}/.rubocop.yml", <<-END.strip_indent)
+        create_file("#{Dir.home}/.rubocop.yml", <<-YAML.strip_indent)
           Metrics/LineLength:
             Exclude:
               - dir/example.rb
-        END
+        YAML
         create_file('dir/example.rb', '#' * 90)
       end
 
@@ -1599,10 +1599,10 @@ describe RuboCop::CLI, :isolated_environment do
   describe 'configuration of target Ruby versions' do
     context 'when configured with an unknown version' do
       it 'fails with an error message' do
-        create_file('.rubocop.yml', <<-END.strip_indent)
+        create_file('.rubocop.yml', <<-YAML.strip_indent)
           AllCops:
             TargetRubyVersion: 2.5
-        END
+        YAML
         expect(cli.run([])).to eq(2)
         expect($stderr.string.strip).to match(
           /\AError: Unknown Ruby version 2.5 found in `TargetRubyVersion`/
@@ -1616,12 +1616,12 @@ describe RuboCop::CLI, :isolated_environment do
     context 'when set to 1.9 and Style/OptionHash is enabled' do
       it 'fails with an error message' do
         create_file('example1.rb', "puts 'hello'")
-        create_file('.rubocop.yml', <<-END.strip_indent)
+        create_file('.rubocop.yml', <<-YAML.strip_indent)
           AllCops:
             TargetRubyVersion: 1.9
           Style/OptionHash:
             Enabled: true
-        END
+        YAML
         expect(cli.run(['example1.rb'])).to eq(2)
         expect($stderr.string.strip).to eq(
           ['Error: The `Style/OptionHash` cop is only compatible with Ruby ' \
@@ -1637,10 +1637,10 @@ describe RuboCop::CLI, :isolated_environment do
     context 'when configuration for TrailingComma is given' do
       it 'fails with an error message' do
         create_file('example1.rb', "puts 'hello'")
-        create_file('.rubocop.yml', <<-END.strip_indent)
+        create_file('.rubocop.yml', <<-YAML.strip_indent)
           Style/TrailingComma:
             Enabled: true
-        END
+        YAML
         expect(cli.run(['example1.rb'])).to eq(2)
         expect($stderr.string.strip).to eq(
           ['Error: The `Style/TrailingComma` cop no longer exists. Please ' \

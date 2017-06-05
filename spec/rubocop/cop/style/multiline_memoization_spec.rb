@@ -34,52 +34,52 @@ describe RuboCop::Cop::Style::MultilineMemoization, :config do
       it_behaves_like 'code without offense',
                       'foo ||= bar'
 
-      it_behaves_like 'code without offense', <<-END.strip_indent
+      it_behaves_like 'code without offense', <<-RUBY.strip_indent
         foo ||=
           bar
-      END
+      RUBY
     end
 
     context 'with a multiline memoization' do
       context 'without a `begin` and `end` block' do
         context 'when there is another block on the first line' do
-          it_behaves_like 'code without offense', <<-END.strip_indent
+          it_behaves_like 'code without offense', <<-RUBY.strip_indent
             foo ||= bar.each do |b|
               b.baz
               bb.ax
             end
-          END
+          RUBY
         end
 
         context 'when there is another block on the following line' do
-          it_behaves_like 'code without offense', <<-END.strip_indent
+          it_behaves_like 'code without offense', <<-RUBY.strip_indent
             foo ||=
               bar.each do |b|
                 b.baz
                 b.bax
               end
-          END
+          RUBY
         end
 
         context 'when there is a conditional on the first line' do
-          it_behaves_like 'code without offense', <<-END.strip_indent
+          it_behaves_like 'code without offense', <<-RUBY.strip_indent
             foo ||= if bar
                       baz
                     else
                       bax
                     end
-          END
+          RUBY
         end
 
         context 'when there is a conditional on the following line' do
-          it_behaves_like 'code without offense', <<-END.strip_indent
+          it_behaves_like 'code without offense', <<-RUBY.strip_indent
             foo ||=
               if bar
                 baz
               else
                 bax
               end
-          END
+          RUBY
         end
       end
     end
@@ -93,54 +93,54 @@ describe RuboCop::Cop::Style::MultilineMemoization, :config do
       context 'without a `begin` and `end` block' do
         context 'when the expression is wrapped in parentheses' do
           it_behaves_like 'code with offense',
-                          <<-END.strip_indent,
+                          <<-RUBY.strip_indent,
                             foo ||= (
                               bar
                               baz
                             )
-                          END
-                          <<-END.strip_indent
+                          RUBY
+                          <<-RUBY.strip_indent
                             foo ||= begin
                               bar
                               baz
                             end
-                          END
+                          RUBY
 
           it_behaves_like 'code with offense',
-                          <<-END.strip_indent,
+                          <<-RUBY.strip_indent,
                             foo ||=
                               (
                                 bar
                                 baz
                               )
-                          END
-                          <<-END.strip_indent
+                          RUBY
+                          <<-RUBY.strip_indent
                             foo ||=
                               begin
                                 bar
                                 baz
                               end
-                          END
+                          RUBY
         end
       end
 
       context 'with a `begin` and `end` block on the first line' do
-        it_behaves_like 'code without offense', <<-END.strip_indent
+        it_behaves_like 'code without offense', <<-RUBY.strip_indent
           foo ||= begin
             bar
             baz
           end
-        END
+        RUBY
       end
 
       context 'with a `begin` and `end` block on the following line' do
-        it_behaves_like 'code without offense', <<-END.strip_indent
+        it_behaves_like 'code without offense', <<-RUBY.strip_indent
           foo ||=
             begin
             bar
             baz
           end
-        END
+        RUBY
       end
     end
   end
@@ -154,54 +154,54 @@ describe RuboCop::Cop::Style::MultilineMemoization, :config do
         context 'when the expression is wrapped in' \
                 ' `begin` and `end` keywords' do
           it_behaves_like 'code with offense',
-                          <<-END.strip_indent,
+                          <<-RUBY.strip_indent,
                             foo ||= begin
                               bar
                               baz
                             end
-                          END
-                          <<-END.strip_indent
+                          RUBY
+                          <<-RUBY.strip_indent
                             foo ||= (
                               bar
                               baz
                             )
-                          END
+                          RUBY
 
           it_behaves_like 'code with offense',
-                          <<-END.strip_indent,
+                          <<-RUBY.strip_indent,
                             foo ||=
                               begin
                                 bar
                                 baz
                               end
-                          END
-                          <<-END.strip_indent
+                          RUBY
+                          <<-RUBY.strip_indent
                             foo ||=
                               (
                                 bar
                                 baz
                               )
-                          END
+                          RUBY
         end
       end
 
       context 'with parentheses on the first line' do
-        it_behaves_like 'code without offense', <<-END.strip_indent
+        it_behaves_like 'code without offense', <<-RUBY.strip_indent
           foo ||= (
             bar
             baz
           )
-        END
+        RUBY
       end
 
       context 'with parentheses block on the following line' do
-        it_behaves_like 'code without offense', <<-END.strip_indent
+        it_behaves_like 'code without offense', <<-RUBY.strip_indent
           foo ||=
             (
             bar
             baz
           )
-        END
+        RUBY
       end
     end
   end

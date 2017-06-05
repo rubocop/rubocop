@@ -85,12 +85,12 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
 
   it 'registers an offense for a single when with splat expansion followed ' \
      'by another value' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       case foo
       when *Foo, Bar
         nil
       end
-    END
+    RUBY
     expect(cop.messages).to eq([message])
     expect(cop.highlights).to eq(['when *Foo'])
   end
@@ -153,7 +153,7 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
   end
 
   it 'allows splat expansion on an array literal' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       case foo
       when *[1, 2]
         bar
@@ -162,28 +162,28 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
       when 5
         baz
       end
-    END
+    RUBY
   end
 
   it 'allows splat expansion on array literal as the last condition' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       case foo
       when *[1, 2]
         bar
       end
-    END
+    RUBY
   end
 
   it 'registers an offense for a splat on a variable that proceeds a splat ' \
      'on an array literal as the last condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       case foo
       when *cond
         bar
       when *[1, 2]
         baz
       end
-    END
+    RUBY
 
     expect(cop.messages).to eq([message])
     expect(cop.highlights).to eq(['when *cond'])
@@ -204,85 +204,85 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
   context 'autocorrect' do
     it 'corrects a single when with splat expansion followed by ' \
       'another value' do
-      source = <<-END.strip_indent
+      source = <<-RUBY.strip_indent
         case foo
         when *Foo, Bar, Baz
           nil
         end
-      END
+      RUBY
       new_source = autocorrect_source(cop, source)
-      expect(new_source).to eq(<<-END.strip_indent)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         case foo
         when Bar, Baz, *Foo
           nil
         end
-      END
+      RUBY
     end
 
     it 'corrects a when with splat expansion followed by another value ' \
       'when there are multiple whens' do
-      source = <<-END.strip_indent
+      source = <<-RUBY.strip_indent
         case foo
         when *Foo, Bar
           nil
         when FooBar
           1
         end
-      END
+      RUBY
       new_source = autocorrect_source(cop, source)
-      expect(new_source).to eq(<<-END.strip_indent)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         case foo
         when FooBar
           1
         when Bar, *Foo
           nil
         end
-      END
+      RUBY
     end
 
     it 'corrects a when with multiple out of order splat expansions ' \
       'followed by other values when there are multiple whens' do
-      source = <<-END.strip_indent
+      source = <<-RUBY.strip_indent
         case foo
         when *Foo, Bar, *Baz, Qux
           nil
         when FooBar
           1
         end
-      END
+      RUBY
       new_source = autocorrect_source(cop, source)
-      expect(new_source).to eq(<<-END.strip_indent)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         case foo
         when FooBar
           1
         when Bar, Qux, *Foo, *Baz
           nil
         end
-      END
+      RUBY
     end
 
     it 'moves a single splat condition to the end of the when conditions' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         case foo
         when *cond
           bar
         when 3
           baz
         end
-      END
+      RUBY
 
-      expect(new_source).to eq(<<-END.strip_indent)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         case foo
         when 3
           baz
         when *cond
           bar
         end
-      END
+      RUBY
     end
 
     it 'moves multiple splat condition to the end of the when conditions' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         case foo
         when *cond1
           bar
@@ -291,14 +291,14 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
         when 5
           baz
         end
-      END
+      RUBY
 
       # CaseWhenSplat requires multiple rounds of correction to avoid
       # "clobbering errors" from Source::Rewriter
       cop = described_class.new
       new_source = autocorrect_source(cop, new_source)
 
-      expect(new_source).to eq(<<-END.strip_indent)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         case foo
         when 5
           baz
@@ -307,12 +307,12 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
         when *cond2
           foobar
         end
-      END
+      RUBY
     end
 
     it 'moves multiple out of order splat condition to the end ' \
        'of the when conditions' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         case foo
         when *cond1
           bar
@@ -323,14 +323,14 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
         when 6
           baz
         end
-      END
+      RUBY
 
       # CaseWhenSplat requires multiple rounds of correction to avoid
       # "clobbering errors" from Source::Rewriter
       cop = described_class.new
       new_source = autocorrect_source(cop, new_source)
 
-      expect(new_source).to eq(<<-END.strip_indent)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         case foo
         when 3
           doo
@@ -341,27 +341,27 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
         when *cond2
           foobar
         end
-      END
+      RUBY
     end
 
     it 'corrects splat condition when using when then' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         case foo
         when *cond then bar
         when 4 then baz
         end
-      END
+      RUBY
 
-      expect(new_source).to eq(<<-END.strip_indent)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         case foo
         when 4 then baz
         when *cond then bar
         end
-      END
+      RUBY
     end
 
     it 'corrects nested case when statements' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         def check
           case foo
           when *cond
@@ -370,9 +370,9 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
             baz
           end
         end
-      END
+      RUBY
 
-      expect(new_source).to eq(<<-END.strip_indent)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         def check
           case foo
           when 3
@@ -381,87 +381,87 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
             bar
           end
         end
-      END
+      RUBY
     end
 
     it 'corrects splat on a variable and leaves an array literal alone' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         case foo
         when *cond
           bar
         when *[1, 2]
           baz
         end
-      END
+      RUBY
 
-      expect(new_source).to eq(<<-END.strip_indent)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         case foo
         when *[1, 2]
           baz
         when *cond
           bar
         end
-      END
+      RUBY
     end
 
     it 'corrects a splat as part of the condition' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         case foo
         when cond1, *cond2
           bar
         when cond3
           baz
         end
-      END
+      RUBY
 
-      expect(new_source).to eq(<<-END.strip_indent)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         case foo
         when cond3
           baz
         when cond1, *cond2
           bar
         end
-      END
+      RUBY
     end
 
     it 'corrects an array followed by splat in the same condition' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         case foo
         when *[cond1, cond2], *cond3
           bar
         when cond4
           baz
         end
-      END
+      RUBY
 
-      expect(new_source).to eq(<<-END.strip_indent)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         case foo
         when cond4
           baz
         when *[cond1, cond2], *cond3
           bar
         end
-      END
+      RUBY
     end
 
     it 'corrects a splat followed by array in the same condition' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         case foo
         when *cond1, *[cond2, cond3]
           bar
         when cond4
           baz
         end
-      END
+      RUBY
 
-      expect(new_source).to eq(<<-END.strip_indent)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         case foo
         when cond4
           baz
         when *cond1, *[cond2, cond3]
           bar
         end
-      END
+      RUBY
     end
   end
 end

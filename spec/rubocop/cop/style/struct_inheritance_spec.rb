@@ -20,17 +20,17 @@ describe RuboCop::Cop::Style::StructInheritance do
   end
 
   it 'accepts plain class' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       class Person
       end
-    END
+    RUBY
   end
 
   it 'accepts extending DelegateClass' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       class Person < DelegateClass(Animal)
       end
-    END
+    RUBY
   end
 
   it 'accepts assignment to Struct.new' do

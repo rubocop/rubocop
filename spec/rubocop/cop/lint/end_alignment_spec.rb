@@ -120,14 +120,14 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
 
   context 'correct + opposite' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         x = if a
               a1
             end
         y = if b
           b1
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -141,23 +141,23 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
 
     it 'does auto-correction' do
       corrected = autocorrect_source(cop, source)
-      expect(corrected).to eq(<<-END.strip_indent)
+      expect(corrected).to eq(<<-RUBY.strip_indent)
         x = if a
               a1
             end
         y = if b
           b1
             end
-      END
+      RUBY
     end
   end
 
   context 'when end is preceded by something else than whitespace' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         module A
         puts a end
-      END
+      RUBY
     end
 
     it 'registers an offense' do

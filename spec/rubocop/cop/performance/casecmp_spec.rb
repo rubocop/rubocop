@@ -101,18 +101,18 @@ describe RuboCop::Cop::Performance::Casecmp do
     end
 
     it "doesn't report an offense for variable == str.#{selector}" do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         var = "a"
         var == str.#{selector}
-      END
+      RUBY
       expect(cop.offenses).to be_empty
     end
 
     it "doesn't report an offense for str.#{selector} == variable" do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         var = "a"
         str.#{selector} == var
-      END
+      RUBY
       expect(cop.offenses).to be_empty
     end
 

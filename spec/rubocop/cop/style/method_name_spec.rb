@@ -5,33 +5,33 @@ describe RuboCop::Cop::Style::MethodName, :config do
 
   shared_examples 'never accepted' do
     it 'registers an offense for mixed snake case and camel case' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         def visit_Arel_Nodes_SelectStatement
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['visit_Arel_Nodes_SelectStatement'])
     end
 
     it 'registers an offense for capitalized camel case' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         class MyClass
           def MyMethod
           end
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['MyMethod'])
     end
 
     it 'registers an offense for singleton upper case method without ' \
        'corresponding class' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         module Sequel
           def self.Model(source)
           end
         end
-      END
+      RUBY
       expect(cop.highlights).to eq(['Model'])
     end
   end
@@ -42,26 +42,26 @@ describe RuboCop::Cop::Style::MethodName, :config do
     end
 
     it 'accepts operator definitions' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def +(other)
           # ...
         end
-      END
+      RUBY
     end
 
     it 'accepts unary operator definitions' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def ~@; end
-      END
+      RUBY
 
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def !@; end
-      END
+      RUBY
     end
 
     %w[class module].each do |kind|
       it "accepts class emitter method in a #{kind}" do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           #{kind} Sequel
             def self.Model(source)
             end
@@ -69,13 +69,13 @@ describe RuboCop::Cop::Style::MethodName, :config do
             class Model
             end
           end
-        END
+        RUBY
         expect(cop.offenses).to be_empty
       end
 
       it "accepts class emitter method in a #{kind}, even when it is " \
          'defined inside another method' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           module DPN
             module Flow
               module BaseFlow
@@ -88,7 +88,7 @@ describe RuboCop::Cop::Style::MethodName, :config do
               end
             end
           end
-        END
+        RUBY
         expect(cop.offenses).to be_empty
       end
     end
@@ -98,11 +98,11 @@ describe RuboCop::Cop::Style::MethodName, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'snake_case' } }
 
     it 'registers an offense for camel case in instance method name' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         def myMethod
           # ...
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['myMethod'])
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
@@ -110,12 +110,12 @@ describe RuboCop::Cop::Style::MethodName, :config do
     end
 
     it 'registers an offense for opposite + correct' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         def my_method
         end
         def myMethod
         end
-      END
+      RUBY
       expect(cop.highlights).to eq(['myMethod'])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
@@ -130,10 +130,10 @@ describe RuboCop::Cop::Style::MethodName, :config do
     end
 
     it 'accepts snake case in names' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def my_method
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for singleton camelCase method within class' do
@@ -154,26 +154,26 @@ describe RuboCop::Cop::Style::MethodName, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'camelCase' } }
 
     it 'accepts camel case in instance method name' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def myMethod
           # ...
         end
-      END
+      RUBY
     end
 
     it 'accepts camel case in singleton method name' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def self.myMethod
           # ...
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for snake case in names' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         def my_method
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['my_method'])
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
@@ -181,12 +181,12 @@ describe RuboCop::Cop::Style::MethodName, :config do
     end
 
     it 'registers an offense for correct + opposite' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         def my_method
         end
         def myMethod
         end
-      END
+      RUBY
       expect(cop.highlights).to eq(['my_method'])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end

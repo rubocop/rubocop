@@ -9,46 +9,46 @@ describe RuboCop::Cop::Lint::RescueType do
   end
 
   it 'accepts rescuing nothing' do
-    expect_no_offenses(<<-END)
+    expect_no_offenses(<<-RUBY)
       begin
         foo
       rescue
         bar
       end
-    END
+    RUBY
   end
 
   it 'accepts rescuing a single exception' do
-    expect_no_offenses(<<-END)
+    expect_no_offenses(<<-RUBY)
       def foobar
         foo
       rescue NameError
         bar
       end
-    END
+    RUBY
   end
 
   it 'accepts rescuing nothing' do
-    expect_no_offenses(<<-END)
+    expect_no_offenses(<<-RUBY)
      def foobar
         foo
       rescue
         bar
       end
-    END
+    RUBY
   end
 
   shared_examples :offenses do |rescues|
     context 'begin rescue' do
       context "rescuing from #{rescues}" do
         let(:source) do
-          <<-END
+          <<-RUBY
             begin
               foo
             rescue #{rescues}
               bar
             end
-          END
+          RUBY
         end
 
         it 'registers an offense' do
@@ -63,25 +63,25 @@ describe RuboCop::Cop::Lint::RescueType do
         it 'auto-corrects' do
           new_source = autocorrect_source(cop, source)
 
-          expect(new_source).to eq(<<-END)
+          expect(new_source).to eq(<<-RUBY)
             begin
               foo
             rescue
               bar
             end
-          END
+          RUBY
         end
       end
 
       context "rescuing from #{rescues} before another exception" do
         let(:source) do
-          <<-END
+          <<-RUBY
             begin
               foo
             rescue #{rescues}, StandardError
               bar
             end
-          END
+          RUBY
         end
 
         it 'registers an offense' do
@@ -96,25 +96,25 @@ describe RuboCop::Cop::Lint::RescueType do
         it 'auto-corrects' do
           new_source = autocorrect_source(cop, source)
 
-          expect(new_source).to eq(<<-END)
+          expect(new_source).to eq(<<-RUBY)
             begin
               foo
             rescue StandardError
               bar
             end
-          END
+          RUBY
         end
       end
 
       context "rescuing from #{rescues} after another exception" do
         let(:source) do
-          <<-END
+          <<-RUBY
             begin
               foo
             rescue StandardError, #{rescues}
               bar
             end
-          END
+          RUBY
         end
 
         it 'registers an offense' do
@@ -129,13 +129,13 @@ describe RuboCop::Cop::Lint::RescueType do
         it 'auto-corrects' do
           new_source = autocorrect_source(cop, source)
 
-          expect(new_source).to eq(<<-END)
+          expect(new_source).to eq(<<-RUBY)
             begin
               foo
             rescue StandardError
               bar
             end
-          END
+          RUBY
         end
       end
     end
@@ -143,7 +143,7 @@ describe RuboCop::Cop::Lint::RescueType do
     context 'begin rescue ensure' do
       context "rescuing from #{rescues}" do
         let(:source) do
-          <<-END
+          <<-RUBY
             begin
               foo
             rescue #{rescues}
@@ -151,7 +151,7 @@ describe RuboCop::Cop::Lint::RescueType do
             ensure
               baz
             end
-          END
+          RUBY
         end
 
         it 'registers an offense' do
@@ -166,7 +166,7 @@ describe RuboCop::Cop::Lint::RescueType do
         it 'auto-corrects' do
           new_source = autocorrect_source(cop, source)
 
-          expect(new_source).to eq(<<-END)
+          expect(new_source).to eq(<<-RUBY)
             begin
               foo
             rescue
@@ -174,7 +174,7 @@ describe RuboCop::Cop::Lint::RescueType do
             ensure
               baz
             end
-          END
+          RUBY
         end
       end
     end
@@ -182,13 +182,13 @@ describe RuboCop::Cop::Lint::RescueType do
     context 'def rescue' do
       context "rescuing from #{rescues}" do
         let(:source) do
-          <<-END
+          <<-RUBY
             def foobar
               foo
             rescue #{rescues}
               bar
             end
-          END
+          RUBY
         end
 
         it 'registers an offense' do
@@ -203,13 +203,13 @@ describe RuboCop::Cop::Lint::RescueType do
         it 'auto-corrects' do
           new_source = autocorrect_source(cop, source)
 
-          expect(new_source).to eq(<<-END)
+          expect(new_source).to eq(<<-RUBY)
             def foobar
               foo
             rescue
               bar
             end
-          END
+          RUBY
         end
       end
     end
@@ -217,7 +217,7 @@ describe RuboCop::Cop::Lint::RescueType do
     context 'def rescue ensure' do
       context "rescuing from #{rescues}" do
         let(:source) do
-          <<-END
+          <<-RUBY
             def foobar
               foo
             rescue #{rescues}
@@ -225,7 +225,7 @@ describe RuboCop::Cop::Lint::RescueType do
             ensure
               baz
             end
-          END
+          RUBY
         end
 
         it 'registers an offense' do
@@ -240,7 +240,7 @@ describe RuboCop::Cop::Lint::RescueType do
         it 'auto-corrects' do
           new_source = autocorrect_source(cop, source)
 
-          expect(new_source).to eq(<<-END)
+          expect(new_source).to eq(<<-RUBY)
             def foobar
               foo
             rescue
@@ -248,7 +248,7 @@ describe RuboCop::Cop::Lint::RescueType do
             ensure
               baz
             end
-          END
+          RUBY
         end
       end
     end

@@ -22,53 +22,53 @@ describe RuboCop::Cop::Layout::SpaceAfterMethodName do
   end
 
   it 'accepts a def without arguments' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def func
         a
       end
-    END
+    RUBY
   end
 
   it 'accepts a defs without arguments' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def self.func
         a
       end
-    END
+    RUBY
   end
 
   it 'accepts a def with arguments but no parentheses' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def func x
         a
       end
-    END
+    RUBY
   end
 
   it 'accepts a defs with arguments but no parentheses' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def self.func x
         a
       end
-    END
+    RUBY
   end
 
   it 'auto-corrects unwanted space' do
-    new_source = autocorrect_source(cop, <<-END.strip_indent)
+    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
       def func (x)
         a
       end
       def self.func (x)
         a
       end
-    END
-    expect(new_source).to eq(<<-END.strip_indent)
+    RUBY
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       def func(x)
         a
       end
       def self.func(x)
         a
       end
-    END
+    RUBY
   end
 end

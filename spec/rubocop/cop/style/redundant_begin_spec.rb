@@ -10,7 +10,7 @@ describe RuboCop::Cop::Style::RedundantBegin do
   end
 
   it 'reports an offense for def with redundant begin block' do
-    src = <<-END.strip_indent
+    src = <<-RUBY.strip_indent
       def func
         begin
           ala
@@ -18,13 +18,13 @@ describe RuboCop::Cop::Style::RedundantBegin do
           bala
         end
       end
-    END
+    RUBY
     inspect_source(cop, src)
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'reports an offense for defs with redundant begin block' do
-    src = <<-END.strip_indent
+    src = <<-RUBY.strip_indent
       def Test.func
         begin
           ala
@@ -32,7 +32,7 @@ describe RuboCop::Cop::Style::RedundantBegin do
           bala
         end
       end
-    END
+    RUBY
     inspect_source(cop, src)
     expect(cop.offenses.size).to eq(1)
   end
@@ -65,7 +65,7 @@ describe RuboCop::Cop::Style::RedundantBegin do
 
   it 'auto-corrects source separated by newlines ' \
      'by removing redundant begin blocks' do
-    src = <<-END.strip_margin('|')
+    src = <<-RUBY.strip_margin('|')
       |  def func
       |    begin
       |      foo
@@ -74,7 +74,7 @@ describe RuboCop::Cop::Style::RedundantBegin do
       |      baz
       |    end
       |  end
-    END
+    RUBY
     result_src = ['  def func',
                   '    ',
                   '      foo',
@@ -97,7 +97,7 @@ describe RuboCop::Cop::Style::RedundantBegin do
   end
 
   it "doesn't modify spacing when auto-correcting" do
-    src = <<-END.strip_indent
+    src = <<-RUBY.strip_indent
       def method
         begin
           BlockA do |strategy|
@@ -112,7 +112,7 @@ describe RuboCop::Cop::Style::RedundantBegin do
           bar
         end
       end
-    END
+    RUBY
 
     result_src = ['def method',
                   '  ',
@@ -134,22 +134,22 @@ describe RuboCop::Cop::Style::RedundantBegin do
   end
 
   it 'auto-corrects when there are trailing comments' do
-    src = <<-END.strip_indent
+    src = <<-RUBY.strip_indent
       def method
         begin # comment 1
           do_some_stuff
         rescue # comment 2
         end # comment 3
       end
-    END
-    result_src = <<-END.strip_indent
+    RUBY
+    result_src = <<-RUBY.strip_indent
       def method
          # comment 1
           do_some_stuff
         rescue # comment 2
          # comment 3
       end
-    END
+    RUBY
     new_source = autocorrect_source(cop, src)
     expect(new_source).to eq(result_src)
   end

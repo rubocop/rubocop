@@ -222,10 +222,10 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
     end
 
     it 'does not auto-correct when params is a lvar' do
-      source = <<-END.strip_indent
+      source = <<-RUBY.strip_indent
         params = { id: 1 }
         post user_attrs, params
-      END
+      RUBY
       inspect_source(cop, source)
       expect(cop.offenses.size).to eq(0)
       new_source = autocorrect_source(cop, source)
@@ -514,17 +514,17 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
     end
 
     it 'auto-corrects http action when params is a lvar' do
-      source = <<-END.strip_indent
+      source = <<-RUBY.strip_indent
         params = { id: 1 }
         post user_attrs, params
-      END
+      RUBY
       inspect_source(cop, source)
       expect(cop.offenses.size).to eq(1)
       new_source = autocorrect_source(cop, source)
-      expect(new_source).to eq(<<-END.strip_indent)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         params = { id: 1 }
         post user_attrs, params: params
-      END
+      RUBY
     end
 
     it 'auto-corrects http action when params is a method call' do

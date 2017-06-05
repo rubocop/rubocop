@@ -44,25 +44,25 @@ describe RuboCop::Cop::Lint::EmptyExpression, :config do
     it_behaves_like 'code with offense',
                     'if (); end'
 
-    it_behaves_like 'code with offense', <<-END.strip_indent
+    it_behaves_like 'code with offense', <<-RUBY.strip_indent
       if foo
         1
       elsif ()
         2
       end
-    END
+    RUBY
 
-    it_behaves_like 'code with offense', <<-END.strip_indent
+    it_behaves_like 'code with offense', <<-RUBY.strip_indent
       case ()
       when :foo then 1
       end
-    END
+    RUBY
 
-    it_behaves_like 'code with offense', <<-END.strip_indent
+    it_behaves_like 'code with offense', <<-RUBY.strip_indent
       case foo
       when () then 1
       end
-    END
+    RUBY
 
     it_behaves_like 'code with offense',
                     '() ? true : false'
@@ -72,23 +72,23 @@ describe RuboCop::Cop::Lint::EmptyExpression, :config do
   end
 
   context 'when used as a return value' do
-    it_behaves_like 'code with offense', <<-END.strip_indent
+    it_behaves_like 'code with offense', <<-RUBY.strip_indent
       def foo
         ()
       end
-    END
+    RUBY
 
-    it_behaves_like 'code with offense', <<-END.strip_indent
+    it_behaves_like 'code with offense', <<-RUBY.strip_indent
       if foo
         ()
       end
-    END
+    RUBY
 
-    it_behaves_like 'code with offense', <<-END.strip_indent
+    it_behaves_like 'code with offense', <<-RUBY.strip_indent
       case foo
       when :bar then ()
       end
-    END
+    RUBY
   end
 
   context 'when used as an assignment' do

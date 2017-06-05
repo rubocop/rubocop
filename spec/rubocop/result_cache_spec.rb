@@ -25,10 +25,10 @@ describe RuboCop::ResultCache, :isolated_environment do
   end
 
   before do
-    create_file('example.rb', <<-END.strip_indent)
+    create_file('example.rb', <<-RUBY.strip_indent)
       # Hello
       x = 1
-    END
+    RUBY
     allow(config_store).to receive(:for).with('example.rb')
                                         .and_return(RuboCop::Config.new)
   end

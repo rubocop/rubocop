@@ -24,10 +24,10 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When gems are not alphabetically sorted' do
-    let(:source) { <<-END.strip_indent }
+    let(:source) { <<-RUBY.strip_indent }
       gem 'rubocop'
       gem 'rspec'
-    END
+    RUBY
 
     it 'registers an offense' do
       expect_offense(<<-RUBY.strip_indent)
@@ -39,10 +39,10 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
 
     it 'autocorrects' do
       new_source = autocorrect_source_with_loop(cop, source)
-      expect(new_source).to eq(<<-END.strip_indent)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         gem 'rspec'
         gem 'rubocop'
-      END
+      RUBY
     end
   end
 
@@ -59,11 +59,11 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When a gem declaration takes several lines' do
-    let(:source) { <<-END.strip_indent }
+    let(:source) { <<-RUBY.strip_indent }
       gem 'rubocop',
           '0.1.1'
       gem 'rspec'
-    END
+    RUBY
 
     it 'registers an offense' do
       expect_offense(<<-RUBY.strip_indent)
@@ -76,11 +76,11 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
 
     it 'autocorrects' do
       new_source = autocorrect_source_with_loop(cop, source)
-      expect(new_source).to eq(<<-END.strip_indent)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         gem 'rspec'
         gem 'rubocop',
             '0.1.1'
-      END
+      RUBY
     end
   end
 
@@ -91,7 +91,7 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When each individual group of line is not sorted' do
-    let(:source) { <<-END.strip_indent }
+    let(:source) { <<-RUBY.strip_indent }
         gem "d"
         gem "b"
         gem "e"
@@ -103,7 +103,7 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
         gem "j"
         gem "f"
         gem "i"
-    END
+    RUBY
 
     it 'registers some offenses' do
       expect_offense(<<-RUBY.strip_indent)
@@ -127,7 +127,7 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
 
     it 'autocorrects' do
       new_source = autocorrect_source_with_loop(cop, source)
-      expect(new_source).to eq(<<-END.strip_indent)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         gem "a"
         gem "b"
         gem "c"
@@ -139,18 +139,18 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
         gem "h"
         gem "i"
         gem "j"
-      END
+      RUBY
     end
   end
 
   context 'When gem groups is separated by multiline comment' do
-    let(:source) { <<-END.strip_indent }
+    let(:source) { <<-RUBY.strip_indent }
       # For code quality
       gem 'rubocop'
       # For
       # test
       gem 'rspec'
-    END
+    RUBY
 
     context 'with TreatCommentsAsGroupSeparators: true' do
       let(:treat_comments_as_group_separators) { true }
@@ -180,23 +180,23 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
 
       it 'autocorrects' do
         new_source = autocorrect_source_with_loop(cop, source)
-        expect(new_source).to eq(<<-END.strip_indent)
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           # For
           # test
           gem 'rspec'
           # For code quality
           gem 'rubocop'
-        END
+        RUBY
       end
     end
   end
 
   context 'When gems have an inline comment, and not sorted' do
-    let(:source) { <<-END.strip_indent }
+    let(:source) { <<-RUBY.strip_indent }
       gem 'rubocop' # For code quality
       gem 'pry'
       gem 'rspec'   # For test
-    END
+    RUBY
 
     it 'registers an offense' do
       expect_offense(<<-RUBY.strip_indent)
@@ -209,11 +209,11 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
 
     it 'autocorrects' do
       new_source = autocorrect_source_with_loop(cop, source)
-      expect(new_source).to eq(<<-END.strip_indent)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         gem 'pry'
         gem 'rspec'   # For test
         gem 'rubocop' # For code quality
-      END
+      RUBY
     end
   end
 
@@ -236,10 +236,10 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When a gem that starts with a capital letter is not sorted' do
-    let(:source) { <<-END.strip_indent }
+    let(:source) { <<-RUBY.strip_indent }
       gem 'Z'
       gem 'a'
-    END
+    RUBY
 
     it 'registers an offense' do
       expect_offense(<<-RUBY.strip_indent)
@@ -251,10 +251,10 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
 
     it 'autocorrects' do
       new_source = autocorrect_source_with_loop(cop, source)
-      expect(new_source).to eq(<<-END.strip_indent)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         gem 'a'
         gem 'Z'
-      END
+      RUBY
     end
   end
 end

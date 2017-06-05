@@ -31,63 +31,63 @@ describe RuboCop::Cop::Rails::Delegate do
   end
 
   it 'ignores class methods' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def self.fox
         new.fox
       end
-    END
+    RUBY
   end
 
   it 'ignores non trivial delegate' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def fox
         bar.foo.fox
       end
-    END
+    RUBY
   end
 
   it 'ignores trivial delegate with mismatched arguments' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def fox(baz)
         bar.fox(foo)
       end
-    END
+    RUBY
   end
 
   it 'ignores trivial delegate with optional argument with a default value' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def fox(foo = nil)
         bar.fox(foo || 5)
       end
-    END
+    RUBY
   end
 
   it 'ignores trivial delegate with mismatched number of arguments' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def fox(a, baz)
         bar.fox(a)
       end
-    END
+    RUBY
   end
 
   it 'ignores trivial delegate with other prefix' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def fox_foo
         bar.foo
       end
-    END
+    RUBY
   end
 
   it 'ignores methods with arguments' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def fox(bar)
         bar.fox
       end
-    END
+    RUBY
   end
 
   it 'ignores private delegations' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
         private def fox # leading spaces are on purpose
           bar.fox
         end
@@ -97,11 +97,11 @@ describe RuboCop::Cop::Rails::Delegate do
         def fox
           bar.fox
         end
-    END
+    RUBY
   end
 
   it 'ignores protected delegations' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
         protected def fox # leading spaces are on purpose
           bar.fox
         end
@@ -111,40 +111,40 @@ describe RuboCop::Cop::Rails::Delegate do
         def fox
           bar.fox
         end
-    END
+    RUBY
   end
 
   it 'ignores delegation with assignment' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def new
         @bar = Foo.new
       end
-    END
+    RUBY
   end
 
   it 'ignores delegation to constant' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       FOO = []
       def size
         FOO.size
       end
-    END
+    RUBY
   end
 
   describe '#autocorrect' do
     context 'trivial delegation' do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           def bar
             foo.bar
           end
-        END
+        RUBY
       end
 
       let(:corrected_source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           delegate :bar, to: :foo
-        END
+        RUBY
       end
 
       it 'autocorrects' do
@@ -154,17 +154,17 @@ describe RuboCop::Cop::Rails::Delegate do
 
     context 'trivial delegation with prefix' do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           def foo_bar
             foo.bar
           end
-        END
+        RUBY
       end
 
       let(:corrected_source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           delegate :bar, to: :foo, prefix: true
-        END
+        RUBY
       end
 
       it 'autocorrects' do

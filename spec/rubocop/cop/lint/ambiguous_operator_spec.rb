@@ -7,10 +7,10 @@ describe RuboCop::Cop::Lint::AmbiguousOperator do
     context 'without parentheses' do
       context 'without whitespaces on the right of the operator' do
         let(:source) do
-          <<-END.strip_indent
+          <<-RUBY.strip_indent
             array = [1, 2, 3]
             puts *array
-          END
+          RUBY
         end
 
         it 'registers an offense' do
@@ -51,10 +51,10 @@ describe RuboCop::Cop::Lint::AmbiguousOperator do
     context 'without parentheses' do
       context 'without whitespaces on the right of the operator' do
         let(:source) do
-          <<-END.strip_indent
+          <<-RUBY.strip_indent
             process = proc { do_something }
             2.times &process
-          END
+          RUBY
         end
 
         it 'registers an offense' do

@@ -14,18 +14,18 @@ describe RuboCop::Cop::Lint::ConditionPosition do
     end
 
     it 'accepts condition on the same line' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         #{keyword} x == 10
          bala
         end
-      END
+      RUBY
     end
 
     it 'accepts condition on a different line for modifiers' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         do_something #{keyword}
           something && something_else
-      END
+      RUBY
     end
   end
 

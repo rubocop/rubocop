@@ -5,11 +5,11 @@ describe RuboCop::Cop::Style::OptionHash, :config do
   let(:cop_config) { { 'SuspiciousParamNames' => ['options'] } }
 
   let(:source) do
-    <<-END.strip_indent
+    <<-RUBY.strip_indent
       def some_method(options = {})
         puts some_arg
       end
-    END
+    RUBY
   end
 
   it 'registers an offense' do
@@ -22,12 +22,12 @@ describe RuboCop::Cop::Style::OptionHash, :config do
 
   context 'when the last argument is an options hash named something else' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def steep(flavor, duration, config={})
           mug = config.fetch(:mug)
           prep(flavor, duration, mug)
         end
-      END
+      RUBY
     end
 
     it 'does not register an offense' do

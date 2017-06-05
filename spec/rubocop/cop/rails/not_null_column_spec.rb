@@ -43,18 +43,18 @@ describe RuboCop::Cop::Rails::NotNullColumn, :config do
 
   context 'with change_column call' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         add_column :users, :name, :string
         User.update_all(name: "dummy")
         change_column :users, :name, :string, null: false
-      END
+      RUBY
     end
     include_examples 'accepts'
   end
 
   context 'with create_table call' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         class CreateUsersTable < ActiveRecord::Migration
           def change
             create_table :users do |t|
@@ -63,7 +63,7 @@ describe RuboCop::Cop::Rails::NotNullColumn, :config do
             end
           end
         end
-      END
+      RUBY
     end
     include_examples 'accepts'
   end

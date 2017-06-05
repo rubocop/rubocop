@@ -19,9 +19,9 @@ describe RuboCop::Cop::Layout::TrailingWhitespace do
   end
 
   it 'registers an offense for trailing whitespace in a heredoc string' do
-    inspect_source(cop, ['x = <<END',
+    inspect_source(cop, ['x = <<RUBY',
                          '  Hi   ',
-                         'END'])
+                         'RUBY'])
     expect(cop.offenses.size).to eq(1)
   end
 
@@ -43,21 +43,21 @@ describe RuboCop::Cop::Layout::TrailingWhitespace do
   end
 
   it 'is not fooled by heredoc containing __END__' do
-    inspect_source(cop, ['x1 = <<END ',
+    inspect_source(cop, ['x1 = <<RUBY ',
                          '__END__',
                          "x2 = 0\t",
-                         'END',
+                         'RUBY',
                          "x3 = 0\t"])
     expect(cop.offenses.map(&:line)).to eq([1, 3, 5])
   end
 
   it 'is not fooled by heredoc containing __END__ within a doc comment' do
-    inspect_source(cop, ['x1 = <<END ',
+    inspect_source(cop, ['x1 = <<RUBY ',
                          '=begin  ',
                          '__END__',
                          '=end',
                          "x2 = 0\t",
-                         'END',
+                         'RUBY',
                          "x3 = 0\t"])
     expect(cop.offenses.map(&:line)).to eq([1, 2, 5, 7])
   end

@@ -16,29 +16,29 @@ describe RuboCop::Cop::Performance::StringReplacement do
       end
 
       it 'accepts the first param being a variable' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           regex = /a/
           'abc'.#{method}(regex, '1')
-        END
+        RUBY
 
         expect(cop.messages).to be_empty
       end
 
       it 'accepts the second param being a variable' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           replacement = 'e'
           'abc'.#{method}('abc', replacement)
-        END
+        RUBY
 
         expect(cop.messages).to be_empty
       end
 
       it 'accepts the both params being a variables' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           regex = /a/
           replacement = 'e'
           'abc'.#{method}(regex, replacement)
-        END
+        RUBY
 
         expect(cop.messages).to be_empty
       end
@@ -56,19 +56,19 @@ describe RuboCop::Cop::Performance::StringReplacement do
       end
 
       it 'accepts a pattern with string interpolation' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           foo = 'a'
           'abc'.#{method}(\"\#{foo}\", '1')
-        END
+        RUBY
 
         expect(cop.messages).to be_empty
       end
 
       it 'accepts a replacement with string interpolation' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           foo = '1'
           'abc'.#{method}('a', \"\#{foo}\")
-        END
+        RUBY
 
         expect(cop.messages).to be_empty
       end

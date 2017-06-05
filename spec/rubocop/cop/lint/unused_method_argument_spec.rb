@@ -13,11 +13,11 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
 
     context 'when a method takes multiple arguments' do
       context 'and an argument is unused' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           def some_method(foo, bar)
             puts bar
           end
-        END
+        RUBY
 
         it 'registers an offense' do
           expect(cop.offenses.size).to eq(1)
@@ -33,10 +33,10 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       end
 
       context 'and all the arguments are unused' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           def some_method(foo, bar)
           end
-        END
+        RUBY
 
         it 'registers offenses and suggests the use of `*`' do
           expect(cop.offenses.size).to eq(2)
@@ -52,11 +52,11 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     end
 
     context 'when a required keyword argument is unused', ruby: 2.1 do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         def self.some_method(foo, bar:)
           puts foo
         end
-      END
+      RUBY
 
       it 'registers an offense but does not suggest underscore-prefix' do
         expect(cop.offenses.size).to eq(1)
@@ -67,11 +67,11 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     end
 
     context 'when an optional keyword argument is unused' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         def self.some_method(foo, bar: 1)
           puts foo
         end
-      END
+      RUBY
 
       it 'registers an offense but does not suggest underscore-prefix' do
         expect(cop.offenses.size).to eq(1)
@@ -94,10 +94,10 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     end
 
     context 'when a singleton method argument is unused' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         def self.some_method(foo)
         end
-      END
+      RUBY
 
       it 'registers an offense' do
         expect(cop.offenses.size).to eq(1)
@@ -107,10 +107,10 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     end
 
     context 'when an underscore-prefixed method argument is unused' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         def some_method(_foo)
         end
-      END
+      RUBY
 
       it 'accepts' do
         expect_no_offenses(<<-RUBY.strip_indent)
@@ -121,11 +121,11 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     end
 
     context 'when a method argument is used' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         def some_method(foo)
           puts foo
         end
-      END
+      RUBY
 
       it 'accepts' do
         expect_no_offenses(<<-RUBY.strip_indent)
@@ -137,11 +137,11 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     end
 
     context 'when a variable is unused' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         def some_method
           foo = 1
         end
-      END
+      RUBY
 
       it 'does not care' do
         expect_no_offenses(<<-RUBY.strip_indent)
@@ -153,10 +153,10 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     end
 
     context 'when a block argument is unused' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         1.times do |foo|
         end
-      END
+      RUBY
 
       it 'does not care' do
         expect_no_offenses(<<-RUBY.strip_indent)
@@ -168,11 +168,11 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
 
     context 'in a method calling `super` without arguments' do
       context 'when a method argument is not used explicitly' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           def some_method(foo)
             super
           end
-        END
+        RUBY
 
         it 'accepts since the arguments are guaranteed to be the same as ' \
            "superclass' ones and the user has no control on them" do
@@ -183,11 +183,11 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
 
     context 'in a method calling `super` with arguments' do
       context 'when a method argument is unused' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           def some_method(foo)
             super(:something)
           end
-        END
+        RUBY
 
         it 'registers an offense' do
           expect(cop.offenses.size).to eq(1)
@@ -198,11 +198,11 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     end
 
     context 'in a method calling `binding` without arguments' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         def some_method(foo, bar)
           do_something binding
         end
-      END
+      RUBY
 
       it 'accepts all arguments' do
         expect_no_offenses(<<-RUBY.strip_indent)
@@ -213,13 +213,13 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       end
 
       context 'inside another method definition' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           def some_method(foo, bar)
             def other(a)
               puts something(binding)
             end
           end
-        END
+        RUBY
 
         it 'registers offenses' do
           expect(cop.offenses.size).to eq 2
@@ -231,11 +231,11 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
 
     context 'in a method calling `binding` with arguments' do
       context 'when a method argument is unused' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           def some_method(foo)
             binding(:something)
           end
-        END
+        RUBY
 
         it 'registers an offense' do
           expect(cop.offenses.size).to eq(1)
@@ -250,15 +250,15 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     let(:corrected_source) { autocorrect_source(cop, source) }
 
     context 'when multiple arguments are unused' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         def some_method(foo, bar)
         end
-      END
+      RUBY
 
-      let(:expected_source) { <<-END }
+      let(:expected_source) { <<-RUBY }
         def some_method(_foo, _bar)
         end
-      END
+      RUBY
 
       it 'adds underscore-prefix to them' do
         expect(corrected_source).to eq(expected_source)
@@ -266,17 +266,17 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     end
 
     context 'when only a part of arguments is unused' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         def some_method(foo, bar)
           puts foo
         end
-      END
+      RUBY
 
-      let(:expected_source) { <<-END }
+      let(:expected_source) { <<-RUBY }
         def some_method(foo, _bar)
           puts foo
         end
-      END
+      RUBY
 
       it 'modifies only the unused one' do
         expect(corrected_source).to eq(expected_source)
@@ -284,19 +284,19 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     end
 
     context 'when there is some whitespace around the argument' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         def some_method(foo,
             bar)
           puts foo
         end
-      END
+      RUBY
 
-      let(:expected_source) { <<-END }
+      let(:expected_source) { <<-RUBY }
         def some_method(foo,
             _bar)
           puts foo
         end
-      END
+      RUBY
 
       it 'preserves the whitespace' do
         expect(corrected_source).to eq(expected_source)
@@ -304,17 +304,17 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     end
 
     context 'when a splat argument is unused' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         def some_method(foo, *bar)
           puts foo
         end
-      END
+      RUBY
 
-      let(:expected_source) { <<-END }
+      let(:expected_source) { <<-RUBY }
         def some_method(foo, *_bar)
           puts foo
         end
-      END
+      RUBY
 
       it 'preserves the splat' do
         expect(corrected_source).to eq(expected_source)
@@ -322,17 +322,17 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     end
 
     context 'when an unused argument has default value' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         def some_method(foo, bar = 1)
           puts foo
         end
-      END
+      RUBY
 
-      let(:expected_source) { <<-END }
+      let(:expected_source) { <<-RUBY }
         def some_method(foo, _bar = 1)
           puts foo
         end
-      END
+      RUBY
 
       it 'preserves the default value' do
         expect(corrected_source).to eq(expected_source)
@@ -340,11 +340,11 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     end
 
     context 'when a keyword argument is unused' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         def some_method(foo, bar: 1)
           puts foo
         end
-      END
+      RUBY
 
       it 'ignores that since modifying the name changes the method interface' do
         expect(corrected_source).to eq(source)
@@ -352,17 +352,17 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     end
 
     context 'when a trailing block argument is unused' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         def some_method(foo, bar, &block)
           foo + bar
         end
-      END
+      RUBY
 
-      let(:expected_source) { <<-END }
+      let(:expected_source) { <<-RUBY }
         def some_method(foo, bar)
           foo + bar
         end
-      END
+      RUBY
 
       it 'removes the unused block arg' do
         expect(corrected_source).to eq(expected_source)
@@ -374,36 +374,36 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     let(:cop_config) { { 'IgnoreEmptyMethods' => true } }
 
     it 'accepts an empty method with a single unused parameter' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def method(arg)
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for a non-empty method with a single unused ' \
         'parameter' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         def method(arg)
           1
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq 1
     end
 
     it 'accepts an empty method with multiple unused parameters' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def method(a, b, *others)
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for a non-empty method with multiple unused ' \
        'parameters' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         def method(a, b, *others)
           1
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq 3
     end
   end

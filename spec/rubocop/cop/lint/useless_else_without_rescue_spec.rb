@@ -9,13 +9,13 @@ describe RuboCop::Cop::Lint::UselessElseWithoutRescue do
 
   context 'with `else` without `rescue`' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         begin
           do_something
         else
           handle_unknown_errors
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -28,7 +28,7 @@ describe RuboCop::Cop::Lint::UselessElseWithoutRescue do
 
   context 'with `else` with `rescue`' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         begin
           do_something
         rescue ArgumentError
@@ -36,7 +36,7 @@ describe RuboCop::Cop::Lint::UselessElseWithoutRescue do
         else
           handle_unknown_errors
         end
-      END
+      RUBY
     end
 
     it 'accepts' do

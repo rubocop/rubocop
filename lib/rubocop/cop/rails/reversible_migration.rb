@@ -131,29 +131,29 @@ module RuboCop
           change change_default remove
         ].freeze
 
-        def_node_matcher :irreversible_schema_statement_call, <<-END
+        def_node_matcher :irreversible_schema_statement_call, <<-PATTERN
           (send nil ${:change_table_comment :execute :remove_belongs_to} ...)
-        END
+        PATTERN
 
-        def_node_matcher :drop_table_call, <<-END
+        def_node_matcher :drop_table_call, <<-PATTERN
           (send nil :drop_table ...)
-        END
+        PATTERN
 
-        def_node_matcher :change_column_default_call, <<-END
+        def_node_matcher :change_column_default_call, <<-PATTERN
           (send nil :change_column_default _ _ $...)
-        END
+        PATTERN
 
-        def_node_matcher :remove_column_call, <<-END
+        def_node_matcher :remove_column_call, <<-PATTERN
           (send nil :remove_column $...)
-        END
+        PATTERN
 
-        def_node_matcher :remove_foreign_key_call, <<-END
+        def_node_matcher :remove_foreign_key_call, <<-PATTERN
           (send nil :remove_foreign_key _ $_)
-        END
+        PATTERN
 
-        def_node_matcher :change_table_call, <<-END
+        def_node_matcher :change_table_call, <<-PATTERN
           (send nil :change_table $_ ...)
-        END
+        PATTERN
 
         def on_send(node)
           return unless within_change_method?(node)

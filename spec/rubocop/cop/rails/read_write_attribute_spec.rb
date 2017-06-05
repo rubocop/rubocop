@@ -69,11 +69,11 @@ describe RuboCop::Cop::Rails::ReadWriteAttribute do
           ')',
           ''
         ]
-        corrected_source = <<-END.strip_indent
+        corrected_source = <<-RUBY.strip_indent
           self[:attr] = (
           'test_' + postfix
           ).to_sym
-        END
+        RUBY
 
         expect(autocorrect_source(cop, source)).to eq(corrected_source)
       end
@@ -109,18 +109,18 @@ describe RuboCop::Cop::Rails::ReadWriteAttribute do
       end
 
       it 'autocorrects multiline' do
-        source = <<-END.strip_indent
+        source = <<-RUBY.strip_indent
           res = read_attribute(
           (
           'test_' + postfix
           ).to_sym
           )
-        END
-        corrected_source = <<-END.strip_indent
+        RUBY
+        corrected_source = <<-RUBY.strip_indent
           res = self[(
           'test_' + postfix
           ).to_sym]
-        END
+        RUBY
 
         expect(autocorrect_source(cop, source)).to eq(corrected_source)
       end

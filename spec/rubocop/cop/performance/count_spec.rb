@@ -67,11 +67,11 @@ describe RuboCop::Cop::Performance::Count do
     end
 
     it "registers an offense for #{selector} with params instead of a block" do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         Data = Struct.new(:value)
         array = [Data.new(2), Data.new(3), Data.new(2)]
         puts array.#{selector}(&:value).count
-      END
+      RUBY
 
       expect(cop.messages)
         .to eq(["Use `count` instead of `#{selector}...count`."])
@@ -88,13 +88,13 @@ describe RuboCop::Cop::Performance::Count do
 
     it "registers an offense for #{selector}(&:something).count " \
        'when called as an instance method on its own class' do
-      source = <<-END.strip_indent
+      source = <<-RUBY.strip_indent
         class A < Array
           def count(&block)
             #{selector}(&block).count
           end
         end
-      END
+      RUBY
       inspect_source(cop, source)
 
       expect(cop.messages)
@@ -177,11 +177,11 @@ describe RuboCop::Cop::Performance::Count do
 
   it 'allows usage of count on an interstitial method with blocks ' \
      'called on select' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       Data = Struct.new(:value)
       array = [Data.new(2), Data.new(3), Data.new(2)]
       array.select(&:value).uniq { |v| v > 2 }.count
-    END
+    RUBY
 
     expect(cop.messages).to be_empty
   end
@@ -232,20 +232,20 @@ describe RuboCop::Cop::Performance::Count do
       end
 
       it 'select...size when select has parameters' do
-        source = <<-END.strip_indent
+        source = <<-RUBY.strip_indent
           Data = Struct.new(:value)
           array = [Data.new(2), Data.new(3), Data.new(2)]
           puts array.select(&:value).size
-        END
+        RUBY
 
         new_source = autocorrect_source(cop, source)
 
         expect(new_source)
-          .to eq(<<-END.strip_indent)
+          .to eq(<<-RUBY.strip_indent)
             Data = Struct.new(:value)
             array = [Data.new(2), Data.new(3), Data.new(2)]
             puts array.count(&:value)
-          END
+          RUBY
       end
     end
 
@@ -278,11 +278,11 @@ describe RuboCop::Cop::Performance::Count do
       end
 
       it 'reject...size when select has parameters' do
-        source = <<-END.strip_indent
+        source = <<-RUBY.strip_indent
           Data = Struct.new(:value)
           array = [Data.new(2), Data.new(3), Data.new(2)]
           puts array.reject(&:value).size
-        END
+        RUBY
 
         new_source = autocorrect_source(cop, source)
 

@@ -137,29 +137,29 @@ describe RuboCop::Cop::Rails::Blank, :config do
     end
 
     it 'accepts normal if present?' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if foo.present?
           something
         end
-      END
+      RUBY
     end
 
     it 'accepts normal unless blank?' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         unless foo.blank?
           something
         end
-      END
+      RUBY
     end
 
     it 'accepts elsif present?' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if bar.present?
           something
         elsif bar.present?
           something_else
         end
-      END
+      RUBY
     end
 
     context 'modifier unless' do
@@ -181,11 +181,11 @@ describe RuboCop::Cop::Rails::Blank, :config do
 
     context 'normal unless present?' do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           unless foo.present?
             something
           end
-        END
+        RUBY
       end
 
       it 'registers an offense' do
@@ -200,23 +200,23 @@ describe RuboCop::Cop::Rails::Blank, :config do
       it 'auto-corrects' do
         new_source = autocorrect_source(cop, source)
 
-        expect(new_source).to eq(<<-END.strip_indent)
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           if foo.blank?
             something
           end
-        END
+        RUBY
       end
     end
 
     context 'unless present? with an else' do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           unless foo.present?
             something
           else
             something_else
           end
-        END
+        RUBY
       end
 
       it 'registers an offense' do
@@ -233,13 +233,13 @@ describe RuboCop::Cop::Rails::Blank, :config do
       it 'auto-corrects' do
         new_source = autocorrect_source(cop, source)
 
-        expect(new_source).to eq(<<-END.strip_indent)
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           if foo.blank?
             something
           else
             something_else
           end
-        END
+        RUBY
       end
     end
   end

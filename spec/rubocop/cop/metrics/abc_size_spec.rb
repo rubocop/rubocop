@@ -7,18 +7,18 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
     let(:cop_config) { { 'Max' => 0 } }
 
     it 'accepts an empty method' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def method_name
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for an if modifier' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         def method_name
           call_foo if some_condition # 0 + 2*2 + 1*1
         end
-      END
+      RUBY
       expect(cop.messages)
         .to eq(['Assignment Branch Condition size for method_name is too ' \
                 'high. [2.24/0]'])
@@ -27,11 +27,11 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
     end
 
     it 'registers an offense for an assignment of a local variable' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         def method_name
           x = 1
         end
-      END
+      RUBY
       expect(cop.messages)
         .to eq(['Assignment Branch Condition size for method_name is too ' \
                 'high. [1/0]'])
@@ -39,11 +39,11 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
     end
 
     it 'registers an offense for an assignment of an element' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         def method_name
           x[0] = 1
         end
-      END
+      RUBY
       expect(cop.messages)
         .to eq(['Assignment Branch Condition size for method_name is too ' \
                 'high. [1.41/0]'])
@@ -52,7 +52,7 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
 
     it 'registers an offense for complex content including A, B, and C ' \
        'scores' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         def method_name
           my_options = Hash.new if 1 == 1 || 2 == 2 # 1, 3, 2
           my_options.each do |key, value|           # 0, 1, 0
@@ -60,7 +60,7 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
             p value                                 # 0, 1, 0
           end
         end
-      END
+      RUBY
       expect(cop.messages)
         .to eq(['Assignment Branch Condition size for method_name is too ' \
                 'high. [6.4/0]']) # sqrt(1*1 + 6*6 + 2*2) => 6.4
@@ -68,12 +68,12 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
 
     context 'target_ruby_version >= 2.3', :ruby23 do
       it 'treats safe navigation method calls like regular method calls' do
-        expect_offense(<<-END.strip_indent) # sqrt(0 + 2*2 + 0) => 2
+        expect_offense(<<-RUBY.strip_indent) # sqrt(0 + 2*2 + 0) => 2
           def method_name
           ^^^ Assignment Branch Condition size for method_name is too high. [2/0]
             object&.do_something
           end
-        END
+        RUBY
       end
     end
   end
@@ -82,12 +82,12 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
     let(:cop_config) { { 'Max' => 2 } }
 
     it 'accepts two assignments' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def method_name
           x = 1
           y = 2
         end
-      END
+      RUBY
     end
   end
 
@@ -95,11 +95,11 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
     let(:cop_config) { { 'Max' => 1.8 } }
 
     it 'accepts a total score of 1.7' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def method_name
           y = 1 if y == 1
         end
-      END
+      RUBY
     end
   end
 

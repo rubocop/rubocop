@@ -6,13 +6,13 @@ describe RuboCop::ProcessedSource do
   subject(:processed_source) { described_class.new(source, ruby_version, path) }
   let(:ruby_version) { RuboCop::Config::KNOWN_RUBIES.last }
 
-  let(:source) { <<-END.strip_indent }
+  let(:source) { <<-RUBY.strip_indent }
     # encoding: utf-8
     def some_method
       puts 'foo'
     end
     some_method
-  END
+  RUBY
 
   let(:path) { 'path/to/file.rb' }
 

@@ -20,17 +20,17 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
   end
 
   it 'accepts `Max` levels of nesting' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if a
         if b
           puts b
         end
       end
-    END
+    RUBY
   end
 
   context '`Max + 1` levels of `if` nesting' do
-    source = <<-END.strip_indent
+    source = <<-RUBY.strip_indent
       if a
         if b
           if c
@@ -38,12 +38,12 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
           end
         end
       end
-    END
+    RUBY
     it_behaves_like 'too deep', source, [3]
   end
 
   context '`Max + 2` levels of `if` nesting' do
-    source = <<-END.strip_indent
+    source = <<-RUBY.strip_indent
       if a
         if b
           if c
@@ -53,12 +53,12 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
           end
         end
       end
-    END
+    RUBY
     it_behaves_like 'too deep', source, [3], 4
   end
 
   context 'Multiple nested `ifs` at same level' do
-    source = <<-END.strip_indent
+    source = <<-RUBY.strip_indent
       if a
         if b
           if c
@@ -71,12 +71,12 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
           end
         end
       end
-    END
+    RUBY
     it_behaves_like 'too deep', source, [3, 8]
   end
 
   context 'nested `case`' do
-    source = <<-END.strip_indent
+    source = <<-RUBY.strip_indent
       if a
         if b
           case c
@@ -85,12 +85,12 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
           end
         end
       end
-    END
+    RUBY
     it_behaves_like 'too deep', source, [3]
   end
 
   context 'nested `while`' do
-    source = <<-END.strip_indent
+    source = <<-RUBY.strip_indent
       if a
         if b
           while c
@@ -98,12 +98,12 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
           end
         end
       end
-    END
+    RUBY
     it_behaves_like 'too deep', source, [3]
   end
 
   context 'nested modifier `while`' do
-    source = <<-END.strip_indent
+    source = <<-RUBY.strip_indent
       if a
         if b
           begin
@@ -111,12 +111,12 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
           end while c
         end
       end
-    END
+    RUBY
     it_behaves_like 'too deep', source, [3]
   end
 
   context 'nested `until`' do
-    source = <<-END.strip_indent
+    source = <<-RUBY.strip_indent
       if a
         if b
           until c
@@ -124,12 +124,12 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
           end
         end
       end
-    END
+    RUBY
     it_behaves_like 'too deep', source, [3]
   end
 
   context 'nested modifier `until`' do
-    source = <<-END.strip_indent
+    source = <<-RUBY.strip_indent
       if a
         if b
           begin
@@ -137,12 +137,12 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
           end until c
         end
       end
-    END
+    RUBY
     it_behaves_like 'too deep', source, [3]
   end
 
   context 'nested `for`' do
-    source = <<-END.strip_indent
+    source = <<-RUBY.strip_indent
       if a
         if b
           for c in [1,2] do
@@ -150,12 +150,12 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
           end
         end
       end
-    END
+    RUBY
     it_behaves_like 'too deep', source, [3]
   end
 
   context 'nested `rescue`' do
-    source = <<-END.strip_indent
+    source = <<-RUBY.strip_indent
       if a
         if b
           begin
@@ -165,25 +165,25 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
           end
         end
       end
-    END
+    RUBY
     it_behaves_like 'too deep', source, [5]
   end
 
   it 'accepts if/elsif' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if a
       elsif b
       elsif c
       elsif d
       end
-    END
+    RUBY
   end
 
   context 'when CountBlocks is false' do
     let(:cop_config) { { 'Max' => 2, 'CountBlocks' => false } }
 
     it 'accepts nested multiline blocks' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if a
           if b
             [1, 2].each do |c|
@@ -191,17 +191,17 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
             end
           end
         end
-      END
+      RUBY
     end
 
     it 'accepts nested inline blocks' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if a
           if b
             [1, 2].each { |c| puts c }
           end
         end
-      END
+      RUBY
     end
   end
 
@@ -209,7 +209,7 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
     let(:cop_config) { { 'Max' => 2, 'CountBlocks' => true } }
 
     context 'nested multiline block' do
-      source = <<-END.strip_indent
+      source = <<-RUBY.strip_indent
         if a
           if b
             [1, 2].each do |c|
@@ -217,18 +217,18 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
             end
           end
         end
-      END
+      RUBY
       it_behaves_like 'too deep', source, [3]
     end
 
     context 'nested inline block' do
-      source = <<-END.strip_indent
+      source = <<-RUBY.strip_indent
         if a
           if b
             [1, 2].each { |c| puts c }
           end
         end
-      END
+      RUBY
       it_behaves_like 'too deep', source, [3]
     end
   end

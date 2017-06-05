@@ -5,10 +5,10 @@ describe RuboCop::Cop::Layout::MultilineArrayBraceLayout, :config do
   let(:cop_config) { { 'EnforcedStyle' => 'symmetrical' } }
 
   it 'ignores implicit arrays' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       foo = a,
       b
-    END
+    RUBY
   end
 
   it 'ignores single-line arrays' do

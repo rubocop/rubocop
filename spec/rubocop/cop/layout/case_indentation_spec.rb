@@ -23,14 +23,14 @@ describe RuboCop::Cop::Layout::CaseIndentation do
 
       context 'regarding assignment where the right hand side is a case' do
         let(:correct_source) do
-          <<-END.strip_indent
+          <<-RUBY.strip_indent
             output = case variable
                      when 'value1'
               'output1'
             else
               'output2'
             end
-          END
+          RUBY
         end
 
         it 'accepts a correctly indented assignment' do
@@ -46,14 +46,14 @@ describe RuboCop::Cop::Layout::CaseIndentation do
 
         context 'an assignment indented as end' do
           let(:source) do
-            <<-END.strip_indent
+            <<-RUBY.strip_indent
               output = case variable
               when 'value1'
                 'output1'
               else
                 'output2'
               end
-            END
+            RUBY
           end
 
           it 'registers an offense' do
@@ -71,25 +71,25 @@ describe RuboCop::Cop::Layout::CaseIndentation do
 
         context 'an assignment indented some other way' do
           let(:source) do
-            <<-END.strip_indent
+            <<-RUBY.strip_indent
               output = case variable
                 when 'value1'
                   'output1'
                 else
                   'output2'
               end
-            END
+            RUBY
           end
 
           let(:correct_source) do
-            <<-END.strip_indent
+            <<-RUBY.strip_indent
               output = case variable
                        when 'value1'
                   'output1'
                 else
                   'output2'
               end
-            END
+            RUBY
           end
 
           it 'registers an offense' do
@@ -106,7 +106,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
 
         context 'correct + opposite' do
           let(:source) do
-            <<-END.strip_indent
+            <<-RUBY.strip_indent
               output = case variable
                        when 'value1'
                          'output1'
@@ -119,11 +119,11 @@ describe RuboCop::Cop::Layout::CaseIndentation do
               else
                 'output2'
               end
-            END
+            RUBY
           end
 
           let(:correct_source) do
-            <<-END.strip_indent
+            <<-RUBY.strip_indent
               output = case variable
                        when 'value1'
                          'output1'
@@ -136,7 +136,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
               else
                 'output2'
               end
-            END
+            RUBY
           end
 
           it 'registers an offense' do
@@ -154,7 +154,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
 
       context "a when clause that's deeper than case" do
         let(:source) do
-          <<-END.strip_indent
+          <<-RUBY.strip_indent
             case a
                 when 0 then return
                 else
@@ -162,7 +162,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
                      when 1 then return
                     end
             end
-          END
+          RUBY
         end
 
         it 'registers an offense' do
@@ -181,7 +181,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
 
         it 'does auto-correction' do
           corrected = autocorrect_source(cop, source)
-          expect(corrected).to eq(<<-END.strip_indent)
+          expect(corrected).to eq(<<-RUBY.strip_indent)
             case a
             when 0 then return
                 else
@@ -189,7 +189,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
                     when 1 then return
                     end
             end
-          END
+          RUBY
         end
       end
 
@@ -279,25 +279,25 @@ describe RuboCop::Cop::Layout::CaseIndentation do
 
         context 'an assignment indented some other way' do
           let(:source) do
-            <<-END.strip_indent
+            <<-RUBY.strip_indent
               output = case variable
                        when 'value1'
                          'output1'
                        else
                          'output2'
                        end
-            END
+            RUBY
           end
 
           let(:correct_source) do
-            <<-END.strip_indent
+            <<-RUBY.strip_indent
               output = case variable
                          when 'value1'
                          'output1'
                        else
                          'output2'
                        end
-            END
+            RUBY
           end
 
           it 'registers an offense' do
@@ -333,7 +333,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
 
       context "a when clause that's equally indented with case" do
         let(:source) do
-          <<-END.strip_indent
+          <<-RUBY.strip_indent
             y = case a
                 when 0 then break
                 when 0 then return
@@ -345,7 +345,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
             case c
             when 2 then encoding
             end
-          END
+          RUBY
         end
 
         it 'registers an offense' do
@@ -371,7 +371,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
 
         it 'does auto-correction' do
           corrected = autocorrect_source(cop, source)
-          expect(corrected).to eq(<<-END.strip_indent)
+          expect(corrected).to eq(<<-RUBY.strip_indent)
             y = case a
                   when 0 then break
                   when 0 then return
@@ -383,7 +383,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
             case c
               when 2 then encoding
             end
-          END
+          RUBY
         end
       end
 
@@ -436,25 +436,25 @@ describe RuboCop::Cop::Layout::CaseIndentation do
 
         context 'an assignment indented some other way' do
           let(:source) do
-            <<-END.strip_indent
+            <<-RUBY.strip_indent
               output = case variable
                 when 'value1'
                   'output1'
                 else
                   'output2'
               end
-            END
+            RUBY
           end
 
           let(:correct_source) do
-            <<-END.strip_indent
+            <<-RUBY.strip_indent
               output = case variable
               when 'value1'
                   'output1'
                 else
                   'output2'
               end
-            END
+            RUBY
           end
 
           it 'registers an offense' do
@@ -502,25 +502,25 @@ describe RuboCop::Cop::Layout::CaseIndentation do
 
         context 'an assignment indented as case' do
           let(:source) do
-            <<-END.strip_indent
+            <<-RUBY.strip_indent
               output = case variable
                        when 'value1'
                          'output1'
                        else
                          'output2'
                        end
-            END
+            RUBY
           end
 
           let(:correct_source) do
-            <<-END.strip_indent
+            <<-RUBY.strip_indent
               output = case variable
                          when 'value1'
                          'output1'
                        else
                          'output2'
                        end
-            END
+            RUBY
           end
 
           it 'registers an offense' do
@@ -539,25 +539,25 @@ describe RuboCop::Cop::Layout::CaseIndentation do
 
         context 'an assignment indented some other way' do
           let(:source) do
-            <<-END.strip_indent
+            <<-RUBY.strip_indent
               output = case variable
                      when 'value1'
                        'output1'
                      else
                        'output2'
                      end
-            END
+            RUBY
           end
 
           let(:correct_source) do
-            <<-END.strip_indent
+            <<-RUBY.strip_indent
               output = case variable
                        when 'value1'
                        'output1'
                      else
                        'output2'
                      end
-            END
+            RUBY
           end
 
           it 'registers an offense' do
@@ -579,10 +579,10 @@ describe RuboCop::Cop::Layout::CaseIndentation do
   context 'when case is preceded by something else than whitespace' do
     let(:cop_config) { {} }
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         case test when something
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do

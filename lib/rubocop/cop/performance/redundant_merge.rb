@@ -15,9 +15,9 @@ module RuboCop
         MSG = 'Use `%s` instead of `%s`.'.freeze
 
         def_node_matcher :redundant_merge, '(send $_ :merge! (hash $...))'
-        def_node_matcher :modifier_flow_control?, <<-END
+        def_node_matcher :modifier_flow_control?, <<-PATTERN
           [{if while until} modifier_form?]
-        END
+        PATTERN
 
         def on_send(node)
           each_redundant_merge(node) do |receiver, pairs|
@@ -141,9 +141,9 @@ module RuboCop
             receiver
           end
 
-          def_node_matcher :each_with_object_node, <<-END
+          def_node_matcher :each_with_object_node, <<-PATTERN
             (block (send _ :each_with_object _) (args _ $_) ...)
-          END
+          PATTERN
         end
       end
     end

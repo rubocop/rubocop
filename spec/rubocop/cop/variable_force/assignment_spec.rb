@@ -8,7 +8,7 @@ describe RuboCop::Cop::VariableForce::Assignment do
   end
 
   let(:source) do
-    <<-END
+    <<-RUBY
       class SomeClass
         def some_method(flag)
           puts 'Hello World!'
@@ -18,7 +18,7 @@ describe RuboCop::Cop::VariableForce::Assignment do
           end
         end
       end
-    END
+    RUBY
   end
 
   let(:def_node) { ast.each_node.find(&:def_type?) }
@@ -68,11 +68,11 @@ describe RuboCop::Cop::VariableForce::Assignment do
   describe '#meta_assignment_node' do
     context 'when it is += operator assignment' do
       let(:source) do
-        <<-END
+        <<-RUBY
           def some_method
             foo += 1
           end
-        END
+        RUBY
       end
 
       it 'returns op_asgn node' do
@@ -82,11 +82,11 @@ describe RuboCop::Cop::VariableForce::Assignment do
 
     context 'when it is ||= operator assignment' do
       let(:source) do
-        <<-END
+        <<-RUBY
           def some_method
             foo ||= 1
           end
-        END
+        RUBY
       end
 
       it 'returns or_asgn node' do
@@ -96,11 +96,11 @@ describe RuboCop::Cop::VariableForce::Assignment do
 
     context 'when it is &&= operator assignment' do
       let(:source) do
-        <<-END
+        <<-RUBY
           def some_method
             foo &&= 1
           end
-        END
+        RUBY
       end
 
       it 'returns and_asgn node' do
@@ -110,11 +110,11 @@ describe RuboCop::Cop::VariableForce::Assignment do
 
     context 'when it is multiple assignment' do
       let(:source) do
-        <<-END
+        <<-RUBY
           def some_method
             foo, bar = [1, 2]
           end
-        END
+        RUBY
       end
 
       it 'returns masgn node' do
@@ -126,11 +126,11 @@ describe RuboCop::Cop::VariableForce::Assignment do
   describe '#operator' do
     context 'when it is normal assignment' do
       let(:source) do
-        <<-END
+        <<-RUBY
           def some_method
             foo = 1
           end
-        END
+        RUBY
       end
 
       it 'returns =' do
@@ -140,11 +140,11 @@ describe RuboCop::Cop::VariableForce::Assignment do
 
     context 'when it is += operator assignment' do
       let(:source) do
-        <<-END
+        <<-RUBY
           def some_method
             foo += 1
           end
-        END
+        RUBY
       end
 
       it 'returns +=' do
@@ -154,11 +154,11 @@ describe RuboCop::Cop::VariableForce::Assignment do
 
     context 'when it is ||= operator assignment' do
       let(:source) do
-        <<-END
+        <<-RUBY
           def some_method
             foo ||= 1
           end
-        END
+        RUBY
       end
 
       it 'returns ||=' do
@@ -168,11 +168,11 @@ describe RuboCop::Cop::VariableForce::Assignment do
 
     context 'when it is &&= operator assignment' do
       let(:source) do
-        <<-END
+        <<-RUBY
           def some_method
             foo &&= 1
           end
-        END
+        RUBY
       end
 
       it 'returns &&=' do
@@ -182,11 +182,11 @@ describe RuboCop::Cop::VariableForce::Assignment do
 
     context 'when it is multiple assignment' do
       let(:source) do
-        <<-END
+        <<-RUBY
           def some_method
             foo, bar = [1, 2]
           end
-        END
+        RUBY
       end
 
       it 'returns =' do

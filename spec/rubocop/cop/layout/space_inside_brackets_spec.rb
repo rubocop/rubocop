@@ -4,30 +4,30 @@ describe RuboCop::Cop::Layout::SpaceInsideBrackets do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for an array literal with spaces inside' do
-    expect_offense(<<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       a = [1, 2 ]
                ^ Space inside square brackets detected.
       b = [ 1, 2]
            ^ Space inside square brackets detected.
-    END
+    RUBY
   end
 
   it 'registers an offense for Hash#[] with symbol key and spaces inside' do
-    expect_offense(<<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       a[ :key]
         ^ Space inside square brackets detected.
       b[:key ]
             ^ Space inside square brackets detected.
-    END
+    RUBY
   end
 
   it 'registers an offense for Hash#[] with string key and spaces inside' do
-    expect_offense(<<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       a[\'key\' ]
              ^ Space inside square brackets detected.
       b[ \'key\']
         ^ Space inside square brackets detected.
-    END
+    RUBY
   end
 
   it 'accepts space inside strings within square brackets' do
@@ -72,21 +72,21 @@ describe RuboCop::Cop::Layout::SpaceInsideBrackets do
   end
 
   it 'auto-corrects unwanted space' do
-    new_source = autocorrect_source(cop, <<-END.strip_indent)
+    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
       a = [1, 2 ]
       b = [ 1, 2]
       c[ :key]
       d[:key ]
       e["key" ]
       f[ "key"]
-    END
-    expect(new_source).to eq(<<-END.strip_indent)
+    RUBY
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       a = [1, 2]
       b = [1, 2]
       c[:key]
       d[:key]
       e["key"]
       f["key"]
-    END
+    RUBY
   end
 end

@@ -43,7 +43,7 @@ describe RuboCop::Cop::Style::IfInsideElse do
   end
 
   it "isn't offended if there is a statement following the if node" do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if a
         blah
       else
@@ -52,11 +52,11 @@ describe RuboCop::Cop::Style::IfInsideElse do
         end
         bar
       end
-    END
+    RUBY
   end
 
   it "isn't offended if there is a statement preceding the if node" do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if a
         blah
       else
@@ -65,11 +65,11 @@ describe RuboCop::Cop::Style::IfInsideElse do
           foo
         end
       end
-    END
+    RUBY
   end
 
   it "isn't offended by if..elsif..else" do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if a
         blah
       elsif b
@@ -77,11 +77,11 @@ describe RuboCop::Cop::Style::IfInsideElse do
       else
         blah
       end
-    END
+    RUBY
   end
 
   it 'ignores unless inside else' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if a
         blah
       else
@@ -89,17 +89,17 @@ describe RuboCop::Cop::Style::IfInsideElse do
           foo
         end
       end
-    END
+    RUBY
   end
 
   it 'ignores if inside unless' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       unless a
         if b
           foo
         end
       end
-    END
+    RUBY
   end
 
   it 'ignores nested ternary expressions' do
@@ -107,12 +107,12 @@ describe RuboCop::Cop::Style::IfInsideElse do
   end
 
   it 'ignores ternary inside if..else' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if a
         blah
       else
         a ? b : c
       end
-    END
+    RUBY
   end
 end

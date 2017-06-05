@@ -20,10 +20,10 @@ module RuboCop
                           'message 2')
 
           formatter.file_finished('test', cop.offenses)
-          expect(output.string).to eq <<-END.strip_indent
+          expect(output.string).to eq <<-OUTPUT.strip_indent
             test:1:1: C: message 1
             test:3:6: C: message 2
-          END
+          OUTPUT
         end
 
         context 'when the offense is automatically corrected' do

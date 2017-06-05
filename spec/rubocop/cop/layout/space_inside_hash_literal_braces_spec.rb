@@ -45,10 +45,10 @@ describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
   end
 
   it 'registers an offense for hashes with no spaces if so configured' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       h = {a: 1, b: 2}
       h = {a => 1}
-    END
+    RUBY
     expect(cop.messages).to eq(['Space inside { missing.',
                                 'Space inside } missing.',
                                 'Space inside { missing.',
@@ -65,14 +65,14 @@ describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
   end
 
   it 'auto-corrects missing space' do
-    new_source = autocorrect_source(cop, <<-END.strip_indent)
+    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
       h = {a: 1, b: 2}
       h = {a => 1 }
-    END
-    expect(new_source).to eq(<<-END.strip_indent)
+    RUBY
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       h = { a: 1, b: 2 }
       h = { a => 1 }
-    END
+    RUBY
   end
 
   context 'when EnforcedStyle is no_space' do
@@ -95,39 +95,39 @@ describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
     end
 
     it 'auto-corrects unwanted space' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         h = { a: 1, b: 2 }
         h = {a => 1 }
-      END
-      expect(new_source).to eq(<<-END.strip_indent)
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         h = {a: 1, b: 2}
         h = {a => 1}
-      END
+      RUBY
     end
 
     it 'accepts hashes with no spaces' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         h = {a: 1, b: 2}
         h = {a => 1}
-      END
+      RUBY
     end
 
     it 'accepts multiline hash' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         h = {
               a: 1,
               b: 2,
         }
-      END
+      RUBY
     end
 
     it 'accepts multiline hash with comment' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         h = { # Comment
               a: 1,
               b: 2,
         }
-      END
+      RUBY
     end
   end
 
@@ -155,25 +155,25 @@ describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
     end
 
     it 'auto-corrects hashes with no space' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         h = {a: 1, b: 2}
         h = {a => 1 }
-      END
-      expect(new_source).to eq(<<-END.strip_indent)
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         h = { a: 1, b: 2 }
         h = { a => 1 }
-      END
+      RUBY
     end
 
     it 'auto-corrects nested hashes with spaces' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         h = { a: { a: 1, b: 2 } }
         h = {a => method { 1 } }
-      END
-      expect(new_source).to eq(<<-END.strip_indent)
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         h = { a: { a: 1, b: 2 }}
         h = { a => method { 1 }}
-      END
+      RUBY
     end
 
     it 'registers offenses for hashes with no spaces' do
@@ -188,29 +188,29 @@ describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
     end
 
     it 'accepts multiline hash' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         h = {
               a: 1,
               b: 2,
         }
-      END
+      RUBY
     end
 
     it 'accepts multiline hash with comment' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         h = { # Comment
               a: 1,
               b: 2,
         }
-      END
+      RUBY
     end
   end
 
   it 'accepts hashes with spaces by default' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       h = { a: 1, b: 2 }
       h = { a => 1 }
-    END
+    RUBY
   end
 
   it 'accepts hash literals with no braces' do

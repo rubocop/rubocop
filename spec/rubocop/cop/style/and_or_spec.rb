@@ -95,27 +95,27 @@ describe RuboCop::Cop::Style::AndOr, :config do
     end
 
     it 'auto-corrects "or" with ||' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         x = 12345
         true or false
-      END
-      expect(new_source).to eq(<<-END.strip_indent)
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         x = 12345
         true || false
-      END
+      RUBY
     end
 
     it 'auto-corrects "or" with || inside def' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         def z(a, b)
           return true if a or b
         end
-      END
-      expect(new_source).to eq(<<-END.strip_indent)
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         def z(a, b)
           return true if a || b
         end
-      END
+      RUBY
     end
 
     it 'autocorrects "or" with an assignment on the left' do
@@ -354,69 +354,69 @@ describe RuboCop::Cop::Style::AndOr, :config do
     context 'within a nested begin node' do
       # regression test; see GH issue 2531
       it 'autocorrects "and" with && and adds parens' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           def x
           end
 
           def y
             a = b and a.c
           end
-        END
-        expect(new_source).to eq(<<-END.strip_indent)
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           def x
           end
 
           def y
             (a = b) && a.c
           end
-        END
+        RUBY
       end
     end
 
     context 'when left hand side is a comparison method' do
       # Regression: https://github.com/bbatsov/rubocop/issues/4451
       it 'autocorrects "and" with && and adds parens' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           foo == bar and baz
-        END
-        expect(new_source).to eq(<<-END.strip_indent)
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           (foo == bar) && baz
-        END
+        RUBY
       end
     end
 
     context 'within a nested begin node with one child only' do
       # regression test; see GH issue 2531
       it 'autocorrects "and" with && and adds parens' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           (def y
             a = b and a.c
           end)
-        END
-        expect(new_source).to eq(<<-END.strip_indent)
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           (def y
             (a = b) && a.c
           end)
-        END
+        RUBY
       end
     end
 
     context 'with a file which contains __FILE__' do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           APP_ROOT = Pathname.new File.expand_path('../../', __FILE__)
           system('bundle check') or system!('bundle install')
-        END
+        RUBY
       end
 
       # regression test; see GH issue 2609
       it 'autocorrects "or" with ||' do
         new_source = autocorrect_source(cop, source)
         expect(new_source).to eq(
-          <<-END.strip_indent
+          <<-RUBY.strip_indent
             APP_ROOT = Pathname.new File.expand_path('../../', __FILE__)
             system('bundle check') || system!('bundle install')
-          END
+          RUBY
         )
       end
     end

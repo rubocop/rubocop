@@ -51,25 +51,25 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
 
   context 'on if..elsif with no else' do
     it "doesn't register an offense" do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if something
           do_x
         elsif something_else
           do_x
         end
-      END
+      RUBY
     end
   end
 
   context 'on if..else with slightly different trailing lines' do
     it "doesn't register an offense" do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if something
           do_x(1)
         else
           do_x(2)
         end
-      END
+      RUBY
     end
   end
 
@@ -94,7 +94,7 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
   # Regression: https://github.com/bbatsov/rubocop/issues/3868
   context 'when one of the case branches is empty' do
     it 'does not register an offense' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         case value
         when cond1
         else
@@ -102,7 +102,7 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
           else
           end
         end
-      END
+      RUBY
     end
   end
 
@@ -150,31 +150,31 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
 
   context 'on case without else' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         case something
         when :a
           do_x
         when :b
           do_x
         end
-      END
+      RUBY
     end
 
     it "doesn't register an offense" do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         case something
         when :a
           do_x
         when :b
           do_x
         end
-      END
+      RUBY
     end
   end
 
   context 'on case with empty when' do
     it "doesn't register an offense" do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         case something
         when :a
           do_x
@@ -184,7 +184,7 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
           do_x
           do_z
         end
-      END
+      RUBY
     end
   end
 end

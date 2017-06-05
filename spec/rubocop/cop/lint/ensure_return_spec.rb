@@ -16,24 +16,24 @@ describe RuboCop::Cop::Lint::EnsureReturn do
   end
 
   it 'does not register an offense for return outside ensure' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       begin
         something
         return
       ensure
         file.close
       end
-    END
+    RUBY
   end
 
   it 'does not check when ensure block has no body' do
     expect do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         begin
           something
         ensure
         end
-      END
+      RUBY
     end.not_to raise_exception
   end
 end

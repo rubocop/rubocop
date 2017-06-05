@@ -15,10 +15,10 @@ describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     let(:enforced_style) { 'new_line' }
 
     it 'registers an offense when the rhs is on the same line' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         blarg = if true
         end
-      END
+      RUBY
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.line).to eq(1)
@@ -27,33 +27,33 @@ describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     end
 
     it 'auto-corrects offenses' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         blarg = if true
         end
-      END
+      RUBY
 
-      expect(new_source).to eq(<<-END.strip_indent)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         blarg =
          if true
         end
-      END
+      RUBY
     end
 
     it 'ignores arrays' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         a, b = 4,
         5
-      END
+      RUBY
     end
 
     context 'configured supported types' do
       let(:supported_types) { %w[array] }
 
       it 'allows supported types to be configured' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           a, b = 4,
           5
-        END
+        RUBY
 
         expect(cop.offenses.size).to eq(1)
         expect(cop.offenses.first.line).to eq(1)
@@ -63,19 +63,19 @@ describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     end
 
     it 'allows multi-line assignments on separate lines' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         blarg=
         if true
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for masgn with multi-line lhs' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         a,
         b = if foo
         end
-      END
+      RUBY
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.line).to eq(1)
@@ -88,11 +88,11 @@ describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     let(:enforced_style) { 'same_line' }
 
     it 'registers an offense when the rhs is a different line' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         blarg =
         if true
         end
-      END
+      RUBY
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.line).to eq(1)
@@ -101,35 +101,35 @@ describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     end
 
     it 'auto-corrects offenses' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         blarg =
         if true
         end
-      END
+      RUBY
 
-      expect(new_source).to eq(<<-END.strip_indent)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         blarg = if true
         end
-      END
+      RUBY
     end
 
     it 'ignores arrays' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         a, b =
         4,
         5
-      END
+      RUBY
     end
 
     context 'configured supported types' do
       let(:supported_types) { %w[array] }
 
       it 'allows supported types to be configured' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           a, b =
           4,
           5
-        END
+        RUBY
 
         expect(cop.offenses.size).to eq(1)
         expect(cop.offenses.first.line).to eq(1)
@@ -139,19 +139,19 @@ describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     end
 
     it 'allows multi-line assignments on the same line' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         blarg= if true
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for masgn with multi-line lhs' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         a,
         b =
         if foo
         end
-      END
+      RUBY
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.line).to eq(1)

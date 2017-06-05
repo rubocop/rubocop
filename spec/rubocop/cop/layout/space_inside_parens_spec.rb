@@ -4,12 +4,12 @@ describe RuboCop::Cop::Layout::SpaceInsideParens do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for spaces inside parens' do
-    expect_offense(<<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       f( 3)
         ^ Space inside parentheses detected.
       g = (a + 3 )
                 ^ Space inside parentheses detected.
-    END
+    RUBY
   end
 
   it 'accepts parentheses in block parameter list' do
@@ -38,13 +38,13 @@ describe RuboCop::Cop::Layout::SpaceInsideParens do
   end
 
   it 'auto-corrects unwanted space' do
-    new_source = autocorrect_source(cop, <<-END.strip_indent)
+    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
       f( 3)
       g = ( a + 3 )
-    END
-    expect(new_source).to eq(<<-END.strip_indent)
+    RUBY
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       f(3)
       g = (a + 3)
-    END
+    RUBY
   end
 end

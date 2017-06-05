@@ -104,7 +104,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords do
     end
   CORRECTION
 
-  include_examples :accepts, 'no empty line', <<-END
+  include_examples :accepts, 'no empty line', <<-RUBY
     begin
       f1
     rescue
@@ -114,28 +114,28 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords do
     ensure
       f4
     end
-  END
+  RUBY
 
-  include_examples :accepts, 'empty lines around begin body', <<-END
+  include_examples :accepts, 'empty lines around begin body', <<-RUBY
     begin
 
       f1
 
     end
-  END
+  RUBY
 
-  include_examples :accepts, 'empty begin', <<-END
+  include_examples :accepts, 'empty begin', <<-RUBY
     begin
     end
-  END
+  RUBY
 
-  include_examples :accepts, 'empty method definition', <<-END
+  include_examples :accepts, 'empty method definition', <<-RUBY
     def foo
     end
-  END
+  RUBY
 
   context 'with complex begin-end' do
-    let(:source) { <<-END.strip_indent }
+    let(:source) { <<-RUBY.strip_indent }
       begin
 
         do_something1
@@ -161,9 +161,9 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords do
         do_something4
 
       end
-    END
+    RUBY
 
-    let(:correction) { <<-END.strip_indent }
+    let(:correction) { <<-RUBY.strip_indent }
       begin
 
         do_something1
@@ -179,7 +179,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords do
         do_something4
 
       end
-    END
+    RUBY
 
     it 'registers many offenses' do
       inspect_source(cop, source)
@@ -193,7 +193,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords do
   end
 
   context 'with complex method definition' do
-    let(:source) { <<-END.strip_indent }
+    let(:source) { <<-RUBY.strip_indent }
       def foo
 
         do_something1
@@ -219,9 +219,9 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords do
         do_something4
 
       end
-    END
+    RUBY
 
-    let(:correction) { <<-END.strip_indent }
+    let(:correction) { <<-RUBY.strip_indent }
       def foo
 
         do_something1
@@ -237,7 +237,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords do
         do_something4
 
       end
-    END
+    RUBY
 
     it 'registers many offenses' do
       inspect_source(cop, source)

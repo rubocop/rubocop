@@ -133,10 +133,10 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
 
   it 'accepts a heredoc string that contains %q' do
     expect_no_offenses(<<-RUBY.strip_indent)
-        s = <<END
+        s = <<CODE
       %q('hi') # line 1
       %q("hi")
-      END
+      CODE
     RUBY
   end
 

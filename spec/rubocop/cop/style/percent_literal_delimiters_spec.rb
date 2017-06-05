@@ -261,7 +261,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'fixes a string array in a scope' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         module Foo
            class Bar
              def baz
@@ -269,8 +269,8 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
              end
            end
          end
-      END
-      expect(new_source).to eq(<<-END.strip_indent)
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         module Foo
            class Bar
              def baz
@@ -278,7 +278,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
              end
            end
          end
-      END
+      RUBY
     end
 
     it 'fixes a regular expression' do
@@ -306,50 +306,50 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'preserves line breaks when fixing a multiline array' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         %w(
         some
         words
         )
-      END
-      expect(new_source).to eq(<<-END.strip_indent)
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         %w[
         some
         words
         ]
-      END
+      RUBY
     end
 
     it 'preserves indentation when correcting a multiline array' do
-      original_source = <<-END.strip_margin('|')
+      original_source = <<-RUBY.strip_margin('|')
         |  array = %w(
         |    first
         |    second
         |  )
-      END
-      corrected_source = <<-END.strip_margin('|')
+      RUBY
+      corrected_source = <<-RUBY.strip_margin('|')
         |  array = %w[
         |    first
         |    second
         |  ]
-      END
+      RUBY
       new_source = autocorrect_source(cop, original_source)
       expect(new_source).to eq(corrected_source)
     end
 
     it 'preserves irregular indentation when correcting a multiline array' do
-      original_source = <<-END.strip_indent
+      original_source = <<-RUBY.strip_indent
           array = %w(
             first
           second
         )
-      END
-      corrected_source = <<-END.strip_indent
+      RUBY
+      corrected_source = <<-RUBY.strip_indent
           array = %w[
             first
           second
         ]
-      END
+      RUBY
       new_source = autocorrect_source(cop, original_source)
       expect(new_source).to eq(corrected_source)
     end

@@ -39,7 +39,7 @@ describe RuboCop::Cop::Layout::EmptyLines do
   end
 
   it 'does not register an offense for heredocs with empty lines inside' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       str = <<-TEXT
       line 1
 
@@ -47,6 +47,6 @@ describe RuboCop::Cop::Layout::EmptyLines do
       line 2
       TEXT
       puts str
-    END
+    RUBY
   end
 end

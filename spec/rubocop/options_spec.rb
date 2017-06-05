@@ -32,7 +32,7 @@ describe RuboCop::Options, :isolated_environment do
         rescue SystemExit # rubocop:disable Lint/HandleExceptions
         end
 
-        expected_help = <<-END.strip_indent
+        expected_help = <<-OUTPUT.strip_indent
           Usage: rubocop [options] [file1, file2, ...]
               -L, --list-target-files          List all files RuboCop will inspect.
                   --except [COP1,COP2,...]     Disable the given cop(s).
@@ -98,7 +98,7 @@ describe RuboCop::Options, :isolated_environment do
                                                parallel.
               -s, --stdin FILE                 Pipe source from STDIN, using FILE in offense
                                                reports. This is useful for editor integration.
-        END
+        OUTPUT
 
         expect($stdout.string).to eq(expected_help)
       end

@@ -32,12 +32,12 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
 
     it 'accepts rescue clause' do
       # The list of rescued classes is an array.
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         begin
           do_something
         rescue RuntimeError
         end
-      END
+      RUBY
     end
 
     it 'accepts Hash literal without trailing comma' do
@@ -109,31 +109,31 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
       end
 
       it 'accepts an Array literal with no trailing comma' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           VALUES = [ 1001,
                      2020,
                      3333 ]
-        END
+        RUBY
       end
 
       it 'accepts a Hash literal with no trailing comma' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           MAP = {
                   a: 1001,
                   b: 2020,
                   c: 3333
                 }
-        END
+        RUBY
       end
 
       it 'accepts comma inside a heredoc parameters at the end' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           route(help: {
             'auth' => <<-HELP.chomp
           ,
           HELP
           })
-        END
+        RUBY
       end
 
       it 'accepts comma in comment after last value item' do
@@ -146,35 +146,35 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
       end
 
       it 'auto-corrects unwanted comma in an Array literal' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           VALUES = [
                      1001,
                      2020,
                      3333,
                    ]
-        END
-        expect(new_source).to eq(<<-END.strip_indent)
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           VALUES = [
                      1001,
                      2020,
                      3333
                    ]
-        END
+        RUBY
       end
 
       it 'auto-corrects unwanted comma in a Hash literal' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           MAP = { a: 1001,
                   b: 2020,
                   c: 3333,
                 }
-        END
-        expect(new_source).to eq(<<-END.strip_indent)
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           MAP = { a: 1001,
                   b: 2020,
                   c: 3333
                 }
-        END
+        RUBY
       end
     end
 
@@ -183,41 +183,41 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
 
       context 'when closing bracket is on same line as last value' do
         it 'accepts Array literal with no trailing comma' do
-          expect_no_offenses(<<-END.strip_indent)
+          expect_no_offenses(<<-RUBY.strip_indent)
             VALUES = [
                        1001,
                        2020,
                        3333]
-          END
+          RUBY
         end
 
         it 'accepts a Hash literal with no trailing comma' do
-          expect_no_offenses(<<-END.strip_indent)
+          expect_no_offenses(<<-RUBY.strip_indent)
             VALUES = {
                        a: "b",
                        c: "d",
                        e: "f"}
-          END
+          RUBY
         end
       end
 
       it 'accepts Array literal with two of the values on the same line' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           VALUES = [
                      1001, 2020,
                      3333
                    ]
-        END
+        RUBY
       end
 
       it 'registers an offense for an Array literal with two of the values ' \
          'on the same line and a trailing comma' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           VALUES = [
                      1001, 2020,
                      3333,
                    ]
-        END
+        RUBY
         expect(cop.messages)
           .to eq(['Avoid comma after the last item of an array, unless each ' \
                   'item is on its own line.'])
@@ -244,44 +244,44 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
       end
 
       it 'accepts trailing comma in an Array literal' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           VALUES = [1001,
                     2020,
                     3333,
                    ]
-        END
+        RUBY
       end
 
       it 'accepts trailing comma in a Hash literal' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           MAP = {
                   a: 1001,
                   b: 2020,
                   c: 3333,
                 }
-        END
+        RUBY
       end
 
       it 'accepts a multiline word array' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           ingredients = %w(
             sausage
             anchovies
             olives
           )
-        END
+        RUBY
       end
 
       it 'accepts missing comma after a heredoc' do
         # A heredoc that's the last item in a literal or parameter list can not
         # have a trailing comma. It's a syntax error.
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           route(help: {
             'auth' => <<-HELP.chomp
           ...
           HELP
           })
-        END
+        RUBY
       end
 
       it 'accepts an empty hash being passed as a method argument' do
@@ -293,49 +293,49 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
 
       it 'auto-corrects an Array literal with two of the values on the same' \
          ' line and a trailing comma' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           VALUES = [
                      1001, 2020,
                      3333
                    ]
-        END
-        expect(new_source).to eq(<<-END.strip_indent)
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           VALUES = [
                      1001, 2020,
                      3333
                    ]
-        END
+        RUBY
       end
 
       it 'auto-corrects missing comma in a Hash literal' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           MAP = { a: 1001,
                   b: 2020,
                   c: 3333
           }
-        END
-        expect(new_source).to eq(<<-END.strip_indent)
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           MAP = { a: 1001,
                   b: 2020,
                   c: 3333,
           }
-        END
+        RUBY
       end
 
       it 'accepts a multiline array with a single item and trailing comma' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           foo = [
             1,
           ]
-        END
+        RUBY
       end
 
       it 'accepts a multiline hash with a single pair and trailing comma' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           bar = {
             a: 123,
           }
-        END
+        RUBY
       end
     end
 
@@ -344,56 +344,56 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
 
       context 'when closing bracket is on same line as last value' do
         it 'registers an offense for an Array literal with no trailing comma' do
-          expect_offense(<<-END.strip_indent)
+          expect_offense(<<-RUBY.strip_indent)
             VALUES = [
                        1001,
                        2020,
                        3333]
                        ^^^^ Put a comma after the last item of a multiline array.
-          END
+          RUBY
         end
 
         it 'registers an offense for a Hash literal with no trailing comma' do
-          expect_offense(<<-END.strip_indent)
+          expect_offense(<<-RUBY.strip_indent)
             VALUES = {
                        a: "b",
                        b: "c",
                        d: "e"}
                        ^^^^^^ Put a comma after the last item of a multiline hash.
-          END
+          RUBY
         end
 
         it 'auto-corrects a missing comma in a Hash literal' do
-          new_source = autocorrect_source(cop, <<-END.strip_indent)
+          new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
             MAP = { a: 1001,
                     b: 2020,
                     c: 3333}
-          END
-          expect(new_source).to eq(<<-END.strip_indent)
+          RUBY
+          expect(new_source).to eq(<<-RUBY.strip_indent)
             MAP = { a: 1001,
                     b: 2020,
                     c: 3333,}
-          END
+          RUBY
         end
       end
 
       it 'accepts Array literal with two of the values on the same line' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           VALUES = [
                      1001, 2020,
                      3333,
                    ]
-        END
+        RUBY
       end
 
       it 'registers an offense for an Array literal with two of the values ' \
          'on the same line and no trailing comma' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           VALUES = [
                      1001, 2020,
                      3333
                    ]
-        END
+        RUBY
         expect(cop.messages)
           .to eq(['Put a comma after the last item of a multiline array.'])
       end
@@ -409,110 +409,110 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
       end
 
       it 'accepts trailing comma in an Array literal' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           VALUES = [1001,
                     2020,
                     3333,
                    ]
-        END
+        RUBY
       end
 
       it 'accepts trailing comma in a Hash literal' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           MAP = {
                   a: 1001,
                   b: 2020,
                   c: 3333,
                 }
-        END
+        RUBY
       end
 
       it 'accepts a multiline word array' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           ingredients = %w(
             sausage
             anchovies
             olives
           )
-        END
+        RUBY
       end
 
       it 'accepts missing comma after a heredoc' do
         # A heredoc that's the last item in a literal or parameter list can not
         # have a trailing comma. It's a syntax error.
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           route(help: {
             'auth' => <<-HELP.chomp
           ...
           HELP
           })
-        END
+        RUBY
       end
 
       it 'auto-corrects an Array literal with two of the values on the same' \
          ' line and a trailing comma' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           VALUES = [
                      1001, 2020,
                      3333
                    ]
-        END
-        expect(new_source).to eq(<<-END.strip_indent)
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           VALUES = [
                      1001, 2020,
                      3333,
                    ]
-        END
+        RUBY
       end
 
       it 'auto-corrects missing comma in a Hash literal' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           MAP = { a: 1001,
                   b: 2020,
                   c: 3333
           }
-        END
-        expect(new_source).to eq(<<-END.strip_indent)
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           MAP = { a: 1001,
                   b: 2020,
                   c: 3333,
           }
-        END
+        RUBY
       end
 
       it 'accepts a multiline array with a single item and trailing comma' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           foo = [
             1,
           ]
-        END
+        RUBY
       end
 
       it 'accepts a multiline hash with a single pair and trailing comma' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           bar = {
             a: 123,
           }
-        END
+        RUBY
       end
 
       it 'accepts a multiline array with items on a single line and' \
          'trailing comma' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           foo = [
             1, 2,
           ]
-        END
+        RUBY
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts a multiline hash with pairs on a single line and' \
          'trailing comma' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           bar = {
             a: 1001, b: 2020,
           }
-        END
+        RUBY
         expect(cop.offenses).to be_empty
       end
     end

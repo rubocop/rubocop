@@ -14,11 +14,11 @@ describe RuboCop::Cop::Performance::RedundantSortBy do
   end
 
   it 'autocorrects array.sort_by do |x| x end' do
-    new_source = autocorrect_source(cop, <<-END.strip_indent)
+    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
       array.sort_by do |x|
         x
       end
-    END
+    RUBY
     expect(new_source).to eq "array.sort\n"
   end
 

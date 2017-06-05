@@ -46,7 +46,7 @@ module RuboCop
 
           it 'is called in the proper sequence' do
             run
-            expect(output).to eq(<<-END.strip_indent)
+            expect(output).to eq(<<-OUTPUT.strip_indent)
               started
               file_started
               file_finished
@@ -55,7 +55,7 @@ module RuboCop
               file_started
               file_finished
               finished
-            END
+            OUTPUT
           end
         end
 

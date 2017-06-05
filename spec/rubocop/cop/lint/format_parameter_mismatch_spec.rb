@@ -6,28 +6,28 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
 
   shared_examples 'variables' do |variable|
     it 'does not register an offense for % called on a variable' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         #{variable} = '%s'
         #{variable} % [foo]
-      END
+      RUBY
 
       expect(cop.messages).to be_empty
     end
 
     it 'does not register an offense for format called on a variable' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         #{variable} = '%s'
         format(#{variable}, foo)
-      END
+      RUBY
 
       expect(cop.messages).to be_empty
     end
 
     it 'does not register an offense for format called on a variable' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         #{variable} = '%s'
         sprintf(#{variable}, foo)
-      END
+      RUBY
 
       expect(cop.messages).to be_empty
     end
@@ -218,20 +218,20 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
   context 'on format with %{} interpolations' do
     context 'and 1 argument' do
       it 'does not register an offense' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           params = { y: '2015', m: '01', d: '01' }
           puts format('%{y}-%{m}-%{d}', params)
-        END
+        RUBY
       end
     end
 
     context 'and multiple arguments' do
       it 'registers an offense' do
-        expect_offense(<<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           params = { y: '2015', m: '01', d: '01' }
           puts format('%{y}-%{m}-%{d}', 2015, 1, 1)
                ^^^^^^ Number of arguments (3) to `format` doesn't match the number of fields (1).
-        END
+        RUBY
       end
     end
   end
@@ -239,20 +239,20 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
   context 'on format with %<> interpolations' do
     context 'and 1 argument' do
       it 'does not register an offense' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           params = { y: '2015', m: '01', d: '01' }
           puts format('%<y>d-%<m>d-%<d>d', params)
-        END
+        RUBY
       end
     end
 
     context 'and multiple arguments' do
       it 'registers an offense' do
-        expect_offense(<<-END.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           params = { y: '2015', m: '01', d: '01' }
           puts format('%<y>d-%<m>d-%<d>d', 2015, 1, 1)
                ^^^^^^ Number of arguments (3) to `format` doesn't match the number of fields (1).
-        END
+        RUBY
       end
     end
   end

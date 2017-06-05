@@ -20,7 +20,7 @@ describe RuboCop::Cop::Style::Documentation do
 
   it 'does not consider comment followed by empty line to be class ' \
      'documentation' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       # Copyright 2014
       # Some company
 
@@ -28,7 +28,7 @@ describe RuboCop::Cop::Style::Documentation do
         def method
         end
       end
-    END
+    RUBY
     expect(cop.offenses.size).to eq(1)
   end
 
@@ -53,13 +53,13 @@ describe RuboCop::Cop::Style::Documentation do
   end
 
   it 'accepts non-empty class with documentation' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       # class comment
       class My_Class
         def method
         end
       end
-    END
+    RUBY
   end
 
   it 'registers an offense for non-empty class with annotation comment' do
@@ -108,93 +108,93 @@ describe RuboCop::Cop::Style::Documentation do
 
   it 'accepts non-empty class with annotation comment followed by other ' \
      'comment' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       # OPTIMIZE: Make this faster.
       # Class comment.
       class My_Class
         def method
         end
       end
-    END
+    RUBY
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts non-empty class with comment that ends with an annotation' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       # Does fooing.
       # FIXME: Not yet implemented.
       class Foo
         def initialize
         end
       end
-    END
+    RUBY
   end
 
   it 'accepts non-empty module with documentation' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       # class comment
       module My_Class
         def method
         end
       end
-    END
+    RUBY
   end
 
   it 'accepts empty class without documentation' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       class My_Class
       end
-    END
+    RUBY
   end
 
   it 'accepts namespace module without documentation' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       module Test
         class A; end
         class B; end
       end
-    END
+    RUBY
   end
 
   it 'accepts namespace class without documentation' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       class Test
         class A; end
         class B; end
       end
-    END
+    RUBY
   end
 
   it 'accepts namespace class which defines constants' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       class Test
         A = Class.new
         B = Class.new(A)
         C = Class.new { call_method }
         D = 1
       end
-    END
+    RUBY
   end
 
   it 'accepts namespace module which defines constants' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       module Test
         A = Class.new
         B = Class.new(A)
         C = Class.new { call_method }
         D = 1
       end
-    END
+    RUBY
   end
 
   it 'does not raise an error for an implicit match conditional' do
     expect do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         class Test
           if //
           end
         end
-      END
+      RUBY
     end.not_to raise_error
   end
 
@@ -214,7 +214,7 @@ describe RuboCop::Cop::Style::Documentation do
   context 'sparse and trailing comments' do
     %w[class module].each do |keyword|
       it "ignores comments after #{keyword} node end" do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           module TestModule
             # documentation comment
             #{keyword} Test
@@ -222,12 +222,12 @@ describe RuboCop::Cop::Style::Documentation do
               end
             end # decorating comment
           end
-        END
+        RUBY
         expect(cop.offenses).to be_empty
       end
 
       it "ignores sparse comments inside #{keyword} node" do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           module TestModule
             #{keyword} Test
               def method
@@ -235,7 +235,7 @@ describe RuboCop::Cop::Style::Documentation do
               # sparse comment
             end
           end
-        END
+        RUBY
         expect(cop.offenses.size).to eq(1)
       end
     end
@@ -244,17 +244,17 @@ describe RuboCop::Cop::Style::Documentation do
   context 'with # :nodoc:' do
     %w[class module].each do |keyword|
       it "accepts non-namespace #{keyword} without documentation" do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           #{keyword} Test #:nodoc:
             def method
             end
           end
-        END
+        RUBY
         expect(cop.offenses).to be_empty
       end
 
       it "registers an offense for nested #{keyword} without documentation" do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           module TestModule #:nodoc:
             TEST = 20
             #{keyword} Test
@@ -262,13 +262,13 @@ describe RuboCop::Cop::Style::Documentation do
               end
             end
           end
-        END
+        RUBY
         expect(cop.offenses.size).to eq(1)
       end
 
       context 'with `all` modifier' do
         it "accepts nested #{keyword} without documentation" do
-          inspect_source(cop, <<-END.strip_indent)
+          inspect_source(cop, <<-RUBY.strip_indent)
             module A #:nodoc: all
               module B
                 TEST = 20
@@ -277,7 +277,7 @@ describe RuboCop::Cop::Style::Documentation do
                 end
               end
             end
-          END
+          RUBY
           expect(cop.offenses).to be_empty
         end
       end
@@ -285,12 +285,12 @@ describe RuboCop::Cop::Style::Documentation do
 
     context 'on a subclass' do
       it 'accepts non-namespace subclass without documentation' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           class Test < Parent #:nodoc:
             def method
             end
           end
-        END
+        RUBY
       end
 
       it 'registers an offense for nested subclass without documentation' do
@@ -308,7 +308,7 @@ describe RuboCop::Cop::Style::Documentation do
 
       context 'with `all` modifier' do
         it 'accepts nested subclass without documentation' do
-          expect_no_offenses(<<-END.strip_indent)
+          expect_no_offenses(<<-RUBY.strip_indent)
             module A #:nodoc: all
               module B
                 TEST = 20
@@ -317,7 +317,7 @@ describe RuboCop::Cop::Style::Documentation do
                 end
               end
             end
-          END
+          RUBY
         end
       end
     end

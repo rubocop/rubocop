@@ -22,9 +22,9 @@ module RuboCop
         # Right now, we only detect direct calls on a Range literal
         # (We don't even catch it if the Range is in double parens)
 
-        def_node_matcher :range_include, <<-END
+        def_node_matcher :range_include, <<-PATTERN
           (send {irange erange (begin {irange erange})} :include? ...)
-        END
+        PATTERN
 
         def on_send(node)
           return unless range_include(node)

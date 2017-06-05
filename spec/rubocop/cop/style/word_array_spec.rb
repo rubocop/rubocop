@@ -96,23 +96,23 @@ describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'does not register an offense for an array with comments in it' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         [
         "foo", # comment here
         "bar", # this thing was done because of a bug
         "baz" # do not delete this line
         ]
-      END
+      RUBY
     end
 
     it 'registers an offense for an array with comments outside of it' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         [
         "foo",
         "bar",
         "baz"
         ] # test
-      END
+      RUBY
 
       expect(cop.offenses.size).to eq(1)
     end
@@ -136,10 +136,10 @@ describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'detects right value of MinSize to use for --auto-gen-config' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         ['one', 'two', 'three']
         %w(a b c d)
-      END
+      RUBY
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Use `%w` or `%W` for an array of words.'])
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'percent',
@@ -147,10 +147,10 @@ describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'detects when the cop must be disabled to avoid offenses' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         ['one', 'two', 'three']
         %w(a b)
-      END
+      RUBY
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Use `%w` or `%W` for an array of words.'])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
@@ -210,7 +210,7 @@ describe RuboCop::Cop::Style::WordArray, :config do
 
     it "doesn't fail on strings which are not valid UTF-8" do
       # Regression test, see GH issue 2671
-      expect_no_offenses(<<-'END'.strip_indent)
+      expect_no_offenses(<<-'RUBY'.strip_indent)
         ["\xC0",
          "\xC2\x4a",
          "\xC2\xC2",
@@ -218,12 +218,12 @@ describe RuboCop::Cop::Style::WordArray, :config do
          "\x82\x82",
          "\xe1\x82\x4a",
         ]
-      END
+      RUBY
     end
 
     it "doesn't fail on strings which are not valid UTF-8" \
        'and encoding: binary is specified' do
-      expect_no_offenses(<<-'END'.strip_indent)
+      expect_no_offenses(<<-'RUBY'.strip_indent)
         # -*- encoding: binary -*-
         ["\xC0",
          "\xC2\x4a",
@@ -232,7 +232,7 @@ describe RuboCop::Cop::Style::WordArray, :config do
          "\x82\x82",
          "\xe1\x82\x4a",
         ]
-      END
+      RUBY
     end
   end
 
