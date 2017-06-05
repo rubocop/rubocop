@@ -34,33 +34,33 @@ module RuboCop
       end
 
       ONE_CHILD_NODE.each do |type|
-        module_eval(<<-END)
+        module_eval(<<-RUBY)
           def on_#{type}(node)
             if (child = node.children[0])
               send(:"on_\#{child.type}", child)
             end
           end
-        END
+        RUBY
       end
 
       MANY_CHILD_NODES.each do |type|
-        module_eval(<<-END)
+        module_eval(<<-RUBY)
           def on_#{type}(node)
             node.children.each { |child| send(:"on_\#{child.type}", child) }
             nil
           end
-        END
+        RUBY
       end
 
       SECOND_CHILD_ONLY.each do |type|
         # Guard clause is for nodes nested within mlhs
-        module_eval(<<-END)
+        module_eval(<<-RUBY)
           def on_#{type}(node)
             if (child = node.children[1])
               send(:"on_\#{child.type}", child)
             end
           end
-        END
+        RUBY
       end
 
       def on_const(node)

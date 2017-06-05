@@ -177,12 +177,12 @@ module RuboCop
 
       errors.each { |error| warn error }
 
-      warn <<-END.strip_indent
+      warn <<-WARNING.strip_indent
         Errors are usually caused by RuboCop bugs.
         Please, report your problems to RuboCop's issue tracker.
         Mention the following information in the issue report:
         #{RuboCop::Version.version(true)}
-      END
+      WARNING
     end
 
     def maybe_print_corrected_source

@@ -21,19 +21,19 @@ module RuboCop
         MSG = 'Use `casecmp` instead of `%s %s`.'.freeze
         CASE_METHODS = %i[downcase upcase].freeze
 
-        def_node_matcher :downcase_eq, <<-END
+        def_node_matcher :downcase_eq, <<-PATTERN
           (send
             $(send _ ${:downcase :upcase})
             ${:== :eql? :!=}
             ${str (send _ {:downcase :upcase} ...) (begin str)})
-        END
+        PATTERN
 
-        def_node_matcher :eq_downcase, <<-END
+        def_node_matcher :eq_downcase, <<-PATTERN
           (send
             {str (send _ {:downcase :upcase} ...) (begin str)}
             ${:== :eql? :!=}
             $(send _ ${:downcase :upcase}))
-        END
+        PATTERN
 
         def on_send(node)
           return if part_of_ignored_node?(node)

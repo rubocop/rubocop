@@ -5,6 +5,7 @@
 ### New features
 
 * [#4448](https://github.com/bbatsov/rubocop/pull/4448): Add new `TapFormatter`. ([@cyberdelia][])
+* Add new `Style/HeredocDelimiters` cop. ([@drenmi][])
 
 ### Bug fixes
 
