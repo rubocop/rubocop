@@ -380,36 +380,20 @@ module RuboCop
 
           assignment = lhs(tail(branches[0]))
 
-          longest_rhs_exceeds_line_limit?(branches, assignment) ||
-            longest_line_exceeds_line_limit?(node, assignment)
-        end
-
-        def longest_rhs_exceeds_line_limit?(branches, assignment)
-          longest_rhs_full_length(branches, assignment) > max_line_length
+          longest_line_exceeds_line_limit?(node, assignment)
         end
 
         def longest_line_exceeds_line_limit?(node, assignment)
           longest_line(node, assignment).length > max_line_length
         end
 
-        def longest_rhs_full_length(branches, assignment)
-          longest_rhs(branches) + indentation_width + assignment.length
-        end
-
         def longest_line(node, assignment)
-          assignment_regex = /#{Regexp.escape(assignment).gsub(' ', '\s*')}/
+          assignment_regex = /\s*#{Regexp.escape(assignment).gsub('\ ', '\s*')}/
           lines = node.source.lines.map do |line|
             line.chomp.sub(assignment_regex, '')
           end
           longest_line = lines.max_by(&:length)
-          longest_line + assignment
-        end
-
-        def longest_rhs(branches)
-          line_lengths = branches.flat_map do |branch|
-            branch.children.last.source.split("\n").map(&:length)
-          end
-          line_lengths.max
+          assignment + longest_line
         end
 
         def line_length_cop_enabled?

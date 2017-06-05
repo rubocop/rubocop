@@ -344,6 +344,21 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     RUBY
   end
 
+  it 'registers an offense in an if else if the assignment is already ' \
+    'at the line length limit' do
+    source = <<-RUBY.strip_indent
+      if foo
+        bar = #{'a' * 72}
+      else
+        bar = #{'b' * 72}
+      end
+    RUBY
+
+    inspect_source(cop, source)
+
+    expect(cop.messages).to eq([message])
+  end
+
   context 'correction would exceed max line length' do
     it 'allows assignment to the same variable in if else if the correction ' \
        'would create a line longer than the configured LineLength' do
