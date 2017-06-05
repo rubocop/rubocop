@@ -475,8 +475,10 @@ describe RuboCop::ConfigLoader do
     end
 
     context 'when a file inherits from a url' do
-      let(:file_path) { '.rubocop.yml' }
-      let(:cache_file) { '.rubocop-http---example-com-rubocop-yml' }
+      let(:file_path)  { '.rubocop.yml' }
+      let(:cache_dir)  { '.rubocop' }
+      let(:cache_name) { 'http---example-com-rubocop-yml' }
+      let(:cache_file) { File.join(cache_dir, cache_name) }
 
       before do
         stub_request(:get, /example.com/)

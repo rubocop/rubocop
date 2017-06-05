@@ -5,8 +5,9 @@ describe RuboCop::RemoteConfig do
 
   let(:remote_config_url) { 'http://example.com/rubocop.yml' }
   let(:base_dir) { '.' }
-  let(:cached_file_name) { '.rubocop-http---example-com-rubocop-yml' }
-  let(:cached_file_path) { File.expand_path(cached_file_name, base_dir) }
+  let(:cache_dir) { File.join(base_dir, '.rubocop') }
+  let(:cached_file_name) { 'http---example-com-rubocop-yml' }
+  let(:cached_file_path) { File.expand_path(cached_file_name, cache_dir) }
 
   subject(:remote_config) do
     described_class.new(remote_config_url, base_dir).file
