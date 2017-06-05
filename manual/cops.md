@@ -204,6 +204,7 @@ In the following section you find all available cops:
 * [Lint/RequireParentheses](cops_lint.md#lintrequireparentheses)
 * [Lint/RescueException](cops_lint.md#lintrescueexception)
 * [Lint/RescueType](cops_lint.md#lintrescuetype)
+* [Lint/ReturnInVoidContext](cops_lint.md#lintreturninvoidcontext)
 * [Lint/SafeNavigationChain](cops_lint.md#lintsafenavigationchain)
 * [Lint/ScriptPermission](cops_lint.md#lintscriptpermission)
 * [Lint/ShadowedException](cops_lint.md#lintshadowedexception)
