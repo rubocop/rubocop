@@ -5,12 +5,12 @@ describe RuboCop::Cop::Layout::FirstMethodParameterLineBreak do
 
   context 'params listed on the first line' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def foo(bar,
           baz)
           do_something
         end
-      END
+      RUBY
     end
 
     it 'detects the offense' do
@@ -37,12 +37,12 @@ describe RuboCop::Cop::Layout::FirstMethodParameterLineBreak do
 
   context 'params on first line of singleton method' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def self.foo(bar,
           baz)
           do_something
         end
-      END
+      RUBY
     end
 
     it 'detects the offense' do
@@ -68,20 +68,20 @@ describe RuboCop::Cop::Layout::FirstMethodParameterLineBreak do
   end
 
   it 'ignores params listed on a single line' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
         def foo(bar, baz, bing)
           do_something
         end
-      END
+      RUBY
   end
 
   it 'ignores params without parens' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
         def foo bar,
           baz
           do_something
         end
-      END
+      RUBY
   end
 
   it 'ignores single-line methods' do
@@ -89,21 +89,21 @@ describe RuboCop::Cop::Layout::FirstMethodParameterLineBreak do
   end
 
   it 'ignores methods without params' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
         def foo
           bing
         end
-      END
+      RUBY
   end
 
   context 'params with default values' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def foo(bar = [],
           baz = 2)
           do_something
         end
-      END
+      RUBY
     end
 
     it 'detects the offense' do

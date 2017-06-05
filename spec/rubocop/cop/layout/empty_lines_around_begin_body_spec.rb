@@ -142,7 +142,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
   CORRECTION
 
   context 'with complex begin-end' do
-    let(:source) { <<-END.strip_indent }
+    let(:source) { <<-RUBY.strip_indent }
       begin
 
         do_something1
@@ -158,8 +158,8 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
         do_something4
 
       end
-    END
-    let(:correction) { <<-END.strip_indent }
+    RUBY
+    let(:correction) { <<-RUBY.strip_indent }
       begin
         do_something1
       rescue RuntimeError
@@ -173,7 +173,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
       ensure
         do_something4
       end
-    END
+    RUBY
 
     it 'registers many offenses' do
       inspect_source(cop, source)
@@ -186,17 +186,17 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
     end
   end
 
-  include_examples :accepts, 'begin block without empty line', <<-END
+  include_examples :accepts, 'begin block without empty line', <<-RUBY
     begin
       foo
     end
-  END
+  RUBY
   include_examples :accepts,
-                   'begin block without empty line in a method', <<-END
+                   'begin block without empty line in a method', <<-RUBY
     def foo
       begin
         bar
       end
     end
-  END
+  RUBY
 end

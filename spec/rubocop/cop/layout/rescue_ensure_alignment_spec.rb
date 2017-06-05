@@ -6,61 +6,61 @@ describe RuboCop::Cop::Layout::RescueEnsureAlignment do
   shared_examples 'common behavior' do |keyword|
     context 'bad alignment' do
       it 'registers an offense when used with begin' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           begin
             something
               #{keyword}
               error
           end
-        END
+        RUBY
         expect(cop.messages).to eq(["`#{keyword}` at 3, 4 is not aligned with" \
                                     ' `end` at 5, 0.'])
       end
 
       it 'registers an offense when used with def' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           def test
             something
               #{keyword}
               error
           end
-        END
+        RUBY
         expect(cop.messages).to eq(["`#{keyword}` at 3, 4 is not aligned with" \
                                     ' `end` at 5, 0.'])
       end
 
       it 'registers an offense when used with defs' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           def Test.test
             something
               #{keyword}
               error
           end
-        END
+        RUBY
         expect(cop.messages).to eq(["`#{keyword}` at 3, 4 is not aligned with" \
                                     ' `end` at 5, 0.'])
       end
 
       it 'registers an offense when used with class' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           class C
             something
               #{keyword}
               error
           end
-        END
+        RUBY
         expect(cop.messages).to eq(["`#{keyword}` at 3, 4 is not aligned with" \
                                     ' `end` at 5, 0.'])
       end
 
       it 'registers an offense when used with module' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           module M
             something
               #{keyword}
               error
           end
-        END
+        RUBY
         expect(cop.messages).to eq(["`#{keyword}` at 3, 4 is not aligned with" \
                                     ' `end` at 5, 0.'])
       end
@@ -72,20 +72,20 @@ describe RuboCop::Cop::Layout::RescueEnsureAlignment do
       end
 
       it 'auto-corrects' do
-        corrected = autocorrect_source(cop, <<-END.strip_indent)
+        corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
           begin
             something
               #{keyword}
               error
           end
-        END
-        expect(corrected).to eq(<<-END.strip_indent)
+        RUBY
+        expect(corrected).to eq(<<-RUBY.strip_indent)
           begin
             something
           #{keyword}
               error
           end
-        END
+        RUBY
       end
     end
 

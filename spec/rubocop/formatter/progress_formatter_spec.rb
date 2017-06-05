@@ -145,7 +145,7 @@ module RuboCop
 
         it 'reports all detected offenses for all failed files' do
           formatter.finished(files)
-          expect(output.string).to include(<<-END.strip_indent)
+          expect(output.string).to include(<<-OUTPUT.strip_indent)
             Offenses:
 
             lib/rubocop.rb:2:3: C: foo
@@ -157,7 +157,7 @@ module RuboCop
             bin/rubocop:6:1: C: foo
             This is line 6.
             ^
-          END
+          OUTPUT
         end
       end
 

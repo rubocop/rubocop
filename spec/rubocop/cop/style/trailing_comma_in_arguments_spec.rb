@@ -36,10 +36,10 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
     end
 
     it 'accepts chained single-line method calls' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         target
           .some_method(a)
-      END
+      RUBY
     end
 
     it 'auto-corrects unwanted comma in a method call' do
@@ -79,54 +79,54 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'registers an offense for trailing comma in a method call with ' \
          'hash parameters at the end' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           some_method(
                         a,
                         b,
                         c: 0,
                         d: 1,)
-        END
+        RUBY
         expect(cop.highlights).to eq([','])
       end
 
       it 'accepts a method call with ' \
          'hash parameters at the end and no trailing comma' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           some_method(a,
                       b,
                       c: 0,
                       d: 1
                      )
-        END
+        RUBY
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts comma inside a heredoc parameter at the end' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           route(help: {
             'auth' => <<-HELP.chomp
           ,
           HELP
           })
-        END
+        RUBY
       end
 
       it 'auto-corrects unwanted comma in a method call with hash parameters' \
          ' at the end' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           some_method(
                         a,
                         b,
                         c: 0,
                         d: 1,)
-        END
-        expect(new_source).to eq(<<-END.strip_indent)
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           some_method(
                         a,
                         b,
                         c: 0,
                         d: 1)
-        END
+        RUBY
       end
     end
 
@@ -136,24 +136,24 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       context 'when closing bracket is on same line as last value' do
         it 'accepts a method call with Hash as last parameter split on ' \
            'multiple lines' do
-          inspect_source(cop, <<-END.strip_indent)
+          inspect_source(cop, <<-RUBY.strip_indent)
             some_method(a: "b",
                         c: "d")
-          END
+          RUBY
           expect(cop.offenses).to be_empty
         end
       end
 
       it 'registers an offense for no trailing comma in a method call with' \
          ' hash parameters at the end' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           some_method(
                         a,
                         b,
                         c: 0,
                         d: 1
                      )
-        END
+        RUBY
         expect(cop.messages)
           .to eq(['Put a comma after the last parameter of a multiline ' \
                   'method call.'])
@@ -161,45 +161,45 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       end
 
       it 'accepts a method call with two parameters on the same line' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           some_method(a, b
                      )
-        END
+        RUBY
       end
 
       it 'accepts trailing comma in a method call with hash' \
          ' parameters at the end' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           some_method(
                         a,
                         b,
                         c: 0,
                         d: 1,
                      )
-        END
+        RUBY
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts no trailing comma in a method call with a multiline' \
          ' braceless hash at the end with more than one parameter on a line' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           some_method(
                         a,
                         b: 0,
                         c: 0, d: 1
                      )
-        END
+        RUBY
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts a trailing comma in a method call with single ' \
          'line hashes' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           some_method(
            { a: 0, b: 1 },
            { a: 1, b: 0 },
           )
-        END
+        RUBY
 
         expect(cop.offenses).to be_empty
       end
@@ -213,30 +213,30 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'auto-corrects missing comma in a method call with hash parameters' \
          ' at the end' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           some_method(
                         a,
                         b,
                         c: 0,
                         d: 1
                      )
-        END
-        expect(new_source).to eq(<<-END.strip_indent)
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           some_method(
                         a,
                         b,
                         c: 0,
                         d: 1,
                      )
-        END
+        RUBY
       end
 
       it 'accepts a multiline call with a single argument and trailing comma' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           method(
             1,
           )
-        END
+        RUBY
       end
     end
 
@@ -246,10 +246,10 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       context 'when closing bracket is on same line as last value' do
         it 'registers an offense for a method call, with a Hash as the ' \
            'last parameter, split on multiple lines' do
-          inspect_source(cop, <<-END.strip_indent)
+          inspect_source(cop, <<-RUBY.strip_indent)
             some_method(a: "b",
                         c: "d")
-          END
+          RUBY
           expect(cop.messages)
             .to eq(['Put a comma after the last parameter of a ' \
                     'multiline method call.'])
@@ -258,14 +258,14 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'registers an offense for no trailing comma in a method call with' \
          ' hash parameters at the end' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           some_method(
                         a,
                         b,
                         c: 0,
                         d: 1
                      )
-        END
+        RUBY
         expect(cop.messages)
           .to eq(['Put a comma after the last parameter of a multiline ' \
                   'method call.'])
@@ -274,10 +274,10 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'registers an offense for no trailing comma in a method call with' \
           'two parameters on the same line' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           some_method(a, b
                      )
-        END
+        RUBY
         expect(cop.messages)
           .to eq(['Put a comma after the last parameter of a multiline ' \
                   'method call.'])
@@ -285,36 +285,36 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'accepts trailing comma in a method call with hash' \
          ' parameters at the end' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           some_method(
                         a,
                         b,
                         c: 0,
                         d: 1,
                      )
-        END
+        RUBY
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts a trailing comma in a method call with ' \
          'a single hash parameter' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           some_method(
                         a: 0,
                         b: 1,
                      )
-        END
+        RUBY
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts a trailing comma in a method call with single ' \
          'line hashes' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           some_method(
            { a: 0, b: 1 },
            { a: 1, b: 0 },
           )
-        END
+        RUBY
 
         expect(cop.offenses).to be_empty
       end
@@ -322,7 +322,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       # this is a sad parse error
       it 'accepts no trailing comma in a method call with a block' \
          ' parameter at the end' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           some_method(
                         a,
                         b,
@@ -330,56 +330,56 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
                         d: 1,
                         &block
                      )
-        END
+        RUBY
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts missing comma after a heredoc' do
         # A heredoc that's the last item in a literal or parameter list can not
         # have a trailing comma. It's a syntax error.
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           route(1, <<-HELP.chomp
           ...
           HELP
           )
-        END
+        RUBY
       end
 
       it 'auto-corrects missing comma in a method call with hash parameters' \
          ' at the end' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           some_method(
                         a,
                         b,
                         c: 0,
                         d: 1
                      )
-        END
-        expect(new_source).to eq(<<-END.strip_indent)
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           some_method(
                         a,
                         b,
                         c: 0,
                         d: 1,
                      )
-        END
+        RUBY
       end
 
       it 'accepts a multiline call with a single argument and trailing comma' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           method(
             1,
           )
-        END
+        RUBY
       end
 
       it 'accepts a multiline call with arguments on a single line and' \
          ' trailing comma' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           method(
             1, 2,
           )
-        END
+        RUBY
         expect(cop.offenses).to be_empty
       end
     end

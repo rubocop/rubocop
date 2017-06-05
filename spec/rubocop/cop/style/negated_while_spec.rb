@@ -4,35 +4,35 @@ describe RuboCop::Cop::Style::NegatedWhile do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for while with exclamation point condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       while !a_condition
         some_method
       end
       some_method while !a_condition
-    END
+    RUBY
     expect(cop.messages).to eq(
       ['Favor `until` over `while` for negative conditions.'] * 2
     )
   end
 
   it 'registers an offense for until with exclamation point condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       until !a_condition
         some_method
       end
       some_method until !a_condition
-    END
+    RUBY
     expect(cop.messages)
       .to eq(['Favor `while` over `until` for negative conditions.'] * 2)
   end
 
   it 'registers an offense for while with "not" condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       while (not a_condition)
         some_method
       end
       some_method while not a_condition
-    END
+    RUBY
     expect(cop.messages).to eq(
       ['Favor `until` over `while` for negative conditions.'] * 2
     )
@@ -61,14 +61,14 @@ describe RuboCop::Cop::Style::NegatedWhile do
   end
 
   it 'autocorrects by replacing while not with until' do
-    corrected = autocorrect_source(cop, <<-END.strip_indent)
+    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
       something while !x.even?
       something while(!x.even?)
-    END
-    expect(corrected).to eq <<-END.strip_indent
+    RUBY
+    expect(corrected).to eq <<-RUBY.strip_indent
       something until x.even?
       something until(x.even?)
-    END
+    RUBY
   end
 
   it 'autocorrects by replacing until not with while' do
@@ -77,16 +77,16 @@ describe RuboCop::Cop::Style::NegatedWhile do
   end
 
   it 'does not blow up for empty while condition' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       while ()
       end
-    END
+    RUBY
   end
 
   it 'does not blow up for empty until condition' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       until ()
       end
-    END
+    RUBY
   end
 end

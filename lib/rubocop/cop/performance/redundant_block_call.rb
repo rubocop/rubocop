@@ -29,18 +29,18 @@ module RuboCop
         CLOSE_PAREN = ')'.freeze
         SPACE = ' '.freeze
 
-        def_node_matcher :blockarg_def, <<-END
+        def_node_matcher :blockarg_def, <<-PATTERN
           {(def  _   (args ... (blockarg $_)) $_)
            (defs _ _ (args ... (blockarg $_)) $_)}
-        END
+        PATTERN
 
-        def_node_search :blockarg_calls, <<-END
+        def_node_search :blockarg_calls, <<-PATTERN
           (send (lvar %1) :call ...)
-        END
+        PATTERN
 
-        def_node_search :blockarg_assigned?, <<-END
+        def_node_search :blockarg_assigned?, <<-PATTERN
           (lvasgn %1 ...)
-        END
+        PATTERN
 
         def on_def(node)
           blockarg_def(node) do |argname, body|

@@ -14,9 +14,9 @@ module RuboCop
       class Eval < Cop
         MSG = 'The use of `eval` is a serious security risk.'.freeze
 
-        def_node_matcher :eval?, <<-END
+        def_node_matcher :eval?, <<-PATTERN
           (send {nil (send nil :binding)} :eval $!str ...)
-        END
+        PATTERN
 
         def on_send(node)
           eval?(node) do |code|

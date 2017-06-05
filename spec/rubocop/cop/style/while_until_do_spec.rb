@@ -28,38 +28,38 @@ describe RuboCop::Cop::Style::WhileUntilDo do
   end
 
   it 'accepts multi-line while without do' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       while cond
       end
-    END
+    RUBY
   end
 
   it 'accepts multi-line until without do' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       until cond
       end
-    END
+    RUBY
   end
 
   it 'auto-corrects the usage of "do" in multiline while' do
-    new_source = autocorrect_source(cop, <<-END.strip_indent)
+    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
       while cond do
       end
-    END
-    expect(new_source).to eq(<<-END.strip_indent)
+    RUBY
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       while cond
       end
-    END
+    RUBY
   end
 
   it 'auto-corrects the usage of "do" in multiline until' do
-    new_source = autocorrect_source(cop, <<-END.strip_indent)
+    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
       until cond do
       end
-    END
-    expect(new_source).to eq(<<-END.strip_indent)
+    RUBY
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       until cond
       end
-    END
+    RUBY
   end
 end

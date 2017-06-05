@@ -5,7 +5,7 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
   let(:cop_config) { { 'AllowSafeAssignment' => true } }
 
   it 'registers an offense for parentheses around condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       if (x > 10)
       elsif (x < 3)
       end
@@ -19,7 +19,7 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
       x += 1 unless (x < 10)
       x += 1 until (x < 10)
       x += 1 while (x < 10)
-    END
+    RUBY
     expect(cop.offenses.size).to eq(9)
     expect(cop.messages.first)
       .to eq("Don't use parentheses around the condition of an `if`.")
@@ -28,14 +28,14 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
   end
 
   it 'accepts parentheses if there is no space between the keyword and (.' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if(x > 5) then something end
       do_something until(x > 5)
-    END
+    RUBY
   end
 
   it 'auto-corrects parentheses around condition' do
-    corrected = autocorrect_source(cop, <<-END.strip_indent)
+    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
       if (x > 10)
       elsif (x < 3)
       end
@@ -49,8 +49,8 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
       x += 1 unless (x < 10)
       x += 1 while (x < 10)
       x += 1 until (x < 10)
-    END
-    expect(corrected).to eq <<-END.strip_indent
+    RUBY
+    expect(corrected).to eq <<-RUBY.strip_indent
       if x > 10
       elsif x < 3
       end
@@ -64,11 +64,11 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
       x += 1 unless x < 10
       x += 1 while x < 10
       x += 1 until x < 10
-    END
+    RUBY
   end
 
   it 'accepts condition without parentheses' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if x > 10
       end
       unless x > 10
@@ -81,7 +81,7 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
       x += 1 unless x < 10
       x += 1 while x < 10
       x += 1 until x < 10
-    END
+    RUBY
   end
 
   it 'accepts parentheses around condition in a ternary' do
@@ -93,18 +93,18 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
   end
 
   it 'is not confused by unbalanced parentheses' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if (a + b).c()
       end
-    END
+    RUBY
   end
 
   %w[rescue if unless while until].each do |op|
     it "allows parens if the condition node is a modifier #{op} op" do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         if (something #{op} top)
         end
-      END
+      RUBY
       expect(cop.offenses).to be_empty
     end
   end
@@ -117,39 +117,39 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
   end
 
   it 'does not blow up for empty if condition' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if ()
       end
-    END
+    RUBY
   end
 
   it 'does not blow up for empty unless condition' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       unless ()
       end
-    END
+    RUBY
   end
 
   context 'safe assignment is allowed' do
     it 'accepts variable assignment in condition surrounded with parentheses' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if (test = 10)
         end
-      END
+      RUBY
     end
 
     it 'accepts element assignment in condition surrounded with parentheses' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if (test[0] = 10)
         end
-      END
+      RUBY
     end
 
     it 'accepts setter in condition surrounded with parentheses' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if (self.test = 10)
         end
-      END
+      RUBY
     end
   end
 
@@ -158,19 +158,19 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
 
     it 'does not accept variable assignment in condition surrounded with ' \
        'parentheses' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         if (test = 10)
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq(1)
     end
 
     it 'does not accept element assignment in condition surrounded with ' \
        'parentheses' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         if (test[0] = 10)
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq(1)
     end
   end

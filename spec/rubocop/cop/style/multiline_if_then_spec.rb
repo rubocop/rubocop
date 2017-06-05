@@ -6,11 +6,11 @@ describe RuboCop::Cop::Style::MultilineIfThen do
   # if
 
   it 'does not get confused by empty elsif branch' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if cond
       elsif cond
       end
-    END
+    RUBY
   end
 
   it 'registers an offense for then in multiline if' do
@@ -42,66 +42,66 @@ describe RuboCop::Cop::Style::MultilineIfThen do
   end
 
   it 'accepts multiline if without then' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if cond
       end
-    END
+    RUBY
   end
 
   it 'accepts table style if/then/elsif/ends' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if    @io == $stdout then str << "$stdout"
       elsif @io == $stdin  then str << "$stdin"
       elsif @io == $stderr then str << "$stderr"
       else                      str << @io.class.to_s
       end
-    END
+    RUBY
   end
 
   it 'does not get confused by a then in a when' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if a
         case b
         when c then
         end
       end
-    END
+    RUBY
   end
 
   it 'does not get confused by a commented-out then' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if a # then
         b
       end
       if c # then
       end
-    END
+    RUBY
   end
 
   it 'does not raise an error for an implicit match if' do
     expect do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         if //
         end
-      END
+      RUBY
     end.not_to raise_error
   end
 
   # unless
 
   it 'registers an offense for then in multiline unless' do
-    expect_offense(<<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       unless cond then
                   ^^^^ Do not use `then` for multi-line `unless`.
       end
-    END
+    RUBY
   end
 
   it 'accepts multiline unless without then' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       unless cond
       end
-    END
+    RUBY
   end
 
   it 'does not get confused by a postfix unless' do
@@ -109,32 +109,32 @@ describe RuboCop::Cop::Style::MultilineIfThen do
   end
 
   it 'does not get confused by a nested postfix unless' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if two
         puts 1
       end unless two
-    END
+    RUBY
   end
 
   it 'does not raise an error for an implicit match unless' do
     expect do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         unless //
         end
-      END
+      RUBY
     end.not_to raise_error
   end
 
   it 'auto-corrects the usage of "then" in multiline if' do
-    new_source = autocorrect_source(cop, <<-END.strip_indent)
+    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
       if cond then
         something
       end
-    END
-    expect(new_source).to eq(<<-END.strip_indent)
+    RUBY
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       if cond
         something
       end
-    END
+    RUBY
   end
 end

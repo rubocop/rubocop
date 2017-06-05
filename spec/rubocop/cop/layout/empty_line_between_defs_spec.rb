@@ -5,7 +5,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
   let(:cop_config) { { 'AllowAdjacentOneLineDefs' => false } }
 
   it 'finds offenses in inner classes' do
-    source = <<-END.strip_indent
+    source = <<-RUBY.strip_indent
       class K
         def m
         end
@@ -19,7 +19,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
         def p
         end
       end
-    END
+    RUBY
     inspect_source(cop, source)
     expect(cop.offenses.size).to eq(1)
     expect(cop.offenses.map(&:line).sort).to eq([7])
@@ -27,7 +27,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
 
   context 'when there are only comments between defs' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         class J
           def n
           end # n-related
@@ -36,7 +36,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
           def o
           end
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -55,7 +55,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
 
     it 'auto-corrects' do
       corrected = autocorrect_source(cop, source)
-      expect(corrected).to eq(<<-END.strip_indent)
+      expect(corrected).to eq(<<-RUBY.strip_indent)
         class J
           def n
           end # n-related
@@ -65,7 +65,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
           def o
           end
         end
-      END
+      RUBY
     end
   end
 
@@ -85,7 +85,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
     end
 
     it 'registers an offense for consecutive defs inside a conditional' do
-      source = <<-END.strip_indent
+      source = <<-RUBY.strip_indent
         if condition
           def foo
             true
@@ -98,7 +98,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
             false
           end
         end
-      END
+      RUBY
       inspect_source(cop, source)
       expect(cop.offenses.size).to eq(1)
     end
@@ -107,7 +107,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
   context 'class methods' do
     context 'adjacent class methods' do
       let(:offending_source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           class Test
             def self.foo
               true
@@ -116,7 +116,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
               true
             end
           end
-        END
+        RUBY
       end
 
       it 'registers an offense for missing blank line between methods' do
@@ -135,7 +135,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
 
       it 'autocorrects it' do
         corrected = autocorrect_source(cop, offending_source)
-        expect(corrected).to eq(<<-END.strip_indent)
+        expect(corrected).to eq(<<-RUBY.strip_indent)
           class Test
             def self.foo
               true
@@ -145,13 +145,13 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
               true
             end
           end
-        END
+        RUBY
       end
     end
 
     context 'mixed instance and class methods' do
       let(:offending_source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           class Test
             def foo
               true
@@ -160,7 +160,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
               true
             end
           end
-        END
+        RUBY
       end
 
       it 'registers an offense for missing blank line between methods' do
@@ -179,7 +179,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
 
       it 'autocorrects it' do
         corrected = autocorrect_source(cop, offending_source)
-        expect(corrected).to eq(<<-END.strip_indent)
+        expect(corrected).to eq(<<-RUBY.strip_indent)
           class Test
             def foo
               true
@@ -189,7 +189,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
               true
             end
           end
-        END
+        RUBY
       end
     end
   end
@@ -262,39 +262,39 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
   end
 
   it 'registers an offense for adjacent one-liners by default' do
-    source = <<-END.strip_indent
+    source = <<-RUBY.strip_indent
       def a; end
       def b; end
-    END
+    RUBY
     inspect_source(cop, source)
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'auto-corrects adjacent one-liners by default' do
-    corrected = autocorrect_source(cop, <<-END.strip_indent)
+    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
       def a; end
       def b; end
-    END
-    expect(corrected).to eq(<<-END.strip_indent)
+    RUBY
+    expect(corrected).to eq(<<-RUBY.strip_indent)
       def a; end
 
       def b; end
-    END
+    RUBY
   end
 
   it 'auto-corrects when there are too many new lines' do
-    corrected = autocorrect_source(cop, <<-END.strip_indent)
+    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
       def a; end
 
 
 
       def b; end
-    END
-    expect(corrected).to eq(<<-END.strip_indent)
+    RUBY
+    expect(corrected).to eq(<<-RUBY.strip_indent)
       def a; end
 
       def b; end
-    END
+    RUBY
   end
 
   it 'treats lines with whitespaces as blank' do
@@ -310,7 +310,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
   end
 
   it "doesn't allow more than the required number of newlines" do
-    source = <<-END.strip_indent
+    source = <<-RUBY.strip_indent
       class A
         def n
         end
@@ -319,7 +319,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
         def o
         end
       end
-    END
+    RUBY
     inspect_source(cop, source)
     expect(cop.offenses.size).to eq(1)
   end
@@ -335,13 +335,13 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
     end
 
     it 'registers an offense for adjacent defs if some are multi-line' do
-      source = <<-END.strip_indent
+      source = <<-RUBY.strip_indent
         def a; end
         def b; end
         def c # Not a one-liner, so this is an offense.
         end
         def d; end # Also an offense since previous was multi-line:
-      END
+      RUBY
       inspect_source(cop, source)
       expect(cop.offenses.map(&:line)).to eq([3, 5])
     end
@@ -370,35 +370,35 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
     end
 
     it 'finds an  offense for two empty lines' do
-      source = <<-END.strip_indent
+      source = <<-RUBY.strip_indent
         def n
         end
 
 
         def o
         end
-      END
+      RUBY
       inspect_source(cop, source)
       expect(cop.offenses.size).to eq(1)
     end
 
     it 'auto-corrects' do
-      source = <<-END.strip_indent
+      source = <<-RUBY.strip_indent
         def n
         end
 
 
         def o
         end
-      END
+      RUBY
       corrected = autocorrect_source(cop, source)
-      expect(corrected).to eq(<<-END.strip_indent)
+      expect(corrected).to eq(<<-RUBY.strip_indent)
         def n
         end
 
         def o
         end
-      END
+      RUBY
     end
   end
 
@@ -406,56 +406,56 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
     let(:cop_config) { { 'NumberOfEmptyLines' => 2 } }
 
     it 'treats lines with whitespaces as blank' do
-      source = <<-END.strip_indent
+      source = <<-RUBY.strip_indent
         def n
         end
 
         def o
         end
-      END
+      RUBY
       inspect_source(cop, source)
       expect(cop.offenses.size).to eq(1)
     end
 
     it 'auto-corrects when there are no new lines' do
-      source = <<-END.strip_indent
+      source = <<-RUBY.strip_indent
         def n
         end
         def o
         end
-      END
+      RUBY
       corrected = autocorrect_source(cop, source)
-      expect(corrected).to eq(<<-END.strip_indent)
+      expect(corrected).to eq(<<-RUBY.strip_indent)
         def n
         end
 
 
         def o
         end
-      END
+      RUBY
     end
 
     it 'auto-corrects when there are too few new lines' do
-      source = <<-END.strip_indent
+      source = <<-RUBY.strip_indent
         def n
         end
 
         def o
         end
-      END
+      RUBY
       corrected = autocorrect_source(cop, source)
-      expect(corrected).to eq(<<-END.strip_indent)
+      expect(corrected).to eq(<<-RUBY.strip_indent)
         def n
         end
 
 
         def o
         end
-      END
+      RUBY
     end
 
     it 'auto-corrects when there are too many new lines' do
-      source = <<-END.strip_indent
+      source = <<-RUBY.strip_indent
         def n
         end
 
@@ -464,16 +464,16 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
 
         def o
         end
-      END
+      RUBY
       corrected = autocorrect_source(cop, source)
-      expect(corrected).to eq(<<-END.strip_indent)
+      expect(corrected).to eq(<<-RUBY.strip_indent)
         def n
         end
 
 
         def o
         end
-      END
+      RUBY
     end
   end
 end

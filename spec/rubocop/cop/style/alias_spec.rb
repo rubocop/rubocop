@@ -39,7 +39,7 @@ describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'does not register an offense for alias in an instance_eval block' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         module M
           def foo
             instance_eval {
@@ -47,7 +47,7 @@ describe RuboCop::Cop::Style::Alias, :config do
             }
           end
         end
-      END
+      RUBY
     end
   end
 
@@ -92,16 +92,16 @@ describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'autocorrects alias_method in a class block' do
-      corrected = autocorrect_source(cop, <<-END.strip_indent)
+      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
         class C
           alias_method :ala, :bala
         end
-      END
-      expect(corrected).to eq(<<-END.strip_indent)
+      RUBY
+      expect(corrected).to eq(<<-RUBY.strip_indent)
         class C
           alias ala bala
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for alias_method in a module block' do
@@ -114,66 +114,66 @@ describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'autocorrects alias_method in a module block' do
-      corrected = autocorrect_source(cop, <<-END.strip_indent)
+      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
         module M
           alias_method :ala, :bala
         end
-      END
-      expect(corrected).to eq(<<-END.strip_indent)
+      RUBY
+      expect(corrected).to eq(<<-RUBY.strip_indent)
         module M
           alias ala bala
         end
-      END
+      RUBY
     end
 
     it 'does not register an offense for alias_method with explicit receiver' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         class C
           receiver.alias_method :ala, :bala
         end
-      END
+      RUBY
     end
 
     it 'does not register an offense for alias_method in a method def' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def method
           alias_method :ala, :bala
         end
-      END
+      RUBY
     end
 
     it 'does not register an offense for alias_method in self.method def' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def self.method
           alias_method :ala, :bala
         end
-      END
+      RUBY
     end
 
     it 'does not register an offense for alias_method in a block' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         dsl_method do
           alias_method :ala, :bala
         end
-      END
+      RUBY
     end
 
     it 'does not register an offense for alias_method with non-literal '\
        'argument' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         alias_method :bar, FOO
-      END
+      RUBY
     end
 
     it 'does not register an offense for alias_method with non-literal ' \
        'argument' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         alias_method :baz, foo.bar
-      END
+      RUBY
     end
 
     it 'does not register an offense for alias in an instance_eval block' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         module M
           def foo
             instance_eval {
@@ -181,7 +181,7 @@ describe RuboCop::Cop::Style::Alias, :config do
             }
           end
         end
-      END
+      RUBY
     end
   end
 end

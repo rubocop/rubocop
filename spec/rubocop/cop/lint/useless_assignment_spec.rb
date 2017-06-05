@@ -5,7 +5,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   context 'when a variable is assigned and unreferenced in a method' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         class SomeClass
           foo = 1
           puts foo
@@ -15,7 +15,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
             puts bar
           end
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -33,7 +33,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is assigned and unreferenced ' \
           'in a singleton method defined with self keyword' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         class SomeClass
           foo = 1
           puts foo
@@ -43,7 +43,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
             puts bar
           end
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -61,7 +61,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is assigned and unreferenced ' \
           'in a singleton method defined with variable name' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         1.times do
           foo = 1
           puts foo
@@ -72,7 +72,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
             puts bar
           end
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -89,7 +89,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   context 'when a variable is assigned and unreferenced in a class' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         1.times do
           foo = 1
           puts foo
@@ -99,7 +99,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
             puts bar
           end
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -117,7 +117,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is assigned and unreferenced in a class ' \
           'subclassing another class stored in local variable' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         1.times do
           foo = 1
           puts foo
@@ -128,7 +128,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
             puts bar
           end
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -146,7 +146,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is assigned and unreferenced ' \
           'in a singleton class' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         1.times do
           foo = 1
           puts foo
@@ -157,7 +157,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
             puts bar
           end
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -174,7 +174,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   context 'when a variable is assigned and unreferenced in a module' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         1.times do
           foo = 1
           puts foo
@@ -184,7 +184,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
             puts bar
           end
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -201,11 +201,11 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   context 'when a variable is assigned and unreferenced in top level' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         foo = 1
         bar = 2
         puts bar
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -240,14 +240,14 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is assigned multiple times ' \
           'but unreferenced' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           foo = 1
           bar = 2
           foo = 3
           puts bar
         end
-      END
+      RUBY
     end
 
     it 'registers offenses for each assignment' do
@@ -269,13 +269,13 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a referenced variable is reassigned ' \
           'but not re-referenced' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           foo = 1
           puts foo
           foo = 3
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for the non-re-referenced assignment' do
@@ -291,13 +291,13 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when an unreferenced variable is reassigned ' \
           'and re-referenced' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           foo = 1
           foo = 3
           puts foo
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for the unreferenced assignment' do
@@ -312,7 +312,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   context 'when an unreferenced variable is reassigned in a block' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def const_name(node)
           const_names = []
           const_node = node
@@ -327,7 +327,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
           const_names.reverse.join('::')
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -336,7 +336,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   context 'when a referenced variable is reassigned in a block' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           foo = 1
           puts foo
@@ -344,7 +344,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
             foo = 2
           end
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -353,10 +353,10 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   context 'when a block local variable is declared but not assigned' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         1.times do |i; foo|
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -364,11 +364,11 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   context 'when a block local variable is assigned and unreferenced' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         1.times do |i; foo|
           foo = 2
         end
-      END
+      RUBY
     end
 
     it 'registers offenses for the assignment' do
@@ -383,13 +383,13 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   context 'when a variable is assigned in loop body and unreferenced' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           while true
             foo = 1
           end
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -407,7 +407,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is reassigned at the end of loop body ' \
           'and would be referenced in next iteration' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           total = 0
           foo = 0
@@ -419,7 +419,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
           total
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -429,7 +429,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is reassigned at the end of loop body ' \
           'and would be referenced in loop condition' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           total = 0
           foo = 0
@@ -441,7 +441,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
           total
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -450,7 +450,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   context 'when a setter is invoked with operator assignment in loop body' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           obj = {}
 
@@ -458,7 +458,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
             obj[:count] += 1
           end
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -468,7 +468,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context "when a variable is reassigned in loop body but won't " \
           'be referenced either next iteration or loop condition' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           total = 0
           foo = 0
@@ -480,7 +480,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
           total
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -498,7 +498,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a referenced variable is reassigned ' \
           'but not re-referenced in a method defined in loop' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         while true
           def some_method
             foo = 1
@@ -506,7 +506,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
             foo = 3
           end
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -522,7 +522,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable that has same name as outer scope variable ' \
           'is not referenced in a method defined in loop' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         foo = 1
 
         while foo < 100
@@ -531,7 +531,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
             foo = 1
           end
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -547,13 +547,13 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is assigned in single branch if ' \
           'and unreferenced' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method(flag)
           if flag
             foo = 1
           end
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -571,7 +571,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a unreferenced variable is reassigned in same branch ' \
           'and referenced after the branching' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method(flag)
           if flag
             foo = 1
@@ -580,7 +580,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
           foo
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for the unreferenced assignment' do
@@ -596,7 +596,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is reassigned in single branch if ' \
           'and referenced after the branching' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method(flag)
           foo = 1
 
@@ -606,7 +606,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
           foo
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -616,7 +616,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is reassigned in a loop' do
     context 'while loop' do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           def while(param)
             ret = 1
 
@@ -627,7 +627,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
             ret
           end
-        END
+        RUBY
       end
 
       include_examples 'accepts'
@@ -635,7 +635,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
     context 'post while loop' do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           def post_while(param)
             ret = 1
 
@@ -646,7 +646,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
             ret
           end
-        END
+        RUBY
       end
 
       include_examples 'accepts'
@@ -654,7 +654,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
     context 'until loop' do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           def until(param)
             ret = 1
 
@@ -665,7 +665,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
             ret
           end
-        END
+        RUBY
       end
 
       include_examples 'accepts'
@@ -673,7 +673,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
     context 'post until loop' do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           def post_until(param)
             ret = 1
 
@@ -684,7 +684,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
             ret
           end
-        END
+        RUBY
       end
 
       include_examples 'accepts'
@@ -692,7 +692,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
     context 'for loop' do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           def for(param)
             ret = 1
 
@@ -703,7 +703,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
             ret
           end
-        END
+        RUBY
       end
 
       include_examples 'accepts'
@@ -713,7 +713,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is assigned in each branch of if ' \
           'and referenced after the branching' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method(flag)
           if flag
             foo = 2
@@ -723,7 +723,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
           foo
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -733,7 +733,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is reassigned in single branch if ' \
           'and referenced in the branch' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method(flag)
           foo = 1
 
@@ -742,7 +742,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
             puts foo
           end
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for the unreferenced assignment' do
@@ -758,7 +758,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is assigned in each branch of if ' \
           'and referenced in the else branch' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method(flag)
           if flag
             foo = 2
@@ -767,7 +767,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
             puts foo
           end
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for the assignment in the if branch' do
@@ -783,7 +783,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is reassigned and unreferenced in a if branch ' \
           'while the variable is referenced in the paired else branch ' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method(flag)
           foo = 1
 
@@ -794,7 +794,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
             puts foo
           end
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for the reassignment in the if branch' do
@@ -810,13 +810,13 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context "when there's an unreferenced assignment in top level if branch " \
           'while the variable is referenced in the paired else branch' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         if flag
           foo = 1
         else
           puts foo
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for the assignment in the if branch' do
@@ -832,7 +832,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context "when there's an unreferenced reassignment in a if branch " \
           'while the variable is referenced in the paired elsif branch' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method(flag_a, flag_b)
           foo = 1
 
@@ -843,7 +843,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
             puts foo
           end
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for the reassignment in the if branch' do
@@ -860,7 +860,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
           'while the variable is referenced in a case branch ' \
           'in the paired else branch' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method(flag_a, flag_b)
           foo = 1
 
@@ -874,7 +874,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
             end
           end
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for the reassignment in the if branch' do
@@ -890,7 +890,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when an assignment in a if branch is referenced ' \
           'in another if branch' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method(flag_a, flag_b)
           if flag_a
             foo = 1
@@ -900,7 +900,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
             puts foo
           end
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -910,12 +910,12 @@ describe RuboCop::Cop::Lint::UselessAssignment do
           'that references the variable in its conditional clause' \
           'and referenced after the branching' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method(flag)
           foo = 1 unless foo
           puts foo
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -926,11 +926,11 @@ describe RuboCop::Cop::Lint::UselessAssignment do
           'that references the variable in its conditional clause' \
           'and unreferenced' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method(flag)
           foo = 1 unless foo
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -946,12 +946,12 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is assigned on each side of && ' \
           'and referenced after the &&' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           (foo = do_something_returns_object_or_nil) && (foo = 1)
           foo
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -961,13 +961,13 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a unreferenced variable is reassigned ' \
           'on the left side of && and referenced after the &&' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           foo = 1
           (foo = do_something_returns_object_or_nil) && do_something
           foo
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for the unreferenced assignment' do
@@ -983,13 +983,13 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a unreferenced variable is reassigned ' \
           'on the right side of && and referenced after the &&' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           foo = 1
           do_something_returns_object_or_nil && foo = 2
           foo
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -999,13 +999,13 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is reassigned ' \
           'while referencing itself in rhs and referenced' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           foo = [1, 2]
           foo = foo.map { |i| i + 1 }
           puts foo
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -1015,13 +1015,13 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is reassigned ' \
           'with binary operator assignment and referenced' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           foo = 1
           foo += 1
           foo
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -1031,13 +1031,13 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is reassigned ' \
           'with logical operator assignment and referenced' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           foo = do_something_returns_object_or_nil
           foo ||= 1
           foo
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -1048,13 +1048,13 @@ describe RuboCop::Cop::Lint::UselessAssignment do
            'assignment while assigning to itself in rhs ' \
            'then referenced' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           foo = 1
           foo += foo = 2
           foo
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for the assignment in rhs' do
@@ -1069,12 +1069,12 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   context 'when a variable is assigned first with ||= and referenced' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           foo ||= 1
           foo
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -1084,12 +1084,12 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is assigned with ||= ' \
           'at the last expression of the scope' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           foo = do_something_returns_object_or_nil
           foo ||= 1
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -1106,13 +1106,13 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is assigned with ||= ' \
           'before the last expression of the scope' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           foo = do_something_returns_object_or_nil
           foo ||= 1
           some_return_value
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -1128,12 +1128,12 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is assigned with multiple assignment ' \
           'and unreferenced' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           foo, bar = do_something
           puts foo
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -1154,13 +1154,13 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is reassigned with multiple assignment ' \
           'while referencing itself in rhs and referenced' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           foo = 1
           foo, bar = do_something(foo)
           puts foo, bar
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -1170,12 +1170,12 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is assigned in loop body ' \
           'and referenced in post while condition' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         begin
           a = (a || 0) + 1
           puts a
         end while a <= 2
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -1185,12 +1185,12 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is assigned in loop body ' \
           'and referenced in post until condition' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         begin
           a = (a || 0) + 1
           puts a
         end until a > 2
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -1200,14 +1200,14 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is assigned ' \
           'in main body of begin with rescue but unreferenced' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         begin
           do_something
           foo = true
         rescue
           do_anything
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -1225,7 +1225,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is assigned in main body of begin, rescue ' \
           'and else then referenced after the begin' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         begin
           do_something
           foo = :in_begin
@@ -1238,7 +1238,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
         end
 
         puts foo
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -1248,7 +1248,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is reassigned multiple times ' \
           'in main body of begin then referenced after the begin' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         begin
           status = :initial
           connect_sometimes_fails!
@@ -1260,7 +1260,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
         end
 
         puts status
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -1270,7 +1270,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is reassigned multiple times ' \
           'in main body of begin then referenced in rescue' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         begin
           status = :initial
           connect_sometimes_fails!
@@ -1280,7 +1280,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
         rescue
           puts status
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -1290,7 +1290,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is reassigned multiple times ' \
           'in main body of begin then referenced in ensure' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         begin
           status = :initial
           connect_sometimes_fails!
@@ -1300,7 +1300,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
         ensure
           puts status
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -1310,7 +1310,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is reassigned multiple times in rescue ' \
           'and referenced after the begin' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         foo = false
 
         begin
@@ -1321,7 +1321,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
         end
 
         puts foo
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -1337,7 +1337,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is reassigned multiple times ' \
           'in rescue with ensure then referenced after the begin' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         foo = false
 
         begin
@@ -1350,7 +1350,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
         end
 
         puts foo
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -1366,7 +1366,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is reassigned multiple times ' \
           'in ensure with rescue then referenced after the begin' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         begin
           do_something
         rescue
@@ -1377,7 +1377,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
         end
 
         puts foo
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -1393,7 +1393,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is assigned at the end of rescue ' \
           'and would be referenced with retry' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         retried = false
 
         begin
@@ -1403,7 +1403,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
           retried = true
           retry
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -1413,7 +1413,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is assigned with operator assignment ' \
           'in rescue and would be referenced with retry' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         retry_count = 0
 
         begin
@@ -1422,7 +1422,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
           fail if (retry_count += 1) > 3
           retry
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -1433,7 +1433,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
           'in main body of begin, rescue and else ' \
           'and reassigned in ensure then referenced after the begin' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         begin
           do_something
           foo = :in_begin
@@ -1448,7 +1448,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
         end
 
         puts foo
-      END
+      RUBY
     end
 
     it 'registers offenses for each assignment before ensure' do
@@ -1465,14 +1465,14 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a rescued error variable is wrongly tried to be referenced ' \
           'in another rescue body' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         begin
           do_something
         rescue FirstError => error
         rescue SecondError
           p error # => nil
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -1488,12 +1488,12 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a method argument is reassigned ' \
           'and zero arity super is called' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method(foo)
           foo = 1
           super
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -1503,12 +1503,12 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a local variable is unreferenced ' \
           'and zero arity super is called' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method(bar)
           foo = 1
           super
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -1526,12 +1526,12 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a method argument is reassigned ' \
           'but not passed to super' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method(foo, bar)
           foo = 1
           super(bar)
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -1563,11 +1563,11 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a named capture is unreferenced ' \
           'in other than top level' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           /(?<foo>\\w+)/ =~ 'FOO'
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -1586,13 +1586,13 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   context 'when a named capture is referenced' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           /(?<foo>\w+)(?<bar>\s+)/ =~ 'FOO'
           puts foo
           puts bar
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -1602,13 +1602,13 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is referenced ' \
           'in rhs of named capture expression' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           foo = 'some string'
           /(?<foo>\w+)/ =~ foo
           puts foo
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -1617,14 +1617,14 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is assigned in begin ' \
           'and referenced outside' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           begin
             foo = 1
           end
           puts foo
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -1634,14 +1634,14 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is shadowed by a block argument ' \
           'and unreferenced' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           foo = 1
           1.times do |foo|
             puts foo
           end
         end
-      END
+      RUBY
     end
 
     it 'registers an offense' do
@@ -1658,13 +1658,13 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   context 'when a variable is not used and the name starts with _' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method
           _foo = 1
           bar = 2
           puts bar
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -1673,10 +1673,10 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   context 'when a method argument is not used' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method(arg)
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -1685,10 +1685,10 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   context 'when an optional method argument is not used' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method(arg = nil)
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -1697,10 +1697,10 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   context 'when a block method argument is not used' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method(&block)
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -1709,10 +1709,10 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   context 'when a splat method argument is not used' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method(*args)
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -1721,10 +1721,10 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   context 'when a optional keyword method argument is not used' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method(name: value)
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts' unless RUBY_VERSION < '2.0'
@@ -1733,11 +1733,11 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   context 'when a keyword splat method argument is used' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method(name: value, **rest_keywords)
           p rest_keywords
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts' unless RUBY_VERSION < '2.0'
@@ -1746,10 +1746,10 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   context 'when a keyword splat method argument is not used' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method(name: value, **rest_keywords)
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts' unless RUBY_VERSION < '2.0'
@@ -1758,10 +1758,10 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   context 'when an anonymous keyword splat method argument is defined' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         def some_method(name: value, **)
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts' unless RUBY_VERSION < '2.0'
@@ -1770,10 +1770,10 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   context 'when a block argument is not used' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         1.times do |i|
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -1801,11 +1801,11 @@ describe RuboCop::Cop::Lint::UselessAssignment do
           'while being passed to a method taking block' do
     context 'and the variable is used' do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           some_method(foo = 1) do
           end
           puts foo
-        END
+        RUBY
       end
 
       include_examples 'accepts'
@@ -1814,10 +1814,10 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
     context 'and the variable is not used' do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           some_method(foo = 1) do
           end
-        END
+        RUBY
       end
 
       it 'registers an offense' do
@@ -1836,11 +1836,11 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is assigned ' \
           'and passed to a method followed by method taking block' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         pattern = '*.rb'
         Dir.glob(pattern).map do |path|
         end
-      END
+      RUBY
     end
 
     include_examples 'accepts'
@@ -1866,13 +1866,13 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   describe 'similar name suggestion' do
     context "when there's a similar variable-like method invocation" do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           def some_method
             enviromnent = {}
             another_symbol
             puts environment
           end
-        END
+        RUBY
       end
 
       it 'suggests the method name' do
@@ -1887,14 +1887,14 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
     context "when there's a similar variable" do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           def some_method
             environment = nil
             another_symbol
             enviromnent = {}
             puts environment
           end
-        END
+        RUBY
       end
 
       it 'suggests the variable name' do
@@ -1909,13 +1909,13 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
     context 'when there are only less similar names' do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           def some_method
             enviromnent = {}
             another_symbol
             puts envelope
           end
-        END
+        RUBY
       end
 
       it 'does not suggest any name' do
@@ -1928,13 +1928,13 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
     context "when there's a similar method invocation with explicit receiver" do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           def some_method
             enviromnent = {}
             another_symbol
             puts self.environment
           end
-        END
+        RUBY
       end
 
       it 'does not suggest any name' do
@@ -1947,13 +1947,13 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
     context "when there's a similar method invocation with arguments" do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           def some_method
             enviromnent = {}
             another_symbol
             puts environment(1)
           end
-        END
+        RUBY
       end
 
       it 'does not suggest any name' do
@@ -1966,7 +1966,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
     context "when there's a similar name but it's in inner scope" do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           class SomeClass
             enviromnent = {}
 
@@ -1974,7 +1974,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
               puts environment
             end
           end
-        END
+        RUBY
       end
 
       it 'does not suggest any name' do

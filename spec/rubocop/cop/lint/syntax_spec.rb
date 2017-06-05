@@ -45,10 +45,10 @@ describe RuboCop::Cop::Lint::Syntax do
     end
 
     context 'with a parser error' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         # encoding: utf-8
         # \xf9
-      END
+      RUBY
 
       it 'returns an offense' do
         expect(offenses.size).to eq(1)

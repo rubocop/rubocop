@@ -4,12 +4,12 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for method body starting with a blank' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       def some_method
 
         do_something
       end
-    END
+    RUBY
     expect(cop.messages)
       .to eq(['Extra empty line detected at method body beginning.'])
   end
@@ -28,71 +28,71 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody do
   end
 
   it 'autocorrects method body starting with a blank' do
-    corrected = autocorrect_source(cop, <<-END.strip_indent)
+    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
       def some_method
 
         do_something
       end
-    END
-    expect(corrected).to eq <<-END.strip_indent
+    RUBY
+    expect(corrected).to eq <<-RUBY.strip_indent
       def some_method
         do_something
       end
-    END
+    RUBY
   end
 
   it 'registers an offense for class method body starting with a blank' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       def Test.some_method
 
         do_something
       end
-    END
+    RUBY
     expect(cop.messages)
       .to eq(['Extra empty line detected at method body beginning.'])
   end
 
   it 'autocorrects class method body starting with a blank' do
-    corrected = autocorrect_source(cop, <<-END.strip_indent)
+    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
       def Test.some_method
 
         do_something
       end
-    END
-    expect(corrected).to eq <<-END.strip_indent
+    RUBY
+    expect(corrected).to eq <<-RUBY.strip_indent
       def Test.some_method
         do_something
       end
-    END
+    RUBY
   end
 
   it 'registers an offense for method body ending with a blank' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       def some_method
         do_something
 
       end
-    END
+    RUBY
     expect(cop.messages)
       .to eq(['Extra empty line detected at method body end.'])
   end
 
   it 'registers an offense for class method body ending with a blank' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       def Test.some_method
         do_something
 
       end
-    END
+    RUBY
     expect(cop.messages)
       .to eq(['Extra empty line detected at method body end.'])
   end
 
   it 'is not fooled by single line methods' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def some_method; do_something; end
 
       something_else
-    END
+    RUBY
   end
 end

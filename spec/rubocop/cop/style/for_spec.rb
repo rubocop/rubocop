@@ -7,20 +7,20 @@ describe RuboCop::Cop::Style::For, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'each' } }
 
     it 'registers an offense for for' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         def func
           for n in [1, 2, 3] do
             puts n
           end
         end
-      END
+      RUBY
       expect(cop.messages).to eq(['Prefer `each` over `for`.'])
       expect(cop.highlights).to eq(['for'])
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'for')
     end
 
     it 'registers an offense for opposite + correct style' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         def func
           for n in [1, 2, 3] do
             puts n
@@ -29,19 +29,19 @@ describe RuboCop::Cop::Style::For, :config do
             puts n
           end
         end
-      END
+      RUBY
       expect(cop.messages).to eq(['Prefer `each` over `for`.'])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'accepts multiline each' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def func
           [1, 2, 3].each do |n|
             puts n
           end
         end
-      END
+      RUBY
     end
 
     it 'accepts :for' do
@@ -57,30 +57,30 @@ describe RuboCop::Cop::Style::For, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'for' } }
 
     it 'accepts for' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def func
           for n in [1, 2, 3] do
             puts n
           end
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for multiline each' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         def func
           [1, 2, 3].each do |n|
             puts n
           end
         end
-      END
+      RUBY
       expect(cop.messages).to eq(['Prefer `for` over `each`.'])
       expect(cop.highlights).to eq(['each'])
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'each')
     end
 
     it 'registers an offense for correct + opposite style' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         def func
           for n in [1, 2, 3] do
             puts n
@@ -89,28 +89,28 @@ describe RuboCop::Cop::Style::For, :config do
             puts n
           end
         end
-      END
+      RUBY
       expect(cop.messages).to eq(['Prefer `for` over `each`.'])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'accepts single line each' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def func
           [1, 2, 3].each { |n| puts n }
         end
-      END
+      RUBY
     end
 
     context 'when using safe navigation operator' do
       let(:ruby_version) { 2.3 }
 
       it 'does not break' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           def func
             [1, 2, 3]&.each { |n| puts n }
           end
-        END
+        RUBY
       end
     end
   end

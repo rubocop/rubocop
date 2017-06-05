@@ -5,10 +5,10 @@ describe RuboCop::Cop::Layout::FirstMethodArgumentLineBreak do
 
   context 'args listed on the first line' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         foo(bar,
           baz)
-      END
+      RUBY
     end
 
     it 'detects the offense' do
@@ -33,10 +33,10 @@ describe RuboCop::Cop::Layout::FirstMethodArgumentLineBreak do
 
   context 'hash arg spanning multiple lines' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         something(3, bar: 1,
         baz: 2)
-      END
+      RUBY
     end
 
     it 'detects the offense' do
@@ -61,10 +61,10 @@ describe RuboCop::Cop::Layout::FirstMethodArgumentLineBreak do
 
   context 'hash arg without a line break before the first pair' do
     let(:source) do
-      <<-END.strip_indent
+      <<-RUBY.strip_indent
         something(bar: 1,
         baz: 2)
-      END
+      RUBY
     end
 
     it 'detects the offense' do
@@ -92,10 +92,10 @@ describe RuboCop::Cop::Layout::FirstMethodArgumentLineBreak do
   end
 
   it 'ignores arguments without parens' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       foo bar,
         baz
-    END
+    RUBY
   end
 
   it 'ignores methods without arguments' do

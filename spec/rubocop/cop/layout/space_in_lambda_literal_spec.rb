@@ -18,12 +18,12 @@ describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
     end
 
     it 'does not register an offense for multi-line lambdas' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         l = lambda do |a, b|
           tmp = a * 7
           tmp * b / 50
         end
-      END
+      RUBY
     end
 
     it 'does not register an offense for no space between -> and {' do
@@ -92,12 +92,12 @@ describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
     end
 
     it 'does not register an offense for multi-line lambdas' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         l = lambda do |a, b|
           tmp = a * 7
           tmp * b / 50
         end
-      END
+      RUBY
     end
 
     it 'does not register an offense for a space between -> and {' do

@@ -69,10 +69,10 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   end
 
   it 'accepts == in condition' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if test == 10
       end
-    END
+    RUBY
   end
 
   it 'registers an offense for assignment after == in condition' do
@@ -111,32 +111,32 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   end
 
   it 'does not blow up for empty if condition' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       if ()
       end
-    END
+    RUBY
   end
 
   it 'does not blow up for empty unless condition' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       unless ()
       end
-    END
+    RUBY
   end
 
   context 'safe assignment is allowed' do
     it 'accepts = in condition surrounded with braces' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if (test = 10)
         end
-      END
+      RUBY
     end
 
     it 'accepts []= in condition surrounded with braces' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if (test[0] = 10)
         end
-      END
+      RUBY
     end
   end
 

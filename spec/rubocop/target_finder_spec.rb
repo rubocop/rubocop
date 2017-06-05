@@ -121,18 +121,18 @@ describe RuboCop::TargetFinder, :isolated_environment do
     context 'when some paths are specified in the configuration Exclude ' \
             'and they are explicitly passed as arguments' do
       before do
-        create_file('.rubocop.yml', <<-END.strip_indent)
+        create_file('.rubocop.yml', <<-YAML.strip_indent)
           AllCops:
             Exclude:
               - dir1/ruby1.rb
               - 'dir2/*'
-        END
+        YAML
 
-        create_file('dir1/.rubocop.yml', <<-END.strip_indent)
+        create_file('dir1/.rubocop.yml', <<-YAML.strip_indent)
           AllCops:
             Exclude:
               - executable
-        END
+        YAML
       end
 
       let(:args) do

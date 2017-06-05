@@ -18,10 +18,10 @@ module RuboCop
               'the beginning of the string.'.freeze
         SINGLE_QUOTE = "'".freeze
 
-        def_node_matcher :redundant_regex?, <<-END
+        def_node_matcher :redundant_regex?, <<-PATTERN
           {(send $!nil {:match :=~} (regexp (str $#literal_at_start?) (regopt)))
            (send (regexp (str $#literal_at_start?) (regopt)) {:match :=~} $_)}
-        END
+        PATTERN
 
         def literal_at_start?(regex_str)
           # is this regexp 'literal' in the sense of only matching literal

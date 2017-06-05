@@ -23,44 +23,44 @@ describe RuboCop::Cop::Performance::RedundantMatch do
   end
 
   it 'autocorrects .match in while condition' do
-    new_source = autocorrect_source(cop, <<-END.strip_indent)
+    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
       while str.match(/regex/)
         do_something
       end
-    END
-    expect(new_source).to eq(<<-END.strip_indent)
+    RUBY
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       while str =~ /regex/
         do_something
       end
-    END
+    RUBY
   end
 
   it 'autocorrects .match in until condition' do
-    new_source = autocorrect_source(cop, <<-END.strip_indent)
+    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
       until str.match(/regex/)
         do_something
       end
-    END
-    expect(new_source).to eq(<<-END.strip_indent)
+    RUBY
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       until str =~ /regex/
         do_something
       end
-    END
+    RUBY
   end
 
   it 'autocorrects .match in method body (but not tail position)' do
-    new_source = autocorrect_source(cop, <<-END.strip_indent)
+    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
       def method(str)
         str.match(/regex/)
         true
       end
-    END
-    expect(new_source).to eq(<<-END.strip_indent)
+    RUBY
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       def method(str)
         str =~ /regex/
         true
       end
-    END
+    RUBY
   end
 
   it 'does not autocorrect if .match has a string agrgument' do
@@ -70,41 +70,41 @@ describe RuboCop::Cop::Performance::RedundantMatch do
 
   it 'does not register an error when return value of .match is passed ' \
      'to another method' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       def method(str)
        something(str.match(/regex/))
       end
-    END
+    RUBY
     expect(cop.messages).to be_empty
   end
 
   it 'does not register an error when return value of .match is stored in an ' \
      'instance variable' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       def method(str)
        @var = str.match(/regex/)
        true
       end
-    END
+    RUBY
     expect(cop.messages).to be_empty
   end
 
   it 'does not register an error when return value of .match is returned from' \
      ' surrounding method' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       def method(str)
        str.match(/regex/)
       end
-    END
+    RUBY
     expect(cop.messages).to be_empty
   end
 
   it 'does not register an offense when match has a block' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       /regex/.match(str) do |m|
         something(m)
       end
-    END
+    RUBY
   end
 
   it 'does not register an error when there is no receiver to the match call' do

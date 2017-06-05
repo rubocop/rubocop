@@ -7,7 +7,7 @@ describe RuboCop::Cop::Util do
 
   describe '#line_range' do
     let(:source) do
-      <<-END
+      <<-RUBY
         foo = 1
         bar = 2
         class Test
@@ -16,7 +16,7 @@ describe RuboCop::Cop::Util do
           end
         end
         baz = 8
-      END
+      RUBY
     end
 
     let(:processed_source) { parse_source(source) }
@@ -100,12 +100,12 @@ describe RuboCop::Cop::Util do
   end
 
   describe 'source indicated by #range_by_whole_lines' do
-    let(:source) { <<-END.strip_indent }
+    let(:source) { <<-RUBY.strip_indent }
       puts 'example'
       puts 'another example'
 
       something_else
-    END
+    RUBY
     let(:processed_source) { parse_source(source) }
 
     # `input_source` defined in contexts

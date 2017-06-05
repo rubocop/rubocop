@@ -89,14 +89,14 @@ module RuboCop
 
       context "when there's .rubocop.yml" do
         before do
-          create_file('.rubocop.yml', <<-END.strip_indent)
+          create_file('.rubocop.yml', <<-YAML.strip_indent)
             Cop1:
               Exclude:
                 - Gemfile
             Cop2:
               Exclude:
                 - "**/*.blah"
-          END
+          YAML
         end
 
         before do

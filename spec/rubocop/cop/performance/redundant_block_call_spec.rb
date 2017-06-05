@@ -4,70 +4,70 @@ describe RuboCop::Cop::Performance::RedundantBlockCall do
   subject(:cop) { described_class.new }
 
   it 'autocorrects block.call without arguments' do
-    new_source = autocorrect_source(cop, <<-END.strip_indent)
+    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
       def method(&block)
         block.call
       end
-    END
-    expect(new_source).to eq(<<-END.strip_indent)
+    RUBY
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       def method(&block)
         yield
       end
-    END
+    RUBY
   end
 
   it 'autocorrects block.call with empty parentheses' do
-    new_source = autocorrect_source(cop, <<-END.strip_indent)
+    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
       def method(&block)
         block.call()
       end
-    END
-    expect(new_source).to eq(<<-END.strip_indent)
+    RUBY
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       def method(&block)
         yield
       end
-    END
+    RUBY
   end
 
   it 'autocorrects block.call with arguments' do
-    new_source = autocorrect_source(cop, <<-END.strip_indent)
+    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
       def method(&block)
         block.call 1, 2
       end
-    END
-    expect(new_source).to eq(<<-END.strip_indent)
+    RUBY
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       def method(&block)
         yield 1, 2
       end
-    END
+    RUBY
   end
 
   it 'autocorrects multiple occurances of block.call with arguments' do
-    new_source = autocorrect_source(cop, <<-END.strip_indent)
+    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
       def method(&block)
         block.call 1
         block.call 2
       end
-    END
-    expect(new_source).to eq(<<-END.strip_indent)
+    RUBY
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       def method(&block)
         yield 1
         yield 2
       end
-    END
+    RUBY
   end
 
   it 'autocorrects even when block arg has a different name' do
-    new_source = autocorrect_source(cop, <<-END.strip_indent)
+    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
       def method(&func)
         func.call
       end
-    END
-    expect(new_source).to eq(<<-END.strip_indent)
+    RUBY
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       def method(&func)
         yield
       end
-    END
+    RUBY
   end
 
   it 'accepts a block that is not `call`ed' do
@@ -129,46 +129,46 @@ describe RuboCop::Cop::Performance::RedundantBlockCall do
   end
 
   it 'formats the error message for func.call(1) correctly' do
-    expect_offense(<<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       def method(&func)
         func.call(1)
         ^^^^^^^^^^^^ Use `yield` instead of `func.call`.
       end
-    END
+    RUBY
   end
 
   it 'autocorrects using parentheses when block.call uses parentheses' do
-    new_source = autocorrect_source(cop, <<-END.strip_indent)
+    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
       def method(&block)
         block.call(a, b)
       end
-    END
+    RUBY
 
-    expect(new_source).to eq(<<-END.strip_indent)
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       def method(&block)
         yield(a, b)
       end
-    END
+    RUBY
   end
 
   it 'autocorrects when the result of the call is used in a scope that ' \
      'requires parentheses' do
-    source = <<-END.strip_indent
+    source = <<-RUBY.strip_indent
       def method(&block)
         each_with_object({}) do |(key, value), acc|
           acc.merge!(block.call(key) => rhs[value])
         end
       end
-    END
+    RUBY
 
     new_source = autocorrect_source(cop, source)
 
-    expect(new_source).to eq(<<-END.strip_indent)
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       def method(&block)
         each_with_object({}) do |(key, value), acc|
           acc.merge!(yield(key) => rhs[value])
         end
       end
-    END
+    RUBY
   end
 end

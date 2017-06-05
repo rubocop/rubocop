@@ -12,23 +12,23 @@ module RuboCop
       # @example
       #
       #   # bad
-      #   <<-END
+      #   <<-RUBY
       #   something
-      #   END
+      #   RUBY
       #
       #   # good
       #   # When EnforcedStyle is squiggly, bad code is auto-corrected to the
       #   # following code.
-      #   <<~END
+      #   <<~RUBY
       #     something
-      #   END
+      #   RUBY
       #
       #   # good
       #   # When EnforcedStyle is active_support, bad code is auto-corrected to
       #   # the following code.
-      #   <<-END.strip_heredoc
+      #   <<-RUBY.strip_heredoc
       #     something
-      #   END
+      #   RUBY
       class IndentHeredoc < Cop
         include ConfigurableEnforcedStyle
         include SafeMode

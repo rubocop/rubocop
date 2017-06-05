@@ -5,28 +5,28 @@ describe RuboCop::Cop::Style::MultilineTernaryOperator do
 
   it 'registers offense when the if branch and the else branch are ' \
      'on a separate line from the condition' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       a = cond ?
         b : c
-    END
+    RUBY
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'registers an offense when the false branch is on a separate line' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       a = cond ? b :
           c
-    END
+    RUBY
 
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'registers an offense when everything is on a separate line' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       a = cond ?
           b :
           c
-    END
+    RUBY
 
     expect(cop.offenses.size).to eq(1)
   end

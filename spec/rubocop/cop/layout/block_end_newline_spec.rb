@@ -9,35 +9,35 @@ describe RuboCop::Cop::Layout::BlockEndNewline do
 
   it 'does not register an offense for multiline blocks with newlines before '\
      'the end' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       test do
         foo
       end
-    END
+    RUBY
     expect(cop.messages).to be_empty
   end
 
   it 'registers an offense when multiline block end is not on its own line' do
-    expect_offense(<<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       test do
         foo end
             ^^^ Expression at 2, 7 should be on its own line.
-    END
+    RUBY
   end
 
   it 'registers an offense when multiline block } is not on its own line' do
-    expect_offense(<<-END.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       test {
         foo }
             ^ Expression at 2, 7 should be on its own line.
-    END
+    RUBY
   end
 
   it 'autocorrects a do/end block where the end is not on its own line' do
-    src = <<-END.strip_indent
+    src = <<-RUBY.strip_indent
       test do
         foo end
-    END
+    RUBY
 
     new_source = autocorrect_source(cop, src)
 
@@ -48,10 +48,10 @@ describe RuboCop::Cop::Layout::BlockEndNewline do
   end
 
   it 'autocorrects a {} block where the } is not on its own line' do
-    src = <<-END.strip_indent
+    src = <<-RUBY.strip_indent
       test {
         foo }
-    END
+    RUBY
 
     new_source = autocorrect_source(cop, src)
 

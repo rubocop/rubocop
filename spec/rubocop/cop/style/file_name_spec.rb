@@ -86,10 +86,10 @@ describe RuboCop::Cop::Style::FileName do
 
   context 'with non-snake-case file names with a shebang' do
     let(:filename) { '/some/dir/test-case' }
-    let(:source) { <<-END.strip_indent }
+    let(:source) { <<-RUBY.strip_indent }
       #!/usr/bin/env ruby
       print 1
-    END
+    RUBY
 
     it 'does not report an offense' do
       expect(cop.offenses).to be_empty
@@ -217,40 +217,40 @@ describe RuboCop::Cop::Style::FileName do
     end
 
     context 'on a file which defines a nested module' do
-      let(:source) { <<-END.strip_indent }
+      let(:source) { <<-RUBY.strip_indent }
         module A
           module B
           end
         end
-      END
+      RUBY
 
       include_examples 'matching module or class'
     end
 
     context 'on a file which defines a nested class' do
-      let(:source) { <<-END.strip_indent }
+      let(:source) { <<-RUBY.strip_indent }
         module A
           class B
           end
         end
-      END
+      RUBY
 
       include_examples 'matching module or class'
     end
 
     context 'on a file which uses Name::Spaced::Module syntax' do
-      let(:source) { <<-END.strip_indent }
+      let(:source) { <<-RUBY.strip_indent }
         begin
           module A::B
           end
         end
-      END
+      RUBY
 
       include_examples 'matching module or class'
     end
 
     context 'on a file which defines multiple classes' do
-      let(:source) { <<-END.strip_indent }
+      let(:source) { <<-RUBY.strip_indent }
         class X
         end
         module M
@@ -259,7 +259,7 @@ describe RuboCop::Cop::Style::FileName do
           class B
           end
         end
-      END
+      RUBY
 
       include_examples 'matching module or class'
     end
@@ -299,14 +299,14 @@ describe RuboCop::Cop::Style::FileName do
 
     let(:filename) { '/lib/my/cli/admin_user.rb' }
 
-    let(:source) { <<-END.strip_indent }
+    let(:source) { <<-RUBY.strip_indent }
       module My
         module CLI
           class AdminUser
           end
         end
       end
-    END
+    RUBY
 
     it 'does not register an offense' do
       expect(cop.offenses).to be_empty
@@ -324,12 +324,12 @@ describe RuboCop::Cop::Style::FileName do
 
     let(:filename) { '/lib/my/cli.rb' }
 
-    let(:source) { <<-END.strip_indent }
+    let(:source) { <<-RUBY.strip_indent }
       module My
         class CLI
         end
       end
-    END
+    RUBY
 
     it 'does not register an offense' do
       expect(cop.offenses).to be_empty
@@ -347,12 +347,12 @@ describe RuboCop::Cop::Style::FileName do
 
     let(:filename) { '/lib/my/http_server.rb' }
 
-    let(:source) { <<-END.strip_indent }
+    let(:source) { <<-RUBY.strip_indent }
       module My
         class HTTPServer
         end
       end
-    END
+    RUBY
 
     it 'does not register an offense' do
       expect(cop.offenses).to be_empty

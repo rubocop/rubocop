@@ -20,7 +20,7 @@ describe RuboCop::Cop::Team do
     let(:file_path) { 'example.rb' }
 
     it 'auto corrects without SyntaxError', :isolated_environment do
-      source = <<-'END'.strip_indent
+      source = <<-'RUBY'.strip_indent
         foo.map{ |a| a.nil? }
 
         'foo' +
@@ -28,8 +28,8 @@ describe RuboCop::Cop::Team do
           "#{baz}"
 
         i=i+1
-      END
-      corrected = <<-'END'.strip_indent
+      RUBY
+      corrected = <<-'RUBY'.strip_indent
         foo.map(&:nil?)
 
         'foo' \
@@ -37,7 +37,7 @@ describe RuboCop::Cop::Team do
           "#{baz}"
 
         i += 1
-      END
+      RUBY
 
       create_file(file_path, source)
       runner.run([])

@@ -31,11 +31,11 @@ describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment do
   end
 
   it 'accepts code that separates the comment from the code with a newline' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       # frozen_string_literal: true
 
       class Foo; end
-    END
+    RUBY
   end
 
   it 'accepts an empty source file' do
@@ -47,29 +47,29 @@ describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment do
   end
 
   it 'autocorrects by adding a newline' do
-    new_source = autocorrect_source(cop, <<-END.strip_indent)
+    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
       # frozen_string_literal: true
       class Foo; end
-    END
+    RUBY
 
-    expect(new_source).to eq(<<-END.strip_indent)
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       # frozen_string_literal: true\n
       class Foo; end
-    END
+    RUBY
   end
 
   it 'autocorrects by adding a newline above the documentation' do
-    new_source = autocorrect_source(cop, <<-END.strip_indent)
+    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
       # frozen_string_literal: true
       # Documentation for Foo
       class Foo; end
-    END
+    RUBY
 
-    expect(new_source).to eq(<<-END.strip_indent)
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       # frozen_string_literal: true
 
       # Documentation for Foo
       class Foo; end
-    END
+    RUBY
   end
 end

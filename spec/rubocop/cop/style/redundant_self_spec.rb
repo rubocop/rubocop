@@ -129,12 +129,12 @@ describe RuboCop::Cop::Style::RedundantSelf do
 
     it 'accepts a self receiver used to distinguish from an argument' \
       ' when an inner method is defined' do
-      src = <<-END.strip_indent
+      src = <<-RUBY.strip_indent
         def foo(bar)
           def inner_method(); end
           puts bar, self.bar
         end
-      END
+      RUBY
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end

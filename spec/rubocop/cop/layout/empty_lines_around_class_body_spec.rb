@@ -13,69 +13,69 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'no_empty_lines' } }
 
     it 'registers an offense for class body starting with a blank' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         class SomeClass
 
           do_something
         end
-      END
+      RUBY
       expect(cop.messages)
         .to eq(['Extra empty line detected at class body beginning.'])
     end
 
     it 'autocorrects class body containing only a blank' do
-      corrected = autocorrect_source(cop, <<-END.strip_indent)
+      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
         class SomeClass
 
         end
-      END
-      expect(corrected).to eq <<-END.strip_indent
+      RUBY
+      expect(corrected).to eq <<-RUBY.strip_indent
         class SomeClass
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for class body ending with a blank' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         class SomeClass
           do_something
 
         end
-      END
+      RUBY
       expect(cop.messages)
         .to eq(['Extra empty line detected at class body end.'])
     end
 
     it 'registers an offense for singleton class body starting with a blank' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         class << self
 
           do_something
         end
-      END
+      RUBY
       expect(cop.messages)
         .to eq(['Extra empty line detected at class body beginning.'])
     end
 
     it 'autocorrects singleton class body containing only a blank' do
-      corrected = autocorrect_source(cop, <<-END.strip_indent)
+      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
         class << self
 
         end
-      END
-      expect(corrected).to eq <<-END.strip_indent
+      RUBY
+      expect(corrected).to eq <<-RUBY.strip_indent
         class << self
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for singleton class body ending with a blank' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         class << self
           do_something
 
         end
-      END
+      RUBY
       expect(cop.messages)
         .to eq(['Extra empty line detected at class body end.'])
     end
@@ -86,11 +86,11 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
     it 'registers an offense for class body not starting or ending with a ' \
        'blank' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         class SomeClass
           do_something
         end
-      END
+      RUBY
       expect(cop.messages).to eq(['Empty line missing at class body beginning.',
                                   'Empty line missing at class body end.'])
     end
@@ -102,27 +102,27 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
     end
 
     it 'autocorrects beginning and end' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         class SomeClass
           do_something
         end
-      END
-      expect(new_source).to eq(<<-END.strip_indent)
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         class SomeClass
 
           do_something
 
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for singleton class body not starting or ending ' \
        'with a blank' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         class << self
           do_something
         end
-      END
+      RUBY
       expect(cop.messages).to eq(['Empty line missing at class body beginning.',
                                   'Empty line missing at class body end.'])
     end
@@ -134,18 +134,18 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
     end
 
     it 'autocorrects beginning and end for `class << self`' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         class << self
           do_something
         end
-      END
-      expect(new_source).to eq(<<-END.strip_indent)
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         class << self
 
           do_something
 
         end
-      END
+      RUBY
     end
   end
 
@@ -166,7 +166,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
       end
 
       it 'registers offence for namespace body starting with a blank' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           class Parent
 
             class Child
@@ -175,12 +175,12 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
             end
           end
-        END
+        RUBY
         expect(cop.messages).to eq([extra_begin])
       end
 
       it 'registers offence for namespace body ending with a blank' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           class Parent
             class Child
 
@@ -189,38 +189,38 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
             end
 
           end
-        END
+        RUBY
         expect(cop.messages).to eq([extra_end])
       end
 
       it 'registers offences for namespaced class body not starting '\
           'with a blank' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           class Parent
             class Child
               do_something
 
             end
           end
-        END
+        RUBY
         expect(cop.messages).to eq([missing_begin])
       end
 
       it 'registers offences for namespaced class body not ending '\
           'with a blank' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           class Parent
             class Child
 
               do_something
             end
           end
-        END
+        RUBY
         expect(cop.messages).to eq([missing_end])
       end
 
       it 'autocorrects beginning and end' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           class Parent < Base
 
             class Child
@@ -228,8 +228,8 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
             end
 
           end
-        END
-        expect(new_source).to eq(<<-END.strip_indent)
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           class Parent < Base
             class Child
 
@@ -237,7 +237,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
             end
           end
-        END
+        RUBY
       end
     end
 
@@ -253,26 +253,26 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
       end
 
       it 'registers offence for namespace body starting with a blank' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           class Parent
 
             module Child
               do_something
             end
           end
-        END
+        RUBY
         expect(cop.messages).to eq([extra_begin])
       end
 
       it 'registers offence for namespace body ending with a blank' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           class Parent
             module Child
               do_something
             end
 
           end
-        END
+        RUBY
         expect(cop.messages).to eq([extra_end])
       end
     end
@@ -297,7 +297,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
       it 'registers offences for namespace body starting '\
         'and ending without a blank' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           class Parent
             class Mom
 
@@ -308,7 +308,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
             end
           end
-        END
+        RUBY
         expect(cop.messages).to eq([missing_begin, missing_end])
       end
     end

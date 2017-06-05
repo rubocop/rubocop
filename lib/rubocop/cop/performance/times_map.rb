@@ -37,10 +37,10 @@ module RuboCop
           end
         end
 
-        def_node_matcher :times_map_call, <<-END
+        def_node_matcher :times_map_call, <<-PATTERN
           {(block (send (send !nil :times) ${:map :collect}) ...)
            (send (send !nil :times) ${:map :collect} (block_pass ...))}
-        END
+        PATTERN
 
         def autocorrect(node)
           send_node = node.send_type? ? node : node.each_descendant(:send).first

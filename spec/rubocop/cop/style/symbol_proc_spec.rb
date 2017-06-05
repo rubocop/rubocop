@@ -135,17 +135,17 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
   end
 
   it 'auto-corrects correctly when args have a trailing comma' do
-    corrected = autocorrect_source(cop, <<-END.strip_indent)
+    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
       mail(
         to: 'foo',
         subject: 'bar',
       ) { |format| format.text }
-    END
-    expect(corrected).to eq(<<-END.strip_indent)
+    RUBY
+    expect(corrected).to eq(<<-RUBY.strip_indent)
       mail(
         to: 'foo',
         subject: 'bar', &:text
       )
-    END
+    RUBY
   end
 end

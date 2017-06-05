@@ -28,12 +28,12 @@ describe RuboCop::Cop::Style::ClassAndModuleCamelCase do
   end
 
   it 'accepts CamelCase names' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       class MyClass
       end
 
       module Mine
       end
-    END
+    RUBY
   end
 end

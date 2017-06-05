@@ -45,14 +45,14 @@ describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses do
     end
 
     it 'accepts parens in complex assignment' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         test = begin
           case a
           when b
             c = test() if d
           end
         end
-      END
+      RUBY
     end
   end
 
@@ -85,17 +85,17 @@ describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses do
   # These will be offenses for the EmptyLiteral cop. The autocorrect loop will
   # handle that.
   it 'auto-corrects calls that could be empty literals' do
-    original = <<-END.strip_indent
+    original = <<-RUBY.strip_indent
       Hash.new()
       Array.new()
       String.new()
-    END
+    RUBY
     new_source = autocorrect_source(cop, original)
-    expect(new_source).to eq(<<-END.strip_indent)
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       Hash.new
       Array.new
       String.new
-    END
+    RUBY
   end
 
   context 'method call as argument' do

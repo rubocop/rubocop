@@ -4,7 +4,7 @@ describe RuboCop::Cop::Lint::DefEndAlignment, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:source) do
-    <<-END.strip_indent
+    <<-RUBY.strip_indent
       foo def a
         a1
       end
@@ -12,7 +12,7 @@ describe RuboCop::Cop::Lint::DefEndAlignment, :config do
       foo def b
             b1
           end
-    END
+    RUBY
   end
 
   context 'when EnforcedStyleAlignWith is start_of_line' do
@@ -47,7 +47,7 @@ describe RuboCop::Cop::Lint::DefEndAlignment, :config do
 
       it 'does auto-correction' do
         corrected = autocorrect_source(cop, source)
-        expect(corrected).to eq(<<-END.strip_indent)
+        expect(corrected).to eq(<<-RUBY.strip_indent)
           foo def a
             a1
           end
@@ -55,7 +55,7 @@ describe RuboCop::Cop::Lint::DefEndAlignment, :config do
           foo def b
                 b1
           end
-        END
+        RUBY
       end
     end
   end
@@ -92,7 +92,7 @@ describe RuboCop::Cop::Lint::DefEndAlignment, :config do
 
         it 'does auto-correction' do
           corrected = autocorrect_source(cop, source)
-          expect(corrected).to eq(<<-END.strip_indent)
+          expect(corrected).to eq(<<-RUBY.strip_indent)
             foo def a
               a1
                 end
@@ -100,7 +100,7 @@ describe RuboCop::Cop::Lint::DefEndAlignment, :config do
             foo def b
                   b1
                 end
-          END
+          RUBY
         end
       end
     end

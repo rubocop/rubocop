@@ -15,10 +15,10 @@ describe RuboCop::Cop::Layout::IndentAssignment, :config do
   end
 
   it 'registers an offense for incorrectly indented rhs' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       a =
       if b ; end
-    END
+    RUBY
 
     expect(cop.offenses.length).to eq(1)
     expect(cop.highlights).to eq(['if b ; end'])
@@ -26,33 +26,33 @@ describe RuboCop::Cop::Layout::IndentAssignment, :config do
   end
 
   it 'allows assignments that do not start on a newline' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       a = if b
             foo
           end
-    END
+    RUBY
   end
 
   it 'allows a properly indented rhs' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       a =
         if b ; end
-    END
+    RUBY
   end
 
   it 'allows a properly indented rhs with fullwidth characters' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       f 'Ｒｕｂｙ', a =
                       b
-    END
+    RUBY
   end
 
   it 'registers an offense for multi-lhs' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       a,
       b =
       if b ; end
-    END
+    RUBY
 
     expect(cop.offenses.length).to eq(1)
     expect(cop.highlights).to eq(['if b ; end'])
@@ -60,50 +60,50 @@ describe RuboCop::Cop::Layout::IndentAssignment, :config do
   end
 
   it 'ignores comparison operators' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       a ===
       if b ; end
-    END
+    RUBY
   end
 
   it 'auto-corrects indentation' do
     new_source = autocorrect_source(
-      cop, <<-END.strip_indent
+      cop, <<-RUBY.strip_indent
         a =
         if b ; end
-      END
+      RUBY
     )
 
     expect(new_source)
-      .to eq(<<-END.strip_indent)
+      .to eq(<<-RUBY.strip_indent)
         a =
           if b ; end
-      END
+      RUBY
   end
 
   context 'when indentation width is overridden for this cop only' do
     let(:cop_indent) { 7 }
 
     it 'allows a properly indented rhs' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         a =
                if b ; end
-      END
+      RUBY
     end
 
     it 'auto-corrects indentation' do
       new_source = autocorrect_source(
-        cop, <<-END.strip_indent
+        cop, <<-RUBY.strip_indent
           a =
             if b ; end
-        END
+        RUBY
       )
 
       expect(new_source)
-        .to eq(<<-END.strip_indent)
+        .to eq(<<-RUBY.strip_indent)
           a =
                  if b ; end
-        END
+        RUBY
     end
   end
 end

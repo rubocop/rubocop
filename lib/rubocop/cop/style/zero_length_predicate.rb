@@ -48,17 +48,17 @@ module RuboCop
           # rubocop:enable Style/GuardClause
         end
 
-        def_node_matcher :zero_length_predicate, <<-END
+        def_node_matcher :zero_length_predicate, <<-PATTERN
           {(send (send (...) ${:length :size}) $:== (int $0))
            (send (int $0) $:== (send (...) ${:length :size}))
            (send (send (...) ${:length :size}) $:<  (int $1))
            (send (int $1) $:> (send (...) ${:length :size}))}
-        END
+        PATTERN
 
-        def_node_matcher :nonzero_length_predicate, <<-END
+        def_node_matcher :nonzero_length_predicate, <<-PATTERN
           {(send (send (...) ${:length :size}) ${:> :!=} (int $0))
            (send (int $0) ${:< :!=} (send (...) ${:length :size}))}
-        END
+        PATTERN
 
         def autocorrect(node)
           lambda do |corrector|
@@ -73,17 +73,17 @@ module RuboCop
           "!#{other_receiver(node).source}.empty?"
         end
 
-        def_node_matcher :zero_length_receiver, <<-END
+        def_node_matcher :zero_length_receiver, <<-PATTERN
           {(send (send $_ _) :== (int 0))
            (send (int 0) :== (send $_ _))
            (send (send $_ _) :<  (int 1))
            (send (int 1) :> (send $_ _))}
-        END
+        PATTERN
 
-        def_node_matcher :other_receiver, <<-END
+        def_node_matcher :other_receiver, <<-PATTERN
           {(send (send $_ _) _ _)
            (send _ _ (send $_ _))}
-        END
+        PATTERN
       end
     end
   end

@@ -14,28 +14,28 @@ describe RuboCop::Cop::Lint::EmptyEnsure do
   end
 
   it 'autocorrects for empty ensure' do
-    corrected = autocorrect_source(cop, <<-END.strip_indent)
+    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
       begin
         something
       ensure
       end
-    END
-    expect(corrected).to eq(<<-END.strip_indent)
+    RUBY
+    expect(corrected).to eq(<<-RUBY.strip_indent)
       begin
         something
 
       end
-    END
+    RUBY
   end
 
   it 'does not register an offense for non-empty ensure' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       begin
         something
         return
       ensure
         file.close
       end
-    END
+    RUBY
   end
 end

@@ -17,14 +17,14 @@ describe RuboCop::Cop::Layout::AlignArray do
   end
 
   it 'accepts aligned array keys' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       array = [
         a,
         b,
         c,
         d
       ]
-    END
+    RUBY
   end
 
   it 'accepts single line array' do
@@ -32,85 +32,85 @@ describe RuboCop::Cop::Layout::AlignArray do
   end
 
   it 'accepts several elements per line' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       array = [ a, b,
                 c, d ]
-    END
+    RUBY
   end
 
   it 'accepts aligned array with fullwidth characters' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       puts 'Ｒｕｂｙ', [ a,
                          b ]
-    END
+    RUBY
   end
 
   it 'auto-corrects alignment' do
-    new_source = autocorrect_source(cop, <<-END.strip_indent)
+    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
       array = [
         a,
          b,
         c,
        d
       ]
-    END
-    expect(new_source).to eq(<<-END.strip_indent)
+    RUBY
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       array = [
         a,
         b,
         c,
         d
       ]
-    END
+    RUBY
   end
 
   it 'does not auto-correct array within array with too much indentation' do
-    original_source = <<-END.strip_indent
+    original_source = <<-RUBY.strip_indent
       [:l1,
         [:l2,
 
           [:l3,
            [:l4]]]]
-    END
+    RUBY
     new_source = autocorrect_source(cop, original_source)
-    expect(new_source).to eq(<<-END.strip_indent)
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       [:l1,
        [:l2,
 
          [:l3,
           [:l4]]]]
-    END
+    RUBY
   end
 
   it 'does not auto-correct array within array with too little indentation' do
-    original_source = <<-END.strip_indent
+    original_source = <<-RUBY.strip_indent
       [:l1,
       [:l2,
 
         [:l3,
          [:l4]]]]
-    END
+    RUBY
     new_source = autocorrect_source(cop, original_source)
-    expect(new_source).to eq(<<-END.strip_indent)
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       [:l1,
        [:l2,
 
          [:l3,
           [:l4]]]]
-    END
+    RUBY
   end
 
   it 'auto-corrects only elements that begin a line' do
-    original_source = <<-END.strip_indent
+    original_source = <<-RUBY.strip_indent
       array = [:bar, {
                whiz: 2, bang: 3 }, option: 3]
-    END
+    RUBY
     new_source = autocorrect_source(cop, original_source)
     expect(new_source).to eq(original_source)
   end
 
   it 'does not indent heredoc strings in autocorrect' do
-    original_source = <<-END.strip_indent
+    original_source = <<-RUBY.strip_indent
       var = [
              { :type => 'something',
                :sql => <<EOF
@@ -125,9 +125,9 @@ describe RuboCop::Cop::Layout::AlignArray do
       EOF
             }
       ]
-    END
+    RUBY
     new_source = autocorrect_source(cop, original_source)
-    expect(new_source).to eq(<<-END.strip_indent)
+    expect(new_source).to eq(<<-RUBY.strip_indent)
       var = [
              { :type => 'something',
                :sql => <<EOF
@@ -142,6 +142,6 @@ describe RuboCop::Cop::Layout::AlignArray do
       EOF
              }
       ]
-    END
+    RUBY
   end
 end

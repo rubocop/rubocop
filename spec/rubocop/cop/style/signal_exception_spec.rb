@@ -40,17 +40,17 @@ describe RuboCop::Cop::Style::SignalException, :config do
     end
 
     it 'accepts raise in rescue section' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         begin
           fail
         rescue Exception
           raise RuntimeError
         end
-      END
+      RUBY
     end
 
     it 'accepts raise in def with multiple rescues' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def test
           fail
         rescue StandardError
@@ -58,7 +58,7 @@ describe RuboCop::Cop::Style::SignalException, :config do
         rescue Exception
           raise
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for fail in def rescue section' do
@@ -96,34 +96,34 @@ describe RuboCop::Cop::Style::SignalException, :config do
     end
 
     it 'accepts raise in def rescue section' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def test
           fail
         rescue Exception
           raise
         end
-      END
+      RUBY
     end
 
     it 'accepts `raise` and `fail` with explicit receiver' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def test
           test.raise
         rescue Exception
           test.fail
         end
-      END
+      RUBY
     end
 
     it 'registers an offense for `raise` and `fail` with `Kernel` as ' \
        'explicit receiver' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         def test
           Kernel.raise
         rescue Exception
           Kernel.fail
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq(2)
       expect(cop.messages)
         .to eq(['Use `fail` instead of `raise` to signal exceptions.',
@@ -142,17 +142,17 @@ describe RuboCop::Cop::Style::SignalException, :config do
     end
 
     it 'registers one offense for each raise' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         cop.stub(:on_def) { raise RuntimeError }
         cop.stub(:on_def) { raise RuntimeError }
-      END
+      RUBY
       expect(cop.offenses.size).to eq(2)
       expect(cop.messages)
         .to eq(['Use `fail` instead of `raise` to signal exceptions.'] * 2)
     end
 
     it 'is not confused by nested begin/rescue' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         begin
           raise
           begin
@@ -163,7 +163,7 @@ describe RuboCop::Cop::Style::SignalException, :config do
         rescue Exception
           #do nothing
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq(3)
       expect(cop.messages)
         .to eq(['Use `fail` instead of `raise` to signal exceptions.'] * 2 +
@@ -171,37 +171,37 @@ describe RuboCop::Cop::Style::SignalException, :config do
     end
 
     it 'auto-corrects raise to fail when appropriate' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         begin
           raise
         rescue Exception
           raise
         end
-      END
-      expect(new_source).to eq(<<-END.strip_indent)
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         begin
           fail
         rescue Exception
           raise
         end
-      END
+      RUBY
     end
 
     it 'auto-corrects fail to raise when appropriate' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         begin
           fail
         rescue Exception
           fail
         end
-      END
-      expect(new_source).to eq(<<-END.strip_indent)
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         begin
           fail
         rescue Exception
           raise
         end
-      END
+      RUBY
     end
   end
 
@@ -242,7 +242,7 @@ describe RuboCop::Cop::Style::SignalException, :config do
     end
 
     it 'accepts `fail` if a custom `fail` instance method is defined' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         class A
           def fail(arg)
           end
@@ -250,11 +250,11 @@ describe RuboCop::Cop::Style::SignalException, :config do
             fail "message"
           end
         end
-      END
+      RUBY
     end
 
     it 'accepts `fail` if a custom `fail` singleton method is defined' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         class A
           def self.fail(arg)
           end
@@ -262,7 +262,7 @@ describe RuboCop::Cop::Style::SignalException, :config do
             fail "message"
           end
         end
-      END
+      RUBY
     end
 
     it 'accepts `fail` with explicit receiver' do
@@ -277,20 +277,20 @@ describe RuboCop::Cop::Style::SignalException, :config do
     end
 
     it 'auto-corrects fail to raise always' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         begin
           fail
         rescue Exception
           fail
         end
-      END
-      expect(new_source).to eq(<<-END.strip_indent)
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         begin
           raise
         rescue Exception
           raise
         end
-      END
+      RUBY
     end
   end
 
@@ -342,20 +342,20 @@ describe RuboCop::Cop::Style::SignalException, :config do
     end
 
     it 'auto-corrects raise to fail always' do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         begin
           raise
         rescue Exception
           raise
         end
-      END
-      expect(new_source).to eq(<<-END.strip_indent)
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
         begin
           fail
         rescue Exception
           fail
         end
-      END
+      RUBY
     end
   end
 end

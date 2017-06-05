@@ -122,7 +122,7 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
 
   it_behaves_like('special keywords', '__FILE__')
   it_behaves_like('special keywords', '__LINE__')
-  it_behaves_like('special keywords', '__END__')
+  it_behaves_like('special keywords', '__RUBY__')
   it_behaves_like('special keywords', '__ENCODING__')
 
   shared_examples 'non-special string literal interpolation' do |string|

@@ -5,19 +5,19 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
   let(:cop_config) { {} }
 
   let(:trivial_reader) do
-    <<-END.strip_indent
+    <<-RUBY.strip_indent
       def foo
         @foo
       end
-    END
+    RUBY
   end
 
   let(:trivial_writer) do
-    <<-END.strip_indent
+    <<-RUBY.strip_indent
       def foo=(val)
         @foo = val
       end
-    END
+    RUBY
   end
 
   it 'registers an offense on instance reader' do
@@ -110,54 +110,54 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'accepts non-trivial reader' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def test
         some_function_call
         @test
       end
-    END
+    RUBY
   end
 
   it 'accepts non-trivial writer' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def test(val)
         some_function_call(val)
         @test = val
         log(val)
       end
-    END
+    RUBY
   end
 
   it 'accepts splats' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def splatomatic(*values)
         @splatomatic = values
       end
-    END
+    RUBY
   end
 
   it 'accepts blocks' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def something(&block)
         @b = block
       end
-    END
+    RUBY
   end
 
   it 'accepts expressions within reader' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def bar
         @bar + foo
       end
-    END
+    RUBY
   end
 
   it 'accepts expressions within writer' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def bar(val)
         @bar = val + foo
       end
-    END
+    RUBY
   end
 
   it 'accepts an initialize method looking like a writer' do
@@ -169,33 +169,33 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'accepts reader with different ivar name' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def foo
         @fo
       end
-    END
+    RUBY
   end
 
   it 'accepts writer with different ivar name' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def foo(val)
         @fo = val
       end
-    END
+    RUBY
   end
 
   it 'accepts writer in a module' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       module Foo
         def bar=(bar)
           @bar = bar
         end
       end
-    END
+    RUBY
   end
 
   it 'accepts writer nested within a module' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       module Foo
         begin
           if RUBY_VERSION > "2.0"
@@ -205,11 +205,11 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
           end
         end
       end
-    END
+    RUBY
   end
 
   it 'accepts reader nested within a module' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       module Foo
         begin
           if RUBY_VERSION > "2.0"
@@ -219,11 +219,11 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
           end
         end
       end
-    END
+    RUBY
   end
 
   it 'accepts writer nested within an instance_eval call' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       something.instance_eval do
         begin
           if RUBY_VERSION > "2.0"
@@ -233,11 +233,11 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
           end
         end
       end
-    END
+    RUBY
   end
 
   it 'accepts reader nested within an instance_eval calll' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       something.instance_eval do
         begin
           if RUBY_VERSION > "2.0"
@@ -247,7 +247,7 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
           end
         end
       end
-    END
+    RUBY
   end
 
   it 'flags a reader inside a class, inside an instance_eval call' do
@@ -303,11 +303,11 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
     let(:cop_config) { { 'AllowPredicates' => true } }
 
     it 'accepts predicate-like reader' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def foo?
           @foo
         end
-      END
+      RUBY
     end
   end
 
@@ -350,11 +350,11 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
     let(:cop_config) { { 'AllowDSLWriters' => true } }
 
     it 'accepts DSL-style writer' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def foo(val)
          @foo = val
         end
-      END
+      RUBY
     end
   end
 
@@ -362,19 +362,19 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
     let(:cop_config) { { 'IgnoreClassMethods' => true } }
 
     it 'accepts class reader' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def self.foo
           @foo
         end
-      END
+      RUBY
     end
 
     it 'accepts class writer' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def self.foo(val)
           @foo = val
         end
-      END
+      RUBY
     end
   end
 
@@ -393,11 +393,11 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
       let(:cop_config) { { 'ExactNameMatch' => false } }
 
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           def foo
             @bar
           end
-        END
+        RUBY
       end
 
       it 'does not autocorrect' do
@@ -409,11 +409,11 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
     context 'predicate reader, with AllowPredicates: false' do
       let(:cop_config) { { 'AllowPredicates' => false } }
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           def foo?
             @foo
           end
-        END
+        RUBY
       end
 
       it 'does not autocorrect' do
@@ -434,11 +434,11 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
 
     context 'matching DSL-style writer' do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           def foo(f)
             @foo=f
           end
-        END
+        RUBY
       end
 
       it 'does not autocorrect' do
@@ -449,11 +449,11 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
 
     context 'explicit receiver writer' do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           def derp.foo=(f)
             @foo=f
           end
-        END
+        RUBY
       end
 
       it 'does not autocorrect' do
@@ -464,23 +464,23 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
 
     context 'class receiver reader' do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           class Foo
             def self.foo
               @foo
             end
           end
-        END
+        RUBY
       end
 
       let(:corrected_source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           class Foo
             class << self
               attr_reader :foo
             end
           end
-        END
+        RUBY
       end
 
       it 'autocorrects with class-level attr_reader' do
@@ -490,23 +490,23 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
 
     context 'class receiver writer' do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           class Foo
             def self.foo=(f)
               @foo = f
             end
           end
-        END
+        RUBY
       end
 
       let(:corrected_source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           class Foo
             class << self
               attr_writer :foo
             end
           end
-        END
+        RUBY
       end
 
       it 'autocorrects with class-level attr_writer' do

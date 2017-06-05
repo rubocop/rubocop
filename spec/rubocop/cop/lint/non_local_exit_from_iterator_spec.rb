@@ -24,43 +24,43 @@ describe RuboCop::Cop::Lint::NonLocalExitFromIterator do
 
     context 'when block is followed by method chain' do
       context 'and has single argument' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           items.each do |item|
             return if item.stock == 0
             item.update!(foobar: true)
           end
-        END
+        RUBY
 
         it_behaves_like('offense detector')
         it { expect(cop.offenses.first.line).to eq(2) }
       end
 
       context 'and has multiple arguments' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           items.each_with_index do |item, i|
             return if item.stock == 0
             item.update!(foobar: true)
           end
-        END
+        RUBY
 
         it_behaves_like('offense detector')
         it { expect(cop.offenses.first.line).to eq(2) }
       end
 
       context 'and has no argument' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           item.with_lock do
             return if item.stock == 0
             item.update!(foobar: true)
           end
-        END
+        RUBY
 
         it { expect(cop.offenses).to be_empty }
       end
     end
 
     context 'when block is not followed by method chain' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         transaction do
           return unless update_necessary?
           find_each do |item|
@@ -68,13 +68,13 @@ describe RuboCop::Cop::Lint::NonLocalExitFromIterator do
             item.update!(foobar: true)
           end
         end
-      END
+      RUBY
 
       it { expect(cop.offenses).to be_empty }
     end
 
     context 'when block is lambda' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         items.each(lambda do |item|
           return if item.stock == 0
           item.update!(foobar: true)
@@ -83,13 +83,13 @@ describe RuboCop::Cop::Lint::NonLocalExitFromIterator do
           return if item.stock == 0
           item.update!(foobar: true)
         }
-      END
+      RUBY
 
       it { expect(cop.offenses).to be_empty }
     end
 
     context 'when lambda is inside of block followed by method chain' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         RSpec.configure do |config|
           # some configuration
 
@@ -105,13 +105,13 @@ describe RuboCop::Cop::Lint::NonLocalExitFromIterator do
             # more configuration
           end
         end
-      END
+      RUBY
 
       it { expect(cop.offenses).to be_empty }
     end
 
     context 'when block in middle of nest is followed by method chain' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         transaction do
           return unless update_necessary?
           items.each do |item|
@@ -122,7 +122,7 @@ describe RuboCop::Cop::Lint::NonLocalExitFromIterator do
             end
           end
         end
-      END
+      RUBY
 
       it 'registers offenses' do
         expect(cop.offenses.size).to eq(2)
@@ -137,63 +137,63 @@ describe RuboCop::Cop::Lint::NonLocalExitFromIterator do
     end
 
     context 'when return with value' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         def find_first_sold_out_item(items)
           items.each do |item|
             return item if item.stock == 0
             item.foobar!
           end
         end
-      END
+      RUBY
 
       it { expect(cop.offenses).to be_empty }
     end
 
     context 'when the message is define_method' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         [:method_one, :method_two].each do |method_name|
           define_method(method_name) do
             return if predicate?
           end
         end
-      END
+      RUBY
 
       it { expect(cop.offenses).to be_empty }
     end
 
     context 'when the message is define_singleton_method' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         str = 'foo'
         str.define_singleton_method :bar do |baz|
           return unless baz
           replace baz
         end
-      END
+      RUBY
 
       it { expect(cop.offenses).to be_empty }
     end
 
     context 'when the return is within a nested method definition' do
       context 'with an instance method definition' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           Foo.configure do |c|
             def bar
               return if baz?
             end
           end
-        END
+        RUBY
 
         it { expect(cop.offenses).to be_empty }
       end
 
       context 'with a class method definition' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           Foo.configure do |c|
             def self.bar
               return if baz?
             end
           end
-        END
+        RUBY
 
         it { expect(cop.offenses).to be_empty }
       end

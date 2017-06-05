@@ -29,10 +29,10 @@ describe RuboCop::Cop::VariableForce::Scope do
 
   describe '#name' do
     context 'when the scope is instance method definition' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         def some_method
         end
-      END
+      RUBY
 
       let(:scope_node_type) { :def }
 
@@ -42,10 +42,10 @@ describe RuboCop::Cop::VariableForce::Scope do
     end
 
     context 'when the scope is singleton method definition' do
-      let(:source) { <<-END }
+      let(:source) { <<-RUBY }
         def self.some_method
         end
-      END
+      RUBY
 
       let(:scope_node_type) { :defs }
 
@@ -64,11 +64,11 @@ describe RuboCop::Cop::VariableForce::Scope do
 
     context 'when the scope is instance method' do
       let(:source) do
-        <<-END
+        <<-RUBY
           def some_method
             this_is_target
           end
-        END
+        RUBY
       end
 
       let(:scope_node_type) { :def }
@@ -78,11 +78,11 @@ describe RuboCop::Cop::VariableForce::Scope do
 
     context 'when the scope is singleton method' do
       let(:source) do
-        <<-END
+        <<-RUBY
           def self.some_method
             this_is_target
           end
-        END
+        RUBY
       end
 
       let(:scope_node_type) { :defs }
@@ -92,11 +92,11 @@ describe RuboCop::Cop::VariableForce::Scope do
 
     context 'when the scope is module' do
       let(:source) do
-        <<-END
+        <<-RUBY
           module SomeModule
             this_is_target
           end
-        END
+        RUBY
       end
 
       let(:scope_node_type) { :module }
@@ -106,11 +106,11 @@ describe RuboCop::Cop::VariableForce::Scope do
 
     context 'when the scope is class' do
       let(:source) do
-        <<-END
+        <<-RUBY
           class SomeClass
             this_is_target
           end
-        END
+        RUBY
       end
 
       let(:scope_node_type) { :class }
@@ -120,11 +120,11 @@ describe RuboCop::Cop::VariableForce::Scope do
 
     context 'when the scope is singleton class' do
       let(:source) do
-        <<-END
+        <<-RUBY
           class << self
             this_is_target
           end
-        END
+        RUBY
       end
 
       let(:scope_node_type) { :sclass }
@@ -134,11 +134,11 @@ describe RuboCop::Cop::VariableForce::Scope do
 
     context 'when the scope is block' do
       let(:source) do
-        <<-END
+        <<-RUBY
           1.times do
             this_is_target
           end
-        END
+        RUBY
       end
 
       let(:scope_node_type) { :block }
@@ -148,9 +148,9 @@ describe RuboCop::Cop::VariableForce::Scope do
 
     context 'when the scope is top level' do
       let(:source) do
-        <<-END
+        <<-RUBY
           this_is_target
-        END
+        RUBY
       end
 
       let(:scope_node_type) { :send }
@@ -164,7 +164,7 @@ describe RuboCop::Cop::VariableForce::Scope do
       scope.include?(target_node)
     end
 
-    let(:source) { <<-END }
+    let(:source) { <<-RUBY }
       class SomeClass
         def self.some_method(arg1, arg2)
           do_something
@@ -174,7 +174,7 @@ describe RuboCop::Cop::VariableForce::Scope do
           end
         end
       end
-    END
+    RUBY
 
     let(:scope_node_type) { :defs }
 
@@ -234,11 +234,11 @@ describe RuboCop::Cop::VariableForce::Scope do
 
     describe 'outer scope boundary handling' do
       context 'when the scope is instance method' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           def some_method(arg1, arg2)
             :body
           end
-        END
+        RUBY
 
         let(:scope_node_type) { :def }
         let(:expected_types) { %w[args arg arg sym] }
@@ -246,11 +246,11 @@ describe RuboCop::Cop::VariableForce::Scope do
       end
 
       context 'when the scope is singleton method' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           def self.some_method(arg1, arg2)
             :body
           end
-        END
+        RUBY
 
         let(:scope_node_type) { :defs }
         let(:expected_types) { %w[args arg arg sym] }
@@ -258,11 +258,11 @@ describe RuboCop::Cop::VariableForce::Scope do
       end
 
       context 'when the scope is module' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           module SomeModule
             :body
           end
-        END
+        RUBY
 
         let(:scope_node_type) { :module }
         let(:expected_types) { %w[sym] }
@@ -270,13 +270,13 @@ describe RuboCop::Cop::VariableForce::Scope do
       end
 
       context 'when the scope is class' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           some_super_class = Class.new
 
           class SomeClass < some_super_class
             :body
           end
-        END
+        RUBY
 
         let(:scope_node_type) { :class }
         let(:expected_types) { %w[sym] }
@@ -284,13 +284,13 @@ describe RuboCop::Cop::VariableForce::Scope do
       end
 
       context 'when the scope is singleton class' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           some_object = Object.new
 
           class << some_object
             :body
           end
-        END
+        RUBY
 
         let(:scope_node_type) { :sclass }
         let(:expected_types) { %w[sym] }
@@ -298,11 +298,11 @@ describe RuboCop::Cop::VariableForce::Scope do
       end
 
       context 'when the scope is block' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           1.times do |arg1, arg2|
             :body
           end
-        END
+        RUBY
 
         let(:scope_node_type) { :block }
         let(:expected_types) { %w[args arg arg sym] }
@@ -310,9 +310,9 @@ describe RuboCop::Cop::VariableForce::Scope do
       end
 
       context 'when the scope is top level' do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           :body
-        END
+        RUBY
 
         let(:scope_node_type) { :sym }
         let(:expected_types) { %w[sym] }
@@ -322,7 +322,7 @@ describe RuboCop::Cop::VariableForce::Scope do
 
     describe 'inner scope boundary handling' do
       context "when there's a method invocation with block" do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           foo = 1
 
           do_something(1, 2) do |arg|
@@ -330,7 +330,7 @@ describe RuboCop::Cop::VariableForce::Scope do
           end
 
           foo
-        END
+        RUBY
 
         let(:scope_node_type) { :begin }
         let(:expected_types) { %w[begin lvasgn int block send int int lvar] }
@@ -338,7 +338,7 @@ describe RuboCop::Cop::VariableForce::Scope do
       end
 
       context "when there's a singleton method definition" do
-        let(:source) { <<-END }
+        let(:source) { <<-RUBY }
           foo = 1
 
           def self.some_method(arg1, arg2)
@@ -346,7 +346,7 @@ describe RuboCop::Cop::VariableForce::Scope do
           end
 
           foo
-        END
+        RUBY
 
         let(:scope_node_type) { :begin }
         let(:expected_types) { %w[begin lvasgn int defs self lvar] }

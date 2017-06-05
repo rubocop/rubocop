@@ -164,12 +164,12 @@ describe RuboCop::Cop::Style::InverseMethods do
 
       it 'registers an offense for a multiline method call where the last ' \
         'method is inverted' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           foo.#{method} do |e|
             something
             !e.bar
           end
-        END
+        RUBY
 
         expect(cop.messages)
           .to eq(["Use `#{inverse}` instead of inverting `#{method}`."])
@@ -183,13 +183,13 @@ describe RuboCop::Cop::Style::InverseMethods do
       end
 
       it 'registers an offense for a multiline inverted equality block' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           foo.#{method} do |e|
             something
             something_else
             e != 2
           end
-        END
+        RUBY
 
         expect(cop.messages)
           .to eq(["Use `#{inverse}` instead of inverting `#{method}`."])
@@ -215,35 +215,35 @@ describe RuboCop::Cop::Style::InverseMethods do
       end
 
       it 'corrects an inverted do end method call' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           foo.#{method} do |e|
             !e.bar
           end
-        END
+        RUBY
 
-        expect(new_source).to eq(<<-END.strip_indent)
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           foo.#{inverse} do |e|
             e.bar
           end
-        END
+        RUBY
       end
 
       it 'corrects a multiline method call where the last method is inverted' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           foo.#{method} do |e|
             something
             something_else
             !e.bar
           end
-        END
+        RUBY
 
-        expect(new_source).to eq(<<-END.strip_indent)
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           foo.#{inverse} do |e|
             something
             something_else
             e.bar
           end
-        END
+        RUBY
       end
 
       it 'corrects an offense for an inverted equality block' do
@@ -253,21 +253,21 @@ describe RuboCop::Cop::Style::InverseMethods do
       end
 
       it 'corrects an offense for a multiline inverted equality block' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           foo.#{method} do |e|
             something
             something_else
             e != 2
           end
-        END
+        RUBY
 
-        expect(new_source).to eq(<<-END.strip_indent)
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           foo.#{inverse} do |e|
             something
             something_else
             e == 2
           end
-        END
+        RUBY
       end
     end
   end

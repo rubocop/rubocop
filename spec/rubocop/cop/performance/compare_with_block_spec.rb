@@ -57,11 +57,11 @@ describe RuboCop::Cop::Performance::CompareWithBlock do
     end
 
     it "autocorrects array.#{method} do |a, b| a.foo <=> b.foo end" do
-      new_source = autocorrect_source(cop, <<-END.strip_indent)
+      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
         array.#{method} do |a, b|
           a.foo <=> b.foo
         end
-      END
+      RUBY
       expect(new_source).to eq "array.#{method}_by(&:foo)\n"
     end
 

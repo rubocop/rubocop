@@ -18,12 +18,12 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
       let(:indentation_width) { 2 }
 
       it 'registers an offense for an over-indented first parameter' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           run(
               :foo,
               bar: 3
           )
-        END
+        RUBY
         expect(cop.messages).to eq(['Indent the first parameter one step ' \
                                     'more than the start of the ' \
                                     'previous line.'])
@@ -31,23 +31,23 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
       end
 
       it 'registers an offense for an under-indented first parameter' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           run(
            :foo,
               bar: 3
           )
-        END
+        RUBY
         expect(cop.highlights).to eq([':foo'])
       end
 
       it 'registers an offense on lines affected by another offense' do
-        inspect_source(cop, <<-END.strip_indent)
+        inspect_source(cop, <<-RUBY.strip_indent)
           foo(
            bar(
             7
           )
           )
-        END
+        RUBY
 
         expect(cop.highlights).to eq([['bar(',
                                        '  7',
@@ -61,80 +61,80 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
       end
 
       it 'auto-corrects nested offenses' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           foo(
            bar(
             7
           )
           )
-        END
+        RUBY
 
         # The first `)` Will be corrected by IndentationConsistency.
-        expect(new_source).to eq(<<-END.strip_indent)
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           foo(
             bar(
              7
            )
           )
-        END
+        RUBY
       end
 
       context 'for assignment' do
         it 'accepts a correctly indented first parameter and does not care ' \
            'about the second parameter' do
-          inspect_source(cop, <<-END.strip_indent)
+          inspect_source(cop, <<-RUBY.strip_indent)
             x = run(
               :foo,
                 bar: 3
             )
-          END
+          RUBY
           expect(cop.offenses).to be_empty
         end
 
         context 'with line break' do
           it 'accepts a correctly indented first parameter' do
-            expect_no_offenses(<<-END.strip_indent)
+            expect_no_offenses(<<-RUBY.strip_indent)
               x =
                 run(
                   :foo)
-            END
+            RUBY
           end
 
           it 'registers an offense for an under-indented first parameter' do
-            inspect_source(cop, <<-END.strip_indent)
+            inspect_source(cop, <<-RUBY.strip_indent)
               @x =
                 run(
                 :foo)
-            END
+            RUBY
             expect(cop.highlights).to eq([':foo'])
           end
         end
       end
 
       it 'accepts a first parameter that is not preceded by a line break' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           run :foo,
               bar: 3
-        END
+        RUBY
       end
 
       context 'when the receiver contains a line break' do
         it 'accepts a correctly indented first parameter' do
-          expect_no_offenses(<<-END.strip_indent)
+          expect_no_offenses(<<-RUBY.strip_indent)
             puts x.
               merge(
                 b: 2
               )
-          END
+          RUBY
         end
 
         it 'registers an offense for an over-indented first parameter' do
-          inspect_source(cop, <<-END.strip_indent)
+          inspect_source(cop, <<-RUBY.strip_indent)
             puts x.
               merge(
                   b: 2
               )
-          END
+          RUBY
           expect(cop.messages).to eq(['Indent the first parameter one step ' \
                                       'more than the start of the ' \
                                       'previous line.'])
@@ -143,35 +143,35 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
 
         it 'accepts a correctly indented first parameter preceded by an ' \
            'empty line' do
-          inspect_source(cop, <<-END.strip_indent)
+          inspect_source(cop, <<-RUBY.strip_indent)
             puts x.
               merge(
 
                 b: 2
               )
-          END
+          RUBY
           expect(cop.offenses).to be_empty
         end
 
         context 'when preceded by a comment line' do
           it 'accepts a correctly indented first parameter' do
-            expect_no_offenses(<<-END.strip_indent)
+            expect_no_offenses(<<-RUBY.strip_indent)
               puts x.
                 merge( # EOL comment
                   # comment
                   b: 2
                 )
-            END
+            RUBY
           end
 
           it 'registers an offense for an under-indented first parameter' do
-            inspect_source(cop, <<-END.strip_indent)
+            inspect_source(cop, <<-RUBY.strip_indent)
               puts x.
                 merge(
                 # comment
                 b: 2
                 )
-            END
+            RUBY
             expect(cop.messages).to eq(['Indent the first parameter one step ' \
                                         'more than the start of the previous ' \
                                         'line (not counting the comment).'])
@@ -181,53 +181,53 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
       end
 
       it 'accepts method calls with no parameters' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           run()
           run_again
-        END
+        RUBY
       end
 
       it 'accepts operator calls' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           params = default_cfg.keys - %w(Description) -
                    cfg.keys
-        END
+        RUBY
       end
 
       it 'does not view []= as an outer method call' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           @subject_results[subject] = original.update(
             mutation_results: (dup << mutation_result),
             tests:            test_result.tests
           )
-        END
+        RUBY
       end
 
       it 'does not view chained call as an outer method call' do
-        inspect_source(cop, <<-'END'.strip_margin('|'))
+        inspect_source(cop, <<-'RUBY'.strip_margin('|'))
           |  A = Regexp.union(
           |    /[A-Za-z_][A-Za-z\d_]*[!?=]?/,
           |    *AST::Types::OPERATOR_METHODS.map(&:to_s)
           |  ).freeze
-        END
+        RUBY
         expect(cop.offenses).to be_empty
       end
 
       it 'auto-corrects an under-indented first parameter' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           x =
             run(
             :foo,
               bar: 3
           )
-        END
-        expect(new_source).to eq(<<-END.strip_indent)
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           x =
             run(
               :foo,
               bar: 3
           )
-        END
+        RUBY
       end
     end
 
@@ -235,16 +235,16 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
       let(:indentation_width) { 4 }
 
       it 'auto-corrects an over-indented first parameter' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           run(
                   :foo,
               bar: 3)
-        END
-        expect(new_source).to eq(<<-END.strip_indent)
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           run(
               :foo,
               bar: 3)
-        END
+        RUBY
       end
     end
 
@@ -262,25 +262,25 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
       end
 
       it 'accepts a correctly indented first parameter' do
-        expect_no_offenses(<<-END.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           run(
               :foo,
               bar: 3
           )
-        END
+        RUBY
       end
 
       it 'auto-corrects an over-indented first parameter' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           run(
                   :foo,
               bar: 3)
-        END
-        expect(new_source).to eq(<<-END.strip_indent)
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           run(
               :foo,
               bar: 3)
-        END
+        RUBY
       end
     end
   end
@@ -304,22 +304,22 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
 
       context 'without outer parentheses' do
         it 'accepts a first parameter with special indentation' do
-          expect_no_offenses(<<-END.strip_indent)
+          expect_no_offenses(<<-RUBY.strip_indent)
             run :foo, defaults.merge(
                         bar: 3)
-          END
+          RUBY
         end
       end
 
       it 'auto-corrects an over-indented first parameter' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           run(:foo, defaults.merge(
                                   bar: 3))
-        END
-        expect(new_source).to eq(<<-END.strip_indent)
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           run(:foo, defaults.merge(
                       bar: 3))
-        END
+        RUBY
       end
     end
   end
@@ -351,7 +351,7 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
         end
 
         it 'accepts a correctly indented first parameter in interpolation' do
-          expect_no_offenses(<<-'END'.strip_indent)
+          expect_no_offenses(<<-'RUBY'.strip_indent)
             puts %(
               <p>
                 #{Array(
@@ -359,37 +359,37 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
                 )}
               </p>
             )
-          END
+          RUBY
         end
 
         it 'accepts a correctly indented first parameter with fullwidth ' \
            'characters' do
-          inspect_source(cop, <<-END.strip_indent)
+          inspect_source(cop, <<-RUBY.strip_indent)
             puts('Ｒｕｂｙ', f(
                                a))
-          END
+          RUBY
           expect(cop.offenses).to be_empty
         end
       end
 
       context 'without outer parentheses' do
         it 'accepts a first parameter with consistent style indentation' do
-          expect_no_offenses(<<-END.strip_indent)
+          expect_no_offenses(<<-RUBY.strip_indent)
             run :foo, defaults.merge(
               bar: 3)
-          END
+          RUBY
         end
       end
 
       it 'auto-corrects an over-indented first parameter' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           run(:foo, defaults.merge(
                                   bar: 3))
-        END
-        expect(new_source).to eq(<<-END.strip_indent)
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           run(:foo, defaults.merge(
                       bar: 3))
-        END
+        RUBY
       end
     end
   end
@@ -417,14 +417,14 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
       end
 
       it 'auto-corrects an over-indented first parameter' do
-        new_source = autocorrect_source(cop, <<-END.strip_indent)
+        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
           run(:foo, defaults.merge(
                                   bar: 3))
-        END
-        expect(new_source).to eq(<<-END.strip_indent)
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
           run(:foo, defaults.merge(
             bar: 3))
-        END
+        RUBY
       end
     end
   end

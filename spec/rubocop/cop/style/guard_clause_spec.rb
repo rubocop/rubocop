@@ -6,7 +6,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
 
   shared_examples 'reports offense' do |body|
     it 'reports an offense if method body is if / unless without else' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         def func
           if something
             #{body}
@@ -18,7 +18,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
             #{body}
           end
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq(2)
       expect(cop.offenses.map(&:line).sort).to eq([2, 8])
       expect(cop.messages)
@@ -28,7 +28,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it 'reports an offense if method body is if / unless without else' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         def func
           if something
             #{body}
@@ -40,7 +40,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
             #{body}
           end
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq(2)
       expect(cop.offenses.map(&:line).sort).to eq([2, 8])
       expect(cop.messages)
@@ -50,7 +50,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it 'reports an offense if method body ends with if / unless without else' do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         def func
           test
           if something
@@ -64,7 +64,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
             #{body}
           end
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq(2)
       expect(cop.offenses.map(&:line).sort).to eq([3, 10])
       expect(cop.messages)
@@ -78,7 +78,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
   it_behaves_like('reports offense', '# TODO')
 
   it 'does not report an offense if body is if..elsif..end' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def func
         if something
           a
@@ -86,11 +86,11 @@ describe RuboCop::Cop::Style::GuardClause, :config do
           b
         end
       end
-    END
+    RUBY
   end
 
   it "doesn't report an offense if condition has multiple lines" do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def func
         if something &&
              something_else
@@ -104,11 +104,11 @@ describe RuboCop::Cop::Style::GuardClause, :config do
           work
         end
       end
-    END
+    RUBY
   end
 
   it 'accepts a method which body is if / unless with else' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def func
         if something
           work
@@ -124,11 +124,11 @@ describe RuboCop::Cop::Style::GuardClause, :config do
           test
         end
       end
-    END
+    RUBY
   end
 
   it 'accepts a method which body does not end with if / unless' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def func
         if something
           work
@@ -142,11 +142,11 @@ describe RuboCop::Cop::Style::GuardClause, :config do
         end
         test
       end
-    END
+    RUBY
   end
 
   it 'accepts a method whose body is a modifier if / unless' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def func
         work if something
       end
@@ -154,7 +154,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
       def func
         work if something
       end
-    END
+    RUBY
   end
 
   context 'MinBodyLength: 1' do
@@ -187,7 +187,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it 'accepts a method whose body has 3 lines' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def func
           if something
             work
@@ -203,7 +203,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
             work
           end
         end
-      END
+      RUBY
     end
   end
 
@@ -213,13 +213,13 @@ describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it 'fails with an error' do
-      source = <<-END.strip_indent
+      source = <<-RUBY.strip_indent
         def func
           if something
             work
           end
         end
-      END
+      RUBY
 
       expect { inspect_source(cop, source) }
         .to raise_error('MinBodyLength needs to be a positive integer!')
@@ -228,55 +228,55 @@ describe RuboCop::Cop::Style::GuardClause, :config do
 
   shared_examples 'on if nodes which exit current scope' do |kw|
     it "registers an error with #{kw} in the if branch" do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         if something
           #{kw}
         else
           puts "hello"
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Use a guard clause instead of wrapping ' \
                                   'the code inside a conditional expression.'])
     end
 
     it "registers an error with #{kw} in the else branch" do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         if something
          puts "hello"
         else
           #{kw}
         end
-      END
+      RUBY
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Use a guard clause instead of wrapping ' \
                                   'the code inside a conditional expression.'])
     end
 
     it "doesn't register an error if condition has multiple lines" do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if something &&
              something_else
           #{kw}
         else
           puts "hello"
         end
-      END
+      RUBY
     end
 
     it "does not report an offense if #{kw} is inside elsif" do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         if something
           a
         elsif something_else
           #{kw}
         end
-      END
+      RUBY
       expect(cop.offenses).to be_empty
     end
 
     it "does not report an offense if #{kw} is inside if..elsif..else..end" do
-      inspect_source(cop, <<-END.strip_indent)
+      inspect_source(cop, <<-RUBY.strip_indent)
         if something
           a
         elsif something_else
@@ -284,7 +284,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
         else
           #{kw}
         end
-      END
+      RUBY
       expect(cop.offenses).to be_empty
     end
 

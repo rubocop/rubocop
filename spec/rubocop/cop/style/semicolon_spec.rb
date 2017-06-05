@@ -34,30 +34,30 @@ describe RuboCop::Cop::Style::Semicolon, :config do
   end
 
   it 'accepts one line method definitions' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def foo1; x(3) end
       def initialize(*_); end
       def foo2() x(3); end
       def foo3; x(3); end
-    END
+    RUBY
   end
 
   it 'accepts one line empty class definitions' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       # Prefer a single-line format for class ...
       class Foo < Exception; end
 
       class Bar; end
-    END
+    RUBY
   end
 
   it 'accepts one line empty method definitions' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       # One exception to the rule are empty-body methods
       def no_op; end
 
       def foo; end
-    END
+    RUBY
   end
 
   it 'accepts one line empty module definitions' do
@@ -72,10 +72,10 @@ describe RuboCop::Cop::Style::Semicolon, :config do
   end
 
   it 'accept semicolons inside strings' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       string = ";
       multi-line string"
-    END
+    RUBY
   end
 
   it 'registers an offense for a semicolon at the beginning of a line' do
@@ -87,21 +87,21 @@ describe RuboCop::Cop::Style::Semicolon, :config do
 
   it 'auto-corrects semicolons when syntactically possible' do
     corrected =
-      autocorrect_source(cop, <<-END.strip_indent)
+      autocorrect_source(cop, <<-RUBY.strip_indent)
         module Foo; end;
         puts "this is a test";
         puts "this is a test"; puts "So is this"
         def foo(a) x(1); y(2); z(3); end
         ;puts 1
-      END
+      RUBY
     expect(corrected)
-      .to eq(<<-END.strip_indent)
+      .to eq(<<-RUBY.strip_indent)
         module Foo; end
         puts "this is a test"
         puts "this is a test"; puts "So is this"
         def foo(a) x(1); y(2); z(3); end
         puts 1
-      END
+      RUBY
   end
 
   context 'when AllowAsExpressionSeparator is true' do

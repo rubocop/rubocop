@@ -20,13 +20,13 @@ module RuboCop
 
         MSG = 'Use `%s` instead of `%s`.'.freeze
 
-        def_node_matcher :plain_each, <<-END
+        def_node_matcher :plain_each, <<-PATTERN
           (block $(send (send _ :hash) :each) (args (arg $_k) (arg $_v)) ...)
-        END
+        PATTERN
 
-        def_node_matcher :kv_each, <<-END
+        def_node_matcher :kv_each, <<-PATTERN
           (block $(send (send (send _ :hash) ${:keys :values}) :each) ...)
-        END
+        PATTERN
 
         def on_block(node)
           plain_each(node) do |target, k, v|

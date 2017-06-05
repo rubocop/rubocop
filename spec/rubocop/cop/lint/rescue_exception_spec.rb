@@ -48,79 +48,79 @@ describe RuboCop::Cop::Lint::RescueException do
   end
 
   it 'does not register an offense for rescue with no class' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       begin
         something
         return
       rescue
         file.close
       end
-    END
+    RUBY
   end
 
   it 'does not register an offense for rescue with no class and => e' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       begin
         something
         return
       rescue => e
         file.close
       end
-    END
+    RUBY
   end
 
   it 'does not register an offense for rescue with other class' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       begin
         something
         return
       rescue ArgumentError => e
         file.close
       end
-    END
+    RUBY
   end
 
   it 'does not register an offense for rescue with other classes' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       begin
         something
         return
       rescue EOFError, ArgumentError => e
         file.close
       end
-    END
+    RUBY
   end
 
   it 'does not register an offense for rescue with a module prefix' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       begin
         something
         return
       rescue Test::Exception => e
         file.close
       end
-    END
+    RUBY
   end
 
   it 'does not crash when the splat operator is used in a rescue' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       ERRORS = [Exception]
       begin
         a = 3 / 0
       rescue *ERRORS
         puts e
       end
-    END
+    RUBY
   end
 
   it 'does not crash when the namespace of a rescued class is in a local ' \
      'variable' do
-    inspect_source(cop, <<-END.strip_indent)
+    inspect_source(cop, <<-RUBY.strip_indent)
       adapter = current_adapter
       begin
       rescue adapter::ParseError
       end
-    END
+    RUBY
     expect(cop.offenses).to be_empty
   end
 end

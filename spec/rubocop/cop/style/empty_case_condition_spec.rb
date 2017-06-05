@@ -28,7 +28,7 @@ describe RuboCop::Cop::Style::EmptyCaseCondition do
   context 'given a case statement with an empty case' do
     context 'with multiple when branches and an else' do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           case
           when 1 == 2
             foo
@@ -37,10 +37,10 @@ describe RuboCop::Cop::Style::EmptyCaseCondition do
           else
             baz
           end
-        END
+        RUBY
       end
       let(:corrected_source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           if 1 == 2
             foo
           elsif 1 == 1
@@ -48,7 +48,7 @@ describe RuboCop::Cop::Style::EmptyCaseCondition do
           else
             baz
           end
-        END
+        RUBY
       end
 
       it_behaves_like 'detect/correct empty case, accept non-empty case'
@@ -56,23 +56,23 @@ describe RuboCop::Cop::Style::EmptyCaseCondition do
 
     context 'with multiple when branches and no else' do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           case
           when 1 == 2
             foo
           when 1 == 1
             bar
           end
-        END
+        RUBY
       end
       let(:corrected_source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           if 1 == 2
             foo
           elsif 1 == 1
             bar
           end
-        END
+        RUBY
       end
 
       it_behaves_like 'detect/correct empty case, accept non-empty case'
@@ -80,23 +80,23 @@ describe RuboCop::Cop::Style::EmptyCaseCondition do
 
     context 'with a single when branch and an else' do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           case
           when 1 == 2
             foo
           else
             bar
           end
-        END
+        RUBY
       end
       let(:corrected_source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           if 1 == 2
             foo
           else
             bar
           end
-        END
+        RUBY
       end
 
       it_behaves_like 'detect/correct empty case, accept non-empty case'
@@ -104,19 +104,19 @@ describe RuboCop::Cop::Style::EmptyCaseCondition do
 
     context 'with a single when branch and no else' do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           case
           when 1 == 2
             foo
           end
-        END
+        RUBY
       end
       let(:corrected_source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           if 1 == 2
             foo
           end
-        END
+        RUBY
       end
 
       it_behaves_like 'detect/correct empty case, accept non-empty case'
@@ -124,7 +124,7 @@ describe RuboCop::Cop::Style::EmptyCaseCondition do
 
     context 'with a when branch including comma-delimited alternatives' do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           case
           when false
             foo
@@ -133,10 +133,10 @@ describe RuboCop::Cop::Style::EmptyCaseCondition do
           when false, 1
             baz
           end
-        END
+        RUBY
       end
       let(:corrected_source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           if false
             foo
           elsif nil || false || 1
@@ -144,7 +144,7 @@ describe RuboCop::Cop::Style::EmptyCaseCondition do
           elsif false || 1
             baz
           end
-        END
+        RUBY
       end
 
       it_behaves_like 'detect/correct empty case, accept non-empty case'
@@ -152,21 +152,21 @@ describe RuboCop::Cop::Style::EmptyCaseCondition do
 
     context 'with when branches using then' do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           case
           when false then foo
           when nil, false, 1 then bar
           when false, 1 then baz
           end
-        END
+        RUBY
       end
       let(:corrected_source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           if false then foo
           elsif nil || false || 1 then bar
           elsif false || 1 then baz
           end
-        END
+        RUBY
       end
 
       it_behaves_like 'detect/correct empty case, accept non-empty case'
@@ -174,23 +174,23 @@ describe RuboCop::Cop::Style::EmptyCaseCondition do
 
     context 'with first when branch including comma-delimited alternatives' do
       let(:source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           case
           when my.foo?, my.bar?
             something
           when my.baz?
             something_else
           end
-        END
+        RUBY
       end
       let(:corrected_source) do
-        <<-END.strip_indent
+        <<-RUBY.strip_indent
           if my.foo? || my.bar?
             something
           elsif my.baz?
             something_else
           end
-        END
+        RUBY
       end
 
       it_behaves_like 'detect/correct empty case, accept non-empty case'

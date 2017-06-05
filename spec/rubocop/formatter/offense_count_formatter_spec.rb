@@ -57,7 +57,7 @@ module RuboCop
 
           it 'sorts by offense count first and then by cop name' do
             formatter.finished(files)
-            expect(output.string).to eq(<<-END.strip_indent)
+            expect(output.string).to eq(<<-OUTPUT.strip_indent)
 
               2  CopC
               1  CopA
@@ -65,7 +65,7 @@ module RuboCop
               --
               4  Total
 
-            END
+            OUTPUT
           end
         end
       end

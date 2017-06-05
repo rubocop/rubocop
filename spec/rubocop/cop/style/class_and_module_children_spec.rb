@@ -31,7 +31,7 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
     end
 
     it 'accepts nested children' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         class FooClass
           class BarClass
           end
@@ -41,11 +41,11 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
           module BarModule
           end
         end
-      END
+      RUBY
     end
 
     it 'accepts :: in parent class on inheritance' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         class FooClass
           class BarClass
           end
@@ -53,7 +53,7 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
 
         class BazClass < FooClass::BarClass
         end
-      END
+      RUBY
     end
   end
 
@@ -81,17 +81,17 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
     end
 
     it 'accepts compact style for classes/modules' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         class FooClass::BarClass
         end
 
         module FooClass::BarModule
         end
-      END
+      RUBY
     end
 
     it 'accepts nesting for classes/modules with more than one child' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         class FooClass
           class BarClass
           end
@@ -105,25 +105,25 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
           class BazModule
           end
         end
-      END
+      RUBY
     end
 
     it 'accepts class/module with single method' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         class FooClass
           def bar_method
           end
         end
-      END
+      RUBY
     end
 
     it 'accepts nesting for classes with an explicit superclass' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         class FooClass < Super
           class BarClass
           end
         end
-      END
+      RUBY
     end
   end
 end

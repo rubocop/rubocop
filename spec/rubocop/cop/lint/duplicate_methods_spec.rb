@@ -323,7 +323,7 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
   end
 
   it 'ignores Class.new blocks which are assigned to local variables' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       a = Class.new do
         def foo
         end
@@ -332,7 +332,7 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
         def foo
         end
       end
-    END
+    RUBY
   end
 
   context 'when path is in the project root' do
@@ -343,13 +343,13 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
     end
 
     it 'adds a message with relative path' do
-      expect_offense(<<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def something
         end
         def something
         ^^^ Method `Object#something` is defined at both lib/foo.rb:1 and lib/foo.rb:3.
         end
-      END
+      RUBY
     end
   end
 
@@ -361,13 +361,13 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
     end
 
     it 'adds a message with absolute path' do
-      expect_offense(<<-END.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def something
         end
         def something
         ^^^ Method `Object#something` is defined at both /no/project/root/foo.rb:1 and /no/project/root/foo.rb:3.
         end
-      END
+      RUBY
     end
   end
 end

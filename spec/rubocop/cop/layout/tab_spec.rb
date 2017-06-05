@@ -24,13 +24,13 @@ describe RuboCop::Cop::Layout::Tab do
     RUBY
   end
 
-  it 'registers offenses before __END__ but not after' do
-    expect_offense(<<-END.strip_indent)
+  it 'registers offenses before __RUBY__ but not after' do
+    expect_offense(<<-RUBY.strip_indent)
       \tx = 0
       ^ Tab detected.
       __END__
       \tx = 0
-    END
+    RUBY
   end
 
   it 'accepts a line with tab in a string' do

@@ -61,10 +61,10 @@ describe RuboCop::Cop::Rails::EnumUniqueness, :config do
 
   context 'when receiving a variable' do
     it 'does not register an offense' do
-      expect_no_offenses(<<-END.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         var = { status: { active: 0, archived: 1 } }
         enum var
-      END
+      RUBY
     end
   end
 

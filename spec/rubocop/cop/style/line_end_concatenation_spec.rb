@@ -93,10 +93,10 @@ describe RuboCop::Cop::Style::LineEndConcatenation do
 
   it 'accepts string concat with a return value of method on an interpolated ' \
      'string' do
-    source = <<-END
+    source = <<-RUBY
       x3a = 'x' +
         "\#{'a' + "\#{3}"}".reverse
-    END
+    RUBY
     inspect_source(cop, source)
     expect(cop.offenses).to be_empty
   end

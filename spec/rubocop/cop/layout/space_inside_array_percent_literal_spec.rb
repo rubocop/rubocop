@@ -52,18 +52,18 @@ describe RuboCop::Cop::Layout::SpaceInsideArrayPercentLiteral do
         end
 
         it 'accepts multi-line literals' do
-          inspect_source(cop, <<-END.strip_indent)
+          inspect_source(cop, <<-RUBY.strip_indent)
             %#{type}(
               a
               b
               c
             )
-          END
+          RUBY
           expect(cop.messages).to be_empty
         end
 
         it 'accepts multi-line literals within a method' do
-          inspect_source(cop, <<-END.strip_indent)
+          inspect_source(cop, <<-RUBY.strip_indent)
             def foo
               %#{type}(
                 a
@@ -71,15 +71,15 @@ describe RuboCop::Cop::Layout::SpaceInsideArrayPercentLiteral do
                 c
               )
             end
-          END
+          RUBY
           expect(cop.messages).to be_empty
         end
 
         it 'accepts newlines and additional following alignment spaces' do
-          inspect_source(cop, <<-END.strip_indent)
+          inspect_source(cop, <<-RUBY.strip_indent)
             %#{type}(a b
                c)
-          END
+          RUBY
           expect(cop.messages).to be_empty
         end
       end

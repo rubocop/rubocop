@@ -25,9 +25,9 @@ module RuboCop
       class JSONLoad < Cop
         MSG = 'Prefer `JSON.parse` over `JSON.%s`.'.freeze
 
-        def_node_matcher :json_load, <<-END
+        def_node_matcher :json_load, <<-PATTERN
           (send (const {nil cbase} :JSON) ${:load :restore} ...)
-        END
+        PATTERN
 
         def on_send(node)
           json_load(node) do |method|

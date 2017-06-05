@@ -18,12 +18,12 @@ describe RuboCop::Cop::Style::EachWithObject do
   end
 
   it 'correctly autocorrects' do
-    corrected = autocorrect_source(cop, <<-END.strip_indent)
+    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
       [1, 2, 3].inject({}) do |h, i|
         h[i] = i
         h
       end
-    END
+    RUBY
 
     expect(corrected).to eq(['[1, 2, 3].each_with_object({}) do |i, h|',
                              '  h[i] = i',
@@ -33,11 +33,11 @@ describe RuboCop::Cop::Style::EachWithObject do
   end
 
   it 'correctly autocorrects with return value only' do
-    corrected = autocorrect_source(cop, <<-END.strip_indent)
+    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
       [1, 2, 3].inject({}) do |h, i|
         h
       end
-    END
+    RUBY
 
     expect(corrected).to eq(['[1, 2, 3].each_with_object({}) do |i, h|',
                              '  ',
@@ -46,7 +46,7 @@ describe RuboCop::Cop::Style::EachWithObject do
   end
 
   it 'ignores inject and reduce with passed in, but not returned hash' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       [].inject({}) do |a, e|
         a + e
       end
@@ -54,20 +54,20 @@ describe RuboCop::Cop::Style::EachWithObject do
       [].reduce({}) do |a, e|
         my_method e, a
       end
-    END
+    RUBY
   end
 
   it 'ignores inject and reduce with empty body' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       [].inject({}) do |a, e|
       end
 
       [].reduce({}) { |a, e| }
-    END
+    RUBY
   end
 
   it 'ignores inject and reduce with condition as body' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       [].inject({}) do |a, e|
         a = e if e
       end
@@ -81,7 +81,7 @@ describe RuboCop::Cop::Style::EachWithObject do
       [].reduce({}) do |a, e|
         a = e ? e : 2
       end
-    END
+    RUBY
   end
 
   it 'ignores inject and reduce passed in symbol' do
@@ -93,12 +93,12 @@ describe RuboCop::Cop::Style::EachWithObject do
   end
 
   it 'ignores inject/reduce with assignment to accumulator param in block' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       r = [1, 2, 3].reduce({}) do |memo, item|
         memo += item > 2 ? item : 0
         memo
       end
-    END
+    RUBY
   end
 
   context 'when a simple literal is passed as initial value' do

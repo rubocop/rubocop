@@ -26,17 +26,17 @@ describe RuboCop::Cop::Style::ClassMethods do
   end
 
   it 'does not register an offense for methods using self' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       module Test
         def self.some_method
           do_something
         end
       end
-    END
+    RUBY
   end
 
   it 'does not register an offense for other top-level singleton methods' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       class Test
         X = Something.new
 
@@ -44,33 +44,33 @@ describe RuboCop::Cop::Style::ClassMethods do
           do_something
         end
       end
-    END
+    RUBY
   end
 
   it 'does not register an offense outside class/module bodies' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def Test.some_method
         do_something
       end
-    END
+    RUBY
   end
 
   it 'autocorrects class name to self' do
-    src = <<-END.strip_indent
+    src = <<-RUBY.strip_indent
       class Test
         def Test.some_method
           do_something
         end
       end
-    END
+    RUBY
 
-    correct_source = <<-END.strip_indent
+    correct_source = <<-RUBY.strip_indent
       class Test
         def self.some_method
           do_something
         end
       end
-    END
+    RUBY
 
     new_source = autocorrect_source(cop, src)
     expect(new_source).to eq(correct_source)

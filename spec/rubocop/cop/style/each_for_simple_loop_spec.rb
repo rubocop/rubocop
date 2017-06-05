@@ -49,10 +49,10 @@ describe RuboCop::Cop::Style::EachForSimpleLoop do
   end
 
   it 'does not register offense for multiline block with parameters' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       (0..10).each do |n|
       end
-    END
+    RUBY
   end
 
   it 'does not register offense for character range' do
@@ -66,34 +66,34 @@ describe RuboCop::Cop::Style::EachForSimpleLoop do
     end
 
     it 'autocorrects the source with multiline block' do
-      corrected = autocorrect_source(cop, <<-END.strip_indent)
+      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
         (0..10).each do
         end
-      END
+      RUBY
 
-      expect(corrected).to eq <<-END.strip_indent
+      expect(corrected).to eq <<-RUBY.strip_indent
         11.times do
         end
-      END
+      RUBY
     end
 
     it 'autocorrects the range not starting with zero' do
-      corrected = autocorrect_source(cop, <<-END.strip_indent)
+      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
         (3..7).each do
         end
-      END
+      RUBY
 
-      expect(corrected).to eq <<-END.strip_indent
+      expect(corrected).to eq <<-RUBY.strip_indent
         5.times do
         end
-      END
+      RUBY
     end
 
     it 'does not autocorrect range not starting with zero and using param' do
-      source = <<-END.strip_indent
+      source = <<-RUBY.strip_indent
         (3..7).each do |n|
         end
-      END
+      RUBY
       corrected = autocorrect_source(cop, source)
       expect(corrected).to eq(source)
     end
@@ -106,34 +106,34 @@ describe RuboCop::Cop::Style::EachForSimpleLoop do
     end
 
     it 'autocorrects the source with multiline block' do
-      corrected = autocorrect_source(cop, <<-END.strip_indent)
+      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
         (0...10).each do
         end
-      END
+      RUBY
 
-      expect(corrected).to eq <<-END.strip_indent
+      expect(corrected).to eq <<-RUBY.strip_indent
         10.times do
         end
-      END
+      RUBY
     end
 
     it 'autocorrects the range not starting with zero' do
-      corrected = autocorrect_source(cop, <<-END.strip_indent)
+      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
         (3...7).each do
         end
-      END
+      RUBY
 
-      expect(corrected).to eq <<-END.strip_indent
+      expect(corrected).to eq <<-RUBY.strip_indent
         4.times do
         end
-      END
+      RUBY
     end
 
     it 'does not autocorrect range not starting with zero and using param' do
-      source = <<-END.strip_indent
+      source = <<-RUBY.strip_indent
         (3...7).each do |n|
         end
-      END
+      RUBY
       corrected = autocorrect_source(cop, source)
       expect(corrected).to eq(source)
     end

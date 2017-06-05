@@ -11,12 +11,12 @@ describe RuboCop::Cop::Style::NestedTernaryOperator do
   end
 
   it 'accepts a non-nested ternary operator within an if' do
-    expect_no_offenses(<<-END.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       a = if x
         cond ? b : c
       else
         d
       end
-    END
+    RUBY
   end
 end
