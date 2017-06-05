@@ -573,6 +573,11 @@ Style/HashSyntax:
   StyleGuide: '#hash-literals'
   Enabled: true
 
+Style/HeredocDelimiters:
+  Description: 'Use descriptive heredoc delimiters.'
+  StyleGuide: '#heredoc-delimiters'
+  Enabled: true
+
 Style/IfInsideElse:
   Description: 'Finds if nodes inside else, which can be converted to elsif.'
   Enabled: true

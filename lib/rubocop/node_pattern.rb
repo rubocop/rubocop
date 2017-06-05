@@ -519,7 +519,7 @@ module RuboCop
 
       def node_search_body(method_name, trailing_params, prelude, match_code,
                            on_match)
-        <<-END
+        <<-RUBY
           def #{method_name}(node0#{trailing_params})
             #{prelude}
             node0.each_node do |node|
@@ -529,7 +529,7 @@ module RuboCop
             end
             nil
           end
-        END
+        RUBY
       end
     end
 

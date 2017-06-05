@@ -27,19 +27,19 @@ module RuboCop
         MSG = 'Use `%s_by%s` instead of ' \
               '`%s { |%s, %s| %s <=> %s }`.'.freeze
 
-        def_node_matcher :compare?, <<-END
+        def_node_matcher :compare?, <<-PATTERN
           (block
             $(send _ {:sort :min :max})
             (args (arg $_a) (arg $_b))
             $send)
-        END
+        PATTERN
 
-        def_node_matcher :replaceable_body?, <<-END
+        def_node_matcher :replaceable_body?, <<-PATTERN
           (send
             (send (lvar %1) $_method $...)
             :<=>
             (send (lvar %2) _method $...))
-        END
+        PATTERN
 
         def on_block(node)
           compare?(node) do |send, var_a, var_b, body|

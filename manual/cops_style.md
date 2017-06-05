@@ -376,6 +376,10 @@ Attribute | Value
 EnforcedStyle | nested
 SupportedStyles | nested, compact
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#namespace-definition](https://github.com/bbatsov/ruby-style-guide#namespace-definition)
+
 ## Style/ClassCheck
 
 Enabled by default | Supports autocorrection
@@ -1430,6 +1434,40 @@ PreferHashRocketsForNonAlnumEndingSymbols | false
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#hash-literals](https://github.com/bbatsov/ruby-style-guide#hash-literals)
+
+## Style/HeredocDelimiters
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks that your heredocs are using meaningful delimiters. By
+default it disallows `END`, and can be configured through blacklisting
+additional delimiters.
+
+### Example
+
+```ruby
+# good
+<<-SQL
+  SELECT * FROM foo
+SQL
+
+# bad
+<<-END
+  SELECT * FROM foo
+END
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+Blacklist | END
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#heredoc-delimiters](https://github.com/bbatsov/ruby-style-guide#heredoc-delimiters)
 
 ## Style/IdenticalConditionalBranches
 
