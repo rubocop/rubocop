@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Lint
       # This cop checks for the use of a return with a value in a context
-      # where it the value will be ignored. (initialize and setter methods)
+      # where the value will be ignored. (initialize and setter methods)
       #
       # @example
       #
@@ -19,7 +19,9 @@ module RuboCop
       #     return 42
       #   end
       #
-      #  # good
+      # @example
+      #
+      #   # good
       #   def initialize
       #     foo
       #     return if bar?
@@ -29,7 +31,6 @@ module RuboCop
       #   def foo=(bar)
       #     return
       #   end
-      #
       class ReturnInVoidContext < Cop
         MSG = 'Do not return a value in `%s`.'.freeze
         def on_return(return_node)
@@ -44,13 +45,13 @@ module RuboCop
 
         def method_name(return_node)
           method_node = return_node.each_ancestor(:block, :def, :defs).first
-          return nil unless method_node.type == :def
+          return nil unless method_node.def_type?
           method_node.children.first
         end
 
         def method_setter?(method_name)
           method_name.to_s.end_with?('=') &&
-            !%i[!= == === >= <=].include?(method_name)
+            !AST::Node::COMPARISON_OPERATORS.include?(method_name)
         end
 
         def useless_return_method?(method_name)

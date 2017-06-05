@@ -1486,18 +1486,7 @@ Enabled by default | Supports autocorrection
 Enabled | No
 
 This cop checks for the use of a return with a value in a context
-where it the value will be ignored. (initialize and setter methods)
-
- # good
-  def initialize
-    foo
-    return if bar?
-    baz
-  end
-
-  def foo=(bar)
-    return
-  end
+where the value will be ignored. (initialize and setter methods)
 
 ### Example
 
@@ -1511,6 +1500,18 @@ end
 
 def foo=(bar)
   return 42
+end
+```
+```ruby
+# good
+def initialize
+  foo
+  return if bar?
+  baz
+end
+
+def foo=(bar)
+  return
 end
 ```
 

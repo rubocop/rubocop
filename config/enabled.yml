@@ -1388,7 +1388,7 @@ Lint/UselessElseWithoutRescue:
   Enabled: true
 
 Lint/ReturnInVoidContext:
-  Description: 'Checks for return in void context'
+  Description: 'Checks for return in void context.'
   Enabled: true
 
 Lint/UselessSetterCall:
