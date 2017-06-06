@@ -7,6 +7,28 @@ module RuboCop
       # be aligned with an if/unless/while/until/begin/def keyword, but there
       # are special cases when they should follow the same rules as the
       # alignment of end.
+      #
+      # @example
+      #   # bad
+      #   if something
+      #     code
+      #  else
+      #     code
+      #   end
+      #
+      #   # bad
+      #   if something
+      #     code
+      #  elsif something
+      #     code
+      #   end
+      #
+      #   # good
+      #   if something
+      #     code
+      #   else
+      #     code
+      #   end
       class ElseAlignment < Cop
         include EndKeywordAlignment
         include AutocorrectAlignment

@@ -414,6 +414,18 @@ Enabled | Yes
 
 This cop checks the . position in multi-line method calls.
 
+### Example
+
+```ruby
+# bad
+something.
+  mehod
+
+# good
+something
+  .method
+```
+
 ### Important attributes
 
 Attribute | Value
@@ -435,6 +447,32 @@ This cops checks the alignment of else keywords. Normally they should
 be aligned with an if/unless/while/until/begin/def keyword, but there
 are special cases when they should follow the same rules as the
 alignment of end.
+
+ else
+    code
+  end
+
+  # bad
+  if something
+    code
+ elsif something
+    code
+  end
+
+  # good
+  if something
+    code
+  else
+    code
+  end
+
+### Example
+
+```ruby
+# bad
+if something
+  code
+```
 
 ## Layout/EmptyLineAfterMagicComment
 
@@ -1710,6 +1748,12 @@ if a +
 b
   something
 end
+
+# good
+if a +
+   b
+  something
+end
 ```
 
 ### Important attributes
@@ -1756,6 +1800,16 @@ Enabled | Yes
 Checks for colon (:) not followed by some kind of space.
 N.B. this cop does not handle spaces after a ternary operator, which are
 instead handled by Layout/SpaceAroundOperators.
+
+### Example
+
+```ruby
+# bad
+def f(a:, b:2); {a:3}; end
+
+# good
+def f(a:, b: 2); {a: 3}; end
+```
 
 ### References
 
@@ -1947,6 +2001,20 @@ Enabled | Yes
 Checks that block braces have or don't have a space before the opening
 brace depending on configuration.
 
+### Example
+
+```ruby
+# bad
+foo.map{ |a|
+  a.bar.to_s
+}
+
+# good
+foo.map { |a|
+  a.bar.to_s
+}
+```
+
 ### Important attributes
 
 Attribute | Value
@@ -1970,6 +2038,16 @@ Enabled | Yes
 
 This cop checks for missing space between a token and a comment on the
 same line.
+
+### Example
+
+```ruby
+# bad
+1 + 1# this operation does ...
+
+# good
+1 + 1 # this operation does ...
+```
 
 ## Layout/SpaceBeforeFirstArg
 
@@ -2011,6 +2089,16 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 Checks for semicolon (;) preceded by space.
+
+### Example
+
+```ruby
+# bad
+x = 1 ; y = 2
+
+# good
+x = 1; y = 2
+```
 
 ## Layout/SpaceInLambdaLiteral
 

@@ -5,6 +5,13 @@ module RuboCop
     module Layout
       # This cop checks for missing space between a token and a comment on the
       # same line.
+      #
+      # @example
+      #   # bad
+      #   1 + 1# this operation does ...
+      #
+      #   # good
+      #   1 + 1 # this operation does ...
       class SpaceBeforeComment < Cop
         MSG = 'Put a space before an end-of-line comment.'.freeze
 

@@ -4,6 +4,13 @@ module RuboCop
   module Cop
     module Layout
       # Checks for semicolon (;) preceded by space.
+      #
+      # @example
+      #   # bad
+      #   x = 1 ; y = 2
+      #
+      #   # good
+      #   x = 1; y = 2
       class SpaceBeforeSemicolon < Cop
         include SpaceBeforePunctuation
 

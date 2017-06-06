@@ -12,6 +12,12 @@ module RuboCop
       #   b
       #     something
       #   end
+      #
+      #   # good
+      #   if a +
+      #      b
+      #     something
+      #   end
       class MultilineOperationIndentation < Cop
         include ConfigurableEnforcedStyle
         include AutocorrectAlignment

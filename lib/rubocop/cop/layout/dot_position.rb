@@ -4,6 +4,15 @@ module RuboCop
   module Cop
     module Layout
       # This cop checks the . position in multi-line method calls.
+      #
+      # @example
+      #   # bad
+      #   something.
+      #     mehod
+      #
+      #   # good
+      #   something
+      #     .method
       class DotPosition < Cop
         include ConfigurableEnforcedStyle
 
