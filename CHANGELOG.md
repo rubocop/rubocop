@@ -20,6 +20,7 @@
 
 * [#4444](https://github.com/bbatsov/rubocop/pull/4444): Make `Style/Encoding` cop enabled by default. ([@deivid-rodriguez][])
 * [#4452](https://github.com/bbatsov/rubocop/pull/4452): Add option to `Rails/Delegate` for enforcing the prefixed method name case. ([@klesse413][])
+* [#4492](https://github.com/bbatsov/rubocop/pull/4492): Make `Lint/DuplicateMethods` aware of `alias` and `alias_method`. ([@pocke][])
 
 ## 0.49.1 (2017-05-29)
 
