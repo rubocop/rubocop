@@ -231,7 +231,7 @@ end
 
 # good
 delegate :bar, to: :foo, prefix: true
-  
+
 # EnforceForPrefixed: false
 # good
 def foo_bar

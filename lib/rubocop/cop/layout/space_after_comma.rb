@@ -4,6 +4,15 @@ module RuboCop
   module Cop
     module Layout
       # Checks for comma (,) not followed by some kind of space.
+      #
+      # @exmple
+      #   # bad
+      #   1,2
+      #   { foo:bar,}
+      #
+      #   # good
+      #   1, 2
+      #   { foo:bar, }
       class SpaceAfterComma < Cop
         include SpaceAfterPunctuation
 
