@@ -97,6 +97,28 @@ describe RuboCop::Cop::Lint::Void do
     RUBY
   end
 
+  it 'registers two offenses for void literals in a `#each` method' do
+    expect_offense(<<-RUBY.strip_indent)
+      array.each do |_item|
+        42
+        ^^ Literal `42` used in void context.
+        42
+        ^^ Literal `42` used in void context.
+      end
+    RUBY
+  end
+
+  it 'registers two offenses for void literals in a `for`' do
+    expect_offense(<<-RUBY.strip_indent)
+      for _item in array do
+        42
+        ^^ Literal `42` used in void context.
+        42
+        ^^ Literal `42` used in void context.
+      end
+    RUBY
+  end
+
   it 'handles explicit begin blocks' do
     expect_offense(<<-RUBY.strip_indent)
       begin

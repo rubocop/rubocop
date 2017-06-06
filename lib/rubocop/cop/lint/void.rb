@@ -62,9 +62,7 @@ module RuboCop
 
         def check_begin(node)
           expressions = *node
-          unless in_void_context_method?(node)
-            expressions = expressions.drop_last(1)
-          end
+          expressions = expressions.drop_last(1) unless in_void_context?(node)
           expressions.each do |expr|
             check_for_void_op(expr)
             check_for_literal(expr)
@@ -107,13 +105,21 @@ module RuboCop
 
         # `initialize` and setter methods do not return value of last
         # expression.
-        def in_void_context_method?(node)
+        def in_void_context?(node)
           parent = node.parent
           return false unless parent
-          method = parent.children.first
-          parent.def_type? &&
-            (method == :initialize || method.to_s.end_with?('=')) &&
-            parent.children.last == node
+          return false unless parent.children.last == node
+
+          case parent.type
+          when :def
+            method = parent.children.first
+            method == :initialize || method.to_s.end_with?('=')
+          when :for
+            true
+          when :block
+            send = parent.children.first
+            send.method?(:each)
+          end
         end
       end
     end
