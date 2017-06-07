@@ -20,6 +20,7 @@ module RuboCop
       #   END
       class HeredocDelimiters < Cop
         MSG = 'Use meaningful heredoc delimiters.'.freeze
+        OPENING_DELIMITER = /<<[~-]?'?(\w+)'?\b/
 
         def on_str(node)
           return unless heredoc?(node) && !meaningful_delimiters?(node)
@@ -40,7 +41,7 @@ module RuboCop
         end
 
         def delimiters(node)
-          node.source[3..-1].delete("'")
+          node.source.match(OPENING_DELIMITER).captures.first
         end
 
         def blacklisted_delimiters
