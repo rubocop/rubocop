@@ -28,7 +28,7 @@ module RuboCop
         def on_begin(node)
           return unless empty_expression?(node)
 
-          add_offense(node, node.source_range, MSG)
+          add_offense(node, node.source_range)
         end
 
         private

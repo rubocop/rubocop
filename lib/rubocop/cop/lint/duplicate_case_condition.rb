@@ -34,7 +34,7 @@ module RuboCop
           case_node.when_branches.each_with_object([]) do |when_node, previous|
             when_node.each_condition do |condition|
               if repeated_condition?(previous, condition)
-                add_offense(condition, :expression, MSG)
+                add_offense(condition, :expression)
               end
             end
 

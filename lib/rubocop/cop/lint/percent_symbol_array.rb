@@ -33,7 +33,7 @@ module RuboCop
         def on_percent_literal(node)
           return unless contains_colons_or_commas?(node)
 
-          add_offense(node, :expression, MSG)
+          add_offense(node, :expression)
         end
 
         private

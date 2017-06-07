@@ -65,8 +65,7 @@ module RuboCop
 
           add_offense(
             node,
-            source_range(processed_source.buffer, node.loc.line, line_range),
-            MSG
+            source_range(processed_source.buffer, node.loc.line, line_range)
           )
         end
       end

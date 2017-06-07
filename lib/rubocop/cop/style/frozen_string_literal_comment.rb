@@ -79,7 +79,7 @@ module RuboCop
           last_special_comment = last_special_comment(processed_source)
           range = source_range(processed_source.buffer, 0, 0)
 
-          add_offense(last_special_comment, range, MSG)
+          add_offense(last_special_comment, range)
         end
 
         def unnecessary_comment_offense(processed_source)

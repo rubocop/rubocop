@@ -33,7 +33,7 @@ module RuboCop
           referer?(node) do
             return unless node.method?(wrong_method_name)
 
-            add_offense(node.source_range, node.source_range, message)
+            add_offense(node.source_range, node.source_range)
           end
         end
 
@@ -43,7 +43,7 @@ module RuboCop
 
         private
 
-        def message
+        def message(_node)
           format(MSG, style, wrong_method_name)
         end
 

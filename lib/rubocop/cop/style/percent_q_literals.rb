@@ -25,7 +25,7 @@ module RuboCop
           # i.e., if the string would become dynamic or has special characters.
           return if node.children != parse(corrected(node.source)).ast.children
 
-          add_offense(node, :begin, message)
+          add_offense(node, :begin)
         end
 
         def correct_literal_style?(node)
@@ -33,7 +33,7 @@ module RuboCop
             style == :upper_case_q && type(node) == '%Q'
         end
 
-        def message
+        def message(_node)
           style == :lower_case_q ? LOWER_CASE_Q_MSG : UPPER_CASE_Q_MSG
         end
 

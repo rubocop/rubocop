@@ -12,7 +12,6 @@ end
 def expect_copyright_offense(cop, source)
   inspect_source(cop, source)
   expect(cop.offenses.size).to eq(1)
-  expect(cop.messages[0]).to eq(cop.message)
 end
 
 describe RuboCop::Cop::Style::Copyright, :config do

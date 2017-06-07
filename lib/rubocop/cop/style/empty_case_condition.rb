@@ -42,7 +42,7 @@ module RuboCop
         def on_case(case_node)
           return if case_node.condition
 
-          add_offense(case_node, :keyword, MSG)
+          add_offense(case_node, :keyword)
         end
 
         private

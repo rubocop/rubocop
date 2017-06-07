@@ -101,13 +101,13 @@ module RuboCop
         def empty_check(node)
           return unless node.else? && !node.else_branch
 
-          add_offense(node, :else, MSG)
+          add_offense(node, :else)
         end
 
         def nil_check(node)
           return unless node.else_branch && node.else_branch.nil_type?
 
-          add_offense(node, :else, MSG)
+          add_offense(node, :else)
         end
 
         def autocorrect(node)
