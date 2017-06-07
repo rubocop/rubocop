@@ -57,7 +57,7 @@ module RuboCop
           return if compact_style? && compact?(node)
           return if expanded_style? && expanded?(node)
 
-          add_offense(node, node.source_range, message)
+          add_offense(node, node.source_range)
         end
 
         private
@@ -68,7 +68,7 @@ module RuboCop
           end
         end
 
-        def message
+        def message(_node)
           compact_style? ? MSG_COMPACT : MSG_EXPANDED
         end
 

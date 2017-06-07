@@ -23,11 +23,11 @@ module RuboCop
 
         def on_float(node)
           value, = *node
-          if value.infinite?
-            add_offense(node, :expression, MSG)
-          elsif value.zero? && node.source =~ /[1-9]/
-            add_offense(node, :expression, MSG)
-          end
+
+          return unless value.infinite? ||
+                        value.zero? && node.source =~ /[1-9]/
+
+          add_offense(node, :expression)
         end
       end
     end

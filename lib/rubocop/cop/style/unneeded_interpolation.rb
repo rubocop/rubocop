@@ -25,7 +25,7 @@ module RuboCop
         end
 
         def on_dstr(node)
-          add_offense(node, :expression, MSG) if single_interpolation?(node)
+          add_offense(node, :expression) if single_interpolation?(node)
         end
 
         private

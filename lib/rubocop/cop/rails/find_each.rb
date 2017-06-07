@@ -24,7 +24,7 @@ module RuboCop
           return unless SCOPE_METHODS.include?(node.receiver.method_name)
           return if method_chain(node).any? { |m| ignored_by_find_each?(m) }
 
-          add_offense(node, node.loc.selector, MSG)
+          add_offense(node, node.loc.selector)
         end
 
         def autocorrect(node)

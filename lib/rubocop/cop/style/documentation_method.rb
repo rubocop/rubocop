@@ -68,7 +68,7 @@ module RuboCop
           return if non_public?(node) && !require_for_non_public_methods?
           return if documentation_comment?(node)
 
-          add_offense(node, :expression, MSG)
+          add_offense(node, :expression)
         end
 
         def require_for_non_public_methods?
