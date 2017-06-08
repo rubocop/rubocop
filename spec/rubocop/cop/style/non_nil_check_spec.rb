@@ -157,4 +157,9 @@ describe RuboCop::Cop::Style::NonNilCheck, :config do
       expect(corrected).to eq('return nil unless (line =~ //)')
     end
   end
+
+  it 'does not blow up when autocorrecting implicit receiver' do
+    corrected = autocorrect_source(cop, '!nil?')
+    expect(corrected).to eq 'self'
+  end
 end
