@@ -1024,6 +1024,27 @@ Attribute | Value
 EnforcedStyle | runtime_error
 SupportedStyles | runtime_error, standard_error
 
+## Lint/InterpolationCheck
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks for interpolation in a single quoted string.
+
+ foo = 'something with #{interpolation} inside'
+
+ foo = "something with #{interpolation} inside"
+
+### Example
+
+```ruby
+# bad
+```
+```ruby
+# good
+```
+
 ## Lint/InvalidCharacterLiteral
 
 Enabled by default | Supports autocorrection
