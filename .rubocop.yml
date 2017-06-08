@@ -23,6 +23,10 @@ Lint/AmbiguousBlockAssociation:
   Exclude:
     - 'spec/**/*.rb'
 
+Lint/InterpolationCheck:
+  Exclude:
+    - 'spec/**/*.rb'
+
 Lint/UselessAccessModifier:
   MethodCreatingMethods:
     - 'def_matcher'

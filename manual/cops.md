@@ -195,6 +195,7 @@ In the following section you find all available cops:
 * [Lint/ImplicitStringConcatenation](cops_lint.md#lintimplicitstringconcatenation)
 * [Lint/IneffectiveAccessModifier](cops_lint.md#lintineffectiveaccessmodifier)
 * [Lint/InheritException](cops_lint.md#lintinheritexception)
+* [Lint/InterpolationCheck](cops_lint.md#lintinterpolationcheck)
 * [Lint/InvalidCharacterLiteral](cops_lint.md#lintinvalidcharacterliteral)
 * [Lint/LiteralInCondition](cops_lint.md#lintliteralincondition)
 * [Lint/LiteralInInterpolation](cops_lint.md#lintliteralininterpolation)

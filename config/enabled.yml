@@ -1254,6 +1254,10 @@ Lint/InheritException:
   Description: 'Avoid inheriting from the `Exception` class.'
   Enabled: true
 
+Lint/InterpolationCheck:
+  Description: 'Raise warning for interpolation in single q strs'
+  Enabled: true
+
 Lint/InvalidCharacterLiteral:
   Description: >-
                  Checks for invalid character literals with a non-escaped

@@ -5,9 +5,11 @@ module RuboCop
     module Style
       # This cop checks for variable interpolation (like "#@ivar").
       class VariableInterpolation < Cop
+        # rubocop:disable Lint/InterpolationCheck
         MSG = 'Replace interpolated variable `%s` ' \
               'with expression `#{%s}`.'.freeze
 
+        # rubocop:enable Lint/InterpolationCheck
         def on_dstr(node)
           check_for_interpolation(node)
         end
