@@ -135,6 +135,16 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
         new_source = autocorrect_source(cop, '{ :a=>1, :b=>2 }')
         expect(new_source).to eq('{ a: 1, b: 2 }')
       end
+
+      it 'registers offense when mixed keys including Integer' do
+        inspect_source(cop, "{ :a => 'hey', 123 => 'bob' }")
+        expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+      end
+
+      it 'autocorrects with mixed keys including Integer' do
+        new_source = autocorrect_source(cop, "{ :a => 'hey', 123 => 'bob' }")
+        expect(new_source).to eq("{ a: 'hey', 123 => 'bob' }")
+      end
     end
 
     context 'with SpaceAroundOperators disabled' do
