@@ -51,7 +51,7 @@ module RuboCop
         end
       RUBY
 
-      SPEC_TEMPLATE = <<-RUBY.strip_indent
+      SPEC_TEMPLATE = <<-SPEC.strip_indent
         # frozen_string_literal: true
 
         describe RuboCop::Cop::%<department>s::%<cop_name>s do
@@ -61,19 +61,20 @@ module RuboCop
           # TODO: Write test code
           #
           # For example
-          it 'registers an offense for offending code' do
-            inspect_source(cop, 'bad_method')
-            expect(cop.offenses.size).to eq(1)
-            expect(cop.messages)
-              .to eq(['Message of %<cop_name>s'])
+          it 'registers an offense when using `#bad_method`' do
+            expect_offense(<<-RUBY.strip_indent)
+              bad_method
+              ^^^^^^^^^^ Use `#good_method` instead of `#bad_method`.
+            RUBY
           end
 
-          it 'accepts' do
-            inspect_source(cop, 'good_method')
-            expect(cop.offenses).to be_empty
+          it 'does not register an offense when using `#good_method`' do
+            expect_no_offenses(<<-RUBY.strip_indent)
+              good_method
+            RUBY
           end
         end
-      RUBY
+      SPEC
 
       def initialize(name)
         @badge = Badge.parse(name)
