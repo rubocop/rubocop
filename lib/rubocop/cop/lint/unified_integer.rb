@@ -20,12 +20,13 @@ module RuboCop
       class UnifiedInteger < Cop
         MSG = 'Use `Integer` instead of `%s`.'.freeze
 
-        def_node_matcher :fixnum_or_bignum_const?, <<-PATTERN
+        def_node_matcher :fixnum_or_bignum_const, <<-PATTERN
           (:const {nil (:cbase)} ${:Fixnum :Bignum})
         PATTERN
 
         def on_const(node)
-          klass = fixnum_or_bignum_const?(node)
+          klass = fixnum_or_bignum_const(node)
+
           return unless klass
 
           add_offense(node, :expression, format(MSG, klass))

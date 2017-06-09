@@ -59,7 +59,7 @@ module RuboCop
           null_false = pairs.find { |pair| null_false?(pair) }
           return unless null_false
 
-          add_offense(null_false, :expression)
+          add_offense(null_false)
         end
       end
     end

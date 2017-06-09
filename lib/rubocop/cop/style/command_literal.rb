@@ -47,13 +47,17 @@ module RuboCop
         def check_backtick_literal(node)
           return if allowed_backtick_literal?(node)
 
-          add_offense(node, :expression, MSG_USE_PERCENT_X)
+          add_offense(node)
         end
 
         def check_percent_x_literal(node)
           return if allowed_percent_x_literal?(node)
 
-          add_offense(node, :expression, MSG_USE_BACKTICKS)
+          add_offense(node)
+        end
+
+        def message(node)
+          backtick_literal?(node) ? MSG_USE_PERCENT_X : MSG_USE_BACKTICKS
         end
 
         def allowed_backtick_literal?(node)

@@ -34,7 +34,7 @@ module RuboCop
           return unless ensure_body
 
           ensure_body.each_node(:return) do |return_node|
-            add_offense(return_node, :expression)
+            add_offense(return_node)
           end
         end
       end

@@ -31,7 +31,13 @@ module RuboCop
         def on_send(node)
           return unless rand_one?(node)
 
-          add_offense(node, :expression, format(MSG, node.source))
+          add_offense(node)
+        end
+
+        private
+
+        def message(node)
+          format(MSG, node.source)
         end
       end
     end

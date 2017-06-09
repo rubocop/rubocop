@@ -26,7 +26,7 @@ module RuboCop
 
         def investigate(_processed_source)
           assertions_using_described_class_msg.each do |node|
-            add_offense(node, :expression)
+            add_offense(node)
           end
         end
 

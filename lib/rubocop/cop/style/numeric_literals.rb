@@ -56,9 +56,9 @@ module RuboCop
 
           case int
           when /^\d+$/
-            add_offense(node, :expression) { self.max = int.size + 1 }
+            add_offense(node) { self.max = int.size + 1 }
           when /\d{4}/, short_group_regex
-            add_offense(node, :expression) do
+            add_offense(node) do
               self.config_to_allow_offenses = { 'Enabled' => false }
             end
           end

@@ -15,7 +15,7 @@ module RuboCop
 
           return if empty_lines_around?(node)
 
-          add_offense(node, :expression)
+          add_offense(node)
         end
 
         def autocorrect(node)

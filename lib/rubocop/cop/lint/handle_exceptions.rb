@@ -48,7 +48,7 @@ module RuboCop
         MSG = 'Do not suppress exceptions.'.freeze
 
         def on_resbody(node)
-          add_offense(node, :expression) unless node.body
+          add_offense(node) unless node.body
         end
       end
     end

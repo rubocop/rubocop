@@ -24,7 +24,7 @@ module RuboCop
         def on_if(node)
           return unless node.modifier_form? && node.body.multiline?
 
-          add_offense(node, :expression, format(MSG, node.keyword))
+          add_offense(node)
         end
 
         private
@@ -33,6 +33,10 @@ module RuboCop
           lambda do |corrector|
             corrector.replace(node.source_range, to_normal_if(node))
           end
+        end
+
+        def message(node)
+          format(MSG, node.keyword)
         end
 
         def to_normal_if(node)

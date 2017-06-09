@@ -8,11 +8,11 @@ module RuboCop
         MSG = 'Avoid the use of flip flop operators.'.freeze
 
         def on_iflipflop(node)
-          add_offense(node, :expression)
+          add_offense(node)
         end
 
         def on_eflipflop(node)
-          add_offense(node, :expression)
+          add_offense(node)
         end
       end
     end

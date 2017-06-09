@@ -73,7 +73,7 @@ module RuboCop
           return if uses_preferred_delimiter?(node, type) ||
                     contains_preferred_delimiter?(node, type)
 
-          add_offense(node, :expression)
+          add_offense(node)
         end
 
         def uses_preferred_delimiter?(node, type)

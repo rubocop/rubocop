@@ -20,7 +20,7 @@ module RuboCop
 
         def on_send(node)
           scope?(node) do |second_arg|
-            add_offense(second_arg, :expression)
+            add_offense(second_arg)
           end
         end
       end

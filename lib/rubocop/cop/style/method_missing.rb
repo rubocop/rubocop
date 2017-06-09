@@ -37,7 +37,7 @@ module RuboCop
         def check(node)
           return if calls_super?(node) && implements_respond_to_missing?(node)
 
-          add_offense(node, :expression)
+          add_offense(node)
         end
 
         def message(node)

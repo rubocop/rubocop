@@ -73,7 +73,7 @@ module RuboCop
                (method_argument?(node) || part_of_an_array?(node))
               add_offense(node, :expression, ARRAY_PARAM_MSG)
             else
-              add_offense(node, :expression)
+              add_offense(node)
             end
           end
         end

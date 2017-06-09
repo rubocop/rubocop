@@ -41,7 +41,7 @@ module RuboCop
             # offense again and correct it.
             add_offense(nil, expr)
           else
-            add_offense(current, :expression)
+            add_offense(current)
           end
         end
       end

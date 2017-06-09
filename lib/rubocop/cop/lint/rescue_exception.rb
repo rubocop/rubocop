@@ -33,7 +33,7 @@ module RuboCop
           rescue_args = node.children.first.children
           return unless rescue_args.any? { |a| targets_exception?(a) }
 
-          add_offense(node, :expression)
+          add_offense(node)
         end
 
         def targets_exception?(rescue_arg_node)

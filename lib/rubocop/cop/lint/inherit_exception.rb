@@ -54,24 +54,25 @@ module RuboCop
         def on_class(node)
           _class, base_class, _body = *node
 
-          return if base_class.nil?
+          return unless base_class && illegal_class_name?(base_class)
 
-          check(base_class)
+          add_offense(base_class)
         end
 
         private
 
-        def check(node)
-          return unless ILLEGAL_CLASSES.include?(node.const_name)
-
-          msg = format(MSG, preferred_base_class, node.const_name)
-          add_offense(node, :expression, msg)
+        def message(node)
+          format(MSG, preferred_base_class, node.const_name)
         end
 
         def autocorrect(node)
           lambda do |corrector|
             corrector.replace(node.loc.expression, preferred_base_class)
           end
+        end
+
+        def illegal_class_name?(class_node)
+          ILLEGAL_CLASSES.include?(class_node.const_name)
         end
 
         def preferred_base_class

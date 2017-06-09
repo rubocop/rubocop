@@ -38,7 +38,7 @@ module RuboCop
             add_offense(node, :selector)
           elsif include_semantic_changes? &&
                 (not_and_nil_check?(node) || unless_and_nil_check?(node))
-            add_offense(node, :expression)
+            add_offense(node)
           end
         end
 

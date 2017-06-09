@@ -11,7 +11,9 @@ module RuboCop
 
         def investigate(processed_source)
           processed_source.comments.each do |comment|
-            add_offense(comment, :expression) if comment.document?
+            next unless comment.document?
+
+            add_offense(comment)
           end
         end
 

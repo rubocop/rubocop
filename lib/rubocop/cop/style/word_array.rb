@@ -69,12 +69,16 @@ module RuboCop
                     below_array_length?(node)
 
           array_style_detected(:brackets, node.values.size)
-          add_offense(node, :expression, PERCENT_MSG) if style == :percent
+          add_offense(node) if style == :percent
         end
 
         def check_percent_array(node)
           array_style_detected(:percent, node.values.size)
-          add_offense(node, :expression, ARRAY_MSG) if style == :brackets
+          add_offense(node) if style == :brackets
+        end
+
+        def message(_node)
+          style == :percent ? PERCENT_MSG : ARRAY_MSG
         end
 
         def percent_syntax?(node)

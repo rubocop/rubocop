@@ -13,7 +13,7 @@ module RuboCop
 
         def on_block(node)
           proc_new?(node) do |block_method|
-            add_offense(block_method, :expression)
+            add_offense(block_method)
           end
         end
 

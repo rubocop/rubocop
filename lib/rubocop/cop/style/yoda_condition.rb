@@ -33,7 +33,7 @@ module RuboCop
         def on_send(node)
           return unless yoda_condition?(node)
 
-          register_offense(node)
+          add_offense(node)
         end
 
         private
@@ -44,8 +44,8 @@ module RuboCop
           node.receiver.literal? && !node.arguments.first.literal?
         end
 
-        def register_offense(node)
-          add_offense(node, :expression, format(MSG, node.source))
+        def message(node)
+          format(MSG, node.source)
         end
 
         def autocorrect(node)

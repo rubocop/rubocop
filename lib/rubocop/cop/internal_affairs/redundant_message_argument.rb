@@ -29,7 +29,7 @@ module RuboCop
 
         def on_send(node)
           node_type_check(node) do |offense_node|
-            add_offense(offense_node.last_argument, :expression)
+            add_offense(offense_node.last_argument)
           end
         end
       end

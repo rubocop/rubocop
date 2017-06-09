@@ -40,7 +40,7 @@ module RuboCop
 
           return unless expression =~ /(\s#{escaped_op})|(#{escaped_op}\s)/
 
-          add_offense(node, :expression)
+          add_offense(node)
         end
 
         def autocorrect(node)

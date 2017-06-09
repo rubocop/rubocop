@@ -18,7 +18,7 @@ module RuboCop
         def on_sym(node)
           return unless node.source =~ /\A:["'][A-Za-z_]\w*["']\z/
 
-          add_offense(node, :expression)
+          add_offense(node)
         end
 
         def autocorrect(node)

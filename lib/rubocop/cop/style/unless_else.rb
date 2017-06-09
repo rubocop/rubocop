@@ -11,7 +11,7 @@ module RuboCop
         def on_if(node)
           return unless node.unless? && node.else?
 
-          add_offense(node, :expression)
+          add_offense(node)
         end
 
         def autocorrect(node)

@@ -17,7 +17,7 @@ module RuboCop
         def on_send(node)
           return unless node.keyword_bang? && whitespace_after_operator?(node)
 
-          add_offense(node, :expression)
+          add_offense(node)
         end
 
         def whitespace_after_operator?(node)

@@ -36,7 +36,7 @@ module RuboCop
                         (!node.value_used? || only_truthiness_matters?(node)) &&
                         !(node.parent && node.parent.block_type?)
 
-          add_offense(node, :expression)
+          add_offense(node)
         end
 
         def autocorrect(node)

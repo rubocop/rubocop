@@ -23,10 +23,13 @@ module RuboCop
         private
 
         def check_for_interpolation(node)
-          var_nodes(node.children).each do |v|
-            var = v.source
-            add_offense(v, :expression, format(MSG, var, var))
+          var_nodes(node.children).each do |var_node|
+            add_offense(var_node)
           end
+        end
+
+        def message(node)
+          format(MSG, node.source, node.source)
         end
 
         def autocorrect(node)

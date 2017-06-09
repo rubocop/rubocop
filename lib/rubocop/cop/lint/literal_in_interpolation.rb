@@ -27,7 +27,7 @@ module RuboCop
             next if special_keyword?(final_node)
             next unless prints_as_self?(final_node)
 
-            add_offense(final_node, :expression)
+            add_offense(final_node)
           end
         end
 

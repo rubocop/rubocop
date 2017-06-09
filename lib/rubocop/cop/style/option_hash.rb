@@ -32,7 +32,7 @@ module RuboCop
           return unless default_value.hash_type? && default_value.pairs.empty?
           return unless suspicious_name?(arg)
 
-          add_offense(last_arg, :expression)
+          add_offense(last_arg)
         end
 
         def validate_config

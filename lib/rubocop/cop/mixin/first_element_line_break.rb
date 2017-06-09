@@ -35,7 +35,7 @@ module RuboCop
         max = last_by_line(children)
         return if line == max.loc.last_line
 
-        add_offense(min, :expression)
+        add_offense(min)
       end
 
       def first_by_line(nodes)

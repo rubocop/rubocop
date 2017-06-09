@@ -9,6 +9,10 @@ module RuboCop
         include OnMethodDef
         include ConfigurableEnforcedStyle
 
+        MSG_PRESENT = 'Use def without parentheses.'.freeze
+        MSG_MISSING = 'Use def with parentheses when there are ' \
+                      'parameters.'.freeze
+
         def on_method_def(node, _method_name, args, _body)
           if require_parentheses?(args)
             if arguments_without_parentheses?(args)
@@ -53,14 +57,13 @@ module RuboCop
         end
 
         def missing_parentheses(node, args)
-          add_offense(node, args.source_range,
-                      'Use def with parentheses when there are parameters.') do
+          add_offense(node, args.source_range, MSG_MISSING) do
             unexpected_style_detected(:require_no_parentheses)
           end
         end
 
         def unwanted_parentheses(args)
-          add_offense(args, :expression, 'Use def without parentheses.') do
+          add_offense(args, :expression, MSG_PRESENT) do
             unexpected_style_detected(:require_parentheses)
           end
         end

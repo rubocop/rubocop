@@ -35,7 +35,7 @@ module RuboCop
           return if allowed_lhs?(lhs) || allowed_rhs?(rhs) ||
                     allowed_masign?(lhs_elements, rhs_elements)
 
-          add_offense(node, :expression)
+          add_offense(node)
         end
 
         private

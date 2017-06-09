@@ -67,7 +67,7 @@ module RuboCop
             correct_style_detected
           else
             opposite_style_detected
-            add_offense(node, :expression)
+            add_offense(node)
           end
         end
 

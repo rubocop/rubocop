@@ -93,7 +93,7 @@ module RuboCop
           return if @allowed_send_nodes.include?(node) ||
                     @local_variables_scopes[node].include?(node.method_name)
 
-          add_offense(node, :expression)
+          add_offense(node)
         end
 
         def autocorrect(node)

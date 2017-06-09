@@ -39,8 +39,8 @@ module RuboCop
           _name, body = *node
           return unless body && body.begin_type?
 
-          each_wrong_style(body.children) do |child_node, msg|
-            add_offense(child_node, :expression, msg)
+          each_wrong_style(body.children) do |child_node|
+            add_offense(child_node)
           end
         end
 
@@ -50,13 +50,17 @@ module RuboCop
           case style
           when :module_function
             nodes.each do |node|
-              yield node, MODULE_FUNCTION_MSG if extend_self_node?(node)
+              yield node if extend_self_node?(node)
             end
           when :extend_self
             nodes.each do |node|
-              yield node, EXTEND_SELF_MSG if module_function_node?(node)
+              yield node if module_function_node?(node)
             end
           end
+        end
+
+        def message(_node)
+          style == :module_function ? MODULE_FUNCTION_MSG : EXTEND_SELF_MSG
         end
       end
     end

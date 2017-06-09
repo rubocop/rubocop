@@ -57,13 +57,26 @@ module RuboCop
 
           if empty_else_cop_enabled?
             if empty_else_style == :empty
-              add_offense(node, :expression, format(MSG_NIL, node.type))
+              add_offense(node)
             elsif empty_else_style == :nil
-              add_offense(node, :expression, format(MSG_EMPTY, node.type))
+              add_offense(node)
             end
           end
 
-          add_offense(node, :expression, format(MSG, node.type))
+          add_offense(node)
+        end
+
+        def message(node)
+          template = case empty_else_style
+                     when :empty
+                       MSG_NIL
+                     when :nil
+                       MSG_EMPTY
+                     else
+                       MSG
+                     end
+
+          format(template, node.type)
         end
 
         def if_style?
