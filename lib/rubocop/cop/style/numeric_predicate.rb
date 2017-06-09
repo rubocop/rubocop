@@ -59,7 +59,7 @@ module RuboCop
 
           return unless numeric
 
-          add_offense(node, node.loc.expression,
+          add_offense(node, :expression,
                       format(MSG, replacement, node.source))
         end
 
