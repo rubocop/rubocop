@@ -1833,6 +1833,18 @@ Enabled | Yes
 
 Checks for comma (,) not followed by some kind of space.
 
+### Example
+
+```ruby
+# bad
+1,2
+{ foo:bar,}
+
+# good
+1, 2
+{ foo:bar, }
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#spaces-operators](https://github.com/bbatsov/ruby-style-guide#spaces-operators)

@@ -5,7 +5,8 @@ module RuboCop
     module Layout
       # Checks for comma (,) not followed by some kind of space.
       #
-      # @exmple
+      # @example
+      #
       #   # bad
       #   1,2
       #   { foo:bar,}
