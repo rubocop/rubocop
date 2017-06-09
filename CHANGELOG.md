@@ -103,6 +103,7 @@
 * [#4168](https://github.com/bbatsov/rubocop/issues/4168): Removed `-n` option. ([@sadovnik][])
 * [#4039](https://github.com/bbatsov/rubocop/pull/4039): Change `Style/PercentLiteralDelimiters` default configuration to match Style Guide update. ([@drenmi][])
 * [#4235](https://github.com/bbatsov/rubocop/pull/4235): Improved copy of offense message in `Lint/AmbiguousBlockAssociation` cop. ([@smakagon][])
+* [#4484](https://github.com/bbatsov/rubocop/pull/1830): `Style/PredicateName` now ignores the `app/controllers/` directory, since we don't want to have interrogation marks in controller methods names in Rails. ([@Ana06][])
 
 ### Bug fixes
 
