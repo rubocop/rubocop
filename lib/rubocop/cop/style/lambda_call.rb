@@ -19,7 +19,7 @@ module RuboCop
           return unless node.receiver && node.method?(:call)
 
           if offense?(node)
-            add_offense(node, :expression) { opposite_style_detected }
+            add_offense(node) { opposite_style_detected }
           else
             correct_style_detected
           end

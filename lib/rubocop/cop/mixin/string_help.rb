@@ -14,7 +14,7 @@ module RuboCop
         return if part_of_ignored_node?(node)
 
         if offense?(node)
-          add_offense(node, :expression) { opposite_style_detected }
+          add_offense(node) { opposite_style_detected }
         else
           correct_style_detected
         end

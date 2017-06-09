@@ -31,21 +31,28 @@ module RuboCop
         NONZERO_MSG = 'Use `!empty?` instead of `%s %s %s`.'.freeze
 
         def on_send(node)
+          check_zero_length_predicate(node)
+          check_nonzero_length_predicate(node)
+        end
+
+        private
+
+        def check_zero_length_predicate(node)
           zero_length_predicate = zero_length_predicate(node)
 
-          if zero_length_predicate
-            add_offense(node, :expression,
-                        format(ZERO_MSG, *zero_length_predicate))
-          end
+          return unless zero_length_predicate
 
+          add_offense(node, :expression,
+                      format(ZERO_MSG, *zero_length_predicate))
+        end
+
+        def check_nonzero_length_predicate(node)
           nonzero_length_predicate = nonzero_length_predicate(node)
 
-          # rubocop:disable Style/GuardClause
-          if nonzero_length_predicate
-            add_offense(node, :expression,
-                        format(NONZERO_MSG, *nonzero_length_predicate))
-          end
-          # rubocop:enable Style/GuardClause
+          return unless nonzero_length_predicate
+
+          add_offense(node, :expression,
+                      format(NONZERO_MSG, *nonzero_length_predicate))
         end
 
         def_node_matcher :zero_length_predicate, <<-PATTERN

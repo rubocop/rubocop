@@ -54,7 +54,7 @@ module RuboCop
         def on_send(node)
           return unless debugger_call?(node) || binding_irb?(node)
 
-          add_offense(node, :expression)
+          add_offense(node)
         end
 
         private

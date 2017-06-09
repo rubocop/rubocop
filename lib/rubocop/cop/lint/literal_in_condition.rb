@@ -60,7 +60,7 @@ module RuboCop
             case_node.each_when do |when_node|
               next unless when_node.conditions.all?(&:literal?)
 
-              add_offense(when_node, :expression)
+              add_offense(when_node)
             end
           end
         end
@@ -73,7 +73,7 @@ module RuboCop
 
         def check_for_literal(node)
           if node.condition.literal?
-            add_offense(node.condition, :expression)
+            add_offense(node.condition)
           else
             check_node(node.condition)
           end
@@ -107,7 +107,7 @@ module RuboCop
 
         def handle_node(node)
           if node.literal?
-            add_offense(node, :expression)
+            add_offense(node)
           elsif %i[send and or begin].include?(node.type)
             check_node(node)
           end

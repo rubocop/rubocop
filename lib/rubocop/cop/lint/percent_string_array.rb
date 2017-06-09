@@ -37,7 +37,7 @@ module RuboCop
         def on_percent_literal(node)
           return unless contains_quotes_or_commas?(node)
 
-          add_offense(node, :expression)
+          add_offense(node)
         end
 
         private

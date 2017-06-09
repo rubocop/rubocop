@@ -39,7 +39,7 @@ module RuboCop
           return if FROZEN_STRING_LITERAL_TYPES.include?(value.type) &&
                     frozen_string_literals_enabled?
 
-          add_offense(value, :expression)
+          add_offense(value)
         end
 
         def autocorrect(node)

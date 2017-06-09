@@ -33,9 +33,9 @@ module RuboCop
         def on_case(case_node)
           case_node.when_branches.each_with_object([]) do |when_node, previous|
             when_node.each_condition do |condition|
-              if repeated_condition?(previous, condition)
-                add_offense(condition, :expression)
-              end
+              next unless repeated_condition?(previous, condition)
+
+              add_offense(condition)
             end
 
             previous.push(when_node.conditions)

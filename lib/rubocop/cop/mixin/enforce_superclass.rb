@@ -16,13 +16,13 @@ module RuboCop
 
       def on_class(node)
         class_definition(node) do
-          add_offense(node.children[1], :expression, self.class::MSG)
+          add_offense(node.children[1])
         end
       end
 
       def on_send(node)
         class_new_definition(node) do
-          add_offense(node.children.last, :expression, self.class::MSG)
+          add_offense(node.children.last)
         end
       end
 

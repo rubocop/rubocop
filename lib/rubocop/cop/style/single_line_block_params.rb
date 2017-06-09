@@ -27,7 +27,7 @@ module RuboCop
           return true unless arguments.all?(&:arg_type?)
           return if args_match?(send_node.method_name, arguments)
 
-          add_offense(node.arguments, :expression)
+          add_offense(node.arguments)
         end
 
         private

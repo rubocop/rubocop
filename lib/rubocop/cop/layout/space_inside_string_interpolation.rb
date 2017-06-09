@@ -18,8 +18,8 @@ module RuboCop
         SPACE_MSG = 'Missing space around string interpolation detected.'.freeze
 
         def on_dstr(node)
-          each_style_violation(node) do |final_node, msg|
-            add_offense(final_node, :expression, msg)
+          each_style_violation(node) do |final_node|
+            add_offense(final_node)
           end
         end
 
@@ -31,11 +31,15 @@ module RuboCop
             next unless final_node
 
             if style == :no_space && space_on_any_side?(final_node)
-              yield final_node, NO_SPACE_MSG
+              yield final_node
             elsif style == :space && !space_on_each_side?(final_node)
-              yield final_node, SPACE_MSG
+              yield final_node
             end
           end
+        end
+
+        def message(_node)
+          style == :no_space ? NO_SPACE_MSG : SPACE_MSG
         end
 
         def space_on_any_side?(node)

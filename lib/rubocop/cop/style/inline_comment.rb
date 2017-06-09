@@ -23,7 +23,7 @@ module RuboCop
         def investigate(processed_source)
           processed_source.comments.each do |comment|
             next if comment_line?(processed_source[comment.loc.line - 1])
-            add_offense(comment, :expression)
+            add_offense(comment)
           end
         end
       end

@@ -24,7 +24,7 @@ module RuboCop
             next unless comment.text =~ /\A#+[^#\s=:+-]/
             next if comment.loc.line == 1 && allowed_on_first_line?(comment)
 
-            add_offense(comment, :expression)
+            add_offense(comment)
           end
         end
 

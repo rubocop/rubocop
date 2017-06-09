@@ -21,7 +21,7 @@ module RuboCop
           return unless node.receiver && node.method?(:freeze) &&
                         immutable_literal?(node.receiver)
 
-          add_offense(node, :expression)
+          add_offense(node)
         end
 
         def autocorrect(node)

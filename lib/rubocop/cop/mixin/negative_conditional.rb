@@ -20,7 +20,7 @@ module RuboCop
         return unless single_negative?(condition)
         return if node.if_type? && node.else?
 
-        add_offense(node, :expression)
+        add_offense(node)
       end
 
       def negative_conditional_corrector(node)

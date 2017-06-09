@@ -94,7 +94,7 @@ module RuboCop
           return if NIL_METHODS.include?(method)
           return unless method =~ /\w+[=!?]?/
 
-          add_offense(node, :expression)
+          add_offense(node)
         end
 
         def allowed_if_condition?(node)

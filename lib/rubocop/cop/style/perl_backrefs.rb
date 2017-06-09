@@ -9,7 +9,7 @@ module RuboCop
         MSG = 'Avoid the use of Perl-style backrefs.'.freeze
 
         def on_nth_ref(node)
-          add_offense(node, :expression)
+          add_offense(node)
         end
 
         def autocorrect(node)

@@ -26,7 +26,7 @@ module RuboCop
           arguments = *arguments
 
           each_misplaced_optional_arg(arguments) do |argument|
-            add_offense(argument, :expression)
+            add_offense(argument)
           end
         end
 

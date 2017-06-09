@@ -74,13 +74,13 @@ module RuboCop
         def check_grouped_style(send_node)
           return if sibling_mixins(send_node).empty?
 
-          add_offense(send_node, :expression)
+          add_offense(send_node)
         end
 
         def check_separated_style(send_node)
           return if send_node.arguments.one?
 
-          add_offense(send_node, :expression)
+          add_offense(send_node)
         end
 
         def sibling_mixins(send_node)

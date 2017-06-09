@@ -29,7 +29,7 @@ module RuboCop
           return unless duplicates?(keys)
 
           consecutive_duplicates(keys).each do |key|
-            add_offense(key, :expression)
+            add_offense(key)
           end
         end
       end

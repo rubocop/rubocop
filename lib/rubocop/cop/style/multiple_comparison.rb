@@ -20,7 +20,7 @@ module RuboCop
 
         def on_if(node)
           return unless nested_variable_comparison?(node.condition)
-          add_offense(node, :expression)
+          add_offense(node)
         end
 
         private

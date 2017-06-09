@@ -17,7 +17,7 @@ module RuboCop
           counter(node) do |var, arg|
             return if allowed_variable?(var) || allowed_argument?(arg)
 
-            add_offense(node, :expression)
+            add_offense(node)
           end
         end
 

@@ -12,7 +12,7 @@ module RuboCop
           return unless node.ternary?
 
           node.each_descendant(:if).select(&:ternary?).each do |nested_ternary|
-            add_offense(nested_ternary, :expression)
+            add_offense(nested_ternary)
           end
         end
       end

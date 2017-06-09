@@ -139,9 +139,13 @@ module RuboCop
         def check_condition(cond)
           match_node?(cond) do
             return if last_match_used?(cond)
-            add_offense(cond, :expression,
-                        format(MSG, cond.loc.selector.source))
+
+            add_offense(cond)
           end
+        end
+
+        def message(node)
+          node.loc.selector.source
         end
 
         def last_match_used?(match_node)

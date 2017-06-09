@@ -34,7 +34,7 @@ module RuboCop
           return if parens_required?(node.children.first)
           return if safe_assignment?(cond) && safe_assignment_allowed?
 
-          add_offense(cond, :expression, message(node))
+          add_offense(cond)
         end
 
         def modifier_op?(node)
@@ -46,7 +46,7 @@ module RuboCop
         end
 
         def message(node)
-          kw = node.keyword
+          kw = node.parent.keyword
           article = kw == 'while' ? 'a' : 'an'
           "Don't use parentheses around the condition of #{article} `#{kw}`."
         end

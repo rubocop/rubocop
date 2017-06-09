@@ -100,8 +100,12 @@ module RuboCop
           return unless expressions.size > 1 && expressions.uniq.one?
 
           expressions.each do |expression|
-            add_offense(expression, :expression, format(MSG, expression.source))
+            add_offense(expression, :expression)
           end
+        end
+
+        def message(node)
+          format(MSG, node.source)
         end
 
         # `elsif` branches show up in the if node as nested `else` branches. We

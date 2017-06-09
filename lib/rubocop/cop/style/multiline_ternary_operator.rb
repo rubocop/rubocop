@@ -11,7 +11,7 @@ module RuboCop
         def on_if(node)
           return unless node.ternary? && node.multiline?
 
-          add_offense(node, :expression)
+          add_offense(node)
         end
       end
     end

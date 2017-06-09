@@ -25,7 +25,7 @@ module RuboCop
           return unless start_line == end_line && !(allow_empty? && empty_body)
 
           @body = body
-          add_offense(node, :expression)
+          add_offense(node)
         end
 
         def autocorrect(node)

@@ -35,7 +35,7 @@ module RuboCop
           return unless start_with_percent_q_variant?(node)
           return if interpolated_quotes?(node) || allowed_percent_q?(node)
 
-          add_offense(node, :expression)
+          add_offense(node)
         end
 
         def interpolated_quotes?(node)

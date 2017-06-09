@@ -14,13 +14,19 @@ module RuboCop
         def on_normal_if_unless(node)
           return unless node.single_line? && node.else_branch
 
-          add_offense(node, :expression, format(MSG, node.keyword))
+          add_offense(node)
         end
+
+        private
 
         def autocorrect(node)
           lambda do |corrector|
             corrector.replace(node.source_range, replacement(node))
           end
+        end
+
+        def message(node)
+          format(MSG, node.keyword)
         end
 
         def replacement(node)

@@ -19,7 +19,7 @@ module RuboCop
         def on_percent_literal(node)
           return if requires_interpolation?(node)
 
-          add_offense(node, :expression)
+          add_offense(node)
         end
 
         def requires_interpolation?(node)

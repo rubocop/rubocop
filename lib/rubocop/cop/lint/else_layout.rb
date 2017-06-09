@@ -57,7 +57,7 @@ module RuboCop
 
           return unless first_else.source_range.line == node.loc.else.line
 
-          add_offense(first_else, :expression)
+          add_offense(first_else)
         end
       end
     end

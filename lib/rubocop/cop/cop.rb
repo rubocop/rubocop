@@ -112,7 +112,7 @@ module RuboCop
         self.class::MSG
       end
 
-      def add_offense(node, loc, message = nil, severity = nil)
+      def add_offense(node, loc = :expression, message = nil, severity = nil)
         location = find_location(node, loc)
 
         return if duplicate_location?(location)

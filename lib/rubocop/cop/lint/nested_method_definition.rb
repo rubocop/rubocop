@@ -63,7 +63,7 @@ module RuboCop
 
         def on_method_def(node, _method_name, _args, _body)
           find_nested_defs(node) do |nested_def_node|
-            add_offense(nested_def_node, :expression)
+            add_offense(nested_def_node)
           end
         end
 

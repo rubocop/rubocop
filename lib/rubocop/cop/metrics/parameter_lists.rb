@@ -16,13 +16,16 @@ module RuboCop
           count = args_count(node)
           return unless count > max_params
 
-          message = format(MSG, max_params, count, max_params)
-          add_offense(node, :expression, message) do
+          add_offense(node) do
             self.max = count
           end
         end
 
         private
+
+        def message(node)
+          format(MSG, max_params, args_count(node), max_params)
+        end
 
         def args_count(node)
           if count_keyword_args?

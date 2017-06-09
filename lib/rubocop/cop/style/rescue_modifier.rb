@@ -12,7 +12,7 @@ module RuboCop
 
         def on_resbody(node)
           return unless rescue_modifier?(node)
-          add_offense(node.parent, :expression)
+          add_offense(node.parent)
         end
 
         def autocorrect(node)

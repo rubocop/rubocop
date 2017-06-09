@@ -36,7 +36,7 @@ module RuboCop
           last_param = node.last_argument.children.first
           return unless method_as_param?(last_param)
 
-          add_offense(node, :expression, message(node.last_argument))
+          add_offense(node)
         end
 
         private
@@ -53,7 +53,9 @@ module RuboCop
           param && param.send_type? && !param.arguments?
         end
 
-        def message(param)
+        def message(node)
+          param = node.last_argument
+
           format(MSG, param.source, param.children.first.source)
         end
 

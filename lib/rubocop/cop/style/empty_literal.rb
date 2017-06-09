@@ -21,8 +21,7 @@ module RuboCop
                          '(block (send (const nil :Hash) :new) args _)'
 
         def on_send(node)
-          add_offense(node, :expression, ARR_MSG) if offense_array_node?(node)
-
+          add_offense(node, :expression, ARR_MSG)  if offense_array_node?(node)
           add_offense(node, :expression, HASH_MSG) if offense_hash_node?(node)
 
           str_node(node) do

@@ -44,7 +44,11 @@ module RuboCop
         def check(node)
           return if node.modifier_form? || node.single_line_condition?
 
-          add_offense(node.condition, :expression, format(MSG, node.keyword))
+          add_offense(node.condition)
+        end
+
+        def message(node)
+          format(MSG, node.parent.keyword)
         end
       end
     end

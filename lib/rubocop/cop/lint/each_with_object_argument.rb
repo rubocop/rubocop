@@ -30,7 +30,7 @@ module RuboCop
           each_with_object?(node) do |arg|
             return unless arg.immutable_literal?
 
-            add_offense(node, :expression)
+            add_offense(node)
           end
         end
       end

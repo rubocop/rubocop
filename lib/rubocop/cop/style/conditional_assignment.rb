@@ -358,7 +358,7 @@ module RuboCop
           return if allowed_single_line?(branches)
           return if correction_exceeds_line_limit?(node, branches)
 
-          add_offense(node, :expression)
+          add_offense(node)
         end
 
         def allowed_statements?(branches)

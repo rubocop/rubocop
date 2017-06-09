@@ -27,7 +27,7 @@ module RuboCop
           return unless value.infinite? ||
                         value.zero? && node.source =~ /[1-9]/
 
-          add_offense(node, :expression)
+          add_offense(node)
         end
       end
     end

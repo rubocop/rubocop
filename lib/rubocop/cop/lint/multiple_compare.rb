@@ -31,7 +31,7 @@ module RuboCop
         def on_send(node)
           return unless multiple_compare?(node)
 
-          add_offense(node, :expression)
+          add_offense(node)
         end
 
         def autocorrect(node)

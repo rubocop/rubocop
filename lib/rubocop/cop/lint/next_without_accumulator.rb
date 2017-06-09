@@ -35,7 +35,7 @@ module RuboCop
               n.children.empty? && parent_block_node(n) == node
             end
 
-            add_offense(void_next, :expression) if void_next
+            add_offense(void_next) if void_next
           end
         end
 

@@ -34,7 +34,7 @@ module RuboCop
 
           return unless offense?(node)
 
-          add_offense(node, :expression)
+          add_offense(node)
         end
 
         private
