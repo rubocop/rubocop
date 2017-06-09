@@ -75,16 +75,25 @@ module RuboCop
         end
 
         def check_space_style_inside_pipes(args, opening_pipe, closing_pipe)
+          check_opening_pipe_space(args, opening_pipe)
+          check_closing_pipe_space(args, closing_pipe)
+        end
+
+        def check_opening_pipe_space(args, opening_pipe)
           first = args.first.source_range
-          last = args.last.source_range
-          last_end_pos = last_end_pos_inside_pipes(last.end_pos)
 
           check_space(opening_pipe.end_pos, first.begin_pos, first,
                       'before first block parameter')
-          check_space(last_end_pos, closing_pipe.begin_pos, last,
-                      'after last block parameter')
           check_no_space(opening_pipe.end_pos, first.begin_pos - 1,
                          'Extra space before first')
+        end
+
+        def check_closing_pipe_space(args, closing_pipe)
+          last         = args.last.source_range
+          last_end_pos = last_end_pos_inside_pipes(last.end_pos)
+
+          check_space(last_end_pos, closing_pipe.begin_pos, last,
+                      'after last block parameter')
           check_no_space(last_end_pos + 1, closing_pipe.begin_pos,
                          'Extra space after last')
         end
