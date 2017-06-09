@@ -15,6 +15,7 @@
 * [#4451](https://github.com/bbatsov/rubocop/issues/4451): Make `Style/AndOr` cop aware of comparison methods. ([@drenmi][])
 * [#4457](https://github.com/bbatsov/rubocop/pull/4457): Fix false negative in `Lint/Void` with initialize and setter methods. ([@pocke][])
 * [#4418](https://github.com/bbatsov/rubocop/issues/4418): Register an offense in `Style/ConditionalAssignment` when the assignment line is the longest line, and it does not exceed the max line length. ([@rrosenblum][])
+* [#4485](https://github.com/bbatsov/rubocop/pull/4485): Handle 304 status for remote config files. ([@daniloisr][])
 
 ### Changes
 
@@ -2831,3 +2832,4 @@
 [@hoshinotsuyoshi]: https://github.com/hoshinotsuyoshi
 [@timrogers]: https://github.com/timrogers
 [@harold-s]: https://github.com/harold-s
+[@daniloisr]: https://github.com/daniloisr
