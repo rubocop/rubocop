@@ -39,7 +39,7 @@ module RuboCop
           return if data.nil?
           return unless needs_conversion?(data)
 
-          add_offense(node, node.loc.selector, format(MSG, node.method_name))
+          add_offense(node, :selector, format(MSG, node.method_name))
         end
 
         # @return [Boolean] true if the line needs to be converted

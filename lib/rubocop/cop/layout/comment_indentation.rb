@@ -33,7 +33,7 @@ module RuboCop
             return if column == correct_comment_indentation
           end
 
-          add_offense(comment, comment.loc.expression,
+          add_offense(comment, :expression,
                       format(MSG, column, correct_comment_indentation))
         end
 

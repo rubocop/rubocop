@@ -70,7 +70,7 @@ module RuboCop
           return unless expected_signature?(node)
           return if persisted_referenced?(assignment)
 
-          add_offense(node, node.loc.selector,
+          add_offense(node, :selector,
                       format(CREATE_MSG,
                              "#{node.method_name}!",
                              node.method_name.to_s,
@@ -84,7 +84,7 @@ module RuboCop
           return if check_used_in_conditional(node)
           return if last_call_of_method?(node)
 
-          add_offense(node, node.loc.selector,
+          add_offense(node, :selector,
                       format(MSG,
                              "#{node.method_name}!",
                              node.method_name.to_s))
@@ -121,7 +121,7 @@ module RuboCop
           return false unless conditional?(node)
 
           unless MODIFY_PERSIST_METHODS.include?(node.method_name)
-            add_offense(node, node.loc.selector,
+            add_offense(node, :selector,
                         format(CREATE_CONDITIONAL_MSG,
                                node.method_name.to_s))
           end
