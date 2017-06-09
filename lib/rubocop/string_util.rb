@@ -46,6 +46,7 @@ module RuboCop
         compute_non_zero_distance(matched_count.to_f, transposition_count)
       end
 
+      # rubocop:disable Metrics/AbcSize
       def find_common_characters
         common_chars_of_shorter = Array.new(shorter.size)
         common_chars_of_longer = Array.new(longer.size)
@@ -68,6 +69,7 @@ module RuboCop
 
         [common_chars_of_shorter, common_chars_of_longer].map(&:compact)
       end
+      # rubocop:enable Metrics/AbcSize
 
       def count_transpositions(common_chars_a, common_chars_b)
         common_chars_a.size.times.count do |index|
