@@ -93,14 +93,23 @@ module RuboCop
         end
 
         def block_end_align_target(node)
-          while (parent = node.parent)
-            break if !parent || !parent.loc
-            break if parent.loc.line != node.loc.line && !parent.masgn_type?
-            break unless block_end_align_target?(parent, node)
-            node = parent
+          lineage = [node, *node.ancestors]
+
+          target = lineage.each_cons(2) do |current, parent|
+            break current if end_align_target?(current, parent)
           end
 
-          node
+          target || lineage.last
+        end
+
+        def end_align_target?(node, parent)
+          disqualified_parent?(parent, node) ||
+            !block_end_align_target?(parent, node)
+        end
+
+        def disqualified_parent?(parent, node)
+          parent && parent.loc && parent.loc.line != node.loc.line &&
+            !parent.masgn_type?
         end
 
         def check_block_alignment(start_node, block_node)
