@@ -292,6 +292,76 @@ describe RuboCop::AST::IfNode do
     end
   end
 
+  describe '#elsif_conditional?' do
+    context 'with one elsif conditional' do
+      let(:source) do
+        ['if foo?',
+         '  1',
+         'elsif bar?',
+         '  2',
+         'else',
+         '  3',
+         'end'].join("\n")
+      end
+
+      it { expect(if_node.elsif_conditional?).to be_truthy }
+    end
+
+    context 'with multiple elsif conditionals' do
+      let(:source) do
+        ['if foo?',
+         '  1',
+         'elsif bar?',
+         '  2',
+         'elsif baz?',
+         '  3',
+         'else',
+         '  4',
+         'end'].join("\n")
+      end
+
+      it { expect(if_node.elsif_conditional?).to be_truthy }
+    end
+
+    context 'with nested conditionals in if clause' do
+      let(:source) do
+        ['if foo?',
+         '  if baz; 1; end',
+         'else',
+         '  2',
+         'end'].join("\n")
+      end
+
+      it { expect(if_node.elsif_conditional?).to be_falsey }
+    end
+
+    context 'with nested conditionals in else clause' do
+      let(:source) do
+        ['if foo?',
+         '  1',
+         'else',
+         '  if baz; 2; end',
+         'end'].join("\n")
+      end
+
+      it { expect(if_node.elsif_conditional?).to be_falsey }
+    end
+
+    context 'with nested ternary operators' do
+      context 'when nested in the truthy branch' do
+        let(:source) { 'foo? ? bar? ? 1 : 2 : 3' }
+
+        it { expect(if_node.elsif_conditional?).to be_falsey }
+      end
+
+      context 'when nested in the falsey branch' do
+        let(:source) { 'foo? ? 3 : bar? ? 1 : 2' }
+
+        it { expect(if_node.elsif_conditional?).to be_falsey }
+      end
+    end
+  end
+
   describe '#if_branch' do
     context 'with an if statement' do
       let(:source) do
