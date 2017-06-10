@@ -55,10 +55,9 @@ module RuboCop
 
         def on_def(node)
           return if node.body || comment_lines?(node)
-          return if compact_style? && compact?(node)
-          return if expanded_style? && expanded?(node)
+          return if correct_style?(node)
 
-          add_offense(node, node.source_range)
+          add_offense(node)
         end
         alias on_defs on_def
 
@@ -72,6 +71,11 @@ module RuboCop
 
         def message(_node)
           compact_style? ? MSG_COMPACT : MSG_EXPANDED
+        end
+
+        def correct_style?(node)
+          compact_style? && compact?(node) ||
+            expanded_style? && expanded?(node)
         end
 
         def corrected(node)
