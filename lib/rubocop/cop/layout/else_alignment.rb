@@ -42,18 +42,9 @@ module RuboCop
 
           check_alignment(base_range(node, base), node.loc.else)
 
-          else_branch = node.else_branch
+          return unless node.elsif_conditional?
 
-          return unless else_branch && else_branch.if_type? &&
-                        else_branch.elsif?
-
-          # If the `else` part is actually an `elsif`, we check the `elsif`
-          # node in case it contains an `else` within, because that `else`
-          # should have the same alignment (base).
-          on_if(else_branch, base)
-          # The `elsif` node will get an `on_if` call from the framework later,
-          # but we're done here, so we set it to ignored.
-          ignore_node(else_branch)
+          check_nested(node.else_branch, base)
         end
 
         def on_rescue(node)
@@ -76,6 +67,11 @@ module RuboCop
         end
 
         private
+
+        def check_nested(node, base)
+          on_if(node, base)
+          ignore_node(node)
+        end
 
         def base_range(node, base)
           if base
@@ -108,8 +104,7 @@ module RuboCop
 
           return unless rhs.if_type?
 
-          on_if(rhs, base)
-          ignore_node(rhs)
+          check_nested(rhs, base)
         end
 
         def check_alignment(base_range, else_range)
