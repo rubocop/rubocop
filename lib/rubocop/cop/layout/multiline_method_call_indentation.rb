@@ -144,25 +144,21 @@ module RuboCop
         def syntactic_alignment_base(lhs, rhs)
           # a if b
           #      .c
-          n = kw_node_with_special_indentation(lhs)
-          if n
-            case n.type
-            when :for            then _, expression, = *n
-            when :return         then expression, = *n
-            when *MODIFIER_NODES then expression, = *n
-            end
-            return expression.source_range
+          kw_node_with_special_indentation(lhs) do |base|
+            return indented_keyword_expression(base).source_range
           end
 
           # a = b
           #     .c
-          n = part_of_assignment_rhs(lhs, rhs)
-          return assignment_rhs(n).source_range if n
+          part_of_assignment_rhs(lhs, rhs) do |base|
+            return assignment_rhs(base).source_range
+          end
 
           # a + b
           #     .c
-          n = operation_rhs(lhs)
-          return n.source_range if n
+          operation_rhs(lhs) do |base|
+            return base.source_range
+          end
         end
 
         # a.b
@@ -202,12 +198,19 @@ module RuboCop
 
         def operation_rhs(node)
           receiver, = *node
-          receiver.each_ancestor(:send) do |a|
-            _, method, args = *a
-            return args if operator?(method) && args &&
-                           within_node?(receiver, args)
+
+          operation_rhs = receiver.each_ancestor(:send).find do |rhs|
+            operator_rhs?(rhs, receiver)
           end
-          nil
+
+          return unless operation_rhs
+
+          yield operation_rhs.first_argument
+        end
+
+        def operator_rhs?(node, receiver)
+          node.operator_method? && node.arguments? &&
+            within_node?(receiver, node.first_argument)
         end
       end
     end
