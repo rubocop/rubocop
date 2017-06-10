@@ -60,8 +60,7 @@ module RuboCop
 
           parent = node.parent
 
-          return false unless parent && parent.send_type? &&
-                              !parent.method?(:[]=)
+          return false unless eligible_method_call?(parent)
           return false if !parent.parenthesized? &&
                           style == :special_for_inner_method_call_in_parentheses
 
@@ -69,6 +68,10 @@ module RuboCop
           # part of a chained method call.
           node.source_range.begin_pos > parent.source_range.begin_pos
         end
+
+        def_node_matcher :eligible_method_call?, <<-PATTERN
+          (send _ !:[]= ...)
+        PATTERN
 
         def base_range(send_node, arg_node)
           range_between(send_node.source_range.begin_pos,
