@@ -61,16 +61,23 @@ module RuboCop
         end
 
         def allowed_backtick_literal?(node)
-          style == :backticks && !contains_disallowed_backtick?(node) ||
-            style == :mixed && node.single_line? &&
-              !contains_disallowed_backtick?(node)
+          case style
+          when :backticks
+            !contains_disallowed_backtick?(node)
+          when :mixed
+            node.single_line? && !contains_disallowed_backtick?(node)
+          end
         end
 
         def allowed_percent_x_literal?(node)
-          style == :backticks && contains_disallowed_backtick?(node) ||
-            style == :percent_x ||
-            style == :mixed && node.multiline? ||
-            style == :mixed && contains_disallowed_backtick?(node)
+          case style
+          when :backticks
+            contains_disallowed_backtick?(node)
+          when :mixed
+            node.multiline? || contains_disallowed_backtick?(node)
+          when :percent_x
+            true
+          end
         end
 
         def contains_disallowed_backtick?(node)
