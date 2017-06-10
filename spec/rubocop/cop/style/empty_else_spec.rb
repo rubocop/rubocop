@@ -98,6 +98,27 @@ describe RuboCop::Cop::Style::EmptyElse do
           expect_no_offenses('if cond; foo end')
         end
       end
+
+      context 'in an if-statement' do
+        let(:source) { <<-RUBY.strip_indent }
+          if cond
+            if cond2
+              something
+            else
+            end
+          end
+        RUBY
+        let(:corrected_source) { <<-RUBY.strip_indent }
+          if cond
+            if cond2
+              something
+            end
+          end
+        RUBY
+
+        it_behaves_like 'auto-correct', 'if'
+        it_behaves_like 'offense registration'
+      end
     end
 
     context 'given an unless-statement' do

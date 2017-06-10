@@ -432,6 +432,15 @@ def duplicated
 end
 ```
 ```ruby
+# bad
+
+def duplicated
+  1
+end
+
+alias duplicated other_duplicated
+```
+```ruby
 # good
 
 def duplicated

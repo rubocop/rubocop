@@ -17,6 +17,7 @@ module RuboCop
       return cache_path unless cache_path_expired?
 
       request do |response|
+        next if response.is_a?(Net::HTTPNotModified)
         open cache_path, 'w' do |io|
           io.write response.body
         end
@@ -43,7 +44,7 @@ module RuboCop
 
     def handle_response(response, limit, &block)
       case response
-      when Net::HTTPSuccess
+      when Net::HTTPSuccess, Net::HTTPNotModified
         yield response
       when Net::HTTPRedirection
         request(URI.parse(response['location']), limit - 1, &block)

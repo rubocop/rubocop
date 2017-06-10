@@ -20,6 +20,16 @@ module RuboCop
       #
       # @example
       #
+      #   # bad
+      #
+      #   def duplicated
+      #     1
+      #   end
+      #
+      #   alias duplicated other_duplicated
+      #
+      # @example
+      #
       #   # good
       #
       #   def duplicated
@@ -43,8 +53,8 @@ module RuboCop
           return if node.ancestors.any?(&:if_type?)
           return if possible_dsl?(node)
 
-          return unless (scope = node.parent_module_name)
-          found_instance_method(node, scope)
+          name, = *node
+          found_instance_method(node, name)
         end
 
         def on_defs(node)
@@ -58,6 +68,30 @@ module RuboCop
           elsif receiver.self_type?
             check_self_receiver(node, name)
           end
+        end
+
+        def_node_matcher :method_alias?, <<-PATTERN
+          (alias (sym $_name) sym)
+        PATTERN
+
+        def on_alias(node)
+          return unless (name = method_alias?(node))
+          return if node.ancestors.any?(&:if_type?)
+          return if possible_dsl?(node)
+
+          found_instance_method(node, name)
+        end
+
+        def_node_matcher :alias_method?, <<-PATTERN
+          (send nil :alias_method (sym $_name) _)
+        PATTERN
+
+        def on_send(node)
+          return unless (name = alias_method?(node))
+          return if node.ancestors.any?(&:if_type?)
+          return if possible_dsl?(node)
+
+          found_instance_method(node, name)
         end
 
         private
@@ -81,8 +115,8 @@ module RuboCop
                  source_location(node))
         end
 
-        def found_instance_method(node, scope)
-          name, = *node
+        def found_instance_method(node, name)
+          return unless (scope = node.parent_module_name)
           if scope =~ /\A#<Class:(.*)>\Z/
             found_method(node, "#{Regexp.last_match(1)}.#{name}")
           else
@@ -92,7 +126,8 @@ module RuboCop
 
         def found_method(node, method_name)
           if @definitions.key?(method_name)
-            add_offense(node, :keyword, message_for_dup(node, method_name))
+            loc = node.send_type? ? node.loc.selector : node.loc.keyword
+            add_offense(node, loc, message_for_dup(node, method_name))
           else
             @definitions[method_name] = source_location(node)
           end
