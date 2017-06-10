@@ -14,18 +14,10 @@ module RuboCop
         def on_block(node)
           return unless node.single_line?
 
-          send_node = node.send_node
+          return unless eligible_method?(node)
+          return unless eligible_arguments?(node)
 
-          return unless send_node.receiver
-          return unless method_names.include?(send_node.method_name)
-
-          return unless node.arguments?
-
-          arguments = node.arguments.to_a
-
-          # discard cases with argument destructuring
-          return true unless arguments.all?(&:arg_type?)
-          return if args_match?(send_node.method_name, arguments)
+          return if args_match?(node.send_node.method_name, node.arguments)
 
           add_offense(node.arguments)
         end
@@ -37,6 +29,15 @@ module RuboCop
           arguments   = target_args(method_name).join(', ')
 
           format(MSG, method_name, arguments)
+        end
+
+        def eligible_arguments?(node)
+          node.arguments? && node.arguments.to_a.all?(&:arg_type?)
+        end
+
+        def eligible_method?(node)
+          node.send_node.receiver &&
+            method_names.include?(node.send_node.method_name)
         end
 
         def methods
@@ -58,7 +59,7 @@ module RuboCop
         end
 
         def args_match?(method_name, args)
-          actual_args = args.flat_map(&:to_a)
+          actual_args = args.to_a.flat_map(&:to_a)
 
           # Prepending an underscore to mark an unused parameter is allowed, so
           # we remove any leading underscores before comparing.
