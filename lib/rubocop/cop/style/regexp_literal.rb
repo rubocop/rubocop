@@ -73,6 +73,10 @@ module RuboCop
           !allow_inner_slashes? && contains_slash?(node)
         end
 
+        def contains_delimiter?(node)
+          node_body(node) =~ Regexp.union(preferred_delimiters)
+        end
+
         def contains_slash?(node)
           node_body(node).include?('/')
         end
@@ -95,13 +99,13 @@ module RuboCop
         end
 
         def autocorrect(node)
-          return if contains_slash?(node)
-
-          replacement = if slash_literal?(node)
-                          ['%r', ''].zip(preferred_delimiters).map(&:join)
-                        else
-                          %w[/ /]
-                        end
+          if slash_literal?(node)
+            return if contains_delimiter?(node)
+            replacement = ['%r', ''].zip(preferred_delimiters).map(&:join)
+          else
+            return if contains_slash?(node)
+            replacement = %w[/ /]
+          end
 
           lambda do |corrector|
             corrector.replace(node.loc.begin, replacement.first)
