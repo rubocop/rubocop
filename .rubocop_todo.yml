@@ -6,16 +6,16 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 75
+# Offense count: 74
 Metrics/AbcSize:
   Max: 18
 
-# Offense count: 38
+# Offense count: 37
 # Configuration parameters: CountComments.
 Metrics/ClassLength:
   Max: 172
 
-# Offense count: 24
+# Offense count: 22
 Metrics/CyclomaticComplexity:
   Max: 7
 
