@@ -58,6 +58,22 @@ describe RuboCop::RemoteConfig do
       end
     end
 
+    context 'when the remote URL responds with not modified' do
+      before do
+        stub_request(:get, remote_config_url)
+          .to_return(status: 304)
+      end
+
+      it 'reuses the existing cached file' do
+        FileUtils.touch cached_file_path, mtime: Time.now - ((60 * 60) * 30)
+
+        expect do
+          remote_config
+        end.to_not change(File.stat(cached_file_path), :mtime)
+        assert_requested :get, remote_config_url
+      end
+    end
+
     context 'when the remote URL responds with 500' do
       before do
         stub_request(:get, remote_config_url)

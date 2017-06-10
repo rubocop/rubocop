@@ -16,11 +16,13 @@
 * [#4457](https://github.com/bbatsov/rubocop/pull/4457): Fix false negative in `Lint/Void` with initialize and setter methods. ([@pocke][])
 * [#4418](https://github.com/bbatsov/rubocop/issues/4418): Register an offense in `Style/ConditionalAssignment` when the assignment line is the longest line, and it does not exceed the max line length. ([@rrosenblum][])
 * [#4491](https://github.com/bbatsov/rubocop/issues/4491): Prevent bad auto-correct in `Style/EmptyElse` for nested `if`. ([@pocke][])
+* [#4485](https://github.com/bbatsov/rubocop/pull/4485): Handle 304 status for remote config files. ([@daniloisr][])
 
 ### Changes
 
 * [#4444](https://github.com/bbatsov/rubocop/pull/4444): Make `Style/Encoding` cop enabled by default. ([@deivid-rodriguez][])
 * [#4452](https://github.com/bbatsov/rubocop/pull/4452): Add option to `Rails/Delegate` for enforcing the prefixed method name case. ([@klesse413][])
+* [#4492](https://github.com/bbatsov/rubocop/pull/4492): Make `Lint/DuplicateMethods` aware of `alias` and `alias_method`. ([@pocke][])
 
 ## 0.49.1 (2017-05-29)
 
@@ -2832,3 +2834,4 @@
 [@hoshinotsuyoshi]: https://github.com/hoshinotsuyoshi
 [@timrogers]: https://github.com/timrogers
 [@harold-s]: https://github.com/harold-s
+[@daniloisr]: https://github.com/daniloisr

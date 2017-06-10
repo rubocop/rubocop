@@ -253,6 +253,60 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
                       'end'], 'test.rb')
       expect(cop.offenses).to be_empty
     end
+
+    it "registers an offense for duplicate alias in #{type}" do
+      expect_offense(<<-RUBY)
+        #{opening_line}
+          def some_method
+            implement 1
+          end
+          alias some_method any_method
+          ^^^^^ Method `A#some_method` is defined at both example.rb:2 and example.rb:5.
+        end
+      RUBY
+    end
+
+    it "doesn't register an offense for non-duplicate alias in #{type}" do
+      expect_no_offenses(<<-RUBY)
+        #{opening_line}
+          def some_method
+            implement 1
+          end
+          alias any_method some_method
+        end
+      RUBY
+    end
+
+    it "registers an offense for duplicate alias_method in #{type}" do
+      expect_offense(<<-RUBY)
+        #{opening_line}
+          def some_method
+            implement 1
+          end
+          alias_method :some_method, :any_method
+          ^^^^^^^^^^^^ Method `A#some_method` is defined at both example.rb:2 and example.rb:5.
+        end
+      RUBY
+    end
+
+    it "accepts for non-duplicate alias_method in #{type}" do
+      expect_no_offenses(<<-RUBY)
+        #{opening_line}
+          def some_method
+            implement 1
+          end
+          alias_method :any_method, :some_method
+        end
+      RUBY
+    end
+
+    it "doesn't register an offense for alias for gvar in #{type}" do
+      expect_no_offenses(<<-RUBY)
+        #{opening_line}
+          alias $foo $bar
+        end
+      RUBY
+    end
   end
 
   include_examples('in scope', 'class', 'class A')
