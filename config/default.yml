@@ -1080,6 +1080,7 @@ Style/PredicateName:
   # helpers in the form of `have_something` or `be_something`.
   Exclude:
     - 'spec/**/*'
+    - 'app/controllers/**/*'
 
 Style/PreferredHashMethods:
   EnforcedStyle: short
