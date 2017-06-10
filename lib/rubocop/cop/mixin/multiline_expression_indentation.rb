@@ -5,6 +5,14 @@ module RuboCop
     # Common functionality for checking multiline method calls and binary
     # operations.
     module MultilineExpressionIndentation
+      KEYWORD_ANCESTOR_TYPES  = [:for, :return, *Util::MODIFIER_NODES].freeze
+      UNALIGNED_RHS_TYPES     = %i[if while until for return
+                                   array kwbegin].freeze
+      ASSIGNMENT_RHS_TYPES    = [:send, *Util::ASGN_NODES].freeze
+      DEFAULT_MESSAGE_TAIL    = 'an expression'.freeze
+      ASSIGNMENT_MESSAGE_TAIL = 'an expression in an assignment'.freeze
+      KEYWORD_MESSAGE_TAIL    = 'a %s in %s `%s` statement'.freeze
+
       def on_send(node)
         return if !node.receiver || node.method?(:[])
         return unless relevant_node?(node)
@@ -79,30 +87,46 @@ module RuboCop
       end
 
       def operation_description(node, rhs)
-        ancestor = kw_node_with_special_indentation(node)
-        if ancestor
-          kw = ancestor.loc.keyword.source
-          kind = kw == 'for' ? 'collection' : 'condition'
-          article = kw =~ /^[iu]/ ? 'an' : 'a'
-          "a #{kind} in #{article} `#{kw}` statement"
-        else
-          'an expression' +
-            (part_of_assignment_rhs(node, rhs) ? ' in an assignment' : '')
+        kw_node_with_special_indentation(node) do |ancestor|
+          return keyword_message_tail(ancestor)
         end
+
+        part_of_assignment_rhs(node, rhs) do |_node|
+          return ASSIGNMENT_MESSAGE_TAIL
+        end
+
+        DEFAULT_MESSAGE_TAIL
+      end
+
+      def keyword_message_tail(node)
+        keyword = node.loc.keyword.source
+        kind    = keyword == 'for' ? 'collection' : 'condition'
+        article = keyword =~ /^[iu]/ ? 'an' : 'a'
+
+        format(KEYWORD_MESSAGE_TAIL, kind, article, keyword)
       end
 
       def kw_node_with_special_indentation(node)
-        node.each_ancestor.find do |a|
-          next unless a.loc.respond_to?(:keyword)
-
-          case a.type
-          when :for                  then _, expression, = *a
-          when :return               then expression, = *a
-          when *Util::MODIFIER_NODES then expression, = *a
+        keyword_node =
+          node.each_ancestor(*KEYWORD_ANCESTOR_TYPES).find do |ancestor|
+            within_node?(node, indented_keyword_expression(ancestor))
           end
 
-          within_node?(node, expression) if expression
+        if keyword_node && block_given?
+          yield keyword_node
+        else
+          keyword_node
         end
+      end
+
+      def indented_keyword_expression(node)
+        if node.for_type?
+          expression = node.collection
+        else
+          expression, = *node
+        end
+
+        expression
       end
 
       def argument_in_method_call(node, kind)
@@ -122,17 +146,31 @@ module RuboCop
       end
 
       def part_of_assignment_rhs(node, candidate)
-        node.each_ancestor.find do |a|
-          case a.type
-          when :if, :while, :until, :for, :return, :array, :kwbegin
-            break # other kinds of alignment
-          when :block
-            break if part_of_block_body?(candidate, a)
-          when :send
-            valid_method_rhs_candidate?(candidate, a)
-          when *Util::ASGN_NODES
-            valid_rhs_candidate?(candidate, assignment_rhs(a))
-          end
+        rhs_node = node.each_ancestor.find do |ancestor|
+          break if disqualified_rhs?(candidate, ancestor)
+
+          valid_rhs?(candidate, ancestor)
+        end
+
+        if rhs_node && block_given?
+          yield rhs_node
+        else
+          rhs_node
+        end
+      end
+
+      def disqualified_rhs?(candidate, ancestor)
+        UNALIGNED_RHS_TYPES.include?(ancestor.type) ||
+          ancestor.block_type? && part_of_block_body?(candidate, ancestor)
+      end
+
+      def valid_rhs?(candidate, ancestor)
+        if ancestor.send_type?
+          valid_method_rhs_candidate?(candidate, ancestor)
+        elsif Util::ASGN_NODES.include?(ancestor.type)
+          valid_rhs_candidate?(candidate, assignment_rhs(ancestor))
+        else
+          false
         end
       end
 
@@ -146,9 +184,8 @@ module RuboCop
         !candidate || within_node?(candidate, node)
       end
 
-      def part_of_block_body?(candidate, node)
-        _method, _args, body = *node
-        body && within_node?(candidate, body)
+      def part_of_block_body?(candidate, block_node)
+        block_node.body && within_node?(candidate, block_node.body)
       end
 
       def assignment_rhs(node)
