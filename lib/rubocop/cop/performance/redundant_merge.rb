@@ -14,28 +14,26 @@ module RuboCop
         AREF_ASGN = '%s[%s] = %s'.freeze
         MSG = 'Use `%s` instead of `%s`.'.freeze
 
-        def_node_matcher :redundant_merge, '(send $_ :merge! (hash $...))'
+        def_node_matcher :redundant_merge_candidate, <<-PATTERN
+          (send $!nil :merge! [(hash $...) !kwsplat_type?])
+        PATTERN
+
         def_node_matcher :modifier_flow_control?, <<-PATTERN
           [{if while until} modifier_form?]
         PATTERN
 
         def on_send(node)
-          each_redundant_merge(node) do |receiver, pairs|
-            return if pairs.any?(&:kwsplat_type?)
-
-            assignments = to_assignments(receiver, pairs).join('; ')
-            message = format(MSG, assignments, node.source)
-            add_offense(node, :expression, message)
+          each_redundant_merge(node) do |redundant_merge_node|
+            add_offense(redundant_merge_node)
           end
         end
 
         def autocorrect(node)
-          redundant_merge(node) do |receiver, pairs|
+          redundant_merge_candidate(node) do |receiver, pairs|
             new_source = to_assignments(receiver, pairs).join("\n")
 
-            parent = node.parent
-            if parent && pairs.size > 1
-              correct_multiple_elements(node, parent, new_source)
+            if node.parent && pairs.size > 1
+              correct_multiple_elements(node, node.parent, new_source)
             else
               correct_single_element(node, new_source)
             end
@@ -44,16 +42,34 @@ module RuboCop
 
         private
 
-        def each_redundant_merge(node)
-          redundant_merge(node) do |receiver, pairs|
-            next unless receiver
-            next if node.value_used? &&
-                    !EachWithObjectInspector.new(node, receiver).value_used?
-            next if pairs.size > 1 && !receiver.pure?
-            next if pairs.size > max_key_value_pairs
+        def message(node)
+          redundant_merge_candidate(node) do |receiver, pairs|
+            assignments = to_assignments(receiver, pairs).join('; ')
 
-            yield receiver, pairs
+            format(MSG, assignments, node.source)
           end
+        end
+
+        def each_redundant_merge(node)
+          redundant_merge_candidate(node) do |receiver, pairs|
+            next if non_redundant_merge?(node, receiver, pairs)
+
+            yield node
+          end
+        end
+
+        def non_redundant_merge?(node, receiver, pairs)
+          non_redundant_pairs?(receiver, pairs) ||
+            non_redundant_value_used?(receiver, node)
+        end
+
+        def non_redundant_pairs?(receiver, pairs)
+          pairs.size > 1 && !receiver.pure? || pairs.size > max_key_value_pairs
+        end
+
+        def non_redundant_value_used?(receiver, node)
+          node.value_used? &&
+            !EachWithObjectInspector.new(node, receiver).value_used?
         end
 
         def correct_multiple_elements(node, parent, new_source)
