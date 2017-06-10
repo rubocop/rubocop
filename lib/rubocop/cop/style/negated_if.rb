@@ -82,20 +82,24 @@ module RuboCop
 
         def on_if(node)
           return if node.elsif? || node.ternary?
-          return if style == :prefix && node.modifier_form?
-          return if style == :postfix && !node.modifier_form?
+          return if correct_style?(node)
 
           check_negative_conditional(node)
         end
+
+        private
 
         def message(node)
           format(MSG, node.inverse_keyword, node.keyword)
         end
 
-        private
-
         def autocorrect(node)
           negative_conditional_corrector(node)
+        end
+
+        def correct_style?(node)
+          style == :prefix && node.modifier_form? ||
+            style == :postfix && !node.modifier_form?
         end
       end
     end
