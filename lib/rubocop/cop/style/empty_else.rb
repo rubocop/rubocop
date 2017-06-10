@@ -121,6 +121,7 @@ module RuboCop
         end
 
         def base_if_node(node)
+          return node unless node.case_type? || node.elsif?
           node.each_ancestor(:if).find { |parent| parent.loc.end } || node
         end
 
