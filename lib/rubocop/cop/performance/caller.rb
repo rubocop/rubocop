@@ -8,32 +8,56 @@ module RuboCop
       #
       # @example
       #   # bad
-      #   caller[n]
+      #   caller[1]
       #   caller.first
       #
       #   # good
-      #   caller(n..n).first
+      #   caller(2..2).first
       #   caller(1..1).first
       class Caller < Cop
-        MSG = 'Use `caller(n..n)` instead of `caller[n]`.'.freeze
-        SCOPE_METHODS = %i[first []].freeze
+        MSG_BRACE =
+          'Use `caller(%<n>d..%<n>d).first` instead of `caller[%<m>d]`.'.freeze
+        MSG_FIRST =
+          'Use `caller(%<n>d..%<n>d).first` instead of `caller.first`.'.freeze
+
+        def_node_matcher :slow_caller?, <<-PATTERN
+          {
+            (send nil :caller)
+            (send nil :caller int)
+          }
+        PATTERN
 
         def_node_matcher :caller_with_scope_method?, <<-PATTERN
-          (send (send nil :caller ...) ${#{SCOPE_METHODS.map(&:inspect).join(' ')}} ...)
+          {
+            (send $_recv :first)
+            (send $_recv :[] int)
+          }
         PATTERN
 
         def on_send(node)
-          return unless caller_with_scope_method?(node) && slow_caller?(node)
-          add_offense(node, :selector)
+          recv = caller_with_scope_method?(node)
+          return unless slow_caller?(recv)
+
+          add_offense(node)
         end
 
         private
 
-        def slow_caller?(node)
-          arguments = node.receiver.arguments
+        def message(node)
+          caller_arg = node.receiver.arguments[0]
+          n = caller_arg ? int_value(caller_arg) : 1
 
-          arguments.empty? ||
-            (arguments.length == 1 && arguments[0].int_type?)
+          if node.method_name == :[]
+            m = int_value(node.arguments[0])
+            n += m
+            format(MSG_BRACE, n: n, m: m)
+          else
+            format(MSG_FIRST, n: n)
+          end
+        end
+
+        def int_value(node)
+          node.children[0]
         end
       end
     end
