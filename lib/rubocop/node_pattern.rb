@@ -106,7 +106,7 @@ module RuboCop
       METHOD_NAME  = /\#?#{IDENTIFIER}+[\!\?]?\(?/
       PARAM_NUMBER = /%\d*/
 
-      SEPARATORS = /[\s,]+/
+      SEPARATORS = /[\s]+/
       TOKENS     = Regexp.union(META, PARAM_NUMBER, NUMBER,
                                 METHOD_NAME, SYMBOL, STRING)
 
