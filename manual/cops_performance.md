@@ -13,11 +13,11 @@ can be replaced by `caller(n..n).first`.
 
 ```ruby
 # bad
-caller[n]
+caller[1]
 caller.first
 
 # good
-caller(n..n).first
+caller(2..2).first
 caller(1..1).first
 ```
 

@@ -37,3 +37,7 @@ Metrics/BlockLength:
 Metrics/ModuleLength:
   Exclude:
     - 'spec/**/*.rb'
+
+Performance/Caller:
+  Exclude:
+    - spec/rubocop/cop/performance/caller_spec.rb
