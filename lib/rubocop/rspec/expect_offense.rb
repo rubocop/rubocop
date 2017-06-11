@@ -56,7 +56,7 @@ module RuboCop
         inspect_source(cop, expected_annotations.plain_source, filename)
         actual_annotations =
           expected_annotations.with_offense_annotations(cop.offenses)
-        expect(expected_annotations.to_s).to eq(actual_annotations.to_s)
+        expect(actual_annotations.to_s).to eq(expected_annotations.to_s)
       end
 
       def expect_no_offenses(source, filename = DEFAULT_FILENAME)
