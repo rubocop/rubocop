@@ -98,19 +98,26 @@ module RuboCop
     # @private
     # Builds Ruby code which implements a pattern
     class Compiler
-      RSYM    = %r{:(?:[\w+@*/?!<>=~|%^-]+|\[\]=?)}
-      ID_CHAR = /[a-zA-Z_-]/
-      META    = /\(|\)|\{|\}|\[|\]|\$\.\.\.|\$|!|\^|\.\.\./
-      NUMBER  = /-?\d+(?:\.\d+)?/
-      TOKEN   =
-        /\G(?:[\s,]+|#{META}|%\d*|#{NUMBER}|\#?#{ID_CHAR}+[\!\?]?\(?|#{RSYM}|.)/
+      SYMBOL       = %r{:(?:[\w+@*/?!<>=~|%^-]+|\[\]=?)}
+      IDENTIFIER   = /[a-zA-Z_-]/
+      META         = /\(|\)|\{|\}|\[|\]|\$\.\.\.|\$|!|\^|\.\.\./
+      NUMBER       = /-?\d+(?:\.\d+)?/
+      STRING       = /".+?"/
+      METHOD_NAME  = /\#?#{IDENTIFIER}+[\!\?]?\(?/
+      PARAM_NUMBER = /%\d*/
 
-      NODE      = /\A#{ID_CHAR}+\Z/
-      PREDICATE = /\A#{ID_CHAR}+\?\(?\Z/
-      WILDCARD  = /\A_#{ID_CHAR}*\Z/
-      FUNCALL   = /\A\##{ID_CHAR}+[\!\?]?\(?\Z/
-      LITERAL   = /\A(?:#{RSYM}|#{NUMBER}|nil)\Z/
-      PARAM     = /\A%\d*\Z/
+      SEPARATORS = /[\s,]+/
+      TOKENS     = Regexp.union(META, PARAM_NUMBER, NUMBER,
+                                METHOD_NAME, SYMBOL, STRING)
+
+      TOKEN = /\G(?:#{SEPARATORS}|#{TOKENS}|.)/
+
+      NODE      = /\A#{IDENTIFIER}+\Z/
+      PREDICATE = /\A#{IDENTIFIER}+\?\(?\Z/
+      WILDCARD  = /\A_#{IDENTIFIER}*\Z/
+      FUNCALL   = /\A\##{METHOD_NAME}/
+      LITERAL   = /\A(?:#{SYMBOL}|#{NUMBER}|#{STRING}|nil)\Z/
+      PARAM     = /\A#{PARAM_NUMBER}\Z/
       CLOSING   = /\A(?:\)|\}|\])\Z/
 
       attr_reader :match_code
@@ -158,7 +165,7 @@ module RuboCop
         when PARAM     then compile_param(cur_node, token[1..-1], seq_head)
         when CLOSING   then fail_due_to("#{token} in invalid position")
         when nil       then fail_due_to('pattern ended prematurely')
-        else fail_due_to("invalid token #{token.inspect}")
+        else                fail_due_to("invalid token #{token.inspect}")
         end
       end
       # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
