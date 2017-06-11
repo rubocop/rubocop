@@ -109,6 +109,24 @@ describe RuboCop::NodePattern do
       let(:ruby) { '-2.5' }
       it_behaves_like :matching
     end
+
+    context 'single quoted string literals' do
+      let(:pattern) { '(str "foo")' }
+      let(:ruby) { '"foo"' }
+      it_behaves_like :matching
+    end
+
+    context 'double quoted string literals' do
+      let(:pattern) { '(str "foo")' }
+      let(:ruby) { "'foo'" }
+      it_behaves_like :matching
+    end
+
+    context 'symbol literals' do
+      let(:pattern) { '(sym :foo)' }
+      let(:ruby) { ':foo' }
+      it_behaves_like :matching
+    end
   end
 
   describe 'simple sequence' do
@@ -286,6 +304,12 @@ describe RuboCop::NodePattern do
           let(:ruby) { 'obj.c' }
           it_behaves_like :nonmatching
         end
+      end
+
+      context 'containing string literals' do
+        let(:pattern) { '(send (str {"a" "b"}) :upcase)' }
+        let(:ruby) { '"a".upcase' }
+        it_behaves_like :matching
       end
 
       context 'containing integer literals' do
@@ -514,6 +538,20 @@ describe RuboCop::NodePattern do
       context 'with a non-matching symbol, but too many children' do
         let(:ruby) { 'obj.xyz(1)' }
         it_behaves_like :nonmatching
+      end
+    end
+
+    context 'on a string' do
+      let(:pattern) { '(send (str !"foo") :upcase)' }
+
+      context 'with a matching string' do
+        let(:ruby) { '"foo".upcase' }
+        it_behaves_like :nonmatching
+      end
+
+      context 'with a non-matching symbol' do
+        let(:ruby) { '"bar".upcase' }
+        it_behaves_like :matching
       end
     end
 
