@@ -20,6 +20,7 @@ module RuboCop
     #
     class Node < Parser::AST::Node # rubocop:disable Metrics/ClassLength
       include RuboCop::AST::Sexp
+      extend NodePattern::Macros
 
       COMPARISON_OPERATORS = %i[== === != <= >= > < <=>].freeze
 
@@ -43,19 +44,6 @@ module RuboCop
                     yield].freeze
       OPERATOR_KEYWORDS = %i[and or].freeze
       SPECIAL_KEYWORDS = %w[__FILE__ __LINE__ __ENCODING__].freeze
-
-      # def_matcher can be used to define a pattern-matching method on Node
-      class << self
-        def def_matcher(method_name, pattern_str)
-          compiler = RuboCop::NodePattern::Compiler.new(pattern_str, 'self')
-          src = "def #{method_name}(" \
-                "#{compiler.emit_param_list});" \
-                "#{compiler.emit_method_code};end"
-
-          location = caller_locations(1, 1).first
-          class_eval(src, location.path, location.lineno)
-        end
-      end
 
       # @see http://rubydoc.info/gems/ast/AST/Node:initialize
       def initialize(type, children = [], properties = {})
@@ -271,11 +259,17 @@ module RuboCop
 
       ## Destructuring
 
-      def_matcher :receiver,    '{(send $_ ...) (block (send $_ ...) ...)}'
-      def_matcher :method_name, '{(send _ $_ ...) (block (send _ $_ ...) ...)}'
+      def_node_matcher :receiver, <<-PATTERN
+        {(send $_ ...) (block (send $_ ...) ...)}
+      PATTERN
+
+      def_node_matcher :method_name, <<-PATTERN
+        {(send _ $_ ...) (block (send _ $_ ...) ...)}
+      PATTERN
+
       # Note: for masgn, #asgn_rhs will be an array node
-      def_matcher :asgn_rhs, '[assignment? (... $_)]'
-      def_matcher :str_content, '(str $_)'
+      def_node_matcher :asgn_rhs, '[assignment? (... $_)]'
+      def_node_matcher :str_content, '(str $_)'
 
       def const_name
         return unless const_type?
@@ -287,7 +281,7 @@ module RuboCop
         end
       end
 
-      def_matcher :defined_module0, <<-PATTERN
+      def_node_matcher :defined_module0, <<-PATTERN
         {(class (const $_ $_) ...)
          (module (const $_ $_) ...)
          (casgn $_ $_        (send (const nil {:Class :Module}) :new ...))
@@ -331,10 +325,15 @@ module RuboCop
           method_name.to_s.end_with?('='.freeze)
       end
 
-      def_matcher :equals_asgn?, '{lvasgn ivasgn cvasgn gvasgn casgn masgn}'
-      def_matcher :shorthand_asgn?, '{op_asgn or_asgn and_asgn}'
-      def_matcher :assignment?,
-                  '{equals_asgn? shorthand_asgn? asgn_method_call?}'
+      def_node_matcher :equals_asgn?, <<-PATTERN
+        {lvasgn ivasgn cvasgn gvasgn casgn masgn}
+      PATTERN
+
+      def_node_matcher :shorthand_asgn?, '{op_asgn or_asgn and_asgn}'
+
+      def_node_matcher :assignment?, <<-PATTERN
+        {equals_asgn? shorthand_asgn? asgn_method_call?}
+      PATTERN
 
       def literal?
         LITERALS.include?(type)
@@ -438,24 +437,25 @@ module RuboCop
         int_type? || float_type?
       end
 
-      def_matcher :guard_clause?, <<-PATTERN
+      def_node_matcher :guard_clause?, <<-PATTERN
         [{(send nil {:raise :fail} ...) return break next} single_line?]
       PATTERN
 
-      def_matcher :lambda?, '(block (send nil :lambda) ...)'
-      def_matcher :proc?, <<-PATTERN
+      def_node_matcher :proc?, <<-PATTERN
         {(block (send nil :proc) ...)
          (block (send (const nil :Proc) :new) ...)
          (send (const nil :Proc) :new)}
       PATTERN
-      def_matcher :lambda_or_proc?, '{lambda? proc?}'
 
-      def_matcher :class_constructor?, <<-PATTERN
+      def_node_matcher :lambda?, '(block (send nil :lambda) ...)'
+      def_node_matcher :lambda_or_proc?, '{lambda? proc?}'
+
+      def_node_matcher :class_constructor?, <<-PATTERN
         {       (send (const nil {:Class :Module}) :new ...)
          (block (send (const nil {:Class :Module}) :new ...) ...)}
       PATTERN
 
-      def_matcher :module_definition?, <<-PATTERN
+      def_node_matcher :module_definition?, <<-PATTERN
         {class module (casgn _ _ class_constructor?)}
       PATTERN
 

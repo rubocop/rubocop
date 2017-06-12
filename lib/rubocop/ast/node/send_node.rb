@@ -173,7 +173,7 @@ module RuboCop
 
       private
 
-      def_matcher :macro_scope?, <<-PATTERN
+      def_node_matcher :macro_scope?, <<-PATTERN
         {^({class module} ...)
          ^^({class module} ... (begin ...))}
       PATTERN
