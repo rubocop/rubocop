@@ -273,7 +273,6 @@ module RuboCop
 
       def_matcher :receiver,    '{(send $_ ...) (block (send $_ ...) ...)}'
       def_matcher :method_name, '{(send _ $_ ...) (block (send _ $_ ...) ...)}'
-      def_matcher :method_args, '{(send _ _ $...) (block (send _ _ $...) ...)}'
       # Note: for masgn, #asgn_rhs will be an array node
       def_matcher :asgn_rhs, '[assignment? (... $_)]'
       def_matcher :str_content, '(str $_)'

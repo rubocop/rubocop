@@ -71,7 +71,7 @@ module RuboCop
         def relative_date_method?(node)
           node.send_type? &&
             RELATIVE_DATE_METHODS.include?(node.method_name) &&
-            node.method_args.empty?
+            !node.arguments?
         end
 
         def autocorrect(node)
