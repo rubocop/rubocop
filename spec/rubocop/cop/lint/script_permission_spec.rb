@@ -1,49 +1,65 @@
 # frozen_string_literal: true
 
+# rubocop:disable Style/NumericLiteralPrefix
 describe RuboCop::Cop::Lint::ScriptPermission do
   subject(:cop) { described_class.new(config) }
   let(:config) { RuboCop::Config.new }
 
-  before do
-    file_stat = double('file_stat')
-    allow(file_stat).to receive(:executable?).and_return(execution)
-    allow(File).to receive(:stat).and_return(file_stat)
+  let(:file) { Tempfile.new('') }
+  let(:filename) { file.path.split('/').last }
+
+  after do
+    file.close
+    file.unlink
   end
 
   context 'with file permission 0644' do
-    let(:execution) { false }
+    let(:source) { '#!/usr/bin/ruby' }
 
-    it 'registers an offense for script permission' do
-      if RuboCop::Platform.windows?
-        expect_no_offenses(<<-RUBY.strip_indent)
-          #!/usr/bin/ruby
-        RUBY
-      else
-        expect_offense(<<-RUBY.strip_indent)
-          #!/usr/bin/ruby
-          ^^^^^^^^^^^^^^^ Script file example.rb doesn't have execute permission.
-        RUBY
+    before do
+      File.write(file.path, source)
+      FileUtils.chmod(0644, file.path)
+    end
+
+    if RuboCop::Platform.windows?
+      context 'Windows' do
+        it 'allows any file permissions' do
+          expect_no_offenses(<<-RUBY.strip_indent, file)
+        #!/usr/bin/ruby
+          RUBY
+        end
+      end
+    else
+      it 'registers an offense for script permission' do
+        expect_offense(<<-RUBY.strip_indent, file)
+        #!/usr/bin/ruby
+        ^^^^^^^^^^^^^^^ Script file #{filename} doesn't have execute permission.
+          RUBY
       end
     end
   end
 
   context 'with file permission 0755' do
-    let(:execution) { true }
+    before do
+      FileUtils.chmod(0755, file.path)
+    end
 
     it 'accepts with shebang line' do
-      expect_no_offenses(<<-RUBY.strip_indent)
-        #!/usr/bin/ruby
-      RUBY
+      File.write(file.path, '#!/usr/bin/ruby')
+
+      expect_no_offenses(file.read, file)
     end
 
     it 'accepts without shebang line' do
-      expect_no_offenses(<<-RUBY.strip_indent)
-        puts "hello"
-      RUBY
+      File.write(file.path, 'puts "hello"')
+
+      expect_no_offenses(file.read, file)
     end
 
     it 'accepts with blank' do
-      expect_no_offenses('')
+      File.write(file.path, '')
+
+      expect_no_offenses(file.read, file)
     end
   end
 end
