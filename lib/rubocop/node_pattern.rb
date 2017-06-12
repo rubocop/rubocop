@@ -135,9 +135,11 @@ module RuboCop
       end
 
       def run(node_var)
-        tokens = @string.scan(TOKEN)
-        tokens.reject! { |token| token =~ /\A[\s,]+\Z/ } # drop whitespace
+        tokens =
+          @string.scan(TOKEN).reject { |token| token =~ /\A#{SEPARATORS}\Z/ }
+
         @match_code = compile_expr(tokens, node_var, false)
+
         fail_due_to('unbalanced pattern') unless tokens.empty?
       end
 

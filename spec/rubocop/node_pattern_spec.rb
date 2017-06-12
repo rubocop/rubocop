@@ -912,11 +912,10 @@ describe RuboCop::NodePattern do
   end
 
   describe 'commas' do
-    # commas are just whitespace
     context 'with commas randomly strewn around' do
       let(:pattern) { ',,(,send,, ,int,:+, int ), ' }
       let(:ruby) { '1 + 2' }
-      it_behaves_like :matching
+      it_behaves_like :invalid
     end
   end
 
