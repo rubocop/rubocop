@@ -18,6 +18,12 @@ module RuboCop
           add_offense(comment, :expression, message)
         end
 
+        def autocorrect(node)
+          lambda do |_corrector|
+            FileUtils.chmod('+x', node.loc.expression.source_buffer.name)
+          end
+        end
+
         private
 
         def start_with_shebang?(processed_source)
