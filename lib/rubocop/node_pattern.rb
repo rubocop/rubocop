@@ -442,11 +442,17 @@ module RuboCop
         params.empty? ? '' : ",#{params}"
       end
 
+      def emit_guard_clause
+        <<-RUBY
+          return unless node.is_a?(RuboCop::AST::Node)
+        RUBY
+      end
+
       def emit_method_code
-        <<-CODE
-          return nil unless #{@match_code}
+        <<-RUBY
+          return unless #{@match_code}
           block_given? ? yield(#{emit_capture_list}) : (return #{emit_retval})
-        CODE
+        RUBY
       end
 
       def fail_due_to(message)
@@ -468,6 +474,7 @@ module RuboCop
         @temps += 1
       end
     end
+    private_constant :Compiler
 
     # Helpers for defining methods based on a pattern string
     module Macros
@@ -479,9 +486,10 @@ module RuboCop
       # If the node matches, and no block is provided, the new method will
       # return the captures, or `true` if there were none.
       def def_node_matcher(method_name, pattern_str)
-        compiler = RuboCop::NodePattern::Compiler.new(pattern_str, 'node')
-        src = "def #{method_name}(node" \
+        compiler = Compiler.new(pattern_str, 'node')
+        src = "def #{method_name}(node = self" \
               "#{compiler.emit_trailing_params});" \
+              "#{compiler.emit_guard_clause}" \
               "#{compiler.emit_method_code};end"
 
         location = caller_locations(1, 1).first
@@ -495,7 +503,7 @@ module RuboCop
       # as soon as it finds a descendant which matches. Otherwise, it will
       # yield all descendants which match.
       def def_node_search(method_name, pattern_str)
-        compiler = RuboCop::NodePattern::Compiler.new(pattern_str, 'node')
+        compiler = Compiler.new(pattern_str, 'node')
         called_from = caller(1..1).first.split(':')
 
         if method_name.to_s.end_with?('?')
