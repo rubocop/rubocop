@@ -62,4 +62,16 @@ describe RuboCop::Cop::Lint::ScriptPermission do
       expect_no_offenses(file.read, file)
     end
   end
+
+  unless RuboCop::Platform.windows?
+    context 'auto-correct' do
+      it 'adds execute permissions to the file' do
+        File.write(file.path, '#!/usr/bin/ruby')
+
+        autocorrect_source(cop, file.read, file)
+
+        expect(file.stat.executable?).to be_truthy
+      end
+    end
+  end
 end

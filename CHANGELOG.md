@@ -7,6 +7,7 @@
 * [#4448](https://github.com/bbatsov/rubocop/pull/4448): Add new `TapFormatter`. ([@cyberdelia][])
 * Add new `Style/HeredocDelimiters` cop. ([@drenmi][])
 * [#4153](https://github.com/bbatsov/rubocop/issues/4153): New cop `Lint/ReturnInVoidContext` checks for the use of a return with a value in a context where it will be ignored. ([@harold-s][])
+* Add auto-correct support to `Lint/ScriptPermission`. ([@rrosenblum][])
 
 ### Bug fixes
 
