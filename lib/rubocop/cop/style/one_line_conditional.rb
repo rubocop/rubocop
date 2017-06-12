@@ -62,8 +62,7 @@ module RuboCop
         end
 
         def method_call_with_changed_precedence?(node)
-          return false unless node.send_type?
-          return false if node.method_args.empty?
+          return false unless node.send_type? && node.arguments?
           return false if parenthesized_call?(node)
 
           !operator?(node.method_name)

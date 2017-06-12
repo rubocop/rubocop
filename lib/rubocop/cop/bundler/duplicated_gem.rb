@@ -36,7 +36,7 @@ module RuboCop
             nodes[1..-1].each do |node|
               register_offense(
                 node,
-                node.method_args.first.to_a.first,
+                node.first_argument.to_a.first,
                 nodes.first.loc.line
               )
             end
@@ -49,9 +49,9 @@ module RuboCop
 
         def duplicated_gem_nodes
           gem_declarations(processed_source.ast)
-            .group_by { |e| e.method_args.first }
-            .keep_if { |_, nodes| nodes.length > 1 }
+            .group_by(&:first_argument)
             .values
+            .select { |nodes| nodes.size > 1 }
         end
 
         def register_offense(node, gem_name, line_of_first_occurrence)

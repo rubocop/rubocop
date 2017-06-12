@@ -43,7 +43,7 @@ module RuboCop
 
         def check_for_file_join_with_rails_root(node)
           return unless file_join_nodes?(node)
-          return unless node.method_args.any? { |e| rails_root_nodes?(e) }
+          return unless node.arguments.any? { |e| rails_root_nodes?(e) }
 
           register_offense(node)
         end
@@ -51,7 +51,7 @@ module RuboCop
         def check_for_rails_root_join_with_slash_separated_path(node)
           return unless rails_root_nodes?(node)
           return unless rails_root_join_nodes?(node)
-          return unless node.method_args.any? { |arg| string_with_slash?(arg) }
+          return unless node.arguments.any? { |arg| string_with_slash?(arg) }
 
           register_offense(node)
         end

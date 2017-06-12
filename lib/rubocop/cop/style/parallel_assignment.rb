@@ -159,7 +159,7 @@ module RuboCop
           def accesses?(rhs, lhs)
             if lhs.method?(:[]=)
               matching_calls(rhs, lhs.receiver, :[]).any? do |args|
-                args == lhs.method_args
+                args == lhs.arguments
               end
             else
               access_method = lhs.method_name.to_s.chop.to_sym
