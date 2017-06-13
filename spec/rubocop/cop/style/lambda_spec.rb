@@ -5,7 +5,7 @@ describe RuboCop::Cop::Style::Lambda, :config do
 
   shared_examples 'registers an offense' do |message|
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq([message])

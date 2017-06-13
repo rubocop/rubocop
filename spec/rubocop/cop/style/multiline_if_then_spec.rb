@@ -14,17 +14,17 @@ describe RuboCop::Cop::Style::MultilineIfThen do
   end
 
   it 'registers an offense for then in multiline if' do
-    inspect_source(cop, ['if cond then',
-                         'end',
-                         "if cond then\t",
-                         'end',
-                         'if cond then  ',
-                         'end',
-                         'if cond',
-                         'then',
-                         'end',
-                         'if cond then # bad',
-                         'end'])
+    inspect_source(['if cond then',
+                    'end',
+                    "if cond then\t",
+                    'end',
+                    'if cond then  ',
+                    'end',
+                    'if cond',
+                    'then',
+                    'end',
+                    'if cond then # bad',
+                    'end'])
     expect(cop.offenses.map(&:line)).to eq([1, 3, 5, 8, 10])
     expect(cop.highlights).to eq(['then'] * 5)
     expect(cop.messages).to eq(['Do not use `then` for multi-line `if`.'] * 5)
@@ -80,7 +80,7 @@ describe RuboCop::Cop::Style::MultilineIfThen do
 
   it 'does not raise an error for an implicit match if' do
     expect do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         if //
         end
       RUBY
@@ -118,7 +118,7 @@ describe RuboCop::Cop::Style::MultilineIfThen do
 
   it 'does not raise an error for an implicit match unless' do
     expect do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         unless //
         end
       RUBY

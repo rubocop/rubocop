@@ -4,61 +4,61 @@ describe RuboCop::Cop::Layout::TrailingWhitespace do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for a line ending with space' do
-    inspect_source(cop, 'x = 0 ')
+    inspect_source('x = 0 ')
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'registers an offense for a blank line with space' do
-    inspect_source(cop, '  ')
+    inspect_source('  ')
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'registers an offense for a line ending with tab' do
-    inspect_source(cop, "x = 0\t")
+    inspect_source("x = 0\t")
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'registers an offense for trailing whitespace in a heredoc string' do
-    inspect_source(cop, ['x = <<RUBY',
-                         '  Hi   ',
-                         'RUBY'])
+    inspect_source(['x = <<RUBY',
+                    '  Hi   ',
+                    'RUBY'])
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'registers offenses before __END__ but not after' do
-    inspect_source(cop, ["x = 0\t",
-                         ' ',
-                         '__END__',
-                         "x = 0\t"])
+    inspect_source(["x = 0\t",
+                    ' ',
+                    '__END__',
+                    "x = 0\t"])
     expect(cop.offenses.map(&:line)).to eq([1, 2])
   end
 
   it 'is not fooled by __END__ within a documentation comment' do
-    inspect_source(cop, ["x = 0\t",
-                         '=begin',
-                         '__END__',
-                         '=end',
-                         "x = 0\t"])
+    inspect_source(["x = 0\t",
+                    '=begin',
+                    '__END__',
+                    '=end',
+                    "x = 0\t"])
     expect(cop.offenses.map(&:line)).to eq([1, 5])
   end
 
   it 'is not fooled by heredoc containing __END__' do
-    inspect_source(cop, ['x1 = <<RUBY ',
-                         '__END__',
-                         "x2 = 0\t",
-                         'RUBY',
-                         "x3 = 0\t"])
+    inspect_source(['x1 = <<RUBY ',
+                    '__END__',
+                    "x2 = 0\t",
+                    'RUBY',
+                    "x3 = 0\t"])
     expect(cop.offenses.map(&:line)).to eq([1, 3, 5])
   end
 
   it 'is not fooled by heredoc containing __END__ within a doc comment' do
-    inspect_source(cop, ['x1 = <<RUBY ',
-                         '=begin  ',
-                         '__END__',
-                         '=end',
-                         "x2 = 0\t",
-                         'RUBY',
-                         "x3 = 0\t"])
+    inspect_source(['x1 = <<RUBY ',
+                    '=begin  ',
+                    '__END__',
+                    '=end',
+                    "x2 = 0\t",
+                    'RUBY',
+                    "x3 = 0\t"])
     expect(cop.offenses.map(&:line)).to eq([1, 2, 5, 7])
   end
 

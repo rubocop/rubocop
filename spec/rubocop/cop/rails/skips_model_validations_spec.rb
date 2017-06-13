@@ -24,7 +24,7 @@ describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
   context 'with default blacklist' do
     cop_config['Blacklist'].each do |method_name|
       it "registers an offense for `#{method_name}`" do
-        inspect_source(cop, "User.#{method_name}(:attr)")
+        inspect_source("User.#{method_name}(:attr)")
         expect(cop.offenses.size).to eq(1)
         expect(cop.messages)
           .to eq([format(msg, method_name)])
@@ -39,7 +39,7 @@ describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
   context 'with methods that require at least an argument' do
     methods_with_arguments.each do |method_name|
       it "doesn't register an offense for `#{method_name}`" do
-        inspect_source(cop, "User.#{method_name}")
+        inspect_source("User.#{method_name}")
         expect(cop.offenses).to be_empty
       end
     end
@@ -48,7 +48,7 @@ describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
   context "with methods that don't require an argument" do
     (cop_config['Blacklist'] - methods_with_arguments).each do |method_name|
       it "registers an offense for `#{method_name}`" do
-        inspect_source(cop, "User.#{method_name}")
+        inspect_source("User.#{method_name}")
         expect(cop.offenses.size).to eq(1)
         expect(cop.messages)
           .to eq([format(msg, method_name)])
@@ -67,7 +67,7 @@ describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
 
     whitelist.each do |method_name|
       it "accepts `#{method_name}`" do
-        inspect_source(cop, "User.#{method_name}")
+        inspect_source("User.#{method_name}")
         expect(cop.offenses).to be_empty
       end
     end

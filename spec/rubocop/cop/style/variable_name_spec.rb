@@ -25,7 +25,7 @@ describe RuboCop::Cop::Style::VariableName, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'snake_case' } }
 
     it 'registers an offense for camel case in local variable name' do
-      inspect_source(cop, 'myLocal = 1')
+      inspect_source('myLocal = 1')
       expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['myLocal'])
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
@@ -33,7 +33,7 @@ describe RuboCop::Cop::Style::VariableName, :config do
     end
 
     it 'registers an offense for correct + opposite' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         my_local = 1
         myLocal = 1
       RUBY
@@ -76,7 +76,7 @@ describe RuboCop::Cop::Style::VariableName, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'camelCase' } }
 
     it 'registers an offense for snake case in local variable name' do
-      inspect_source(cop, 'my_local = 1')
+      inspect_source('my_local = 1')
       expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['my_local'])
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
@@ -84,7 +84,7 @@ describe RuboCop::Cop::Style::VariableName, :config do
     end
 
     it 'registers an offense for opposite + correct' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         my_local = 1
         myLocal = 1
       RUBY
@@ -122,7 +122,7 @@ describe RuboCop::Cop::Style::VariableName, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'other' } }
 
     it 'fails' do
-      expect { inspect_source(cop, 'a = 3') }
+      expect { inspect_source('a = 3') }
         .to raise_error(RuntimeError)
     end
   end

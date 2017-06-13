@@ -26,7 +26,7 @@ describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'registers an offense for arrays of single quoted strings' do
-      inspect_source(cop, "['one', 'two', 'three']")
+      inspect_source("['one', 'two', 'three']")
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Use `%w` or `%W` for an array of words.'])
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'brackets')
@@ -54,7 +54,7 @@ describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'registers an offense for strings with embedded newlines and tabs' do
-      inspect_source(cop, %(["one\n", "hi\tthere"]))
+      inspect_source(%(["one\n", "hi\tthere"]))
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -106,7 +106,7 @@ describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'registers an offense for an array with comments outside of it' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         [
         "foo",
         "bar",
@@ -136,7 +136,7 @@ describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'detects right value of MinSize to use for --auto-gen-config' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         ['one', 'two', 'three']
         %w(a b c d)
       RUBY
@@ -147,7 +147,7 @@ describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'detects when the cop must be disabled to avoid offenses' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         ['one', 'two', 'three']
         %w(a b)
       RUBY
@@ -256,7 +256,7 @@ describe RuboCop::Cop::Style::WordArray, :config do
     let(:cop_config) { { 'WordRegex' => 'just_a_string' } }
 
     it 'still parses the code without raising an error' do
-      expect { inspect_source(cop, '') }.to_not raise_error
+      expect { inspect_source('') }.to_not raise_error
     end
   end
 

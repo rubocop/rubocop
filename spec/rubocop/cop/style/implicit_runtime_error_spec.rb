@@ -5,7 +5,7 @@ describe RuboCop::Cop::Style::ImplicitRuntimeError do
 
   %w[raise fail].each do |method|
     it "registers an offense for #{method} 'message'" do
-      inspect_source(cop, "#{method} 'message'")
+      inspect_source("#{method} 'message'")
       expect(cop.offenses.size).to eq 1
       expect(cop.messages).to eq(["Use `#{method}` with an explicit " \
                                  'exception class and message, rather than ' \
@@ -14,7 +14,7 @@ describe RuboCop::Cop::Style::ImplicitRuntimeError do
     end
 
     it "registers an offense for #{method} with a multiline string" do
-      inspect_source(cop, ["#{method} 'message' \\", "'2nd line'"])
+      inspect_source(["#{method} 'message' \\", "'2nd line'"])
       expect(cop.offenses.size).to eq 1
       expect(cop.messages).to eq(["Use `#{method}` with an explicit " \
                                  'exception class and message, rather than ' \
@@ -23,12 +23,12 @@ describe RuboCop::Cop::Style::ImplicitRuntimeError do
     end
 
     it "doesn't register an offense for #{method} StandardError, 'message'" do
-      inspect_source(cop, "#{method} StandardError, 'message'")
+      inspect_source("#{method} StandardError, 'message'")
       expect(cop.offenses).to be_empty
     end
 
     it "doesn't register an offense for #{method} with no arguments" do
-      inspect_source(cop, method)
+      inspect_source(method)
       expect(cop.offenses).to be_empty
     end
   end

@@ -6,7 +6,7 @@ describe RuboCop::Cop::Layout::RescueEnsureAlignment do
   shared_examples 'common behavior' do |keyword|
     context 'bad alignment' do
       it 'registers an offense when used with begin' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           begin
             something
               #{keyword}
@@ -18,7 +18,7 @@ describe RuboCop::Cop::Layout::RescueEnsureAlignment do
       end
 
       it 'registers an offense when used with def' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           def test
             something
               #{keyword}
@@ -30,7 +30,7 @@ describe RuboCop::Cop::Layout::RescueEnsureAlignment do
       end
 
       it 'registers an offense when used with defs' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           def Test.test
             something
               #{keyword}
@@ -42,7 +42,7 @@ describe RuboCop::Cop::Layout::RescueEnsureAlignment do
       end
 
       it 'registers an offense when used with class' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           class C
             something
               #{keyword}
@@ -54,7 +54,7 @@ describe RuboCop::Cop::Layout::RescueEnsureAlignment do
       end
 
       it 'registers an offense when used with module' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           module M
             something
               #{keyword}
@@ -66,7 +66,7 @@ describe RuboCop::Cop::Layout::RescueEnsureAlignment do
       end
 
       it 'accepts rescue and ensure on the same line' do
-        inspect_source(cop, 'begin; puts 1; rescue; ensure; puts 2; end')
+        inspect_source('begin; puts 1; rescue; ensure; puts 2; end')
 
         expect(cop.messages).to be_empty
       end
@@ -90,11 +90,11 @@ describe RuboCop::Cop::Layout::RescueEnsureAlignment do
     end
 
     it 'accepts correct alignment' do
-      inspect_source(cop, ['begin',
-                           '  something',
-                           keyword,
-                           '    error',
-                           'end'])
+      inspect_source(['begin',
+                      '  something',
+                      keyword,
+                      '    error',
+                      'end'])
       expect(cop.messages).to be_empty
     end
   end

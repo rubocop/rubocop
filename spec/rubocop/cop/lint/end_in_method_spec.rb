@@ -9,7 +9,7 @@ describe RuboCop::Cop::Lint::EndInMethod do
         END { something }
       end
     RUBY
-    inspect_source(cop, src)
+    inspect_source(src)
     expect(cop.offenses.size).to eq(1)
   end
 
@@ -19,7 +19,7 @@ describe RuboCop::Cop::Lint::EndInMethod do
         END { something }
       end
     RUBY
-    inspect_source(cop, src)
+    inspect_source(src)
     expect(cop.offenses.size).to eq(1)
   end
 

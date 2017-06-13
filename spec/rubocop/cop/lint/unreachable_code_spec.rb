@@ -5,15 +5,14 @@ describe RuboCop::Cop::Lint::UnreachableCode do
 
   described_class::NODE_TYPES.each do |t|
     it "registers an offense for #{t} before other statements" do
-      inspect_source(cop,
-                     ['foo = 5',
+      inspect_source(['foo = 5',
                       t.to_s,
                       'bar'])
       expect(cop.offenses.size).to eq(1)
     end
 
     it "accepts code with conditional #{t}" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         foo = 5
         #{t} if test
         bar
@@ -22,7 +21,7 @@ describe RuboCop::Cop::Lint::UnreachableCode do
     end
 
     it "accepts #{t} as the final expression" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         foo = 5
         #{t} if test
       RUBY
@@ -32,7 +31,7 @@ describe RuboCop::Cop::Lint::UnreachableCode do
 
   described_class::FLOW_COMMANDS.each do |t|
     it "registers an offense for #{t} before other statements" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         foo = 5
         #{t} something
         bar
@@ -41,7 +40,7 @@ describe RuboCop::Cop::Lint::UnreachableCode do
     end
 
     it "accepts code with conditional #{t}" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         foo = 5
         #{t} something if test
         bar
@@ -50,7 +49,7 @@ describe RuboCop::Cop::Lint::UnreachableCode do
     end
 
     it "accepts #{t} as the final expression" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         foo = 5
         #{t} something if test
       RUBY

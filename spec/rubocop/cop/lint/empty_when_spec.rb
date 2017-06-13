@@ -4,7 +4,7 @@ describe RuboCop::Cop::Lint::EmptyWhen, :config do
   subject(:cop) { described_class.new(config) }
 
   before do
-    inspect_source(cop, source)
+    inspect_source(source)
   end
 
   shared_examples 'code with offense' do |code, expected = nil|

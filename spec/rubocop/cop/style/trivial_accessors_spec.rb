@@ -39,13 +39,13 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'show correct message on reader' do
-    inspect_source(cop, trivial_reader)
+    inspect_source(trivial_reader)
     expect(cop.messages.first)
       .to eq('Use `attr_reader` to define trivial reader methods.')
   end
 
   it 'show correct message on writer' do
-    inspect_source(cop, trivial_writer)
+    inspect_source(trivial_writer)
     expect(cop.messages.first)
       .to eq('Use `attr_writer` to define trivial writer methods.')
   end

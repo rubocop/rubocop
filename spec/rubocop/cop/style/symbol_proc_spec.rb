@@ -7,7 +7,7 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
 
   it 'registers an offense for a block with parameterless method call on ' \
      'param' do
-    inspect_source(cop, 'coll.map { |e| e.upcase }')
+    inspect_source('coll.map { |e| e.upcase }')
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
       .to eq(['Pass `&:upcase` as an argument to `map` instead of a block.'])
@@ -98,7 +98,7 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
   end
 
   it 'does not crash with a bare method call' do
-    run = -> { inspect_source(cop, 'coll.map { |s| bare_method }') }
+    run = -> { inspect_source('coll.map { |s| bare_method }') }
     expect(&run).not_to raise_error
   end
 

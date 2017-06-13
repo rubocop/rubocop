@@ -5,7 +5,7 @@ describe RuboCop::Cop::Metrics::ModuleLength, :config do
   let(:cop_config) { { 'Max' => 5, 'CountComments' => false } }
 
   it 'rejects a module with more than 5 lines' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       module Test
         a = 1
         a = 2
@@ -21,7 +21,7 @@ describe RuboCop::Cop::Metrics::ModuleLength, :config do
   end
 
   it 'reports the correct beginning and end lines' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       module Test
         a = 1
         a = 2
@@ -108,7 +108,7 @@ describe RuboCop::Cop::Metrics::ModuleLength, :config do
     end
 
     it 'rejects a module with 6 lines that belong to the module directly' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         module NamespaceModule
           module TestOne
             a = 1
@@ -164,7 +164,7 @@ describe RuboCop::Cop::Metrics::ModuleLength, :config do
     end
 
     it 'rejects a module with 6 lines that belong to the module directly' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         module NamespaceModule
           class TestOne
             a = 1
@@ -196,7 +196,7 @@ describe RuboCop::Cop::Metrics::ModuleLength, :config do
     before { cop_config['CountComments'] = true }
 
     it 'also counts commented lines' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         module Test
           a = 1
           #a = 2

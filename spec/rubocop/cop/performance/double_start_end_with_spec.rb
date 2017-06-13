@@ -18,7 +18,7 @@ describe RuboCop::Cop::Performance::DoubleStartEndWith do
           let(:source) { 'x.start_with?(a, b) || x.start_with?("c", D)' }
 
           it 'registers an offense' do
-            inspect_source(cop, source)
+            inspect_source(source)
             expect(cop.offenses.size).to eq(1)
             expect(cop.offenses.first.message).to eq(
               'Use `x.start_with?(a, b, "c", D)` instead of ' \
@@ -56,7 +56,7 @@ describe RuboCop::Cop::Performance::DoubleStartEndWith do
           let(:source) { 'x.end_with?(a, b) || x.end_with?("c", D)' }
 
           it 'registers an offense' do
-            inspect_source(cop, source)
+            inspect_source(source)
             expect(cop.offenses.size).to eq(1)
             expect(cop.offenses.first.message).to eq(
               'Use `x.end_with?(a, b, "c", D)` instead of ' \
@@ -122,7 +122,7 @@ describe RuboCop::Cop::Performance::DoubleStartEndWith do
           let(:source) { 'x.start_with?(a, b) || x.start_with?("c", D)' }
 
           it 'registers an offense' do
-            inspect_source(cop, source)
+            inspect_source(source)
             expect(cop.offenses.size).to eq(1)
             expect(cop.offenses.first.message)
               .to eq('Use `x.start_with?(a, b, "c", D)` instead of ' \
@@ -146,7 +146,7 @@ describe RuboCop::Cop::Performance::DoubleStartEndWith do
           let(:source) { 'x.end_with?(a, b) || x.end_with?("c", D)' }
 
           it 'registers an offense' do
-            inspect_source(cop, source)
+            inspect_source(source)
             expect(cop.offenses.size).to eq(1)
             expect(cop.offenses.first.message)
               .to eq('Use `x.end_with?(a, b, "c", D)` instead of ' \
@@ -170,7 +170,7 @@ describe RuboCop::Cop::Performance::DoubleStartEndWith do
           let(:source) { 'x.starts_with?(a, b) || x.starts_with?("c", D)' }
 
           it 'registers an offense' do
-            inspect_source(cop, source)
+            inspect_source(source)
             expect(cop.offenses.size).to eq(1)
             expect(cop.offenses.first.message).to eq(
               'Use `x.starts_with?(a, b, "c", D)` instead of ' \
@@ -210,7 +210,7 @@ describe RuboCop::Cop::Performance::DoubleStartEndWith do
           let(:source) { 'x.ends_with?(a, b) || x.ends_with?("c", D)' }
 
           it 'registers an offense' do
-            inspect_source(cop, source)
+            inspect_source(source)
             expect(cop.offenses.size).to eq(1)
             expect(cop.offenses.first.message).to eq(
               'Use `x.ends_with?(a, b, "c", D)` instead of ' \

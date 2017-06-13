@@ -5,7 +5,7 @@ describe RuboCop::Cop::Style::BeginBlock do
 
   it 'reports an offense for a BEGIN block' do
     src = 'BEGIN { test }'
-    inspect_source(cop, src)
+    inspect_source(src)
     expect(cop.offenses.size).to eq(1)
   end
 end

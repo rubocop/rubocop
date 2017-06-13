@@ -9,7 +9,7 @@ describe RuboCop::Cop::Lint::PercentStringArray do
   end
 
   def expect_offense(source)
-    inspect_source(cop, source)
+    inspect_source(source)
 
     expect(cop.offenses.map(&:message)).to eq([message])
     expect(cop.highlights).to eq([source])
@@ -18,7 +18,7 @@ describe RuboCop::Cop::Lint::PercentStringArray do
   context 'detecting quotes or commas in a %w/%W string' do
     %w[w W].each do |char|
       it 'accepts tokens without quotes or commas' do
-        inspect_source(cop, "%#{char}(foo bar baz)")
+        inspect_source("%#{char}(foo bar baz)")
 
         expect(cop.offenses).to be_empty
       end
@@ -30,7 +30,7 @@ describe RuboCop::Cop::Lint::PercentStringArray do
         %(%#{char}(\#{a} b))
       ].each do |false_positive|
         it "accepts likely false positive #{false_positive}" do
-          inspect_source(cop, false_positive)
+          inspect_source(false_positive)
 
           expect(cop.offenses).to be_empty
         end

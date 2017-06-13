@@ -9,7 +9,7 @@ describe RuboCop::Cop::Lint::MultipleCompare do
     good_source = "x #{op1} y && y #{op2} z"
 
     it "registers an offense for #{bad_source}" do
-      inspect_source(cop, bad_source)
+      inspect_source(bad_source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Use the `&&` operator to compare multiple values.'])
@@ -21,7 +21,7 @@ describe RuboCop::Cop::Lint::MultipleCompare do
     end
 
     it "accepts for #{good_source}" do
-      inspect_source(cop, good_source)
+      inspect_source(good_source)
       expect(cop.offenses).to be_empty
     end
   end

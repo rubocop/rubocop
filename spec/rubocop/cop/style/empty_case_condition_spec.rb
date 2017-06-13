@@ -9,7 +9,7 @@ describe RuboCop::Cop::Style::EmptyCaseCondition do
 
   shared_examples 'detect/correct empty case, accept non-empty case' do
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.messages).to eq [message]
     end
 
@@ -20,7 +20,7 @@ describe RuboCop::Cop::Style::EmptyCaseCondition do
     let(:source_with_case) { source.sub(/case/, 'case :a') }
 
     it 'accepts the source with case' do
-      inspect_source(cop, source_with_case)
+      inspect_source(source_with_case)
       expect(cop.messages).to be_empty
     end
   end

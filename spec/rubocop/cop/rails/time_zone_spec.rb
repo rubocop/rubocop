@@ -8,55 +8,54 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
 
     described_class::TIMECLASS.each do |klass|
       it "registers an offense for #{klass}.now" do
-        inspect_source(cop, "#{klass}.now")
+        inspect_source("#{klass}.now")
         expect(cop.offenses.size).to eq(1)
         expect(cop.offenses.first.message).to include('`Time.zone.now`')
       end
 
       it "registers an offense for #{klass}.current" do
-        inspect_source(cop, "#{klass}.current")
+        inspect_source("#{klass}.current")
         expect(cop.offenses.size).to eq(1)
         expect(cop.offenses.first.message).to include('`Time.zone.now`')
       end
 
       it "registers an offense for #{klass}.new without argument" do
-        inspect_source(cop, "#{klass}.new")
+        inspect_source("#{klass}.new")
         expect(cop.offenses.size).to eq(1)
         expect(cop.offenses.first.message).to include('`Time.zone.now`')
       end
 
       it "registers an offense for #{klass}.new with argument" do
-        inspect_source(cop, "#{klass}.new(2012, 6, 10, 12, 00)")
+        inspect_source("#{klass}.new(2012, 6, 10, 12, 00)")
         expect(cop.offenses.size).to eq(1)
         expect(cop.offenses.first.message).to include('`Time.zone.local`')
       end
 
       it 'does not register an offense when a .new method is made
         independently of the Time class' do
-        inspect_source(cop,
-                       'Range.new(1,
+        inspect_source('Range.new(1,
                                   Time.days_in_month(date.month, date.year))')
         expect(cop.offenses).to be_empty
       end
 
       it "does not register an offense for #{klass}.new with zone argument" do
-        inspect_source(cop, "#{klass}.new(1988, 3, 15, 3, 0, 0, '-05:00')")
+        inspect_source("#{klass}.new(1988, 3, 15, 3, 0, 0, '-05:00')")
         expect(cop.offenses).to be_empty
       end
 
       it "registers an offense for ::#{klass}.now" do
-        inspect_source(cop, "::#{klass}.now")
+        inspect_source("::#{klass}.now")
         expect(cop.offenses.size).to eq(1)
       end
 
       it "accepts Some::#{klass}.now" do
-        inspect_source(cop, "Some::#{klass}.forward(0).strftime('%H:%M')")
+        inspect_source("Some::#{klass}.forward(0).strftime('%H:%M')")
         expect(cop.offenses).to be_empty
       end
 
       described_class::ACCEPTED_METHODS.each do |a_method|
         it "registers an offense #{klass}.now.#{a_method}" do
-          inspect_source(cop, "#{klass}.now.#{a_method}")
+          inspect_source("#{klass}.now.#{a_method}")
           expect(cop.offenses.size).to eq(1)
         end
       end
@@ -208,7 +207,7 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
 
     described_class::DANGEROUS_METHODS.each do |a_method|
       it "accepts Some::Time.#{a_method}" do
-        inspect_source(cop, "Some::Time.#{a_method}")
+        inspect_source("Some::Time.#{a_method}")
         expect(cop.offenses).to be_empty
       end
     end
@@ -219,7 +218,7 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
 
     described_class::TIMECLASS.each do |klass|
       it "registers an offense for #{klass}.now" do
-        inspect_source(cop, "#{klass}.now")
+        inspect_source("#{klass}.now")
         expect(cop.offenses.size).to eq(1)
 
         expect(cop.offenses.first.message).to include('Use one of')
@@ -233,40 +232,40 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
       end
 
       it "accepts #{klass}.current" do
-        inspect_source(cop, "#{klass}.current")
+        inspect_source("#{klass}.current")
         expect(cop.offenses).to be_empty
       end
 
       described_class::ACCEPTED_METHODS.each do |a_method|
         it "accepts #{klass}.now.#{a_method}" do
-          inspect_source(cop, "#{klass}.now.#{a_method}")
+          inspect_source("#{klass}.now.#{a_method}")
           expect(cop.offenses).to be_empty
         end
       end
 
       it "accepts #{klass}.zone.now" do
-        inspect_source(cop, "#{klass}.zone.now")
+        inspect_source("#{klass}.zone.now")
         expect(cop.offenses).to be_empty
       end
 
       it "accepts #{klass}.zone_default.now" do
-        inspect_source(cop, "#{klass}.zone_default.now")
+        inspect_source("#{klass}.zone_default.now")
         expect(cop.offenses).to be_empty
       end
 
       it "accepts #{klass}.find_zone(time_zone).now" do
-        inspect_source(cop, "#{klass}.find_zone('EST').now")
+        inspect_source("#{klass}.find_zone('EST').now")
         expect(cop.offenses).to be_empty
       end
 
       it "accepts #{klass}.find_zone!(time_zone).now" do
-        inspect_source(cop, "#{klass}.find_zone!('EST').now")
+        inspect_source("#{klass}.find_zone!('EST').now")
         expect(cop.offenses).to be_empty
       end
 
       described_class::DANGEROUS_METHODS.each do |a_method|
         it "accepts #{klass}.current.#{a_method}" do
-          inspect_source(cop, "#{klass}.current.#{a_method}")
+          inspect_source("#{klass}.current.#{a_method}")
           expect(cop.offenses).to be_empty
         end
       end

@@ -5,7 +5,7 @@ describe RuboCop::Cop::Lint::CircularArgumentReference do
 
   describe 'circular argument references in ordinal arguments' do
     before do
-      inspect_source(cop, source)
+      inspect_source(source)
     end
 
     context 'when the method contains a circular argument reference' do
@@ -73,7 +73,7 @@ describe RuboCop::Cop::Lint::CircularArgumentReference do
       end
 
       it 'fails with a syntax error before the cop even comes into play' do
-        expect { inspect_source(cop, source) }.to raise_error(
+        expect { inspect_source(source) }.to raise_error(
           RuntimeError, /Error parsing/
         )
         expect(cop.offenses).to be_empty
@@ -82,7 +82,7 @@ describe RuboCop::Cop::Lint::CircularArgumentReference do
 
     context 'ruby >= 2.0', :ruby20 do
       before do
-        inspect_source(cop, source)
+        inspect_source(source)
       end
 
       context 'when the keyword argument is not circular' do

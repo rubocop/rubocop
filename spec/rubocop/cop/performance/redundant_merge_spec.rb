@@ -116,7 +116,7 @@ describe RuboCop::Cop::Performance::RedundantMerge, :config do
           why_are_you_doing_this?
         end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.offenses).to be_empty
     end

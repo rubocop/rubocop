@@ -8,7 +8,7 @@ describe RuboCop::Cop::Rails::DynamicFindBy, :config do
 
   shared_examples 'register an offense and auto correct' do |message, corrected|
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq([message])

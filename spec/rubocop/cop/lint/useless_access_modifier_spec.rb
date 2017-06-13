@@ -20,7 +20,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
     end
 
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.message)
         .to eq('Useless `private` access modifier.')
@@ -42,7 +42,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
     end
 
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.message)
         .to eq('Useless `protected` access modifier.')
@@ -81,7 +81,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
     end
 
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.message)
         .to eq('Useless `protected` access modifier.')
@@ -107,7 +107,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
     end
 
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.message)
         .to eq('Useless `private` access modifier.')
@@ -139,7 +139,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
     end
 
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.message)
         .to eq('Useless `private` access modifier.')
@@ -160,7 +160,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
     end
 
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.message)
         .to eq('Useless `private` access modifier.')
@@ -182,7 +182,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
       end
 
       it 'does not register an offense' do
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.offenses).to be_empty
       end
     end
@@ -271,7 +271,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
          end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.line).to eq(17)
     end
@@ -296,7 +296,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses.size).to eq(1)
     end
   end
@@ -356,7 +356,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           private
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.line).to eq(4)
     end
@@ -371,7 +371,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -383,7 +383,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses).to be_empty
     end
 
@@ -395,7 +395,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses).to be_empty
     end
   end
@@ -413,7 +413,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses.size).to eq(1)
     end
   end
@@ -429,7 +429,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -443,7 +443,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses).to be_empty
     end
 
@@ -457,7 +457,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses).to be_empty
     end
   end
@@ -473,7 +473,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           #{modifier}
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses.size).to eq(1)
     end
   end
@@ -495,7 +495,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -510,7 +510,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
             end
           end
         RUBY
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.offenses).to be_empty
       end
     end
@@ -530,7 +530,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses.size).to eq(1)
     end
   end
@@ -547,7 +547,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
             end
           end
         RUBY
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.offenses).to be_empty
       end
     end
@@ -564,7 +564,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
                '    end',
                '  end',
                'end']
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.offenses).to be_empty
       end
     end
@@ -579,7 +579,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses).to be_empty
     end
 
@@ -591,7 +591,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
             define_method(:method1, #{proc_type} { })
           end
         RUBY
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.offenses).to be_empty
       end
     end
@@ -609,7 +609,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
             end
           end
         RUBY
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.offenses).to be_empty
       end
 
@@ -627,7 +627,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
             end
           end
         RUBY
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.offenses).to be_empty
       end
 
@@ -639,7 +639,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
             end
           end
         RUBY
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.offenses.size).to eq(1)
       end
 
@@ -653,7 +653,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
             end
           end
         RUBY
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.offenses.size).to eq(1)
       end
 
@@ -668,7 +668,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
             end
           end
         RUBY
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.offenses.size).to eq(1)
       end
     end
@@ -682,7 +682,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
             end
           end
         RUBY
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.offenses).to be_empty
       end
 
@@ -692,7 +692,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
             #{modifier}
           end
         RUBY
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.offenses.size).to eq(1)
       end
 
@@ -704,7 +704,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
             #{modifier}
           end
         RUBY
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.offenses.size).to eq(1)
       end
     end
@@ -719,7 +719,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses).to be_empty
     end
 
@@ -729,7 +729,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           #{modifier}
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -745,7 +745,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
             end
           end
         RUBY
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.offenses.size).to eq(1)
       end
 
@@ -759,7 +759,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
             end
           end
         RUBY
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.offenses.size).to eq(2)
       end
     end
@@ -774,7 +774,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses).to be_empty
     end
 
@@ -784,7 +784,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           #{modifier}
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses.size).to eq(1)
     end
   end
@@ -798,7 +798,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses).to be_empty
     end
 
@@ -808,7 +808,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           #{modifier}
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -824,7 +824,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
             end
           end
         RUBY
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.offenses.size).to eq(1)
       end
 
@@ -838,7 +838,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
             end
           end
         RUBY
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.offenses.size).to eq(2)
       end
     end
@@ -860,7 +860,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses).to be_empty
     end
 
@@ -874,7 +874,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
             end
           end
         RUBY
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.offenses.size).to eq(2)
       end
 
@@ -888,7 +888,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
             end
           end
         RUBY
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.offenses.size).to eq(1)
       end
 
@@ -900,7 +900,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
             end
           end
         RUBY
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.offenses.size).to eq(1)
       end
     end

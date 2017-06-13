@@ -9,7 +9,7 @@ RSpec.describe RuboCop::Cop::Style::StringMethods, :config do
   let(:corrected) { autocorrect_source(cop, source) }
 
   it 'registers an offense' do
-    inspect_source(cop, source)
+    inspect_source(source)
 
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages).to eq(['Prefer `to_sym` over `intern`.'])

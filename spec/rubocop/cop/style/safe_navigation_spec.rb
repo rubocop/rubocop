@@ -24,21 +24,21 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
     it 'allows method calls that nil responds to safe guarded by ' \
       'an object check' do
-      inspect_source(cop, 'foo.to_i if foo')
+      inspect_source('foo.to_i if foo')
 
       expect(cop.offenses).to be_empty
     end
 
     it 'allows method calls that do not get called using . safe guarded by ' \
       'an object check' do
-      inspect_source(cop, 'foo + bar if foo')
+      inspect_source('foo + bar if foo')
 
       expect(cop.offenses).to be_empty
     end
 
     it 'allows object checks in the condition of an elsif statement ' \
       'and a method call on that object in the body' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         if foo
           something
         elsif bar
@@ -53,58 +53,56 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
       context 'modifier if' do
         it 'registers an offense for a method call on an accessor ' \
           'safeguarded by a check for the accessed variable' do
-          inspect_source(cop, "#{variable}[1].bar if #{variable}[1]")
+          inspect_source("#{variable}[1].bar if #{variable}[1]")
 
           expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call safeguarded with a check ' \
           'for the object' do
-          inspect_source(cop, "#{variable}.bar if #{variable}")
+          inspect_source("#{variable}.bar if #{variable}")
 
           expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call with params safeguarded ' \
           'with a check for the object' do
-          inspect_source(cop, "#{variable}.bar(baz) if #{variable}")
+          inspect_source("#{variable}.bar(baz) if #{variable}")
 
           expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call with a block safeguarded ' \
           'with a check for the object' do
-          inspect_source(cop, "#{variable}.bar { |e| e.qux } if #{variable}")
+          inspect_source("#{variable}.bar { |e| e.qux } if #{variable}")
 
           expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call with params and a block ' \
           'safeguarded with a check for the object' do
-          inspect_source(cop,
-                         "#{variable}.bar(baz) { |e| e.qux } if #{variable}")
+          inspect_source("#{variable}.bar(baz) { |e| e.qux } if #{variable}")
 
           expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call safeguarded with a ' \
           'negative check for the object' do
-          inspect_source(cop, "#{variable}.bar unless !#{variable}")
+          inspect_source("#{variable}.bar unless !#{variable}")
 
           expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call with params safeguarded ' \
           'with a negative check for the object' do
-          inspect_source(cop, "#{variable}.bar(baz) unless !#{variable}")
+          inspect_source("#{variable}.bar(baz) unless !#{variable}")
 
           expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call with a block safeguarded ' \
           'with a negative check for the object' do
-          inspect_source(cop,
-                         "#{variable}.bar { |e| e.qux } unless !#{variable}")
+          inspect_source("#{variable}.bar { |e| e.qux } unless !#{variable}")
 
           expect(cop.messages).to eq([message])
         end
@@ -113,21 +111,21 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
           'safeguarded with a negative check for the object' do
           source = "#{variable}.bar(baz) { |e| e.qux } unless !#{variable}"
 
-          inspect_source(cop, source)
+          inspect_source(source)
 
           expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call safeguarded with a nil ' \
           'check for the object' do
-          inspect_source(cop, "#{variable}.bar unless #{variable}.nil?")
+          inspect_source("#{variable}.bar unless #{variable}.nil?")
 
           expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call with params safeguarded ' \
           'with a nil check for the object' do
-          inspect_source(cop, "#{variable}.bar(baz) unless #{variable}.nil?")
+          inspect_source("#{variable}.bar(baz) unless #{variable}.nil?")
 
           expect(cop.messages).to eq([message])
         end
@@ -136,7 +134,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
           'with a nil check for the object' do
           source = "#{variable}.bar { |e| e.qux } unless #{variable}.nil?"
 
-          inspect_source(cop, source)
+          inspect_source(source)
 
           expect(cop.messages).to eq([message])
         end
@@ -145,21 +143,21 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
           'safeguarded with a nil check for the object' do
           source = "#{variable}.bar(baz) { |e| e.qux } unless #{variable}.nil?"
 
-          inspect_source(cop, source)
+          inspect_source(source)
 
           expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call safeguarded with a ' \
           'negative nil check for the object' do
-          inspect_source(cop, "#{variable}.bar if !#{variable}.nil?")
+          inspect_source("#{variable}.bar if !#{variable}.nil?")
 
           expect(cop.messages).to eq([message])
         end
 
         it 'registers an offense for a method call with params safeguarded ' \
           'with a negative nil check for the object' do
-          inspect_source(cop, "#{variable}.bar(baz) if !#{variable}.nil?")
+          inspect_source("#{variable}.bar(baz) if !#{variable}.nil?")
 
           expect(cop.messages).to eq([message])
         end
@@ -168,7 +166,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
           'with a negative nil check for the object' do
           source = "#{variable}.bar { |e| e.qux } if !#{variable}.nil?"
 
-          inspect_source(cop, source)
+          inspect_source(source)
 
           expect(cop.messages).to eq([message])
         end
@@ -177,7 +175,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
           'safeguarded with a negative nil check for the object' do
           source = "#{variable}.bar(baz) { |e| e.qux } if !#{variable}.nil?"
 
-          inspect_source(cop, source)
+          inspect_source(source)
 
           expect(cop.messages).to eq([message])
         end
@@ -186,7 +184,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
       context 'if expression' do
         it 'registers an offense for a single method call inside of a check ' \
           'for the object' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             if #{variable}
               #{variable}.bar
             end
@@ -197,7 +195,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
         it 'registers an offense for a single method call inside of a ' \
           'non-nil check for the object' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             if !#{variable}.nil?
               #{variable}.bar
             end
@@ -208,7 +206,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
         it 'registers an offense for a single method call inside of an ' \
           'unless nil check for the object' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             unless #{variable}.nil?
               #{variable}.bar
             end
@@ -219,7 +217,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
         it 'registers an offense for a single method call inside of an ' \
           'unless negative check for the object' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             unless !#{variable}
               #{variable}.bar
             end
@@ -230,7 +228,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
         it 'accepts a single method call inside of a check for the object ' \
            'with an else' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             if #{variable}
               #{variable}.bar
             else
@@ -244,7 +242,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
         context 'ternary expression' do
           it 'accepts ternary expression' do
             source = "!#{variable}.nil? ? #{variable}.bar : something"
-            inspect_source(cop, source)
+            inspect_source(source)
 
             expect(cop.offenses).to be_empty
           end
@@ -257,14 +255,14 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
           it 'registers an offense for a non-nil object check followed by a ' \
             'method call' do
-            inspect_source(cop, "!#{variable}.nil? && #{variable}.bar")
+            inspect_source("!#{variable}.nil? && #{variable}.bar")
 
             expect(cop.messages).to eq([message])
           end
 
           it 'registers an offense for a non-nil object check followed by a ' \
             'method call with params' do
-            inspect_source(cop, "!#{variable}.nil? && #{variable}.bar(baz)")
+            inspect_source("!#{variable}.nil? && #{variable}.bar(baz)")
 
             expect(cop.messages).to eq([message])
           end
@@ -273,7 +271,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             'method call with a block' do
             source = "!#{variable}.nil? && #{variable}.bar { |e| e.qux }"
 
-            inspect_source(cop, source)
+            inspect_source(source)
 
             expect(cop.messages).to eq([message])
           end
@@ -282,28 +280,28 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             'method call with params and a block' do
             source = "!#{variable}.nil? && #{variable}.bar(baz) { |e| e.qux }"
 
-            inspect_source(cop, source)
+            inspect_source(source)
 
             expect(cop.messages).to eq([message])
           end
 
           it 'registers an offense for an object check followed by a ' \
             'method call' do
-            inspect_source(cop, "#{variable} && #{variable}.bar")
+            inspect_source("#{variable} && #{variable}.bar")
 
             expect(cop.messages).to eq([message])
           end
 
           it 'registers an offense for an object check followed by a ' \
             'method call with params' do
-            inspect_source(cop, "#{variable} && #{variable}.bar(baz)")
+            inspect_source("#{variable} && #{variable}.bar(baz)")
 
             expect(cop.messages).to eq([message])
           end
 
           it 'registers an offense for an object check followed by a ' \
             'method call with a block' do
-            inspect_source(cop, "#{variable} && #{variable}.bar { |e| e.qux }")
+            inspect_source("#{variable} && #{variable}.bar { |e| e.qux }")
 
             expect(cop.messages).to eq([message])
           end
@@ -312,14 +310,14 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             'method call with params and a block' do
             source = "#{variable} && #{variable}.bar(baz) { |e| e.qux }"
 
-            inspect_source(cop, source)
+            inspect_source(source)
 
             expect(cop.messages).to eq([message])
           end
 
           it 'registers an offense for a check for the object followed by a ' \
             'method call in the condition for an if expression' do
-            inspect_source(cop, <<-RUBY.strip_indent)
+            inspect_source(<<-RUBY.strip_indent)
               if #{variable} && #{variable}.bar
                 something
               end
@@ -332,14 +330,14 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
         context 'ConvertCodeThatCanStartToReturnNil false' do
           it 'registers an offense for a non-nil object check followed by a ' \
             'method call' do
-            inspect_source(cop, "!#{variable}.nil? && #{variable}.bar")
+            inspect_source("!#{variable}.nil? && #{variable}.bar")
 
             expect(cop.offenses).to be_empty
           end
 
           it 'registers an offense for a non-nil object check followed by a ' \
             'method call with params' do
-            inspect_source(cop, "!#{variable}.nil? && #{variable}.bar(baz)")
+            inspect_source("!#{variable}.nil? && #{variable}.bar(baz)")
 
             expect(cop.offenses).to be_empty
           end
@@ -348,7 +346,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             'method call with a block' do
             source = "!#{variable}.nil? && #{variable}.bar { |e| e.qux }"
 
-            inspect_source(cop, source)
+            inspect_source(source)
 
             expect(cop.offenses).to be_empty
           end
@@ -357,28 +355,28 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             'method call with params and a block' do
             source = "!#{variable}.nil? && #{variable}.bar(baz) { |e| e.qux }"
 
-            inspect_source(cop, source)
+            inspect_source(source)
 
             expect(cop.offenses).to be_empty
           end
 
           it 'registers an offense for an object check followed by a ' \
             'method call' do
-            inspect_source(cop, "#{variable} && #{variable}.bar")
+            inspect_source("#{variable} && #{variable}.bar")
 
             expect(cop.offenses).to be_empty
           end
 
           it 'registers an offense for an object check followed by a ' \
             'method call with params' do
-            inspect_source(cop, "#{variable} && #{variable}.bar(baz)")
+            inspect_source("#{variable} && #{variable}.bar(baz)")
 
             expect(cop.offenses).to be_empty
           end
 
           it 'registers an offense for an object check followed by a ' \
             'method call with a block' do
-            inspect_source(cop, "#{variable} && #{variable}.bar { |e| e.qux }")
+            inspect_source("#{variable} && #{variable}.bar { |e| e.qux }")
 
             expect(cop.offenses).to be_empty
           end
@@ -387,14 +385,14 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             'method call with params and a block' do
             source = "#{variable} && #{variable}.bar(baz) { |e| e.qux }"
 
-            inspect_source(cop, source)
+            inspect_source(source)
 
             expect(cop.offenses).to be_empty
           end
 
           it 'registers an offense for a check for the object followed by a ' \
             'method call in the condition for an if expression' do
-            inspect_source(cop, <<-RUBY.strip_indent)
+            inspect_source(<<-RUBY.strip_indent)
               if #{variable} && #{variable}.bar
                 something
               end
@@ -405,13 +403,13 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
         end
 
         it 'allows a nil object check followed by a method call' do
-          inspect_source(cop, "#{variable}.nil? || #{variable}.bar")
+          inspect_source("#{variable}.nil? || #{variable}.bar")
 
           expect(cop.offenses).to be_empty
         end
 
         it 'allows a nil object check followed by a method call with params' do
-          inspect_source(cop, "#{variable}.nil? || #{variable}.bar(baz)")
+          inspect_source("#{variable}.nil? || #{variable}.bar(baz)")
 
           expect(cop.offenses).to be_empty
         end
@@ -419,7 +417,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
         it 'allows a nil object check followed by a method call with a block' do
           source = "#{variable}.nil? || #{variable}.bar { |e| e.qux }"
 
-          inspect_source(cop, source)
+          inspect_source(source)
 
           expect(cop.offenses).to be_empty
         end
@@ -428,25 +426,25 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
           'and a block' do
           source = "#{variable}.nil? || #{variable}.bar(baz) { |e| e.qux }"
 
-          inspect_source(cop, source)
+          inspect_source(source)
 
           expect(cop.offenses).to be_empty
         end
 
         it 'allows a non object check followed by a method call' do
-          inspect_source(cop, "!#{variable} || #{variable}.bar")
+          inspect_source("!#{variable} || #{variable}.bar")
 
           expect(cop.offenses).to be_empty
         end
 
         it 'allows a non object check followed by a method call with params' do
-          inspect_source(cop, "!#{variable} || #{variable}.bar(baz)")
+          inspect_source("!#{variable} || #{variable}.bar(baz)")
 
           expect(cop.offenses).to be_empty
         end
 
         it 'allows a non object check followed by a method call with a block' do
-          inspect_source(cop, "!#{variable} || #{variable}.bar { |e| e.qux }")
+          inspect_source("!#{variable} || #{variable}.bar { |e| e.qux }")
 
           expect(cop.offenses).to be_empty
         end
@@ -455,7 +453,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
           'and a block' do
           source = "!#{variable} || #{variable}.bar(baz) { |e| e.qux }"
 
-          inspect_source(cop, source)
+          inspect_source(source)
 
           expect(cop.offenses).to be_empty
         end
@@ -476,28 +474,28 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
       it 'allows method calls safeguarded by a respond_to check to a ' \
         'different method' do
-        inspect_source(cop, 'foo.bar if foo.respond_to?(:foobar)')
+        inspect_source('foo.bar if foo.respond_to?(:foobar)')
 
         expect(cop.offenses).to be_empty
       end
 
       it 'allows method calls safeguarded by a respond_to check on a' \
         'different variable but the same method' do
-        inspect_source(cop, 'foo.bar if baz.respond_to?(:bar)')
+        inspect_source('foo.bar if baz.respond_to?(:bar)')
 
         expect(cop.offenses).to be_empty
       end
 
       it 'allows method calls safeguarded by a respond_to check on a' \
         'different variable and method' do
-        inspect_source(cop, 'foo.bar if baz.respond_to?(:foo)')
+        inspect_source('foo.bar if baz.respond_to?(:foo)')
 
         expect(cop.offenses).to be_empty
       end
 
       it 'allows enumerable accessor method calls safeguarded by ' \
         'a respond_to check' do
-        inspect_source(cop, 'foo[0] if foo.respond_to?(:[])')
+        inspect_source('foo[0] if foo.respond_to?(:[])')
 
         expect(cop.offenses).to be_empty
       end

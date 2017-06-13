@@ -13,7 +13,7 @@ describe RuboCop::Cop::Lint::ImplicitStringConcatenation do
     let(:source) { 'class A; "abc" "def"; end' }
 
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Combine "abc" and "def" into a single ' \
                                   'string literal, rather than using ' \
@@ -37,7 +37,7 @@ describe RuboCop::Cop::Lint::ImplicitStringConcatenation do
     let(:source) { "def method; 'ab\nc' 'de\nf'; end" }
 
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Combine "ab\nc" and "de\nf" into a ' \
                                   'single string literal, rather than using ' \
@@ -56,7 +56,7 @@ describe RuboCop::Cop::Lint::ImplicitStringConcatenation do
     let(:source) { 'array = ["abc" "def"]' }
 
     it 'notes that the strings could be separated by a comma instead' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Combine "abc" and "def" into a single ' \
                                   'string literal, rather than using ' \
@@ -71,7 +71,7 @@ describe RuboCop::Cop::Lint::ImplicitStringConcatenation do
     let(:source) { 'method("abc" "def")' }
 
     it 'notes that the strings could be separated by a comma instead' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Combine "abc" and "def" into a single ' \
                                   'string literal, rather than using ' \

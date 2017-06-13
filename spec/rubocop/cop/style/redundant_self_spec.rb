@@ -5,7 +5,7 @@ describe RuboCop::Cop::Style::RedundantSelf do
 
   it 'reports an offense a self receiver on an rvalue' do
     src = 'a = self.b'
-    inspect_source(cop, src)
+    inspect_source(src)
     expect(cop.offenses.size).to eq(1)
   end
 
@@ -135,7 +135,7 @@ describe RuboCop::Cop::Style::RedundantSelf do
           puts bar, self.bar
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses).to be_empty
     end
   end
@@ -188,7 +188,7 @@ describe RuboCop::Cop::Style::RedundantSelf do
 
   it 'reports an offence a self receiver of .call' do
     src = 'self.call'
-    inspect_source(cop, src)
+    inspect_source(src)
     expect(cop.offenses.size).to eq(1)
   end
 

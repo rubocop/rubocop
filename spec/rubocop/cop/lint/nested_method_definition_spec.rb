@@ -11,7 +11,7 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
   end
 
   it 'registers an offense for a nested singleton method definition' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       class Foo
       end
       foo = Foo.new
@@ -33,7 +33,7 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
   end
 
   it 'registers an offense for a nested class method definition' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       class Foo
         def self.x
           def self.y

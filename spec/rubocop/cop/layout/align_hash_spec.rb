@@ -432,7 +432,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
           bb: 1
         }
       RUBY
-      expect { inspect_source(cop, src) }.to raise_error(RuntimeError)
+      expect { inspect_source(src) }.to raise_error(RuntimeError)
     end
   end
 

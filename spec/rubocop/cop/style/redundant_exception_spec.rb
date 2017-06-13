@@ -6,7 +6,7 @@ describe RuboCop::Cop::Style::RedundantException do
   shared_examples 'common behavior' do |keyword|
     it "reports an offense for a #{keyword} with RuntimeError" do
       src = "#{keyword} RuntimeError, msg"
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.highlights).to eq([src])
       expect(cop.messages)
         .to eq(['Redundant `RuntimeError` argument can be removed.'])
@@ -14,7 +14,7 @@ describe RuboCop::Cop::Style::RedundantException do
 
     it "reports an offense for a #{keyword} with RuntimeError.new" do
       src = "#{keyword} RuntimeError.new(msg)"
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.highlights).to eq([src])
       expect(cop.messages)
         .to eq(['Redundant `RuntimeError.new` call can be replaced with ' \
@@ -22,7 +22,7 @@ describe RuboCop::Cop::Style::RedundantException do
     end
 
     it "accepts a #{keyword} with RuntimeError if it does not have 2 args" do
-      inspect_source(cop, "#{keyword} RuntimeError, msg, caller")
+      inspect_source("#{keyword} RuntimeError, msg, caller")
       expect(cop.offenses).to be_empty
     end
 

@@ -14,7 +14,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
     let(:cop_config) { { 'EnforcedStyle' => 'indent' } }
 
     it 'registers an offense for misaligned private' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         class Test
 
         private
@@ -29,7 +29,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
     end
 
     it 'registers an offense for misaligned private in module' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         module Test
 
          private
@@ -44,7 +44,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
     end
 
     it 'registers an offense for misaligned module_function in module' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         module Test
 
          module_function
@@ -60,7 +60,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
     end
 
     it 'registers an offense for correct + opposite alignment' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         module Test
 
           public
@@ -77,7 +77,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
     end
 
     it 'registers an offense for opposite + correct alignment' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         module Test
 
         public
@@ -107,7 +107,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
 
     it 'registers an offense for misaligned private in class ' \
        'defined with Class.new' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         Test = Class.new do
 
         private
@@ -122,7 +122,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
 
     it 'accepts misaligned private in blocks that are not recognized as ' \
        'class/module definitions' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         Test = func do
 
         private
@@ -135,7 +135,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
 
     it 'registers an offense for misaligned private in module ' \
        'defined with Module.new' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         Test = Module.new do
 
         private
@@ -279,7 +279,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
     let(:indent_msg) { 'Outdent access modifiers like `private`.' }
 
     it 'registers offense for private indented to method depth in a class' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         class Test
 
           private
@@ -318,7 +318,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
 
     it 'registers offense for private indented to method depth in singleton' \
        'class' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         class << self
 
           private
@@ -332,7 +332,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
 
     it 'registers offense for private indented to method depth in class ' \
        'defined with Class.new' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         Test = Class.new do
 
           private
@@ -346,7 +346,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
 
     it 'registers offense for private indented to method depth in module ' \
        'defined with Module.new' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         Test = Module.new do
 
           private

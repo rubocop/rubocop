@@ -5,7 +5,7 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
   let(:cop_config) { { 'AllowSafeAssignment' => true } }
 
   it 'registers an offense for parentheses around condition' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       if (x > 10)
       elsif (x < 3)
       end
@@ -101,7 +101,7 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
 
   %w[rescue if unless while until].each do |op|
     it "allows parens if the condition node is a modifier #{op} op" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         if (something #{op} top)
         end
       RUBY
@@ -158,7 +158,7 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
 
     it 'does not accept variable assignment in condition surrounded with ' \
        'parentheses' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         if (test = 10)
         end
       RUBY
@@ -167,7 +167,7 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
 
     it 'does not accept element assignment in condition surrounded with ' \
        'parentheses' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         if (test[0] = 10)
         end
       RUBY

@@ -2,7 +2,7 @@
 
 module StatementModifierHelper
   def check_empty(cop, keyword)
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       #{keyword} cond
       end
     RUBY
@@ -10,7 +10,7 @@ module StatementModifierHelper
   end
 
   def check_really_short(cop, keyword)
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       #{keyword} a
         b
       end
@@ -36,7 +36,7 @@ module StatementModifierHelper
     body = 'b' * 37
     expect("  #{body} #{keyword} #{condition}".length).to eq(81)
 
-    inspect_source(cop, <<-RUBY.strip_margin('|'))
+    inspect_source(<<-RUBY.strip_margin('|'))
       |  #{keyword} #{condition}
       |    #{body}
       |  end
@@ -46,7 +46,7 @@ module StatementModifierHelper
   end
 
   def check_short_multiline(cop, keyword)
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       #{keyword} ENV['COVERAGE']
         require 'simplecov'
         SimpleCov.start

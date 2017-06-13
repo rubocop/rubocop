@@ -85,7 +85,7 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
 
   it 'registers an offense for a single when with splat expansion followed ' \
      'by another value' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       case foo
       when *Foo, Bar
         nil
@@ -176,7 +176,7 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
 
   it 'registers an offense for a splat on a variable that proceeds a splat ' \
      'on an array literal as the last condition' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       case foo
       when *cond
         bar

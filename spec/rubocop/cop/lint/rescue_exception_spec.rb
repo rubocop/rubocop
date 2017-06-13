@@ -115,7 +115,7 @@ describe RuboCop::Cop::Lint::RescueException do
 
   it 'does not crash when the namespace of a rescued class is in a local ' \
      'variable' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       adapter = current_adapter
       begin
       rescue adapter::ParseError

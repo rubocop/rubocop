@@ -47,22 +47,22 @@ describe RuboCop::Cop::Style::Attr do
     let(:msg_accessor) { 'Do not use `attr`. Use `attr_accessor` instead.' }
 
     it 'for attr :name suggests to use attr_reader' do
-      inspect_source(cop, 'attr :name')
+      inspect_source('attr :name')
       expect(cop.offenses.first.message).to eq(msg_reader)
     end
 
     it 'for attr :name, false suggests to use attr_reader' do
-      inspect_source(cop, 'attr :name, false')
+      inspect_source('attr :name, false')
       expect(cop.offenses.first.message).to eq(msg_reader)
     end
 
     it 'for attr :name, true suggests to use attr_accessor' do
-      inspect_source(cop, 'attr :name, true')
+      inspect_source('attr :name, true')
       expect(cop.offenses.first.message).to eq(msg_accessor)
     end
 
     it 'for attr with multiple names suggests to use attr_reader' do
-      inspect_source(cop, 'attr :foo, :bar')
+      inspect_source('attr :foo, :bar')
       expect(cop.offenses.first.message).to eq(msg_reader)
     end
   end

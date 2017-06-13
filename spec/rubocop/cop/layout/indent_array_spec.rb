@@ -26,7 +26,7 @@ describe RuboCop::Cop::Layout::IndentArray do
     end
 
     it 'registers an offense for incorrectly indented first element' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a << [
          1
         ]
@@ -49,7 +49,7 @@ describe RuboCop::Cop::Layout::IndentArray do
     end
 
     it 'registers an offense for incorrectly indented ]' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a << [
           ]
       RUBY
@@ -72,7 +72,7 @@ describe RuboCop::Cop::Layout::IndentArray do
       end
 
       it 'registers an offense for incorrectly indented first element' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           a << [
             1
           ]
@@ -95,7 +95,7 @@ describe RuboCop::Cop::Layout::IndentArray do
     end
 
     it 'registers an offense for incorrectly indented first element' do
-      inspect_source(cop, <<-RUBY.strip_margin('|'))
+      inspect_source(<<-RUBY.strip_margin('|'))
         |   config.rack_cache = [
         |   "rails:/",
         |   "rails:/",
@@ -109,7 +109,7 @@ describe RuboCop::Cop::Layout::IndentArray do
 
   context 'when array is right hand side in assignment' do
     it 'registers an offense for incorrectly indented first element' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a = [
             1,
           2,
@@ -204,7 +204,7 @@ describe RuboCop::Cop::Layout::IndentArray do
         end
 
         it "registers an offense for 'consistent' indentation" do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             func([
               1
             ])
@@ -219,7 +219,7 @@ describe RuboCop::Cop::Layout::IndentArray do
         end
 
         it "registers an offense for 'align_brackets' indentation" do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             var = [
                     1
                   ]
@@ -289,7 +289,7 @@ describe RuboCop::Cop::Layout::IndentArray do
         end
 
         it 'registers an offense for incorrect indentation' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             func([
                    1
                  ])
@@ -331,7 +331,7 @@ describe RuboCop::Cop::Layout::IndentArray do
 
       it 'registers an offense for incorrectly indented multi-line array ' \
          'with brackets' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           func x, [
                  1, 2]
         RUBY
@@ -388,7 +388,7 @@ describe RuboCop::Cop::Layout::IndentArray do
 
     context "when 'consistent' style is used" do
       it 'registers an offense for incorrect indentation' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           func([
             1
           ])
@@ -417,7 +417,7 @@ describe RuboCop::Cop::Layout::IndentArray do
 
     context "when 'special_inside_parentheses' style is used" do
       it 'registers an offense for incorrect indentation' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           var = [
             1
           ]
@@ -435,7 +435,7 @@ describe RuboCop::Cop::Layout::IndentArray do
     end
 
     it 'registers an offense for incorrectly indented ]' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a << [
           ]
       RUBY

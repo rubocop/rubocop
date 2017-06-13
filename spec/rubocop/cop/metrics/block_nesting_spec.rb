@@ -6,7 +6,7 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
 
   shared_examples 'too deep' do |source, lines, max_to_allow = 3|
     it "registers #{lines.length} offense(s)" do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.map(&:line)).to eq(lines)
       expect(cop.messages).to eq(
         ['Avoid more than 2 levels of block nesting.'] * lines.length
@@ -14,7 +14,7 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
     end
 
     it 'sets `Max` value correctly' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.config_to_allow_offenses['Max']).to eq(max_to_allow)
     end
   end

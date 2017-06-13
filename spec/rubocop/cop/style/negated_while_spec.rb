@@ -4,7 +4,7 @@ describe RuboCop::Cop::Style::NegatedWhile do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for while with exclamation point condition' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       while !a_condition
         some_method
       end
@@ -16,7 +16,7 @@ describe RuboCop::Cop::Style::NegatedWhile do
   end
 
   it 'registers an offense for until with exclamation point condition' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       until !a_condition
         some_method
       end
@@ -27,7 +27,7 @@ describe RuboCop::Cop::Style::NegatedWhile do
   end
 
   it 'registers an offense for while with "not" condition' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       while (not a_condition)
         some_method
       end

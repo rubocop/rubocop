@@ -20,7 +20,7 @@ describe RuboCop::Cop::Style::FormatStringToken, :config do
       let(:enforced_style) { name }
 
       it "registers offenses for #{bad_style1}" do
-        inspect_source(cop, [
+        inspect_source([
                          '<<-HEREDOC',
                          "foo #{good} + bar #{bad_style1}",
                          'HEREDOC'
@@ -31,7 +31,6 @@ describe RuboCop::Cop::Style::FormatStringToken, :config do
 
       it 'supports dynamic string with interpolation' do
         inspect_source(
-          cop,
           %("a\#{b}#{good} c\#{d}#{bad_style1} e\#{f}")
         )
 
@@ -39,7 +38,7 @@ describe RuboCop::Cop::Style::FormatStringToken, :config do
       end
 
       it 'sets the enforced style to annotated after inspecting "%<a>s"' do
-        inspect_source(cop, '"%<a>s"')
+        inspect_source('"%<a>s"')
 
         expect(cop.config_to_allow_offenses).to eq(
           'EnforcedStyle' => 'annotated'
@@ -47,7 +46,7 @@ describe RuboCop::Cop::Style::FormatStringToken, :config do
       end
 
       it 'configures the enforced style to template after inspecting "%{a}"' do
-        inspect_source(cop, '"%{a}"')
+        inspect_source('"%{a}"')
 
         expect(cop.config_to_allow_offenses).to eq(
           'EnforcedStyle' => 'template'
@@ -76,7 +75,7 @@ describe RuboCop::Cop::Style::FormatStringToken, :config do
       let(:enforced_style) { enforced_style }
 
       it 'gives a helpful error message' do
-        inspect_source(cop, source)
+        inspect_source(source)
 
         expect(cop.messages.first).to eql(message)
       end
@@ -88,7 +87,7 @@ describe RuboCop::Cop::Style::FormatStringToken, :config do
   end
 
   it 'handles dstrs' do
-    inspect_source(cop, '"c#{b}%{template}"')
+    inspect_source('"c#{b}%{template}"')
     expect(cop.highlights).to eql(['%{template}'])
   end
 

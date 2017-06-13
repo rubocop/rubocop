@@ -7,7 +7,7 @@ describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
   context 'for method calls without parentheses' do
     it 'registers an offense for method call with two spaces before the ' \
        'first arg' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         something  x
         a.something  y, z
       RUBY
@@ -30,7 +30,7 @@ describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
 
     it 'registers an offense for method call with no spaces before the '\
        'first arg' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         something'hello'
         a.something'hello world'
       RUBY

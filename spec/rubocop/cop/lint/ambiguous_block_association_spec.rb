@@ -9,7 +9,7 @@ describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
       'associated with the `%s` method call.'
   end
 
-  before { inspect_source(cop, source) }
+  before { inspect_source(source) }
 
   shared_examples 'accepts' do |code|
     let(:source) { code }

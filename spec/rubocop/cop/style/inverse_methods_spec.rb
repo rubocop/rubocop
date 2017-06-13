@@ -66,14 +66,14 @@ describe RuboCop::Cop::Style::InverseMethods do
 
   shared_examples :all_variable_types do |variable|
     it "registers an offense for calling !#{variable}.none?" do
-      inspect_source(cop, "!#{variable}.none?")
+      inspect_source("!#{variable}.none?")
 
       expect(cop.messages).to eq(['Use `any?` instead of inverting `none?`.'])
       expect(cop.highlights).to eq(["!#{variable}.none?"])
     end
 
     it "registers an offense for calling not #{variable}.none?" do
-      inspect_source(cop, "not #{variable}.none?")
+      inspect_source("not #{variable}.none?")
 
       expect(cop.messages).to eq(['Use `any?` instead of inverting `none?`.'])
       expect(cop.highlights).to eq(["not #{variable}.none?"])
@@ -110,7 +110,7 @@ describe RuboCop::Cop::Style::InverseMethods do
     blank?: :present?,
     exclude?: :include? }.each do |method, inverse|
       it "registers an offense for !foo.#{method}" do
-        inspect_source(cop, "!foo.#{method}")
+        inspect_source("!foo.#{method}")
 
         expect(cop.messages)
           .to eq(["Use `#{inverse}` instead of inverting `#{method}`."])
@@ -130,14 +130,14 @@ describe RuboCop::Cop::Style::InverseMethods do
     :< => :>=,
     :> => :<= }.each do |method, inverse|
     it "registers an offense for !(foo #{method} bar)" do
-      inspect_source(cop, "!(foo #{method} bar)")
+      inspect_source("!(foo #{method} bar)")
 
       expect(cop.messages)
         .to eq(["Use `#{inverse}` instead of inverting `#{method}`."])
     end
 
     it "registers an offense for not (foo #{method} bar)" do
-      inspect_source(cop, "not (foo #{method} bar)")
+      inspect_source("not (foo #{method} bar)")
 
       expect(cop.messages)
         .to eq(["Use `#{inverse}` instead of inverting `#{method}`."])
@@ -156,7 +156,7 @@ describe RuboCop::Cop::Style::InverseMethods do
       select!: :reject!,
       reject!: :select! }.each do |method, inverse|
       it "registers an offense for foo.#{method} { |e| !e }" do
-        inspect_source(cop, "foo.#{method} { |e| !e }")
+        inspect_source("foo.#{method} { |e| !e }")
 
         expect(cop.messages)
           .to eq(["Use `#{inverse}` instead of inverting `#{method}`."])
@@ -164,7 +164,7 @@ describe RuboCop::Cop::Style::InverseMethods do
 
       it 'registers an offense for a multiline method call where the last ' \
         'method is inverted' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           foo.#{method} do |e|
             something
             !e.bar
@@ -183,7 +183,7 @@ describe RuboCop::Cop::Style::InverseMethods do
       end
 
       it 'registers an offense for a multiline inverted equality block' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           foo.#{method} do |e|
             something
             something_else

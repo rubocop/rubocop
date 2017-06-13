@@ -10,15 +10,15 @@ module CopHelper
   let(:enabled_rails) { false }
   let(:rails_version) { false }
 
-  def inspect_source_file(cop, source)
-    Tempfile.open('tmp') { |f| inspect_source(cop, source, f) }
+  def inspect_source_file(source)
+    Tempfile.open('tmp') { |f| inspect_source(source, f) }
   end
 
-  def inspect_gemfile(cop, source)
-    inspect_source(cop, source, 'Gemfile')
+  def inspect_gemfile(source)
+    inspect_source(source, 'Gemfile')
   end
 
-  def inspect_source(cop, source, file = nil)
+  def inspect_source(source, file = nil)
     if source.is_a?(Array) && source.size == 1
       raise "Don't use an array for a single line of code: #{source}"
     end

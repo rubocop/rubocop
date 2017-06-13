@@ -82,26 +82,26 @@ describe RuboCop::Cop::Performance::Casecmp do
     end
 
     it "formats the error message correctly for str.#{selector} ==" do
-      inspect_source(cop, "str.#{selector} == 'string'")
+      inspect_source("str.#{selector} == 'string'")
       expect(cop.highlights).to eq(["#{selector} =="])
       expect(cop.messages).to eq(["Use `casecmp` instead of `#{selector} ==`."])
     end
 
     it "formats the error message correctly for == str.#{selector}" do
-      inspect_source(cop, "'string' == str.#{selector}")
+      inspect_source("'string' == str.#{selector}")
       expect(cop.highlights).to eq(["== str.#{selector}"])
       expect(cop.messages).to eq(["Use `casecmp` instead of `== #{selector}`."])
     end
 
     it 'formats the error message correctly for ' \
        "obj.#{selector} == str.#{selector}" do
-      inspect_source(cop, "obj.#{selector} == str.#{selector}")
+      inspect_source("obj.#{selector} == str.#{selector}")
       expect(cop.highlights).to eq(["obj.#{selector} == str.#{selector}"])
       expect(cop.messages).to eq(["Use `casecmp` instead of `#{selector} ==`."])
     end
 
     it "doesn't report an offense for variable == str.#{selector}" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         var = "a"
         var == str.#{selector}
       RUBY
@@ -109,7 +109,7 @@ describe RuboCop::Cop::Performance::Casecmp do
     end
 
     it "doesn't report an offense for str.#{selector} == variable" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         var = "a"
         str.#{selector} == var
       RUBY
@@ -117,12 +117,12 @@ describe RuboCop::Cop::Performance::Casecmp do
     end
 
     it "doesn't report an offense for obj.method == str.#{selector}" do
-      inspect_source(cop, "obj.method == str.#{selector}")
+      inspect_source("obj.method == str.#{selector}")
       expect(cop.offenses).to be_empty
     end
 
     it "doesn't report an offense for str.#{selector} == obj.method" do
-      inspect_source(cop, "str.#{selector} == obj.method")
+      inspect_source("str.#{selector} == obj.method")
       expect(cop.offenses).to be_empty
     end
   end

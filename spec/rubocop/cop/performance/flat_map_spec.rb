@@ -5,7 +5,7 @@ describe RuboCop::Cop::Performance::FlatMap, :config do
 
   shared_examples 'map_and_collect' do |method, flatten|
     it "registers an offense when calling #{method}...#{flatten}(1)" do
-      inspect_source(cop, "[1, 2, 3, 4].#{method} { |e| [e, e] }.#{flatten}(1)")
+      inspect_source("[1, 2, 3, 4].#{method} { |e| [e, e] }.#{flatten}(1)")
 
       expect(cop.messages)
         .to eq(["Use `flat_map` instead of `#{method}...#{flatten}`."])
@@ -14,13 +14,13 @@ describe RuboCop::Cop::Performance::FlatMap, :config do
 
     it "does not register an offense when calling #{method}...#{flatten} " \
       'with a number greater than 1' do
-      inspect_source(cop, "[1, 2, 3, 4].#{method} { |e| [e, e] }.#{flatten}(3)")
+      inspect_source("[1, 2, 3, 4].#{method} { |e| [e, e] }.#{flatten}(3)")
 
       expect(cop.messages).to be_empty
     end
 
     it "does not register an offense when calling #{method}!...#{flatten}" do
-      inspect_source(cop, "[1, 2, 3, 4].#{method}! { |e| [e, e] }.#{flatten}")
+      inspect_source("[1, 2, 3, 4].#{method}! { |e| [e, e] }.#{flatten}")
 
       expect(cop.messages).to be_empty
     end
@@ -43,7 +43,7 @@ describe RuboCop::Cop::Performance::FlatMap, :config do
 
     shared_examples 'flatten_with_params_disabled' do |method, flatten|
       it "does not register an offense when calling #{method}...#{flatten}" do
-        inspect_source(cop, "[1, 2, 3, 4].map { |e| [e, e] }.#{flatten}")
+        inspect_source("[1, 2, 3, 4].map { |e| [e, e] }.#{flatten}")
 
         expect(cop.messages).to be_empty
       end
@@ -70,7 +70,7 @@ describe RuboCop::Cop::Performance::FlatMap, :config do
 
     shared_examples 'flatten_with_params_enabled' do |method, flatten|
       it "registers an offense when calling #{method}...#{flatten}" do
-        inspect_source(cop, "[1, 2, 3, 4].map { |e| [e, e] }.#{flatten}")
+        inspect_source("[1, 2, 3, 4].map { |e| [e, e] }.#{flatten}")
 
         expect(cop.messages)
           .to eq(["Use `flat_map` instead of `map...#{flatten}`. " \

@@ -5,7 +5,7 @@ describe RuboCop::Cop::Performance::Count do
 
   shared_examples 'selectors' do |selector|
     it "registers an offense for using array.#{selector}...size" do
-      inspect_source(cop, "[1, 2, 3].#{selector} { |e| e.even? }.size")
+      inspect_source("[1, 2, 3].#{selector} { |e| e.even? }.size")
 
       expect(cop.messages)
         .to eq(["Use `count` instead of `#{selector}...size`."])
@@ -13,7 +13,7 @@ describe RuboCop::Cop::Performance::Count do
     end
 
     it "registers an offense for using hash.#{selector}...size" do
-      inspect_source(cop, "{a: 1, b: 2, c: 3}.#{selector} { |e| e == :a }.size")
+      inspect_source("{a: 1, b: 2, c: 3}.#{selector} { |e| e == :a }.size")
 
       expect(cop.messages)
         .to eq(["Use `count` instead of `#{selector}...size`."])
@@ -21,7 +21,7 @@ describe RuboCop::Cop::Performance::Count do
     end
 
     it "registers an offense for using array.#{selector}...length" do
-      inspect_source(cop, "[1, 2, 3].#{selector} { |e| e.even? }.length")
+      inspect_source("[1, 2, 3].#{selector} { |e| e.even? }.length")
 
       expect(cop.messages)
         .to eq(["Use `count` instead of `#{selector}...length`."])
@@ -29,7 +29,7 @@ describe RuboCop::Cop::Performance::Count do
     end
 
     it "registers an offense for using hash.#{selector}...length" do
-      inspect_source(cop, "{a: 1, b: 2}.#{selector} { |e| e == :a }.length")
+      inspect_source("{a: 1, b: 2}.#{selector} { |e| e == :a }.length")
 
       expect(cop.messages)
         .to eq(["Use `count` instead of `#{selector}...length`."])
@@ -37,7 +37,7 @@ describe RuboCop::Cop::Performance::Count do
     end
 
     it "registers an offense for using array.#{selector}...count" do
-      inspect_source(cop, "[1, 2, 3].#{selector} { |e| e.even? }.count")
+      inspect_source("[1, 2, 3].#{selector} { |e| e.even? }.count")
 
       expect(cop.messages)
         .to eq(["Use `count` instead of `#{selector}...count`."])
@@ -45,7 +45,7 @@ describe RuboCop::Cop::Performance::Count do
     end
 
     it "registers an offense for using hash.#{selector}...count" do
-      inspect_source(cop, "{a: 1, b: 2}.#{selector} { |e| e == :a }.count")
+      inspect_source("{a: 1, b: 2}.#{selector} { |e| e == :a }.count")
 
       expect(cop.messages)
         .to eq(["Use `count` instead of `#{selector}...count`."])
@@ -53,21 +53,20 @@ describe RuboCop::Cop::Performance::Count do
     end
 
     it "allows usage of #{selector}...count with a block on an array" do
-      inspect_source(cop,
-                     "[1, 2, 3].#{selector} { |e| e.odd? }.count { |e| e > 2 }")
+      inspect_source("[1, 2, 3].#{selector} { |e| e.odd? }.count { |e| e > 2 }")
 
       expect(cop.messages).to be_empty
     end
 
     it "allows usage of #{selector}...count with a block on a hash" do
       source = "{a: 1, b: 2}.#{selector} { |e| e == :a }.count { |e| e > 2 }"
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages).to be_empty
     end
 
     it "registers an offense for #{selector} with params instead of a block" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         Data = Struct.new(:value)
         array = [Data.new(2), Data.new(3), Data.new(2)]
         puts array.#{selector}(&:value).count
@@ -79,7 +78,7 @@ describe RuboCop::Cop::Performance::Count do
     end
 
     it "registers an offense for #{selector}(&:something).count" do
-      inspect_source(cop, "foo.#{selector}(&:something).count")
+      inspect_source("foo.#{selector}(&:something).count")
 
       expect(cop.messages)
         .to eq(["Use `count` instead of `#{selector}...count`."])
@@ -95,7 +94,7 @@ describe RuboCop::Cop::Performance::Count do
           end
         end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages)
         .to eq(["Use `count` instead of `#{selector}...count`."])
@@ -103,29 +102,26 @@ describe RuboCop::Cop::Performance::Count do
     end
 
     it "allows usage of #{selector} without getting the size" do
-      inspect_source(cop, "[1, 2, 3].#{selector} { |e| e.even? }")
+      inspect_source("[1, 2, 3].#{selector} { |e| e.even? }")
 
       expect(cop.messages).to be_empty
     end
 
     context 'bang methods' do
       it "allows usage of #{selector}!...size" do
-        inspect_source(cop,
-                       "[1, 2, 3].#{selector}! { |e| e.odd? }.size")
+        inspect_source("[1, 2, 3].#{selector}! { |e| e.odd? }.size")
 
         expect(cop.messages).to be_empty
       end
 
       it "allows usage of #{selector}!...count" do
-        inspect_source(cop,
-                       "[1, 2, 3].#{selector}! { |e| e.odd? }.count")
+        inspect_source("[1, 2, 3].#{selector}! { |e| e.odd? }.count")
 
         expect(cop.messages).to be_empty
       end
 
       it "allows usage of #{selector}!...length" do
-        inspect_source(cop,
-                       "[1, 2, 3].#{selector}! { |e| e.odd? }.length")
+        inspect_source("[1, 2, 3].#{selector}! { |e| e.odd? }.length")
 
         expect(cop.messages).to be_empty
       end
@@ -177,7 +173,7 @@ describe RuboCop::Cop::Performance::Count do
 
   it 'allows usage of count on an interstitial method with blocks ' \
      'called on select' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       Data = Struct.new(:value)
       array = [Data.new(2), Data.new(3), Data.new(2)]
       array.select(&:value).uniq { |v| v > 2 }.count
@@ -199,12 +195,12 @@ describe RuboCop::Cop::Performance::Count do
 
   context 'properly parses non related code' do
     it 'will not raise an error for Bundler.setup' do
-      expect { inspect_source(cop, 'Bundler.setup(:default, :development)') }
+      expect { inspect_source('Bundler.setup(:default, :development)') }
         .not_to raise_error
     end
 
     it 'will not raise an error for RakeTask.new' do
-      expect { inspect_source(cop, 'RakeTask.new(:spec)') }
+      expect { inspect_source('RakeTask.new(:spec)') }
         .not_to raise_error
     end
   end
@@ -307,7 +303,7 @@ describe RuboCop::Cop::Performance::Count do
 
     shared_examples 'selectors' do |selector|
       it "allows using array.#{selector}...size" do
-        inspect_source(cop, "[1, 2, 3].#{selector} { |e| e.even? }.size")
+        inspect_source("[1, 2, 3].#{selector} { |e| e.even? }.size")
 
         expect(cop.offenses).to be_empty
       end

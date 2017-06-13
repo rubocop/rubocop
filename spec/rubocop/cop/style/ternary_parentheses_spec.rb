@@ -4,7 +4,7 @@ describe RuboCop::Cop::Style::TernaryParentheses, :config do
   subject(:cop) { described_class.new(config) }
 
   before do
-    inspect_source(cop, source)
+    inspect_source(source)
   end
 
   let(:redundant_parens_enabled) { false }

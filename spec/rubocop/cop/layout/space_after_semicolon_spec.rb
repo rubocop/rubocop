@@ -26,7 +26,7 @@ describe RuboCop::Cop::Layout::SpaceAfterSemicolon do
   context 'inside block braces' do
     shared_examples 'common behavior' do
       it 'accepts a space between a semicolon and a closing brace' do
-        inspect_source(cop, 'test { ; }')
+        inspect_source('test { ; }')
         expect(cop.messages).to be_empty
       end
     end
@@ -40,7 +40,7 @@ describe RuboCop::Cop::Layout::SpaceAfterSemicolon do
 
       it 'registers an offense for no space between a semicolon and a ' \
          'closing brace' do
-        inspect_source(cop, 'test { ;}')
+        inspect_source('test { ;}')
         expect(cop.messages).to eq(['Space missing after semicolon.'])
       end
     end

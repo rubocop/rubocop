@@ -69,7 +69,7 @@ describe RuboCop::Cop::Rails::ApplicationRecord do
 
     it 'corrects models that subclass ActiveRecord::Base' do
       source = "class MyModel < ActiveRecord::Base\nend"
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.messages).to eq(msgs)
       expect(cop.highlights).to eq(['ActiveRecord::Base'])
       expect(autocorrect_source(cop, source))
@@ -78,7 +78,7 @@ describe RuboCop::Cop::Rails::ApplicationRecord do
 
     it 'corrects single-line class definitions' do
       source = 'class MyModel < ActiveRecord::Base; end'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.messages).to eq(msgs)
       expect(cop.highlights).to eq(['ActiveRecord::Base'])
       expect(autocorrect_source(cop, source))
@@ -87,7 +87,7 @@ describe RuboCop::Cop::Rails::ApplicationRecord do
 
     it 'corrects namespaced models that subclass ActiveRecord::Base' do
       source = "module Nested\n  class MyModel < ActiveRecord::Base\n  end\nend"
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.messages).to eq(msgs)
       expect(cop.highlights).to eq(['ActiveRecord::Base'])
       expect(autocorrect_source(cop, source))
@@ -96,7 +96,7 @@ describe RuboCop::Cop::Rails::ApplicationRecord do
 
     it 'corrects models defined using nested constants' do
       source = "class Nested::MyModel < ActiveRecord::Base\nend"
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.messages).to eq(msgs)
       expect(cop.highlights).to eq(['ActiveRecord::Base'])
       expect(autocorrect_source(cop, source))
@@ -105,7 +105,7 @@ describe RuboCop::Cop::Rails::ApplicationRecord do
 
     it 'corrects models defined using Class.new' do
       source = 'MyModel = Class.new(ActiveRecord::Base)'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.messages).to eq(msgs)
       expect(cop.highlights).to eq(['ActiveRecord::Base'])
       expect(autocorrect_source(cop, source))
@@ -114,7 +114,7 @@ describe RuboCop::Cop::Rails::ApplicationRecord do
 
     it 'corrects nested models defined using Class.new' do
       source = 'Nested::MyModel = Class.new(ActiveRecord::Base)'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.messages).to eq(msgs)
       expect(cop.highlights).to eq(['ActiveRecord::Base'])
       expect(autocorrect_source(cop, source))
@@ -123,7 +123,7 @@ describe RuboCop::Cop::Rails::ApplicationRecord do
 
     it 'corrects anonymous models' do
       source = 'Class.new(ActiveRecord::Base) {}'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.messages).to eq(msgs)
       expect(cop.highlights).to eq(['ActiveRecord::Base'])
       expect(autocorrect_source(cop, source))

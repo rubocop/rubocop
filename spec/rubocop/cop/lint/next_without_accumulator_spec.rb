@@ -36,18 +36,18 @@ describe RuboCop::Cop::Lint::NextWithoutAccumulator do
   shared_examples 'reduce/inject' do |reduce_alias|
     context "given a #{reduce_alias} block" do
       it 'registers an offense for a bare next' do
-        inspect_source(cop, code_without_accumulator(reduce_alias))
+        inspect_source(code_without_accumulator(reduce_alias))
         expect(cop.offenses.size).to eq(1)
         expect(cop.highlights).to eq(['next'])
       end
 
       it 'accepts next with a value' do
-        inspect_source(cop, code_with_accumulator(reduce_alias))
+        inspect_source(code_with_accumulator(reduce_alias))
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts next within a nested block' do
-        inspect_source(cop, code_with_nested_block(reduce_alias))
+        inspect_source(code_with_nested_block(reduce_alias))
         expect(cop.offenses).to be_empty
       end
     end

@@ -7,7 +7,7 @@ describe RuboCop::Cop::Layout::DotPosition, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'leading' } }
 
     it 'registers an offense for trailing dot in multi-line call' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         something.
           method_name
       RUBY
@@ -17,7 +17,7 @@ describe RuboCop::Cop::Layout::DotPosition, :config do
     end
 
     it 'registers an offense for correct + opposite' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         something
           .method_name
         something.
@@ -112,7 +112,7 @@ describe RuboCop::Cop::Layout::DotPosition, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'trailing' } }
 
     it 'registers an offense for leading dot in multi-line call' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         something
           .method_name
       RUBY

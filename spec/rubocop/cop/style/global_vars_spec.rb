@@ -21,7 +21,7 @@ describe RuboCop::Cop::Style::GlobalVars, :config do
 
   described_class::BUILT_IN_VARS.each do |var|
     it "does not register an offense for built-in variable #{var}" do
-      inspect_source(cop, "puts #{var}")
+      inspect_source("puts #{var}")
       expect(cop.offenses).to be_empty
     end
   end

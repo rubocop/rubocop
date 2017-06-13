@@ -12,7 +12,7 @@ describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
     RUBY
 
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.message)
         .to eq('Do not use prefix `_` for a variable that is used.')
@@ -52,7 +52,7 @@ describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
     RUBY
 
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.line).to eq(1)
       expect(cop.highlights).to eq(['_foo'])
@@ -67,7 +67,7 @@ describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
     RUBY
 
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.line).to eq(1)
       expect(cop.highlights).to eq(['_foo'])
@@ -81,7 +81,7 @@ describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
     RUBY
 
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.line).to eq(1)
       expect(cop.highlights).to eq(['_foo'])
@@ -106,7 +106,7 @@ describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
     RUBY
 
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.line).to eq(1)
       expect(cop.highlights).to eq(['/(?<_foo>\\w+)/'])
@@ -123,7 +123,7 @@ describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
         RUBY
 
         it 'accepts' do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.offenses).to be_empty
         end
       end
@@ -137,7 +137,7 @@ describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
         RUBY
 
         it 'registers an offense' do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.offenses.size).to eq(1)
           expect(cop.offenses.first.line).to eq(1)
           expect(cop.highlights).to eq(['_'])
@@ -154,7 +154,7 @@ describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
         RUBY
 
         it 'accepts' do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.offenses).to be_empty
         end
       end
@@ -167,7 +167,7 @@ describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
         RUBY
 
         it 'registers an offense' do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.offenses.size).to eq(1)
           expect(cop.offenses.first.line).to eq(1)
           expect(cop.highlights).to eq(['_'])

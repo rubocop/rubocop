@@ -42,7 +42,7 @@ describe RuboCop::Cop::Style::MultilineBlockChain do
 
     it 'registers an offense for a chain where the second block is ' \
        'single-line' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         Thread.list.find_all { |t|
           t.alive?
         }.map { |thread| thread.object_id }

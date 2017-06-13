@@ -5,7 +5,7 @@ describe RuboCop::Cop::Style::MultilineIfModifier do
 
   shared_examples 'offense' do |modifier|
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.messages)
         .to eq(["Favor a normal #{modifier}-statement over a modifier" \
                 ' clause in a multiline statement.'])
@@ -14,7 +14,7 @@ describe RuboCop::Cop::Style::MultilineIfModifier do
 
   shared_examples 'no offense' do
     it 'does not register an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.messages).to be_empty
     end
   end

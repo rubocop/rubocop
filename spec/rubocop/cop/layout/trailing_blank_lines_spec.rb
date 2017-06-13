@@ -32,25 +32,24 @@ describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
     end
 
     it 'registers an offense for multiple trailing blank lines' do
-      inspect_source(cop, ['x = 0', '', '', '', ''])
+      inspect_source(['x = 0', '', '', '', ''])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['3 trailing blank lines detected.'])
     end
 
     it 'registers an offense for multiple blank lines in an empty file' do
-      inspect_source(cop, ['', '', '', '', ''])
+      inspect_source(['', '', '', '', ''])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['3 trailing blank lines detected.'])
     end
 
     it 'registers an offense for no final newline after assignment' do
-      inspect_source(cop, 'x = 0')
+      inspect_source('x = 0')
       expect(cop.messages).to eq(['Final newline missing.'])
     end
 
     it 'registers an offense for no final newline after block comment' do
-      inspect_source(cop,
-                     "puts 'testing rubocop when final new line is missing " \
+      inspect_source("puts 'testing rubocop when final new line is missing " \
                      "after block comments'\n\n=begin\nfirst line\nsecond " \
                      "line\nthird line\n=end")
 
@@ -77,26 +76,26 @@ describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'final_blank_line' } }
 
     it 'registers an offense for final newline' do
-      inspect_source(cop, ['x = 0', ''])
+      inspect_source(['x = 0', ''])
       expect(cop.messages).to eq(['Trailing blank line missing.'])
     end
 
     it 'registers an offense for multiple trailing blank lines' do
-      inspect_source(cop, ['x = 0', '', '', '', ''])
+      inspect_source(['x = 0', '', '', '', ''])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['3 trailing blank lines instead of 1 detected.'])
     end
 
     it 'registers an offense for multiple blank lines in an empty file' do
-      inspect_source(cop, ['', '', '', '', ''])
+      inspect_source(['', '', '', '', ''])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['3 trailing blank lines instead of 1 detected.'])
     end
 
     it 'registers an offense for no final newline' do
-      inspect_source(cop, 'x = 0')
+      inspect_source('x = 0')
       expect(cop.messages).to eq(['Final newline missing.'])
     end
 

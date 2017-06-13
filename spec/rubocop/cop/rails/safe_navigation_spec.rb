@@ -5,7 +5,7 @@ describe RuboCop::Cop::Rails::SafeNavigation, :config do
 
   shared_examples :accepts do |name, code|
     it "accepts usages of #{name}" do
-      inspect_source(cop, "[1, 2].#{code}")
+      inspect_source("[1, 2].#{code}")
 
       expect(cop.offenses).to be_empty
     end
@@ -13,7 +13,7 @@ describe RuboCop::Cop::Rails::SafeNavigation, :config do
 
   shared_examples :offense do |name, method, params|
     it "registers an offense for #{name}" do
-      inspect_source(cop, "[1, 2].#{method}#{params}")
+      inspect_source("[1, 2].#{method}#{params}")
 
       expect(cop.messages)
         .to eq([format('Use safe navigation (`&.`) instead of `%s`.', method)])

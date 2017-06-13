@@ -7,14 +7,13 @@ describe RuboCop::Cop::Style::LambdaCall, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'call' } }
 
     it 'registers an offense for x.()' do
-      inspect_source(cop,
-                     'x.(a, b)')
+      inspect_source('x.(a, b)')
       expect(cop.offenses.size).to eq(1)
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'braces')
     end
 
     it 'registers an offense for correct + opposite' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         x.call(a, b)
         x.(a, b)
       RUBY
@@ -36,14 +35,13 @@ describe RuboCop::Cop::Style::LambdaCall, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'braces' } }
 
     it 'registers an offense for x.call()' do
-      inspect_source(cop,
-                     'x.call(a, b)')
+      inspect_source('x.call(a, b)')
       expect(cop.offenses.size).to eq(1)
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'call')
     end
 
     it 'registers an offense for opposite + correct' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         x.call(a, b)
         x.(a, b)
       RUBY

@@ -4,7 +4,7 @@ describe RuboCop::Cop::Lint::UselessElseWithoutRescue do
   subject(:cop) { described_class.new }
 
   before do
-    inspect_source(cop, source)
+    inspect_source(source)
   end
 
   context 'with `else` without `rescue`' do

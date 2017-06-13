@@ -3,7 +3,7 @@
 describe RuboCop::Cop::Rails::PluralizationGrammar do
   subject(:cop) { described_class.new }
   before do
-    inspect_source(cop, source)
+    inspect_source(source)
   end
 
   shared_examples 'enforces pluralization grammar' do |method_name|

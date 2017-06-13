@@ -8,7 +8,7 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
 
   describe 'inspection' do
     before do
-      inspect_source(cop, source)
+      inspect_source(source)
     end
 
     context 'when a method takes multiple arguments' do
@@ -382,7 +382,7 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
 
     it 'registers an offense for a non-empty method with a single unused ' \
         'parameter' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def method(arg)
           1
         end
@@ -399,7 +399,7 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
 
     it 'registers an offense for a non-empty method with multiple unused ' \
        'parameters' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def method(a, b, *others)
           1
         end

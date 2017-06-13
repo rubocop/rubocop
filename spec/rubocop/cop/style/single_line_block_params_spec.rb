@@ -9,7 +9,7 @@ describe RuboCop::Cop::Style::SingleLineBlockParams, :config do
   end
 
   it 'finds wrong argument names in calls with different syntax' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       def m
         [0, 1].reduce { |c, d| c + d }
         [0, 1].reduce{ |c, d| c + d }

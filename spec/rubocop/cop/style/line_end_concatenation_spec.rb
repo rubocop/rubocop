@@ -66,8 +66,7 @@ describe RuboCop::Cop::Style::LineEndConcatenation do
 
   it 'registers multiple offenses when there are chained concatenations' \
      'combined with << calls' do
-    inspect_source(cop,
-                   ['top = "test#{x}" <<',
+    inspect_source(['top = "test#{x}" <<',
                     '"top" +',
                     '"foo" <<',
                     '"bar"'])
@@ -97,7 +96,7 @@ describe RuboCop::Cop::Style::LineEndConcatenation do
       x3a = 'x' +
         "\#{'a' + "\#{3}"}".reverse
     RUBY
-    inspect_source(cop, source)
+    inspect_source(source)
     expect(cop.offenses).to be_empty
   end
 

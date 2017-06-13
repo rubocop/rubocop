@@ -233,7 +233,7 @@ describe RuboCop::Cop::Style::MissingElse do
 
       context 'with no else-clause' do
         it 'registers an offense' do
-          inspect_source(cop, 'if cond; foo end')
+          inspect_source('if cond; foo end')
           msg = ['`if` condition requires an `else`-clause with `nil` in it.']
           expect(cop.messages)
             .to eq(msg)
@@ -269,7 +269,7 @@ describe RuboCop::Cop::Style::MissingElse do
 
       context 'with no else-clause' do
         it 'registers an offense' do
-          inspect_source(cop, 'unless cond; foo end')
+          inspect_source('unless cond; foo end')
           msg = ['`if` condition requires an `else`-clause with `nil` in it.']
           expect(cop.messages)
             .to eq(msg)
@@ -298,7 +298,7 @@ describe RuboCop::Cop::Style::MissingElse do
 
       context 'with no else-clause' do
         it 'registers an offense' do
-          inspect_source(cop, 'case v; when a; foo; when b; bar; end')
+          inspect_source('case v; when a; foo; when b; bar; end')
           msg = ['`case` condition requires an `else`-clause with `nil` in it.']
           expect(cop.messages)
             .to eq(msg)

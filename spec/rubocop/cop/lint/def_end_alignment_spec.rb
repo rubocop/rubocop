@@ -37,7 +37,7 @@ describe RuboCop::Cop::Lint::DefEndAlignment, :config do
 
     context 'correct + opposite' do
       it 'registers an offense' do
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.offenses.size).to eq(1)
         expect(cop.messages.first)
           .to eq('`end` at 7, 4 is not aligned with `foo def` at 5, 0.')
@@ -82,7 +82,7 @@ describe RuboCop::Cop::Lint::DefEndAlignment, :config do
 
       context 'correct + opposite' do
         it 'registers an offense' do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.offenses.size).to eq(1)
           expect(cop.messages.first)
             .to eq('`end` at 3, 0 is not aligned with `def` at 1, 4.')

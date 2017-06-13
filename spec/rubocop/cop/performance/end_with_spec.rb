@@ -26,7 +26,7 @@ describe RuboCop::Cop::Performance::EndWith do
       end
 
       it "doesn't register an error for #{method} /#{str}\\z/" do
-        inspect_source(cop, "str#{method} /#{str}\\z/")
+        inspect_source("str#{method} /#{str}\\z/")
         expect(cop.messages).to be_empty
       end
     end
@@ -44,7 +44,7 @@ describe RuboCop::Cop::Performance::EndWith do
     # character classes, anchors
     %w[w W s S d D A Z z G b B h H R X S].each do |str|
       it "doesn't register an error for #{method} /\\#{str}\\z/" do
-        inspect_source(cop, "str#{method} /\\#{str}\\z/")
+        inspect_source("str#{method} /\\#{str}\\z/")
         expect(cop.messages).to be_empty
       end
     end
@@ -58,7 +58,7 @@ describe RuboCop::Cop::Performance::EndWith do
     end
 
     it "formats the error message correctly for #{method} /abc\\z/" do
-      inspect_source(cop, "str#{method} /abc\\z/")
+      inspect_source("str#{method} /abc\\z/")
       expect(cop.messages).to eq(['Use `String#end_with?` instead of a ' \
                                   'regex match anchored to the end of ' \
                                   'the string.'])

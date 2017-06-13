@@ -8,7 +8,7 @@ describe RuboCop::Cop::Style::RaiseArgs, :config do
 
     context 'with a raise with 2 args' do
       it 'reports an offense' do
-        inspect_source(cop, 'raise RuntimeError, msg')
+        inspect_source('raise RuntimeError, msg')
         expect(cop.offenses.size).to eq(1)
         expect(cop.config_to_allow_offenses)
           .to eq('EnforcedStyle' => 'exploded')
@@ -22,7 +22,7 @@ describe RuboCop::Cop::Style::RaiseArgs, :config do
 
     context 'with correct + opposite' do
       it 'reports an offense' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           if a
             raise RuntimeError, msg
           else
@@ -83,7 +83,7 @@ describe RuboCop::Cop::Style::RaiseArgs, :config do
     context 'with a raise with exception object' do
       context 'with one argument' do
         it 'reports an offense' do
-          inspect_source(cop, 'raise Ex.new(msg)')
+          inspect_source('raise Ex.new(msg)')
           expect(cop.offenses.size).to eq(1)
           expect(cop.messages)
             .to eq(['Provide an exception class and message ' \
@@ -100,7 +100,7 @@ describe RuboCop::Cop::Style::RaiseArgs, :config do
 
       context 'with no arguments' do
         it 'reports an offense' do
-          inspect_source(cop, 'raise Ex.new')
+          inspect_source('raise Ex.new')
           expect(cop.offenses.size).to eq(1)
           expect(cop.messages)
             .to eq(['Provide an exception class and message ' \
@@ -118,7 +118,7 @@ describe RuboCop::Cop::Style::RaiseArgs, :config do
 
     context 'with opposite + correct' do
       it 'reports an offense for opposite + correct' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           if a
             raise RuntimeError, msg
           else

@@ -7,7 +7,7 @@ describe RuboCop::Cop::Style::RedundantFreeze do
   shared_examples :immutable_objects do |o|
     it "registers an offense for frozen #{o}" do
       source = [prefix, "CONST = #{o}.freeze"].compact.join("\n")
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -28,7 +28,7 @@ describe RuboCop::Cop::Style::RedundantFreeze do
   shared_examples :mutable_objects do |o|
     it "allows #{o} with freeze" do
       source = [prefix, "CONST = #{o}.freeze"].compact.join("\n")
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses).to be_empty
     end
   end

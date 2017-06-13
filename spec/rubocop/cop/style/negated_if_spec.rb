@@ -13,7 +13,7 @@ describe RuboCop::Cop::Style::NegatedIf do
 
   describe 'with “both” style' do
     it 'registers an offense for if with exclamation point condition' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         if !a_condition
           some_method
         end
@@ -26,7 +26,7 @@ describe RuboCop::Cop::Style::NegatedIf do
     end
 
     it 'registers an offense for unless with exclamation point condition' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         unless !a_condition
           some_method
         end
@@ -37,7 +37,7 @@ describe RuboCop::Cop::Style::NegatedIf do
     end
 
     it 'registers an offense for if with "not" condition' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         if not a_condition
           some_method
         end
@@ -145,7 +145,7 @@ describe RuboCop::Cop::Style::NegatedIf do
     end
 
     it 'registers an offence for prefix' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         if !foo
         end
       RUBY

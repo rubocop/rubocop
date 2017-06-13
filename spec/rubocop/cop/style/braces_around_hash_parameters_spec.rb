@@ -7,20 +7,20 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
     after { expect(cop.offenses).to be_empty }
 
     it 'accepts one non-hash parameter' do
-      inspect_source(cop, 'where(2)')
+      inspect_source('where(2)')
     end
 
     it 'accepts multiple non-hash parameters' do
-      inspect_source(cop, 'where(1, "2")')
+      inspect_source('where(1, "2")')
     end
 
     it 'accepts one empty hash parameter' do
-      inspect_source(cop, 'where({})')
+      inspect_source('where({})')
     end
 
     it 'accepts one empty hash parameter with whitespace' do
-      inspect_source(cop, ['where(  {     ',
-                           " }\t   )  "])
+      inspect_source(['where(  {     ',
+                      " }\t   )  "])
     end
   end
 
@@ -28,23 +28,23 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
     after { expect(cop.offenses).to be_empty }
 
     it 'accepts one hash parameter without braces' do
-      inspect_source(cop, 'where(x: "y")')
+      inspect_source('where(x: "y")')
     end
 
     it 'accepts one hash parameter without braces and with multiple keys' do
-      inspect_source(cop, 'where(x: "y", foo: "bar")')
+      inspect_source('where(x: "y", foo: "bar")')
     end
 
     it 'accepts one hash parameter without braces and with one hash value' do
-      inspect_source(cop, 'where(x: { "y" => "z" })')
+      inspect_source('where(x: { "y" => "z" })')
     end
 
     it 'accepts property assignment with braces' do
-      inspect_source(cop, 'x.z = { y: "z" }')
+      inspect_source('x.z = { y: "z" }')
     end
 
     it 'accepts operator with a hash parameter with braces' do
-      inspect_source(cop, 'x.z - { y: "z" }')
+      inspect_source('x.z - { y: "z" }')
     end
   end
 
@@ -53,34 +53,34 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
 
     it 'registers an offense for one non-hash parameter followed by a hash ' \
        'parameter with braces' do
-      inspect_source(cop, 'where(1, { y: 2 })')
+      inspect_source('where(1, { y: 2 })')
       expect(cop.messages).to eq([msg])
       expect(cop.highlights).to eq(['{ y: 2 }'])
     end
 
     it 'registers an offense for one object method hash parameter with ' \
        'braces' do
-      inspect_source(cop, 'x.func({ y: "z" })')
+      inspect_source('x.func({ y: "z" })')
       expect(cop.messages).to eq([msg])
       expect(cop.highlights).to eq(['{ y: "z" }'])
     end
 
     it 'registers an offense for one hash parameter with braces' do
-      inspect_source(cop, 'where({ x: 1 })')
+      inspect_source('where({ x: 1 })')
       expect(cop.messages).to eq([msg])
       expect(cop.highlights).to eq(['{ x: 1 }'])
     end
 
     it 'registers an offense for one hash parameter with braces and ' \
        'whitespace' do
-      inspect_source(cop, "where(  \n { x: 1 }   )")
+      inspect_source("where(  \n { x: 1 }   )")
       expect(cop.messages).to eq([msg])
       expect(cop.highlights).to eq(['{ x: 1 }'])
     end
 
     it 'registers an offense for one hash parameter with braces and multiple ' \
        'keys' do
-      inspect_source(cop, 'where({ x: 1, foo: "bar" })')
+      inspect_source('where({ x: 1, foo: "bar" })')
       expect(cop.messages).to eq([msg])
       expect(cop.highlights).to eq(['{ x: 1, foo: "bar" }'])
     end
@@ -225,7 +225,7 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
 
       it 'registers an offense for one hash parameter with braces and one ' \
          'without' do
-        inspect_source(cop, 'where({ x: 1 }, y: 2)')
+        inspect_source('where({ x: 1 }, y: 2)')
         expect(cop.messages)
           .to eq(['Missing curly braces around a hash parameter.'])
         expect(cop.highlights).to eq(['y: 2'])
@@ -286,13 +286,13 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
 
       it 'registers an offense for one hash parameter with multiple keys and ' \
          'without braces' do
-        inspect_source(cop, 'where(x: "y", foo: "bar")')
+        inspect_source('where(x: "y", foo: "bar")')
         expect(cop.highlights).to eq(['x: "y", foo: "bar"'])
       end
 
       it 'registers an offense for one hash parameter without braces with ' \
          'one hash value' do
-        inspect_source(cop, 'where(x: { "y" => "z" })')
+        inspect_source('where(x: { "y" => "z" })')
         expect(cop.highlights).to eq(['x: { "y" => "z" }'])
       end
     end

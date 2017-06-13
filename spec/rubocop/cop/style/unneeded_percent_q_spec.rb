@@ -30,7 +30,7 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
     end
 
     it 'registers an offfense for a string containing escaped backslashes' do
-      inspect_source(cop, '%q(\\\\foo\\\\)')
+      inspect_source('%q(\\\\foo\\\\)')
 
       expect(cop.messages.length).to eq 1
     end
@@ -142,28 +142,28 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
 
   it 'accepts %q at the beginning of a double quoted string ' \
      'with interpolation' do
-    inspect_source(cop, "\"%q(a)\#{b}\"")
+    inspect_source("\"%q(a)\#{b}\"")
 
     expect(cop.messages).to be_empty
   end
 
   it 'accepts %Q at the beginning of a double quoted string ' \
      'with interpolation' do
-    inspect_source(cop, "\"%Q(a)\#{b}\"")
+    inspect_source("\"%Q(a)\#{b}\"")
 
     expect(cop.messages).to be_empty
   end
 
   it 'accepts %q at the beginning of a section of a double quoted string ' \
      'with interpolation' do
-    inspect_source(cop, %("%\#{b}%q(a)"))
+    inspect_source(%("%\#{b}%q(a)"))
 
     expect(cop.messages).to be_empty
   end
 
   it 'accepts %Q at the beginning of a section of a double quoted string ' \
      'with interpolation' do
-    inspect_source(cop, %("%\#{b}%Q(a)"))
+    inspect_source(%("%\#{b}%Q(a)"))
 
     expect(cop.messages).to be_empty
   end

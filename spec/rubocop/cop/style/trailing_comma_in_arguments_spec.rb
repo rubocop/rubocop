@@ -5,7 +5,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
   shared_examples 'single line lists' do |extra_info|
     it 'registers an offense for trailing comma in a method call' do
-      inspect_source(cop, 'some_method(a, b, c, )')
+      inspect_source('some_method(a, b, c, )')
       expect(cop.messages)
         .to eq(['Avoid comma after the last parameter of a method ' \
                 "call#{extra_info}."])
@@ -14,7 +14,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
     it 'registers an offense for trailing comma in a method call with hash' \
        ' parameters at the end' do
-      inspect_source(cop, 'some_method(a, b, c: 0, d: 1, )')
+      inspect_source('some_method(a, b, c: 0, d: 1, )')
       expect(cop.messages)
         .to eq(['Avoid comma after the last parameter of a method ' \
                 "call#{extra_info}."])
@@ -27,7 +27,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
     it 'accepts method call without trailing comma with single element hash' \
         ' parameters at the end' do
-      inspect_source(cop, 'some_method(a: 1)')
+      inspect_source('some_method(a: 1)')
       expect(cop.offenses).to be_empty
     end
 
@@ -79,7 +79,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'registers an offense for trailing comma in a method call with ' \
          'hash parameters at the end' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           some_method(
                         a,
                         b,
@@ -91,7 +91,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'accepts a method call with ' \
          'hash parameters at the end and no trailing comma' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           some_method(a,
                       b,
                       c: 0,
@@ -136,7 +136,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       context 'when closing bracket is on same line as last value' do
         it 'accepts a method call with Hash as last parameter split on ' \
            'multiple lines' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             some_method(a: "b",
                         c: "d")
           RUBY
@@ -146,7 +146,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'registers an offense for no trailing comma in a method call with' \
          ' hash parameters at the end' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           some_method(
                         a,
                         b,
@@ -169,7 +169,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'accepts trailing comma in a method call with hash' \
          ' parameters at the end' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           some_method(
                         a,
                         b,
@@ -182,7 +182,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'accepts no trailing comma in a method call with a multiline' \
          ' braceless hash at the end with more than one parameter on a line' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           some_method(
                         a,
                         b: 0,
@@ -194,7 +194,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'accepts a trailing comma in a method call with single ' \
          'line hashes' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           some_method(
            { a: 0, b: 1 },
            { a: 1, b: 0 },
@@ -246,7 +246,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       context 'when closing bracket is on same line as last value' do
         it 'registers an offense for a method call, with a Hash as the ' \
            'last parameter, split on multiple lines' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             some_method(a: "b",
                         c: "d")
           RUBY
@@ -258,7 +258,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'registers an offense for no trailing comma in a method call with' \
          ' hash parameters at the end' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           some_method(
                         a,
                         b,
@@ -274,7 +274,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'registers an offense for no trailing comma in a method call with' \
           'two parameters on the same line' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           some_method(a, b
                      )
         RUBY
@@ -285,7 +285,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'accepts trailing comma in a method call with hash' \
          ' parameters at the end' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           some_method(
                         a,
                         b,
@@ -298,7 +298,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'accepts a trailing comma in a method call with ' \
          'a single hash parameter' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           some_method(
                         a: 0,
                         b: 1,
@@ -309,7 +309,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'accepts a trailing comma in a method call with single ' \
          'line hashes' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           some_method(
            { a: 0, b: 1 },
            { a: 1, b: 0 },
@@ -322,7 +322,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       # this is a sad parse error
       it 'accepts no trailing comma in a method call with a block' \
          ' parameter at the end' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           some_method(
                         a,
                         b,
@@ -375,7 +375,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'accepts a multiline call with arguments on a single line and' \
          ' trailing comma' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           method(
             1, 2,
           )

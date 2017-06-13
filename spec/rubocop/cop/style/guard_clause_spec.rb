@@ -6,7 +6,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
 
   shared_examples 'reports offense' do |body|
     it 'reports an offense if method body is if / unless without else' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def func
           if something
             #{body}
@@ -28,7 +28,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it 'reports an offense if method body is if / unless without else' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def func
           if something
             #{body}
@@ -50,7 +50,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it 'reports an offense if method body ends with if / unless without else' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def func
           test
           if something
@@ -221,14 +221,14 @@ describe RuboCop::Cop::Style::GuardClause, :config do
         end
       RUBY
 
-      expect { inspect_source(cop, source) }
+      expect { inspect_source(source) }
         .to raise_error('MinBodyLength needs to be a positive integer!')
     end
   end
 
   shared_examples 'on if nodes which exit current scope' do |kw|
     it "registers an error with #{kw} in the if branch" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         if something
           #{kw}
         else
@@ -241,7 +241,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it "registers an error with #{kw} in the else branch" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         if something
          puts "hello"
         else
@@ -265,7 +265,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it "does not report an offense if #{kw} is inside elsif" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         if something
           a
         elsif something_else
@@ -276,7 +276,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it "does not report an offense if #{kw} is inside if..elsif..else..end" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         if something
           a
         elsif something_else
@@ -289,22 +289,22 @@ describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it "doesn't register an error if control flow expr has multiple lines" do
-      inspect_source(cop, ['if something',
-                           "  #{kw} 'blah blah blah' \\",
-                           "        'blah blah blah'",
-                           'else',
-                           '  puts "hello"',
-                           'end'])
+      inspect_source(['if something',
+                      "  #{kw} 'blah blah blah' \\",
+                      "        'blah blah blah'",
+                      'else',
+                      '  puts "hello"',
+                      'end'])
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an error if non-control-flow branch has multiple lines' do
-      inspect_source(cop, ['if something',
-                           "  #{kw}",
-                           'else',
-                           '  puts "hello" \\',
-                           '       "blah blah blah"',
-                           'end'])
+      inspect_source(['if something',
+                      "  #{kw}",
+                      'else',
+                      '  puts "hello" \\',
+                      '       "blah blah blah"',
+                      'end'])
       expect(cop.offenses.size).to eq(1)
     end
   end

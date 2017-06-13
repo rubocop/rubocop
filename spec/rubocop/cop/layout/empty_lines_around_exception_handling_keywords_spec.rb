@@ -6,7 +6,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords do
 
   shared_examples :offense do |name, message, code, correction|
     it "registers an offense for #{name} with a blank" do
-      inspect_source(cop, code.strip_indent)
+      inspect_source(code.strip_indent)
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(["Extra empty line detected #{message}."])
     end
@@ -19,7 +19,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords do
 
   shared_examples :accepts do |name, code|
     it "accepts #{name}" do
-      inspect_source(cop, code)
+      inspect_source(code)
       expect(cop.offenses).to be_empty
     end
   end
@@ -182,7 +182,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords do
     RUBY
 
     it 'registers many offenses' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(10)
     end
 
@@ -240,7 +240,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords do
     RUBY
 
     it 'registers many offenses' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(10)
     end
 

@@ -10,7 +10,7 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
         return something
       end
     RUBY
-    inspect_source(cop, src)
+    inspect_source(src)
     expect(cop.offenses.size).to eq(1)
   end
 
@@ -20,7 +20,7 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
         return something
       end
     RUBY
-    inspect_source(cop, src)
+    inspect_source(src)
     expect(cop.offenses.size).to eq(1)
   end
 
@@ -32,7 +32,7 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
         return something
       end
     RUBY
-    inspect_source(cop, src)
+    inspect_source(src)
     expect(cop.offenses.size).to eq(1)
   end
 
@@ -44,7 +44,7 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
         return something
       end
     RUBY
-    inspect_source(cop, src)
+    inspect_source(src)
     expect(cop.offenses.size).to eq(1)
   end
 
@@ -107,7 +107,7 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
       end
 
       it "registers an offense for #{ret}" do
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.offenses.size).to eq(1)
       end
 
@@ -135,7 +135,7 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
           return something, test
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -145,7 +145,7 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
           return something, test
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -157,7 +157,7 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
           return something, test
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -169,7 +169,7 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
           return something, test
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses.size).to eq(1)
     end
 

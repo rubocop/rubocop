@@ -11,7 +11,7 @@ describe RuboCop::Cop::Style::MethodDefParentheses, :config do
         def func a, b
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses.size).to eq(1)
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
                                                  'require_no_parentheses')
@@ -24,7 +24,7 @@ describe RuboCop::Cop::Style::MethodDefParentheses, :config do
         def func a, b
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses.size).to eq(1)
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
@@ -34,7 +34,7 @@ describe RuboCop::Cop::Style::MethodDefParentheses, :config do
         def Test.func a, b
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -78,7 +78,7 @@ describe RuboCop::Cop::Style::MethodDefParentheses, :config do
         def func(a, b)
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses.size).to eq(1)
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
                                                  'require_parentheses')
@@ -89,7 +89,7 @@ describe RuboCop::Cop::Style::MethodDefParentheses, :config do
         def func a, b
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses).to be_empty
     end
 
@@ -100,7 +100,7 @@ describe RuboCop::Cop::Style::MethodDefParentheses, :config do
         def func a, b
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses.size).to eq(1)
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
@@ -110,7 +110,7 @@ describe RuboCop::Cop::Style::MethodDefParentheses, :config do
         def Test.func(a, b)
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -119,7 +119,7 @@ describe RuboCop::Cop::Style::MethodDefParentheses, :config do
         def Test.func a, b
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses).to be_empty
     end
 
@@ -128,7 +128,7 @@ describe RuboCop::Cop::Style::MethodDefParentheses, :config do
         def func()
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -137,7 +137,7 @@ describe RuboCop::Cop::Style::MethodDefParentheses, :config do
         def func
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses).to be_empty
     end
 
@@ -177,7 +177,7 @@ describe RuboCop::Cop::Style::MethodDefParentheses, :config do
                    b
           end
         RUBY
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.offenses.size).to eq(1)
         expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
       end

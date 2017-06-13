@@ -5,7 +5,7 @@ describe RuboCop::Cop::Style::RedundantParentheses do
 
   shared_examples 'redundant' do |expr, correct, type, highlight = nil|
     it "registers an offense for parentheses around #{type}" do
-      inspect_source(cop, expr)
+      inspect_source(expr)
       expect(cop.messages)
         .to eq(["Don't use parentheses around #{type}."])
       expect(cop.highlights).to eq([highlight || expr])
@@ -18,7 +18,7 @@ describe RuboCop::Cop::Style::RedundantParentheses do
 
   shared_examples 'plausible' do |expr|
     it 'accepts parentheses when arguments are unparenthesized' do
-      inspect_source(cop, expr)
+      inspect_source(expr)
       expect(cop.offenses).to be_empty
     end
   end
@@ -168,7 +168,7 @@ describe RuboCop::Cop::Style::RedundantParentheses do
 
   it 'accepts parentheses around a method call with unparenthesized ' \
      'arguments' do
-    inspect_source(cop, '(a 1, 2) && (1 + 1)')
+    inspect_source('(a 1, 2) && (1 + 1)')
     expect(cop.offenses).to be_empty
   end
 

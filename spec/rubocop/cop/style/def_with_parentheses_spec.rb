@@ -8,7 +8,7 @@ describe RuboCop::Cop::Style::DefWithParentheses do
       def func()
       end
     RUBY
-    inspect_source(cop, src)
+    inspect_source(src)
     expect(cop.offenses.size).to eq(1)
   end
 
@@ -17,7 +17,7 @@ describe RuboCop::Cop::Style::DefWithParentheses do
       def Test.func()
       end
     RUBY
-    inspect_source(cop, src)
+    inspect_source(src)
     expect(cop.offenses.size).to eq(1)
   end
 

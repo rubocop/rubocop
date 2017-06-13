@@ -214,7 +214,7 @@ describe RuboCop::Cop::Layout::AlignParameters do
           ]
         )
       RUBY
-      expect { inspect_source(cop, src) }.not_to raise_error
+      expect { inspect_source(src) }.not_to raise_error
     end
 
     context 'method definitions' do

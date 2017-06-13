@@ -8,7 +8,7 @@ describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
 
   shared_examples :accepts do |name, code|
     it "accepts usages of #{name}" do
-      inspect_source(cop, code)
+      inspect_source(code)
 
       expect(cop.offenses).to be_empty
     end
@@ -16,7 +16,7 @@ describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
 
   shared_examples :offense do |name, code|
     it "registers an offense for #{name}" do
-      inspect_source(cop, code)
+      inspect_source(code)
 
       expect(cop.messages)
         .to eq(

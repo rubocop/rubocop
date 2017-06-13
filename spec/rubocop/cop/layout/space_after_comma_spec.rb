@@ -9,7 +9,7 @@ describe RuboCop::Cop::Layout::SpaceAfterComma do
 
   shared_examples 'ends with an item' do |items, correct_items|
     it 'registers an offense' do
-      inspect_source(cop, source.call(items))
+      inspect_source(source.call(items))
       expect(cop.messages).to eq(
         ['Space missing after comma.']
       )
@@ -23,7 +23,7 @@ describe RuboCop::Cop::Layout::SpaceAfterComma do
 
   shared_examples 'trailing comma' do |items|
     it 'accepts the last comma' do
-      inspect_source(cop, source.call(items))
+      inspect_source(source.call(items))
       expect(cop.messages).to be_empty
     end
   end
@@ -51,7 +51,7 @@ describe RuboCop::Cop::Layout::SpaceAfterComma do
   context 'inside hash braces' do
     shared_examples 'common behavior' do
       it 'accepts a space between a comma and a closing brace' do
-        inspect_source(cop, '{ foo:bar, }')
+        inspect_source('{ foo:bar, }')
         expect(cop.messages).to be_empty
       end
     end
@@ -65,7 +65,7 @@ describe RuboCop::Cop::Layout::SpaceAfterComma do
 
       it 'registers an offense for no space between a comma and a ' \
          'closing brace' do
-        inspect_source(cop, '{ foo:bar,}')
+        inspect_source('{ foo:bar,}')
         expect(cop.messages).to eq(['Space missing after comma.'])
       end
     end

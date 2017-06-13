@@ -31,7 +31,7 @@ describe RuboCop::Cop::Style::RescueModifier do
   end
 
   it 'handles modifier rescue in normal rescue' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       begin
         test rescue modifier_handle
       rescue
@@ -45,7 +45,7 @@ describe RuboCop::Cop::Style::RescueModifier do
   end
 
   it 'handles modifier rescue in a method' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       def a_method
         test rescue nil
       end
@@ -102,7 +102,7 @@ describe RuboCop::Cop::Style::RescueModifier do
     end
 
     it 'handles modifier rescue in body of implicit begin' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def some_method
           test rescue modifier_handle
         rescue
@@ -127,7 +127,7 @@ describe RuboCop::Cop::Style::RescueModifier do
     end
 
     it 'handles modifier rescue in body of implicit begin' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def self.some_method
           test rescue modifier_handle
         rescue

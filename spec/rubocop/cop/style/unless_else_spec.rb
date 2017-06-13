@@ -15,7 +15,7 @@ describe RuboCop::Cop::Style::UnlessElse do
     end
 
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -49,7 +49,7 @@ describe RuboCop::Cop::Style::UnlessElse do
     end
 
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
     end
 

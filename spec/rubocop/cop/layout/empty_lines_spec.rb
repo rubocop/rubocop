@@ -4,8 +4,7 @@ describe RuboCop::Cop::Layout::EmptyLines do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for consecutive empty lines' do
-    inspect_source(cop,
-                   ['test = 5', '', '', '', 'top'])
+    inspect_source(['test = 5', '', '', '', 'top'])
     expect(cop.offenses.size).to eq(2)
   end
 

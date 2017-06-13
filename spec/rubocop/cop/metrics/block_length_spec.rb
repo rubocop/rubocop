@@ -5,7 +5,7 @@ describe RuboCop::Cop::Metrics::BlockLength, :config do
   let(:cop_config) { { 'Max' => 2, 'CountComments' => false } }
 
   it 'rejects a block with more than 5 lines' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       something do
         a = 1
         a = 2
@@ -19,7 +19,7 @@ describe RuboCop::Cop::Metrics::BlockLength, :config do
   end
 
   it 'reports the correct beginning and end lines' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       something do
         a = 1
         a = 2
@@ -72,7 +72,7 @@ describe RuboCop::Cop::Metrics::BlockLength, :config do
   end
 
   it 'rejects brace blocks too' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       something {
         a = 1
         a = 2
@@ -83,7 +83,7 @@ describe RuboCop::Cop::Metrics::BlockLength, :config do
   end
 
   it 'properly counts nested blocks' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       something do
         something do
           a = 2
@@ -112,7 +112,7 @@ describe RuboCop::Cop::Metrics::BlockLength, :config do
     before { cop_config['CountComments'] = true }
 
     it 'also counts commented lines' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         something do
           a = 1
           #a = 2
@@ -128,7 +128,7 @@ describe RuboCop::Cop::Metrics::BlockLength, :config do
     before { cop_config['ExcludedMethods'] = ['foo'] }
 
     it 'still rejects other methods with long blocks' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         something do
           a = 1
           a = 2

@@ -5,7 +5,7 @@ describe RuboCop::Cop::Rails::Blank, :config do
 
   shared_examples :offense do |source, correction, message|
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages).to eq([message])
       expect(cop.highlights).to eq([source])

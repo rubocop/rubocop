@@ -27,7 +27,7 @@ describe RuboCop::Cop::Performance::StartWith do
       end
 
       it "doesn't register an error for #{method} /\\A#{str}/" do
-        inspect_source(cop, "str#{method} /\\A#{str}/")
+        inspect_source("str#{method} /\\A#{str}/")
         expect(cop.messages).to be_empty
       end
     end
@@ -35,7 +35,7 @@ describe RuboCop::Cop::Performance::StartWith do
     # character classes, anchors
     %w[w W s S d D A Z z G b B h H R X S].each do |str|
       it "doesn't register an error for #{method} /\\A\\#{str}/" do
-        inspect_source(cop, "str#{method} /\\A\\#{str}/")
+        inspect_source("str#{method} /\\A\\#{str}/")
         expect(cop.messages).to be_empty
       end
     end
@@ -49,7 +49,7 @@ describe RuboCop::Cop::Performance::StartWith do
     end
 
     it "formats the error message correctly for #{method} /\\Aabc/" do
-      inspect_source(cop, "str#{method} /\\Aabc/")
+      inspect_source("str#{method} /\\Aabc/")
       expect(cop.messages).to eq(['Use `String#start_with?` instead of a ' \
                                   'regex match anchored to the beginning of ' \
                                   'the string.'])

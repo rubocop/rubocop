@@ -28,7 +28,7 @@ describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     end
 
     it 'registers an offense for an if modifier' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def self.method_name
           call_foo if some_condition
         end

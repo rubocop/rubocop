@@ -199,7 +199,7 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
           a=1 #{keyword} condition
           c=2
         RUBY
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.offenses.map(&:line)).to eq([1, 2])
         expect(cop.messages).to eq(
           ['Surrounding space missing for operator `=`.'] * 2
@@ -331,7 +331,7 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     context 'when a hash literal is on a single line' do
-      before { inspect_source(cop, '{ 1=>2, a: b }') }
+      before { inspect_source('{ 1=>2, a: b }') }
 
       context 'and Layout/AlignHash:EnforcedHashRocketStyle is key' do
         let(:hash_style) { 'key' }
@@ -354,7 +354,7 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
 
     context 'when a hash literal is on multiple lines' do
       before do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           {
             1=>2,
             a: b
@@ -483,7 +483,7 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
           a =  1 #{keyword} condition
           c =   2
         RUBY
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.offenses.map(&:line)).to eq([1, 2])
         expect(cop.messages).to eq(
           ['Operator `=` should be surrounded by a single space.'] * 2
@@ -633,7 +633,7 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
 
     it 'registers an offense for a hash rocket with an extra space' \
       'on multiple line' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         {
           1 =>  2
         }
@@ -645,7 +645,7 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
 
     it 'accepts for a hash rocket with an extra space for alignment' \
       'on multiple line' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         {
           1 =>  2,
           11 => 3
@@ -717,7 +717,7 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
 
     it 'registers an offense for - with too many spaces with ' \
        'negative lhs operand' do
-      inspect_source(cop, '-1  - arg')
+      inspect_source('-1  - arg')
       expect(cop.messages)
         .to eq(['Operator `-` should be surrounded by a single space.'])
     end

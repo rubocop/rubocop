@@ -5,7 +5,7 @@ describe RuboCop::Cop::Style::NestedModifier do
 
   shared_examples 'avoidable' do |keyword|
     it "registers an offense for modifier #{keyword}" do
-      inspect_source(cop, "something #{keyword} a if b")
+      inspect_source("something #{keyword} a if b")
       expect(cop.messages).to eq(['Avoid using nested modifiers.'])
       expect(cop.highlights).to eq([keyword])
     end
