@@ -255,7 +255,7 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
     end
 
     it "registers an offense for duplicate alias in #{type}" do
-      expect_offense(<<-RUBY)
+      expect_offense(<<-RUBY, 'example.rb')
         #{opening_line}
           def some_method
             implement 1
@@ -278,7 +278,7 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
     end
 
     it "registers an offense for duplicate alias_method in #{type}" do
-      expect_offense(<<-RUBY)
+      expect_offense(<<-RUBY, 'example.rb')
         #{opening_line}
           def some_method
             implement 1
