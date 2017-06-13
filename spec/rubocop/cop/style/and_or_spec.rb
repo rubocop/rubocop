@@ -90,12 +90,12 @@ describe RuboCop::Cop::Style::AndOr, :config do
     end
 
     it 'auto-corrects "and" with &&' do
-      new_source = autocorrect_source(cop, 'true and false')
+      new_source = autocorrect_source('true and false')
       expect(new_source).to eq('true && false')
     end
 
     it 'auto-corrects "or" with ||' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         x = 12345
         true or false
       RUBY
@@ -106,7 +106,7 @@ describe RuboCop::Cop::Style::AndOr, :config do
     end
 
     it 'auto-corrects "or" with || inside def' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         def z(a, b)
           return true if a or b
         end
@@ -120,25 +120,25 @@ describe RuboCop::Cop::Style::AndOr, :config do
 
     it 'autocorrects "or" with an assignment on the left' do
       src = "x = y or teststring.include? 'b'"
-      new_source = autocorrect_source(cop, src)
+      new_source = autocorrect_source(src)
       expect(new_source).to eq("(x = y) || teststring.include?('b')")
     end
 
     it 'autocorrects "or" with an assignment on the right' do
       src = "teststring.include? 'b' or x = y"
-      new_source = autocorrect_source(cop, src)
+      new_source = autocorrect_source(src)
       expect(new_source).to eq("teststring.include?('b') || (x = y)")
     end
 
     it 'autocorrects "and" with an assignment and return on either side' do
       src = 'x = a + b and return x'
-      new_source = autocorrect_source(cop, src)
+      new_source = autocorrect_source(src)
       expect(new_source).to eq('(x = a + b) && (return x)')
     end
 
     it 'autocorrects "and" with an Enumerable accessor on either side' do
       src = 'foo[:bar] and foo[:baz]'
-      new_source = autocorrect_source(cop, src)
+      new_source = autocorrect_source(src)
       expect(new_source).to eq('foo[:bar] && foo[:baz]')
     end
 
@@ -199,114 +199,114 @@ describe RuboCop::Cop::Style::AndOr, :config do
     end
 
     it 'auto-corrects "or" with || in method calls' do
-      new_source = autocorrect_source(cop, 'method a or b')
+      new_source = autocorrect_source('method a or b')
       expect(new_source).to eq('method(a) || b')
     end
 
     it 'auto-corrects "or" with || in method calls (2)' do
-      new_source = autocorrect_source(cop, 'method a,b or b')
+      new_source = autocorrect_source('method a,b or b')
       expect(new_source).to eq('method(a,b) || b')
     end
 
     it 'auto-corrects "or" with || in method calls (3)' do
-      new_source = autocorrect_source(cop, 'obj.method a or b')
+      new_source = autocorrect_source('obj.method a or b')
       expect(new_source).to eq('obj.method(a) || b')
     end
 
     it 'auto-corrects "or" with || in method calls (4)' do
-      new_source = autocorrect_source(cop, 'obj.method a,b or b')
+      new_source = autocorrect_source('obj.method a,b or b')
       expect(new_source).to eq('obj.method(a,b) || b')
     end
 
     it 'auto-corrects "or" with || and doesn\'t add extra parentheses' do
-      new_source = autocorrect_source(cop, 'method(a, b) or b')
+      new_source = autocorrect_source('method(a, b) or b')
       expect(new_source).to eq('method(a, b) || b')
     end
 
     it 'auto-corrects "or" with || and adds parentheses to expr' do
-      new_source = autocorrect_source(cop, 'b or method a,b')
+      new_source = autocorrect_source('b or method a,b')
       expect(new_source).to eq('b || method(a,b)')
     end
 
     it 'auto-corrects "and" with && in method calls' do
-      new_source = autocorrect_source(cop, 'method a and b')
+      new_source = autocorrect_source('method a and b')
       expect(new_source).to eq('method(a) && b')
     end
 
     it 'auto-corrects "and" with && in method calls (2)' do
-      new_source = autocorrect_source(cop, 'method a,b and b')
+      new_source = autocorrect_source('method a,b and b')
       expect(new_source).to eq('method(a,b) && b')
     end
 
     it 'auto-corrects "and" with && in method calls (3)' do
-      new_source = autocorrect_source(cop, 'obj.method a and b')
+      new_source = autocorrect_source('obj.method a and b')
       expect(new_source).to eq('obj.method(a) && b')
     end
 
     it 'auto-corrects "and" with && in method calls (4)' do
-      new_source = autocorrect_source(cop, 'obj.method a,b and b')
+      new_source = autocorrect_source('obj.method a,b and b')
       expect(new_source).to eq('obj.method(a,b) && b')
     end
 
     it 'auto-corrects "and" with && and doesn\'t add extra parentheses' do
-      new_source = autocorrect_source(cop, 'method(a, b) and b')
+      new_source = autocorrect_source('method(a, b) and b')
       expect(new_source).to eq('method(a, b) && b')
     end
 
     it 'auto-corrects "and" with && and adds parentheses to expr' do
-      new_source = autocorrect_source(cop, 'b and method a,b')
+      new_source = autocorrect_source('b and method a,b')
       expect(new_source).to eq('b && method(a,b)')
     end
 
     context 'with !obj.method arg on right' do
       it 'autocorrects "and" with && and adds parens' do
-        new_source = autocorrect_source(cop, 'x and !obj.method arg')
+        new_source = autocorrect_source('x and !obj.method arg')
         expect(new_source).to eq('x && !obj.method(arg)')
       end
     end
 
     context 'with !obj.method arg on left' do
       it 'autocorrects "and" with && and adds parens' do
-        new_source = autocorrect_source(cop, '!obj.method arg and x')
+        new_source = autocorrect_source('!obj.method arg and x')
         expect(new_source).to eq('!obj.method(arg) && x')
       end
     end
 
     context 'with obj.method = arg on left' do
       it 'autocorrects "and" with && and adds parens' do
-        new_source = autocorrect_source(cop, 'obj.method = arg and x')
+        new_source = autocorrect_source('obj.method = arg and x')
         expect(new_source).to eq('(obj.method = arg) && x')
       end
     end
 
     context 'with obj.method= arg on left' do
       it 'autocorrects "and" with && and adds parens' do
-        new_source = autocorrect_source(cop, 'obj.method= arg and x')
+        new_source = autocorrect_source('obj.method= arg and x')
         expect(new_source).to eq('(obj.method= arg) && x')
       end
     end
 
     context 'with predicate method with arg without space on right' do
       it 'autocorrects "or" with || and adds parens' do
-        new_source = autocorrect_source(cop, 'false or 3.is_a?Integer')
+        new_source = autocorrect_source('false or 3.is_a?Integer')
         expect(new_source).to eq('false || 3.is_a?(Integer)')
       end
 
       it 'autocorrects "and" with && and adds parens' do
-        new_source = autocorrect_source(cop, 'false and 3.is_a?Integer')
+        new_source = autocorrect_source('false and 3.is_a?Integer')
         expect(new_source).to eq('false && 3.is_a?(Integer)')
       end
     end
 
     context 'with two predicate methods with args without spaces on right' do
       it 'autocorrects "or" with || and adds parens' do
-        new_source = autocorrect_source(cop, "'1'.is_a?Integer " \
+        new_source = autocorrect_source("'1'.is_a?Integer " \
                                              'or 1.is_a?Integer')
         expect(new_source).to eq('\'1\'.is_a?(Integer) || 1.is_a?(Integer)')
       end
 
       it 'autocorrects "and" with && and adds parens' do
-        new_source = autocorrect_source(cop, "'1'.is_a?Integer and" \
+        new_source = autocorrect_source("'1'.is_a?Integer and" \
                                              ' 1.is_a?Integer')
         expect(new_source).to eq('\'1\'.is_a?(Integer) && 1.is_a?(Integer)')
       end
@@ -315,13 +315,13 @@ describe RuboCop::Cop::Style::AndOr, :config do
     context 'with one predicate method without space on right and another ' \
             'method' do
       it 'autocorrects "or" with || and adds parens' do
-        new_source = autocorrect_source(cop, "'1'.is_a?Integer or" \
+        new_source = autocorrect_source("'1'.is_a?Integer or" \
                                              ' 1.is_a? Integer')
         expect(new_source).to eq("'1'.is_a?(Integer) || 1.is_a?(Integer)")
       end
 
       it 'autocorrects "and" with && and adds parens' do
-        new_source = autocorrect_source(cop, "'1'.is_a?Integer " \
+        new_source = autocorrect_source("'1'.is_a?Integer " \
                                               'and 1.is_a? Integer')
         expect(new_source).to eq('\'1\'.is_a?(Integer) && 1.is_a?(Integer)')
       end
@@ -329,14 +329,14 @@ describe RuboCop::Cop::Style::AndOr, :config do
 
     context 'with `not` expression on right' do
       it 'autocorrects "and" with && and adds parens' do
-        new_source = autocorrect_source(cop, 'x and not arg')
+        new_source = autocorrect_source('x and not arg')
         expect(new_source).to eq('x && (not arg)')
       end
     end
 
     context 'with `not` expression on left' do
       it 'autocorrects "and" with && and adds parens' do
-        new_source = autocorrect_source(cop, 'not arg and x')
+        new_source = autocorrect_source('not arg and x')
         expect(new_source).to eq('(not arg) && x')
       end
     end
@@ -354,7 +354,7 @@ describe RuboCop::Cop::Style::AndOr, :config do
     context 'within a nested begin node' do
       # regression test; see GH issue 2531
       it 'autocorrects "and" with && and adds parens' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           def x
           end
 
@@ -376,7 +376,7 @@ describe RuboCop::Cop::Style::AndOr, :config do
     context 'when left hand side is a comparison method' do
       # Regression: https://github.com/bbatsov/rubocop/issues/4451
       it 'autocorrects "and" with && and adds parens' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           foo == bar and baz
         RUBY
         expect(new_source).to eq(<<-RUBY.strip_indent)
@@ -388,7 +388,7 @@ describe RuboCop::Cop::Style::AndOr, :config do
     context 'within a nested begin node with one child only' do
       # regression test; see GH issue 2531
       it 'autocorrects "and" with && and adds parens' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           (def y
             a = b and a.c
           end)
@@ -411,7 +411,7 @@ describe RuboCop::Cop::Style::AndOr, :config do
 
       # regression test; see GH issue 2609
       it 'autocorrects "or" with ||' do
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq(
           <<-RUBY.strip_indent
             APP_ROOT = Pathname.new File.expand_path('../../', __FILE__)

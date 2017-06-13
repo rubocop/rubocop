@@ -21,7 +21,7 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+        corrected = autocorrect_source(<<-RUBY.strip_indent)
           some_method(
             a
             )
@@ -52,7 +52,7 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+        corrected = autocorrect_source(<<-RUBY.strip_indent)
           some_method(a
           )
         RUBY
@@ -89,7 +89,7 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
         end
 
         it 'autocorrects misindented )' do
-          corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+          corrected = autocorrect_source(<<-RUBY.strip_indent)
             some_method(a,
               x: 1,
               y: 2
@@ -125,7 +125,7 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+        corrected = autocorrect_source(<<-RUBY.strip_indent)
           def some_method(
             a
             )
@@ -160,7 +160,7 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+        corrected = autocorrect_source(<<-RUBY.strip_indent)
           def some_method(a
           )
           end
@@ -201,7 +201,7 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+        corrected = autocorrect_source(<<-RUBY.strip_indent)
           w = x * (
             y + z
             )
@@ -232,7 +232,7 @@ describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+        corrected = autocorrect_source(<<-RUBY.strip_indent)
           w = x * (y + z
             )
         RUBY

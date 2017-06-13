@@ -69,7 +69,7 @@ describe RuboCop::Cop::Lint::PercentStringArray do
     end
 
     it 'removes undesireable characters' do
-      expect(autocorrect_source(cop, source)).to eq(expected_corrected_source)
+      expect(autocorrect_source(source)).to eq(expected_corrected_source)
     end
   end
 

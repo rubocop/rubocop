@@ -68,7 +68,7 @@ describe RuboCop::Cop::Layout::IndentAssignment, :config do
 
   it 'auto-corrects indentation' do
     new_source = autocorrect_source(
-      cop, <<-RUBY.strip_indent
+      <<-RUBY.strip_indent
         a =
         if b ; end
       RUBY
@@ -93,7 +93,7 @@ describe RuboCop::Cop::Layout::IndentAssignment, :config do
 
     it 'auto-corrects indentation' do
       new_source = autocorrect_source(
-        cop, <<-RUBY.strip_indent
+        <<-RUBY.strip_indent
           a =
             if b ; end
         RUBY

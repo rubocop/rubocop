@@ -9,8 +9,7 @@ describe RuboCop::Cop::Layout::EmptyLines do
   end
 
   it 'auto-corrects consecutive empty lines' do
-    corrected = autocorrect_source(cop,
-                                   ['test = 5', '', '', '', 'top'])
+    corrected = autocorrect_source(['test = 5', '', '', '', 'top'])
     expect(corrected).to eq ['test = 5', '', 'top'].join("\n")
   end
 

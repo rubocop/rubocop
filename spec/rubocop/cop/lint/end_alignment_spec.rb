@@ -140,7 +140,7 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
     end
 
     it 'does auto-correction' do
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq(<<-RUBY.strip_indent)
         x = if a
               a1
@@ -169,7 +169,7 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
     end
 
     it "doesn't auto-correct" do
-      expect(autocorrect_source(cop, source))
+      expect(autocorrect_source(source))
         .to eq(source)
       expect(cop.offenses.map(&:corrected?)).to eq [false]
     end

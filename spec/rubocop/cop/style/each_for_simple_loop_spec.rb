@@ -61,12 +61,12 @@ describe RuboCop::Cop::Style::EachForSimpleLoop do
 
   context 'when using an inclusive range' do
     it 'autocorrects the source with inline block' do
-      corrected = autocorrect_source(cop, '(0..10).each {}')
+      corrected = autocorrect_source('(0..10).each {}')
       expect(corrected).to eq '11.times {}'
     end
 
     it 'autocorrects the source with multiline block' do
-      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
         (0..10).each do
         end
       RUBY
@@ -78,7 +78,7 @@ describe RuboCop::Cop::Style::EachForSimpleLoop do
     end
 
     it 'autocorrects the range not starting with zero' do
-      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
         (3..7).each do
         end
       RUBY
@@ -94,19 +94,19 @@ describe RuboCop::Cop::Style::EachForSimpleLoop do
         (3..7).each do |n|
         end
       RUBY
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq(source)
     end
   end
 
   context 'when using an exclusive range' do
     it 'autocorrects the source with inline block' do
-      corrected = autocorrect_source(cop, '(0...10).each {}')
+      corrected = autocorrect_source('(0...10).each {}')
       expect(corrected).to eq '10.times {}'
     end
 
     it 'autocorrects the source with multiline block' do
-      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
         (0...10).each do
         end
       RUBY
@@ -118,7 +118,7 @@ describe RuboCop::Cop::Style::EachForSimpleLoop do
     end
 
     it 'autocorrects the range not starting with zero' do
-      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
         (3...7).each do
         end
       RUBY
@@ -134,7 +134,7 @@ describe RuboCop::Cop::Style::EachForSimpleLoop do
         (3...7).each do |n|
         end
       RUBY
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq(source)
     end
   end

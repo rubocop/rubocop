@@ -47,7 +47,7 @@ describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment do
   end
 
   it 'autocorrects by adding a newline' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       # frozen_string_literal: true
       class Foo; end
     RUBY
@@ -59,7 +59,7 @@ describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment do
   end
 
   it 'autocorrects by adding a newline above the documentation' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       # frozen_string_literal: true
       # Documentation for Foo
       class Foo; end

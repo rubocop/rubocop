@@ -51,7 +51,7 @@ describe RuboCop::Cop::Layout::DotPosition, :config do
     end
 
     it 'auto-corrects trailing dot in multi-line call' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         something.
           method_name
       RUBY
@@ -62,7 +62,7 @@ describe RuboCop::Cop::Layout::DotPosition, :config do
     end
 
     it 'auto-corrects trailing dot in multi-line call without selector' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         something.
           (1)
       RUBY
@@ -73,7 +73,7 @@ describe RuboCop::Cop::Layout::DotPosition, :config do
     end
 
     it 'auto-corrects correct + opposite style' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         something
           .method_name
         something.
@@ -155,7 +155,7 @@ describe RuboCop::Cop::Layout::DotPosition, :config do
     end
 
     it 'auto-corrects leading dot in multi-line call' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         something
           .method_name
       RUBY
@@ -166,7 +166,7 @@ describe RuboCop::Cop::Layout::DotPosition, :config do
     end
 
     it 'auto-corrects leading dot in multi-line call without selector' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         something
           .(1)
       RUBY

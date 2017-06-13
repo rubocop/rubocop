@@ -46,7 +46,7 @@ describe RuboCop::Cop::Layout::AlignArray do
   end
 
   it 'auto-corrects alignment' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       array = [
         a,
          b,
@@ -72,7 +72,7 @@ describe RuboCop::Cop::Layout::AlignArray do
           [:l3,
            [:l4]]]]
     RUBY
-    new_source = autocorrect_source(cop, original_source)
+    new_source = autocorrect_source(original_source)
     expect(new_source).to eq(<<-RUBY.strip_indent)
       [:l1,
        [:l2,
@@ -90,7 +90,7 @@ describe RuboCop::Cop::Layout::AlignArray do
         [:l3,
          [:l4]]]]
     RUBY
-    new_source = autocorrect_source(cop, original_source)
+    new_source = autocorrect_source(original_source)
     expect(new_source).to eq(<<-RUBY.strip_indent)
       [:l1,
        [:l2,
@@ -105,7 +105,7 @@ describe RuboCop::Cop::Layout::AlignArray do
       array = [:bar, {
                whiz: 2, bang: 3 }, option: 3]
     RUBY
-    new_source = autocorrect_source(cop, original_source)
+    new_source = autocorrect_source(original_source)
     expect(new_source).to eq(original_source)
   end
 
@@ -126,7 +126,7 @@ describe RuboCop::Cop::Layout::AlignArray do
             }
       ]
     RUBY
-    new_source = autocorrect_source(cop, original_source)
+    new_source = autocorrect_source(original_source)
     expect(new_source).to eq(<<-RUBY.strip_indent)
       var = [
              { :type => 'something',

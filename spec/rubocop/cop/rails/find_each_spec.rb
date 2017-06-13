@@ -39,7 +39,7 @@ describe RuboCop::Cop::Rails::FindEach do
   end
 
   it 'auto-corrects each to find_each' do
-    new_source = autocorrect_source(cop, 'User.all.each { |u| u.x }')
+    new_source = autocorrect_source('User.all.each { |u| u.x }')
 
     expect(new_source).to eq('User.all.find_each { |u| u.x }')
   end

@@ -11,7 +11,7 @@ describe RuboCop::Cop::Performance::Sample do
 
     context 'corrects' do
       it "#{wrong} to #{right}" do
-        new_source = autocorrect_source(cop, "[1, 2, 3].#{wrong}")
+        new_source = autocorrect_source("[1, 2, 3].#{wrong}")
         expect(new_source).to eq("[1, 2, 3].#{right}")
       end
     end

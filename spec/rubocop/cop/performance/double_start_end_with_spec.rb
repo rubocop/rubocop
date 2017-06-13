@@ -30,7 +30,7 @@ describe RuboCop::Cop::Performance::DoubleStartEndWith do
           end
 
           it 'corrects to a single start_with?' do
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq('x.start_with?(a, b, "c", D)')
           end
@@ -68,7 +68,7 @@ describe RuboCop::Cop::Performance::DoubleStartEndWith do
           end
 
           it 'corrects to a single end_with?' do
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq('x.end_with?(a, b, "c", D)')
           end
@@ -132,7 +132,7 @@ describe RuboCop::Cop::Performance::DoubleStartEndWith do
           end
 
           it 'corrects to a single start_with?' do
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq('x.start_with?(a, b, "c", D)')
           end
@@ -156,7 +156,7 @@ describe RuboCop::Cop::Performance::DoubleStartEndWith do
           end
 
           it 'corrects to a single end_with?' do
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq('x.end_with?(a, b, "c", D)')
           end
@@ -182,7 +182,7 @@ describe RuboCop::Cop::Performance::DoubleStartEndWith do
           end
 
           it 'corrects to a single starts_with?' do
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq('x.starts_with?(a, b, "c", D)')
           end
@@ -222,7 +222,7 @@ describe RuboCop::Cop::Performance::DoubleStartEndWith do
           end
 
           it 'corrects to a single ends_with?' do
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq('x.ends_with?(a, b, "c", D)')
           end

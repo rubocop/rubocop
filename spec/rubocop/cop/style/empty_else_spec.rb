@@ -7,7 +7,7 @@ describe RuboCop::Cop::Style::EmptyElse do
   shared_examples 'auto-correct' do |keyword|
     context 'MissingElse is disabled' do
       it 'does auto-correction' do
-        expect(autocorrect_source(cop, source)).to eq(corrected_source)
+        expect(autocorrect_source(source)).to eq(corrected_source)
       end
     end
 
@@ -20,12 +20,12 @@ describe RuboCop::Cop::Style::EmptyElse do
 
         if ['both', keyword].include? missing_else_style
           it 'does not auto-correct' do
-            expect(autocorrect_source(cop, source)).to eq(source)
+            expect(autocorrect_source(source)).to eq(source)
             expect(cop.offenses.map(&:corrected?)).to eq [false]
           end
         else
           it 'does auto-correction' do
-            expect(autocorrect_source(cop, source)).to eq(corrected_source)
+            expect(autocorrect_source(source)).to eq(corrected_source)
           end
         end
       end

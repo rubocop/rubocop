@@ -43,13 +43,13 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
     end
 
     it 'auto-corrects unwanted comma in a method call' do
-      new_source = autocorrect_source(cop, 'some_method(a, b, c, )')
+      new_source = autocorrect_source('some_method(a, b, c, )')
       expect(new_source).to eq('some_method(a, b, c )')
     end
 
     it 'auto-corrects unwanted comma in a method call with hash parameters at' \
        ' the end' do
-      new_source = autocorrect_source(cop, 'some_method(a, b, c: 0, d: 1, )')
+      new_source = autocorrect_source('some_method(a, b, c: 0, d: 1, )')
       expect(new_source).to eq('some_method(a, b, c: 0, d: 1 )')
     end
   end
@@ -113,7 +113,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'auto-corrects unwanted comma in a method call with hash parameters' \
          ' at the end' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           some_method(
                         a,
                         b,
@@ -213,7 +213,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'auto-corrects missing comma in a method call with hash parameters' \
          ' at the end' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           some_method(
                         a,
                         b,
@@ -347,7 +347,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'auto-corrects missing comma in a method call with hash parameters' \
          ' at the end' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           some_method(
                         a,
                         b,

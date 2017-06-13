@@ -18,7 +18,7 @@ describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
     end
 
     it 'auto-corrects extra space' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         something  x
         a.something   y, z
       RUBY
@@ -40,7 +40,7 @@ describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
     end
 
     it 'auto-corrects missing space' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         something'hello'
         a.something'hello world'
       RUBY

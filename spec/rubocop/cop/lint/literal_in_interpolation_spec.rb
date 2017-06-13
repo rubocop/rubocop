@@ -31,20 +31,19 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
     end
 
     it "removes interpolation around #{literal}" do
-      corrected = autocorrect_source(cop, %("this is the \#{#{literal}}"))
+      corrected = autocorrect_source(%("this is the \#{#{literal}}"))
       expect(corrected).to eq(%("this is the #{expected}"))
     end
 
     it "removes interpolation around #{literal} when there is more text" do
       corrected =
-        autocorrect_source(cop, %("this is the \#{#{literal}} literally"))
+        autocorrect_source(%("this is the \#{#{literal}} literally"))
       expect(corrected).to eq(%("this is the #{expected} literally"))
     end
 
     it "removes interpolation around multiple #{literal}" do
       corrected =
-        autocorrect_source(cop,
-                           %("some \#{#{literal}} with \#{#{literal}} too"))
+        autocorrect_source(%("some \#{#{literal}} with \#{#{literal}} too"))
       expect(corrected).to eq(%("some #{expected} with #{expected} too"))
     end
 
@@ -52,7 +51,7 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
       context 'when literal interpolation is before non-literal' do
         it 'only remove interpolation around literal' do
           corrected =
-            autocorrect_source(cop, %("this is \#{#{literal}} with \#{a} now"))
+            autocorrect_source(%("this is \#{#{literal}} with \#{a} now"))
           expect(corrected).to eq(%("this is #{expected} with \#{a} now"))
         end
       end
@@ -60,7 +59,7 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
       context 'when literal interpolation is after non-literal' do
         it 'only remove interpolation around literal' do
           corrected =
-            autocorrect_source(cop, %("this is \#{a} with \#{#{literal}} now"))
+            autocorrect_source(%("this is \#{a} with \#{#{literal}} now"))
           expect(corrected).to eq(%("this is \#{a} with #{expected} now"))
         end
       end
@@ -92,7 +91,7 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
   it_behaves_like('literal interpolation', 1...2)
 
   it 'handles nested interpolations when auto-correction' do
-    corrected = autocorrect_source(cop, %("this is \#{"\#{1}"} silly"))
+    corrected = autocorrect_source(%("this is \#{"\#{1}"} silly"))
     # next iteration fixes this
     expect(corrected).to eq %("this is \#{"1"} silly")
   end
@@ -104,7 +103,7 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
     end
 
     it "does not try to autocorrect strings like #{keyword}" do
-      corrected = autocorrect_source(cop, %("this is the \#{#{keyword}} silly"))
+      corrected = autocorrect_source(%("this is the \#{#{keyword}} silly"))
 
       expect(corrected).to eq(%("this is the \#{#{keyword}} silly"))
     end
@@ -115,7 +114,7 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
     end
 
     it "auto-corrects literal interpolation after #{keyword}" do
-      corrected = autocorrect_source(cop, %("this is the \#{#{keyword}} \#{1}"))
+      corrected = autocorrect_source(%("this is the \#{#{keyword}} \#{1}"))
       expect(corrected).to eq(%("this is the \#{#{keyword}} 1"))
     end
   end
@@ -137,7 +136,7 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
     end
 
     it "should remove the interpolation and quotes around #{string}" do
-      corrected = autocorrect_source(cop, %("this is the \#{#{string}}"))
+      corrected = autocorrect_source(%("this is the \#{#{string}}"))
       expect(corrected).to eq(%("this is the #{string.gsub(/'|"/, '')}"))
     end
   end

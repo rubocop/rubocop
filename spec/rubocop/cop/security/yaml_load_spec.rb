@@ -30,7 +30,7 @@ describe RuboCop::Cop::Security::YAMLLoad, :config do
   end
 
   it 'autocorrects load to safe_load' do
-    expect(autocorrect_source(cop, '::YAML.load("-- foo")')).to eq(
+    expect(autocorrect_source('::YAML.load("-- foo")')).to eq(
       '::YAML.safe_load("-- foo")'
     )
   end

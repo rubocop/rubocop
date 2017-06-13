@@ -21,7 +21,7 @@ describe RuboCop::Cop::Style::MultilineIfModifier do
 
   shared_examples 'autocorrect' do |correct_code|
     it 'auto-corrects' do
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq(correct_code)
     end
   end

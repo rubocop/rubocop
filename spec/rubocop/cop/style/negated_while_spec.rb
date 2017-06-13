@@ -61,7 +61,7 @@ describe RuboCop::Cop::Style::NegatedWhile do
   end
 
   it 'autocorrects by replacing while not with until' do
-    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
       something while !x.even?
       something while(!x.even?)
     RUBY
@@ -72,7 +72,7 @@ describe RuboCop::Cop::Style::NegatedWhile do
   end
 
   it 'autocorrects by replacing until not with while' do
-    corrected = autocorrect_source(cop, 'something until !x.even?')
+    corrected = autocorrect_source('something until !x.even?')
     expect(corrected).to eq 'something while x.even?'
   end
 

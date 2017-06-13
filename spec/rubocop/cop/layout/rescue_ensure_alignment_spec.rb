@@ -72,7 +72,7 @@ describe RuboCop::Cop::Layout::RescueEnsureAlignment do
       end
 
       it 'auto-corrects' do
-        corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+        corrected = autocorrect_source(<<-RUBY.strip_indent)
           begin
             something
               #{keyword}

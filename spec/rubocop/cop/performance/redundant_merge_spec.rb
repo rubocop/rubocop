@@ -8,18 +8,18 @@ describe RuboCop::Cop::Performance::RedundantMerge, :config do
   end
 
   it 'autocorrects hash.merge!(a: 1)' do
-    new_source = autocorrect_source(cop, 'hash.merge!(a: 1)')
+    new_source = autocorrect_source('hash.merge!(a: 1)')
     expect(new_source).to eq 'hash[:a] = 1'
   end
 
   it 'autocorrects hash.merge!("abc" => "value")' do
-    new_source = autocorrect_source(cop, 'hash.merge!("abc" => "value")')
+    new_source = autocorrect_source('hash.merge!("abc" => "value")')
     expect(new_source).to eq 'hash["abc"] = "value"'
   end
 
   context 'when receiver is a local variable' do
     it 'autocorrects hash.merge!(a: 1, b: 2)' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         hash = {}
         hash.merge!(a: 1, b: 2)
       RUBY
@@ -33,14 +33,14 @@ describe RuboCop::Cop::Performance::RedundantMerge, :config do
 
   context 'when receiver is a method call' do
     it "doesn't autocorrect hash.merge!(a: 1, b: 2)" do
-      new_source = autocorrect_source(cop, 'hash.merge!(a: 1, b: 2)')
+      new_source = autocorrect_source('hash.merge!(a: 1, b: 2)')
       expect(new_source).to eq('hash.merge!(a: 1, b: 2)')
     end
   end
 
   context 'when receiver is implicit' do
     it "doesn't autocorrect" do
-      new_source = autocorrect_source(cop, 'merge!(foo: 1, bar: 2)')
+      new_source = autocorrect_source('merge!(foo: 1, bar: 2)')
       expect(new_source).to eq('merge!(foo: 1, bar: 2)')
     end
   end
@@ -60,7 +60,7 @@ describe RuboCop::Cop::Performance::RedundantMerge, :config do
           hash.merge!(a: 1, b: 2)
         end
       RUBY
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq(<<-RUBY.strip_indent)
         foo.each_with_object({}) do |f, hash|
@@ -78,7 +78,7 @@ describe RuboCop::Cop::Performance::RedundantMerge, :config do
           hash.merge!(a: 1, b: 2)
         end
       RUBY
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq(<<-RUBY.strip_indent)
         foo.each_with_object({}) do |f, hash|
@@ -97,7 +97,7 @@ describe RuboCop::Cop::Performance::RedundantMerge, :config do
           why_are_you_doing_this?
         end
       RUBY
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq(<<-RUBY.strip_indent)
         foo.each_with_object({}) do |f, hash|
@@ -128,7 +128,7 @@ describe RuboCop::Cop::Performance::RedundantMerge, :config do
           hash[:a].merge!(b: "")
         end
       RUBY
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq(<<-RUBY.strip_indent)
         foo.each_with_object(bar) do |f, hash|
@@ -144,7 +144,7 @@ describe RuboCop::Cop::Performance::RedundantMerge, :config do
           hash[:a][:b].merge!(c: "")
         end
       RUBY
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq(<<-RUBY.strip_indent)
         foo.each_with_object(bar) do |f, hash|
@@ -160,7 +160,7 @@ describe RuboCop::Cop::Performance::RedundantMerge, :config do
           hash.bar.merge!(c: "")
         end
       RUBY
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq(<<-RUBY.strip_indent)
         foo.each_with_object(bar) do |f, hash|
@@ -174,7 +174,6 @@ describe RuboCop::Cop::Performance::RedundantMerge, :config do
     context "when there is a modifier #{kw}, and more than 1 pair" do
       it "autocorrects it to an #{kw} block" do
         new_source = autocorrect_source(
-          cop,
           <<-RUBY.strip_indent
             hash = {}
             hash.merge!(a: 1, b: 2) #{kw} condition1 && condition2
@@ -192,7 +191,6 @@ describe RuboCop::Cop::Performance::RedundantMerge, :config do
       context 'when original code was indented' do
         it 'maintains proper indentation' do
           new_source = autocorrect_source(
-            cop,
             <<-RUBY.strip_indent
               hash = {}
               begin
@@ -216,7 +214,7 @@ describe RuboCop::Cop::Performance::RedundantMerge, :config do
 
   context 'when code is indented, and there is more than 1 pair' do
     it 'indents the autocorrected code properly' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         hash = {}
         begin
           hash.merge!(a: 1, b: 2)

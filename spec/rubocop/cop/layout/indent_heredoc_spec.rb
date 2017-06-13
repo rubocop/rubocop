@@ -10,7 +10,7 @@ describe RuboCop::Cop::Layout::IndentHeredoc, :config do
     end
 
     it "autocorrects for #{name}" do
-      corrected = autocorrect_source_with_loop(cop, code.strip_indent)
+      corrected = autocorrect_source_with_loop(code.strip_indent)
       expect(corrected).to eq(correction.strip_indent)
     end
   end
@@ -36,7 +36,7 @@ describe RuboCop::Cop::Layout::IndentHeredoc, :config do
   shared_examples :warning do |message|
     it 'warns' do
       correct = lambda do
-        autocorrect_source(cop, <<-RUBY.strip_indent)
+        autocorrect_source(<<-RUBY.strip_indent)
           <<-RUBY2
           foo
           RUBY2

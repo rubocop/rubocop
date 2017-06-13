@@ -29,12 +29,12 @@ describe RuboCop::Cop::Lint::DeprecatedClassMethods do
   end
 
   it 'auto-corrects File.exists? with File.exist?' do
-    new_source = autocorrect_source(cop, 'File.exists?(something)')
+    new_source = autocorrect_source('File.exists?(something)')
     expect(new_source).to eq('File.exist?(something)')
   end
 
   it 'auto-corrects Dir.exists? with Dir.exist?' do
-    new_source = autocorrect_source(cop, 'Dir.exists?(something)')
+    new_source = autocorrect_source('Dir.exists?(something)')
     expect(new_source).to eq('Dir.exist?(something)')
   end
 end

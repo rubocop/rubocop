@@ -23,7 +23,7 @@ describe RuboCop::Cop::Style::SymbolLiteral do
   end
 
   it 'auto-corrects by removing quotes' do
-    new_source = autocorrect_source(cop, '{ :"ala" => 1, :"bala" => 2 }')
+    new_source = autocorrect_source('{ :"ala" => 1, :"bala" => 2 }')
     expect(new_source).to eq('{ :ala => 1, :bala => 2 }')
   end
 end

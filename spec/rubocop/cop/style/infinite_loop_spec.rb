@@ -37,7 +37,7 @@ describe RuboCop::Cop::Style::InfiniteLoop do
   shared_examples_for 'auto-corrector' do |keyword, lit|
     it "auto-corrects single line modifier #{keyword}" do
       new_source =
-        autocorrect_source(cop, "something += 1 #{keyword} #{lit} # comment")
+        autocorrect_source("something += 1 #{keyword} #{lit} # comment")
       expect(new_source).to eq('loop { something += 1 } # comment')
     end
 
@@ -47,7 +47,7 @@ describe RuboCop::Cop::Style::InfiniteLoop do
       end
 
       it "auto-corrects multi-line modifier #{keyword} and indents correctly" do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           # comment
           something 1, # comment 1
               # comment 2
@@ -65,7 +65,7 @@ describe RuboCop::Cop::Style::InfiniteLoop do
     end
 
     it "auto-corrects begin-end-#{keyword} with one statement" do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_margin('|'))
+      new_source = autocorrect_source(<<-RUBY.strip_margin('|'))
         |  begin # comment 1
         |    something += 1 # comment 2
         |  end #{keyword} #{lit} # comment 3
@@ -78,7 +78,7 @@ describe RuboCop::Cop::Style::InfiniteLoop do
     end
 
     it "auto-corrects begin-end-#{keyword} with two statements" do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_margin('|'))
+      new_source = autocorrect_source(<<-RUBY.strip_margin('|'))
         | begin
         |  something += 1
         |  something_else += 1
@@ -94,13 +94,12 @@ describe RuboCop::Cop::Style::InfiniteLoop do
 
     it "auto-corrects single line modifier #{keyword} with and" do
       new_source =
-        autocorrect_source(cop,
-                           "something and something_else #{keyword} #{lit}")
+        autocorrect_source("something and something_else #{keyword} #{lit}")
       expect(new_source).to eq('loop { something and something_else }')
     end
 
     it "auto-corrects the usage of #{keyword} with do" do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         #{keyword} #{lit} do
         end
       RUBY
@@ -111,7 +110,7 @@ describe RuboCop::Cop::Style::InfiniteLoop do
     end
 
     it "auto-corrects the usage of #{keyword} without do" do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         #{keyword} #{lit}
         end
       RUBY

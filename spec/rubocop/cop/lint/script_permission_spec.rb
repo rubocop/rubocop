@@ -68,7 +68,7 @@ describe RuboCop::Cop::Lint::ScriptPermission do
       it 'adds execute permissions to the file' do
         File.write(file.path, '#!/usr/bin/ruby')
 
-        autocorrect_source(cop, file.read, file)
+        autocorrect_source(file.read, file)
 
         expect(file.stat.executable?).to be_truthy
       end

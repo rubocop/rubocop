@@ -57,17 +57,17 @@ describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
     end
 
     it 'auto-corrects unwanted blank lines' do
-      new_source = autocorrect_source(cop, ['x = 0', '', '', '', ''])
+      new_source = autocorrect_source(['x = 0', '', '', '', ''])
       expect(new_source).to eq(['x = 0', ''].join("\n"))
     end
 
     it 'auto-corrects unwanted blank lines in an empty file' do
-      new_source = autocorrect_source(cop, ['', '', '', '', ''])
+      new_source = autocorrect_source(['', '', '', '', ''])
       expect(new_source).to eq(['', ''].join("\n"))
     end
 
     it 'auto-corrects even if some lines have space' do
-      new_source = autocorrect_source(cop, ['x = 0', '', '  ', '', ''])
+      new_source = autocorrect_source(['x = 0', '', '  ', '', ''])
       expect(new_source).to eq(['x = 0', ''].join("\n"))
     end
   end
@@ -104,22 +104,22 @@ describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
     end
 
     it 'auto-corrects unwanted blank lines' do
-      new_source = autocorrect_source(cop, ['x = 0', '', '', '', ''])
+      new_source = autocorrect_source(['x = 0', '', '', '', ''])
       expect(new_source).to eq(['x = 0', '', ''].join("\n"))
     end
 
     it 'auto-corrects unwanted blank lines in an empty file' do
-      new_source = autocorrect_source(cop, ['', '', '', '', ''])
+      new_source = autocorrect_source(['', '', '', '', ''])
       expect(new_source).to eq(['', '', ''].join("\n"))
     end
 
     it 'auto-corrects missing blank line' do
-      new_source = autocorrect_source(cop, ['x = 0', ''])
+      new_source = autocorrect_source(['x = 0', ''])
       expect(new_source).to eq(['x = 0', '', ''].join("\n"))
     end
 
     it 'auto-corrects missing newline' do
-      new_source = autocorrect_source(cop, ['x = 0'])
+      new_source = autocorrect_source(['x = 0'])
       expect(new_source).to eq(['x = 0', '', ''].join("\n"))
     end
   end

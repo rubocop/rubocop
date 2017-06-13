@@ -72,7 +72,7 @@ describe RuboCop::Cop::Layout::IndentationWidth do
 
     describe '#autocorrect' do
       it 'corrects bad indentation' do
-        corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+        corrected = autocorrect_source(<<-RUBY.strip_indent)
           if a1
              b1
              b1
@@ -185,7 +185,7 @@ describe RuboCop::Cop::Layout::IndentationWidth do
 
       describe '#autocorrect' do
         it 'corrects bad indentation' do
-          corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+          corrected = autocorrect_source(<<-RUBY.strip_indent)
             if a1
                b1
                b1
@@ -228,11 +228,11 @@ describe RuboCop::Cop::Layout::IndentationWidth do
             end
           RUBY
 
-          expect(autocorrect_source(cop, source)).to eq source
+          expect(autocorrect_source(source)).to eq source
         end
 
         it 'does not indent heredoc strings' do
-          corrected = autocorrect_source(cop, <<-'RUBY'.strip_indent)
+          corrected = autocorrect_source(<<-'RUBY'.strip_indent)
             module Foo
             module Bar
               SOMETHING = <<GOO
@@ -272,7 +272,7 @@ describe RuboCop::Cop::Layout::IndentationWidth do
               array_list << var1
             end
           RUBY
-          corrected = autocorrect_source(cop, src)
+          corrected = autocorrect_source(src)
           expect(corrected)
             .to eq <<-RUBY.strip_indent
               var1 = nil
@@ -293,7 +293,7 @@ describe RuboCop::Cop::Layout::IndentationWidth do
               rescue ; end # consume any exception
             end
           RUBY
-          corrected = autocorrect_source(cop, src)
+          corrected = autocorrect_source(src)
           expect(corrected).to eq src
         end
 
@@ -307,16 +307,16 @@ describe RuboCop::Cop::Layout::IndentationWidth do
                   :attr2 => Other.get_value(),
                   :attr3 => Another.get_value()) }
           RUBY
-          corrected = autocorrect_source(cop, src)
+          corrected = autocorrect_source(src)
           expect(corrected).to eq src
         end
 
         it 'handles lines with only whitespace' do
-          corrected = autocorrect_source(cop, ['def x',
-                                               '    y',
-                                               ' ',
-                                               'rescue',
-                                               'end'])
+          corrected = autocorrect_source(['def x',
+                                          '    y',
+                                          ' ',
+                                          'rescue',
+                                          'end'])
 
           expect(corrected).to eq ['def x',
                                    '  y',
@@ -559,7 +559,7 @@ describe RuboCop::Cop::Layout::IndentationWidth do
             end
 
             it 'autocorrects bad indentation' do
-              corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+              corrected = autocorrect_source(<<-RUBY.strip_indent)
                 var = if a
                   b
                 end

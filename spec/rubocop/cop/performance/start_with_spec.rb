@@ -5,7 +5,7 @@ describe RuboCop::Cop::Performance::StartWith do
 
   shared_examples 'different match methods' do |method|
     it "autocorrects #{method} /\\Aabc/" do
-      new_source = autocorrect_source(cop, "str#{method} /\\Aabc/")
+      new_source = autocorrect_source("str#{method} /\\Aabc/")
       expect(new_source).to eq "str.start_with?('abc')"
     end
 
@@ -14,7 +14,7 @@ describe RuboCop::Cop::Performance::StartWith do
     # but in a regex, it's an anchor on a word boundary
     %w[a e f r t v].each do |str|
       it "autocorrects #{method} /\\A\\#{str}/" do
-        new_source = autocorrect_source(cop, "str#{method} /\\A\\#{str}/")
+        new_source = autocorrect_source("str#{method} /\\A\\#{str}/")
         expect(new_source).to eq %{str.start_with?("\\#{str}")}
       end
     end
@@ -22,7 +22,7 @@ describe RuboCop::Cop::Performance::StartWith do
     # regexp metacharacters
     %w[. * ? $ ^ |].each do |str|
       it "autocorrects #{method} /\\A\\#{str}/" do
-        new_source = autocorrect_source(cop, "str#{method} /\\A\\#{str}/")
+        new_source = autocorrect_source("str#{method} /\\A\\#{str}/")
         expect(new_source).to eq "str.start_with?('#{str}')"
       end
 
@@ -43,7 +43,7 @@ describe RuboCop::Cop::Performance::StartWith do
     # characters with no special meaning whatsoever
     %w[i j l m o q y].each do |str|
       it "autocorrects #{method} /\\A\\#{str}/" do
-        new_source = autocorrect_source(cop, "str#{method} /\\A\\#{str}/")
+        new_source = autocorrect_source("str#{method} /\\A\\#{str}/")
         expect(new_source).to eq "str.start_with?('#{str}')"
       end
     end
@@ -56,7 +56,7 @@ describe RuboCop::Cop::Performance::StartWith do
     end
 
     it "autocorrects #{method} /\\A\\\\/" do
-      new_source = autocorrect_source(cop, "str#{method} /\\A\\\\/")
+      new_source = autocorrect_source("str#{method} /\\A\\\\/")
       expect(new_source).to eq("str.start_with?('\\\\')")
     end
   end

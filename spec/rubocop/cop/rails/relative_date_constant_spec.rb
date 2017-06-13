@@ -73,7 +73,7 @@ describe RuboCop::Cop::Rails::RelativeDateConstant do
   end
 
   it 'autocorrects' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       class SomeClass
         EXPIRED_AT = 1.week.since
       end

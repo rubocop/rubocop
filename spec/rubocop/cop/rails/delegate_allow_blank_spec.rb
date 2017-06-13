@@ -20,7 +20,7 @@ describe RuboCop::Cop::Rails::DelegateAllowBlank do
 
   it 'autocorrects allow_blank to allow_nil' do
     source = 'delegate :foo, to: :bar, allow_blank: true'
-    new_source = autocorrect_source(cop, source)
+    new_source = autocorrect_source(source)
 
     expect(new_source).to eq('delegate :foo, to: :bar, allow_nil: true')
   end

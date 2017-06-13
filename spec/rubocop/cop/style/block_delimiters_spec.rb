@@ -205,7 +205,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
         }
         RUBY
 
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq(corrected_source)
       end
 
@@ -216,7 +216,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
         }
         RUBY
 
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq(corrected_source)
       end
     end
@@ -229,7 +229,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
         }
       RUBY
 
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(source)
     end
 
@@ -241,7 +241,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
         end
       RUBY
 
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(source)
     end
 
@@ -258,7 +258,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
         }
       RUBY
 
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(expected_source)
     end
 
@@ -275,7 +275,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
         }
       RUBY
 
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(expected_source)
     end
 
@@ -293,7 +293,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
         })
       RUBY
 
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(expected_source)
     end
   end
@@ -309,13 +309,13 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
     include_examples 'syntactic styles'
 
     it 'auto-corrects do and end for single line blocks to { and }' do
-      new_source = autocorrect_source(cop, 'block do |x| end')
+      new_source = autocorrect_source('block do |x| end')
       expect(new_source).to eq('block { |x| }')
     end
 
     it 'does not auto-correct do-end if {} would change the meaning' do
       src = "s.subspec 'Subspec' do |sp| end"
-      new_source = autocorrect_source(cop, src)
+      new_source = autocorrect_source(src)
       expect(new_source).to eq(src)
     end
 
@@ -325,7 +325,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
           bar a
         }
       RUBY
-      new_source = autocorrect_source(cop, src)
+      new_source = autocorrect_source(src)
       expect(new_source).to eq(src)
     end
 
@@ -416,7 +416,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
           end
         RUBY
 
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq(expected_source)
       end
 
@@ -427,7 +427,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
           }}
         RUBY
 
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq(<<-RUBY.strip_indent)
           (0..3).each do |a| a.times do
             puts a
@@ -441,7 +441,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
             something
           }, arg3: :another_value
         RUBY
-        new_source = autocorrect_source(cop, src)
+        new_source = autocorrect_source(src)
         expect(new_source).to eq(src)
       end
     end
@@ -470,7 +470,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
         each do |x|
         end.map(&:to_s)
       RUBY
-      new_source = autocorrect_source(cop, src)
+      new_source = autocorrect_source(src)
       expect(new_source).to eq(<<-RUBY.strip_indent)
         each { |x|
         }.map(&:to_s)

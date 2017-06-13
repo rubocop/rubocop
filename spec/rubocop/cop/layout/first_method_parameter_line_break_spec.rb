@@ -22,7 +22,7 @@ describe RuboCop::Cop::Layout::FirstMethodParameterLineBreak do
     end
 
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq([
         'def foo(',
@@ -54,7 +54,7 @@ describe RuboCop::Cop::Layout::FirstMethodParameterLineBreak do
     end
 
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq([
         'def self.foo(',
@@ -115,7 +115,7 @@ describe RuboCop::Cop::Layout::FirstMethodParameterLineBreak do
     end
 
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq([
         'def foo(',

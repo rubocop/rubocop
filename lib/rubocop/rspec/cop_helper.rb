@@ -41,11 +41,11 @@ module CopHelper
     RuboCop::ProcessedSource.new(source, ruby_version, file)
   end
 
-  def autocorrect_source_file(cop, source)
-    Tempfile.open('tmp') { |f| autocorrect_source(cop, source, f) }
+  def autocorrect_source_file(source)
+    Tempfile.open('tmp') { |f| autocorrect_source(source, f) }
   end
 
-  def autocorrect_source(cop, source, file = nil)
+  def autocorrect_source(source, file = nil)
     cop.instance_variable_get(:@options)[:auto_correct] = true
     processed_source = parse_source(source, file)
     _investigate(cop, processed_source)
@@ -55,10 +55,10 @@ module CopHelper
     corrector.rewrite
   end
 
-  def autocorrect_source_with_loop(cop, source, file = nil)
+  def autocorrect_source_with_loop(source, file = nil)
     loop do
       cop.instance_variable_set(:@corrections, [])
-      new_source = autocorrect_source(cop, source, file)
+      new_source = autocorrect_source(source, file)
       return new_source if new_source == source
       source = new_source
     end

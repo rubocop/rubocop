@@ -33,7 +33,7 @@ describe RuboCop::Cop::Style::YodaCondition do
   shared_examples 'autocorrect' do |code, corrected|
     let(:source) { code }
     it 'autocorrects code' do
-      expect(autocorrect_source(cop, source)).to eq(corrected)
+      expect(autocorrect_source(source)).to eq(corrected)
     end
   end
 

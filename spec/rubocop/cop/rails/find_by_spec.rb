@@ -20,13 +20,13 @@ describe RuboCop::Cop::Rails::FindBy do
   end
 
   it 'autocorrects where.take to find_by' do
-    new_source = autocorrect_source(cop, 'User.where(id: x).take')
+    new_source = autocorrect_source('User.where(id: x).take')
 
     expect(new_source).to eq('User.find_by(id: x)')
   end
 
   it 'does not autocorrect where.first' do
-    new_source = autocorrect_source(cop, 'User.where(id: x).first')
+    new_source = autocorrect_source('User.where(id: x).first')
 
     expect(new_source).to eq('User.where(id: x).first')
   end

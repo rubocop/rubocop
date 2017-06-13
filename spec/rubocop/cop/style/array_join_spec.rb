@@ -12,22 +12,19 @@ describe RuboCop::Cop::Style::ArrayJoin do
 
   it "autocorrects '*' to 'join' when there are spaces" do
     corrected =
-      autocorrect_source(cop,
-                         '%w(one two three) * ", "')
+      autocorrect_source('%w(one two three) * ", "')
     expect(corrected).to eq '%w(one two three).join(", ")'
   end
 
   it "autocorrects '*' to 'join' when there are no spaces" do
     corrected =
-      autocorrect_source(cop,
-                         '%w(one two three)*", "')
+      autocorrect_source('%w(one two three)*", "')
     expect(corrected).to eq '%w(one two three).join(", ")'
   end
 
   it "autocorrects '*' to 'join' when setting to a variable" do
     corrected =
-      autocorrect_source(cop,
-                         'foo = %w(one two three)*", "')
+      autocorrect_source('foo = %w(one two three)*", "')
     expect(corrected).to eq 'foo = %w(one two three).join(", ")'
   end
 

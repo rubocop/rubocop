@@ -38,7 +38,7 @@ describe RuboCop::Cop::Layout::SpaceInsideParens do
   end
 
   it 'auto-corrects unwanted space' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       f( 3)
       g = ( a + 3 )
     RUBY

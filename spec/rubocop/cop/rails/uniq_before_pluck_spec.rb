@@ -11,7 +11,7 @@ describe RuboCop::Cop::Rails::UniqBeforePluck, :config do
           expect(cop.messages).to eq(["Use `#{method}` before `pluck`."])
           expect(cop.highlights).to eq([method])
           corrected_source = corrected || "Model.#{method}.pluck(:id)"
-          expect(autocorrect_source(cop, source)).to eq(corrected_source)
+          expect(autocorrect_source(source)).to eq(corrected_source)
         end
       else
         it "ignores pluck without errors in #{source}" do

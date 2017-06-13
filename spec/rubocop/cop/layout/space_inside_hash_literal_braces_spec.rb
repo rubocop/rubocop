@@ -19,7 +19,7 @@ describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
     end
 
     it 'auto-corrects unwanted space' do
-      new_source = autocorrect_source(cop, 'h = { }')
+      new_source = autocorrect_source('h = { }')
       expect(new_source).to eq('h = {}')
     end
   end
@@ -39,7 +39,7 @@ describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
     end
 
     it 'auto-corrects missing space' do
-      new_source = autocorrect_source(cop, 'h = {}')
+      new_source = autocorrect_source('h = {}')
       expect(new_source).to eq('h = { }')
     end
   end
@@ -64,7 +64,7 @@ describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
   end
 
   it 'auto-corrects missing space' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       h = {a: 1, b: 2}
       h = {a => 1 }
     RUBY
@@ -92,7 +92,7 @@ describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
     end
 
     it 'auto-corrects unwanted space' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         h = { a: 1, b: 2 }
         h = {a => 1 }
       RUBY
@@ -151,7 +151,7 @@ describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
     end
 
     it 'auto-corrects hashes with no space' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         h = {a: 1, b: 2}
         h = {a => 1 }
       RUBY
@@ -162,7 +162,7 @@ describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
     end
 
     it 'auto-corrects nested hashes with spaces' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         h = { a: { a: 1, b: 2 } }
         h = {a => method { 1 } }
       RUBY

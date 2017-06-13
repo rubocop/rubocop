@@ -19,12 +19,12 @@ describe RuboCop::Cop::Layout::SpaceBeforeSemicolon do
   end
 
   it 'auto-corrects space before semicolon' do
-    new_source = autocorrect_source(cop, 'x = 1 ; y = 2')
+    new_source = autocorrect_source('x = 1 ; y = 2')
     expect(new_source).to eq('x = 1; y = 2')
   end
 
   it 'handles more than one space before a semicolon' do
-    new_source = autocorrect_source(cop, 'x = 1  ; y = 2')
+    new_source = autocorrect_source('x = 1  ; y = 2')
     expect(new_source).to eq('x = 1; y = 2')
   end
 

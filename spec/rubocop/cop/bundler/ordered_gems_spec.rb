@@ -38,7 +38,7 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
     end
 
     it 'autocorrects' do
-      new_source = autocorrect_source_with_loop(cop, source)
+      new_source = autocorrect_source_with_loop(source)
       expect(new_source).to eq(<<-RUBY.strip_indent)
         gem 'rspec'
         gem 'rubocop'
@@ -75,7 +75,7 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
     end
 
     it 'autocorrects' do
-      new_source = autocorrect_source_with_loop(cop, source)
+      new_source = autocorrect_source_with_loop(source)
       expect(new_source).to eq(<<-RUBY.strip_indent)
         gem 'rspec'
         gem 'rubocop',
@@ -126,7 +126,7 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
     end
 
     it 'autocorrects' do
-      new_source = autocorrect_source_with_loop(cop, source)
+      new_source = autocorrect_source_with_loop(source)
       expect(new_source).to eq(<<-RUBY.strip_indent)
         gem "a"
         gem "b"
@@ -179,7 +179,7 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
       end
 
       it 'autocorrects' do
-        new_source = autocorrect_source_with_loop(cop, source)
+        new_source = autocorrect_source_with_loop(source)
         expect(new_source).to eq(<<-RUBY.strip_indent)
           # For
           # test
@@ -208,7 +208,7 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
     end
 
     it 'autocorrects' do
-      new_source = autocorrect_source_with_loop(cop, source)
+      new_source = autocorrect_source_with_loop(source)
       expect(new_source).to eq(<<-RUBY.strip_indent)
         gem 'pry'
         gem 'rspec'   # For test
@@ -250,7 +250,7 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
     end
 
     it 'autocorrects' do
-      new_source = autocorrect_source_with_loop(cop, source)
+      new_source = autocorrect_source_with_loop(source)
       expect(new_source).to eq(<<-RUBY.strip_indent)
         gem 'a'
         gem 'Z'

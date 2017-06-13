@@ -136,22 +136,22 @@ describe RuboCop::Cop::Style::UnneededInterpolation do
   end
 
   it 'autocorrects "#{1 + 1; 2 + 2}"' do
-    corrected = autocorrect_source(cop, ['"#{1 + 1; 2 + 2}"'])
+    corrected = autocorrect_source(['"#{1 + 1; 2 + 2}"'])
     expect(corrected).to eq '(1 + 1; 2 + 2).to_s'
   end
 
   it 'autocorrects "#@var"' do
-    corrected = autocorrect_source(cop, ['"#@var"'])
+    corrected = autocorrect_source(['"#@var"'])
     expect(corrected).to eq '@var.to_s'
   end
 
   it 'autocorrects "#{var}"' do
-    corrected = autocorrect_source(cop, ['var = 1; "#{var}"'])
+    corrected = autocorrect_source(['var = 1; "#{var}"'])
     expect(corrected).to eq 'var = 1; var.to_s'
   end
 
   it 'autocorrects "#{@var}"' do
-    corrected = autocorrect_source(cop, ['"#{@var}"'])
+    corrected = autocorrect_source(['"#{@var}"'])
     expect(corrected).to eq '@var.to_s'
   end
 end

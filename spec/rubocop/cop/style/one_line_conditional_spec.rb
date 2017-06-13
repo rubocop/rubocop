@@ -21,7 +21,7 @@ describe RuboCop::Cop::Style::OneLineConditional do
 
   shared_examples 'autocorrect' do |correct_code|
     it 'auto-corrects' do
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq(correct_code)
     end
   end
@@ -68,15 +68,14 @@ describe RuboCop::Cop::Style::OneLineConditional do
      && ||].each do |operator|
     it 'parenthesizes the expression if it is preceded by an operator' do
       corrected =
-        autocorrect_source(cop, "a #{operator} if cond then run else dont end")
+        autocorrect_source("a #{operator} if cond then run else dont end")
       expect(corrected).to eq("a #{operator} (cond ? run : dont)")
     end
   end
 
   shared_examples 'changed precedence' do |expr|
     it "adds parentheses around `#{expr}`" do
-      corrected = autocorrect_source(cop,
-                                     "if #{expr} then #{expr} else #{expr} end")
+      corrected = autocorrect_source("if #{expr} then #{expr} else #{expr} end")
       expect(corrected).to eq("(#{expr}) ? (#{expr}) : (#{expr})")
     end
   end
@@ -94,13 +93,13 @@ describe RuboCop::Cop::Style::OneLineConditional do
   it 'does not parenthesize expressions when they do not contain method ' \
      'calls with unparenthesized arguments' do
     corrected =
-      autocorrect_source(cop, 'if a(0) then puts(1) else yield(2) end')
+      autocorrect_source('if a(0) then puts(1) else yield(2) end')
     expect(corrected).to eq('a(0) ? puts(1) : yield(2)')
   end
 
   it 'does not parenthesize expressions when they contain unparenthesized ' \
      'operator method calls' do
-    corrected = autocorrect_source(cop, 'if 0 + 0 then 1 + 1 else 2 + 2 end')
+    corrected = autocorrect_source('if 0 + 0 then 1 + 1 else 2 + 2 end')
     expect(corrected).to eq('0 + 0 ? 1 + 1 : 2 + 2')
   end
 end

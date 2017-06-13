@@ -52,7 +52,7 @@ describe RuboCop::Cop::Style::ColonMethodCall do
   end
 
   it 'auto-corrects "::" with "."' do
-    new_source = autocorrect_source(cop, 'test::method')
+    new_source = autocorrect_source('test::method')
     expect(new_source).to eq('test.method')
   end
 end

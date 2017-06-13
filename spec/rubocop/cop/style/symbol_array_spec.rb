@@ -32,23 +32,23 @@ describe RuboCop::Cop::Style::SymbolArray, :config do
     end
 
     it 'autocorrects arrays of symbols' do
-      new_source = autocorrect_source(cop, '[:one, :two, :three]')
+      new_source = autocorrect_source('[:one, :two, :three]')
       expect(new_source).to eq('%i(one two three)')
     end
 
     it 'autocorrects arrays of symbols with new line' do
-      new_source = autocorrect_source(cop, "[:one,\n:two, :three,\n:four]")
+      new_source = autocorrect_source("[:one,\n:two, :three,\n:four]")
       expect(new_source).to eq("%i(one \ntwo three \nfour)")
     end
 
     it 'uses %I when appropriate' do
-      new_source = autocorrect_source(cop, '[:"\\t", :"\\n", :three]')
+      new_source = autocorrect_source('[:"\\t", :"\\n", :three]')
       expect(new_source).to eq('%I(\\t \\n three)')
     end
 
     it "doesn't break when a symbol contains )" do
       source = '[:one, :")", :three, :"(", :"]", :"["]'
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq('%i(one \\) three \\( ] [)')
     end
 
@@ -109,7 +109,7 @@ describe RuboCop::Cop::Style::SymbolArray, :config do
 
       it 'autocorrects an array with delimiters' do
         source = '[:one, :")", :three, :"(", :"]", :"["]'
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq('%i[one ) three ( \\] \\[]')
       end
     end
@@ -130,7 +130,7 @@ describe RuboCop::Cop::Style::SymbolArray, :config do
     end
 
     it 'autocorrects an array starting with %i' do
-      new_source = autocorrect_source(cop, '%i(one @two $three four-five)')
+      new_source = autocorrect_source('%i(one @two $three four-five)')
       expect(new_source).to eq("[:one, :@two, :$three, :'four-five']")
     end
   end

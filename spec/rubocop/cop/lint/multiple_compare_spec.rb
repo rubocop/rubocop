@@ -16,7 +16,7 @@ describe RuboCop::Cop::Lint::MultipleCompare do
     end
 
     it 'autocorrects' do
-      new_source = autocorrect_source(cop, bad_source)
+      new_source = autocorrect_source(bad_source)
       expect(new_source).to eq(good_source)
     end
 

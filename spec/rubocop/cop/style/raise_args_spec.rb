@@ -15,7 +15,7 @@ describe RuboCop::Cop::Style::RaiseArgs, :config do
       end
 
       it 'auto-corrects to compact style' do
-        new_source = autocorrect_source(cop, 'raise RuntimeError, msg')
+        new_source = autocorrect_source('raise RuntimeError, msg')
         expect(new_source).to eq('raise RuntimeError.new(msg)')
       end
     end
@@ -36,7 +36,7 @@ describe RuboCop::Cop::Style::RaiseArgs, :config do
       end
 
       it 'auto-corrects to compact style' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           if a
             raise RuntimeError, msg
           else
@@ -62,8 +62,7 @@ describe RuboCop::Cop::Style::RaiseArgs, :config do
       end
 
       it 'auto-corrects to compact style' do
-        new_source = autocorrect_source(cop,
-                                        ['raise RuntimeError, msg, caller'])
+        new_source = autocorrect_source(['raise RuntimeError, msg, caller'])
         expect(new_source).to eq('raise RuntimeError.new(msg, caller)')
       end
     end
@@ -93,7 +92,7 @@ describe RuboCop::Cop::Style::RaiseArgs, :config do
         end
 
         it 'auto-corrects to exploded style' do
-          new_source = autocorrect_source(cop, ['raise Ex.new(msg)'])
+          new_source = autocorrect_source(['raise Ex.new(msg)'])
           expect(new_source).to eq('raise Ex, msg')
         end
       end
@@ -110,7 +109,7 @@ describe RuboCop::Cop::Style::RaiseArgs, :config do
         end
 
         it 'auto-corrects to exploded style' do
-          new_source = autocorrect_source(cop, ['raise Ex.new'])
+          new_source = autocorrect_source(['raise Ex.new'])
           expect(new_source).to eq('raise Ex')
         end
       end
@@ -130,7 +129,7 @@ describe RuboCop::Cop::Style::RaiseArgs, :config do
       end
 
       it 'auto-corrects to exploded style' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           if a
             raise RuntimeError, msg
           else

@@ -33,7 +33,7 @@ describe RuboCop::Cop::Style::NestedParenthesizedCalls do
       end
 
       it 'auto-corrects by adding parentheses' do
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq('puts(compute(something))')
       end
     end
@@ -47,7 +47,7 @@ describe RuboCop::Cop::Style::NestedParenthesizedCalls do
       end
 
       it 'auto-corrects by adding parentheses' do
-        new_source = autocorrect_source(cop, 'puts(compute first, second)')
+        new_source = autocorrect_source('puts(compute first, second)')
         expect(new_source).to eq('puts(compute(first, second))')
       end
     end

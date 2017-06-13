@@ -5,79 +5,78 @@ describe RuboCop::Cop::Performance::Casecmp do
 
   shared_examples 'selectors' do |selector|
     it "autocorrects str.#{selector} ==" do
-      new_source = autocorrect_source(cop, "str.#{selector} == 'string'")
+      new_source = autocorrect_source("str.#{selector} == 'string'")
       expect(new_source).to eq "str.casecmp('string').zero?"
     end
 
     it "autocorrects str.#{selector} == with parens around arg" do
-      new_source = autocorrect_source(cop, "str.#{selector} == ('string')")
+      new_source = autocorrect_source("str.#{selector} == ('string')")
       expect(new_source).to eq "str.casecmp('string').zero?"
     end
 
     it "autocorrects str.#{selector} !=" do
-      new_source = autocorrect_source(cop, "str.#{selector} != 'string'")
+      new_source = autocorrect_source("str.#{selector} != 'string'")
       expect(new_source).to eq "!str.casecmp('string').zero?"
     end
 
     it "autocorrects str.#{selector} != with parens around arg" do
-      new_source = autocorrect_source(cop, "str.#{selector} != ('string')")
+      new_source = autocorrect_source("str.#{selector} != ('string')")
       expect(new_source).to eq "!str.casecmp('string').zero?"
     end
 
     it "autocorrects str.#{selector}.eql? without parens" do
-      new_source = autocorrect_source(cop, "str.#{selector}.eql? 'string'")
+      new_source = autocorrect_source("str.#{selector}.eql? 'string'")
       expect(new_source).to eq "str.casecmp('string').zero?"
     end
 
     it "autocorrects str.#{selector}.eql? with parens" do
-      new_source = autocorrect_source(cop, "str.#{selector}.eql?('string')")
+      new_source = autocorrect_source("str.#{selector}.eql?('string')")
       expect(new_source).to eq "str.casecmp('string').zero?"
     end
 
     it "autocorrects str.#{selector}.eql? with parens and funny spacing" do
-      new_source = autocorrect_source(cop, "str.#{selector}.eql? ( 'string' )")
+      new_source = autocorrect_source("str.#{selector}.eql? ( 'string' )")
       expect(new_source).to eq "str.casecmp( 'string' ).zero?"
     end
 
     it "autocorrects == str.#{selector}" do
-      new_source = autocorrect_source(cop, "'string' == str.#{selector}")
+      new_source = autocorrect_source("'string' == str.#{selector}")
       expect(new_source).to eq "str.casecmp('string').zero?"
     end
 
     it "autocorrects string with parens == str.#{selector}" do
-      new_source = autocorrect_source(cop, "('string') == str.#{selector}")
+      new_source = autocorrect_source("('string') == str.#{selector}")
       expect(new_source).to eq "str.casecmp('string').zero?"
     end
 
     it "autocorrects string != str.#{selector}" do
-      new_source = autocorrect_source(cop, "'string' != str.#{selector}")
+      new_source = autocorrect_source("'string' != str.#{selector}")
       expect(new_source).to eq "!str.casecmp('string').zero?"
     end
 
     it 'autocorrects string with parens and funny spacing ' \
        "eql? str.#{selector}" do
-      new_source = autocorrect_source(cop, "( 'string' ).eql? str.#{selector}")
+      new_source = autocorrect_source("( 'string' ).eql? str.#{selector}")
       expect(new_source).to eq "str.casecmp( 'string' ).zero?"
     end
 
     it "autocorrects string.eql? str.#{selector} without parens " do
-      new_source = autocorrect_source(cop, "'string'.eql? str.#{selector}")
+      new_source = autocorrect_source("'string'.eql? str.#{selector}")
       expect(new_source).to eq "str.casecmp('string').zero?"
     end
 
     it "autocorrects string.eql? str.#{selector} with parens " do
-      new_source = autocorrect_source(cop, "'string'.eql?(str.#{selector})")
+      new_source = autocorrect_source("'string'.eql?(str.#{selector})")
       expect(new_source).to eq "str.casecmp('string').zero?"
     end
 
     it "autocorrects obj.#{selector} == str.#{selector}" do
-      new_source = autocorrect_source(cop, "obj.#{selector} == str.#{selector}")
+      new_source = autocorrect_source("obj.#{selector} == str.#{selector}")
       expect(new_source).to eq "obj.casecmp(str.#{selector}).zero?"
     end
 
     it "autocorrects obj.#{selector} eql? str.#{selector}" do
-      new_source = autocorrect_source(cop,
-                                      "obj.#{selector}.eql? str.#{selector}")
+      new_source = autocorrect_source("obj.#{selector}.eql? str.#{selector}")
       expect(new_source).to eq "obj.casecmp(str.#{selector}).zero?"
     end
 

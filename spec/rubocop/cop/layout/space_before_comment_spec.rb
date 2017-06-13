@@ -27,7 +27,7 @@ describe RuboCop::Cop::Layout::SpaceBeforeComment do
   end
 
   it 'auto-corrects missing space' do
-    new_source = autocorrect_source(cop, 'a += 1# increment')
+    new_source = autocorrect_source('a += 1# increment')
     expect(new_source).to eq('a += 1 # increment')
   end
 end

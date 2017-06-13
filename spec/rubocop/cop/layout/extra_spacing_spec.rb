@@ -125,7 +125,7 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'auto-corrects a line indented with mixed whitespace' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         website("example.org")
         name    = "Jill"
       RUBY
@@ -136,7 +136,7 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'auto-corrects the class inheritance' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         class A   < String
         end
       RUBY
@@ -305,7 +305,7 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'autocorrects consecutive assignments which are not aligned' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         a = 1
         bb = 2
         ccc = 3
@@ -326,7 +326,7 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'autocorrects consecutive operator assignments which are not aligned' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         a += 1
         bb = 2
         ccc <<= 3
@@ -347,7 +347,7 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'autocorrects consecutive aref assignments which are not aligned' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         a[1] = 1
         bb[2,3] = 2
         ccc[:key] = 3
@@ -368,7 +368,7 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'autocorrects consecutive attribute assignments which are not aligned' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         a.attr = 1
         bb &&= 2
         ccc.s = 3

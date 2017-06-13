@@ -20,7 +20,7 @@ describe RuboCop::Cop::Layout::FirstMethodArgumentLineBreak do
     end
 
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq([
         'foo(',
@@ -48,7 +48,7 @@ describe RuboCop::Cop::Layout::FirstMethodArgumentLineBreak do
     end
 
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq([
         'something(',
@@ -76,7 +76,7 @@ describe RuboCop::Cop::Layout::FirstMethodArgumentLineBreak do
     end
 
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq([
         'something(',

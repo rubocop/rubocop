@@ -122,7 +122,7 @@ describe RuboCop::Cop::Layout::IndentHash do
     end
 
     it 'auto-corrects incorrectly indented first pair' do
-      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
         a << {
          a: 1
         }
@@ -178,7 +178,7 @@ describe RuboCop::Cop::Layout::IndentHash do
     end
 
     it 'auto-corrects incorrectly indented first pair' do
-      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
         a = {
             a: 1,
           b: 2,
@@ -229,7 +229,7 @@ describe RuboCop::Cop::Layout::IndentHash do
       let(:cop_indent) { 3 }
 
       it 'auto-corrects incorrectly indented first pair' do
-        corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+        corrected = autocorrect_source(<<-RUBY.strip_indent)
           a = {
               a: 1,
             b: 2,
@@ -310,7 +310,7 @@ describe RuboCop::Cop::Layout::IndentHash do
         end
 
         it 'auto-corrects incorrectly indented first pair' do
-          corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+          corrected = autocorrect_source(<<-RUBY.strip_indent)
             func({
               a: 1
             })
@@ -469,7 +469,7 @@ describe RuboCop::Cop::Layout::IndentHash do
       end
 
       it 'auto-corrects incorrectly indented first pair' do
-        corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+        corrected = autocorrect_source(<<-RUBY.strip_indent)
           var = {
             a: 1
           }

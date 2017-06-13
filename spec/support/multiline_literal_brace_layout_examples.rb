@@ -74,7 +74,7 @@ shared_examples_for 'multiline literal brace layout' do
 
     it 'auto-corrects safe heredoc offenses' do
       new_source = autocorrect_source(
-        cop, construct(false, a, make_multi(safe_heredoc), true)
+        construct(false, a, make_multi(safe_heredoc), true)
       )
 
       expect(new_source)
@@ -110,10 +110,10 @@ shared_examples_for 'multiline literal brace layout' do
       end
 
       it 'autocorrects closing brace on different line from last element' do
-        new_source = autocorrect_source(cop, ["#{prefix}#{open}#{a}, # a",
-                                              "#{b} # b",
-                                              close,
-                                              suffix])
+        new_source = autocorrect_source(["#{prefix}#{open}#{a}, # a",
+                                         "#{b} # b",
+                                         close,
+                                         suffix])
 
         expect(new_source)
           .to eq("#{prefix}#{open}#{a}, # a\n#{b}#{close} # b\n#{suffix}")
@@ -145,7 +145,7 @@ shared_examples_for 'multiline literal brace layout' do
       end
 
       it 'autocorrects closing brace on same line from last element' do
-        new_source = autocorrect_source(cop, construct(true, false))
+        new_source = autocorrect_source(construct(true, false))
 
         expect(new_source).to eq(construct(true, true).join("\n"))
       end
@@ -191,9 +191,9 @@ shared_examples_for 'multiline literal brace layout' do
       end
 
       it 'autocorrects closing brace on same line as last element' do
-        new_source = autocorrect_source(cop, ["#{prefix}#{open}#{a}, # a",
-                                              "#{b}#{close} # b",
-                                              suffix])
+        new_source = autocorrect_source(["#{prefix}#{open}#{a}, # a",
+                                         "#{b}#{close} # b",
+                                         suffix])
 
         expect(new_source)
           .to eq("#{prefix}#{open}#{a}, # a\n#{b}\n#{close} # b\n#{suffix}")
@@ -225,7 +225,7 @@ shared_examples_for 'multiline literal brace layout' do
       end
 
       it 'autocorrects closing brace on same line from last element' do
-        new_source = autocorrect_source(cop, construct(true, false))
+        new_source = autocorrect_source(construct(true, false))
 
         expect(new_source).to eq(construct(true, true).join("\n"))
       end
@@ -271,10 +271,10 @@ shared_examples_for 'multiline literal brace layout' do
       end
 
       it 'autocorrects closing brace on different line as last element' do
-        new_source = autocorrect_source(cop, ["#{prefix}#{open}#{a}, # a",
-                                              "#{b} # b",
-                                              close,
-                                              suffix])
+        new_source = autocorrect_source(["#{prefix}#{open}#{a}, # a",
+                                         "#{b} # b",
+                                         close,
+                                         suffix])
 
         expect(new_source)
           .to eq("#{prefix}#{open}#{a}, # a\n#{b}#{close} # b\n#{suffix}")
@@ -305,7 +305,7 @@ shared_examples_for 'multiline literal brace layout' do
       end
 
       it 'autocorrects closing brace on different line from last element' do
-        new_source = autocorrect_source(cop, construct(true, true))
+        new_source = autocorrect_source(construct(true, true))
 
         expect(new_source).to eq(construct(true, false).join("\n"))
       end

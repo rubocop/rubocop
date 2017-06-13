@@ -16,7 +16,7 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
     end
 
     it 'auto-corrects alignment' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         test do
           end
       RUBY
@@ -38,7 +38,7 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
     end
 
     it 'auto-corrects alignment' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         test do |ala|
           end
       RUBY
@@ -93,7 +93,7 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
     end
 
     it 'auto-corrects alignment to the first variable' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         a = b = c = test do |ala|
             end
       RUBY
@@ -145,7 +145,6 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
 
     it 'auto-corrects alignment' do
       new_source = autocorrect_source(
-        cop,
         <<-RUBY.strip_indent
           variable =
             a_long_method_that_dont_fit_on_the_line do |v|
@@ -268,7 +267,7 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
         end
       RUBY
 
-      new_source = autocorrect_source(cop, src)
+      new_source = autocorrect_source(src)
       expect(new_source).to eq(aligned_src)
     end
   end
@@ -309,7 +308,7 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
           i - 5
         end
       RUBY
-      new_source = autocorrect_source(cop, src)
+      new_source = autocorrect_source(src)
       expect(new_source).to eq(corrected)
     end
   end
@@ -550,7 +549,7 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
         end
       RUBY
 
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(corrected)
     end
   end
@@ -582,7 +581,7 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
         end
       RUBY
 
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(corrected)
     end
   end
@@ -614,7 +613,7 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
         end
       RUBY
 
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(corrected)
     end
   end
@@ -646,7 +645,7 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
         end
       RUBY
 
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(corrected)
     end
   end
@@ -702,7 +701,7 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
         end
       RUBY
 
-      new_source = autocorrect_source(cop, src)
+      new_source = autocorrect_source(src)
       expect(new_source).to eq(corrected)
     end
   end
@@ -748,7 +747,7 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
           end
       RUBY
 
-      new_source = autocorrect_source(cop, src)
+      new_source = autocorrect_source(src)
       expect(new_source).to eq(corrected)
     end
   end

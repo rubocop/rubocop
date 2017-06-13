@@ -61,7 +61,7 @@ describe RuboCop::Cop::Lint::RescueType do
         end
 
         it 'auto-corrects' do
-          new_source = autocorrect_source(cop, source)
+          new_source = autocorrect_source(source)
 
           expect(new_source).to eq(<<-RUBY)
             begin
@@ -94,7 +94,7 @@ describe RuboCop::Cop::Lint::RescueType do
         end
 
         it 'auto-corrects' do
-          new_source = autocorrect_source(cop, source)
+          new_source = autocorrect_source(source)
 
           expect(new_source).to eq(<<-RUBY)
             begin
@@ -127,7 +127,7 @@ describe RuboCop::Cop::Lint::RescueType do
         end
 
         it 'auto-corrects' do
-          new_source = autocorrect_source(cop, source)
+          new_source = autocorrect_source(source)
 
           expect(new_source).to eq(<<-RUBY)
             begin
@@ -164,7 +164,7 @@ describe RuboCop::Cop::Lint::RescueType do
         end
 
         it 'auto-corrects' do
-          new_source = autocorrect_source(cop, source)
+          new_source = autocorrect_source(source)
 
           expect(new_source).to eq(<<-RUBY)
             begin
@@ -201,7 +201,7 @@ describe RuboCop::Cop::Lint::RescueType do
         end
 
         it 'auto-corrects' do
-          new_source = autocorrect_source(cop, source)
+          new_source = autocorrect_source(source)
 
           expect(new_source).to eq(<<-RUBY)
             def foobar
@@ -238,7 +238,7 @@ describe RuboCop::Cop::Lint::RescueType do
         end
 
         it 'auto-corrects' do
-          new_source = autocorrect_source(cop, source)
+          new_source = autocorrect_source(source)
 
           expect(new_source).to eq(<<-RUBY)
             def foobar

@@ -53,12 +53,12 @@ describe RuboCop::Cop::Layout::SpaceInsideRangeLiteral do
   end
 
   it 'autocorrects space around .. literal' do
-    corrected = autocorrect_source(cop, ['1  .. 2'])
+    corrected = autocorrect_source(['1  .. 2'])
     expect(corrected).to eq '1..2'
   end
 
   it 'autocorrects space around ... literal' do
-    corrected = autocorrect_source(cop, ['1  ... 2'])
+    corrected = autocorrect_source(['1  ... 2'])
     expect(corrected).to eq '1...2'
   end
 end

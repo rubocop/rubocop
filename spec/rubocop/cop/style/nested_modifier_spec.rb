@@ -14,14 +14,14 @@ describe RuboCop::Cop::Style::NestedModifier do
   shared_examples 'not correctable' do |keyword|
     it "does not auto-correct when #{keyword} is the outer modifier" do
       source = "something if a #{keyword} b"
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq source
       expect(cop.offenses.map(&:corrected?)).to eq [false]
     end
 
     it "does not auto-correct when #{keyword} is the inner modifier" do
       source = "something #{keyword} a if b"
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq source
       expect(cop.offenses.map(&:corrected?)).to eq [false]
     end
@@ -36,37 +36,37 @@ describe RuboCop::Cop::Style::NestedModifier do
   end
 
   it 'auto-corrects if + if' do
-    corrected = autocorrect_source(cop, 'something if a if b')
+    corrected = autocorrect_source('something if a if b')
     expect(corrected).to eq 'something if b && a'
   end
 
   it 'auto-corrects unless + unless' do
-    corrected = autocorrect_source(cop, 'something unless a unless b')
+    corrected = autocorrect_source('something unless a unless b')
     expect(corrected).to eq 'something unless b || a'
   end
 
   it 'auto-corrects if + unless' do
-    corrected = autocorrect_source(cop, 'something if a unless b')
+    corrected = autocorrect_source('something if a unless b')
     expect(corrected).to eq 'something unless b || !a'
   end
 
   it 'auto-corrects unless with a comparison operator + if' do
-    corrected = autocorrect_source(cop, 'something unless b > 1 if true')
+    corrected = autocorrect_source('something unless b > 1 if true')
     expect(corrected).to eq 'something if true && !(b > 1)'
   end
 
   it 'auto-corrects unless + if' do
-    corrected = autocorrect_source(cop, 'something unless a if b')
+    corrected = autocorrect_source('something unless a if b')
     expect(corrected).to eq 'something if b && !a'
   end
 
   it 'adds parentheses when needed in auto-correction' do
-    corrected = autocorrect_source(cop, 'something if a || b if c || d')
+    corrected = autocorrect_source('something if a || b if c || d')
     expect(corrected).to eq 'something if (c || d) && (a || b)'
   end
 
   it 'does not add redundant parentheses in auto-correction' do
-    corrected = autocorrect_source(cop, 'something if a unless c || d')
+    corrected = autocorrect_source('something if a unless c || d')
     expect(corrected).to eq 'something unless c || d || !a'
   end
 

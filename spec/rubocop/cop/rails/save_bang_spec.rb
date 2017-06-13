@@ -43,7 +43,7 @@ describe RuboCop::Cop::Rails::SaveBang do
     end
 
     it 'autocorrects' do
-      new_source = autocorrect_source(cop, "object.#{method}()")
+      new_source = autocorrect_source("object.#{method}()")
 
       expect(new_source).to eq("object.#{method}!()")
     end

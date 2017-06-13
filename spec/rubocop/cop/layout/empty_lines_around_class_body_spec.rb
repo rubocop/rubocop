@@ -24,7 +24,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
     end
 
     it 'autocorrects class body containing only a blank' do
-      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
         class SomeClass
 
         end
@@ -58,7 +58,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
     end
 
     it 'autocorrects singleton class body containing only a blank' do
-      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
         class << self
 
         end
@@ -97,12 +97,12 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
     it 'ignores classes with an empty body' do
       source = "class SomeClass\nend"
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq(source)
     end
 
     it 'autocorrects beginning and end' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         class SomeClass
           do_something
         end
@@ -129,12 +129,12 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
     it 'ignores singleton classes with an empty body' do
       source = "class << self\nend"
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq(source)
     end
 
     it 'autocorrects beginning and end for `class << self`' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         class << self
           do_something
         end
@@ -220,7 +220,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
       end
 
       it 'autocorrects beginning and end' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           class Parent < Base
 
             class Child

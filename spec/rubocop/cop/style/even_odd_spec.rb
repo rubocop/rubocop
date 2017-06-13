@@ -82,77 +82,77 @@ describe RuboCop::Cop::Style::EvenOdd do
   end
 
   it 'converts x % 2 == 0 to #even?' do
-    corrected = autocorrect_source(cop, 'x % 2 == 0')
+    corrected = autocorrect_source('x % 2 == 0')
     expect(corrected).to eq('x.even?')
   end
 
   it 'converts x % 2 != 0 to #odd?' do
-    corrected = autocorrect_source(cop, 'x % 2 != 0')
+    corrected = autocorrect_source('x % 2 != 0')
     expect(corrected).to eq('x.odd?')
   end
 
   it 'converts (x % 2) == 0 to #even?' do
-    corrected = autocorrect_source(cop, '(x % 2) == 0')
+    corrected = autocorrect_source('(x % 2) == 0')
     expect(corrected).to eq('x.even?')
   end
 
   it 'converts (x % 2) != 0 to #odd?' do
-    corrected = autocorrect_source(cop, '(x % 2) != 0')
+    corrected = autocorrect_source('(x % 2) != 0')
     expect(corrected).to eq('x.odd?')
   end
 
   it 'converts x % 2 == 1 to odd?' do
-    corrected = autocorrect_source(cop, 'x % 2 == 1')
+    corrected = autocorrect_source('x % 2 == 1')
     expect(corrected).to eq('x.odd?')
   end
 
   it 'converts x % 2 != 1 to even?' do
-    corrected = autocorrect_source(cop, 'x % 2 != 1')
+    corrected = autocorrect_source('x % 2 != 1')
     expect(corrected).to eq('x.even?')
   end
 
   it 'converts (x % 2) == 1 to odd?' do
-    corrected = autocorrect_source(cop, '(x % 2) == 1')
+    corrected = autocorrect_source('(x % 2) == 1')
     expect(corrected).to eq('x.odd?')
   end
 
   it 'converts (y % 2) != 1 to even?' do
-    corrected = autocorrect_source(cop, '(y % 2) != 1')
+    corrected = autocorrect_source('(y % 2) != 1')
     expect(corrected).to eq('y.even?')
   end
 
   it 'converts (x.y % 2) != 1 to even?' do
-    corrected = autocorrect_source(cop, '(x.y % 2) != 1')
+    corrected = autocorrect_source('(x.y % 2) != 1')
     expect(corrected).to eq('x.y.even?')
   end
 
   it 'converts (x(y) % 2) != 1 to even?' do
-    corrected = autocorrect_source(cop, '(x(y) % 2) != 1')
+    corrected = autocorrect_source('(x(y) % 2) != 1')
     expect(corrected).to eq('x(y).even?')
   end
 
   it 'converts (x._(y) % 2) != 1 to even?' do
-    corrected = autocorrect_source(cop, '(x._(y) % 2) != 1')
+    corrected = autocorrect_source('(x._(y) % 2) != 1')
     expect(corrected).to eq('x._(y).even?')
   end
 
   it 'converts (x._(y)) % 2 != 1 to even?' do
-    corrected = autocorrect_source(cop, '(x._(y)) % 2 != 1')
+    corrected = autocorrect_source('(x._(y)) % 2 != 1')
     expect(corrected).to eq('(x._(y)).even?')
   end
 
   it 'converts x._(y) % 2 != 1 to even?' do
-    corrected = autocorrect_source(cop, 'x._(y) % 2 != 1')
+    corrected = autocorrect_source('x._(y) % 2 != 1')
     expect(corrected).to eq('x._(y).even?')
   end
 
   it 'converts 1 % 2 != 1 to even?' do
-    corrected = autocorrect_source(cop, '1 % 2 != 1')
+    corrected = autocorrect_source('1 % 2 != 1')
     expect(corrected).to eq('1.even?')
   end
 
   it 'converts complex examples' do
-    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
       if (y % 2) != 1
         method == :== ? :even : :odd
       elsif x % 2 == 1

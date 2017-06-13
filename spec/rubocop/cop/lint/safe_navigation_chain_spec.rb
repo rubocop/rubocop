@@ -27,7 +27,7 @@ describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
 
   shared_examples :autocorrect do |name, source, correction|
     it "corrects #{name}" do
-      new_source = autocorrect_source_with_loop(cop, source)
+      new_source = autocorrect_source_with_loop(source)
 
       expect(new_source).to eq(correction)
     end

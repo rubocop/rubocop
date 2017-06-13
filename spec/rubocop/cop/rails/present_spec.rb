@@ -12,7 +12,7 @@ describe RuboCop::Cop::Rails::Present, :config do
     end
 
     it 'auto-corrects' do
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq(correction)
     end
@@ -160,7 +160,7 @@ describe RuboCop::Cop::Rails::Present, :config do
         end
 
         it 'auto-corrects' do
-          new_source = autocorrect_source(cop, source)
+          new_source = autocorrect_source(source)
 
           expect(new_source).to eq('something if foo.present?')
         end
@@ -185,7 +185,7 @@ describe RuboCop::Cop::Rails::Present, :config do
         end
 
         it 'auto-corrects' do
-          new_source = autocorrect_source(cop, source)
+          new_source = autocorrect_source(source)
 
           expect(new_source).to eq(<<-RUBY.strip_indent)
             if foo.present?
@@ -218,7 +218,7 @@ describe RuboCop::Cop::Rails::Present, :config do
         end
 
         it 'auto-corrects' do
-          new_source = autocorrect_source(cop, source)
+          new_source = autocorrect_source(source)
 
           expect(new_source).to eq(<<-RUBY.strip_indent)
             if foo.present?

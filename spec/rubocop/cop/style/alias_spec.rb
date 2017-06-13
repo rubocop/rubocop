@@ -14,7 +14,7 @@ describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'autocorrects alias with symbol args' do
-      corrected = autocorrect_source(cop, 'alias :ala :bala')
+      corrected = autocorrect_source('alias :ala :bala')
       expect(corrected).to eq 'alias_method :ala, :bala'
     end
 
@@ -26,7 +26,7 @@ describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'autocorrects alias with bareword args' do
-      corrected = autocorrect_source(cop, 'alias ala bala')
+      corrected = autocorrect_source('alias ala bala')
       expect(corrected).to eq 'alias_method :ala, :bala'
     end
 
@@ -62,7 +62,7 @@ describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'autocorrects alias with symbol args' do
-      corrected = autocorrect_source(cop, ['alias :ala :bala'])
+      corrected = autocorrect_source(['alias :ala :bala'])
       expect(corrected).to eq 'alias ala bala'
     end
 
@@ -78,7 +78,7 @@ describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'autocorrects alias_method at the top level' do
-      corrected = autocorrect_source(cop, 'alias_method :ala, :bala')
+      corrected = autocorrect_source('alias_method :ala, :bala')
       expect(corrected).to eq 'alias ala bala'
     end
 
@@ -92,7 +92,7 @@ describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'autocorrects alias_method in a class block' do
-      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
         class C
           alias_method :ala, :bala
         end
@@ -114,7 +114,7 @@ describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'autocorrects alias_method in a module block' do
-      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
         module M
           alias_method :ala, :bala
         end

@@ -56,7 +56,7 @@ describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
     end
 
     it 'auto-corrects " with \'' do
-      new_source = autocorrect_source(cop, 's = "#{"abc"}"')
+      new_source = autocorrect_source('s = "#{"abc"}"')
       expect(new_source).to eq(%q(s = "#{'abc'}"))
     end
   end

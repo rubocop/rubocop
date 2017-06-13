@@ -58,7 +58,7 @@ shared_examples_for 'misaligned' do |prefix, alignment_base, arg, end_kw, name|
   it "auto-corrects mismatched #{name} ... end" do
     aligned_source = ["#{prefix}#{alignment_base} #{arg}",
                       "#{' ' * prefix.length}#{end_kw.strip}"].join("\n")
-    corrected = autocorrect_source(cop, source)
+    corrected = autocorrect_source(source)
     expect(corrected).to eq(aligned_source)
   end
 end

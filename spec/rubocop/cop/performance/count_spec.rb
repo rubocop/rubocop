@@ -208,21 +208,19 @@ describe RuboCop::Cop::Performance::Count do
   context 'autocorrect' do
     context 'will correct' do
       it 'select..size to count' do
-        new_source = autocorrect_source(cop, '[1, 2].select { |e| e > 2 }.size')
+        new_source = autocorrect_source('[1, 2].select { |e| e > 2 }.size')
 
         expect(new_source).to eq('[1, 2].count { |e| e > 2 }')
       end
 
       it 'select..count without a block to count' do
-        new_source = autocorrect_source(cop,
-                                        '[1, 2].select { |e| e > 2 }.count')
+        new_source = autocorrect_source('[1, 2].select { |e| e > 2 }.count')
 
         expect(new_source).to eq('[1, 2].count { |e| e > 2 }')
       end
 
       it 'select..length to count' do
-        new_source = autocorrect_source(cop,
-                                        '[1, 2].select { |e| e > 2 }.length')
+        new_source = autocorrect_source('[1, 2].select { |e| e > 2 }.length')
 
         expect(new_source).to eq('[1, 2].count { |e| e > 2 }')
       end
@@ -234,7 +232,7 @@ describe RuboCop::Cop::Performance::Count do
           puts array.select(&:value).size
         RUBY
 
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         expect(new_source)
           .to eq(<<-RUBY.strip_indent)
@@ -247,28 +245,26 @@ describe RuboCop::Cop::Performance::Count do
 
     describe 'will not correct' do
       it 'reject...size' do
-        new_source = autocorrect_source(cop, '[1, 2].reject { |e| e > 2 }.size')
+        new_source = autocorrect_source('[1, 2].reject { |e| e > 2 }.size')
 
         expect(new_source).to eq('[1, 2].reject { |e| e > 2 }.size')
       end
 
       it 'reject...count' do
-        new_source = autocorrect_source(cop,
-                                        '[1, 2].reject { |e| e > 2 }.count')
+        new_source = autocorrect_source('[1, 2].reject { |e| e > 2 }.count')
 
         expect(new_source).to eq('[1, 2].reject { |e| e > 2 }.count')
       end
 
       it 'reject...length' do
-        new_source = autocorrect_source(cop,
-                                        '[1, 2].reject { |e| e > 2 }.length')
+        new_source = autocorrect_source('[1, 2].reject { |e| e > 2 }.length')
 
         expect(new_source).to eq('[1, 2].reject { |e| e > 2 }.length')
       end
 
       it 'select...count when count has a block' do
         source = '[1, 2].select { |e| e > 2 }.count { |e| e.even? }'
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         expect(new_source).to eq(source)
       end
@@ -280,7 +276,7 @@ describe RuboCop::Cop::Performance::Count do
           puts array.reject(&:value).size
         RUBY
 
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         expect(new_source).to eq(source)
       end

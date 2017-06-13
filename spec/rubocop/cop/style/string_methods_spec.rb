@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Style::StringMethods, :config do
   let(:cop_config) { { 'intern' => 'to_sym' } }
 
   let(:source) { "'something'.intern" }
-  let(:corrected) { autocorrect_source(cop, source) }
+  let(:corrected) { autocorrect_source(source) }
 
   it 'registers an offense' do
     inspect_source(source)

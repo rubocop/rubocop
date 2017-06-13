@@ -72,7 +72,7 @@ describe RuboCop::Cop::Style::ClassMethods do
       end
     RUBY
 
-    new_source = autocorrect_source(cop, src)
+    new_source = autocorrect_source(src)
     expect(new_source).to eq(correct_source)
   end
 end

@@ -26,7 +26,7 @@ describe RuboCop::Cop::Style::LambdaCall, :config do
     end
 
     it 'auto-corrects x.() to x.call()' do
-      new_source = autocorrect_source(cop, ['a.(x)'])
+      new_source = autocorrect_source(['a.(x)'])
       expect(new_source).to eq('a.call(x)')
     end
   end
@@ -58,7 +58,7 @@ describe RuboCop::Cop::Style::LambdaCall, :config do
     end
 
     it 'auto-corrects x.call() to x.()' do
-      new_source = autocorrect_source(cop, ['a.call(x)'])
+      new_source = autocorrect_source(['a.call(x)'])
       expect(new_source).to eq('a.(x)')
     end
   end

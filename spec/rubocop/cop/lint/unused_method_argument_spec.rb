@@ -247,7 +247,7 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
   end
 
   describe 'auto-correction' do
-    let(:corrected_source) { autocorrect_source(cop, source) }
+    let(:corrected_source) { autocorrect_source(source) }
 
     context 'when multiple arguments are unused' do
       let(:source) { <<-RUBY }

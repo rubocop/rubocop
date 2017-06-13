@@ -39,7 +39,7 @@ describe RuboCop::Cop::Style::CollectionMethods, :config do
     end
 
     it 'auto-corrects to preferred method' do
-      new_source = autocorrect_source(cop, 'some.collect(&:test)')
+      new_source = autocorrect_source('some.collect(&:test)')
       expect(new_source).to eq('some.map(&:test)')
     end
   end

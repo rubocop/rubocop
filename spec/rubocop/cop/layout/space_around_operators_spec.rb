@@ -140,7 +140,7 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
   end
 
   it 'auto-corrects unwanted space around **' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       x = a * b ** 2
       y = a * b** 2
     RUBY
@@ -205,7 +205,7 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
           ['Surrounding space missing for operator `=`.'] * 2
         )
 
-        new_source = autocorrect_source(cop, src)
+        new_source = autocorrect_source(src)
         expect(new_source).to eq(<<-RUBY.strip_indent)
           a = 1 #{keyword} condition
           c = 2
@@ -225,7 +225,7 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'auto-corrects assignment without space on both sides' do
-      new_source = autocorrect_source(cop, ['x=0', 'y= 0', 'z =0'])
+      new_source = autocorrect_source(['x=0', 'y= 0', 'z =0'])
       expect(new_source).to eq(['x = 0', 'y = 0', 'z = 0'].join("\n"))
     end
 
@@ -255,7 +255,7 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
       end
 
       it 'auto-corrects a ternary operator without space' do
-        new_source = autocorrect_source(cop, 'x == 0?1:2')
+        new_source = autocorrect_source('x == 0?1:2')
         expect(new_source).to eq('x == 0 ? 1 : 2')
       end
     end
@@ -277,7 +277,7 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'auto-corrects missing space in binary operators that could be unary' do
-      new_source = autocorrect_source(cop, ['a-3', 'x&0xff', 'z+0'])
+      new_source = autocorrect_source(['a-3', 'x&0xff', 'z+0'])
       expect(new_source).to eq(['a - 3', 'x & 0xff', 'z + 0'].join("\n"))
     end
 
@@ -289,7 +289,7 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'auto-corrects missing space in arguments to a method' do
-      new_source = autocorrect_source(cop, 'puts 1+2')
+      new_source = autocorrect_source('puts 1+2')
       expect(new_source).to eq('puts 1 + 2')
     end
 
@@ -313,7 +313,7 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'auto-corrects missing space' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         x+= a+b-c*d/e%f^g|h&i||j
         y -=k&&l
       RUBY
@@ -455,7 +455,7 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it "doesn't eat a newline when auto-correcting" do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         'Here is a'+
         'joined string'+
         'across three lines'
@@ -489,7 +489,7 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
           ['Operator `=` should be surrounded by a single space.'] * 2
         )
 
-        new_source = autocorrect_source(cop, src)
+        new_source = autocorrect_source(src)
         expect(new_source).to eq(<<-RUBY.strip_indent)
           a = 1 #{keyword} condition
           c = 2
@@ -509,7 +509,7 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'auto-corrects assignment with too many spaces on either side' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         x  = 0
         y =   0
         z  =   0
@@ -530,7 +530,7 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'auto-corrects a ternary operator too many spaces' do
-      new_source = autocorrect_source(cop, 'x == 0  ? 1 :  2')
+      new_source = autocorrect_source('x == 0  ? 1 :  2')
       expect(new_source).to eq('x == 0 ? 1 : 2')
     end
 
@@ -551,7 +551,7 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'auto-corrects missing space in binary operators that could be unary' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         a -  3
         x &   0xff
         z +  0
@@ -571,7 +571,7 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'auto-corrects missing space in arguments to a method' do
-      new_source = autocorrect_source(cop, 'puts 1 +  2')
+      new_source = autocorrect_source('puts 1 +  2')
       expect(new_source).to eq('puts 1 + 2')
     end
 
@@ -605,7 +605,6 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
 
     it 'auto-corrects missing space' do
       new_source = autocorrect_source(
-        cop,
         <<-RUBY.strip_indent
           x +=  a  + b -  c  * d /  e  % f  ^ g   | h &  i  ||  j
           y  -=  k   &&        l

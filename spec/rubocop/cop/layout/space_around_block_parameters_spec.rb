@@ -103,14 +103,12 @@ describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
     end
 
     it 'auto-corrects offenses' do
-      new_source = autocorrect_source(cop,
-                                      '{}.each { |  x=5,  (y,*z) |puts x }')
+      new_source = autocorrect_source('{}.each { |  x=5,  (y,*z) |puts x }')
       expect(new_source).to eq('{}.each { |x=5, (y,*z)| puts x }')
     end
 
     it 'auto-corrects offenses for a lambda' do
-      new_source = autocorrect_source(cop,
-                                      '->(  a,  b, c) { puts a }')
+      new_source = autocorrect_source('->(  a,  b, c) { puts a }')
       expect(new_source).to eq('->(a, b, c) { puts a }')
     end
   end
@@ -231,14 +229,12 @@ describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
     end
 
     it 'auto-corrects offenses' do
-      new_source = autocorrect_source(cop,
-                                      '{}.each { |  x=5,  (y,*z)|puts x }')
+      new_source = autocorrect_source('{}.each { |  x=5,  (y,*z)|puts x }')
       expect(new_source).to eq('{}.each { | x=5, (y,*z) | puts x }')
     end
 
     it 'auto-corrects offenses' do
-      new_source = autocorrect_source(cop,
-                                      '->(  x,  y) { puts x }')
+      new_source = autocorrect_source('->(  x,  y) { puts x }')
       expect(new_source).to eq('->( x, y ) { puts x }')
     end
   end

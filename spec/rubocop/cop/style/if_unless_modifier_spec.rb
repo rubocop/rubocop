@@ -37,7 +37,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
     end
 
     it 'does auto-correction' do
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq "#{body} if #{condition}\n"
     end
 
@@ -71,7 +71,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
     end
 
     it 'does auto-correction and preserves comment' do
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq "b if a # comment\n"
     end
   end
@@ -129,7 +129,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
     end
 
     it 'does auto-correction' do
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq(<<-RUBY.strip_indent)
         if x
           y
@@ -173,7 +173,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
     end
 
     it 'does auto-correction' do
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq "b unless a\n"
     end
   end
@@ -229,7 +229,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
       end
 
       it 'does auto-correction' do
-        corrected = autocorrect_source(cop, source)
+        corrected = autocorrect_source(source)
         expect(corrected).to eq "  #{body} if #{conditional}\n"
       end
     end
@@ -273,7 +273,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it "doesn't break if-end when used as RHS of local var assignment" do
-    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
       a = if b
         1
       end
@@ -282,7 +282,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it "doesn't break if-end when used as RHS of instance var assignment" do
-    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
       @a = if b
         1
       end
@@ -291,7 +291,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it "doesn't break if-end when used as RHS of class var assignment" do
-    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
       @@a = if b
         1
       end
@@ -300,7 +300,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it "doesn't break if-end when used as RHS of constant assignment" do
-    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
       A = if b
         1
       end
@@ -309,7 +309,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it "doesn't break if-end when used as RHS of binary arithmetic" do
-    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
       a + if b
         1
       end
@@ -327,7 +327,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
 
   context 'if-end is argument to a parenthesized method call' do
     it "doesn't add redundant parentheses" do
-      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
         puts("string", if a
           1
         end)
@@ -338,7 +338,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
 
   context 'if-end is argument to a non-parenthesized method call' do
     it 'adds parentheses so as not to change meaning' do
-      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
         puts "string", if a
           1
         end

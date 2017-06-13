@@ -34,7 +34,7 @@ describe RuboCop::Cop::Style::SingleLineMethods do
     end
 
     it 'auto-corrects an empty method' do
-      corrected = autocorrect_source(cop, 'def x; end')
+      corrected = autocorrect_source('def x; end')
       expect(corrected).to eq(['def x; ',
                                'end'].join("\n"))
     end
@@ -68,8 +68,7 @@ describe RuboCop::Cop::Style::SingleLineMethods do
   end
 
   it 'auto-corrects def with semicolon after method name' do
-    corrected = autocorrect_source(cop,
-                                   ['  def some_method; body end # Cmnt'])
+    corrected = autocorrect_source(['  def some_method; body end # Cmnt'])
     expect(corrected).to eq ['  # Cmnt',
                              '  def some_method; ',
                              '    body ',
@@ -77,28 +76,28 @@ describe RuboCop::Cop::Style::SingleLineMethods do
   end
 
   it 'auto-corrects defs with parentheses after method name' do
-    corrected = autocorrect_source(cop, ['  def self.some_method() body end'])
+    corrected = autocorrect_source(['  def self.some_method() body end'])
     expect(corrected).to eq ['  def self.some_method() ',
                              '    body ',
                              '  end'].join("\n")
   end
 
   it 'auto-corrects def with argument in parentheses' do
-    corrected = autocorrect_source(cop, ['  def some_method(arg) body end'])
+    corrected = autocorrect_source(['  def some_method(arg) body end'])
     expect(corrected).to eq ['  def some_method(arg) ',
                              '    body ',
                              '  end'].join("\n")
   end
 
   it 'auto-corrects def with argument and no parentheses' do
-    corrected = autocorrect_source(cop, ['  def some_method arg; body end'])
+    corrected = autocorrect_source(['  def some_method arg; body end'])
     expect(corrected).to eq ['  def some_method arg; ',
                              '    body ',
                              '  end'].join("\n")
   end
 
   it 'auto-corrects def with semicolon before end' do
-    corrected = autocorrect_source(cop, ['  def some_method; b1; b2; end'])
+    corrected = autocorrect_source(['  def some_method; b1; b2; end'])
     expect(corrected).to eq ['  def some_method; ',
                              '    b1; ',
                              '    b2; ',

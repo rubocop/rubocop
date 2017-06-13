@@ -29,14 +29,12 @@ describe RuboCop::Cop::Layout::SpaceBeforeComma do
   end
 
   it 'auto-corrects space before comma' do
-    new_source = autocorrect_source(cop,
-                                    'each { |s , t| a(1 , formats[0 , 1])}')
+    new_source = autocorrect_source('each { |s , t| a(1 , formats[0 , 1])}')
     expect(new_source).to eq('each { |s, t| a(1, formats[0, 1])}')
   end
 
   it 'handles more than one space before a comma' do
-    new_source = autocorrect_source(cop,
-                                    'each { |s  , t| a(1  , formats[0  , 1])}')
+    new_source = autocorrect_source('each { |s  , t| a(1  , formats[0  , 1])}')
     expect(new_source).to eq('each { |s, t| a(1, formats[0, 1])}')
   end
 end

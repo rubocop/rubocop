@@ -29,12 +29,12 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
       end
 
       it 'autocorrects an octal literal starting with 0' do
-        corrected = autocorrect_source(cop, ['a = 01234'])
+        corrected = autocorrect_source(['a = 01234'])
         expect(corrected).to eq('a = 0o1234')
       end
 
       it 'autocorrects an octal literal starting with 0O' do
-        corrected = autocorrect_source(cop, ['b(0O1234, a)'])
+        corrected = autocorrect_source(['b(0O1234, a)'])
         expect(corrected).to eq('b(0o1234, a)')
       end
     end
@@ -61,7 +61,7 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
       end
 
       it 'autocorrects an octal literal starting with 0O or 0o' do
-        corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+        corrected = autocorrect_source(<<-RUBY.strip_indent)
           a = 0O1234
           b(0o1234)
         RUBY
@@ -73,7 +73,7 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
       end
 
       it 'does not autocorrect an octal literal starting with 0' do
-        corrected = autocorrect_source(cop, ['b(01234, a)'])
+        corrected = autocorrect_source(['b(01234, a)'])
         expect(corrected).to eq 'b(01234, a)'
       end
     end
@@ -95,7 +95,7 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
     end
 
     it 'autocorrects literals with uppercase prefix' do
-      corrected = autocorrect_source(cop, ['a = 0XAB'])
+      corrected = autocorrect_source(['a = 0XAB'])
       expect(corrected).to eq 'a = 0xAB'
     end
   end
@@ -116,7 +116,7 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
     end
 
     it 'autocorrects literals with uppercase prefix' do
-      corrected = autocorrect_source(cop, ['a = 0B1010'])
+      corrected = autocorrect_source(['a = 0B1010'])
       expect(corrected).to eq 'a = 0b1010'
     end
   end
@@ -138,12 +138,12 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
     end
 
     it 'autocorrects literals with prefix' do
-      corrected = autocorrect_source(cop, ['a = 0d1234', 'b(0D1990)'])
+      corrected = autocorrect_source(['a = 0d1234', 'b(0D1990)'])
       expect(corrected).to eq "a = 1234\nb(1990)"
     end
 
     it 'does not autocorrect literals with no prefix' do
-      corrected = autocorrect_source(cop, ['a = 1234', 'b(1990)'])
+      corrected = autocorrect_source(['a = 1234', 'b(1990)'])
       expect(corrected).to eq "a = 1234\nb(1990)"
     end
   end

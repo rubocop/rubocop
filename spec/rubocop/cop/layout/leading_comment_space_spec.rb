@@ -89,7 +89,7 @@ describe RuboCop::Cop::Layout::LeadingCommentSpace do
   end
 
   it 'auto-corrects missing space' do
-    new_source = autocorrect_source(cop, '#comment')
+    new_source = autocorrect_source('#comment')
     expect(new_source).to eq('# comment')
   end
 

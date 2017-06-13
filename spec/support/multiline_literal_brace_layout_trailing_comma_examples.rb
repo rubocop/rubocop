@@ -14,10 +14,10 @@ shared_examples_for 'multiline literal brace layout trailing comma' do
     context 'opening brace on same line as first element' do
       context 'last element has a trailing comma' do
         it 'autocorrects closing brace on different line from last element' do
-          new_source = autocorrect_source(cop, ["#{prefix}#{open}#{a}, # a",
-                                                "#{b}, # b",
-                                                close,
-                                                suffix])
+          new_source = autocorrect_source(["#{prefix}#{open}#{a}, # a",
+                                           "#{b}, # b",
+                                           close,
+                                           suffix])
 
           expect(new_source)
             .to eq("#{prefix}#{open}#{a}, # a\n#{b},#{close} # b\n#{suffix}")
@@ -32,10 +32,10 @@ shared_examples_for 'multiline literal brace layout trailing comma' do
     context 'opening brace on same line as first element' do
       context 'last element has a trailing comma' do
         it 'autocorrects closing brace on different line as last element' do
-          new_source = autocorrect_source(cop, ["#{prefix}#{open}#{a}, # a",
-                                                "#{b}, # b",
-                                                close,
-                                                suffix])
+          new_source = autocorrect_source(["#{prefix}#{open}#{a}, # a",
+                                           "#{b}, # b",
+                                           close,
+                                           suffix])
 
           expect(new_source)
             .to eq("#{prefix}#{open}#{a}, # a\n#{b},#{close} # b\n#{suffix}")

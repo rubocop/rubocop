@@ -56,7 +56,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       end
 
       it 'does not auto-correct' do
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq(source)
       end
 
@@ -93,7 +93,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       end
 
       it 'does not auto-correct' do
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq(source)
       end
     end
@@ -124,7 +124,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       end
 
       it 'does not auto-correct' do
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq(source)
       end
     end
@@ -141,7 +141,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       source = 'post user_attrs, id: 1'
       inspect_source(source)
       expect(cop.offenses.size).to eq(0)
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(source)
     end
 
@@ -149,7 +149,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       source = 'post :user_attrs, id: 1'
       inspect_source(source)
       expect(cop.offenses.size).to eq(0)
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(source)
     end
 
@@ -157,7 +157,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       source = 'post(:user_attrs, id: 1)'
       inspect_source(source)
       expect(cop.offenses.size).to eq(0)
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(source)
     end
 
@@ -171,20 +171,20 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
 
     it 'does not remove quotes when single quoted' do
       source = "get '/auth/linkedin/callback'"
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq("get '/auth/linkedin/callback'")
     end
 
     it 'does not remove quotes when double quoted' do
       source = 'get "/auth/linkedin/callback"'
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq('get "/auth/linkedin/callback"')
     end
 
     it 'does not add headers keyword when env or headers are used' do
       source = 'get some_path(profile.id), {},'
       source += " 'HTTP_REFERER' => p_url(p.id).to_s"
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(source)
     end
 
@@ -192,7 +192,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       source = 'get some_path(profile.id), '
       source += '{ user_id: @user.id, profile_id: p.id },'
       source += " 'HTTP_REFERER' => p_url(p.id).to_s"
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(source)
     end
 
@@ -200,7 +200,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       source = 'post :create, confirmation_data'
       inspect_source(source)
       expect(cop.offenses.size).to eq(0)
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(source)
     end
 
@@ -209,7 +209,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       source = 'post :create, id: 7, comment: { body: "hei" }'
       inspect_source(source)
       expect(cop.offenses.size).to eq(0)
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(source)
     end
 
@@ -217,7 +217,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       source = 'post :create, id: 7, format: :rss'
       inspect_source(source)
       expect(cop.offenses.size).to eq(0)
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(source)
     end
 
@@ -228,7 +228,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       RUBY
       inspect_source(source)
       expect(cop.offenses.size).to eq(0)
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(source)
     end
 
@@ -236,14 +236,14 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       source = 'post user_attrs, params'
       inspect_source(source)
       expect(cop.offenses.size).to eq(0)
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(source)
     end
     it 'does not auto-correct http action when params is a method call with chain' do
       source = 'post user_attrs, params.merge(foo: bar)'
       inspect_source(source)
       expect(cop.offenses.size).to eq(0)
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(source)
     end
   end
@@ -316,7 +316,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       end
 
       it 'autocorrects offense' do
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq(corrected_result)
       end
 
@@ -364,7 +364,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       end
 
       it 'autocorrects offense' do
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq(corrected_result)
       end
     end
@@ -406,7 +406,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       end
 
       it 'autocorrects offense' do
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq(corrected_result)
       end
     end
@@ -423,7 +423,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       source = 'post user_attrs, id: 1'
       inspect_source(source)
       expect(cop.offenses.size).to eq(1)
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expected = 'post user_attrs, params: { id: 1 }'
       expect(new_source).to eq(expected)
     end
@@ -432,7 +432,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       source = 'post :user_attrs, id: 1'
       inspect_source(source)
       expect(cop.offenses.size).to eq(1)
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expected = 'post :user_attrs, params: { id: 1 }'
       expect(new_source).to eq(expected)
     end
@@ -441,7 +441,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       source = 'post(:user_attrs, id: 1)'
       inspect_source(source)
       expect(cop.offenses.size).to eq(1)
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expected = 'post(:user_attrs, params: { id: 1 })'
       expect(new_source).to eq(expected)
     end
@@ -456,20 +456,20 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
 
     it 'does not remove quotes when single quoted' do
       source = "get '/auth/linkedin/callback'"
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq("get '/auth/linkedin/callback'")
     end
 
     it 'does not remove quotes when double quoted' do
       source = 'get "/auth/linkedin/callback"'
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq('get "/auth/linkedin/callback"')
     end
 
     it 'does add headers keyword when env or headers are used' do
       source = 'get some_path(profile.id), {},'
       source += " 'HTTP_REFERER' => p_url(p.id).to_s"
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       output = 'get some_path(profile.id),'
       output += " headers: { 'HTTP_REFERER' => p_url(p.id).to_s }"
       expect(new_source).to eq(output)
@@ -479,7 +479,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       source = 'get some_path(profile.id), '
       source += '{ user_id: @user.id, profile_id: p.id },'
       source += " 'HTTP_REFERER' => p_url(p.id).to_s"
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       output = 'get some_path(profile.id), params:'
       output += ' { user_id: @user.id, profile_id: p.id },'
       output += " headers: { 'HTTP_REFERER' => p_url(p.id).to_s }"
@@ -490,7 +490,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       source = 'post :create, confirmation_data'
       inspect_source(source)
       expect(cop.offenses.size).to eq(1)
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       output = 'post :create, params: confirmation_data'
       expect(new_source).to eq(output)
     end
@@ -499,7 +499,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       source = 'post :create, id: 7, comment: { body: "hei" }'
       inspect_source(source)
       expect(cop.offenses.size).to eq(1)
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       output = 'post :create, params: { id: 7, comment: { body: "hei" } }'
       expect(new_source).to eq(output)
     end
@@ -508,7 +508,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       source = 'post :create, id: 7, format: :rss'
       inspect_source(source)
       expect(cop.offenses.size).to eq(1)
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       output = 'post :create, params: { id: 7, format: :rss }'
       expect(new_source).to eq(output)
     end
@@ -520,7 +520,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       RUBY
       inspect_source(source)
       expect(cop.offenses.size).to eq(1)
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(<<-RUBY.strip_indent)
         params = { id: 1 }
         post user_attrs, params: params
@@ -531,7 +531,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       source = 'post user_attrs, params'
       inspect_source(source)
       expect(cop.offenses.size).to eq(1)
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expected = 'post user_attrs, params: params'
       expect(new_source).to eq(expected)
     end
@@ -540,7 +540,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       source = 'post user_attrs, params.merge(foo: bar)'
       inspect_source(source)
       expect(cop.offenses.size).to eq(1)
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expected = 'post user_attrs, params: params.merge(foo: bar)'
       expect(new_source).to eq(expected)
     end

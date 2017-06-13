@@ -21,7 +21,7 @@ describe RuboCop::Cop::Style::Next, :config do
     end
 
     it "autocorrects #{condition} inside of downto" do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         3.downto(1) do
           #{condition} o == 1
             puts o
@@ -50,7 +50,7 @@ describe RuboCop::Cop::Style::Next, :config do
     end
 
     it "autocorrects #{condition} inside of each" do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         [].each do |o|
           #{condition} o == 1
             puts o
@@ -92,7 +92,7 @@ describe RuboCop::Cop::Style::Next, :config do
     end
 
     it "autocorrects #{condition} inside of for" do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         for o in 1..3 do
           #{condition} o == 1
             puts o
@@ -376,7 +376,7 @@ describe RuboCop::Cop::Style::Next, :config do
       end
 
       it "auto-corrects modifier #{condition}" do
-        corrected = autocorrect_source(cop, source)
+        corrected = autocorrect_source(source)
         expect(corrected).to eq(<<-RUBY.strip_indent)
           [].each do |o|
             next #{opposite} o == 1
@@ -387,7 +387,7 @@ describe RuboCop::Cop::Style::Next, :config do
     end
 
     it 'auto-corrects a misaligned end' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         [1, 2, 3, 4].each do |num|
           if !opts.nil?
             puts num
@@ -413,14 +413,14 @@ describe RuboCop::Cop::Style::Next, :config do
   end
 
   it 'keeps comments when autocorrecting' do
-    new_source = autocorrect_source(cop, ['loop do',
-                                          '  if test # keep me',
-                                          '    # keep me',
-                                          '    something # keep me',
-                                          '    # keep me',
-                                          '    ',
-                                          '  end # keep me',
-                                          'end'])
+    new_source = autocorrect_source(['loop do',
+                                     '  if test # keep me',
+                                     '    # keep me',
+                                     '    something # keep me',
+                                     '    # keep me',
+                                     '    ',
+                                     '  end # keep me',
+                                     'end'])
     expect(new_source).to eq(['loop do',
                               '  next unless test # keep me',
                               '  # keep me',
@@ -432,7 +432,7 @@ describe RuboCop::Cop::Style::Next, :config do
   end
 
   it 'handles `then` when autocorrecting' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       loop do
         if test then
           something
@@ -448,7 +448,7 @@ describe RuboCop::Cop::Style::Next, :config do
   end
 
   it "doesn't reindent heredoc bodies when autocorrecting" do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       loop do
         if test
           str = <<-BLAH
@@ -472,7 +472,7 @@ describe RuboCop::Cop::Style::Next, :config do
   end
 
   it 'handles nested autocorrections' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       loop do
         if test
           loop do

@@ -328,7 +328,7 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
 
   context 'auto-correct' do
     it 'fixes single' do
-      expect(autocorrect_source(cop, <<-SOURCE
+      expect(autocorrect_source(<<-SOURCE
       arr.map { |foo| stuff }
       SOURCE
                                )).to eq(<<-CORRECTED_SOURCE
@@ -338,7 +338,7 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
     end
 
     it 'fixes multiple' do
-      expect(autocorrect_source(cop, <<-SOURCE
+      expect(autocorrect_source(<<-SOURCE
       hash.map { |key, val| stuff }
       SOURCE
                                )).to eq(<<-CORRECTED_SOURCE
@@ -348,7 +348,7 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
     end
 
     it 'preserves whitespace' do
-      expect(autocorrect_source(cop, <<-SOURCE
+      expect(autocorrect_source(<<-SOURCE
       hash.map { |key,
                   val| stuff }
       SOURCE
@@ -360,7 +360,7 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
     end
 
     it 'preserves splat' do
-      expect(autocorrect_source(cop, <<-SOURCE
+      expect(autocorrect_source(<<-SOURCE
       obj.method { |foo, *bars, baz| stuff(foo, baz) }
       SOURCE
                                )).to eq(<<-CORRECTED_SOURCE
@@ -370,7 +370,7 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
     end
 
     it 'preserves default' do
-      expect(autocorrect_source(cop, <<-SOURCE
+      expect(autocorrect_source(<<-SOURCE
       obj.method { |foo, bar = baz| stuff(foo) }
       SOURCE
                                )).to eq(<<-CORRECTED_SOURCE
@@ -384,7 +384,7 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
       obj.method { |foo, baz| stuff(foo, baz) }
       SOURCE
 
-      expect(autocorrect_source(cop, original_source)).to eq(original_source)
+      expect(autocorrect_source(original_source)).to eq(original_source)
     end
   end
 

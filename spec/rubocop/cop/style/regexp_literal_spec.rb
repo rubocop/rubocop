@@ -41,7 +41,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
     end
 
     it 'respects the configuration when auto-correcting' do
-      new_source = autocorrect_source(cop, '/a/')
+      new_source = autocorrect_source('/a/')
       expect(new_source).to eq('%r[a]')
     end
   end
@@ -66,7 +66,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       end
 
       it 'cannot auto-correct' do
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq(source)
       end
 
@@ -104,7 +104,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       end
 
       it 'cannot auto-correct' do
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq(source.join("\n"))
       end
 
@@ -133,7 +133,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       end
 
       it 'auto-corrects' do
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq('foo = /a/')
       end
     end
@@ -156,7 +156,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
         end
 
         it 'cannot auto-correct' do
-          new_source = autocorrect_source(cop, source)
+          new_source = autocorrect_source(source)
           expect(new_source).to eq(source)
         end
       end
@@ -176,7 +176,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       end
 
       it 'auto-corrects' do
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq("foo = /\n  foo\n  bar\n/x")
       end
     end
@@ -207,7 +207,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
         end
 
         it 'cannot auto-correct' do
-          new_source = autocorrect_source(cop, source)
+          new_source = autocorrect_source(source)
           expect(new_source).to eq(source.join("\n"))
         end
       end
@@ -228,7 +228,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       end
 
       it 'auto-corrects' do
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq('foo = %r{a}')
       end
     end
@@ -244,7 +244,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       end
 
       it 'cannot auto-correct' do
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq(source)
       end
     end
@@ -263,7 +263,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       end
 
       it 'auto-corrects' do
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq("foo = %r{\n  foo\n  bar\n}x")
       end
     end
@@ -282,7 +282,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       end
 
       it 'cannot auto-correct' do
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq(source.join("\n"))
       end
     end
@@ -342,7 +342,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       end
 
       it 'cannot auto-correct' do
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq(source)
       end
 
@@ -369,7 +369,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       end
 
       it 'auto-corrects' do
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq("foo = %r{\n  foo\n  bar\n}x")
       end
     end
@@ -388,7 +388,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       end
 
       it 'cannot auto-correct' do
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq(source.join("\n"))
       end
     end
@@ -404,7 +404,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       end
 
       it 'auto-corrects' do
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq('foo = /a/')
       end
     end
@@ -427,7 +427,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
         end
 
         it 'cannot auto-correct' do
-          new_source = autocorrect_source(cop, source)
+          new_source = autocorrect_source(source)
           expect(new_source).to eq(source)
         end
       end

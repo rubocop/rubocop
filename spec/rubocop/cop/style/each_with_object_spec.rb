@@ -18,7 +18,7 @@ describe RuboCop::Cop::Style::EachWithObject do
   end
 
   it 'correctly autocorrects' do
-    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
       [1, 2, 3].inject({}) do |h, i|
         h[i] = i
         h
@@ -33,7 +33,7 @@ describe RuboCop::Cop::Style::EachWithObject do
   end
 
   it 'correctly autocorrects with return value only' do
-    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
       [1, 2, 3].inject({}) do |h, i|
         h
       end

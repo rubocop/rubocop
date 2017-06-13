@@ -49,19 +49,19 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
 
     context 'auto-correct' do
       it 'registers an offense for only single quotes' do
-        new_source = autocorrect_source(cop, "%q('hi')")
+        new_source = autocorrect_source("%q('hi')")
 
         expect(new_source).to eq(%q("'hi'"))
       end
 
       it 'registers an offense for only double quotes' do
-        new_source = autocorrect_source(cop, '%q("hi")')
+        new_source = autocorrect_source('%q("hi")')
 
         expect(new_source).to eq(%q('"hi"'))
       end
 
       it 'registers an offense for no quotes' do
-        new_source = autocorrect_source(cop, '%q(hi)')
+        new_source = autocorrect_source('%q(hi)')
 
         expect(new_source).to eq("'hi'")
       end
@@ -112,19 +112,19 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
 
     context 'auto-correct' do
       it 'corrects a static string without quotes' do
-        new_source = autocorrect_source(cop, '%Q(hi)')
+        new_source = autocorrect_source('%Q(hi)')
 
         expect(new_source).to eq('"hi"')
       end
 
       it 'corrects a static string with only double quotes' do
-        new_source = autocorrect_source(cop, '%Q("hi")')
+        new_source = autocorrect_source('%Q("hi")')
 
         expect(new_source).to eq(%q('"hi"'))
       end
 
       it 'corrects a dynamic string without quotes' do
-        new_source = autocorrect_source(cop, "%Q(hi\#{4})")
+        new_source = autocorrect_source("%Q(hi\#{4})")
 
         expect(new_source).to eq(%("hi\#{4}"))
       end

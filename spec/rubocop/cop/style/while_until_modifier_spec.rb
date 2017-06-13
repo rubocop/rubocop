@@ -23,7 +23,7 @@ describe RuboCop::Cop::Style::WhileUntilModifier do
     end
 
     it 'does auto-correction' do
-      autocorrect_really_short(cop, 'while')
+      autocorrect_really_short('while')
     end
   end
 
@@ -63,7 +63,7 @@ describe RuboCop::Cop::Style::WhileUntilModifier do
     end
 
     it 'does auto-correction' do
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq "x = 0 while true\n"
     end
   end
@@ -74,7 +74,7 @@ describe RuboCop::Cop::Style::WhileUntilModifier do
     end
 
     it 'does auto-correction' do
-      autocorrect_really_short(cop, 'until')
+      autocorrect_really_short('until')
     end
   end
 

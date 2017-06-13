@@ -49,22 +49,22 @@ describe RuboCop::Cop::Style::FormatString, :config do
     end
 
     it 'auto-corrects format' do
-      corrected = autocorrect_source(cop, 'format(something, a, b)')
+      corrected = autocorrect_source('format(something, a, b)')
       expect(corrected).to eq 'sprintf(something, a, b)'
     end
 
     it 'auto-corrects String#%' do
-      corrected = autocorrect_source(cop, 'puts "%d" % 10')
+      corrected = autocorrect_source('puts "%d" % 10')
       expect(corrected).to eq 'puts sprintf("%d", 10)'
     end
 
     it 'auto-corrects String#% with an array argument' do
-      corrected = autocorrect_source(cop, 'puts x % [10, 11]')
+      corrected = autocorrect_source('puts x % [10, 11]')
       expect(corrected).to eq 'puts sprintf(x, 10, 11)'
     end
 
     it 'auto-corrects String#% with a hash argument' do
-      corrected = autocorrect_source(cop, 'puts x % { a: 10, b: 11 }')
+      corrected = autocorrect_source('puts x % { a: 10, b: 11 }')
       expect(corrected).to eq 'puts sprintf(x, a: 10, b: 11)'
     end
   end
@@ -123,22 +123,22 @@ describe RuboCop::Cop::Style::FormatString, :config do
     end
 
     it 'auto-corrects sprintf' do
-      corrected = autocorrect_source(cop, 'sprintf(something, a, b)')
+      corrected = autocorrect_source('sprintf(something, a, b)')
       expect(corrected).to eq 'format(something, a, b)'
     end
 
     it 'auto-corrects String#%' do
-      corrected = autocorrect_source(cop, 'puts "%d" % 10')
+      corrected = autocorrect_source('puts "%d" % 10')
       expect(corrected).to eq 'puts format("%d", 10)'
     end
 
     it 'auto-corrects String#% with an array argument' do
-      corrected = autocorrect_source(cop, 'puts x % [10, 11]')
+      corrected = autocorrect_source('puts x % [10, 11]')
       expect(corrected).to eq 'puts format(x, 10, 11)'
     end
 
     it 'auto-corrects String#% with a hash argument' do
-      corrected = autocorrect_source(cop, 'puts x % { a: 10, b: 11 }')
+      corrected = autocorrect_source('puts x % { a: 10, b: 11 }')
       expect(corrected).to eq 'puts format(x, a: 10, b: 11)'
     end
   end
@@ -188,32 +188,32 @@ describe RuboCop::Cop::Style::FormatString, :config do
     end
 
     it 'auto-corrects format with 2 arguments' do
-      corrected = autocorrect_source(cop, 'format(something, a)')
+      corrected = autocorrect_source('format(something, a)')
       expect(corrected).to eq 'something % a'
     end
 
     it 'auto-corrects format with 3 arguments' do
-      corrected = autocorrect_source(cop, 'format(something, a, b)')
+      corrected = autocorrect_source('format(something, a, b)')
       expect(corrected).to eq 'something % [a, b]'
     end
 
     it 'auto-corrects format with a hash argument' do
-      corrected = autocorrect_source(cop, 'format(something, a: 10, b: 11)')
+      corrected = autocorrect_source('format(something, a: 10, b: 11)')
       expect(corrected).to eq 'something % { a: 10, b: 11 }'
     end
 
     it 'auto-corrects sprintf with 2 arguments' do
-      corrected = autocorrect_source(cop, 'sprintf(something, a)')
+      corrected = autocorrect_source('sprintf(something, a)')
       expect(corrected).to eq 'something % a'
     end
 
     it 'auto-corrects sprintf with 3 arguments' do
-      corrected = autocorrect_source(cop, 'sprintf(something, a, b)')
+      corrected = autocorrect_source('sprintf(something, a, b)')
       expect(corrected).to eq 'something % [a, b]'
     end
 
     it 'auto-corrects sprintf with a hash argument' do
-      corrected = autocorrect_source(cop, 'sprintf(something, a: 10, b: 11)')
+      corrected = autocorrect_source('sprintf(something, a: 10, b: 11)')
       expect(corrected).to eq 'something % { a: 10, b: 11 }'
     end
   end

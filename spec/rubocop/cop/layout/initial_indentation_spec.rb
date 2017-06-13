@@ -59,7 +59,7 @@ describe RuboCop::Cop::Layout::InitialIndentation do
   end
 
   it 'auto-corrects indented method definition' do
-    corrected = autocorrect_source(cop, <<-RUBY.strip_margin('|'))
+    corrected = autocorrect_source(<<-RUBY.strip_margin('|'))
       |  def f
       |  end
     RUBY
@@ -70,7 +70,7 @@ describe RuboCop::Cop::Layout::InitialIndentation do
   end
 
   it 'auto-corrects indented assignment but not comment' do
-    corrected = autocorrect_source(cop, <<-RUBY.strip_margin('|'))
+    corrected = autocorrect_source(<<-RUBY.strip_margin('|'))
       |  # comment
       |  x = 1
     RUBY

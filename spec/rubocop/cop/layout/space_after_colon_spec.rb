@@ -63,7 +63,7 @@ describe RuboCop::Cop::Layout::SpaceAfterColon do
   end
 
   it 'auto-corrects missing space' do
-    new_source = autocorrect_source(cop, 'def f(a:, b:2); {a:3}; end')
+    new_source = autocorrect_source('def f(a:, b:2); {a:3}; end')
     expect(new_source).to eq('def f(a:, b: 2); {a: 3}; end')
   end
 end

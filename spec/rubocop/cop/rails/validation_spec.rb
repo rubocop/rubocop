@@ -19,7 +19,6 @@ describe RuboCop::Cop::Rails::Validation do
   described_class::TYPES.each_with_index do |parameter|
     it "autocorrect validates_#{parameter}_of" do
       new_source = autocorrect_source(
-        cop,
         "validates_#{parameter}_of :full_name, :birth_date"
       )
       expect(new_source).to eq(
@@ -34,7 +33,6 @@ describe RuboCop::Cop::Rails::Validation do
 
   it 'autocorrect validates_length_of' do
     new_source = autocorrect_source(
-      cop,
       'validates_numericality_of :age, minimum: 0, maximum: 122'
     )
     expect(new_source).to eq(

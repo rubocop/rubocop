@@ -21,7 +21,7 @@ describe RuboCop::Cop::Performance::TimesMap do
         end
 
         it 'auto-corrects' do
-          corrected = autocorrect_source(cop, source)
+          corrected = autocorrect_source(source)
           expect(corrected).to eq('Array.new(4) { |i| i.to_s }')
         end
       end
@@ -38,7 +38,7 @@ describe RuboCop::Cop::Performance::TimesMap do
         end
 
         it 'auto-corrects' do
-          corrected = autocorrect_source(cop, source)
+          corrected = autocorrect_source(source)
           expect(corrected).to eq('Array.new(4, &method(:foo))')
         end
       end

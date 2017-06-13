@@ -42,7 +42,7 @@ describe RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault, :config do
     end
 
     it 'auto-corrects missing space' do
-      new_source = autocorrect_source(cop, ['def f(x, y=0, z=1)', 'end'])
+      new_source = autocorrect_source(['def f(x, y=0, z=1)', 'end'])
       expect(new_source).to eq(['def f(x, y = 0, z = 1)', 'end'].join("\n"))
     end
 
@@ -54,7 +54,7 @@ describe RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault, :config do
     end
 
     it 'auto-corrects missing space for arguments with unary operators' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         def f(x=-1, y= 0, z =+1)
         end
       RUBY
@@ -104,7 +104,7 @@ describe RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault, :config do
     end
 
     it 'auto-corrects unwanted space' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         def f(x, y = 0, z= 1, w= 2)
         end
       RUBY

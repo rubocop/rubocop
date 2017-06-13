@@ -13,7 +13,7 @@ describe RuboCop::Cop::Layout::SpaceAroundKeyword do
     end
 
     it 'auto-corrects' do
-      expect(autocorrect_source(cop, expr)).to eq correct
+      expect(autocorrect_source(expr)).to eq correct
     end
   end
 
@@ -27,7 +27,7 @@ describe RuboCop::Cop::Layout::SpaceAroundKeyword do
     end
 
     it 'auto-corrects' do
-      expect(autocorrect_source(cop, expr)).to eq correct
+      expect(autocorrect_source(expr)).to eq correct
     end
   end
 

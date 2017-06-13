@@ -33,7 +33,7 @@ describe RuboCop::Cop::Style::DefWithParentheses do
   end
 
   it 'auto-removes unneeded parens' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       def test();
       something
       end

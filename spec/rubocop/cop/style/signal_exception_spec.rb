@@ -171,7 +171,7 @@ describe RuboCop::Cop::Style::SignalException, :config do
     end
 
     it 'auto-corrects raise to fail when appropriate' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         begin
           raise
         rescue Exception
@@ -188,7 +188,7 @@ describe RuboCop::Cop::Style::SignalException, :config do
     end
 
     it 'auto-corrects fail to raise when appropriate' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         begin
           fail
         rescue Exception
@@ -277,7 +277,7 @@ describe RuboCop::Cop::Style::SignalException, :config do
     end
 
     it 'auto-corrects fail to raise always' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         begin
           fail
         rescue Exception
@@ -342,7 +342,7 @@ describe RuboCop::Cop::Style::SignalException, :config do
     end
 
     it 'auto-corrects raise to fail always' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         begin
           raise
         rescue Exception

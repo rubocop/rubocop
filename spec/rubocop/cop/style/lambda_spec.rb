@@ -14,7 +14,7 @@ describe RuboCop::Cop::Style::Lambda, :config do
 
   shared_examples 'auto-correct' do |expected|
     it 'auto-corrects' do
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq(expected)
     end
@@ -22,7 +22,7 @@ describe RuboCop::Cop::Style::Lambda, :config do
 
   shared_examples 'does not auto-correct' do
     it 'does not autocorrect' do
-      expect(autocorrect_source(cop, source)).to eq(source)
+      expect(autocorrect_source(source)).to eq(source)
       expect(cop.offenses.map(&:corrected?)).to eq [false]
     end
   end

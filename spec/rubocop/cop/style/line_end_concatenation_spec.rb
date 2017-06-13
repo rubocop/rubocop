@@ -142,8 +142,7 @@ describe RuboCop::Cop::Style::LineEndConcatenation do
   end
 
   it 'autocorrects in the simple case by replacing + with \\' do
-    corrected = autocorrect_source(cop,
-                                   ['top = "test" +',
+    corrected = autocorrect_source(['top = "test" +',
                                     '"top"'])
     expect(corrected).to eq ['top = "test" \\', '"top"'].join("\n")
   end
@@ -152,22 +151,19 @@ describe RuboCop::Cop::Style::LineEndConcatenation do
   # the code has syntax errors, so it's important to fix the trailing
   # whitespace in this cop.
   it 'autocorrects a + with trailing whitespace to \\' do
-    corrected = autocorrect_source(cop,
-                                   ['top = "test" + ',
+    corrected = autocorrect_source(['top = "test" + ',
                                     '"top"'])
     expect(corrected).to eq ['top = "test" \\', '"top"'].join("\n")
   end
 
   it 'autocorrects a + with \\ to just \\' do
-    corrected = autocorrect_source(cop,
-                                   ['top = "test" + \\',
+    corrected = autocorrect_source(['top = "test" + \\',
                                     '"top"'])
     expect(corrected).to eq ['top = "test" \\', '"top"'].join("\n")
   end
 
   it 'autocorrects for chained concatenations and << calls' do
-    corrected = autocorrect_source(cop,
-                                   ['top = "test#{x}" <<',
+    corrected = autocorrect_source(['top = "test#{x}" <<',
                                     '"top" +',
                                     '"ubertop" <<',
                                     '"foo"'])
@@ -179,8 +175,7 @@ describe RuboCop::Cop::Style::LineEndConcatenation do
   end
 
   it 'autocorrects only the lines that should be autocorrected' do
-    corrected = autocorrect_source(cop,
-                                   ['top = "test#{x}" <<',
+    corrected = autocorrect_source(['top = "test#{x}" <<',
                                     '"top" + # comment',
                                     '"foo" +',
                                     '"bar" +',

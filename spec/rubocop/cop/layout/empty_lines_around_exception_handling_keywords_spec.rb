@@ -12,7 +12,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords do
     end
 
     it "autocorrects for #{name} with a blank" do
-      corrected = autocorrect_source(cop, code.strip_indent)
+      corrected = autocorrect_source(code.strip_indent)
       expect(corrected).to eq(correction.strip_indent)
     end
   end
@@ -187,7 +187,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords do
     end
 
     it 'autocorrects' do
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq correction
     end
   end
@@ -245,7 +245,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords do
     end
 
     it 'autocorrects' do
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq correction
     end
   end

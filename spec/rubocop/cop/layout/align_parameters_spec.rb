@@ -278,7 +278,7 @@ describe RuboCop::Cop::Layout::AlignParameters do
       end
 
       it 'auto-corrects alignment' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           def method(a,
               b)
           end
@@ -309,7 +309,7 @@ describe RuboCop::Cop::Layout::AlignParameters do
         end
 
         it 'auto-corrects alignment' do
-          new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<-RUBY.strip_indent)
             def self.method(a,
                 b)
             end
@@ -345,7 +345,7 @@ describe RuboCop::Cop::Layout::AlignParameters do
     end
 
     it 'auto-corrects alignment' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         func(a,
                b,
         c)
@@ -359,7 +359,7 @@ describe RuboCop::Cop::Layout::AlignParameters do
 
     it 'auto-corrects each line of a multi-line parameter to the right' do
       new_source =
-        autocorrect_source(cop, <<-RUBY.strip_indent)
+        autocorrect_source(<<-RUBY.strip_indent)
           create :transaction, :closed,
                 account:          account,
                 open_price:       1.29,
@@ -376,7 +376,7 @@ describe RuboCop::Cop::Layout::AlignParameters do
 
     it 'auto-corrects each line of a multi-line parameter to the left' do
       new_source =
-        autocorrect_source(cop, <<-RUBY.strip_indent)
+        autocorrect_source(<<-RUBY.strip_indent)
           create :transaction, :closed,
                    account:          account,
                    open_price:       1.29,
@@ -396,7 +396,7 @@ describe RuboCop::Cop::Layout::AlignParameters do
         foo(:bar, {
             whiz: 2, bang: 3 }, option: 3)
       RUBY
-      new_source = autocorrect_source(cop, original_source)
+      new_source = autocorrect_source(original_source)
       expect(new_source).to eq(original_source)
     end
 
@@ -409,7 +409,7 @@ describe RuboCop::Cop::Layout::AlignParameters do
 
         end
       RUBY
-      new_source = autocorrect_source(cop, src)
+      new_source = autocorrect_source(src)
       expect(new_source)
         .to eq <<-'RUBY'.strip_indent
           class MyModel < ActiveRecord::Base
@@ -439,7 +439,7 @@ describe RuboCop::Cop::Layout::AlignParameters do
     end
 
     it 'does not autocorrect correct source' do
-      expect(autocorrect_source(cop, correct_source))
+      expect(autocorrect_source(correct_source))
         .to eq(correct_source)
     end
 
@@ -451,7 +451,7 @@ describe RuboCop::Cop::Layout::AlignParameters do
                close_price: 1.30
       RUBY
 
-      expect(autocorrect_source(cop, original_source))
+      expect(autocorrect_source(original_source))
         .to eq(correct_source)
     end
 
@@ -463,7 +463,7 @@ describe RuboCop::Cop::Layout::AlignParameters do
         close_price: 1.30
       RUBY
 
-      expect(autocorrect_source(cop, original_source))
+      expect(autocorrect_source(original_source))
         .to eq(correct_source)
     end
 
@@ -482,7 +482,7 @@ describe RuboCop::Cop::Layout::AlignParameters do
         |    close_price: 1.30
       RUBY
 
-      expect(autocorrect_source(cop, original_source))
+      expect(autocorrect_source(original_source))
         .to eq(correct_source)
     end
 
@@ -540,7 +540,7 @@ describe RuboCop::Cop::Layout::AlignParameters do
           |     c
           |   )
         RUBY
-        expect(autocorrect_source(cop, original_source))
+        expect(autocorrect_source(original_source))
           .to eq(correct_source)
       end
     end
@@ -607,7 +607,7 @@ describe RuboCop::Cop::Layout::AlignParameters do
       end
 
       it 'auto-corrects alignment' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           def method(a,
               b)
           end
@@ -638,7 +638,7 @@ describe RuboCop::Cop::Layout::AlignParameters do
         end
 
         it 'auto-corrects alignment' do
-          new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<-RUBY.strip_indent)
             def self.method(a,
                 b)
             end
@@ -692,7 +692,7 @@ describe RuboCop::Cop::Layout::AlignParameters do
             | )
           RUBY
 
-          expect(autocorrect_source(cop, original_source))
+          expect(autocorrect_source(original_source))
             .to eq(correct_source)
         end
       end

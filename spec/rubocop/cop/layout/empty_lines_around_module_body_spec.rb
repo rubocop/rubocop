@@ -35,7 +35,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
     end
 
     it 'autocorrects beginning and end' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         module SomeModule
 
           do_something
@@ -76,7 +76,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
     end
 
     it 'autocorrects beginning and end' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         module SomeModule
           do_something
         end
@@ -92,7 +92,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
 
     it 'ignores modules with an empty body' do
       source = "module A\nend"
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq(source)
     end
   end
@@ -168,7 +168,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
       end
 
       it 'autocorrects beginning and end' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           module Parent
 
             module Child

@@ -82,7 +82,7 @@ describe RuboCop::Cop::Style::Encoding, :config do
     context 'auto-correct' do
       it 'inserts an encoding comment on the first line when there are ' \
          'non ASCII characters in the file' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           def foo() 'ä' end
         RUBY
 
@@ -93,7 +93,7 @@ describe RuboCop::Cop::Style::Encoding, :config do
       end
 
       it "removes encoding comment on first line when it's not needed" do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           # encoding: utf-8
           blah
         RUBY
@@ -163,7 +163,7 @@ describe RuboCop::Cop::Style::Encoding, :config do
         it 'inserts an encoding comment on the first line of files without ' \
            'a shebang' do
           cop_config['AutoCorrectEncodingComment'] = '# encoding: utf-8'
-          new_source = autocorrect_source(cop, 'def foo() end')
+          new_source = autocorrect_source('def foo() end')
 
           expect(new_source).to eq("# encoding: utf-8\ndef foo() end")
         end
@@ -171,7 +171,7 @@ describe RuboCop::Cop::Style::Encoding, :config do
         it 'inserts an encoding comment on the first line and leaves ' \
            'the wrong encoding line when encoding is in the wrong place' do
           cop_config['AutoCorrectEncodingComment'] = '# encoding: utf-8'
-          new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<-RUBY.strip_indent)
             def foo() end
             # encoding: utf-8
           RUBY
@@ -185,7 +185,7 @@ describe RuboCop::Cop::Style::Encoding, :config do
 
         it 'inserts an encoding comment on the second line when the first ' \
            'line is a shebang' do
-          new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<-RUBY.strip_indent)
             #!/usr/bin/env ruby
             def foo
             end
@@ -200,7 +200,7 @@ describe RuboCop::Cop::Style::Encoding, :config do
         end
 
         it "doesn't infinite-loop when the first line is blank" do
-          new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<-RUBY.strip_indent)
 
             module Toto
             end
@@ -217,7 +217,7 @@ describe RuboCop::Cop::Style::Encoding, :config do
       context 'invalid auto correct comment' do
         it 'throws an exception' do
           cop_config['AutoCorrectEncodingComment'] = 'invalid'
-          expect { autocorrect_source(cop, 'def foo() end') }
+          expect { autocorrect_source('def foo() end') }
             .to raise_error(RuntimeError, 'invalid does not match ' \
                           '(?-mix:#.*coding\s?[:=]\s?(?:UTF|utf)-8)')
         end
@@ -260,13 +260,13 @@ describe RuboCop::Cop::Style::Encoding, :config do
     context 'auto-correct' do
       it 'removes encoding comment on first line when there are ' \
          'non ASCII characters in the file' do
-        new_source = autocorrect_source(cop, 'def foo() \'ä\' end')
+        new_source = autocorrect_source('def foo() \'ä\' end')
 
         expect(new_source).to eq('def foo() \'ä\' end')
       end
 
       it "removes encoding comment on first line when it's not needed" do
-        new_source = autocorrect_source(cop, "# encoding: utf-8\nblah")
+        new_source = autocorrect_source("# encoding: utf-8\nblah")
 
         expect(new_source).to eq('blah')
       end
