@@ -19,8 +19,8 @@ module RuboCop
         def_node_matcher :symbol_proc?, <<-PATTERN
           (block
             ${(send ...) (super ...) zsuper}
-            $(args (arg _))
-            $(send lvar $_))
+            (args (arg _var))
+            (send (lvar _var) $_))
         PATTERN
 
         def self.autocorrect_incompatible_with
@@ -28,7 +28,7 @@ module RuboCop
         end
 
         def on_block(node)
-          symbol_proc?(node) do |send_or_super, block_args, block_body, method|
+          symbol_proc?(node) do |send_or_super, method|
             block_method_name = resolve_block_method_name(send_or_super)
 
             # TODO: Rails-specific handling that we should probably make
@@ -37,7 +37,6 @@ module RuboCop
             return if proc_node?(send_or_super)
             return if %i[lambda proc].include?(block_method_name)
             return if ignored_method?(block_method_name)
-            return unless can_shorten?(block_args, block_body)
 
             offense(node, method, block_method_name)
           end
@@ -122,20 +121,6 @@ module RuboCop
 
         def ignored_method?(name)
           ignored_methods.include?(name.to_s)
-        end
-
-        def can_shorten?(block_args, block_body)
-          argument_matches_receiver?(block_args, block_body)
-        end
-
-        # TODO: This might be clearer as a node matcher with unification
-        def argument_matches_receiver?(block_args, block_body)
-          receiver, = *block_body
-
-          block_arg_name, = *block_args.children.first
-          receiver_name, = *receiver
-
-          block_arg_name == receiver_name
         end
 
         def super?(node)
