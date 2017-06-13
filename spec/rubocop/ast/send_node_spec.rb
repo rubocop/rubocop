@@ -384,7 +384,7 @@ describe RuboCop::AST::SendNode do
 
   describe '#operator_method?' do
     context 'with a binary operator method' do
-      let(:source) { 'foo.bar == :baz' }
+      let(:source) { 'foo.bar + :baz' }
 
       it { expect(send_node.operator_method?).to be_truthy }
     end

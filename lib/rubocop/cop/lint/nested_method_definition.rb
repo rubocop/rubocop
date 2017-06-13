@@ -55,17 +55,17 @@ module RuboCop
       #     end
       #   end
       class NestedMethodDefinition < Cop
-        include OnMethodDef
-        extend RuboCop::NodePattern::Macros
-
         MSG = 'Method definitions must not be nested. ' \
               'Use `lambda` instead.'.freeze
 
-        def on_method_def(node, _method_name, _args, _body)
+        def on_def(node)
           find_nested_defs(node) do |nested_def_node|
             add_offense(nested_def_node)
           end
         end
+        alias on_defs on_def
+
+        private
 
         def find_nested_defs(node, &block)
           node.each_child_node do |child|
@@ -80,8 +80,6 @@ module RuboCop
             end
           end
         end
-
-        private
 
         def scoping_method_call?(child)
           eval_call?(child) || exec_call?(child) || child.sclass_type? ||

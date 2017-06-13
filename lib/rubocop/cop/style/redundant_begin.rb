@@ -25,15 +25,16 @@ module RuboCop
       #     something
       #   end
       class RedundantBegin < Cop
-        include OnMethodDef
-
         MSG = 'Redundant `begin` block detected.'.freeze
 
-        def on_method_def(_node, _method_name, _args, body)
-          return unless body && body.kwbegin_type?
+        def on_def(node)
+          return unless node.body && node.body.kwbegin_type?
 
-          add_offense(body, :begin)
+          add_offense(node.body, :begin)
         end
+        alias on_defs on_def
+
+        private
 
         def autocorrect(node)
           lambda do |corrector|

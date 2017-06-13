@@ -37,17 +37,17 @@ module RuboCop
       #   private def foo
       #           end
       class DefEndAlignment < Cop
-        include OnMethodDef
         include EndKeywordAlignment
 
         MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d.'.freeze
 
-        def on_method_def(node, _method_name, _args, _body)
+        def on_def(node)
           check_end_kw_in_node(node)
         end
+        alias on_defs on_def
 
         def on_send(node)
-          return unless modifier_and_def_on_same_line?(node)
+          return unless node.prefixed_def_modifier?
 
           method_def = node.first_argument
           expr = node.source_range

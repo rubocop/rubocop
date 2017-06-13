@@ -22,15 +22,14 @@ module RuboCop
       #     super
       #   end
       class MethodMissing < Cop
-        include OnMethodDef
-
         MSG = 'When using `method_missing`, %s.'.freeze
 
-        def on_method_def(node, method_name, _args, _body)
-          return unless method_name == :method_missing
+        def on_def(node)
+          return unless node.method?(:method_missing)
 
           check(node)
         end
+        alias on_defs on_def
 
         private
 
@@ -60,21 +59,9 @@ module RuboCop
 
         def implements_respond_to_missing?(node)
           node.parent.each_child_node(node.type).any? do |sibling|
-            if node.def_type?
-              respond_to_missing_def?(sibling)
-            elsif node.defs_type?
-              respond_to_missing_defs?(sibling)
-            end
+            sibling.method?(:respond_to_missing?)
           end
         end
-
-        def_node_matcher :respond_to_missing_def?, <<-PATTERN
-          (def :respond_to_missing? (...) ...)
-        PATTERN
-
-        def_node_matcher :respond_to_missing_defs?, <<-PATTERN
-          (defs (self) :respond_to_missing? (...) ...)
-        PATTERN
       end
     end
   end

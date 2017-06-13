@@ -15,14 +15,14 @@ module RuboCop
       #
       #   # EnforcedStyle: compact (default)
       #
-      #   @bad
+      #   # bad
       #   def foo(bar)
       #   end
       #
       #   def self.foo(bar)
       #   end
       #
-      #   @good
+      #   # good
       #   def foo(bar); end
       #
       #   def foo(bar)
@@ -31,34 +31,36 @@ module RuboCop
       #
       #   def self.foo(bar); end
       #
+      # @example
+      #
       #   # EnforcedStyle: expanded
       #
-      #   @bad
+      #   # bad
       #   def foo(bar); end
       #
       #   def self.foo(bar); end
       #
-      #   @good
+      #   # good
       #   def foo(bar)
       #   end
       #
       #   def self.foo(bar)
       #   end
       class EmptyMethod < Cop
-        include OnMethodDef
         include ConfigurableEnforcedStyle
 
         MSG_COMPACT = 'Put empty method definitions on a single line.'.freeze
         MSG_EXPANDED = 'Put the `end` of empty method definitions on the ' \
                        'next line.'.freeze
 
-        def on_method_def(node, _method_name, _args, body)
-          return if body || comment_lines?(node)
+        def on_def(node)
+          return if node.body || comment_lines?(node)
           return if compact_style? && compact?(node)
           return if expanded_style? && expanded?(node)
 
           add_offense(node, node.source_range)
         end
+        alias on_defs on_def
 
         private
 
@@ -73,14 +75,18 @@ module RuboCop
         end
 
         def corrected(node)
-          method_name, args, _body, scope = method_def_node_parts(node)
+          arguments = node.arguments? ? node.arguments.source : ''
+          scope     = node.receiver ? "#{node.receiver.source}." : ''
 
-          arguments = !args.children.empty? ? args.source : ''
-          indent    = ' ' * node.loc.column
-          joint     = compact_style? ? '; ' : "\n#{indent}"
-          scope     = scope ? 'self.' : ''
+          signature = [scope, node.method_name, arguments].join
 
-          ["def #{scope}#{method_name}#{arguments}", 'end'].join(joint)
+          ["def #{signature}", 'end'].join(joint(node))
+        end
+
+        def joint(node)
+          indent = ' ' * node.loc.column
+
+          compact_style? ? '; ' : "\n#{indent}"
         end
 
         def comment_lines?(node)

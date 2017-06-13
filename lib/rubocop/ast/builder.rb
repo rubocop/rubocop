@@ -19,6 +19,7 @@ module RuboCop
         ArrayNode        => [:array],
         BlockNode        => [:block],
         CaseNode         => [:case],
+        DefNode          => %i[def defs],
         EnsureNode       => [:ensure],
         ForNode          => [:for],
         HashNode         => [:hash],

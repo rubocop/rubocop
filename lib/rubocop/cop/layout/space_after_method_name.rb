@@ -13,12 +13,11 @@ module RuboCop
       #   # good
       #   def func(x) ... end
       class SpaceAfterMethodName < Cop
-        include OnMethodDef
-
         MSG = 'Do not put a space between a method name and the opening ' \
               'parenthesis.'.freeze
 
-        def on_method_def(_node, _method_name, args, _body)
+        def on_def(node)
+          args = node.arguments
           return unless args.loc.begin && args.loc.begin.is?('(')
           expr = args.source_range
           pos_before_left_paren = range_between(expr.begin_pos - 1,
@@ -27,6 +26,9 @@ module RuboCop
 
           add_offense(pos_before_left_paren, pos_before_left_paren)
         end
+        alias on_defs on_def
+
+        private
 
         def autocorrect(pos_before_left_paren)
           ->(corrector) { corrector.remove(pos_before_left_paren) }

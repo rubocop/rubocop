@@ -18,13 +18,9 @@ module RuboCop
       #   # good
       #   def value? ...
       class PredicateName < Cop
-        include OnMethodDef
-
-        private
-
-        def on_method_def(node, method_name, _args, _body)
+        def on_def(node)
           predicate_prefixes.each do |prefix|
-            method_name = method_name.to_s
+            method_name = node.method_name.to_s
             next unless method_name.start_with?(prefix)
             next if method_name == expected_name(method_name, prefix)
             next if predicate_whitelist.include?(method_name)
@@ -35,6 +31,9 @@ module RuboCop
             )
           end
         end
+        alias on_defs on_def
+
+        private
 
         def expected_name(method_name, prefix)
           new_name = if prefix_blacklist.include?(prefix)

@@ -6,19 +6,7 @@ module RuboCop
     # node when the builder constructs the AST, making its methods available
     # to all `args` nodes within RuboCop.
     class ArgsNode < Node
-      # Whether this `args` node has any arguments.
-      #
-      # @return [Boolean] whether this `args` node has any arguments
-      def empty?
-        to_a.empty?
-      end
-
-      # The number of arguments in this `args` node.
-      #
-      # @return [Integer] the number of arguments in this `args` node
-      def size
-        to_a.size
-      end
+      include CollectionNode
     end
   end
 end

@@ -27,7 +27,6 @@ module RuboCop
       #     )
       class ClosingParenthesisIndentation < Cop
         include AutocorrectAlignment
-        include OnMethodDef
 
         MSG_INDENT =
           'Indent `)` the same as the start of the line where `(` is.'.freeze
@@ -41,11 +40,12 @@ module RuboCop
           check(node, node.children)
         end
 
-        private
-
-        def on_method_def(_node, _method_name, args, _body)
-          check(args, args.children)
+        def on_def(node)
+          check(node.arguments, node.arguments)
         end
+        alias on_defs on_def
+
+        private
 
         def check(node, elements)
           right_paren = node.loc.end

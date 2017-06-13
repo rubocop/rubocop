@@ -22,13 +22,13 @@ module RuboCop
       #   end
       class EmptyLinesAroundMethodBody < Cop
         include EmptyLinesAroundBody
-        include OnMethodDef
 
         KIND = 'method'.freeze
 
-        def on_method_def(node, _method_name, _args, body)
-          check(node, body)
+        def on_def(node)
+          check(node, node.body)
         end
+        alias on_defs on_def
 
         private
 

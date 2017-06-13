@@ -60,13 +60,13 @@ module RuboCop
       #   end
       class EmptyLinesAroundExceptionHandlingKeywords < Cop
         include EmptyLinesAroundBody
-        include OnMethodDef
 
         MSG = 'Extra empty line detected %s the `%s`.'.freeze
 
-        def on_method_def(_node, _method_name, _args, body)
-          check_body(body)
+        def on_def(node)
+          check_body(node.body)
         end
+        alias on_defs on_def
 
         def on_kwbegin(node)
           body, = *node

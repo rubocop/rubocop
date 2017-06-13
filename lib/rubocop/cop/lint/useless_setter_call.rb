@@ -25,26 +25,25 @@ module RuboCop
       #     x
       #   end
       class UselessSetterCall < Cop
-        include OnMethodDef
-
         MSG = 'Useless setter call to local variable `%s`.'.freeze
         ASSIGNMENT_TYPES = %i[lvasgn ivasgn cvasgn gvasgn].freeze
 
-        private
+        def on_def(node)
+          return unless node.body
 
-        def on_method_def(_node, _method_name, _args, body)
-          return unless body
-
-          last_expr = last_expression(body)
+          last_expr = last_expression(node.body)
           return unless setter_call_to_local_variable?(last_expr)
 
-          tracker = MethodVariableTracker.new(body)
+          tracker = MethodVariableTracker.new(node.body)
           receiver, = *last_expr
           variable_name, = *receiver
           return unless tracker.contain_local_object?(variable_name)
 
           add_offense(receiver, :name, format(MSG, receiver.loc.name.source))
         end
+        alias on_defs on_def
+
+        private
 
         def last_expression(body)
           expression = body.begin_type? ? body.children : body
@@ -54,9 +53,9 @@ module RuboCop
 
         def setter_call_to_local_variable?(node)
           return unless node && node.send_type?
-          receiver, method, _args = *node
-          return unless receiver && receiver.lvar_type?
-          method =~ /(?:\w|\[\])=$/
+          return unless node.receiver && node.receiver.lvar_type?
+
+          node.method_name =~ /(?:\w|\[\])=$/
         end
 
         # This class tracks variable assignments in a method body

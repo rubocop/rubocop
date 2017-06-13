@@ -10,16 +10,11 @@ module RuboCop
 
         def on_def(node)
           return if in_module_or_instance_eval?(node)
-          method_name, args, body = *node
-          on_method_def(node, method_name, args, body)
-        end
+          return if ignore_class_methods? && node.defs_type?
 
-        def on_defs(node)
-          return if in_module_or_instance_eval?(node)
-          return if ignore_class_methods?
-          _scope, method_name, args, body = *node
-          on_method_def(node, method_name, args, body)
+          on_method_def(node)
         end
+        alias on_defs on_def
 
         private
 
@@ -37,10 +32,10 @@ module RuboCop
           false
         end
 
-        def on_method_def(node, method_name, args, body)
-          kind = if trivial_reader?(method_name, args, body)
+        def on_method_def(node)
+          kind = if trivial_reader?(node)
                    'reader'
-                 elsif trivial_writer?(method_name, args, body)
+                 elsif trivial_writer?(node)
                    'writer'
                  end
           return unless kind
@@ -69,61 +64,53 @@ module RuboCop
           Array(whitelist).map(&:to_sym) + [:initialize]
         end
 
-        def predicate?(method_name)
-          method_name[-1] == '?'
-        end
-
         def dsl_writer?(method_name)
           !method_name.to_s.end_with?('=')
         end
 
-        def trivial_reader?(method_name, args, body)
-          looks_like_trivial_reader?(args, body) &&
-            !allowed_method?(method_name, body) &&
-            !allowed_reader?(method_name)
+        def trivial_reader?(node)
+          looks_like_trivial_reader?(node) &&
+            !allowed_method?(node) && !allowed_reader?(node)
         end
 
-        def looks_like_trivial_reader?(args, body)
-          args.children.empty? && body && body.ivar_type?
+        def looks_like_trivial_reader?(node)
+          !node.arguments? && node.body && node.body.ivar_type?
         end
 
-        def trivial_writer?(method_name, args, body)
-          looks_like_trivial_writer?(args, body) &&
-            !allowed_method?(method_name, body) &&
-            !allowed_writer?(method_name)
+        def trivial_writer?(node)
+          looks_like_trivial_writer?(node) &&
+            !allowed_method?(node) && !allowed_writer?(node.method_name)
         end
 
-        def looks_like_trivial_writer?(args, body)
-          args.children.one? &&
-            !%i[restarg blockarg].include?(args.children[0].type) &&
-            body && body.ivasgn_type? &&
-            body.children[1] && body.children[1].lvar_type?
-        end
+        def_node_matcher :looks_like_trivial_writer?, <<-PATTERN
+          {(def    _ (args (arg ...)) (ivasgn _ (lvar _)))
+           (defs _ _ (args (arg ...)) (ivasgn _ (lvar _)))}
+        PATTERN
 
-        def allowed_method?(method_name, body)
-          whitelist.include?(method_name) ||
-            exact_name_match? && !names_match?(method_name, body)
+        def allowed_method?(node)
+          whitelist.include?(node.method_name) ||
+            exact_name_match? && !names_match?(node)
         end
 
         def allowed_writer?(method_name)
           allow_dsl_writers? && dsl_writer?(method_name)
         end
 
-        def allowed_reader?(method_name)
-          allow_predicates? && predicate?(method_name)
+        def allowed_reader?(node)
+          allow_predicates? && node.predicate_method?
         end
 
-        def names_match?(method_name, body)
-          ivar_name, = *body
+        def names_match?(node)
+          ivar_name, = *node.body
 
-          method_name.to_s.sub(/[=?]$/, '') == ivar_name[1..-1]
+          node.method_name.to_s.sub(/[=?]$/, '') == ivar_name[1..-1]
         end
 
-        def trivial_accessor_kind(method_name, args, body)
-          if trivial_writer?(method_name, args, body) &&
-             !dsl_writer?(method_name)
+        def trivial_accessor_kind(node)
+          if trivial_writer?(node) &&
+             !dsl_writer?(node.method_name)
             'writer'
-          elsif trivial_reader?(method_name, args, body)
+          elsif trivial_reader?(node)
             'reader'
           end
         end
@@ -141,31 +128,27 @@ module RuboCop
         end
 
         def autocorrect_instance(node)
-          method_name, args, body = *node
-          unless names_match?(method_name, body) &&
-                 !predicate?(method_name) &&
-                 (kind = trivial_accessor_kind(method_name, args, body))
-            return
-          end
+          kind = trivial_accessor_kind(node)
+
+          return unless names_match?(node) && !node.predicate_method? && kind
 
           lambda do |corrector|
-            corrector.replace(node.source_range, accessor(kind, method_name))
+            corrector.replace(node.source_range,
+                              accessor(kind, node.method_name))
           end
         end
 
         def autocorrect_class(node)
-          _, method_name, args, body = *node
-          unless names_match?(method_name, body) &&
-                 (kind = trivial_accessor_kind(method_name, args, body))
-            return
-          end
+          kind = trivial_accessor_kind(node)
+
+          return unless names_match?(node) && kind
 
           lambda do |corrector|
             indent = ' ' * node.loc.column
             corrector.replace(
               node.source_range,
               ['class << self',
-               "#{indent}  #{accessor(kind, method_name)}",
+               "#{indent}  #{accessor(kind, node.method_name)}",
                "#{indent}end"].join("\n")
             )
           end
