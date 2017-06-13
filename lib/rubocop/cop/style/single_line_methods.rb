@@ -7,29 +7,25 @@ module RuboCop
       # It can optionally accept single-line methods with no body.
       class SingleLineMethods < Cop
         include AutocorrectAlignment
-        include OnMethodDef
 
         MSG = 'Avoid single-line method definitions.'.freeze
+
+        def on_def(node)
+          return unless node.single_line?
+          return if allow_empty? && !node.body
+
+          add_offense(node)
+        end
+        alias on_defs on_def
+
+        private
 
         def allow_empty?
           cop_config['AllowIfMethodIsEmpty']
         end
 
-        private
-
-        def on_method_def(node, _method_name, _args, body)
-          start_line = node.loc.keyword.line
-          end_line = node.loc.end.line
-
-          empty_body = body.nil?
-          return unless start_line == end_line && !(allow_empty? && empty_body)
-
-          @body = body
-          add_offense(node)
-        end
-
         def autocorrect(node)
-          body = @body
+          body = node.body
 
           lambda do |corrector|
             each_part(body) do |part|

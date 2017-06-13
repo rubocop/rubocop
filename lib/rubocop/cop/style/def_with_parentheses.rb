@@ -7,17 +7,18 @@ module RuboCop
       # that does not take any arguments. Both instance and
       # class/singleton methods are checked.
       class DefWithParentheses < Cop
-        include OnMethodDef
-
         MSG = "Omit the parentheses in defs when the method doesn't accept " \
               'any arguments.'.freeze
 
-        def on_method_def(node, _method_name, args, _body)
+        def on_def(node)
           return if node.single_line?
-          return unless args.children.empty? && args.loc.begin
+          return unless !node.arguments? && node.arguments.loc.begin
 
-          add_offense(args, :begin)
+          add_offense(node.arguments, :begin)
         end
+        alias on_defs on_def
+
+        private
 
         def autocorrect(node)
           lambda do |corrector|

@@ -21,9 +21,14 @@ module RuboCop
       # It should be extended to handle methods whose body is if/else
       # or a case expression with a default branch.
       class RedundantReturn < Cop
-        include OnMethodDef
-
         MSG = 'Redundant `return` detected.'.freeze
+
+        def on_def(node)
+          return unless node.body
+
+          check_branch(node.body)
+        end
+        alias on_defs on_def
 
         private
 
@@ -64,18 +69,12 @@ module RuboCop
           !args.first.begin_type? || !args.first.children.empty?
         end
 
-        def on_method_def(_node, _method_name, _args, body)
-          return unless body
-
-          check_branch(body)
-        end
-
         def check_branch(node)
           case node.type
           when :return then check_return_node(node)
-          when :case then check_case_node(node)
-          when :if then check_if_node(node)
-          when :begin then check_begin_node(node)
+          when :case   then check_case_node(node)
+          when :if     then check_if_node(node)
+          when :begin  then check_begin_node(node)
           end
         end
 

@@ -7,12 +7,20 @@ module RuboCop
     # methods available to all `super`- and `zsuper` nodes within RuboCop.
     class SuperNode < Node
       include ParameterizedNode
+      include MethodIdentifierPredicates
 
       # The method name of this `super` node. Always `:super`.
       #
       # @return [Symbol] the method name of `super`
       def method_name
         :super
+      end
+
+      # The receiver of this `super` node. Always `nil`.
+      #
+      # @return [nil] the receiver of `super`
+      def receiver
+        nil
       end
 
       # An array containing the arguments of the super invocation.
@@ -22,12 +30,19 @@ module RuboCop
         node_parts
       end
 
-      # Checks whether the method name matches the argument.
+      # Whether this method invocation has an explicit block.
       #
-      # @param [Symbol, String] name the method name to check for
-      # @return [Boolean] whether the method name matches the argument
-      def method?(name)
-        method_name == name.to_sym
+      # @return [Boolean] whether the invoked method has a block
+      def block_literal?
+        parent && parent.block_type? && eql?(parent.send_node)
+      end
+
+      # The block node associated with this method call, if any.
+      #
+      # @return [BlockNode, nil] the `block` node associated with this method
+      #                          call or `nil`
+      def block_node
+        parent if block_literal?
       end
 
       # Custom destructuring method. This can be used to normalize

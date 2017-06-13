@@ -24,8 +24,6 @@ module RuboCop
       #    !current_user.nil?
       #  end
       class NonNilCheck < Cop
-        include OnMethodDef
-
         def_node_matcher :not_equal_to_nil?, '(send _ :!= (:nil))'
         def_node_matcher :unless_check?, '(if (send _ :nil?) ...)'
         def_node_matcher :nil_check?, '(send _ :nil?)'
@@ -41,6 +39,19 @@ module RuboCop
             add_offense(node)
           end
         end
+
+        def on_def(node)
+          body = node.body
+
+          return unless node.predicate_method? && body
+
+          if body.begin_type?
+            ignore_node(body.children.last)
+          else
+            ignore_node(body)
+          end
+        end
+        alias on_defs on_def
 
         private
 
@@ -61,17 +72,6 @@ module RuboCop
 
         def include_semantic_changes?
           cop_config['IncludeSemanticChanges']
-        end
-
-        def on_method_def(_node, name, _args, body)
-          # only predicate methods are handled differently
-          return unless name.to_s.end_with?('?') && body
-
-          if body.begin_type?
-            ignore_node(body.children.last)
-          else
-            ignore_node(body)
-          end
         end
 
         def autocorrect(node)

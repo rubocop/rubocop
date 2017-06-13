@@ -7,6 +7,7 @@ module RuboCop
     # to all `send` nodes within RuboCop.
     class SendNode < Node
       include ParameterizedNode
+      include MethodIdentifierPredicates
 
       ENUMERATOR_METHODS = %i[collect collect_concat detect downto each
                               find find_all find_index inject loop map!
@@ -20,7 +21,7 @@ module RuboCop
         node_parts[0]
       end
 
-      # The name of the invoked method called as a string.
+      # The name of the invoked method called as a symbol.
       #
       # @return [Symbol] the name of the invoked method
       def method_name
@@ -29,17 +30,9 @@ module RuboCop
 
       # An array containing the arguments of the method invocation.
       #
-      # @return [Array<Node>] the arguments of the method invocation or `nil`
+      # @return [Array<Node>] the arguments of the method invocation
       def arguments
         node_parts[2..-1]
-      end
-
-      # Checks whether the method name matches the argument.
-      #
-      # @param [Symbol, String] name the method name to check for
-      # @return [Boolean] whether the method name matches the argument
-      def method?(name)
-        method_name == name.to_sym
       end
 
       # Checks whether the method is a macro method. A macro method is defined
@@ -69,35 +62,6 @@ module RuboCop
         loc.operator
       end
 
-      # Checks whether the invoked method is an operator method.
-      #
-      # @return [Boolean] whether the invoked method is an operator
-      def operator_method?
-        RuboCop::Cop::Util::OPERATOR_METHODS.include?(method_name)
-      end
-
-      # Checks whether the invoked method is a comparison method.
-      #
-      # @return [Boolean] whether the involed method is a comparison
-      def comparison_method?
-        COMPARISON_OPERATORS.include?(method_name)
-      end
-
-      # Checks whether the invoked method is an assignment method.
-      #
-      # @return [Boolean] whether the invoked method is an assignment.
-      def assignment_method?
-        !comparison_method? && method_name.to_s.end_with?('=')
-      end
-
-      # Checks whether the invoked method is an enumerator method.
-      #
-      # @return [Boolean] whether the invoked method is an enumerator.
-      def enumerator_method?
-        ENUMERATOR_METHODS.include?(method_name) ||
-          method_name.to_s.start_with?('each_')
-      end
-
       # Checks whether the method call uses a dot to connect the receiver and
       # the method name.
       #
@@ -117,7 +81,8 @@ module RuboCop
         loc.dot && loc.dot.is?('::')
       end
 
-      # Checks whether the receiver of this method invocation is `self`.
+      # Checks whether the *explicit* receiver of this method invocation is
+      # `self`.
       #
       # @return [Boolean] whether the receiver of this method invocation
       #                   is `self`
@@ -125,7 +90,8 @@ module RuboCop
         receiver && receiver.self_type?
       end
 
-      # Checks whether the receiver of this method invocation is a `const` node.
+      # Checks whether the *explicit* receiver of this method invocation is a
+      # `const` node.
       #
       # @return [Boolean] whether the receiver of this method invocation
       #                   is a `const` node
@@ -141,26 +107,19 @@ module RuboCop
         method_name == :call && !loc.selector
       end
 
-      # Checks whether the invoked method is a predicate method.
+      # Whether this method invocation has an explicit block.
       #
-      # @return [Boolean] whether the invoked method is a predicate method
-      def predicate_method?
-        method_name.to_s.end_with?('?')
+      # @return [Boolean] whether the invoked method has a block
+      def block_literal?
+        parent && parent.block_type? && eql?(parent.send_node)
       end
 
-      # Checks whether the invoked method is a bang method.
+      # The block node associated with this method call, if any.
       #
-      # @return [Boolean] whether the invoked method is a bang method
-      def bang_method?
-        method_name.to_s.end_with?('!')
-      end
-
-      # Checks whether the invoked method is a camel case method,
-      # e.g. `Integer()`.
-      #
-      # @return [Boolean] whether the invoked method is a camel case method
-      def camel_case_method?
-        method_name.to_s =~ /\A[A-Z]/
+      # @return [BlockNode, nil] the `block` node associated with this method
+      #                          call or `nil`
+      def block_node
+        parent if block_literal?
       end
 
       # Custom destructuring method. This can be used to normalize
@@ -176,6 +135,10 @@ module RuboCop
       def_node_matcher :macro_scope?, <<-PATTERN
         {^({class module} ...)
          ^^({class module} ... (begin ...))}
+      PATTERN
+
+      def_node_matcher :prefixed_def_modifier?, <<-PATTERN
+        (send nil _ ({def defs} ...))
       PATTERN
     end
   end

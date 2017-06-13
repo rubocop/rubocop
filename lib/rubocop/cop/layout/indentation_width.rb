@@ -48,7 +48,6 @@ module RuboCop
       class IndentationWidth < Cop
         include EndKeywordAlignment
         include AutocorrectAlignment
-        include OnMethodDef
         include CheckAssignment
         include AccessModifierNode
         include IgnoredPattern
@@ -98,7 +97,7 @@ module RuboCop
 
         def on_send(node)
           super
-          return unless modifier_and_def_on_same_line?(node)
+          return unless node.prefixed_def_modifier?
 
           *_, body = *node.first_argument
 
@@ -110,9 +109,12 @@ module RuboCop
           ignore_node(node.first_argument)
         end
 
-        def on_method_def(node, _method_name, _args, body)
-          check_indentation(node.loc.keyword, body) unless ignored_node?(node)
+        def on_def(node)
+          return if ignored_node?(node)
+
+          check_indentation(node.loc.keyword, node.body)
         end
+        alias on_defs on_def
 
         def on_while(node, base = node)
           return if ignored_node?(node)

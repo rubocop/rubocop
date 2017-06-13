@@ -37,12 +37,13 @@ module RuboCop
       #   ok
       class GuardClause < Cop
         include MinBodyLength
-        include OnMethodDef
 
         MSG = 'Use a guard clause instead of wrapping the code inside a ' \
               'conditional expression.'.freeze
 
-        def on_method_def(_node, _method_name, _args, body)
+        def on_def(node)
+          body = node.body
+
           return unless body
 
           if body.if_type?
@@ -51,6 +52,7 @@ module RuboCop
             check_ending_if(body.children.last)
           end
         end
+        alias on_defs on_def
 
         def on_if(node)
           return if accepted_form?(node) || !contains_guard_clause?(node)
