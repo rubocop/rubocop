@@ -44,23 +44,21 @@ module RuboCop
     # that there were no offenses. The `expect_offenses` method has
     # to do more work by parsing out lines that contain carets.
     module ExpectOffense
-      DEFAULT_FILENAME = 'example.rb'.freeze
-
-      def expect_offense(source, filename = DEFAULT_FILENAME)
+      def expect_offense(source, file = nil)
         expected_annotations = AnnotatedSource.parse(source)
 
         if expected_annotations.plain_source == source
           raise 'Use expect_no_offenses to assert that no offenses are found'
         end
 
-        inspect_source(cop, expected_annotations.plain_source, filename)
+        inspect_source(cop, expected_annotations.plain_source, file)
         actual_annotations =
           expected_annotations.with_offense_annotations(cop.offenses)
         expect(actual_annotations.to_s).to eq(expected_annotations.to_s)
       end
 
-      def expect_no_offenses(source, filename = DEFAULT_FILENAME)
-        inspect_source(cop, source, filename)
+      def expect_no_offenses(source, file = nil)
+        inspect_source(cop, source, file)
 
         expect(cop.offenses).to be_empty
       end
