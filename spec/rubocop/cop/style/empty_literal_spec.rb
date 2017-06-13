@@ -23,13 +23,13 @@ describe RuboCop::Cop::Style::EmptyLiteral do
     end
 
     it 'auto-corrects Array.new to []' do
-      new_source = autocorrect_source(cop, 'test = Array.new')
+      new_source = autocorrect_source('test = Array.new')
       expect(new_source).to eq('test = []')
     end
 
     it 'auto-corrects Array.new in block in block' do
       source = 'puts { Array.new }'
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq 'puts { [] }'
     end
 
@@ -66,19 +66,19 @@ describe RuboCop::Cop::Style::EmptyLiteral do
     end
 
     it 'auto-corrects Hash.new to {}' do
-      new_source = autocorrect_source(cop, 'Hash.new')
+      new_source = autocorrect_source('Hash.new')
       expect(new_source).to eq('{}')
     end
 
     it 'auto-corrects Hash.new in block ' do
       source = 'puts { Hash.new }'
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq 'puts { {} }'
     end
 
     it 'auto-corrects Hash.new to {} in various contexts' do
       new_source =
-        autocorrect_source(cop, <<-RUBY.strip_indent)
+        autocorrect_source(<<-RUBY.strip_indent)
           test = Hash.new
           Hash.new.merge("a" => 3)
           yadayada.map { a }.reduce(Hash.new, :merge)
@@ -93,13 +93,13 @@ describe RuboCop::Cop::Style::EmptyLiteral do
 
     it 'auto-correct Hash.new to {} as the only parameter to a method' do
       source = 'yadayada.map { a }.reduce Hash.new'
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq('yadayada.map { a }.reduce({})')
     end
 
     it 'auto-correct Hash.new to {} as the first parameter to a method' do
       source = 'yadayada.map { a }.reduce Hash.new, :merge'
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq('yadayada.map { a }.reduce({}, :merge)')
     end
   end
@@ -124,7 +124,7 @@ describe RuboCop::Cop::Style::EmptyLiteral do
     end
 
     it 'auto-corrects String.new to empty string literal' do
-      new_source = autocorrect_source(cop, 'test = String.new')
+      new_source = autocorrect_source('test = String.new')
       expect(new_source).to eq("test = ''")
     end
 
@@ -147,7 +147,7 @@ describe RuboCop::Cop::Style::EmptyLiteral do
       end
 
       it 'auto-corrects String.new to a double-quoted empty string literal' do
-        new_source = autocorrect_source(cop, 'test = String.new')
+        new_source = autocorrect_source('test = String.new')
         expect(new_source).to eq('test = ""')
       end
     end

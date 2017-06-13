@@ -4,7 +4,7 @@ describe RuboCop::Cop::Performance::RedundantBlockCall do
   subject(:cop) { described_class.new }
 
   it 'autocorrects block.call without arguments' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       def method(&block)
         block.call
       end
@@ -17,7 +17,7 @@ describe RuboCop::Cop::Performance::RedundantBlockCall do
   end
 
   it 'autocorrects block.call with empty parentheses' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       def method(&block)
         block.call()
       end
@@ -30,7 +30,7 @@ describe RuboCop::Cop::Performance::RedundantBlockCall do
   end
 
   it 'autocorrects block.call with arguments' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       def method(&block)
         block.call 1, 2
       end
@@ -43,7 +43,7 @@ describe RuboCop::Cop::Performance::RedundantBlockCall do
   end
 
   it 'autocorrects multiple occurances of block.call with arguments' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       def method(&block)
         block.call 1
         block.call 2
@@ -58,7 +58,7 @@ describe RuboCop::Cop::Performance::RedundantBlockCall do
   end
 
   it 'autocorrects even when block arg has a different name' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       def method(&func)
         func.call
       end
@@ -138,7 +138,7 @@ describe RuboCop::Cop::Performance::RedundantBlockCall do
   end
 
   it 'autocorrects using parentheses when block.call uses parentheses' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       def method(&block)
         block.call(a, b)
       end
@@ -161,7 +161,7 @@ describe RuboCop::Cop::Performance::RedundantBlockCall do
       end
     RUBY
 
-    new_source = autocorrect_source(cop, source)
+    new_source = autocorrect_source(source)
 
     expect(new_source).to eq(<<-RUBY.strip_indent)
       def method(&block)

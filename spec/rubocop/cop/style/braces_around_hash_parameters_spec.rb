@@ -89,56 +89,56 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
   shared_examples 'no_braces and context_dependent auto-corrections' do
     it 'corrects one non-hash parameter followed by a hash parameter with ' \
        'braces' do
-      corrected = autocorrect_source(cop, ['where(1, { y: 2 })'])
+      corrected = autocorrect_source(['where(1, { y: 2 })'])
       expect(corrected).to eq('where(1, y: 2)')
     end
 
     it 'corrects one object method hash parameter with braces' do
-      corrected = autocorrect_source(cop, ['x.func({ y: "z" })'])
+      corrected = autocorrect_source(['x.func({ y: "z" })'])
       expect(corrected).to eq('x.func(y: "z")')
     end
 
     it 'corrects one hash parameter with braces' do
-      corrected = autocorrect_source(cop, ['where({ x: 1 })'])
+      corrected = autocorrect_source(['where({ x: 1 })'])
       expect(corrected).to eq('where(x: 1)')
     end
 
     it 'corrects one hash parameter with braces and whitespace' do
-      corrected = autocorrect_source(cop, ['where(  ',
-                                           ' { x: 1 }   )'])
+      corrected = autocorrect_source(['where(  ',
+                                      ' { x: 1 }   )'])
       expect(corrected).to eq(['where(  ',
                                ' x: 1   )'].join("\n"))
     end
 
     it 'corrects one hash parameter with braces and multiple keys' do
-      corrected = autocorrect_source(cop, ['where({ x: 1, foo: "bar" })'])
+      corrected = autocorrect_source(['where({ x: 1, foo: "bar" })'])
       expect(corrected).to eq('where(x: 1, foo: "bar")')
     end
 
     it 'corrects one hash parameter with braces and extra leading whitespace' do
-      corrected = autocorrect_source(cop, ['where({   x: 1, y: 2 })'])
+      corrected = autocorrect_source(['where({   x: 1, y: 2 })'])
       expect(corrected).to eq('where(x: 1, y: 2)')
     end
 
     it 'corrects one hash parameter with braces and extra trailing ' \
        'whitespace' do
-      corrected = autocorrect_source(cop, ['where({ x: 1, y: 2   })'])
+      corrected = autocorrect_source(['where({ x: 1, y: 2   })'])
       expect(corrected).to eq('where(x: 1, y: 2)')
     end
 
     it 'corrects one hash parameter with braces and a trailing comma' do
-      corrected = autocorrect_source(cop, ['where({ x: 1, y: 2, })'])
+      corrected = autocorrect_source(['where({ x: 1, y: 2, })'])
       expect(corrected).to eq('where(x: 1, y: 2)')
     end
 
     it 'corrects one hash parameter with braces and trailing comma and ' \
        'whitespace' do
-      corrected = autocorrect_source(cop, ['where({ x: 1, y: 2,   })'])
+      corrected = autocorrect_source(['where({ x: 1, y: 2,   })'])
       expect(corrected).to eq('where(x: 1, y: 2)')
     end
 
     it 'corrects one hash parameter with braces without adding extra space' do
-      corrected = autocorrect_source(cop, 'get :i, { q: { x: 1 } }')
+      corrected = autocorrect_source('get :i, { q: { x: 1 } }')
       expect(corrected).to eq('get :i, q: { x: 1 }')
     end
 
@@ -150,7 +150,7 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
             p2: (opts[:b] || opts[:c]) # a comment
           })
         RUBY
-        corrected = autocorrect_source(cop, src)
+        corrected = autocorrect_source(src)
         expect(corrected).to eq(<<-RUBY.strip_indent)
           r = opts.merge(
             p1: opts[:a],
@@ -163,7 +163,7 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
     context 'in a method call without parentheses' do
       it 'corrects a hash parameter with trailing comma' do
         src = 'get :i, { x: 1, }'
-        corrected = autocorrect_source(cop, src)
+        corrected = autocorrect_source(src)
         expect(corrected).to eq('get :i, x: 1')
       end
     end
@@ -197,12 +197,12 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       include_examples 'no_braces and context_dependent auto-corrections'
 
       it 'corrects one hash parameter with braces' do
-        corrected = autocorrect_source(cop, ['where(1, { x: 1 })'])
+        corrected = autocorrect_source(['where(1, { x: 1 })'])
         expect(corrected).to eq('where(1, x: 1)')
       end
 
       it 'corrects two hash parameters with braces' do
-        corrected = autocorrect_source(cop, ['where(1, { x: 1 }, { y: 2 })'])
+        corrected = autocorrect_source(['where(1, { x: 1 }, { y: 2 })'])
         expect(corrected).to eq('where(1, { x: 1 }, y: 2)')
       end
     end
@@ -236,12 +236,12 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       include_examples 'no_braces and context_dependent auto-corrections'
 
       it 'corrects one hash parameter with braces and one without' do
-        corrected = autocorrect_source(cop, ['where(1, { x: 1 }, y: 2)'])
+        corrected = autocorrect_source(['where(1, { x: 1 }, y: 2)'])
         expect(corrected).to eq('where(1, { x: 1 }, {y: 2})')
       end
 
       it 'corrects one hash parameter with braces' do
-        corrected = autocorrect_source(cop, ['where(1, { x: 1 })'])
+        corrected = autocorrect_source(['where(1, { x: 1 })'])
         expect(corrected).to eq('where(1, x: 1)')
       end
     end
@@ -299,17 +299,17 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
 
     describe '#autocorrect' do
       it 'corrects one hash parameter without braces' do
-        corrected = autocorrect_source(cop, ['where(x: "y")'])
+        corrected = autocorrect_source(['where(x: "y")'])
         expect(corrected).to eq('where({x: "y"})')
       end
 
       it 'corrects one hash parameter with multiple keys and without braces' do
-        corrected = autocorrect_source(cop, ['where(x: "y", foo: "bar")'])
+        corrected = autocorrect_source(['where(x: "y", foo: "bar")'])
         expect(corrected).to eq('where({x: "y", foo: "bar"})')
       end
 
       it 'corrects one hash parameter without braces with one hash value' do
-        corrected = autocorrect_source(cop, ['where(x: { "y" => "z" })'])
+        corrected = autocorrect_source(['where(x: { "y" => "z" })'])
         expect(corrected).to eq('where({x: { "y" => "z" }})')
       end
     end

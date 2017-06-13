@@ -78,7 +78,7 @@ describe RuboCop::Cop::Style::Copyright, :config do
 
     it 'correctly autocorrects the source code' do
       cop_config['AutocorrectNotice'] = '# Copyright (c) 2015 Acme Inc.'
-      autocorrected_source = autocorrect_source(cop, source)
+      autocorrected_source = autocorrect_source(source)
       expect(autocorrected_source).to eq(expected_autocorrected_source)
     end
 
@@ -86,14 +86,14 @@ describe RuboCop::Cop::Style::Copyright, :config do
        'not match the Notice pattern' do
       cop_config['AutocorrectNotice'] = '# Copyleft (c) 2015 Acme Inc.'
       expect do
-        autocorrect_source(cop, source)
+        autocorrect_source(source)
       end.to raise_error(RuboCop::Warning)
     end
 
     it 'fails to autocorrect if no AutocorrectNotice is given' do
       # cop_config['AutocorrectNotice'] = '# Copyleft (c) 2015 Acme Inc.'
       expect do
-        autocorrect_source(cop, source)
+        autocorrect_source(source)
       end.to raise_error(RuboCop::Warning)
     end
   end
@@ -120,7 +120,7 @@ describe RuboCop::Cop::Style::Copyright, :config do
 
     it 'correctly autocorrects the source code' do
       cop_config['AutocorrectNotice'] = '# Copyright (c) 2015 Acme Inc.'
-      autocorrected_source = autocorrect_source(cop, source)
+      autocorrected_source = autocorrect_source(source)
       expect(autocorrected_source).to eq(expected_autocorrected_source)
     end
   end
@@ -136,7 +136,7 @@ describe RuboCop::Cop::Style::Copyright, :config do
 
     it 'correctly autocorrects the source code' do
       cop_config['AutocorrectNotice'] = '# Copyright (c) 2015 Acme Inc.'
-      autocorrected_source = autocorrect_source(cop, source)
+      autocorrected_source = autocorrect_source(source)
       expect(autocorrected_source).to eq(expected_autocorrected_source)
     end
   end
@@ -162,7 +162,7 @@ describe RuboCop::Cop::Style::Copyright, :config do
 
     it 'correctly autocorrects the source code' do
       cop_config['AutocorrectNotice'] = '# Copyright (c) 2015 Acme Inc.'
-      autocorrected_source = autocorrect_source(cop, source)
+      autocorrected_source = autocorrect_source(source)
       expect(autocorrected_source).to eq(expected_autocorrected_source)
     end
   end
@@ -188,7 +188,7 @@ describe RuboCop::Cop::Style::Copyright, :config do
 
     it 'correctly autocorrects the source code' do
       cop_config['AutocorrectNotice'] = '# Copyright (c) 2015 Acme Inc.'
-      autocorrected_source = autocorrect_source(cop, source)
+      autocorrected_source = autocorrect_source(source)
       expect(autocorrected_source).to eq(expected_autocorrected_source)
     end
   end
@@ -217,7 +217,7 @@ describe RuboCop::Cop::Style::Copyright, :config do
 
     it 'correctly autocorrects the source code' do
       cop_config['AutocorrectNotice'] = '# Copyright (c) 2015 Acme Inc.'
-      autocorrected_source = autocorrect_source(cop, source)
+      autocorrected_source = autocorrect_source(source)
       expect(autocorrected_source).to eq(expected_autocorrected_source)
     end
   end

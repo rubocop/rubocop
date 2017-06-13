@@ -364,7 +364,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'auto-corrects' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         until a +
             b
           something
@@ -556,7 +556,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'auto-corrects' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         until a +
               b
           something
@@ -632,7 +632,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
       end
 
       it 'auto-corrects' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           until a +
                 b
             something

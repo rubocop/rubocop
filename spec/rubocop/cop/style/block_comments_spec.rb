@@ -17,7 +17,7 @@ describe RuboCop::Cop::Style::BlockComments do
   end
 
   it 'auto-corrects a block comment into a regular comment' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       =begin
       comment line 1
 
@@ -36,7 +36,7 @@ describe RuboCop::Cop::Style::BlockComments do
   end
 
   it 'auto-corrects an empty block comment by removing it' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       =begin
       =end
       def foo

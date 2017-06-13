@@ -36,7 +36,7 @@ describe RuboCop::Cop::Rails::PluralizationGrammar do
         end
 
         it 'autocorrects to be grammatically correct' do
-          new_source = autocorrect_source(cop, source)
+          new_source = autocorrect_source(source)
           expect(new_source).to eq("#{singular_literal}.#{method_name}.ago")
         end
       end
@@ -74,7 +74,7 @@ describe RuboCop::Cop::Rails::PluralizationGrammar do
           end
 
           it 'autocorrects to be grammatically correct' do
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
             expect(new_source)
               .to eq("#{plural_number}.#{method_name}s.from_now")
           end

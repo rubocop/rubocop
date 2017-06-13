@@ -17,7 +17,7 @@ describe RuboCop::Cop::Style::SelfAssignment do
     end
 
     it "auto-corrects a non-shorthand assignment #{op} and #{var}" do
-      new_source = autocorrect_source(cop, "#{var} = #{var} #{op} y")
+      new_source = autocorrect_source("#{var} = #{var} #{op} y")
       expect(new_source).to eq("#{var} #{op}= y")
     end
   end
@@ -36,7 +36,7 @@ describe RuboCop::Cop::Style::SelfAssignment do
     end
 
     it "auto-corrects a non-shorthand assignment #{op} and #{var}" do
-      new_source = autocorrect_source(cop, "#{var} = #{var} #{op} y")
+      new_source = autocorrect_source("#{var} = #{var} #{op} y")
       expect(new_source).to eq("#{var} #{op}= y")
     end
   end

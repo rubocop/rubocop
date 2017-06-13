@@ -54,7 +54,7 @@ describe RuboCop::Cop::Layout::SpaceAfterMethodName do
   end
 
   it 'auto-corrects unwanted space' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       def func (x)
         a
       end

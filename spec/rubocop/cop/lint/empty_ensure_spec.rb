@@ -14,7 +14,7 @@ describe RuboCop::Cop::Lint::EmptyEnsure do
   end
 
   it 'autocorrects for empty ensure' do
-    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
       begin
         something
       ensure

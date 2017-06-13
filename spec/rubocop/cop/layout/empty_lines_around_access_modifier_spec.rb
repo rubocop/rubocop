@@ -82,7 +82,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     end
 
     it "autocorrects blank line before #{access_modifier}" do
-      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
         class Test
           something
           #{access_modifier}
@@ -102,7 +102,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     end
 
     it 'autocorrects blank line after #{access_modifier}' do
-      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
         class Test
           something
 
@@ -122,7 +122,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     end
 
     it 'autocorrects blank line after #{access_modifier} with comment' do
-      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
         class Test
           something
 

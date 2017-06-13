@@ -544,7 +544,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
               #{name} #{assignment} 2
             end
           RUBY
-          new_source = autocorrect_source(cop, source)
+          new_source = autocorrect_source(source)
 
           indent = ' ' * "#{name} #{assignment} ".length
           expect(new_source).to eq <<-RUBY.strip_indent
@@ -654,7 +654,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         foo = { }
       end
     RUBY
-    new_source = autocorrect_source(cop, source)
+    new_source = autocorrect_source(source)
 
     expect(new_source).to eq(<<-RUBY.strip_indent)
       foo = if foo
@@ -1080,7 +1080,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           end
         RUBY
 
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         indent = ' ' * "a #{method} ".length
         expect(new_source).to eq(<<-RUBY.strip_indent)
@@ -1103,7 +1103,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           end
         RUBY
 
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         indent = ' ' * "a #{method} ".length
         expect(new_source).to eq(<<-RUBY.strip_indent)
@@ -1125,7 +1125,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           end
         RUBY
 
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         indent = ' ' * "a #{method} ".length
         expect(new_source).to eq(<<-RUBY.strip_indent)
@@ -1146,29 +1146,29 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     it_behaves_like('comparison correction', '<=>')
 
     it 'corrects assignment in ternary operations' do
-      new_source = autocorrect_source(cop, 'foo? ? bar = 1 : bar = 2')
+      new_source = autocorrect_source('foo? ? bar = 1 : bar = 2')
 
       expect(new_source).to eq('bar = foo? ? 1 : 2')
     end
 
     it 'corrects assignment in ternary operations using strings' do
-      new_source = autocorrect_source(cop, 'foo? ? bar = "1" : bar = "2"')
+      new_source = autocorrect_source('foo? ? bar = "1" : bar = "2"')
 
       expect(new_source).to eq('bar = foo? ? "1" : "2"')
     end
 
     it 'corrects =~ in ternary operations' do
-      new_source = autocorrect_source(cop, 'foo? ? bar =~ /a/ : bar =~ /b/')
+      new_source = autocorrect_source('foo? ? bar =~ /a/ : bar =~ /b/')
       expect(new_source).to eq('bar =~ (foo? ? /a/ : /b/)')
     end
 
     it 'corrects aref assignment in ternary operations' do
-      new_source = autocorrect_source(cop, 'foo? ? bar[1] = 1 : bar[1] = 2')
+      new_source = autocorrect_source('foo? ? bar[1] = 1 : bar[1] = 2')
       expect(new_source).to eq('bar[1] = foo? ? 1 : 2')
     end
 
     it 'corrects << in ternary operations' do
-      new_source = autocorrect_source(cop, 'foo? ? bar << 1 : bar << 2')
+      new_source = autocorrect_source('foo? ? bar << 1 : bar << 2')
       expect(new_source).to eq('bar << (foo? ? 1 : 2)')
     end
 
@@ -1181,7 +1181,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         end
       RUBY
 
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq(<<-RUBY.strip_indent)
         bar = if foo
@@ -1203,7 +1203,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         end
       RUBY
 
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq(<<-RUBY.strip_indent)
         bar = if foo
@@ -1228,7 +1228,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           end
         RUBY
 
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         expect(new_source).to eq(<<-RUBY.strip_indent)
           bar #{asgn} if foo
@@ -1251,7 +1251,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           end
         RUBY
 
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         expect(new_source).to eq(<<-RUBY.strip_indent)
           baz #{asgn} case foo
@@ -1272,7 +1272,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           end
         RUBY
 
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         expect(new_source).to eq(<<-RUBY.strip_indent)
           bar #{asgn} unless foo
@@ -1300,7 +1300,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           end
         RUBY
 
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         expect(new_source).to eq(<<-RUBY.strip_indent)
           bar #{asgn} if foo
@@ -1323,7 +1323,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           end
         RUBY
 
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         expect(new_source).to eq(<<-RUBY.strip_indent)
           baz #{asgn} case foo
@@ -1344,7 +1344,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           end
         RUBY
 
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         expect(new_source).to eq(<<-RUBY.strip_indent)
           bar #{asgn} unless foo
@@ -1372,7 +1372,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         end
       RUBY
 
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq(<<-RUBY.strip_indent)
         bar = if foo
@@ -1396,7 +1396,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         end
       RUBY
 
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq(<<-RUBY.strip_indent)
         bar = unless foo
@@ -1417,7 +1417,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         end
       RUBY
 
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq(<<-RUBY.strip_indent)
         baz = case foo
@@ -1441,7 +1441,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         end
       RUBY
 
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq(<<-RUBY.strip_indent)
         baz = case foo
@@ -1465,7 +1465,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           end
         RUBY
 
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         expect(new_source).to eq(<<-RUBY.strip_indent)
           bar << if foo?(scope.node)
@@ -1485,7 +1485,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           end
         RUBY
 
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         expect(new_source).to eq(<<-RUBY.strip_indent)
           bar << unless foo?(scope.node)
@@ -1506,7 +1506,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           end
         RUBY
 
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         expect(new_source).to eq(<<-RUBY.strip_indent)
           bar << case foo
@@ -1528,7 +1528,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           end
         RUBY
 
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         expect(new_source).to eq(<<-RUBY.strip_indent)
           bar = if cond then 1
@@ -1546,7 +1546,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           end
         RUBY
 
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         expect(new_source).to eq(<<-RUBY.strip_indent)
           bar = case foo
@@ -1568,7 +1568,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         end
       RUBY
 
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq(<<-RUBY.strip_indent)
         bar = if foo
@@ -1593,7 +1593,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         end
       RUBY
 
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq(<<-RUBY.strip_indent)
         bar = case foo
@@ -1609,7 +1609,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
     context 'aref assignment' do
       it 'corrects if..else' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           if something
             array[1] = 1
           else
@@ -1640,7 +1640,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
     context 'self.attribute= assignment' do
       it 'corrects if..else' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           if something
             self.attribute = 1
           else
@@ -2023,7 +2023,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 3
           end
         RUBY
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         expect(new_source).to eq(<<-RUBY.strip_indent)
           bar = if foo
@@ -2049,7 +2049,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 3
           end
         RUBY
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         expect(new_source).to eq(<<-RUBY.strip_indent)
           bar = if foo
@@ -2081,7 +2081,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 4
           end
         RUBY
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         expect(new_source).to eq(<<-RUBY.strip_indent)
           bar = if foo
@@ -2111,7 +2111,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 2
           end
         RUBY
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         expect(new_source).to eq(<<-RUBY.strip_indent)
           bar = case foo
@@ -2139,7 +2139,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 3
           end
         RUBY
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         expect(new_source).to eq(<<-RUBY.strip_indent)
           bar = case foo
@@ -2166,7 +2166,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 2
           end
         RUBY
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         expect(new_source).to eq(<<-RUBY.strip_indent)
           bar = unless foo
@@ -2195,7 +2195,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           end
         RUBY
 
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         expect(new_source).to eq(<<-RUBY.strip_indent)
           unless foo
@@ -2243,7 +2243,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
             end
           RUBY
 
-          new_source = autocorrect_source(cop, source)
+          new_source = autocorrect_source(source)
 
           expect(new_source).to eq(<<-RUBY.strip_indent)
             a = if foo
@@ -2265,7 +2265,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
             end
           RUBY
 
-          new_source = autocorrect_source(cop, source)
+          new_source = autocorrect_source(source)
 
           expect(new_source).to eq(<<-RUBY.strip_indent)
             a = unless foo
@@ -2288,7 +2288,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
             end
           RUBY
 
-          new_source = autocorrect_source(cop, source)
+          new_source = autocorrect_source(source)
 
           expect(new_source).to eq(<<-RUBY.strip_indent)
             a = case foo

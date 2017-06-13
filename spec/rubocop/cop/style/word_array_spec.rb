@@ -66,7 +66,7 @@ describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'uses %W when autocorrecting strings with newlines and tabs' do
-      new_source = autocorrect_source(cop, %(["one\\n", "hi\\tthere"]))
+      new_source = autocorrect_source(%(["one\\n", "hi\\tthere"]))
       expect(new_source).to eq('%W(one\\n hi\\tthere)')
     end
 
@@ -118,18 +118,17 @@ describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'auto-corrects an array of words' do
-      new_source = autocorrect_source(cop, "['one', %q(two), 'three']")
+      new_source = autocorrect_source("['one', %q(two), 'three']")
       expect(new_source).to eq('%w(one two three)')
     end
 
     it 'auto-corrects an array of words and character constants' do
-      new_source = autocorrect_source(cop, '[%|one|, %Q(two), ?\n, ?\t]')
+      new_source = autocorrect_source('[%|one|, %Q(two), ?\n, ?\t]')
       expect(new_source).to eq('%W(one two \n \t)')
     end
 
     it 'keeps the line breaks in place after auto-correct' do
-      new_source = autocorrect_source(cop,
-                                      ["['one',",
+      new_source = autocorrect_source(["['one',",
                                        "'two', 'three']"])
       expect(new_source).to eq(['%w(one ',
                                 'two three)'].join("\n"))
@@ -194,17 +193,17 @@ describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'auto-corrects a %w() array' do
-      new_source = autocorrect_source(cop, '%w(one two three)')
+      new_source = autocorrect_source('%w(one two three)')
       expect(new_source).to eq("['one', 'two', 'three']")
     end
 
     it 'autocorrects a %w() array which uses single quotes' do
-      new_source = autocorrect_source(cop, "%w(one's two's three's)")
+      new_source = autocorrect_source("%w(one's two's three's)")
       expect(new_source).to eq('["one\'s", "two\'s", "three\'s"]')
     end
 
     it 'autocorrects a %W() array which uses escapes' do
-      new_source = autocorrect_source(cop, '%W(\\n \\t \\b \\v \\f)')
+      new_source = autocorrect_source('%W(\\n \\t \\b \\v \\f)')
       expect(new_source).to eq('["\n", "\t", "\b", "\v", "\f"]')
     end
 
@@ -247,7 +246,7 @@ describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'auto-corrects an array of email addresses' do
-      new_source = autocorrect_source(cop, "['a@example.com', 'b@example.com']")
+      new_source = autocorrect_source("['a@example.com', 'b@example.com']")
       expect(new_source).to eq('%w(a@example.com b@example.com)')
     end
   end
@@ -264,12 +263,12 @@ describe RuboCop::Cop::Style::WordArray, :config do
     let(:cop_config) { { 'MinSize' => 0, 'WordRegex' => /\S+/ } }
 
     it 'uses %W when autocorrecting strings with non-printable chars' do
-      new_source = autocorrect_source(cop, '["\x1f\x1e", "hello"]')
+      new_source = autocorrect_source('["\x1f\x1e", "hello"]')
       expect(new_source).to eq('%W(\u001F\u001E hello)')
     end
 
     it 'uses %w for strings which only appear to have an escape' do
-      new_source = autocorrect_source(cop, "['hi\\tthere', 'again\\n']")
+      new_source = autocorrect_source("['hi\\tthere', 'again\\n']")
       expect(new_source).to eq('%w(hi\\tthere again\\n)')
     end
   end
@@ -278,12 +277,12 @@ describe RuboCop::Cop::Style::WordArray, :config do
     let(:cop_config) { { 'MinSize' => 0, 'WordRegex' => /[\w \[\]\(\)]/ } }
 
     it "doesn't break when words contain whitespace" do
-      new_source = autocorrect_source(cop, "['hi there', 'something\telse']")
+      new_source = autocorrect_source("['hi there', 'something\telse']")
       expect(new_source).to eq("['hi there', 'something\telse']")
     end
 
     it "doesn't break when words contain delimiters" do
-      new_source = autocorrect_source(cop, "[')', ']', '(']")
+      new_source = autocorrect_source("[')', ']', '(']")
       expect(new_source).to eq('%w(\\) ] \\()')
     end
 
@@ -299,7 +298,7 @@ describe RuboCop::Cop::Style::WordArray, :config do
       end
 
       it 'autocorrects an array with delimiters' do
-        new_source = autocorrect_source(cop, "[')', ']', '(', '[']")
+        new_source = autocorrect_source("[')', ']', '(', '[']")
         expect(new_source).to eq('%w[) \\] ( \\[]')
       end
     end

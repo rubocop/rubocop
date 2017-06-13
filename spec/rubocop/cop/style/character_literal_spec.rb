@@ -26,17 +26,17 @@ describe RuboCop::Cop::Style::CharacterLiteral do
   end
 
   it "auto-corrects ?x to 'x'" do
-    new_source = autocorrect_source(cop, 'x = ?x')
+    new_source = autocorrect_source('x = ?x')
     expect(new_source).to eq("x = 'x'")
   end
 
   it 'auto-corrects ?\n to "\\n"' do
-    new_source = autocorrect_source(cop, 'x = ?\n')
+    new_source = autocorrect_source('x = ?\n')
     expect(new_source).to eq('x = "\\n"')
   end
 
   it 'auto-corrects ?\' to "\'"' do
-    new_source = autocorrect_source(cop, 'x = ?\'')
+    new_source = autocorrect_source('x = ?\'')
     expect(new_source).to eq('x = "\'"')
   end
 end

@@ -16,7 +16,7 @@ describe RuboCop::Cop::Lint::UnifiedInteger do
         end
 
         it 'autocorrects' do
-          new_source = autocorrect_source(cop, source)
+          new_source = autocorrect_source(source)
           expect(new_source).to eq('1.is_a?(Integer)')
         end
       end
@@ -31,7 +31,7 @@ describe RuboCop::Cop::Lint::UnifiedInteger do
         end
 
         it 'autocorrects' do
-          new_source = autocorrect_source(cop, source)
+          new_source = autocorrect_source(source)
           expect(new_source).to eq('1.is_a?(::Integer)')
         end
       end

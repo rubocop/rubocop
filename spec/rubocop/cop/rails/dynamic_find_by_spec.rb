@@ -15,7 +15,7 @@ describe RuboCop::Cop::Rails::DynamicFindBy, :config do
     end
 
     it 'auto-corrects' do
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(corrected)
     end
   end

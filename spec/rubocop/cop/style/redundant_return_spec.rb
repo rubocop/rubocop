@@ -89,7 +89,7 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
         something
       end
     RUBY
-    new_source = autocorrect_source(cop, src)
+    new_source = autocorrect_source(src)
     expect(new_source).to eq(result_src)
   end
 
@@ -112,7 +112,7 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
       end
 
       it "auto-corrects by replacing #{ret} with nil" do
-        new_source = autocorrect_source(cop, src)
+        new_source = autocorrect_source(src)
         expect(new_source).to eq(<<-RUBY.strip_indent)
           def func
             one
@@ -185,7 +185,7 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
           [1, 2]
         end
       RUBY
-      new_source = autocorrect_source(cop, src)
+      new_source = autocorrect_source(src)
       expect(new_source).to eq(result_src)
     end
 
@@ -201,7 +201,7 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
           {:a => 1, :b => 2}
         end
       RUBY
-      new_source = autocorrect_source(cop, src)
+      new_source = autocorrect_source(src)
       expect(new_source).to eq(result_src)
     end
 
@@ -217,7 +217,7 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
           {:a => 1, :b => 2}
         end
       RUBY
-      new_source = autocorrect_source(cop, src)
+      new_source = autocorrect_source(src)
       expect(new_source).to eq(result_src)
     end
   end
@@ -267,7 +267,7 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
           return  1, 2
         end
       RUBY
-      new_source = autocorrect_source(cop, src)
+      new_source = autocorrect_source(src)
       expect(new_source).to eq(src)
     end
   end
@@ -305,7 +305,7 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
     end
 
     it 'auto-corrects' do
-      corrected = autocorrect_source(cop, src)
+      corrected = autocorrect_source(src)
       expect(corrected).to eq <<-RUBY.strip_indent
         def func
           if x
@@ -353,7 +353,7 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
     end
 
     it 'auto-corrects' do
-      corrected = autocorrect_source(cop, src)
+      corrected = autocorrect_source(src)
       expect(corrected).to eq <<-RUBY.strip_indent
         def func
           case x

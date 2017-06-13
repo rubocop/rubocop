@@ -54,7 +54,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
     end
 
     it 'auto-corrects' do
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq(<<-RUBY.strip_indent)
         class J
           def n
@@ -134,7 +134,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
       end
 
       it 'autocorrects it' do
-        corrected = autocorrect_source(cop, offending_source)
+        corrected = autocorrect_source(offending_source)
         expect(corrected).to eq(<<-RUBY.strip_indent)
           class Test
             def self.foo
@@ -178,7 +178,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
       end
 
       it 'autocorrects it' do
-        corrected = autocorrect_source(cop, offending_source)
+        corrected = autocorrect_source(offending_source)
         expect(corrected).to eq(<<-RUBY.strip_indent)
           class Test
             def foo
@@ -271,7 +271,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
   end
 
   it 'auto-corrects adjacent one-liners by default' do
-    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
       def a; end
       def b; end
     RUBY
@@ -283,7 +283,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
   end
 
   it 'auto-corrects when there are too many new lines' do
-    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
       def a; end
 
 
@@ -391,7 +391,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
         def o
         end
       RUBY
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq(<<-RUBY.strip_indent)
         def n
         end
@@ -424,7 +424,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
         def o
         end
       RUBY
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq(<<-RUBY.strip_indent)
         def n
         end
@@ -443,7 +443,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
         def o
         end
       RUBY
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq(<<-RUBY.strip_indent)
         def n
         end
@@ -465,7 +465,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
         def o
         end
       RUBY
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq(<<-RUBY.strip_indent)
         def n
         end

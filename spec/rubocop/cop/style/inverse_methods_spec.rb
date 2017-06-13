@@ -52,13 +52,13 @@ describe RuboCop::Cop::Style::InverseMethods do
 
   context 'auto-correct' do
     it 'corrects !.none? wiht a symbol proc to any?' do
-      new_source = autocorrect_source(cop, '!foo.none?(&:even?)')
+      new_source = autocorrect_source('!foo.none?(&:even?)')
 
       expect(new_source).to eq('foo.any?(&:even?)')
     end
 
     it 'corrects !.none? with a block to any?' do
-      new_source = autocorrect_source(cop, '!foo.none? { |f| f.even? }')
+      new_source = autocorrect_source('!foo.none? { |f| f.even? }')
 
       expect(new_source).to eq('foo.any? { |f| f.even? }')
     end
@@ -80,13 +80,13 @@ describe RuboCop::Cop::Style::InverseMethods do
     end
 
     it "corrects !#{variable}.none? to #{variable}.any?" do
-      new_source = autocorrect_source(cop, "!#{variable}.none?")
+      new_source = autocorrect_source("!#{variable}.none?")
 
       expect(new_source).to eq("#{variable}.any?")
     end
 
     it "corrects not #{variable}.none? to #{variable}.any?" do
-      new_source = autocorrect_source(cop, "not #{variable}.none?")
+      new_source = autocorrect_source("not #{variable}.none?")
 
       expect(new_source).to eq("#{variable}.any?")
     end
@@ -117,7 +117,7 @@ describe RuboCop::Cop::Style::InverseMethods do
       end
 
       it "corrects #{method} to #{inverse}" do
-        new_source = autocorrect_source(cop, "!foo.#{method}")
+        new_source = autocorrect_source("!foo.#{method}")
 
         expect(new_source).to eq("foo.#{inverse}")
       end
@@ -144,7 +144,7 @@ describe RuboCop::Cop::Style::InverseMethods do
     end
 
     it "corrects #{method} to #{inverse}" do
-      new_source = autocorrect_source(cop, "!(foo #{method} bar)")
+      new_source = autocorrect_source("!(foo #{method} bar)")
 
       expect(new_source).to eq("foo #{inverse} bar")
     end
@@ -196,26 +196,26 @@ describe RuboCop::Cop::Style::InverseMethods do
       end
 
       it 'corrects a simple inverted block' do
-        new_source = autocorrect_source(cop, "foo.#{method} { |e| !e }")
+        new_source = autocorrect_source("foo.#{method} { |e| !e }")
 
         expect(new_source).to eq("foo.#{inverse} { |e| e }")
       end
 
       it 'corrects an inverted method call' do
-        new_source = autocorrect_source(cop, "foo.#{method} { |e| !e.bar? }")
+        new_source = autocorrect_source("foo.#{method} { |e| !e.bar? }")
 
         expect(new_source).to eq("foo.#{inverse} { |e| e.bar? }")
       end
 
       it 'corrects a complex inverted method call' do
         source = "puts 1 if !foo.#{method} { |e| !e.bar? }"
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         expect(new_source).to eq("puts 1 if !foo.#{inverse} { |e| e.bar? }")
       end
 
       it 'corrects an inverted do end method call' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           foo.#{method} do |e|
             !e.bar
           end
@@ -229,7 +229,7 @@ describe RuboCop::Cop::Style::InverseMethods do
       end
 
       it 'corrects a multiline method call where the last method is inverted' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           foo.#{method} do |e|
             something
             something_else
@@ -247,13 +247,13 @@ describe RuboCop::Cop::Style::InverseMethods do
       end
 
       it 'corrects an offense for an inverted equality block' do
-        new_source = autocorrect_source(cop, "foo.#{method} { |e| e != 2 }")
+        new_source = autocorrect_source("foo.#{method} { |e| e != 2 }")
 
         expect(new_source).to eq("foo.#{inverse} { |e| e == 2 }")
       end
 
       it 'corrects an offense for a multiline inverted equality block' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           foo.#{method} do |e|
             something
             something_else

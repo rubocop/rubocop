@@ -117,7 +117,7 @@ describe RuboCop::Cop::Layout::MultilineBlockLayout do
       end
     RUBY
 
-    new_source = autocorrect_source(cop, src)
+    new_source = autocorrect_source(src)
 
     expect(new_source).to eq(['test do |foo| ',
                               '  bar',
@@ -132,7 +132,7 @@ describe RuboCop::Cop::Layout::MultilineBlockLayout do
       end
     RUBY
 
-    new_source = autocorrect_source(cop, src)
+    new_source = autocorrect_source(src)
 
     expect(new_source).to eq(['test do |foo| ',
                               '  bar',
@@ -147,7 +147,7 @@ describe RuboCop::Cop::Layout::MultilineBlockLayout do
       }
     RUBY
 
-    new_source = autocorrect_source(cop, src)
+    new_source = autocorrect_source(src)
 
     expect(new_source).to eq(['test { |foo| ',
                               '  bar',
@@ -163,7 +163,7 @@ describe RuboCop::Cop::Layout::MultilineBlockLayout do
       }
     RUBY
 
-    new_source = autocorrect_source(cop, src)
+    new_source = autocorrect_source(src)
 
     expect(new_source).to eq(['x = -> (y) { ',
                               '      foo',
@@ -173,7 +173,7 @@ describe RuboCop::Cop::Layout::MultilineBlockLayout do
   end
 
   it 'auto-corrects a line-break before arguments' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       test do
         |x| play_with(x)
       end
@@ -187,7 +187,7 @@ describe RuboCop::Cop::Layout::MultilineBlockLayout do
   end
 
   it 'auto-corrects a line-break before arguments with empty block' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       test do
         |x|
       end
@@ -200,7 +200,7 @@ describe RuboCop::Cop::Layout::MultilineBlockLayout do
   end
 
   it 'auto-corrects a line-break within arguments' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       test do |x,
         y| play_with(x, y)
       end
@@ -213,7 +213,7 @@ describe RuboCop::Cop::Layout::MultilineBlockLayout do
   end
 
   it 'auto-corrects a line break within destructured arguments' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       test do |(x,
         y)| play_with(x, y)
       end
@@ -227,7 +227,7 @@ describe RuboCop::Cop::Layout::MultilineBlockLayout do
 
   it "doesn't move end keyword in a way which causes infinite loop " \
      'in combination with Style/BlockEndNewLine' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       def f
         X.map do |(a,
         b)|

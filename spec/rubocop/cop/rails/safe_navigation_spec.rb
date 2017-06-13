@@ -22,7 +22,7 @@ describe RuboCop::Cop::Rails::SafeNavigation, :config do
 
   shared_examples :autocorrect do |name, source, correction|
     it "corrects #{name}" do
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq(correction)
     end

@@ -34,7 +34,7 @@ describe RuboCop::Cop::Style::WhenThen do
   end
 
   it 'auto-corrects "when x;" with "when x then"' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       case a
       when b; c
       end

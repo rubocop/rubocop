@@ -13,7 +13,7 @@ describe RuboCop::Cop::Style::RedundantFreeze do
 
     it 'auto-corrects by removing .freeze' do
       source = [prefix, "CONST = #{o}.freeze"].compact.join("\n")
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(source.chomp('.freeze'))
     end
   end

@@ -49,7 +49,7 @@ describe RuboCop::Cop::Style::BarePercentLiterals, :config do
       end
 
       it 'auto-corrects' do
-        new_source = autocorrect_source(cop, '%(hi)')
+        new_source = autocorrect_source('%(hi)')
         expect(new_source).to eq('%Q(hi)')
       end
 
@@ -69,7 +69,7 @@ describe RuboCop::Cop::Style::BarePercentLiterals, :config do
       end
 
       it 'auto-corrects' do
-        new_source = autocorrect_source(cop, '%(#{x})')
+        new_source = autocorrect_source('%(#{x})')
         expect(new_source).to eq('%Q(#{x})')
       end
 
@@ -93,7 +93,7 @@ describe RuboCop::Cop::Style::BarePercentLiterals, :config do
       end
 
       it 'auto-corrects' do
-        new_source = autocorrect_source(cop, '%Q(hi)')
+        new_source = autocorrect_source('%Q(hi)')
         expect(new_source).to eq('%(hi)')
       end
 
@@ -113,7 +113,7 @@ describe RuboCop::Cop::Style::BarePercentLiterals, :config do
       end
 
       it 'auto-corrects' do
-        new_source = autocorrect_source(cop, '%Q(#{x})')
+        new_source = autocorrect_source('%Q(#{x})')
         expect(new_source).to eq('%(#{x})')
       end
 

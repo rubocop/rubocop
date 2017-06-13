@@ -29,19 +29,19 @@ describe RuboCop::Cop::Layout::SpaceAfterNot do
 
   context 'auto-correct' do
     it 'removes redundant space' do
-      new_source = autocorrect_source(cop, '!  something')
+      new_source = autocorrect_source('!  something')
 
       expect(new_source).to eq('!something')
     end
 
     it 'keeps space after not keyword' do
-      new_source = autocorrect_source(cop, 'not something')
+      new_source = autocorrect_source('not something')
 
       expect(new_source).to eq('not something')
     end
 
     it 'removes redundant space when there is a parentheses' do
-      new_source = autocorrect_source(cop, '!  (model)')
+      new_source = autocorrect_source('!  (model)')
 
       expect(new_source).to eq('!(model)')
     end

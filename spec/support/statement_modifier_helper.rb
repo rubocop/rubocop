@@ -21,8 +21,8 @@ module StatementModifierHelper
     expect(cop.offenses.map { |o| o.location.source }).to eq([keyword])
   end
 
-  def autocorrect_really_short(cop, keyword)
-    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+  def autocorrect_really_short(keyword)
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
       #{keyword} a
         b
       end

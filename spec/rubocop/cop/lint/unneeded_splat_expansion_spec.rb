@@ -182,43 +182,43 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
   context 'autocorrect' do
     context 'assignment to a splat expanded variable' do
       it 'removes the splat from an array using []' do
-        new_source = autocorrect_source(cop, 'a = *[1, 2, 3]')
+        new_source = autocorrect_source('a = *[1, 2, 3]')
 
         expect(new_source).to eq('a = [1, 2, 3]')
       end
 
       it 'removes the splat from an array using %w' do
-        new_source = autocorrect_source(cop, 'a = *%w(one two three)')
+        new_source = autocorrect_source('a = *%w(one two three)')
 
         expect(new_source).to eq('a = %w(one two three)')
       end
 
       it 'removes the splat from an array using %W' do
-        new_source = autocorrect_source(cop, 'a = *%W(one two three)')
+        new_source = autocorrect_source('a = *%W(one two three)')
 
         expect(new_source).to eq('a = %W(one two three)')
       end
 
       it 'converts an expanded string to an array' do
-        new_source = autocorrect_source(cop, "a = *'a'")
+        new_source = autocorrect_source("a = *'a'")
 
         expect(new_source).to eq("a = ['a']")
       end
 
       it 'converts an expanded string with interpolation to an array' do
-        new_source = autocorrect_source(cop, 'a = *"#{a}"')
+        new_source = autocorrect_source('a = *"#{a}"')
 
         expect(new_source).to eq('a = ["#{a}"]')
       end
 
       it 'converts an expanded integer to an array' do
-        new_source = autocorrect_source(cop, 'a = *1')
+        new_source = autocorrect_source('a = *1')
 
         expect(new_source).to eq('a = [1]')
       end
 
       it 'converts an expanded float to an array' do
-        new_source = autocorrect_source(cop, 'a = *1.1')
+        new_source = autocorrect_source('a = *1.1')
 
         expect(new_source).to eq('a = [1.1]')
       end
@@ -226,7 +226,7 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
 
     context 'splat expansion in when condition' do
       it 'removes the square brackets' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           case foo
           when *[1, 2, 3]
             bar
@@ -242,7 +242,7 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
       end
 
       it 'changes %w to a list of words' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           case foo
           when *%w(one two three)
             bar
@@ -258,7 +258,7 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
       end
 
       it 'changes %W to a list of words' do
-        new_source = autocorrect_source(cop, <<-'RUBY'.strip_indent)
+        new_source = autocorrect_source(<<-'RUBY'.strip_indent)
           case foo
           when *%W(one #{two} three)
             bar
@@ -276,7 +276,7 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
 
     context 'rescuing splat expansion' do
       it 'changes an array literal to a list of constants' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           begin
             foo
           rescue *[First, Second]
@@ -296,19 +296,19 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
 
     context 'splat expansion of method parameters' do
       it 'removes the splat and brackets from []' do
-        new_source = autocorrect_source(cop, 'foo(*[1, 2, 3])')
+        new_source = autocorrect_source('foo(*[1, 2, 3])')
 
         expect(new_source).to eq('foo(1, 2, 3)')
       end
 
       it 'changes %w to a list of words' do
-        new_source = autocorrect_source(cop, 'foo(*%w(one two three))')
+        new_source = autocorrect_source('foo(*%w(one two three))')
 
         expect(new_source).to eq("foo('one', 'two', 'three')")
       end
 
       it 'changes %W to a list of words' do
-        new_source = autocorrect_source(cop, 'foo(*%W(#{one} two three))')
+        new_source = autocorrect_source('foo(*%W(#{one} two three))')
 
         expect(new_source).to eq('foo("#{one}", "two", "three")')
       end
@@ -316,19 +316,19 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
 
     context 'splat expansion inside of an array' do
       it 'removes the splat and brackets from []' do
-        new_source = autocorrect_source(cop, '[1, 2, *[3, 4, 5], 6, 7]')
+        new_source = autocorrect_source('[1, 2, *[3, 4, 5], 6, 7]')
 
         expect(new_source).to eq('[1, 2, 3, 4, 5, 6, 7]')
       end
 
       it 'changes %w to a list of words' do
-        new_source = autocorrect_source(cop, "['a', 'b', *%w(c d e), 'f', 'g']")
+        new_source = autocorrect_source("['a', 'b', *%w(c d e), 'f', 'g']")
 
         expect(new_source).to eq("['a', 'b', 'c', 'd', 'e', 'f', 'g']")
       end
 
       it 'changes %W to a list of words' do
-        new_source = autocorrect_source(cop, '["a", "b", *%W(#{one} two)]')
+        new_source = autocorrect_source('["a", "b", *%W(#{one} two)]')
 
         expect(new_source).to eq('["a", "b", "#{one}", "two"]')
       end
@@ -374,7 +374,7 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
 
       context 'autocorrect' do
         it 'changes %i to a list of symbols' do
-          new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<-RUBY.strip_indent)
             case foo
             when *%i(first second)
               baz
@@ -390,7 +390,7 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
         end
 
         it 'changes %I to a list of symbols' do
-          new_source = autocorrect_source(cop, <<-'RUBY'.strip_indent)
+          new_source = autocorrect_source(<<-'RUBY'.strip_indent)
             case foo
             when *%I(#{first} second)
               baz
@@ -408,13 +408,13 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
 
       context 'splat expansion inside of an array' do
         it 'changes %i to a list of symbols' do
-          new_source = autocorrect_source(cop, '[:a, :b, *%i(c d), :e]')
+          new_source = autocorrect_source('[:a, :b, *%i(c d), :e]')
 
           expect(new_source).to eq('[:a, :b, :c, :d, :e]')
         end
 
         it 'changes %I to a list of symbols' do
-          new_source = autocorrect_source(cop, '[:a, :b, *%I(#{one} two), :e]')
+          new_source = autocorrect_source('[:a, :b, *%I(#{one} two), :e]')
 
           expect(new_source).to eq('[:a, :b, :"#{one}", :"two", :e]')
         end

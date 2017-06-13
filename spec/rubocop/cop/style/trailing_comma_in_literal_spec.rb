@@ -53,13 +53,12 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
     end
 
     it 'auto-corrects unwanted comma in an Array literal' do
-      new_source = autocorrect_source(cop, 'VALUES = [1001, 2020, 3333, ]')
+      new_source = autocorrect_source('VALUES = [1001, 2020, 3333, ]')
       expect(new_source).to eq('VALUES = [1001, 2020, 3333 ]')
     end
 
     it 'auto-corrects unwanted comma in a Hash literal' do
-      new_source = autocorrect_source(cop,
-                                      'MAP = { a: 1001, b: 2020, c: 3333, }')
+      new_source = autocorrect_source('MAP = { a: 1001, b: 2020, c: 3333, }')
       expect(new_source).to eq('MAP = { a: 1001, b: 2020, c: 3333 }')
     end
   end
@@ -146,7 +145,7 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
       end
 
       it 'auto-corrects unwanted comma in an Array literal' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           VALUES = [
                      1001,
                      2020,
@@ -163,7 +162,7 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
       end
 
       it 'auto-corrects unwanted comma in a Hash literal' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           MAP = { a: 1001,
                   b: 2020,
                   c: 3333,
@@ -293,7 +292,7 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
 
       it 'auto-corrects an Array literal with two of the values on the same' \
          ' line and a trailing comma' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           VALUES = [
                      1001, 2020,
                      3333
@@ -308,7 +307,7 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
       end
 
       it 'auto-corrects missing comma in a Hash literal' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           MAP = { a: 1001,
                   b: 2020,
                   c: 3333
@@ -364,7 +363,7 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
         end
 
         it 'auto-corrects a missing comma in a Hash literal' do
-          new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<-RUBY.strip_indent)
             MAP = { a: 1001,
                     b: 2020,
                     c: 3333}
@@ -451,7 +450,7 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
 
       it 'auto-corrects an Array literal with two of the values on the same' \
          ' line and a trailing comma' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           VALUES = [
                      1001, 2020,
                      3333
@@ -466,7 +465,7 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
       end
 
       it 'auto-corrects missing comma in a Hash literal' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           MAP = { a: 1001,
                   b: 2020,
                   c: 3333

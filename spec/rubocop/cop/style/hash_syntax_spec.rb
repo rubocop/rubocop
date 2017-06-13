@@ -125,14 +125,14 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'auto-corrects old to new style' do
-        new_source = autocorrect_source(cop, '{ :a => 1, :b   =>  2}')
+        new_source = autocorrect_source('{ :a => 1, :b   =>  2}')
         expect(new_source).to eq('{ a: 1, b: 2}')
       end
 
       it 'auto-corrects even if it interferes with SpaceAroundOperators' do
         # Clobbering caused by two cops changing in the same range is dealt with
         # by the auto-correct loop, so there's no reason to avoid a change.
-        new_source = autocorrect_source(cop, '{ :a=>1, :b=>2 }')
+        new_source = autocorrect_source('{ :a=>1, :b=>2 }')
         expect(new_source).to eq('{ a: 1, b: 2 }')
       end
     end
@@ -153,7 +153,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'auto-corrects even if there is no space around =>' do
-        new_source = autocorrect_source(cop, '{ :a=>1, :b=>2 }')
+        new_source = autocorrect_source('{ :a=>1, :b=>2 }')
         expect(new_source).to eq('{ a: 1, b: 2 }')
       end
     end
@@ -217,25 +217,25 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'auto-corrects to ruby19 style when there are no symbol values' do
-        new_source = autocorrect_source(cop, '{ :a => 1, :b => 2 }')
+        new_source = autocorrect_source('{ :a => 1, :b => 2 }')
         expect(new_source).to eq('{ a: 1, b: 2 }')
       end
 
       it 'auto-corrects to hash rockets ' \
         'when there is an element with a symbol value' do
-        new_source = autocorrect_source(cop, '{ a: 1, :b => :c }')
+        new_source = autocorrect_source('{ a: 1, :b => :c }')
         expect(new_source).to eq('{ :a => 1, :b => :c }')
       end
 
       it 'auto-corrects to hash rockets ' \
         'when all elements have symbol value' do
-        new_source = autocorrect_source(cop, '{ a: :b, c: :d }')
+        new_source = autocorrect_source('{ a: :b, c: :d }')
         expect(new_source).to eq('{ :a => :b, :c => :d }')
       end
 
       it 'auto-correct does not change anything when the hash ' \
         'is already ruby19 style and there are no symbol values' do
-        new_source = autocorrect_source(cop, '{ a: 1, b: 2 }')
+        new_source = autocorrect_source('{ a: 1, b: 2 }')
         expect(new_source).to eq('{ a: 1, b: 2 }')
       end
     end
@@ -282,7 +282,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
     end
 
     it 'auto-corrects new style to hash rockets' do
-      new_source = autocorrect_source(cop, '{ a: 1, b: 2}')
+      new_source = autocorrect_source('{ a: 1, b: 2}')
       expect(new_source).to eq('{ :a => 1, :b => 2}')
     end
 
@@ -409,13 +409,13 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'auto-corrects old to new style' do
-        new_source = autocorrect_source(cop, '{ :a => 1, :b => 2 }')
+        new_source = autocorrect_source('{ :a => 1, :b => 2 }')
         expect(new_source).to eq('{ a: 1, b: 2 }')
       end
 
       it 'auto-corrects to hash rockets when new style cannot be used ' \
         'for all' do
-        new_source = autocorrect_source(cop, '{ a: 1, "b" => 2 }')
+        new_source = autocorrect_source('{ a: 1, "b" => 2 }')
         expect(new_source).to eq('{ :a => 1, "b" => 2 }')
       end
     end
@@ -444,13 +444,13 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
 
       it 'auto-corrects to hash rockets ' \
         'when there is an element with a symbol value' do
-        new_source = autocorrect_source(cop, '{ a: 1, :b => :c }')
+        new_source = autocorrect_source('{ a: 1, :b => :c }')
         expect(new_source).to eq('{ :a => 1, :b => :c }')
       end
 
       it 'auto-corrects to hash rockets ' \
         'when all elements have symbol value' do
-        new_source = autocorrect_source(cop, '{ a: :b, c: :d }')
+        new_source = autocorrect_source('{ a: :b, c: :d }')
         expect(new_source).to eq('{ :a => :b, :c => :d }')
       end
 
@@ -553,13 +553,13 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'auto-corrects old to new style' do
-        new_source = autocorrect_source(cop, '{ :a => 1, :b => 2 }')
+        new_source = autocorrect_source('{ :a => 1, :b => 2 }')
         expect(new_source).to eq('{ a: 1, b: 2 }')
       end
 
       it 'auto-corrects to hash rockets when new style cannot be used ' \
         'for all' do
-        new_source = autocorrect_source(cop, '{ a: 1, "b" => 2 }')
+        new_source = autocorrect_source('{ a: 1, "b" => 2 }')
         expect(new_source).to eq('{ :a => 1, "b" => 2 }')
       end
     end
@@ -640,23 +640,23 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
     end
 
     it 'does not auto-correct old to new style' do
-      new_source = autocorrect_source(cop, '{ :a => 1, :b => 2 }')
+      new_source = autocorrect_source('{ :a => 1, :b => 2 }')
       expect(new_source).to eq('{ :a => 1, :b => 2 }')
     end
 
     it 'does not auto-correct new to hash rockets style' do
-      new_source = autocorrect_source(cop, '{ a: 1, b: 2 }')
+      new_source = autocorrect_source('{ a: 1, b: 2 }')
       expect(new_source).to eq('{ a: 1, b: 2 }')
     end
 
     it 'auto-corrects mixed key hashes' do
-      new_source = autocorrect_source(cop, '{ a: 1, :b => 2 }')
+      new_source = autocorrect_source('{ a: 1, :b => 2 }')
       expect(new_source).to eq('{ a: 1, b: 2 }')
     end
 
     it 'auto-corrects to hash rockets when new style cannot be used ' \
       'for all' do
-      new_source = autocorrect_source(cop, '{ a: 1, "b" => 2 }')
+      new_source = autocorrect_source('{ a: 1, "b" => 2 }')
       expect(new_source).to eq('{ :a => 1, "b" => 2 }')
     end
   end

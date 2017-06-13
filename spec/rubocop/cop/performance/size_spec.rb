@@ -60,19 +60,19 @@ describe RuboCop::Cop::Performance::Size do
     end
 
     it 'corrects count to size' do
-      new_source = autocorrect_source(cop, '[1, 2, 3].count')
+      new_source = autocorrect_source('[1, 2, 3].count')
 
       expect(new_source).to eq('[1, 2, 3].size')
     end
 
     it 'corrects count to size on to_a' do
-      new_source = autocorrect_source(cop, '(1..3).to_a.count')
+      new_source = autocorrect_source('(1..3).to_a.count')
 
       expect(new_source).to eq('(1..3).to_a.size')
     end
 
     it 'corrects count to size on Array[]' do
-      new_source = autocorrect_source(cop, 'Array[*1..5].count')
+      new_source = autocorrect_source('Array[*1..5].count')
 
       expect(new_source).to eq('Array[*1..5].size')
     end
@@ -121,19 +121,19 @@ describe RuboCop::Cop::Performance::Size do
     end
 
     it 'corrects count to size' do
-      new_source = autocorrect_source(cop, '{a: 1, b: 2, c: 3}.count')
+      new_source = autocorrect_source('{a: 1, b: 2, c: 3}.count')
 
       expect(new_source).to eq('{a: 1, b: 2, c: 3}.size')
     end
 
     it 'corrects count to size on to_h' do
-      new_source = autocorrect_source(cop, '[[:foo, :bar], [1, 2]].to_h.count')
+      new_source = autocorrect_source('[[:foo, :bar], [1, 2]].to_h.count')
 
       expect(new_source).to eq('[[:foo, :bar], [1, 2]].to_h.size')
     end
 
     it 'corrects count to size on Hash[]' do
-      new_source = autocorrect_source(cop, "Hash[*('a'..'z')].count")
+      new_source = autocorrect_source("Hash[*('a'..'z')].count")
 
       expect(new_source).to eq("Hash[*('a'..'z')].size")
     end

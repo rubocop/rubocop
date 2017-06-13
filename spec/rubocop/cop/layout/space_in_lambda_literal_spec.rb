@@ -55,25 +55,25 @@ describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
     it 'autocorrects an offense for no space between -> and (' do
       code = 'a = ->(b, c) { b + c }'
       expected = 'a = -> (b, c) { b + c }'
-      expect(autocorrect_source(cop, code)).to eq(expected)
+      expect(autocorrect_source(code)).to eq(expected)
     end
 
     it 'autocorrects an offense for no space in the inner nested lambda' do
       code = 'a = -> (b = ->(c) {}, d) { b + d }'
       expected = 'a = -> (b = -> (c) {}, d) { b + d }'
-      expect(autocorrect_source(cop, code)).to eq(expected)
+      expect(autocorrect_source(code)).to eq(expected)
     end
 
     it 'autocorrects an offense for no space in the outer nested lambda' do
       code = 'a = ->(b = -> (c) {}, d) { b + d }'
       expected = 'a = -> (b = -> (c) {}, d) { b + d }'
-      expect(autocorrect_source(cop, code)).to eq(expected)
+      expect(autocorrect_source(code)).to eq(expected)
     end
 
     it 'autocorrects an offense for no space in both lambdas when nested' do
       code = 'a = ->(b = ->(c) {}, d) { b + d }'
       expected = 'a = -> (b = -> (c) {}, d) { b + d }'
-      expect(autocorrect_source(cop, code)).to eq(expected)
+      expect(autocorrect_source(code)).to eq(expected)
     end
   end
 
@@ -136,31 +136,31 @@ describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
     it 'autocorrects an offense for a space between -> and (' do
       code = 'a = -> (b, c) { b + c }'
       expected = 'a = ->(b, c) { b + c }'
-      expect(autocorrect_source(cop, code)).to eq(expected)
+      expect(autocorrect_source(code)).to eq(expected)
     end
 
     it 'autocorrects an offense for spaces between -> and (' do
       code = 'a = ->   (b, c) { b + c }'
       expected = 'a = ->(b, c) { b + c }'
-      expect(autocorrect_source(cop, code)).to eq(expected)
+      expect(autocorrect_source(code)).to eq(expected)
     end
 
     it 'autocorrects an offense for a space in the inner nested lambda' do
       code = 'a = ->(b = -> (c) {}, d) { b + d }'
       expected = 'a = ->(b = ->(c) {}, d) { b + d }'
-      expect(autocorrect_source(cop, code)).to eq(expected)
+      expect(autocorrect_source(code)).to eq(expected)
     end
 
     it 'autocorrects an offense for a space in the outer nested lambda' do
       code = 'a = -> (b = ->(c) {}, d) { b + d }'
       expected = 'a = ->(b = ->(c) {}, d) { b + d }'
-      expect(autocorrect_source(cop, code)).to eq(expected)
+      expect(autocorrect_source(code)).to eq(expected)
     end
 
     it 'autocorrects two offenses for a space in both lambdas when nested' do
       code = 'a = -> (b = -> (c) {}, d) { b + d }'
       expected = 'a = ->(b = ->(c) {}, d) { b + d }'
-      expect(autocorrect_source(cop, code)).to eq(expected)
+      expect(autocorrect_source(code)).to eq(expected)
     end
   end
 end

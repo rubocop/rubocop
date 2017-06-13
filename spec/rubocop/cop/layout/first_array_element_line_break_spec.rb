@@ -19,7 +19,7 @@ describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
     end
 
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       # Alignment for the first element is set by IndentationWidth cop,
       # the rest of the elements should be aligned using the AlignArray cop.
       expect(new_source).to eq(<<-RUBY.strip_indent)
@@ -47,7 +47,7 @@ describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
     end
 
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(<<-RUBY.strip_indent)
         %w(
         a b
@@ -73,7 +73,7 @@ describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
     end
 
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq(<<-RUBY.strip_indent)
         method([
@@ -109,7 +109,7 @@ describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
     end
 
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq(correct_source)
     end
@@ -141,7 +141,7 @@ describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
     end
 
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq(correct_source)
     end

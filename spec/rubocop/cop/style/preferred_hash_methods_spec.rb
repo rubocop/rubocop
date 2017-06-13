@@ -29,12 +29,12 @@ describe RuboCop::Cop::Style::PreferredHashMethods, :config do
     end
 
     it 'auto-corrects has_key? with key?' do
-      new_source = autocorrect_source(cop, 'hash.has_key?(:test)')
+      new_source = autocorrect_source('hash.has_key?(:test)')
       expect(new_source).to eq('hash.key?(:test)')
     end
 
     it 'auto-corrects has_value? with value?' do
-      new_source = autocorrect_source(cop, 'hash.has_value?(value)')
+      new_source = autocorrect_source('hash.has_value?(value)')
       expect(new_source).to eq('hash.value?(value)')
     end
   end
@@ -65,12 +65,12 @@ describe RuboCop::Cop::Style::PreferredHashMethods, :config do
     end
 
     it 'auto-corrects key? with has_key?' do
-      new_source = autocorrect_source(cop, 'hash.key?(:test)')
+      new_source = autocorrect_source('hash.key?(:test)')
       expect(new_source).to eq('hash.has_key?(:test)')
     end
 
     it 'auto-corrects value? with has_value?' do
-      new_source = autocorrect_source(cop, 'hash.value?(value)')
+      new_source = autocorrect_source('hash.value?(value)')
       expect(new_source).to eq('hash.has_value?(value)')
     end
   end

@@ -15,7 +15,7 @@ describe RuboCop::Cop::Style::MutableConstant do
 
       it 'auto-corrects by adding .freeze' do
         source = [prefix, "CONST = #{o}"].compact.join("\n")
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq("#{source}.freeze")
       end
     end
@@ -29,7 +29,7 @@ describe RuboCop::Cop::Style::MutableConstant do
 
       it 'auto-corrects by adding .freeze' do
         source = [prefix, "CONST ||= #{o}"].compact.join("\n")
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq("#{source}.freeze")
       end
     end
@@ -77,7 +77,7 @@ describe RuboCop::Cop::Style::MutableConstant do
       inspect_source(source)
       expect(cop.offenses.size).to eq(1)
 
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
 
       expect(corrected).to eq('BAR = *[1, 2, 3].freeze')
     end
@@ -85,12 +85,12 @@ describe RuboCop::Cop::Style::MutableConstant do
 
   context 'when assigning an array without brackets' do
     it 'adds brackets when auto-correcting' do
-      new_source = autocorrect_source(cop, 'XXX = YYY, ZZZ')
+      new_source = autocorrect_source('XXX = YYY, ZZZ')
       expect(new_source).to eq 'XXX = [YYY, ZZZ].freeze'
     end
 
     it 'does not add brackets to %w() arrays' do
-      new_source = autocorrect_source(cop, 'XXX = %w(YYY ZZZ)')
+      new_source = autocorrect_source('XXX = %w(YYY ZZZ)')
       expect(new_source).to eq 'XXX = %w(YYY ZZZ).freeze'
     end
   end

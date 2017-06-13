@@ -20,7 +20,7 @@ describe RuboCop::Cop::Performance::ReverseEach do
 
   context 'autocorrect' do
     it 'corrects reverse.each to reverse_each' do
-      new_source = autocorrect_source(cop, '[1, 2].reverse.each { |e| puts e }')
+      new_source = autocorrect_source('[1, 2].reverse.each { |e| puts e }')
 
       expect(new_source).to eq('[1, 2].reverse_each { |e| puts e }')
     end

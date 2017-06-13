@@ -34,7 +34,7 @@ describe RuboCop::Cop::Style::StabbyLambdaParentheses, :config do
     end
 
     it 'autocorrects when a stabby lambda has no parentheses' do
-      corrected = autocorrect_source(cop, ['->a,b,c { a + b + c }'])
+      corrected = autocorrect_source(['->a,b,c { a + b + c }'])
       expect(corrected).to eq '->(a,b,c) { a + b + c }'
     end
   end
@@ -52,7 +52,7 @@ describe RuboCop::Cop::Style::StabbyLambdaParentheses, :config do
     end
 
     it 'autocorrects when a stabby lambda does not parentheses' do
-      corrected = autocorrect_source(cop, ['->(a,b,c) { a + b + c }'])
+      corrected = autocorrect_source(['->(a,b,c) { a + b + c }'])
       expect(corrected).to eq '->a,b,c { a + b + c }'
     end
   end

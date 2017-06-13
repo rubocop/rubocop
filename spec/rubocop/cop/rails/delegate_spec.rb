@@ -168,7 +168,7 @@ describe RuboCop::Cop::Rails::Delegate do
       end
 
       it 'autocorrects' do
-        expect(autocorrect_source(cop, source)).to eq(corrected_source)
+        expect(autocorrect_source(source)).to eq(corrected_source)
       end
     end
 
@@ -188,7 +188,7 @@ describe RuboCop::Cop::Rails::Delegate do
       end
 
       it 'autocorrects' do
-        expect(autocorrect_source(cop, source)).to eq(corrected_source)
+        expect(autocorrect_source(source)).to eq(corrected_source)
       end
 
       context 'with EnforceForPrefixed: false' do
@@ -197,7 +197,7 @@ describe RuboCop::Cop::Rails::Delegate do
         end
 
         it 'does not autocorrect' do
-          expect(autocorrect_source(cop, source)).to eq(source)
+          expect(autocorrect_source(source)).to eq(source)
         end
       end
     end

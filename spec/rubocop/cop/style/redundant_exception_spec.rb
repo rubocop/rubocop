@@ -29,7 +29,7 @@ describe RuboCop::Cop::Style::RedundantException do
     it "auto-corrects a #{keyword} RuntimeError by removing RuntimeError" do
       src = "#{keyword} RuntimeError, msg"
       result_src = "#{keyword} msg"
-      new_src = autocorrect_source(cop, src)
+      new_src = autocorrect_source(src)
       expect(new_src).to eq(result_src)
     end
 
@@ -37,7 +37,7 @@ describe RuboCop::Cop::Style::RedundantException do
        'removing RuntimeError.new' do
       src = "#{keyword} RuntimeError.new(msg)"
       result_src = "#{keyword} msg"
-      new_src = autocorrect_source(cop, src)
+      new_src = autocorrect_source(src)
       expect(new_src).to eq(result_src)
     end
 
@@ -45,20 +45,20 @@ describe RuboCop::Cop::Style::RedundantException do
        'removing RuntimeError.new' do
       src = "#{keyword} RuntimeError.new msg"
       result_src = "#{keyword} msg"
-      new_src = autocorrect_source(cop, src)
+      new_src = autocorrect_source(src)
       expect(new_src).to eq(result_src)
     end
 
     it "does not modify #{keyword} w/ RuntimeError if it does not have 2 " \
        'args' do
       src = "#{keyword} runtimeError, msg, caller"
-      new_src = autocorrect_source(cop, src)
+      new_src = autocorrect_source(src)
       expect(new_src).to eq(src)
     end
 
     it 'does not modify rescue w/ non redundant error' do
       src = "#{keyword} OtherError, msg"
-      new_src = autocorrect_source(cop, src)
+      new_src = autocorrect_source(src)
       expect(new_src).to eq(src)
     end
   end

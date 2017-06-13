@@ -19,7 +19,7 @@ describe RuboCop::Cop::Layout::SpaceAfterSemicolon do
   end
 
   it 'auto-corrects missing space' do
-    new_source = autocorrect_source(cop, 'x = 1;y = 2')
+    new_source = autocorrect_source('x = 1;y = 2')
     expect(new_source).to eq('x = 1; y = 2')
   end
 

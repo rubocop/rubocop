@@ -15,7 +15,7 @@ describe RuboCop::Cop::Layout::SpaceInsidePercentLiteralDelimiters do
         end
 
         def expect_corrected(source, expected)
-          expect(autocorrect_source(cop, source)).to eq expected
+          expect(autocorrect_source(source)).to eq expected
         end
 
         it 'registers an offense for unnecessary spaces' do

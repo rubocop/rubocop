@@ -46,7 +46,7 @@ describe RuboCop::Cop::Lint::DefEndAlignment, :config do
       end
 
       it 'does auto-correction' do
-        corrected = autocorrect_source(cop, source)
+        corrected = autocorrect_source(source)
         expect(corrected).to eq(<<-RUBY.strip_indent)
           foo def a
             a1
@@ -91,7 +91,7 @@ describe RuboCop::Cop::Lint::DefEndAlignment, :config do
         end
 
         it 'does auto-correction' do
-          corrected = autocorrect_source(cop, source)
+          corrected = autocorrect_source(source)
           expect(corrected).to eq(<<-RUBY.strip_indent)
             foo def a
               a1

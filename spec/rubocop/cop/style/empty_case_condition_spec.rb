@@ -14,7 +14,7 @@ describe RuboCop::Cop::Style::EmptyCaseCondition do
     end
 
     it 'correctly autocorrects' do
-      expect(autocorrect_source(cop, source)).to eq corrected_source
+      expect(autocorrect_source(source)).to eq corrected_source
     end
 
     let(:source_with_case) { source.sub(/case/, 'case :a') }

@@ -210,7 +210,7 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
           nil
         end
       RUBY
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(<<-RUBY.strip_indent)
         case foo
         when Bar, Baz, *Foo
@@ -229,7 +229,7 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
           1
         end
       RUBY
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(<<-RUBY.strip_indent)
         case foo
         when FooBar
@@ -250,7 +250,7 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
           1
         end
       RUBY
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(<<-RUBY.strip_indent)
         case foo
         when FooBar
@@ -262,7 +262,7 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
     end
 
     it 'moves a single splat condition to the end of the when conditions' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         case foo
         when *cond
           bar
@@ -282,7 +282,7 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
     end
 
     it 'moves multiple splat condition to the end of the when conditions' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source_with_loop(<<-RUBY.strip_indent)
         case foo
         when *cond1
           bar
@@ -292,11 +292,6 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
           baz
         end
       RUBY
-
-      # CaseWhenSplat requires multiple rounds of correction to avoid
-      # "clobbering errors" from Source::Rewriter
-      cop = described_class.new
-      new_source = autocorrect_source(cop, new_source)
 
       expect(new_source).to eq(<<-RUBY.strip_indent)
         case foo
@@ -312,7 +307,7 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
 
     it 'moves multiple out of order splat condition to the end ' \
        'of the when conditions' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source_with_loop(<<-RUBY.strip_indent)
         case foo
         when *cond1
           bar
@@ -324,11 +319,6 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
           baz
         end
       RUBY
-
-      # CaseWhenSplat requires multiple rounds of correction to avoid
-      # "clobbering errors" from Source::Rewriter
-      cop = described_class.new
-      new_source = autocorrect_source(cop, new_source)
 
       expect(new_source).to eq(<<-RUBY.strip_indent)
         case foo
@@ -345,7 +335,7 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
     end
 
     it 'corrects splat condition when using when then' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         case foo
         when *cond then bar
         when 4 then baz
@@ -361,7 +351,7 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
     end
 
     it 'corrects nested case when statements' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         def check
           case foo
           when *cond
@@ -385,7 +375,7 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
     end
 
     it 'corrects splat on a variable and leaves an array literal alone' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         case foo
         when *cond
           bar
@@ -405,7 +395,7 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
     end
 
     it 'corrects a splat as part of the condition' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         case foo
         when cond1, *cond2
           bar
@@ -425,7 +415,7 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
     end
 
     it 'corrects an array followed by splat in the same condition' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         case foo
         when *[cond1, cond2], *cond3
           bar
@@ -445,7 +435,7 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
     end
 
     it 'corrects a splat followed by array in the same condition' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         case foo
         when *cond1, *[cond2, cond3]
           bar

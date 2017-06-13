@@ -46,22 +46,22 @@ describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
     end
 
     it 'auto-corrects $: to $LOAD_PATH' do
-      new_source = autocorrect_source(cop, '$:')
+      new_source = autocorrect_source('$:')
       expect(new_source).to eq('$LOAD_PATH')
     end
 
     it 'auto-corrects $/ to $INPUT_RECORD_SEPARATOR' do
-      new_source = autocorrect_source(cop, '$/')
+      new_source = autocorrect_source('$/')
       expect(new_source).to eq('$INPUT_RECORD_SEPARATOR')
     end
 
     it 'auto-corrects #$: to #{$LOAD_PATH}' do
-      new_source = autocorrect_source(cop, '"#$:"')
+      new_source = autocorrect_source('"#$:"')
       expect(new_source).to eq('"#{$LOAD_PATH}"')
     end
 
     it 'auto-corrects #{$!} to #{$ERROR_INFO}' do
-      new_source = autocorrect_source(cop, '"#{$!}"')
+      new_source = autocorrect_source('"#{$!}"')
       expect(new_source).to eq('"#{$ERROR_INFO}"')
     end
 
@@ -121,17 +121,17 @@ describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
     end
 
     it 'auto-corrects $LOAD_PATH to $:' do
-      new_source = autocorrect_source(cop, '$LOAD_PATH')
+      new_source = autocorrect_source('$LOAD_PATH')
       expect(new_source).to eq('$:')
     end
 
     it 'auto-corrects $INPUT_RECORD_SEPARATOR to $/' do
-      new_source = autocorrect_source(cop, '$INPUT_RECORD_SEPARATOR')
+      new_source = autocorrect_source('$INPUT_RECORD_SEPARATOR')
       expect(new_source).to eq('$/')
     end
 
     it 'auto-corrects #{$LOAD_PATH} to #$:' do
-      new_source = autocorrect_source(cop, '"#{$LOAD_PATH}"')
+      new_source = autocorrect_source('"#{$LOAD_PATH}"')
       expect(new_source).to eq('"#$:"')
     end
   end

@@ -126,7 +126,7 @@ describe RuboCop::Cop::Style::MultilineIfThen do
   end
 
   it 'auto-corrects the usage of "then" in multiline if' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       if cond then
         something
       end

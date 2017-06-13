@@ -507,7 +507,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
           it 'corrects a method call safeguarded with a check for the object' do
             source = "#{variable}.bar if #{variable}"
 
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("#{variable}&.bar")
           end
@@ -516,7 +516,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             'for the object' do
             source = "#{variable}.bar(baz) if #{variable}"
 
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("#{variable}&.bar(baz)")
           end
@@ -525,7 +525,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             'for the object' do
             source = "#{variable}.bar { |e| e.qux } if #{variable}"
 
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
           end
@@ -534,7 +534,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             'with a check for the object' do
             source = "#{variable}.bar(baz) { |e| e.qux } if #{variable}"
 
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }")
           end
@@ -543,7 +543,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             'the object' do
             source = "#{variable}.bar unless !#{variable}"
 
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("#{variable}&.bar")
           end
@@ -552,7 +552,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             'negative check for the object' do
             source = "#{variable}.bar(baz) unless !#{variable}"
 
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("#{variable}&.bar(baz)")
           end
@@ -561,7 +561,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             'negative check for the object' do
             source = "#{variable}.bar { |e| e.qux } unless !#{variable}"
 
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
           end
@@ -570,7 +570,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             'with a negative check for the object' do
             source = "#{variable}.bar(baz) { |e| e.qux } unless !#{variable}"
 
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }")
           end
@@ -579,7 +579,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             'object' do
             source = "#{variable}.bar unless #{variable}.nil?"
 
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("#{variable}&.bar")
           end
@@ -588,7 +588,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             'check for the object' do
             source = "#{variable}.bar(baz) unless #{variable}.nil?"
 
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("#{variable}&.bar(baz)")
           end
@@ -597,7 +597,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             'check for the object' do
             source = "#{variable}.bar { |e| e.qux } unless #{variable}.nil?"
 
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
           end
@@ -607,7 +607,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             source =
               "#{variable}.bar(baz) { |e| e.qux } unless #{variable}.nil?"
 
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }")
           end
@@ -616,7 +616,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             'for the object' do
             source = "#{variable}.bar if !#{variable}.nil?"
 
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("#{variable}&.bar")
           end
@@ -625,7 +625,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             'negative nil check for the object' do
             source = "#{variable}.bar(baz) if !#{variable}.nil?"
 
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("#{variable}&.bar(baz)")
           end
@@ -634,7 +634,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             'negative nil check for the object' do
             source = "#{variable}.bar { |e| e.qux } if !#{variable}.nil?"
 
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
           end
@@ -643,7 +643,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             'with a negative nil check for the object' do
             source = "#{variable}.bar(baz) { |e| e.qux } if !#{variable}.nil?"
 
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }")
           end
@@ -652,7 +652,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             'for the accessed variable' do
             source = "#{variable}[1].bar if #{variable}[1]"
 
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("#{variable}[1]&.bar")
           end
@@ -660,7 +660,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
         context 'if expression' do
           it 'corrects a single method call inside of a check for the object' do
-            new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+            new_source = autocorrect_source(<<-RUBY.strip_indent)
               if #{variable}
                 #{variable}.bar
               end
@@ -671,7 +671,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
           it 'corrects a single method call with params inside of a check ' \
             'for the object' do
-            new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+            new_source = autocorrect_source(<<-RUBY.strip_indent)
               if #{variable}
                 #{variable}.bar(baz)
               end
@@ -687,7 +687,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
                 #{variable}.bar { |e| e.qux }
               end
             RUBY
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("#{variable}&.bar { |e| e.qux }\n")
           end
@@ -699,14 +699,14 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
                 #{variable}.bar(baz) { |e| e.qux }
               end
             RUBY
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }\n")
           end
 
           it 'corrects a single method call inside of a non-nil check for ' \
             'the object' do
-            new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+            new_source = autocorrect_source(<<-RUBY.strip_indent)
               if !#{variable}.nil?
                 #{variable}.bar
               end
@@ -717,7 +717,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
           it 'corrects a single method call with params inside of a non-nil ' \
             'check for the object' do
-            new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+            new_source = autocorrect_source(<<-RUBY.strip_indent)
               if !#{variable}.nil?
                 #{variable}.bar(baz)
               end
@@ -733,7 +733,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
                 #{variable}.bar { |e| e.qux }
               end
             RUBY
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("#{variable}&.bar { |e| e.qux }\n")
           end
@@ -745,14 +745,14 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
                 #{variable}.bar(baz) { |e| e.qux }
               end
             RUBY
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }\n")
           end
 
           it 'corrects a single method call inside of an unless nil check ' \
             'for the object' do
-            new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+            new_source = autocorrect_source(<<-RUBY.strip_indent)
               unless #{variable}.nil?
                 #{variable}.bar
               end
@@ -763,7 +763,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
           it 'corrects a single method call with params inside of an unless ' \
             'nil check for the object' do
-            new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+            new_source = autocorrect_source(<<-RUBY.strip_indent)
               unless #{variable}.nil?
                 #{variable}.bar(baz)
               end
@@ -779,7 +779,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
                 #{variable}.bar { |e| e.qux }
               end
             RUBY
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("#{variable}&.bar { |e| e.qux }\n")
           end
@@ -791,14 +791,14 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
                 #{variable}.bar(baz) { |e| e.qux }
               end
             RUBY
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }\n")
           end
 
           it 'corrects a single method call inside of an unless negative ' \
             'check for the object' do
-            new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+            new_source = autocorrect_source(<<-RUBY.strip_indent)
               unless !#{variable}
                 #{variable}.bar
               end
@@ -809,7 +809,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
 
           it 'corrects a single method call with params inside of an unless ' \
             'negative check for the object' do
-            new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+            new_source = autocorrect_source(<<-RUBY.strip_indent)
               unless !#{variable}
                 #{variable}.bar(baz)
               end
@@ -825,7 +825,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
                 #{variable}.bar { |e| e.qux }
               end
             RUBY
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("#{variable}&.bar { |e| e.qux }\n")
           end
@@ -837,7 +837,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
                 #{variable}.bar(baz) { |e| e.qux }
               end
             RUBY
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }\n")
           end
@@ -852,7 +852,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             it 'corrects an object check followed by a method call' do
               source = "#{variable} && #{variable}.bar"
 
-              new_source = autocorrect_source(cop, source)
+              new_source = autocorrect_source(source)
 
               expect(new_source).to eq("#{variable}&.bar")
             end
@@ -861,7 +861,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
               'with params' do
               source = "#{variable} && #{variable}.bar(baz)"
 
-              new_source = autocorrect_source(cop, source)
+              new_source = autocorrect_source(source)
 
               expect(new_source).to eq("#{variable}&.bar(baz)")
             end
@@ -870,7 +870,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
               'a block' do
               source = "#{variable} && #{variable}.bar { |e| e.qux }"
 
-              new_source = autocorrect_source(cop, source)
+              new_source = autocorrect_source(source)
 
               expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
             end
@@ -879,7 +879,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
               'params and a block' do
               source = "#{variable} && #{variable}.bar(baz) { |e| e.qux }"
 
-              new_source = autocorrect_source(cop, source)
+              new_source = autocorrect_source(source)
 
               expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }")
             end
@@ -887,7 +887,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
             it 'corrects a non-nil object check followed by a method call' do
               source = "!#{variable}.nil? && #{variable}.bar"
 
-              new_source = autocorrect_source(cop, source)
+              new_source = autocorrect_source(source)
 
               expect(new_source).to eq("#{variable}&.bar")
             end
@@ -896,7 +896,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
               'with params' do
               source = "!#{variable}.nil? && #{variable}.bar(baz)"
 
-              new_source = autocorrect_source(cop, source)
+              new_source = autocorrect_source(source)
 
               expect(new_source).to eq("#{variable}&.bar(baz)")
             end
@@ -905,7 +905,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
               'with a block' do
               source = "!#{variable}.nil? && #{variable}.bar { |e| e.qux }"
 
-              new_source = autocorrect_source(cop, source)
+              new_source = autocorrect_source(source)
 
               expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
             end
@@ -914,7 +914,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
               'with params and a block' do
               source = "!#{variable}.nil? && #{variable}.bar(baz) { |e| e.qux }"
 
-              new_source = autocorrect_source(cop, source)
+              new_source = autocorrect_source(source)
 
               expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }")
             end
@@ -923,7 +923,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
               'another check' do
               source = "#{variable} && #{variable}.bar && something"
 
-              new_source = autocorrect_source(cop, source)
+              new_source = autocorrect_source(source)
 
               expect(new_source).to eq("#{variable}&.bar && something")
             end

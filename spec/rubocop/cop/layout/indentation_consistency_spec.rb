@@ -43,7 +43,7 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
     end
 
     it 'autocorrects bad indentation' do
-      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
         if a1
            b1
         elsif a2
@@ -576,7 +576,7 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
     end
 
     it 'does not auto-correct an offense within another offense' do
-      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
         require 'spec_helper'
         describe ArticlesController do
           render_views

@@ -22,22 +22,22 @@ describe RuboCop::Cop::Style::Attr do
 
   context 'auto-corrects' do
     it 'attr to attr_reader' do
-      new_source = autocorrect_source(cop, 'attr :name')
+      new_source = autocorrect_source('attr :name')
       expect(new_source).to eq('attr_reader :name')
     end
 
     it 'attr, false to attr_reader' do
-      new_source = autocorrect_source(cop, 'attr :name, false')
+      new_source = autocorrect_source('attr :name, false')
       expect(new_source).to eq('attr_reader :name')
     end
 
     it 'attr :name, true to attr_accessor :name' do
-      new_source = autocorrect_source(cop, 'attr :name, true')
+      new_source = autocorrect_source('attr :name, true')
       expect(new_source).to eq('attr_accessor :name')
     end
 
     it 'attr with multiple names to attr_reader' do
-      new_source = autocorrect_source(cop, 'attr :foo, :bar')
+      new_source = autocorrect_source('attr :foo, :bar')
       expect(new_source).to eq('attr_reader :foo, :bar')
     end
   end

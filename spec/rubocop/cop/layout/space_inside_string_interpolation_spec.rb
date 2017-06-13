@@ -22,7 +22,7 @@ describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
     end
 
     it 'auto-corrects spacing within a string interpolation' do
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expected_source = ([corrected_source] * source_length).join("\n")
       expect(new_source).to eq(expected_source)
     end
@@ -62,7 +62,7 @@ describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
       end
 
       it 'does not correct valid string interpolations' do
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq(source.join("\n"))
       end
     end
@@ -106,7 +106,7 @@ describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
       end
 
       it 'does not correct valid string interpolations' do
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq(source.join("\n"))
       end
     end

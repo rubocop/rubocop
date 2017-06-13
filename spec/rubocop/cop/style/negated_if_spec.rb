@@ -99,28 +99,28 @@ describe RuboCop::Cop::Style::NegatedIf do
     end
 
     it 'autocorrects for postfix' do
-      corrected = autocorrect_source(cop, 'bar if !foo')
+      corrected = autocorrect_source('bar if !foo')
 
       expect(corrected).to eq 'bar unless foo'
     end
 
     it 'autocorrects by replacing if not with unless' do
-      corrected = autocorrect_source(cop, 'something if !x.even?')
+      corrected = autocorrect_source('something if !x.even?')
       expect(corrected).to eq 'something unless x.even?'
     end
 
     it 'autocorrects by replacing parenthesized if not with unless' do
-      corrected = autocorrect_source(cop, 'something if (!x.even?)')
+      corrected = autocorrect_source('something if (!x.even?)')
       expect(corrected).to eq 'something unless (x.even?)'
     end
 
     it 'autocorrects by replacing unless not with if' do
-      corrected = autocorrect_source(cop, 'something unless !x.even?')
+      corrected = autocorrect_source('something unless !x.even?')
       expect(corrected).to eq 'something if x.even?'
     end
 
     it 'autocorrects for prefix' do
-      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
         if !foo
         end
       RUBY
@@ -160,7 +160,7 @@ describe RuboCop::Cop::Style::NegatedIf do
     end
 
     it 'autocorrects for prefix' do
-      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
         if !foo
         end
       RUBY
@@ -199,7 +199,7 @@ describe RuboCop::Cop::Style::NegatedIf do
     end
 
     it 'autocorrects for postfix' do
-      corrected = autocorrect_source(cop, 'bar if !foo')
+      corrected = autocorrect_source('bar if !foo')
 
       expect(corrected).to eq 'bar unless foo'
     end

@@ -28,7 +28,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody do
   end
 
   it 'autocorrects method body starting with a blank' do
-    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
       def some_method
 
         do_something
@@ -53,7 +53,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody do
   end
 
   it 'autocorrects class method body starting with a blank' do
-    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
       def Test.some_method
 
         do_something

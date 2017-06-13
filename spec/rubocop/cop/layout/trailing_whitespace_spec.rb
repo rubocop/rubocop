@@ -67,8 +67,8 @@ describe RuboCop::Cop::Layout::TrailingWhitespace do
   end
 
   it 'auto-corrects unwanted space' do
-    new_source = autocorrect_source(cop, ['x = 0 ',
-                                          "x = 0\t"])
+    new_source = autocorrect_source(['x = 0 ',
+                                     "x = 0\t"])
     expect(new_source).to eq(['x = 0',
                               'x = 0'].join("\n"))
   end

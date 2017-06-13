@@ -41,7 +41,7 @@ describe RuboCop::Cop::Style::PercentQLiterals, :config do
       end
 
       it 'auto-corrects' do
-        new_source = autocorrect_source(cop, '%Q(hi)')
+        new_source = autocorrect_source('%Q(hi)')
         expect(new_source).to eq('%q(hi)')
       end
 
@@ -79,7 +79,7 @@ describe RuboCop::Cop::Style::PercentQLiterals, :config do
       end
 
       it 'auto-corrects' do
-        new_source = autocorrect_source(cop, '%q[hi]')
+        new_source = autocorrect_source('%q[hi]')
         expect(new_source).to eq('%Q[hi]')
       end
 
@@ -101,7 +101,7 @@ describe RuboCop::Cop::Style::PercentQLiterals, :config do
 
       it 'does not auto-correct' do
         source = '%q(#{1 + 2})'
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq(source)
       end
 

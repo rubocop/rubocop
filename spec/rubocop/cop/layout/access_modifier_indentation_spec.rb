@@ -219,7 +219,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
     end
 
     it 'auto-corrects incorrectly indented access modifiers' do
-      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
         class Test
 
         public
@@ -400,7 +400,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
     end
 
     it 'auto-corrects incorrectly indented access modifiers' do
-      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
         module M
           class Test
 
@@ -427,7 +427,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
     end
 
     it 'auto-corrects private in complicated case' do
-      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
         class Hello
           def foo
             'hi'

@@ -133,7 +133,7 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
     end
 
     it 'auto-corrects " with \'' do
-      new_source = autocorrect_source(cop, 's = "abc"')
+      new_source = autocorrect_source('s = "abc"')
       expect(new_source).to eq("s = 'abc'")
     end
 
@@ -152,7 +152,7 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
     end
 
     it 'autocorrects words with non-ascii chars' do
-      new_source = autocorrect_source(cop, '"España"')
+      new_source = autocorrect_source('"España"')
       expect(new_source).to eq("'España'")
     end
 
@@ -164,7 +164,7 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
 
     it 'does not autocorrect words with non-ascii chars and other control ' \
        'sequences' do
-      new_source = autocorrect_source(cop, '"España\n"')
+      new_source = autocorrect_source('"España\n"')
       expect(new_source).to eq('"España\n"')
     end
   end
@@ -248,7 +248,7 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
     end
 
     it "auto-corrects ' with \"" do
-      new_source = autocorrect_source(cop, "s = 'abc'")
+      new_source = autocorrect_source("s = 'abc'")
       expect(new_source).to eq('s = "abc"')
     end
   end

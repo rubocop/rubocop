@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'pry'
 describe RuboCop::Cop::Style::RescueModifier do
   let(:config) do
     RuboCop::Config.new('Layout/IndentationWidth' => {
@@ -142,7 +143,7 @@ describe RuboCop::Cop::Style::RescueModifier do
 
   context 'autocorrect' do
     it 'corrects basic rescue modifier' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         foo rescue bar
       RUBY
 
@@ -156,7 +157,7 @@ describe RuboCop::Cop::Style::RescueModifier do
     end
 
     it 'corrects complex rescue modifier' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         foo || bar rescue bar
       RUBY
 
@@ -175,7 +176,7 @@ describe RuboCop::Cop::Style::RescueModifier do
           test rescue modifier_handle
         end
       RUBY
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq(<<-RUBY.strip_indent)
         def foo
@@ -196,7 +197,7 @@ describe RuboCop::Cop::Style::RescueModifier do
           normal_handle
         end
       RUBY
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq(<<-RUBY.strip_indent)
         begin
@@ -212,12 +213,9 @@ describe RuboCop::Cop::Style::RescueModifier do
     end
 
     it 'corrects doubled rescue modifiers' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source_with_loop(<<-RUBY.strip_indent)
         blah rescue 1 rescue 2
       RUBY
-
-      # Another round of autocorrection is needed
-      new_source = autocorrect_source(described_class.new(config), new_source)
 
       expect(new_source).to eq(<<-RUBY.strip_indent)
         begin

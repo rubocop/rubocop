@@ -17,7 +17,7 @@ describe RuboCop::Cop::Style::MultilineMemoization, :config do
     end
 
     it 'auto-corrects' do
-      expect(autocorrect_source(cop, code)).to eq(expected)
+      expect(autocorrect_source(code)).to eq(expected)
     end
   end
 

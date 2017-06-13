@@ -5,23 +5,23 @@ describe RuboCop::Cop::Performance::EndWith do
 
   shared_examples 'different match methods' do |method|
     it "autocorrects #{method} /abc\\z/" do
-      new_source = autocorrect_source(cop, "str#{method} /abc\\z/")
+      new_source = autocorrect_source("str#{method} /abc\\z/")
       expect(new_source).to eq "str.end_with?('abc')"
     end
 
     it "autocorrects #{method} /\\n\\z/" do
-      new_source = autocorrect_source(cop, "str#{method} /\\n\\z/")
+      new_source = autocorrect_source("str#{method} /\\n\\z/")
       expect(new_source).to eq 'str.end_with?("\n")'
     end
 
     it "autocorrects #{method} /\\t\\z/" do
-      new_source = autocorrect_source(cop, "str#{method} /\\t\\z/")
+      new_source = autocorrect_source("str#{method} /\\t\\z/")
       expect(new_source).to eq 'str.end_with?("\t")'
     end
 
     %w[. $ ^ |].each do |str|
       it "autocorrects #{method} /\\#{str}\\z/" do
-        new_source = autocorrect_source(cop, "str#{method} /\\#{str}\\z/")
+        new_source = autocorrect_source("str#{method} /\\#{str}\\z/")
         expect(new_source).to eq "str.end_with?('#{str}')"
       end
 
@@ -36,7 +36,7 @@ describe RuboCop::Cop::Performance::EndWith do
     # but in a regex, it's an anchor on a word boundary
     %w[a e f r t v].each do |str|
       it "autocorrects #{method} /\\#{str}\\z/" do
-        new_source = autocorrect_source(cop, "str#{method} /\\#{str}\\z/")
+        new_source = autocorrect_source("str#{method} /\\#{str}\\z/")
         expect(new_source).to eq %{str.end_with?("\\#{str}")}
       end
     end
@@ -52,7 +52,7 @@ describe RuboCop::Cop::Performance::EndWith do
     # characters with no special meaning whatsoever
     %w[i j l m o q y].each do |str|
       it "autocorrects #{method} /\\#{str}\\z/" do
-        new_source = autocorrect_source(cop, "str#{method} /\\#{str}\\z/")
+        new_source = autocorrect_source("str#{method} /\\#{str}\\z/")
         expect(new_source).to eq "str.end_with?('#{str}')"
       end
     end
@@ -65,7 +65,7 @@ describe RuboCop::Cop::Performance::EndWith do
     end
 
     it "autocorrects #{method} /\\\\\\z/" do
-      new_source = autocorrect_source(cop, "str#{method} /\\\\\\z/")
+      new_source = autocorrect_source("str#{method} /\\\\\\z/")
       expect(new_source).to eq("str.end_with?('\\\\')")
     end
   end

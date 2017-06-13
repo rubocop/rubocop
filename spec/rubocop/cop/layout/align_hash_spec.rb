@@ -27,7 +27,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
             ), h: :i)
         end
       RUBY
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
       expect(new_source).to eq(source)
     end
   end
@@ -208,7 +208,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'auto-corrects alignment' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         hash1 = { a: 0,
              bb: 1,
                    ccc: 2 }
@@ -229,7 +229,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'auto-corrects alignment for mixed multiline hash keys' do
-      new_sources = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_sources = autocorrect_source(<<-RUBY.strip_indent)
         hash = { a: 1, b: 2,
                 c: 3 }
       RUBY
@@ -242,7 +242,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     context 'ruby >= 2.0', :ruby20 do
       it 'auto-corrects alignment when using double splat ' \
          'in an explicit hash' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           Hash(foo: 'bar',
                  **extra_params
           )
@@ -256,7 +256,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
       end
 
       it 'auto-corrects alignment when using double splat in braces' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           {foo: 'bar',
                  **extra_params
           }
@@ -386,7 +386,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'auto-corrects alignment' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         hash1 = { a: 0,
              bb:   1,
                    ccc: 2 }
@@ -494,7 +494,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
     include_examples 'not on separate lines'
 
     it 'auto-corrects alignment' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         hash1 = { a: 0,
              bb:    1,
                    ccc: 2 }
@@ -514,11 +514,11 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
 
     it "doesn't break code by moving long keys too far left" do
       # regression test; see GH issue 2582
-      new_source = autocorrect_source(cop, ['{',
-                                            '  sjtjo: sjtjo,',
-                                            '  too_ono_ilitjion_tofotono_o: ' \
-                                            'too_ono_ilitjion_tofotono_o,',
-                                            '}'])
+      new_source = autocorrect_source(['{',
+                                       '  sjtjo: sjtjo,',
+                                       '  too_ono_ilitjion_tofotono_o: ' \
+                                       'too_ono_ilitjion_tofotono_o,',
+                                       '}'])
       expect(new_source).to eq(['{',
                                 '  sjtjo: sjtjo,',
                                 'too_ono_ilitjion_tofotono_o: ' \

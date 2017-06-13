@@ -38,7 +38,7 @@ describe RuboCop::Cop::Layout::SpaceBeforeBlockBraces, :config do
     end
 
     it 'auto-corrects missing space' do
-      new_source = autocorrect_source(cop, 'each{}')
+      new_source = autocorrect_source('each{}')
       expect(new_source).to eq('each {}')
     end
   end
@@ -63,7 +63,7 @@ describe RuboCop::Cop::Layout::SpaceBeforeBlockBraces, :config do
     end
 
     it 'auto-corrects unwanted space' do
-      new_source = autocorrect_source(cop, 'each {}')
+      new_source = autocorrect_source('each {}')
       expect(new_source).to eq('each{}')
     end
 

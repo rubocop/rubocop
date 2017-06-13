@@ -13,17 +13,17 @@ describe RuboCop::Cop::Performance::RedundantMatch do
   subject(:cop) { described_class.new }
 
   it 'autocorrects .match in if condition' do
-    new_source = autocorrect_source(cop, 'something if str.match(/regex/)')
+    new_source = autocorrect_source('something if str.match(/regex/)')
     expect(new_source).to eq 'something if str =~ /regex/'
   end
 
   it 'autocorrects .match in unless condition' do
-    new_source = autocorrect_source(cop, 'something unless str.match(/regex/)')
+    new_source = autocorrect_source('something unless str.match(/regex/)')
     expect(new_source).to eq 'something unless str =~ /regex/'
   end
 
   it 'autocorrects .match in while condition' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       while str.match(/regex/)
         do_something
       end
@@ -36,7 +36,7 @@ describe RuboCop::Cop::Performance::RedundantMatch do
   end
 
   it 'autocorrects .match in until condition' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       until str.match(/regex/)
         do_something
       end
@@ -49,7 +49,7 @@ describe RuboCop::Cop::Performance::RedundantMatch do
   end
 
   it 'autocorrects .match in method body (but not tail position)' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       def method(str)
         str.match(/regex/)
         true
@@ -64,7 +64,7 @@ describe RuboCop::Cop::Performance::RedundantMatch do
   end
 
   it 'does not autocorrect if .match has a string agrgument' do
-    new_source = autocorrect_source(cop, 'something if str.match("string")')
+    new_source = autocorrect_source('something if str.match("string")')
     expect(new_source).to eq 'something if str.match("string")'
   end
 

@@ -36,7 +36,7 @@ describe RuboCop::Cop::Layout::IndentArray do
     end
 
     it 'auto-corrects incorrectly indented first element' do
-      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
         a << [
          1
         ]
@@ -124,7 +124,7 @@ describe RuboCop::Cop::Layout::IndentArray do
     end
 
     it 'auto-corrects incorrectly indented first element' do
-      corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
         a = [
             1,
           2,
@@ -235,7 +235,7 @@ describe RuboCop::Cop::Layout::IndentArray do
         end
 
         it 'auto-corrects incorrectly indented first element' do
-          corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+          corrected = autocorrect_source(<<-RUBY.strip_indent)
             func([
               1
             ])
@@ -402,7 +402,7 @@ describe RuboCop::Cop::Layout::IndentArray do
       end
 
       it 'auto-corrects incorrectly indented first element' do
-        corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+        corrected = autocorrect_source(<<-RUBY.strip_indent)
           var = [
             1
           ]
@@ -457,7 +457,7 @@ describe RuboCop::Cop::Layout::IndentArray do
       end
 
       it 'autocorrects indentation which does not match IndentationWidth' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           a = [
                 1
               ]

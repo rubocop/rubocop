@@ -63,27 +63,27 @@ describe RuboCop::Cop::Style::NumericLiterals, :config do
   end
 
   it 'autocorrects a long integer offense' do
-    corrected = autocorrect_source(cop, ['a = 123456'])
+    corrected = autocorrect_source(['a = 123456'])
     expect(corrected).to eq 'a = 123_456'
   end
 
   it 'autocorrects an integer with misplaced underscore' do
-    corrected = autocorrect_source(cop, ['a = 123_456_78_90_00'])
+    corrected = autocorrect_source(['a = 123_456_78_90_00'])
     expect(corrected).to eq 'a = 123_456_789_000'
   end
 
   it 'autocorrects negative numbers' do
-    corrected = autocorrect_source(cop, ['a = -123456'])
+    corrected = autocorrect_source(['a = -123456'])
     expect(corrected).to eq 'a = -123_456'
   end
 
   it 'autocorrects floating-point numbers' do
-    corrected = autocorrect_source(cop, ['a = 123456.78'])
+    corrected = autocorrect_source(['a = 123456.78'])
     expect(corrected).to eq 'a = 123_456.78'
   end
 
   it 'autocorrects negative floating-point numbers' do
-    corrected = autocorrect_source(cop, ['a = -123456.78'])
+    corrected = autocorrect_source(['a = -123456.78'])
     expect(corrected).to eq 'a = -123_456.78'
   end
 

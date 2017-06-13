@@ -54,7 +54,7 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
     end
 
     it 'auto-corrects unwanted space' do
-      new_source = autocorrect_source(cop, 'each { }')
+      new_source = autocorrect_source('each { }')
       expect(new_source).to eq('each {}')
     end
 
@@ -64,7 +64,7 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
           b
         }
       RUBY
-      new_source = autocorrect_source(cop, old_source)
+      new_source = autocorrect_source(old_source)
       expect(new_source).to eq(old_source)
     end
   end
@@ -84,7 +84,7 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
     end
 
     it 'auto-corrects missing space' do
-      new_source = autocorrect_source(cop, 'each {}')
+      new_source = autocorrect_source('each {}')
       expect(new_source).to eq('each { }')
     end
   end
@@ -139,7 +139,7 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
   end
 
   it 'auto-corrects missing space' do
-    new_source = autocorrect_source(cop, 'each {puts}')
+    new_source = autocorrect_source('each {puts}')
     expect(new_source).to eq('each { puts }')
   end
 
@@ -178,7 +178,7 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
       end
 
       it 'auto-corrects missing space' do
-        new_source = autocorrect_source(cop, <<-SOURCE)
+        new_source = autocorrect_source(<<-SOURCE)
           each {|x|
             puts
           }
@@ -197,7 +197,7 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
     end
 
     it 'auto-corrects missing space' do
-      new_source = autocorrect_source(cop, 'each {|x| puts }')
+      new_source = autocorrect_source('each {|x| puts }')
       expect(new_source).to eq('each { |x| puts }')
     end
 
@@ -208,7 +208,7 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
       end
 
       it 'does auto-correction for single-line blocks' do
-        new_source = autocorrect_source(cop, 'each {|x| puts}')
+        new_source = autocorrect_source('each {|x| puts}')
         expect(new_source).to eq('each { |x| puts }')
       end
 
@@ -218,7 +218,7 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
             puts
           }
         RUBY
-        new_source = autocorrect_source(cop, old_source)
+        new_source = autocorrect_source(old_source)
         expect(new_source).to eq(<<-RUBY.strip_indent)
           each { |x|
             puts
@@ -248,7 +248,7 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
       end
 
       it 'auto-corrects unwanted space' do
-        new_source = autocorrect_source(cop, 'each { |x| puts }')
+        new_source = autocorrect_source('each { |x| puts }')
         expect(new_source).to eq('each {|x| puts }')
       end
 
@@ -299,7 +299,7 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
     end
 
     it 'auto-corrects unwanted space' do
-      new_source = autocorrect_source(cop, 'each{ puts }')
+      new_source = autocorrect_source('each{ puts }')
       expect(new_source).to eq('each{puts}')
     end
 
@@ -321,7 +321,7 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
         end
 
         it 'auto-corrects missing space' do
-          new_source = autocorrect_source(cop, 'each {|x| puts}')
+          new_source = autocorrect_source('each {|x| puts}')
           expect(new_source).to eq('each { |x| puts}')
         end
       end
@@ -347,7 +347,7 @@ describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
         end
 
         it 'auto-corrects unwanted space' do
-          new_source = autocorrect_source(cop, 'each { |x| puts}')
+          new_source = autocorrect_source('each { |x| puts}')
           expect(new_source).to eq('each {|x| puts}')
         end
       end

@@ -40,24 +40,24 @@ describe RuboCop::Cop::Performance::CompareWithBlock do
 
     it "autocorrects array.#{method} { |a, b| a.foo <=> b.foo }" do
       new_source =
-        autocorrect_source(cop, "array.#{method} { |a, b| a.foo <=> b.foo }")
+        autocorrect_source("array.#{method} { |a, b| a.foo <=> b.foo }")
       expect(new_source).to eq "array.#{method}_by(&:foo)"
     end
 
     it "autocorrects array.#{method} { |a, b| a.bar <=> b.bar }" do
       new_source =
-        autocorrect_source(cop, "array.#{method} { |a, b| a.bar <=> b.bar }")
+        autocorrect_source("array.#{method} { |a, b| a.bar <=> b.bar }")
       expect(new_source).to eq "array.#{method}_by(&:bar)"
     end
 
     it "autocorrects array.#{method} { |x, y| x.foo <=> y.foo }" do
       new_source =
-        autocorrect_source(cop, "array.#{method} { |x, y| x.foo <=> y.foo }")
+        autocorrect_source("array.#{method} { |x, y| x.foo <=> y.foo }")
       expect(new_source).to eq "array.#{method}_by(&:foo)"
     end
 
     it "autocorrects array.#{method} do |a, b| a.foo <=> b.foo end" do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         array.#{method} do |a, b|
           a.foo <=> b.foo
         end
@@ -67,7 +67,6 @@ describe RuboCop::Cop::Performance::CompareWithBlock do
 
     it "autocorrects array.#{method} { |a, b| a[:foo] <=> b[:foo] }" do
       new_source = autocorrect_source(
-        cop,
         "array.#{method} { |a, b| a[:foo] <=> b[:foo] }"
       )
       expect(new_source).to eq "array.#{method}_by { |a| a[:foo] }"
@@ -75,7 +74,6 @@ describe RuboCop::Cop::Performance::CompareWithBlock do
 
     it "autocorrects array.#{method} { |a, b| a['foo'] <=> b['foo'] }" do
       new_source = autocorrect_source(
-        cop,
         "array.#{method} { |a, b| a['foo'] <=> b['foo'] }"
       )
       expect(new_source).to eq "array.#{method}_by { |a| a['foo'] }"
@@ -83,7 +81,6 @@ describe RuboCop::Cop::Performance::CompareWithBlock do
 
     it "autocorrects array.#{method} { |a, b| a[1] <=> b[1] }" do
       new_source = autocorrect_source(
-        cop,
         "array.#{method} { |a, b| a[1] <=> b[1] }"
       )
       expect(new_source).to eq "array.#{method}_by { |a| a[1] }"

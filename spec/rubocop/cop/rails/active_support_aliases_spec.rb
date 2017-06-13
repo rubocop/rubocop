@@ -16,7 +16,7 @@ describe RuboCop::Cop::Rails::ActiveSupportAliases do
 
       it 'is autocorrected' do
         new_source = autocorrect_source(
-          cop, "'some_string'.starts_with?('prefix')"
+          "'some_string'.starts_with?('prefix')"
         )
         expect(new_source).to eq "'some_string'.start_with?('prefix')"
       end
@@ -38,7 +38,7 @@ describe RuboCop::Cop::Rails::ActiveSupportAliases do
 
       it 'is autocorrected' do
         new_source = autocorrect_source(
-          cop, "'some_string'.ends_with?('prefix')"
+          "'some_string'.ends_with?('prefix')"
         )
         expect(new_source).to eq "'some_string'.end_with?('prefix')"
       end
@@ -62,7 +62,7 @@ describe RuboCop::Cop::Rails::ActiveSupportAliases do
 
       it 'is not autocorrected' do
         source = "[1, 'a', 3].append('element')"
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq source
       end
     end
@@ -83,7 +83,7 @@ describe RuboCop::Cop::Rails::ActiveSupportAliases do
 
       it 'is autocorrected' do
         new_source = autocorrect_source(
-          cop, "[1, 'a', 3].prepend('element')"
+          "[1, 'a', 3].prepend('element')"
         )
         expect(new_source).to eq "[1, 'a', 3].unshift('element')"
       end

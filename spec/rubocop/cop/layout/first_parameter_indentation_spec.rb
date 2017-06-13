@@ -61,7 +61,7 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
       end
 
       it 'auto-corrects nested offenses' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           foo(
            bar(
             7
@@ -214,7 +214,7 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
       end
 
       it 'auto-corrects an under-indented first parameter' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           x =
             run(
             :foo,
@@ -235,7 +235,7 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
       let(:indentation_width) { 4 }
 
       it 'auto-corrects an over-indented first parameter' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           run(
                   :foo,
               bar: 3)
@@ -271,7 +271,7 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
       end
 
       it 'auto-corrects an over-indented first parameter' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           run(
                   :foo,
               bar: 3)
@@ -312,7 +312,7 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
       end
 
       it 'auto-corrects an over-indented first parameter' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           run(:foo, defaults.merge(
                                   bar: 3))
         RUBY
@@ -382,7 +382,7 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
       end
 
       it 'auto-corrects an over-indented first parameter' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           run(:foo, defaults.merge(
                                   bar: 3))
         RUBY
@@ -417,7 +417,7 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
       end
 
       it 'auto-corrects an over-indented first parameter' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           run(:foo, defaults.merge(
                                   bar: 3))
         RUBY

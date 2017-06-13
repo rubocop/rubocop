@@ -78,7 +78,7 @@ describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses do
   end
 
   it 'auto-corrects by removing unneeded braces' do
-    new_source = autocorrect_source(cop, 'test()')
+    new_source = autocorrect_source('test()')
     expect(new_source).to eq('test')
   end
 
@@ -90,7 +90,7 @@ describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses do
       Array.new()
       String.new()
     RUBY
-    new_source = autocorrect_source(cop, original)
+    new_source = autocorrect_source(original)
     expect(new_source).to eq(<<-RUBY.strip_indent)
       Hash.new
       Array.new

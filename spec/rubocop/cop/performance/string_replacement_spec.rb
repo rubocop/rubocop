@@ -311,69 +311,67 @@ describe RuboCop::Cop::Performance::StringReplacement do
   context 'auto-correct' do
     describe 'corrects to tr' do
       it 'corrects when the length of the pattern and replacement are one' do
-        new_source = autocorrect_source(cop, "'abc'.gsub('a', 'd')")
+        new_source = autocorrect_source("'abc'.gsub('a', 'd')")
 
         expect(new_source).to eq("'abc'.tr('a', 'd')")
       end
 
       it 'corrects when the pattern is a regex literal' do
-        new_source = autocorrect_source(cop, "'abc'.gsub(/a/, '1')")
+        new_source = autocorrect_source("'abc'.gsub(/a/, '1')")
 
         expect(new_source).to eq("'abc'.tr('a', '1')")
       end
 
       it 'corrects when the pattern is a regex literal using %r' do
-        new_source = autocorrect_source(cop, "'abc'.gsub(%r{a}, '1')")
+        new_source = autocorrect_source("'abc'.gsub(%r{a}, '1')")
 
         expect(new_source).to eq("'abc'.tr('a', '1')")
       end
 
       it 'corrects when the pattern uses Regexp.new' do
-        new_source = autocorrect_source(cop,
-                                        "'abc'.gsub(Regexp.new('a'), '1')")
+        new_source = autocorrect_source("'abc'.gsub(Regexp.new('a'), '1')")
 
         expect(new_source).to eq("'abc'.tr('a', '1')")
       end
 
       it 'corrects when the pattern uses Regexp.compile' do
-        new_source = autocorrect_source(cop,
-                                        "'abc'.gsub(Regexp.compile('a'), '1')")
+        new_source = autocorrect_source("'abc'.gsub(Regexp.compile('a'), '1')")
 
         expect(new_source).to eq("'abc'.tr('a', '1')")
       end
 
       it 'corrects when the replacement contains a new line character' do
-        new_source = autocorrect_source(cop, "'abc'.gsub('a', '\n')")
+        new_source = autocorrect_source("'abc'.gsub('a', '\n')")
 
         expect(new_source).to eq("'abc'.tr('a', '\n')")
       end
 
       it 'corrects when the replacement contains escape backslash' do
-        new_source = autocorrect_source(cop, "\"\".gsub('/', '\\\\')")
+        new_source = autocorrect_source("\"\".gsub('/', '\\\\')")
 
         expect(new_source).to eq("\"\".tr('/', '\\\\')")
       end
 
       it 'corrects when the pattern contains a new line character' do
-        new_source = autocorrect_source(cop, "'abc'.gsub('\n', ',')")
+        new_source = autocorrect_source("'abc'.gsub('\n', ',')")
 
         expect(new_source).to eq("'abc'.tr('\n', ',')")
       end
 
       it 'corrects when the pattern contains double backslash' do
-        new_source = autocorrect_source(cop, "''.gsub('\\\\', '')")
+        new_source = autocorrect_source("''.gsub('\\\\', '')")
 
         expect(new_source).to eq("''.delete('\\\\')")
       end
 
       it 'corrects when replacing to a single quote' do
-        new_source = autocorrect_source(cop, '"a`b".gsub("`", "\'")')
+        new_source = autocorrect_source('"a`b".gsub("`", "\'")')
 
         expect(new_source).to eq('"a`b".tr("`", "\'")')
       end
 
       it 'corrects when replacing to a double quote' do
-        new_source = autocorrect_source(cop, '"a`b".gsub("`", "\"")')
+        new_source = autocorrect_source('"a`b".gsub("`", "\"")')
 
         expect(new_source).to eq('"a`b".tr("`", "\"")')
       end
@@ -381,44 +379,43 @@ describe RuboCop::Cop::Performance::StringReplacement do
 
     describe 'corrects to delete' do
       it 'corrects when deleting a single character' do
-        new_source = autocorrect_source(cop, "'abc'.gsub!('a', '')")
+        new_source = autocorrect_source("'abc'.gsub!('a', '')")
 
         expect(new_source).to eq("'abc'.delete!('a')")
       end
 
       it 'corrects when the pattern is a regex literal' do
-        new_source = autocorrect_source(cop, "'abc'.gsub(/a/, '')")
+        new_source = autocorrect_source("'abc'.gsub(/a/, '')")
 
         expect(new_source).to eq("'abc'.delete('a')")
       end
 
       it 'corrects when deleting an escape character' do
-        new_source = autocorrect_source(cop, "'abc'.gsub('\n', '')")
+        new_source = autocorrect_source("'abc'.gsub('\n', '')")
 
         expect(new_source).to eq("'abc'.delete('\n')")
       end
 
       it 'corrects when the pattern uses Regexp.new' do
-        new_source = autocorrect_source(cop, "'abc'.gsub(Regexp.new('a'), '')")
+        new_source = autocorrect_source("'abc'.gsub(Regexp.new('a'), '')")
 
         expect(new_source).to eq("'abc'.delete('a')")
       end
 
       it 'corrects when the pattern uses Regexp.compile' do
-        new_source = autocorrect_source(cop,
-                                        "'ab'.gsub(Regexp.compile('a'), '')")
+        new_source = autocorrect_source("'ab'.gsub(Regexp.compile('a'), '')")
 
         expect(new_source).to eq("'ab'.delete('a')")
       end
 
       it 'corrects when there are no brackets' do
-        new_source = autocorrect_source(cop, "'abc'.gsub! 'a', ''")
+        new_source = autocorrect_source("'abc'.gsub! 'a', ''")
 
         expect(new_source).to eq("'abc'.delete! 'a'")
       end
 
       it 'corrects when a regexp contains escapes' do
-        new_source = autocorrect_source(cop, "'abc'.gsub(/\\n/, '')")
+        new_source = autocorrect_source("'abc'.gsub(/\\n/, '')")
 
         expect(new_source).to eq(%('abc'.delete("\\n")))
       end

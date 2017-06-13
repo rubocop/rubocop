@@ -19,7 +19,7 @@ describe RuboCop::Cop::Performance::RegexpMatch, :config do
     end
 
     it "corrects #{name}" do
-      new_source = autocorrect_source(cop, code)
+      new_source = autocorrect_source(code)
 
       expect(new_source).to eq(correction)
     end

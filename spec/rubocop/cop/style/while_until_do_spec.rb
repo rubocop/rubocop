@@ -42,7 +42,7 @@ describe RuboCop::Cop::Style::WhileUntilDo do
   end
 
   it 'auto-corrects the usage of "do" in multiline while' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       while cond do
       end
     RUBY
@@ -53,7 +53,7 @@ describe RuboCop::Cop::Style::WhileUntilDo do
   end
 
   it 'auto-corrects the usage of "do" in multiline until' do
-    new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       until cond do
       end
     RUBY

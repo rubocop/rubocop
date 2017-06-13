@@ -18,12 +18,12 @@ describe RuboCop::Cop::Style::NilComparison do
   end
 
   it 'autocorrects by replacing == nil with .nil?' do
-    corrected = autocorrect_source(cop, 'x == nil')
+    corrected = autocorrect_source('x == nil')
     expect(corrected).to eq 'x.nil?'
   end
 
   it 'autocorrects by replacing === nil with .nil?' do
-    corrected = autocorrect_source(cop, 'x === nil')
+    corrected = autocorrect_source('x === nil')
     expect(corrected).to eq 'x.nil?'
   end
 end

@@ -27,7 +27,7 @@ describe RuboCop::Cop::Performance::FlatMap, :config do
 
     it "corrects #{method}..#{flatten}(1) to flat_map" do
       source = "[1, 2].#{method} { |e| [e, e] }.#{flatten}(1)"
-      new_source = autocorrect_source(cop, source)
+      new_source = autocorrect_source(source)
 
       expect(new_source).to eq('[1, 2].flat_map { |e| [e, e] }')
     end
@@ -81,7 +81,7 @@ describe RuboCop::Cop::Performance::FlatMap, :config do
 
       it "will not correct #{method}..#{flatten} to flat_map" do
         source = "[1, 2].map { |e| [e, e] }.#{flatten}"
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
 
         expect(new_source).to eq("[1, 2].map { |e| [e, e] }.#{flatten}")
       end

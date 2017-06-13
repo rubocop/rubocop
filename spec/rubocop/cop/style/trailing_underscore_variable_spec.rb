@@ -129,43 +129,43 @@ describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
 
     describe 'autocorrect' do
       it 'removes trailing underscores automatically' do
-        new_source = autocorrect_source(cop, 'a, b, _ = foo()')
+        new_source = autocorrect_source('a, b, _ = foo()')
 
         expect(new_source).to eq('a, b, = foo()')
       end
 
       it 'removes trailing underscores and commas' do
-        new_source = autocorrect_source(cop, 'a, b, _, = foo()')
+        new_source = autocorrect_source('a, b, _, = foo()')
 
         expect(new_source).to eq('a, b, = foo()')
       end
 
       it 'removes multiple trailing underscores' do
-        new_source = autocorrect_source(cop, 'a, _, _ = foo()')
+        new_source = autocorrect_source('a, _, _ = foo()')
 
         expect(new_source).to eq('a, = foo()')
       end
 
       it 'removes trailing underscores and commas and preserves assignments' do
-        new_source = autocorrect_source(cop, 'a, _, _, = foo()')
+        new_source = autocorrect_source('a, _, _, = foo()')
 
         expect(new_source).to eq('a, = foo()')
       end
 
       it 'removes trailing comma when it is the only variable' do
-        new_source = autocorrect_source(cop, '_, = foo()')
+        new_source = autocorrect_source('_, = foo()')
 
         expect(new_source).to eq('foo()')
       end
 
       it 'removes all assignments when every assignment is to `_`' do
-        new_source = autocorrect_source(cop, '_, _, _, = foo()')
+        new_source = autocorrect_source('_, _, _, = foo()')
 
         expect(new_source).to eq('foo()')
       end
 
       it 'remove splat underscore' do
-        new_source = autocorrect_source(cop, 'a, *_ = foo()')
+        new_source = autocorrect_source('a, *_ = foo()')
 
         expect(new_source).to eq('a, = foo()')
       end
@@ -282,25 +282,25 @@ describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
 
     context 'autocorrect' do
       it 'removes named underscore variables' do
-        new_source = autocorrect_source(cop, 'a, _b = foo()')
+        new_source = autocorrect_source('a, _b = foo()')
 
         expect(new_source).to eq('a, = foo()')
       end
 
       it 'removes named splat underscore variables' do
-        new_source = autocorrect_source(cop, 'a, *_b = foo()')
+        new_source = autocorrect_source('a, *_b = foo()')
 
         expect(new_source).to eq('a, = foo()')
       end
 
       it 'removes named splat underscore and named underscore variables' do
-        new_source = autocorrect_source(cop, 'a, *_b, _c = foo()')
+        new_source = autocorrect_source('a, *_b, _c = foo()')
 
         expect(new_source).to eq('a, = foo()')
       end
 
       it 'works when last underscore is followed by a comma' do
-        new_source = autocorrect_source(cop, 'a, _, = foo()')
+        new_source = autocorrect_source('a, _, = foo()')
 
         expect(new_source).to eq('a, = foo()')
       end

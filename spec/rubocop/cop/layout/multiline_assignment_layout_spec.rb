@@ -27,7 +27,7 @@ describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     end
 
     it 'auto-corrects offenses' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         blarg = if true
         end
       RUBY
@@ -101,7 +101,7 @@ describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     end
 
     it 'auto-corrects offenses' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         blarg =
         if true
         end

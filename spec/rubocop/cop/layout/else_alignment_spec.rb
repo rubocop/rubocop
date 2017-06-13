@@ -51,7 +51,7 @@ describe RuboCop::Cop::Layout::ElseAlignment do
 
     describe '#autocorrect' do
       it 'corrects bad alignment' do
-        corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+        corrected = autocorrect_source(<<-RUBY.strip_indent)
             if a1
               b1
               elsif a2
@@ -224,7 +224,7 @@ describe RuboCop::Cop::Layout::ElseAlignment do
           end
 
           it 'autocorrects bad alignment' do
-            corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+            corrected = autocorrect_source(<<-RUBY.strip_indent)
               var = if a
                 b1
               else

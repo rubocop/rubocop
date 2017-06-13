@@ -74,17 +74,17 @@ describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
   end
 
   it 'auto-corrects call by adding needed braces' do
-    new_source = autocorrect_source(cop, 'top.test a')
+    new_source = autocorrect_source('top.test a')
     expect(new_source).to eq('top.test(a)')
   end
 
   it 'auto-corrects superclass call by adding needed braces' do
-    new_source = autocorrect_source(cop, 'super a')
+    new_source = autocorrect_source('super a')
     expect(new_source).to eq('super(a)')
   end
 
   it 'auto-corrects superclass call by adding needed braces' do
-    new_source = autocorrect_source(cop, 'yield a')
+    new_source = autocorrect_source('yield a')
     expect(new_source).to eq('yield(a)')
   end
 

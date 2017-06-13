@@ -48,22 +48,22 @@ describe RuboCop::Cop::Performance::HashEachMethods do
   end
 
   it 'auto-corrects Hash#keys.each with Hash#each_key' do
-    new_source = autocorrect_source(cop, 'hash.keys.each { |k| p k }')
+    new_source = autocorrect_source('hash.keys.each { |k| p k }')
     expect(new_source).to eq('hash.each_key { |k| p k }')
   end
 
   it 'auto-corrects Hash#values.each with Hash#each_value' do
-    new_source = autocorrect_source(cop, 'hash.values.each { |v| p v }')
+    new_source = autocorrect_source('hash.values.each { |v| p v }')
     expect(new_source).to eq('hash.each_value { |v| p v }')
   end
 
   it 'auto-corrects Hash#each with unused value argument with Hash#each_key' do
-    new_source = autocorrect_source(cop, 'hash.each { |k, _v| p k }')
+    new_source = autocorrect_source('hash.each { |k, _v| p k }')
     expect(new_source).to eq('hash.each_key { |k| p k }')
   end
 
   it 'auto-corrects Hash#each with unused key argument with Hash#each_value' do
-    new_source = autocorrect_source(cop, 'hash.each { |_k, v| p v }')
+    new_source = autocorrect_source('hash.each { |_k, v| p v }')
     expect(new_source).to eq('hash.each_value { |v| p v }')
   end
 end

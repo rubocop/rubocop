@@ -12,7 +12,7 @@ describe RuboCop::Cop::Style::RedundantParentheses do
     end
 
     it 'auto-corrects' do
-      expect(autocorrect_source(cop, expr)).to eq correct
+      expect(autocorrect_source(expr)).to eq correct
     end
   end
 

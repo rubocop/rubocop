@@ -32,7 +32,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
         end
 
         it 'autocorrects the offenses' do
-          new_source = autocorrect_source(cop, source)
+          new_source = autocorrect_source(source)
           expect(new_source).to eq(<<-RUBY.strip_indent)
             #{type} SomeObject
 
@@ -72,7 +72,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
           end
 
           it 'autocorrects the offenses' do
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
             expect(new_source).to eq(<<-RUBY.strip_indent)
               #{type} Parent
                 #{type} SomeObject
@@ -103,7 +103,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
           end
 
           it 'autocorrects the offenses' do
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
             expect(new_source).to eq(<<-RUBY.strip_indent)
               #{type} Parent
                 #{type} SomeObject
@@ -150,7 +150,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
         end
 
         it 'autocorrects the offenses' do
-          new_source = autocorrect_source(cop, source)
+          new_source = autocorrect_source(source)
           expect(new_source).to eq(<<-RUBY.strip_indent)
             #{type} SomeObject
               include Something
@@ -180,7 +180,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
         end
 
         it 'autocorrects the offenses' do
-          new_source = autocorrect_source(cop, source)
+          new_source = autocorrect_source(source)
           expect(new_source).to eq(<<-RUBY.strip_indent)
             #{type} SomeObject
               include Something
@@ -211,7 +211,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
         end
 
         it 'autocorrects the offenses' do
-          new_source = autocorrect_source(cop, source)
+          new_source = autocorrect_source(source)
           expect(new_source).to eq(<<-RUBY.strip_indent)
             #{type} SomeObject
               include Something
@@ -256,7 +256,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
           end
 
           it 'autocorrects the offenses' do
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
             expect(new_source).to eq(<<-RUBY.strip_indent)
               #{type} Parent
                 #{type} SomeObject
@@ -290,7 +290,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
           end
 
           it 'autocorrects the offenses' do
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
             expect(new_source).to eq(<<-RUBY.strip_indent)
               #{type} Parent
                 #{type} SomeObject
@@ -319,7 +319,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
           end
 
           it 'autocorrects the offenses' do
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
             expect(new_source).to eq(<<-RUBY.strip_indent)
               #{type} Parent
                 #{type} SomeObject
@@ -370,7 +370,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
       end
 
       it 'autocorrects the offenses' do
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq(<<-RUBY.strip_indent)
           #{type} Parent
             #{type} SomeObject
@@ -404,7 +404,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
       end
 
       it 'autocorrects the offenses' do
-        new_source = autocorrect_source(cop, source)
+        new_source = autocorrect_source(source)
         expect(new_source).to eq(<<-RUBY.strip_indent)
           #{type} Parent
             URL = %q(http://example.com)

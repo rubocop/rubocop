@@ -114,7 +114,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
   describe 'autocorrect' do
     it 'corrects when the number of left hand variables matches ' \
       'the number of right hand variables' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           a, b, c = 1, 2, 3
         RUBY
 
@@ -126,7 +126,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
       end
 
     it 'corrects when the right variable is an array' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         a, b, c = ["1", "2", :c]
       RUBY
 
@@ -138,7 +138,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects when the right variable is a word array' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         a, b, c = %w(1 2 3)
       RUBY
 
@@ -150,7 +150,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects when the right variable is a symbol array' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         a, b, c = %i(a b c)
       RUBY
 
@@ -162,7 +162,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects when assigning to method returns' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         a, b = foo(), bar()
       RUBY
 
@@ -173,7 +173,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects when assigning from multiple methods with blocks' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         a, b = foo() { |c| puts c }, bar() { |d| puts d }
       RUBY
 
@@ -184,7 +184,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects when using constants' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         CONSTANT1, CONSTANT2 = CONSTANT3, CONSTANT4
       RUBY
 
@@ -195,7 +195,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects when the expression is missing spaces' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         a,b,c=1,2,3
       RUBY
 
@@ -207,7 +207,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects when using single indentation' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         def foo
           a, b, c = 1, 2, 3
         end
@@ -223,7 +223,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects when using nested indentation' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         def foo
           if true
             a, b, c = 1, 2, 3
@@ -243,7 +243,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects when the expression uses a modifier if statement' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         a, b = 1, 2 if foo
       RUBY
 
@@ -257,7 +257,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
 
     it 'corrects when the expression uses a modifier if statement ' \
        'inside a method' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         def foo
           a, b = 1, 2 if foo
         end
@@ -274,7 +274,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects parallel assignment in if statements' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         if foo
           a, b = 1, 2
         end
@@ -289,7 +289,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects when the expression uses a modifier unless statement' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         a, b = 1, 2 unless foo
       RUBY
 
@@ -302,7 +302,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects parallel assignment in unless statements' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         unless foo
           a, b = 1, 2
         end
@@ -317,7 +317,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects when the expression uses a modifier while statement' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         a, b = 1, 2 while foo
       RUBY
 
@@ -330,7 +330,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects parallel assignment in while statements' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         while foo
           a, b = 1, 2
         end
@@ -345,7 +345,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects when the expression uses a modifier until statement' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         a, b = 1, 2 until foo
       RUBY
 
@@ -358,7 +358,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects parallel assignment in until statements' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         until foo
           a, b = 1, 2
         end
@@ -373,7 +373,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects when the expression uses a modifier rescue statement' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         a, b = 1, 2 rescue foo
       RUBY
 
@@ -389,7 +389,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
 
     it 'corrects parallel assignment inside rescue statements '\
        'within method definitions' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         def bar
           a, b = 1, 2
         rescue
@@ -409,7 +409,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
 
     it 'corrects parallel assignment in rescue statements '\
        'within begin ... rescue' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         begin
           a, b = 1, 2
         rescue
@@ -429,7 +429,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
 
     it 'corrects when the expression uses a modifier rescue statement ' \
        'as the only thing inside of a method' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         def foo
           a, b = 1, 2 rescue foo
         end
@@ -447,7 +447,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
 
     it 'corrects when the expression uses a modifier rescue statement ' \
        'inside of a method' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         def foo
           a, b = %w(1 2) rescue foo
           something_else
@@ -469,7 +469,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
 
     it 'corrects when assignments must be reordered to avoid changing ' \
        'meaning' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         a, b, c, d = 1, a + 1, b + 1, a + b + c
       RUBY
 
@@ -484,7 +484,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
     shared_examples('no correction') do |description, source|
       context description do
         it "does not change: #{source.gsub(/\s*\n\s*/, '; ')}" do
-          new_source = autocorrect_source(cop, source)
+          new_source = autocorrect_source(source)
           expect(new_source).to eq(source)
         end
       end
@@ -516,7 +516,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
       end
 
       it 'works with standard correction' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           a, b, c = 1, 2, 3
         RUBY
 
@@ -528,7 +528,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
       end
 
       it 'works with guard clauses' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           a, b = 1, 2 if foo
         RUBY
 
@@ -541,7 +541,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
       end
 
       it 'works with rescue' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           a, b = 1, 2 rescue foo
         RUBY
 
@@ -556,7 +556,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
       end
 
       it 'works with nesting' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           def foo
              if true
                 a, b, c = 1, 2, 3

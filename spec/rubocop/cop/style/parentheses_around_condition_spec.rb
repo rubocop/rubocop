@@ -35,7 +35,7 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
   end
 
   it 'auto-corrects parentheses around condition' do
-    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
       if (x > 10)
       elsif (x < 3)
       end

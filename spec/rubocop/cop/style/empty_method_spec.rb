@@ -18,11 +18,11 @@ describe RuboCop::Cop::Style::EmptyMethod, :config do
 
       if expected
         it 'auto-corrects' do
-          expect(autocorrect_source(cop, code)).to eq(expected)
+          expect(autocorrect_source(code)).to eq(expected)
         end
       else
         it 'does not auto-correct' do
-          expect(autocorrect_source(cop, code)).to eq(code)
+          expect(autocorrect_source(code)).to eq(code)
         end
       end
     end

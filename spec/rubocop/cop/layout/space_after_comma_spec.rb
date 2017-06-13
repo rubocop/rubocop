@@ -16,7 +16,7 @@ describe RuboCop::Cop::Layout::SpaceAfterComma do
     end
 
     it 'does auto-correction' do
-      new_source = autocorrect_source(cop, source.call(items))
+      new_source = autocorrect_source(source.call(items))
       expect(new_source).to eq source.call(correct_items)
     end
   end

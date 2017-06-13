@@ -87,7 +87,7 @@ describe RuboCop::Cop::Style::Semicolon, :config do
 
   it 'auto-corrects semicolons when syntactically possible' do
     corrected =
-      autocorrect_source(cop, <<-RUBY.strip_indent)
+      autocorrect_source(<<-RUBY.strip_indent)
         module Foo; end;
         puts "this is a test";
         puts "this is a test"; puts "So is this"

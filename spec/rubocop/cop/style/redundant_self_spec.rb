@@ -193,7 +193,7 @@ describe RuboCop::Cop::Style::RedundantSelf do
   end
 
   it 'auto-corrects by removing redundant self' do
-    new_source = autocorrect_source(cop, 'self.x')
+    new_source = autocorrect_source('self.x')
     expect(new_source).to eq('x')
   end
 end

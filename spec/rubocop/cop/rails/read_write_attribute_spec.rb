@@ -35,28 +35,28 @@ describe RuboCop::Cop::Rails::ReadWriteAttribute do
         source = 'write_attribute(:attr, var)'
         corrected_source = 'self[:attr] = var'
 
-        expect(autocorrect_source(cop, source)).to eq(corrected_source)
+        expect(autocorrect_source(source)).to eq(corrected_source)
       end
 
       it 'autocorrects string' do
         source = "write_attribute('attr', 'test')"
         corrected_source = "self['attr'] = 'test'"
 
-        expect(autocorrect_source(cop, source)).to eq(corrected_source)
+        expect(autocorrect_source(source)).to eq(corrected_source)
       end
 
       it 'autocorrects without parentheses' do
         source = "write_attribute 'attr', 'test'"
         corrected_source = "self['attr'] = 'test'"
 
-        expect(autocorrect_source(cop, source)).to eq(corrected_source)
+        expect(autocorrect_source(source)).to eq(corrected_source)
       end
 
       it 'autocorrects expression' do
         source = "write_attribute(:attr, 'test_' + postfix)"
         corrected_source = "self[:attr] = 'test_' + postfix"
 
-        expect(autocorrect_source(cop, source)).to eq(corrected_source)
+        expect(autocorrect_source(source)).to eq(corrected_source)
       end
 
       it 'autocorrects multiline' do
@@ -75,7 +75,7 @@ describe RuboCop::Cop::Rails::ReadWriteAttribute do
           ).to_sym
         RUBY
 
-        expect(autocorrect_source(cop, source)).to eq(corrected_source)
+        expect(autocorrect_source(source)).to eq(corrected_source)
       end
     end
 
@@ -84,28 +84,28 @@ describe RuboCop::Cop::Rails::ReadWriteAttribute do
         source = 'res = read_attribute(:test)'
         corrected_source = 'res = self[:test]'
 
-        expect(autocorrect_source(cop, source)).to eq(corrected_source)
+        expect(autocorrect_source(source)).to eq(corrected_source)
       end
 
       it 'autocorrects string' do
         source = "res = read_attribute('test')"
         corrected_source = "res = self['test']"
 
-        expect(autocorrect_source(cop, source)).to eq(corrected_source)
+        expect(autocorrect_source(source)).to eq(corrected_source)
       end
 
       it 'autocorrects without parentheses' do
         source = "res = read_attribute 'test'"
         corrected_source = "res = self['test']"
 
-        expect(autocorrect_source(cop, source)).to eq(corrected_source)
+        expect(autocorrect_source(source)).to eq(corrected_source)
       end
 
       it 'autocorrects expression' do
         source = "res = read_attribute('test_' + postfix)"
         corrected_source = "res = self['test_' + postfix]"
 
-        expect(autocorrect_source(cop, source)).to eq(corrected_source)
+        expect(autocorrect_source(source)).to eq(corrected_source)
       end
 
       it 'autocorrects multiline' do
@@ -122,7 +122,7 @@ describe RuboCop::Cop::Rails::ReadWriteAttribute do
           ).to_sym]
         RUBY
 
-        expect(autocorrect_source(cop, source)).to eq(corrected_source)
+        expect(autocorrect_source(source)).to eq(corrected_source)
       end
     end
   end

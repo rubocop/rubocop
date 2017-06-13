@@ -64,7 +64,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
           end
 
           it 'does auto-correction' do
-            corrected = autocorrect_source(cop, source)
+            corrected = autocorrect_source(source)
             expect(corrected).to eq correct_source
           end
         end
@@ -99,7 +99,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
           end
 
           it 'does auto-correction' do
-            corrected = autocorrect_source(cop, source)
+            corrected = autocorrect_source(source)
             expect(corrected).to eq correct_source
           end
         end
@@ -146,7 +146,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
           end
 
           it 'does auto-correction' do
-            corrected = autocorrect_source(cop, source)
+            corrected = autocorrect_source(source)
             expect(corrected).to eq(correct_source)
           end
         end
@@ -180,7 +180,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
         end
 
         it 'does auto-correction' do
-          corrected = autocorrect_source(cop, source)
+          corrected = autocorrect_source(source)
           expect(corrected).to eq(<<-RUBY.strip_indent)
             case a
             when 0 then return
@@ -313,7 +313,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
           end
 
           it 'does auto-correction' do
-            corrected = autocorrect_source(cop, source)
+            corrected = autocorrect_source(source)
             expect(corrected).to eq correct_source
           end
         end
@@ -370,7 +370,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
         end
 
         it 'does auto-correction' do
-          corrected = autocorrect_source(cop, source)
+          corrected = autocorrect_source(source)
           expect(corrected).to eq(<<-RUBY.strip_indent)
             y = case a
                   when 0 then break
@@ -470,7 +470,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
           end
 
           it 'does auto-correction' do
-            corrected = autocorrect_source(cop, source)
+            corrected = autocorrect_source(source)
             expect(corrected).to eq correct_source
           end
         end
@@ -532,7 +532,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
           end
 
           it 'does auto-correction' do
-            corrected = autocorrect_source(cop, source)
+            corrected = autocorrect_source(source)
             expect(corrected).to eq correct_source
           end
         end
@@ -568,7 +568,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
           end
 
           it 'does auto-correction' do
-            corrected = autocorrect_source(cop, source)
+            corrected = autocorrect_source(source)
             expect(corrected).to eq correct_source
           end
         end
@@ -594,7 +594,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
     end
 
     it "doesn't auto-correct" do
-      expect(autocorrect_source(cop, source))
+      expect(autocorrect_source(source))
         .to eq(source)
       expect(cop.offenses.map(&:corrected?)).to eq [false]
     end

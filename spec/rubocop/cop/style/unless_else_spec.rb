@@ -20,7 +20,7 @@ describe RuboCop::Cop::Style::UnlessElse do
     end
 
     it 'auto-corrects' do
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq(<<-RUBY.strip_indent)
         if x # positive 1
           a = 0 # positive 2
@@ -54,7 +54,7 @@ describe RuboCop::Cop::Style::UnlessElse do
     end
 
     it 'auto-corrects' do
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq(<<-RUBY.strip_indent)
         if(x)
           a = 3

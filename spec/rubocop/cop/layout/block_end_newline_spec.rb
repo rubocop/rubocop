@@ -39,7 +39,7 @@ describe RuboCop::Cop::Layout::BlockEndNewline do
         foo end
     RUBY
 
-    new_source = autocorrect_source(cop, src)
+    new_source = autocorrect_source(src)
 
     expect(new_source).to eq(['test do',
                               '  foo ',
@@ -53,7 +53,7 @@ describe RuboCop::Cop::Layout::BlockEndNewline do
         foo }
     RUBY
 
-    new_source = autocorrect_source(cop, src)
+    new_source = autocorrect_source(src)
 
     expect(new_source).to eq(['test {',
                               '  foo ',

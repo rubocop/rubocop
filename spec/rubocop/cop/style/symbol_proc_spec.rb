@@ -76,24 +76,24 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
     end
 
     it 'auto-corrects' do
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq 'method(one, 2, &:test)'
     end
   end
 
   it 'autocorrects alias with symbols as proc' do
-    corrected = autocorrect_source(cop, ['coll.map { |s| s.upcase }'])
+    corrected = autocorrect_source(['coll.map { |s| s.upcase }'])
     expect(corrected).to eq 'coll.map(&:upcase)'
   end
 
   it 'autocorrects multiple aliases with symbols as proc' do
-    corrected = autocorrect_source(cop, ['coll.map { |s| s.upcase }' \
+    corrected = autocorrect_source(['coll.map { |s| s.upcase }' \
                                          '.map { |s| s.downcase }'])
     expect(corrected).to eq 'coll.map(&:upcase).map(&:downcase)'
   end
 
   it 'auto-corrects correctly when there are no arguments in parentheses' do
-    corrected = autocorrect_source(cop, ['coll.map(   ) { |s| s.upcase }'])
+    corrected = autocorrect_source(['coll.map(   ) { |s| s.upcase }'])
     expect(corrected).to eq 'coll.map(&:upcase)'
   end
 
@@ -113,7 +113,7 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
     end
 
     it 'auto-corrects' do
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq 'super(one, two, &:test)'
     end
   end
@@ -129,13 +129,13 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
     end
 
     it 'auto-corrects' do
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq 'super(&:test)'
     end
   end
 
   it 'auto-corrects correctly when args have a trailing comma' do
-    corrected = autocorrect_source(cop, <<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
       mail(
         to: 'foo',
         subject: 'bar',

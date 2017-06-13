@@ -246,22 +246,22 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
   context 'auto-correct' do
     it 'fixes a string' do
-      new_source = autocorrect_source(cop, '%(string)')
+      new_source = autocorrect_source('%(string)')
       expect(new_source).to eq('%[string]')
     end
 
     it 'fixes a string with no content' do
-      new_source = autocorrect_source(cop, '%()')
+      new_source = autocorrect_source('%()')
       expect(new_source).to eq('%[]')
     end
 
     it 'fixes a string array' do
-      new_source = autocorrect_source(cop, '%w(some words)')
+      new_source = autocorrect_source('%w(some words)')
       expect(new_source).to eq('%w[some words]')
     end
 
     it 'fixes a string array in a scope' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         module Foo
            class Bar
              def baz
@@ -283,30 +283,30 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
     it 'fixes a regular expression' do
       original_source = '%r(.*)'
-      new_source = autocorrect_source(cop, original_source)
+      new_source = autocorrect_source(original_source)
       expect(new_source).to eq('%r[.*]')
     end
 
     it 'fixes a string with interpolation' do
       original_source = '%Q|#{with_interpolation}|'
-      new_source = autocorrect_source(cop, original_source)
+      new_source = autocorrect_source(original_source)
       expect(new_source).to eq('%Q[#{with_interpolation}]')
     end
 
     it 'fixes a regular expression with interpolation' do
       original_source = '%r|#{with_interpolation}|'
-      new_source = autocorrect_source(cop, original_source)
+      new_source = autocorrect_source(original_source)
       expect(new_source).to eq('%r[#{with_interpolation}]')
     end
 
     it 'fixes a regular expression with option' do
       original_source = '%r(.*)i'
-      new_source = autocorrect_source(cop, original_source)
+      new_source = autocorrect_source(original_source)
       expect(new_source).to eq('%r[.*]i')
     end
 
     it 'preserves line breaks when fixing a multiline array' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         %w(
         some
         words
@@ -333,7 +333,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
         |    second
         |  ]
       RUBY
-      new_source = autocorrect_source(cop, original_source)
+      new_source = autocorrect_source(original_source)
       expect(new_source).to eq(corrected_source)
     end
 
@@ -350,19 +350,19 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
           second
         ]
       RUBY
-      new_source = autocorrect_source(cop, original_source)
+      new_source = autocorrect_source(original_source)
       expect(new_source).to eq(corrected_source)
     end
 
     shared_examples :escape_characters do |percent_literal|
       it "corrects #{percent_literal} with \\n in it" do
-        new_source = autocorrect_source(cop, "#{percent_literal}{\n}")
+        new_source = autocorrect_source("#{percent_literal}{\n}")
 
         expect(new_source).to eq("#{percent_literal}[\n]")
       end
 
       it "corrects #{percent_literal} with \\t in it" do
-        new_source = autocorrect_source(cop, "#{percent_literal}{\t}")
+        new_source = autocorrect_source("#{percent_literal}{\t}")
 
         expect(new_source).to eq("#{percent_literal}[\t]")
       end

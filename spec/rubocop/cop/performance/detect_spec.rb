@@ -126,7 +126,7 @@ describe RuboCop::Cop::Performance::Detect do
           it "corrects #{method}.first to #{preferred_method} (with block)" do
             source = "[1, 2, 3].#{method} { |i| i % 2 == 0 }.first"
 
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source)
               .to eq("[1, 2, 3].#{preferred_method} { |i| i % 2 == 0 }")
@@ -136,7 +136,7 @@ describe RuboCop::Cop::Performance::Detect do
              '(with block)' do
             source = "[1, 2, 3].#{method} { |i| i % 2 == 0 }.last"
 
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source)
               .to eq("[1, 2, 3].reverse.#{preferred_method} { |i| i % 2 == 0 }")
@@ -145,7 +145,7 @@ describe RuboCop::Cop::Performance::Detect do
           it "corrects #{method}.first to #{preferred_method} (short syntax)" do
             source = "[1, 2, 3].#{method}(&:even?).first"
 
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq("[1, 2, 3].#{preferred_method}(&:even?)")
           end
@@ -154,7 +154,7 @@ describe RuboCop::Cop::Performance::Detect do
              '(short syntax)' do
             source = "[1, 2, 3].#{method}(&:even?).last"
 
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source)
               .to eq("[1, 2, 3].reverse.#{preferred_method}(&:even?)")
@@ -166,7 +166,7 @@ describe RuboCop::Cop::Performance::Detect do
                 i % 2 == 0
               end.first
             RUBY
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source).to eq(<<-RUBY.strip_indent)
               [1, 2, 3].#{preferred_method} do |i|
@@ -182,7 +182,7 @@ describe RuboCop::Cop::Performance::Detect do
                 i % 2 == 0
               end.last
             RUBY
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source)
               .to eq(<<-RUBY.strip_indent)
@@ -198,7 +198,7 @@ describe RuboCop::Cop::Performance::Detect do
               [1, 2, 3].#{method} { true }
               .first['x']
             RUBY
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source)
               .to eq("[1, 2, 3].#{preferred_method} { true }['x']\n")
@@ -210,7 +210,7 @@ describe RuboCop::Cop::Performance::Detect do
               [1, 2, 3].#{method}(&:blank?)
               .first['x']
             RUBY
-            new_source = autocorrect_source(cop, source)
+            new_source = autocorrect_source(source)
 
             expect(new_source)
               .to eq("[1, 2, 3].#{preferred_method}(&:blank?)['x']\n")

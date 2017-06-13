@@ -72,7 +72,7 @@ describe RuboCop::Cop::Rails::ApplicationJob do
       inspect_source(source)
       expect(cop.messages).to eq(msgs)
       expect(cop.highlights).to eq(['ActiveJob::Base'])
-      expect(autocorrect_source(cop, source))
+      expect(autocorrect_source(source))
         .to eq("class MyJob < ApplicationJob\nend")
     end
 
@@ -81,7 +81,7 @@ describe RuboCop::Cop::Rails::ApplicationJob do
       inspect_source(source)
       expect(cop.messages).to eq(msgs)
       expect(cop.highlights).to eq(['ActiveJob::Base'])
-      expect(autocorrect_source(cop, source))
+      expect(autocorrect_source(source))
         .to eq('class MyJob < ApplicationJob; end')
     end
 
@@ -90,7 +90,7 @@ describe RuboCop::Cop::Rails::ApplicationJob do
       inspect_source(source)
       expect(cop.messages).to eq(msgs)
       expect(cop.highlights).to eq(['ActiveJob::Base'])
-      expect(autocorrect_source(cop, source))
+      expect(autocorrect_source(source))
         .to eq("module Nested\n  class MyJob < ApplicationJob\n  end\nend")
     end
 
@@ -99,7 +99,7 @@ describe RuboCop::Cop::Rails::ApplicationJob do
       inspect_source(source)
       expect(cop.messages).to eq(msgs)
       expect(cop.highlights).to eq(['ActiveJob::Base'])
-      expect(autocorrect_source(cop, source))
+      expect(autocorrect_source(source))
         .to eq("class Nested::MyJob < ApplicationJob\nend")
     end
 
@@ -108,7 +108,7 @@ describe RuboCop::Cop::Rails::ApplicationJob do
       inspect_source(source)
       expect(cop.messages).to eq(msgs)
       expect(cop.highlights).to eq(['ActiveJob::Base'])
-      expect(autocorrect_source(cop, source))
+      expect(autocorrect_source(source))
         .to eq('MyJob = Class.new(ApplicationJob)')
     end
 
@@ -117,7 +117,7 @@ describe RuboCop::Cop::Rails::ApplicationJob do
       inspect_source(source)
       expect(cop.messages).to eq(msgs)
       expect(cop.highlights).to eq(['ActiveJob::Base'])
-      expect(autocorrect_source(cop, source))
+      expect(autocorrect_source(source))
         .to eq('Nested::MyJob = Class.new(ApplicationJob)')
     end
 
@@ -126,7 +126,7 @@ describe RuboCop::Cop::Rails::ApplicationJob do
       inspect_source(source)
       expect(cop.messages).to eq(msgs)
       expect(cop.highlights).to eq(['ActiveJob::Base'])
-      expect(autocorrect_source(cop, source))
+      expect(autocorrect_source(source))
         .to eq('Class.new(ApplicationJob) {}')
     end
 

@@ -46,17 +46,17 @@ describe RuboCop::Cop::Style::MethodDefParentheses, :config do
     end
 
     it 'auto-adds required parens for a def' do
-      new_source = autocorrect_source(cop, 'def test param; end')
+      new_source = autocorrect_source('def test param; end')
       expect(new_source).to eq('def test(param); end')
     end
 
     it 'auto-adds required parens for a defs' do
-      new_source = autocorrect_source(cop, 'def self.test param; end')
+      new_source = autocorrect_source('def self.test param; end')
       expect(new_source).to eq('def self.test(param); end')
     end
 
     it 'auto-adds required parens to argument lists on multiple lines' do
-      new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
         def test one,
         two
         end
@@ -142,12 +142,12 @@ describe RuboCop::Cop::Style::MethodDefParentheses, :config do
     end
 
     it 'auto-removes the parens' do
-      new_source = autocorrect_source(cop, 'def test(param); end')
+      new_source = autocorrect_source('def test(param); end')
       expect(new_source).to eq('def test param; end')
     end
 
     it 'auto-removes the parens for defs' do
-      new_source = autocorrect_source(cop, 'def self.test(param); end')
+      new_source = autocorrect_source('def self.test(param); end')
       expect(new_source).to eq('def self.test param; end')
     end
   end
@@ -183,7 +183,7 @@ describe RuboCop::Cop::Style::MethodDefParentheses, :config do
       end
 
       it 'auto-adds required parens to argument lists on multiple lines' do
-        new_source = autocorrect_source(cop, <<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           def test one,
           two
           end

@@ -64,23 +64,23 @@ describe RuboCop::Cop::Style::NonNilCheck, :config do
     end
 
     it 'autocorrects by changing `!= nil` to `!x.nil?`' do
-      corrected = autocorrect_source(cop, 'x != nil')
+      corrected = autocorrect_source('x != nil')
       expect(corrected).to eq '!x.nil?'
     end
 
     it 'does not autocorrect by removing non-nil (!x.nil?) check' do
-      corrected = autocorrect_source(cop, '!x.nil?')
+      corrected = autocorrect_source('!x.nil?')
       expect(corrected).to eq '!x.nil?'
     end
 
     it 'does not blow up when autocorrecting implicit receiver' do
-      corrected = autocorrect_source(cop, '!nil?')
+      corrected = autocorrect_source('!nil?')
       expect(corrected).to eq '!nil?'
     end
 
     it 'does not report corrected when the code was not modified' do
       source = 'return nil unless (line =~ //) != nil'
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
 
       expect(corrected).to eq(source)
       expect(cop.corrections).to be_empty
@@ -130,29 +130,28 @@ describe RuboCop::Cop::Style::NonNilCheck, :config do
     end
 
     it 'autocorrects by changing unless x.nil? to if x' do
-      corrected = autocorrect_source(cop, 'puts a unless x.nil?')
+      corrected = autocorrect_source('puts a unless x.nil?')
       expect(corrected).to eq 'puts a if x'
     end
 
     it 'autocorrects by changing `x != nil` to `x`' do
-      corrected = autocorrect_source(cop, 'x != nil')
+      corrected = autocorrect_source('x != nil')
       expect(corrected).to eq 'x'
     end
 
     it 'autocorrects by changing `!x.nil?` to `x`' do
-      corrected = autocorrect_source(cop, '!x.nil?')
+      corrected = autocorrect_source('!x.nil?')
       expect(corrected).to eq 'x'
     end
 
     it 'does not blow up when autocorrecting implicit receiver' do
-      corrected = autocorrect_source(cop, '!nil?')
+      corrected = autocorrect_source('!nil?')
       expect(corrected).to eq 'self'
     end
 
     it 'corrects code that would not be modified if ' \
        'IncludeSemanticChanges were false' do
-      corrected = autocorrect_source(cop,
-                                     'return nil unless (line =~ //) != nil')
+      corrected = autocorrect_source('return nil unless (line =~ //) != nil')
 
       expect(corrected).to eq('return nil unless (line =~ //)')
     end

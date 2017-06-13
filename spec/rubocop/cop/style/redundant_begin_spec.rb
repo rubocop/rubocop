@@ -84,7 +84,7 @@ describe RuboCop::Cop::Style::RedundantBegin do
                   '    ',
                   '  end',
                   ''].join("\n")
-    new_source = autocorrect_source(cop, src)
+    new_source = autocorrect_source(src)
     expect(new_source).to eq(result_src)
   end
 
@@ -92,7 +92,7 @@ describe RuboCop::Cop::Style::RedundantBegin do
      'by removing redundant begin blocks' do
     src = '  def func; begin; x; y; rescue; z end end'
     result_src = '  def func; ; x; y; rescue; z  end'
-    new_source = autocorrect_source(cop, src)
+    new_source = autocorrect_source(src)
     expect(new_source).to eq(result_src)
   end
 
@@ -129,7 +129,7 @@ describe RuboCop::Cop::Style::RedundantBegin do
                   '  ',
                   'end',
                   ''].join("\n")
-    new_source = autocorrect_source(cop, src)
+    new_source = autocorrect_source(src)
     expect(new_source).to eq(result_src)
   end
 
@@ -150,7 +150,7 @@ describe RuboCop::Cop::Style::RedundantBegin do
          # comment 3
       end
     RUBY
-    new_source = autocorrect_source(cop, src)
+    new_source = autocorrect_source(src)
     expect(new_source).to eq(result_src)
   end
 end

@@ -18,8 +18,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
       end
 
       it 'autocorrects block body containing only a blank' do
-        corrected = autocorrect_source(cop,
-                                       ["some_method #{open}",
+        corrected = autocorrect_source(["some_method #{open}",
                                         '',
                                         close])
         expect(corrected).to eq ["some_method #{open}",
@@ -67,13 +66,12 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
 
       it 'ignores block with an empty body' do
         source = "some_method #{open}\n#{close}"
-        corrected = autocorrect_source(cop, source)
+        corrected = autocorrect_source(source)
         expect(corrected).to eq(source)
       end
 
       it 'autocorrects beginning and end' do
-        new_source = autocorrect_source(cop,
-                                        ["some_method #{open}",
+        new_source = autocorrect_source(["some_method #{open}",
                                          '  do_something',
                                          close])
         expect(new_source).to eq(["some_method #{open}",

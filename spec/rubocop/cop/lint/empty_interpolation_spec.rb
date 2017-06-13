@@ -22,12 +22,12 @@ describe RuboCop::Cop::Lint::EmptyInterpolation do
   end
 
   it 'autocorrects empty interpolation' do
-    new_source = autocorrect_source(cop, '"this is the #{}"')
+    new_source = autocorrect_source('"this is the #{}"')
     expect(new_source).to eq('"this is the "')
   end
 
   it 'autocorrects empty interpolation containing a space' do
-    new_source = autocorrect_source(cop, '"this is the #{ }"')
+    new_source = autocorrect_source('"this is the #{ }"')
     expect(new_source).to eq('"this is the "')
   end
 end

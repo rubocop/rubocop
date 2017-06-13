@@ -15,7 +15,7 @@ describe RuboCop::Cop::Style::CommentAnnotation, :config do
     end
 
     it 'autocorrects' do
-      corrected = autocorrect_source(cop, '# TODO make better')
+      corrected = autocorrect_source('# TODO make better')
       expect(corrected).to eq('# TODO: make better')
     end
   end
@@ -31,7 +31,7 @@ describe RuboCop::Cop::Style::CommentAnnotation, :config do
     end
 
     it 'autocorrects a missing colon after keyword' do
-      corrected = autocorrect_source(cop, '# ISSUE wrong order')
+      corrected = autocorrect_source('# ISSUE wrong order')
       expect(corrected).to eq('# ISSUE: wrong order')
     end
   end
@@ -45,7 +45,7 @@ describe RuboCop::Cop::Style::CommentAnnotation, :config do
     end
 
     it 'autocorrects' do
-      corrected = autocorrect_source(cop, '# TODO:make better')
+      corrected = autocorrect_source('# TODO:make better')
       expect(corrected).to eq('# TODO: make better')
     end
   end
@@ -59,7 +59,7 @@ describe RuboCop::Cop::Style::CommentAnnotation, :config do
     end
 
     it 'autocorrects' do
-      corrected = autocorrect_source(cop, '# fixme: does not work')
+      corrected = autocorrect_source('# fixme: does not work')
       expect(corrected).to eq('# FIXME: does not work')
     end
   end
@@ -73,7 +73,7 @@ describe RuboCop::Cop::Style::CommentAnnotation, :config do
     end
 
     it 'autocorrects' do
-      corrected = autocorrect_source(cop, '# Optimize: does not work')
+      corrected = autocorrect_source('# Optimize: does not work')
       expect(corrected).to eq('# OPTIMIZE: does not work')
     end
   end
@@ -88,7 +88,7 @@ describe RuboCop::Cop::Style::CommentAnnotation, :config do
 
     it 'does not autocorrects' do
       source = '# HACK:'
-      corrected = autocorrect_source(cop, source)
+      corrected = autocorrect_source(source)
       expect(corrected).to eq(source)
     end
   end

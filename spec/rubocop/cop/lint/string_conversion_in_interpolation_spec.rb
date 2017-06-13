@@ -37,12 +37,12 @@ describe RuboCop::Cop::Lint::StringConversionInInterpolation do
   end
 
   it 'autocorrects by removing the redundant to_s' do
-    corrected = autocorrect_source(cop, ['"some #{something.to_s}"'])
+    corrected = autocorrect_source(['"some #{something.to_s}"'])
     expect(corrected).to eq '"some #{something}"'
   end
 
   it 'autocorrects implicit receiver by replacing to_s with self' do
-    corrected = autocorrect_source(cop, ['"some #{to_s}"'])
+    corrected = autocorrect_source(['"some #{to_s}"'])
     expect(corrected).to eq '"some #{self}"'
   end
 end

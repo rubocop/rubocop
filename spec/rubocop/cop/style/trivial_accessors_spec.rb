@@ -385,7 +385,7 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
       let(:corrected_source) { "attr_reader :foo\n" }
 
       it 'autocorrects' do
-        expect(autocorrect_source(cop, source)).to eq(corrected_source)
+        expect(autocorrect_source(source)).to eq(corrected_source)
       end
     end
 
@@ -401,7 +401,7 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
       end
 
       it 'does not autocorrect' do
-        expect(autocorrect_source(cop, source)).to eq(source)
+        expect(autocorrect_source(source)).to eq(source)
         expect(cop.offenses.map(&:corrected?)).to eq [false]
       end
     end
@@ -417,7 +417,7 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
       end
 
       it 'does not autocorrect' do
-        expect(autocorrect_source(cop, source)).to eq(source)
+        expect(autocorrect_source(source)).to eq(source)
         expect(cop.offenses.map(&:corrected?)).to eq [false]
       end
     end
@@ -428,7 +428,7 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
       let(:corrected_source) { "attr_writer :foo\n" }
 
       it 'autocorrects' do
-        expect(autocorrect_source(cop, source)).to eq(corrected_source)
+        expect(autocorrect_source(source)).to eq(corrected_source)
       end
     end
 
@@ -442,7 +442,7 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
       end
 
       it 'does not autocorrect' do
-        expect(autocorrect_source(cop, source)).to eq(source)
+        expect(autocorrect_source(source)).to eq(source)
         expect(cop.offenses.map(&:corrected?)).to eq [false]
       end
     end
@@ -457,7 +457,7 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
       end
 
       it 'does not autocorrect' do
-        expect(autocorrect_source(cop, source)).to eq(source)
+        expect(autocorrect_source(source)).to eq(source)
         expect(cop.offenses.map(&:corrected?)).to eq [false]
       end
     end
@@ -484,7 +484,7 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
       end
 
       it 'autocorrects with class-level attr_reader' do
-        expect(autocorrect_source(cop, source)).to eq(corrected_source)
+        expect(autocorrect_source(source)).to eq(corrected_source)
       end
     end
 
@@ -510,7 +510,7 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
       end
 
       it 'autocorrects with class-level attr_writer' do
-        expect(autocorrect_source(cop, source)).to eq(corrected_source)
+        expect(autocorrect_source(source)).to eq(corrected_source)
       end
     end
   end
