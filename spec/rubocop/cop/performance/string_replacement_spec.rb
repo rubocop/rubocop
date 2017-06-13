@@ -10,13 +10,13 @@ describe RuboCop::Cop::Performance::StringReplacement do
   shared_examples 'accepts' do |method|
     context 'non deterministic parameters' do
       it 'accepts gsub when the length of the pattern is greater than 1' do
-        inspect_source(cop, "'abc'.#{method}('ab', 'de')")
+        inspect_source("'abc'.#{method}('ab', 'de')")
 
         expect(cop.messages).to be_empty
       end
 
       it 'accepts the first param being a variable' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           regex = /a/
           'abc'.#{method}(regex, '1')
         RUBY
@@ -25,7 +25,7 @@ describe RuboCop::Cop::Performance::StringReplacement do
       end
 
       it 'accepts the second param being a variable' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           replacement = 'e'
           'abc'.#{method}('abc', replacement)
         RUBY
@@ -34,7 +34,7 @@ describe RuboCop::Cop::Performance::StringReplacement do
       end
 
       it 'accepts the both params being a variables' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           regex = /a/
           replacement = 'e'
           'abc'.#{method}(regex, replacement)
@@ -44,19 +44,19 @@ describe RuboCop::Cop::Performance::StringReplacement do
       end
 
       it 'accepts gsub with only one param' do
-        inspect_source(cop, "'abc'.#{method}('a')")
+        inspect_source("'abc'.#{method}('a')")
 
         expect(cop.messages).to be_empty
       end
 
       it 'accepts gsub with a block' do
-        inspect_source(cop, "'abc'.#{method}('a') { |s| s.upcase } ")
+        inspect_source("'abc'.#{method}('a') { |s| s.upcase } ")
 
         expect(cop.messages).to be_empty
       end
 
       it 'accepts a pattern with string interpolation' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           foo = 'a'
           'abc'.#{method}(\"\#{foo}\", '1')
         RUBY
@@ -65,7 +65,7 @@ describe RuboCop::Cop::Performance::StringReplacement do
       end
 
       it 'accepts a replacement with string interpolation' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           foo = '1'
           'abc'.#{method}('a', \"\#{foo}\")
         RUBY
@@ -74,37 +74,37 @@ describe RuboCop::Cop::Performance::StringReplacement do
       end
 
       it 'allows empty regex literal pattern' do
-        inspect_source(cop, "'abc'.#{method}(//, '1')")
+        inspect_source("'abc'.#{method}(//, '1')")
 
         expect(cop.messages).to be_empty
       end
 
       it 'allows empty regex pattern from string' do
-        inspect_source(cop, "'abc'.#{method}(Regexp.new(''), '1')")
+        inspect_source("'abc'.#{method}(Regexp.new(''), '1')")
 
         expect(cop.messages).to be_empty
       end
 
       it 'allows empty regex pattern from regex' do
-        inspect_source(cop, "'abc'.#{method}(Regexp.new(//), '1')")
+        inspect_source("'abc'.#{method}(Regexp.new(//), '1')")
 
         expect(cop.messages).to be_empty
       end
 
       it 'allows regex literals with options' do
-        inspect_source(cop, "'abc'.#{method}(/a/i, '1')")
+        inspect_source("'abc'.#{method}(/a/i, '1')")
 
         expect(cop.messages).to be_empty
       end
 
       it 'allows regex with options' do
-        inspect_source(cop, "'abc'.#{method}(Regexp.new(/a/i), '1')")
+        inspect_source("'abc'.#{method}(Regexp.new(/a/i), '1')")
 
         expect(cop.messages).to be_empty
       end
 
       it 'allows empty string pattern' do
-        inspect_source(cop, "'abc'.#{method}('', '1')")
+        inspect_source("'abc'.#{method}('', '1')")
 
         expect(cop.messages).to be_empty
       end
@@ -112,14 +112,14 @@ describe RuboCop::Cop::Performance::StringReplacement do
 
     it 'accepts calls to gsub when the length of the pattern is shorter than ' \
        'the length of the replacement' do
-      inspect_source(cop, "'abc'.#{method}('a', 'ab')")
+      inspect_source("'abc'.#{method}('a', 'ab')")
 
       expect(cop.messages).to be_empty
     end
 
     it 'accepts calls to gsub when the length of the pattern is longer than ' \
        'the length of the replacement' do
-      inspect_source(cop, "'abc'.#{method}('ab', 'd')")
+      inspect_source("'abc'.#{method}('ab', 'd')")
 
       expect(cop.messages).to be_empty
     end
@@ -140,25 +140,25 @@ describe RuboCop::Cop::Performance::StringReplacement do
       %w[a b c ' " % ! = < > # & ; : ` ~ 1 2 3 - _ , \r \\\\ \y \u1234
          \x65].each do |str|
         it "registers an offense when replacing #{str} with a literal" do
-          inspect_source(cop, "'abc'.gsub(/#{str}/, 'a')")
+          inspect_source("'abc'.gsub(/#{str}/, 'a')")
           expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])
         end
 
         it "registers an offense when deleting #{str}" do
-          inspect_source(cop, "'abc'.gsub(/#{str}/, '')")
+          inspect_source("'abc'.gsub(/#{str}/, '')")
           expect(cop.messages).to eq(['Use `delete` instead of `gsub`.'])
         end
       end
 
       it 'allows deterministic regex when the length of the pattern ' \
          'and the length of the replacement do not match' do
-        inspect_source(cop, %('abc'.gsub(/a/, 'def')))
+        inspect_source(%('abc'.gsub(/a/, 'def')))
 
         expect(cop.messages).to be_empty
       end
 
       it 'registers an offense when escape characters in regex' do
-        inspect_source(cop, %('abc'.gsub(/\n/, ',')))
+        inspect_source(%('abc'.gsub(/\n/, ',')))
 
         expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])
       end
@@ -268,14 +268,14 @@ describe RuboCop::Cop::Performance::StringReplacement do
 
   it 'registers an offense when the pattern has non deterministic regex ' \
      'as a string' do
-    inspect_source(cop, %('a + c'.gsub('+', '-')))
+    inspect_source(%('a + c'.gsub('+', '-')))
 
     expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])
   end
 
   it 'registers an offense when using gsub to find and replace ' \
      'a single character' do
-    inspect_source(cop, "'abc'.gsub('a', '1')")
+    inspect_source("'abc'.gsub('a', '1')")
 
     expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])
     expect(cop.highlights).to eq(["gsub('a', '1')"])
@@ -283,7 +283,7 @@ describe RuboCop::Cop::Performance::StringReplacement do
 
   it 'registers an offense when using gsub! to find and replace ' \
      'a single character ' do
-    inspect_source(cop, "'abc'.gsub!('a', '1')")
+    inspect_source("'abc'.gsub!('a', '1')")
 
     expect(cop.messages).to eq(['Use `tr!` instead of `gsub!`.'])
     expect(cop.highlights).to eq(["gsub!('a', '1')"])
@@ -297,13 +297,13 @@ describe RuboCop::Cop::Performance::StringReplacement do
   end
 
   it 'registers an offense when using escape characters in the replacement' do
-    inspect_source(cop, "'abc'.gsub('a', '\n')")
+    inspect_source("'abc'.gsub('a', '\n')")
 
     expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])
   end
 
   it 'registers an offense when using escape characters in the pattern' do
-    inspect_source(cop, "'abc'.gsub('\n', ',')")
+    inspect_source("'abc'.gsub('\n', ',')")
 
     expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])
   end

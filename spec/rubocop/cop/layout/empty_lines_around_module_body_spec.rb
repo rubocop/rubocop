@@ -13,7 +13,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'no_empty_lines' } }
 
     it 'registers an offense for module body starting with a blank' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         module SomeModule
 
           do_something
@@ -24,7 +24,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
     end
 
     it 'registers an offense for module body ending with a blank' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         module SomeModule
           do_something
 
@@ -55,7 +55,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
 
     it 'registers an offense for module body not starting or ending with a ' \
        'blank' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         module SomeModule
           do_something
         end
@@ -114,7 +114,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
       end
 
       it 'registers offence for namespace body starting with a blank' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           module Parent
 
             module Child
@@ -128,7 +128,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
       end
 
       it 'registers offence for namespace body ending with a blank' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           module Parent
             module Child
 
@@ -143,7 +143,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
 
       it 'registers offences for namespaced module body not starting '\
           'with a blank' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           module Parent
             module Child
               do_something
@@ -156,7 +156,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
 
       it 'registers offences for namespaced module body not ending '\
           'with a blank' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           module Parent
             module Child
 
@@ -201,7 +201,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
       end
 
       it 'registers offence for namespace body starting with a blank' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           module Parent
 
             class SomeClass
@@ -213,7 +213,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
       end
 
       it 'registers offence for namespace body ending with a blank' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           module Parent
             class SomeClass
               do_something
@@ -245,7 +245,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
 
       it 'registers offences for namespace body starting '\
         'and ending without a blank' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           module Parent
             module Mom
 

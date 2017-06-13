@@ -18,7 +18,7 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
       let(:indentation_width) { 2 }
 
       it 'registers an offense for an over-indented first parameter' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           run(
               :foo,
               bar: 3
@@ -31,7 +31,7 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
       end
 
       it 'registers an offense for an under-indented first parameter' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           run(
            :foo,
               bar: 3
@@ -41,7 +41,7 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
       end
 
       it 'registers an offense on lines affected by another offense' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           foo(
            bar(
             7
@@ -82,7 +82,7 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
       context 'for assignment' do
         it 'accepts a correctly indented first parameter and does not care ' \
            'about the second parameter' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             x = run(
               :foo,
                 bar: 3
@@ -101,7 +101,7 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
           end
 
           it 'registers an offense for an under-indented first parameter' do
-            inspect_source(cop, <<-RUBY.strip_indent)
+            inspect_source(<<-RUBY.strip_indent)
               @x =
                 run(
                 :foo)
@@ -129,7 +129,7 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
         end
 
         it 'registers an offense for an over-indented first parameter' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             puts x.
               merge(
                   b: 2
@@ -143,7 +143,7 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
 
         it 'accepts a correctly indented first parameter preceded by an ' \
            'empty line' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             puts x.
               merge(
 
@@ -165,7 +165,7 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
           end
 
           it 'registers an offense for an under-indented first parameter' do
-            inspect_source(cop, <<-RUBY.strip_indent)
+            inspect_source(<<-RUBY.strip_indent)
               puts x.
                 merge(
                 # comment
@@ -204,7 +204,7 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
       end
 
       it 'does not view chained call as an outer method call' do
-        inspect_source(cop, <<-'RUBY'.strip_margin('|'))
+        inspect_source(<<-'RUBY'.strip_margin('|'))
           |  A = Regexp.union(
           |    /[A-Za-z_][A-Za-z\d_]*[!?=]?/,
           |    *AST::Types::OPERATOR_METHODS.map(&:to_s)
@@ -364,7 +364,7 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
 
         it 'accepts a correctly indented first parameter with fullwidth ' \
            'characters' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             puts('Ｒｕｂｙ', f(
                                a))
           RUBY

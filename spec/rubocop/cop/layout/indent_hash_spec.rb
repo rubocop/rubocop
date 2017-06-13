@@ -26,7 +26,7 @@ describe RuboCop::Cop::Layout::IndentHash do
 
   shared_examples 'right brace' do
     it 'registers an offense for incorrectly indented }' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a << {
           }
       RUBY
@@ -57,7 +57,7 @@ describe RuboCop::Cop::Layout::IndentHash do
     end
 
     it 'registers an offense for incorrectly indented first pair with :' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a << {
                a: 1,
              aaa: 222
@@ -89,7 +89,7 @@ describe RuboCop::Cop::Layout::IndentHash do
     end
 
     it 'registers an offense for incorrectly indented first pair with =>' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a << {
            'a' => 1,
          'aaa' => 222
@@ -112,7 +112,7 @@ describe RuboCop::Cop::Layout::IndentHash do
     end
 
     it 'registers an offense for incorrectly indented first pair' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a << {
          a: 1
         }
@@ -149,7 +149,7 @@ describe RuboCop::Cop::Layout::IndentHash do
     end
 
     it 'registers an offense for incorrectly indented first pair' do
-      inspect_source(cop, <<-RUBY.strip_margin('|'))
+      inspect_source(<<-RUBY.strip_margin('|'))
         |   config.rack_cache = {
         |   :metastore => "rails:/",
         |   :entitystore => "rails:/",
@@ -163,7 +163,7 @@ describe RuboCop::Cop::Layout::IndentHash do
 
   context 'when hash is right hand side in assignment' do
     it 'registers an offense for incorrectly indented first pair' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a = {
             a: 1,
           b: 2,
@@ -279,7 +279,7 @@ describe RuboCop::Cop::Layout::IndentHash do
         end
 
         it "registers an offense for 'consistent' indentation" do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             func({
               a: 1
             })
@@ -294,7 +294,7 @@ describe RuboCop::Cop::Layout::IndentHash do
         end
 
         it "registers an offense for 'align_braces' indentation" do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             var = {
                     a: 1
                   }
@@ -364,7 +364,7 @@ describe RuboCop::Cop::Layout::IndentHash do
         end
 
         it 'registers an offense for incorrect indentation' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             func({
                    a: 1
                  })
@@ -406,7 +406,7 @@ describe RuboCop::Cop::Layout::IndentHash do
 
       it 'registers an offense for incorrectly indented multi-line hash ' \
          'with braces' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           func x, {
                  a: 1, b: 2 }
         RUBY
@@ -455,7 +455,7 @@ describe RuboCop::Cop::Layout::IndentHash do
 
     context "when 'consistent' style is used" do
       it 'registers an offense for incorrect indentation' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           func({
             a: 1
           })
@@ -484,7 +484,7 @@ describe RuboCop::Cop::Layout::IndentHash do
 
     context "when 'special_inside_parentheses' style is used" do
       it 'registers an offense for incorrect indentation' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           var = {
             a: 1
           }
@@ -502,7 +502,7 @@ describe RuboCop::Cop::Layout::IndentHash do
     end
 
     it 'registers an offense for incorrectly indented }' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a << {
           }
       RUBY

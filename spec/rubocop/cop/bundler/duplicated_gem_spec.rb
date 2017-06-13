@@ -19,7 +19,7 @@ describe RuboCop::Cop::Bundler::DuplicatedGem, :config do
       let(:source) { '' }
 
       it 'does not raise an error' do
-        expect { inspect_source(cop, source, 'gems.rb') }.not_to raise_error
+        expect { inspect_source('gems.rb') }.not_to raise_error
       end
 
       it 'does not register any offenses' do
@@ -44,17 +44,17 @@ describe RuboCop::Cop::Bundler::DuplicatedGem, :config do
       GEM
 
       it 'registers an offense' do
-        inspect_gemfile(cop, source)
+        inspect_gemfile(source)
         expect(cop.offenses.size).to eq(1)
       end
 
       it "references gem's first occurance in message" do
-        inspect_gemfile(cop, source)
+        inspect_gemfile(source)
         expect(cop.offenses.first.message).to include('2')
       end
 
       it 'highlights the duplicate gem' do
-        inspect_gemfile(cop, source)
+        inspect_gemfile(source)
         expect(cop.highlights).to eq(["gem 'rubocop'"])
       end
     end
@@ -68,12 +68,12 @@ describe RuboCop::Cop::Bundler::DuplicatedGem, :config do
       GEM
 
       it 'registers an offense' do
-        inspect_gemfile(cop, source)
+        inspect_gemfile(source)
         expect(cop.offenses.size).to eq(1)
       end
 
       it 'highlights the duplicate gem' do
-        inspect_gemfile(cop, source)
+        inspect_gemfile(source)
         expect(cop.highlights).to eq(["gem 'rubocop', path: '/path/to/gem'"])
       end
     end

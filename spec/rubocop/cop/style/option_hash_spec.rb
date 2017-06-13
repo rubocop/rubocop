@@ -13,7 +13,7 @@ describe RuboCop::Cop::Style::OptionHash, :config do
   end
 
   it 'registers an offense' do
-    inspect_source(cop, source)
+    inspect_source(source)
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages.first)
       .to eq('Prefer keyword arguments to options hashes.')
@@ -42,7 +42,7 @@ describe RuboCop::Cop::Style::OptionHash, :config do
     it 'registers an offense when in SuspiciousParamNames list' do
       cop_config['SuspiciousParamNames'] = ['config']
 
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages.first)

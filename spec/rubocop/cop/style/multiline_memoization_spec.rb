@@ -5,7 +5,7 @@ describe RuboCop::Cop::Style::MultilineMemoization, :config do
   let(:message) { 'Wrap multiline memoization blocks in `begin` and `end`.' }
 
   before do
-    inspect_source(cop, source)
+    inspect_source(source)
   end
 
   shared_examples 'code with offense' do |code, expected|

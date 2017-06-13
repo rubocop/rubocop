@@ -10,7 +10,7 @@ describe RuboCop::Cop::Lint::UnifiedInteger do
         let(:source) { "1.is_a?(#{klass})" }
 
         it 'registers an offence' do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.offenses.size).to eq(1)
           expect(cop.messages).to eq(["Use `Integer` instead of `#{klass}`."])
         end
@@ -25,7 +25,7 @@ describe RuboCop::Cop::Lint::UnifiedInteger do
         let(:source) { "1.is_a?(::#{klass})" }
 
         it 'registers an offence' do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.offenses.size).to eq(1)
           expect(cop.messages).to eq(["Use `Integer` instead of `#{klass}`."])
         end

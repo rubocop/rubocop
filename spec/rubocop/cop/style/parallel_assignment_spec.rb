@@ -9,7 +9,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
 
   shared_examples('offenses') do |source|
     it "registers an offense for: #{source.gsub(/\s*\n\s*/, '; ')}" do
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages).to eq(['Do not use parallel assignment.'])
     end
@@ -51,7 +51,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
 
   shared_examples('allowed') do |source|
     it "allows assignment of: #{source.gsub(/\s*\n\s*/, '; ')}" do
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages).to be_empty
     end

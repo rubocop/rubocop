@@ -10,7 +10,7 @@ describe RuboCop::Cop::Metrics::ParameterLists, :config do
   end
 
   it 'registers an offense for a method def with 5 parameters' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       def meth(a, b, c, d, e)
       end
     RUBY
@@ -49,7 +49,7 @@ describe RuboCop::Cop::Metrics::ParameterLists, :config do
     end
 
     it 'does not count keyword arguments without default values', ruby: 2.1 do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def meth(a, b, c, d:, e:)
         end
       RUBY

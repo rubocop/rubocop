@@ -7,7 +7,7 @@ describe RuboCop::Cop::Rails::UniqBeforePluck, :config do
     do |method, source, action, corrected = nil|
       if action == :correct
         it "finds the use of #{method} after pluck in #{source}" do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.messages).to eq(["Use `#{method}` before `pluck`."])
           expect(cop.highlights).to eq([method])
           corrected_source = corrected || "Model.#{method}.pluck(:id)"
@@ -15,7 +15,7 @@ describe RuboCop::Cop::Rails::UniqBeforePluck, :config do
         end
       else
         it "ignores pluck without errors in #{source}" do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.messages).to be_empty
           expect(cop.highlights).to be_empty
           expect(cop.offenses).to be_empty

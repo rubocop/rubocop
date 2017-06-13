@@ -13,7 +13,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'no_empty_lines' } }
 
     it 'registers an offense for class body starting with a blank' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         class SomeClass
 
           do_something
@@ -36,7 +36,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
     end
 
     it 'registers an offense for class body ending with a blank' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         class SomeClass
           do_something
 
@@ -47,7 +47,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
     end
 
     it 'registers an offense for singleton class body starting with a blank' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         class << self
 
           do_something
@@ -70,7 +70,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
     end
 
     it 'registers an offense for singleton class body ending with a blank' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         class << self
           do_something
 
@@ -86,7 +86,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
     it 'registers an offense for class body not starting or ending with a ' \
        'blank' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         class SomeClass
           do_something
         end
@@ -118,7 +118,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
     it 'registers an offense for singleton class body not starting or ending ' \
        'with a blank' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         class << self
           do_something
         end
@@ -166,7 +166,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
       end
 
       it 'registers offence for namespace body starting with a blank' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           class Parent
 
             class Child
@@ -180,7 +180,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
       end
 
       it 'registers offence for namespace body ending with a blank' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           class Parent
             class Child
 
@@ -195,7 +195,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
       it 'registers offences for namespaced class body not starting '\
           'with a blank' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           class Parent
             class Child
               do_something
@@ -208,7 +208,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
       it 'registers offences for namespaced class body not ending '\
           'with a blank' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           class Parent
             class Child
 
@@ -253,7 +253,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
       end
 
       it 'registers offence for namespace body starting with a blank' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           class Parent
 
             module Child
@@ -265,7 +265,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
       end
 
       it 'registers offence for namespace body ending with a blank' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           class Parent
             module Child
               do_something
@@ -297,7 +297,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
       it 'registers offences for namespace body starting '\
         'and ending without a blank' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           class Parent
             class Mom
 

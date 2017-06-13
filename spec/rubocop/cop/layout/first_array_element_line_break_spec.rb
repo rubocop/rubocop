@@ -11,7 +11,7 @@ describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
       RUBY
     end
     it 'detects the offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.offenses.length).to eq(1)
       expect(cop.offenses.first.line).to eq(1)
@@ -39,7 +39,7 @@ describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
     end
 
     it 'detects the offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.offenses.length).to eq(1)
       expect(cop.offenses.first.line).to eq(1)
@@ -65,7 +65,7 @@ describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
     end
 
     it 'detects the offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.offenses.length).to eq(1)
       expect(cop.offenses.first.line).to eq(1)
@@ -101,7 +101,7 @@ describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
     end
 
     it 'detects the offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.offenses.length).to eq(1)
       expect(cop.offenses.first.line).to eq(2)
@@ -133,7 +133,7 @@ describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
     end
 
     it 'detects the offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.offenses.length).to eq(1)
       expect(cop.offenses.first.line).to eq(2)

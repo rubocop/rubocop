@@ -196,7 +196,7 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
                 end
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.messages)
         .to eq(['`end` at 5, 8 is not aligned with `bar.get_stuffs` at 2, 2' \
                 ' or `.reject do |stuff|` at 3, 6.',
@@ -290,7 +290,7 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
           i - 5
             end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.messages)
         .to eq(['`end` at 4, 4 is not aligned with `e,` at 1, 0 or' \
                 ' `f = [5, 6].map do |i|` at 2, 0.'])
@@ -323,7 +323,7 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
 
   it 'registers an offense for mismatched block end with' \
      ' an instance variable' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       @variable = test do |ala|
         end
     RUBY
@@ -404,7 +404,7 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
 
   it 'registers an offense for mismatched end with a method call' \
      ' with arguments' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       @h[:f] = f.each_pair.map do |f, v|
         v = 1
         end
@@ -428,7 +428,7 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
 
   it 'registers an offense for mismatched end not aligned with the block' \
      ' that is an argument' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       expect(arr.all? do |o|
         o.valid?
         end)
@@ -682,7 +682,7 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
             baz
           end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.messages)
         .to eq(['`end` at 4, 2 is not aligned with ' \
                 '`foo.bar` at 1, 0.'])
@@ -728,7 +728,7 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
             baz
         end
       RUBY
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.messages)
         .to eq(['`end` at 4, 0 is not aligned with ' \
                 '`.each do` at 2, 2.'])

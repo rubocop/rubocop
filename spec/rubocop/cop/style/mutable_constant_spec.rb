@@ -9,7 +9,7 @@ describe RuboCop::Cop::Style::MutableConstant do
     context 'when assigning with =' do
       it "registers an offense for #{o} assigned to a constant" do
         source = [prefix, "CONST = #{o}"].compact.join("\n")
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.offenses.size).to eq(1)
       end
 
@@ -23,7 +23,7 @@ describe RuboCop::Cop::Style::MutableConstant do
     context 'when assigning with ||=' do
       it "registers an offense for #{o} assigned to a constant" do
         source = [prefix, "CONST ||= #{o}"].compact.join("\n")
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.offenses.size).to eq(1)
       end
 
@@ -43,13 +43,13 @@ describe RuboCop::Cop::Style::MutableConstant do
   shared_examples :immutable_objects do |o|
     it "allows #{o} to be assigned to a constant" do
       source = [prefix, "CONST = #{o}"].compact.join("\n")
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses).to be_empty
     end
 
     it "allows #{o} to be ||= to a constant" do
       source = [prefix, "CONST ||= #{o}"].compact.join("\n")
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses).to be_empty
     end
   end
@@ -74,7 +74,7 @@ describe RuboCop::Cop::Style::MutableConstant do
     it 'registers an offense for a mutable value' do
       source = 'BAR = *[1, 2, 3]'
 
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
 
       corrected = autocorrect_source(cop, source)

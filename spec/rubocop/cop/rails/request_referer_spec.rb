@@ -4,7 +4,7 @@ describe RuboCop::Cop::Rails::RequestReferer, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'when EnforcedStyle is referer' do
-    before { inspect_source(cop, 'puts request.referrer') }
+    before { inspect_source('puts request.referrer') }
     let(:cop_config) { { 'EnforcedStyle' => 'referer' } }
     it 'registers an offense for request.referrer' do
       expect(cop.offenses.size).to eq(1)
@@ -26,7 +26,7 @@ describe RuboCop::Cop::Rails::RequestReferer, :config do
   end
 
   context 'when EnforcedStyle is referrer' do
-    before { inspect_source(cop, 'puts request.referer') }
+    before { inspect_source('puts request.referer') }
     let(:cop_config) { { 'EnforcedStyle' => 'referrer' } }
     it 'registers an offense for request.referer' do
       expect(cop.offenses.size).to eq(1)

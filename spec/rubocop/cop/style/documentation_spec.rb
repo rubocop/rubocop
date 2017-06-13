@@ -20,7 +20,7 @@ describe RuboCop::Cop::Style::Documentation do
 
   it 'does not consider comment followed by empty line to be class ' \
      'documentation' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       # Copyright 2014
       # Some company
 
@@ -108,7 +108,7 @@ describe RuboCop::Cop::Style::Documentation do
 
   it 'accepts non-empty class with annotation comment followed by other ' \
      'comment' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       # OPTIMIZE: Make this faster.
       # Class comment.
       class My_Class
@@ -189,7 +189,7 @@ describe RuboCop::Cop::Style::Documentation do
 
   it 'does not raise an error for an implicit match conditional' do
     expect do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         class Test
           if //
           end
@@ -214,7 +214,7 @@ describe RuboCop::Cop::Style::Documentation do
   context 'sparse and trailing comments' do
     %w[class module].each do |keyword|
       it "ignores comments after #{keyword} node end" do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           module TestModule
             # documentation comment
             #{keyword} Test
@@ -227,7 +227,7 @@ describe RuboCop::Cop::Style::Documentation do
       end
 
       it "ignores sparse comments inside #{keyword} node" do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           module TestModule
             #{keyword} Test
               def method
@@ -244,7 +244,7 @@ describe RuboCop::Cop::Style::Documentation do
   context 'with # :nodoc:' do
     %w[class module].each do |keyword|
       it "accepts non-namespace #{keyword} without documentation" do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           #{keyword} Test #:nodoc:
             def method
             end
@@ -254,7 +254,7 @@ describe RuboCop::Cop::Style::Documentation do
       end
 
       it "registers an offense for nested #{keyword} without documentation" do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           module TestModule #:nodoc:
             TEST = 20
             #{keyword} Test
@@ -268,7 +268,7 @@ describe RuboCop::Cop::Style::Documentation do
 
       context 'with `all` modifier' do
         it "accepts nested #{keyword} without documentation" do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             module A #:nodoc: all
               module B
                 TEST = 20

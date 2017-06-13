@@ -5,7 +5,7 @@ describe RuboCop::Cop::Performance::Sample do
 
   shared_examples 'offense' do |wrong, right|
     it "when using #{wrong}" do
-      inspect_source(cop, "[1, 2, 3].#{wrong}")
+      inspect_source("[1, 2, 3].#{wrong}")
       expect(cop.messages).to eq(["Use `#{right}` instead of `#{wrong}`."])
     end
 
@@ -19,7 +19,7 @@ describe RuboCop::Cop::Performance::Sample do
 
   shared_examples 'accepts' do |acceptable|
     it acceptable do
-      inspect_source(cop, "[1, 2, 3].#{acceptable}")
+      inspect_source("[1, 2, 3].#{acceptable}")
       expect(cop.messages).to be_empty
     end
   end

@@ -7,10 +7,10 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'single_quotes' } }
 
     it 'registers offense for double quotes when single quotes suffice' do
-      inspect_source(cop, ['s = "abc"',
-                           'x = "a\\\\b"',
-                           'y ="\\\\b"',
-                           'z = "a\\\\"'])
+      inspect_source(['s = "abc"',
+                      'x = "a\\\\b"',
+                      'y ="\\\\b"',
+                      'z = "a\\\\"'])
       expect(cop.highlights).to eq(['"abc"',
                                     '"a\\\\b"',
                                     '"\\\\b"',
@@ -23,8 +23,8 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
     end
 
     it 'registers offense for correct + opposite' do
-      inspect_source(cop, ['s = "abc"',
-                           "x = 'abc'"])
+      inspect_source(['s = "abc"',
+                      "x = 'abc'"])
       expect(cop.messages)
         .to eq(["Prefer single-quoted strings when you don't need " \
                 'string interpolation or special symbols.'])
@@ -116,7 +116,7 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
 
     it 'detects unneeded double quotes within concatenated string' do
       src = ['"#{x}" \\', '"y"']
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -158,7 +158,7 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
 
     it 'does not register an offense for words with non-ascii chars and ' \
        'other control sequences' do
-      inspect_source(cop, '"España\n"')
+      inspect_source('"España\n"')
       expect(cop.offenses.size).to eq(0)
     end
 
@@ -174,7 +174,7 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
 
     it 'registers offense for single quotes when double quotes would ' \
       'be equivalent' do
-      inspect_source(cop, "s = 'abc'")
+      inspect_source("s = 'abc'")
       expect(cop.highlights).to eq(["'abc'"])
       expect(cop.messages)
         .to eq(['Prefer double-quoted strings unless you need ' \
@@ -185,8 +185,8 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
     end
 
     it 'registers offense for opposite + correct' do
-      inspect_source(cop, ['s = "abc"',
-                           "x = 'abc'"])
+      inspect_source(['s = "abc"',
+                      "x = 'abc'"])
       expect(cop.messages)
         .to eq(['Prefer double-quoted strings unless you need ' \
                 'single quotes to avoid extra backslashes for ' \
@@ -227,7 +227,7 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
     end
 
     it 'flags single quotes with plain # (not #@var or #{interpolation}' do
-      inspect_source(cop, "a = 'blah #'")
+      inspect_source("a = 'blah #'")
       expect(cop.offenses.size).to be 1
     end
 
@@ -257,7 +257,7 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'other' } }
 
     it 'fails' do
-      expect { inspect_source(cop, 'a = "b"') }
+      expect { inspect_source('a = "b"') }
         .to raise_error(RuntimeError)
     end
   end
@@ -272,8 +272,7 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
       end
 
       it 'registers an offense for strings with line breaks in them' do
-        inspect_source(cop,
-                       ['"--',
+        inspect_source(['"--',
                         'SELECT *',
                         'LEFT JOIN X on Y',
                         'FROM Models"'])
@@ -291,16 +290,16 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
       end
 
       it 'registers an offense for mixed quote styles in a continued string' do
-        inspect_source(cop, ["'abc' \\",
-                             '"def"'])
+        inspect_source(["'abc' \\",
+                        '"def"'])
         expect(cop.offenses.size).to eq(1)
         expect(cop.messages).to eq(['Inconsistent quote style.'])
         expect(cop.highlights).to eq(["'abc' \\\n\"def\""])
       end
 
       it 'registers an offense for unneeded double quotes in continuation' do
-        inspect_source(cop, ['"abc" \\',
-                             '"def"'])
+        inspect_source(['"abc" \\',
+                        '"def"'])
         expect(cop.offenses.size).to eq(1)
         expect(cop.messages).to eq(['Prefer single-quoted strings when you ' \
                                     "don't need string interpolation or " \
@@ -362,16 +361,16 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
       end
 
       it 'registers an offense for mixed quote styles in a continued string' do
-        inspect_source(cop, ["'abc' \\",
-                             '"def"'])
+        inspect_source(["'abc' \\",
+                        '"def"'])
         expect(cop.offenses.size).to eq(1)
         expect(cop.messages).to eq(['Inconsistent quote style.'])
         expect(cop.highlights).to eq(["'abc' \\\n\"def\""])
       end
 
       it 'registers an offense for unneeded single quotes in continuation' do
-        inspect_source(cop, ["'abc' \\",
-                             "'def'"])
+        inspect_source(["'abc' \\",
+                        "'def'"])
         expect(cop.offenses.size).to eq(1)
         expect(cop.messages).to eq(['Prefer double-quoted strings unless you ' \
                                     'need single quotes to avoid extra ' \

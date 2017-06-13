@@ -5,7 +5,7 @@ describe RuboCop::Cop::Style::MethodName, :config do
 
   shared_examples 'never accepted' do
     it 'registers an offense for mixed snake case and camel case' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def visit_Arel_Nodes_SelectStatement
         end
       RUBY
@@ -14,7 +14,7 @@ describe RuboCop::Cop::Style::MethodName, :config do
     end
 
     it 'registers an offense for capitalized camel case' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         class MyClass
           def MyMethod
           end
@@ -26,7 +26,7 @@ describe RuboCop::Cop::Style::MethodName, :config do
 
     it 'registers an offense for singleton upper case method without ' \
        'corresponding class' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         module Sequel
           def self.Model(source)
           end
@@ -61,7 +61,7 @@ describe RuboCop::Cop::Style::MethodName, :config do
 
     %w[class module].each do |kind|
       it "accepts class emitter method in a #{kind}" do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           #{kind} Sequel
             def self.Model(source)
             end
@@ -75,7 +75,7 @@ describe RuboCop::Cop::Style::MethodName, :config do
 
       it "accepts class emitter method in a #{kind}, even when it is " \
          'defined inside another method' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           module DPN
             module Flow
               module BaseFlow
@@ -98,7 +98,7 @@ describe RuboCop::Cop::Style::MethodName, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'snake_case' } }
 
     it 'registers an offense for camel case in instance method name' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def myMethod
           # ...
         end
@@ -110,7 +110,7 @@ describe RuboCop::Cop::Style::MethodName, :config do
     end
 
     it 'registers an offense for opposite + correct' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def my_method
         end
         def myMethod
@@ -170,7 +170,7 @@ describe RuboCop::Cop::Style::MethodName, :config do
     end
 
     it 'registers an offense for snake case in names' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def my_method
         end
       RUBY
@@ -181,7 +181,7 @@ describe RuboCop::Cop::Style::MethodName, :config do
     end
 
     it 'registers an offense for correct + opposite' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def my_method
         end
         def myMethod
@@ -209,7 +209,7 @@ describe RuboCop::Cop::Style::MethodName, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'other' } }
 
     it 'fails' do
-      expect { inspect_source(cop, 'def a', 'end') }
+      expect { inspect_source('end') }
         .to raise_error(RuntimeError)
     end
   end

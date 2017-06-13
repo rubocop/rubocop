@@ -14,7 +14,7 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
     end
 
     it 'registers an offense for an if modifier' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def method_name
           call_foo if some_condition # 0 + 2*2 + 1*1
         end
@@ -27,7 +27,7 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
     end
 
     it 'registers an offense for an assignment of a local variable' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def method_name
           x = 1
         end
@@ -39,7 +39,7 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
     end
 
     it 'registers an offense for an assignment of an element' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def method_name
           x[0] = 1
         end
@@ -52,7 +52,7 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
 
     it 'registers an offense for complex content including A, B, and C ' \
        'scores' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def method_name
           my_options = Hash.new if 1 == 1 || 2 == 2 # 1, 3, 2
           my_options.each do |key, value|           # 0, 1, 0
@@ -116,9 +116,9 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
         # Build an amount of code large enough to register an offense.
         code = ['  x = Hash.new if 1 == 1 || 2 == 2'] * max
 
-        inspect_source(cop, ['def method_name',
-                             *code,
-                             'end'])
+        inspect_source(['def method_name',
+                        *code,
+                        'end'])
         expect(cop.messages)
           .to eq(['Assignment Branch Condition size for method_name is too ' \
                   "high. [#{presentation}]"])

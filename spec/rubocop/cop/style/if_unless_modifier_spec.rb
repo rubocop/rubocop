@@ -28,7 +28,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
       # modifier.
       expect("#{body} if #{condition}".length).to eq(80)
 
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.messages).to eq(
         ['Favor modifier `if` usage when having a single-line' \
          ' body. Another good alternative is the usage of control flow' \
@@ -224,7 +224,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
       it 'registers an offense' do
         expect("  #{body} if #{conditional}".length).to eq(80)
 
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.offenses.size).to eq(1)
       end
 
@@ -240,7 +240,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
       it 'accepts' do
         expect("  #{body} if #{conditional}".length).to eq(81)
 
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.offenses).to be_empty
       end
     end

@@ -539,7 +539,7 @@ describe RuboCop::Cop::Layout::IndentationWidth do
         shared_examples 'assignment and if with keyword alignment' do
           context 'and end is aligned with variable' do
             it 'registers an offense for an if' do
-              inspect_source(cop, <<-RUBY.strip_indent)
+              inspect_source(<<-RUBY.strip_indent)
                 var = if a
                   0
                 end
@@ -549,7 +549,7 @@ describe RuboCop::Cop::Layout::IndentationWidth do
             end
 
             it 'registers an offense for a while' do
-              inspect_source(cop, <<-RUBY.strip_indent)
+              inspect_source(<<-RUBY.strip_indent)
                 var = while a
                   b
                 end
@@ -816,7 +816,7 @@ describe RuboCop::Cop::Layout::IndentationWidth do
     context 'with def/defs' do
       shared_examples 'without modifier on the same line' do
         it 'registers an offense for bad indentation of a def body' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             def test
                 func1
                  func2 # No offense registered for this.
@@ -826,7 +826,7 @@ describe RuboCop::Cop::Layout::IndentationWidth do
         end
 
         it 'registers an offense for bad indentation of a defs body' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             def self.test
                func
             end
@@ -978,7 +978,7 @@ describe RuboCop::Cop::Layout::IndentationWidth do
         let(:consistency_config) { { 'EnforcedStyle' => 'rails' } }
 
         it 'registers an offense for normal non-rails indentation' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             class Test
               public
 
@@ -1054,7 +1054,7 @@ describe RuboCop::Cop::Layout::IndentationWidth do
 
     context 'with begin/rescue/else/ensure/end' do
       it 'registers an offense for bad indentation of bodies' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           def my_func
             puts 'do something outside block'
             begin
@@ -1113,7 +1113,7 @@ describe RuboCop::Cop::Layout::IndentationWidth do
         let(:consistency_config) { { 'EnforcedStyle' => 'rails' } }
 
         it 'registers an offense for bad indentation in a do/end body' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             concern :Authenticatable do
               def foo
                 puts "foo"

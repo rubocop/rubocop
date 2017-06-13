@@ -5,26 +5,26 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
   let(:cop_config) { { 'Max' => 80, 'IgnoredPatterns' => nil } }
 
   it "registers an offense for a line that's 81 characters wide" do
-    inspect_source(cop, '#' * 81)
+    inspect_source('#' * 81)
     expect(cop.offenses.size).to eq(1)
     expect(cop.offenses.first.message).to eq('Line is too long. [81/80]')
     expect(cop.config_to_allow_offenses).to eq('Max' => 81)
   end
 
   it 'highlights excessive characters' do
-    inspect_source(cop, '#' * 80 + 'abc')
+    inspect_source('#' * 80 + 'abc')
     expect(cop.highlights).to eq(['abc'])
   end
 
   it "accepts a line that's 80 characters wide" do
-    inspect_source(cop, '#' * 80)
+    inspect_source('#' * 80)
     expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for long line before __END__ but not after' do
-    inspect_source(cop, ['#' * 150,
-                         '__END__',
-                         '#' * 200])
+    inspect_source(['#' * 150,
+                    '__END__',
+                    '#' * 200])
     expect(cop.messages).to eq(['Line is too long. [150/80]'])
   end
 
@@ -39,7 +39,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
       RUBY
 
       it 'accepts the line' do
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.offenses).to be_empty
       end
     end
@@ -50,12 +50,12 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
       RUBY
 
       it 'registers an offense for the line' do
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.offenses.size).to eq(1)
       end
 
       it 'highlights all the excessive characters' do
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.highlights).to eq(['http://plus.google.com/'])
       end
     end
@@ -68,12 +68,12 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
       RUBY
 
       it 'registers an offense for the line' do
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.offenses.size).to eq(1)
       end
 
       it 'highlights only the non-URL part' do
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.highlights).to eq([' and'])
       end
     end
@@ -89,7 +89,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
       RUBY
 
       it 'does not crash' do
-        expect { inspect_source(cop, source) }.not_to raise_error
+        expect { inspect_source(source) }.not_to raise_error
       end
     end
 
@@ -99,7 +99,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
       RUBY
 
       it 'rejects the line' do
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.offenses.size).to eq(1)
       end
 
@@ -109,7 +109,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
         end
 
         it 'accepts the line' do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.offenses).to be_empty
         end
       end
@@ -136,7 +136,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
     end
 
     it 'accepts long lines matching a pattern but not other long lines' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.highlights).to eq(['< TestCase'])
     end
   end
@@ -151,7 +151,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
     RUBY
 
     it 'accepts long lines in heredocs' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses).to be_empty
     end
 
@@ -159,7 +159,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
       let(:source) { '# this results in AST being nil' }
 
       it 'does not crash' do
-        expect { inspect_source(cop, source) }.not_to raise_error
+        expect { inspect_source(source) }.not_to raise_error
       end
     end
 
@@ -191,7 +191,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
       RUBY
 
       it 'rejects long lines in heredocs with not whitelisted delimiters' do
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.offenses.size).to eq(4)
       end
     end
@@ -206,7 +206,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
       RUBY
 
       it 'registers an offense for the line' do
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.offenses.size).to eq(1)
       end
     end
@@ -223,12 +223,12 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
         let(:source) { acceptable_source + cop_directive }
 
         it 'registers an offense for the line' do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.offenses.size).to eq(1)
         end
 
         it 'highlights the excess directive' do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.highlights).to eq([cop_directive])
         end
       end
@@ -238,7 +238,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
         let(:source) { acceptable_source + excess_comment }
 
         it 'highlights the excess comment' do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.highlights).to eq([excess_comment])
         end
       end
@@ -249,7 +249,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
       let(:source) { 'a' * 80 + excess_with_directive }
 
       it 'highlights the excess source and cop directive' do
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.highlights).to eq([excess_with_directive])
       end
     end
@@ -264,7 +264,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
       RUBY
 
       it 'accepts the line' do
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.offenses).to be_empty
       end
     end
@@ -277,7 +277,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
       RUBY
 
       it 'accepts the line' do
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.offenses).to be_empty
       end
 
@@ -289,7 +289,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
         RUBY
 
         it 'accepts the line' do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.offenses).to be_empty
         end
       end
@@ -299,12 +299,12 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
       let(:source) { 'a' * 80 + 'bcd' + ' # rubocop:enable Style/ClassVars' }
 
       it 'registers an offense for the line' do
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.offenses.size).to eq(1)
       end
 
       it 'highlights only the non-directive part' do
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.highlights).to eq(['bcd'])
       end
 
@@ -314,12 +314,12 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
         RUBY
 
         it 'registers an offense for the line' do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.offenses.size).to eq(1)
         end
 
         it 'highlights only the non-directive part' do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.highlights).to eq(['bbbbbbb'])
         end
       end
@@ -330,12 +330,12 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
         RUBY
 
         it 'registers an offense for the line' do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.offenses.size).to eq(1)
         end
 
         it 'highlights only the non-directive part' do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.highlights).to eq([']*={0,2})#([A-Za-z0-9+/#]*={0,2})z}'])
         end
       end

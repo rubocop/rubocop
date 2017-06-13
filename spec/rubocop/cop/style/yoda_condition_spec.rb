@@ -9,7 +9,7 @@ describe RuboCop::Cop::Style::YodaCondition do
   # needed because of usage of safe navigation operator
   let(:ruby_version) { 2.3 }
 
-  before { inspect_source(cop, source) }
+  before { inspect_source(source) }
 
   shared_examples 'accepts' do |code|
     let(:source) { code }

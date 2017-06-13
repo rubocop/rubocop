@@ -7,7 +7,7 @@ describe RuboCop::Cop::Style::IfUnlessModifierOfIfUnless do
 
   it 'provides a good error message' do
     source = 'condition ? then_part : else_part unless external_condition'
-    inspect_source(cop, source)
+    inspect_source(source)
     expect(cop.messages)
       .to eq(['Avoid modifier `unless` after another conditional.'])
   end

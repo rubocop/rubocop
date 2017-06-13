@@ -6,7 +6,7 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
 
   context 'inspection' do
     before do
-      inspect_source(cop, source)
+      inspect_source(source)
     end
 
     context 'when a block takes multiple arguments' do

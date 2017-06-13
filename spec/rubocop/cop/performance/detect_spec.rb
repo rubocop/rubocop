@@ -20,31 +20,31 @@ describe RuboCop::Cop::Performance::Detect do
 
   select_methods.each do |method|
     it "registers an offense when first is called on #{method}" do
-      inspect_source(cop, "[1, 2, 3].#{method} { |i| i % 2 == 0 }.first")
+      inspect_source("[1, 2, 3].#{method} { |i| i % 2 == 0 }.first")
 
       expect(cop.messages)
         .to eq(["Use `detect` instead of `#{method}.first`."])
     end
 
     it "doesn't register an offense when first(n) is called on #{method}" do
-      inspect_source(cop, "[1, 2, 3].#{method} { |i| i % 2 == 0 }.first(n)")
+      inspect_source("[1, 2, 3].#{method} { |i| i % 2 == 0 }.first(n)")
       expect(cop.offenses).to be_empty
     end
 
     it "registers an offense when last is called on #{method}" do
-      inspect_source(cop, "[1, 2, 3].#{method} { |i| i % 2 == 0 }.last")
+      inspect_source("[1, 2, 3].#{method} { |i| i % 2 == 0 }.last")
 
       expect(cop.messages)
         .to eq(["Use `reverse.detect` instead of `#{method}.last`."])
     end
 
     it "doesn't register an offense when last(n) is called on #{method}" do
-      inspect_source(cop, "[1, 2, 3].#{method} { |i| i % 2 == 0 }.last(n)")
+      inspect_source("[1, 2, 3].#{method} { |i| i % 2 == 0 }.last(n)")
       expect(cop.offenses).to be_empty
     end
 
     it "registers an offense when first is called on multiline #{method}" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         [1, 2, 3].#{method} do |i|
           i % 2 == 0
         end.first
@@ -54,7 +54,7 @@ describe RuboCop::Cop::Performance::Detect do
     end
 
     it "registers an offense when last is called on multiline #{method}" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         [1, 2, 3].#{method} do |i|
           i % 2 == 0
         end.last
@@ -65,13 +65,13 @@ describe RuboCop::Cop::Performance::Detect do
     end
 
     it "registers an offense when first is called on #{method} short syntax" do
-      inspect_source(cop, "[1, 2, 3].#{method}(&:even?).first")
+      inspect_source("[1, 2, 3].#{method}(&:even?).first")
 
       expect(cop.messages).to eq(["Use `detect` instead of `#{method}.first`."])
     end
 
     it "registers an offense when last is called on #{method} short syntax" do
-      inspect_source(cop, "[1, 2, 3].#{method}(&:even?).last")
+      inspect_source("[1, 2, 3].#{method}(&:even?).last")
 
       expect(cop.messages)
         .to eq(["Use `reverse.detect` instead of `#{method}.last`."])
@@ -79,35 +79,35 @@ describe RuboCop::Cop::Performance::Detect do
 
     it "registers an offense when #{method} is called" \
        'on `lazy` without receiver' do
-      inspect_source(cop, "lazy.#{method}(&:even?).first")
+      inspect_source("lazy.#{method}(&:even?).first")
 
       expect(cop.messages).to eq(["Use `detect` instead of `#{method}.first`."])
     end
 
     it "does not register an offense when #{method} is used " \
        'without first or last' do
-      inspect_source(cop, "[1, 2, 3].#{method} { |i| i % 2 == 0 }")
+      inspect_source("[1, 2, 3].#{method} { |i| i % 2 == 0 }")
 
       expect(cop.messages).to be_empty
     end
 
     it "does not register an offense when #{method} is called" \
        'without block or args' do
-      inspect_source(cop, "adapter.#{method}.first")
+      inspect_source("adapter.#{method}.first")
 
       expect(cop.messages).to be_empty
     end
 
     it "does not register an offense when #{method} is called" \
        'with args but without ampersand syntax' do
-      inspect_source(cop, "adapter.#{method}('something').first")
+      inspect_source("adapter.#{method}('something').first")
 
       expect(cop.messages).to be_empty
     end
 
     it "does not register an offense when #{method} is called" \
        'on lazy enumerable' do
-      inspect_source(cop, "adapter.lazy.#{method} { 'something' }.first")
+      inspect_source("adapter.lazy.#{method} { 'something' }.first")
 
       expect(cop.messages).to be_empty
     end
@@ -242,7 +242,7 @@ describe RuboCop::Cop::Performance::Detect do
 
     select_methods.each do |method|
       it "doesn't register an offense when first is called on #{method}" do
-        inspect_source(cop, "[1, 2, 3].#{method} { |i| i % 2 == 0 }.first")
+        inspect_source("[1, 2, 3].#{method} { |i| i % 2 == 0 }.first")
 
         expect(cop.offenses).to be_empty
       end

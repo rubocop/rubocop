@@ -4,7 +4,7 @@ describe RuboCop::Cop::Layout::SpaceInsideRangeLiteral do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for space inside .. literal' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       1 .. 2
       1.. 2
       1 ..2
@@ -19,7 +19,7 @@ describe RuboCop::Cop::Layout::SpaceInsideRangeLiteral do
   end
 
   it 'registers an offense for space inside ... literal' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       1 ... 2
       1... 2
       1 ...2
@@ -45,7 +45,7 @@ describe RuboCop::Cop::Layout::SpaceInsideRangeLiteral do
   end
 
   it 'registers an offense in multiline range literal with space in it' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       x = 0 ..
           10
     RUBY

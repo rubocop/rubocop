@@ -52,7 +52,7 @@ describe RuboCop::Cop::Lint::RescueType do
         end
 
         it 'registers an offense' do
-          inspect_source(cop, source)
+          inspect_source(source)
 
           expect(cop.highlights).to eq(["rescue #{rescues}"])
           expect(cop.messages)
@@ -85,7 +85,7 @@ describe RuboCop::Cop::Lint::RescueType do
         end
 
         it 'registers an offense' do
-          inspect_source(cop, source)
+          inspect_source(source)
 
           expect(cop.highlights).to eq(["rescue #{rescues}, StandardError"])
           expect(cop.messages)
@@ -118,7 +118,7 @@ describe RuboCop::Cop::Lint::RescueType do
         end
 
         it 'registers an offense' do
-          inspect_source(cop, source)
+          inspect_source(source)
 
           expect(cop.highlights).to eq(["rescue StandardError, #{rescues}"])
           expect(cop.messages)
@@ -155,7 +155,7 @@ describe RuboCop::Cop::Lint::RescueType do
         end
 
         it 'registers an offense' do
-          inspect_source(cop, source)
+          inspect_source(source)
 
           expect(cop.highlights).to eq(["rescue #{rescues}"])
           expect(cop.messages)
@@ -192,7 +192,7 @@ describe RuboCop::Cop::Lint::RescueType do
         end
 
         it 'registers an offense' do
-          inspect_source(cop, source)
+          inspect_source(source)
 
           expect(cop.highlights).to eq(["rescue #{rescues}"])
           expect(cop.messages)
@@ -229,7 +229,7 @@ describe RuboCop::Cop::Lint::RescueType do
         end
 
         it 'registers an offense' do
-          inspect_source(cop, source)
+          inspect_source(source)
 
           expect(cop.highlights).to eq(["rescue #{rescues}"])
           expect(cop.messages)

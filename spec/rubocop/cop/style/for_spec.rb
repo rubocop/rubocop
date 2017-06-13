@@ -7,7 +7,7 @@ describe RuboCop::Cop::Style::For, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'each' } }
 
     it 'registers an offense for for' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def func
           for n in [1, 2, 3] do
             puts n
@@ -20,7 +20,7 @@ describe RuboCop::Cop::Style::For, :config do
     end
 
     it 'registers an offense for opposite + correct style' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def func
           for n in [1, 2, 3] do
             puts n
@@ -67,7 +67,7 @@ describe RuboCop::Cop::Style::For, :config do
     end
 
     it 'registers an offense for multiline each' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def func
           [1, 2, 3].each do |n|
             puts n
@@ -80,7 +80,7 @@ describe RuboCop::Cop::Style::For, :config do
     end
 
     it 'registers an offense for correct + opposite style' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def func
           for n in [1, 2, 3] do
             puts n

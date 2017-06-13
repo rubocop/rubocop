@@ -5,14 +5,14 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
 
   shared_examples 'single line lists' do |extra_info|
     it 'registers an offense for trailing comma in an Array literal' do
-      inspect_source(cop, 'VALUES = [1001, 2020, 3333, ]')
+      inspect_source('VALUES = [1001, 2020, 3333, ]')
       expect(cop.messages)
         .to eq(["Avoid comma after the last item of an array#{extra_info}."])
       expect(cop.highlights).to eq([','])
     end
 
     it 'registers an offense for trailing comma in a Hash literal' do
-      inspect_source(cop, 'MAP = { a: 1001, b: 2020, c: 3333, }')
+      inspect_source('MAP = { a: 1001, b: 2020, c: 3333, }')
       expect(cop.messages)
         .to eq(["Avoid comma after the last item of a hash#{extra_info}."])
       expect(cop.highlights).to eq([','])
@@ -212,7 +212,7 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
 
       it 'registers an offense for an Array literal with two of the values ' \
          'on the same line and a trailing comma' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           VALUES = [
                      1001, 2020,
                      3333,
@@ -388,7 +388,7 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
 
       it 'registers an offense for an Array literal with two of the values ' \
          'on the same line and no trailing comma' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           VALUES = [
                      1001, 2020,
                      3333
@@ -498,7 +498,7 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
 
       it 'accepts a multiline array with items on a single line and' \
          'trailing comma' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           foo = [
             1, 2,
           ]
@@ -508,7 +508,7 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
 
       it 'accepts a multiline hash with pairs on a single line and' \
          'trailing comma' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           bar = {
             a: 1001, b: 2020,
           }

@@ -6,7 +6,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
     context 'when first child is method' do
       it "requires blank line at the beginning and ending of #{type} body" do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           #{type} SomeObject
 
             def do_something; end
@@ -27,7 +27,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
         it "registers an offense for #{type} not beginning "\
           'and ending with a blank line' do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.messages).to eq([missing_begin, missing_end])
         end
 
@@ -46,7 +46,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
       context "when #{type} has a namespace" do
         it 'requires no empty lines for namespace but '\
           "requires blank line at the beginning and ending of #{type} body" do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             #{type} Parent
               #{type} SomeObject
 
@@ -123,7 +123,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
       it "does not require blank line at the beginning of #{type} body "\
         'but requires blank line before first def definition '\
         "and requires blank line at the end of #{type} body" do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           #{type} SomeObject
             include Something
 
@@ -145,7 +145,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
         end
 
         it "registers an offense for #{type} not ending with a blank line" do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.messages).to eq([missing_def, missing_end])
         end
 
@@ -175,7 +175,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
         end
 
         it "registers an offense for #{type} beginning with a blank line" do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.messages).to eq([extra_begin, missing_def])
         end
 
@@ -206,7 +206,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
         end
 
         it "registers an offense for #{type} beginning with a blank line" do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.messages).to eq([extra_begin, missing_def])
         end
 
@@ -228,7 +228,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
         it 'requires no empty lines for namespace '\
           "and does not require blank line at the beginning of #{type} body "\
           "but requires blank line at the end of #{type} body" do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             #{type} Parent
               #{type} SomeObject
                 include Something
@@ -338,7 +338,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
     context 'when namespace has multiple children' do
       it 'requires empty lines for namespace' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           #{type} Parent
 
             #{type} Mom
@@ -396,7 +396,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
       end
 
       it 'registers offenses' do
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.messages).to eq([missing_type,
                                     missing_begin,
                                     missing_end,
@@ -431,7 +431,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
         end
 
         it 'does NOT register offenses' do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.messages).to eq([])
         end
       end
@@ -445,7 +445,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
         end
 
         it 'does NOT register offenses' do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.messages).to eq([])
         end
       end

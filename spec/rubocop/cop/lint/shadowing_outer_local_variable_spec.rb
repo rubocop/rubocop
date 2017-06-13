@@ -17,7 +17,7 @@ describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable do
     end
 
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.message)
         .to eq('Shadowing outer local variable - `foo`.')
@@ -41,7 +41,7 @@ describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable do
     end
 
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.message)
         .to eq('Shadowing outer local variable - `foo`.')
@@ -67,7 +67,7 @@ describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable do
     end
 
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.message)
         .to eq('Shadowing outer local variable - `foo`.')
@@ -92,7 +92,7 @@ describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable do
     end
 
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.message)
         .to eq('Shadowing outer local variable - `foo`.')

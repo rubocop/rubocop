@@ -20,7 +20,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
         end
       end
     RUBY
-    inspect_source(cop, source)
+    inspect_source(source)
     expect(cop.offenses.size).to eq(1)
     expect(cop.offenses.map(&:line).sort).to eq([7])
   end
@@ -99,7 +99,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
           end
         end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
     end
   end
@@ -266,7 +266,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
       def a; end
       def b; end
     RUBY
-    inspect_source(cop, source)
+    inspect_source(source)
     expect(cop.offenses.size).to eq(1)
   end
 
@@ -320,7 +320,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
         end
       end
     RUBY
-    inspect_source(cop, source)
+    inspect_source(source)
     expect(cop.offenses.size).to eq(1)
   end
 
@@ -342,7 +342,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
         end
         def d; end # Also an offense since previous was multi-line:
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.map(&:line)).to eq([3, 5])
     end
   end
@@ -378,7 +378,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
         def o
         end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -413,7 +413,7 @@ describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
         def o
         end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
     end
 

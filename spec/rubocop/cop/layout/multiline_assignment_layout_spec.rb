@@ -15,7 +15,7 @@ describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     let(:enforced_style) { 'new_line' }
 
     it 'registers an offense when the rhs is on the same line' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         blarg = if true
         end
       RUBY
@@ -50,7 +50,7 @@ describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
       let(:supported_types) { %w[array] }
 
       it 'allows supported types to be configured' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           a, b = 4,
           5
         RUBY
@@ -71,7 +71,7 @@ describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     end
 
     it 'registers an offense for masgn with multi-line lhs' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a,
         b = if foo
         end
@@ -88,7 +88,7 @@ describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     let(:enforced_style) { 'same_line' }
 
     it 'registers an offense when the rhs is a different line' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         blarg =
         if true
         end
@@ -125,7 +125,7 @@ describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
       let(:supported_types) { %w[array] }
 
       it 'allows supported types to be configured' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           a, b =
           4,
           5
@@ -146,7 +146,7 @@ describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     end
 
     it 'registers an offense for masgn with multi-line lhs' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a,
         b =
         if foo

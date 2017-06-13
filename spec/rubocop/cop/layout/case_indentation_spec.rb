@@ -57,7 +57,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
           end
 
           it 'registers an offense' do
-            inspect_source(cop, source)
+            inspect_source(source)
             expect(cop.messages).to eq(['Indent `when` as deep as `case`.'])
             expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
                                                        'end')
@@ -93,7 +93,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
           end
 
           it 'registers an offense' do
-            inspect_source(cop, source)
+            inspect_source(source)
             expect(cop.messages).to eq(['Indent `when` as deep as `case`.'])
             expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
           end
@@ -140,7 +140,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
           end
 
           it 'registers an offense' do
-            inspect_source(cop, source)
+            inspect_source(source)
             expect(cop.messages).to eq(['Indent `when` as deep as `case`.'])
             expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
           end
@@ -524,7 +524,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
           end
 
           it 'registers an offense' do
-            inspect_source(cop, source)
+            inspect_source(source)
             expect(cop.messages)
               .to eq(['Indent `when` one step more than `end`.'])
             expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
@@ -561,7 +561,7 @@ describe RuboCop::Cop::Layout::CaseIndentation do
           end
 
           it 'registers an offense' do
-            inspect_source(cop, source)
+            inspect_source(source)
             expect(cop.messages)
               .to eq(['Indent `when` one step more than `end`.'])
             expect(cop.config_to_allow_offenses).to eq('Enabled' => false)

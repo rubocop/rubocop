@@ -10,14 +10,14 @@ describe RuboCop::Cop::Style::Encoding, :config do
 
     it 'registers no offense when no encoding present but only ASCII ' \
        'characters' do
-      inspect_source(cop, 'def foo() end')
+      inspect_source('def foo() end')
 
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense when there is no encoding present but non ' \
        'ASCII characters' do
-      inspect_source(cop, 'def foo() \'ä\' end')
+      inspect_source('def foo() \'ä\' end')
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(
@@ -27,7 +27,7 @@ describe RuboCop::Cop::Style::Encoding, :config do
 
     it 'registers an offense when encoding present but only ASCII ' \
        'characters' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         # encoding: utf-8
         def foo() end
       RUBY
@@ -232,21 +232,21 @@ describe RuboCop::Cop::Style::Encoding, :config do
 
     it 'registers no offense when no encoding present but only ASCII ' \
        'characters' do
-      inspect_source(cop, 'def foo() end')
+      inspect_source('def foo() end')
 
       expect(cop.offenses).to be_empty
     end
 
     it 'registers no offense when there is no encoding present but non ' \
        'ASCII characters' do
-      inspect_source(cop, 'def foo() \'ä\' end')
+      inspect_source('def foo() \'ä\' end')
 
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense when encoding present but only ASCII ' \
        'characters' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         # encoding: utf-8
         def foo() end
       RUBY

@@ -99,7 +99,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       end
 
       it 'registers an offense' do
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.messages).to eq(['Use `%r` around regular expression.'])
       end
 
@@ -171,7 +171,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       end
 
       it 'registers an offense' do
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.messages).to eq(['Use `//` around regular expression.'])
       end
 
@@ -202,7 +202,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
         before { cop_config['AllowInnerSlashes'] = true }
 
         it 'registers an offense' do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.messages).to eq(['Use `//` around regular expression.'])
         end
 
@@ -258,7 +258,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       end
 
       it 'registers an offense' do
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.messages).to eq(['Use `%r` around regular expression.'])
       end
 
@@ -277,7 +277,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       end
 
       it 'registers an offense' do
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.messages).to eq(['Use `%r` around regular expression.'])
       end
 
@@ -364,7 +364,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       end
 
       it 'registers an offense' do
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.messages).to eq(['Use `%r` around regular expression.'])
       end
 
@@ -383,7 +383,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       end
 
       it 'registers an offense' do
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.messages).to eq(['Use `%r` around regular expression.'])
       end
 

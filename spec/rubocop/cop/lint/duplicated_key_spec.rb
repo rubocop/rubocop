@@ -8,7 +8,7 @@ describe RuboCop::Cop::Lint::DuplicatedKey do
     end
 
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.message)
         .to eq('Duplicated key in hash literal.')
@@ -22,7 +22,7 @@ describe RuboCop::Cop::Lint::DuplicatedKey do
     end
 
     it 'registers two offenses' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(2)
       expect(cop.messages).to eq(['Duplicated key in hash literal.'] * 2)
       expect(cop.highlights).to eq %w[veg fruit]
@@ -35,7 +35,7 @@ describe RuboCop::Cop::Lint::DuplicatedKey do
     end
 
     it 'registers two offenses' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(2)
       expect(cop.messages).to eq(['Duplicated key in hash literal.'] * 2)
       expect(cop.highlights).to eq %w[1 1]
@@ -52,7 +52,7 @@ describe RuboCop::Cop::Lint::DuplicatedKey do
 
   shared_examples :duplicated_literal_key do |key|
     it "registers an offense for duplicated `#{key}` hash keys" do
-      inspect_source(cop, "hash = { #{key} => 1, #{key} => 4}")
+      inspect_source("hash = { #{key} => 1, #{key} => 4}")
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.message)
         .to eq('Duplicated key in hash literal.')
@@ -79,7 +79,7 @@ describe RuboCop::Cop::Lint::DuplicatedKey do
 
   shared_examples :duplicated_non_literal_key do |key|
     it "does not register an offense for duplicated `#{key}` hash keys" do
-      inspect_source(cop, "hash = { #{key} => 1, #{key} => 4}")
+      inspect_source("hash = { #{key} => 1, #{key} => 4}")
       expect(cop.offenses).to be_empty
     end
   end

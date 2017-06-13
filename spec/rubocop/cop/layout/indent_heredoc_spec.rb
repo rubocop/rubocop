@@ -5,7 +5,7 @@ describe RuboCop::Cop::Layout::IndentHeredoc, :config do
 
   shared_examples :offense do |name, code, correction = nil|
     it "registers an offense for #{name}" do
-      inspect_source(cop, code.strip_indent)
+      inspect_source(code.strip_indent)
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -17,14 +17,14 @@ describe RuboCop::Cop::Layout::IndentHeredoc, :config do
 
   shared_examples :accept do |name, code|
     it "accepts for #{name}" do
-      inspect_source(cop, code.strip_indent)
+      inspect_source(code.strip_indent)
       expect(cop.offenses).to be_empty
     end
   end
 
   shared_examples :check_message do |name, message|
     it "displays a message with #{name}" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         <<-RUBY2
         foo
         RUBY2
@@ -253,7 +253,7 @@ describe RuboCop::Cop::Layout::IndentHeredoc, :config do
         RUBY
 
         it 'displays message to use `<<~` instead of `<<`' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
           <<RUBY2
           foo
           RUBY2
@@ -266,7 +266,7 @@ describe RuboCop::Cop::Layout::IndentHeredoc, :config do
           )
         end
         it 'displays message to use `<<~` instead of `<<-`' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
           <<-RUBY2
           foo
           RUBY2

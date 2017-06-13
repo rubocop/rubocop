@@ -30,7 +30,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     let(:cop_config) { { 'PreferredDelimiters' => { 'foobar' => '()' } } }
 
     it 'raises an error when invalid configuration is specified' do
-      expect { inspect_source(cop, '%w[string]') }.to raise_error(ArgumentError)
+      expect { inspect_source('%w[string]') }.to raise_error(ArgumentError)
     end
   end
 
@@ -48,13 +48,13 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
     it 'does not register an offense for other delimiters ' \
        'when containing preferred delimiter characters' do
-      inspect_source(cop, '%([string])')
+      inspect_source('%([string])')
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for other delimiters ' \
        'when containing preferred delimiter characters in interpolation' do
-      inspect_source(cop, '%(#{[1].first})')
+      inspect_source('%(#{[1].first})')
       expect(cop.messages.size).to eq(1)
     end
   end
@@ -73,7 +73,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
     it 'does not register an offense for other delimiters ' \
        'when containing preferred delimiter characters' do
-      inspect_source(cop, '%q([string])')
+      inspect_source('%q([string])')
       expect(cop.offenses).to be_empty
     end
   end
@@ -92,13 +92,13 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
     it 'does not register an offense for other delimiters ' \
        'when containing preferred delimiter characters' do
-      inspect_source(cop, '%Q([string])')
+      inspect_source('%Q([string])')
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for other delimiters ' \
        'when containing preferred delimiter characters in interpolation' do
-      inspect_source(cop, '%Q(#{[1].first})')
+      inspect_source('%Q(#{[1].first})')
       expect(cop.messages.size).to eq(1)
     end
   end
@@ -117,7 +117,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
     it 'does not register an offense for other delimiters ' \
        'when containing preferred delimiter characters' do
-      inspect_source(cop, '%w([some] [words])')
+      inspect_source('%w([some] [words])')
       expect(cop.offenses).to be_empty
     end
   end
@@ -136,13 +136,13 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
     it 'does not register an offense for other delimiters ' \
        'when containing preferred delimiter characters' do
-      inspect_source(cop, '%W([some] [words])')
+      inspect_source('%W([some] [words])')
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for other delimiters ' \
        'when containing preferred delimiter characters in interpolation' do
-      inspect_source(cop, '%W(#{[1].first})')
+      inspect_source('%W(#{[1].first})')
       expect(cop.messages.size).to eq(1)
     end
   end
@@ -161,13 +161,13 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
     it 'does not register an offense for other delimiters ' \
        'when containing preferred delimiter characters' do
-      inspect_source(cop, '%r([regexp])')
+      inspect_source('%r([regexp])')
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for other delimiters ' \
        'when containing preferred delimiter characters in interpolation' do
-      inspect_source(cop, '%r(#{[1].first})')
+      inspect_source('%r(#{[1].first})')
       expect(cop.messages.size).to eq(1)
     end
   end
@@ -199,7 +199,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
     it 'registers an offense for other delimiters ' \
        'when containing preferred delimiter characters in interpolation' do
-      inspect_source(cop, '%I(#{[1].first})')
+      inspect_source('%I(#{[1].first})')
       expect(cop.messages).to eq(
         ['`%I`-literals should be delimited by `[` and `]`.']
       )
@@ -233,13 +233,13 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
     it 'does not register an offense for other delimiters ' \
        'when containing preferred delimiter characters' do
-      inspect_source(cop, '%x([command])')
+      inspect_source('%x([command])')
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for other delimiters ' \
        'when containing preferred delimiter characters in interpolation' do
-      inspect_source(cop, '%x(#{[1].first})')
+      inspect_source('%x(#{[1].first})')
       expect(cop.messages.size).to eq(1)
     end
   end

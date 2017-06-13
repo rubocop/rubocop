@@ -20,7 +20,7 @@ describe RuboCop::Cop::Layout::SpaceInsideArrayPercentLiteral do
 
         it 'registers an offense for unnecessary spaces' do
           source = code_example('1   2')
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.offenses.size).to eq(1)
           expect(cop.highlights).to eq(['   '])
           expect(cop.messages).to eq([message])
@@ -29,30 +29,30 @@ describe RuboCop::Cop::Layout::SpaceInsideArrayPercentLiteral do
 
         it 'registers an offense for multiple spaces between items' do
           source = code_example('1   2   3')
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.offenses.size).to eq(2)
           expect_corrected(source, code_example('1 2 3'))
         end
 
         it 'accepts literals with escaped and additional spaces' do
           source = code_example('a\   b \ c')
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.offenses.size).to eq(1)
           expect_corrected(source, code_example('a\  b \ c'))
         end
 
         it 'accepts literals without additional spaces' do
-          inspect_source(cop, code_example('a b c'))
+          inspect_source(code_example('a b c'))
           expect(cop.messages).to be_empty
         end
 
         it 'accepts literals with escaped spaces' do
-          inspect_source(cop, code_example('a\  b\ \  c'))
+          inspect_source(code_example('a\  b\ \  c'))
           expect(cop.messages).to be_empty
         end
 
         it 'accepts multi-line literals' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             %#{type}(
               a
               b
@@ -63,7 +63,7 @@ describe RuboCop::Cop::Layout::SpaceInsideArrayPercentLiteral do
         end
 
         it 'accepts multi-line literals within a method' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             def foo
               %#{type}(
                 a
@@ -76,7 +76,7 @@ describe RuboCop::Cop::Layout::SpaceInsideArrayPercentLiteral do
         end
 
         it 'accepts newlines and additional following alignment spaces' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             %#{type}(a b
                c)
           RUBY

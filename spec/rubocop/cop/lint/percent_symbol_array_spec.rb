@@ -9,7 +9,7 @@ describe RuboCop::Cop::Lint::PercentSymbolArray do
   end
 
   def expect_offense(source)
-    inspect_source(cop, source)
+    inspect_source(source)
 
     expect(cop.offenses.map(&:message)).to eq([message])
     expect(cop.highlights).to eq([source])
@@ -18,13 +18,13 @@ describe RuboCop::Cop::Lint::PercentSymbolArray do
   context 'detecting colons or commas in a %i/%I string' do
     %w[i I].each do |char|
       it 'accepts tokens without colons or commas' do
-        inspect_source(cop, "%#{char}(foo bar baz)")
+        inspect_source("%#{char}(foo bar baz)")
 
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts likely false positive $,' do
-        inspect_source(cop, "%#{char}{$,}")
+        inspect_source("%#{char}{$,}")
 
         expect(cop.offenses).to be_empty
       end

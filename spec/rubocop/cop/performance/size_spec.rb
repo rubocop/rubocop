@@ -5,14 +5,14 @@ describe RuboCop::Cop::Performance::Size do
 
   it 'does not register an offense when calling count ' \
      'as a stand alone method' do
-    inspect_source(cop, 'count(items)')
+    inspect_source('count(items)')
 
     expect(cop.messages).to be_empty
   end
 
   it 'does not register an offense when calling count on an object ' \
      'other than an array or a hash' do
-    inspect_source(cop, 'object.count(items)')
+    inspect_source('object.count(items)')
 
     expect(cop.messages).to be_empty
   end

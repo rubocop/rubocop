@@ -4,7 +4,7 @@ describe RuboCop::Cop::Performance::TimesMap do
   subject(:cop) { described_class.new }
 
   before do
-    inspect_source(cop, source)
+    inspect_source(source)
   end
 
   shared_examples 'map_or_collect' do |method|

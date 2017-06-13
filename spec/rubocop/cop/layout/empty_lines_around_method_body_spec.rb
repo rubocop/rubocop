@@ -4,7 +4,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for method body starting with a blank' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       def some_method
 
         do_something
@@ -42,7 +42,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody do
   end
 
   it 'registers an offense for class method body starting with a blank' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       def Test.some_method
 
         do_something
@@ -67,7 +67,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody do
   end
 
   it 'registers an offense for method body ending with a blank' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       def some_method
         do_something
 
@@ -78,7 +78,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody do
   end
 
   it 'registers an offense for class method body ending with a blank' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       def Test.some_method
         do_something
 

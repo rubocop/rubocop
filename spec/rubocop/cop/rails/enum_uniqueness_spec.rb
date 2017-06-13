@@ -6,7 +6,7 @@ describe RuboCop::Cop::Rails::EnumUniqueness, :config do
   context 'when array syntax is used' do
     context 'with a single duplicated enum value' do
       it 'registers an offense' do
-        inspect_source(cop, 'enum status: [:active, :archived, :active]')
+        inspect_source('enum status: [:active, :archived, :active]')
 
         msg = 'Duplicate value `:active` found in `status` enum declaration.'
         expect(cop.offenses.size).to eq(1)
@@ -34,7 +34,7 @@ describe RuboCop::Cop::Rails::EnumUniqueness, :config do
   context 'when hash syntax is used' do
     context 'with a single duplicated enum value' do
       it 'registers an offense' do
-        inspect_source(cop, 'enum status: { active: 0, archived: 0 }')
+        inspect_source('enum status: { active: 0, archived: 0 }')
 
         msg = 'Duplicate value `0` found in `status` enum declaration.'
         expect(cop.offenses.size).to eq(1)

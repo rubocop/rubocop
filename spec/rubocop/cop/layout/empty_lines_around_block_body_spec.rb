@@ -9,8 +9,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
       let(:cop_config) { { 'EnforcedStyle' => 'no_empty_lines' } }
 
       it 'registers an offense for block body starting with a blank' do
-        inspect_source(cop,
-                       ["some_method #{open}",
+        inspect_source(["some_method #{open}",
                         '',
                         '  do_something',
                         close])
@@ -28,8 +27,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
       end
 
       it 'registers an offense for block body ending with a blank' do
-        inspect_source(cop,
-                       ["some_method #{open}",
+        inspect_source(["some_method #{open}",
                         '  do_something',
                         '',
                         close])
@@ -38,8 +36,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
       end
 
       it 'accepts block body starting with a line with spaces' do
-        inspect_source(cop,
-                       ["some_method #{open}",
+        inspect_source(["some_method #{open}",
                         '  ',
                         '  do_something',
                         close])
@@ -60,8 +57,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
 
       it 'registers an offense for block body not starting or ending with a ' \
          'blank' do
-        inspect_source(cop,
-                       ["some_method #{open}",
+        inspect_source(["some_method #{open}",
                         '  do_something',
                         close])
         expect(cop.messages).to eq(['Empty line missing at block body '\

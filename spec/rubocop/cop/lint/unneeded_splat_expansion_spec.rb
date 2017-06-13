@@ -34,7 +34,7 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
 
   shared_examples 'splat literal assignment' do |literal|
     it 'registers an offense for ' do
-      inspect_source(cop, "a = *#{literal}")
+      inspect_source("a = *#{literal}")
 
       expect(cop.messages).to eq([message])
       expect(cop.highlights).to eq(["*#{literal}"])
@@ -44,7 +44,7 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
   shared_examples 'array splat expansion' do |literal|
     context 'method parameters' do
       it 'registers an offense' do
-        inspect_source(cop, "array.push(*#{literal})")
+        inspect_source("array.push(*#{literal})")
 
         expect(cop.messages).to eq([array_param_message])
         expect(cop.highlights).to eq(["*#{literal}"])
@@ -57,7 +57,7 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
   shared_examples 'splat expansion' do |literal|
     context 'method parameters' do
       it 'registers an offense' do
-        inspect_source(cop, "array.push(*#{literal})")
+        inspect_source("array.push(*#{literal})")
 
         expect(cop.messages).to eq([message])
         expect(cop.highlights).to eq(["*#{literal}"])
@@ -169,7 +169,7 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
 
   it 'registers an offense for the expansion of an array literal' \
     'inside of an array literal' do
-    inspect_source(cop, '[1, 2, *[3, 4, 5], 6, 7]')
+    inspect_source('[1, 2, *[3, 4, 5], 6, 7]')
 
     expect(cop.messages).to eq([array_param_message])
     expect(cop.highlights).to eq(['*[3, 4, 5]'])
@@ -342,7 +342,7 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
     context 'arrays being expanded with %i variants using splat expansion' do
       it 'registers an offense for an array literal being expanded in a ' \
         'when condition' do
-        inspect_source(cop, <<-'RUBY'.strip_indent)
+        inspect_source(<<-'RUBY'.strip_indent)
           case foo
           when *%i(first second)
             bar

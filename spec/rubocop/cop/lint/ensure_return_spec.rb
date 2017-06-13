@@ -28,7 +28,7 @@ describe RuboCop::Cop::Lint::EnsureReturn do
 
   it 'does not check when ensure block has no body' do
     expect do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         begin
           something
         ensure

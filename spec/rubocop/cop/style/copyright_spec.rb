@@ -5,12 +5,12 @@ def unindent(s)
 end
 
 def expect_no_copyright_offense(cop, source)
-  inspect_source(cop, source)
+  inspect_source(source)
   expect(cop.offenses).to be_empty
 end
 
 def expect_copyright_offense(cop, source)
-  inspect_source(cop, source)
+  inspect_source(source)
   expect(cop.offenses.size).to eq(1)
 end
 

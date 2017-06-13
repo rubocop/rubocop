@@ -5,13 +5,13 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
   shared_examples 'all variable types' do |variable|
     it 'registers an offense assigning any variable type to ternary' do
-      inspect_source(cop, "#{variable} = foo? ? 1 : 2")
+      inspect_source("#{variable} = foo? ? 1 : 2")
 
       expect(cop.messages).to eq([described_class::ASSIGN_TO_CONDITION_MSG])
     end
 
     it 'allows assigning any variable type inside ternary' do
-      inspect_source(cop, "foo? ? #{variable} = 1 : #{variable} = 2")
+      inspect_source("foo? ? #{variable} = 1 : #{variable} = 2")
 
       expect(cop.offenses).to be_empty
     end
@@ -24,7 +24,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                         2
                       end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages).to eq([described_class::ASSIGN_TO_CONDITION_MSG])
     end
@@ -39,7 +39,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                         3
                       end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages).to eq([described_class::ASSIGN_TO_CONDITION_MSG])
     end
@@ -53,7 +53,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                         something_else
                       end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages).to eq([described_class::ASSIGN_TO_CONDITION_MSG])
     end
@@ -67,7 +67,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           #{variable}, #{variable} = something_else
         end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages).to be_empty
     end
@@ -80,7 +80,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           #{variable} = 2
         end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.offenses).to be_empty
     end
@@ -91,7 +91,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                         1
                       end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.offenses).to be_empty
     end
@@ -104,7 +104,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                         2
                       end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages).to eq([described_class::ASSIGN_TO_CONDITION_MSG])
     end
@@ -117,7 +117,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           #{variable} = 2
         end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.offenses).to be_empty
     end
@@ -131,7 +131,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                         2
                       end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages).to eq([described_class::ASSIGN_TO_CONDITION_MSG])
     end
@@ -145,7 +145,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           #{variable} = 2
         end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.offenses).to be_empty
     end
@@ -158,7 +158,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           bar
         end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.offenses).to be_empty
     end
@@ -241,7 +241,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
   shared_examples 'all assignment types' do |assignment|
     it 'registers an offense for any assignment to ternary' do
-      inspect_source(cop, "bar #{assignment} (foo? ? 1 : 2)")
+      inspect_source("bar #{assignment} (foo? ? 1 : 2)")
 
       expect(cop.messages).to eq([described_class::ASSIGN_TO_CONDITION_MSG])
     end
@@ -254,7 +254,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                         2
                       end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages).to eq([described_class::ASSIGN_TO_CONDITION_MSG])
     end
@@ -265,7 +265,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                         1
                       end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.offenses).to be_empty
     end
@@ -278,7 +278,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                         2
                       end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages).to eq([described_class::ASSIGN_TO_CONDITION_MSG])
     end
@@ -292,7 +292,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                         2
                       end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages).to eq([described_class::ASSIGN_TO_CONDITION_MSG])
     end
@@ -377,7 +377,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                         2
                       end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages).to eq(expected)
     end
@@ -392,7 +392,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                         2
                       end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages).to eq(expected)
     end
@@ -413,7 +413,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                         4
                       end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages).to eq(expected)
     end
@@ -428,7 +428,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                         2
                       end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages).to eq(expected)
     end
@@ -444,7 +444,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                         2
                       end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages).to eq(expected)
     end
@@ -461,7 +461,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                         2
                       end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages).to eq(expected)
     end
@@ -476,7 +476,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                         2
                       end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages).to eq(expected)
     end
@@ -492,7 +492,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                         2
                       end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages).to eq(expected)
     end
@@ -726,7 +726,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
     it 'registers an offense for assignment using a method that ends with ' \
        'an equal sign' do
-      inspect_source(cop, 'self.attributes = foo? ? 1 : 2')
+      inspect_source('self.attributes = foo? ? 1 : 2')
 
       expect(cop.messages).to eq([described_class::ASSIGN_TO_CONDITION_MSG])
     end
@@ -739,7 +739,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                     2
                   end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages).to eq([described_class::ASSIGN_TO_CONDITION_MSG])
     end
@@ -750,7 +750,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
               else 2
               end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages).to eq([described_class::ASSIGN_TO_CONDITION_MSG])
     end
@@ -762,7 +762,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
               else 2
               end
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages).to eq([described_class::ASSIGN_TO_CONDITION_MSG])
     end

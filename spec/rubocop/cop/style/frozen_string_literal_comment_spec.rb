@@ -33,7 +33,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for not having a frozen string literal comment ' \
        'on the top line' do
-      inspect_source(cop, 'puts 1')
+      inspect_source('puts 1')
 
       expect(cop.messages)
         .to eq(['Missing magic comment `# frozen_string_literal: true`.'])
@@ -41,7 +41,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for not having a frozen string literal comment ' \
        'under a shebang' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         puts 1
       RUBY
@@ -68,7 +68,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for not having a frozen string literal comment ' \
        'under an encoding comment' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         # encoding: utf-8
         puts 1
       RUBY
@@ -95,7 +95,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for not having a frozen string literal comment ' \
        'under a shebang and an encoding comment' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         # encoding: utf-8
         puts 1
@@ -107,7 +107,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'accepts a frozen string literal comment below shebang and encoding ' \
        'comments' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         # encoding: utf-8
         # frozen_string_literal: true
@@ -119,7 +119,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'accepts a disabled frozen string literal comment below shebang and ' \
        'encoding comments' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         # encoding: utf-8
         # frozen_string_literal: false
@@ -131,7 +131,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'accepts a frozen string literal comment below shebang above an ' \
        'encoding comments' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         # frozen_string_literal: true
         # encoding: utf-8
@@ -143,7 +143,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'accepts a disabled frozen string literal comment below shebang above ' \
        'an encoding comments' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         # frozen_string_literal: false
         # encoding: utf-8
@@ -299,7 +299,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
         it 'accepts freezing a string when there is a frozen string literal ' \
            'comment' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             # frozen_string_literal: true
             "x".freeze
           RUBY
@@ -309,7 +309,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
         it 'accepts shoveling into a string when there is a frozen string ' \
            'literal comment' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             # frozen_string_literal: true
             "x" << "y"
           RUBY
@@ -386,7 +386,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for a frozen string literal comment ' \
       'on the top line' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         # frozen_string_literal: true
         puts 1
       RUBY
@@ -397,7 +397,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for a disabled frozen string literal comment ' \
       'on the top line' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         # frozen_string_literal: false
         puts 1
       RUBY
@@ -412,7 +412,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'accepts not having not having a frozen string literal comment ' \
       'under a shebang' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         puts 1
       RUBY
@@ -422,7 +422,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for a frozen string literal comment ' \
       'below a shebang comment' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         # frozen_string_literal: true
         puts 1
@@ -434,7 +434,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for a disabled frozen string literal ' \
       'below a shebang comment' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         # frozen_string_literal: false
         puts 1
@@ -446,7 +446,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'allows not having a frozen string literal comment ' \
       'under an encoding comment' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         # encoding: utf-8
         puts 1
       RUBY
@@ -456,7 +456,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for a frozen string literal comment below ' \
       'an encoding comment' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         # encoding: utf-8
         # frozen_string_literal: true
         puts 1
@@ -468,7 +468,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for a dsabled frozen string literal below ' \
       'an encoding comment' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         # encoding: utf-8
         # frozen_string_literal: false
         puts 1
@@ -480,7 +480,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'allows not having a frozen string literal comment ' \
       'under a shebang and an encoding comment' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         # encoding: utf-8
         puts 1
@@ -491,7 +491,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for a frozen string literal comment ' \
       'below shebang and encoding comments' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         # encoding: utf-8
         # frozen_string_literal: true
@@ -504,7 +504,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for a disabled frozen string literal comment ' \
       'below shebang and encoding comments' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         # encoding: utf-8
         # frozen_string_literal: false
@@ -517,7 +517,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for a frozen string literal comment ' \
       'below shebang above an encoding comments' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         # frozen_string_literal: true
         # encoding: utf-8
@@ -530,7 +530,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for a disabled frozen string literal comment ' \
       'below shebang above an encoding comments' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         # frozen_string_literal: false
         # encoding: utf-8

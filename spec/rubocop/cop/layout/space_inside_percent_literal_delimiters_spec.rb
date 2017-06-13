@@ -20,7 +20,7 @@ describe RuboCop::Cop::Layout::SpaceInsidePercentLiteralDelimiters do
 
         it 'registers an offense for unnecessary spaces' do
           source = code_example(' 1 2  ')
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.offenses.size).to eq(2)
           expect(cop.messages.uniq).to eq([message])
           expect(cop.highlights).to eq([' ', '  '])
@@ -29,37 +29,37 @@ describe RuboCop::Cop::Layout::SpaceInsidePercentLiteralDelimiters do
 
         it 'registers an offense for spaces after first delimiter' do
           source = code_example(' 1 2')
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.offenses.size).to eq(1)
           expect_corrected(source, code_example('1 2'))
         end
 
         it 'registers an offense for spaces before final delimiter' do
           source = code_example('1 2 ')
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.offenses.size).to eq(1)
           expect_corrected(source, code_example('1 2'))
         end
 
         it 'registers an offense for literals with escaped and other spaces' do
           source = code_example(' \ a b c\  ')
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.offenses.size).to eq(2)
           expect_corrected(source, code_example('\ a b c\ '))
         end
 
         it 'accepts literals without additional spaces' do
-          inspect_source(cop, code_example('a b c'))
+          inspect_source(code_example('a b c'))
           expect(cop.messages).to be_empty
         end
 
         it 'accepts literals with escaped spaces' do
-          inspect_source(cop, code_example('\ a b c\ '))
+          inspect_source(code_example('\ a b c\ '))
           expect(cop.messages).to be_empty
         end
 
         it 'accepts multi-line literals' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             %#{type}(
               a
               b
@@ -70,7 +70,7 @@ describe RuboCop::Cop::Layout::SpaceInsidePercentLiteralDelimiters do
         end
 
         it 'accepts multi-line literals within a method' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             def foo
               %#{type}(
                 a
@@ -83,7 +83,7 @@ describe RuboCop::Cop::Layout::SpaceInsidePercentLiteralDelimiters do
         end
 
         it 'accepts newlines and additional following alignment spaces' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             %#{type}(a b
                c)
           RUBY
@@ -91,7 +91,7 @@ describe RuboCop::Cop::Layout::SpaceInsidePercentLiteralDelimiters do
         end
 
         it 'accepts spaces between entries' do
-          inspect_source(cop, code_example('a  b  c'))
+          inspect_source(code_example('a  b  c'))
           expect(cop.messages).to be_empty
         end
       end

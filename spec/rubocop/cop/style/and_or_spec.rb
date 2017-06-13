@@ -11,7 +11,7 @@ describe RuboCop::Cop::Style::AndOr, :config do
 
     %w[and or].each do |operator|
       it "accepts \"#{operator}\" outside of conditional" do
-        inspect_source(cop, "x = a + b #{operator} return x")
+        inspect_source("x = a + b #{operator} return x")
         expect(cop.offenses).to be_empty
       end
 
@@ -29,7 +29,7 @@ describe RuboCop::Cop::Style::AndOr, :config do
           }
           source = format(snippet_format, elements)
 
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.offenses.size).to eq(1)
         end
 
@@ -40,7 +40,7 @@ describe RuboCop::Cop::Style::AndOr, :config do
           }
           source = format(snippet_format, elements)
 
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.offenses).to be_empty
         end
       end
@@ -48,12 +48,12 @@ describe RuboCop::Cop::Style::AndOr, :config do
 
     %w[&& ||].each do |operator|
       it "accepts #{operator} inside of conditional" do
-        inspect_source(cop, "test if a #{operator} b")
+        inspect_source("test if a #{operator} b")
         expect(cop.offenses).to be_empty
       end
 
       it "accepts #{operator} outside of conditional" do
-        inspect_source(cop, "x = a #{operator} b")
+        inspect_source("x = a #{operator} b")
         expect(cop.offenses).to be_empty
       end
     end

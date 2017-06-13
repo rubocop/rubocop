@@ -6,7 +6,7 @@ describe RuboCop::Cop::Layout::SpaceAroundKeyword do
   shared_examples 'missing before' do |highlight, expr, correct|
     it 'registers an offense for missing space before keyword in ' \
        "`#{expr}`" do
-      inspect_source(cop, expr)
+      inspect_source(expr)
       expect(cop.messages)
         .to eq(["Space before keyword `#{highlight}` is missing."])
       expect(cop.highlights).to eq([highlight])
@@ -20,7 +20,7 @@ describe RuboCop::Cop::Layout::SpaceAroundKeyword do
   shared_examples 'missing after' do |highlight, expr, correct|
     it 'registers an offense for missing space after keyword in ' \
        "`#{expr}`" do
-      inspect_source(cop, expr)
+      inspect_source(expr)
       expect(cop.messages)
         .to eq(["Space after keyword `#{highlight}` is missing."])
       expect(cop.highlights).to eq([highlight])
@@ -33,21 +33,21 @@ describe RuboCop::Cop::Layout::SpaceAroundKeyword do
 
   shared_examples 'accept before' do |after, expr|
     it "accepts `#{after}` before keyword in `#{expr}`" do
-      inspect_source(cop, expr)
+      inspect_source(expr)
       expect(cop.offenses).to be_empty
     end
   end
 
   shared_examples 'accept after' do |after, expr|
     it "accepts `#{after}` after keyword in `#{expr}`" do
-      inspect_source(cop, expr)
+      inspect_source(expr)
       expect(cop.offenses).to be_empty
     end
   end
 
   shared_examples 'accept around' do |after, expr|
     it "accepts `#{after}` around keyword in `#{expr}`" do
-      inspect_source(cop, expr)
+      inspect_source(expr)
       expect(cop.offenses).to be_empty
     end
   end

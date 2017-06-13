@@ -20,7 +20,7 @@ describe RuboCop::Cop::Lint::InvalidCharacterLiteral do
     it 'registers an offense' do
       pending 'Is there a way to emit this warning without syntax errors?'
 
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.message)

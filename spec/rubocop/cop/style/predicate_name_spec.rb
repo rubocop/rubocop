@@ -11,7 +11,7 @@ describe RuboCop::Cop::Style::PredicateName, :config do
 
     %w[has is].each do |prefix|
       it 'registers an offense when method name starts with known prefix' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           def #{prefix}_attr
             # ...
           end
@@ -38,7 +38,7 @@ describe RuboCop::Cop::Style::PredicateName, :config do
 
     %w[has is].each do |prefix|
       it 'registers an offense when method name starts with known prefix' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           def #{prefix}_attr
             # ...
           end

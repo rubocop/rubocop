@@ -12,7 +12,7 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
       end
 
       it 'registers an offense for prefixes `0` and `0O`' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           a = 01234
           b(0O1234)
         RUBY
@@ -47,7 +47,7 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
       end
 
       it 'registers an offense for prefix `0O` and `0o`' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           a = 0O1234
           b(0o1234)
         RUBY
@@ -81,7 +81,7 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
 
   context 'hex literals' do
     it 'registers an offense for uppercase prefix' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a = 0X1AC
         b(0XABC)
       RUBY
@@ -102,7 +102,7 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
 
   context 'binary literals' do
     it 'registers an offense for uppercase prefix' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a = 0B10101
         b(0B111)
       RUBY
@@ -123,7 +123,7 @@ describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
 
   context 'decimal literals' do
     it 'registers an offense for prefixes' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a = 0d1234
         b(0D1234)
       RUBY

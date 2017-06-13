@@ -117,7 +117,7 @@ describe RuboCop::Cop::Style::SignalException, :config do
 
     it 'registers an offense for `raise` and `fail` with `Kernel` as ' \
        'explicit receiver' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def test
           Kernel.raise
         rescue Exception
@@ -142,7 +142,7 @@ describe RuboCop::Cop::Style::SignalException, :config do
     end
 
     it 'registers one offense for each raise' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         cop.stub(:on_def) { raise RuntimeError }
         cop.stub(:on_def) { raise RuntimeError }
       RUBY
@@ -152,7 +152,7 @@ describe RuboCop::Cop::Style::SignalException, :config do
     end
 
     it 'is not confused by nested begin/rescue' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         begin
           raise
           begin

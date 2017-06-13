@@ -16,7 +16,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
 
   shared_examples 'common' do
     it 'accepts indented operands in ordinary statement' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a +
           b
       RUBY
@@ -24,7 +24,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'accepts indented operands inside and outside a block' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a = b.map do |c|
           c +
             b +
@@ -38,7 +38,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'registers an offense for no indentation of second line' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a +
         b
       RUBY
@@ -48,7 +48,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'registers an offense for one space indentation of second line' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a +
          b
       RUBY
@@ -77,7 +77,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'registers an offense for three spaces indentation of second line' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a ||
            b
         c and
@@ -89,7 +89,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'registers an offense for extra indentation of third line' do
-      inspect_source(cop, <<-RUBY.strip_margin('|'))
+      inspect_source(<<-RUBY.strip_margin('|'))
         |   a ||
         |     b ||
         |       c
@@ -101,7 +101,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
 
     it 'registers an offense for the emacs ruby-mode 1.1 indentation of an ' \
        'expression in an array' do
-      inspect_source(cop, <<-RUBY.strip_margin('|'))
+      inspect_source(<<-RUBY.strip_margin('|'))
         |  [
         |   a +
         |   b
@@ -113,7 +113,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'accepts indented operands in an array' do
-      inspect_source(cop, <<-RUBY.strip_margin('|'))
+      inspect_source(<<-RUBY.strip_margin('|'))
         |    dm[i][j] = [
         |      dm[i-1][j-1] +
         |        (this[j-1] == that[i-1] ? 0 : sub),
@@ -125,7 +125,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'accepts two spaces indentation in assignment of local variable' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a =
           'foo' +
           'bar'
@@ -134,7 +134,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'accepts two spaces indentation in assignment of array element' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a['test'] =
           'foo' +
           'bar'
@@ -143,7 +143,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'accepts two spaces indentation of second line' do
-      inspect_source(cop, <<-RUBY.strip_margin('|'))
+      inspect_source(<<-RUBY.strip_margin('|'))
         |   a ||
         |     b
       RUBY
@@ -151,7 +151,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'accepts no extra indentation of third line' do
-      inspect_source(cop, <<-RUBY.strip_margin('|'))
+      inspect_source(<<-RUBY.strip_margin('|'))
         |   a &&
         |     b &&
         |     c
@@ -160,7 +160,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'accepts indented operands in for body' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         for x in a
           something &&
             something_else
@@ -170,7 +170,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'accepts alignment inside a grouped expression' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         (a +
          b)
       RUBY
@@ -178,7 +178,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'accepts an expression where the first operand spans multiple lines' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         subject.each do |item|
           result = resolve(locale) and return result
         end and nil
@@ -187,7 +187,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'accepts any indentation of parameters to #[]' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         payment = Models::IncomingPayments[
                 id:      input['incoming-payment-id'],
                    user_id: @user[:id]]
@@ -197,7 +197,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
 
     it 'registers an offense for an unindented multiline operation that is ' \
        'the left operand in another operation' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a +
         b < 3
       RUBY
@@ -222,7 +222,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'registers an offense for indented operands in if condition' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         if a +
             b
           something
@@ -258,7 +258,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'registers an offense for indented second part of string' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         it "should convert " +
           "a to " +
           "b" do
@@ -271,7 +271,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'registers an offense for indented operand in second argument' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         puts a, 1 +
           2
       RUBY
@@ -283,8 +283,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
 
     it 'registers an offense for misaligned string operand when the first ' \
        'operand has backslash continuation' do
-      inspect_source(cop,
-                     ['def f',
+      inspect_source(['def f',
                       "  flash[:error] = 'Here is a string ' \\",
                       "                  'That spans' <<",
                       "    'multiple lines'",
@@ -304,7 +303,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'registers an offense for misaligned operands in unless condition' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         unless a +
           b
           something
@@ -325,7 +324,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     ].each do |article, keyword|
       it "registers an offense for misaligned operands in #{keyword} " \
          'condition' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           #{keyword} a or
               b
             something
@@ -395,7 +394,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'registers an offense for aligned operands in if condition' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         if a +
            b
           something
@@ -457,7 +456,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
       %w[an until]
     ].each do |article, keyword|
       it "accepts double indentation of #{keyword} condition" do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           #{keyword} receiver.nil? &&
               !args.empty? &&
               BLACKLIST.include?(method_name)
@@ -471,7 +470,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
 
       it "registers an offense for a 2 space indentation of #{keyword} " \
          'condition' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           #{keyword} receiver.nil? &&
             !args.empty? &&
             BLACKLIST.include?(method_name)
@@ -485,7 +484,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
       end
 
       it "accepts indented operands in #{keyword} body" do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           #{keyword} a
             something &&
               something_else
@@ -497,7 +496,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
 
     %w[unless if].each do |keyword|
       it "accepts special indentation of return #{keyword} condition" do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           return #{keyword} receiver.nil? &&
               !args.empty? &&
               BLACKLIST.include?(method_name)
@@ -532,7 +531,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'registers an offense for correct + unrecognized style' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a ||
           b
         c and
@@ -594,7 +593,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
           # normal code indentation is 2 spaces, and we have configured
           # multiline method indentation to 6 spaces
           # so in this case, 8 spaces are required
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             #{keyword} receiver.nil? &&
                     !args.empty? &&
                     BLACKLIST.include?(method_name)
@@ -608,7 +607,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
 
         it "registers an offense for a 4 space indentation of #{keyword} " \
            'condition' do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             #{keyword} receiver.nil? &&
                 !args.empty? &&
                 BLACKLIST.include?(method_name)
@@ -622,7 +621,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
         end
 
         it "accepts indented operands in #{keyword} body" do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             #{keyword} a
               something &&
                     something_else

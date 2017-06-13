@@ -6,7 +6,7 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
 
   shared_examples 'variables' do |variable|
     it 'does not register an offense for % called on a variable' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         #{variable} = '%s'
         #{variable} % [foo]
       RUBY
@@ -15,7 +15,7 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
     end
 
     it 'does not register an offense for format called on a variable' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         #{variable} = '%s'
         format(#{variable}, foo)
       RUBY
@@ -24,7 +24,7 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
     end
 
     it 'does not register an offense for format called on a variable' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         #{variable} = '%s'
         sprintf(#{variable}, foo)
       RUBY
@@ -41,7 +41,7 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
 
   it 'registers an offense when calling Kernel.format ' \
      'and the fields do not match' do
-    inspect_source(cop, 'Kernel.format("%s %s", 1)')
+    inspect_source('Kernel.format("%s %s", 1)')
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages).to eq(
       ["Number of arguments (1) to `format` doesn't match the number of " \
@@ -51,7 +51,7 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
 
   it 'registers an offense when calling Kernel.sprintf ' \
      'and the fields do not match' do
-    inspect_source(cop, 'Kernel.sprintf("%s %s", 1)')
+    inspect_source('Kernel.sprintf("%s %s", 1)')
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages).to eq(
       ["Number of arguments (1) to `sprintf` doesn't match the number of " \
@@ -60,7 +60,7 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
   end
 
   it 'registers an offense when there are less arguments than expected' do
-    inspect_source(cop, 'format("%s %s", 1)')
+    inspect_source('format("%s %s", 1)')
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages).to eq(
       ["Number of arguments (1) to `format` doesn't match the number of " \
@@ -69,7 +69,7 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
   end
 
   it 'registers an offense when there are more arguments than expected' do
-    inspect_source(cop, 'format("%s %s", 1, 2, 3)')
+    inspect_source('format("%s %s", 1, 2, 3)')
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages).to eq(
       ["Number of arguments (3) to `format` doesn't match the number of " \
@@ -90,7 +90,7 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
   end
 
   it 'registers offense with sprintf' do
-    inspect_source(cop, 'sprintf("%s %s", 1, 2, 3)')
+    inspect_source('sprintf("%s %s", 1, 2, 3)')
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages).to eq(
       ["Number of arguments (3) to `sprintf` doesn't match the number of " \
@@ -103,7 +103,7 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
   end
 
   it 'registers an offense for String#%' do
-    inspect_source(cop, '"%s %s" % [1, 2, 3]')
+    inspect_source('"%s %s" % [1, 2, 3]')
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages).to eq(
       ["Number of arguments (3) to `String#%` doesn't match the number of " \
@@ -129,11 +129,11 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
     end
 
     it 'does register an offense when args count is more than expected' do
-      inspect_source(cop, 'puts "%s, %s, %s" % [1, 2, 3, 4, *arr]')
+      inspect_source('puts "%s, %s, %s" % [1, 2, 3, 4, *arr]')
       expect(cop.offenses).not_to be_empty
-      inspect_source(cop, 'format("%s, %s, %s", 1, 2, 3, 4, *arr)')
+      inspect_source('format("%s, %s, %s", 1, 2, 3, 4, *arr)')
       expect(cop.offenses).not_to be_empty
-      inspect_source(cop, 'sprintf("%s, %s, %s", 1, 2, 3, 4, *arr)')
+      inspect_source('sprintf("%s, %s, %s", 1, 2, 3, 4, *arr)')
       expect(cop.offenses).not_to be_empty
     end
   end
@@ -175,7 +175,7 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
   end
 
   it 'registers an offense if extra argument for dynamic width not given' do
-    inspect_source(cop, 'format("%*d", id)')
+    inspect_source('format("%*d", id)')
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages).to eq(["Number of arguments (1) to `format` doesn't " \
                                 'match the number of fields (2).'])
@@ -203,7 +203,7 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
 
   it 'finds faults even when the string looks like a HEREDOC' do
     # heredocs are ignored at the moment
-    inspect_source(cop, 'format("<< %s bleh", 1, 2)')
+    inspect_source('format("<< %s bleh", 1, 2)')
     expect(cop.offenses.size).to eq(1)
   end
 

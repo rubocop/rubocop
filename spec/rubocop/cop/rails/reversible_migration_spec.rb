@@ -17,7 +17,7 @@ describe RuboCop::Cop::Rails::ReversibleMigration, :config do
     let(:code) { code }
 
     it "accepts usages of #{name}" do
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.offenses).to be_empty
     end
@@ -27,7 +27,7 @@ describe RuboCop::Cop::Rails::ReversibleMigration, :config do
     let(:code) { code }
 
     it "registers an offense for #{name}" do
-      inspect_source(cop, source)
+      inspect_source(source)
 
       expect(cop.messages).to eq(["#{name} is not reversible."])
     end

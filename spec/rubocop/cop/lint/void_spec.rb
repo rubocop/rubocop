@@ -5,7 +5,7 @@ describe RuboCop::Cop::Lint::Void do
 
   described_class::OPS.each do |op|
     it "registers an offense for void op #{op} if not on last line" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a #{op} b
         a #{op} b
         a #{op} b
@@ -16,7 +16,7 @@ describe RuboCop::Cop::Lint::Void do
 
   described_class::OPS.each do |op|
     it "accepts void op #{op} if on last line" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         something
         a #{op} b
       RUBY
@@ -26,15 +26,14 @@ describe RuboCop::Cop::Lint::Void do
 
   described_class::OPS.each do |op|
     it "accepts void op #{op} by itself without a begin block" do
-      inspect_source(cop, "a #{op} b")
+      inspect_source("a #{op} b")
       expect(cop.offenses).to be_empty
     end
   end
 
   %w[var @var @@var VAR $var].each do |var|
     it "registers an offense for void var #{var} if not on last line" do
-      inspect_source(cop,
-                     ["#{var} = 5",
+      inspect_source(["#{var} = 5",
                       var,
                       'top'])
       expect(cop.offenses.size).to eq(1)
@@ -43,8 +42,7 @@ describe RuboCop::Cop::Lint::Void do
 
   %w(1 2.0 :test /test/ [1] {}).each do |lit|
     it "registers an offense for void lit #{lit} if not on last line" do
-      inspect_source(cop,
-                     [lit,
+      inspect_source([lit,
                       'top'])
       expect(cop.offenses.size).to eq(1)
     end

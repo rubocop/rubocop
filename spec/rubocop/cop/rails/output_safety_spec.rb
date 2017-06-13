@@ -7,7 +7,7 @@ describe RuboCop::Cop::Rails::OutputSafety do
     source = <<-RUBY.strip_indent
       foo.safe_concat('bar')
     RUBY
-    inspect_source(cop, source)
+    inspect_source(source)
     expect(cop.offenses.size).to eq(1)
   end
 
@@ -17,7 +17,7 @@ describe RuboCop::Cop::Rails::OutputSafety do
       foo.html_safe
       "foo".html_safe
     RUBY
-    inspect_source(cop, source)
+    inspect_source(source)
     expect(cop.offenses.size).to eq(2)
   end
 
@@ -37,7 +37,7 @@ describe RuboCop::Cop::Rails::OutputSafety do
       raw(foo)
       raw "foo"
     RUBY
-    inspect_source(cop, source)
+    inspect_source(source)
     expect(cop.offenses.size).to eq(2)
   end
 
@@ -66,35 +66,35 @@ describe RuboCop::Cop::Rails::OutputSafety do
   it 'does not accept safe_concat methods when wrapped in a safe_join' do
     source = 'safe_join([i18n_text.safe_concat(i18n_text),
               i18n_text.safe_concat(i18n_mode_additional_markup(key))])'
-    inspect_source(cop, source)
+    inspect_source(source)
     expect(cop.offenses.size).to eq(2)
   end
 
   it 'does not accept raw methods when wrapped in a safe_join' do
     source = 'safe_join([raw(i18n_text),
               raw(i18n_mode_additional_markup(key))])'
-    inspect_source(cop, source)
+    inspect_source(source)
     expect(cop.offenses.size).to eq(2)
   end
 
   it 'does not accept html_safe methods when wrapped in a safe_join' do
     source = 'safe_join([i18n_text.html_safe,
               i18n_mode_additional_markup(key).html_safe])'
-    inspect_source(cop, source)
+    inspect_source(source)
     expect(cop.offenses.size).to eq(2)
   end
 
   it 'does not accept html_safe methods wrapped in safe_join not at root' do
     source = 'foo(safe_join([i18n_text.html_safe,
               i18n_mode_additional_markup(key).html_safe]))'
-    inspect_source(cop, source)
+    inspect_source(source)
     expect(cop.offenses.size).to eq(2)
   end
 
   it 'does not accept raw methods wrapped in a safe_join not at root' do
     source = 'foo(safe_join([raw(i18n_text),
               raw(i18n_mode_additional_markup(key))]))'
-    inspect_source(cop, source)
+    inspect_source(source)
     expect(cop.offenses.size).to eq(2)
   end
 end

@@ -8,34 +8,34 @@ describe RuboCop::Cop::Rails::Date, :config do
 
     %w[today current yesterday tomorrow].each do |day|
       it "registers an offense for Date.#{day}" do
-        inspect_source(cop, "Date.#{day}")
+        inspect_source("Date.#{day}")
         expect(cop.offenses.size).to eq(1)
       end
 
       it "registers an offense for ::Date.#{day}" do
-        inspect_source(cop, "::Date.#{day}")
+        inspect_source("::Date.#{day}")
         expect(cop.offenses.size).to eq(1)
       end
 
       it "accepts Some::Date.#{day}" do
-        inspect_source(cop, "Some::Date.#{day}")
+        inspect_source("Some::Date.#{day}")
         expect(cop.offenses).to be_empty
       end
     end
 
     %w[to_time to_time_in_current_zone].each do |method|
       it "registers an offense for ##{method}" do
-        inspect_source(cop, "date.#{method}")
+        inspect_source("date.#{method}")
         expect(cop.offenses.size).to eq(1)
       end
 
       it "accepts variable named #{method}" do
-        inspect_source(cop, "#{method} = 1")
+        inspect_source("#{method} = 1")
         expect(cop.offenses).to be_empty
       end
 
       it "accepts variable #{method} as range end" do
-        inspect_source(cop, "from_time..#{method}")
+        inspect_source("from_time..#{method}")
         expect(cop.offenses).to be_empty
       end
     end
@@ -67,7 +67,7 @@ describe RuboCop::Cop::Rails::Date, :config do
 
     RuboCop::Cop::Rails::TimeZone::ACCEPTED_METHODS.each do |a_method|
       it "registers an offense for val.to_time.#{a_method}" do
-        inspect_source(cop, "val.to_time.#{a_method}")
+        inspect_source("val.to_time.#{a_method}")
         expect(cop.offenses.size).to eq(1)
       end
     end
@@ -78,7 +78,7 @@ describe RuboCop::Cop::Rails::Date, :config do
 
     %w[current yesterday tomorrow].each do |day|
       it "accepts Date.#{day}" do
-        inspect_source(cop, "Date.#{day}")
+        inspect_source("Date.#{day}")
         expect(cop.offenses).to be_empty
       end
     end
@@ -92,7 +92,7 @@ describe RuboCop::Cop::Rails::Date, :config do
 
     RuboCop::Cop::Rails::TimeZone::ACCEPTED_METHODS.each do |a_method|
       it "accepts val.to_time.#{a_method}" do
-        inspect_source(cop, "val.to_time.#{a_method}")
+        inspect_source("val.to_time.#{a_method}")
         expect(cop.offenses).to be_empty
       end
     end

@@ -23,7 +23,7 @@ module RuboCop
     #
     # @example Equivalent assertion without `expect_offense`
     #
-    #     inspect_source(cop, <<-RUBY.strip_indent)
+    #     inspect_source(<<-RUBY.strip_indent)
     #       a do
     #         b
     #       end.c
@@ -51,14 +51,14 @@ module RuboCop
           raise 'Use expect_no_offenses to assert that no offenses are found'
         end
 
-        inspect_source(cop, expected_annotations.plain_source, file)
+        inspect_source(expected_annotations.plain_source, file)
         actual_annotations =
           expected_annotations.with_offense_annotations(cop.offenses)
         expect(actual_annotations.to_s).to eq(expected_annotations.to_s)
       end
 
       def expect_no_offenses(source, file = nil)
-        inspect_source(cop, source, file)
+        inspect_source(source, file)
 
         expect(cop.offenses).to be_empty
       end

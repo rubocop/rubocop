@@ -17,7 +17,7 @@ describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
     let(:source_length) { source.class == String ? 1 : source.length }
 
     it 'registers an offense for any irregular spacing inside the braces' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.messages).to eq([expected_message] * source_length)
     end
 

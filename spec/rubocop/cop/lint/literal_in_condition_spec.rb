@@ -5,7 +5,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
 
   %w(1 2.0 [1] {} :sym :"#{a}").each do |lit|
     it "registers an offense for literal #{lit} in if" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         if #{lit}
           top
         end
@@ -14,7 +14,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
     end
 
     it "registers an offense for literal #{lit} in while" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         while #{lit}
           top
         end
@@ -23,7 +23,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
     end
 
     it "registers an offense for literal #{lit} in post-loop while" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         begin
           top
         end while(#{lit})
@@ -32,7 +32,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
     end
 
     it "registers an offense for literal #{lit} in until" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         until #{lit}
           top
         end
@@ -41,7 +41,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
     end
 
     it "registers an offense for literal #{lit} in post-loop until" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         begin
           top
         end until #{lit}
@@ -50,7 +50,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
     end
 
     it "registers an offense for literal #{lit} in case" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         case #{lit}
         when x then top
         end
@@ -60,7 +60,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
 
     it "registers an offense for literal #{lit} in a when " \
        'of a case without anything after case keyword' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         case
         when #{lit} then top
         end
@@ -70,7 +70,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
 
     it "accepts literal #{lit} in a when of a case with " \
        'something after case keyword' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         case x
         when #{lit} then top
         end
@@ -79,7 +79,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
     end
 
     it "registers an offense for literal #{lit} in &&" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         if x && #{lit}
           top
         end
@@ -88,7 +88,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
     end
 
     it "registers an offense for literal #{lit} in complex cond" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         if x && !(a && #{lit}) && y && z
           top
         end
@@ -97,7 +97,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
     end
 
     it "registers an offense for literal #{lit} in !" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         if !#{lit}
           top
         end
@@ -106,7 +106,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
     end
 
     it "registers an offense for literal #{lit} in complex !" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         if !(x && (y && #{lit}))
           top
         end
@@ -115,7 +115,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
     end
 
     it "accepts literal #{lit} if it's not an and/or operand" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         if test(#{lit})
           top
         end
@@ -124,7 +124,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
     end
 
     it "accepts literal #{lit} in non-toplevel and/or" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         if (a || #{lit}).something
           top
         end

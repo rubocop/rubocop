@@ -5,7 +5,7 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
 
   shared_examples :offense do |style, variable, style_to_allow_offenses|
     it "registers an offense for #{Array(variable).first} in #{style}" do
-      inspect_source(cop, Array(variable).map { |v| "#{v} = 1" }.join("\n"))
+      inspect_source(Array(variable).map { |v| "#{v} = 1" }.join("\n"))
 
       expect(cop.messages).to eq(["Use #{style} for variable numbers."])
       expect(cop.highlights).to eq(Array(variable)[0, 1])
@@ -21,7 +21,7 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
 
   shared_examples :accepts do |style, variable|
     it "accepts #{variable} in #{style}" do
-      inspect_source(cop, "#{variable} = 1")
+      inspect_source("#{variable} = 1")
 
       expect(cop.offenses).to be_empty
     end
@@ -60,7 +60,7 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
 
     it 'registers an offense for normal case numbering in method camel case
      parameter' do
-      inspect_source(cop, 'def method(funnyArg1); end')
+      inspect_source('def method(funnyArg1); end')
       expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['funnyArg1'])
     end
@@ -103,7 +103,7 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
 
     it 'registers an offense for snake case numbering in method camel case
      parameter' do
-      inspect_source(cop, 'def method(funnyArg_1); end')
+      inspect_source('def method(funnyArg_1); end')
       expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['funnyArg_1'])
     end
@@ -150,14 +150,14 @@ describe RuboCop::Cop::Style::VariableNumber, :config do
 
     it 'registers an offense for snake case numbering in method camel case
      parameter' do
-      inspect_source(cop, 'def method(myArg_1); end')
+      inspect_source('def method(myArg_1); end')
       expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['myArg_1'])
     end
 
     it 'registers an offense for normal case numbering in method camel case
      parameter' do
-      inspect_source(cop, 'def method(myArg1); end')
+      inspect_source('def method(myArg1); end')
       expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['myArg1'])
     end

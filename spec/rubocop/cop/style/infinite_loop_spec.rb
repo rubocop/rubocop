@@ -8,7 +8,7 @@ describe RuboCop::Cop::Style::InfiniteLoop do
 
   %w(1 2.0 [1] {}).each do |lit|
     it "registers an offense for a while loop with #{lit} as condition" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         while #{lit}
           top
         end
@@ -20,7 +20,7 @@ describe RuboCop::Cop::Style::InfiniteLoop do
 
   %w[false nil].each do |lit|
     it "registers an offense for a until loop with #{lit} as condition" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         until #{lit}
           top
         end

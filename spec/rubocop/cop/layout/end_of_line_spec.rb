@@ -5,15 +5,15 @@ describe RuboCop::Cop::Layout::EndOfLine, :config do
 
   shared_examples 'all configurations' do
     it 'accepts an empty file' do
-      inspect_source_file(cop, '')
+      inspect_source_file('')
       expect(cop.offenses).to be_empty
     end
   end
 
   shared_examples 'iso-8859-15' do |eol|
     it 'can inspect non-UTF-8 encoded source with proper encoding comment' do
-      inspect_source_file(cop, ["# coding: ISO-8859-15#{eol}",
-                                "# Euro symbol: \xa4#{eol}"])
+      inspect_source_file(["# coding: ISO-8859-15#{eol}",
+                           "# Euro symbol: \xa4#{eol}"])
       expect(cop.offenses.size).to eq(1)
     end
   end
@@ -26,7 +26,7 @@ describe RuboCop::Cop::Layout::EndOfLine, :config do
     end
 
     it 'registers an offense for an incorrect EOL' do
-      inspect_source_file(cop, ['x=0', '', "y=1\r"])
+      inspect_source_file(['x=0', '', "y=1\r"])
       expect(cop.messages).to eq(messages)
       expect(cop.offenses.map(&:line))
         .to eq([RuboCop::Platform.windows? ? 1 : 3])
@@ -39,31 +39,31 @@ describe RuboCop::Cop::Layout::EndOfLine, :config do
     include_examples 'all configurations'
 
     it 'registers an offense for CR+LF' do
-      inspect_source_file(cop, ['x=0', '', "y=1\r"])
+      inspect_source_file(['x=0', '', "y=1\r"])
       expect(cop.messages).to eq(messages)
       expect(cop.offenses.map(&:line)).to eq([1])
     end
 
     it 'highlights the whole offending line' do
-      inspect_source_file(cop, ['x=0', '', "y=1\r"])
+      inspect_source_file(['x=0', '', "y=1\r"])
       expect(cop.highlights).to eq(["x=0\n"])
     end
 
     it 'does not register offense for no CR at end of file' do
-      inspect_source_file(cop, 'x=0')
+      inspect_source_file('x=0')
       expect(cop.offenses).to be_empty
     end
 
     it 'does not register offenses after __END__' do
-      inspect_source(cop, ["x=0\r",
-                           '__END__',
-                           'x=0'])
+      inspect_source(["x=0\r",
+                      '__END__',
+                      'x=0'])
       expect(cop.offenses).to be_empty
     end
 
     context 'and there are many lines ending with LF' do
       it 'registers only one offense' do
-        inspect_source_file(cop, ['x=0', '', 'y=1'].join("\n"))
+        inspect_source_file(['x=0', '', 'y=1'].join("\n"))
         expect(cop.messages.size).to eq(1)
       end
 
@@ -83,7 +83,7 @@ describe RuboCop::Cop::Layout::EndOfLine, :config do
                   'class Epd::ReportsController < EpdAreaController',
                   "  'terecht bij uw ROM-coördinator.'",
                   'end'].join("\r\n")
-        inspect_source_file(cop, source)
+        inspect_source_file(source)
         expect(cop.offenses).to be_empty
       end
 
@@ -92,7 +92,7 @@ describe RuboCop::Cop::Layout::EndOfLine, :config do
 
     context 'and source is a string' do
       it 'registers an offense' do
-        inspect_source(cop, "x=0\ny=1")
+        inspect_source("x=0\ny=1")
 
         expect(cop.messages).to eq(['Carriage return character missing.'])
       end
@@ -104,31 +104,31 @@ describe RuboCop::Cop::Layout::EndOfLine, :config do
     include_examples 'all configurations'
 
     it 'registers an offense for CR+LF' do
-      inspect_source_file(cop, ['x=0', '', "y=1\r"])
+      inspect_source_file(['x=0', '', "y=1\r"])
       expect(cop.messages).to eq(['Carriage return character detected.'])
       expect(cop.offenses.map(&:line)).to eq([3])
     end
 
     it 'highlights the whole offending line' do
-      inspect_source_file(cop, ['x=0', '', "y=1\r"])
+      inspect_source_file(['x=0', '', "y=1\r"])
       expect(cop.highlights).to eq(["y=1\r"])
     end
 
     it 'registers an offense for CR at end of file' do
-      inspect_source_file(cop, "x=0\r")
+      inspect_source_file("x=0\r")
       expect(cop.messages).to eq(['Carriage return character detected.'])
     end
 
     it 'does not register offenses after __END__' do
-      inspect_source(cop, ['x=0',
-                           '__END__',
-                           "x=0\r"])
+      inspect_source(['x=0',
+                      '__END__',
+                      "x=0\r"])
       expect(cop.offenses).to be_empty
     end
 
     context 'and there are many lines ending with CR+LF' do
       it 'registers only one offense' do
-        inspect_source_file(cop, ['x=0', '', 'y=1'].join("\r\n"))
+        inspect_source_file(['x=0', '', 'y=1'].join("\r\n"))
         expect(cop.messages.size).to eq(1)
       end
 
@@ -148,7 +148,7 @@ describe RuboCop::Cop::Layout::EndOfLine, :config do
                   'class Epd::ReportsController < EpdAreaController',
                   "  'terecht bij uw ROM-coördinator.'",
                   'end'].join("\n")
-        inspect_source_file(cop, source)
+        inspect_source_file(source)
         expect(cop.offenses).to be_empty
       end
 

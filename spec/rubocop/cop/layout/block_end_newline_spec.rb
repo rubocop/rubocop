@@ -9,7 +9,7 @@ describe RuboCop::Cop::Layout::BlockEndNewline do
 
   it 'does not register an offense for multiline blocks with newlines before '\
      'the end' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       test do
         foo
       end

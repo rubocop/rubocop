@@ -5,7 +5,7 @@ describe RuboCop::Cop::Rails::FindBy do
 
   shared_examples 'registers_offense' do |selector|
     it "when using where.#{selector}" do
-      inspect_source(cop, "User.where(id: x).#{selector}")
+      inspect_source("User.where(id: x).#{selector}")
 
       expect(cop.messages)
         .to eq(["Use `find_by` instead of `where.#{selector}`."])

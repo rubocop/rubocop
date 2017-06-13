@@ -5,7 +5,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
   shared_examples 'syntactic styles' do
     it 'registers an offense for a single line block with do-end' do
-      inspect_source(cop, 'each do |x| end')
+      inspect_source('each do |x| end')
       expect(cop.messages)
         .to eq(['Prefer `{...}` over `do...end` for single-line blocks.'])
     end
@@ -22,7 +22,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
     end
 
     it 'accepts a multi-line block that needs braces to be valid ruby' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         puts [1, 2, 3].map { |n|
           n * n
         }, 1
@@ -43,7 +43,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     it 'accepts a multi-line block with braces if the return value is ' \
        'assigned' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         foo = map { |x|
           x
         }
@@ -53,7 +53,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     it 'accepts a multi-line block with braces if it is the return value ' \
        'of its scope' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         block do
           map { |x|
             x
@@ -81,7 +81,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     it 'accepts a multi-line block with braces when passed to a known ' \
        'functional method' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         let(:foo) {
           x
         }
@@ -91,7 +91,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     it 'registers an offense for a multi-line block with braces if the ' \
        'return value is not used' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         each { |x|
           x
         }
@@ -102,7 +102,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     it 'registers an offense for a multi-line block with do-end if the ' \
        'return value is assigned' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         foo = map do |x|
           x
         end
@@ -113,7 +113,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     it 'registers an offense for a multi-line block with do-end if the ' \
        'return value is passed to a method' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         puts (map do |x|
           x
         end)
@@ -124,7 +124,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     it 'accepts a multi-line block with do-end if it is the return value ' \
        'of its scope' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         block do
           map do |x|
             x
@@ -160,7 +160,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     it 'accepts a multi-line functional block with do-end if it is ' \
        'a known procedural method' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         foo = bar.tap do |x|
           x.age = 3
         end
@@ -170,7 +170,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     it 'accepts a multi-line functional block with do-end if it is ' \
        'an ignored method' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         foo = lambda do
           puts 42
         end
@@ -357,13 +357,13 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
             expects :save
           }
         RUBY
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts a multi-line functional block with {} if it is ' \
          'an ignored method' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           foo = proc {
             puts 42
           }
@@ -382,7 +382,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
             # ...
           })
         RUBY
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.offenses.size).to eq(2)
       end
 
@@ -396,7 +396,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
             e.nil?
           }
         RUBY
-        inspect_source(cop, src)
+        inspect_source(src)
         expect(cop.messages)
           .to eq(['Avoid using `{...}` for multi-line blocks.'])
       end
@@ -479,7 +479,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     it 'accepts a multi-line functional block with {} if it is ' \
        'an ignored method' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         foo = proc {
           puts 42
         }

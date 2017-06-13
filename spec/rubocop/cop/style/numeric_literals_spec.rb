@@ -5,13 +5,13 @@ describe RuboCop::Cop::Style::NumericLiterals, :config do
   let(:cop_config) { { 'MinDigits' => 5 } }
 
   it 'registers an offense for a long undelimited integer' do
-    inspect_source(cop, 'a = 12345')
+    inspect_source('a = 12345')
     expect(cop.offenses.size).to eq(1)
     expect(cop.config_to_allow_offenses).to eq('MinDigits' => 6)
   end
 
   it 'registers an offense for a float with a long undelimited integer part' do
-    inspect_source(cop, 'a = 123456.789')
+    inspect_source('a = 123456.789')
     expect(cop.offenses.size).to eq(1)
     expect(cop.config_to_allow_offenses).to eq('MinDigits' => 7)
   end
@@ -24,7 +24,7 @@ describe RuboCop::Cop::Style::NumericLiterals, :config do
   end
 
   it 'registers an offense for an integer with misplaced underscore' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       a = 123_456_78_90_00
       b = 1_8192
     RUBY
@@ -96,7 +96,7 @@ describe RuboCop::Cop::Style::NumericLiterals, :config do
     end
 
     it 'registers an offense for an integer with misplaced underscore' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a = 123_456_78_90_00
         b = 81_92
       RUBY

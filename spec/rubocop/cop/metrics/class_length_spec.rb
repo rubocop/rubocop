@@ -5,7 +5,7 @@ describe RuboCop::Cop::Metrics::ClassLength, :config do
   let(:cop_config) { { 'Max' => 5, 'CountComments' => false } }
 
   it 'rejects a class with more than 5 lines' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       class Test
         a = 1
         a = 2
@@ -21,7 +21,7 @@ describe RuboCop::Cop::Metrics::ClassLength, :config do
   end
 
   it 'reports the correct beginning and end lines' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       class Test
         a = 1
         a = 2
@@ -109,7 +109,7 @@ describe RuboCop::Cop::Metrics::ClassLength, :config do
     end
 
     it 'rejects a class with 6 lines that belong to the class directly' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         class NamespaceClass
           class TestOne
             a = 1
@@ -141,7 +141,7 @@ describe RuboCop::Cop::Metrics::ClassLength, :config do
     before { cop_config['CountComments'] = true }
 
     it 'also counts commented lines' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         class Test
           a = 1
           #a = 2

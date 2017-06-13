@@ -10,7 +10,7 @@ describe RuboCop::Cop::Rails::Output do
       print "abbe busoni"
       pp "monte cristo"
     RUBY
-    inspect_source(cop, source)
+    inspect_source(source)
     expect(cop.offenses.size).to eq(4)
   end
 

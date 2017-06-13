@@ -5,7 +5,7 @@ describe RuboCop::Cop::Metrics::MethodLength, :config do
   let(:cop_config) { { 'Max' => 5, 'CountComments' => false } }
 
   it 'rejects a method with more than 5 lines' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       def m()
         a = 1
         a = 2
@@ -22,7 +22,7 @@ describe RuboCop::Cop::Metrics::MethodLength, :config do
   end
 
   it 'reports the correct beginning and end lines' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       def m()
         a = 1
         a = 2
@@ -50,7 +50,7 @@ describe RuboCop::Cop::Metrics::MethodLength, :config do
 
   it 'accepts a method with multiline arguments ' \
      'and less than 5 lines of body' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       def m(x,
             y,
             z)
@@ -111,7 +111,7 @@ describe RuboCop::Cop::Metrics::MethodLength, :config do
   end
 
   it 'checks class methods, syntax #1' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       def self.m()
         a = 1
         a = 2
@@ -126,7 +126,7 @@ describe RuboCop::Cop::Metrics::MethodLength, :config do
   end
 
   it 'checks class methods, syntax #2' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       class K
         class << self
           def m()
@@ -145,7 +145,7 @@ describe RuboCop::Cop::Metrics::MethodLength, :config do
   end
 
   it 'properly counts lines when method ends with block' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       def m()
         something do
           a = 2
@@ -176,7 +176,7 @@ describe RuboCop::Cop::Metrics::MethodLength, :config do
     before { cop_config['CountComments'] = true }
 
     it 'also counts commented lines' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def m()
           a = 1
           #a = 2

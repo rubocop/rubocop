@@ -5,7 +5,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
 
   %w[private protected public module_function].each do |access_modifier|
     it "requires blank line before #{access_modifier}" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         class Test
           something
           #{access_modifier}
@@ -19,7 +19,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     end
 
     it "requires blank line after #{access_modifier}" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         class Test
           something
 
@@ -33,7 +33,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     end
 
     it "ignores comment line before #{access_modifier}" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         class Test
           something
 
@@ -47,7 +47,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     end
 
     it "ignores #{access_modifier} inside a method call" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         class Test
           def #{access_modifier}?
             #{access_modifier}
@@ -58,7 +58,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     end
 
     it "ignores #{access_modifier} deep inside a method call" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         class Test
           def #{access_modifier}?
             if true
@@ -71,7 +71,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     end
 
     it "ignores #{access_modifier} with a right-hand-side condition" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         class Test
           def #{access_modifier}?
             #{access_modifier} if true
@@ -153,7 +153,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
 
     it "requires blank line after, but not before, #{access_modifier} " \
        'when at the beginning of class/module' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         class Test
           #{access_modifier}
           def test
@@ -188,7 +188,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
         end
 
         it "requires blank line after, but not before, #{access_modifier}" do
-          inspect_source(cop, <<-RUBY.strip_indent)
+          inspect_source(<<-RUBY.strip_indent)
             included do
               #{access_modifier}
               def test

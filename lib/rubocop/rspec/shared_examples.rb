@@ -4,7 +4,7 @@
 
 shared_examples_for 'accepts' do
   it 'accepts' do
-    inspect_source(cop, source)
+    inspect_source(source)
     expect(cop.offenses).to be_empty
   end
 end
@@ -12,7 +12,7 @@ end
 shared_examples_for 'mimics MRI 2.1' do |grep_mri_warning|
   if RUBY_ENGINE == 'ruby' && RUBY_VERSION.start_with?('2.1')
     it "mimics MRI #{RUBY_VERSION} built-in syntax checking" do
-      inspect_source(cop, source)
+      inspect_source(source)
       offenses_by_mri = MRISyntaxChecker.offenses_for_source(
         source, cop.name, grep_mri_warning
       )
@@ -38,7 +38,7 @@ shared_examples_for 'misaligned' do |prefix, alignment_base, arg, end_kw, name|
             end_kw]
 
   it "registers an offense for mismatched #{name} ... end" do
-    inspect_source(cop, source)
+    inspect_source(source)
     expect(cop.offenses.size).to eq(1)
     base_regexp = Regexp.escape(alignment_base)
     regexp = /`end` at 2, \d+ is not aligned with `#{base_regexp}` at 1,/
@@ -67,15 +67,15 @@ shared_examples_for 'aligned' do |alignment_base, arg, end_kw, name|
   name ||= alignment_base
   name = name.gsub(/\n/, ' <newline>')
   it "accepts matching #{name} ... end" do
-    inspect_source(cop, ["#{alignment_base} #{arg}",
-                         end_kw])
+    inspect_source(["#{alignment_base} #{arg}",
+                    end_kw])
     expect(cop.offenses).to be_empty
   end
 end
 
 shared_examples_for 'debugger' do |name, src|
   it "reports an offense for a #{name} call" do
-    inspect_source(cop, src)
+    inspect_source(src)
     src = [src] if src.is_a? String
     expect(cop.offenses.size).to eq(src.size)
     expect(cop.messages)
@@ -86,7 +86,7 @@ end
 
 shared_examples_for 'non-debugger' do |name, src|
   it "does not report an offense for #{name}" do
-    inspect_source(cop, src)
+    inspect_source(src)
     expect(cop.offenses).to be_empty
   end
 end

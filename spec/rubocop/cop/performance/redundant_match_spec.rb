@@ -70,7 +70,7 @@ describe RuboCop::Cop::Performance::RedundantMatch do
 
   it 'does not register an error when return value of .match is passed ' \
      'to another method' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       def method(str)
        something(str.match(/regex/))
       end
@@ -80,7 +80,7 @@ describe RuboCop::Cop::Performance::RedundantMatch do
 
   it 'does not register an error when return value of .match is stored in an ' \
      'instance variable' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       def method(str)
        @var = str.match(/regex/)
        true
@@ -91,7 +91,7 @@ describe RuboCop::Cop::Performance::RedundantMatch do
 
   it 'does not register an error when return value of .match is returned from' \
      ' surrounding method' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       def method(str)
        str.match(/regex/)
       end

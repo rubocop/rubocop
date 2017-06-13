@@ -7,7 +7,7 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     it 'registers an offense for alignment with token not preceded by space' do
       # The = and the ( are on the same column, but this is not for alignment,
       # it's just a mistake.
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         website("example.org")
         name   = "Jill"
       RUBY
@@ -22,7 +22,7 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
                  state:      'CA',
                  postal_code:'99999-1111')
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses).to be_empty
     end
 
@@ -47,13 +47,13 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
           }
         }
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses).to be_empty
     end
 
     context 'when spaces are present in a single-line hash literal' do
       it 'registers an offense for hashes with symbol keys' do
-        inspect_source(cop, 'hash = {a:   1,  b:    2}')
+        inspect_source('hash = {a:   1,  b:    2}')
         expect(cop.offenses.size).to eq(3)
       end
 
@@ -64,7 +64,7 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
           }
         RUBY
 
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.offenses.size).to eq(1)
         expect(cop.offenses.first.line).to eq(2)
       end
@@ -75,7 +75,7 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
         {:a => "a",
          :b => [nil,  2.5]}
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -85,12 +85,12 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
                           3,  +3, # Extra spacing only here.
                           4,+4)
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.map { |o| o.location.line }).to eq([2])
     end
 
     it 'gives the correct line' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         class A   < String
         end
       RUBY
@@ -98,7 +98,7 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'registers an offense for double extra spacing on variable assignment' do
-      inspect_source(cop, 'm    = "hello"')
+      inspect_source('m    = "hello"')
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -111,13 +111,13 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'ignores trailing whitespace' do
-      inspect_source(cop, ['      class Benchmarker < Performer     ',
-                           '      end'])
+      inspect_source(['      class Benchmarker < Performer     ',
+                      '      end'])
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense on class inheritance' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         class A   < String
         end
       RUBY
@@ -232,7 +232,7 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       sources.each do |reason, src|
         context "such as #{reason}" do
           it 'allows it' do
-            inspect_source(cop, src)
+            inspect_source(src)
             expect(cop.offenses).to be_empty
           end
         end
@@ -251,7 +251,7 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       sources.each do |reason, src|
         context "such as #{reason}" do
           it 'registers offense(s)' do
-            inspect_source(cop, src)
+            inspect_source(src)
             expect(cop.offenses).not_to be_empty
           end
         end
@@ -265,7 +265,7 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'registers an offense if consecutive assignments are not aligned' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         a = 1
         bb = 2
         ccc = 3
@@ -390,7 +390,7 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
 
     it 'does not register an offense when optarg equals is not aligned with ' \
        'assignment equals sign' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def method(arg = 1)
           var = arg
         end

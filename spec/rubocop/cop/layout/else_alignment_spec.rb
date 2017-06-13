@@ -38,7 +38,7 @@ describe RuboCop::Cop::Layout::ElseAlignment do
 
     it 'accepts indentation after else when if is on new line after ' \
        'assignment' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         Rails.application.config.ideal_postcodes_key =
           if Rails.env.production? || Rails.env.staging?
             "AAAA-AAAA-AAAA-AAAA"

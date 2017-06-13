@@ -40,7 +40,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
         end
 
         it 'does not register an offense' do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.messages).to be_empty
         end
       end
@@ -132,14 +132,14 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
     %w[post get patch put delete].each do |keyword|
       it 'does not register an offense when keyword' do
         source = "@user.#{keyword}.id = ''"
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.offenses.size).to eq(0)
       end
     end
 
     it 'does not auto-correct http action when method' do
       source = 'post user_attrs, id: 1'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(0)
       new_source = autocorrect_source(cop, source)
       expect(new_source).to eq(source)
@@ -147,7 +147,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
 
     it 'does not auto-correct http action when symbol' do
       source = 'post :user_attrs, id: 1'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(0)
       new_source = autocorrect_source(cop, source)
       expect(new_source).to eq(source)
@@ -155,7 +155,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
 
     it 'does not auto-correct' do
       source = 'post(:user_attrs, id: 1)'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(0)
       new_source = autocorrect_source(cop, source)
       expect(new_source).to eq(source)
@@ -198,7 +198,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
 
     it 'does not auto-correct http action when params is a method call' do
       source = 'post :create, confirmation_data'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(0)
       new_source = autocorrect_source(cop, source)
       expect(new_source).to eq(source)
@@ -207,7 +207,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
     # rubocop:disable LineLength
     it 'does not auto-correct http action when parameter matches keyword name' do
       source = 'post :create, id: 7, comment: { body: "hei" }'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(0)
       new_source = autocorrect_source(cop, source)
       expect(new_source).to eq(source)
@@ -215,7 +215,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
 
     it 'does not auto-correct http action when format keyword included but not alone' do
       source = 'post :create, id: 7, format: :rss'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(0)
       new_source = autocorrect_source(cop, source)
       expect(new_source).to eq(source)
@@ -226,7 +226,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
         params = { id: 1 }
         post user_attrs, params
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(0)
       new_source = autocorrect_source(cop, source)
       expect(new_source).to eq(source)
@@ -234,14 +234,14 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
 
     it 'does not auto-correct http action when params is a method call' do
       source = 'post user_attrs, params'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(0)
       new_source = autocorrect_source(cop, source)
       expect(new_source).to eq(source)
     end
     it 'does not auto-correct http action when params is a method call with chain' do
       source = 'post user_attrs, params.merge(foo: bar)'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(0)
       new_source = autocorrect_source(cop, source)
       expect(new_source).to eq(source)
@@ -253,19 +253,19 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
 
     it 'registers an offense for post method' do
       source = 'post :create, user_id: @user.id'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
     end
 
     it 'registers an offense for patch method' do
       source = 'patch :update, user_id: @user.id'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
     end
 
     it 'registers an offense for delete method' do
       source = 'delete :destroy, id: @user.id'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -293,7 +293,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
         end
 
         it 'does not register an offense' do
-          inspect_source(cop, source)
+          inspect_source(source)
           expect(cop.messages).to be_empty
         end
       end
@@ -414,14 +414,14 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
     %w[post get patch put delete].each do |keyword|
       it 'does not register an offense when keyword' do
         source = "@user.#{keyword}.id = ''"
-        inspect_source(cop, source)
+        inspect_source(source)
         expect(cop.offenses.size).to eq(0)
       end
     end
 
     it 'auto-corrects http action when method' do
       source = 'post user_attrs, id: 1'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       new_source = autocorrect_source(cop, source)
       expected = 'post user_attrs, params: { id: 1 }'
@@ -430,7 +430,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
 
     it 'auto-corrects http action when symbol' do
       source = 'post :user_attrs, id: 1'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       new_source = autocorrect_source(cop, source)
       expected = 'post :user_attrs, params: { id: 1 }'
@@ -439,7 +439,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
 
     it 'maintains parentheses in auto-correcting' do
       source = 'post(:user_attrs, id: 1)'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       new_source = autocorrect_source(cop, source)
       expected = 'post(:user_attrs, params: { id: 1 })'
@@ -488,7 +488,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
 
     it 'auto-corrects http action when params is a method call' do
       source = 'post :create, confirmation_data'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       new_source = autocorrect_source(cop, source)
       output = 'post :create, params: confirmation_data'
@@ -497,7 +497,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
 
     it 'auto-corrects http action when parameter matches special keyword name' do
       source = 'post :create, id: 7, comment: { body: "hei" }'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       new_source = autocorrect_source(cop, source)
       output = 'post :create, params: { id: 7, comment: { body: "hei" } }'
@@ -506,7 +506,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
 
     it 'auto-corrects http action when format keyword included but not alone' do
       source = 'post :create, id: 7, format: :rss'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       new_source = autocorrect_source(cop, source)
       output = 'post :create, params: { id: 7, format: :rss }'
@@ -518,7 +518,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
         params = { id: 1 }
         post user_attrs, params
       RUBY
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       new_source = autocorrect_source(cop, source)
       expect(new_source).to eq(<<-RUBY.strip_indent)
@@ -529,7 +529,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
 
     it 'auto-corrects http action when params is a method call' do
       source = 'post user_attrs, params'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       new_source = autocorrect_source(cop, source)
       expected = 'post user_attrs, params: params'
@@ -538,7 +538,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
 
     it 'auto-corrects http action when params is a method call with chain' do
       source = 'post user_attrs, params.merge(foo: bar)'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       new_source = autocorrect_source(cop, source)
       expected = 'post user_attrs, params: params.merge(foo: bar)'

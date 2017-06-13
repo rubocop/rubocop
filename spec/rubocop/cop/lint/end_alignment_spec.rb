@@ -131,7 +131,7 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
     end
 
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages.first)
         .to eq('`end` at 6, 0 is not aligned with `if` at 4, 4.')
@@ -161,7 +161,7 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
     end
 
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages.first)
         .to eq('`end` at 2, 7 is not aligned with `module` at 1, 0.')

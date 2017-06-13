@@ -28,7 +28,7 @@ describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
     end
 
     it 'registers an offense for an if modifier' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def self.method_name
           call_foo if some_condition
         end
@@ -134,7 +134,7 @@ describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
 
     it 'registers an offense for a case/when block without an expression ' \
        'after case' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def method_name
           case
           when value == 1

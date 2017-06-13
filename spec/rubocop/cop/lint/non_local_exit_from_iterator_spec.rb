@@ -5,7 +5,7 @@ describe RuboCop::Cop::Lint::NonLocalExitFromIterator do
 
   context 'inspection' do
     before do
-      inspect_source(cop, source)
+      inspect_source(source)
     end
 
     let(:message) do

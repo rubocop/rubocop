@@ -5,7 +5,7 @@ describe RuboCop::Cop::Style::OpMethod do
 
   %i[+ eql? equal?].each do |op|
     it "registers an offense for #{op} with arg not named other" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def #{op}(another)
           another
         end

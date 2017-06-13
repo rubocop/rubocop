@@ -15,7 +15,7 @@ describe RuboCop::Cop::Layout::IndentAssignment, :config do
   end
 
   it 'registers an offense for incorrectly indented rhs' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       a =
       if b ; end
     RUBY
@@ -48,7 +48,7 @@ describe RuboCop::Cop::Layout::IndentAssignment, :config do
   end
 
   it 'registers an offense for multi-lhs' do
-    inspect_source(cop, <<-RUBY.strip_indent)
+    inspect_source(<<-RUBY.strip_indent)
       a,
       b =
       if b ; end

@@ -7,7 +7,7 @@ describe RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'space' } }
 
     it 'registers an offense for default value assignment without space' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def f(x, y=0, z= 1)
         end
       RUBY
@@ -18,7 +18,7 @@ describe RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault, :config do
     end
 
     it 'registers an offense for assignment empty string without space' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def f(x, y="", z=1)
         end
       RUBY
@@ -69,7 +69,7 @@ describe RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'no_space' } }
 
     it 'registers an offense for default value assignment with space' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def f(x, y = 0, z =1, w= 2)
         end
       RUBY
@@ -80,7 +80,7 @@ describe RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault, :config do
     end
 
     it 'registers an offense for assignment empty string with space' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         def f(x, y = "", z = 1)
         end
       RUBY

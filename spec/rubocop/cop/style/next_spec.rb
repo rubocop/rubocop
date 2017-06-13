@@ -8,7 +8,7 @@ describe RuboCop::Cop::Style::Next, :config do
     let(:opposite) { condition == 'if' ? 'unless' : 'if' }
 
     it "registers an offense for #{condition} inside of downto" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         3.downto(1) do
           #{condition} o == 1
             puts o
@@ -37,7 +37,7 @@ describe RuboCop::Cop::Style::Next, :config do
     end
 
     it "registers an offense for #{condition} inside of each" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         [].each do |o|
           #{condition} o == 1
             puts o
@@ -66,7 +66,7 @@ describe RuboCop::Cop::Style::Next, :config do
     end
 
     it "registers an offense for #{condition} inside of each_with_object" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         [].each_with_object({}) do |o, a|
           #{condition} o == 1
             a[o] = {}
@@ -79,7 +79,7 @@ describe RuboCop::Cop::Style::Next, :config do
     end
 
     it "registers an offense for #{condition} inside of for" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         for o in 1..3 do
           #{condition} o == 1
             puts o
@@ -108,7 +108,7 @@ describe RuboCop::Cop::Style::Next, :config do
     end
 
     it "registers an offense for #{condition} inside of loop" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         loop do
           #{condition} o == 1
             puts o
@@ -121,7 +121,7 @@ describe RuboCop::Cop::Style::Next, :config do
     end
 
     it "registers an offense for #{condition} inside of map" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         loop do
           {}.map do |k, v|
             #{condition} v == 1
@@ -136,7 +136,7 @@ describe RuboCop::Cop::Style::Next, :config do
     end
 
     it "registers an offense for #{condition} inside of times" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         loop do
           3.times do |o|
             #{condition} o == 1
@@ -151,7 +151,7 @@ describe RuboCop::Cop::Style::Next, :config do
     end
 
     it "registers an offense for #{condition} inside of collect" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         [].collect do |o|
           #{condition} o == 1
             true
@@ -164,7 +164,7 @@ describe RuboCop::Cop::Style::Next, :config do
     end
 
     it "registers an offense for #{condition} inside of select" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         [].select do |o|
           #{condition} o == 1
             true
@@ -177,7 +177,7 @@ describe RuboCop::Cop::Style::Next, :config do
     end
 
     it "registers an offense for #{condition} inside of select!" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         [].select! do |o|
           #{condition} o == 1
             true
@@ -190,7 +190,7 @@ describe RuboCop::Cop::Style::Next, :config do
     end
 
     it "registers an offense for #{condition} inside of reject" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         [].reject do |o|
           #{condition} o == 1
             true
@@ -203,7 +203,7 @@ describe RuboCop::Cop::Style::Next, :config do
     end
 
     it "registers an offense for #{condition} inside of reject!" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         [].reject! do |o|
           #{condition} o == 1
             true
@@ -216,7 +216,7 @@ describe RuboCop::Cop::Style::Next, :config do
     end
 
     it "registers an offense for #{condition} inside of nested iterators" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         loop do
           until false
             #{condition} o == 1
@@ -231,7 +231,7 @@ describe RuboCop::Cop::Style::Next, :config do
     end
 
     it "registers an offense for #{condition} inside of nested iterators" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         loop do
           while true
             #{condition} o == 1
@@ -247,7 +247,7 @@ describe RuboCop::Cop::Style::Next, :config do
 
     it 'registers an offense for a condition at the end of an iterator ' \
        'when there is more in the iterator than the condition' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         [].each do |o|
           puts o
           #{condition} o == 1
@@ -279,7 +279,7 @@ describe RuboCop::Cop::Style::Next, :config do
     end
 
     it "allows loops with #{condition} being the entire body with else" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         [].each do |o|
           #{condition} o == 1
             puts o
@@ -294,7 +294,7 @@ describe RuboCop::Cop::Style::Next, :config do
 
     it "allows loops with #{condition} with else, nested in another " \
        'condition' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         [].each do |o|
           if foo
             #{condition} o == 1
@@ -310,7 +310,7 @@ describe RuboCop::Cop::Style::Next, :config do
     end
 
     it "allows loops with #{condition} with else at the end" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         [].each do |o|
           puts o
           #{condition} o == 1
@@ -325,7 +325,7 @@ describe RuboCop::Cop::Style::Next, :config do
     end
 
     it "reports an offense for #{condition} whose body has 3 lines" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         arr.each do |e|
           #{condition} something
             work
@@ -345,7 +345,7 @@ describe RuboCop::Cop::Style::Next, :config do
       end
 
       it "allows modifier #{condition}" do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           [].each do |o|
             puts o #{condition} o == 1
           end
@@ -369,7 +369,7 @@ describe RuboCop::Cop::Style::Next, :config do
       end
 
       it "registers an offense for modifier #{condition}" do
-        inspect_source(cop, source)
+        inspect_source(source)
 
         expect(cop.messages).to eq(['Use `next` to skip iteration.'])
         expect(cop.highlights).to eq(["puts o #{condition} o == 1"])
@@ -581,7 +581,7 @@ describe RuboCop::Cop::Style::Next, :config do
         end
       RUBY
 
-      expect { inspect_source(cop, source) }
+      expect { inspect_source(source) }
         .to raise_error('MinBodyLength needs to be a positive integer!')
     end
   end

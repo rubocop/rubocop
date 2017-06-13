@@ -5,7 +5,7 @@ describe RuboCop::Cop::Style::OneLineConditional do
 
   shared_examples 'offense' do |condition|
     it 'registers an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.messages)
         .to eq(['Favor the ternary operator (`?:`)' \
                 " over `#{condition}/then/else/end` constructs."])
@@ -14,7 +14,7 @@ describe RuboCop::Cop::Style::OneLineConditional do
 
   shared_examples 'no offense' do
     it 'does not register an offense' do
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.messages).to be_empty
     end
   end

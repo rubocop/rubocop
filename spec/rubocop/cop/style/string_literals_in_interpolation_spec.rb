@@ -8,7 +8,7 @@ describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
 
     it 'registers an offense for double quotes within embedded expression' do
       src = '"#{"A"}"'
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.messages)
         .to eq(['Prefer single-quoted strings inside interpolations.'])
     end
@@ -18,7 +18,7 @@ describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
       src = ['<<RUBY',
              '#{"A"}',
              'RUBY']
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.messages)
         .to eq(['Prefer single-quoted strings inside interpolations.'])
     end
@@ -66,7 +66,7 @@ describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
 
     it 'registers an offense for single quotes within embedded expression' do
       src = %q("#{'A'}")
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.messages)
         .to eq(['Prefer double-quoted strings inside interpolations.'])
     end
@@ -76,7 +76,7 @@ describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
       src = ['<<RUBY',
              '#{\'A\'}',
              'RUBY']
-      inspect_source(cop, src)
+      inspect_source(src)
       expect(cop.messages)
         .to eq(['Prefer double-quoted strings inside interpolations.'])
     end
@@ -86,7 +86,7 @@ describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'other' } }
 
     it 'fails' do
-      expect { inspect_source(cop, 'a = "#{"b"}"') }
+      expect { inspect_source('a = "#{"b"}"') }
         .to raise_error(RuntimeError)
     end
   end

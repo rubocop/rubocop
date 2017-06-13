@@ -25,7 +25,7 @@ describe RuboCop::Cop::Style::SymbolArray, :config do
     end
 
     it 'registers an offense for arrays of symbols' do
-      inspect_source(cop, '[:one, :two, :three]')
+      inspect_source('[:one, :two, :three]')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Use `%i` or `%I` for an array of symbols.'])
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'brackets')
@@ -69,7 +69,7 @@ describe RuboCop::Cop::Style::SymbolArray, :config do
     end
 
     it 'detects right value for MinSize to use for --auto-gen-config' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         [:one, :two, :three]
         %i(a b c d)
       RUBY
@@ -81,7 +81,7 @@ describe RuboCop::Cop::Style::SymbolArray, :config do
     end
 
     it 'detects when the cop must be disabled to avoid offenses' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         [:one, :two, :three]
         %i(a b)
       RUBY

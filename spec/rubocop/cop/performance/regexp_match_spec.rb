@@ -5,7 +5,7 @@ describe RuboCop::Cop::Performance::RegexpMatch, :config do
 
   shared_examples :accepts do |name, code|
     it "accepts usages of #{name}" do
-      inspect_source(cop, code)
+      inspect_source(code)
 
       expect(cop.offenses).to be_empty
     end
@@ -13,7 +13,7 @@ describe RuboCop::Cop::Performance::RegexpMatch, :config do
 
   shared_examples :offense do |name, code, correction|
     it "registers an offense for #{name}" do
-      inspect_source(cop, code)
+      inspect_source(code)
 
       expect(cop.offenses.size).to eq(1)
     end

@@ -154,7 +154,7 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
 
     it 'accepts an if/else in assignment with end aligned with variable ' \
        'and chaining after the end' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         var = if a
           0
         else
@@ -166,7 +166,7 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
 
     it 'accepts an if/else in assignment with end aligned with variable ' \
        'and chaining with a block after the end' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         var = if a
           0
         else
@@ -196,7 +196,7 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
 
     it 'accepts an if/else in assignment on next line with end aligned ' \
        'with if' do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         var =
           if a
             0
@@ -493,7 +493,7 @@ describe RuboCop::Cop::Layout::IndentationConsistency, :config do
 
       it 'registers an offense for bad indentation in def but not for ' \
          'outdented public, protected, and private' do
-        inspect_source(cop, <<-RUBY.strip_indent)
+        inspect_source(<<-RUBY.strip_indent)
           class Test
           public
 

@@ -69,7 +69,7 @@ describe RuboCop::Cop::Rails::ApplicationJob do
 
     it 'corrects jobs that subclass ActiveJob::Base' do
       source = "class MyJob < ActiveJob::Base\nend"
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.messages).to eq(msgs)
       expect(cop.highlights).to eq(['ActiveJob::Base'])
       expect(autocorrect_source(cop, source))
@@ -78,7 +78,7 @@ describe RuboCop::Cop::Rails::ApplicationJob do
 
     it 'corrects single-line class definitions' do
       source = 'class MyJob < ActiveJob::Base; end'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.messages).to eq(msgs)
       expect(cop.highlights).to eq(['ActiveJob::Base'])
       expect(autocorrect_source(cop, source))
@@ -87,7 +87,7 @@ describe RuboCop::Cop::Rails::ApplicationJob do
 
     it 'corrects namespaced jobs that subclass ActiveJob::Base' do
       source = "module Nested\n  class MyJob < ActiveJob::Base\n  end\nend"
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.messages).to eq(msgs)
       expect(cop.highlights).to eq(['ActiveJob::Base'])
       expect(autocorrect_source(cop, source))
@@ -96,7 +96,7 @@ describe RuboCop::Cop::Rails::ApplicationJob do
 
     it 'corrects jobs defined using nested constants' do
       source = "class Nested::MyJob < ActiveJob::Base\nend"
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.messages).to eq(msgs)
       expect(cop.highlights).to eq(['ActiveJob::Base'])
       expect(autocorrect_source(cop, source))
@@ -105,7 +105,7 @@ describe RuboCop::Cop::Rails::ApplicationJob do
 
     it 'corrects jobs defined using Class.new' do
       source = 'MyJob = Class.new(ActiveJob::Base)'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.messages).to eq(msgs)
       expect(cop.highlights).to eq(['ActiveJob::Base'])
       expect(autocorrect_source(cop, source))
@@ -114,7 +114,7 @@ describe RuboCop::Cop::Rails::ApplicationJob do
 
     it 'corrects nested jobs defined using Class.new' do
       source = 'Nested::MyJob = Class.new(ActiveJob::Base)'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.messages).to eq(msgs)
       expect(cop.highlights).to eq(['ActiveJob::Base'])
       expect(autocorrect_source(cop, source))
@@ -123,7 +123,7 @@ describe RuboCop::Cop::Rails::ApplicationJob do
 
     it 'corrects anonymous jobs' do
       source = 'Class.new(ActiveJob::Base) {}'
-      inspect_source(cop, source)
+      inspect_source(source)
       expect(cop.messages).to eq(msgs)
       expect(cop.highlights).to eq(['ActiveJob::Base'])
       expect(autocorrect_source(cop, source))

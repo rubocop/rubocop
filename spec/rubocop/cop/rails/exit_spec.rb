@@ -24,8 +24,7 @@ describe RuboCop::Cop::Rails::Exit, :config do
 
     it 'does not register an offense for an explicit exit call '\
       'with an argument on an object' do
-      inspect_source(cop,
-                     'Object.new.exit(0)')
+      inspect_source('Object.new.exit(0)')
       expect(cop.offenses).to be_empty
     end
 

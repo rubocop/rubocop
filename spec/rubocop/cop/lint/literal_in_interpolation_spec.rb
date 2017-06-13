@@ -21,12 +21,12 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
 
   shared_examples 'literal interpolation' do |literal, expected = literal|
     it "registers an offense for #{literal} in interpolation" do
-      inspect_source(cop, %("this is the \#{#{literal}}"))
+      inspect_source(%("this is the \#{#{literal}}"))
       expect(cop.offenses.size).to eq(1)
     end
 
     it "should have #{literal} as the message highlight" do
-      inspect_source(cop, %("this is the \#{#{literal}}"))
+      inspect_source(%("this is the \#{#{literal}}"))
       expect(cop.highlights).to eq([literal.to_s])
     end
 
@@ -67,7 +67,7 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
     end
 
     it "registers an offense only for final #{literal} in interpolation" do
-      inspect_source(cop, %("this is the \#{#{literal};#{literal}}"))
+      inspect_source(%("this is the \#{#{literal};#{literal}}"))
       expect(cop.offenses.size).to eq(1)
     end
   end
@@ -99,7 +99,7 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
 
   shared_examples 'special keywords' do |keyword|
     it "accepts strings like #{keyword}" do
-      inspect_source(cop, %("this is \#{#{keyword}} silly"))
+      inspect_source(%("this is \#{#{keyword}} silly"))
       expect(cop.offenses).to be_empty
     end
 
@@ -110,7 +110,7 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
     end
 
     it "registers an offense for interpolation after #{keyword}" do
-      inspect_source(cop, %("this is the \#{#{keyword}} \#{1}"))
+      inspect_source(%("this is the \#{#{keyword}} \#{1}"))
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -127,12 +127,12 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
 
   shared_examples 'non-special string literal interpolation' do |string|
     it "registers an offense for #{string}" do
-      inspect_source(cop, %("this is the \#{#{string}}"))
+      inspect_source(%("this is the \#{#{string}}"))
       expect(cop.offenses.size).to eq(1)
     end
 
     it "should have #{string} in the message highlight" do
-      inspect_source(cop, %("this is the \#{#{string}}"))
+      inspect_source(%("this is the \#{#{string}}"))
       expect(cop.highlights).to eq([string])
     end
 

@@ -20,7 +20,7 @@ describe RuboCop::Cop::Layout::SpaceAfterNot do
 
   it 'reports an offense for space after ! with the negated receiver ' \
      'wrapped in parentheses' do
-    inspect_source(cop, '! (model)')
+    inspect_source('! (model)')
 
     expect(cop.messages)
       .to eq(['Do not leave space between `!` and its argument.'])

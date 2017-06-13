@@ -5,7 +5,7 @@ describe RuboCop::Cop::Rails::SaveBang do
 
   shared_examples 'checks_common_offense' do |method|
     it "when using #{method} with arguments" do
-      inspect_source(cop, "object.#{method}(name: 'Tom', age: 20)")
+      inspect_source("object.#{method}(name: 'Tom', age: 20)")
 
       if method == :destroy
         expect(cop.messages).to be_empty
@@ -17,7 +17,7 @@ describe RuboCop::Cop::Rails::SaveBang do
     end
 
     it "when using #{method} without arguments" do
-      inspect_source(cop, method.to_s)
+      inspect_source(method.to_s)
 
       expect(cop.messages)
         .to eq(["Use `#{method}!` instead of `#{method}` " \
@@ -25,19 +25,19 @@ describe RuboCop::Cop::Rails::SaveBang do
     end
 
     it "when using #{method}!" do
-      inspect_source(cop, "object.#{method}!")
+      inspect_source("object.#{method}!")
 
       expect(cop.messages).to be_empty
     end
 
     it "when using #{method} with 2 arguments" do
-      inspect_source(cop, "Model.#{method}(1, name: 'Tom')")
+      inspect_source("Model.#{method}(1, name: 'Tom')")
 
       expect(cop.messages).to be_empty
     end
 
     it "when using #{method} with wrong argument" do
-      inspect_source(cop, "object.#{method}('Tom')")
+      inspect_source("object.#{method}('Tom')")
 
       expect(cop.messages).to be_empty
     end
@@ -51,7 +51,7 @@ describe RuboCop::Cop::Rails::SaveBang do
 
   shared_examples 'checks_variable_return_use_offense' do |method, pass|
     it "when assigning the return value of #{method}" do
-      inspect_source(cop, "x = object.#{method}\n")
+      inspect_source("x = object.#{method}\n")
 
       if pass
         expect(cop.messages).to be_empty
@@ -64,7 +64,7 @@ describe RuboCop::Cop::Rails::SaveBang do
     end
 
     it "when assigning the return value of #{method} with block" do
-      inspect_source(cop, "x = object.#{method} do |obj|\n" \
+      inspect_source("x = object.#{method} do |obj|\n" \
                           "  obj.name = 'Tom'\n" \
                           'end')
 
@@ -79,7 +79,7 @@ describe RuboCop::Cop::Rails::SaveBang do
     end
 
     it "when using #{method} with if" do
-      inspect_source(cop, "if object.#{method}; something; end")
+      inspect_source("if object.#{method}; something; end")
 
       if pass
         expect(cop.messages).to be_empty
@@ -90,7 +90,7 @@ describe RuboCop::Cop::Rails::SaveBang do
     end
 
     it "when using #{method} with multiple conditional" do
-      inspect_source(cop, <<-RUBY.strip_indent)
+      inspect_source(<<-RUBY.strip_indent)
         if true && object.active? && object.#{method}
           something
         end
@@ -104,7 +104,7 @@ describe RuboCop::Cop::Rails::SaveBang do
     end
 
     it "when using #{method} with oneline if" do
-      inspect_source(cop, "something if object.#{method}")
+      inspect_source("something if object.#{method}")
 
       if pass
         expect(cop.messages).to be_empty
@@ -115,7 +115,7 @@ describe RuboCop::Cop::Rails::SaveBang do
     end
 
     it "when using #{method} with oneline if and multiple conditional" do
-      inspect_source(cop, "something if false || object.#{method}")
+      inspect_source("something if false || object.#{method}")
 
       if pass
         expect(cop.messages).to be_empty
@@ -126,16 +126,16 @@ describe RuboCop::Cop::Rails::SaveBang do
     end
 
     it "when using #{method} as last method call" do
-      inspect_source(cop, ['def foo', "object.#{method}", 'end'])
+      inspect_source(['def foo', "object.#{method}", 'end'])
       expect(cop.messages).to be_empty
     end
 
     # Bug: https://github.com/bbatsov/rubocop/issues/4264
     it 'when using the assigned variable as value in a hash' do
-      inspect_source(cop, ['def foo',
-                           "  foo = Foo.#{method}",
-                           '  render json: foo',
-                           'end'])
+      inspect_source(['def foo',
+                      "  foo = Foo.#{method}",
+                      '  render json: foo',
+                      'end'])
       if pass
         expect(cop.offenses).to be_empty
       else
@@ -151,14 +151,14 @@ describe RuboCop::Cop::Rails::SaveBang do
 
   shared_examples 'checks_create_offense' do |method|
     it "when using persisted? after #{method}" do
-      inspect_source(cop, "x = object.#{method}\n" \
+      inspect_source("x = object.#{method}\n" \
                           'if x.persisted? then; something; end')
 
       expect(cop.messages).to be_empty
     end
 
     it "when using persisted? after #{method} with block" do
-      inspect_source(cop, "x = object.#{method} do |obj|\n" \
+      inspect_source("x = object.#{method} do |obj|\n" \
                           "  obj.name = 'Tom'\n" \
                           "end\n" \
                           'if x.persisted? then; something; end')
