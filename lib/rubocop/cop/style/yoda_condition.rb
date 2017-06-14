@@ -9,18 +9,34 @@ module RuboCop
       #
       # @example
       #
+      #   # EnforcedStyle: all_comparison_operators
+      #
       #   # bad
       #   99 == foo
-      #   "bar" == foo
+      #   "bar" != foo
       #   42 >= foo
-      #
-      # @example
+      #   10 < bar
       #
       #   # good
       #   foo == 99
       #   foo == "bar"
-      #   for <= 42
+      #   foo <= 42
+      #   bar > 10
+      #
+      # @example
+      #
+      #   # EnforcedStyle: equality_operators_only
+      #
+      #   # bad
+      #   99 == foo
+      #   "bar" != foo
+      #
+      #   # good
+      #   99 >= foo
+      #   3 < a && a < 5
       class YodaCondition < Cop
+        include ConfigurableEnforcedStyle
+
         MSG = 'Reverse the order of the operands `%s`.'.freeze
 
         REVERSE_COMPARISON = {
@@ -29,6 +45,8 @@ module RuboCop
           '>' => '<',
           '>=' => '<='
         }.freeze
+
+        EQUALITY_OPERATORS = %i[== !=].freeze
 
         def on_send(node)
           return unless yoda_condition?(node)
@@ -41,7 +59,12 @@ module RuboCop
         def yoda_condition?(node)
           return false unless node.comparison_method?
 
-          node.receiver.literal? && !node.arguments.first.literal?
+          lhs, operator, rhs = *node
+          if check_equality_only?
+            return false if non_equality_operator?(operator)
+          end
+
+          lhs.literal? && !rhs.literal?
         end
 
         def message(node)
@@ -55,8 +78,8 @@ module RuboCop
         end
 
         def corrected_code(node)
-          first, operator, last = node.children
-          "#{last.source} #{reverse_comparison(operator)} #{first.source}"
+          lhs, operator, rhs = *node
+          "#{rhs.source} #{reverse_comparison(operator)} #{lhs.source}"
         end
 
         def actual_code_range(node)
@@ -67,6 +90,14 @@ module RuboCop
 
         def reverse_comparison(operator)
           REVERSE_COMPARISON.fetch(operator.to_s, operator)
+        end
+
+        def check_equality_only?
+          style == :equality_operators_only
+        end
+
+        def non_equality_operator?(operator)
+          !EQUALITY_OPERATORS.include?(operator)
         end
       end
     end

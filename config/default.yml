@@ -1293,6 +1293,14 @@ Style/WordArray:
   # The regular expression `WordRegex` decides what is considered a word.
   WordRegex: !ruby/regexp '/\A[\p{Word}\n\t]+\z/'
 
+Style/YodaCondition:
+  EnforcedStyle: all_comparison_operators
+  SupportedStyles:
+    # check all comparison operators
+    - all_comparison_operators
+    # check only equality operators: `!=` and `==`
+    - equality_operators_only
+
 #################### Metrics ###############################
 
 Metrics/AbcSize:
