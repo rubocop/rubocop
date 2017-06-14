@@ -166,6 +166,7 @@ In the following section you find all available cops:
 * [Lint/AmbiguousRegexpLiteral](cops_lint.md#lintambiguousregexpliteral)
 * [Lint/AssignmentInCondition](cops_lint.md#lintassignmentincondition)
 * [Lint/BlockAlignment](cops_lint.md#lintblockalignment)
+* [Lint/BooleanSymbol](cops_lint.md#lintbooleansymbol)
 * [Lint/CircularArgumentReference](cops_lint.md#lintcircularargumentreference)
 * [Lint/ConditionPosition](cops_lint.md#lintconditionposition)
 * [Lint/Debugger](cops_lint.md#lintdebugger)
