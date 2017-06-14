@@ -28,6 +28,9 @@ Lint/UselessAccessModifier:
     - 'def_matcher'
     - 'def_node_matcher'
 
+Lint/BooleanSymbol:
+  Enabled: false
+
 Metrics/BlockLength:
   Exclude:
     - 'Rakefile'

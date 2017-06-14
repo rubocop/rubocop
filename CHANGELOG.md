@@ -9,6 +9,7 @@
 * [#4153](https://github.com/bbatsov/rubocop/issues/4153): New cop `Lint/ReturnInVoidContext` checks for the use of a return with a value in a context where it will be ignored. ([@harold-s][])
 * Add auto-correct support to `Lint/ScriptPermission`. ([@rrosenblum][])
 * [#4514](https://github.com/bbatsov/rubocop/pull/4514): Add configuration options to `Style/YodaCondition` to support checking all comparison operators or equality operators only. ([@smakagon][])
+* Add new `Lint/BooleanSymbol` cop. ([@droptheplot][])
 
 ### Bug fixes
 

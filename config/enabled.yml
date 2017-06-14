@@ -1124,6 +1124,10 @@ Lint/BlockAlignment:
   Description: 'Align block ends correctly.'
   Enabled: true
 
+Lint/BooleanSymbol:
+  Description: 'Check for `:true` and `:false` symbols.'
+  Enabled: true
+
 Lint/CircularArgumentReference:
   Description: "Default values in optional keyword arguments and optional ordinal arguments should not refer back to the name of the argument."
   Enabled: true

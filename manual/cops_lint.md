@@ -192,6 +192,24 @@ Attribute | Value
 EnforcedStyleAlignWith | either
 SupportedStylesAlignWith | either, start_of_block, start_of_line
 
+## Lint/BooleanSymbol
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks for `:true` and `:false` symbols.
+
+### Example
+
+```ruby
+# bad
+:true
+
+# good
+true
+```
+
 ## Lint/CircularArgumentReference
 
 Enabled by default | Supports autocorrection
