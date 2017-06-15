@@ -48,15 +48,13 @@ module RuboCop
         SELF_MSG = '`self` used in void context.'.freeze
         DEFINED_MSG = '`%s` used in void context.'.freeze
 
-        OPS = %w[* / % + - == === != < > <= >= <=>].freeze
+        OPS = %i[* / % + - == === != < > <= >= <=>].freeze
+        VOID_CONTEXT_TYPES = %i[def for block].freeze
 
         def on_begin(node)
           check_begin(node)
         end
-
-        def on_kwbegin(node)
-          check_begin(node)
-        end
+        alias on_kwbegin on_begin
 
         private
 
@@ -64,62 +62,49 @@ module RuboCop
           expressions = *node
           expressions = expressions.drop_last(1) unless in_void_context?(node)
           expressions.each do |expr|
-            check_for_void_op(expr)
-            check_for_literal(expr)
-            check_for_var(expr)
-            check_for_self(expr)
-            check_for_defined(expr)
+            check_void_op(expr)
+            check_literal(expr)
+            check_var(expr)
+            check_self(expr)
+            check_defined(expr)
           end
         end
 
-        def check_for_void_op(node)
-          return unless node.send_type? && node.loc.selector
+        def check_void_op(node)
+          return unless node.send_type? && OPS.include?(node.method_name)
 
-          op = node.loc.selector.source
-
-          add_offense(node, :selector, format(OP_MSG, op)) if OPS.include?(op)
+          add_offense(node, :selector, format(OP_MSG, node.method_name))
         end
 
-        def check_for_var(node)
+        def check_var(node)
           return unless node.variable? || node.const_type?
           add_offense(node, :name, format(VAR_MSG, node.loc.name.source))
         end
 
-        def check_for_literal(node)
+        def check_literal(node)
           return if !node.literal? || node.xstr_type?
 
           add_offense(node, :expression, format(LIT_MSG, node.source))
         end
 
-        def check_for_self(node)
+        def check_self(node)
           return unless node.self_type?
 
           add_offense(node, :expression, SELF_MSG)
         end
 
-        def check_for_defined(node)
+        def check_defined(node)
           return unless node.defined_type?
 
           add_offense(node, :expression, format(DEFINED_MSG, node.source))
         end
 
-        # `initialize` and setter methods do not return value of last
-        # expression.
         def in_void_context?(node)
           parent = node.parent
-          return false unless parent
-          return false unless parent.children.last == node
 
-          case parent.type
-          when :def
-            method = parent.children.first
-            method == :initialize || method.to_s.end_with?('=')
-          when :for
-            true
-          when :block
-            send = parent.children.first
-            send.method?(:each)
-          end
+          return false unless parent && parent.children.last == node
+
+          VOID_CONTEXT_TYPES.include?(parent.type) && parent.void_context?
         end
       end
     end

@@ -311,6 +311,38 @@ describe RuboCop::AST::DefNode do
     end
   end
 
+  describe '#void_context?' do
+    context 'with an initializer method' do
+      let(:source) { 'def initialize(bar); end' }
+
+      it { expect(def_node.void_context?).to be_truthy }
+    end
+
+    context 'with a regular assignment method' do
+      let(:source) { 'def foo=(bar); end' }
+
+      it { expect(def_node.void_context?).to be_truthy }
+    end
+
+    context 'with a bracket assignment method' do
+      let(:source) { 'def []=(bar); end' }
+
+      it { expect(def_node.void_context?).to be_truthy }
+    end
+
+    context 'with a comparison method' do
+      let(:source) { 'def ==(bar); end' }
+
+      it { expect(def_node.void_context?).to be_falsey }
+    end
+
+    context 'with a regular method' do
+      let(:source) { 'def foo(bar); end' }
+
+      it { expect(def_node.void_context?).to be_falsey }
+    end
+  end
+
   describe '#receiver' do
     context 'with an instance method definition' do
       let(:source) { 'def foo(bar); end' }

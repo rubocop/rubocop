@@ -9,6 +9,8 @@ module RuboCop
     # A `block` node is essentially a method send with a block. Parser nests
     # the `send` node inside the `block` node.
     class BlockNode < Node
+      VOID_CONTEXT_METHODS = %i[each].freeze
+
       # The `send` node associated with this block.
       #
       # @return [SendNode] the `send` node associated with the `block` node
@@ -93,6 +95,13 @@ module RuboCop
       # @return [Boolean] whether the `block` literal belongs to a lambda
       def lambda?
         send_node.method?(:lambda)
+      end
+
+      # Checks whether this node body is a void context.
+      #
+      # @return [Boolean] whether the `block` node body is a void context
+      def void_context?
+        VOID_CONTEXT_METHODS.include?(send_node.method_name)
       end
 
       # Custom destructuring method. This can be used to normalize

@@ -29,6 +29,20 @@ describe RuboCop::AST::ForNode do
     end
   end
 
+  describe '#void_context?' do
+    context 'with a do keyword' do
+      let(:source) { 'for foo in bar do baz; end' }
+
+      it { expect(for_node.void_context?).to be_truthy }
+    end
+
+    context 'without a do keyword' do
+      let(:source) { 'for foo in bar; baz; end' }
+
+      it { expect(for_node.void_context?).to be_truthy }
+    end
+  end
+
   describe '#variable' do
     let(:source) { 'for foo in :bar; :baz; end' }
 
