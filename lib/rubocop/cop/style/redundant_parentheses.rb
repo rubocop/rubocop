@@ -31,11 +31,17 @@ module RuboCop
           check(node)
         end
 
+        private
+
         def parens_allowed?(node)
           empty_parentheses?(node) ||
-            allowed_ancestor?(node) ||
             hash_literal_as_first_arg?(node) ||
             rescue?(node) ||
+            allowed_expression?(node)
+        end
+
+        def allowed_expression?(node)
+          allowed_ancestor?(node) ||
             allowed_method_call?(node) ||
             allowed_array_or_hash_element?(node) ||
             allowed_multiple_expression?(node)
@@ -52,7 +58,7 @@ module RuboCop
         end
 
         def allowed_multiple_expression?(node)
-          return false if node.children.size == 1
+          return false if node.children.one?
           ancestor = node.ancestors.first
           return false unless ancestor
           !ancestor.begin_type? && !ancestor.def_type? && !ancestor.block_type?
@@ -65,7 +71,7 @@ module RuboCop
 
         def hash_literal_as_first_arg?(node)
           # Don't flag `method ({key: value})`
-          node.children.first.hash_type? && first_arg?(node) &&
+          node.children.first.hash_type? && first_argument?(node) &&
             !parentheses?(node.parent)
         end
 
@@ -177,16 +183,12 @@ module RuboCop
         end
 
         def only_begin_arg?(args)
-          args.size == 1 && args.first && args.first.begin_type?
+          args.one? && args.first.begin_type?
         end
 
-        def first_arg?(node)
-          send_node = node.parent
-          return false unless send_node && send_node.send_type?
-
-          _receiver, _method_name, *args = *send_node
-          node.equal?(args.first)
-        end
+        def_node_matcher :first_argument?, <<-PATTERN
+          ^(send _ _ equal?(%0) ...)
+        PATTERN
 
         def call_chain_starts_with_int?(begin_node, send_node)
           recv = first_part_of_call_chain(send_node)
