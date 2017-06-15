@@ -18,23 +18,24 @@ module RuboCop
         def on_while(node)
           process_control_op(node)
         end
-
-        def on_until(node)
-          process_control_op(node)
-        end
+        alias on_until on_while
 
         private
+
+        def_node_matcher :control_op_condition, <<-PATTERN
+          (begin $_ ...)
+        PATTERN
 
         def process_control_op(node)
           cond = node.condition
 
-          return unless cond.begin_type?
-          return if cond.children.empty?
-          return if modifier_op?(cond.children.first)
-          return if parens_required?(node.children.first)
-          return if safe_assignment?(cond) && safe_assignment_allowed?
+          control_op_condition(cond) do |first_child|
+            return if modifier_op?(first_child)
+            return if parens_required?(node.children.first)
+            return if safe_assignment?(cond) && safe_assignment_allowed?
 
-          add_offense(cond)
+            add_offense(cond)
+          end
         end
 
         def modifier_op?(node)
