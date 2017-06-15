@@ -54,6 +54,9 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include SurroundingSpace
 
+        VARIABLE_TYPES = AST::Node::VARIABLES
+        NON_COMPLEX_TYPES = [*VARIABLE_TYPES, :const, :defined?, :yield].freeze
+
         MSG = '%s parentheses for ternary conditions.'.freeze
         MSG_COMPLEX = '%s parentheses for ternary expressions with' \
           ' complex conditions.'.freeze
@@ -102,17 +105,21 @@ module RuboCop
           if condition.begin_type?
             condition.to_a.any? { |x| complex_condition?(x) }
           else
-            non_complex_type?(condition) ? false : true
+            non_complex_expression?(condition) ? false : true
           end
         end
 
         # Anything that is not a variable, constant, or method/.method call
         # will be counted as a complex expression.
-        def non_complex_type?(condition)
-          condition.variable? || condition.const_type? ||
-            (condition.send_type? && !operator?(condition.method_name)) ||
-            condition.defined_type? || condition.yield_type? ||
-            square_brackets?(condition)
+        def non_complex_expression?(condition)
+          NON_COMPLEX_TYPES.include?(condition.type) ||
+            non_complex_send?(condition)
+        end
+
+        def non_complex_send?(node)
+          return false unless node.send_type?
+
+          !node.operator_method? || node.method?(:[])
         end
 
         def message(node)
@@ -164,9 +171,6 @@ module RuboCop
           {(:defined? $...)
            (send {_ nil} _ $(send nil _)...)}
         PATTERN
-
-        def_node_matcher :square_brackets?,
-                         '(send {(send _recv _msg) str array hash} :[] ...)'
 
         def correct_parenthesized(condition)
           lambda do |corrector|
