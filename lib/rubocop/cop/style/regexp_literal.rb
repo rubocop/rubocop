@@ -58,15 +58,23 @@ module RuboCop
 
         def allowed_slash_literal?(node)
           style == :slashes && !contains_disallowed_slash?(node) ||
-            style == :mixed && node.single_line? &&
-              !contains_disallowed_slash?(node)
+            allowed_mixed_slash?(node)
+        end
+
+        def allowed_mixed_slash?(node)
+          style == :mixed && node.single_line? &&
+            !contains_disallowed_slash?(node)
         end
 
         def allowed_percent_r_literal?(node)
           style == :slashes && contains_disallowed_slash?(node) ||
             style == :percent_r ||
-            style == :mixed && node.multiline? ||
-            style == :mixed && contains_disallowed_slash?(node)
+            allowed_mixed_percent_r?(node)
+        end
+
+        def allowed_mixed_percent_r?(node)
+          style == :mixed && node.multiline? ||
+            contains_disallowed_slash?(node)
         end
 
         def contains_disallowed_slash?(node)
