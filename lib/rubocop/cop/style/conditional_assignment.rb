@@ -6,6 +6,8 @@ module RuboCop
       # Helper module to provide common methods to classes needed for the
       # ConditionalAssignment Cop.
       module ConditionalAssignmentHelper
+        extend NodePattern::Macros
+
         EQUAL = '='.freeze
         END_ALIGNMENT = 'Lint/EndAlignment'.freeze
         ALIGN_WITH = 'EnforcedStyleAlignWith'.freeze
@@ -269,20 +271,26 @@ module RuboCop
         private
 
         def check_assignment_to_condition(node)
-          return unless style == :assign_inside_condition
-          return unless assignment_rhs_exist?(node)
+          return unless candidate_node?(node)
+
           ignore_node(node)
 
           assignment = assignment_node(node)
-          return unless condition?(assignment)
-          return if allowed_ternary?(assignment)
+          return unless candidate_condition?(assignment)
 
           _condition, *branches, else_branch = *assignment
-          return unless else_branch # empty else
+
+          return unless else_branch
           return if allowed_single_line?([*branches, else_branch])
 
           add_offense(node, :expression, ASSIGN_TO_CONDITION_MSG)
         end
+
+        def candidate_node?(node)
+          style == :assign_inside_condition && assignment_rhs_exist?(node)
+        end
+
+        def_node_matcher :candidate_condition?, '[{if case} !#allowed_ternary?]'
 
         def allowed_ternary?(assignment)
           assignment.if_type? && assignment.ternary? && !include_ternary?
