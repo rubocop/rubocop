@@ -20,6 +20,14 @@ module RuboCop
         loc.begin && loc.begin.is?('do')
       end
 
+      # Checks whether this node body is a void context.
+      # Always `true` for `for`.
+      #
+      # @return [true] whether the `for` node body is a void context
+      def void_context?
+        true
+      end
+
       # Returns the iteration variable of the `for` loop.
       #
       # @return [Node] The iteration variable of the `for` loop

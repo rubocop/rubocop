@@ -206,4 +206,18 @@ describe RuboCop::AST::BlockNode do
       it { expect(block_node.multiline?).to be_truthy }
     end
   end
+
+  describe '#void_context?' do
+    context 'when block method is each' do
+      let(:source) { 'each { bar }' }
+
+      it { expect(block_node.void_context?).to be_truthy }
+    end
+
+    context 'when block method is not each' do
+      let(:source) { 'map { bar }' }
+
+      it { expect(block_node.void_context?).to be_falsey }
+    end
+  end
 end

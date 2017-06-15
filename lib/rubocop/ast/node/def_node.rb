@@ -9,6 +9,13 @@ module RuboCop
       include ParameterizedNode
       include MethodIdentifierPredicates
 
+      # Checks whether this node body is a void context.
+      #
+      # @return [Boolean] whether the `def` node body is a void context
+      def void_context?
+        method?(:initialize) || assignment_method?
+      end
+
       # The name of the defined method as a symbol.
       #
       # @return [Symbol] the name of the defined method
