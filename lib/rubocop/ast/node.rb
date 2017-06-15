@@ -467,7 +467,7 @@ module RuboCop
       # So, does the return value of this node matter? If we changed it to
       # `(...; nil)`, might that affect anything?
       #
-      # rubocop:disable Metrics/MethodLength
+      # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
       def value_used?
         # Be conservative and return true if we're not sure.
         return false if parent.nil?
@@ -489,7 +489,7 @@ module RuboCop
           true
         end
       end
-      # rubocop:enable Metrics/MethodLength
+      # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity
 
       # Some expressions are evaluated for their value, some for their side
       # effects, and some for both.
@@ -595,15 +595,9 @@ module RuboCop
         end
       end
 
-      def new_class_or_module_block?(block_node)
-        receiver = block_node.receiver
-
-        block_node.method_name == :new &&
-          receiver && receiver.const_type? &&
-          (receiver.const_name == 'Class' || receiver.const_name == 'Module') &&
-          block_node.parent &&
-          block_node.parent.casgn_type?
-      end
+      def_node_matcher :new_class_or_module_block?, <<-PATTERN
+        ^(casgn _ _ (block (send (const _ {:Class :Module}) :new) ...))
+      PATTERN
     end
   end
 end

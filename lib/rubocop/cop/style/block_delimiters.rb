@@ -111,6 +111,7 @@ module RuboCop
           range.source_buffer.source[range.begin_pos + length, 1] =~ /\s/
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity
         def get_blocks(node, &block)
           case node.type
           when :block
@@ -126,8 +127,8 @@ module RuboCop
           when :pair
             node.each_child_node { |child| get_blocks(child, &block) }
           end
-          nil
         end
+        # rubocop:enable Metrics/CyclimaticComplexity
 
         def proper_block_style?(node)
           return true if ignored_method?(node.method_name)

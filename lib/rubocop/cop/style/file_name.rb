@@ -87,8 +87,10 @@ module RuboCop
           basename =~ (regex || SNAKE_CASE)
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity
         def find_class_or_module(node, namespace)
-          return nil if node.nil?
+          return nil unless node
+
           name = namespace.pop
 
           on_node(%i[class module casgn], node) do |child|
@@ -96,13 +98,15 @@ module RuboCop
 
             const_namespace, const_name = *const
             next if name != const_name && !match_acronym?(name, const_name)
+            next unless namespace.empty? ||
+                        match_namespace(child, const_namespace, namespace)
 
-            return node if namespace.empty?
-            return node if match_namespace(child, const_namespace, namespace)
+            return node
           end
 
           nil
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         def match_namespace(node, namespace, expected)
           match_partial = partial_matcher!(expected)

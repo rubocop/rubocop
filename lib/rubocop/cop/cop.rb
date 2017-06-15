@@ -112,6 +112,7 @@ module RuboCop
         self.class::MSG
       end
 
+      # rubocop:disable Metrics/CyclomaticComplexity
       def add_offense(node, loc = :expression, message = nil, severity = nil)
         location = find_location(node, loc)
 
@@ -127,6 +128,7 @@ module RuboCop
         @offenses << Offense.new(severity, location, message, name, status)
         yield if block_given? && status != :disabled
       end
+      # rubocop:enable Metrics/CyclomaticComplexity
 
       def find_location(node, loc)
         # Location can be provided as a symbol, e.g.: `:keyword`

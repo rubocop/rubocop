@@ -107,7 +107,8 @@ module RuboCop
       [ast, comments, tokens]
     end
 
-    def parser_class(ruby_version) # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
+    def parser_class(ruby_version)
       case ruby_version
       when 1.9
         require 'parser/ruby19'
@@ -131,6 +132,7 @@ module RuboCop
         raise ArgumentError, "Unknown Ruby version: #{ruby_version.inspect}"
       end
     end
+    # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity
 
     def create_parser(ruby_version)
       builder = RuboCop::AST::Builder.new
