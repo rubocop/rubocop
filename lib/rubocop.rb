@@ -5,6 +5,7 @@ require 'rainbow'
 
 require 'English'
 require 'set'
+require 'forwardable'
 require 'powerpack/array/butfirst'
 require 'powerpack/enumerable/drop_last'
 require 'powerpack/hash/symbolize_keys'
