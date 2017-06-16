@@ -4183,17 +4183,38 @@ way as they would be ordered in spoken English.
 ### Example
 
 ```ruby
+# EnforcedStyle: all_comparison_operators
+
 # bad
 99 == foo
-"bar" == foo
+"bar" != foo
 42 >= foo
-```
-```ruby
+10 < bar
+
 # good
 foo == 99
 foo == "bar"
-for <= 42
+foo <= 42
+bar > 10
 ```
+```ruby
+# EnforcedStyle: equality_operators_only
+
+# bad
+99 == foo
+"bar" != foo
+
+# good
+99 >= foo
+3 < a && a < 5
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+EnforcedStyle | all_comparison_operators
+SupportedStyles | all_comparison_operators, equality_operators_only
 
 ### References
 
