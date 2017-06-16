@@ -137,7 +137,7 @@ module RuboCop
         end
 
         def all_disabled?(comment)
-          comment.text =~ /rubocop:disable\s+all\b/
+          comment.text =~ /rubocop\s*:\s*disable\s+all\b/
         end
 
         def ignore_offense?(disabled_ranges, line_range)

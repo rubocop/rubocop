@@ -23,7 +23,7 @@
 * [#4529](https://github.com/bbatsov/rubocop/pull/4529): Make `Lint/UnreachableCode` aware of `if` and `case`. ([@pocke][])
 * [#4469](https://github.com/bbatsov/rubocop/issues/4469): Include permissions in file cache. ([@pocke][])
 * [#4270](https://github.com/bbatsov/rubocop/issues/4270): Fix false positive in `Performance/RegexpMatch` for named captures. ([@pocke][])
-
+* [#4525](https://github.com/bbatsov/rubocop/pull/4525): Fix regexp for checking comment config of `rubocop:disable all` in `Lint/UnneededDisable`. ([@meganemura][])
 
 ### Changes
 
