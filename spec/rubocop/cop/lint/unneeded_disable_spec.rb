@@ -258,7 +258,7 @@ describe RuboCop::Cop::Lint::UnneededDisable do
           end
 
           context 'all cops' do
-            let(:source) { '# rubocop:disable all' }
+            let(:source) { '# rubocop : disable all' }
             let(:cop_disabled_line_ranges) do
               {
                 'Metrics/MethodLength' => [1..Float::INFINITY],
@@ -270,7 +270,7 @@ describe RuboCop::Cop::Lint::UnneededDisable do
 
             it 'returns an offense' do
               expect(cop.messages).to eq(['Unnecessary disabling of all cops.'])
-              expect(cop.highlights).to eq(['# rubocop:disable all'])
+              expect(cop.highlights).to eq([source])
             end
           end
         end
@@ -371,7 +371,7 @@ describe RuboCop::Cop::Lint::UnneededDisable do
           end
 
           context 'all cops' do
-            let(:source) { '# rubocop:disable all' }
+            let(:source) { '# rubocop : disable all' }
             let(:cop_disabled_line_ranges) do
               {
                 'Metrics/MethodLength' => [1..Float::INFINITY],
