@@ -3588,7 +3588,29 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
-Checks if uses of quotes match the configured preference.
+This cop checks that quotes inside the string interpolation
+match the configured preference.
+
+### Example
+
+```ruby
+# EnforcedStyle: single_quotes
+
+# bad
+result = "Tests #{success ? "PASS" : "FAIL"}"
+
+# good
+result = "Tests #{success ? 'PASS' : 'FAIL'}"
+```
+```ruby
+# EnforcedStyle: double_quotes
+
+# bad
+result = "Tests #{success ? 'PASS' : 'FAIL'}"
+
+# good
+result = "Tests #{success ? "PASS" : "FAIL"}"
+```
 
 ### Important attributes
 
