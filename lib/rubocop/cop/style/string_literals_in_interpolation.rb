@@ -3,7 +3,28 @@
 module RuboCop
   module Cop
     module Style
-      # Checks if uses of quotes match the configured preference.
+      # This cop checks that quotes inside the string interpolation
+      # match the configured preference.
+      #
+      # @example
+      #
+      #   # EnforcedStyle: single_quotes
+      #
+      #   # bad
+      #   result = "Tests #{success ? "PASS" : "FAIL"}"
+      #
+      #   # good
+      #   result = "Tests #{success ? 'PASS' : 'FAIL'}"
+      #
+      # @example
+      #
+      #   # EnforcedStyle: double_quotes
+      #
+      #   # bad
+      #   result = "Tests #{success ? 'PASS' : 'FAIL'}"
+      #
+      #   # good
+      #   result = "Tests #{success ? "PASS" : "FAIL"}"
       class StringLiteralsInInterpolation < Cop
         include ConfigurableEnforcedStyle
         include StringLiteralsHelp
