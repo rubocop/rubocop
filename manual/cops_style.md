@@ -1042,7 +1042,8 @@ def foo(bar)
 end
 
 def self.foo(bar); end
-
+```
+```ruby
 # EnforcedStyle: expanded
 
 # bad
