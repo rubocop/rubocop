@@ -1580,7 +1580,7 @@ Whitelist | present?, blank?, presence, try
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | No
+Enabled | Yes
 
 This cop checks if a file which has a shebang line as
 its first line is granted execute permission.
@@ -1833,6 +1833,17 @@ statement in non-final position in *begin*(implicit) blocks.
 
 def some_method
   return
+  do_something
+end
+
+# bad
+
+def some_method
+  if cond
+    return
+  else
+    return
+  end
   do_something
 end
 ```

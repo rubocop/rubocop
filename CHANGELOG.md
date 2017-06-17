@@ -20,6 +20,7 @@
 * [#4418](https://github.com/bbatsov/rubocop/issues/4418): Register an offense in `Style/ConditionalAssignment` when the assignment line is the longest line, and it does not exceed the max line length. ([@rrosenblum][])
 * [#4491](https://github.com/bbatsov/rubocop/issues/4491): Prevent bad auto-correct in `Style/EmptyElse` for nested `if`. ([@pocke][])
 * [#4485](https://github.com/bbatsov/rubocop/pull/4485): Handle 304 status for remote config files. ([@daniloisr][])
+* [#4529](https://github.com/bbatsov/rubocop/pull/4529): Make `Lint/UnreachableCode` aware of `if` and `case`. ([@pocke][])
 
 ### Changes
 
