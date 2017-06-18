@@ -32,15 +32,23 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
       }
     end
 
-    let(:source) { <<-RUBY.strip_indent }
-      gem 'rails'
-      gem 'abc'
-      gem 'bcd'
-      gem 'cde'
-    RUBY
-
     it 'does not register any offenses' do
-      expect_no_offenses(source)
+      expect_no_offenses(<<-RUBY.strip_indent)
+        gem 'rails'
+        gem 'abc'
+        gem 'bcd'
+        gem 'cde'
+      RUBY
+    end
+
+    it 'register offenses' do
+      expect_offense(<<-RUBY.strip_indent)
+        gem 'rails'
+
+        gem 'b'
+        gem 'a'
+        ^^^^^^^ #{format(message, 'a', 'b')}
+      RUBY
     end
   end
 
