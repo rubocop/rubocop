@@ -40,6 +40,7 @@ module RuboCop
               gem_name(current),
               gem_name(previous)
             )
+            next if ignore_gem?(previous)
             register_offense(previous, current)
           end
         end
@@ -107,6 +108,10 @@ module RuboCop
         def_node_search :gem_declarations, <<-PATTERN
           (:send nil :gem ...)
         PATTERN
+
+        def ignore_gem?(node)
+          cop_config['IgnoreGems'].include?(gem_name(node))
+        end
       end
     end
   end

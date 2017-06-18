@@ -23,6 +23,35 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
     end
   end
 
+  context 'When ignore gems were configured' do
+    let(:cop_config) do
+      {
+        'TreatCommentsAsGroupSeparators' => treat_comments_as_group_separators,
+        'Include' => nil,
+        'IgnoreGems' => ['rails']
+      }
+    end
+
+    it 'does not register any offenses' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        gem 'rails'
+        gem 'abc'
+        gem 'bcd'
+        gem 'cde'
+      RUBY
+    end
+
+    it 'register offenses' do
+      expect_offense(<<-RUBY.strip_indent)
+        gem 'rails'
+
+        gem 'b'
+        gem 'a'
+        ^^^^^^^ #{format(message, 'a', 'b')}
+      RUBY
+    end
+  end
+
   context 'When gems are not alphabetically sorted' do
     let(:source) { <<-RUBY.strip_indent }
       gem 'rubocop'
