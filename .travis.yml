@@ -1,17 +1,23 @@
 sudo: false
 cache: bundler
 language: ruby
+rvm:
+  - jruby-9.0.1.0
+  - 2.0.0
+  - 2.1.10
+  - 2.2.7
+  - 2.3.4
+  - 2.4.1
+  - ruby-head
+  - rbx-3
+env:
+  global:
+    - JRUBY_OPTS='--debug' # get more accurate coverage data in JRuby
+  matrix:
+    - 'TASK=spec'
+    - 'TASK=ascii_spec'
+    - 'TASK=internal_investigation'
 matrix:
-  include:
-     - rvm: jruby-9.0.1.0
-       env: JRUBY_OPTS='--debug' # get more accurate coverage data
-     - rvm: 2.0.0
-     - rvm: 2.1.10
-     - rvm: 2.2.7
-     - rvm: 2.3.4
-     - rvm: 2.4.1
-     - rvm: ruby-head
-     - rvm: rbx-3
   allow_failures:
     - rvm: ruby-head
     - rvm: rbx-3
@@ -24,8 +30,8 @@ before_install:
 install:
   - bundle install --retry=3
 script:
-  - bundle exec rake
-  - bundle exec codeclimate-test-reporter
+  - 'bundle exec rake $TASK'
+  - 'test $TRAVIS_BRANCH = master && bundle exec codeclimate-test-reporter'
   # Running YARD under jruby crashes so skip checking manual under jruby
   - ruby -e "exit 1 unless RUBY_PLATFORM == 'java'" || bundle exec rake generate_cops_documentation
   # Check requiring libraries successfully. See https://github.com/bbatsov/rubocop/pull/4523#issuecomment-309136113
