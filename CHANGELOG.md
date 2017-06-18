@@ -10,6 +10,7 @@
 * Add auto-correct support to `Lint/ScriptPermission`. ([@rrosenblum][])
 * [#4514](https://github.com/bbatsov/rubocop/pull/4514): Add configuration options to `Style/YodaCondition` to support checking all comparison operators or equality operators only. ([@smakagon][])
 * Add new `Lint/BooleanSymbol` cop. ([@droptheplot][])
+* Make `Rails/PluralizationGrammar` use singular methods for `-1` / `-1.0` ([@promisedlandt])
 
 ### Bug fixes
 

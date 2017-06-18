@@ -24,7 +24,7 @@ describe RuboCop::Cop::Rails::PluralizationGrammar do
       end
     end
 
-    [1, 1.0].each do |singular_literal|
+    [-1, -1.0, 1, 1.0].each do |singular_literal|
       context "when mis-pluralizing #{method_name} with #{singular_literal}" do
         let(:source) { "#{singular_literal}.#{method_name}s.ago" }
         it 'registers an offense' do
@@ -51,8 +51,7 @@ describe RuboCop::Cop::Rails::PluralizationGrammar do
 
     context "when #{method_name} is called on any other literal number" do
       [-rand(2..1000),
-       rand(-1.0...0),
-       -1,
+       rand(-1.0.next_float...0),
        0,
        rand(0...1.0),
        rand(2..1000)].each do |plural_number|

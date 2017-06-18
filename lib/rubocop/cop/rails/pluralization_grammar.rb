@@ -77,7 +77,7 @@ module RuboCop
         end
 
         def singular_receiver?(number)
-          number == 1
+          number.abs == 1
         end
 
         def plural_receiver?(number)
