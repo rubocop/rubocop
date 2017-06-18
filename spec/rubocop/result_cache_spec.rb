@@ -57,6 +57,18 @@ describe RuboCop::ResultCache, :isolated_environment do
         end
       end
 
+      context 'when file permission have changed' do
+        unless RuboCop::Platform.windows?
+          it 'is invalid' do
+            cache.save(offenses)
+            FileUtils.chmod('+x', file)
+            cache2 = described_class.new(file, options,
+                                         config_store, cache_root)
+            expect(cache2.valid?).to eq(false)
+          end
+        end
+      end
+
       context 'when a symlink is present in the cache location' do
         let(:cache2) do
           described_class.new(file, options, config_store, cache_root)
