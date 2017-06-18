@@ -22,6 +22,8 @@
 * [#4485](https://github.com/bbatsov/rubocop/pull/4485): Handle 304 status for remote config files. ([@daniloisr][])
 * [#4529](https://github.com/bbatsov/rubocop/pull/4529): Make `Lint/UnreachableCode` aware of `if` and `case`. ([@pocke][])
 * [#4469](https://github.com/bbatsov/rubocop/issues/4469): Include permissions in file cache. ([@pocke][])
+* [#4270](https://github.com/bbatsov/rubocop/issues/4270): Fix false positive in `Performance/RegexpMatch` for named captures. ([@pocke][])
+
 
 ### Changes
 
