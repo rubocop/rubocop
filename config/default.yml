@@ -1564,3 +1564,5 @@ Rails/Validation:
 
 Bundler/OrderedGems:
   TreatCommentsAsGroupSeparators: true
+  IgnoreGems:
+    - 'rails'
