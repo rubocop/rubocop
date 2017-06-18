@@ -199,6 +199,7 @@ Enabled by default | Supports autocorrection
 Enabled | No
 
 This cop checks for `:true` and `:false` symbols.
+In most cases it would be a typo.
 
 ### Example
 
@@ -208,6 +209,13 @@ This cop checks for `:true` and `:false` symbols.
 
 # good
 true
+```
+```ruby
+# bad
+:false
+
+# good
+false
 ```
 
 ## Lint/CircularArgumentReference

@@ -27,6 +27,7 @@ module RuboCop
         KeywordSplatNode => [:kwsplat],
         OrNode           => [:or],
         PairNode         => [:pair],
+        RegexpNode       => [:regexp],
         ResbodyNode      => [:resbody],
         SendNode         => %i[csend send],
         SuperNode        => %i[super zsuper],

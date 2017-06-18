@@ -312,5 +312,11 @@ describe RuboCop::Cop::Performance::RegexpMatch, :config do
     include_examples :accepts, '`match` without arguments', <<-RUBY
       code if match
     RUBY
+
+    include_examples :accepts, '`=~` with assignment', <<-RUBY
+      if /alias_(?<alias_id>.*)/ =~ something
+        do_something
+      end
+    RUBY
   end
 end

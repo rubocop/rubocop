@@ -81,9 +81,11 @@ module RuboCop
           (send (regexp (str _) {(regopt) (regopt _)}) :=== !nil)
         PATTERN
 
-        def_node_matcher :match_with_lvasgn?, <<-PATTERN
-          (match_with_lvasgn !nil !nil)
-        PATTERN
+        def match_with_lvasgn?(node)
+          return false unless node.match_with_lvasgn_type?
+          regexp, _rhs = *node
+          regexp.to_regexp.named_captures.empty?
+        end
 
         MATCH_NODE_PATTERN = <<-PATTERN.freeze
           {
@@ -145,7 +147,7 @@ module RuboCop
         end
 
         def message(node)
-          node.loc.selector.source
+          format(MSG, node.loc.selector.source)
         end
 
         def last_match_used?(match_node)
