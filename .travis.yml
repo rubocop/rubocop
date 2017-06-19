@@ -31,7 +31,7 @@ install:
   - bundle install --retry=3
 script:
   - 'bundle exec rake $TASK'
-  - 'test $TRAVIS_BRANCH = master && bundle exec codeclimate-test-reporter'
+  - ruby -e "exit 1 if ENV['TRAVIS_BRANCH'] == 'master' && ENV['TASK'] != 'internal_investigation'" || bundle exec codeclimate-test-reporter
   # Running YARD under jruby crashes so skip checking manual under jruby
   - ruby -e "exit 1 unless RUBY_PLATFORM == 'java'" || bundle exec rake generate_cops_documentation
   # Check requiring libraries successfully. See https://github.com/bbatsov/rubocop/pull/4523#issuecomment-309136113
