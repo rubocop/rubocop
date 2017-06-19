@@ -592,7 +592,7 @@ describe RuboCop::Config do
       end
 
       before do
-        allow(File).to receive(:file?).with('.ruby-version')
+        allow(File).to receive(:file?).and_call_original
       end
 
       it 'uses TargetRubyVersion' do

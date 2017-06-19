@@ -26,8 +26,11 @@ RSpec.configure do |config|
   # to individual examples or groups you care about by tagging them with
   # `:focus` metadata. When nothing is tagged with `:focus`, all examples
   # get run.
-  config.filter_run :focus
-  config.run_all_when_everything_filtered = true
+  unless defined?(::TestQueue)
+    # See. https://github.com/tmm1/test-queue/issues/60#issuecomment-281948929
+    config.filter_run :focus
+    config.run_all_when_everything_filtered = true
+  end
 
   config.example_status_persistence_file_path = 'spec/examples.txt'
 
