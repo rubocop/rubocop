@@ -83,6 +83,15 @@ module RuboCop
           formatter_set.add_formatter('simple')
         end
 
+        around do |example|
+          begin
+            $stdout = StringIO.new
+            example.run
+          ensure
+            $stdout = STDOUT
+          end
+        end
+
         it 'closes all output files' do
           formatter_set.close_output_files
           formatter_set[0..1].each do |formatter|

@@ -8,6 +8,7 @@ gem 'pry'
 gem 'rake', '~> 12.0'
 gem 'rspec', '~> 3.6.0'
 gem 'simplecov', '~> 0.10'
+gem 'test-queue' if RUBY_VERSION >= '2.1.0'
 gem 'yard', '~> 0.9'
 
 group :test do

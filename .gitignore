@@ -16,6 +16,7 @@ Gemfile.local
 
 # rspec
 /spec/examples.txt
+/.test_queue_stats
 
 # jeweler generated
 pkg

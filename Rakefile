@@ -20,6 +20,18 @@ Dir['tasks/**/*.rake'].each { |t| load t }
 RSpec::Core::RakeTask.new(:spec) { |t| t.ruby_opts = '-E UTF-8' }
 RSpec::Core::RakeTask.new(:ascii_spec) { |t| t.ruby_opts = '-E ASCII' }
 
+namespace :parallel do
+  desc 'Run RSpec in parallel'
+  task :spec do
+    sh('rspec-queue spec/')
+  end
+
+  desc 'Run RSpec in parallel with ASCII encoding'
+  task :ascii_spec do
+    sh('RUBYOPT="-E ASCII" rspec-queue spec/')
+  end
+end
+
 desc 'Run RSpec with code coverage'
 task :coverage do
   ENV['COVERAGE'] = 'true'
