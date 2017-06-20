@@ -82,10 +82,6 @@ module RuboCop
           check_node(node)
         end
 
-        def on_or(node)
-          check_node(node)
-        end
-
         def check_node(node)
           return if target_ruby_version < 2.3
           return if allowed_if_condition?(node)
