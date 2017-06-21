@@ -27,7 +27,12 @@ task :coverage do
 end
 
 desc 'Run RuboCop over itself'
-RuboCop::RakeTask.new(:internal_investigation)
+RuboCop::RakeTask.new(:internal_investigation).tap do |task|
+  if RUBY_ENGINE == 'ruby' &&
+     RbConfig::CONFIG['host_os'] !~ /mswin|msys|mingw|cygwin|bccwin|wince|emc/
+    task.options = %w[--parallel]
+  end
+end
 
 task default: %i[spec ascii_spec internal_investigation]
 
