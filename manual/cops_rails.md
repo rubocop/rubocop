@@ -465,6 +465,39 @@ Include | app/models/\*\*/\*.rb
 
 * [https://github.com/bbatsov/rails-style-guide#has-many-through](https://github.com/bbatsov/rails-style-guide#has-many-through)
 
+## Rails/HasManyDependent
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop looks for has_many or has_one associations that don't specify a
+:dependent option.
+
+### Example
+
+```ruby
+# bad
+class Post < ActiveRecord::Base
+  has_many :comments
+end
+
+# good
+class Post < ActiveRecord::Base
+  has_many :comments, dependent: :destroy
+end
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+Include | app/models/\*\*/\*.rb
+
+### References
+
+* [https://github.com/bbatsov/rails-style-guide#has_many-has_one-dependent-option](https://github.com/bbatsov/rails-style-guide#has_many-has_one-dependent-option)
+
 ## Rails/HttpPositionalArguments
 
 Enabled by default | Supports autocorrection

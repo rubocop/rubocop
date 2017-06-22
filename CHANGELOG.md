@@ -11,6 +11,7 @@
 * [#4514](https://github.com/bbatsov/rubocop/pull/4514): Add configuration options to `Style/YodaCondition` to support checking all comparison operators or equality operators only. ([@smakagon][])
 * Add new `Lint/BooleanSymbol` cop. ([@droptheplot][])
 * Make `Rails/PluralizationGrammar` use singular methods for `-1` / `-1.0`. ([@promisedlandt][])
+* [#4541](https://github.com/bbatsov/rubocop/pull/4541): Add new `Rails/HasManyDependent` cop. ([@oboxodo][])
 
 ### Bug fixes
 
@@ -2848,3 +2849,4 @@
 [@harold-s]: https://github.com/harold-s
 [@daniloisr]: https://github.com/daniloisr
 [@promisedlandt]: https://github.com/promisedlandt
+[@oboxodo]: https://github.com/oboxodo

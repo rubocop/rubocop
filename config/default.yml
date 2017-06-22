@@ -1493,6 +1493,10 @@ Rails/HasAndBelongsToMany:
   Include:
     - app/models/**/*.rb
 
+Rails/HasManyDependent:
+  Include:
+    - app/models/**/*.rb
+
 Rails/NotNullColumn:
   Include:
     - db/migrate/*.rb
