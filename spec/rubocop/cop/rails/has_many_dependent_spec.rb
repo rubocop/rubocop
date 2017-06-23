@@ -2,9 +2,7 @@
 
 describe RuboCop::Cop::Rails::HasManyDependent do
   subject(:cop) { described_class.new }
-  let(:msg) do
-    '`has_many` and `has_one` associations must specify a `dependent` option.'
-  end
+  let(:msg) { 'Specify a `:dependent` option.' }
 
   %w[has_many has_one].each do |has_many_or_has_one|
     context has_many_or_has_one do
