@@ -465,7 +465,7 @@ Include | app/models/\*\*/\*.rb
 
 * [https://github.com/bbatsov/rails-style-guide#has-many-through](https://github.com/bbatsov/rails-style-guide#has-many-through)
 
-## Rails/HasManyDependent
+## Rails/HasManyOrHasOneDependent
 
 Enabled by default | Supports autocorrection
 --- | ---

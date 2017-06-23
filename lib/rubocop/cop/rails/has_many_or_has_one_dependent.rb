@@ -18,7 +18,7 @@ module RuboCop
       #     has_many :comments, dependent: :restrict_with_exception
       #     has_one :avatar, dependent: :destroy
       #   end
-      class HasManyDependent < Cop
+      class HasManyOrHasOneDependent < Cop
         MSG = 'Specify a `:dependent` option.'.freeze
 
         def_node_matcher :is_has_many_or_has_one_without_options?, <<-PATTERN

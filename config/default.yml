@@ -1493,7 +1493,7 @@ Rails/HasAndBelongsToMany:
   Include:
     - app/models/**/*.rb
 
-Rails/HasManyDependent:
+Rails/HasManyOrHasOneDependent:
   Include:
     - app/models/**/*.rb
 
