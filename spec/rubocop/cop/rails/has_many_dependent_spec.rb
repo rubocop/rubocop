@@ -2,25 +2,52 @@
 
 describe RuboCop::Cop::Rails::HasManyDependent do
   subject(:cop) { described_class.new }
-  let(:msg) { 'Specify a `:dependent` option.' }
 
-  %w[has_many has_one].each do |has_many_or_has_one|
-    context has_many_or_has_one do
-      it 'registers an offense when not specifying any options' do
-        inspect_source("#{has_many_or_has_one} :foo")
+  context 'has_one' do
+    it 'registers an offense when not specifying any options' do
+      expect_offense(<<-RUBY.strip_indent)
+        class Person
+          has_one :foo
+          ^^^^^^^ Specify a `:dependent` option.
+        end
+      RUBY
+    end
 
-        expect(cop.messages).to eq([msg])
-      end
+    it 'registers an offense when missing an explicit `:dependent` strategy' do
+      expect_offense(<<-RUBY.strip_indent)
+        class Person
+          has_one :foo, class_name: 'bar'
+          ^^^^^^^ Specify a `:dependent` option.
+        end
+      RUBY
+    end
 
-      it 'registers an offense when missing an explicit dependent strategy' do
-        inspect_source("#{has_many_or_has_one} :foo, class_name: 'bar'")
+    it 'does not register an offense when specifying `:dependent` strategy' do
+      expect_no_offenses('has_one :foo, dependent: :bar')
+    end
+  end
 
-        expect(cop.messages).to eq([msg])
-      end
+  context 'has_many' do
+    it 'registers an offense when not specifying any options' do
+      expect_offense(<<-RUBY.strip_indent)
+        class Person
+          has_many :foo
+          ^^^^^^^^ Specify a `:dependent` option.
+        end
+      RUBY
+    end
 
-      it 'does not register an offense when specifying dependent strategy' do
-        expect_no_offenses("#{has_many_or_has_one} :foo, dependent: :destroy")
-      end
+    it 'registers an offense when missing an explicit `:dependent` strategy' do
+      expect_offense(<<-RUBY.strip_indent)
+        class Person
+          has_many :foo, class_name: 'bar'
+          ^^^^^^^^ Specify a `:dependent` option.
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when specifying `:dependent` strategy' do
+      expect_no_offenses('has_many :foo, dependent: :bar')
     end
   end
 end

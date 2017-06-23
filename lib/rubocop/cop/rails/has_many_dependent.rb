@@ -38,7 +38,7 @@ module RuboCop
             return if pairs.any? { |pair| has_dependent?(pair) }
           end
 
-          add_offense(node)
+          add_offense(node, :selector)
         end
       end
     end
