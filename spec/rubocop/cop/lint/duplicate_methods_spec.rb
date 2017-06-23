@@ -291,6 +291,89 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
         end
       RUBY
     end
+
+    it "registers an offense for duplicate attr_reader in #{type}" do
+      expect_offense(<<-RUBY, 'example.rb')
+        #{opening_line}
+          def something
+          end
+          attr_reader :something
+          ^^^^^^^^^^^ Method `A#something` is defined at both example.rb:2 and example.rb:4.
+        end
+      RUBY
+    end
+
+    it "registers an offense for duplicate attr_writer in #{type}" do
+      expect_offense(<<-RUBY, 'example.rb')
+        #{opening_line}
+          def something=(right)
+          end
+          attr_writer :something
+          ^^^^^^^^^^^ Method `A#something=` is defined at both example.rb:2 and example.rb:4.
+        end
+      RUBY
+    end
+
+    it "registers offenses for duplicate attr_accessor in #{type}" do
+      expect_offense(<<-RUBY, 'example.rb')
+        #{opening_line}
+          attr_accessor :something
+
+          def something
+          ^^^ Method `A#something` is defined at both example.rb:2 and example.rb:4.
+          end
+          def something=(right)
+          ^^^ Method `A#something=` is defined at both example.rb:2 and example.rb:6.
+          end
+        end
+      RUBY
+    end
+
+    it "registers an offense for duplicate attr in #{type}" do
+      expect_offense(<<-RUBY, 'example.rb')
+        #{opening_line}
+          def something
+          end
+          attr :something
+          ^^^^ Method `A#something` is defined at both example.rb:2 and example.rb:4.
+        end
+      RUBY
+    end
+
+    it "registers offenses for duplicate assignable attr in #{type}" do
+      expect_offense(<<-RUBY, 'example.rb')
+        #{opening_line}
+          attr :something, true
+
+          def something
+          ^^^ Method `A#something` is defined at both example.rb:2 and example.rb:4.
+          end
+          def something=(right)
+          ^^^ Method `A#something=` is defined at both example.rb:2 and example.rb:6.
+          end
+        end
+      RUBY
+    end
+
+    it "accepts for attr_reader and setter in #{type}" do
+      expect_no_offenses(<<-RUBY)
+        #{opening_line}
+          def something=(right)
+          end
+          attr_reader :something
+        end
+      RUBY
+    end
+
+    it "accepts for attr_writer and getter in #{type}" do
+      expect_no_offenses(<<-RUBY)
+        #{opening_line}
+          def something
+          end
+          attr_writer :something
+        end
+      RUBY
+    end
   end
 
   include_examples('in scope', 'class', 'class A')

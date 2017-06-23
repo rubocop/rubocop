@@ -86,12 +86,22 @@ module RuboCop
           (send nil :alias_method (sym $_name) _)
         PATTERN
 
-        def on_send(node)
-          return unless (name = alias_method?(node))
-          return if node.ancestors.any?(&:if_type?)
-          return if possible_dsl?(node)
+        def_node_matcher :attr?, <<-PATTERN
+          (send nil ${:attr_reader :attr_writer :attr_accessor :attr} $...)
+        PATTERN
 
-          found_instance_method(node, name)
+        def_node_matcher :sym_name, '(sym $_name)'
+
+        def on_send(node)
+          if (name = alias_method?(node))
+            return unless name
+            return if node.ancestors.any?(&:if_type?)
+            return if possible_dsl?(node)
+
+            found_instance_method(node, name)
+          elsif (attr = attr?(node))
+            on_attr(node, *attr)
+          end
         end
 
         private
@@ -130,6 +140,29 @@ module RuboCop
             add_offense(node, loc, message_for_dup(node, method_name))
           else
             @definitions[method_name] = source_location(node)
+          end
+        end
+
+        def on_attr(node, attr_name, args)
+          case attr_name
+          when :attr
+            writable = args.size == 2 && args.last.true_type?
+            found_attr(node, [args.first], readable: true, writable: writable)
+          when :attr_reader
+            found_attr(node, args, readable: true)
+          when :attr_writer
+            found_attr(node, args, writable: true)
+          when :attr_accessor
+            found_attr(node, args, readable: true, writable: true)
+          end
+        end
+
+        def found_attr(node, args, readable: false, writable: false)
+          args.each do |arg|
+            name = sym_name(arg)
+            next unless name
+            found_instance_method(node, name) if readable
+            found_instance_method(node, "#{name}=") if writable
           end
         end
 
