@@ -3,9 +3,13 @@
 require 'yard'
 require 'rubocop'
 
-desc 'Generate docs of all cops departments'
+YARD::Rake::YardocTask.new(:yard_for_generate_documentation) do |task|
+  task.files = ['lib/rubocop/cop/*/*.rb']
+  task.options = ['--no-output']
+end
 
-task generate_cops_documentation: :yard do
+desc 'Generate docs of all cops departments'
+task generate_cops_documentation: :yard_for_generate_documentation do
   def cops_of_department(cops, department)
     cops.with_department(department).sort!
   end
