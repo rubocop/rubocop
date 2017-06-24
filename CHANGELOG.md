@@ -13,6 +13,7 @@
 * Make `Rails/PluralizationGrammar` use singular methods for `-1` / `-1.0`. ([@promisedlandt][])
 * [#4541](https://github.com/bbatsov/rubocop/pull/4541): Add new `Rails/HasManyOrHasOneDependent` cop. ([@oboxodo][])
 * Add new `Style/Dir` cop. ([@drenmi][])
+* Add new `Style/HeredocDelimiterCase` cop. ([@drenmi][])
 
 ### Bug fixes
 
