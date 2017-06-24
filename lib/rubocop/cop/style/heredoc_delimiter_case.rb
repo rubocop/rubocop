@@ -34,18 +34,16 @@ module RuboCop
       #     SELECT * FROM foo
       #   SQL
       class HeredocDelimiterCase < Cop
+        include Heredoc
         include ConfigurableEnforcedStyle
 
         MSG = 'Use %s heredoc delimiters.'.freeze
-        OPENING_DELIMITER = /<<[~-]?'?(\w+)'?\b/
 
-        def on_str(node)
-          return unless heredoc?(node) && !correct_case_delimiters?(node)
+        def on_heredoc(node)
+          return if correct_case_delimiters?(node)
 
           add_offense(node, :heredoc_end)
         end
-        alias on_dstr on_str
-        alias on_xstr on_str
 
         private
 
@@ -53,24 +51,16 @@ module RuboCop
           format(MSG, style)
         end
 
-        def heredoc?(node)
-          node.loc.is_a?(Parser::Source::Map::Heredoc)
-        end
-
         def correct_case_delimiters?(node)
-          delimiters(node) == correct_delimiters(node)
+          delimiter_string(node) == correct_delimiters(node)
         end
 
         def correct_delimiters(node)
           if style == :uppercase
-            delimiters(node).upcase
+            delimiter_string(node).upcase
           else
-            delimiters(node).downcase
+            delimiter_string(node).downcase
           end
-        end
-
-        def delimiters(node)
-          node.source.match(OPENING_DELIMITER).captures.first
         end
       end
     end

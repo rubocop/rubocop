@@ -30,6 +30,7 @@ module RuboCop
       #     something
       #   RUBY
       class IndentHeredoc < Cop
+        include Heredoc
         include ConfigurableEnforcedStyle
         include SafeMode
 
@@ -43,9 +44,7 @@ module RuboCop
           powerpack: 'strip_indent'
         }.freeze
 
-        def on_str(node)
-          return unless heredoc?(node)
-
+        def on_heredoc(node)
           body_indent_level = body_indent_level(node)
 
           if heredoc_indent_type(node) == '~'
@@ -57,9 +56,6 @@ module RuboCop
 
           add_offense(node, :heredoc_body)
         end
-
-        alias on_dstr on_str
-        alias on_xstr on_str
 
         def autocorrect(node)
           check_style!
@@ -131,10 +127,6 @@ module RuboCop
                              "2.3 or higher for #{cop_name}."
             end
           end
-        end
-
-        def heredoc?(node)
-          node.loc.is_a?(Parser::Source::Map::Heredoc)
         end
 
         def indented_body(node)

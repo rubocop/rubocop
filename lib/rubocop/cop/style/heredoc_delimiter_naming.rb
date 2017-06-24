@@ -24,22 +24,18 @@ module RuboCop
       #     SELECT * FROM foo
       #   EOS
       class HeredocDelimiterNaming < Cop
+        include Heredoc
+
         MSG = 'Use meaningful heredoc delimiters.'.freeze
         OPENING_DELIMITER = /<<[~-]?'?(\w+)'?\b/
 
-        def on_str(node)
-          return unless heredoc?(node) && !meaningful_delimiters?(node)
+        def on_heredoc(node)
+          return if meaningful_delimiters?(node)
 
           add_offense(node, :heredoc_end)
         end
-        alias on_dstr on_str
-        alias on_xstr on_str
 
         private
-
-        def heredoc?(node)
-          node.loc.is_a?(Parser::Source::Map::Heredoc)
-        end
 
         def meaningful_delimiters?(node)
           delimiters = delimiters(node)
