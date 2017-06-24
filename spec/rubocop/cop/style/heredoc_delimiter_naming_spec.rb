@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::HeredocDelimiters, :config do
+describe RuboCop::Cop::Style::HeredocDelimiterNaming, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:config) do
-    RuboCop::Config.new('Style/HeredocDelimiters' => cop_config)
+    RuboCop::Config.new('Style/HeredocDelimiterNaming' => cop_config)
   end
 
   let(:cop_config) do
