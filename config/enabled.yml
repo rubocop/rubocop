@@ -573,7 +573,7 @@ Style/HashSyntax:
   StyleGuide: '#hash-literals'
   Enabled: true
 
-Style/HeredocDelimiters:
+Style/HeredocDelimiterNaming:
   Description: 'Use descriptive heredoc delimiters.'
   StyleGuide: '#heredoc-delimiters'
   Enabled: true

@@ -18,7 +18,7 @@ module RuboCop
       #   <<-END
       #     SELECT * FROM foo
       #   END
-      class HeredocDelimiters < Cop
+      class HeredocDelimiterNaming < Cop
         MSG = 'Use meaningful heredoc delimiters.'.freeze
         OPENING_DELIMITER = /<<[~-]?'?(\w+)'?\b/
 
