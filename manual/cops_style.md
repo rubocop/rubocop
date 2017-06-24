@@ -1436,15 +1436,15 @@ PreferHashRocketsForNonAlnumEndingSymbols | false
 
 * [https://github.com/bbatsov/ruby-style-guide#hash-literals](https://github.com/bbatsov/ruby-style-guide#hash-literals)
 
-## Style/HeredocDelimiters
+## Style/HeredocDelimiterNaming
 
 Enabled by default | Supports autocorrection
 --- | ---
 Enabled | No
 
-This cop checks that your heredocs are using meaningful delimiters. By
-default it disallows `END`, and can be configured through blacklisting
-additional delimiters.
+This cop checks that your heredocs are using meaningful delimiters.
+By default it disallows `END` and `EO*`, and can be configured through
+blacklisting additional delimiters.
 
 ### Example
 
@@ -1458,13 +1458,18 @@ SQL
 <<-END
   SELECT * FROM foo
 END
+
+# bad
+<<-EOS
+  SELECT * FROM foo
+EOS
 ```
 
 ### Important attributes
 
 Attribute | Value
 --- | ---
-Blacklist | END
+Blacklist | END, (?i-mx:EO[A-Z]{1})
 
 ### References
 

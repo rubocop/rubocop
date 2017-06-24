@@ -36,6 +36,8 @@
 * [#4478](https://github.com/bbatsov/rubocop/issues/4478): Fix confusing message of `Performance/Caller` cop. ([@pocke][])
 * [#4543](https://github.com/bbatsov/rubocop/pull/4543): Make `Lint/DuplicateMethods` aware of `attr_*` methods. ([@pocke][])
 * [#4550](https://github.com/bbatsov/rubocop/pull/4550): Mark `RuboCop::CLI#run` as a public API. ([@yujinakayama][])
+* Rename `Style/HeredocDelimiters` to `Style/HeredocDelimiterNaming`. ([@drenmi][])
+
 
 ## 0.49.1 (2017-05-29)
 

@@ -69,7 +69,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
 
     describe '.patch' do
       let(:source) do
-        <<-EOS.strip_indent
+        <<-RUBY.strip_indent
         patch :update,
                   id: @user.id,
                   ac: {
@@ -77,7 +77,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
                     profile_id: @profile1.id,
                     content: 'Some Text'
                   }
-        EOS
+        RUBY
       end
 
       it 'does not register an offense' do
@@ -100,7 +100,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
 
     describe '.post' do
       let(:source) do
-        <<-EOS.strip_indent
+        <<-RUBY.strip_indent
         post :create,
                   id: @user.id,
                   ac: {
@@ -108,7 +108,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
                     profile_id: @profile1.id,
                     content: 'Some Text'
                   }
-        EOS
+        RUBY
       end
 
       it 'does not register an offense' do
@@ -329,7 +329,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
 
     describe '.patch' do
       let(:source) do
-        <<-EOS.strip_indent
+        <<-RUBY.strip_indent
         patch :update,
                   id: @user.id,
                   ac: {
@@ -337,17 +337,17 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
                     profile_id: @profile1.id,
                     content: 'Some Text'
                   }
-        EOS
+        RUBY
       end
 
       let(:corrected_result) do
-        <<-EOS.strip_indent
+        <<-RUBY.strip_indent
         patch :update, params: { id: @user.id, ac: {
                     article_id: @article1.id,
                     profile_id: @profile1.id,
                     content: 'Some Text'
                   } }
-        EOS
+        RUBY
       end
 
       it 'registers an offense' do
@@ -371,7 +371,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
 
     describe '.post' do
       let(:source) do
-        <<-EOS.strip_indent
+        <<-RUBY.strip_indent
         post :create,
                   id: @user.id,
                   ac: {
@@ -379,17 +379,17 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
                     profile_id: @profile1.id,
                     content: 'Some Text'
                   }
-        EOS
+        RUBY
       end
 
       let(:corrected_result) do
-        <<-EOS.strip_indent
+        <<-RUBY.strip_indent
         post :create, params: { id: @user.id, ac: {
                     article_id: @article1.id,
                     profile_id: @profile1.id,
                     content: 'Some Text'
                   } }
-        EOS
+        RUBY
       end
 
       it 'registers an offense' do
