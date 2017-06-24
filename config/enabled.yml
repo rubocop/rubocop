@@ -1645,6 +1645,11 @@ Rails/HasAndBelongsToMany:
   StyleGuide: 'https://github.com/bbatsov/rails-style-guide#has-many-through'
   Enabled: true
 
+Rails/HasManyOrHasOneDependent:
+  Description: 'Define the dependent option to the has_many and has_one associations.'
+  StyleGuide: 'https://github.com/bbatsov/rails-style-guide#has_many-has_one-dependent-option'
+  Enabled: true
+
 Rails/HttpPositionalArguments:
   Description: 'Use keyword arguments instead of positional arguments in http method calls.'
   Enabled: true

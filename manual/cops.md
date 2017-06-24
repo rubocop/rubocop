@@ -283,6 +283,7 @@ In the following section you find all available cops:
 * [Rails/FindBy](cops_rails.md#railsfindby)
 * [Rails/FindEach](cops_rails.md#railsfindeach)
 * [Rails/HasAndBelongsToMany](cops_rails.md#railshasandbelongstomany)
+* [Rails/HasManyOrHasOneDependent](cops_rails.md#railshasmanyorhasonedependent)
 * [Rails/HttpPositionalArguments](cops_rails.md#railshttppositionalarguments)
 * [Rails/NotNullColumn](cops_rails.md#railsnotnullcolumn)
 * [Rails/Output](cops_rails.md#railsoutput)
