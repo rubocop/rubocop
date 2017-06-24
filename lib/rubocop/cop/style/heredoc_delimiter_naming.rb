@@ -3,9 +3,9 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks that your heredocs are using meaningful delimiters. By
-      # default it disallows `END`, and can be configured through blacklisting
-      # additional delimiters.
+      # This cop checks that your heredocs are using meaningful delimiters.
+      # By default it disallows `END` and `EO*`, and can be configured through
+      # blacklisting additional delimiters.
       #
       # @example
       #
@@ -18,6 +18,11 @@ module RuboCop
       #   <<-END
       #     SELECT * FROM foo
       #   END
+      #
+      #   # bad
+      #   <<-EOS
+      #     SELECT * FROM foo
+      #   EOS
       class HeredocDelimiterNaming < Cop
         MSG = 'Use meaningful heredoc delimiters.'.freeze
         OPENING_DELIMITER = /<<[~-]?'?(\w+)'?\b/
@@ -37,7 +42,11 @@ module RuboCop
         end
 
         def meaningful_delimiters?(node)
-          !blacklisted_delimiters.include?(delimiters(node))
+          delimiters = delimiters(node)
+
+          blacklisted_delimiters.none? do |blacklisted_delimiter|
+            delimiters =~ Regexp.new(blacklisted_delimiter)
+          end
         end
 
         def delimiters(node)

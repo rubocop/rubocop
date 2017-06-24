@@ -901,6 +901,7 @@ Style/HashSyntax:
 Style/HeredocDelimiterNaming:
   Blacklist:
     - END
+    - !ruby/regexp '/EO[A-Z]{1}/'
 
 Style/IfUnlessModifier:
   MaxLineLength: 80
