@@ -512,6 +512,7 @@ require 'rubocop/formatter/worst_offenders_formatter'
 require 'rubocop/formatter/formatter_set'
 
 require 'rubocop/cached_data'
+require 'rubocop/file_finder'
 require 'rubocop/config'
 require 'rubocop/config_loader_resolver'
 require 'rubocop/config_loader'

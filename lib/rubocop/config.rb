@@ -12,12 +12,14 @@ module RuboCop
   # directories are inspected.
   class Config
     include PathUtil
+    include FileFinder
 
     COMMON_PARAMS = %w[Exclude Include Severity
                        AutoCorrect StyleGuide Details].freeze
     # 2.1 is the oldest officially supported Ruby version.
     DEFAULT_RUBY_VERSION = 2.1
     KNOWN_RUBIES = [1.9, 2.0, 2.1, 2.2, 2.3, 2.4].freeze
+    RUBY_VERSION_FILE = '.ruby-version'.freeze
     DEFAULT_RAILS_VERSION = 5.0
     OBSOLETE_COPS = {
       'Style/TrailingComma' =>
@@ -298,8 +300,8 @@ module RuboCop
           @target_ruby_version_source = :rubocop_yml
 
           for_all_cops['TargetRubyVersion']
-        elsif File.file?('.ruby-version') &&
-              /\A(ruby-)?(?<version>\d+\.\d+)/ =~ File.read('.ruby-version')
+        elsif File.file?(ruby_version_file) &&
+              /\A(ruby-)?(?<version>\d+\.\d+)/ =~ File.read(ruby_version_file)
 
           @target_ruby_version_source = :dot_ruby_version
 
@@ -315,6 +317,12 @@ module RuboCop
     end
 
     private
+
+    def ruby_version_file
+      @ruby_version_file ||=
+        files_in_path(base_dir_for_path_parameters, RUBY_VERSION_FILE).first ||
+        RUBY_VERSION_FILE
+    end
 
     def warn_about_unrecognized_cops(invalid_cop_names)
       invalid_cop_names.each do |name|
