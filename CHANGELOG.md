@@ -12,6 +12,7 @@
 * Add new `Lint/BooleanSymbol` cop. ([@droptheplot][])
 * Make `Rails/PluralizationGrammar` use singular methods for `-1` / `-1.0`. ([@promisedlandt][])
 * [#4541](https://github.com/bbatsov/rubocop/pull/4541): Add new `Rails/HasManyOrHasOneDependent` cop. ([@oboxodo][])
+* Add new `Style/Dir` cop. ([@drenmi][])
 
 ### Bug fixes
 

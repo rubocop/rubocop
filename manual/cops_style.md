@@ -709,6 +709,29 @@ class/singleton methods are checked.
 
 * [https://github.com/bbatsov/ruby-style-guide#method-parens](https://github.com/bbatsov/ruby-style-guide#method-parens)
 
+## Style/Dir
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks for places where the `#__dir__` method can replace more
+complex constructs to retrieve a canonicalized absolute path to the
+current file.
+
+### Example
+
+```ruby
+# bad
+path = File.expand_path(File.dirname(__FILE__))
+
+# bad
+path = File.dirname(File.realpath(__FILE__))
+
+# good
+path = __dir__
+```
+
 ## Style/Documentation
 
 Enabled by default | Supports autocorrection

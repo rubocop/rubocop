@@ -339,6 +339,7 @@ In the following section you find all available cops:
 * [Style/ConstantName](cops_style.md#styleconstantname)
 * [Style/Copyright](cops_style.md#stylecopyright)
 * [Style/DefWithParentheses](cops_style.md#styledefwithparentheses)
+* [Style/Dir](cops_style.md#styledir)
 * [Style/Documentation](cops_style.md#styledocumentation)
 * [Style/DocumentationMethod](cops_style.md#styledocumentationmethod)
 * [Style/DoubleNegation](cops_style.md#styledoublenegation)
