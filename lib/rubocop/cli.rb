@@ -15,9 +15,13 @@ module RuboCop
       @config_store = ConfigStore.new
     end
 
+    # @api public
+    #
     # Entry point for the application logic. Here we
     # do the command line arguments processing and inspect
-    # the target files
+    # the target files.
+    #
+    # @param args [Array<String>] command line arguments
     # @return [Integer] UNIX exit code
     def run(args = ARGV)
       @options, paths = Options.new.parse(args)
