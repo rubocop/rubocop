@@ -3,11 +3,19 @@
 describe RuboCop::Cop::Performance::Caller do
   subject(:cop) { described_class.new }
 
-  it "doesn't register an offense when caller is called" do
+  it 'accepts `caller` without argument and method chain' do
     expect_no_offenses('caller')
   end
 
-  it "doesn't register an offense when caller with arguments is called" do
+  it 'accepts `caller` with arguments' do
+    expect_no_offenses('caller(1, 1).first')
+  end
+
+  it 'accepts `caller_locations` without argument and method chain' do
+    expect_no_offenses('caller_locations')
+  end
+
+  it 'accepts `caller_locations` with arguments' do
     expect_no_offenses('caller(1, 1).first')
   end
 
@@ -56,6 +64,22 @@ describe RuboCop::Cop::Performance::Caller do
     expect_offense(<<-RUBY.strip_indent)
       caller(2)[1]
       ^^^^^^^^^^^^ Use `caller(3..3).first` instead of `caller[1]`.
+    RUBY
+  end
+
+  it 'registers an offense when :first is called on caller_locations also' do
+    expect(caller_locations.first.to_s).to eq(caller_locations(1..1).first.to_s)
+    expect_offense(<<-RUBY.strip_indent)
+      caller_locations.first
+      ^^^^^^^^^^^^^^^^^^^^^^ Use `caller_locations(1..1).first` instead of `caller_locations.first`.
+    RUBY
+  end
+
+  it 'registers an offense when :[] is called on caller_locations also' do
+    expect(caller_locations[1].to_s).to eq(caller_locations(2..2).first.to_s)
+    expect_offense(<<-RUBY.strip_indent)
+      caller_locations[1]
+      ^^^^^^^^^^^^^^^^^^^ Use `caller_locations(2..2).first` instead of `caller_locations[1]`.
     RUBY
   end
 end
