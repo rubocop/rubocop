@@ -34,6 +34,7 @@
 * [#4481](https://github.com/bbatsov/rubocop/issues/4481): Prevent `Style/WordArray` and `Style/SymbolArray` from registering offenses where percent arrays don't work. ([@drenmi][])
 * [#4447](https://github.com/bbatsov/rubocop/issues/4447): Prevent `Layout/EmptyLineBetweenDefs` from removing too many lines. ([@drenmi][])
 * [#3892](https://github.com/bbatsov/rubocop/issues/3892): Make `Style/NumericPredicate` ignore numeric comparison of global variables. ([@drenmi][])
+* [#4518](https://github.com/bbatsov/rubocop/issues/4518): Fix bug where `Style/SafeNavigation` does not register an offense when there are chained method calls. ([@rrosenblum][])
 
 ### Changes
 
