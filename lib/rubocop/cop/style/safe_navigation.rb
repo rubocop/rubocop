@@ -48,33 +48,30 @@ module RuboCop
 
         MSG = 'Use safe navigation (`&.`) instead of checking if an object ' \
               'exists before calling the method.'.freeze
-        NIL_METHODS = nil.methods.freeze
+        NIL_METHODS = nil.methods.map(&:to_s).freeze
 
         minimum_target_ruby_version 2.3
 
-        def_node_matcher :safe_navigation_candidate, <<-PATTERN
+        # if format: (if checked_variable body nil)
+        # unless format: (if checked_variable nil body)
+        def_node_matcher :modifier_if_safe_navigation_candidate?, <<-PATTERN
           {
-            (if
-              {(send (send $_ :nil?) :!) $_}
-              {(send $_ $_ ...) (block (send $_ $_ ...) ...)}
-            ...)
-            (if
-              (send $_ {:nil? :!}) nil
-              {(send $_ $_ ...) (block (send $_ $_ ...) ...)}
-            ...)
+            (if {
+                  (send $_ {:nil? :!})
+                  $_
+                } nil $_)
+
+            (if {
+                  (send (send $_ :nil?) :!)
+                  $_
+                } $_ nil)
           }
         PATTERN
 
-        def_node_matcher :candidate_that_may_introduce_nil, <<-PATTERN
-          (and
-            {(send (send $_ :nil?) :!) $_}
-            {(send $_ $_ ...) (block (send $_ $_ ...) ...)}
-          ...)
-        PATTERN
+        def_node_matcher :not_nil_check?, '(send (send $_ :nil?) :!)'
 
         def on_if(node)
-          return if node.ternary?
-
+          return if allowed_if_condition?(node)
           check_node(node)
         end
 
@@ -84,36 +81,17 @@ module RuboCop
 
         def check_node(node)
           return if target_ruby_version < 2.3
-          return if allowed_if_condition?(node)
           checked_variable, receiver, method = extract_parts(node)
           return unless receiver == checked_variable
-          return if NIL_METHODS.include?(method)
-          return unless method =~ /\w+[=!?]?/
+          return if unsafe_method?(method)
 
           add_offense(node)
         end
 
-        def allowed_if_condition?(node)
-          node.if_type? && (node.else? || node.elsif?)
-        end
-
-        def extract_parts(node)
-          if cop_config['ConvertCodeThatCanStartToReturnNil']
-            safe_navigation_candidate(node) ||
-              candidate_that_may_introduce_nil(node)
-          else
-            safe_navigation_candidate(node)
-          end
-        end
-
         def autocorrect(node)
-          if node.if_type?
-            _check, body, = *node.node_parts
-          else
-            _check, body = *node
-          end
-
-          method_call, = *body if body.block_type?
+          _check, body, = node.node_parts
+          _checked_variable, matching_receiver, = extract_parts(node)
+          method_call, = matching_receiver.parent
 
           lambda do |corrector|
             corrector.remove(begin_range(node, body))
@@ -123,6 +101,69 @@ module RuboCop
         end
 
         private
+
+        def allowed_if_condition?(node)
+          node.else? || node.elsif? || node.ternary?
+        end
+
+        def extract_parts(node)
+          case node.type
+          when :if
+            extract_parts_from_if(node)
+          when :and
+            extract_parts_from_and(node)
+          end
+        end
+
+        def extract_parts_from_if(node)
+          checked_variable, receiver =
+            modifier_if_safe_navigation_candidate?(node)
+
+          matching_receiver =
+            find_matching_receiver_invocation(receiver, checked_variable)
+
+          if matching_receiver
+            method = matching_receiver.parent.loc.selector.source
+          end
+
+          [checked_variable, matching_receiver, method]
+        end
+
+        def extract_parts_from_and(node)
+          checked_variable, rhs = *node
+          if cop_config['ConvertCodeThatCanStartToReturnNil']
+            checked_variable =
+              not_nil_check?(checked_variable) || checked_variable
+          end
+
+          matching_receiver =
+            find_matching_receiver_invocation(rhs, checked_variable)
+
+          if matching_receiver
+            method = matching_receiver.parent.loc.selector.source
+          end
+
+          [checked_variable, matching_receiver, method]
+        end
+
+        def find_matching_receiver_invocation(node, checked_variable)
+          return nil if node.nil?
+
+          if node.block_type?
+            method_call, = *node
+            receiver, _method = *method_call
+          elsif node.send_type?
+            receiver, _method = *node
+          end
+
+          return receiver if receiver == checked_variable
+
+          find_matching_receiver_invocation(receiver, checked_variable)
+        end
+
+        def unsafe_method?(method)
+          NIL_METHODS.include?(method) || method !~ /\w+[=!?]?/
+        end
 
         def begin_range(node, method_call)
           Parser::Source::Range.new(node.loc.expression.source_buffer,
