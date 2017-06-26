@@ -898,9 +898,10 @@ Style/HashSyntax:
   # Do not suggest { a?: 1 } over { :a? => 1 } in ruby19 style
   PreferHashRocketsForNonAlnumEndingSymbols: false
 
-Style/HeredocDelimiters:
+Style/HeredocDelimiterNaming:
   Blacklist:
     - END
+    - !ruby/regexp '/EO[A-Z]{1}/'
 
 Style/IfUnlessModifier:
   MaxLineLength: 80
