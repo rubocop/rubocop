@@ -39,6 +39,7 @@
 * [#4550](https://github.com/bbatsov/rubocop/pull/4550): Mark `RuboCop::CLI#run` as a public API. ([@yujinakayama][])
 * [#4551](https://github.com/bbatsov/rubocop/pull/4551): Make `Performance/Caller` aware of `caller_locations`. ([@pocke][])
 * Rename `Style/HeredocDelimiters` to `Style/HeredocDelimiterNaming`. ([@drenmi][])
+* [#4157](https://github.com/bbatsov/rubocop/issues/4157): Enhance offense message for `Style/RedudantReturn` cop. ([@gohdaniel15][])
 
 ## 0.49.1 (2017-05-29)
 
@@ -2853,3 +2854,4 @@
 [@daniloisr]: https://github.com/daniloisr
 [@promisedlandt]: https://github.com/promisedlandt
 [@oboxodo]: https://github.com/oboxodo
+[@gohdaniel15]: https://github.com/gohdaniel15
