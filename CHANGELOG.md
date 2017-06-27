@@ -27,6 +27,7 @@
 * [#4469](https://github.com/bbatsov/rubocop/issues/4469): Include permissions in file cache. ([@pocke][])
 * [#4270](https://github.com/bbatsov/rubocop/issues/4270): Fix false positive in `Performance/RegexpMatch` for named captures. ([@pocke][])
 * [#4525](https://github.com/bbatsov/rubocop/pull/4525): Fix regexp for checking comment config of `rubocop:disable all` in `Lint/UnneededDisable`. ([@meganemura][])
+* [#4555](https://github.com/bbatsov/rubocop/issues/4555): Make `Style/VariableName` aware of optarg, kwarg and other arguments. ([@pocke][])
 
 ### Changes
 

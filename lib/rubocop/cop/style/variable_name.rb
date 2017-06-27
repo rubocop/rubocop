@@ -10,23 +10,19 @@ module RuboCop
 
         def on_lvasgn(node)
           name, = *node
+          return unless name
           check_name(node, name, node.loc.name)
         end
 
-        def on_ivasgn(node)
-          name, = *node
-          check_name(node, name, node.loc.name)
-        end
-
-        def on_cvasgn(node)
-          name, = *node
-          check_name(node, name, node.loc.name)
-        end
-
-        def on_arg(node)
-          name, = *node
-          check_name(node, name, node.loc.name)
-        end
+        alias on_ivasgn    on_lvasgn
+        alias on_cvasgn    on_lvasgn
+        alias on_arg       on_lvasgn
+        alias on_optarg    on_lvasgn
+        alias on_restarg   on_lvasgn
+        alias on_kwoptarg  on_lvasgn
+        alias on_kwarg     on_lvasgn
+        alias on_kwrestarg on_lvasgn
+        alias on_blockarg  on_lvasgn
 
         private
 
