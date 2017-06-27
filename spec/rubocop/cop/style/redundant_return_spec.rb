@@ -173,6 +173,15 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
       expect(cop.offenses.size).to eq(1)
     end
 
+    it 'registers a helpful message for defs with multiple returns' do
+      expect_offense(<<-RUBY.strip_indent)
+        def func
+          return something, test
+          ^^^^^^ Redundant `return` detected. To return multiple values, use an array.
+        end
+      RUBY
+    end
+
     it 'auto-corrects by making implicit arrays explicit' do
       src = <<-RUBY.strip_indent
         def func
