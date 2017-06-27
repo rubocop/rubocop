@@ -713,7 +713,7 @@ class/singleton methods are checked.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | No
+Enabled | Yes
 
 This cop checks for places where the `#__dir__` method can replace more
 complex constructs to retrieve a canonicalized absolute path to the
@@ -1492,7 +1492,7 @@ EOS
 
 Attribute | Value
 --- | ---
-Blacklist | END, (?i-mx:EO[A-Z]{1})
+Blacklist | END, (?-mix:EO[A-Z]{1})
 
 ### References
 

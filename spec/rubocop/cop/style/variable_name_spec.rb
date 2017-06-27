@@ -69,6 +69,20 @@ describe RuboCop::Cop::Style::VariableName, :config do
       RUBY
     end
 
+    it 'registers offenses for method arguments' do
+      expect_offense(<<-RUBY.strip_indent)
+        def f(someArg, optArg = 1, *restArg, argAfterRest, kwOptArg: 1, kwArg:, **kwRest, &blockArg); end
+              ^^^^^^^ Use snake_case for variable names.
+                       ^^^^^^ Use snake_case for variable names.
+                                    ^^^^^^^ Use snake_case for variable names.
+                                             ^^^^^^^^^^^^ Use snake_case for variable names.
+                                                           ^^^^^^^^ Use snake_case for variable names.
+                                                                        ^^^^^ Use snake_case for variable names.
+                                                                                  ^^^^^^ Use snake_case for variable names.
+                                                                                           ^^^^^^^^ Use snake_case for variable names.
+      RUBY
+    end
+
     include_examples 'always accepted'
   end
 
@@ -113,6 +127,20 @@ describe RuboCop::Cop::Style::VariableName, :config do
 
     it 'accepts camel case local variables marked as unused' do
       expect_no_offenses('_myLocal = 1')
+    end
+
+    it 'registers offenses for method arguments' do
+      expect_offense(<<-RUBY.strip_indent)
+        def f(some_arg, opt_arg = 1, *rest_arg, arg_after_rest, kw_opt_arg: 1, kw_arg:, **kw_rest, &block_arg); end
+              ^^^^^^^^ Use camelCase for variable names.
+                        ^^^^^^^ Use camelCase for variable names.
+                                      ^^^^^^^^ Use camelCase for variable names.
+                                                ^^^^^^^^^^^^^^ Use camelCase for variable names.
+                                                                ^^^^^^^^^^ Use camelCase for variable names.
+                                                                               ^^^^^^ Use camelCase for variable names.
+                                                                                          ^^^^^^^ Use camelCase for variable names.
+                                                                                                    ^^^^^^^^^ Use camelCase for variable names.
+      RUBY
     end
 
     include_examples 'always accepted'
