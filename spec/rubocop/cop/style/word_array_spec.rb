@@ -90,6 +90,18 @@ describe RuboCop::Cop::Style::WordArray, :config do
       expect_no_offenses('["", "two", "three"]')
     end
 
+    # Bug: https://github.com/bbatsov/rubocop/issues/4481
+    it 'does not register an offense in an ambiguous block context' do
+      expect_no_offenses('foo ["bar", "baz"] { qux }')
+    end
+
+    it 'registers an offense in a non-ambiguous block context' do
+      expect_offense(<<-RUBY.strip_indent)
+        foo(['bar', 'baz']) { qux }
+            ^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
+      RUBY
+    end
+
     it 'does not register offense for array with allowed number of strings' do
       cop_config['MinSize'] = 4
       expect_no_offenses('["one", "two", "three"]')

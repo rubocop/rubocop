@@ -68,6 +68,18 @@ describe RuboCop::Cop::Style::SymbolArray, :config do
       expect_no_offenses('[:one, :two, :"space here"]')
     end
 
+    # Bug: https://github.com/bbatsov/rubocop/issues/4481
+    it 'does not register an offense in an ambiguous block context' do
+      expect_no_offenses('foo [:bar, :baz] { qux }')
+    end
+
+    it 'registers an offense in a non-ambiguous block context' do
+      expect_offense(<<-RUBY.strip_indent)
+        foo([:bar, :baz]) { qux }
+            ^^^^^^^^^^^^ Use `%i` or `%I` for an array of symbols.
+      RUBY
+    end
+
     it 'detects right value for MinSize to use for --auto-gen-config' do
       inspect_source(<<-RUBY.strip_indent)
         [:one, :two, :three]
