@@ -32,6 +32,7 @@
 
 ### Changes
 
+* [#4553](https://github.com/bbatsov/rubocop/issues/4553): Add `node_modules` to default excludes. ([@iainbeeston][])
 * [#4444](https://github.com/bbatsov/rubocop/pull/4444): Make `Style/Encoding` cop enabled by default. ([@deivid-rodriguez][])
 * [#4452](https://github.com/bbatsov/rubocop/pull/4452): Add option to `Rails/Delegate` for enforcing the prefixed method name case. ([@klesse413][])
 * [#4493](https://github.com/bbatsov/rubocop/pull/4493): Make `Lint/Void` cop aware of `Enumerable#each` and `for`. ([@pocke][])
