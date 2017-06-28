@@ -22,8 +22,7 @@ module RuboCop
       # or a case expression with a default branch.
       class RedundantReturn < Cop
         MSG = 'Redundant `return` detected.'.freeze
-        MULTI_RETURN_MSG = 'Redundant `return` detected.' \
-        ' To return multiple values, use an array.'.freeze
+        MULTI_RETURN_MSG = 'To return multiple values, use an array.'.freeze
 
         def on_def(node)
           return unless node.body
@@ -122,10 +121,11 @@ module RuboCop
         end
 
         def message(node)
-          return MULTI_RETURN_MSG if !allow_multiple_return_values? &&
-                                     node.children.size > 1
-
-          MSG
+          if !allow_multiple_return_values? && node.children.size > 1
+            "#{MSG} #{MULTI_RETURN_MSG}"
+          else
+            MSG
+          end
         end
       end
     end
