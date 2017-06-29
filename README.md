@@ -88,6 +88,7 @@ Here's a list of RuboCop's core developers:
 * [Yuji Nakayama](https://github.com/yujinakayama)
 * [Evgeni Dzhelyov](https://github.com/edzhelyov)
 * [Ted Johansson](https://github.com/dremni)
+* [Masataka Kuwabara](https://github.com/pocke)
 
 ## Logo
 
