@@ -92,18 +92,21 @@ module RuboCop
         write_unless_file_exists(spec_path, generated_spec)
       end
 
+      def inject_require
+        RequireFileInjector.new(require_path).inject
+      end
+
       def todo
         <<-TODO.strip_indent
-          created
-          - #{source_path}
-          - #{spec_path}
+          Files created:
+            - #{source_path}
+            - #{spec_path}
 
-          Do 4 steps
-          - Add an entry to `New feature` section in CHANGELOG.md
-            - e.g. Add new `#{badge.cop_name}` cop. ([@your_id][])
-          - Add `require '#{require_path}'` into lib/rubocop.rb
-          - Add an entry into config/enabled.yml or config/disabled.yml
-          - Implement a new cop to the generated file!
+          Do 3 steps:
+            1. Add an entry to the "New features" section in CHANGELOG.md,
+               e.g. "Add new `#{badge.cop_name}` cop. ([@your_id][])"
+            2. Add an entry into config/enabled.yml or config/disabled.yml
+            3. Implement your new cop in the generated file!
         TODO
       end
 
@@ -158,6 +161,67 @@ module RuboCop
           .gsub(/([^A-Z])([A-Z]+)/, '\1_\2')
           .gsub(/([A-Z])([A-Z][^A-Z\d]+)/, '\1_\2')
           .downcase
+      end
+
+      # A class that injects a require directive into the root RuboCop file.
+      # It looks for other directives that require files in the same (cop)
+      # namespace and injects the provided one in alpha
+      class RequireFileInjector
+        REQUIRE_PATH = /require ['"](.+)['"]/
+
+        def initialize(require_path)
+          @require_path    = require_path
+          @require_entries = File.readlines(rubocop_root_file_path)
+        end
+
+        def inject
+          return if require_exists? || !target_line
+
+          File.write(rubocop_root_file_path, updated_directives)
+        end
+
+        private
+
+        attr_reader :require_path, :require_entries
+
+        def rubocop_root_file_path
+          File.join('lib', 'rubocop.rb')
+        end
+
+        def require_exists?
+          require_entries.any? do |entry|
+            entry == injectable_require_directive
+          end
+        end
+
+        def updated_directives
+          require_entries.insert(target_line,
+                                 injectable_require_directive).join
+        end
+
+        def target_line
+          @target_line ||= begin
+            inject_parts = require_path_fragments(injectable_require_directive)
+
+            require_entries.find.with_index do |entry, index|
+              current_entry_parts = require_path_fragments(entry)
+
+              next unless inject_parts[0..-2] == current_entry_parts[0..-2]
+
+              break index if inject_parts.last < current_entry_parts.last
+            end
+          end
+        end
+
+        def require_path_fragments(require_directove)
+          path = require_directove.match(REQUIRE_PATH)
+
+          path ? path.captures.first.split('/') : []
+        end
+
+        def injectable_require_directive
+          "require '#{require_path}'\n"
+        end
       end
     end
   end
