@@ -39,7 +39,7 @@ $ rubocop --output result.txt --format simple
 #           default format        $stdout
 ```
 
-You can also load [custom formatters](#custom-formatters).
+You can also load [custom formatters](extensions.md#custom-formatters).
 
 ### Progress Formatter (default)
 
