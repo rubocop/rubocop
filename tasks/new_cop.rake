@@ -12,6 +12,7 @@ task :new_cop, [:cop] do |_task, args|
 
   generator.write_source
   generator.write_spec
+  generator.inject_require
 
   puts generator.todo
 end
