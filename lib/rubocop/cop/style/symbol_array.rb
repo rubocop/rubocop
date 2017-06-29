@@ -37,6 +37,7 @@ module RuboCop
         include ArraySyntax
         include ConfigurableEnforcedStyle
         include PercentLiteral
+        include PercentArray
         extend TargetRubyVersion
 
         minimum_target_ruby_version 2.0
@@ -50,46 +51,21 @@ module RuboCop
 
         def on_array(node)
           if bracketed_array_of?(:sym, node)
+            return if symbols_contain_spaces?(node)
+
             check_bracketed_array(node)
           elsif node.percent_literal?(:symbol)
             check_percent_array(node)
           end
         end
 
+        private
+
         def autocorrect(node)
           if style == :percent
             correct_percent(node, 'i')
           else
             correct_bracketed(node)
-          end
-        end
-
-        private
-
-        def check_bracketed_array(node)
-          return if comments_in_array?(node) ||
-                    symbols_contain_spaces?(node) ||
-                    below_array_length?(node)
-
-          array_style_detected(:brackets, node.values.size)
-          add_offense(node) if style == :percent
-        end
-
-        def check_percent_array(node)
-          array_style_detected(:percent, node.values.size)
-          add_offense(node) if style == :brackets
-        end
-
-        def message(_node)
-          style == :percent ? PERCENT_MSG : ARRAY_MSG
-        end
-
-        def comments_in_array?(node)
-          comments = processed_source.comments
-          array_range = node.source_range.to_a
-
-          comments.any? do |comment|
-            !(comment.loc.expression.to_a & array_range).empty?
           end
         end
 
