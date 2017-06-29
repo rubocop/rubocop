@@ -903,6 +903,12 @@ Style/HeredocDelimiterNaming:
     - END
     - !ruby/regexp '/EO[A-Z]{1}/'
 
+Style/HeredocDelimiterCase:
+  EnforcedStyle: uppercase
+  SupportedStyles:
+    - lowercase
+    - uppercase
+
 Style/IfUnlessModifier:
   MaxLineLength: 80
 

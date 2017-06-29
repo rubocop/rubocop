@@ -13,6 +13,7 @@
 * Make `Rails/PluralizationGrammar` use singular methods for `-1` / `-1.0`. ([@promisedlandt][])
 * [#4541](https://github.com/bbatsov/rubocop/pull/4541): Add new `Rails/HasManyOrHasOneDependent` cop. ([@oboxodo][])
 * Add new `Style/Dir` cop. ([@drenmi][])
+* Add new `Style/HeredocDelimiterCase` cop. ([@drenmi][])
 
 ### Bug fixes
 
@@ -29,6 +30,7 @@
 * [#4525](https://github.com/bbatsov/rubocop/pull/4525): Fix regexp for checking comment config of `rubocop:disable all` in `Lint/UnneededDisable`. ([@meganemura][])
 * [#4555](https://github.com/bbatsov/rubocop/issues/4555): Make `Style/VariableName` aware of optarg, kwarg and other arguments. ([@pocke][])
 * [#4481](https://github.com/bbatsov/rubocop/issues/4481): Prevent `Style/WordArray` and `Style/SymbolArray` from registering offenses where percent arrays don't work. ([@drenmi][])
+* [#4447](https://github.com/bbatsov/rubocop/issues/4447): Prevent `Layout/EmptyLineBetweenDefs` from removing too many lines. ([@drenmi][])
 
 ### Changes
 
@@ -41,6 +43,7 @@
 * [#4550](https://github.com/bbatsov/rubocop/pull/4550): Mark `RuboCop::CLI#run` as a public API. ([@yujinakayama][])
 * [#4551](https://github.com/bbatsov/rubocop/pull/4551): Make `Performance/Caller` aware of `caller_locations`. ([@pocke][])
 * Rename `Style/HeredocDelimiters` to `Style/HeredocDelimiterNaming`. ([@drenmi][])
+* [#4157](https://github.com/bbatsov/rubocop/issues/4157): Enhance offense message for `Style/RedudantReturn` cop. ([@gohdaniel15][])
 
 ## 0.49.1 (2017-05-29)
 
@@ -2855,3 +2858,4 @@
 [@daniloisr]: https://github.com/daniloisr
 [@promisedlandt]: https://github.com/promisedlandt
 [@oboxodo]: https://github.com/oboxodo
+[@gohdaniel15]: https://github.com/gohdaniel15

@@ -361,6 +361,7 @@ In the following section you find all available cops:
 * [Style/GlobalVars](cops_style.md#styleglobalvars)
 * [Style/GuardClause](cops_style.md#styleguardclause)
 * [Style/HashSyntax](cops_style.md#stylehashsyntax)
+* [Style/HeredocDelimiterCase](cops_style.md#styleheredocdelimitercase)
 * [Style/HeredocDelimiterNaming](cops_style.md#styleheredocdelimiternaming)
 * [Style/IdenticalConditionalBranches](cops_style.md#styleidenticalconditionalbranches)
 * [Style/IfInsideElse](cops_style.md#styleifinsideelse)

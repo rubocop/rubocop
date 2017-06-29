@@ -1459,6 +1459,55 @@ PreferHashRocketsForNonAlnumEndingSymbols | false
 
 * [https://github.com/bbatsov/ruby-style-guide#hash-literals](https://github.com/bbatsov/ruby-style-guide#hash-literals)
 
+## Style/HeredocDelimiterCase
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks that your heredocs are using the configured case.
+By default it is configured to enforce uppercase heredocs.
+
+### Example
+
+```ruby
+# EnforcedStyle: uppercase (default)
+
+# good
+<<-SQL
+  SELECT * FROM foo
+SQL
+
+# bad
+<<-sql
+  SELECT * FROM foo
+sql
+```
+```ruby
+# EnforcedStyle: lowercase
+
+# good
+<<-sql
+  SELECT * FROM foo
+sql
+
+# bad
+<<-SQL
+  SELECT * FROM foo
+SQL
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+EnforcedStyle | uppercase
+SupportedStyles | lowercase, uppercase
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#heredoc-delimiters](https://github.com/bbatsov/ruby-style-guide#heredoc-delimiters)
+
 ## Style/HeredocDelimiterNaming
 
 Enabled by default | Supports autocorrection

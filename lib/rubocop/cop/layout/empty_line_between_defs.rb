@@ -32,6 +32,10 @@ module RuboCop
       class EmptyLineBetweenDefs < Cop
         MSG = 'Use empty lines between method definitions.'.freeze
 
+        def self.autocorrect_incompatible_with
+          [Layout::EmptyLines]
+        end
+
         # We operate on `begin` nodes, instead of using `OnMethodDef`,
         # so that we can walk over pairs of consecutive nodes and
         # efficiently access a node's predecessor; #prev_node ends up
