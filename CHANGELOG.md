@@ -29,6 +29,7 @@
 * [#4270](https://github.com/bbatsov/rubocop/issues/4270): Fix false positive in `Performance/RegexpMatch` for named captures. ([@pocke][])
 * [#4525](https://github.com/bbatsov/rubocop/pull/4525): Fix regexp for checking comment config of `rubocop:disable all` in `Lint/UnneededDisable`. ([@meganemura][])
 * [#4555](https://github.com/bbatsov/rubocop/issues/4555): Make `Style/VariableName` aware of optarg, kwarg and other arguments. ([@pocke][])
+* [#4447](https://github.com/bbatsov/rubocop/issues/4447): Prevent `Layout/EmptyLineBetweenDefs` from removing too many lines. ([@drenmi][])
 
 ### Changes
 
