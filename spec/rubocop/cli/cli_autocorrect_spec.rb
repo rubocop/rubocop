@@ -310,7 +310,7 @@ describe RuboCop::CLI, :isolated_environment do
       def verify_section
             begin
             scroll_down_until_element_exists
-            rescue
+            rescue StandardError
               scroll_down_until_element_exists
               end
       end
@@ -320,7 +320,7 @@ describe RuboCop::CLI, :isolated_environment do
     corrected = <<-RUBY.strip_indent
       def verify_section
         scroll_down_until_element_exists
-      rescue
+      rescue StandardError
         scroll_down_until_element_exists
       end
     RUBY
@@ -412,7 +412,7 @@ describe RuboCop::CLI, :isolated_environment do
           begin
             foo
             bar
-          rescue
+          rescue StandardError
             baz
           end
         end
@@ -430,7 +430,7 @@ describe RuboCop::CLI, :isolated_environment do
       def func
         foo
         bar
-      rescue
+      rescue StandardError
         baz
       end
     RUBY

@@ -367,7 +367,7 @@ TvFXMeuCkZPcaEBLqvgPBhCuiZo8+sAAAAAASUVORK5CYII=
       <div class="infobox">
         <div class="total">
           3 files inspected,
-          19 offenses detected:
+          20 offenses detected:
         </div>
         <ul class="offenses-list">
           
@@ -388,7 +388,7 @@ TvFXMeuCkZPcaEBLqvgPBhCuiZo8+sAAAAAASUVORK5CYII=
             
             <li>
               <a href="#offense_app/models/book.rb">
-                app/models/book.rb - 6 offenses
+                app/models/book.rb - 7 offenses
               </a>
             </li>
           
@@ -563,7 +563,7 @@ TvFXMeuCkZPcaEBLqvgPBhCuiZo8+sAAAAAASUVORK5CYII=
       
       <div class="offense-box" id="offense_app/models/book.rb">
         <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
-        <div class="box-title"><h3>app/models/book.rb - 6 offenses</h3></div>
+        <div class="box-title"><h3>app/models/book.rb - 7 offenses</h3></div>
         <div class="offense-reports">
           
           <div class="report">
@@ -629,6 +629,17 @@ TvFXMeuCkZPcaEBLqvgPBhCuiZo8+sAAAAAASUVORK5CYII=
             </div>
             
             <pre><code>    Regexp.new(<span class="highlight convention">/\A&lt;p&gt;(.*)&lt;\/p&gt;\Z/m</span>).match(full_document)[1] rescue full_document</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #4</span> –
+              <span class="severity warning">warning:</span>
+              <span class="message">Avoid rescuing without specifying an error class.</span>
+            </div>
+            
+            <pre><code>    Regexp.new(/\A&lt;p&gt;(.*)&lt;\/p&gt;\Z/m).match(full_document)[1] <span class="highlight warning">rescue</span> full_document</code></pre>
             
           </div>
           

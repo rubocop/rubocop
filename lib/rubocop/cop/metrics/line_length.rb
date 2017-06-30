@@ -118,7 +118,7 @@ module RuboCop
         def valid_uri?(uri_ish_string)
           URI.parse(uri_ish_string)
           true
-        rescue
+        rescue URI::InvalidURIError, NoMethodError
           false
         end
 

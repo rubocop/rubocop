@@ -1514,6 +1514,36 @@ rescue NameError
 end
 ```
 
+## Lint/RescueWithoutErrorClass
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks for uses of `rescue` with no error class specified.
+
+### Example
+
+```ruby
+# good
+begin
+  foo
+rescue BarError
+  bar
+end
+
+# bad
+begin
+  foo
+rescue
+  bar
+end
+```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-blind-rescues](https://github.com/bbatsov/ruby-style-guide#no-blind-rescues)
+
 ## Lint/ReturnInVoidContext
 
 Enabled by default | Supports autocorrection
