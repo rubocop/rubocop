@@ -96,16 +96,35 @@ module RuboCop
 
           return unless first_offense
 
-          end_position =
-            if first_offense.source_range == variables.first.source_range
-              right.source_range.begin_pos
-            else
-              node.loc.operator.begin_pos
-            end
+          if unused_variables_only?(first_offense, variables)
+            return left_side_range(left, right)
+          end
 
-          range = range_between(first_offense.source_range.begin_pos,
-                                end_position)
-          range_with_surrounding_space(range, :right)
+          if Util.parentheses?(left)
+            return range_for_parentheses(first_offense, left)
+          end
+
+          range_between(
+            first_offense.source_range.begin_pos,
+            node.loc.operator.begin_pos
+          )
+        end
+
+        def unused_variables_only?(offense, variables)
+          offense.source_range == variables.first.source_range
+        end
+
+        def left_side_range(left, right)
+          range_between(
+            left.source_range.begin_pos, right.source_range.begin_pos
+          )
+        end
+
+        def range_for_parentheses(offense, left)
+          range_between(
+            offense.source_range.begin_pos - 1,
+            left.loc.expression.end_pos - 1
+          )
         end
       end
     end
