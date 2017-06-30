@@ -169,6 +169,32 @@ describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
 
         expect(new_source).to eq('a, = foo()')
       end
+
+      context 'with parentheses' do
+        it 'leaves parentheses but removes trailing underscores' do
+          new_source = autocorrect_source('(a, b, _) = foo()')
+
+          expect(new_source).to eq('(a, b,) = foo()')
+        end
+
+        it 'removes assignment part when every assignment is to `_`' do
+          new_source = autocorrect_source('(_, _, _,) = foo()')
+
+          expect(new_source).to eq('foo()')
+        end
+
+        it 'removes assignment part when it is the only variable' do
+          new_source = autocorrect_source('(_,) = foo()')
+
+          expect(new_source).to eq('foo()')
+        end
+
+        it 'leaves parentheses but removes trailing underscores and commas' do
+          new_source = autocorrect_source('(a, _, _,) = foo()')
+
+          expect(new_source).to eq('(a,) = foo()')
+        end
+      end
     end
   end
 

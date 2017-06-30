@@ -15,6 +15,7 @@
 * Add new `Style/Dir` cop. ([@drenmi][])
 * Add new `Style/HeredocDelimiterCase` cop. ([@drenmi][])
 * [#2943](https://github.com/bbatsov/rubocop/pull/2943): Add new `Lint/RescueWithoutErrorClass` cop. ([@drenmi][])
+* [#4568](https://github.com/bbatsov/rubocop/pull/4568): Fix autocorrection for `Style/TrailingUnderscoreVariable`. ([@smakagon][])
 
 ### Bug fixes
 
