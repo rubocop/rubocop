@@ -14,6 +14,7 @@
 * [#4541](https://github.com/bbatsov/rubocop/pull/4541): Add new `Rails/HasManyOrHasOneDependent` cop. ([@oboxodo][])
 * Add new `Style/Dir` cop. ([@drenmi][])
 * Add new `Style/HeredocDelimiterCase` cop. ([@drenmi][])
+* [#2943](https://github.com/bbatsov/rubocop/pull/2943): Add new `Lint/RescueWithoutErrorClass` cop. ([@drenmi][])
 
 ### Bug fixes
 
