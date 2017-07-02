@@ -8,9 +8,13 @@ module RuboCop
       # These can be replaced by their respective predicate methods.
       # The cop can also be configured to do the reverse.
       #
-      # The cop disregards `nonzero?` as it its value is truthy or falsey,
+      # The cop disregards `#nonzero?` as it its value is truthy or falsey,
       # but not `true` and `false`, and thus not always interchangeable with
       # `!= 0`.
+      #
+      # The cop ignores comparisons to global variables, since they are often
+      # populated with objects which can be compared with integers, but are
+      # not themselves `Interger` polymorphic.
       #
       # @example
       #
@@ -128,11 +132,11 @@ module RuboCop
         PATTERN
 
         def_node_matcher :comparison, <<-PATTERN
-          (send $(...) ${:== :> :<} (int 0))
+          (send [$(...) !gvar_type?] ${:== :> :<} (int 0))
         PATTERN
 
         def_node_matcher :inverted_comparison, <<-PATTERN
-          (send (int 0) ${:== :> :<} $(...))
+          (send (int 0) ${:== :> :<} [$(...) !gvar_type?])
         PATTERN
       end
     end
