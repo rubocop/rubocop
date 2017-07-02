@@ -61,6 +61,14 @@ describe RuboCop::Cop::Style::NumericPredicate, :config do
                         '0 == foo - 1',
                         '(foo - 1).zero?'
       end
+
+      context 'when comparing against a global variable' do
+        it_behaves_like 'code without offense',
+                        '$CHILD_STATUS == 0'
+
+        it_behaves_like 'code without offense',
+                        '0 == $CHILD_STATUS'
+      end
     end
 
     context 'with checking if a number is not zero' do
@@ -76,6 +84,14 @@ describe RuboCop::Cop::Style::NumericPredicate, :config do
 
         it_behaves_like 'code without offense',
                         '0 != foo - 1'
+      end
+
+      context 'when comparing against a global variable' do
+        it_behaves_like 'code without offense',
+                        '$CHILD_STATUS != 0'
+
+        it_behaves_like 'code without offense',
+                        '0 != $CHILD_STATUS'
       end
     end
 
