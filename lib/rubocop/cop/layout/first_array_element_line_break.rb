@@ -12,10 +12,21 @@ module RuboCop
       #     [ :a,
       #       :b]
       #
+      #     [{
+      #       a: 1,
+      #       b: 2
+      #     }]
+      #
       #     # good
       #     [
       #       :a,
       #       :b]
+      #
+      #     [
+      #     {
+      #       a: 1,
+      #       b: 2
+      #     }]
       #
       class FirstArrayElementLineBreak < Cop
         include FirstElementLineBreak

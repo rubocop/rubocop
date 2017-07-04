@@ -12,10 +12,21 @@ module RuboCop
       #     method(foo, bar,
       #       baz)
       #
+      #     method({
+      #       a: 1,
+      #       b: 2
+      #     })
+      #
       #     # good
       #     method(
       #       foo, bar,
       #       baz)
+      #
+      #     method(
+      #     {
+      #       a: 1,
+      #       b: 2
+      #     })
       #
       #     # ignored
       #     method foo, bar,
