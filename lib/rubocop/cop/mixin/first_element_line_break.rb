@@ -25,7 +25,7 @@ module RuboCop
       end
 
       def check_children_line_break(node, children, start = node)
-        return if children.size < 2
+        return if children.empty?
 
         line = start.loc.line
 

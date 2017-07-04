@@ -87,6 +87,41 @@ describe RuboCop::Cop::Layout::FirstMethodArgumentLineBreak do
     end
   end
 
+  context 'hash arg without a line break before the first pair' do
+    let(:source) do
+      <<-RUBY.strip_indent
+        something({
+          a: 1,
+          b: 2,
+        })
+      RUBY
+    end
+
+    let(:correct_source) do
+      <<-RUBY.strip_indent
+        something(
+        {
+          a: 1,
+          b: 2,
+        })
+      RUBY
+    end
+
+    it 'detects the offense' do
+      inspect_source(source)
+
+      expect(cop.offenses.length).to eq(1)
+      expect(cop.offenses.first.line).to eq(1)
+      expect(cop.highlights).to eq(["{\n  a: 1,\n  b: 2,\n}"])
+    end
+
+    it 'autocorrects the offense' do
+      new_source = autocorrect_source(source)
+
+      expect(new_source).to eq(correct_source)
+    end
+  end
+
   it 'ignores arguments listed on a single line' do
     expect_no_offenses('foo(bar, baz, bing)')
   end

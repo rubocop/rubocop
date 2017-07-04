@@ -59,6 +59,55 @@ describe RuboCop::Cop::Layout::FirstHashElementLineBreak do
     end
   end
 
+  context 'single multi-line hash value' do
+    let(:source) do
+      <<-RUBY.strip_indent
+        {a: {
+          a: 1,
+          b: 2
+        }}
+      RUBY
+    end
+
+    let(:correct_source) do
+      <<-RUBY.strip_indent
+        {
+        a: {
+          a: 1,
+          b: 2
+        }}
+      RUBY
+    end
+
+    it 'detects the offence' do
+      inspect_source(source)
+
+      expect(cop.offenses.length).to eq(1)
+      expect(cop.offenses.first.line).to eq(1)
+      expect(cop.highlights).to eq(["a: {\n  a: 1,\n  b: 2\n}"])
+    end
+
+    it 'autocorrects the offense' do
+      new_source = autocorrect_source(source)
+
+      expect(new_source).to eq(correct_source)
+    end
+  end
+
+  context 'single multi-line hash value' do
+    let(:source) do
+      <<-RUBY.strip_indent
+        {a: {a: 1, b: 2}}
+      RUBY
+    end
+
+    it "doesn't detect an offence" do
+      inspect_source(source)
+
+      expect(cop.offenses).to be_empty
+    end
+  end
+
   it 'ignores implicit hashes in method calls with parens' do
     expect_no_offenses(<<-RUBY.strip_indent)
       method(
