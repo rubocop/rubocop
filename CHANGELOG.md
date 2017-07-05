@@ -34,6 +34,7 @@
 * [#4481](https://github.com/bbatsov/rubocop/issues/4481): Prevent `Style/WordArray` and `Style/SymbolArray` from registering offenses where percent arrays don't work. ([@drenmi][])
 * [#4447](https://github.com/bbatsov/rubocop/issues/4447): Prevent `Layout/EmptyLineBetweenDefs` from removing too many lines. ([@drenmi][])
 * [#3892](https://github.com/bbatsov/rubocop/issues/3892): Make `Style/NumericPredicate` ignore numeric comparison of global variables. ([@drenmi][])
+* [#4101](https://github.com/bbatsov/rubocop/issues/4101): Skip auto-correct for literals with trailing comment and chained method call in `Layout/Multiline*BraceLayout`. ([@jonas054][])
 
 ### Changes
 
