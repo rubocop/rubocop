@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::VariableName, :config do
+describe RuboCop::Cop::Naming::VariableName, :config do
   subject(:cop) { described_class.new(config) }
 
   shared_examples 'always accepted' do

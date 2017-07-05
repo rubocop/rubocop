@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Naming
       # This cop makes sure that accessor methods are named properly.
       #
       # @example

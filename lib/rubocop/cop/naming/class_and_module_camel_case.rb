@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Naming
       # This cops checks for class and module names with
       # an underscore in them.
       class ClassAndModuleCamelCase < Cop

@@ -52,7 +52,36 @@ module RuboCop
         'The `Lint/Eval` cop has been renamed to `Security/Eval`.',
       'Style/DeprecatedHashMethods' =>
         'The `Style/DeprecatedHashMethods` cop has been renamed to ' \
-          '`Style/PreferredHashMethods`.'
+          '`Style/PreferredHashMethods`.',
+      'Style/AccessorMethodName' =>
+        'The `Style/AccessorMethodName` cop has been moved to ' \
+          '`Naming/AccessorMethodName`.',
+      'Style/AsciiIdentifiers' =>
+        'The `Style/AsciiIdentifiers` cop has been moved to ' \
+          '`Naming/AccessorMethodName`.',
+      'Style/OpMethod' =>
+        'The `Style/OpMethods` cop has been renamed and moved to ' \
+          '`Naming/BinaryOperatorParameter`.',
+      'Style/ClassAndModuleCamelCase' =>
+        'The `Style/ClassAndModuleCamelCase` cop has been renamed to ' \
+          '`Naming/ClassAndModuleCamelCase`.',
+      'Style/ConstantName' =>
+        'The `Style/ConstantName` cop has been renamed to ' \
+          '`Naming/ConstantName`.',
+      'Style/FileName' =>
+        'The `Style/FileName` cop has been renamed to `Naming/FileName`.',
+      'Style/MethodName' =>
+        'The `Style/MethodName` cop has been renamed to ' \
+          '`Naming/MethodName`.',
+      'Style/PredicateName' =>
+        'The `Style/PredicateName` cop has been renamed to ' \
+          '`Naming/PredicateName`.',
+      'Style/VariableName' =>
+        'The `Style/VariableName` cop has been renamed to ' \
+          '`Naming/VariableName`.',
+      'Style/VariableNumber' =>
+        'The `Style/VariableNumber` cop has been renamed to ' \
+          '`Naming/VariableNumber`.'
     }.freeze
 
     OBSOLETE_PARAMETERS = [

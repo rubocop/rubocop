@@ -48,6 +48,7 @@
 * [#4551](https://github.com/bbatsov/rubocop/pull/4551): Make `Performance/Caller` aware of `caller_locations`. ([@pocke][])
 * Rename `Style/HeredocDelimiters` to `Style/HeredocDelimiterNaming`. ([@drenmi][])
 * [#4157](https://github.com/bbatsov/rubocop/issues/4157): Enhance offense message for `Style/RedudantReturn` cop. ([@gohdaniel15][])
+* [#4521](https://github.com/bbatsov/rubocop/issues/4521): Move naming related cops into their own `Naming` department. ([@drenmi][])
 
 ## 0.49.1 (2017-05-29)
 
