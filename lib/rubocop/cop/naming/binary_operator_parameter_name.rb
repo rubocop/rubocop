@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Naming
       # This cop makes sure that certain binary operator methods have their
       # sole  parameter named `other`.
       #
@@ -13,7 +13,7 @@ module RuboCop
       #
       #   # good
       #   def +(other); end
-      class OpMethod < Cop
+      class BinaryOperatorParameterName < Cop
         MSG = 'When defining the `%s` operator, ' \
               'name its argument `other`.'.freeze
 

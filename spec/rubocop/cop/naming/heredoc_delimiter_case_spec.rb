@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::HeredocDelimiterCase, :config do
+describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:config) do
-    RuboCop::Config.new('Style/HeredocDelimiterCase' => cop_config)
+    RuboCop::Config.new(described_class.badge.to_s => cop_config)
   end
 
   context 'when enforced style is uppercase' do
