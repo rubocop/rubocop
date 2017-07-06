@@ -49,6 +49,7 @@
 * [#4551](https://github.com/bbatsov/rubocop/pull/4551): Make `Performance/Caller` aware of `caller_locations`. ([@pocke][])
 * Rename `Style/HeredocDelimiters` to `Style/HeredocDelimiterNaming`. ([@drenmi][])
 * [#4157](https://github.com/bbatsov/rubocop/issues/4157): Enhance offense message for `Style/RedudantReturn` cop. ([@gohdaniel15][])
+* [#3998](https://github.com/bbatsov/rubocop/issues/3998): Do not auto-correct `Security/YAMLLoad` by default. ([@NobodysNightmare][])
 
 ## 0.49.1 (2017-05-29)
 

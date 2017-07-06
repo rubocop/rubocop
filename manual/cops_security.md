@@ -104,6 +104,12 @@ YAML.safe_load("--- foo")
 YAML.dump("foo")
 ```
 
+### Important attributes
+
+Attribute | Value
+--- | ---
+AutoCorrect | false
+
 ### References
 
 * [https://ruby-doc.org/stdlib-2.3.3/libdoc/yaml/rdoc/YAML.html#module-YAML-label-Security](https://ruby-doc.org/stdlib-2.3.3/libdoc/yaml/rdoc/YAML.html#module-YAML-label-Security)
