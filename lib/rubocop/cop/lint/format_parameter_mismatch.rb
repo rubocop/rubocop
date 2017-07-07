@@ -111,12 +111,11 @@ module RuboCop
         end
 
         def count_format_matches(node)
-          [arguments_count(node.arguments) - 1,
-           expected_fields_count(node.first_argument)]
+          [node.arguments.count - 1, expected_fields_count(node.first_argument)]
         end
 
         def count_percent_matches(node)
-          [arguments_count(node.first_argument.child_nodes),
+          [node.first_argument.child_nodes.count,
            expected_fields_count(node.receiver)]
         end
 
@@ -136,15 +135,12 @@ module RuboCop
             .source
             .scan(FIELD_REGEX)
             .reject { |x| x.first == PERCENT_PERCENT }
-            .reduce(0) { |acc, elem| acc + (elem[2] =~ /\*/ ? 2 : 1) }
+            .reduce(0) { |acc, elem| acc + arguments_count(elem[2]) }
         end
 
-        def arguments_count(args)
-          if args.last && args.last.splat_type?
-            -(args.size - 1)
-          else
-            args.size
-          end
+        # number of arguments required for the format sequence
+        def arguments_count(format)
+          format.scan('*').count + 1
         end
 
         def format?(node)

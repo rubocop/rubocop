@@ -257,6 +257,24 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
     end
   end
 
+  context 'with wildcard' do
+    it 'does not register an offence for width' do
+      expect_no_offenses('format("%*d", 10, 3)')
+    end
+
+    it 'does not register an offence for precision' do
+      expect_no_offenses('format("%.*f", 2, 20.19)')
+    end
+
+    it 'does not register an offense for width and precision' do
+      expect_no_offenses('format("%*.*f", 10, 3, 20.19)')
+    end
+
+    it 'does not register an offense for multiple wildcards' do
+      expect_no_offenses('format("%*.*f %*.*f", 10, 2, 20.19, 5, 1, 11.22)')
+    end
+  end
+
   it 'finds the correct number of fields' do
     expect(''.scan(described_class::FIELD_REGEX).size)
       .to eq(0)
