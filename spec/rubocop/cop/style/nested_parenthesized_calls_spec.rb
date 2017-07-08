@@ -1,7 +1,13 @@
 # frozen_string_literal: true
 
 describe RuboCop::Cop::Style::NestedParenthesizedCalls do
-  subject(:cop) { described_class.new }
+  subject(:cop) { described_class.new(config) }
+
+  let(:config) do
+    RuboCop::Config.new(
+      'Style/NestedParenthesizedCalls' => { 'Whitelist' => ['be'] }
+    )
+  end
 
   context 'on a non-parenthesized method call' do
     it "doesn't register an offense" do
@@ -71,7 +77,7 @@ describe RuboCop::Cop::Style::NestedParenthesizedCalls do
     end
   end
 
-  context 'on an RSpec matcher' do
+  context 'on a whitelisted method' do
     it "doesn't register an offense" do
       expect_no_offenses('expect(obj).to(be true)')
     end

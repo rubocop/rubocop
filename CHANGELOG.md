@@ -17,6 +17,7 @@
 * [#2943](https://github.com/bbatsov/rubocop/pull/2943): Add new `Lint/RescueWithoutErrorClass` cop. ([@drenmi][])
 * [#4568](https://github.com/bbatsov/rubocop/pull/4568): Fix autocorrection for `Style/TrailingUnderscoreVariable`. ([@smakagon][])
 * [#4586](https://github.com/bbatsov/rubocop/pull/4586): Add new `Performance/UnfreezeString` cop. ([@pocke][])
+* [#2976](https://github.com/bbatsov/rubocop/issues/2976): Add `Whitelist` configuration option to `Style/NestedParenthesizedCalls` cop. ([@drenmi][])
 
 ### Bug fixes
 
