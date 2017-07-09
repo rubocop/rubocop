@@ -48,7 +48,9 @@ module RuboCop
         SELF_MSG = '`self` used in void context.'.freeze
         DEFINED_MSG = '`%s` used in void context.'.freeze
 
-        OPS = %i[* / % + - == === != < > <= >= <=>].freeze
+        BINARY_OPERATORS = %i[* / % + - == === != < > <= >= <=>].freeze
+        UNARY_OPERATORS = %i[+@ -@ ~ !].freeze
+        OPERATORS = (BINARY_OPERATORS + UNARY_OPERATORS).freeze
         VOID_CONTEXT_TYPES = %i[def for block].freeze
 
         def on_begin(node)
@@ -71,7 +73,7 @@ module RuboCop
         end
 
         def check_void_op(node)
-          return unless node.send_type? && OPS.include?(node.method_name)
+          return unless node.send_type? && OPERATORS.include?(node.method_name)
 
           add_offense(node, :selector, format(OP_MSG, node.method_name))
         end
