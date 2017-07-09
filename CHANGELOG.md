@@ -36,6 +36,7 @@
 * [#3892](https://github.com/bbatsov/rubocop/issues/3892): Make `Style/NumericPredicate` ignore numeric comparison of global variables. ([@drenmi][])
 * [#4518](https://github.com/bbatsov/rubocop/issues/4518): Fix bug where `Style/SafeNavigation` does not register an offense when there are chained method calls. ([@rrosenblum][])
 * [#3040](https://github.com/bbatsov/rubocop/issues/3040): Ignore safe navigation in `Rails/Delegate`. ([@cgriego][])
+* [#4587](https://github.com/bbatsov/rubocop/pull/4587): Fix false negative for void unary operators in `Lint/Void` cop. ([@pocke][])
 
 ### Changes
 
