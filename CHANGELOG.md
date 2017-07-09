@@ -16,6 +16,7 @@
 * Add new `Style/HeredocDelimiterCase` cop. ([@drenmi][])
 * [#2943](https://github.com/bbatsov/rubocop/pull/2943): Add new `Lint/RescueWithoutErrorClass` cop. ([@drenmi][])
 * [#4568](https://github.com/bbatsov/rubocop/pull/4568): Fix autocorrection for `Style/TrailingUnderscoreVariable`. ([@smakagon][])
+* [#4586](https://github.com/bbatsov/rubocop/pull/4586): Add new `Performance/UnfreezeString` cop. ([@pocke][])
 
 ### Bug fixes
 

@@ -1583,6 +1583,10 @@ Performance/TimesMap:
   Description: 'Checks for .times.map calls.'
   Enabled: true
 
+Performance/UnfreezeString:
+  Description: 'Use unary plus to get an unfrozen string literal.'
+  Enabled: true
+
 #################### Rails #################################
 
 Rails/ActionFilter:
