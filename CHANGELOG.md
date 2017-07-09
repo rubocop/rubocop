@@ -21,6 +21,7 @@
 * [#2976](https://github.com/bbatsov/rubocop/issues/2976): Add `Whitelist` configuration option to `Style/NestedParenthesizedCalls` cop. ([@drenmi][])
 * [#3965](https://github.com/bbatsov/rubocop/issues/3965): Add new `Style/DoublePipeEquals` cop. ([@donjar][])
 * Make `rake new_cop` create parent directories if they do not already exist. ([@highb][])
+* [#4368](https://github.com/bbatsov/rubocop/issues/4368): Make `Performance/HashEachMethod` inspect send nodes with any receiver. ([@gohdaniel15][])
 
 ### Bug fixes
 
