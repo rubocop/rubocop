@@ -79,6 +79,7 @@
 * [#4521](https://github.com/bbatsov/rubocop/issues/4521): Move naming related cops into their own `Naming` department. ([@drenmi][])
 * [#4600](https://github.com/bbatsov/rubocop/pull/4600): Make `Style/RedundantSelf` aware of arguments of a block. ([@Envek][])
 * [#4658](https://github.com/bbatsov/rubocop/issues/4658): Disable auto-correction for `Performance/TimesMap` by default. ([@Envek][])
+* [#4588](https://github.com/bbatsov/rubocop/pull/4588): Relax metrics cops threshold. ([@pocke][])
 
 ## 0.49.1 (2017-05-29)
 
