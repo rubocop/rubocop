@@ -182,6 +182,8 @@ module RuboCop
           case node.type
           when :module
             children[1]
+          when :defs
+            children[3]
           else
             children[2]
           end
