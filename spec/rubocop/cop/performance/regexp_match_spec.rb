@@ -106,6 +106,15 @@ describe RuboCop::Cop::Performance::RegexpMatch, :config do
         end
       RUBY
 
+      include_examples :accepts, "#{name} in a class method with `#{var}`",
+                       <<-RUBY
+        def self.foo
+          if #{cond}
+            do_something(#{var})
+          end
+        end
+      RUBY
+
       include_examples :accepts,
                        "#{name} in method with `#{var}` in block", <<-RUBY
         def foo

@@ -38,6 +38,7 @@
 * [#4518](https://github.com/bbatsov/rubocop/issues/4518): Fix bug where `Style/SafeNavigation` does not register an offense when there are chained method calls. ([@rrosenblum][])
 * [#3040](https://github.com/bbatsov/rubocop/issues/3040): Ignore safe navigation in `Rails/Delegate`. ([@cgriego][])
 * [#4587](https://github.com/bbatsov/rubocop/pull/4587): Fix false negative for void unary operators in `Lint/Void` cop. ([@pocke][])
+* [#4589](https://github.com/bbatsov/rubocop/issues/4589): Fix false positive in `Performance/RegexpMatch` cop for `=~` is in a class method. ([@pocke][])
 
 ### Changes
 
