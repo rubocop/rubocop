@@ -33,7 +33,8 @@ module RuboCop
         SuperNode        => %i[super zsuper],
         UntilNode        => %i[until until_post],
         WhenNode         => [:when],
-        WhileNode        => %i[while while_post]
+        WhileNode        => %i[while while_post],
+        YieldNode        => [:yield]
       }.freeze
 
       # Generates {Node} from the given information.

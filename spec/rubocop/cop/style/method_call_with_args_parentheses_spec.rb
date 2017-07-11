@@ -17,28 +17,28 @@ describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
   it 'register an offense for method call without parens' do
     expect_offense(<<-RUBY.strip_indent)
       top.test a, b
-          ^^^^ Use parentheses for method calls with arguments.
+      ^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
     RUBY
   end
 
   it 'register an offense for non-reciever method call without parens' do
     expect_offense(<<-RUBY.strip_indent)
       test a, b
-      ^^^^ Use parentheses for method calls with arguments.
+      ^^^^^^^^^ Use parentheses for method calls with arguments.
     RUBY
   end
 
   it 'register an offense for methods starting with a capital without parens' do
     expect_offense(<<-RUBY.strip_indent)
       Test a, b
-      ^^^^ Use parentheses for method calls with arguments.
+      ^^^^^^^^^ Use parentheses for method calls with arguments.
     RUBY
   end
 
   it 'register an offense for superclass call without parens' do
     expect_offense(<<-RUBY.strip_indent)
       super a
-      ^^^^^ Use parentheses for method calls with arguments.
+      ^^^^^^^ Use parentheses for method calls with arguments.
     RUBY
   end
 
@@ -57,7 +57,7 @@ describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
   it 'register an offense for yield without parens' do
     expect_offense(<<-RUBY.strip_indent)
       yield a
-      ^^^^^ Use parentheses for method calls with arguments.
+      ^^^^^^^ Use parentheses for method calls with arguments.
     RUBY
   end
 
