@@ -40,6 +40,7 @@
 * [#3040](https://github.com/bbatsov/rubocop/issues/3040): Ignore safe navigation in `Rails/Delegate`. ([@cgriego][])
 * [#4587](https://github.com/bbatsov/rubocop/pull/4587): Fix false negative for void unary operators in `Lint/Void` cop. ([@pocke][])
 * [#4589](https://github.com/bbatsov/rubocop/issues/4589): Fix false positive in `Performance/RegexpMatch` cop for `=~` is in a class method. ([@pocke][])
+* [#4578](https://github.com/bbatsov/rubocop/issues/4578): Fix false positive in `Lint/FormatParameterMismatch` for format with "asterisk" (`*`) width and precision. ([@smakagon][])
 
 ### Changes
 
