@@ -63,6 +63,7 @@
 * Rename `Style/HeredocDelimiters` to `Style/HeredocDelimiterNaming`. ([@drenmi][])
 * [#4157](https://github.com/bbatsov/rubocop/issues/4157): Enhance offense message for `Style/RedudantReturn` cop. ([@gohdaniel15][])
 * [#4521](https://github.com/bbatsov/rubocop/issues/4521): Move naming related cops into their own `Naming` department. ([@drenmi][])
+* [#4600](https://github.com/bbatsov/rubocop/pull/4600): Make `Style/RedundantSelf` aware of arguments of a block. ([@Envek][])
 
 ## 0.49.1 (2017-05-29)
 
@@ -2879,3 +2880,4 @@
 [@oboxodo]: https://github.com/oboxodo
 [@gohdaniel15]: https://github.com/gohdaniel15
 [@barthez]: https://github.com/barthez
+[@Envek]: https://github.com/Envek

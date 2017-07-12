@@ -30,6 +30,10 @@ module RuboCop
       #     self.bar # resolves name clash with local variable
       #   end
       #
+      #   %w[x y z].select do |bar|
+      #     self.bar == bar # resolves name clash with argument of a block
+      #   end
+      #
       # * Calling an attribute writer to prevent an local variable assignment
       #
       #   attr_writer :bar
@@ -93,6 +97,10 @@ module RuboCop
           add_offense(node)
         end
 
+        def on_block(node)
+          add_scope(node, @local_variables_scopes[node])
+        end
+
         private
 
         def autocorrect(node)
@@ -102,8 +110,7 @@ module RuboCop
           end
         end
 
-        def add_scope(node)
-          local_variables = []
+        def add_scope(node, local_variables = [])
           node.descendants.each do |child_node|
             @local_variables_scopes[child_node] = local_variables
           end

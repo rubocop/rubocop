@@ -82,6 +82,17 @@ describe RuboCop::Cop::Style::RedundantSelf do
     RUBY
   end
 
+  it 'accepts a self receiver used to distinguish from argument of block' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      %w[draft preview moderation approved rejected].each do |state|
+        self.state == state
+        define_method "\#{state}?" do
+          self.state == state
+        end
+      end
+    RUBY
+  end
+
   describe 'instance methods' do
     it 'accepts a self receiver used to distinguish from blockarg' do
       expect_no_offenses(<<-RUBY.strip_indent)
