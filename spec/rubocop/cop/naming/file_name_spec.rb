@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::FileName do
+describe RuboCop::Cop::Naming::FileName do
   subject(:cop) { described_class.new(config) }
 
   let(:config) do
     RuboCop::Config.new(
       { 'AllCops' => { 'Include' => includes },
-        'Style/FileName' => cop_config },
+        described_class.badge.to_s => cop_config },
       '/some/.rubocop.yml'
     )
   end

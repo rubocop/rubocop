@@ -2,10 +2,10 @@
 
 module RuboCop
   module AST
-    # A node extension for `send` nodes. This will be used in place of a plain
+    # A node extension for `yield` nodes. This will be used in place of a plain
     # node when the builder constructs the AST, making its methods available
-    # to all `send` nodes within RuboCop.
-    class SendNode < Node
+    # to all `yield` nodes within RuboCop.
+    class YieldNode < Node
       include ParameterizedNode
       include MethodDispatchNode
 
@@ -14,7 +14,7 @@ module RuboCop
       #
       # @return [Array] the different parts of the `send` node
       def node_parts
-        to_a
+        [nil, :yield, *to_a]
       end
     end
   end

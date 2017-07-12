@@ -151,6 +151,16 @@ describe RuboCop::Cop::Rails::Delegate do
     end
   end
 
+  context 'Ruby 2.3', :ruby23 do
+    it 'ignores trivial delegate with safe navigation' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def foo
+          bar&.foo
+        end
+      RUBY
+    end
+  end
+
   describe '#autocorrect' do
     context 'trivial delegation' do
       let(:source) do

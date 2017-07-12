@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::AsciiIdentifiers do
+describe RuboCop::Cop::Naming::AsciiIdentifiers do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for a variable name with non-ascii chars' do

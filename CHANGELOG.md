@@ -16,6 +16,8 @@
 * Add new `Style/HeredocDelimiterCase` cop. ([@drenmi][])
 * [#2943](https://github.com/bbatsov/rubocop/pull/2943): Add new `Lint/RescueWithoutErrorClass` cop. ([@drenmi][])
 * [#4568](https://github.com/bbatsov/rubocop/pull/4568): Fix autocorrection for `Style/TrailingUnderscoreVariable`. ([@smakagon][])
+* [#4586](https://github.com/bbatsov/rubocop/pull/4586): Add new `Performance/UnfreezeString` cop. ([@pocke][])
+* [#2976](https://github.com/bbatsov/rubocop/issues/2976): Add `Whitelist` configuration option to `Style/NestedParenthesizedCalls` cop. ([@drenmi][])
 
 ### Bug fixes
 
@@ -35,6 +37,11 @@
 * [#4447](https://github.com/bbatsov/rubocop/issues/4447): Prevent `Layout/EmptyLineBetweenDefs` from removing too many lines. ([@drenmi][])
 * [#3892](https://github.com/bbatsov/rubocop/issues/3892): Make `Style/NumericPredicate` ignore numeric comparison of global variables. ([@drenmi][])
 * [#4101](https://github.com/bbatsov/rubocop/issues/4101): Skip auto-correct for literals with trailing comment and chained method call in `Layout/Multiline*BraceLayout`. ([@jonas054][])
+* [#4518](https://github.com/bbatsov/rubocop/issues/4518): Fix bug where `Style/SafeNavigation` does not register an offense when there are chained method calls. ([@rrosenblum][])
+* [#3040](https://github.com/bbatsov/rubocop/issues/3040): Ignore safe navigation in `Rails/Delegate`. ([@cgriego][])
+* [#4587](https://github.com/bbatsov/rubocop/pull/4587): Fix false negative for void unary operators in `Lint/Void` cop. ([@pocke][])
+* [#4589](https://github.com/bbatsov/rubocop/issues/4589): Fix false positive in `Performance/RegexpMatch` cop for `=~` is in a class method. ([@pocke][])
+* [#4578](https://github.com/bbatsov/rubocop/issues/4578): Fix false positive in `Lint/FormatParameterMismatch` for format with "asterisk" (`*`) width and precision. ([@smakagon][])
 
 ### Changes
 
@@ -49,6 +56,7 @@
 * [#4551](https://github.com/bbatsov/rubocop/pull/4551): Make `Performance/Caller` aware of `caller_locations`. ([@pocke][])
 * Rename `Style/HeredocDelimiters` to `Style/HeredocDelimiterNaming`. ([@drenmi][])
 * [#4157](https://github.com/bbatsov/rubocop/issues/4157): Enhance offense message for `Style/RedudantReturn` cop. ([@gohdaniel15][])
+* [#4521](https://github.com/bbatsov/rubocop/issues/4521): Move naming related cops into their own `Naming` department. ([@drenmi][])
 
 ## 0.49.1 (2017-05-29)
 

@@ -534,6 +534,118 @@ Layout/TrailingBlankLines:
     - final_newline
     - final_blank_line
 
+#################### Naming ##########################
+
+Naming/FileName:
+  # File names listed in `AllCops:Include` are excluded by default. Add extra
+  # excludes here.
+  Exclude: []
+  # When `true`, requires that each source file should define a class or module
+  # with a name which matches the file name (converted to ... case).
+  # It further expects it to be nested inside modules which match the names
+  # of subdirectories in its path.
+  ExpectMatchingDefinition: false
+  # If non-`nil`, expect all source file names to match the following regex.
+  # Only the file name itself is matched, not the entire file path.
+  # Use anchors as necessary if you want to match the entire name rather than
+  # just a part of it.
+  Regex: ~
+  # With `IgnoreExecutableScripts` set to `true`, this cop does not
+  # report offending filenames for executable scripts (i.e. source
+  # files with a shebang in the first line).
+  IgnoreExecutableScripts: true
+  AllowedAcronyms:
+    - CLI
+    - DSL
+    - ACL
+    - API
+    - ASCII
+    - CPU
+    - CSS
+    - DNS
+    - EOF
+    - GUID
+    - HTML
+    - HTTP
+    - HTTPS
+    - ID
+    - IP
+    - JSON
+    - LHS
+    - QPS
+    - RAM
+    - RHS
+    - RPC
+    - SLA
+    - SMTP
+    - SQL
+    - SSH
+    - TCP
+    - TLS
+    - TTL
+    - UDP
+    - UI
+    - UID
+    - UUID
+    - URI
+    - URL
+    - UTF8
+    - VM
+    - XML
+    - XMPP
+    - XSRF
+    - XSS
+
+Naming/HeredocDelimiterNaming:
+  Blacklist:
+    - END
+    - !ruby/regexp '/EO[A-Z]{1}/'
+
+Naming/HeredocDelimiterCase:
+  EnforcedStyle: uppercase
+  SupportedStyles:
+    - lowercase
+    - uppercase
+
+Naming/MethodName:
+  EnforcedStyle: snake_case
+  SupportedStyles:
+    - snake_case
+    - camelCase
+
+Naming/PredicateName:
+  # Predicate name prefixes.
+  NamePrefix:
+    - is_
+    - has_
+    - have_
+  # Predicate name prefixes that should be removed.
+  NamePrefixBlacklist:
+    - is_
+    - has_
+    - have_
+  # Predicate names which, despite having a blacklisted prefix, or no `?`,
+  # should still be accepted
+  NameWhitelist:
+    - is_a?
+  # Exclude Rspec specs because there is a strong convention to write spec
+  # helpers in the form of `have_something` or `be_something`.
+  Exclude:
+    - 'spec/**/*'
+
+Naming/VariableName:
+  EnforcedStyle: snake_case
+  SupportedStyles:
+    - snake_case
+    - camelCase
+
+Naming/VariableNumber:
+  EnforcedStyle: normalcase
+  SupportedStyles:
+    - snake_case
+    - normalcase
+    - non_integer
+
 #################### Style ###########################
 
 Style/Alias:
@@ -774,66 +886,6 @@ Style/Encoding:
     - never
   AutoCorrectEncodingComment: '# encoding: utf-8'
 
-Style/FileName:
-  # File names listed in `AllCops:Include` are excluded by default. Add extra
-  # excludes here.
-  Exclude: []
-  # When `true`, requires that each source file should define a class or module
-  # with a name which matches the file name (converted to ... case).
-  # It further expects it to be nested inside modules which match the names
-  # of subdirectories in its path.
-  ExpectMatchingDefinition: false
-  # If non-`nil`, expect all source file names to match the following regex.
-  # Only the file name itself is matched, not the entire file path.
-  # Use anchors as necessary if you want to match the entire name rather than
-  # just a part of it.
-  Regex: ~
-  # With `IgnoreExecutableScripts` set to `true`, this cop does not
-  # report offending filenames for executable scripts (i.e. source
-  # files with a shebang in the first line).
-  IgnoreExecutableScripts: true
-  AllowedAcronyms:
-    - CLI
-    - DSL
-    - ACL
-    - API
-    - ASCII
-    - CPU
-    - CSS
-    - DNS
-    - EOF
-    - GUID
-    - HTML
-    - HTTP
-    - HTTPS
-    - ID
-    - IP
-    - JSON
-    - LHS
-    - QPS
-    - RAM
-    - RHS
-    - RPC
-    - SLA
-    - SMTP
-    - SQL
-    - SSH
-    - TCP
-    - TLS
-    - TTL
-    - UDP
-    - UI
-    - UID
-    - UUID
-    - URI
-    - URL
-    - UTF8
-    - VM
-    - XML
-    - XMPP
-    - XSRF
-    - XSS
-
 # Checks use of for or each in multiline loops.
 Style/For:
   EnforcedStyle: each
@@ -899,17 +951,6 @@ Style/HashSyntax:
   # Do not suggest { a?: 1 } over { :a? => 1 } in ruby19 style
   PreferHashRocketsForNonAlnumEndingSymbols: false
 
-Style/HeredocDelimiterNaming:
-  Blacklist:
-    - END
-    - !ruby/regexp '/EO[A-Z]{1}/'
-
-Style/HeredocDelimiterCase:
-  EnforcedStyle: uppercase
-  SupportedStyles:
-    - lowercase
-    - uppercase
-
 Style/IfUnlessModifier:
   MaxLineLength: 80
 
@@ -959,12 +1000,6 @@ Style/MethodDefParentheses:
     - require_no_parentheses
     - require_no_parentheses_except_multiline
 
-Style/MethodName:
-  EnforcedStyle: snake_case
-  SupportedStyles:
-    - snake_case
-    - camelCase
-
 # Checks the grouping of mixins (`include`, `extend`, `prepend`) in `class` and
 # `module` bodies.
 Style/MixinGrouping:
@@ -996,6 +1031,26 @@ Style/NegatedIf:
     - both
     - prefix
     - postfix
+
+Style/NestedParenthesizedCalls:
+  Whitelist:
+    - be
+    - be_a
+    - be_an
+    - be_between
+    - be_falsey
+    - be_kind_of
+    - be_instance_of
+    - be_truthy
+    - be_within
+    - eq
+    - eql
+    - end_with
+    - include
+    - match
+    - raise_error
+    - respond_to
+    - start_with
 
 Style/Next:
   # With `always` all conditions at the end of an iteration needs to be
@@ -1068,26 +1123,6 @@ Style/PercentQLiterals:
   SupportedStyles:
     - lower_case_q # Use `%q` when possible, `%Q` when necessary
     - upper_case_q # Always use `%Q`
-
-Style/PredicateName:
-  # Predicate name prefixes.
-  NamePrefix:
-    - is_
-    - has_
-    - have_
-  # Predicate name prefixes that should be removed.
-  NamePrefixBlacklist:
-    - is_
-    - has_
-    - have_
-  # Predicate names which, despite having a blacklisted prefix, or no `?`,
-  # should still be accepted
-  NameWhitelist:
-    - is_a?
-  # Exclude Rspec specs because there is a strong convention to write spec
-  # helpers in the form of `have_something` or `be_something`.
-  Exclude:
-    - 'spec/**/*'
 
 Style/PreferredHashMethods:
   EnforcedStyle: short
@@ -1269,19 +1304,6 @@ Style/TrivialAccessors:
     - to_str
     - to_s
     - to_sym
-
-Style/VariableName:
-  EnforcedStyle: snake_case
-  SupportedStyles:
-    - snake_case
-    - camelCase
-
-Style/VariableNumber:
-  EnforcedStyle: normalcase
-  SupportedStyles:
-    - snake_case
-    - normalcase
-    - non_integer
 
 Style/WhileUntilModifier:
   MaxLineLength: 80

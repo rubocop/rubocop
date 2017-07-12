@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::AccessorMethodName do
+describe RuboCop::Cop::Naming::AccessorMethodName do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for method get_... with no args' do

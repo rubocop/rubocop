@@ -17,6 +17,12 @@ describe RuboCop::AST::SuperNode do
     end
   end
 
+  describe '#receiver' do
+    let(:source) { 'super(foo)' }
+
+    it { expect(super_node.receiver).to be_nil }
+  end
+
   describe '#method_name' do
     let(:source) { 'super(foo)' }
 
@@ -51,6 +57,98 @@ describe RuboCop::AST::SuperNode do
         it { expect(super_node.method?('foo')).to be_falsey }
       end
     end
+  end
+
+  describe '#macro?' do
+    let(:source) { 'super(foo)' }
+
+    it { expect(super_node.macro?).to be_falsey }
+  end
+
+  describe '#command?' do
+    context 'when argument is a symbol' do
+      let(:source) { 'super(foo)' }
+
+      it { expect(super_node.command?(:super)).to be_truthy }
+    end
+
+    context 'when argument is a string' do
+      let(:source) { 'super(foo)' }
+
+      it { expect(super_node.command?('super')).to be_truthy }
+    end
+  end
+
+  describe '#setter_method?' do
+    let(:source) { 'super(foo)' }
+
+    it { expect(super_node.setter_method?).to be_falsey }
+  end
+
+  describe '#operator_method?' do
+    let(:source) { 'super(foo)' }
+
+    it { expect(super_node.operator_method?).to be_falsey }
+  end
+
+  describe '#comparison_method?' do
+    let(:source) { 'super(foo)' }
+
+    it { expect(super_node.comparison_method?).to be_falsey }
+  end
+
+  describe '#assignment_method?' do
+    let(:source) { 'super(foo)' }
+
+    it { expect(super_node.assignment_method?).to be_falsey }
+  end
+
+  describe '#dot?' do
+    let(:source) { 'super(foo)' }
+
+    it { expect(super_node.dot?).to be_falsey }
+  end
+
+  describe '#double_colon?' do
+    let(:source) { 'super(foo)' }
+
+    it { expect(super_node.double_colon?).to be_falsey }
+  end
+
+  describe '#self_receiver?' do
+    let(:source) { 'super(foo)' }
+
+    it { expect(super_node.self_receiver?).to be_falsey }
+  end
+
+  describe '#const_receiver?' do
+    let(:source) { 'super(foo)' }
+
+    it { expect(super_node.const_receiver?).to be_falsey }
+  end
+
+  describe '#implicit_call?' do
+    let(:source) { 'super(foo)' }
+
+    it { expect(super_node.implicit_call?).to be_falsey }
+  end
+
+  describe '#predicate_method?' do
+    let(:source) { 'super(foo)' }
+
+    it { expect(super_node.predicate_method?).to be_falsey }
+  end
+
+  describe '#bang_method?' do
+    let(:source) { 'super(foo)' }
+
+    it { expect(super_node.bang_method?).to be_falsey }
+  end
+
+  describe '#camel_case_method?' do
+    let(:source) { 'super(foo)' }
+
+    it { expect(super_node.camel_case_method?).to be_falsey }
   end
 
   describe '#parenthesized?' do

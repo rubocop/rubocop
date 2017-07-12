@@ -14,9 +14,6 @@ module RuboCop
       #   method1(method2 arg, method3, arg)
       class NestedParenthesizedCalls < Cop
         MSG = 'Add parentheses to nested method call `%s`.'.freeze
-        RSPEC_MATCHERS = %i[be eq eql equal be_kind_of be_instance_of
-                            respond_to be_between match be_within
-                            start_with end_with include raise_error].freeze
 
         def on_send(node)
           return unless node.parenthesized?
@@ -33,13 +30,12 @@ module RuboCop
         def allowed_omission?(send_node)
           !send_node.arguments? || send_node.parenthesized? ||
             send_node.setter_method? || send_node.operator_method? ||
-            rspec_matcher?(send_node)
+            whitelisted?(send_node)
         end
 
-        # TODO: Relegate this from RuboCop core
-        def rspec_matcher?(send_node)
-          send_node.parent.arguments.one? && # .to, .not_to, etc
-            RSPEC_MATCHERS.include?(send_node.method_name) &&
+        def whitelisted?(send_node)
+          send_node.parent.arguments.one? &&
+            whitelisted_methods.include?(send_node.method_name.to_s) &&
             send_node.arguments.one?
         end
 
@@ -54,6 +50,10 @@ module RuboCop
             corrector.replace(leading_space, '(')
             corrector.insert_after(last_arg, ')')
           end
+        end
+
+        def whitelisted_methods
+          cop_config['Whitelist'] || []
         end
       end
     end

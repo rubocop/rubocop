@@ -46,22 +46,12 @@ module RuboCop
           return if ignored_method?(node)
           return unless node.arguments? && !node.parenthesized?
 
-          add_offense(node, :selector)
+          add_offense(node, :expression)
         end
+        alias on_super on_send
+        alias on_yield on_send
 
-        def on_super(node)
-          return if node.parenthesized?
-
-          add_offense(node, :keyword)
-        end
-
-        def on_yield(node)
-          args = node.children
-          return if args.empty?
-          return if parentheses?(node)
-
-          add_offense(node, :keyword)
-        end
+        private
 
         def autocorrect(node)
           lambda do |corrector|
@@ -69,8 +59,6 @@ module RuboCop
             corrector.insert_after(args_end(node), ')')
           end
         end
-
-        private
 
         def ignored_method?(node)
           node.operator_method? || node.setter_method? ||
@@ -84,10 +72,6 @@ module RuboCop
 
         def ignore_macros?
           cop_config['IgnoreMacros']
-        end
-
-        def parentheses?(node)
-          node.loc.begin
         end
 
         def args_begin(node)

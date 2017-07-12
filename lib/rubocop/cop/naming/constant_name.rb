@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Naming
       # This cop checks whether constant names are written using
       # SCREAMING_SNAKE_CASE.
       #
