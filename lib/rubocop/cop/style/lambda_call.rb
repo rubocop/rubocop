@@ -40,9 +40,30 @@ module RuboCop
 
               corrector.replace(node.source_range, replacement)
             else
+              add_parentheses(node, corrector) unless node.parenthesized?
               corrector.remove(node.loc.selector)
             end
           end
+        end
+
+        def add_parentheses(node, corrector)
+          if node.arguments.empty?
+            corrector.insert_after(node.source_range, '()')
+          else
+            corrector.replace(args_begin(node), '(')
+            corrector.insert_after(args_end(node), ')')
+          end
+        end
+
+        def args_begin(node)
+          loc = node.loc
+          selector =
+            node.super_type? || node.yield_type? ? loc.keyword : loc.selector
+          selector.end.resize(1)
+        end
+
+        def args_end(node)
+          node.loc.expression.end
         end
 
         def message(_node)
