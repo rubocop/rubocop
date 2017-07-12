@@ -7,6 +7,7 @@ shared_examples_for 'multiline literal brace layout' do
   let(:close) { nil } # The closing brace.
   let(:a) { 'a' } # The first element.
   let(:b) { 'b' } # The second element.
+  let(:b_comment) { '' } # Comment after the second element.
   let(:multi_prefix) { '' } # Prefix multi and heredoc with this.
   let(:multi) { ['{', 'foo: bar', '}'] } # A viable multi-line element.
   # This heredoc is unsafe to edit around because it ends on the same line as
@@ -44,7 +45,7 @@ shared_examples_for 'multiline literal brace layout' do
   #     } # line break indicated by `true` as the last argument.
   #     ]
   def braces(open_line_break, *args, close_line_break)
-    args = [a, b] if args.empty?
+    args = [a, b + b_comment] if args.empty?
 
     open + (open_line_break ? "\n" : '') +
       args.map { |a| a.respond_to?(:join) ? a.join("\n") : a }.join(",\n") +
@@ -117,6 +118,41 @@ shared_examples_for 'multiline literal brace layout' do
 
         expect(new_source)
           .to eq("#{prefix}#{open}#{a}, # a\n#{b}#{close} # b\n#{suffix}")
+      end
+
+      unless described_class ==
+             RuboCop::Cop::Layout::MultilineMethodDefinitionBraceLayout
+        context 'with a chained call on the closing brace' do
+          let(:suffix) { '.any?' }
+          let(:source) { construct(false, true) }
+
+          context 'and a comment after the last element' do
+            let(:b_comment) { ' # comment b' }
+
+            it 'detects closing brace on separate line from last element' do
+              inspect_source(source)
+
+              expect(cop.highlights).to eq([close])
+              expect(cop.messages)
+                .to eq([described_class::SAME_LINE_MESSAGE])
+            end
+
+            it 'does not autocorrect the closing brace' do
+              new_source = autocorrect_source(source)
+              expect(new_source).to eq(source.join($RS))
+            end
+          end
+
+          context 'but no comment after the last element' do
+            it 'autocorrects the closing brace' do
+              new_source = autocorrect_source(source)
+
+              expect(new_source).to eq(["#{prefix}#{open}#{a},",
+                                        "#{b}#{close}",
+                                        suffix].join($RS))
+            end
+          end
+        end
       end
     end
 
@@ -278,6 +314,41 @@ shared_examples_for 'multiline literal brace layout' do
 
         expect(new_source)
           .to eq("#{prefix}#{open}#{a}, # a\n#{b}#{close} # b\n#{suffix}")
+      end
+
+      unless described_class ==
+             RuboCop::Cop::Layout::MultilineMethodDefinitionBraceLayout
+        context 'with a chained call on the closing brace' do
+          let(:suffix) { '.any?' }
+          let(:source) { construct(false, true) }
+
+          context 'and a comment after the last element' do
+            let(:b_comment) { ' # comment b' }
+
+            it 'detects closing brace on separate line from last element' do
+              inspect_source(source)
+
+              expect(cop.highlights).to eq([close])
+              expect(cop.messages)
+                .to eq([described_class::ALWAYS_SAME_LINE_MESSAGE])
+            end
+
+            it 'does not autocorrect the closing brace' do
+              new_source = autocorrect_source(source)
+              expect(new_source).to eq(source.join($RS))
+            end
+          end
+
+          context 'but no comment after the last element' do
+            it 'autocorrects the closing brace' do
+              new_source = autocorrect_source(source)
+
+              expect(new_source).to eq(["#{prefix}#{open}#{a},",
+                                        "#{b}#{close}",
+                                        suffix].join($RS))
+            end
+          end
+        end
       end
     end
 

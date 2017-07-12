@@ -23,6 +23,12 @@ module RuboCop
             corrector.insert_before(node.loc.end, "\n".freeze)
           end
         else
+          # When a comment immediately before the closing brace gets in the way
+          # of an easy correction, the offense is reported but not auto-
+          # corrected. The user must handle the delicate decision of where to
+          # put the comment.
+          return if new_line_needed_before_closing_brace?(node)
+
           lambda do |corrector|
             corrector.remove(range_with_surrounding_space(node.loc.end,
                                                           :left))
@@ -34,6 +40,18 @@ module RuboCop
       end
 
       private
+
+      # Returns true for the case
+      #   [a,
+      #    b # comment
+      #   ].some_method
+      def new_line_needed_before_closing_brace?(node)
+        return unless node.chained?
+
+        last_element_line =
+          last_element_range_with_trailing_comma(node).last_line
+        processed_source.comments.any? { |c| c.loc.line == last_element_line }
+      end
 
       def check(node)
         case style
