@@ -7,7 +7,7 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   it 'registers an offense for lvar assignment in condition' do
     expect_offense(<<-RUBY.strip_indent)
       if test = 10
-              ^ Assignment in condition - you probably meant to use `==`.
+              ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
       end
     RUBY
   end
@@ -15,7 +15,7 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   it 'registers an offense for lvar assignment in while condition' do
     expect_offense(<<-RUBY.strip_indent)
       while test = 10
-                 ^ Assignment in condition - you probably meant to use `==`.
+                 ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
       end
     RUBY
   end
@@ -23,7 +23,7 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   it 'registers an offense for lvar assignment in until condition' do
     expect_offense(<<-RUBY.strip_indent)
       until test = 10
-                 ^ Assignment in condition - you probably meant to use `==`.
+                 ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
       end
     RUBY
   end
@@ -31,7 +31,7 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   it 'registers an offense for ivar assignment in condition' do
     expect_offense(<<-RUBY.strip_indent)
       if @test = 10
-               ^ Assignment in condition - you probably meant to use `==`.
+               ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
       end
     RUBY
   end
@@ -39,7 +39,7 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   it 'registers an offense for clvar assignment in condition' do
     expect_offense(<<-RUBY.strip_indent)
       if @@test = 10
-                ^ Assignment in condition - you probably meant to use `==`.
+                ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
       end
     RUBY
   end
@@ -47,7 +47,7 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   it 'registers an offense for gvar assignment in condition' do
     expect_offense(<<-RUBY.strip_indent)
       if $test = 10
-               ^ Assignment in condition - you probably meant to use `==`.
+               ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
       end
     RUBY
   end
@@ -55,7 +55,7 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   it 'registers an offense for constant assignment in condition' do
     expect_offense(<<-RUBY.strip_indent)
       if TEST = 10
-              ^ Assignment in condition - you probably meant to use `==`.
+              ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
       end
     RUBY
   end
@@ -63,7 +63,7 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   it 'registers an offense for collection element assignment in condition' do
     expect_offense(<<-RUBY.strip_indent)
       if a[3] = 10
-              ^ Assignment in condition - you probably meant to use `==`.
+              ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
       end
     RUBY
   end
@@ -78,7 +78,7 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   it 'registers an offense for assignment after == in condition' do
     expect_offense(<<-RUBY.strip_indent)
       if test == 10 || foobar = 1
-                              ^ Assignment in condition - you probably meant to use `==`.
+                              ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
       end
     RUBY
   end
@@ -98,14 +98,14 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   it 'registers an offense for assignment after ||= in condition' do
     expect_offense(<<-RUBY.strip_indent)
       raise StandardError unless (foo ||= bar) || a = b
-                                                    ^ Assignment in condition - you probably meant to use `==`.
+                                                    ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
     RUBY
   end
 
   it 'registers an offense for assignment methods' do
     expect_offense(<<-RUBY.strip_indent)
       if test.method = 10
-                     ^ Assignment in condition - you probably meant to use `==`.
+                     ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
       end
     RUBY
   end
@@ -146,7 +146,7 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
     it 'does not accept = in condition surrounded with braces' do
       expect_offense(<<-RUBY.strip_indent)
         if (test = 10)
-                 ^ Assignment in condition - you probably meant to use `==`.
+                 ^ Use `==` if you meant to do a comparison or move the assignment up out of the condition.
         end
       RUBY
     end
@@ -154,7 +154,7 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
     it 'does not accept []= in condition surrounded with braces' do
       expect_offense(<<-RUBY.strip_indent)
         if (test[0] = 10)
-                    ^ Assignment in condition - you probably meant to use `==`.
+                    ^ Use `==` if you meant to do a comparison or move the assignment up out of the condition.
         end
       RUBY
     end

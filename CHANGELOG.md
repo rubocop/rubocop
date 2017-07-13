@@ -47,6 +47,7 @@
 
 ### Changes
 
+* [#4470](https://github.com/bbatsov/rubocop/issues/4470): Improve the error message for `Lint/AssignmentInCondition`. ([@brandonweiss][])
 * [#4553](https://github.com/bbatsov/rubocop/issues/4553): Add `node_modules` to default excludes. ([@iainbeeston][])
 * [#4444](https://github.com/bbatsov/rubocop/pull/4444): Make `Style/Encoding` cop enabled by default. ([@deivid-rodriguez][])
 * [#4452](https://github.com/bbatsov/rubocop/pull/4452): Add option to `Rails/Delegate` for enforcing the prefixed method name case. ([@klesse413][])
