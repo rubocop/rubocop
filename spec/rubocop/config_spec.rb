@@ -580,6 +580,10 @@ describe RuboCop::Config do
   end
 
   describe '#target_ruby_version' do
+    let(:ruby_version_file) do
+      File.join(File.expand_path(File.dirname(loaded_path)), '.ruby-version')
+    end
+
     context 'when TargetRubyVersion is set' do
       let(:ruby_version) { 2.1 }
 
@@ -601,17 +605,17 @@ describe RuboCop::Config do
 
       it 'does not read .ruby-version' do
         configuration.target_ruby_version
-        expect(File).not_to have_received(:file?).with('.ruby-version')
+        expect(File).not_to have_received(:file?).with(ruby_version_file)
       end
     end
 
     context 'when TargetRubyVersion is not set' do
       context 'when .ruby-version is present' do
         before do
-          allow(File).to receive(:file?).with('.ruby-version').and_return true
+          allow(File).to receive(:file?).with(ruby_version_file).and_return true
           allow(File)
             .to receive(:read)
-            .with('.ruby-version')
+            .with(ruby_version_file)
             .and_return ruby_version
         end
 
@@ -672,7 +676,7 @@ describe RuboCop::Config do
 
       context 'when .ruby-version is not present' do
         before do
-          allow(File).to receive(:file?).with('.ruby-version').and_return false
+          allow(File).to receive(:file?).with(ruby_version_file).and_return false
         end
 
         it 'uses the default target ruby version' do
