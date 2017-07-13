@@ -327,14 +327,18 @@ module RuboCop
           @target_ruby_version_source = :rubocop_yml
 
           for_all_cops['TargetRubyVersion']
-        elsif File.file?('.ruby-version') &&
-              /\A(ruby-)?(?<version>\d+\.\d+)/ =~ File.read('.ruby-version')
-
-          @target_ruby_version_source = :dot_ruby_version
-
-          version.to_f
         else
-          DEFAULT_RUBY_VERSION
+          ruby_version_file = File.join(base_dir_for_path_parameters, '.ruby-version')
+
+          if File.file?(ruby_version_file) &&
+              /\A(ruby-)?(?<version>\d+\.\d+)/ =~ File.read(ruby_version_file)
+
+            @target_ruby_version_source = :dot_ruby_version
+
+            version.to_f
+          else
+            DEFAULT_RUBY_VERSION
+          end
         end
     end
 
