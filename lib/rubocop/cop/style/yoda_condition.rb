@@ -57,7 +57,7 @@ module RuboCop
         private
 
         def yoda_condition?(node)
-          return false unless node.comparison_method?
+          return false if !node.comparison_method? || node.method_name == :<=>
 
           lhs, operator, rhs = *node
           if check_equality_only?
