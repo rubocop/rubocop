@@ -97,7 +97,7 @@ module RuboCop
 
         def on_send(node)
           super
-          return unless node.prefixed_def_modifier?
+          return unless node.adjacent_def_modifier?
 
           *_, body = *node.first_argument
 

@@ -29,6 +29,7 @@ describe RuboCop::Cop::Lint::DefEndAlignment, :config do
 
     context 'in ruby 2.1 or later' do
       include_examples 'aligned', 'foo def', 'test', 'end'
+      include_examples 'aligned', 'foo bar def', 'test', 'end'
 
       include_examples('misaligned', '',
                        'foo def', 'test',

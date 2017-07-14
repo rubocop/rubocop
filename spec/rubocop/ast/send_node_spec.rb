@@ -715,4 +715,18 @@ describe RuboCop::AST::SendNode do
       it { expect(send_node.splat_argument?).to be_truthy }
     end
   end
+
+  describe '#def_modifier?' do
+    context 'with a prefixed def modifier' do
+      let(:source) { 'foo def bar; end' }
+
+      it { expect(send_node.def_modifier?).to be_truthy }
+    end
+
+    context 'with several prefixed def modifiers' do
+      let(:source) { 'foo bar def baz; end' }
+
+      it { expect(send_node.def_modifier?).to be_truthy }
+    end
+  end
 end

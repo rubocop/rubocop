@@ -115,6 +115,18 @@ module RuboCop
         parent if block_literal?
       end
 
+      # Checks if this node is part of a chain of `def` modifiers.
+      #
+      # @example
+      #
+      #   private def foo; end
+      #
+      # @return [Boolean] whether the dispatched method is a `def` modifier
+      def def_modifier?
+        send_type? &&
+          [self, *each_descendant(:send)].any?(&:adjacent_def_modifier?)
+      end
+
       private
 
       def_node_matcher :macro_scope?, <<-PATTERN
@@ -122,7 +134,7 @@ module RuboCop
          ^^({class module} ... (begin ...))}
       PATTERN
 
-      def_node_matcher :prefixed_def_modifier?, <<-PATTERN
+      def_node_matcher :adjacent_def_modifier?, <<-PATTERN
         (send nil _ ({def defs} ...))
       PATTERN
     end
