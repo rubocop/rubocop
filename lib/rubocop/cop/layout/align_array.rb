@@ -8,14 +8,14 @@ module RuboCop
       #
       # @example
       #   # bad
-      #   a = [1, 2, 3
+      #   a = [1, 2, 3,
       #     4, 5, 6]
       #   array = ['run',
       #        'forrest',
       #        'run']
       #
       #   # good
-      #   a = [1, 2, 3
+      #   a = [1, 2, 3,
       #        4, 5, 6]
       #   a = ['run',
       #        'forrest',
