@@ -12,14 +12,14 @@ module RuboCop
       #   # bad
       #   if something
       #     code
-      #  else
+      #    else
       #     code
       #   end
       #
       #   # bad
       #   if something
       #     code
-      #  elsif something
+      #    elsif something
       #     code
       #   end
       #
