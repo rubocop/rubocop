@@ -458,6 +458,13 @@ if something
   code
 end
 
+# bad
+if something
+  code
+ elsif something
+  code
+end
+
 # good
 if something
   code
