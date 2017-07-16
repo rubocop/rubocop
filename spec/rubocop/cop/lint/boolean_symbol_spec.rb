@@ -17,19 +17,19 @@ describe RuboCop::Cop::Lint::BooleanSymbol, :config do
     RUBY
   end
 
-  it 'do not registers an offense when using regular symbol' do
+  it 'does not register an offense when using regular symbol' do
     expect_no_offenses(<<-RUBY.strip_indent)
       :something
     RUBY
   end
 
-  it 'do not registers an offense when using `true`' do
+  it 'does not register an offense when using `true`' do
     expect_no_offenses(<<-RUBY.strip_indent)
       true
     RUBY
   end
 
-  it 'do not registers an offense when using `false`' do
+  it 'does not register an offense when using `false`' do
     expect_no_offenses(<<-RUBY.strip_indent)
       false
     RUBY
