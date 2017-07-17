@@ -81,7 +81,6 @@ require 'rubocop/cop/variable_force/reference'
 require 'rubocop/cop/variable_force/scope'
 require 'rubocop/cop/variable_force/variable_table'
 
-require 'rubocop/cop/mixin/access_modifier_node'
 require 'rubocop/cop/mixin/annotation_comment'
 require 'rubocop/cop/mixin/array_hash_indentation'
 require 'rubocop/cop/mixin/array_min_size'

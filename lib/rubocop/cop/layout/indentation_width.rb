@@ -49,7 +49,6 @@ module RuboCop
         include EndKeywordAlignment
         include AutocorrectAlignment
         include CheckAssignment
-        include AccessModifierNode
         include IgnoredPattern
 
         SPECIAL_MODIFIERS = %w[private protected].freeze
@@ -159,7 +158,7 @@ module RuboCop
         def each_member(members)
           previous_modifier = nil
           members.first.children.each do |member|
-            if special_modifier?(member)
+            if member.send_type? && special_modifier?(member)
               previous_modifier = member
             elsif previous_modifier
               yield member, previous_modifier.source_range
@@ -169,7 +168,7 @@ module RuboCop
         end
 
         def special_modifier?(node)
-          modifier_node?(node) && SPECIAL_MODIFIERS.include?(node.source)
+          node.access_modifier? && SPECIAL_MODIFIERS.include?(node.source)
         end
 
         def indentation_consistency_style
@@ -291,7 +290,10 @@ module RuboCop
         end
 
         def starts_with_access_modifier?(body_node)
-          body_node.begin_type? && modifier_node?(body_node.children.first)
+          return unless body_node.begin_type?
+
+          starting_node = body_node.children.first
+          starting_node.send_type? && starting_node.access_modifier?
         end
 
         def configured_indentation_width

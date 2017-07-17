@@ -60,7 +60,13 @@ describe RuboCop::AST::SuperNode do
   end
 
   describe '#macro?' do
-    let(:source) { 'super(foo)' }
+    let(:super_node) { parse_source(source).ast.children[2] }
+
+    let(:source) do
+      ['def initialize',
+       '  super(foo)',
+       'end'].join("\n")
+    end
 
     it { expect(super_node.macro?).to be_falsey }
   end

@@ -94,6 +94,70 @@ describe RuboCop::AST::SendNode do
     end
   end
 
+  describe '#access_modifier?' do
+    let(:send_node) { parse_source(source).ast.children[1] }
+
+    context 'when node is a bare `module_function`' do
+      let(:source) do
+        ['module Foo',
+         '  module_function',
+         'end'].join("\n")
+      end
+
+      it { expect(send_node.access_modifier?).to be_truthy }
+    end
+
+    context 'when node is a bare `private`' do
+      let(:source) do
+        ['module Foo',
+         '  private',
+         'end'].join("\n")
+      end
+
+      it { expect(send_node.access_modifier?).to be_truthy }
+    end
+
+    context 'when node is a bare `protected`' do
+      let(:source) do
+        ['module Foo',
+         '  protected',
+         'end'].join("\n")
+      end
+
+      it { expect(send_node.access_modifier?).to be_truthy }
+    end
+
+    context 'when node is a bare `public`' do
+      let(:source) do
+        ['module Foo',
+         '  public',
+         'end'].join("\n")
+      end
+
+      it { expect(send_node.access_modifier?).to be_truthy }
+    end
+
+    context 'when node has an argument' do
+      let(:source) do
+        ['module Foo',
+         '  private :foo',
+         'end'].join("\n")
+      end
+
+      it { expect(send_node.access_modifier?).to be_falsey }
+    end
+
+    context 'when node is not an access modifier' do
+      let(:source) do
+        ['module Foo',
+         '  some_command',
+         'end'].join("\n")
+      end
+
+      it { expect(send_node.access_modifier?).to be_falsey }
+    end
+  end
+
   describe '#macro?' do
     context 'without a receiver' do
       context 'when parent is a class' do
@@ -122,6 +186,77 @@ describe RuboCop::AST::SendNode do
         it { expect(send_node.macro?).to be_truthy }
       end
 
+      context 'when parent is a class constructor' do
+        let(:send_node) { parse_source(source).ast.children[2].children[0] }
+
+        let(:source) do
+          ['Module.new do',
+           '  bar :baz',
+           '  bar :qux',
+           'end'].join("\n")
+        end
+
+        it { expect(send_node.macro?).to be_truthy }
+      end
+
+      context 'when parent is a singleton class' do
+        let(:send_node) { parse_source(source).ast.children[1].children[0] }
+
+        let(:source) do
+          ['class << self',
+           '  bar :baz',
+           '  bar :qux',
+           'end'].join("\n")
+        end
+
+        it { expect(send_node.macro?).to be_truthy }
+      end
+
+      context 'when parent is a block' do
+        let(:send_node) { parse_source(source).ast.children[2].children[0] }
+
+        let(:source) do
+          ['concern :Auth do',
+           '  bar :baz',
+           '  bar :qux',
+           'end'].join("\n")
+        end
+
+        it { expect(send_node.macro?).to be_truthy }
+      end
+
+      context 'when parent is a keyword begin inside of an class' do
+        let(:send_node) { parse_source(source).ast.children[2].children[0] }
+
+        let(:source) do
+          ['class Foo',
+           '  begin',
+           '    bar :qux',
+           '  end',
+           'end'].join("\n")
+        end
+
+        it { expect(send_node.macro?).to be_truthy }
+      end
+
+      context 'without a parent' do
+        let(:source) { 'bar :baz' }
+
+        it { expect(send_node.macro?).to be_truthy }
+      end
+
+      context 'when parent is a begin without a parent' do
+        let(:send_node) { parse_source(source).ast.children[0] }
+
+        let(:source) do
+          ['begin',
+           '  bar :qux',
+           'end'].join("\n")
+        end
+
+        it { expect(send_node.macro?).to be_truthy }
+      end
+
       context 'when parent is a method definition' do
         let(:send_node) { parse_source(source).ast.children[2] }
 
@@ -130,12 +265,6 @@ describe RuboCop::AST::SendNode do
            '  bar :baz',
            'end'].join("\n")
         end
-
-        it { expect(send_node.macro?).to be_falsey }
-      end
-
-      context 'without a parent' do
-        let(:source) { 'bar :baz' }
 
         it { expect(send_node.macro?).to be_falsey }
       end

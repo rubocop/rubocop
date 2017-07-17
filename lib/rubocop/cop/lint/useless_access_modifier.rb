@@ -113,10 +113,6 @@ module RuboCop
 
         private
 
-        def_node_matcher :access_modifier, <<-PATTERN
-          (send nil ${:public :protected :private})
-        PATTERN
-
         def_node_matcher :static_method_definition?, <<-PATTERN
           {def (send nil {:attr :attr_reader :attr_writer :attr_accessor} ...)}
         PATTERN
@@ -138,8 +134,8 @@ module RuboCop
 
           if node.begin_type?
             check_scope(node)
-          elsif (vis = access_modifier(node))
-            add_offense(node, :expression, format(MSG, vis))
+          elsif node.send_type? && node.access_modifier?
+            add_offense(node, :expression, format(MSG, node.method_name))
           end
         end
 
@@ -151,9 +147,9 @@ module RuboCop
 
         def check_child_nodes(node, unused, cur_vis)
           node.child_nodes.each do |child|
-            if (new_vis = access_modifier(child))
+            if child.send_type? && child.access_modifier?
               cur_vis, unused =
-                check_new_visibility(child, unused, new_vis, cur_vis)
+                check_new_visibility(child, unused, child.method_name, cur_vis)
             elsif method_definition?(child)
               unused = nil
             elsif start_of_new_scope?(child)

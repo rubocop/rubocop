@@ -53,10 +53,6 @@ module RuboCop
         ALTERNATIVE_PROTECTED = '`protected` inside a `class << self` ' \
                                 'block'.freeze
 
-        def_node_matcher :access_modifier, <<-PATTERN
-          (send nil ${:public :protected :private})
-        PATTERN
-
         def_node_matcher :private_class_method, <<-PATTERN
           (send nil :private_class_method $...)
         PATTERN
@@ -105,25 +101,34 @@ module RuboCop
         end
 
         def check_child_scope(node, cur_vis)
-          if (new_vis = access_modifier(node))
-            cur_vis = change_visibility(node, new_vis)
-          elsif node.defs_type?
-            mark_method_as_useless(node, cur_vis) if cur_vis != :public
-          elsif (methods = private_class_method(node))
-            # don't warn about defs nodes which are followed by a call to
-            # `private_class_method :name`
-            # obviously the programmer knows what they are doing
-            revert_method_uselessness(methods)
-          elsif node.kwbegin_type?
-            cur_vis = check_scope(node, cur_vis)
+          case node.type
+          when :send
+            cur_vis = check_send(node, cur_vis)
+          when :defs
+            check_defs(node, cur_vis)
+          when :kwbegin
+            check_scope(node, cur_vis)
           end
 
           cur_vis
         end
 
-        def change_visibility(node, new_vis)
-          @last_access_modifier = node
-          new_vis
+        def check_send(node, cur_vis)
+          if node.access_modifier? && !node.method?(:module_function)
+            @last_access_modifier = node
+            return node.method_name
+          elsif (methods = private_class_method(node))
+            # don't warn about defs nodes which are followed by a call to
+            # `private_class_method :name`
+            # obviously the programmer knows what they are doing
+            revert_method_uselessness(methods)
+          end
+
+          cur_vis
+        end
+
+        def check_defs(node, cur_vis)
+          mark_method_as_useless(node, cur_vis) if cur_vis != :public
         end
 
         def mark_method_as_useless(node, cur_vis)

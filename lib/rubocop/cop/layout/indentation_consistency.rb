@@ -15,7 +15,6 @@ module RuboCop
       #   end
       class IndentationConsistency < Cop
         include AutocorrectAlignment
-        include AccessModifierNode
         include ConfigurableEnforcedStyle
 
         MSG = 'Inconsistent indentation detected.'.freeze
@@ -37,7 +36,7 @@ module RuboCop
             # the AccessModifierIndentation cop. This cop uses them as dividers
             # in rails mode. Then consistency is checked only within each
             # section delimited by a modifier node.
-            if modifier_node?(child)
+            if child.send_type? && child.access_modifier?
               children_to_check << [] if style == :rails
             else
               children_to_check.last << child
