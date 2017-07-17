@@ -52,7 +52,13 @@ describe RuboCop::AST::YieldNode do
   end
 
   describe '#macro?' do
-    let(:source) { 'yield :bar' }
+    let(:yield_node) { parse_source(source).ast.children[2] }
+
+    let(:source) do
+      ['def give_me_bar',
+       '  yield :bar',
+       'end'].join("\n")
+    end
 
     it { expect(yield_node.macro?).to be_falsey }
   end

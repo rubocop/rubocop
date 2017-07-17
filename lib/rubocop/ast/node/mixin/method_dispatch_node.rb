@@ -30,14 +30,22 @@ module RuboCop
       end
 
       # Checks whether the dispatched method is a macro method. A macro method
-      # is defined as a method that sits in a class- or module body and has an
-      # implicit receiver.
+      # is defined as a method that sits in a class, module, or block body and
+      # has an implicit receiver.
       #
       # @note This does not include DSLs that use nested blocks, like RSpec
       #
       # @return [Boolean] whether the dispatched method is a macro method
       def macro?
         !receiver && macro_scope?
+      end
+
+      # Checks whether the dispatched method is a bare access modifier affects
+      # all methods defined after the macro.
+      #
+      # @return [Boolean] whether the dispatched method is access modifier
+      def access_modifier?
+        macro? && bare_access_modifier?
       end
 
       # Checks whether the name of the dispatched method matches the argument
@@ -130,12 +138,36 @@ module RuboCop
       private
 
       def_node_matcher :macro_scope?, <<-PATTERN
-        {^({class module} ...)
-         ^^({class module} ... (begin ...))}
+        {^{({sclass class module block} ...) class_constructor?}
+         ^^{({sclass class module block} ... (begin ...)) class_constructor?}
+         ^#macro_kwbegin_wrapper?
+         #root_node?}
       PATTERN
+
+      # Check if a node's parent is a kwbegin wrapper within a macro scope
+      #
+      # @param parent [Node] parent of the node being checked
+      #
+      # @return [Boolean] true if the parent is a kwbegin in a macro scope
+      def macro_kwbegin_wrapper?(parent)
+        parent.kwbegin_type? && macro_scope?(parent)
+      end
+
+      # Check if a node does not have a parent
+      #
+      # @param node [Node]
+      #
+      # @return [Boolean] if the parent is nil
+      def root_node?(node)
+        node.parent.nil?
+      end
 
       def_node_matcher :adjacent_def_modifier?, <<-PATTERN
         (send nil _ ({def defs} ...))
+      PATTERN
+
+      def_node_matcher :bare_access_modifier?, <<-PATTERN
+        (send nil {:public :protected :private :module_function})
       PATTERN
     end
   end

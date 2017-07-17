@@ -23,22 +23,28 @@ describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
 
   it 'register an offense for non-reciever method call without parens' do
     expect_offense(<<-RUBY.strip_indent)
-      test a, b
-      ^^^^^^^^^ Use parentheses for method calls with arguments.
+      def foo
+        test a, b
+        ^^^^^^^^^ Use parentheses for method calls with arguments.
+      end
     RUBY
   end
 
   it 'register an offense for methods starting with a capital without parens' do
     expect_offense(<<-RUBY.strip_indent)
-      Test a, b
-      ^^^^^^^^^ Use parentheses for method calls with arguments.
+      def foo
+        Test a, b
+        ^^^^^^^^^ Use parentheses for method calls with arguments.
+      end
     RUBY
   end
 
   it 'register an offense for superclass call without parens' do
     expect_offense(<<-RUBY.strip_indent)
-      super a
-      ^^^^^^^ Use parentheses for method calls with arguments.
+      def foo
+        super a
+        ^^^^^^^ Use parentheses for method calls with arguments.
+      end
     RUBY
   end
 
@@ -56,8 +62,10 @@ describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
 
   it 'register an offense for yield without parens' do
     expect_offense(<<-RUBY.strip_indent)
-      yield a
-      ^^^^^^^ Use parentheses for method calls with arguments.
+      def foo
+        yield a
+        ^^^^^^^ Use parentheses for method calls with arguments.
+      end
     RUBY
   end
 
@@ -79,13 +87,31 @@ describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
   end
 
   it 'auto-corrects superclass call by adding needed braces' do
-    new_source = autocorrect_source('super a')
-    expect(new_source).to eq('super(a)')
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
+      def foo
+        super a
+      end
+    RUBY
+
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      def foo
+        super(a)
+      end
+    RUBY
   end
 
   it 'auto-corrects superclass call by adding needed braces' do
-    new_source = autocorrect_source('yield a')
-    expect(new_source).to eq('yield(a)')
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
+      def foo
+        yield a
+      end
+    RUBY
+
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      def foo
+        yield(a)
+      end
+    RUBY
   end
 
   it 'ignores method listed in IgnoredMethods' do
