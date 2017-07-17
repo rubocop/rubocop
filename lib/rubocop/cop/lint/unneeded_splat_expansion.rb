@@ -124,7 +124,7 @@ module RuboCop
           elements = elements.map(&:source)
 
           if array_start.start_with?(PERCENT_W)
-            "'#{elements.join("', '")}'"
+            %('#{elements.join("', '")}')
           elsif array_start.start_with?(PERCENT_CAPITAL_W)
             %("#{elements.join('", "')}")
           elsif array_start.start_with?(PERCENT_I)

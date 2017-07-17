@@ -1270,6 +1270,12 @@ Lint/MultipleCompare:
   Description: "Use `&&` operator to compare multiple value."
   Enabled: true
 
+Lint/NestedDoubleQuotesInInterpolation:
+  Description: >-
+                 Checks for double-quoted strings used in interpolations
+                 inside of double-quoted strings.
+  Enabled: true
+
 Lint/NestedMethodDefinition:
   Description: 'Do not use nested method definitions.'
   StyleGuide: '#no-nested-methods'
