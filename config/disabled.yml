@@ -69,11 +69,6 @@ Style/InlineComment:
   Description: 'Avoid trailing inline comments.'
   Enabled: false
 
-Style/MethodCallWithArgsParentheses:
-  Description: 'Use parentheses for method calls with arguments.'
-  StyleGuide: '#method-invocation-parens'
-  Enabled: false
-
 Style/MethodCalledOnDoEndBlock:
   Description: 'Avoid chaining a method call on a do...end block.'
   StyleGuide: '#single-line-blocks'

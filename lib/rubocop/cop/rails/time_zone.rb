@@ -111,10 +111,10 @@ module RuboCop
         # called is part of the time class.
         def method_from_time_class?(node)
           receiver, method_name, *_args = *node
-          if (receiver.is_a? RuboCop::AST::Node) && !receiver.cbase_type?
+          if receiver && !receiver.cbase_type?
             method_from_time_class?(receiver)
           else
-            TIMECLASS.include? method_name
+            TIMECLASS.include?(method_name)
           end
         end
 

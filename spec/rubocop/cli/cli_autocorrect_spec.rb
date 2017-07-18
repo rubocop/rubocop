@@ -558,6 +558,10 @@ describe RuboCop::CLI, :isolated_environment do
           end
     RUBY
     create_file('example.rb', source)
+    create_file('.rubocop.yml', <<-YAML.strip_indent)
+      Style/MethodCallWithArgsParentheses:
+        Enabled: false
+    YAML
     expect(cli.run(['--auto-correct'])).to eq(0)
     corrected = <<-RUBY.strip_indent
       render_views
@@ -589,6 +593,10 @@ describe RuboCop::CLI, :isolated_environment do
       end
     RUBY
     create_file('example.rb', source)
+    create_file('.rubocop.yml', <<-YAML.strip_indent)
+      Style/MethodCallWithArgsParentheses:
+        Enabled: false
+    YAML
     expect(cli.run(['--auto-correct'])).to eq(0)
     corrected = <<-RUBY.strip_indent
       require 'spec_helper'
@@ -660,6 +668,10 @@ describe RuboCop::CLI, :isolated_environment do
       })
     RUBY
     create_file('example.rb', source)
+    create_file('.rubocop.yml', <<-YAML.strip_indent)
+      Style/MethodCallWithArgsParentheses:
+        Enabled: false
+    YAML
     expect(cli.run(['-D', '--auto-correct'])).to eq(0)
     corrected =
       <<-RUBY.strip_indent
@@ -690,8 +702,8 @@ describe RuboCop::CLI, :isolated_environment do
       module Bar
       class Goo
         def something
-          first call
-            do_other 'things'
+          first(call)
+            do_other('things')
             if other > 34
               more_work
             end
@@ -720,8 +732,8 @@ describe RuboCop::CLI, :isolated_environment do
         module Bar
           class Goo
             def something
-              first call
-              do_other 'things'
+              first(call)
+              do_other('things')
               more_work if other > 34
             end
           end
@@ -793,6 +805,10 @@ describe RuboCop::CLI, :isolated_environment do
   it 'can handle spaces when removing braces' do
     create_file('example.rb',
                 ["assert_post_status_code 400, 's', {:type => 'bad'}"])
+    create_file('.rubocop.yml', <<-YAML.strip_indent)
+      Style/MethodCallWithArgsParentheses:
+        Enabled: false
+    YAML
     expect(cli.run(%w[--auto-correct --format emacs])).to eq(0)
     expect(IO.read('example.rb'))
       .to eq(<<-RUBY.strip_indent)
@@ -1145,14 +1161,12 @@ describe RuboCop::CLI, :isolated_environment do
 
   it 'does not say [Corrected] if correction was avoided' do
     src = <<-RUBY.strip_indent
-      func a do b end
       Signal.trap('TERM') { system(cmd); exit }
       def self.some_method(foo, bar: 1)
         log.debug(foo)
       end
     RUBY
     corrected = <<-RUBY.strip_indent
-      func a do b end
       Signal.trap('TERM') { system(cmd); exit }
       def self.some_method(foo, bar: 1)
         log.debug(foo)
@@ -1168,11 +1182,10 @@ describe RuboCop::CLI, :isolated_environment do
     expect(IO.read('example.rb')).to eq(corrected)
     expect($stdout.string).to eq(<<-RESULT.strip_indent)
       == example.rb ==
-      C:  1:  8: Prefer {...} over do...end for single-line blocks.
-      C:  2: 34: Do not use semicolons to terminate expressions.
-      W:  3: 27: Unused method argument - bar.
+      C:  1: 34: Do not use semicolons to terminate expressions.
+      W:  2: 27: Unused method argument - bar.
 
-      1 file inspected, 3 offenses detected
+      1 file inspected, 2 offenses detected
     RESULT
   end
 

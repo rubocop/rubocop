@@ -239,7 +239,7 @@ module RuboCop
           break if dir_pathname.to_s == @root_level
           dirs_to_search << dir_pathname.to_s
         end
-        dirs_to_search << Dir.home if ENV.key? 'HOME'
+        dirs_to_search << Dir.home if ENV.key?('HOME')
         dirs_to_search
       end
     end

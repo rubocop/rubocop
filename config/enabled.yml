@@ -670,6 +670,11 @@ Style/LineEndConcatenation:
                  line end.
   Enabled: true
 
+Style/MethodCallWithArgsParentheses:
+  Description: 'Use parentheses for method calls with arguments.'
+  StyleGuide: '#method-invocation-parens'
+  Enabled: true
+
 Style/MethodCallWithoutArgsParentheses:
   Description: 'Do not use parentheses for method calls with no arguments.'
   StyleGuide: '#method-invocation-parens'

@@ -43,6 +43,7 @@
 * [#4589](https://github.com/bbatsov/rubocop/issues/4589): Fix false positive in `Performance/RegexpMatch` cop for `=~` is in a class method. ([@pocke][])
 * [#4578](https://github.com/bbatsov/rubocop/issues/4578): Fix false positive in `Lint/FormatParameterMismatch` for format with "asterisk" (`*`) width and precision. ([@smakagon][])
 * [#4285](https://github.com/bbatsov/rubocop/issues/4285): Make `Lint/DefEndAlignment` aware of multiple modifiers. ([@drenmi][])
+* Remove false positives from known methods in `Style/MethodCallWithArgsParentheses` cop. ([@drenmi][])
 
 ### Changes
 
@@ -58,6 +59,7 @@
 * Rename `Style/HeredocDelimiters` to `Style/HeredocDelimiterNaming`. ([@drenmi][])
 * [#4157](https://github.com/bbatsov/rubocop/issues/4157): Enhance offense message for `Style/RedudantReturn` cop. ([@gohdaniel15][])
 * [#4521](https://github.com/bbatsov/rubocop/issues/4521): Move naming related cops into their own `Naming` department. ([@drenmi][])
+* Make `Style/MethodCallWithArgsParentheses` cop enabled by default. ([@drenmi][])
 
 ## 0.49.1 (2017-05-29)
 

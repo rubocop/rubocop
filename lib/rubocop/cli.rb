@@ -92,7 +92,7 @@ module RuboCop
     end
 
     def handle_exiting_options
-      return unless Options::EXITING_OPTIONS.any? { |o| @options.key? o }
+      return unless Options::EXITING_OPTIONS.any? { |o| @options.key?(o) }
 
       puts RuboCop::Version.version(false) if @options[:version]
       puts RuboCop::Version.version(true) if @options[:verbose_version]

@@ -46,7 +46,7 @@ module RuboCop
         # Ideally, we calculate this relative to the project root.
         base_dir = Dir.pwd
 
-        if path.start_with? base_dir
+        if path.start_with?(base_dir)
           relative_path(path, base_dir)
         else
           path

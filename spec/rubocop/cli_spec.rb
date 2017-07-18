@@ -663,6 +663,9 @@ describe RuboCop::CLI, :isolated_environment do
         # config parameter is set for the rails cops. The paths are interpreted
         # as relative to dir1 because .rubocop.yml is placed there.
         create_file('dir1/.rubocop.yml', <<-YAML.strip_indent)
+          Style/MethodCallWithArgsParentheses:
+            Enabled: false
+
           Rails:
             Enabled: true
 
@@ -674,6 +677,10 @@ describe RuboCop::CLI, :isolated_environment do
         # are interpreted as relative to the current directory, so they don't
         # match.
         create_file('dir2/app/models/example4.rb', source)
+        create_file('dir2/.rubocop.yml', <<-YAML.strip_indent)
+          Style/MethodCallWithArgsParentheses:
+            Enabled: false
+        YAML
 
         expect(cli.run(%w[--format simple dir1 dir2])).to eq(1)
         expect($stdout.string)

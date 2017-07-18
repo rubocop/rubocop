@@ -344,4 +344,10 @@ describe RuboCop::AST::YieldNode do
       it { expect(yield_node.splat_argument?).to be_truthy }
     end
   end
+
+  describe '#conventionally_unparenthesized?' do
+    let(:source) { 'yield' }
+
+    it { expect(yield_node.conventionally_unparenthesized?).to be_truthy }
+  end
 end

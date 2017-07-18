@@ -231,7 +231,7 @@ module RuboCop
         PATTERN
 
         ASSIGNMENT_TYPES.each do |type|
-          define_method "on_#{type}" do |node|
+          define_method("on_#{type}") do |node|
             return if part_of_ignored_node?(node)
 
             check_assignment_to_condition(node)

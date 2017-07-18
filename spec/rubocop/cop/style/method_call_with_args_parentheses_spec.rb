@@ -35,30 +35,28 @@ describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     RUBY
   end
 
-  it 'register an offense for superclass call without parens' do
-    expect_offense(<<-RUBY.strip_indent)
-      super a
-      ^^^^^^^ Use parentheses for method calls with arguments.
-    RUBY
+  it 'does not register an offense for superclass call without parens' do
+    expect_no_offenses('super foo')
   end
 
   it 'register no offense for superclass call without args' do
     expect_no_offenses('super')
   end
 
-  it 'register no offense for yield without args' do
-    expect_no_offenses('yield')
-  end
-
   it 'register no offense for superclass call with parens' do
     expect_no_offenses('super(a)')
   end
 
-  it 'register an offense for yield without parens' do
-    expect_offense(<<-RUBY.strip_indent)
-      yield a
-      ^^^^^^^ Use parentheses for method calls with arguments.
-    RUBY
+  it 'register no offense for yield with args' do
+    expect_no_offenses('yield foo')
+  end
+
+  it 'register no offense for yield without args' do
+    expect_no_offenses('yield')
+  end
+
+  it 'register no offense for yield with parens' do
+    expect_no_offenses('yield(foo)')
   end
 
   it 'accepts no parens for operators' do
@@ -76,16 +74,6 @@ describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
   it 'auto-corrects call by adding needed braces' do
     new_source = autocorrect_source('top.test a')
     expect(new_source).to eq('top.test(a)')
-  end
-
-  it 'auto-corrects superclass call by adding needed braces' do
-    new_source = autocorrect_source('super a')
-    expect(new_source).to eq('super(a)')
-  end
-
-  it 'auto-corrects superclass call by adding needed braces' do
-    new_source = autocorrect_source('yield a')
-    expect(new_source).to eq('yield(a)')
   end
 
   it 'ignores method listed in IgnoredMethods' do
