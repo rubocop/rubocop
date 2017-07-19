@@ -21,6 +21,7 @@
 
 ### Bug fixes
 
+* [#4618](https://github.com/bbatsov/rubocop/pull/4618): Fix `Lint/FormatParameterMismatch` false positive if format string includes `%%5B` (CGI encoded left bracket). ([@barthez][])
 * [#4604](https://github.com/bbatsov/rubocop/pull/4604): Fix `Style/LambdaCall` to autocorrect `obj.call` to `obj.`. ([@iGEL][])
 * [#4443](https://github.com/bbatsov/rubocop/pull/4443): Prevent `Style/YodaCondition` from breaking `not LITERAL`. ([@pocke][])
 * [#4434](https://github.com/bbatsov/rubocop/issues/4434): Prevent bad auto-correct in `Style/Alias` for non-literal arguments. ([@drenmi][])
@@ -2876,3 +2877,4 @@
 [@promisedlandt]: https://github.com/promisedlandt
 [@oboxodo]: https://github.com/oboxodo
 [@gohdaniel15]: https://github.com/gohdaniel15
+[@barthez]: https://github.com/barthez

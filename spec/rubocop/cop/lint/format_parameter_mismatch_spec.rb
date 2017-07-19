@@ -82,7 +82,7 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
   end
 
   it 'correctly ignores double percent' do
-    expect_no_offenses("format('%s %s %% %s %%%% %%%%%%', 1, 2, 3)")
+    expect_no_offenses("format('%s %s %% %s %%%% %%%%%% %%5B', 1, 2, 3)")
   end
 
   it 'constants do not register offenses' do
