@@ -447,6 +447,7 @@ In the following section you find all available cops:
 * [Style/SymbolArray](cops_style.md#stylesymbolarray)
 * [Style/SymbolLiteral](cops_style.md#stylesymbolliteral)
 * [Style/SymbolProc](cops_style.md#stylesymbolproc)
+* [Style/TernaryOperator](cops_style.md#styleternaryoperator)
 * [Style/TernaryParentheses](cops_style.md#styleternaryparentheses)
 * [Style/TrailingCommaInArguments](cops_style.md#styletrailingcommainarguments)
 * [Style/TrailingCommaInLiteral](cops_style.md#styletrailingcommainliteral)

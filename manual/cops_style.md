@@ -2364,6 +2364,12 @@ method1(method2(arg), method3(arg))
 method1(method2 arg, method3, arg)
 ```
 
+### Important attributes
+
+Attribute | Value
+--- | ---
+Whitelist | be, be_a, be_an, be_between, be_falsey, be_kind_of, be_instance_of, be_truthy, be_within, eq, eql, end_with, include, match, raise_error, respond_to, start_with
+
 ## Style/NestedTernaryOperator
 
 Enabled by default | Supports autocorrection
@@ -3569,6 +3575,28 @@ something.map(&:upcase)
 Attribute | Value
 --- | ---
 IgnoredMethods | respond_to, define_method
+
+## Style/TernaryOperator
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks for the presence of ternary operators.
+
+### Example
+
+```ruby
+# bad
+cond ? b : c
+
+# good
+if cond
+  b
+else
+  c
+end
+```
 
 ## Style/TernaryParentheses
 

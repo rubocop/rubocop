@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#4619](https://github.com/bbatsov/rubocop/pull/4619): Add new `Style/TernaryOperator` cop. ([@secade][])
 * [#4448](https://github.com/bbatsov/rubocop/pull/4448): Add new `TapFormatter`. ([@cyberdelia][])
 * Add new `Style/HeredocDelimiters` cop. ([@drenmi][])
 * [#4153](https://github.com/bbatsov/rubocop/issues/4153): New cop `Lint/ReturnInVoidContext` checks for the use of a return with a value in a context where it will be ignored. ([@harold-s][])
@@ -2874,3 +2875,4 @@
 [@promisedlandt]: https://github.com/promisedlandt
 [@oboxodo]: https://github.com/oboxodo
 [@gohdaniel15]: https://github.com/gohdaniel15
+[@secade]: https://github.com/secade
