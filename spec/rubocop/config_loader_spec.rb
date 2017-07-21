@@ -58,8 +58,7 @@ describe RuboCop::ConfigLoader do
 
       context 'when YAML has method :safe_load' do
         before do
-          @yaml = defined?(YAML) && YAML
-          Object.send(:remove_const, :YAML) if @yaml
+          Object.send(:remove_const, :YAML)
           class YAML
             def self.safe_load(*)
               :success
@@ -113,8 +112,7 @@ describe RuboCop::ConfigLoader do
 
       context 'when YAML does not have method :safe_load' do
         before do
-          @yaml = defined?(YAML) && YAML
-          Object.send(:remove_const, :YAML) if @yaml
+          Object.send(:remove_const, :YAML)
           class YAML
             def self.load(*)
               :success
