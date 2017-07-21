@@ -21,6 +21,7 @@
 
 ### Bug fixes
 
+* Fix passing `YAML.load` too many arguments when using syck. ([@trzejos][])
 * [#4604](https://github.com/bbatsov/rubocop/pull/4604): Fix `Style/LambdaCall` to autocorrect `obj.call` to `obj.`. ([@iGEL][])
 * [#4443](https://github.com/bbatsov/rubocop/pull/4443): Prevent `Style/YodaCondition` from breaking `not LITERAL`. ([@pocke][])
 * [#4434](https://github.com/bbatsov/rubocop/issues/4434): Prevent bad auto-correct in `Style/Alias` for non-literal arguments. ([@drenmi][])
@@ -2874,3 +2875,4 @@
 [@promisedlandt]: https://github.com/promisedlandt
 [@oboxodo]: https://github.com/oboxodo
 [@gohdaniel15]: https://github.com/gohdaniel15
+[@trzejos]: https://github.com/trzejos

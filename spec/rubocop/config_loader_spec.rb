@@ -5,6 +5,135 @@ describe RuboCop::ConfigLoader do
 
   let(:default_config) { described_class.default_configuration }
 
+  describe '.yaml_safe_load' do
+    context 'when YAML == Syck' do
+      before do
+        @yaml = defined?(YAML) && YAML
+        @syck = defined?(Syck) && Syck
+        Object.send(:remove_const, :YAML) if @yaml
+        Object.send(:remove_const, :Syck) if @syck
+        class Syck
+          def self.load(*)
+            :success
+          end
+        end
+        YAML = Syck
+      end
+      after do
+        Object.send(:remove_const, :Syck)
+        Object.send(:remove_const, :YAML)
+        # rubocop:disable Naming/ConstantName
+        Syck = @syck if @syck
+        YAML = @yaml if @yaml
+        # rubocop:enable Naming/ConstantName
+      end
+
+      it 'should call YAML.load with one argument' do
+        expect(YAML).to receive(:load).with(anything)
+        described_class.send(:yaml_safe_load, '--- :foo', 'file.yml')
+      end
+    end # context Psych
+
+    context 'when YAML == Psych' do
+      before do
+        @yaml = defined?(YAML) && YAML
+        @psych = defined?(Psych) && Psych
+        Object.send(:remove_const, :YAML) if @yaml
+        Object.send(:remove_const, :Psych) if @psych
+        class Psych
+          def self.load(*)
+            :success
+          end
+        end
+        YAML = Psych
+      end
+      after do
+        Object.send(:remove_const, :Psych)
+        Object.send(:remove_const, :YAML)
+        # rubocop:disable Naming/ConstantName
+        Psych = @psych if @psych
+        YAML = @yaml if @yaml
+        # rubocop:enable Naming/ConstantName
+      end
+
+      context 'when YAML has method :safe_load' do
+        before do
+          @yaml = defined?(YAML) && YAML
+          Object.send(:remove_const, :YAML) if @yaml
+          class YAML
+            def self.safe_load(*)
+              :success
+            end
+          end
+        end
+        after do
+          Object.send(:remove_const, :YAML)
+          YAML = @yaml if @yaml
+        end
+
+        context 'when SafeYAML is defined and has method :load' do
+          before do
+            @safeyaml = defined?(SafeYAML) && SafeYAML
+            Object.send(:remove_const, :SafeYAML) if @safeyaml
+            class SafeYAML
+              def self.load(*)
+                :success
+              end
+            end
+          end
+          after do
+            Object.send(:remove_const, :SafeYAML)
+            # rubocop:disable Naming/ConstantName
+            SafeYAML = @safeyaml if @safeyaml
+            # rubocop:enable Naming/ConstantName
+          end
+
+          it 'should call SafeYAML.load' do
+            expect(SafeYAML).to receive(:load)
+            described_class.send(:yaml_safe_load, '--- :foo', 'file.yml')
+          end
+        end # context SafeYAML defined
+        context 'when SafeYAML is not defined' do
+          before do
+            @safeyaml = defined?(SafeYAML) && SafeYAML
+            Object.send(:remove_const, :SafeYAML) if @safeyaml
+          end
+          after do
+            # rubocop:disable Naming/ConstantName
+            SafeYAML = @safeyaml if @safeyaml
+            # rubocop:enable Naming/ConstantName
+          end
+
+          it 'should call YAML.safe_load' do
+            expect(YAML).to receive(:safe_load)
+            described_class.send(:yaml_safe_load, '--- :foo', 'file.yml')
+          end
+        end # context SafeYAML not defined
+      end # context safe_load
+
+      context 'when YAML does not have method :safe_load' do
+        before do
+          @yaml = defined?(YAML) && YAML
+          Object.send(:remove_const, :YAML) if @yaml
+          class YAML
+            def self.load(*)
+              :success
+            end
+          end
+        end
+        after do
+          Object.send(:remove_const, :YAML)
+          YAML = @yaml if @yaml
+        end
+
+        it 'should call YAML.load with two args' do
+          expect(YAML).to receive(:load).with(anything, anything)
+          described_class.send(:yaml_safe_load, '--- :foo', 'file.yml')
+        end
+      end # context no safe_load
+    end # context Psych
+  end
+
   describe '.configuration_file_for', :isolated_environment do
     subject(:configuration_file_for) do
       described_class.configuration_file_for(dir_path)
