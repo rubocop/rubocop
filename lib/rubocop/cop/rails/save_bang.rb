@@ -130,8 +130,10 @@ module RuboCop
         end
 
         def conditional?(node)
-          node.parent && (node.parent.if_type? && node.sibling_index.zero? ||
-            conditional?(node.parent))
+          node.parent && (
+            node.parent.if_type? || node.parent.case_type? ||
+            node.parent.or_type? || node.parent.and_type?
+          )
         end
 
         def last_call_of_method?(node)
