@@ -33,7 +33,7 @@ $ rubocop --format progress --format json --out rubocop.json
 #              $stdout
 
 # Progress format to result.txt, and simple format to $stdout.
-$ rubocop --output result.txt --format simple
+$ rubocop --out result.txt --format simple
 #         ~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~
 #                  |                 |
 #           default format        $stdout
