@@ -513,6 +513,34 @@ describe RuboCop::ConfigLoader do
       end
     end
 
+    context 'when a file inherits from a url inheriting from another file' do
+      let(:file_path) { '.robocop.yml' }
+      let(:cache_file) { '.rubocop-http---example-com-rubocop-yml' }
+      let(:cache_file_2) { '.rubocop-http---example-com-inherit-yml' }
+
+      before do
+        stub_request(:get, %r{example.com/rubocop})
+          .to_return(status: 200, body: "inherit_from:\n    - inherit.yml")
+
+        stub_request(:get, %r{example.com/inherit})
+          .to_return(status: 200, body: "Style/Encoding:\n    Enabled: true")
+
+        create_file(file_path, ['inherit_from: http://example.com/rubocop.yml'])
+      end
+
+      after do
+        [cache_file, cache_file_2].each do |f|
+          File.unlink f if File.exist? f
+        end
+      end
+
+      it 'downloads the inherited file from the same url and caches it' do
+        configuration_from_file
+        expect(File.exist?(cache_file)).to be true
+        expect(File.exist?(cache_file_2)).to be true
+      end
+    end
+
     context 'when a file inherits from a non http/https url' do
       let(:file_path) { '.rubocop.yml' }
 
