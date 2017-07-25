@@ -30,8 +30,12 @@ module RuboCop
         @debug = @auto_gen_config = @root_level = nil
       end
 
-      def load_file(path)
-        path = File.absolute_path(path)
+      def load_file(file)
+        return if file.nil?
+        path = File.absolute_path(
+          file.is_a?(RemoteConfig) ? file.file : file
+        )
+
         hash = load_yaml_configuration(path)
 
         # Resolve requires first in case they define additional cops
@@ -41,7 +45,7 @@ module RuboCop
         target_ruby_version_to_f!(hash)
 
         resolve_inheritance_from_gems(hash, hash.delete('inherit_gem'))
-        resolve_inheritance(path, hash)
+        resolve_inheritance(path, hash, file)
 
         hash.delete('inherit_from')
 
@@ -84,23 +88,27 @@ module RuboCop
         result
       end
 
-      def base_configs(path, inherit_from)
+      def base_configs(path, inherit_from, file)
         configs = Array(inherit_from).compact.map do |f|
-          if f =~ /\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https])}\z/
-            f = RemoteConfig.new(f, File.dirname(path)).file
-          else
-            f = File.expand_path(f, File.dirname(path))
-
-            if auto_gen_config?
-              next if f.include?(AUTO_GENERATED_FILE)
-            end
-
-            print 'Inheriting ' if debug?
-          end
-          load_file(f)
+          load_file(inherited_file(path, f, file))
         end
 
         configs.compact
+      end
+
+      def inherited_file(path, inherit_from, file)
+        regex = URI::DEFAULT_PARSER.make_regexp(%w[http https])
+        if inherit_from =~ /\A#{regex}\z/
+          f = RemoteConfig.new(inherit_from, File.dirname(path))
+        elsif file.is_a?(RemoteConfig)
+          f = file.inherit_from_remote(inherit_from, path)
+        else
+          f = File.expand_path(inherit_from, File.dirname(path))
+
+          return if auto_gen_config? && f.include?(AUTO_GENERATED_FILE)
+          print 'Inheriting ' if debug?
+        end
+        f
       end
 
       # Returns the path of .rubocop.yml searching upwards in the

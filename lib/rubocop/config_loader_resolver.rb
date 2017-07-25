@@ -17,8 +17,9 @@ module RuboCop
       end
     end
 
-    def resolve_inheritance(path, hash)
-      base_configs(path, hash['inherit_from']).reverse_each do |base_config|
+    def resolve_inheritance(path, hash, file)
+      base_configs(path, hash['inherit_from'], file)
+        .reverse_each do |base_config|
         base_config.each do |k, v|
           hash[k] = hash.key?(k) ? merge(v, hash[k]) : v if v.is_a?(Hash)
         end
