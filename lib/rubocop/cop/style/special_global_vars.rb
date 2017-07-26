@@ -98,7 +98,7 @@ module RuboCop
 
         def format_english_message(global_var)
           regular, english = ENGLISH_VARS[global_var].partition do |var|
-            NON_ENGLISH_VARS.include? var
+            NON_ENGLISH_VARS.include?(var)
           end
 
           format_message(english, regular, global_var)

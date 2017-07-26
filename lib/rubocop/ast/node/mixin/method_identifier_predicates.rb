@@ -12,6 +12,13 @@ module RuboCop
                               map reduce reject reject! reverse_each select
                               select! times upto].freeze
 
+      # A list of methods which are unparenthesized by convention.
+      UNPARENTHESIZED_COMMANDS = %i[abort alias_method attr_reader attr_writer
+                                    attr_accessor desc exit exit! extend fail
+                                    gets include namespace print puts raise
+                                    require require_relative sleep super task
+                                    throw warn write yield].freeze
+
       # Checks whether the method name matches the argument.
       #
       # @param [Symbol, String] name the method name to check for
@@ -83,6 +90,17 @@ module RuboCop
       # @return [Boolean] whether the receiver of this node is a `const` node
       def const_receiver?
         receiver && receiver.const_type?
+      end
+
+      # Checks whether calls to this method are usually unparenthesized
+      # by convention.
+      #
+      # @return [Boolean] whether calls to this method are unparenthesized
+      #                   by convention
+      def conventionally_unparenthesized?
+        setter_method? || operator_method? ||
+          receiver && receiver.gvar_type? ||
+          UNPARENTHESIZED_COMMANDS.include?(method_name)
       end
     end
   end

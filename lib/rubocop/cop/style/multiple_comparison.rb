@@ -62,7 +62,7 @@ module RuboCop
 
         def nested_comparison?(node)
           if node.or_type?
-            node.node_parts.all? { |node_part| comparison? node_part }
+            node.node_parts.all? { |node_part| comparison?(node_part) }
           else
             false
           end

@@ -61,7 +61,7 @@ module RuboCop
         end
 
         def ignored_method?(node)
-          node.operator_method? || node.setter_method? ||
+          node.conventionally_unparenthesized? ||
             ignore_macros? && node.macro? ||
             ignored_list.include?(node.method_name)
         end

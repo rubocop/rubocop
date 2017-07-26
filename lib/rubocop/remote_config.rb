@@ -18,7 +18,7 @@ module RuboCop
 
       request do |response|
         next if response.is_a?(Net::HTTPNotModified)
-        open cache_path, 'w' do |io|
+        open(cache_path, 'w') do |io|
           io.write response.body
         end
       end
@@ -32,7 +32,7 @@ module RuboCop
       raise ArgumentError, 'HTTP redirect too deep' if limit.zero?
 
       http = Net::HTTP.new(uri.hostname, uri.port)
-      http.use_ssl = true if uri.instance_of? URI::HTTPS
+      http.use_ssl = true if uri.instance_of?(URI::HTTPS)
 
       request = Net::HTTP::Get.new(uri.request_uri)
       if cache_path_exists?

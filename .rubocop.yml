@@ -44,3 +44,10 @@ Metrics/ModuleLength:
 Performance/Caller:
   Exclude:
     - spec/rubocop/cop/performance/caller_spec.rb
+
+Style/MethodCallWithArgsParentheses:
+  Enabled: true
+  Exclude:
+    - 'Gemfile'
+    - 'lib/rubocop/rspec/**/*'
+    - 'spec/**/*.rb'

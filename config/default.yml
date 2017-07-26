@@ -990,6 +990,11 @@ Style/LambdaCall:
     - braces
 
 Style/MethodCallWithArgsParentheses:
+  Exclude:
+    - 'Gemfile'
+    - 'app/controllers/**/*'
+    - 'app/models/**/*'
+    - 'spec/**/*'
   IgnoreMacros: true
   IgnoredMethods: []
 

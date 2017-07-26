@@ -34,7 +34,7 @@ module RuboCop
         }.freeze
 
         ALIASES.each do |aliased_method, options|
-          def_node_matcher aliased_method, options[:matcher]
+          def_node_matcher(aliased_method, options[:matcher])
         end
 
         def on_send(node)

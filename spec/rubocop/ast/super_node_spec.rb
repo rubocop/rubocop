@@ -404,4 +404,10 @@ describe RuboCop::AST::SuperNode do
       it { expect(super_node.splat_argument?).to be_truthy }
     end
   end
+
+  describe '#conventionally_unparenthesized?' do
+    let(:source) { 'super' }
+
+    it { expect(super_node.conventionally_unparenthesized?).to be_truthy }
+  end
 end

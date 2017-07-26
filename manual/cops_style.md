@@ -1767,7 +1767,7 @@ some_str = 'ala' \
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop checks presence of parentheses in method calls containing
 parameters. By default, macro methods are ignored. Additional methods
@@ -1812,6 +1812,7 @@ end
 
 Attribute | Value
 --- | ---
+Exclude | Gemfile, app/controllers/\*\*/\*, app/models/\*\*/\*, spec/\*\*/\*
 IgnoreMacros | true
 IgnoredMethods |
 

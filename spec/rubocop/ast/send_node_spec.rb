@@ -729,4 +729,30 @@ describe RuboCop::AST::SendNode do
       it { expect(send_node.def_modifier?).to be_truthy }
     end
   end
+
+  describe '#conventionally_unparenthesized?' do
+    context 'with an operator method' do
+      let(:source) { 'foo == bar' }
+
+      it { expect(send_node.conventionally_unparenthesized?).to be_truthy }
+    end
+
+    context 'with a setter method' do
+      let(:source) { 'self.foo = bar' }
+
+      it { expect(send_node.conventionally_unparenthesized?).to be_truthy }
+    end
+
+    context 'with a method that is conventionally called without parens' do
+      let(:source) { 'puts foo' }
+
+      it { expect(send_node.conventionally_unparenthesized?).to be_truthy }
+    end
+
+    context 'with a regular method' do
+      let(:source) { 'foo' }
+
+      it { expect(send_node.conventionally_unparenthesized?).to be_falsey }
+    end
+  end
 end
