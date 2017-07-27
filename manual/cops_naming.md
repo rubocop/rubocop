@@ -253,8 +253,8 @@ def value? ...
 
 Attribute | Value
 --- | ---
-NamePrefix | is_, has_, have_
-NamePrefixBlacklist | is_, has_, have_
+NamePrefix | is_, have_
+NamePrefixBlacklist | is_, have_
 NameWhitelist | is_a?
 Exclude | spec/\*\*/\*
 
