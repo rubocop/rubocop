@@ -3,11 +3,19 @@
 describe RuboCop::Cop::InternalAffairs::RedundantMessageArgument do
   subject(:cop) { described_class.new }
 
-  it 'registers an offense when `MSG` is passed' do
-    expect_offense(<<-RUBY, 'example_cop.rb')
+  context 'when `MSG` is passed' do
+    it 'registers an offense' do
+      expect_offense(<<-RUBY, 'example_cop.rb')
       add_offense(node, :expression, MSG)
                                      ^^^ Redundant message argument to `#add_offense`.
-    RUBY
+      RUBY
+    end
+
+    it 'auto-corrects' do
+      new_source = autocorrect_source('add_offense(node, :expression, MSG)')
+
+      expect(new_source).to eq('add_offense(node, :expression)')
+    end
   end
 
   it 'does not register an offense when formatted `MSG` is passed' do
@@ -16,18 +24,35 @@ describe RuboCop::Cop::InternalAffairs::RedundantMessageArgument do
     RUBY
   end
 
-  it 'registers an offense when `#message` is passed' do
-    expect_offense(<<-RUBY, 'example_cop.rb')
+  context 'when `#message` is passed' do
+    it 'registers an offense' do
+      expect_offense(<<-RUBY, 'example_cop.rb')
       add_offense(node, :expression, message)
                                      ^^^^^^^ Redundant message argument to `#add_offense`.
-    RUBY
+      RUBY
+    end
+
+    it 'auto-corrects' do
+      new_source = autocorrect_source('add_offense(node, :expression, message)')
+
+      expect(new_source).to eq('add_offense(node, :expression)')
+    end
   end
 
-  it 'registers an offense when `#message` with offending node is passed' do
-    expect_offense(<<-RUBY, 'example_cop.rb')
+  context 'when `#message` with offending node is passed' do
+    it 'registers an offense' do
+      expect_offense(<<-RUBY, 'example_cop.rb')
       add_offense(node, :expression, message(node))
                                      ^^^^^^^^^^^^^ Redundant message argument to `#add_offense`.
-    RUBY
+      RUBY
+    end
+
+    it 'auto-corrects' do
+      new_source =
+        autocorrect_source('add_offense(node, :expression, message(node))')
+
+      expect(new_source).to eq('add_offense(node, :expression)')
+    end
   end
 
   it 'does not register an offense when `#message` with another node ' \
