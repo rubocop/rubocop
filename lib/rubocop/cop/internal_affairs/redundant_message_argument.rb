@@ -22,15 +22,26 @@ module RuboCop
       class RedundantMessageArgument < Cop
         MSG = 'Redundant message argument to `#add_offense`.'.freeze
 
-        def_node_search :node_type_check, <<-PATTERN
+        def_node_matcher :node_type_check, <<-PATTERN
           (send nil :add_offense _offender _
             {(const nil :MSG) (send nil :message) (send nil :message _offender)})
         PATTERN
 
         def on_send(node)
-          node_type_check(node) do |offense_node|
-            add_offense(offense_node.last_argument)
+          node_type_check(node) do
+            add_offense(node.last_argument)
           end
+        end
+
+        def autocorrect(node)
+          parent = node.parent
+          arguments = parent.arguments
+          range =
+            Parser::Source::Range.new(parent.source_range.source_buffer,
+                                      arguments[-2].loc.expression.end_pos,
+                                      arguments.last.loc.expression.end_pos)
+
+          ->(corrector) { corrector.remove(range) }
         end
       end
     end
