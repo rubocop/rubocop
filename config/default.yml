@@ -1154,6 +1154,12 @@ Style/RegexpLiteral:
   # are found in the regexp string.
   AllowInnerSlashes: false
 
+Style/ReturnNil:
+  EnforcedStyle: return
+  SupportedStyles:
+    - return
+    - return_nil
+
 Style/SafeNavigation:
   # Safe navigation may cause a statement to start returning `nil` in addition
   # to whatever it used to return.

@@ -439,6 +439,7 @@ In the following section you find all available cops:
 * [Style/RedundantSelf](cops_style.md#styleredundantself)
 * [Style/RegexpLiteral](cops_style.md#styleregexpliteral)
 * [Style/RescueModifier](cops_style.md#stylerescuemodifier)
+* [Style/ReturnNil](cops_style.md#stylereturnnil)
 * [Style/SafeNavigation](cops_style.md#stylesafenavigation)
 * [Style/SelfAssignment](cops_style.md#styleselfassignment)
 * [Style/Semicolon](cops_style.md#stylesemicolon)
