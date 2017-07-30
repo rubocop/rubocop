@@ -136,6 +136,11 @@ describe RuboCop::Cop::Layout::IndentHeredoc, :config do
         RUBY2
         end
       RUBY
+      include_examples :accept, 'an empty line', <<-RUBY
+        <<-#{quote}RUBY2#{quote}
+
+        RUBY2
+      RUBY
 
       include_examples :check_message, 'suggestion powerpack',
                        [

@@ -45,7 +45,10 @@ module RuboCop
         }.freeze
 
         def on_heredoc(node)
-          body_indent_level = body_indent_level(node)
+          body = heredoc_body(node)
+          return if body =~ /\A\s*\z/
+
+          body_indent_level = indent_level(body)
 
           if heredoc_indent_type(node) == '~'
             expected_indent_level = base_indent_level(node) + indentation_width
@@ -130,15 +133,10 @@ module RuboCop
         end
 
         def indented_body(node)
-          body = node.loc.heredoc_body.source
-          body_indent_level = body_indent_level(node)
+          body = heredoc_body(node)
+          body_indent_level = indent_level(body)
           correct_indent_level = base_indent_level(node) + indentation_width
           body.gsub(/^\s{#{body_indent_level}}/, ' ' * correct_indent_level)
-        end
-
-        def body_indent_level(node)
-          body = node.loc.heredoc_body.source
-          indent_level(body)
         end
 
         def base_indent_level(node)
@@ -148,7 +146,8 @@ module RuboCop
         end
 
         def indent_level(str)
-          str.scan(/^\s*/).reject { |line| line == "\n" }.min_by(&:size).size
+          indentations = str.scan(/^\s*/).reject { |line| line == "\n" }
+          indentations.empty? ? 0 : indentations.min_by(&:size).size
         end
 
         # Returns '~', '-' or nil
@@ -158,6 +157,10 @@ module RuboCop
 
         def indentation_width
           @config.for_cop('IndentationWidth')['Width'] || 2
+        end
+
+        def heredoc_body(node)
+          scrub_string(node.loc.heredoc_body.source)
         end
       end
     end
