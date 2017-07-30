@@ -38,7 +38,7 @@ module RuboCop
         end
 
         def on_send(node)
-          ALIASES.keys.each do |aliased_method|
+          ALIASES.each_key do |aliased_method|
             register_offense(node, aliased_method) if
               public_send(aliased_method, node)
           end

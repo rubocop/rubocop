@@ -174,6 +174,10 @@ module RuboCop
       @hash.keys
     end
 
+    def each_key(&block)
+      @hash.each_key(&block)
+    end
+
     def map(&block)
       @hash.map(&block)
     end
@@ -195,7 +199,7 @@ module RuboCop
     end
 
     def make_excludes_absolute
-      each do |key, _|
+      each_key do |key|
         validate_section_presence(key)
         next unless self[key]['Exclude']
 

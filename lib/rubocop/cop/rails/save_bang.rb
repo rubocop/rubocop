@@ -56,7 +56,7 @@ module RuboCop
         end
 
         def after_leaving_scope(scope, _variable_table)
-          scope.variables.each do |_name, variable|
+          scope.variables.each_value do |variable|
             variable.assignments.each do |assignment|
               check_assignment(assignment)
             end

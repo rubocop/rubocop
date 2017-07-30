@@ -47,8 +47,8 @@ module RuboCop
         PERL_VARS.merge!(
           Hash[PERL_VARS.flat_map { |_, vs| vs.map { |v| [v, [v]] } }]
         )
-        ENGLISH_VARS.each { |_, v| v.freeze }.freeze
-        PERL_VARS.each { |_, v| v.freeze }.freeze
+        ENGLISH_VARS.each_value(&:freeze).freeze
+        PERL_VARS.each_value(&:freeze).freeze
 
         # Anything *not* in this set is provided by the English library.
         NON_ENGLISH_VARS = Set.new(%i[
