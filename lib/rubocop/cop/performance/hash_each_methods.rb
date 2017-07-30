@@ -17,6 +17,7 @@ module RuboCop
       #   hash.each_value { |v| p v }
       class HashEachMethods < Cop
         include Lint::UnusedArgument
+        require 'pry'
 
         MSG = 'Use `%s` instead of `%s`.'.freeze
 
@@ -64,16 +65,14 @@ module RuboCop
 
         def autocorrect(node)
           receiver, _second_method = *node
-          caller, first_method = *receiver
+          _caller, first_method = *receiver
 
           lambda do |corrector|
-            if first_method.eql?(:keys) || first_method.eql?(:values)
-              return correct_implicit(node, corrector) if receiver
-                                                          .child_nodes
-                                                          .first.nil?
+            case first_method
+            when :keys, :values
+              return correct_implicit(node, corrector) if receiver.receiver.nil?
 
-              new_source = caller.source + ".each_#{first_method[0..-2]}"
-              corrector.replace(node.loc.expression, new_source)
+              correct_key_value_each(node, corrector)
             else
               return correct_implicit(node, corrector) if receiver.nil?
 
@@ -83,20 +82,26 @@ module RuboCop
         end
 
         def correct_implicit(node, corrector)
-          method = @args.key(true).eql?(:k) ? :key : :value
+          method = @args.include?(:k) ? :key : :value
           new_source = "each_#{method}"
 
           corrector.replace(node.loc.expression, new_source)
-
           correct_args(node, corrector)
         end
 
+        def correct_key_value_each(node, corrector)
+          receiver = node.receiver
+
+          new_source = receiver.receiver.source +
+                       ".each_#{receiver.method_name[0..-2]}"
+          corrector.replace(node.loc.expression, new_source)
+        end
+
         def correct_plain_each(node, corrector)
-          method = @args.key(true).eql?(:k) ? :key : :value
+          method = @args.include?(:k) ? :key : :value
           new_source = node.receiver.source + ".each_#{method}"
 
           corrector.replace(node.loc.expression, new_source)
-
           correct_args(node, corrector)
         end
 
