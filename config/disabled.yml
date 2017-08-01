@@ -112,3 +112,7 @@ Style/StringMethods:
 Style/SingleLineBlockParams:
   Description: 'Enforces the names of some block params.'
   Enabled: false
+
+Style/TernaryOperator:
+  Description: 'Prevents use of ternaries.'
+  Enabled: false

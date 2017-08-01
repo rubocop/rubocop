@@ -3576,6 +3576,28 @@ Attribute | Value
 --- | ---
 IgnoredMethods | respond_to, define_method
 
+## Style/TernaryOperator
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks for the presence of ternary operators.
+
+### Example
+
+```ruby
+# bad
+cond ? b : c
+
+# good
+if cond
+  b
+else
+  c
+end
+```
+
 ## Style/TernaryParentheses
 
 Enabled by default | Supports autocorrection
