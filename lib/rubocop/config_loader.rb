@@ -205,8 +205,11 @@ module RuboCop
         hash
       end
 
+      # rubocop:disable Metrics/PerceivedComplexity
       def yaml_safe_load(yaml_code, filename)
-        if YAML.respond_to?(:safe_load) # Ruby 2.1+
+        if defined?(Syck) && YAML == Syck
+          YAML.load(yaml_code) # rubocop:disable Security/YAMLLoad
+        elsif YAML.respond_to?(:safe_load) # Ruby 2.1+
           if defined?(SafeYAML) && SafeYAML.respond_to?(:load)
             SafeYAML.load(yaml_code, filename,
                           whitelisted_tags: %w[!ruby/regexp])
@@ -217,6 +220,7 @@ module RuboCop
           YAML.load(yaml_code, filename) # rubocop:disable Security/YAMLLoad
         end
       end
+      # rubocop:enable Metrics/PerceivedComplexity
 
       def gem_config_path(gem_name, relative_config_path)
         spec = Gem::Specification.find_by_name(gem_name)
