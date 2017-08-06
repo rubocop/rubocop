@@ -46,6 +46,7 @@
 * [#4578](https://github.com/bbatsov/rubocop/issues/4578): Fix false positive in `Lint/FormatParameterMismatch` for format with "asterisk" (`*`) width and precision. ([@smakagon][])
 * [#4285](https://github.com/bbatsov/rubocop/issues/4285): Make `Lint/DefEndAlignment` aware of multiple modifiers. ([@drenmi][])
 * [#4634](https://github.com/bbatsov/rubocop/issues/4634): Handle heredoc that contains empty lines only in `Layout/IndentHeredoc` cop. ([@pocke][])
+* [#4646](https://github.com/bbatsov/rubocop/issues/4646): Make `Lint/Debugger` aware of `Kernel` and cbase. ([@pocke][])
 
 ### Changes
 

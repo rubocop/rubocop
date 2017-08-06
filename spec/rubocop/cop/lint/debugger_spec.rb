@@ -24,6 +24,12 @@ describe RuboCop::Cop::Lint::Debugger, :config do
                     'save_screenshot foo']
   include_examples 'non-debugger', 'a non-pry binding', 'binding.pirate'
 
+  include_examples 'debugger', 'debugger with Kernel', 'Kernel.debugger'
+  include_examples 'debugger', 'debugger with ::Kernel', '::Kernel.debugger'
+  include_examples 'debugger', 'binding.pry with Kernel', 'Kernel.binding.pry'
+  include_examples 'non-debugger', 'save_and_open_page with Kernel',
+                   'Kernel.save_and_open_page'
+
   ALL_COMMANDS = %w[debugger byebug pry remote_pry pry_remote irb
                     save_and_open_page save_and_open_screenshot
                     save_screenshot].freeze
@@ -38,12 +44,15 @@ describe RuboCop::Cop::Lint::Debugger, :config do
       def method
         Pry.rescue { puts 1 }
         ^^^^^^^^^^ Remove debugger entry point `Pry.rescue`.
+        ::Pry.rescue { puts 1 }
+        ^^^^^^^^^^^^ Remove debugger entry point `::Pry.rescue`.
       end
     RUBY
   end
 
   context 'target_ruby_version >= 2.4', :ruby24 do
     include_examples 'debugger', 'irb binding', 'binding.irb'
+    include_examples 'debugger', 'binding.irb with Kernel', 'Kernel.binding.irb'
 
     ALL_COMMANDS.each do |src|
       include_examples 'non-debugger', "a #{src} in comments", "# #{src}"
