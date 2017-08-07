@@ -21,6 +21,7 @@ pages:
     - Layout Cops: cops_layout.md
     - Linting Cops: cops_lint.md
     - Metrics Cops: cops_metrics.md
+    - Naming Cops: cops_naming.md
     - Performance Cops: cops_performance.md
     - Rails Cops: cops_rails.md
     - Security Cops: cops_security.md
