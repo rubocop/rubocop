@@ -46,6 +46,11 @@ configuration parameter called `Max` and when running
 `rubocop --auto-gen-config`, this parameter will be set to the highest value
 found for the inspected code.
 
+### Naming
+
+Naming cops check for naming issue of your code, such as method name, constant
+name, file name, etc.
+
 ### Performance
 
 Performance cops catch Ruby idioms which are known to be slower than another,
