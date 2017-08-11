@@ -1581,6 +1581,7 @@ Performance/StringReplacement:
 
 Performance/TimesMap:
   Description: 'Checks for .times.map calls.'
+  AutoCorrect: false
   Enabled: true
 
 Performance/UnfreezeString:
