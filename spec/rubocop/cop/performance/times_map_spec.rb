@@ -15,7 +15,7 @@ describe RuboCop::Cop::Performance::TimesMap do
         it 'registers an offense' do
           expect(cop.offenses.size).to eq(1)
           expect(cop.offenses.first.message).to eq(
-            "Use `Array.new` with a block instead of `.times.#{method}`."
+            "Use `Array.new(4)` with a block instead of `.times.#{method}`."
           )
           expect(cop.highlights).to eq(["4.times.#{method} { |i| i.to_s }"])
         end
@@ -26,13 +26,26 @@ describe RuboCop::Cop::Performance::TimesMap do
         end
       end
 
+      context 'for non-literal receiver' do
+        let(:source) { "n.times.#{method} { |i| i.to_s }" }
+
+        it 'registers an offense' do
+          expect(cop.offenses.size).to eq(1)
+          expect(cop.offenses.first.message).to eq(
+            "Use `Array.new(n)` with a block instead of `.times.#{method}` " \
+            'only if `n` is always 0 or more.'
+          )
+          expect(cop.highlights).to eq(["n.times.#{method} { |i| i.to_s }"])
+        end
+      end
+
       context 'with an explicitly passed block' do
         let(:source) { "4.times.#{method}(&method(:foo))" }
 
         it 'registers an offense' do
           expect(cop.offenses.size).to eq(1)
           expect(cop.offenses.first.message).to eq(
-            "Use `Array.new` with a block instead of `.times.#{method}`."
+            "Use `Array.new(4)` with a block instead of `.times.#{method}`."
           )
           expect(cop.highlights).to eq(["4.times.#{method}(&method(:foo))"])
         end

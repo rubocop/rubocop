@@ -21,7 +21,7 @@
 * Make `rake new_cop` create parent directories if they do not already exist. ([@highb][])
 
 ### Bug fixes
-
+* [#4664](https://github.com/bbatsov/rubocop/pull/4664): Fix typos in Rails/HttpPositionalArguments. ([@JoeCohen][])
 * [#4618](https://github.com/bbatsov/rubocop/pull/4618): Fix `Lint/FormatParameterMismatch` false positive if format string includes `%%5B` (CGI encoded left bracket). ([@barthez][])
 * [#4604](https://github.com/bbatsov/rubocop/pull/4604): Fix `Style/LambdaCall` to autocorrect `obj.call` to `obj.`. ([@iGEL][])
 * [#4443](https://github.com/bbatsov/rubocop/pull/4443): Prevent `Style/YodaCondition` from breaking `not LITERAL`. ([@pocke][])
@@ -66,6 +66,7 @@
 * [#4157](https://github.com/bbatsov/rubocop/issues/4157): Enhance offense message for `Style/RedudantReturn` cop. ([@gohdaniel15][])
 * [#4521](https://github.com/bbatsov/rubocop/issues/4521): Move naming related cops into their own `Naming` department. ([@drenmi][])
 * [#4600](https://github.com/bbatsov/rubocop/pull/4600): Make `Style/RedundantSelf` aware of arguments of a block. ([@Envek][])
+* [#4658](https://github.com/bbatsov/rubocop/issues/4658): Disable auto-correction for `Performance/TimesMap` by default. ([@Envek][])
 
 ## 0.49.1 (2017-05-29)
 
@@ -458,7 +459,7 @@
 * Allow including multiple configuration files from a single gem. ([@tjwallace][])
 * Add check for `persisted?` method call when using a create method in `Rails/SaveBang`. ([@QuinnHarris][])
 * Add new `Style/SafeNavigation` cop to convert method calls safeguarded by a non `nil` check for the object to `&.`. ([@rrosenblum][])
-* Add new `Performance/SortWithBlock` cop to use `sort_by(&:foo)` instead of `sort_by { |a, b| a.foo <=> b.foo }`. ([@koic][])
+* Add new `Performance/SortWithBlock` cop to use `sort_by(&:foo)` instead of `sort { |a, b| a.foo <=> b.foo }`. ([@koic][])
 * [#3492](https://github.com/bbatsov/rubocop/pull/3492): Add new `UnifiedInteger` cop. ([@pocke][])
 
 ### Bug fixes
@@ -2884,3 +2885,4 @@
 [@barthez]: https://github.com/barthez
 [@Envek]: https://github.com/Envek
 [@highb]: https://github.com/highb
+[@JoeCohen]: https://github.com/JoeCohen

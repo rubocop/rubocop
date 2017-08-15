@@ -6,7 +6,7 @@ module RuboCop
       # This cop is used to identify usages of http methods like `get`, `post`,
       # `put`, `patch` without the usage of keyword arguments in your tests and
       # change them to use keyword args.  This cop only applies to Rails >= 5 .
-      # If you are not running Rails < 5 you should disable # the
+      # If you are running Rails < 5 you should disable the
       # Rails/HttpPositionalArguments cop or set your TargetRailsVersion in your
       # .rubocop.yml file to 4.0, etc.
       #
@@ -81,7 +81,7 @@ module RuboCop
         # @return lambda of auto correct procedure
         # the result should look like:
         #     get :new, params: { user_id: @user.id }, headers: {}
-        # the http_method is the method use to call the controller
+        # the http_method is the method used to call the controller
         # the controller node can be a symbol, method, object or string
         # that represents the path/action on the Rails controller
         # the data is the http parameters and environment sent in
