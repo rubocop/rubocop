@@ -18,6 +18,7 @@
 * [#4568](https://github.com/bbatsov/rubocop/pull/4568): Fix autocorrection for `Style/TrailingUnderscoreVariable`. ([@smakagon][])
 * [#4586](https://github.com/bbatsov/rubocop/pull/4586): Add new `Performance/UnfreezeString` cop. ([@pocke][])
 * [#2976](https://github.com/bbatsov/rubocop/issues/2976): Add `Whitelist` configuration option to `Style/NestedParenthesizedCalls` cop. ([@drenmi][])
+* Make `rake new_cop` create parent directories if they do not already exist. ([@highb][])
 
 ### Bug fixes
 * [#4664](https://github.com/bbatsov/rubocop/pull/4664): Fix typos in Rails/HttpPositionalArguments. ([@JoeCohen][])
@@ -2883,4 +2884,5 @@
 [@gohdaniel15]: https://github.com/gohdaniel15
 [@barthez]: https://github.com/barthez
 [@Envek]: https://github.com/Envek
+[@highb]: https://github.com/highb
 [@JoeCohen]: https://github.com/JoeCohen
