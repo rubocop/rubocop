@@ -20,7 +20,7 @@
 * [#2976](https://github.com/bbatsov/rubocop/issues/2976): Add `Whitelist` configuration option to `Style/NestedParenthesizedCalls` cop. ([@drenmi][])
 
 ### Bug fixes
-
+* [#4664](https://github.com/bbatsov/rubocop/pull/4664): Fix typos in Rails/HttpPositionalArguments. ([@JoeCohen][])
 * [#4618](https://github.com/bbatsov/rubocop/pull/4618): Fix `Lint/FormatParameterMismatch` false positive if format string includes `%%5B` (CGI encoded left bracket). ([@barthez][])
 * [#4604](https://github.com/bbatsov/rubocop/pull/4604): Fix `Style/LambdaCall` to autocorrect `obj.call` to `obj.`. ([@iGEL][])
 * [#4443](https://github.com/bbatsov/rubocop/pull/4443): Prevent `Style/YodaCondition` from breaking `not LITERAL`. ([@pocke][])
@@ -2882,3 +2882,4 @@
 [@gohdaniel15]: https://github.com/gohdaniel15
 [@barthez]: https://github.com/barthez
 [@Envek]: https://github.com/Envek
+[@JoeCohen]: https://github.com/JoeCohen
