@@ -3,18 +3,6 @@
 RSpec.describe RuboCop::Cop::Lint::NestedPercentLiteral do
   subject(:cop) { described_class.new }
 
-  let(:message) do
-    'Within percent literals, nested percent literals do not function and ' \
-      'may be unwanted in the result.'
-  end
-
-  def expect_offense(source)
-    inspect_source(source)
-
-    expect(cop.offenses.map(&:message)).to eq([message])
-    expect(cop.highlights).to eq([source])
-  end
-
   it 'registers no offense for empty array' do
     expect_no_offenses('%i[]')
   end
@@ -37,18 +25,27 @@ RSpec.describe RuboCop::Cop::Lint::NestedPercentLiteral do
   end
 
   it 'registers offense for nested percent literals' do
-    expect_offense('%i[a b %i[c d] xyz]')
+    expect_offense(<<-RUBY.strip_indent)
+      %i[a b %i[c d] xyz]
+      ^^^^^^^^^^^^^^^^^^^ Within percent literals, nested percent literals do not function and may be unwanted in the result.
+    RUBY
   end
 
   it 'registers offense for repeated nested percent literals' do
-    expect_offense('%i[a b %i[c d] %i[xyz]]')
+    expect_offense(<<-RUBY.strip_indent)
+      %i[a b %i[c d] %i[xyz]]
+      ^^^^^^^^^^^^^^^^^^^^^^^ Within percent literals, nested percent literals do not function and may be unwanted in the result.
+    RUBY
   end
 
   it 'registers offense for multiply nested percent literals' do
     # TODO: This emits only one offense for the entire snippet, though it
     # would be more correct to emit two offenses. This is tricky to fix, as
     # the AST parses %i[b, %i[c, and d]] as separate tokens.
-    expect_offense('%i[a %i[b %i[c d]] xyz]')
+    expect_offense(<<-RUBY.strip_indent)
+      %i[a %i[b %i[c d]] xyz]
+      ^^^^^^^^^^^^^^^^^^^^^^^ Within percent literals, nested percent literals do not function and may be unwanted in the result.
+    RUBY
   end
 
   context 'when handling invalid UTF8 byte sequence' do
@@ -57,7 +54,13 @@ RSpec.describe RuboCop::Cop::Lint::NestedPercentLiteral do
     end
 
     it 'registers offense for nested percent literal' do
-      expect_offense('%W[\xff %W[]]')
+      source = '%W[\xff %W[]]'
+      inspect_source(source)
+
+      expect(cop.messages).to eq(['Within percent literals, nested percent' \
+                                  ' literals do not function and may be' \
+                                  ' unwanted in the result.'])
+      expect(cop.highlights).to eq([source])
     end
   end
 end
