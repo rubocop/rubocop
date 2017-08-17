@@ -1,5 +1,4 @@
 # This is the configuration used to check the rubocop source code.
-
 inherit_from: .rubocop_todo.yml
 require: rubocop/cop/internal_affairs
 
