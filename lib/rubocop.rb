@@ -503,6 +503,7 @@ require_relative 'rubocop/cop/rails/scope_args'
 require_relative 'rubocop/cop/rails/skips_model_validations'
 require_relative 'rubocop/cop/rails/time_zone'
 require_relative 'rubocop/cop/rails/uniq_before_pluck'
+require_relative 'rubocop/cop/rails/unknown_env'
 require_relative 'rubocop/cop/rails/validation'
 
 require_relative 'rubocop/cop/security/eval'

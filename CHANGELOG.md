@@ -2,7 +2,12 @@
 
 ## master (unreleased)
 
-## Bug fixes
+### New features
+
+* [#4791](https://github.com/bbatsov/rubocop/pull/4791): Add new `Rails/UnknownEnv` cop. ([@pocke][])
+
+### Bug fixes
+
 * [#3312](https://github.com/bbatsov/rubocop/issues/3312): Make `Rails/Date` Correct false positive on `#to_time` for strings ending in UTC-"Z".([@erikdstock][])
 * [#4741](https://github.com/bbatsov/rubocop/issues/4741): Make `Style/SafeNavigation` correctly exclude methods called without dot. ([@drenmi][])
 * [#4740](https://github.com/bbatsov/rubocop/issues/4740): Make `Lint/RescueWithoutErrorClass` aware of modifier form `rescue`. ([@drenmi][])

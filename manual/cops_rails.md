@@ -1213,6 +1213,31 @@ EnforcedStyle | conservative
 SupportedStyles | conservative, aggressive
 AutoCorrect | false
 
+## Rails/UnknownEnv
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks that environments called with `Rails.env` predicates
+exist.
+
+### Example
+
+```ruby
+# bad
+Rails.env.proudction?
+
+# good
+Rails.env.production?
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+Environments | development, test, production
+
 ## Rails/Validation
 
 Enabled by default | Supports autocorrection
