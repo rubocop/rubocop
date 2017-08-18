@@ -327,6 +327,7 @@ In the following section you find all available cops:
 * [Rails/SkipsModelValidations](cops_rails.md#railsskipsmodelvalidations)
 * [Rails/TimeZone](cops_rails.md#railstimezone)
 * [Rails/UniqBeforePluck](cops_rails.md#railsuniqbeforepluck)
+* [Rails/UnknownEnv](cops_rails.md#railsunknownenv)
 * [Rails/Validation](cops_rails.md#railsvalidation)
 
 #### Department [Security](cops_security.md)

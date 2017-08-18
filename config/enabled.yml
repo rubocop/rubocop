@@ -1780,6 +1780,10 @@ Rails/UniqBeforePluck:
   Description: 'Prefer the use of uniq or distinct before pluck.'
   Enabled: true
 
+Rails/UnknownEnv:
+  Description: 'Use correct environment name.'
+  Enabled: true
+
 Rails/SkipsModelValidations:
   Description: >-
                  Use methods that skips model validations with caution.

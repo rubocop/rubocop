@@ -1576,6 +1576,12 @@ Rails/UniqBeforePluck:
     - aggressive
   AutoCorrect: false
 
+Rails/UnknownEnv:
+  Environments:
+    - development
+    - test
+    - production
+
 Rails/SkipsModelValidations:
   Blacklist:
     - decrement!
