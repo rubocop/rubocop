@@ -420,6 +420,7 @@ In the following section you find all available cops:
 * [Style/OneLineConditional](cops_style.md#styleonelineconditional)
 * [Style/OptionHash](cops_style.md#styleoptionhash)
 * [Style/OptionalArguments](cops_style.md#styleoptionalarguments)
+* [Style/OrAssignment](cops_style.md#styleorassignment)
 * [Style/ParallelAssignment](cops_style.md#styleparallelassignment)
 * [Style/ParenthesesAroundCondition](cops_style.md#styleparenthesesaroundcondition)
 * [Style/PercentLiteralDelimiters](cops_style.md#stylepercentliteraldelimiters)

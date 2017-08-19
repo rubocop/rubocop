@@ -818,6 +818,11 @@ Style/OptionalArguments:
   StyleGuide: '#optional-arguments'
   Enabled: true
 
+Style/OrAssignment:
+  Description: 'Recommend usage of double pipe equals (||=) where applicable.'
+  StyleGuide: '#double-pipe-for-uninit'
+  Enabled: true
+
 Style/ParallelAssignment:
   Description: >-
                   Check for simple usages of parallel assignment.
@@ -1559,7 +1564,7 @@ Performance/Size:
   Enabled: true
 
 Performance/CompareWithBlock:
-  Description: 'Use `sort_by(&:foo)` instead of `sort_by { |a, b| a.foo <=> b.foo }`.'
+  Description: 'Use `sort_by(&:foo)` instead of `sort { |a, b| a.foo <=> b.foo }`.'
   Enabled: true
 
 Performance/StartWith:
@@ -1581,6 +1586,7 @@ Performance/StringReplacement:
 
 Performance/TimesMap:
   Description: 'Checks for .times.map calls.'
+  AutoCorrect: false
   Enabled: true
 
 Performance/UnfreezeString:

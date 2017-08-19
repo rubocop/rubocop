@@ -2694,6 +2694,43 @@ end
 
 * [https://github.com/bbatsov/ruby-style-guide#optional-arguments](https://github.com/bbatsov/ruby-style-guide#optional-arguments)
 
+## Style/OrAssignment
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for potential usage of the `||=` operator.
+
+### Example
+
+```ruby
+# bad
+name = name ? name : 'Bozhidar'
+
+# bad
+name = if name
+         name
+       else
+         'Bozhidar'
+       end
+
+# bad
+unless name
+  name = 'Bozhidar'
+end
+
+# bad
+name = 'Bozhidar' unless name
+
+# good - set name to 'Bozhidar', only if it's nil or false
+name ||= 'Bozhidar'
+```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#double-pipe-for-uninit](https://github.com/bbatsov/ruby-style-guide#double-pipe-for-uninit)
+
 ## Style/ParallelAssignment
 
 Enabled by default | Supports autocorrection

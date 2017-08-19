@@ -117,6 +117,9 @@ module RuboCop
       def write_unless_file_exists(path, contents)
         raise "#{path} already exists!" if File.exist?(path)
 
+        dir = File.dirname(path)
+        FileUtils.mkdir_p(dir) unless File.exist?(dir)
+
         File.write(path, contents)
       end
 
