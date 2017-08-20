@@ -818,6 +818,11 @@ Style/OptionalArguments:
   StyleGuide: '#optional-arguments'
   Enabled: true
 
+Style/OrAssignment:
+  Description: 'Recommend usage of double pipe equals (||=) where applicable.'
+  StyleGuide: '#double-pipe-for-uninit'
+  Enabled: true
+
 Style/ParallelAssignment:
   Description: >-
                   Check for simple usages of parallel assignment.
