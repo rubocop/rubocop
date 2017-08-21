@@ -430,6 +430,7 @@ In the following section you find all available cops:
 * [Style/Proc](cops_style.md#styleproc)
 * [Style/RaiseArgs](cops_style.md#styleraiseargs)
 * [Style/RedundantBegin](cops_style.md#styleredundantbegin)
+* [Style/RedundantConditional](cops_style.md#styleredundantconditional)
 * [Style/RedundantException](cops_style.md#styleredundantexception)
 * [Style/RedundantFreeze](cops_style.md#styleredundantfreeze)
 * [Style/RedundantParentheses](cops_style.md#styleredundantparentheses)

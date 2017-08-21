@@ -69,6 +69,8 @@
 * [#4600](https://github.com/bbatsov/rubocop/pull/4600): Make `Style/RedundantSelf` aware of arguments of a block. ([@Envek][])
 * [#4658](https://github.com/bbatsov/rubocop/issues/4658): Disable auto-correction for `Performance/TimesMap` by default. ([@Envek][])
 
+* [#4453](https://github.com/bbatsov/rubocop/pull/4453): New cop `Style/RedundantConditional` checks for conditionals that return true/false. ([@petehamilton][])
+
 ## 0.49.1 (2017-05-29)
 
 ### Bug fixes
@@ -2885,6 +2887,7 @@
 [@gohdaniel15]: https://github.com/gohdaniel15
 [@barthez]: https://github.com/barthez
 [@Envek]: https://github.com/Envek
+[@petehamilton]: https://github.com/petehamilton
 [@donjar]: https://github.com/donjar
 [@highb]: https://github.com/highb
 [@JoeCohen]: https://github.com/JoeCohen
