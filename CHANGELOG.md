@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#4453](https://github.com/bbatsov/rubocop/pull/4453): New cop `Style/RedundantConditional` checks for conditionals that return true/false. ([@petehamilton][])
 * [#4448](https://github.com/bbatsov/rubocop/pull/4448): Add new `TapFormatter`. ([@cyberdelia][])
 * Add new `Style/HeredocDelimiters` cop. ([@drenmi][])
 * [#4153](https://github.com/bbatsov/rubocop/issues/4153): New cop `Lint/ReturnInVoidContext` checks for the use of a return with a value in a context where it will be ignored. ([@harold-s][])
@@ -22,6 +23,7 @@
 * Make `rake new_cop` create parent directories if they do not already exist. ([@highb][])
 
 ### Bug fixes
+
 * [#4664](https://github.com/bbatsov/rubocop/pull/4664): Fix typos in Rails/HttpPositionalArguments. ([@JoeCohen][])
 * [#4618](https://github.com/bbatsov/rubocop/pull/4618): Fix `Lint/FormatParameterMismatch` false positive if format string includes `%%5B` (CGI encoded left bracket). ([@barthez][])
 * [#4604](https://github.com/bbatsov/rubocop/pull/4604): Fix `Style/LambdaCall` to autocorrect `obj.call` to `obj.`. ([@iGEL][])
@@ -68,8 +70,6 @@
 * [#4521](https://github.com/bbatsov/rubocop/issues/4521): Move naming related cops into their own `Naming` department. ([@drenmi][])
 * [#4600](https://github.com/bbatsov/rubocop/pull/4600): Make `Style/RedundantSelf` aware of arguments of a block. ([@Envek][])
 * [#4658](https://github.com/bbatsov/rubocop/issues/4658): Disable auto-correction for `Performance/TimesMap` by default. ([@Envek][])
-
-* [#4453](https://github.com/bbatsov/rubocop/pull/4453): New cop `Style/RedundantConditional` checks for conditionals that return true/false. ([@petehamilton][])
 
 ## 0.49.1 (2017-05-29)
 
