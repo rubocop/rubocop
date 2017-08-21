@@ -195,6 +195,23 @@ describe RuboCop::Cop::Style::InverseMethods do
           .to eq(["Use `#{inverse}` instead of inverting `#{method}`."])
       end
 
+      it 'registers a single offense for nested inverse method calls' do
+        inspect_source(<<-RUBY.strip_indent)
+          y.#{method} { |key, _value| !(key =~ /c\d/) }
+        RUBY
+
+        expect(cop.messages)
+          .to eq(["Use `#{inverse}` instead of inverting `#{method}`."])
+      end
+
+      it 'corrects nested inverse method calls' do
+        new_source =
+          autocorrect_source("y.#{method} { |key, _value| !(key =~ /c\d/) }")
+
+        expect(new_source)
+          .to eq("y.#{inverse} { |key, _value| (key =~ /c\d/) }")
+      end
+
       it 'corrects a simple inverted block' do
         new_source = autocorrect_source("foo.#{method} { |e| !e }")
 

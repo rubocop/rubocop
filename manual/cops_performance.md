@@ -751,6 +751,12 @@ Array.new(9) do |i|
 end
 ```
 
+### Important attributes
+
+Attribute | Value
+--- | ---
+AutoCorrect | false
+
 ## Performance/UnfreezeString
 
 Enabled by default | Supports autocorrection

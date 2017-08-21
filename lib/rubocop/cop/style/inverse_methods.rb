@@ -28,6 +28,8 @@ module RuboCop
       #   foo == bar
       #   !!('foo' =~ /^\w+$/)
       class InverseMethods < Cop
+        include IgnoredNode
+
         MSG = 'Use `%<inverse>s` instead of inverting `%<method>s`.'.freeze
         EQUALITY_METHODS = %i[== != =~ !~ <= >= < >].freeze
         NEGATED_EQUALITY_METHODS = %i[!= !~].freeze
@@ -49,6 +51,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
+          return if part_of_ignored_node?(node)
           inverse_candidate?(node) do |_method_call, method|
             return unless inverse_methods.key?(method)
             return if negated?(node)
@@ -61,10 +64,14 @@ module RuboCop
         end
 
         def on_block(node)
-          inverse_block?(node) do |_method_call, method, _block|
+          inverse_block?(node) do |_method_call, method, block|
             return unless inverse_blocks.key?(method)
             return if negated?(node) && negated?(node.parent)
 
+            # Inverse method offenses inside of the block of an inverse method
+            # offense, such as `y.reject { |key, _value| !(key =~ /c\d/) }`,
+            # can cause auto-correction to apply improper corrections.
+            ignore_node(block)
             add_offense(node,
                         :expression,
                         format(MSG, method: method,
