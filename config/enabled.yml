@@ -499,6 +499,10 @@ Style/CommentAnnotation:
   StyleGuide: '#annotate-keywords'
   Enabled: true
 
+Style/CommentedKeyword:
+  Description: 'Do not place comments on the same line as certain keywords.'
+  Enabled: true
+
 Style/ConditionalAssignment:
   Description: >-
                  Use the return value of `if` and `case` statements for

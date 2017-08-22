@@ -362,6 +362,7 @@ In the following section you find all available cops:
 * [Style/ColonMethodCall](cops_style.md#stylecolonmethodcall)
 * [Style/CommandLiteral](cops_style.md#stylecommandliteral)
 * [Style/CommentAnnotation](cops_style.md#stylecommentannotation)
+* [Style/CommentedKeyword](cops_style.md#stylecommentedkeyword)
 * [Style/ConditionalAssignment](cops_style.md#styleconditionalassignment)
 * [Style/Copyright](cops_style.md#stylecopyright)
 * [Style/DefWithParentheses](cops_style.md#styledefwithparentheses)
