@@ -273,7 +273,7 @@ describe RuboCop::AST::DefNode do
 
   describe '#comparison_method?' do
     context 'with a comparison method' do
-      let(:source) { 'def <=>(bar); end' }
+      let(:source) { 'def <=(bar); end' }
 
       it { expect(def_node.comparison_method?).to be_truthy }
     end

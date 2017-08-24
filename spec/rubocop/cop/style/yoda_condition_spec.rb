@@ -52,6 +52,7 @@ describe RuboCop::Cop::Style::YodaCondition, :config do
   it_behaves_like 'accepts', '[1, 2, 3] <=> [4, 5, 6]'
   it_behaves_like 'accepts', '!true'
   it_behaves_like 'accepts', 'not true'
+  it_behaves_like 'accepts', '0 <=> val'
 
   it_behaves_like 'offense', '"foo" == bar'
   it_behaves_like 'offense', 'nil == bar'
