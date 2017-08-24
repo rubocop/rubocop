@@ -55,8 +55,12 @@ module RuboCop
       end
 
       def variable_alignment?(whole_expression, rhs, end_alignment_style)
-        end_alignment_style == :variable &&
+        case end_alignment_style
+        when :variable
           !line_break_before_keyword?(whole_expression, rhs)
+        when :start_of_line
+          true
+        end
       end
 
       def line_break_before_keyword?(whole_expression, rhs)
