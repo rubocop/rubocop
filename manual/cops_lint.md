@@ -1032,17 +1032,17 @@ Enabled | No
 
 This cop checks for interpolation in a single quoted string.
 
- foo = 'something with #{interpolation} inside'
-
- foo = "something with #{interpolation} inside"
-
 ### Example
 
 ```ruby
 # bad
+
+foo = 'something with #{interpolation} inside'
 ```
 ```ruby
 # good
+
+foo = "something with #{interpolation} inside"
 ```
 
 ## Lint/InvalidCharacterLiteral
