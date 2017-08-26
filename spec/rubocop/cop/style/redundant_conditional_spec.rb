@@ -13,7 +13,7 @@ describe RuboCop::Cop::Style::RedundantConditional do
       it 'registers an offense' do
         expected_message =
           'This conditional expression '\
-          "can just be replaced by #{message_expression || expected}"
+          "can just be replaced by `#{message_expression || expected}`."
         expect(cop.offenses.size).to eq(1)
         expect(cop.messages).to eq([expected_message])
       end
@@ -72,12 +72,61 @@ describe RuboCop::Cop::Style::RedundantConditional do
                   "!(x == y)\n",
                   '!(x == y)'
 
+  it_behaves_like 'code with offense',
+                  <<-RUBY.strip_indent,
+                    if cond
+                      false
+                    elsif x == y
+                      true
+                    else
+                      false
+                    end
+                  RUBY
+                  <<-RUBY.strip_indent,
+                    if cond
+                      false
+                    else
+                      x == y
+                    end
+                  RUBY
+                  "\nelse\n  x == y"
+
+  it_behaves_like 'code with offense',
+                  <<-RUBY.strip_indent,
+                    if cond
+                      false
+                    elsif x == y
+                      false
+                    else
+                      true
+                    end
+                  RUBY
+                  <<-RUBY.strip_indent,
+                    if cond
+                      false
+                    else
+                      !(x == y)
+                    end
+                  RUBY
+                  "\nelse\n  !(x == y)"
+
   it_behaves_like 'code without offense',
                   <<-RUBY.strip_indent
                     if x == y
                       1
                     else
                       2
+                    end
+                  RUBY
+
+  it_behaves_like 'code without offense',
+                  <<-RUBY.strip_indent
+                    if cond
+                      1
+                    elseif x == y
+                      2
+                    else
+                      3
                     end
                   RUBY
 end

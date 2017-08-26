@@ -25,6 +25,7 @@
 
 ### Bug fixes
 
+* [#4676](https://github.com/bbatsov/rubocop/issues/4676): Make `Style/RedundantConditional` cop work with elsif. ([@akhramov][])
 * [#4615](https://github.com/bbatsov/rubocop/pull/4615): Don't consider `<=>` a comparison method. ([@iGEL][])
 * [#4664](https://github.com/bbatsov/rubocop/pull/4664): Fix typos in Rails/HttpPositionalArguments. ([@JoeCohen][])
 * [#4618](https://github.com/bbatsov/rubocop/pull/4618): Fix `Lint/FormatParameterMismatch` false positive if format string includes `%%5B` (CGI encoded left bracket). ([@barthez][])
@@ -2893,3 +2894,4 @@
 [@donjar]: https://github.com/donjar
 [@highb]: https://github.com/highb
 [@JoeCohen]: https://github.com/JoeCohen
+[@akhramov]: https://github.com/akhramov
