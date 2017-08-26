@@ -70,7 +70,7 @@ module RuboCop
       end
 
       def annotate_message(msg)
-        msg.gsub(/`(.*?)`/, yellow('\1'))
+        msg.gsub(/`(.*?)`/m, yellow('\1'))
       end
 
       def message(offense)
