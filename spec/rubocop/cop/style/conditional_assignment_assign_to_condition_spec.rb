@@ -12,7 +12,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                                   assign_inside_condition]
                         },
                         'Lint/EndAlignment' => {
-                          'EnforcedStyleAlignWith' => 'keyword',
+                          'EnforcedStyleAlignWith' => end_alignment_align_with,
                           'Enabled' => true
                         },
                         'Metrics/LineLength' => {
@@ -20,6 +20,8 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                           'Enabled' => true
                         })
   end
+
+  let(:end_alignment_align_with) { 'start_of_line' }
 
   let(:message) do
     'Use the return of the conditional ' \
@@ -486,6 +488,8 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
   it_behaves_like('all variable types', 'foo.bar')
 
   shared_examples 'all assignment types' do |assignment|
+    let(:end_alignment_align_with) { 'keyword' }
+
     { 'local variable' => 'bar',
       'constant' => 'CONST',
       'class variable' => '@@cvar',
@@ -670,7 +674,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         }
       else
         { }
-            end
+      end
     RUBY
   end
 
@@ -1069,6 +1073,8 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
   context 'auto-correct' do
     shared_examples 'comparison correction' do |method|
+      let(:end_alignment_align_with) { 'keyword' }
+
       it 'corrects comparison methods in if elsif else' do
         source = <<-RUBY.strip_indent
           if foo
@@ -1188,7 +1194,27 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           1
         else
           2
-              end
+        end
+      RUBY
+    end
+
+    it 'corrects assignment to unbracketed array in if else' do
+      source = <<-RUBY.strip_indent
+        if foo
+          bar = 1
+        else
+          bar = 2, 5, 6
+        end
+      RUBY
+
+      new_source = autocorrect_source(source)
+
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        bar = if foo
+          1
+        else
+          [2, 5, 6]
+        end
       RUBY
     end
 
@@ -1212,7 +1238,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           2
         else
           3
-              end
+        end
       RUBY
     end
 
@@ -1237,7 +1263,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
             2
           else
             3
-                 end
+          end
         RUBY
       end
 
@@ -1259,7 +1285,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
             1
           else
             2
-                 end
+          end
         RUBY
       end
 
@@ -1279,7 +1305,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
             1
           else
             2
-                 end
+          end
         RUBY
       end
     end
@@ -1309,7 +1335,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
             2
           else
             3
-                  end
+          end
         RUBY
       end
 
@@ -1331,7 +1357,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
             1
           else
             2
-                  end
+          end
         RUBY
       end
 
@@ -1351,7 +1377,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
             1
           else
             2
-                  end
+          end
         RUBY
       end
     end
@@ -1383,7 +1409,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           3
         else
           4
-              end
+        end
       RUBY
     end
 
@@ -1403,7 +1429,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           1
         else
           2
-              end
+        end
       RUBY
     end
 
@@ -1425,7 +1451,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           1
         else
           2
-              end
+        end
       RUBY
     end
 
@@ -1451,7 +1477,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           2
         else
           3
-              end
+        end
       RUBY
     end
 
@@ -1472,7 +1498,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
             foobar(var, all)
           else
             baz(var, all)
-                 end
+          end
         RUBY
       end
 
@@ -1492,7 +1518,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
             foobar(var, all)
           else
             baz(var, all)
-                 end
+          end
         RUBY
       end
 
@@ -1514,7 +1540,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
             foobar(var, all)
           else
             baz(var, all)
-                 end
+          end
         RUBY
       end
     end
@@ -1534,7 +1560,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           bar = if cond then 1
           elsif cond then 2
           else 3
-                end
+          end
         RUBY
       end
 
@@ -1552,7 +1578,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           bar = case foo
           when baz then 1
           else 2
-                end
+          end
         RUBY
       end
     end
@@ -1577,7 +1603,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         else
           # comment in else
           2
-              end
+        end
       RUBY
     end
 
@@ -1603,7 +1629,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         else
           # comment in else
           2
-              end
+        end
       RUBY
     end
 
@@ -1621,7 +1647,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
             1
           else
             2
-                     end
+          end
         RUBY
       end
 
@@ -1652,7 +1678,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
             1
           else
             2
-                           end
+          end
         RUBY
       end
 

@@ -469,7 +469,15 @@ module RuboCop
 
         def replace_branch_assignment(corrector, branch)
           _variable, *_operator, assignment = *branch
-          corrector.replace(branch.source_range, assignment.source)
+          source = assignment.source
+
+          replacement = if assignment.array_type? && !assignment.bracketed?
+                          "[#{source}]"
+                        else
+                          source
+                        end
+
+          corrector.replace(branch.source_range, replacement)
         end
 
         def correct_branches(corrector, branches)

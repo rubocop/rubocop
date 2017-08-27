@@ -30,6 +30,7 @@
 
 * [#4688](https://github.com/bbatsov/rubocop/pull/4688): Accept yoda condition which isn't commutative. ([@fujimura][])
 * [#4676](https://github.com/bbatsov/rubocop/issues/4676): Make `Style/RedundantConditional` cop work with elsif. ([@akhramov][])
+* [#4656](https://github.com/bbatsov/rubocop/issues/4656): Modify `Style/ConditionalAssignment` autocorrection to work with unbracketed arrays. ([@akhramov][])
 * [#4615](https://github.com/bbatsov/rubocop/pull/4615): Don't consider `<=>` a comparison method. ([@iGEL][])
 * [#4664](https://github.com/bbatsov/rubocop/pull/4664): Fix typos in Rails/HttpPositionalArguments. ([@JoeCohen][])
 * [#4618](https://github.com/bbatsov/rubocop/pull/4618): Fix `Lint/FormatParameterMismatch` false positive if format string includes `%%5B` (CGI encoded left bracket). ([@barthez][])

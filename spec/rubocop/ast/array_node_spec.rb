@@ -70,4 +70,26 @@ describe RuboCop::AST::ArrayNode do
       it { expect(array_node.percent_literal?(:symbol)).to be_truthy }
     end
   end
+
+  describe '#bracketed?' do
+    context 'with square brackets' do
+      let(:source) { '[1, 2, 3]' }
+
+      it { expect(array_node).to be_bracketed }
+    end
+
+    context 'with a percent literal' do
+      let(:source) { '%w(foo bar)' }
+
+      it { expect(array_node).to be_bracketed }
+    end
+
+    context 'unbracketed' do
+      let(:array_node) do
+        parse_source('foo = 1, 2, 3').ast.to_a.last
+      end
+
+      it { expect(array_node).not_to be_bracketed }
+    end
+  end
 end
