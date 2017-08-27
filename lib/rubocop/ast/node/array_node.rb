@@ -43,6 +43,15 @@ module RuboCop
           loc.begin && loc.begin.source.start_with?('%')
         end
       end
+
+      # Checks whether the `array` literal is delimited by either percent or
+      # square brackets
+      #
+      # @return [Boolean] whether the array is enclosed in percent or square
+      # brackets
+      def bracketed?
+        square_brackets? || percent_literal?
+      end
     end
   end
 end
