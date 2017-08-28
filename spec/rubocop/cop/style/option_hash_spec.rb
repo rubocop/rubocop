@@ -71,4 +71,19 @@ describe RuboCop::Cop::Style::OptionHash, :config do
       RUBY
     end
   end
+
+  context 'auto-correct' do
+    it 'works' do
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        def some_method(options = {})
+          puts some_arg
+        end
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        def some_method(**options)
+          puts some_arg
+        end
+      RUBY
+    end
+  end
 end

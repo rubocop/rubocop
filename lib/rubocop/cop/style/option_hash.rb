@@ -48,6 +48,12 @@ module RuboCop
 
         private
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(node.source_range, "**#{node.children.first}")
+          end
+        end
+
         def suspicious_name?(arg_name)
           cop_config.key?('SuspiciousParamNames') &&
             cop_config['SuspiciousParamNames'].include?(arg_name.to_s)

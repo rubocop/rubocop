@@ -2638,7 +2638,7 @@ Checks for uses of if/then/else/end on a single line.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Disabled | Yes
 
 This cop checks for options hashes and discourages them if the
 current Ruby version supports keyword arguments.
