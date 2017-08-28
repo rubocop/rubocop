@@ -17,23 +17,19 @@ module RuboCop
     attr_accessor :requires
     attr_accessor :options
 
-    def initialize(*args, &task_block)
-      setup_ivars(args)
+    def initialize(name = :rubocop, *args, &task_block)
+      setup_ivars(name)
 
       desc 'Run RuboCop' unless ::Rake.application.last_description
 
       task(name, *args) do |_, task_args|
-        RakeFileUtils.send(:verbose, verbose) do
+        RakeFileUtils.verbose(verbose) do
           yield(*[self, task_args].slice(0, task_block.arity)) if block_given?
-          run_main_task(verbose)
+          run_cli(verbose, full_options)
         end
       end
 
       setup_subtasks(name, *args, &task_block)
-    end
-
-    def run_main_task(verbose)
-      run_cli(verbose, full_options)
     end
 
     private
@@ -50,19 +46,14 @@ module RuboCop
     end
 
     def full_options
-      [].tap do |result|
-        result.concat(formatters.map { |f| ['--format', f] }.flatten)
-        result.concat(requires.map { |r| ['--require', r] }.flatten)
-        result.concat(options.flatten)
-        result.concat(patterns)
-      end
+      formatters.map { |f| ['--format', f] }.flatten
+                .concat(requires.map { |r| ['--require', r] }.flatten)
+                .concat(options.flatten)
+                .concat(patterns)
     end
 
-    def setup_ivars(args)
-      # More lazy-loading to keep load time down.
-      require 'rubocop/options'
-
-      @name = args.shift || :rubocop
+    def setup_ivars(name)
+      @name = name
       @verbose = true
       @fail_on_error = true
       @patterns = []
@@ -72,13 +63,15 @@ module RuboCop
     end
 
     def setup_subtasks(name, *args, &task_block)
-      namespace name do
+      namespace(name) do
         desc 'Auto-correct RuboCop offenses'
 
         task(:auto_correct, *args) do |_, task_args|
-          yield(*[self, task_args].slice(0, task_block.arity)) if block_given?
-          options = full_options.unshift('--auto-correct')
-          run_cli(verbose, options)
+          RakeFileUtils.verbose(verbose) do
+            yield(*[self, task_args].slice(0, task_block.arity)) if block_given?
+            options = full_options.unshift('--auto-correct')
+            run_cli(verbose, options)
+          end
         end
       end
     end
