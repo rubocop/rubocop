@@ -6,28 +6,26 @@ require 'rubocop/rake_task'
 describe RuboCop::RakeTask do
   include FileHelper
 
+  before do
+    Rake::Task.clear
+  end
+
+  after do
+    Rake::Task.clear
+  end
+
   describe 'defining tasks' do
-    it 'creates a rubocop task' do
+    it 'creates a rubocop task and a rubocop auto_correct task' do
       described_class.new
 
       expect(Rake::Task.task_defined?(:rubocop)).to be true
-    end
-
-    it 'creates a rubocop:auto_correct task' do
-      described_class.new
-
       expect(Rake::Task.task_defined?('rubocop:auto_correct')).to be true
     end
 
-    it 'creates a named task' do
+    it 'creates a named task and a named auto_correct task' do
       described_class.new(:lint_lib)
 
       expect(Rake::Task.task_defined?(:lint_lib)).to be true
-    end
-
-    it 'creates an auto_correct task for the named task' do
-      described_class.new(:lint_lib)
-
       expect(Rake::Task.task_defined?('lint_lib:auto_correct')).to be true
     end
   end
@@ -36,7 +34,6 @@ describe RuboCop::RakeTask do
     before do
       $stdout = StringIO.new
       $stderr = StringIO.new
-      Rake::Task['rubocop'].clear if Rake::Task.task_defined?('rubocop')
     end
 
     after do
