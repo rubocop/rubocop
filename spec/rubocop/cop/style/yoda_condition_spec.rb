@@ -53,6 +53,7 @@ describe RuboCop::Cop::Style::YodaCondition, :config do
   it_behaves_like 'accepts', '!true'
   it_behaves_like 'accepts', 'not true'
   it_behaves_like 'accepts', '0 <=> val'
+  it_behaves_like 'accepts', '"foo" === bar'
 
   it_behaves_like 'offense', '"foo" == bar'
   it_behaves_like 'offense', 'nil == bar'
@@ -83,10 +84,6 @@ describe RuboCop::Cop::Style::YodaCondition, :config do
 
     it_behaves_like(
       'autocorrect', 'nil != foo ? bar : baz', 'foo != nil ? bar : baz'
-    )
-
-    it_behaves_like(
-      'autocorrect', 'false === foo ? bar : baz', 'foo === false ? bar : baz'
     )
   end
 

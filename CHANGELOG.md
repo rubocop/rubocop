@@ -27,6 +27,7 @@
 
 ### Bug fixes
 
+* [#4688](https://github.com/bbatsov/rubocop/pull/4688): Accept yoda condition which isn't commutative. ([@fujimura][])
 * [#4676](https://github.com/bbatsov/rubocop/issues/4676): Make `Style/RedundantConditional` cop work with elsif. ([@akhramov][])
 * [#4615](https://github.com/bbatsov/rubocop/pull/4615): Don't consider `<=>` a comparison method. ([@iGEL][])
 * [#4664](https://github.com/bbatsov/rubocop/pull/4664): Fix typos in Rails/HttpPositionalArguments. ([@JoeCohen][])
@@ -2897,3 +2898,4 @@
 [@highb]: https://github.com/highb
 [@JoeCohen]: https://github.com/JoeCohen
 [@akhramov]: https://github.com/akhramov
+[@fujimura]: https://github.com/fujimura
