@@ -2037,6 +2037,25 @@ URI.decode_www_form(enc_uri)
 URI.decode_www_form_component(enc_uri)
 ```
 
+## Lint/UriRegexp
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop identifies places where `URI.regexp`
+can be replaced by `URI::Parser.new.make_regexp`.
+
+### Example
+
+```ruby
+# bad
+URI.regexp("http://example.com")
+
+# good
+URI::Parser.new.make_regexp("http://example.com")
+```
+
 ## Lint/UselessAccessModifier
 
 Enabled by default | Supports autocorrection

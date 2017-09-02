@@ -1413,6 +1413,10 @@ Lint/UriEscapeUnescape:
                  depending on your specific use case.
   Enabled: true
 
+Lint/UriRegexp:
+  Description: 'Use URI::Parser.new.make_regexp` instead of `URI.regexp`.'
+  Enabled: true
+
 Lint/UselessAccessModifier:
   Description: 'Checks for useless access modifiers.'
   Enabled: true
