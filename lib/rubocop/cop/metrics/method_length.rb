@@ -16,6 +16,11 @@ module RuboCop
         end
         alias on_defs on_def
 
+        def on_block(node)
+          return unless node.send_node.method_name == :define_method
+          check_code_length(node)
+        end
+
         private
 
         def cop_label
