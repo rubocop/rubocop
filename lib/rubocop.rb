@@ -325,6 +325,7 @@ require 'rubocop/cop/performance/start_with'
 require 'rubocop/cop/performance/string_replacement'
 require 'rubocop/cop/performance/times_map'
 require 'rubocop/cop/performance/unfreeze_string'
+require 'rubocop/cop/performance/uri_default_parser'
 
 require 'rubocop/cop/style/alias'
 require 'rubocop/cop/style/and_or'
