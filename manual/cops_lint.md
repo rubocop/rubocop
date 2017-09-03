@@ -2044,7 +2044,7 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 This cop identifies places where `URI.regexp`
-can be replaced by `URI::Parser.new.make_regexp`.
+can be replaced by `URI::DEFAULT_PARSER.make_regexp`.
 
 ### Example
 
@@ -2053,7 +2053,7 @@ can be replaced by `URI::Parser.new.make_regexp`.
 URI.regexp("http://example.com")
 
 # good
-URI::Parser.new.make_regexp("http://example.com")
+URI::DEFAULT_PARSER.make_regexp("http://example.com")
 ```
 
 ## Lint/UselessAccessModifier

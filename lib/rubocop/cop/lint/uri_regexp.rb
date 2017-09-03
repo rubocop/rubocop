@@ -4,17 +4,17 @@ module RuboCop
   module Cop
     module Lint
       # This cop identifies places where `URI.regexp`
-      # can be replaced by `URI::Parser.new.make_regexp`.
+      # can be replaced by `URI::DEFAULT_PARSER.make_regexp`.
       #
       # @example
       #   # bad
       #   URI.regexp("http://example.com")
       #
       #   # good
-      #   URI::Parser.new.make_regexp("http://example.com")
+      #   URI::DEFAULT_PARSER.make_regexp("http://example.com")
       #
       class UriRegexp < Cop
-        MSG = 'Use `%sURI::Parser.new.make_regexp%s` instead of ' \
+        MSG = 'Use `%sURI::DEFAULT_PARSER.make_regexp%s` instead of ' \
               '`%sURI.regexp%s`.'.freeze
 
         def_node_matcher :uri_regexp_with_argument?, <<-PATTERN
@@ -54,7 +54,7 @@ module RuboCop
 
             corrector.replace(
               node.loc.expression,
-              "#{top_level}URI::Parser.new.make_regexp#{argument}"
+              "#{top_level}URI::DEFAULT_PARSER.make_regexp#{argument}"
             )
           end
         end
