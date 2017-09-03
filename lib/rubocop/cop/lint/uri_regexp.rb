@@ -19,13 +19,13 @@ module RuboCop
 
         def_node_matcher :uri_regexp_with_argument?, <<-PATTERN
           (send
-            (const $_ :URI) :regexp
+            (const ${nil cbase} :URI) :regexp
             (str $_))
         PATTERN
 
         def_node_matcher :uri_regexp_without_argument?, <<-PATTERN
           (send
-            (const $_ :URI) :regexp)
+            (const ${nil cbase} :URI) :regexp)
         PATTERN
 
         def on_send(node)
