@@ -25,6 +25,7 @@
 * [#4368](https://github.com/bbatsov/rubocop/issues/4368): Make `Performance/HashEachMethod` inspect send nodes with any receiver. ([@gohdaniel15][])
 * [#4508](https://github.com/bbatsov/rubocop/issues/4508): Add new `Style/ReturnNil` cop. ([@donjar][])
 * [#4629](https://github.com/bbatsov/rubocop/issues/4629): Add Metrics/MethodLength cop for `define_method`. ([@jekuta][])
+* [#4696](https://github.com/bbatsov/rubocop/pull/4696): Add new `Performance/UriDefaultParser` cop. ([@koic][])
 
 ### Bug fixes
 
