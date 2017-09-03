@@ -14,50 +14,55 @@ module RuboCop
       #   URI::Parser.new.make_regexp("http://example.com")
       #
       class UriRegexp < Cop
-        MSG = 'Use `URI::Parser.new.make_regexp%s` instead of `URI.regexp%s`.'
-              .freeze
+        MSG = 'Use `%sURI::Parser.new.make_regexp%s` instead of ' \
+              '`%sURI.regexp%s`.'.freeze
 
         def_node_matcher :uri_regexp_with_argument?, <<-PATTERN
           (send
-            (const nil :URI) :regexp
+            (const $_ :URI) :regexp
             (str $_))
         PATTERN
 
         def_node_matcher :uri_regexp_without_argument?, <<-PATTERN
           (send
-            (const nil :URI) :regexp)
+            (const $_ :URI) :regexp)
         PATTERN
 
         def on_send(node)
-          uri_regexp_with_argument?(node) do |arg|
-            register_offense(node, "('#{arg}')")
+          uri_regexp_with_argument?(node) do |double_colon, arg|
+            register_offense(
+              node, top_level: double_colon ? '::' : '', arg: "('#{arg}')"
+            )
           end
 
-          uri_regexp_without_argument?(node) do
-            register_offense(node)
+          uri_regexp_without_argument?(node) do |double_colon|
+            register_offense(node, top_level: double_colon ? '::' : '')
           end
         end
 
         def autocorrect(node)
           lambda do |corrector|
-            arg = uri_regexp_with_argument?(node)
-
-            if arg
-              corrector.replace(
-                node.loc.expression, "URI::Parser.new.make_regexp('#{arg}')"
-              )
+            if (captured_values = uri_regexp_with_argument?(node))
             else
-              corrector.replace(
-                node.loc.expression, 'URI::Parser.new.make_regexp'
-              )
+              captured_values = uri_regexp_without_argument?(node)
             end
+
+            double_colon, arg = captured_values
+
+            top_level = double_colon ? '::' : ''
+            argument = arg ? "('#{arg}')" : ''
+
+            corrector.replace(
+              node.loc.expression,
+              "#{top_level}URI::Parser.new.make_regexp#{argument}"
+            )
           end
         end
 
         private
 
-        def register_offense(node, arg = '')
-          format = format(MSG, arg, arg)
+        def register_offense(node, top_level: '', arg: '')
+          format = format(MSG, top_level, arg, top_level, arg)
 
           add_offense(node, :selector, format)
         end
