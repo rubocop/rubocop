@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#4464](https://github.com/bbatsov/rubocop/pull/4464): Add `EnforcedStyleForEmptyBraces` parameter to `Layout/SpaceBeforeBlockBraces` cop. ([@palkan][])
 * [#4453](https://github.com/bbatsov/rubocop/pull/4453): New cop `Style/RedundantConditional` checks for conditionals that return true/false. ([@petehamilton][])
 * [#4448](https://github.com/bbatsov/rubocop/pull/4448): Add new `TapFormatter`. ([@cyberdelia][])
 * Add new `Style/HeredocDelimiters` cop. ([@drenmi][])
@@ -22,9 +23,11 @@
 * [#3965](https://github.com/bbatsov/rubocop/issues/3965): Add new `Style/DoublePipeEquals` cop. ([@donjar][])
 * Make `rake new_cop` create parent directories if they do not already exist. ([@highb][])
 * [#4368](https://github.com/bbatsov/rubocop/issues/4368): Make `Performance/HashEachMethod` inspect send nodes with any receiver. ([@gohdaniel15][])
+* [#4508](https://github.com/bbatsov/rubocop/issues/4508): Add new `Style/ReturnNil` cop. ([@donjar][])
 
 ### Bug fixes
 
+* [#4676](https://github.com/bbatsov/rubocop/issues/4676): Make `Style/RedundantConditional` cop work with elsif. ([@akhramov][])
 * [#4615](https://github.com/bbatsov/rubocop/pull/4615): Don't consider `<=>` a comparison method. ([@iGEL][])
 * [#4664](https://github.com/bbatsov/rubocop/pull/4664): Fix typos in Rails/HttpPositionalArguments. ([@JoeCohen][])
 * [#4618](https://github.com/bbatsov/rubocop/pull/4618): Fix `Lint/FormatParameterMismatch` false positive if format string includes `%%5B` (CGI encoded left bracket). ([@barthez][])
@@ -2895,3 +2898,4 @@
 [@highb]: https://github.com/highb
 [@JoeCohen]: https://github.com/JoeCohen
 [@theRealNG]: https://github.com/theRealNG
+[@akhramov]: https://github.com/akhramov

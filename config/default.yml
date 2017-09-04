@@ -490,6 +490,9 @@ Layout/SpaceBeforeBlockBraces:
   SupportedStyles:
     - space
     - no_space
+  SupportedStylesForEmptyBraces:
+    - space
+    - no_space
 
 Layout/SpaceBeforeFirstArg:
   # When `true`, allows most uses of extra spacing if the intent is to align
@@ -1153,6 +1156,12 @@ Style/RegexpLiteral:
   # If `false`, the cop will always recommend using `%r` if one or more slashes
   # are found in the regexp string.
   AllowInnerSlashes: false
+
+Style/ReturnNil:
+  EnforcedStyle: return
+  SupportedStyles:
+    - return
+    - return_nil
 
 Style/SafeNavigation:
   # Safe navigation may cause a statement to start returning `nil` in addition

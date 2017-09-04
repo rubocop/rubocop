@@ -3240,6 +3240,51 @@ This cop checks for uses of rescue in its modifier form.
 
 * [https://github.com/bbatsov/ruby-style-guide#no-rescue-modifiers](https://github.com/bbatsov/ruby-style-guide#no-rescue-modifiers)
 
+## Style/ReturnNil
+
+Enabled by default | Supports autocorrection
+--- | ---
+Disabled | Yes
+
+This cop enforces consistency between 'return nil' and 'return'.
+
+Supported styles are: return, return_nil.
+
+### Example
+
+```ruby
+# EnforcedStyle: return (default)
+
+# bad
+def foo(arg)
+  return nil if arg
+end
+
+# good
+def foo(arg)
+  return if arg
+end
+
+# EnforcedStyle: return_nil
+
+# bad
+def foo(arg)
+  return if arg
+end
+
+# good
+def foo(arg)
+  return nil if arg
+end
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+EnforcedStyle | return
+SupportedStyles | return, return_nil
+
 ## Style/SafeNavigation
 
 Enabled by default | Supports autocorrection
