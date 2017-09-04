@@ -125,6 +125,68 @@ describe RuboCop::Cop::Rails::SaveBang do
       end
     end
 
+    it "when using #{method} with case statement" do
+      inspect_source(<<-RUBY.strip_indent)
+        case object.#{method}
+        when true
+          puts "true"
+        when false
+          puts "false"
+        end
+      RUBY
+
+      if pass
+        expect(cop.messages).to be_empty
+      else
+        expect(cop.messages)
+          .to eq(["`#{method}` returns a model which is always truthy."])
+      end
+    end
+
+    it "when using #{method} with '&&'" do
+      inspect_source("object.#{method} && false")
+
+      if pass
+        expect(cop.messages).to be_empty
+      else
+        expect(cop.messages)
+          .to eq(["`#{method}` returns a model which is always truthy."])
+      end
+    end
+
+    it "when using #{method} with 'and'" do
+      inspect_source("object.#{method} and false")
+
+      if pass
+        expect(cop.messages).to be_empty
+      else
+        expect(cop.messages)
+          .to eq(["`#{method}` returns a model which is always truthy."])
+      end
+    end
+
+    it "when using #{method} with '||'" do
+      inspect_source("object.#{method} || false")
+
+      if pass
+        expect(cop.messages).to be_empty
+      else
+        expect(cop.messages)
+          .to eq(["`#{method}` returns a model which is always truthy."])
+      end
+    end
+
+    it "when using #{method} with 'or'" do
+      inspect_source("object.#{method} or false")
+
+      if pass
+        expect(cop.messages).to be_empty
+      else
+        expect(cop.messages)
+          .to eq(["`#{method}` returns a model which is always truthy."])
+      end
+    end
+
     it "when using #{method} as last method call" do
       inspect_source(['def foo', "object.#{method}", 'end'])
       expect(cop.messages).to be_empty

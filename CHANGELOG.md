@@ -28,6 +28,7 @@
 
 ### Bug fixes
 
+* [#4688](https://github.com/bbatsov/rubocop/pull/4688): Accept yoda condition which isn't commutative. ([@fujimura][])
 * [#4676](https://github.com/bbatsov/rubocop/issues/4676): Make `Style/RedundantConditional` cop work with elsif. ([@akhramov][])
 * [#4615](https://github.com/bbatsov/rubocop/pull/4615): Don't consider `<=>` a comparison method. ([@iGEL][])
 * [#4664](https://github.com/bbatsov/rubocop/pull/4664): Fix typos in Rails/HttpPositionalArguments. ([@JoeCohen][])
@@ -58,6 +59,7 @@
 * [#4634](https://github.com/bbatsov/rubocop/issues/4634): Handle heredoc that contains empty lines only in `Layout/IndentHeredoc` cop. ([@pocke][])
 * [#4646](https://github.com/bbatsov/rubocop/issues/4646): Make `Lint/Debugger` aware of `Kernel` and cbase. ([@pocke][])
 * [#4643](https://github.com/bbatsov/rubocop/issues/4643): Modify `Style/InverseMethods` to not register a separate offense for an inverse method nested inside of the block of an inverse method offense. ([@rrosenblum][])
+* [#4593](https://github.com/bbatsov/rubocop/issues/4593): Fix false positive in `Rails/SaveBang` when `save/update_attribute` is used with a `case` statement. ([@theRealNG][])
 
 ### Changes
 
@@ -2897,5 +2899,7 @@
 [@donjar]: https://github.com/donjar
 [@highb]: https://github.com/highb
 [@JoeCohen]: https://github.com/JoeCohen
+[@theRealNG]: https://github.com/theRealNG
 [@akhramov]: https://github.com/akhramov
 [@jekuta]: https://github.com/jekuta
+[@fujimura]: https://github.com/fujimura
