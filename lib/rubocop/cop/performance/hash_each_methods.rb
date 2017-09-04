@@ -17,7 +17,6 @@ module RuboCop
       #   hash.each_value { |v| p v }
       class HashEachMethods < Cop
         include Lint::UnusedArgument
-        require 'pry'
 
         MSG = 'Use `%s` instead of `%s`.'.freeze
 

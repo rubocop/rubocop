@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'pry'
 describe RuboCop::Cop::Style::RescueModifier do
   let(:config) do
     RuboCop::Config.new('Layout/IndentationWidth' => {
