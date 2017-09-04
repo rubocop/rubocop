@@ -14,8 +14,8 @@ module RuboCop
       #   URI::DEFAULT_PARSER.make_regexp("http://example.com")
       #
       class UriRegexp < Cop
-        MSG = 'Use `%sURI::DEFAULT_PARSER.make_regexp%s` instead of ' \
-              '`%sURI.regexp%s`.'.freeze
+        MSG = 'Use `%<top_level>sURI::DEFAULT_PARSER.make_regexp%<arg>s` ' \
+              'instead of `%<top_level>sURI.regexp%<arg>s`.'.freeze
 
         def_node_matcher :uri_regexp_with_argument?, <<-PATTERN
           (send
@@ -62,7 +62,7 @@ module RuboCop
         private
 
         def register_offense(node, top_level: '', arg: '')
-          format = format(MSG, top_level, arg, top_level, arg)
+          format = format(MSG, top_level: top_level, arg: arg)
 
           add_offense(node, :selector, format)
         end
