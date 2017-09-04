@@ -24,6 +24,7 @@
 * Make `rake new_cop` create parent directories if they do not already exist. ([@highb][])
 * [#4368](https://github.com/bbatsov/rubocop/issues/4368): Make `Performance/HashEachMethod` inspect send nodes with any receiver. ([@gohdaniel15][])
 * [#4508](https://github.com/bbatsov/rubocop/issues/4508): Add new `Style/ReturnNil` cop. ([@donjar][])
+* [#4629](https://github.com/bbatsov/rubocop/issues/4629): Add Metrics/MethodLength cop for `define_method`. ([@jekuta][])
 
 ### Bug fixes
 
@@ -2900,4 +2901,5 @@
 [@JoeCohen]: https://github.com/JoeCohen
 [@theRealNG]: https://github.com/theRealNG
 [@akhramov]: https://github.com/akhramov
+[@jekuta]: https://github.com/jekuta
 [@fujimura]: https://github.com/fujimura
