@@ -57,6 +57,7 @@
 * [#4634](https://github.com/bbatsov/rubocop/issues/4634): Handle heredoc that contains empty lines only in `Layout/IndentHeredoc` cop. ([@pocke][])
 * [#4646](https://github.com/bbatsov/rubocop/issues/4646): Make `Lint/Debugger` aware of `Kernel` and cbase. ([@pocke][])
 * [#4643](https://github.com/bbatsov/rubocop/issues/4643): Modify `Style/InverseMethods` to not register a separate offense for an inverse method nested inside of the block of an inverse method offense. ([@rrosenblum][])
+* [#4593](https://github.com/bbatsov/rubocop/issues/4593): Fix false positive in `Rails/SaveBang` when 'save/update_attribute' is used with a 'case' statement. ([@theRealNG][])
 
 ### Changes
 
@@ -2896,4 +2897,5 @@
 [@donjar]: https://github.com/donjar
 [@highb]: https://github.com/highb
 [@JoeCohen]: https://github.com/JoeCohen
+[@theRealNG]: https://github.com/theRealNG
 [@akhramov]: https://github.com/akhramov
