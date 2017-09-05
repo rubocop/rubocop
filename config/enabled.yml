@@ -1414,7 +1414,7 @@ Lint/UriEscapeUnescape:
   Enabled: true
 
 Lint/UriRegexp:
-  Description: 'Use URI::DEFAULT_PARSER.make_regexp` instead of `URI.regexp`.'
+  Description: 'Use `URI::DEFAULT_PARSER.make_regexp` instead of `URI.regexp`.'
   Enabled: true
 
 Lint/UselessAccessModifier:
