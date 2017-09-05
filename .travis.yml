@@ -3,7 +3,8 @@ cache: bundler
 language: ruby
 dist: trusty
 rvm:
-  - jruby-9.0.1.0
+  - jruby-9.1.13.0
+  - jruby-head
   - 2.0.0
   - 2.1.10
   - 2.2.8
@@ -13,16 +14,16 @@ rvm:
   - rbx-3
 env:
   global:
-    - JRUBY_OPTS='--debug' # get more accurate coverage data in JRuby
+    - JRUBY_OPTS='--debug -J-Xmx1000M' # get more accurate coverage data in JRuby
   matrix:
     - 'TASK=spec'
     - 'TASK=ascii_spec'
     - 'TASK=internal_investigation'
 matrix:
   allow_failures:
-    - rvm: jruby-9.0.1.0
     - rvm: ruby-head
     - rvm: rbx-3
+    - rvm: jruby-head
   fast_finish: true
 before_install:
   - gem update --remote bundler
