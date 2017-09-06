@@ -1391,6 +1391,10 @@ Lint/UnneededDisable:
                  It must be explicitly disabled.
   Enabled: true
 
+Lint/UnneededWithIndex:
+  Description: 'Checks for unneeded `with_index`.'
+  Enabled: true
+
 Lint/UnneededSplatExpansion:
   Description: 'Checks for splat unnecessarily being called on literals'
   Enabled: true

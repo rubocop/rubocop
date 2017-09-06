@@ -224,6 +224,7 @@ In the following section you find all available cops:
 * [Lint/UnifiedInteger](cops_lint.md#lintunifiedinteger)
 * [Lint/UnneededDisable](cops_lint.md#lintunneededdisable)
 * [Lint/UnneededSplatExpansion](cops_lint.md#lintunneededsplatexpansion)
+* [Lint/UnneededWithIndex](cops_lint.md#lintunneededwithindex)
 * [Lint/UnreachableCode](cops_lint.md#lintunreachablecode)
 * [Lint/UnusedBlockArgument](cops_lint.md#lintunusedblockargument)
 * [Lint/UnusedMethodArgument](cops_lint.md#lintunusedmethodargument)

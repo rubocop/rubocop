@@ -1875,6 +1875,38 @@ else
 end
 ```
 
+## Lint/UnneededWithIndex
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for unneeded `with_index`.
+
+### Example
+
+```ruby
+# bad
+ary.each_with_index do |v|
+  v
+end
+
+# good
+ary.each do |v|
+  v
+end
+
+# bad
+ary.each.with_index do |v|
+  v
+end
+
+# good
+ary.each do |v|
+  v
+end
+```
+
 ## Lint/UnreachableCode
 
 Enabled by default | Supports autocorrection
