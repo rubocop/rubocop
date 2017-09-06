@@ -1276,6 +1276,27 @@ end
 
 * [https://github.com/bbatsov/ruby-style-guide#no-nested-methods](https://github.com/bbatsov/ruby-style-guide#no-nested-methods)
 
+## Lint/NestedPercentLiteral
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks for nested percent literals.
+
+### Example
+
+```ruby
+# bad
+
+# The percent literal for nested_attributes is parsed as four tokens,
+# yielding the array [:name, :content, :"%i[incorrectly", :"nested]"].
+attributes = {
+  valid_attributes: %i[name content],
+  nested_attributes: %i[name content %i[incorrectly nested]]
+}
+```
+
 ## Lint/NextWithoutAccumulator
 
 Enabled by default | Supports autocorrection
