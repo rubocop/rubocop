@@ -121,6 +121,18 @@ describe RuboCop::Cop::Style::MultilineMemoization, :config do
                                 baz
                               end
                           RUBY
+
+          it_behaves_like 'code with offense',
+                          <<-RUBY.strip_indent,
+                            foo ||= (bar ||
+                                     baz)
+                          RUBY
+                          <<-RUBY.strip_indent
+                             foo ||= begin
+                                       bar ||
+                                      baz
+                                     end
+                          RUBY
         end
       end
 
