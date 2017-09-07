@@ -399,6 +399,7 @@ In the following section you find all available cops:
 * [Style/MethodCalledOnDoEndBlock](cops_style.md#stylemethodcalledondoendblock)
 * [Style/MethodDefParentheses](cops_style.md#stylemethoddefparentheses)
 * [Style/MethodMissing](cops_style.md#stylemethodmissing)
+* [Style/MinMax](cops_style.md#styleminmax)
 * [Style/MissingElse](cops_style.md#stylemissingelse)
 * [Style/MixinGrouping](cops_style.md#stylemixingrouping)
 * [Style/ModuleFunction](cops_style.md#stylemodulefunction)

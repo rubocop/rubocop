@@ -687,6 +687,12 @@ Style/MethodMissing:
   StyleGuide: '#no-method-missing'
   Enabled: true
 
+Style/MinMax:
+  Description: >-
+                 Use `Enumerable#minmax` instead of `Enumerable#min`
+                 and `Enumerable#max` in conjunction.'
+  Enabled: true
+
 Style/MixinGrouping:
   Description: 'Checks for grouping of mixins in `class` and `module` bodies.'
   StyleGuide: '#mixin-grouping'

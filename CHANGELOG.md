@@ -28,6 +28,7 @@
 * [#4702](https://github.com/bbatsov/rubocop/pull/4702): Add new `Lint/UriEscapeUnescape` cop. ([@koic][])
 * [#4696](https://github.com/bbatsov/rubocop/pull/4696): Add new `Performance/UriDefaultParser` cop. ([@koic][])
 * [#4694](https://github.com/bbatsov/rubocop/pull/4694): Add new `Lint/UriRegexp` cop. ([@koic][])
+* Add new `Style/MinMax` cop. ([@drenmi][])
 
 ### Bug fixes
 
