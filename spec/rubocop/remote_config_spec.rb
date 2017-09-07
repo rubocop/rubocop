@@ -74,6 +74,17 @@ describe RuboCop::RemoteConfig do
       end
     end
 
+    context 'when the network is inaccessible' do
+      before do
+        stub_request(:get, remote_config_url)
+          .to_raise(SocketError)
+      end
+
+      it 'reuses the existing cached file' do
+        expect(remote_config).to eq(cached_file_path)
+      end
+    end
+
     context 'when the remote URL responds with 500' do
       before do
         stub_request(:get, remote_config_url)

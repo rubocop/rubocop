@@ -28,6 +28,7 @@
 
 ### Bug fixes
 
+* [#4709](https://github.com/bbatsov/rubocop/pull/4709): Use cached remote config on network failure. ([@kristjan][])
 * [#4688](https://github.com/bbatsov/rubocop/pull/4688): Accept yoda condition which isn't commutative. ([@fujimura][])
 * [#4676](https://github.com/bbatsov/rubocop/issues/4676): Make `Style/RedundantConditional` cop work with elsif. ([@akhramov][])
 * [#4656](https://github.com/bbatsov/rubocop/issues/4656): Modify `Style/ConditionalAssignment` autocorrection to work with unbracketed arrays. ([@akhramov][])
@@ -2904,3 +2905,4 @@
 [@akhramov]: https://github.com/akhramov
 [@jekuta]: https://github.com/jekuta
 [@fujimura]: https://github.com/fujimura
+[@kristjan]: https://github.com/kristjan
