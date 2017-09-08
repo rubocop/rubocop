@@ -22,7 +22,7 @@ module RuboCop
 
         def on_str(node)
           return if heredoc?(node)
-          return unless node.str_content =~ /#\{.*\}/
+          return unless scrub_string(node.str_content) =~ /#\{.*\}/
           add_offense(node, :expression)
         end
 
