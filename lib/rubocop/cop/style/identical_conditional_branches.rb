@@ -100,7 +100,7 @@ module RuboCop
           return unless expressions.size > 1 && expressions.uniq.one?
 
           expressions.each do |expression|
-            add_offense(expression, :expression)
+            add_offense(expression)
           end
         end
 
