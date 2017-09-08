@@ -46,7 +46,7 @@ module RuboCop
           return if ignored_method?(node)
           return unless node.arguments? && !node.parenthesized?
 
-          add_offense(node, :expression)
+          add_offense(node)
         end
         alias on_super on_send
         alias on_yield on_send
