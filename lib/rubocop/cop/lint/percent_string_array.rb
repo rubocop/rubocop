@@ -69,17 +69,6 @@ module RuboCop
           end
         end
         # rubocop:enable Performance/HashEachMethod
-
-        def scrub_string(string)
-          if string.respond_to?(:scrub)
-            string.scrub
-          else
-            string
-              .encode('UTF-16BE', 'UTF-8',
-                      invalid: :replace, undef: :replace, replace: '?')
-              .encode('UTF-8')
-          end
-        end
       end
     end
   end
