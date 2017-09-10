@@ -2050,10 +2050,10 @@ can be replaced by `URI::DEFAULT_PARSER.make_regexp`.
 
 ```ruby
 # bad
-URI.regexp("http://example.com")
+URI.regexp('http://example.com')
 
 # good
-URI::DEFAULT_PARSER.make_regexp("http://example.com")
+URI::DEFAULT_PARSER.make_regexp('http://example.com')
 ```
 
 ## Lint/UselessAccessModifier

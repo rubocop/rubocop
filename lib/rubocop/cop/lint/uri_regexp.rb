@@ -8,10 +8,10 @@ module RuboCop
       #
       # @example
       #   # bad
-      #   URI.regexp("http://example.com")
+      #   URI.regexp('http://example.com')
       #
       #   # good
-      #   URI::DEFAULT_PARSER.make_regexp("http://example.com")
+      #   URI::DEFAULT_PARSER.make_regexp('http://example.com')
       #
       class UriRegexp < Cop
         MSG = 'Use `%<top_level>sURI::DEFAULT_PARSER.make_regexp%<arg>s` ' \
