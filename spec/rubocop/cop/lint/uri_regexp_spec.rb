@@ -7,28 +7,28 @@ describe RuboCop::Cop::Lint::UriRegexp do
   it 'registers an offense when using `URI.regexp` with argument' do
     expect_offense(<<-RUBY.strip_indent)
       URI.regexp('http://example.com')
-          ^^^^^^ Use `URI::DEFAULT_PARSER.make_regexp('http://example.com')` instead of `URI.regexp('http://example.com')`.
+          ^^^^^^ `URI.regexp('http://example.com')` is obsolete and should not be used. Instead, use `URI::DEFAULT_PARSER.make_regexp('http://example.com')`.
     RUBY
   end
 
   it 'registers an offense when using `::URI.regexp` with argument' do
     expect_offense(<<-RUBY.strip_indent)
       ::URI.regexp('http://example.com')
-            ^^^^^^ Use `::URI::DEFAULT_PARSER.make_regexp('http://example.com')` instead of `::URI.regexp('http://example.com')`.
+            ^^^^^^ `::URI.regexp('http://example.com')` is obsolete and should not be used. Instead, use `::URI::DEFAULT_PARSER.make_regexp('http://example.com')`.
     RUBY
   end
 
   it 'registers an offense when using `URI.regexp` without argument' do
     expect_offense(<<-RUBY.strip_indent)
       URI.regexp
-          ^^^^^^ Use `URI::DEFAULT_PARSER.make_regexp` instead of `URI.regexp`.
+          ^^^^^^ `URI.regexp` is obsolete and should not be used. Instead, use `URI::DEFAULT_PARSER.make_regexp`.
     RUBY
   end
 
   it 'registers an offense when using `::URI.regexp` without argument' do
     expect_offense(<<-RUBY.strip_indent)
       ::URI.regexp
-            ^^^^^^ Use `::URI::DEFAULT_PARSER.make_regexp` instead of `::URI.regexp`.
+            ^^^^^^ `::URI.regexp` is obsolete and should not be used. Instead, use `::URI::DEFAULT_PARSER.make_regexp`.
     RUBY
   end
 

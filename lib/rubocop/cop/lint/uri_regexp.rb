@@ -3,8 +3,8 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop identifies places where `URI.regexp`
-      # can be replaced by `URI::DEFAULT_PARSER.make_regexp`.
+      # This cop identifies places where `URI.regexp` is obsolete and should
+      # not be used. Instead, use `URI::DEFAULT_PARSER.make_regexp`.
       #
       # @example
       #   # bad
@@ -14,8 +14,9 @@ module RuboCop
       #   URI::DEFAULT_PARSER.make_regexp('http://example.com')
       #
       class UriRegexp < Cop
-        MSG = 'Use `%<top_level>sURI::DEFAULT_PARSER.make_regexp%<arg>s` ' \
-              'instead of `%<top_level>sURI.regexp%<arg>s`.'.freeze
+        MSG = '`%<top_level>sURI.regexp%<arg>s` is obsolete and should not ' \
+              'be used. Instead, use `%<top_level>sURI::DEFAULT_PARSER.' \
+              'make_regexp%<arg>s`.'.freeze
 
         def_node_matcher :uri_regexp_with_argument?, <<-PATTERN
           (send

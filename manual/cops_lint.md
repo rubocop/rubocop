@@ -2043,8 +2043,8 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
-This cop identifies places where `URI.regexp`
-can be replaced by `URI::DEFAULT_PARSER.make_regexp`.
+This cop identifies places where `URI.regexp` is obsolete and should
+not be used. Instead, use `URI::DEFAULT_PARSER.make_regexp`.
 
 ### Example
 
