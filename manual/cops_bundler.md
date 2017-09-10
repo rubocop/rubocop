@@ -39,6 +39,35 @@ Attribute | Value
 --- | ---
 Include | \*\*/Gemfile, \*\*/gems.rb
 
+## Bundler/InsecureProtocolSource
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+The source `:gemcutter`, `:rubygems` and `:rubyforge` are deprecated
+because HTTP requests are insecure. Please change your source to
+'https://rubygems.org' if possible, or 'http://rubygems.org' if not.
+
+### Example
+
+```ruby
+# bad
+source :gemcutter
+source :rubygems
+source :rubyforge
+
+# good
+source 'https://rubygems.org' # strongly recommended
+source 'http://rubygems.org'
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+Include | \*\*/Gemfile, \*\*/gems.rb
+
 ## Bundler/OrderedGems
 
 Enabled by default | Supports autocorrection

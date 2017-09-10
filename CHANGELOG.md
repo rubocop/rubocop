@@ -29,6 +29,7 @@
 * [#4696](https://github.com/bbatsov/rubocop/pull/4696): Add new `Performance/UriDefaultParser` cop. ([@koic][])
 * [#4694](https://github.com/bbatsov/rubocop/pull/4694): Add new `Lint/UriRegexp` cop. ([@koic][])
 * Add new `Style/MinMax` cop. ([@drenmi][])
+* [#4720](https://github.com/bbatsov/rubocop/pull/4720): Add new `Bundler/InsecureProtocolSource` cop. ([@koic][])
 
 ### Bug fixes
 

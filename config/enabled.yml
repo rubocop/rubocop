@@ -1832,6 +1832,16 @@ Bundler/DuplicatedGem:
     - '**/Gemfile'
     - '**/gems.rb'
 
+Bundler/InsecureProtocolSource:
+  Description: >-
+                 The source `:gemcutter`, `:rubygems` and `:rubyforge` are deprecated
+                 because HTTP requests are insecure. Please change your source to
+                 'https://rubygems.org' if possible, or 'http://rubygems.org' if not.
+  Enabled: true
+  Include:
+    - '**/Gemfile'
+    - '**/gems.rb'
+
 Bundler/OrderedGems:
   Description: >-
                  Gems within groups in the Gemfile should be alphabetically sorted.

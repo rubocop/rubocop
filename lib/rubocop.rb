@@ -136,6 +136,7 @@ require 'rubocop/cop/mixin/trailing_comma'
 require 'rubocop/cop/mixin/unused_argument'
 
 require 'rubocop/cop/bundler/duplicated_gem'
+require 'rubocop/cop/bundler/insecure_protocol_source'
 require 'rubocop/cop/bundler/ordered_gems'
 
 require 'rubocop/cop/layout/access_modifier_indentation'
