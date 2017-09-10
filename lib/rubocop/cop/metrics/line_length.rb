@@ -123,7 +123,7 @@ module RuboCop
         end
 
         def uri_regexp
-          @regexp ||= URI::Parser.new.make_regexp(cop_config['URISchemes'])
+          @regexp ||= URI::DEFAULT_PARSER.make_regexp(cop_config['URISchemes'])
         end
 
         def check_directive_line(line, index)

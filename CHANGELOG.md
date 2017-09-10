@@ -26,9 +26,11 @@
 * [#4508](https://github.com/bbatsov/rubocop/issues/4508): Add new `Style/ReturnNil` cop. ([@donjar][])
 * [#4629](https://github.com/bbatsov/rubocop/issues/4629): Add Metrics/MethodLength cop for `define_method`. ([@jekuta][])
 * [#4702](https://github.com/bbatsov/rubocop/pull/4702): Add new `Lint/UriEscapeUnescape` cop. ([@koic][])
+* [#4696](https://github.com/bbatsov/rubocop/pull/4696): Add new `Performance/UriDefaultParser` cop. ([@koic][])
 
 ### Bug fixes
 
+* [#4709](https://github.com/bbatsov/rubocop/pull/4709): Use cached remote config on network failure. ([@kristjan][])
 * [#4688](https://github.com/bbatsov/rubocop/pull/4688): Accept yoda condition which isn't commutative. ([@fujimura][])
 * [#4676](https://github.com/bbatsov/rubocop/issues/4676): Make `Style/RedundantConditional` cop work with elsif. ([@akhramov][])
 * [#4656](https://github.com/bbatsov/rubocop/issues/4656): Modify `Style/ConditionalAssignment` autocorrection to work with unbracketed arrays. ([@akhramov][])
@@ -2905,3 +2907,4 @@
 [@akhramov]: https://github.com/akhramov
 [@jekuta]: https://github.com/jekuta
 [@fujimura]: https://github.com/fujimura
+[@kristjan]: https://github.com/kristjan

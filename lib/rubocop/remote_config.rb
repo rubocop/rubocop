@@ -18,6 +18,7 @@ module RuboCop
 
       request do |response|
         next if response.is_a?(Net::HTTPNotModified)
+        next if response.is_a?(SocketError)
         open cache_path, 'w' do |io|
           io.write response.body
         end
@@ -40,11 +41,13 @@ module RuboCop
       end
 
       handle_response(http.request(request), limit, &block)
+    rescue SocketError => err
+      handle_response(err, limit, &block)
     end
 
     def handle_response(response, limit, &block)
       case response
-      when Net::HTTPSuccess, Net::HTTPNotModified
+      when Net::HTTPSuccess, Net::HTTPNotModified, SocketError
         yield response
       when Net::HTTPRedirection
         request(URI.parse(response['location']), limit - 1, &block)

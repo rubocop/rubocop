@@ -21,4 +21,10 @@ describe RuboCop::Cop::Lint::InterpolationCheck do
       foo = "bar '#{baz}' qux"
     RUBY
   end
+
+  it 'does not crash for \xff' do
+    expect_no_offenses(<<-'RUBY'.strip_indent)
+      foo = "\xff"
+    RUBY
+  end
 end
