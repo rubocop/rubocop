@@ -66,6 +66,7 @@
 * [#4643](https://github.com/bbatsov/rubocop/issues/4643): Modify `Style/InverseMethods` to not register a separate offense for an inverse method nested inside of the block of an inverse method offense. ([@rrosenblum][])
 * [#4593](https://github.com/bbatsov/rubocop/issues/4593): Fix false positive in `Rails/SaveBang` when `save/update_attribute` is used with a `case` statement. ([@theRealNG][])
 * [#4322](https://github.com/bbatsov/rubocop/issues/4322): Fix Style/MultilineMemoization from autocorrecting to invalid ruby. ([@dpostorivo][])
+* [#4722](https://github.com/bbatsov/rubocop/pull/4722): Fix `rake new_cop` problem that doesn't add `require` line. ([@koic][])
 
 ### Changes
 

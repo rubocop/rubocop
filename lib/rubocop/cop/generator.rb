@@ -204,14 +204,19 @@ module RuboCop
 
         def target_line
           @target_line ||= begin
+            in_the_same_department = false
             inject_parts = require_path_fragments(injectable_require_directive)
 
             require_entries.find.with_index do |entry, index|
               current_entry_parts = require_path_fragments(entry)
 
-              next unless inject_parts[0..-2] == current_entry_parts[0..-2]
+              if inject_parts[0..-2] == current_entry_parts[0..-2]
+                in_the_same_department = true
 
-              break index if inject_parts.last < current_entry_parts.last
+                break index if inject_parts.last < current_entry_parts.last
+              elsif in_the_same_department
+                break index
+              end
             end
           end
         end
