@@ -227,6 +227,7 @@ In the following section you find all available cops:
 * [Lint/UnusedBlockArgument](cops_lint.md#lintunusedblockargument)
 * [Lint/UnusedMethodArgument](cops_lint.md#lintunusedmethodargument)
 * [Lint/UriEscapeUnescape](cops_lint.md#linturiescapeunescape)
+* [Lint/UriRegexp](cops_lint.md#linturiregexp)
 * [Lint/UselessAccessModifier](cops_lint.md#lintuselessaccessmodifier)
 * [Lint/UselessAssignment](cops_lint.md#lintuselessassignment)
 * [Lint/UselessComparison](cops_lint.md#lintuselesscomparison)
