@@ -194,7 +194,7 @@ RSpec.describe RuboCop::Cop::Generator do
       end
     end
 
-    context 'when a cops of style department already exists' do
+    context 'when a cop of style department already exists' do
       let(:cop_identifier) { 'Style/TheEndOfStyle' }
 
       before do
