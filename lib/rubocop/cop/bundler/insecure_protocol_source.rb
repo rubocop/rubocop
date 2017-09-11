@@ -23,32 +23,28 @@ module RuboCop
 
         def_node_matcher :insecure_protocol_source?, <<-PATTERN
           (send nil :source
-            (sym {:gemcutter :rubygems :rubyforge}))
+            (sym ${:gemcutter :rubygems :rubyforge}))
         PATTERN
 
         def on_send(node)
-          insecure_protocol_source?(node) do
-            source = source_node(node)
+          insecure_protocol_source?(node) do |source|
+            message = format(MSG, source)
 
-            message = format(MSG, source.children.last)
-
-            add_offense(node, source_range(source.loc.expression), message)
+            add_offense(
+              node, source_range(node.first_argument.loc.expression), message
+            )
           end
         end
 
         def autocorrect(node)
           lambda do |corrector|
             corrector.replace(
-              source_node(node).loc.expression, "'https://rubygems.org'"
+              node.first_argument.loc.expression, "'https://rubygems.org'"
             )
           end
         end
 
         private
-
-        def source_node(node)
-          node.children.last
-        end
 
         def source_range(node)
           range_between(node.begin_pos, node.end_pos)
