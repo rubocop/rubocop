@@ -194,6 +194,65 @@ RSpec.describe RuboCop::Cop::Generator do
       end
     end
 
+    context 'when a cop of style department already exists' do
+      let(:cop_identifier) { 'Style/TheEndOfStyle' }
+
+      before do
+        allow(File)
+          .to receive(:readlines).with('lib/rubocop.rb')
+                                 .and_return(<<-RUBY.strip_indent.lines)
+          # frozen_string_literal: true
+
+          require 'parser'
+          require 'rainbow'
+
+          require 'English'
+          require 'set'
+          require 'forwardable'
+
+          require 'rubocop/version'
+
+          require 'rubocop/cop/style/end_block'
+          require 'rubocop/cop/style/even_odd'
+          require 'rubocop/cop/style/file_name'
+          require 'rubocop/cop/style/flip_flop'
+
+          require 'rubocop/cop/rails/action_filter'
+
+          require 'rubocop/cop/team'
+        RUBY
+      end
+
+      it 'injects a `require` statement on the end of style department' do
+        generated_source = <<-RUBY.strip_indent
+          # frozen_string_literal: true
+
+          require 'parser'
+          require 'rainbow'
+
+          require 'English'
+          require 'set'
+          require 'forwardable'
+
+          require 'rubocop/version'
+
+          require 'rubocop/cop/style/end_block'
+          require 'rubocop/cop/style/even_odd'
+          require 'rubocop/cop/style/file_name'
+          require 'rubocop/cop/style/flip_flop'
+          require 'rubocop/cop/style/the_end_of_style'
+
+          require 'rubocop/cop/rails/action_filter'
+
+          require 'rubocop/cop/team'
+        RUBY
+
+        generator.inject_require
+        expect(File)
+          .to have_received(:write).with('lib/rubocop.rb', generated_source)
+      end
+    end
+
     context 'when a `require` entry already exists' do
       before do
         allow(File)
