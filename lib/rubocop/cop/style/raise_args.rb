@@ -60,33 +60,32 @@ module RuboCop
         private
 
         def autocorrect(node)
-          new_exception = if style == :compact
-                            correction_exploded_to_compact(node.arguments)
-                          else
-                            correction_compact_to_exploded(node.first_argument)
-                          end
-          replacement = "#{node.method_name} #{new_exception}"
+          replacement = if style == :compact
+                          correction_exploded_to_compact(node)
+                        else
+                          correction_compact_to_exploded(node)
+                        end
 
           ->(corrector) { corrector.replace(node.source_range, replacement) }
         end
 
         def correction_compact_to_exploded(node)
-          exception_node, _new, message_node = *node
+          exception_node, _new, message_node = *node.first_argument
 
           message = message_node && message_node.source
 
           correction = exception_node.const_name.to_s
           correction = "#{correction}, #{message}" if message
 
-          correction
+          "#{node.method_name} #{correction}"
         end
 
         def correction_exploded_to_compact(node)
-          exception_node, *message_nodes = *node
+          exception_node, *message_nodes = *node.arguments
+          return node.source if message_nodes.size > 1
 
-          messages = message_nodes.map(&:source).join(', ')
-
-          "#{exception_node.const_name}.new(#{messages})"
+          argument = message_nodes.first.source
+          "#{node.method_name} #{exception_node.const_name}.new(#{argument})"
         end
 
         def check_compact(node)

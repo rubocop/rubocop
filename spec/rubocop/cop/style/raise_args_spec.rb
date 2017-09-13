@@ -61,9 +61,11 @@ describe RuboCop::Cop::Style::RaiseArgs, :config do
         RUBY
       end
 
-      it 'auto-corrects to compact style' do
-        new_source = autocorrect_source(['raise RuntimeError, msg, caller'])
-        expect(new_source).to eq('raise RuntimeError.new(msg, caller)')
+      it 'does not auto-correct to compact style' do
+        initial_source = 'raise RuntimeError, msg, caller'
+
+        new_source = autocorrect_source([initial_source])
+        expect(new_source).to eq(initial_source)
       end
     end
 
