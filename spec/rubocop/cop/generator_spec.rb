@@ -120,7 +120,7 @@ RSpec.describe RuboCop::Cop::Generator do
 
         Do 3 steps:
           1. Add an entry to the "New features" section in CHANGELOG.md,
-             e.g. "Add new `FakeCop` cop. ([@your_id][])"
+             e.g. "Add new `Style/FakeCop` cop. ([@your_id][])"
           2. Add an entry into config/enabled.yml or config/disabled.yml
           3. Implement your new cop in the generated file!
       TODO
