@@ -69,6 +69,7 @@
 * [#4593](https://github.com/bbatsov/rubocop/issues/4593): Fix false positive in `Rails/SaveBang` when `save/update_attribute` is used with a `case` statement. ([@theRealNG][])
 * [#4322](https://github.com/bbatsov/rubocop/issues/4322): Fix Style/MultilineMemoization from autocorrecting to invalid ruby. ([@dpostorivo][])
 * [#4722](https://github.com/bbatsov/rubocop/pull/4722): Fix `rake new_cop` problem that doesn't add `require` line. ([@koic][])
+* [#4723](https://github.com/bbatsov/rubocop/issues/4723): Fix `RaiseArgs` auto-correction issue for `raise` with 3 arguments. ([@smakagon][])
 
 ### Changes
 
