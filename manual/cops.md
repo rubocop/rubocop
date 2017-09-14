@@ -209,6 +209,7 @@ In the following section you find all available cops:
 * [Lint/PercentStringArray](cops_lint.md#lintpercentstringarray)
 * [Lint/PercentSymbolArray](cops_lint.md#lintpercentsymbolarray)
 * [Lint/RandOne](cops_lint.md#lintrandone)
+* [Lint/RedundantWithIndex](cops_lint.md#lintredundantwithindex)
 * [Lint/RequireParentheses](cops_lint.md#lintrequireparentheses)
 * [Lint/RescueException](cops_lint.md#lintrescueexception)
 * [Lint/RescueType](cops_lint.md#lintrescuetype)

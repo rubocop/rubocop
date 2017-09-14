@@ -30,6 +30,7 @@
 * [#4694](https://github.com/bbatsov/rubocop/pull/4694): Add new `Lint/UriRegexp` cop. ([@koic][])
 * Add new `Style/MinMax` cop. ([@drenmi][])
 * [#4720](https://github.com/bbatsov/rubocop/pull/4720): Add new `Bundler/InsecureProtocolSource` cop. ([@koic][])
+* [#4708](https://github.com/bbatsov/rubocop/pull/4708): Add new `Lint/RedundantWithIndex` cop`. ([@koic][])
 
 ### Bug fixes
 

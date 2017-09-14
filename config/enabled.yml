@@ -1327,6 +1327,10 @@ Lint/RandOne:
                  and most likely a mistake.
   Enabled: true
 
+Lint/RedundantWithIndex:
+  Description: 'Checks for redundant `with_index`.'
+  Enabled: true
+
 Lint/RequireParentheses:
   Description: >-
                  Use parentheses in the method call to avoid confusion

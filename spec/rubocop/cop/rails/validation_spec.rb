@@ -16,7 +16,7 @@ describe RuboCop::Cop::Rails::Validation do
     end
   end
 
-  described_class::TYPES.each_with_index do |parameter|
+  described_class::TYPES.each do |parameter|
     it "autocorrect validates_#{parameter}_of" do
       new_source = autocorrect_source(
         "validates_#{parameter}_of :full_name, :birth_date"
