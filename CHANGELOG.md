@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.50.0 (2017-09-14)
+
 ### New features
 
 * [#4464](https://github.com/bbatsov/rubocop/pull/4464): Add `EnforcedStyleForEmptyBraces` parameter to `Layout/SpaceBeforeBlockBraces` cop. ([@palkan][])
