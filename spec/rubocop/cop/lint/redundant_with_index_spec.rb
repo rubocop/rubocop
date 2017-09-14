@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::UnneededWithIndex do
+describe RuboCop::Cop::Lint::RedundantWithIndex do
   let(:config) { RuboCop::Config.new }
   subject(:cop) { described_class.new(config) }
 
@@ -14,7 +14,7 @@ describe RuboCop::Cop::Lint::UnneededWithIndex do
   it 'registers an offense when using `ary.each.with_index { |v| v }`' do
     expect_offense(<<-RUBY.strip_indent)
       ary.each.with_index { |v| v }
-               ^^^^^^^^^^ Remove unneeded `with_index`.
+               ^^^^^^^^^^ Remove redundant `with_index`.
     RUBY
   end
 

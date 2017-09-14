@@ -1327,6 +1327,10 @@ Lint/RandOne:
                  and most likely a mistake.
   Enabled: true
 
+Lint/RedundantWithIndex:
+  Description: 'Checks for redundant `with_index`.'
+  Enabled: true
+
 Lint/RequireParentheses:
   Description: >-
                  Use parentheses in the method call to avoid confusion
@@ -1389,10 +1393,6 @@ Lint/UnneededDisable:
                  Checks for rubocop:disable comments that can be removed.
                  Note: this cop is not disabled when disabling all cops.
                  It must be explicitly disabled.
-  Enabled: true
-
-Lint/UnneededWithIndex:
-  Description: 'Checks for unneeded `with_index`.'
   Enabled: true
 
 Lint/UnneededSplatExpansion:

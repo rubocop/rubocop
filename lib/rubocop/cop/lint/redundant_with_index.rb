@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for unneeded `with_index`.
+      # This cop checks for redundant `with_index`.
       #
       # @example
       #   # bad
@@ -26,11 +26,11 @@ module RuboCop
       #     v
       #   end
       #
-      class UnneededWithIndex < Cop
+      class RedundantWithIndex < Cop
         MSG_EACH_WITH_INDEX = 'Use `each` instead of `each_with_index`.'.freeze
-        MSG_WITH_INDEX = 'Remove unneeded `with_index`.'.freeze
+        MSG_WITH_INDEX = 'Remove redundant `with_index`.'.freeze
 
-        def_node_matcher :unneeded_with_index?, <<-PATTERN
+        def_node_matcher :redundant_with_index?, <<-PATTERN
           (block
             $(send
               _ {:each_with_index :with_index})
@@ -40,14 +40,14 @@ module RuboCop
         PATTERN
 
         def on_block(node)
-          unneeded_with_index?(node) do |send|
+          redundant_with_index?(node) do |send|
             add_offense(node, with_index_range(send))
           end
         end
 
         def autocorrect(node)
           lambda do |corrector|
-            unneeded_with_index?(node) do |send|
+            redundant_with_index?(node) do |send|
               if send.method_name == :each_with_index
                 corrector.replace(send.loc.selector, 'each')
               else

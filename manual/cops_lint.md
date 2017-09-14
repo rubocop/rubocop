@@ -1431,6 +1431,38 @@ rand(-1.0)
 0 # just use 0 instead
 ```
 
+## Lint/RedundantWithIndex
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for redundant `with_index`.
+
+### Example
+
+```ruby
+# bad
+ary.each_with_index do |v|
+  v
+end
+
+# good
+ary.each do |v|
+  v
+end
+
+# bad
+ary.each.with_index do |v|
+  v
+end
+
+# good
+ary.each do |v|
+  v
+end
+```
+
 ## Lint/RequireParentheses
 
 Enabled by default | Supports autocorrection
@@ -1872,38 +1904,6 @@ when *[1, 2, 3]
   bar
 else
   baz
-end
-```
-
-## Lint/UnneededWithIndex
-
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
-
-This cop checks for unneeded `with_index`.
-
-### Example
-
-```ruby
-# bad
-ary.each_with_index do |v|
-  v
-end
-
-# good
-ary.each do |v|
-  v
-end
-
-# bad
-ary.each.with_index do |v|
-  v
-end
-
-# good
-ary.each do |v|
-  v
 end
 ```
 
