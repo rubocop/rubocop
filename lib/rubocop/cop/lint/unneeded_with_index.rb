@@ -48,7 +48,7 @@ module RuboCop
         def autocorrect(node)
           lambda do |corrector|
             unneeded_with_index?(node) do |send|
-              if each_with_index_method?(node)
+              if send.method_name == :each_with_index
                 corrector.replace(send.loc.selector, 'each')
               else
                 corrector.remove(send.loc.selector)
@@ -61,15 +61,15 @@ module RuboCop
         private
 
         def message(node)
-          each_with_index_method?(node) ? MSG_EACH_WITH_INDEX : MSG_WITH_INDEX
+          if node.method_name == :each_with_index
+            MSG_EACH_WITH_INDEX
+          else
+            MSG_WITH_INDEX
+          end
         end
 
         def with_index_range(send)
           range_between(send.loc.selector.begin_pos, send.loc.selector.end_pos)
-        end
-
-        def each_with_index_method?(node)
-          node.children.first.children.last == :each_with_index
         end
       end
     end
