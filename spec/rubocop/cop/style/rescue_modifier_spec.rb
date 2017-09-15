@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
 describe RuboCop::Cop::Style::RescueModifier do
+  subject(:cop) { described_class.new(config) }
   let(:config) do
     RuboCop::Config.new('Layout/IndentationWidth' => {
                           'Width' => 2
                         })
   end
-
-  subject(:cop) { described_class.new(config) }
 
   it 'registers an offense for modifier rescue' do
     expect_offense(<<-RUBY.strip_indent)
@@ -231,13 +230,12 @@ describe RuboCop::Cop::Style::RescueModifier do
   end
 
   describe 'excluded file' do
+    subject(:cop) { described_class.new(config) }
     let(:config) do
       RuboCop::Config.new('Style/RescueModifier' =>
                           { 'Enabled' => true,
                             'Exclude' => ['**/**'] })
     end
-
-    subject(:cop) { described_class.new(config) }
 
     it 'processes excluded files with issue' do
       expect_no_offenses('foo rescue bar')

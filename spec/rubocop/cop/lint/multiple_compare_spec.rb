@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 describe RuboCop::Cop::Lint::MultipleCompare do
-  let(:config) { RuboCop::Config.new }
-
   subject(:cop) { described_class.new(config) }
+  let(:config) { RuboCop::Config.new }
 
   shared_examples 'Check to use two comparison operator' do |op1, op2|
     bad_source = "x #{op1} y #{op2} z"

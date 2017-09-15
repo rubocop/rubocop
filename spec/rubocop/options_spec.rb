@@ -311,9 +311,8 @@ describe RuboCop::Options, :isolated_environment do
     ensure
       ENV.delete('RUBOCOP_OPTS')
     end
-    let(:command_line_options) { %w[--no-color] }
-
     subject { options.parse(command_line_options).first }
+    let(:command_line_options) { %w[--no-color] }
 
     context '.rubocop file' do
       before do

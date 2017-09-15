@@ -3,9 +3,8 @@
 require 'spec_helper'
 
 describe RuboCop::Cop::Style::YodaCondition, :config do
-  let(:cop_config) { { 'EnforcedStyle' => 'all_comparison_operators' } }
   subject(:cop) { described_class.new(config) }
-
+  let(:cop_config) { { 'EnforcedStyle' => 'all_comparison_operators' } }
   let(:error_message) { 'Reverse the order of the operands `%s`.' }
 
   # needed because of usage of safe navigation operator

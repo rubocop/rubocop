@@ -40,17 +40,16 @@ describe RuboCop::Cop::Util do
   end
 
   describe 'source indicated by #range_with_surrounding_comma' do
-    let(:source) { 'raise " ,Error, "' }
-    let(:processed_source) { parse_source(source) }
-    let(:input_range) do
-      Parser::Source::Range.new(processed_source.buffer, 9, 14)
-    end
-
     subject do
       obj = TestUtil.new
       obj.instance_exec(processed_source) { |src| @processed_source = src }
       r = obj.send(:range_with_surrounding_comma, input_range, side)
       processed_source.buffer.source[r.begin_pos...r.end_pos]
+    end
+    let(:source) { 'raise " ,Error, "' }
+    let(:processed_source) { parse_source(source) }
+    let(:input_range) do
+      Parser::Source::Range.new(processed_source.buffer, 9, 14)
     end
 
     context 'when side is :both' do
@@ -73,17 +72,16 @@ describe RuboCop::Cop::Util do
   end
 
   describe 'source indicated by #range_with_surrounding_space' do
-    let(:source) { 'f {  a(2) }' }
-    let(:processed_source) { parse_source(source) }
-    let(:input_range) do
-      Parser::Source::Range.new(processed_source.buffer, 5, 9)
-    end
-
     subject do
       obj = TestUtil.new
       obj.instance_exec(processed_source) { |src| @processed_source = src }
       r = obj.send(:range_with_surrounding_space, input_range, side)
       processed_source.buffer.source[r.begin_pos...r.end_pos]
+    end
+    let(:source) { 'f {  a(2) }' }
+    let(:processed_source) { parse_source(source) }
+    let(:input_range) do
+      Parser::Source::Range.new(processed_source.buffer, 5, 9)
     end
 
     context 'when side is :both' do
@@ -106,6 +104,10 @@ describe RuboCop::Cop::Util do
   end
 
   describe 'source indicated by #range_by_whole_lines' do
+    subject do
+      r = output_range
+      processed_source.buffer.source[r.begin_pos...r.end_pos]
+    end
     let(:source) { <<-RUBY.strip_indent }
       puts 'example'
       puts 'another example'
@@ -127,11 +129,6 @@ describe RuboCop::Cop::Util do
       obj.send(:range_by_whole_lines,
                input_range,
                include_final_newline: include_final_newline)
-    end
-
-    subject do
-      r = output_range
-      processed_source.buffer.source[r.begin_pos...r.end_pos]
     end
 
     shared_examples 'final newline behavior' do

@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
 describe RuboCop::Cop::Offense do
+  subject(:offense) do
+    described_class.new(:convention, location, 'message', 'CopName', :corrected)
+  end
   let(:location) do
     source_buffer = Parser::Source::Buffer.new('test', 1)
     source_buffer.source = "a\n"
     Parser::Source::Range.new(source_buffer, 0, 1)
-  end
-
-  subject(:offense) do
-    described_class.new(:convention, location, 'message', 'CopName', :corrected)
   end
 
   it 'has a few required attributes' do
@@ -135,6 +134,10 @@ describe RuboCop::Cop::Offense do
   end
 
   context 'offenses that span multiple lines' do
+    subject(:offense) do
+      described_class
+        .new(:convention, location, 'message', 'CopName', :corrected)
+    end
     let(:location) do
       source_buffer = Parser::Source::Buffer.new('test', 1)
       source_buffer.source = <<-RUBY.strip_indent
@@ -146,11 +149,6 @@ describe RuboCop::Cop::Offense do
       Parser::Source::Range.new(source_buffer, 0, source_buffer.source.length)
     end
 
-    subject(:offense) do
-      described_class
-        .new(:convention, location, 'message', 'CopName', :corrected)
-    end
-
     it 'highlights the first line' do
       expect(offense.location.source).to eq(location.source_buffer.source)
       expect(offense.highlighted_area.source).to eq('def foo')
@@ -158,6 +156,10 @@ describe RuboCop::Cop::Offense do
   end
 
   context 'offenses that span part of a line' do
+    subject(:offense) do
+      described_class
+        .new(:convention, location, 'message', 'CopName', :corrected)
+    end
     let(:location) do
       source_buffer = Parser::Source::Buffer.new('test', 1)
       source_buffer.source = <<-RUBY.strip_indent
@@ -167,11 +169,6 @@ describe RuboCop::Cop::Offense do
         end
       RUBY
       Parser::Source::Range.new(source_buffer, 4, 7)
-    end
-
-    subject(:offense) do
-      described_class
-        .new(:convention, location, 'message', 'CopName', :corrected)
     end
 
     it 'highlights the first line' do

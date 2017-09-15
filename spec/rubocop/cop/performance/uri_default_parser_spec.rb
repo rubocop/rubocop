@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 describe RuboCop::Cop::Performance::UriDefaultParser do
-  let(:config) { RuboCop::Config.new }
-
   subject(:cop) { described_class.new(config) }
+  let(:config) { RuboCop::Config.new }
 
   it 'registers an offense when using `URI::Parser.new`' do
     expect_offense(<<-RUBY.strip_indent)

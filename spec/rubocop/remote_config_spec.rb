@@ -3,14 +3,13 @@
 describe RuboCop::RemoteConfig do
   include FileHelper
 
+  subject(:remote_config) do
+    described_class.new(remote_config_url, base_dir).file
+  end
   let(:remote_config_url) { 'http://example.com/rubocop.yml' }
   let(:base_dir) { '.' }
   let(:cached_file_name) { '.rubocop-http---example-com-rubocop-yml' }
   let(:cached_file_path) { File.expand_path(cached_file_name, base_dir) }
-
-  subject(:remote_config) do
-    described_class.new(remote_config_url, base_dir).file
-  end
 
   before do
     stub_request(:get, remote_config_url)

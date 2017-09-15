@@ -19,13 +19,12 @@ describe RuboCop::Cop::VariableForce::Scope do
     end
   end
 
+  subject(:scope) { described_class.new(scope_node) }
   let(:ast) do
     RuboCop::ProcessedSource.new(source, ruby_version).ast
   end
 
   let(:scope_node) { ast.each_node(scope_node_type).first }
-
-  subject(:scope) { described_class.new(scope_node) }
 
   describe '#name' do
     context 'when the scope is instance method definition' do

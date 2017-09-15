@@ -3,9 +3,8 @@
 require 'spec_helper'
 
 describe RuboCop::Cop::Style::MultipleComparison do
-  let(:config) { RuboCop::Config.new }
-
   subject(:cop) { described_class.new(config) }
+  let(:config) { RuboCop::Config.new }
 
   it 'accepts' do
     inspect_source(['a = "a"',

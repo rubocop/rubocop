@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 describe RuboCop::Cop::Style::CommentedKeyword do
-  let(:config) { RuboCop::Config.new }
-
   subject(:cop) { described_class.new(config) }
+  let(:config) { RuboCop::Config.new }
 
   it 'registers an offense when commenting on the same line as `end`' do
     inspect_source(<<-RUBY.strip_indent)

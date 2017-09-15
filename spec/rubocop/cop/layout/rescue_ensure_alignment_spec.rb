@@ -112,13 +112,12 @@ describe RuboCop::Cop::Layout::RescueEnsureAlignment do
   end
 
   describe 'excluded file' do
+    subject(:cop) { described_class.new(config) }
     let(:config) do
       RuboCop::Config.new('Layout/RescueEnsureAlignment' =>
                           { 'Enabled' => true,
                             'Exclude' => ['**/**'] })
     end
-
-    subject(:cop) { described_class.new(config) }
 
     it 'processes excluded files with issue' do
       expect_no_offenses(<<-RUBY.strip_indent)

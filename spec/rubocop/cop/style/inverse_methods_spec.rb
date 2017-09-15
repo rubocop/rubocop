@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 describe RuboCop::Cop::Style::InverseMethods do
+  subject(:cop) { described_class.new(config) }
   let(:config) do
     RuboCop::Config.new(
       'Style/InverseMethods' => {
@@ -21,8 +22,6 @@ describe RuboCop::Cop::Style::InverseMethods do
       }
     )
   end
-
-  subject(:cop) { described_class.new(config) }
 
   it 'registers an offense for calling !.none? with a symbol proc' do
     expect_offense(<<-RUBY.strip_indent)

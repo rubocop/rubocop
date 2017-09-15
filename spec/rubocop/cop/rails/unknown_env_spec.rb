@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 describe RuboCop::Cop::Rails::UnknownEnv, :config do
+  subject(:cop) { described_class.new(config) }
   let(:cop_config) do
     {
       'Environments' => %w[
@@ -10,8 +11,6 @@ describe RuboCop::Cop::Rails::UnknownEnv, :config do
       ]
     }
   end
-
-  subject(:cop) { described_class.new(config) }
 
   it 'registers an offense for typo of environment name' do
     expect_offense(<<-RUBY)
