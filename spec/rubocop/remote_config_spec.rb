@@ -68,7 +68,7 @@ describe RuboCop::RemoteConfig do
 
         expect do
           remote_config
-        end.to_not change(File.stat(cached_file_path), :mtime)
+        end.not_to change(File.stat(cached_file_path), :mtime)
         assert_requested :get, remote_config_url
       end
     end

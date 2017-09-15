@@ -41,13 +41,13 @@ describe RuboCop::AST::HashNode do
     context 'with a hash containing pairs' do
       let(:source) { '{ a: 1, b: 2 }' }
 
-      it { expect(hash_node).to_not be_empty }
+      it { expect(hash_node).not_to be_empty }
     end
 
     context 'with a hash containing a keyword splat' do
       let(:source) { '{ **foo }' }
 
-      it { expect(hash_node).to_not be_empty }
+      it { expect(hash_node).not_to be_empty }
     end
   end
 

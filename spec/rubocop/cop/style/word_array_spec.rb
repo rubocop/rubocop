@@ -267,7 +267,7 @@ describe RuboCop::Cop::Style::WordArray, :config do
     let(:cop_config) { { 'WordRegex' => 'just_a_string' } }
 
     it 'still parses the code without raising an error' do
-      expect { inspect_source('') }.to_not raise_error
+      expect { inspect_source('') }.not_to raise_error
     end
   end
 
