@@ -101,6 +101,8 @@ module RuboCop
           Files created:
             - #{source_path}
             - #{spec_path}
+          File modified:
+            - `require '#{require_path}'` added into lib/rubocop.rb
 
           Do 3 steps:
             1. Add an entry to the "New features" section in CHANGELOG.md,
