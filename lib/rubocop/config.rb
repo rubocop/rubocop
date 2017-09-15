@@ -60,8 +60,8 @@ module RuboCop
         'The `Style/AsciiIdentifiers` cop has been moved to ' \
           '`Naming/AccessorMethodName`.',
       'Style/OpMethod' =>
-        'The `Style/OpMethods` cop has been renamed and moved to ' \
-          '`Naming/BinaryOperatorParameter`.',
+        'The `Style/OpMethod` cop has been renamed and moved to ' \
+          '`Naming/BinaryOperatorParameterName`.',
       'Style/ClassAndModuleCamelCase' =>
         'The `Style/ClassAndModuleCamelCase` cop has been renamed to ' \
           '`Naming/ClassAndModuleCamelCase`.',
