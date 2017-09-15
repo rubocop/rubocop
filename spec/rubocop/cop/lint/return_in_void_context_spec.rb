@@ -80,4 +80,12 @@ describe RuboCop::Cop::Lint::ReturnInVoidContext do
       RUBY
     end
   end
+
+  context 'when return is in top scope' do
+    it 'accepts' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        return if true
+      RUBY
+    end
+  end
 end
