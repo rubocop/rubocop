@@ -183,7 +183,7 @@ describe RuboCop::Cop::VariableForce::Scope do
         ast
       end
 
-      it { should be false }
+      it { is_expected.to be false }
     end
 
     context 'with node of the scope itself' do
@@ -191,7 +191,7 @@ describe RuboCop::Cop::VariableForce::Scope do
         ast.each_node.find(&:defs_type?)
       end
 
-      it { should be false }
+      it { is_expected.to be false }
     end
 
     context 'with child node the scope does not include' do
@@ -199,7 +199,7 @@ describe RuboCop::Cop::VariableForce::Scope do
         ast.each_node.find(&:self_type?)
       end
 
-      it { should be false }
+      it { is_expected.to be false }
     end
 
     context 'with child node the scope includes' do
@@ -207,7 +207,7 @@ describe RuboCop::Cop::VariableForce::Scope do
         ast.each_node.find(&:send_type?)
       end
 
-      it { should be true }
+      it { is_expected.to be true }
     end
 
     context 'with descendant node the scope does not include' do
@@ -215,7 +215,7 @@ describe RuboCop::Cop::VariableForce::Scope do
         ast.each_node.find(&:lvasgn_type?)
       end
 
-      it { should be false }
+      it { is_expected.to be false }
     end
   end
 
