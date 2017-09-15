@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Style::SafeNavigation, :config do
   subject(:cop) { described_class.new(config) }
+
   let(:cop_config) { { 'ConvertCodeThatCanStartToReturnNil' => false } }
 
   let(:message) do

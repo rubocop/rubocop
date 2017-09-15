@@ -3,6 +3,7 @@
 module RuboCop
   describe Formatter::ProgressFormatter do
     subject(:formatter) { described_class.new(output) }
+
     let(:output) { StringIO.new }
 
     let(:files) do

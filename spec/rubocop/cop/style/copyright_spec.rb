@@ -16,6 +16,7 @@ end
 
 describe RuboCop::Cop::Style::Copyright, :config do
   subject(:cop) { described_class.new(config) }
+
   let(:cop_config) { { 'Notice' => 'Copyright (\(c\) )?2015 Acme Inc' } }
 
   context 'when the copyright notice is present' do

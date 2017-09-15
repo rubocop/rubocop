@@ -4,6 +4,7 @@ describe RuboCop::ProcessedSource do
   include FileHelper
 
   subject(:processed_source) { described_class.new(source, ruby_version, path) }
+
   let(:ruby_version) { RuboCop::Config::KNOWN_RUBIES.last }
 
   let(:source) { <<-RUBY.strip_indent }

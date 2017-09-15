@@ -4,6 +4,7 @@ describe RuboCop::Config do
   include FileHelper
 
   subject(:configuration) { described_class.new(hash, loaded_path) }
+
   let(:hash) { {} }
   let(:loaded_path) { 'example/.rubocop.yml' }
 

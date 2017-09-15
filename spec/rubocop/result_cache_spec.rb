@@ -6,6 +6,7 @@ describe RuboCop::ResultCache, :isolated_environment do
   subject(:cache) do
     described_class.new(file, options, config_store, cache_root)
   end
+
   let(:file) { 'example.rb' }
   let(:options) { {} }
   let(:config_store) { double('config_store', for: RuboCop::Config.new) }

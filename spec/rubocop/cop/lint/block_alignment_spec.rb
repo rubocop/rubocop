@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Lint::BlockAlignment, :config do
   subject(:cop) { described_class.new(config) }
+
   let(:cop_config) do
     { 'EnforcedStyleAlignWith' => 'either' }
   end

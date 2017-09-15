@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Metrics::BlockNesting, :config do
   subject(:cop) { described_class.new(config) }
+
   let(:cop_config) { { 'Max' => 2 } }
 
   shared_examples 'too deep' do |source, lines, max_to_allow = 3|

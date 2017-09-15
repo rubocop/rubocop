@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Style::EmptyElse do
   subject(:cop) { described_class.new(config) }
+
   let(:missing_else_config) { {} }
 
   shared_examples 'auto-correct' do |keyword|

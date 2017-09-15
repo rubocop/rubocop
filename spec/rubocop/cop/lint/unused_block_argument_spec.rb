@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
   subject(:cop) { described_class.new(config) }
+
   let(:cop_config) { { 'AllowUnusedKeywordArguments' => false } }
 
   shared_examples 'auto-correction' do |name, old_source, new_source|

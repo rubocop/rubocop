@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Style::TrivialAccessors, :config do
   subject(:cop) { described_class.new(config) }
+
   let(:cop_config) { {} }
 
   let(:trivial_reader) do

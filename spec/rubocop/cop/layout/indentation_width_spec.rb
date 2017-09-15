@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Layout::IndentationWidth do
   subject(:cop) { described_class.new(config) }
+
   let(:config) do
     RuboCop::Config.new('Layout/IndentationWidth' => cop_config,
                         'Layout/IndentationConsistency' => consistency_config,

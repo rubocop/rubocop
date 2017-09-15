@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Metrics::ParameterLists, :config do
   subject(:cop) { described_class.new(config) }
+
   let(:cop_config) do
     {
       'Max' => 4,

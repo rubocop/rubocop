@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Style::RedundantFreeze do
   subject(:cop) { described_class.new }
+
   let(:prefix) { nil }
 
   shared_examples :immutable_objects do |o|

@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Layout::SpaceAroundOperators do
   subject(:cop) { described_class.new(config) }
+
   let(:config) do
     RuboCop::Config
       .new(

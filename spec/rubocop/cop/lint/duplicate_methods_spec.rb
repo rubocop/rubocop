@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Lint::DuplicateMethods do
   subject(:cop) { described_class.new(config) }
+
   let(:config) { RuboCop::Config.new }
 
   shared_examples 'in scope' do |type, opening_line|

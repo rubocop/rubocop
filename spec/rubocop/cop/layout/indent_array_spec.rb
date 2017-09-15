@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Layout::IndentArray do
   subject(:cop) { described_class.new(config) }
+
   let(:config) do
     supported_styles = {
       'SupportedStyles' => %w[special_inside_parentheses consistent

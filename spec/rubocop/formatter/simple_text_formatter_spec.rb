@@ -8,6 +8,7 @@ module RuboCop
       end
 
       subject(:formatter) { described_class.new(output) }
+
       let(:output) { StringIO.new }
 
       describe '#report_file' do

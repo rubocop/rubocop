@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Rails::PluralizationGrammar do
   subject(:cop) { described_class.new }
+
   before do
     inspect_source(source)
   end

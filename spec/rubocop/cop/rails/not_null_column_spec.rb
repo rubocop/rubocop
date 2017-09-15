@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Rails::NotNullColumn, :config do
   subject(:cop) { described_class.new(config) }
+
   let(:cop_config) { { 'Include' => nil } }
 
   context 'with add_column call' do

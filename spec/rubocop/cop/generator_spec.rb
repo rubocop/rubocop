@@ -2,6 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Generator do
   subject(:generator)  { described_class.new(cop_identifier) }
+
   let(:cop_identifier) { 'Style/FakeCop' }
 
   before do

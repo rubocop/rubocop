@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Metrics::MethodLength, :config do
   subject(:cop) { described_class.new(config) }
+
   let(:cop_config) { { 'Max' => 5, 'CountComments' => false } }
 
   shared_examples 'reports violation' do |first_line, last_line|

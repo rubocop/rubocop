@@ -3,6 +3,7 @@
 module RuboCop
   describe Formatter::JSONFormatter do
     subject(:formatter) { described_class.new(output) }
+
     let(:output) { StringIO.new }
     let(:files) { %w[/path/to/file1 /path/to/file2] }
     let(:location) do
@@ -80,6 +81,7 @@ module RuboCop
 
     describe '#hash_for_file' do
       subject(:hash) { formatter.hash_for_file(file, offenses) }
+
       let(:file) { File.expand_path('spec/spec_helper.rb') }
       let(:offenses) { [double('offense1'), double('offense2')] }
 

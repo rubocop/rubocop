@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
   subject(:cop) { described_class.new(config) }
+
   let(:config) do
     merged = RuboCop::ConfigLoader
              .default_configuration['Layout/MultilineMethodCallIndentation']

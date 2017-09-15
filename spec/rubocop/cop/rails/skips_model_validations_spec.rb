@@ -16,6 +16,7 @@ describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
   }
 
   subject(:cop) { described_class.new(config) }
+
   let(:msg) { 'Avoid using `%s` because it skips validations.' }
   let(:cop_config) { cop_config }
 

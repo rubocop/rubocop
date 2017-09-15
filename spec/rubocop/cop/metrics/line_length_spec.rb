@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Metrics::LineLength, :config do
   subject(:cop) { described_class.new(config) }
+
   let(:cop_config) { { 'Max' => 80, 'IgnoredPatterns' => nil } }
 
   it "registers an offense for a line that's 81 characters wide" do

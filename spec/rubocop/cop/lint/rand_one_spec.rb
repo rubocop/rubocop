@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Lint::RandOne do
   subject(:cop) { described_class.new }
+
   before { inspect_source(source) }
 
   shared_examples 'offenses' do |source|

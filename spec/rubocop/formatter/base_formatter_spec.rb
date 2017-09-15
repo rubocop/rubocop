@@ -7,6 +7,7 @@ module RuboCop
 
       describe 'how the API methods are invoked', :isolated_environment do
         subject(:formatter) { double('formatter').as_null_object }
+
         let(:runner) { Runner.new({}, ConfigStore.new) }
         let(:output) { $stdout.string }
 

@@ -43,6 +43,7 @@ describe RuboCop::Cop::Rails::ActionFilter, :config do
 
   context 'Rails <= 4.0', :rails3 do
     subject(:cop) { described_class.new(config) }
+
     let(:cop_config) { { 'Include' => nil } }
 
     context 'when using action methods' do
@@ -100,6 +101,7 @@ describe RuboCop::Cop::Rails::ActionFilter, :config do
 
   context 'Rails >= 4.0', :rails4 do
     subject(:cop) { described_class.new(config) }
+
     let(:cop_config) { { 'Include' => nil } }
 
     context 'when style is action' do

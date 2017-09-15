@@ -4,6 +4,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
   include StatementModifierHelper
 
   subject(:cop) { described_class.new(config) }
+
   let(:config) do
     hash = { 'Metrics/LineLength' => { 'Max' => 80 } }
     RuboCop::Config.new(hash)

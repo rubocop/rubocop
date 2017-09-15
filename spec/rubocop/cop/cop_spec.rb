@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Cop do
   subject(:cop) { described_class.new }
+
   let(:location) do
     source_buffer = Parser::Source::Buffer.new('test', 1)
     source_buffer.source = "a\n"
@@ -177,24 +178,28 @@ describe RuboCop::Cop::Cop do
 
   context 'with no submodule' do
     subject(:cop) { described_class }
+
     it('has right name') { expect(cop.cop_name).to eq('Cop/Cop') }
     it('has right department') { expect(cop.department).to eq(:Cop) }
   end
 
   context 'with style cops' do
     subject(:cop) { RuboCop::Cop::Style::For }
+
     it('has right name') { expect(cop.cop_name).to eq('Style/For') }
     it('has right department') { expect(cop.department).to eq(:Style) }
   end
 
   context 'with lint cops' do
     subject(:cop) { RuboCop::Cop::Lint::Loop }
+
     it('has right name') { expect(cop.cop_name).to eq('Lint/Loop') }
     it('has right department') { expect(cop.department).to eq(:Lint) }
   end
 
   context 'with rails cops' do
     subject(:cop) { RuboCop::Cop::Rails::Validation }
+
     it('has right name') { expect(cop.cop_name).to eq('Rails/Validation') }
     it('has right department') { expect(cop.department).to eq(:Rails) }
   end
@@ -202,6 +207,7 @@ describe RuboCop::Cop::Cop do
   describe 'Registry' do
     context '#departments' do
       subject(:departments) { described_class.registry.departments }
+
       it('has departments') { expect(departments.length).not_to eq(0) }
       it { is_expected.to include(:Lint) }
       it { is_expected.to include(:Rails) }

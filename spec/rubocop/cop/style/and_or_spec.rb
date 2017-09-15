@@ -7,6 +7,7 @@ describe RuboCop::Cop::Style::AndOr, :config do
     }
 
     subject(:cop) { described_class.new(config) }
+
     let(:cop_config) { cop_config }
 
     %w[and or].each do |operator|
@@ -65,6 +66,7 @@ describe RuboCop::Cop::Style::AndOr, :config do
     }
 
     subject(:cop) { described_class.new(config) }
+
     let(:cop_config) { cop_config }
 
     it 'registers an offense for "or"' do

@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Style::OptionHash, :config do
   subject(:cop) { described_class.new(config) }
+
   let(:cop_config) { { 'SuspiciousParamNames' => ['options'] } }
 
   let(:source) do

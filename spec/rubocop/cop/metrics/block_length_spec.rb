@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Metrics::BlockLength, :config do
   subject(:cop) { described_class.new(config) }
+
   let(:cop_config) { { 'Max' => 2, 'CountComments' => false } }
 
   it 'rejects a block with more than 5 lines' do

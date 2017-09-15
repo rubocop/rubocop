@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Layout::AccessModifierIndentation do
   subject(:cop) { described_class.new(config) }
+
   let(:config) do
     c = cop_config.merge('SupportedStyles' => %w[indent outdent])
     RuboCop::Config

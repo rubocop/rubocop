@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Layout::SpaceAfterComma do
   subject(:cop) { described_class.new(config) }
+
   let(:config) do
     RuboCop::Config.new('Layout/SpaceInsideHashLiteralBraces' => brace_config)
   end

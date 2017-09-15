@@ -3,6 +3,7 @@
 module RuboCop
   describe Formatter::TapFormatter do
     subject(:formatter) { described_class.new(output) }
+
     let(:output) { StringIO.new }
 
     let(:files) do

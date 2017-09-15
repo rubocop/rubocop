@@ -50,6 +50,7 @@ describe RuboCop::Cop::Team do
 
     context 'when the option argument of .new is omitted' do
       subject { described_class.new(cop_classes, config).autocorrect? }
+
       it { is_expected.to be_falsey }
     end
 
@@ -65,6 +66,7 @@ describe RuboCop::Cop::Team do
 
     context 'when the option argument of .new is omitted' do
       subject { described_class.new(cop_classes, config).debug? }
+
       it { is_expected.to be_falsey }
     end
 
@@ -179,6 +181,7 @@ describe RuboCop::Cop::Team do
 
   describe '#forces' do
     subject(:forces) { team.forces }
+
     let(:cop_classes) { RuboCop::Cop::Cop.non_rails }
 
     it 'returns force instances' do
