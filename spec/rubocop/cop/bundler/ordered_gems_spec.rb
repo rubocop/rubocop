@@ -12,6 +12,7 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
     'Gems should be sorted in an alphabetical order within their ' \
       'section of the Gemfile. Gem `%s` should appear before `%s`.'
   end
+
   subject(:cop) { described_class.new(config) }
 
   context 'When gems are alphabetically sorted' do

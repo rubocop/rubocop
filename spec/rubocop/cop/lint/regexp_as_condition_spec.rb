@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Lint::RegexpAsCondition do
   let(:config) { RuboCop::Config.new }
+
   subject(:cop) { described_class.new(config) }
 
   it 'registers an offense for a regexp literal in `if` condition' do

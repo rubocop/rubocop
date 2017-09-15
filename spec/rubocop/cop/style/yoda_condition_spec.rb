@@ -33,6 +33,7 @@ describe RuboCop::Cop::Style::YodaCondition, :config do
 
   shared_examples 'autocorrect' do |code, corrected|
     let(:source) { code }
+
     it 'autocorrects code' do
       expect(autocorrect_source(source)).to eq(corrected)
     end
@@ -89,6 +90,7 @@ describe RuboCop::Cop::Style::YodaCondition, :config do
 
   context 'with EnforcedStyle: equality_operators_only' do
     let(:cop_config) { { 'EnforcedStyle' => 'equality_operators_only' } }
+
     it_behaves_like 'accepts', '42 < bar'
     it_behaves_like 'accepts', 'nil >= baz'
     it_behaves_like 'accepts', '3 < a && a < 5'

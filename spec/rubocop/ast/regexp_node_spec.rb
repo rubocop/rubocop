@@ -13,21 +13,25 @@ describe RuboCop::AST::RegexpNode do
     # rubocop:disable Security/Eval
     context 'with an empty regexp' do
       let(:source) { '//' }
+
       it { expect(regexp_node.to_regexp).to eq(eval(source)) }
     end
 
     context 'with a regexp without option' do
       let(:source) { '/.+/' }
+
       it { expect(regexp_node.to_regexp).to eq(eval(source)) }
     end
 
     context 'with an empty regexp with option' do
       let(:source) { '//ix' }
+
       it { expect(regexp_node.to_regexp).to eq(eval(source)) }
     end
 
     context 'with a regexp with option' do
       let(:source) { '/.+/imx' }
+
       it { expect(regexp_node.to_regexp).to eq(eval(source)) }
     end
     # rubocop:enable Security/Eval
@@ -38,24 +42,28 @@ describe RuboCop::AST::RegexpNode do
 
     context 'with an empty regexp' do
       let(:source) { '//' }
+
       it { expect(regopt).to be_regopt_type }
       it { expect(regopt.children).to be_empty }
     end
 
     context 'with a regexp without option' do
       let(:source) { '/.+/' }
+
       it { expect(regopt).to be_regopt_type }
       it { expect(regopt.children).to be_empty }
     end
 
     context 'with an empty regexp with option' do
       let(:source) { '//ix' }
+
       it { expect(regopt).to be_regopt_type }
       it { expect(regopt.children).to eq(%i[i x]) }
     end
 
     context 'with a regexp with option' do
       let(:source) { '/.+/imx' }
+
       it { expect(regopt).to be_regopt_type }
       it { expect(regopt.children).to eq(%i[i m x]) }
     end
@@ -66,21 +74,25 @@ describe RuboCop::AST::RegexpNode do
 
     context 'with an empty regexp' do
       let(:source) { '//' }
+
       it { expect(content).to eq('') }
     end
 
     context 'with a regexp without option' do
       let(:source) { '/.+/' }
+
       it { expect(content).to eq('.+') }
     end
 
     context 'with an empty regexp with option' do
       let(:source) { '//ix' }
+
       it { expect(content).to eq('') }
     end
 
     context 'with a regexp with option' do
       let(:source) { '/.+/imx' }
+
       it { expect(content).to eq('.+') }
     end
   end

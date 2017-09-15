@@ -240,6 +240,7 @@ describe RuboCop::Cop::Cop do
     let(:config) { RuboCop::Config.new({}) }
     let(:cop) { described_class.new(config, options) }
     let(:support_autocorrect) { true }
+
     subject { cop.autocorrect? }
 
     before do
@@ -248,15 +249,18 @@ describe RuboCop::Cop::Cop do
 
     context 'when the option is not given' do
       let(:options) { {} }
+
       it { is_expected.to be(false) }
     end
 
     context 'when the option is given' do
       let(:options) { { auto_correct: true } }
+
       it { is_expected.to be(true) }
 
       context 'when cop does not support autocorrection' do
         let(:support_autocorrect) { false }
+
         it { is_expected.to be(false) }
       end
 
@@ -264,6 +268,7 @@ describe RuboCop::Cop::Cop do
         let(:config) do
           RuboCop::Config.new('Cop/Cop' => { 'AutoCorrect' => false })
         end
+
         it { is_expected.to be(false) }
       end
     end

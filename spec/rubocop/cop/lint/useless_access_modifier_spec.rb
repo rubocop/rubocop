@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Lint::UselessAccessModifier do
   let(:config) { RuboCop::Config.new }
+
   subject(:cop) { described_class.new(config) }
 
   context 'when an access modifier has no effect' do
@@ -224,6 +225,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
         }
       )
     end
+
     it 'is aware that this creates a new scope' do
       expect_no_offenses(<<-RUBY.strip_indent)
         class SomeClass
@@ -309,6 +311,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
         }
       )
     end
+
     it 'is aware that this creates a new scope' do
       expect_no_offenses(<<-RUBY.strip_indent)
         module SomeModule
@@ -338,6 +341,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
         }
       )
     end
+
     it 'is aware that this creates a new method' do
       expect_no_offenses(<<-RUBY.strip_indent)
         class SomeClass

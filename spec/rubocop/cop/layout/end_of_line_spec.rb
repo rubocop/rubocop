@@ -36,6 +36,7 @@ describe RuboCop::Cop::Layout::EndOfLine, :config do
   context 'when EnforcedStyle is crlf' do
     let(:cop_config) { { 'EnforcedStyle' => 'crlf' } }
     let(:messages) { ['Carriage return character missing.'] }
+
     include_examples 'all configurations'
 
     it 'registers an offense for CR+LF' do
@@ -101,6 +102,7 @@ describe RuboCop::Cop::Layout::EndOfLine, :config do
 
   context 'when EnforcedStyle is lf' do
     let(:cop_config) { { 'EnforcedStyle' => 'lf' } }
+
     include_examples 'all configurations'
 
     it 'registers an offense for CR+LF' do

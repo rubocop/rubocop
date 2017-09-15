@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Lint::RedundantWithIndex do
   let(:config) { RuboCop::Config.new }
+
   subject(:cop) { described_class.new(config) }
 
   it 'registers an offense when using `ary.each_with_index { |v| v }`' do

@@ -55,16 +55,19 @@ describe RuboCop::Cop::Util do
 
     context 'when side is :both' do
       let(:side) { :both }
+
       it { is_expected.to eq(',Error,') }
     end
 
     context 'when side is :left' do
       let(:side) { :left }
+
       it { is_expected.to eq(',Error') }
     end
 
     context 'when side is :right' do
       let(:side) { :right }
+
       it { is_expected.to eq('Error,') }
     end
   end
@@ -85,16 +88,19 @@ describe RuboCop::Cop::Util do
 
     context 'when side is :both' do
       let(:side) { :both }
+
       it { is_expected.to eq('  a(2) ') }
     end
 
     context 'when side is :left' do
       let(:side) { :left }
+
       it { is_expected.to eq('  a(2)') }
     end
 
     context 'when side is :right' do
       let(:side) { :right }
+
       it { is_expected.to eq('a(2) ') }
     end
   end
@@ -122,6 +128,7 @@ describe RuboCop::Cop::Util do
                input_range,
                include_final_newline: include_final_newline)
     end
+
     subject do
       r = output_range
       processed_source.buffer.source[r.begin_pos...r.end_pos]
@@ -130,11 +137,13 @@ describe RuboCop::Cop::Util do
     shared_examples 'final newline behavior' do
       context 'without include_final_newline' do
         let(:include_final_newline) { false }
+
         it { is_expected.to eq(expected) }
       end
 
       context 'with include_final_newline' do
         let(:include_final_newline) { true }
+
         it { is_expected.to eq(expected + "\n") }
       end
     end
@@ -142,18 +151,21 @@ describe RuboCop::Cop::Util do
     context 'when part of a single line is selected' do
       let(:input_source) { "'example'" }
       let(:expected) { "puts 'example'" }
+
       include_examples 'final newline behavior'
     end
 
     context 'with a whole line except newline selected' do
       let(:input_source) { "puts 'example'" }
       let(:expected) { "puts 'example'" }
+
       include_examples 'final newline behavior'
     end
 
     context 'with a whole line plus beginning of next line' do
       let(:input_source) { "puts 'example'\n" }
       let(:expected) { "puts 'example'\nputs 'another example'" }
+
       include_examples 'final newline behavior'
     end
 
@@ -161,6 +173,7 @@ describe RuboCop::Cop::Util do
       let(:begin_pos) { 14 }
       let(:end_pos) { 14 }
       let(:expected) { "puts 'example'" }
+
       include_examples 'final newline behavior'
     end
 
@@ -168,18 +181,21 @@ describe RuboCop::Cop::Util do
       let(:begin_pos) { 15 }
       let(:end_pos) { 15 }
       let(:expected) { "puts 'another example'" }
+
       include_examples 'final newline behavior'
     end
 
     context 'with parts of two lines' do
       let(:input_source) { "'example'\nputs 'another" }
       let(:expected) { "puts 'example'\nputs 'another example'" }
+
       include_examples 'final newline behavior'
     end
 
     context 'with parts of four lines' do
       let(:input_source) { "'example'\nputs 'another example'\n\nso" }
       let(:expected) { source.chomp }
+
       include_examples 'final newline behavior'
     end
 
@@ -189,11 +205,13 @@ describe RuboCop::Cop::Util do
 
       context 'without include_final_newline' do
         let(:include_final_newline) { false }
+
         it { is_expected.to eq('newline_at_end') }
       end
 
       context 'with include_final_newline' do
         let(:include_final_newline) { true }
+
         it { is_expected.to eq('newline_at_end') }
       end
     end
@@ -224,11 +242,13 @@ describe RuboCop::Cop::Util do
 
     context 'when EnforcedStyle' do
       let(:enforced_style) { 'EnforcedStyle' }
+
       it { is_expected.to eq('SupportedStyles') }
     end
 
     context 'when EnforcedStyleInsidePipes' do
       let(:enforced_style) { 'EnforcedStyleInsidePipes' }
+
       it { is_expected.to eq('SupportedStylesInsidePipes') }
     end
   end

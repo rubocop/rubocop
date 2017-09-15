@@ -25,6 +25,7 @@ describe RuboCop::Cop::Style::Copyright, :config do
       names = Array.new
       names << 'James'
     SOURCE
+
     it 'does not add an offense' do
       expect_no_copyright_offense(cop, source)
     end
@@ -37,6 +38,7 @@ describe RuboCop::Cop::Style::Copyright, :config do
       names = Array.new
       names << 'James'
     SOURCE
+
     it 'does not add an offense' do
       expect_no_copyright_offense(cop, source)
     end
@@ -51,6 +53,7 @@ describe RuboCop::Cop::Style::Copyright, :config do
       names = Array.new
       names << 'James'
     SOURCE
+
     it 'does not add an offense' do
       expect_no_copyright_offense(cop, source)
     end

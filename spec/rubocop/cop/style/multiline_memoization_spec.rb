@@ -87,6 +87,7 @@ describe RuboCop::Cop::Style::MultilineMemoization, :config do
 
   context 'EnforcedStyle: keyword' do
     let(:cop_config) { { 'EnforcedStyle' => 'keyword' } }
+
     include_examples 'with all enforced styles'
 
     context 'with a multiline memoization' do
@@ -159,6 +160,7 @@ describe RuboCop::Cop::Style::MultilineMemoization, :config do
 
   context 'EnforcedStyle: braces' do
     let(:cop_config) { { 'EnforcedStyle' => 'braces' } }
+
     include_examples 'with all enforced styles'
 
     context 'with a multiline memoization' do

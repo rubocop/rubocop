@@ -5,6 +5,7 @@ describe RuboCop::Cop::Style::FormatString, :config do
 
   context 'when enforced style is sprintf' do
     let(:cop_config) { { 'EnforcedStyle' => 'sprintf' } }
+
     it 'registers an offense for a string followed by something' do
       expect_offense(<<-RUBY.strip_indent)
         puts "%d" % 10

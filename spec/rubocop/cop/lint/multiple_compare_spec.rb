@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Lint::MultipleCompare do
   let(:config) { RuboCop::Config.new }
+
   subject(:cop) { described_class.new(config) }
 
   shared_examples 'Check to use two comparison operator' do |op1, op2|

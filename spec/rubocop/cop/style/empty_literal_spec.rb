@@ -137,6 +137,7 @@ describe RuboCop::Cop::Style::EmptyLiteral do
             }
         )
       end
+
       subject(:cop) { described_class.new(config) }
 
       it 'registers an offense for String.new' do

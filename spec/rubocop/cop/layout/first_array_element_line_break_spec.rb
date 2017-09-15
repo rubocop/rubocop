@@ -10,6 +10,7 @@ describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
              :b]
       RUBY
     end
+
     it 'detects the offense' do
       inspect_source(source)
 

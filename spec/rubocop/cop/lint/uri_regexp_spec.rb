@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Lint::UriRegexp do
   let(:config) { RuboCop::Config.new }
+
   subject(:cop) { described_class.new(config) }
 
   it 'registers an offense when using `URI.regexp` with argument' do

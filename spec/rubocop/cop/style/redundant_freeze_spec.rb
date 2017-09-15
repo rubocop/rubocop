@@ -53,11 +53,13 @@ describe RuboCop::Cop::Style::RedundantFreeze do
 
         context 'when the frozen string literal comment is true' do
           let(:prefix) { '# frozen_string_literal: true' }
+
           it_behaves_like :immutable_objects, '"#{a}"'
         end
 
         context 'when the frozen string literal comment is false' do
           let(:prefix) { '# frozen_string_literal: false' }
+
           it_behaves_like :immutable_objects, '"#{a}"'
         end
       end
@@ -72,11 +74,13 @@ describe RuboCop::Cop::Style::RedundantFreeze do
 
       context 'when the frozen string literal comment is true' do
         let(:prefix) { '# frozen_string_literal: true' }
+
         it_behaves_like :immutable_objects, '"#{a}"'
       end
 
       context 'when the frozen string literal comment is false' do
         let(:prefix) { '# frozen_string_literal: false' }
+
         it_behaves_like :mutable_objects, '"#{a}"'
       end
     end

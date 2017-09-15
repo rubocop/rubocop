@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Lint::RedundantWithObject do
   let(:config) { RuboCop::Config.new }
+
   subject(:cop) { described_class.new(config) }
 
   it 'registers an offense when using `ary.each_with_object { |v| v }`' do

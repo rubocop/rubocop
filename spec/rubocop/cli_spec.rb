@@ -81,21 +81,25 @@ describe RuboCop::CLI, :isolated_environment do
 
     context 'and the directory is absolute' do
       let(:checked_path) { abs('..') }
+
       include_examples 'checks Rakefile'
     end
 
     context 'and the directory is relative' do
       let(:checked_path) { '..' }
+
       include_examples 'checks Rakefile'
     end
 
     context 'and the Rakefile path is absolute' do
       let(:checked_path) { abs('../Rakefile') }
+
       include_examples 'checks Rakefile'
     end
 
     context 'and the Rakefile path is relative' do
       let(:checked_path) { '../Rakefile' }
+
       include_examples 'checks Rakefile'
     end
   end
@@ -879,6 +883,7 @@ describe RuboCop::CLI, :isolated_environment do
 
       context 'when no config file specified' do
         let(:args) { %w[--format simple --force-default-config] }
+
         include_examples 'ignores config file'
       end
 
@@ -886,6 +891,7 @@ describe RuboCop::CLI, :isolated_environment do
         let(:args) do
           %w[--format simple --force-default-config -c .rubocop.yml]
         end
+
         include_examples 'ignores config file'
       end
     end

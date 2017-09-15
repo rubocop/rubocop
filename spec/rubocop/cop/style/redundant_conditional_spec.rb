@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Style::RedundantConditional do
   let(:config) { RuboCop::Config.new }
+
   subject(:cop) { described_class.new(config) }
 
   before { inspect_source(source) }

@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Style::StderrPuts do
   let(:config) { RuboCop::Config.new }
+
   subject(:cop) { described_class.new(config) }
 
   it "registers an offense when using `$stderr.puts('hello')`" do

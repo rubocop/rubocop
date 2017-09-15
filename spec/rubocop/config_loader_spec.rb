@@ -12,6 +12,7 @@ describe RuboCop::ConfigLoader do
 
     context 'when no config file exists in ancestor directories' do
       let(:dir_path) { 'dir' }
+
       before { create_file('dir/example.rb', '') }
 
       context 'but a config file exists in home directory' do

@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Lint::UnifiedInteger do
   let(:config) { RuboCop::Config.new }
+
   subject(:cop) { described_class.new(config) }
 
   shared_examples 'registers an offence' do |klass|

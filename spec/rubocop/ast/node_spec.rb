@@ -154,6 +154,7 @@ describe RuboCop::AST::Node do
 
     shared_examples :literal do |source|
       let(:src) { source }
+
       it "returns true for `#{source}`" do
         expect(node).to be_recursive_literal
       end
@@ -178,6 +179,7 @@ describe RuboCop::AST::Node do
 
     shared_examples :non_literal do |source|
       let(:src) { source }
+
       it "returns false for `#{source}`" do
         expect(node).not_to be_recursive_literal
       end
@@ -344,6 +346,7 @@ describe RuboCop::AST::Node do
 
       context 'with interpolated segments' do
         let(:body) { '#{x}' }
+
         it 'returns false' do
           expect(node).not_to be_pure
         end
@@ -351,6 +354,7 @@ describe RuboCop::AST::Node do
 
       context 'with no interpolation' do
         let(:src) { URI::DEFAULT_PARSER.make_regexp.inspect }
+
         it 'returns true' do
           expect(node).to be_pure
         end
@@ -358,6 +362,7 @@ describe RuboCop::AST::Node do
 
       context 'with options' do
         let(:opts) { 'oix' }
+
         it 'returns true' do
           expect(node).to be_pure
         end

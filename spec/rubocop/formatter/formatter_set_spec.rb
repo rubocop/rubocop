@@ -62,6 +62,7 @@ module RuboCop
 
           context "when parent directories don't exist" do
             let(:tmpdir) { Dir.mktmpdir }
+
             after { FileUtils.rm_rf(tmpdir) }
 
             it 'creates them' do

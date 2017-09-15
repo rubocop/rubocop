@@ -688,6 +688,7 @@ describe RuboCop::CLI, :isolated_environment do
 
     context 'with two cops given' do
       let(:cop_list) { ['Layout/Tab,Metrics/LineLength'] }
+
       include_examples :prints_config
     end
 
@@ -1060,6 +1061,7 @@ describe RuboCop::CLI, :isolated_environment do
 
   describe 'with --auto-correct and disabled offense' do
     let(:target_file) { 'example.rb' }
+
     after do
       expect($stdout.string.lines.to_a.last)
         .to eq('1 file inspected, no offenses detected' \

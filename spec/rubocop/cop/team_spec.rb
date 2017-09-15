@@ -55,6 +55,7 @@ describe RuboCop::Cop::Team do
 
     context 'when { auto_correct: true } is passed to .new' do
       let(:options) { { auto_correct: true } }
+
       it { is_expected.to be_truthy }
     end
   end
@@ -69,6 +70,7 @@ describe RuboCop::Cop::Team do
 
     context 'when { debug: true } is passed to .new' do
       let(:options) { { debug: true } }
+
       it { is_expected.to be_truthy }
     end
   end

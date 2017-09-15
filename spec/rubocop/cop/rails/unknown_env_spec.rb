@@ -10,6 +10,7 @@ describe RuboCop::Cop::Rails::UnknownEnv, :config do
       ]
     }
   end
+
   subject(:cop) { described_class.new(config) }
 
   it 'registers an offense for typo of environment name' do
