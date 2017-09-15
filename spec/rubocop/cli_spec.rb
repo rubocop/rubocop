@@ -571,7 +571,7 @@ describe RuboCop::CLI, :isolated_environment do
   end
 
   describe 'rails cops' do
-    before(:each) do
+    before do
       RuboCop::ConfigLoader.default_configuration = nil
     end
 
@@ -715,7 +715,7 @@ describe RuboCop::CLI, :isolated_environment do
   end
 
   describe 'configuration from file' do
-    before(:each) do
+    before do
       RuboCop::ConfigLoader.default_configuration = nil
     end
 

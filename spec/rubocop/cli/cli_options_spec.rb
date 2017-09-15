@@ -5,7 +5,7 @@ describe RuboCop::CLI, :isolated_environment do
 
   subject(:cli) { described_class.new }
 
-  before(:each) do
+  before do
     RuboCop::ConfigLoader.default_configuration = nil
   end
 

@@ -8,7 +8,7 @@ describe RuboCop::Cop::Team do
   let(:options) { nil }
   let(:ruby_version) { RuboCop::Config::KNOWN_RUBIES.last }
 
-  before(:each) do
+  before do
     RuboCop::ConfigLoader.default_configuration = nil
   end
 
