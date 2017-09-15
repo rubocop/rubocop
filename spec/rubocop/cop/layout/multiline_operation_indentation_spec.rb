@@ -21,7 +21,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
         a +
           b
       RUBY
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'accepts indented operands inside and outside a block' do
@@ -35,7 +35,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
             end
         end
       RUBY
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'registers an offense for no indentation of second line' do
@@ -122,7 +122,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
         |      dm[i-1][j] + del
         |    ].min
       RUBY
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts two spaces indentation in assignment of local variable' do
@@ -131,7 +131,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
           'foo' +
           'bar'
       RUBY
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'accepts two spaces indentation in assignment of array element' do
@@ -140,7 +140,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
           'foo' +
           'bar'
       RUBY
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'accepts two spaces indentation of second line' do
@@ -148,7 +148,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
         |   a ||
         |     b
       RUBY
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'accepts no extra indentation of third line' do
@@ -157,7 +157,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
         |     b &&
         |     c
       RUBY
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'accepts indented operands in for body' do
@@ -167,7 +167,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
             something_else
         end
       RUBY
-      expect(cop.highlights).to be_empty
+      expect(cop.highlights.empty?).to be(true)
     end
 
     it 'accepts alignment inside a grouped expression' do
@@ -175,7 +175,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
         (a +
          b)
       RUBY
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'accepts an expression where the first operand spans multiple lines' do
@@ -184,7 +184,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
           result = resolve(locale) and return result
         end and nil
       RUBY
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'accepts any indentation of parameters to #[]' do
@@ -193,7 +193,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
                 id:      input['incoming-payment-id'],
                    user_id: @user[:id]]
       RUBY
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'registers an offense for an unindented multiline operation that is ' \
@@ -466,7 +466,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
               nil?
           end
         RUBY
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it "registers an offense for a 2 space indentation of #{keyword} " \
@@ -491,7 +491,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
               something_else
           end
         RUBY
-        expect(cop.highlights).to be_empty
+        expect(cop.highlights.empty?).to be(true)
       end
     end
 
@@ -502,7 +502,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
               !args.empty? &&
               BLACKLIST.include?(method_name)
         RUBY
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
     end
 
@@ -603,7 +603,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
                     nil?
             end
           RUBY
-          expect(cop.messages).to be_empty
+          expect(cop.messages.empty?).to be(true)
         end
 
         it "registers an offense for a 4 space indentation of #{keyword} " \
@@ -628,7 +628,7 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
                     something_else
             end
           RUBY
-          expect(cop.highlights).to be_empty
+          expect(cop.highlights.empty?).to be(true)
         end
       end
 

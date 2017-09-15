@@ -250,7 +250,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
           #{kw}
         end
       RUBY
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "does not report an offense if #{kw} is inside if..elsif..else..end" do
@@ -263,7 +263,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
           #{kw}
         end
       RUBY
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "doesn't register an error if control flow expr has multiple lines" do
@@ -273,7 +273,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
                       'else',
                       '  puts "hello"',
                       'end'])
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'registers an error if non-control-flow branch has multiple lines' do

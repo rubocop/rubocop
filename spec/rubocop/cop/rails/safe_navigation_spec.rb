@@ -7,7 +7,7 @@ describe RuboCop::Cop::Rails::SafeNavigation, :config do
     it "accepts usages of #{name}" do
       inspect_source("[1, 2].#{code}")
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 

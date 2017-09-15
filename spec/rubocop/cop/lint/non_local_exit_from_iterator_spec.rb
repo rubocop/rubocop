@@ -55,7 +55,7 @@ describe RuboCop::Cop::Lint::NonLocalExitFromIterator do
           end
         RUBY
 
-        it { expect(cop.offenses).to be_empty }
+        it { expect(cop.offenses.empty?).to be(true) }
       end
     end
 
@@ -70,7 +70,7 @@ describe RuboCop::Cop::Lint::NonLocalExitFromIterator do
         end
       RUBY
 
-      it { expect(cop.offenses).to be_empty }
+      it { expect(cop.offenses.empty?).to be(true) }
     end
 
     context 'when block is lambda' do
@@ -85,7 +85,7 @@ describe RuboCop::Cop::Lint::NonLocalExitFromIterator do
         }
       RUBY
 
-      it { expect(cop.offenses).to be_empty }
+      it { expect(cop.offenses.empty?).to be(true) }
     end
 
     context 'when lambda is inside of block followed by method chain' do
@@ -107,7 +107,7 @@ describe RuboCop::Cop::Lint::NonLocalExitFromIterator do
         end
       RUBY
 
-      it { expect(cop.offenses).to be_empty }
+      it { expect(cop.offenses.empty?).to be(true) }
     end
 
     context 'when block in middle of nest is followed by method chain' do
@@ -146,7 +146,7 @@ describe RuboCop::Cop::Lint::NonLocalExitFromIterator do
         end
       RUBY
 
-      it { expect(cop.offenses).to be_empty }
+      it { expect(cop.offenses.empty?).to be(true) }
     end
 
     context 'when the message is define_method' do
@@ -158,7 +158,7 @@ describe RuboCop::Cop::Lint::NonLocalExitFromIterator do
         end
       RUBY
 
-      it { expect(cop.offenses).to be_empty }
+      it { expect(cop.offenses.empty?).to be(true) }
     end
 
     context 'when the message is define_singleton_method' do
@@ -170,7 +170,7 @@ describe RuboCop::Cop::Lint::NonLocalExitFromIterator do
         end
       RUBY
 
-      it { expect(cop.offenses).to be_empty }
+      it { expect(cop.offenses.empty?).to be(true) }
     end
 
     context 'when the return is within a nested method definition' do
@@ -183,7 +183,7 @@ describe RuboCop::Cop::Lint::NonLocalExitFromIterator do
           end
         RUBY
 
-        it { expect(cop.offenses).to be_empty }
+        it { expect(cop.offenses.empty?).to be(true) }
       end
 
       context 'with a class method definition' do
@@ -195,7 +195,7 @@ describe RuboCop::Cop::Lint::NonLocalExitFromIterator do
           end
         RUBY
 
-        it { expect(cop.offenses).to be_empty }
+        it { expect(cop.offenses.empty?).to be(true) }
       end
     end
   end

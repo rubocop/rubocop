@@ -7,14 +7,14 @@ describe RuboCop::AST::SendNode do
     context 'with a regular method send' do
       let(:source) { 'foo.bar(:baz)' }
 
-      it { expect(send_node).to be_a(described_class) }
+      it { expect(send_node.is_a?(described_class)).to be(true) }
     end
 
     context 'with a safe navigation method send' do
       let(:ruby_version) { 2.3 }
       let(:source) { 'foo&.bar(:baz)' }
 
-      it { expect(send_node).to be_a(described_class) }
+      it { expect(send_node.is_a?(described_class)).to be(true) }
     end
   end
 
@@ -22,19 +22,19 @@ describe RuboCop::AST::SendNode do
     context 'with no receiver' do
       let(:source) { 'bar(:baz)' }
 
-      it { expect(send_node.receiver).to be_nil }
+      it { expect(send_node.receiver.nil?).to be(true) }
     end
 
     context 'with a literal receiver' do
       let(:source) { "'foo'.bar(:baz)" }
 
-      it { expect(send_node.receiver).to be_str_type }
+      it { expect(send_node.receiver.str_type?).to be(true) }
     end
 
     context 'with a variable receiver' do
       let(:source) { 'foo.bar(:baz)' }
 
-      it { expect(send_node.receiver).to be_send_type }
+      it { expect(send_node.receiver.send_type?).to be(true) }
     end
   end
 
@@ -331,7 +331,7 @@ describe RuboCop::AST::SendNode do
     context 'with no arguments' do
       let(:source) { 'foo.bar' }
 
-      it { expect(send_node.arguments).to be_empty }
+      it { expect(send_node.arguments.empty?).to be(true) }
     end
 
     context 'with a single literal argument' do
@@ -363,31 +363,31 @@ describe RuboCop::AST::SendNode do
     context 'with no arguments' do
       let(:source) { 'foo.bar' }
 
-      it { expect(send_node.first_argument).to be_nil }
+      it { expect(send_node.first_argument.nil?).to be(true) }
     end
 
     context 'with a single literal argument' do
       let(:source) { 'foo.bar(:baz)' }
 
-      it { expect(send_node.first_argument).to be_sym_type }
+      it { expect(send_node.first_argument.sym_type?).to be(true) }
     end
 
     context 'with a single splat argument' do
       let(:source) { 'foo.bar(*baz)' }
 
-      it { expect(send_node.first_argument).to be_splat_type }
+      it { expect(send_node.first_argument.splat_type?).to be(true) }
     end
 
     context 'with multiple literal arguments' do
       let(:source) { 'foo.bar(:baz, :qux)' }
 
-      it { expect(send_node.first_argument).to be_sym_type }
+      it { expect(send_node.first_argument.sym_type?).to be(true) }
     end
 
     context 'with multiple mixed arguments' do
       let(:source) { 'foo.bar(:baz, *qux)' }
 
-      it { expect(send_node.first_argument).to be_sym_type }
+      it { expect(send_node.first_argument.sym_type?).to be(true) }
     end
   end
 
@@ -395,31 +395,31 @@ describe RuboCop::AST::SendNode do
     context 'with no arguments' do
       let(:source) { 'foo.bar' }
 
-      it { expect(send_node.last_argument).to be_nil }
+      it { expect(send_node.last_argument.nil?).to be(true) }
     end
 
     context 'with a single literal argument' do
       let(:source) { 'foo.bar(:baz)' }
 
-      it { expect(send_node.last_argument).to be_sym_type }
+      it { expect(send_node.last_argument.sym_type?).to be(true) }
     end
 
     context 'with a single splat argument' do
       let(:source) { 'foo.bar(*baz)' }
 
-      it { expect(send_node.last_argument).to be_splat_type }
+      it { expect(send_node.last_argument.splat_type?).to be(true) }
     end
 
     context 'with multiple literal arguments' do
       let(:source) { 'foo.bar(:baz, :qux)' }
 
-      it { expect(send_node.last_argument).to be_sym_type }
+      it { expect(send_node.last_argument.sym_type?).to be(true) }
     end
 
     context 'with multiple mixed arguments' do
       let(:source) { 'foo.bar(:baz, *qux)' }
 
-      it { expect(send_node.last_argument).to be_splat_type }
+      it { expect(send_node.last_argument.splat_type?).to be(true) }
     end
   end
 
@@ -803,19 +803,19 @@ describe RuboCop::AST::SendNode do
 
       let(:source) { 'foo.bar { |q| baz(q) }' }
 
-      it { expect(send_node.block_node).to be_block_type }
+      it { expect(send_node.block_node.block_type?).to be(true) }
     end
 
     context 'with a block argument' do
       let(:source) { 'foo.bar(&baz)' }
 
-      it { expect(send_node.block_node).to be_nil }
+      it { expect(send_node.block_node.nil?).to be(true) }
     end
 
     context 'with no block' do
       let(:source) { 'foo.bar' }
 
-      it { expect(send_node.block_node).to be_nil }
+      it { expect(send_node.block_node.nil?).to be(true) }
     end
   end
 
@@ -863,19 +863,19 @@ describe RuboCop::AST::SendNode do
     context 'with keyword `not`' do
       let(:source) { 'not foo' }
 
-      it { expect(send_node).to be_negation_method }
+      it { expect(send_node.negation_method?).to be(true) }
     end
 
     context 'with bang method' do
       let(:source) { '!foo' }
 
-      it { expect(send_node).to be_negation_method }
+      it { expect(send_node.negation_method?).to be(true) }
     end
 
     context 'with normal method' do
       let(:source) { 'foo.bar' }
 
-      it { expect(send_node).not_to be_negation_method }
+      it { expect(send_node.negation_method?).to be(false) }
     end
   end
 end

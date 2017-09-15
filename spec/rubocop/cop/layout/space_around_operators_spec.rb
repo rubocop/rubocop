@@ -651,7 +651,7 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
           11 => 3
         }
       RUBY
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     context 'when does not allowed for alignment' do

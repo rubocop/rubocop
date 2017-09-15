@@ -27,7 +27,7 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
                       '    implement 2',
                       '  end',
                       'end'])
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "registers an offense for duplicate class methods in #{type}" do
@@ -54,7 +54,7 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
                       '    implement 2',
                       '  end',
                       'end'])
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "recognizes difference between instance and class methods in #{type}" do
@@ -66,7 +66,7 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
                       '    implement 2',
                       '  end',
                       'end'])
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "registers an offense for duplicate private methods in #{type}" do
@@ -102,7 +102,7 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
                       '    implement 2',
                       '  end',
                       'end'])
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "registers an offense for duplicate protected methods in #{type}" do
@@ -236,7 +236,7 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
                       '    end',
                       '  end',
                       'end'], 'test.rb')
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "registers an offense for duplicate alias in #{type}" do

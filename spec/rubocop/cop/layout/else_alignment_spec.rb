@@ -47,7 +47,7 @@ describe RuboCop::Cop::Layout::ElseAlignment do
             "BBBB-BBBB-BBBB-BBBB"
           end
       RUBY
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     describe '#autocorrect' do

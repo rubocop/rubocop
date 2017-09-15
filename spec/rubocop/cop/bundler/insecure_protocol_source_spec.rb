@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Bundler::InsecureProtocolSource do
   subject(:cop) { described_class.new(config) }
+
   let(:config) { RuboCop::Config.new }
 
   it 'registers an offense when using `source :gemcutter`' do

@@ -51,12 +51,12 @@ describe RuboCop::CLI, :isolated_environment do
     context 'when there are no files' do
       it 'prints nothing with -L' do
         cli.run ['-L']
-        expect($stdout.string).to be_empty
+        expect($stdout.string.empty?).to be(true)
       end
 
       it 'prints nothing with --list-target-files' do
         cli.run ['--list-target-files']
-        expect($stdout.string).to be_empty
+        expect($stdout.string.empty?).to be(true)
       end
     end
 

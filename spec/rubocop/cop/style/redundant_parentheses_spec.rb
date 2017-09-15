@@ -19,7 +19,7 @@ describe RuboCop::Cop::Style::RedundantParentheses do
   shared_examples 'plausible' do |expr|
     it 'accepts parentheses when arguments are unparenthesized' do
       inspect_source(expr)
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 
@@ -166,7 +166,7 @@ describe RuboCop::Cop::Style::RedundantParentheses do
   it 'accepts parentheses around a method call with unparenthesized ' \
      'arguments' do
     inspect_source('(a 1, 2) && (1 + 1)')
-    expect(cop.offenses).to be_empty
+    expect(cop.offenses.empty?).to be(true)
   end
 
   it 'accepts parentheses inside an irange' do

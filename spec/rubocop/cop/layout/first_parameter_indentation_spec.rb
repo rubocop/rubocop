@@ -89,7 +89,7 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
                 bar: 3
             )
           RUBY
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
 
         context 'with line break' do
@@ -151,7 +151,7 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
                 b: 2
               )
           RUBY
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
 
         context 'when preceded by a comment line' do
@@ -211,7 +211,7 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
           |    *AST::Types::OPERATOR_METHODS.map(&:to_s)
           |  ).freeze
         RUBY
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'auto-corrects an under-indented first parameter' do
@@ -369,7 +369,7 @@ describe RuboCop::Cop::Layout::FirstParameterIndentation do
             puts('Ｒｕｂｙ', f(
                                a))
           RUBY
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
 

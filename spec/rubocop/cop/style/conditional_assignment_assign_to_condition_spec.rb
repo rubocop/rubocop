@@ -376,7 +376,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
       inspect_source(source)
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'allows assignment to the same variable in if else if the correction ' \
@@ -391,7 +391,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
       inspect_source(source)
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'allows assignment to the same variable in case when else if the ' \
@@ -408,7 +408,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
       inspect_source(source)
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 
@@ -456,7 +456,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       inspect_source(source)
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'allows assignment to the return of case when' do
@@ -470,13 +470,13 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       inspect_source(source)
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'allows assignment to the return of a ternary' do
       inspect_source("#{variable} = foo? ? 1 : 2")
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 
@@ -509,7 +509,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           source = "#{name} #{assignment} foo? ? 1 : 2"
           inspect_source(source)
 
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
 
         it "registers an offense for assignment using #{assignment} in " \
@@ -769,7 +769,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       inspect_source(source)
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'allows multiple assignment in case when else when the last ' \
@@ -790,7 +790,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       inspect_source(source)
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'allows out of order multiple assignment in if elsif else' do
@@ -868,7 +868,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       inspect_source(source)
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'allows multiple assignment in case statements when the last ' \
@@ -889,7 +889,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       inspect_source(source)
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'allows assignment in if elsif else with some branches only ' \
@@ -910,7 +910,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       inspect_source(source)
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'allows variable assignment in unless else with more than ' \
@@ -926,7 +926,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       inspect_source(source)
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'allows variable assignment in case when else with more than ' \
@@ -944,7 +944,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
       inspect_source(source)
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     context 'multiple assignment in only one branch' do
@@ -1069,7 +1069,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     RUBY
     inspect_source(source)
 
-    expect(cop.offenses).to be_empty
+    expect(cop.offenses.empty?).to be(true)
   end
 
   context 'auto-correct' do
@@ -2021,7 +2021,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       inspect_source(source)
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'registers an offense for multiple assignment when an earlier ' \

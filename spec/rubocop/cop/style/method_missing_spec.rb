@@ -20,7 +20,7 @@ describe RuboCop::Cop::Style::MethodMissing do
     let(:source) { code }
 
     it 'does not register an offense' do
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 

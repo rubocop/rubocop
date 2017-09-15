@@ -134,7 +134,7 @@ describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
 
     it "doesn't register an offense for non-nested hashes with spaces" do
       inspect_source('h = { a: 1, b: 2 }')
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'compact')
     end
 

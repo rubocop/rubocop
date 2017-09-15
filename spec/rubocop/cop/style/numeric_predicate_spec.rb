@@ -34,7 +34,7 @@ describe RuboCop::Cop::Style::NumericPredicate, :config do
     let(:source) { code }
 
     it 'does not register an offense' do
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 

@@ -616,7 +616,7 @@ describe RuboCop::CLI, :isolated_environment do
     uncorrected = $stdout.string.split($RS).select do |line|
       line.include?('example.rb:') && !line.include?('[Corrected]')
     end
-    expect(uncorrected).to be_empty # Hence exit code 0.
+    expect(uncorrected.empty?).to be(true) # Hence exit code 0.
   end
 
   it 'corrects only IndentationWidth without crashing' do
@@ -889,7 +889,7 @@ describe RuboCop::CLI, :isolated_environment do
     uncorrected = $stdout.string.split($RS).select do |line|
       line.include?('example.rb:') && !line.include?('[Corrected]')
     end
-    expect(uncorrected).not_to be_empty # Hence exit code 1.
+    expect(uncorrected.empty?).to be(false) # Hence exit code 1.
   end
 
   it 'can correct single line methods' do

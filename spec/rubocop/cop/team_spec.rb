@@ -94,7 +94,7 @@ describe RuboCop::Cop::Team do
     end
 
     it 'returns offenses' do
-      expect(offenses).not_to be_empty
+      expect(offenses.empty?).to be(false)
       expect(offenses.all? { |o| o.is_a?(RuboCop::Cop::Offense) }).to be_truthy
     end
 
@@ -138,7 +138,7 @@ describe RuboCop::Cop::Team do
     subject(:cops) { team.cops }
 
     it 'returns cop instances' do
-      expect(cops).not_to be_empty
+      expect(cops.empty?).to be(false)
       expect(cops.all? { |c| c.is_a?(RuboCop::Cop::Cop) }).to be_truthy
     end
 
@@ -172,7 +172,7 @@ describe RuboCop::Cop::Team do
       let(:cop_names) { cops.map(&:name) }
 
       it 'does not return instances of the classes' do
-        expect(cops).not_to be_empty
+        expect(cops.empty?).to be(false)
         expect(cop_names).not_to include('Lint/Void')
         expect(cop_names).not_to include('Metrics/LineLength')
       end
@@ -185,10 +185,10 @@ describe RuboCop::Cop::Team do
     let(:cop_classes) { RuboCop::Cop::Cop.non_rails }
 
     it 'returns force instances' do
-      expect(forces).not_to be_empty
+      expect(forces.empty?).to be(false)
 
       forces.each do |force|
-        expect(force).to be_a(RuboCop::Cop::Force)
+        expect(force.is_a?(RuboCop::Cop::Force)).to be(true)
       end
     end
 
@@ -199,7 +199,7 @@ describe RuboCop::Cop::Team do
 
       it 'returns the force' do
         expect(forces.size).to eq(1)
-        expect(forces.first).to be_a(RuboCop::Cop::VariableForce)
+        expect(forces.first.is_a?(RuboCop::Cop::VariableForce)).to be(true)
       end
     end
 
@@ -224,7 +224,7 @@ describe RuboCop::Cop::Team do
       end
 
       it 'returns nothing' do
-        expect(forces).to be_empty
+        expect(forces.empty?).to be(true)
       end
     end
   end

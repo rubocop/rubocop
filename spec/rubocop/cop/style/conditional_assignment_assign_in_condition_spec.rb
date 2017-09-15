@@ -13,7 +13,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     it 'allows assigning any variable type inside ternary' do
       inspect_source("foo? ? #{variable} = 1 : #{variable} = 2")
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'registers an offense assigning any variable type to if else' do
@@ -69,7 +69,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       inspect_source(source)
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'allows assigning any variable type inside if else' do
@@ -82,7 +82,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       inspect_source(source)
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'allows assignment to if without else' do
@@ -93,7 +93,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       inspect_source(source)
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'registers an offense assigning any variable type to unless else' do
@@ -119,7 +119,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       inspect_source(source)
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'registers an offense for assigning any variable type to case when' do
@@ -147,7 +147,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       inspect_source(source)
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'does not crash for rescue assignment' do
@@ -160,7 +160,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       inspect_source(source)
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     context 'auto-correct' do
@@ -267,7 +267,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       inspect_source(source)
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'registers an offense for any assignment to unless else' do

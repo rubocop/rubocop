@@ -115,7 +115,7 @@ describe RuboCop::Cop::Metrics::MethodLength, :config do
         a = 4
       end
     RUBY
-    expect(cop.offenses).to be_empty
+    expect(cop.offenses.empty?).to be(true)
   end
 
   it 'does not count blank lines' do

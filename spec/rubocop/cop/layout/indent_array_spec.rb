@@ -58,7 +58,7 @@ describe RuboCop::Cop::Layout::IndentArray do
       expect(cop.messages)
         .to eq(['Indent the right bracket the same as the start of the line ' \
                 'where the left bracket is.'])
-      expect(cop.config_to_allow_offenses).to be_empty
+      expect(cop.config_to_allow_offenses.empty?).to be(true)
     end
 
     context 'when indentation width is overridden for this cop' do
@@ -443,7 +443,7 @@ describe RuboCop::Cop::Layout::IndentArray do
       expect(cop.highlights).to eq([']'])
       expect(cop.messages)
         .to eq(['Indent the right bracket the same as the left bracket.'])
-      expect(cop.config_to_allow_offenses).to be_empty
+      expect(cop.config_to_allow_offenses.empty?).to be(true)
     end
 
     context 'when indentation width is overridden for this cop' do

@@ -7,19 +7,19 @@ describe RuboCop::AST::IfNode do
     context 'with a regular if statement' do
       let(:source) { 'if foo?; :bar; end' }
 
-      it { expect(if_node).to be_a(described_class) }
+      it { expect(if_node.is_a?(described_class)).to be(true) }
     end
 
     context 'with a ternary operator' do
       let(:source) { 'foo? ? :bar : :baz' }
 
-      it { expect(if_node).to be_a(described_class) }
+      it { expect(if_node.is_a?(described_class)).to be(true) }
     end
 
     context 'with a modifier statement' do
       let(:source) { ':foo if bar?' }
 
-      it { expect(if_node).to be_a(described_class) }
+      it { expect(if_node.is_a?(described_class)).to be(true) }
     end
   end
 
@@ -372,7 +372,7 @@ describe RuboCop::AST::IfNode do
          'end'].join("\n")
       end
 
-      it { expect(if_node.if_branch).to be_sym_type }
+      it { expect(if_node.if_branch.sym_type?).to be(true) }
     end
 
     context 'with an unless statement' do
@@ -384,13 +384,13 @@ describe RuboCop::AST::IfNode do
          'end'].join("\n")
       end
 
-      it { expect(if_node.if_branch).to be_sym_type }
+      it { expect(if_node.if_branch.sym_type?).to be(true) }
     end
 
     context 'with a ternary operator' do
       let(:source) { 'foo? ? :foo : 42' }
 
-      it { expect(if_node.if_branch).to be_sym_type }
+      it { expect(if_node.if_branch.sym_type?).to be(true) }
     end
   end
 
@@ -404,7 +404,7 @@ describe RuboCop::AST::IfNode do
          'end'].join("\n")
       end
 
-      it { expect(if_node.else_branch).to be_int_type }
+      it { expect(if_node.else_branch.int_type?).to be(true) }
     end
 
     context 'with an unless statement' do
@@ -416,13 +416,13 @@ describe RuboCop::AST::IfNode do
          'end'].join("\n")
       end
 
-      it { expect(if_node.else_branch).to be_int_type }
+      it { expect(if_node.else_branch.int_type?).to be(true) }
     end
 
     context 'with a ternary operator' do
       let(:source) { 'foo? ? :foo : 42' }
 
-      it { expect(if_node.else_branch).to be_int_type }
+      it { expect(if_node.else_branch.int_type?).to be(true) }
     end
   end
 end

@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Style::OrAssignment do
   subject(:cop) { described_class.new(config) }
+
   let(:config) { RuboCop::Config.new }
 
   context 'when using var = var ? var : something' do

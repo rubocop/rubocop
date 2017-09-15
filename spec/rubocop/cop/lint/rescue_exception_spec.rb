@@ -121,6 +121,6 @@ describe RuboCop::Cop::Lint::RescueException do
       rescue adapter::ParseError
       end
     RUBY
-    expect(cop.offenses).to be_empty
+    expect(cop.offenses.empty?).to be(true)
   end
 end

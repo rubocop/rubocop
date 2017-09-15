@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Lint::RescueType do
   subject(:cop) { described_class.new(config) }
+
   let(:config) { RuboCop::Config.new }
 
   it 'accepts rescue modifier' do

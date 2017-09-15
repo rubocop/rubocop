@@ -505,7 +505,7 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
             1, 2,
           ]
         RUBY
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'accepts a multiline hash with pairs on a single line and' \
@@ -515,7 +515,7 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
             a: 1001, b: 2020,
           }
         RUBY
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
     end
   end

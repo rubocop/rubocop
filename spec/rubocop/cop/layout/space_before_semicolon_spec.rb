@@ -33,7 +33,7 @@ describe RuboCop::Cop::Layout::SpaceBeforeSemicolon do
     shared_examples 'common behavior' do
       it 'accepts no space between an opening brace and a semicolon' do
         inspect_source('test {; }')
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
     end
 

@@ -27,7 +27,7 @@ describe 'RuboCop Project' do
     it 'has a nicely formatted description for all cops' do
       cop_names.each do |name|
         description = config[name]['Description']
-        expect(description).not_to be_nil
+        expect(description.nil?).to be(false)
         expect(description).not_to include("\n")
       end
     end
@@ -185,7 +185,7 @@ describe 'RuboCop Project' do
                  .lines
                  .grep(%r{/lib/rubocop}) # ignore warnings from dependencies
                  .reject(&whitelisted)
-      expect(warnings).to be_empty
+      expect(warnings.empty?).to be(true)
     end
   end
 end

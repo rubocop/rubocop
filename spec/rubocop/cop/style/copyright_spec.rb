@@ -6,7 +6,7 @@ end
 
 def expect_no_copyright_offense(cop, source)
   inspect_source(source)
-  expect(cop.offenses).to be_empty
+  expect(cop.offenses.empty?).to be(true)
 end
 
 def expect_copyright_offense(cop, source)

@@ -6,7 +6,7 @@ describe RuboCop::Cop::Style::Encoding, :config do
   it 'registers no offense when no encoding present' do
     inspect_source('def foo() end')
 
-    expect(cop.offenses).to be_empty
+    expect(cop.offenses.empty?).to be(true)
   end
 
   it 'registers no offense when encoding present but not UTF-8' do
@@ -15,7 +15,7 @@ describe RuboCop::Cop::Style::Encoding, :config do
       def foo() end
     RUBY
 
-    expect(cop.offenses).to be_empty
+    expect(cop.offenses.empty?).to be(true)
   end
 
   it 'registers an offense when encoding present and UTF-8' do
@@ -61,7 +61,7 @@ describe RuboCop::Cop::Style::Encoding, :config do
       # encoding: utf-8
     RUBY
 
-    expect(cop.offenses).to be_empty
+    expect(cop.offenses.empty?).to be(true)
   end
 
   it 'registers an offense for encoding inserted by magic_encoding gem' do

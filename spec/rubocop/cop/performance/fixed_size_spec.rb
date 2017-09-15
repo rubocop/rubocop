@@ -45,42 +45,42 @@ describe RuboCop::Cop::Performance::FixedSize do
          'contains interpolation' do
         inspect_source("\"\#{foo}\".#{method}")
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it "accepts calling #{method} on a %Q string that contains " \
          'interpolation' do
         inspect_source("\%Q(\#{foo}).#{method}")
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it "accepts calling #{method} on a % string that contains " \
          'interpolation' do
         inspect_source("\%(\#{foo}).#{method}")
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it "accepts calling #{method} on a single quoted string that " \
          'is assigned to a constant' do
         inspect_source("CONST = 'a'.#{method}")
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it "accepts calling #{method} on a double quoted string that " \
          'is assigned to a constant' do
         inspect_source("CONST = \"a\".#{method}")
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it "accepts calling #{method} on a %q string that is assigned to " \
          'a constant' do
         inspect_source("CONST = %q(a).#{method}")
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it "accepts calling #{method} on a variable " do
@@ -89,7 +89,7 @@ describe RuboCop::Cop::Performance::FixedSize do
           foo.#{method}
         RUBY
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
     end
 
@@ -109,7 +109,7 @@ describe RuboCop::Cop::Performance::FixedSize do
       it "accepts calling #{method} on an interpolated quoted symbol" do
         inspect_source(":\"foo-\#{bar}\".#{method}")
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it "registers an offense when calling #{method} on %s" do
@@ -122,7 +122,7 @@ describe RuboCop::Cop::Performance::FixedSize do
          'to a constant' do
         inspect_source("CONST = :foo.#{method}")
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
     end
 
@@ -149,7 +149,7 @@ describe RuboCop::Cop::Performance::FixedSize do
          'a splat' do
         inspect_source("[1, 2, *foo].#{method}")
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it "accepts calling #{method} on array that is set to a variable" do
@@ -158,14 +158,14 @@ describe RuboCop::Cop::Performance::FixedSize do
           foo.#{method}
         RUBY
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it "accepts calling #{method} on an array that is assigned " \
          'to a constant' do
         inspect_source("CONST = [1, 2, 3].#{method}")
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
     end
 
@@ -182,20 +182,22 @@ describe RuboCop::Cop::Performance::FixedSize do
           foo.#{method}
         RUBY
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
-      it "accepts calling #{method} on a hash that contains a double splat" do
-        inspect_source("{a: 1, **foo}.#{method}")
+      context 'ruby >= 2.0', :ruby20 do
+        it "accepts calling #{method} on a hash that contains a double splat" do
+          inspect_source("{a: 1, **foo}.#{method}")
 
-        expect(cop.messages).to be_empty
+          expect(cop.messages.empty?).to be(true)
+        end
       end
 
       it "accepts calling #{method} on an hash that is assigned " \
          'to a constant' do
         inspect_source("CONST = {a: 1, b: 2}.#{method}")
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
     end
   end
@@ -208,13 +210,13 @@ describe RuboCop::Cop::Performance::FixedSize do
     it 'accepts calling count with a variable' do
       inspect_source("#{variable}.count(bar)")
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'accepts calling count with an instance variable' do
       inspect_source("#{variable}.count(@bar)")
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'registers an offense when calling count with a string' do
@@ -226,13 +228,13 @@ describe RuboCop::Cop::Performance::FixedSize do
     it 'accepts calling count with a block' do
       inspect_source("#{variable}.count { |v| v == 'a' }")
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'accepts calling count with a symbol proc' do
       inspect_source("#{variable}.count(&:any?) ")
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
   end
 

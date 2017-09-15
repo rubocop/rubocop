@@ -242,7 +242,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
         expect("  #{body} if #{conditional}".length).to eq(81)
 
         inspect_source(source)
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
     end
 

@@ -6,7 +6,7 @@ describe RuboCop::Cop::Layout::EndOfLine, :config do
   shared_examples 'all configurations' do
     it 'accepts an empty file' do
       inspect_source_file('')
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 
@@ -52,14 +52,14 @@ describe RuboCop::Cop::Layout::EndOfLine, :config do
 
     it 'does not register offense for no CR at end of file' do
       inspect_source_file('x=0')
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'does not register offenses after __END__' do
       inspect_source(["x=0\r",
                       '__END__',
                       'x=0'])
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     context 'and there are many lines ending with LF' do
@@ -85,7 +85,7 @@ describe RuboCop::Cop::Layout::EndOfLine, :config do
                   "  'terecht bij uw ROM-coördinator.'",
                   'end'].join("\r\n")
         inspect_source_file(source)
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       include_examples 'iso-8859-15', ''
@@ -125,7 +125,7 @@ describe RuboCop::Cop::Layout::EndOfLine, :config do
       inspect_source(['x=0',
                       '__END__',
                       "x=0\r"])
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     context 'and there are many lines ending with CR+LF' do
@@ -151,7 +151,7 @@ describe RuboCop::Cop::Layout::EndOfLine, :config do
                   "  'terecht bij uw ROM-coördinator.'",
                   'end'].join("\n")
         inspect_source_file(source)
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       include_examples 'iso-8859-15', "\r"

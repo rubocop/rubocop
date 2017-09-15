@@ -136,7 +136,7 @@ describe RuboCop::Cop::Metrics::BlockLength, :config do
           a = 3
         end
       RUBY
-      expect(cop.offenses).not_to be_empty
+      expect(cop.offenses.empty?).to be(false)
     end
 
     it 'accepts the foo method with a long block' do

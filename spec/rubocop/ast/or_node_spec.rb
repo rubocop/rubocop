@@ -9,7 +9,7 @@ describe RuboCop::AST::OrNode do
         ':foo || :bar'
       end
 
-      it { expect(or_node).to be_a(described_class) }
+      it { expect(or_node.is_a?(described_class)).to be(true) }
     end
 
     context 'with a semantic or node' do
@@ -17,7 +17,7 @@ describe RuboCop::AST::OrNode do
         ':foo or :bar'
       end
 
-      it { expect(or_node).to be_a(described_class) }
+      it { expect(or_node.is_a?(described_class)).to be(true) }
     end
   end
 
@@ -27,7 +27,7 @@ describe RuboCop::AST::OrNode do
         ':foo || :bar'
       end
 
-      it { expect(or_node).to be_logical_operator }
+      it { expect(or_node.logical_operator?).to be(true) }
     end
 
     context 'with a semantic or node' do
@@ -35,7 +35,7 @@ describe RuboCop::AST::OrNode do
         ':foo or :bar'
       end
 
-      it { expect(or_node).not_to be_logical_operator }
+      it { expect(or_node.logical_operator?).to be(false) }
     end
   end
 
@@ -45,7 +45,7 @@ describe RuboCop::AST::OrNode do
         ':foo || :bar'
       end
 
-      it { expect(or_node).not_to be_semantic_operator }
+      it { expect(or_node.semantic_operator?).to be(false) }
     end
 
     context 'with a semantic or node' do
@@ -53,7 +53,7 @@ describe RuboCop::AST::OrNode do
         ':foo or :bar'
       end
 
-      it { expect(or_node).to be_semantic_operator }
+      it { expect(or_node.semantic_operator?).to be(true) }
     end
   end
 
@@ -117,7 +117,7 @@ describe RuboCop::AST::OrNode do
         ':foo || 42'
       end
 
-      it { expect(or_node.lhs).to be_sym_type }
+      it { expect(or_node.lhs.sym_type?).to be(true) }
     end
 
     context 'with a semantic or node' do
@@ -125,7 +125,7 @@ describe RuboCop::AST::OrNode do
         ':foo or 42'
       end
 
-      it { expect(or_node.lhs).to be_sym_type }
+      it { expect(or_node.lhs.sym_type?).to be(true) }
     end
   end
 
@@ -135,7 +135,7 @@ describe RuboCop::AST::OrNode do
         ':foo || 42'
       end
 
-      it { expect(or_node.rhs).to be_int_type }
+      it { expect(or_node.rhs.int_type?).to be(true) }
     end
 
     context 'with a semantic or node' do
@@ -143,7 +143,7 @@ describe RuboCop::AST::OrNode do
         ':foo or 42'
       end
 
-      it { expect(or_node.rhs).to be_int_type }
+      it { expect(or_node.rhs.int_type?).to be(true) }
     end
   end
 end

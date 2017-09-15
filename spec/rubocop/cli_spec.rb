@@ -31,7 +31,7 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'adds a handler for SIGINT' do
-      expect(interrupt_handlers).to be_empty
+      expect(interrupt_handlers.empty?).to be(true)
       cli.trap_interrupt(runner)
       expect(interrupt_handlers.size).to eq(1)
     end
@@ -315,7 +315,7 @@ describe RuboCop::CLI, :isolated_environment do
     it 'can disable all cops on a single line' do
       create_file('example.rb', 'y("123", 123456) # rubocop:disable all')
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(0)
-      expect($stdout.string).to be_empty
+      expect($stdout.string.empty?).to be(true)
     end
 
     it 'can disable selected cops on a single line' do

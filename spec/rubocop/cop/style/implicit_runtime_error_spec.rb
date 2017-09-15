@@ -24,12 +24,12 @@ describe RuboCop::Cop::Style::ImplicitRuntimeError do
 
     it "doesn't register an offense for #{method} StandardError, 'message'" do
       inspect_source("#{method} StandardError, 'message'")
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "doesn't register an offense for #{method} with no arguments" do
       inspect_source(method)
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 end

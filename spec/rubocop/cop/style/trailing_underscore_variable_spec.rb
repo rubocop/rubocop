@@ -60,48 +60,48 @@ describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
     it 'does not register an offense when there are no underscores' do
       inspect_source('a, b, c = foo()')
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'does not register an offense for underscores at the beginning' do
       inspect_source('_, a, b = foo()')
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'does not register an offense for an underscore preceded by a ' \
        'splat variable anywhere in the argument chain' do
       inspect_source('*a, b, _ = foo()')
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'does not register an offense for an underscore preceded by a ' \
        'splat variable' do
       inspect_source('a, *b, _ = foo()')
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'does not register an offense for an underscore preceded by a ' \
        'splat variable and another underscore' do
       inspect_source('_, *b, _ = *foo')
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'does not register an offense for multiple underscores preceded by a ' \
        'splat variable' do
       inspect_source('a, *b, _, _ = foo()')
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'does not register an offense for multiple named underscores ' \
        'preceded by a splat variable' do
       inspect_source('a, *b, _c, _d = foo()')
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'registers an offense for multiple underscore variables preceded by ' \
@@ -137,14 +137,14 @@ describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
        'preceded by a splat variable' do
       inspect_source('a, *b, _c = foo()')
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'does not register an offense for a named variable preceded by a ' \
        'names splat underscore variable' do
       inspect_source('a, *b, _c = foo()')
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'does not register an offense for nested assignments without ' \
@@ -258,35 +258,35 @@ describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
        'by a named splat underscore variable' do
       inspect_source('a, *_b, _ = foo()')
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'does not register an offense for named variables ' \
        'that start with an underscore' do
       inspect_source('a, b, _c = foo()')
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'does not register an offense for a named splat underscore ' \
        'as the last variable' do
       inspect_source('a, *_b = foo()')
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'does not register an offense for an underscore preceded by ' \
        'a named splat underscore' do
       inspect_source('a, *_b, _ = foo()')
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'does not register an offense for multiple underscore variables ' \
        'preceded by a named splat underscore variable' do
       inspect_source('a, *_b, _, _ = foo()')
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
   end
 
@@ -322,7 +322,7 @@ describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
        'splat variable' do
       inspect_source('a, *b, _c = foo()')
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'registers an offense for an underscore variable preceded ' \

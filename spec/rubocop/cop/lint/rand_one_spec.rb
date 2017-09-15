@@ -26,7 +26,7 @@ describe RuboCop::Cop::Lint::RandOne do
       let(:source) { source }
 
       it "doesn't register an offense" do
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
     end
   end

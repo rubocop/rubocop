@@ -4,6 +4,7 @@ describe RuboCop::Cop::Offense do
   subject(:offense) do
     described_class.new(:convention, location, 'message', 'CopName', :corrected)
   end
+
   let(:location) do
     source_buffer = Parser::Source::Buffer.new('test', 1)
     source_buffer.source = "a\n"
@@ -38,13 +39,13 @@ describe RuboCop::Cop::Offense do
   end
 
   it 'is frozen' do
-    expect(offense).to be_frozen
+    expect(offense.frozen?).to be(true)
   end
 
   %i[severity location message cop_name].each do |a|
     describe "##{a}" do
       it 'is frozen' do
-        expect(offense.send(a)).to be_frozen
+        expect(offense.send(a).frozen?).to be(true)
       end
     end
   end
@@ -138,6 +139,7 @@ describe RuboCop::Cop::Offense do
       described_class
         .new(:convention, location, 'message', 'CopName', :corrected)
     end
+
     let(:location) do
       source_buffer = Parser::Source::Buffer.new('test', 1)
       source_buffer.source = <<-RUBY.strip_indent
@@ -160,6 +162,7 @@ describe RuboCop::Cop::Offense do
       described_class
         .new(:convention, location, 'message', 'CopName', :corrected)
     end
+
     let(:location) do
       source_buffer = Parser::Source::Buffer.new('test', 1)
       source_buffer.source = <<-RUBY.strip_indent

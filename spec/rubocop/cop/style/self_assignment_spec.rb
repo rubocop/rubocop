@@ -13,7 +13,7 @@ describe RuboCop::Cop::Style::SelfAssignment do
 
     it "accepts shorthand assignment for #{op} and #{var}" do
       inspect_source("#{var} #{op}= y")
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "auto-corrects a non-shorthand assignment #{op} and #{var}" do
@@ -32,7 +32,7 @@ describe RuboCop::Cop::Style::SelfAssignment do
 
     it "accepts shorthand assignment for #{op} and #{var}" do
       inspect_source("#{var} #{op}= y")
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "auto-corrects a non-shorthand assignment #{op} and #{var}" do

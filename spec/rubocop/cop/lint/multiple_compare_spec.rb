@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Lint::MultipleCompare do
   subject(:cop) { described_class.new(config) }
+
   let(:config) { RuboCop::Config.new }
 
   shared_examples 'Check to use two comparison operator' do |op1, op2|
@@ -22,7 +23,7 @@ describe RuboCop::Cop::Lint::MultipleCompare do
 
     it "accepts for #{good_source}" do
       inspect_source(good_source)
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 

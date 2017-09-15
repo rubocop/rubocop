@@ -43,11 +43,11 @@ describe RuboCop::Cop::Badge do
 
   describe '#qualified?' do
     it 'says `CopName` is not qualified' do
-      expect(described_class.parse('Bar')).not_to be_qualified
+      expect(described_class.parse('Bar').qualified?).to be(false)
     end
 
     it 'says `Department/CopName` is qualified' do
-      expect(described_class.parse('Department/Bar')).to be_qualified
+      expect(described_class.parse('Department/Bar').qualified?).to be(true)
     end
   end
 end

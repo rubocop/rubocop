@@ -104,7 +104,7 @@ describe RuboCop::Cop::Performance::Casecmp do
         var = "a"
         var == str.#{selector}
       RUBY
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "doesn't report an offense for str.#{selector} == variable" do
@@ -112,17 +112,17 @@ describe RuboCop::Cop::Performance::Casecmp do
         var = "a"
         str.#{selector} == var
       RUBY
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "doesn't report an offense for obj.method == str.#{selector}" do
       inspect_source("obj.method == str.#{selector}")
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "doesn't report an offense for str.#{selector} == obj.method" do
       inspect_source("str.#{selector} == obj.method")
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 

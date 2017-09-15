@@ -20,7 +20,7 @@ describe RuboCop::Cop::Performance::Sample do
   shared_examples 'accepts' do |acceptable|
     it acceptable do
       inspect_source("[1, 2, 3].#{acceptable}")
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
   end
 

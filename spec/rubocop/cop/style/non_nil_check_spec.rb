@@ -83,7 +83,7 @@ describe RuboCop::Cop::Style::NonNilCheck, :config do
       corrected = autocorrect_source(source)
 
       expect(corrected).to eq(source)
-      expect(cop.corrections).to be_empty
+      expect(cop.corrections.empty?).to be(true)
     end
   end
 

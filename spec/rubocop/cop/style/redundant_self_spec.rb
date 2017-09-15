@@ -147,7 +147,7 @@ describe RuboCop::Cop::Style::RedundantSelf do
         end
       RUBY
       inspect_source(src)
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 

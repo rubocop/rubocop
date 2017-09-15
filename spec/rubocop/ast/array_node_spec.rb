@@ -6,14 +6,14 @@ describe RuboCop::AST::ArrayNode do
   describe '.new' do
     let(:source) { '[]' }
 
-    it { expect(array_node).to be_a(described_class) }
+    it { expect(array_node.is_a?(described_class)).to be(true) }
   end
 
   describe '#values' do
     context 'with an empty array' do
       let(:source) { '[]' }
 
-      it { expect(array_node.values).to be_empty }
+      it { expect(array_node.values.empty?).to be(true) }
     end
 
     context 'with an array of literals' do
@@ -75,13 +75,13 @@ describe RuboCop::AST::ArrayNode do
     context 'with square brackets' do
       let(:source) { '[1, 2, 3]' }
 
-      it { expect(array_node).to be_bracketed }
+      it { expect(array_node.bracketed?).to be(true) }
     end
 
     context 'with a percent literal' do
       let(:source) { '%w(foo bar)' }
 
-      it { expect(array_node).to be_bracketed }
+      it { expect(array_node.bracketed?).to be(true) }
     end
 
     context 'unbracketed' do
@@ -89,7 +89,7 @@ describe RuboCop::AST::ArrayNode do
         parse_source('foo = 1, 2, 3').ast.to_a.last
       end
 
-      it { expect(array_node).not_to be_bracketed }
+      it { expect(array_node.bracketed?).to be(nil) }
     end
   end
 end

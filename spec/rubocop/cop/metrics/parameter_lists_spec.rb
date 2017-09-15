@@ -54,7 +54,7 @@ describe RuboCop::Cop::Metrics::ParameterLists, :config do
         def meth(a, b, c, d:, e:)
         end
       RUBY
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 end

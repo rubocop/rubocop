@@ -80,7 +80,7 @@ describe RuboCop::Cop::Lint::UnneededDisable do
             end
 
             it 'does not return an offense' do
-              expect(cop.offenses).to be_empty
+              expect(cop.offenses.empty?).to be(true)
             end
           end
 
@@ -96,7 +96,7 @@ describe RuboCop::Cop::Lint::UnneededDisable do
               end
 
               it 'does not return an offense' do
-                expect(cop.offenses).to be_empty
+                expect(cop.offenses.empty?).to be(true)
               end
             end
           end
@@ -355,7 +355,7 @@ describe RuboCop::Cop::Lint::UnneededDisable do
             let(:cop_disabled_line_ranges) { { 'Layout/Tab' => [1..100] } }
 
             it 'returns an empty array' do
-              expect(cop.offenses).to be_empty
+              expect(cop.offenses.empty?).to be(true)
             end
           end
 
@@ -381,7 +381,7 @@ describe RuboCop::Cop::Lint::UnneededDisable do
             end
 
             it 'returns an empty array' do
-              expect(cop.offenses).to be_empty
+              expect(cop.offenses.empty?).to be(true)
             end
           end
         end

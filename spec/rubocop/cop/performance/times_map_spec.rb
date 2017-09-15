@@ -60,7 +60,7 @@ describe RuboCop::Cop::Performance::TimesMap do
         let(:source) { "4.times.#{method}" }
 
         it "doesn't register an offense" do
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
 
@@ -68,7 +68,7 @@ describe RuboCop::Cop::Performance::TimesMap do
         let(:source) { "times.#{method} { |i| i.to_s }" }
 
         it "doesn't register an offense" do
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
     end

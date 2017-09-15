@@ -46,6 +46,7 @@ describe RuboCop::Cop::Util do
       r = obj.send(:range_with_surrounding_comma, input_range, side)
       processed_source.buffer.source[r.begin_pos...r.end_pos]
     end
+
     let(:source) { 'raise " ,Error, "' }
     let(:processed_source) { parse_source(source) }
     let(:input_range) do
@@ -78,6 +79,7 @@ describe RuboCop::Cop::Util do
       r = obj.send(:range_with_surrounding_space, input_range, side)
       processed_source.buffer.source[r.begin_pos...r.end_pos]
     end
+
     let(:source) { 'f {  a(2) }' }
     let(:processed_source) { parse_source(source) }
     let(:input_range) do
@@ -108,6 +110,7 @@ describe RuboCop::Cop::Util do
       r = output_range
       processed_source.buffer.source[r.begin_pos...r.end_pos]
     end
+
     let(:source) { <<-RUBY.strip_indent }
       puts 'example'
       puts 'another example'

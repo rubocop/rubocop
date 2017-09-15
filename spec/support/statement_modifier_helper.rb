@@ -6,7 +6,7 @@ module StatementModifierHelper
       #{keyword} cond
       end
     RUBY
-    expect(cop.offenses).to be_empty
+    expect(cop.offenses.empty?).to be(true)
   end
 
   def check_really_short(cop, keyword)
@@ -42,7 +42,7 @@ module StatementModifierHelper
       |  end
     RUBY
 
-    expect(cop.offenses).to be_empty
+    expect(cop.offenses.empty?).to be(true)
   end
 
   def check_short_multiline(cop, keyword)
@@ -52,6 +52,6 @@ module StatementModifierHelper
         SimpleCov.start
       end
     RUBY
-    expect(cop.messages).to be_empty
+    expect(cop.messages.empty?).to be(true)
   end
 end

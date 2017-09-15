@@ -10,7 +10,7 @@ describe RuboCop::Cop::Cop do
   end
 
   it 'initially has 0 offenses' do
-    expect(cop.offenses).to be_empty
+    expect(cop.offenses.empty?).to be(true)
   end
 
   describe '.qualified_cop_name' do
@@ -66,7 +66,7 @@ describe RuboCop::Cop::Cop do
   it 'will report registered offenses' do
     cop.add_offense(nil, location: location, message: 'message')
 
-    expect(cop.offenses).not_to be_empty
+    expect(cop.offenses.empty?).to be(false)
   end
 
   it 'will set default severity' do
@@ -244,6 +244,7 @@ describe RuboCop::Cop::Cop do
   describe '#autocorrect?' do
     # dummy config for a generic cop instance
     subject { cop.autocorrect? }
+
     let(:config) { RuboCop::Config.new({}) }
     let(:cop) { described_class.new(config, options) }
     let(:support_autocorrect) { true }

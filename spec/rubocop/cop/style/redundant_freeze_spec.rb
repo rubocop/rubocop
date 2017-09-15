@@ -30,7 +30,7 @@ describe RuboCop::Cop::Style::RedundantFreeze do
     it "allows #{o} with freeze" do
       source = [prefix, "CONST = #{o}.freeze"].compact.join("\n")
       inspect_source(source)
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 

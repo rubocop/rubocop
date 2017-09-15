@@ -147,7 +147,7 @@ describe RuboCop::Cop::Lint::ShadowedException do
         end
       RUBY
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     context 'when there are multiple levels of exceptions in the same rescue' do
@@ -335,7 +335,7 @@ describe RuboCop::Cop::Lint::ShadowedException do
         end
       RUBY
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts rescuing exceptions in order of level with multiple ' \
@@ -350,7 +350,7 @@ describe RuboCop::Cop::Lint::ShadowedException do
         end
       RUBY
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts rescuing custom exceptions in multiple rescue groups' do
@@ -390,7 +390,7 @@ describe RuboCop::Cop::Lint::ShadowedException do
           end
         RUBY
 
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'registers an offense for splat arguments rescued after ' \

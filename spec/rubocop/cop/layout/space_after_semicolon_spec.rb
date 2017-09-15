@@ -28,7 +28,7 @@ describe RuboCop::Cop::Layout::SpaceAfterSemicolon do
     shared_examples 'common behavior' do
       it 'accepts a space between a semicolon and a closing brace' do
         inspect_source('test { ; }')
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
     end
 

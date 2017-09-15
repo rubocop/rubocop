@@ -53,7 +53,7 @@ describe RuboCop::AST::Node do
       let(:src) { 'expr' }
 
       it 'is false' do
-        expect(node).not_to be_used
+        expect(node.used?).to be(false)
       end
     end
 
@@ -69,7 +69,7 @@ describe RuboCop::AST::Node do
       let(:src) { 'obj.method { blah; expr }' }
 
       it 'is always true' do
-        expect(node.children.last).to be_used
+        expect(node.children.last.used?).to be(true)
       end
     end
 
@@ -112,9 +112,9 @@ describe RuboCop::AST::Node do
 
         it 'is true only for the condition' do
           condition, true_branch, false_branch = *node
-          expect(condition).to be_used
-          expect(true_branch).not_to be_used
-          expect(false_branch).not_to be_used
+          expect(condition.used?).to be(true)
+          expect(true_branch.used?).to be(false)
+          expect(false_branch.used?).to be(false)
         end
       end
     end
@@ -143,8 +143,8 @@ describe RuboCop::AST::Node do
 
       it 'is true only for the condition' do
         condition, body = *node
-        expect(condition).to be_used
-        expect(body).not_to be_used
+        expect(condition.used?).to be(true)
+        expect(body.used?).to be(false)
       end
     end
   end
@@ -156,7 +156,7 @@ describe RuboCop::AST::Node do
       let(:src) { source }
 
       it "returns true for `#{source}`" do
-        expect(node).to be_recursive_literal
+        expect(node.recursive_literal?).to be(true)
       end
     end
 
@@ -181,7 +181,7 @@ describe RuboCop::AST::Node do
       let(:src) { source }
 
       it "returns false for `#{source}`" do
-        expect(node).not_to be_recursive_literal
+        expect(node.recursive_literal?).to be(false)
       end
     end
 
@@ -204,7 +204,7 @@ describe RuboCop::AST::Node do
       let(:src) { 'obj.method(arg1, arg2)' }
 
       it 'returns false' do
-        expect(node).not_to be_pure
+        expect(node.pure?).to be(false)
       end
     end
 
@@ -212,7 +212,7 @@ describe RuboCop::AST::Node do
       let(:src) { '100' }
 
       it 'returns true' do
-        expect(node).to be_pure
+        expect(node.pure?).to be(true)
       end
     end
 
@@ -221,7 +221,7 @@ describe RuboCop::AST::Node do
         let(:src) { '[1..100, false, :symbol, "string", 1.0]' }
 
         it 'returns true' do
-          expect(node).to be_pure
+          expect(node.pure?).to be(true)
         end
       end
 
@@ -229,7 +229,7 @@ describe RuboCop::AST::Node do
         let(:src) { '[1, 2, 3, 3 + 4]' }
 
         it 'returns false' do
-          expect(node).not_to be_pure
+          expect(node.pure?).to be(false)
         end
       end
     end
@@ -239,7 +239,7 @@ describe RuboCop::AST::Node do
         let(:src) { '{range: 1..100, bool: false, str: "string", float: 1.0}' }
 
         it 'returns true' do
-          expect(node).to be_pure
+          expect(node.pure?).to be(true)
         end
       end
 
@@ -247,7 +247,7 @@ describe RuboCop::AST::Node do
         let(:src) { '{a: 1, b: 2, c: Kernel.exit}' }
 
         it 'returns false' do
-          expect(node).not_to be_pure
+          expect(node.pure?).to be(false)
         end
       end
     end
@@ -270,7 +270,7 @@ describe RuboCop::AST::Node do
         it 'returns true' do
           if_node = node.children[1]
           expect(if_node.type).to be :if
-          expect(if_node).to be_pure
+          expect(if_node.pure?).to be(true)
         end
       end
 
@@ -278,7 +278,7 @@ describe RuboCop::AST::Node do
         let(:src) { 'if $DEBUG then puts "hello" else nil end' }
 
         it 'returns false' do
-          expect(node).not_to be_pure
+          expect(node.pure?).to be(false)
         end
       end
 
@@ -286,7 +286,7 @@ describe RuboCop::AST::Node do
         let(:src) { 'if @a then 1 else $global = "str" end' }
 
         it 'returns false' do
-          expect(node).not_to be_pure
+          expect(node.pure?).to be(false)
         end
       end
     end
@@ -295,7 +295,7 @@ describe RuboCop::AST::Node do
       let(:src) { '@var = 1' }
 
       it 'returns false' do
-        expect(node).not_to be_pure
+        expect(node.pure?).to be(false)
       end
     end
 
@@ -303,7 +303,7 @@ describe RuboCop::AST::Node do
       let(:src) { '$var = 1' }
 
       it 'returns false' do
-        expect(node).not_to be_pure
+        expect(node.pure?).to be(false)
       end
     end
 
@@ -311,7 +311,7 @@ describe RuboCop::AST::Node do
       let(:src) { '@@var = 1' }
 
       it 'returns false' do
-        expect(node).not_to be_pure
+        expect(node.pure?).to be(false)
       end
     end
 
@@ -319,7 +319,7 @@ describe RuboCop::AST::Node do
       let(:src) { 'var = 1' }
 
       it 'returns false' do
-        expect(node).not_to be_pure
+        expect(node.pure?).to be(false)
       end
     end
 
@@ -327,7 +327,7 @@ describe RuboCop::AST::Node do
       let(:src) { 'class C < Super; def method; end end' }
 
       it 'returns false' do
-        expect(node).not_to be_pure
+        expect(node.pure?).to be(false)
       end
     end
 
@@ -335,7 +335,7 @@ describe RuboCop::AST::Node do
       let(:src) { 'module M; def method; end end' }
 
       it 'returns false' do
-        expect(node).not_to be_pure
+        expect(node.pure?).to be(false)
       end
     end
 
@@ -348,7 +348,7 @@ describe RuboCop::AST::Node do
         let(:body) { '#{x}' }
 
         it 'returns false' do
-          expect(node).not_to be_pure
+          expect(node.pure?).to be(false)
         end
       end
 
@@ -356,7 +356,7 @@ describe RuboCop::AST::Node do
         let(:src) { URI::DEFAULT_PARSER.make_regexp.inspect }
 
         it 'returns true' do
-          expect(node).to be_pure
+          expect(node.pure?).to be(true)
         end
       end
 
@@ -364,7 +364,7 @@ describe RuboCop::AST::Node do
         let(:opts) { 'oix' }
 
         it 'returns true' do
-          expect(node).to be_pure
+          expect(node.pure?).to be(true)
         end
       end
     end

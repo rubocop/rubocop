@@ -34,21 +34,21 @@ describe RuboCop::Cop::Layout::SpaceAroundKeyword do
   shared_examples 'accept before' do |after, expr|
     it "accepts `#{after}` before keyword in `#{expr}`" do
       inspect_source(expr)
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 
   shared_examples 'accept after' do |after, expr|
     it "accepts `#{after}` after keyword in `#{expr}`" do
       inspect_source(expr)
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 
   shared_examples 'accept around' do |after, expr|
     it "accepts `#{after}` around keyword in `#{expr}`" do
       inspect_source(expr)
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 

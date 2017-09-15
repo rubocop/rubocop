@@ -13,7 +13,7 @@ describe RuboCop::Cop::Rails::PluralizationGrammar do
         let(:source) { "some_variable.#{method_name}s" }
 
         it 'does not register an offense' do
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
 
@@ -21,7 +21,7 @@ describe RuboCop::Cop::Rails::PluralizationGrammar do
         let(:source) { "some_method.#{method_name}" }
 
         it 'does not register an offense' do
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
     end
@@ -48,7 +48,7 @@ describe RuboCop::Cop::Rails::PluralizationGrammar do
         let(:source) { "#{singular_literal}.#{method_name}" }
 
         it 'does not register an offense' do
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
     end
@@ -63,7 +63,7 @@ describe RuboCop::Cop::Rails::PluralizationGrammar do
           let(:source) { "#{plural_number}.#{method_name}s" }
 
           it 'does not register an offense' do
-            expect(cop.offenses).to be_empty
+            expect(cop.offenses.empty?).to be(true)
           end
         end
 

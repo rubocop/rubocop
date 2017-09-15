@@ -117,7 +117,7 @@ describe RuboCop::Cop::Style::Documentation do
         end
       end
     RUBY
-    expect(cop.offenses).to be_empty
+    expect(cop.offenses.empty?).to be(true)
   end
 
   it 'accepts non-empty class with comment that ends with an annotation' do
@@ -224,7 +224,7 @@ describe RuboCop::Cop::Style::Documentation do
             end # decorating comment
           end
         RUBY
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it "ignores sparse comments inside #{keyword} node" do
@@ -251,7 +251,7 @@ describe RuboCop::Cop::Style::Documentation do
             end
           end
         RUBY
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it "registers an offense for nested #{keyword} without documentation" do
@@ -279,7 +279,7 @@ describe RuboCop::Cop::Style::Documentation do
               end
             end
           RUBY
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
     end

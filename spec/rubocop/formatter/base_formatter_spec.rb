@@ -79,7 +79,7 @@ module RuboCop
             it 'is frozen' do
               expect(formatter).to receive(method_name) do |all_files|
                 all_files.each do |path|
-                  expect(path).to be_frozen
+                  expect(path.frozen?).to be(true)
                 end
               end
               run
@@ -138,7 +138,7 @@ module RuboCop
             it 'is frozen' do
               expect(formatter)
                 .to receive(method_name).exactly(3).times do |path|
-                expect(path).to be_frozen
+                expect(path.frozen?).to be(true)
               end
               run
             end
@@ -167,7 +167,7 @@ module RuboCop
               when '4_offenses.rb'
                 expect(offenses.size).to eq(4)
               when 'no_offense.rb'
-                expect(offenses).to be_empty
+                expect(offenses.empty?).to be(true)
               else
                 raise
               end

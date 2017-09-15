@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment do
   subject(:cop) { described_class.new(config) }
+
   let(:config) { RuboCop::Config.new }
 
   it 'registers an offense for code that immediately follows comment' do

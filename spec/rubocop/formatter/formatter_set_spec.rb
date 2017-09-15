@@ -96,12 +96,12 @@ module RuboCop
         it 'closes all output files' do
           formatter_set.close_output_files
           formatter_set[0..1].each do |formatter|
-            expect(formatter.output).to be_closed
+            expect(formatter.output.closed?).to be(true)
           end
         end
 
         it 'does not close non file output' do
-          expect(formatter_set[2].output).not_to be_closed
+          expect(formatter_set[2].output.closed?).to be(false)
         end
       end
 

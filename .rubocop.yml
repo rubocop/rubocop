@@ -56,3 +56,6 @@ Metrics/ModuleLength:
 Performance/Caller:
   Exclude:
     - spec/rubocop/cop/performance/caller_spec.rb
+
+RSpec/PredicateMatcher:
+  EnforcedStyle: explicit

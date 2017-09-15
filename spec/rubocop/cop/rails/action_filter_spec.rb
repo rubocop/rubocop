@@ -62,7 +62,7 @@ describe RuboCop::Cop::Rails::ActionFilter, :config do
       described_class::ACTION_METHODS.each do |method|
         it "accepts #{method}" do
           inspect_source_file("#{method} :something")
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
 
@@ -88,7 +88,7 @@ describe RuboCop::Cop::Rails::ActionFilter, :config do
       described_class::FILTER_METHODS.each do |method|
         it "accepts #{method}" do
           inspect_source_file("#{method} :something")
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
 
@@ -124,7 +124,7 @@ describe RuboCop::Cop::Rails::ActionFilter, :config do
       described_class::ACTION_METHODS.each do |method|
         it "accepts #{method}" do
           inspect_source_file("#{method} :something")
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
 
@@ -154,7 +154,7 @@ describe RuboCop::Cop::Rails::ActionFilter, :config do
       described_class::FILTER_METHODS.each do |method|
         it "accepts #{method}" do
           inspect_source_file("#{method} :something")
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
 

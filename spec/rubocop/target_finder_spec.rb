@@ -27,7 +27,7 @@ describe RuboCop::TargetFinder, :isolated_environment do
     let(:args) { [] }
 
     it 'returns absolute paths' do
-      expect(found_files).not_to be_empty
+      expect(found_files.empty?).to be(false)
       found_files.each do |file|
         expect(file.sub(/^[A-Z]:/, '')).to start_with('/')
       end
@@ -38,7 +38,7 @@ describe RuboCop::TargetFinder, :isolated_environment do
 
       it 'finds files under the current directory' do
         Dir.chdir('dir1') do
-          expect(found_files).not_to be_empty
+          expect(found_files.empty?).to be(false)
           found_files.each do |file|
             expect(file).to include('/dir1/')
             expect(file).not_to include('/dir2/')
@@ -52,7 +52,7 @@ describe RuboCop::TargetFinder, :isolated_environment do
 
       it 'finds files under the specified directory' do
         Dir.chdir('dir1') do
-          expect(found_files).not_to be_empty
+          expect(found_files.empty?).to be(false)
           found_files.each do |file|
             expect(file).to include('/dir2/')
             expect(file).not_to include('/dir1/')
@@ -65,7 +65,7 @@ describe RuboCop::TargetFinder, :isolated_environment do
       let(:args) { ['dir2/file'] }
 
       it "doesn't pick the file" do
-        expect(found_basenames).to be_empty
+        expect(found_basenames.empty?).to be(true)
       end
     end
 
@@ -264,7 +264,7 @@ describe RuboCop::TargetFinder, :isolated_environment do
 
         it 'outputs nothing' do
           found_files
-          expect($stderr.string).to be_empty
+          expect($stderr.string.empty?).to be(true)
         end
       end
     end

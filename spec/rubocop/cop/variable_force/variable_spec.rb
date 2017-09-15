@@ -19,6 +19,7 @@ describe RuboCop::Cop::VariableForce::Variable do
 
   describe '#referenced?' do
     subject { variable.referenced? }
+
     let(:name) { :foo }
     let(:declaration_node) { s(:arg, name) }
     let(:scope) { double('scope').as_null_object }

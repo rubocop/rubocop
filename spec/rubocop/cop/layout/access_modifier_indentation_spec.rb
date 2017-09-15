@@ -131,7 +131,7 @@ describe RuboCop::Cop::Layout::AccessModifierIndentation do
           def test; end
         end
       RUBY
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'registers an offense for misaligned private in module ' \

@@ -28,7 +28,7 @@ describe RuboCop::Cop::Performance::Detect do
 
     it "doesn't register an offense when first(n) is called on #{method}" do
       inspect_source("[1, 2, 3].#{method} { |i| i % 2 == 0 }.first(n)")
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "registers an offense when last is called on #{method}" do
@@ -40,7 +40,7 @@ describe RuboCop::Cop::Performance::Detect do
 
     it "doesn't register an offense when last(n) is called on #{method}" do
       inspect_source("[1, 2, 3].#{method} { |i| i % 2 == 0 }.last(n)")
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "registers an offense when first is called on multiline #{method}" do
@@ -88,28 +88,28 @@ describe RuboCop::Cop::Performance::Detect do
        'without first or last' do
       inspect_source("[1, 2, 3].#{method} { |i| i % 2 == 0 }")
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it "does not register an offense when #{method} is called" \
        'without block or args' do
       inspect_source("adapter.#{method}.first")
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it "does not register an offense when #{method} is called" \
        'with args but without ampersand syntax' do
       inspect_source("adapter.#{method}('something').first")
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it "does not register an offense when #{method} is called" \
        'on lazy enumerable' do
       inspect_source("adapter.lazy.#{method} { 'something' }.first")
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
   end
 
@@ -244,7 +244,7 @@ describe RuboCop::Cop::Performance::Detect do
       it "doesn't register an offense when first is called on #{method}" do
         inspect_source("[1, 2, 3].#{method} { |i| i % 2 == 0 }.first")
 
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
     end
   end

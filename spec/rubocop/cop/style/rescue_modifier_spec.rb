@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Style::RescueModifier do
   subject(:cop) { described_class.new(config) }
+
   let(:config) do
     RuboCop::Config.new('Layout/IndentationWidth' => {
                           'Width' => 2
@@ -231,6 +232,7 @@ describe RuboCop::Cop::Style::RescueModifier do
 
   describe 'excluded file' do
     subject(:cop) { described_class.new(config) }
+
     let(:config) do
       RuboCop::Config.new('Style/RescueModifier' =>
                           { 'Enabled' => true,

@@ -83,7 +83,7 @@ module RuboCop
       describe '#finished' do
         it 'does not report summary' do
           formatter.finished(['/path/to/file'])
-          expect(output.string).to be_empty
+          expect(output.string.empty?).to be(true)
         end
       end
     end

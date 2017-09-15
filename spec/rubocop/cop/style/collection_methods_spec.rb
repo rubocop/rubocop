@@ -31,12 +31,12 @@ describe RuboCop::Cop::Style::CollectionMethods, :config do
 
     it "accepts #{method} with more than 1 param" do
       inspect_source("[1, 2, 3].#{method}(other, &:test)")
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "accepts #{method} without a block" do
       inspect_source("[1, 2, 3].#{method}")
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'auto-corrects to preferred method' do

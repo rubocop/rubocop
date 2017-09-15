@@ -20,6 +20,7 @@ describe RuboCop::Cop::VariableForce::Scope do
   end
 
   subject(:scope) { described_class.new(scope_node) }
+
   let(:ast) do
     RuboCop::ProcessedSource.new(source, ruby_version).ast
   end

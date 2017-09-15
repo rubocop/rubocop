@@ -6,7 +6,7 @@ describe RuboCop::AST::PairNode do
   describe '.new' do
     let(:source) { '{ a: 1 }' }
 
-    it { expect(pair_node).to be_a(described_class) }
+    it { expect(pair_node.is_a?(described_class)).to be(true) }
   end
 
   describe '#hash_rocket?' do
@@ -87,20 +87,20 @@ describe RuboCop::AST::PairNode do
     context 'when using a symbol key' do
       let(:source) { '{ a: 1 }' }
 
-      it { expect(pair_node.key).to be_sym_type }
+      it { expect(pair_node.key.sym_type?).to be(true) }
     end
 
     context 'when using a string key' do
       let(:source) { "{ 'a' => 1 }" }
 
-      it { expect(pair_node.key).to be_str_type }
+      it { expect(pair_node.key.str_type?).to be(true) }
     end
   end
 
   describe '#value' do
     let(:source) { '{ a: 1 }' }
 
-    it { expect(pair_node.value).to be_int_type }
+    it { expect(pair_node.value.int_type?).to be(true) }
   end
 
   describe '#same_line?' do

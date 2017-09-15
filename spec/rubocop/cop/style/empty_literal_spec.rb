@@ -130,6 +130,7 @@ describe RuboCop::Cop::Style::EmptyLiteral do
 
     context 'when double-quoted string literals are preferred' do
       subject(:cop) { described_class.new(config) }
+
       let(:config) do
         RuboCop::Config.new(
           'Style/StringLiterals' =>

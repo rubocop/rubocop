@@ -22,7 +22,7 @@ describe RuboCop::NodePattern do
 
   shared_examples :nonmatching do
     it "doesn't match" do
-      expect(described_class.new(pattern).match(node, *params)).to be_nil
+      expect(described_class.new(pattern).match(node, *params).nil?).to be(true)
     end
   end
 
@@ -90,7 +90,7 @@ describe RuboCop::NodePattern do
       let(:pattern) { 'op-asgn' }
       let(:ruby) { 'a += 1' }
 
- # this is an (op-asgn ...) node
+      # this is an (op-asgn ...) node
       it_behaves_like :matching
     end
   end

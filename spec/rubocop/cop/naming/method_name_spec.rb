@@ -70,7 +70,7 @@ describe RuboCop::Cop::Naming::MethodName, :config do
             end
           end
         RUBY
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it "accepts class emitter method in a #{kind}, even when it is " \
@@ -89,7 +89,7 @@ describe RuboCop::Cop::Naming::MethodName, :config do
             end
           end
         RUBY
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
     end
   end

@@ -22,7 +22,7 @@ describe RuboCop::Cop::Severity do
   end
 
   it 'is frozen' do
-    expect(convention).to be_frozen
+    expect(convention.frozen?).to be(true)
   end
 
   describe '#code' do

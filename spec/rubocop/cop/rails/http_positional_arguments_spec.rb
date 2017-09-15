@@ -41,7 +41,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
 
         it 'does not register an offense' do
           inspect_source(source)
-          expect(cop.messages).to be_empty
+          expect(cop.messages.empty?).to be(true)
         end
       end
     end
@@ -294,7 +294,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
 
         it 'does not register an offense' do
           inspect_source(source)
-          expect(cop.messages).to be_empty
+          expect(cop.messages.empty?).to be(true)
         end
       end
     end
