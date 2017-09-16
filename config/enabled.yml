@@ -1264,12 +1264,6 @@ Lint/InterpolationCheck:
   Description: 'Raise warning for interpolation in single q strs'
   Enabled: true
 
-Lint/InvalidCharacterLiteral:
-  Description: >-
-                 Checks for invalid character literals with a non-escaped
-                 whitespace character.
-  Enabled: true
-
 Lint/LiteralInCondition:
   Description: 'Checks of literals used in conditions.'
   Enabled: true

@@ -7,6 +7,10 @@
 * [#4741](https://github.com/bbatsov/rubocop/issues/4741): Make `Style/SafeNavigation` correctly exclude methods called without dot. ([@drenmi][])
 * [#4740](https://github.com/bbatsov/rubocop/issues/4740): Make `Lint/RescueWithoutErrorClass` aware of modifier form `rescue`. ([@drenmi][])
 
+### Changes
+
+* [#4746](https://github.com/bbatsov/rubocop/pull/4746): The `Lint/InvalidCharacterLiteral` cop has been removed since it was never being actually triggered. ([@deivid-rodriguez][])
+
 ## 0.50.0 (2017-09-14)
 
 ### New features
