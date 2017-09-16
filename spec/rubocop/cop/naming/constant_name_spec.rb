@@ -46,7 +46,7 @@ describe RuboCop::Cop::Naming::ConstantName do
   end
 
   it 'does not check if rhs is another constant' do
-    expect_no_offenses('Parser::CurrentRuby = Parser::Ruby20')
+    expect_no_offenses('Parser::CurrentRuby = Parser::Ruby21')
   end
 
   it 'checks qualified const names' do

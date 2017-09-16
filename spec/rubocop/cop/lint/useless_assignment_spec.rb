@@ -1578,10 +1578,6 @@ describe RuboCop::Cop::Lint::UselessAssignment do
       expect(cop.offenses.first.line).to eq(2)
       expect(cop.highlights).to eq(['/(?<foo>\w+)/'])
     end
-
-    # MRI 2.0 accepts this case, but I have no idea why it does so
-    # and there's no convincing reason to conform to this behavior,
-    # so RuboCop does not mimic MRI in this case.
   end
 
   context 'when a named capture is referenced' do

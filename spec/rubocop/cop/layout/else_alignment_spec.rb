@@ -411,32 +411,30 @@ describe RuboCop::Cop::Layout::ElseAlignment do
       RUBY
     end
 
-    if RUBY_VERSION >= '2.1'
-      context 'when modifier and def are on the same line' do
-        it 'accepts a correctly aligned body' do
-          expect_no_offenses(<<-RUBY.strip_indent)
-            private def test
-              something
-            rescue
-              handling
-            else
-              something_else
-            end
-          RUBY
-        end
+    context 'when modifier and def are on the same line' do
+      it 'accepts a correctly aligned body' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          private def test
+            something
+          rescue
+            handling
+          else
+            something_else
+          end
+        RUBY
+      end
 
-        it 'registers an offense for else not aligned with private' do
-          expect_offense(<<-RUBY.strip_indent)
-            private def test
-                      something
-                    rescue
-                      handling
-                    else
-                    ^^^^ Align `else` with `private`.
-                      something_else
-                    end
-          RUBY
-        end
+      it 'registers an offense for else not aligned with private' do
+        expect_offense(<<-RUBY.strip_indent)
+          private def test
+                    something
+                  rescue
+                    handling
+                  else
+                  ^^^^ Align `else` with `private`.
+                    something_else
+                  end
+        RUBY
       end
     end
   end
