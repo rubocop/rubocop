@@ -26,6 +26,9 @@ module RuboCop
         '`Style/TrailingCommaInArguments` instead.',
       'Rails/DefaultScope' =>
         'The `Rails/DefaultScope` cop no longer exists.',
+      'Lint/InvalidCharacterLiteral' =>
+        'The `Lint/InvalidCharacterLiteral` cop has been removed since it ' \
+        'was never being actually triggered.',
       'Style/SingleSpaceBeforeFirstArg' =>
         'The `Style/SingleSpaceBeforeFirstArg` cop has been renamed to ' \
         '`Layout/SpaceBeforeFirstArg`.',

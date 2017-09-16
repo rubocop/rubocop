@@ -10,6 +10,10 @@
 * [#4732](https://github.com/bbatsov/rubocop/issues/4732): Prevent `Performance/HashEachMethods` from registering an offense when `#each` follows `#to_a`. ([@drenmi][])
 * [#4730](https://github.com/bbatsov/rubocop/issues/4730): False positive on Lint/InterpolationCheck. ([@koic][])
 
+### Changes
+
+* [#4746](https://github.com/bbatsov/rubocop/pull/4746): The `Lint/InvalidCharacterLiteral` cop has been removed since it was never being actually triggered. ([@deivid-rodriguez][])
+
 ## 0.50.0 (2017-09-14)
 
 ### New features
