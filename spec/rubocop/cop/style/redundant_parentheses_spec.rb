@@ -52,11 +52,8 @@ describe RuboCop::Cop::Style::RedundantParentheses do
   it_behaves_like 'redundant', '(/regexp/)', '/regexp/', 'a literal'
   it_behaves_like 'redundant', '("x"; "y")', '"x"; "y"', 'a literal'
   it_behaves_like 'redundant', '(1; 2)', '1; 2', 'a literal'
-  if RUBY_VERSION >= '2.1'
-    it_behaves_like 'redundant', '(1i)', '1i', 'a literal'
-    it_behaves_like 'redundant', '(1r)', '1r', 'a literal'
-  end
-
+  it_behaves_like 'redundant', '(1i)', '1i', 'a literal'
+  it_behaves_like 'redundant', '(1r)', '1r', 'a literal'
   it_behaves_like 'redundant', '(__FILE__)', '__FILE__', 'a keyword'
   it_behaves_like 'redundant', '(__LINE__)', '__LINE__', 'a keyword'
   it_behaves_like 'redundant', '(__ENCODING__)', '__ENCODING__', 'a keyword'

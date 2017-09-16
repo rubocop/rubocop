@@ -45,21 +45,19 @@ describe RuboCop::Cop::Layout::SpaceAfterColon do
     RUBY
   end
 
-  if RUBY_VERSION >= '2.1'
-    it 'accepts colons denoting required keyword argument' do
-      expect_no_offenses(<<-RUBY.strip_indent)
-        def initialize(table:, nodes:)
-        end
-      RUBY
-    end
+  it 'accepts colons denoting required keyword argument' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      def initialize(table:, nodes:)
+      end
+    RUBY
+  end
 
-    it 'registers an offence if an keyword optional argument has no space' do
-      expect_offense(<<-RUBY.strip_indent)
-        def m(var:1, other_var: 2)
-                 ^ Space missing after colon.
-        end
-      RUBY
-    end
+  it 'registers an offence if an keyword optional argument has no space' do
+    expect_offense(<<-RUBY.strip_indent)
+      def m(var:1, other_var: 2)
+               ^ Space missing after colon.
+      end
+    RUBY
   end
 
   it 'auto-corrects missing space' do

@@ -17,8 +17,6 @@ module RuboCop
       #   # good
       #   path = __dir__
       class Dir < Cop
-        extend TargetRubyVersion
-
         MSG = 'Use `__dir__` to get an absolute path to the current ' \
               "file's directory.".freeze
 
@@ -26,8 +24,6 @@ module RuboCop
           {(send (const nil? :File) :expand_path (send (const nil? :File) :dirname  #file_keyword?))
            (send (const nil? :File) :dirname     (send (const nil? :File) :realpath #file_keyword?))}
         PATTERN
-
-        minimum_target_ruby_version 2.0
 
         def on_send(node)
           dir_replacement?(node) do

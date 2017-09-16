@@ -198,10 +198,8 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
     expect_no_offenses(<<-RUBY.strip_indent)
       module Foo
         begin
-          if RUBY_VERSION > "2.0"
-            def bar=(bar)
-              @bar = bar
-            end
+          def bar=(bar)
+            @bar = bar
           end
         end
       end
@@ -212,10 +210,8 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
     expect_no_offenses(<<-RUBY.strip_indent)
       module Foo
         begin
-          if RUBY_VERSION > "2.0"
-            def bar
-              @bar
-            end
+          def bar
+            @bar
           end
         end
       end
@@ -226,10 +222,8 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
     expect_no_offenses(<<-RUBY.strip_indent)
       something.instance_eval do
         begin
-          if RUBY_VERSION > "2.0"
-            def bar=(bar)
-              @bar = bar
-            end
+          def bar=(bar)
+            @bar = bar
           end
         end
       end
@@ -240,10 +234,8 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
     expect_no_offenses(<<-RUBY.strip_indent)
       something.instance_eval do
         begin
-          if RUBY_VERSION > "2.0"
-            def bar
-              @bar
-            end
+          def bar
+            @bar
           end
         end
       end

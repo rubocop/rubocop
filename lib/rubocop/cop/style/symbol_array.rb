@@ -7,8 +7,7 @@ module RuboCop
       # using the %i() syntax.
       #
       # Alternatively, it checks for symbol arrays using the %i() syntax on
-      # projects which do not want to use that syntax, perhaps because they
-      # support a version of Ruby lower than 2.0.
+      # projects which do not want to use that syntax.
       #
       # Configuration option: MinSize
       # If set, arrays with fewer elements than this value will not trigger the
@@ -38,9 +37,6 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include PercentLiteral
         include PercentArray
-        extend TargetRubyVersion
-
-        minimum_target_ruby_version 2.0
 
         PERCENT_MSG = 'Use `%i` or `%I` for an array of symbols.'.freeze
         ARRAY_MSG = 'Use `[]` for an array of symbols.'.freeze

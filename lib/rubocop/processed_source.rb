@@ -110,9 +110,6 @@ module RuboCop
     # rubocop:disable Metrics/MethodLength
     def parser_class(ruby_version)
       case ruby_version
-      when 2.0
-        require 'parser/ruby20'
-        Parser::Ruby20
       when 2.1
         require 'parser/ruby21'
         Parser::Ruby21

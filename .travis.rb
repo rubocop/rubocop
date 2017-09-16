@@ -26,7 +26,7 @@ def sh!(command)
 end
 
 # Run main task(RSpec or RuboCop).
-if master? || !test? || jruby? || RUBY_VERSION < '2.1.0'
+if master? || !test? || jruby?
   sh!("bundle exec rake #{ENV['TASK']}")
 else
   sh!("bundle exec rake parallel:#{ENV['TASK']}")

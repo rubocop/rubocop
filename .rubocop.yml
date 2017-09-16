@@ -8,7 +8,7 @@ AllCops:
     - 'vendor/**/*'
     - 'spec/fixtures/**/*'
     - 'tmp/**/*'
-  TargetRubyVersion: 2.0
+  TargetRubyVersion: 2.1
 
 Style/FrozenStringLiteralComment:
   EnforcedStyle: always

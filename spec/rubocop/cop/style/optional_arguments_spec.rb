@@ -81,7 +81,7 @@ describe RuboCop::Cop::Style::OptionalArguments do
       end
     end
 
-    context 'required params', :ruby21 do
+    context 'required params' do
       it 'registers an offense for optional arguments that come before ' \
          'required arguments where there are name arguments' do
         inspect_source(<<-RUBY.strip_indent)
