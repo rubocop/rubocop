@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+## Bug fixes
+
+* [#4741](https://github.com/bbatsov/rubocop/issues/4741): Make `Style/SafeNavigation` correctly exclude methods called without dot. ([@drenmi][])
+
 ## 0.50.0 (2017-09-14)
 
 ### New features
