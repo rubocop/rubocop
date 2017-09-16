@@ -1727,7 +1727,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
       RUBY
     end
 
-    include_examples 'accepts' unless RUBY_VERSION < '2.0'
+    include_examples 'accepts'
     include_examples 'mimics MRI 2.1'
   end
 
@@ -1740,7 +1740,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
       RUBY
     end
 
-    include_examples 'accepts' unless RUBY_VERSION < '2.0'
+    include_examples 'accepts'
     include_examples 'mimics MRI 2.1'
   end
 
@@ -1752,7 +1752,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
       RUBY
     end
 
-    include_examples 'accepts' unless RUBY_VERSION < '2.0'
+    include_examples 'accepts'
     include_examples 'mimics MRI 2.1'
   end
 
@@ -1764,7 +1764,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
       RUBY
     end
 
-    include_examples 'accepts' unless RUBY_VERSION < '2.0'
+    include_examples 'accepts'
     include_examples 'mimics MRI 2.1'
   end
 
