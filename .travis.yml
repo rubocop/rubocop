@@ -20,6 +20,7 @@ env:
     - 'TASK=internal_investigation'
 matrix:
   allow_failures:
+    - rvm: jruby-9.0.1.0
     - rvm: ruby-head
     - rvm: rbx-3
   fast_finish: true
