@@ -3,7 +3,11 @@
 module RuboCop
   module Cop
     module Performance
-      # This cop checks for uses of `each_key` & `each_value` Hash methods.
+      # This cop checks for uses of `each_key` and `each_value` Hash methods.
+      #
+      # Note: If you have an array of two-element arrays, you can put
+      #   parentheses around the block arguments to indicate that you're not
+      #   working with a hash, and supress RuboCop offenses.
       #
       # @example
       #   # bad
@@ -21,7 +25,7 @@ module RuboCop
         MSG = 'Use `%s` instead of `%s`.'.freeze
 
         def_node_matcher :plain_each, <<-PATTERN
-          (block $(send _ :each) (args (arg $_k) (arg $_v)) ...)
+          (block $(send !(send _ :to_a) :each) (args (arg $_k) (arg $_v)) ...)
         PATTERN
 
         def_node_matcher :kv_each, <<-PATTERN

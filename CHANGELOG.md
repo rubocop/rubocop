@@ -7,6 +7,7 @@
 * [#4741](https://github.com/bbatsov/rubocop/issues/4741): Make `Style/SafeNavigation` correctly exclude methods called without dot. ([@drenmi][])
 * [#4740](https://github.com/bbatsov/rubocop/issues/4740): Make `Lint/RescueWithoutErrorClass` aware of modifier form `rescue`. ([@drenmi][])
 * [#4745](https://github.com/bbatsov/rubocop/issues/4745): Make `Style/SafeNavigation` ignore negated continuations. ([@drenmi][])
+* [#4732](https://github.com/bbatsov/rubocop/issues/4732): Prevent `Performance/HashEachMethods` from registering an offense when `#each` follows `#to_a`. ([@drenmi][])
 
 ## 0.50.0 (2017-09-14)
 
