@@ -18,6 +18,14 @@ describe RuboCop::Cop::Performance::HashEachMethods do
         expect_no_offenses("foo.each { |k, v| p \"\#{k}_\#{v}\" }")
       end
 
+      it 'does not register an offense when #each follows #to_a' do
+        expect_no_offenses('foo.to_a.each { |k, _v| bar(k) }')
+      end
+
+      it 'does not register an offense when using braces around arguments' do
+        expect_no_offenses('foo.each { |(k, _v)| bar(k) }')
+      end
+
       it 'does not register an offense for foo#each ' \
       ' if block takes only one arg' do
         expect_no_offenses('foo.each { |kv| p kv }')
@@ -60,6 +68,14 @@ describe RuboCop::Cop::Performance::HashEachMethods do
       it 'does not register an offense for {}#each ' \
       ' if block takes only one arg' do
         expect_no_offenses('{}.each { |kv| p kv }')
+      end
+
+      it 'does not register an offense when #each follows #to_a' do
+        expect_no_offenses('{}.to_a.each { |k, _v| bar(k) }')
+      end
+
+      it 'does not register an offense when using braces around arguments' do
+        expect_no_offenses('{}.each { |(k, _v)| bar(k) }')
       end
 
       it 'auto-corrects {}#each with unused value argument' \
