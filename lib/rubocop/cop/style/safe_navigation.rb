@@ -156,19 +156,22 @@ module RuboCop
         end
 
         def unsafe_method?(send_node)
-          NIL_METHODS.include?(send_node.method_name) || !send_node.dot?
+          NIL_METHODS.include?(send_node.method_name) ||
+            negated?(send_node) || !send_node.dot?
+        end
+
+        def negated?(send_node)
+          send_node.parent.send_type? && send_node.parent.method?(:!)
         end
 
         def begin_range(node, method_call)
-          Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                    node.loc.expression.begin_pos,
-                                    method_call.loc.expression.begin_pos)
+          range_between(node.loc.expression.begin_pos,
+                        method_call.loc.expression.begin_pos)
         end
 
         def end_range(node, method_call)
-          Parser::Source::Range.new(node.loc.expression,
-                                    method_call.loc.expression.end_pos,
-                                    node.loc.expression.end_pos)
+          range_between(method_call.loc.expression.end_pos,
+                        node.loc.expression.end_pos)
         end
       end
     end
