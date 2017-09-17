@@ -48,7 +48,7 @@ module RuboCop
 
         MSG = 'Use safe navigation (`&.`) instead of checking if an object ' \
               'exists before calling the method.'.freeze
-        NIL_METHODS = nil.methods.map(&:to_s).freeze
+        NIL_METHODS = nil.methods.freeze
 
         minimum_target_ruby_version 2.3
 
@@ -119,14 +119,7 @@ module RuboCop
           checked_variable, receiver =
             modifier_if_safe_navigation_candidate?(node)
 
-          matching_receiver =
-            find_matching_receiver_invocation(receiver, checked_variable)
-
-          if matching_receiver
-            method = matching_receiver.parent.loc.selector.source
-          end
-
-          [checked_variable, matching_receiver, method]
+          extract_common_parts(receiver, checked_variable)
         end
 
         def extract_parts_from_and(node)
@@ -136,33 +129,34 @@ module RuboCop
               not_nil_check?(checked_variable) || checked_variable
           end
 
-          matching_receiver =
-            find_matching_receiver_invocation(rhs, checked_variable)
+          extract_common_parts(rhs, checked_variable)
+        end
 
-          if matching_receiver
-            method = matching_receiver.parent.loc.selector.source
-          end
+        def extract_common_parts(continuation, checked_variable)
+          matching_receiver =
+            find_matching_receiver_invocation(continuation, checked_variable)
+
+          method = matching_receiver.parent if matching_receiver
 
           [checked_variable, matching_receiver, method]
         end
 
         def find_matching_receiver_invocation(node, checked_variable)
-          return nil if node.nil?
+          return nil unless node
 
-          if node.block_type?
-            method_call, = *node
-            receiver, _method = *method_call
-          elsif node.send_type?
-            receiver, _method = *node
-          end
+          receiver = if node.block_type?
+                       node.send_node.receiver
+                     else
+                       node.receiver
+                     end
 
           return receiver if receiver == checked_variable
 
           find_matching_receiver_invocation(receiver, checked_variable)
         end
 
-        def unsafe_method?(method)
-          NIL_METHODS.include?(method) || method !~ /\w+[=!?]?/
+        def unsafe_method?(send_node)
+          NIL_METHODS.include?(send_node.method_name) || !send_node.dot?
         end
 
         def begin_range(node, method_call)

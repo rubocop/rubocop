@@ -31,6 +31,10 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
       expect_no_offenses('foo && foo.to_i')
     end
 
+    it 'allows an object check before hash access' do
+      expect_no_offenses('foo && foo[:bar]')
+    end
+
     it 'allows method calls that do not get called using . safe guarded by ' \
       'an object check' do
       expect_no_offenses('foo + bar if foo')
