@@ -1592,6 +1592,13 @@ rescue
   bar
 end
 ```
+```ruby
+# good
+foo rescue BarError; "baz"
+
+# bad
+foo rescue "baz"
+```
 
 ### References
 

@@ -117,6 +117,8 @@ RSpec.describe RuboCop::Cop::Generator do
         Files created:
           - lib/rubocop/cop/style/fake_cop.rb
           - spec/rubocop/cop/style/fake_cop_spec.rb
+        File modified:
+          - `require 'rubocop/cop/style/fake_cop'` added into lib/rubocop.rb
 
         Do 3 steps:
           1. Add an entry to the "New features" section in CHANGELOG.md,

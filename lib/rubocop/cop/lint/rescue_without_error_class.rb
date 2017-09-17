@@ -20,11 +20,19 @@ module RuboCop
       #   rescue
       #     bar
       #   end
+      #
+      # @example
+      #
+      #   # good
+      #   foo rescue BarError; "baz"
+      #
+      #   # bad
+      #   foo rescue "baz"
       class RescueWithoutErrorClass < Cop
         MSG = 'Avoid rescuing without specifying an error class.'.freeze
 
         def_node_matcher :rescue_without_error_class?, <<-PATTERN
-          (resbody nil ...)
+          (resbody nil _ !(const ...))
         PATTERN
 
         def on_resbody(node)

@@ -15,11 +15,33 @@ describe RuboCop::Cop::Lint::RescueWithoutErrorClass, :config do
       RUBY
     end
 
+    it 'registers an offense without an error class, assigning to variable' do
+      expect_offense(<<-RUBY.strip_indent)
+        begin
+          foo
+        rescue => e
+        ^^^^^^ Avoid rescuing without specifying an error class.
+          bar
+        end
+      RUBY
+    end
+
     it 'does not register an offense with an error class' do
       expect_no_offenses(<<-RUBY.strip_indent)
         begin
           foo
         rescue BarError
+          bar
+        end
+      RUBY
+    end
+
+    it 'does not register an offense with an error class, ' \
+       'assigning to variable' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        begin
+          foo
+        rescue BarError => e
           bar
         end
       RUBY
@@ -38,6 +60,17 @@ describe RuboCop::Cop::Lint::RescueWithoutErrorClass, :config do
       RUBY
     end
 
+    it 'registers an offense without an error class, assigning to variable' do
+      expect_offense(<<-RUBY.strip_indent)
+        def baz
+          foo
+        rescue => e
+        ^^^^^^ Avoid rescuing without specifying an error class.
+          bar
+        end
+      RUBY
+    end
+
     it 'does not register an offense with an error class' do
       expect_no_offenses(<<-RUBY.strip_indent)
         def baz
@@ -45,6 +78,32 @@ describe RuboCop::Cop::Lint::RescueWithoutErrorClass, :config do
         rescue BarError
           bar
         end
+      RUBY
+    end
+
+    it 'does not register an offense with an error class, ' \
+       'assigning to variable' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def baz
+          foo
+        rescue BarError => e
+          bar
+        end
+      RUBY
+    end
+  end
+
+  context 'when rescuing as a modifier' do
+    it 'registers an offense with something besides an an error class' do
+      expect_offense(<<-RUBY.strip_indent)
+        foo rescue 42
+            ^^^^^^ Avoid rescuing without specifying an error class.
+      RUBY
+    end
+
+    it 'does not register an offense with an error class' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        foo rescue BarError
       RUBY
     end
   end
