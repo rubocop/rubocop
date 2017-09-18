@@ -27,4 +27,10 @@ describe RuboCop::Cop::Lint::InterpolationCheck do
       foo = "\xff"
     RUBY
   end
+
+  it 'does not register an offense for escaped crab claws in dstr' do
+    expect_no_offenses(<<-'RUBY'.strip_indent)
+      foo = "alpha #{variable} beta \#{gamma}\" delta"
+    RUBY
+  end
 end

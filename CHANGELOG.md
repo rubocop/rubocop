@@ -8,6 +8,7 @@
 * [#4740](https://github.com/bbatsov/rubocop/issues/4740): Make `Lint/RescueWithoutErrorClass` aware of modifier form `rescue`. ([@drenmi][])
 * [#4745](https://github.com/bbatsov/rubocop/issues/4745): Make `Style/SafeNavigation` ignore negated continuations. ([@drenmi][])
 * [#4732](https://github.com/bbatsov/rubocop/issues/4732): Prevent `Performance/HashEachMethods` from registering an offense when `#each` follows `#to_a`. ([@drenmi][])
+* [#4730](https://github.com/bbatsov/rubocop/issues/4730): False positive on Lint/InterpolationCheck. ([@koic][])
 
 ## 0.50.0 (2017-09-14)
 
