@@ -5,6 +5,9 @@
 ### New features
 
 * [#4791](https://github.com/bbatsov/rubocop/pull/4791): Add new `Rails/UnknownEnv` cop. ([@pocke][])
+* [#4690](https://github.com/bbatsov/rubocop/issues/4690): Add new `Lint/UnneededRequireStatement` cop. ([@koic][])
+
+## Bug fixes
 
 ### Bug fixes
 

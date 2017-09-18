@@ -1827,6 +1827,31 @@ their work. Instead, it waits until it's called in a later stage of the
 execution. The reason it can't be implemented as a normal cop is that
 it depends on the results of all other cops to do its work.
 
+## Lint/UnneededRequireStatement
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+Checks for unnecessary require statement.
+
+The following features are unnecessary require statement because
+they are already loaded.
+
+% ruby -e 'p $LOADED_FEATURES.reject { |feature| %r|/| =~ feature }'
+["enumerator.so", "thread.rb", "rational.so", "complex.so"]
+
+### Example
+
+```ruby
+# bad
+require 'unloaded_feature'
+require 'thread'
+
+# good
+require 'unloaded_feature'
+```
+
 ## Lint/UnneededSplatExpansion
 
 Enabled by default | Supports autocorrection
