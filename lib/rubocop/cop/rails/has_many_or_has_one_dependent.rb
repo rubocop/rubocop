@@ -5,6 +5,7 @@ module RuboCop
     module Rails
       # This cop looks for `has_many` or `has_one` associations that don't
       # specify a `:dependent` option.
+      # It doesn't register an offense if `:through` option was specified.
       #
       # @example
       #   # bad
@@ -17,6 +18,7 @@ module RuboCop
       #   class User < ActiveRecord::Base
       #     has_many :comments, dependent: :restrict_with_exception
       #     has_one :avatar, dependent: :destroy
+      #     has_many :patients, through: :appointments
       #   end
       class HasManyOrHasOneDependent < Cop
         MSG = 'Specify a `:dependent` option.'.freeze
@@ -33,11 +35,17 @@ module RuboCop
           (pair (sym :dependent) !(:nil))
         PATTERN
 
+        def_node_matcher :has_through?, <<-PATTERN
+          (pair (sym :through) !(:nil))
+        PATTERN
+
         def on_send(node)
           unless is_has_many_or_has_one_without_options?(node)
             pairs = is_has_many_or_has_one_with_options?(node)
             return unless pairs
-            return if pairs.any? { |pair| has_dependent?(pair) }
+            return if pairs.any? do |pair|
+              has_dependent?(pair) || has_through?(pair)
+            end
           end
 
           add_offense(node, :selector)
