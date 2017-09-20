@@ -12,8 +12,13 @@ describe RuboCop::Cop::Lint::UnneededRequireStatement do
   end
 
   it 'autocorrects remove unnecessary require statement' do
-    new_source = autocorrect_source("require 'enumerator'")
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
+      require 'enumerator'
+      require 'uri'
+    RUBY
 
-    expect(new_source).to be_blank
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      require 'uri'
+    RUBY
   end
 end
