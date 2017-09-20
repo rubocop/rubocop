@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 describe RuboCop::Cop::Layout::Tab do
-  subject(:cop) { described_class.new }
+  subject(:cop) { described_class.new(config) }
+  let(:config) do
+    RuboCop::Config.new('Layout/IndentationWidth' => { 'Width' => 2 })
+  end
 
   it 'registers an offense for a line indented with tab' do
     expect_offense(<<-RUBY.strip_indent)
@@ -63,5 +66,20 @@ describe RuboCop::Cop::Layout::Tab do
   it 'auto-corrects a line with tab in a string indented with tab' do
     new_source = autocorrect_source(["\t(x = \"\t\")"])
     expect(new_source).to eq("  (x = \"\t\")")
+  end
+
+  context 'custom indentation width' do
+    let(:config) do
+      RuboCop::Config.new('Layout/Tab' => {
+                            'IndentationWidth' => 3
+                          },
+                          'Layout/IndentationWidth' => { 'Width' => 2 })
+    end
+
+    it 'uses the configured number of spaces to replace a tab' do
+      new_source = autocorrect_source("\tx = 0")
+
+      expect(new_source).to eq('   x = 0')
+    end
   end
 end
