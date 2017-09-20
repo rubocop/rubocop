@@ -22,10 +22,6 @@ module RuboCop
       #   # good
       #   require 'unloaded_feature'
       class UnneededRequireStatement < Cop
-        extend TargetRubyVersion
-
-        minimum_target_ruby_version 2.2
-
         MSG = 'Remove unnecessary require statement.'.freeze
 
         def_node_matcher :unnecessary_require_statement?, <<-PATTERN
@@ -34,6 +30,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
+          return if RUBY_VERSION < '2.2'
           return unless unnecessary_require_statement?(node)
           add_offense(node)
         end
