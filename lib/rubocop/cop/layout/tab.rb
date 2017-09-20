@@ -7,6 +7,8 @@ module RuboCop
     module Layout
       # This cop checks for tabs inside the source code.
       class Tab < Cop
+        include AutocorrectAlignment
+
         MSG = 'Tab detected.'.freeze
 
         def investigate(processed_source)
@@ -30,7 +32,8 @@ module RuboCop
 
         def autocorrect(range)
           lambda do |corrector|
-            corrector.replace(range, range.source.gsub(/\t/, '  '))
+            spaces = ' ' * configured_indentation_width
+            corrector.replace(range, range.source.gsub(/\t/, spaces))
           end
         end
 

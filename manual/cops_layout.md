@@ -2364,6 +2364,12 @@ Enabled | Yes
 
 This cop checks for tabs inside the source code.
 
+### Important attributes
+
+Attribute | Value
+--- | ---
+IndentationWidth |
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#spaces-indentation](https://github.com/bbatsov/ruby-style-guide#spaces-indentation)
