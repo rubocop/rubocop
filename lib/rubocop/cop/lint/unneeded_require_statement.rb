@@ -34,12 +34,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          lambda do |corrector|
-            range = range_between(
-              node.loc.expression.begin_pos, node.loc.expression.end_pos
-            )
-            corrector.remove(range)
-          end
+          ->(corrector) { corrector.remove(node.source_range) }
         end
       end
     end
