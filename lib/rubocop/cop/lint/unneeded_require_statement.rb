@@ -8,8 +8,11 @@ module RuboCop
       # The following features are unnecessary require statement because
       # they are already loaded.
       #
-      # % ruby -e 'p $LOADED_FEATURES.reject { |feature| %r|/| =~ feature }'
-      # ["enumerator.so", "thread.rb", "rational.so", "complex.so"]
+      # ruby -ve 'p $LOADED_FEATURES.reject { |feature| %r|/| =~ feature }'
+      # ruby 2.2.8p477 (2017-09-14 revision 59906) [x86_64-darwin13]
+      # ["enumerator.so", "rational.so", "complex.so", "thread.rb"]
+      #
+      # This cop targets Ruby 2.2 or higher containing these 4 features.
       #
       # @example
       #   # bad
@@ -19,13 +22,15 @@ module RuboCop
       #   # good
       #   require 'unloaded_feature'
       class UnneededRequireStatement < Cop
-        MSG = 'Remove unnecessary require statement.'.freeze
+        extend TargetRubyVersion
 
-        LOADED_FEATURES = $LOADED_FEATURES.reject { |feature| %r{/} =~ feature }
+        minimum_target_ruby_version 2.2
+
+        MSG = 'Remove unnecessary require statement.'.freeze
 
         def_node_matcher :unnecessary_require_statement?, <<-PATTERN
           (send nil :require
-            (str {#{LOADED_FEATURES.map { |f| "\"#{File.basename(f, '.*')}\"" }.join(' ')}}))
+            (str {"enumerator" "rational" "complex" "thread"}))
         PATTERN
 
         def on_send(node)
