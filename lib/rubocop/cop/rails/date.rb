@@ -98,7 +98,7 @@ module RuboCop
           return unless node.method?(:to_time)
 
           if node.receiver.str_type?
-            zone_regexp = /[+-][\d:]+\z/
+            zone_regexp = /([+-][\d:]+|\dZ)\z/
 
             node.receiver.str_content.match(zone_regexp)
           else
