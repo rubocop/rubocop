@@ -20,23 +20,18 @@ module RuboCop
       #   rescue
       #     bar
       #   end
-      #
-      # @example
-      #
-      #   # good
-      #   foo rescue BarError; "baz"
-      #
-      #   # bad
-      #   foo rescue "baz"
       class RescueWithoutErrorClass < Cop
+        include RescueNode
+
         MSG = 'Avoid rescuing without specifying an error class.'.freeze
 
         def_node_matcher :rescue_without_error_class?, <<-PATTERN
-          (resbody nil _ !(const ...))
+          (resbody nil _ _)
         PATTERN
 
         def on_resbody(node)
-          return unless rescue_without_error_class?(node)
+          return unless rescue_without_error_class?(node) &&
+                        !rescue_modifier?(node)
 
           add_offense(node, :keyword)
         end

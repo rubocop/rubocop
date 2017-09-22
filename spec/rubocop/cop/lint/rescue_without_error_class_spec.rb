@@ -94,16 +94,9 @@ describe RuboCop::Cop::Lint::RescueWithoutErrorClass, :config do
   end
 
   context 'when rescuing as a modifier' do
-    it 'registers an offense with something besides an an error class' do
-      expect_offense(<<-RUBY.strip_indent)
-        foo rescue 42
-            ^^^^^^ Avoid rescuing without specifying an error class.
-      RUBY
-    end
-
-    it 'does not register an offense with an error class' do
+    it 'does not register an offense without an error class' do
       expect_no_offenses(<<-RUBY.strip_indent)
-        foo rescue BarError
+        foo rescue 42
       RUBY
     end
   end
