@@ -22,6 +22,20 @@ describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
       RUBY
     end
 
+    it 'does not registers an offense when dependent in options block' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class Person
+          with_options dependent: :destroy do
+            has_one :foo
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when specifying `:dependent` strategy' do
+      expect_no_offenses('has_one :foo, dependent: :bar')
+    end
+
     it 'does not register an offense when specifying `:dependent` strategy' do
       expect_no_offenses('has_one :foo, dependent: :bar')
     end
