@@ -118,7 +118,7 @@ RSpec.describe RuboCop::Cop::Generator do
           - lib/rubocop/cop/style/fake_cop.rb
           - spec/rubocop/cop/style/fake_cop_spec.rb
         File modified:
-          - `require 'rubocop/cop/style/fake_cop'` added into lib/rubocop.rb
+          - `require_relative 'rubocop/cop/style/fake_cop'` added into lib/rubocop.rb
 
         Do 3 steps:
           1. Add an entry to the "New features" section in CHANGELOG.md,
@@ -138,7 +138,7 @@ RSpec.describe RuboCop::Cop::Generator do
   end
 
   describe '#inject_require' do
-    context 'when a `require` entry does not exist from before' do
+    context 'when a `require_relative` entry does not exist from before' do
       before do
         allow(File)
           .to receive(:readlines).with('lib/rubocop.rb')
@@ -152,20 +152,21 @@ RSpec.describe RuboCop::Cop::Generator do
           require 'set'
           require 'forwardable'
 
-          require 'rubocop/version'
+          require_relative 'rubocop/version'
 
-          require 'rubocop/cop/style/end_block'
-          require 'rubocop/cop/style/even_odd'
-          require 'rubocop/cop/style/file_name'
-          require 'rubocop/cop/style/flip_flop'
+          require_relative 'rubocop/cop/style/end_block'
+          require_relative 'rubocop/cop/style/even_odd'
+          require_relative 'rubocop/cop/style/file_name'
+          require_relative 'rubocop/cop/style/flip_flop'
 
-          require 'rubocop/cop/rails/action_filter'
+          require_relative 'rubocop/cop/rails/action_filter'
 
-          require 'rubocop/cop/team'
+          require_relative 'rubocop/cop/team'
         RUBY
       end
 
-      it 'injects a `require` statement on the right line in the root file' do
+      it 'injects a `require_relative` statement ' \
+         'on the right line in the root file' do
         generated_source = <<-RUBY.strip_indent
           # frozen_string_literal: true
 
@@ -176,17 +177,17 @@ RSpec.describe RuboCop::Cop::Generator do
           require 'set'
           require 'forwardable'
 
-          require 'rubocop/version'
+          require_relative 'rubocop/version'
 
-          require 'rubocop/cop/style/end_block'
-          require 'rubocop/cop/style/even_odd'
-          require 'rubocop/cop/style/fake_cop'
-          require 'rubocop/cop/style/file_name'
-          require 'rubocop/cop/style/flip_flop'
+          require_relative 'rubocop/cop/style/end_block'
+          require_relative 'rubocop/cop/style/even_odd'
+          require_relative 'rubocop/cop/style/fake_cop'
+          require_relative 'rubocop/cop/style/file_name'
+          require_relative 'rubocop/cop/style/flip_flop'
 
-          require 'rubocop/cop/rails/action_filter'
+          require_relative 'rubocop/cop/rails/action_filter'
 
-          require 'rubocop/cop/team'
+          require_relative 'rubocop/cop/team'
         RUBY
 
         generator.inject_require
@@ -212,20 +213,21 @@ RSpec.describe RuboCop::Cop::Generator do
           require 'set'
           require 'forwardable'
 
-          require 'rubocop/version'
+          require_relative 'rubocop/version'
 
-          require 'rubocop/cop/style/end_block'
-          require 'rubocop/cop/style/even_odd'
-          require 'rubocop/cop/style/file_name'
-          require 'rubocop/cop/style/flip_flop'
+          require_relative 'rubocop/cop/style/end_block'
+          require_relative 'rubocop/cop/style/even_odd'
+          require_relative 'rubocop/cop/style/file_name'
+          require_relative 'rubocop/cop/style/flip_flop'
 
-          require 'rubocop/cop/rails/action_filter'
+          require_relative 'rubocop/cop/rails/action_filter'
 
-          require 'rubocop/cop/team'
+          require_relative 'rubocop/cop/team'
         RUBY
       end
 
-      it 'injects a `require` statement on the end of style department' do
+      it 'injects a `require_relative` statement ' \
+         'on the end of style department' do
         generated_source = <<-RUBY.strip_indent
           # frozen_string_literal: true
 
@@ -236,17 +238,17 @@ RSpec.describe RuboCop::Cop::Generator do
           require 'set'
           require 'forwardable'
 
-          require 'rubocop/version'
+          require_relative 'rubocop/version'
 
-          require 'rubocop/cop/style/end_block'
-          require 'rubocop/cop/style/even_odd'
-          require 'rubocop/cop/style/file_name'
-          require 'rubocop/cop/style/flip_flop'
-          require 'rubocop/cop/style/the_end_of_style'
+          require_relative 'rubocop/cop/style/end_block'
+          require_relative 'rubocop/cop/style/even_odd'
+          require_relative 'rubocop/cop/style/file_name'
+          require_relative 'rubocop/cop/style/flip_flop'
+          require_relative 'rubocop/cop/style/the_end_of_style'
 
-          require 'rubocop/cop/rails/action_filter'
+          require_relative 'rubocop/cop/rails/action_filter'
 
-          require 'rubocop/cop/team'
+          require_relative 'rubocop/cop/team'
         RUBY
 
         generator.inject_require
@@ -269,17 +271,17 @@ RSpec.describe RuboCop::Cop::Generator do
           require 'set'
           require 'forwardable'
 
-          require 'rubocop/version'
+          require_relative 'rubocop/version'
 
-          require 'rubocop/cop/style/end_block'
-          require 'rubocop/cop/style/even_odd'
-          require 'rubocop/cop/style/fake_cop'
-          require 'rubocop/cop/style/file_name'
-          require 'rubocop/cop/style/flip_flop'
+          require_relative 'rubocop/cop/style/end_block'
+          require_relative 'rubocop/cop/style/even_odd'
+          require_relative 'rubocop/cop/style/fake_cop'
+          require_relative 'rubocop/cop/style/file_name'
+          require_relative 'rubocop/cop/style/flip_flop'
 
-          require 'rubocop/cop/rails/action_filter'
+          require_relative 'rubocop/cop/rails/action_filter'
 
-          require 'rubocop/cop/team'
+          require_relative 'rubocop/cop/team'
         RUBY
       end
 
@@ -306,17 +308,17 @@ RSpec.describe RuboCop::Cop::Generator do
           require 'set'
           require 'forwardable'
 
-          require 'rubocop/version'
+          require_relative 'rubocop/version'
 
-          require 'rubocop/cop/style/end_block'
-          require 'rubocop/cop/style/even_odd'
-          require 'rubocop/cop/style/fake_cop'
-          require 'rubocop/cop/style/file_name'
-          require 'rubocop/cop/style/flip_flop'
+          require_relative 'rubocop/cop/style/end_block'
+          require_relative 'rubocop/cop/style/even_odd'
+          require_relative 'rubocop/cop/style/fake_cop'
+          require_relative 'rubocop/cop/style/file_name'
+          require_relative 'rubocop/cop/style/flip_flop'
 
-          require 'rubocop/cop/rails/action_filter'
+          require_relative 'rubocop/cop/rails/action_filter'
 
-          require 'rubocop/cop/team'
+          require_relative 'rubocop/cop/team'
         RUBY
       end
 

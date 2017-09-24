@@ -102,7 +102,7 @@ module RuboCop
             - #{source_path}
             - #{spec_path}
           File modified:
-            - `require '#{require_path}'` added into lib/rubocop.rb
+            - `require_relative '#{require_path}'` added into lib/rubocop.rb
 
           Do 3 steps:
             1. Add an entry to the "New features" section in CHANGELOG.md,
@@ -172,7 +172,7 @@ module RuboCop
       # It looks for other directives that require files in the same (cop)
       # namespace and injects the provided one in alpha
       class RequireFileInjector
-        REQUIRE_PATH = /require ['"](.+)['"]/
+        REQUIRE_PATH = /require_relative ['"](.+)['"]/
 
         def initialize(require_path)
           @require_path    = require_path
@@ -230,7 +230,7 @@ module RuboCop
         end
 
         def injectable_require_directive
-          "require '#{require_path}'\n"
+          "require_relative '#{require_path}'\n"
         end
       end
     end
