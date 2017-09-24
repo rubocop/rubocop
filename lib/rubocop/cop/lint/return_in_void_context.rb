@@ -33,29 +33,38 @@ module RuboCop
       #   end
       class ReturnInVoidContext < Cop
         MSG = 'Do not return a value in `%s`.'.freeze
+
         def on_return(return_node)
-          method_name = method_name(return_node)
-          return unless method_name && return_node.descendants.any? &&
-                        useless_return_method?(method_name)
+          return unless return_node.descendants.any?
+
+          context_node = non_void_context(return_node)
+
+          return unless context_node && context_node.def_type?
+
+          method_name = method_name(context_node)
+
+          return unless method_name && void_context_method?(method_name)
 
           add_offense(return_node, :keyword, format(message, method_name))
         end
 
         private
 
-        def method_name(return_node)
-          method_node = return_node.each_ancestor(:block, :def, :defs).first
-          return nil unless method_node.def_type?
-          method_node.children.first
+        def non_void_context(return_node)
+          return_node.each_ancestor(:block, :def, :defs).first
         end
 
-        def method_setter?(method_name)
+        def method_name(context_node)
+          context_node.children.first
+        end
+
+        def void_context_method?(method_name)
+          method_name == :initialize || setter_method?(method_name)
+        end
+
+        def setter_method?(method_name)
           method_name.to_s.end_with?('=') &&
             !AST::Node::COMPARISON_OPERATORS.include?(method_name)
-        end
-
-        def useless_return_method?(method_name)
-          method_name == :initialize || method_setter?(method_name)
         end
       end
     end

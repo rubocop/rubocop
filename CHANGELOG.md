@@ -10,6 +10,11 @@
 * [#4732](https://github.com/bbatsov/rubocop/issues/4732): Prevent `Performance/HashEachMethods` from registering an offense when `#each` follows `#to_a`. ([@drenmi][])
 * [#4730](https://github.com/bbatsov/rubocop/issues/4730): False positive on Lint/InterpolationCheck. ([@koic][])
 * [#4751](https://github.com/bbatsov/rubocop/issues/4751): Prevent `Rails/HasManyOrHasOneDependent` cop from registering offense if `:through` option was specified. ([@smakagon][])
+* [#4737](https://github.com/bbatsov/rubocop/issues/4737): Fix ReturnInVoidContext cop when `return` is in top scope. ([@frodsan][])
+
+### Changes
+
+* [#4746](https://github.com/bbatsov/rubocop/pull/4746): The `Lint/InvalidCharacterLiteral` cop has been removed since it was never being actually triggered. ([@deivid-rodriguez][])
 
 ## 0.50.0 (2017-09-14)
 
@@ -2926,3 +2931,4 @@
 [@jekuta]: https://github.com/jekuta
 [@fujimura]: https://github.com/fujimura
 [@kristjan]: https://github.com/kristjan
+[@frodsan]: https://github.com/frodsan
