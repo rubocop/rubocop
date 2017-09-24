@@ -1173,6 +1173,25 @@ x < y && y < z
 10 <= x && x <= 20
 ```
 
+## Lint/NestedDoubleQuotesInInterpolation
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+Checks for double-quoted strings that contain interpolations with
+double-quoted strings, which can be hard to read and understand.
+
+### Example
+
+```ruby
+# bad
+"#{success? ? "yes" : "no"}"
+
+# good
+"#{success? ? 'yes' : 'no'}"
+```
+
 ## Lint/NestedMethodDefinition
 
 Enabled by default | Supports autocorrection

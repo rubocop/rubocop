@@ -201,6 +201,7 @@ In the following section you find all available cops:
 * [Lint/LiteralInInterpolation](cops_lint.md#lintliteralininterpolation)
 * [Lint/Loop](cops_lint.md#lintloop)
 * [Lint/MultipleCompare](cops_lint.md#lintmultiplecompare)
+* [Lint/NestedDoubleQuotesInInterpolation](cops_lint.md#lintnesteddoublequotesininterpolation)
 * [Lint/NestedMethodDefinition](cops_lint.md#lintnestedmethoddefinition)
 * [Lint/NextWithoutAccumulator](cops_lint.md#lintnextwithoutaccumulator)
 * [Lint/NonLocalExitFromIterator](cops_lint.md#lintnonlocalexitfromiterator)
