@@ -9,6 +9,7 @@
 * [#4745](https://github.com/bbatsov/rubocop/issues/4745): Make `Style/SafeNavigation` ignore negated continuations. ([@drenmi][])
 * [#4732](https://github.com/bbatsov/rubocop/issues/4732): Prevent `Performance/HashEachMethods` from registering an offense when `#each` follows `#to_a`. ([@drenmi][])
 * [#4730](https://github.com/bbatsov/rubocop/issues/4730): False positive on Lint/InterpolationCheck. ([@koic][])
+* [#4737](https://github.com/bbatsov/rubocop/issues/4737): Fix ReturnInVoidContext cop when `return` is in top scope. ([@frodsan][])
 
 ### Changes
 
@@ -2929,3 +2930,4 @@
 [@jekuta]: https://github.com/jekuta
 [@fujimura]: https://github.com/fujimura
 [@kristjan]: https://github.com/kristjan
+[@frodsan]: https://github.com/frodsan
