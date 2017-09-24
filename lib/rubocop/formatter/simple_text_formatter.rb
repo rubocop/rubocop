@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'rubocop/formatter/colorizable'
-require 'rubocop/formatter/text_util'
+require_relative 'colorizable'
+require_relative 'text_util'
 
 module RuboCop
   module Formatter
