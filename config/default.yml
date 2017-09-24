@@ -878,17 +878,6 @@ Style/EmptyMethod:
     - compact
     - expanded
 
-# Checks whether the source file has a utf-8 encoding comment or not
-# AutoCorrectEncodingComment must match the regex
-# /#.*coding\s?[:=]\s?(?:UTF|utf)-8/
-Style/Encoding:
-  EnforcedStyle: never
-  SupportedStyles:
-    - when_needed
-    - always
-    - never
-  AutoCorrectEncodingComment: '# encoding: utf-8'
-
 # Checks use of for or each in multiline loops.
 Style/For:
   EnforcedStyle: each

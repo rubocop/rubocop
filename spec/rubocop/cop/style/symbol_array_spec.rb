@@ -102,12 +102,6 @@ describe RuboCop::Cop::Style::SymbolArray, :config do
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
-    context 'Ruby 1.9', :ruby19 do
-      it 'accepts arrays of smybols' do
-        expect_no_offenses('[:one, :two, :three]')
-      end
-    end
-
     context 'when PreferredDelimiters is specified' do
       let(:other_cops) do
         {

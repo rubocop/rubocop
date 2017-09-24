@@ -30,7 +30,7 @@ describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
     end
   end
 
-  context 'with a non-interpolated heredoc', :ruby20 do
+  context 'with a non-interpolated heredoc' do
     it 'registers an offense with a non-meaningful delimiter' do
       expect_offense(<<-RUBY.strip_indent)
         <<-'END'

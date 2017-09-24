@@ -376,9 +376,6 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     it_behaves_like(:escape_characters, '%W')
     it_behaves_like(:escape_characters, '%x')
     it_behaves_like(:escape_characters, '%r')
-
-    context 'symbol array', :ruby20 do
-      it_behaves_like(:escape_characters, '%i')
-    end
+    it_behaves_like(:escape_characters, '%i')
   end
 end

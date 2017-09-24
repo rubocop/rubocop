@@ -32,19 +32,4 @@ describe RuboCop::Cop::Style::Dir, :config do
   it_behaves_like 'auto-correct',
                   'File.dirname(File.realpath(__FILE__))',
                   '__dir__'
-
-  context 'when target ruby version is 1.9', :ruby19 do
-    it 'does not register an offense when using `#expand_path` and ' \
-       '`#dirname`' do
-      expect_no_offenses(<<-RUBY.strip_indent)
-        File.expand_path(File.dirname(__FILE__))
-      RUBY
-    end
-
-    it 'does not register an offense when using `#dirname` and `#realpath`' do
-      expect_no_offenses(<<-RUBY.strip_indent)
-      File.dirname(File.realpath(__FILE__))
-      RUBY
-    end
-  end
 end

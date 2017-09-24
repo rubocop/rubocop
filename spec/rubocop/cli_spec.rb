@@ -1608,26 +1608,7 @@ describe RuboCop::CLI, :isolated_environment do
           /\AError: Unknown Ruby version 2.5 found in `TargetRubyVersion`/
         )
         expect($stderr.string.strip).to match(
-          /Known versions: 1.9, 2.0, 2.1, 2.2, 2.3, 2.4/
-        )
-      end
-    end
-
-    context 'when set to 1.9 and Style/OptionHash is enabled' do
-      it 'fails with an error message' do
-        create_file('example1.rb', "puts 'hello'")
-        create_file('.rubocop.yml', <<-YAML.strip_indent)
-          AllCops:
-            TargetRubyVersion: 1.9
-          Style/OptionHash:
-            Enabled: true
-        YAML
-        expect(cli.run(['example1.rb'])).to eq(2)
-        expect($stderr.string.strip).to eq(
-          ['Error: The `Style/OptionHash` cop is only compatible with Ruby ' \
-           '2.0 and up, but the target Ruby version for your project is 1.9.',
-           'Please disable this cop or adjust the `TargetRubyVersion` ' \
-           'parameter in your configuration.'].join("\n")
+          /Known versions: 2.0, 2.1, 2.2, 2.3, 2.4/
         )
       end
     end

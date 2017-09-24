@@ -72,7 +72,7 @@ describe RuboCop::Cop::Style::OptionalArguments do
   end
 
   context 'named params' do
-    context 'with default values', :ruby20 do
+    context 'with default values' do
       it 'allows optional arguments before an optional named argument' do
         expect_no_offenses(<<-RUBY.strip_indent)
           def foo(a = 1, b: 2)

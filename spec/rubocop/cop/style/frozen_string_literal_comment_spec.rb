@@ -319,53 +319,51 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       end
     end
 
-    context 'ruby < 2.3' do
-      context 'target_ruby_version < 2.3', :ruby19 do
-        it 'accepts freezing a string' do
-          expect_no_offenses('"x".freeze')
-        end
-
-        it 'accepts calling << on a string' do
-          expect_no_offenses('"x" << "y"')
-        end
-
-        it 'accepts freezing a string with interpolation' do
-          expect_no_offenses('"#{foo}bar".freeze')
-        end
-
-        it 'accepts calling << on a string with interpolation' do
-          expect_no_offenses('"#{foo}bar" << "baz"')
-        end
+    context 'target_ruby_version < 2.3', :ruby22 do
+      it 'accepts freezing a string' do
+        expect_no_offenses('"x".freeze')
       end
 
-      context 'target_ruby_version 2.3+', :ruby23 do
-        it 'accepts freezing a string' do
-          expect_offense(<<-RUBY.strip_indent)
-            "x".freeze
-            ^ Missing magic comment `# frozen_string_literal: true`.
-          RUBY
-        end
+      it 'accepts calling << on a string' do
+        expect_no_offenses('"x" << "y"')
+      end
 
-        it 'accepts calling << on a string' do
-          expect_offense(<<-RUBY.strip_indent)
-            "x" << "y"
-            ^ Missing magic comment `# frozen_string_literal: true`.
-          RUBY
-        end
+      it 'accepts freezing a string with interpolation' do
+        expect_no_offenses('"#{foo}bar".freeze')
+      end
 
-        it 'accepts freezing a string with interpolation' do
-          expect_offense(<<-'RUBY'.strip_indent)
-            "#{foo}bar".freeze
-            ^ Missing magic comment `# frozen_string_literal: true`.
-          RUBY
-        end
+      it 'accepts calling << on a string with interpolation' do
+        expect_no_offenses('"#{foo}bar" << "baz"')
+      end
+    end
 
-        it 'accepts calling << on a string with interpolation' do
-          expect_offense(<<-'RUBY'.strip_indent)
-            "#{foo}bar" << "baz"
-            ^ Missing magic comment `# frozen_string_literal: true`.
-          RUBY
-        end
+    context 'target_ruby_version 2.3+', :ruby23 do
+      it 'accepts freezing a string' do
+        expect_offense(<<-RUBY.strip_indent)
+          "x".freeze
+          ^ Missing magic comment `# frozen_string_literal: true`.
+        RUBY
+      end
+
+      it 'accepts calling << on a string' do
+        expect_offense(<<-RUBY.strip_indent)
+          "x" << "y"
+          ^ Missing magic comment `# frozen_string_literal: true`.
+        RUBY
+      end
+
+      it 'accepts freezing a string with interpolation' do
+        expect_offense(<<-'RUBY'.strip_indent)
+          "#{foo}bar".freeze
+          ^ Missing magic comment `# frozen_string_literal: true`.
+        RUBY
+      end
+
+      it 'accepts calling << on a string with interpolation' do
+        expect_offense(<<-'RUBY'.strip_indent)
+          "#{foo}bar" << "baz"
+          ^ Missing magic comment `# frozen_string_literal: true`.
+        RUBY
       end
     end
   end
