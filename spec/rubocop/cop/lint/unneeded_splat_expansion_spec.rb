@@ -335,89 +335,87 @@ describe RuboCop::Cop::Lint::UnneededSplatExpansion do
     end
   end
 
-  context 'ruby >= 2.0', :ruby20 do
-    it_behaves_like 'array splat expansion', '%i(first second)'
-    it_behaves_like 'array splat expansion', '%I(first second #{third})'
+  it_behaves_like 'array splat expansion', '%i(first second)'
+  it_behaves_like 'array splat expansion', '%I(first second #{third})'
 
-    context 'arrays being expanded with %i variants using splat expansion' do
-      it 'registers an offense for an array literal being expanded in a ' \
-        'when condition' do
-        inspect_source(<<-'RUBY'.strip_indent)
+  context 'arrays being expanded with %i variants using splat expansion' do
+    it 'registers an offense for an array literal being expanded in a ' \
+      'when condition' do
+      inspect_source(<<-'RUBY'.strip_indent)
+        case foo
+        when *%i(first second)
+          bar
+        when *%I(#{first} second)
+          baz
+        end
+      RUBY
+
+      expect(cop.offenses.size).to eq(2)
+      expect(cop.highlights).to eq(['*%i(first second)',
+                                    '*%I(#{first} second)'])
+    end
+
+    context 'splat expansion of method parameters' do
+      it 'registers an offense for an array literal %i' do
+        expect_offense(<<-RUBY.strip_indent)
+          array.push(*%i(first second))
+                     ^^^^^^^^^^^^^^^^^ Pass array contents as separate arguments.
+        RUBY
+      end
+
+      it 'registers an offense for an array literal %I' do
+        expect_offense(<<-'RUBY'.strip_indent)
+          array.push(*%I(#{first} second))
+                     ^^^^^^^^^^^^^^^^^^^^ Pass array contents as separate arguments.
+        RUBY
+      end
+    end
+
+    context 'autocorrect' do
+      it 'changes %i to a list of symbols' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           case foo
           when *%i(first second)
-            bar
+            baz
+          end
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          case foo
+          when :first, :second
+            baz
+          end
+        RUBY
+      end
+
+      it 'changes %I to a list of symbols' do
+        new_source = autocorrect_source(<<-'RUBY'.strip_indent)
+          case foo
           when *%I(#{first} second)
             baz
           end
         RUBY
 
-        expect(cop.offenses.size).to eq(2)
-        expect(cop.highlights).to eq(['*%i(first second)',
-                                      '*%I(#{first} second)'])
+        expect(new_source).to eq(<<-'RUBY'.strip_indent)
+          case foo
+          when :"#{first}", :"second"
+            baz
+          end
+        RUBY
+      end
+    end
+
+    context 'splat expansion inside of an array' do
+      it 'changes %i to a list of symbols' do
+        new_source = autocorrect_source('[:a, :b, *%i(c d), :e]')
+
+        expect(new_source).to eq('[:a, :b, :c, :d, :e]')
       end
 
-      context 'splat expansion of method parameters' do
-        it 'registers an offense for an array literal %i' do
-          expect_offense(<<-RUBY.strip_indent)
-            array.push(*%i(first second))
-                       ^^^^^^^^^^^^^^^^^ Pass array contents as separate arguments.
-          RUBY
-        end
+      it 'changes %I to a list of symbols' do
+        new_source = autocorrect_source('[:a, :b, *%I(#{one} two), :e]')
 
-        it 'registers an offense for an array literal %I' do
-          expect_offense(<<-'RUBY'.strip_indent)
-            array.push(*%I(#{first} second))
-                       ^^^^^^^^^^^^^^^^^^^^ Pass array contents as separate arguments.
-          RUBY
-        end
-      end
-
-      context 'autocorrect' do
-        it 'changes %i to a list of symbols' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
-            case foo
-            when *%i(first second)
-              baz
-            end
-          RUBY
-
-          expect(new_source).to eq(<<-RUBY.strip_indent)
-            case foo
-            when :first, :second
-              baz
-            end
-          RUBY
-        end
-
-        it 'changes %I to a list of symbols' do
-          new_source = autocorrect_source(<<-'RUBY'.strip_indent)
-            case foo
-            when *%I(#{first} second)
-              baz
-            end
-          RUBY
-
-          expect(new_source).to eq(<<-'RUBY'.strip_indent)
-            case foo
-            when :"#{first}", :"second"
-              baz
-            end
-          RUBY
-        end
-      end
-
-      context 'splat expansion inside of an array' do
-        it 'changes %i to a list of symbols' do
-          new_source = autocorrect_source('[:a, :b, *%i(c d), :e]')
-
-          expect(new_source).to eq('[:a, :b, :c, :d, :e]')
-        end
-
-        it 'changes %I to a list of symbols' do
-          new_source = autocorrect_source('[:a, :b, *%I(#{one} two), :e]')
-
-          expect(new_source).to eq('[:a, :b, :"#{one}", :"two", :e]')
-        end
+        expect(new_source).to eq('[:a, :b, :"#{one}", :"two", :e]')
       end
     end
   end

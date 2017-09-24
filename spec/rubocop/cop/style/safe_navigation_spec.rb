@@ -1004,7 +1004,7 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
     end
   end
 
-  context 'target_ruby_version < 2.3', :ruby19 do
+  context 'target_ruby_version < 2.3', :ruby22 do
     it 'allows a method call safeguarded by a check for the variable' do
       expect_no_offenses('foo.bar if foo')
     end

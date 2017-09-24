@@ -17,7 +17,7 @@ module RuboCop
                        AutoCorrect StyleGuide Details].freeze
     # 2.1 is the oldest officially supported Ruby version.
     DEFAULT_RUBY_VERSION = 2.1
-    KNOWN_RUBIES = [1.9, 2.0, 2.1, 2.2, 2.3, 2.4].freeze
+    KNOWN_RUBIES = [2.0, 2.1, 2.2, 2.3, 2.4].freeze
     DEFAULT_RAILS_VERSION = 5.0
     OBSOLETE_COPS = {
       'Style/TrailingComma' =>
@@ -94,6 +94,24 @@ module RuboCop
         alternative: 'If your intention was to allow extra spaces ' \
                      'for alignment, please use AllowForAlignment: ' \
                      'true instead.'
+      },
+      {
+        cop: 'Style/Encoding',
+        parameter: 'EnforcedStyle',
+        alternative: 'Style/Encoding no longer supports styles. ' \
+                     'The "never" behavior is always assumed.'
+      },
+      {
+        cop: 'Style/Encoding',
+        parameter: 'SupportedStyles',
+        alternative: 'Style/Encoding no longer supports styles. ' \
+                     'The "never" behavior is always assumed.'
+      },
+      {
+        cop: 'Style/Encoding',
+        parameter: 'AutoCorrectEncodingComment',
+        alternative: 'Style/Encoding no longer supports styles. ' \
+                     'The "never" behavior is always assumed.'
       },
       {
         cop: 'Style/SpaceAroundOperators',

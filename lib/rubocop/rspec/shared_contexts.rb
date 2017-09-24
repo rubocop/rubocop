@@ -57,10 +57,6 @@ shared_context 'config', :config do
   end
 end
 
-shared_context 'ruby 1.9', :ruby19 do
-  let(:ruby_version) { 1.9 }
-end
-
 shared_context 'ruby 2.0', :ruby20 do
   let(:ruby_version) { 2.0 }
 end

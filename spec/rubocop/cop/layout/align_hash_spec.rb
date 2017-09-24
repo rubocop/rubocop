@@ -239,35 +239,33 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
       RUBY
     end
 
-    context 'ruby >= 2.0', :ruby20 do
-      it 'auto-corrects alignment when using double splat ' \
-         'in an explicit hash' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          Hash(foo: 'bar',
-                 **extra_params
-          )
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
-          Hash(foo: 'bar',
+    it 'auto-corrects alignment when using double splat ' \
+       'in an explicit hash' do
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        Hash(foo: 'bar',
                **extra_params
-          )
-        RUBY
-      end
+        )
+      RUBY
 
-      it 'auto-corrects alignment when using double splat in braces' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          {foo: 'bar',
-                 **extra_params
-          }
-        RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        Hash(foo: 'bar',
+             **extra_params
+        )
+      RUBY
+    end
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
-          {foo: 'bar',
-           **extra_params
-          }
-        RUBY
-      end
+    it 'auto-corrects alignment when using double splat in braces' do
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        {foo: 'bar',
+               **extra_params
+        }
+      RUBY
+
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        {foo: 'bar',
+         **extra_params
+        }
+      RUBY
     end
   end
 
@@ -322,25 +320,23 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
       RUBY
     end
 
-    context 'ruby >= 2.0', :ruby20 do
-      it 'accepts hashes that use different separators and double splats' do
-        expect_no_offenses(<<-RUBY.strip_indent)
-          hash = {
-            a: 1,
-            'bbb' => 2,
-            **foo
-          }
-        RUBY
-      end
+    it 'accepts hashes that use different separators and double splats' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        hash = {
+          a: 1,
+          'bbb' => 2,
+          **foo
+        }
+      RUBY
+    end
 
-      it 'accepts hashes that use different separators and double splats' do
-        expect_no_offenses(<<-RUBY.strip_indent)
-          hash = {
-            a: 1,
-            **kw
-          }
-        RUBY
-      end
+    it 'accepts hashes that use different separators and double splats' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        hash = {
+          a: 1,
+          **kw
+        }
+      RUBY
     end
 
     it 'registers an offense for misaligned hash values' do
@@ -481,14 +477,12 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
       RUBY
     end
 
-    context 'ruby >= 2.0', :ruby20 do
-      it 'accepts hashes with different separators' do
-        expect_no_offenses(<<-RUBY.strip_indent)
-          {a: 1,
-            'b' => 2,
-             **params}
-        RUBY
-      end
+    it 'accepts hashes with different separators' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        {a: 1,
+          'b' => 2,
+           **params}
+      RUBY
     end
 
     include_examples 'not on separate lines'

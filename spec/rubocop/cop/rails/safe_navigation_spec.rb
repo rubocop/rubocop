@@ -33,7 +33,7 @@ describe RuboCop::Cop::Rails::SafeNavigation, :config do
 
     it_behaves_like :accepts, 'non try! method calls', 'join'
 
-    context 'target_ruby_version < 2.3', :ruby19 do
+    context 'target_ruby_version < 2.3', :ruby22 do
       it_behaves_like :accepts, 'try! with a single parameter', 'try!(:join)'
       it_behaves_like :accepts, 'try! with a multiple parameters',
                       'try!(:join, ",")'
@@ -115,7 +115,7 @@ describe RuboCop::Cop::Rails::SafeNavigation, :config do
   context 'convert try and try!' do
     let(:cop_config) { { 'ConvertTry' => true } }
 
-    context 'target_ruby_version < 2.3', :ruby19 do
+    context 'target_ruby_version < 2.3', :ruby22 do
       it_behaves_like :accepts, 'try! with a single parameter', 'try!(:join)'
       it_behaves_like :accepts, 'try! with a multiple parameters',
                       'try!(:join, ",")'

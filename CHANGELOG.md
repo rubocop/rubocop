@@ -11,10 +11,12 @@
 * [#4730](https://github.com/bbatsov/rubocop/issues/4730): False positive on Lint/InterpolationCheck. ([@koic][])
 * [#4751](https://github.com/bbatsov/rubocop/issues/4751): Prevent `Rails/HasManyOrHasOneDependent` cop from registering offense if `:through` option was specified. ([@smakagon][])
 * [#4737](https://github.com/bbatsov/rubocop/issues/4737): Fix ReturnInVoidContext cop when `return` is in top scope. ([@frodsan][])
+* [#4776](https://github.com/bbatsov/rubocop/issues/4776): Non utf-8 magic encoding comments are now respected. ([@deivid-rodriguez][])
 
 ### Changes
 
 * [#4746](https://github.com/bbatsov/rubocop/pull/4746): The `Lint/InvalidCharacterLiteral` cop has been removed since it was never being actually triggered. ([@deivid-rodriguez][])
+* [#4789](https://github.com/bbatsov/rubocop/pull/4789): Analyzing code that needs to support MRI 1.9 is no longer supported. ([@deivid-rodriguez][])
 
 ## 0.50.0 (2017-09-14)
 
