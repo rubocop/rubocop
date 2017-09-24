@@ -29,7 +29,7 @@ module RuboCop
             next unless final_node && final_node.send_type? &&
                         final_node.method?(:to_s) && !final_node.arguments?
 
-            add_offense(final_node, :selector)
+            add_offense(final_node, location: :selector)
           end
         end
 

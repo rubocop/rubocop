@@ -64,24 +64,30 @@ module RuboCop
       def check_new_line(node)
         return unless closing_brace_on_same_line?(node)
 
-        add_offense(node, :end, self.class::ALWAYS_NEW_LINE_MESSAGE)
+        add_offense(node,
+                    location: :end,
+                    message: self.class::ALWAYS_NEW_LINE_MESSAGE)
       end
 
       def check_same_line(node)
         return if closing_brace_on_same_line?(node)
 
-        add_offense(node, :end, self.class::ALWAYS_SAME_LINE_MESSAGE)
+        add_offense(node,
+                    location: :end,
+                    message: self.class::ALWAYS_SAME_LINE_MESSAGE)
       end
 
       def check_symmetrical(node)
         if opening_brace_on_same_line?(node)
           return if closing_brace_on_same_line?(node)
 
-          add_offense(node, :end, self.class::SAME_LINE_MESSAGE)
+          add_offense(node, location: :end,
+                            message: self.class::SAME_LINE_MESSAGE)
         else
           return unless closing_brace_on_same_line?(node)
 
-          add_offense(node, :end, self.class::NEW_LINE_MESSAGE)
+          add_offense(node, location: :end,
+                            message: self.class::NEW_LINE_MESSAGE)
         end
       end
 

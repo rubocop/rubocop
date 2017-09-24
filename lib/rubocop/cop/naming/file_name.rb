@@ -22,7 +22,7 @@ module RuboCop
           return if config.file_to_include?(file_path)
 
           for_bad_filename(file_path) do |range, msg|
-            add_offense(nil, range, msg)
+            add_offense(nil, location: range, message: msg)
           end
         end
 

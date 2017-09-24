@@ -22,7 +22,7 @@ module RuboCop
           if proper_dot_position?(node)
             correct_style_detected
           else
-            add_offense(node, :dot) { opposite_style_detected }
+            add_offense(node, location: :dot) { opposite_style_detected }
           end
         end
 

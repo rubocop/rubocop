@@ -40,7 +40,9 @@ module RuboCop
             message = format(MSG, source)
 
             add_offense(
-              node, source_range(node.first_argument.loc.expression), message
+              node,
+              location: source_range(node.first_argument.loc.expression),
+              message: message
             )
           end
         end

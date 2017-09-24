@@ -64,7 +64,7 @@ module RuboCop
         def on_if(node)
           return unless node.ternary? && !infinite_loop? && offense?(node)
 
-          add_offense(node, node.source_range)
+          add_offense(node, location: node.source_range)
         end
 
         private

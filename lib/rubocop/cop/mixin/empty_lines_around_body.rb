@@ -102,7 +102,7 @@ module RuboCop
 
           offset = style == :empty_lines && msg.include?('end.') ? 2 : 1
           range = source_range(processed_source.buffer, line + offset, 0)
-          add_offense([style, range], range, msg)
+          add_offense([style, range], location: range, message: msg)
         end
 
         def check_deferred_empty_line(body)
@@ -113,7 +113,12 @@ module RuboCop
           return if processed_source[line].empty?
 
           range = source_range(processed_source.buffer, line + 2, 0)
-          add_offense([:empty_lines, range], range, deferred_message(node))
+
+          add_offense(
+            [:empty_lines, range],
+            location: range,
+            message: deferred_message(node)
+          )
         end
 
         def namespace?(body, with_one_child: false)

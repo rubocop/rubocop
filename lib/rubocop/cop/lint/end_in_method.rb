@@ -32,7 +32,7 @@ module RuboCop
 
         def on_postexe(node)
           inside_of_method = node.each_ancestor(:def, :defs).count.nonzero?
-          add_offense(node, :keyword) if inside_of_method
+          add_offense(node, location: :keyword) if inside_of_method
         end
       end
     end

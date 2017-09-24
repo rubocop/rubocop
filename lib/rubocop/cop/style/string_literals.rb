@@ -24,7 +24,7 @@ module RuboCop
           quote_styles = detect_quote_styles(node)
 
           if quote_styles.size > 1
-            add_offense(node, :expression, MSG_INCONSISTENT)
+            add_offense(node, message: MSG_INCONSISTENT)
           else
             check_multiline_quote_style(node, quote_styles[0])
           end
@@ -76,10 +76,11 @@ module RuboCop
           range = node.source_range
           children = node.children
           if unexpected_single_quotes?(quote)
-            add_offense(node, range) if children.all? { |c| wrong_quotes?(c) }
+            all_children_with_quotes = children.all? { |c| wrong_quotes?(c) }
+            add_offense(node, location: range) if all_children_with_quotes
           elsif unexpected_double_quotes?(quote) &&
                 !accept_child_double_quotes?(children)
-            add_offense(node, range)
+            add_offense(node, location: range)
           end
         end
 

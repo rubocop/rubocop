@@ -25,7 +25,10 @@ module RuboCop
         def on_block(node)
           redundant_sort_by(node) do |send, var_name|
             range = sort_by_range(send, node)
-            add_offense(node, range, format(MSG, var_name, var_name))
+
+            add_offense(node,
+                        location: range,
+                        message: format(MSG, var_name, var_name))
           end
         end
 

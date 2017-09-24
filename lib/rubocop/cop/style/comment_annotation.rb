@@ -23,8 +23,11 @@ module RuboCop
                         !correct_annotation?(first_word, colon, space, note)
 
             length = concat_length(first_word, colon, space)
-            add_offense(comment, annotation_range(comment, margin, length),
-                        format(note ? MSG : MISSING_NOTE, first_word))
+            add_offense(
+              comment,
+              location: annotation_range(comment, margin, length),
+              message: format(note ? MSG : MISSING_NOTE, first_word)
+            )
           end
         end
 

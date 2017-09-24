@@ -10,7 +10,7 @@ module RuboCop
         def_node_matcher :case_equality?, '(send _ :=== _)'
 
         def on_send(node)
-          case_equality?(node) { add_offense(node, :selector) }
+          case_equality?(node) { add_offense(node, location: :selector) }
         end
       end
     end

@@ -52,7 +52,7 @@ module RuboCop
 
           return if good_touch?(node)
 
-          add_offense(node, :selector)
+          add_offense(node, location: :selector)
         end
 
         private

@@ -10,7 +10,7 @@ module RuboCop
         def on_send(node)
           return unless node.command?(:has_and_belongs_to_many)
 
-          add_offense(node, :selector)
+          add_offense(node, location: :selector)
         end
       end
     end

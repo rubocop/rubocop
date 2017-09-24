@@ -22,7 +22,7 @@ module RuboCop
                                  index + 1,
                                  (spaces.length)...(match.end(0)))
 
-            add_offense(range, range)
+            add_offense(range, location: range)
           end
         end
 

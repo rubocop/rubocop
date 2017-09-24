@@ -12,10 +12,9 @@ module RuboCop
 
         return unless complexity > max
 
-        add_offense(node, :keyword, format(self.class::MSG,
-                                           node.method_name,
-                                           complexity,
-                                           max)) do
+        msg = format(self.class::MSG, node.method_name, complexity, max)
+
+        add_offense(node, location: :keyword, message: msg) do
           self.max = complexity.ceil
         end
       end

@@ -56,13 +56,13 @@ module RuboCop
         def check_new_line_offense(node, rhs)
           return unless node.loc.operator.line == rhs.loc.line
 
-          add_offense(node, :expression, NEW_LINE_OFFENSE)
+          add_offense(node, message: NEW_LINE_OFFENSE)
         end
 
         def check_same_line_offense(node, rhs)
           return unless node.loc.operator.line != rhs.loc.line
 
-          add_offense(node, :expression, SAME_LINE_OFFENSE)
+          add_offense(node, message: SAME_LINE_OFFENSE)
         end
 
         def autocorrect(node)

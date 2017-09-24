@@ -58,8 +58,7 @@ module RuboCop
         def register_offense(node, method_name)
           add_offense(
             node,
-            :expression,
-            format(MSG, ALIASES[method_name][:original], method_name)
+            message: format(MSG, ALIASES[method_name][:original], method_name)
           )
         end
       end

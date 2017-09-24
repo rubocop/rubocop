@@ -30,7 +30,8 @@ module RuboCop
         def on_if(node)
           return unless node.modifier_form? && node.body.if_type?
 
-          add_offense(node, :keyword, format(MSG, node.keyword))
+          add_offense(node, location: :keyword,
+                            message: format(MSG, node.keyword))
         end
       end
     end

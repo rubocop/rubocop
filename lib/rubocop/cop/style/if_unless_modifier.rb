@@ -19,7 +19,8 @@ module RuboCop
         def on_if(node)
           return unless eligible_node?(node)
 
-          add_offense(node, :keyword, format(MSG, node.keyword))
+          add_offense(node, location: :keyword,
+                            message: format(MSG, node.keyword))
         end
 
         private

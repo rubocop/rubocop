@@ -29,8 +29,9 @@ module RuboCop
           space_length = spaces_before_left_parenthesis(node)
           return unless space_length > 0
 
-          add_offense(nil, space_range(node.first_argument.source_range,
-                                       space_length))
+          range = space_range(node.first_argument.source_range, space_length)
+
+          add_offense(nil, location: range)
         end
 
         private

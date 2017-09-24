@@ -71,10 +71,10 @@ module RuboCop
           range = range_between(block_start, block_end)
 
           add_offense(node,
-                      range,
-                      format(MSG,
-                             method_name,
-                             block_method_name))
+                      location: range,
+                      message: format(MSG,
+                                      method_name,
+                                      block_method_name))
         end
 
         def autocorrect_method(corrector, node, args, method_name)

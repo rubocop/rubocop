@@ -55,7 +55,9 @@ module RuboCop
                      aggressive_node_match(node)
                    end
 
-          add_offense(node, :selector, format(MSG, method)) if method
+          return unless method
+
+          add_offense(node, location: :selector, message: format(MSG, method))
         end
 
         def autocorrect(node)

@@ -28,7 +28,7 @@ module RuboCop
             double_colon = captured_value ? '::' : ''
             message = format(MSG, double_colon, double_colon)
 
-            add_offense(node, :expression, message)
+            add_offense(node, message: message)
           end
         end
 

@@ -62,11 +62,9 @@ module RuboCop
 
         def register_offense(node)
           line_range = node.loc.column...node.loc.last_column
-
-          add_offense(
-            node,
-            source_range(processed_source.buffer, node.loc.line, line_range)
-          )
+          source_range = source_range(processed_source.buffer, node.loc.line,
+                                      line_range)
+          add_offense(node, location: source_range)
         end
       end
     end

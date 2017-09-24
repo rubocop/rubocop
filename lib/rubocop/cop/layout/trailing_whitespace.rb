@@ -15,7 +15,7 @@ module RuboCop
                                  index + 1,
                                  (line.rstrip.length)...(line.length))
 
-            add_offense(range, range)
+            add_offense(range, location: range)
           end
         end
 

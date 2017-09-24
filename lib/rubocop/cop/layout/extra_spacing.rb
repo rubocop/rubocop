@@ -87,7 +87,7 @@ module RuboCop
             message = format(MSG_UNALIGNED_ASGN, 'following')
           end
           return if aligned_assignment?(token.pos, assignment_line)
-          add_offense(token.pos, token.pos, message)
+          add_offense(token.pos, location: token.pos, message: message)
         end
 
         def should_aligned_with_preceding_line?(token)
@@ -108,7 +108,7 @@ module RuboCop
             next if ignored_range?(ast, range.begin_pos)
             next if unary_plus_non_offense?(range)
 
-            add_offense(range, range, MSG_UNNECESSARY)
+            add_offense(range, location: range, message: MSG_UNNECESSARY)
           end
         end
 

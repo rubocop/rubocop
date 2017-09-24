@@ -59,7 +59,7 @@ module RuboCop
         def process_logical_operator(node)
           return if node.logical_operator?
 
-          add_offense(node, :operator)
+          add_offense(node, location: :operator)
         end
 
         def message(node)

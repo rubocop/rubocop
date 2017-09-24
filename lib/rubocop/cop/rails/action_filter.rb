@@ -70,7 +70,7 @@ module RuboCop
         def check_method_node(node)
           return unless bad_methods.include?(node.method_name)
 
-          add_offense(node, :selector)
+          add_offense(node, location: :selector)
         end
 
         def message(node)

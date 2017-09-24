@@ -41,7 +41,7 @@ module RuboCop
         end_loc = node.loc.end
         msg = format(MSG, end_loc.line, end_loc.column, align_with.source,
                      align_with.line, align_with.column)
-        add_offense(node, end_loc, msg)
+        add_offense(node, location: end_loc, message: msg)
       end
 
       def style_parameter_name

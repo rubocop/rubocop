@@ -32,7 +32,7 @@ module RuboCop
         def on_heredoc(node)
           return if meaningful_delimiters?(node)
 
-          add_offense(node, :heredoc_end)
+          add_offense(node, location: :heredoc_end)
         end
 
         private

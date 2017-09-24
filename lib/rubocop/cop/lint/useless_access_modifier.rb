@@ -135,14 +135,14 @@ module RuboCop
           if node.begin_type?
             check_scope(node)
           elsif node.send_type? && node.access_modifier?
-            add_offense(node, :expression, format(MSG, node.method_name))
+            add_offense(node, message: format(MSG, node.method_name))
           end
         end
 
         def check_scope(node)
           cur_vis, unused = check_child_nodes(node, nil, :public)
 
-          add_offense(unused, :expression, format(MSG, cur_vis)) if unused
+          add_offense(unused, message: format(MSG, cur_vis)) if unused
         end
 
         def check_child_nodes(node, unused, cur_vis)
@@ -165,10 +165,10 @@ module RuboCop
         def check_new_visibility(node, unused, new_vis, cur_vis)
           # does this modifier just repeat the existing visibility?
           if new_vis == cur_vis
-            add_offense(node, :expression, format(MSG, cur_vis))
+            add_offense(node, message: format(MSG, cur_vis))
           else
             # was the previous modifier never applied to any defs?
-            add_offense(unused, :expression, format(MSG, cur_vis)) if unused
+            add_offense(unused, message: format(MSG, cur_vis)) if unused
             # once we have already warned about a certain modifier, don't
             # warn again even if it is never applied to any method defs
             unused = node

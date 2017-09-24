@@ -21,7 +21,7 @@ module RuboCop
           return unless node.receiver && node.double_colon?
           return if node.camel_case_method?
 
-          add_offense(node, :dot)
+          add_offense(node, location: :dot)
         end
 
         def autocorrect(node)

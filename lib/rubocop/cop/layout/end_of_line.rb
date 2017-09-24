@@ -23,7 +23,7 @@ module RuboCop
 
             range =
               source_range(processed_source.buffer, index + 1, 0, line.length)
-            add_offense(nil, range, msg)
+            add_offense(nil, location: range, message: msg)
             # Usually there will be carriage return characters on all or none
             # of the lines in a file, so we report only one offense.
             break

@@ -27,7 +27,8 @@ module RuboCop
           range = range_between(node.receiver.loc.selector.begin_pos,
                                 node.loc.selector.end_pos)
 
-          add_offense(node, range, format(MSG, node.method_name))
+          add_offense(node, location: range,
+                            message: format(MSG, node.method_name))
         end
 
         def autocorrect(node)

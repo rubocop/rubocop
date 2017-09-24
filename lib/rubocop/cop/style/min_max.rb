@@ -21,7 +21,8 @@ module RuboCop
           min_max_candidate(node) do |receiver|
             offender = offending_range(node)
 
-            add_offense(node, offender, message(offender, receiver))
+            add_offense(node, location: offender,
+                              message: message(offender, receiver))
           end
         end
         alias on_return on_array

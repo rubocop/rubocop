@@ -32,8 +32,8 @@ module RuboCop
             next if node.parent && node.parent.block_type?
             next if node.block_argument?
 
-            add_offense(node, :expression,
-                        format(MSG, target_class, target_method))
+            add_offense(node,
+                        message: format(MSG, target_class, target_method))
           end
         end
       end

@@ -65,7 +65,7 @@ module RuboCop
         def register_offense(node, top_level: '', arg: '')
           format = format(MSG, top_level: top_level, arg: arg)
 
-          add_offense(node, :selector, format)
+          add_offense(node, location: :selector, message: format)
         end
       end
     end

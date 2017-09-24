@@ -27,7 +27,7 @@ module RuboCop
         def on_def(node)
           op_method_candidate?(node) do |name, arg|
             return unless op_method?(name)
-            add_offense(arg, :expression, format(MSG, name))
+            add_offense(arg, message: format(MSG, name))
           end
         end
 

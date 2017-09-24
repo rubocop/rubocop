@@ -16,7 +16,7 @@ module RuboCop
           return unless (@message = offense(processed_source, line_number))
 
           range = processed_source.buffer.line_range(line_number + 1)
-          add_offense(range, range, @message)
+          add_offense(range, location: range, message: @message)
         end
 
         def autocorrect(range)

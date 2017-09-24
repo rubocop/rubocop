@@ -59,7 +59,7 @@ module RuboCop
             next if args_node.children.empty?
 
             if chained_send?(send_node)
-              add_offense(return_node, :keyword)
+              add_offense(return_node, location: :keyword)
               break
             end
           end

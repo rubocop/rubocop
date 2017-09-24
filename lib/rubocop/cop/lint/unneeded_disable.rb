@@ -166,8 +166,12 @@ module RuboCop
         def add_offense_for_entire_comment(comment, cops)
           location = comment.loc.expression
           cop_list = cops.sort.map { |c| describe(c) }
-          add_offense([[location], location], location,
-                      "Unnecessary disabling of #{cop_list.join(', ')}.")
+
+          add_offense(
+            [[location], location],
+            location: location,
+            message: "Unnecessary disabling of #{cop_list.join(', ')}."
+          )
         end
 
         def add_offense_for_some_cops(comment, cops)
@@ -176,8 +180,11 @@ module RuboCop
           ranges = cop_ranges.map { |_, r| r }
 
           cop_ranges.each do |cop, range|
-            add_offense([ranges, range], range,
-                        "Unnecessary disabling of #{describe(cop)}.")
+            add_offense(
+              [ranges, range],
+              location: range,
+              message: "Unnecessary disabling of #{describe(cop)}."
+            )
           end
         end
 

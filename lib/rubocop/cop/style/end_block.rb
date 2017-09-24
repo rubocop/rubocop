@@ -9,7 +9,7 @@ module RuboCop
               'Use `Kernel#at_exit` instead.'.freeze
 
         def on_postexe(node)
-          add_offense(node, :keyword)
+          add_offense(node, location: :keyword)
         end
       end
     end

@@ -11,12 +11,16 @@ module RuboCop
           cop = Cop::Cop.new
           source_buffer = Parser::Source::Buffer.new('test', 1)
           source_buffer.source = ('aa'..'az').to_a.join($RS)
-          cop.add_offense(nil,
-                          Parser::Source::Range.new(source_buffer, 0, 2),
-                          'message 1')
-          cop.add_offense(nil,
-                          Parser::Source::Range.new(source_buffer, 30, 32),
-                          'message 2')
+          cop.add_offense(
+            nil,
+            location: Parser::Source::Range.new(source_buffer, 0, 2),
+            message: 'message 1'
+          )
+          cop.add_offense(
+            nil,
+            location: Parser::Source::Range.new(source_buffer, 30, 32),
+            message: 'message 2'
+          )
 
           formatter.report_file('test', cop.offenses)
           expect(output.string).to eq <<-OUTPUT.strip_indent
@@ -34,12 +38,16 @@ module RuboCop
             cop = Cop::Cop.new
             source_buffer = Parser::Source::Buffer.new('test', 1)
             source_buffer.source = ['     ', 'yaba'].join($RS)
-            cop.add_offense(nil,
-                            Parser::Source::Range.new(source_buffer, 0, 2),
-                            'message 1')
-            cop.add_offense(nil,
-                            Parser::Source::Range.new(source_buffer, 6, 10),
-                            'message 2')
+            cop.add_offense(
+              nil,
+              location: Parser::Source::Range.new(source_buffer, 0, 2),
+              message: 'message 1'
+            )
+            cop.add_offense(
+              nil,
+              location: Parser::Source::Range.new(source_buffer, 6, 10),
+              message: 'message 2'
+            )
 
             formatter.report_file('test', cop.offenses)
             expect(output.string).to eq <<-OUTPUT.strip_indent
@@ -67,7 +75,7 @@ module RuboCop
                                                  source.index(']') + 1)
 
             cop = Cop::Cop.new
-            cop.add_offense(nil, location, 'message 1')
+            cop.add_offense(nil, location: location, message: 'message 1')
 
             formatter.report_file('test', cop.offenses)
             expect(output.string)

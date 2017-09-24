@@ -57,7 +57,7 @@ module RuboCop
           range = source_range(@processed_source.buffer, line, column)
           # Don't attempt to autocorrect if semicolon is separating statements
           # on the same line
-          add_offense(autocorrect ? range : nil, range)
+          add_offense(autocorrect ? range : nil, location: range)
         end
 
         def autocorrect(range)

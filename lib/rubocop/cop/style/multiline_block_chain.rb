@@ -25,7 +25,7 @@ module RuboCop
             range = range_between(receiver.loc.end.begin_pos,
                                   node.send_node.source_range.end_pos)
 
-            add_offense(nil, range)
+            add_offense(nil, location: range)
 
             # Done. If there are more blocks in the chain, they will be
             # found by subsequent calls to on_block.

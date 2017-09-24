@@ -90,7 +90,7 @@ module RuboCop
                   'Indent the right bracket the same as the start of the line' \
                   ' where the left bracket is.'
                 end
-          add_offense(right_bracket, right_bracket, msg)
+          add_offense(right_bracket, location: right_bracket, message: msg)
         end
 
         # Returns the description of what the correct indentation is based on.

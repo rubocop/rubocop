@@ -78,8 +78,8 @@ module RuboCop
         end
 
         def add_arg_offense(arg, type)
-          add_offense(arg.parent, arg.source_range,
-                      format(MSG, type.to_s.capitalize))
+          add_offense(arg.parent, location: arg.source_range,
+                                  message: format(MSG, type.to_s.capitalize))
         end
 
         # We let AutocorrectUnlessChangingAST#autocorrect work with the send

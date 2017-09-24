@@ -54,7 +54,7 @@ module RuboCop
                        node.loc.name
                      end
 
-          add_offense(nil, location)
+          add_offense(nil, location: location)
         end
       end
     end

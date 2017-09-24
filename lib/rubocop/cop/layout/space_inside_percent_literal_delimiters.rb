@@ -50,7 +50,7 @@ module RuboCop
           return unless node.single_line?
 
           regex_matches(node) do |match_range|
-            add_offense(node, match_range)
+            add_offense(node, location: match_range)
           end
         end
 

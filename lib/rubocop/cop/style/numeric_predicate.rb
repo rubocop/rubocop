@@ -63,8 +63,8 @@ module RuboCop
 
           return unless numeric
 
-          add_offense(node, :expression,
-                      format(MSG, replacement, node.source))
+          add_offense(node,
+                      message: format(MSG, replacement, node.source))
         end
 
         private

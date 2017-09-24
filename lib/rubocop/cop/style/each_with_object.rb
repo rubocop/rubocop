@@ -34,7 +34,8 @@ module RuboCop
             return unless first_argument_returned?(args, return_value)
             return if accumulator_param_assigned_to?(body, args)
 
-            add_offense(node, method.loc.selector, format(MSG, method_name))
+            add_offense(node, location: method.loc.selector,
+                              message: format(MSG, method_name))
           end
         end
 

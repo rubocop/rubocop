@@ -75,7 +75,7 @@ module RuboCop
             return
           end
 
-          add_offense(arg_value, :expression, format(MSG, arg_name))
+          add_offense(arg_value, message: format(MSG, arg_name))
         end
       end
     end

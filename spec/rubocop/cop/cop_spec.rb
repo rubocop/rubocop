@@ -57,26 +57,26 @@ describe RuboCop::Cop::Cop do
   end
 
   it 'keeps track of offenses' do
-    cop.add_offense(nil, location, 'message')
+    cop.add_offense(nil, location: location, message: 'message')
 
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'will report registered offenses' do
-    cop.add_offense(nil, location, 'message')
+    cop.add_offense(nil, location: location, message: 'message')
 
     expect(cop.offenses).not_to be_empty
   end
 
   it 'will set default severity' do
-    cop.add_offense(nil, location, 'message')
+    cop.add_offense(nil, location: location, message: 'message')
 
     expect(cop.offenses.first.severity).to eq(:convention)
   end
 
   it 'will set custom severity if present' do
     cop.config[cop.name] = { 'Severity' => 'warning' }
-    cop.add_offense(nil, location, 'message')
+    cop.add_offense(nil, location: location, message: 'message')
 
     expect(cop.offenses.first.severity).to eq(:warning)
   end
@@ -84,12 +84,12 @@ describe RuboCop::Cop::Cop do
   it 'will warn if custom severity is invalid' do
     cop.config[cop.name] = { 'Severity' => 'superbad' }
     expect(cop).to receive(:warn)
-    cop.add_offense(nil, location, 'message')
+    cop.add_offense(nil, location: location, message: 'message')
   end
 
   it 'registers offense with its name' do
     cop = RuboCop::Cop::Style::For.new
-    cop.add_offense(nil, location, 'message')
+    cop.add_offense(nil, location: location, message: 'message')
     expect(cop.offenses.first.cop_name).to eq('Style/For')
   end
 
@@ -100,7 +100,7 @@ describe RuboCop::Cop::Cop do
       end
 
       it 'is not specified (set to nil)' do
-        cop.add_offense(nil, location, 'message')
+        cop.add_offense(nil, location: location, message: 'message')
         expect(cop.offenses.first.corrected?).to be(false)
       end
     end
@@ -115,7 +115,7 @@ describe RuboCop::Cop::Cop do
         end
 
         it 'is set to true' do
-          cop.add_offense(nil, location, 'message')
+          cop.add_offense(nil, location: location, message: 'message')
           expect(cop.offenses.first.corrected?).to eq(true)
         end
       end
@@ -126,7 +126,7 @@ describe RuboCop::Cop::Cop do
         end
 
         it 'is set to false' do
-          cop.add_offense(nil, location, 'message')
+          cop.add_offense(nil, location: location, message: 'message')
           expect(cop.offenses.first.corrected?).to eq(false)
         end
       end
@@ -138,7 +138,7 @@ describe RuboCop::Cop::Cop do
         end
 
         it 'is set to false' do
-          cop.add_offense(nil, location, 'message')
+          cop.add_offense(nil, location: location, message: 'message')
           expect(cop.offenses.first.corrected?).to eq(false)
         end
       end

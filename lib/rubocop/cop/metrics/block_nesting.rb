@@ -33,7 +33,7 @@ module RuboCop
             if current_level > max
               self.max = current_level
               unless part_of_ignored_node?(node)
-                add_offense(node, :expression, message(max)) do
+                add_offense(node, message: message(max)) do
                   ignore_node(node)
                 end
               end

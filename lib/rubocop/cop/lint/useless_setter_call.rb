@@ -39,7 +39,11 @@ module RuboCop
           variable_name, = *receiver
           return unless tracker.contain_local_object?(variable_name)
 
-          add_offense(receiver, :name, format(MSG, receiver.loc.name.source))
+          add_offense(
+            receiver,
+            location: :name,
+            message: format(MSG, receiver.loc.name.source)
+          )
         end
         alias on_defs on_def
 

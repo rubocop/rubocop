@@ -26,7 +26,7 @@ module RuboCop
         def on_send(node)
           return unless !node.receiver && BLACKLIST.include?(node.method_name)
 
-          add_offense(node, :selector)
+          add_offense(node, location: :selector)
         end
 
         private

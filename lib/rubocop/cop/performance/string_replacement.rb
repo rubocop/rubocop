@@ -101,7 +101,7 @@ module RuboCop
           second_source, = *second_param
           message = message(node, first_source, second_source)
 
-          add_offense(node, range(node), message)
+          add_offense(node, location: range(node), message: message)
         end
 
         def first_source(first_param)

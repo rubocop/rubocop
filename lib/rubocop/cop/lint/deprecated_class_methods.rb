@@ -47,10 +47,10 @@ module RuboCop
 
         def on_send(node)
           check(node) do |data|
-            add_offense(node, :selector,
-                        format(MSG,
-                               deprecated_method(data),
-                               replacement_method(data)))
+            message = format(MSG, deprecated_method(data),
+                             replacement_method(data))
+
+            add_offense(node, location: :selector, message: message)
           end
         end
 

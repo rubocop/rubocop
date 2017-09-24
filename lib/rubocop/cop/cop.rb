@@ -116,19 +116,19 @@ module RuboCop
       end
 
       # rubocop:disable Metrics/CyclomaticComplexity
-      def add_offense(node, loc = :expression, message = nil, severity = nil)
-        location = find_location(node, loc)
+      def add_offense(node, location: :expression, message: nil, severity: nil)
+        loc = find_location(node, location)
 
-        return if duplicate_location?(location)
+        return if duplicate_location?(loc)
 
         severity = custom_severity || severity || default_severity
 
         message ||= message(node)
         message = annotate(message)
 
-        status = enabled_line?(location.line) ? correct(node) : :disabled
+        status = enabled_line?(loc.line) ? correct(node) : :disabled
 
-        @offenses << Offense.new(severity, location, message, name, status)
+        @offenses << Offense.new(severity, loc, message, name, status)
         yield if block_given? && status != :disabled
       end
       # rubocop:enable Metrics/CyclomaticComplexity

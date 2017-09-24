@@ -14,7 +14,7 @@ module RuboCop
           return if node.single_line?
           return unless !node.arguments? && node.arguments.loc.begin
 
-          add_offense(node.arguments, :begin)
+          add_offense(node.arguments, location: :begin)
         end
         alias on_defs on_def
 

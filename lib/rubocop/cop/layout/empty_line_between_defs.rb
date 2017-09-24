@@ -54,7 +54,7 @@ module RuboCop
           return if nodes.all?(&:single_line?) &&
                     cop_config['AllowAdjacentOneLineDefs']
 
-          add_offense(nodes.last, :keyword)
+          add_offense(nodes.last, location: :keyword)
         end
 
         private

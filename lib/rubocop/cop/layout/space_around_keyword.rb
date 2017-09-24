@@ -166,7 +166,7 @@ module RuboCop
         end
 
         def offense(range, msg)
-          add_offense(range, range, msg % range.source)
+          add_offense(range, location: range, message: msg % range.source)
         end
 
         def space_before_missing?(range)

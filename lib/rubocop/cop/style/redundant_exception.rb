@@ -22,8 +22,8 @@ module RuboCop
                 'just the message.'.freeze
 
         def on_send(node)
-          exploded?(node) { return add_offense(node, :expression, MSG_1) }
-          compact?(node) { add_offense(node, :expression, MSG_2) }
+          exploded?(node) { return add_offense(node, message: MSG_1) }
+          compact?(node) { add_offense(node, message: MSG_2) }
         end
 
         # Switch `raise RuntimeError, 'message'` to `raise 'message'`, and

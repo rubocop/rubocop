@@ -33,7 +33,7 @@ module RuboCop
             return unless duplicates?(items)
 
             consecutive_duplicates(items).each do |item|
-              add_offense(item, :expression, format(MSG, item.source, name))
+              add_offense(item, message: format(MSG, item.source, name))
             end
           end
         end

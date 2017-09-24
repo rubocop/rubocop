@@ -36,8 +36,10 @@ module RuboCop
           autocorrect_range = range_between(begin_pos, sb.source.length)
           begin_pos += 1 unless whitespace_at_end.empty?
           report_range = range_between(begin_pos, sb.source.length)
-          add_offense(autocorrect_range, report_range,
-                      message(wanted_blank_lines, blank_lines))
+
+          add_offense(autocorrect_range,
+                      location: report_range,
+                      message: message(wanted_blank_lines, blank_lines))
         end
 
         def ends_in_end?(processed_source)

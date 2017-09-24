@@ -43,21 +43,20 @@ module RuboCop
           plain_each(node) do |target, k, v|
             return if @args[k] && @args[v]
             used = @args[k] ? :key : :value
+
             add_offense(
-              target, plain_range(target), format(message,
-                                                  "each_#{used}",
-                                                  :each)
+              target,
+              location: plain_range(target),
+              message: format(message, "each_#{used}", :each)
             )
           end
         end
 
         def register_kv_offense(node)
           kv_each(node) do |target, method|
-            add_offense(
-              target, kv_range(target), format(message,
-                                               "each_#{method[0..-2]}",
-                                               "#{method}.each")
-            )
+            msg = format(message, "each_#{method[0..-2]}", "#{method}.each")
+
+            add_offense(target, location: kv_range(target), message: msg)
           end
         end
 

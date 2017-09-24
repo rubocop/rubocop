@@ -27,7 +27,7 @@ module RuboCop
         def on_send(node)
           return unless double_negative?(node) && node.keyword_bang?
 
-          add_offense(node, :selector)
+          add_offense(node, location: :selector)
         end
       end
     end

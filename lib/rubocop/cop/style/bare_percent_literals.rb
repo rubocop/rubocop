@@ -41,7 +41,7 @@ module RuboCop
         end
 
         def add_offense_for_wrong_style(node, good, bad)
-          add_offense(node, :begin, format(MSG, good, bad))
+          add_offense(node, location: :begin, message: format(MSG, good, bad))
         end
 
         def autocorrect(node)

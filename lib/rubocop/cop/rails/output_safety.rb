@@ -76,7 +76,7 @@ module RuboCop
                         looks_like_rails_raw?(node) ||
                         looks_like_rails_safe_concat?(node)
 
-          add_offense(node, :selector)
+          add_offense(node, location: :selector)
         end
 
         private

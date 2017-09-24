@@ -10,7 +10,7 @@ module RuboCop
         def on_when(node)
           return if node.multiline? || node.then? || !node.body
 
-          add_offense(node, :begin)
+          add_offense(node, location: :begin)
         end
 
         def autocorrect(node)

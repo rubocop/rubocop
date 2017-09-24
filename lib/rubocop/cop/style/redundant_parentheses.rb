@@ -110,7 +110,7 @@ module RuboCop
         end
 
         def offense(node, msg)
-          add_offense(node, :expression, "Don't use parentheses around #{msg}.")
+          add_offense(node, message: "Don't use parentheses around #{msg}.")
         end
 
         def keyword_ancestor?(node)

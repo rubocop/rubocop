@@ -19,7 +19,7 @@ module RuboCop
           end
 
           each_extra_empty_line(lines.sort) do |range|
-            add_offense(range, range)
+            add_offense(range, location: range)
           end
         end
 

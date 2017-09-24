@@ -26,7 +26,10 @@ module RuboCop
                       d.message.capitalize
                     end
 
-          add_offense(nil, d.location, message, d.level)
+          add_offense(nil,
+                      location: d.location,
+                      message: message,
+                      severity: d.level)
         end
       end
     end

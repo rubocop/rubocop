@@ -11,7 +11,7 @@ module RuboCop
       def investigate(processed_source)
         @processed_source = processed_source
         each_extraneous_space(processed_source.tokens) do |kind, range|
-          add_offense(range, range, format(MSG, kind))
+          add_offense(range, location: range, message: format(MSG, kind))
         end
       end
 

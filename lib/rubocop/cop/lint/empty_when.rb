@@ -29,7 +29,7 @@ module RuboCop
           node.each_when do |when_node|
             next if when_node.body
 
-            add_offense(when_node, when_node.source_range)
+            add_offense(when_node, location: when_node.source_range)
           end
         end
       end

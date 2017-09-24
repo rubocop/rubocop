@@ -33,7 +33,8 @@ module RuboCop
         def check(node)
           return unless node.multiline? && single_line_as_modifier?(node)
 
-          add_offense(node, :keyword, format(MSG, node.keyword))
+          add_offense(node, location: :keyword,
+                            message: format(MSG, node.keyword))
         end
       end
     end

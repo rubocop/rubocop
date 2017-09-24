@@ -58,7 +58,8 @@ module RuboCop
 
           return if safe_chain?(node) || safe_to_time?(node)
 
-          add_offense(node, :selector, format(MSG_SEND, node.method_name))
+          add_offense(node, location: :selector,
+                            message: format(MSG_SEND, node.method_name))
         end
 
         private
@@ -70,10 +71,10 @@ module RuboCop
 
           method_name = (chain & bad_days).join('.')
 
-          add_offense(node, :selector,
-                      format(MSG,
-                             "Date.#{method_name}",
-                             "Time.zone.#{method_name}"))
+          add_offense(node, location: :selector,
+                            message: format(MSG,
+                                            "Date.#{method_name}",
+                                            "Time.zone.#{method_name}"))
         end
 
         def extract_method_chain(node)

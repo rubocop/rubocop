@@ -52,7 +52,7 @@ module RuboCop
           target_node = s(var_type, var_name)
           return unless receiver == target_node
 
-          add_offense(node, :expression, format(MSG, method_name))
+          add_offense(node, message: format(MSG, method_name))
         end
 
         def check_boolean_node(node, rhs, var_name, var_type)
@@ -62,7 +62,7 @@ module RuboCop
           return unless first_operand == target_node
 
           operator = rhs.loc.operator.source
-          add_offense(node, :expression, format(MSG, operator))
+          add_offense(node, message: format(MSG, operator))
         end
 
         def autocorrect(node)

@@ -10,7 +10,7 @@ module RuboCop
         MSG = 'Replace class var %s with a class instance var.'.freeze
 
         def on_cvasgn(node)
-          add_offense(node, :name)
+          add_offense(node, location: :name)
         end
 
         def message(node)

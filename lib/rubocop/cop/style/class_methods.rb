@@ -51,7 +51,8 @@ module RuboCop
           return unless name == definee
 
           _, class_name = *definee
-          add_offense(definee, :name, message(class_name, method_name))
+          add_offense(definee, location: :name,
+                               message: message(class_name, method_name))
         end
 
         def message(class_name, method_name)

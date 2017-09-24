@@ -60,7 +60,7 @@ module RuboCop
           left_paren = node.loc.begin
           msg = correct_column == left_paren.column ? MSG_ALIGN : MSG_INDENT
 
-          add_offense(right_paren, right_paren, msg)
+          add_offense(right_paren, location: right_paren, message: msg)
         end
 
         def expected_column(node, elements)

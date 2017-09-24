@@ -48,12 +48,12 @@ module RuboCop
 
         def check_nested_style(node)
           return unless compact_node_name?(node)
-          add_offense(node, :name, NESTED_MSG)
+          add_offense(node, location: :name, message: NESTED_MSG)
         end
 
         def check_compact_style(node, body)
           return unless one_child?(body) && !compact_node_name?(node)
-          add_offense(node, :name, COMPACT_MSG)
+          add_offense(node, location: :name, message: COMPACT_MSG)
         end
 
         def one_child?(body)

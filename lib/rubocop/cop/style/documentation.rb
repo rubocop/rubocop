@@ -38,7 +38,7 @@ module RuboCop
           return if namespace?(body)
           return if documentation_comment?(node) || nodoc_comment?(node)
 
-          add_offense(node, :keyword, format(MSG, type))
+          add_offense(node, location: :keyword, message: format(MSG, type))
         end
 
         def namespace?(node)

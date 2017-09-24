@@ -113,14 +113,15 @@ module RuboCop
         def check_space(space_begin_pos, space_end_pos, range, msg)
           return if space_begin_pos != space_end_pos
 
-          add_offense(range, range, "Space #{msg} missing.")
+          add_offense(range, location: range, message: "Space #{msg} missing.")
         end
 
         def check_no_space(space_begin_pos, space_end_pos, msg)
           return if space_begin_pos >= space_end_pos
 
           range = range_between(space_begin_pos, space_end_pos)
-          add_offense(range, range, "#{msg} block parameter detected.")
+          add_offense(range, location: range,
+                             message: "#{msg} block parameter detected.")
         end
 
         def autocorrect(range)

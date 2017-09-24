@@ -33,7 +33,7 @@ module RuboCop
 
           range = send_node.receiver.source_range.join(send_node.loc.selector)
 
-          add_offense(node, range)
+          add_offense(node, location: range)
         end
 
         private

@@ -25,7 +25,7 @@ module RuboCop
           # i.e., if the string would become dynamic or has special characters.
           return if node.children != parse(corrected(node.source)).ast.children
 
-          add_offense(node, :begin)
+          add_offense(node, location: :begin)
         end
 
         def correct_literal_style?(node)

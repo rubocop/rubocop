@@ -46,7 +46,7 @@ module RuboCop
 
           return unless bad_rhs?(rhs)
 
-          add_offense(rhs, node.source_range)
+          add_offense(rhs, location: node.source_range)
         end
 
         private

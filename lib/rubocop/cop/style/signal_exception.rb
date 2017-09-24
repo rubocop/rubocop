@@ -77,7 +77,8 @@ module RuboCop
           each_command_or_kernel_call(method_name, node) do |send_node|
             next if ignored_node?(send_node)
 
-            add_offense(send_node, :selector, message(method_name))
+            add_offense(send_node,
+                        location: :selector, message: message(method_name))
             ignore_node(send_node)
           end
         end
@@ -85,7 +86,7 @@ module RuboCop
         def check_send(method_name, node)
           return unless node && command_or_kernel_call?(method_name, node)
 
-          add_offense(node, :selector, message(method_name))
+          add_offense(node, location: :selector, message: message(method_name))
         end
 
         def command_or_kernel_call?(name, node)

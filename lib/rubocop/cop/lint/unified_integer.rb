@@ -29,7 +29,7 @@ module RuboCop
 
           return unless klass
 
-          add_offense(node, :expression, format(MSG, klass))
+          add_offense(node, message: format(MSG, klass))
         end
 
         def autocorrect(node)

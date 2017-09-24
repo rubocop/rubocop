@@ -24,7 +24,7 @@ module RuboCop
           node_type_check(node) do |_receiver, node_type|
             return unless Parser::Meta::NODE_TYPES.include?(node_type)
 
-            add_offense(node, :expression, format(MSG, node_type))
+            add_offense(node, message: format(MSG, node_type))
           end
         end
 

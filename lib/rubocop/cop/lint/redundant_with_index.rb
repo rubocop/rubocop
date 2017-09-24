@@ -41,7 +41,7 @@ module RuboCop
 
         def on_block(node)
           redundant_with_index?(node) do |send|
-            add_offense(node, with_index_range(send))
+            add_offense(node, location: with_index_range(send))
           end
         end
 

@@ -21,14 +21,14 @@ module RuboCop
                          '(block (send (const nil? :Hash) :new) args _)'
 
         def on_send(node)
-          add_offense(node, :expression, ARR_MSG)  if offense_array_node?(node)
-          add_offense(node, :expression, HASH_MSG) if offense_hash_node?(node)
+          add_offense(node, message: ARR_MSG)  if offense_array_node?(node)
+          add_offense(node, message: HASH_MSG) if offense_hash_node?(node)
 
           str_node(node) do
             return if frozen_string_literals_enabled?
 
-            add_offense(node, :expression,
-                        format(STR_MSG, preferred_string_literal))
+            add_offense(node,
+                        message: format(STR_MSG, preferred_string_literal))
           end
         end
 

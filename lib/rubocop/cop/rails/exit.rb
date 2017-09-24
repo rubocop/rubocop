@@ -24,7 +24,7 @@ module RuboCop
         EXPLICIT_RECEIVERS = %i[Kernel Process].freeze
 
         def on_send(node)
-          add_offense(node, :selector) if offending_node?(node)
+          add_offense(node, location: :selector) if offending_node?(node)
         end
 
         private

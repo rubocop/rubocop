@@ -31,7 +31,7 @@ module RuboCop
 
         def on_send(node)
           json_load(node) do |method|
-            add_offense(node, :selector, format(MSG, method))
+            add_offense(node, location: :selector, message: format(MSG, method))
           end
         end
 

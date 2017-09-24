@@ -35,7 +35,7 @@ module RuboCop
           # If the end is on its own line, there is no offense
           return if end_loc.source_line =~ /^\s*#{end_loc.source}/
 
-          add_offense(node, end_loc)
+          add_offense(node, location: end_loc)
         end
 
         private

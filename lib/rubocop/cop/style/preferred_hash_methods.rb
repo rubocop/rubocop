@@ -45,7 +45,7 @@ module RuboCop
           return unless node.arguments.one? &&
                         offending_selector?(node.method_name)
 
-          add_offense(node, :selector)
+          add_offense(node, location: :selector)
         end
 
         def autocorrect(node)

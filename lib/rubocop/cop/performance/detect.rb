@@ -84,10 +84,10 @@ module RuboCop
           range = receiver.loc.selector.join(node.loc.selector)
 
           message = second_method == :last ? REVERSE_MSG : MSG
-          add_offense(node, range, format(message,
-                                          preferred_method,
-                                          first_method,
-                                          second_method))
+          formatted_message = format(message, preferred_method, first_method,
+                                     second_method)
+
+          add_offense(node, location: range, message: formatted_message)
         end
 
         def preferred_method

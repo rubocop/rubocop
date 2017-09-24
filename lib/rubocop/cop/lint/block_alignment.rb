@@ -146,7 +146,7 @@ module RuboCop
           message = format_message(start_loc, end_loc, do_source_line_column,
                                    error_source_line_column)
 
-          add_offense(block_node, end_loc, message)
+          add_offense(block_node, location: end_loc, message: message)
         end
 
         def format_message(start_loc, end_loc, do_source_line_column,

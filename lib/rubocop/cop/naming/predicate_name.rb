@@ -26,8 +26,8 @@ module RuboCop
             next if predicate_whitelist.include?(method_name)
             add_offense(
               node,
-              :name,
-              message(method_name, expected_name(method_name, prefix))
+              location: :name,
+              message: message(method_name, expected_name(method_name, prefix))
             )
           end
         end

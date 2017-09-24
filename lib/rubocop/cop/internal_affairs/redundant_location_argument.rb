@@ -10,35 +10,48 @@ module RuboCop
       # @example
       #
       #   # bad
-      #   add_offense(node, :expression)
+      #   add_offense(node, location: :expression)
       #
       #   # good
       #   add_offense(node)
-      #   add_offense(node, :selector)
-      #   add_offense(node, :expression, 'message')
+      #   add_offense(node, location: :selector)
       #
       class RedundantLocationArgument < Cop
         MSG = 'Redundant location argument to `#add_offense`.'.freeze
 
-        def_node_matcher :node_type_check, <<-PATTERN
-          (send nil? :add_offense _ (sym :expression))
+        def_node_matcher :add_offense_kwargs, <<-PATTERN
+          (send nil? :add_offense _ $hash)
+        PATTERN
+
+        def_node_matcher :redundant_location_argument?, <<-PATTERN
+          (pair (sym :location) (sym :expression))
         PATTERN
 
         def on_send(node)
-          node_type_check(node) do
-            add_offense(node.last_argument)
-          end
+          redundant_location_argument(node) { |argument| add_offense(argument) }
         end
 
         def autocorrect(node)
-          first, second = node.parent.arguments
-
-          range = range_between(
-            first.loc.expression.end_pos,
-            second.loc.expression.end_pos
-          )
+          range = offending_range(node)
 
           ->(corrector) { corrector.remove(range) }
+        end
+
+        private
+
+        def redundant_location_argument(node)
+          add_offense_kwargs(node) do |kwargs|
+            result =
+              kwargs.pairs.find { |arg| redundant_location_argument?(arg) }
+
+            yield result if result
+          end
+        end
+
+        def offending_range(node)
+          with_space = range_with_surrounding_space(node.loc.expression)
+
+          range_with_surrounding_comma(with_space, :left)
         end
       end
     end

@@ -96,7 +96,7 @@ module RuboCop
                   'Indent the right brace the same as the start of the line ' \
                   'where the left brace is.'
                 end
-          add_offense(right_brace, right_brace, msg)
+          add_offense(right_brace, location: right_brace, message: msg)
         end
 
         def separator_style?(first_pair)

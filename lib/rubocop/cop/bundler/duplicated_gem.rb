@@ -56,11 +56,13 @@ module RuboCop
 
         def register_offense(node, gem_name, line_of_first_occurrence)
           line_range = node.loc.column...node.loc.last_column
+          offense_location =
+            source_range(processed_source.buffer, node.loc.line, line_range)
 
           add_offense(
             node,
-            source_range(processed_source.buffer, node.loc.line, line_range),
-            format(MSG, gem_name, line_of_first_occurrence)
+            location: offense_location,
+            message: format(MSG, gem_name, line_of_first_occurrence)
           )
         end
       end

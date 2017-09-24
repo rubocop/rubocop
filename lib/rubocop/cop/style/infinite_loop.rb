@@ -23,13 +23,13 @@ module RuboCop
         def on_while(node)
           return unless node.condition.truthy_literal?
 
-          add_offense(node, :keyword)
+          add_offense(node, location: :keyword)
         end
 
         def on_until(node)
           return unless node.condition.falsey_literal?
 
-          add_offense(node, :keyword)
+          add_offense(node, location: :keyword)
         end
 
         alias on_while_post on_while

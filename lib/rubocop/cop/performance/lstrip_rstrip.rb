@@ -25,7 +25,9 @@ module RuboCop
           lstrip_rstrip(node) do |first_send, method_one, method_two|
             range = range_between(first_send.loc.selector.begin_pos,
                                   node.source_range.end_pos)
-            add_offense(node, range, format(MSG, method_one, method_two))
+            add_offense(node,
+                        location: range,
+                        message: format(MSG, method_one, method_two))
           end
         end
 

@@ -8,7 +8,7 @@ module RuboCop
         MSG = 'Avoid the use of `BEGIN` blocks.'.freeze
 
         def on_preexe(node)
-          add_offense(node, :keyword)
+          add_offense(node, location: :keyword)
         end
       end
     end

@@ -63,7 +63,7 @@ module RuboCop
 
           nodes.each do |n|
             if relative_date_method?(n)
-              add_offense(node.parent, :expression, format(MSG, n.method_name))
+              add_offense(node.parent, message: format(MSG, n.method_name))
             end
           end
         end

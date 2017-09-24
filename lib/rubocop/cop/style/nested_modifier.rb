@@ -32,7 +32,7 @@ module RuboCop
           return if part_of_ignored_node?(node)
           return unless modifier?(node) && modifier?(node.parent)
 
-          add_offense(node, :keyword)
+          add_offense(node, location: :keyword)
           ignore_node(node)
         end
 

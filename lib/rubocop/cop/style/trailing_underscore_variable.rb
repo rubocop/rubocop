@@ -36,7 +36,7 @@ module RuboCop
           offset = range.begin_pos - node.source_range.begin_pos
           good_code[offset, range.size] = ''
 
-          add_offense(node, range, format(MSG, good_code))
+          add_offense(node, location: range, message: format(MSG, good_code))
         end
 
         def autocorrect(node)

@@ -11,7 +11,7 @@ module RuboCop
         def investigate(processed_source)
           processed_source.comments.each do |comment|
             unless comment.text.ascii_only?
-              add_offense(comment, first_offense_range(comment))
+              add_offense(comment, location: first_offense_range(comment))
             end
           end
         end

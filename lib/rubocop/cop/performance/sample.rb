@@ -37,7 +37,7 @@ module RuboCop
 
             range = source_range(shuffle, node)
             message = message(shuffle_arg, method, method_args, range)
-            add_offense(node, range, message)
+            add_offense(node, location: range, message: message)
           end
         end
 

@@ -57,7 +57,9 @@ module RuboCop
           return if end_loc.column == kw_loc.column
           return if end_loc.line == kw_loc.line
 
-          add_offense(node, kw_loc, format_message(kw_loc, end_loc))
+          add_offense(node,
+                      location: kw_loc,
+                      message: format_message(kw_loc, end_loc))
         end
 
         def format_message(kw_loc, end_loc)
