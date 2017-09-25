@@ -3,9 +3,9 @@
 module RuboCop
   module Cop
     module Lint
-      # Checks for unnecessary require statement.
+      # Checks for unnecessary `require` statement.
       #
-      # The following features are unnecessary require statement because
+      # The following features are unnecessary `require` statement because
       # they are already loaded.
       #
       # ruby -ve 'p $LOADED_FEATURES.reject { |feature| %r|/| =~ feature }'
