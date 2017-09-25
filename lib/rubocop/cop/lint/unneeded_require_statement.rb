@@ -22,7 +22,7 @@ module RuboCop
       #   # good
       #   require 'unloaded_feature'
       class UnneededRequireStatement < Cop
-        MSG = 'Remove unnecessary require statement.'.freeze
+        MSG = 'Remove unnecessary `require` statement.'.freeze
 
         def_node_matcher :unnecessary_require_statement?, <<-PATTERN
           (send nil :require

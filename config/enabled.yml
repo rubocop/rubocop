@@ -1390,7 +1390,7 @@ Lint/UnneededDisable:
   Enabled: true
 
 Lint/UnneededRequireStatement:
-  Description: 'Checks for unnecessary require statement.'
+  Description: 'Checks for unnecessary `require` statement.'
   Enabled: true
 
 Lint/UnneededSplatExpansion:

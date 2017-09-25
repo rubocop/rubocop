@@ -29,7 +29,7 @@ describe RuboCop::Cop::Lint::UnneededRequireStatement do
       it "registers an offense when using `require 'enumerator'`" do
         expect_offense(<<-RUBY.strip_indent)
           require 'enumerator'
-          ^^^^^^^^^^^^^^^^^^^^ Remove unnecessary require statement.
+          ^^^^^^^^^^^^^^^^^^^^ Remove unnecessary `require` statement.
         RUBY
       end
 
