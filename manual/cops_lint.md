@@ -1437,6 +1437,38 @@ ary.each do |v|
 end
 ```
 
+## Lint/RedundantWithObject
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for redundant `with_object`.
+
+### Example
+
+```ruby
+# bad
+ary.each_with_object([]) do |v|
+  v
+end
+
+# good
+ary.each do |v|
+  v
+end
+
+# bad
+ary.each.with_object([]) do |v|
+  v
+end
+
+# good
+ary.each do |v|
+  v
+end
+```
+
 ## Lint/RequireParentheses
 
 Enabled by default | Supports autocorrection

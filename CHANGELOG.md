@@ -7,6 +7,7 @@
 * [#4791](https://github.com/bbatsov/rubocop/pull/4791): Add new `Rails/UnknownEnv` cop. ([@pocke][])
 * [#4690](https://github.com/bbatsov/rubocop/issues/4690): Add new `Lint/UnneededRequireStatement` cop. ([@koic][])
 * [#4813](https://github.com/bbatsov/rubocop/pull/4813): Add new `Style/StderrPuts` cop. ([@koic][])
+* [#4796](https://github.com/bbatsov/rubocop/pull/4796): Add new `Lint/RedundantWithObject` cop. ([@koic][])
 
 ### Bug fixes
 
