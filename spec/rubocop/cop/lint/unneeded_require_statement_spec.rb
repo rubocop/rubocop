@@ -11,18 +11,6 @@ describe RuboCop::Cop::Lint::UnneededRequireStatement do
           require 'enumerator'
         RUBY
       end
-
-      it 'does not autocorrects remove unnecessary require statement' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          require 'enumerator'
-          require 'uri'
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
-          require 'enumerator'
-          require 'uri'
-        RUBY
-      end
     end
   else
     context 'target ruby version >= 2.2', :ruby22 do
