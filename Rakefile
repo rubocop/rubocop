@@ -20,6 +20,9 @@ Dir['tasks/**/*.rake'].each { |t| load t }
 RSpec::Core::RakeTask.new(:spec) { |t| t.ruby_opts = '-E UTF-8' }
 RSpec::Core::RakeTask.new(:ascii_spec) { |t| t.ruby_opts = '-E ASCII' }
 
+desc 'Run test and RuboCop in parallel'
+task parallel: %i[parallel:spec parallel:ascii_spec internal_investigation]
+
 namespace :parallel do
   desc 'Run RSpec in parallel'
   task :spec do
