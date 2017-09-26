@@ -109,6 +109,7 @@ module RuboCop
       def kw_node_with_special_indentation(node)
         keyword_node =
           node.each_ancestor(*KEYWORD_ANCESTOR_TYPES).find do |ancestor|
+            next unless ancestor.loc.respond_to?(:keyword)
             within_node?(node, indented_keyword_expression(ancestor))
           end
 
