@@ -117,7 +117,10 @@ module RuboCop
       attr_reader :badge
 
       def write_unless_file_exists(path, contents)
-        raise "#{path} already exists!" if File.exist?(path)
+        if File.exist?(path)
+          $stderr.puts "rake new_cop: #{path} already exists!"
+          exit!
+        end
 
         dir = File.dirname(path)
         FileUtils.mkdir_p(dir) unless File.exist?(dir)
