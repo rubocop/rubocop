@@ -3,7 +3,7 @@
 ## master (unreleased)
 
 ## Bug fixes
-
+* [#3312](https://github.com/bbatsov/rubocop/issues/3312): Make `Rails/Date` Correct false positive on `#to_time` for strings ending in UTC-"Z".([@erikdstock][])
 * [#4741](https://github.com/bbatsov/rubocop/issues/4741): Make `Style/SafeNavigation` correctly exclude methods called without dot. ([@drenmi][])
 * [#4740](https://github.com/bbatsov/rubocop/issues/4740): Make `Lint/RescueWithoutErrorClass` aware of modifier form `rescue`. ([@drenmi][])
 * [#4745](https://github.com/bbatsov/rubocop/issues/4745): Make `Style/SafeNavigation` ignore negated continuations. ([@drenmi][])
@@ -2934,3 +2934,4 @@
 [@fujimura]: https://github.com/fujimura
 [@kristjan]: https://github.com/kristjan
 [@frodsan]: https://github.com/frodsan
+[@erikdstock]: https://github.com/erikdstock

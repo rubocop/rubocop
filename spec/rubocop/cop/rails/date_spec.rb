@@ -61,6 +61,12 @@ describe RuboCop::Cop::Rails::Date, :config do
       end
     end
 
+    context 'when a string literal with "Z"-style UTC timezone' do
+      it 'does not register an offense' do
+        expect_no_offenses('"2017-09-22T22:46:06.497Z".to_time(:utc)')
+      end
+    end
+
     it 'does not blow up in the presence of a single constant to inspect' do
       expect_no_offenses('A')
     end
