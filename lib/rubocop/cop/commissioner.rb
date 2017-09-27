@@ -105,11 +105,9 @@ module RuboCop
       # Allow blind rescues here, since we're absorbing and packaging or
       # re-raising exceptions that can be raised from within the individual
       # cops' `#investigate` methods.
-      #
-      # rubocop:disable Lint/RescueWithoutErrorClass
       def with_cop_error_handling(cop, node = nil)
         yield
-      rescue => e
+      rescue StandardError => e
         raise e if @options[:raise_error]
         if node
           line = node.loc.line
@@ -118,7 +116,6 @@ module RuboCop
         error = CopError.new(e, line, column)
         @errors[cop] << error
       end
-      # rubocop:enable Lint/RescueWithoutErrorClass
     end
   end
 end
