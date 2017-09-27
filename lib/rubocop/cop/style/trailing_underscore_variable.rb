@@ -28,22 +28,22 @@ module RuboCop
         UNDERSCORE = '_'.freeze
 
         def on_masgn(node)
-          range = unneeded_range(node)
+          ranges = unneeded_ranges(node)
 
-          return unless range
+          ranges.each do |range|
+            good_code = node.source
+            offset = range.begin_pos - node.source_range.begin_pos
+            good_code[offset, range.size] = ''
 
-          good_code = node.source
-          offset = range.begin_pos - node.source_range.begin_pos
-          good_code[offset, range.size] = ''
-
-          add_offense(node, location: range, message: format(MSG, good_code))
+            add_offense(node, location: range, message: format(MSG, good_code))
+          end
         end
 
         def autocorrect(node)
-          range = unneeded_range(node)
+          ranges = unneeded_ranges(node)
 
           lambda do |corrector|
-            corrector.remove(range) if range
+            ranges.each { |range| corrector.remove(range) if range }
           end
         end
 
@@ -60,6 +60,7 @@ module RuboCop
 
         def find_first_possible_offense(variables)
           variables.reduce(nil) do |offense, variable|
+            break offense unless %i[lvasgn splat].include?(variable.type)
             var, = *variable
             var, = *var
             if allow_named_underscore_variables
@@ -89,35 +90,57 @@ module RuboCop
             cop_config['AllowNamedUnderscoreVariables']
         end
 
-        def unneeded_range(node)
-          left, right = *node
-          variables = *left
+        def unneeded_ranges(node)
+          node.masgn_type? ? (mlhs_node, = *node) : mlhs_node = node
+          variables = *mlhs_node
+
+          main_offense = main_node_offense(node)
+          if main_offense.nil?
+            children_offenses(variables)
+          else
+            children_offenses(variables) << main_offense
+          end
+        end
+
+        def main_node_offense(node)
+          node.masgn_type? ? (mlhs_node, right = *node) : mlhs_node = node
+
+          variables = *mlhs_node
           first_offense = find_first_offense(variables)
 
           return unless first_offense
 
           if unused_variables_only?(first_offense, variables)
-            return left_side_range(left, right)
+            return unused_range(node.type, mlhs_node, right)
           end
 
-          if Util.parentheses?(left)
-            return range_for_parentheses(first_offense, left)
+          if Util.parentheses?(mlhs_node)
+            return range_for_parentheses(first_offense, mlhs_node)
           end
 
-          range_between(
-            first_offense.source_range.begin_pos,
-            node.loc.operator.begin_pos
-          )
+          range_between(first_offense.source_range.begin_pos,
+                        node.loc.operator.begin_pos)
+        end
+
+        def children_offenses(variables)
+          variables.select(&:mlhs_type?).flat_map { |v| unneeded_ranges(v) }
         end
 
         def unused_variables_only?(offense, variables)
           offense.source_range == variables.first.source_range
         end
 
-        def left_side_range(left, right)
-          range_between(
-            left.source_range.begin_pos, right.source_range.begin_pos
-          )
+        def unused_range(node_type, mlhs_node, right)
+          start_range = mlhs_node.source_range.begin_pos
+
+          end_range = case node_type
+                      when :masgn
+                        right.source_range.begin_pos
+                      when :mlhs
+                        mlhs_node.source_range.end_pos
+                      end
+
+          range_between(start_range, end_range)
         end
 
         def range_for_parentheses(offense, left)
