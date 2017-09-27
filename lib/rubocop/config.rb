@@ -18,6 +18,7 @@ module RuboCop
     # 2.1 is the oldest officially supported Ruby version.
     DEFAULT_RUBY_VERSION = 2.1
     KNOWN_RUBIES = [2.1, 2.2, 2.3, 2.4].freeze
+    OBSOLETE_RUBIES = { 1.9 => '0.50', 2.0 => '0.50' }.freeze
     DEFAULT_RAILS_VERSION = 5.0
     OBSOLETE_COPS = {
       'Style/TrailingComma' =>
@@ -461,19 +462,28 @@ module RuboCop
     def check_target_ruby
       return if KNOWN_RUBIES.include?(target_ruby_version)
 
-      msg = "Unknown Ruby version #{target_ruby_version.inspect} found "
+      msg = if OBSOLETE_RUBIES.include?(target_ruby_version)
+              "Unsupported Ruby version #{target_ruby_version} found in " \
+              "#{target_ruby_source}. #{target_ruby_version}-compatible " \
+              'analysis was dropped after version ' \
+              "#{OBSOLETE_RUBIES[target_ruby_version]}."
+            else
+              "Unknown Ruby version #{target_ruby_version.inspect} found in " \
+              "#{target_ruby_source}."
+            end
 
-      msg +=
-        case @target_ruby_version_source
-        when :dot_ruby_version
-          'in `.ruby-version`.'
-        when :rubocop_yml
-          "in `TargetRubyVersion` parameter (in #{loaded_path})." \
-        end
-
-      msg += "\nKnown versions: #{KNOWN_RUBIES.join(', ')}"
+      msg += "\nSupported versions: #{KNOWN_RUBIES.join(', ')}"
 
       raise ValidationError, msg
+    end
+
+    def target_ruby_source
+      case @target_ruby_version_source
+      when :dot_ruby_version
+        '`.ruby-version`'
+      when :rubocop_yml
+        "`TargetRubyVersion` parameter (in #{loaded_path})"
+      end
     end
 
     def reject_mutually_exclusive_defaults

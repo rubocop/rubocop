@@ -1618,7 +1618,29 @@ describe RuboCop::CLI, :isolated_environment do
           /\AError: Unknown Ruby version 2.5 found in `TargetRubyVersion`/
         )
         expect($stderr.string.strip).to match(
-          /Known versions: 2.1, 2.2, 2.3, 2.4/
+          /Supported versions: 2.1, 2.2, 2.3, 2.4/
+        )
+      end
+    end
+
+    context 'when configured with an unsupported ruby' do
+      it 'fails with an error message' do
+        create_file('.rubocop.yml', <<-YAML.strip_indent)
+          AllCops:
+            TargetRubyVersion: 2.0
+        YAML
+
+        expect(cli.run([])).to eq(2)
+        expect($stderr.string.strip).to match(
+          /\AError: Unsupported Ruby version 2.0 found in `TargetRubyVersion`/
+        )
+
+        expect($stderr.string.strip).to match(
+          /2\.0-compatible analysis was dropped after version 0\.50/
+        )
+
+        expect($stderr.string.strip).to match(
+          /Supported versions: 2.1, 2.2, 2.3, 2.4/
         )
       end
     end
