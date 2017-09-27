@@ -38,16 +38,21 @@ module RuboCop
       #       something
       #     end
       class Blank < Cop
-        MSG_NIL_OR_EMPTY = 'Use `%s.blank?` instead of `%s`.'.freeze
+        MSG_NIL_OR_EMPTY = 'Use `%s` instead of `%s`.'.freeze
         MSG_NOT_PRESENT = 'Use `%s` instead of `%s`.'.freeze
-        MSG_UNLESS_PRESENT = 'Use `if %s.blank?` instead of `%s`.'.freeze
+        MSG_UNLESS_PRESENT = 'Use `if %s` instead of `%s`.'.freeze
 
+        # `(send nil $_)` is not actually a valid match for an offense. Nodes
+        # that have a single method call on the left hand side
+        # (`bar || foo.empty?`) will blow up when checking
+        # `(send (:nil) :== $_)`.
         def_node_matcher :nil_or_empty?, <<-PATTERN
           (or
               {
                 (send $_ :!)
                 (send $_ :nil?)
                 (send $_ :== (:nil))
+                (send nil $_)
                 (send (:nil) :== $_)
               }
               {
@@ -77,14 +82,15 @@ module RuboCop
 
         def on_or(node)
           return unless cop_config['NilOrEmpty']
-          return unless node.lhs.receiver && node.rhs.receiver
 
           nil_or_empty?(node) do |variable1, variable2|
             return unless variable1 == variable2
 
             add_offense(node,
                         :expression,
-                        format(MSG_NIL_OR_EMPTY, variable1.source, node.source))
+                        format(MSG_NIL_OR_EMPTY,
+                               replacement(variable1),
+                               node.source))
           end
         end
 
@@ -98,7 +104,7 @@ module RuboCop
             add_offense(node,
                         range,
                         format(MSG_UNLESS_PRESENT,
-                               receiver.source,
+                               replacement(receiver),
                                range.source))
           end
         end
@@ -107,7 +113,7 @@ module RuboCop
           lambda do |corrector|
             method_call, variable1 = unless_present?(node)
 
-            if method_call && variable1
+            if method_call
               corrector.replace(node.loc.keyword, 'if')
               range = method_call.loc.expression
             else

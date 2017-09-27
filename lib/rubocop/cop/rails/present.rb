@@ -36,8 +36,8 @@ module RuboCop
       #     something if  foo.present?
       class Present < Cop
         MSG_NOT_BLANK = 'Use `%s` instead of `%s`.'.freeze
-        MSG_EXISTS_AND_NOT_EMPTY = 'Use `%s.present?` instead of `%s`.'.freeze
-        MSG_UNLESS_BLANK = 'Use `if %s.present?` instead of `%s`.'.freeze
+        MSG_EXISTS_AND_NOT_EMPTY = 'Use `%s` instead of `%s`.'.freeze
+        MSG_UNLESS_BLANK = 'Use `if %s` instead of `%s`.'.freeze
 
         def_node_matcher :exists_and_not_empty?, <<-PATTERN
           (and
@@ -80,7 +80,7 @@ module RuboCop
             add_offense(node,
                         :expression,
                         format(MSG_EXISTS_AND_NOT_EMPTY,
-                               variable1.source,
+                               replacement(variable1),
                                node.source))
           end
         end
@@ -103,7 +103,9 @@ module RuboCop
             range = unless_condition(node, method_call)
             add_offense(node,
                         range,
-                        format(MSG_UNLESS_BLANK, receiver.source, range.source))
+                        format(MSG_UNLESS_BLANK,
+                               replacement(receiver),
+                               range.source))
           end
         end
 
@@ -111,7 +113,7 @@ module RuboCop
           lambda do |corrector|
             method_call, variable1 = unless_blank?(node)
 
-            if method_call && variable1
+            if method_call
               corrector.replace(node.loc.keyword, 'if')
               range = method_call.loc.expression
             else
