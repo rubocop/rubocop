@@ -47,6 +47,9 @@ describe RuboCop::Cop::Rails::Present, :config do
     it_behaves_like :offense, '!foo.nil? && !foo.empty?',
                     'foo.present?',
                     'Use `foo.present?` instead of `!foo.nil? && !foo.empty?`.'
+    it_behaves_like :offense, '!nil? && !empty?',
+                    'present?',
+                    'Use `present?` instead of `!nil? && !empty?`.'
     it_behaves_like :offense, 'foo != nil && !foo.empty?',
                     'foo.present?',
                     'Use `foo.present?` instead of `foo != nil && !foo.empty?`.'
@@ -150,19 +153,34 @@ describe RuboCop::Cop::Rails::Present, :config do
 
     context 'unless blank?' do
       context 'modifier unless' do
-        let(:source) { 'something unless foo.blank?' }
+        context 'with a receiver' do
+          it 'registers an offense' do
+            expect_offense(<<-RUBY.strip_indent)
+              something unless foo.blank?
+                        ^^^^^^^^^^^^^^^^^ Use `if foo.present?` instead of `unless foo.blank?`.
+            RUBY
+          end
 
-        it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
-            something unless foo.blank?
-                      ^^^^^^^^^^^^^^^^^ Use `if foo.present?` instead of `unless foo.blank?`.
-          RUBY
+          it 'auto-corrects' do
+            new_source = autocorrect_source('something unless foo.blank?')
+
+            expect(new_source).to eq('something if foo.present?')
+          end
         end
 
-        it 'auto-corrects' do
-          new_source = autocorrect_source(source)
+        context 'without a receiver' do
+          it 'registers an offense' do
+            expect_offense(<<-RUBY.strip_indent)
+              something unless blank?
+                        ^^^^^^^^^^^^^ Use `if present?` instead of `unless blank?`.
+            RUBY
+          end
 
-          expect(new_source).to eq('something if foo.present?')
+          it 'auto-corrects' do
+            new_source = autocorrect_source('something unless blank?')
+
+            expect(new_source).to eq('something if present?')
+          end
         end
       end
 

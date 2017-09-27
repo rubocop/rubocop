@@ -48,6 +48,9 @@ describe RuboCop::Cop::Rails::Blank, :config do
       it_behaves_like :offense, 'foo.nil? || foo.empty?',
                       'foo.blank?',
                       'Use `foo.blank?` instead of `foo.nil? || foo.empty?`.'
+      it_behaves_like :offense, 'nil? || empty?',
+                      'blank?',
+                      'Use `blank?` instead of `nil? || empty?`.'
       it_behaves_like :offense, 'foo == nil || foo.empty?',
                       'foo.blank?',
                       'Use `foo.blank?` instead of `foo == nil || foo.empty?`.'
@@ -163,19 +166,34 @@ describe RuboCop::Cop::Rails::Blank, :config do
     end
 
     context 'modifier unless' do
-      let(:source) { 'something unless foo.present?' }
-
-      it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+      context 'with a receiver' do
+        it 'registers an offense' do
+          expect_offense(<<-RUBY.strip_indent)
           something unless foo.present?
                     ^^^^^^^^^^^^^^^^^^^ Use `if foo.blank?` instead of `unless foo.present?`.
-        RUBY
+          RUBY
+        end
+
+        it 'auto-corrects' do
+          new_source = autocorrect_source('something unless foo.present?')
+
+          expect(new_source).to eq('something if foo.blank?')
+        end
       end
 
-      it 'auto-corrects' do
-        new_source = autocorrect_source(source)
+      context 'without a receiver' do
+        it 'registers an offense' do
+          expect_offense(<<-RUBY.strip_indent)
+          something unless present?
+                    ^^^^^^^^^^^^^^^ Use `if blank?` instead of `unless present?`.
+          RUBY
+        end
 
-        expect(new_source).to eq('something if foo.blank?')
+        it 'auto-corrects' do
+          new_source = autocorrect_source('something unless present?')
+
+          expect(new_source).to eq('something if blank?')
+        end
       end
     end
 
