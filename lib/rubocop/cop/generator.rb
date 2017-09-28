@@ -118,7 +118,7 @@ module RuboCop
 
       def write_unless_file_exists(path, contents)
         if File.exist?(path)
-          $stderr.puts "rake new_cop: #{path} already exists!"
+          warn "rake new_cop: #{path} already exists!"
           exit!
         end
 
