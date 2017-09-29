@@ -954,6 +954,11 @@ Style/StabbyLambdaParentheses:
   StyleGuide: '#stabby-lambda-with-args'
   Enabled: true
 
+Style/StderrPuts:
+  Description: 'Use `warn` instead of `$stderr.puts`.'
+  StyleGuide: '#warn'
+  Enabled: true
+
 Style/StringLiterals:
   Description: 'Checks if uses of quotes match the configured preference.'
   StyleGuide: '#consistent-string-literals'

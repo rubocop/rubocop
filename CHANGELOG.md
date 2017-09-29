@@ -5,6 +5,7 @@
 ### New features
 
 * [#4791](https://github.com/bbatsov/rubocop/pull/4791): Add new `Rails/UnknownEnv` cop. ([@pocke][])
+* [#4813](https://github.com/bbatsov/rubocop/pull/4813): Add new `Style/StderrPuts` cop. ([@koic][])
 
 ### Bug fixes
 
