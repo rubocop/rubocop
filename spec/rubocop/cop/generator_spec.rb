@@ -64,8 +64,11 @@ RSpec.describe RuboCop::Cop::Generator do
     it 'refuses to overwrite existing files' do
       new_cop = described_class.new('Layout/Tab')
 
+      expect(new_cop).to receive(:exit!)
       expect { new_cop.write_source }
-        .to raise_error('lib/rubocop/cop/layout/tab.rb already exists!')
+        .to output(
+          "rake new_cop: lib/rubocop/cop/layout/tab.rb already exists!\n"
+        ).to_stderr
     end
   end
 
@@ -106,8 +109,11 @@ RSpec.describe RuboCop::Cop::Generator do
     it 'refuses to overwrite existing files' do
       new_cop = described_class.new('Layout/Tab')
 
+      expect(new_cop).to receive(:exit!)
       expect { new_cop.write_spec }
-        .to raise_error('spec/rubocop/cop/layout/tab_spec.rb already exists!')
+        .to output(
+          "rake new_cop: spec/rubocop/cop/layout/tab_spec.rb already exists!\n"
+        ).to_stderr
     end
   end
 
