@@ -29,7 +29,7 @@ module RuboCop
 
         def on_send(node)
           unknown_environment?(node) do |name|
-            add_offense(node, :selector, message(name))
+            add_offense(node, location: :selector, message: message(name))
           end
         end
 

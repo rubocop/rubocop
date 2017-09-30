@@ -29,7 +29,7 @@ module RuboCop
         MSG = 'Remove unnecessary `require` statement.'.freeze
 
         def_node_matcher :unnecessary_require_statement?, <<-PATTERN
-          (send nil :require
+          (send nil? :require
             (str {"enumerator" "rational" "complex" "thread"}))
         PATTERN
 

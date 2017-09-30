@@ -29,10 +29,10 @@ module RuboCop
         def_node_matcher :redundant_message_argument, <<-PATTERN
           (pair
             (sym :message)
-            ${(const nil :MSG) (send nil :message) (send nil :message _)})
+            ${(const nil? :MSG) (send nil? :message) (send nil? :message _)})
         PATTERN
 
-        def_node_matcher :message_method_call, '(send nil :message $_node)'
+        def_node_matcher :message_method_call, '(send nil? :message $_node)'
 
         def on_send(node)
           node_type_check(node) do |node_arg, kwargs|
