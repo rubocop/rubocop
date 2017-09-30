@@ -31,13 +31,13 @@ module RuboCop
 
       execute_runner(paths)
     rescue RuboCop::Error => e
-      $stderr.puts Rainbow("Error: #{e.message}").red
+      warn Rainbow("Error: #{e.message}").red
       return 2
     rescue Finished
       return 0
     rescue StandardError, SyntaxError => e
-      $stderr.puts e.message
-      $stderr.puts e.backtrace
+      warn e.message
+      warn e.backtrace
       return 2
     end
 
@@ -45,8 +45,8 @@ module RuboCop
       Signal.trap('INT') do
         exit!(1) if runner.aborting?
         runner.abort
-        $stderr.puts
-        $stderr.puts 'Exiting... Interrupt again to exit immediately.'
+        warn
+        warn 'Exiting... Interrupt again to exit immediately.'
       end
     end
 
