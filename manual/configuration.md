@@ -254,9 +254,10 @@ using `Enabled: false` in user configuration files are enabled.
 #### Severity
 
 Each cop has a default severity level based on which department it belongs
-to. The level is `warning` for `Lint` and `convention` for all the others.
-Cops can customize their severity level. Allowed params are `refactor`,
-`convention`, `warning`, `error` and `fatal`.
+to. The level is normally `warning` for `Lint` and `convention` for all the
+others, but this can be changed in user configuration. Cops can customize their
+severity level. Allowed values are `refactor`, `convention`, `warning`, `error`
+and `fatal`.
 
 There is one exception from the general rule above and that is `Lint/Syntax`, a
 special cop that checks for syntax errors before the other cops are invoked. It
@@ -264,6 +265,9 @@ can not be disabled and its severity (`fatal`) can not be changed in
 configuration.
 
 ```yaml
+Lint:
+  Severity: error
+
 Metrics/CyclomaticComplexity:
   Severity: warning
 ```
