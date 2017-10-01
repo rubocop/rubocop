@@ -44,6 +44,11 @@ describe RuboCop::Cop::Rails::Blank, :config do
       expect_no_offenses('bar || foo.empty?')
     end
 
+    # Bug: https://github.com/bbatsov/rubocop/issues/4814
+    it 'does not break when LHS of `or` is a send node with an arugment' do
+      expect_no_offenses('x(1) || something')
+    end
+
     context 'nil or empty' do
       it_behaves_like :offense, 'foo.nil? || foo.empty?',
                       'foo.blank?',
