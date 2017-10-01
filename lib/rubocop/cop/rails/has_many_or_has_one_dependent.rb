@@ -23,6 +23,10 @@ module RuboCop
       class HasManyOrHasOneDependent < Cop
         MSG = 'Specify a `:dependent` option.'.freeze
 
+        def_node_matcher :has_dependent_options_block?, <<-PATTERN
+          (send nil {:with_options} (hash $...))
+        PATTERN
+
         def_node_matcher :is_has_many_or_has_one_without_options?, <<-PATTERN
           (send nil {:has_many :has_one} _)
         PATTERN
@@ -47,6 +51,7 @@ module RuboCop
               has_dependent?(pair) || has_through?(pair)
             end
           end
+          return if /with_options.*dependent: :destroy/ =~ processed_source.buffer.source
 
           add_offense(node, :selector)
         end
