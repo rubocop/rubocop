@@ -39,8 +39,7 @@ module RuboCop
         RETURN_NIL_MSG = 'Use `return nil` instead of `return`.'.freeze
 
         def_node_matcher :return_node?, '(return)'
-        # TODO: fix (return nil) on the NodePattern class
-        # def_node_matcher :return_nil_node?, '(return nil)'
+        def_node_matcher :return_nil_node?, '(return nil)'
 
         def on_return(node)
           # Check Lint/NonLocalExitFromIterator first before this cop
@@ -80,15 +79,11 @@ module RuboCop
             style == :return_nil && !return_node?(node)
         end
 
-        def return_nil_node?(node)
-          !node.children.empty? && node.children.first.nil_type?
-        end
-
         def scoped_node?(node)
           node.def_type? || node.defs_type? || node.lambda?
         end
 
-        def_node_matcher :chained_send?, '(send !nil ...)'
+        def_node_matcher :chained_send?, '(send !nil? ...)'
         def_node_matcher :define_method?, <<-PATTERN
           (send _ {:define_method :define_singleton_method} _)
         PATTERN

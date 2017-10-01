@@ -20,7 +20,7 @@ module RuboCop
       end
 
       def_node_matcher :non_public_modifier?, <<-PATTERN
-        (send nil {:private :protected} ({def defs} ...))
+        (send nil? {:private :protected} ({def defs} ...))
       PATTERN
     end
   end

@@ -29,7 +29,7 @@ module RuboCop
         minimum_target_rails_version 5.0
 
         def_node_matcher :http_request?, <<-PATTERN
-          (send nil {#{HTTP_METHODS.map(&:inspect).join(' ')}} !nil $_data ...)
+          (send nil? {#{HTTP_METHODS.map(&:inspect).join(' ')}} !nil? $_data ...)
         PATTERN
 
         def on_send(node)

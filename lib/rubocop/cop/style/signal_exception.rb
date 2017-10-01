@@ -11,7 +11,7 @@ module RuboCop
         RAISE_MSG = 'Use `raise` instead of `fail` to ' \
                     'rethrow exceptions.'.freeze
 
-        def_node_matcher :kernel_call?, '(send (const nil :Kernel) %1 ...)'
+        def_node_matcher :kernel_call?, '(send (const nil? :Kernel) %1 ...)'
         def_node_search :custom_fail_methods,
                         '{(def :fail ...) (defs _ :fail ...)}'
 

@@ -26,7 +26,7 @@ module RuboCop
         private
 
         def_node_matcher :offense_location, <<-PATTERN
-          (send nil :add_offense _offender
+          (send nil? :add_offense _offender
             $(send (send _offender :loc) $_) ...)
         PATTERN
 

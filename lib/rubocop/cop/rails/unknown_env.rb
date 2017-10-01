@@ -22,7 +22,7 @@ module RuboCop
         def_node_matcher :unknown_environment?, <<-PATTERN
           (send
             (send
-              {(const nil :Rails) (const (cbase) :Rails)}
+              {(const nil? :Rails) (const (cbase) :Rails)}
               :env)
             $#unknown_env_name?)
         PATTERN

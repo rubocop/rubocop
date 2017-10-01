@@ -132,27 +132,27 @@ module RuboCop
         ].freeze
 
         def_node_matcher :irreversible_schema_statement_call, <<-PATTERN
-          (send nil ${:change_table_comment :execute :remove_belongs_to} ...)
+          (send nil? ${:change_table_comment :execute :remove_belongs_to} ...)
         PATTERN
 
         def_node_matcher :drop_table_call, <<-PATTERN
-          (send nil :drop_table ...)
+          (send nil? :drop_table ...)
         PATTERN
 
         def_node_matcher :change_column_default_call, <<-PATTERN
-          (send nil :change_column_default _ _ $...)
+          (send nil? :change_column_default _ _ $...)
         PATTERN
 
         def_node_matcher :remove_column_call, <<-PATTERN
-          (send nil :remove_column $...)
+          (send nil? :remove_column $...)
         PATTERN
 
         def_node_matcher :remove_foreign_key_call, <<-PATTERN
-          (send nil :remove_foreign_key _ $_)
+          (send nil? :remove_foreign_key _ $_)
         PATTERN
 
         def_node_matcher :change_table_call, <<-PATTERN
-          (send nil :change_table $_ ...)
+          (send nil? :change_table $_ ...)
         PATTERN
 
         def on_send(node)

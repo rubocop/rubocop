@@ -9,7 +9,7 @@ module RuboCop
               "Use Rails's logger if you want to log.".freeze
 
         def_node_matcher :output?, <<-PATTERN
-          (send nil {:ap :p :pp :pretty_print :print :puts} ...)
+          (send nil? {:ap :p :pp :pretty_print :print :puts} ...)
         PATTERN
 
         def on_send(node)

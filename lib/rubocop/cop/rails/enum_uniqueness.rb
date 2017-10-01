@@ -23,7 +23,7 @@ module RuboCop
         MSG = 'Duplicate value `%s` found in `%s` enum declaration.'.freeze
 
         def_node_matcher :enum_declaration, <<-PATTERN
-          (send nil :enum (hash (pair (_ $_) ${array hash})))
+          (send nil? :enum (hash (pair (_ $_) ${array hash})))
         PATTERN
 
         def on_send(node)

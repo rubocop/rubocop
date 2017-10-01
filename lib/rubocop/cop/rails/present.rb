@@ -44,7 +44,7 @@ module RuboCop
               {
                 (send (send $_ :nil?) :!)
                 (send (send $_ :!) :!)
-                (send $_ :!= (:nil))
+                (send $_ :!= nil)
                 $_
               }
               {
@@ -56,7 +56,7 @@ module RuboCop
         def_node_matcher :not_blank?, '(send (send $_ :blank?) :!)'
 
         def_node_matcher :unless_blank?, <<-PATTERN
-          (:if $(send $_ :blank?) {nil (...)} ...)
+          (:if $(send $_ :blank?) {nil? (...)} ...)
         PATTERN
 
         def on_send(node)

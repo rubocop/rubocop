@@ -21,7 +21,7 @@ module RuboCop
         MSG = 'Use `Integer` instead of `%s`.'.freeze
 
         def_node_matcher :fixnum_or_bignum_const, <<-PATTERN
-          (:const {nil (:cbase)} ${:Fixnum :Bignum})
+          (:const {nil? (:cbase)} ${:Fixnum :Bignum})
         PATTERN
 
         def on_const(node)

@@ -169,7 +169,7 @@ module RuboCop
 
         def_node_matcher :method_call_argument, <<-PATTERN
           {(:defined? $...)
-           (send {_ nil} _ $(send nil _)...)}
+           (send {_ nil?} _ $(send nil? _)...)}
         PATTERN
 
         def correct_parenthesized(condition)

@@ -23,7 +23,7 @@ module RuboCop
 
         MSG = 'Models should subclass `ApplicationRecord`.'.freeze
         SUPERCLASS = 'ApplicationRecord'.freeze
-        BASE_PATTERN = '(const (const nil :ActiveRecord) :Base)'.freeze
+        BASE_PATTERN = '(const (const nil? :ActiveRecord) :Base)'.freeze
 
         include RuboCop::Cop::EnforceSuperclass
       end

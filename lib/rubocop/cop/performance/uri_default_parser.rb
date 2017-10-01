@@ -20,7 +20,7 @@ module RuboCop
         def_node_matcher :uri_parser_new?, <<-PATTERN
           (send
             (const
-              (const ${nil cbase} :URI) :Parser) :new)
+              (const ${nil? cbase} :URI) :Parser) :new)
         PATTERN
 
         def on_send(node)

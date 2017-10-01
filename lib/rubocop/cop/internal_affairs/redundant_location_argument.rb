@@ -21,7 +21,7 @@ module RuboCop
         MSG = 'Redundant location argument to `#add_offense`.'.freeze
 
         def_node_matcher :node_type_check, <<-PATTERN
-          (send nil :add_offense _ (sym :expression))
+          (send nil? :add_offense _ (sym :expression))
         PATTERN
 
         def on_send(node)

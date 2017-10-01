@@ -24,7 +24,7 @@ module RuboCop
       #    !current_user.nil?
       #  end
       class NonNilCheck < Cop
-        def_node_matcher :not_equal_to_nil?, '(send _ :!= (:nil))'
+        def_node_matcher :not_equal_to_nil?, '(send _ :!= nil)'
         def_node_matcher :unless_check?, '(if (send _ :nil?) ...)'
         def_node_matcher :nil_check?, '(send _ :nil?)'
         def_node_matcher :not_and_nil_check?, '(send (send _ :nil?) :!)'

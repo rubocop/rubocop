@@ -36,8 +36,8 @@ module RuboCop
 
         def_node_matcher :string_new?, <<-PATTERN
           {
-            (send (const nil :String) :new {str dstr})
-            (send (const nil :String) :new)
+            (send (const nil? :String) :new {str dstr})
+            (send (const nil? :String) :new)
           }
         PATTERN
 

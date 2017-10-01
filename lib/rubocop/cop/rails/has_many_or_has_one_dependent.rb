@@ -24,19 +24,19 @@ module RuboCop
         MSG = 'Specify a `:dependent` option.'.freeze
 
         def_node_matcher :is_has_many_or_has_one_without_options?, <<-PATTERN
-          (send nil {:has_many :has_one} _)
+          (send nil? {:has_many :has_one} _)
         PATTERN
 
         def_node_matcher :is_has_many_or_has_one_with_options?, <<-PATTERN
-          (send nil {:has_many :has_one} _ (hash $...))
+          (send nil? {:has_many :has_one} _ (hash $...))
         PATTERN
 
         def_node_matcher :has_dependent?, <<-PATTERN
-          (pair (sym :dependent) !(:nil))
+          (pair (sym :dependent) !nil)
         PATTERN
 
         def_node_matcher :has_through?, <<-PATTERN
-          (pair (sym :through) !(:nil))
+          (pair (sym :through) !nil)
         PATTERN
 
         def on_send(node)

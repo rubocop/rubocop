@@ -45,7 +45,7 @@ module RuboCop
 
         private
 
-        def_node_search :gem_declarations, '(send nil :gem str ...)'
+        def_node_search :gem_declarations, '(send nil? :gem str ...)'
 
         def duplicated_gem_nodes
           gem_declarations(processed_source.ast)

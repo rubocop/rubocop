@@ -26,7 +26,7 @@ module RuboCop
         MSG = 'Use `request.%s` instead of `request.%s`.'.freeze
 
         def_node_matcher :referer?, <<-PATTERN
-          (send (send nil :request) {:referer :referrer})
+          (send (send nil? :request) {:referer :referrer})
         PATTERN
 
         def on_send(node)

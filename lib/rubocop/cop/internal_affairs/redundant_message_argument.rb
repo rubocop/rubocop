@@ -23,8 +23,8 @@ module RuboCop
         MSG = 'Redundant message argument to `#add_offense`.'.freeze
 
         def_node_matcher :node_type_check, <<-PATTERN
-          (send nil :add_offense _offender _
-            {(const nil :MSG) (send nil :message) (send nil :message _offender)})
+          (send nil? :add_offense _offender _
+            {(const nil? :MSG) (send nil? :message) (send nil? :message _offender)})
         PATTERN
 
         def on_send(node)

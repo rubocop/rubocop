@@ -9,7 +9,7 @@ module RuboCop
         MSG = 'Use `proc` instead of `Proc.new`.'.freeze
 
         def_node_matcher :proc_new?,
-                         '(block $(send (const nil :Proc) :new) ...)'
+                         '(block $(send (const nil? :Proc) :new) ...)'
 
         def on_block(node)
           proc_new?(node) do |block_method|

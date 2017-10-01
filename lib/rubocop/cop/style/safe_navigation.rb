@@ -59,12 +59,12 @@ module RuboCop
             (if {
                   (send $_ {:nil? :!})
                   $_
-                } nil $_)
+                } nil? $_)
 
             (if {
                   (send (send $_ :nil?) :!)
                   $_
-                } $_ nil)
+                } $_ nil?)
           }
         PATTERN
 

@@ -23,8 +23,8 @@ module RuboCop
               "file's directory.".freeze
 
         def_node_matcher :dir_replacement?, <<-PATTERN
-          {(send (const nil :File) :expand_path (send (const nil :File) :dirname  #file_keyword?))
-           (send (const nil :File) :dirname     (send (const nil :File) :realpath #file_keyword?))}
+          {(send (const nil? :File) :expand_path (send (const nil? :File) :dirname  #file_keyword?))
+           (send (const nil? :File) :dirname     (send (const nil? :File) :realpath #file_keyword?))}
         PATTERN
 
         minimum_target_ruby_version 2.0

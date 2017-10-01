@@ -23,8 +23,8 @@ module RuboCop
         end
 
         def_node_matcher :struct_constructor?, <<-PATTERN
-           {(send (const nil :Struct) :new ...)
-            (block (send (const nil :Struct) :new ...) ...)}
+           {(send (const nil? :Struct) :new ...)
+            (block (send (const nil? :Struct) :new ...) ...)}
         PATTERN
       end
     end

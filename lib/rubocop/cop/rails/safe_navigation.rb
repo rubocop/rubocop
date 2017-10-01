@@ -45,7 +45,7 @@ module RuboCop
         MSG = 'Use safe navigation (`&.`) instead of `%s`.'.freeze
 
         def_node_matcher :try_call, <<-PATTERN
-          (send !nil ${:try :try!} $_ ...)
+          (send !nil? ${:try :try!} $_ ...)
         PATTERN
 
         minimum_target_ruby_version 2.3
