@@ -1505,24 +1505,34 @@ describe RuboCop::CLI, :isolated_environment do
                 ''].join("\n"))
     end
 
-    it 'works when a configuration file specifies a Severity' do
-      create_file('example/example1.rb', '#' * 90)
+    shared_examples 'specified Severity' do |key|
+      it 'works when a configuration file specifies Severity for ' \
+         "Metrics/ParameterLists and #{key}" do
+        create_file('example/example1.rb', <<-RUBY.strip_indent)
+          def method(a, b, c, d, e, f) end #{'#' * 57}
+        RUBY
 
-      create_file('rubocop.yml', <<-YAML.strip_indent)
-        Metrics/LineLength:
-          Severity: error
-      YAML
+        create_file('rubocop.yml', <<-YAML.strip_indent)
+          #{key}:
+            Severity: error
+          Metrics/ParameterLists:
+            Severity: convention
+        YAML
 
-      cli.run(%w[--format simple -c rubocop.yml])
-      expect($stdout.string)
-        .to eq(<<-RESULT.strip_indent)
-          == example/example1.rb ==
-          E:  1: 81: Line is too long. [90/80]
+        cli.run(%w[--format simple -c rubocop.yml])
+        expect($stdout.string).to eq(<<-RESULT.strip_indent)
+            == example/example1.rb ==
+            C:  1: 11: Avoid parameter lists longer than 5 parameters. [6/5]
+            E:  1: 81: Line is too long. [90/80]
 
-          1 file inspected, 1 offense detected
-      RESULT
-      expect($stderr.string).to eq('')
+            1 file inspected, 2 offenses detected
+        RESULT
+        expect($stderr.string).to eq('')
+      end
     end
+
+    include_examples 'specified Severity', 'Metrics/LineLength'
+    include_examples 'specified Severity', 'Metrics'
 
     it 'fails when a configuration file specifies an invalid Severity' do
       create_file('example/example1.rb', '#' * 90)

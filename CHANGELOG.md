@@ -23,6 +23,7 @@
 
 * [#4746](https://github.com/bbatsov/rubocop/pull/4746): The `Lint/InvalidCharacterLiteral` cop has been removed since it was never being actually triggered. ([@deivid-rodriguez][])
 * [#4789](https://github.com/bbatsov/rubocop/pull/4789): Analyzing code that needs to support MRI 1.9 is no longer supported. ([@deivid-rodriguez][])
+* [#4582](https://github.com/bbatsov/rubocop/issues/4582): `Severity` and other common parameters can be configured on department level. ([@jonas054][])
 
 ## 0.50.0 (2017-09-14)
 

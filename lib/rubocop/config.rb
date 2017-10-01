@@ -491,7 +491,7 @@ module RuboCop
 
       unless department
         department_options = self[cop_department]
-        if department_options && department_options.fetch('Enabled') == false
+        if department_options && department_options['Enabled'] == false
           return false
         end
       end

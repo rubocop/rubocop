@@ -105,7 +105,10 @@ module RuboCop
       end
 
       def cop_config
-        @cop_config ||= @config.for_cop(self)
+        # Use department configuration as basis, but let individual cop
+        # configuration override.
+        @cop_config ||= @config.for_cop(self.class.department.to_s)
+                               .merge(@config.for_cop(self))
       end
 
       def message(_node = nil)
