@@ -20,6 +20,7 @@
 * [#4737](https://github.com/bbatsov/rubocop/issues/4737): Fix ReturnInVoidContext cop when `return` is in top scope. ([@frodsan][])
 * [#4776](https://github.com/bbatsov/rubocop/issues/4776): Non utf-8 magic encoding comments are now respected. ([@deivid-rodriguez][])
 * [#4241](https://github.com/bbatsov/rubocop/issues/4241): Prevent `Rails/Blank` and `Rails/Present` from breaking when there is no explicit receiver. ([@rrosenblum][])
+* [#4814](https://github.com/bbatsov/rubocop/issues/4814): Prevent `Rails/Blank` from breaking on send with an argument. ([@pocke][])
 
 ### Changes
 
