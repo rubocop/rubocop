@@ -105,7 +105,7 @@ module RuboCop
         end
 
         def_node_search :gem_declarations, <<-PATTERN
-          (:send nil :gem ...)
+          (:send nil? :gem ...)
         PATTERN
       end
     end

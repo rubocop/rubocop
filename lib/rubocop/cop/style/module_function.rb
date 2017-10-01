@@ -32,8 +32,8 @@ module RuboCop
         EXTEND_SELF_MSG =
           'Use `extend self` instead of `module_function`.'.freeze
 
-        def_node_matcher :module_function_node?, '(send nil :module_function)'
-        def_node_matcher :extend_self_node?, '(send nil :extend self)'
+        def_node_matcher :module_function_node?, '(send nil? :module_function)'
+        def_node_matcher :extend_self_node?, '(send nil? :extend self)'
 
         def on_module(node)
           _name, body = *node

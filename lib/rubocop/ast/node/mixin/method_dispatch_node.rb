@@ -163,11 +163,11 @@ module RuboCop
       end
 
       def_node_matcher :adjacent_def_modifier?, <<-PATTERN
-        (send nil _ ({def defs} ...))
+        (send nil? _ ({def defs} ...))
       PATTERN
 
       def_node_matcher :bare_access_modifier?, <<-PATTERN
-        (send nil {:public :protected :private :module_function})
+        (send nil? {:public :protected :private :module_function})
       PATTERN
     end
   end

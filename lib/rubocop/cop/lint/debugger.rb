@@ -37,26 +37,26 @@ module RuboCop
 
         def_node_matcher :kernel?, <<-PATTERN
           {
-            (const nil :Kernel)
+            (const nil? :Kernel)
             (const (cbase) :Kernel)
           }
         PATTERN
 
         def_node_matcher :debugger_call?, <<-PATTERN
-          {(send {nil #kernel?} {:debugger :byebug} ...)
-           (send (send {#kernel? nil} :binding)
+          {(send {nil? #kernel?} {:debugger :byebug} ...)
+           (send (send {#kernel? nil?} :binding)
              {:pry :remote_pry :pry_remote} ...)
-           (send (const {nil (cbase)} :Pry) :rescue ...)
-           (send nil {:save_and_open_page
+           (send (const {nil? (cbase)} :Pry) :rescue ...)
+           (send nil? {:save_and_open_page
                       :save_and_open_screenshot
                       :save_screenshot} ...)}
         PATTERN
 
         def_node_matcher :binding_irb_call?, <<-PATTERN
-          (send (send {#kernel? nil} :binding) :irb ...)
+          (send (send {#kernel? nil?} :binding) :irb ...)
         PATTERN
 
-        def_node_matcher :pry_rescue?, '(send (const nil :Pry) :rescue ...)'
+        def_node_matcher :pry_rescue?, '(send (const nil? :Pry) :rescue ...)'
 
         def on_send(node)
           return unless debugger_call?(node) || binding_irb?(node)

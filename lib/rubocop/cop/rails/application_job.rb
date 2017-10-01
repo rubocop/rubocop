@@ -23,7 +23,7 @@ module RuboCop
 
         MSG = 'Jobs should subclass `ApplicationJob`.'.freeze
         SUPERCLASS = 'ApplicationJob'.freeze
-        BASE_PATTERN = '(const (const nil :ActiveJob) :Base)'.freeze
+        BASE_PATTERN = '(const (const nil? :ActiveJob) :Base)'.freeze
 
         include RuboCop::Cop::EnforceSuperclass
       end

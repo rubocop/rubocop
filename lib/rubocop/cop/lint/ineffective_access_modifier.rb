@@ -54,7 +54,7 @@ module RuboCop
                                 'block'.freeze
 
         def_node_matcher :private_class_method, <<-PATTERN
-          (send nil :private_class_method $...)
+          (send nil? :private_class_method $...)
         PATTERN
 
         def on_class(node)

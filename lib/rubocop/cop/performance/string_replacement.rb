@@ -28,7 +28,7 @@ module RuboCop
 
         def_node_matcher :string_replacement?, <<-PATTERN
           (send _ {:gsub :gsub!}
-                    ${regexp str (send (const nil :Regexp) {:new :compile} _)}
+                    ${regexp str (send (const nil? :Regexp) {:new :compile} _)}
                     $str)
         PATTERN
 

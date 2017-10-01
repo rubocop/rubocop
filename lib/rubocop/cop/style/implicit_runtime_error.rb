@@ -19,7 +19,7 @@ module RuboCop
               'rather than just a message.'.freeze
 
         def_node_matcher :implicit_runtime_error_raise_or_fail,
-                         '(send nil ${:raise :fail} {str dstr})'
+                         '(send nil? ${:raise :fail} {str dstr})'
 
         def on_send(node)
           implicit_runtime_error_raise_or_fail(node) do |method|

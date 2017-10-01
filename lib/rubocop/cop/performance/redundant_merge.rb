@@ -15,7 +15,7 @@ module RuboCop
         MSG = 'Use `%s` instead of `%s`.'.freeze
 
         def_node_matcher :redundant_merge_candidate, <<-PATTERN
-          (send $!nil :merge! [(hash $...) !kwsplat_type?])
+          (send $!nil? :merge! [(hash $...) !kwsplat_type?])
         PATTERN
 
         def_node_matcher :modifier_flow_control?, <<-PATTERN

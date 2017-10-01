@@ -17,7 +17,7 @@ module RuboCop
         MSG = '`allow_blank` is not a valid option, use `allow_nil`.'.freeze
 
         def_node_matcher :delegate_options, <<-PATTERN
-          (send nil :delegate _ $hash)
+          (send nil? :delegate _ $hash)
         PATTERN
 
         def_node_matcher :allow_blank_option?, <<-PATTERN

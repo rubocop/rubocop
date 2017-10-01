@@ -56,7 +56,7 @@ module RuboCop
         PERCENT_CAPITAL_W = '%W'.freeze
         PERCENT_I = '%i'.freeze
         PERCENT_CAPITAL_I = '%I'.freeze
-        ARRAY_NEW_PATTERN = '$(send (const nil :Array) :new ...)'.freeze
+        ARRAY_NEW_PATTERN = '$(send (const nil? :Array) :new ...)'.freeze
         ASSIGNMENT_TYPES = %i[lvasgn ivasgn cvasgn gvasgn].freeze
 
         def_node_matcher :literal_expansion?, <<-PATTERN

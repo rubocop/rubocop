@@ -15,7 +15,7 @@ module RuboCop
         MSG = 'Pass `&:%s` as an argument to `%s` instead of a block.'.freeze
         SUPER_TYPES = %i[super zsuper].freeze
 
-        def_node_matcher :proc_node?, '(send (const nil :Proc) :new)'
+        def_node_matcher :proc_node?, '(send (const nil? :Proc) :new)'
         def_node_matcher :symbol_proc?, <<-PATTERN
           (block
             ${(send ...) (super ...) zsuper}

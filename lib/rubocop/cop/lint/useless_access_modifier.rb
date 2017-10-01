@@ -114,11 +114,11 @@ module RuboCop
         private
 
         def_node_matcher :static_method_definition?, <<-PATTERN
-          {def (send nil {:attr :attr_reader :attr_writer :attr_accessor} ...)}
+          {def (send nil? {:attr :attr_reader :attr_writer :attr_accessor} ...)}
         PATTERN
 
         def_node_matcher :dynamic_method_definition?, <<-PATTERN
-          {(send nil :define_method ...) (block (send nil :define_method ...) ...)}
+          {(send nil? :define_method ...) (block (send nil? :define_method ...) ...)}
         PATTERN
 
         def_node_matcher :class_or_instance_eval?, <<-PATTERN
@@ -126,7 +126,7 @@ module RuboCop
         PATTERN
 
         def_node_matcher :class_or_module_or_struct_new_call?, <<-PATTERN
-          (block (send (const nil {:Class :Module :Struct}) :new ...) ...)
+          (block (send (const nil? {:Class :Module :Struct}) :new ...) ...)
         PATTERN
 
         def check_node(node)
@@ -188,7 +188,7 @@ module RuboCop
             matcher_name = "#{m}_method?".to_sym
             unless respond_to?(matcher_name)
               self.class.def_node_matcher matcher_name, <<-PATTERN
-                {def (send nil :#{m} ...)}
+                {def (send nil? :#{m} ...)}
               PATTERN
             end
 
@@ -212,7 +212,7 @@ module RuboCop
             matcher_name = "#{m}_block?".to_sym
             unless respond_to?(matcher_name)
               self.class.def_node_matcher matcher_name, <<-PATTERN
-                (block (send {nil const} {:#{m}} ...) ...)
+                (block (send {nil? const} {:#{m}} ...) ...)
               PATTERN
             end
 

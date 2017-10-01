@@ -70,7 +70,7 @@ module RuboCop
           }
         }.freeze
 
-        def_node_matcher :lambda_node?, '(block $(send nil :lambda) ...)'
+        def_node_matcher :lambda_node?, '(block $(send nil? :lambda) ...)'
 
         def on_block(node)
           return unless node.lambda?

@@ -31,7 +31,7 @@ module RuboCop
               "if possible, or 'http://rubygems.org' if not.".freeze
 
         def_node_matcher :insecure_protocol_source?, <<-PATTERN
-          (send nil :source
+          (send nil? :source
             (sym ${:gemcutter :rubygems :rubyforge}))
         PATTERN
 

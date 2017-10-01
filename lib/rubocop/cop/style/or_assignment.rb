@@ -39,7 +39,7 @@ module RuboCop
 
         def_node_matcher :unless_assignment?, <<-PATTERN
           (if
-            ({lvar ivar cvar gvar} _var) nil
+            ({lvar ivar cvar gvar} _var) nil?
             ({lvasgn ivasgn cvasgn gvasgn} _var
               _))
         PATTERN

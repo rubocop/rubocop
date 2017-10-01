@@ -285,8 +285,8 @@ module RuboCop
       def_node_matcher :defined_module0, <<-PATTERN
         {(class (const $_ $_) ...)
          (module (const $_ $_) ...)
-         (casgn $_ $_        (send (const nil {:Class :Module}) :new ...))
-         (casgn $_ $_ (block (send (const nil {:Class :Module}) :new ...) ...))}
+         (casgn $_ $_        (send (const nil? {:Class :Module}) :new ...))
+         (casgn $_ $_ (block (send (const nil? {:Class :Module}) :new ...) ...))}
       PATTERN
       private :defined_module0
 
@@ -439,21 +439,21 @@ module RuboCop
       end
 
       def_node_matcher :guard_clause?, <<-PATTERN
-        [{(send nil {:raise :fail} ...) return break next} single_line?]
+        [{(send nil? {:raise :fail} ...) return break next} single_line?]
       PATTERN
 
       def_node_matcher :proc?, <<-PATTERN
-        {(block (send nil :proc) ...)
-         (block (send (const nil :Proc) :new) ...)
-         (send (const nil :Proc) :new)}
+        {(block (send nil? :proc) ...)
+         (block (send (const nil? :Proc) :new) ...)
+         (send (const nil? :Proc) :new)}
       PATTERN
 
-      def_node_matcher :lambda?, '(block (send nil :lambda) ...)'
+      def_node_matcher :lambda?, '(block (send nil? :lambda) ...)'
       def_node_matcher :lambda_or_proc?, '{lambda? proc?}'
 
       def_node_matcher :class_constructor?, <<-PATTERN
-        {       (send (const nil {:Class :Module}) :new ...)
-         (block (send (const nil {:Class :Module}) :new ...) ...)}
+        {       (send (const nil? {:Class :Module}) :new ...)
+         (block (send (const nil? {:Class :Module}) :new ...) ...)}
       PATTERN
 
       def_node_matcher :module_definition?, <<-PATTERN

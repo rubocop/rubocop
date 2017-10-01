@@ -10,7 +10,7 @@ module RuboCop
         PATTERN
 
         base.def_node_matcher :class_new_definition, <<-PATTERN
-        [!^(casgn nil :#{base::SUPERCLASS} ...) (send (const nil :Class) :new #{base::BASE_PATTERN})]
+        [!^(casgn nil? :#{base::SUPERCLASS} ...) (send (const nil? :Class) :new #{base::BASE_PATTERN})]
         PATTERN
       end
 

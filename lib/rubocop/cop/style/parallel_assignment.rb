@@ -115,7 +115,7 @@ module RuboCop
           end
         end
 
-        def_node_matcher :implicit_self_getter?, '(send nil $_)'
+        def_node_matcher :implicit_self_getter?, '(send nil? $_)'
 
         # Helper class necessitated by silly design of TSort prior to Ruby 2.1
         # Newer versions have a better API, but that doesn't help us

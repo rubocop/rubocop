@@ -26,8 +26,8 @@ module RuboCop
 
         def_node_matcher :slow_caller?, <<-PATTERN
           {
-            (send nil {:caller :caller_locations})
-            (send nil {:caller :caller_locations} int)
+            (send nil? {:caller :caller_locations})
+            (send nil? {:caller :caller_locations} int)
           }
         PATTERN
 

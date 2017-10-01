@@ -17,9 +17,9 @@ module RuboCop
 
         def_node_matcher :formatter, <<-PATTERN
         {
-          (send nil ${:sprintf :format} _ _ ...)
+          (send nil? ${:sprintf :format} _ _ ...)
           (send {str dstr} $:% ... )
-          (send !nil $:% {array hash})
+          (send !nil? $:% {array hash})
         }
         PATTERN
 

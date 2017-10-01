@@ -20,8 +20,8 @@ module RuboCop
 
         def_node_matcher :read_write_attribute?, <<-PATTERN
           {
-            (send nil :read_attribute _)
-            (send nil :write_attribute _ _)
+            (send nil? :read_attribute _)
+            (send nil? :write_attribute _ _)
           }
         PATTERN
 

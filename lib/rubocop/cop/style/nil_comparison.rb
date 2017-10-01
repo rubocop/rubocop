@@ -15,7 +15,7 @@ module RuboCop
       class NilComparison < Cop
         MSG = 'Prefer the use of the `nil?` predicate.'.freeze
 
-        def_node_matcher :nil_comparison?, '(send _ {:== :===} (:nil))'
+        def_node_matcher :nil_comparison?, '(send _ {:== :===} nil)'
 
         def on_send(node)
           nil_comparison?(node) do

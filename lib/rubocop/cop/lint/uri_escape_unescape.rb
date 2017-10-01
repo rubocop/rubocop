@@ -45,7 +45,7 @@ module RuboCop
 
         def_node_matcher :uri_escape_unescape?, <<-PATTERN
           (send
-            (const ${nil cbase} :URI) ${:escape :encode :unescape :decode}
+            (const ${nil? cbase} :URI) ${:escape :encode :unescape :decode}
             ...)
         PATTERN
 
