@@ -51,6 +51,7 @@ module RuboCop
               has_dependent?(pair) || has_through?(pair)
             end
           end
+          return if /with_options.*dependent: :destroy/ =~ processed_source.buffer.source
 
           add_offense(node, :selector)
         end
