@@ -129,6 +129,26 @@ describe RuboCop::NodePattern do
     end
   end
 
+  describe 'nil' do
+    context 'nil literals' do
+      let(:pattern) { '(nil)' }
+      let(:ruby) { 'nil' }
+      it_behaves_like :matching
+    end
+
+    context 'nil value in AST' do
+      let(:pattern) { '(send nil :foo)' }
+      let(:ruby) { 'foo' }
+      it_behaves_like :nonmatching
+    end
+
+    context 'nil value in AST, use nil? method' do
+      let(:pattern) { '(send nil? :foo)' }
+      let(:ruby) { 'foo' }
+      it_behaves_like :matching
+    end
+  end
+
   describe 'simple sequence' do
     let(:pattern) { '(send int :+ int)' }
 
@@ -374,7 +394,7 @@ describe RuboCop::NodePattern do
     end
 
     context 'in a nested sequence' do
-      let(:pattern) { '(send (const nil $_) ...)' }
+      let(:pattern) { '(send (const nil? $_) ...)' }
       let(:ruby) { 'A.method' }
       let(:captured_val) { :A }
       it_behaves_like :single_capture
