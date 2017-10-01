@@ -1767,6 +1767,11 @@ Rails/ReversibleMigration:
   Reference: 'http://api.rubyonrails.org/classes/ActiveRecord/Migration/CommandRecorder.html'
   Enabled: true
 
+Rails/IndexTrue:
+  Description: 'Checks for misuses of index: true in migrations.'
+  Reference: 'https://makandracards.com/makandra/32353-psa-index-true-in-rails-migrations-does-not-work-as-you-d-expect'
+  Enabled: true
+
 Rails/SafeNavigation:
   Description: "Use Ruby's safe navigation operator (`&.`) instead of `try!`"
   Enabled: true

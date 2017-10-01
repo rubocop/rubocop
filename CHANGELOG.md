@@ -6,6 +6,7 @@
 
 * [#4791](https://github.com/bbatsov/rubocop/pull/4791): Add new `Rails/UnknownEnv` cop. ([@pocke][])
 * [#4813](https://github.com/bbatsov/rubocop/pull/4813): Add new `Style/StderrPuts` cop. ([@koic][])
+* [#4396](https://github.com/bbatsov/rubocop/pull/4396): Add new `Rails/IndexTrue` cop. ([@alexcstark][])
 
 ### Bug fixes
 
@@ -2945,3 +2946,4 @@
 [@frodsan]: https://github.com/frodsan
 [@erikdstock]: https://github.com/erikdstock
 [@GauthamGoli]: https://github.com/GauthamGoli
+[@alexcstark]: https://github.com/alexcstark

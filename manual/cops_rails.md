@@ -540,6 +540,34 @@ Attribute | Value
 --- | ---
 Include | spec/\*\*/\*, test/\*\*/\*
 
+## Rails/IndexTrue
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+check that index: true is not being used in migrations
+
+### Example
+
+```ruby
+# bad
+add_column :booking_templates, :booking_id, :integer
+
+# good
+add_index :booking_templates, :booking_id
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+Include | db/migrate/\*.rb
+
+### References
+
+* [https://makandracards.com/makandra/32353-psa-index-true-in-rails-migrations-does-not-work-as-you-d-expect](https://makandracards.com/makandra/32353-psa-index-true-in-rails-migrations-does-not-work-as-you-d-expect)
+
 ## Rails/NotNullColumn
 
 Enabled by default | Supports autocorrection
