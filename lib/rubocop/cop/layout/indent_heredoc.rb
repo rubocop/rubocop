@@ -160,7 +160,7 @@ module RuboCop
         end
 
         def heredoc_body(node)
-          scrub_string(node.loc.heredoc_body.source)
+          node.loc.heredoc_body.source.scrub
         end
       end
     end

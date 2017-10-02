@@ -44,7 +44,7 @@ module RuboCop
 
         def contains_quotes_or_commas?(node)
           node.values.any? do |value|
-            literal = scrub_string(value.children.first.to_s)
+            literal = value.children.first.to_s.scrub
 
             # To avoid likely false positives (e.g. a single ' or ")
             next if literal.gsub(/[^\p{Alnum}]/, '').empty?

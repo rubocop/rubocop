@@ -38,12 +38,7 @@ module RuboCop
     def message(offense)
       # JSON.dump will fail if the offense message contains text which is not
       # valid UTF-8
-      message = offense.message
-      if message.respond_to?(:scrub)
-        message.scrub
-      else
-        message.chars.select(&:valid_encoding?).join
-      end
+      offense.message.scrub
     end
 
     # Restore an offense object loaded from a JSON file.
