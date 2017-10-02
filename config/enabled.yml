@@ -1394,6 +1394,10 @@ Lint/UnneededDisable:
                  It must be explicitly disabled.
   Enabled: true
 
+Lint/UnneededRequireStatement:
+  Description: 'Checks for unnecessary `require` statement.'
+  Enabled: true
+
 Lint/UnneededSplatExpansion:
   Description: 'Checks for splat unnecessarily being called on literals'
   Enabled: true

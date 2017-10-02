@@ -223,6 +223,7 @@ In the following section you find all available cops:
 * [Lint/UnderscorePrefixedVariableName](cops_lint.md#lintunderscoreprefixedvariablename)
 * [Lint/UnifiedInteger](cops_lint.md#lintunifiedinteger)
 * [Lint/UnneededDisable](cops_lint.md#lintunneededdisable)
+* [Lint/UnneededRequireStatement](cops_lint.md#lintunneededrequirestatement)
 * [Lint/UnneededSplatExpansion](cops_lint.md#lintunneededsplatexpansion)
 * [Lint/UnreachableCode](cops_lint.md#lintunreachablecode)
 * [Lint/UnusedBlockArgument](cops_lint.md#lintunusedblockargument)
