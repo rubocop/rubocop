@@ -146,6 +146,24 @@ describe RuboCop::ConfigLoader do
         excludes = configuration_from_file['AllCops']['Exclude']
         expect(excludes).to eq([File.expand_path('vendor/**'), /[A-Z]/])
       end
+
+      it 'ignores parent AllCops/Exclude if ignore_parent_exclusion is true' do
+        sub_file_path = 'vendor/.rubocop.yml'
+        create_file(sub_file_path, <<-YAML.strip_indent)
+        AllCops:
+          Exclude:
+            - 'foo'
+        YAML
+        # dup the class so that setting ignore_parent_exclusion doesn't
+        # interfere with other specs
+        config_loader = described_class.dup
+        config_loader.ignore_parent_exclusion = true
+
+        configuration = config_loader.configuration_from_file(sub_file_path)
+        excludes = configuration['AllCops']['Exclude']
+        expect(excludes).to_not include(File.expand_path('vendor/**'))
+        expect(excludes).to include(File.expand_path('vendor/foo'))
+      end
     end
 
     context 'when a file inherits from an empty parent file' do
