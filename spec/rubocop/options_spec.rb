@@ -48,6 +48,8 @@ describe RuboCop::Options, :isolated_environment do
                   --force-exclusion            Force excluding files specified in the
                                                configuration `Exclude` even if they are
                                                explicitly passed as arguments.
+                  --ignore-parent-exclusion    Prevent from inheriting AllCops/Exclude from
+                                               parent folders.
                   --force-default-config       Use default configuration even if configuration
                                                files are present in the directory tree.
                   --no-offense-counts          Do not include offense counts in configuration

@@ -18,12 +18,13 @@ module RuboCop
     class << self
       include ConfigLoaderResolver
 
-      attr_accessor :debug, :auto_gen_config
+      attr_accessor :debug, :auto_gen_config, :ignore_parent_exclusion
       attr_writer :root_level # The upwards search is stopped at this level.
       attr_writer :default_configuration
 
       alias debug? debug
       alias auto_gen_config? auto_gen_config
+      alias ignore_parent_exclusion? ignore_parent_exclusion
 
       def clear_options
         @debug = @auto_gen_config = @root_level = nil
@@ -115,12 +116,19 @@ module RuboCop
         config = load_file(config_file)
         return config if config_file == DEFAULT_FILE
 
-        found_files = config_files_in_path(config_file)
-        if found_files.any? && found_files.last != config_file
-          print 'AllCops/Exclude ' if debug?
-          config.add_excludes_from_higher_level(load_file(found_files.last))
+        if ignore_parent_exclusion?
+          print 'Ignoring AllCops/Exclude from parent folders' if debug?
+        else
+          add_excludes_from_files(config, config_file)
         end
         merge_with_default(config, config_file)
+      end
+
+      def add_excludes_from_files(config, config_file)
+        found_files = config_files_in_path(config_file)
+        return unless found_files.any? && found_files.last != config_file
+        print 'AllCops/Exclude ' if debug?
+        config.add_excludes_from_higher_level(load_file(found_files.last))
       end
 
       def default_configuration

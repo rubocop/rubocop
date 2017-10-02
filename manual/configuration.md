@@ -180,7 +180,9 @@ valid for the directory tree starting where they are defined. They are not
 shadowed by the setting of `Include` and `Exclude` in other `.rubocop.yml`
 files in subdirectories. This is different from all other parameters, who
 follow RuboCop's general principle that configuration for an inspected file
-is taken from the nearest `.rubocop.yml`, searching upwards.
+is taken from the nearest `.rubocop.yml`, searching upwards.  _This behavior
+will be overriden if you specify the `--ignore-parent-exclusion` command line
+argument_.
 
 Cops can be run only on specific sets of files when that's needed (for
 instance you might want to run some Rails model checks only on files whose
@@ -254,9 +256,10 @@ using `Enabled: false` in user configuration files are enabled.
 #### Severity
 
 Each cop has a default severity level based on which department it belongs
-to. The level is `warning` for `Lint` and `convention` for all the others.
-Cops can customize their severity level. Allowed params are `refactor`,
-`convention`, `warning`, `error` and `fatal`.
+to. The level is normally `warning` for `Lint` and `convention` for all the
+others, but this can be changed in user configuration. Cops can customize their
+severity level. Allowed values are `refactor`, `convention`, `warning`, `error`
+and `fatal`.
 
 There is one exception from the general rule above and that is `Lint/Syntax`, a
 special cop that checks for syntax errors before the other cops are invoked. It
@@ -264,6 +267,9 @@ can not be disabled and its severity (`fatal`) can not be changed in
 configuration.
 
 ```yaml
+Lint:
+  Severity: error
+
 Metrics/CyclomaticComplexity:
   Severity: warning
 ```

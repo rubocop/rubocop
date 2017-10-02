@@ -3508,6 +3508,29 @@ SupportedStyles | require_parentheses, require_no_parentheses
 
 * [https://github.com/bbatsov/ruby-style-guide#stabby-lambda-with-args](https://github.com/bbatsov/ruby-style-guide#stabby-lambda-with-args)
 
+## Style/StderrPuts
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop identifies places where `$stderr.puts`
+can be replaced by `warn`.
+
+### Example
+
+```ruby
+# bad
+$stderr.puts('hello')
+
+# good
+warn('hello')
+```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#warn](https://github.com/bbatsov/ruby-style-guide#warn)
+
 ## Style/StringLiterals
 
 Enabled by default | Supports autocorrection

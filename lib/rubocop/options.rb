@@ -100,6 +100,7 @@ module RuboCop
       end
 
       option(opts, '--force-exclusion')
+      option(opts, '--ignore-parent-exclusion')
 
       option(opts, '--force-default-config')
 
@@ -303,6 +304,9 @@ module RuboCop
       force_exclusion:      ['Force excluding files specified in the',
                              'configuration `Exclude` even if they are',
                              'explicitly passed as arguments.'],
+      ignore_parent_exclusion:
+                            ['Prevent from inheriting AllCops/Exclude from',
+                             'parent folders.'],
       force_default_config: ['Use default configuration even if configuration',
                              'files are present in the directory tree.'],
       format:               ['Choose an output formatter. This option',
