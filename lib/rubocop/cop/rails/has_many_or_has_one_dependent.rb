@@ -48,7 +48,7 @@ module RuboCop
             end
           end
 
-          add_offense(node, :selector)
+          add_offense(node, location: :selector)
         end
       end
     end

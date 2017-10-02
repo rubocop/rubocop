@@ -18,7 +18,7 @@ module RuboCop
         length = code_length(node)
         return unless length > max_length
 
-        add_offense(node, :expression, message(length, max_length)) do
+        add_offense(node, message: message(length, max_length)) do
           self.max = length
         end
       end

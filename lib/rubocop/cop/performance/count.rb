@@ -59,7 +59,9 @@ module RuboCop
               selector_node.loc.selector.begin_pos
             end
 
-            add_offense(node, range, format(MSG, selector, counter))
+            add_offense(node,
+                        location: range,
+                        message: format(MSG, selector, counter))
           end
         end
 

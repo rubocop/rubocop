@@ -68,10 +68,9 @@ module RuboCop
 
           not_present?(node) do |receiver|
             add_offense(node,
-                        :expression,
-                        format(MSG_NOT_PRESENT,
-                               replacement(receiver),
-                               node.source))
+                        message: format(MSG_NOT_PRESENT,
+                                        replacement(receiver),
+                                        node.source))
           end
         end
 
@@ -82,10 +81,9 @@ module RuboCop
             return unless variable1 == variable2
 
             add_offense(node,
-                        :expression,
-                        format(MSG_NIL_OR_EMPTY,
-                               replacement(variable1),
-                               node.source))
+                        message: format(MSG_NIL_OR_EMPTY,
+                                        replacement(variable1),
+                                        node.source))
           end
         end
 
@@ -97,10 +95,10 @@ module RuboCop
             range = unless_condition(node, method_call)
 
             add_offense(node,
-                        range,
-                        format(MSG_UNLESS_PRESENT,
-                               replacement(receiver),
-                               range.source))
+                        location: range,
+                        message: format(MSG_UNLESS_PRESENT,
+                                        replacement(receiver),
+                                        range.source))
           end
         end
 

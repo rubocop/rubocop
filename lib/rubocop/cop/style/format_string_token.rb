@@ -50,7 +50,8 @@ module RuboCop
               correct_style_detected
             else
               style_detected(detected_style)
-              add_offense(node, token_range, message(detected_style))
+              add_offense(node, location: token_range,
+                                message: message(detected_style))
             end
           end
         end

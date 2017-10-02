@@ -21,7 +21,7 @@ module RuboCop
           # SomeClass = SomeOtherClass
           return if value && %i[send block const].include?(value.type)
 
-          add_offense(node, :name) if const_name !~ SNAKE_CASE
+          add_offense(node, location: :name) if const_name !~ SNAKE_CASE
         end
       end
     end

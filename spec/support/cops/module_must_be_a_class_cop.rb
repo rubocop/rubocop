@@ -5,7 +5,7 @@ module RuboCop
     module Test
       class ModuleMustBeAClassCop < RuboCop::Cop::Cop
         def on_module(node)
-          add_offense(node, :expression, 'Module must be a Class')
+          add_offense(node, message: 'Module must be a Class')
         end
 
         def autocorrect(node)

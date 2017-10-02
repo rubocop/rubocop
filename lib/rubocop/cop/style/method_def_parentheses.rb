@@ -59,13 +59,15 @@ module RuboCop
         end
 
         def missing_parentheses(node)
-          add_offense(node, node.arguments.source_range, MSG_MISSING) do
+          location = node.arguments.source_range
+
+          add_offense(node, location: location, message: MSG_MISSING) do
             unexpected_style_detected(:require_no_parentheses)
           end
         end
 
         def unwanted_parentheses(args)
-          add_offense(args, :expression, MSG_PRESENT) do
+          add_offense(args, message: MSG_PRESENT) do
             unexpected_style_detected(:require_parentheses)
           end
         end

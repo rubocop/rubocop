@@ -13,7 +13,7 @@ module RuboCop
         def on_send(node)
           return unless sending?(node) && node.arguments?
 
-          add_offense(node, :selector)
+          add_offense(node, location: :selector)
         end
       end
     end

@@ -50,11 +50,11 @@ module RuboCop
             used_style.to_s
 
           if style_for_empty_braces == :space
-            add_offense(left_brace, left_brace, MISSING_MSG)
+            add_offense(left_brace, location: left_brace, message: MISSING_MSG)
           else
             space = range_between(space_plus_brace.begin_pos,
                                   left_brace.begin_pos)
-            add_offense(space, space, DETECTED_MSG)
+            add_offense(space, location: space, message: DETECTED_MSG)
           end
         end
 
@@ -67,7 +67,7 @@ module RuboCop
         end
 
         def space_missing(left_brace)
-          add_offense(left_brace, left_brace, MISSING_MSG) do
+          add_offense(left_brace, location: left_brace, message: MISSING_MSG) do
             opposite_style_detected
           end
         end
@@ -75,7 +75,7 @@ module RuboCop
         def space_detected(left_brace, space_plus_brace)
           space = range_between(space_plus_brace.begin_pos,
                                 left_brace.begin_pos)
-          add_offense(space, space, DETECTED_MSG) do
+          add_offense(space, location: space, message: DETECTED_MSG) do
             opposite_style_detected
           end
         end

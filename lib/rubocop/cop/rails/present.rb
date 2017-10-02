@@ -64,10 +64,9 @@ module RuboCop
 
           not_blank?(node) do |receiver|
             add_offense(node,
-                        :expression,
-                        format(MSG_NOT_BLANK,
-                               replacement(receiver),
-                               node.source))
+                        message: format(MSG_NOT_BLANK,
+                                        replacement(receiver),
+                                        node.source))
           end
         end
 
@@ -78,10 +77,9 @@ module RuboCop
             return unless variable1 == variable2
 
             add_offense(node,
-                        :expression,
-                        format(MSG_EXISTS_AND_NOT_EMPTY,
-                               replacement(variable1),
-                               node.source))
+                        message: format(MSG_EXISTS_AND_NOT_EMPTY,
+                                        replacement(variable1),
+                                        node.source))
           end
         end
 
@@ -91,7 +89,7 @@ module RuboCop
           exists_and_not_empty?(node) do |variable1, variable2|
             return unless variable1 == variable2
 
-            add_offense(node, :expression, MSG_EXISTS_AND_NOT_EMPTY)
+            add_offense(node, message: MSG_EXISTS_AND_NOT_EMPTY)
           end
         end
 
@@ -101,11 +99,8 @@ module RuboCop
 
           unless_blank?(node) do |method_call, receiver|
             range = unless_condition(node, method_call)
-            add_offense(node,
-                        range,
-                        format(MSG_UNLESS_BLANK,
-                               replacement(receiver),
-                               range.source))
+            msg = format(MSG_UNLESS_BLANK, replacement(receiver), range.source)
+            add_offense(node, location: range, message: msg)
           end
         end
 

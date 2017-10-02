@@ -90,7 +90,7 @@ module RuboCop
           return if with_space.source.start_with?("\n")
 
           offense(op, with_space, right_operand) do |msg|
-            add_offense(with_space, op, msg)
+            add_offense(with_space, location: op, message: msg)
           end
         end
 

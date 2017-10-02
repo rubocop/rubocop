@@ -67,7 +67,7 @@ module RuboCop
 
           return unless eligible_next_successor?(next_successor)
 
-          add_offense(operator.pos, operator.pos)
+          add_offense(operator.pos, location: operator.pos)
         end
 
         def eligible_successor?(successor)

@@ -65,7 +65,9 @@ module RuboCop
           range = range_between(map_node.loc.selector.begin_pos,
                                 node.loc.expression.end_pos)
 
-          add_offense(node, range, format(message, first_method, flatten))
+          add_offense(node,
+                      location: range,
+                      message: format(message, first_method, flatten))
         end
       end
     end

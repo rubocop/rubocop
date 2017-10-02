@@ -83,7 +83,7 @@ module RuboCop
           return if cop_config['AllowMultipleReturnValues'] &&
                     node.children.size > 1
 
-          add_offense(node, :keyword)
+          add_offense(node, location: :keyword)
         end
 
         def check_case_node(node)

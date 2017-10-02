@@ -79,8 +79,9 @@ module RuboCop
           check_scope(node)
 
           @useless.each do |_name, (defs_node, visibility, modifier)|
-            add_offense(defs_node, :keyword,
-                        format_message(visibility, modifier))
+            add_offense(defs_node,
+                        location: :keyword,
+                        message: format_message(visibility, modifier))
           end
         end
 

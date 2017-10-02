@@ -33,7 +33,7 @@ module RuboCop
           return if ignored_node?(node)
 
           if not_equal_to_nil?(node)
-            add_offense(node, :selector)
+            add_offense(node, location: :selector)
           elsif include_semantic_changes? &&
                 (not_and_nil_check?(node) || unless_and_nil_check?(node))
             add_offense(node)

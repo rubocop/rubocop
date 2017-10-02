@@ -57,9 +57,8 @@ module RuboCop
             return if negated?(node)
 
             add_offense(node,
-                        :expression,
-                        format(MSG, method: method,
-                                    inverse: inverse_methods[method]))
+                        message: format(MSG, method: method,
+                                             inverse: inverse_methods[method]))
           end
         end
 
@@ -73,9 +72,8 @@ module RuboCop
             # can cause auto-correction to apply improper corrections.
             ignore_node(block)
             add_offense(node,
-                        :expression,
-                        format(MSG, method: method,
-                                    inverse: inverse_blocks[method]))
+                        message: format(MSG, method: method,
+                                             inverse: inverse_blocks[method]))
           end
         end
 

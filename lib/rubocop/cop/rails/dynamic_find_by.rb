@@ -38,8 +38,8 @@ module RuboCop
 
           return unless static_name
 
-          add_offense(node, :expression,
-                      format(MSG, static_name, node.method_name))
+          add_offense(node,
+                      message: format(MSG, static_name, node.method_name))
         end
 
         def autocorrect(node)

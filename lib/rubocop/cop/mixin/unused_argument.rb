@@ -20,7 +20,8 @@ module RuboCop
           return if variable.referenced?
 
           message = message(variable)
-          add_offense(variable.declaration_node, :name, message)
+          add_offense(variable.declaration_node, location: :name,
+                                                 message: message)
         end
 
         def autocorrect(node)

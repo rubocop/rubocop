@@ -13,7 +13,7 @@ module RuboCop
         def on_send(node)
           return unless preferred_method(node.method_name)
 
-          add_offense(node, :selector)
+          add_offense(node, location: :selector)
         end
 
         private

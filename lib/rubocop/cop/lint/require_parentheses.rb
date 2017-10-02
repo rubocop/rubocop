@@ -47,7 +47,7 @@ module RuboCop
           range = range_between(node.source_range.begin_pos,
                                 ternary.condition.source_range.end_pos)
 
-          add_offense(range, range)
+          add_offense(range, location: range)
         end
 
         def check_predicate(predicate, node)

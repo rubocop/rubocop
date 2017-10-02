@@ -26,7 +26,7 @@ module RuboCop
 
         def on_percent_literal(node)
           each_unnecessary_space_match(node) do |range|
-            add_offense(node, range)
+            add_offense(node, location: range)
           end
         end
 

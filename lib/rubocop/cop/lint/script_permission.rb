@@ -15,7 +15,7 @@ module RuboCop
           return if executable?(processed_source)
           comment = processed_source.comments[0]
           message = format_message_from(processed_source)
-          add_offense(comment, :expression, message)
+          add_offense(comment, message: message)
         end
 
         def autocorrect(node)

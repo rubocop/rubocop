@@ -28,7 +28,7 @@ module RuboCop
 
         def on_send(node)
           marshal_load(node) do |method|
-            add_offense(node, :selector, format(MSG, method))
+            add_offense(node, location: :selector, message: format(MSG, method))
           end
         end
       end

@@ -33,7 +33,7 @@ module RuboCop
           return unless rescue_without_error_class?(node) &&
                         !rescue_modifier?(node)
 
-          add_offense(node, :keyword)
+          add_offense(node, location: :keyword)
         end
       end
     end

@@ -39,14 +39,14 @@ module RuboCop
           return unless style == :prefer_alias && alias_keyword_possible?(node)
 
           msg = format(MSG_ALIAS_METHOD, lexical_scope_type(node))
-          add_offense(node, :selector, msg)
+          add_offense(node, location: :selector, message: msg)
         end
 
         def on_alias(node)
           return unless alias_method_possible?(node)
 
           if scope_type(node) == :dynamic || style == :prefer_alias_method
-            add_offense(node, :keyword, MSG_ALIAS)
+            add_offense(node, location: :keyword, message: MSG_ALIAS)
           elsif node.children.none? { |arg| bareword?(arg) }
             add_offense_for_args(node)
           end
@@ -79,7 +79,7 @@ module RuboCop
           arg_ranges     = node.children.map(&:source_range)
           msg            = format(MSG_SYMBOL_ARGS, preferred_args,
                                   existing_args)
-          add_offense(node, arg_ranges.reduce(&:join), msg)
+          add_offense(node, location: arg_ranges.reduce(&:join), message: msg)
         end
 
         # In this expression, will `self` be the same as the innermost enclosing

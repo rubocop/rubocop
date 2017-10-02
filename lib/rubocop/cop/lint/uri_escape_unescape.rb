@@ -65,7 +65,7 @@ module RuboCop
               *replacement_methods
             )
 
-            add_offense(node, :expression, message)
+            add_offense(node, message: message)
           end
         end
       end

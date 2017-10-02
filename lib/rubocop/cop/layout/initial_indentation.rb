@@ -9,8 +9,9 @@ module RuboCop
         MSG = 'Indentation of first line in file detected.'.freeze
 
         def investigate(_processed_source)
-          token = first_token
-          space_before(token) { |space| add_offense(space, token.pos) }
+          space_before(first_token) do |space|
+            add_offense(space, location: first_token.pos)
+          end
         end
 
         def autocorrect(range)

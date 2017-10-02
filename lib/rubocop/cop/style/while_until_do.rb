@@ -18,7 +18,8 @@ module RuboCop
         def handle(node)
           return unless node.multiline? && node.do?
 
-          add_offense(node, :begin, format(MSG, node.keyword))
+          add_offense(node, location: :begin,
+                            message: format(MSG, node.keyword))
         end
 
         private

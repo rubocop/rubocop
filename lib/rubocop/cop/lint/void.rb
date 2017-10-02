@@ -75,30 +75,35 @@ module RuboCop
         def check_void_op(node)
           return unless node.send_type? && OPERATORS.include?(node.method_name)
 
-          add_offense(node, :selector, format(OP_MSG, node.method_name))
+          add_offense(node,
+                      location: :selector,
+                      message: format(OP_MSG, node.method_name))
         end
 
         def check_var(node)
           return unless node.variable? || node.const_type?
-          add_offense(node, :name, format(VAR_MSG, node.loc.name.source))
+
+          add_offense(node,
+                      location: :name,
+                      message: format(VAR_MSG, node.loc.name.source))
         end
 
         def check_literal(node)
           return if !node.literal? || node.xstr_type?
 
-          add_offense(node, :expression, format(LIT_MSG, node.source))
+          add_offense(node, message: format(LIT_MSG, node.source))
         end
 
         def check_self(node)
           return unless node.self_type?
 
-          add_offense(node, :expression, SELF_MSG)
+          add_offense(node, message: SELF_MSG)
         end
 
         def check_defined(node)
           return unless node.defined_type?
 
-          add_offense(node, :expression, format(DEFINED_MSG, node.source))
+          add_offense(node, message: format(DEFINED_MSG, node.source))
         end
 
         def in_void_context?(node)

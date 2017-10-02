@@ -40,7 +40,9 @@ module RuboCop
                  end
           return unless kind
 
-          add_offense(node, :keyword, format(MSG, kind, kind))
+          add_offense(node,
+                      location: :keyword,
+                      message: format(MSG, kind, kind))
         end
 
         def exact_name_match?

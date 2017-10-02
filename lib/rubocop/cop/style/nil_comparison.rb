@@ -19,7 +19,7 @@ module RuboCop
 
         def on_send(node)
           nil_comparison?(node) do
-            add_offense(node, :selector)
+            add_offense(node, location: :selector)
           end
         end
 

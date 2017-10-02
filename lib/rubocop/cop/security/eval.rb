@@ -21,7 +21,7 @@ module RuboCop
         def on_send(node)
           eval?(node) do |code|
             return if code.dstr_type? && code.recursive_literal?
-            add_offense(node, :selector)
+            add_offense(node, location: :selector)
           end
         end
       end

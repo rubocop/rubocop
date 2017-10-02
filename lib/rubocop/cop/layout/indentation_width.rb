@@ -51,6 +51,8 @@ module RuboCop
         include CheckAssignment
         include IgnoredPattern
 
+        MSG = 'Use %d (not %d) spaces for%s indentation.'.freeze
+
         SPECIAL_MODIFIERS = %w[private protected].freeze
 
         def on_rescue(node)
@@ -236,11 +238,11 @@ module RuboCop
                    body_node
                  end
 
-          indentation_name = style == 'normal' ? '' : "#{style} "
-          add_offense(node, offending_range(body_node, indentation),
-                      format("Use #{configured_indentation_width} (not %d) " \
-                             "spaces for #{indentation_name}indentation.",
-                             indentation))
+          name = style == 'normal' ? '' : " #{style}"
+          msg = format(MSG, configured_indentation_width, indentation, name)
+
+          add_offense(node, location: offending_range(body_node, indentation),
+                            message: msg)
         end
 
         # Returns true if the given node is within another node that has

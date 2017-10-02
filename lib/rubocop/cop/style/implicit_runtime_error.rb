@@ -23,7 +23,7 @@ module RuboCop
 
         def on_send(node)
           implicit_runtime_error_raise_or_fail(node) do |method|
-            add_offense(node, :expression, format(MSG, method))
+            add_offense(node, message: format(MSG, method))
           end
         end
       end

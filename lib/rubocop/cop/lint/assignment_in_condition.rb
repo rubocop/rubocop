@@ -62,7 +62,7 @@ module RuboCop
             next :skip_children if skip_children?(asgn_node)
             next if allowed_construct?(asgn_node)
 
-            add_offense(asgn_node, :operator)
+            add_offense(asgn_node, location: :operator)
           end
         end
 

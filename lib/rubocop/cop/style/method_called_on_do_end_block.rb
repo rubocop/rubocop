@@ -35,7 +35,7 @@ module RuboCop
           range = range_between(receiver.loc.end.begin_pos,
                                 node.source_range.end_pos)
 
-          add_offense(nil, range)
+          add_offense(nil, location: range)
         end
       end
     end

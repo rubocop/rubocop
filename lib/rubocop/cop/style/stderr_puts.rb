@@ -25,7 +25,7 @@ module RuboCop
         def on_send(node)
           return unless stderr_puts?(node)
 
-          add_offense(node, stderr_puts_range(node))
+          add_offense(node, location: stderr_puts_range(node))
         end
 
         def autocorrect(node)

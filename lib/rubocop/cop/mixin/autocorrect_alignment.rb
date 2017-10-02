@@ -39,7 +39,7 @@ module RuboCop
             # autocorrecting it. Two rewrites in the same area by the same
             # cop can not be handled. The next iteration will find the
             # offense again and correct it.
-            add_offense(nil, expr)
+            add_offense(nil, location: expr)
           else
             add_offense(current)
           end

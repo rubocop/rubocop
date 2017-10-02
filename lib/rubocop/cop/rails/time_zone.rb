@@ -74,7 +74,7 @@ module RuboCop
 
           message = build_message(klass, method_name, node)
 
-          add_offense(node, :selector, message)
+          add_offense(node, location: :selector, message: message)
         end
 
         def build_message(klass, method_name, node)
@@ -148,7 +148,8 @@ module RuboCop
 
           return if node.arguments?
 
-          add_offense(selector_node, :selector, MSG_LOCALTIME)
+          add_offense(selector_node,
+                      location: :selector, message: MSG_LOCALTIME)
         end
 
         def danger_chain?(chain)

@@ -47,13 +47,13 @@ module RuboCop
         def check_slash_literal(node)
           return if allowed_slash_literal?(node)
 
-          add_offense(node, :expression, MSG_USE_PERCENT_R)
+          add_offense(node, message: MSG_USE_PERCENT_R)
         end
 
         def check_percent_r_literal(node)
           return if allowed_percent_r_literal?(node)
 
-          add_offense(node, :expression, MSG_USE_SLASHES)
+          add_offense(node, message: MSG_USE_SLASHES)
         end
 
         def allowed_slash_literal?(node)

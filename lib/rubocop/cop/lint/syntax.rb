@@ -31,12 +31,18 @@ module RuboCop
           message =
             "#{diagnostic.message}\n(Using Ruby #{ruby_version} parser; " \
             'configure using `TargetRubyVersion` parameter, under `AllCops`)'
-          add_offense(nil, diagnostic.location, message, diagnostic.level)
+          add_offense(nil,
+                      location: diagnostic.location,
+                      message: message,
+                      severity: diagnostic.level)
         end
 
         def add_offense_from_error(error)
           message = beautify_message(error.message)
-          add_offense(nil, ERROR_SOURCE_RANGE, message, :fatal)
+          add_offense(nil,
+                      location: ERROR_SOURCE_RANGE,
+                      message: message,
+                      severity: :fatal)
         end
 
         private

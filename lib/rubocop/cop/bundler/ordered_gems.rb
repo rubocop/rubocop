@@ -56,8 +56,10 @@ module RuboCop
         end
 
         def register_offense(previous, current)
-          add_offense(current, :expression,
-                      format(MSG, gem_name(current), gem_name(previous)))
+          add_offense(
+            current,
+            message: format(MSG, gem_name(current), gem_name(previous))
+          )
         end
 
         def gem_name(declaration_node)

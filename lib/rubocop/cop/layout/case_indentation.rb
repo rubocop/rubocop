@@ -109,7 +109,7 @@ module RuboCop
           when_column = when_node.loc.keyword.column
           base_column = base_column(when_node.parent, alternative_style)
 
-          add_offense(when_node, :keyword, message(style)) do
+          add_offense(when_node, location: :keyword, message: message(style)) do
             if when_column == base_column
               opposite_style_detected
             else

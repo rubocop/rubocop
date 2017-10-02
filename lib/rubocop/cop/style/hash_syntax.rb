@@ -164,9 +164,8 @@ module RuboCop
         def check(pairs, delim, msg)
           pairs.each do |pair|
             if pair.delimiter == delim
-              add_offense(pair,
-                          pair.source_range.begin.join(pair.loc.operator),
-                          msg) do
+              location = pair.source_range.begin.join(pair.loc.operator)
+              add_offense(pair, location: location, message: msg) do
                 opposite_style_detected
               end
             else

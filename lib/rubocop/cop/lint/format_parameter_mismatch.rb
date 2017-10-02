@@ -35,7 +35,7 @@ module RuboCop
         def on_send(node)
           return unless offending_node?(node)
 
-          add_offense(node, :selector)
+          add_offense(node, location: :selector)
         end
 
         private

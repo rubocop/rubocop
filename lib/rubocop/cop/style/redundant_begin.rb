@@ -30,7 +30,7 @@ module RuboCop
         def on_def(node)
           return unless node.body && node.body.kwbegin_type?
 
-          add_offense(node.body, :begin)
+          add_offense(node.body, location: :begin)
         end
         alias on_defs on_def
 

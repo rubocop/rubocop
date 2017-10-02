@@ -24,7 +24,7 @@ module RuboCop
 
         def on_send(node)
           yaml_load(node) do
-            add_offense(node, :selector)
+            add_offense(node, location: :selector)
           end
         end
 

@@ -13,7 +13,9 @@ module RuboCop
 
         def on_for(node)
           if style == :each
-            add_offense(node, :keyword, 'Prefer `each` over `for`.') do
+            msg = 'Prefer `each` over `for`.'
+
+            add_offense(node, location: :keyword, message: msg) do
               opposite_style_detected
             end
           else
@@ -39,7 +41,9 @@ module RuboCop
         def incorrect_style_detected(method)
           end_pos = method.source_range.end_pos
           range = range_between(end_pos - EACH_LENGTH, end_pos)
-          add_offense(range, range, 'Prefer `for` over `each`.') do
+          msg = 'Prefer `for` over `each`.'
+
+          add_offense(range, location: range, message: msg) do
             opposite_style_detected
           end
         end

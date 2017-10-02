@@ -32,7 +32,7 @@ module RuboCop
           offending_range =
             source_range(source.buffer, last_magic_comment.loc.line + 1, 0)
 
-          add_offense(offending_range, offending_range)
+          add_offense(offending_range, location: offending_range)
         end
 
         def autocorrect(token)

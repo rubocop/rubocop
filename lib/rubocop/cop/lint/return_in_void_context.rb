@@ -45,7 +45,9 @@ module RuboCop
 
           return unless method_name && void_context_method?(method_name)
 
-          add_offense(return_node, :keyword, format(message, method_name))
+          add_offense(return_node,
+                      location: :keyword,
+                      message: format(message, method_name))
         end
 
         private

@@ -57,7 +57,7 @@ module RuboCop
             return unless body_indent_level.zero?
           end
 
-          add_offense(node, :heredoc_body)
+          add_offense(node, location: :heredoc_body)
         end
 
         def autocorrect(node)

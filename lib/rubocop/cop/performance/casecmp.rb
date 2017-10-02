@@ -40,7 +40,7 @@ module RuboCop
 
           inefficient_comparison(node) do |range, is_other_part, *methods|
             ignore_node(node) if is_other_part
-            add_offense(node, range, format(MSG, *methods))
+            add_offense(node, location: range, message: format(MSG, *methods))
           end
         end
 

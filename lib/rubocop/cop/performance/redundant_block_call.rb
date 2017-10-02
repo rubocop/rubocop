@@ -47,7 +47,7 @@ module RuboCop
             next unless body
 
             calls_to_report(argname, body).each do |blockcall|
-              add_offense(blockcall, :expression, format(MSG, argname))
+              add_offense(blockcall, message: format(MSG, argname))
             end
           end
         end

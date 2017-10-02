@@ -39,7 +39,7 @@ module RuboCop
             elsif node.parent && node.parent.send_type?
               message << FOR_METHOD
             end
-            add_offense(node, range, message)
+            add_offense(node, location: range, message: message)
           end
         end
 

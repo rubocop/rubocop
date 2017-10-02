@@ -44,7 +44,10 @@ module RuboCop
 
         def register_offense(loc, line)
           message = format(MSG, line.length, max)
-          add_offense(nil, loc, message) { self.max = line.length }
+
+          add_offense(nil, location: loc, message: message) do
+            self.max = line.length
+          end
         end
 
         def excess_range(uri_range, line, index)

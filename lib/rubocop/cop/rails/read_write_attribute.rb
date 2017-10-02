@@ -28,7 +28,7 @@ module RuboCop
         def on_send(node)
           return unless read_write_attribute?(node)
 
-          add_offense(node, :selector)
+          add_offense(node, location: :selector)
         end
 
         private

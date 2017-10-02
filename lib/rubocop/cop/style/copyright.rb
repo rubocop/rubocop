@@ -26,7 +26,7 @@ module RuboCop
           return if notice_found?(processed_source)
           range = source_range(processed_source.buffer, 1, 0)
           add_offense(insert_notice_before(processed_source),
-                      range, MSG % notice)
+                      location: range, message: MSG % notice)
         end
 
         private

@@ -128,9 +128,9 @@ module RuboCop
           end
         end
 
-        def offense(begin_pos, end_pos, msg)
+        def offense(begin_pos, end_pos, msg, &block)
           range = range_between(begin_pos, end_pos)
-          add_offense(range, range, msg) { yield if block_given? }
+          add_offense(range, location: range, message: msg, &block)
         end
 
         def style_for_empty_braces

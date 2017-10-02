@@ -29,7 +29,8 @@ module RuboCop
 
             return if detected_style == style
 
-            add_offense(node, :selector, message(detected_style))
+            add_offense(node, location: :selector,
+                              message: message(detected_style))
           end
         end
 

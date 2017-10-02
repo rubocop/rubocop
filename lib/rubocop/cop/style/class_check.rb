@@ -15,7 +15,7 @@ module RuboCop
           class_check?(node) do |method_name|
             return if style == method_name
 
-            add_offense(node, :selector)
+            add_offense(node, location: :selector)
           end
         end
 

@@ -20,7 +20,7 @@ module RuboCop
         def on_send(node)
           return unless useless_comparison?(node)
 
-          add_offense(node, :selector)
+          add_offense(node, location: :selector)
         end
       end
     end

@@ -79,7 +79,7 @@ module RuboCop
           last_special_comment = last_special_comment(processed_source)
           range = source_range(processed_source.buffer, 0, 0)
 
-          add_offense(last_special_comment, range)
+          add_offense(last_special_comment, location: range)
         end
 
         def unnecessary_comment_offense(processed_source)
@@ -87,8 +87,8 @@ module RuboCop
             frozen_string_literal_comment(processed_source)
 
           add_offense(frozen_string_literal_comment,
-                      frozen_string_literal_comment.pos,
-                      MSG_UNNECESSARY)
+                      location: frozen_string_literal_comment.pos,
+                      message: MSG_UNNECESSARY)
         end
       end
     end

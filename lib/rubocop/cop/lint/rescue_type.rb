@@ -48,9 +48,11 @@ module RuboCop
           invalid_exceptions = invalid_exceptions(exceptions)
           return if invalid_exceptions.empty?
 
-          add_offense(node,
-                      node.loc.keyword.join(rescued.loc.expression),
-                      format(MSG, invalid_exceptions.map(&:source).join(', ')))
+          add_offense(
+            node,
+            location: node.loc.keyword.join(rescued.loc.expression),
+            message: format(MSG, invalid_exceptions.map(&:source).join(', '))
+          )
         end
 
         private

@@ -46,8 +46,12 @@ module RuboCop
             replaceable_body?(body, var_a, var_b) do |method, args_a, args_b|
               return unless slow_compare?(method, args_a, args_b)
               range = compare_range(send, node)
-              add_offense(node, range,
-                          message(send, method, var_a, var_b, args_a))
+
+              add_offense(
+                node,
+                location: range,
+                message: message(send, method, var_a, var_b, args_a)
+              )
             end
           end
         end

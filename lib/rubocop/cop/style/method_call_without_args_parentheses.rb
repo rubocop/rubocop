@@ -22,7 +22,7 @@ module RuboCop
           return unless !node.arguments? && node.parenthesized?
           return if same_name_assignment?(node)
 
-          add_offense(node, :begin)
+          add_offense(node, location: :begin)
         end
 
         private

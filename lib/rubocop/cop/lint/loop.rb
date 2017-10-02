@@ -55,7 +55,7 @@ module RuboCop
         private
 
         def register_offense(node)
-          add_offense(node, :keyword)
+          add_offense(node, location: :keyword)
         end
       end
     end

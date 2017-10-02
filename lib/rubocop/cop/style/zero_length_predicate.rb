@@ -42,8 +42,8 @@ module RuboCop
 
           return unless zero_length_predicate
 
-          add_offense(node, :expression,
-                      format(ZERO_MSG, *zero_length_predicate))
+          add_offense(node,
+                      message: format(ZERO_MSG, *zero_length_predicate))
         end
 
         def check_nonzero_length_predicate(node)
@@ -51,8 +51,8 @@ module RuboCop
 
           return unless nonzero_length_predicate
 
-          add_offense(node, :expression,
-                      format(NONZERO_MSG, *nonzero_length_predicate))
+          add_offense(node,
+                      message: format(NONZERO_MSG, *nonzero_length_predicate))
         end
 
         def_node_matcher :zero_length_predicate, <<-PATTERN

@@ -37,7 +37,7 @@ module RuboCop
 
           return unless else_branch && else_branch.if_type? && else_branch.if?
 
-          add_offense(else_branch, :keyword)
+          add_offense(else_branch, location: :keyword)
         end
       end
     end

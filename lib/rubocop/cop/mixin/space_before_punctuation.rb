@@ -9,7 +9,8 @@ module RuboCop
 
       def investigate(processed_source)
         each_missing_space(processed_source.tokens) do |token, pos_before|
-          add_offense(pos_before, pos_before, format(MSG, kind(token)))
+          add_offense(pos_before, location: pos_before,
+                                  message: format(MSG, kind(token)))
         end
       end
 

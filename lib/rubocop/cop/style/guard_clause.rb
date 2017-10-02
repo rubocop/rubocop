@@ -57,7 +57,7 @@ module RuboCop
         def on_if(node)
           return if accepted_form?(node) || !contains_guard_clause?(node)
 
-          add_offense(node, :keyword)
+          add_offense(node, location: :keyword)
         end
 
         private
@@ -65,7 +65,7 @@ module RuboCop
         def check_ending_if(node)
           return if accepted_form?(node, true) || !min_body_length?(node)
 
-          add_offense(node, :keyword)
+          add_offense(node, location: :keyword)
         end
 
         def accepted_form?(node, ending = false)

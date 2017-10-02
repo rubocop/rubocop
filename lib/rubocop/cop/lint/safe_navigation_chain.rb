@@ -41,7 +41,7 @@ module RuboCop
 
             loc = node.loc.dot || :selector
 
-            add_offense(node, loc)
+            add_offense(node, location: loc)
           end
         end
 

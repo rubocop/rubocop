@@ -116,9 +116,9 @@ module RuboCop
       def avoid_comma(kind, comma_begin_pos, extra_info)
         range = range_between(comma_begin_pos, comma_begin_pos + 1)
         article = kind =~ /array/ ? 'an' : 'a'
-        add_offense(range, range,
-                    format(MSG, 'Avoid', format(kind, article)) +
-                    "#{extra_info}.")
+        msg = format(MSG, 'Avoid', format(kind, article)) + "#{extra_info}."
+
+        add_offense(range, location: range, message: msg)
       end
 
       def put_comma(node, items, kind)
@@ -128,9 +128,9 @@ module RuboCop
         return if last_item.block_pass_type?
 
         range = autocorrect_range(last_item)
+        msg = format(MSG, 'Put a', format(kind, 'a multiline') + '.')
 
-        add_offense(range, range,
-                    format(MSG, 'Put a', format(kind, 'a multiline') + '.'))
+        add_offense(range, location: range, message: msg)
       end
 
       def autocorrect_range(item)

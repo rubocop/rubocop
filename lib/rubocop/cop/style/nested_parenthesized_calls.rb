@@ -21,7 +21,9 @@ module RuboCop
           node.each_child_node(:send) do |nested|
             next if allowed_omission?(nested)
 
-            add_offense(nested, nested.source_range, format(MSG, nested.source))
+            add_offense(nested,
+                        location: nested.source_range,
+                        message: format(MSG, nested.source))
           end
         end
 

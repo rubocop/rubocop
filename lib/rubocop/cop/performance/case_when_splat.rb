@@ -68,7 +68,7 @@ module RuboCop
             range = condition.parent.loc.keyword.join(condition.source_range)
             variable, = *condition
             message = variable.array_type? ? ARRAY_MSG : MSG
-            add_offense(condition.parent, range, message)
+            add_offense(condition.parent, location: range, message: message)
           end
         end
 

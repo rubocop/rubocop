@@ -14,7 +14,7 @@ module RuboCop
         def_node_matcher :join_candidate?, '(send $array :* $str)'
 
         def on_send(node)
-          join_candidate?(node) { add_offense(node, :selector) }
+          join_candidate?(node) { add_offense(node, location: :selector) }
         end
 
         def autocorrect(node)

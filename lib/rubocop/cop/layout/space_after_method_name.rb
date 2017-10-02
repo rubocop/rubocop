@@ -24,7 +24,7 @@ module RuboCop
                                                 expr.begin_pos)
           return unless pos_before_left_paren.source =~ /\s/
 
-          add_offense(pos_before_left_paren, pos_before_left_paren)
+          add_offense(pos_before_left_paren, location: pos_before_left_paren)
         end
         alias on_defs on_def
 

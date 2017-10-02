@@ -80,8 +80,8 @@ module RuboCop
           return unless offending_selector?(node, selector)
 
           add_offense(node,
-                      node.send_node.source_range,
-                      message(node, selector))
+                      location: node.send_node.source_range,
+                      message: message(node, selector))
         end
 
         private

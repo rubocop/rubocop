@@ -10,38 +10,60 @@ module RuboCop
       # @example
       #
       #   # bad
-      #   add_offense(node, :expression, MSG)
-      #   add_offense(node, :expression, message)
-      #   add_offense(node, :expression, message(node))
+      #   add_offense(node, message: MSG)
+      #   add_offense(node, message: message)
+      #   add_offense(node, message: message(node))
       #
       #   # good
-      #   add_offense(node, :expression)
-      #   add_offense(node, :expression, CUSTOM_MSG)
-      #   add_offense(node, :expression, message(other_node))
+      #   add_offense(node)
+      #   add_offense(node, message: CUSTOM_MSG)
+      #   add_offense(node, message: message(other_node))
       #
       class RedundantMessageArgument < Cop
         MSG = 'Redundant message argument to `#add_offense`.'.freeze
 
         def_node_matcher :node_type_check, <<-PATTERN
-          (send nil? :add_offense _offender _
-            {(const nil? :MSG) (send nil? :message) (send nil? :message _offender)})
+          (send nil? :add_offense $_node $hash)
         PATTERN
 
+        def_node_matcher :redundant_message_argument, <<-PATTERN
+          (pair
+            (sym :message)
+            ${(const nil? :MSG) (send nil? :message) (send nil? :message _)})
+        PATTERN
+
+        def_node_matcher :message_method_call, '(send nil? :message $_node)'
+
         def on_send(node)
-          node_type_check(node) do
-            add_offense(node.last_argument)
+          node_type_check(node) do |node_arg, kwargs|
+            find_offending_argument(node_arg, kwargs) do |pair|
+              add_offense(pair)
+            end
           end
         end
 
         def autocorrect(node)
-          parent = node.parent
-          arguments = parent.arguments
-          range =
-            Parser::Source::Range.new(parent.source_range.source_buffer,
-                                      arguments[-2].loc.expression.end_pos,
-                                      arguments.last.loc.expression.end_pos)
+          range = offending_range(node)
 
           ->(corrector) { corrector.remove(range) }
+        end
+
+        private
+
+        def offending_range(node)
+          with_space = range_with_surrounding_space(node.loc.expression)
+
+          range_with_surrounding_comma(with_space, :left)
+        end
+
+        def find_offending_argument(searched_node, kwargs)
+          kwargs.pairs.each do |pair|
+            redundant_message_argument(pair) do |message_argument|
+              node = message_method_call(message_argument)
+
+              yield pair if !node || node == searched_node
+            end
+          end
         end
       end
     end

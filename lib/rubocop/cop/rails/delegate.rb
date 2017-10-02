@@ -59,7 +59,7 @@ module RuboCop
           method_name, args, body = *node
           return unless trivial_delegate?(method_name, args, body)
           return if private_or_protected_delegation(node)
-          add_offense(node, :keyword)
+          add_offense(node, location: :keyword)
         end
 
         private

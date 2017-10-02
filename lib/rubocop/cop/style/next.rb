@@ -51,7 +51,8 @@ module RuboCop
 
           offending_node = offense_node(node.body)
 
-          add_offense(offending_node, offense_location(offending_node))
+          add_offense(offending_node,
+                      location: offense_location(offending_node))
         end
 
         def ends_with_condition?(body)

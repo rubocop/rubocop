@@ -68,15 +68,12 @@ module RuboCop
         end
 
         def add_offense_for_double_call(node, receiver, method, combined_args)
-          add_offense(node,
-                      :expression,
-                      format(
-                        MSG,
-                        receiver: receiver.source,
-                        method: method,
-                        combined_args: combined_args,
-                        original_code: node.source
-                      ))
+          msg = format(MSG, receiver: receiver.source,
+                            method: method,
+                            combined_args: combined_args,
+                            original_code: node.source)
+
+          add_offense(node, message: msg)
         end
 
         def check_for_active_support_aliases?

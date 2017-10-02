@@ -25,7 +25,7 @@ module RuboCop
         def on_block(node)
           return if ignored_node?(node)
 
-          add_offense(node, :begin) unless proper_block_style?(node)
+          add_offense(node, location: :begin) unless proper_block_style?(node)
         end
 
         private

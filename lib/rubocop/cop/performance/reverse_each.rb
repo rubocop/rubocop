@@ -27,7 +27,7 @@ module RuboCop
 
             range = range_between(location_of_reverse, end_location)
 
-            add_offense(node, range)
+            add_offense(node, location: range)
           end
         end
 

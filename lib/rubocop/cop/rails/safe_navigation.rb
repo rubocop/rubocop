@@ -56,7 +56,7 @@ module RuboCop
             return unless method_to_try.sym_type?
             method, = *method_to_try
             return unless method =~ /\w+[=!?]?/
-            add_offense(node, :expression, format(MSG, try_method))
+            add_offense(node, message: format(MSG, try_method))
           end
         end
 

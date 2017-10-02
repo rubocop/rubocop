@@ -37,9 +37,13 @@ module RuboCop
         def on_send(node)
           return unless arrow_lambda_with_args?(node)
           if style == :require_space && !space_after_arrow?(node)
-            add_offense(node, node.parent.loc.expression, MSG_REQUIRE_SPACE)
+            add_offense(node,
+                        location: node.parent.loc.expression,
+                        message: MSG_REQUIRE_SPACE)
           elsif style == :require_no_space && space_after_arrow?(node)
-            add_offense(node, node.parent.loc.expression, MSG_REQUIRE_NO_SPACE)
+            add_offense(node,
+                        location: node.parent.loc.expression,
+                        message: MSG_REQUIRE_NO_SPACE)
           end
         end
 

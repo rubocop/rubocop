@@ -35,7 +35,7 @@ module RuboCop
 
         def check(node)
           times_map_call(node) do |map_or_collect, count|
-            add_offense(node, :expression, message(map_or_collect, count))
+            add_offense(node, message: message(map_or_collect, count))
           end
         end
 

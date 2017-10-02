@@ -283,7 +283,7 @@ module RuboCop
           return unless else_branch
           return if allowed_single_line?([*branches, else_branch])
 
-          add_offense(node, :expression, ASSIGN_TO_CONDITION_MSG)
+          add_offense(node, message: ASSIGN_TO_CONDITION_MSG)
         end
 
         def candidate_node?(node)

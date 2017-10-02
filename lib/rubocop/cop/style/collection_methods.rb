@@ -41,7 +41,7 @@ module RuboCop
         def check_method_node(node)
           return unless preferred_methods[node.method_name]
 
-          add_offense(node, :selector)
+          add_offense(node, location: :selector)
         end
       end
     end
