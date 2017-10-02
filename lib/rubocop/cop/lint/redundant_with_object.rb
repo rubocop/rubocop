@@ -42,7 +42,7 @@ module RuboCop
 
         def on_block(node)
           redundant_with_object?(node) do |send|
-            add_offense(node, with_object_range(send))
+            add_offense(node, location: with_object_range(send))
           end
         end
 
