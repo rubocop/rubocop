@@ -226,7 +226,10 @@ module RuboCop
       def add_offense_deprecated(node, loc = :expression, message = nil,
                                  severity = nil, &block)
 
-        message = <<-RUBY.strip_indent
+        caller = caller_locations(2..2).first
+        path = "#{caller.path}:#{caller.lineno}"
+        warn_message = <<-RUBY.strip_indent
+          #{path}
           Warning: The usage of positional location, message, and severity
           parameters to Cop#add_offense is deprecated.
           Please use keyword arguments instead.
@@ -235,7 +238,7 @@ module RuboCop
           RuboCop 0.52
         RUBY
 
-        warn(Rainbow(message).red)
+        warn(Rainbow(warn_message).red)
 
         add_offense_common(node, location: loc, message: message,
                                  severity: severity, &block)
