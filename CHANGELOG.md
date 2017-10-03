@@ -23,6 +23,7 @@
 * [#4241](https://github.com/bbatsov/rubocop/issues/4241): Prevent `Rails/Blank` and `Rails/Present` from breaking when there is no explicit receiver. ([@rrosenblum][])
 * [#4814](https://github.com/bbatsov/rubocop/issues/4814): Prevent `Rails/Blank` from breaking on send with an argument. ([@pocke][])
 * [#4759](https://github.com/bbatsov/rubocop/issues/4759): Make `Naming/HeredocDelimiterNaming` and `Naming/HeredocDelimiterCase` aware of more delimiter patterns. ([@drenmi][])
+* [#4823](https://github.com/bbatsov/rubocop/issues/4823): Make `Lint/UnusedMethodArgument` and `Lint/UnusedBlockArgument` aware of overriding assignments. ([@akhramov][])
 
 ### Changes
 

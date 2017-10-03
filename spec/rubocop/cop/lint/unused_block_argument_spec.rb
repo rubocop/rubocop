@@ -31,6 +31,39 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
         end
       end
 
+      context 'and arguments are swap-assigned' do
+        let(:source) { <<-RUBY }
+          hash.each do |key, value|
+            key, value = value, key
+          end
+        RUBY
+
+        it 'accepts' do
+          expect_no_offenses(source)
+        end
+      end
+
+      context "and one argument is assigned to another, whilst other's value " \
+                'is not used' do
+        let(:source) { <<-RUBY }
+          hash.each do |key, value|
+            key, value = value, 42
+          end
+        RUBY
+
+        it 'registers an offense' do
+          expect(cop.offenses.size).to eq(1)
+          expect(cop.offenses.first.message).to eq(
+            'Unused block argument - `key`. ' \
+              "If it's necessary, use `_` or `_key` as an argument name " \
+              "to indicate that it won't be used."
+          )
+          expect(cop.offenses.first.severity.name).to eq(:warning)
+          expect(cop.offenses.first.line).to eq(1)
+          expect(cop.highlights).to eq(['key'])
+        end
+      end
+
       context 'and all the arguments are unused' do
         let(:source) { <<-RUBY }
           hash = { foo: 'FOO', bar: 'BAR' }
@@ -85,6 +118,77 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
             "to indicate that it won't be used."
           )
           expect(cop.highlights).to eq(['bar'])
+        end
+      end
+
+      context 'and the argument is reassigned' do
+        context 'and the argument was reassigned in the conditional' do
+          let(:source) { <<-RUBY.strip_indent }
+            1.times do |index|
+              index = 42 if bar
+              puts index
+            end
+          RUBY
+
+          it 'accepts' do
+            expect_no_offenses(source)
+          end
+
+          context 'and was not used after the reassignment' do
+            let(:source) { <<-RUBY.strip_indent }
+              1.times do |index|
+                index = 42 if bar
+                puts bar
+              end
+            RUBY
+
+            it 'registers an offense' do
+              expect(cop.offenses.size).to eq(1)
+            end
+          end
+        end
+
+        context 'and the argument used at the assignment' do
+          let(:source) { <<-RUBY.strip_indent }
+            1.times do |index|
+              index = index + 42
+              puts index
+            end
+          RUBY
+
+          it 'accepts' do
+            expect_no_offenses(source)
+          end
+        end
+
+        context 'and the argument is not used at the assignment' do
+          context 'and the argument was not used before the assignment' do
+            let(:source) { <<-RUBY.strip_indent }
+              1.times do |index|
+                puts 'counting'
+                index = 42
+                puts index
+              end
+            RUBY
+
+            it 'registers an offense' do
+              expect(cop.offenses.size).to eq(1)
+            end
+          end
+
+          context 'and the argument was used before the assignment' do
+            let(:source) { <<-RUBY.strip_indent }
+              1.times do |index|
+                puts index + 1
+                index = 42
+                puts index
+              end
+            RUBY
+
+            it 'accepts' do
+              expect_no_offenses(source)
+            end
+          end
         end
       end
     end
