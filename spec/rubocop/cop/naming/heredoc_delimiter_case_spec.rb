@@ -44,30 +44,98 @@ describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
     end
 
     context 'with a non-interpolated heredoc' do
-      it 'registers an offense with a lowercase delimiter' do
-        expect_offense(<<-RUBY.strip_indent)
-          <<-'sql'
-            foo
-          sql
-          ^^^ Use uppercase heredoc delimiters.
-        RUBY
+      context 'when using single quoted delimiters' do
+        it 'registers an offense with a lowercase delimiter' do
+          expect_offense(<<-RUBY.strip_indent)
+            <<-'sql'
+              foo
+            sql
+            ^^^ Use uppercase heredoc delimiters.
+          RUBY
+        end
+
+        it 'registers an offense with a camel case delimiter' do
+          expect_offense(<<-RUBY.strip_indent)
+            <<-'Sql'
+              foo
+            Sql
+            ^^^ Use uppercase heredoc delimiters.
+          RUBY
+        end
+
+        it 'does not register an offense with an uppercase delimiter' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            <<-'SQL'
+              foo
+            SQL
+          RUBY
+        end
       end
 
-      it 'registers an offense with a camel case delimiter' do
-        expect_offense(<<-RUBY.strip_indent)
-          <<-'Sql'
-            foo
-          Sql
-          ^^^ Use uppercase heredoc delimiters.
-        RUBY
+      context 'when using double quoted delimiters' do
+        it 'registers an offense with a lowercase delimiter' do
+          expect_offense(<<-RUBY.strip_indent)
+            <<-"sql"
+              foo
+            sql
+            ^^^ Use uppercase heredoc delimiters.
+          RUBY
+        end
+
+        it 'registers an offense with a camel case delimiter' do
+          expect_offense(<<-RUBY.strip_indent)
+            <<-"Sql"
+              foo
+            Sql
+            ^^^ Use uppercase heredoc delimiters.
+          RUBY
+        end
+
+        it 'does not register an offense with an uppercase delimiter' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            <<-"SQL"
+              foo
+            SQL
+          RUBY
+        end
       end
 
-      it 'does not register an offense with an uppercase delimiter' do
-        expect_no_offenses(<<-RUBY.strip_indent)
-          <<-'SQL'
-            foo
-          SQL
-        RUBY
+      context 'when using back tick delimiters' do
+        it 'registers an offense with a lowercase delimiter' do
+          expect_offense(<<-RUBY.strip_indent)
+            <<-`sql`
+              foo
+            sql
+            ^^^ Use uppercase heredoc delimiters.
+          RUBY
+        end
+
+        it 'registers an offense with a camel case delimiter' do
+          expect_offense(<<-RUBY.strip_indent)
+            <<-`Sql`
+              foo
+            Sql
+            ^^^ Use uppercase heredoc delimiters.
+          RUBY
+        end
+
+        it 'does not register an offense with an uppercase delimiter' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            <<-`SQL`
+              foo
+            SQL
+          RUBY
+        end
+      end
+
+      context 'when using non-word delimiters' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            <<-'+'
+              foo
+            +
+          RUBY
+        end
       end
     end
 

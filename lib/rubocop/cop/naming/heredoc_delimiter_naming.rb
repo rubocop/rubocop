@@ -27,7 +27,6 @@ module RuboCop
         include Heredoc
 
         MSG = 'Use meaningful heredoc delimiters.'.freeze
-        OPENING_DELIMITER = /<<[~-]?'?(\w+)'?\b/
 
         def on_heredoc(node)
           return if meaningful_delimiters?(node)
@@ -39,6 +38,8 @@ module RuboCop
 
         def meaningful_delimiters?(node)
           delimiters = delimiters(node)
+
+          return false unless delimiters =~ /\w/
 
           blacklisted_delimiters.none? do |blacklisted_delimiter|
             delimiters =~ Regexp.new(blacklisted_delimiter)

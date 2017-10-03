@@ -2,7 +2,7 @@
 
 # Common functionality for working with heredoc strings.
 module Heredoc
-  OPENING_DELIMITER = /<<[~-]?'?(\w+)'?\b/
+  OPENING_DELIMITER = /<<[~-]?['"`]?([^'"`]+)['"`]?/
 
   def on_str(node)
     return unless heredoc?(node)
