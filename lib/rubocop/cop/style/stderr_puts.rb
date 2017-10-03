@@ -42,7 +42,7 @@ module RuboCop
 
         def stderr_puts_range(send)
           range_between(
-            send.children.first.loc.expression.begin_pos,
+            send.loc.expression.begin_pos,
             send.loc.selector.end_pos
           )
         end
