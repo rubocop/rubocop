@@ -31,21 +31,72 @@ describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
   end
 
   context 'with a non-interpolated heredoc' do
-    it 'registers an offense with a non-meaningful delimiter' do
-      expect_offense(<<-RUBY.strip_indent)
-        <<-'END'
-          foo
-        END
-        ^^^ Use meaningful heredoc delimiters.
-      RUBY
+    context 'when using single quoted delimiters' do
+      it 'registers an offense with a non-meaningful delimiter' do
+        expect_offense(<<-RUBY.strip_indent)
+          <<-'END'
+            foo
+          END
+          ^^^ Use meaningful heredoc delimiters.
+        RUBY
+      end
+
+      it 'does not register an offense with a meaningful delimiter' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          <<-'SQL'
+            foo
+          SQL
+        RUBY
+      end
     end
 
-    it 'does not register an offense with a meaningful delimiter' do
-      expect_no_offenses(<<-RUBY.strip_indent)
-        <<-'SQL'
-          foo
-        SQL
-      RUBY
+    context 'when using double quoted delimiters' do
+      it 'registers an offense with a non-meaningful delimiter' do
+        expect_offense(<<-RUBY.strip_indent)
+          <<-"END"
+            foo
+          END
+          ^^^ Use meaningful heredoc delimiters.
+        RUBY
+      end
+
+      it 'does not register an offense with a meaningful delimiter' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          <<-'SQL'
+            foo
+          SQL
+        RUBY
+      end
+    end
+
+    context 'when using back tick delimiters' do
+      it 'registers an offense with a non-meaningful delimiter' do
+        expect_offense(<<-RUBY.strip_indent)
+          <<-`END`
+            foo
+          END
+          ^^^ Use meaningful heredoc delimiters.
+        RUBY
+      end
+
+      it 'does not register an offense with a meaningful delimiter' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          <<-`SQL`
+            foo
+          SQL
+        RUBY
+      end
+    end
+
+    context 'when using non-word delimiters' do
+      it 'registers an offense' do
+        expect_offense(<<-RUBY.strip_indent)
+          <<-'+'
+            foo
+          +
+          ^ Use meaningful heredoc delimiters.
+        RUBY
+      end
     end
   end
 

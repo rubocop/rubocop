@@ -22,6 +22,7 @@
 * [#4776](https://github.com/bbatsov/rubocop/issues/4776): Non utf-8 magic encoding comments are now respected. ([@deivid-rodriguez][])
 * [#4241](https://github.com/bbatsov/rubocop/issues/4241): Prevent `Rails/Blank` and `Rails/Present` from breaking when there is no explicit receiver. ([@rrosenblum][])
 * [#4814](https://github.com/bbatsov/rubocop/issues/4814): Prevent `Rails/Blank` from breaking on send with an argument. ([@pocke][])
+* [#4759](https://github.com/bbatsov/rubocop/issues/4759): Make `Naming/HeredocDelimiterNaming` and `Naming/HeredocDelimiterCase` aware of more delimiter patterns. ([@drenmi][])
 
 ### Changes
 
