@@ -4046,8 +4046,8 @@ which do not want to include that syntax.
 
 Configuration option: MinSize
 If set, arrays with fewer elements than this value will not trigger the
-cop. For example, a `MinSize of `3` will not enforce a style on an array
-of 2 or fewer elements.
+cop. For example, a `MinSize` of `3` will not enforce a style on an
+array of 2 or fewer elements.
 
 ### Example
 
