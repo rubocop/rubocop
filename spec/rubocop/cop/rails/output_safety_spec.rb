@@ -3,98 +3,109 @@
 describe RuboCop::Cop::Rails::OutputSafety do
   subject(:cop) { described_class.new }
 
-  it 'registers an offense for safe_concat methods' do
-    source = <<-RUBY.strip_indent
-      foo.safe_concat('bar')
-    RUBY
-    inspect_source(source)
-    expect(cop.offenses.size).to eq(1)
+  context 'when using `#safe_concat`' do
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
+        foo.safe_concat('bar')
+            ^^^^^^^^^^^ Tagging a string as html safe may be a security risk.
+      RUBY
+    end
+    it 'registers an offense when wrapped inside `#safe_join`' do
+      expect_offense(<<-RUBY.strip_indent)
+        safe_join([i18n_text.safe_concat(i18n_text)])
+                             ^^^^^^^^^^^ Tagging a string as html safe may be a security risk.
+      RUBY
+    end
   end
 
-  it 'registers an offense for html_safe methods with a receiver and no ' \
-     'arguments' do
-    source = <<-RUBY.strip_indent
-      foo.html_safe
-      "foo".html_safe
-    RUBY
-    inspect_source(source)
-    expect(cop.offenses.size).to eq(2)
+  context 'when using `#html_safe`' do
+    it 'registers an offense for literal receiver and no argument' do
+      expect_offense(<<-RUBY.strip_indent)
+        "foo".html_safe
+              ^^^^^^^^^ Tagging a string as html safe may be a security risk.
+      RUBY
+    end
+
+    it 'registers an offense for variable receiver and no argument' do
+      expect_offense(<<-RUBY.strip_indent)
+        foo.html_safe
+            ^^^^^^^^^ Tagging a string as html safe may be a security risk.
+      RUBY
+    end
+
+    it 'does not register an offense for variable receiver and arguments' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        foo.html_safe(one)
+      RUBY
+    end
+
+    it 'does not register an offense without a receiver' do
+      expect_no_offenses('html_safe')
+    end
+
+    it 'registers an offense when used inside `#safe_join`' do
+      expect_offense(<<-RUBY.strip_indent)
+        safe_join([i18n_text.html_safe, "foo"])
+                             ^^^^^^^^^ Tagging a string as html safe may be a security risk.
+      RUBY
+    end
+
+    it 'registers an offense when used inside `#safe_join` in other method' do
+      expect_offense(<<-RUBY.strip_indent)
+        foo(safe_join([i18n_text.html_safe, "bar"]))
+                                 ^^^^^^^^^ Tagging a string as html safe may be a security risk.
+      RUBY
+    end
   end
 
-  it 'accepts html_safe methods without a receiver' do
-    expect_no_offenses('html_safe')
-  end
+  context 'when using `#raw`' do
+    it 'registers an offense with no receiver and a variable argument' do
+      expect_offense(<<-RUBY)
+        raw(foo)
+        ^^^ Tagging a string as html safe may be a security risk.
+      RUBY
+    end
 
-  it 'accepts html_safe methods with arguments' do
-    expect_no_offenses(<<-RUBY.strip_indent)
-      foo.html_safe one
-      "foo".html_safe two
-    RUBY
-  end
+    it 'registers an offense with no receiver and a literal argument' do
+      expect_offense(<<-RUBY)
+        raw("foo")
+        ^^^ Tagging a string as html safe may be a security risk.
+      RUBY
+    end
 
-  it 'registers an offense for raw methods without a receiver' do
-    source = <<-RUBY.strip_indent
-      raw(foo)
-      raw "foo"
-    RUBY
-    inspect_source(source)
-    expect(cop.offenses.size).to eq(2)
-  end
+    it 'does not register an offense with a receiver' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        foo.raw(foo)
+      RUBY
+    end
 
-  it 'accepts raw methods with a receiver' do
-    expect_no_offenses(<<-RUBY.strip_indent)
-      foo.raw(foo)
-      "foo".raw "foo"
-    RUBY
-  end
+    it 'does not register an offense without arguments' do
+      expect_no_offenses('raw')
+    end
 
-  it 'accepts raw methods without arguments' do
-    expect_no_offenses('raw')
-  end
+    it 'does not reguster an offense with more than one argument' do
+      expect_no_offenses('raw(one, two)')
+    end
 
-  it 'accepts raw methods with more than one arguments' do
-    expect_no_offenses('raw one, two')
-  end
+    it 'does not ergister an offense for comments' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        # foo.html_safe
+        # raw foo
+      RUBY
+    end
 
-  it 'accepts comments' do
-    expect_no_offenses(<<-RUBY.strip_indent)
-      # foo.html_safe
-      # raw foo
-    RUBY
-  end
+    it 'registers an offense when used inside `#safe_join`' do
+      expect_offense(<<-RUBY.strip_indent)
+        safe_join([raw(i18n_text), "foo"])
+                   ^^^ Tagging a string as html safe may be a security risk.
+      RUBY
+    end
 
-  it 'does not accept safe_concat methods when wrapped in a safe_join' do
-    source = 'safe_join([i18n_text.safe_concat(i18n_text),
-              i18n_text.safe_concat(i18n_mode_additional_markup(key))])'
-    inspect_source(source)
-    expect(cop.offenses.size).to eq(2)
-  end
-
-  it 'does not accept raw methods when wrapped in a safe_join' do
-    source = 'safe_join([raw(i18n_text),
-              raw(i18n_mode_additional_markup(key))])'
-    inspect_source(source)
-    expect(cop.offenses.size).to eq(2)
-  end
-
-  it 'does not accept html_safe methods when wrapped in a safe_join' do
-    source = 'safe_join([i18n_text.html_safe,
-              i18n_mode_additional_markup(key).html_safe])'
-    inspect_source(source)
-    expect(cop.offenses.size).to eq(2)
-  end
-
-  it 'does not accept html_safe methods wrapped in safe_join not at root' do
-    source = 'foo(safe_join([i18n_text.html_safe,
-              i18n_mode_additional_markup(key).html_safe]))'
-    inspect_source(source)
-    expect(cop.offenses.size).to eq(2)
-  end
-
-  it 'does not accept raw methods wrapped in a safe_join not at root' do
-    source = 'foo(safe_join([raw(i18n_text),
-              raw(i18n_mode_additional_markup(key))]))'
-    inspect_source(source)
-    expect(cop.offenses.size).to eq(2)
+    it 'registers an offense when used inside `#safe_join` in other method' do
+      expect_offense(<<-RUBY.strip_indent)
+        foo(safe_join([raw(i18n_text), "bar"]))
+                       ^^^ Tagging a string as html safe may be a security risk.
+      RUBY
+    end
   end
 end
