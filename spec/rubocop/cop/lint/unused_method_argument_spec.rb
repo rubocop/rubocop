@@ -30,6 +30,39 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
           expect(cop.offenses.first.line).to eq(1)
           expect(cop.highlights).to eq(['foo'])
         end
+
+        context 'and arguments are swap-assigned' do
+          let(:source) { <<-RUBY }
+            def foo(a, b)
+              a, b = b, a
+            end
+          RUBY
+
+          it 'accepts' do
+            expect_no_offenses(source)
+          end
+        end
+
+        context "and one argument is assigned to another, whilst other's " \
+                  'value is not used' do
+          let(:source) { <<-RUBY }
+            def foo(a, b)
+              a, b = b, 42
+            end
+          RUBY
+
+          it 'registers an offense' do
+            expect(cop.offenses.size).to eq(1)
+            expect(cop.offenses.first.message).to eq(
+              'Unused method argument - `a`. ' \
+                "If it's necessary, use `_` or `_a` as an argument name " \
+                "to indicate that it won't be used."
+            )
+            expect(cop.offenses.first.severity.name).to eq(:warning)
+            expect(cop.offenses.first.line).to eq(1)
+            expect(cop.highlights).to eq(['a'])
+          end
+        end
       end
 
       context 'and all the arguments are unused' do
@@ -133,6 +166,77 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
             puts foo
           end
         RUBY
+      end
+    end
+
+    context 'when a method argument is reassigned' do
+      context 'and the argument was reassigned in the conditional' do
+        let(:source) { <<-RUBY.strip_indent }
+          def some_method(foo)
+            foo = 42 if bar
+            puts foo
+          end
+        RUBY
+
+        it 'accepts' do
+          expect_no_offenses(source)
+        end
+
+        context 'and was not used after the reassignment' do
+          let(:source) { <<-RUBY.strip_indent }
+            def some_method(foo)
+              foo = 42 if bar
+              puts bar
+            end
+          RUBY
+
+          it 'registers an offense' do
+            expect(cop.offenses.size).to eq(1)
+          end
+        end
+      end
+
+      context 'and the argument used at the assignment' do
+        let(:source) { <<-RUBY.strip_indent }
+          def some_method(foo)
+            foo = foo + 42
+            puts foo
+          end
+        RUBY
+
+        it 'accepts' do
+          expect_no_offenses(source)
+        end
+      end
+
+      context 'and the argument is not used at the assignment' do
+        context 'and the argument was not used before the assignment' do
+          let(:source) { <<-RUBY.strip_indent }
+            def some_method(foo)
+              puts 'bar'
+              foo = 42
+              puts foo
+            end
+          RUBY
+
+          it 'registers an offense' do
+            expect(cop.offenses.size).to eq(1)
+          end
+        end
+
+        context 'and the argument was used before the assignment' do
+          let(:source) { <<-RUBY.strip_indent }
+            def some_method(foo)
+              puts foo
+              foo = 42
+              puts foo
+            end
+          RUBY
+
+          it 'accepts' do
+            expect_no_offenses(source)
+          end
+        end
       end
     end
 
