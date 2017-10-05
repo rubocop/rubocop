@@ -26,6 +26,7 @@
 * [#4823](https://github.com/bbatsov/rubocop/issues/4823): Make `Lint/UnusedMethodArgument` and `Lint/UnusedBlockArgument` aware of overriding assignments. ([@akhramov][])
 * [#4830](https://github.com/bbatsov/rubocop/issues/4830): Prevent `Lint/BooleanSymbol` from truncating symbol's value in the message when offense is located in the new syntax hash. ([@akhramov][])
 * [#4747](https://github.com/bbatsov/rubocop/issues/4747): Fix `Rails/HasManyOrHasOneDependent` cop incorrectly flags `with_options` blocks. ([@koic][])
+* [#4836](https://github.com/bbatsov/rubocop/issues/4836): Make `Rails/OutputSafety` aware of safe navigation operator. ([@drenmi][])
 
 ### Changes
 

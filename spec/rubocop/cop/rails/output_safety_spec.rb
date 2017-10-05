@@ -10,11 +10,21 @@ describe RuboCop::Cop::Rails::OutputSafety do
             ^^^^^^^^^^^ Tagging a string as html safe may be a security risk.
       RUBY
     end
+
     it 'registers an offense when wrapped inside `#safe_join`' do
       expect_offense(<<-RUBY.strip_indent)
         safe_join([i18n_text.safe_concat(i18n_text)])
                              ^^^^^^^^^^^ Tagging a string as html safe may be a security risk.
       RUBY
+    end
+
+    context 'when using safe navigation operator', :ruby23 do
+      it 'registers an offense' do
+        expect_offense(<<-RUBY.strip_indent)
+          foo&.safe_concat('bar')
+               ^^^^^^^^^^^ Tagging a string as html safe may be a security risk.
+        RUBY
+      end
     end
   end
 
@@ -55,6 +65,15 @@ describe RuboCop::Cop::Rails::OutputSafety do
         foo(safe_join([i18n_text.html_safe, "bar"]))
                                  ^^^^^^^^^ Tagging a string as html safe may be a security risk.
       RUBY
+    end
+
+    context 'when using safe navigation operator', :ruby23 do
+      it 'registers an offense for variable receiver and no argument' do
+        expect_offense(<<-RUBY.strip_indent)
+          foo&.html_safe
+               ^^^^^^^^^ Tagging a string as html safe may be a security risk.
+        RUBY
+      end
     end
   end
 
