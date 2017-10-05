@@ -40,6 +40,18 @@ describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
         RUBY
       end
     end
+
+    context 'with_options dependent: :destroy' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          class Person
+            with_options dependent: :destroy do
+              has_one :foo
+            end
+          end
+        RUBY
+      end
+    end
   end
 
   context 'has_many' do
@@ -76,6 +88,29 @@ describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
           has_many :foo, through: nil
           ^^^^^^^^ Specify a `:dependent` option.
         end
+        RUBY
+      end
+    end
+
+    context 'Surrounded `with_options` block' do
+      it 'registers an offense when `dependent: :destroy` is not present' do
+        expect_offense(<<-RUBY.strip_indent)
+          class Person
+            with_options through: nil do
+              has_many :foo
+              ^^^^^^^^ Specify a `:dependent` option.
+            end
+          end
+        RUBY
+      end
+
+      it "doesn't register an offense for `with_options dependent: :destroy`" do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          class Person
+            with_options dependent: :destroy do
+              has_many :foo
+            end
+          end
         RUBY
       end
     end
