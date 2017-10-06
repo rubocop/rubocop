@@ -12,6 +12,7 @@
 * Add `IndentationWidth` configuration for `Layout/Tab` cop. ([@rrosenblum][])
 * [#4854](https://github.com/bbatsov/rubocop/pull/4854): Add new `Lint/RegexpAsCondition` cop. ([@pocke][])
 * [#4862](https://github.com/bbatsov/rubocop/pull/4862): Add `MethodDefineMacros` option to `Naming/PredicateName` cop. ([@koic][])
+* [#4840](https://github.com/bbatsov/rubocop/pull/4840): Add new `Style/MixinUsage` cop. ([@koic][])
 
 ### Bug fixes
 
