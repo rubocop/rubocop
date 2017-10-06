@@ -408,6 +408,7 @@ In the following section you find all available cops:
 * [Style/MinMax](cops_style.md#styleminmax)
 * [Style/MissingElse](cops_style.md#stylemissingelse)
 * [Style/MixinGrouping](cops_style.md#stylemixingrouping)
+* [Style/MixinUsage](cops_style.md#stylemixinusage)
 * [Style/ModuleFunction](cops_style.md#stylemodulefunction)
 * [Style/MultilineBlockChain](cops_style.md#stylemultilineblockchain)
 * [Style/MultilineIfModifier](cops_style.md#stylemultilineifmodifier)
