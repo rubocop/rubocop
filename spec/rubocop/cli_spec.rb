@@ -295,7 +295,7 @@ describe RuboCop::CLI, :isolated_environment do
                    'end'])
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       expect($stderr.string)
-        .to eq(["#{abs('example.rb')}: Style/LineLength has the wrong " \
+        .to eq(['example.rb: Style/LineLength has the wrong ' \
                 'namespace - should be Metrics',
                 ''].join("\n"))
       # 3 cops were disabled, then 2 were enabled again, so we
@@ -1436,8 +1436,8 @@ describe RuboCop::CLI, :isolated_environment do
 
       expect(cli.run(%w[--format simple example])).to eq(1)
       expect($stderr.string)
-        .to eq(['Warning: unrecognized cop Style/LyneLenth found in ' +
-                abs('example/.rubocop.yml'),
+        .to eq(['Warning: unrecognized cop Style/LyneLenth found in ' \
+                'example/.rubocop.yml',
                 ''].join("\n"))
     end
 
@@ -1453,7 +1453,7 @@ describe RuboCop::CLI, :isolated_environment do
       expect(cli.run(%w[--format simple example])).to eq(1)
       expect($stderr.string)
         .to eq(['Warning: unrecognized parameter Metrics/LineLength:Min ' \
-                'found in ' + abs('example/.rubocop.yml'),
+                'found in example/.rubocop.yml',
                 ''].join("\n"))
     end
 
@@ -1467,8 +1467,8 @@ describe RuboCop::CLI, :isolated_environment do
       expect(cli.run(%w[--format simple example])).to eq(2)
       expect($stderr.string)
         .to eq(["Error: invalid EnforcedStyle 'context' for " \
-                'Style/BracesAroundHashParameters found in ' +
-                abs('example/.rubocop.yml'),
+                'Style/BracesAroundHashParameters found in ' \
+                'example/.rubocop.yml',
                 'Valid choices are: braces, no_braces, context_dependent',
                 ''].join("\n"))
     end
@@ -1678,7 +1678,7 @@ describe RuboCop::CLI, :isolated_environment do
           ['Error: The `Style/TrailingComma` cop no longer exists. Please ' \
            'use `Style/TrailingCommaInLiteral` and/or ' \
            '`Style/TrailingCommaInArguments` instead.',
-           "(obsolete configuration found in #{abs('.rubocop.yml')}, " \
+           '(obsolete configuration found in .rubocop.yml, ' \
            'please update it)'].join("\n")
         )
       end
