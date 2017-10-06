@@ -377,7 +377,7 @@ module RuboCop
         next if Cop::Cop.registry.contains_cop_matching?([name])
 
         warn Rainbow("Warning: unrecognized cop #{name} found in " \
-                     "#{loaded_path}").yellow
+                     "#{smart_loaded_path}").yellow
       end
     end
 
@@ -386,13 +386,14 @@ module RuboCop
                     valid_cop_names.include?('Syntax')
 
       raise ValidationError,
-            "configuration for Syntax cop found in #{loaded_path}\n" \
+            "configuration for Syntax cop found in #{smart_loaded_path}\n" \
             'This cop cannot be configured.'
     end
 
     def validate_section_presence(name)
       return unless key?(name) && self[name].nil?
-      raise ValidationError, "empty section #{name} found in #{loaded_path}"
+      raise ValidationError,
+            "empty section #{name} found in #{smart_loaded_path}"
     end
 
     def validate_parameter_names(valid_cop_names)
@@ -403,7 +404,7 @@ module RuboCop
                   ConfigLoader.default_configuration[name].key?(param)
 
           warn Rainbow("Warning: unrecognized parameter #{name}:#{param} " \
-                       "found in #{loaded_path}").yellow
+                       "found in #{smart_loaded_path}").yellow
         end
       end
     end
@@ -419,7 +420,7 @@ module RuboCop
           next if valid.include?(style)
 
           msg = "invalid #{style_name} '#{style}' for #{name} found in " \
-            "#{loaded_path}\n" \
+            "#{smart_loaded_path}\n" \
             "Valid choices are: #{valid.join(', ')}"
           raise ValidationError, msg
         end
@@ -447,15 +448,15 @@ module RuboCop
       return unless self[cop] && self[cop].key?(parameter)
 
       "obsolete parameter #{parameter} (for #{cop}) " \
-        "found in #{loaded_path}" \
+        "found in #{smart_loaded_path}" \
         "\n#{alternative}"
     end
 
     def obsolete_cops
       OBSOLETE_COPS.map do |cop_name, message|
         next unless key?(cop_name) || key?(Cop::Badge.parse(cop_name).cop_name)
-        message + "\n(obsolete configuration found in #{loaded_path}, please" \
-                   ' update it)'
+        message + "\n(obsolete configuration found in #{smart_loaded_path}," \
+                   ' please update it)'
       end
     end
 
@@ -482,7 +483,7 @@ module RuboCop
       when :dot_ruby_version
         '`.ruby-version`'
       when :rubocop_yml
-        "`TargetRubyVersion` parameter (in #{loaded_path})"
+        "`TargetRubyVersion` parameter (in #{smart_loaded_path})"
       end
     end
 
@@ -507,6 +508,10 @@ module RuboCop
       end
 
       cop_options.fetch('Enabled', true)
+    end
+
+    def smart_loaded_path
+      PathUtil.smart_path(@loaded_path)
     end
   end
 end
