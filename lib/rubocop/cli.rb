@@ -35,7 +35,7 @@ module RuboCop
       return 2
     rescue Finished
       return 0
-    rescue StandardError, SyntaxError => e
+    rescue StandardError, SyntaxError, LoadError => e
       warn e.message
       warn e.backtrace
       return 2

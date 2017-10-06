@@ -1646,6 +1646,25 @@ describe RuboCop::CLI, :isolated_environment do
     end
   end
 
+  context 'configuration of `require`' do
+    context 'unknown library is specified' do
+      it 'exits with 2' do
+        create_file('.rubocop.yml', <<-YAML.strip_indent)
+          require: unknownlibrary
+        YAML
+
+        regexp =
+          if RUBY_ENGINE == 'jruby'
+            /no such file to load -- unknownlibrary/
+          else
+            /cannot load such file -- unknownlibrary/
+          end
+        expect(cli.run([])).to eq(2)
+        expect($stderr.string).to match(regexp)
+      end
+    end
+  end
+
   describe 'obsolete cops' do
     context 'when configuration for TrailingComma is given' do
       it 'fails with an error message' do
