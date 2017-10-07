@@ -9,6 +9,7 @@
 * [#4813](https://github.com/bbatsov/rubocop/pull/4813): Add new `Style/StderrPuts` cop. ([@koic][])
 * [#4796](https://github.com/bbatsov/rubocop/pull/4796): Add new `Lint/RedundantWithObject` cop. ([@koic][])
 * [#4663](https://github.com/bbatsov/rubocop/issues/4663): Add new `Style/CommentedKeyword` cop. ([@donjar][])
+* Add `IndentationWidth` configuration for `Layout/Tab` cop. ([@rrosenblum][])
 
 ### Bug fixes
 

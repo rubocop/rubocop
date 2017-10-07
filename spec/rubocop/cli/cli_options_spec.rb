@@ -679,8 +679,7 @@ describe RuboCop::CLI, :isolated_environment do
            '  Description: No hard tabs.',
            /^  StyleGuide: ('|")#spaces-indentation('|")$/,
            '  Enabled: true',
-           '',
-           ''].join("\n")
+           '  IndentationWidth:'].join("\n")
         )
       end
 
@@ -701,9 +700,7 @@ describe RuboCop::CLI, :isolated_environment do
            'Layout/Tab:',
            '  Description: No hard tabs.',
            /^  StyleGuide: ('|")#spaces-indentation('|")$/,
-           '  Enabled: true',
-           '',
-           ''].join("\n")
+           '  Enabled: true'].join("\n")
         )
       end
     end

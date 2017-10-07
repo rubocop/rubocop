@@ -531,6 +531,13 @@ Layout/SpaceInsideStringInterpolation:
     - space
     - no_space
 
+Layout/Tab:
+  # By default, the indentation width from Layout/IndentationWidth is used
+  # But it can be overridden by setting this parameter
+  # It is used during auto-correction to determine how many spaces should
+  # replace each tab.
+  IndentationWidth: ~
+
 Layout/TrailingBlankLines:
   EnforcedStyle: final_newline
   SupportedStyles:
