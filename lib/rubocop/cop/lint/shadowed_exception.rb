@@ -77,7 +77,17 @@ module RuboCop
             return !(group.size == 2 && group.include?(NilClass))
           end
 
-          group.combination(2).any? { |a, b| a && b && a <=> b }
+          group.combination(2).any? { |a, b|
+            if system_call_error?(a) && system_call_error?(b)
+              a.const_get(:Errno) != b.const_get(:Errno)
+            else
+              a && b && a <=> b
+            end
+          }
+        end
+
+        def system_call_error?(error)
+          error && error.ancestors[1] == SystemCallError
         end
 
         def evaluate_exceptions(rescue_group)
