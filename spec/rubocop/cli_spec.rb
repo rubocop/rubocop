@@ -1523,9 +1523,10 @@ describe RuboCop::CLI, :isolated_environment do
         expect($stdout.string).to eq(<<-RESULT.strip_indent)
             == example/example1.rb ==
             C:  1: 11: Avoid parameter lists longer than 5 parameters. [6/5]
+            C:  1: 34: Do not place comments on the same line as the def keyword.
             E:  1: 81: Line is too long. [90/80]
 
-            1 file inspected, 2 offenses detected
+            1 file inspected, 3 offenses detected
         RESULT
         expect($stderr.string).to eq('')
       end
