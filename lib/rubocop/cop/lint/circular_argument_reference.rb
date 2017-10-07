@@ -61,19 +61,8 @@ module RuboCop
         private
 
         def check_for_circular_argument_references(arg_name, arg_value)
-          case arg_value.type
-          when :send
-            # Ruby 2.0 will have type send every time, and "send nil" if it is
-            # calling itself with a specified "self" receiver
-            receiver, name = *arg_value
-            return unless name == arg_name && receiver.nil?
-          when :lvar
-            # Ruby 2.2.2 will have type lvar if it is calling its own method
-            # without a specified "self"
-            return unless arg_value.to_a == [arg_name]
-          else
-            return
-          end
+          return unless arg_value.lvar_type?
+          return unless arg_value.to_a == [arg_name]
 
           add_offense(arg_value, message: format(MSG, arg_name))
         end
