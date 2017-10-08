@@ -84,7 +84,7 @@ module RuboCop
 
         def compare_exceptions(a, b)
           if system_call_error?(a) && system_call_error?(b)
-            a.const_get(:Errno) != b.const_get(:Errno)
+            a.const_get(:Errno) != b.const_get(:Errno) && a <=> b
           else
             a && b && a <=> b
           end

@@ -60,15 +60,16 @@ describe RuboCop::Cop::Lint::ShadowedException do
       RUBY
     end
 
-    it 'accepts rescuing multiple same error code exceptions' do
+    it 'accepts rescuing contain multiple same error code exceptions' do
       # System dependent error code depends on runtime environment.
       stub_const('Errno::EAGAIN::Errno', 35)
       stub_const('Errno::EWOULDBLOCK::Errno', 35)
+      stub_const('Errno::ECONNABORTED::Errno', 53)
 
       expect_no_offenses(<<-RUBY.strip_indent)
         begin
           something
-        rescue Errno::EAGAIN, Errno::EWOULDBLOCK
+        rescue Errno::EAGAIN, Errno::EWOULDBLOCK, Errno::ECONNABORTED
           handle_exception
         end
       RUBY
