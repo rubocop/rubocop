@@ -116,12 +116,6 @@ module RuboCop
         def rescued_exceptions(rescue_group)
           klasses = *rescue_group
           klasses.map do |klass|
-            # `rescue nil` is valid syntax in all versions of Ruby. In Ruby
-            # 1.9.3, it effectively disables the `rescue`. In versions
-            # after 1.9.3, a `TypeError` is thrown when the statement is
-            # rescued. In order to account for this, we convert `nil` to
-            # `NilClass`.
-            next 'NilClass' if klass.nil_type?
             next unless klass.const_type?
             klass.source
           end.compact
