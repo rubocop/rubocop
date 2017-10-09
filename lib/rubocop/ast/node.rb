@@ -314,15 +314,16 @@ module RuboCop
       ## Predicates
 
       def multiline?
-        source_range && (source_range.first_line != source_range.last_line)
+        line_count > 1
       end
 
       def single_line?
         !multiline?
       end
 
-      def two_lines?
-        source_range && (source_range.last_line - source_range.first_line == 1)
+      def line_count
+        return 0 unless source_range
+        (source_range.last_line - source_range.first_line) + 1
       end
 
       def asgn_method_call?
