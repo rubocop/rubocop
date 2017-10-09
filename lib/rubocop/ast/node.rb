@@ -321,6 +321,10 @@ module RuboCop
         !multiline?
       end
 
+      def two_lines?
+        source_range && (source_range.last_line - source_range.first_line == 1)
+      end
+
       def asgn_method_call?
         !COMPARISON_OPERATORS.include?(method_name) &&
           method_name.to_s.end_with?('='.freeze)

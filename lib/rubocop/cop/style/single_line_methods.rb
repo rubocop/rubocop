@@ -11,8 +11,8 @@ module RuboCop
         MSG = 'Avoid single-line method definitions.'.freeze
 
         def on_def(node)
-          return unless node.single_line?
           return if allow_empty? && !node.body
+          return unless node.single_line? || node.two_lines?
 
           add_offense(node)
         end
