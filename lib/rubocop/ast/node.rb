@@ -323,7 +323,7 @@ module RuboCop
 
       def line_count
         return 0 unless source_range
-        (source_range.last_line - source_range.first_line) + 1
+        source_range.last_line - source_range.first_line + 1
       end
 
       def asgn_method_call?
