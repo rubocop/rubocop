@@ -3,8 +3,9 @@
 module RuboCop
   module Cop
     module Performance
-      # This cop identifies use of `Regexp#match` or `String#match` in a context
-      # where the integral return value of `=~` would do just as well.
+      # This cop identifies the use of `Regexp#match` or `String#match`, which
+      # returns `#<MatchData>`/`nil`. The return value of `=~` is an integral
+      # index/`nil` and is more performant.
       #
       # @example
       #   @bad
@@ -14,8 +15,8 @@ module RuboCop
       #   end
       #
       #   @good
-      #   method(str.match(/regex/))
-      #   return regex.match('str')
+      #   method(str =~ /regex/)
+      #   return value unless regex =~ 'str'
       class RedundantMatch < Cop
         MSG = 'Use `=~` in places where the `MatchData` returned by ' \
               '`#match` will not be used.'.freeze
