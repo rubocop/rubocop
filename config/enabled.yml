@@ -1338,6 +1338,12 @@ Lint/RedundantWithObject:
   Description: 'Checks for redundant `with_object`.'
   Enabled: true
 
+Lint/RegexpInCondition:
+  Description: >-
+                 Do not use regexp literal in condition.
+                 The regexp literal matches `$_` implicitly.
+  Enabled: true
+
 Lint/RequireParentheses:
   Description: >-
                  Use parentheses in the method call to avoid confusion
