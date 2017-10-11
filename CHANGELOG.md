@@ -10,6 +10,7 @@
 * [#4796](https://github.com/bbatsov/rubocop/pull/4796): Add new `Lint/RedundantWithObject` cop. ([@koic][])
 * [#4663](https://github.com/bbatsov/rubocop/issues/4663): Add new `Style/CommentedKeyword` cop. ([@donjar][])
 * Add `IndentationWidth` configuration for `Layout/Tab` cop. ([@rrosenblum][])
+* [#4854](https://github.com/bbatsov/rubocop/pull/4854): Add new `Lint/RegexpInCondition` cop. ([@pocke][])
 
 ### Bug fixes
 
