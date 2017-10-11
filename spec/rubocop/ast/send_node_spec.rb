@@ -858,4 +858,24 @@ describe RuboCop::AST::SendNode do
       it { expect(send_node.def_modifier?).to be_truthy }
     end
   end
+
+  describe '#negation_method?' do
+    context 'with keyword `not`' do
+      let(:source) { 'not foo' }
+
+      it { expect(send_node).to be_negation_method }
+    end
+
+    context 'with bang method' do
+      let(:source) { '!foo' }
+
+      it { expect(send_node).to be_negation_method }
+    end
+
+    context 'with normal method' do
+      let(:source) { 'foo.bar' }
+
+      it { expect(send_node).not_to be_negation_method }
+    end
+  end
 end
