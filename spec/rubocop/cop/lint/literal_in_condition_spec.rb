@@ -131,6 +131,20 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
       RUBY
       expect(cop.offenses).to be_empty
     end
+
+    it "registers an offense for `!#{lit}`" do
+      inspect_source(<<-RUBY.strip_indent)
+        !#{lit}
+      RUBY
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it "registers an offense for `not #{lit}`" do
+      inspect_source(<<-RUBY.strip_indent)
+        !#{lit}
+      RUBY
+      expect(cop.offenses.size).to eq(1)
+    end
   end
 
   it 'accepts array literal in case, if it has non-literal elements' do

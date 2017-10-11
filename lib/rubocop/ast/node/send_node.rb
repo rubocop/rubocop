@@ -16,6 +16,10 @@ module RuboCop
       def node_parts
         to_a
       end
+
+      def negation_method?
+        keyword_bang? || keyword_not?
+      end
     end
   end
 end

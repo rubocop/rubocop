@@ -39,6 +39,7 @@
 * [#4787](https://github.com/bbatsov/rubocop/pull/4787): Analyzing code that needs to support MRI 2.0 is no longer supported. ([@deivid-rodriguez][])
 * [#4787](https://github.com/bbatsov/rubocop/pull/4787): RuboCop no longer installs on MRI 2.0. ([@deivid-rodriguez][])
 * [#4266](https://github.com/bbatsov/rubocop/issues/4266): Download the inherited config files of a remote file from the same remote. ([@tdeo][])
+* [#4853](https://github.com/bbatsov/rubocop/pull/4853): Make `Lint/LiteralInCondition` cop aware of `!` and `not`. ([@pocke][])
 
 ## 0.50.0 (2017-09-14)
 
