@@ -366,6 +366,7 @@ In the following section you find all available cops:
 * [Style/CommentedKeyword](cops_style.md#stylecommentedkeyword)
 * [Style/ConditionalAssignment](cops_style.md#styleconditionalassignment)
 * [Style/Copyright](cops_style.md#stylecopyright)
+* [Style/DateTime](cops_style.md#styledatetime)
 * [Style/DefWithParentheses](cops_style.md#styledefwithparentheses)
 * [Style/Dir](cops_style.md#styledir)
 * [Style/Documentation](cops_style.md#styledocumentation)

@@ -13,6 +13,7 @@
 * [#4854](https://github.com/bbatsov/rubocop/pull/4854): Add new `Lint/RegexpAsCondition` cop. ([@pocke][])
 * [#4862](https://github.com/bbatsov/rubocop/pull/4862): Add `MethodDefineMacros` option to `Naming/PredicateName` cop. ([@koic][])
 * [#4840](https://github.com/bbatsov/rubocop/pull/4840): Add new `Style/MixinUsage` cop. ([@koic][])
+* [#1952](https://github.com/bbatsov/rubocop/issues/1952): Add new `Style/DateTime` cop. ([@dpostorivo][])
 
 ### Bug fixes
 
