@@ -31,7 +31,7 @@ module RuboCop
           (pair (sym :null) (false))
         PATTERN
 
-        def_node_matcher :has_default?, <<-PATTERN
+        def_node_matcher :default_option?, <<-PATTERN
           (pair (sym :default) !nil)
         PATTERN
 
@@ -54,7 +54,7 @@ module RuboCop
 
         def check_pairs(pairs)
           return unless pairs
-          return if pairs.any? { |pair| has_default?(pair) }
+          return if pairs.any? { |pair| default_option?(pair) }
 
           null_false = pairs.find { |pair| null_false?(pair) }
           return unless null_false
