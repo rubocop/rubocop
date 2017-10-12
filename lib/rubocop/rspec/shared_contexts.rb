@@ -45,7 +45,12 @@ shared_context 'config', :config do
     hash['Rails'] = { 'Enabled' => true } if enabled_rails
     hash['AllCops']['TargetRailsVersion'] = rails_version if rails_version
     if respond_to?(:cop_config)
-      cop_name = described_class.cop_name
+      cop_name = if respond_to?(:transpose_configure_cop_name)
+                   transpose_configure_cop_name
+                 else
+                   described_class.cop_name
+                 end
+
       hash[cop_name] = RuboCop::ConfigLoader
                        .default_configuration[cop_name]
                        .merge(cop_config)
