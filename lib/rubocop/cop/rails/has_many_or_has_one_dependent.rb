@@ -23,19 +23,19 @@ module RuboCop
       class HasManyOrHasOneDependent < Cop
         MSG = 'Specify a `:dependent` option.'.freeze
 
-        def_node_matcher :has_many_or_has_one_without_options?, <<-PATTERN
+        def_node_matcher :association_without_options?, <<-PATTERN
           (send nil? {:has_many :has_one} _)
         PATTERN
 
-        def_node_matcher :has_many_or_has_one_with_options?, <<-PATTERN
+        def_node_matcher :association_with_options?, <<-PATTERN
           (send nil? {:has_many :has_one} _ (hash $...))
         PATTERN
 
-        def_node_matcher :has_dependent?, <<-PATTERN
+        def_node_matcher :dependent_option?, <<-PATTERN
           (pair (sym :dependent) !nil)
         PATTERN
 
-        def_node_matcher :has_through?, <<-PATTERN
+        def_node_matcher :present_option?, <<-PATTERN
           (pair (sym :through) !nil)
         PATTERN
 
@@ -47,8 +47,8 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          if !has_many_or_has_one_without_options?(node)
-            return if valid_options?(has_many_or_has_one_with_options?(node))
+          if !association_without_options?(node)
+            return if valid_options?(association_with_options?(node))
           elsif with_options_block(node.parent)
             return if valid_options?(with_options_block(node.parent))
           end
@@ -61,7 +61,7 @@ module RuboCop
         def valid_options?(options)
           return true unless options
           return true if options.any? do |o|
-            has_dependent?(o) || has_through?(o)
+            dependent_option?(o) || present_option?(o)
           end
 
           false
