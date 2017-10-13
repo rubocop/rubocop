@@ -120,21 +120,25 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     end
 
     context 'when an underscore-prefixed method argument is unused' do
+      let(:source) { <<-RUBY.strip_indent }
+        def some_method(_foo)
+        end
+      RUBY
+
       it 'accepts' do
-        expect_no_offenses(<<-RUBY.strip_indent)
-          def some_method(_foo)
-          end
-        RUBY
+        expect_no_offenses(source)
       end
     end
 
     context 'when a method argument is used' do
+      let(:source) { <<-RUBY.strip_indent }
+        def some_method(foo)
+          puts foo
+        end
+      RUBY
+
       it 'accepts' do
-        expect_no_offenses(<<-RUBY.strip_indent)
-          def some_method(foo)
-            puts foo
-          end
-        RUBY
+        expect_no_offenses(source)
       end
     end
 
@@ -212,21 +216,25 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     end
 
     context 'when a variable is unused' do
+      let(:source) { <<-RUBY.strip_indent }
+        def some_method
+          foo = 1
+        end
+      RUBY
+
       it 'does not care' do
-        expect_no_offenses(<<-RUBY.strip_indent)
-          def some_method
-            foo = 1
-          end
-        RUBY
+        expect_no_offenses(source)
       end
     end
 
     context 'when a block argument is unused' do
+      let(:source) { <<-RUBY.strip_indent }
+        1.times do |foo|
+        end
+      RUBY
+
       it 'does not care' do
-        expect_no_offenses(<<-RUBY.strip_indent)
-          1.times do |foo|
-          end
-        RUBY
+        expect_no_offenses(source)
       end
     end
 
@@ -264,12 +272,14 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     end
 
     context 'in a method calling `binding` without arguments' do
+      let(:source) { <<-RUBY.strip_indent }
+        def some_method(foo, bar)
+          do_something binding
+        end
+      RUBY
+
       it 'accepts all arguments' do
-        expect_no_offenses(<<-RUBY.strip_indent)
-          def some_method(foo, bar)
-            do_something binding
-          end
-        RUBY
+        expect_no_offenses(source)
       end
 
       context 'inside another method definition' do
