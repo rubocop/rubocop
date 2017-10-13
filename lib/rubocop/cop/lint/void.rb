@@ -3,8 +3,8 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for operators, variables and literals used
-      # in void context.
+      # This cop checks for operators, variables, literals, and nonmutating
+      # methods used in void context.
       #
       # @example
       #
@@ -26,6 +26,15 @@ module RuboCop
       #
       # @example
       #
+      #   # bad, when CheckForMethodsWithNoSideEffects is set true
+      #
+      #   def some_method(some_array)
+      #     some_array.sort
+      #     do_something(some_array)
+      #   end
+      #
+      # @example
+      #
       #   # good
       #
       #   def some_method
@@ -40,6 +49,15 @@ module RuboCop
       #   def some_method(some_var)
       #     do_something
       #     some_var
+      #   end
+      #
+      # @example
+      #
+      #   # good, when CheckForMethodsWithNoSideEffects is set true
+      #
+      #   def some_method(some_array)
+      #     some_array.sort!
+      #     do_something(some_array)
       #   end
       class Void < Cop
         OP_MSG = 'Operator `%<op>s` used in void context.'.freeze
@@ -47,11 +65,19 @@ module RuboCop
         LIT_MSG = 'Literal `%<lit>s` used in void context.'.freeze
         SELF_MSG = '`self` used in void context.'.freeze
         DEFINED_MSG = '`%<defined>s` used in void context.'.freeze
+        NONMUTATING_MSG = 'Method `#%<method>s` used in void context. ' \
+          'Did you mean `#%<method>s!`?'.freeze
 
         BINARY_OPERATORS = %i[* / % + - == === != < > <= >= <=>].freeze
         UNARY_OPERATORS = %i[+@ -@ ~ !].freeze
         OPERATORS = (BINARY_OPERATORS + UNARY_OPERATORS).freeze
         VOID_CONTEXT_TYPES = %i[def for block].freeze
+        NONMUTATING_METHODS = %i[capitalize chomp chop collect compact downcase
+                                 encode flatten gsub lstrip map next reject
+                                 reverse rotate rstrip scrub select shuffle
+                                 slice sort sort_by squeeze strip sub succ
+                                 swapcase tr tr_s transform_values
+                                 unicode_normalize uniq upcase].freeze
 
         def on_begin(node)
           check_begin(node)
@@ -69,6 +95,9 @@ module RuboCop
             check_var(expr)
             check_self(expr)
             check_defined(expr)
+            if cop_config['CheckForMethodsWithNoSideEffects']
+              check_nonmutating(expr)
+            end
           end
         end
 
@@ -104,6 +133,16 @@ module RuboCop
           return unless node.defined_type?
 
           add_offense(node, message: format(DEFINED_MSG, defined: node.source))
+        end
+
+        def check_nonmutating(node)
+          unless node.send_type? &&
+                 NONMUTATING_METHODS.include?(node.method_name)
+            return
+          end
+
+          add_offense(node, message: format(NONMUTATING_MSG,
+                                            method: node.method_name))
         end
 
         def in_void_context?(node)
