@@ -458,6 +458,13 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       RUBY
     end
 
+    it 'accepts an empty singleton method with a single unused parameter' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def self.method(unused)
+        end
+      RUBY
+    end
+
     it 'registers an offense for a non-empty method with a single unused ' \
         'parameter' do
 
