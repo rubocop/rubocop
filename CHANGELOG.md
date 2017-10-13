@@ -21,6 +21,7 @@
 * [#4909](https://github.com/bbatsov/rubocop/issues/4909): Make `Rails/HasManyOrHasOneDependent` aware of multiple associations in `with_options`. ([@koic][])
 * [#4794](https://github.com/bbatsov/rubocop/issues/4794): Fix an error in `Layout/MultilineOperationIndentation` when an operation spans multiple lines and contains a ternary expression. ([@rrosenblum][])
 * [#4885](https://github.com/bbatsov/rubocop/issues/4885): Fix false offense detected by `Style/MixinUsage` cop. ([@koic][])
+* [#4252](https://github.com/bbatsov/rubocop/issues/4252): Register an offense for a trailing body on definition line in `Style/SingleLineMethod`. ([@garettarrowood][])
 
 ### Changes
 
@@ -69,7 +70,6 @@
 * [#4597](https://github.com/bbatsov/rubocop/pull/4597): Fix `Style/StringLiterals` cop not registering an offense on single quoted strings containing an escaped single quote when configured to use double quotes. ([@promisedlandt][])
 * [#4850](https://github.com/bbatsov/rubocop/issues/4850): `Lint/UnusedMethodArgument` respects `IgnoreEmptyMethods` setting by ignoring unused method arguments for singleton methods. ([@jmks][])
 * [#2040](https://github.com/bbatsov/rubocop/issues/2040): Document how to write a custom cop. ([@jonatas][])
-* [#4252](https://github.com/bbatsov/rubocop/issues/4252): Raise `Style/SingleLineMethod` offense when trailing body on definition line. ([@garettarrowood][])
 
 ### Changes
 
