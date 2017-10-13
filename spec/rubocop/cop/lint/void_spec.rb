@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::Void do
-  subject(:cop) { described_class.new }
+  subject(:cop) { described_class.new(config) }
+
+  let(:config) { RuboCop::Config.new }
 
   described_class::BINARY_OPERATORS.each do |op|
     it "registers an offense for void op #{op} if not on last line" do
@@ -86,6 +88,49 @@ RSpec.describe RuboCop::Cop::Lint::Void do
       ^^^^^^^^^^^ `defined?(x)` used in void context.
       top
     RUBY
+  end
+
+  context 'when checking for methods with no side effects' do
+    let(:config) do
+      RuboCop::Config.new(
+        'Lint/Void' => {
+          'CheckForMethodsWithNoSideEffects' => true
+        }
+      )
+    end
+
+    it 'registers an offense if not on last line' do
+      expect_offense(<<-RUBY.strip_indent)
+        x.sort
+        ^^^^^^ Method `#sort` used in void context. Did you mean `#sort!`?
+        top(x)
+      RUBY
+    end
+
+    it 'registers an offense for chained methods' do
+      expect_offense(<<-RUBY.strip_indent)
+        x.sort.flatten
+        ^^^^^^^^^^^^^^ Method `#flatten` used in void context. Did you mean `#flatten!`?
+        top(x)
+      RUBY
+    end
+  end
+
+  context 'when not checking for methods with no side effects' do
+    let(:config) do
+      RuboCop::Config.new(
+        'Lint/Void' => {
+          'CheckForMethodsWithNoSideEffects' => false
+        }
+      )
+    end
+
+    it 'does not register an offense for void nonmutating methods' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        x.sort
+        top(x)
+      RUBY
+    end
   end
 
   it 'registers an offense for void literal in a method definition' do

@@ -1572,6 +1572,9 @@ Lint/UnusedMethodArgument:
   AllowUnusedKeywordArguments: false
   IgnoreEmptyMethods: true
 
+Lint/Void:
+  CheckForMethodsWithNoSideEffects: false
+
 #################### Performance ###########################
 
 Performance/DoubleStartEndWith:

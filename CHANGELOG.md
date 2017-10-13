@@ -199,6 +199,7 @@
 * [#4874](https://github.com/bbatsov/rubocop/pull/4874): Add new `Gemspec/OrderedDependencies` cop. ([@sue445][])
 * [#4840](https://github.com/bbatsov/rubocop/pull/4840): Add new `Style/MixinUsage` cop. ([@koic][])
 * [#1952](https://github.com/bbatsov/rubocop/issues/1952): Add new `Style/DateTime` cop. ([@dpostorivo][])
+* [#4727](https://github.com/bbatsov/rubocop/issues/4727): Make `Lint/Void` check for nonmutating methods as well. ([@donjar][])
 
 ### Bug fixes
 
