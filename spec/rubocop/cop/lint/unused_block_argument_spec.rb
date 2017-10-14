@@ -4,189 +4,171 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) { { 'AllowUnusedKeywordArguments' => false } }
 
-  context 'inspection' do
-    before do
-      inspect_source(source)
-    end
+  shared_examples 'auto-correction' do |name, old_source, new_source|
+    it "auto-corrects #{name}" do
+      corrected_source = autocorrect_source(old_source)
 
+      expect(corrected_source).to eq(new_source)
+    end
+  end
+
+  context 'inspection' do
     context 'when a block takes multiple arguments' do
       context 'and an argument is unused' do
-        let(:source) { <<-RUBY }
-          hash = { foo: 'FOO', bar: 'BAR' }
-          hash.each do |key, value|
-            puts key
-          end
-        RUBY
-
         it 'registers an offense' do
-          expect(cop.offenses.size).to eq(1)
-          expect(cop.offenses.first.message).to eq(
-            'Unused block argument - `value`. ' \
-            "If it's necessary, use `_` or `_value` as an argument name " \
-            "to indicate that it won't be used."
-          )
-          expect(cop.offenses.first.severity.name).to eq(:warning)
-          expect(cop.offenses.first.line).to eq(2)
-          expect(cop.highlights).to eq(['value'])
+          message = "Unused block argument - `value`. If it's " \
+                      'necessary, use `_` or `_value` as an argument ' \
+                      "name to indicate that it won't be used."
+
+          expect_offense(<<-RUBY.strip_indent)
+            hash.each do |key, value|
+                               ^^^^^ #{message}
+              puts key
+            end
+          RUBY
         end
       end
 
       context 'and arguments are swap-assigned' do
-        let(:source) { <<-RUBY }
-          hash.each do |key, value|
-            key, value = value, key
-          end
-        RUBY
-
         it 'accepts' do
-          expect_no_offenses(source)
+          expect_no_offenses(<<-RUBY.strip_indent)
+            hash.each do |key, value|
+              key, value = value, key
+            end
+          RUBY
         end
       end
 
       context "and one argument is assigned to another, whilst other's value " \
                 'is not used' do
-        let(:source) { <<-RUBY }
-          hash.each do |key, value|
-            key, value = value, 42
-          end
-        RUBY
-
         it 'registers an offense' do
-          expect(cop.offenses.size).to eq(1)
-          expect(cop.offenses.first.message).to eq(
-            'Unused block argument - `key`. ' \
-              "If it's necessary, use `_` or `_key` as an argument name " \
-              "to indicate that it won't be used."
-          )
-          expect(cop.offenses.first.severity.name).to eq(:warning)
-          expect(cop.offenses.first.line).to eq(1)
-          expect(cop.highlights).to eq(['key'])
+          message = 'Unused block argument - `key`. ' \
+                    "If it's necessary, use `_` or `_key` as an argument " \
+                    "name to indicate that it won't be used."
+
+          expect_offense(<<-RUBY.strip_indent)
+            hash.each do |key, value|
+                          ^^^ #{message}
+              key, value = value, 42
+            end
+          RUBY
         end
       end
 
       context 'and all the arguments are unused' do
-        let(:source) { <<-RUBY }
-          hash = { foo: 'FOO', bar: 'BAR' }
-          hash.each do |key, value|
-            puts :something
-          end
-        RUBY
-
         it 'registers offenses and suggests omitting them' do
-          expect(cop.offenses.size).to eq(2)
-          expect(cop.offenses.first.message).to eq(
-            'Unused block argument - `key`. ' \
-            "You can omit all the arguments if you don't care about them."
-          )
-          expect(cop.offenses.first.line).to eq(2)
-          expect(cop.highlights).to eq(%w[key value])
+          (key_message, value_message) = %w[key value].map do |arg|
+            "Unused block argument - `#{arg}`. You can omit all the " \
+             "arguments if you don't care about them."
+          end
+
+          expect_offense(<<-RUBY.strip_indent)
+            hash = { foo: 'FOO', bar: 'BAR' }
+            hash.each do |key, value|
+                               ^^^^^ #{value_message}
+                          ^^^ #{key_message}
+              puts :something
+            end
+          RUBY
         end
       end
     end
 
     context 'when a block takes single argument' do
       context 'and the argument is unused' do
-        let(:source) { <<-RUBY }
-          1.times do |index|
-            puts :something
-          end
-        RUBY
-
         it 'registers an offense and suggests omitting that' do
-          expect(cop.offenses.size).to eq(1)
-          expect(cop.offenses.first.message).to eq(
-            'Unused block argument - `index`. ' \
-            "You can omit the argument if you don't care about it."
-          )
-          expect(cop.offenses.first.line).to eq(1)
-          expect(cop.highlights).to eq(['index'])
+          message = 'Unused block argument - `index`. ' \
+                      "You can omit the argument if you don't care about it."
+
+          expect_offense(<<-RUBY.strip_indent)
+            1.times do |index|
+                        ^^^^^ #{message}
+              puts :something
+            end
+          RUBY
         end
       end
 
       context 'and the method call is `define_method`' do
-        let(:source) { <<-RUBY }
-          define_method(:foo) do |bar|
-            puts 'baz'
-          end
-        RUBY
-
         it 'registers an offense' do
-          expect(cop.offenses.size).to eq(1)
-          expect(cop.offenses.first.message).to eq(
-            'Unused block argument - `bar`. ' \
-            "If it's necessary, use `_` or `_bar` as an argument name " \
-            "to indicate that it won't be used."
-          )
-          expect(cop.highlights).to eq(['bar'])
+          message = 'Unused block argument - `bar`. ' \
+                      "If it's necessary, use `_` or `_bar` as an argument " \
+                      "name to indicate that it won't be used."
+
+          expect_offense(<<-RUBY.strip_indent)
+            define_method(:foo) do |bar|
+                                    ^^^ #{message}
+              puts 'baz'
+            end
+          RUBY
         end
       end
 
       context 'and the argument is reassigned' do
         context 'and the argument was reassigned in the conditional' do
-          let(:source) { <<-RUBY.strip_indent }
-            1.times do |index|
-              index = 42 if bar
-              puts index
-            end
-          RUBY
-
           it 'accepts' do
-            expect_no_offenses(source)
+            expect_no_offenses(<<-RUBY.strip_indent)
+              1.times do |index|
+                index = 42 if bar
+                puts index
+              end
+            RUBY
           end
 
           context 'and was not used after the reassignment' do
-            let(:source) { <<-RUBY.strip_indent }
-              1.times do |index|
-                index = 42 if bar
-                puts bar
-              end
-            RUBY
-
             it 'registers an offense' do
-              expect(cop.offenses.size).to eq(1)
+              message = 'Unused block argument - `index`. You can omit the ' \
+                          "argument if you don't care about it."
+
+              expect_offense(<<-RUBY.strip_indent)
+                1.times do |index|
+                            ^^^^^ #{message}
+                  index = 42 if bar
+                  puts bar
+                end
+              RUBY
             end
           end
         end
 
         context 'and the argument used at the assignment' do
-          let(:source) { <<-RUBY.strip_indent }
-            1.times do |index|
-              index = index + 42
-              puts index
-            end
-          RUBY
-
           it 'accepts' do
-            expect_no_offenses(source)
+            expect_no_offenses(<<-RUBY.strip_indent)
+              1.times do |index|
+                index = index + 42
+                puts index
+              end
+            RUBY
           end
         end
 
         context 'and the argument is not used at the assignment' do
           context 'and the argument was not used before the assignment' do
-            let(:source) { <<-RUBY.strip_indent }
-              1.times do |index|
-                puts 'counting'
-                index = 42
-                puts index
-              end
-            RUBY
-
             it 'registers an offense' do
-              expect(cop.offenses.size).to eq(1)
+              message = "Unused block argument - `index`. If it's necessary, " \
+                          'use `_` or `_index` as an argument name to ' \
+                          "indicate that it won't be used."
+
+              expect_offense(<<-RUBY.strip_indent)
+                1.times do |index|
+                            ^^^^^ #{message}
+                  puts 'counting'
+                  index = 42
+                  puts index
+                end
+              RUBY
             end
           end
 
           context 'and the argument was used before the assignment' do
-            let(:source) { <<-RUBY.strip_indent }
-              1.times do |index|
-                puts index + 1
-                index = 42
-                puts index
-              end
-            RUBY
-
             it 'accepts' do
-              expect_no_offenses(source)
+              expect_no_offenses(<<-RUBY.strip_indent)
+                1.times do |index|
+                  puts index + 1
+                  index = 42
+                  puts index
+                end
+              RUBY
             end
           end
         end
@@ -195,70 +177,52 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
 
     context 'when a block have a block local variable' do
       context 'and the variable is unused' do
-        let(:source) { <<-RUBY }
-          1.times do |index; block_local_variable|
-            puts index
-          end
-        RUBY
-
         it 'registers an offense' do
-          expect(cop.offenses.size).to eq(1)
-          expect(cop.offenses.first.message).to eq(
-            'Unused block local variable - `block_local_variable`.'
-          )
-          expect(cop.offenses.first.line).to eq(1)
-          expect(cop.highlights).to eq(['block_local_variable'])
+          expect_offense(<<-RUBY.strip_indent)
+            1.times do |index; block_local_variable|
+                               ^^^^^^^^^^^^^^^^^^^^ Unused block local variable - `block_local_variable`.
+              puts index
+            end
+          RUBY
         end
       end
     end
 
     context 'when a lambda block takes arguments' do
       context 'and all the arguments are unused' do
-        let(:source) { <<-RUBY }
-          -> (foo, bar) { do_something }
-        RUBY
-
         it 'registers offenses and suggests using a proc' do
-          expect(cop.offenses.size).to eq(2)
-          expect(cop.offenses.first.message).to eq(
-            'Unused block argument - `foo`. ' \
-            "If it's necessary, use `_` or `_foo` as an argument name " \
+          (foo_message, bar_message) = %w[foo bar].map do |arg|
+            "Unused block argument - `#{arg}`. " \
+            "If it's necessary, use `_` or `_#{arg}` as an argument name " \
             "to indicate that it won't be used. " \
             'Also consider using a proc without arguments instead of a ' \
             "lambda if you want it to accept any arguments but don't care " \
             'about them.'
+          end
 
-          )
-          expect(cop.offenses.first.line).to eq(1)
-          expect(cop.highlights).to eq(%w[foo bar])
+          expect_offense(<<-RUBY.strip_indent)
+            -> (foo, bar) { do_something }
+                     ^^^ #{bar_message}
+                ^^^ #{foo_message}
+          RUBY
         end
       end
 
       context 'and an argument is unused' do
-        let(:source) { <<-RUBY }
-          -> (foo, bar) { puts bar }
-        RUBY
-
         it 'registers an offense' do
-          expect(cop.offenses.size).to eq(1)
-          expect(cop.offenses.first.message).to eq(
-            'Unused block argument - `foo`. ' \
-            "If it's necessary, use `_` or `_foo` as an argument name " \
-            "to indicate that it won't be used."
-          )
-          expect(cop.offenses.first.line).to eq(1)
-          expect(cop.highlights).to eq(['foo'])
+          message = 'Unused block argument - `foo`. ' \
+                      "If it's necessary, use `_` or `_foo` as an argument " \
+                      "name to indicate that it won't be used."
+
+          expect_offense(<<-RUBY.strip_indent)
+            -> (foo, bar) { puts bar }
+                ^^^ #{message}
+          RUBY
         end
       end
     end
 
     context 'when an underscore-prefixed block argument is not used' do
-      let(:source) { <<-RUBY }
-        1.times do |_index|
-          puts 'foo'
-        end
-      RUBY
-
       it 'accepts' do
         expect_no_offenses(<<-RUBY.strip_indent)
           1.times do |_index|
@@ -270,20 +234,17 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
 
     context 'when an optional keyword argument is unused' do
       context 'when the method call is `define_method`' do
-        let(:source) { <<-RUBY }
-          define_method(:foo) do |bar: 'default'|
-            puts 'bar'
-          end
-        RUBY
-
         it 'registers an offense' do
-          expect(cop.offenses.size).to eq(1)
-          expect(cop.offenses.first.message).to eq(
-            'Unused block argument - `bar`. ' \
+          message = 'Unused block argument - `bar`. ' \
             "If it's necessary, use `_` or `_bar` as an argument name " \
             "to indicate that it won't be used."
-          )
-          expect(cop.highlights).to eq(['bar'])
+
+          expect_offense(<<-RUBY.strip_indent)
+            define_method(:foo) do |bar: 'default'|
+                                    ^^^ #{message}
+              puts 'bar'
+            end
+          RUBY
         end
 
         context 'when AllowUnusedKeywordArguments set' do
@@ -300,19 +261,16 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
       end
 
       context 'when the method call is not `define_method`' do
-        let(:source) { <<-RUBY }
-          foo(:foo) do |bar: 'default'|
-            puts 'bar'
-          end
-        RUBY
-
         it 'registers an offense' do
-          expect(cop.offenses.size).to eq(1)
-          expect(cop.offenses.first.message).to eq(
-            'Unused block argument - `bar`. ' \
-            "You can omit the argument if you don't care about it."
-          )
-          expect(cop.highlights).to eq(['bar'])
+          message = 'Unused block argument - `bar`. ' \
+                      "You can omit the argument if you don't care about it."
+
+          expect_offense(<<-RUBY.strip_indent)
+            foo(:foo) do |bar: 'default'|
+                          ^^^ #{message}
+              puts 'bar'
+            end
+          RUBY
         end
 
         context 'when AllowUnusedKeywordArguments set' do
@@ -330,11 +288,6 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
     end
 
     context 'when a method argument is not used' do
-      let(:source) { <<-RUBY }
-        def some_method(foo)
-        end
-      RUBY
-
       it 'does not care' do
         expect_no_offenses(<<-RUBY.strip_indent)
           def some_method(foo)
@@ -344,12 +297,6 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
     end
 
     context 'when a variable is not used' do
-      let(:source) { <<-RUBY }
-        1.times do
-          foo = 1
-        end
-      RUBY
-
       it 'does not care' do
         expect_no_offenses(<<-RUBY.strip_indent)
           1.times do
@@ -360,12 +307,6 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
     end
 
     context 'in a method calling `binding` without arguments' do
-      let(:source) { <<-RUBY }
-        test do |key, value|
-          puts something(binding)
-        end
-      RUBY
-
       it 'accepts all arguments' do
         expect_no_offenses(<<-RUBY.strip_indent)
           test do |key, value|
@@ -375,48 +316,56 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
       end
 
       context 'inside a method definition' do
-        let(:source) { <<-RUBY }
-          test do |key, value|
-            def other(a)
-              puts something(binding)
-            end
-          end
-        RUBY
-
         it 'registers offenses' do
-          expect(cop.offenses.size).to eq 2
-          expect(cop.offenses.first.line).to eq(1)
-          expect(cop.highlights).to eq(%w[key value])
+          (key_message, value_message) = %w[key value].map do |arg|
+            "Unused block argument - `#{arg}`. You can omit all the " \
+              "arguments if you don't care about them."
+          end
+
+          expect_offense(<<-RUBY.strip_indent)
+            test do |key, value|
+                          ^^^^^ #{value_message}
+                     ^^^ #{key_message}
+              def other(a)
+                puts something(binding)
+              end
+            end
+          RUBY
         end
       end
     end
 
     context 'in a method calling `binding` with arguments' do
       context 'when a method argument is unused' do
-        let(:source) { <<-RUBY }
-          test do |key, value|
-            puts something(binding(:other))
-          end
-        RUBY
-
         it 'registers an offense' do
-          expect(cop.offenses.size).to eq(2)
-          expect(cop.offenses.first.line).to eq(1)
-          expect(cop.highlights).to eq(%w[key value])
+          (key_message, value_message) = %w[key value].map do |arg|
+            "Unused block argument - `#{arg}`. You can omit all the " \
+              "arguments if you don't care about them."
+          end
+
+          expect_offense(<<-RUBY.strip_indent)
+            test do |key, value|
+                          ^^^^^ #{value_message}
+                     ^^^ #{key_message}
+              puts something(binding(:other))
+            end
+          RUBY
         end
       end
     end
 
     context 'with an empty block' do
-      let(:source) { <<-RUBY }
-        super { |bar| }
-      RUBY
-
       context 'when not configured to ignore empty blocks' do
         let(:cop_config) { { 'IgnoreEmptyBlocks' => false } }
 
-        it 'does not register an offense' do
-          expect(cop.offenses.size).to eq(1)
+        it 'registers an offense' do
+          message = 'Unused block argument - `bar`. You can omit the ' \
+                    "argument if you don't care about it."
+
+          expect_offense(<<-RUBY.strip_indent)
+            super { |bar| }
+                     ^^^ #{message}
+          RUBY
         end
       end
 
@@ -424,76 +373,62 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
         let(:cop_config) { { 'IgnoreEmptyBlocks' => true } }
 
         it 'does not register an offense' do
-          expect_no_offenses('        super { |bar| }')
+          expect_no_offenses('super { |bar| }')
         end
       end
     end
   end
 
   context 'auto-correct' do
-    it 'fixes single' do
-      expect(autocorrect_source(<<-SOURCE
-      arr.map { |foo| stuff }
-      SOURCE
-                               )).to eq(<<-CORRECTED_SOURCE
-      arr.map { |_foo| stuff }
-      CORRECTED_SOURCE
-                                       )
-    end
+    it_behaves_like(
+      'auto-correction',
+      'fixes single',
+      'arr.map { |foo| stuff }',
+      'arr.map { |_foo| stuff }'
+    )
 
-    it 'fixes multiple' do
-      expect(autocorrect_source(<<-SOURCE
-      hash.map { |key, val| stuff }
-      SOURCE
-                               )).to eq(<<-CORRECTED_SOURCE
-      hash.map { |_key, _val| stuff }
-      CORRECTED_SOURCE
-                                       )
-    end
+    it_behaves_like(
+      'auto-correction',
+      'fixes multiple',
+      'hash.map { |key, val| stuff }',
+      'hash.map { |_key, _val| stuff }'
+    )
 
-    it 'preserves whitespace' do
-      expect(autocorrect_source(<<-SOURCE
-      hash.map { |key,
-                  val| stuff }
+    it_behaves_like(
+      'auto-correction',
+      'preserves whitespace',
+      <<-SOURCE,
+        hash.map { |key,
+                    val| stuff }
       SOURCE
-                               )).to eq(<<-CORRECTED_SOURCE
-      hash.map { |_key,
-                  _val| stuff }
+      <<-CORRECTED_SOURCE
+        hash.map { |_key,
+                    _val| stuff }
       CORRECTED_SOURCE
-                                       )
-    end
+    )
 
-    it 'preserves splat' do
-      expect(autocorrect_source(<<-SOURCE
-      obj.method { |foo, *bars, baz| stuff(foo, baz) }
-      SOURCE
-                               )).to eq(<<-CORRECTED_SOURCE
-      obj.method { |foo, *_bars, baz| stuff(foo, baz) }
-      CORRECTED_SOURCE
-                                       )
-    end
+    it_behaves_like(
+      'auto-correction',
+      'preserves splat',
+      'obj.method { |foo, *bars, baz| stuff(foo, baz) }',
+      'obj.method { |foo, *_bars, baz| stuff(foo, baz) }'
+    )
 
-    it 'preserves default' do
-      expect(autocorrect_source(<<-SOURCE
-      obj.method { |foo, bar = baz| stuff(foo) }
-      SOURCE
-                               )).to eq(<<-CORRECTED_SOURCE
-      obj.method { |foo, _bar = baz| stuff(foo) }
-      CORRECTED_SOURCE
-                                       )
-    end
+    it_behaves_like(
+      'auto-correction',
+      'preserves default',
+      'obj.method { |foo, bar = baz| stuff(foo) }',
+      'obj.method { |foo, _bar = baz| stuff(foo) }'
+    )
 
-    it 'ignores used' do
-      original_source = <<-SOURCE
-      obj.method { |foo, baz| stuff(foo, baz) }
-      SOURCE
+    it 'ignores used arguments' do
+      original_source = 'obj.method { |foo, baz| stuff(foo, baz) }'
 
       expect(autocorrect_source(original_source)).to eq(original_source)
     end
   end
 
   context 'when IgnoreEmptyBlocks config parameter is set' do
-    subject(:cop) { described_class.new(config) }
     let(:cop_config) { { 'IgnoreEmptyBlocks' => true } }
 
     it 'accepts an empty block with a single unused parameter' do
@@ -501,9 +436,15 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
     end
 
     it 'registers an offense for a non-empty block with an unused parameter' do
+      message = "Unused block argument - `arg`. If it's necessary, use `_` " \
+                "or `_arg` as an argument name to indicate that it won't " \
+                'be used. Also consider using a proc without arguments ' \
+                'instead of a lambda if you want it to accept any arguments ' \
+                "but don't care about them."
+
       expect_offense(<<-RUBY.strip_indent)
         ->(arg) { 1 }
-           ^^^ Unused block argument - `arg`. If it's necessary, use `_` or `_arg` as an argument name to indicate that it won't be used. Also consider using a proc without arguments instead of a lambda if you want it to accept any arguments but don't care about them.
+           ^^^ #{message}
       RUBY
     end
 
@@ -512,11 +453,19 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
     end
 
     it 'registers an offense for a non-empty block with multiple unused args' do
+      (arg1_message, arg2_message, others_message) = %w[arg1 arg2 others]
+                                                     .map do |arg|
+        "Unused block argument - `#{arg}`. If it's necessary, use `_` or " \
+        "`_#{arg}` as an argument name to indicate that it won't be used. " \
+        'Also consider using a proc without arguments instead of a lambda ' \
+        "if you want it to accept any arguments but don't care about them."
+      end
+
       expect_offense(<<-RUBY.strip_indent)
         ->(arg1, arg2, *others) { 1 }
-                        ^^^^^^ Unused block argument - `others`. If it's necessary, use `_` or `_others` as an argument name to indicate that it won't be used. Also consider using a proc without arguments instead of a lambda if you want it to accept any arguments but don't care about them.
-                 ^^^^ Unused block argument - `arg2`. If it's necessary, use `_` or `_arg2` as an argument name to indicate that it won't be used. Also consider using a proc without arguments instead of a lambda if you want it to accept any arguments but don't care about them.
-           ^^^^ Unused block argument - `arg1`. If it's necessary, use `_` or `_arg1` as an argument name to indicate that it won't be used. Also consider using a proc without arguments instead of a lambda if you want it to accept any arguments but don't care about them.
+                        ^^^^^^ #{others_message}
+                 ^^^^ #{arg2_message}
+           ^^^^ #{arg1_message}
       RUBY
     end
   end
