@@ -11,6 +11,7 @@
 * [#4663](https://github.com/bbatsov/rubocop/issues/4663): Add new `Style/CommentedKeyword` cop. ([@donjar][])
 * Add `IndentationWidth` configuration for `Layout/Tab` cop. ([@rrosenblum][])
 * [#4854](https://github.com/bbatsov/rubocop/pull/4854): Add new `Lint/RegexpAsCondition` cop. ([@pocke][])
+* [#4862](https://github.com/bbatsov/rubocop/pull/4862): Add `MethodDefineMacros` option to `Naming/PredicateName` cop. ([@koic][])
 
 ### Bug fixes
 
