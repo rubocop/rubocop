@@ -16,8 +16,8 @@ module RuboCop
       #   if /foo/ =~ $_
       #     do_something
       #   end
-      class RegexpInCondition < Cop
-        MSG = 'Do not use regexp literal in condition.' \
+      class RegexpAsCondition < Cop
+        MSG = 'Do not use regexp literal as condition.' \
               ' The regexp literal matches `$_` implicitly.'.freeze
 
         def on_match_current_line(node)

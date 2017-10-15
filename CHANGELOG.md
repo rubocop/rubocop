@@ -10,7 +10,7 @@
 * [#4796](https://github.com/bbatsov/rubocop/pull/4796): Add new `Lint/RedundantWithObject` cop. ([@koic][])
 * [#4663](https://github.com/bbatsov/rubocop/issues/4663): Add new `Style/CommentedKeyword` cop. ([@donjar][])
 * Add `IndentationWidth` configuration for `Layout/Tab` cop. ([@rrosenblum][])
-* [#4854](https://github.com/bbatsov/rubocop/pull/4854): Add new `Lint/RegexpInCondition` cop. ([@pocke][])
+* [#4854](https://github.com/bbatsov/rubocop/pull/4854): Add new `Lint/RegexpInCondition` cop(Note: This cop was renamed to `Lint/RegexpAsCondition`). ([@pocke][])
 
 ### Bug fixes
 
@@ -41,6 +41,7 @@
 * [#4787](https://github.com/bbatsov/rubocop/pull/4787): RuboCop no longer installs on MRI 2.0. ([@deivid-rodriguez][])
 * [#4266](https://github.com/bbatsov/rubocop/issues/4266): Download the inherited config files of a remote file from the same remote. ([@tdeo][])
 * [#4853](https://github.com/bbatsov/rubocop/pull/4853): Make `Lint/LiteralInCondition` cop aware of `!` and `not`. ([@pocke][])
+* [#4864](https://github.com/bbatsov/rubocop/pull/4864): Rename `Lint/LiteralInCondition` to `Lint/LiteralAsCondition`. ([@pocke][])
 
 ## 0.50.0 (2017-09-14)
 
