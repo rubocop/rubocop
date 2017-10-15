@@ -115,11 +115,25 @@ module RuboCop
                      'The "never" behavior is always assumed.'
       },
       {
+        cop: 'Style/IfUnlessModifier',
+        parameter: 'MaxLineLength',
+        alternative:
+          '`Style/IfUnlessModifier: MaxLineLength` has been removed. Use ' \
+          '`Metrics/LineLength: Max` instead'
+      },
+      {
         cop: 'Style/SpaceAroundOperators',
         parameter: 'MultiSpaceAllowedForOperators',
         alternative: 'If your intention was to allow extra spaces ' \
                      'for alignment, please use AllowForAlignment: ' \
                      'true instead.'
+      },
+      {
+        cop: 'Style/WhileUntilModifier',
+        parameter: 'MaxLineLength',
+        alternative:
+          '`Style/WhileUntilModifier: MaxLineLength` has been removed. Use ' \
+          '`Metrics/LineLength: Max` instead'
       },
       {
         cop: 'AllCops',

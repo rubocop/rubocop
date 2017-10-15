@@ -1649,14 +1649,8 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 Checks for if and unless statements that would fit on one line
-if written as a modifier if/unless.
-The maximum line length is configurable.
-
-### Important attributes
-
-Attribute | Value
---- | ---
-MaxLineLength | 80
+if written as a modifier if/unless. The maximum line length is
+configured in the `Metrics/LineLength` cop.
 
 ### References
 
@@ -4336,14 +4330,8 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 Checks for while and until statements that would fit on one line
-if written as a modifier while/until.
-The maximum line length is configurable.
-
-### Important attributes
-
-Attribute | Value
---- | ---
-MaxLineLength | 80
+if written as a modifier while/until. The maximum line length is
+configured in the `Metrics/LineLength` cop.
 
 ### References
 

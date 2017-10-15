@@ -28,8 +28,7 @@ module RuboCop
       validate_options_vs_config
       act_on_options
       apply_default_formatter
-
-      execute_runner(paths)
+      execute_runners(paths)
     rescue RuboCop::Error => e
       warn Rainbow("Error: #{e.message}").red
       return 2
@@ -51,6 +50,48 @@ module RuboCop
     end
 
     private
+
+    def execute_runners(paths)
+      if @options[:auto_gen_config]
+        reset_config_and_auto_gen_file
+        line_length_contents = run_line_length_cop_auto_gen_config(paths)
+        run_all_cops_auto_gen_config(line_length_contents, paths)
+      else
+        execute_runner(paths)
+      end
+    end
+
+    # Do an initial run with only Metrics/LineLength so that cops that depend
+    # on Metrics/LineLength:Max get the correct value for that parameter.
+    def run_line_length_cop_auto_gen_config(paths)
+      puts Rainbow('Phase 1 of 2: run Metrics/LineLength cop').yellow
+      @options[:only] = ['Metrics/LineLength']
+      execute_runner(paths)
+      @options.delete(:only)
+      @config_store = ConfigStore.new
+      # Save the todo configuration of the LineLength cop.
+      IO.read(ConfigLoader::AUTO_GENERATED_FILE)
+        .lines
+        .drop_while { |line| line.start_with?('#') }
+        .join
+    end
+
+    def run_all_cops_auto_gen_config(line_length_contents, paths)
+      puts Rainbow('Phase 2 of 2: run all cops').yellow
+      result = execute_runner(paths)
+      # This run was made with the current maximum length allowed, so append
+      # the saved setting for LineLength.
+      File.open(ConfigLoader::AUTO_GENERATED_FILE, 'a') do |f|
+        f.write(line_length_contents)
+      end
+      result
+    end
+
+    def reset_config_and_auto_gen_file
+      @config_store = ConfigStore.new
+      File.open(ConfigLoader::AUTO_GENERATED_FILE, 'w'){}
+      ConfigLoader.add_inheritance_from_auto_generated_file
+    end
 
     def validate_options_vs_config
       if @options[:parallel] &&

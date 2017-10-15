@@ -41,8 +41,7 @@ module RuboCop
       end
 
       def max_line_length
-        cop_config['MaxLineLength'] ||
-          config.for_cop('Metrics/LineLength')['Max']
+        config.for_cop('Metrics/LineLength')['Max']
       end
 
       def line_count(node)
