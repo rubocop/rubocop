@@ -1878,3 +1878,10 @@ Bundler/OrderedGems:
   Include:
     - '**/Gemfile'
     - '**/gems.rb'
+
+Gemspec/OrderedDependencies:
+  Description: >-
+                 Dependencies in the gemspec should be alphabetically sorted.
+  Enabled: true
+  Include:
+    - '**/*.gemspec'
