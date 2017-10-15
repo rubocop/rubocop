@@ -27,28 +27,6 @@ describe RuboCop::Cop::Style::GuardClause, :config do
       expect(cop.highlights).to eq(%w[if unless])
     end
 
-    it 'reports an offense if method body is if / unless without else' do
-      inspect_source(<<-RUBY.strip_indent)
-        def func
-          if something
-            #{body}
-          end
-        end
-
-        def func
-          unless something
-            #{body}
-          end
-        end
-      RUBY
-      expect(cop.offenses.size).to eq(2)
-      expect(cop.offenses.map(&:line).sort).to eq([2, 8])
-      expect(cop.messages)
-        .to eq(['Use a guard clause instead of wrapping ' \
-                'the code inside a conditional expression.'] * 2)
-      expect(cop.highlights).to eq(%w[if unless])
-    end
-
     it 'reports an offense if method body ends with if / unless without else' do
       inspect_source(<<-RUBY.strip_indent)
         def func
