@@ -81,6 +81,10 @@ Rails:
 
 Bundler cops check for style or bad practices in Bundler files, e.g. `Gemfile`.
 
+### Gemspec
+
+Gemspec cops check for style or bad practices in gemspec files, e.g. `rubocop.gemspec`.
+
 ### Available cops
 
 In the following section you find all available cops:
@@ -91,6 +95,10 @@ In the following section you find all available cops:
 * [Bundler/DuplicatedGem](cops_bundler.md#bundlerduplicatedgem)
 * [Bundler/InsecureProtocolSource](cops_bundler.md#bundlerinsecureprotocolsource)
 * [Bundler/OrderedGems](cops_bundler.md#bundlerorderedgems)
+
+#### Department [Gemspec](cops_gemspec.md)
+
+* [Gemspec/OrderedDependencies](cops_gemspec.md#gemspecordereddependencies)
 
 #### Department [Layout](cops_layout.md)
 

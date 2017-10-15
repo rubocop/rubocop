@@ -1613,3 +1613,6 @@ Rails/Validation:
 
 Bundler/OrderedGems:
   TreatCommentsAsGroupSeparators: true
+
+Gemspec/OrderedDependencies:
+  TreatCommentsAsGroupSeparators: true
