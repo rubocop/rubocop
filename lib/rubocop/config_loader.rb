@@ -99,16 +99,13 @@ module RuboCop
       def inherited_file(path, inherit_from, file)
         regex = URI::DEFAULT_PARSER.make_regexp(%w[http https])
         if inherit_from =~ /\A#{regex}\z/
-          f = RemoteConfig.new(inherit_from, File.dirname(path))
+          RemoteConfig.new(inherit_from, File.dirname(path))
         elsif file.is_a?(RemoteConfig)
-          f = file.inherit_from_remote(inherit_from, path)
+          file.inherit_from_remote(inherit_from, path)
         else
-          f = File.expand_path(inherit_from, File.dirname(path))
-
-          return if auto_gen_config? && f.include?(AUTO_GENERATED_FILE)
           print 'Inheriting ' if debug?
+          File.expand_path(inherit_from, File.dirname(path))
         end
-        f
       end
 
       # Returns the path of .rubocop.yml searching upwards in the
@@ -176,6 +173,25 @@ module RuboCop
         return unless hash['AllCops'] && hash['AllCops'][version]
 
         hash['AllCops'][version] = hash['AllCops'][version].to_f
+      end
+
+      def add_inheritance_from_auto_generated_file
+        file_string = " #{AUTO_GENERATED_FILE}"
+
+        if File.exist?(DOTFILE)
+          files = Array(load_yaml_configuration(DOTFILE)['inherit_from'])
+          return if files.include?(AUTO_GENERATED_FILE)
+          files.unshift(AUTO_GENERATED_FILE)
+          file_string = "\n  - " + files.join("\n  - ") if files.size > 1
+          rubocop_yml_contents = IO.read(DOTFILE, encoding: Encoding::UTF_8)
+                                   .sub(/^inherit_from: *[.\w]+/, '')
+                                   .sub(/^inherit_from: *(\n *- *[.\w]+)+/, '')
+        end
+        File.open(DOTFILE, 'w') do |f|
+          f.write "inherit_from:#{file_string}\n\n"
+          f.write rubocop_yml_contents if rubocop_yml_contents
+        end
+        puts "Added inheritance from `#{AUTO_GENERATED_FILE}` in `#{DOTFILE}`."
       end
 
       private

@@ -200,6 +200,29 @@ describe RuboCop::Config do
       end
     end
 
+    shared_examples 'obsolete MaxLineLength parameter' do |cop_name|
+      context "when the configuration includes the obsolete #{cop_name}: " \
+              'MaxLineLength parameter' do
+        before do
+          create_file(configuration_path, <<-YAML.strip_indent)
+            #{cop_name}:
+              MaxLineLength: 100
+          YAML
+        end
+
+        it 'raises validation error' do
+          expect { configuration.validate }
+            .to raise_error(RuboCop::ValidationError,
+                            /`#{cop_name}: MaxLineLength` has been removed./)
+        end
+      end
+    end
+
+    include_examples 'obsolete MaxLineLength parameter',
+                     'Style/WhileUntilModifier'
+    include_examples 'obsolete MaxLineLength parameter',
+                     'Style/IfUnlessModifier'
+
     context 'when the configuration includes obsolete parameters and cops' do
       before do
         create_file(configuration_path, <<-YAML.strip_indent)

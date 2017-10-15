@@ -55,8 +55,6 @@ module RuboCop
         output_offenses
 
         puts "Created #{output.path}."
-        puts "Run `rubocop --config #{output.path}`, or add `inherit_from: " \
-             "#{output.path}` in a .rubocop.yml file."
       end
 
       private
