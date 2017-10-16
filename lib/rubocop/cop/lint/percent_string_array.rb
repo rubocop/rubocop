@@ -53,7 +53,6 @@ module RuboCop
           end
         end
 
-        # rubocop:disable Performance/HashEachMethods
         def autocorrect(node)
           lambda do |corrector|
             node.values.each do |value|
@@ -68,7 +67,6 @@ module RuboCop
             end
           end
         end
-        # rubocop:enable Performance/HashEachMethod
       end
     end
   end
