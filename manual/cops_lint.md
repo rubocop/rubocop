@@ -1045,7 +1045,7 @@ foo = 'something with #{interpolation} inside'
 foo = "something with #{interpolation} inside"
 ```
 
-## Lint/LiteralInCondition
+## Lint/LiteralAsCondition
 
 Enabled by default | Supports autocorrection
 --- | ---
@@ -1469,7 +1469,7 @@ ary.each do |v|
 end
 ```
 
-## Lint/RegexpInCondition
+## Lint/RegexpAsCondition
 
 Enabled by default | Supports autocorrection
 --- | ---

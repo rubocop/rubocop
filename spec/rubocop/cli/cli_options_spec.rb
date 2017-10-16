@@ -458,7 +458,7 @@ describe RuboCop::CLI, :isolated_environment do
       expect($stdout.string)
         .to eq(<<-RESULT.strip_indent)
           == example.rb ==
-          W:  1:  4: Literal 0 appeared in a condition.
+          W:  1:  4: Literal 0 appeared as a condition.
 
           1 file inspected, 1 offense detected
         RESULT

@@ -1273,7 +1273,7 @@ Lint/InterpolationCheck:
   Description: 'Raise warning for interpolation in single q strs'
   Enabled: true
 
-Lint/LiteralInCondition:
+Lint/LiteralAsCondition:
   Description: 'Checks of literals used in conditions.'
   Enabled: true
 
@@ -1338,9 +1338,9 @@ Lint/RedundantWithObject:
   Description: 'Checks for redundant `with_object`.'
   Enabled: true
 
-Lint/RegexpInCondition:
+Lint/RegexpAsCondition:
   Description: >-
-                 Do not use regexp literal in condition.
+                 Do not use regexp literal as a condition.
                  The regexp literal matches `$_` implicitly.
   Enabled: true
 
