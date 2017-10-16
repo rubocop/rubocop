@@ -89,7 +89,6 @@ describe RuboCop::Cop::Cop do
 
   describe '#add_offense positional arguments deprecation warning' do
     context 'when #add_offense called with positional arguments' do
-      # rubocop:disable InternalAffairs/DeprecatedPositionalArguments
       before { $stderr = StringIO.new }
       after { $stderr = STDERR }
 
@@ -106,7 +105,6 @@ describe RuboCop::Cop::Cop do
 
         expect($stderr.string).to include msg
       end
-      # rubocop:enable InternalAffairs/DeprecatedPositionalArguments
     end
 
     context 'when #add_offense is called with kwargs' do
