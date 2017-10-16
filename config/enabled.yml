@@ -1340,7 +1340,7 @@ Lint/RedundantWithObject:
 
 Lint/RegexpAsCondition:
   Description: >-
-                 Do not use regexp literal as condition.
+                 Do not use regexp literal as a condition.
                  The regexp literal matches `$_` implicitly.
   Enabled: true
 

@@ -7,7 +7,7 @@ describe RuboCop::Cop::Lint::RegexpAsCondition do
   it 'registers an offense for a regexp literal in `if` condition' do
     expect_offense(<<-RUBY.strip_indent)
       if /foo/
-         ^^^^^ Do not use regexp literal in condition. The regexp literal matches `$_` implicitly.
+         ^^^^^ Do not use regexp literal as a condition. The regexp literal matches `$_` implicitly.
       end
     RUBY
   end
