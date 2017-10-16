@@ -4,6 +4,7 @@
 
 ### Bug fixes
 
+* [#4866](https://github.com/bbatsov/rubocop/issues/4866): Prevent `Layout/BlockEndNewline` cop from introducing trailing whitespaces. ([@bgeuken][])
 * [#4881](https://github.com/bbatsov/rubocop/issues/4881): Fix a false positive for `Performance/HashEachMethods` when unused argument(s) exists in other blocks. ([@pocke][])
 * [#4883](https://github.com/bbatsov/rubocop/pull/4883): Fix auto-correction for `Performance/HashEachMethods`. ([@pocke][])
 * [#4896](https://github.com/bbatsov/rubocop/pull/4896): Fix Style/DateTime wrongly triggered on classes `...::DateTime`. ([@dpostorivo][])
@@ -2993,3 +2994,4 @@
 [@jonatas]: https://github.com/jonatas
 [@jaredbeck]: https://www.jaredbeck.com
 [@michniewicz]: https://github.com/michniewicz
+[@bgeuken]: https://github.com/bgeuken
