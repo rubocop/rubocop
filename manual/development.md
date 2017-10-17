@@ -19,13 +19,35 @@ Do 3 steps:
 
 ## Implementing the cop
 
-You can start by learning the
-[node pattern](http://www.rubydoc.info/gems/rubocop/RuboCop/NodePattern)
-and using the pattern to match with specific nodes that you want to match.
+RuboCop uses [parser](https://github.com/whitequark/parser) to create the
+Abstract Syntax Tree representation of the code.
 
-If you're not familiar with node pattern, try to investigate how it goes by
-creating a few examples with code that you want to match. Let's start with a
-simple cop to simplify conditions with arrays:
+You can install `parser` gem and use `ruby-parse` command line utility to check
+what the AST looks like in the output.
+
+```sh
+$ gem install parser
+```
+
+And then try to parse a simple integer representation with `ruby-parse`:
+
+```sh
+$ ruby-parse -e '1'
+(int 1)
+```
+
+Each expression surrounded by parens represents a node. The first
+element is the node type and the tail contains the children with all
+information needed to represent the code.
+
+Another example of a local variable `name` being assigned with the "John"
+string value:
+
+```sh
+$ ruby-parse -e 'name = "John"'                                                                                                                09:45:59
+(lvasgn :name
+  (str "John"))
+```
 
 ### Inspecting the AST representation
 
@@ -33,14 +55,24 @@ Let's imagine we want to simplify statements from `!array.empty?` to
 `array.any?`:
 
 First, check what the bad code returns in the Abstract Syntax Tree
-representation. Let's debug our expression using the REPL from RuboCop:
+representation.
+
+```sh
+$ ruby-parse -e '!array.empty?                                                                                                                 12:59:47
+(send
+  (send
+    (send nil :array) :empty?) :!)
+```
+
+Now, it's time to debug our expression using the REPL from RuboCop:
 
 ```sh
 $ rake repl
 ```
 
-Now, we need to create an AST representation to match with it:
-
+First we need to declare the code that we want to match, and use the
+[ProcessedSource](http://www.rubydoc.info/gems/rubocop/RuboCop/ProcessedSource)
+that is a simple wrap to make the parser interpret the code and build the AST:
 
 ```ruby
 code = '!something.empty?'
@@ -49,16 +81,30 @@ node = source.ast
 # => s(:send, s(:send, s(:send, nil, :something), :empty?), :!)
 ```
 
-### Writing rules for node pattern matches:
+The node has a few attributes that can be useful in the journey:
 
-Node pattern matches something very similar to what is on the node
+```ruby
+node.type # => :send
+node.children # => [s(:send, s(:send, nil, :something), :empty?), :!]
+node.source # => "!something.empty?"
+```
+
+### Writing rules to make node pattern matches:
+
+Now that you're familiar with AST, you can learn a bit about the
+[node pattern](http://www.rubydoc.info/gems/rubocop/RuboCop/NodePattern)
+and use patterns to match with specific nodes that you want to match.
+
+Node pattern matches something very similar to the current output from AST
 representation, then let's start with something very generic:
 
 ```ruby
 NodePattern.new('send').match(node) # => true
 ```
 
-It matches because the root is a `send` type. Now lets match it deeply:
+It matches because the root is a `send` type. Now lets match it deeply using
+parens to define details for sub-nodes. If you don't care about what a internal
+node is, you can use `...` to skip it and just consider " a node".
 
 ```ruby
 NodePattern.new('(send ...)').match(node) # => true
