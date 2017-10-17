@@ -112,6 +112,15 @@ NodePattern.new('(send (send ...) :!)').match(node) # => true
 NodePattern.new('(send (send (send ...) :empty?) :!)').match(node) # => true
 ```
 
+Sometimes it's hard to comprehend complex expressions you're building with the
+pattern, then, if you got lost with the node pattern parens surrounding deeply,
+try to use the `$` to capture the internal expression and check exactly each
+piece of the expression:
+
+```ruby
+NodePattern.new('(send (send (send $...) :empty?) :!)').match(node) # => [nil, :something]
+```
+
 It's not needed to strictly receive a send in the internal node because maybe 
 it can also be a literal array like:
 
