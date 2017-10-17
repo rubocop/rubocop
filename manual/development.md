@@ -255,5 +255,45 @@ The corrector allows you to `insert_after` and `insert_before` or
 The range can be determined on `node.location` where it brings specific
 ranges for expression or other internal information that the node holds.
 
-In the end, don't forget to run `rake generate_cops_documentation` to update
+### Configuration
+
+Each cop can hold a configuration and you can refer to `cop_config` in the
+instance and it will bring a hash with options declared in the `.rubocop.yml`
+file.
+
+For example, lets imagine we want to make configurable to make the replacement
+works with other method than `.any?`:
+
+```yml
+Style/SimplifyNotEmptyWithAny:
+  Enabled: true
+  ReplaceAnyWith: "size > 0"
+```
+
+And then on the autocorrect method, you just need to use the `cop_config` it:
+
+```ruby
+def autocorrect(node)
+  lambda do |corrector|
+    internal_expression = node.children[0].children[0].source
+    replacement = cop_config['ReplaceAnyWith'] || "any?"
+    new_expression = "#{internal_expression}.#{replacement}"
+    corrector.replace(node.loc.expression, new_expression)
+  end
+end
+```
+
+### Testing your cop in a real codebase
+
+Generally, is a good practice to check if your cop is working properly over a
+huge codebase to guarantee it's working in a range of different syntaxes.
+
+To make it fast and do not get confused with other cops in action,  you can use
+`--only` parameter in the command line to filter by your cop name:
+
+```sh
+rubocop --only Style/SimplifyNotEmptyWithAny
+```
+
+In the end, do not forget to run `rake generate_cops_documentation` to update
 the docs.
