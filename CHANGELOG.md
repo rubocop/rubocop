@@ -34,7 +34,7 @@
 * [#4836](https://github.com/bbatsov/rubocop/issues/4836): Make `Rails/OutputSafety` aware of safe navigation operator. ([@drenmi][])
 * [#4843](https://github.com/bbatsov/rubocop/issues/4843): Make `Lint/ShadowedException` cop aware of same system error code. ([@koic][])
 * [#4850](https://github.com/bbatsov/rubocop/issues/4850): `Lint/UnusedMethodArgument` respects `IgnoreEmptyMethods` setting by ignoring unused method arguments for singleton methods. ([@jmks][])
-* [#2040](https://github.com/bbatsov/rubocop/issues/2040): Document how to write a custom cop ([@jonatas][]).
+* [#2040](https://github.com/bbatsov/rubocop/issues/2040): Document how to write a custom cop. ([@jonatas][])
 
 ### Changes
 
