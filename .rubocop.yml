@@ -16,6 +16,7 @@ Naming/PredicateName:
     - define_method
     - define_singleton_method
     - def_node_matcher
+    - def_node_search
 
 Style/FrozenStringLiteralComment:
   EnforcedStyle: always
