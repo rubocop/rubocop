@@ -23,12 +23,11 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
     end
 
     it 'registers offense for correct + opposite' do
-      inspect_source(['s = "abc"',
-                      "x = 'abc'"])
-      expect(cop.messages)
-        .to eq(["Prefer single-quoted strings when you don't need " \
-                'string interpolation or special symbols.'])
-      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+      expect_offense(<<-RUBY.strip_indent)
+        s = "abc"
+            ^^^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.
+        x = 'abc'
+      RUBY
     end
 
     it 'accepts single quotes' do
@@ -174,24 +173,35 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
 
     it 'registers offense for single quotes when double quotes would ' \
       'be equivalent' do
-      inspect_source("s = 'abc'")
-      expect(cop.highlights).to eq(["'abc'"])
-      expect(cop.messages)
-        .to eq(['Prefer double-quoted strings unless you need ' \
-                'single quotes to avoid extra backslashes for ' \
-                'escaping.'])
+      expect_offense(<<-RUBY.strip_indent)
+        s = 'abc'
+            ^^^^^ Prefer double-quoted strings unless you need single quotes to avoid extra backslashes for escaping.
+      RUBY
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
                                                  'single_quotes')
     end
 
     it 'registers offense for opposite + correct' do
-      inspect_source(['s = "abc"',
-                      "x = 'abc'"])
-      expect(cop.messages)
-        .to eq(['Prefer double-quoted strings unless you need ' \
-                'single quotes to avoid extra backslashes for ' \
-                'escaping.'])
+      expect_offense(<<-'RUBY'.strip_indent)
+        s = "abc"
+        x = 'abc'
+            ^^^^^ Prefer double-quoted strings unless you need single quotes to avoid extra backslashes for escaping.
+      RUBY
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+    end
+
+    it 'registers offense for escaped single quote in single quotes' do
+      expect_offense(<<-'RUBY'.strip_indent)
+        '\''
+        ^^^^ Prefer double-quoted strings unless you need single quotes to avoid extra backslashes for escaping.
+      RUBY
+    end
+
+    it 'does not accept multiple escaped single quotes in single quotes' do
+      expect_offense(<<-'RUBY'.strip_indent)
+        'This \'string\' has \'multiple\' escaped quotes'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer double-quoted strings unless you need single quotes to avoid extra backslashes for escaping.
+      RUBY
     end
 
     it 'accepts double quotes' do
@@ -216,6 +226,14 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
           SELECT name from users
         SQL
       RUBY
+    end
+
+    it 'accepts single quotes in string with escaped non-\' character' do
+      expect_no_offenses(%q('\n'))
+    end
+
+    it 'accepts escaped single quote in string with escaped non-\' character' do
+      expect_no_offenses(%q('\'\n'))
     end
 
     it 'accepts single quotes when they are needed' do
@@ -272,14 +290,13 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
       end
 
       it 'registers an offense for strings with line breaks in them' do
-        inspect_source(['"--',
-                        'SELECT *',
-                        'LEFT JOIN X on Y',
-                        'FROM Models"'])
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages).to eq(['Prefer single-quoted strings when you ' \
-                                    "don't need string interpolation or " \
-                                    'special symbols.'])
+        expect_offense(<<-'RUBY'.strip_indent)
+          "--
+          ^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.
+          SELECT *
+            LEFT JOIN X on Y
+            FROM Models"
+        RUBY
       end
 
       it 'accepts continued strings using all single quotes' do
@@ -290,21 +307,19 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
       end
 
       it 'registers an offense for mixed quote styles in a continued string' do
-        inspect_source(["'abc' \\",
-                        '"def"'])
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages).to eq(['Inconsistent quote style.'])
-        expect(cop.highlights).to eq(["'abc' \\\n\"def\""])
+        expect_offense(<<-'RUBY'.strip_indent)
+          'abc' \
+          ^^^^^^^ Inconsistent quote style.
+          "def"
+        RUBY
       end
 
       it 'registers an offense for unneeded double quotes in continuation' do
-        inspect_source(['"abc" \\',
-                        '"def"'])
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages).to eq(['Prefer single-quoted strings when you ' \
-                                    "don't need string interpolation or " \
-                                    'special symbols.'])
-        expect(cop.highlights).to eq(["\"abc\" \\\n\"def\""])
+        expect_offense(<<-'RUBY'.strip_indent)
+          "abc" \
+          ^^^^^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.
+          "def"
+        RUBY
       end
 
       it "doesn't register offense for double quotes with interpolation" do
@@ -361,21 +376,19 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
       end
 
       it 'registers an offense for mixed quote styles in a continued string' do
-        inspect_source(["'abc' \\",
-                        '"def"'])
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages).to eq(['Inconsistent quote style.'])
-        expect(cop.highlights).to eq(["'abc' \\\n\"def\""])
+        expect_offense(<<-'RUBY'.strip_indent)
+          'abc' \
+          ^^^^^^^ Inconsistent quote style.
+          "def"
+        RUBY
       end
 
       it 'registers an offense for unneeded single quotes in continuation' do
-        inspect_source(["'abc' \\",
-                        "'def'"])
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages).to eq(['Prefer double-quoted strings unless you ' \
-                                    'need single quotes to avoid extra ' \
-                                    'backslashes for escaping.'])
-        expect(cop.highlights).to eq(["'abc' \\\n'def'"])
+        expect_offense(<<-'RUBY'.strip_indent)
+          'abs' \
+          ^^^^^^^ Prefer double-quoted strings unless you need single quotes to avoid extra backslashes for escaping.
+          'def'
+        RUBY
       end
 
       it "doesn't register offense for single quotes with embedded double" do

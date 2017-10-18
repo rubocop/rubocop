@@ -27,6 +27,7 @@ pages:
     - Security Cops: cops_security.md
     - Style Cops: cops_style.md
     - Bundler Cops: cops_bundler.md
+    - Gemspec Cops: cops_gemspec.md
 extra_css:
   - css/extra.css
 theme: readthedocs

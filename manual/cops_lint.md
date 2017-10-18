@@ -1045,7 +1045,7 @@ foo = 'something with #{interpolation} inside'
 foo = "something with #{interpolation} inside"
 ```
 
-## Lint/LiteralInCondition
+## Lint/LiteralAsCondition
 
 Enabled by default | Supports autocorrection
 --- | ---
@@ -1466,6 +1466,29 @@ end
 # good
 ary.each do |v|
   v
+end
+```
+
+## Lint/RegexpAsCondition
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks for regexp literals used as `match-current-line`.
+If a regexp literal is in condition, the regexp matches `$_` implicitly.
+
+### Example
+
+```ruby
+# bad
+if /foo/
+  do_something
+end
+
+# good
+if /foo/ =~ $_
+  do_something
 end
 ```
 

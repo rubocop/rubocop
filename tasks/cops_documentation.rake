@@ -163,8 +163,9 @@ task generate_cops_documentation: :yard_for_generate_documentation do
       # Output diff before raising error
       sh('git diff manual')
 
-      raise 'The manual directory is out of sync. ' \
-        'Run rake generate_cops_documentation and commit the results.'
+      warn 'The manual directory is out of sync. ' \
+        'Run `rake generate_cops_documentation` and commit the results.'
+      exit!
     end
   end
 

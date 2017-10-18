@@ -510,6 +510,11 @@ Style/ConditionalAssignment:
                  of assigning that variable inside of each branch.
   Enabled: true
 
+Style/DateTime:
+  Description: 'Use Date or Time over DateTime.'
+  StyleGuide: '#date--time'
+  Enabled: true
+
 Style/DefWithParentheses:
   Description: 'Use def with parentheses when there are arguments.'
   StyleGuide: '#method-parens'
@@ -996,6 +1001,10 @@ Style/TernaryParentheses:
   Description: 'Checks for use of parentheses around ternary conditions.'
   Enabled: true
 
+Style/MixinUsage:
+  Description: 'Checks that `include`, `extend` and `prepend` exists at the top level.'
+  Enabled: true
+
 Style/TrailingCommaInArguments:
   Description: 'Checks for trailing comma in argument lists.'
   StyleGuide: '#no-trailing-params-comma'
@@ -1273,7 +1282,7 @@ Lint/InterpolationCheck:
   Description: 'Raise warning for interpolation in single q strs'
   Enabled: true
 
-Lint/LiteralInCondition:
+Lint/LiteralAsCondition:
   Description: 'Checks of literals used in conditions.'
   Enabled: true
 
@@ -1336,6 +1345,12 @@ Lint/RedundantWithIndex:
 
 Lint/RedundantWithObject:
   Description: 'Checks for redundant `with_object`.'
+  Enabled: true
+
+Lint/RegexpAsCondition:
+  Description: >-
+                 Do not use regexp literal as a condition.
+                 The regexp literal matches `$_` implicitly.
   Enabled: true
 
 Lint/RequireParentheses:
@@ -1868,3 +1883,10 @@ Bundler/OrderedGems:
   Include:
     - '**/Gemfile'
     - '**/gems.rb'
+
+Gemspec/OrderedDependencies:
+  Description: >-
+                 Dependencies in the gemspec should be alphabetically sorted.
+  Enabled: true
+  Include:
+    - '**/*.gemspec'

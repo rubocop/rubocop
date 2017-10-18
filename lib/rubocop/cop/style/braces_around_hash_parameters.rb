@@ -10,35 +10,38 @@ module RuboCop
       # * The `braces` style enforces braces around all method
       # parameters that are hashes.
       #
-      # @example
-      #   # bad
-      #   some_method(x, y, a: 1, b: 2)
+      #     ```
+      #     # bad
+      #     some_method(x, y, a: 1, b: 2)
       #
-      #   # good
-      #   some_method(x, y, {a: 1, b: 2})
+      #     # good
+      #     some_method(x, y, {a: 1, b: 2})
+      #     ```
       #
       # * The `no_braces` style checks that the last parameter doesn't
       # have braces around it.
       #
-      # @example
-      #   # bad
-      #   some_method(x, y, {a: 1, b: 2})
+      #     ```
+      #     # bad
+      #     some_method(x, y, {a: 1, b: 2})
       #
-      #   # good
-      #   some_method(x, y, a: 1, b: 2)
+      #     # good
+      #     some_method(x, y, a: 1, b: 2)
+      #     ```
       #
       # * The `context_dependent` style checks that the last parameter
       # doesn't have braces around it, but requires braces if the
       # second to last parameter is also a hash literal.
       #
-      # @example
-      #   # bad
-      #   some_method(x, y, {a: 1, b: 2})
-      #   some_method(x, y, {a: 1, b: 2}, a: 1, b: 2)
+      #     ```
+      #     # bad
+      #     some_method(x, y, {a: 1, b: 2})
+      #     some_method(x, y, {a: 1, b: 2}, a: 1, b: 2)
       #
-      #   # good
-      #   some_method(x, y, a: 1, b: 2)
-      #   some_method(x, y, {a: 1, b: 2}, {a: 1, b: 2})
+      #     # good
+      #     some_method(x, y, a: 1, b: 2)
+      #     some_method(x, y, {a: 1, b: 2}, {a: 1, b: 2})
+      #     ```
       class BracesAroundHashParameters < Cop
         include ConfigurableEnforcedStyle
 

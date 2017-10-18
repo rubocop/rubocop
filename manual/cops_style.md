@@ -231,38 +231,38 @@ It supports 3 styles:
 * The `braces` style enforces braces around all method
 parameters that are hashes.
 
+    ```
+    # bad
+    some_method(x, y, a: 1, b: 2)
+
+    # good
+    some_method(x, y, {a: 1, b: 2})
+    ```
+
 * The `no_braces` style checks that the last parameter doesn't
 have braces around it.
+
+    ```
+    # bad
+    some_method(x, y, {a: 1, b: 2})
+
+    # good
+    some_method(x, y, a: 1, b: 2)
+    ```
 
 * The `context_dependent` style checks that the last parameter
 doesn't have braces around it, but requires braces if the
 second to last parameter is also a hash literal.
 
-### Example
+    ```
+    # bad
+    some_method(x, y, {a: 1, b: 2})
+    some_method(x, y, {a: 1, b: 2}, a: 1, b: 2)
 
-```ruby
-# bad
-some_method(x, y, a: 1, b: 2)
-
-# good
-some_method(x, y, {a: 1, b: 2})
-```
-```ruby
-# bad
-some_method(x, y, {a: 1, b: 2})
-
-# good
-some_method(x, y, a: 1, b: 2)
-```
-```ruby
-# bad
-some_method(x, y, {a: 1, b: 2})
-some_method(x, y, {a: 1, b: 2}, a: 1, b: 2)
-
-# good
-some_method(x, y, a: 1, b: 2)
-some_method(x, y, {a: 1, b: 2}, {a: 1, b: 2})
-```
+    # good
+    some_method(x, y, a: 1, b: 2)
+    some_method(x, y, {a: 1, b: 2}, {a: 1, b: 2})
+    ```
 
 ### Important attributes
 
@@ -664,6 +664,38 @@ Attribute | Value
 --- | ---
 Notice | ^Copyright (\(c\) )?2[0-9]{3} .+
 AutocorrectNotice |
+
+## Style/DateTime
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks for uses of `DateTime` that should be replaced by
+`Date` or `Time`.
+
+### Example
+
+```ruby
+# bad - uses `DateTime` for current time
+DateTime.now
+
+# good - uses `Time` for current time
+Time.now
+
+# bad - uses `DateTime` for modern date
+DateTime.iso8601('2016-06-29')
+
+# good - uses `Date` for modern date
+Date.iso8601('2016-06-29')
+
+# good - uses `DateTime` with start argument for historical date
+DateTime.iso8601('1751-04-23', Date::ENGLAND)
+```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#date--time](https://github.com/bbatsov/ruby-style-guide#date--time)
 
 ## Style/DefWithParentheses
 
@@ -2050,6 +2082,55 @@ SupportedStyles | separated, grouped
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#mixin-grouping](https://github.com/bbatsov/ruby-style-guide#mixin-grouping)
+
+## Style/MixinUsage
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks that `include`, `extend` and `prepend` exists at
+the top level.
+Using these at the top level affects the behavior of `Object`.
+There will not be using `include`, `extend` and `prepend` at
+the top level. Let's use it inside `class` or `module`.
+
+### Example
+
+```ruby
+# bad
+include M
+
+class C
+end
+
+# bad
+extend M
+
+class C
+end
+
+# bad
+prepend M
+
+class C
+end
+
+# good
+class C
+  include M
+end
+
+# good
+class C
+  extend M
+end
+
+# good
+class C
+  prepend M
+end
+```
 
 ## Style/ModuleFunction
 

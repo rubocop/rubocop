@@ -256,6 +256,7 @@ Attribute | Value
 NamePrefix | is_, has_, have_
 NamePrefixBlacklist | is_, has_, have_
 NameWhitelist | is_a?
+MethodDefineMacros | define_method, define_singleton_method
 Exclude | spec/\*\*/\*
 
 ### References

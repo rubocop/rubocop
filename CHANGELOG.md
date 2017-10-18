@@ -10,6 +10,11 @@
 * [#4796](https://github.com/bbatsov/rubocop/pull/4796): Add new `Lint/RedundantWithObject` cop. ([@koic][])
 * [#4663](https://github.com/bbatsov/rubocop/issues/4663): Add new `Style/CommentedKeyword` cop. ([@donjar][])
 * Add `IndentationWidth` configuration for `Layout/Tab` cop. ([@rrosenblum][])
+* [#4854](https://github.com/bbatsov/rubocop/pull/4854): Add new `Lint/RegexpAsCondition` cop. ([@pocke][])
+* [#4862](https://github.com/bbatsov/rubocop/pull/4862): Add `MethodDefineMacros` option to `Naming/PredicateName` cop. ([@koic][])
+* [#4874](https://github.com/bbatsov/rubocop/pull/4874): Add new `Gemspec/OrderedDependencies` cop. ([@sue445][])
+* [#4840](https://github.com/bbatsov/rubocop/pull/4840): Add new `Style/MixinUsage` cop. ([@koic][])
+* [#1952](https://github.com/bbatsov/rubocop/issues/1952): Add new `Style/DateTime` cop. ([@dpostorivo][])
 
 ### Bug fixes
 
@@ -31,6 +36,9 @@
 * [#4836](https://github.com/bbatsov/rubocop/issues/4836): Make `Rails/OutputSafety` aware of safe navigation operator. ([@drenmi][])
 * [#4843](https://github.com/bbatsov/rubocop/issues/4843): Make `Lint/ShadowedException` cop aware of same system error code. ([@koic][])
 * [#4757](https://github.com/bbatsov/rubocop/issues/4757): Make `Style/TrailingUnderscoreVariable` work for nested assignments. ([@donjar][])
+* [#4597](https://github.com/bbatsov/rubocop/pull/4597): Fix `Style/StringLiterals` cop not registering an offense on single quoted strings containing an escaped single quote when configured to use double quotes. ([@promisedlandt][])
+* [#4850](https://github.com/bbatsov/rubocop/issues/4850): `Lint/UnusedMethodArgument` respects `IgnoreEmptyMethods` setting by ignoring unused method arguments for singleton methods. ([@jmks][])
+* [#2040](https://github.com/bbatsov/rubocop/issues/2040): Document how to write a custom cop. ([@jonatas][])
 
 ### Changes
 
@@ -41,6 +49,7 @@
 * [#4787](https://github.com/bbatsov/rubocop/pull/4787): RuboCop no longer installs on MRI 2.0. ([@deivid-rodriguez][])
 * [#4266](https://github.com/bbatsov/rubocop/issues/4266): Download the inherited config files of a remote file from the same remote. ([@tdeo][])
 * [#4853](https://github.com/bbatsov/rubocop/pull/4853): Make `Lint/LiteralInCondition` cop aware of `!` and `not`. ([@pocke][])
+* [#4864](https://github.com/bbatsov/rubocop/pull/4864): Rename `Lint/LiteralInCondition` to `Lint/LiteralAsCondition`. ([@pocke][])
 
 ## 0.50.0 (2017-09-14)
 
@@ -2963,3 +2972,4 @@
 [@erikdstock]: https://github.com/erikdstock
 [@GauthamGoli]: https://github.com/GauthamGoli
 [@nelsonjr]: https://github.com/nelsonjr
+[@jonatas]: https://github.com/jonatas
