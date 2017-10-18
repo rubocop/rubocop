@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.51.0 (2017-10-18)
+
 ### New features
 
 * [#4791](https://github.com/bbatsov/rubocop/pull/4791): Add new `Rails/UnknownEnv` cop. ([@pocke][])
