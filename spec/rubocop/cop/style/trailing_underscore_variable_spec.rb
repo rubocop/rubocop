@@ -113,6 +113,26 @@ describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
                 'Prefer `a, = foo()`.'])
     end
 
+    it 'registers an offense for nested assignments with trailing ' \
+      'underscores' do
+      inspect_source('a, (b, _) = foo()')
+
+      expect(cop.messages)
+        .to eq(['Do not use trailing `_`s in parallel assignment. ' \
+                'Prefer `a, (b,) = foo()`.'])
+    end
+
+    it 'registers an offense for complex nested assignments with trailing ' \
+      'underscores' do
+      inspect_source('a, (_, (b, _), *_) = foo()')
+
+      expect(cop.messages)
+        .to eq(['Do not use trailing `_`s in parallel assignment. ' \
+                'Prefer `a, (_, (b,), *_) = foo()`.',
+                'Do not use trailing `_`s in parallel assignment. ' \
+                'Prefer `a, (_, (b, _),) = foo()`.'])
+    end
+
     it 'does not register an offense for a named underscore variable ' \
        'preceded by a splat variable' do
       inspect_source('a, *b, _c = foo()')
@@ -123,6 +143,20 @@ describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
     it 'does not register an offense for a named variable preceded by a ' \
        'names splat underscore variable' do
       inspect_source('a, *b, _c = foo()')
+
+      expect(cop.messages).to be_empty
+    end
+
+    it 'does not register an offense for nested assignments without ' \
+      'trailing underscores' do
+      inspect_source('a, (_, b) = foo()')
+
+      expect(cop.messages).to be_empty
+    end
+
+    it 'does not register an offense for complex nested assignments without ' \
+      'trailing underscores' do
+      inspect_source('a, (_, (b,), c, (d, e),) = foo()')
 
       expect(cop.messages).to be_empty
     end
@@ -168,6 +202,18 @@ describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
         new_source = autocorrect_source('a, *_ = foo()')
 
         expect(new_source).to eq('a, = foo()')
+      end
+
+      it 'removes underscores inside nested assignments' do
+        new_source = autocorrect_source('a, (b, _) = foo()')
+
+        expect(new_source).to eq('a, (b,) = foo()')
+      end
+
+      it 'removes trailing underscores inside complex nested assignments ' do
+        new_source = autocorrect_source('a, (_, (b, _), *_) = foo()')
+
+        expect(new_source).to eq('a, (_, (b,),) = foo()')
       end
 
       context 'with parentheses' do

@@ -42,6 +42,10 @@ module RuboCop
         MSG_NOT_PRESENT = 'Use `%s` instead of `%s`.'.freeze
         MSG_UNLESS_PRESENT = 'Use `if %s` instead of `%s`.'.freeze
 
+        # `(send nil $_)` is not actually a valid match for an offense. Nodes
+        # that have a single method call on the left hand side
+        # (`bar || foo.empty?`) will blow up when checking
+        # `(send (:nil) :== $_)`.
         def_node_matcher :nil_or_empty?, <<-PATTERN
           (or
               {
