@@ -23,7 +23,7 @@ module RuboCop
       # Backtick is added last just to help editors parse this code.
       OPERATOR_METHODS = %w(
         | ^ & <=> == === =~ > >= < <= << >>
-        + - * / % ** ~ +@ -@ [] []= ! != !~
+        + - * / % ** ~ +@ -@ !@ ~@ [] []= ! != !~
       ).map(&:to_sym).push(:'`').freeze
 
       # Match literal regex characters, not including anchors, character

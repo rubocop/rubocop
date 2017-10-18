@@ -211,8 +211,28 @@ Enabled by default | Supports autocorrection
 Enabled | No
 
 This cop makes sure that all methods use the configured style,
-snake_case or camelCase, for their names. Some special arrangements
-have to be made for operator methods.
+snake_case or camelCase, for their names.
+
+### Example
+
+```ruby
+# EnforcedStyle: snake_case
+
+# bad
+def fooBar; end
+
+# good
+def foo_bar; end
+```
+```ruby
+# EnforcedStyle: camelCase
+
+# bad
+def foo_bar; end
+
+# good
+def fooBar; end
+```
 
 ### Important attributes
 
@@ -272,6 +292,27 @@ Enabled | No
 This cop makes sure that all variables use the configured style,
 snake_case or camelCase, for their names.
 
+### Example
+
+```ruby
+# EnforcedStyle: snake_case
+
+# bad
+fooBar = 1
+
+# good
+foo_bar = 1
+```
+```ruby
+# EnforcedStyle: camelCase
+
+# bad
+foo_bar = 1
+
+# good
+fooBar = 1
+```
+
 ### Important attributes
 
 Attribute | Value
@@ -296,7 +337,7 @@ for their numbering.
 ### Example
 
 ```ruby
-"EnforcedStyle => 'snake_case'"
+# EnforcedStyle: snake_case
 
 # bad
 
@@ -307,7 +348,7 @@ variable1 = 1
 variable_1 = 1
 ```
 ```ruby
-"EnforcedStyle => 'normalcase'"
+# EnforcedStyle: normalcase
 
 # bad
 
@@ -318,15 +359,15 @@ variable_1 = 1
 variable1 = 1
 ```
 ```ruby
-"EnforcedStyle => 'non_integer'"
+# EnforcedStyle: non_integer
 
-#bad
+# bad
 
 variable1 = 1
 
 variable_1 = 1
 
-#good
+# good
 
 variableone = 1
 
