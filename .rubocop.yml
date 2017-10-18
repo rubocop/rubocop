@@ -10,6 +10,14 @@ AllCops:
     - 'tmp/**/*'
   TargetRubyVersion: 2.1
 
+Naming/PredicateName:
+  # Method define macros for dynamically generated method.
+  MethodDefineMacros:
+    - define_method
+    - define_singleton_method
+    - def_node_matcher
+    - def_node_search
+
 Style/FrozenStringLiteralComment:
   EnforcedStyle: always
 

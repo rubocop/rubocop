@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::LiteralInCondition do
+describe RuboCop::Cop::Lint::LiteralAsCondition do
   subject(:cop) { described_class.new }
 
   %w(1 2.0 [1] {} :sym :"#{a}").each do |lit|
@@ -131,6 +131,20 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
       RUBY
       expect(cop.offenses).to be_empty
     end
+
+    it "registers an offense for `!#{lit}`" do
+      inspect_source(<<-RUBY.strip_indent)
+        !#{lit}
+      RUBY
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it "registers an offense for `not #{lit}`" do
+      inspect_source(<<-RUBY.strip_indent)
+        !#{lit}
+      RUBY
+      expect(cop.offenses.size).to eq(1)
+    end
   end
 
   it 'accepts array literal in case, if it has non-literal elements' do
@@ -152,7 +166,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
   it 'registers an offense for case with a primitive array condition' do
     expect_offense(<<-RUBY.strip_indent)
       case [1, 2, [3, 4]]
-           ^^^^^^^^^^^^^^ Literal `[1, 2, [3, 4]]` appeared in a condition.
+           ^^^^^^^^^^^^^^ Literal `[1, 2, [3, 4]]` appeared as a condition.
       when [1, 2, 5] then top
       end
     RUBY

@@ -29,7 +29,8 @@ module RuboCop
                     cop_config['AllowUnusedKeywordArguments']
 
           if cop_config['IgnoreEmptyMethods']
-            _name, _args, body = *variable.scope.node
+            body = variable.scope.node.body
+
             return if body.nil?
           end
 

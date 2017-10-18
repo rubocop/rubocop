@@ -30,8 +30,8 @@ module RuboCop
       #   if some_var && some_condition
       #     do_something
       #   end
-      class LiteralInCondition < Cop
-        MSG = 'Literal `%s` appeared in a condition.'.freeze
+      class LiteralAsCondition < Cop
+        MSG = 'Literal `%s` appeared as a condition.'.freeze
 
         def on_if(node)
           check_for_literal(node)
@@ -65,6 +65,11 @@ module RuboCop
           end
         end
 
+        def on_send(node)
+          return unless node.negation_method?
+          check_for_literal(node)
+        end
+
         def message(node)
           format(MSG, node.source)
         end
@@ -72,10 +77,11 @@ module RuboCop
         private
 
         def check_for_literal(node)
-          if node.condition.literal?
-            add_offense(node.condition)
+          cond = condition(node)
+          if cond.literal?
+            add_offense(cond)
           else
-            check_node(node.condition)
+            check_node(cond)
           end
         end
 
@@ -120,6 +126,14 @@ module RuboCop
           return if condition.dstr_type?
 
           handle_node(condition)
+        end
+
+        def condition(node)
+          if node.send_type?
+            node.receiver
+          else
+            node.condition
+          end
         end
       end
     end
