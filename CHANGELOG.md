@@ -11,7 +11,7 @@
 * [#4663](https://github.com/bbatsov/rubocop/issues/4663): Add new `Style/CommentedKeyword` cop. ([@donjar][])
 * Add `IndentationWidth` configuration for `Layout/Tab` cop. ([@rrosenblum][])
 * [#4854](https://github.com/bbatsov/rubocop/pull/4854): Add new `Lint/RegexpAsCondition` cop. ([@pocke][])
-* [#4862](https://github.com/bbatsov/rubocop/pull/4862): Add `MethodDefineMacros` option to `Naming/PredicateName` cop. ([@koic][])
+* [#4862](https://github.com/bbatsov/rubocop/pull/4862): Add `MethodDefinitionMacros` option to `Naming/PredicateName` cop. ([@koic][])
 * [#4874](https://github.com/bbatsov/rubocop/pull/4874): Add new `Gemspec/OrderedDependencies` cop. ([@sue445][])
 * [#4840](https://github.com/bbatsov/rubocop/pull/4840): Add new `Style/MixinUsage` cop. ([@koic][])
 * [#1952](https://github.com/bbatsov/rubocop/issues/1952): Add new `Style/DateTime` cop. ([@dpostorivo][])

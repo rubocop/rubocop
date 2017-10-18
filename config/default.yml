@@ -638,8 +638,8 @@ Naming/PredicateName:
   # should still be accepted
   NameWhitelist:
     - is_a?
-  # Method define macros for dynamically generated method.
-  MethodDefineMacros:
+  # Method definition macros for dynamically generated methods.
+  MethodDefinitionMacros:
     - define_method
     - define_singleton_method
   # Exclude Rspec specs because there is a strong convention to write spec

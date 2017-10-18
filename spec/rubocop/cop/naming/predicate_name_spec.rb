@@ -77,7 +77,7 @@ describe RuboCop::Cop::Naming::PredicateName, :config do
   context 'with method definition macros' do
     let(:cop_config) do
       { 'NamePrefix' => %w[is_], 'NamePrefixBlacklist' => %w[is_],
-        'MethodDefineMacros' => %w[define_method def_node_matcher] }
+        'MethodDefinitionMacros' => %w[define_method def_node_matcher] }
     end
 
     it 'registers an offense when using `define_method`' do

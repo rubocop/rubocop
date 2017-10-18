@@ -19,7 +19,7 @@ module RuboCop
       #   def value? ...
       class PredicateName < Cop
         def_node_matcher :dynamic_method_define, <<-PATTERN
-          (send nil? #method_define_macros
+          (send nil? #method_definition_macros
             (sym $_)
             ...)
         PATTERN
@@ -88,8 +88,8 @@ module RuboCop
           cop_config['NameWhitelist']
         end
 
-        def method_define_macros(macro_name)
-          cop_config['MethodDefineMacros'].include?(macro_name.to_s)
+        def method_definition_macros(macro_name)
+          cop_config['MethodDefinitionMacros'].include?(macro_name.to_s)
         end
       end
     end
