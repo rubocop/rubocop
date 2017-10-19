@@ -4,7 +4,7 @@ describe RuboCop::Cop::Performance::HashEachMethods do
   subject(:cop) { described_class.new }
 
   context 'when node matches a plain `#each` ' \
-  'with unused key or value' do
+          'with unused key or value' do
     context 'when receiver is a send' do
       it 'registers an offense for foo#each with unused value' do
         expect_offense(<<-RUBY.strip_indent)
@@ -14,7 +14,7 @@ describe RuboCop::Cop::Performance::HashEachMethods do
       end
 
       it 'does not register an offense for foo#each' \
-      ' if both key/value are used' do
+         ' if both key/value are used' do
         expect_no_offenses("foo.each { |k, v| p \"\#{k}_\#{v}\" }")
       end
 
@@ -27,8 +27,17 @@ describe RuboCop::Cop::Performance::HashEachMethods do
       end
 
       it 'does not register an offense for foo#each ' \
-      ' if block takes only one arg' do
+         ' if block takes only one arg' do
         expect_no_offenses('foo.each { |kv| p kv }')
+      end
+
+      # Regression test. See https://github.com/bbatsov/rubocop/issues/4881
+      it 'does not register an offense for foo#each ' \
+         ' without unused arg, but unused arg exists in other method' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          foo.each { |k, v| p [k, v] }
+          foo.sum { |k, v| v }
+        RUBY
       end
 
       it 'registers an offense for foo#each with unused key' do
@@ -39,9 +48,16 @@ describe RuboCop::Cop::Performance::HashEachMethods do
       end
 
       it 'auto-corrects foo#each with unused value argument' \
-      ' with foo#each_key' do
+         ' with foo#each_key' do
         new_source = autocorrect_source('foo.each { |k, _v| p k }')
         expect(new_source).to eq('foo.each_key { |k| p k }')
+      end
+
+      # Regression test. See https://github.com/bbatsov/rubocop/pull/4883
+      it 'auto-corrects foo#each with unused value argument' \
+         ' with foo#each_key, and the used value name is not `k`' do
+        new_source = autocorrect_source('foo.each { |key, _v| p key }')
+        expect(new_source).to eq('foo.each_key { |key| p key }')
       end
     end
 
@@ -61,12 +77,12 @@ describe RuboCop::Cop::Performance::HashEachMethods do
       end
 
       it 'does not register an offense for {}#each' \
-      ' if both key/value are used' do
+         ' if both key/value are used' do
         expect_no_offenses("{}.each { |k, v| p \"\#{k}_\#{v}\" }")
       end
 
       it 'does not register an offense for {}#each ' \
-      ' if block takes only one arg' do
+         ' if block takes only one arg' do
         expect_no_offenses('{}.each { |kv| p kv }')
       end
 
@@ -79,13 +95,13 @@ describe RuboCop::Cop::Performance::HashEachMethods do
       end
 
       it 'auto-corrects {}#each with unused value argument' \
-      ' with {}#each_key' do
+         ' with {}#each_key' do
         new_source = autocorrect_source('{}.each { |k, _v| p k }')
         expect(new_source).to eq('{}.each_key { |k| p k }')
       end
 
       it 'auto-corrects {}#each with unused key argument' \
-      ' with {}#each_value' do
+         ' with {}#each_value' do
         new_source = autocorrect_source('{}.each { |_k, v| p v }')
         expect(new_source).to eq('{}.each_value { |v| p v }')
       end
@@ -107,23 +123,32 @@ describe RuboCop::Cop::Performance::HashEachMethods do
       end
 
       it 'does not register an offense for each' \
-      ' if both key/value are used' do
+         ' if both key/value are used' do
         expect_no_offenses("each { |k, v| p \"\#{k}_\#{v}\" }")
       end
 
       it 'does not register an offense for each ' \
-      ' if block takes only one arg' do
+         ' if block takes only one arg' do
         expect_no_offenses('each { |kv| p kv }')
       end
 
+      # Regression test. See https://github.com/bbatsov/rubocop/issues/4881
+      it 'does not register an offense for each ' \
+         ' without unused arg, but unused arg exists in other method' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          each { |k, v| p [k, v] }
+          sum { |k, v| v }
+        RUBY
+      end
+
       it 'auto-corrects each with unused value argument' \
-      ' with each_key' do
+         ' with each_key' do
         new_source = autocorrect_source('each { |k, _v| p k }')
         expect(new_source).to eq('each_key { |k| p k }')
       end
 
       it 'auto-corrects each with unused key argument' \
-      ' with each_value' do
+         ' with each_value' do
         new_source = autocorrect_source('each { |_k, v| p v }')
         expect(new_source).to eq('each_value { |v| p v }')
       end

@@ -25,7 +25,7 @@ module RuboCop
         MSG = 'Use `%s` instead of `%s`.'.freeze
 
         def_node_matcher :plain_each, <<-PATTERN
-          (block $(send !(send _ :to_a) :each) (args (arg $_k) (arg $_v)) ...)
+          (block $(send !(send _ :to_a) :each) (args $(arg _k) $(arg _v)) ...)
         PATTERN
 
         def_node_matcher :kv_each, <<-PATTERN
@@ -41,8 +41,8 @@ module RuboCop
 
         def register_each_offense(node)
           plain_each(node) do |target, k, v|
-            return if @args[k] && @args[v]
-            used = @args[k] ? :key : :value
+            return if used?(k) && used?(v)
+            used = used?(k) ? :key : :value
 
             add_offense(
               target,
@@ -62,56 +62,57 @@ module RuboCop
 
         def check_argument(variable)
           return unless variable.block_argument?
-          (@args ||= {})[variable.name] = variable.used?
+          (@block_args ||= []).push(variable)
+        end
+
+        def used?(arg)
+          loc = arg.loc
+          variable = @block_args.find { |var| var.declaration_node.loc == loc }
+          variable.used?
         end
 
         def autocorrect(node)
-          receiver, _second_method = *node
+          receiver = node.receiver
           _caller, first_method = *receiver
 
           lambda do |corrector|
             case first_method
             when :keys, :values
-              return correct_implicit(node, corrector) if receiver.receiver.nil?
-
               correct_key_value_each(node, corrector)
             else
-              return correct_implicit(node, corrector) if receiver.nil?
-
               correct_plain_each(node, corrector)
             end
           end
         end
 
-        def correct_implicit(node, corrector)
-          method = @args.include?(:k) ? :key : :value
-          new_source = "each_#{method}"
-
-          corrector.replace(node.loc.expression, new_source)
+        def correct_implicit(node, corrector, method_name)
+          corrector.replace(node.loc.expression, method_name)
           correct_args(node, corrector)
         end
 
         def correct_key_value_each(node, corrector)
-          receiver = node.receiver
+          receiver = node.receiver.receiver
+          name = "each_#{node.receiver.method_name.to_s.chop}"
+          return correct_implicit(node, corrector, name) unless receiver
 
-          new_source = receiver.receiver.source +
-                       ".each_#{receiver.method_name[0..-2]}"
+          new_source = receiver.source + ".#{name}"
           corrector.replace(node.loc.expression, new_source)
         end
 
         def correct_plain_each(node, corrector)
-          method = @args.include?(:k) ? :key : :value
-          new_source = node.receiver.source + ".each_#{method}"
+          _each, key, _value = plain_each(node.parent)
+          name = used?(key) ? 'each_key' : 'each_value'
+          return correct_implicit(node, corrector, name) unless node.receiver
 
-          corrector.replace(node.loc.expression, new_source)
+          corrector.replace(node.loc.selector, name)
           correct_args(node, corrector)
         end
 
         def correct_args(node, corrector)
           args = node.parent.children[1]
-          used_arg = "|#{@args.detect { |_k, v| v }.first}|"
+          name, = *args.children.find { |arg| used?(arg) }
 
-          corrector.replace(args.source_range, used_arg)
+          corrector.replace(args.source_range, "|#{name}|")
         end
 
         def plain_range(outer_node)
