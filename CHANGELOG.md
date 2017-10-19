@@ -7,6 +7,10 @@
 * [#4881](https://github.com/bbatsov/rubocop/issues/4881): Fix a false positive for `Performance/HashEachMethods` when unused argument(s) exists in other blocks. ([@pocke][])
 * [#4883](https://github.com/bbatsov/rubocop/pull/4883): Fix auto-correction for `Performance/HashEachMethods`. ([@pocke][])
 
+### Changes
+
+* [#4891](https://github.com/bbatsov/rubocop/pull/4891): Allow predicates for `Style/SafeNavigation`. ([@onk][])
+
 ## 0.51.0 (2017-10-18)
 
 ### New features

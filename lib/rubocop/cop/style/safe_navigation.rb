@@ -43,6 +43,10 @@ module RuboCop
       #   # Methods that `nil` will `respond_to?` should not be converted to
       #   # use safe navigation
       #   foo.to_i if foo
+      #
+      #   # Predicate methods should not be converted to use safe navigation.
+      #   # If using safe navigation, it seems to looks like it returns boolean.
+      #   foo && foo.bar?
       class SafeNavigation < Cop
         extend TargetRubyVersion
 
@@ -157,7 +161,11 @@ module RuboCop
 
         def unsafe_method?(send_node)
           NIL_METHODS.include?(send_node.method_name) ||
-            negated?(send_node) || !send_node.dot?
+            negated?(send_node) || predicate?(send_node) || !send_node.dot?
+        end
+
+        def predicate?(send_node)
+          allow_predicates? && send_node.predicate_method?
         end
 
         def negated?(send_node)
@@ -172,6 +180,10 @@ module RuboCop
         def end_range(node, method_call)
           range_between(method_call.loc.expression.end_pos,
                         node.loc.expression.end_pos)
+        end
+
+        def allow_predicates?
+          cop_config['AllowPredicates']
         end
       end
     end

@@ -36,6 +36,23 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
       expect_no_offenses('foo && foo[:bar]')
     end
 
+    context 'AllowPredicates true' do
+      let(:cop_config) { { 'AllowPredicates' => true } }
+
+      it 'allows an object check before a predicate' do
+        expect_no_offenses('foo && foo.bar?')
+      end
+    end
+    context 'AllowPredicates false' do
+      let(:cop_config) { { 'AllowPredicates' => false } }
+
+      it 'registers an offense for an object check followed by a predicate ' \
+          'method call' do
+        inspect_source('foo && foo.bar?')
+        expect(cop.messages).to eq([message])
+      end
+    end
+
     it 'allows an object check before a negated predicate' do
       expect_no_offenses('foo && !foo.bar?')
     end
