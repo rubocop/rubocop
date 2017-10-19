@@ -12,7 +12,7 @@ AllCops:
 
 Naming/PredicateName:
   # Method define macros for dynamically generated method.
-  MethodDefineMacros:
+  MethodDefinitionMacros:
     - define_method
     - define_singleton_method
     - def_node_matcher
