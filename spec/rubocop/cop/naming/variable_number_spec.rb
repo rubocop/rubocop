@@ -60,9 +60,10 @@ describe RuboCop::Cop::Naming::VariableNumber, :config do
 
     it 'registers an offense for normal case numbering in method camel case
      parameter' do
-      inspect_source('def method(funnyArg1); end')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['funnyArg1'])
+      expect_offense(<<-RUBY.strip_indent)
+        def method(funnyArg1); end
+                   ^^^^^^^^^ Use snake_case for variable numbers.
+      RUBY
     end
   end
 
@@ -103,9 +104,10 @@ describe RuboCop::Cop::Naming::VariableNumber, :config do
 
     it 'registers an offense for snake case numbering in method camel case
      parameter' do
-      inspect_source('def method(funnyArg_1); end')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['funnyArg_1'])
+      expect_offense(<<-RUBY.strip_indent)
+        def method(funnyArg_1); end
+                   ^^^^^^^^^^ Use normalcase for variable numbers.
+      RUBY
     end
   end
 
@@ -150,16 +152,18 @@ describe RuboCop::Cop::Naming::VariableNumber, :config do
 
     it 'registers an offense for snake case numbering in method camel case
      parameter' do
-      inspect_source('def method(myArg_1); end')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['myArg_1'])
+      expect_offense(<<-RUBY.strip_indent)
+        def method(myArg_1); end
+                   ^^^^^^^ Use non_integer for variable numbers.
+      RUBY
     end
 
     it 'registers an offense for normal case numbering in method camel case
      parameter' do
-      inspect_source('def method(myArg1); end')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['myArg1'])
+      expect_offense(<<-RUBY.strip_indent)
+        def method(myArg1); end
+                   ^^^^^^ Use non_integer for variable numbers.
+      RUBY
     end
   end
 end

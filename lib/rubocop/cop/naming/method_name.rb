@@ -4,29 +4,41 @@ module RuboCop
   module Cop
     module Naming
       # This cop makes sure that all methods use the configured style,
-      # snake_case or camelCase, for their names. Some special arrangements
-      # have to be made for operator methods.
+      # snake_case or camelCase, for their names.
+      #
+      # @example
+      #
+      #   # EnforcedStyle: snake_case
+      #
+      #   # bad
+      #   def fooBar; end
+      #
+      #   # good
+      #   def foo_bar; end
+      #
+      # @example
+      #
+      #   # EnforcedStyle: camelCase
+      #
+      #   # bad
+      #   def foo_bar; end
+      #
+      #   # good
+      #   def fooBar; end
       class MethodName < Cop
         include ConfigurableNaming
 
-        def on_def(node)
-          name, = *node
-          check_name(node, sanitize_name(name), node.loc.name)
-        end
+        MSG = 'Use %<style>s for method names.'.freeze
 
-        def on_defs(node)
-          _object, name, = *node
-          check_name(node, sanitize_name(name), node.loc.name)
+        def on_def(node)
+          check_name(node, node.method_name, node.loc.name)
         end
+        alias on_defs on_def
 
         private
 
         def message(style)
-          format('Use %s for method names.', style)
-        end
-
-        def sanitize_name(name)
-          name.to_s.delete('@').to_sym
+          format(MSG, style: style)
         end
       end
     end
