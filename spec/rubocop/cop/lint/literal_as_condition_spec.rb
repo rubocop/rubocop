@@ -75,7 +75,7 @@ describe RuboCop::Cop::Lint::LiteralAsCondition do
         when #{lit} then top
         end
       RUBY
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "registers an offense for literal #{lit} in &&" do
@@ -120,7 +120,7 @@ describe RuboCop::Cop::Lint::LiteralAsCondition do
           top
         end
       RUBY
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "accepts literal #{lit} in non-toplevel and/or" do
@@ -129,7 +129,7 @@ describe RuboCop::Cop::Lint::LiteralAsCondition do
           top
         end
       RUBY
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "registers an offense for `!#{lit}`" do

@@ -32,7 +32,7 @@ describe RuboCop::Cop::Style::Send do
   end
 
   context 'with __send__' do
-    after { expect(cop.offenses).to be_empty }
+    after { expect(cop.offenses.empty?).to be(true) }
 
     context 'and with a receiver' do
       it 'does not register an offense for an invocation with args' do
@@ -56,7 +56,7 @@ describe RuboCop::Cop::Style::Send do
   end
 
   context 'with public_send' do
-    after { expect(cop.offenses).to be_empty }
+    after { expect(cop.offenses.empty?).to be(true) }
 
     context 'and with a receiver' do
       it 'does not register an offense for an invocation with args' do

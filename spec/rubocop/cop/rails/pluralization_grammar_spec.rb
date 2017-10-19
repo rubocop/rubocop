@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Rails::PluralizationGrammar do
   subject(:cop) { described_class.new }
+
   before do
     inspect_source(source)
   end
@@ -10,8 +11,9 @@ describe RuboCop::Cop::Rails::PluralizationGrammar do
     context "When #{method_name} is called on an unknown variable" do
       context "when using the plural form ##{method_name}s" do
         let(:source) { "some_variable.#{method_name}s" }
+
         it 'does not register an offense' do
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
 
@@ -19,7 +21,7 @@ describe RuboCop::Cop::Rails::PluralizationGrammar do
         let(:source) { "some_method.#{method_name}" }
 
         it 'does not register an offense' do
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
     end
@@ -27,6 +29,7 @@ describe RuboCop::Cop::Rails::PluralizationGrammar do
     [-1, -1.0, 1, 1.0].each do |singular_literal|
       context "when mis-pluralizing #{method_name} with #{singular_literal}" do
         let(:source) { "#{singular_literal}.#{method_name}s.ago" }
+
         it 'registers an offense' do
           expect(cop.offenses.size).to eq(1)
           expect(cop.highlights).to eq(["#{singular_literal}.#{method_name}s"])
@@ -43,8 +46,9 @@ describe RuboCop::Cop::Rails::PluralizationGrammar do
 
       context "when using the singular form ##{method_name}" do
         let(:source) { "#{singular_literal}.#{method_name}" }
+
         it 'does not register an offense' do
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
     end
@@ -57,13 +61,15 @@ describe RuboCop::Cop::Rails::PluralizationGrammar do
        rand(2..1000)].each do |plural_number|
         context "when using the plural form ##{method_name}s" do
           let(:source) { "#{plural_number}.#{method_name}s" }
+
           it 'does not register an offense' do
-            expect(cop.offenses).to be_empty
+            expect(cop.offenses.empty?).to be(true)
           end
         end
 
         context "when using the singular form ##{method_name}" do
           let(:source) { "#{plural_number}.#{method_name}.from_now" }
+
           it 'registers an offense' do
             expect(cop.offenses.size).to eq(1)
             expect(cop.highlights).to eq(["#{plural_number}.#{method_name}"])

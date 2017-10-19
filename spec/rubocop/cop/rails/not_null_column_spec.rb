@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Rails::NotNullColumn, :config do
   subject(:cop) { described_class.new(config) }
+
   let(:cop_config) { { 'Include' => nil } }
 
   context 'with add_column call' do
@@ -18,6 +19,7 @@ describe RuboCop::Cop::Rails::NotNullColumn, :config do
       let(:source) do
         'add_column :users, :name, :string, null: false, default: ""'
       end
+
       include_examples 'accepts'
     end
 
@@ -32,11 +34,13 @@ describe RuboCop::Cop::Rails::NotNullColumn, :config do
 
     context 'with null: true' do
       let(:source) { 'add_column :users, :name, :string, null: true' }
+
       include_examples 'accepts'
     end
 
     context 'without any options' do
       let(:source) { 'add_column :users, :name, :string' }
+
       include_examples 'accepts'
     end
   end
@@ -49,6 +53,7 @@ describe RuboCop::Cop::Rails::NotNullColumn, :config do
         change_column :users, :name, :string, null: false
       RUBY
     end
+
     include_examples 'accepts'
   end
 
@@ -65,6 +70,7 @@ describe RuboCop::Cop::Rails::NotNullColumn, :config do
         end
       RUBY
     end
+
     include_examples 'accepts'
   end
 
@@ -82,11 +88,13 @@ describe RuboCop::Cop::Rails::NotNullColumn, :config do
       let(:source) do
         'add_reference :products, :category, null: false, default: 1'
       end
+
       include_examples 'accepts'
     end
 
     context 'without any options' do
       let(:source) { 'add_reference :products, :category' }
+
       include_examples 'accepts'
     end
   end

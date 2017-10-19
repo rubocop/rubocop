@@ -7,13 +7,13 @@ describe RuboCop::AST::DefNode do
     context 'with a def node' do
       let(:source) { 'def foo(bar); end' }
 
-      it { expect(def_node).to be_a(described_class) }
+      it { expect(def_node.is_a?(described_class)).to be(true) }
     end
 
     context 'with a defs node' do
       let(:source) { 'def self.foo(bar); end' }
 
-      it { expect(def_node).to be_a(described_class) }
+      it { expect(def_node.is_a?(described_class)).to be(true) }
     end
   end
 
@@ -77,7 +77,7 @@ describe RuboCop::AST::DefNode do
     context 'with no arguments' do
       let(:source) { 'def foo; end' }
 
-      it { expect(def_node.arguments).to be_empty }
+      it { expect(def_node.arguments.empty?).to be(true) }
     end
 
     context 'with a single regular argument' do
@@ -109,37 +109,37 @@ describe RuboCop::AST::DefNode do
     context 'with no arguments' do
       let(:source) { 'def foo; end' }
 
-      it { expect(def_node.first_argument).to be_nil }
+      it { expect(def_node.first_argument.nil?).to be(true) }
     end
 
     context 'with a single regular argument' do
       let(:source) { 'def foo(bar); end' }
 
-      it { expect(def_node.first_argument).to be_arg_type }
+      it { expect(def_node.first_argument.arg_type?).to be(true) }
     end
 
     context 'with a single rest argument' do
       let(:source) { 'def foo(*bar); end' }
 
-      it { expect(def_node.first_argument).to be_restarg_type }
+      it { expect(def_node.first_argument.restarg_type?).to be(true) }
     end
 
     context 'with a single keyword argument' do
       let(:source) { 'def foo(bar: :baz); end' }
 
-      it { expect(def_node.first_argument).to be_kwoptarg_type }
+      it { expect(def_node.first_argument.kwoptarg_type?).to be(true) }
     end
 
     context 'with multiple regular arguments' do
       let(:source) { 'def foo(bar, baz); end' }
 
-      it { expect(def_node.first_argument).to be_arg_type }
+      it { expect(def_node.first_argument.arg_type?).to be(true) }
     end
 
     context 'with multiple mixed arguments' do
       let(:source) { 'def foo(bar, *baz); end' }
 
-      it { expect(def_node.first_argument).to be_arg_type }
+      it { expect(def_node.first_argument.arg_type?).to be(true) }
     end
   end
 
@@ -147,37 +147,37 @@ describe RuboCop::AST::DefNode do
     context 'with no arguments' do
       let(:source) { 'def foo; end' }
 
-      it { expect(def_node.last_argument).to be_nil }
+      it { expect(def_node.last_argument.nil?).to be(true) }
     end
 
     context 'with a single regular argument' do
       let(:source) { 'def foo(bar); end' }
 
-      it { expect(def_node.last_argument).to be_arg_type }
+      it { expect(def_node.last_argument.arg_type?).to be(true) }
     end
 
     context 'with a single rest argument' do
       let(:source) { 'def foo(*bar); end' }
 
-      it { expect(def_node.last_argument).to be_restarg_type }
+      it { expect(def_node.last_argument.restarg_type?).to be(true) }
     end
 
     context 'with a single keyword argument' do
       let(:source) { 'def foo(bar: :baz); end' }
 
-      it { expect(def_node.last_argument).to be_kwoptarg_type }
+      it { expect(def_node.last_argument.kwoptarg_type?).to be(true) }
     end
 
     context 'with multiple regular arguments' do
       let(:source) { 'def foo(bar, baz); end' }
 
-      it { expect(def_node.last_argument).to be_arg_type }
+      it { expect(def_node.last_argument.arg_type?).to be(true) }
     end
 
     context 'with multiple mixed arguments' do
       let(:source) { 'def foo(bar, *baz); end' }
 
-      it { expect(def_node.last_argument).to be_restarg_type }
+      it { expect(def_node.last_argument.restarg_type?).to be(true) }
     end
   end
 
@@ -347,19 +347,19 @@ describe RuboCop::AST::DefNode do
     context 'with an instance method definition' do
       let(:source) { 'def foo(bar); end' }
 
-      it { expect(def_node.receiver).to be_nil }
+      it { expect(def_node.receiver.nil?).to be(true) }
     end
 
     context 'with a class method definition' do
       let(:source) { 'def self.foo(bar); end' }
 
-      it { expect(def_node.receiver).to be_self_type }
+      it { expect(def_node.receiver.self_type?).to be(true) }
     end
 
     context 'with a singleton method definition' do
       let(:source) { 'def Foo.bar(baz); end' }
 
-      it { expect(def_node.receiver).to be_const_type }
+      it { expect(def_node.receiver.const_type?).to be(true) }
     end
   end
 
@@ -487,19 +487,19 @@ describe RuboCop::AST::DefNode do
     context 'with no body' do
       let(:source) { 'def foo(bar); end' }
 
-      it { expect(def_node.body).to be_nil }
+      it { expect(def_node.body.nil?).to be(true) }
     end
 
     context 'with a single expression body' do
       let(:source) { 'def foo(bar); baz; end' }
 
-      it { expect(def_node.body).to be_send_type }
+      it { expect(def_node.body.send_type?).to be(true) }
     end
 
     context 'with a multi-expression body' do
       let(:source) { 'def foo(bar); baz; qux; end' }
 
-      it { expect(def_node.body).to be_begin_type }
+      it { expect(def_node.body.begin_type?).to be(true) }
     end
   end
 end

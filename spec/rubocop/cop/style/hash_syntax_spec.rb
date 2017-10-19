@@ -174,7 +174,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
       it 'accepts ruby19 syntax when no elements have symbol values ' \
         'in method calls' do
         inspect_source('func(3, a: 0)')
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it 'accepts new syntax in method calls' do

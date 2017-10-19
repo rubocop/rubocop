@@ -12,6 +12,7 @@ describe RuboCop::ConfigLoader do
 
     context 'when no config file exists in ancestor directories' do
       let(:dir_path) { 'dir' }
+
       before { create_file('dir/example.rb', '') }
 
       context 'but a config file exists in home directory' do
@@ -161,7 +162,7 @@ describe RuboCop::ConfigLoader do
 
         configuration = config_loader.configuration_from_file(sub_file_path)
         excludes = configuration['AllCops']['Exclude']
-        expect(excludes).to_not include(File.expand_path('vendor/**'))
+        expect(excludes).not_to include(File.expand_path('vendor/**'))
         expect(excludes).to include(File.expand_path('vendor/foo'))
       end
     end
@@ -340,8 +341,10 @@ describe RuboCop::ConfigLoader do
         expected = { 'Enabled' => true,        # overridden in .rubocop.yml
                      'CountComments' => true,  # only defined in normal.yml
                      'Max' => 200 }            # special.yml takes precedence
-        expect(configuration_from_file['Metrics/MethodLength'].to_set)
-          .to be_superset(expected.to_set)
+        expect(
+          configuration_from_file['Metrics/MethodLength']
+            .to_set.superset?(expected.to_set)
+        ).to be(true)
       end
     end
 
@@ -480,15 +483,19 @@ describe RuboCop::ConfigLoader do
         expected = { 'Enabled' => true,        # overridden in .rubocop.yml
                      'CountComments' => true,  # overridden in local.yml
                      'Max' => 200 }            # inherited from somegem
-        expect(configuration_from_file['Metrics/MethodLength'].to_set)
-          .to be_superset(expected.to_set)
+        expect(
+          configuration_from_file['Metrics/MethodLength']
+            .to_set.superset?(expected.to_set)
+        ).to be(true)
 
         expected = { 'Enabled' => true,        # gemtwo/config/default.yml
                      'Max' => 72,              # gemtwo/config/strict.yml
                      'AllowHeredoc' => false,  # gemtwo/config/strict.yml
                      'AllowURI' => false }     # overridden in .rubocop.yml
-        expect(configuration_from_file['Metrics/LineLength'].to_set)
-          .to be_superset(expected.to_set)
+        expect(
+          configuration_from_file['Metrics/LineLength']
+            .to_set.superset?(expected.to_set)
+        ).to be(true)
       end
     end
 
@@ -746,7 +753,7 @@ describe RuboCop::ConfigLoader do
             configuration = described_class.load_file('.rubocop.yml')
 
             word_regexp = configuration['Style/WordArray']['WordRegex']
-            expect(word_regexp).to be_a(::Regexp)
+            expect(word_regexp.is_a?(::Regexp)).to be(true)
           end
         end
       end
@@ -757,7 +764,7 @@ describe RuboCop::ConfigLoader do
             configuration = described_class.load_file('.rubocop.yml')
 
             word_regexp = configuration['Style/WordArray']['WordRegex']
-            expect(word_regexp).to be_a(::Regexp)
+            expect(word_regexp.is_a?(::Regexp)).to be(true)
           end
         end
 
@@ -770,7 +777,7 @@ describe RuboCop::ConfigLoader do
               configuration = described_class.load_file('.rubocop.yml')
 
               word_regexp = configuration['Style/WordArray']['WordRegex']
-              expect(word_regexp).to be_a(::Regexp)
+              expect(word_regexp.is_a?(::Regexp)).to be(true)
             end
           end
         end

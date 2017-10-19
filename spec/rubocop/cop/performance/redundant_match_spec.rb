@@ -75,7 +75,7 @@ describe RuboCop::Cop::Performance::RedundantMatch do
        something(str.match(/regex/))
       end
     RUBY
-    expect(cop.messages).to be_empty
+    expect(cop.messages.empty?).to be(true)
   end
 
   it 'does not register an error when return value of .match is stored in an ' \
@@ -86,7 +86,7 @@ describe RuboCop::Cop::Performance::RedundantMatch do
        true
       end
     RUBY
-    expect(cop.messages).to be_empty
+    expect(cop.messages.empty?).to be(true)
   end
 
   it 'does not register an error when return value of .match is returned from' \
@@ -96,7 +96,7 @@ describe RuboCop::Cop::Performance::RedundantMatch do
        str.match(/regex/)
       end
     RUBY
-    expect(cop.messages).to be_empty
+    expect(cop.messages.empty?).to be(true)
   end
 
   it 'does not register an offense when match has a block' do

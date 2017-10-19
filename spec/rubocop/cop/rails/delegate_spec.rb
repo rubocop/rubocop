@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Rails::Delegate do
   subject(:cop) { described_class.new(config) }
+
   let(:cop_config) { { 'EnforceForPrefixed' => true } }
   let(:config) do
     merged = RuboCop::ConfigLoader

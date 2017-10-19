@@ -6,13 +6,13 @@ describe RuboCop::AST::YieldNode do
   describe '.new' do
     let(:source) { 'yield :foo, :bar' }
 
-    it { expect(yield_node).to be_a(described_class) }
+    it { expect(yield_node.is_a?(described_class)).to be(true) }
   end
 
   describe '#receiver' do
     let(:source) { 'yield :foo, :bar' }
 
-    it { expect(yield_node.receiver).to be_nil }
+    it { expect(yield_node.receiver.nil?).to be(true) }
   end
 
   describe '#method_name' do
@@ -81,7 +81,7 @@ describe RuboCop::AST::YieldNode do
     context 'with no arguments' do
       let(:source) { 'yield' }
 
-      it { expect(yield_node.arguments).to be_empty }
+      it { expect(yield_node.arguments.empty?).to be(true) }
     end
 
     context 'with a single literal argument' do
@@ -113,31 +113,31 @@ describe RuboCop::AST::YieldNode do
     context 'with no arguments' do
       let(:source) { 'yield' }
 
-      it { expect(yield_node.first_argument).to be_nil }
+      it { expect(yield_node.first_argument.nil?).to be(true) }
     end
 
     context 'with a single literal argument' do
       let(:source) { 'yield :foo' }
 
-      it { expect(yield_node.first_argument).to be_sym_type }
+      it { expect(yield_node.first_argument.sym_type?).to be(true) }
     end
 
     context 'with a single splat argument' do
       let(:source) { 'yield *foo' }
 
-      it { expect(yield_node.first_argument).to be_splat_type }
+      it { expect(yield_node.first_argument.splat_type?).to be(true) }
     end
 
     context 'with multiple literal arguments' do
       let(:source) { 'yield :foo, :bar' }
 
-      it { expect(yield_node.first_argument).to be_sym_type }
+      it { expect(yield_node.first_argument.sym_type?).to be(true) }
     end
 
     context 'with multiple mixed arguments' do
       let(:source) { 'yield :foo, *bar' }
 
-      it { expect(yield_node.first_argument).to be_sym_type }
+      it { expect(yield_node.first_argument.sym_type?).to be(true) }
     end
   end
 
@@ -145,31 +145,31 @@ describe RuboCop::AST::YieldNode do
     context 'with no arguments' do
       let(:source) { 'yield' }
 
-      it { expect(yield_node.last_argument).to be_nil }
+      it { expect(yield_node.last_argument.nil?).to be(true) }
     end
 
     context 'with a single literal argument' do
       let(:source) { 'yield :foo' }
 
-      it { expect(yield_node.last_argument).to be_sym_type }
+      it { expect(yield_node.last_argument.sym_type?).to be(true) }
     end
 
     context 'with a single splat argument' do
       let(:source) { 'yield *foo' }
 
-      it { expect(yield_node.last_argument).to be_splat_type }
+      it { expect(yield_node.last_argument.splat_type?).to be(true) }
     end
 
     context 'with multiple literal arguments' do
       let(:source) { 'yield :foo, :bar' }
 
-      it { expect(yield_node.last_argument).to be_sym_type }
+      it { expect(yield_node.last_argument.sym_type?).to be(true) }
     end
 
     context 'with multiple mixed arguments' do
       let(:source) { 'yield :foo, *bar' }
 
-      it { expect(yield_node.last_argument).to be_splat_type }
+      it { expect(yield_node.last_argument.splat_type?).to be(true) }
     end
   end
 
@@ -322,7 +322,7 @@ describe RuboCop::AST::YieldNode do
   describe '#block_node' do
     let(:source) { 'yield :foo' }
 
-    it { expect(yield_node.block_node).to be_nil }
+    it { expect(yield_node.block_node.nil?).to be(true) }
   end
 
   describe '#splat_argument?' do

@@ -43,12 +43,12 @@ describe RuboCop::Cop::Layout::SpaceInsideArrayPercentLiteral do
 
         it 'accepts literals without additional spaces' do
           inspect_source(code_example('a b c'))
-          expect(cop.messages).to be_empty
+          expect(cop.messages.empty?).to be(true)
         end
 
         it 'accepts literals with escaped spaces' do
           inspect_source(code_example('a\  b\ \  c'))
-          expect(cop.messages).to be_empty
+          expect(cop.messages.empty?).to be(true)
         end
 
         it 'accepts multi-line literals' do
@@ -59,7 +59,7 @@ describe RuboCop::Cop::Layout::SpaceInsideArrayPercentLiteral do
               c
             )
           RUBY
-          expect(cop.messages).to be_empty
+          expect(cop.messages.empty?).to be(true)
         end
 
         it 'accepts multi-line literals within a method' do
@@ -72,7 +72,7 @@ describe RuboCop::Cop::Layout::SpaceInsideArrayPercentLiteral do
               )
             end
           RUBY
-          expect(cop.messages).to be_empty
+          expect(cop.messages.empty?).to be(true)
         end
 
         it 'accepts newlines and additional following alignment spaces' do
@@ -80,7 +80,7 @@ describe RuboCop::Cop::Layout::SpaceInsideArrayPercentLiteral do
             %#{type}(a b
                c)
           RUBY
-          expect(cop.messages).to be_empty
+          expect(cop.messages.empty?).to be(true)
         end
       end
     end

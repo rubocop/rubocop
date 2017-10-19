@@ -48,7 +48,7 @@ describe RuboCop::Cop::Naming::FileName do
     let(:filename) { '/some/dir/test_case.rb' }
 
     it 'reports an offense' do
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 
@@ -56,7 +56,7 @@ describe RuboCop::Cop::Naming::FileName do
     let(:filename) { '/some/dir/test_case' }
 
     it 'does not report an offense' do
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 
@@ -64,7 +64,7 @@ describe RuboCop::Cop::Naming::FileName do
     let(:filename) { '/some/dir/some_task.rake' }
 
     it 'does not report an offense' do
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 
@@ -72,7 +72,7 @@ describe RuboCop::Cop::Naming::FileName do
     let(:filename) { 'some/dir/some_view.html.slim_spec.rb' }
 
     it 'does not report an offense' do
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 
@@ -80,7 +80,7 @@ describe RuboCop::Cop::Naming::FileName do
     let(:filename) { 'some/dir/file?!.rb' }
 
     it 'does not report an offense' do
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 
@@ -92,7 +92,7 @@ describe RuboCop::Cop::Naming::FileName do
     RUBY
 
     it 'does not report an offense' do
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     context 'when IgnoreExecutableScripts is disabled' do
@@ -111,7 +111,7 @@ describe RuboCop::Cop::Naming::FileName do
       let(:filename) { '/some/dir/Gemfile' }
 
       it 'does not report an offense' do
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
     end
   end
@@ -174,7 +174,7 @@ describe RuboCop::Cop::Naming::FileName do
           let(:filename) { "/some/dir/#{dir}/a/b.rb" }
 
           it 'does not register an offense' do
-            expect(cop.offenses).to be_empty
+            expect(cop.offenses.empty?).to be(true)
           end
         end
 
@@ -192,7 +192,7 @@ describe RuboCop::Cop::Naming::FileName do
           let(:filename) { "/some/dir/#{dir}/project/#{dir}/a/b.rb" }
 
           it 'does not register an offense' do
-            expect(cop.offenses).to be_empty
+            expect(cop.offenses.empty?).to be(true)
           end
         end
       end
@@ -201,7 +201,7 @@ describe RuboCop::Cop::Naming::FileName do
         let(:filename) { '/some/dir/b.rb' }
 
         it 'does not register an offense' do
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
 
@@ -272,7 +272,7 @@ describe RuboCop::Cop::Naming::FileName do
       let(:filename) { 'a.rb' }
 
       it 'does not register an offense' do
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
     end
 
@@ -309,7 +309,7 @@ describe RuboCop::Cop::Naming::FileName do
     RUBY
 
     it 'does not register an offense' do
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 
@@ -332,7 +332,7 @@ describe RuboCop::Cop::Naming::FileName do
     RUBY
 
     it 'does not register an offense' do
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 
@@ -355,7 +355,7 @@ describe RuboCop::Cop::Naming::FileName do
     RUBY
 
     it 'does not register an offense' do
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 end

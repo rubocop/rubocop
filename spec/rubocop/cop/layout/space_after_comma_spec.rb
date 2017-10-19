@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Layout::SpaceAfterComma do
   subject(:cop) { described_class.new(config) }
+
   let(:config) do
     RuboCop::Config.new('Layout/SpaceInsideHashLiteralBraces' => brace_config)
   end
@@ -24,7 +25,7 @@ describe RuboCop::Cop::Layout::SpaceAfterComma do
   shared_examples 'trailing comma' do |items|
     it 'accepts the last comma' do
       inspect_source(source.call(items))
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
   end
 
@@ -52,7 +53,7 @@ describe RuboCop::Cop::Layout::SpaceAfterComma do
     shared_examples 'common behavior' do
       it 'accepts a space between a comma and a closing brace' do
         inspect_source('{ foo:bar, }')
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
     end
 

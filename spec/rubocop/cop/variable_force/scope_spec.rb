@@ -19,13 +19,13 @@ describe RuboCop::Cop::VariableForce::Scope do
     end
   end
 
+  subject(:scope) { described_class.new(scope_node) }
+
   let(:ast) do
     RuboCop::ProcessedSource.new(source, ruby_version).ast
   end
 
   let(:scope_node) { ast.each_node(scope_node_type).first }
-
-  subject(:scope) { described_class.new(scope_node) }
 
   describe '#name' do
     context 'when the scope is instance method definition' do
@@ -183,7 +183,7 @@ describe RuboCop::Cop::VariableForce::Scope do
         ast
       end
 
-      it { should be false }
+      it { is_expected.to be false }
     end
 
     context 'with node of the scope itself' do
@@ -191,7 +191,7 @@ describe RuboCop::Cop::VariableForce::Scope do
         ast.each_node.find(&:defs_type?)
       end
 
-      it { should be false }
+      it { is_expected.to be false }
     end
 
     context 'with child node the scope does not include' do
@@ -199,7 +199,7 @@ describe RuboCop::Cop::VariableForce::Scope do
         ast.each_node.find(&:self_type?)
       end
 
-      it { should be false }
+      it { is_expected.to be false }
     end
 
     context 'with child node the scope includes' do
@@ -207,7 +207,7 @@ describe RuboCop::Cop::VariableForce::Scope do
         ast.each_node.find(&:send_type?)
       end
 
-      it { should be true }
+      it { is_expected.to be true }
     end
 
     context 'with descendant node the scope does not include' do
@@ -215,7 +215,7 @@ describe RuboCop::Cop::VariableForce::Scope do
         ast.each_node.find(&:lvasgn_type?)
       end
 
-      it { should be false }
+      it { is_expected.to be false }
     end
   end
 
@@ -242,6 +242,7 @@ describe RuboCop::Cop::VariableForce::Scope do
 
         let(:scope_node_type) { :def }
         let(:expected_types) { %w[args arg arg sym] }
+
         include_examples 'yields', 'the argument and the body nodes'
       end
 
@@ -254,6 +255,7 @@ describe RuboCop::Cop::VariableForce::Scope do
 
         let(:scope_node_type) { :defs }
         let(:expected_types) { %w[args arg arg sym] }
+
         include_examples 'yields', 'the argument and the body nodes'
       end
 
@@ -266,6 +268,7 @@ describe RuboCop::Cop::VariableForce::Scope do
 
         let(:scope_node_type) { :module }
         let(:expected_types) { %w[sym] }
+
         include_examples 'yields', 'the body nodes'
       end
 
@@ -280,6 +283,7 @@ describe RuboCop::Cop::VariableForce::Scope do
 
         let(:scope_node_type) { :class }
         let(:expected_types) { %w[sym] }
+
         include_examples 'yields', 'the body nodes'
       end
 
@@ -294,6 +298,7 @@ describe RuboCop::Cop::VariableForce::Scope do
 
         let(:scope_node_type) { :sclass }
         let(:expected_types) { %w[sym] }
+
         include_examples 'yields', 'the body nodes'
       end
 
@@ -306,6 +311,7 @@ describe RuboCop::Cop::VariableForce::Scope do
 
         let(:scope_node_type) { :block }
         let(:expected_types) { %w[args arg arg sym] }
+
         include_examples 'yields', 'the argument and the body nodes'
       end
 
@@ -316,6 +322,7 @@ describe RuboCop::Cop::VariableForce::Scope do
 
         let(:scope_node_type) { :sym }
         let(:expected_types) { %w[sym] }
+
         include_examples 'yields', 'the body nodes'
       end
     end
@@ -334,6 +341,7 @@ describe RuboCop::Cop::VariableForce::Scope do
 
         let(:scope_node_type) { :begin }
         let(:expected_types) { %w[begin lvasgn int block send int int lvar] }
+
         include_examples 'yields', 'only the block node and the child send node'
       end
 
@@ -350,6 +358,7 @@ describe RuboCop::Cop::VariableForce::Scope do
 
         let(:scope_node_type) { :begin }
         let(:expected_types) { %w[begin lvasgn int defs self lvar] }
+
         include_examples 'yields', 'only the defs node and the method host node'
       end
     end

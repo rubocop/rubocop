@@ -23,7 +23,7 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
                  postal_code:'99999-1111')
       RUBY
       inspect_source(source)
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts space between key and value in a hash with hash rockets' do
@@ -48,7 +48,7 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
         }
       RUBY
       inspect_source(source)
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     context 'when spaces are present in a single-line hash literal' do
@@ -113,7 +113,7 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     it 'ignores trailing whitespace' do
       inspect_source(['      class Benchmarker < Performer     ',
                       '      end'])
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'registers an offense on class inheritance' do
@@ -233,7 +233,7 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
         context "such as #{reason}" do
           it 'allows it' do
             inspect_source(src)
-            expect(cop.offenses).to be_empty
+            expect(cop.offenses.empty?).to be(true)
           end
         end
       end
@@ -252,7 +252,7 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
         context "such as #{reason}" do
           it 'registers offense(s)' do
             inspect_source(src)
-            expect(cop.offenses).not_to be_empty
+            expect(cop.offenses.empty?).to be(false)
           end
         end
       end
@@ -395,7 +395,7 @@ describe RuboCop::Cop::Layout::ExtraSpacing, :config do
           var = arg
         end
       RUBY
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 end

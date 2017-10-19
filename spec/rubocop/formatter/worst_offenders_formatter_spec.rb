@@ -4,6 +4,7 @@ module RuboCop
   module Formatter
     describe WorstOffendersFormatter do
       subject(:formatter) { described_class.new(output) }
+
       let(:output) { StringIO.new }
 
       let(:files) do

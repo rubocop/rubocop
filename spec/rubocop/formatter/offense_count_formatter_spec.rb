@@ -4,6 +4,7 @@ module RuboCop
   module Formatter
     describe OffenseCountFormatter do
       subject(:formatter) { described_class.new(output) }
+
       let(:output) { StringIO.new }
 
       let(:files) do
@@ -19,6 +20,7 @@ module RuboCop
 
         context 'when no offenses are detected' do
           let(:offenses) { [] }
+
           it 'does not add to offense_counts' do
             expect { finish }.not_to change { formatter.offense_counts }
           end
@@ -26,6 +28,7 @@ module RuboCop
 
         context 'when any offenses are detected' do
           let(:offenses) { [double('offense', cop_name: 'OffendedCop')] }
+
           it 'increments the count for the cop in offense_counts' do
             expect { finish }.to change { formatter.offense_counts }
           end
@@ -35,6 +38,7 @@ module RuboCop
       describe '#report_summary' do
         context 'when an offense is detected' do
           let(:cop_counts) { { 'OffendedCop' => 1 } }
+
           it 'shows the cop and the offense count' do
             formatter.report_summary(cop_counts)
             expect(output.string).to include(

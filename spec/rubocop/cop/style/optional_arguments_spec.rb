@@ -107,7 +107,7 @@ describe RuboCop::Cop::Style::OptionalArguments do
           end
         RUBY
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
     end
   end

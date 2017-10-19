@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Layout::SpaceAroundOperators do
   subject(:cop) { described_class.new(config) }
+
   let(:config) do
     RuboCop::Config
       .new(
@@ -650,7 +651,7 @@ describe RuboCop::Cop::Layout::SpaceAroundOperators do
           11 => 3
         }
       RUBY
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     context 'when does not allowed for alignment' do

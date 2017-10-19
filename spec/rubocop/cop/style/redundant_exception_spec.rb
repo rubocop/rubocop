@@ -23,7 +23,7 @@ describe RuboCop::Cop::Style::RedundantException do
 
     it "accepts a #{keyword} with RuntimeError if it does not have 2 args" do
       inspect_source("#{keyword} RuntimeError, msg, caller")
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "auto-corrects a #{keyword} RuntimeError by removing RuntimeError" do

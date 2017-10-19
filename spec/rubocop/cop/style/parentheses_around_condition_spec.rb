@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
   subject(:cop) { described_class.new(config) }
+
   let(:cop_config) { { 'AllowSafeAssignment' => true } }
 
   it 'registers an offense for parentheses around condition' do
@@ -105,7 +106,7 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
         if (something #{op} top)
         end
       RUBY
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 

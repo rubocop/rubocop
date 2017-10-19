@@ -64,7 +64,7 @@ shared_examples_for 'multiline literal brace layout' do
     it 'ignores heredocs that could share a last line' do
       inspect_source(construct(false, a, make_multi(heredoc), true))
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'detects heredoc structures that are safe to add to' do
@@ -90,13 +90,13 @@ shared_examples_for 'multiline literal brace layout' do
       it 'allows closing brace on same line as last element' do
         inspect_source(construct(false, false))
 
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'allows closing brace on same line as last multiline element' do
         inspect_source(construct(false, a, make_multi(multi), false))
 
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'detects closing brace on different line from last element' do
@@ -160,13 +160,13 @@ shared_examples_for 'multiline literal brace layout' do
       it 'allows closing brace on separate line from last element' do
         inspect_source(construct(true, true))
 
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'allows closing brace on separate line from last multiline element' do
         inspect_source(construct(true, a, make_multi(multi), true))
 
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'detects closing brace on same line as last element' do
@@ -195,13 +195,13 @@ shared_examples_for 'multiline literal brace layout' do
       it 'allows closing brace on different line from last element' do
         inspect_source(construct(false, true))
 
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'allows closing brace on different line from multi-line element' do
         inspect_source(construct(false, a, make_multi(multi), true))
 
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'detects closing brace on same line as last element' do
@@ -240,13 +240,13 @@ shared_examples_for 'multiline literal brace layout' do
       it 'allows closing brace on separate line from last element' do
         inspect_source(construct(true, true))
 
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'allows closing brace on separate line from last multiline element' do
         inspect_source(construct(true, a, make_multi(multi), true))
 
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'detects closing brace on same line as last element' do
@@ -275,13 +275,13 @@ shared_examples_for 'multiline literal brace layout' do
       it 'allows closing brace on same line from last element' do
         inspect_source(construct(false, false))
 
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'allows closing brace on same line as multi-line element' do
         inspect_source(construct(false, a, make_multi(multi), false))
 
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'detects closing brace on different line from last element' do
@@ -356,13 +356,13 @@ shared_examples_for 'multiline literal brace layout' do
       it 'allows closing brace on same line as last element' do
         inspect_source(construct(true, false))
 
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'allows closing brace on same line as last multiline element' do
         inspect_source(construct(true, a, make_multi(multi), false))
 
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'detects closing brace on different line from last element' do

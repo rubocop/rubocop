@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Layout::IndentAssignment, :config do
   subject(:cop) { described_class.new(config) }
+
   let(:config) do
     RuboCop::Config.new('Layout/IndentAssignment' => {
                           'IndentationWidth' => cop_indent

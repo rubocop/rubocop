@@ -28,7 +28,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
     it 'accepts method call without trailing comma with single element hash' \
         ' parameters at the end' do
       inspect_source('some_method(a: 1)')
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts method call without parameters' do
@@ -57,17 +57,20 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
   context 'with single line list of values' do
     context 'when EnforcedStyleForMultiline is no_comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'no_comma' } }
+
       include_examples 'single line lists', ''
     end
 
     context 'when EnforcedStyleForMultiline is comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'comma' } }
+
       include_examples 'single line lists',
                        ', unless each item is on its own line'
     end
 
     context 'when EnforcedStyleForMultiline is consistent_comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'consistent_comma' } }
+
       include_examples 'single line lists',
                        ', unless items are split onto multiple lines'
     end
@@ -98,7 +101,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
                       d: 1
                      )
         RUBY
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'accepts comma inside a heredoc parameter at the end' do
@@ -140,7 +143,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
             some_method(a: "b",
                         c: "d")
           RUBY
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
 
@@ -177,7 +180,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
                         d: 1,
                      )
         RUBY
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'accepts no trailing comma in a method call with a multiline' \
@@ -189,7 +192,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
                         c: 0, d: 1
                      )
         RUBY
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'accepts a trailing comma in a method call with single ' \
@@ -201,7 +204,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
           )
         RUBY
 
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'accepts an empty hash being passed as a method argument' do
@@ -293,7 +296,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
                         d: 1,
                      )
         RUBY
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'accepts a trailing comma in a method call with ' \
@@ -304,7 +307,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
                         b: 1,
                      )
         RUBY
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'accepts a trailing comma in a method call with single ' \
@@ -316,7 +319,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
           )
         RUBY
 
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       # this is a sad parse error
@@ -331,7 +334,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
                         &block
                      )
         RUBY
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'accepts missing comma after a heredoc' do
@@ -380,7 +383,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
             1, 2,
           )
         RUBY
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
     end
   end

@@ -6,7 +6,7 @@ end
 
 def expect_no_copyright_offense(cop, source)
   inspect_source(source)
-  expect(cop.offenses).to be_empty
+  expect(cop.offenses.empty?).to be(true)
 end
 
 def expect_copyright_offense(cop, source)
@@ -16,6 +16,7 @@ end
 
 describe RuboCop::Cop::Style::Copyright, :config do
   subject(:cop) { described_class.new(config) }
+
   let(:cop_config) { { 'Notice' => 'Copyright (\(c\) )?2015 Acme Inc' } }
 
   context 'when the copyright notice is present' do
@@ -25,6 +26,7 @@ describe RuboCop::Cop::Style::Copyright, :config do
       names = Array.new
       names << 'James'
     SOURCE
+
     it 'does not add an offense' do
       expect_no_copyright_offense(cop, source)
     end
@@ -37,6 +39,7 @@ describe RuboCop::Cop::Style::Copyright, :config do
       names = Array.new
       names << 'James'
     SOURCE
+
     it 'does not add an offense' do
       expect_no_copyright_offense(cop, source)
     end
@@ -51,6 +54,7 @@ describe RuboCop::Cop::Style::Copyright, :config do
       names = Array.new
       names << 'James'
     SOURCE
+
     it 'does not add an offense' do
       expect_no_copyright_offense(cop, source)
     end

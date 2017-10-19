@@ -43,12 +43,12 @@ describe RuboCop::Cop::Lint::NextWithoutAccumulator do
 
       it 'accepts next with a value' do
         inspect_source(code_with_accumulator(reduce_alias))
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'accepts next within a nested block' do
         inspect_source(code_with_nested_block(reduce_alias))
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
     end
   end

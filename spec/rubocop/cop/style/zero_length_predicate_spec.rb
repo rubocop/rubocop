@@ -27,7 +27,7 @@ describe RuboCop::Cop::Style::ZeroLengthPredicate do
     let(:source) { code }
 
     it 'does not register any offense' do
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 

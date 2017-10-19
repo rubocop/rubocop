@@ -53,7 +53,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
     it "allows assignment of: #{source.gsub(/\s*\n\s*/, '; ')}" do
       inspect_source(source)
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
   end
 

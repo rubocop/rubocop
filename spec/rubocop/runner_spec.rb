@@ -17,8 +17,10 @@ describe RuboCop::Runner, :isolated_environment do
   end
 
   describe '#run' do
-    let(:options) { { formatters: [['progress', formatter_output_path]] } }
     subject(:runner) { described_class.new(options, RuboCop::ConfigStore.new) }
+
+    let(:options) { { formatters: [['progress', formatter_output_path]] } }
+
     context 'if there are no offenses in inspected files' do
       let(:source) { <<-RUBY.strip_indent }
         # frozen_string_literal: true
@@ -123,13 +125,6 @@ describe RuboCop::Runner, :isolated_environment do
   end
 
   describe '#run with cops autocorrecting each-other' do
-    let(:options) do
-      {
-        auto_correct: true,
-        formatters: [['progress', formatter_output_path]]
-      }
-    end
-
     subject(:runner) do
       runner_class = Class.new(RuboCop::Runner) do
         def mobilized_cop_classes(_config)
@@ -142,6 +137,13 @@ describe RuboCop::Runner, :isolated_environment do
         end
       end
       runner_class.new(options, RuboCop::ConfigStore.new)
+    end
+
+    let(:options) do
+      {
+        auto_correct: true,
+        formatters: [['progress', formatter_output_path]]
+      }
     end
 
     context 'if there is an offense in an inspected file' do

@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Style::MultilineMemoization, :config do
   subject(:cop) { described_class.new(config) }
+
   let(:message) { 'Wrap multiline memoization blocks in `begin` and `end`.' }
 
   before do
@@ -25,7 +26,7 @@ describe RuboCop::Cop::Style::MultilineMemoization, :config do
     let(:source) { code }
 
     it 'does not register an offense' do
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 
@@ -87,6 +88,7 @@ describe RuboCop::Cop::Style::MultilineMemoization, :config do
 
   context 'EnforcedStyle: keyword' do
     let(:cop_config) { { 'EnforcedStyle' => 'keyword' } }
+
     include_examples 'with all enforced styles'
 
     context 'with a multiline memoization' do
@@ -159,6 +161,7 @@ describe RuboCop::Cop::Style::MultilineMemoization, :config do
 
   context 'EnforcedStyle: braces' do
     let(:cop_config) { { 'EnforcedStyle' => 'braces' } }
+
     include_examples 'with all enforced styles'
 
     context 'with a multiline memoization' do

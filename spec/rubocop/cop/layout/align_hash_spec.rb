@@ -421,6 +421,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
         'EnforcedColonStyle' => 'junk'
       }
     end
+
     it 'fails' do
       src = <<-RUBY.strip_indent
         hash = {

@@ -4,6 +4,7 @@ module RuboCop
   module Formatter
     describe DisabledLinesFormatter do
       subject(:formatter) { described_class.new(output) }
+
       let(:output) { StringIO.new }
 
       let(:files) do
@@ -21,6 +22,7 @@ module RuboCop
 
         context 'when no disable cop comments are detected' do
           let(:cop_disabled_line_ranges) { {} }
+
           it 'does not add to cop_disabled_line_ranges' do
             expect { file_started }.not_to(
               change { formatter.cop_disabled_line_ranges }
@@ -32,6 +34,7 @@ module RuboCop
           let(:cop_disabled_line_ranges) do
             { cop_disabled_line_ranges: { 'LineLength' => [1..1] } }
           end
+
           it 'merges the changes into cop_disabled_line_ranges' do
             expect { file_started }.to(
               change { formatter.cop_disabled_line_ranges }

@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Style::Next, :config do
   subject(:cop) { described_class.new(config) }
+
   let(:cop_config) { { 'MinBodyLength' => 1 } }
 
   shared_examples 'iterators' do |condition|
@@ -289,7 +290,7 @@ describe RuboCop::Cop::Style::Next, :config do
         end
       RUBY
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "allows loops with #{condition} with else, nested in another " \
@@ -306,7 +307,7 @@ describe RuboCop::Cop::Style::Next, :config do
         end
       RUBY
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "allows loops with #{condition} with else at the end" do
@@ -321,7 +322,7 @@ describe RuboCop::Cop::Style::Next, :config do
         end
       RUBY
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "reports an offense for #{condition} whose body has 3 lines" do
@@ -351,7 +352,7 @@ describe RuboCop::Cop::Style::Next, :config do
           end
         RUBY
 
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
     end
 

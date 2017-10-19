@@ -20,7 +20,7 @@ describe RuboCop::Cop::Lint::PercentStringArray do
       it 'accepts tokens without quotes or commas' do
         inspect_source("%#{char}(foo bar baz)")
 
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       [
@@ -32,7 +32,7 @@ describe RuboCop::Cop::Lint::PercentStringArray do
         it "accepts likely false positive #{false_positive}" do
           inspect_source(false_positive)
 
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
 

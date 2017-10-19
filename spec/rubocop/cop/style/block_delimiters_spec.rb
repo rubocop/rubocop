@@ -27,7 +27,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
           n * n
         }, 1
       RUBY
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
   end
 
@@ -48,7 +48,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
           x
         }
       RUBY
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts a multi-line block with braces if it is the return value ' \
@@ -60,7 +60,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
           }
         end
       RUBY
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts a multi-line block with braces when passed to a method' do
@@ -86,7 +86,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
           x
         }
       RUBY
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'registers an offense for a multi-line block with braces if the ' \
@@ -131,7 +131,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
           end
         end
       RUBY
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'accepts a single line block with {} if used in an if statement' do
@@ -165,7 +165,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
           x.age = 3
         end
       RUBY
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'accepts a multi-line functional block with do-end if it is ' \
@@ -175,7 +175,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
           puts 42
         end
       RUBY
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'registers an offense for a single line procedural block' do
@@ -358,7 +358,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
           }
         RUBY
         inspect_source(src)
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'accepts a multi-line functional block with {} if it is ' \
@@ -368,7 +368,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
             puts 42
           }
         RUBY
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it 'registers an offense for braces if do-end would not change ' \
@@ -484,7 +484,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
           puts 42
         }
       RUBY
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     context 'when there are braces around a multi-line block' do

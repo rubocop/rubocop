@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Layout::IndentHash do
   subject(:cop) { described_class.new(config) }
+
   let(:config) do
     supported_styles = {
       'SupportedStyles' => %w[special_inside_parentheses consistent
@@ -34,7 +35,7 @@ describe RuboCop::Cop::Layout::IndentHash do
       expect(cop.messages)
         .to eq(['Indent the right brace the same as the start of the line ' \
                 'where the left brace is.'])
-      expect(cop.config_to_allow_offenses).to be_empty
+      expect(cop.config_to_allow_offenses.empty?).to be(true)
     end
   end
 
@@ -509,7 +510,7 @@ describe RuboCop::Cop::Layout::IndentHash do
       expect(cop.highlights).to eq(['}'])
       expect(cop.messages)
         .to eq(['Indent the right brace the same as the left brace.'])
-      expect(cop.config_to_allow_offenses).to be_empty
+      expect(cop.config_to_allow_offenses.empty?).to be(true)
     end
   end
 end

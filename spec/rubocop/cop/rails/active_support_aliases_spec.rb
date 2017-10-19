@@ -29,7 +29,7 @@ describe RuboCop::Cop::Rails::ActiveSupportAliases do
     end
 
     describe '#ends_with?' do
-      it 'it is registered as an offense' do
+      it 'is registered as an offense' do
         expect_offense(<<-RUBY.strip_indent)
           'some_string'.ends_with?('prefix')
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `end_with?` instead of `ends_with?`.

@@ -6,7 +6,7 @@ describe RuboCop::AST::KeywordSplatNode do
   describe '.new' do
     let(:source) { '{ a: 1, **foo }' }
 
-    it { expect(kwsplat_node).to be_a(described_class) }
+    it { expect(kwsplat_node.is_a?(described_class)).to be(true) }
   end
 
   describe '#hash_rocket?' do

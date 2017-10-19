@@ -1,7 +1,9 @@
 # This is the configuration used to check the rubocop source code.
 
 inherit_from: .rubocop_todo.yml
-require: rubocop/cop/internal_affairs
+require:
+  - rubocop/cop/internal_affairs
+  - rubocop-rspec
 
 AllCops:
   Exclude:
@@ -56,3 +58,6 @@ Metrics/ModuleLength:
 Performance/Caller:
   Exclude:
     - spec/rubocop/cop/performance/caller_spec.rb
+
+RSpec/PredicateMatcher:
+  EnforcedStyle: explicit

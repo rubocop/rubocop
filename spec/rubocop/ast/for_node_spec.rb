@@ -6,7 +6,7 @@ describe RuboCop::AST::ForNode do
   describe '.new' do
     let(:source) { 'for foo in bar; baz; end' }
 
-    it { expect(for_node).to be_a(described_class) }
+    it { expect(for_node.is_a?(described_class)).to be(true) }
   end
 
   describe '#keyword' do
@@ -46,18 +46,18 @@ describe RuboCop::AST::ForNode do
   describe '#variable' do
     let(:source) { 'for foo in :bar; :baz; end' }
 
-    it { expect(for_node.variable).to be_lvasgn_type }
+    it { expect(for_node.variable.lvasgn_type?).to be(true) }
   end
 
   describe '#collection' do
     let(:source) { 'for foo in :bar; baz; end' }
 
-    it { expect(for_node.collection).to be_sym_type }
+    it { expect(for_node.collection.sym_type?).to be(true) }
   end
 
   describe '#body' do
     let(:source) { 'for foo in bar; :baz; end' }
 
-    it { expect(for_node.body).to be_sym_type }
+    it { expect(for_node.body.sym_type?).to be(true) }
   end
 end

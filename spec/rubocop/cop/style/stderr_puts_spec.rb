@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 describe RuboCop::Cop::Style::StderrPuts do
-  let(:config) { RuboCop::Config.new }
   subject(:cop) { described_class.new(config) }
+  let(:config) { RuboCop::Config.new }
 
   it "registers an offense when using `$stderr.puts('hello')`" do
     expect_offense(<<-RUBY.strip_indent)

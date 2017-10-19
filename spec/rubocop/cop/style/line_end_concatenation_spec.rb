@@ -97,7 +97,7 @@ describe RuboCop::Cop::Style::LineEndConcatenation do
         "\#{'a' + "\#{3}"}".reverse
     RUBY
     inspect_source(source)
-    expect(cop.offenses).to be_empty
+    expect(cop.offenses.empty?).to be(true)
   end
 
   it 'accepts string concat at line end when followed by comment' do

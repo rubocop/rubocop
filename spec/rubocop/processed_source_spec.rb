@@ -4,6 +4,7 @@ describe RuboCop::ProcessedSource do
   include FileHelper
 
   subject(:processed_source) { described_class.new(source, ruby_version, path) }
+
   let(:ruby_version) { RuboCop::Config::KNOWN_RUBIES.last }
 
   let(:source) { <<-RUBY.strip_indent }
@@ -25,7 +26,7 @@ describe RuboCop::ProcessedSource do
       let(:processed_source) { described_class.from_file(path, ruby_version) }
 
       it 'returns an instance of ProcessedSource' do
-        expect(processed_source).to be_a(described_class)
+        expect(processed_source.is_a?(described_class)).to be(true)
       end
 
       it "sets the file path to the instance's #path" do
@@ -49,27 +50,29 @@ describe RuboCop::ProcessedSource do
 
   describe '#buffer' do
     it 'is a source buffer' do
-      expect(processed_source.buffer).to be_a(Parser::Source::Buffer)
+      expect(processed_source.buffer.is_a?(Parser::Source::Buffer)).to be(true)
     end
   end
 
   describe '#ast' do
     it 'is the root node of AST' do
-      expect(processed_source.ast).to be_a(RuboCop::AST::Node)
+      expect(processed_source.ast.is_a?(RuboCop::AST::Node)).to be(true)
     end
   end
 
   describe '#comments' do
     it 'is an array of comments' do
-      expect(processed_source.comments).to be_a(Array)
-      expect(processed_source.comments.first).to be_a(Parser::Source::Comment)
+      expect(processed_source.comments.is_a?(Array)).to be(true)
+      expect(
+        processed_source.comments.first.is_a?(Parser::Source::Comment)
+      ).to be(true)
     end
   end
 
   describe '#tokens' do
     it 'has an array of tokens' do
-      expect(processed_source.tokens).to be_a(Array)
-      expect(processed_source.tokens.first).to be_a(RuboCop::Token)
+      expect(processed_source.tokens.is_a?(Array)).to be(true)
+      expect(processed_source.tokens.first.is_a?(RuboCop::Token)).to be(true)
     end
   end
 
@@ -85,7 +88,7 @@ describe RuboCop::ProcessedSource do
   describe '#parser_error' do
     context 'when the source was properly parsed' do
       it 'is nil' do
-        expect(processed_source.parser_error).to be_nil
+        expect(processed_source.parser_error.nil?).to be(true)
       end
     end
 
@@ -101,7 +104,7 @@ describe RuboCop::ProcessedSource do
 
       it 'is nil' do
         # ProcessedSource#parse sets UTF-8 as default encoding, so no error.
-        expect(processed_source.parser_error).to be_nil
+        expect(processed_source.parser_error.nil?).to be(true)
       end
     end
 
@@ -109,7 +112,7 @@ describe RuboCop::ProcessedSource do
       include_context 'invalid encoding source'
 
       it 'returns the error' do
-        expect(processed_source.parser_error).to be_a(Exception)
+        expect(processed_source.parser_error.is_a?(Exception)).to be(true)
         expect(processed_source.parser_error.message)
           .to include('invalid byte sequence')
       end
@@ -118,7 +121,7 @@ describe RuboCop::ProcessedSource do
 
   describe '#lines' do
     it 'is an array' do
-      expect(processed_source.lines).to be_a(Array)
+      expect(processed_source.lines.is_a?(Array)).to be(true)
     end
 
     it 'has same number of elements as line count' do
@@ -159,8 +162,8 @@ describe RuboCop::ProcessedSource do
       let(:source) { 'def valid_code; end' }
 
       it 'returns true' do
-        expect(processed_source.diagnostics).to be_empty
-        expect(processed_source).to be_valid_syntax
+        expect(processed_source.diagnostics.empty?).to be(true)
+        expect(processed_source.valid_syntax?).to be(true)
       end
     end
 
@@ -168,7 +171,7 @@ describe RuboCop::ProcessedSource do
       let(:source) { 'def invalid_code; en' }
 
       it 'returns false' do
-        expect(processed_source).not_to be_valid_syntax
+        expect(processed_source.valid_syntax?).to be(false)
       end
     end
 
@@ -176,9 +179,9 @@ describe RuboCop::ProcessedSource do
       let(:source) { 'do_something *array' }
 
       it 'returns true' do
-        expect(processed_source.diagnostics).not_to be_empty
+        expect(processed_source.diagnostics.empty?).to be(false)
         expect(processed_source.diagnostics.first.level).to eq(:warning)
-        expect(processed_source).to be_valid_syntax
+        expect(processed_source.valid_syntax?).to be(true)
       end
     end
 
@@ -186,7 +189,7 @@ describe RuboCop::ProcessedSource do
       include_context 'invalid encoding source'
 
       it 'returns false' do
-        expect(processed_source).not_to be_valid_syntax
+        expect(processed_source.valid_syntax?).to be(false)
       end
     end
 
@@ -198,8 +201,8 @@ describe RuboCop::ProcessedSource do
       end
 
       it 'returns true' do
-        expect(processed_source.diagnostics).to be_empty
-        expect(processed_source).to be_valid_syntax
+        expect(processed_source.diagnostics.empty?).to be(true)
+        expect(processed_source.valid_syntax?).to be(true)
       end
     end
 

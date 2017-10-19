@@ -20,13 +20,13 @@ describe RuboCop::Cop::Lint::PercentSymbolArray do
       it 'accepts tokens without colons or commas' do
         inspect_source("%#{char}(foo bar baz)")
 
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'accepts likely false positive $,' do
         inspect_source("%#{char}{$,}")
 
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'adds an offense if symbols contain colons and are comma separated' do

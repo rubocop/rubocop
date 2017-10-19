@@ -8,7 +8,7 @@ describe RuboCop::Cop::Rails::SaveBang do
       inspect_source("object.#{method}(name: 'Tom', age: 20)")
 
       if method == :destroy
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       else
         expect(cop.messages)
           .to eq(["Use `#{method}!` instead of `#{method}` " \
@@ -27,19 +27,19 @@ describe RuboCop::Cop::Rails::SaveBang do
     it "when using #{method}!" do
       inspect_source("object.#{method}!")
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it "when using #{method} with 2 arguments" do
       inspect_source("Model.#{method}(1, name: 'Tom')")
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it "when using #{method} with wrong argument" do
       inspect_source("object.#{method}('Tom')")
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'autocorrects' do
@@ -54,7 +54,7 @@ describe RuboCop::Cop::Rails::SaveBang do
       inspect_source("x = object.#{method}\n")
 
       if pass
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       else
         expect(cop.messages)
           .to eq(["Use `#{method}!` instead of `#{method}` " \
@@ -69,7 +69,7 @@ describe RuboCop::Cop::Rails::SaveBang do
                           'end')
 
       if pass
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       else
         expect(cop.messages)
           .to eq(["Use `#{method}!` instead of `#{method}` " \
@@ -82,7 +82,7 @@ describe RuboCop::Cop::Rails::SaveBang do
       inspect_source("if object.#{method}; something; end")
 
       if pass
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       else
         expect(cop.messages)
           .to eq(["`#{method}` returns a model which is always truthy."])
@@ -96,7 +96,7 @@ describe RuboCop::Cop::Rails::SaveBang do
         end
       RUBY
       if pass
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       else
         expect(cop.messages)
           .to eq(["`#{method}` returns a model which is always truthy."])
@@ -107,7 +107,7 @@ describe RuboCop::Cop::Rails::SaveBang do
       inspect_source("something if object.#{method}")
 
       if pass
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       else
         expect(cop.messages)
           .to eq(["`#{method}` returns a model which is always truthy."])
@@ -118,7 +118,7 @@ describe RuboCop::Cop::Rails::SaveBang do
       inspect_source("something if false || object.#{method}")
 
       if pass
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       else
         expect(cop.messages)
           .to eq(["`#{method}` returns a model which is always truthy."])
@@ -136,7 +136,7 @@ describe RuboCop::Cop::Rails::SaveBang do
       RUBY
 
       if pass
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       else
         expect(cop.messages)
           .to eq(["`#{method}` returns a model which is always truthy."])
@@ -147,7 +147,7 @@ describe RuboCop::Cop::Rails::SaveBang do
       inspect_source("object.#{method} && false")
 
       if pass
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       else
         expect(cop.messages)
           .to eq(["`#{method}` returns a model which is always truthy."])
@@ -158,7 +158,7 @@ describe RuboCop::Cop::Rails::SaveBang do
       inspect_source("object.#{method} and false")
 
       if pass
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       else
         expect(cop.messages)
           .to eq(["`#{method}` returns a model which is always truthy."])
@@ -169,7 +169,7 @@ describe RuboCop::Cop::Rails::SaveBang do
       inspect_source("object.#{method} || false")
 
       if pass
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       else
         expect(cop.messages)
           .to eq(["`#{method}` returns a model which is always truthy."])
@@ -180,7 +180,7 @@ describe RuboCop::Cop::Rails::SaveBang do
       inspect_source("object.#{method} or false")
 
       if pass
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       else
         expect(cop.messages)
           .to eq(["`#{method}` returns a model which is always truthy."])
@@ -189,7 +189,7 @@ describe RuboCop::Cop::Rails::SaveBang do
 
     it "when using #{method} as last method call" do
       inspect_source(['def foo', "object.#{method}", 'end'])
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     # Bug: https://github.com/bbatsov/rubocop/issues/4264
@@ -199,7 +199,7 @@ describe RuboCop::Cop::Rails::SaveBang do
                       '  render json: foo',
                       'end'])
       if pass
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       else
         expect(cop.offenses.size).to eq(1)
       end
@@ -216,7 +216,7 @@ describe RuboCop::Cop::Rails::SaveBang do
       inspect_source("x = object.#{method}\n" \
                           'if x.persisted? then; something; end')
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it "when using persisted? after #{method} with block" do
@@ -225,7 +225,7 @@ describe RuboCop::Cop::Rails::SaveBang do
                           "end\n" \
                           'if x.persisted? then; something; end')
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
   end
 

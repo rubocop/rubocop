@@ -13,20 +13,20 @@ describe RuboCop::Cop::Rails::FindEach do
     it "does not register an offense when using #{scope}.order(...).each" do
       inspect_source("User.#{scope}.order(:name).each { |u| u.something }")
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "does not register an offense when using #{scope}.limit(...).each" do
       inspect_source("User.#{scope}.limit(10).each { |u| u.something }")
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "does not register an offense when using #{scope}.select(...).each" do
       inspect_source("User.#{scope}.select(:name, :age).each " \
                           '{ |u| u.something }')
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 

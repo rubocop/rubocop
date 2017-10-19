@@ -99,7 +99,7 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
   shared_examples 'special keywords' do |keyword|
     it "accepts strings like #{keyword}" do
       inspect_source(%("this is \#{#{keyword}} silly"))
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "does not try to autocorrect strings like #{keyword}" do

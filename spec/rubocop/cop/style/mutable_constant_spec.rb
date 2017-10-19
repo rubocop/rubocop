@@ -44,13 +44,13 @@ describe RuboCop::Cop::Style::MutableConstant do
     it "allows #{o} to be assigned to a constant" do
       source = [prefix, "CONST = #{o}"].compact.join("\n")
       inspect_source(source)
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "allows #{o} to be ||= to a constant" do
       source = [prefix, "CONST ||= #{o}"].compact.join("\n")
       inspect_source(source)
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 
@@ -106,11 +106,13 @@ describe RuboCop::Cop::Style::MutableConstant do
 
         context 'when the frozen string literal comment is true' do
           let(:prefix) { '# frozen_string_literal: true' }
+
           it_behaves_like :immutable_objects, '"#{a}"'
         end
 
         context 'when the frozen string literal comment is false' do
           let(:prefix) { '# frozen_string_literal: false' }
+
           it_behaves_like :immutable_objects, '"#{a}"'
         end
       end
@@ -125,11 +127,13 @@ describe RuboCop::Cop::Style::MutableConstant do
 
       context 'when the frozen string literal comment is true' do
         let(:prefix) { '# frozen_string_literal: true' }
+
         it_behaves_like :immutable_objects, '"#{a}"'
       end
 
       context 'when the frozen string literal comment is false' do
         let(:prefix) { '# frozen_string_literal: false' }
+
         it_behaves_like :mutable_objects, '"#{a}"'
       end
     end

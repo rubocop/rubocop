@@ -4,6 +4,7 @@ module RuboCop
   module Formatter
     describe EmacsStyleFormatter do
       subject(:formatter) { described_class.new(output) }
+
       let(:output) { StringIO.new }
 
       describe '#file_finished' do
@@ -82,7 +83,7 @@ module RuboCop
       describe '#finished' do
         it 'does not report summary' do
           formatter.finished(['/path/to/file'])
-          expect(output.string).to be_empty
+          expect(output.string.empty?).to be(true)
         end
       end
     end

@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
   subject(:cop) { described_class.new(config) }
+
   let(:extra_begin) { 'Extra empty line detected at module body beginning.' }
   let(:extra_end) { 'Extra empty line detected at module body end.' }
   let(:missing_begin) { 'Empty line missing at module body beginning.' }

@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 describe RuboCop::Cop::Lint::UselessAccessModifier do
-  let(:config) { RuboCop::Config.new }
   subject(:cop) { described_class.new(config) }
+
+  let(:config) { RuboCop::Config.new }
 
   context 'when an access modifier has no effect' do
     let(:source) do
@@ -183,7 +184,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
 
       it 'does not register an offense' do
         inspect_source(source)
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
     end
   end
@@ -224,6 +225,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
         }
       )
     end
+
     it 'is aware that this creates a new scope' do
       expect_no_offenses(<<-RUBY.strip_indent)
         class SomeClass
@@ -309,6 +311,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
         }
       )
     end
+
     it 'is aware that this creates a new scope' do
       expect_no_offenses(<<-RUBY.strip_indent)
         module SomeModule
@@ -338,6 +341,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
         }
       )
     end
+
     it 'is aware that this creates a new method' do
       expect_no_offenses(<<-RUBY.strip_indent)
         class SomeClass
@@ -384,7 +388,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
         end
       RUBY
       inspect_source(src)
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "doesn't register an offense for `private`" do
@@ -396,7 +400,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
         end
       RUBY
       inspect_source(src)
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 
@@ -444,7 +448,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
         end
       RUBY
       inspect_source(src)
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "doesn't register an offense when `private` is not repeated" do
@@ -458,7 +462,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
         end
       RUBY
       inspect_source(src)
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 
@@ -511,7 +515,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
         RUBY
         inspect_source(src)
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
     end
   end
@@ -548,7 +552,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
         RUBY
         inspect_source(src)
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
     end
   end
@@ -565,7 +569,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
                '  end',
                'end']
         inspect_source(src)
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
     end
   end
@@ -580,7 +584,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
         end
       RUBY
       inspect_source(src)
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     %w[lambda proc ->].each do |proc_type|
@@ -592,7 +596,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
         RUBY
         inspect_source(src)
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
     end
   end
@@ -610,7 +614,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
         RUBY
         inspect_source(src)
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it "doesn't register an offense if the modifier is the same as " \
@@ -628,7 +632,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
         RUBY
         inspect_source(src)
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'registers an offense if no method is defined' do
@@ -683,7 +687,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
         RUBY
         inspect_source(src)
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'registers an offense if no method is defined' do
@@ -720,7 +724,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
         end
       RUBY
       inspect_source(src)
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'registers an offense if no method is defined' do
@@ -775,7 +779,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
         end
       RUBY
       inspect_source(src)
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it "registers an offense if no method is defined in #{klass}.new" do
@@ -799,7 +803,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
         end
       RUBY
       inspect_source(src)
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'registers an offense if no method is defined' do
@@ -861,7 +865,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
         end
       RUBY
       inspect_source(src)
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     context 'unused modifiers' do

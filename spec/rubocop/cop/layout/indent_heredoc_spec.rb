@@ -18,7 +18,7 @@ describe RuboCop::Cop::Layout::IndentHeredoc, :config do
   shared_examples :accept do |name, code|
     it "accepts for #{name}" do
       inspect_source(code.strip_indent)
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 

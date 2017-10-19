@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
   subject(:cop) { described_class.new(config) }
+
   let(:cop_config) do
     { 'Whitelist' => %w[present? blank? try presence] }
   end
@@ -10,7 +11,7 @@ describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
     it "accepts usages of #{name}" do
       inspect_source(code)
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 

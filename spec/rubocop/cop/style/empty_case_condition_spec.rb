@@ -21,7 +21,7 @@ describe RuboCop::Cop::Style::EmptyCaseCondition do
 
     it 'accepts the source with case' do
       inspect_source(source_with_case)
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
   end
 

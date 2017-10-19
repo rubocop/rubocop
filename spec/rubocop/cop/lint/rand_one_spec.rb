@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Lint::RandOne do
   subject(:cop) { described_class.new }
+
   before { inspect_source(source) }
 
   shared_examples 'offenses' do |source|
@@ -25,7 +26,7 @@ describe RuboCop::Cop::Lint::RandOne do
       let(:source) { source }
 
       it "doesn't register an offense" do
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
     end
   end

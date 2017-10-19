@@ -66,17 +66,20 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
   context 'with single line list of values' do
     context 'when EnforcedStyleForMultiline is no_comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'no_comma' } }
+
       include_examples 'single line lists', ''
     end
 
     context 'when EnforcedStyleForMultiline is comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'comma' } }
+
       include_examples 'single line lists',
                        ', unless each item is on its own line'
     end
 
     context 'when EnforcedStyleForMultiline is consistent_comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'consistent_comma' } }
+
       include_examples 'single line lists',
                        ', unless items are split onto multiple lines'
     end
@@ -502,7 +505,7 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
             1, 2,
           ]
         RUBY
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'accepts a multiline hash with pairs on a single line and' \
@@ -512,7 +515,7 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
             a: 1001, b: 2020,
           }
         RUBY
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
     end
   end

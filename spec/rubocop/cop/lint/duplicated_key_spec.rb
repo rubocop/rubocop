@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Lint::DuplicatedKey do
   subject(:cop) { described_class.new }
+
   context 'When there is a duplicated key in the hash literal' do
     let(:source) do
       "hash = { 'otherkey' => 'value', 'key' => 'value', 'key' => 'hi' }"
@@ -80,7 +81,7 @@ describe RuboCop::Cop::Lint::DuplicatedKey do
   shared_examples :duplicated_non_literal_key do |key|
     it "does not register an offense for duplicated `#{key}` hash keys" do
       inspect_source("hash = { #{key} => 1, #{key} => 4}")
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 

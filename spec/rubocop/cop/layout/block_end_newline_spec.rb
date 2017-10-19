@@ -14,7 +14,7 @@ describe RuboCop::Cop::Layout::BlockEndNewline do
         foo
       end
     RUBY
-    expect(cop.messages).to be_empty
+    expect(cop.messages.empty?).to be(true)
   end
 
   it 'registers an offense when multiline block end is not on its own line' do

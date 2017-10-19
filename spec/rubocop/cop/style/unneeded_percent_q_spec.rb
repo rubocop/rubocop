@@ -144,28 +144,28 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
      'with interpolation' do
     inspect_source("\"%q(a)\#{b}\"")
 
-    expect(cop.messages).to be_empty
+    expect(cop.messages.empty?).to be(true)
   end
 
   it 'accepts %Q at the beginning of a double quoted string ' \
      'with interpolation' do
     inspect_source("\"%Q(a)\#{b}\"")
 
-    expect(cop.messages).to be_empty
+    expect(cop.messages.empty?).to be(true)
   end
 
   it 'accepts %q at the beginning of a section of a double quoted string ' \
      'with interpolation' do
     inspect_source(%("%\#{b}%q(a)"))
 
-    expect(cop.messages).to be_empty
+    expect(cop.messages.empty?).to be(true)
   end
 
   it 'accepts %Q at the beginning of a section of a double quoted string ' \
      'with interpolation' do
     inspect_source(%("%\#{b}%Q(a)"))
 
-    expect(cop.messages).to be_empty
+    expect(cop.messages.empty?).to be(true)
   end
 
   it 'accepts %q containing string interpolation' do

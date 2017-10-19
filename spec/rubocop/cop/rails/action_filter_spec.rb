@@ -43,6 +43,7 @@ describe RuboCop::Cop::Rails::ActionFilter, :config do
 
   context 'Rails <= 4.0', :rails3 do
     subject(:cop) { described_class.new(config) }
+
     let(:cop_config) { { 'Include' => nil } }
 
     context 'when using action methods' do
@@ -61,7 +62,7 @@ describe RuboCop::Cop::Rails::ActionFilter, :config do
       described_class::ACTION_METHODS.each do |method|
         it "accepts #{method}" do
           inspect_source_file("#{method} :something")
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
 
@@ -87,7 +88,7 @@ describe RuboCop::Cop::Rails::ActionFilter, :config do
       described_class::FILTER_METHODS.each do |method|
         it "accepts #{method}" do
           inspect_source_file("#{method} :something")
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
 
@@ -100,6 +101,7 @@ describe RuboCop::Cop::Rails::ActionFilter, :config do
 
   context 'Rails >= 4.0', :rails4 do
     subject(:cop) { described_class.new(config) }
+
     let(:cop_config) { { 'Include' => nil } }
 
     context 'when style is action' do
@@ -122,7 +124,7 @@ describe RuboCop::Cop::Rails::ActionFilter, :config do
       described_class::ACTION_METHODS.each do |method|
         it "accepts #{method}" do
           inspect_source_file("#{method} :something")
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
 
@@ -152,7 +154,7 @@ describe RuboCop::Cop::Rails::ActionFilter, :config do
       described_class::FILTER_METHODS.each do |method|
         it "accepts #{method}" do
           inspect_source_file("#{method} :something")
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
 

@@ -3,6 +3,7 @@
 module RuboCop
   describe Formatter::ProgressFormatter do
     subject(:formatter) { described_class.new(output) }
+
     let(:output) { StringIO.new }
 
     let(:files) do
@@ -26,11 +27,13 @@ module RuboCop
 
       context 'when no offenses are detected' do
         let(:offenses) { [] }
+
         include_examples 'calls #report_file_as_mark'
       end
 
       context 'when any offenses are detected' do
         let(:offenses) { [double('offense').as_null_object] }
+
         include_examples 'calls #report_file_as_mark'
       end
     end

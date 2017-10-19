@@ -5,7 +5,7 @@ describe RuboCop::CLI, :isolated_environment do
 
   subject(:cli) { described_class.new }
 
-  before(:each) do
+  before do
     RuboCop::ConfigLoader.default_configuration = nil
   end
 
@@ -51,12 +51,12 @@ describe RuboCop::CLI, :isolated_environment do
     context 'when there are no files' do
       it 'prints nothing with -L' do
         cli.run ['-L']
-        expect($stdout.string).to be_empty
+        expect($stdout.string.empty?).to be(true)
       end
 
       it 'prints nothing with --list-target-files' do
         cli.run ['--list-target-files']
-        expect($stdout.string).to be_empty
+        expect($stdout.string.empty?).to be(true)
       end
     end
 
@@ -688,6 +688,7 @@ describe RuboCop::CLI, :isolated_environment do
 
     context 'with two cops given' do
       let(:cop_list) { ['Layout/Tab,Metrics/LineLength'] }
+
       include_examples :prints_config
     end
 
@@ -1060,6 +1061,7 @@ describe RuboCop::CLI, :isolated_environment do
 
   describe 'with --auto-correct and disabled offense' do
     let(:target_file) { 'example.rb' }
+
     after do
       expect($stdout.string.lines.to_a.last)
         .to eq('1 file inspected, no offenses detected' \

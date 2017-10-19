@@ -10,7 +10,7 @@ describe RuboCop::AST::CaseNode do
        'end'].join("\n")
     end
 
-    it { expect(case_node).to be_a(described_class) }
+    it { expect(case_node.is_a?(described_class)).to be(true) }
   end
 
   describe '#keyword' do
@@ -46,7 +46,7 @@ describe RuboCop::AST::CaseNode do
     end
 
     context 'when not passed a block' do
-      it { expect(case_node.each_when).to be_an(Enumerator) }
+      it { expect(case_node.each_when.is_a?(Enumerator)).to be(true) }
     end
 
     context 'when passed a block' do
@@ -89,7 +89,7 @@ describe RuboCop::AST::CaseNode do
            'end'].join("\n")
         end
 
-        it { expect(case_node.else_branch).to be_nil }
+        it { expect(case_node.else_branch.nil?).to be(true) }
       end
 
       context 'with an else statement' do
@@ -100,7 +100,7 @@ describe RuboCop::AST::CaseNode do
            'end'].join("\n")
         end
 
-        it { expect(case_node.else_branch).to be_sym_type }
+        it { expect(case_node.else_branch.sym_type?).to be(true) }
       end
     end
   end

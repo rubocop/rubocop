@@ -7,12 +7,13 @@ describe RuboCop::Cop::Style::AndOr, :config do
     }
 
     subject(:cop) { described_class.new(config) }
+
     let(:cop_config) { cop_config }
 
     %w[and or].each do |operator|
       it "accepts \"#{operator}\" outside of conditional" do
         inspect_source("x = a + b #{operator} return x")
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       {
@@ -41,7 +42,7 @@ describe RuboCop::Cop::Style::AndOr, :config do
           source = format(snippet_format, elements)
 
           inspect_source(source)
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
     end
@@ -49,12 +50,12 @@ describe RuboCop::Cop::Style::AndOr, :config do
     %w[&& ||].each do |operator|
       it "accepts #{operator} inside of conditional" do
         inspect_source("test if a #{operator} b")
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it "accepts #{operator} outside of conditional" do
         inspect_source("x = a #{operator} b")
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
     end
   end
@@ -65,6 +66,7 @@ describe RuboCop::Cop::Style::AndOr, :config do
     }
 
     subject(:cop) { described_class.new(config) }
+
     let(:cop_config) { cop_config }
 
     it 'registers an offense for "or"' do

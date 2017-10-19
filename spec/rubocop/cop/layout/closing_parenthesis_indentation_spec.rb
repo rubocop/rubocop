@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
   subject(:cop) { described_class.new(config) }
+
   let(:config) do
     RuboCop::Config.new('Layout/AlignParameters' => {
                           'EnforcedStyle' => align_parameters_config

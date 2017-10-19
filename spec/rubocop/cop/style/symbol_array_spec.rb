@@ -3,7 +3,7 @@
 describe RuboCop::Cop::Style::SymbolArray, :config do
   subject(:cop) { described_class.new(config) }
 
-  before(:each) do
+  before do
     # Reset data which is shared by all instances of SymbolArray
     described_class.largest_brackets = -Float::INFINITY
   end

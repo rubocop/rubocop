@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 describe RuboCop::Cop::Lint::UriRegexp do
-  let(:config) { RuboCop::Config.new }
   subject(:cop) { described_class.new(config) }
+
+  let(:config) { RuboCop::Config.new }
 
   it 'registers an offense when using `URI.regexp` with argument' do
     expect_offense(<<-RUBY.strip_indent)

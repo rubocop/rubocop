@@ -6,6 +6,7 @@ describe RuboCop::ResultCache, :isolated_environment do
   subject(:cache) do
     described_class.new(file, options, config_store, cache_root)
   end
+
   let(:file) { 'example.rb' }
   let(:options) { {} }
   let(:config_store) { double('config_store', for: RuboCop::Config.new) }
@@ -46,6 +47,7 @@ describe RuboCop::ResultCache, :isolated_environment do
 
     context 'when no option is given' do
       let(:options2) { {} }
+
       include_examples 'valid'
 
       context 'when file contents have changed' do
@@ -131,6 +133,7 @@ describe RuboCop::ResultCache, :isolated_environment do
 
     context 'when --format is given' do
       let(:options2) { { format: 'simple' } }
+
       include_examples 'valid'
     end
 
@@ -169,6 +172,7 @@ describe RuboCop::ResultCache, :isolated_environment do
         [RuboCop::Cop::Offense.new(:warning, location, "unused var \xF0",
                                    'Lint/UselessAssignment')]
       end
+
       before { Encoding.default_internal = Encoding::UTF_8 }
       after { Encoding.default_internal = nil }
 

@@ -6,14 +6,14 @@ describe RuboCop::AST::BlockNode do
   describe '.new' do
     let(:source) { 'foo { |q| bar(q) }' }
 
-    it { expect(block_node).to be_a(described_class) }
+    it { expect(block_node.is_a?(described_class)).to be(true) }
   end
 
   describe '#arguments' do
     context 'with no arguments' do
       let(:source) { 'foo { bar }' }
 
-      it { expect(block_node.arguments).to be_empty }
+      it { expect(block_node.arguments.empty?).to be(true) }
     end
 
     context 'with a single literal argument' do

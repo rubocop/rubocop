@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Metrics::LineLength, :config do
   subject(:cop) { described_class.new(config) }
+
   let(:cop_config) { { 'Max' => 80, 'IgnoredPatterns' => nil } }
 
   it "registers an offense for a line that's 81 characters wide" do
@@ -18,7 +19,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
 
   it "accepts a line that's 80 characters wide" do
     inspect_source('#' * 80)
-    expect(cop.offenses).to be_empty
+    expect(cop.offenses.empty?).to be(true)
   end
 
   it 'registers an offense for long line before __END__ but not after' do
@@ -40,7 +41,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
 
       it 'accepts the line' do
         inspect_source(source)
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
     end
 
@@ -110,7 +111,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
 
         it 'accepts the line' do
           inspect_source(source)
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
     end
@@ -152,7 +153,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
 
     it 'accepts long lines in heredocs' do
       inspect_source(source)
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     context 'when the source has no AST' do
@@ -265,7 +266,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
 
       it 'accepts the line' do
         inspect_source(source)
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
     end
 
@@ -278,7 +279,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
 
       it 'accepts the line' do
         inspect_source(source)
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       context 'and has explanatory text' do
@@ -290,7 +291,7 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
 
         it 'accepts the line' do
           inspect_source(source)
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
     end

@@ -124,7 +124,7 @@ describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
 
         it 'accepts' do
           inspect_source(source)
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
 
@@ -155,7 +155,7 @@ describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
 
         it 'accepts' do
           inspect_source(source)
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
 

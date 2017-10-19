@@ -8,6 +8,7 @@ gem 'bump', require: false
 gem 'pry'
 gem 'rake', '~> 12.0'
 gem 'rspec', '~> 3.6.0'
+gem 'rubocop-rspec', '~> 1.19.0'
 gem 'simplecov', '~> 0.10'
 gem 'test-queue'
 gem 'yard', '~> 0.9'

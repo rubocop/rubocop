@@ -19,7 +19,7 @@ describe RuboCop::Cop::Rails::Date, :config do
 
       it "accepts Some::Date.#{day}" do
         inspect_source("Some::Date.#{day}")
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
     end
 
@@ -31,12 +31,12 @@ describe RuboCop::Cop::Rails::Date, :config do
 
       it "accepts variable named #{method}" do
         inspect_source("#{method} = 1")
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
 
       it "accepts variable #{method} as range end" do
         inspect_source("from_time..#{method}")
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
     end
 
@@ -85,7 +85,7 @@ describe RuboCop::Cop::Rails::Date, :config do
     %w[current yesterday tomorrow].each do |day|
       it "accepts Date.#{day}" do
         inspect_source("Date.#{day}")
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
     end
 
@@ -99,7 +99,7 @@ describe RuboCop::Cop::Rails::Date, :config do
     RuboCop::Cop::Rails::TimeZone::ACCEPTED_METHODS.each do |a_method|
       it "accepts val.to_time.#{a_method}" do
         inspect_source("val.to_time.#{a_method}")
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
     end
 

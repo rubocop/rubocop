@@ -12,7 +12,7 @@ describe RuboCop::Cop::Performance::StringReplacement do
       it 'accepts gsub when the length of the pattern is greater than 1' do
         inspect_source("'abc'.#{method}('ab', 'de')")
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it 'accepts the first param being a variable' do
@@ -21,7 +21,7 @@ describe RuboCop::Cop::Performance::StringReplacement do
           'abc'.#{method}(regex, '1')
         RUBY
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it 'accepts the second param being a variable' do
@@ -30,7 +30,7 @@ describe RuboCop::Cop::Performance::StringReplacement do
           'abc'.#{method}('abc', replacement)
         RUBY
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it 'accepts the both params being a variables' do
@@ -40,19 +40,19 @@ describe RuboCop::Cop::Performance::StringReplacement do
           'abc'.#{method}(regex, replacement)
         RUBY
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it 'accepts gsub with only one param' do
         inspect_source("'abc'.#{method}('a')")
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it 'accepts gsub with a block' do
         inspect_source("'abc'.#{method}('a') { |s| s.upcase } ")
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it 'accepts a pattern with string interpolation' do
@@ -61,7 +61,7 @@ describe RuboCop::Cop::Performance::StringReplacement do
           'abc'.#{method}(\"\#{foo}\", '1')
         RUBY
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it 'accepts a replacement with string interpolation' do
@@ -70,43 +70,43 @@ describe RuboCop::Cop::Performance::StringReplacement do
           'abc'.#{method}('a', \"\#{foo}\")
         RUBY
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it 'allows empty regex literal pattern' do
         inspect_source("'abc'.#{method}(//, '1')")
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it 'allows empty regex pattern from string' do
         inspect_source("'abc'.#{method}(Regexp.new(''), '1')")
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it 'allows empty regex pattern from regex' do
         inspect_source("'abc'.#{method}(Regexp.new(//), '1')")
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it 'allows regex literals with options' do
         inspect_source("'abc'.#{method}(/a/i, '1')")
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it 'allows regex with options' do
         inspect_source("'abc'.#{method}(Regexp.new(/a/i), '1')")
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it 'allows empty string pattern' do
         inspect_source("'abc'.#{method}('', '1')")
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
     end
 
@@ -114,14 +114,14 @@ describe RuboCop::Cop::Performance::StringReplacement do
        'the length of the replacement' do
       inspect_source("'abc'.#{method}('a', 'ab')")
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it 'accepts calls to gsub when the length of the pattern is longer than ' \
        'the length of the replacement' do
       inspect_source("'abc'.#{method}('ab', 'd')")
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
   end
 
@@ -154,7 +154,7 @@ describe RuboCop::Cop::Performance::StringReplacement do
          'and the length of the replacement do not match' do
         inspect_source(%('abc'.gsub(/a/, 'def')))
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it 'registers an offense when escape characters in regex' do

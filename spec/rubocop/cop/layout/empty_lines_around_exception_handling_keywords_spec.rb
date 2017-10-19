@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords do
-  let(:config) { RuboCop::Config.new }
   subject(:cop) { described_class.new(config) }
+
+  let(:config) { RuboCop::Config.new }
 
   shared_examples :offense do |name, message, code, correction|
     it "registers an offense for #{name} with a blank" do
@@ -20,7 +21,7 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords do
   shared_examples :accepts do |name, code|
     it "accepts #{name}" do
       inspect_source(code)
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 

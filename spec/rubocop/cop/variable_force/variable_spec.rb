@@ -18,12 +18,12 @@ describe RuboCop::Cop::VariableForce::Variable do
   end
 
   describe '#referenced?' do
+    subject { variable.referenced? }
+
     let(:name) { :foo }
     let(:declaration_node) { s(:arg, name) }
     let(:scope) { double('scope').as_null_object }
     let(:variable) { described_class.new(name, declaration_node, scope) }
-
-    subject { variable.referenced? }
 
     context 'when the variable is not assigned' do
       it { is_expected.to be_falsey }

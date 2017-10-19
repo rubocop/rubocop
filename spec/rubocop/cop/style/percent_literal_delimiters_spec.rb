@@ -49,7 +49,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     it 'does not register an offense for other delimiters ' \
        'when containing preferred delimiter characters' do
       inspect_source('%([string])')
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'registers an offense for other delimiters ' \
@@ -74,7 +74,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     it 'does not register an offense for other delimiters ' \
        'when containing preferred delimiter characters' do
       inspect_source('%q([string])')
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 
@@ -93,7 +93,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     it 'does not register an offense for other delimiters ' \
        'when containing preferred delimiter characters' do
       inspect_source('%Q([string])')
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'registers an offense for other delimiters ' \
@@ -118,7 +118,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     it 'does not register an offense for other delimiters ' \
        'when containing preferred delimiter characters' do
       inspect_source('%w([some] [words])')
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 
@@ -137,7 +137,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     it 'does not register an offense for other delimiters ' \
        'when containing preferred delimiter characters' do
       inspect_source('%W([some] [words])')
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'registers an offense for other delimiters ' \
@@ -162,7 +162,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     it 'does not register an offense for other delimiters ' \
        'when containing preferred delimiter characters' do
       inspect_source('%r([regexp])')
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'registers an offense for other delimiters ' \
@@ -234,7 +234,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     it 'does not register an offense for other delimiters ' \
        'when containing preferred delimiter characters' do
       inspect_source('%x([command])')
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'registers an offense for other delimiters ' \

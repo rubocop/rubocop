@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 describe RuboCop::Cop::Style::RedundantConditional do
-  let(:config) { RuboCop::Config.new }
   subject(:cop) { described_class.new(config) }
+
+  let(:config) { RuboCop::Config.new }
 
   before { inspect_source(source) }
 
@@ -34,7 +35,7 @@ describe RuboCop::Cop::Style::RedundantConditional do
 
     context "when checking #{code.inspect}" do
       it 'does not register an offense' do
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
     end
   end

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
   subject(:cop) { described_class.new }
+
   let(:error_message) do
     'Parenthesize the param `%s` to make sure that the block will be ' \
       'associated with the `%s` method call.'
@@ -15,7 +16,7 @@ describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
     let(:source) { code }
 
     it 'does not register an offense' do
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 

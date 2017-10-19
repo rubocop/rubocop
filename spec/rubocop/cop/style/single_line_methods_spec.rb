@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Style::SingleLineMethods do
   subject(:cop) { described_class.new(config) }
+
   let(:config) do
     RuboCop::Config.new('Style/SingleLineMethods' => cop_config,
                         'Layout/IndentationWidth' => { 'Width' => 2 })

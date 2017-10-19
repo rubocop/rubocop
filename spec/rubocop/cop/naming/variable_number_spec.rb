@@ -23,7 +23,7 @@ describe RuboCop::Cop::Naming::VariableNumber, :config do
     it "accepts #{variable} in #{style}" do
       inspect_source("#{variable} = 1")
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 

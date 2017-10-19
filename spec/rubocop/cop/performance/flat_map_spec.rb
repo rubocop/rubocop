@@ -16,13 +16,13 @@ describe RuboCop::Cop::Performance::FlatMap, :config do
       'with a number greater than 1' do
       inspect_source("[1, 2, 3, 4].#{method} { |e| [e, e] }.#{flatten}(3)")
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it "does not register an offense when calling #{method}!...#{flatten}" do
       inspect_source("[1, 2, 3, 4].#{method}! { |e| [e, e] }.#{flatten}")
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
 
     it "corrects #{method}..#{flatten}(1) to flat_map" do
@@ -45,7 +45,7 @@ describe RuboCop::Cop::Performance::FlatMap, :config do
       it "does not register an offense when calling #{method}...#{flatten}" do
         inspect_source("[1, 2, 3, 4].map { |e| [e, e] }.#{flatten}")
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
     end
 

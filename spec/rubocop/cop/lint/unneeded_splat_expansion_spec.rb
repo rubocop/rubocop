@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Lint::UnneededSplatExpansion do
   subject(:cop) { described_class.new }
+
   let(:message) { 'Unnecessary splat expansion.' }
   let(:array_param_message) { 'Pass array contents as separate arguments.' }
 

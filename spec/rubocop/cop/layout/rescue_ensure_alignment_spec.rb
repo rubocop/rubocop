@@ -68,7 +68,7 @@ describe RuboCop::Cop::Layout::RescueEnsureAlignment do
       it 'accepts rescue and ensure on the same line' do
         inspect_source('begin; puts 1; rescue; ensure; puts 2; end')
 
-        expect(cop.messages).to be_empty
+        expect(cop.messages.empty?).to be(true)
       end
 
       it 'auto-corrects' do
@@ -95,7 +95,7 @@ describe RuboCop::Cop::Layout::RescueEnsureAlignment do
                       keyword,
                       '    error',
                       'end'])
-      expect(cop.messages).to be_empty
+      expect(cop.messages.empty?).to be(true)
     end
   end
 
@@ -112,13 +112,13 @@ describe RuboCop::Cop::Layout::RescueEnsureAlignment do
   end
 
   describe 'excluded file' do
+    subject(:cop) { described_class.new(config) }
+
     let(:config) do
       RuboCop::Config.new('Layout/RescueEnsureAlignment' =>
                           { 'Enabled' => true,
                             'Exclude' => ['**/**'] })
     end
-
-    subject(:cop) { described_class.new(config) }
 
     it 'processes excluded files with issue' do
       expect_no_offenses(<<-RUBY.strip_indent)

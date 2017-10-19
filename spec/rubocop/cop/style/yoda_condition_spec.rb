@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 describe RuboCop::Cop::Style::YodaCondition, :config do
-  let(:cop_config) { { 'EnforcedStyle' => 'all_comparison_operators' } }
   subject(:cop) { described_class.new(config) }
+
+  let(:cop_config) { { 'EnforcedStyle' => 'all_comparison_operators' } }
   let(:error_message) { 'Reverse the order of the operands `%s`.' }
 
   # needed because of usage of safe navigation operator
@@ -16,7 +17,7 @@ describe RuboCop::Cop::Style::YodaCondition, :config do
     let(:source) { code }
 
     it 'does not register an offense' do
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 
@@ -33,6 +34,7 @@ describe RuboCop::Cop::Style::YodaCondition, :config do
 
   shared_examples 'autocorrect' do |code, corrected|
     let(:source) { code }
+
     it 'autocorrects code' do
       expect(autocorrect_source(source)).to eq(corrected)
     end
@@ -89,6 +91,7 @@ describe RuboCop::Cop::Style::YodaCondition, :config do
 
   context 'with EnforcedStyle: equality_operators_only' do
     let(:cop_config) { { 'EnforcedStyle' => 'equality_operators_only' } }
+
     it_behaves_like 'accepts', '42 < bar'
     it_behaves_like 'accepts', 'nil >= baz'
     it_behaves_like 'accepts', '3 < a && a < 5'

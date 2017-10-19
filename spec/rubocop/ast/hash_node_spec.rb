@@ -6,14 +6,14 @@ describe RuboCop::AST::HashNode do
   describe '.new' do
     let(:source) { '{}' }
 
-    it { expect(hash_node).to be_a(described_class) }
+    it { expect(hash_node.is_a?(described_class)).to be(true) }
   end
 
   describe '#pairs' do
     context 'with an empty hash' do
       let(:source) { '{}' }
 
-      it { expect(hash_node.pairs).to be_empty }
+      it { expect(hash_node.pairs.empty?).to be(true) }
     end
 
     context 'with a hash of literals' do
@@ -35,19 +35,19 @@ describe RuboCop::AST::HashNode do
     context 'with an empty hash' do
       let(:source) { '{}' }
 
-      it { expect(hash_node).to be_empty }
+      it { expect(hash_node.empty?).to be(true) }
     end
 
     context 'with a hash containing pairs' do
       let(:source) { '{ a: 1, b: 2 }' }
 
-      it { expect(hash_node).to_not be_empty }
+      it { expect(hash_node.empty?).to be(false) }
     end
 
     context 'with a hash containing a keyword splat' do
       let(:source) { '{ **foo }' }
 
-      it { expect(hash_node).to_not be_empty }
+      it { expect(hash_node.empty?).to be(false) }
     end
   end
 
@@ -55,7 +55,7 @@ describe RuboCop::AST::HashNode do
     context 'with an empty hash' do
       let(:source) { '{}' }
 
-      it { expect(hash_node.keys).to be_empty }
+      it { expect(hash_node.keys.empty?).to be(true) }
     end
 
     context 'with a hash with symbol keys' do
@@ -77,7 +77,7 @@ describe RuboCop::AST::HashNode do
     let(:source) { '{ a: 1, b: 2, c: 3 }' }
 
     context 'when not passed a block' do
-      it { expect(hash_node.each_key).to be_an(Enumerator) }
+      it { expect(hash_node.each_key.is_a?(Enumerator)).to be(true) }
     end
 
     context 'when passed a block' do
@@ -100,7 +100,7 @@ describe RuboCop::AST::HashNode do
     context 'with an empty hash' do
       let(:source) { '{}' }
 
-      it { expect(hash_node.values).to be_empty }
+      it { expect(hash_node.values.empty?).to be(true) }
     end
 
     context 'with a hash with literal values' do
@@ -122,7 +122,7 @@ describe RuboCop::AST::HashNode do
     let(:source) { '{ a: 1, b: 2, c: 3 }' }
 
     context 'when not passed a block' do
-      it { expect(hash_node.each_value).to be_an(Enumerator) }
+      it { expect(hash_node.each_value.is_a?(Enumerator)).to be(true) }
     end
 
     context 'when passed a block' do
@@ -145,7 +145,7 @@ describe RuboCop::AST::HashNode do
     let(:source) { '{ a: 1, b: 2, c: 3 }' }
 
     context 'when not passed a block' do
-      it { expect(hash_node.each_pair).to be_an(Enumerator) }
+      it { expect(hash_node.each_pair.is_a?(Enumerator)).to be(true) }
     end
 
     context 'when passed a block' do

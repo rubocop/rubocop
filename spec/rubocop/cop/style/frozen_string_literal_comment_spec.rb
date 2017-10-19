@@ -114,7 +114,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
         puts 1
       RUBY
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts a disabled frozen string literal comment below shebang and ' \
@@ -126,7 +126,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
         puts 1
       RUBY
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts a frozen string literal comment below shebang above an ' \
@@ -138,7 +138,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
         puts 1
       RUBY
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts a disabled frozen string literal comment below shebang above ' \
@@ -150,7 +150,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
         puts 1
       RUBY
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts an emacs style combined magic comment' do
@@ -304,7 +304,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
             "x".freeze
           RUBY
 
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
 
         it 'accepts shoveling into a string when there is a frozen string ' \
@@ -314,7 +314,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
             "x" << "y"
           RUBY
 
-          expect(cop.offenses).to be_empty
+          expect(cop.offenses.empty?).to be(true)
         end
       end
     end
@@ -415,7 +415,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
         puts 1
       RUBY
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'registers an offense for a frozen string literal comment ' \
@@ -449,7 +449,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
         puts 1
       RUBY
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'registers an offense for a frozen string literal comment below ' \
@@ -484,7 +484,7 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
         puts 1
       RUBY
 
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'registers an offense for a frozen string literal comment ' \

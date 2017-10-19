@@ -16,6 +16,7 @@ describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
   }
 
   subject(:cop) { described_class.new(config) }
+
   let(:msg) { 'Avoid using `%s` because it skips validations.' }
   let(:cop_config) { cop_config }
 
@@ -40,7 +41,7 @@ describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
     methods_with_arguments.each do |method_name|
       it "doesn't register an offense for `#{method_name}`" do
         inspect_source("User.#{method_name}")
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
     end
   end
@@ -68,7 +69,7 @@ describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
     whitelist.each do |method_name|
       it "accepts `#{method_name}`" do
         inspect_source("User.#{method_name}")
-        expect(cop.offenses).to be_empty
+        expect(cop.offenses.empty?).to be(true)
       end
     end
 

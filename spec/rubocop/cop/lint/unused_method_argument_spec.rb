@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
   subject(:cop) { described_class.new(config) }
+
   let(:cop_config) do
     { 'AllowUnusedKeywordArguments' => false, 'IgnoreEmptyMethods' => false }
   end
@@ -242,7 +243,6 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       context 'when a method argument is not used explicitly' do
         it 'accepts since the arguments are guaranteed to be the same as ' \
            "superclass' ones and the user has no control on them" do
-
           expect_no_offenses(<<-RUBY.strip_indent)
             def some_method(foo)
               super

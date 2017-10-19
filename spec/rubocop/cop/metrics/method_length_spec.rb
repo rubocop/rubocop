@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Metrics::MethodLength, :config do
   subject(:cop) { described_class.new(config) }
+
   let(:cop_config) { { 'Max' => 5, 'CountComments' => false } }
 
   shared_examples 'reports violation' do |first_line, last_line|
@@ -114,7 +115,7 @@ describe RuboCop::Cop::Metrics::MethodLength, :config do
         a = 4
       end
     RUBY
-    expect(cop.offenses).to be_empty
+    expect(cop.offenses.empty?).to be(true)
   end
 
   it 'does not count blank lines' do

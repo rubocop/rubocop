@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Style::RegexpLiteral, :config do
   subject(:cop) { described_class.new(config) }
+
   let(:config) do
     supported_styles = {
       'SupportedStyles' => %w[slashes percent_r mixed]

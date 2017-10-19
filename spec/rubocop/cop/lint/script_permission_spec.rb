@@ -3,6 +3,7 @@
 # rubocop:disable Style/NumericLiteralPrefix
 describe RuboCop::Cop::Lint::ScriptPermission do
   subject(:cop) { described_class.new(config) }
+
   let(:config) { RuboCop::Config.new }
 
   let(:file) { Tempfile.new('') }
