@@ -146,13 +146,6 @@ describe RuboCop::Cop::Naming::VariableName, :config do
       expect_no_offenses('_myLocal = 1')
     end
 
-    it 'registers an offense for method arguments' do
-      expect_offense(<<-RUBY.strip_indent)
-        def method(funny_arg); end
-                   ^^^^^^^^^ Use camelCase for variable names.
-      RUBY
-    end
-
     it 'registers an offense for default method arguments' do
       expect_offense(<<-RUBY.strip_indent)
         def foo(opt_arg = 1); end
