@@ -5,11 +5,11 @@ module RuboCop
     module Style
       # This cop checks for braces around the last parameter in a method call
       # if the last parameter is a hash.
-      # It supports 3 styles.
+      # It supports `braces`, `no_braces` and `context_dependent` styles.
       #
-      # @example
-      #   # 1. The `braces` style enforces braces around all method
-      #   #    parameters that are hashes.
+      # @example EnforcedStyle: braces
+      #   # The `braces` style enforces braces around all method
+      #   # parameters that are hashes.
       #
       #   # bad
       #   some_method(x, y, a: 1, b: 2)
@@ -17,9 +17,9 @@ module RuboCop
       #   # good
       #   some_method(x, y, {a: 1, b: 2})
       #
-      # @example
-      #   # 2.  The `no_braces` style checks that the last parameter doesn't
-      #   #     have braces around it.
+      # @example EnforcedStyle: no_braces
+      #   # The `no_braces` style checks that the last parameter doesn't
+      #   # have braces around it.
       #
       #   # bad
       #   some_method(x, y, {a: 1, b: 2})
@@ -27,10 +27,10 @@ module RuboCop
       #   # good
       #   some_method(x, y, a: 1, b: 2)
       #
-      # @example
-      #   # 3. The `context_dependent` style checks that the last parameter
-      #   #    doesn't have braces around it, but requires braces if the
-      #   #    second to last parameter is also a hash literal.
+      # @example EnforcedStyle: context_dependent
+      #   # The `context_dependent` style checks that the last parameter
+      #   # doesn't have braces around it, but requires braces if the
+      #   # second to last parameter is also a hash literal.
       #
       #   # bad
       #   some_method(x, y, {a: 1, b: 2})
