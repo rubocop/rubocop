@@ -46,6 +46,7 @@
 * [#5177](https://github.com/bbatsov/rubocop/pull/5177): Add new `Rails/LexicallyScopedActionFilter` cop. ([@wata727][])
 * [#5173](https://github.com/bbatsov/rubocop/pull/5173): Add new `Style/EvalWithLocation` cop. ([@pocke][])
 * [#5208](https://github.com/bbatsov/rubocop/pull/5208): Add new `Rails/Presence` cop. ([@wata727][])
+* Allow auto-correction of ClassAndModuleChildren. ([@siggymcfried][], [@melch][])
 
 ### Bug fixes
 
@@ -3091,3 +3092,5 @@
 [@marcandre]: https://github.com/marcandre
 [@walf443]: https://github.com/walf443
 [@reitermarkus]: https://github.com/reitermarkus
+[@siggymcfried]: https://github.com/siggymcfried
+[@melch]: https://github.com/melch

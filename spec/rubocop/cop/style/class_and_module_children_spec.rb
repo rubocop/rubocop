@@ -126,4 +126,168 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       RUBY
     end
   end
+
+  context 'autocorrect' do
+    context 'nested style' do
+      let(:cop_config) { { 'EnforcedStyle' => 'nested' } }
+
+      it 'corrects a not nested class' do
+        source = <<-RUBY.strip_indent
+          class FooClass::BarClass
+          end
+        RUBY
+        new_source = autocorrect_source(source)
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          module FooClass
+            class BarClass
+            end
+          end
+        RUBY
+      end
+
+      it 'corrects a not nested class with explicit superclass' do
+        source = <<-RUBY.strip_indent
+        class FooClass::BarClass < Super
+        end
+        RUBY
+        new_source = autocorrect_source(source)
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          module FooClass
+            class BarClass < Super
+            end
+          end
+        RUBY
+      end
+
+      it 'corrects a not nested module' do
+        source = <<-RUBY.strip_indent
+          module FooClass::BarClass
+          end
+        RUBY
+        new_source = autocorrect_source(source)
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          module FooClass
+            module BarClass
+            end
+          end
+        RUBY
+      end
+
+      it 'does not correct nested children' do
+        source = <<-RUBY.strip_indent
+          class FooClass
+            class BarClass
+            end
+          end
+
+          module FooModule
+            module BarModule
+            end
+          end
+        RUBY
+        new_source = autocorrect_source(source)
+        expect(new_source).to eq(source)
+      end
+
+      it 'does not correct :: in parent class on inheritance' do
+        source = <<-RUBY.strip_indent
+          class FooClass
+            class BarClass
+            end
+          end
+
+          class BazClass < FooClass::BarClass
+          end
+        RUBY
+        new_source = autocorrect_source(source)
+        expect(new_source).to eq(source)
+      end
+    end
+
+    context 'compact style' do
+      let(:cop_config) { { 'EnforcedStyle' => 'compact' } }
+
+      it 'corrects nested children' do
+        source = <<-RUBY.strip_indent
+          class FooClass
+            class BarClass
+            end
+          end
+        RUBY
+        new_source = autocorrect_source(source)
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          class FooClass::BarClass
+          end
+        RUBY
+      end
+
+      it 'corrects modules with nested children' do
+        source = <<-RUBY.strip_indent
+          module FooModule
+            module BarModule
+            end
+          end
+        RUBY
+        new_source = autocorrect_source(source)
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          module FooModule::BarModule
+          end
+        RUBY
+      end
+
+      it 'does not correct compact style for classes/modules' do
+        source = <<-RUBY.strip_indent
+          class FooClass::BarClass
+          end
+
+          module FooClass::BarModule
+          end
+        RUBY
+        new_source = autocorrect_source(source)
+        expect(new_source).to eq(source)
+      end
+
+      it 'does not correct nested classes/modules with more than one child' do
+        source = <<-RUBY.strip_indent
+          class FooClass
+            class BarClass
+            end
+            class BazClass
+            end
+          end
+
+          module FooModule
+            module BarModule
+            end
+            class BazModule
+            end
+          end
+        RUBY
+        new_source = autocorrect_source(source)
+        expect(new_source).to eq(source)
+      end
+
+      it 'does not correct class/module with single method' do
+        source = <<-RUBY.strip_indent
+          class FooClass
+            def bar_method
+            end
+          end
+        RUBY
+        new_source = autocorrect_source(source)
+        expect(new_source).to eq(source)
+      end
+
+      it 'does not correct nesting for classes with an explicit superclass' do
+        source = <<-RUBY.strip_indent
+          class FooClass < Super
+            class BarClass
+            end
+          end
+        RUBY
+        new_source = autocorrect_source(source)
+        expect(new_source).to eq(source)
+      end
+    end
+  end
 end
