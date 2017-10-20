@@ -45,11 +45,10 @@ module RuboCop
             if node.class_type?
               name, superclass, body = *node
               return if superclass && style != :nested
-              nest_or_compact(corrector, node, name, body)
             else
               name, body = *node
-              nest_or_compact(corrector, node, name, body)
             end
+            nest_or_compact(corrector, node, name, body)
           end
         end
 
@@ -91,12 +90,23 @@ module RuboCop
         end
 
         def compact_definition(corrector, node, name, body)
-          replacement = "#{body.type.to_s} #{name.const_name}::#{body.children.first.const_name}"
+          compact_node(corrector, node, name, body)
+          remove_end(corrector, body)
+        end
+
+        def compact_node(corrector, node, name, body)
+          const_name = "#{name.const_name}::#{body.children.first.const_name}"
+          replacement = "#{body.type} #{const_name}"
           range = range_between(node.loc.keyword.begin_pos,
                                 body.loc.name.end_pos)
           corrector.replace(range, replacement)
-          range = range_between(body.loc.end.begin_pos - leading_spaces(body).size,
-                                body.loc.end.end_pos + 1)
+        end
+
+        def remove_end(corrector, body)
+          range = range_between(
+            body.loc.end.begin_pos - leading_spaces(body).size,
+            body.loc.end.end_pos + 1
+          )
           corrector.remove(range)
         end
 
