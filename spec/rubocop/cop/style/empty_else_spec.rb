@@ -120,6 +120,25 @@ describe RuboCop::Cop::Style::EmptyElse do
         it_behaves_like 'auto-correct', 'if'
         it_behaves_like 'offense registration'
       end
+      context 'with an empty comment' do
+        let(:source) { <<-RUBY.strip_indent }
+          if cond
+            something
+          else
+            # TODO
+          end
+        RUBY
+        let(:corrected_source) { <<-RUBY.strip_indent }
+          if cond
+            something
+          else
+            # TODO
+          end
+        RUBY
+
+        it_behaves_like 'auto-correct', 'if'
+        it_behaves_like 'offense registration'
+      end
     end
 
     context 'given an unless-statement' do

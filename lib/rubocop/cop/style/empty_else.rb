@@ -112,12 +112,22 @@ module RuboCop
 
         def autocorrect(node)
           return false if autocorrect_forbidden?(node.type.to_s)
+          return false if comment_in_else?(node)
 
           lambda do |corrector|
             end_pos = base_if_node(node).loc.end.begin_pos
-
             corrector.remove(range_between(node.loc.else.begin_pos, end_pos))
           end
+        end
+
+        def comment_in_else?(node)
+          range = else_line_range(node.loc)
+          processed_source.comments.find { |c| range.include?(c.loc.line) }
+        end
+
+        def else_line_range(loc)
+          return 0..0 if loc.else.nil? || loc.end.nil?
+          loc.else.first_line..loc.end.first_line
         end
 
         def base_if_node(node)
