@@ -7,7 +7,7 @@ describe RuboCop::Cop::Style::StderrPuts do
   it "registers an offense when using `$stderr.puts('hello')`" do
     expect_offense(<<-RUBY.strip_indent)
       $stderr.puts('hello')
-      ^^^^^^^^^^^^ Use `warn` instead of `$stderr.puts`.
+      ^^^^^^^^^^^^ Use `warn` instead of `$stderr.puts` to allow such output to be disabled.
     RUBY
   end
 

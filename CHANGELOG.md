@@ -6,6 +6,7 @@
 
 * [#4881](https://github.com/bbatsov/rubocop/issues/4881): Fix a false positive for `Performance/HashEachMethods` when unused argument(s) exists in other blocks. ([@pocke][])
 * [#4883](https://github.com/bbatsov/rubocop/pull/4883): Fix auto-correction for `Performance/HashEachMethods`. ([@pocke][])
+* [#4888](https://github.com/bbatsov/rubocop/pull/4888): Improve offense message of `Style/StderPuts`. ([@jaredbeck][])
 
 ## 0.51.0 (2017-10-18)
 
@@ -2980,3 +2981,4 @@
 [@GauthamGoli]: https://github.com/GauthamGoli
 [@nelsonjr]: https://github.com/nelsonjr
 [@jonatas]: https://github.com/jonatas
+[@jaredbeck]: https://www.jaredbeck.com

@@ -3,8 +3,9 @@
 module RuboCop
   module Cop
     module Style
-      # This cop identifies places where `$stderr.puts`
-      # can be replaced by `warn`.
+      # This cop identifies places where `$stderr.puts` can be replaced by
+      # `warn`. The latter has the advantage of easily being disabled by,
+      # e.g. the -W0 interpreter flag, or setting $VERBOSE to nil.
       #
       # @example
       #   # bad
@@ -14,7 +15,8 @@ module RuboCop
       #   warn('hello')
       #
       class StderrPuts < Cop
-        MSG = 'Use `warn` instead of `$stderr.puts`.'.freeze
+        MSG = 'Use `warn` instead of `$stderr.puts` to allow such output ' \
+              'to be disabled.'.freeze
 
         def_node_matcher :stderr_puts?, <<-PATTERN
           (send
