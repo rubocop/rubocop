@@ -26,11 +26,11 @@ module RuboCop
         MSG = 'Prefer Date or Time over DateTime.'.freeze
 
         def_node_matcher :date_time?, <<-PATTERN
-          (send (const _ :DateTime) ...)
+          (send (const {nil? (cbase)} :DateTime) ...)
         PATTERN
 
         def_node_matcher :historic_date?, <<-PATTERN
-          (send _ _ _ (const (const _ :Date) _))
+          (send _ _ _ (const (const nil? :Date) _))
         PATTERN
 
         def on_send(node)
