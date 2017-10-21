@@ -330,7 +330,7 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
       RUBY
     end
 
-    it 'accepts hashes that use different separators and double splats' do
+    it 'accepts a symbol only hash followed by a keyword splat' do
       expect_no_offenses(<<-RUBY.strip_indent)
         hash = {
           a: 1,

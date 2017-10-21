@@ -204,6 +204,15 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       expect(new_source).to eq(source)
     end
 
+    it 'does not auto-correct http action when params and action names ' \
+      'are method calls' do
+      source = 'post user_attrs, params'
+      inspect_source(source)
+      expect(cop.offenses.size).to eq(0)
+      new_source = autocorrect_source(source)
+      expect(new_source).to eq(source)
+    end
+
     # rubocop:disable LineLength
     it 'does not auto-correct http action when parameter matches keyword name' do
       source = 'post :create, id: 7, comment: { body: "hei" }'
@@ -213,7 +222,8 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       expect(new_source).to eq(source)
     end
 
-    it 'does not auto-correct http action when format keyword included but not alone' do
+    it 'does not auto-correct http action when format keyword included ' \
+      'but not alone' do
       source = 'post :create, id: 7, format: :rss'
       inspect_source(source)
       expect(cop.offenses.size).to eq(0)
@@ -232,14 +242,8 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       expect(new_source).to eq(source)
     end
 
-    it 'does not auto-correct http action when params is a method call' do
-      source = 'post user_attrs, params'
-      inspect_source(source)
-      expect(cop.offenses.size).to eq(0)
-      new_source = autocorrect_source(source)
-      expect(new_source).to eq(source)
-    end
-    it 'does not auto-correct http action when params is a method call with chain' do
+    it 'does not auto-correct http action when params is a method call ' \
+      'with chain' do
       source = 'post user_attrs, params.merge(foo: bar)'
       inspect_source(source)
       expect(cop.offenses.size).to eq(0)
@@ -527,7 +531,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       RUBY
     end
 
-    it 'auto-corrects http action when params is a method call' do
+    it 'auto-corrects http action when params and action name are method calls' do
       source = 'post user_attrs, params'
       inspect_source(source)
       expect(cop.offenses.size).to eq(1)

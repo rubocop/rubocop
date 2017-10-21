@@ -228,12 +228,12 @@ describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       end
     end
 
-    it 'auto-corrects offenses' do
+    it 'auto-corrects block arguments inside Hash#each' do
       new_source = autocorrect_source('{}.each { |  x=5,  (y,*z)|puts x }')
       expect(new_source).to eq('{}.each { | x=5, (y,*z) | puts x }')
     end
 
-    it 'auto-corrects offenses' do
+    it 'auto-corrects lambda args' do
       new_source = autocorrect_source('->(  x,  y) { puts x }')
       expect(new_source).to eq('->( x, y ) { puts x }')
     end
