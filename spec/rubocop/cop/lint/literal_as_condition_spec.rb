@@ -141,7 +141,7 @@ describe RuboCop::Cop::Lint::LiteralAsCondition do
 
     it "registers an offense for `not #{lit}`" do
       inspect_source(<<-RUBY.strip_indent)
-        !#{lit}
+        not(#{lit})
       RUBY
       expect(cop.offenses.size).to eq(1)
     end

@@ -15,10 +15,6 @@ describe RuboCop::Cop::Performance::Caller do
     expect_no_offenses('caller_locations')
   end
 
-  it 'accepts `caller_locations` with arguments' do
-    expect_no_offenses('caller(1, 1).first')
-  end
-
   it 'registers an offense when :first is called on caller' do
     expect(caller.first).to eq(caller(1..1).first)
     expect_offense(<<-RUBY.strip_indent)
