@@ -11,6 +11,13 @@ describe RuboCop::Cop::Style::DateTime do
     RUBY
   end
 
+  it 'registers an offense when using ::DateTime for current time' do
+    expect_offense(<<-RUBY.strip_indent)
+      ::DateTime.now
+      ^^^^^^^^^^^^^^ Prefer Date or Time over DateTime.
+    RUBY
+  end
+
   it 'registers an offense when using DateTime for modern date' do
     expect_offense(<<-RUBY.strip_indent)
       DateTime.iso8601('2016-06-29')
@@ -28,5 +35,9 @@ describe RuboCop::Cop::Style::DateTime do
 
   it 'does not register an offense when using DateTime for historic date' do
     expect_no_offenses("DateTime.iso8601('2016-06-29', Date::ENGLAND)")
+  end
+
+  it 'does not register an offense when using DateTime in another namespace' do
+    expect_no_offenses('Icalendar::Values::DateTime.new(start_at)')
   end
 end
