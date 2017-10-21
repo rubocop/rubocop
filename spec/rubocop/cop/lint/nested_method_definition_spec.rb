@@ -129,7 +129,7 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
     RUBY
   end
 
-  it 'does not register offense for nested definition inside module_eval' do
+  it 'does not register offense for nested definition inside module_exec' do
     expect_no_offenses(<<-RUBY.strip_indent)
       class Foo
         def self.define(mod)

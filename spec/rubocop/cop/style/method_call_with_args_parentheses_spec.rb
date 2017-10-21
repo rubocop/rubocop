@@ -101,7 +101,7 @@ describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     RUBY
   end
 
-  it 'auto-corrects superclass call by adding needed braces' do
+  it 'auto-corrects yield by adding needed braces' do
     new_source = autocorrect_source(<<-RUBY.strip_indent)
       def foo
         yield a

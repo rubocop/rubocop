@@ -29,7 +29,7 @@ describe RuboCop::Cop::Lint::RescueType do
     RUBY
   end
 
-  it 'accepts rescuing nothing' do
+  it 'accepts rescuing nothing within a method definition' do
     expect_no_offenses(<<-RUBY)
      def foobar
         foo
