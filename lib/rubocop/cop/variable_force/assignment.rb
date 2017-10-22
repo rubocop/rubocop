@@ -9,7 +9,7 @@ module RuboCop
 
         MULTIPLE_LEFT_HAND_SIDE_TYPE = :mlhs
 
-        attr_reader :node, :variable, :referenced
+        attr_reader :node, :variable, :referenced, :references
         alias referenced? referenced
 
         def initialize(node, variable)
@@ -22,6 +22,7 @@ module RuboCop
           @node = node
           @variable = variable
           @referenced = false
+          @references = []
         end
 
         def name
@@ -32,7 +33,8 @@ module RuboCop
           @variable.scope
         end
 
-        def reference!
+        def reference!(node)
+          @references << node
           @referenced = true
         end
 

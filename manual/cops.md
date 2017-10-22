@@ -226,6 +226,7 @@ In the following section you find all available cops:
 * [Lint/ReturnInVoidContext](cops_lint.md#lintreturninvoidcontext)
 * [Lint/SafeNavigationChain](cops_lint.md#lintsafenavigationchain)
 * [Lint/ScriptPermission](cops_lint.md#lintscriptpermission)
+* [Lint/ShadowedArgument](cops_lint.md#lintshadowedargument)
 * [Lint/ShadowedException](cops_lint.md#lintshadowedexception)
 * [Lint/ShadowingOuterLocalVariable](cops_lint.md#lintshadowingouterlocalvariable)
 * [Lint/StringConversionInInterpolation](cops_lint.md#lintstringconversionininterpolation)
