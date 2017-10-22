@@ -539,9 +539,9 @@ describe RuboCop::AST::SendNode do
 
   describe '#comparison_method?' do
     context 'with a comparison method' do
-      let(:source) { 'foo.bar <=> :baz' }
+      let(:source) { 'foo.bar >= :baz' }
 
-      it { expect(send_node.comparison_method?).to be_falsey }
+      it { expect(send_node.comparison_method?).to be_truthy }
     end
 
     context 'with a regular method' do
