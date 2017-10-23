@@ -93,6 +93,7 @@ describe RuboCop::Cop::Lint::CircularArgumentReference do
           end
         RUBY
       end
+
       it 'does not register an offense' do
         expect_no_offenses(<<-RUBY.strip_indent)
           def some_method(some_arg: some_method)
@@ -110,6 +111,7 @@ describe RuboCop::Cop::Lint::CircularArgumentReference do
           end
         RUBY
       end
+
       it 'registers an offense' do
         expect(cop.offenses.size).to eq(1)
         expect(cop.offenses.first.message)

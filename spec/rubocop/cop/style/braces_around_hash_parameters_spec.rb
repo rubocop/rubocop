@@ -4,47 +4,43 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
   subject(:cop) { described_class.new(config) }
 
   shared_examples 'general non-offenses' do
-    after { expect(cop.offenses.empty?).to be(true) }
-
     it 'accepts one non-hash parameter' do
-      inspect_source('where(2)')
+      expect_no_offenses('where(2)')
     end
 
     it 'accepts multiple non-hash parameters' do
-      inspect_source('where(1, "2")')
+      expect_no_offenses('where(1, "2")')
     end
 
     it 'accepts one empty hash parameter' do
-      inspect_source('where({})')
+      expect_no_offenses('where({})')
     end
 
     it 'accepts one empty hash parameter with whitespace' do
-      inspect_source(['where(  {     ',
-                      " }\t   )  "])
+      expect_no_offenses(['where(  {     ',
+                          " }\t   )  "])
     end
   end
 
   shared_examples 'no_braces and context_dependent non-offenses' do
-    after { expect(cop.offenses.empty?).to be(true) }
-
     it 'accepts one hash parameter without braces' do
-      inspect_source('where(x: "y")')
+      expect_no_offenses('where(x: "y")')
     end
 
     it 'accepts one hash parameter without braces and with multiple keys' do
-      inspect_source('where(x: "y", foo: "bar")')
+      expect_no_offenses('where(x: "y", foo: "bar")')
     end
 
     it 'accepts one hash parameter without braces and with one hash value' do
-      inspect_source('where(x: { "y" => "z" })')
+      expect_no_offenses('where(x: { "y" => "z" })')
     end
 
     it 'accepts property assignment with braces' do
-      inspect_source('x.z = { y: "z" }')
+      expect_no_offenses('x.z = { y: "z" }')
     end
 
     it 'accepts operator with a hash parameter with braces' do
-      inspect_source('x.z - { y: "z" }')
+      expect_no_offenses('x.z - { y: "z" }')
     end
   end
 
@@ -180,11 +176,6 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
     context 'for incorrect code' do
       include_examples 'no_braces and context_dependent offenses'
 
-      after do
-        expect(cop.messages)
-          .to eq(['Redundant curly braces around a hash parameter.'])
-      end
-
       it 'registers an offense for two hash parameters with braces' do
         expect_offense(<<-RUBY.strip_indent)
           where({ x: 1 }, { y: 2 })
@@ -253,8 +244,6 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
     context 'for correct code' do
       include_examples 'general non-offenses'
 
-      after { expect(cop.offenses.empty?).to be(true) }
-
       it 'accepts one hash parameter with braces' do
         expect_no_offenses('where({ x: 1 })')
       end
@@ -272,11 +261,6 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
     end
 
     context 'for incorrect code' do
-      after do
-        expect(cop.messages)
-          .to eq(['Missing curly braces around a hash parameter.'])
-      end
-
       it 'registers an offense for one hash parameter without braces' do
         expect_offense(<<-RUBY.strip_indent)
           where(x: "y")
@@ -286,14 +270,18 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
 
       it 'registers an offense for one hash parameter with multiple keys and ' \
          'without braces' do
-        inspect_source('where(x: "y", foo: "bar")')
-        expect(cop.highlights).to eq(['x: "y", foo: "bar"'])
+        expect_offense(<<-RUBY.strip_indent)
+          where(x: "y", foo: "bar")
+                ^^^^^^^^^^^^^^^^^^ Missing curly braces around a hash parameter.
+        RUBY
       end
 
       it 'registers an offense for one hash parameter without braces with ' \
          'one hash value' do
-        inspect_source('where(x: { "y" => "z" })')
-        expect(cop.highlights).to eq(['x: { "y" => "z" }'])
+        expect_offense(<<-RUBY.strip_indent)
+          where(x: { "y" => "z" })
+                ^^^^^^^^^^^^^^^^^ Missing curly braces around a hash parameter.
+        RUBY
       end
     end
 

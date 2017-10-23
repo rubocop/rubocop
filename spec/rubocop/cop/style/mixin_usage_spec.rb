@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 describe RuboCop::Cop::Style::MixinUsage do
-  let(:config) { RuboCop::Config.new }
-  subject(:cop) { described_class.new(config) }
+  subject(:cop) { described_class.new }
 
   context 'include' do
     it 'registers an offense when using outside class' do

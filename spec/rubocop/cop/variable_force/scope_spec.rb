@@ -3,6 +3,14 @@
 describe RuboCop::Cop::VariableForce::Scope do
   include RuboCop::AST::Sexp
 
+  subject(:scope) { described_class.new(scope_node) }
+
+  let(:ast) do
+    RuboCop::ProcessedSource.new(source, ruby_version).ast
+  end
+
+  let(:scope_node) { ast.each_node(scope_node_type).first }
+
   describe '.new' do
     context 'when lvasgn node is passed' do
       it 'accepts that as top level scope' do
@@ -18,14 +26,6 @@ describe RuboCop::Cop::VariableForce::Scope do
       end
     end
   end
-
-  subject(:scope) { described_class.new(scope_node) }
-
-  let(:ast) do
-    RuboCop::ProcessedSource.new(source, ruby_version).ast
-  end
-
-  let(:scope_node) { ast.each_node(scope_node_type).first }
 
   describe '#name' do
     context 'when the scope is instance method definition' do

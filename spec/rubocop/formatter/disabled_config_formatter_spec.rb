@@ -184,8 +184,6 @@ module RuboCop
       end
 
       context 'when exclude_limit option is passed' do
-        let(:formatter) { described_class.new(output, exclude_limit: 5) }
-
         before do
           formatter.started(filenames)
 
@@ -201,6 +199,8 @@ module RuboCop
 
           formatter.finished(filenames)
         end
+
+        let(:formatter) { described_class.new(output, exclude_limit: 5) }
 
         let(:filenames) do
           Array.new(6) { |index| format('test_%02d.rb', index + 1) }

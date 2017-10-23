@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 describe RuboCop::Cop::Style::DateTime do
-  let(:config) { RuboCop::Config.new }
-  subject(:cop) { described_class.new(config) }
+  subject(:cop) { described_class.new }
 
   it 'registers an offense when using DateTime for current time' do
     expect_offense(<<-RUBY.strip_indent)

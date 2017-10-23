@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Rails::UnknownEnv, :config do
   subject(:cop) { described_class.new(config) }
+
   let(:cop_config) do
     {
       'Environments' => %w[
