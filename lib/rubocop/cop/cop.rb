@@ -115,13 +115,23 @@ module RuboCop
         self.class::MSG
       end
 
-      def add_offense(node, *args, **kwargs, &block)
-        if args.any?
-          add_offense_deprecated(node, *args, &block)
-        else
-          add_offense_common(node, **kwargs, &block)
-        end
+      # rubocop:disable Metrics/CyclomaticComplexity
+      def add_offense(node, location: :expression, message: nil, severity: nil)
+        loc = find_location(node, location)
+
+        return if duplicate_location?(loc)
+
+        severity = custom_severity || severity || default_severity
+
+        message ||= message(node)
+        message = annotate(message)
+
+        status = enabled_line?(loc.line) ? correct(node) : :disabled
+
+        @offenses << Offense.new(severity, loc, message, name, status)
+        yield if block_given? && status != :disabled
       end
+      # rubocop:enable Metrics/CyclomaticComplexity
 
       def find_location(node, loc)
         # Location can be provided as a symbol, e.g.: `:keyword`
@@ -222,46 +232,6 @@ module RuboCop
           warn(Rainbow(message).red)
         end
       end
-
-      def add_offense_deprecated(node, loc = :expression, message = nil,
-                                 severity = nil, &block)
-
-        caller = caller_locations(2..2).first
-        path = "#{caller.path}:#{caller.lineno}"
-        warn_message = <<-RUBY.strip_indent
-          #{path}
-          Warning: The usage of positional location, message, and severity
-          parameters to Cop#add_offense is deprecated.
-          Please use keyword arguments instead.
-
-          The positional arguments version of Cop#add_offense will be removed in
-          RuboCop 0.52
-        RUBY
-
-        warn(Rainbow(warn_message).red)
-
-        add_offense_common(node, location: loc, message: message,
-                                 severity: severity, &block)
-      end
-
-      # rubocop:disable Metrics/CyclomaticComplexity
-      def add_offense_common(node, location: :expression, message: nil,
-                             severity: nil)
-        loc = find_location(node, location)
-
-        return if duplicate_location?(loc)
-
-        severity = custom_severity || severity || default_severity
-
-        message ||= message(node)
-        message = annotate(message)
-
-        status = enabled_line?(loc.line) ? correct(node) : :disabled
-
-        @offenses << Offense.new(severity, loc, message, name, status)
-        yield if block_given? && status != :disabled
-      end
-      # rubocop:enable Metrics/CyclomaticComplexity
     end
   end
 end
