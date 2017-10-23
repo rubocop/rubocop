@@ -3,6 +3,13 @@
 describe RuboCop::Cop::Layout::AlignHash, :config do
   subject(:cop) { described_class.new(config) }
 
+  let(:cop_config) do
+    {
+      'EnforcedHashRocketStyle' => 'key',
+      'EnforcedColonStyle' => 'key'
+    }
+  end
+
   shared_examples 'not on separate lines' do
     it 'accepts single line hash' do
       expect_no_offenses('func(a: 0, bb: 1)')
@@ -122,13 +129,6 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
           b: 1})
       RUBY
     end
-  end
-
-  let(:cop_config) do
-    {
-      'EnforcedHashRocketStyle' => 'key',
-      'EnforcedColonStyle' => 'key'
-    }
   end
 
   context 'with default configuration' do

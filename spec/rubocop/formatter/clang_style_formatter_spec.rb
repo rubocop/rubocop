@@ -8,6 +8,19 @@ module RuboCop
       let(:output) { StringIO.new }
 
       describe '#report_file' do
+        let(:file) { '/path/to/file' }
+
+        let(:offense) do
+          Cop::Offense.new(:convention, location,
+                           'This is a message.', 'CopName', status)
+        end
+
+        let(:location) do
+          source_buffer = Parser::Source::Buffer.new('test', 1)
+          source_buffer.source = "a\n"
+          Parser::Source::Range.new(source_buffer, 0, 1)
+        end
+
         it 'displays text containing the offending source line' do
           cop = Cop::Cop.new
           source_buffer = Parser::Source::Buffer.new('test', 1)
@@ -84,21 +97,8 @@ module RuboCop
                 test:1:14: C: message 1
                 do_something([this, #{described_class::ELLIPSES}
                              ^^^^^^
-              OUTPUT
+            OUTPUT
           end
-        end
-
-        let(:file) { '/path/to/file' }
-
-        let(:offense) do
-          Cop::Offense.new(:convention, location,
-                           'This is a message.', 'CopName', status)
-        end
-
-        let(:location) do
-          source_buffer = Parser::Source::Buffer.new('test', 1)
-          source_buffer.source = "a\n"
-          Parser::Source::Range.new(source_buffer, 0, 1)
         end
 
         context 'when the offense is not corrected' do

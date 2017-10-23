@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Style::CommentedKeyword do
   subject(:cop) { described_class.new(config) }
+
   let(:config) { RuboCop::Config.new }
 
   it 'registers an offense when commenting on the same line as `end`' do
