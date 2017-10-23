@@ -404,7 +404,27 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
-This cops checks the indentation of comments.
+
+
+### Example
+
+```ruby
+# bad
+  # comment here
+def method_name
+end
+
+  # comment here
+a = 'hello'
+
+# good
+# comment here
+def method_name
+end
+
+# comment here
+a = 'hello'
+```
 
 ## Layout/DotPosition
 
