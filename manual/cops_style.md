@@ -4117,6 +4117,22 @@ Enabled | Yes
 
 This cop checks for *when;* uses in *case* expressions.
 
+### Example
+
+```ruby
+# bad
+case foo
+when 1; 'baz'
+when 2; 'bar'
+end
+
+# good
+case foo
+when 1 then 'baz'
+when 2 then 'bar'
+end
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#one-line-cases](https://github.com/bbatsov/ruby-style-guide#one-line-cases)
