@@ -88,36 +88,6 @@ describe RuboCop::Cop::Cop do
     cop.add_offense(nil, location: location, message: 'message')
   end
 
-  describe '#add_offense positional arguments deprecation warning' do
-    context 'when #add_offense called with positional arguments' do
-      # rubocop:disable InternalAffairs/DeprecatedPositionalArguments
-      before { $stderr = StringIO.new }
-      after { $stderr = STDERR }
-
-      it 'will warn' do
-        expect(cop).to receive(:warn)
-        cop.add_offense(nil, location, 'message')
-      end
-
-      it 'will warn with correct warning message' do
-        cop.add_offense(nil, location, 'message')
-
-        msg = 'Warning: The usage of positional location, message, and ' \
-              "severity\nparameters to Cop#add_offense is deprecated."
-
-        expect($stderr.string).to include msg
-      end
-      # rubocop:enable InternalAffairs/DeprecatedPositionalArguments
-    end
-
-    context 'when #add_offense is called with kwargs' do
-      it "won't warn" do
-        expect(cop).not_to receive(:warn)
-        cop.add_offense(nil, location: location, message: 'message')
-      end
-    end
-  end
-
   it 'registers offense with its name' do
     cop = RuboCop::Cop::Style::For.new
     cop.add_offense(nil, location: location, message: 'message')
