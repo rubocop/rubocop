@@ -557,6 +557,29 @@ Enabled | Yes
 
 This cops checks for two or more consecutive blank lines.
 
+### Example
+
+```ruby
+# bad
+def method_name
+  puts 'hello world'
+
+end
+
+if a > b
+
+  a
+end
+
+# good
+def method_name
+  puts 'hello world'
+end
+if a > b
+  a
+end
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#two-or-more-empty-lines](https://github.com/bbatsov/ruby-style-guide#two-or-more-empty-lines)
