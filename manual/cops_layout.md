@@ -2241,6 +2241,16 @@ Enabled | Yes
 
 Checks for spaces inside square brackets.
 
+### Example
+
+```ruby
+# bad
+array = [ 1, 2, 3 ]
+
+# good
+array = [1, 2, 3]
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#no-spaces-braces](https://github.com/bbatsov/ruby-style-guide#no-spaces-braces)

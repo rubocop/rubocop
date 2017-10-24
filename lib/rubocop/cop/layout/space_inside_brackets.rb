@@ -4,6 +4,12 @@ module RuboCop
   module Cop
     module Layout
       # Checks for spaces inside square brackets.
+      # @example
+      #   # bad
+      #   array = [ 1, 2, 3 ]
+      #
+      #   # good
+      #   array = [1, 2, 3]
       class SpaceInsideBrackets < Cop
         include SpaceInside
 
