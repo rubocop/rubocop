@@ -2243,11 +2243,36 @@ surrounding space depending on configuration.
 ### Example
 
 ```ruby
+# The `space` style enforces that hash literals have
+# surrounding space.
+
 # bad
-h = {CA: "California", MA: "Massachusetts"}
+h = {a: 1, b: 2}
 
 # good
-h = { CA: "California", MA: "Massachusetts" }
+h = { a: 1, b: 2 }
+```
+```ruby
+# The `no_space` style enforces that hash literals have
+# no surrounding space.
+
+# bad
+h = { a: 1, b: 2 }
+
+# good
+h = {a: 1, b: 2}
+```
+```ruby
+# The `compact` style normally requires a space inside hash braces, with the exception
+# that successive left braces or right braces are collapsed together in nested hashes.
+
+# bad
+h = { { a: 1 }, b: 2 }
+h = { a: 1, { b: 2 } }
+
+# good
+h = {{ a: 1 }, b: 2 }
+h = { a: 1, { b: 2 }}
 ```
 
 ### Important attributes

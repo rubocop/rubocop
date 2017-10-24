@@ -6,12 +6,37 @@ module RuboCop
       # Checks that braces used for hash literals have or don't have
       # surrounding space depending on configuration.
       #
-      # @example
+      # @example EnforcedStyle: space
+      #   # The `space` style enforces that hash literals have
+      #   # surrounding space.
+      #
       #   # bad
-      #   h = {CA: "California", MA: "Massachusetts"}
+      #   h = {a: 1, b: 2}
       #
       #   # good
-      #   h = { CA: "California", MA: "Massachusetts" }
+      #   h = { a: 1, b: 2 }
+      #
+      # @example EnforcedStyle: no_space
+      #   # The `no_space` style enforces that hash literals have
+      #   # no surrounding space.
+      #
+      #   # bad
+      #   h = { a: 1, b: 2 }
+      #
+      #   # good
+      #   h = {a: 1, b: 2}
+      #
+      # @example EnforcedStyle: compact
+      #   # The `compact` style normally requires a space inside hash braces, with the exception
+      #   # that successive left braces or right braces are collapsed together in nested hashes.
+      #
+      #   # bad
+      #   h = { { a: 1 }, b: 2 }
+      #   h = { a: 1, { b: 2 } }
+      #
+      #   # good
+      #   h = {{ a: 1 }, b: 2 }
+      #   h = { a: 1, { b: 2 }}
       class SpaceInsideHashLiteralBraces < Cop
         include SurroundingSpace
         include ConfigurableEnforcedStyle
