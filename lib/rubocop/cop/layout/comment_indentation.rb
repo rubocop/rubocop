@@ -4,6 +4,48 @@ module RuboCop
   module Cop
     module Layout
       # This cops checks the indentation of comments.
+      # @example
+      #
+      #   # good:
+      #   something #coment
+      #
+      #   #good:
+      #   #comment
+      #   line that is being commented
+      #
+      #   # good
+      #   class Something
+      #     #  def something_else
+      #     #    do yet another thing
+      #     #  end
+      #   end
+      #
+      #   # bad
+      #   class Something
+      #   #  def something_else
+      #   #    do yet another thing
+      #   #  end
+      #   end
+      #
+      #   # good
+      #   # comment
+      #   class Something
+      #     #comment
+      #     def something_else
+      #       do yet another thing
+      #     end
+      #   end
+      #
+      #   # bad
+      #   class Something
+      #   # comment
+      #     def something_else
+      #     #comment
+      #       do yet another thing
+      #     end
+      #   end
+      #
+      #
       class CommentIndentation < Cop
         include AutocorrectAlignment
 
