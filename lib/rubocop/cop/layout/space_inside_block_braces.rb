@@ -8,14 +8,31 @@ module RuboCop
       # left brace has or doesn't have trailing space depending on
       # configuration.
       #
-      # @example
+      # @example EnforcedStyle: space
+      #   # The `space` style accepts empty braces with space inside
+      #   # and checks that block braces have surrounding spaces inside.
       #   # bad
-      #   array = [1, 2, 3]
-      #   array.each {|x| puts x}
+      #   h = {}
+      #   array.each{|x| puts x}
+      #   array.each{|x| puts x }
+      #   array.each{ |x| puts x}
       #
       #   # good
-      #   array = [1, 2, 3]
+      #   h = { }
+      #   array.each{ |x| puts x }
       #   array.each { |x| puts x }
+      #
+      # @example EnforcedStyle: no_space
+      #   # The `no_space` style accepts braces and empty braces without
+      #   # surrounding space/spaces inside.
+      #   # bad
+      #   h = { }
+      #   array.each{ |x| puts x }
+      #
+      #   # good
+      #   h = {}
+      #   array.each {|x| puts x}
+      #   array.each{|x| puts x}
       class SpaceInsideBlockBraces < Cop
         include ConfigurableEnforcedStyle
         include SurroundingSpace

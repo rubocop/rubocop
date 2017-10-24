@@ -2212,13 +2212,30 @@ configuration.
 ### Example
 
 ```ruby
+# The `space` style accepts empty braces with space inside
+# and checks that block braces have surrounding spaces inside.
 # bad
-array = [1, 2, 3]
-array.each {|x| puts x}
+h = {}
+array.each{|x| puts x}
+array.each{|x| puts x }
+array.each{ |x| puts x}
 
 # good
-array = [1, 2, 3]
+h = { }
+array.each{ |x| puts x }
 array.each { |x| puts x }
+```
+```ruby
+# The `no_space` style accepts braces and empty braces without
+# surrounding space/spaces inside.
+# bad
+h = { }
+array.each{ |x| puts x }
+
+# good
+h = {}
+array.each {|x| puts x}
+array.each{|x| puts x}
 ```
 
 ### Important attributes
