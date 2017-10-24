@@ -2240,6 +2240,16 @@ Enabled | Yes
 Checks that braces used for hash literals have or don't have
 surrounding space depending on configuration.
 
+### Example
+
+```ruby
+# bad
+h = {CA: "California", MA: "Massachusetts"}
+
+# good
+h = { CA: "California", MA: "Massachusetts" }
+```
+
 ### Important attributes
 
 Attribute | Value

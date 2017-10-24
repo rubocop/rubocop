@@ -5,6 +5,13 @@ module RuboCop
     module Layout
       # Checks that braces used for hash literals have or don't have
       # surrounding space depending on configuration.
+      #
+      # @example
+      #   # bad
+      #   h = {CA: "California", MA: "Massachusetts"}
+      #
+      #   # good
+      #   h = { CA: "California", MA: "Massachusetts" }
       class SpaceInsideHashLiteralBraces < Cop
         include SurroundingSpace
         include ConfigurableEnforcedStyle
