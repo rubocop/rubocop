@@ -2091,9 +2091,15 @@ Checks for comma (,) preceded by space.
 ```ruby
 # bad
 [1 , 2 , 3]
+a(1 , 2)
+each { |a , b| }
+a ** b
 
 # good
 [1, 2, 3]
+a(1, 2)
+each { |a, b| }
+a**b
 ```
 
 ## Layout/SpaceBeforeComment
