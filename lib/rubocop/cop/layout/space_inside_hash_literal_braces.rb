@@ -27,8 +27,9 @@ module RuboCop
       #   h = {a: 1, b: 2}
       #
       # @example EnforcedStyle: compact
-      #   # The `compact` style normally requires a space inside hash braces, with the exception
-      #   # that successive left braces or right braces are collapsed together in nested hashes.
+      #   # The `compact` style normally requires a space inside
+      #   # hash braces, with the exception that successive left
+      #   # braces or right braces are collapsed together in nested hashes.
       #
       #   # bad
       #   h = { { a: 1 }, b: 2 }
