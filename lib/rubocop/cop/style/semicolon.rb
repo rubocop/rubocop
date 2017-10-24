@@ -5,6 +5,16 @@ module RuboCop
     module Style
       # This cop checks for multiple expressions placed on the same line.
       # It also checks for lines terminated with a semicolon.
+      #
+      # @example
+      #   # bad
+      #   foo = 1; bar = 2;
+      #   baz = 3;
+      #
+      #   # good
+      #   foo = 1
+      #   bar = 2
+      #   baz = 3
       class Semicolon < Cop
         MSG = 'Do not use semicolons to terminate expressions.'.freeze
 
