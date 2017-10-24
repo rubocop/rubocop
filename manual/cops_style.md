@@ -1579,6 +1579,16 @@ Enabled | No
 
 Checks for uses of semicolon in if statements.
 
+### Example
+
+```ruby
+# bad
+result = if some_condition; something else another_thing end
+
+# good
+result = some_condition ? something : another_thing
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#no-semicolon-ifs](https://github.com/bbatsov/ruby-style-guide#no-semicolon-ifs)
