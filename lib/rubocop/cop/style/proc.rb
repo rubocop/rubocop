@@ -5,6 +5,14 @@ module RuboCop
     module Style
       # This cops checks for uses of Proc.new where Kernel#proc
       # would be more appropriate.
+      #
+      # @example
+      #   # bad
+      #   p = Proc.new { |n| puts n }
+      #
+      #   # good
+      #   p = proc { |n| puts n }
+      #
       class Proc < Cop
         MSG = 'Use `proc` instead of `Proc.new`.'.freeze
 

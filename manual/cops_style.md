@@ -3038,6 +3038,16 @@ Enabled | Yes
 This cops checks for uses of Proc.new where Kernel#proc
 would be more appropriate.
 
+### Example
+
+```ruby
+# bad
+p = Proc.new { |n| puts n }
+
+# good
+p = proc { |n| puts n }
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#proc](https://github.com/bbatsov/ruby-style-guide#proc)
