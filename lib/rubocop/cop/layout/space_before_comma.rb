@@ -10,13 +10,11 @@ module RuboCop
       #   [1 , 2 , 3]
       #   a(1 , 2)
       #   each { |a , b| }
-      #   a ** b
       #
       #   # good
       #   [1, 2, 3]
       #   a(1, 2)
       #   each { |a, b| }
-      #   a**b
       class SpaceBeforeComma < Cop
         include SpaceBeforePunctuation
 

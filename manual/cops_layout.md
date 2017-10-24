@@ -2030,11 +2030,13 @@ which should not have surrounding space.
 total = 3*4
 "apple"+"juice"
 my_number = 38/4
+a ** b
 
 # good
 total = 3 * 4
 "apple" + "juice"
 my_number = 38 / 4
+a**b
 ```
 
 ### Important attributes
@@ -2093,13 +2095,11 @@ Checks for comma (,) preceded by space.
 [1 , 2 , 3]
 a(1 , 2)
 each { |a , b| }
-a ** b
 
 # good
 [1, 2, 3]
 a(1, 2)
 each { |a, b| }
-a**b
 ```
 
 ## Layout/SpaceBeforeComment
