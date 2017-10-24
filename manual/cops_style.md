@@ -4052,6 +4052,24 @@ Enabled | Yes
 
 This cop looks for *unless* expressions with *else* clauses.
 
+### Example
+
+```ruby
+# bad
+unless foo_bar.nil?
+  # do something...
+else
+  # do a different thing...
+end
+
+# good
+if foo_bar.present?
+  # do something...
+else
+  # do a different thing...
+end
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#no-else-with-unless](https://github.com/bbatsov/ruby-style-guide#no-else-with-unless)
