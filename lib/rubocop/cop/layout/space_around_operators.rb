@@ -5,6 +5,17 @@ module RuboCop
     module Layout
       # Checks that operators have space around them, except for **
       # which should not have surrounding space.
+      #
+      # @example
+      #   # bad
+      #   total = 3*4
+      #   "apple"+"juice"
+      #   my_number = 38/4
+      #
+      #   # good
+      #   total = 3 * 4
+      #   "apple" + "juice"
+      #   my_number = 38 / 4
       class SpaceAroundOperators < Cop
         include PrecedingFollowingAlignment
 

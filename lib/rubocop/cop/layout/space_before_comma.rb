@@ -4,6 +4,13 @@ module RuboCop
   module Cop
     module Layout
       # Checks for comma (,) preceded by space.
+      #
+      # @example
+      #   # bad
+      #   [1 , 2 , 3]
+      #
+      #   # good
+      #   [1, 2, 3]
       class SpaceBeforeComma < Cop
         include SpaceBeforePunctuation
 

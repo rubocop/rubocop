@@ -2023,6 +2023,20 @@ Enabled | Yes
 Checks that operators have space around them, except for **
 which should not have surrounding space.
 
+### Example
+
+```ruby
+# bad
+total = 3*4
+"apple"+"juice"
+my_number = 38/4
+
+# good
+total = 3 * 4
+"apple" + "juice"
+my_number = 38 / 4
+```
+
 ### Important attributes
 
 Attribute | Value
@@ -2071,6 +2085,16 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 Checks for comma (,) preceded by space.
+
+### Example
+
+```ruby
+# bad
+[1 , 2 , 3]
+
+# good
+[1, 2, 3]
+```
 
 ## Layout/SpaceBeforeComment
 
