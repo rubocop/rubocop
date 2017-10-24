@@ -564,9 +564,11 @@ This cops checks for two or more consecutive blank lines.
 def method_name
   puts 'hello world'
 
+
 end
 
 if a > b
+
 
   a
 end
@@ -575,6 +577,7 @@ end
 def method_name
   puts 'hello world'
 end
+
 if a > b
   a
 end
