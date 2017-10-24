@@ -7,6 +7,15 @@ module RuboCop
       # them on configuration. For blocks taking parameters, it checks that the
       # left brace has or doesn't have trailing space depending on
       # configuration.
+      #
+      # @example
+      #   # bad
+      #   array = [1, 2, 3]
+      #   array.each {|x| puts x}
+      #
+      #   # good
+      #   array = [1, 2, 3]
+      #   array.each { |x| puts x }
       class SpaceInsideBlockBraces < Cop
         include ConfigurableEnforcedStyle
         include SurroundingSpace

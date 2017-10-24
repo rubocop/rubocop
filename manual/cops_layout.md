@@ -2209,6 +2209,18 @@ them on configuration. For blocks taking parameters, it checks that the
 left brace has or doesn't have trailing space depending on
 configuration.
 
+### Example
+
+```ruby
+# bad
+array = [1, 2, 3]
+array.each {|x| puts x}
+
+# good
+array = [1, 2, 3]
+array.each { |x| puts x }
+```
+
 ### Important attributes
 
 Attribute | Value
