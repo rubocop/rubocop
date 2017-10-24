@@ -4,6 +4,21 @@ module RuboCop
   module Cop
     module Style
       # This cop looks for *unless* expressions with *else* clauses.
+      #
+      # @example
+      #   # bad
+      #   unless foo_bar.nil?
+      #     # do something...
+      #   else
+      #     # do a different thing...
+      #   end
+      #
+      #   # good
+      #   if foo_bar.present?
+      #     # do something...
+      #   else
+      #     # do a different thing...
+      #   end
       class UnlessElse < Cop
         MSG = 'Do not use `unless` with `else`. Rewrite these with the ' \
               'positive case first.'.freeze
