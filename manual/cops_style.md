@@ -524,6 +524,7 @@ end
 
 Name | Default value | Configurable values
 --- | --- | ---
+AutoCorrect | `false` | Boolean
 EnforcedStyle | `nested` | `nested`, `compact`
 
 ### References

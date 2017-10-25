@@ -128,8 +128,12 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
   end
 
   context 'autocorrect' do
+    let(:cop_config) do
+      { 'AutoCorrect' => 'true', 'EnforcedStyle' => enforced_style }
+    end
+
     context 'nested style' do
-      let(:cop_config) { { 'EnforcedStyle' => 'nested' } }
+      let(:enforced_style) { 'nested' }
 
       it 'corrects a not nested class' do
         source = <<-RUBY.strip_indent
@@ -205,7 +209,7 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
     end
 
     context 'compact style' do
-      let(:cop_config) { { 'EnforcedStyle' => 'compact' } }
+      let(:enforced_style) { 'compact' }
 
       it 'corrects nested children' do
         source = <<-RUBY.strip_indent
