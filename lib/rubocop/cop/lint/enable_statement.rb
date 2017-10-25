@@ -31,8 +31,7 @@ module RuboCop
           .freeze
 
         def investigate(processed_source)
-          comment_config = CommentConfig.new(processed_source)
-          comment_config.cop_disabled_line_ranges.each do |cop, line_range|
+          processed_source.disabled_line_ranges.each do |cop, line_range|
             next unless line_range.any? { |r| r.max == Float::INFINITY }
             range = source_range(processed_source.buffer,
                                  processed_source.lines.size - 1,
