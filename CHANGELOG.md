@@ -18,6 +18,7 @@
 
 * [#1583](https://github.com/bbatsov/rubocop/issues/1583): Add a quiet formatter. ([@drenmi][])
 * [#4794](https://github.com/bbatsov/rubocop/issues/4794): Fix an error in `Layout/MultilineOperationIndentation` when an operation spans multiple lines and contains a ternary expression. ([@rrosenblum][])
+* [#4909](https://github.com/bbatsov/rubocop/issues/4909): Make `Rails/HasManyOrHasOneDependent` aware of multiple associations in `with_options`. ([@koic][])
 
 ## 0.51.0 (2017-10-18)
 
