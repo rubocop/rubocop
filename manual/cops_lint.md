@@ -685,6 +685,31 @@ when baz then 2
 end
 ```
 
+## Lint/EnableStatement
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+TODO: Write cop description and example of bad / good code.
+
+### Example
+
+```ruby
+# bad
+# rubocop:disable Layout/SpaceAroundOperators
+x =   0
+# Some other code
+# EOF
+
+# good
+# rubocop:disable Layout/SpaceAroundOperators
+x =   0
+# rubocop:enable Layout/SpaceAroundOperators
+# Some other code
+# EOF
+```
+
 ## Lint/EndAlignment
 
 Enabled by default | Supports autocorrection
