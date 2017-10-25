@@ -1150,6 +1150,20 @@ Enabled | No
 
 This cop looks for uses of flip flop operator
 
+### Example
+
+```ruby
+# bad
+(1..20).each do |x|
+  puts x if (x == 5) .. (x == 10)
+end
+
+# good
+(1..20).each do |x|
+  puts x if (x >= 5) && (x <= 10)
+end
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#no-flip-flops](https://github.com/bbatsov/ruby-style-guide#no-flip-flops)
