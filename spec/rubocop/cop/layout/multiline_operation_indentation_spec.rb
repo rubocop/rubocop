@@ -258,6 +258,13 @@ describe RuboCop::Cop::Layout::MultilineOperationIndentation do
       RUBY
     end
 
+    it 'accepts indented operands with ternary operators' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        one ||
+          two ? 3 : 5
+      RUBY
+    end
+
     it 'registers an offense for indented second part of string' do
       inspect_source(<<-RUBY.strip_indent)
         it "should convert " +
