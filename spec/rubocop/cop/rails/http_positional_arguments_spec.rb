@@ -507,6 +507,7 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
       output = 'post :create, params: { id: 7, comment: { body: "hei" } }'
       expect(new_source).to eq(output)
     end
+    # rubocop:enable LineLength
 
     it 'auto-corrects http action when format keyword included but not alone' do
       source = 'post :create, id: 7, format: :rss'

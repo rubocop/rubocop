@@ -68,7 +68,7 @@ module RuboCop
             end
           end
         end
-        # rubocop:enable Performance/HashEachMethod
+        # rubocop:enable Performance/HashEachMethods
       end
     end
   end
