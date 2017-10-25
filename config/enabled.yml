@@ -1241,6 +1241,10 @@ Lint/EmptyWhen:
   Description: 'Checks for `when` branches with empty bodies.'
   Enabled: true
 
+Lint/EnableStatement:
+  Description: 'Checks for a `# rubocop:enable` after `# rubocop:disable`'
+  Enabled: true
+
 Lint/EndAlignment:
   Description: 'Align ends correctly.'
   Enabled: true
