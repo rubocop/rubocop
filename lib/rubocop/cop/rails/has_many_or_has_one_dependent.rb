@@ -49,8 +49,12 @@ module RuboCop
         def on_send(node)
           if !association_without_options?(node)
             return if valid_options?(association_with_options?(node))
-          elsif with_options_block(node.parent)
-            return if valid_options?(with_options_block(node.parent))
+          else
+            n = node.parent.begin_type? ? node.parent.parent : node.parent
+
+            if with_options_block(n)
+              return if valid_options?(with_options_block(n))
+            end
           end
 
           add_offense(node, location: :selector)
