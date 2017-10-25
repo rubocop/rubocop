@@ -696,16 +696,16 @@ Enabled | No
 ### Example
 
 ```ruby
-# bad
-# rubocop:disable _cop
-# Source code
+# good
+# rubocop:disable Layout/SpaceAroundOperators
+# x= 0
+# rubocop:enable Layout/SpaceAroundOperators
+# y = 1
 # EOF
 
-# good
-# rubocop:disable _cop
-x = 0
-# rubocop:enable _cop
-# Some other code
+# bad
+# rubocop:disable Layout/SpaceAroundOperators
+# x= 0
 # EOF
 ```
 

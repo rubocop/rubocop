@@ -1,19 +1,20 @@
 # frozen_string_literal: true
 
+# rubocop:disable Lint/UnneededDisable
 module RuboCop
   module Cop
     module Lint
       # @example
-      #   # bad
-      #   # rubocop:disable _cop
-      #   # Source code
+      #   # good
+      #   # rubocop:disable Layout/SpaceAroundOperators
+      #   # x= 0
+      #   # rubocop:enable Layout/SpaceAroundOperators
+      #   # y = 1
       #   # EOF
       #
-      #   # good
-      #   # rubocop:disable _cop
-      #   x = 0
-      #   # rubocop:enable _cop
-      #   # Some other code
+      #   # bad
+      #   # rubocop:disable Layout/SpaceAroundOperators
+      #   # x= 0
       #   # EOF
       #
       class EnableStatement < Cop
@@ -33,3 +34,4 @@ module RuboCop
     end
   end
 end
+# rubocop:enable Lint/UnneededDisable, Layout/SpaceAroundOperators
