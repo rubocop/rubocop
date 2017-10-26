@@ -141,4 +141,17 @@ describe RuboCop::Cop::Style::CommentedKeyword do
       end
     RUBY
   end
+
+  it 'does not register an offense if AST contains # symbol' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      def x(y = "#value")
+        y
+      end
+    RUBY
+    expect_no_offenses(<<-RUBY.strip_indent)
+      def x(y: "#value")
+        y
+      end
+    RUBY
+  end
 end
