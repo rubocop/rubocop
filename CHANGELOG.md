@@ -8,6 +8,7 @@
 * [#4883](https://github.com/bbatsov/rubocop/pull/4883): Fix auto-correction for `Performance/HashEachMethods`. ([@pocke][])
 * [#4888](https://github.com/bbatsov/rubocop/pull/4888): Improve offense message of `Style/StderPuts`. ([@jaredbeck][])
 * [#4896](https://github.com/bbatsov/rubocop/pull/4896): Fix Style/DateTime wrongly triggered on classes `...::DateTime`. ([@dpostorivo][])
+* [#4886](https://github.com/bbatsov/rubocop/issues/4886): Fix false offense for Style/CommentedKeyword. ([@michniewicz][])
 
 ### New features
 
@@ -2987,3 +2988,4 @@
 [@nelsonjr]: https://github.com/nelsonjr
 [@jonatas]: https://github.com/jonatas
 [@jaredbeck]: https://www.jaredbeck.com
+[@michniewicz]: https://github.com/michniewicz
