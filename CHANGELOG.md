@@ -8,6 +8,10 @@
 * [#4883](https://github.com/bbatsov/rubocop/pull/4883): Fix auto-correction for `Performance/HashEachMethods`. ([@pocke][])
 * [#4888](https://github.com/bbatsov/rubocop/pull/4888): Improve offense message of `Style/StderPuts`. ([@jaredbeck][])
 
+### Changes
+
+* [#4943](https://github.com/bbatsov/rubocop/pull/4943): Make cop generator compliant with the repo's rubocop config. ([@tdeo][])
+
 ## 0.51.0 (2017-10-18)
 
 ### New features
