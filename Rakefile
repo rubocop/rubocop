@@ -31,7 +31,7 @@ namespace :parallel do
 
   desc 'Run RSpec in parallel with ASCII encoding'
   task :ascii_spec do
-    sh('RUBYOPT="-E ASCII" rspec-queue spec/')
+    sh('RUBYOPT="$RUBYOPT -E ASCII" rspec-queue spec/')
   end
 end
 

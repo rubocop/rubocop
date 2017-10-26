@@ -340,7 +340,7 @@ RSpec.describe RuboCop::Cop::Generator do
   describe 'compliance with rubocop', :isolated_environment do
     include FileHelper
 
-    before(:each) { allow(File).to receive(:write).and_call_original }
+    before { allow(File).to receive(:write).and_call_original }
 
     let(:config) do
       config = RuboCop::ConfigStore.new
@@ -349,7 +349,8 @@ RSpec.describe RuboCop::Cop::Generator do
       config.options_config = path
       config
     end
-    let(:runner) { RuboCop::Runner.new({}, config) }
+    let(:options) { { formatters: [] } }
+    let(:runner) { RuboCop::Runner.new(options, config) }
 
     it 'generates a cop file that has no offense' do
       generator.write_source
