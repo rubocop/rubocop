@@ -18,6 +18,7 @@
 * [#4987](https://github.com/bbatsov/rubocop/pull/4987): Skip permission check when using stdin option. ([@mtsmfm][])
 * [#4909](https://github.com/bbatsov/rubocop/issues/4909): Make `Rails/HasManyOrHasOneDependent` aware of multiple associations in `with_options`. ([@koic][])
 * [#4794](https://github.com/bbatsov/rubocop/issues/4794): Fix an error in `Layout/MultilineOperationIndentation` when an operation spans multiple lines and contains a ternary expression. ([@rrosenblum][])
+* [#4885](https://github.com/bbatsov/rubocop/issues/4885): Fix false offense detected by `Style/MixinUsage` cop. ([@koic][])
 
 ### Changes
 
