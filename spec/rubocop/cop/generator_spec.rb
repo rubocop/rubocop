@@ -337,3 +337,27 @@ RSpec.describe RuboCop::Cop::Generator do
     end
   end
 end
+
+RSpec.describe RuboCop::Cop::Generator, :isolated_environment do
+  include FileHelper
+  subject(:generator) { described_class.new('Test/Test') }
+
+  let(:config) do
+    config = RuboCop::ConfigStore.new
+    path = File.join(RuboCop::ConfigLoader::RUBOCOP_HOME,
+                     RuboCop::ConfigLoader::DOTFILE)
+    config.options_config = path
+    config
+  end
+  let(:runner) { RuboCop::Runner.new({}, config) }
+
+  it 'generates a cop file that has no offense' do
+    generator.write_source
+    expect(runner.run([])).to be true
+  end
+
+  it 'generates a spec file that has no offense' do
+    generator.write_spec
+    expect(runner.run([])).to be true
+  end
+end
