@@ -9,6 +9,10 @@
 * [#4888](https://github.com/bbatsov/rubocop/pull/4888): Improve offense message of `Style/StderPuts`. ([@jaredbeck][])
 * [#4896](https://github.com/bbatsov/rubocop/pull/4896): Fix Style/DateTime wrongly triggered on classes `...::DateTime`. ([@dpostorivo][])
 
+### New features
+
+* [#1583](https://github.com/bbatsov/rubocop/issues/1583): Add a quiet formatter. ([@drenmi][])
+
 ## 0.51.0 (2017-10-18)
 
 ### New features
