@@ -698,14 +698,14 @@ Enabled | No
 ```ruby
 # good
 # rubocop:disable Layout/SpaceAroundOperators
-# x= 0
+x= 0
 # rubocop:enable Layout/SpaceAroundOperators
 # y = 1
 # EOF
 
 # bad
 # rubocop:disable Layout/SpaceAroundOperators
-# x= 0
+x= 0
 # EOF
 ```
 
