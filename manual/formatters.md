@@ -136,6 +136,10 @@ W:  4:  5: end at 4, 4 is not aligned with if at 2, 2
 1 file inspected, 4 offenses detected
 ```
 
+### Quiet Formatter
+
+Behaves like Simple Formatter if there are offenses. Completely quiet otherwise.
+
 ### File List Formatter
 
  **Machine-parsable**
