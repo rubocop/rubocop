@@ -3699,6 +3699,29 @@ warn('hello')
 
 * [https://github.com/bbatsov/ruby-style-guide#warn](https://github.com/bbatsov/ruby-style-guide#warn)
 
+## Style/StringHashKeys
+
+Enabled by default | Supports autocorrection
+--- | ---
+Disabled | Yes
+
+This cop checks for the use of strings as keys in hashes. The use of
+symbols is preferred instead.
+
+### Example
+
+```ruby
+# bad
+{ 'one' => 1, 'two' => 2, 'three' => 3 }
+
+# good
+{ one: 1, two: 2, three: 3 }
+```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#symbols-as-keys](https://github.com/bbatsov/ruby-style-guide#symbols-as-keys)
+
 ## Style/StringLiterals
 
 Enabled by default | Supports autocorrection

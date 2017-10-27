@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#4650](https://github.com/bbatsov/rubocop/issues/4650): Add new `Style/StringHashKeys` cop. ([@donjar][])
+
 ### Bug fixes
 
 * [#4881](https://github.com/bbatsov/rubocop/issues/4881): Fix a false positive for `Performance/HashEachMethods` when unused argument(s) exists in other blocks. ([@pocke][])
