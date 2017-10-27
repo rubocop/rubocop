@@ -8,7 +8,9 @@ module RuboCop
   # file from which it was read. Several different Configs can be used
   # during a run of the rubocop program, if files in several
   # directories are inspected.
-  class Config # rubocop:disable Metrics/ClassLength
+
+  # rubocop:disable Metrics/ClassLength
+  class Config
     include PathUtil
 
     COMMON_PARAMS = %w[Exclude Include Severity
@@ -539,4 +541,5 @@ module RuboCop
       PathUtil.smart_path(@loaded_path)
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end
