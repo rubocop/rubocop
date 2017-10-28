@@ -13,10 +13,12 @@ module RuboCop
       # @example
       #   # bad
       #   $foo = 2
+      #   bar = $foo + 5
       #
       #   # good
       #   FOO = 2
       #   foo = 2
+      #   $stdin.read
       class GlobalVars < Cop
         MSG = 'Do not introduce global variables.'.freeze
 

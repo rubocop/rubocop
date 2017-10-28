@@ -1348,10 +1348,12 @@ Note that backreferences like $1, $2, etc are not global variables.
 ```ruby
 # bad
 $foo = 2
+bar = $foo + 5
 
 # good
 FOO = 2
 foo = 2
+$stdin.read
 ```
 
 ### Important attributes
