@@ -55,8 +55,9 @@ module RuboCop
         # frozen_string_literal: true
 
         describe RuboCop::Cop::%<department>s::%<cop_name>s do
-          let(:config) { RuboCop::Config.new }
           subject(:cop) { described_class.new(config) }
+
+          let(:config) { RuboCop::Config.new }
 
           # TODO: Write test code
           #
