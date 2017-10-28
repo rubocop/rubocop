@@ -882,6 +882,13 @@ Style/RaiseArgs:
   StyleGuide: '#exception-class-messages'
   Enabled: true
 
+Style/RandomWithOffset:
+  Description: >-
+                 Prefer to use ranges when generating random numbers instead of
+                 integers with offsets.
+  StyleGuide: '#random-numbers'
+  Enabled: true
+
 Style/RedundantBegin:
   Description: "Don't use begin blocks when they are not needed."
   StyleGuide: '#begin-implicit'

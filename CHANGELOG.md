@@ -6,6 +6,7 @@
 
 * [#4650](https://github.com/bbatsov/rubocop/issues/4650): Add new `Style/StringHashKeys` cop. ([@donjar][])
 * [#1583](https://github.com/bbatsov/rubocop/issues/1583): Add a quiet formatter. ([@drenmi][])
+* Add new `Style/RandomWithOffset` cop. ([@donjar][])
 
 ### Bug fixes
 
