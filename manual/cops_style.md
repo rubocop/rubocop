@@ -3239,6 +3239,40 @@ SupportedStyles | compact, exploded
 
 * [https://github.com/bbatsov/ruby-style-guide#exception-class-messages](https://github.com/bbatsov/ruby-style-guide#exception-class-messages)
 
+## Style/RandomWithOffset
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for the use of randomly generated numbers,
+added/subtracted with integer literals, as well as those with
+Integer#succ and Integer#pred methods. Prefer using ranges instead,
+as it clearly states the intentions.
+
+### Example
+
+```ruby
+# bad
+rand(6) + 1
+1 + rand(6)
+rand(6) - 1
+1 - rand(6)
+rand(6).succ
+rand(6).pred
+Random.rand(6) + 1
+Kernel.rand(6) + 1
+rand(0..5) + 1
+
+# good
+rand(1..6)
+rand(1...7)
+```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#random-numbers](https://github.com/bbatsov/ruby-style-guide#random-numbers)
+
 ## Style/RedundantBegin
 
 Enabled by default | Supports autocorrection

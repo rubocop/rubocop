@@ -450,6 +450,7 @@ In the following section you find all available cops:
 * [Style/PreferredHashMethods](cops_style.md#stylepreferredhashmethods)
 * [Style/Proc](cops_style.md#styleproc)
 * [Style/RaiseArgs](cops_style.md#styleraiseargs)
+* [Style/RandomWithOffset](cops_style.md#stylerandomwithoffset)
 * [Style/RedundantBegin](cops_style.md#styleredundantbegin)
 * [Style/RedundantConditional](cops_style.md#styleredundantconditional)
 * [Style/RedundantException](cops_style.md#styleredundantexception)
