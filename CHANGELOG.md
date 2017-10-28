@@ -6,8 +6,12 @@
 
 * [#4881](https://github.com/bbatsov/rubocop/issues/4881): Fix a false positive for `Performance/HashEachMethods` when unused argument(s) exists in other blocks. ([@pocke][])
 * [#4883](https://github.com/bbatsov/rubocop/pull/4883): Fix auto-correction for `Performance/HashEachMethods`. ([@pocke][])
-* [#4888](https://github.com/bbatsov/rubocop/pull/4888): Improve offense message of `Style/StderPuts`. ([@jaredbeck][])
 * [#4896](https://github.com/bbatsov/rubocop/pull/4896): Fix Style/DateTime wrongly triggered on classes `...::DateTime`. ([@dpostorivo][])
+* [#4887](https://github.com/bbatsov/rubocop/pull/4887): Add undeclared configuration option `EnforcedStyleForEmptyBraces` for `Layout/SpaceBeforeBlockBraces` cop. ([@drenmi][])
+
+### Changes
+
+* [#4888](https://github.com/bbatsov/rubocop/pull/4888): Improve offense message of `Style/StderrPuts`. ([@jaredbeck][])
 * [#4886](https://github.com/bbatsov/rubocop/issues/4886): Fix false offense for Style/CommentedKeyword. ([@michniewicz][])
 
 ### New features
