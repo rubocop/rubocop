@@ -12,6 +12,11 @@
 ### Changes
 
 * [#4888](https://github.com/bbatsov/rubocop/pull/4888): Improve offense message of `Style/StderrPuts`. ([@jaredbeck][])
+* [#4886](https://github.com/bbatsov/rubocop/issues/4886): Fix false offense for Style/CommentedKeyword. ([@michniewicz][])
+
+### New features
+
+* [#1583](https://github.com/bbatsov/rubocop/issues/1583): Add a quiet formatter. ([@drenmi][])
 
 ## 0.51.0 (2017-10-18)
 
@@ -2987,3 +2992,4 @@
 [@nelsonjr]: https://github.com/nelsonjr
 [@jonatas]: https://github.com/jonatas
 [@jaredbeck]: https://www.jaredbeck.com
+[@michniewicz]: https://github.com/michniewicz

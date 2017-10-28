@@ -536,6 +536,7 @@ require_relative 'rubocop/formatter/html_formatter'
 require_relative 'rubocop/formatter/json_formatter'
 require_relative 'rubocop/formatter/offense_count_formatter'
 require_relative 'rubocop/formatter/progress_formatter'
+require_relative 'rubocop/formatter/quiet_formatter'
 require_relative 'rubocop/formatter/tap_formatter'
 require_relative 'rubocop/formatter/worst_offenders_formatter'
 
