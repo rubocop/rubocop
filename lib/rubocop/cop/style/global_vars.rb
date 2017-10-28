@@ -22,7 +22,7 @@ module RuboCop
       class GlobalVars < Cop
         MSG = 'Do not introduce global variables.'.freeze
 
-        # predefined global variables their English aliases
+        # built-in global variables and their English aliases
         # http://www.zenspider.com/Languages/Ruby/QuickRef.html
         BUILT_IN_VARS = %w[
           $: $LOAD_PATH
