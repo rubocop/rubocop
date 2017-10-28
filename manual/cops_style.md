@@ -1315,6 +1315,17 @@ users can allow additional variables via the AllowedVariables option.
 
 Note that backreferences like $1, $2, etc are not global variables.
 
+### Example
+
+```ruby
+# bad
+$foo = 2
+
+# good
+FOO = 2
+foo = 2
+```
+
 ### Important attributes
 
 Attribute | Value
