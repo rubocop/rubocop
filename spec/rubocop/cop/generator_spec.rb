@@ -341,6 +341,14 @@ RSpec.describe RuboCop::Cop::Generator do
   describe 'compliance with rubocop', :isolated_environment do
     include FileHelper
 
+    around do |example|
+      orig_registry = RuboCop::Cop::Cop.registry
+      RuboCop::Cop::Cop.instance_variable_set(:@registry,
+                                              RuboCop::Cop::Registry.new)
+      example.run
+      RuboCop::Cop::Cop.instance_variable_set(:@registry, orig_registry)
+    end
+
     before { allow(File).to receive(:write).and_call_original }
 
     let(:config) do

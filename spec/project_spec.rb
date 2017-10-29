@@ -32,7 +32,7 @@ describe 'RuboCop Project' do
       end
     end
 
-    it 'has a SupportedStyles for all EnforcedStyle' \
+    it 'has a SupportedStyles for all EnforcedStyle ' \
       'and EnforcedStyle is valid' do
       errors = []
       cop_names.each do |name|
