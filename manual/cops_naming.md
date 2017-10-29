@@ -72,6 +72,22 @@ Enabled | No
 This cops checks for class and module names with
 an underscore in them.
 
+### Example
+
+```ruby
+# bad
+class My_Class
+end
+module My_Module
+end
+
+# good
+class MyClass
+end
+module MyModule
+end
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#camelcase-classes](https://github.com/bbatsov/ruby-style-guide#camelcase-classes)
