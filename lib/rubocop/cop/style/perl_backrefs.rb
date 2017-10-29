@@ -11,7 +11,7 @@ module RuboCop
       #   puts $1
       #
       #   # good
-      #   puts Regexp.last_match[1]
+      #   puts Regexp.last_match(1)
       class PerlBackrefs < Cop
         MSG = 'Avoid the use of Perl-style backrefs.'.freeze
 
