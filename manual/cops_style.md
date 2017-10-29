@@ -3059,6 +3059,16 @@ Enabled | Yes
 This cop looks for uses of Perl-style regexp match
 backreferences like $1, $2, etc.
 
+### Example
+
+```ruby
+# bad
+puts $1
+
+# good
+puts Regexp.last_match[1]
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#no-perl-regexp-last-matchers](https://github.com/bbatsov/ruby-style-guide#no-perl-regexp-last-matchers)
