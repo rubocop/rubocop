@@ -12,10 +12,19 @@ describe RuboCop::Cop::Layout::SpaceAfterMethodName do
     RUBY
   end
 
-  it 'registers an offense for defs with space before the parenthesis' do
+  it 'registers offense for class def with space before parenthesis' do
     expect_offense(<<-RUBY.strip_indent)
       def self.func (x)
                    ^ Do not put a space between a method name and the opening parenthesis.
+        a
+      end
+    RUBY
+  end
+
+  it 'registers offense for assignment def with space before parenthesis' do
+    expect_offense(<<-RUBY.strip_indent)
+      def func= (x)
+               ^ Do not put a space between a method name and the opening parenthesis.
         a
       end
     RUBY
@@ -45,9 +54,17 @@ describe RuboCop::Cop::Layout::SpaceAfterMethodName do
     RUBY
   end
 
-  it 'accepts a defs with arguments but no parentheses' do
+  it 'accepts class method def with arguments but no parentheses' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def self.func x
+        a
+      end
+    RUBY
+  end
+
+  it 'accepts an assignment def with arguments but no parentheses' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      def func= x
         a
       end
     RUBY
@@ -61,12 +78,18 @@ describe RuboCop::Cop::Layout::SpaceAfterMethodName do
       def self.func (x)
         a
       end
+      def func= (x)
+        a
+      end
     RUBY
     expect(new_source).to eq(<<-RUBY.strip_indent)
       def func(x)
         a
       end
       def self.func(x)
+        a
+      end
+      def func=(x)
         a
       end
     RUBY
