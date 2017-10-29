@@ -5,7 +5,7 @@ module RuboCop
     module Style
       # This cop checks for uses of class variables. Offenses
       # are signaled only on assignment to class variables to
-      # reduced the number of offenses that would be reported.
+      # reduce the number of offenses that would be reported.
       class ClassVars < Cop
         MSG = 'Replace class var %s with a class instance var.'.freeze
 
