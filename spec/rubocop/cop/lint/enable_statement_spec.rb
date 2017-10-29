@@ -8,9 +8,9 @@ describe RuboCop::Cop::Lint::EnableStatement do
   it 'registers an offense when a cop is disabled and never re-enabled' do
     expect_offense(<<-RUBY.strip_indent)
       # rubocop:disable Layout/SpaceAroundOperators
+      ^ Re-enable Layout/SpaceAroundOperators cop with `# rubocop:enable` after disabling it.
       x =   0
       # Some other code
-      ^ Re-enable Layout/SpaceAroundOperators cop with `# rubocop:enable` after disabling it.
     RUBY
   end
 

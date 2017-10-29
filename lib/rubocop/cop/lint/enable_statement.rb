@@ -4,6 +4,11 @@
 module RuboCop
   module Cop
     module Lint
+      # This cop checks that there is an `# rubocop:enable ...` statement
+      # after a `# rubocop:disable ...` statement. This will prevent leaving
+      # cop disables on wide ranges of code, that latter contributors to
+      # a file wouldn't be aware of.
+      #
       # @example
       #   # good
       #   # rubocop:disable Layout/SpaceAroundOperators
@@ -22,12 +27,14 @@ module RuboCop
               .freeze
 
         def investigate(processed_source)
-          processed_source.disabled_line_ranges.each do |cop, line_range|
-            next unless line_range.any? { |r| r.max == Float::INFINITY }
-            range = source_range(processed_source.buffer,
-                                 processed_source.lines.size - 1,
-                                 (0..0))
-            add_offense(range, location: range, message: format(MSG, cop))
+          processed_source.disabled_line_ranges.each do |cop, line_ranges|
+            line_ranges.each do |line_range|
+              next unless line_range.max == Float::INFINITY
+              range = source_range(processed_source.buffer,
+                                   line_range.min,
+                                   (0..0))
+              add_offense(range, location: range, message: format(MSG, cop))
+            end
           end
         end
       end
