@@ -4,6 +4,13 @@ module RuboCop
   module Cop
     module Layout
       # Checks for semicolon (;) not followed by some kind of space.
+      #
+      # @example
+      #   # bad
+      #   x = 1;y = 2
+      #
+      #   # good
+      #   x = 1; y = 2
       class SpaceAfterSemicolon < Cop
         include SpaceAfterPunctuation
 

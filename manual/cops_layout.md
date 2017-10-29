@@ -1950,6 +1950,16 @@ Enabled | Yes
 
 Checks for semicolon (;) not followed by some kind of space.
 
+### Example
+
+```ruby
+# bad
+x = 1;y = 2
+
+# good
+x = 1; y = 2
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#spaces-operators](https://github.com/bbatsov/ruby-style-guide#spaces-operators)
