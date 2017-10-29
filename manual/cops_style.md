@@ -3066,7 +3066,7 @@ backreferences like $1, $2, etc.
 puts $1
 
 # good
-puts Regexp.last_match[1]
+puts Regexp.last_match(1)
 ```
 
 ### References
