@@ -771,6 +771,34 @@ This cop checks for parentheses in the definition of a method,
 that does not take any arguments. Both instance and
 class/singleton methods are checked.
 
+### Example
+
+```ruby
+# bad
+def foo()
+  does a thing
+end
+
+# good
+def foo
+  does a thing
+end
+
+# also good
+def foo() does a thing end
+```
+```ruby
+# bad
+def Baz.foo()
+  does a thing
+end
+
+# good
+def Baz.foo
+  does a thing
+end
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#method-parens](https://github.com/bbatsov/ruby-style-guide#method-parens)
