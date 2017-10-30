@@ -776,26 +776,26 @@ class/singleton methods are checked.
 ```ruby
 # bad
 def foo()
-  does a thing
+  # does a thing
 end
 
 # good
 def foo
-  does a thing
+  # does a thing
 end
 
 # also good
-def foo() does a thing end
+def foo() does_a_thing end
 ```
 ```ruby
 # bad
 def Baz.foo()
-  does a thing
+  # does a thing
 end
 
 # good
 def Baz.foo
-  does a thing
+  # does a thing
 end
 ```
 

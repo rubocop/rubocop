@@ -11,27 +11,27 @@ module RuboCop
       #
       #   # bad
       #   def foo()
-      #     does a thing
+      #     # does a thing
       #   end
       #
       #   # good
       #   def foo
-      #     does a thing
+      #     # does a thing
       #   end
       #
       #   # also good
-      #   def foo() does a thing end
+      #   def foo() does_a_thing end
       #
       # @example
       #
       #   # bad
       #   def Baz.foo()
-      #     does a thing
+      #     # does a thing
       #   end
       #
       #   # good
       #   def Baz.foo
-      #     does a thing
+      #     # does a thing
       #   end
       class DefWithParentheses < Cop
         MSG = "Omit the parentheses in defs when the method doesn't accept " \
