@@ -4,6 +4,7 @@
 
 ### Bug fixes
 
+* [#3396](https://github.com/bbatsov/rubocop/issues/3396): Concise error when config. file not found. ([@jaredbeck][])
 * [#4881](https://github.com/bbatsov/rubocop/issues/4881): Fix a false positive for `Performance/HashEachMethods` when unused argument(s) exists in other blocks. ([@pocke][])
 * [#4883](https://github.com/bbatsov/rubocop/pull/4883): Fix auto-correction for `Performance/HashEachMethods`. ([@pocke][])
 * [#4896](https://github.com/bbatsov/rubocop/pull/4896): Fix Style/DateTime wrongly triggered on classes `...::DateTime`. ([@dpostorivo][])

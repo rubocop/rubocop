@@ -548,18 +548,6 @@ describe RuboCop::ConfigLoader do
       end
     end
 
-    context 'when a file inherits from a non http/https url' do
-      let(:file_path) { '.rubocop.yml' }
-
-      before do
-        create_file(file_path, ['inherit_from: c:\\\\foo\\bar.yml'])
-      end
-
-      it 'fails to load the resulting path' do
-        expect { configuration_from_file }.to raise_error(Errno::ENOENT)
-      end
-    end
-
     context 'EnabledByDefault / DisabledByDefault' do
       def cop_enabled?(cop_class)
         configuration_from_file.for_cop(cop_class).fetch('Enabled')
@@ -781,6 +769,20 @@ describe RuboCop::ConfigLoader do
             end
           end
         end
+      end
+    end
+
+    context 'when the file does not exist' do
+      let(:configuration_path) { 'file_that_does_not_exist.yml' }
+
+      it 'prints a friendly (concise) message to stderr and exits' do
+        expect { load_file }.to(
+          output(/Configuration file not found/).to_stderr.and(
+            raise_error(SystemExit) do |e|
+              expect(e.status).to(eq(Errno::ENOENT::Errno))
+            end
+          )
+        )
       end
     end
   end

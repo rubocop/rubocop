@@ -211,7 +211,7 @@ module RuboCop
       end
 
       def load_yaml_configuration(absolute_path)
-        yaml_code = IO.read(absolute_path, encoding: Encoding::UTF_8)
+        yaml_code = read_file(absolute_path)
         hash = yaml_safe_load(yaml_code, absolute_path) || {}
 
         puts "configuration from #{absolute_path}" if debug?
@@ -221,6 +221,16 @@ module RuboCop
         end
 
         hash
+      end
+
+      # Read the specified file, or exit with a friendly, concise message on
+      # stderr. Care is taken to use the standard OS exit code for a "file not
+      # found" error.
+      def read_file(absolute_path)
+        IO.read(absolute_path, encoding: Encoding::UTF_8)
+      rescue Errno::ENOENT
+        warn(format('Configuration file not found: %s', absolute_path))
+        exit(Errno::ENOENT::Errno)
       end
 
       def yaml_safe_load(yaml_code, filename)
