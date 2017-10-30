@@ -598,7 +598,6 @@ end
 def b
 end
 ```
-
 ```ruby
 # good
 def a
