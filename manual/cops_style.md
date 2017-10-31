@@ -124,6 +124,16 @@ Enabled | No
 This cop checks for non-ascii (non-English) characters
 in comments.
 
+### Example
+
+```ruby
+# bad
+# 🤔
+
+# good
+# A comment in plain english.
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#english-comments](https://github.com/bbatsov/ruby-style-guide#english-comments)

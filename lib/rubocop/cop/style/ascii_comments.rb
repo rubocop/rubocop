@@ -5,6 +5,12 @@ module RuboCop
     module Style
       # This cop checks for non-ascii (non-English) characters
       # in comments.
+      # @example
+      #   # bad
+      #   # 🤔
+      #
+      #   # good
+      #   # A comment in plain english.
       class AsciiComments < Cop
         MSG = 'Use only ascii symbols in comments.'.freeze
 
