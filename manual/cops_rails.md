@@ -478,6 +478,16 @@ Enabled | No
 
 This cop checks for the use of the has_and_belongs_to_many macro.
 
+### Example
+
+```ruby
+# bad
+# has_and_belongs_to_many :ingredients
+
+# good
+# has_many :ingredients, :through => recipe_ingredients
+```
+
 ### Important attributes
 
 Attribute | Value
