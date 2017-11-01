@@ -33,7 +33,7 @@ module RuboCop
         def_node_matcher :redundant_with_index?, <<-PATTERN
           (block
             $(send
-              _ {:each_with_index :with_index})
+              _ {:each_with_index :with_index} ...)
             (args
               (arg _))
             ...)
@@ -51,7 +51,7 @@ module RuboCop
               if send.method_name == :each_with_index
                 corrector.replace(send.loc.selector, 'each')
               else
-                corrector.remove(send.loc.selector)
+                corrector.remove(with_index_range(send))
                 corrector.remove(send.loc.dot)
               end
             end
@@ -69,7 +69,7 @@ module RuboCop
         end
 
         def with_index_range(send)
-          range_between(send.loc.selector.begin_pos, send.loc.selector.end_pos)
+          range_between(send.loc.selector.begin_pos, send.source.length)
         end
       end
     end
