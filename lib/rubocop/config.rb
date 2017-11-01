@@ -186,6 +186,19 @@ module RuboCop
       @hash = hash
     end
 
+    def self.create(hash, path)
+      new(hash, path).check
+    end
+
+    def check
+      deprecation_check do |deprecation_message|
+        warn("#{path} - #{deprecation_message}")
+      end
+      validate
+      make_excludes_absolute
+      self
+    end
+
     def [](key)
       @hash[key]
     end

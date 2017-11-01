@@ -32,9 +32,7 @@ module RuboCop
 
       def load_file(file)
         return if file.nil?
-        path = File.absolute_path(
-          file.is_a?(RemoteConfig) ? file.file : file
-        )
+        path = File.absolute_path(file.is_a?(RemoteConfig) ? file.file : file)
 
         hash = load_yaml_configuration(path)
 
@@ -49,19 +47,7 @@ module RuboCop
 
         hash.delete('inherit_from')
 
-        create_config(hash, path)
-      end
-
-      def create_config(hash, path)
-        config = Config.new(hash, path)
-
-        config.deprecation_check do |deprecation_message|
-          warn("#{path} - #{deprecation_message}")
-        end
-
-        config.validate
-        config.make_excludes_absolute
-        config
+        Config.create(hash, path)
       end
 
       # rubocop:disable Performance/HashEachMethods
