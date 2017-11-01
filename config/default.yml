@@ -1155,6 +1155,14 @@ Style/RegexpLiteral:
   # are found in the regexp string.
   AllowInnerSlashes: false
 
+Style/RescueStandardError:
+  EnforcedStyle: explicit
+  # implicit: Do not include the error class, `rescue`
+  # explicit: Require an error class `rescue StandardError`
+  SupportedStyles:
+    - implicit
+    - explicit
+
 Style/ReturnNil:
   EnforcedStyle: return
   SupportedStyles:
