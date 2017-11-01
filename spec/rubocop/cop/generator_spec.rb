@@ -79,8 +79,9 @@ RSpec.describe RuboCop::Cop::Generator do
         # frozen_string_literal: true
 
         describe RuboCop::Cop::Style::FakeCop do
-          let(:config) { RuboCop::Config.new }
           subject(:cop) { described_class.new(config) }
+
+          let(:config) { RuboCop::Config.new }
 
           # TODO: Write test code
           #
@@ -334,6 +335,40 @@ RSpec.describe RuboCop::Cop::Generator do
 
         expect(File).not_to have_received(:write)
       end
+    end
+  end
+
+  describe 'compliance with rubocop', :isolated_environment do
+    include FileHelper
+
+    around do |example|
+      orig_registry = RuboCop::Cop::Cop.registry
+      RuboCop::Cop::Cop.instance_variable_set(:@registry,
+                                              RuboCop::Cop::Registry.new)
+      example.run
+      RuboCop::Cop::Cop.instance_variable_set(:@registry, orig_registry)
+    end
+
+    before { allow(File).to receive(:write).and_call_original }
+
+    let(:config) do
+      config = RuboCop::ConfigStore.new
+      path = File.join(RuboCop::ConfigLoader::RUBOCOP_HOME,
+                       RuboCop::ConfigLoader::DOTFILE)
+      config.options_config = path
+      config
+    end
+    let(:options) { { formatters: [] } }
+    let(:runner) { RuboCop::Runner.new(options, config) }
+
+    it 'generates a cop file that has no offense' do
+      generator.write_source
+      expect(runner.run([])).to be true
+    end
+
+    it 'generates a spec file that has no offense' do
+      generator.write_spec
+      expect(runner.run([])).to be true
     end
   end
 end

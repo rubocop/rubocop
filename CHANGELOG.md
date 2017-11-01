@@ -20,6 +20,10 @@
 * [#1583](https://github.com/bbatsov/rubocop/issues/1583): Add a quiet formatter. ([@drenmi][])
 * [#4794](https://github.com/bbatsov/rubocop/issues/4794): Fix an error in `Layout/MultilineOperationIndentation` when an operation spans multiple lines and contains a ternary expression. ([@rrosenblum][])
 
+### Changes
+
+* [#4943](https://github.com/bbatsov/rubocop/pull/4943): Make cop generator compliant with the repo's rubocop config. ([@tdeo][])
+
 ## 0.51.0 (2017-10-18)
 
 ### New features
