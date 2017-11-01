@@ -6,6 +6,22 @@ module RuboCop
   module Cop
     module Layout
       # This cops checks for two or more consecutive blank lines.
+      # @example
+      #   # bad
+      #   def a
+      #   end
+      #
+      #
+      #   def b
+      #   end
+      #
+      # @example
+      #   # good
+      #   def a
+      #   end
+      #
+      #   def b
+      #   end
       class EmptyLines < Cop
         MSG = 'Extra blank line detected.'.freeze
         LINE_OFFSET = 2
