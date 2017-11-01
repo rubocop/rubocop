@@ -14,6 +14,7 @@
 
 * [#4888](https://github.com/bbatsov/rubocop/pull/4888): Improve offense message of `Style/StderrPuts`. ([@jaredbeck][])
 * [#4886](https://github.com/bbatsov/rubocop/issues/4886): Fix false offense for Style/CommentedKeyword. ([@michniewicz][])
+* [#4977](https://github.com/bbatsov/rubocop/pull/4977): Make `Lint/RedundantWithIndex` cop aware of offset argument. ([@koic][])
 
 ### New features
 
