@@ -33,6 +33,9 @@ module RuboCop
       'Style/SingleSpaceBeforeFirstArg' =>
         'The `Style/SingleSpaceBeforeFirstArg` cop has been renamed to ' \
         '`Layout/SpaceBeforeFirstArg`.',
+      'Lint/RescueWithoutErrorClass' =>
+        'The `Lint/RescueWithoutErrorClass` cop has been replaced by ' \
+        '`Style/RescueStandardError`.',
       'Lint/SpaceBeforeFirstArg' =>
         'The `Lint/SpaceBeforeFirstArg` cop has been removed, since it was a ' \
         'duplicate of `Layout/SpaceBeforeFirstArg`. Please use ' \

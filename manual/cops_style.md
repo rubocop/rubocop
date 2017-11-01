@@ -3683,6 +3683,77 @@ This cop checks for uses of rescue in its modifier form.
 
 * [https://github.com/bbatsov/ruby-style-guide#no-rescue-modifiers](https://github.com/bbatsov/ruby-style-guide#no-rescue-modifiers)
 
+## Style/RescueStandardError
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for rescuing `StandardError`. There are two supported
+styles `implicit` and `explicit`. This cop will not register an offense
+if any error other than `StandardError` is specified.
+
+`implicit` will enforce using `rescue` instead of
+`rescue StandardError`.
+
+`explicit` will enforce using `rescue StandardError`
+instead of `rescue`.
+
+### Example
+
+```ruby
+# good
+begin
+  foo
+rescue OtherError
+  bar
+end
+
+# good
+begin
+  foo
+rescue StandardError, SecurityError
+  bar
+end
+```
+```ruby
+# bad
+begin
+  foo
+rescue StandardError
+  bar
+end
+
+# good
+begin
+  foo
+rescue
+  bar
+end
+```
+```ruby
+# bad
+begin
+  foo
+rescue
+  bar
+end
+
+# good
+begin
+  foo
+rescue StandardError
+  bar
+end
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+EnforcedStyle | explicit
+SupportedStyles | implicit, explicit
+
 ## Style/ReturnNil
 
 Enabled by default | Supports autocorrection
