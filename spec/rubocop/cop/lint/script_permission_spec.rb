@@ -2,9 +2,10 @@
 
 # rubocop:disable Style/NumericLiteralPrefix
 describe RuboCop::Cop::Lint::ScriptPermission do
-  subject(:cop) { described_class.new(config) }
+  subject(:cop) { described_class.new(config, options) }
 
   let(:config) { RuboCop::Config.new }
+  let(:options) { nil }
 
   let(:file) { Tempfile.new('') }
   let(:filename) { file.path.split('/').last }
@@ -61,6 +62,14 @@ describe RuboCop::Cop::Lint::ScriptPermission do
       File.write(file.path, '')
 
       expect_no_offenses(file.read, file)
+    end
+  end
+
+  context 'with stdin' do
+    let(:options) { { stdin: '' } }
+
+    it 'skips investigation' do
+      expect_no_offenses('#!/usr/bin/ruby')
     end
   end
 
