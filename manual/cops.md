@@ -470,6 +470,7 @@ In the following section you find all available cops:
 * [Style/SpecialGlobalVars](cops_style.md#stylespecialglobalvars)
 * [Style/StabbyLambdaParentheses](cops_style.md#stylestabbylambdaparentheses)
 * [Style/StderrPuts](cops_style.md#stylestderrputs)
+* [Style/StringHashKeys](cops_style.md#stylestringhashkeys)
 * [Style/StringLiterals](cops_style.md#stylestringliterals)
 * [Style/StringLiteralsInInterpolation](cops_style.md#stylestringliteralsininterpolation)
 * [Style/StringMethods](cops_style.md#stylestringmethods)

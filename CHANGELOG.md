@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#4650](https://github.com/bbatsov/rubocop/issues/4650): Add new `Style/StringHashKeys` cop. ([@donjar][])
+
 ### Bug fixes
 
 * [#3396](https://github.com/bbatsov/rubocop/issues/3396): Concise error when config. file not found. ([@jaredbeck][])
