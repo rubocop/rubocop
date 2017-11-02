@@ -130,14 +130,18 @@ module RuboCop
                                    .sub(/^inherit_from: *[.\w]+/, '')
                                    .sub(/^inherit_from: *(\n *- *[.\w]+)+/, '')
         end
-        File.open(DOTFILE, 'w') do |f|
-          f.write "inherit_from:#{file_string}\n\n"
-          f.write rubocop_yml_contents if rubocop_yml_contents
-        end
+        write_dotfile(file_string, rubocop_yml_contents)
         puts "Added inheritance from `#{AUTO_GENERATED_FILE}` in `#{DOTFILE}`."
       end
 
       private
+
+      def write_dotfile(file_string, rubocop_yml_contents)
+        File.open(DOTFILE, 'w') do |f|
+          f.write "inherit_from:#{file_string}\n\n"
+          f.write rubocop_yml_contents if rubocop_yml_contents
+        end
+      end
 
       def resolver
         @resolver ||= ConfigLoaderResolver.new
