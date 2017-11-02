@@ -4,6 +4,20 @@ module RuboCop
   module Cop
     module Layout
       # This cop checks for Windows-style line endings in the source code.
+      #
+      # @example
+      #   # bad
+      #   puts 'foobar'; # superfluous semicolon
+      #
+      #   puts 'foo'; puts 'bar' # two expressions on the same line
+      #
+      #   # good
+      #   puts 'foobar'
+      #
+      #   puts 'foo'
+      #   puts 'bar'
+      #
+      #   puts 'foo', 'bar' # this applies to puts in particular
       class EndOfLine < Cop
         include ConfigurableEnforcedStyle
 
