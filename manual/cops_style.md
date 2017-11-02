@@ -128,10 +128,10 @@ in comments.
 
 ```ruby
 # bad
-# 🤔
+# Translates from English to 日本語。
 
 # good
-# A comment in plain english.
+# Translates from English to Japanese
 ```
 
 ### References
