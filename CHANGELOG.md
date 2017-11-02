@@ -9,6 +9,7 @@
 * [#4883](https://github.com/bbatsov/rubocop/pull/4883): Fix auto-correction for `Performance/HashEachMethods`. ([@pocke][])
 * [#4896](https://github.com/bbatsov/rubocop/pull/4896): Fix Style/DateTime wrongly triggered on classes `...::DateTime`. ([@dpostorivo][])
 * [#4887](https://github.com/bbatsov/rubocop/pull/4887): Add undeclared configuration option `EnforcedStyleForEmptyBraces` for `Layout/SpaceBeforeBlockBraces` cop. ([@drenmi][])
+* [#4987](https://github.com/bbatsov/rubocop/pull/4987): Skip permission check when using stdin option. ([@mtsmfm][])
 
 ### Changes
 
@@ -3000,3 +3001,4 @@
 [@jonatas]: https://github.com/jonatas
 [@jaredbeck]: https://www.jaredbeck.com
 [@michniewicz]: https://github.com/michniewicz
+[@mtsmfm]: https://github.com/mtsmfm
