@@ -4,6 +4,7 @@
 
 ### Bug fixes
 
+* [#4979](https://github.com/bbatsov/rubocop/issues/4979): Disable `Rails/FindBy` for rails3 projects. ([@barodeur][])
 * [#3396](https://github.com/bbatsov/rubocop/issues/3396): Concise error when config. file not found. ([@jaredbeck][])
 * [#4881](https://github.com/bbatsov/rubocop/issues/4881): Fix a false positive for `Performance/HashEachMethods` when unused argument(s) exists in other blocks. ([@pocke][])
 * [#4883](https://github.com/bbatsov/rubocop/pull/4883): Fix auto-correction for `Performance/HashEachMethods`. ([@pocke][])
@@ -3000,3 +3001,4 @@
 [@jonatas]: https://github.com/jonatas
 [@jaredbeck]: https://www.jaredbeck.com
 [@michniewicz]: https://github.com/michniewicz
+[@barodeur]: https://github.com/barodeur

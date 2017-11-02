@@ -6,6 +6,8 @@ module RuboCop
       # This cop is used to identify usages of `where.first` and
       # change them to use `find_by` instead.
       #
+      # This cop is disabled if the TargetRailsVersion is set to less than 4.0.
+      #
       # @example
       #   # bad
       #   User.where(name: 'Bruce').first
@@ -14,12 +16,16 @@ module RuboCop
       #   # good
       #   User.find_by(name: 'Bruce')
       class FindBy < Cop
+        extend TargetRailsVersion
+
         MSG = 'Use `find_by` instead of `where.%s`.'.freeze
         TARGET_SELECTORS = %i[first take].freeze
 
         def_node_matcher :where_first?, <<-PATTERN
           (send (send _ :where ...) {:first :take})
         PATTERN
+
+        minimum_target_rails_version 4.0
 
         def on_send(node)
           return unless where_first?(node)

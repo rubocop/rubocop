@@ -420,6 +420,8 @@ Enabled | Yes
 This cop is used to identify usages of `where.first` and
 change them to use `find_by` instead.
 
+This cop is disabled if the TargetRailsVersion is set to less than 4.0.
+
 ### Example
 
 ```ruby
