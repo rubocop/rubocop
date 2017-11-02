@@ -7,6 +7,8 @@ module RuboCop
       # Use `find_by` instead of dynamic method.
       # See. https://github.com/bbatsov/rails-style-guide#find_by
       #
+      # This cop is disabled if the TargetRailsVersion is set to less than 4.0.
+      #
       # @example
       #   # bad
       #   User.find_by_name(name)
@@ -26,8 +28,12 @@ module RuboCop
       #   # good
       #   User.find_by!(email: email)
       class DynamicFindBy < Cop
+        extend TargetRailsVersion
+
         MSG = 'Use `%s` instead of dynamic `%s`.'.freeze
         METHOD_PATTERN = /^find_by_(.+?)(!)?$/
+
+        minimum_target_rails_version 4.0
 
         def on_send(node)
           method_name = node.method_name.to_s

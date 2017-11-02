@@ -301,6 +301,8 @@ This cop checks dynamic `find_by_*` methods.
 Use `find_by` instead of dynamic method.
 See. https://github.com/bbatsov/rails-style-guide#find_by
 
+This cop is disabled if the TargetRailsVersion is set to less than 4.0.
+
 ### Example
 
 ```ruby
