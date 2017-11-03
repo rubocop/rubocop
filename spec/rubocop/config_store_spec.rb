@@ -19,7 +19,7 @@ describe RuboCop::ConfigStore do
     allow(RuboCop::ConfigLoader)
       .to receive(:merge_with_default) { |config| "merged #{config.to_h}" }
     allow(RuboCop::ConfigLoader)
-      .to receive(:default_configuration) { 'default config' }
+      .to receive(:default_configuration).and_return('default config')
   end
 
   describe '.for' do
