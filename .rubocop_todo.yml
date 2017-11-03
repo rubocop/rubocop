@@ -37,11 +37,6 @@ RSpec/AnyInstance:
 RSpec/ExampleLength:
   Enabled: false
 
-# Offense count: 4
-RSpec/ExpectInHook:
-  Exclude:
-    - 'spec/rubocop/cli/cli_options_spec.rb'
-
 # Offense count: 39
 RSpec/ExpectOutput:
   Exclude:
