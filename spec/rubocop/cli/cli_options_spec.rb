@@ -1005,8 +1005,6 @@ describe RuboCop::CLI, :isolated_environment do
       RUBY
     end
 
-    after do
-    end
     def expect_offense_detected(num)
       expect($stderr.string).to eq('')
       expect($stdout.string)
