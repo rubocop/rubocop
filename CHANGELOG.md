@@ -5,6 +5,7 @@
 ### New features
 
 * [#4650](https://github.com/bbatsov/rubocop/issues/4650): Add new `Style/StringHashKeys` cop. ([@donjar][])
+* [#1583](https://github.com/bbatsov/rubocop/issues/1583): Add a quiet formatter. ([@drenmi][])
 
 ### Bug fixes
 
@@ -14,6 +15,8 @@
 * [#4896](https://github.com/bbatsov/rubocop/pull/4896): Fix Style/DateTime wrongly triggered on classes `...::DateTime`. ([@dpostorivo][])
 * [#4887](https://github.com/bbatsov/rubocop/pull/4887): Add undeclared configuration option `EnforcedStyleForEmptyBraces` for `Layout/SpaceBeforeBlockBraces` cop. ([@drenmi][])
 * [#4987](https://github.com/bbatsov/rubocop/pull/4987): Skip permission check when using stdin option. ([@mtsmfm][])
+* [#4909](https://github.com/bbatsov/rubocop/issues/4909): Make `Rails/HasManyOrHasOneDependent` aware of multiple associations in `with_options`. ([@koic][])
+* [#4794](https://github.com/bbatsov/rubocop/issues/4794): Fix an error in `Layout/MultilineOperationIndentation` when an operation spans multiple lines and contains a ternary expression. ([@rrosenblum][])
 
 ### Changes
 
@@ -21,15 +24,6 @@
 * [#4886](https://github.com/bbatsov/rubocop/issues/4886): Fix false offense for Style/CommentedKeyword. ([@michniewicz][])
 * [#4977](https://github.com/bbatsov/rubocop/pull/4977): Make `Lint/RedundantWithIndex` cop aware of offset argument. ([@koic][])
 * [#2679](https://github.com/bbatsov/rubocop/issues/2679): Handle dependencies to `Metrics/LineLength: Max` when generating `.rubocop_todo.yml`. ([@jonas054][])
-
-### New features
-
-* [#1583](https://github.com/bbatsov/rubocop/issues/1583): Add a quiet formatter. ([@drenmi][])
-* [#4794](https://github.com/bbatsov/rubocop/issues/4794): Fix an error in `Layout/MultilineOperationIndentation` when an operation spans multiple lines and contains a ternary expression. ([@rrosenblum][])
-* [#4909](https://github.com/bbatsov/rubocop/issues/4909): Make `Rails/HasManyOrHasOneDependent` aware of multiple associations in `with_options`. ([@koic][])
-
-### Changes
-
 * [#4943](https://github.com/bbatsov/rubocop/pull/4943): Make cop generator compliant with the repo's rubocop config. ([@tdeo][])
 
 ## 0.51.0 (2017-10-18)
