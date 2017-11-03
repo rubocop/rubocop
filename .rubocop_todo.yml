@@ -54,13 +54,6 @@ RSpec/ExpectOutput:
     - 'spec/rubocop/target_finder_spec.rb'
     - 'spec/support/cli_spec_behavior.rb'
 
-# Offense count: 6
-RSpec/IteratedExpectation:
-  Exclude:
-    - 'spec/project_spec.rb'
-    - 'spec/rubocop/cop/force_spec.rb'
-    - 'spec/rubocop/formatter/formatter_set_spec.rb'
-
 # Offense count: 36
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: have_received, receive

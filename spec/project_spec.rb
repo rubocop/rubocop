@@ -101,9 +101,7 @@ describe 'RuboCop Project', type: :feature do
       let(:lines) { changelog.each_line }
 
       it 'has a whitespace between the * and the body' do
-        entries.each do |entry|
-          expect(entry).to match(/^\* \S/)
-        end
+        expect(entries).to all(match(/^\* \S/))
       end
 
       context 'after version 0.14.0' do
@@ -114,9 +112,7 @@ describe 'RuboCop Project', type: :feature do
         end
 
         it 'has a link to the contributors at the end' do
-          entries.each do |entry|
-            expect(entry).to match(/\(\[@\S+\]\[\](?:, \[@\S+\]\[\])*\)$/)
-          end
+          expect(entries).to all(match(/\(\[@\S+\]\[\](?:, \[@\S+\]\[\])*\)$/))
         end
       end
 
@@ -146,9 +142,7 @@ describe 'RuboCop Project', type: :feature do
             entry.match(/^\*\s*\[/)
           end
 
-          entries_including_issue_link.each do |entry|
-            expect(entry).to include('): ')
-          end
+          expect(entries_including_issue_link).to all(be_include('): '))
         end
       end
 
@@ -169,9 +163,7 @@ describe 'RuboCop Project', type: :feature do
         end
 
         it 'ends with a punctuation' do
-          bodies.each do |body|
-            expect(body).to match(/[\.\!]$/)
-          end
+          expect(bodies).to all(match(/[\.\!]$/))
         end
       end
     end
