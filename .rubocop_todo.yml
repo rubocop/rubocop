@@ -107,11 +107,6 @@ RSpec/MultipleExpectations:
 RSpec/NestedGroups:
   Enabled: false
 
-# Offense count: 2
-RSpec/RepeatedExample:
-  Exclude:
-    - 'spec/rubocop/cop/style/trailing_underscore_variable_spec.rb'
-
 # Offense count: 21
 RSpec/SubjectStub:
   Exclude:
