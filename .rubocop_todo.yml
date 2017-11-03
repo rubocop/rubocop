@@ -40,12 +40,6 @@ RSpec/BeforeAfterAll:
     - 'spec/support/**/*.rb'
     - 'spec/rubocop/ast/node_spec.rb'
 
-# Offense count: 2
-RSpec/DescribeClass:
-  Exclude:
-    - 'spec/isolated_environment_spec.rb'
-    - 'spec/project_spec.rb'
-
 # Offense count: 2538
 # Configuration parameters: Max.
 RSpec/ExampleLength:
