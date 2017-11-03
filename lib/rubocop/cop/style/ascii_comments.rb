@@ -8,7 +8,7 @@ module RuboCop
       #
       # @example
       #   # bad
-      #   # Translates from English to 日本語。
+      #   # Translates from English to 日本語。# rubocop:disable Style/AsciiComments
       #
       #   # good
       #   # Translates from English to Japanese
