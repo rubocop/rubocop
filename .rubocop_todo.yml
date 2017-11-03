@@ -32,14 +32,6 @@ RSpec/AnyInstance:
     - 'spec/rubocop/cop/lint/duplicate_methods_spec.rb'
     - 'spec/rubocop/target_finder_spec.rb'
 
-# Offense count: 1
-RSpec/BeforeAfterAll:
-  Exclude:
-    - 'spec/spec_helper.rb'
-    - 'spec/rails_helper.rb'
-    - 'spec/support/**/*.rb'
-    - 'spec/rubocop/ast/node_spec.rb'
-
 # Offense count: 2538
 # Configuration parameters: Max.
 RSpec/ExampleLength:
