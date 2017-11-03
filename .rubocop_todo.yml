@@ -119,12 +119,6 @@ RSpec/ReturnFromStub:
   Exclude:
     - 'spec/rubocop/config_store_spec.rb'
 
-# Offense count: 4
-RSpec/ScatteredSetup:
-  Exclude:
-    - 'spec/rubocop/cli/cli_autocorrect_spec.rb'
-    - 'spec/rubocop/formatter/disabled_config_formatter_spec.rb'
-
 # Offense count: 21
 RSpec/SubjectStub:
   Exclude:
