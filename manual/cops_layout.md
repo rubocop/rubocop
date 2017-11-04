@@ -2301,7 +2301,7 @@ array = [1, 2, 3]
 
 ### References
 
-* [https://github.com/bbatsov/ruby-style-guide#no-spaces-braces](https://github.com/bbatsov/ruby-style-guide#no-spaces-braces)
+* [https://github.com/bbatsov/ruby-style-guide#spaces-braces](https://github.com/bbatsov/ruby-style-guide#spaces-braces)
 
 ## Layout/SpaceInsideHashLiteralBraces
 
@@ -2383,7 +2383,7 @@ g = (a + 3)
 
 ### References
 
-* [https://github.com/bbatsov/ruby-style-guide#no-spaces-braces](https://github.com/bbatsov/ruby-style-guide#no-spaces-braces)
+* [https://github.com/bbatsov/ruby-style-guide#spaces-braces](https://github.com/bbatsov/ruby-style-guide#spaces-braces)
 
 ## Layout/SpaceInsidePercentLiteralDelimiters
 
