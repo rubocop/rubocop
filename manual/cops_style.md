@@ -124,6 +124,16 @@ Enabled | No
 This cop checks for non-ascii (non-English) characters
 in comments.
 
+### Example
+
+```ruby
+# bad
+# Translates from English to 日本語。
+
+# good
+# Translates from English to Japanese
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#english-comments](https://github.com/bbatsov/ruby-style-guide#english-comments)
