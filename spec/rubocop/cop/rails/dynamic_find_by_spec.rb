@@ -7,6 +7,21 @@ describe RuboCop::Cop::Rails::DynamicFindBy, :config do
     { 'Whitelist' => %w[find_by_sql] }
   end
 
+  before do
+    module ActiveRecord
+      class Base
+      end
+    end
+
+    class User < ActiveRecord::Base; end
+  end
+
+  after do
+    Object.send(:remove_const, 'User')
+    ActiveRecord.send(:remove_const, 'Base')
+    Object.send(:remove_const, 'ActiveRecord')
+  end
+
   shared_examples 'register an offense and auto correct' do |message, corrected|
     it 'registers an offense' do
       inspect_source(source)
@@ -137,5 +152,13 @@ describe RuboCop::Cop::Rails::DynamicFindBy, :config do
     expect_no_offenses(<<-RUBY.strip_indent)
       User.find_by_sql(["select * from users where name = ?", name])
     RUBY
+  end
+
+  context 'When receiver class does not inherit `ActiveRecord::Base`' do
+    it 'accepts find_by_* method' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        Gem::Specification.find_by_name('loremipsum')
+      RUBY
+    end
   end
 end
