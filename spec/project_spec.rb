@@ -142,7 +142,7 @@ describe 'RuboCop Project', type: :feature do
             entry.match(/^\*\s*\[/)
           end
 
-          expect(entries_including_issue_link).to all(be_include('): '))
+          expect(entries_including_issue_link).to all(include('): '))
         end
       end
 
