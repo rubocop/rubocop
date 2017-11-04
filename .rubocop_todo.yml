@@ -76,11 +76,6 @@ RSpec/MessageSpies:
 RSpec/MultipleExpectations:
   Max: 25
 
-# Offense count: 786
-# Configuration parameters: Max.
-RSpec/NestedGroups:
-  Enabled: false
-
 # Offense count: 21
 RSpec/SubjectStub:
   Exclude:
