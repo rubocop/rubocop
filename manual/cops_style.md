@@ -128,7 +128,7 @@ in comments.
 
 ```ruby
 # bad
-# Translates from English to 日本語。# rubocop:disable Style/AsciiComments
+# Translates from English to 日本語。
 
 # good
 # Translates from English to Japanese

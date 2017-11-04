@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# rubocop:disable Style/AsciiComments
+
 module RuboCop
   module Cop
     module Style
@@ -8,7 +10,7 @@ module RuboCop
       #
       # @example
       #   # bad
-      #   # Translates from English to 日本語。# rubocop:disable Style/AsciiComments
+      #   # Translates from English to 日本語。
       #
       #   # good
       #   # Translates from English to Japanese
