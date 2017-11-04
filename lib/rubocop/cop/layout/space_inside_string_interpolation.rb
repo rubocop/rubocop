@@ -5,14 +5,14 @@ module RuboCop
     module Layout
       # This cop checks for whitespace within string interpolations.
       #
-      # @example EnforcedStyle no_space (default)
+      # @example EnforcedStyle: no_space (default)
       #   # bad
       #      var = "This is the #{ space } example"
       #
       #   # good
       #      var = "This is the #{no_space} example"
       #
-      # @example EnforcedStyle space
+      # @example EnforcedStyle: space
       #   # bad
       #      var = "This is the #{no_space} example"
       #
