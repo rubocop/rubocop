@@ -32,29 +32,10 @@ RSpec/AnyInstance:
     - 'spec/rubocop/cop/lint/duplicate_methods_spec.rb'
     - 'spec/rubocop/target_finder_spec.rb'
 
-# Offense count: 1
-RSpec/BeforeAfterAll:
-  Exclude:
-    - 'spec/spec_helper.rb'
-    - 'spec/rails_helper.rb'
-    - 'spec/support/**/*.rb'
-    - 'spec/rubocop/ast/node_spec.rb'
-
-# Offense count: 2
-RSpec/DescribeClass:
-  Exclude:
-    - 'spec/isolated_environment_spec.rb'
-    - 'spec/project_spec.rb'
-
 # Offense count: 2538
 # Configuration parameters: Max.
 RSpec/ExampleLength:
   Enabled: false
-
-# Offense count: 4
-RSpec/ExpectInHook:
-  Exclude:
-    - 'spec/rubocop/cli/cli_options_spec.rb'
 
 # Offense count: 39
 RSpec/ExpectOutput:
@@ -72,13 +53,6 @@ RSpec/ExpectOutput:
     - 'spec/rubocop/result_cache_spec.rb'
     - 'spec/rubocop/target_finder_spec.rb'
     - 'spec/support/cli_spec_behavior.rb'
-
-# Offense count: 6
-RSpec/IteratedExpectation:
-  Exclude:
-    - 'spec/project_spec.rb'
-    - 'spec/rubocop/cop/force_spec.rb'
-    - 'spec/rubocop/formatter/formatter_set_spec.rb'
 
 # Offense count: 36
 # Configuration parameters: EnforcedStyle, SupportedStyles.
@@ -106,24 +80,6 @@ RSpec/MultipleExpectations:
 # Configuration parameters: Max.
 RSpec/NestedGroups:
   Enabled: false
-
-# Offense count: 2
-RSpec/RepeatedExample:
-  Exclude:
-    - 'spec/rubocop/cop/style/trailing_underscore_variable_spec.rb'
-
-# Offense count: 1
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: and_return, block
-RSpec/ReturnFromStub:
-  Exclude:
-    - 'spec/rubocop/config_store_spec.rb'
-
-# Offense count: 4
-RSpec/ScatteredSetup:
-  Exclude:
-    - 'spec/rubocop/cli/cli_autocorrect_spec.rb'
-    - 'spec/rubocop/formatter/disabled_config_formatter_spec.rb'
 
 # Offense count: 21
 RSpec/SubjectStub:

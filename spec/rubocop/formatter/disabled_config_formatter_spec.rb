@@ -91,9 +91,7 @@ module RuboCop
               Exclude:
                 - "**/*.blah"
           YAML
-        end
 
-        before do
           formatter.started(['test_a.rb', 'test_b.rb'])
           formatter.file_started('test_a.rb', {})
           formatter.file_finished('test_a.rb', offenses)
