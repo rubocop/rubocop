@@ -30,6 +30,9 @@ module RuboCop
         METHOD_PATTERN = /^find_by_(.+?)(!)?$/
 
         def on_send(node)
+          return if node.receiver.nil? ||
+                    !inherited_active_record?(node.receiver.const_name)
+
           method_name = node.method_name.to_s
 
           return if whitelist.include?(method_name)
@@ -74,6 +77,13 @@ module RuboCop
           match = METHOD_PATTERN.match(method_name)
           return nil unless match
           match[2] ? 'find_by!' : 'find_by'
+        end
+
+        def inherited_active_record?(class_name)
+          klass = Object.const_get(class_name)
+
+          klass.respond_to?(:ancestors) &&
+            klass.ancestors.include?(ActiveRecord::Base)
         end
       end
     end
