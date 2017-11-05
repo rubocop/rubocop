@@ -233,6 +233,20 @@ Enabled | Yes
 
 This cop looks for uses of block comments (=begin...=end).
 
+### Example
+
+```ruby
+# bad -
+=begin
+Multiple lines
+of comments...
+=end
+
+# good
+# Multiple lines
+# of comments...
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#no-block-comments](https://github.com/bbatsov/ruby-style-guide#no-block-comments)
