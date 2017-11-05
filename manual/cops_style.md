@@ -192,6 +192,16 @@ Enabled | Yes
 
 This cop checks if usage of %() or %Q() matches configuration.
 
+### Example
+
+```ruby
+# bad -
+%Q(My name is #{name})
+
+# good
+%(My name is #{name})
+```
+
 ### Important attributes
 
 Attribute | Value
