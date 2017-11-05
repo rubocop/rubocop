@@ -6,20 +6,14 @@ module RuboCop
       # This cop makes sure that all variables use the configured style,
       # snake_case or camelCase, for their names.
       #
-      # @example
-      #
-      #   # EnforcedStyle: snake_case
-      #
+      # @example EnforcedStyle: snake_case (default)
       #   # bad
       #   fooBar = 1
       #
       #   # good
       #   foo_bar = 1
       #
-      # @example
-      #
-      #   # EnforcedStyle: camelCase
-      #
+      # @example EnforcedStyle: camelCase
       #   # bad
       #   foo_bar = 1
       #
