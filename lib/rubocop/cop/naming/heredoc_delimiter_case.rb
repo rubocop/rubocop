@@ -6,33 +6,27 @@ module RuboCop
       # This cop checks that your heredocs are using the configured case.
       # By default it is configured to enforce uppercase heredocs.
       #
-      # @example
-      #
-      #   # EnforcedStyle: uppercase (default)
+      # @example EnforcedStyle: uppercase (default)
+      #   # bad
+      #   <<-sql
+      #     SELECT * FROM foo
+      #   sql
       #
       #   # good
       #   <<-SQL
       #     SELECT * FROM foo
       #   SQL
       #
+      # @example EnforcedStyle: lowercase
       #   # bad
-      #   <<-sql
+      #   <<-SQL
       #     SELECT * FROM foo
-      #   sql
-      #
-      # @example
-      #
-      #   # EnforcedStyle: lowercase
+      #   SQL
       #
       #   # good
       #   <<-sql
       #     SELECT * FROM foo
       #   sql
-      #
-      #   # bad
-      #   <<-SQL
-      #     SELECT * FROM foo
-      #   SQL
       class HeredocDelimiterCase < Cop
         include Heredoc
         include ConfigurableEnforcedStyle

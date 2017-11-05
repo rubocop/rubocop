@@ -7,10 +7,7 @@ module RuboCop
       # configured style, snake_case, normalcase or non_integer,
       # for their numbering.
       #
-      # @example
-      #
-      #   # EnforcedStyle: snake_case
-      #
+      # @example EnforcedStyle: snake_case
       #   # bad
       #
       #   variable1 = 1
@@ -19,10 +16,7 @@ module RuboCop
       #
       #   variable_1 = 1
       #
-      # @example
-      #
-      #   # EnforcedStyle: normalcase
-      #
+      # @example EnforcedStyle: normalcase (default)
       #   # bad
       #
       #   variable_1 = 1
@@ -31,10 +25,7 @@ module RuboCop
       #
       #   variable1 = 1
       #
-      # @example
-      #
-      #   # EnforcedStyle: non_integer
-      #
+      # @example EnforcedStyle: non_integer
       #   # bad
       #
       #   variable1 = 1
