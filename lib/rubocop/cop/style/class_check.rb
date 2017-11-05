@@ -4,6 +4,16 @@ module RuboCop
   module Cop
     module Style
       # This cop enforces consistent use of `Object#is_a?` or `Object#kind_of?`.
+      #
+      # @example
+      #   # bad
+      #   var.kind_of?(Date)
+      #   var.kind_of?(Integer)
+      #
+      #   # good
+      #   var.is_a?(Date)
+      #   var.is_a?(Integer)
+      #
       class ClassCheck < Cop
         include ConfigurableEnforcedStyle
 
