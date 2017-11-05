@@ -5,6 +5,26 @@ module RuboCop
     module Style
       # Check for uses of braces or do/end around single line or
       # multi-line blocks.
+      #
+      # @example
+      #   # bad - single line block
+      #   collection.each do |item| item.method(x) end
+      #
+      #   # good - single line block
+      #   collection.each { |item| item.method(x) }
+      #
+      #   # bad - multi-line block
+      #   things.map { |thing|
+      #     something = thing.some_method
+      #     proces(something, something_else)
+      #   }
+      #
+      #   # good - multi-line block
+      #   things.map do |thing|
+      #     something = thing.some_method
+      #     proces(something, something_else)
+      #   end
+      #
       class BlockDelimiters < Cop
         include ConfigurableEnforcedStyle
 
