@@ -20,6 +20,14 @@ describe RuboCop::Cop::Style::SingleLineMethods do
     RUBY
   end
 
+  it 'registers an offense for trailing body after def line' do
+    expect_offense(<<-RUBY.strip_indent)
+      def foo; body
+      ^^^^^^^^^^^^^ Avoid single-line method definitions.
+      end
+    RUBY
+  end
+
   context 'when AllowIfMethodIsEmpty is disabled' do
     let(:cop_config) { { 'AllowIfMethodIsEmpty' => false } }
 

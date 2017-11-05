@@ -3763,6 +3763,26 @@ Enabled | Yes
 This cop checks for single-line method definitions.
 It can optionally accept single-line methods with no body.
 
+### Example
+
+```ruby
+# bad
+def some_method; body end
+def @table.columns; super; end
+
+# bad (trailing body after def)
+def foo; body
+end
+
+# good (when no body)
+def no_op; end
+
+# good
+def some_method
+  do_things
+end
+```
+
 ### Important attributes
 
 Attribute | Value

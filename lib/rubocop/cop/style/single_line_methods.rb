@@ -5,14 +5,30 @@ module RuboCop
     module Style
       # This cop checks for single-line method definitions.
       # It can optionally accept single-line methods with no body.
+      #
+      # @example
+      #   # bad
+      #   def some_method; body end
+      #   def @table.columns; super; end
+      #
+      #   # bad (trailing body after def)
+      #   def foo; body
+      #   end
+      #
+      #   # good (when no body)
+      #   def no_op; end
+      #
+      #   # good
+      #   def some_method
+      #     do_things
+      #   end
       class SingleLineMethods < Cop
         include AutocorrectAlignment
 
         MSG = 'Avoid single-line method definitions.'.freeze
 
         def on_def(node)
-          return unless node.single_line?
-          return if allow_empty? && !node.body
+          return if (allow_empty? && !node.body) || node.line_count > 2
 
           add_offense(node)
         end
