@@ -14,6 +14,7 @@
 * [#4881](https://github.com/bbatsov/rubocop/issues/4881): Fix a false positive for `Performance/HashEachMethods` when unused argument(s) exists in other blocks. ([@pocke][])
 * [#4883](https://github.com/bbatsov/rubocop/pull/4883): Fix auto-correction for `Performance/HashEachMethods`. ([@pocke][])
 * [#4896](https://github.com/bbatsov/rubocop/pull/4896): Fix Style/DateTime wrongly triggered on classes `...::DateTime`. ([@dpostorivo][])
+* [#4938](https://github.com/bbatsov/rubocop/pull/4938): Fix behavior of `Lint/UnneededDisable`, which was returning offenses even after being disabled in a comment. ([@tdeo][])
 * [#4887](https://github.com/bbatsov/rubocop/pull/4887): Add undeclared configuration option `EnforcedStyleForEmptyBraces` for `Layout/SpaceBeforeBlockBraces` cop. ([@drenmi][])
 * [#4987](https://github.com/bbatsov/rubocop/pull/4987): Skip permission check when using stdin option. ([@mtsmfm][])
 * [#4909](https://github.com/bbatsov/rubocop/issues/4909): Make `Rails/HasManyOrHasOneDependent` aware of multiple associations in `with_options`. ([@koic][])

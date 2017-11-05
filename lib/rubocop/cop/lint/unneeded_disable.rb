@@ -75,7 +75,8 @@ module RuboCop
           disabled_ranges = cop_disabled_line_ranges[COP_NAME] || [0..0]
 
           cop_disabled_line_ranges.each do |cop, line_ranges|
-            each_already_disabled(line_ranges, comments) do |comment|
+            each_already_disabled(line_ranges,
+                                  disabled_ranges, comments) do |comment|
               yield comment, cop
             end
 
@@ -88,10 +89,7 @@ module RuboCop
                             cop)
           line_ranges.each_with_index do |line_range, ix|
             comment = comments.find { |c| c.loc.line == line_range.begin }
-
-            unless all_disabled?(comment)
-              next if ignore_offense?(disabled_ranges, line_range)
-            end
+            next if ignore_offense?(disabled_ranges, line_range)
 
             unneeded_cop = find_unneeded(comment, offenses, cop, line_range,
                                          line_ranges[ix + 1])
@@ -99,8 +97,9 @@ module RuboCop
           end
         end
 
-        def each_already_disabled(line_ranges, comments)
+        def each_already_disabled(line_ranges, disabled_ranges, comments)
           line_ranges.each_cons(2) do |previous_range, range|
+            next if ignore_offense?(disabled_ranges, range)
             next if previous_range.end != range.begin
 
             # If a cop is disabled in a range that begins on the same line as

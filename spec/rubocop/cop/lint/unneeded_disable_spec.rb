@@ -99,6 +99,39 @@ describe RuboCop::Cop::Lint::UnneededDisable do
                 expect(cop.offenses.empty?).to be(true)
               end
             end
+
+            context 'disabled on different ranges' do
+              let(:source) do
+                ['# rubocop:disable Lint/UnneededDisable',
+                 '# rubocop:disable Metrics/ClassLength'].join("\n")
+              end
+
+              let(:cop_disabled_line_ranges) do
+                { 'Lint/UnneededDisable' => [1..Float::INFINITY],
+                  'Metrics/ClassLength' => [2..Float::INFINITY] }
+              end
+
+              it 'does not return an offense' do
+                expect(cop.offenses.empty?).to be(true)
+              end
+            end
+
+            context 'and the other cop is disabled a second time' do
+              let(:source) do
+                ['# rubocop:disable Lint/UnneededDisable',
+                 '# rubocop:disable Metrics/ClassLength',
+                 '# rubocop:disable Metrics/ClassLength'].join("\n")
+              end
+
+              let(:cop_disabled_line_ranges) do
+                { 'Lint/UnneededDisable' => [1..Float::INFINITY],
+                  'Metrics/ClassLength' => [(2..3), (3..Float::INFINITY)] }
+              end
+
+              it 'does not return an offense' do
+                expect(cop.offenses.empty?).to be(true)
+              end
+            end
           end
 
           context 'multiple cops' do
@@ -263,7 +296,6 @@ describe RuboCop::Cop::Lint::UnneededDisable do
               {
                 'Metrics/MethodLength' => [1..Float::INFINITY],
                 'Metrics/ClassLength' => [1..Float::INFINITY],
-                'Lint/UnneededDisable' => [1..Float::INFINITY]
                 # etc... (no need to include all cops here)
               }
             end
@@ -271,6 +303,24 @@ describe RuboCop::Cop::Lint::UnneededDisable do
             it 'returns an offense' do
               expect(cop.messages).to eq(['Unnecessary disabling of all cops.'])
               expect(cop.highlights).to eq([source])
+            end
+          end
+
+          context 'itself and all cops' do
+            context 'disabled on different ranges' do
+              let(:source) do
+                ['# rubocop:disable Lint/UnneededDisable',
+                 '# rubocop:disable all'].join("\n")
+              end
+
+              let(:cop_disabled_line_ranges) do
+                { 'Lint/UnneededDisable' => [1..Float::INFINITY],
+                  'all' => [2..Float::INFINITY] }
+              end
+
+              it 'does not return an offense' do
+                expect(cop.offenses.empty?).to be(true)
+              end
             end
           end
         end
