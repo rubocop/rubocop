@@ -2271,6 +2271,35 @@ them on configuration. For blocks taking parameters, it checks that the
 left brace has or doesn't have trailing space depending on
 configuration.
 
+### Example
+
+```ruby
+# The `space` style accepts empty braces with space inside
+# and checks that block braces have surrounding spaces inside.
+# bad
+h = {}
+array.each{|x| puts x}
+array.each{|x| puts x }
+array.each{ |x| puts x}
+
+# good
+h = { }
+array.each{ |x| puts x }
+array.each { |x| puts x }
+```
+```ruby
+# The `no_space` style accepts braces and empty braces without
+# surrounding space/spaces inside.
+# bad
+h = { }
+array.each{ |x| puts x }
+
+# good
+h = {}
+array.each {|x| puts x}
+array.each{|x| puts x}
+```
+
 ### Important attributes
 
 Attribute | Value
