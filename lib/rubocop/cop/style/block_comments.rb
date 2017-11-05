@@ -6,7 +6,7 @@ module RuboCop
       # This cop looks for uses of block comments (=begin...=end).
       #
       # @example
-      #   # bad -
+      #   # bad
       #   =begin
       #   Multiple lines
       #   of comments...

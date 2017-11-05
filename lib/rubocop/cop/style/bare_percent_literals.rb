@@ -5,12 +5,23 @@ module RuboCop
     module Style
       # This cop checks if usage of %() or %Q() matches configuration.
       #
-      # @example
-      #   # bad -
-      #   %Q(My name is #{name})
+      # @example EnforcedStyle: bare_percent (default)
+      #   # bad
+      #   %Q(He said: "#{greeting}")
+      #   %q{She said: 'Hi'}
       #
       #   # good
-      #   %(My name is #{name})
+      #   %(He said: "#{greeting}")
+      #   %{She said: 'Hi'}
+      #
+      # @example EnforcedStyle: percent_q
+      #   # bad
+      #   %|He said: "#{greeting}"|
+      #   %/She said: 'Hi'/
+      #
+      #   # good
+      #   %Q|He said: "#{greeting}"|
+      #   %q/She said: 'Hi'/
       #
       class BarePercentLiterals < Cop
         include ConfigurableEnforcedStyle
