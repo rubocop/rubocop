@@ -195,11 +195,22 @@ This cop checks if usage of %() or %Q() matches configuration.
 ### Example
 
 ```ruby
-# bad -
-%Q(My name is #{name})
+# bad
+%Q(He said: "#{greeting}")
+%q{She said: 'Hi'}
 
 # good
-%(My name is #{name})
+%(He said: "#{greeting}")
+%{She said: 'Hi'}
+```
+```ruby
+# bad
+%|He said: "#{greeting}"|
+%/She said: 'Hi'/
+
+# good
+%Q|He said: "#{greeting}"|
+%q/She said: 'Hi'/
 ```
 
 ### Important attributes
@@ -236,7 +247,7 @@ This cop looks for uses of block comments (=begin...=end).
 ### Example
 
 ```ruby
-# bad -
+# bad
 =begin
 Multiple lines
 of comments...
@@ -264,22 +275,68 @@ multi-line blocks.
 
 ```ruby
 # bad - single line block
-collection.each do |item| item.method(x) end
+items.each do |item| item / 5 end
 
 # good - single line block
-collection.each { |item| item.method(x) }
+items.each { |item| item / 5 }
 
 # bad - multi-line block
 things.map { |thing|
   something = thing.some_method
-  proces(something, something_else)
+  proces(something)
 }
 
 # good - multi-line block
 things.map do |thing|
   something = thing.some_method
-  proces(something, something_else)
+  proces(something)
 end
+```
+```ruby
+# Prefer `do...end` over `{...}` for procedural blocks.
+
+# return value is used/assigned
+# bad
+foo = map do |x|
+  x
+end
+puts (map do |x|
+  x
+end)
+
+# return value is not used out of scope
+# good
+map do |x|
+  x
+end
+
+# Prefer `{...}` over `do...end` for functional blocks.
+
+# return value is not used out of scope
+# bad
+each { |x|
+  x
+}
+
+# return value is used/assigned
+# good
+foo = map { |x|
+  x
+}
+map { |x|
+  x
+}.inspect
+```
+```ruby
+# bad
+words.each do |word|
+  word.flip.flop
+end.join("-")
+
+# good
+words.each { |word|
+  word.flip.flop
+}.join("-")
 ```
 
 ### Important attributes
@@ -437,6 +494,15 @@ var.kind_of?(Integer)
 # good
 var.is_a?(Date)
 var.is_a?(Integer)
+```
+```ruby
+# bad
+var.is_a?(Time)
+var.is_a?(String)
+
+# good
+var.kind_of?(Time)
+var.kind_of?(String)
 ```
 
 ### Important attributes
