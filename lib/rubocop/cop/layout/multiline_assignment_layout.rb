@@ -6,30 +6,31 @@ module RuboCop
       # This cop checks whether the multiline assignments have a newline
       # after the assignment operator.
       #
-      # @example
-      #   # bad (with EnforcedStyle set to new_line)
+      # @example EnforcedStyle: new_line (default)
+      #   # bad
       #   foo = if expression
       #     'bar'
       #   end
       #
-      #   # good (with EnforcedStyle set to same_line)
-      #   foo = if expression
-      #     'bar'
-      #   end
-      #
-      #   # good (with EnforcedStyle set to new_line)
+      #   # good
       #   foo =
       #     if expression
       #       'bar'
       #     end
       #
-      #   # good (with EnforcedStyle set to new_line)
+      #   # good
       #   foo =
       #     begin
       #       compute
       #     rescue => e
       #       nil
       #     end
+      #
+      # @example EnforcedStyle: same_line
+      #   # good
+      #   foo = if expression
+      #     'bar'
+      #   end
       class MultilineAssignmentLayout < Cop
         include CheckAssignment
         include ConfigurableEnforcedStyle

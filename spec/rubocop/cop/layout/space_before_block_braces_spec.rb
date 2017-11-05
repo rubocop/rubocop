@@ -39,8 +39,8 @@ describe RuboCop::Cop::Layout::SpaceBeforeBlockBraces, :config do
     end
 
     it 'auto-corrects missing space' do
-      new_source = autocorrect_source('each{}')
-      expect(new_source).to eq('each {}')
+      new_source = autocorrect_source('each{ puts }')
+      expect(new_source).to eq('each { puts }')
     end
   end
 

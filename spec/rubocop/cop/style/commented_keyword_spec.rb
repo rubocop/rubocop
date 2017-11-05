@@ -2,6 +2,7 @@
 
 describe RuboCop::Cop::Style::CommentedKeyword do
   subject(:cop) { described_class.new(config) }
+
   let(:config) { RuboCop::Config.new }
 
   it 'registers an offense when commenting on the same line as `end`' do
@@ -137,6 +138,19 @@ describe RuboCop::Cop::Style::CommentedKeyword do
     RUBY
     expect_no_offenses(<<-RUBY.strip_indent)
       def x # rubocop:disable Metrics/MethodLength
+        y
+      end
+    RUBY
+  end
+
+  it 'does not register an offense if AST contains # symbol' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      def x(y = "#value")
+        y
+      end
+    RUBY
+    expect_no_offenses(<<-RUBY.strip_indent)
+      def x(y: "#value")
         y
       end
     RUBY

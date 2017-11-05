@@ -4,7 +4,7 @@ describe RuboCop::Cop::Lint::UnneededDisable do
   describe '.check' do
     let(:cop) do
       cop = described_class.new
-      cop.instance_eval { @options[:auto_correct] = true }
+      cop.instance_variable_get(:@options)[:auto_correct] = true
       cop.processed_source = processed_source
       cop
     end

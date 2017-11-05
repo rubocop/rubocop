@@ -39,13 +39,15 @@ module RuboCop
         def investigate(processed_source)
           heredoc_lines = extract_heredoc_lines(processed_source.ast)
 
-          processed_source.lines.each_with_index do |line, index|
-            next if heredoc_lines.any? { |r| r.include?(index + 1) }
+          processed_source.comments.each do |comment|
+            location = comment.location
+            line_position = location.line
+            line = processed_source.lines[line_position - 1]
+            next if heredoc_lines.any? { |r| r.include?(line_position) }
             next unless offensive?(line)
-
             range = source_range(processed_source.buffer,
-                                 index + 1,
-                                 (line.index('#'))...(line.length))
+                                 line_position,
+                                 (location.column)...(location.last_column))
 
             add_offense(range, location: range)
           end
@@ -57,7 +59,8 @@ module RuboCop
         ALLOWED_COMMENTS = %w[:nodoc: rubocop:disable].freeze
 
         def offensive?(line)
-          KEYWORDS.any? { |k| line =~ /^\s*#{k}\s+.*#/ } &&
+          line = line.lstrip
+          line.start_with?(*KEYWORDS) &&
             ALLOWED_COMMENTS.none? { |c| line =~ /#\s*#{c}/ }
         end
 

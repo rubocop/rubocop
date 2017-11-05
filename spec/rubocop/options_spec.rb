@@ -69,6 +69,7 @@ describe RuboCop::Options, :isolated_environment do
                                                  [o]ffenses
                                                  [w]orst
                                                  [t]ap
+                                                 [q]uiet
                                                  custom formatter class name
               -o, --out FILE                   Write output to a file instead of STDOUT.
                                                This option applies to the previously

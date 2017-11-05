@@ -61,3 +61,6 @@ Performance/Caller:
 
 RSpec/PredicateMatcher:
   EnforcedStyle: explicit
+
+RSpec/NestedGroups:
+  Max: 7

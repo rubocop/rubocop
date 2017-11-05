@@ -2,13 +2,32 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#4650](https://github.com/bbatsov/rubocop/issues/4650): Add new `Style/StringHashKeys` cop. ([@donjar][])
+* [#1583](https://github.com/bbatsov/rubocop/issues/1583): Add a quiet formatter. ([@drenmi][])
+* Add new `Style/RandomWithOffset` cop. ([@donjar][])
+
 ### Bug fixes
 
+* [#3396](https://github.com/bbatsov/rubocop/issues/3396): Concise error when config. file not found. ([@jaredbeck][])
 * [#4881](https://github.com/bbatsov/rubocop/issues/4881): Fix a false positive for `Performance/HashEachMethods` when unused argument(s) exists in other blocks. ([@pocke][])
 * [#4883](https://github.com/bbatsov/rubocop/pull/4883): Fix auto-correction for `Performance/HashEachMethods`. ([@pocke][])
-* [#4888](https://github.com/bbatsov/rubocop/pull/4888): Improve offense message of `Style/StderPuts`. ([@jaredbeck][])
 * [#4896](https://github.com/bbatsov/rubocop/pull/4896): Fix Style/DateTime wrongly triggered on classes `...::DateTime`. ([@dpostorivo][])
 * [#4938](https://github.com/bbatsov/rubocop/pull/4938): Fix behavior of `Lint/UnneededDisable`, which was returning offenses even after being disabled in a comment. ([@tdeo][])
+* [#4887](https://github.com/bbatsov/rubocop/pull/4887): Add undeclared configuration option `EnforcedStyleForEmptyBraces` for `Layout/SpaceBeforeBlockBraces` cop. ([@drenmi][])
+* [#4987](https://github.com/bbatsov/rubocop/pull/4987): Skip permission check when using stdin option. ([@mtsmfm][])
+* [#4909](https://github.com/bbatsov/rubocop/issues/4909): Make `Rails/HasManyOrHasOneDependent` aware of multiple associations in `with_options`. ([@koic][])
+* [#4794](https://github.com/bbatsov/rubocop/issues/4794): Fix an error in `Layout/MultilineOperationIndentation` when an operation spans multiple lines and contains a ternary expression. ([@rrosenblum][])
+* [#4885](https://github.com/bbatsov/rubocop/issues/4885): Fix false offense detected by `Style/MixinUsage` cop. ([@koic][])
+
+### Changes
+
+* [#4888](https://github.com/bbatsov/rubocop/pull/4888): Improve offense message of `Style/StderrPuts`. ([@jaredbeck][])
+* [#4886](https://github.com/bbatsov/rubocop/issues/4886): Fix false offense for Style/CommentedKeyword. ([@michniewicz][])
+* [#4977](https://github.com/bbatsov/rubocop/pull/4977): Make `Lint/RedundantWithIndex` cop aware of offset argument. ([@koic][])
+* [#2679](https://github.com/bbatsov/rubocop/issues/2679): Handle dependencies to `Metrics/LineLength: Max` when generating `.rubocop_todo.yml`. ([@jonas054][])
+* [#4943](https://github.com/bbatsov/rubocop/pull/4943): Make cop generator compliant with the repo's rubocop config. ([@tdeo][])
 
 ## 0.51.0 (2017-10-18)
 
@@ -2984,3 +3003,5 @@
 [@nelsonjr]: https://github.com/nelsonjr
 [@jonatas]: https://github.com/jonatas
 [@jaredbeck]: https://www.jaredbeck.com
+[@michniewicz]: https://github.com/michniewicz
+[@mtsmfm]: https://github.com/mtsmfm

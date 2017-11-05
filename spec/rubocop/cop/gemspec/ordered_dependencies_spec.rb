@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 describe RuboCop::Cop::Gemspec::OrderedDependencies, :config do
+  subject(:cop) { described_class.new(config) }
+
   let(:cop_config) do
     {
       'TreatCommentsAsGroupSeparators' => treat_comments_as_group_separators,
@@ -12,8 +14,6 @@ describe RuboCop::Cop::Gemspec::OrderedDependencies, :config do
     'Dependencies should be sorted in an alphabetical order within their ' \
       'section of the gemspec. Dependency `%s` should appear before `%s`.'
   end
-
-  subject(:cop) { described_class.new(config) }
 
   shared_examples :ordered_dependency do |add_dependency|
     context "When #{add_dependency}" do

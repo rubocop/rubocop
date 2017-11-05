@@ -9,10 +9,20 @@ module RuboCop
       # users can allow additional variables via the AllowedVariables option.
       #
       # Note that backreferences like $1, $2, etc are not global variables.
+      #
+      # @example
+      #   # bad
+      #   $foo = 2
+      #   bar = $foo + 5
+      #
+      #   # good
+      #   FOO = 2
+      #   foo = 2
+      #   $stdin.read
       class GlobalVars < Cop
         MSG = 'Do not introduce global variables.'.freeze
 
-        # predefined global variables their English aliases
+        # built-in global variables and their English aliases
         # http://www.zenspider.com/Languages/Ruby/QuickRef.html
         BUILT_IN_VARS = %w[
           $: $LOAD_PATH

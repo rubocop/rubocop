@@ -8,6 +8,15 @@ module RuboCop
       # Not all cases can reliably checked, due to Ruby's dynamic
       # types, so we consider only cases when the first argument is an
       # array literal or the second is a string literal.
+      #
+      # @example
+      #
+      #   # bad
+      #   %w(foo bar baz) * ","
+      #
+      #   # good
+      #   %w(foo bar bax).join(",")
+      #
       class ArrayJoin < Cop
         MSG = 'Favor `Array#join` over `Array#*`.'.freeze
 

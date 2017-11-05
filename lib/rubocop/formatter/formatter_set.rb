@@ -20,7 +20,8 @@ module RuboCop
         'offenses' => OffenseCountFormatter,
         'disabled' => DisabledLinesFormatter,
         'worst'    => WorstOffendersFormatter,
-        'tap'      => TapFormatter
+        'tap'      => TapFormatter,
+        'quiet'    => QuietFormatter
       }.freeze
 
       FORMATTER_APIS = %i[started finished].freeze

@@ -101,6 +101,16 @@ Not all cases can reliably checked, due to Ruby's dynamic
 types, so we consider only cases when the first argument is an
 array literal or the second is a string literal.
 
+### Example
+
+```ruby
+# bad
+%w(foo bar baz) * ","
+
+# good
+%w(foo bar bax).join(",")
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#array-join](https://github.com/bbatsov/ruby-style-guide#array-join)
@@ -114,6 +124,16 @@ Enabled | No
 This cop checks for non-ascii (non-English) characters
 in comments.
 
+### Example
+
+```ruby
+# bad
+# Translates from English to 日本語。
+
+# good
+# Translates from English to Japanese
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#english-comments](https://github.com/bbatsov/ruby-style-guide#english-comments)
@@ -125,6 +145,18 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 This cop checks for uses of Module#attr.
+
+### Example
+
+```ruby
+# bad - creates a single attribute accessor (deprecated in Ruby 1.9)
+attr :something, true
+attr :one, :two, :three # behaves as attr_reader
+
+# good
+attr_accessor :something
+attr_reader :one, :two, :three
+```
 
 ### References
 
@@ -279,6 +311,20 @@ Enabled | No
 
 This cop checks for uses of the case equality operator(===).
 
+### Example
+
+```ruby
+# bad
+Array === something
+(1..100) === 7
+/something/ === some_string
+
+# good
+something.is_a?(Array)
+(1..100).include?(7)
+some_string =~ /something/
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#no-case-equality](https://github.com/bbatsov/ruby-style-guide#no-case-equality)
@@ -381,7 +427,7 @@ Enabled | No
 
 This cop checks for uses of class variables. Offenses
 are signaled only on assignment to class variables to
-reduced the number of offenses that would be reported.
+reduce the number of offenses that would be reported.
 
 ### References
 
@@ -476,6 +522,34 @@ Enabled | Yes
 
 This cop checks that comment annotation keywords are written according
 to guidelines.
+
+### Example
+
+```ruby
+# bad
+# TODO make better
+
+# good
+# TODO: make better
+
+# bad
+# TODO:make better
+
+# good
+# TODO: make better
+
+# bad
+# fixme: does not work
+
+# good
+# FIXME: does not work
+
+# bad
+# Optimize does not work
+
+# good
+# OPTIMIZE: does not work
+```
 
 ### Important attributes
 
@@ -706,6 +780,34 @@ Enabled | Yes
 This cop checks for parentheses in the definition of a method,
 that does not take any arguments. Both instance and
 class/singleton methods are checked.
+
+### Example
+
+```ruby
+# bad
+def foo()
+  # does a thing
+end
+
+# good
+def foo
+  # does a thing
+end
+
+# also good
+def foo() does_a_thing end
+```
+```ruby
+# bad
+def Baz.foo()
+  # does a thing
+end
+
+# good
+def Baz.foo
+  # does a thing
+end
+```
 
 ### References
 
@@ -1289,6 +1391,19 @@ users can allow additional variables via the AllowedVariables option.
 
 Note that backreferences like $1, $2, etc are not global variables.
 
+### Example
+
+```ruby
+# bad
+$foo = 2
+bar = $foo + 5
+
+# good
+FOO = 2
+foo = 2
+$stdin.read
+```
+
 ### Important attributes
 
 Attribute | Value
@@ -1544,14 +1659,8 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 Checks for if and unless statements that would fit on one line
-if written as a modifier if/unless.
-The maximum line length is configurable.
-
-### Important attributes
-
-Attribute | Value
---- | ---
-MaxLineLength | 80
+if written as a modifier if/unless. The maximum line length is
+configured in the `Metrics/LineLength` cop.
 
 ### References
 
@@ -2992,6 +3101,16 @@ Enabled | Yes
 This cop looks for uses of Perl-style regexp match
 backreferences like $1, $2, etc.
 
+### Example
+
+```ruby
+# bad
+puts $1
+
+# good
+puts Regexp.last_match(1)
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#no-perl-regexp-last-matchers](https://github.com/bbatsov/ruby-style-guide#no-perl-regexp-last-matchers)
@@ -3119,6 +3238,40 @@ SupportedStyles | compact, exploded
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#exception-class-messages](https://github.com/bbatsov/ruby-style-guide#exception-class-messages)
+
+## Style/RandomWithOffset
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for the use of randomly generated numbers,
+added/subtracted with integer literals, as well as those with
+Integer#succ and Integer#pred methods. Prefer using ranges instead,
+as it clearly states the intentions.
+
+### Example
+
+```ruby
+# bad
+rand(6) + 1
+1 + rand(6)
+rand(6) - 1
+1 - rand(6)
+rand(6).succ
+rand(6).pred
+Random.rand(6) + 1
+Kernel.rand(6) + 1
+rand(0..5) + 1
+
+# good
+rand(1..6)
+rand(1...7)
+```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#random-numbers](https://github.com/bbatsov/ruby-style-guide#random-numbers)
 
 ## Style/RedundantBegin
 
@@ -3699,6 +3852,29 @@ warn('hello')
 
 * [https://github.com/bbatsov/ruby-style-guide#warn](https://github.com/bbatsov/ruby-style-guide#warn)
 
+## Style/StringHashKeys
+
+Enabled by default | Supports autocorrection
+--- | ---
+Disabled | Yes
+
+This cop checks for the use of strings as keys in hashes. The use of
+symbols is preferred instead.
+
+### Example
+
+```ruby
+# bad
+{ 'one' => 1, 'two' => 2, 'three' => 3 }
+
+# good
+{ one: 1, two: 2, three: 3 }
+```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#symbols-as-keys](https://github.com/bbatsov/ruby-style-guide#symbols-as-keys)
+
 ## Style/StringLiterals
 
 Enabled by default | Supports autocorrection
@@ -4221,14 +4397,8 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 Checks for while and until statements that would fit on one line
-if written as a modifier while/until.
-The maximum line length is configurable.
-
-### Important attributes
-
-Attribute | Value
---- | ---
-MaxLineLength | 80
+if written as a modifier while/until. The maximum line length is
+configured in the `Metrics/LineLength` cop.
 
 ### References
 

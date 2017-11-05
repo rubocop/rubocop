@@ -1,16 +1,38 @@
 # frozen_string_literal: true
 
 describe RuboCop::Cop::Style::MixinUsage do
-  let(:config) { RuboCop::Config.new }
-  subject(:cop) { described_class.new(config) }
+  subject(:cop) { described_class.new }
 
   context 'include' do
-    it 'registers an offense when using outside class' do
+    it 'registers an offense when using outside class (used above)' do
       expect_offense(<<-RUBY.strip_indent)
         include M
         ^^^^^^^^^ `include` is used at the top level. Use inside `class` or `module`.
         class C
         end
+      RUBY
+    end
+
+    it 'registers an offense when using outside class (used below)' do
+      expect_offense(<<-RUBY.strip_indent)
+        class C
+        end
+        include M
+        ^^^^^^^^^ `include` is used at the top level. Use inside `class` or `module`.
+      RUBY
+    end
+
+    it 'registers an offense when using only `include` statement' do
+      expect_offense(<<-RUBY.strip_indent)
+        include M
+        ^^^^^^^^^ `include` is used at the top level. Use inside `class` or `module`.
+      RUBY
+    end
+
+    it 'does not register an offense when using outside class' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        Foo.include M
+        class C; end
       RUBY
     end
 
@@ -20,6 +42,39 @@ describe RuboCop::Cop::Style::MixinUsage do
           include M
         end
       RUBY
+    end
+
+    it 'does not register an offense when using inside block' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        Class.new do
+          include M
+        end
+      RUBY
+    end
+
+    context 'Multiple definition classes in one' do
+      it 'does not register an offense when using inside class' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          class C1
+            include M
+          end
+
+          class C2
+            include M
+          end
+        RUBY
+      end
+    end
+
+    context 'Nested module' do
+      it 'registers an offense when using outside class' do
+        expect_offense(<<-RUBY.strip_indent)
+          include M1::M2::M3
+          ^^^^^^^^^^^^^^^^^^ `include` is used at the top level. Use inside `class` or `module`.
+          class C
+          end
+        RUBY
+      end
     end
   end
 

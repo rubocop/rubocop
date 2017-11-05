@@ -1,10 +1,19 @@
 # frozen_string_literal: true
 
+# rubocop:disable Style/AsciiComments
+
 module RuboCop
   module Cop
     module Style
       # This cop checks for non-ascii (non-English) characters
       # in comments.
+      #
+      # @example
+      #   # bad
+      #   # Translates from English to 日本語。
+      #
+      #   # good
+      #   # Translates from English to Japanese
       class AsciiComments < Cop
         MSG = 'Use only ascii symbols in comments.'.freeze
 

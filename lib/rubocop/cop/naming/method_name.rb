@@ -6,20 +6,14 @@ module RuboCop
       # This cop makes sure that all methods use the configured style,
       # snake_case or camelCase, for their names.
       #
-      # @example
-      #
-      #   # EnforcedStyle: snake_case
-      #
+      # @example EnforcedStyle: snake_case (default)
       #   # bad
       #   def fooBar; end
       #
       #   # good
       #   def foo_bar; end
       #
-      # @example
-      #
-      #   # EnforcedStyle: camelCase
-      #
+      # @example EnforcedStyle: camelCase
       #   # bad
       #   def foo_bar; end
       #
