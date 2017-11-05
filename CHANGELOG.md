@@ -10,6 +10,7 @@
 
 ### Bug fixes
 
+* [#4866](https://github.com/bbatsov/rubocop/issues/4866): Prevent `Layout/BlockEndNewline` cop from introducing trailing whitespaces. ([@bgeuken][])
 * [#3396](https://github.com/bbatsov/rubocop/issues/3396): Concise error when config. file not found. ([@jaredbeck][])
 * [#4881](https://github.com/bbatsov/rubocop/issues/4881): Fix a false positive for `Performance/HashEachMethods` when unused argument(s) exists in other blocks. ([@pocke][])
 * [#4883](https://github.com/bbatsov/rubocop/pull/4883): Fix auto-correction for `Performance/HashEachMethods`. ([@pocke][])
@@ -3004,4 +3005,5 @@
 [@jonatas]: https://github.com/jonatas
 [@jaredbeck]: https://www.jaredbeck.com
 [@michniewicz]: https://github.com/michniewicz
+[@bgeuken]: https://github.com/bgeuken
 [@mtsmfm]: https://github.com/mtsmfm

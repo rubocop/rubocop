@@ -36,13 +36,13 @@ describe RuboCop::Cop::Layout::BlockEndNewline do
   it 'autocorrects a do/end block where the end is not on its own line' do
     src = <<-RUBY.strip_indent
       test do
-        foo end
+        foo  end
     RUBY
 
     new_source = autocorrect_source(src)
 
     expect(new_source).to eq(['test do',
-                              '  foo ',
+                              '  foo',
                               'end',
                               ''].join("\n"))
   end
@@ -50,13 +50,13 @@ describe RuboCop::Cop::Layout::BlockEndNewline do
   it 'autocorrects a {} block where the } is not on its own line' do
     src = <<-RUBY.strip_indent
       test {
-        foo }
+        foo  }
     RUBY
 
     new_source = autocorrect_source(src)
 
     expect(new_source).to eq(['test {',
-                              '  foo ',
+                              '  foo',
                               '}',
                               ''].join("\n"))
   end

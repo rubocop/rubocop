@@ -43,7 +43,8 @@ module RuboCop
         def autocorrect(node)
           lambda do |corrector|
             indentation = indentation_of_block_start_line(node)
-            corrector.insert_before(node.loc.end, "\n" + (' ' * indentation))
+            new_block_end = "\n" + node.loc.end.source + (' ' * indentation)
+            corrector.replace(delimiter_range(node), new_block_end)
           end
         end
 
@@ -54,6 +55,18 @@ module RuboCop
         def indentation_of_block_start_line(node)
           match = /\S.*/.match(node.loc.begin.source_line)
           match.begin(0)
+        end
+
+        def delimiter_range(node)
+          Parser::Source::Range.new(
+            node.loc.end.source_buffer,
+            index_of_delimiter_with_whitespaces(node),
+            node.source.length
+          )
+        end
+
+        def index_of_delimiter_with_whitespaces(node)
+          node.source =~ /\s*#{node.closing_delimiter}/
         end
       end
     end
