@@ -5,6 +5,18 @@ module RuboCop
     module Style
       # This cop checks for methods invoked via the :: operator instead
       # of the . operator (like FileUtils::rmdir instead of FileUtils.rmdir).
+      #
+      # @example
+      #   # bad
+      #   Timeout::timeout(500) { ... }
+      #   FileUtils::rmdir(dir)
+      #   Marshal::dump(obj)
+      #
+      #   # good
+      #   Timeout.timeout(500) { ... }
+      #   FileUtils.rmdir(dir)
+      #   Marshal.dump(obj)
+      #
       class ColonMethodCall < Cop
         MSG = 'Do not use `::` for method calls.'.freeze
 

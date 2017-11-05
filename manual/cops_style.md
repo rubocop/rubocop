@@ -523,6 +523,20 @@ Enabled | Yes
 This cop checks for methods invoked via the :: operator instead
 of the . operator (like FileUtils::rmdir instead of FileUtils.rmdir).
 
+### Example
+
+```ruby
+# bad
+Timeout::timeout(500) { ... }
+FileUtils::rmdir(dir)
+Marshal::dump(obj)
+
+# good
+Timeout.timeout(500) { ... }
+FileUtils.rmdir(dir)
+Marshal.dump(obj)
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#double-colons](https://github.com/bbatsov/ruby-style-guide#double-colons)
