@@ -4,6 +4,14 @@ module RuboCop
   module Cop
     module Style
       # This cop checks if usage of %() or %Q() matches configuration.
+      #
+      # @example
+      #   # bad -
+      #   %Q(My name is #{name})
+      #
+      #   # good
+      #   %(My name is #{name})
+      #
       class BarePercentLiterals < Cop
         include ConfigurableEnforcedStyle
 
