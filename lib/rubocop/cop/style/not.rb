@@ -4,6 +4,15 @@ module RuboCop
   module Cop
     module Style
       # This cop checks for uses if the keyword *not* instead of !.
+      #
+      # @example
+      #
+      #   # bad - parentheses are required because of op precedence
+      #   x = (not something)
+      #
+      #   # good
+      #   x = !something
+      #
       class Not < Cop
         MSG = 'Use `!` instead of `not`.'.freeze
 

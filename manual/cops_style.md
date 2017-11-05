@@ -2897,6 +2897,16 @@ Enabled | Yes
 
 This cop checks for uses if the keyword *not* instead of !.
 
+### Example
+
+```ruby
+# bad - parentheses are required because of op precedence
+x = (not something)
+
+# good
+x = !something
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#bang-not-not](https://github.com/bbatsov/ruby-style-guide#bang-not-not)
