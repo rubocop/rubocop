@@ -19,24 +19,34 @@ module RuboCop
       # This default style is called 'special_inside_parentheses'. Alternative
       # styles are 'consistent' and 'align_brackets'. Here are examples:
       #
-      #     # special_inside_parentheses
-      #     array = [
-      #       :value
-      #     ]
-      #     but_in_a_method_call([
-      #                            :its_like_this
-      #                          ])
-      #     # consistent
-      #     array = [
-      #       :value
-      #     ]
-      #     and_in_a_method_call([
-      #       :no_difference
-      #     ])
-      #     # align_brackets
-      #     and_now_for_something = [
-      #                               :completely_different
-      #                             ]
+      # @example EnforcedStyle: special_inside_parentheses
+      #
+      #   # special_inside_parentheses
+      #   array = [
+      #     :value
+      #   ]
+      #   but_in_a_method_call([
+      #                          :its_like_this
+      #                        ])
+      #
+      #
+      # @example EnforcedStyle: consistent
+      #
+      #   # consistent
+      #   array = [
+      #     :value
+      #   ]
+      #   and_in_a_method_call([
+      #     :no_difference
+      #   ])
+      #
+      #
+      # @example EnforcedStyle: align_brackets
+      #
+      #   # align_brackets
+      #   and_now_for_something = [
+      #                             :completely_different
+      #                           ]
       #
       class IndentArray < Cop
         include AutocorrectAlignment
