@@ -94,7 +94,7 @@ describe RuboCop::ResultCache, :isolated_environment do
           $stderr = StringIO.new
         end
         after do
-          FileUtils.rmdir(attack_target_dir)
+          FileUtils.rm_rf(attack_target_dir)
           $stderr = STDERR
         end
 

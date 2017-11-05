@@ -6,9 +6,7 @@ module RuboCop
       # Modifiers should be indented as deep as method definitions, or as deep
       # as the class/module keyword, depending on configuration.
       #
-      # @example
-      #   # EnforcedStyle: indent (default)
-      #
+      # @example EnforcedStyle: indent (default)
       #   # bad
       #   class Plumbus
       #   private
@@ -21,8 +19,7 @@ module RuboCop
       #     def smooth; end
       #   end
       #
-      #   # EnforcedStyle: outdent
-      #
+      # @example EnforcedStyle: outdent
       #   # bad
       #   class Plumbus
       #     private

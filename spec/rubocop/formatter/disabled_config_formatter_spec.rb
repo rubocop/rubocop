@@ -77,13 +77,7 @@ module RuboCop
 
         it 'displays YAML configuration disabling all cops with offenses' do
           expect(output.string).to eq(expected_rubocop_todo)
-
-          expect($stdout.string)
-            .to eq(['Created .rubocop_todo.yml.',
-                    'Run `rubocop --config .rubocop_todo.yml`, or ' \
-                    'add `inherit_from: .rubocop_todo.yml` in a .rubocop.yml ' \
-                    'file.',
-                    ''].join("\n"))
+          expect($stdout.string).to eq("Created .rubocop_todo.yml.\n")
         end
       end
 
@@ -97,9 +91,7 @@ module RuboCop
               Exclude:
                 - "**/*.blah"
           YAML
-        end
 
-        before do
           formatter.started(['test_a.rb', 'test_b.rb'])
           formatter.file_started('test_a.rb', {})
           formatter.file_finished('test_a.rb', offenses)

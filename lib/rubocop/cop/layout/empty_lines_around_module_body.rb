@@ -6,10 +6,7 @@ module RuboCop
       # This cops checks if empty lines around the bodies of modules match
       # the configuration.
       #
-      # @example
-      #
-      #   EnforcedStyle: empty_lines
-      #
+      # @example EnforcedStyle: empty_lines
       #   # good
       #
       #   module Foo
@@ -20,8 +17,7 @@ module RuboCop
       #
       #   end
       #
-      #   EnforcedStyle: no_empty_lines
-      #
+      # @example EnforcedStyle: no_empty_lines (default)
       #   # good
       #
       #   module Foo

@@ -109,9 +109,6 @@ describe RuboCop::CLI, :isolated_environment do
 
     before do
       create_file('example.rb', source)
-    end
-
-    before do
       create_file('.rubocop.yml', YAML.dump(config))
     end
 

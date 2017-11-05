@@ -124,6 +124,16 @@ Enabled | No
 This cop checks for non-ascii (non-English) characters
 in comments.
 
+### Example
+
+```ruby
+# bad
+# Translates from English to 日本語。
+
+# good
+# Translates from English to Japanese
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#english-comments](https://github.com/bbatsov/ruby-style-guide#english-comments)
@@ -770,6 +780,34 @@ Enabled | Yes
 This cop checks for parentheses in the definition of a method,
 that does not take any arguments. Both instance and
 class/singleton methods are checked.
+
+### Example
+
+```ruby
+# bad
+def foo()
+  # does a thing
+end
+
+# good
+def foo
+  # does a thing
+end
+
+# also good
+def foo() does_a_thing end
+```
+```ruby
+# bad
+def Baz.foo()
+  # does a thing
+end
+
+# good
+def Baz.foo
+  # does a thing
+end
+```
 
 ### References
 
@@ -1621,14 +1659,8 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 Checks for if and unless statements that would fit on one line
-if written as a modifier if/unless.
-The maximum line length is configurable.
-
-### Important attributes
-
-Attribute | Value
---- | ---
-MaxLineLength | 80
+if written as a modifier if/unless. The maximum line length is
+configured in the `Metrics/LineLength` cop.
 
 ### References
 
@@ -3207,6 +3239,40 @@ SupportedStyles | compact, exploded
 
 * [https://github.com/bbatsov/ruby-style-guide#exception-class-messages](https://github.com/bbatsov/ruby-style-guide#exception-class-messages)
 
+## Style/RandomWithOffset
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for the use of randomly generated numbers,
+added/subtracted with integer literals, as well as those with
+Integer#succ and Integer#pred methods. Prefer using ranges instead,
+as it clearly states the intentions.
+
+### Example
+
+```ruby
+# bad
+rand(6) + 1
+1 + rand(6)
+rand(6) - 1
+1 - rand(6)
+rand(6).succ
+rand(6).pred
+Random.rand(6) + 1
+Kernel.rand(6) + 1
+rand(0..5) + 1
+
+# good
+rand(1..6)
+rand(1...7)
+```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#random-numbers](https://github.com/bbatsov/ruby-style-guide#random-numbers)
+
 ## Style/RedundantBegin
 
 Enabled by default | Supports autocorrection
@@ -3786,6 +3852,29 @@ warn('hello')
 
 * [https://github.com/bbatsov/ruby-style-guide#warn](https://github.com/bbatsov/ruby-style-guide#warn)
 
+## Style/StringHashKeys
+
+Enabled by default | Supports autocorrection
+--- | ---
+Disabled | Yes
+
+This cop checks for the use of strings as keys in hashes. The use of
+symbols is preferred instead.
+
+### Example
+
+```ruby
+# bad
+{ 'one' => 1, 'two' => 2, 'three' => 3 }
+
+# good
+{ one: 1, two: 2, three: 3 }
+```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#symbols-as-keys](https://github.com/bbatsov/ruby-style-guide#symbols-as-keys)
+
 ## Style/StringLiterals
 
 Enabled by default | Supports autocorrection
@@ -4308,14 +4397,8 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 Checks for while and until statements that would fit on one line
-if written as a modifier while/until.
-The maximum line length is configurable.
-
-### Important attributes
-
-Attribute | Value
---- | ---
-MaxLineLength | 80
+if written as a modifier while/until. The maximum line length is
+configured in the `Metrics/LineLength` cop.
 
 ### References
 

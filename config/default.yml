@@ -955,9 +955,6 @@ Style/HashSyntax:
   # Do not suggest { a?: 1 } over { :a? => 1 } in ruby19 style
   PreferHashRocketsForNonAlnumEndingSymbols: false
 
-Style/IfUnlessModifier:
-  MaxLineLength: 80
-
 Style/InverseMethods:
   Enabled: true
   # `InverseMethods` are methods that can be inverted by a not (`not` or `!`)
@@ -1314,9 +1311,6 @@ Style/TrivialAccessors:
     - to_str
     - to_s
     - to_sym
-
-Style/WhileUntilModifier:
-  MaxLineLength: 80
 
 # `WordArray` enforces how array literals of word-like strings should be expressed.
 Style/WordArray:

@@ -8,6 +8,17 @@ module RuboCop
       # This cop makes sure that Ruby source files have snake_case
       # names. Ruby scripts (i.e. source files with a shebang in the
       # first line) are ignored.
+      #
+      # @example
+      #   # bad
+      #   lib/layoutManager.rb
+      #
+      #   anything/usingCamelCase
+      #
+      #   # good
+      #   lib/layout_manager.rb
+      #
+      #   anything/using_snake_case.rake
       class FileName < Cop
         MSG_SNAKE_CASE = 'The name of this source file (`%s`) ' \
                          'should use snake_case.'.freeze

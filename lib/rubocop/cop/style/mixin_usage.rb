@@ -48,24 +48,21 @@ module RuboCop
 
         def_node_matcher :include_statement, <<-PATTERN
           (send nil? ${:include :extend :prepend}
-            (const nil? _))
+            const)
         PATTERN
 
         def on_send(node)
-          return unless (statement = include_statement(node))
-          return unless top_level_node?(node)
+          include_statement(node) do |statement|
+            return if accepted_include?(node)
 
-          add_offense(node, message: format(MSG, statement: statement))
+            add_offense(node, message: format(MSG, statement: statement))
+          end
         end
 
         private
 
-        def top_level_node?(node)
-          if node.parent.parent.nil?
-            node.sibling_index.zero?
-          else
-            top_level_node?(node.parent)
-          end
+        def accepted_include?(node)
+          node.parent && node.macro?
         end
       end
     end

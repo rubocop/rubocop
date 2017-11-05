@@ -6,10 +6,7 @@ module RuboCop
       # This cops checks if empty lines around the bodies of classes match
       # the configuration.
       #
-      # @example
-      #
-      #   EnforcedStyle: empty_lines
-      #
+      # @example EnforcedStyle: empty_lines
       #   # good
       #
       #   class Foo

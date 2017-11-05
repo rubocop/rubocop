@@ -13,9 +13,7 @@ describe RuboCop::Cop::Force do
 
   describe '#run_hook' do
     it 'invokes a hook in all cops' do
-      cops.each do |cop|
-        expect(cop).to receive(:some_hook).with(:foo, :bar)
-      end
+      expect(cops).to all(receive(:some_hook).with(:foo, :bar))
 
       force.run_hook(:some_hook, :foo, :bar)
     end

@@ -113,6 +113,20 @@ describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
           end
         RUBY
       end
+
+      context 'Multiple associations' do
+        it "doesn't register an offense for " \
+           '`with_options dependent: :destroy`' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            class Person
+              with_options dependent: :destroy do
+                has_many :foo
+                has_many :bar
+              end
+            end
+          RUBY
+        end
+      end
     end
   end
 end

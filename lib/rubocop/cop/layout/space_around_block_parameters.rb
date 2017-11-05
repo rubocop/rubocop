@@ -5,10 +5,7 @@ module RuboCop
     module Layout
       # Checks the spacing inside and after block parameters pipes.
       #
-      # @example
-      #
-      #   # EnforcedStyleInsidePipes: no_space (default)
-      #
+      # @example EnforcedStyleInsidePipes: no_space (default)
       #   # bad
       #   {}.each { | x,  y |puts x }
       #   ->( x,  y ) { puts x }
@@ -17,10 +14,7 @@ module RuboCop
       #   {}.each { |x, y| puts x }
       #   ->(x, y) { puts x }
       #
-      # @example
-      #
-      #   # EnforcedStyleInsidePipes: space
-      #
+      # @example EnforcedStyleInsidePipes: space
       #   # bad
       #   {}.each { |x,  y| puts x }
       #   ->(x,  y) { puts x }
