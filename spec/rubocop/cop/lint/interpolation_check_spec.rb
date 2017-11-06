@@ -10,6 +10,22 @@ describe RuboCop::Cop::Lint::InterpolationCheck do
     RUBY
   end
 
+  it 'does not register an offense for interpolation in heredoc' do
+    expect_no_offenses(<<-'RUBY'.strip_indent)
+      hello = <<-TEXT
+        foo #{bar}
+      TEXT
+    RUBY
+  end
+
+  it 'does not register an offense for an escaped interpolation in heredoc' do
+    expect_no_offenses(<<-'RUBY'.strip_indent)
+      hello = <<-TEXT
+        foo \#{bar}
+      TEXT
+    RUBY
+  end
+
   it 'does not register an offense for properly interpolation strings' do
     expect_no_offenses(<<-'RUBY'.strip_indent)
       hello = "foo #{bar}"
