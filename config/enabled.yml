@@ -1388,6 +1388,10 @@ Lint/ScriptPermission:
   Description: 'Grant script file execute permission.'
   Enabled: true
 
+Lint/ShadowedArgument:
+  Description: 'Avoid reassigning arguments before they were used.'
+  Enabled: true
+
 Lint/ShadowedException:
   Description: >-
                   Avoid rescuing a higher level exception

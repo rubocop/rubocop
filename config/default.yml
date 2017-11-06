@@ -1451,6 +1451,10 @@ Lint/SafeNavigationChain:
     - presence
     - try
 
+# Checks for shadowed arguments
+Lint/ShadowedArgument:
+  IgnoreImplicitReferences: false
+
 # Checks for unused block arguments
 Lint/UnusedBlockArgument:
   IgnoreEmptyBlocks: true

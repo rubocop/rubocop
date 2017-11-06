@@ -1705,6 +1705,53 @@ Enabled | Yes
 This cop checks if a file which has a shebang line as
 its first line is granted execute permission.
 
+## Lint/ShadowedArgument
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks for shadowed arguments.
+
+### Example
+
+```ruby
+# bad
+
+do_something do |foo|
+  foo = 42
+  puts foo
+end
+
+def do_something(foo)
+  foo = 42
+  puts foo
+end
+```
+```ruby
+# good
+
+do_something do |foo|
+  foo = foo + 42
+  puts foo
+end
+
+def do_something(foo)
+  foo = foo + 42
+  puts foo
+end
+
+def do_something(foo)
+  puts foo
+end
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+IgnoreImplicitReferences | false
+
 ## Lint/ShadowedException
 
 Enabled by default | Supports autocorrection
