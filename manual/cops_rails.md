@@ -378,7 +378,7 @@ methods instead of equality against a string or symbol.
 # bad
 Rails.env == 'production'
 
-# bad, always return false
+# bad, always returns false
 Rails.env == :test
 
 # good
