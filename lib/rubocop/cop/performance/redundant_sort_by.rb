@@ -7,13 +7,13 @@ module RuboCop
       # `sort`.
       #
       # @example
-      #   @bad
+      #   # bad
       #   array.sort_by { |x| x }
       #   array.sort_by do |var|
       #     var
       #   end
       #
-      #   @good
+      #   # good
       #   array.sort
       class RedundantSortBy < Cop
         MSG = 'Use `sort` instead of `sort_by { |%s| %s }`.'.freeze

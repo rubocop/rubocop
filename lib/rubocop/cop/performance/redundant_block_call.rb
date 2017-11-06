@@ -7,7 +7,7 @@ module RuboCop
       # where `yield` would do just as well.
       #
       # @example
-      #   @bad
+      #   # bad
       #   def method(&block)
       #     block.call
       #   end
@@ -15,7 +15,7 @@ module RuboCop
       #     func.call 1, 2, 3
       #   end
       #
-      #   @good
+      #   # good
       #   def method
       #     yield
       #   end

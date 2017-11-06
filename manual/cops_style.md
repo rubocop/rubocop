@@ -1494,46 +1494,46 @@ The supported styles are:
 ```ruby
 "EnforcedStyle => 'ruby19'"
 
+# bad
+{:a => 2}
+{b: 1, :c => 2}
+
 # good
 {a: 2, b: 1}
 {:c => 2, 'd' => 2} # acceptable since 'd' isn't a symbol
 {d: 1, 'e' => 2} # technically not forbidden
-
-# bad
-{:a => 2}
-{b: 1, :c => 2}
 ```
 ```ruby
 "EnforcedStyle => 'hash_rockets'"
 
-# good
-{:a => 1, :b => 2}
-
 # bad
 {a: 1, b: 2}
 {c: 1, 'd' => 5}
+
+# good
+{:a => 1, :b => 2}
 ```
 ```ruby
 "EnforcedStyle => 'no_mixed_keys'"
 
-# good
-{:a => 1, :b => 2}
-{c: 1, d: 2}
-
 # bad
 {:a => 1, b: 2}
 {c: 1, 'd' => 2}
+
+# good
+{:a => 1, :b => 2}
+{c: 1, d: 2}
 ```
 ```ruby
 "EnforcedStyle => 'ruby19_no_mixed_keys'"
 
-# good
-{a: 1, b: 2}
-{:c => 3, 'd' => 4}
-
 # bad
 {:a => 1, :b => 2}
 {c: 2, 'd' => 3} # should just use hash rockets
+
+# good
+{a: 1, b: 2}
+{:c => 3, 'd' => 4}
 ```
 
 ### Important attributes
@@ -1631,15 +1631,6 @@ This helps to keep the nesting level from getting too deep.
 ### Example
 
 ```ruby
-# good
-if condition_a
-  action_a
-elsif condition_b
-  action_b
-else
-  action_c
-end
-
 # bad
 if condition_a
   action_a
@@ -1649,6 +1640,15 @@ else
   else
     action_c
   end
+end
+
+# good
+if condition_a
+  action_a
+elsif condition_b
+  action_b
+else
+  action_c
 end
 ```
 

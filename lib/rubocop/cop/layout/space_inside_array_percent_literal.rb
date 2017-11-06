@@ -7,11 +7,11 @@ module RuboCop
       # (i.e. %i/%w).
       #
       # @example
-      #   @good
-      #   %i(foo bar baz)
       #
-      #   @bad
+      #   # bad
       #   %w(foo  bar  baz)
+      #   # good
+      #   %i(foo bar baz)
       class SpaceInsideArrayPercentLiteral < Cop
         include MatchRange
         include PercentLiteral

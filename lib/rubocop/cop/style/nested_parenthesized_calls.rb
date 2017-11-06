@@ -7,10 +7,10 @@ module RuboCop
       # of a parenthesized method call.
       #
       # @example
-      #   @good
+      #   # good
       #   method1(method2(arg), method3(arg))
       #
-      #   @bad
+      #   # bad
       #   method1(method2 arg, method3, arg)
       class NestedParenthesizedCalls < Cop
         MSG = 'Add parentheses to nested method call `%s`.'.freeze

@@ -8,16 +8,7 @@ module RuboCop
       # This helps to keep the nesting level from getting too deep.
       #
       # @example
-      #   @good
-      #   if condition_a
-      #     action_a
-      #   elsif condition_b
-      #     action_b
-      #   else
-      #     action_c
-      #   end
-      #
-      #   @bad
+      #   # bad
       #   if condition_a
       #     action_a
       #   else
@@ -26,6 +17,15 @@ module RuboCop
       #     else
       #       action_c
       #     end
+      #   end
+      #
+      #   # good
+      #   if condition_a
+      #     action_a
+      #   elsif condition_b
+      #     action_b
+      #   else
+      #     action_c
       #   end
       class IfInsideElse < Cop
         MSG = 'Convert `if` nested inside `else` to `elsif`.'.freeze

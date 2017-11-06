@@ -7,11 +7,11 @@ module RuboCop
       #
       # @example
       #
-      #   @bad
+      #   # bad
       #   bar = [foo.min, foo.max]
       #   return foo.min, foo.max
       #
-      #   @good
+      #   # good
       #   bar = foo.minmax
       #   return foo.minmax
       class MinMax < Cop

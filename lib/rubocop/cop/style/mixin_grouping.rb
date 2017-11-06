@@ -11,12 +11,12 @@ module RuboCop
       #
       #   EnforcedStyle: separated (default)
       #
-      #   @bad
+      #   # bad
       #   class Foo
       #     include Bar, Qox
       #   end
       #
-      #   @good
+      #   # good
       #   class Foo
       #     include Qox
       #     include Bar
@@ -24,13 +24,13 @@ module RuboCop
       #
       #   EnforcedStyle: grouped
       #
-      #   @bad
+      #   # bad
       #   class Foo
       #     extend Bar
       #     extend Qox
       #   end
       #
-      #   @good
+      #   # good
       #   class Foo
       #     extend Qox, Bar
       #   end

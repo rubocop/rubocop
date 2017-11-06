@@ -8,13 +8,13 @@ module RuboCop
       # This cop also checks `max` and `min` methods.
       #
       # @example
-      #   @bad
+      #   # bad
       #   array.sort { |a, b| a.foo <=> b.foo }
       #   array.max { |a, b| a.foo <=> b.foo }
       #   array.min { |a, b| a.foo <=> b.foo }
       #   array.sort { |a, b| a[:foo] <=> b[:foo] }
       #
-      #   @good
+      #   # good
       #   array.sort_by(&:foo)
       #   array.sort_by { |v| v.foo }
       #   array.sort_by do |var|

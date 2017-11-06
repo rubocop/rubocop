@@ -8,13 +8,13 @@ module RuboCop
       # index/`nil` and is more performant.
       #
       # @example
-      #   @bad
+      #   # bad
       #   do_something if str.match(/regex/)
       #   while regex.match('str')
       #     do_something
       #   end
       #
-      #   @good
+      #   # good
       #   method(str =~ /regex/)
       #   return value unless regex =~ 'str'
       class RedundantMatch < Cop

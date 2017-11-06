@@ -7,7 +7,7 @@ module RuboCop
       # each branch of a conditional statement.
       #
       # @example
-      #   @bad
+      #   # bad
       #   if condition
       #     do_x
       #     do_z
@@ -16,7 +16,7 @@ module RuboCop
       #     do_z
       #   end
       #
-      #   @good
+      #   # good
       #   if condition
       #     do_x
       #   else
@@ -24,7 +24,7 @@ module RuboCop
       #   end
       #   do_z
       #
-      #   @bad
+      #   # bad
       #   if condition
       #     do_z
       #     do_x
@@ -33,7 +33,7 @@ module RuboCop
       #     do_y
       #   end
       #
-      #   @good
+      #   # good
       #   do_z
       #   if condition
       #     do_x
@@ -41,7 +41,7 @@ module RuboCop
       #     do_y
       #   end
       #
-      #   @bad
+      #   # bad
       #   case foo
       #   when 1
       #     do_x
@@ -51,7 +51,7 @@ module RuboCop
       #     do_x
       #   end
       #
-      #   @good
+      #   # good
       #   case foo
       #   when 1
       #     do_x

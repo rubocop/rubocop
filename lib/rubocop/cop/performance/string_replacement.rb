@@ -7,13 +7,13 @@ module RuboCop
       # `tr` or `delete`.
       #
       # @example
-      #   @bad
+      #   # bad
       #   'abc'.gsub('b', 'd')
       #   'abc'.gsub('a', '')
       #   'abc'.gsub(/a/, 'd')
       #   'abc'.gsub!('a', 'd')
       #
-      #   @good
+      #   # good
       #   'abc'.gsub(/.*/, 'a')
       #   'abc'.gsub(/a+/, 'd')
       #   'abc'.tr('b', 'd')
