@@ -22,7 +22,7 @@ module RuboCop
       #   x= 0
       #   # EOF
       #
-      class EnableStatement < Cop
+      class MissingCopEnableDirective < Cop
         MSG = 'Re-enable %s cop with `# rubocop:enable` after disabling it.'
               .freeze
 

@@ -685,33 +685,6 @@ when baz then 2
 end
 ```
 
-## Lint/EnableStatement
-
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
-
-This cop checks that there is an `# rubocop:enable ...` statement
-after a `# rubocop:disable ...` statement. This will prevent leaving
-cop disables on wide ranges of code, that latter contributors to
-a file wouldn't be aware of.
-
-### Example
-
-```ruby
-# good
-# rubocop:disable Layout/SpaceAroundOperators
-x= 0
-# rubocop:enable Layout/SpaceAroundOperators
-# y = 1
-# EOF
-
-# bad
-# rubocop:disable Layout/SpaceAroundOperators
-x= 0
-# EOF
-```
-
 ## Lint/EndAlignment
 
 Enabled by default | Supports autocorrection
@@ -1173,6 +1146,33 @@ end
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#loop-with-break](https://github.com/bbatsov/ruby-style-guide#loop-with-break)
+
+## Lint/MissingCopEnableDirective
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks that there is an `# rubocop:enable ...` statement
+after a `# rubocop:disable ...` statement. This will prevent leaving
+cop disables on wide ranges of code, that latter contributors to
+a file wouldn't be aware of.
+
+### Example
+
+```ruby
+# good
+# rubocop:disable Layout/SpaceAroundOperators
+x= 0
+# rubocop:enable Layout/SpaceAroundOperators
+# y = 1
+# EOF
+
+# bad
+# rubocop:disable Layout/SpaceAroundOperators
+x= 0
+# EOF
+```
 
 ## Lint/MultipleCompare
 
