@@ -2895,7 +2895,7 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
-This cop checks for uses if the keyword *not* instead of !.
+This cop checks for uses of the keyword `not` instead of `!`.
 
 ### Example
 
