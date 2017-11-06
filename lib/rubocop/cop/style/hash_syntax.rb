@@ -19,9 +19,7 @@ module RuboCop
       # * ruby19_no_mixed_keys - forces use of ruby 1.9 syntax and forbids mixed
       #   syntax hashes
       #
-      # @example
-      #   "EnforcedStyle => 'ruby19'"
-      #
+      # @example EnforcedStyle: ruby19 (default)
       #   # bad
       #   {:a => 2}
       #   {b: 1, :c => 2}
@@ -31,9 +29,7 @@ module RuboCop
       #   {:c => 2, 'd' => 2} # acceptable since 'd' isn't a symbol
       #   {d: 1, 'e' => 2} # technically not forbidden
       #
-      # @example
-      #   "EnforcedStyle => 'hash_rockets'"
-      #
+      # @example EnforcedStyle: hash_rockets
       #   # bad
       #   {a: 1, b: 2}
       #   {c: 1, 'd' => 5}
@@ -41,9 +37,7 @@ module RuboCop
       #   # good
       #   {:a => 1, :b => 2}
       #
-      # @example
-      #   "EnforcedStyle => 'no_mixed_keys'"
-      #
+      # @example EnforcedStyle: no_mixed_keys
       #   # bad
       #   {:a => 1, b: 2}
       #   {c: 1, 'd' => 2}
@@ -52,9 +46,7 @@ module RuboCop
       #   {:a => 1, :b => 2}
       #   {c: 1, d: 2}
       #
-      # @example
-      #   "EnforcedStyle => 'ruby19_no_mixed_keys'"
-      #
+      # @example EnforcedStyle: ruby19_no_mixed_keys
       #   # bad
       #   {:a => 1, :b => 2}
       #   {c: 2, 'd' => 3} # should just use hash rockets

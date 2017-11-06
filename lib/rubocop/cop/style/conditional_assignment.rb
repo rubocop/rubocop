@@ -108,9 +108,7 @@ module RuboCop
       # assignment to the same variable when using the return of the
       # condition can be used instead.
       #
-      # @example
-      #   EnforcedStyle: assign_to_condition
-      #
+      # @example EnforcedStyle: assign_to_condition (default)
       #   # bad
       #   if foo
       #     bar = 1
@@ -155,7 +153,7 @@ module RuboCop
       #            2
       #          end
       #
-      #   EnforcedStyle: assign_inside_condition
+      # @example EnforcedStyle: assign_inside_condition
       #   # bad
       #   bar = if foo
       #           1

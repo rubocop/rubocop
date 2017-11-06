@@ -5,23 +5,37 @@ module RuboCop
     module Style
       # This cop checks for trailing comma in argument lists.
       #
-      # @example
-      #   # always bad
+      # @example EnforcedStyleForMultiline: consistent_comma
+      #   # bad
       #   method(1, 2,)
       #
-      #   # good if EnforcedStyleForMultiline is consistent_comma
+      #   # good
       #   method(
       #     1, 2,
       #     3,
       #   )
       #
-      #   # good if EnforcedStyleForMultiline is comma or consistent_comma
+      #   # good
       #   method(
       #     1,
       #     2,
       #   )
       #
-      #   # good if EnforcedStyleForMultiline is no_comma
+      # @example EnforcedStyleForMultiline: comma
+      #   # bad
+      #   method(1, 2,)
+      #
+      #   # good
+      #   method(
+      #     1,
+      #     2,
+      #   )
+      #
+      # @example EnforcedStyleForMultiline: no_comma (default)
+      #   # bad
+      #   method(1, 2,)
+      #
+      #   # good
       #   method(
       #     1,
       #     2

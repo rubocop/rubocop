@@ -8,10 +8,7 @@ module RuboCop
       # parentheses using `EnforcedStyle`. Omission is only enforced when
       # removing the parentheses won't cause a different behavior.
       #
-      # @example
-      #
-      #   EnforcedStyle: require_no_parentheses (default)
-      #
+      # @example EnforcedStyle: require_no_parentheses (default)
       #   # bad
       #   foo = (bar?) ? a : b
       #   foo = (bar.baz?) ? a : b
@@ -22,10 +19,7 @@ module RuboCop
       #   foo = bar.baz? ? a : b
       #   foo = bar && baz ? a : b
       #
-      # @example
-      #
-      #   EnforcedStyle: require_parentheses
-      #
+      # @example EnforcedStyle: require_parentheses
       #   # bad
       #   foo = bar? ? a : b
       #   foo = bar.baz? ? a : b
@@ -36,10 +30,7 @@ module RuboCop
       #   foo = (bar.baz?) ? a : b
       #   foo = (bar && baz) ? a : b
       #
-      # @example
-      #
-      #   EnforcedStyle: require_parentheses_when_complex
-      #
+      # @example EnforcedStyle: require_parentheses_when_complex
       #   # bad
       #   foo = (bar?) ? a : b
       #   foo = (bar.baz?) ? a : b

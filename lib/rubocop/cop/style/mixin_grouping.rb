@@ -7,10 +7,7 @@ module RuboCop
       # By default it enforces mixins to be placed in separate declarations,
       # but it can be configured to enforce grouping them in one declaration.
       #
-      # @example
-      #
-      #   EnforcedStyle: separated (default)
-      #
+      # @example EnforcedStyle: separated (default)
       #   # bad
       #   class Foo
       #     include Bar, Qox
@@ -22,8 +19,7 @@ module RuboCop
       #     include Bar
       #   end
       #
-      #   EnforcedStyle: grouped
-      #
+      # @example EnforcedStyle: grouped
       #   # bad
       #   class Foo
       #     extend Bar

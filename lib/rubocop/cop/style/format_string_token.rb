@@ -5,10 +5,7 @@ module RuboCop
     module Style
       # Use a consistent style for named format string tokens.
       #
-      # @example
-      #
-      #   EnforcedStyle: annotated
-      #
+      # @example EnforcedStyle: annotated (default)
       #   # bad
       #
       #   format('%{greeting}', greeting: 'Hello')
@@ -18,10 +15,7 @@ module RuboCop
       #
       #   format('%<greeting>s', greeting: 'Hello')
       #
-      # @example
-      #
-      #   EnforcedStyle: template
-      #
+      # @example EnforcedStyle: template
       #   # bad
       #
       #   format('%<greeting>s', greeting: 'Hello')

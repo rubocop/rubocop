@@ -14,18 +14,14 @@ module RuboCop
       # cop. For example, a `MinSize` of `3` will not enforce a style on an
       # array of 2 or fewer elements.
       #
-      # @example
-      #   EnforcedStyle: percent (default)
-      #
+      # @example EnforcedStyle: percent (default)
       #   # good
       #   %w[foo bar baz]
       #
       #   # bad
       #   ['foo', 'bar', 'baz']
       #
-      # @example
-      #   EnforcedStyle: brackets
-      #
+      # @example EnforcedStyle: brackets
       #   # good
       #   ['foo', 'bar', 'baz']
       #

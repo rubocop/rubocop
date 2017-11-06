@@ -751,8 +751,6 @@ condition can be used instead.
 ### Example
 
 ```ruby
-EnforcedStyle: assign_to_condition
-
 # bad
 if foo
   bar = 1
@@ -796,8 +794,8 @@ bar << if foo
          some_other_method
          2
        end
-
-EnforcedStyle: assign_inside_condition
+```
+```ruby
 # bad
 bar = if foo
         1
@@ -1305,8 +1303,6 @@ Note: A method definition is not considered empty if it contains
 ### Example
 
 ```ruby
-# EnforcedStyle: compact (default)
-
 # bad
 def foo(bar)
 end
@@ -1324,8 +1320,6 @@ end
 def self.foo(bar); end
 ```
 ```ruby
-# EnforcedStyle: expanded
-
 # bad
 def foo(bar); end
 
@@ -1481,8 +1475,6 @@ Use a consistent style for named format string tokens.
 ### Example
 
 ```ruby
-EnforcedStyle: annotated
-
 # bad
 
 format('%{greeting}', greeting: 'Hello')
@@ -1493,8 +1485,6 @@ format('%s', 'Hello')
 format('%<greeting>s', greeting: 'Hello')
 ```
 ```ruby
-EnforcedStyle: template
-
 # bad
 
 format('%<greeting>s', greeting: 'Hello')
@@ -1645,8 +1635,6 @@ The supported styles are:
 ### Example
 
 ```ruby
-"EnforcedStyle => 'ruby19'"
-
 # bad
 {:a => 2}
 {b: 1, :c => 2}
@@ -1657,8 +1645,6 @@ The supported styles are:
 {d: 1, 'e' => 2} # technically not forbidden
 ```
 ```ruby
-"EnforcedStyle => 'hash_rockets'"
-
 # bad
 {a: 1, b: 2}
 {c: 1, 'd' => 5}
@@ -1667,8 +1653,6 @@ The supported styles are:
 {:a => 1, :b => 2}
 ```
 ```ruby
-"EnforcedStyle => 'no_mixed_keys'"
-
 # bad
 {:a => 1, b: 2}
 {c: 1, 'd' => 2}
@@ -1678,8 +1662,6 @@ The supported styles are:
 {c: 1, d: 2}
 ```
 ```ruby
-"EnforcedStyle => 'ruby19_no_mixed_keys'"
-
 # bad
 {:a => 1, :b => 2}
 {c: 2, 'd' => 3} # should just use hash rockets
@@ -1994,8 +1976,6 @@ and multiline lambdas as well.
 ### Example
 
 ```ruby
-# EnforcedStyle: line_count_dependent (default)
-
 # bad
 f = lambda { |x| x }
 f = ->(x) do
@@ -2009,8 +1989,6 @@ f = lambda do |x|
     end
 ```
 ```ruby
-# EnforcedStyle: lambda
-
 # bad
 f = ->(x) { x }
 f = ->(x) do
@@ -2024,8 +2002,6 @@ f = lambda do |x|
     end
 ```
 ```ruby
-# EnforcedStyle: literal
-
 # bad
 f = lambda { |x| x }
 f = lambda do |x|
@@ -2331,8 +2307,6 @@ but it can be configured to enforce grouping them in one declaration.
 ### Example
 
 ```ruby
-EnforcedStyle: separated (default)
-
 # bad
 class Foo
   include Bar, Qox
@@ -2343,9 +2317,8 @@ class Foo
   include Qox
   include Bar
 end
-
-EnforcedStyle: grouped
-
+```
+```ruby
 # bad
 class Foo
   extend Bar
@@ -2435,13 +2408,26 @@ implications to each approach.
 ### Example
 
 ```ruby
-# Good if EnforcedStyle is module_function
+# bad
+module Test
+  extend self
+  ...
+end
+
+# good
+module Test
+  module_function
+  ...
+end
+```
+```ruby
+# bad
 module Test
   module_function
   ...
 end
 
-# Good if EnforcedStyle is extend_self
+# good
 module Test
   extend self
   ...
@@ -2517,10 +2503,13 @@ Checks for uses of the `then` keyword in multi-line if statements.
 ### Example
 
 ```ruby
+# bad
+# This is considered bad practice.
 if cond then
 end
-```
-```ruby
+
+# good
+# If statements can contain `then` on the same line.
 if cond then a
 elsif cond then b
 end
@@ -2541,8 +2530,6 @@ This cop checks expressions wrapping styles for multiline memoization.
 ### Example
 
 ```ruby
-# EnforcedStyle: keyword (default)
-
 # bad
 foo ||= (
   bar
@@ -2556,8 +2543,6 @@ foo ||= begin
 end
 ```
 ```ruby
-# EnforcedStyle: braces
-
 # bad
 foo ||= begin
   bar
@@ -2646,15 +2631,8 @@ without else are considered. There are three different styles:
 ### Example
 
 ```ruby
-# EnforcedStyle: both
 # enforces `unless` for `prefix` and `postfix` conditionals
 
-# good
-
-unless foo
-  bar
-end
-
 # bad
 
 if !foo
@@ -2663,22 +2641,21 @@ end
 
 # good
 
-bar unless foo
+unless foo
+  bar
+end
 
 # bad
 
 bar if !foo
+
+# good
+
+bar unless foo
 ```
 ```ruby
-# EnforcedStyle: prefix
 # enforces `unless` for just `prefix` conditionals
 
-# good
-
-unless foo
-  bar
-end
-
 # bad
 
 if !foo
@@ -2687,19 +2664,24 @@ end
 
 # good
 
-bar if !foo
-```
-```ruby
-# EnforcedStyle: postfix
-# enforces `unless` for just `postfix` conditionals
+unless foo
+  bar
+end
 
 # good
 
-bar unless foo
+bar if !foo
+```
+```ruby
+# enforces `unless` for just `postfix` conditionals
 
 # bad
 
 bar if !foo
+
+# good
+
+bar unless foo
 
 # good
 
@@ -2997,8 +2979,6 @@ not themselves `Interger` polymorphic.
 ### Example
 
 ```ruby
-# EnforcedStyle: predicate (default)
-
 # bad
 
 foo == 0
@@ -3012,8 +2992,6 @@ foo.negative?
 bar.baz.positive?
 ```
 ```ruby
-# EnforcedStyle: comparison
-
 # bad
 
 foo.zero?
@@ -3292,8 +3270,6 @@ names also.
 ### Example
 
 ```ruby
-# EnforcedStyle: short (default)
-
 # bad
 Hash#has_key?
 Hash#has_value?
@@ -3303,8 +3279,6 @@ Hash#key?
 Hash#value?
 ```
 ```ruby
-# EnforcedStyle: verbose
-
 # bad
 Hash#key?
 Hash#value?
@@ -3367,8 +3341,6 @@ passed multiple arguments.
 ### Example
 
 ```ruby
-# EnforcedStyle: exploded
-
 # bad
 raise StandardError.new("message")
 
@@ -3379,8 +3351,6 @@ raise MyCustomError.new(arg1, arg2, arg3)
 raise MyKwArgError.new(key1: val1, key2: val2)
 ```
 ```ruby
-# EnforcedStyle: compact
-
 # bad
 raise StandardError, "message"
 raise RuntimeError, arg1, arg2, arg3
@@ -3726,8 +3696,6 @@ Supported styles are: return, return_nil.
 ### Example
 
 ```ruby
-# EnforcedStyle: return (default)
-
 # bad
 def foo(arg)
   return nil if arg
@@ -3737,9 +3705,8 @@ end
 def foo(arg)
   return if arg
 end
-
-# EnforcedStyle: return_nil
-
+```
+```ruby
 # bad
 def foo(arg)
   return if arg
@@ -3967,16 +3934,17 @@ There are two different styles. Defaults to `require_parentheses`.
 ### Example
 
 ```ruby
-# require_parentheses - bad
+# bad
 ->a,b,c { a + b + c }
 
-# require_parentheses - good
+# good
 ->(a,b,c) { a + b + c}
-
-# require_no_parentheses - bad
+```
+```ruby
+# bad
 ->(a,b,c) { a + b + c }
 
-# require_no_parentheses - good
+# good
 ->a,b,c { a + b + c}
 ```
 
@@ -4070,8 +4038,6 @@ match the configured preference.
 ### Example
 
 ```ruby
-# EnforcedStyle: single_quotes
-
 # bad
 result = "Tests #{success ? "PASS" : "FAIL"}"
 
@@ -4079,8 +4045,6 @@ result = "Tests #{success ? "PASS" : "FAIL"}"
 result = "Tests #{success ? 'PASS' : 'FAIL'}"
 ```
 ```ruby
-# EnforcedStyle: double_quotes
-
 # bad
 result = "Tests #{success ? 'PASS' : 'FAIL'}"
 
@@ -4153,8 +4117,6 @@ of 2 or fewer elements.
 ### Example
 
 ```ruby
-EnforcedStyle: percent (default)
-
 # good
 %i[foo bar baz]
 
@@ -4162,8 +4124,6 @@ EnforcedStyle: percent (default)
 [:foo, :bar, :baz]
 ```
 ```ruby
-EnforcedStyle: brackets
-
 # good
 [:foo, :bar, :baz]
 
@@ -4239,8 +4199,6 @@ removing the parentheses won't cause a different behavior.
 ### Example
 
 ```ruby
-EnforcedStyle: require_no_parentheses (default)
-
 # bad
 foo = (bar?) ? a : b
 foo = (bar.baz?) ? a : b
@@ -4252,8 +4210,6 @@ foo = bar.baz? ? a : b
 foo = bar && baz ? a : b
 ```
 ```ruby
-EnforcedStyle: require_parentheses
-
 # bad
 foo = bar? ? a : b
 foo = bar.baz? ? a : b
@@ -4265,8 +4221,6 @@ foo = (bar.baz?) ? a : b
 foo = (bar && baz) ? a : b
 ```
 ```ruby
-EnforcedStyle: require_parentheses_when_complex
-
 # bad
 foo = (bar?) ? a : b
 foo = (bar.baz?) ? a : b
@@ -4297,22 +4251,36 @@ This cop checks for trailing comma in argument lists.
 ### Example
 
 ```ruby
-# always bad
+# bad
 method(1, 2,)
 
-# good if EnforcedStyleForMultiline is consistent_comma
+# good
 method(
   1, 2,
   3,
 )
 
-# good if EnforcedStyleForMultiline is comma or consistent_comma
+# good
 method(
   1,
   2,
 )
+```
+```ruby
+# bad
+method(1, 2,)
 
-# good if EnforcedStyleForMultiline is no_comma
+# good
+method(
+  1,
+  2,
+)
+```
+```ruby
+# bad
+method(1, 2,)
+
+# good
 method(
   1,
   2
@@ -4341,22 +4309,36 @@ This cop checks for trailing comma in array and hash literals.
 ### Example
 
 ```ruby
-# always bad
+# bad
 a = [1, 2,]
 
-# good if EnforcedStyleForMultiline is consistent_comma
+# good
 a = [
   1, 2,
   3,
 ]
 
-# good if EnforcedStyleForMultiline is comma or consistent_comma
+# good
 a = [
   1,
   2,
 ]
+```
+```ruby
+# bad
+a = [1, 2,]
 
-# good if EnforcedStyleForMultiline is no_comma
+# good
+a = [
+  1,
+  2,
+]
+```
+```ruby
+# bad
+a = [1, 2,]
+
+# good
 a = [
   1,
   2
@@ -4587,8 +4569,6 @@ array of 2 or fewer elements.
 ### Example
 
 ```ruby
-EnforcedStyle: percent (default)
-
 # good
 %w[foo bar baz]
 
@@ -4596,8 +4576,6 @@ EnforcedStyle: percent (default)
 ['foo', 'bar', 'baz']
 ```
 ```ruby
-EnforcedStyle: brackets
-
 # good
 ['foo', 'bar', 'baz']
 
@@ -4631,8 +4609,6 @@ way as they would be ordered in spoken English.
 ### Example
 
 ```ruby
-# EnforcedStyle: all_comparison_operators
-
 # bad
 99 == foo
 "bar" != foo
@@ -4646,8 +4622,6 @@ foo <= 42
 bar > 10
 ```
 ```ruby
-# EnforcedStyle: equality_operators_only
-
 # bad
 99 == foo
 "bar" != foo
