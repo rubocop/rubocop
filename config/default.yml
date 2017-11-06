@@ -1165,6 +1165,7 @@ Style/SafeNavigation:
   # Safe navigation may cause a statement to start returning `nil` in addition
   # to whatever it used to return.
   ConvertCodeThatCanStartToReturnNil: false
+  AllowPredicates: true
 
 Style/Semicolon:
   # Allow `;` to separate several expressions on the same line.

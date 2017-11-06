@@ -3806,6 +3806,10 @@ foo.nil? || foo.bar
 # Methods that `nil` will `respond_to?` should not be converted to
 # use safe navigation
 foo.to_i if foo
+
+# Predicate methods should not be converted to use safe navigation.
+# If using safe navigation, it seems to looks like it returns boolean.
+foo && foo.bar?
 ```
 
 ### Important attributes
@@ -3813,6 +3817,7 @@ foo.to_i if foo
 Attribute | Value
 --- | ---
 ConvertCodeThatCanStartToReturnNil | false
+AllowPredicates | true
 
 ## Style/SelfAssignment
 
