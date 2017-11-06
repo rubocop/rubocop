@@ -938,10 +938,21 @@ multi-line array.
 [ :a,
   :b]
 
+[{
+  a: 1,
+  b: 2
+}]
+
 # good
 [
   :a,
   :b]
+
+[
+{
+  a: 1,
+  b: 2
+}]
 ```
 
 ## Layout/FirstHashElementLineBreak
@@ -960,10 +971,21 @@ multi-line hash.
 { a: 1,
   b: 2}
 
+{ a: {
+    b: 1,
+    c: 2,
+}}
+
 # good
 {
   a: 1,
   b: 2 }
+{
+
+a: {
+    b: 1,
+    c: 2,
+}}
 ```
 
 ## Layout/FirstMethodArgumentLineBreak
@@ -982,10 +1004,21 @@ multi-line method call.
 method(foo, bar,
   baz)
 
+method({
+  a: 1,
+  b: 2
+})
+
 # good
 method(
   foo, bar,
   baz)
+
+method(
+{
+  a: 1,
+  b: 2
+})
 
 # ignored
 method foo, bar,
