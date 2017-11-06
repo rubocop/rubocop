@@ -2276,11 +2276,10 @@ Checks for unnecessary additional spaces inside array percent literals
 ### Example
 
 ```ruby
-# good
-%i(foo bar baz)
-
 # bad
 %w(foo  bar  baz)
+# good
+%i(foo bar baz)
 ```
 
 ## Layout/SpaceInsideBlockBraces

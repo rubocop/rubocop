@@ -11,12 +11,12 @@ module RuboCop
       # config parameter is true.
       #
       # @example
-      #   @bad
+      #   # bad
       #   something  x
       #   something   y, z
       #   something'hello'
       #
-      #   @good
+      #   # good
       #   something x
       #   something y, z
       #   something 'hello'

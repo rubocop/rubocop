@@ -10,17 +10,17 @@ module RuboCop
       # This check only applies if the block takes no parameters.
       #
       # @example
-      #   @bad
+      #   # bad
       #   (1..5).each { }
       #
-      #   @good
+      #   # good
       #   5.times { }
       #
       # @example
-      #   @bad
+      #   # bad
       #   (0...10).each {}
       #
-      #   @good
+      #   # good
       #   10.times {}
       class EachForSimpleLoop < Cop
         MSG = 'Use `Integer#times` for a simple loop which iterates a fixed ' \

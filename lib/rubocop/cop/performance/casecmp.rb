@@ -7,14 +7,14 @@ module RuboCop
       # can better be implemented using `casecmp`.
       #
       # @example
-      #   @bad
+      #   # bad
       #   str.downcase == 'abc'
       #   str.upcase.eql? 'ABC'
       #   'abc' == str.downcase
       #   'ABC'.eql? str.upcase
       #   str.downcase == str.downcase
       #
-      #   @good
+      #   # good
       #   str.casecmp('ABC').zero?
       #   'abc'.casecmp(str).zero?
       class Casecmp < Cop

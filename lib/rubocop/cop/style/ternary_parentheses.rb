@@ -12,12 +12,12 @@ module RuboCop
       #
       #   EnforcedStyle: require_no_parentheses (default)
       #
-      #   @bad
+      #   # bad
       #   foo = (bar?) ? a : b
       #   foo = (bar.baz?) ? a : b
       #   foo = (bar && baz) ? a : b
       #
-      #   @good
+      #   # good
       #   foo = bar? ? a : b
       #   foo = bar.baz? ? a : b
       #   foo = bar && baz ? a : b
@@ -26,12 +26,12 @@ module RuboCop
       #
       #   EnforcedStyle: require_parentheses
       #
-      #   @bad
+      #   # bad
       #   foo = bar? ? a : b
       #   foo = bar.baz? ? a : b
       #   foo = bar && baz ? a : b
       #
-      #   @good
+      #   # good
       #   foo = (bar?) ? a : b
       #   foo = (bar.baz?) ? a : b
       #   foo = (bar && baz) ? a : b
@@ -40,12 +40,12 @@ module RuboCop
       #
       #   EnforcedStyle: require_parentheses_when_complex
       #
-      #   @bad
+      #   # bad
       #   foo = (bar?) ? a : b
       #   foo = (bar.baz?) ? a : b
       #   foo = bar && baz ? a : b
       #
-      #   @good
+      #   # good
       #   foo = bar? ? a : b
       #   foo = bar.baz? ? a : b
       #   foo = (bar && baz) ? a : b

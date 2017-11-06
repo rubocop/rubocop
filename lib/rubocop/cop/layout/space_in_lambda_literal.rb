@@ -7,17 +7,17 @@ module RuboCop
       # brace in lambda literals.
       #
       # @example EnforcedStyle: require_no_space (default)
-      #     @bad
+      #     # bad
       #     a = -> (x, y) { x + y }
       #
-      #     @good
+      #     # good
       #     a = ->(x, y) { x + y }
       #
       # @example EnforcedStyle: require_space
-      #     @bad
+      #     # bad
       #     a = ->(x, y) { x + y }
       #
-      #     @good
+      #     # good
       #     a = -> (x, y) { x + y }
       class SpaceInLambdaLiteral < Cop
         include ConfigurableEnforcedStyle

@@ -22,46 +22,46 @@ module RuboCop
       # @example
       #   "EnforcedStyle => 'ruby19'"
       #
-      #   @good
+      #   # bad
+      #   {:a => 2}
+      #   {b: 1, :c => 2}
+      #
+      #   # good
       #   {a: 2, b: 1}
       #   {:c => 2, 'd' => 2} # acceptable since 'd' isn't a symbol
       #   {d: 1, 'e' => 2} # technically not forbidden
       #
-      #   @bad
-      #   {:a => 2}
-      #   {b: 1, :c => 2}
-      #
       # @example
       #   "EnforcedStyle => 'hash_rockets'"
       #
-      #   @good
-      #   {:a => 1, :b => 2}
-      #
-      #   @bad
+      #   # bad
       #   {a: 1, b: 2}
       #   {c: 1, 'd' => 5}
+      #
+      #   # good
+      #   {:a => 1, :b => 2}
       #
       # @example
       #   "EnforcedStyle => 'no_mixed_keys'"
       #
-      #   @good
-      #   {:a => 1, :b => 2}
-      #   {c: 1, d: 2}
-      #
-      #   @bad
+      #   # bad
       #   {:a => 1, b: 2}
       #   {c: 1, 'd' => 2}
+      #
+      #   # good
+      #   {:a => 1, :b => 2}
+      #   {c: 1, d: 2}
       #
       # @example
       #   "EnforcedStyle => 'ruby19_no_mixed_keys'"
       #
-      #   @good
-      #   {a: 1, b: 2}
-      #   {:c => 3, 'd' => 4}
-      #
-      #   @bad
+      #   # bad
       #   {:a => 1, :b => 2}
       #   {c: 2, 'd' => 3} # should just use hash rockets
+      #
+      #   # good
+      #   {a: 1, b: 2}
+      #   {:c => 3, 'd' => 4}
       class HashSyntax < Cop
         include ConfigurableEnforcedStyle
 

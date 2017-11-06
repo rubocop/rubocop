@@ -9,10 +9,10 @@ module RuboCop
       # nature of the error.)
       #
       # @example
-      #   @bad
+      #   # bad
       #   raise 'Error message here'
       #
-      #   @good
+      #   # good
       #   raise ArgumentError, 'Error message here'
       class ImplicitRuntimeError < Cop
         MSG = 'Use `%s` with an explicit exception class and message, ' \

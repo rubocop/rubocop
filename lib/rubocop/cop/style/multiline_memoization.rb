@@ -9,13 +9,13 @@ module RuboCop
       #
       #   # EnforcedStyle: keyword (default)
       #
-      #   @bad
+      #   # bad
       #   foo ||= (
       #     bar
       #     baz
       #   )
       #
-      #   @good
+      #   # good
       #   foo ||= begin
       #     bar
       #     baz
@@ -25,13 +25,13 @@ module RuboCop
       #
       #   # EnforcedStyle: braces
       #
-      #   @bad
+      #   # bad
       #   foo ||= begin
       #     bar
       #     baz
       #   end
       #
-      #   @good
+      #   # good
       #   foo ||= (
       #     bar
       #     baz

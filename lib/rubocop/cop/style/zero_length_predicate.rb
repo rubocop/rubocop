@@ -10,8 +10,7 @@ module RuboCop
       # replaced by receiver.empty? and !receiver.empty.
       #
       # @example
-      #
-      #   @bad
+      #   # bad
       #   [1, 2, 3].length == 0
       #   0 == "foobar".length
       #   array.length < 1
@@ -19,7 +18,7 @@ module RuboCop
       #   string.length > 0
       #   hash.size > 0
       #
-      #   @good
+      #   # good
       #   [1, 2, 3].empty?
       #   "foobar".empty?
       #   array.empty?
