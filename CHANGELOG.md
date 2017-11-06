@@ -9,6 +9,7 @@
 * Add new `Style/RandomWithOffset` cop. ([@donjar][])
 * [#4892](https://github.com/bbatsov/rubocop/issues/4892): Add new `Lint/ShadowedArgument` cop and remove argument shadowing detection from `Lint/UnusedBlockArgument` and `Lint/UnusedMethodArgument`. ([@akhramov][])
 * [#4674](https://github.com/bbatsov/rubocop/issues/4674): Add a new `Lint/MissingCopEnableDirective` cop. ([@tdeo][])
+* Add new `Rails/EnvironmentComparison` cop. ([@tdeo][])
 
 ### Bug fixes
 

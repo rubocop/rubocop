@@ -363,6 +363,28 @@ Attribute | Value
 --- | ---
 Include | app/models/\*\*/\*.rb
 
+## Rails/EnvironmentComparison
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks that Rails.env is compared using `.production?`-like
+methods instead of equality against a string or symbol.
+
+### Example
+
+```ruby
+# bad
+Rails.env == 'production'
+
+# bad, always return false
+Rails.env == :test
+
+# good
+Rails.env.production?
+```
+
 ## Rails/Exit
 
 Enabled by default | Supports autocorrection

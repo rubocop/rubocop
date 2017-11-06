@@ -1724,6 +1724,10 @@ Rails/EnumUniqueness:
   Description: 'Avoid duplicate integers in hash-syntax `enum` declaration.'
   Enabled: true
 
+Rails/EnvironmentComparison:
+  Description: "Favor `Rails.env.production?` over `Rails.env == 'production'`"
+  Enabled: true
+
 Rails/Exit:
   Description: >-
                   Favor `fail`, `break`, `return`, etc. over `exit` in
