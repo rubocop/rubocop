@@ -13,10 +13,7 @@ module RuboCop
       # will also suggest constructing error objects when the exception is
       # passed multiple arguments.
       #
-      # @example
-      #
-      #   # EnforcedStyle: exploded
-      #
+      # @example EnforcedStyle: exploded (default)
       #   # bad
       #   raise StandardError.new("message")
       #
@@ -26,10 +23,7 @@ module RuboCop
       #   raise MyCustomError.new(arg1, arg2, arg3)
       #   raise MyKwArgError.new(key1: val1, key2: val2)
       #
-      # @example
-      #
-      #   # EnforcedStyle: compact
-      #
+      # @example EnforcedStyle: compact
       #   # bad
       #   raise StandardError, "message"
       #   raise RuntimeError, arg1, arg2, arg3

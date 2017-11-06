@@ -11,10 +11,7 @@ module RuboCop
       # Note: A method definition is not considered empty if it contains
       #       comments.
       #
-      # @example
-      #
-      #   # EnforcedStyle: compact (default)
-      #
+      # @example EnforcedStyle: compact (default)
       #   # bad
       #   def foo(bar)
       #   end
@@ -31,10 +28,7 @@ module RuboCop
       #
       #   def self.foo(bar); end
       #
-      # @example
-      #
-      #   # EnforcedStyle: expanded
-      #
+      # @example EnforcedStyle: expanded
       #   # bad
       #   def foo(bar); end
       #

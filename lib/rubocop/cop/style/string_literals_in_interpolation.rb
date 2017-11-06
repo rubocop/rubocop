@@ -6,20 +6,14 @@ module RuboCop
       # This cop checks that quotes inside the string interpolation
       # match the configured preference.
       #
-      # @example
-      #
-      #   # EnforcedStyle: single_quotes
-      #
+      # @example EnforcedStyle: single_quotes (default)
       #   # bad
       #   result = "Tests #{success ? "PASS" : "FAIL"}"
       #
       #   # good
       #   result = "Tests #{success ? 'PASS' : 'FAIL'}"
       #
-      # @example
-      #
-      #   # EnforcedStyle: double_quotes
-      #
+      # @example EnforcedStyle: double_quotes
       #   # bad
       #   result = "Tests #{success ? 'PASS' : 'FAIL'}"
       #

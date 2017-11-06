@@ -7,10 +7,7 @@ module RuboCop
       #
       # Supported styles are: return, return_nil.
       #
-      # @example
-      #
-      #   # EnforcedStyle: return (default)
-      #
+      # @example EnforcedStyle: return (default)
       #   # bad
       #   def foo(arg)
       #     return nil if arg
@@ -21,8 +18,7 @@ module RuboCop
       #     return if arg
       #   end
       #
-      #   # EnforcedStyle: return_nil
-      #
+      # @example EnforcedStyle: return_nil
       #   # bad
       #   def foo(arg)
       #     return if arg

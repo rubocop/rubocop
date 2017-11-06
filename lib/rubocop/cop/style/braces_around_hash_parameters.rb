@@ -17,7 +17,7 @@ module RuboCop
       #   # good
       #   some_method(x, y, {a: 1, b: 2})
       #
-      # @example EnforcedStyle: no_braces
+      # @example EnforcedStyle: no_braces (default)
       #   # The `no_braces` style checks that the last parameter doesn't
       #   # have braces around it.
       #

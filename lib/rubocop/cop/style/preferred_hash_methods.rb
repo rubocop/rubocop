@@ -8,10 +8,7 @@ module RuboCop
       # It is configurable to enforce the inverse, using `verbose` method
       # names also.
       #
-      # @example
-      #
-      #  # EnforcedStyle: short (default)
-      #
+      # @example EnforcedStyle: short (default)
       #  # bad
       #  Hash#has_key?
       #  Hash#has_value?
@@ -20,10 +17,7 @@ module RuboCop
       #  Hash#key?
       #  Hash#value?
       #
-      # @example
-      #
-      #  # EnforcedStyle: verbose
-      #
+      # @example EnforcedStyle: verbose
       #  # bad
       #  Hash#key?
       #  Hash#value?
