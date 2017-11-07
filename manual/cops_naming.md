@@ -36,7 +36,10 @@ Enabled | No
 
 This cop checks for non-ascii characters in identifier names.
 
-bad
+### Example
+
+```ruby
+# bad
 def καλημερα
 
 # bad
@@ -47,6 +50,7 @@ def hello_🍣
 
 # good
 def hello
+```
 
 ### References
 
