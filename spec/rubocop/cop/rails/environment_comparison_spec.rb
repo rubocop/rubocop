@@ -10,7 +10,7 @@ describe RuboCop::Cop::Rails::EnvironmentComparison do
       Rails.env == 'production'
       ^^^^^^^^^^^^^^^^^^^^^^^^^ Favor `Rails.env.production?` over `Rails.env == 'production'`.
       Rails.env == :development
-      ^^^^^^^^^^^^^^^^^^^^^^^^^ Favor `Rails.env.development?` over `Rails.env == :development`.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^ Do not compare `Rails.env` with a symbol, it will always evaluate to `false`.
     RUBY
   end
 

@@ -18,19 +18,33 @@ module RuboCop
       class EnvironmentComparison < Cop
         MSG = 'Favor `Rails.env.%s?` over `Rails.env == %s`.'.freeze
 
-        def_node_matcher :environment_comparison?, <<-PATTERN
+        SYM_MSG = 'Do not compare `Rails.env` with a symbol, it will always ' \
+          'evaluate to `false`.'.freeze
+
+        def_node_matcher :environment_str_comparison?, <<-PATTERN
           (send
             (send (const {nil? cbase} :Rails) :env)
             :==
-            {str sym}
+            $str
+          )
+        PATTERN
+
+        def_node_matcher :environment_sym_comparison?, <<-PATTERN
+          (send
+            (send (const {nil? cbase} :Rails) :env)
+            :==
+            $sym
           )
         PATTERN
 
         def on_send(node)
-          return unless environment_comparison?(node)
-          env = node.children.last
-          add_offense(node,
-                      message: format(MSG, env.children.first, env.source))
+          environment_str_comparison?(node) do |env_node|
+            env, = *env_node
+            add_offense(node, message: format(MSG, env, env_node.source))
+          end
+          environment_sym_comparison?(node) do |_|
+            add_offense(node, message: SYM_MSG)
+          end
         end
 
         def autocorrect(node)
@@ -42,7 +56,9 @@ module RuboCop
         private
 
         def replacement(node)
-          "#{node.receiver.source}.#{node.children.last.children.first}?"
+          receiver, _, compared = *node
+          environment, = *compared
+          "#{receiver.source}.#{environment}?"
         end
       end
     end
