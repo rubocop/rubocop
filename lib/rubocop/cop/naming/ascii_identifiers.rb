@@ -4,6 +4,19 @@ module RuboCop
   module Cop
     module Naming
       # This cop checks for non-ascii characters in identifier names.
+      #
+      # @example
+      # bad
+      # def καλημερα
+      #
+      # # bad
+      # def こんにちは
+      #
+      # # bad
+      # def hello_🍣
+      #
+      # # good
+      # def hello
       class AsciiIdentifiers < Cop
         MSG = 'Use only ascii symbols in identifiers.'.freeze
 

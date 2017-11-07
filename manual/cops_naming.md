@@ -36,6 +36,18 @@ Enabled | No
 
 This cop checks for non-ascii characters in identifier names.
 
+bad
+def καλημερα
+
+# bad
+def こんにちは
+
+# bad
+def hello_🍣
+
+# good
+def hello
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#english-identifiers](https://github.com/bbatsov/ruby-style-guide#english-identifiers)
