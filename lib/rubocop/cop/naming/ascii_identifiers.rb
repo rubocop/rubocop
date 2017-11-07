@@ -1,22 +1,28 @@
 # frozen_string_literal: true
 
+# rubocop:disable Style/AsciiComments
+
 module RuboCop
   module Cop
     module Naming
       # This cop checks for non-ascii characters in identifier names.
       #
       # @example
-      #     # bad
-      #     def καλημερα
+      #   # bad
+      #   def καλημερα # Greek alphabet (non-ascii)
+      #   end
       #
-      #     # bad
-      #     def こんにちは
+      #   # bad
+      #   def こんにちは # Japanese character (non-ascii)
+      #   end
       #
-      #     # bad
-      #     def hello_🍣
+      #   # bad
+      #   def hello_🍣 # Emoji (non-ascii)
+      #   end
       #
-      #     # good
-      #     def hello
+      #   # good
+      #   def hello
+      #   end
       class AsciiIdentifiers < Cop
         MSG = 'Use only ascii symbols in identifiers.'.freeze
 
