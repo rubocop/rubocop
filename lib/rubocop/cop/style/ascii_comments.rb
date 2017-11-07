@@ -45,3 +45,4 @@ module RuboCop
     end
   end
 end
+# rubocop:enable Style/AsciiComments

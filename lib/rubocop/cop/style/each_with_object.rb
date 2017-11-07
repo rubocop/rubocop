@@ -56,7 +56,7 @@ module RuboCop
             corrector.remove(return_value.loc.expression)
           end
         end
-        # rubocop:endable Metrics/AbcSize
+        # rubocop:enable Metrics/AbcSize
 
         def simple_method_arg?(method_arg)
           method_arg && method_arg.basic_literal?

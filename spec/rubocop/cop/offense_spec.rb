@@ -124,6 +124,7 @@ describe RuboCop::Cop::Offense do
       [{ line: 6,         cop: 'A' }, { line: 5,         cop: 'B' }, 1],
       [{          col: 6, cop: 'A' }, {          col: 5, cop: 'B' }, 1]
     ].each do |one, other, expectation|
+      # rubocop:enable Layout/SpaceInsideHashLiteralBraces, Layout/ExtraSpacing
       context "when receiver has #{one} and other has #{other}" do
         it "returns #{expectation}" do
           an_offense = offense(one)

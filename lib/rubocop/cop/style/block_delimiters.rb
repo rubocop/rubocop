@@ -194,7 +194,7 @@ module RuboCop
             node.each_child_node { |child| get_blocks(child, &block) }
           end
         end
-        # rubocop:enable Metrics/CyclimaticComplexity
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         def proper_block_style?(node)
           return true if ignored_method?(node.method_name)

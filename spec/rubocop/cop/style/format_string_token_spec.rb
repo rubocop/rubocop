@@ -130,3 +130,4 @@ describe RuboCop::Cop::Style::FormatStringToken, :config do
     'over annotated tokens (like `%<foo>s`).'
   )
 end
+# rubocop:enable Style/FormatStringToken

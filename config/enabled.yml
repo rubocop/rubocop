@@ -1304,6 +1304,10 @@ Lint/Loop:
   StyleGuide: '#loop-with-break'
   Enabled: true
 
+Lint/MissingCopEnableDirective:
+  Description: 'Checks for a `# rubocop:enable` after `# rubocop:disable`'
+  Enabled: true
+
 Lint/MultipleCompare:
   Description: "Use `&&` operator to compare multiple value."
   Enabled: true

@@ -166,7 +166,8 @@ describe RuboCop::CLI, :isolated_environment do
                                   '# rubocop:disable LineLength',
                                   '#' * 85,
                                   'y ',
-                                  'puts 123456'])
+                                  'puts 123456',
+                                  '# rubocop:enable LineLength'])
       create_file('.rubocop.yml', ['inherit_from: .rubocop_todo.yml'])
       create_file('.rubocop_todo.yml', [''])
       expect(cli.run(['--auto-gen-config'])).to eq(1)

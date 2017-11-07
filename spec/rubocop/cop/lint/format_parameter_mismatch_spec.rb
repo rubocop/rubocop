@@ -328,3 +328,4 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
       .to eq(1)
   end
 end
+# rubocop:enable Style/FormatStringToken
