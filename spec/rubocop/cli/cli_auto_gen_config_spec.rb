@@ -234,7 +234,7 @@ describe RuboCop::CLI, :isolated_environment do
          '',
          '# Offense count: 2',
          '# Cop supports --auto-correct.',
-         '# Configuration parameters: EnforcedStyle, SupportedStyles.',
+         '# Configuration parameters: EnforcedStyle.',
          '# SupportedStyles: normal, rails',
          'Layout/IndentationConsistency:',
          '  Exclude:',
@@ -326,7 +326,7 @@ describe RuboCop::CLI, :isolated_environment do
          '',
          '# Offense count: 1',
          '# Cop supports --auto-correct.',
-         '# Configuration parameters: EnforcedStyle, SupportedStyles.',
+         '# Configuration parameters: EnforcedStyle.',
          '# SupportedStyles: normal, rails',
          'Layout/IndentationConsistency:',
          '  Exclude:',
@@ -413,7 +413,7 @@ describe RuboCop::CLI, :isolated_environment do
          '',
          '# Offense count: 1',
          '# Cop supports --auto-correct.',
-         '# Configuration parameters: EnforcedStyle, SupportedStyles.',
+         '# Configuration parameters: EnforcedStyle.',
          '# SupportedStyles: normal, rails',
          'Layout/IndentationConsistency:',
          '  Exclude:',
@@ -461,8 +461,7 @@ describe RuboCop::CLI, :isolated_environment do
          '',
          '# Offense count: 1',
          '# Cop supports --auto-correct.',
-         '# Configuration parameters: EnforcedStyle, SupportedStyles, ' \
-         'AllowInnerSlashes.',
+         '# Configuration parameters: EnforcedStyle, AllowInnerSlashes.',
          '# SupportedStyles: slashes, percent_r, mixed',
          'Style/RegexpLiteral:',
          '  Exclude:',
@@ -521,7 +520,7 @@ describe RuboCop::CLI, :isolated_environment do
          "    - 'example2.rb'",
          '',
          '# Cop supports --auto-correct.',
-         '# Configuration parameters: EnforcedStyle, SupportedStyles.',
+         '# Configuration parameters: EnforcedStyle.',
          '# SupportedStyles: normal, rails',
          'Layout/IndentationConsistency:',
          '  Exclude:',
@@ -589,7 +588,7 @@ describe RuboCop::CLI, :isolated_environment do
           .to eq(<<-YAML.strip_indent)
             # Offense count: 2
             # Cop supports --auto-correct.
-            # Configuration parameters: EnforcedStyle, SupportedStyles.
+            # Configuration parameters: EnforcedStyle.
             # SupportedStyles: use_perl_names, use_english_names
             Style/SpecialGlobalVars:
               Enabled: false
@@ -603,7 +602,7 @@ describe RuboCop::CLI, :isolated_environment do
           .to eq(<<-YAML.strip_indent)
             # Offense count: 3
             # Cop supports --auto-correct.
-            # Configuration parameters: EnforcedStyle, SupportedStyles.
+            # Configuration parameters: EnforcedStyle.
             # SupportedStyles: use_perl_names, use_english_names
             Style/SpecialGlobalVars:
               Exclude:
