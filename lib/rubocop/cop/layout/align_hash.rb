@@ -116,7 +116,7 @@ module RuboCop
 
         def on_hash(node)
           return if ignored_node?(node)
-          return if node.pairs.empty? || node.single_line?
+          return if node.empty? || node.single_line?
 
           return unless alignment_for_hash_rockets.checkable_layout?(node) &&
                         alignment_for_colons.checkable_layout?(node)

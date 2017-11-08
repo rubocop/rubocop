@@ -30,7 +30,7 @@ module RuboCop
         def on_sym(node)
           return unless boolean_symbol?(node)
 
-          add_offense(node, message: format(MSG, node.to_a.first))
+          add_offense(node, message: format(MSG, node.value))
         end
       end
     end

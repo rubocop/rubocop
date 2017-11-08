@@ -256,8 +256,7 @@ module RuboCop
 
         def within_change_method?(node)
           node.each_ancestor(:def).any? do |ancestor|
-            method_name, = *ancestor
-            method_name == :change
+            ancestor.method?(:change)
           end
         end
 
@@ -270,8 +269,8 @@ module RuboCop
         def all_hash_key?(args, *keys)
           return false unless args && args.hash_type?
 
-          hash_keys = args.to_a.map do |arg|
-            arg.to_a.first.children.first.to_sym
+          hash_keys = args.keys.map do |key|
+            key.children.first.to_sym
           end
 
           hash_keys & keys == keys

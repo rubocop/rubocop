@@ -69,7 +69,7 @@ module RuboCop
             return if first_pair.source_range.line == left_brace.line
 
             if separator_style?(first_pair)
-              check_based_on_longest_key(hash_node.children, left_brace,
+              check_based_on_longest_key(hash_node, left_brace,
                                          left_parenthesis)
             else
               check_first(first_pair, left_brace, left_parenthesis, 0)
@@ -105,11 +105,11 @@ module RuboCop
           config.for_cop('Layout/AlignHash')[key] == 'separator'
         end
 
-        def check_based_on_longest_key(pairs, left_brace, left_parenthesis)
-          key_lengths = pairs.map do |pair|
-            pair.children.first.source_range.length
+        def check_based_on_longest_key(hash_node, left_brace, left_parenthesis)
+          key_lengths = hash_node.keys.map do |key|
+            key.source_range.length
           end
-          check_first(pairs.first, left_brace, left_parenthesis,
+          check_first(hash_node.pairs.first, left_brace, left_parenthesis,
                       key_lengths.max - key_lengths.first)
         end
 

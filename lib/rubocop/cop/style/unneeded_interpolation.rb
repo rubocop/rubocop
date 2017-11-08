@@ -31,18 +31,14 @@ module RuboCop
         private
 
         def single_interpolation?(node)
-          single_child?(node) &&
+          node.children.one? &&
             interpolation?(node.children.first) &&
             !implicit_concatenation?(node) &&
             !embedded_in_percent_array?(node)
         end
 
         def single_variable_interpolation?(node)
-          single_child?(node) && variable_interpolation?(node.children.first)
-        end
-
-        def single_child?(node)
-          node.children.one?
+          node.children.one? && variable_interpolation?(node.children.first)
         end
 
         def interpolation?(node)
