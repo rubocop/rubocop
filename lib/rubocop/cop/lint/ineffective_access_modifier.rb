@@ -96,7 +96,7 @@ module RuboCop
         end
 
         def check_scope(node, cur_vis = :public)
-          node.children.reduce(cur_vis) do |visibility, child|
+          node.each_child_node.reduce(cur_vis) do |visibility, child|
             check_child_scope(child, visibility)
           end
         end
@@ -133,14 +133,13 @@ module RuboCop
         end
 
         def mark_method_as_useless(node, cur_vis)
-          _, method_name, = *node
-          @useless[method_name] = [node, cur_vis, @last_access_modifier]
+          @useless[node.method_name] = [node, cur_vis, @last_access_modifier]
         end
 
         def revert_method_uselessness(methods)
           methods.each do |sym|
             next unless sym.sym_type?
-            @useless.delete(sym.children[0])
+            @useless.delete(sym.value)
           end
         end
       end

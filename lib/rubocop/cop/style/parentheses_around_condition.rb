@@ -31,7 +31,7 @@ module RuboCop
 
           control_op_condition(cond) do |first_child|
             return if modifier_op?(first_child)
-            return if parens_required?(node.children.first)
+            return if parens_required?(node.condition)
             return if safe_assignment?(cond) && safe_assignment_allowed?
 
             add_offense(cond)
@@ -42,8 +42,7 @@ module RuboCop
           return false if node.if_type? && node.ternary?
           return true if node.rescue_type?
 
-          MODIFIER_NODES.include?(node.type) &&
-            node.modifier_form?
+          MODIFIER_NODES.include?(node.type) && node.modifier_form?
         end
 
         def message(node)

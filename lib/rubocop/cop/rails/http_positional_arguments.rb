@@ -29,44 +29,38 @@ module RuboCop
         minimum_target_rails_version 5.0
 
         def_node_matcher :http_request?, <<-PATTERN
-          (send nil? {#{HTTP_METHODS.map(&:inspect).join(' ')}} !nil? $_data ...)
+          (send nil? {#{HTTP_METHODS.map(&:inspect).join(' ')}} !nil? $_ ...)
         PATTERN
 
         def on_send(node)
-          data = http_request?(node)
-          # if the data is nil then we don't need to add keyword arguments
-          # because there is no data to put in params or headers, so skip
-          return if data.nil?
-          return unless needs_conversion?(data)
+          http_request?(node) do |data|
+            return unless needs_conversion?(data)
 
-          add_offense(node, location: :selector,
-                            message: format(MSG, node.method_name))
+            add_offense(node, location: :selector,
+                              message: format(MSG, node.method_name))
+          end
         end
 
-        # @return [Boolean] true if the line needs to be converted
         def needs_conversion?(data)
           return true unless data.hash_type?
-          children = data.child_nodes
 
-          value = children.find do |d|
-            special_keyword_arg?(d.children.first) ||
-              (format_arg?(d.children.first) && children.size == 1)
+          data.each_pair.none? do |pair|
+            special_keyword_arg?(pair.key) ||
+              format_arg?(pair.key) && data.pairs.one?
           end
-
-          value.nil?
         end
 
         def special_keyword_arg?(node)
-          KEYWORD_ARGS.include?(node.children.first) if node.sym_type?
+          node.sym_type? && KEYWORD_ARGS.include?(node.value)
         end
 
         def format_arg?(node)
-          node.children.first == :format if node.sym_type?
+          node.sym_type? && node.value == :format
         end
 
         def convert_hash_data(data, type)
-          # empty hash or no hash return empty string
-          return '' if data.nil? || data.children.empty?
+          return '' if data.hash_type? && data.empty?
+
           hash_data = if data.hash_type?
                         format('{ %s }', data.pairs.map(&:source).join(', '))
                       else
@@ -74,6 +68,7 @@ module RuboCop
                         # no need to surround with braces
                         data.source
                       end
+
           format(', %s: %s', type, hash_data)
         end
 

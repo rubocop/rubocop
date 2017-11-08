@@ -109,7 +109,7 @@ module RuboCop
         end
 
         def correct_args(node, corrector)
-          args = node.parent.children[1]
+          args = node.parent.arguments
           name, = *args.children.find { |arg| used?(arg) }
 
           corrector.replace(args.source_range, "|#{name}|")
@@ -120,8 +120,7 @@ module RuboCop
         end
 
         def kv_range(outer_node)
-          inner_node = outer_node.children.first
-          inner_node.loc.selector.join(outer_node.loc.selector)
+          outer_node.receiver.loc.selector.join(outer_node.loc.selector)
         end
       end
     end

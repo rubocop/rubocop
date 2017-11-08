@@ -17,8 +17,19 @@ module RuboCop
         to_a
       end
 
+      # Checks whether this is a negation method, i.e. `!` or keyword `not`.
+      #
+      # @return [Boolean] whether this method is a negation method
       def negation_method?
         keyword_bang? || keyword_not?
+      end
+
+      # Checks whether this is a lambda. Some versions of parser parses
+      # non-literal lambdas as a method send.
+      #
+      # @return [Boolean] whether this method is a lambda
+      def lambda?
+        parent && parent.block_type? && method?(:lambda)
       end
     end
   end

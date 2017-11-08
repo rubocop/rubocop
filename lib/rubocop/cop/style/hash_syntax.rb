@@ -166,9 +166,9 @@ module RuboCop
           end
         end
 
-        def autocorrect_ruby19(corrector, node)
-          key = node.children.first.source_range
-          op = node.loc.operator
+        def autocorrect_ruby19(corrector, pair_node)
+          key = pair_node.key.source_range
+          op = pair_node.loc.operator
 
           range = range_between(key.begin_pos, op.end_pos)
           range = range_with_surrounding_space(range, :right)
@@ -176,20 +176,20 @@ module RuboCop
                             range.source.sub(/^:(.*\S)\s*=>\s*$/, '\1: '))
         end
 
-        def autocorrect_hash_rockets(corrector, node)
-          key = node.children.first.source_range
-          op = node.loc.operator
+        def autocorrect_hash_rockets(corrector, pair_node)
+          key = pair_node.key.source_range
+          op = pair_node.loc.operator
 
-          corrector.insert_after(key, node.inverse_delimiter(true))
+          corrector.insert_after(key, pair_node.inverse_delimiter(true))
           corrector.insert_before(key, ':')
           corrector.remove(range_with_surrounding_space(op))
         end
 
-        def autocorrect_no_mixed_keys(corrector, node)
-          if node.colon?
-            autocorrect_hash_rockets(corrector, node)
+        def autocorrect_no_mixed_keys(corrector, pair_node)
+          if pair_node.colon?
+            autocorrect_hash_rockets(corrector, pair_node)
           else
-            autocorrect_ruby19(corrector, node)
+            autocorrect_ruby19(corrector, pair_node)
           end
         end
 

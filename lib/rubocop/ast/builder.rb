@@ -31,6 +31,7 @@ module RuboCop
         ResbodyNode      => [:resbody],
         SendNode         => %i[csend send],
         SuperNode        => %i[super zsuper],
+        SymbolNode       => [:sym],
         UntilNode        => %i[until until_post],
         WhenNode         => [:when],
         WhileNode        => %i[while while_post],

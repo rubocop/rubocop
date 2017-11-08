@@ -863,19 +863,33 @@ describe RuboCop::AST::SendNode do
     context 'with keyword `not`' do
       let(:source) { 'not foo' }
 
-      it { expect(send_node.negation_method?).to be(true) }
+      it { expect(send_node.negation_method?).to be_truthy }
     end
 
-    context 'with bang method' do
+    context 'with a bang method' do
       let(:source) { '!foo' }
 
-      it { expect(send_node.negation_method?).to be(true) }
+      it { expect(send_node.negation_method?).to be_truthy }
     end
 
-    context 'with normal method' do
+    context 'with a non-negated method' do
       let(:source) { 'foo.bar' }
 
-      it { expect(send_node.negation_method?).to be(false) }
+      it { expect(send_node.negation_method?).to be_falsey }
+    end
+  end
+
+  describe '#lambda?' do
+    context 'with a lambda method' do
+      let(:source) { 'lambda { |foo| bar(foo) }' }
+
+      it { expect(send_node.lambda?).to be_truthy }
+    end
+
+    context 'with a non-lambda method' do
+      let(:source) { 'foo.bar' }
+
+      it { expect(send_node.lambda?).to be_falsey }
     end
   end
 end

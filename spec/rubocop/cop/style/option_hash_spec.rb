@@ -3,22 +3,16 @@
 describe RuboCop::Cop::Style::OptionHash, :config do
   subject(:cop) { described_class.new(config) }
 
-  let(:cop_config) { { 'SuspiciousParamNames' => ['options'] } }
+  let(:cop_config) { { 'SuspiciousParamNames' => suspicious_names } }
+  let(:suspicious_names) { ['options'] }
 
-  let(:source) do
-    <<-RUBY.strip_indent
+  it 'registers an offense' do
+    expect_offense(<<-RUBY.strip_indent)
       def some_method(options = {})
+                      ^^^^^^^^^^^^ Prefer keyword arguments to options hashes.
         puts some_arg
       end
     RUBY
-  end
-
-  it 'registers an offense' do
-    inspect_source(source)
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages.first)
-      .to eq('Prefer keyword arguments to options hashes.')
-    expect(cop.highlights).to eq ['options = {}']
   end
 
   context 'when the last argument is an options hash named something else' do
@@ -40,15 +34,18 @@ describe RuboCop::Cop::Style::OptionHash, :config do
       RUBY
     end
 
-    it 'registers an offense when in SuspiciousParamNames list' do
-      cop_config['SuspiciousParamNames'] = ['config']
+    context 'when the argument name is in the list of suspicious names' do
+      let(:suspicious_names) { %w[options config] }
 
-      inspect_source(source)
-
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages.first)
-        .to eq('Prefer keyword arguments to options hashes.')
-      expect(cop.highlights).to eq ['config={}']
+      it 'registers an offense' do
+        expect_offense(<<-RUBY.strip_indent)
+          def steep(flavor, duration, config={})
+                                      ^^^^^^^^^ Prefer keyword arguments to options hashes.
+            mug = config.fetch(:mug)
+            prep(flavor, duration, mug)
+          end
+        RUBY
+      end
     end
   end
 

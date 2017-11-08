@@ -18,19 +18,25 @@ module RuboCop
       #   # good
       #   def attribute ...
       class AccessorMethodName < Cop
-        def on_def(node)
-          msg =
-            if bad_reader_name?(node)
-              'Do not prefix reader method names with `get_`.'
-            elsif bad_writer_name?(node)
-              'Do not prefix writer method names with `set_`.'
-            end
+        MSG_READER = 'Do not prefix reader method names with `get_`.'.freeze
+        MSG_WRITER = 'Do not prefix writer method names with `set_`.'.freeze
 
-          add_offense(node, location: :name, message: msg) if msg
+        def on_def(node)
+          return unless bad_reader_name?(node) || bad_writer_name?(node)
+
+          add_offense(node, location: :name)
         end
         alias on_defs on_def
 
         private
+
+        def message(node)
+          if bad_reader_name?(node)
+            MSG_READER
+          elsif bad_writer_name?(node)
+            MSG_WRITER
+          end
+        end
 
         def bad_reader_name?(node)
           node.method_name.to_s.start_with?('get_') && !node.arguments?
