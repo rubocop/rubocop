@@ -154,9 +154,6 @@ foo.bar
    .each do
      baz
        end
-```
-```ruby
-# EnforcedStyleAlignWith: either (default)
 
 # good
 
@@ -165,7 +162,12 @@ variable = lambda do |i|
 end
 ```
 ```ruby
-# EnforcedStyleAlignWith: start_of_block
+# bad
+
+foo.bar
+   .each do
+     baz
+       end
 
 # good
 
@@ -175,7 +177,12 @@ foo.bar
    end
 ```
 ```ruby
-# EnforcedStyleAlignWith: start_of_line
+# bad
+
+foo.bar
+   .each do
+     baz
+       end
 
 # good
 
@@ -356,9 +363,6 @@ keyword is. If it's set to `def`, the `end` shall be aligned with the
 
 private def foo
             end
-```
-```ruby
-# EnforcedStyleAlignWith: start_of_line (default)
 
 # good
 
@@ -366,7 +370,10 @@ private def foo
 end
 ```
 ```ruby
-# EnforcedStyleAlignWith: def
+# bad
+
+private def foo
+            end
 
 # good
 
@@ -714,7 +721,10 @@ variable = if true
     end
 ```
 ```ruby
-# EnforcedStyleAlignWith: keyword (default)
+# bad
+
+variable = if true
+    end
 
 # good
 
@@ -722,7 +732,10 @@ variable = if true
            end
 ```
 ```ruby
-# EnforcedStyleAlignWith: variable
+# bad
+
+variable = if true
+    end
 
 # good
 
@@ -730,7 +743,10 @@ variable = if true
 end
 ```
 ```ruby
-# EnforcedStyleAlignWith: start_of_line
+# bad
+
+variable = if true
+    end
 
 # good
 
@@ -1001,16 +1017,15 @@ and its standard library subclasses, excluding subclasses of
 # bad
 
 class C < Exception; end
-```
-```ruby
-# EnforcedStyle: runtime_error (default)
 
 # good
 
 class C < RuntimeError; end
 ```
 ```ruby
-# EnforcedStyle: standard_error
+# bad
+
+class C < Exception; end
 
 # good
 

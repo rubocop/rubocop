@@ -12,25 +12,22 @@ module RuboCop
       # keyword is. If it's set to `def`, the `end` shall be aligned with the
       # `def` keyword.
       #
-      # @example
-      #
+      # @example EnforcedStyleAlignWith: start_of_line (default)
       #   # bad
       #
       #   private def foo
       #               end
-      #
-      # @example
-      #
-      #   # EnforcedStyleAlignWith: start_of_line (default)
       #
       #   # good
       #
       #   private def foo
       #   end
       #
-      # @example
+      # @example EnforcedStyleAlignWith: def
+      #   # bad
       #
-      #   # EnforcedStyleAlignWith: def
+      #   private def foo
+      #               end
       #
       #   # good
       #

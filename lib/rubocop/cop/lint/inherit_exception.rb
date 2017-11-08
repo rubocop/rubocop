@@ -8,23 +8,19 @@ module RuboCop
       # `StandardError`. It is configurable to suggest using either
       # `RuntimeError` (default) or `StandardError` instead.
       #
-      # @example
-      #
+      # @example EnforcedStyle: runtime_error (default)
       #   # bad
       #
       #   class C < Exception; end
-      #
-      # @example
-      #
-      #   # EnforcedStyle: runtime_error (default)
       #
       #   # good
       #
       #   class C < RuntimeError; end
       #
-      # @example
+      # @example EnforcedStyle: standard_error
+      #   # bad
       #
-      #   # EnforcedStyle: standard_error
+      #   class C < Exception; end
       #
       #   # good
       #
