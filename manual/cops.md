@@ -317,6 +317,7 @@ In the following section you find all available cops:
 * [Rails/DelegateAllowBlank](cops_rails.md#railsdelegateallowblank)
 * [Rails/DynamicFindBy](cops_rails.md#railsdynamicfindby)
 * [Rails/EnumUniqueness](cops_rails.md#railsenumuniqueness)
+* [Rails/EnvironmentComparison](cops_rails.md#railsenvironmentcomparison)
 * [Rails/Exit](cops_rails.md#railsexit)
 * [Rails/FilePath](cops_rails.md#railsfilepath)
 * [Rails/FindBy](cops_rails.md#railsfindby)
