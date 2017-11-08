@@ -40,16 +40,20 @@ This cop checks for non-ascii characters in identifier names.
 
 ```ruby
 # bad
-def καλημερα
+def καλημερα # Greek alphabet (non-ascii)
+end
 
 # bad
-def こんにちは
+def こんにちは # Japanese character (non-ascii)
+end
 
 # bad
-def hello_🍣
+def hello_🍣 # Emoji (non-ascii)
+end
 
 # good
 def hello
+end
 ```
 
 ### References
