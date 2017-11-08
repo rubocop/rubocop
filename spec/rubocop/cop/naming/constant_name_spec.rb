@@ -18,6 +18,13 @@ describe RuboCop::Cop::Naming::ConstantName do
     RUBY
   end
 
+  it 'registers an offense for non-POSIX upper case in const name' do
+    expect_offense(<<-RUBY.strip_indent)
+      Nö = 'no'
+      ^^ Use SCREAMING_SNAKE_CASE for constants.
+    RUBY
+  end
+
   it 'registers offenses for camel case in multiple const assignment' do
     expect_offense(<<-RUBY.strip_indent)
       TopCase, Test2, TEST_3 = 5, 6, 7
@@ -46,6 +53,10 @@ describe RuboCop::Cop::Naming::ConstantName do
 
   it 'allows screaming snake case in multiple const assignment' do
     expect_no_offenses('TOP_TEST, TEST_2 = 5, 6')
+  end
+
+  it 'allows screaming snake case with POSIX upper case characters' do
+    expect_no_offenses('TÖP_TEST = 5')
   end
 
   it 'does not check names if rhs is a method call' do

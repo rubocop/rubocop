@@ -19,7 +19,9 @@ module RuboCop
       #   INCH_IN_CM = 2.54
       class ConstantName < Cop
         MSG = 'Use SCREAMING_SNAKE_CASE for constants.'.freeze
-        SNAKE_CASE = /^[\dA-Z_]+$/
+        # Use POSIX character classes, so we allow accented characters rather
+        # than just standard ASCII characters
+        SNAKE_CASE = /^[[:digit:][:upper:]_]+$/
 
         def_node_matcher :class_or_struct_return_method?, <<-PATTERN
           (send

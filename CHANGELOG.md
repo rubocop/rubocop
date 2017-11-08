@@ -28,6 +28,7 @@
 
 * [#5096](https://github.com/bbatsov/rubocop/issues/5096): Fix incorrect detection and autocorrection of multiple extend/include/prepend. ([@marcandre][])
 * [#4662](https://github.com/bbatsov/rubocop/issues/4662): Fix incorrect indent level detection when first line of heredoc is blank. ([@sambostock][])
+* [#5016](https://github.com/bbatsov/rubocop/issues/5016): Fix a false positive for `Style/ConstantName` with constant names using non-ASCII capital letters with accents. ([@timrogers][])
 * [#4866](https://github.com/bbatsov/rubocop/issues/4866): Prevent `Layout/BlockEndNewline` cop from introducing trailing whitespaces. ([@bgeuken][])
 * [#3396](https://github.com/bbatsov/rubocop/issues/3396): Concise error when config. file not found. ([@jaredbeck][])
 * [#4881](https://github.com/bbatsov/rubocop/issues/4881): Fix a false positive for `Performance/HashEachMethods` when unused argument(s) exists in other blocks. ([@pocke][])
