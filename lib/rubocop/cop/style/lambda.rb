@@ -8,10 +8,7 @@ module RuboCop
       # It is configurable to enforce one of the styles for both single line
       # and multiline lambdas as well.
       #
-      # @example
-      #
-      #   # EnforcedStyle: line_count_dependent (default)
-      #
+      # @example EnforcedStyle: line_count_dependent (default)
       #   # bad
       #   f = lambda { |x| x }
       #   f = ->(x) do
@@ -24,10 +21,7 @@ module RuboCop
       #         x
       #       end
       #
-      # @example
-      #
-      #   # EnforcedStyle: lambda
-      #
+      # @example EnforcedStyle: lambda
       #   # bad
       #   f = ->(x) { x }
       #   f = ->(x) do
@@ -40,10 +34,7 @@ module RuboCop
       #         x
       #       end
       #
-      # @example
-      #
-      #   # EnforcedStyle: literal
-      #
+      # @example EnforcedStyle: literal
       #   # bad
       #   f = lambda { |x| x }
       #   f = lambda do |x|

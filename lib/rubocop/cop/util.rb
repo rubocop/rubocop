@@ -307,3 +307,4 @@ module RuboCop
     end
   end
 end
+# rubocop:enable Metrics/ModuleLength

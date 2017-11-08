@@ -85,3 +85,4 @@ describe RuboCop::Cop::Lint::ScriptPermission do
     end
   end
 end
+# rubocop:enable Style/NumericLiteralPrefix

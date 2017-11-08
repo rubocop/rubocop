@@ -931,6 +931,10 @@ Style/RescueModifier:
   StyleGuide: '#no-rescue-modifiers'
   Enabled: true
 
+Style/RescueStandardError:
+  Description: 'Avoid rescuing without specifying an error class.'
+  Enabled: true
+
 Style/SafeNavigation:
   Description: >-
                   This cop transforms usages of a method call safeguarded by
@@ -1304,6 +1308,10 @@ Lint/Loop:
   StyleGuide: '#loop-with-break'
   Enabled: true
 
+Lint/MissingCopEnableDirective:
+  Description: 'Checks for a `# rubocop:enable` after `# rubocop:disable`'
+  Enabled: true
+
 Lint/MultipleCompare:
   Description: "Use `&&` operator to compare multiple value."
   Enabled: true
@@ -1373,11 +1381,6 @@ Lint/RescueException:
 
 Lint/RescueType:
   Description: 'Avoid rescuing from non constants that could result in a `TypeError`.'
-  Enabled: true
-
-Lint/RescueWithoutErrorClass:
-  Description: 'Avoid rescuing without specifying an error class.'
-  StyleGuide: '#no-blind-rescues'
   Enabled: true
 
 Lint/SafeNavigationChain:

@@ -8,6 +8,7 @@
 * [#1583](https://github.com/bbatsov/rubocop/issues/1583): Add a quiet formatter. ([@drenmi][])
 * Add new `Style/RandomWithOffset` cop. ([@donjar][])
 * [#4892](https://github.com/bbatsov/rubocop/issues/4892): Add new `Lint/ShadowedArgument` cop and remove argument shadowing detection from `Lint/UnusedBlockArgument` and `Lint/UnusedMethodArgument`. ([@akhramov][])
+* [#4674](https://github.com/bbatsov/rubocop/issues/4674): Add a new `Lint/MissingCopEnableDirective` cop. ([@tdeo][])
 
 ### Bug fixes
 
@@ -32,6 +33,7 @@
 * [#2679](https://github.com/bbatsov/rubocop/issues/2679): Handle dependencies to `Metrics/LineLength: Max` when generating `.rubocop_todo.yml`. ([@jonas054][])
 * [#4943](https://github.com/bbatsov/rubocop/pull/4943): Make cop generator compliant with the repo's rubocop config. ([@tdeo][])
 * [#5011](https://github.com/bbatsov/rubocop/pull/5011): Remove `SupportedStyles` from "Configuration parameters" in `.rubocop_todo.yml`. ([@pocke][])
+* `Lint/RescueWithoutErrorClass` has been replaced by `Style/RescueStandardError`. ([@rrosenblum][])
 
 ## 0.51.0 (2017-10-18)
 

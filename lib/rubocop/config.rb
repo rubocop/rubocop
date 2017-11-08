@@ -2,14 +2,14 @@
 
 require 'pathname'
 
-# rubocop:disable Metrics/ClassLength
-
 module RuboCop
   # This class represents the configuration of the RuboCop application
   # and all its cops. A Config is associated with a YAML configuration
   # file from which it was read. Several different Configs can be used
   # during a run of the rubocop program, if files in several
   # directories are inspected.
+
+  # rubocop:disable Metrics/ClassLength
   class Config
     include PathUtil
 
@@ -33,6 +33,9 @@ module RuboCop
       'Style/SingleSpaceBeforeFirstArg' =>
         'The `Style/SingleSpaceBeforeFirstArg` cop has been renamed to ' \
         '`Layout/SpaceBeforeFirstArg`.',
+      'Lint/RescueWithoutErrorClass' =>
+        'The `Lint/RescueWithoutErrorClass` cop has been replaced by ' \
+        '`Style/RescueStandardError`.',
       'Lint/SpaceBeforeFirstArg' =>
         'The `Lint/SpaceBeforeFirstArg` cop has been removed, since it was a ' \
         'duplicate of `Layout/SpaceBeforeFirstArg`. Please use ' \
@@ -541,4 +544,5 @@ module RuboCop
       PathUtil.smart_path(@loaded_path)
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end

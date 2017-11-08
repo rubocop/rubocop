@@ -296,6 +296,7 @@ describe RuboCop::CLI, :isolated_environment do
                    '  ' + '#' * 93,
                    '  x(123456)',
                    '  y("123")',
+                   '  # rubocop: enable Style/NumericLiterals',
                    'end'])
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       expect($stderr.string)
@@ -351,7 +352,8 @@ describe RuboCop::CLI, :isolated_environment do
                     ['#' * 95,
                      '# rubocop:disable all',
                      'a' * 10 + ' # rubocop:disable LineLength,ClassLength',
-                     'y(123) # rubocop:disable all'])
+                     'y(123) # rubocop:disable all',
+                     '# rubocop:enable all'])
         expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
         expect($stderr.string).to eq('')
         expect($stdout.string)
