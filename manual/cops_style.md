@@ -122,7 +122,8 @@ Enabled by default | Supports autocorrection
 Enabled | No
 
 This cop checks for non-ascii (non-English) characters
-in comments.
+in comments. You could set an array of allowed non-ascii chars in
+AllowedChars attribute (empty by default).
 
 ### Example
 
@@ -133,6 +134,12 @@ in comments.
 # good
 # Translates from English to Japanese
 ```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+AllowedChars |
 
 ### References
 
