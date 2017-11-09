@@ -677,6 +677,9 @@ Style/AndOr:
     - always
     - conditionals
 
+Style/AsciiComments:
+  AllowedChars: []
+
 # Checks if usage of `%()` or `%Q()` matches configuration.
 Style/BarePercentLiterals:
   EnforcedStyle: bare_percent
