@@ -63,6 +63,12 @@ end
 
 # good
 height = 10
+
+# bad
+params[:عرض_gteq] # Arabic character (non-ascii)
+
+# good
+params[:width_gteq]
 ```
 
 ### References

@@ -29,6 +29,12 @@ module RuboCop
       #   # good
       #   height = 10
       #
+      #   # bad
+      #   params[:عرض_gteq] # Arabic character (non-ascii)
+      #
+      #   # good
+      #   params[:width_gteq]
+      #
       # rubocop:enable Style/AsciiComments
       class AsciiIdentifiers < Cop
         MSG = 'Use only ascii symbols in identifiers.'.freeze
