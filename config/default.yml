@@ -955,9 +955,6 @@ Style/HashSyntax:
   # Do not suggest { a?: 1 } over { :a? => 1 } in ruby19 style
   PreferHashRocketsForNonAlnumEndingSymbols: false
 
-Style/IfUnlessModifier:
-  MaxLineLength: 80
-
 Style/InverseMethods:
   Enabled: true
   # `InverseMethods` are methods that can be inverted by a not (`not` or `!`)
@@ -1158,6 +1155,14 @@ Style/RegexpLiteral:
   # are found in the regexp string.
   AllowInnerSlashes: false
 
+Style/RescueStandardError:
+  EnforcedStyle: explicit
+  # implicit: Do not include the error class, `rescue`
+  # explicit: Require an error class `rescue StandardError`
+  SupportedStyles:
+    - implicit
+    - explicit
+
 Style/ReturnNil:
   EnforcedStyle: return
   SupportedStyles:
@@ -1315,9 +1320,6 @@ Style/TrivialAccessors:
     - to_s
     - to_sym
 
-Style/WhileUntilModifier:
-  MaxLineLength: 80
-
 # `WordArray` enforces how array literals of word-like strings should be expressed.
 Style/WordArray:
   EnforcedStyle: percent
@@ -1456,6 +1458,10 @@ Lint/SafeNavigationChain:
     - blank?
     - presence
     - try
+
+# Checks for shadowed arguments
+Lint/ShadowedArgument:
+  IgnoreImplicitReferences: false
 
 # Checks for unused block arguments
 Lint/UnusedBlockArgument:

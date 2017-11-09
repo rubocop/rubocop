@@ -2,14 +2,14 @@
 
 require 'pathname'
 
-# rubocop:disable Metrics/ClassLength
-
 module RuboCop
   # This class represents the configuration of the RuboCop application
   # and all its cops. A Config is associated with a YAML configuration
   # file from which it was read. Several different Configs can be used
   # during a run of the rubocop program, if files in several
   # directories are inspected.
+
+  # rubocop:disable Metrics/ClassLength
   class Config
     include PathUtil
 
@@ -33,6 +33,9 @@ module RuboCop
       'Style/SingleSpaceBeforeFirstArg' =>
         'The `Style/SingleSpaceBeforeFirstArg` cop has been renamed to ' \
         '`Layout/SpaceBeforeFirstArg`.',
+      'Lint/RescueWithoutErrorClass' =>
+        'The `Lint/RescueWithoutErrorClass` cop has been replaced by ' \
+        '`Style/RescueStandardError`.',
       'Lint/SpaceBeforeFirstArg' =>
         'The `Lint/SpaceBeforeFirstArg` cop has been removed, since it was a ' \
         'duplicate of `Layout/SpaceBeforeFirstArg`. Please use ' \
@@ -115,11 +118,25 @@ module RuboCop
                      'The "never" behavior is always assumed.'
       },
       {
+        cop: 'Style/IfUnlessModifier',
+        parameter: 'MaxLineLength',
+        alternative:
+          '`Style/IfUnlessModifier: MaxLineLength` has been removed. Use ' \
+          '`Metrics/LineLength: Max` instead'
+      },
+      {
         cop: 'Style/SpaceAroundOperators',
         parameter: 'MultiSpaceAllowedForOperators',
         alternative: 'If your intention was to allow extra spaces ' \
                      'for alignment, please use AllowForAlignment: ' \
                      'true instead.'
+      },
+      {
+        cop: 'Style/WhileUntilModifier',
+        parameter: 'MaxLineLength',
+        alternative:
+          '`Style/WhileUntilModifier: MaxLineLength` has been removed. Use ' \
+          '`Metrics/LineLength: Max` instead'
       },
       {
         cop: 'AllCops',
@@ -170,6 +187,19 @@ module RuboCop
         h[cop] = cop_options
       end
       @hash = hash
+    end
+
+    def self.create(hash, path)
+      new(hash, path).check
+    end
+
+    def check
+      deprecation_check do |deprecation_message|
+        warn("#{path} - #{deprecation_message}")
+      end
+      validate
+      make_excludes_absolute
+      self
     end
 
     def [](key)
@@ -514,4 +544,5 @@ module RuboCop
       PathUtil.smart_path(@loaded_path)
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end

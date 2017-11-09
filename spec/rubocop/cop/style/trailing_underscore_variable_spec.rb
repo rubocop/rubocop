@@ -224,11 +224,6 @@ describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
 
     include_examples 'common functionality'
 
-    it 'does not register an offense for an underscore variable preceded ' \
-       'by a named splat underscore variable' do
-      expect_no_offenses('a, *_b, _ = foo()')
-    end
-
     it 'does not register an offense for named variables ' \
        'that start with an underscore' do
       expect_no_offenses('a, b, _c = foo()')
@@ -239,8 +234,8 @@ describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
       expect_no_offenses('a, *_b = foo()')
     end
 
-    it 'does not register an offense for an underscore preceded by ' \
-       'a named splat underscore' do
+    it 'does not register an offense for an underscore variable preceded ' \
+       'by a named splat underscore variable' do
       expect_no_offenses('a, *_b, _ = foo()')
     end
 

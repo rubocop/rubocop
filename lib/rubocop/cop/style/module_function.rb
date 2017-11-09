@@ -8,15 +8,27 @@ module RuboCop
       #
       # Supported styles are: module_function, extend_self.
       #
-      # @example
+      # @example EnforcedStyle: module_function (default)
+      #   # bad
+      #   module Test
+      #     extend self
+      #     ...
+      #   end
       #
-      #   # Good if EnforcedStyle is module_function
+      #   # good
       #   module Test
       #     module_function
       #     ...
       #   end
       #
-      #   # Good if EnforcedStyle is extend_self
+      # @example EnforcedStyle: extend_self
+      #   # bad
+      #   module Test
+      #     module_function
+      #     ...
+      #   end
+      #
+      #   # good
       #   module Test
       #     extend self
       #     ...

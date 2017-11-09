@@ -7,10 +7,7 @@ module RuboCop
       # readability is reduced because the operands are not ordered the same
       # way as they would be ordered in spoken English.
       #
-      # @example
-      #
-      #   # EnforcedStyle: all_comparison_operators
-      #
+      # @example EnforcedStyle: all_comparison_operators (default)
       #   # bad
       #   99 == foo
       #   "bar" != foo
@@ -23,10 +20,7 @@ module RuboCop
       #   foo <= 42
       #   bar > 10
       #
-      # @example
-      #
-      #   # EnforcedStyle: equality_operators_only
-      #
+      # @example EnforcedStyle: equality_operators_only
       #   # bad
       #   99 == foo
       #   "bar" != foo

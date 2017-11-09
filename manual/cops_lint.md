@@ -154,9 +154,6 @@ foo.bar
    .each do
      baz
        end
-```
-```ruby
-# EnforcedStyleAlignWith: either (default)
 
 # good
 
@@ -165,7 +162,12 @@ variable = lambda do |i|
 end
 ```
 ```ruby
-# EnforcedStyleAlignWith: start_of_block
+# bad
+
+foo.bar
+   .each do
+     baz
+       end
 
 # good
 
@@ -175,7 +177,12 @@ foo.bar
    end
 ```
 ```ruby
-# EnforcedStyleAlignWith: start_of_line
+# bad
+
+foo.bar
+   .each do
+     baz
+       end
 
 # good
 
@@ -356,9 +363,6 @@ keyword is. If it's set to `def`, the `end` shall be aligned with the
 
 private def foo
             end
-```
-```ruby
-# EnforcedStyleAlignWith: start_of_line (default)
 
 # good
 
@@ -366,7 +370,10 @@ private def foo
 end
 ```
 ```ruby
-# EnforcedStyleAlignWith: def
+# bad
+
+private def foo
+            end
 
 # good
 
@@ -714,7 +721,10 @@ variable = if true
     end
 ```
 ```ruby
-# EnforcedStyleAlignWith: keyword (default)
+# bad
+
+variable = if true
+    end
 
 # good
 
@@ -722,7 +732,10 @@ variable = if true
            end
 ```
 ```ruby
-# EnforcedStyleAlignWith: variable
+# bad
+
+variable = if true
+    end
 
 # good
 
@@ -730,7 +743,10 @@ variable = if true
 end
 ```
 ```ruby
-# EnforcedStyleAlignWith: start_of_line
+# bad
+
+variable = if true
+    end
 
 # good
 
@@ -1001,16 +1017,15 @@ and its standard library subclasses, excluding subclasses of
 # bad
 
 class C < Exception; end
-```
-```ruby
-# EnforcedStyle: runtime_error (default)
 
 # good
 
 class C < RuntimeError; end
 ```
 ```ruby
-# EnforcedStyle: standard_error
+# bad
+
+class C < Exception; end
 
 # good
 
@@ -1146,6 +1161,33 @@ end
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#loop-with-break](https://github.com/bbatsov/ruby-style-guide#loop-with-break)
+
+## Lint/MissingCopEnableDirective
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks that there is an `# rubocop:enable ...` statement
+after a `# rubocop:disable ...` statement. This will prevent leaving
+cop disables on wide ranges of code, that latter contributors to
+a file wouldn't be aware of.
+
+### Example
+
+```ruby
+# good
+# rubocop:disable Layout/SpaceAroundOperators
+x= 0
+# rubocop:enable Layout/SpaceAroundOperators
+# y = 1
+# EOF
+
+# bad
+# rubocop:disable Layout/SpaceAroundOperators
+x= 0
+# EOF
+```
 
 ## Lint/MultipleCompare
 
@@ -1310,7 +1352,7 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | No
 
-Checks for space between a the name of a called method and a left
+Checks for space between the name of a called method and a left
 parenthesis.
 
 ### Example
@@ -1596,36 +1638,6 @@ rescue NameError
 end
 ```
 
-## Lint/RescueWithoutErrorClass
-
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
-
-This cop checks for uses of `rescue` with no error class specified.
-
-### Example
-
-```ruby
-# good
-begin
-  foo
-rescue BarError
-  bar
-end
-
-# bad
-begin
-  foo
-rescue
-  bar
-end
-```
-
-### References
-
-* [https://github.com/bbatsov/ruby-style-guide#no-blind-rescues](https://github.com/bbatsov/ruby-style-guide#no-blind-rescues)
-
 ## Lint/ReturnInVoidContext
 
 Enabled by default | Supports autocorrection
@@ -1704,6 +1716,53 @@ Enabled | Yes
 
 This cop checks if a file which has a shebang line as
 its first line is granted execute permission.
+
+## Lint/ShadowedArgument
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks for shadowed arguments.
+
+### Example
+
+```ruby
+# bad
+
+do_something do |foo|
+  foo = 42
+  puts foo
+end
+
+def do_something(foo)
+  foo = 42
+  puts foo
+end
+```
+```ruby
+# good
+
+do_something do |foo|
+  foo = foo + 42
+  puts foo
+end
+
+def do_something(foo)
+  foo = foo + 42
+  puts foo
+end
+
+def do_something(foo)
+  puts foo
+end
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+IgnoreImplicitReferences | false
 
 ## Lint/ShadowedException
 

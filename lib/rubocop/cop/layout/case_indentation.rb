@@ -30,12 +30,10 @@ module RuboCop
       #     y / 3
       #   end
       #
-      # @example
+      # @example EnforcedStyle: case (default)
       #   # if EndAlignment is set to other style such as
       #   # start_of_line (as shown below), then *when* alignment
       #   # configuration does have an effect.
-      #
-      #   # EnforcedStyle: case (default)
       #
       #   # bad
       #   a = case n
@@ -53,8 +51,7 @@ module RuboCop
       #         y / 3
       #   end
       #
-      #   # EnforcedStyle: end
-      #
+      # @example EnforcedStyle: end
       #   # bad
       #   a = case n
       #       when 0

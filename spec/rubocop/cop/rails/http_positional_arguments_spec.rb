@@ -550,3 +550,4 @@ describe RuboCop::Cop::Rails::HttpPositionalArguments do
     end
   end
 end
+# rubocop:enable LineLength

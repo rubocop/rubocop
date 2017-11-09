@@ -5,6 +5,72 @@ module RuboCop
     module Style
       # Check for uses of braces or do/end around single line or
       # multi-line blocks.
+      #
+      # @example EnforcedStyle: line_count_based (default)
+      #   # bad - single line block
+      #   items.each do |item| item / 5 end
+      #
+      #   # good - single line block
+      #   items.each { |item| item / 5 }
+      #
+      #   # bad - multi-line block
+      #   things.map { |thing|
+      #     something = thing.some_method
+      #     proces(something)
+      #   }
+      #
+      #   # good - multi-line block
+      #   things.map do |thing|
+      #     something = thing.some_method
+      #     proces(something)
+      #   end
+      #
+      # @example EnforcedStyle: semantic
+      #   # Prefer `do...end` over `{...}` for procedural blocks.
+      #
+      #   # return value is used/assigned
+      #   # bad
+      #   foo = map do |x|
+      #     x
+      #   end
+      #   puts (map do |x|
+      #     x
+      #   end)
+      #
+      #   # return value is not used out of scope
+      #   # good
+      #   map do |x|
+      #     x
+      #   end
+      #
+      #   # Prefer `{...}` over `do...end` for functional blocks.
+      #
+      #   # return value is not used out of scope
+      #   # bad
+      #   each { |x|
+      #     x
+      #   }
+      #
+      #   # return value is used/assigned
+      #   # good
+      #   foo = map { |x|
+      #     x
+      #   }
+      #   map { |x|
+      #     x
+      #   }.inspect
+      #
+      # @example EnforcedStyle: braces_for_chaining
+      #   # bad
+      #   words.each do |word|
+      #     word.flip.flop
+      #   end.join("-")
+      #
+      #   # good
+      #   words.each { |word|
+      #     word.flip.flop
+      #   }.join("-")
+      #
       class BlockDelimiters < Cop
         include ConfigurableEnforcedStyle
 
@@ -128,7 +194,7 @@ module RuboCop
             node.each_child_node { |child| get_blocks(child, &block) }
           end
         end
-        # rubocop:enable Metrics/CyclimaticComplexity
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         def proper_block_style?(node)
           return true if ignored_method?(node.method_name)

@@ -109,9 +109,6 @@ describe RuboCop::CLI, :isolated_environment do
 
     before do
       create_file('example.rb', source)
-    end
-
-    before do
       create_file('.rubocop.yml', YAML.dump(config))
     end
 
@@ -515,12 +512,12 @@ describe RuboCop::CLI, :isolated_environment do
       def func
         foo
         bar
-        rescue
+        rescue StandardError
           baz
         end
 
       def func
-        x; y; rescue; z
+        x; y; rescue StandardError; z
       end
 
       def method
@@ -531,14 +528,14 @@ describe RuboCop::CLI, :isolated_environment do
         BlockB do |_portfolio|
           foo
         end
-      rescue => e # some problem
+      rescue StandardError => e # some problem
         bar
       end
 
       def method
         # comment 1
         do_some_stuff
-      rescue # comment 2
+      rescue StandardError # comment 2
         # comment 3
       end
     RUBY

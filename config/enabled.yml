@@ -300,7 +300,7 @@ Layout/SpaceInsidePercentLiteralDelimiters:
 
 Layout/SpaceInsideBrackets:
   Description: 'No spaces after [ or before ].'
-  StyleGuide: '#no-spaces-braces'
+  StyleGuide: '#spaces-braces'
   Enabled: true
 
 Layout/SpaceInsideHashLiteralBraces:
@@ -310,7 +310,7 @@ Layout/SpaceInsideHashLiteralBraces:
 
 Layout/SpaceInsideParens:
   Description: 'No spaces after ( or before ).'
-  StyleGuide: '#no-spaces-braces'
+  StyleGuide: '#spaces-braces'
   Enabled: true
 
 Layout/SpaceInsideRangeLiteral:
@@ -882,6 +882,13 @@ Style/RaiseArgs:
   StyleGuide: '#exception-class-messages'
   Enabled: true
 
+Style/RandomWithOffset:
+  Description: >-
+                 Prefer to use ranges when generating random numbers instead of
+                 integers with offsets.
+  StyleGuide: '#random-numbers'
+  Enabled: true
+
 Style/RedundantBegin:
   Description: "Don't use begin blocks when they are not needed."
   StyleGuide: '#begin-implicit'
@@ -922,6 +929,10 @@ Style/RegexpLiteral:
 Style/RescueModifier:
   Description: 'Avoid using rescue in its modifier form.'
   StyleGuide: '#no-rescue-modifiers'
+  Enabled: true
+
+Style/RescueStandardError:
+  Description: 'Avoid rescuing without specifying an error class.'
   Enabled: true
 
 Style/SafeNavigation:
@@ -1297,6 +1308,10 @@ Lint/Loop:
   StyleGuide: '#loop-with-break'
   Enabled: true
 
+Lint/MissingCopEnableDirective:
+  Description: 'Checks for a `# rubocop:enable` after `# rubocop:disable`'
+  Enabled: true
+
 Lint/MultipleCompare:
   Description: "Use `&&` operator to compare multiple value."
   Enabled: true
@@ -1368,17 +1383,16 @@ Lint/RescueType:
   Description: 'Avoid rescuing from non constants that could result in a `TypeError`.'
   Enabled: true
 
-Lint/RescueWithoutErrorClass:
-  Description: 'Avoid rescuing without specifying an error class.'
-  StyleGuide: '#no-blind-rescues'
-  Enabled: true
-
 Lint/SafeNavigationChain:
   Description: 'Do not chain ordinary method call after safe navigation operator.'
   Enabled: true
 
 Lint/ScriptPermission:
   Description: 'Grant script file execute permission.'
+  Enabled: true
+
+Lint/ShadowedArgument:
+  Description: 'Avoid reassigning arguments before they were used.'
   Enabled: true
 
 Lint/ShadowedException:
@@ -1578,7 +1592,7 @@ Performance/RangeInclude:
 
 Performance/RedundantBlockCall:
   Description: 'Use `yield` instead of `block.call`.'
-  Reference: 'https://github.com/JuanitoFatas/fast-ruby#proccall-vs-yield-code'
+  Reference: 'https://github.com/JuanitoFatas/fast-ruby#proccall-and-block-arguments-vs-yieldcode'
   Enabled: true
 
 Performance/RedundantMatch:
@@ -1618,7 +1632,7 @@ Performance/Size:
   Description: >-
                   Use `size` instead of `count` for counting
                   the number of elements in `Array` and `Hash`.
-  Reference: 'https://github.com/JuanitoFatas/fast-ruby#arraycount-vs-arraysize-code'
+  Reference: 'https://github.com/JuanitoFatas/fast-ruby#arraylength-vs-arraysize-vs-arraycount-code'
   Enabled: true
 
 Performance/CompareWithBlock:
@@ -1707,6 +1721,10 @@ Rails/DynamicFindBy:
 
 Rails/EnumUniqueness:
   Description: 'Avoid duplicate integers in hash-syntax `enum` declaration.'
+  Enabled: true
+
+Rails/EnvironmentComparison:
+  Description: "Favor `Rails.env.production?` over `Rails.env == 'production'`"
   Enabled: true
 
 Rails/Exit:

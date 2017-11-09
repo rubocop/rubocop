@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe 'isolated environment', :isolated_environment do
+describe 'isolated environment', :isolated_environment, type: :feature do
   include_context 'cli spec behavior'
 
   let(:cli) { RuboCop::CLI.new }

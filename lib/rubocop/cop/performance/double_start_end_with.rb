@@ -8,15 +8,14 @@ module RuboCop
       # with an single `#start_with?`/`#end_with?` call.
       #
       # @example
-      #
-      #   @bad
+      #   # bad
       #   str.start_with?("a") || str.start_with?(Some::CONST)
       #   str.start_with?("a", "b") || str.start_with?("c")
       #   var1 = ...
       #   var2 = ...
       #   str.end_with?(var1) || str.end_with?(var2)
       #
-      #   @good
+      #   # good
       #   str.start_with?("a", Some::CONST)
       #   str.start_with?("a", "b", "c")
       #   var1 = ...

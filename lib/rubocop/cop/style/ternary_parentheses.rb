@@ -8,44 +8,35 @@ module RuboCop
       # parentheses using `EnforcedStyle`. Omission is only enforced when
       # removing the parentheses won't cause a different behavior.
       #
-      # @example
-      #
-      #   EnforcedStyle: require_no_parentheses (default)
-      #
-      #   @bad
+      # @example EnforcedStyle: require_no_parentheses (default)
+      #   # bad
       #   foo = (bar?) ? a : b
       #   foo = (bar.baz?) ? a : b
       #   foo = (bar && baz) ? a : b
       #
-      #   @good
+      #   # good
       #   foo = bar? ? a : b
       #   foo = bar.baz? ? a : b
       #   foo = bar && baz ? a : b
       #
-      # @example
-      #
-      #   EnforcedStyle: require_parentheses
-      #
-      #   @bad
+      # @example EnforcedStyle: require_parentheses
+      #   # bad
       #   foo = bar? ? a : b
       #   foo = bar.baz? ? a : b
       #   foo = bar && baz ? a : b
       #
-      #   @good
+      #   # good
       #   foo = (bar?) ? a : b
       #   foo = (bar.baz?) ? a : b
       #   foo = (bar && baz) ? a : b
       #
-      # @example
-      #
-      #   EnforcedStyle: require_parentheses_when_complex
-      #
-      #   @bad
+      # @example EnforcedStyle: require_parentheses_when_complex
+      #   # bad
       #   foo = (bar?) ? a : b
       #   foo = (bar.baz?) ? a : b
       #   foo = bar && baz ? a : b
       #
-      #   @good
+      #   # good
       #   foo = bar? ? a : b
       #   foo = bar.baz? ? a : b
       #   foo = (bar && baz) ? a : b

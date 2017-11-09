@@ -320,7 +320,7 @@ module RuboCop
             next if assignment_nodes_in_loop.none? do |assignment_node|
                       assignment_node.equal?(assignment.node)
                     end
-            assignment.reference!
+            assignment.reference!(node)
           end
         end
       end

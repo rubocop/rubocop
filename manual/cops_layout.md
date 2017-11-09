@@ -12,8 +12,6 @@ as the class/module keyword, depending on configuration.
 ### Example
 
 ```ruby
-# EnforcedStyle: indent (default)
-
 # bad
 class Plumbus
 private
@@ -25,9 +23,8 @@ class Plumbus
   private
   def smooth; end
 end
-
-# EnforcedStyle: outdent
-
+```
+```ruby
 # bad
 class Plumbus
   private
@@ -208,8 +205,6 @@ definition are aligned.
 ### Example
 
 ```ruby
-# EnforcedStyle: with_first_parameter
-
 # good
 
 foo :bar,
@@ -221,8 +216,6 @@ foo :bar,
   :baz
 ```
 ```ruby
-# EnforcedStyle: with_fixed_indentation
-
 # good
 
 foo :bar,
@@ -317,8 +310,6 @@ end
 # start_of_line (as shown below), then *when* alignment
 # configuration does have an effect.
 
-# EnforcedStyle: case (default)
-
 # bad
 a = case n
 when 0
@@ -334,9 +325,8 @@ a = case n
     else
       y / 3
 end
-
-# EnforcedStyle: end
-
+```
+```ruby
 # bad
 a = case n
     when 0
@@ -587,6 +577,21 @@ Enabled | Yes
 
 This cops checks for two or more consecutive blank lines.
 
+### Example
+
+```ruby
+# bad - It has two empty lines.
+some_method
+# one empty line
+# two empty lines
+some_method
+
+# good
+some_method
+# one empty line
+some_method
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#two-or-more-empty-lines](https://github.com/bbatsov/ruby-style-guide#two-or-more-empty-lines)
@@ -666,8 +671,6 @@ the configuration.
 ### Example
 
 ```ruby
-# EnforcedStyle: empty_lines
-
 # good
 
 foo do |bar|
@@ -675,9 +678,8 @@ foo do |bar|
   ...
 
 end
-
-# EnforcedStyle: no_empty_lines
-
+```
+```ruby
 # good
 
 foo do |bar|
@@ -708,8 +710,6 @@ the configuration.
 ### Example
 
 ```ruby
-EnforcedStyle: empty_lines
-
 # good
 
 class Foo
@@ -842,8 +842,6 @@ the configuration.
 ### Example
 
 ```ruby
-EnforcedStyle: empty_lines
-
 # good
 
 module Foo
@@ -853,9 +851,8 @@ module Foo
   end
 
 end
-
-EnforcedStyle: no_empty_lines
-
+```
+```ruby
 # good
 
 module Foo
@@ -1081,24 +1078,32 @@ more than the start of the line where the opening square bracket is.
 This default style is called 'special_inside_parentheses'. Alternative
 styles are 'consistent' and 'align_brackets'. Here are examples:
 
-    # special_inside_parentheses
-    array = [
-      :value
-    ]
-    but_in_a_method_call([
-                           :its_like_this
-                         ])
-    # consistent
-    array = [
-      :value
-    ]
-    and_in_a_method_call([
-      :no_difference
-    ])
-    # align_brackets
-    and_now_for_something = [
-                              :completely_different
-                            ]
+### Example
+
+```ruby
+# special_inside_parentheses
+array = [
+  :value
+]
+but_in_a_method_call([
+                       :its_like_this
+                     ])
+```
+```ruby
+# consistent
+array = [
+  :value
+]
+and_in_a_method_call([
+  :no_difference
+])
+```
+```ruby
+# align_brackets
+and_now_for_something = [
+                          :completely_different
+                        ]
+```
 
 ### Important attributes
 
@@ -1445,29 +1450,30 @@ after the assignment operator.
 ### Example
 
 ```ruby
-# bad (with EnforcedStyle set to new_line)
+# bad
 foo = if expression
   'bar'
 end
 
-# good (with EnforcedStyle set to same_line)
-foo = if expression
-  'bar'
-end
-
-# good (with EnforcedStyle set to new_line)
+# good
 foo =
   if expression
     'bar'
   end
 
-# good (with EnforcedStyle set to new_line)
+# good
 foo =
   begin
     compute
   rescue => e
     nil
   end
+```
+```ruby
+# good
+foo = if expression
+  'bar'
+end
 ```
 
 ### Important attributes
@@ -1977,8 +1983,6 @@ Checks the spacing inside and after block parameters pipes.
 ### Example
 
 ```ruby
-# EnforcedStyleInsidePipes: no_space (default)
-
 # bad
 {}.each { | x,  y |puts x }
 ->( x,  y ) { puts x }
@@ -1988,8 +1992,6 @@ Checks the spacing inside and after block parameters pipes.
 ->(x, y) { puts x }
 ```
 ```ruby
-# EnforcedStyleInsidePipes: space
-
 # bad
 {}.each { |x,  y| puts x }
 ->(x,  y) { puts x }
@@ -2241,22 +2243,18 @@ brace in lambda literals.
 ### Example
 
 ```ruby
-EnforcedStyle: require_no_space (default)
+# bad
+a = -> (x, y) { x + y }
 
-  # bad
-  a = -> (x, y) { x + y }
-
-  # good
-  a = ->(x, y) { x + y }
+# good
+a = ->(x, y) { x + y }
 ```
 ```ruby
-EnforcedStyle: require_space
+# bad
+a = ->(x, y) { x + y }
 
-  # bad
-  a = ->(x, y) { x + y }
-
-  # good
-  a = -> (x, y) { x + y }
+# good
+a = -> (x, y) { x + y }
 ```
 
 ### Important attributes
@@ -2278,11 +2276,10 @@ Checks for unnecessary additional spaces inside array percent literals
 ### Example
 
 ```ruby
-# good
-%i(foo bar baz)
-
 # bad
 %w(foo  bar  baz)
+# good
+%i(foo bar baz)
 ```
 
 ## Layout/SpaceInsideBlockBraces
@@ -2295,6 +2292,75 @@ Checks that block braces have or don't have surrounding space inside
 them on configuration. For blocks taking parameters, it checks that the
 left brace has or doesn't have trailing space depending on
 configuration.
+
+### Example
+
+```ruby
+# The `space` style enforces that block braces have
+# surrounding space.
+
+# bad
+some_array.each {puts e}
+
+# good
+some_array.each { puts e }
+```
+```ruby
+# The `no_space` style enforces that block braces don't
+# have surrounding space.
+
+# bad
+some_array.each { puts e }
+
+# good
+some_array.each {puts e}
+```
+```ruby
+# The `no_space` EnforcedStyleForEmptyBraces style enforces that
+# block braces don't have a space in between when empty.
+
+# bad
+some_array.each {   }
+some_array.each {  }
+some_array.each { }
+
+# good
+some_array.each {}
+```
+```ruby
+# The `space` EnforcedStyleForEmptyBraces style enforces that
+# block braces have at least a spece in between when empty.
+
+# bad
+some_array.each {}
+
+# good
+some_array.each { }
+some_array.each {  }
+some_array.each {   }
+```
+```ruby
+# The SpaceBeforeBlockParameters style set to `true` enforces that
+# there is a space between `{` and `|`. Overrides `EnforcedStyle`
+# if there is a conflict.
+
+# bad
+[1, 2, 3].each {|n| n * 2 }
+
+# good
+[1, 2, 3].each { |n| n * 2 }
+```
+```ruby
+# The SpaceBeforeBlockParameters style set to `false` enforces that
+# there is no space between `{` and `|`. Overrides `EnforcedStyle`
+# if there is a conflict.
+
+# bad
+[1, 2, 3].each { |n| n * 2 }
+
+# good
+[1, 2, 3].each {|n| n * 2 }
+```
 
 ### Important attributes
 
@@ -2326,7 +2392,7 @@ array = [1, 2, 3]
 
 ### References
 
-* [https://github.com/bbatsov/ruby-style-guide#no-spaces-braces](https://github.com/bbatsov/ruby-style-guide#no-spaces-braces)
+* [https://github.com/bbatsov/ruby-style-guide#spaces-braces](https://github.com/bbatsov/ruby-style-guide#spaces-braces)
 
 ## Layout/SpaceInsideHashLiteralBraces
 
@@ -2408,7 +2474,7 @@ g = (a + 3)
 
 ### References
 
-* [https://github.com/bbatsov/ruby-style-guide#no-spaces-braces](https://github.com/bbatsov/ruby-style-guide#no-spaces-braces)
+* [https://github.com/bbatsov/ruby-style-guide#spaces-braces](https://github.com/bbatsov/ruby-style-guide#spaces-braces)
 
 ## Layout/SpaceInsidePercentLiteralDelimiters
 
@@ -2471,10 +2537,17 @@ This cop checks for whitespace within string interpolations.
 ### Example
 
 ```ruby
-# Good if EnforcedStyle is no_space, bad if space.
+# bad
+   var = "This is the #{ space } example"
+
+# good
+   var = "This is the #{no_space} example"
+```
+```ruby
+# bad
    var = "This is the #{no_space} example"
 
-# Good if EnforceStyle is space, bad if no_space.
+# good
    var = "This is the #{ space } example"
 ```
 

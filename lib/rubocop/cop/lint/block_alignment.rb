@@ -18,8 +18,7 @@ module RuboCop
       # `either` (which is the default) : the `end` is allowed to be in either
       # location. The autofixer will default to `start_of_line`.
       #
-      # @example
-      #
+      # @example EnforcedStyleAlignWith: either (default)
       #   # bad
       #
       #   foo.bar
@@ -27,19 +26,19 @@ module RuboCop
       #        baz
       #          end
       #
-      # @example
-      #
-      #   # EnforcedStyleAlignWith: either (default)
-      #
       #   # good
       #
       #   variable = lambda do |i|
       #     i
       #   end
       #
-      # @example
+      # @example EnforcedStyleAlignWith: start_of_block
+      #   # bad
       #
-      #   # EnforcedStyleAlignWith: start_of_block
+      #   foo.bar
+      #      .each do
+      #        baz
+      #          end
       #
       #   # good
       #
@@ -48,9 +47,13 @@ module RuboCop
       #        baz
       #      end
       #
-      # @example
+      # @example EnforcedStyleAlignWith: start_of_line
+      #   # bad
       #
-      #   # EnforcedStyleAlignWith: start_of_line
+      #   foo.bar
+      #      .each do
+      #        baz
+      #          end
       #
       #   # good
       #

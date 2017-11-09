@@ -363,6 +363,28 @@ Attribute | Value
 --- | ---
 Include | app/models/\*\*/\*.rb
 
+## Rails/EnvironmentComparison
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks that Rails.env is compared using `.production?`-like
+methods instead of equality against a string or symbol.
+
+### Example
+
+```ruby
+# bad
+Rails.env == 'production'
+
+# bad, always returns false
+Rails.env == :test
+
+# good
+Rails.env.production?
+```
+
 ## Rails/Exit
 
 Enabled by default | Supports autocorrection
@@ -477,6 +499,16 @@ Enabled by default | Supports autocorrection
 Enabled | No
 
 This cop checks for the use of the has_and_belongs_to_many macro.
+
+### Example
+
+```ruby
+# bad
+# has_and_belongs_to_many :ingredients
+
+# good
+# has_many :ingredients, through: :recipe_ingredients
+```
 
 ### Important attributes
 

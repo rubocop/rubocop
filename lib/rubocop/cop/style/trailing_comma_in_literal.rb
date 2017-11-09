@@ -5,23 +5,37 @@ module RuboCop
     module Style
       # This cop checks for trailing comma in array and hash literals.
       #
-      # @example
-      #   # always bad
+      # @example EnforcedStyleForMultiline: consistent_comma
+      #   # bad
       #   a = [1, 2,]
       #
-      #   # good if EnforcedStyleForMultiline is consistent_comma
+      #   # good
       #   a = [
       #     1, 2,
       #     3,
       #   ]
       #
-      #   # good if EnforcedStyleForMultiline is comma or consistent_comma
+      #   # good
       #   a = [
       #     1,
       #     2,
       #   ]
       #
-      #   # good if EnforcedStyleForMultiline is no_comma
+      # @example EnforcedStyleForMultiline: comma
+      #   # bad
+      #   a = [1, 2,]
+      #
+      #   # good
+      #   a = [
+      #     1,
+      #     2,
+      #   ]
+      #
+      # @example EnforcedStyleForMultiline: no_comma (default)
+      #   # bad
+      #   a = [1, 2,]
+      #
+      #   # good
       #   a = [
       #     1,
       #     2

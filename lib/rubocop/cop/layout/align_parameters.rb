@@ -6,10 +6,7 @@ module RuboCop
       # Here we check if the parameters on a multi-line method call or
       # definition are aligned.
       #
-      # @example
-      #
-      #   # EnforcedStyle: with_first_parameter
-      #
+      # @example EnforcedStyle: with_first_parameter (default)
       #   # good
       #
       #   foo :bar,
@@ -20,10 +17,7 @@ module RuboCop
       #   foo :bar,
       #     :baz
       #
-      # @example
-      #
-      #   # EnforcedStyle: with_fixed_indentation
-      #
+      # @example EnforcedStyle: with_fixed_indentation
       #   # good
       #
       #   foo :bar,

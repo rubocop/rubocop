@@ -16,10 +16,7 @@ module RuboCop
       # populated with objects which can be compared with integers, but are
       # not themselves `Interger` polymorphic.
       #
-      # @example
-      #
-      #   # EnforcedStyle: predicate (default)
-      #
+      # @example EnforcedStyle: predicate (default)
       #   # bad
       #
       #   foo == 0
@@ -32,10 +29,7 @@ module RuboCop
       #   foo.negative?
       #   bar.baz.positive?
       #
-      # @example
-      #
-      #   # EnforcedStyle: comparison
-      #
+      # @example EnforcedStyle: comparison
       #   # bad
       #
       #   foo.zero?

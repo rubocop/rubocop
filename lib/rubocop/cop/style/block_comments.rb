@@ -4,6 +4,18 @@ module RuboCop
   module Cop
     module Style
       # This cop looks for uses of block comments (=begin...=end).
+      #
+      # @example
+      #   # bad
+      #   =begin
+      #   Multiple lines
+      #   of comments...
+      #   =end
+      #
+      #   # good
+      #   # Multiple lines
+      #   # of comments...
+      #
       class BlockComments < Cop
         MSG = 'Do not use block comments.'.freeze
         BEGIN_LENGTH = "=begin\n".length

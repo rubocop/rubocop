@@ -6,24 +6,18 @@ module RuboCop
       # This cop checks for spaces between -> and opening parameter
       # brace in lambda literals.
       #
-      # @example
-      #
-      #   EnforcedStyle: require_no_space (default)
-      #
-      #     @bad
+      # @example EnforcedStyle: require_no_space (default)
+      #     # bad
       #     a = -> (x, y) { x + y }
       #
-      #     @good
+      #     # good
       #     a = ->(x, y) { x + y }
       #
-      # @example
-      #
-      #   EnforcedStyle: require_space
-      #
-      #     @bad
+      # @example EnforcedStyle: require_space
+      #     # bad
       #     a = ->(x, y) { x + y }
       #
-      #     @good
+      #     # good
       #     a = -> (x, y) { x + y }
       class SpaceInLambdaLiteral < Cop
         include ConfigurableEnforcedStyle

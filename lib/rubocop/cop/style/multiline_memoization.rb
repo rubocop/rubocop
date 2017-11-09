@@ -5,33 +5,27 @@ module RuboCop
     module Style
       # This cop checks expressions wrapping styles for multiline memoization.
       #
-      # @example
-      #
-      #   # EnforcedStyle: keyword (default)
-      #
-      #   @bad
+      # @example EnforcedStyle: keyword (default)
+      #   # bad
       #   foo ||= (
       #     bar
       #     baz
       #   )
       #
-      #   @good
+      #   # good
       #   foo ||= begin
       #     bar
       #     baz
       #   end
       #
-      # @example
-      #
-      #   # EnforcedStyle: braces
-      #
-      #   @bad
+      # @example EnforcedStyle: braces
+      #   # bad
       #   foo ||= begin
       #     bar
       #     baz
       #   end
       #
-      #   @good
+      #   # good
       #   foo ||= (
       #     bar
       #     baz

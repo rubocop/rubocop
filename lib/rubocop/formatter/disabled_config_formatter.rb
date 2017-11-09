@@ -55,8 +55,6 @@ module RuboCop
         output_offenses
 
         puts "Created #{output.path}."
-        puts "Run `rubocop --config #{output.path}`, or add `inherit_from: " \
-             "#{output.path}` in a .rubocop.yml file."
       end
 
       private
@@ -107,7 +105,8 @@ module RuboCop
       end
 
       def output_cop_param_comments(params, default_cfg)
-        output.puts "# Configuration parameters: #{params.join(', ')}."
+        config_params = params.reject { |p| p.start_with?('Supported') }
+        output.puts "# Configuration parameters: #{config_params.join(', ')}."
 
         params.each do |param|
           value = default_cfg[param]

@@ -7,11 +7,11 @@ module RuboCop
       # would suffice.
       #
       # @example
-      #   @bad
+      #   # bad
       #   'abc' =~ /bc\Z/
       #   'abc'.match(/bc\Z/)
       #
-      #   @good
+      #   # good
       #   'abc'.end_with?('bc')
       class EndWith < Cop
         MSG = 'Use `String#end_with?` instead of a regex match anchored to ' \

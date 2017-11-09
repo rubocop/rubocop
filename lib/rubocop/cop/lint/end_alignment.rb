@@ -24,27 +24,33 @@ module RuboCop
       #   variable = if true
       #       end
       #
-      # @example
+      # @example EnforcedStyleAlignWith: keyword (default)
+      #   # bad
       #
-      #   # EnforcedStyleAlignWith: keyword (default)
+      #   variable = if true
+      #       end
       #
       #   # good
       #
       #   variable = if true
       #              end
       #
-      # @example
+      # @example EnforcedStyleAlignWith: variable
+      #   # bad
       #
-      #   # EnforcedStyleAlignWith: variable
+      #   variable = if true
+      #       end
       #
       #   # good
       #
       #   variable = if true
       #   end
       #
-      # @example
+      # @example EnforcedStyleAlignWith: start_of_line
+      #   # bad
       #
-      #   # EnforcedStyleAlignWith: start_of_line
+      #   variable = if true
+      #       end
       #
       #   # good
       #

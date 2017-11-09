@@ -199,30 +199,26 @@ By default it is configured to enforce uppercase heredocs.
 ### Example
 
 ```ruby
-# EnforcedStyle: uppercase (default)
+# bad
+<<-sql
+  SELECT * FROM foo
+sql
 
 # good
 <<-SQL
   SELECT * FROM foo
 SQL
-
-# bad
-<<-sql
-  SELECT * FROM foo
-sql
 ```
 ```ruby
-# EnforcedStyle: lowercase
+# bad
+<<-SQL
+  SELECT * FROM foo
+SQL
 
 # good
 <<-sql
   SELECT * FROM foo
 sql
-
-# bad
-<<-SQL
-  SELECT * FROM foo
-SQL
 ```
 
 ### Important attributes
@@ -287,8 +283,6 @@ snake_case or camelCase, for their names.
 ### Example
 
 ```ruby
-# EnforcedStyle: snake_case
-
 # bad
 def fooBar; end
 
@@ -296,8 +290,6 @@ def fooBar; end
 def foo_bar; end
 ```
 ```ruby
-# EnforcedStyle: camelCase
-
 # bad
 def foo_bar; end
 
@@ -366,8 +358,6 @@ snake_case or camelCase, for their names.
 ### Example
 
 ```ruby
-# EnforcedStyle: snake_case
-
 # bad
 fooBar = 1
 
@@ -375,8 +365,6 @@ fooBar = 1
 foo_bar = 1
 ```
 ```ruby
-# EnforcedStyle: camelCase
-
 # bad
 foo_bar = 1
 
@@ -408,8 +396,6 @@ for their numbering.
 ### Example
 
 ```ruby
-# EnforcedStyle: snake_case
-
 # bad
 
 variable1 = 1
@@ -419,8 +405,6 @@ variable1 = 1
 variable_1 = 1
 ```
 ```ruby
-# EnforcedStyle: normalcase
-
 # bad
 
 variable_1 = 1
@@ -430,8 +414,6 @@ variable_1 = 1
 variable1 = 1
 ```
 ```ruby
-# EnforcedStyle: non_integer
-
 # bad
 
 variable1 = 1

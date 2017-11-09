@@ -124,6 +124,16 @@ Enabled | No
 This cop checks for non-ascii (non-English) characters
 in comments.
 
+### Example
+
+```ruby
+# bad
+# Translates from English to 日本語。
+
+# good
+# Translates from English to Japanese
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#english-comments](https://github.com/bbatsov/ruby-style-guide#english-comments)
@@ -182,6 +192,27 @@ Enabled | Yes
 
 This cop checks if usage of %() or %Q() matches configuration.
 
+### Example
+
+```ruby
+# bad
+%Q(He said: "#{greeting}")
+%q{She said: 'Hi'}
+
+# good
+%(He said: "#{greeting}")
+%{She said: 'Hi'}
+```
+```ruby
+# bad
+%|He said: "#{greeting}"|
+%/She said: 'Hi'/
+
+# good
+%Q|He said: "#{greeting}"|
+%q/She said: 'Hi'/
+```
+
 ### Important attributes
 
 Attribute | Value
@@ -213,6 +244,20 @@ Enabled | Yes
 
 This cop looks for uses of block comments (=begin...=end).
 
+### Example
+
+```ruby
+# bad
+=begin
+Multiple lines
+of comments...
+=end
+
+# good
+# Multiple lines
+# of comments...
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#no-block-comments](https://github.com/bbatsov/ruby-style-guide#no-block-comments)
@@ -225,6 +270,74 @@ Enabled | Yes
 
 Check for uses of braces or do/end around single line or
 multi-line blocks.
+
+### Example
+
+```ruby
+# bad - single line block
+items.each do |item| item / 5 end
+
+# good - single line block
+items.each { |item| item / 5 }
+
+# bad - multi-line block
+things.map { |thing|
+  something = thing.some_method
+  proces(something)
+}
+
+# good - multi-line block
+things.map do |thing|
+  something = thing.some_method
+  proces(something)
+end
+```
+```ruby
+# Prefer `do...end` over `{...}` for procedural blocks.
+
+# return value is used/assigned
+# bad
+foo = map do |x|
+  x
+end
+puts (map do |x|
+  x
+end)
+
+# return value is not used out of scope
+# good
+map do |x|
+  x
+end
+
+# Prefer `{...}` over `do...end` for functional blocks.
+
+# return value is not used out of scope
+# bad
+each { |x|
+  x
+}
+
+# return value is used/assigned
+# good
+foo = map { |x|
+  x
+}
+map { |x|
+  x
+}.inspect
+```
+```ruby
+# bad
+words.each do |word|
+  word.flip.flop
+end.join("-")
+
+# good
+words.each { |word|
+  word.flip.flop
+}.join("-")
+```
 
 ### Important attributes
 
@@ -371,6 +484,27 @@ Enabled | Yes
 
 This cop enforces consistent use of `Object#is_a?` or `Object#kind_of?`.
 
+### Example
+
+```ruby
+# bad
+var.kind_of?(Date)
+var.kind_of?(Integer)
+
+# good
+var.is_a?(Date)
+var.is_a?(Integer)
+```
+```ruby
+# bad
+var.is_a?(Time)
+var.is_a?(String)
+
+# good
+var.kind_of?(Time)
+var.kind_of?(String)
+```
+
 ### Important attributes
 
 Attribute | Value
@@ -454,6 +588,20 @@ Enabled | Yes
 
 This cop checks for methods invoked via the :: operator instead
 of the . operator (like FileUtils::rmdir instead of FileUtils.rmdir).
+
+### Example
+
+```ruby
+# bad
+Timeout::timeout(500) { ... }
+FileUtils::rmdir(dir)
+Marshal::dump(obj)
+
+# good
+Timeout.timeout(500) { ... }
+FileUtils.rmdir(dir)
+Marshal.dump(obj)
+```
 
 ### References
 
@@ -603,8 +751,6 @@ condition can be used instead.
 ### Example
 
 ```ruby
-EnforcedStyle: assign_to_condition
-
 # bad
 if foo
   bar = 1
@@ -648,8 +794,8 @@ bar << if foo
          some_other_method
          2
        end
-
-EnforcedStyle: assign_inside_condition
+```
+```ruby
 # bad
 bar = if foo
         1
@@ -840,6 +986,21 @@ their bodies except classes, other modules, or constant definitions.
 The documentation requirement is annulled if the class or module has
 a "#:nodoc:" comment next to it. Likewise, "#:nodoc: all" does the
 same for all its children.
+
+### Example
+
+```ruby
+# bad
+class Person
+  ...
+end
+
+# good
+# Description/Explanation of Person class
+class Person
+  ...
+end
+```
 
 ### Important attributes
 
@@ -1142,8 +1303,6 @@ Note: A method definition is not considered empty if it contains
 ### Example
 
 ```ruby
-# EnforcedStyle: compact (default)
-
 # bad
 def foo(bar)
 end
@@ -1161,8 +1320,6 @@ end
 def self.foo(bar); end
 ```
 ```ruby
-# EnforcedStyle: expanded
-
 # bad
 def foo(bar); end
 
@@ -1318,8 +1475,6 @@ Use a consistent style for named format string tokens.
 ### Example
 
 ```ruby
-EnforcedStyle: annotated
-
 # bad
 
 format('%{greeting}', greeting: 'Hello')
@@ -1330,8 +1485,6 @@ format('%s', 'Hello')
 format('%<greeting>s', greeting: 'Hello')
 ```
 ```ruby
-EnforcedStyle: template
-
 # bad
 
 format('%<greeting>s', greeting: 'Hello')
@@ -1482,48 +1635,40 @@ The supported styles are:
 ### Example
 
 ```ruby
-"EnforcedStyle => 'ruby19'"
+# bad
+{:a => 2}
+{b: 1, :c => 2}
 
 # good
 {a: 2, b: 1}
 {:c => 2, 'd' => 2} # acceptable since 'd' isn't a symbol
 {d: 1, 'e' => 2} # technically not forbidden
-
-# bad
-{:a => 2}
-{b: 1, :c => 2}
 ```
 ```ruby
-"EnforcedStyle => 'hash_rockets'"
-
-# good
-{:a => 1, :b => 2}
-
 # bad
 {a: 1, b: 2}
 {c: 1, 'd' => 5}
+
+# good
+{:a => 1, :b => 2}
 ```
 ```ruby
-"EnforcedStyle => 'no_mixed_keys'"
+# bad
+{:a => 1, b: 2}
+{c: 1, 'd' => 2}
 
 # good
 {:a => 1, :b => 2}
 {c: 1, d: 2}
-
-# bad
-{:a => 1, b: 2}
-{c: 1, 'd' => 2}
 ```
 ```ruby
-"EnforcedStyle => 'ruby19_no_mixed_keys'"
+# bad
+{:a => 1, :b => 2}
+{c: 2, 'd' => 3} # should just use hash rockets
 
 # good
 {a: 1, b: 2}
 {:c => 3, 'd' => 4}
-
-# bad
-{:a => 1, :b => 2}
-{c: 2, 'd' => 3} # should just use hash rockets
 ```
 
 ### Important attributes
@@ -1621,15 +1766,6 @@ This helps to keep the nesting level from getting too deep.
 ### Example
 
 ```ruby
-# good
-if condition_a
-  action_a
-elsif condition_b
-  action_b
-else
-  action_c
-end
-
 # bad
 if condition_a
   action_a
@@ -1640,6 +1776,15 @@ else
     action_c
   end
 end
+
+# good
+if condition_a
+  action_a
+elsif condition_b
+  action_b
+else
+  action_c
+end
 ```
 
 ## Style/IfUnlessModifier
@@ -1649,14 +1794,8 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 Checks for if and unless statements that would fit on one line
-if written as a modifier if/unless.
-The maximum line length is configurable.
-
-### Important attributes
-
-Attribute | Value
---- | ---
-MaxLineLength | 80
+if written as a modifier if/unless. The maximum line length is
+configured in the `Metrics/LineLength` cop.
 
 ### References
 
@@ -1837,8 +1976,6 @@ and multiline lambdas as well.
 ### Example
 
 ```ruby
-# EnforcedStyle: line_count_dependent (default)
-
 # bad
 f = lambda { |x| x }
 f = ->(x) do
@@ -1852,8 +1989,6 @@ f = lambda do |x|
     end
 ```
 ```ruby
-# EnforcedStyle: lambda
-
 # bad
 f = ->(x) { x }
 f = ->(x) do
@@ -1867,8 +2002,6 @@ f = lambda do |x|
     end
 ```
 ```ruby
-# EnforcedStyle: literal
-
 # bad
 f = lambda { |x| x }
 f = lambda do |x|
@@ -2174,8 +2307,6 @@ but it can be configured to enforce grouping them in one declaration.
 ### Example
 
 ```ruby
-EnforcedStyle: separated (default)
-
 # bad
 class Foo
   include Bar, Qox
@@ -2186,9 +2317,8 @@ class Foo
   include Qox
   include Bar
 end
-
-EnforcedStyle: grouped
-
+```
+```ruby
 # bad
 class Foo
   extend Bar
@@ -2278,13 +2408,26 @@ implications to each approach.
 ### Example
 
 ```ruby
-# Good if EnforcedStyle is module_function
+# bad
+module Test
+  extend self
+  ...
+end
+
+# good
+module Test
+  module_function
+  ...
+end
+```
+```ruby
+# bad
 module Test
   module_function
   ...
 end
 
-# Good if EnforcedStyle is extend_self
+# good
 module Test
   extend self
   ...
@@ -2360,10 +2503,13 @@ Checks for uses of the `then` keyword in multi-line if statements.
 ### Example
 
 ```ruby
+# bad
+# This is considered bad practice.
 if cond then
 end
-```
-```ruby
+
+# good
+# If statements can contain `then` on the same line.
 if cond then a
 elsif cond then b
 end
@@ -2384,8 +2530,6 @@ This cop checks expressions wrapping styles for multiline memoization.
 ### Example
 
 ```ruby
-# EnforcedStyle: keyword (default)
-
 # bad
 foo ||= (
   bar
@@ -2399,8 +2543,6 @@ foo ||= begin
 end
 ```
 ```ruby
-# EnforcedStyle: braces
-
 # bad
 foo ||= begin
   bar
@@ -2489,15 +2631,8 @@ without else are considered. There are three different styles:
 ### Example
 
 ```ruby
-# EnforcedStyle: both
 # enforces `unless` for `prefix` and `postfix` conditionals
 
-# good
-
-unless foo
-  bar
-end
-
 # bad
 
 if !foo
@@ -2506,22 +2641,21 @@ end
 
 # good
 
-bar unless foo
+unless foo
+  bar
+end
 
 # bad
 
 bar if !foo
+
+# good
+
+bar unless foo
 ```
 ```ruby
-# EnforcedStyle: prefix
 # enforces `unless` for just `prefix` conditionals
 
-# good
-
-unless foo
-  bar
-end
-
 # bad
 
 if !foo
@@ -2530,19 +2664,24 @@ end
 
 # good
 
-bar if !foo
-```
-```ruby
-# EnforcedStyle: postfix
-# enforces `unless` for just `postfix` conditionals
+unless foo
+  bar
+end
 
 # good
 
-bar unless foo
+bar if !foo
+```
+```ruby
+# enforces `unless` for just `postfix` conditionals
 
 # bad
 
 bar if !foo
+
+# good
+
+bar unless foo
 
 # good
 
@@ -2738,7 +2877,17 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
-This cop checks for uses if the keyword *not* instead of !.
+This cop checks for uses of the keyword `not` instead of `!`.
+
+### Example
+
+```ruby
+# bad - parentheses are required because of op precedence
+x = (not something)
+
+# good
+x = !something
+```
 
 ### References
 
@@ -2830,8 +2979,6 @@ not themselves `Interger` polymorphic.
 ### Example
 
 ```ruby
-# EnforcedStyle: predicate (default)
-
 # bad
 
 foo == 0
@@ -2845,8 +2992,6 @@ foo.negative?
 bar.baz.positive?
 ```
 ```ruby
-# EnforcedStyle: comparison
-
 # bad
 
 foo.zero?
@@ -3125,8 +3270,6 @@ names also.
 ### Example
 
 ```ruby
-# EnforcedStyle: short (default)
-
 # bad
 Hash#has_key?
 Hash#has_value?
@@ -3136,8 +3279,6 @@ Hash#key?
 Hash#value?
 ```
 ```ruby
-# EnforcedStyle: verbose
-
 # bad
 Hash#key?
 Hash#value?
@@ -3200,8 +3341,6 @@ passed multiple arguments.
 ### Example
 
 ```ruby
-# EnforcedStyle: exploded
-
 # bad
 raise StandardError.new("message")
 
@@ -3212,8 +3351,6 @@ raise MyCustomError.new(arg1, arg2, arg3)
 raise MyKwArgError.new(key1: val1, key2: val2)
 ```
 ```ruby
-# EnforcedStyle: compact
-
 # bad
 raise StandardError, "message"
 raise RuntimeError, arg1, arg2, arg3
@@ -3234,6 +3371,40 @@ SupportedStyles | compact, exploded
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#exception-class-messages](https://github.com/bbatsov/ruby-style-guide#exception-class-messages)
+
+## Style/RandomWithOffset
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for the use of randomly generated numbers,
+added/subtracted with integer literals, as well as those with
+Integer#succ and Integer#pred methods. Prefer using ranges instead,
+as it clearly states the intentions.
+
+### Example
+
+```ruby
+# bad
+rand(6) + 1
+1 + rand(6)
+rand(6) - 1
+1 - rand(6)
+rand(6).succ
+rand(6).pred
+Random.rand(6) + 1
+Kernel.rand(6) + 1
+rand(0..5) + 1
+
+# good
+rand(1..6)
+rand(1...7)
+```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#random-numbers](https://github.com/bbatsov/ruby-style-guide#random-numbers)
 
 ## Style/RedundantBegin
 
@@ -3512,6 +3683,77 @@ This cop checks for uses of rescue in its modifier form.
 
 * [https://github.com/bbatsov/ruby-style-guide#no-rescue-modifiers](https://github.com/bbatsov/ruby-style-guide#no-rescue-modifiers)
 
+## Style/RescueStandardError
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for rescuing `StandardError`. There are two supported
+styles `implicit` and `explicit`. This cop will not register an offense
+if any error other than `StandardError` is specified.
+
+`implicit` will enforce using `rescue` instead of
+`rescue StandardError`.
+
+`explicit` will enforce using `rescue StandardError`
+instead of `rescue`.
+
+### Example
+
+```ruby
+# good
+begin
+  foo
+rescue OtherError
+  bar
+end
+
+# good
+begin
+  foo
+rescue StandardError, SecurityError
+  bar
+end
+```
+```ruby
+# bad
+begin
+  foo
+rescue StandardError
+  bar
+end
+
+# good
+begin
+  foo
+rescue
+  bar
+end
+```
+```ruby
+# bad
+begin
+  foo
+rescue
+  bar
+end
+
+# good
+begin
+  foo
+rescue StandardError
+  bar
+end
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+EnforcedStyle | explicit
+SupportedStyles | implicit, explicit
+
 ## Style/ReturnNil
 
 Enabled by default | Supports autocorrection
@@ -3525,8 +3767,6 @@ Supported styles are: return, return_nil.
 ### Example
 
 ```ruby
-# EnforcedStyle: return (default)
-
 # bad
 def foo(arg)
   return nil if arg
@@ -3536,9 +3776,8 @@ end
 def foo(arg)
   return if arg
 end
-
-# EnforcedStyle: return_nil
-
+```
+```ruby
 # bad
 def foo(arg)
   return if arg
@@ -3766,16 +4005,17 @@ There are two different styles. Defaults to `require_parentheses`.
 ### Example
 
 ```ruby
-# require_parentheses - bad
+# bad
 ->a,b,c { a + b + c }
 
-# require_parentheses - good
+# good
 ->(a,b,c) { a + b + c}
-
-# require_no_parentheses - bad
+```
+```ruby
+# bad
 ->(a,b,c) { a + b + c }
 
-# require_no_parentheses - good
+# good
 ->a,b,c { a + b + c}
 ```
 
@@ -3814,6 +4054,29 @@ warn('hello')
 
 * [https://github.com/bbatsov/ruby-style-guide#warn](https://github.com/bbatsov/ruby-style-guide#warn)
 
+## Style/StringHashKeys
+
+Enabled by default | Supports autocorrection
+--- | ---
+Disabled | Yes
+
+This cop checks for the use of strings as keys in hashes. The use of
+symbols is preferred instead.
+
+### Example
+
+```ruby
+# bad
+{ 'one' => 1, 'two' => 2, 'three' => 3 }
+
+# good
+{ one: 1, two: 2, three: 3 }
+```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#symbols-as-keys](https://github.com/bbatsov/ruby-style-guide#symbols-as-keys)
+
 ## Style/StringLiterals
 
 Enabled by default | Supports autocorrection
@@ -3846,8 +4109,6 @@ match the configured preference.
 ### Example
 
 ```ruby
-# EnforcedStyle: single_quotes
-
 # bad
 result = "Tests #{success ? "PASS" : "FAIL"}"
 
@@ -3855,8 +4116,6 @@ result = "Tests #{success ? "PASS" : "FAIL"}"
 result = "Tests #{success ? 'PASS' : 'FAIL'}"
 ```
 ```ruby
-# EnforcedStyle: double_quotes
-
 # bad
 result = "Tests #{success ? 'PASS' : 'FAIL'}"
 
@@ -3929,8 +4188,6 @@ of 2 or fewer elements.
 ### Example
 
 ```ruby
-EnforcedStyle: percent (default)
-
 # good
 %i[foo bar baz]
 
@@ -3938,8 +4195,6 @@ EnforcedStyle: percent (default)
 [:foo, :bar, :baz]
 ```
 ```ruby
-EnforcedStyle: brackets
-
 # good
 [:foo, :bar, :baz]
 
@@ -4015,8 +4270,6 @@ removing the parentheses won't cause a different behavior.
 ### Example
 
 ```ruby
-EnforcedStyle: require_no_parentheses (default)
-
 # bad
 foo = (bar?) ? a : b
 foo = (bar.baz?) ? a : b
@@ -4028,8 +4281,6 @@ foo = bar.baz? ? a : b
 foo = bar && baz ? a : b
 ```
 ```ruby
-EnforcedStyle: require_parentheses
-
 # bad
 foo = bar? ? a : b
 foo = bar.baz? ? a : b
@@ -4041,8 +4292,6 @@ foo = (bar.baz?) ? a : b
 foo = (bar && baz) ? a : b
 ```
 ```ruby
-EnforcedStyle: require_parentheses_when_complex
-
 # bad
 foo = (bar?) ? a : b
 foo = (bar.baz?) ? a : b
@@ -4073,22 +4322,36 @@ This cop checks for trailing comma in argument lists.
 ### Example
 
 ```ruby
-# always bad
+# bad
 method(1, 2,)
 
-# good if EnforcedStyleForMultiline is consistent_comma
+# good
 method(
   1, 2,
   3,
 )
 
-# good if EnforcedStyleForMultiline is comma or consistent_comma
+# good
 method(
   1,
   2,
 )
+```
+```ruby
+# bad
+method(1, 2,)
 
-# good if EnforcedStyleForMultiline is no_comma
+# good
+method(
+  1,
+  2,
+)
+```
+```ruby
+# bad
+method(1, 2,)
+
+# good
 method(
   1,
   2
@@ -4117,22 +4380,36 @@ This cop checks for trailing comma in array and hash literals.
 ### Example
 
 ```ruby
-# always bad
+# bad
 a = [1, 2,]
 
-# good if EnforcedStyleForMultiline is consistent_comma
+# good
 a = [
   1, 2,
   3,
 ]
 
-# good if EnforcedStyleForMultiline is comma or consistent_comma
+# good
 a = [
   1,
   2,
 ]
+```
+```ruby
+# bad
+a = [1, 2,]
 
-# good if EnforcedStyleForMultiline is no_comma
+# good
+a = [
+  1,
+  2,
+]
+```
+```ruby
+# bad
+a = [1, 2,]
+
+# good
 a = [
   1,
   2
@@ -4336,14 +4613,8 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 Checks for while and until statements that would fit on one line
-if written as a modifier while/until.
-The maximum line length is configurable.
-
-### Important attributes
-
-Attribute | Value
---- | ---
-MaxLineLength | 80
+if written as a modifier while/until. The maximum line length is
+configured in the `Metrics/LineLength` cop.
 
 ### References
 
@@ -4369,8 +4640,6 @@ array of 2 or fewer elements.
 ### Example
 
 ```ruby
-EnforcedStyle: percent (default)
-
 # good
 %w[foo bar baz]
 
@@ -4378,8 +4647,6 @@ EnforcedStyle: percent (default)
 ['foo', 'bar', 'baz']
 ```
 ```ruby
-EnforcedStyle: brackets
-
 # good
 ['foo', 'bar', 'baz']
 
@@ -4413,8 +4680,6 @@ way as they would be ordered in spoken English.
 ### Example
 
 ```ruby
-# EnforcedStyle: all_comparison_operators
-
 # bad
 99 == foo
 "bar" != foo
@@ -4428,8 +4693,6 @@ foo <= 42
 bar > 10
 ```
 ```ruby
-# EnforcedStyle: equality_operators_only
-
 # bad
 99 == foo
 "bar" != foo

@@ -47,7 +47,7 @@ module RuboCop
             next if consumed_branches.include?(assignment.branch)
 
             unless assignment.run_exclusively_with?(reference)
-              assignment.reference!
+              assignment.reference!(node)
             end
 
             break if !assignment.branch || assignment.branch == reference.branch

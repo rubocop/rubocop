@@ -8,13 +8,12 @@ module RuboCop
       # with an explicit array creation.
       #
       # @example
-      #
-      #   @bad
+      #   # bad
       #   9.times.map do |i|
       #     i.to_s
       #   end
       #
-      #   @good
+      #   # good
       #   Array.new(9) do |i|
       #     i.to_s
       #   end

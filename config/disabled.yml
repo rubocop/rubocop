@@ -113,6 +113,11 @@ Style/StringMethods:
   Description: 'Checks if configured preferred methods are used over non-preferred.'
   Enabled: false
 
+Style/StringHashKeys:
+  Description: 'Prefer symbols instead of strings as hash keys.'
+  StyleGuide: '#symbols-as-keys'
+  Enabled: false
+
 Style/SingleLineBlockParams:
   Description: 'Enforces the names of some block params.'
   Enabled: false

@@ -7,11 +7,11 @@ module RuboCop
       # `strip`.
       #
       # @example
-      #   @bad
+      #   # bad
       #   'abc'.lstrip.rstrip
       #   'abc'.rstrip.lstrip
       #
-      #   @good
+      #   # good
       #   'abc'.strip
       class LstripRstrip < Cop
         MSG = 'Use `strip` instead of `%s.%s`.'.freeze

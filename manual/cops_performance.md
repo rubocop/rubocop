@@ -440,7 +440,7 @@ end
 
 ### References
 
-* [https://github.com/JuanitoFatas/fast-ruby#proccall-vs-yield-code](https://github.com/JuanitoFatas/fast-ruby#proccall-vs-yield-code)
+* [https://github.com/JuanitoFatas/fast-ruby#proccall-and-block-arguments-vs-yieldcode](https://github.com/JuanitoFatas/fast-ruby#proccall-and-block-arguments-vs-yieldcode)
 
 ## Performance/RedundantMatch
 
@@ -671,7 +671,7 @@ have been assigned to an array or a hash.
 
 ### References
 
-* [https://github.com/JuanitoFatas/fast-ruby#arraycount-vs-arraysize-code](https://github.com/JuanitoFatas/fast-ruby#arraycount-vs-arraysize-code)
+* [https://github.com/JuanitoFatas/fast-ruby#arraylength-vs-arraysize-vs-arraycount-code](https://github.com/JuanitoFatas/fast-ruby#arraylength-vs-arraysize-vs-arraycount-code)
 
 ## Performance/StartWith
 
