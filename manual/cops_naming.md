@@ -34,7 +34,10 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | No
 
+rubocop:disable Style/AsciiComments
 This cop checks for non-ascii characters in identifier names.
+
+rubocop:enable Style/AsciiComments
 
 ### Example
 
@@ -44,7 +47,7 @@ def καλημερα # Greek alphabet (non-ascii)
 end
 
 # bad
-def こんにちは # Japanese character (non-ascii)
+def こんにちはと言う # Japanese character (non-ascii)
 end
 
 # bad
@@ -52,8 +55,14 @@ def hello_🍣 # Emoji (non-ascii)
 end
 
 # good
-def hello
+def say_hello
 end
+
+# bad
+신장 = 10 # Hangul character (non-ascii)
+
+# good
+height = 10
 ```
 
 ### References
