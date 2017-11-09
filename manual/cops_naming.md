@@ -34,10 +34,7 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | No
 
-rubocop:disable Style/AsciiComments
 This cop checks for non-ascii characters in identifier names.
-
-rubocop:enable Style/AsciiComments
 
 ### Example
 

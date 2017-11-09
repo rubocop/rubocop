@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
+# rubocop:disable Style/AsciiComments
+
 module RuboCop
   module Cop
     module Naming
-      # rubocop:disable Style/AsciiComments
       # This cop checks for non-ascii characters in identifier names.
       #
       # @example
@@ -35,7 +36,6 @@ module RuboCop
       #   # good
       #   params[:width_gteq]
       #
-      # rubocop:enable Style/AsciiComments
       class AsciiIdentifiers < Cop
         MSG = 'Use only ascii symbols in identifiers.'.freeze
 
@@ -66,3 +66,4 @@ module RuboCop
     end
   end
 end
+# rubocop:enable Style/AsciiComments
