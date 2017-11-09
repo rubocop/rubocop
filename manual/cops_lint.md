@@ -1172,6 +1172,9 @@ a file wouldn't be aware of.
 ### Example
 
 ```ruby
+Lint/MissingCopEnableDirective
+  MaximumRangeSize: .inf
+
 # good
 # rubocop:disable Layout/SpaceAroundOperators
 x= 0
@@ -1184,6 +1187,29 @@ x= 0
 x= 0
 # EOF
 ```
+```ruby
+Lint/MissingCopEnableDirective
+  MaximumRangeSize: 2
+
+# good
+# rubocop:disable Layout/SpaceAroundOperators
+x= 0
+# With the previous, there are 2 lines on which cop is disabled.
+# rubocop:enable Layout/SpaceAroundOperators
+
+# bad
+# rubocop:disable Layout/SpaceAroundOperators
+x= 0
+x += 1
+# Including this, that's 3 lines on which the cop is disabled.
+# rubocop:enable Layout/SpaceAroundOperators
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+MaximumRangeSize | Infinity
 
 ## Lint/MultipleCompare
 
