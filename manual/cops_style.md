@@ -1162,9 +1162,8 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
-This cop checks for delimiters that are pipes or braces for empty
-block parameters. Delimiters for empty block parameters do not cause
-syntax errors, but it looks strange.
+This cop checks for pipes for empty block parameters. Pipes for empty
+block parameters do not cause syntax errors, but they are redundant.
 
 ### Example
 
@@ -1308,6 +1307,29 @@ Attribute | Value
 --- | ---
 EnforcedStyle | both
 SupportedStyles | empty, nil, both
+
+## Style/EmptyLambdaParameter
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for parentheses for empty lambda parameters. Parentheses
+for empty lambda parameters do not cause syntax errors, but they are
+redundant.
+
+### Example
+
+```ruby
+# bad
+-> () { do_something }
+
+# good
+-> { do_something }
+
+# good
+-> (arg) { do_something(arg) }
+```
 
 ## Style/EmptyLiteral
 

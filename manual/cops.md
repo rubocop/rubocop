@@ -387,6 +387,7 @@ In the following section you find all available cops:
 * [Style/EmptyBlockParameter](cops_style.md#styleemptyblockparameter)
 * [Style/EmptyCaseCondition](cops_style.md#styleemptycasecondition)
 * [Style/EmptyElse](cops_style.md#styleemptyelse)
+* [Style/EmptyLambdaParameter](cops_style.md#styleemptylambdaparameter)
 * [Style/EmptyLiteral](cops_style.md#styleemptyliteral)
 * [Style/EmptyMethod](cops_style.md#styleemptymethod)
 * [Style/Encoding](cops_style.md#styleencoding)

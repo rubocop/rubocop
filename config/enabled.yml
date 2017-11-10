@@ -868,7 +868,11 @@ Style/PerlBackrefs:
   Enabled: true
 
 Style/EmptyBlockParameter:
-  Description: 'Omit delimiters for empty block parameters.'
+  Description: 'Omit pipes for empty block parameters.'
+  Enabled: true
+
+Style/EmptyLambdaParameter:
+  Description: 'Omit parens for empty lambda parameters.'
   Enabled: true
 
 Style/PreferredHashMethods:

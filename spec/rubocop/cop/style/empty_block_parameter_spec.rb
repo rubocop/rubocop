@@ -8,7 +8,7 @@ describe RuboCop::Cop::Style::EmptyBlockParameter do
   it 'registers an offense for an empty block parameter with do-end wtyle' do
     expect_offense(<<-RUBY.strip_indent)
       a do ||
-           ^^ Omit delimiters for the empty block parameters.
+           ^^ Omit pipes for the empty block parameters.
       end
     RUBY
   end
@@ -16,14 +16,16 @@ describe RuboCop::Cop::Style::EmptyBlockParameter do
   it 'registers an offense for an empty block parameter with {} style' do
     expect_offense(<<-RUBY.strip_indent)
       a { || do_something }
-          ^^ Omit delimiters for the empty block parameters.
+          ^^ Omit pipes for the empty block parameters.
     RUBY
   end
 
-  it 'registers an offense for an empty block parameter with a lambda' do
-    expect_offense(<<-RUBY.strip_indent)
-      -> () { do_something }
-         ^^ Omit delimiters for the empty block parameters.
+  it 'registers an offense for an empty block parameter with super' do
+    expect_offense(<<-RUBY)
+      def foo
+        super { || do_something }
+                ^^ Omit pipes for the empty block parameters.
+      end
     RUBY
   end
 
@@ -46,16 +48,6 @@ describe RuboCop::Cop::Style::EmptyBlockParameter do
 
     expect(new_source).to eq(<<-RUBY.strip_indent)
       a { do_something }
-    RUBY
-  end
-
-  it 'auto-corrects for a lambda' do
-    new_source = autocorrect_source(<<-RUBY.strip_indent)
-      -> () { do_something }
-    RUBY
-
-    expect(new_source).to eq(<<-RUBY.strip_indent)
-      -> { do_something }
     RUBY
   end
 
@@ -92,6 +84,12 @@ describe RuboCop::Cop::Style::EmptyBlockParameter do
   it 'accepts a non-empty block parameter with {} style' do
     expect_no_offenses(<<-RUBY.strip_indent)
       a { |x| }
+    RUBY
+  end
+
+  it 'accepts an empty block parameter with a lambda' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      -> () { do_something }
     RUBY
   end
 end
