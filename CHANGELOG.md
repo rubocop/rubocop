@@ -26,6 +26,7 @@
 * [#4794](https://github.com/bbatsov/rubocop/issues/4794): Fix an error in `Layout/MultilineOperationIndentation` when an operation spans multiple lines and contains a ternary expression. ([@rrosenblum][])
 * [#4885](https://github.com/bbatsov/rubocop/issues/4885): Fix false offense detected by `Style/MixinUsage` cop. ([@koic][])
 * [#3363](https://github.com/bbatsov/rubocop/pull/3363): Fix `Style/EmptyElse` autocorrection removes comments from branches. ([@dpostorivo][])
+* [#5025](https://github.com/bbatsov/rubocop/issues/5025): Fix error with Layout/MultilineMethodCallIndentation cop and lambda.(...). ([@dpostorivo][])
 
 ### Changes
 
