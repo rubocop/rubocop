@@ -107,6 +107,13 @@ describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       RUBY
       expect(cop.offenses.size).to eq(1)
     end
+
+    it "doesn't crash on unaligned multiline lambdas" do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        MyClass.(my_args)
+          .my_method
+      RUBY
+    end
   end
 
   shared_examples 'common for aligned and indented' do
