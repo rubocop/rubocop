@@ -39,10 +39,10 @@ RSpec.describe RuboCop::Cop::Generator do
                 # See. https://github.com/bbatsov/rubocop/blob/master/lib/rubocop/node_pattern.rb
                 #
                 # For example
-                MSG = 'Message of FakeCop'.freeze
+                MSG = 'Use `#good_method` instead of `#bad_method`.'.freeze
 
                 def_node_matcher :bad_method?, <<-PATTERN
-                  (send nil :bad_method ...)
+                  (send nil? :bad_method ...)
                 PATTERN
 
                 def on_send(node)
