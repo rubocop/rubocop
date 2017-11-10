@@ -1156,6 +1156,35 @@ parameter is assigned to within the block.
 [1, 2].each_with_object({}) { |e, a| a[e] = e }
 ```
 
+## Style/EmptyBlockParameter
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for delimiters that are pipes or braces for empty
+block parameters. Delimiters for empty block parameters do not cause
+syntax errors, but it looks strange.
+
+### Example
+
+```ruby
+# bad
+a do ||
+  do_something
+end
+
+# bad
+a { || do_something }
+
+# good
+a do
+end
+
+# good
+a { do_something }
+```
+
 ## Style/EmptyCaseCondition
 
 Enabled by default | Supports autocorrection

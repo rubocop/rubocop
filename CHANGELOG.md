@@ -11,6 +11,7 @@
 * [#4674](https://github.com/bbatsov/rubocop/issues/4674): Add a new `Lint/MissingCopEnableDirective` cop. ([@tdeo][])
 * Add new `Rails/EnvironmentComparison` cop. ([@tdeo][])
 * Add `AllowedChars` option to `Style/AsciiComments` cop. ([@hedgesky][])
+* [#5031](https://github.com/bbatsov/rubocop/pull/5031): Add new `Style/EmptyBlockParameter` cop. ([@pocke][])
 
 ### Bug fixes
 

@@ -384,6 +384,7 @@ In the following section you find all available cops:
 * [Style/DoubleNegation](cops_style.md#styledoublenegation)
 * [Style/EachForSimpleLoop](cops_style.md#styleeachforsimpleloop)
 * [Style/EachWithObject](cops_style.md#styleeachwithobject)
+* [Style/EmptyBlockParameter](cops_style.md#styleemptyblockparameter)
 * [Style/EmptyCaseCondition](cops_style.md#styleemptycasecondition)
 * [Style/EmptyElse](cops_style.md#styleemptyelse)
 * [Style/EmptyLiteral](cops_style.md#styleemptyliteral)
