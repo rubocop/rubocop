@@ -18,6 +18,7 @@ module RuboCop
         ESCAPED_NON_BACKSLASH = /\\[^\\]/
 
         def on_dstr(node)
+          return unless string_literal?(node)
           check(node)
         end
 

@@ -65,6 +65,17 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
 
         expect(new_source).to eq("'hi'")
       end
+
+      it 'auto-corrects for strings that is concated with backslash' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          %q(foo bar baz) \
+            'boogers'
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          'foo bar baz' \
+            'boogers'
+        RUBY
+      end
     end
   end
 
@@ -127,6 +138,17 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
         new_source = autocorrect_source("%Q(hi\#{4})")
 
         expect(new_source).to eq(%("hi\#{4}"))
+      end
+
+      it 'auto-corrects for strings that is concated with backslash' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          %Q(foo bar baz) \
+            'boogers'
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          "foo bar baz" \
+            'boogers'
+        RUBY
       end
     end
   end
