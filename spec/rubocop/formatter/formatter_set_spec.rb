@@ -20,9 +20,7 @@ module RuboCop
         let(:files) { ['/path/to/file1', '/path/to/file2'] }
 
         it 'invokes same method of all containing formatters' do
-          # rubocop:disable RSpec/SubjectStub SEE ALSO: https://github.com/backus/rubocop-rspec/issues/488
           expect(formatter_set).to all(receive(:started).with(files))
-          # rubocop:enable RSpec/SubjectStub
           formatter_set.started(files)
         end
       end
