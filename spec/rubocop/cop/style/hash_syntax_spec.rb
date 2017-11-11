@@ -135,6 +135,12 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
         new_source = autocorrect_source('{ :a=>1, :b=>2 }')
         expect(new_source).to eq('{ a: 1, b: 2 }')
       end
+
+      # Bug: https://github.com/bbatsov/rubocop/issues/5019
+      it 'auto-corrects a missing space when hash is used as argument' do
+        new_source = autocorrect_source('foo:bar => 1')
+        expect(new_source).to eq('foo bar: 1')
+      end
     end
 
     context 'with SpaceAroundOperators disabled' do
