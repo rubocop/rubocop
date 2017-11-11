@@ -167,13 +167,22 @@ module RuboCop
         end
 
         def autocorrect_ruby19(corrector, pair_node)
-          key = pair_node.key.source_range
+          key = pair_node.key
           op = pair_node.loc.operator
 
-          range = range_between(key.begin_pos, op.end_pos)
+          range = range_between(key.source_range.begin_pos, op.end_pos)
           range = range_with_surrounding_space(range, :right)
-          corrector.replace(range,
-                            range.source.sub(/^:(.*\S)\s*=>\s*$/, '\1: '))
+
+          new_key = key.sym_type? ? key.value : key.source
+
+          space = argument_without_space?(pair_node.parent) ? ' ' : ''
+
+          corrector.replace(range, "#{space}#{new_key}: ")
+        end
+
+        def argument_without_space?(node)
+          node.argument? &&
+            node.loc.expression.begin_pos == node.parent.loc.selector.end_pos
         end
 
         def autocorrect_hash_rockets(corrector, pair_node)
