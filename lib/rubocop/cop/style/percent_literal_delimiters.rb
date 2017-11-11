@@ -71,7 +71,8 @@ module RuboCop
         def on_percent_literal(node)
           type = type(node)
           return if uses_preferred_delimiter?(node, type) ||
-                    contains_preferred_delimiter?(node, type)
+                    contains_preferred_delimiter?(node, type) ||
+                    include_same_character_as_used_for_delimiter?(node, type)
 
           add_offense(node)
         end
@@ -87,12 +88,32 @@ module RuboCop
             .any? { |s| preferred_delimiters.any? { |d| s.include?(d) } }
         end
 
+        def include_same_character_as_used_for_delimiter?(node, type)
+          return false unless %w[%w %i].include?(type)
+
+          used_delimiters = matchpairs(begin_source(node)[-1])
+          escaped_delimiters = used_delimiters.map { |d| "\\#{d}" }.join('|')
+
+          node
+            .children.map { |n| string_source(n) }.compact
+            .any? { |s| Regexp.new(escaped_delimiters) =~ s }
+        end
+
         def string_source(node)
           if node.is_a?(String)
             node
           elsif node.respond_to?(:type) && node.str_type?
             node.source
           end
+        end
+
+        def matchpairs(begin_delimiter)
+          {
+            '(' => %w[( )],
+            '[' => %w[[ ]],
+            '{' => %w[{ }],
+            '<' => %w[< >]
+          }.fetch(begin_delimiter, [begin_delimiter])
         end
       end
     end

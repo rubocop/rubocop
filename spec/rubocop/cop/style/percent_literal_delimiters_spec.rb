@@ -108,6 +108,21 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
       expect_no_offenses('%w[some words]')
     end
 
+    it 'does not register an offense for preferred delimiters ' \
+       'with a pairing delimiters' do
+      expect_no_offenses('%w(\(some words\))')
+    end
+
+    it 'does not register an offense for preferred delimiters ' \
+       'with only a closing delimiter' do
+      expect_no_offenses('%w(only closing delimiter charapter\))')
+    end
+
+    it 'does not register an offense for preferred delimiters ' \
+       'with not a pairing delimiter' do
+      expect_no_offenses('%w|\|not pairirng delimiter|')
+    end
+
     it 'registers an offense for other delimiters' do
       expect_offense(<<-RUBY.strip_indent)
         %w(some words)
