@@ -180,8 +180,20 @@ module RuboCop
 
           range = range_between(key.begin_pos, op.end_pos)
           range = range_with_surrounding_space(range, :right)
-          corrector.replace(range,
-                            range.source.sub(/^:(.*\S)\s*=>\s*$/, '\1: '))
+
+          hash_regex = /^:(.*\S)\s*=>\s*$/
+          if method_before_hash?(key)
+            corrector.replace(range,
+                              range.source.sub(hash_regex, ' \1: '))
+          else
+            corrector.replace(range,
+                              range.source.sub(hash_regex, '\1: '))
+          end
+        end
+
+        def method_before_hash?(key)
+          !key.begin_pos.zero? &&
+            processed_source.ast.source[key.begin_pos - 1] =~ /[^\s,{\[]/
         end
 
         def autocorrect_hash_rockets(corrector, node)
