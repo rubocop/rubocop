@@ -52,7 +52,7 @@ describe RuboCop::Runner, :isolated_environment do
 
           Offenses:
 
-          example.rb:3:5: C: Use snake_case for method names.
+          example.rb:3:5: C: Naming/MethodName: Use snake_case for method names.
           def INVALID_CODE; end
               ^^^^^^^^^^^^
 
@@ -114,7 +114,7 @@ describe RuboCop::Runner, :isolated_environment do
 
           Offenses:
 
-          example.rb:3:5: C: Use snake_case for method names.
+          example.rb:3:5: C: Naming/MethodName: Use snake_case for method names.
           def INVALID_CODE; end
               ^^^^^^^^^^^^
 

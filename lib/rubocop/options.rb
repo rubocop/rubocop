@@ -17,9 +17,6 @@ module RuboCop
     def parse(command_line_args)
       args = args_from_file.concat(args_from_env).concat(command_line_args)
       define_options(args).parse!(args)
-      # The --no-color CLI option sets `color: false` so we don't want the
-      # `no_color` key, which is created automatically.
-      @options.delete(:no_color)
 
       @validator.validate_compatibility
 
@@ -143,7 +140,7 @@ module RuboCop
       option(opts, '-F', '--fail-fast')
       option(opts, '-C', '--cache FLAG')
       option(opts, '-d', '--debug')
-      option(opts, '-D', '--display-cop-names')
+      option(opts, '-D', '--[no-]display-cop-names')
       option(opts, '-E', '--extra-details')
       option(opts, '-S', '--display-style-guide')
       option(opts, '-R', '--rails')
@@ -153,7 +150,7 @@ module RuboCop
       end
       option(opts, '-a', '--auto-correct')
 
-      option(opts, '--[no-]color') { |c| @options[:color] = c }
+      option(opts, '--[no-]color')
 
       option(opts, '-v', '--version')
       option(opts, '-V', '--verbose-version')
@@ -179,7 +176,8 @@ module RuboCop
     # e.g. [..., '--auto-correct', ...] to :auto_correct.
     def long_opt_symbol(args)
       long_opt = args.find { |arg| arg.start_with?('--') }
-      long_opt[2..-1].sub(/ .*/, '').tr('-', '_').gsub(/[\[\]]/, '').to_sym
+      long_opt[2..-1].sub('[no-]', '').sub(/ .*/, '')
+                     .tr('-', '_').gsub(/[\[\]]/, '').to_sym
     end
   end
 
@@ -342,14 +340,15 @@ module RuboCop
                              '(FLAG=false), default determined by',
                              'configuration parameter AllCops: UseCache.'],
       debug:                 'Display debug info.',
-      display_cop_names:     'Display cop names in offense messages.',
+      display_cop_names:     ['Display cop names in offense messages.',
+                              'Default is true.'],
       display_style_guide:   'Display style guide URLs in offense messages.',
       extra_details:         'Display extra details in offense messages.',
       rails:                 'Run extra Rails cops.',
       lint:                  'Run only lint cops.',
       list_target_files:     'List all files RuboCop will inspect.',
       auto_correct:          'Auto-correct offenses.',
-      no_color:              'Force color output on or off.',
+      color:                 'Force color output on or off.',
       version:               'Display version.',
       verbose_version:       'Display verbose version.',
       parallel:             ['Use available CPUs to execute inspection in',

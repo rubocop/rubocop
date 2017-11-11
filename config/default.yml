@@ -59,10 +59,10 @@ AllCops:
     - 'vendor/**/*'
   # Default formatter will be used if no `-f/--format` option is given.
   DefaultFormatter: progress
-  # Cop names are not displayed in offense messages by default. Change behavior
-  # by overriding DisplayCopNames, or by giving the `-D/--display-cop-names`
+  # Cop names are displayed in offense messages by default. Change behavior
+  # by overriding DisplayCopNames, or by giving the `--no-display-cop-names`
   # option.
-  DisplayCopNames: false
+  DisplayCopNames: true
   # Style guide URLs are not displayed in offense messages by default. Change
   # behavior by overriding `DisplayStyleGuide`, or by giving the
   # `-S/--display-style-guide` option.
