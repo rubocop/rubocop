@@ -1,10 +1,47 @@
 # Node Pattern
 
-Node pattern is a small language to help find specific nodes in
+Node pattern is a DSL to help find specific nodes in
 the Abstract Syntax Tree using a simple string.
 
 It reminds the simplicity of regular expressions but used to find specific
-nodes of ruby code.
+nodes of Ruby code.
+
+## History
+
+The Node Pattern was introduced by [Alex Dowad](https://github.com/alexdowad)
+and solves a problem that RuboCop contributors was facing for a long time:
+Specify all the rules around what kind of nodes we have and put it in rule
+methods.
+
+The code bellow belongs to [Style/ArrayJoin](http://www.rubydoc.info/github/bbatsov/rubocop/Rubocop/Cop/Style/ArrayJoin)
+cop and it's in favor of `Array#join` over `Array#*`. Then it tries to find
+code like `%w(one two three) * ", "` and suggest to use `#join` instead.
+
+It checks if the code is an array of strings and call `*` in the end:
+
+```ruby
+def on_send(node)
+  receiver_node, method_name, *arg_nodes = *node
+  return unless receiver_node && receiver_node.array_type? &&
+    method_name == :* && arg_nodes.first.str_type?
+
+  add_offense(node, :selector)
+end
+```
+
+This code was replaced in the cop defining a new matcher that means the same as the code above:
+
+```ruby
+def_node_matcher :join_candidate?, '(send $array :* $str)'
+```
+
+And the `on_send` method is simplified to a simple method usage:
+
+```ruby
+def on_send(node)
+  join_candidate?(node) { add_offense(node, :selector) }
+end
+```
 
 ## Simple match
 
@@ -15,7 +52,7 @@ $ ruby-parse -e '1'
 (int 1)
 ```
 
-- `int` will match exactly the node
+- `int` will match exactly the node, looking only the node type.
 - `(int 1)` will match precisely the node
 
 ## `_` for any value
@@ -117,12 +154,15 @@ The tuple can be captured using the `$` before the open parens:
 $({int float} _)
 ```
 
-## predicate methods
+## Predicate methods
 
-You can also use methods that end with question mark `?`, to ask for some
-method in the node. Example:
+Words which end with a `?` are predicate methods, are called on the target
+to see if it matches any Ruby method which the matched object supports can be
+used.
 
-- `int_type?` can be used herein replacement of `(int _)`
+Example:
+
+- `int_type?` can be used herein replacement of `(int _)`.
 
 And refactoring the expression to allow both int or float types:
 
