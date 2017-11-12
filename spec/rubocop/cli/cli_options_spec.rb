@@ -1175,22 +1175,21 @@ describe RuboCop::CLI, :isolated_environment do
 
     it 'prints corrected code to stdout if --autocorrect is used' do
       begin
-        $stdin = StringIO.new('p $/')
+        $stdin = StringIO.new('p "foo"')
         argv   = ['--auto-correct',
-                  '--only=Style/SpecialGlobalVars',
+                  '--only=Style/StringLiterals',
                   '--format=simple',
                   '--stdin',
                   'fake.rb']
         expect(cli.run(argv)).to eq(0)
-        expect($stdout.string).to eq([
-          '== fake.rb ==',
-          'C:  1:  3: [Corrected] Prefer $INPUT_RECORD_SEPARATOR or $RS from ' \
-          "the stdlib 'English' module (don't forget to require it) over $/.",
-          '',
-          '1 file inspected, 1 offense detected, 1 offense corrected',
-          '====================',
-          'p $INPUT_RECORD_SEPARATOR'
-        ].join("\n"))
+        expect($stdout.string).to eq(<<-RUBY.strip_indent.chomp)
+          == fake.rb ==
+          C:  1:  3: [Corrected] Prefer single-quoted strings when you don't need string interpolation or special symbols.
+
+          1 file inspected, 1 offense detected, 1 offense corrected
+          ====================
+          p 'foo'
+        RUBY
       ensure
         $stdin = STDIN
       end

@@ -4,7 +4,12 @@ describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'when style is use_english_names' do
-    let(:cop_config) { { 'EnforcedStyle' => 'use_english_names' } }
+    let(:cop_config) do
+      {
+        'EnforcedStyle' => 'use_english_names',
+        'AutoCorrect' => true
+      }
+    end
 
     it 'registers an offense for $:' do
       expect_offense(<<-RUBY.strip_indent)
@@ -79,7 +84,12 @@ describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
   end
 
   context 'when style is use_perl_names' do
-    let(:cop_config) { { 'EnforcedStyle' => 'use_perl_names' } }
+    let(:cop_config) do
+      {
+        'EnforcedStyle' => 'use_perl_names',
+        'AutoCorrect' => true
+      }
+    end
 
     it 'registers an offense for $LOAD_PATH' do
       expect_offense(<<-RUBY.strip_indent)

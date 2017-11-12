@@ -1205,6 +1205,7 @@ Style/SpecialGlobalVars:
   SupportedStyles:
     - use_perl_names
     - use_english_names
+  AutoCorrect: false
 
 Style/StabbyLambdaParentheses:
   EnforcedStyle: require_parentheses

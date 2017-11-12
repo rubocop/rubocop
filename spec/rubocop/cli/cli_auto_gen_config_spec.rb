@@ -588,7 +588,7 @@ describe RuboCop::CLI, :isolated_environment do
           .to eq(<<-YAML.strip_indent)
             # Offense count: 2
             # Cop supports --auto-correct.
-            # Configuration parameters: EnforcedStyle.
+            # Configuration parameters: EnforcedStyle, AutoCorrect.
             # SupportedStyles: use_perl_names, use_english_names
             Style/SpecialGlobalVars:
               Enabled: false
@@ -602,7 +602,7 @@ describe RuboCop::CLI, :isolated_environment do
           .to eq(<<-YAML.strip_indent)
             # Offense count: 3
             # Cop supports --auto-correct.
-            # Configuration parameters: EnforcedStyle.
+            # Configuration parameters: EnforcedStyle, AutoCorrect.
             # SupportedStyles: use_perl_names, use_english_names
             Style/SpecialGlobalVars:
               Exclude:
