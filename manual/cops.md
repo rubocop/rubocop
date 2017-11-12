@@ -483,6 +483,7 @@ In the following section you find all available cops:
 * [Style/SymbolLiteral](cops_style.md#stylesymbolliteral)
 * [Style/SymbolProc](cops_style.md#stylesymbolproc)
 * [Style/TernaryParentheses](cops_style.md#styleternaryparentheses)
+* [Style/TrailingBodyOnMethodDefinition](cops_style.md#styletrailingbodyonmethoddefinition)
 * [Style/TrailingCommaInArguments](cops_style.md#styletrailingcommainarguments)
 * [Style/TrailingCommaInLiteral](cops_style.md#styletrailingcommainliteral)
 * [Style/TrailingUnderscoreVariable](cops_style.md#styletrailingunderscorevariable)
