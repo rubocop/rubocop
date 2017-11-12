@@ -41,6 +41,7 @@
 * [#5011](https://github.com/bbatsov/rubocop/pull/5011): Remove `SupportedStyles` from "Configuration parameters" in `.rubocop_todo.yml`. ([@pocke][])
 * `Lint/RescueWithoutErrorClass` has been replaced by `Style/RescueStandardError`. ([@rrosenblum][])
 * [#5042](https://github.com/bbatsov/rubocop/pull/5042): Make offense locations of metrics cops to contain whole a method. ([@pocke][])
+* [#5044](https://github.com/bbatsov/rubocop/pull/5044): Add last_line and last_column into outputs of the JSON formatter. ([@pocke][])
 
 ## 0.51.0 (2017-10-18)
 
