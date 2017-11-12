@@ -44,7 +44,7 @@ Another example of a local variable `name` being assigned with the "John"
 string value:
 
 ```sh
-$ ruby-parse -e 'name = "John"'                                                                                                                09:45:59
+$ ruby-parse -e 'name = "John"'
 (lvasgn :name
   (str "John"))
 ```
@@ -58,7 +58,7 @@ First, check what the bad code returns in the Abstract Syntax Tree
 representation.
 
 ```sh
-$ ruby-parse -e '!array.empty?                                                                                                                 12:59:47
+$ ruby-parse -e '!array.empty?'
 (send
   (send
     (send nil :array) :empty?) :!)
@@ -95,7 +95,7 @@ Now that you're familiar with AST, you can learn a bit about the
 [node pattern](http://www.rubydoc.info/gems/rubocop/RuboCop/NodePattern)
 and use patterns to match with specific nodes that you want to match.
 
-You can learn more about [Node Pattern here](https://rubocop.readthedocs.io/en/latest/node_pattern/).
+You can learn more about Node Pattern [here](https://rubocop.readthedocs.io/en/latest/node_pattern/).
 
 Node pattern matches something very similar to the current output from AST
 representation, then let's start with something very generic:
