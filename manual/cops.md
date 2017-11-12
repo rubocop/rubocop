@@ -489,6 +489,7 @@ In the following section you find all available cops:
 * [Style/TrailingBodyOnMethodDefinition](cops_style.md#styletrailingbodyonmethoddefinition)
 * [Style/TrailingCommaInArguments](cops_style.md#styletrailingcommainarguments)
 * [Style/TrailingCommaInLiteral](cops_style.md#styletrailingcommainliteral)
+* [Style/TrailingMethodEndStatement](cops_style.md#styletrailingmethodendstatement)
 * [Style/TrailingUnderscoreVariable](cops_style.md#styletrailingunderscorevariable)
 * [Style/TrivialAccessors](cops_style.md#styletrivialaccessors)
 * [Style/UnlessElse](cops_style.md#styleunlesselse)

@@ -4515,6 +4515,45 @@ SupportedStylesForMultiline | comma, consistent_comma, no_comma
 
 * [https://github.com/bbatsov/ruby-style-guide#no-trailing-array-commas](https://github.com/bbatsov/ruby-style-guide#no-trailing-array-commas)
 
+## Style/TrailingMethodEndStatement
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for trailing code after the method definition.
+
+### Example
+
+```ruby
+# bad
+def some_method
+do_stuff; end
+
+def do_this(x)
+  baz.map { |b| b.this(x) } end
+
+def foo
+  block do
+    bar
+  end end
+
+# good
+def some_method
+  do_stuff
+end
+
+def do_this(x)
+  baz.map { |b| b.this(x) }
+end
+
+def foo
+  block do
+    bar
+  end
+end
+```
+
 ## Style/TrailingUnderscoreVariable
 
 Enabled by default | Supports autocorrection
