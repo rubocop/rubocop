@@ -1038,6 +1038,10 @@ Style/TrailingCommaInLiteral:
   StyleGuide: '#no-trailing-array-commas'
   Enabled: true
 
+Style/TrailingMethodEndStatement:
+  Description: 'Checks for trailing end statement on line of method body.'
+  Enabled: true
+
 Style/TrivialAccessors:
   Description: 'Prefer attr_* methods to trivial readers/writers.'
   StyleGuide: '#attr_family'
