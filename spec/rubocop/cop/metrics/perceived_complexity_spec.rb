@@ -35,14 +35,18 @@ describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
       RUBY
       expect(cop.messages)
         .to eq(['Perceived complexity for method_name is too high. [2/1]'])
-      expect(cop.highlights).to eq(['def'])
+      expect(cop.highlights).to eq([<<-RUBY.strip_indent.chomp])
+        def self.method_name
+          call_foo if some_condition
+        end
+      RUBY
       expect(cop.config_to_allow_offenses).to eq('Max' => 2)
     end
 
     it 'registers an offense for an unless modifier' do
       expect_offense(<<-RUBY.strip_indent)
         def method_name
-        ^^^ Perceived complexity for method_name is too high. [2/1]
+        ^^^^^^^^^^^^^^^ Perceived complexity for method_name is too high. [2/1]
           call_foo unless some_condition
         end
       RUBY
@@ -51,7 +55,7 @@ describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
     it 'registers an offense for elsif and else blocks' do
       expect_offense(<<-RUBY.strip_indent)
         def method_name
-        ^^^ Perceived complexity for method_name is too high. [4/1]
+        ^^^^^^^^^^^^^^^ Perceived complexity for method_name is too high. [4/1]
           if first_condition then
             call_foo
           elsif second_condition then
@@ -66,7 +70,7 @@ describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
     it 'registers an offense for a ternary operator' do
       expect_offense(<<-RUBY.strip_indent)
         def method_name
-        ^^^ Perceived complexity for method_name is too high. [2/1]
+        ^^^^^^^^^^^^^^^ Perceived complexity for method_name is too high. [2/1]
           value = some_condition ? 1 : 2
         end
       RUBY
@@ -75,7 +79,7 @@ describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
     it 'registers an offense for a while block' do
       expect_offense(<<-RUBY.strip_indent)
         def method_name
-        ^^^ Perceived complexity for method_name is too high. [2/1]
+        ^^^^^^^^^^^^^^^ Perceived complexity for method_name is too high. [2/1]
           while some_condition do
             call_foo
           end
@@ -86,7 +90,7 @@ describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
     it 'registers an offense for an until block' do
       expect_offense(<<-RUBY.strip_indent)
         def method_name
-        ^^^ Perceived complexity for method_name is too high. [2/1]
+        ^^^^^^^^^^^^^^^ Perceived complexity for method_name is too high. [2/1]
           until some_condition do
             call_foo
           end
@@ -97,7 +101,7 @@ describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
     it 'registers an offense for a for block' do
       expect_offense(<<-RUBY.strip_indent)
         def method_name
-        ^^^ Perceived complexity for method_name is too high. [2/1]
+        ^^^^^^^^^^^^^^^ Perceived complexity for method_name is too high. [2/1]
           for i in 1..2 do
             call_method
           end
@@ -108,7 +112,7 @@ describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
     it 'registers an offense for a rescue block' do
       expect_offense(<<-RUBY.strip_indent)
         def method_name
-        ^^^ Perceived complexity for method_name is too high. [2/1]
+        ^^^^^^^^^^^^^^^ Perceived complexity for method_name is too high. [2/1]
           begin
             call_foo
           rescue Exception
@@ -121,7 +125,7 @@ describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
     it 'registers an offense for a case/when block' do
       expect_offense(<<-RUBY.strip_indent)
         def method_name
-        ^^^ Perceived complexity for method_name is too high. [3/1]
+        ^^^^^^^^^^^^^^^ Perceived complexity for method_name is too high. [3/1]
           case value
           when 1 then call_foo_1
           when 2 then call_foo_2
@@ -153,7 +157,7 @@ describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
     it 'registers an offense for &&' do
       expect_offense(<<-RUBY.strip_indent)
         def method_name
-        ^^^ Perceived complexity for method_name is too high. [2/1]
+        ^^^^^^^^^^^^^^^ Perceived complexity for method_name is too high. [2/1]
           call_foo && call_bar
         end
       RUBY
@@ -162,7 +166,7 @@ describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
     it 'registers an offense for and' do
       expect_offense(<<-RUBY.strip_indent)
         def method_name
-        ^^^ Perceived complexity for method_name is too high. [2/1]
+        ^^^^^^^^^^^^^^^ Perceived complexity for method_name is too high. [2/1]
           call_foo and call_bar
         end
       RUBY
@@ -171,7 +175,7 @@ describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
     it 'registers an offense for ||' do
       expect_offense(<<-RUBY.strip_indent)
         def method_name
-        ^^^ Perceived complexity for method_name is too high. [2/1]
+        ^^^^^^^^^^^^^^^ Perceived complexity for method_name is too high. [2/1]
           call_foo || call_bar
         end
       RUBY
@@ -180,7 +184,7 @@ describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
     it 'registers an offense for or' do
       expect_offense(<<-RUBY.strip_indent)
         def method_name
-        ^^^ Perceived complexity for method_name is too high. [2/1]
+        ^^^^^^^^^^^^^^^ Perceived complexity for method_name is too high. [2/1]
           call_foo or call_bar
         end
       RUBY
@@ -189,7 +193,7 @@ describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
     it 'deals with nested if blocks containing && and ||' do
       expect_offense(<<-RUBY.strip_indent)
         def method_name
-        ^^^ Perceived complexity for method_name is too high. [6/1]
+        ^^^^^^^^^^^^^^^ Perceived complexity for method_name is too high. [6/1]
           if first_condition then
             call_foo if second_condition && third_condition
             call_bar if fourth_condition || fifth_condition
@@ -201,12 +205,12 @@ describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
     it 'counts only a single method' do
       expect_offense(<<-RUBY.strip_indent)
         def method_name_1
-        ^^^ Perceived complexity for method_name_1 is too high. [2/1]
+        ^^^^^^^^^^^^^^^^^ Perceived complexity for method_name_1 is too high. [2/1]
           call_foo if some_condition
         end
 
         def method_name_2
-        ^^^ Perceived complexity for method_name_2 is too high. [2/1]
+        ^^^^^^^^^^^^^^^^^ Perceived complexity for method_name_2 is too high. [2/1]
           call_foo if some_condition
         end
       RUBY
@@ -219,7 +223,7 @@ describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
     it 'counts stupid nested if and else blocks' do
       expect_offense(<<-RUBY.strip_indent)
         def method_name                   # 1
-        ^^^ Perceived complexity for method_name is too high. [7/2]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Perceived complexity for method_name is too high. [7/2]
           if first_condition then         # 2
             call_foo
           else                            # 3

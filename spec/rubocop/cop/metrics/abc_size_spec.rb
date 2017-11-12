@@ -22,7 +22,11 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
       expect(cop.messages)
         .to eq(['Assignment Branch Condition size for method_name is too ' \
                 'high. [2.24/0]'])
-      expect(cop.highlights).to eq(['def'])
+      expect(cop.highlights).to eq([<<-RUBY.strip_indent.chomp])
+        def method_name
+          call_foo if some_condition # 0 + 2*2 + 1*1
+        end
+      RUBY
       expect(cop.config_to_allow_offenses).to eq('Max' => 3)
     end
 
@@ -70,7 +74,7 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
       it 'treats safe navigation method calls like regular method calls' do
         expect_offense(<<-RUBY.strip_indent) # sqrt(0 + 2*2 + 0) => 2
           def method_name
-          ^^^ Assignment Branch Condition size for method_name is too high. [2/0]
+          ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [2/0]
             object&.do_something
           end
         RUBY
