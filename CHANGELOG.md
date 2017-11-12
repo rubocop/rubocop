@@ -41,6 +41,7 @@
 * [#5011](https://github.com/bbatsov/rubocop/pull/5011): Remove `SupportedStyles` from "Configuration parameters" in `.rubocop_todo.yml`. ([@pocke][])
 * `Lint/RescueWithoutErrorClass` has been replaced by `Style/RescueStandardError`. ([@rrosenblum][])
 * [#5042](https://github.com/bbatsov/rubocop/pull/5042): Make offense locations of metrics cops to contain whole a method. ([@pocke][])
+* [#5046](https://github.com/bbatsov/rubocop/issues/5046): Disable auto-correction for `Style/SpecialGlobalVars` by default. ([@pocke][])
 
 ## 0.51.0 (2017-10-18)
 

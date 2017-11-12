@@ -3995,6 +3995,7 @@ Attribute | Value
 --- | ---
 EnforcedStyle | use_english_names
 SupportedStyles | use_perl_names, use_english_names
+AutoCorrect | false
 
 ### References
 
