@@ -31,23 +31,25 @@ module RuboCop
         private
 
         def trailing_body?(node)
-          node.line_count == 2 ||
-            (node.line_count - node.body.line_count) == 1 &&
-              node.body.to_a.first.class == AST::SendNode
+          node.line_count >= 2 && body_start_on_first_line?(node)
+        end
+
+        def body_start_on_first_line?(node)
+          node.source_range.first_line == node.body.source_range.first_line
         end
 
         def autocorrect(node)
           body = node.body
 
           lambda do |corrector|
-            break_line_before(first_line_of(body), node, corrector, 1)
+            break_line_before(first_part_of(body), node, corrector, 1)
 
             eol_comment = end_of_line_comment(node.source_range.line)
             move_comment(eol_comment, node, corrector) if eol_comment
           end
         end
 
-        def first_line_of(body)
+        def first_part_of(body)
           if body.begin_type?
             body.children.first.source_range
           else

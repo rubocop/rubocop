@@ -23,9 +23,9 @@ describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition do
 
   it 'registers when body starts on def line & continues one more line' do
     expect_offense(<<-RUBY.strip_indent)
-      def some_method; body
-      ^^^^^^^^^^^^^^^^^^^^^ Method body goes below definition.
-        more_body
+      def some_method; foo = {}
+      ^^^^^^^^^^^^^^^^^^^^^^^^^ Method body goes below definition.
+        more_body(foo)
       end
     RUBY
   end
@@ -55,6 +55,14 @@ describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition do
         9.times { process(stuff) }
         more_stuff
       end
+    RUBY
+  end
+
+  it 'does not register offense with trailing body on method end' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      def some_method
+        body
+      foo; end
     RUBY
   end
 
@@ -102,12 +110,12 @@ describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition do
   end
 
   it 'auto-corrects when body continues on multiple more line' do
-    corrected = autocorrect_source(['  def some_method; body',
+    corrected = autocorrect_source(['  def some_method; []',
                                     '    more_body',
                                     '    even_more',
                                     '  end'].join("\n"))
     expect(corrected).to eq ['  def some_method; ',
-                             '    body',
+                             '    []',
                              '    more_body',
                              '    even_more',
                              '  end'].join("\n")
