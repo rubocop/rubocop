@@ -10,13 +10,13 @@ describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition do
   it 'registers an offense when body trails after method definition' do
     expect_offense(<<-RUBY.strip_indent)
       def some_method; body
-      ^^^^^^^^^^^^^^^^^^^^^ Method body goes below definition.
+                       ^^^^ Put the method definition body on its own line.
       end
       def extra_large; { size: 15 };
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method body goes below definition.
+                       ^^^^^^^^^^^^ Put the method definition body on its own line.
       end
       def seven_times(stuff) 7.times { do_this(stuff) }
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method body goes below definition.
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^ Put the method definition body on its own line.
       end
     RUBY
   end
@@ -24,7 +24,7 @@ describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition do
   it 'registers when body starts on def line & continues one more line' do
     expect_offense(<<-RUBY.strip_indent)
       def some_method; foo = {}
-      ^^^^^^^^^^^^^^^^^^^^^^^^^ Method body goes below definition.
+                       ^^^^^^^^ Put the method definition body on its own line.
         more_body(foo)
       end
     RUBY
@@ -33,7 +33,7 @@ describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition do
   it 'registers when body starts on def line & continues many more lines' do
     expect_offense(<<-RUBY.strip_indent)
       def do_stuff(thing) process(thing)
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method body goes below definition.
+                          ^^^^^^^^^^^^^^ Put the method definition body on its own line.
         8.times { thing + 9 }
         even_more(thing)
       end
@@ -69,7 +69,7 @@ describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition do
   it 'auto-corrects body after method definition' do
     corrected = autocorrect_source(['  def some_method; body',
                                     '  end'].join("\n"))
-    expect(corrected).to eq ['  def some_method; ',
+    expect(corrected).to eq ['  def some_method ',
                              '    body',
                              '  end'].join("\n")
   end
@@ -78,7 +78,7 @@ describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition do
     corrected = autocorrect_source(['  def some_method; body # stuff',
                                     '  end'].join("\n"))
     expect(corrected).to eq ['  # stuff',
-                             '  def some_method; ',
+                             '  def some_method ',
                              '    body ',
                              '  end'].join("\n")
   end
@@ -94,8 +94,16 @@ describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition do
   it 'auto-corrects body with method definition with args not in parens' do
     corrected = autocorrect_source(['  def some_method arg1, arg2; body',
                                     '  end'].join("\n"))
-    expect(corrected).to eq ['  def some_method arg1, arg2; ',
+    expect(corrected).to eq ['  def some_method arg1, arg2 ',
                              '    body',
+                             '  end'].join("\n")
+  end
+
+  it 'auto-correction removes semicolon from method definition but not body' do
+    corrected = autocorrect_source(['  def some_method; body; more_body;',
+                                    '  end'].join("\n"))
+    expect(corrected).to eq ['  def some_method ',
+                             '    body; more_body;',
                              '  end'].join("\n")
   end
 
@@ -103,7 +111,7 @@ describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition do
     corrected = autocorrect_source(['  def some_method; body',
                                     '    more_body',
                                     '  end'].join("\n"))
-    expect(corrected).to eq ['  def some_method; ',
+    expect(corrected).to eq ['  def some_method ',
                              '    body',
                              '    more_body',
                              '  end'].join("\n")
@@ -114,7 +122,7 @@ describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition do
                                     '    more_body',
                                     '    even_more',
                                     '  end'].join("\n"))
-    expect(corrected).to eq ['  def some_method; ',
+    expect(corrected).to eq ['  def some_method ',
                              '    []',
                              '    more_body',
                              '    even_more',

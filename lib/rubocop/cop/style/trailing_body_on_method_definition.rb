@@ -18,35 +18,39 @@ module RuboCop
       class TrailingBodyOnMethodDefinition < Cop
         include AutocorrectAlignment
 
-        MSG = 'Method body goes below definition.'.freeze
+        MSG = 'Put the method definition body on its own line.'.freeze
 
         def on_def(node)
-          return unless node.body
           return unless trailing_body?(node)
 
-          add_offense(node)
+          add_offense(node, location: first_part_of(node.body))
         end
         alias on_defs on_def
 
         private
 
         def trailing_body?(node)
-          node.line_count >= 2 && body_start_on_first_line?(node)
+          node.body && node.multiline? && body_starts_on_def?(node)
         end
 
-        def body_start_on_first_line?(node)
+        def body_starts_on_def?(node)
           node.source_range.first_line == node.body.source_range.first_line
         end
 
         def autocorrect(node)
-          body = node.body
-
           lambda do |corrector|
-            break_line_before(first_part_of(body), node, corrector, 1)
-
-            eol_comment = end_of_line_comment(node.source_range.line)
-            move_comment(eol_comment, node, corrector) if eol_comment
+            break_line_before_body(node, corrector)
+            move_comment(node, corrector)
+            remove_semicolon(corrector)
           end
+        end
+
+        def break_line_before_body(node, corrector)
+          corrector.insert_before(
+            first_part_of(node.body),
+            "\n" + ' ' * (node.loc.keyword.column +
+                          configured_indentation_width)
+          )
         end
 
         def first_part_of(body)
@@ -57,23 +61,29 @@ module RuboCop
           end
         end
 
-        def end_of_line_comment(line)
-          processed_source.comments.find { |c| c.loc.line == line }
-        end
+        def move_comment(node, corrector)
+          eol_comment = end_of_line_comment(node.source_range.line)
+          return unless eol_comment
 
-        def break_line_before(range, node, corrector, indent_steps)
-          corrector.insert_before(
-            range,
-            "\n" + ' ' * (node.loc.keyword.column +
-                          indent_steps * configured_indentation_width)
-          )
-        end
-
-        def move_comment(eol_comment, node, corrector)
           text = eol_comment.loc.expression.source
           corrector.insert_before(node.source_range,
                                   text + "\n" + (' ' * node.loc.keyword.column))
           corrector.remove(eol_comment.loc.expression)
+        end
+
+        def end_of_line_comment(line)
+          processed_source.comments.find { |c| c.loc.line == line }
+        end
+
+        def remove_semicolon(corrector)
+          return unless semicolon
+          corrector.remove(semicolon.pos)
+        end
+
+        def semicolon
+          @semicolon ||= processed_source.tokens.find do |token|
+            token.pos.line == 1 && token.type == :tSEMI
+          end
         end
       end
     end

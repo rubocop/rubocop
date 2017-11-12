@@ -318,7 +318,7 @@ module RuboCop
       end
 
       def single_line?
-        !multiline?
+        line_count == 1
       end
 
       def line_count
