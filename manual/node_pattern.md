@@ -64,62 +64,39 @@ value:
 - `(int _ _)` will not match because `int` types have just one child that
   contains the value.
 
-The compiler translates the pattern `(int _)` into something like:
 
-```ruby
-node.int_type? && node.children.size == 1
-```
+## `...` for several subsequent nodes
 
-while `(int _ _)` will be translated to something like:
-
-```ruby
-node.int_type? && node.children.size == 2
-```
-
-## `...` for something else
-
-While `_` limits the size, `...` make it open for more children.
-
-And the example `(int ...)` will be translated into something like:
-
-```ruby
-node.int_type? && node.children.size >= 1
-```
-
-And it matches with any number as well.
+Where `_` matches a single node, `...` eagerly matches one or more subsequent nodes.
 
 It's useful when you want to check some variable internal nodes but with a
-final with the same results. For example, let's use a classic `something.save`.
+final with the same results. For example, let's use a classic `sum(1,2)`.
 
-We can also have `person.save` or `person.address.save`, and we want to match
-both. So, let's check how it looks like in the AST:
+We can also have `sum(1,2,3,n)` and the arguments can vary. The objective is
+match all. So, let's check how it looks like in the AST:
 
 ```
-$ ruby-parse -e 'person.save'
-(send (send nil :person) :save)
+$ ruby-parse -e 'sum(1,2)'
+(send nil :sum
+  (int 1)
+  (int 2))
+```
+
+Or with more children:
+
+```
+$ ruby-parse -e 'sum(1,2,3,n)'
+(send nil :sum
+  (int 1)
+  (int 2)
+  (int 3)
+  (send nil :n))
 ```
 
 The first case can be addressed with an expression like:
 
 ```
-(send (send nil? _) :save)
-```
-
-But if it contains `.address` in the middle:
-
-```
-$ruby-parse -e 'person.address.save'
-(send
-  (send
-    (send nil :person) :address) :save)
-```
-
-The expression will not match, and it can be `a.b.c.d.save`.
-
-In such cases you can use `...` to match both cases:
-
-```
-(send ... :save)
+(send nil? :sum ...)
 ```
 
 ## `{}` for any `<expression>`
