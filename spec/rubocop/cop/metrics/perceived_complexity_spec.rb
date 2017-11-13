@@ -14,6 +14,20 @@ describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
       RUBY
     end
 
+    it 'accepts an empty method' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def method_name
+        end
+      RUBY
+    end
+
+    it 'accepts an empty `define_method`' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        define_method :method_name do
+        end
+      RUBY
+    end
+
     it 'accepts complex code outside of methods' do
       expect_no_offenses(<<-RUBY.strip_indent)
         def method_name
@@ -211,6 +225,15 @@ describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
 
         def method_name_2
         ^^^^^^^^^^^^^^^^^ Perceived complexity for method_name_2 is too high. [2/1]
+          call_foo if some_condition
+        end
+      RUBY
+    end
+
+    it 'registers an offense for a `define_method`' do
+      expect_offense(<<-RUBY.strip_indent)
+        define_method :method_name do
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Perceived complexity for method_name is too high. [2/1]
           call_foo if some_condition
         end
       RUBY

@@ -13,6 +13,13 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
       RUBY
     end
 
+    it 'accepts an empty `define_method`' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        define_method :method_name do
+        end
+      RUBY
+    end
+
     it 'registers an offense for an if modifier' do
       inspect_source(<<-RUBY.strip_indent)
         def method_name
@@ -68,6 +75,15 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
       expect(cop.messages)
         .to eq(['Assignment Branch Condition size for method_name is too ' \
                 'high. [6.4/0]']) # sqrt(1*1 + 6*6 + 2*2) => 6.4
+    end
+
+    it 'registers an offense for a `define_method`' do
+      expect_offense(<<-RUBY.strip_indent)
+        define_method :method_name do
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [1/0]
+          x = 1
+        end
+      RUBY
     end
 
     context 'target_ruby_version >= 2.3', :ruby23 do

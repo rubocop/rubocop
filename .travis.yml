@@ -10,7 +10,6 @@ rvm:
   - 2.3.5
   - 2.4.2
   - ruby-head
-  - rbx-3
 env:
   global:
     - JRUBY_OPTS='--debug -J-Xmx1000M' # get more accurate coverage data in JRuby
@@ -21,7 +20,6 @@ env:
 matrix:
   allow_failures:
     - rvm: ruby-head
-    - rvm: rbx-3
     - rvm: jruby-head
   fast_finish: true
 before_install:
