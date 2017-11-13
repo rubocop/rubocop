@@ -13,7 +13,7 @@ and solves a problem that RuboCop contributors was facing for a long time:
 Specify all the logic around what kind of nodes we have and put it in rule
 methods.
 
-The code bellow belongs to [Style/ArrayJoin](http://www.rubydoc.info/github/bbatsov/rubocop/Rubocop/Cop/Style/ArrayJoin)
+The code below belongs to [Style/ArrayJoin](http://www.rubydoc.info/github/bbatsov/rubocop/Rubocop/Cop/Style/ArrayJoin)
 cop and it's in favor of `Array#join` over `Array#*`. Then it tries to find
 code like `%w(one two three) * ", "` and suggest to use `#join` instead.
 
@@ -29,7 +29,7 @@ def on_send(node)
 end
 ```
 
-This code was replaced in the cop defining a new matcher that means the same as the code above:
+This code was replaced in the cop defining a new matcher that does the same as the code above:
 
 ```ruby
 def_node_matcher :join_candidate?, '(send $array :* $str)'
