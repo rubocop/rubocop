@@ -248,8 +248,9 @@ describe RuboCop::Cop::Layout::IndentHeredoc, :config do
             something
           RUBY2
         RUBY
-        include_examples :accept, 'include empty line', <<-RUBY
+        include_examples :accept, 'include empty lines', <<-RUBY
           <<~#{quote}MSG#{quote}
+
             foo
 
               bar
