@@ -10,7 +10,7 @@ nodes of Ruby code.
 
 The Node Pattern was introduced by [Alex Dowad](https://github.com/alexdowad)
 and solves a problem that RuboCop contributors was facing for a long time:
-Specify all the rules around what kind of nodes we have and put it in rule
+Specify all the logic around what kind of nodes we have and put it in rule
 methods.
 
 The code bellow belongs to [Style/ArrayJoin](http://www.rubydoc.info/github/bbatsov/rubocop/Rubocop/Cop/Style/ArrayJoin)
@@ -25,7 +25,7 @@ def on_send(node)
   return unless receiver_node && receiver_node.array_type? &&
     method_name == :* && arg_nodes.first.str_type?
 
-  add_offense(node, :selector)
+  add_offense(node, location: :selector)
 end
 ```
 
@@ -39,7 +39,7 @@ And the `on_send` method is simplified to a simple method usage:
 
 ```ruby
 def on_send(node)
-  join_candidate?(node) { add_offense(node, :selector) }
+  join_candidate?(node) { add_offense(node, location: :selector) }
 end
 ```
 
@@ -147,11 +147,17 @@ You can also capture multiple things like:
 (${int float} $_)
 ```
 
-It will bring an array with `[:int, 1]` for a tuple like (int 1).
-The tuple can be captured using the `$` before the open parens:
+It will return an array with `[:int, 1]` for a tuple like (int 1).
+The tuple can be entirely captured using the `$` before the open parens:
 
 ```
 $({int float} _)
+```
+
+Or remove the parens and match directly from node head:
+
+```
+${int float}
 ```
 
 ## Predicate methods
