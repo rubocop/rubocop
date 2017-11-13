@@ -115,8 +115,7 @@ $ ruby-parse -e '1.0'
 ## `$` for captures
 
 You can capture elements or nodes along with your search, prefixing the expression
-with `$`. For example, in a tuple like `(int 1)` with a search like `(int $_)`,
-you can catch element if the search matches.
+with `$`. For example, in a tuple like `(int 1)`, you can capture the value using `(int $_)`.
 
 You can also capture multiple things like:
 
