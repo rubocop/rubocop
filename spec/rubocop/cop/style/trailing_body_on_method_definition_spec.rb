@@ -10,13 +10,13 @@ describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition do
   it 'registers an offense when body trails after method definition' do
     expect_offense(<<-RUBY.strip_indent)
       def some_method; body
-                       ^^^^ Put the method definition body on its own line.
+                       ^^^^ Place the first line of a multi-line method definition's body on its own line.
       end
       def extra_large; { size: 15 };
-                       ^^^^^^^^^^^^ Put the method definition body on its own line.
+                       ^^^^^^^^^^^^ Place the first line of a multi-line method definition's body on its own line.
       end
       def seven_times(stuff) 7.times { do_this(stuff) }
-                             ^^^^^^^^^^^^^^^^^^^^^^^^^^ Put the method definition body on its own line.
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^ Place the first line of a multi-line method definition's body on its own line.
       end
     RUBY
   end
@@ -24,7 +24,7 @@ describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition do
   it 'registers when body starts on def line & continues one more line' do
     expect_offense(<<-RUBY.strip_indent)
       def some_method; foo = {}
-                       ^^^^^^^^ Put the method definition body on its own line.
+                       ^^^^^^^^ Place the first line of a multi-line method definition's body on its own line.
         more_body(foo)
       end
     RUBY
@@ -33,7 +33,7 @@ describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition do
   it 'registers when body starts on def line & continues many more lines' do
     expect_offense(<<-RUBY.strip_indent)
       def do_stuff(thing) process(thing)
-                          ^^^^^^^^^^^^^^ Put the method definition body on its own line.
+                          ^^^^^^^^^^^^^^ Place the first line of a multi-line method definition's body on its own line.
         8.times { thing + 9 }
         even_more(thing)
       end

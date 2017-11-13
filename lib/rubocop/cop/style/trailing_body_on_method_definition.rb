@@ -10,15 +10,25 @@ module RuboCop
       #   def some_method; do_stuff
       #   end
       #
+      #   def f(x); b = foo
+      #     b[c: x]
+      #   end
+      #
       #   # good
       #   def some_method
       #     do_stuff
       #   end
       #
+      #   def f(x)
+      #     b = foo
+      #     b[c: x]
+      #   end
+      #
       class TrailingBodyOnMethodDefinition < Cop
         include AutocorrectAlignment
 
-        MSG = 'Put the method definition body on its own line.'.freeze
+        MSG = "Place the first line of a multi-line method definition's " \
+              'body on its own line.'.freeze
 
         def on_def(node)
           return unless trailing_body?(node)
@@ -30,10 +40,10 @@ module RuboCop
         private
 
         def trailing_body?(node)
-          node.body && node.multiline? && body_starts_on_def?(node)
+          node.body && node.multiline? && on_def_line?(node)
         end
 
-        def body_starts_on_def?(node)
+        def on_def_line?(node)
           node.source_range.first_line == node.body.source_range.first_line
         end
 
