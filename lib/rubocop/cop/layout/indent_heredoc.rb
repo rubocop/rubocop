@@ -146,7 +146,9 @@ module RuboCop
         end
 
         def indent_level(str)
-          indentations = str.scan(/^\s*/).reject { |line| line == "\n" }
+          indentations = str.lines
+                            .map { |line| line[/^\s*/] }
+                            .reject { |line| line == "\n" }
           indentations.empty? ? 0 : indentations.min_by(&:size).size
         end
 
