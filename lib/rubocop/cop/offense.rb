@@ -138,6 +138,11 @@ module RuboCop
       end
 
       # @api private
+      def last_column
+        location.last_column
+      end
+
+      # @api private
       def column_range
         location.column_range
       end
