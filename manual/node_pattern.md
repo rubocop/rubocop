@@ -55,7 +55,7 @@ $ ruby-parse -e '1'
 - `int` will match exactly the node, looking only the node type.
 - `(int 1)` will match precisely the node
 
-## `_` for any value
+## `_` for any single node
 
 `_` will check if there's something present in the specific position, no matter the
 value:
