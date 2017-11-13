@@ -284,8 +284,8 @@ Curious about how it works?
 
 Check more details in the
 [documentation](http://www.rubydoc.info/gems/rubocop/RuboCop/NodePattern)
-or you can go directly and hack the
-[source code](https://github.com/bbatsov/rubocop/blob/master/lib/rubocop/node_pattern.rb).
+or browse the [source code](https://github.com/bbatsov/rubocop/blob/master/lib/rubocop/node_pattern.rb)
+directly. It's easy to read and hack on.
 
 The [specs](https://github.com/bbatsov/rubocop/blob/master/spec/rubocop/node_pattern_spec.rb)
 are also very useful to comprehend each feature.
