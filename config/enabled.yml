@@ -1928,3 +1928,9 @@ Gemspec/OrderedDependencies:
   Enabled: true
   Include:
     - '**/*.gemspec'
+
+Gemspec/RequiredRubyVersion:
+  Description: 'Checks that `required_ruby_version` of gemspec and `TargetRubyVersion` of .rubocop.yml are equal.'
+  Enabled: true
+  Include:
+    - '**/*.gemspec'
