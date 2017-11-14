@@ -4369,6 +4369,36 @@ EnforcedStyle | require_no_parentheses
 SupportedStyles | require_parentheses, require_no_parentheses, require_parentheses_when_complex
 AllowSafeAssignment | true
 
+## Style/TrailingBodyOnMethodDefinition
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for trailing code after the method definition.
+
+### Example
+
+```ruby
+# bad
+def some_method; do_stuff
+end
+
+def f(x); b = foo
+  b[c: x]
+end
+
+# good
+def some_method
+  do_stuff
+end
+
+def f(x)
+  b = foo
+  b[c: x]
+end
+```
+
 ## Style/TrailingCommaInArguments
 
 Enabled by default | Supports autocorrection

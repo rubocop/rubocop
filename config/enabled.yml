@@ -1024,6 +1024,10 @@ Style/MixinUsage:
   Description: 'Checks that `include`, `extend` and `prepend` exists at the top level.'
   Enabled: true
 
+Style/TrailingBodyOnMethodDefinition:
+  Description: 'Method body goes below definition.'
+  Enabled: true
+
 Style/TrailingCommaInArguments:
   Description: 'Checks for trailing comma in argument lists.'
   StyleGuide: '#no-trailing-params-comma'
