@@ -33,6 +33,7 @@
 * [#5025](https://github.com/bbatsov/rubocop/issues/5025): Fix error with Layout/MultilineMethodCallIndentation cop and lambda.(...). ([@dpostorivo][])
 * [#4781](https://github.com/bbatsov/rubocop/issues/4781): Prevent `Style/UnneededPercentQ` from breaking on strings that are concated with backslash. ([@pocke][])
 * [#4363](https://github.com/bbatsov/rubocop/issues/4363): Fix `Style/PercentLiteralDelimiters` incorrectly automatically modifies escaped percent literal delimiter. ([@koic][])
+* [#5053](https://github.com/bbatsov/rubocop/issues/5053): Fix `Naming/ConstantName` false offense on assigning to a nonoffensive assignment. ([@garettarrowood][])
 * [#5019](https://github.com/bbatsov/rubocop/pull/5019): Fix auto-correct for `Style/HashSyntax` cop when hash is used as unspaced argument. ([@drenmi][])
 
 ### Changes
