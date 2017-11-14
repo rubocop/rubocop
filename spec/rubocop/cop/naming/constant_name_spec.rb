@@ -25,6 +25,13 @@ describe RuboCop::Cop::Naming::ConstantName do
     RUBY
   end
 
+  it 'registers 1 offense if rhs is offending const assignment' do
+    expect_offense(<<-RUBY.strip_indent)
+      Bar = Foo = 4
+            ^^^ Use SCREAMING_SNAKE_CASE for constants.
+    RUBY
+  end
+
   it 'allows screaming snake case in const name' do
     expect_no_offenses('TOP_TEST = 5')
   end
@@ -47,6 +54,12 @@ describe RuboCop::Cop::Naming::ConstantName do
 
   it 'does not check if rhs is another constant' do
     expect_no_offenses('Parser::CurrentRuby = Parser::Ruby21')
+  end
+
+  it 'does not check if rhs is a non-offensive const assignment' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      Bar = Foo = Qux
+    RUBY
   end
 
   it 'checks qualified const names' do
