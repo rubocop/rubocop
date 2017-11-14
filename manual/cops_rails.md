@@ -586,6 +586,41 @@ Attribute | Value
 --- | ---
 Include | spec/\*\*/\*, test/\*\*/\*
 
+## Rails/InverseOf
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop looks for has_(one|many) and belongs_to associations where
+ActiveRecord can't automatically determine the inverse association
+because of a scope or the options used. This can result in unnecessary
+queries in some circumstances. `:inverse_of` must be manually specified
+for associations to work in both ways, or set to `false` to opt-out.
+
+### Example
+
+```ruby
+# bad
+class Blog < ApplicationRecord
+  has_many :recent_posts, -> { order(published_at: :desc) }
+end
+
+# good
+class Blog < ApplicationRecord
+  has_many(:recent_posts,
+    -> { order(published_at: :desc) },
+    inverse_of: :blog
+  )
+end
+```
+
+### Important attributes
+
+Attribute | Value
+--- | ---
+Include | app/models/\*\*/\*.rb
+
 ## Rails/NotNullColumn
 
 Enabled by default | Supports autocorrection

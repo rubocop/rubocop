@@ -1777,6 +1777,10 @@ Rails/HttpPositionalArguments:
     - 'spec/**/*'
     - 'test/**/*'
 
+Rails/InverseOf:
+  Description: 'Checks for associations where the inverse cannot be determined automatically.'
+  Enabled: true
+
 Rails/NotNullColumn:
   Description: 'Do not add a NOT NULL column without a default value'
   Enabled: true

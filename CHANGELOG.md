@@ -4,6 +4,7 @@
 
 ### New features
 
+* New cop `Rails/InverseOf` checks for association arguments that require setting the `inverse_of` option manually. ([@bdewater][])
 * [#4252](https://github.com/bbatsov/rubocop/issues/4252): Add new `Style/TrailingBodyOnMethodDefinition` cop. ([@garettarrowood][])
 * [#4650](https://github.com/bbatsov/rubocop/issues/4650): Add new `Style/StringHashKeys` cop. ([@donjar][])
 * [#1583](https://github.com/bbatsov/rubocop/issues/1583): Add a quiet formatter. ([@drenmi][])
@@ -3023,4 +3024,5 @@
 [@michniewicz]: https://github.com/michniewicz
 [@bgeuken]: https://github.com/bgeuken
 [@mtsmfm]: https://github.com/mtsmfm
+[@bdewater]: https://github.com/bdewater
 [@garettarrowood]: https://github.com/garettarrowood
