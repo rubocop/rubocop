@@ -1156,6 +1156,34 @@ parameter is assigned to within the block.
 [1, 2].each_with_object({}) { |e, a| a[e] = e }
 ```
 
+## Style/EmptyBlockParameter
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for pipes for empty block parameters. Pipes for empty
+block parameters do not cause syntax errors, but they are redundant.
+
+### Example
+
+```ruby
+# bad
+a do ||
+  do_something
+end
+
+# bad
+a { || do_something }
+
+# good
+a do
+end
+
+# good
+a { do_something }
+```
+
 ## Style/EmptyCaseCondition
 
 Enabled by default | Supports autocorrection
@@ -1279,6 +1307,29 @@ Attribute | Value
 --- | ---
 EnforcedStyle | both
 SupportedStyles | empty, nil, both
+
+## Style/EmptyLambdaParameter
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for parentheses for empty lambda parameters. Parentheses
+for empty lambda parameters do not cause syntax errors, but they are
+redundant.
+
+### Example
+
+```ruby
+# bad
+-> () { do_something }
+
+# good
+-> { do_something }
+
+# good
+-> (arg) { do_something(arg) }
+```
 
 ## Style/EmptyLiteral
 
@@ -4317,6 +4368,36 @@ Attribute | Value
 EnforcedStyle | require_no_parentheses
 SupportedStyles | require_parentheses, require_no_parentheses, require_parentheses_when_complex
 AllowSafeAssignment | true
+
+## Style/TrailingBodyOnMethodDefinition
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for trailing code after the method definition.
+
+### Example
+
+```ruby
+# bad
+def some_method; do_stuff
+end
+
+def f(x); b = foo
+  b[c: x]
+end
+
+# good
+def some_method
+  do_stuff
+end
+
+def f(x)
+  b = foo
+  b[c: x]
+end
+```
 
 ## Style/TrailingCommaInArguments
 

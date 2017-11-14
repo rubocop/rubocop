@@ -5,6 +5,7 @@
 ### New features
 
 * New cop `Rails/InverseOf` checks for association arguments that require setting the `inverse_of` option manually. ([@bdewater][])
+* [#4252](https://github.com/bbatsov/rubocop/issues/4252): Add new `Style/TrailingBodyOnMethodDefinition` cop. ([@garettarrowood][])
 * [#4650](https://github.com/bbatsov/rubocop/issues/4650): Add new `Style/StringHashKeys` cop. ([@donjar][])
 * [#1583](https://github.com/bbatsov/rubocop/issues/1583): Add a quiet formatter. ([@drenmi][])
 * Add new `Style/RandomWithOffset` cop. ([@donjar][])
@@ -12,6 +13,7 @@
 * [#4674](https://github.com/bbatsov/rubocop/issues/4674): Add a new `Lint/MissingCopEnableDirective` cop. ([@tdeo][])
 * Add new `Rails/EnvironmentComparison` cop. ([@tdeo][])
 * Add `AllowedChars` option to `Style/AsciiComments` cop. ([@hedgesky][])
+* [#5031](https://github.com/bbatsov/rubocop/pull/5031): Add new `Style/EmptyBlockParameter` and `Style/EmptyLambdaParameter` cops. ([@pocke][])
 
 ### Bug fixes
 
@@ -41,6 +43,9 @@
 * [#4943](https://github.com/bbatsov/rubocop/pull/4943): Make cop generator compliant with the repo's rubocop config. ([@tdeo][])
 * [#5011](https://github.com/bbatsov/rubocop/pull/5011): Remove `SupportedStyles` from "Configuration parameters" in `.rubocop_todo.yml`. ([@pocke][])
 * `Lint/RescueWithoutErrorClass` has been replaced by `Style/RescueStandardError`. ([@rrosenblum][])
+* [#5042](https://github.com/bbatsov/rubocop/pull/5042): Make offense locations of metrics cops to contain whole a method. ([@pocke][])
+* [#5044](https://github.com/bbatsov/rubocop/pull/5044): Add last_line and last_column into outputs of the JSON formatter. ([@pocke][])
+* [#4633](https://github.com/bbatsov/rubocop/issues/4633): Make metrics cops aware of `define_method`. ([@pocke][])
 
 ## 0.51.0 (2017-10-18)
 
@@ -3020,3 +3025,4 @@
 [@bgeuken]: https://github.com/bgeuken
 [@mtsmfm]: https://github.com/mtsmfm
 [@bdewater]: https://github.com/bdewater
+[@garettarrowood]: https://github.com/garettarrowood

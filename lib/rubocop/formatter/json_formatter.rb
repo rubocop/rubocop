@@ -64,9 +64,15 @@ module RuboCop
       # TODO: Consider better solution for Offense#real_column.
       def hash_for_location(offense)
         {
-          line:   offense.line,
-          column: offense.real_column,
-          length: offense.location.length
+          start_line:        offense.line,
+          start_column:      offense.real_column,
+          last_line:   offense.last_line,
+          last_column: offense.last_column,
+          length:      offense.location.length,
+          # `line` and `column` exist for compatibility.
+          # Use `start_line` and `start_column` instead.
+          line:        offense.line,
+          column:      offense.real_column
         }
       end
     end

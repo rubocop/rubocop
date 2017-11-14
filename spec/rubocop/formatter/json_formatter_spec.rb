@@ -9,7 +9,7 @@ module RuboCop
     let(:location) do
       source_buffer = Parser::Source::Buffer.new('test', 1)
       source_buffer.source = %w[a b cdefghi].join("\n")
-      Parser::Source::Range.new(source_buffer, 9, 10)
+      Parser::Source::Range.new(source_buffer, 2, 10)
     end
     let(:offense) do
       Cop::Offense.new(:convention, location,
@@ -121,7 +121,15 @@ module RuboCop
       end
 
       it 'sets value of #hash_for_location for :location key' do
-        location_hash = { line: 3, column: 6, length: 1 }
+        location_hash = {
+          start_line: 2,
+          start_column: 1,
+          last_line: 3,
+          last_column: 6,
+          length: 8,
+          line: 2,
+          column: 1
+        }
         expect(hash[:location]).to eq(location_hash)
       end
     end
@@ -130,15 +138,15 @@ module RuboCop
       subject(:hash) { formatter.hash_for_location(offense) }
 
       it 'sets line value for :line key' do
-        expect(hash[:line]).to eq(3)
+        expect(hash[:line]).to eq(2)
       end
 
       it 'sets column value for :column key' do
-        expect(hash[:column]).to eq(6)
+        expect(hash[:column]).to eq(1)
       end
 
       it 'sets length value for :length key' do
-        expect(hash[:length]).to eq(1)
+        expect(hash[:length]).to eq(8)
       end
     end
   end

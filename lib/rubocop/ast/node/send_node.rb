@@ -6,6 +6,8 @@ module RuboCop
     # node when the builder constructs the AST, making its methods available
     # to all `send` nodes within RuboCop.
     class SendNode < Node
+      ARROW = '->'.freeze
+
       include ParameterizedNode
       include MethodDispatchNode
 
@@ -30,6 +32,13 @@ module RuboCop
       # @return [Boolean] whether this method is a lambda
       def lambda?
         parent && parent.block_type? && method?(:lambda)
+      end
+
+      # Checks whether this is a stabby lambda. e.g. `-> () {}`
+      #
+      # @return [Boolean] whether this method is a staby lambda
+      def stabby_lambda?
+        loc.selector.source == ARROW
       end
     end
   end
