@@ -53,6 +53,7 @@ module RuboCop
 
         def on_send(node)
           include_statement(node) do |statement|
+            return if node.argument?
             return if accepted_include?(node)
 
             add_offense(node, message: format(MSG, statement: statement))

@@ -52,6 +52,12 @@ describe RuboCop::Cop::Style::MixinUsage do
       RUBY
     end
 
+    it "doesn't register an offense when `include` call is a method argument" do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        obj(include(M))
+      RUBY
+    end
+
     context 'Multiple definition classes in one' do
       it 'does not register an offense when using inside class' do
         expect_no_offenses(<<-RUBY.strip_indent)
