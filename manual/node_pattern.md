@@ -1,7 +1,7 @@
 # Node Pattern
 
-Node pattern is a DSL to help find specific nodes in
-the Abstract Syntax Tree using a simple string.
+Node pattern is a DSL to help find specific nodes in the Abstract Syntax Tree
+using a simple string.
 
 It reminds the simplicity of regular expressions but used to find specific
 nodes of Ruby code.
@@ -9,15 +9,16 @@ nodes of Ruby code.
 ## History
 
 The Node Pattern was introduced by [Alex Dowad](https://github.com/alexdowad)
-and solves a problem that RuboCop contributors was facing for a long time:
-Specify all the logic around what kind of nodes we have and put it in rule
-methods.
+and solves a problem that RuboCop contributors were facing for a long time:
+
+- Ability to declaratively define rules for node search, matching, and capture.
 
 The code below belongs to [Style/ArrayJoin](http://www.rubydoc.info/github/bbatsov/rubocop/Rubocop/Cop/Style/ArrayJoin)
 cop and it's in favor of `Array#join` over `Array#*`. Then it tries to find
 code like `%w(one two three) * ", "` and suggest to use `#join` instead.
 
-It checks if the code is an array of strings and call `*` in the end:
+It can also be an array of integers, and the code doesn't check it. However,
+it checks if the argument sent is a string.
 
 ```ruby
 def on_send(node)
@@ -35,7 +36,7 @@ This code was replaced in the cop defining a new matcher that does the same as t
 def_node_matcher :join_candidate?, '(send $array :* $str)'
 ```
 
-And the `on_send` method is simplified to a simple method usage:
+And the `on_send` method is simplified to a method usage:
 
 ```ruby
 def on_send(node)
@@ -43,9 +44,11 @@ def on_send(node)
 end
 ```
 
-## Simple match
+## `(` and `)` Navigate deeply with Parens
 
-A simple integer like `1` represents `(int 1)` in the AST.
+Parens delimits navigation inside node and its children.
+
+A simple integer like `1` is represented by `(int 1)` in the AST.
 
 ```
 $ ruby-parse -e '1'
@@ -69,8 +72,8 @@ value:
 
 Where `_` matches a single node, `...` eagerly matches one or more subsequent nodes.
 
-It's useful when you want to check some variable internal nodes but with a
-final with the same results. For example, let's use a classic `sum(1,2)`.
+It's useful when you want to check some internal nodes but with a
+final with the same results. For example, let's use `sum(1,2)`.
 
 We can also have `sum(1,2,3,n)` and the arguments can vary. The objective is
 match all. So, let's check how it looks like in the AST:
@@ -99,7 +102,7 @@ The first case can be addressed with an expression like:
 (send nil? :sum ...)
 ```
 
-## `{}` for any `<expression>`
+## `{}` for "OR"
 
 Lets make it a bit more complex and introduce floats:
 
@@ -123,7 +126,6 @@ You can also capture multiple things like:
 (${int float} $_)
 ```
 
-It will return an array with `[:int, 1]` for a tuple like (int 1).
 The tuple can be entirely captured using the `$` before the open parens:
 
 ```
@@ -155,14 +157,17 @@ You can also use it at the node level, asking for each child:
 - `(int odd?)` will match only with odd numbers, asking it to the current
   number.
 
-## `[]` for or `<expression>`
+## `[]` for "AND"`
 
-Imagine you want to check if the number is `odd?` and also not `zero?`:
+Imagine you want to check if the number is `odd?` and also positive numbers:
 
-`(int [odd? !zero?])` - is an int and the value should be odd and not zero.
+`(int [odd? positive?])` - is an int and the value should be odd and positive.
 
-Sometimes, we want to add an extra logic. Let's imagine we're searching for
-prime numbers, so we have a method to define it:
+
+## `#` to call external methods
+
+Sometimes, we want to add extra logic. Let's imagine we're searching for
+prime numbers, so we have a method to detect it:
 
 ```ruby
 def prime?(n)
@@ -171,18 +176,16 @@ def prime?(n)
   elsif n == 2
     true
   else
-    (2..n/2).none? { |i| n % i == 0}
+    (2..n/2).none? { |i| n % i == 0 }
   end
 end
 ```
 
-We can incorporate this using `#prime?` in the expression:
+We can use the `#prime?` method directly in the expression:
 
 ```
-(int [odd? !zero? #prime?])
+(int #prime?)
 ```
-
-It will match only `odd?`, non zero and prime numbers.
 
 ## Using node matcher macros
 
