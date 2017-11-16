@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Style/FormatStringToken
 describe RuboCop::Cop::Style::FormatStringToken, :config do
   subject(:cop) { described_class.new(config) }
 
@@ -9,7 +8,7 @@ describe RuboCop::Cop::Style::FormatStringToken, :config do
   let(:cop_config) do
     {
       'EnforcedStyle' => enforced_style,
-      'SupportedStyles' => %i[annotated template]
+      'SupportedStyles' => %i[annotated template unannotated]
     }
   end
 
@@ -129,5 +128,12 @@ describe RuboCop::Cop::Style::FormatStringToken, :config do
     'Prefer template tokens (like `%{foo}`) ' \
     'over annotated tokens (like `%<foo>s`).'
   )
+
+  include_examples(
+    'offense message',
+    :unannotated,
+    '"%{foo}"',
+    'Prefer unannotated tokens (like `%s`) ' \
+    'over template tokens (like `%{foo}`).'
+  )
 end
-# rubocop:enable Style/FormatStringToken

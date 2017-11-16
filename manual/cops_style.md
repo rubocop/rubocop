@@ -1583,23 +1583,27 @@ Use a consistent style for named format string tokens.
 
 ```ruby
 # bad
-
 format('%{greeting}', greeting: 'Hello')
 format('%s', 'Hello')
 
 # good
-
 format('%<greeting>s', greeting: 'Hello')
 ```
 ```ruby
 # bad
-
 format('%<greeting>s', greeting: 'Hello')
 format('%s', 'Hello')
 
 # good
-
 format('%{greeting}', greeting: 'Hello')
+```
+```ruby
+# bad
+format('%<greeting>s', greeting: 'Hello')
+format('%{greeting}', 'Hello')
+
+# good
+format('%s', 'Hello')
 ```
 
 ### Important attributes
@@ -1607,7 +1611,7 @@ format('%{greeting}', greeting: 'Hello')
 Attribute | Value
 --- | ---
 EnforcedStyle | annotated
-SupportedStyles | annotated, template
+SupportedStyles | annotated, template, unannotated
 
 ## Style/FrozenStringLiteralComment
 
