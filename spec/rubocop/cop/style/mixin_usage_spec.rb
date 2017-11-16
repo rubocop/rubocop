@@ -54,7 +54,7 @@ describe RuboCop::Cop::Style::MixinUsage do
 
     it "doesn't register an offense when `include` call is a method argument" do
       expect_no_offenses(<<-RUBY.strip_indent)
-        obj(include(M))
+        do_something(include(M))
       RUBY
     end
 
