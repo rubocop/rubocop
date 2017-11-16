@@ -17,6 +17,7 @@ pages:
 - Support: support.md
 - Contributing: contributing.md
 - Development: development.md
+- Node Pattern: node_pattern.md
 - Cops Documentation:
     - Layout Cops: cops_layout.md
     - Linting Cops: cops_lint.md
