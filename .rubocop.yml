@@ -23,6 +23,12 @@ Naming/PredicateName:
 Style/FrozenStringLiteralComment:
   EnforcedStyle: always
 
+Style/FormatStringToken:
+  # Because we parse a lot of source codes from strings. Percent arrays
+  # look like unannotated format string tokens to this cop.
+  Exclude:
+    - spec/**/*
+
 Layout/EndOfLine:
   EnforcedStyle: lf
 
