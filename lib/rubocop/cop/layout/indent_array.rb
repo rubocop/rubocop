@@ -20,8 +20,20 @@ module RuboCop
       # styles are 'consistent' and 'align_brackets'. Here are examples:
       #
       # @example EnforcedStyle: special_inside_parentheses
+      #   # The `special_inside_parentheses` style enforces that the first
+      #   # element in an array literal where the opening bracket and first
+      #   # element are on seprate lines is indented one step (two spaces) more
+      #   # than the position inside the opening parenthesis.
       #
-      #   # special_inside_parentheses
+      #   #bad
+      #   array = [
+      #     :value
+      #   ]
+      #   and_in_a_method_call([
+      #     :no_difference
+      #                        ])
+      #
+      #   #good
       #   array = [
       #     :value
       #   ]
@@ -29,10 +41,22 @@ module RuboCop
       #                          :its_like_this
       #                        ])
       #
-      #
       # @example EnforcedStyle: consistent
+      #   # The `consistent` style enforces that the first element in an array
+      #   # literal where the opening bracket and the first element are on
+      #   # seprate lines is indented the same as an array literal which is not
+      #   # defined inside a method call.
       #
+      #   #bad
       #   # consistent
+      #   array = [
+      #     :value
+      #   ]
+      #   but_in_a_method_call([
+      #                          :its_like_this
+      #   ])
+      #
+      #   #good
       #   array = [
       #     :value
       #   ]
@@ -40,14 +64,21 @@ module RuboCop
       #     :no_difference
       #   ])
       #
-      #
       # @example EnforcedStyle: align_brackets
+      #   # The `align_brackets` style enforces that the opening and closing
+      #   # brackets are indented to the same position.
       #
+      #   #bad
+      #   # align_brackets
+      #   and_now_for_something = [
+      #                             :completely_different
+      #   ]
+      #
+      #   #good
       #   # align_brackets
       #   and_now_for_something = [
       #                             :completely_different
       #                           ]
-      #
       class IndentArray < Cop
         include AutocorrectAlignment
         include ConfigurableEnforcedStyle
