@@ -138,6 +138,88 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       expect(corrected).to eq('get :i, q: { x: 1 }')
     end
 
+    it 'does not remove trailing comma nor realign args' do
+      src = <<-RUBY.strip_indent
+      foo({
+        a: 1,
+        b: 2,
+      })
+      RUBY
+      corrected = autocorrect_source(src)
+      expect(corrected).to eq(<<-RUBY.strip_indent)
+      foo(
+        a: 1,
+        b: 2,
+      )
+      RUBY
+    end
+
+    it 'corrects brace removal with 2 extra lines' do
+      src = <<-RUBY.strip_indent
+      foo(
+        {
+          baz: 10
+        }
+      )
+      RUBY
+      corrected = autocorrect_source(src)
+      expect(corrected).to eq(<<-RUBY.strip_indent)
+      foo(
+        baz: 10
+      )
+      RUBY
+    end
+
+    it 'corrects brace removal with extra lines & mulitple pairs' do
+      src = <<-RUBY.strip_indent
+      foo(
+        {
+          qux: "bar",
+          baz: "bar",
+          thud: "bar"
+        }
+      )
+      RUBY
+      corrected = autocorrect_source(src)
+      expect(corrected).to eq(<<-RUBY.strip_indent)
+      foo(
+        qux: "bar",
+          baz: "bar",
+          thud: "bar"
+      )
+      RUBY
+    end
+
+    it 'corrects brace removal with lower extra line' do
+      src = <<-RUBY.strip_indent
+      foo({
+        baz: 7
+        }
+      )
+      RUBY
+      corrected = autocorrect_source(src)
+      expect(corrected).to eq(<<-RUBY.strip_indent)
+      foo(
+        baz: 7
+      )
+      RUBY
+    end
+
+    it 'corrects brace removal with top extra line' do
+      src = <<-RUBY.strip_indent
+      foo(
+        {
+          baz: 5
+      })
+      RUBY
+      corrected = autocorrect_source(src)
+      expect(corrected).to eq(<<-RUBY.strip_indent)
+      foo(
+        baz: 5
+      )
+      RUBY
+    end
+
     context 'with a comment following the last key-value pair' do
       it 'corrects and leaves line breaks' do
         src = <<-RUBY.strip_indent
@@ -195,6 +277,28 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       it 'corrects two hash parameters with braces' do
         corrected = autocorrect_source(['where(1, { x: 1 }, { y: 2 })'])
         expect(corrected).to eq('where(1, { x: 1 }, y: 2)')
+      end
+
+      it 'corrects two hash parameters with braces & extra lines' do
+        src = <<-RUBY.strip_indent
+        foo(
+          {
+            qux: 9
+          },
+          {
+            bar: 0
+          }
+        )
+        RUBY
+        corrected = autocorrect_source(src)
+        expect(corrected).to eq(<<-RUBY.strip_indent)
+        foo(
+          {
+            qux: 9
+          },
+          bar: 0
+        )
+        RUBY
       end
     end
   end

@@ -170,8 +170,10 @@ describe RuboCop::CLI, :isolated_environment do
 
         let(:expected_corrected_source) do
           <<-RUBY.strip_indent
-            func(@abc => 0,
-                 @xyz => 1)
+            func(
+              @abc => 0,
+              @xyz => 1,
+            )
             func(
               abc: 0,
             )
@@ -194,8 +196,10 @@ describe RuboCop::CLI, :isolated_environment do
 
         let(:expected_corrected_source) do
           <<-RUBY.strip_indent
-            func(@abc => 0,
-                 @xyz => 1)
+            func(
+              @abc => 0,
+              @xyz => 1,
+            )
             func(
               abc: 0,
             )
@@ -258,8 +262,10 @@ describe RuboCop::CLI, :isolated_environment do
 
         let(:expected_corrected_source) do
           <<-RUBY.strip_indent
-            func(@abc => 0,
-                 @xyz => 1,)
+            func(
+              @abc => 0,
+              @xyz => 1,
+            )
             func(
               abc: 0,
             )
@@ -282,8 +288,10 @@ describe RuboCop::CLI, :isolated_environment do
 
         let(:expected_corrected_source) do
           <<-RUBY.strip_indent
-            func(@abc => 0,
-                 @xyz => 1,)
+            func(
+              @abc => 0,
+              @xyz => 1,
+            )
             func(
               abc: 0,
             )
@@ -660,11 +668,13 @@ describe RuboCop::CLI, :isolated_environment do
     expect(cli.run(['-D', '--auto-correct'])).to eq(0)
     corrected =
       <<-RUBY.strip_indent
-        expect(subject[:address]).to eq(street1:     '1 Market',
-                                        street2:     '#200',
-                                        city:        'Some Town',
-                                        state:       'CA',
-                                        postal_code: '99999-1111')
+        expect(subject[:address]).to eq(
+          street1:     '1 Market',
+          street2:     '#200',
+          city:        'Some Town',
+          state:       'CA',
+          postal_code: '99999-1111'
+        )
       RUBY
     expect(IO.read('example.rb')).to eq(corrected)
   end

@@ -45,6 +45,7 @@
 * [#4363](https://github.com/bbatsov/rubocop/issues/4363): Fix `Style/PercentLiteralDelimiters` incorrectly automatically modifies escaped percent literal delimiter. ([@koic][])
 * [#5053](https://github.com/bbatsov/rubocop/issues/5053): Fix `Naming/ConstantName` false offense on assigning to a nonoffensive assignment. ([@garettarrowood][])
 * [#5019](https://github.com/bbatsov/rubocop/pull/5019): Fix auto-correct for `Style/HashSyntax` cop when hash is used as unspaced argument. ([@drenmi][])
+* [#5052](https://github.com/bbatsov/rubocop/pull/5052): Improve accuracy of `Style/BracesAroundHashParameters` auto-correction. ([@garettarrowood][])
 * [#5059](https://github.com/bbatsov/rubocop/issues/5059): Fix a false positive for `Style/MixinUsage` when `include` call is a method argument. ([@koic][])
 * [#5071](https://github.com/bbatsov/rubocop/pull/5071): Fix a false positive in `Lint/UnneededSplatExpansion`, when `Array.new` resides in an array literal. ([@akhramov][])
 * [#4071](https://github.com/bbatsov/rubocop/issues/4071): Prevent generating wrong code by Style/ColonMethodCall and Style/RedundantSelf. ([@pocke][])

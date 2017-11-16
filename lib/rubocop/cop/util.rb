@@ -137,18 +137,19 @@ module RuboCop
         Parser::Source::Range.new(buffer, begin_pos, end_pos)
       end
 
-      def range_with_surrounding_space(range, side = :both, with_newline = true)
+      def range_with_surrounding_space(range,
+                                       side = :both,
+                                       newlines = true,
+                                       wspace = false)
         buffer = @processed_source.buffer
         src = buffer.source
 
         go_left, go_right = directions(side)
 
         begin_pos = range.begin_pos
+        begin_pos = final_pos(src, begin_pos, -1, newlines, wspace) if go_left
         end_pos = range.end_pos
-        begin_pos = move_pos(src, begin_pos, -1, go_left, /[ \t]/)
-        begin_pos = move_pos(src, begin_pos, -1, go_left && with_newline, /\n/)
-        end_pos = move_pos(src, end_pos, 1, go_right, /[ \t]/)
-        end_pos = move_pos(src, end_pos, 1, go_right && with_newline, /\n/)
+        end_pos = final_pos(src, end_pos, 1, newlines, wspace) if go_right
         Parser::Source::Range.new(buffer, begin_pos, end_pos)
       end
 
@@ -303,6 +304,14 @@ module RuboCop
         enforced_style
           .sub(/^Enforced/, 'Supported')
           .sub('Style', 'Styles')
+      end
+
+      private
+
+      def final_pos(src, pos, increment, newlines, whitespace)
+        pos = move_pos(src, pos, increment, true, /[ \t]/)
+        pos = move_pos(src, pos, increment, newlines, /\n/)
+        move_pos(src, pos, increment, whitespace, /\s/)
       end
     end
   end
