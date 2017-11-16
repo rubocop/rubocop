@@ -92,15 +92,41 @@ module RuboCop
 
           lambda do |corrector|
             if hash_node.braces?
-              remove_braces_with_whitespace(corrector, hash_node)
+              remove_braces_with_whitespace(corrector,
+                                            hash_node,
+                                            extra_space(hash_node))
             else
               add_braces(corrector, hash_node)
             end
           end
         end
 
-        def remove_braces_with_whitespace(corrector, node)
-          right_brace_and_space = right_brace_and_space(node.loc.end)
+        def extra_space(hash_node)
+          {
+            newlines: extra_left_space?(hash_node) &&
+              extra_right_space?(hash_node),
+            left: extra_left_space?(hash_node),
+            right: extra_right_space?(hash_node)
+          }
+        end
+
+        def extra_left_space?(hash_node)
+          @extra_left_space ||= begin
+            top_line = hash_node.source_range.source_line
+            top_line.delete(' ') == '{'
+          end
+        end
+
+        def extra_right_space?(hash_node)
+          @extra_right_space ||= begin
+            bottom_line_number = hash_node.source_range.last_line
+            bottom_line = processed_source.lines[bottom_line_number - 1]
+            bottom_line.delete(' ') == '}'
+          end
+        end
+
+        def remove_braces_with_whitespace(corrector, node, space)
+          right_brace_and_space = right_brace_and_space(node.loc.end, space)
 
           if comment_on_line?(right_brace_and_space.line)
             # Removing a line break between a comment and the closing
@@ -108,15 +134,24 @@ module RuboCop
             # braces in that case.
             remove_braces(corrector, node)
           else
-            left_brace_and_space = range_with_surrounding_space(node.loc.begin,
-                                                                :right)
+            left_brace_and_space =
+              range_with_surrounding_space(node.loc.begin,
+                                           :right,
+                                           space[:newlines],
+                                           space[:left])
             corrector.remove(left_brace_and_space)
             corrector.remove(right_brace_and_space)
           end
         end
 
-        def right_brace_and_space(loc_end)
-          brace_and_space = range_with_surrounding_space(loc_end, :left)
+        def right_brace_and_space(loc_end, space)
+          brace_and_space =
+            range_with_surrounding_space(
+              loc_end,
+              :left,
+              space[:newlines],
+              space[:right]
+            )
           range_with_surrounding_comma(brace_and_space, :left)
         end
 
