@@ -56,19 +56,16 @@ module RuboCop
         PERCENT_CAPITAL_W = '%W'.freeze
         PERCENT_I = '%i'.freeze
         PERCENT_CAPITAL_I = '%I'.freeze
-        ARRAY_NEW_PATTERN = '$(send (const nil? :Array) :new ...)'.freeze
         ASSIGNMENT_TYPES = %i[lvasgn ivasgn cvasgn gvasgn].freeze
 
-        def_node_matcher :literal_expansion?, <<-PATTERN
-          (splat {$({str dstr int float array} ...) (block #{ARRAY_NEW_PATTERN} ...) #{ARRAY_NEW_PATTERN}} ...)
+        def_node_matcher :array_new?, '$(send (const nil? :Array) :new ...)'
+
+        def_node_matcher :literal_expansion, <<-PATTERN
+          (splat {$({str dstr int float array} ...) (block $#array_new? ...) $#array_new?} ...)
         PATTERN
 
         def on_splat(node)
-          literal_expansion?(node) do |object|
-            if object.send_type?
-              return unless ASSIGNMENT_TYPES.include?(node.parent.parent.type)
-            end
-
+          unneeded_splat_expansion(node) do
             if array_splat?(node) &&
                (method_argument?(node) || part_of_an_array?(node))
               add_offense(node, message: ARRAY_PARAM_MSG)
@@ -80,18 +77,47 @@ module RuboCop
 
         private
 
+        def unneeded_splat_expansion(node)
+          literal_expansion(node) do |expanded_item|
+            if expanded_item.send_type?
+              return if array_new_inside_array_literal?(expanded_item)
+
+              grandparent = node.parent.parent
+              return if grandparent &&
+                        !ASSIGNMENT_TYPES.include?(grandparent.type)
+            end
+
+            yield
+          end
+        end
+
+        def array_new_inside_array_literal?(array_new_node)
+          return false unless array_new?(array_new_node)
+
+          grandparent = array_new_node.parent.parent
+          grandparent.array_type? && grandparent.children.size > 1
+        end
+
         def autocorrect(node)
+          range, content = replacement_range_and_content(node)
+
+          lambda do |corrector|
+            corrector.replace(range, content)
+          end
+        end
+
+        def replacement_range_and_content(node)
           variable, = *node
           loc = node.loc
 
-          lambda do |corrector|
-            if !variable.array_type?
-              corrector.replace(loc.expression, "[#{variable.source}]")
-            elsif unneeded_brackets?(node)
-              corrector.replace(loc.expression, remove_brackets(variable))
-            else
-              corrector.remove(loc.operator)
-            end
+          if array_new?(variable)
+            [node.parent.loc.expression, variable.source]
+          elsif !variable.array_type?
+            [loc.expression, "[#{variable.source}]"]
+          elsif unneeded_brackets?(node)
+            [loc.expression, remove_brackets(variable)]
+          else
+            [loc.operator, '']
           end
         end
 
