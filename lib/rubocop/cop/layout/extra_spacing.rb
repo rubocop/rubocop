@@ -23,7 +23,8 @@ module RuboCop
         include PrecedingFollowingAlignment
 
         MSG_UNNECESSARY = 'Unnecessary spacing detected.'.freeze
-        MSG_UNALIGNED_ASGN = '`=` is not aligned with the %s assignment.'.freeze
+        MSG_UNALIGNED_ASGN = '`=` is not aligned with the %<location>s ' \
+                             'assignment.'.freeze
 
         def investigate(processed_source)
           return if processed_source.ast.nil?
@@ -81,10 +82,10 @@ module RuboCop
           message = ''
           if should_aligned_with_preceding_line?(token)
             assignment_line = preceding_line(token)
-            message = format(MSG_UNALIGNED_ASGN, 'preceding')
+            message = format(MSG_UNALIGNED_ASGN, location: 'preceding')
           else
             assignment_line = following_line(token)
-            message = format(MSG_UNALIGNED_ASGN, 'following')
+            message = format(MSG_UNALIGNED_ASGN, location: 'following')
           end
           return if aligned_assignment?(token.pos, assignment_line)
           add_offense(token.pos, location: token.pos, message: message)

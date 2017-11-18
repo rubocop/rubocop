@@ -54,9 +54,10 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include OrderedGemNode
 
-        MSG = 'Dependencies should be sorted in an alphabetical order within '\
+        MSG = 'Dependencies should be sorted in an alphabetical order within ' \
               'their section of the gemspec. '\
-              'Dependency `%s` should appear before `%s`.'.freeze
+              'Dependency `%<previous>s` should appear before `%<current>s`.'
+              .freeze
 
         def investigate(processed_source)
           return if processed_source.ast.nil?

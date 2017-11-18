@@ -35,7 +35,7 @@ module RuboCop
         include AutocorrectAlignment
         include ConfigurableEnforcedStyle
 
-        MSG = '%s access modifiers like `%s`.'.freeze
+        MSG = '%<style>s access modifiers like `%<node>s`.'.freeze
 
         def on_class(node)
           _name, _base_class, body = *node
@@ -88,7 +88,7 @@ module RuboCop
         end
 
         def message(node)
-          format(MSG, style.capitalize, node.loc.selector.source)
+          format(MSG, style: style.capitalize, node: node.loc.selector.source)
         end
 
         def expected_indent_offset

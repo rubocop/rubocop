@@ -19,6 +19,8 @@ module RuboCop
         include SurroundingSpace
         include ConfigurableEnforcedStyle
 
+        MSG = 'Surrounding space %<type>s in default value assignment.'.freeze
+
         def on_optarg(node)
           index = index_of_first_token(node)
           arg, equals, value = processed_source.tokens[index, 3]
@@ -62,8 +64,7 @@ module RuboCop
         end
 
         def message(_)
-          format('Surrounding space %s in default value assignment.',
-                 style == :space ? 'missing' : 'detected')
+          format(MSG, type: style == :space ? 'missing' : 'detected')
         end
 
         def autocorrect(range)
