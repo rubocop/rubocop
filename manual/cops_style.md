@@ -625,25 +625,74 @@ This cop enforces using `` or %x around command literals.
 ### Example
 
 ```ruby
-# Good if EnforcedStyle is backticks or mixed, bad if percent_x.
-folders = `find . -type d`.split
-
-# Good if EnforcedStyle is percent_x, bad if backticks or mixed.
+# bad
 folders = %x(find . -type d).split
 
-# Good if EnforcedStyle is backticks, bad if percent_x or mixed.
-`
-  ln -s foo.example.yml foo.example
-  ln -s bar.example.yml bar.example
-`
-
-# Good if EnforcedStyle is percent_x or mixed, bad if backticks.
+# bad
 %x(
   ln -s foo.example.yml foo.example
   ln -s bar.example.yml bar.example
 )
 
-# Bad unless AllowInnerBackticks is true.
+# good
+folders = `find . -type d`.split
+
+# good
+`
+  ln -s foo.example.yml foo.example
+  ln -s bar.example.yml bar.example
+`
+```
+```ruby
+# bad
+folders = %x(find . -type d).split
+
+# bad
+`
+  ln -s foo.example.yml foo.example
+  ln -s bar.example.yml bar.example
+`
+
+# good
+folders = `find . -type d`.split
+
+# good
+%x(
+  ln -s foo.example.yml foo.example
+  ln -s bar.example.yml bar.example
+)
+```
+```ruby
+# bad
+folders = `find . -type d`.split
+
+# bad
+`
+  ln -s foo.example.yml foo.example
+  ln -s bar.example.yml bar.example
+`
+
+# good
+folders = %x(find . -type d).split
+
+# good
+%x(
+  ln -s foo.example.yml foo.example
+  ln -s bar.example.yml bar.example
+)
+```
+```ruby
+# If `false`, the cop will always recommend using `%x` if one or more
+# backticks are found in the command string.
+
+# bad
+`echo \`ls\``
+
+# good
+%x(echo `ls`)
+```
+```ruby
+# good
 `echo \`ls\``
 ```
 
