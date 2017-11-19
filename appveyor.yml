@@ -5,7 +5,7 @@ version: "{build}"
 install:
   - set PATH=C:\Ruby%ruby_version%\bin;%PATH%
   - gem update --system 2.6.14 --no-document
-  - gem install bundler --no-document
+  - gem install bundler --no-document --force
   - bundle install --jobs 3 --retry 3
 
 build: off
