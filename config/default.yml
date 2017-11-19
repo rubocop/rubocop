@@ -1498,6 +1498,10 @@ Rails/ActionFilter:
   Include:
     - app/controllers/**/*.rb
 
+Rails/CreateTableWithTimestamps:
+  Include:
+    - db/migrate/*.rb
+
 Rails/Date:
   # The value `strict` disallows usage of `Date.today`, `Date.current`,
   # `Date#to_time` etc.

@@ -1720,6 +1720,12 @@ Rails/Blank:
   # Convert usages of `unless` `present?` to `if` `blank?`
   UnlessPresent: true
 
+Rails/CreateTableWithTimestamps:
+  Description: >-
+                  Checks the migration for which timestamps are not included
+                  when creating a new table.
+  Enabled: true
+
 Rails/Date:
   Description: >-
                   Checks the correct usage of date aware methods,
