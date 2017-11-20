@@ -22,6 +22,8 @@ module RuboCop
         include AutocorrectAlignment
         include ConfigurableEnforcedStyle
 
+        MSG = 'Indent the first parameter one step more than %<base>s.'.freeze
+
         def on_send(node)
           return if !node.arguments? || node.operator_method?
 
@@ -44,7 +46,8 @@ module RuboCop
                  else
                    'the start of the previous line'
                  end
-          format('Indent the first parameter one step more than %s.', base)
+
+          format(MSG, base: base)
         end
 
         def base_indentation(node)

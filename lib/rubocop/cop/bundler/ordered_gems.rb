@@ -30,7 +30,7 @@ module RuboCop
 
         MSG = 'Gems should be sorted in an alphabetical order within their '\
               'section of the Gemfile. '\
-              'Gem `%s` should appear before `%s`.'.freeze
+              'Gem `%<previous>s` should appear before `%<current>s`.'.freeze
 
         def investigate(processed_source)
           return if processed_source.ast.nil?

@@ -71,7 +71,7 @@ module RuboCop
         include AutocorrectAlignment
         include ConfigurableEnforcedStyle
 
-        MSG = 'Indent `when` %s `%s`.'.freeze
+        MSG = 'Indent `when` %<depth>s `%<base>s`.'.freeze
 
         def on_case(case_node)
           return if case_node.single_line?
@@ -118,7 +118,7 @@ module RuboCop
         def message(base)
           depth = indent_one_step? ? 'one step more than' : 'as deep as'
 
-          format(MSG, depth, base)
+          format(MSG, depth: depth, base: base)
         end
 
         def base_column(case_node, base)

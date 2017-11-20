@@ -22,7 +22,9 @@ module RuboCop
       #     puts 'error'
       #   end
       class RescueEnsureAlignment < Cop
-        MSG = '`%s` at %d, %d is not aligned with `end` at %d, %d.'.freeze
+        MSG = '`%<kw_loc>s` at %<kw_loc_line>d, %<kw_loc_column>d is not ' \
+              'aligned with `end` at %<end_loc_line>d, %<end_loc_column>d.'
+              .freeze
 
         def on_resbody(node)
           check(node) unless modifier?(node)
@@ -63,8 +65,12 @@ module RuboCop
         end
 
         def format_message(kw_loc, end_loc)
-          format(MSG, kw_loc.source, kw_loc.line, kw_loc.column, end_loc.line,
-                 end_loc.column)
+          format(MSG,
+                 kw_loc: kw_loc.source,
+                 kw_loc_line: kw_loc.line,
+                 kw_loc_column: kw_loc.column,
+                 end_loc_line: end_loc.line,
+                 end_loc_column: end_loc.column)
         end
 
         def modifier?(node)

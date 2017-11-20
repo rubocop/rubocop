@@ -17,7 +17,11 @@ module RuboCop
       end
 
       def register_offense(previous, current)
-        message = format(self.class::MSG, gem_name(current), gem_name(previous))
+        message = format(
+          self.class::MSG,
+          previous: gem_name(current),
+          current: gem_name(previous)
+        )
         add_offense(current, message: message)
       end
 

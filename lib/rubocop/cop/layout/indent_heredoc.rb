@@ -34,10 +34,11 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include SafeMode
 
-        RUBY23_MSG = 'Use %d spaces for indentation in a heredoc by using ' \
-                     '`<<~` instead of `%s`.'.freeze
-        LIBRARY_MSG = 'Use %d spaces for indentation in a heredoc by using %s.'
-                      .freeze
+        RUBY23_MSG = 'Use %<indentation_width>d spaces for indentation in a ' \
+                     'heredoc by using `<<~` instead of ' \
+                     '`%<current_indent_type>s`.'.freeze
+        LIBRARY_MSG = 'Use %<indentation_width>d spaces for indentation in a ' \
+                      'heredoc by using %<method>s.'.freeze
         StripMethods = {
           unindent: 'unindent',
           active_support: 'strip_heredoc',
@@ -88,14 +89,30 @@ module RuboCop
           case style
           when :squiggly
             current_indent_type = "<<#{heredoc_indent_type(node)}"
-            format(RUBY23_MSG, indentation_width, current_indent_type)
+            ruby23_message(indentation_width, current_indent_type)
           when nil
             method = "some library(e.g. ActiveSupport's `String#strip_heredoc`)"
-            format(LIBRARY_MSG, indentation_width, method)
+            library_message(indentation_width, method)
           else
             method = "`String##{StripMethods[style]}`"
-            format(LIBRARY_MSG, indentation_width, method)
+            library_message(indentation_width, method)
           end
+        end
+
+        def library_message(indentation_width, method)
+          format(
+            LIBRARY_MSG,
+            indentation_width: indentation_width,
+            method: method
+          )
+        end
+
+        def ruby23_message(indentation_width, current_indent_type)
+          format(
+            RUBY23_MSG,
+            indentation_width: indentation_width,
+            current_indent_type: current_indent_type
+          )
         end
 
         def correct_by_squiggly(node)

@@ -34,7 +34,7 @@ module RuboCop
         include AutocorrectAlignment
         include CheckAssignment
 
-        MSG = 'Align `%s` with `%s`.'.freeze
+        MSG = 'Align `%<else_range>s` with `%<base_range>s`.'.freeze
 
         def on_if(node, base = nil)
           return if ignored_node?(node)
@@ -112,12 +112,12 @@ module RuboCop
 
           @column_delta = effective_column(base_range) - else_range.column
           return if @column_delta.zero?
-
-          add_offense(
-            else_range,
-            location: else_range,
-            message: format(MSG, else_range.source, base_range.source[/^\S*/])
+          message = format(
+            MSG,
+            else_range: else_range.source,
+            base_range: base_range.source[/^\S*/]
           )
+          add_offense(else_range, location: else_range, message: message)
         end
       end
     end

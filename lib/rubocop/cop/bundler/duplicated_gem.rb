@@ -26,8 +26,8 @@ module RuboCop
       #   # good
       #   gem 'rubocop', groups: [:development, :test]
       class DuplicatedGem < Cop
-        MSG = 'Gem `%s` requirements already given on line %d ' \
-              'of the Gemfile.'.freeze
+        MSG = 'Gem `%<gem_name>s` requirements already given on line '\
+          '%<line_of_first_occurrence>d of the Gemfile.'.freeze
 
         def investigate(processed_source)
           return unless processed_source.ast
@@ -58,12 +58,12 @@ module RuboCop
           line_range = node.loc.column...node.loc.last_column
           offense_location =
             source_range(processed_source.buffer, node.loc.line, line_range)
-
-          add_offense(
-            node,
-            location: offense_location,
-            message: format(MSG, gem_name, line_of_first_occurrence)
+          message = format(
+            MSG,
+            gem_name: gem_name,
+            line_of_first_occurrence: line_of_first_occurrence
           )
+          add_offense(node, location: offense_location, message: message)
         end
       end
     end

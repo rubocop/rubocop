@@ -26,8 +26,9 @@ module RuboCop
       #   source 'https://rubygems.org' # strongly recommended
       #   source 'http://rubygems.org'
       class InsecureProtocolSource < Cop
-        MSG = 'The source `:%s` is deprecated because HTTP requests are ' \
-              "insecure. Please change your source to 'https://rubygems.org' " \
+        MSG = 'The source `:%<source>s` is deprecated because HTTP requests ' \
+              'are insecure. ' \
+              "Please change your source to 'https://rubygems.org' " \
               "if possible, or 'http://rubygems.org' if not.".freeze
 
         def_node_matcher :insecure_protocol_source?, <<-PATTERN
@@ -37,7 +38,7 @@ module RuboCop
 
         def on_send(node)
           insecure_protocol_source?(node) do |source|
-            message = format(MSG, source)
+            message = format(MSG, source: source)
 
             add_offense(
               node,

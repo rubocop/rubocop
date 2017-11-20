@@ -35,7 +35,8 @@ module RuboCop
       class CommentIndentation < Cop
         include AutocorrectAlignment
 
-        MSG = 'Incorrect indentation detected (column %d instead of %d).'.freeze
+        MSG = 'Incorrect indentation detected (column %<column>d ' \
+          'instead of %<correct_comment_indentation>d).'.freeze
 
         def investigate(processed_source)
           processed_source.comments.each { |comment| check(comment) }
@@ -63,7 +64,15 @@ module RuboCop
 
           add_offense(
             comment,
-            message: format(MSG, column, correct_comment_indentation)
+            message: message(column, correct_comment_indentation)
+          )
+        end
+
+        def message(column, correct_comment_indentation)
+          format(
+            MSG,
+            column: column,
+            correct_comment_indentation: correct_comment_indentation
           )
         end
 

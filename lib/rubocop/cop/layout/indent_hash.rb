@@ -43,6 +43,9 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include ArrayHashIndentation
 
+        MSG = 'Use %<configured_indentation_width>d spaces for indentation ' \
+              'in a hash, relative to %<base_description>s.'.freeze
+
         def on_hash(node)
           check(node, nil) if node.loc.begin
         end
@@ -125,8 +128,11 @@ module RuboCop
         end
 
         def message(base_description)
-          format('Use %d spaces for indentation in a hash, relative to %s.',
-                 configured_indentation_width, base_description)
+          format(
+            MSG,
+            configured_indentation_width: configured_indentation_width,
+            base_description: base_description
+          )
         end
       end
     end

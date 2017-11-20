@@ -25,7 +25,8 @@ module RuboCop
       #     foo(i)
       #   }
       class BlockEndNewline < Cop
-        MSG = 'Expression at %d, %d should be on its own line.'.freeze
+        MSG = 'Expression at %<line>d, %<column>d should be on its own line.'
+              .freeze
 
         def on_block(node)
           return if node.single_line?
@@ -49,7 +50,7 @@ module RuboCop
         end
 
         def message(node)
-          format(MSG, node.loc.end.line, node.loc.end.column + 1)
+          format(MSG, line: node.loc.end.line, column: node.loc.end.column + 1)
         end
 
         def indentation_of_block_start_line(node)
