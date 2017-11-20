@@ -1922,6 +1922,12 @@ Bundler/OrderedGems:
     - '**/Gemfile'
     - '**/gems.rb'
 
+Gemspec/DuplicatedAssignment:
+  Description: 'An attribute assignment method calls should be listed only once in a gemspec.'
+  Enabled: true
+  Include:
+    - '**/*.gemspec'
+
 Gemspec/OrderedDependencies:
   Description: >-
                  Dependencies in the gemspec should be alphabetically sorted.
