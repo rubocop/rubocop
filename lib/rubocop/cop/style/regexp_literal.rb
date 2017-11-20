@@ -5,28 +5,81 @@ module RuboCop
     module Style
       # This cop enforces using // or %r around regular expressions.
       #
-      # @example
-      #   # Good if EnforcedStyle is slashes or mixed, bad if percent_r.
-      #   snake_case = /^[\dA-Z_]+$/
-      #
-      #   # Good if EnforcedStyle is percent_r, bad if slashes or mixed.
+      # @example EnforcedStyle: slashes (default)
+      #   # bad
       #   snake_case = %r{^[\dA-Z_]+$}
       #
-      #   # Good if EnforcedStyle is slashes, bad if percent_r or mixed.
-      #   regex = /
-      #     foo
-      #     (bar)
-      #     (baz)
-      #   /x
-      #
-      #   # Good if EnforcedStyle is percent_r or mixed, bad if slashes.
+      #   # bad
       #   regex = %r{
       #     foo
       #     (bar)
       #     (baz)
       #   }x
       #
-      #   # Bad unless AllowInnerSlashes is true.
+      #   # good
+      #   snake_case = /^[\dA-Z_]+$/
+      #
+      #   # good
+      #   regex = /
+      #     foo
+      #     (bar)
+      #     (baz)
+      #   /x
+      #
+      # @example EnforcedStyle: percent_r
+      #   # bad
+      #   snake_case = /^[\dA-Z_]+$/
+      #
+      #   # bad
+      #   regex = /
+      #     foo
+      #     (bar)
+      #     (baz)
+      #   /x
+      #
+      #   # good
+      #   snake_case = %r{^[\dA-Z_]+$}
+      #
+      #   # good
+      #   regex = %r{
+      #     foo
+      #     (bar)
+      #     (baz)
+      #   }x
+      #
+      # @example EnforcedStyle: mixed
+      #   # bad
+      #   snake_case = %r{^[\dA-Z_]+$}
+      #
+      #   # bad
+      #   regex = /
+      #     foo
+      #     (bar)
+      #     (baz)
+      #   /x
+      #
+      #   # good
+      #   snake_case = /^[\dA-Z_]+$/
+      #
+      #   # good
+      #   regex = %r{
+      #     foo
+      #     (bar)
+      #     (baz)
+      #   }x
+      #
+      # @example AllowInnerSlashes: false (default)
+      #   # If `false`, the cop will always recommend using `%r` if one or more
+      #   # slashes are found in the regexp string.
+      #
+      #   # bad
+      #   x =~ /home\//
+      #
+      #   # good
+      #   x =~ %r{home/}
+      #
+      # @example AllowInnerSlashes: true
+      #   # good
       #   x =~ /home\//
       class RegexpLiteral < Cop
         include ConfigurableEnforcedStyle
