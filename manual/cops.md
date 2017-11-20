@@ -119,6 +119,7 @@ In the following section you find all available cops:
 * [Layout/EmptyLineBetweenDefs](cops_layout.md#layoutemptylinebetweendefs)
 * [Layout/EmptyLines](cops_layout.md#layoutemptylines)
 * [Layout/EmptyLinesAroundAccessModifier](cops_layout.md#layoutemptylinesaroundaccessmodifier)
+* [Layout/EmptyLinesAroundArguments](cops_layout.md#layoutemptylinesaroundarguments)
 * [Layout/EmptyLinesAroundBeginBody](cops_layout.md#layoutemptylinesaroundbeginbody)
 * [Layout/EmptyLinesAroundBlockBody](cops_layout.md#layoutemptylinesaroundblockbody)
 * [Layout/EmptyLinesAroundClassBody](cops_layout.md#layoutemptylinesaroundclassbody)
