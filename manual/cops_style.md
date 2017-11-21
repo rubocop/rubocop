@@ -2154,6 +2154,13 @@ lambda.(x, y)
 # good
 lambda.call(x, y)
 ```
+```ruby
+# bad
+lambda.call(x, y)
+
+# good
+lambda.(x, y)
+```
 
 ### Important attributes
 
