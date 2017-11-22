@@ -1389,6 +1389,20 @@ Enabled | Yes
 This cop checks for the use of a method, the result of which
 would be a literal, like an empty array, hash or string.
 
+### Example
+
+```ruby
+# bad
+a = Array.new
+h = Hash.new
+s = String.new
+
+# good
+a = []
+h = {}
+s = ''
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#literal-array-hash](https://github.com/bbatsov/ruby-style-guide#literal-array-hash)
