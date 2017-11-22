@@ -143,6 +143,7 @@ require_relative 'rubocop/cop/bundler/duplicated_gem'
 require_relative 'rubocop/cop/bundler/insecure_protocol_source'
 require_relative 'rubocop/cop/bundler/ordered_gems'
 
+require_relative 'rubocop/cop/gemspec/duplicated_assignment'
 require_relative 'rubocop/cop/gemspec/ordered_dependencies'
 require_relative 'rubocop/cop/gemspec/required_ruby_version'
 

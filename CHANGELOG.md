@@ -16,6 +16,7 @@
 * Add `AllowedChars` option to `Style/AsciiComments` cop. ([@hedgesky][])
 * [#5031](https://github.com/bbatsov/rubocop/pull/5031): Add new `Style/EmptyBlockParameter` and `Style/EmptyLambdaParameter` cops. ([@pocke][])
 * [#5057](https://github.com/bbatsov/rubocop/pull/5057): Add new `Gemspec/RequiredRubyVersion` cop. ([@koic][])
+* [#5087](https://github.com/bbatsov/rubocop/pull/5087): Add new `Gemspec/RedundantAssignment` cop. ([@koic][])
 * Add `unannotated` option to `Style/FormatStringToken` cop. ([@drenmi][])
 
 ### Bug fixes
