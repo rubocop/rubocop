@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Style/FormatStringToken
 describe RuboCop::Cop::Lint::FormatParameterMismatch do
   subject(:cop) { described_class.new }
 
@@ -328,4 +327,3 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
       .to eq(1)
   end
 end
-# rubocop:enable Style/FormatStringToken

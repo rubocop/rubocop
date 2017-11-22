@@ -917,6 +917,7 @@ Style/FormatStringToken:
     - annotated
     # Prefer simple looking "template" style tokens like `%{name}`, `%{age}`
     - template
+    - unannotated
 
 Style/FrozenStringLiteralComment:
   EnforcedStyle: when_needed

@@ -1583,23 +1583,27 @@ Use a consistent style for named format string tokens.
 
 ```ruby
 # bad
-
 format('%{greeting}', greeting: 'Hello')
 format('%s', 'Hello')
 
 # good
-
 format('%<greeting>s', greeting: 'Hello')
 ```
 ```ruby
 # bad
-
 format('%<greeting>s', greeting: 'Hello')
 format('%s', 'Hello')
 
 # good
-
 format('%{greeting}', greeting: 'Hello')
+```
+```ruby
+# bad
+format('%<greeting>s', greeting: 'Hello')
+format('%{greeting}', 'Hello')
+
+# good
+format('%s', 'Hello')
 ```
 
 ### Important attributes
@@ -1607,7 +1611,7 @@ format('%{greeting}', greeting: 'Hello')
 Attribute | Value
 --- | ---
 EnforcedStyle | annotated
-SupportedStyles | annotated, template
+SupportedStyles | annotated, template, unannotated
 
 ## Style/FrozenStringLiteralComment
 
@@ -2149,6 +2153,13 @@ lambda.(x, y)
 
 # good
 lambda.call(x, y)
+```
+```ruby
+# bad
+lambda.call(x, y)
+
+# good
+lambda.(x, y)
 ```
 
 ### Important attributes
@@ -3685,47 +3696,44 @@ Enabled | Yes
 
 This cop checks for redundant uses of `self`.
 
-`self` is only needed when:
+The usage of `self` is only needed when:
 
 * Sending a message to same object with zero arguments in
   presence of a method name clash with an argument or a local
   variable.
 
-  Note, with using explicit self you can only send messages
-  with public or protected scope, you cannot send private
-  messages this way.
+* Calling an attribute writer to prevent an local variable assignment.
 
-  Example:
+Note, with using explicit self you can only send messages with public or
+protected scope, you cannot send private messages this way.
 
-  def bar
-    :baz
-  end
-
-  def foo(bar)
-    self.bar # resolves name clash with argument
-  end
-
-  def foo2
-    bar = 1
-    self.bar # resolves name clash with local variable
-  end
-
-  %w[x y z].select do |bar|
-    self.bar == bar # resolves name clash with argument of a block
-  end
-
-* Calling an attribute writer to prevent an local variable assignment
-
-  attr_writer :bar
-
-  def foo
-    self.bar= 1 # Make sure above attr writer is called
-  end
-
-Special cases:
-
-We allow uses of `self` with operators because it would be awkward
+Note we allow uses of `self` with operators because it would be awkward
 otherwise.
+
+### Example
+
+```ruby
+# bad
+def foo(bar)
+  self.baz
+end
+
+# good
+def foo(bar)
+  self.bar  # Resolves name clash with the argument.
+end
+
+def foo
+  bar = 1
+  self.bar  # Resolves name clash with the local variable.
+end
+
+def foo
+  %w[x y z].select do |bar|
+    self.bar == bar  # Resolves name clash with argument of the block.
+  end
+end
+```
 
 ### References
 

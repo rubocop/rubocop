@@ -1337,6 +1337,10 @@ Lint/NestedMethodDefinition:
   StyleGuide: '#no-nested-methods'
   Enabled: true
 
+Lint/NestedPercentLiteral:
+  Description: 'Checks for nested percent literals.'
+  Enabled: true
+
 Lint/NextWithoutAccumulator:
   Description:  >-
                   Do not omit the accumulator when calling `next`

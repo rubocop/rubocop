@@ -17,6 +17,7 @@
 * [#5031](https://github.com/bbatsov/rubocop/pull/5031): Add new `Style/EmptyBlockParameter` and `Style/EmptyLambdaParameter` cops. ([@pocke][])
 * [#5057](https://github.com/bbatsov/rubocop/pull/5057): Add new `Gemspec/RequiredRubyVersion` cop. ([@koic][])
 * [#5087](https://github.com/bbatsov/rubocop/pull/5087): Add new `Gemspec/RedundantAssignment` cop. ([@koic][])
+* Add `unannotated` option to `Style/FormatStringToken` cop. ([@drenmi][])
 
 ### Bug fixes
 
@@ -137,6 +138,7 @@
 * [#4720](https://github.com/bbatsov/rubocop/pull/4720): Add new `Bundler/InsecureProtocolSource` cop. ([@koic][])
 * [#4708](https://github.com/bbatsov/rubocop/pull/4708): Add new `Lint/RedundantWithIndex` cop. ([@koic][])
 * [#4480](https://github.com/bbatsov/rubocop/pull/4480): Add new `Lint/InterpolationCheck` cop. ([@GauthamGoli][])
+* [#4628](https://github.com/bbatsov/rubocop/issues/4628): Add new `Lint/NestedPercentLiteral` cop. ([@asherkach][])
 
 ### Bug fixes
 
@@ -3034,3 +3036,4 @@
 [@bdewater]: https://github.com/bdewater
 [@garettarrowood]: https://github.com/garettarrowood
 [@sambostock]: https://github.com/sambostock
+[@asherkach]: https://github.com/asherkach
