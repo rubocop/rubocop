@@ -28,6 +28,10 @@ describe RuboCop::Cop::Team do
           "#{baz}"
 
         i=i+1
+
+        def a
+          self::b
+        end
       RUBY
       corrected = <<-'RUBY'.strip_indent
         foo.map(&:nil?)
@@ -37,6 +41,10 @@ describe RuboCop::Cop::Team do
           "#{baz}"
 
         i += 1
+
+        def a
+          b
+        end
       RUBY
 
       create_file(file_path, source)

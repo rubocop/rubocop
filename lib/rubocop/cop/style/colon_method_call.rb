@@ -26,6 +26,10 @@ module RuboCop
             {:boolean :byte :char :double :float :int :long :short})
         PATTERN
 
+        def self.autocorrect_incompatible_with
+          [RedundantSelf]
+        end
+
         def on_send(node)
           # ignore Java interop code like Java::int
           return if java_type_node?(node)
