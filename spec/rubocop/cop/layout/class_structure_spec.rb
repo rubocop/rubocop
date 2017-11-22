@@ -7,22 +7,20 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
     RuboCop::Config.new(
       'Layout/ClassStructure' => {
         'ExpectedOrder' => %w[
-          extend
-          include
-          inner_class
-          constant
-          attribute_macro
-          macro
-          public_class_method
-          initialize
-          instance_method
-          protected_method
-          private_method
+          module_inclusion
+          constants
+          attribute_macros
+          macros
+          public_class_methods
+          initializer
+          instance_methods
+          protected_methods
+          private_methods
         ],
         'Categories' => {
-          'macro' => %w[validates validate],
-          'include' => %w[prepend],
-          'attribute_macro' => %w[attr_accessor attr_reader attr_writer]
+          'macros' => %w[validates validate],
+          'module_inclusion' => %w[prepend extend include],
+          'attribute_macros' => %w[attr_accessor attr_reader attr_writer]
         }
       }
     )
@@ -76,31 +74,30 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
   end
 
   context 'simple example' do
-    let(:code) { <<-RUBY }
-      class Person
-        CONST = 'wrong place'
-        include AnotherModule
-        ^^^^^^^^^^^^^^^^^^^^^ `include` is supposed to appear before `constant`.
-        extend SomeModule
-        ^^^^^^^^^^^^^^^^^ `extend` is supposed to appear before `include`.
-      end
-    RUBY
-
-    it { expect_offense(code) }
+    specify do
+      expect_offense <<-RUBY.strip_indent
+        class Person
+          CONST = 'wrong place'
+          include AnotherModule
+          ^^^^^^^^^^^^^^^^^^^^^ `module_inclusion` is supposed to appear before `constants`.
+          extend SomeModule
+        end
+      RUBY
+    end
 
     specify do
       expect(autocorrect_source_with_loop(<<-RUBY.strip_indent))
-        class Person
-          CONST = 'wrong place'
+        class Example
+          CONST = 1
           include AnotherModule
           extend SomeModule
         end
       RUBY
         .to eq(<<-RUBY.strip_indent)
-        class Person
-          extend SomeModule
+        class Example
           include AnotherModule
-          CONST = 'wrong place'
+          extend SomeModule
+          CONST = 1
         end
       RUBY
     end
@@ -123,7 +120,7 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
         protected
 
         def first_protected_method
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^ `protected_method` is supposed to appear before `private_method`.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^ `protected_methods` is supposed to appear before `private_methods`.
         end
 
         def second_protected_method
@@ -139,14 +136,13 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
       class Person
         include AnotherModule
         extend SomeModule
-        ^^^^^^^^^^^^^^^^^ `extend` is supposed to appear before `include`.
 
         CustomError = Class.new(StandardError)
 
         validates :name
 
         attr_reader :name
-        ^^^^^^^^^^^^^^^^^ `attribute_macro` is supposed to appear before `macro`.
+        ^^^^^^^^^^^^^^^^^ `attribute_macros` is supposed to appear before `macros`.
 
         def self.some_public_class_method
         end

@@ -11,7 +11,7 @@ module RuboCop
       # - Constants
       # - Associations (has_one, has_many)
       # - Attributes (attr_accessor, attr_writer, attr_reader)
-      # - Initialize
+      # - Initializer
       # - Instance methods
       # - Protected methods
       # - Private methods
@@ -20,14 +20,19 @@ module RuboCop
       #
       # ```yaml
       #  Layout/ClassStructure:
+      #    Categories:
+      #      module_inclusion:
+      #        - include
+      #        - prepend
+      #        - extend
       #    ExpectedOrder:
-      #      - constant
-      #      - association
-      #      - attribute
-      #      - initialize
-      #      - instance_method
-      #      - protected_method
-      #      - private_method
+      #        - module_inclusion
+      #        - constants
+      #        - public_class_methods
+      #        - initializer
+      #        - instance_methods
+      #        - protected_methods
+      #        - private_methods
       #
       # ```
       # Instead of putting all literals in the expected order, is also
@@ -49,7 +54,7 @@ module RuboCop
       #
       #   # bad: Expect extend be before constant
       #   class Person < ApplicationRecord
-      #     has_many :
+      #     has_many :orders
       #     ANSWER = 42
       #
       #     extend SomeModule
@@ -102,9 +107,9 @@ module RuboCop
       # @see https://github.com/bbatsov/ruby-style-guide#consistent-classes
       class ClassStructure < Cop
         HUMANIZED_NODE_TYPE = {
-          casgn: :constant,
-          defs: :class_method,
-          def: :instance_method
+          casgn: :constants,
+          defs: :class_methods,
+          def: :instance_methods
         }.freeze
 
         VISIBILITY_SCOPES = %i[private protected public].freeze
@@ -234,8 +239,8 @@ module RuboCop
         def humanize_node(node)
           method_name, = *node
           if node.def_type?
-            return :initialize if method_name == :initialize
-            return "#{node_visibility(node)}_method"
+            return :initializer if method_name == :initialize
+            return "#{node_visibility(node)}_methods"
           end
           HUMANIZED_NODE_TYPE[node.type] || node.type
         end

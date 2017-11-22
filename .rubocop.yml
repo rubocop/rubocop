@@ -35,17 +35,18 @@ Layout/EndOfLine:
 Layout/ClassStructure:
   Enabled: true
   Categories:
-    include:
-      - prepend
-  ExpectedOrder:
-      - extend
+    module_inclusion:
       - include
-      - constant
-      - public_class_method
-      - initialize
-      - instance_method
-      - protected_method
-      - private_method
+      - prepend
+      - extend
+  ExpectedOrder:
+      - module_inclusion
+      - constants
+      - public_class_methods
+      - initializer
+      - instance_methods
+      - protected_methods
+      - private_methods
 
 Layout/IndentHeredoc:
   EnforcedStyle: powerpack

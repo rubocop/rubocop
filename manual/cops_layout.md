@@ -371,7 +371,7 @@ Consider an example of code style that covers the following order:
 - Constants
 - Associations (has_one, has_many)
 - Attributes (attr_accessor, attr_writer, attr_reader)
-- Initialize
+- Initializer
 - Instance methods
 - Protected methods
 - Private methods
@@ -380,14 +380,19 @@ You can configure the following order:
 
 ```yaml
  Layout/ClassStructure:
+   Categories:
+     module_inclusion:
+       - include
+       - prepend
+       - extend
    ExpectedOrder:
-     - constant
-     - association
-     - attribute
-     - initialize
-     - instance_method
-     - protected_method
-     - private_method
+       - module_inclusion
+       - constants
+       - public_class_methods
+       - initializer
+       - instance_methods
+       - protected_methods
+       - private_methods
 
 ```
 Instead of putting all literals in the expected order, is also
@@ -410,7 +415,7 @@ possible to group categories of macros.
 ```ruby
 # bad: Expect extend be before constant
 class Person < ApplicationRecord
-  has_many :
+  has_many :orders
   ANSWER = 42
 
   extend SomeModule
@@ -464,8 +469,8 @@ end
 
 Attribute | Value
 --- | ---
-ExpectedOrder | includes, constant, public_class_method, initialize, instance_method, protected_method, private_method
-Categories | {"includes"=>["include", "prepend", "extend"]}
+Categories | {"module_inclusion"=>["include", "prepend", "extend"]}
+ExpectedOrder | module_inclusion, constants, public_class_methods, initializer, instance_methods, protected_methods, private_methods
 
 ### References
 
