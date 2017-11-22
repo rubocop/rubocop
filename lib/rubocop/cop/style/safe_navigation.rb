@@ -150,7 +150,10 @@ module RuboCop
                        node.receiver
                      end
 
-          return receiver if receiver == checked_variable
+          if receiver == checked_variable
+            return nil if node.assignment? || node.parent.arithmetic_operation?
+            return receiver
+          end
 
           find_matching_receiver_invocation(receiver, checked_variable)
         end
