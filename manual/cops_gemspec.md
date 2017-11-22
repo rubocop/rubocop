@@ -41,11 +41,11 @@ Gem::Specification.new do |spec|
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Include | \*\*/\*.gemspec
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `**/*.gemspec` | Array
 
 ## Gemspec/OrderedDependencies
 
@@ -104,12 +104,12 @@ spec.add_dependency 'rubocop'
 spec.add_dependency 'rspec'
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Include | \*\*/\*.gemspec
-TreatCommentsAsGroupSeparators | true
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `**/*.gemspec` | Array
+TreatCommentsAsGroupSeparators | `true` | Boolean
 
 ## Gemspec/RequiredRubyVersion
 
@@ -153,8 +153,8 @@ Gem::Specification.new do |spec|
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Include | \*\*/\*.gemspec
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `**/*.gemspec` | Array

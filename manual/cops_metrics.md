@@ -10,11 +10,11 @@ This cop checks that the ABC size of methods is not higher than the
 configured maximum. The ABC size is based on assignments, branches
 (method calls), and conditions. See http://c2.com/cgi/wiki?AbcMetric
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Max | 15
+Name | Default value | Configurable values
+--- | --- | ---
+Max | `15` | Integer
 
 ### References
 
@@ -31,13 +31,13 @@ Comment lines can optionally be ignored.
 The maximum allowed length is configurable.
 The cop can be configured to ignore blocks passed to certain methods.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-CountComments | false
-Max | 25
-ExcludedMethods |
+Name | Default value | Configurable values
+--- | --- | ---
+CountComments | `false` | Boolean
+Max | `25` | Integer
+ExcludedMethods | `[]` | Array
 
 ## Metrics/BlockNesting
 
@@ -54,12 +54,12 @@ towards the nesting level. Set to `true` to count blocks as well.
 
 The maximum level of nesting allowed is configurable.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-CountBlocks | false
-Max | 3
+Name | Default value | Configurable values
+--- | --- | ---
+CountBlocks | `false` | Boolean
+Max | `3` | Integer
 
 ### References
 
@@ -75,12 +75,12 @@ This cop checks if the length a class exceeds some maximum value.
 Comment lines can optionally be ignored.
 The maximum allowed length is configurable.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-CountComments | false
-Max | 100
+Name | Default value | Configurable values
+--- | --- | ---
+CountComments | `false` | Boolean
+Max | `100` | Integer
 
 ## Metrics/CyclomaticComplexity
 
@@ -99,11 +99,11 @@ operator (or keyword and) can be converted to a nested if statement,
 and ||/or is shorthand for a sequence of ifs, so they also add one.
 Loops can be said to have an exit condition, so they add one.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Max | 6
+Name | Default value | Configurable values
+--- | --- | ---
+Max | `6` | Integer
 
 ## Metrics/LineLength
 
@@ -114,16 +114,16 @@ Enabled | No
 This cop checks the length of lines in the source code.
 The maximum length is configurable.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Max | 80
-AllowHeredoc | true
-AllowURI | true
-URISchemes | http, https
-IgnoreCopDirectives | false
-IgnoredPatterns |
+Name | Default value | Configurable values
+--- | --- | ---
+Max | `80` | Integer
+AllowHeredoc | `true` | Boolean
+AllowURI | `true` | Boolean
+URISchemes | `http`, `https` | Array
+IgnoreCopDirectives | `false` | Boolean
+IgnoredPatterns | `[]` | Array
 
 ### References
 
@@ -139,12 +139,12 @@ This cop checks if the length of a method exceeds some maximum value.
 Comment lines can optionally be ignored.
 The maximum allowed length is configurable.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-CountComments | false
-Max | 10
+Name | Default value | Configurable values
+--- | --- | ---
+CountComments | `false` | Boolean
+Max | `10` | Integer
 
 ### References
 
@@ -160,12 +160,12 @@ This cop checks if the length a module exceeds some maximum value.
 Comment lines can optionally be ignored.
 The maximum allowed length is configurable.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-CountComments | false
-Max | 100
+Name | Default value | Configurable values
+--- | --- | ---
+CountComments | `false` | Boolean
+Max | `100` | Integer
 
 ## Metrics/ParameterLists
 
@@ -177,12 +177,12 @@ This cop checks for methods with too many parameters.
 The maximum number of parameters is configurable.
 Keyword arguments can optionally be excluded from the total count.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Max | 5
-CountKeywordArgs | true
+Name | Default value | Configurable values
+--- | --- | ---
+Max | `5` | Integer
+CountKeywordArgs | `true` | Boolean
 
 ### References
 
@@ -220,8 +220,8 @@ def my_method                   # 1
 end                             # 7 complexity points
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Max | 7
+Name | Default value | Configurable values
+--- | --- | ---
+Max | `7` | Integer

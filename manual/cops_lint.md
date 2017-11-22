@@ -114,11 +114,11 @@ if some_var == true
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-AllowSafeAssignment | true
+Name | Default value | Configurable values
+--- | --- | ---
+AllowSafeAssignment | `true` | Boolean
 
 ### References
 
@@ -192,12 +192,11 @@ foo.bar
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyleAlignWith | either
-SupportedStylesAlignWith | either, start_of_block, start_of_line
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyleAlignWith | `either` | `either`, `start_of_block`, `start_of_line`
 
 ## Lint/BooleanSymbol
 
@@ -381,13 +380,12 @@ private def foo
         end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyleAlignWith | start_of_line
-SupportedStylesAlignWith | start_of_line, def
-AutoCorrect | false
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyleAlignWith | `start_of_line` | `start_of_line`, `def`
+AutoCorrect | `false` | Boolean
 
 ## Lint/DeprecatedClassMethods
 
@@ -611,11 +609,11 @@ ensure
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-AutoCorrect | false
+Name | Default value | Configurable values
+--- | --- | ---
+AutoCorrect | `false` | Boolean
 
 ## Lint/EmptyExpression
 
@@ -754,13 +752,12 @@ puts(if true
 end)
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyleAlignWith | keyword
-SupportedStylesAlignWith | keyword, variable, start_of_line
-AutoCorrect | false
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyleAlignWith | `keyword` | `keyword`, `variable`, `start_of_line`
+AutoCorrect | `false` | Boolean
 
 ## Lint/EndInMethod
 
@@ -1032,12 +1029,11 @@ class C < Exception; end
 class C < StandardError; end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | runtime_error
-SupportedStyles | runtime_error, standard_error
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `runtime_error` | `runtime_error`, `standard_error`
 
 ## Lint/InterpolationCheck
 
@@ -1723,11 +1719,11 @@ x&.foo&.bar
 x&.foo || bar
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Whitelist | present?, blank?, presence, try
+Name | Default value | Configurable values
+--- | --- | ---
+Whitelist | `present?`, `blank?`, `presence`, `try` | Array
 
 ## Lint/ScriptPermission
 
@@ -1779,11 +1775,11 @@ def do_something(foo)
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-IgnoreImplicitReferences | false
+Name | Default value | Configurable values
+--- | --- | ---
+IgnoreImplicitReferences | `false` | Boolean
 
 ## Lint/ShadowedException
 
@@ -2137,12 +2133,12 @@ define_method(:foo) do |_bar|
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-IgnoreEmptyBlocks | true
-AllowUnusedKeywordArguments | false
+Name | Default value | Configurable values
+--- | --- | ---
+IgnoreEmptyBlocks | `true` | Boolean
+AllowUnusedKeywordArguments | `false` | Boolean
 
 ### References
 
@@ -2173,12 +2169,12 @@ def some_method(used, _unused, _unused_but_allowed)
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-AllowUnusedKeywordArguments | false
-IgnoreEmptyMethods | true
+Name | Default value | Configurable values
+--- | --- | ---
+AllowUnusedKeywordArguments | `false` | Boolean
+IgnoreEmptyMethods | `true` | Boolean
 
 ### References
 
@@ -2333,12 +2329,12 @@ class Foo
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-ContextCreatingMethods |
-MethodCreatingMethods |
+Name | Default value | Configurable values
+--- | --- | ---
+ContextCreatingMethods | `[]` | Array
+MethodCreatingMethods | `[]` | Array
 
 ## Lint/UselessAssignment
 

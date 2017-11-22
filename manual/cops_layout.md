@@ -38,13 +38,12 @@ private
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | indent
-SupportedStyles | outdent, indent
-IndentationWidth |
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `indent` | `outdent`, `indent`
+IndentationWidth | `<none>` | Integer
 
 ### References
 
@@ -182,16 +181,13 @@ can also be configured. The options are:
 }
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedHashRocketStyle | key
-SupportedHashRocketStyles | key, separator, table
-EnforcedColonStyle | key
-SupportedColonStyles | key, separator, table
-EnforcedLastArgumentHashStyle | always_inspect
-SupportedLastArgumentHashStyles | always_inspect, always_ignore, ignore_implicit, ignore_explicit
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedHashRocketStyle | `key` | `key`, `separator`, `table`
+EnforcedColonStyle | `key` | `key`, `separator`, `table`
+EnforcedLastArgumentHashStyle | `always_inspect` | `always_inspect`, `always_ignore`, `ignore_implicit`, `ignore_explicit`
 
 ## Layout/AlignParameters
 
@@ -227,13 +223,12 @@ foo :bar,
     :baz
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | with_first_parameter
-SupportedStyles | with_first_parameter, with_fixed_indentation
-IndentationWidth |
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `with_first_parameter` | `with_first_parameter`, `with_fixed_indentation`
+IndentationWidth | `<none>` | Integer
 
 ### References
 
@@ -344,14 +339,13 @@ else
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | case
-SupportedStyles | case, end
-IndentOneStep | false
-IndentationWidth |
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `case` | `case`, `end`
+IndentOneStep | `false` | Boolean
+IndentationWidth | `<none>` | Integer
 
 ### References
 
@@ -465,12 +459,12 @@ class Person
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Categories | {"module_inclusion"=>["include", "prepend", "extend"]}
-ExpectedOrder | module_inclusion, constants, public_class_methods, initializer, instance_methods, protected_methods, private_methods
+Name | Default value | Configurable values
+--- | --- | ---
+Categories | `{"module_inclusion"=>["include", "prepend", "extend"]}` | 
+ExpectedOrder | `module_inclusion`, `constants`, `public_class_methods`, `initializer`, `instance_methods`, `protected_methods`, `private_methods` | Array
 
 ### References
 
@@ -574,12 +568,11 @@ something.
   mehod
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | leading
-SupportedStyles | leading, trailing
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `leading` | `leading`, `trailing`
 
 ### References
 
@@ -686,12 +679,12 @@ def b
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-AllowAdjacentOneLineDefs | false
-NumberOfEmptyLines | 1
+Name | Default value | Configurable values
+--- | --- | ---
+AllowAdjacentOneLineDefs | `false` | Boolean
+NumberOfEmptyLines | `1` | Integer
 
 ### References
 
@@ -815,12 +808,11 @@ foo do |bar|
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | no_empty_lines
-SupportedStyles | empty_lines, no_empty_lines
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `no_empty_lines` | `empty_lines`, `no_empty_lines`
 
 ### References
 
@@ -849,12 +841,11 @@ class Foo
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | no_empty_lines
-SupportedStyles | empty_lines, empty_lines_except_namespace, empty_lines_special, no_empty_lines
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `no_empty_lines` | `empty_lines`, `empty_lines_except_namespace`, `empty_lines_special`, `no_empty_lines`
 
 ### References
 
@@ -990,12 +981,11 @@ module Foo
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | no_empty_lines
-SupportedStyles | empty_lines, empty_lines_except_namespace, empty_lines_special, no_empty_lines
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `no_empty_lines` | `empty_lines`, `empty_lines_except_namespace`, `empty_lines_special`, `no_empty_lines`
 
 ### References
 
@@ -1009,12 +999,11 @@ Enabled | No
 
 This cop checks for Windows-style line endings in the source code.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | native
-SupportedStyles | native, lf, crlf
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `native` | `native`, `lf`, `crlf`
 
 ### References
 
@@ -1043,12 +1032,12 @@ set_app("RuboCop")
 website  = "https://github.com/bbatsov/rubocop"
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-AllowForAlignment | true
-ForceEqualSignAlignment | false
+Name | Default value | Configurable values
+--- | --- | ---
+AllowForAlignment | `true` | Boolean
+ForceEqualSignAlignment | `false` | Boolean
 
 ## Layout/FirstArrayElementLineBreak
 
@@ -1176,13 +1165,12 @@ some_method(
 second_param)
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | special_for_inner_method_call_in_parentheses
-SupportedStyles | consistent, special_for_inner_method_call, special_for_inner_method_call_in_parentheses
-IndentationWidth |
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `special_for_inner_method_call_in_parentheses` | `consistent`, `special_for_inner_method_call`, `special_for_inner_method_call_in_parentheses`
+IndentationWidth | `<none>` | Integer
 
 ## Layout/IndentArray
 
@@ -1233,13 +1221,12 @@ and_now_for_something = [
                         ]
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | special_inside_parentheses
-SupportedStyles | special_inside_parentheses, consistent, align_brackets
-IndentationWidth |
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `special_inside_parentheses` | `special_inside_parentheses`, `consistent`, `align_brackets`
+IndentationWidth | `<none>` | Integer
 
 ## Layout/IndentAssignment
 
@@ -1269,11 +1256,11 @@ value =
   end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-IndentationWidth |
+Name | Default value | Configurable values
+--- | --- | ---
+IndentationWidth | `<none>` | Integer
 
 ## Layout/IndentHash
 
@@ -1316,13 +1303,12 @@ styles are 'consistent' and 'align_braces'. Here are examples:
                               completely: :different
                             }
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | special_inside_parentheses
-SupportedStyles | special_inside_parentheses, consistent, align_braces
-IndentationWidth |
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `special_inside_parentheses` | `special_inside_parentheses`, `consistent`, `align_braces`
+IndentationWidth | `<none>` | Integer
 
 ## Layout/IndentHeredoc
 
@@ -1359,12 +1345,11 @@ RUBY
 RUBY
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | auto_detection
-SupportedStyles | auto_detection, squiggly, active_support, powerpack, unindent
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `auto_detection` | `auto_detection`, `squiggly`, `active_support`, `powerpack`, `unindent`
 
 ### References
 
@@ -1389,12 +1374,11 @@ class A
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | normal
-SupportedStyles | normal, rails
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `normal` | `normal`, `rails`
 
 ### References
 
@@ -1452,12 +1436,12 @@ end
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Width | 2
-IgnoredPatterns |
+Name | Default value | Configurable values
+--- | --- | ---
+Width | `2` | Integer
+IgnoredPatterns | `[]` | Array
 
 ### References
 
@@ -1559,12 +1543,11 @@ line as the last element of the array.
 ]
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | symmetrical
-SupportedStyles | symmetrical, new_line, same_line
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `symmetrical` | `symmetrical`, `new_line`, `same_line`
 
 ## Layout/MultilineAssignmentLayout
 
@@ -1604,13 +1587,11 @@ foo = if expression
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-SupportedTypes | block, case, class, if, kwbegin, module
-EnforcedStyle | new_line
-SupportedStyles | same_line, new_line
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `new_line` | `same_line`, `new_line`
 
 ### References
 
@@ -1719,12 +1700,11 @@ line as the last element of the hash.
 }
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | symmetrical
-SupportedStyles | symmetrical, new_line, same_line
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `symmetrical` | `symmetrical`, `new_line`, `same_line`
 
 ## Layout/MultilineMethodCallBraceLayout
 
@@ -1787,12 +1767,11 @@ foo(
 )
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | symmetrical
-SupportedStyles | symmetrical, new_line, same_line
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `symmetrical` | `symmetrical`, `new_line`, `same_line`
 
 ## Layout/MultilineMethodCallIndentation
 
@@ -1848,13 +1827,12 @@ myvariable = Thing
                .c
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | aligned
-SupportedStyles | aligned, indented, indented_relative_to_receiver
-IndentationWidth |
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `aligned` | `aligned`, `indented`, `indented_relative_to_receiver`
+IndentationWidth | `<none>` | Integer
 
 ## Layout/MultilineMethodDefinitionBraceLayout
 
@@ -1917,12 +1895,11 @@ def foo(
 )
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | symmetrical
-SupportedStyles | symmetrical, new_line, same_line
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `symmetrical` | `symmetrical`, `new_line`, `same_line`
 
 ## Layout/MultilineOperationIndentation
 
@@ -1949,13 +1926,12 @@ if a +
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | aligned
-SupportedStyles | aligned, indented
-IndentationWidth |
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `aligned` | `aligned`, `indented`
+IndentationWidth | `<none>` | Integer
 
 ## Layout/RescueEnsureAlignment
 
@@ -2129,12 +2105,11 @@ Checks the spacing inside and after block parameters pipes.
 ->( x, y ) { puts x }
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyleInsidePipes | no_space
-SupportedStylesInsidePipes | space, no_space
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyleInsidePipes | `no_space` | `space`, `no_space`
 
 ## Layout/SpaceAroundEqualsInParameterDefault
 
@@ -2159,12 +2134,11 @@ def some_method(arg1 = :default, arg2 = nil, arg3 = [])
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | space
-SupportedStyles | space, no_space
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `space` | `space`, `no_space`
 
 ### References
 
@@ -2225,11 +2199,11 @@ my_number = 38 / 4
 a**b
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-AllowForAlignment | true
+Name | Default value | Configurable values
+--- | --- | ---
+AllowForAlignment | `true` | Boolean
 
 ### References
 
@@ -2258,14 +2232,12 @@ foo.map { |a|
 }
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | space
-SupportedStyles | space, no_space
-EnforcedStyleForEmptyBraces | no_space
-SupportedStylesForEmptyBraces | space, no_space
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `space` | `space`, `no_space`
+EnforcedStyleForEmptyBraces | `no_space` | `space`, `no_space`
 
 ## Layout/SpaceBeforeComma
 
@@ -2335,11 +2307,11 @@ something y, z
 something 'hello'
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-AllowForAlignment | true
+Name | Default value | Configurable values
+--- | --- | ---
+AllowForAlignment | `true` | Boolean
 
 ## Layout/SpaceBeforeSemicolon
 
@@ -2385,12 +2357,11 @@ a = ->(x, y) { x + y }
 a = -> (x, y) { x + y }
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | require_no_space
-SupportedStyles | require_no_space, require_space
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `require_no_space` | `require_no_space`, `require_space`
 
 ## Layout/SpaceInsideArrayPercentLiteral
 
@@ -2490,15 +2461,13 @@ some_array.each {   }
 [1, 2, 3].each {|n| n * 2 }
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | space
-SupportedStyles | space, no_space
-EnforcedStyleForEmptyBraces | no_space
-SupportedStylesForEmptyBraces | space, no_space
-SpaceBeforeBlockParameters | true
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `space` | `space`, `no_space`
+EnforcedStyleForEmptyBraces | `no_space` | `space`, `no_space`
+SpaceBeforeBlockParameters | `true` | Boolean
 
 ## Layout/SpaceInsideBrackets
 
@@ -2567,14 +2536,12 @@ h = {{ a: 1 }, b: 2 }
 h = { a: 1, { b: 2 }}
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | space
-SupportedStyles | space, no_space, compact
-EnforcedStyleForEmptyBraces | no_space
-SupportedStylesForEmptyBraces | space, no_space
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `space` | `space`, `no_space`, `compact`
+EnforcedStyleForEmptyBraces | `no_space` | `space`, `no_space`
 
 ### References
 
@@ -2679,12 +2646,11 @@ This cop checks for whitespace within string interpolations.
    var = "This is the #{ space } example"
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | no_space
-SupportedStyles | space, no_space
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `no_space` | `space`, `no_space`
 
 ### References
 
@@ -2698,11 +2664,11 @@ Enabled | Yes
 
 This cop checks for tabs inside the source code.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-IndentationWidth |
+Name | Default value | Configurable values
+--- | --- | ---
+IndentationWidth | `<none>` | Integer
 
 ### References
 
@@ -2717,12 +2683,11 @@ Enabled | Yes
 This cop looks for trailing blank lines and a final newline in the
 source code.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | final_newline
-SupportedStyles | final_newline, final_blank_line
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `final_newline` | `final_newline`, `final_blank_line`
 
 ### References
 

@@ -176,15 +176,15 @@ lib/layout_manager.rb
 anything/using_snake_case.rake
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Exclude |
-ExpectMatchingDefinition | false
-Regex |
-IgnoreExecutableScripts | true
-AllowedAcronyms | CLI, DSL, ACL, API, ASCII, CPU, CSS, DNS, EOF, GUID, HTML, HTTP, HTTPS, ID, IP, JSON, LHS, QPS, RAM, RHS, RPC, SLA, SMTP, SQL, SSH, TCP, TLS, TTL, UDP, UI, UID, UUID, URI, URL, UTF8, VM, XML, XMPP, XSRF, XSS
+Name | Default value | Configurable values
+--- | --- | ---
+Exclude | `[]` | Array
+ExpectMatchingDefinition | `false` | Boolean
+Regex | `<none>` | 
+IgnoreExecutableScripts | `true` | Boolean
+AllowedAcronyms | `CLI`, `DSL`, `ACL`, `API`, `ASCII`, `CPU`, `CSS`, `DNS`, `EOF`, `GUID`, `HTML`, `HTTP`, `HTTPS`, `ID`, `IP`, `JSON`, `LHS`, `QPS`, `RAM`, `RHS`, `RPC`, `SLA`, `SMTP`, `SQL`, `SSH`, `TCP`, `TLS`, `TTL`, `UDP`, `UI`, `UID`, `UUID`, `URI`, `URL`, `UTF8`, `VM`, `XML`, `XMPP`, `XSRF`, `XSS` | Array
 
 ### References
 
@@ -224,12 +224,11 @@ SQL
 sql
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | uppercase
-SupportedStyles | lowercase, uppercase
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `uppercase` | `lowercase`, `uppercase`
 
 ### References
 
@@ -264,11 +263,11 @@ END
 EOS
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Blacklist | END, (?-mix:EO[A-Z]{1})
+Name | Default value | Configurable values
+--- | --- | ---
+Blacklist | `END`, `(?-mix:EO[A-Z]{1})` | Array
 
 ### References
 
@@ -300,12 +299,11 @@ def foo_bar; end
 def fooBar; end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | snake_case
-SupportedStyles | snake_case, camelCase
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `snake_case` | `snake_case`, `camelCase`
 
 ### References
 
@@ -335,15 +333,15 @@ def has_value? ...
 def value? ...
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-NamePrefix | is_, has_, have_
-NamePrefixBlacklist | is_, has_, have_
-NameWhitelist | is_a?
-MethodDefinitionMacros | define_method, define_singleton_method
-Exclude | spec/\*\*/\*
+Name | Default value | Configurable values
+--- | --- | ---
+NamePrefix | `is_`, `has_`, `have_` | Array
+NamePrefixBlacklist | `is_`, `has_`, `have_` | Array
+NameWhitelist | `is_a?` | Array
+MethodDefinitionMacros | `define_method`, `define_singleton_method` | Array
+Exclude | `spec/**/*` | Array
 
 ### References
 
@@ -375,12 +373,11 @@ foo_bar = 1
 fooBar = 1
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | snake_case
-SupportedStyles | snake_case, camelCase
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `snake_case` | `snake_case`, `camelCase`
 
 ### References
 
@@ -430,9 +427,8 @@ variableone = 1
 variable_one = 1
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | normalcase
-SupportedStyles | snake_case, normalcase, non_integer
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `normalcase` | `snake_case`, `normalcase`, `non_integer`

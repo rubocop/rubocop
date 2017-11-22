@@ -32,12 +32,11 @@ alias_method :bar, :foo
 alias bar foo
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | prefer_alias
-SupportedStyles | prefer_alias, prefer_alias_method
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `prefer_alias` | `prefer_alias`, `prefer_alias_method`
 
 ### References
 
@@ -78,12 +77,11 @@ if foo && bar
 if foo and bar
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | always
-SupportedStyles | always, conditionals
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `always` | `always`, `conditionals`
 
 ### References
 
@@ -135,11 +133,11 @@ AllowedChars attribute (empty by default).
 # Translates from English to Japanese
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-AllowedChars |
+Name | Default value | Configurable values
+--- | --- | ---
+AllowedChars | `[]` | Array
 
 ### References
 
@@ -220,12 +218,11 @@ This cop checks if usage of %() or %Q() matches configuration.
 %q/She said: 'Hi'/
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | bare_percent
-SupportedStyles | percent_q, bare_percent
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `bare_percent` | `percent_q`, `bare_percent`
 
 ### References
 
@@ -346,15 +343,14 @@ words.each { |word|
 }.join("-")
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | line_count_based
-SupportedStyles | line_count_based, semantic, braces_for_chaining
-ProceduralMethods | benchmark, bm, bmbm, create, each_with_object, measure, new, realtime, tap, with_object
-FunctionalMethods | let, let!, subject, watch
-IgnoredMethods | lambda, proc, it
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `line_count_based` | `line_count_based`, `semantic`, `braces_for_chaining`
+ProceduralMethods | `benchmark`, `bm`, `bmbm`, `create`, `each_with_object`, `measure`, `new`, `realtime`, `tap`, `with_object` | Array
+FunctionalMethods | `let`, `let!`, `subject`, `watch` | Array
+IgnoredMethods | `lambda`, `proc`, `it` | Array
 
 ### References
 
@@ -406,12 +402,11 @@ some_method(x, y, a: 1, b: 2)
 some_method(x, y, {a: 1, b: 2}, {a: 1, b: 2})
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | no_braces
-SupportedStyles | braces, no_braces, context_dependent
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `no_braces` | `braces`, `no_braces`, `context_dependent`
 
 ## Style/CaseEquality
 
@@ -472,12 +467,11 @@ compact - combine definitions as much as possible
 
 The compact style is only forced for classes/modules with one child.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | nested
-SupportedStyles | nested, compact
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `nested` | `nested`, `compact`
 
 ### References
 
@@ -512,12 +506,11 @@ var.kind_of?(Time)
 var.kind_of?(String)
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | is_a?
-SupportedStyles | is_a?, kind_of?
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `is_a?` | `is_a?`, `kind_of?`
 
 ## Style/ClassMethods
 
@@ -577,11 +570,11 @@ Unfortunately we cannot actually know if a method is from
 Enumerable or not (static analysis limitation), so this cop
 can yield some false positives.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-PreferredMethods | {"collect"=>"map", "collect!"=>"map!", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select"}
+Name | Default value | Configurable values
+--- | --- | ---
+PreferredMethods | `{"collect"=>"map", "collect!"=>"map!", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select"}` | 
 
 ### References
 
@@ -721,13 +714,12 @@ folders = %x(find . -type d).split
 `echo \`ls\``
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | backticks
-SupportedStyles | backticks, percent_x, mixed
-AllowInnerBackticks | false
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `backticks` | `backticks`, `percent_x`, `mixed`
+AllowInnerBackticks | `false` | Boolean
 
 ### References
 
@@ -770,11 +762,11 @@ to guidelines.
 # OPTIMIZE: does not work
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Keywords | TODO, FIXME, OPTIMIZE, HACK, REVIEW
+Name | Default value | Configurable values
+--- | --- | ---
+Keywords | `TODO`, `FIXME`, `OPTIMIZE`, `HACK`, `REVIEW` | Array
 
 ### References
 
@@ -922,14 +914,13 @@ else
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | assign_to_condition
-SupportedStyles | assign_to_condition, assign_inside_condition
-SingleLineConditionsOnly | true
-IncludeTernaryExpressions | true
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `assign_to_condition` | `assign_to_condition`, `assign_inside_condition`
+SingleLineConditionsOnly | `true` | Boolean
+IncludeTernaryExpressions | `true` | Boolean
 
 ## Style/Copyright
 
@@ -949,12 +940,12 @@ This regex string is treated as an unanchored regex.  For each file
 that RuboCop scans, a comment that matches this regex must be found or
 an offense is reported.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Notice | ^Copyright (\(c\) )?2[0-9]{3} .+
-AutocorrectNotice |
+Name | Default value | Configurable values
+--- | --- | ---
+Notice | `^Copyright (\(c\) )?2[0-9]{3} .+` | String
+AutocorrectNotice | `` | String
 
 ## Style/DateTime
 
@@ -1083,11 +1074,11 @@ class Person
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Exclude | spec/\*\*/\*, test/\*\*/\*
+Name | Default value | Configurable values
+--- | --- | ---
+Exclude | `spec/**/*`, `test/**/*` | Array
 
 ## Style/DocumentationMethod
 
@@ -1142,12 +1133,12 @@ def foo.bar
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Exclude | spec/\*\*/\*, test/\*\*/\*
-RequireForNonPublicMethods | false
+Name | Default value | Configurable values
+--- | --- | ---
+Exclude | `spec/**/*`, `test/**/*` | Array
+RequireForNonPublicMethods | `false` | Boolean
 
 ## Style/DoubleNegation
 
@@ -1375,12 +1366,11 @@ else
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | both
-SupportedStyles | empty, nil, both
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `both` | `empty`, `nil`, `both`
 
 ## Style/EmptyLambdaParameter
 
@@ -1479,12 +1469,11 @@ def self.foo(bar)
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | compact
-SupportedStyles | compact, expanded
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `compact` | `compact`, `expanded`
 
 ### References
 
@@ -1574,12 +1563,11 @@ preferred alternative is set in the EnforcedStyle configuration
 parameter. An *each* call with a block on a single line is always
 allowed, however.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | each
-SupportedStyles | for, each
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `each` | `for`, `each`
 
 ### References
 
@@ -1599,12 +1587,11 @@ manner for all cases, so only two scenarios are considered -
 if the first argument is a string literal and if the second
 argument is an array literal.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | format
-SupportedStyles | format, sprintf, percent
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `format` | `format`, `sprintf`, `percent`
 
 ### References
 
@@ -1645,12 +1632,11 @@ format('%{greeting}', 'Hello')
 format('%s', 'Hello')
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | annotated
-SupportedStyles | annotated, template, unannotated
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `annotated` | `annotated`, `template`, `unannotated`
 
 ## Style/FrozenStringLiteralComment
 
@@ -1664,12 +1650,11 @@ enable frozen string literals. Frozen string literals may be default
 in Ruby 3.0. The comment will be added below a shebang and encoding
 comment. The frozen string literal comment is only valid in Ruby 2.3+.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | when_needed
-SupportedStyles | when_needed, always, never
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `when_needed` | `when_needed`, `always`, `never`
 
 ## Style/GlobalVars
 
@@ -1697,11 +1682,11 @@ foo = 2
 $stdin.read
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-AllowedVariables |
+Name | Default value | Configurable values
+--- | --- | ---
+AllowedVariables | `[]` | Array
 
 ### References
 
@@ -1750,11 +1735,11 @@ raise 'exception' if something
 ok
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-MinBodyLength | 1
+Name | Default value | Configurable values
+--- | --- | ---
+MinBodyLength | `1` | Integer
 
 ### References
 
@@ -1821,14 +1806,13 @@ The supported styles are:
 {:c => 3, 'd' => 4}
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | ruby19
-SupportedStyles | ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
-UseHashRocketsWithSymbolValues | false
-PreferHashRocketsForNonAlnumEndingSymbols | false
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `ruby19` | `ruby19`, `hash_rockets`, `no_mixed_keys`, `ruby19_no_mixed_keys`
+UseHashRocketsWithSymbolValues | `false` | Boolean
+PreferHashRocketsForNonAlnumEndingSymbols | `false` | Boolean
 
 ### References
 
@@ -2105,12 +2089,12 @@ foo == bar
 !!('foo' =~ /^\w+$/)
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-InverseMethods | {:any?=>:none?, :even?=>:odd?, :===>:!=, :=~=>:!~, :<=>:>=, :>=>:<=}
-InverseBlocks | {:select=>:reject, :select!=>:reject!}
+Name | Default value | Configurable values
+--- | --- | ---
+InverseMethods | `{:any?=>:none?, :even?=>:odd?, :===>:!=, :=~=>:!~, :<=>:>=, :>=>:<=}` | 
+InverseBlocks | `{:select=>:reject, :select!=>:reject!}` | 
 
 ## Style/Lambda
 
@@ -2165,12 +2149,11 @@ f = ->(x) do
     end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | line_count_dependent
-SupportedStyles | line_count_dependent, lambda, literal
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `line_count_dependent` | `line_count_dependent`, `lambda`, `literal`
 
 ### References
 
@@ -2201,12 +2184,11 @@ lambda.call(x, y)
 lambda.(x, y)
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | call
-SupportedStyles | call, braces
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `call` | `call`, `braces`
 
 ### References
 
@@ -2281,12 +2263,12 @@ class Foo
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-IgnoreMacros | true
-IgnoredMethods |
+Name | Default value | Configurable values
+--- | --- | ---
+IgnoreMacros | `true` | Boolean
+IgnoredMethods | `[]` | Array
 
 ### References
 
@@ -2345,12 +2327,11 @@ Enabled | Yes
 This cops checks for parentheses around the arguments in method
 definitions. Both instance and class/singleton methods are checked.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | require_parentheses
-SupportedStyles | require_parentheses, require_no_parentheses, require_no_parentheses_except_multiline
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `require_parentheses` | `require_parentheses`, `require_no_parentheses`, `require_no_parentheses_except_multiline`
 
 ### References
 
@@ -2444,12 +2425,11 @@ else
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | both
-SupportedStyles | if, case, both
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `both` | `if`, `case`, `both`
 
 ## Style/MixinGrouping
 
@@ -2488,12 +2468,11 @@ class Foo
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | separated
-SupportedStyles | separated, grouped
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `separated` | `separated`, `grouped`
 
 ### References
 
@@ -2591,12 +2570,11 @@ module Test
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | module_function
-SupportedStyles | module_function, extend_self
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `module_function` | `module_function`, `extend_self`
 
 ### References
 
@@ -2713,12 +2691,11 @@ foo ||= (
 )
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | keyword
-SupportedStyles | keyword, braces
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `keyword` | `keyword`, `braces`
 
 ## Style/MultilineTernaryOperator
 
@@ -2847,12 +2824,11 @@ if !foo
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | both
-SupportedStyles | both, prefix, postfix
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `both` | `both`, `prefix`, `postfix`
 
 ### References
 
@@ -2912,11 +2888,11 @@ method1(method2(arg), method3(arg))
 method1(method2 arg, method3, arg)
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Whitelist | be, be_a, be_an, be_between, be_falsey, be_kind_of, be_instance_of, be_truthy, be_within, eq, eql, end_with, include, match, raise_error, respond_to, start_with
+Name | Default value | Configurable values
+--- | --- | ---
+Whitelist | `be`, `be_a`, `be_an`, `be_between`, `be_falsey`, `be_kind_of`, `be_instance_of`, `be_truthy`, `be_within`, `eq`, `eql`, `end_with`, `include`, `match`, `raise_error`, `respond_to`, `start_with` | Array
 
 ## Style/NestedTernaryOperator
 
@@ -2983,13 +2959,12 @@ end
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | skip_modifier_ifs
-MinBodyLength | 3
-SupportedStyles | skip_modifier_ifs, always
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `skip_modifier_ifs` | `skip_modifier_ifs`, `always`
+MinBodyLength | `3` | Integer
 
 ### References
 
@@ -3046,11 +3021,11 @@ if !x.nil?
 if x
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-IncludeSemanticChanges | false
+Name | Default value | Configurable values
+--- | --- | ---
+IncludeSemanticChanges | `false` | Boolean
 
 ### References
 
@@ -3092,12 +3067,11 @@ eg. for octal use `0o` instead of `0` or `0O`.
 Can be configured to use `0` only for octal literals using
 `EnforcedOctalStyle` => `zero_only`
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedOctalStyle | zero_with_o
-SupportedOctalStyles | zero_with_o, zero_only
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedOctalStyle | `zero_with_o` | `zero_with_o`, `zero_only`
 
 ### References
 
@@ -3131,12 +3105,12 @@ of digits in them.
 10_000_00 # typical representation of $10,000 in cents
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-MinDigits | 5
-Strict | false
+Name | Default value | Configurable values
+--- | --- | ---
+MinDigits | `5` | Integer
+Strict | `false` | Boolean
 
 ### References
 
@@ -3190,14 +3164,13 @@ foo == 0
 bar.baz > 0
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-AutoCorrect | false
-EnforcedStyle | predicate
-SupportedStyles | predicate, comparison
-Exclude | spec/\*\*/\*
+Name | Default value | Configurable values
+--- | --- | ---
+AutoCorrect | `false` | Boolean
+EnforcedStyle | `predicate` | `predicate`, `comparison`
+Exclude | `spec/**/*` | Array
 
 ### References
 
@@ -3242,11 +3215,11 @@ def fry(temperature: 300)
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-SuspiciousParamNames | options, opts, args, params, parameters
+Name | Default value | Configurable values
+--- | --- | ---
+SuspiciousParamNames | `options`, `opts`, `args`, `params`, `parameters` | Array
 
 ## Style/OptionalArguments
 
@@ -3353,11 +3326,11 @@ Enabled | Yes
 This cop checks for the presence of superfluous parentheses around the
 condition of if/unless/while/until.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-AllowSafeAssignment | true
+Name | Default value | Configurable values
+--- | --- | ---
+AllowSafeAssignment | `true` | Boolean
 
 ### References
 
@@ -3393,11 +3366,11 @@ default.
 %I(alpha beta)
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-PreferredDelimiters | {"default"=>"()", "%i"=>"[]", "%I"=>"[]", "%r"=>"{}", "%w"=>"[]", "%W"=>"[]"}
+Name | Default value | Configurable values
+--- | --- | ---
+PreferredDelimiters | `{"default"=>"()", "%i"=>"[]", "%I"=>"[]", "%r"=>"{}", "%w"=>"[]", "%W"=>"[]"}` | 
 
 ### References
 
@@ -3411,12 +3384,11 @@ Enabled | Yes
 
 This cop checks for usage of the %Q() syntax when %q() would do.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | lower_case_q
-SupportedStyles | lower_case_q, upper_case_q
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `lower_case_q` | `lower_case_q`, `upper_case_q`
 
 ## Style/PerlBackrefs
 
@@ -3473,12 +3445,11 @@ Hash#has_key?
 Hash#has_value?
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | short
-SupportedStyles | short, verbose
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `short` | `short`, `verbose`
 
 ### References
 
@@ -3546,12 +3517,11 @@ raise MyCustomError.new(arg1, arg2, arg3)
 fail "message"
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | exploded
-SupportedStyles | compact, exploded
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `exploded` | `compact`, `exploded`
 
 ### References
 
@@ -3745,11 +3715,11 @@ def test
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-AllowMultipleReturnValues | false
+Name | Default value | Configurable values
+--- | --- | ---
+AllowMultipleReturnValues | `false` | Boolean
 
 ### References
 
@@ -3894,13 +3864,12 @@ x =~ %r{home/}
 x =~ /home\//
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | slashes
-SupportedStyles | slashes, percent_r, mixed
-AllowInnerSlashes | false
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `slashes` | `slashes`, `percent_r`, `mixed`
+AllowInnerSlashes | `false` | Boolean
 
 ### References
 
@@ -3982,12 +3951,11 @@ rescue StandardError
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | explicit
-SupportedStyles | implicit, explicit
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `explicit` | `implicit`, `explicit`
 
 ## Style/ReturnNil
 
@@ -4024,12 +3992,11 @@ def foo(arg)
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | return
-SupportedStyles | return, return_nil
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `return` | `return`, `return_nil`
 
 ## Style/SafeNavigation
 
@@ -4081,11 +4048,11 @@ foo.nil? || foo.bar
 foo.to_i if foo
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-ConvertCodeThatCanStartToReturnNil | false
+Name | Default value | Configurable values
+--- | --- | ---
+ConvertCodeThatCanStartToReturnNil | `false` | Boolean
 
 ## Style/SelfAssignment
 
@@ -4131,11 +4098,11 @@ bar = 2
 baz = 3
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-AllowAsExpressionSeparator | false
+Name | Default value | Configurable values
+--- | --- | ---
+AllowAsExpressionSeparator | `false` | Boolean
 
 ### References
 
@@ -4161,12 +4128,11 @@ Enabled | Yes
 
 This cop checks for uses of `fail` and `raise`.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | only_raise
-SupportedStyles | only_raise, only_fail, semantic
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `only_raise` | `only_raise`, `only_fail`, `semantic`
 
 ### References
 
@@ -4184,11 +4150,11 @@ method accepting a block match the names specified via configuration.
 For instance one can configure `reduce`(`inject`) to use |a, e| as
 parameters.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Methods | {"reduce"=>["acc", "elem"]}, {"inject"=>["acc", "elem"]}
+Name | Default value | Configurable values
+--- | --- | ---
+Methods | `{"reduce"=>["acc", "elem"]}`, `{"inject"=>["acc", "elem"]}` | Array
 
 ## Style/SingleLineMethods
 
@@ -4213,11 +4179,11 @@ def self.resource_class=(klass); end
 def @table.columns; end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-AllowIfMethodIsEmpty | true
+Name | Default value | Configurable values
+--- | --- | ---
+AllowIfMethodIsEmpty | `true` | Boolean
 
 ### References
 
@@ -4231,12 +4197,11 @@ Enabled | Yes
 
 This cop looks for uses of Perl-style global variables.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | use_english_names
-SupportedStyles | use_perl_names, use_english_names
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `use_english_names` | `use_perl_names`, `use_english_names`
 
 ### References
 
@@ -4268,12 +4233,11 @@ There are two different styles. Defaults to `require_parentheses`.
 ->a,b,c { a + b + c}
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | require_parentheses
-SupportedStyles | require_parentheses, require_no_parentheses
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `require_parentheses` | `require_parentheses`, `require_no_parentheses`
 
 ### References
 
@@ -4334,13 +4298,12 @@ Enabled | Yes
 
 Checks if uses of quotes match the configured preference.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | single_quotes
-SupportedStyles | single_quotes, double_quotes
-ConsistentQuotesInMultiline | false
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `single_quotes` | `single_quotes`, `double_quotes`
+ConsistentQuotesInMultiline | `false` | Boolean
 
 ### References
 
@@ -4372,12 +4335,11 @@ result = "Tests #{success ? 'PASS' : 'FAIL'}"
 result = "Tests #{success ? "PASS" : "FAIL"}"
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | single_quotes
-SupportedStyles | single_quotes, double_quotes
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `single_quotes` | `single_quotes`, `double_quotes`
 
 ## Style/StringMethods
 
@@ -4388,11 +4350,11 @@ Disabled | Yes
 This cop enforces the use of consistent method names
 from the String class.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-PreferredMethods | {"intern"=>"to_sym"}
+Name | Default value | Configurable values
+--- | --- | ---
+PreferredMethods | `{"intern"=>"to_sym"}` | 
 
 ## Style/StructInheritance
 
@@ -4451,13 +4413,12 @@ of 2 or fewer elements.
 %i[foo bar baz]
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | percent
-MinSize | 0
-SupportedStyles | percent, brackets
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `percent` | `percent`, `brackets`
+MinSize | `0` | Integer
 
 ### References
 
@@ -4499,11 +4460,11 @@ something.map { |s| s.upcase }
 something.map(&:upcase)
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-IgnoredMethods | respond_to, define_method
+Name | Default value | Configurable values
+--- | --- | ---
+IgnoredMethods | `respond_to`, `define_method` | Array
 
 ## Style/TernaryParentheses
 
@@ -4552,13 +4513,12 @@ foo = bar.baz? ? a : b
 foo = (bar && baz) ? a : b
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | require_no_parentheses
-SupportedStyles | require_parentheses, require_no_parentheses, require_parentheses_when_complex
-AllowSafeAssignment | true
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `require_no_parentheses` | `require_parentheses`, `require_no_parentheses`, `require_parentheses_when_complex`
+AllowSafeAssignment | `true` | Boolean
 
 ## Style/TrailingBodyOnMethodDefinition
 
@@ -4637,12 +4597,11 @@ method(
 )
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyleForMultiline | no_comma
-SupportedStylesForMultiline | comma, consistent_comma, no_comma
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyleForMultiline | `no_comma` | `comma`, `consistent_comma`, `no_comma`
 
 ### References
 
@@ -4695,12 +4654,11 @@ a = [
 ]
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyleForMultiline | no_comma
-SupportedStylesForMultiline | comma, consistent_comma, no_comma
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyleForMultiline | `no_comma` | `comma`, `consistent_comma`, `no_comma`
 
 ### References
 
@@ -4772,11 +4730,11 @@ a, *b, _ = foo()  => The correction `a, *b, = foo()` is a syntax error
 a, b, _something = foo()
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-AllowNamedUnderscoreVariables | true
+Name | Default value | Configurable values
+--- | --- | ---
+AllowNamedUnderscoreVariables | `true` | Boolean
 
 ## Style/TrivialAccessors
 
@@ -4787,15 +4745,15 @@ Enabled | Yes
 This cop looks for trivial reader/writer methods, that could
 have been created with the attr_* family of functions automatically.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-ExactNameMatch | true
-AllowPredicates | true
-AllowDSLWriters | false
-IgnoreClassMethods | false
-Whitelist | to_ary, to_a, to_c, to_enum, to_h, to_hash, to_i, to_int, to_io, to_open, to_path, to_proc, to_r, to_regexp, to_str, to_s, to_sym
+Name | Default value | Configurable values
+--- | --- | ---
+ExactNameMatch | `true` | Boolean
+AllowPredicates | `true` | Boolean
+AllowDSLWriters | `false` | Boolean
+IgnoreClassMethods | `false` | Boolean
+Whitelist | `to_ary`, `to_a`, `to_c`, `to_enum`, `to_h`, `to_hash`, `to_i`, `to_int`, `to_io`, `to_open`, `to_path`, `to_proc`, `to_r`, `to_regexp`, `to_str`, `to_s`, `to_sym` | Array
 
 ### References
 
@@ -4972,14 +4930,13 @@ array of 2 or fewer elements.
 %w[foo bar baz]
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | percent
-SupportedStyles | percent, brackets
-MinSize | 0
-WordRegex | (?-mix:\A[\p{Word}\n\t]+\z)
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `percent` | `percent`, `brackets`
+MinSize | `0` | Integer
+WordRegex | `(?-mix:\A[\p{Word}\n\t]+\z)` | 
 
 ### References
 
@@ -5020,12 +4977,11 @@ bar > 10
 3 < a && a < 5
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | all_comparison_operators
-SupportedStyles | all_comparison_operators, equality_operators_only
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `all_comparison_operators` | `all_comparison_operators`, `equality_operators_only`
 
 ### References
 
