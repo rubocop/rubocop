@@ -45,6 +45,16 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
       expect_no_offenses('foo + bar if foo')
     end
 
+    it 'allows chained method calls during arithmetic operations safe ' \
+      'guarded by an object check' do
+      expect_no_offenses('foo.baz + bar if foo')
+    end
+
+    it 'allows chained method calls during assignment safe guarded' \
+      'by an object check' do
+      expect_no_offenses('foo.baz = bar if foo')
+    end
+
     it 'allows object checks in the condition of an elsif statement ' \
       'and a method call on that object in the body' do
       expect_no_offenses(<<-RUBY.strip_indent)

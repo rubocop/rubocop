@@ -42,6 +42,7 @@
 * [#5059](https://github.com/bbatsov/rubocop/issues/5059): Fix a false positive for `Style/MixinUsage` when `include` call is a method argument. ([@koic][])
 * [#5071](https://github.com/bbatsov/rubocop/pull/5071): Fix a false positive in `Lint/UnneededSplatExpansion`, when `Array.new` resides in an array literal. ([@akhramov][])
 * [#4071](https://github.com/bbatsov/rubocop/issues/4071): Prevent generating wrong code by Style/ColonMethodCall and Style/RedundantSelf. ([@pocke][])
+* [#5089](https://github.com/bbatsov/rubocop/issues/5089): Fix false positive for `Style/SafeNavigation` when safe guarding arithmetic operation or assignment. ([@tiagotex][])
 
 ### Changes
 
@@ -3039,3 +3040,4 @@
 [@garettarrowood]: https://github.com/garettarrowood
 [@sambostock]: https://github.com/sambostock
 [@asherkach]: https://github.com/asherkach
+[@tiagotex]: https://github.com/tiagotex
