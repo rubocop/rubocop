@@ -95,6 +95,7 @@ module RuboCop
 
         def sibling_mixins(send_node)
           siblings = send_node.parent.each_child_node(:send)
+                              .select(&:macro?)
 
           siblings.select do |sibling_node|
             sibling_node.method_name == send_node.method_name
