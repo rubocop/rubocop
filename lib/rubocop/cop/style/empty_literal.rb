@@ -5,6 +5,17 @@ module RuboCop
     module Style
       # This cop checks for the use of a method, the result of which
       # would be a literal, like an empty array, hash or string.
+      #
+      # @example
+      #   # bad
+      #   a = Array.new
+      #   h = Hash.new
+      #   s = String.new
+      #
+      #   # good
+      #   a = []
+      #   h = {}
+      #   s = ''
       class EmptyLiteral < Cop
         include FrozenStringLiteral
 
