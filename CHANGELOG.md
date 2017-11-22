@@ -41,6 +41,7 @@
 * [#5019](https://github.com/bbatsov/rubocop/pull/5019): Fix auto-correct for `Style/HashSyntax` cop when hash is used as unspaced argument. ([@drenmi][])
 * [#5059](https://github.com/bbatsov/rubocop/issues/5059): Fix a false positive for `Style/MixinUsage` when `include` call is a method argument. ([@koic][])
 * [#5071](https://github.com/bbatsov/rubocop/pull/5071): Fix a false positive in `Lint/UnneededSplatExpansion`, when `Array.new` resides in an array literal. ([@akhramov][])
+* [#5089](https://github.com/bbatsov/rubocop/issues/5089): Fix false positive for `Style/SafeNavigation` when safe guarding arithmetic operation or assignment. ([@tiagotex][])
 
 ### Changes
 
@@ -3038,3 +3039,4 @@
 [@garettarrowood]: https://github.com/garettarrowood
 [@sambostock]: https://github.com/sambostock
 [@asherkach]: https://github.com/asherkach
+[@tiagotex]: https://github.com/tiagotex
