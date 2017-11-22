@@ -28,13 +28,12 @@ append_around_action :do_stuff
 skip_after_action :do_stuff
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | action
-SupportedStyles | action, filter
-Include | app/controllers/\*\*/\*.rb
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `action` | `action`, `filter`
+Include | `app/controllers/**/*.rb` | Array
 
 ## Rails/ActiveSupportAliases
 
@@ -149,13 +148,13 @@ Settings:
   end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-NilOrEmpty | true
-NotPresent | true
-UnlessPresent | true
+Name | Default value | Configurable values
+--- | --- | ---
+NilOrEmpty | `true` | Boolean
+NotPresent | `true` | Boolean
+UnlessPresent | `true` | Boolean
 
 ## Rails/Date
 
@@ -199,12 +198,11 @@ date.to_time
 date.to_time_in_current_zone
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | flexible
-SupportedStyles | strict, flexible
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `flexible` | `strict`, `flexible`
 
 ## Rails/Delegate
 
@@ -265,11 +263,11 @@ end
 delegate :bar, to: :foo, prefix: true
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforceForPrefixed | true
+Name | Default value | Configurable values
+--- | --- | ---
+EnforceForPrefixed | `true` | Boolean
 
 ## Rails/DelegateAllowBlank
 
@@ -323,11 +321,11 @@ User.find_by(name: name, email: email)
 User.find_by!(email: email)
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Whitelist | find_by_sql
+Name | Default value | Configurable values
+--- | --- | ---
+Whitelist | `find_by_sql` | Array
 
 ### References
 
@@ -357,11 +355,11 @@ enum status: [:active, :archived, :active]
 enum status: [:active, :archived]
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Include | app/models/\*\*/\*.rb
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `app/models/**/*.rb` | Array
 
 ## Rails/EnvironmentComparison
 
@@ -405,12 +403,12 @@ is used.)
 the program exiting, which could result in the code failing to run and
 do its job.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Include | app/\*\*/\*.rb, config/\*\*/\*.rb, lib/\*\*/\*.rb
-Exclude | lib/\*\*/\*.rake
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `app/**/*.rb`, `config/**/*.rb`, `lib/**/*.rb` | Array
+Exclude | `lib/**/*.rake` | Array
 
 ## Rails/FilePath
 
@@ -453,11 +451,11 @@ User.where(name: 'Bruce').take
 User.find_by(name: 'Bruce')
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Include | app/models/\*\*/\*.rb
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `app/models/**/*.rb` | Array
 
 ### References
 
@@ -482,11 +480,11 @@ User.all.each
 User.all.find_each
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Include | app/models/\*\*/\*.rb
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `app/models/**/*.rb` | Array
 
 ### References
 
@@ -510,11 +508,11 @@ This cop checks for the use of the has_and_belongs_to_many macro.
 # has_many :ingredients, through: :recipe_ingredients
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Include | app/models/\*\*/\*.rb
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `app/models/**/*.rb` | Array
 
 ### References
 
@@ -547,11 +545,11 @@ class User < ActiveRecord::Base
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Include | app/models/\*\*/\*.rb
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `app/models/**/*.rb` | Array
 
 ### References
 
@@ -580,11 +578,11 @@ get :new, { user_id: 1}
 get :new, params: { user_id: 1 }
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Include | spec/\*\*/\*, test/\*\*/\*
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `spec/**/*`, `test/**/*` | Array
 
 ## Rails/InverseOf
 
@@ -615,11 +613,11 @@ class Blog < ApplicationRecord
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Include | app/models/\*\*/\*.rb
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `app/models/**/*.rb` | Array
 
 ## Rails/NotNullColumn
 
@@ -644,11 +642,11 @@ add_reference :products, :category
 add_reference :products, :category, null: false, default: 1
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Include | db/migrate/\*.rb
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `db/migrate/*.rb` | Array
 
 ## Rails/Output
 
@@ -658,11 +656,11 @@ Enabled | No
 
 This cop checks for the use of output calls like puts and print
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Include | app/\*\*/\*.rb, config/\*\*/\*.rb, db/\*\*/\*.rb, lib/\*\*/\*.rb
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `app/**/*.rb`, `config/**/*.rb`, `db/**/*.rb`, `lib/**/*.rb` | Array
 
 ## Rails/OutputSafety
 
@@ -795,13 +793,13 @@ Settings:
   something if  foo.present?
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-NotNilAndNotEmpty | true
-NotBlank | true
-UnlessBlank | true
+Name | Default value | Configurable values
+--- | --- | ---
+NotNilAndNotEmpty | `true` | Boolean
+NotBlank | `true` | Boolean
+UnlessBlank | `true` | Boolean
 
 ## Rails/ReadWriteAttribute
 
@@ -824,11 +822,11 @@ x = self[:attr]
 self[:attr] = val
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Include | app/models/\*\*/\*.rb
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `app/models/**/*.rb` | Array
 
 ### References
 
@@ -886,12 +884,11 @@ request.referer
 request.referrer
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | referer
-SupportedStyles | referer, referrer
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `referer` | `referer`, `referrer`
 
 ## Rails/ReversibleMigration
 
@@ -1023,11 +1020,11 @@ def change
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Include | db/migrate/\*.rb
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `db/migrate/*.rb` | Array
 
 ### References
 
@@ -1079,11 +1076,11 @@ target Ruby version is set to 2.3+
   foo&.bar { |e| e.baz }
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-ConvertTry | false
+Name | Default value | Configurable values
+--- | --- | ---
+ConvertTry | `false` | Boolean
 
 ## Rails/SaveBang
 
@@ -1149,11 +1146,11 @@ scope :something, where(something: true)
 scope :something, -> { where(something: true) }
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Include | app/models/\*\*/\*.rb
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `app/models/**/*.rb` | Array
 
 ## Rails/SkipsModelValidations
 
@@ -1185,11 +1182,11 @@ user.update_attributes(website: 'example.com')
 FileUtils.touch('file')
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Blacklist | decrement!, decrement_counter, increment!, increment_counter, toggle!, touch, update_all, update_attribute, update_column, update_columns, update_counters
+Name | Default value | Configurable values
+--- | --- | ---
+Blacklist | `decrement!`, `decrement_counter`, `increment!`, `increment_counter`, `toggle!`, `touch`, `update_all`, `update_attribute`, `update_column`, `update_columns`, `update_counters` | Array
 
 ### References
 
@@ -1229,12 +1226,11 @@ DateTime.strptime(str, "%Y-%m-%d %H:%M %Z").in_time_zone
 Time.at(timestamp).in_time_zone
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | flexible
-SupportedStyles | strict, flexible
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `flexible` | `strict`, `flexible`
 
 ### References
 
@@ -1281,13 +1277,12 @@ Model.where(cond: true).pluck(:id).uniq
 instance.assoc.pluck(:id).uniq
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnforcedStyle | conservative
-SupportedStyles | conservative, aggressive
-AutoCorrect | false
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `conservative` | `conservative`, `aggressive`
+AutoCorrect | `false` | Boolean
 
 ## Rails/UnknownEnv
 
@@ -1308,11 +1303,11 @@ Rails.env.proudction?
 Rails.env.production?
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Environments | development, test, production
+Name | Default value | Configurable values
+--- | --- | ---
+Environments | `development`, `test`, `production` | Array
 
 ## Rails/Validation
 
@@ -1322,8 +1317,8 @@ Enabled | Yes
 
 This cop checks for the use of old-style attribute validation macros.
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Include | app/models/\*\*/\*.rb
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `app/models/**/*.rb` | Array

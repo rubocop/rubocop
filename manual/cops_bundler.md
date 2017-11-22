@@ -33,11 +33,11 @@ end
 gem 'rubocop', groups: [:development, :test]
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Include | \*\*/Gemfile, \*\*/gems.rb
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `**/Gemfile`, `**/gems.rb` | Array
 
 ## Bundler/InsecureProtocolSource
 
@@ -71,11 +71,11 @@ source 'https://rubygems.org' # strongly recommended
 source 'http://rubygems.org'
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Include | \*\*/Gemfile, \*\*/gems.rb
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `**/Gemfile`, `**/gems.rb` | Array
 
 ## Bundler/OrderedGems
 
@@ -108,9 +108,9 @@ gem 'rubocop'
 gem 'rspec'
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Include | \*\*/Gemfile, \*\*/gems.rb
-TreatCommentsAsGroupSeparators | true
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `**/Gemfile`, `**/gems.rb` | Array
+TreatCommentsAsGroupSeparators | `true` | Boolean
