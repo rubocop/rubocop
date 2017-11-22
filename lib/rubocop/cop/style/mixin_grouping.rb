@@ -43,21 +43,35 @@ module RuboCop
         end
 
         def autocorrect(node)
+          range = node.loc.expression
           if separated_style?
-            range = node.loc.expression
             correction = separate_mixins(node)
           else
             mixins = sibling_mixins(node)
-            mixins.unshift(node)
-
-            range = node.loc.expression.join(mixins.last.loc.expression)
-            correction = group_mixins(node, mixins)
+            if node == mixins.first
+              correction = group_mixins(node, mixins)
+            else
+              range = range_to_remove_for_subsequent_mixin(mixins, node)
+              correction = ''
+            end
           end
 
           ->(corrector) { corrector.replace(range, correction) }
         end
 
         private
+
+        def range_to_remove_for_subsequent_mixin(mixins, node)
+          range = node.loc.expression
+          prev_mixin = mixins.each_cons(2) { |m, n| break m if n == node }
+          between = prev_mixin.loc.expression.end
+                              .join(range.begin)
+          # if separated from previous mixin with only whitespace?
+          if between.source !~ /\S/
+            range = range.join(between) # then remove that too
+          end
+          range
+        end
 
         def check(send_node)
           if separated_style?
@@ -68,7 +82,7 @@ module RuboCop
         end
 
         def check_grouped_style(send_node)
-          return if sibling_mixins(send_node).empty?
+          return if sibling_mixins(send_node).size == 1
 
           add_offense(send_node)
         end
@@ -81,7 +95,6 @@ module RuboCop
 
         def sibling_mixins(send_node)
           siblings = send_node.parent.each_child_node(:send)
-                              .reject { |sibling| sibling == send_node }
 
           siblings.select do |sibling_node|
             sibling_node.method_name == send_node.method_name
