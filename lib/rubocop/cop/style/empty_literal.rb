@@ -67,9 +67,8 @@ module RuboCop
             # to rewrite the arguments to wrap them in parenthesis.
             _receiver, _method_name, *args = *node.parent
 
-            Parser::Source::Range.new(node.parent.loc.expression,
-                                      args[0].loc.expression.begin_pos - 1,
-                                      args[-1].loc.expression.end_pos)
+            range_between(args[0].loc.expression.begin_pos - 1,
+                          args[-1].loc.expression.end_pos)
           else
             node.source_range
           end
