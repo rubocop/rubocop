@@ -44,6 +44,10 @@ module RuboCop
       class RedundantSelf < Cop
         MSG = 'Redundant `self` detected.'.freeze
 
+        def self.autocorrect_incompatible_with
+          [ColonMethodCall]
+        end
+
         def initialize(config = nil, options = nil)
           super
           @allowed_send_nodes = []
