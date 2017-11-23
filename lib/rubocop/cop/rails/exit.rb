@@ -16,6 +16,13 @@ module RuboCop
       # - Usage in application code outside of the web process could result in
       # the program exiting, which could result in the code failing to run and
       # do its job.
+      #
+      # @example
+      #   # bad
+      #   exit(0)
+      #
+      #   # good
+      #   raise 'a bad error has happened'
       class Exit < Cop
         include ConfigurableEnforcedStyle
 

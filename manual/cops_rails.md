@@ -456,6 +456,16 @@ is used.)
 the program exiting, which could result in the code failing to run and
 do its job.
 
+### Example
+
+```ruby
+# bad
+exit(0)
+
+# good
+raise 'a bad error has happened'
+```
+
 ### Configurable attributes
 
 Name | Default value | Configurable values
