@@ -25,7 +25,9 @@ module RuboCop
         SUPERCLASS = 'ApplicationRecord'.freeze
         BASE_PATTERN = '(const (const nil? :ActiveRecord) :Base)'.freeze
 
+        # rubocop:disable Layout/ClassStructure
         include RuboCop::Cop::EnforceSuperclass
+        # rubocop:enable Layout/ClassStructure
       end
     end
   end
