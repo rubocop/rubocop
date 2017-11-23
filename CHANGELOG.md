@@ -20,6 +20,7 @@
 * [#5087](https://github.com/bbatsov/rubocop/pull/5087): Add new `Gemspec/RedundantAssignment` cop. ([@koic][])
 * Add `unannotated` option to `Style/FormatStringToken` cop. ([@drenmi][])
 * Add new `Style/ColonMethodDefinition` cop. ([@rrosenblum][])
+* Add new `Style/ExtendSelf` cop. ([@drenmi][])
 
 ### Bug fixes
 

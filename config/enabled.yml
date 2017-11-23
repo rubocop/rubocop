@@ -585,6 +585,14 @@ Style/EvenOdd:
   StyleGuide: '#predicate-methods'
   Enabled: true
 
+Style/ExtendSelf:
+  Description: 'Checks for uses of extend self.'
+  StyleGuide: '#module-function'
+  Enabled: true
+  # Using `module_function` results in private visibility scope when the
+  # module is included, so auto-correction is unsafe.
+  Autocorrect: false
+
 Style/FrozenStringLiteralComment:
   Description: >-
                  Add the frozen_string_literal comment to the top of files
