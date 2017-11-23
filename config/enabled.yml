@@ -487,6 +487,10 @@ Style/ColonMethodCall:
   StyleGuide: '#double-colons'
   Enabled: true
 
+Style/ColonMethodDefinition:
+  Description: 'Do not use :: for defining class methods.'
+  Enabled: true
+
 Style/CommandLiteral:
   Description: 'Use `` or %x around command literals.'
   StyleGuide: '#percent-x'

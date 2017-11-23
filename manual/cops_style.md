@@ -614,6 +614,31 @@ Marshal.dump(obj)
 
 * [https://github.com/bbatsov/ruby-style-guide#double-colons](https://github.com/bbatsov/ruby-style-guide#double-colons)
 
+## Style/ColonMethodDefinition
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for class methods that are defined using the `::`
+operator instead of the `.` operator.
+
+### Example
+
+```ruby
+# bad
+class Foo
+  def self::bar
+  end
+end
+
+# good
+class Foo
+  def self.bar
+  end
+end
+```
+
 ## Style/CommandLiteral
 
 Enabled by default | Supports autocorrection
