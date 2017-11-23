@@ -534,7 +534,7 @@ Layout/SpaceInsideStringInterpolation:
 
 Layout/ClassStructure:
   Description: 'Enforces a configured order of definitions within a class body.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#consistent-classes'
+  StyleGuide: '#consistent-classes'
   Enabled: false
   Categories:
     module_inclusion:
