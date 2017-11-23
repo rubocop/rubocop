@@ -4,6 +4,7 @@
 
 ### New features
 
+* Corrector now checks that Ranges given are of correct SourceBuffer. ([@marcandre][])
 * New cop `Rails/InverseOf` checks for association arguments that require setting the `inverse_of` option manually. ([@bdewater][])
 * [#4252](https://github.com/bbatsov/rubocop/issues/4252): Add new `Style/TrailingBodyOnMethodDefinition` cop. ([@garettarrowood][])
 * Add new `Style/TrailingMethodEndStatment` cop. ([@garettarrowood][])

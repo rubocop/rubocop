@@ -67,6 +67,7 @@ module RuboCop
       #
       # @param [Parser::Source::Range] range
       def remove(range)
+        check_range(range)
         @source_rewriter.remove(range)
       end
 
@@ -75,6 +76,7 @@ module RuboCop
       # @param [Parser::Source::Range] range
       # @param [String] content
       def insert_before(range, content)
+        check_range(range)
         @source_rewriter.insert_before(range, content)
       end
 
@@ -83,6 +85,7 @@ module RuboCop
       # @param [Parser::Source::Range] range
       # @param [String] content
       def insert_after(range, content)
+        check_range(range)
         @source_rewriter.insert_after(range, content)
       end
 
@@ -91,6 +94,7 @@ module RuboCop
       # @param [Parser::Source::Range] range
       # @param [String] content
       def replace(range, content)
+        check_range(range)
         @source_rewriter.replace(range, content)
       end
 
@@ -102,6 +106,7 @@ module RuboCop
         to_remove = Parser::Source::Range.new(range.source_buffer,
                                               range.begin_pos - size,
                                               range.begin_pos)
+        check_range(to_remove)
         @source_rewriter.remove(to_remove)
       end
 
@@ -115,6 +120,7 @@ module RuboCop
         to_remove = Parser::Source::Range.new(range.source_buffer,
                                               range.begin_pos,
                                               range.begin_pos + size)
+        check_range(to_remove)
         @source_rewriter.remove(to_remove)
       end
 
@@ -128,7 +134,13 @@ module RuboCop
         to_remove = Parser::Source::Range.new(range.source_buffer,
                                               range.end_pos - size,
                                               range.end_pos)
+        check_range(to_remove)
         @source_rewriter.remove(to_remove)
+      end
+
+      private
+      def check_range(range)
+        raise ArgumentError, "The given range has the wrong source_buffer" unless range.source_buffer == @source_buffer
       end
     end
   end
