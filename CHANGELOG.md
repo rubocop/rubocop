@@ -66,6 +66,7 @@
 * [#5044](https://github.com/bbatsov/rubocop/pull/5044): Add last_line and last_column into outputs of the JSON formatter. ([@pocke][])
 * [#4633](https://github.com/bbatsov/rubocop/issues/4633): Make metrics cops aware of `define_method`. ([@pocke][])
 * [#5037](https://github.com/bbatsov/rubocop/pull/5037): Make display cop names to enable by default. ([@pocke][])
+* [#4449](https://github.com/bbatsov/rubocop/issues/4449): Make `Layout/IndentHeredoc` aware of line length. ([@pocke][])
 
 ## 0.51.0 (2017-10-18)
 

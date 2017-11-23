@@ -58,6 +58,7 @@ module RuboCop
             return unless body_indent_level.zero?
           end
 
+          return if too_long_line?(node)
           add_offense(node, location: :heredoc_body)
         end
 
@@ -113,6 +114,23 @@ module RuboCop
             indentation_width: indentation_width,
             current_indent_type: current_indent_type
           )
+        end
+
+        def too_long_line?(node)
+          return false if config.for_cop('Metrics/LineLength')['AllowHeredoc']
+          body = heredoc_body(node)
+
+          expected_indent = base_indent_level(node) + indentation_width
+          actual_indent = indent_level(body)
+          increase_indent_level = expected_indent - actual_indent
+
+          max_line = body.each_line.map { |line| line.chomp.size }.max
+
+          max_line + increase_indent_level >= max_line_length
+        end
+
+        def max_line_length
+          config.for_cop('Metrics/LineLength')['Max']
         end
 
         def correct_by_squiggly(node)
