@@ -22,6 +22,7 @@
 * Add `unannotated` option to `Style/FormatStringToken` cop. ([@drenmi][])
 * [#5077](https://github.com/bbatsov/rubocop/pull/5077): Add new `Rails/CreateTableWithTimestamps` cop. ([@wata727][])
 * Add new `Style/ColonMethodDefinition` cop. ([@rrosenblum][])
+* Add new `Style/ExtendSelf` cop. ([@drenmi][])
 
 ### Bug fixes
 
