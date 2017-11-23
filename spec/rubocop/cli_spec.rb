@@ -1605,14 +1605,14 @@ describe RuboCop::CLI, :isolated_environment do
       it 'fails with an error message' do
         create_file('.rubocop.yml', <<-YAML.strip_indent)
           AllCops:
-            TargetRubyVersion: 2.5
+            TargetRubyVersion: 2.6
         YAML
         expect(cli.run([])).to eq(2)
         expect($stderr.string.strip).to match(
-          /\AError: Unknown Ruby version 2.5 found in `TargetRubyVersion`/
+          /\AError: Unknown Ruby version 2.6 found in `TargetRubyVersion`/
         )
         expect($stderr.string.strip).to match(
-          /Supported versions: 2.1, 2.2, 2.3, 2.4/
+          /Supported versions: 2.1, 2.2, 2.3, 2.4, 2.5/
         )
       end
     end

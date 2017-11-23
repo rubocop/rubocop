@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#5101](https://github.com/bbatsov/rubocop/pull/5101): Allow to specify `TargetRubyVersion` 2.5. ([@walf443][])
 * New cop `Rails/InverseOf` checks for association arguments that require setting the `inverse_of` option manually. ([@bdewater][])
 * [#4252](https://github.com/bbatsov/rubocop/issues/4252): Add new `Style/TrailingBodyOnMethodDefinition` cop. ([@garettarrowood][])
 * Add new `Style/TrailingMethodEndStatment` cop. ([@garettarrowood][])
@@ -3044,3 +3045,4 @@
 [@asherkach]: https://github.com/asherkach
 [@tiagotex]: https://github.com/tiagotex
 [@marcandre]: https://github.com/marcandre
+[@walf443]: https://github.com/walf443
