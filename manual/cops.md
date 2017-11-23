@@ -375,6 +375,7 @@ In the following section you find all available cops:
 * [Style/ClassVars](cops_style.md#styleclassvars)
 * [Style/CollectionMethods](cops_style.md#stylecollectionmethods)
 * [Style/ColonMethodCall](cops_style.md#stylecolonmethodcall)
+* [Style/ColonMethodDefinition](cops_style.md#stylecolonmethoddefinition)
 * [Style/CommandLiteral](cops_style.md#stylecommandliteral)
 * [Style/CommentAnnotation](cops_style.md#stylecommentannotation)
 * [Style/CommentedKeyword](cops_style.md#stylecommentedkeyword)
