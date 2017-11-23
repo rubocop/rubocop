@@ -40,6 +40,16 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
       expect_no_offenses('foo && !foo.bar?')
     end
 
+    it 'allows method call that are used in a comparison safe guarded by ' \
+      'an object check' do
+      expect_no_offenses('foo.bar > 2 if foo')
+    end
+
+    it 'allows an object check before a method call that are used in ' \
+      'a comparison' do
+      expect_no_offenses('foo && foo.bar > 2')
+    end
+
     it 'allows method calls that do not get called using . safe guarded by ' \
       'an object check' do
       expect_no_offenses('foo + bar if foo')
