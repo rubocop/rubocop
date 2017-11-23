@@ -59,7 +59,7 @@ module RuboCop
 
         def autocorrect(node)
           rescued, _, _body = *node
-          range = Parser::Source::Range.new(node.loc.expression,
+          range = Parser::Source::Range.new(node.loc.expression.source_buffer,
                                             node.loc.keyword.end_pos,
                                             rescued.loc.expression.end_pos)
 
