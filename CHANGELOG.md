@@ -46,6 +46,7 @@
 * [#5071](https://github.com/bbatsov/rubocop/pull/5071): Fix a false positive in `Lint/UnneededSplatExpansion`, when `Array.new` resides in an array literal. ([@akhramov][])
 * [#4071](https://github.com/bbatsov/rubocop/issues/4071): Prevent generating wrong code by Style/ColonMethodCall and Style/RedundantSelf. ([@pocke][])
 * [#5089](https://github.com/bbatsov/rubocop/issues/5089): Fix false positive for `Style/SafeNavigation` when safe guarding arithmetic operation or assignment. ([@tiagotex][])
+* [#5099](https://github.com/bbatsov/rubocop/pull/5099): Prevent `Style/MinMax` from breaking on implicit receivers. ([@drenmi][])
 
 ### Changes
 
