@@ -489,6 +489,7 @@ Style/ColonMethodCall:
 
 Style/ColonMethodDefinition:
   Description: 'Do not use :: for defining class methods.'
+  StyleGuide: '#colon-method-definition'
   Enabled: true
 
 Style/CommandLiteral:
