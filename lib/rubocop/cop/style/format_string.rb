@@ -10,6 +10,31 @@ module RuboCop
       # manner for all cases, so only two scenarios are considered -
       # if the first argument is a string literal and if the second
       # argument is an array literal.
+      #
+      # @example EnforcedStyle: format(default)
+      #   # bad
+      #   puts sprintf('%10s', 'hoge')
+      #   puts '%10s' % 'hoge'
+      #
+      #   # good
+      #   puts format('%10s', 'hoge')
+      #
+      # @example EnforcedStyle: sprintf
+      #   # bad
+      #   puts format('%10s', 'hoge')
+      #   puts '%10s' % 'hoge'
+      #
+      #   # good
+      #   puts sprintf('%10s', 'hoge')
+      #
+      # @example EnforcedStyle: percent
+      #   # bad
+      #   puts format('%10s', 'hoge')
+      #   puts sprintf('%10s', 'hoge')
+      #
+      #   # good
+      #   puts '%10s' % 'hoge'
+      #
       class FormatString < Cop
         include ConfigurableEnforcedStyle
 
