@@ -550,7 +550,7 @@ which is usually a mistake.
 # bad
 
 if something
-  ...
+  # ...
 else do_this
   do_that
 end
@@ -559,7 +559,7 @@ end
 # good
 
 if something
-  ...
+  # ...
 else
   do_this
   do_that
@@ -1346,13 +1346,13 @@ value. It registers an offense under these conditions:
 ```ruby
 class ItemApi
   rescue_from ValidationError do |e| # non-iteration block with arg
-    return message: 'validation error' unless e.errors # allowed
+    return { message: 'validation error' } unless e.errors # allowed
     error_array = e.errors.map do |error| # block with method chain
       return if error.suppress? # warned
       return "#{error.param}: invalid" unless error.message # allowed
       "#{error.param}: #{error.message}"
     end
-    message: 'validation error', errors: error_array
+    { message: 'validation error', errors: error_array }
   end
 
   def update_items
@@ -1576,13 +1576,15 @@ an operand of &&/||.
 # bad
 
 if day.is? :tuesday && month == :jan
-  ...
+  # ...
 end
 ```
 ```ruby
 # good
 
 if day.is?(:tuesday) && month == :jan
+  # ...
+end
 ```
 
 ## Lint/RescueException

@@ -61,10 +61,12 @@ all contexts.
 # good
 foo.save && return
 if foo && bar
+end
 
 # bad
 foo.save and return
 if foo and bar
+end
 ```
 ```ruby
 # EnforcedStyle: conditionals
@@ -73,9 +75,11 @@ if foo and bar
 foo.save && return
 foo.save and return
 if foo && bar
+end
 
 # bad
 if foo and bar
+end
 ```
 
 ### Important attributes
@@ -187,7 +191,7 @@ f = File.open('file')
 
 # good
 File.open('file') do |f|
-  ...
+  # ...
 end
 ```
 
@@ -534,14 +538,14 @@ self, when defining class/module methods.
 # bad
 class SomeClass
   def SomeClass.class_method
-    ...
+    # ...
   end
 end
 
 # good
 class SomeClass
   def self.class_method
-    ...
+    # ...
   end
 end
 ```
@@ -600,12 +604,12 @@ of the . operator (like FileUtils::rmdir instead of FileUtils.rmdir).
 
 ```ruby
 # bad
-Timeout::timeout(500) { ... }
+Timeout::timeout(500) { do_something }
 FileUtils::rmdir(dir)
 Marshal::dump(obj)
 
 # good
-Timeout.timeout(500) { ... }
+Timeout.timeout(500) { do_something }
 FileUtils.rmdir(dir)
 Marshal.dump(obj)
 ```
@@ -814,7 +818,7 @@ if condition
 end
 
 # good
-class x # :nodoc:
+class X # :nodoc:
   y
 end
 ```
@@ -1073,13 +1077,13 @@ same for all its children.
 ```ruby
 # bad
 class Person
-  ...
+  # ...
 end
 
 # good
 # Description/Explanation of Person class
 class Person
-  ...
+  # ...
 end
 ```
 
@@ -1528,9 +1532,11 @@ should have been used.
 ```ruby
 # bad
 if x % 2 == 0
+end
 
 # good
 if x.even?
+end
 ```
 
 ### References
@@ -2369,17 +2375,17 @@ defining `respond_to_missing?` and falling back on `super`.
 
 ```ruby
 #bad
-def method_missing(...)
-  ...
+def method_missing(name, *args)
+  # ...
 end
 
 #good
-def respond_to_missing?(...)
-  ...
+def respond_to_missing?(name, include_private)
+  # ...
 end
 
-def method_missing(...)
-  ...
+def method_missing(name, *args)
+  # ...
   super
 end
 ```
@@ -2568,26 +2574,26 @@ implications to each approach.
 # bad
 module Test
   extend self
-  ...
+  # ...
 end
 
 # good
 module Test
   module_function
-  ...
+  # ...
 end
 ```
 ```ruby
 # bad
 module Test
   module_function
-  ...
+  # ...
 end
 
 # good
 module Test
   extend self
-  ...
+  # ...
 end
 ```
 
@@ -3008,9 +3014,11 @@ This cop checks for comparison of something with nil using ==.
 ```ruby
 # bad
 if x == nil
+end
 
 # good
 if x.nil?
+end
 ```
 
 ### References
@@ -3027,23 +3035,26 @@ This cop checks for non-nil checks, which are usually redundant.
 
 Non-nil checks are allowed if they are the final nodes of predicate.
 
- # good
- def signed_in?
-   !current_user.nil?
- end
+  # good
+  def signed_in?
+    !current_user.nil?
+  end
 
 ### Example
 
 ```ruby
 # bad
 if x != nil
+end
 
 # good (when not allowing semantic changes)
 # bad (when allowing semantic changes)
 if !x.nil?
+end
 
 # good (when allowing semantic changes)
 if x
+end
 ```
 
 ### Important attributes
@@ -3228,17 +3239,15 @@ current Ruby version supports keyword arguments.
 ### Example
 
 ```ruby
-Instead of:
-
+# bad
 def fry(options = {})
   temperature = options.fetch(:temperature, 300)
-  ...
+  # ...
 end
 
-Prefer:
-
+# good
 def fry(temperature: 300)
-  ...
+  # ...
 end
 ```
 
@@ -4765,8 +4774,10 @@ a, _, _, = foo()
 # good
 a, b, = foo()
 a, = foo()
-*a, b, _ = foo()  => We need to know to not include 2 variables in a
-a, *b, _ = foo()  => The correction `a, *b, = foo()` is a syntax error
+*a, b, _ = foo()
+# => We need to know to not include 2 variables in a
+a, *b, _ = foo()
+# => The correction `a, *b, = foo()` is a syntax error
 
 # good if AllowNamedUnderscoreVariables is true
 a, b, _something = foo()

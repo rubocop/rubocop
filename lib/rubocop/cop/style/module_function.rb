@@ -12,26 +12,26 @@ module RuboCop
       #   # bad
       #   module Test
       #     extend self
-      #     ...
+      #     # ...
       #   end
       #
       #   # good
       #   module Test
       #     module_function
-      #     ...
+      #     # ...
       #   end
       #
       # @example EnforcedStyle: extend_self
       #   # bad
       #   module Test
       #     module_function
-      #     ...
+      #     # ...
       #   end
       #
       #   # good
       #   module Test
       #     extend self
-      #     ...
+      #     # ...
       #   end
       #
       # These offenses are not auto-corrected since there are different

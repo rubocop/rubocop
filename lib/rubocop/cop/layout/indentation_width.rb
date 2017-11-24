@@ -10,16 +10,22 @@ module RuboCop
       # one.
       #
       # @example
-      #   # bad, Width: 2
+      #   # bad
       #   class A
       #    def test
       #     puts 'hello'
       #    end
       #   end
       #
-      #   # bad, Width: 2,
-      #          IgnoredPatterns:
-      #            - '^\s*module'
+      #   # good
+      #   class A
+      #     def test
+      #       puts 'hello'
+      #     end
+      #   end
+      #
+      # @example IgnoredPatterns: ['^\s*module']
+      #   # bad
       #   module A
       #   class B
       #     def test
@@ -28,16 +34,7 @@ module RuboCop
       #   end
       #   end
       #
-      #   # good, Width: 2
-      #   class A
-      #     def test
-      #       puts 'hello'
-      #     end
-      #   end
-      #
-      #   # good, Width: 2,
-      #           IgnoredPatterns:
-      #             - '^\s*module'
+      #   # good
       #   module A
       #   class B
       #     def test

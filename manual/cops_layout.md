@@ -505,6 +505,7 @@ def func(
   x,
   y
   )
+end
 ```
 
 ## Layout/CommentIndentation
@@ -771,14 +772,14 @@ blocks.
 # good
 
 begin
-  ...
+  # ...
 end
 
 # bad
 
 begin
 
-  ...
+  # ...
 
 end
 ```
@@ -803,7 +804,7 @@ the configuration.
 
 foo do |bar|
 
-  ...
+  # ...
 
 end
 ```
@@ -811,7 +812,7 @@ end
 # good
 
 foo do |bar|
-  ...
+  # ...
 end
 ```
 
@@ -843,7 +844,7 @@ the configuration.
 class Foo
 
    def bar
-     ...
+     # ...
    end
 
 end
@@ -942,14 +943,14 @@ This cops checks if empty lines exist around the bodies of methods.
 # good
 
 def foo
-  ...
+  # ...
 end
 
 # bad
 
 def bar
 
-  ...
+  # ...
 
 end
 ```
@@ -975,7 +976,7 @@ the configuration.
 module Foo
 
   def bar
-    ...
+    # ...
   end
 
 end
@@ -985,7 +986,7 @@ end
 
 module Foo
   def bar
-    ...
+    # ...
   end
 end
 ```
@@ -1415,16 +1416,22 @@ one.
 ### Example
 
 ```ruby
-# bad, Width: 2
+# bad
 class A
  def test
   puts 'hello'
  end
 end
 
-# bad, Width: 2,
-       IgnoredPatterns:
-         - '^\s*module'
+# good
+class A
+  def test
+    puts 'hello'
+  end
+end
+```
+```ruby
+# bad
 module A
 class B
   def test
@@ -1433,16 +1440,7 @@ class B
 end
 end
 
-# good, Width: 2
-class A
-  def test
-    puts 'hello'
-  end
-end
-
-# good, Width: 2,
-        IgnoredPatterns:
-          - '^\s*module'
+# good
 module A
 class B
   def test
@@ -1812,27 +1810,27 @@ while myvariable
   # do something
 end
 
-# good, EnforcedStyle: aligned
+# good
 while myvariable
       .b
   # do something
 end
 
-# good, EnforcedStyle: aligned
+# good
 Thing.a
      .b
      .c
-
-# good, EnforcedStyle:    indented,
-        IndentationWidth: 2
+```
+```ruby
+# good
 while myvariable
   .b
 
   # do something
 end
-
-# good, EnforcedStyle:    indented_relative_to_receiver,
-        IndentationWidth: 2
+```
+```ruby
+# good
 while myvariable
         .a
         .b
@@ -1840,8 +1838,7 @@ while myvariable
   # do something
 end
 
-# good, EnforcedStyle:    indented_relative_to_receiver,
-        IndentationWidth: 2
+# good
 myvariable = Thing
                .a
                .b
@@ -1894,6 +1891,7 @@ line as the last parameter of the definition.
 def foo(a,
   b
 )
+end
 
 # symmetrical: bad
 # new_line: bad
@@ -1901,12 +1899,14 @@ def foo(a,
 def foo(
   a,
   b)
+end
 
 # symmetrical: good
 # new_line: bad
 # same_line: good
 def foo(a,
   b)
+end
 
 # symmetrical: good
 # new_line: good
@@ -1915,6 +1915,7 @@ def foo(
   a,
   b
 )
+end
 ```
 
 ### Important attributes
@@ -2020,11 +2021,11 @@ Checks for comma (,) not followed by some kind of space.
 
 ```ruby
 # bad
-1,2
+[1,2]
 { foo:bar,}
 
 # good
-1, 2
+[1, 2]
 { foo:bar, }
 ```
 
@@ -2044,12 +2045,12 @@ Checks for space between a method name and a left parenthesis in defs.
 
 ```ruby
 # bad
-def func (x) ... end
-def method= (y) ... end
+def func (x) end
+def method= (y) end
 
 # good
-def func(x) ... end
-def method=(y) ... end
+def func(x) end
+def method=(y) end
 ```
 
 ### References
@@ -2559,12 +2560,10 @@ h = {a: 1, b: 2}
 # braces or right braces are collapsed together in nested hashes.
 
 # bad
-h = { { a: 1 }, b: 2 }
-h = { a: 1, { b: 2 } }
+h = { a: { b: 2 } }
 
 # good
-h = {{ a: 1 }, b: 2 }
-h = { a: 1, { b: 2 }}
+h = { a: { b: 2 }}
 ```
 
 ### Important attributes

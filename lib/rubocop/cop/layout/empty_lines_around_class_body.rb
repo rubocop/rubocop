@@ -12,7 +12,7 @@ module RuboCop
       #   class Foo
       #
       #      def bar
-      #        ...
+      #        # ...
       #      end
       #
       #   end

@@ -25,6 +25,7 @@ module RuboCop
       #     x,
       #     y
       #     )
+      #   end
       class ClosingParenthesisIndentation < Cop
         include AutocorrectAlignment
 

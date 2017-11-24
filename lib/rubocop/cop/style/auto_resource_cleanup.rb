@@ -14,7 +14,7 @@ module RuboCop
       #
       #   # good
       #   File.open('file') do |f|
-      #     ...
+      #     # ...
       #   end
       class AutoResourceCleanup < Cop
         MSG = 'Use the block version of `%s.%s`.'.freeze

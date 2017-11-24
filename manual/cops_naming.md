@@ -12,16 +12,20 @@ This cop makes sure that accessor methods are named properly.
 
 ```ruby
 # bad
-def set_attribute(value) ...
+def set_attribute(value)
+end
 
 # good
 def attribute=(value)
+end
 
 # bad
-def get_attribute ...
+def get_attribute
+end
 
 # good
-def attribute ...
+def attribute
+end
 ```
 
 ### References
@@ -323,16 +327,20 @@ This cop makes sure that predicates are named properly.
 
 ```ruby
 # bad
-def is_even?(value) ...
+def is_even?(value)
+end
 
 # good
 def even?(value)
+end
 
 # bad
-def has_value? ...
+def has_value?
+end
 
 # good
-def value? ...
+def value?
+end
 ```
 
 ### Important attributes

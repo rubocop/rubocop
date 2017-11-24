@@ -7,17 +7,17 @@ module RuboCop
       # current Ruby version supports keyword arguments.
       #
       # @example
-      #   Instead of:
       #
+      #   # bad
       #   def fry(options = {})
       #     temperature = options.fetch(:temperature, 300)
-      #     ...
+      #     # ...
       #   end
       #
-      #   Prefer:
       #
+      #   # good
       #   def fry(temperature: 300)
-      #     ...
+      #     # ...
       #   end
       class OptionHash < Cop
         MSG = 'Prefer keyword arguments to options hashes.'.freeze
