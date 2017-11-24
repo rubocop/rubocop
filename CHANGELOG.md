@@ -55,6 +55,7 @@
 ### Changes
 
 * [#4848](https://github.com/bbatsov/rubocop/pull/4848): Exclude lambdas and procs from `Metrics/ParameterLists`. ([@reitermarkus][])
+* [#5120](https://github.com/bbatsov/rubocop/pull/5120):  Improve speed of RuboCop::PathUtil#smart_path. ([@walf443][])
 * [#4888](https://github.com/bbatsov/rubocop/pull/4888): Improve offense message of `Style/StderrPuts`. ([@jaredbeck][])
 * [#4886](https://github.com/bbatsov/rubocop/issues/4886): Fix false offense for Style/CommentedKeyword. ([@michniewicz][])
 * [#4977](https://github.com/bbatsov/rubocop/pull/4977): Make `Lint/RedundantWithIndex` cop aware of offset argument. ([@koic][])
