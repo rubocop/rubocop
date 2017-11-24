@@ -11,10 +11,38 @@ module RuboCop
       #
       #   class Foo
       #
-      #      def bar
-      #        # ...
-      #      end
+      #     def bar
+      #       # ...
+      #     end
       #
+      #   end
+      #
+      # @example EnforcedStyle: empty_lines_except_namespace
+      #   # good
+      #
+      #   class Foo
+      #     class Bar
+      #
+      #       # ...
+      #
+      #     end
+      #   end
+      #
+      # @example EnforcedStyle: empty_lines_special
+      #   # good
+      #   class Foo
+      #
+      #     def bar; end
+      #
+      #   end
+      #
+      # @example EnforcedStyle: no_empty_lines (default)
+      #   # good
+      #
+      #   class Foo
+      #     def bar
+      #       # ...
+      #     end
       #   end
       class EmptyLinesAroundClassBody < Cop
         include EmptyLinesAroundBody

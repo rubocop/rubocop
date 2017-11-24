@@ -835,10 +835,38 @@ the configuration.
 
 class Foo
 
-   def bar
-     # ...
-   end
+  def bar
+    # ...
+  end
 
+end
+```
+```ruby
+# good
+
+class Foo
+  class Bar
+
+    # ...
+
+  end
+end
+```
+```ruby
+# good
+class Foo
+
+  def bar; end
+
+end
+```
+```ruby
+# good
+
+class Foo
+  def bar
+    # ...
+  end
 end
 ```
 
