@@ -1560,6 +1560,33 @@ manner for all cases, so only two scenarios are considered -
 if the first argument is a string literal and if the second
 argument is an array literal.
 
+### Example
+
+```ruby
+# bad
+puts sprintf('%10s', 'hoge')
+puts '%10s' % 'hoge'
+
+# good
+puts format('%10s', 'hoge')
+```
+```ruby
+# bad
+puts format('%10s', 'hoge')
+puts '%10s' % 'hoge'
+
+# good
+puts sprintf('%10s', 'hoge')
+```
+```ruby
+# bad
+puts format('%10s', 'hoge')
+puts sprintf('%10s', 'hoge')
+
+# good
+puts '%10s' % 'hoge'
+```
+
 ### Important attributes
 
 Attribute | Value
