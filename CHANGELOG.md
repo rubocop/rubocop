@@ -49,6 +49,7 @@
 * [#5089](https://github.com/bbatsov/rubocop/issues/5089): Fix false positive for `Style/SafeNavigation` when safe guarding arithmetic operation or assignment. ([@tiagotex][])
 * [#5099](https://github.com/bbatsov/rubocop/pull/5099): Prevent `Style/MinMax` from breaking on implicit receivers. ([@drenmi][])
 * [#5079](https://github.com/bbatsov/rubocop/issues/5079): Fix false positive for `Style/SafeNavigation` when safe guarding comparisons. ([@tiagotex][])
+* [#5075](https://github.com/bbatsov/rubocop/issues/5075): Fix auto-correct for `Style/RedundantParentheses` cop when unspaced ternary is present. ([@tiagotex][])
 
 ### Changes
 
