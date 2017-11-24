@@ -73,7 +73,6 @@ RuboCop supports the following Ruby implementations:
 
 * MRI 2.1+
 * JRuby 9.0+
-* Rubinius 2.0+
 
 ## Team
 
