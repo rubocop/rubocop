@@ -384,7 +384,7 @@ You can configure the following order:
        - constants
        - public_class_methods
        - initializer
-       - instance_methods
+       - public_methods
        - protected_methods
        - private_methods
 
@@ -464,7 +464,7 @@ end
 Name | Default value | Configurable values
 --- | --- | ---
 Categories | `{"module_inclusion"=>["include", "prepend", "extend"]}` | 
-ExpectedOrder | `module_inclusion`, `constants`, `public_class_methods`, `initializer`, `instance_methods`, `protected_methods`, `private_methods` | Array
+ExpectedOrder | `module_inclusion`, `constants`, `public_class_methods`, `initializer`, `public_methods`, `protected_methods`, `private_methods` | Array
 
 ### References
 
