@@ -8,12 +8,12 @@ module RuboCop
       #
       # @example
       #   # bad
-      #   Timeout::timeout(500) { ... }
+      #   Timeout::timeout(500) { do_something }
       #   FileUtils::rmdir(dir)
       #   Marshal::dump(obj)
       #
       #   # good
-      #   Timeout.timeout(500) { ... }
+      #   Timeout.timeout(500) { do_something }
       #   FileUtils.rmdir(dir)
       #   Marshal.dump(obj)
       #

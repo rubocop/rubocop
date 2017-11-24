@@ -14,10 +14,12 @@ module RuboCop
       #   # good
       #   foo.save && return
       #   if foo && bar
+      #   end
       #
       #   # bad
       #   foo.save and return
       #   if foo and bar
+      #   end
       #
       # @example
       #
@@ -27,9 +29,11 @@ module RuboCop
       #   foo.save && return
       #   foo.save and return
       #   if foo && bar
+      #   end
       #
       #   # bad
       #   if foo and bar
+      #   end
       class AndOr < Cop
         include ConfigurableEnforcedStyle
 

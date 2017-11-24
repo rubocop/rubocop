@@ -24,7 +24,7 @@ module RuboCop
       #
       #   # good
       #   unless user.save
-      #      . . .
+      #     # ...
       #   end
       #   user.save!
       #   user.update!(name: 'Joe')
@@ -33,7 +33,7 @@ module RuboCop
       #
       #   user = User.find_or_create_by(name: 'Joe')
       #   unless user.persisted?
-      #      . . .
+      #     # ...
       #   end
       class SaveBang < Cop
         MSG = 'Use `%s` instead of `%s` if the return value is not checked.'

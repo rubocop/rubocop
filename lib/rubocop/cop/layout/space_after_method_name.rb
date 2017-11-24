@@ -8,12 +8,12 @@ module RuboCop
       # @example
       #
       #   # bad
-      #   def func (x) ... end
-      #   def method= (y) ... end
+      #   def func (x) end
+      #   def method= (y) end
       #
       #   # good
-      #   def func(x) ... end
-      #   def method=(y) ... end
+      #   def func(x) end
+      #   def method=(y) end
       class SpaceAfterMethodName < Cop
         MSG = 'Do not put a space between a method name and the opening ' \
               'parenthesis.'.freeze

@@ -7,16 +7,20 @@ module RuboCop
       #
       # @example
       #   # bad
-      #   def set_attribute(value) ...
+      #   def set_attribute(value)
+      #   end
       #
       #   # good
       #   def attribute=(value)
+      #   end
       #
       #   # bad
-      #   def get_attribute ...
+      #   def get_attribute
+      #   end
       #
       #   # good
-      #   def attribute ...
+      #   def attribute
+      #   end
       class AccessorMethodName < Cop
         MSG_READER = 'Do not prefix reader method names with `get_`.'.freeze
         MSG_WRITER = 'Do not prefix writer method names with `set_`.'.freeze

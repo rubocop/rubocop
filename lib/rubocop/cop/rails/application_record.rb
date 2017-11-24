@@ -9,12 +9,12 @@ module RuboCop
       #
       #  # good
       #  class Rails5Model < ApplicationRecord
-      #    ...
+      #    # ...
       #  end
       #
       #  # bad
       #  class Rails4Model < ActiveRecord::Base
-      #    ...
+      #    # ...
       #  end
       class ApplicationRecord < Cop
         extend TargetRailsVersion

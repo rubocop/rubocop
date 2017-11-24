@@ -7,11 +7,13 @@ module RuboCop
       #
       # @example
       #
-      #  # bad
-      #  if x == nil
+      #   # bad
+      #   if x == nil
+      #   end
       #
-      #  # good
-      #  if x.nil?
+      #   # good
+      #   if x.nil?
+      #   end
       class NilComparison < Cop
         MSG = 'Prefer the use of the `nil?` predicate.'.freeze
 

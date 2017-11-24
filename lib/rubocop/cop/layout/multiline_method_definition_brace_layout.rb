@@ -34,6 +34,7 @@ module RuboCop
       #     def foo(a,
       #       b
       #     )
+      #     end
       #
       #     # symmetrical: bad
       #     # new_line: bad
@@ -41,12 +42,14 @@ module RuboCop
       #     def foo(
       #       a,
       #       b)
+      #     end
       #
       #     # symmetrical: good
       #     # new_line: bad
       #     # same_line: good
       #     def foo(a,
       #       b)
+      #     end
       #
       #     # symmetrical: good
       #     # new_line: good
@@ -55,6 +58,7 @@ module RuboCop
       #       a,
       #       b
       #     )
+      #     end
       class MultilineMethodDefinitionBraceLayout < Cop
         include MultilineLiteralBraceLayout
 

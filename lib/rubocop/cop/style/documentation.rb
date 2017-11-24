@@ -15,13 +15,13 @@ module RuboCop
       # @example
       #   # bad
       #   class Person
-      #     ...
+      #     # ...
       #   end
       #
       #   # good
       #   # Description/Explanation of Person class
       #   class Person
-      #     ...
+      #     # ...
       #   end
       #
       class Documentation < Cop

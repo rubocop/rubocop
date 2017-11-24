@@ -12,7 +12,7 @@ module RuboCop
       #   # bad
       #
       #   if something
-      #     ...
+      #     # ...
       #   else do_this
       #     do_that
       #   end
@@ -22,7 +22,7 @@ module RuboCop
       #   # good
       #
       #   if something
-      #     ...
+      #     # ...
       #   else
       #     do_this
       #     do_that

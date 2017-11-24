@@ -12,14 +12,14 @@ module RuboCop
       #   # good
       #
       #   begin
-      #     ...
+      #     # ...
       #   end
       #
       #   # bad
       #
       #   begin
       #
-      #     ...
+      #     # ...
       #
       #   end
       class EmptyLinesAroundBeginBody < Cop
