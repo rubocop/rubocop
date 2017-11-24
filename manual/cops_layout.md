@@ -564,6 +564,15 @@ something.
 something
   .method
 ```
+```ruby
+# bad
+something
+  .method
+
+# good
+something.
+  mehod
+```
 
 ### Important attributes
 
