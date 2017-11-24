@@ -184,11 +184,11 @@ Model.select('field AS field_one').count
 Model.select(:value).count
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-SafeMode | true
+Name | Default value | Configurable values
+--- | --- | ---
+SafeMode | `true` | Boolean
 
 ## Performance/Detect
 
@@ -219,11 +219,11 @@ considered unsafe.
 [].reverse.detect { |item| true }
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-SafeMode | true
+Name | Default value | Configurable values
+--- | --- | ---
+SafeMode | `true` | Boolean
 
 ### References
 
@@ -245,23 +245,19 @@ with an single `#start_with?`/`#end_with?` call.
 # bad
 str.start_with?("a") || str.start_with?(Some::CONST)
 str.start_with?("a", "b") || str.start_with?("c")
-var1 = ...
-var2 = ...
 str.end_with?(var1) || str.end_with?(var2)
 
 # good
 str.start_with?("a", Some::CONST)
 str.start_with?("a", "b", "c")
-var1 = ...
-var2 = ...
 str.end_with?(var1, var2)
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-IncludeActiveSupportAliases | false
+Name | Default value | Configurable values
+--- | --- | ---
+IncludeActiveSupportAliases | `false` | Boolean
 
 ## Performance/EndWith
 
@@ -283,11 +279,11 @@ would suffice.
 'abc'.end_with?('bc')
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-AutoCorrect | false
+Name | Default value | Configurable values
+--- | --- | ---
+AutoCorrect | `false` | Boolean
 
 ### References
 
@@ -322,11 +318,11 @@ This cop is used to identify usages of
 [1, 2, 3, 4].collect { |e| [e, e] }.flatten
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-EnabledForFlattenWithoutParams | false
+Name | Default value | Configurable values
+--- | --- | ---
+EnabledForFlattenWithoutParams | `false` | Boolean
 
 ### References
 
@@ -358,11 +354,11 @@ hash.each_key { |k| p k }
 hash.each_value { |v| p v }
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-AutoCorrect | false
+Name | Default value | Configurable values
+--- | --- | ---
+AutoCorrect | `false` | Boolean
 
 ### References
 
@@ -483,11 +479,11 @@ hash.merge!({'key' => 'value'})
 hash.merge!(a: 1, b: 2)
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-MaxKeyValuePairs | 2
+Name | Default value | Configurable values
+--- | --- | ---
+MaxKeyValuePairs | `2` | Integer
 
 ### References
 
@@ -693,11 +689,11 @@ This cop identifies unnecessary use of a regex where
 'abc'.start_with?('ab')
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-AutoCorrect | false
+Name | Default value | Configurable values
+--- | --- | ---
+AutoCorrect | `false` | Boolean
 
 ### References
 
@@ -756,11 +752,11 @@ Array.new(9) do |i|
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-AutoCorrect | false
+Name | Default value | Configurable values
+--- | --- | ---
+AutoCorrect | `false` | Boolean
 
 ## Performance/UnfreezeString
 

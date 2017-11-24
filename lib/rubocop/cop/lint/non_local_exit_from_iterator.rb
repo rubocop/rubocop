@@ -18,13 +18,13 @@ module RuboCop
       #
       #   class ItemApi
       #     rescue_from ValidationError do |e| # non-iteration block with arg
-      #       return message: 'validation error' unless e.errors # allowed
+      #       return { message: 'validation error' } unless e.errors # allowed
       #       error_array = e.errors.map do |error| # block with method chain
       #         return if error.suppress? # warned
       #         return "#{error.param}: invalid" unless error.message # allowed
       #         "#{error.param}: #{error.message}"
       #       end
-      #       message: 'validation error', errors: error_array
+      #       { message: 'validation error', errors: error_array }
       #     end
       #
       #     def update_items

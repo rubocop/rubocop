@@ -95,3 +95,9 @@ RSpec/SubjectStub:
 # Configuration parameters: IgnoreSymbolicNames.
 RSpec/VerifiedDoubles:
   Enabled: false
+
+# Offense count: 386
+# Configuration parameters: EnforcedStyle.
+# SupportedStyles: annotated, template, unannotated
+Style/FormatStringToken:
+  Enabled: false

@@ -39,11 +39,6 @@ RSpec.configure do |config|
   config.order = :random
   Kernel.srand config.seed
 
-  broken_filter = lambda do |v|
-    v.is_a?(Symbol) ? RUBY_ENGINE == v.to_s : v
-  end
-  config.filter_run_excluding broken: broken_filter
-
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
     expectations.syntax = :expect # Disable `should`

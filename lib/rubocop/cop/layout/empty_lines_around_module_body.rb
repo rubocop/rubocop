@@ -12,7 +12,7 @@ module RuboCop
       #   module Foo
       #
       #     def bar
-      #       ...
+      #       # ...
       #     end
       #
       #   end
@@ -22,7 +22,7 @@ module RuboCop
       #
       #   module Foo
       #     def bar
-      #       ...
+      #       # ...
       #     end
       #   end
       class EmptyLinesAroundModuleBody < Cop

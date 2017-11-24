@@ -32,12 +32,10 @@ module RuboCop
       #   # braces or right braces are collapsed together in nested hashes.
       #
       #   # bad
-      #   h = { { a: 1 }, b: 2 }
-      #   h = { a: 1, { b: 2 } }
+      #   h = { a: { b: 2 } }
       #
       #   # good
-      #   h = {{ a: 1 }, b: 2 }
-      #   h = { a: 1, { b: 2 }}
+      #   h = { a: { b: 2 }}
       class SpaceInsideHashLiteralBraces < Cop
         include SurroundingSpace
         include ConfigurableEnforcedStyle

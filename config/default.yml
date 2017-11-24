@@ -532,6 +532,24 @@ Layout/SpaceInsideStringInterpolation:
     - space
     - no_space
 
+Layout/ClassStructure:
+  Description: 'Enforces a configured order of definitions within a class body.'
+  StyleGuide: '#consistent-classes'
+  Enabled: false
+  Categories:
+    module_inclusion:
+      - include
+      - prepend
+      - extend
+  ExpectedOrder:
+      - module_inclusion
+      - constants
+      - public_class_methods
+      - initializer
+      - instance_methods
+      - protected_methods
+      - private_methods
+
 Layout/Tab:
   # By default, the indentation width from Layout/IndentationWidth is used
   # But it can be overridden by setting this parameter
@@ -917,6 +935,7 @@ Style/FormatStringToken:
     - annotated
     # Prefer simple looking "template" style tokens like `%{name}`, `%{age}`
     - template
+    - unannotated
 
 Style/FrozenStringLiteralComment:
   EnforcedStyle: when_needed

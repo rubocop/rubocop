@@ -98,6 +98,7 @@ In the following section you find all available cops:
 
 #### Department [Gemspec](cops_gemspec.md)
 
+* [Gemspec/DuplicatedAssignment](cops_gemspec.md#gemspecduplicatedassignment)
 * [Gemspec/OrderedDependencies](cops_gemspec.md#gemspecordereddependencies)
 * [Gemspec/RequiredRubyVersion](cops_gemspec.md#gemspecrequiredrubyversion)
 
@@ -109,6 +110,7 @@ In the following section you find all available cops:
 * [Layout/AlignParameters](cops_layout.md#layoutalignparameters)
 * [Layout/BlockEndNewline](cops_layout.md#layoutblockendnewline)
 * [Layout/CaseIndentation](cops_layout.md#layoutcaseindentation)
+* [Layout/ClassStructure](cops_layout.md#layoutclassstructure)
 * [Layout/ClosingParenthesisIndentation](cops_layout.md#layoutclosingparenthesisindentation)
 * [Layout/CommentIndentation](cops_layout.md#layoutcommentindentation)
 * [Layout/DotPosition](cops_layout.md#layoutdotposition)
@@ -212,6 +214,7 @@ In the following section you find all available cops:
 * [Lint/MissingCopEnableDirective](cops_lint.md#lintmissingcopenabledirective)
 * [Lint/MultipleCompare](cops_lint.md#lintmultiplecompare)
 * [Lint/NestedMethodDefinition](cops_lint.md#lintnestedmethoddefinition)
+* [Lint/NestedPercentLiteral](cops_lint.md#lintnestedpercentliteral)
 * [Lint/NextWithoutAccumulator](cops_lint.md#lintnextwithoutaccumulator)
 * [Lint/NonLocalExitFromIterator](cops_lint.md#lintnonlocalexitfromiterator)
 * [Lint/ParenthesesAsGroupedExpression](cops_lint.md#lintparenthesesasgroupedexpression)
@@ -373,6 +376,7 @@ In the following section you find all available cops:
 * [Style/ClassVars](cops_style.md#styleclassvars)
 * [Style/CollectionMethods](cops_style.md#stylecollectionmethods)
 * [Style/ColonMethodCall](cops_style.md#stylecolonmethodcall)
+* [Style/ColonMethodDefinition](cops_style.md#stylecolonmethoddefinition)
 * [Style/CommandLiteral](cops_style.md#stylecommandliteral)
 * [Style/CommentAnnotation](cops_style.md#stylecommentannotation)
 * [Style/CommentedKeyword](cops_style.md#stylecommentedkeyword)

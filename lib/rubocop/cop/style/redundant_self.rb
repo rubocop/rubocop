@@ -5,49 +5,48 @@ module RuboCop
     module Style
       # This cop checks for redundant uses of `self`.
       #
-      # `self` is only needed when:
+      # The usage of `self` is only needed when:
       #
       # * Sending a message to same object with zero arguments in
       #   presence of a method name clash with an argument or a local
       #   variable.
       #
-      #   Note, with using explicit self you can only send messages
-      #   with public or protected scope, you cannot send private
-      #   messages this way.
+      # * Calling an attribute writer to prevent an local variable assignment.
       #
-      #   Example:
+      # Note, with using explicit self you can only send messages with public or
+      # protected scope, you cannot send private messages this way.
       #
-      #   def bar
-      #     :baz
-      #   end
+      # Note we allow uses of `self` with operators because it would be awkward
+      # otherwise.
       #
+      # @example
+      #
+      #   # bad
       #   def foo(bar)
-      #     self.bar # resolves name clash with argument
+      #     self.baz
       #   end
       #
-      #   def foo2
-      #     bar = 1
-      #     self.bar # resolves name clash with local variable
+      #   # good
+      #   def foo(bar)
+      #     self.bar  # Resolves name clash with the argument.
       #   end
-      #
-      #   %w[x y z].select do |bar|
-      #     self.bar == bar # resolves name clash with argument of a block
-      #   end
-      #
-      # * Calling an attribute writer to prevent an local variable assignment
-      #
-      #   attr_writer :bar
       #
       #   def foo
-      #     self.bar= 1 # Make sure above attr writer is called
+      #     bar = 1
+      #     self.bar  # Resolves name clash with the local variable.
       #   end
       #
-      # Special cases:
-      #
-      # We allow uses of `self` with operators because it would be awkward
-      # otherwise.
+      #   def foo
+      #     %w[x y z].select do |bar|
+      #       self.bar == bar  # Resolves name clash with argument of the block.
+      #     end
+      #   end
       class RedundantSelf < Cop
         MSG = 'Redundant `self` detected.'.freeze
+
+        def self.autocorrect_incompatible_with
+          [ColonMethodCall]
+        end
 
         def initialize(config = nil, options = nil)
           super

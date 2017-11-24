@@ -225,7 +225,8 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
       )
     end
 
-    it "doesn't register an offense when class << exp is used" do
+    it 'registers an offense when class << exp is used' do
+      pending
       inspect_source([opening_line,
                       '  class << blah',
                       '    def some_method',
@@ -236,7 +237,7 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
                       '    end',
                       '  end',
                       'end'], 'test.rb')
-      expect(cop.offenses.empty?).to be(true)
+      expect(cop.offenses.empty?).to be(false)
     end
 
     it "registers an offense for duplicate alias in #{type}" do

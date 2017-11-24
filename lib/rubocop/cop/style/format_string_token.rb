@@ -6,24 +6,31 @@ module RuboCop
       # Use a consistent style for named format string tokens.
       #
       # @example EnforcedStyle: annotated (default)
-      #   # bad
       #
+      #   # bad
       #   format('%{greeting}', greeting: 'Hello')
       #   format('%s', 'Hello')
       #
       #   # good
-      #
       #   format('%<greeting>s', greeting: 'Hello')
       #
       # @example EnforcedStyle: template
-      #   # bad
       #
+      #   # bad
       #   format('%<greeting>s', greeting: 'Hello')
       #   format('%s', 'Hello')
       #
       #   # good
-      #
       #   format('%{greeting}', greeting: 'Hello')
+      #
+      # @example EnforcedStyle: unannotated
+      #
+      #   # bad
+      #   format('%<greeting>s', greeting: 'Hello')
+      #   format('%{greeting}', 'Hello')
+      #
+      #   # good
+      #   format('%s', 'Hello')
       class FormatStringToken < Cop
         include ConfigurableEnforcedStyle
 
@@ -31,7 +38,8 @@ module RuboCop
 
         STYLE_PATTERNS = {
           annotated: /(?<token>%<[^>]+>#{FIELD_CHARACTERS})/,
-          template:  /(?<token>%\{[^\}]+\})/
+          template: /(?<token>%\{[^\}]+\})/,
+          unannotated: /(?<token>%#{FIELD_CHARACTERS})/
         }.freeze
 
         TOKEN_PATTERN = Regexp.union(STYLE_PATTERNS.values)
@@ -56,14 +64,13 @@ module RuboCop
           "Prefer #{message_text(style)} over #{message_text(detected_style)}."
         end
 
-        # rubocop:disable FormatStringToken
         def message_text(style)
           case style
           when :annotated then 'annotated tokens (like `%<foo>s`)'
-          when :template  then 'template tokens (like `%{foo}`)'
+          when :template then 'template tokens (like `%{foo}`)'
+          when :unannotated then 'unannotated tokens (like `%s`)'
           end
         end
-        # rubocop:enable FormatStringToken
 
         def tokens(str_node, &block)
           return if str_node.source == '__FILE__'

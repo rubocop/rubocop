@@ -150,9 +150,23 @@ module RuboCop
                        node.receiver
                      end
 
-          return receiver if receiver == checked_variable
+          if receiver == checked_variable
+            return nil if assignment_arithmetic_or_comparison?(node)
+
+            return receiver
+          end
 
           find_matching_receiver_invocation(receiver, checked_variable)
+        end
+
+        def assignment_arithmetic_or_comparison?(node)
+          node.assignment? ||
+            node.parent.arithmetic_operation? ||
+            comparison_node?(node.parent)
+        end
+
+        def comparison_node?(parent)
+          parent.send_type? && parent.comparison_method?
         end
 
         def unsafe_method?(send_node)

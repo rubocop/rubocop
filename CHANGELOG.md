@@ -4,6 +4,8 @@
 
 ### New features
 
+* [#5101](https://github.com/bbatsov/rubocop/pull/5101): Allow to specify `TargetRubyVersion` 2.5. ([@walf443][])
+* [#1575](https://github.com/bbatsov/rubocop/issues/1575): Add new `Layout/ClassStructure` cop that checks whether definitions in a class are in the configured order. This cop is disabled by default. ([@jonatas][])
 * New cop `Rails/InverseOf` checks for association arguments that require setting the `inverse_of` option manually. ([@bdewater][])
 * [#4252](https://github.com/bbatsov/rubocop/issues/4252): Add new `Style/TrailingBodyOnMethodDefinition` cop. ([@garettarrowood][])
 * Add new `Style/TrailingMethodEndStatment` cop. ([@garettarrowood][])
@@ -16,9 +18,13 @@
 * Add `AllowedChars` option to `Style/AsciiComments` cop. ([@hedgesky][])
 * [#5031](https://github.com/bbatsov/rubocop/pull/5031): Add new `Style/EmptyBlockParameter` and `Style/EmptyLambdaParameter` cops. ([@pocke][])
 * [#5057](https://github.com/bbatsov/rubocop/pull/5057): Add new `Gemspec/RequiredRubyVersion` cop. ([@koic][])
+* [#5087](https://github.com/bbatsov/rubocop/pull/5087): Add new `Gemspec/RedundantAssignment` cop. ([@koic][])
+* Add `unannotated` option to `Style/FormatStringToken` cop. ([@drenmi][])
+* Add new `Style/ColonMethodDefinition` cop. ([@rrosenblum][])
 
 ### Bug fixes
 
+* [#5096](https://github.com/bbatsov/rubocop/issues/5096): Fix incorrect detection and autocorrection of multiple extend/include/prepend. ([@marcandre][])
 * [#4662](https://github.com/bbatsov/rubocop/issues/4662): Fix incorrect indent level detection when first line of heredoc is blank. ([@sambostock][])
 * [#4866](https://github.com/bbatsov/rubocop/issues/4866): Prevent `Layout/BlockEndNewline` cop from introducing trailing whitespaces. ([@bgeuken][])
 * [#3396](https://github.com/bbatsov/rubocop/issues/3396): Concise error when config. file not found. ([@jaredbeck][])
@@ -38,6 +44,11 @@
 * [#5053](https://github.com/bbatsov/rubocop/issues/5053): Fix `Naming/ConstantName` false offense on assigning to a nonoffensive assignment. ([@garettarrowood][])
 * [#5019](https://github.com/bbatsov/rubocop/pull/5019): Fix auto-correct for `Style/HashSyntax` cop when hash is used as unspaced argument. ([@drenmi][])
 * [#5059](https://github.com/bbatsov/rubocop/issues/5059): Fix a false positive for `Style/MixinUsage` when `include` call is a method argument. ([@koic][])
+* [#5071](https://github.com/bbatsov/rubocop/pull/5071): Fix a false positive in `Lint/UnneededSplatExpansion`, when `Array.new` resides in an array literal. ([@akhramov][])
+* [#4071](https://github.com/bbatsov/rubocop/issues/4071): Prevent generating wrong code by Style/ColonMethodCall and Style/RedundantSelf. ([@pocke][])
+* [#5089](https://github.com/bbatsov/rubocop/issues/5089): Fix false positive for `Style/SafeNavigation` when safe guarding arithmetic operation or assignment. ([@tiagotex][])
+* [#5099](https://github.com/bbatsov/rubocop/pull/5099): Prevent `Style/MinMax` from breaking on implicit receivers. ([@drenmi][])
+* [#5079](https://github.com/bbatsov/rubocop/issues/5079): Fix false positive for `Style/SafeNavigation` when safe guarding comparisons. ([@tiagotex][])
 
 ### Changes
 
@@ -136,6 +147,7 @@
 * [#4720](https://github.com/bbatsov/rubocop/pull/4720): Add new `Bundler/InsecureProtocolSource` cop. ([@koic][])
 * [#4708](https://github.com/bbatsov/rubocop/pull/4708): Add new `Lint/RedundantWithIndex` cop. ([@koic][])
 * [#4480](https://github.com/bbatsov/rubocop/pull/4480): Add new `Lint/InterpolationCheck` cop. ([@GauthamGoli][])
+* [#4628](https://github.com/bbatsov/rubocop/issues/4628): Add new `Lint/NestedPercentLiteral` cop. ([@asherkach][])
 
 ### Bug fixes
 
@@ -3033,3 +3045,7 @@
 [@bdewater]: https://github.com/bdewater
 [@garettarrowood]: https://github.com/garettarrowood
 [@sambostock]: https://github.com/sambostock
+[@asherkach]: https://github.com/asherkach
+[@tiagotex]: https://github.com/tiagotex
+[@marcandre]: https://github.com/marcandre
+[@walf443]: https://github.com/walf443

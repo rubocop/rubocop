@@ -6,10 +6,9 @@ module RuboCop
     # node when the builder constructs the AST, making its methods available
     # to all `send` nodes within RuboCop.
     class SendNode < Node
-      ARROW = '->'.freeze
-
       include ParameterizedNode
       include MethodDispatchNode
+      ARROW = '->'.freeze
 
       # Custom destructuring method. This can be used to normalize
       # destructuring for different variations of the node.

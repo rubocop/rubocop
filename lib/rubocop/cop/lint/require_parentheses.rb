@@ -17,7 +17,7 @@ module RuboCop
       #   # bad
       #
       #   if day.is? :tuesday && month == :jan
-      #     ...
+      #     # ...
       #   end
       #
       # @example
@@ -25,6 +25,8 @@ module RuboCop
       #   # good
       #
       #   if day.is?(:tuesday) && month == :jan
+      #     # ...
+      #   end
       class RequireParentheses < Cop
         MSG = 'Use parentheses in the method call to avoid confusion about ' \
               'precedence.'.freeze

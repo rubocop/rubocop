@@ -17,10 +17,9 @@ task generate_cops_documentation: :yard_for_generate_documentation do
   def cops_body(config, cop, description, examples_objects, pars)
     content = h2(cop.cop_name)
     content << properties(config, cop)
-    content << "\n\n"
     content << "#{description}\n"
     content << examples(examples_objects) if examples_objects.count > 0
-    content << default_settings(pars)
+    content << configurations(pars)
     content << references(config, cop)
     content
   end
@@ -32,13 +31,13 @@ task generate_cops_documentation: :yard_for_generate_documentation do
   end
 
   def properties(config, cop)
-    content = "Enabled by default | Supports autocorrection\n".dup
-    content << "--- | ---\n"
+    header = ['Enabled by default', 'Supports autocorrection']
     enabled_by_default = config.for_cop(cop).fetch('Enabled')
-    default_status = enabled_by_default ? 'Enabled' : 'Disabled'
-    supports_autocorrect = cop.new.support_autocorrect? ? 'Yes' : 'No'
-    content << "#{default_status} | #{supports_autocorrect}"
-    content
+    content = [[
+      enabled_by_default ? 'Enabled' : 'Disabled',
+      cop.new.support_autocorrect? ? 'Yes' : 'No'
+    ]]
+    to_table(header, content) + "\n"
   end
 
   def h2(title)
@@ -63,21 +62,67 @@ task generate_cops_documentation: :yard_for_generate_documentation do
     content
   end
 
-  def default_settings(pars)
-    return '' unless pars.keys.count > 0
-    content = h3('Important attributes')
-    content << "Attribute | Value\n"
-    content << "--- | ---\n"
-    pars.each do |par|
-      content << "#{par.first} |#{format_table_value(par.last)}\n"
+  def configurations(pars)
+    return '' if pars.empty?
+
+    header = ['Name', 'Default value', 'Configurable values']
+    configs = pars.each_key.reject { |key| key.start_with?('Supported') }
+    content = configs.map do |name|
+      configurable = configurable_values(pars, name)
+      default = format_table_value(pars[name])
+      [name, default, configurable]
     end
-    content
+
+    h3('Configurable attributes') + to_table(header, content)
+  end
+
+  # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength
+  def configurable_values(pars, name)
+    case name
+    when /^Enforced/
+      supported_style_name = RuboCop::Cop::Util.to_supported_styles(name)
+      format_table_value(pars[supported_style_name])
+    when 'IndentationWidth'
+      'Integer'
+    else
+      case pars[name]
+      when String
+        'String'
+      when Integer
+        'Integer'
+      when true, false
+        'Boolean'
+      when Array
+        'Array'
+      else
+        ''
+      end
+    end
+  end
+  # rubocop:enable Metrics/CyclomaticComplexity,Metrics/MethodLength
+
+  def to_table(header, content)
+    table = [
+      header.join(' | '),
+      Array.new(header.size, '---').join(' | ')
+    ]
+    table.concat(content.map { |c| c.join(' | ') })
+    table.join("\n") + "\n"
   end
 
   def format_table_value(v)
-    value = v.is_a?(Array) ? v.join(', ') : v.to_s
-    value = value.gsub("#{Dir.pwd}/", '').gsub('*', '\*')
-    " #{value}".rstrip
+    value =
+      case v
+      when Array
+        if v.empty?
+          '`[]`'
+        else
+          v.map { |config| format_table_value(config) }.join(', ')
+        end
+      else
+        "`#{v.nil? ? '<none>' : v}`"
+      end
+    value.gsub("#{Dir.pwd}/", '').rstrip
   end
 
   def references(config, cop)

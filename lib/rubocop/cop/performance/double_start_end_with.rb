@@ -11,15 +11,11 @@ module RuboCop
       #   # bad
       #   str.start_with?("a") || str.start_with?(Some::CONST)
       #   str.start_with?("a", "b") || str.start_with?("c")
-      #   var1 = ...
-      #   var2 = ...
       #   str.end_with?(var1) || str.end_with?(var2)
       #
       #   # good
       #   str.start_with?("a", Some::CONST)
       #   str.start_with?("a", "b", "c")
-      #   var1 = ...
-      #   var2 = ...
       #   str.end_with?(var1, var2)
       class DoubleStartEndWith < Cop
         MSG = 'Use `%<receiver>s.%<method>s(%<combined_args>s)` ' \

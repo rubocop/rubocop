@@ -45,11 +45,11 @@ JSON.restore("{}")
 JSON.parse("{}")
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-AutoCorrect | false
+Name | Default value | Configurable values
+--- | --- | ---
+AutoCorrect | `false` | Boolean
 
 ### References
 

@@ -6,34 +6,34 @@ module RuboCop
       # This cop checks the indentation of the method name part in method calls
       # that span more than one line.
       #
-      # @example
+      # @example EnforcedStyle: aligned
       #   # bad
       #   while myvariable
       #   .b
       #     # do something
       #   end
       #
-      #   # good, EnforcedStyle: aligned
+      #   # good
       #   while myvariable
       #         .b
       #     # do something
       #   end
       #
-      #   # good, EnforcedStyle: aligned
+      #   # good
       #   Thing.a
       #        .b
       #        .c
       #
-      #   # good, EnforcedStyle:    indented,
-      #           IndentationWidth: 2
+      # @example EnforcedStyle: indented
+      #   # good
       #   while myvariable
       #     .b
       #
       #     # do something
       #   end
       #
-      #   # good, EnforcedStyle:    indented_relative_to_receiver,
-      #           IndentationWidth: 2
+      # @example EnforcedStyle: indented_relative_to_receiver
+      #   # good
       #   while myvariable
       #           .a
       #           .b
@@ -41,8 +41,7 @@ module RuboCop
       #     # do something
       #   end
       #
-      #   # good, EnforcedStyle:    indented_relative_to_receiver,
-      #           IndentationWidth: 2
+      #   # good
       #   myvariable = Thing
       #                  .a
       #                  .b

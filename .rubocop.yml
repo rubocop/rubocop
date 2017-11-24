@@ -23,8 +23,30 @@ Naming/PredicateName:
 Style/FrozenStringLiteralComment:
   EnforcedStyle: always
 
+Style/FormatStringToken:
+  # Because we parse a lot of source codes from strings. Percent arrays
+  # look like unannotated format string tokens to this cop.
+  Exclude:
+    - spec/**/*
+
 Layout/EndOfLine:
   EnforcedStyle: lf
+
+Layout/ClassStructure:
+  Enabled: true
+  Categories:
+    module_inclusion:
+      - include
+      - prepend
+      - extend
+  ExpectedOrder:
+      - module_inclusion
+      - constants
+      - public_class_methods
+      - initializer
+      - instance_methods
+      - protected_methods
+      - private_methods
 
 Layout/IndentHeredoc:
   EnforcedStyle: powerpack

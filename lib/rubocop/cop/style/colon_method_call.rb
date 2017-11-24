@@ -8,12 +8,12 @@ module RuboCop
       #
       # @example
       #   # bad
-      #   Timeout::timeout(500) { ... }
+      #   Timeout::timeout(500) { do_something }
       #   FileUtils::rmdir(dir)
       #   Marshal::dump(obj)
       #
       #   # good
-      #   Timeout.timeout(500) { ... }
+      #   Timeout.timeout(500) { do_something }
       #   FileUtils.rmdir(dir)
       #   Marshal.dump(obj)
       #
@@ -25,6 +25,10 @@ module RuboCop
             (const nil? :Java)
             {:boolean :byte :char :double :float :int :long :short})
         PATTERN
+
+        def self.autocorrect_incompatible_with
+          [RedundantSelf]
+        end
 
         def on_send(node)
           # ignore Java interop code like Java::int

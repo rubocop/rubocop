@@ -5,13 +5,19 @@ module RuboCop
     module Style
       # This cop checks for use of the lambda.(args) syntax.
       #
-      # @example
-      #
+      # @example EnforcedStyle: call (default)
       #  # bad
       #  lambda.(x, y)
       #
       #  # good
       #  lambda.call(x, y)
+      #
+      # @example EnforcedStyle: braces
+      #  # bad
+      #  lambda.call(x, y)
+      #
+      #  # good
+      #  lambda.(x, y)
       class LambdaCall < Cop
         include ConfigurableEnforcedStyle
 

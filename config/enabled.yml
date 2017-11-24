@@ -487,6 +487,10 @@ Style/ColonMethodCall:
   StyleGuide: '#double-colons'
   Enabled: true
 
+Style/ColonMethodDefinition:
+  Description: 'Do not use :: for defining class methods.'
+  Enabled: true
+
 Style/CommandLiteral:
   Description: 'Use `` or %x around command literals.'
   StyleGuide: '#percent-x'
@@ -1337,6 +1341,10 @@ Lint/NestedMethodDefinition:
   StyleGuide: '#no-nested-methods'
   Enabled: true
 
+Lint/NestedPercentLiteral:
+  Description: 'Checks for nested percent literals.'
+  Enabled: true
+
 Lint/NextWithoutAccumulator:
   Description:  >-
                   Do not omit the accumulator when calling `next`
@@ -1921,6 +1929,12 @@ Bundler/OrderedGems:
   Include:
     - '**/Gemfile'
     - '**/gems.rb'
+
+Gemspec/DuplicatedAssignment:
+  Description: 'An attribute assignment method calls should be listed only once in a gemspec.'
+  Enabled: true
+  Include:
+    - '**/*.gemspec'
 
 Gemspec/OrderedDependencies:
   Description: >-
