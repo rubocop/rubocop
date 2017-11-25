@@ -16,7 +16,7 @@ module RuboCop
       # an offense is reported.
       #
       class Copyright < Cop
-        MSG = 'Include a copyright notice matching /%s/ before ' \
+        MSG = 'Include a copyright notice matching /%<notice>s/ before ' \
               'any code.'.freeze
         AUTOCORRECT_EMPTY_WARNING = 'An AutocorrectNotice must be defined in' \
                                     'your RuboCop config'.freeze
@@ -26,7 +26,7 @@ module RuboCop
           return if notice_found?(processed_source)
           range = source_range(processed_source.buffer, 1, 0)
           add_offense(insert_notice_before(processed_source),
-                      location: range, message: MSG % notice)
+                      location: range, message: format(MSG, notice: notice))
         end
 
         private

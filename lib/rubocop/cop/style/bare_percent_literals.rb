@@ -26,7 +26,7 @@ module RuboCop
       class BarePercentLiterals < Cop
         include ConfigurableEnforcedStyle
 
-        MSG = 'Use `%%%s` instead of `%%%s`.'.freeze
+        MSG = 'Use `%%%<good>s` instead of `%%%<bad>s`.'.freeze
 
         def on_dstr(node)
           check(node)
@@ -60,7 +60,9 @@ module RuboCop
         end
 
         def add_offense_for_wrong_style(node, good, bad)
-          add_offense(node, location: :begin, message: format(MSG, good, bad))
+          add_offense(node, location: :begin, message: format(MSG,
+                                                              good: good,
+                                                              bad: bad))
         end
 
         def autocorrect(node)

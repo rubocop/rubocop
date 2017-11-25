@@ -21,7 +21,7 @@ module RuboCop
       #     end
       #   end
       class ClassMethods < Cop
-        MSG = 'Use `self.%s` instead of `%s.%s`.'.freeze
+        MSG = 'Use `self.%<method>s` instead of `%<class>s.%<method>s`.'.freeze
 
         def on_class(node)
           name, _superclass, body = *node
@@ -56,7 +56,7 @@ module RuboCop
         end
 
         def message(class_name, method_name)
-          format(MSG, method_name, class_name, method_name)
+          format(MSG, method: method_name, class: class_name)
         end
 
         def autocorrect(node)

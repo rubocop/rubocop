@@ -31,14 +31,16 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         MSG_ALIAS = 'Use `alias_method` instead of `alias`.'.freeze
-        MSG_ALIAS_METHOD = 'Use `alias` instead of `alias_method` %s.'.freeze
-        MSG_SYMBOL_ARGS  = 'Use `alias %s` instead of `alias %s`.'.freeze
+        MSG_ALIAS_METHOD = 'Use `alias` instead of `alias_method` ' \
+                           '%<current>s.'.freeze
+        MSG_SYMBOL_ARGS  = 'Use `alias %<prefer>s` instead of ' \
+                           '`alias %<current>s`.'.freeze
 
         def on_send(node)
           return unless node.command?(:alias_method)
           return unless style == :prefer_alias && alias_keyword_possible?(node)
 
-          msg = format(MSG_ALIAS_METHOD, lexical_scope_type(node))
+          msg = format(MSG_ALIAS_METHOD, current: lexical_scope_type(node))
           add_offense(node, location: :selector, message: msg)
         end
 
@@ -77,8 +79,9 @@ module RuboCop
           existing_args  = node.children.map(&:source).join(' ')
           preferred_args = node.children.map { |a| a.source[1..-1] }.join(' ')
           arg_ranges     = node.children.map(&:source_range)
-          msg            = format(MSG_SYMBOL_ARGS, preferred_args,
-                                  existing_args)
+          msg            = format(MSG_SYMBOL_ARGS,
+                                  prefer: preferred_args,
+                                  current: existing_args)
           add_offense(node, location: arg_ranges.reduce(&:join), message: msg)
         end
 

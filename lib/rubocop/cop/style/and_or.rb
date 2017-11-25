@@ -37,7 +37,7 @@ module RuboCop
       class AndOr < Cop
         include ConfigurableEnforcedStyle
 
-        MSG = 'Use `%s` instead of `%s`.'.freeze
+        MSG = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
 
         def on_and(node)
           process_logical_operator(node) if style == :always
@@ -67,7 +67,7 @@ module RuboCop
         end
 
         def message(node)
-          format(MSG, node.alternate_operator, node.operator)
+          format(MSG, prefer: node.alternate_operator, current: node.operator)
         end
 
         def autocorrect(node)
