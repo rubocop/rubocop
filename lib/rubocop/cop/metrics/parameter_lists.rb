@@ -15,12 +15,18 @@ module RuboCop
           count = args_count(node)
           return unless count > max_params
 
+          return if argument_to_lambda_or_proc?(node)
+
           add_offense(node) do
             self.max = count
           end
         end
 
         private
+
+        def_node_matcher :argument_to_lambda_or_proc?, <<-PATTERN
+          ^lambda_or_proc?
+        PATTERN
 
         def message(node)
           format(MSG, max_params, args_count(node), max_params)

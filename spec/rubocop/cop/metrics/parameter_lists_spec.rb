@@ -29,6 +29,18 @@ describe RuboCop::Cop::Metrics::ParameterLists, :config do
     RUBY
   end
 
+  it 'accepts a proc with more than 4 parameters' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      proc { |a, b, c, d, e| }
+    RUBY
+  end
+
+  it 'accepts a lambda with more than 4 parameters' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      ->(a, b, c, d, e) { }
+    RUBY
+  end
+
   context 'When CountKeywordArgs is true' do
     it 'counts keyword arguments as well' do
       expect_offense(<<-RUBY.strip_indent)
