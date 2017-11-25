@@ -31,7 +31,7 @@ module RuboCop
       class YodaCondition < Cop
         include ConfigurableEnforcedStyle
 
-        MSG = 'Reverse the order of the operands `%s`.'.freeze
+        MSG = 'Reverse the order of the operands `%<source>s`.'.freeze
 
         REVERSE_COMPARISON = {
           '<' => '>',
@@ -66,7 +66,7 @@ module RuboCop
         end
 
         def message(node)
-          format(MSG, node.source)
+          format(MSG, source: node.source)
         end
 
         def autocorrect(node)

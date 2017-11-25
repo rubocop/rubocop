@@ -7,7 +7,7 @@ module RuboCop
     module TrailingComma
       include ConfigurableEnforcedStyle
 
-      MSG = '%s comma after the last %s'.freeze
+      MSG = '%<command>s comma after the last %<unit>s.'.freeze
 
       def style_parameter_name
         'EnforcedStyleForMultiline'
@@ -116,7 +116,11 @@ module RuboCop
       def avoid_comma(kind, comma_begin_pos, extra_info)
         range = range_between(comma_begin_pos, comma_begin_pos + 1)
         article = kind =~ /array/ ? 'an' : 'a'
-        msg = format(MSG, 'Avoid', format(kind, article)) + "#{extra_info}."
+        msg = format(
+          MSG,
+          command: 'Avoid',
+          unit: format(kind, article: article) + extra_info.to_s
+        )
 
         add_offense(range, location: range, message: msg)
       end
@@ -128,7 +132,11 @@ module RuboCop
         return if last_item.block_pass_type?
 
         range = autocorrect_range(last_item)
-        msg = format(MSG, 'Put a', format(kind, 'a multiline') + '.')
+        msg = format(
+          MSG,
+          command: 'Put a',
+          unit: format(kind, article: 'a multiline')
+        )
 
         add_offense(range, location: range, message: msg)
       end

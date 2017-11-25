@@ -48,8 +48,8 @@ module RuboCop
         VARIABLE_TYPES = AST::Node::VARIABLES
         NON_COMPLEX_TYPES = [*VARIABLE_TYPES, :const, :defined?, :yield].freeze
 
-        MSG = '%s parentheses for ternary conditions.'.freeze
-        MSG_COMPLEX = '%s parentheses for ternary expressions with' \
+        MSG = '%<command>s parentheses for ternary conditions.'.freeze
+        MSG_COMPLEX = '%<command>s parentheses for ternary expressions with' \
           ' complex conditions.'.freeze
 
         def on_if(node)
@@ -115,11 +115,11 @@ module RuboCop
 
         def message(node)
           if require_parentheses_when_complex?
-            omit = parenthesized?(node.condition) ? 'Only use' : 'Use'
-            format(MSG_COMPLEX, omit)
+            command = parenthesized?(node.condition) ? 'Only use' : 'Use'
+            format(MSG_COMPLEX, command: command)
           else
-            verb = require_parentheses? ? 'Use' : 'Omit'
-            format(MSG, verb)
+            command = require_parentheses? ? 'Use' : 'Omit'
+            format(MSG, command: command)
           end
         end
 

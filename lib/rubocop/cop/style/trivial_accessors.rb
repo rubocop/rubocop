@@ -6,7 +6,7 @@ module RuboCop
       # This cop looks for trivial reader/writer methods, that could
       # have been created with the attr_* family of functions automatically.
       class TrivialAccessors < Cop
-        MSG = 'Use `attr_%s` to define trivial %s methods.'.freeze
+        MSG = 'Use `attr_%<kind>s` to define trivial %<kind>s methods.'.freeze
 
         def on_def(node)
           return if in_module_or_instance_eval?(node)
@@ -42,7 +42,7 @@ module RuboCop
 
           add_offense(node,
                       location: :keyword,
-                      message: format(MSG, kind, kind))
+                      message: format(MSG, kind: kind))
         end
 
         def exact_name_match?
