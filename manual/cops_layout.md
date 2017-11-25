@@ -1549,33 +1549,67 @@ line as the last element of the array.
 ### Example
 
 ```ruby
-# symmetrical: bad
-# new_line: good
-# same_line: bad
+# bad
 [ :a,
   :b
 ]
 
-# symmetrical: bad
-# new_line: bad
-# same_line: good
+# bad
 [
   :a,
   :b ]
 
-# symmetrical: good
-# new_line: bad
-# same_line: good
+# good
 [ :a,
   :b ]
 
-# symmetrical: good
-# new_line: good
-# same_line: bad
+# good
 [
   :a,
   :b
 ]
+```
+```ruby
+# bad
+[
+  :a,
+  :b ]
+
+# bad
+[ :a,
+  :b ]
+
+# good
+[ :a,
+  :b
+]
+
+# good
+[
+  :a,
+  :b
+]
+```
+```ruby
+# bad
+[ :a,
+  :b
+]
+
+# bad
+[
+  :a,
+  :b
+]
+
+# good
+[
+  :a,
+  :b ]
+
+# good
+[ :a,
+  :b ]
 ```
 
 ### Configurable attributes
