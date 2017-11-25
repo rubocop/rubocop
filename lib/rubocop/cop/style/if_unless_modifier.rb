@@ -9,8 +9,8 @@ module RuboCop
       class IfUnlessModifier < Cop
         include StatementModifier
 
-        MSG = 'Favor modifier `%s` usage when having a single-line body. ' \
-              'Another good alternative is the usage of control flow ' \
+        MSG = 'Favor modifier `%<keyword>s` usage when having a single-line ' \
+              'body. Another good alternative is the usage of control flow ' \
               '`&&`/`||`.'.freeze
 
         ASSIGNMENT_TYPES = %i[lvasgn casgn cvasgn
@@ -20,7 +20,7 @@ module RuboCop
           return unless eligible_node?(node)
 
           add_offense(node, location: :keyword,
-                            message: format(MSG, node.keyword))
+                            message: format(MSG, keyword: node.keyword))
         end
 
         private

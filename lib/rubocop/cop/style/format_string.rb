@@ -38,7 +38,7 @@ module RuboCop
       class FormatString < Cop
         include ConfigurableEnforcedStyle
 
-        MSG = 'Favor `%s` over `%s`.'.freeze
+        MSG = 'Favor `%<prefer>s` over `%<current>s`.'.freeze
 
         def_node_matcher :formatter, <<-PATTERN
         {
@@ -60,7 +60,9 @@ module RuboCop
         end
 
         def message(detected_style)
-          format(MSG, method_name(style), method_name(detected_style))
+          format(MSG,
+                 prefer: method_name(style),
+                 current: method_name(detected_style))
         end
 
         def method_name(style_name)

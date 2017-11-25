@@ -27,7 +27,7 @@ module RuboCop
       class Documentation < Cop
         include DocumentationComment
 
-        MSG = 'Missing top-level %s documentation comment.'.freeze
+        MSG = 'Missing top-level %<type>s documentation comment.'.freeze
 
         def_node_matcher :constant_definition?, '{class module casgn}'
 
@@ -51,7 +51,9 @@ module RuboCop
           return if namespace?(body)
           return if documentation_comment?(node) || nodoc_comment?(node)
 
-          add_offense(node, location: :keyword, message: format(MSG, type))
+          add_offense(node,
+                      location: :keyword,
+                      message: format(MSG, type: type))
         end
 
         def namespace?(node)

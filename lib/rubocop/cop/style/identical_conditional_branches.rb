@@ -63,7 +63,7 @@ module RuboCop
       #     do_z
       #   end
       class IdenticalConditionalBranches < Cop
-        MSG = 'Move `%s` out of the conditional.'.freeze
+        MSG = 'Move `%<source>s` out of the conditional.'.freeze
 
         def on_if(node)
           return if node.elsif?
@@ -105,7 +105,7 @@ module RuboCop
         end
 
         def message(node)
-          format(MSG, node.source)
+          format(MSG, source: node.source)
         end
 
         # `elsif` branches show up in the if node as nested `else` branches. We
