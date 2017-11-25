@@ -561,7 +561,6 @@ require_relative 'rubocop/formatter/worst_offenders_formatter'
 
 require_relative 'rubocop/formatter/formatter_set'
 
-require_relative 'rubocop/cached_data'
 require_relative 'rubocop/config'
 require_relative 'rubocop/config_loader_resolver'
 require_relative 'rubocop/config_loader'
