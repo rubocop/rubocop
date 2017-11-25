@@ -7,12 +7,12 @@ module RuboCop
       include ConfigurableMax
       include CodeLength
 
-      MSG = '%s has too many lines. [%d/%d]'.freeze
+      MSG = '%<label>s has too many lines. [%<length>d/%<max>d]'.freeze
 
       private
 
       def message(length, max_length)
-        format(MSG, cop_label, length, max_length)
+        format(MSG, label: cop_label, length: length, max: max_length)
       end
 
       def code_length(node)

@@ -20,11 +20,11 @@ module RuboCop
       #
       #   anything/using_snake_case.rake
       class FileName < Cop
-        MSG_SNAKE_CASE = 'The name of this source file (`%s`) ' \
+        MSG_SNAKE_CASE = 'The name of this source file (`%<basename>s`) ' \
                          'should use snake_case.'.freeze
-        MSG_NO_DEFINITION = '%s should define a class or module ' \
-                            'called `%s`.'.freeze
-        MSG_REGEX = '`%s` should match `%s`.'.freeze
+        MSG_NO_DEFINITION = '%<basename>s should define a class or module ' \
+                            'called `%<namespace>s`.'.freeze
+        MSG_REGEX = '`%<basename>s` should match `%<regex>s`.'.freeze
 
         SNAKE_CASE = /^[\da-z_.?!]+$/
 
@@ -61,15 +61,15 @@ module RuboCop
 
         def no_definition_message(basename, file_path)
           format(MSG_NO_DEFINITION,
-                 basename,
-                 to_namespace(file_path).join('::'))
+                 basename: basename,
+                 namespace: to_namespace(file_path).join('::'))
         end
 
         def other_message(basename)
           if regex
-            format(MSG_REGEX, basename, regex)
+            format(MSG_REGEX, basename: basename, regex: regex)
           else
-            format(MSG_SNAKE_CASE, basename)
+            format(MSG_SNAKE_CASE, basename: basename)
           end
         end
 

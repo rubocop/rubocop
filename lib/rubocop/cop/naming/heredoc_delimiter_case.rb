@@ -31,7 +31,7 @@ module RuboCop
         include Heredoc
         include ConfigurableEnforcedStyle
 
-        MSG = 'Use %s heredoc delimiters.'.freeze
+        MSG = 'Use %<style>s heredoc delimiters.'.freeze
 
         def on_heredoc(node)
           return if correct_case_delimiters?(node)
@@ -42,7 +42,7 @@ module RuboCop
         private
 
         def message(_node)
-          format(MSG, style)
+          format(MSG, style: style)
         end
 
         def correct_case_delimiters?(node)

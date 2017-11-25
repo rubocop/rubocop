@@ -11,7 +11,7 @@ module RuboCop
         include ConfigurableMax
         include IgnoredPattern
 
-        MSG = 'Line is too long. [%d/%d]'.freeze
+        MSG = 'Line is too long. [%<length>d/%<max>d]'.freeze
 
         def investigate(processed_source)
           heredocs = extract_heredocs(processed_source.ast) if allow_heredoc?
@@ -43,7 +43,7 @@ module RuboCop
         end
 
         def register_offense(loc, line)
-          message = format(MSG, line.length, max)
+          message = format(MSG, length: line.length, max: max)
 
           add_offense(nil, location: loc, message: message) do
             self.max = line.length
