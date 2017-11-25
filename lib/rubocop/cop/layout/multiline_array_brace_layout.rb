@@ -26,35 +26,68 @@ module RuboCop
       # The closing brace of a multi-line array literal must be on the same
       # line as the last element of the array.
       #
-      # @example
-      #
-      #     # symmetrical: bad
-      #     # new_line: good
-      #     # same_line: bad
+      # @example EnforcedStyle: symmetrical (default)
+      #     # bad
       #     [ :a,
       #       :b
       #     ]
       #
-      #     # symmetrical: bad
-      #     # new_line: bad
-      #     # same_line: good
+      #     # bad
       #     [
       #       :a,
       #       :b ]
       #
-      #     # symmetrical: good
-      #     # new_line: bad
-      #     # same_line: good
+      #     # good
       #     [ :a,
       #       :b ]
       #
-      #     # symmetrical: good
-      #     # new_line: good
-      #     # same_line: bad
+      #     # good
       #     [
       #       :a,
       #       :b
       #     ]
+      #
+      # @example EnforcedStyle: new_line
+      #     # bad
+      #     [
+      #       :a,
+      #       :b ]
+      #
+      #     # bad
+      #     [ :a,
+      #       :b ]
+      #
+      #     # good
+      #     [ :a,
+      #       :b
+      #     ]
+      #
+      #     # good
+      #     [
+      #       :a,
+      #       :b
+      #     ]
+      #
+      # @example EnforcedStyle: same_line
+      #     # bad
+      #     [ :a,
+      #       :b
+      #     ]
+      #
+      #     # bad
+      #     [
+      #       :a,
+      #       :b
+      #     ]
+      #
+      #     # good
+      #     [
+      #       :a,
+      #       :b ]
+      #
+      #     # good
+      #     [ :a,
+      #       :b ]
       class MultilineArrayBraceLayout < Cop
         include MultilineLiteralBraceLayout
 
