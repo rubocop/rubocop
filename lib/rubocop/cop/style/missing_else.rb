@@ -32,10 +32,11 @@ module RuboCop
         include OnNormalIfUnless
         include ConfigurableEnforcedStyle
 
-        MSG = '`%s` condition requires an `else`-clause.'.freeze
-        MSG_NIL = '`%s` condition requires an `else`-clause with ' \
+        MSG = '`%<type>s` condition requires an `else`-clause.'.freeze
+        MSG_NIL = '`%<type>s` condition requires an `else`-clause with ' \
                   '`nil` in it.'.freeze
-        MSG_EMPTY = '`%s` condition requires an empty `else`-clause.'.freeze
+        MSG_EMPTY = '`%<type>s` condition requires an empty ' \
+                    '`else`-clause.'.freeze
 
         def on_normal_if_unless(node)
           return if case_style?
@@ -76,7 +77,7 @@ module RuboCop
                        MSG
                      end
 
-          format(template, node.type)
+          format(template, type: node.type)
         end
 
         def if_style?

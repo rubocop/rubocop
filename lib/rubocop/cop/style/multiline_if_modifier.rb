@@ -18,7 +18,7 @@ module RuboCop
         include StatementModifier
         include AutocorrectAlignment
 
-        MSG = 'Favor a normal %s-statement over a modifier' \
+        MSG = 'Favor a normal %<keyword>s-statement over a modifier' \
               ' clause in a multiline statement.'.freeze
 
         def on_if(node)
@@ -36,7 +36,7 @@ module RuboCop
         end
 
         def message(node)
-          format(MSG, node.keyword)
+          format(MSG, keyword: node.keyword)
         end
 
         def to_normal_if(node)

@@ -7,6 +7,9 @@ module RuboCop
     module NegativeConditional
       extend NodePattern::Macros
 
+      MSG = 'Favor `%<inverse>s` over `%<current>s` for ' \
+            'negative conditions.'.freeze
+
       def_node_matcher :single_negative?, '(send !(send _ :!) :!)'
       def_node_matcher :empty_condition?, '(begin)'
 

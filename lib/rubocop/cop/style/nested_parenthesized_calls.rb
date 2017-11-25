@@ -13,7 +13,7 @@ module RuboCop
       #   # bad
       #   method1(method2 arg, method3, arg)
       class NestedParenthesizedCalls < Cop
-        MSG = 'Add parentheses to nested method call `%s`.'.freeze
+        MSG = 'Add parentheses to nested method call `%<source>s`.'.freeze
 
         def on_send(node)
           return unless node.parenthesized?
@@ -23,7 +23,7 @@ module RuboCop
 
             add_offense(nested,
                         location: nested.source_range,
-                        message: format(MSG, nested.source))
+                        message: format(MSG, source: nested.source))
           end
         end
 
