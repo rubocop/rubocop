@@ -36,9 +36,9 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         EXPLODED_MSG = 'Provide an exception class and message ' \
-          'as arguments to `%s`.'.freeze
+          'as arguments to `%<method>s`.'.freeze
         COMPACT_MSG = 'Provide an exception object ' \
-          'as an argument to `%s`.'.freeze
+          'as an argument to `%<method>s`.'.freeze
 
         def on_send(node)
           return unless node.command?(:raise) || node.command?(:fail)
@@ -122,9 +122,9 @@ module RuboCop
 
         def message(node)
           if style == :compact
-            format(COMPACT_MSG, node.method_name)
+            format(COMPACT_MSG, method: node.method_name)
           else
-            format(EXPLODED_MSG, node.method_name)
+            format(EXPLODED_MSG, method: node.method_name)
           end
         end
       end

@@ -9,7 +9,7 @@ module RuboCop
       # For instance one can configure `reduce`(`inject`) to use |a, e| as
       # parameters.
       class SingleLineBlockParams < Cop
-        MSG = 'Name `%s` block params `|%s|`.'.freeze
+        MSG = 'Name `%<method>s` block params `|%<params>s|`.'.freeze
 
         def on_block(node)
           return unless node.single_line?
@@ -28,7 +28,7 @@ module RuboCop
           method_name = node.parent.send_node.method_name
           arguments   = target_args(method_name).join(', ')
 
-          format(MSG, method_name, arguments)
+          format(MSG, method: method_name, params: arguments)
         end
 
         def eligible_arguments?(node)
