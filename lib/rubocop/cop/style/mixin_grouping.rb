@@ -34,7 +34,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         MIXIN_METHODS = %i[extend include prepend].freeze
-        MSG = 'Put `%s` mixins in %s.'.freeze
+        MSG = 'Put `%<mixin>s` mixins in %<suffix>s.'.freeze
 
         def on_send(node)
           return unless node.macro? && MIXIN_METHODS.include?(node.method_name)
@@ -106,7 +106,7 @@ module RuboCop
           suffix =
             separated_style? ? 'separate statements' : 'a single statement'
 
-          format(MSG, send_node.method_name, suffix)
+          format(MSG, mixin: send_node.method_name, suffix: suffix)
         end
 
         def grouped_style?

@@ -21,13 +21,13 @@ module RuboCop
 
         NON_MODIFIER_THEN = /then\s*(#.*)?$/
 
-        MSG = 'Do not use `then` for multi-line `%s`.'.freeze
+        MSG = 'Do not use `then` for multi-line `%<keyword>s`.'.freeze
 
         def on_normal_if_unless(node)
           return unless non_modifier_then?(node)
 
           add_offense(node, location: :begin,
-                            message: format(MSG, node.keyword))
+                            message: format(MSG, keyword: node.keyword))
         end
 
         private

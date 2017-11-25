@@ -44,7 +44,7 @@ module RuboCop
       class NumericPredicate < Cop
         include ConfigurableEnforcedStyle
 
-        MSG = 'Use `%s` instead of `%s`.'.freeze
+        MSG = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
 
         REPLACEMENTS = {
           'zero?' => '==',
@@ -58,7 +58,9 @@ module RuboCop
           return unless numeric
 
           add_offense(node,
-                      message: format(MSG, replacement, node.source))
+                      message: format(MSG,
+                                      prefer: replacement,
+                                      current: node.source))
         end
 
         private

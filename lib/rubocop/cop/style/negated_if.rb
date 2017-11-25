@@ -72,8 +72,6 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include NegativeConditional
 
-        MSG = 'Favor `%s` over `%s` for negative conditions.'.freeze
-
         def on_if(node)
           return if node.elsif? || node.ternary?
           return if correct_style?(node)
@@ -84,7 +82,7 @@ module RuboCop
         private
 
         def message(node)
-          format(MSG, node.inverse_keyword, node.keyword)
+          format(MSG, inverse: node.inverse_keyword, current: node.keyword)
         end
 
         def autocorrect(node)

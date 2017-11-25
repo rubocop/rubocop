@@ -7,8 +7,6 @@ module RuboCop
       class NegatedWhile < Cop
         include NegativeConditional
 
-        MSG = 'Favor `%s` over `%s` for negative conditions.'.freeze
-
         def on_while(node)
           check_negative_conditional(node)
         end
@@ -18,7 +16,7 @@ module RuboCop
         end
 
         def message(node)
-          format(MSG, node.inverse_keyword, node.keyword)
+          format(MSG, inverse: node.inverse_keyword, current: node.keyword)
         end
 
         private

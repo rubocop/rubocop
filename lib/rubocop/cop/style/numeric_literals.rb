@@ -86,7 +86,7 @@ module RuboCop
           formatted_int.insert(0, '-') if int_part < 0
 
           if float_part
-            format('%s.%s', formatted_int, float_part)
+            format('%<int>s.%<float>s', int: formatted_int, float: float_part)
           else
             formatted_int
           end

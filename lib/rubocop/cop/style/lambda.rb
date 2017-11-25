@@ -50,8 +50,9 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         LITERAL_MESSAGE = 'Use the `-> { ... }` lambda literal syntax for ' \
-                          '%s lambdas.'.freeze
-        METHOD_MESSAGE = 'Use the `lambda` method for %s lambdas.'.freeze
+                          '%<modifier>s lambdas.'.freeze
+        METHOD_MESSAGE = 'Use the `lambda` method for %<modifier>s ' \
+                         'lambdas.'.freeze
 
         OFFENDING_SELECTORS = {
           style: {
@@ -86,7 +87,7 @@ module RuboCop
         def message(node, selector)
           message = selector == '->' ? METHOD_MESSAGE : LITERAL_MESSAGE
 
-          format(message, message_line_modifier(node))
+          format(message, modifier: message_line_modifier(node))
         end
 
         def message_line_modifier(node)
