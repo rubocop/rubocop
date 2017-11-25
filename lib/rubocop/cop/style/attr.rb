@@ -15,7 +15,7 @@ module RuboCop
       #   attr_reader :one, :two, :three
       #
       class Attr < Cop
-        MSG = 'Do not use `attr`. Use `%s` instead.'.freeze
+        MSG = 'Do not use `attr`. Use `%<replacement>s` instead.'.freeze
 
         def on_send(node)
           return unless node.command?(:attr) && node.arguments?
@@ -42,7 +42,7 @@ module RuboCop
         end
 
         def message(node)
-          format(MSG, replacement_method(node))
+          format(MSG, replacement: replacement_method(node))
         end
 
         def replacement_method(node)

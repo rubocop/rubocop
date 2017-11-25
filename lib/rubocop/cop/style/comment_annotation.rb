@@ -33,10 +33,10 @@ module RuboCop
       class CommentAnnotation < Cop
         include AnnotationComment
 
-        MSG = 'Annotation keywords like `%s` should be all upper case, ' \
-              'followed by a colon, and a space, ' \
+        MSG = 'Annotation keywords like `%<keyword>s` should be all ' \
+              'upper case, followed by a colon, and a space, ' \
               'then a note describing the problem.'.freeze
-        MISSING_NOTE = 'Annotation comment, with keyword `%s`, ' \
+        MISSING_NOTE = 'Annotation comment, with keyword `%<keyword>s`, ' \
                        'is missing a note.'.freeze
 
         def investigate(processed_source)
@@ -51,7 +51,7 @@ module RuboCop
             add_offense(
               comment,
               location: annotation_range(comment, margin, length),
-              message: format(note ? MSG : MISSING_NOTE, first_word)
+              message: format(note ? MSG : MISSING_NOTE, keyword: first_word)
             )
           end
         end

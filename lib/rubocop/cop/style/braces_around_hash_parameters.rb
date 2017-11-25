@@ -42,7 +42,7 @@ module RuboCop
       class BracesAroundHashParameters < Cop
         include ConfigurableEnforcedStyle
 
-        MSG = '%s curly braces around a hash parameter.'.freeze
+        MSG = '%<type>s curly braces around a hash parameter.'.freeze
 
         def on_send(node)
           return if node.assignment_method? || node.operator_method?
@@ -79,7 +79,8 @@ module RuboCop
 
         def add_arg_offense(arg, type)
           add_offense(arg.parent, location: arg.source_range,
-                                  message: format(MSG, type.to_s.capitalize))
+                                  message: format(MSG,
+                                                  type: type.to_s.capitalize))
         end
 
         # We let AutocorrectUnlessChangingAST#autocorrect work with the send

@@ -34,7 +34,7 @@ module RuboCop
       #   end
       class CommentedKeyword < Cop
         MSG = 'Do not place comments on the same line as the ' \
-              '`%s` keyword.'.freeze
+              '`%<keyword>s` keyword.'.freeze
 
         def investigate(processed_source)
           heredoc_lines = extract_heredoc_lines(processed_source.ast)
@@ -67,7 +67,7 @@ module RuboCop
         def message(node)
           line = node.source_line
           keyword = /^\s*(\S+).*#/.match(line)[1]
-          format(MSG, keyword)
+          format(MSG, keyword: keyword)
         end
 
         def extract_heredoc_lines(ast)

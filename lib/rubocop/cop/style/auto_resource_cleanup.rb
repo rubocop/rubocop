@@ -17,7 +17,7 @@ module RuboCop
       #     # ...
       #   end
       class AutoResourceCleanup < Cop
-        MSG = 'Use the block version of `%s.%s`.'.freeze
+        MSG = 'Use the block version of `%<class>s.%<method>s`.'.freeze
 
         TARGET_METHODS = {
           File: :open
@@ -33,7 +33,9 @@ module RuboCop
             next if node.block_argument?
 
             add_offense(node,
-                        message: format(MSG, target_class, target_method))
+                        message: format(MSG,
+                                        class: target_class,
+                                        method: target_method))
           end
         end
       end
