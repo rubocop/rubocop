@@ -5,12 +5,12 @@ module RuboCop
     # Common functionality for cops checking for space before
     # punctuation.
     module SpaceBeforePunctuation
-      MSG = 'Space found before %s.'.freeze
+      MSG = 'Space found before %<token>s.'.freeze
 
       def investigate(processed_source)
         each_missing_space(processed_source.tokens) do |token, pos_before|
           add_offense(pos_before, location: pos_before,
-                                  message: format(MSG, kind(token)))
+                                  message: format(MSG, token: kind(token)))
         end
       end
 

@@ -14,7 +14,7 @@ module RuboCop
       #   node.send_type?
       #
       class NodeTypePredicate < Cop
-        MSG = 'Use `#%s_type?` to check node type.'.freeze
+        MSG = 'Use `#%<type>s_type?` to check node type.'.freeze
 
         def_node_matcher :node_type_check, <<-PATTERN
           (send (send $_ :type) :== (sym $_))
@@ -24,7 +24,7 @@ module RuboCop
           node_type_check(node) do |_receiver, node_type|
             return unless Parser::Meta::NODE_TYPES.include?(node_type)
 
-            add_offense(node, message: format(MSG, node_type))
+            add_offense(node, message: format(MSG, type: node_type))
           end
         end
 

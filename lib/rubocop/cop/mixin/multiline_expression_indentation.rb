@@ -4,14 +4,15 @@ module RuboCop
   module Cop
     # Common functionality for checking multiline method calls and binary
     # operations.
-    module MultilineExpressionIndentation
+    module MultilineExpressionIndentation # rubocop:disable Metrics/ModuleLength
       KEYWORD_ANCESTOR_TYPES  = [:for, :return, *Util::MODIFIER_NODES].freeze
       UNALIGNED_RHS_TYPES     = %i[if while until for return
                                    array kwbegin].freeze
       ASSIGNMENT_RHS_TYPES    = [:send, *Util::ASGN_NODES].freeze
       DEFAULT_MESSAGE_TAIL    = 'an expression'.freeze
       ASSIGNMENT_MESSAGE_TAIL = 'an expression in an assignment'.freeze
-      KEYWORD_MESSAGE_TAIL    = 'a %s in %s `%s` statement'.freeze
+      KEYWORD_MESSAGE_TAIL    = 'a %<kind>s in %<article>s `%<keyword>s` ' \
+                                'statement'.freeze
 
       def on_send(node)
         return if !node.receiver || node.method?(:[])
@@ -103,7 +104,9 @@ module RuboCop
         kind    = keyword == 'for' ? 'collection' : 'condition'
         article = keyword =~ /^[iu]/ ? 'an' : 'a'
 
-        format(KEYWORD_MESSAGE_TAIL, kind, article, keyword)
+        format(KEYWORD_MESSAGE_TAIL, kind: kind,
+                                     article: article,
+                                     keyword: keyword)
       end
 
       def kw_node_with_special_indentation(node)
