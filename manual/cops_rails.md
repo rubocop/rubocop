@@ -203,11 +203,11 @@ create_table :users do |t|
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Include | db/migrate/\*.rb
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `db/migrate/*.rb` | Array
 
 ## Rails/Date
 
