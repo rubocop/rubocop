@@ -96,7 +96,7 @@ describe RuboCop::Cop::Style::NumericPredicate, :config do
     end
 
     context 'when checking if a number is positive' do
-      context 'when target ruby version is 2.3 or higher', :ruby23, :ruby24 do
+      context 'when target ruby version is 2.3 or higher', :ruby23 do
         it_behaves_like 'code with offense',
                         'number > 0',
                         'number.positive?'
@@ -126,7 +126,7 @@ describe RuboCop::Cop::Style::NumericPredicate, :config do
     end
 
     context 'when checking if a number is negative' do
-      context 'when target ruby version is 2.3 or higher', :ruby23, :ruby24 do
+      context 'when target ruby version is 2.3 or higher', :ruby23 do
         it_behaves_like 'code with offense',
                         'number < 0',
                         'number.negative?'
