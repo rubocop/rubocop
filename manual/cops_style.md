@@ -636,6 +636,10 @@ class Foo
 end
 ```
 
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#colon-method-definition](https://github.com/bbatsov/ruby-style-guide#colon-method-definition)
+
 ## Style/CommandLiteral
 
 Enabled by default | Supports autocorrection

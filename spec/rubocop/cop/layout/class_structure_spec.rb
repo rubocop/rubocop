@@ -13,7 +13,7 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
           macros
           public_class_methods
           initializer
-          instance_methods
+          public_methods
           protected_methods
           private_methods
         ],

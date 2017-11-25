@@ -384,7 +384,7 @@ You can configure the following order:
        - constants
        - public_class_methods
        - initializer
-       - instance_methods
+       - public_methods
        - protected_methods
        - private_methods
 
@@ -464,7 +464,7 @@ end
 Name | Default value | Configurable values
 --- | --- | ---
 Categories | `{"module_inclusion"=>["include", "prepend", "extend"]}` | 
-ExpectedOrder | `module_inclusion`, `constants`, `public_class_methods`, `initializer`, `instance_methods`, `protected_methods`, `private_methods` | Array
+ExpectedOrder | `module_inclusion`, `constants`, `public_class_methods`, `initializer`, `public_methods`, `protected_methods`, `private_methods` | Array
 
 ### References
 
@@ -1549,33 +1549,67 @@ line as the last element of the array.
 ### Example
 
 ```ruby
-# symmetrical: bad
-# new_line: good
-# same_line: bad
+# bad
 [ :a,
   :b
 ]
 
-# symmetrical: bad
-# new_line: bad
-# same_line: good
+# bad
 [
   :a,
   :b ]
 
-# symmetrical: good
-# new_line: bad
-# same_line: good
+# good
 [ :a,
   :b ]
 
-# symmetrical: good
-# new_line: good
-# same_line: bad
+# good
 [
   :a,
   :b
 ]
+```
+```ruby
+# bad
+[
+  :a,
+  :b ]
+
+# bad
+[ :a,
+  :b ]
+
+# good
+[ :a,
+  :b
+]
+
+# good
+[
+  :a,
+  :b
+]
+```
+```ruby
+# bad
+[ :a,
+  :b
+]
+
+# bad
+[
+  :a,
+  :b
+]
+
+# good
+[
+  :a,
+  :b ]
+
+# good
+[ :a,
+  :b ]
 ```
 
 ### Configurable attributes

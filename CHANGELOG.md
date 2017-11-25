@@ -20,6 +20,7 @@
 * [#5057](https://github.com/bbatsov/rubocop/pull/5057): Add new `Gemspec/RequiredRubyVersion` cop. ([@koic][])
 * [#5087](https://github.com/bbatsov/rubocop/pull/5087): Add new `Gemspec/RedundantAssignment` cop. ([@koic][])
 * Add `unannotated` option to `Style/FormatStringToken` cop. ([@drenmi][])
+* [#5077](https://github.com/bbatsov/rubocop/pull/5077): Add new `Rails/CreateTableWithTimestamps` cop. ([@wata727][])
 * Add new `Style/ColonMethodDefinition` cop. ([@rrosenblum][])
 
 ### Bug fixes
@@ -49,6 +50,7 @@
 * [#5089](https://github.com/bbatsov/rubocop/issues/5089): Fix false positive for `Style/SafeNavigation` when safe guarding arithmetic operation or assignment. ([@tiagotex][])
 * [#5099](https://github.com/bbatsov/rubocop/pull/5099): Prevent `Style/MinMax` from breaking on implicit receivers. ([@drenmi][])
 * [#5079](https://github.com/bbatsov/rubocop/issues/5079): Fix false positive for `Style/SafeNavigation` when safe guarding comparisons. ([@tiagotex][])
+* [#5075](https://github.com/bbatsov/rubocop/issues/5075): Fix auto-correct for `Style/RedundantParentheses` cop when unspaced ternary is present. ([@tiagotex][])
 
 ### Changes
 
@@ -3048,6 +3050,7 @@
 [@sambostock]: https://github.com/sambostock
 [@asherkach]: https://github.com/asherkach
 [@tiagotex]: https://github.com/tiagotex
+[@wata727]: https://github.com/wata727
 [@marcandre]: https://github.com/marcandre
 [@walf443]: https://github.com/walf443
 [@reitermarkus]: https://github.com/reitermarkus

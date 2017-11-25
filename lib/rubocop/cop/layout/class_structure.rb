@@ -30,7 +30,7 @@ module RuboCop
       #        - constants
       #        - public_class_methods
       #        - initializer
-      #        - instance_methods
+      #        - public_methods
       #        - protected_methods
       #        - private_methods
       #
@@ -109,7 +109,7 @@ module RuboCop
         HUMANIZED_NODE_TYPE = {
           casgn: :constants,
           defs: :class_methods,
-          def: :instance_methods
+          def: :public_methods
         }.freeze
 
         VISIBILITY_SCOPES = %i[private protected public].freeze

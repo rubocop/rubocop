@@ -534,7 +534,7 @@ Layout/SpaceInsideStringInterpolation:
 
 Layout/ClassStructure:
   Description: 'Enforces a configured order of definitions within a class body.'
-  StyleGuide: '#consistent-classes'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#consistent-classes'
   Enabled: false
   Categories:
     module_inclusion:
@@ -546,7 +546,7 @@ Layout/ClassStructure:
       - constants
       - public_class_methods
       - initializer
-      - instance_methods
+      - public_methods
       - protected_methods
       - private_methods
 
@@ -1515,6 +1515,10 @@ Rails/ActionFilter:
     - filter
   Include:
     - app/controllers/**/*.rb
+
+Rails/CreateTableWithTimestamps:
+  Include:
+    - db/migrate/*.rb
 
 Rails/Date:
   # The value `strict` disallows usage of `Date.today`, `Date.current`,
