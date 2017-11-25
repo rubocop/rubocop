@@ -16,7 +16,8 @@ module RuboCop
       class CyclomaticComplexity < Cop
         include MethodComplexity
 
-        MSG = 'Cyclomatic complexity for %s is too high. [%d/%d]'.freeze
+        MSG = 'Cyclomatic complexity for %<method>s is too high. ' \
+              '[%<complexity>d/%<max>d]'.freeze
         COUNTED_NODES = %i[if while until for
                            rescue when and or].freeze
 

@@ -14,7 +14,7 @@ module RuboCop
       #   # good
       #   def +(other); end
       class BinaryOperatorParameterName < Cop
-        MSG = 'When defining the `%s` operator, ' \
+        MSG = 'When defining the `%<opr>s` operator, ' \
               'name its argument `other`.'.freeze
 
         OP_LIKE_METHODS = %i[eql? equal?].freeze
@@ -26,7 +26,7 @@ module RuboCop
 
         def on_def(node)
           op_method_candidate?(node) do |name, arg|
-            add_offense(arg, message: format(MSG, name))
+            add_offense(arg, message: format(MSG, opr: name))
           end
         end
 
