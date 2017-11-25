@@ -6,7 +6,8 @@ module RuboCop
     module EndKeywordAlignment
       include ConfigurableEnforcedStyle
 
-      MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d.'.freeze
+      MSG = '`end` at %<end_line>d, %<end_col>d is not aligned with ' \
+            '`%<source>s` at %<align_line>d, %<align_col>d.'.freeze
 
       private
 
@@ -39,8 +40,11 @@ module RuboCop
 
       def add_offense_for_misalignment(node, align_with)
         end_loc = node.loc.end
-        msg = format(MSG, end_loc.line, end_loc.column, align_with.source,
-                     align_with.line, align_with.column)
+        msg = format(MSG, end_line: end_loc.line,
+                          end_col: end_loc.column,
+                          source: align_with.source,
+                          align_line: align_with.line,
+                          align_col: align_with.column)
         add_offense(node, location: end_loc, message: msg)
       end
 

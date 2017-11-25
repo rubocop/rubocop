@@ -9,9 +9,11 @@ module RuboCop
         extend NodePattern::Macros
         include ConfigurableEnforcedStyle
 
-        MSG_EXTRA = 'Extra empty line detected at %s body %s.'.freeze
-        MSG_MISSING = 'Empty line missing at %s body %s.'.freeze
-        MSG_DEFERRED = 'Empty line missing before first %s definition'.freeze
+        MSG_EXTRA = 'Extra empty line detected at %<kind>s body ' \
+                    '%<location>s.'.freeze
+        MSG_MISSING = 'Empty line missing at %<kind>s body %<location>s.'.freeze
+        MSG_DEFERRED = 'Empty line missing before first %<type>s ' \
+                       'definition'.freeze
 
         def_node_matcher :constant_definition?, '{class module}'
         def_node_matcher :empty_line_required?, '{def defs class module}'
@@ -154,11 +156,11 @@ module RuboCop
         end
 
         def message(type, desc)
-          format(type, self.class::KIND, desc)
+          format(type, kind: self.class::KIND, location: desc)
         end
 
         def deferred_message(node)
-          format(MSG_DEFERRED, node.type)
+          format(MSG_DEFERRED, type: node.type)
         end
       end
     end

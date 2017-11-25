@@ -6,12 +6,12 @@ module RuboCop
     # kinds of brackets.
     module SpaceInside
       include SurroundingSpace
-      MSG = 'Space inside %s detected.'.freeze
+      MSG = 'Space inside %<kind>s detected.'.freeze
 
       def investigate(processed_source)
         @processed_source = processed_source
         each_extraneous_space(processed_source.tokens) do |kind, range|
-          add_offense(range, location: range, message: format(MSG, kind))
+          add_offense(range, location: range, message: format(MSG, kind: kind))
         end
       end
 
