@@ -29,7 +29,8 @@ module RuboCop
 
         COMPARISON_OPERATORS = RuboCop::AST::Node::COMPARISON_OPERATORS
 
-        MSG = 'This conditional expression can just be replaced by `%s`.'.freeze
+        MSG = 'This conditional expression can just be replaced ' \
+              'by `%<msg>s`.'.freeze
 
         def on_if(node)
           return unless offense?(node)
@@ -43,7 +44,7 @@ module RuboCop
           replacement = replacement_condition(node)
           msg = node.elsif? ? "\n#{replacement}" : replacement
 
-          format(MSG, msg)
+          format(MSG, msg: msg)
         end
 
         def_node_matcher :redundant_condition?, <<-RUBY

@@ -7,11 +7,12 @@ module RuboCop
       class SpecialGlobalVars < Cop
         include ConfigurableEnforcedStyle
 
-        MSG_BOTH = 'Prefer `%s` from the stdlib \'English\' module ' \
-        '(don\'t forget to require it), or `%s` over `%s`.'.freeze
-        MSG_ENGLISH = 'Prefer `%s` from the stdlib \'English\' module ' \
-        '(don\'t forget to require it) over `%s`.'.freeze
-        MSG_REGULAR = 'Prefer `%s` over `%s`.'.freeze
+        MSG_BOTH = 'Prefer `%<prefer>s` from the stdlib \'English\' ' \
+        'module (don\'t forget to require it), or `%<regular>s` over ' \
+        '`%<global>s`.'.freeze
+        MSG_ENGLISH = 'Prefer `%<prefer>s` from the stdlib \'English\' ' \
+        'module (don\'t forget to require it) over `%<global>s`.'.freeze
+        MSG_REGULAR = 'Prefer `%<prefer>s` over `%<global>s`.'.freeze
 
         ENGLISH_VARS = { # rubocop:disable Style/MutableConstant
           :$: => [:$LOAD_PATH],
@@ -77,7 +78,9 @@ module RuboCop
           if style == :use_english_names
             format_english_message(global_var)
           else
-            format(MSG_REGULAR, preferred_names(global_var).first, global_var)
+            format(MSG_REGULAR,
+                   prefer: preferred_names(global_var).first,
+                   global: global_var)
           end
         end
 
@@ -104,14 +107,16 @@ module RuboCop
           format_message(english, regular, global_var)
         end
 
-        def format_message(english, regular, global_var)
+        def format_message(english, regular, global)
           if !regular.empty? && !english.empty?
-            format(MSG_BOTH, format_list(english), format_list(regular),
-                   global_var)
+            format(MSG_BOTH,
+                   prefer: format_list(english),
+                   regular: format_list(regular),
+                   global: global)
           elsif !regular.empty?
-            format(MSG_REGULAR, format_list(regular), global_var)
+            format(MSG_REGULAR, prefer: format_list(regular), global: global)
           elsif !english.empty?
-            format(MSG_ENGLISH, format_list(english), global_var)
+            format(MSG_ENGLISH, prefer: format_list(english), global: global)
           else
             raise 'Bug in SpecialGlobalVars - global var w/o preferred vars!'
           end

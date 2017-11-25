@@ -8,7 +8,7 @@ module RuboCop
       class StringMethods < Cop
         include MethodPreference
 
-        MSG = 'Prefer `%s` over `%s`.'.freeze
+        MSG = 'Prefer `%<prefer>s` over `%<current>s`.'.freeze
 
         def on_send(node)
           return unless preferred_method(node.method_name)
@@ -19,7 +19,9 @@ module RuboCop
         private
 
         def message(node)
-          format(MSG, preferred_method(node.method_name), node.method_name)
+          format(MSG,
+                 prefer: preferred_method(node.method_name),
+                 current: node.method_name)
         end
 
         def autocorrect(node)

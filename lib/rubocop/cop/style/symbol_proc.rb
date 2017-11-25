@@ -12,7 +12,8 @@ module RuboCop
       #   # good
       #   something.map(&:upcase)
       class SymbolProc < Cop
-        MSG = 'Pass `&:%s` as an argument to `%s` instead of a block.'.freeze
+        MSG = 'Pass `&:%<method>s` as an argument to `%<block_method>s` ' \
+              'instead of a block.'.freeze
         SUPER_TYPES = %i[super zsuper].freeze
 
         def_node_matcher :proc_node?, '(send (const nil? :Proc) :new)'
@@ -73,8 +74,8 @@ module RuboCop
           add_offense(node,
                       location: range,
                       message: format(MSG,
-                                      method_name,
-                                      block_method_name))
+                                      method: method_name,
+                                      block_method: block_method_name))
         end
 
         def autocorrect_method(corrector, node, args, method_name)

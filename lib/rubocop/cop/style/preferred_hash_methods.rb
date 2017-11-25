@@ -28,7 +28,7 @@ module RuboCop
       class PreferredHashMethods < Cop
         include ConfigurableEnforcedStyle
 
-        MSG = 'Use `Hash#%s` instead of `Hash#%s`.'.freeze
+        MSG = 'Use `Hash#%<prefer>s` instead of `Hash#%<current>s`.'.freeze
 
         OFFENDING_SELECTORS = {
           short: %i[has_key? has_value?],
@@ -52,7 +52,9 @@ module RuboCop
         private
 
         def message(node)
-          format(MSG, proper_method_name(node.method_name), node.method_name)
+          format(MSG,
+                 prefer: proper_method_name(node.method_name),
+                 current: node.method_name)
         end
 
         def proper_method_name(method_name)
