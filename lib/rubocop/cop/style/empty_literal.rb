@@ -21,7 +21,8 @@ module RuboCop
 
         ARR_MSG = 'Use array literal `[]` instead of `Array.new`.'.freeze
         HASH_MSG = 'Use hash literal `{}` instead of `Hash.new`.'.freeze
-        STR_MSG = 'Use string literal `%s` instead of `String.new`.'.freeze
+        STR_MSG = 'Use string literal `%<prefer>s` instead of ' \
+                  '`String.new`.'.freeze
 
         def_node_matcher :array_node, '(send (const nil? :Array) :new)'
         def_node_matcher :hash_node, '(send (const nil? :Hash) :new)'
@@ -39,7 +40,8 @@ module RuboCop
             return if frozen_string_literals_enabled?
 
             add_offense(node,
-                        message: format(STR_MSG, preferred_string_literal))
+                        message: format(STR_MSG,
+                                        prefer: preferred_string_literal))
           end
         end
 

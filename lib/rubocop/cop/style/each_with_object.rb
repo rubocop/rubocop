@@ -17,7 +17,7 @@ module RuboCop
       #   # good
       #   [1, 2].each_with_object({}) { |e, a| a[e] = e }
       class EachWithObject < Cop
-        MSG = 'Use `each_with_object` instead of `%s`.'.freeze
+        MSG = 'Use `each_with_object` instead of `%<method>s`.'.freeze
         METHODS = %i[inject reduce].freeze
 
         def_node_matcher :each_with_object_candidate?, <<-PATTERN
@@ -35,7 +35,7 @@ module RuboCop
             return if accumulator_param_assigned_to?(body, args)
 
             add_offense(node, location: method.loc.selector,
-                              message: format(MSG, method_name))
+                              message: format(MSG, method: method_name))
           end
         end
 

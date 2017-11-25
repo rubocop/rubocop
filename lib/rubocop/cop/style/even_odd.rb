@@ -16,7 +16,7 @@ module RuboCop
       #   if x.even?
       #   end
       class EvenOdd < Cop
-        MSG = 'Replace with `Integer#%s?`.'.freeze
+        MSG = 'Replace with `Integer#%<method>s?`.'.freeze
 
         def_node_matcher :even_odd_candidate?, <<-PATTERN
           (send
@@ -29,7 +29,7 @@ module RuboCop
         def on_send(node)
           even_odd_candidate?(node) do |_base_number, method, arg|
             replacement_method = replacement_method(arg, method)
-            add_offense(node, message: format(MSG, replacement_method))
+            add_offense(node, message: format(MSG, method: replacement_method))
           end
         end
 
