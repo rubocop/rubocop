@@ -26,7 +26,7 @@ module RuboCop
         include SurroundingSpace
 
         MSG = 'Do not use trailing `_`s in parallel assignment. ' \
-              'Prefer `%s`.'.freeze
+              'Prefer `%<code>s`.'.freeze
         UNDERSCORE = '_'.freeze
 
         def on_masgn(node)
@@ -37,7 +37,9 @@ module RuboCop
             offset = range.begin_pos - node.source_range.begin_pos
             good_code[offset, range.size] = ''
 
-            add_offense(node, location: range, message: format(MSG, good_code))
+            add_offense(node,
+                        location: range,
+                        message: format(MSG, code: good_code))
           end
         end
 

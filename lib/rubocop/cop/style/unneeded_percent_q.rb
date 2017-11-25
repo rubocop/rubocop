@@ -5,8 +5,8 @@ module RuboCop
     module Style
       # This cop checks for usage of the %q/%Q syntax when '' or "" would do.
       class UnneededPercentQ < Cop
-        MSG = 'Use `%s` only for strings that contain both single quotes and ' \
-              'double quotes%s.'.freeze
+        MSG = 'Use `%<q_type>s` only for strings that contain both ' \
+              'single quotes and double quotes%<extra>s.'.freeze
         DYNAMIC_MSG = ', or for dynamic strings that contain ' \
                       'double quotes'.freeze
         SINGLE_QUOTE = "'".freeze
@@ -56,7 +56,7 @@ module RuboCop
                   else
                     EMPTY
                   end
-          format(MSG, src[0, 2], extra)
+          format(MSG, q_type: src[0, 2], extra: extra)
         end
 
         def autocorrect(node)

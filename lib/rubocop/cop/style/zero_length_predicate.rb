@@ -26,8 +26,9 @@ module RuboCop
       #   !string.empty?
       #   !hash.empty?
       class ZeroLengthPredicate < Cop
-        ZERO_MSG = 'Use `empty?` instead of `%s %s %s`.'.freeze
-        NONZERO_MSG = 'Use `!empty?` instead of `%s %s %s`.'.freeze
+        ZERO_MSG = 'Use `empty?` instead of `%<lhs>s %<opr>s %<rhs>s`.'.freeze
+        NONZERO_MSG = 'Use `!empty?` instead of ' \
+                      '`%<lhs>s %<opr>s %<rhs>s`.'.freeze
 
         def on_send(node)
           check_zero_length_predicate(node)
@@ -41,8 +42,12 @@ module RuboCop
 
           return unless zero_length_predicate
 
-          add_offense(node,
-                      message: format(ZERO_MSG, *zero_length_predicate))
+          lhs, opr, rhs = zero_length_predicate
+
+          add_offense(
+            node,
+            message: format(ZERO_MSG, lhs: lhs, opr: opr, rhs: rhs)
+          )
         end
 
         def check_nonzero_length_predicate(node)
@@ -50,8 +55,12 @@ module RuboCop
 
           return unless nonzero_length_predicate
 
-          add_offense(node,
-                      message: format(NONZERO_MSG, *nonzero_length_predicate))
+          lhs, opr, rhs = nonzero_length_predicate
+
+          add_offense(
+            node,
+            message: format(NONZERO_MSG, lhs: lhs, opr: opr, rhs: rhs)
+          )
         end
 
         def_node_matcher :zero_length_predicate, <<-PATTERN

@@ -5,8 +5,8 @@ module RuboCop
     module Style
       # This cop checks for variable interpolation (like "#@ivar").
       class VariableInterpolation < Cop
-        MSG = 'Replace interpolated variable `%s` ' \
-              'with expression `#{%s}`.'.freeze
+        MSG = 'Replace interpolated variable `%<variable>s` ' \
+              'with expression `#{%<variable>s}`.'.freeze
 
         def on_dstr(node)
           check_for_interpolation(node)
@@ -29,7 +29,7 @@ module RuboCop
         end
 
         def message(node)
-          format(MSG, node.source, node.source)
+          format(MSG, variable: node.source)
         end
 
         def autocorrect(node)

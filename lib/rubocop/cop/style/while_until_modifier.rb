@@ -9,7 +9,8 @@ module RuboCop
       class WhileUntilModifier < Cop
         include StatementModifier
 
-        MSG = 'Favor modifier `%s` usage when having a single-line body.'.freeze
+        MSG = 'Favor modifier `%<keyword>s` usage when ' \
+              'having a single-line body.'.freeze
 
         def on_while(node)
           check(node)
@@ -34,7 +35,7 @@ module RuboCop
           return unless node.multiline? && single_line_as_modifier?(node)
 
           add_offense(node, location: :keyword,
-                            message: format(MSG, node.keyword))
+                            message: format(MSG, keyword: node.keyword))
         end
       end
     end
