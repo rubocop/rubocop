@@ -107,3 +107,36 @@ task :bench_cop, %i[cop srcpath times] do |_task, args|
     end
   end)
 end
+
+desc 'Syntax check for the documentation comments'
+task documentation_syntax_check: :yard_for_generate_documentation do
+  require 'parser/ruby24'
+
+  ok = true
+  YARD::Registry.load!
+  cops = RuboCop::Cop::Cop.registry
+  cops.each do |cop|
+    # TODO: parser cannot parse the example, so skip it.
+    #       https://github.com/whitequark/parser/issues/407
+    next if cop == RuboCop::Cop::Layout::SpaceAroundKeyword
+    examples = YARD::Registry.all(:class).find do |code_object|
+      next unless RuboCop::Cop::Badge.for(code_object.to_s) == cop.badge
+      break code_object.tags('example')
+    end
+
+    examples.each do |example|
+      begin
+        # Parser output syntax errors to stderr, but it is not needed.
+        $stderr = StringIO.new(''.dup)
+        Parser::Ruby24.parse(example.text)
+      rescue Parser::SyntaxError => ex
+        path = example.object.file
+        puts "#{path}: Syntax Error in an example. #{ex}"
+        ok = false
+      ensure
+        $stderr = STDERR
+      end
+    end
+  end
+  abort unless ok
+end

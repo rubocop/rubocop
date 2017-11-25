@@ -87,8 +87,8 @@ module RuboCop
         end
 
         def delegate?(body)
-          body && body.send_type? && body.receiver.send_type? &&
-            !body.receiver.receiver
+          body && body.send_type? && body.receiver &&
+            body.receiver.send_type? && !body.receiver.receiver
         end
 
         def arguments_match?(arg_array, body)

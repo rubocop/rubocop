@@ -9,12 +9,12 @@ module RuboCop
       #
       #  # good
       #  class Rails5Job < ApplicationJob
-      #    ...
+      #    # ...
       #  end
       #
       #  # bad
       #  class Rails4Job < ActiveJob::Base
-      #    ...
+      #    # ...
       #  end
       class ApplicationJob < Cop
         extend TargetRailsVersion
@@ -25,7 +25,9 @@ module RuboCop
         SUPERCLASS = 'ApplicationJob'.freeze
         BASE_PATTERN = '(const (const nil? :ActiveJob) :Base)'.freeze
 
+        # rubocop:disable Layout/ClassStructure
         include RuboCop::Cop::EnforceSuperclass
+        # rubocop:enable Layout/ClassStructure
       end
     end
   end

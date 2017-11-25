@@ -38,8 +38,8 @@ $ rubocop -V
   you want to have your own version, or is otherwise necessary, that
   is fine, but please isolate to its own commit so I can cherry-pick
   around it.
-* Make sure the test suite is passing ([including rbx and jruby][7]) and the code you wrote doesn't produce
-  RuboCop offenses.
+* Make sure the test suite is passing and the code you wrote doesn't produce
+  RuboCop offenses (usually this is as simple as running `bundle exec rake`).
 * [Squash related commits together][5].
 * Open a [pull request][4] that relates to *only* one subject with a clear title
   and description in grammatically correct, complete sentences.
@@ -66,4 +66,3 @@ Here are a few examples:
 [4]: https://help.github.com/articles/using-pull-requests
 [5]: http://gitready.com/advanced/2009/02/10/squashing-commits-with-rebase.html
 [6]: http://daringfireball.net/projects/markdown/syntax
-[7]: http://blog.stwrt.ca/2013/09/06/installing-rubinius-with-rbenv

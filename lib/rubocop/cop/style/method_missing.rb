@@ -8,17 +8,17 @@ module RuboCop
       #
       # @example
       #   #bad
-      #   def method_missing(...)
-      #     ...
+      #   def method_missing(name, *args)
+      #     # ...
       #   end
       #
       #   #good
-      #   def respond_to_missing?(...)
-      #     ...
+      #   def respond_to_missing?(name, include_private)
+      #     # ...
       #   end
       #
-      #   def method_missing(...)
-      #     ...
+      #   def method_missing(name, *args)
+      #     # ...
       #     super
       #   end
       class MethodMissing < Cop

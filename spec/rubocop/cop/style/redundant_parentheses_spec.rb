@@ -61,6 +61,9 @@ describe RuboCop::Cop::Style::RedundantParentheses do
   it_behaves_like 'redundant', '(retry)', 'retry', 'a keyword'
   it_behaves_like 'redundant', '(self)', 'self', 'a keyword'
 
+  it_behaves_like 'redundant', '(X) ? Y : N', 'X ? Y : N', 'a constant', '(X)'
+  it_behaves_like 'redundant', '(X)? Y : N', 'X ? Y : N', 'a constant', '(X)'
+
   it_behaves_like 'keyword with return value', 'break'
   it_behaves_like 'keyword with return value', 'next'
   it_behaves_like 'keyword with return value', 'return'

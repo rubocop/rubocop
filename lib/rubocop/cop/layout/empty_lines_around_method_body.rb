@@ -10,14 +10,14 @@ module RuboCop
       #   # good
       #
       #   def foo
-      #     ...
+      #     # ...
       #   end
       #
       #   # bad
       #
       #   def bar
       #
-      #     ...
+      #     # ...
       #
       #   end
       class EmptyLinesAroundMethodBody < Cop

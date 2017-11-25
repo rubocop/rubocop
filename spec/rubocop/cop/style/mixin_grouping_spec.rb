@@ -248,6 +248,43 @@ describe RuboCop::Cop::Style::MixinGrouping, :config do
                          'end'].join("\n")
       end
 
+      context 'with single mixins in separate calls, intersperced' do
+        let(:offenses) { 3 }
+        let(:message) { 'Put `prepend` mixins in a single statement.' }
+
+        it_behaves_like 'code with offense',
+                        ['class Foo',
+                         '  prepend Bar',
+                         '  prepend Baz',
+                         '  do_something_else',
+                         '  prepend Qux',
+                         'end'].join("\n"),
+                        ['class Foo',
+                         '  prepend Qux, Baz, Bar',
+                         '  do_something_else',
+                         '  ', # extra line left by prepend Qux
+                         'end'].join("\n")
+      end
+
+      context 'with mixins with receivers' do
+        let(:offenses) { 2 }
+        let(:message) { 'Put `prepend` mixins in a single statement.' }
+
+        it_behaves_like 'code with offense',
+                        ['class Foo',
+                         '  prepend Bar',
+                         '  Other.prepend Baz',
+                         '  do_something_else',
+                         '  prepend Qux',
+                         'end'].join("\n"),
+                        ['class Foo',
+                         '  prepend Qux, Bar',
+                         '  Other.prepend Baz',
+                         '  do_something_else',
+                         '  ', # extra line left by prepend Qux
+                         'end'].join("\n")
+      end
+
       context 'with several mixins in one call' do
         it_behaves_like 'code without offense', <<-RUBY.strip_indent
           class Foo

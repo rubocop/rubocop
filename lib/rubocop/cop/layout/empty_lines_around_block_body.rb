@@ -11,7 +11,7 @@ module RuboCop
       #
       #   foo do |bar|
       #
-      #     ...
+      #     # ...
       #
       #   end
       #
@@ -19,7 +19,7 @@ module RuboCop
       #   # good
       #
       #   foo do |bar|
-      #     ...
+      #     # ...
       #   end
       class EmptyLinesAroundBlockBody < Cop
         include EmptyLinesAroundBody

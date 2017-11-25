@@ -8,11 +8,11 @@ module RuboCop
       # @example
       #
       #   # bad
-      #   1,2
+      #   [1,2]
       #   { foo:bar,}
       #
       #   # good
-      #   1, 2
+      #   [1, 2]
       #   { foo:bar, }
       class SpaceAfterComma < Cop
         include SpaceAfterPunctuation

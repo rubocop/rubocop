@@ -10,14 +10,14 @@ module RuboCop
       #   # bad
       #   class SomeClass
       #     def SomeClass.class_method
-      #       ...
+      #       # ...
       #     end
       #   end
       #
       #   # good
       #   class SomeClass
       #     def self.class_method
-      #       ...
+      #       # ...
       #     end
       #   end
       class ClassMethods < Cop

@@ -138,6 +138,14 @@ describe RuboCop::Cop::Rails::Delegate do
     RUBY
   end
 
+  it 'ignores code with no receiver' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      def change
+        add_column :images, :size, :integer
+      end
+    RUBY
+  end
+
   context 'with EnforceForPrefixed: false' do
     let(:cop_config) do
       { 'EnforceForPrefixed' => false }

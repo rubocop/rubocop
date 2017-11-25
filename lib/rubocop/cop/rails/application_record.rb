@@ -9,12 +9,12 @@ module RuboCop
       #
       #  # good
       #  class Rails5Model < ApplicationRecord
-      #    ...
+      #    # ...
       #  end
       #
       #  # bad
       #  class Rails4Model < ActiveRecord::Base
-      #    ...
+      #    # ...
       #  end
       class ApplicationRecord < Cop
         extend TargetRailsVersion
@@ -25,7 +25,9 @@ module RuboCop
         SUPERCLASS = 'ApplicationRecord'.freeze
         BASE_PATTERN = '(const (const nil? :ActiveRecord) :Base)'.freeze
 
+        # rubocop:disable Layout/ClassStructure
         include RuboCop::Cop::EnforceSuperclass
+        # rubocop:enable Layout/ClassStructure
       end
     end
   end
