@@ -51,14 +51,16 @@ module RuboCop
 
         def space_on_any_side?(node)
           interp = node.source_range
-          interp_with_surrounding_space = range_with_surrounding_space(interp)
+          interp_with_surrounding_space =
+            range_with_surrounding_space(range: interp)
 
           interp_with_surrounding_space != interp
         end
 
         def space_on_each_side?(node)
           interp = node.source_range
-          interp_with_surrounding_space = range_with_surrounding_space(interp)
+          interp_with_surrounding_space =
+            range_with_surrounding_space(range: interp)
 
           interp_with_surrounding_space.source == " #{interp.source} "
         end
@@ -66,8 +68,10 @@ module RuboCop
         def autocorrect(node)
           new_source = style == :no_space ? node.source : " #{node.source} "
           lambda do |corrector|
-            corrector.replace(range_with_surrounding_space(node.source_range),
-                              new_source)
+            corrector.replace(
+              range_with_surrounding_space(range: node.source_range),
+              new_source
+            )
           end
         end
       end

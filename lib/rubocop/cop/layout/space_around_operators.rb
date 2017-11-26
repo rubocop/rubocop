@@ -99,7 +99,7 @@ module RuboCop
         end
 
         def check_operator(op, right_operand)
-          with_space = range_with_surrounding_space(op)
+          with_space = range_with_surrounding_space(range: op)
           return if with_space.source.start_with?("\n")
 
           offense(op, with_space, right_operand) do |msg|

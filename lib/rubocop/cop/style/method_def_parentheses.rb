@@ -39,7 +39,8 @@ module RuboCop
               corrector.remove(node.loc.end)
             else
               args_expr = node.arguments.source_range
-              args_with_space = range_with_surrounding_space(args_expr, :left)
+              args_with_space = range_with_surrounding_space(range: args_expr,
+                                                             side: :left)
               just_space = range_between(args_with_space.begin_pos,
                                          args_expr.begin_pos)
               corrector.replace(just_space, '(')

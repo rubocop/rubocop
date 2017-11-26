@@ -21,7 +21,8 @@ module RuboCop
 
         def autocorrect(range)
           lambda do |corrector|
-            corrector.remove(range_with_surrounding_space(range, :right))
+            corrector.remove(range_with_surrounding_space(range: range,
+                                                          side: :right))
           end
         end
 

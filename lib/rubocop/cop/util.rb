@@ -137,19 +137,22 @@ module RuboCop
         Parser::Source::Range.new(buffer, begin_pos, end_pos)
       end
 
-      def range_with_surrounding_space(range,
-                                       side = :both,
-                                       newlines = true,
-                                       wspace = false)
+      def range_with_surrounding_space(range:,
+                                       side: :both,
+                                       newlines: true,
+                                       whitespace: false)
         buffer = @processed_source.buffer
         src = buffer.source
 
         go_left, go_right = directions(side)
 
         begin_pos = range.begin_pos
-        begin_pos = final_pos(src, begin_pos, -1, newlines, wspace) if go_left
+        if go_left
+          begin_pos =
+            final_pos(src, begin_pos, -1, newlines, whitespace)
+        end
         end_pos = range.end_pos
-        end_pos = final_pos(src, end_pos, 1, newlines, wspace) if go_right
+        end_pos = final_pos(src, end_pos, 1, newlines, whitespace) if go_right
         Parser::Source::Range.new(buffer, begin_pos, end_pos)
       end
 
@@ -167,20 +170,6 @@ module RuboCop
         end_of_last_line = end_pos + end_offset
 
         Parser::Source::Range.new(buffer, begin_of_first_line, end_of_last_line)
-      end
-
-      def move_pos(src, pos, step, condition, regexp)
-        offset = step == -1 ? -1 : 0
-        pos += step while condition && src[pos + offset] =~ regexp
-        pos < 0 ? 0 : pos
-      end
-
-      def directions(side)
-        if side == :both
-          [true, true]
-        else
-          [side == :left, side == :right]
-        end
       end
 
       def begins_its_line?(range)
@@ -283,21 +272,12 @@ module RuboCop
           n1.loc.line == n2.loc.line
       end
 
-      def line_distance(n1, n2)
-        n2.loc.line - n1.loc.line
-      end
-
       def precede?(n1, n2)
         line_distance(n1, n2) == 1
       end
 
       def stripped_source_upto(line)
         processed_source[0..line].map(&:strip)
-      end
-
-      def compatible_external_encoding_for?(src)
-        src = src.dup if RUBY_VERSION < '2.3' || RUBY_ENGINE == 'jruby'
-        src.force_encoding(Encoding.default_external).valid_encoding?
       end
 
       def to_supported_styles(enforced_style)
@@ -308,10 +288,33 @@ module RuboCop
 
       private
 
+      def directions(side)
+        if side == :both
+          [true, true]
+        else
+          [side == :left, side == :right]
+        end
+      end
+
       def final_pos(src, pos, increment, newlines, whitespace)
         pos = move_pos(src, pos, increment, true, /[ \t]/)
         pos = move_pos(src, pos, increment, newlines, /\n/)
         move_pos(src, pos, increment, whitespace, /\s/)
+      end
+
+      def move_pos(src, pos, step, condition, regexp)
+        offset = step == -1 ? -1 : 0
+        pos += step while condition && src[pos + offset] =~ regexp
+        pos < 0 ? 0 : pos
+      end
+
+      def compatible_external_encoding_for?(src)
+        src = src.dup if RUBY_VERSION < '2.3' || RUBY_ENGINE == 'jruby'
+        src.force_encoding(Encoding.default_external).valid_encoding?
+      end
+
+      def line_distance(n1, n2)
+        n2.loc.line - n1.loc.line
       end
     end
   end

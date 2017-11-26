@@ -85,8 +85,11 @@ module RuboCop
         end
 
         def autocorrect_arguments(corrector, node)
-          end_pos = range_with_surrounding_space(node.arguments.source_range,
-                                                 :right, false).end_pos
+          end_pos = range_with_surrounding_space(
+            range: node.arguments.source_range,
+            side: :right,
+            newlines: false
+          ).end_pos
           range = range_between(node.loc.begin.end.begin_pos, end_pos)
           corrector.replace(range, " |#{block_arg_string(node.arguments)}|")
         end

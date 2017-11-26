@@ -39,7 +39,7 @@ module RuboCop
         def autocorrect(node)
           lambda do |corrector|
             corrector.remove(
-              range_with_surrounding_space(node.loc.begin, :left)
+              range_with_surrounding_space(range: node.loc.begin, side: :left)
             )
           end
         end

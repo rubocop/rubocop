@@ -30,8 +30,8 @@ module RuboCop
           return if new_line_needed_before_closing_brace?(node)
 
           lambda do |corrector|
-            corrector.remove(range_with_surrounding_space(node.loc.end,
-                                                          :left))
+            corrector.remove(range_with_surrounding_space(range: node.loc.end,
+                                                          side: :left))
 
             corrector.insert_after(last_element_range_with_trailing_comma(node),
                                    node.loc.end.source)
@@ -113,8 +113,10 @@ module RuboCop
       end
 
       def last_element_trailing_comma_range(node)
-        range = range_with_surrounding_space(children(node).last.source_range,
-                                             :right).end.resize(1)
+        range = range_with_surrounding_space(
+          range: children(node).last.source_range,
+          side: :right
+        ).end.resize(1)
         range.source == ',' ? range : nil
       end
 

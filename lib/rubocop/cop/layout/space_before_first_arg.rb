@@ -32,7 +32,8 @@ module RuboCop
           return unless expect_params_after_method_name?(node)
 
           first_arg = node.first_argument.source_range
-          first_arg_with_space = range_with_surrounding_space(first_arg, :left)
+          first_arg_with_space = range_with_surrounding_space(range: first_arg,
+                                                              side: :left)
           space = range_between(first_arg_with_space.begin_pos,
                                 first_arg.begin_pos)
 

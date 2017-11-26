@@ -135,10 +135,10 @@ module RuboCop
             remove_braces(corrector, node)
           else
             left_brace_and_space =
-              range_with_surrounding_space(node.loc.begin,
-                                           :right,
-                                           space[:newlines],
-                                           space[:left])
+              range_with_surrounding_space(range: node.loc.begin,
+                                           side: :right,
+                                           newlines: space[:newlines],
+                                           whitespace: space[:left])
             corrector.remove(left_brace_and_space)
             corrector.remove(right_brace_and_space)
           end
@@ -147,10 +147,10 @@ module RuboCop
         def right_brace_and_space(loc_end, space)
           brace_and_space =
             range_with_surrounding_space(
-              loc_end,
-              :left,
-              space[:newlines],
-              space[:right]
+              range: loc_end,
+              side: :left,
+              newlines: space[:newlines],
+              whitespace: space[:right]
             )
           range_with_surrounding_comma(brace_and_space, :left)
         end

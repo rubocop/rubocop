@@ -31,7 +31,8 @@ module RuboCop
 
           if node.blockarg_type?
             lambda do |corrector|
-              range = range_with_surrounding_space(node.source_range, :left)
+              range = range_with_surrounding_space(range: node.source_range,
+                                                   side: :left)
               range = range_with_surrounding_comma(range, :left)
               corrector.remove(range)
             end

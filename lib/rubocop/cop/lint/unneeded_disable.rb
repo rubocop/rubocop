@@ -48,12 +48,15 @@ module RuboCop
           # Eat the entire comment, the preceding space, and the preceding
           # newline if there is one.
           original_begin = range.begin_pos
-          range = range_with_surrounding_space(range, :left, true)
-          range_with_surrounding_space(range, :right,
+          range = range_with_surrounding_space(range: range,
+                                               side: :left,
+                                               newlines: true)
+          range_with_surrounding_space(range: range,
+                                       side: :right,
                                        # Special for a comment that
                                        # begins the file: remove
                                        # the newline at the end.
-                                       original_begin.zero?)
+                                       newlines: original_begin.zero?)
         end
 
         def directive_range_in_list(range, ranges)
@@ -61,13 +64,15 @@ module RuboCop
           # is NOT being removed?
           if ends_its_line?(ranges.last) && trailing_range?(ranges, range)
             # Eat the comma on the left.
-            range = range_with_surrounding_space(range, :left)
+            range = range_with_surrounding_space(range: range, side: :left)
             range = range_with_surrounding_comma(range, :left)
           end
 
           range = range_with_surrounding_comma(range, :right)
           # Eat following spaces up to EOL, but not the newline itself.
-          range_with_surrounding_space(range, :right, false)
+          range_with_surrounding_space(range: range,
+                                       side: :right,
+                                       newlines: false)
         end
 
         def each_unneeded_disable(cop_disabled_line_ranges, offenses, comments,
