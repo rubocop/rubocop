@@ -4338,6 +4338,31 @@ Enabled | Yes
 
 Checks if uses of quotes match the configured preference.
 
+### Example
+
+```ruby
+# bad
+"No special symbols"
+"No string interpolation"
+"Just text"
+
+# good
+'No special symbols'
+'No string interpolation'
+'Just text'
+"Wait! What's #{this}!"
+```
+```ruby
+# bad
+'Just some text'
+'No special chars or interpolation'
+
+# good
+"Just some text"
+"No special chars or interpolation"
+"Every string in #{project} uses double_quotes"
+```
+
 ### Configurable attributes
 
 Name | Default value | Configurable values
