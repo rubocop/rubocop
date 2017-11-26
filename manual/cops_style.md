@@ -4880,6 +4880,20 @@ Enabled | Yes
 
 This cop checks for variable interpolation (like "#@ivar").
 
+### Example
+
+```ruby
+# bad
+"His name is #$name"
+/check #$pattern/
+"Let's go to the #@store"
+
+# good
+"His name is #{$name}"
+/check #{$pattern}/
+"Let's go to the #{@store}"
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#curlies-interpolate](https://github.com/bbatsov/ruby-style-guide#curlies-interpolate)
