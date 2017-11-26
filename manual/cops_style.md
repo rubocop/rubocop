@@ -4390,6 +4390,18 @@ Disabled | Yes
 This cop enforces the use of consistent method names
 from the String class.
 
+### Example
+
+```ruby
+# bad
+'name'.intern
+'var'.unfavored_method
+
+# good
+'name'.to_sym
+'var'.preferred_method
+```
+
 ### Configurable attributes
 
 Name | Default value | Configurable values
