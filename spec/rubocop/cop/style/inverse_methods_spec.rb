@@ -51,7 +51,7 @@ describe RuboCop::Cop::Style::InverseMethods do
   end
 
   context 'auto-correct' do
-    it 'corrects !.none? wiht a symbol proc to any?' do
+    it 'corrects !.none? with a symbol proc to any?' do
       new_source = autocorrect_source('!foo.none?(&:even?)')
 
       expect(new_source).to eq('foo.any?(&:even?)')

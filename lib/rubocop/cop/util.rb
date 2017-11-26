@@ -286,7 +286,7 @@ module RuboCop
         n2.loc.line - n1.loc.line
       end
 
-      def preceed?(n1, n2)
+      def precede?(n1, n2)
         line_distance(n1, n2) == 1
       end
 

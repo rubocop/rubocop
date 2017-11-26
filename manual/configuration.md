@@ -181,7 +181,7 @@ shadowed by the setting of `Include` and `Exclude` in other `.rubocop.yml`
 files in subdirectories. This is different from all other parameters, who
 follow RuboCop's general principle that configuration for an inspected file
 is taken from the nearest `.rubocop.yml`, searching upwards.  _This behavior
-will be overriden if you specify the `--ignore-parent-exclusion` command line
+will be overridden if you specify the `--ignore-parent-exclusion` command line
 argument_.
 
 Cops can be run only on specific sets of files when that's needed (for

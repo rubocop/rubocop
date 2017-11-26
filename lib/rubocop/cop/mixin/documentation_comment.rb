@@ -24,7 +24,7 @@ module RuboCop
       end
 
       def preceding_comment?(n1, n2)
-        n1 && n2 && preceed?(n2, n1) &&
+        n1 && n2 && precede?(n2, n1) &&
           comment_line?(n2.loc.expression.source)
       end
 

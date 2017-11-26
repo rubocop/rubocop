@@ -22,7 +22,7 @@ describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     RUBY
   end
 
-  it 'register an offense for non-reciever method call without parens' do
+  it 'register an offense for non-receiver method call without parens' do
     expect_offense(<<-RUBY.strip_indent)
       def foo
         test a, b

@@ -37,7 +37,7 @@ describe RuboCop::Cop::Rails::Present, :config do
       expect_no_offenses('foo.nil? || bar.empty?')
     end
 
-    it 'accepts checking existance && not empty? on different objects' do
+    it 'accepts checking existence && not empty? on different objects' do
       expect_no_offenses('foo && !bar.empty?')
     end
 

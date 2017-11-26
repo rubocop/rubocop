@@ -49,7 +49,7 @@ describe RuboCop::Cop::Bundler::DuplicatedGem, :config do
         expect(cop.offenses.size).to eq(1)
       end
 
-      it "references gem's first occurance in message" do
+      it "references gem's first occurrence in message" do
         inspect_gemfile(source)
         expect(cop.offenses.first.message).to include('2')
       end

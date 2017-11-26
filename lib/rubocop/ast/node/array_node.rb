@@ -31,7 +31,7 @@ module RuboCop
       #   Check for any percent literal.
       #
       # @overload percent_literal?(type)
-      #   Check for percent literaly of type `type`.
+      #   Check for percent literal of type `type`.
       #
       #   @param type [Symbol] an optional percent literal type
       #
