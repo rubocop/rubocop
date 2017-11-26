@@ -4,6 +4,17 @@ module RuboCop
   module Cop
     module Style
       # This cop checks for variable interpolation (like "#@ivar").
+      #
+      # @example
+      #   # bad
+      #   "His name is #$name"
+      #   /check #$pattern/
+      #   "Let's go to the #@store"
+      #
+      #   # good
+      #   "His name is #{$name}"
+      #   /check #{$pattern}/
+      #   "Let's go to the #{@store}"
       class VariableInterpolation < Cop
         MSG = 'Replace interpolated variable `%<variable>s` ' \
               'with expression `#{%<variable>s}`.'.freeze
