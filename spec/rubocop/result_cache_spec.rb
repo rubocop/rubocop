@@ -156,12 +156,12 @@ describe RuboCop::ResultCache, :isolated_environment do
     end
 
     context 'when a cache source is read' do
-      it 'has utf8 encoding' do
+      it 'has ASCII_8BIT encoding' do
         cache.save(offenses)
         result = cache.load
         loaded_encoding = result[0].location.source.encoding
 
-        expect(loaded_encoding).to eql(Encoding::UTF_8)
+        expect(loaded_encoding).to eql(Encoding::ASCII_8BIT)
       end
     end
   end

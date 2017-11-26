@@ -83,7 +83,6 @@ module RuboCop
       @path = File.join(cache_root, rubocop_checksum,
                         relevant_options_digest(options),
                         file_checksum(file, config_store))
-      @cached_data = CachedData.new(file)
     end
 
     def valid?
@@ -91,7 +90,9 @@ module RuboCop
     end
 
     def load
-      @cached_data.from_json(IO.read(@path, encoding: Encoding::UTF_8))
+      # rubocop:disable Security/MarshalLoad
+      Marshal.load(IO.binread(@path))
+      # rubocop:enable Security/MarshalLoad
     end
 
     def save(offenses)
@@ -103,9 +104,7 @@ module RuboCop
       # indication that a symlink attack is being waged.
       return if symlink_protection_triggered?(dir)
 
-      File.open(preliminary_path, 'w', encoding: Encoding::UTF_8) do |f|
-        f.write(@cached_data.to_json(offenses))
-      end
+      IO.binwrite(preliminary_path, Marshal.dump(offenses))
       # The preliminary path is used so that if there are multiple RuboCop
       # processes trying to save data for the same inspected file
       # simultaneously, the only problem we run in to is a competition who gets
