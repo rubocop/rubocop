@@ -6,6 +6,24 @@ module RuboCop
       # Checks for while and until statements that would fit on one line
       # if written as a modifier while/until. The maximum line length is
       # configured in the `Metrics/LineLength` cop.
+      #
+      # @example
+      #   # bad
+      #   while x < 10
+      #     x += 1
+      #   end
+      #
+      #   # good
+      #   x += 1 while x < 10
+      #
+      # @example
+      #   # bad
+      #   until x > 10
+      #     x += 1
+      #   end
+      #
+      #   # good
+      #   x += 1 until x > 10
       class WhileUntilModifier < Cop
         include StatementModifier
 
