@@ -102,7 +102,7 @@ module RuboCop
         def block_range_with_space(node)
           block_range = range_between(begin_pos_for_replacement(node),
                                       node.loc.end.end_pos)
-          range_with_surrounding_space(block_range, :left)
+          range_with_surrounding_space(range: block_range, side: :left)
         end
 
         def begin_pos_for_replacement(node)

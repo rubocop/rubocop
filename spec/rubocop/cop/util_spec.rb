@@ -76,7 +76,8 @@ describe RuboCop::Cop::Util do
     subject do
       obj = TestUtil.new
       obj.instance_exec(processed_source) { |src| @processed_source = src }
-      r = obj.send(:range_with_surrounding_space, input_range, side)
+      r = obj.send(:range_with_surrounding_space, range: input_range,
+                                                  side: side)
       processed_source.buffer.source[r.begin_pos...r.end_pos]
     end
 

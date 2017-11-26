@@ -171,7 +171,7 @@ module RuboCop
           op = pair_node.loc.operator
 
           range = range_between(key.source_range.begin_pos, op.end_pos)
-          range = range_with_surrounding_space(range, :right)
+          range = range_with_surrounding_space(range: range, side: :right)
 
           new_key = key.sym_type? ? key.value : key.source
 
@@ -191,7 +191,7 @@ module RuboCop
 
           corrector.insert_after(key, pair_node.inverse_delimiter(true))
           corrector.insert_before(key, ':')
-          corrector.remove(range_with_surrounding_space(op))
+          corrector.remove(range_with_surrounding_space(range: op))
         end
 
         def autocorrect_no_mixed_keys(corrector, pair_node)

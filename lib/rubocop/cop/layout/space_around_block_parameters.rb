@@ -99,8 +99,11 @@ module RuboCop
         def check_each_arg(args)
           args.children.butfirst.each do |arg|
             expr = arg.source_range
-            check_no_space(range_with_surrounding_space(expr, :left).begin_pos,
-                           expr.begin_pos - 1, 'Extra space before')
+            check_no_space(
+              range_with_surrounding_space(range: expr, side: :left).begin_pos,
+              expr.begin_pos - 1,
+              'Extra space before'
+            )
           end
         end
 

@@ -27,10 +27,11 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
+        def autocorrect(node) # rubocop:disable Metrics/MethodLength
           lambda do |corrector|
             if style == :never
-              corrector.remove(range_with_surrounding_space(node.pos, :right))
+              corrector.remove(range_with_surrounding_space(range: node.pos,
+                                                            side: :right))
             else
               last_special_comment = last_special_comment(processed_source)
               if last_special_comment.nil?

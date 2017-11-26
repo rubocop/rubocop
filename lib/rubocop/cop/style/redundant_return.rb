@@ -33,7 +33,7 @@ module RuboCop
 
         private
 
-        def autocorrect(node)
+        def autocorrect(node) # rubocop:disable Metrics/MethodLength
           lambda do |corrector|
             unless arguments?(node.children)
               corrector.replace(node.source_range, 'nil')
@@ -46,7 +46,8 @@ module RuboCop
             elsif return_value.hash_type?
               add_braces(corrector, return_value) unless return_value.braces?
             end
-            return_kw = range_with_surrounding_space(node.loc.keyword, :right)
+            return_kw = range_with_surrounding_space(range: node.loc.keyword,
+                                                     side: :right)
             corrector.remove(return_kw)
           end
         end

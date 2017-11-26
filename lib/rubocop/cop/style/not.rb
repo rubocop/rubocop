@@ -34,7 +34,8 @@ module RuboCop
         private
 
         def autocorrect(node)
-          range = range_with_surrounding_space(node.loc.selector, :right)
+          range = range_with_surrounding_space(range: node.loc.selector,
+                                               side: :right)
 
           if opposite_method?(node.receiver)
             correct_opposite_method(range, node.receiver)

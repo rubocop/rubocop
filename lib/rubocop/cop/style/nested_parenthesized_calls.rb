@@ -46,7 +46,8 @@ module RuboCop
           last_arg = nested.last_argument.source_range
 
           leading_space =
-            range_with_surrounding_space(first_arg, :left).begin.resize(1)
+            range_with_surrounding_space(range: first_arg,
+                                         side: :left).begin.resize(1)
 
           lambda do |corrector|
             corrector.replace(leading_space, '(')
