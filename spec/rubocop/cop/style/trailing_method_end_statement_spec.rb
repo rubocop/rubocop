@@ -11,7 +11,7 @@ describe RuboCop::Cop::Style::TrailingMethodEndStatement do
     expect_offense(<<-RUBY.strip_indent)
       def some_method
       foo; end
-           ^^^ Place the end statment of a multi-line method on its own line.
+           ^^^ Place the end statement of a multi-line method on its own line.
     RUBY
   end
 
@@ -20,7 +20,7 @@ describe RuboCop::Cop::Style::TrailingMethodEndStatement do
       def a
         b
       { foo: bar }; end
-                    ^^^ Place the end statment of a multi-line method on its own line.
+                    ^^^ Place the end statement of a multi-line method on its own line.
     RUBY
   end
 
@@ -29,7 +29,7 @@ describe RuboCop::Cop::Style::TrailingMethodEndStatement do
       def c
         b = calculation
         [b] end # because b
-            ^^^ Place the end statment of a multi-line method on its own line.
+            ^^^ Place the end statement of a multi-line method on its own line.
     RUBY
   end
 
@@ -39,7 +39,7 @@ describe RuboCop::Cop::Style::TrailingMethodEndStatement do
         block do
           foo
         end end
-            ^^^ Place the end statment of a multi-line method on its own line.
+            ^^^ Place the end statement of a multi-line method on its own line.
     RUBY
   end
 

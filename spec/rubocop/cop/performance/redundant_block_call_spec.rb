@@ -42,7 +42,7 @@ describe RuboCop::Cop::Performance::RedundantBlockCall do
     RUBY
   end
 
-  it 'autocorrects multiple occurances of block.call with arguments' do
+  it 'autocorrects multiple occurrences of block.call with arguments' do
     new_source = autocorrect_source(<<-RUBY.strip_indent)
       def method(&block)
         block.call 1
@@ -101,7 +101,7 @@ describe RuboCop::Cop::Performance::RedundantBlockCall do
     RUBY
   end
 
-  it 'accepts another block arg in at least one occurance of block.call' do
+  it 'accepts another block arg in at least one occurrence of block.call' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def method(&block)
         block.call(1, &some_proc)

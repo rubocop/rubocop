@@ -103,7 +103,7 @@ module RuboCop
           'after the last array element.'.freeze
 
         ALWAYS_SAME_LINE_MESSAGE = 'Closing array brace must be on the same ' \
-          'line as teh last array element.'.freeze
+          'line as the last array element.'.freeze
 
         def on_array(node)
           check_brace_layout(node)

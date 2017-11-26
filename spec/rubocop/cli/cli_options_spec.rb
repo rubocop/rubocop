@@ -1135,7 +1135,7 @@ describe RuboCop::CLI, :isolated_environment do
   end
 
   describe '--force-exclusion' do
-    context 'when explicitely excluded' do
+    context 'when explicitly excluded' do
       let(:target_file) { 'example.rb' }
 
       before do

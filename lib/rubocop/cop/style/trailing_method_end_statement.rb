@@ -36,7 +36,7 @@ module RuboCop
       class TrailingMethodEndStatement < Cop
         include AutocorrectAlignment
 
-        MSG = 'Place the end statment of a multi-line method on ' \
+        MSG = 'Place the end statement of a multi-line method on ' \
               'its own line.'.freeze
 
         def on_def(node)

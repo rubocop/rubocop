@@ -11,7 +11,7 @@ describe RuboCop::Cop::Style::AsciiComments do
     RUBY
   end
 
-  it 'registers an offense for commentes with mixed chars' do
+  it 'registers an offense for comments with mixed chars' do
     expect_offense(<<-RUBY.strip_indent)
       # encoding: utf-8
       # foo ∂ bar
@@ -32,7 +32,7 @@ describe RuboCop::Cop::Style::AsciiComments do
       expect_no_offenses('# foo ∂ bar')
     end
 
-    it 'registers an offense for commentes with non-allowed non-ascii chars' do
+    it 'registers an offense for comments with non-allowed non-ascii chars' do
       expect_offense(<<-RUBY.strip_indent)
         # encoding: utf-8
         # 这是什么？

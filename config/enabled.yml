@@ -951,7 +951,7 @@ Style/RescueStandardError:
 Style/SafeNavigation:
   Description: >-
                   This cop transforms usages of a method call safeguarded by
-                  a check for the existance of the object to
+                  a check for the existence of the object to
                   safe navigation (`&.`).
   Enabled: true
 

@@ -16,13 +16,13 @@ module RuboCop
       #   # bad - multi-line block
       #   things.map { |thing|
       #     something = thing.some_method
-      #     proces(something)
+      #     process(something)
       #   }
       #
       #   # good - multi-line block
       #   things.map do |thing|
       #     something = thing.some_method
-      #     proces(something)
+      #     process(something)
       #   end
       #
       # @example EnforcedStyle: semantic

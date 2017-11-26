@@ -69,7 +69,7 @@ describe RuboCop::Cop::Style::MixinGrouping, :config do
                         'expect(foo).to include(bar, baz)'
       end
 
-      context 'with several mixins in seperate calls' do
+      context 'with several mixins in separate calls' do
         it_behaves_like 'code with offense',
                         ['class Foo',
                          '  include Bar, Baz',
@@ -193,7 +193,7 @@ describe RuboCop::Cop::Style::MixinGrouping, :config do
         RUBY
       end
 
-      context 'with several mixins in seperate calls' do
+      context 'with several mixins in separate calls' do
         let(:offenses) { 3 }
         let(:message) { 'Put `include` mixins in a single statement.' }
 
@@ -210,7 +210,7 @@ describe RuboCop::Cop::Style::MixinGrouping, :config do
     end
 
     context 'when using `extend`' do
-      context 'with single mixins in seperate calls' do
+      context 'with single mixins in separate calls' do
         let(:offenses) { 2 }
         let(:message) { 'Put `extend` mixins in a single statement.' }
 
