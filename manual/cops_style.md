@@ -1569,13 +1569,12 @@ module Foo
 end
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-Autocorrect | false
-EnforcedStyle | module_function
-SupportedStyles | module_function, extend_self
+Name | Default value | Configurable values
+--- | --- | ---
+Autocorrect | `false` | Boolean
+EnforcedStyle | `module_function` | `module_function`, `extend_self`
 
 ### References
 
