@@ -4839,6 +4839,19 @@ Enabled | Yes
 
 This cop checks for usage of the %W() syntax when %w() would do.
 
+### Example
+
+```ruby
+# bad
+%W(cat dog pig)
+%W[door wall floor]
+
+# good
+%w/swim run bike/
+%w[shirt pants shoes]
+%W(apple #{fruit} grape)
+```
+
 ## Style/UnneededInterpolation
 
 Enabled by default | Supports autocorrection
