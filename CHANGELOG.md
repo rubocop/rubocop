@@ -70,6 +70,7 @@
 * [#5233](https://github.com/bbatsov/rubocop/pull/5233): Remove `Style/ExtendSelf` cop. ([@pocke][])
 * [#5221](https://github.com/bbatsov/rubocop/issues/5221): Change `Layout/SpaceBeforeBlockBraces`'s `EnforcedStyleForEmptyBraces` from `no_space` to `space`. ([@garettarrowood][])
 * [#3558](https://github.com/bbatsov/rubocop/pull/3558): Create `Corrector` classes and move all `autocorrect` methods out of mixin Modules. ([@garettarrowood][])
+* [#3437](https://github.com/bbatsov/rubocop/issues/3437): Add new `Lint/NumberConversion` cop. ([@albertpaulp][])
 
 ## 0.52.0 (2017-12-12)
 
@@ -3155,3 +3156,4 @@
 [@ybiquitous]: https://github.com/ybiquitous
 [@mame]: https://github.com/mame
 [@dominicsayers]: https://github.com/dominicsayers
+[@albertpaulp]: https://github.com/albertpaulp

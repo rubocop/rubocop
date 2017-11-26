@@ -220,6 +220,7 @@ In the following section you find all available cops:
 * [Lint/NestedPercentLiteral](cops_lint.md#lintnestedpercentliteral)
 * [Lint/NextWithoutAccumulator](cops_lint.md#lintnextwithoutaccumulator)
 * [Lint/NonLocalExitFromIterator](cops_lint.md#lintnonlocalexitfromiterator)
+* [Lint/NumberConversion](cops_lint.md#lintnumberconversion)
 * [Lint/ParenthesesAsGroupedExpression](cops_lint.md#lintparenthesesasgroupedexpression)
 * [Lint/PercentStringArray](cops_lint.md#lintpercentstringarray)
 * [Lint/PercentSymbolArray](cops_lint.md#lintpercentsymbolarray)

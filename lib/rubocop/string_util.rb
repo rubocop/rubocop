@@ -95,7 +95,7 @@ module RuboCop
       end
 
       def matching_window
-        @matching_window ||= (longer.size / 2).to_i - 1
+        @matching_window ||= (longer.size / 2) - 1
       end
     end
 
