@@ -26,35 +26,68 @@ module RuboCop
       # The closing brace of a multi-line hash literal must be on the same
       # line as the last element of the hash.
       #
-      # @example
+      # @example EnforcedStyle: symmetrical (default)
       #
-      #     # symmetrical: bad
-      #     # new_line: good
-      #     # same_line: bad
+      #     # bad
       #     { a: 1,
       #       b: 2
       #     }
-      #
-      #     # symmetrical: bad
-      #     # new_line: bad
-      #     # same_line: good
+      #     # bad
       #     {
       #       a: 1,
       #       b: 2 }
       #
-      #     # symmetrical: good
-      #     # new_line: bad
-      #     # same_line: good
+      #     # good
       #     { a: 1,
       #       b: 2 }
       #
-      #     # symmetrical: good
-      #     # new_line: good
-      #     # same_line: bad
+      #     # good
       #     {
       #       a: 1,
       #       b: 2
       #     }
+      #
+      # @example EnforcedStyle: new_line
+      #     # bad
+      #     {
+      #       a: 1,
+      #       b: 2 }
+      #
+      #     # bad
+      #     { a: 1,
+      #       b: 2 }
+      #
+      #     # good
+      #     { a: 1,
+      #       b: 2
+      #     }
+      #
+      #     # good
+      #     {
+      #       a: 1,
+      #       b: 2
+      #     }
+      #
+      # @example EnforcedStyle: same_line
+      #     # bad
+      #     { a: 1,
+      #       b: 2
+      #     }
+      #
+      #     # bad
+      #     {
+      #       a: 1,
+      #       b: 2
+      #     }
+      #
+      #     # good
+      #     {
+      #       a: 1,
+      #       b: 2 }
+      #
+      #     # good
+      #     { a: 1,
+      #       b: 2 }
       class MultilineHashBraceLayout < Cop
         include MultilineLiteralBraceLayout
 
