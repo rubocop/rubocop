@@ -1787,33 +1787,66 @@ line as the last element of the hash.
 ### Example
 
 ```ruby
-# symmetrical: bad
-# new_line: good
-# same_line: bad
+# bad
 { a: 1,
   b: 2
 }
-
-# symmetrical: bad
-# new_line: bad
-# same_line: good
+# bad
 {
   a: 1,
   b: 2 }
 
-# symmetrical: good
-# new_line: bad
-# same_line: good
+# good
 { a: 1,
   b: 2 }
 
-# symmetrical: good
-# new_line: good
-# same_line: bad
+# good
 {
   a: 1,
   b: 2
 }
+```
+```ruby
+# bad
+{
+  a: 1,
+  b: 2 }
+
+# bad
+{ a: 1,
+  b: 2 }
+
+# good
+{ a: 1,
+  b: 2
+}
+
+# good
+{
+  a: 1,
+  b: 2
+}
+```
+```ruby
+# bad
+{ a: 1,
+  b: 2
+}
+
+# bad
+{
+  a: 1,
+  b: 2
+}
+
+# good
+{
+  a: 1,
+  b: 2 }
+
+# good
+{ a: 1,
+  b: 2 }
 ```
 
 ### Configurable attributes
