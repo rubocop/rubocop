@@ -7,7 +7,7 @@ gemspec
 gem 'bump', require: false
 gem 'pry'
 gem 'rake', '~> 12.0'
-gem 'rspec', '~> 3.6.0'
+gem 'rspec', '~> 3.7'
 gem 'rubocop-rspec', '~> 1.20.0'
 gem 'simplecov', '~> 0.10'
 gem 'test-queue'
