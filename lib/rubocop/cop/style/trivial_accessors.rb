@@ -25,7 +25,7 @@ module RuboCop
       #   attr_writer :bar
       #
       #   class << self
-      #     attr_reader: baz
+      #     attr_reader :baz
       #   end
       class TrivialAccessors < Cop
         MSG = 'Use `attr_%<kind>s` to define trivial %<kind>s methods.'.freeze

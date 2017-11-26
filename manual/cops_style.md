@@ -4948,7 +4948,7 @@ attr_reader :foo
 attr_writer :bar
 
 class << self
-  attr_reader: baz
+  attr_reader :baz
 end
 ```
 
