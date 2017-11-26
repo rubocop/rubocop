@@ -5,6 +5,15 @@ module RuboCop
     module Style
       # This cop enforces the use of consistent method names
       # from the String class.
+      #
+      # @example
+      #   # bad
+      #   'name'.intern
+      #   'var'.unfavored_method
+      #
+      #   # good
+      #   'name'.to_sym
+      #   'var'.preferred_method
       class StringMethods < Cop
         include MethodPreference
 
