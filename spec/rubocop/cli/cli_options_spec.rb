@@ -623,7 +623,7 @@ describe RuboCop::CLI, :isolated_environment do
       it 'prints the current configuration' do
         out = stdout.lines.to_a
         printed_config = YAML.load(out.join) # rubocop:disable Security/YAMLLoad
-        cop_names = (cop_list[0] || '').split(',')
+        cop_names = (arguments[0] || '').split(',')
         cop_names.each do |cop_name|
           global_conf[cop_name].each do |key, value|
             printed_value = printed_config[cop_name][key]
@@ -649,12 +649,12 @@ describe RuboCop::CLI, :isolated_environment do
         Metrics/LineLength:
           Max: 110
       YAML
-      # expect(cli.run(['--show-cops'] + cop_list)).to eq(0)
-      cli.run(['--show-cops'] + cop_list)
+      # expect(cli.run(['--show-cops'] + arguments)).to eq(0)
+      cli.run(['--show-cops'] + arguments)
     end
 
     context 'with no args' do
-      let(:cop_list) { [] }
+      let(:arguments) { [] }
 
       # Extracts the first line out of the description
       def short_description_of_cop(cop)
@@ -707,7 +707,7 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     context 'with one cop given' do
-      let(:cop_list) { ['Layout/Tab'] }
+      let(:arguments) { ['Layout/Tab'] }
 
       it 'prints that cop and nothing else' do
         expect(stdout).to match(
@@ -724,13 +724,13 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     context 'with two cops given' do
-      let(:cop_list) { ['Layout/Tab,Metrics/LineLength'] }
+      let(:arguments) { ['Layout/Tab,Metrics/LineLength'] }
 
       include_examples :prints_config
     end
 
     context 'with one of the cops misspelled' do
-      let(:cop_list) { ['Layout/Tab,Lint/X123'] }
+      let(:arguments) { ['Layout/Tab,Lint/X123'] }
 
       it 'skips the unknown cop' do
         expect(stdout).to match(
@@ -740,6 +740,14 @@ describe RuboCop::CLI, :isolated_environment do
            /^  StyleGuide: ('|")#spaces-indentation('|")$/,
            '  Enabled: true'].join("\n")
         )
+      end
+    end
+
+    context 'with --force-default-config' do
+      let(:arguments) { ['Metrics/LineLength', '--force-default-config'] }
+
+      it 'prioritizes default config' do
+        expect(YAML.safe_load(stdout)['Metrics/LineLength']['Max']).to eq(80)
       end
     end
   end
