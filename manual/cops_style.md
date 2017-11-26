@@ -5170,6 +5170,27 @@ Checks for while and until statements that would fit on one line
 if written as a modifier while/until. The maximum line length is
 configured in the `Metrics/LineLength` cop.
 
+### Example
+
+```ruby
+# bad
+while x < 10
+  x += 1
+end
+
+# good
+x += 1 while x < 10
+```
+```ruby
+# bad
+until x > 10
+  x += 1
+end
+
+# good
+x += 1 until x > 10
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#while-as-a-modifier](https://github.com/bbatsov/ruby-style-guide#while-as-a-modifier)
