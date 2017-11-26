@@ -1004,6 +1004,25 @@ end
 # good
 
 module Foo
+  module Bar
+
+    # ...
+
+  end
+end
+```
+```ruby
+# good
+module Foo
+
+  def bar; end
+
+end
+```
+```ruby
+# good
+
+module Foo
   def bar
     # ...
   end

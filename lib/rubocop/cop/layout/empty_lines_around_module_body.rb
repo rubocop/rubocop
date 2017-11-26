@@ -17,6 +17,25 @@ module RuboCop
       #
       #   end
       #
+      # @example EnforcedStyle: empty_lines_except_namespace
+      #   # good
+      #
+      #   module Foo
+      #     module Bar
+      #
+      #       # ...
+      #
+      #     end
+      #   end
+      #
+      # @example EnforcedStyle: empty_lines_special
+      #   # good
+      #   module Foo
+      #
+      #     def bar; end
+      #
+      #   end
+      #
       # @example EnforcedStyle: no_empty_lines (default)
       #   # good
       #
