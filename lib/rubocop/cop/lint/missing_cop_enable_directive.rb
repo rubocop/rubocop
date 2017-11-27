@@ -43,8 +43,10 @@ module RuboCop
       #   # rubocop:enable Layout/SpaceAroundOperators
       #
       class MissingCopEnableDirective < Cop
-        MSG = 'Re-enable %s cop with `# rubocop:enable` after disabling it.'
+        MSG = 'Re-enable %{cop} cop with `# rubocop:enable` after disabling it.'
               .freeze
+        MSG_BOUND = 'Re-enable %{cop} cop within %{max_range} lines after ' \
+                    'disabling it.'.freeze
 
         def investigate(processed_source)
           max_range = cop_config['MaximumRangeSize']
@@ -58,18 +60,18 @@ module RuboCop
                                    (0..0))
               add_offense(range,
                           location: range,
-                          message: format(message(max_range), cop))
+                          message: message(max_range: max_range, cop: cop))
             end
           end
         end
 
         private
 
-        def message(max_range)
+        def message(max_range:, cop:)
           if max_range == Float::INFINITY
-            MSG
+            format(MSG, cop: cop)
           else
-            "Re-enable %s cop within #{max_range} lines after disabling it."
+            format(MSG_BOUND, cop: cop, max_range: max_range)
           end
         end
       end
