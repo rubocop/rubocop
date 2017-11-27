@@ -22,6 +22,13 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
         gem 'rubocop'
       RUBY
     end
+
+    it 'works if gem is referenced from an environment variable' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        gem ENV['env_key_not_defined'] if ENV.key?('env_key_not_defined')
+        gem ENV['env_key_undefined'] if ENV.key?('env_key_undefined')
+      RUBY
+    end
   end
 
   context 'When gems are not alphabetically sorted' do
