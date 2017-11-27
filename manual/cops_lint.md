@@ -1172,8 +1172,8 @@ a file wouldn't be aware of.
 ### Example
 
 ```ruby
-Lint/MissingCopEnableDirective
-  MaximumRangeSize: .inf
+# Lint/MissingCopEnableDirective:
+#   MaximumRangeSize: .inf
 
 # good
 # rubocop:disable Layout/SpaceAroundOperators
@@ -1188,8 +1188,8 @@ x= 0
 # EOF
 ```
 ```ruby
-Lint/MissingCopEnableDirective
-  MaximumRangeSize: 2
+# Lint/MissingCopEnableDirective:
+#   MaximumRangeSize: 2
 
 # good
 # rubocop:disable Layout/SpaceAroundOperators

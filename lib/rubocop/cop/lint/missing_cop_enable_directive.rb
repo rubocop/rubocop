@@ -10,8 +10,8 @@ module RuboCop
       # a file wouldn't be aware of.
       #
       # @example
-      #   Lint/MissingCopEnableDirective
-      #     MaximumRangeSize: .inf
+      #   # Lint/MissingCopEnableDirective:
+      #   #   MaximumRangeSize: .inf
       #
       #   # good
       #   # rubocop:disable Layout/SpaceAroundOperators
@@ -26,8 +26,8 @@ module RuboCop
       #   # EOF
       #
       # @example
-      #   Lint/MissingCopEnableDirective
-      #     MaximumRangeSize: 2
+      #   # Lint/MissingCopEnableDirective:
+      #   #   MaximumRangeSize: 2
       #
       #   # good
       #   # rubocop:disable Layout/SpaceAroundOperators
