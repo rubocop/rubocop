@@ -5156,6 +5156,31 @@ Enabled | Yes
 
 Checks for uses of `do` in multi-line `while/until` statements.
 
+### Example
+
+```ruby
+# bad
+while x.any? do
+  do_something(x.pop)
+end
+
+# good
+while x.any?
+  do_something(x.pop)
+end
+```
+```ruby
+# bad
+until x.empty? do
+  do_something(x.pop)
+end
+
+# good
+until x.empty?
+  do_something(x.pop)
+end
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#no-multiline-while-do](https://github.com/bbatsov/ruby-style-guide#no-multiline-while-do)
