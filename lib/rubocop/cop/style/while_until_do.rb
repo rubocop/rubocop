@@ -4,6 +4,30 @@ module RuboCop
   module Cop
     module Style
       # Checks for uses of `do` in multi-line `while/until` statements.
+      #
+      # @example
+      #
+      #   # bad
+      #   while x.any? do
+      #     do_something(x.pop)
+      #   end
+      #
+      #   # good
+      #   while x.any?
+      #     do_something(x.pop)
+      #   end
+      #
+      # @example
+      #
+      #   # bad
+      #   until x.empty? do
+      #     do_something(x.pop)
+      #   end
+      #
+      #   # good
+      #   until x.empty?
+      #     do_something(x.pop)
+      #   end
       class WhileUntilDo < Cop
         MSG = 'Do not use `do` with multi-line `%<keyword>s`.'.freeze
 
