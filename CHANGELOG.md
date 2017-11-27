@@ -70,8 +70,8 @@
 * [#5037](https://github.com/bbatsov/rubocop/pull/5037): Make display cop names to enable by default. ([@pocke][])
 * [#4449](https://github.com/bbatsov/rubocop/issues/4449): Make `Layout/IndentHeredoc` aware of line length. ([@pocke][])
 * [#5146](https://github.com/bbatsov/rubocop/pull/5146): Make `--show-cops` option aware of `--force-default-config`. ([@pocke][])
-
 * [#3001](https://github.com/bbatsov/rubocop/issues/3001): Add configuration to `Lint/MissingCopEnableDirective` cop. ([@tdeo][])
+
 ## 0.51.0 (2017-10-18)
 
 ### New features

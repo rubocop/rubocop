@@ -1483,7 +1483,7 @@ Lint/InheritException:
 Lint/MissingCopEnableDirective:
   # Maximum number of consecutive lines the cop can be disabled for.
   # 0 allows only single-line disables
-  # 1 would mean the following is the maximum allowed is:
+  # 1 would mean the maximum allowed is the following:
   #   # rubocop:disable SomeCop
   #   a = 1
   #   # rubocop:enable SomeCop

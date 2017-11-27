@@ -1205,11 +1205,11 @@ x += 1
 # rubocop:enable Layout/SpaceAroundOperators
 ```
 
-### Important attributes
+### Configurable attributes
 
-Attribute | Value
---- | ---
-MaximumRangeSize | Infinity
+Name | Default value | Configurable values
+--- | --- | ---
+MaximumRangeSize | `Infinity` | Float
 
 ## Lint/MultipleCompare
 
