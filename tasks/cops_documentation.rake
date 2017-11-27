@@ -90,6 +90,8 @@ task generate_cops_documentation: :yard_for_generate_documentation do
         'String'
       when Integer
         'Integer'
+      when Float
+        'Float'
       when true, false
         'Boolean'
       when Array
