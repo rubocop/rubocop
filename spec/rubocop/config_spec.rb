@@ -266,6 +266,43 @@ describe RuboCop::Config do
           )
       end
     end
+
+    context 'when the configuration includes Lint/Syntax cop' do
+      before do
+        # Force reloading default configuration
+        RuboCop::ConfigLoader.default_configuration = nil
+      end
+
+      context 'when the configuration matches the default' do
+        before do
+          create_file(configuration_path, <<-YAML.strip_indent)
+            Lint/Syntax:
+              Enabled: true
+          YAML
+        end
+
+        it 'does not raise validation error' do
+          expect { configuration.validate }.not_to raise_error
+        end
+      end
+
+      context 'when the configuration does not match the default' do
+        before do
+          create_file(configuration_path, <<-YAML.strip_indent)
+            Lint/Syntax:
+              Enabled: false
+          YAML
+        end
+
+        it 'raises validation error' do
+          expect { configuration.validate }
+            .to raise_error(
+              RuboCop::ValidationError,
+              /configuration for Syntax cop found/
+            )
+        end
+      end
+    end
   end
 
   describe '#make_excludes_absolute' do

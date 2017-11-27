@@ -72,6 +72,7 @@
 * [#4449](https://github.com/bbatsov/rubocop/issues/4449): Make `Layout/IndentHeredoc` aware of line length. ([@pocke][])
 * [#5146](https://github.com/bbatsov/rubocop/pull/5146): Make `--show-cops` option aware of `--force-default-config`. ([@pocke][])
 * [#3001](https://github.com/bbatsov/rubocop/issues/3001): Add configuration to `Lint/MissingCopEnableDirective` cop. ([@tdeo][])
+* [#4932](https://github.com/bbatsov/rubocop/issues/4932): Do not fail if configuration contains `Lint/Syntax` cop with the same settings as the default. ([@tdeo][])
 
 ## 0.51.0 (2017-10-18)
 
