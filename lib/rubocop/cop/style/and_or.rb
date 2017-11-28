@@ -7,32 +7,34 @@ module RuboCop
       # `|| instead`. It can be configured to check only in conditions, or in
       # all contexts.
       #
-      # @example
-      #
-      #   # EnforcedStyle: always (default)
-      #
-      #   # good
-      #   foo.save && return
-      #   if foo && bar
-      #   end
-      #
+      # @example EnforcedStyle: always (default)
       #   # bad
       #   foo.save and return
-      #   if foo and bar
-      #   end
-      #
-      # @example
-      #
-      #   # EnforcedStyle: conditionals
-      #
-      #   # good
-      #   foo.save && return
-      #   foo.save and return
-      #   if foo && bar
-      #   end
       #
       #   # bad
       #   if foo and bar
+      #   end
+      #
+      #   # good
+      #   foo.save && return
+      #
+      #   # good
+      #   if foo && bar
+      #   end
+      #
+      # @example EnforcedStyle: conditionals
+      #   # bad
+      #   if foo and bar
+      #   end
+      #
+      #   # good
+      #   foo.save && return
+      #
+      #   # good
+      #   foo.save and return
+      #
+      #   # good
+      #   if foo && bar
       #   end
       class AndOr < Cop
         include ConfigurableEnforcedStyle
