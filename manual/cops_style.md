@@ -13,23 +13,20 @@ It also flags uses of `alias :symbol` rather than `alias bareword`.
 ### Example
 
 ```ruby
-# EnforcedStyle: prefer_alias
-
-# good
-alias bar foo
-
 # bad
 alias_method :bar, :foo
 alias :bar :foo
+
+# good
+alias bar foo
 ```
 ```ruby
-# EnforcedStyle: prefer_alias_method
+# bad
+alias :bar :foo
+alias bar foo
 
 # good
 alias_method :bar, :foo
-
-# bad
-alias bar foo
 ```
 
 ### Configurable attributes

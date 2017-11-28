@@ -7,26 +7,21 @@ module RuboCop
       # depending on configuration.
       # It also flags uses of `alias :symbol` rather than `alias bareword`.
       #
-      # @example
-      #
-      #   # EnforcedStyle: prefer_alias
-      #
-      #   # good
-      #   alias bar foo
-      #
+      # @example EnforcedStyle: prefer_alias (default)
       #   # bad
       #   alias_method :bar, :foo
       #   alias :bar :foo
       #
-      # @example
+      #   # good
+      #   alias bar foo
       #
-      #   # EnforcedStyle: prefer_alias_method
+      # @example EnforcedStyle: prefer_alias_method
+      #   # bad
+      #   alias :bar :foo
+      #   alias bar foo
       #
       #   # good
       #   alias_method :bar, :foo
-      #
-      #   # bad
-      #   alias bar foo
       class Alias < Cop
         include ConfigurableEnforcedStyle
 
