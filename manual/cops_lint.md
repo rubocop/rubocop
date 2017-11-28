@@ -2019,6 +2019,18 @@ their work. Instead, it waits until it's called in a later stage of the
 execution. The reason it can't be implemented as a normal cop is that
 it depends on the results of all other cops to do its work.
 
+### Examples
+
+```ruby
+# bad
+# rubocop:disable Metrics/LineLength
+x += 1
+# rubocop:enable Metrics/LineLength
+
+# good
+x += 1
+```
+
 ## Lint/UnneededRequireStatement
 
 Enabled by default | Supports autocorrection
