@@ -8,7 +8,7 @@ Enabled | No
 
 This cop checks for the use of `Kernel#eval` and `Binding#eval`.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -34,7 +34,7 @@ If reading single values (rather than proper JSON objects), like
 option, like `JSON.parse('false', quirks_mode: true)`.
 Other similar issues may apply.
 
-### Example
+### Examples
 
 ```ruby
 # always offense
@@ -65,7 +65,7 @@ This cop checks for the use of Marshal class methods which have
 potential security issues leading to remote code execution when
 loading from an untrusted source.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -93,7 +93,7 @@ This cop checks for the use of YAML class methods which have
 potential security issues leading to remote code execution when
 loading from an untrusted source.
 
-### Example
+### Examples
 
 ```ruby
 # bad

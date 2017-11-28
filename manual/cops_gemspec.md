@@ -14,7 +14,7 @@ an unintended usage. On the other hand, duplication of methods such
 as `spec.requirements`, `spec.add_runtime_dependency` and others are
 permitted because it is the intended use of appending values.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -55,7 +55,7 @@ Enabled | Yes
 
 Dependencies in the gemspec should be alphabetically sorted.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -122,7 +122,7 @@ of .rubocop.yml are equal.
 Thereby, RuboCop to perform static analysis working on the version
 required by gemspec.
 
-### Example
+### Examples
 
 ```ruby
 # When `TargetRubyVersion` of .rubocop.yml is `2.3`.

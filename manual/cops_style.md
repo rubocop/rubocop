@@ -10,7 +10,9 @@ This cop enforces the use of either `#alias` or `#alias_method`
 depending on configuration.
 It also flags uses of `alias :symbol` rather than `alias bareword`.
 
-### Example
+### Examples
+
+#### EnforcedStyle: prefer_alias (default)
 
 ```ruby
 # bad
@@ -20,6 +22,8 @@ alias :bar :foo
 # good
 alias bar foo
 ```
+#### EnforcedStyle: prefer_alias_method
+
 ```ruby
 # bad
 alias :bar :foo
@@ -49,7 +53,7 @@ This cop checks for uses of `and` and `or`, and suggests using `&&` and
 `|| instead`. It can be configured to check only in conditions, or in
 all contexts.
 
-### Example
+### Examples
 
 ```ruby
 # EnforcedStyle: always (default)
@@ -100,7 +104,7 @@ Not all cases can reliably checked, due to Ruby's dynamic
 types, so we consider only cases when the first argument is an
 array literal or the second is a string literal.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -124,7 +128,7 @@ This cop checks for non-ascii (non-English) characters
 in comments. You could set an array of allowed non-ascii chars in
 AllowedChars attribute (empty by default).
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -152,7 +156,7 @@ Enabled | Yes
 
 This cop checks for uses of Module#attr.
 
-### Example
+### Examples
 
 ```ruby
 # bad - creates a single attribute accessor (deprecated in Ruby 1.9)
@@ -178,7 +182,7 @@ This cop checks for cases when you could use a block
 accepting version of a method that does automatic
 resource cleanup.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -198,7 +202,9 @@ Enabled | Yes
 
 This cop checks if usage of %() or %Q() matches configuration.
 
-### Example
+### Examples
+
+#### EnforcedStyle: bare_percent (default)
 
 ```ruby
 # bad
@@ -209,6 +215,8 @@ This cop checks if usage of %() or %Q() matches configuration.
 %(He said: "#{greeting}")
 %{She said: 'Hi'}
 ```
+#### EnforcedStyle: percent_q
+
 ```ruby
 # bad
 %|He said: "#{greeting}"|
@@ -249,7 +257,7 @@ Enabled | Yes
 
 This cop looks for uses of block comments (=begin...=end).
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -276,7 +284,9 @@ Enabled | Yes
 Check for uses of braces or do/end around single line or
 multi-line blocks.
 
-### Example
+### Examples
+
+#### EnforcedStyle: line_count_based (default)
 
 ```ruby
 # bad - single line block
@@ -297,6 +307,8 @@ things.map do |thing|
   process(something)
 end
 ```
+#### EnforcedStyle: semantic
+
 ```ruby
 # Prefer `do...end` over `{...}` for procedural blocks.
 
@@ -332,6 +344,8 @@ map { |x|
   x
 }.inspect
 ```
+#### EnforcedStyle: braces_for_chaining
+
 ```ruby
 # bad
 words.each do |word|
@@ -367,7 +381,9 @@ This cop checks for braces around the last parameter in a method call
 if the last parameter is a hash.
 It supports `braces`, `no_braces` and `context_dependent` styles.
 
-### Example
+### Examples
+
+#### EnforcedStyle: braces
 
 ```ruby
 # The `braces` style enforces braces around all method
@@ -379,6 +395,8 @@ some_method(x, y, a: 1, b: 2)
 # good
 some_method(x, y, {a: 1, b: 2})
 ```
+#### EnforcedStyle: no_braces (default)
+
 ```ruby
 # The `no_braces` style checks that the last parameter doesn't
 # have braces around it.
@@ -389,6 +407,8 @@ some_method(x, y, {a: 1, b: 2})
 # good
 some_method(x, y, a: 1, b: 2)
 ```
+#### EnforcedStyle: context_dependent
+
 ```ruby
 # The `context_dependent` style checks that the last parameter
 # doesn't have braces around it, but requires braces if the
@@ -417,7 +437,7 @@ Enabled | No
 
 This cop checks for uses of the case equality operator(===).
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -486,7 +506,9 @@ Enabled | Yes
 
 This cop enforces consistent use of `Object#is_a?` or `Object#kind_of?`.
 
-### Example
+### Examples
+
+#### EnforcedStyle: is_a? (default)
 
 ```ruby
 # bad
@@ -497,6 +519,8 @@ var.kind_of?(Integer)
 var.is_a?(Date)
 var.is_a?(Integer)
 ```
+#### EnforcedStyle: kind_of?
+
 ```ruby
 # bad
 var.is_a?(Time)
@@ -522,7 +546,7 @@ Enabled | Yes
 This cop checks for uses of the class/module name instead of
 self, when defining class/module methods.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -590,7 +614,7 @@ Enabled | Yes
 This cop checks for methods invoked via the :: operator instead
 of the . operator (like FileUtils::rmdir instead of FileUtils.rmdir).
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -617,7 +641,7 @@ Enabled | Yes
 This cop checks for class methods that are defined using the `::`
 operator instead of the `.` operator.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -645,7 +669,9 @@ Enabled | Yes
 
 This cop enforces using `` or %x around command literals.
 
-### Example
+### Examples
+
+#### EnforcedStyle: backticks (default)
 
 ```ruby
 # bad
@@ -666,6 +692,8 @@ folders = `find . -type d`.split
   ln -s bar.example.yml bar.example
 `
 ```
+#### EnforcedStyle: mixed
+
 ```ruby
 # bad
 folders = %x(find . -type d).split
@@ -685,6 +713,8 @@ folders = `find . -type d`.split
   ln -s bar.example.yml bar.example
 )
 ```
+#### EnforcedStyle: percent_x
+
 ```ruby
 # bad
 folders = `find . -type d`.split
@@ -704,6 +734,8 @@ folders = %x(find . -type d).split
   ln -s bar.example.yml bar.example
 )
 ```
+#### AllowInnerBackticks: false (default)
+
 ```ruby
 # If `false`, the cop will always recommend using `%x` if one or more
 # backticks are found in the command string.
@@ -714,6 +746,8 @@ folders = %x(find . -type d).split
 # good
 %x(echo `ls`)
 ```
+#### AllowInnerBackticks: true
+
 ```ruby
 # good
 `echo \`ls\``
@@ -739,7 +773,7 @@ Enabled | Yes
 This cop checks that comment annotation keywords are written according
 to guidelines.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -789,7 +823,7 @@ These keywords are: `begin`, `class`, `def`, `end`, `module`.
 Note that some comments (such as `:nodoc:` and `rubocop:disable`) are
 allowed.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -826,7 +860,9 @@ Check for `if` and `case` statements where each branch is used for
 assignment to the same variable when using the return of the
 condition can be used instead.
 
-### Example
+### Examples
+
+#### EnforcedStyle: assign_to_condition (default)
 
 ```ruby
 # bad
@@ -873,6 +909,8 @@ bar << if foo
          2
        end
 ```
+#### EnforcedStyle: assign_inside_condition
+
 ```ruby
 # bad
 bar = if foo
@@ -961,7 +999,7 @@ Enabled | No
 This cop checks for uses of `DateTime` that should be replaced by
 `Date` or `Time`.
 
-### Example
+### Examples
 
 ```ruby
 # bad - uses `DateTime` for current time
@@ -994,7 +1032,7 @@ This cop checks for parentheses in the definition of a method,
 that does not take any arguments. Both instance and
 class/singleton methods are checked.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1036,7 +1074,7 @@ This cop checks for places where the `#__dir__` method can replace more
 complex constructs to retrieve a canonicalized absolute path to the
 current file.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1064,7 +1102,7 @@ The documentation requirement is annulled if the class or module has
 a "#:nodoc:" comment next to it. Likewise, "#:nodoc: all" does the
 same for all its children.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1095,7 +1133,7 @@ This cop checks for missing documentation comment for public methods.
 It can optionally be configured to also require documentation for
 non-public methods.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1160,7 +1198,7 @@ Please, note that when something is a boolean value
 As you're unlikely to write code that can accept values of any type
 this is rarely a problem in practice.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1186,7 +1224,7 @@ using a Range literal and `#each`. This can be done more readably using
 
 This check only applies if the block takes no parameters.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1216,7 +1254,7 @@ the need to return the object at the end.
 However, we can't replace with each_with_object if the accumulator
 parameter is assigned to within the block.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1235,7 +1273,7 @@ Enabled | Yes
 This cop checks for pipes for empty block parameters. Pipes for empty
 block parameters do not cause syntax errors, but they are redundant.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1262,7 +1300,7 @@ Enabled | Yes
 
 This cop checks for case statements with an empty condition.
 
-### Example
+### Examples
 
 ```ruby
 # bad:
@@ -1306,7 +1344,7 @@ explicit `nil` depending on the EnforcedStyle.
 
 SupportedStyles:
 
-### Example
+### Examples
 
 ```ruby
 # good for all styles
@@ -1387,7 +1425,7 @@ This cop checks for parentheses for empty lambda parameters. Parentheses
 for empty lambda parameters do not cause syntax errors, but they are
 redundant.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1409,7 +1447,7 @@ Enabled | Yes
 This cop checks for the use of a method, the result of which
 would be a literal, like an empty array, hash or string.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1441,7 +1479,9 @@ to go on its own line (expanded style).
 Note: A method definition is not considered empty if it contains
       comments.
 
-### Example
+### Examples
+
+#### EnforcedStyle: compact (default)
 
 ```ruby
 # bad
@@ -1460,6 +1500,8 @@ end
 
 def self.foo(bar); end
 ```
+#### EnforcedStyle: expanded
+
 ```ruby
 # bad
 def foo(bar); end
@@ -1517,7 +1559,7 @@ Enabled | Yes
 This cop checks for places where Integer#even? or Integer#odd?
 should have been used.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1541,7 +1583,9 @@ Enabled | Yes
 
 This cop checks that `#module_function` is used over `extend self`.
 
-### Example
+### Examples
+
+#### EnforcedStyle: module_function (default)
 
 ```ruby
 # bad
@@ -1554,6 +1598,8 @@ module Foo
   module_function
 end
 ```
+#### EnforcedStyle: extend_self
+
 ```ruby
 # bad
 module Foo
@@ -1585,7 +1631,7 @@ Enabled | No
 
 This cop looks for uses of flip flop operator
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1638,7 +1684,9 @@ manner for all cases, so only two scenarios are considered -
 if the first argument is a string literal and if the second
 argument is an array literal.
 
-### Example
+### Examples
+
+#### EnforcedStyle: format(default)
 
 ```ruby
 # bad
@@ -1648,6 +1696,8 @@ puts '%10s' % 'hoge'
 # good
 puts format('%10s', 'hoge')
 ```
+#### EnforcedStyle: sprintf
+
 ```ruby
 # bad
 puts format('%10s', 'hoge')
@@ -1656,6 +1706,8 @@ puts '%10s' % 'hoge'
 # good
 puts sprintf('%10s', 'hoge')
 ```
+#### EnforcedStyle: percent
+
 ```ruby
 # bad
 puts format('%10s', 'hoge')
@@ -1683,7 +1735,9 @@ Enabled | No
 
 Use a consistent style for named format string tokens.
 
-### Example
+### Examples
+
+#### EnforcedStyle: annotated (default)
 
 ```ruby
 # bad
@@ -1693,6 +1747,8 @@ format('%s', 'Hello')
 # good
 format('%<greeting>s', greeting: 'Hello')
 ```
+#### EnforcedStyle: template
+
 ```ruby
 # bad
 format('%<greeting>s', greeting: 'Hello')
@@ -1701,6 +1757,8 @@ format('%s', 'Hello')
 # good
 format('%{greeting}', greeting: 'Hello')
 ```
+#### EnforcedStyle: unannotated
+
 ```ruby
 # bad
 format('%<greeting>s', greeting: 'Hello')
@@ -1747,7 +1805,7 @@ users can allow additional variables via the AllowedVariables option.
 
 Note that backreferences like $1, $2, etc are not global variables.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1780,7 +1838,7 @@ Enabled | No
 Use a guard clause instead of wrapping the code inside a conditional
 expression
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1845,7 +1903,9 @@ The supported styles are:
 * ruby19_no_mixed_keys - forces use of ruby 1.9 syntax and forbids mixed
   syntax hashes
 
-### Example
+### Examples
+
+#### EnforcedStyle: ruby19 (default)
 
 ```ruby
 # bad
@@ -1857,6 +1917,8 @@ The supported styles are:
 {:c => 2, 'd' => 2} # acceptable since 'd' isn't a symbol
 {d: 1, 'e' => 2} # technically not forbidden
 ```
+#### EnforcedStyle: hash_rockets
+
 ```ruby
 # bad
 {a: 1, b: 2}
@@ -1865,6 +1927,8 @@ The supported styles are:
 # good
 {:a => 1, :b => 2}
 ```
+#### EnforcedStyle: no_mixed_keys
+
 ```ruby
 # bad
 {:a => 1, b: 2}
@@ -1874,6 +1938,8 @@ The supported styles are:
 {:a => 1, :b => 2}
 {c: 1, d: 2}
 ```
+#### EnforcedStyle: ruby19_no_mixed_keys
+
 ```ruby
 # bad
 {:a => 1, :b => 2}
@@ -1905,7 +1971,7 @@ Enabled | No
 This cop checks for identical lines at the beginning or end of
 each branch of a conditional statement.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1975,7 +2041,7 @@ If the `else` branch of a conditional consists solely of an `if` node,
 it can be combined with the `else` to become an `elsif`.
 This helps to keep the nesting level from getting too deep.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2022,7 +2088,7 @@ Enabled | No
 Checks for if and unless statements used as modifiers of other if or
 unless statements.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2049,7 +2115,7 @@ Enabled | No
 
 Checks for uses of semicolon in if statements.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2074,7 +2140,7 @@ explicit exception class. (This raises a `RuntimeError`. Some projects
 might prefer to use exception classes which more precisely identify the
 nature of the error.)
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2092,7 +2158,7 @@ Enabled | Yes
 
 Use `Kernel#loop` for infinite loops.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2118,7 +2184,7 @@ Disabled | No
 
 This cop checks for trailing inline comments.
 
-### Example
+### Examples
 
 ```ruby
 # good
@@ -2147,7 +2213,7 @@ Methods that are inverted by inverting the return
 of the block that is passed to the method should be defined in
 `InverseBlocks`
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2185,7 +2251,9 @@ single line lambdas, and the method call syntax for multiline lambdas.
 It is configurable to enforce one of the styles for both single line
 and multiline lambdas as well.
 
-### Example
+### Examples
+
+#### EnforcedStyle: line_count_dependent (default)
 
 ```ruby
 # bad
@@ -2200,6 +2268,8 @@ f = lambda do |x|
       x
     end
 ```
+#### EnforcedStyle: lambda
+
 ```ruby
 # bad
 f = ->(x) { x }
@@ -2213,6 +2283,8 @@ f = lambda do |x|
       x
     end
 ```
+#### EnforcedStyle: literal
+
 ```ruby
 # bad
 f = lambda { |x| x }
@@ -2245,7 +2317,9 @@ Enabled | Yes
 
 This cop checks for use of the lambda.(args) syntax.
 
-### Example
+### Examples
+
+#### EnforcedStyle: call (default)
 
 ```ruby
 # bad
@@ -2254,6 +2328,8 @@ lambda.(x, y)
 # good
 lambda.call(x, y)
 ```
+#### EnforcedStyle: braces
+
 ```ruby
 # bad
 lambda.call(x, y)
@@ -2281,7 +2357,7 @@ Enabled | Yes
 This cop checks for string literal concatenation at
 the end of a line.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2306,7 +2382,7 @@ This cop checks presence of parentheses in method calls containing
 parameters. By default, macro methods are ignored. Additional methods
 can be added to the `IgnoredMethods` list.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2360,7 +2436,7 @@ Enabled | Yes
 
 This cop checks for unwanted parentheses in parameterless method calls.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2384,7 +2460,7 @@ This cop checks for methods called on a do...end block. The point of
 this check is that it's easy to miss the call tacked on to the block
 when reading code.
 
-### Example
+### Examples
 
 ```ruby
 a do
@@ -2424,7 +2500,7 @@ Enabled | No
 This cop checks for the presence of `method_missing` without also
 defining `respond_to_missing?` and falling back on `super`.
 
-### Example
+### Examples
 
 ```ruby
 #bad
@@ -2455,7 +2531,7 @@ Enabled | Yes
 
 This cop checks for potential uses of `Enumerable#minmax`.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2479,7 +2555,7 @@ SupportedStyles
 if
 case
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2519,7 +2595,9 @@ This cop checks for grouping of mixins in `class` and `module` bodies.
 By default it enforces mixins to be placed in separate declarations,
 but it can be configured to enforce grouping them in one declaration.
 
-### Example
+### Examples
+
+#### EnforcedStyle: separated (default)
 
 ```ruby
 # bad
@@ -2533,6 +2611,8 @@ class Foo
   include Bar
 end
 ```
+#### EnforcedStyle: grouped
+
 ```ruby
 # bad
 class Foo
@@ -2568,7 +2648,7 @@ Using these at the top level affects the behavior of `Object`.
 There will not be using `include`, `extend` and `prepend` at
 the top level. Let's use it inside `class` or `module`.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2619,7 +2699,9 @@ Supported styles are: module_function, extend_self.
 These offenses are not auto-corrected since there are different
 implications to each approach.
 
-### Example
+### Examples
+
+#### EnforcedStyle: module_function (default)
 
 ```ruby
 # bad
@@ -2634,6 +2716,8 @@ module Test
   # ...
 end
 ```
+#### EnforcedStyle: extend_self
+
 ```ruby
 # bad
 module Test
@@ -2667,7 +2751,7 @@ Enabled | No
 This cop checks for chaining of a block after another block that spans
 multiple lines.
 
-### Example
+### Examples
 
 ```ruby
 Thread.list.find_all do |t|
@@ -2689,7 +2773,7 @@ Enabled | Yes
 
 Checks for uses of if/unless modifiers with multiple-lines bodies.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2713,7 +2797,7 @@ Enabled | Yes
 
 Checks for uses of the `then` keyword in multi-line if statements.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2740,7 +2824,9 @@ Enabled | Yes
 
 This cop checks expressions wrapping styles for multiline memoization.
 
-### Example
+### Examples
+
+#### EnforcedStyle: keyword (default)
 
 ```ruby
 # bad
@@ -2755,6 +2841,8 @@ foo ||= begin
   baz
 end
 ```
+#### EnforcedStyle: braces
+
 ```ruby
 # bad
 foo ||= begin
@@ -2796,7 +2884,7 @@ Enabled | No
 This cop checks against comparing a variable with multiple items, where
 `Array#include?` could be used instead to avoid code repetition.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2817,7 +2905,7 @@ Enabled | Yes
 This cop checks whether some constant value isn't a
 mutable literal (e.g. array or hash).
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2840,7 +2928,9 @@ without else are considered. There are three different styles:
   - prefix
   - postfix
 
-### Example
+### Examples
+
+#### EnforcedStyle: both (default)
 
 ```ruby
 # enforces `unless` for `prefix` and `postfix` conditionals
@@ -2865,6 +2955,8 @@ bar if !foo
 
 bar unless foo
 ```
+#### EnforcedStyle: prefix
+
 ```ruby
 # enforces `unless` for just `prefix` conditionals
 
@@ -2884,6 +2976,8 @@ end
 
 bar if !foo
 ```
+#### EnforcedStyle: postfix
+
 ```ruby
 # enforces `unless` for just `postfix` conditionals
 
@@ -2933,7 +3027,7 @@ Enabled | Yes
 This cop checks for nested use of if, unless, while and until in their
 modifier form.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2956,7 +3050,7 @@ Enabled | Yes
 This cop checks for unparenthesized method calls in the argument list
 of a parenthesized method call.
 
-### Example
+### Examples
 
 ```ruby
 # good
@@ -2992,7 +3086,9 @@ Enabled | Yes
 
 Use `next` to skip iteration instead of a condition at the end.
 
-### Example
+### Examples
+
+#### EnforcedStyle: skip_modifier_ifs (default)
 
 ```ruby
 # bad
@@ -3013,6 +3109,8 @@ end
   puts o unless o == 1
 end
 ```
+#### EnforcedStyle: always
+
 ```ruby
 # With `always` all conditions at the end of an iteration needs to be
 # replaced by next - with `skip_modifier_ifs` the modifier if like
@@ -3056,7 +3154,7 @@ Enabled | Yes
 
 This cop checks for comparison of something with nil using ==.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -3087,7 +3185,7 @@ Non-nil checks are allowed if they are the final nodes of predicate.
     !current_user.nil?
   end
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -3122,7 +3220,7 @@ Enabled | Yes
 
 This cop checks for uses of the keyword `not` instead of `!`.
 
-### Example
+### Examples
 
 ```ruby
 # bad - parentheses are required because of op precedence
@@ -3169,7 +3267,7 @@ Enabled | Yes
 This cop checks for big numeric literals without _ between groups
 of digits in them.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -3218,7 +3316,9 @@ The cop ignores comparisons to global variables, since they are often
 populated with objects which can be compared with integers, but are
 not themselves `Interger` polymorphic.
 
-### Example
+### Examples
+
+#### EnforcedStyle: predicate (default)
 
 ```ruby
 # bad
@@ -3233,6 +3333,8 @@ foo.zero?
 foo.negative?
 bar.baz.positive?
 ```
+#### EnforcedStyle: comparison
+
 ```ruby
 # bad
 
@@ -3281,7 +3383,7 @@ Disabled | No
 This cop checks for options hashes and discourages them if the
 current Ruby version supports keyword arguments.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -3311,7 +3413,7 @@ Enabled | No
 This cop checks for optional arguments to methods
 that do not come at the end of the argument list
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -3338,7 +3440,7 @@ Enabled | Yes
 
 This cop checks for potential usage of the `||=` operator.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -3377,7 +3479,7 @@ Checks for simple usages of parallel assignment.
 This will only complain when the number of variables
 being assigned matched the number of assigning variables.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -3429,7 +3531,7 @@ Specify the 'default' key to set all preferred delimiters at once. You
 can continue to specify individual preferred delimiters to override the
 default.
 
-### Example
+### Examples
 
 ```ruby
 # Style/PercentLiteralDelimiters:
@@ -3480,7 +3582,7 @@ Enabled | Yes
 This cop looks for uses of Perl-style regexp match
 backreferences like $1, $2, etc.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -3505,7 +3607,9 @@ Hash#has_value? where it enforces Hash#key? and Hash#value?
 It is configurable to enforce the inverse, using `verbose` method
 names also.
 
-### Example
+### Examples
+
+#### EnforcedStyle: short (default)
 
 ```ruby
 # bad
@@ -3516,6 +3620,8 @@ Hash#has_value?
 Hash#key?
 Hash#value?
 ```
+#### EnforcedStyle: verbose
+
 ```ruby
 # bad
 Hash#key?
@@ -3545,7 +3651,7 @@ Enabled | Yes
 This cops checks for uses of Proc.new where Kernel#proc
 would be more appropriate.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -3575,7 +3681,9 @@ The exploded style works identically, but with the addition that it
 will also suggest constructing error objects when the exception is
 passed multiple arguments.
 
-### Example
+### Examples
+
+#### EnforcedStyle: exploded (default)
 
 ```ruby
 # bad
@@ -3587,6 +3695,8 @@ fail "message"
 raise MyCustomError.new(arg1, arg2, arg3)
 raise MyKwArgError.new(key1: val1, key2: val2)
 ```
+#### EnforcedStyle: compact
+
 ```ruby
 # bad
 raise StandardError, "message"
@@ -3619,7 +3729,7 @@ added/subtracted with integer literals, as well as those with
 Integer#succ and Integer#pred methods. Prefer using ranges instead,
 as it clearly states the intentions.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -3652,7 +3762,7 @@ This cop checks for redundant `begin` blocks.
 
 Currently it checks for code like this:
 
-### Example
+### Examples
 
 ```ruby
 def redundant
@@ -3684,7 +3794,7 @@ Enabled | Yes
 
 This cop checks for redundant returning of true/false in conditionals.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -3717,7 +3827,7 @@ This cop checks for RuntimeError as the argument of raise/fail.
 
 It checks for code like this:
 
-### Example
+### Examples
 
 ```ruby
 # Bad
@@ -3742,7 +3852,7 @@ Enabled | Yes
 
 This cop check for uses of Object#freeze on immutable objects.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -3760,7 +3870,7 @@ Enabled | Yes
 
 This cop checks for redundant parentheses.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -3781,7 +3891,7 @@ This cop checks for redundant `return` expressions.
 It should be extended to handle methods whose body is if/else
 or a case expression with a default branch.
 
-### Example
+### Examples
 
 ```ruby
 def test
@@ -3828,7 +3938,7 @@ protected scope, you cannot send private messages this way.
 Note we allow uses of `self` with operators because it would be awkward
 otherwise.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -3865,7 +3975,9 @@ Enabled | Yes
 
 This cop enforces using // or %r around regular expressions.
 
-### Example
+### Examples
+
+#### EnforcedStyle: slashes (default)
 
 ```ruby
 # bad
@@ -3888,6 +4000,8 @@ regex = /
   (baz)
 /x
 ```
+#### EnforcedStyle: percent_r
+
 ```ruby
 # bad
 snake_case = /^[\dA-Z_]+$/
@@ -3909,6 +4023,8 @@ regex = %r{
   (baz)
 }x
 ```
+#### EnforcedStyle: mixed
+
 ```ruby
 # bad
 snake_case = %r{^[\dA-Z_]+$}
@@ -3930,6 +4046,8 @@ regex = %r{
   (baz)
 }x
 ```
+#### AllowInnerSlashes: false (default)
+
 ```ruby
 # If `false`, the cop will always recommend using `%r` if one or more
 # slashes are found in the regexp string.
@@ -3940,6 +4058,8 @@ x =~ /home\//
 # good
 x =~ %r{home/}
 ```
+#### AllowInnerSlashes: true
+
 ```ruby
 # good
 x =~ /home\//
@@ -3984,7 +4104,7 @@ if any error other than `StandardError` is specified.
 `explicit` will enforce using `rescue StandardError`
 instead of `rescue`.
 
-### Example
+### Examples
 
 ```ruby
 # good
@@ -4048,7 +4168,9 @@ This cop enforces consistency between 'return nil' and 'return'.
 
 Supported styles are: return, return_nil.
 
-### Example
+### Examples
+
+#### EnforcedStyle: return (default)
 
 ```ruby
 # bad
@@ -4061,6 +4183,8 @@ def foo(arg)
   return if arg
 end
 ```
+#### EnforcedStyle: return_nil
+
 ```ruby
 # bad
 def foo(arg)
@@ -4097,7 +4221,7 @@ of the method is. If this is converted to safe navigation,
 `foo&.bar` can start returning `nil` as well as what the method
 returns.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -4143,7 +4267,7 @@ Enabled | Yes
 
 This cop enforces the use the shorthand for self-assignment.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -4166,7 +4290,7 @@ Enabled | Yes
 This cop checks for multiple expressions placed on the same line.
 It also checks for lines terminated with a semicolon.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -4209,7 +4333,9 @@ Enabled | Yes
 
 This cop checks for uses of `fail` and `raise`.
 
-### Example
+### Examples
+
+#### EnforcedStyle: only_raise (default)
 
 ```ruby
 # The `only_raise` style enforces the sole use of `raise`.
@@ -4243,6 +4369,8 @@ end
 
 Kernel.raise
 ```
+#### EnforcedStyle: only_fail
+
 ```ruby
 # The `only_fail` style enforces the sole use of `fail`.
 # bad
@@ -4275,6 +4403,8 @@ end
 
 Kernel.fail
 ```
+#### EnforcedStyle: semantic
+
 ```ruby
 # The `semantic` style enforces the use of `fail` to signal an
 # exception, then will use `raise` to trigger an offense after
@@ -4349,7 +4479,7 @@ Enabled | Yes
 This cop checks for single-line method definitions that contain a body.
 It will accept single-line methods with no body.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -4400,7 +4530,9 @@ Enabled | Yes
 Check for parentheses around stabby lambda arguments.
 There are two different styles. Defaults to `require_parentheses`.
 
-### Example
+### Examples
+
+#### EnforcedStyle: require_parentheses (default)
 
 ```ruby
 # bad
@@ -4409,6 +4541,8 @@ There are two different styles. Defaults to `require_parentheses`.
 # good
 ->(a,b,c) { a + b + c}
 ```
+#### EnforcedStyle: require_no_parentheses
+
 ```ruby
 # bad
 ->(a,b,c) { a + b + c }
@@ -4437,7 +4571,7 @@ This cop identifies places where `$stderr.puts` can be replaced by
 `warn`. The latter has the advantage of easily being disabled by,
 e.g. the -W0 interpreter flag, or setting $VERBOSE to nil.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -4460,7 +4594,7 @@ Disabled | Yes
 This cop checks for the use of strings as keys in hashes. The use of
 symbols is preferred instead.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -4482,7 +4616,9 @@ Enabled | Yes
 
 Checks if uses of quotes match the configured preference.
 
-### Example
+### Examples
+
+#### EnforcedStyle: single_quotes (default)
 
 ```ruby
 # bad
@@ -4496,6 +4632,8 @@ Checks if uses of quotes match the configured preference.
 'Just text'
 "Wait! What's #{this}!"
 ```
+#### EnforcedStyle: double_quotes
+
 ```ruby
 # bad
 'Just some text'
@@ -4527,7 +4665,9 @@ Enabled | Yes
 This cop checks that quotes inside the string interpolation
 match the configured preference.
 
-### Example
+### Examples
+
+#### EnforcedStyle: single_quotes (default)
 
 ```ruby
 # bad
@@ -4536,6 +4676,8 @@ result = "Tests #{success ? "PASS" : "FAIL"}"
 # good
 result = "Tests #{success ? 'PASS' : 'FAIL'}"
 ```
+#### EnforcedStyle: double_quotes
+
 ```ruby
 # bad
 result = "Tests #{success ? 'PASS' : 'FAIL'}"
@@ -4559,7 +4701,7 @@ Disabled | Yes
 This cop enforces the use of consistent method names
 from the String class.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -4585,7 +4727,7 @@ Enabled | No
 
 This cop checks for inheritance from Struct.new.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -4617,7 +4759,9 @@ If set, arrays with fewer elements than this value will not trigger the
 cop. For example, a `MinSize of `3` will not enforce a style on an array
 of 2 or fewer elements.
 
-### Example
+### Examples
+
+#### EnforcedStyle: percent (default)
 
 ```ruby
 # good
@@ -4626,6 +4770,8 @@ of 2 or fewer elements.
 # bad
 [:foo, :bar, :baz]
 ```
+#### EnforcedStyle: brackets
+
 ```ruby
 # good
 [:foo, :bar, :baz]
@@ -4653,7 +4799,7 @@ Enabled | Yes
 
 This cop checks symbol literal syntax.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -4671,7 +4817,7 @@ Enabled | Yes
 
 Use symbols as procs when possible.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -4698,7 +4844,9 @@ conditions. It is configurable to enforce inclusion or omission of
 parentheses using `EnforcedStyle`. Omission is only enforced when
 removing the parentheses won't cause a different behavior.
 
-### Example
+### Examples
+
+#### EnforcedStyle: require_no_parentheses (default)
 
 ```ruby
 # bad
@@ -4711,6 +4859,8 @@ foo = bar? ? a : b
 foo = bar.baz? ? a : b
 foo = bar && baz ? a : b
 ```
+#### EnforcedStyle: require_parentheses
+
 ```ruby
 # bad
 foo = bar? ? a : b
@@ -4722,6 +4872,8 @@ foo = (bar?) ? a : b
 foo = (bar.baz?) ? a : b
 foo = (bar && baz) ? a : b
 ```
+#### EnforcedStyle: require_parentheses_when_complex
+
 ```ruby
 # bad
 foo = (bar?) ? a : b
@@ -4749,7 +4901,7 @@ Enabled | Yes
 
 This cop checks for trailing code after the method definition.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -4779,7 +4931,9 @@ Enabled | Yes
 
 This cop checks for trailing comma in argument lists.
 
-### Example
+### Examples
+
+#### EnforcedStyleForMultiline: consistent_comma
 
 ```ruby
 # bad
@@ -4797,6 +4951,8 @@ method(
   2,
 )
 ```
+#### EnforcedStyleForMultiline: comma
+
 ```ruby
 # bad
 method(1, 2,)
@@ -4807,6 +4963,8 @@ method(
   2,
 )
 ```
+#### EnforcedStyleForMultiline: no_comma (default)
+
 ```ruby
 # bad
 method(1, 2,)
@@ -4836,7 +4994,9 @@ Enabled | Yes
 
 This cop checks for trailing comma in array and hash literals.
 
-### Example
+### Examples
+
+#### EnforcedStyleForMultiline: consistent_comma
 
 ```ruby
 # bad
@@ -4854,6 +5014,8 @@ a = [
   2,
 ]
 ```
+#### EnforcedStyleForMultiline: comma
+
 ```ruby
 # bad
 a = [1, 2,]
@@ -4864,6 +5026,8 @@ a = [
   2,
 ]
 ```
+#### EnforcedStyleForMultiline: no_comma (default)
+
 ```ruby
 # bad
 a = [1, 2,]
@@ -4893,7 +5057,7 @@ Enabled | Yes
 
 This cop checks for trailing code after the method definition.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -4932,7 +5096,7 @@ Enabled | Yes
 
 This cop checks for extra underscores in variable assignment.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -4968,7 +5132,7 @@ Enabled | Yes
 This cop looks for trivial reader/writer methods, that could
 have been created with the attr_* family of functions automatically.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -5015,7 +5179,7 @@ Enabled | Yes
 
 This cop looks for *unless* expressions with *else* clauses.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -5045,7 +5209,7 @@ Enabled | Yes
 
 This cop checks for usage of the %W() syntax when %w() would do.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -5066,7 +5230,7 @@ Enabled | Yes
 
 This cop checks for strings that are just an interpolated expression.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -5099,7 +5263,7 @@ Enabled | Yes
 
 This cop checks for variable interpolation (like "#@ivar").
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -5125,7 +5289,7 @@ Enabled | Yes
 
 This cop checks for *when;* uses in *case* expressions.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -5153,7 +5317,7 @@ Enabled | Yes
 
 Checks for uses of `do` in multi-line `while/until` statements.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -5192,7 +5356,7 @@ Checks for while and until statements that would fit on one line
 if written as a modifier while/until. The maximum line length is
 configured in the `Metrics/LineLength` cop.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -5234,7 +5398,9 @@ If set, arrays with fewer elements than this value will not trigger the
 cop. For example, a `MinSize` of `3` will not enforce a style on an
 array of 2 or fewer elements.
 
-### Example
+### Examples
+
+#### EnforcedStyle: percent (default)
 
 ```ruby
 # good
@@ -5243,6 +5409,8 @@ array of 2 or fewer elements.
 # bad
 ['foo', 'bar', 'baz']
 ```
+#### EnforcedStyle: brackets
+
 ```ruby
 # good
 ['foo', 'bar', 'baz']
@@ -5273,7 +5441,9 @@ This cop checks for Yoda conditions, i.e. comparison operations where
 readability is reduced because the operands are not ordered the same
 way as they would be ordered in spoken English.
 
-### Example
+### Examples
+
+#### EnforcedStyle: all_comparison_operators (default)
 
 ```ruby
 # bad
@@ -5288,6 +5458,8 @@ foo == "bar"
 foo <= 42
 bar > 10
 ```
+#### EnforcedStyle: equality_operators_only
+
 ```ruby
 # bad
 99 == foo
@@ -5320,7 +5492,7 @@ receiver.length > 0, receiver.length != 0,
 receiver.length < 1 and receiver.size == 0 that can be
 replaced by receiver.empty? and !receiver.empty.
 
-### Example
+### Examples
 
 ```ruby
 # bad

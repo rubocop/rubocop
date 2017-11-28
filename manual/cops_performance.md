@@ -9,7 +9,7 @@ Enabled | No
 This cop identifies places where `caller[n]`
 can be replaced by `caller(n..n).first`.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -48,7 +48,7 @@ hitting a condition in the splat expansion, it is possible that
 moving the splat condition to the end will use more memory,
 and run slightly slower.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -91,7 +91,7 @@ Enabled | Yes
 This cop identifies places where a case-insensitive string comparison
 can better be implemented using `casecmp`.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -120,7 +120,7 @@ This cop identifies places where `sort { |a, b| a.foo <=> b.foo }`
 can be replaced by `sort_by(&:foo)`.
 This cop also checks `max` and `min` methods.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -163,7 +163,7 @@ Example:
 
   Model.where(id: [1, 2, 3]).to_a.count { |m| m.method == true }
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -205,7 +205,7 @@ and change them to use `detect` instead.
 own meaning. Correcting ActiveRecord methods with this cop should be
 considered unsafe.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -239,7 +239,7 @@ This cop checks for double `#start_with?` or `#end_with?` calls
 separated by `||`. In some cases such calls can be replaced
 with an single `#start_with?`/`#end_with?` call.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -268,7 +268,7 @@ Enabled | Yes
 This cop identifies unnecessary use of a regex where `String#end_with?`
 would suffice.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -305,7 +305,7 @@ Enabled | Yes
 
 This cop is used to identify usages of
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -340,7 +340,7 @@ Note: If you have an array of two-element arrays, you can put
   parentheses around the block arguments to indicate that you're not
   working with a hash, and suppress RuboCop offenses.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -373,7 +373,7 @@ Enabled | Yes
 This cop identifies places where `lstrip.rstrip` can be replaced by
 `strip`.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -414,7 +414,7 @@ Enabled | Yes
 This cop identifies the use of a `&block` parameter and `block.call`
 where `yield` would do just as well.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -448,7 +448,7 @@ This cop identifies the use of `Regexp#match` or `String#match`, which
 returns `#<MatchData>`/`nil`. The return value of `=~` is an integral
 index/`nil` and is more performant.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -471,7 +471,7 @@ Enabled | Yes
 This cop identifies places where `Hash#merge!` can be replaced by
 `Hash#[]=`.
 
-### Example
+### Examples
 
 ```ruby
 hash.merge!(a: 1)
@@ -498,7 +498,7 @@ Enabled | Yes
 This cop identifies places where `sort_by { ... }` can be replaced by
 `sort`.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -523,7 +523,7 @@ Because the methods avoid creating a `MatchData` object or saving
 backref.
 So, when `MatchData` is not used, use `match?` instead of `match`.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -585,7 +585,7 @@ Enabled | Yes
 This cop is used to identify usages of `reverse.each` and
 change them to use `reverse_each` instead.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -608,7 +608,7 @@ Enabled | Yes
 This cop is used to identify usages of `shuffle.first`, `shuffle.last`
 and `shuffle[]` and change them to use `sample` instead.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -646,7 +646,7 @@ This cop is used to identify usages of `count` on an
 TODO: Add advanced detection of variables that could
 have been assigned to an array or a hash.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -678,7 +678,7 @@ Enabled | Yes
 This cop identifies unnecessary use of a regex where
 `String#start_with?` would suffice.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -708,7 +708,7 @@ Enabled | Yes
 This cop identifies places where `gsub` can be replaced by
 `tr` or `delete`.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -738,7 +738,7 @@ This cop checks for .times.map calls.
 In most cases such calls can be replaced
 with an explicit array creation.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -773,7 +773,7 @@ These differ in encoding. `String.new.encoding` is always `ASCII-8BIT`.
 However, `(+'').encoding` is the same as script encoding(e.g. `UTF-8`).
 So, if you expect `ASCII-8BIT` encoding, disable this cop.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -797,7 +797,7 @@ Enabled | Yes
 This cop identifies places where `URI::Parser.new`
 can be replaced by `URI::DEFAULT_PARSER`.
 
-### Example
+### Examples
 
 ```ruby
 # bad

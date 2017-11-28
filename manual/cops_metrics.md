@@ -203,7 +203,7 @@ the cop treats it as an `if`/`elsif`/`elsif`... and lets all the `when`
 nodes count. In contrast to the CyclomaticComplexity cop, this cop
 considers `else` nodes as adding complexity.
 
-### Example
+### Examples
 
 ```ruby
 def my_method                   # 1

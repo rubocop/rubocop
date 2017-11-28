@@ -8,7 +8,7 @@ Enabled | No
 
 This cop makes sure that accessor methods are named properly.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -40,7 +40,7 @@ Enabled | No
 
 This cop checks for non-ascii characters in identifier names.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -85,7 +85,7 @@ Enabled | No
 This cop makes sure that certain binary operator methods have their
 sole  parameter named `other`.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -108,7 +108,7 @@ Enabled | No
 This cops checks for class and module names with
 an underscore in them.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -140,7 +140,7 @@ SCREAMING_SNAKE_CASE.
 To avoid false positives, it ignores cases in which we cannot know
 for certain the type of value that would be assigned to a constant.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -166,7 +166,7 @@ This cop makes sure that Ruby source files have snake_case
 names. Ruby scripts (i.e. source files with a shebang in the
 first line) are ignored.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -203,7 +203,9 @@ Enabled | No
 This cop checks that your heredocs are using the configured case.
 By default it is configured to enforce uppercase heredocs.
 
-### Example
+### Examples
+
+#### EnforcedStyle: uppercase (default)
 
 ```ruby
 # bad
@@ -216,6 +218,8 @@ sql
   SELECT * FROM foo
 SQL
 ```
+#### EnforcedStyle: lowercase
+
 ```ruby
 # bad
 <<-SQL
@@ -248,7 +252,7 @@ This cop checks that your heredocs are using meaningful delimiters.
 By default it disallows `END` and `EO*`, and can be configured through
 blacklisting additional delimiters.
 
-### Example
+### Examples
 
 ```ruby
 # good
@@ -286,7 +290,9 @@ Enabled | No
 This cop makes sure that all methods use the configured style,
 snake_case or camelCase, for their names.
 
-### Example
+### Examples
+
+#### EnforcedStyle: snake_case (default)
 
 ```ruby
 # bad
@@ -295,6 +301,8 @@ def fooBar; end
 # good
 def foo_bar; end
 ```
+#### EnforcedStyle: camelCase
+
 ```ruby
 # bad
 def foo_bar; end
@@ -321,7 +329,7 @@ Enabled | No
 
 This cop makes sure that predicates are named properly.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -364,7 +372,9 @@ Enabled | No
 This cop makes sure that all variables use the configured style,
 snake_case or camelCase, for their names.
 
-### Example
+### Examples
+
+#### EnforcedStyle: snake_case (default)
 
 ```ruby
 # bad
@@ -373,6 +383,8 @@ fooBar = 1
 # good
 foo_bar = 1
 ```
+#### EnforcedStyle: camelCase
+
 ```ruby
 # bad
 foo_bar = 1
@@ -401,7 +413,9 @@ This cop makes sure that all numbered variables use the
 configured style, snake_case, normalcase or non_integer,
 for their numbering.
 
-### Example
+### Examples
+
+#### EnforcedStyle: snake_case
 
 ```ruby
 # bad
@@ -412,6 +426,8 @@ variable1 = 1
 
 variable_1 = 1
 ```
+#### EnforcedStyle: normalcase (default)
+
 ```ruby
 # bad
 
@@ -421,6 +437,8 @@ variable_1 = 1
 
 variable1 = 1
 ```
+#### EnforcedStyle: non_integer
+
 ```ruby
 # bad
 

@@ -9,7 +9,7 @@ Enabled | No
 This cop checks for ambiguous block association with method
 when param passed without parentheses.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -42,7 +42,7 @@ Enabled | No
 This cop checks for ambiguous operators in the first argument of a
 method invocation without parentheses.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -71,7 +71,7 @@ Enabled | No
 This cop checks for ambiguous regexp literals in the first argument of
 a method invocation without parentheses.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -97,7 +97,7 @@ Enabled | No
 This cop checks for assignments in the conditions of
 if/while/until.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -145,7 +145,9 @@ start of the line where the expression started.
 `either` (which is the default) : the `end` is allowed to be in either
 location. The autofixer will default to `start_of_line`.
 
-### Example
+### Examples
+
+#### EnforcedStyleAlignWith: either (default)
 
 ```ruby
 # bad
@@ -161,6 +163,8 @@ variable = lambda do |i|
   i
 end
 ```
+#### EnforcedStyleAlignWith: start_of_block
+
 ```ruby
 # bad
 
@@ -176,6 +180,8 @@ foo.bar
      baz
    end
 ```
+#### EnforcedStyleAlignWith: start_of_line
+
 ```ruby
 # bad
 
@@ -207,7 +213,7 @@ Enabled | No
 This cop checks for `:true` and `:false` symbols.
 In most cases it would be a typo.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -235,7 +241,7 @@ arguments and optional ordinal arguments.
 
 This cop mirrors a warning produced by MRI since 2.2.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -282,7 +288,7 @@ Enabled | No
 This cop checks for conditions that are not on the same line as
 if/while/until.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -312,7 +318,7 @@ Enabled | No
 
 This cop checks for calls to debugger or pry.
 
-### Example
+### Examples
 
 ```ruby
 # bad (ok during development)
@@ -355,7 +361,9 @@ parameter. If it's set to `start_of_line` (which is the default), the
 keyword is. If it's set to `def`, the `end` shall be aligned with the
 `def` keyword.
 
-### Example
+### Examples
+
+#### EnforcedStyleAlignWith: start_of_line (default)
 
 ```ruby
 # bad
@@ -368,6 +376,8 @@ private def foo
 private def foo
 end
 ```
+#### EnforcedStyleAlignWith: def
+
 ```ruby
 # bad
 
@@ -395,7 +405,7 @@ Enabled | Yes
 
 This cop checks for uses of the deprecated class method usages.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -417,7 +427,7 @@ Enabled | No
 This cop checks that there are no repeated conditions
 used in case 'when' expressions.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -449,7 +459,7 @@ Enabled | No
 This cop checks for duplicated instance (or singleton) method
 definitions.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -493,7 +503,7 @@ This cop checks for duplicated keys in hash literals.
 
 This cop mirrors a warning in Ruby 2.2.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -518,7 +528,7 @@ make calls on to build something based on the enumerable that
 each_with_object iterates over, an immutable argument makes no sense.
 It's definitely a bug.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -542,7 +552,7 @@ This cop checks for odd else block layout - like
 having an expression on the same line as the else keyword,
 which is usually a mistake.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -572,7 +582,7 @@ Enabled | Yes
 
 This cop checks for empty `ensure` blocks
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -623,7 +633,7 @@ Enabled | No
 
 This cop checks for the presence of empty expressions.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -650,7 +660,7 @@ Enabled | Yes
 
 This cop checks for empty interpolation.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -671,7 +681,7 @@ Enabled | No
 
 This cop checks for the presence of `when` branches without a body.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -710,7 +720,7 @@ left-hand-side of the variable assignment, if there is one.
 If it's set to `start_of_line`, the `end` shall be aligned with the
 start of the line where the matching keyword appears.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -718,6 +728,8 @@ start of the line where the matching keyword appears.
 variable = if true
     end
 ```
+#### EnforcedStyleAlignWith: keyword (default)
+
 ```ruby
 # bad
 
@@ -729,6 +741,8 @@ variable = if true
 variable = if true
            end
 ```
+#### EnforcedStyleAlignWith: variable
+
 ```ruby
 # bad
 
@@ -740,6 +754,8 @@ variable = if true
 variable = if true
 end
 ```
+#### EnforcedStyleAlignWith: start_of_line
+
 ```ruby
 # bad
 
@@ -767,7 +783,7 @@ Enabled | No
 
 This cop checks for END blocks in method definitions.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -798,7 +814,7 @@ Enabled | No
 
 This cop checks for *return* from an *ensure* block.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -834,7 +850,7 @@ This cop identifies Float literals which are, like, really really really
 really really really really really big. Too big. No-one needs Floats
 that big. If you need a float that big, something is wrong with you.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -857,7 +873,7 @@ This lint sees if there is a mismatch between the number of
 expected fields for format/sprintf/#% and what is actually
 passed as arguments.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -878,7 +894,7 @@ Enabled | No
 
 This cop checks for *rescue* blocks with no body.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -930,7 +946,7 @@ Enabled | No
 This cop checks for implicit string concatenation of string literals
 which are on the same line.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -959,7 +975,7 @@ applied to a singleton method. These access modifiers do not make
 singleton methods private/protected. `private_class_method` can be
 used for that.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1008,7 +1024,9 @@ and its standard library subclasses, excluding subclasses of
 `StandardError`. It is configurable to suggest using either
 `RuntimeError` (default) or `StandardError` instead.
 
-### Example
+### Examples
+
+#### EnforcedStyle: runtime_error (default)
 
 ```ruby
 # bad
@@ -1019,6 +1037,8 @@ class C < Exception; end
 
 class C < RuntimeError; end
 ```
+#### EnforcedStyle: standard_error
+
 ```ruby
 # bad
 
@@ -1043,7 +1063,7 @@ Enabled | No
 
 This cop checks for interpolation in a single quoted string.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1066,7 +1086,7 @@ This cop checks for literals used as the conditions or as
 operands in and/or expressions serving as the conditions of
 if/while/until.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1098,7 +1118,7 @@ Enabled | Yes
 
 This cop checks for interpolated literals.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1119,7 +1139,7 @@ Enabled | No
 
 This cop checks for uses of *begin...end while/until something*.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1169,7 +1189,7 @@ after a `# rubocop:disable ...` statement. This will prevent leaving
 cop disables on wide ranges of code, that latter contributors to
 a file wouldn't be aware of.
 
-### Example
+### Examples
 
 ```ruby
 # Lint/MissingCopEnableDirective:
@@ -1222,7 +1242,7 @@ multiple value. However, we can't use the comparison in Ruby. However,
 the comparison is not syntax error. This cop checks the bad usage of
 comparison operators.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1245,7 +1265,7 @@ Enabled | No
 
 This cop checks for nested method definitions.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1306,7 +1326,7 @@ Enabled | No
 
 This cop checks for nested percent literals.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1327,7 +1347,7 @@ Enabled | No
 
 Don't omit the accumulator when calling `next` in a `reduce` block.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1363,7 +1383,7 @@ value. It registers an offense under these conditions:
  - the return is not contained in an inner scope, e.g. a lambda or a
    method definition.
 
-### Example
+### Examples
 
 ```ruby
 class ItemApi
@@ -1398,7 +1418,7 @@ Enabled | No
 Checks for space between the name of a called method and a left
 parenthesis.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1427,7 +1447,7 @@ It is more likely that the additional characters are unintended (for
 example, mistranslating an array of literals to percent string notation)
 rather than meant to be part of the resulting strings.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1452,7 +1472,7 @@ It is more likely that the additional characters are unintended (for
 example, mistranslating an array of literals to percent string notation)
 rather than meant to be part of the resulting symbols.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1474,7 +1494,7 @@ Enabled | No
 This cop checks for `rand(1)` calls.
 Such calls always return `0`.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1498,7 +1518,7 @@ Enabled | Yes
 
 This cop checks for redundant `with_index`.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1530,7 +1550,7 @@ Enabled | Yes
 
 This cop checks for redundant `with_object`.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1563,7 +1583,7 @@ Enabled | No
 This cop checks for regexp literals used as `match-current-line`.
 If a regexp literal is in condition, the regexp matches `$_` implicitly.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1592,7 +1612,7 @@ The idea behind warning for these constructs is that the user might
 be under the impression that the return value from the method call is
 an operand of &&/||.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1617,7 +1637,7 @@ Enabled | No
 
 This cop checks for *rescue* blocks targeting the Exception class.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1651,7 +1671,7 @@ Enabled | Yes
 Check for arguments to `rescue` that will result in a `TypeError`
 if an exception is raised.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1692,7 +1712,7 @@ Enabled | No
 This cop checks for the use of a return with a value in a context
 where the value will be ignored. (initialize and setter methods)
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1731,7 +1751,7 @@ navigation operator, it raises NoMethodError.  We should use a
 safe navigation operator after a safe navigation operator.
 This cop checks for the problem outlined above.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1770,7 +1790,7 @@ Enabled | No
 
 This cop checks for shadowed arguments.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1819,7 +1839,7 @@ This cop checks for a rescued exception that get shadowed by a
 less specific exception being rescued before a more specific
 exception is rescued.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1868,7 +1888,7 @@ for block arguments or block local variables.
 This is a mimic of the warning
 "shadowing outer local variable - foo" from `ruby -cw`.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1902,7 +1922,7 @@ Enabled | Yes
 This cop checks for string conversion in string interpolation,
 which is redundant.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1937,7 +1957,7 @@ Enabled | No
 This cop checks for underscore-prefixed variables that are actually
 used.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1969,7 +1989,7 @@ Enabled | Yes
 
 This cop checks for using Fixnum or Bignum constant.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2016,7 +2036,7 @@ ruby 2.2.8p477 (2017-09-14 revision 59906) [x86_64-darwin13]
 
 This cop targets Ruby 2.2 or higher containing these 4 features.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2035,7 +2055,7 @@ Enabled | Yes
 
 This cop checks for unneeded usages of splat expansion
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2091,7 +2111,7 @@ This cop checks for unreachable code.
 The check are based on the presence of flow of control
 statement in non-final position in *begin*(implicit) blocks.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2128,7 +2148,7 @@ Enabled | Yes
 
 This cop checks for unused block arguments.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2180,7 +2200,7 @@ Enabled | Yes
 
 This cop checks for unused method arguments.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2221,7 +2241,7 @@ Also this cop identifies places where `URI.unescape` can be replaced by
 `CGI.unescape`, `URI.decode_www_form` or `URI.decode_www_form_component`
 depending on your specific use case.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2252,7 +2272,7 @@ Enabled | Yes
 This cop identifies places where `URI.regexp` is obsolete and should
 not be used. Instead, use `URI::DEFAULT_PARSER.make_regexp`.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2274,7 +2294,7 @@ class or module body. Conditionally-defined methods are considered as
 always being defined, and thus access modifiers guarding such methods
 are not redundant.
 
-### Example
+### Examples
 
 ```ruby
 class Foo
@@ -2380,7 +2400,7 @@ Currently this cop has advanced logic that detects unreferenced
 reassignments and properly handles varied cases such as branch, loop,
 rescue, ensure, etc.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2411,7 +2431,7 @@ Enabled | No
 
 This cop checks for comparison of something with itself.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2427,7 +2447,7 @@ Enabled | No
 
 This cop checks for useless `else` in `begin..end` without `rescue`.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2459,7 +2479,7 @@ Enabled | No
 This cop checks for setter call to local variable as the final
 expression of a function definition.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -2488,7 +2508,7 @@ Enabled | No
 This cop checks for operators, variables and literals used
 in void context.
 
-### Example
+### Examples
 
 ```ruby
 # bad
