@@ -10,6 +10,14 @@ describe RuboCop::Cop::Naming::ConstantName do
     RUBY
   end
 
+  it 'registers an offense for camel case in const name' \
+     'when using frozen object assignment' do
+    expect_offense(<<-RUBY.strip_indent)
+      TopCase = 5.freeze
+      ^^^^^^^ Use SCREAMING_SNAKE_CASE for constants.
+    RUBY
+  end
+
   it 'registers offenses for camel case in multiple const assignment' do
     expect_offense(<<-RUBY.strip_indent)
       TopCase, Test2, TEST_3 = 5, 6, 7
