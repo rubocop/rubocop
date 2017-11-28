@@ -21,7 +21,11 @@ RSpec::Core::RakeTask.new(:spec) { |t| t.ruby_opts = '-E UTF-8' }
 RSpec::Core::RakeTask.new(:ascii_spec) { |t| t.ruby_opts = '-E ASCII' }
 
 desc 'Run test and RuboCop in parallel'
-task parallel: %i[parallel:spec parallel:ascii_spec internal_investigation]
+task parallel: %i[
+  parallel:spec parallel:ascii_spec
+  internal_investigation
+  documentation_syntax_check generate_cops_documentation
+]
 
 namespace :parallel do
   desc 'Run RSpec in parallel'
@@ -49,7 +53,11 @@ RuboCop::RakeTask.new(:internal_investigation).tap do |task|
   end
 end
 
-task default: %i[spec ascii_spec internal_investigation]
+task default: %i[
+  spec ascii_spec
+  internal_investigation
+  documentation_syntax_check generate_cops_documentation
+]
 
 require 'yard'
 YARD::Rake::YardocTask.new
@@ -119,6 +127,7 @@ task documentation_syntax_check: :yard_for_generate_documentation do
     # TODO: parser cannot parse the example, so skip it.
     #       https://github.com/whitequark/parser/issues/407
     next if cop == RuboCop::Cop::Layout::SpaceAroundKeyword
+    next if %i[RSpec Capybara FactoryBot].include?(cop.department)
     examples = YARD::Registry.all(:class).find do |code_object|
       next unless RuboCop::Cop::Badge.for(code_object.to_s) == cop.badge
       break code_object.tags('example')
