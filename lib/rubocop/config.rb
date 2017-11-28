@@ -415,7 +415,7 @@ module RuboCop
       syntax_config = self['Lint/Syntax'] || self['Syntax']
       default_config = ConfigLoader.default_configuration['Lint/Syntax']
 
-      return unless syntax_config && \
+      return unless syntax_config &&
                     default_config.merge(syntax_config) != default_config
 
       raise ValidationError,
