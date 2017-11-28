@@ -8,7 +8,7 @@ Enabled | No
 
 A Gem's requirements should be listed only once in a Gemfile.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -58,7 +58,7 @@ For example, when specifying an internal gem server using HTTP on the
 intranet, a use case where HTTPS can not be specified was considered.
 Consider using HTTP only if you can not use HTTPS.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -85,7 +85,7 @@ Enabled | Yes
 
 Gems should be alphabetically sorted within groups.
 
-### Example
+### Examples
 
 ```ruby
 # bad

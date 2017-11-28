@@ -25,9 +25,10 @@ task generate_cops_documentation: :yard_for_generate_documentation do
   end
 
   def examples(examples_object)
-    content = h3('Example')
-    content += examples_object.map { |e| code_example(e) }.join
-    content
+    examples_object.each_with_object(h3('Examples').dup) do |example, content|
+      content << h4(example.name) unless example.name == ''
+      content << code_example(example)
+    end
   end
 
   def properties(config, cop)
@@ -50,6 +51,12 @@ task generate_cops_documentation: :yard_for_generate_documentation do
   def h3(title)
     content = "\n".dup
     content << "### #{title}\n"
+    content << "\n"
+    content
+  end
+
+  def h4(title)
+    content = "#### #{title}\n".dup
     content << "\n"
     content
   end

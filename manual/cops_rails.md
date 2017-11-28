@@ -14,7 +14,7 @@ something_filter methods or the newer something_action methods.
 If the TargetRailsVersion is set to less than 4.0, the cop will enforce
 the use of filter methods.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -44,7 +44,7 @@ Enabled | Yes
 This cop checks that ActiveSupport aliases to core ruby methods
 are not used.
 
-### Example
+### Examples
 
 ```ruby
 # good
@@ -68,7 +68,7 @@ Enabled | Yes
 
 This cop checks that jobs subclass ApplicationJob with Rails 5.0.
 
-### Example
+### Examples
 
 ```ruby
 # good
@@ -90,7 +90,7 @@ Enabled | Yes
 
 This cop checks that models subclass ApplicationRecord with Rails 5.0.
 
-### Example
+### Examples
 
 ```ruby
 # good
@@ -116,7 +116,7 @@ Settings:
   NotPresent: Convert usages of not `present?` to `blank?`
   UnlessPresent: Convert usages of `unless` `present?` to `blank?`
 
-### Example
+### Examples
 
 ```ruby
 # NilOrEmpty: true
@@ -166,7 +166,7 @@ This cop checks the migration for which timestamps are not included
 when creating a new table.
 In many cases, timestamps are useful information and should be added.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -232,7 +232,7 @@ and 'to_time_in_current_zone' is reported as warning.
 When EnforcedStyle is 'flexible' then only 'Date.today' is prohibited
 and only 'to_time' is reported as warning.
 
-### Example
+### Examples
 
 ```ruby
 # no offense
@@ -275,7 +275,7 @@ using the target object as a prefix of the method name
 without using the `delegate` method will be a violation.
 When set to `false`, this case is legal.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -332,7 +332,7 @@ This cop looks for delegations that pass :allow_blank as an option
 instead of :allow_nil. :allow_blank is not a valid option to pass
 to ActiveSupport#delegate.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -352,7 +352,7 @@ This cop checks dynamic `find_by_*` methods.
 Use `find_by` instead of dynamic method.
 See. https://github.com/bbatsov/rails-style-guide#find_by
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -392,7 +392,7 @@ Enabled | No
 
 This cop looks for duplicate values in enum declarations.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -423,7 +423,7 @@ Enabled | Yes
 This cop checks that Rails.env is compared using `.production?`-like
 methods instead of equality against a string or symbol.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -456,7 +456,7 @@ is used.)
 the program exiting, which could result in the code failing to run and
 do its job.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -482,7 +482,7 @@ Enabled | No
 This cop is used to identify usages of file path joining process
 to use `Rails.root.join` clause.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -503,7 +503,7 @@ Enabled | Yes
 This cop is used to identify usages of `where.first` and
 change them to use `find_by` instead.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -533,7 +533,7 @@ Enabled | Yes
 This cop is used to identify usages of `all.each` and
 change them to use `all.find_each` instead.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -561,7 +561,7 @@ Enabled | No
 
 This cop checks for the use of the has_and_belongs_to_many macro.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -591,7 +591,7 @@ This cop looks for `has_many` or `has_one` associations that don't
 specify a `:dependent` option.
 It doesn't register an offense if `:through` option was specified.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -631,7 +631,7 @@ If you are running Rails < 5 you should disable the
 Rails/HttpPositionalArguments cop or set your TargetRailsVersion in your
 .rubocop.yml file to 4.0, etc.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -659,7 +659,7 @@ because of a scope or the options used. This can result in unnecessary
 queries in some circumstances. `:inverse_of` must be manually specified
 for associations to work in both ways, or set to `false` to opt-out.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -691,7 +691,7 @@ Enabled | No
 This cop checks for add_column call with NOT NULL constraint
 in migration file.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -719,7 +719,7 @@ Enabled | No
 
 This cop checks for the use of output calls like puts and print
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -749,7 +749,7 @@ simply return a SafeBuffer containing the content as is. Instead,
 use safe_join to join content and escape it and concat to
 concatenate content and escape it, ensuring its safety.
 
-### Example
+### Examples
 
 ```ruby
 user_content = "<b>hi</b>"
@@ -815,7 +815,7 @@ Enabled | Yes
 This cop checks for correct grammar when using ActiveSupport's
 core extensions to the numeric classes.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -840,7 +840,7 @@ Settings:
   NotBlank: Convert usages of not `blank?` to `present?`
   UnlessBlank: Convert usages of `unless` `blank?` to `if` `present?`
 
-### Example
+### Examples
 
 ```ruby
 # NotNilAndNotEmpty: true
@@ -885,7 +885,7 @@ Enabled | Yes
 This cop checks for the use of the read_attribute or
 write_attribute methods.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -916,7 +916,7 @@ Enabled | Yes
 This cop checks whether constant value isn't relative date.
 Because the relative date will be evaluated only once.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -941,7 +941,7 @@ Enabled | Yes
 This cop checks for consistent uses of `request.referer` or
 `request.referrer`, depending on the cop's configuration.
 
-### Example
+### Examples
 
 ```ruby
 # EnforcedStyle: referer
@@ -974,7 +974,7 @@ Enabled | No
 This cop checks whether the change method of the migration file is
 reversible.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1116,7 +1116,7 @@ This cop converts usages of `try!` to `&.`. It can also be configured
 to convert `try`. It will convert code to use safe navigation if the
 target Ruby version is set to 2.3+
 
-### Example
+### Examples
 
 ```ruby
 # ConvertTry: false
@@ -1174,7 +1174,7 @@ variable that has a call to `persisted?`. Finally, it will ignore any
 call with more than 2 arguments as that is likely not an Active Record
 call or a Model.update(id, attributes) call.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1211,7 +1211,7 @@ Enabled | No
 This cop checks for scope calls where it was passed
 a method (usually a scope) instead of a lambda/proc.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1237,7 +1237,7 @@ This cop checks for the use of methods which skip
 validations which are listed in
 http://guides.rubyonrails.org/active_record_validations.html#skipping-validations
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1284,7 +1284,7 @@ then only use of Time.zone is allowed.
 When EnforcedStyle is 'flexible' then it's also allowed
 to use Time.in_time_zone.
 
-### Example
+### Examples
 
 ```ruby
 # always offense
@@ -1335,7 +1335,7 @@ vs a call to pluck on an ActiveRecord::Associations::CollectionProxy.
 Autocorrect is disabled by default for this cop since it may generate
 false positives.
 
-### Example
+### Examples
 
 ```ruby
 # bad
@@ -1368,7 +1368,7 @@ Enabled | No
 This cop checks that environments called with `Rails.env` predicates
 exist.
 
-### Example
+### Examples
 
 ```ruby
 # bad
