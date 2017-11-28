@@ -48,10 +48,6 @@ module RuboCop
         str
       end
 
-      def block_length(block_node)
-        block_node.loc.end.line - block_node.loc.begin.line
-      end
-
       def comment_line?(line_source)
         line_source =~ /^\s*#/
       end

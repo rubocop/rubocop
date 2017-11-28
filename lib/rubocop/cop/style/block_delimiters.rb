@@ -97,7 +97,7 @@ module RuboCop
         private
 
         def line_count_based_message(node)
-          if block_length(node) > 0
+          if node.multiline?
             'Avoid using `{...}` for multi-line blocks.'
           else
             'Prefer `{...}` over `do...end` for single-line blocks.'
@@ -115,7 +115,7 @@ module RuboCop
         end
 
         def braces_for_chaining_message(node)
-          if block_length(node) > 0
+          if node.multiline?
             if return_value_chaining?(node)
               'Prefer `{...}` over `do...end` for multi-line chained blocks.'
             else
@@ -221,10 +221,9 @@ module RuboCop
         end
 
         def braces_for_chaining_style?(node)
-          block_length = block_length(node)
           block_begin = node.loc.begin.source
 
-          block_begin == if block_length > 0
+          block_begin == if node.multiline?
                            (return_value_chaining?(node) ? '{' : 'do')
                          else
                            '{'
