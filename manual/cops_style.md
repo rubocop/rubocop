@@ -55,30 +55,38 @@ all contexts.
 
 ### Examples
 
+#### EnforcedStyle: always (default)
+
 ```ruby
-# EnforcedStyle: always (default)
+# bad
+foo.save and return
+
+# bad
+if foo and bar
+end
 
 # good
 foo.save && return
-if foo && bar
-end
 
-# bad
-foo.save and return
-if foo and bar
+# good
+if foo && bar
 end
 ```
+#### EnforcedStyle: conditionals
+
 ```ruby
-# EnforcedStyle: conditionals
+# bad
+if foo and bar
+end
 
 # good
 foo.save && return
-foo.save and return
-if foo && bar
-end
 
-# bad
-if foo and bar
+# good
+foo.save and return
+
+# good
+if foo && bar
 end
 ```
 
