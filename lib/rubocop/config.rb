@@ -412,7 +412,7 @@ module RuboCop
     end
 
     def validate_syntax_cop
-      syntax_config = self['Lint/Syntax'] || self['Syntax']
+      syntax_config = self['Lint/Syntax']
       default_config = ConfigLoader.default_configuration['Lint/Syntax']
 
       return unless syntax_config &&
