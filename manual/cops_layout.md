@@ -1369,24 +1369,67 @@ than the start of the line where the opening curly brace is.
 This default style is called 'special_inside_parentheses'. Alternative
 styles are 'consistent' and 'align_braces'. Here are examples:
 
-    # special_inside_parentheses
-    hash = {
-      key: :value
-    }
-    but_in_a_method_call({
-                           its_like: :this
-                         })
-    # consistent
-    hash = {
-      key: :value
-    }
-    and_in_a_method_call({
-      no: :difference
-    })
-    # align_braces
-    and_now_for_something = {
-                              completely: :different
-                            }
+### Example
+
+```ruby
+# The `special_inside_parentheses` style enforces that the first key
+# in a hash literal where the opening brace and the first key are on
+# separate lines is indented one step (two spaces) more than the
+# position inside the opening parentheses.
+
+# bad
+hash = {
+  key: :value
+}
+and_in_a_method_call({
+  no: :difference
+                     })
+
+# good
+special_inside_parentheses
+hash = {
+  key: :value
+}
+but_in_a_method_call({
+                       its_like: :this
+                     })
+```
+```ruby
+# The `consistent` style enforces that the first key in a hash
+# literal where the opening brace and the first key are on
+# seprate lines is indented the same as a hash literal which is not
+# defined inside a method call.
+
+# bad
+hash = {
+  key: :value
+}
+but_in_a_method_call({
+                       its_like: :this
+                      })
+
+# good
+hash = {
+  key: :value
+}
+and_in_a_method_call({
+  no: :difference
+})
+```
+```ruby
+# The `align_brackets` style enforces that the opening and closing
+# braces are indented to the same position.
+
+# bad
+and_now_for_something = {
+                          completely: :different
+}
+
+# good
+and_now_for_something = {
+                          completely: :different
+                        }
+```
 
 ### Configurable attributes
 
