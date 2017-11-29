@@ -420,7 +420,7 @@ module RuboCop
 
       raise ValidationError,
             "configuration for Syntax cop found in #{smart_loaded_path}\n" \
-            'This cop cannot be configured.'
+            'It\'s not possible to disable this cop.'
     end
 
     def validate_section_presence(name)
