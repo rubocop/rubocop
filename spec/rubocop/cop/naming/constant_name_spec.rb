@@ -52,6 +52,14 @@ describe RuboCop::Cop::Naming::ConstantName do
     expect_no_offenses('AnythingGoes = test')
   end
 
+  it 'does not check names if rhs is a `Class.new`' do
+    expect_no_offenses('Invalid = Class.new(StandardError)')
+  end
+
+  it 'does not check names if rhs is a `Struct.new`' do
+    expect_no_offenses('Investigation = Struct.new(:offenses, :errors)')
+  end
+
   it 'does not check names if rhs is a method call with block' do
     expect_no_offenses(<<-RUBY.strip_indent)
       AnythingGoes = test do
