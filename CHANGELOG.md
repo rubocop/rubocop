@@ -23,7 +23,6 @@
 * [#5077](https://github.com/bbatsov/rubocop/pull/5077): Add new `Rails/CreateTableWithTimestamps` cop. ([@wata727][])
 * Add new `Style/ColonMethodDefinition` cop. ([@rrosenblum][])
 * Add new `Style/ExtendSelf` cop. ([@drenmi][])
-* Relax version constraint on rainbow, allow 3. ([@jaredbeck][])
 
 ### Bug fixes
 
