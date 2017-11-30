@@ -1152,7 +1152,9 @@ describe RuboCop::CLI, :isolated_environment do
       expect($stderr.string).to include(
         'Error: configuration for Syntax cop found'
       )
-      expect($stderr.string).to include('This cop cannot be configured.')
+      expect($stderr.string).to include(
+        'It\'s not possible to disable this cop.'
+      )
     end
 
     it 'can be configured to merge a parameter that is a hash' do

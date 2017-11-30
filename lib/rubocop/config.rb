@@ -312,7 +312,7 @@ module RuboCop
       check_target_ruby
       validate_parameter_names(valid_cop_names)
       validate_enforced_styles(valid_cop_names)
-      validate_syntax_cop(valid_cop_names)
+      validate_syntax_cop
       reject_mutually_exclusive_defaults
     end
 
@@ -411,13 +411,16 @@ module RuboCop
       end
     end
 
-    def validate_syntax_cop(valid_cop_names)
-      return unless valid_cop_names.include?('Lint/Syntax') ||
-                    valid_cop_names.include?('Syntax')
+    def validate_syntax_cop
+      syntax_config = self['Lint/Syntax']
+      default_config = ConfigLoader.default_configuration['Lint/Syntax']
+
+      return unless syntax_config &&
+                    default_config.merge(syntax_config) != default_config
 
       raise ValidationError,
             "configuration for Syntax cop found in #{smart_loaded_path}\n" \
-            'This cop cannot be configured.'
+            'It\'s not possible to disable this cop.'
     end
 
     def validate_section_presence(name)
