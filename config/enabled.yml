@@ -1434,6 +1434,10 @@ Style/EndBlock:
   StyleGuide: '#no-END-blocks'
   Enabled: true
 
+Style/EvalWithLocation:
+  Description: 'Pass `__FILE__` and `__LINE__` to `eval` method, as they are used by backtraces.'
+  Enabled: true
+
 Style/EvenOdd:
   Description: 'Favor the use of Integer#even? && Integer#odd?'
   StyleGuide: '#predicate-methods'
