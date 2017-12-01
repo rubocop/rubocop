@@ -10,6 +10,14 @@ describe RuboCop::Cop::Naming::ConstantName do
     RUBY
   end
 
+  it 'registers an offense for camel case in const name' \
+     'when using frozen object assignment' do
+    expect_offense(<<-RUBY.strip_indent)
+      TopCase = 5.freeze
+      ^^^^^^^ Use SCREAMING_SNAKE_CASE for constants.
+    RUBY
+  end
+
   it 'registers offenses for camel case in multiple const assignment' do
     expect_offense(<<-RUBY.strip_indent)
       TopCase, Test2, TEST_3 = 5, 6, 7
@@ -42,6 +50,14 @@ describe RuboCop::Cop::Naming::ConstantName do
 
   it 'does not check names if rhs is a method call' do
     expect_no_offenses('AnythingGoes = test')
+  end
+
+  it 'does not check names if rhs is a `Class.new`' do
+    expect_no_offenses('Invalid = Class.new(StandardError)')
+  end
+
+  it 'does not check names if rhs is a `Struct.new`' do
+    expect_no_offenses('Investigation = Struct.new(:offenses, :errors)')
   end
 
   it 'does not check names if rhs is a method call with block' do

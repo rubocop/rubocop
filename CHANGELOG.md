@@ -53,6 +53,7 @@
 * [#5099](https://github.com/bbatsov/rubocop/pull/5099): Prevent `Style/MinMax` from breaking on implicit receivers. ([@drenmi][])
 * [#5079](https://github.com/bbatsov/rubocop/issues/5079): Fix false positive for `Style/SafeNavigation` when safe guarding comparisons. ([@tiagotex][])
 * [#5075](https://github.com/bbatsov/rubocop/issues/5075): Fix auto-correct for `Style/RedundantParentheses` cop when unspaced ternary is present. ([@tiagotex][])
+* [#5155](https://github.com/bbatsov/rubocop/issues/5155): Fix a false negative for `Naming/ConstantName` cop when using frozen object assignment. ([@koic][])
 
 ### Changes
 

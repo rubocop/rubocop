@@ -42,7 +42,7 @@ module RuboCop
                      '`%<current_indent_type>s`.'.freeze
         LIBRARY_MSG = 'Use %<indentation_width>d spaces for indentation in a ' \
                       'heredoc by using %<method>s.'.freeze
-        StripMethods = {
+        STRIP_METHODS = {
           unindent: 'unindent',
           active_support: 'strip_heredoc',
           powerpack: 'strip_indent'
@@ -98,7 +98,7 @@ module RuboCop
             method = "some library(e.g. ActiveSupport's `String#strip_heredoc`)"
             library_message(indentation_width, method)
           else
-            method = "`String##{StripMethods[style]}`"
+            method = "`String##{STRIP_METHODS[style]}`"
             library_message(indentation_width, method)
           end
         end
@@ -152,7 +152,7 @@ module RuboCop
         def correct_by_library(node)
           lambda do |corrector|
             corrector.replace(node.loc.heredoc_body, indented_body(node))
-            corrected = ".#{StripMethods[style]}"
+            corrected = ".#{STRIP_METHODS[style]}"
             corrector.insert_after(node.loc.expression, corrected)
           end
         end
