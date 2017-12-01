@@ -19,7 +19,7 @@ module RuboCop
       # This default style is called 'special_inside_parentheses'. Alternative
       # styles are 'consistent' and 'align_braces'. Here are examples:
       #
-      # @example EnforcedStyle: special_inside_parentheses
+      # @example EnforcedStyle: special_inside_parentheses (default)
       #   # The `special_inside_parentheses` style enforces that the first key
       #   # in a hash literal where the opening brace and the first key are on
       #   # separate lines is indented one step (two spaces) more than the

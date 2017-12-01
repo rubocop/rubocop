@@ -1417,7 +1417,7 @@ styles are 'consistent' and 'align_braces'. Here are examples:
 
 ### Examples
 
-#### EnforcedStyle: special_inside_parentheses
+#### EnforcedStyle: special_inside_parentheses (default)
 
 ```ruby
 # The `special_inside_parentheses` style enforces that the first key
