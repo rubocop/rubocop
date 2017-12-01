@@ -30,6 +30,7 @@ module RuboCop
         RegexpNode       => [:regexp],
         ResbodyNode      => [:resbody],
         SendNode         => %i[csend send],
+        StrNode          => %i[str dstr xstr],
         SuperNode        => %i[super zsuper],
         SymbolNode       => [:sym],
         UntilNode        => %i[until until_post],

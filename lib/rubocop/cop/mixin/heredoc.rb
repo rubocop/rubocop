@@ -1,28 +1,28 @@
 # frozen_string_literal: true
 
-# Common functionality for working with heredoc strings.
-module Heredoc
-  OPENING_DELIMITER = /<<[~-]?['"`]?([^'"`]+)['"`]?/
+module RuboCop
+  module Cop
+    # Common functionality for working with heredoc strings.
+    module Heredoc
+      OPENING_DELIMITER = /<<[~-]?['"`]?([^'"`]+)['"`]?/
 
-  def on_str(node)
-    return unless heredoc?(node)
+      def on_str(node)
+        return unless node.heredoc?
 
-    on_heredoc(node)
-  end
-  alias on_dstr on_str
-  alias on_xstr on_str
+        on_heredoc(node)
+      end
+      alias on_dstr on_str
+      alias on_xstr on_str
 
-  def on_heredoc(_node)
-    raise NotImplementedError
-  end
+      def on_heredoc(_node)
+        raise NotImplementedError
+      end
 
-  private
+      private
 
-  def heredoc?(node)
-    node.loc.is_a?(Parser::Source::Map::Heredoc)
-  end
-
-  def delimiter_string(node)
-    node.source.match(OPENING_DELIMITER).captures.first
+      def delimiter_string(node)
+        node.source.match(OPENING_DELIMITER).captures.first
+      end
+    end
   end
 end
