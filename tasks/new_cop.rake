@@ -14,6 +14,7 @@ task :new_cop, [:cop] do |_task, args|
   generator.write_source
   generator.write_spec
   generator.inject_require
+  generator.inject_config
 
   puts generator.todo
 end

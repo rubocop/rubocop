@@ -127,11 +127,13 @@ RSpec.describe RuboCop::Cop::Generator do
           - spec/rubocop/cop/style/fake_cop_spec.rb
         File modified:
           - `require_relative 'rubocop/cop/style/fake_cop'` added into lib/rubocop.rb
+          - A configuration for the cop is added into config/enabled.yml
+            - If you want to disable the cop by default, move the added config to config/disabled.yml
 
         Do 3 steps:
           1. Add an entry to the "New features" section in CHANGELOG.md,
              e.g. "Add new `Style/FakeCop` cop. ([@your_id][])"
-          2. Add an entry into config/enabled.yml or config/disabled.yml
+          2. Modify the description of Style/FakeCop in config/enabled.yml
           3. Implement your new cop in the generated file!
       TODO
     end
@@ -335,6 +337,48 @@ RSpec.describe RuboCop::Cop::Generator do
 
         expect(File).not_to have_received(:write)
       end
+    end
+  end
+
+  describe '#inject_config' do
+    let(:path) { @path } # rubocop:disable RSpec/InstanceVariable
+
+    around do |example|
+      Tempfile.create('rubocop-config.yml') do |file|
+        @path = file.path
+        example.run
+      end
+    end
+
+    before do
+      IO.write(path, <<-YAML.strip_indent)
+        Style/Alias:
+          Enabled: true
+
+        Style/Lambda:
+          Enabled: true
+
+        Style/SpecialGlobalVars:
+          Enabled: true
+      YAML
+    end
+
+    it 'inserts the cop in alphabetical' do
+      expect(File).to receive(:write).with(path, <<-YAML.strip_indent)
+        Style/Alias:
+          Enabled: true
+
+        Style/FakeCop:
+          Description: 'TODO: Write a description of the cop.'
+          Enabled: true
+
+        Style/Lambda:
+          Enabled: true
+
+        Style/SpecialGlobalVars:
+          Enabled: true
+      YAML
+      generator.inject_config(path)
     end
   end
 
