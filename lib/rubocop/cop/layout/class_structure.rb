@@ -50,9 +50,9 @@ module RuboCop
       #        - attr_writer
       # ```
       #
-      # @example bad code
-      #
-      #   # bad: Expect extend be before constant
+      # @example
+      #   # bad
+      #   # Expect extend be before constant
       #   class Person < ApplicationRecord
       #     has_many :orders
       #     ANSWER = 42
@@ -61,8 +61,7 @@ module RuboCop
       #     include AnotherModule
       #   end
       #
-      # @example of good code
-      #
+      #   # good
       #   class Person
       #     # extend and include go first
       #     extend SomeModule
