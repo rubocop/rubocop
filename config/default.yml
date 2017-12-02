@@ -1589,6 +1589,10 @@ Rails/InverseOf:
   Include:
     - app/models/**/*.rb
 
+Rails/LexicallyScopedActionFilter:
+  Include:
+    - app/controllers/**/*.rb
+
 Rails/NotNullColumn:
   Include:
     - db/migrate/*.rb
