@@ -418,10 +418,9 @@ possible to group categories of macros.
 
 ### Examples
 
-#### bad code
-
 ```ruby
-# bad: Expect extend be before constant
+# bad
+# Expect extend be before constant
 class Person < ApplicationRecord
   has_many :orders
   ANSWER = 42
@@ -429,10 +428,8 @@ class Person < ApplicationRecord
   extend SomeModule
   include AnotherModule
 end
-```
-#### of good code
 
-```ruby
+# good
 class Person
   # extend and include go first
   extend SomeModule
