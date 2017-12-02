@@ -74,6 +74,7 @@
 * [#5146](https://github.com/bbatsov/rubocop/pull/5146): Make `--show-cops` option aware of `--force-default-config`. ([@pocke][])
 * [#3001](https://github.com/bbatsov/rubocop/issues/3001): Add configuration to `Lint/MissingCopEnableDirective` cop. ([@tdeo][])
 * [#4932](https://github.com/bbatsov/rubocop/issues/4932): Do not fail if configuration contains `Lint/Syntax` cop with the same settings as the default. ([@tdeo][])
+* [#5175](https://github.com/bbatsov/rubocop/pull/5175): Make Style/RedundantBegin aware of do-end block in Ruby 2.5. ([@pocke][])
 
 ## 0.51.0 (2017-10-18)
 

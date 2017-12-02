@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::RedundantBegin do
-  subject(:cop) { described_class.new }
+describe RuboCop::Cop::Style::RedundantBegin, :config do
+  subject(:cop) { described_class.new(config) }
 
   it 'reports an offense for single line def with redundant begin block' do
     src = '  def func; begin; x; y; rescue; z end end'
@@ -59,6 +59,19 @@ describe RuboCop::Cop::Style::RedundantBegin do
           bala
         end
         something
+      end
+    RUBY
+  end
+
+  it 'accepts a def with a begin block after a statement' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      def Test.func
+        something
+        begin
+          ala
+        rescue => e
+          bala
+        end
       end
     RUBY
   end
@@ -152,5 +165,59 @@ describe RuboCop::Cop::Style::RedundantBegin do
     RUBY
     new_source = autocorrect_source(src)
     expect(new_source).to eq(result_src)
+  end
+
+  context '< Ruby 2.5', :ruby24 do
+    it 'accepts a do-end block with a begin-end' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        do_something do
+          begin
+            foo
+          rescue => e
+            bar
+          end
+        end
+      RUBY
+    end
+  end
+
+  context '>= ruby 2.5', :ruby25 do
+    it 'registers an offense for a do-end block with redundant begin-end' do
+      expect_offense(<<-RUBY.strip_indent)
+        do_something do
+          begin
+          ^^^^^ Redundant `begin` block detected.
+            foo
+          rescue => e
+            bar
+          end
+        end
+      RUBY
+    end
+
+    it 'accepts a {} block with a begin-end' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        do_something {
+          begin
+            foo
+          rescue => e
+            bar
+          end
+        }
+      RUBY
+    end
+
+    it 'accepts a block with a begin block after a statement' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        do_something do
+          something
+          begin
+            ala
+          rescue => e
+            bala
+          end
+        end
+      RUBY
+    end
   end
 end
