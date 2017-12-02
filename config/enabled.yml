@@ -1,5 +1,53 @@
 # These are all the cops that are enabled in the default configuration.
 
+#################### Bundler ###############################
+
+Bundler/DuplicatedGem:
+  Description: 'Checks for duplicate gem entries in Gemfile.'
+  Enabled: true
+  Include:
+    - '**/Gemfile'
+    - '**/gems.rb'
+
+Bundler/InsecureProtocolSource:
+  Description: >-
+                 The source `:gemcutter`, `:rubygems` and `:rubyforge` are deprecated
+                 because HTTP requests are insecure. Please change your source to
+                 'https://rubygems.org' if possible, or 'http://rubygems.org' if not.
+  Enabled: true
+  Include:
+    - '**/Gemfile'
+    - '**/gems.rb'
+
+Bundler/OrderedGems:
+  Description: >-
+                 Gems within groups in the Gemfile should be alphabetically sorted.
+  Enabled: true
+  Include:
+    - '**/Gemfile'
+    - '**/gems.rb'
+
+#################### Gemspec ###############################
+
+Gemspec/DuplicatedAssignment:
+  Description: 'An attribute assignment method calls should be listed only once in a gemspec.'
+  Enabled: true
+  Include:
+    - '**/*.gemspec'
+
+Gemspec/OrderedDependencies:
+  Description: >-
+                 Dependencies in the gemspec should be alphabetically sorted.
+  Enabled: true
+  Include:
+    - '**/*.gemspec'
+
+Gemspec/RequiredRubyVersion:
+  Description: 'Checks that `required_ruby_version` of gemspec and `TargetRubyVersion` of .rubocop.yml are equal.'
+  Enabled: true
+  Include:
+    - '**/*.gemspec'
+
 #################### Layout ###############################
 
 Layout/AccessModifierIndentation:
@@ -53,6 +101,11 @@ Layout/ElseAlignment:
   Description: 'Align elses and elsifs correctly.'
   Enabled: true
 
+Layout/EmptyLineAfterMagicComment:
+  Description: 'Add an empty line after magic comments to separate them from code.'
+  StyleGuide: '#separate-magic-comments-from-code'
+  Enabled: true
+
 Layout/EmptyLineBetweenDefs:
   Description: 'Use empty lines between defs.'
   StyleGuide: '#empty-lines-between-methods'
@@ -88,13 +141,13 @@ Layout/EmptyLinesAroundExceptionHandlingKeywords:
   StyleGuide: '#empty-lines-around-bodies'
   Enabled: true
 
-Layout/EmptyLinesAroundModuleBody:
-  Description: "Keeps track of empty lines around module bodies."
+Layout/EmptyLinesAroundMethodBody:
+  Description: "Keeps track of empty lines around method bodies."
   StyleGuide: '#empty-lines-around-bodies'
   Enabled: true
 
-Layout/EmptyLinesAroundMethodBody:
-  Description: "Keeps track of empty lines around method bodies."
+Layout/EmptyLinesAroundModuleBody:
+  Description: "Keeps track of empty lines around module bodies."
   StyleGuide: '#empty-lines-around-bodies'
   Enabled: true
 
@@ -107,23 +160,8 @@ Layout/ExtraSpacing:
   Description: 'Do not use unnecessary spacing.'
   Enabled: true
 
-Layout/InitialIndentation:
-  Description: >-
-    Checks the indentation of the first non-blank non-comment line in a file.
-  Enabled: true
-
 Layout/FirstParameterIndentation:
   Description: 'Checks the indentation of the first parameter in a method call.'
-  Enabled: true
-
-Layout/IndentationConsistency:
-  Description: 'Keep indentation straight.'
-  StyleGuide: '#spaces-indentation'
-  Enabled: true
-
-Layout/IndentationWidth:
-  Description: 'Use 2 spaces for indentation.'
-  StyleGuide: '#spaces-indentation'
   Enabled: true
 
 Layout/IndentArray:
@@ -147,8 +185,19 @@ Layout/IndentHeredoc:
   StyleGuide: '#squiggly-heredocs'
   Enabled: true
 
-Layout/SpaceInLambdaLiteral:
-  Description: 'Checks for spaces in lambda literals.'
+Layout/IndentationConsistency:
+  Description: 'Keep indentation straight.'
+  StyleGuide: '#spaces-indentation'
+  Enabled: true
+
+Layout/IndentationWidth:
+  Description: 'Use 2 spaces for indentation.'
+  StyleGuide: '#spaces-indentation'
+  Enabled: true
+
+Layout/InitialIndentation:
+  Description: >-
+    Checks the indentation of the first non-blank non-comment line in a file.
   Enabled: true
 
 Layout/LeadingCommentSpace:
@@ -200,19 +249,8 @@ Layout/MultilineOperationIndentation:
                  one line.
   Enabled: true
 
-Layout/EmptyLineAfterMagicComment:
-  Description: 'Add an empty line after magic comments to separate them from code.'
-  StyleGuide: '#separate-magic-comments-from-code'
-  Enabled: true
-
 Layout/RescueEnsureAlignment:
   Description: 'Align rescues and ensures correctly.'
-  Enabled: true
-
-Layout/SpaceBeforeFirstArg:
-  Description: >-
-                 Checks that exactly one space is used between a method name
-                 and the first argument for method calls without parentheses.
   Enabled: true
 
 Layout/SpaceAfterColon:
@@ -242,33 +280,6 @@ Layout/SpaceAfterSemicolon:
   StyleGuide: '#spaces-operators'
   Enabled: true
 
-Layout/SpaceBeforeBlockBraces:
-  Description: >-
-                 Checks that the left block brace has or doesn't have space
-                 before it.
-  Enabled: true
-
-Layout/SpaceBeforeComma:
-  Description: 'No spaces before commas.'
-  Enabled: true
-
-Layout/SpaceBeforeComment:
-  Description: >-
-                 Checks for missing space between code and a comment on the
-                 same line.
-  Enabled: true
-
-Layout/SpaceBeforeSemicolon:
-  Description: 'No spaces before semicolons.'
-  Enabled: true
-
-Layout/SpaceInsideBlockBraces:
-  Description: >-
-                 Checks that block braces have or don't have surrounding space.
-                 For blocks taking parameters, checks that the left brace has
-                 or doesn't have trailing space.
-  Enabled: true
-
 Layout/SpaceAroundBlockParameters:
   Description: 'Checks the spacing inside and after block parameters pipes.'
   Enabled: true
@@ -290,12 +301,45 @@ Layout/SpaceAroundOperators:
   StyleGuide: '#spaces-operators'
   Enabled: true
 
+Layout/SpaceBeforeBlockBraces:
+  Description: >-
+                 Checks that the left block brace has or doesn't have space
+                 before it.
+  Enabled: true
+
+Layout/SpaceBeforeComma:
+  Description: 'No spaces before commas.'
+  Enabled: true
+
+Layout/SpaceBeforeComment:
+  Description: >-
+                 Checks for missing space between code and a comment on the
+                 same line.
+  Enabled: true
+
+Layout/SpaceBeforeFirstArg:
+  Description: >-
+                 Checks that exactly one space is used between a method name
+                 and the first argument for method calls without parentheses.
+  Enabled: true
+
+Layout/SpaceBeforeSemicolon:
+  Description: 'No spaces before semicolons.'
+  Enabled: true
+
+Layout/SpaceInLambdaLiteral:
+  Description: 'Checks for spaces in lambda literals.'
+  Enabled: true
+
 Layout/SpaceInsideArrayPercentLiteral:
   Description: 'No unnecessary additional spaces between elements in %i/%w literals.'
   Enabled: true
 
-Layout/SpaceInsidePercentLiteralDelimiters:
-  Description: 'No unnecessary spaces inside delimiters of %i/%w/%x literals.'
+Layout/SpaceInsideBlockBraces:
+  Description: >-
+                 Checks that block braces have or don't have surrounding space.
+                 For blocks taking parameters, checks that the left brace has
+                 or doesn't have trailing space.
   Enabled: true
 
 Layout/SpaceInsideBrackets:
@@ -311,6 +355,10 @@ Layout/SpaceInsideHashLiteralBraces:
 Layout/SpaceInsideParens:
   Description: 'No spaces after ( or before ).'
   StyleGuide: '#spaces-braces'
+  Enabled: true
+
+Layout/SpaceInsidePercentLiteralDelimiters:
+  Description: 'No unnecessary spaces inside delimiters of %i/%w/%x literals.'
   Enabled: true
 
 Layout/SpaceInsideRangeLiteral:
@@ -336,846 +384,6 @@ Layout/TrailingBlankLines:
 Layout/TrailingWhitespace:
   Description: 'Avoid trailing whitespace.'
   StyleGuide: '#no-trailing-whitespace'
-  Enabled: true
-
-#################### Naming ##############################
-
-Naming/AccessorMethodName:
-  Description: Check the naming of accessor methods for get_/set_.
-  StyleGuide: '#accessor_mutator_method_names'
-  Enabled: true
-
-Naming/AsciiIdentifiers:
-  Description: 'Use only ascii symbols in identifiers.'
-  StyleGuide: '#english-identifiers'
-  Enabled: true
-
-Naming/ClassAndModuleCamelCase:
-  Description: 'Use CamelCase for classes and modules.'
-  StyleGuide: '#camelcase-classes'
-  Enabled: true
-
-Naming/ConstantName:
-  Description: 'Constants should use SCREAMING_SNAKE_CASE.'
-  StyleGuide: '#screaming-snake-case'
-  Enabled: true
-
-Naming/FileName:
-  Description: 'Use snake_case for source file names.'
-  StyleGuide: '#snake-case-files'
-  Enabled: true
-
-Naming/HeredocDelimiterCase:
-  Description: 'Use configured case for heredoc delimiters.'
-  StyleGuide: '#heredoc-delimiters'
-  Enabled: true
-
-Naming/HeredocDelimiterNaming:
-  Description: 'Use descriptive heredoc delimiters.'
-  StyleGuide: '#heredoc-delimiters'
-  Enabled: true
-
-Naming/MethodName:
-  Description: 'Use the configured style when naming methods.'
-  StyleGuide: '#snake-case-symbols-methods-vars'
-  Enabled: true
-
-Naming/PredicateName:
-  Description: 'Check the names of predicate methods.'
-  StyleGuide: '#bool-methods-qmark'
-  Enabled: true
-
-Naming/BinaryOperatorParameterName:
-  Description: 'When defining binary operators, name the argument other.'
-  StyleGuide: '#other-arg'
-  Enabled: true
-
-Naming/VariableName:
-  Description: 'Use the configured style when naming variables.'
-  StyleGuide: '#snake-case-symbols-methods-vars'
-  Enabled: true
-
-Naming/VariableNumber:
-  Description: 'Use the configured style when numbering variables.'
-  Enabled: true
-
-#################### Style ###############################
-
-Style/Alias:
-  Description: 'Use alias instead of alias_method.'
-  StyleGuide: '#alias-method'
-  Enabled: true
-
-Style/AndOr:
-  Description: 'Use &&/|| instead of and/or.'
-  StyleGuide: '#no-and-or-or'
-  Enabled: true
-
-Style/ArrayJoin:
-  Description: 'Use Array#join instead of Array#*.'
-  StyleGuide: '#array-join'
-  Enabled: true
-
-Style/AsciiComments:
-  Description: 'Use only ascii symbols in comments.'
-  StyleGuide: '#english-comments'
-  Enabled: true
-
-Style/Attr:
-  Description: 'Checks for uses of Module#attr.'
-  StyleGuide: '#attr'
-  Enabled: true
-
-Style/BeginBlock:
-  Description: 'Avoid the use of BEGIN blocks.'
-  StyleGuide: '#no-BEGIN-blocks'
-  Enabled: true
-
-Style/BarePercentLiterals:
-  Description: 'Checks if usage of %() or %Q() matches configuration.'
-  StyleGuide: '#percent-q-shorthand'
-  Enabled: true
-
-Style/BlockComments:
-  Description: 'Do not use block comments.'
-  StyleGuide: '#no-block-comments'
-  Enabled: true
-
-Style/BlockDelimiters:
-  Description: >-
-                Avoid using {...} for multi-line blocks (multiline chaining is
-                always ugly).
-                Prefer {...} over do...end for single-line blocks.
-  StyleGuide: '#single-line-blocks'
-  Enabled: true
-
-Style/BracesAroundHashParameters:
-  Description: 'Enforce braces style around hash parameters.'
-  Enabled: true
-
-Style/CaseEquality:
-  Description: 'Avoid explicit use of the case equality operator(===).'
-  StyleGuide: '#no-case-equality'
-  Enabled: true
-
-Style/CharacterLiteral:
-  Description: 'Checks for uses of character literals.'
-  StyleGuide: '#no-character-literals'
-  Enabled: true
-
-Style/ClassAndModuleChildren:
-  Description: 'Checks style of children classes and modules.'
-  StyleGuide: '#namespace-definition'
-  Enabled: true
-
-Style/ClassCheck:
-  Description: 'Enforces consistent use of `Object#is_a?` or `Object#kind_of?`.'
-  Enabled: true
-
-Style/ClassMethods:
-  Description: 'Use self when defining module/class methods.'
-  StyleGuide: '#def-self-class-methods'
-  Enabled: true
-
-Style/ClassVars:
-  Description: 'Avoid the use of class variables.'
-  StyleGuide: '#no-class-vars'
-  Enabled: true
-
-Style/ColonMethodCall:
-  Description: 'Do not use :: for method call.'
-  StyleGuide: '#double-colons'
-  Enabled: true
-
-Style/ColonMethodDefinition:
-  Description: 'Do not use :: for defining class methods.'
-  StyleGuide: '#colon-method-definition'
-  Enabled: true
-
-Style/CommandLiteral:
-  Description: 'Use `` or %x around command literals.'
-  StyleGuide: '#percent-x'
-  Enabled: true
-
-Style/CommentAnnotation:
-  Description: >-
-                 Checks formatting of special comments
-                 (TODO, FIXME, OPTIMIZE, HACK, REVIEW).
-  StyleGuide: '#annotate-keywords'
-  Enabled: true
-
-Style/CommentedKeyword:
-  Description: 'Do not place comments on the same line as certain keywords.'
-  Enabled: true
-
-Style/ConditionalAssignment:
-  Description: >-
-                 Use the return value of `if` and `case` statements for
-                 assignment to a variable and variable comparison instead
-                 of assigning that variable inside of each branch.
-  Enabled: true
-
-Style/DateTime:
-  Description: 'Use Date or Time over DateTime.'
-  StyleGuide: '#date--time'
-  Enabled: true
-
-Style/DefWithParentheses:
-  Description: 'Use def with parentheses when there are arguments.'
-  StyleGuide: '#method-parens'
-  Enabled: true
-
-Style/Dir:
-  Description: >-
-                 Use the `__dir__` method to retrieve the canonicalized
-                 absolute path to the current file.
-  Enabled: true
-
-Style/Documentation:
-  Description: 'Document classes and non-namespace modules.'
-  Enabled: true
-  Exclude:
-    - 'spec/**/*'
-    - 'test/**/*'
-
-Style/DoubleNegation:
-  Description: 'Checks for uses of double negation (!!).'
-  StyleGuide: '#no-bang-bang'
-  Enabled: true
-
-Style/EachForSimpleLoop:
-  Description: >-
-                 Use `Integer#times` for a simple loop which iterates a fixed
-                 number of times.
-  Enabled: true
-
-Style/EachWithObject:
-  Description: 'Prefer `each_with_object` over `inject` or `reduce`.'
-  Enabled: true
-
-Style/EmptyElse:
-  Description: 'Avoid empty else-clauses.'
-  Enabled: true
-
-Style/EmptyCaseCondition:
-  Description: 'Avoid empty condition in case statements.'
-  Enabled: true
-
-Style/EmptyLiteral:
-  Description: 'Prefer literals to Array.new/Hash.new/String.new.'
-  StyleGuide: '#literal-array-hash'
-  Enabled: true
-
-Style/EmptyMethod:
-  Description: 'Checks the formatting of empty method definitions.'
-  StyleGuide: '#no-single-line-methods'
-  Enabled: true
-
-Style/EndBlock:
-  Description: 'Avoid the use of END blocks.'
-  StyleGuide: '#no-END-blocks'
-  Enabled: true
-
-Style/Encoding:
-  Description: 'Use UTF-8 as the source file encoding.'
-  StyleGuide: '#utf-8'
-  Enabled: true
-
-Style/EvenOdd:
-  Description: 'Favor the use of Integer#even? && Integer#odd?'
-  StyleGuide: '#predicate-methods'
-  Enabled: true
-
-Style/ExtendSelf:
-  Description: 'Checks for uses of extend self.'
-  StyleGuide: '#module-function'
-  Enabled: true
-  # Using `module_function` results in private visibility scope when the
-  # module is included, so auto-correction is unsafe.
-  Autocorrect: false
-
-Style/FrozenStringLiteralComment:
-  Description: >-
-                 Add the frozen_string_literal comment to the top of files
-                 to help transition from Ruby 2.3.0 to Ruby 3.0.
-  Enabled: true
-
-Style/FlipFlop:
-  Description: 'Checks for flip flops'
-  StyleGuide: '#no-flip-flops'
-  Enabled: true
-
-Style/For:
-  Description: 'Checks use of for or each in multiline loops.'
-  StyleGuide: '#no-for-loops'
-  Enabled: true
-
-Style/FormatString:
-  Description: 'Enforce the use of Kernel#sprintf, Kernel#format or String#%.'
-  StyleGuide: '#sprintf'
-  Enabled: true
-
-Style/FormatStringToken:
-  Description: 'Use a consistent style for format string tokens.'
-  Enabled: true
-
-Style/GlobalVars:
-  Description: 'Do not introduce global variables.'
-  StyleGuide: '#instance-vars'
-  Reference: 'http://www.zenspider.com/Languages/Ruby/QuickRef.html'
-  Enabled: true
-
-Style/GuardClause:
-  Description: 'Check for conditionals that can be replaced with guard clauses'
-  StyleGuide: '#no-nested-conditionals'
-  Enabled: true
-
-Style/HashSyntax:
-  Description: >-
-                 Prefer Ruby 1.9 hash syntax { a: 1, b: 2 } over 1.8 syntax
-                 { :a => 1, :b => 2 }.
-  StyleGuide: '#hash-literals'
-  Enabled: true
-
-Style/IfInsideElse:
-  Description: 'Finds if nodes inside else, which can be converted to elsif.'
-  Enabled: true
-
-Style/IfUnlessModifier:
-  Description: >-
-                 Favor modifier if/unless usage when you have a
-                 single-line body.
-  StyleGuide: '#if-as-a-modifier'
-  Enabled: true
-
-Style/IfUnlessModifierOfIfUnless:
-  Description: >-
-                 Avoid modifier if/unless usage on conditionals.
-  Enabled: true
-
-Style/IfWithSemicolon:
-  Description: 'Do not use if x; .... Use the ternary operator instead.'
-  StyleGuide: '#no-semicolon-ifs'
-  Enabled: true
-
-Style/IdenticalConditionalBranches:
-  Description: >-
-                 Checks that conditional statements do not have an identical
-                 line at the end of each branch, which can validly be moved
-                 out of the conditional.
-  Enabled: true
-
-Style/InfiniteLoop:
-  Description: 'Use Kernel#loop for infinite loops.'
-  StyleGuide: '#infinite-loop'
-  Enabled: true
-
-Style/InverseMethods:
-  Description: >-
-                 Use the inverse method instead of `!.method`
-                 if an inverse method is defined.
-  Enabled: true
-
-Style/Lambda:
-  Description: 'Use the new lambda literal syntax for single-line blocks.'
-  StyleGuide: '#lambda-multi-line'
-  Enabled: true
-
-Style/LambdaCall:
-  Description: 'Use lambda.call(...) instead of lambda.(...).'
-  StyleGuide: '#proc-call'
-  Enabled: true
-
-Style/LineEndConcatenation:
-  Description: >-
-                 Use \ instead of + or << to concatenate two string literals at
-                 line end.
-  Enabled: true
-
-Style/MethodCallWithoutArgsParentheses:
-  Description: 'Do not use parentheses for method calls with no arguments.'
-  StyleGuide: '#method-invocation-parens'
-  Enabled: true
-
-Style/MethodDefParentheses:
-  Description: >-
-                 Checks if the method definitions have or don't have
-                 parentheses.
-  StyleGuide: '#method-parens'
-  Enabled: true
-
-Style/MethodMissing:
-  Description: 'Avoid using `method_missing`.'
-  StyleGuide: '#no-method-missing'
-  Enabled: true
-
-Style/MinMax:
-  Description: >-
-                 Use `Enumerable#minmax` instead of `Enumerable#min`
-                 and `Enumerable#max` in conjunction.'
-  Enabled: true
-
-Style/MixinGrouping:
-  Description: 'Checks for grouping of mixins in `class` and `module` bodies.'
-  StyleGuide: '#mixin-grouping'
-  Enabled: true
-
-Style/ModuleFunction:
-  Description: 'Checks for usage of `extend self` in modules.'
-  StyleGuide: '#module-function'
-  Enabled: true
-
-Style/MultilineBlockChain:
-  Description: 'Avoid multi-line chains of blocks.'
-  StyleGuide: '#single-line-blocks'
-  Enabled: true
-
-Style/MultilineIfThen:
-  Description: 'Do not use then for multi-line if/unless.'
-  StyleGuide: '#no-then'
-  Enabled: true
-
-Style/MultilineIfModifier:
-  Description: 'Only use if/unless modifiers on single line statements.'
-  StyleGuide: '#no-multiline-if-modifiers'
-  Enabled: true
-
-Style/MultilineMemoization:
-  Description: 'Wrap multiline memoizations in a `begin` and `end` block.'
-  Enabled: true
-
-Style/MultilineTernaryOperator:
-  Description: >-
-                 Avoid multi-line ?: (the ternary operator);
-                 use if/unless instead.
-  StyleGuide: '#no-multiline-ternary'
-  Enabled: true
-
-Style/MultipleComparison:
-  Description: >-
-                 Avoid comparing a variable with multiple items in a conditional,
-                 use Array#include? instead.
-  Enabled: true
-
-Style/MutableConstant:
-  Description: 'Do not assign mutable objects to constants.'
-  Enabled: true
-
-Style/NegatedIf:
-  Description: >-
-                 Favor unless over if for negative conditions
-                 (or control flow or).
-  StyleGuide: '#unless-for-negatives'
-  Enabled: true
-
-Style/NegatedWhile:
-  Description: 'Favor until over while for negative conditions.'
-  StyleGuide: '#until-for-negatives'
-  Enabled: true
-
-Style/NestedModifier:
-  Description: 'Avoid using nested modifiers.'
-  StyleGuide: '#no-nested-modifiers'
-  Enabled: true
-
-Style/NestedParenthesizedCalls:
-  Description: >-
-                 Parenthesize method calls which are nested inside the
-                 argument list of another parenthesized method call.
-  Enabled: true
-
-Style/NestedTernaryOperator:
-  Description: 'Use one expression per branch in a ternary operator.'
-  StyleGuide: '#no-nested-ternary'
-  Enabled: true
-
-Style/Next:
-  Description: 'Use `next` to skip iteration instead of a condition at the end.'
-  StyleGuide: '#no-nested-conditionals'
-  Enabled: true
-
-Style/NilComparison:
-  Description: 'Prefer x.nil? to x == nil.'
-  StyleGuide: '#predicate-methods'
-  Enabled: true
-
-Style/NonNilCheck:
-  Description: 'Checks for redundant nil checks.'
-  StyleGuide: '#no-non-nil-checks'
-  Enabled: true
-
-Style/Not:
-  Description: 'Use ! instead of not.'
-  StyleGuide: '#bang-not-not'
-  Enabled: true
-
-Style/NumericLiterals:
-  Description: >-
-                 Add underscores to large numeric literals to improve their
-                 readability.
-  StyleGuide: '#underscores-in-numerics'
-  Enabled: true
-
-Style/NumericLiteralPrefix:
-  Description: 'Use smallcase prefixes for numeric literals.'
-  StyleGuide: '#numeric-literal-prefixes'
-  Enabled: true
-
-Style/NumericPredicate:
-  Description: >-
-                 Checks for the use of predicate- or comparison methods for
-                 numeric comparisons.
-  StyleGuide: '#predicate-methods'
-  # This will change to a new method call which isn't guaranteed to be on the
-  # object. Switching these methods has to be done with knowledge of the types
-  # of the variables which rubocop doesn't have.
-  AutoCorrect: false
-  Enabled: true
-
-Style/OneLineConditional:
-  Description: >-
-                 Favor the ternary operator(?:) over
-                 if/then/else/end constructs.
-  StyleGuide: '#ternary-operator'
-  Enabled: true
-
-Style/OptionalArguments:
-  Description: >-
-                 Checks for optional arguments that do not appear at the end
-                 of the argument list
-  StyleGuide: '#optional-arguments'
-  Enabled: true
-
-Style/OrAssignment:
-  Description: 'Recommend usage of double pipe equals (||=) where applicable.'
-  StyleGuide: '#double-pipe-for-uninit'
-  Enabled: true
-
-Style/ParallelAssignment:
-  Description: >-
-                  Check for simple usages of parallel assignment.
-                  It will only warn when the number of variables
-                  matches on both sides of the assignment.
-  StyleGuide: '#parallel-assignment'
-  Enabled: true
-
-Style/ParenthesesAroundCondition:
-  Description: >-
-                 Don't use parentheses around the condition of an
-                 if/unless/while.
-  StyleGuide: '#no-parens-around-condition'
-  Enabled: true
-
-Style/PercentLiteralDelimiters:
-  Description: 'Use `%`-literal delimiters consistently'
-  StyleGuide: '#percent-literal-braces'
-  Enabled: true
-
-Style/PercentQLiterals:
-  Description: 'Checks if uses of %Q/%q match the configured preference.'
-  Enabled: true
-
-Style/PerlBackrefs:
-  Description: 'Avoid Perl-style regex back references.'
-  StyleGuide: '#no-perl-regexp-last-matchers'
-  Enabled: true
-
-Style/EmptyBlockParameter:
-  Description: 'Omit pipes for empty block parameters.'
-  Enabled: true
-
-Style/EmptyLambdaParameter:
-  Description: 'Omit parens for empty lambda parameters.'
-  Enabled: true
-
-Style/PreferredHashMethods:
-  Description: 'Checks use of `has_key?` and `has_value?` Hash methods.'
-  StyleGuide: '#hash-key'
-  Enabled: true
-
-Style/Proc:
-  Description: 'Use proc instead of Proc.new.'
-  StyleGuide: '#proc'
-  Enabled: true
-
-Style/RaiseArgs:
-  Description: 'Checks the arguments passed to raise/fail.'
-  StyleGuide: '#exception-class-messages'
-  Enabled: true
-
-Style/RandomWithOffset:
-  Description: >-
-                 Prefer to use ranges when generating random numbers instead of
-                 integers with offsets.
-  StyleGuide: '#random-numbers'
-  Enabled: true
-
-Style/RedundantBegin:
-  Description: "Don't use begin blocks when they are not needed."
-  StyleGuide: '#begin-implicit'
-  Enabled: true
-
-Style/RedundantConditional:
-  Description: "Don't return true/false from a conditional."
-  Enabled: true
-
-Style/RedundantException:
-  Description: "Checks for an obsolete RuntimeException argument in raise/fail."
-  StyleGuide: '#no-explicit-runtimeerror'
-  Enabled: true
-
-Style/RedundantFreeze:
-  Description: "Checks usages of Object#freeze on immutable objects."
-  Enabled: true
-
-Style/RedundantParentheses:
-  Description: "Checks for parentheses that seem not to serve any purpose."
-  Enabled: true
-
-Style/RedundantReturn:
-  Description: "Don't use return where it's not required."
-  StyleGuide: '#no-explicit-return'
-  Enabled: true
-
-Style/RedundantSelf:
-  Description: "Don't use self where it's not needed."
-  StyleGuide: '#no-self-unless-required'
-  Enabled: true
-
-Style/RegexpLiteral:
-  Description: 'Use / or %r around regular expressions.'
-  StyleGuide: '#percent-r'
-  Enabled: true
-
-Style/RescueModifier:
-  Description: 'Avoid using rescue in its modifier form.'
-  StyleGuide: '#no-rescue-modifiers'
-  Enabled: true
-
-Style/RescueStandardError:
-  Description: 'Avoid rescuing without specifying an error class.'
-  Enabled: true
-
-Style/SafeNavigation:
-  Description: >-
-                  This cop transforms usages of a method call safeguarded by
-                  a check for the existence of the object to
-                  safe navigation (`&.`).
-  Enabled: true
-
-Style/SelfAssignment:
-  Description: >-
-                 Checks for places where self-assignment shorthand should have
-                 been used.
-  StyleGuide: '#self-assignment'
-  Enabled: true
-
-Style/Semicolon:
-  Description: "Don't use semicolons to terminate expressions."
-  StyleGuide: '#no-semicolon'
-  Enabled: true
-
-Style/SignalException:
-  Description: 'Checks for proper usage of fail and raise.'
-  StyleGuide: '#prefer-raise-over-fail'
-  Enabled: true
-
-Style/SingleLineMethods:
-  Description: 'Avoid single-line methods.'
-  StyleGuide: '#no-single-line-methods'
-  Enabled: true
-
-Style/SpecialGlobalVars:
-  Description: 'Avoid Perl-style global variables.'
-  StyleGuide: '#no-cryptic-perlisms'
-  Enabled: true
-
-Style/StabbyLambdaParentheses:
-  Description: 'Check for the usage of parentheses around stabby lambda arguments.'
-  StyleGuide: '#stabby-lambda-with-args'
-  Enabled: true
-
-Style/StderrPuts:
-  Description: 'Use `warn` instead of `$stderr.puts`.'
-  StyleGuide: '#warn'
-  Enabled: true
-
-Style/StringLiterals:
-  Description: 'Checks if uses of quotes match the configured preference.'
-  StyleGuide: '#consistent-string-literals'
-  Enabled: true
-
-Style/StringLiteralsInInterpolation:
-  Description: >-
-                 Checks if uses of quotes inside expressions in interpolated
-                 strings match the configured preference.
-  Enabled: true
-
-Style/StructInheritance:
-  Description: 'Checks for inheritance from Struct.new.'
-  StyleGuide: '#no-extend-struct-new'
-  Enabled: true
-
-Style/SymbolArray:
-  Description: 'Use %i or %I for arrays of symbols.'
-  StyleGuide: '#percent-i'
-  Enabled: true
-
-Style/SymbolLiteral:
-  Description: 'Use plain symbols instead of string symbols when possible.'
-  Enabled: true
-
-Style/SymbolProc:
-  Description: 'Use symbols as procs instead of blocks when possible.'
-  Enabled: true
-
-Style/TernaryParentheses:
-  Description: 'Checks for use of parentheses around ternary conditions.'
-  Enabled: true
-
-Style/MixinUsage:
-  Description: 'Checks that `include`, `extend` and `prepend` exists at the top level.'
-  Enabled: true
-
-Style/TrailingBodyOnMethodDefinition:
-  Description: 'Method body goes below definition.'
-  Enabled: true
-
-Style/TrailingCommaInArguments:
-  Description: 'Checks for trailing comma in argument lists.'
-  StyleGuide: '#no-trailing-params-comma'
-  Enabled: true
-
-Style/TrailingCommaInLiteral:
-  Description: 'Checks for trailing comma in array and hash literals.'
-  StyleGuide: '#no-trailing-array-commas'
-  Enabled: true
-
-Style/TrailingMethodEndStatement:
-  Description: 'Checks for trailing end statement on line of method body.'
-  Enabled: true
-
-Style/TrivialAccessors:
-  Description: 'Prefer attr_* methods to trivial readers/writers.'
-  StyleGuide: '#attr_family'
-  Enabled: true
-
-Style/UnlessElse:
-  Description: >-
-                 Do not use unless with else. Rewrite these with the positive
-                 case first.
-  StyleGuide: '#no-else-with-unless'
-  Enabled: true
-
-Style/UnneededCapitalW:
-  Description: 'Checks for %W when interpolation is not needed.'
-  Enabled: true
-
-Style/UnneededInterpolation:
-  Description: 'Checks for strings that are just an interpolated expression.'
-  Enabled: true
-
-Style/UnneededPercentQ:
-  Description: 'Checks for %q/%Q when single quotes or double quotes would do.'
-  StyleGuide: '#percent-q'
-  Enabled: true
-
-Style/TrailingUnderscoreVariable:
-  Description: >-
-                 Checks for the usage of unneeded trailing underscores at the
-                 end of parallel variable assignment.
-  AllowNamedUnderscoreVariables: true
-  Enabled: true
-
-Style/VariableInterpolation:
-  Description: >-
-                 Don't interpolate global, instance and class variables
-                 directly in strings.
-  StyleGuide: '#curlies-interpolate'
-  Enabled: true
-
-Style/WhenThen:
-  Description: 'Use when x then ... for one-line cases.'
-  StyleGuide: '#one-line-cases'
-  Enabled: true
-
-Style/WhileUntilDo:
-  Description: 'Checks for redundant do after while or until.'
-  StyleGuide: '#no-multiline-while-do'
-  Enabled: true
-
-Style/WhileUntilModifier:
-  Description: >-
-                 Favor modifier while/until usage when you have a
-                 single-line body.
-  StyleGuide: '#while-as-a-modifier'
-  Enabled: true
-
-Style/WordArray:
-  Description: 'Use %w or %W for arrays of words.'
-  StyleGuide: '#percent-w'
-  Enabled: true
-
-Style/YodaCondition:
-  Description: 'Do not use literals as the first operand of a comparison.'
-  Reference: 'https://en.wikipedia.org/wiki/Yoda_conditions'
-  Enabled: true
-
-Style/ZeroLengthPredicate:
-  Description: 'Use #empty? when testing for objects of length 0.'
-  Enabled: true
-
-#################### Metrics ###############################
-
-Metrics/AbcSize:
-  Description: >-
-                 A calculated magnitude based on number of assignments,
-                 branches, and conditions.
-  Reference: 'http://c2.com/cgi/wiki?AbcMetric'
-  Enabled: true
-
-Metrics/BlockNesting:
-  Description: 'Avoid excessive block nesting'
-  StyleGuide: '#three-is-the-number-thou-shalt-count'
-  Enabled: true
-
-Metrics/ClassLength:
-  Description: 'Avoid classes longer than 100 lines of code.'
-  Enabled: true
-
-Metrics/ModuleLength:
-  Description: 'Avoid modules longer than 100 lines of code.'
-  Enabled: true
-
-Metrics/CyclomaticComplexity:
-  Description: >-
-                 A complexity metric that is strongly correlated to the number
-                 of test cases needed to validate a method.
-  Enabled: true
-
-Metrics/LineLength:
-  Description: 'Limit lines to 80 characters.'
-  StyleGuide: '#80-character-limits'
-  Enabled: true
-
-Metrics/MethodLength:
-  Description: 'Avoid methods longer than 10 lines of code.'
-  StyleGuide: '#short-methods'
-  Enabled: true
-
-Metrics/BlockLength:
-  Description: 'Avoid long blocks with many lines.'
-  Enabled: true
-
-Metrics/ParameterLists:
-  Description: 'Avoid parameter lists longer than three or four parameters.'
-  StyleGuide: '#too-many-params'
-  Enabled: true
-
-Metrics/PerceivedComplexity:
-  Description: >-
-                 A complexity metric geared towards measuring complexity for a
-                 human reader.
   Enabled: true
 
 #################### Lint ##################################
@@ -1416,6 +624,10 @@ Lint/RescueType:
   Description: 'Avoid rescuing from non constants that could result in a `TypeError`.'
   Enabled: true
 
+Lint/ReturnInVoidContext:
+  Description: 'Checks for return in void context.'
+  Enabled: true
+
 Lint/SafeNavigationChain:
   Description: 'Do not chain ordinary method call after safe navigation operator.'
   Enabled: true
@@ -1472,6 +684,10 @@ Lint/UnneededSplatExpansion:
   Description: 'Checks for splat unnecessarily being called on literals'
   Enabled: true
 
+Lint/UnreachableCode:
+  Description: 'Unreachable code.'
+  Enabled: true
+
 Lint/UnusedBlockArgument:
   Description: 'Checks for unused block arguments.'
   StyleGuide: '#underscore-unused-vars'
@@ -1480,10 +696,6 @@ Lint/UnusedBlockArgument:
 Lint/UnusedMethodArgument:
   Description: 'Checks for unused method arguments.'
   StyleGuide: '#underscore-unused-vars'
-  Enabled: true
-
-Lint/UnreachableCode:
-  Description: 'Unreachable code.'
   Enabled: true
 
 Lint/UriEscapeUnescape:
@@ -1519,16 +731,126 @@ Lint/UselessElseWithoutRescue:
   Description: 'Checks for useless `else` in `begin..end` without `rescue`.'
   Enabled: true
 
-Lint/ReturnInVoidContext:
-  Description: 'Checks for return in void context.'
-  Enabled: true
-
 Lint/UselessSetterCall:
   Description: 'Checks for useless setter call to a local variable.'
   Enabled: true
 
 Lint/Void:
   Description: 'Possible use of operator/literal/variable in void context.'
+  Enabled: true
+
+#################### Metrics ###############################
+
+Metrics/AbcSize:
+  Description: >-
+                 A calculated magnitude based on number of assignments,
+                 branches, and conditions.
+  Reference: 'http://c2.com/cgi/wiki?AbcMetric'
+  Enabled: true
+
+Metrics/BlockLength:
+  Description: 'Avoid long blocks with many lines.'
+  Enabled: true
+
+Metrics/BlockNesting:
+  Description: 'Avoid excessive block nesting'
+  StyleGuide: '#three-is-the-number-thou-shalt-count'
+  Enabled: true
+
+Metrics/ClassLength:
+  Description: 'Avoid classes longer than 100 lines of code.'
+  Enabled: true
+
+Metrics/CyclomaticComplexity:
+  Description: >-
+                 A complexity metric that is strongly correlated to the number
+                 of test cases needed to validate a method.
+  Enabled: true
+
+Metrics/LineLength:
+  Description: 'Limit lines to 80 characters.'
+  StyleGuide: '#80-character-limits'
+  Enabled: true
+
+Metrics/MethodLength:
+  Description: 'Avoid methods longer than 10 lines of code.'
+  StyleGuide: '#short-methods'
+  Enabled: true
+
+Metrics/ModuleLength:
+  Description: 'Avoid modules longer than 100 lines of code.'
+  Enabled: true
+
+Metrics/ParameterLists:
+  Description: 'Avoid parameter lists longer than three or four parameters.'
+  StyleGuide: '#too-many-params'
+  Enabled: true
+
+Metrics/PerceivedComplexity:
+  Description: >-
+                 A complexity metric geared towards measuring complexity for a
+                 human reader.
+  Enabled: true
+
+#################### Naming ##############################
+
+Naming/AccessorMethodName:
+  Description: Check the naming of accessor methods for get_/set_.
+  StyleGuide: '#accessor_mutator_method_names'
+  Enabled: true
+
+Naming/AsciiIdentifiers:
+  Description: 'Use only ascii symbols in identifiers.'
+  StyleGuide: '#english-identifiers'
+  Enabled: true
+
+Naming/BinaryOperatorParameterName:
+  Description: 'When defining binary operators, name the argument other.'
+  StyleGuide: '#other-arg'
+  Enabled: true
+
+Naming/ClassAndModuleCamelCase:
+  Description: 'Use CamelCase for classes and modules.'
+  StyleGuide: '#camelcase-classes'
+  Enabled: true
+
+Naming/ConstantName:
+  Description: 'Constants should use SCREAMING_SNAKE_CASE.'
+  StyleGuide: '#screaming-snake-case'
+  Enabled: true
+
+Naming/FileName:
+  Description: 'Use snake_case for source file names.'
+  StyleGuide: '#snake-case-files'
+  Enabled: true
+
+Naming/HeredocDelimiterCase:
+  Description: 'Use configured case for heredoc delimiters.'
+  StyleGuide: '#heredoc-delimiters'
+  Enabled: true
+
+Naming/HeredocDelimiterNaming:
+  Description: 'Use descriptive heredoc delimiters.'
+  StyleGuide: '#heredoc-delimiters'
+  Enabled: true
+
+Naming/MethodName:
+  Description: 'Use the configured style when naming methods.'
+  StyleGuide: '#snake-case-symbols-methods-vars'
+  Enabled: true
+
+Naming/PredicateName:
+  Description: 'Check the names of predicate methods.'
+  StyleGuide: '#bool-methods-qmark'
+  Enabled: true
+
+Naming/VariableName:
+  Description: 'Use the configured style when naming variables.'
+  StyleGuide: '#snake-case-symbols-methods-vars'
+  Enabled: true
+
+Naming/VariableNumber:
+  Description: 'Use the configured style when numbering variables.'
   Enabled: true
 
 #################### Performance ###########################
@@ -1538,16 +860,20 @@ Performance/Caller:
              Use `caller(n..n)` instead of `caller`.
   Enabled: true
 
+Performance/CaseWhenSplat:
+  Description: >-
+                  Place `when` conditions that use splat at the end
+                  of the list of `when` branches.
+  Enabled: true
+
 Performance/Casecmp:
   Description: >-
              Use `casecmp` rather than `downcase ==`, `upcase ==`, `== downcase`, or `== upcase`..
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#stringcasecmp-vs-stringdowncase---code'
   Enabled: true
 
-Performance/CaseWhenSplat:
-  Description: >-
-                  Place `when` conditions that use splat at the end
-                  of the list of `when` branches.
+Performance/CompareWithBlock:
+  Description: 'Use `sort_by(&:foo)` instead of `sort { |a, b| a.foo <=> b.foo }`.'
   Enabled: true
 
 Performance/Count:
@@ -1668,10 +994,6 @@ Performance/Size:
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#arraylength-vs-arraysize-vs-arraycount-code'
   Enabled: true
 
-Performance/CompareWithBlock:
-  Description: 'Use `sort_by(&:foo)` instead of `sort { |a, b| a.foo <=> b.foo }`.'
-  Enabled: true
-
 Performance/StartWith:
   Description: 'Use `start_with?` instead of a regex match anchored to the beginning of a string.'
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#stringmatch-vs-stringstart_withstringend_with-code-start-code-end'
@@ -1708,19 +1030,19 @@ Rails/ActionFilter:
   Description: 'Enforces consistent use of action filter methods.'
   Enabled: true
 
+Rails/ActiveSupportAliases:
+  Description: >-
+                  Avoid ActiveSupport aliases of standard ruby methods:
+                  `String#starts_with?`, `String#ends_with?`,
+                  `Array#append`, `Array#prepend`.
+  Enabled: true
+
 Rails/ApplicationJob:
   Description: 'Check that jobs subclass ApplicationJob.'
   Enabled: true
 
 Rails/ApplicationRecord:
   Description: 'Check that models subclass ApplicationRecord.'
-  Enabled: true
-
-Rails/ActiveSupportAliases:
-  Description: >-
-                  Avoid ActiveSupport aliases of standard ruby methods:
-                  `String#starts_with?`, `String#ends_with?`,
-                  `Array#append`, `Array#prepend`.
   Enabled: true
 
 Rails/Blank:
@@ -1863,6 +1185,13 @@ Rails/ScopeArgs:
   Description: 'Checks the arguments of ActiveRecord scopes.'
   Enabled: true
 
+Rails/SkipsModelValidations:
+  Description: >-
+                 Use methods that skips model validations with caution.
+                 See reference for more information.
+  Reference: 'http://guides.rubyonrails.org/active_record_validations.html#skipping-validations'
+  Enabled: true
+
 Rails/TimeZone:
   Description: 'Checks the correct usage of time zone aware methods.'
   StyleGuide: 'https://github.com/bbatsov/rails-style-guide#time'
@@ -1875,13 +1204,6 @@ Rails/UniqBeforePluck:
 
 Rails/UnknownEnv:
   Description: 'Use correct environment name.'
-  Enabled: true
-
-Rails/SkipsModelValidations:
-  Description: >-
-                 Use methods that skips model validations with caution.
-                 See reference for more information.
-  Reference: 'http://guides.rubyonrails.org/active_record_validations.html#skipping-validations'
   Enabled: true
 
 Rails/Validation:
@@ -1918,48 +1240,728 @@ Security/YAMLLoad:
   Reference: 'https://ruby-doc.org/stdlib-2.3.3/libdoc/yaml/rdoc/YAML.html#module-YAML-label-Security'
   Enabled: true
 
-#################### Bundler ###############################
+#################### Style ###############################
 
-Bundler/DuplicatedGem:
-  Description: 'Checks for duplicate gem entries in Gemfile.'
+Style/Alias:
+  Description: 'Use alias instead of alias_method.'
+  StyleGuide: '#alias-method'
   Enabled: true
-  Include:
-    - '**/Gemfile'
-    - '**/gems.rb'
 
-Bundler/InsecureProtocolSource:
+Style/AndOr:
+  Description: 'Use &&/|| instead of and/or.'
+  StyleGuide: '#no-and-or-or'
+  Enabled: true
+
+Style/ArrayJoin:
+  Description: 'Use Array#join instead of Array#*.'
+  StyleGuide: '#array-join'
+  Enabled: true
+
+Style/AsciiComments:
+  Description: 'Use only ascii symbols in comments.'
+  StyleGuide: '#english-comments'
+  Enabled: true
+
+Style/Attr:
+  Description: 'Checks for uses of Module#attr.'
+  StyleGuide: '#attr'
+  Enabled: true
+
+Style/BarePercentLiterals:
+  Description: 'Checks if usage of %() or %Q() matches configuration.'
+  StyleGuide: '#percent-q-shorthand'
+  Enabled: true
+
+Style/BeginBlock:
+  Description: 'Avoid the use of BEGIN blocks.'
+  StyleGuide: '#no-BEGIN-blocks'
+  Enabled: true
+
+Style/BlockComments:
+  Description: 'Do not use block comments.'
+  StyleGuide: '#no-block-comments'
+  Enabled: true
+
+Style/BlockDelimiters:
   Description: >-
-                 The source `:gemcutter`, `:rubygems` and `:rubyforge` are deprecated
-                 because HTTP requests are insecure. Please change your source to
-                 'https://rubygems.org' if possible, or 'http://rubygems.org' if not.
+                Avoid using {...} for multi-line blocks (multiline chaining is
+                always ugly).
+                Prefer {...} over do...end for single-line blocks.
+  StyleGuide: '#single-line-blocks'
   Enabled: true
-  Include:
-    - '**/Gemfile'
-    - '**/gems.rb'
 
-Bundler/OrderedGems:
+Style/BracesAroundHashParameters:
+  Description: 'Enforce braces style around hash parameters.'
+  Enabled: true
+
+Style/CaseEquality:
+  Description: 'Avoid explicit use of the case equality operator(===).'
+  StyleGuide: '#no-case-equality'
+  Enabled: true
+
+Style/CharacterLiteral:
+  Description: 'Checks for uses of character literals.'
+  StyleGuide: '#no-character-literals'
+  Enabled: true
+
+Style/ClassAndModuleChildren:
+  Description: 'Checks style of children classes and modules.'
+  StyleGuide: '#namespace-definition'
+  Enabled: true
+
+Style/ClassCheck:
+  Description: 'Enforces consistent use of `Object#is_a?` or `Object#kind_of?`.'
+  Enabled: true
+
+Style/ClassMethods:
+  Description: 'Use self when defining module/class methods.'
+  StyleGuide: '#def-self-class-methods'
+  Enabled: true
+
+Style/ClassVars:
+  Description: 'Avoid the use of class variables.'
+  StyleGuide: '#no-class-vars'
+  Enabled: true
+
+Style/ColonMethodCall:
+  Description: 'Do not use :: for method call.'
+  StyleGuide: '#double-colons'
+  Enabled: true
+
+Style/ColonMethodDefinition:
+  Description: 'Do not use :: for defining class methods.'
+  StyleGuide: '#colon-method-definition'
+  Enabled: true
+
+Style/CommandLiteral:
+  Description: 'Use `` or %x around command literals.'
+  StyleGuide: '#percent-x'
+  Enabled: true
+
+Style/CommentAnnotation:
   Description: >-
-                 Gems within groups in the Gemfile should be alphabetically sorted.
+                 Checks formatting of special comments
+                 (TODO, FIXME, OPTIMIZE, HACK, REVIEW).
+  StyleGuide: '#annotate-keywords'
   Enabled: true
-  Include:
-    - '**/Gemfile'
-    - '**/gems.rb'
 
-Gemspec/DuplicatedAssignment:
-  Description: 'An attribute assignment method calls should be listed only once in a gemspec.'
+Style/CommentedKeyword:
+  Description: 'Do not place comments on the same line as certain keywords.'
   Enabled: true
-  Include:
-    - '**/*.gemspec'
 
-Gemspec/OrderedDependencies:
+Style/ConditionalAssignment:
   Description: >-
-                 Dependencies in the gemspec should be alphabetically sorted.
+                 Use the return value of `if` and `case` statements for
+                 assignment to a variable and variable comparison instead
+                 of assigning that variable inside of each branch.
   Enabled: true
-  Include:
-    - '**/*.gemspec'
 
-Gemspec/RequiredRubyVersion:
-  Description: 'Checks that `required_ruby_version` of gemspec and `TargetRubyVersion` of .rubocop.yml are equal.'
+Style/DateTime:
+  Description: 'Use Date or Time over DateTime.'
+  StyleGuide: '#date--time'
   Enabled: true
-  Include:
-    - '**/*.gemspec'
+
+Style/DefWithParentheses:
+  Description: 'Use def with parentheses when there are arguments.'
+  StyleGuide: '#method-parens'
+  Enabled: true
+
+Style/Dir:
+  Description: >-
+                 Use the `__dir__` method to retrieve the canonicalized
+                 absolute path to the current file.
+  Enabled: true
+
+Style/Documentation:
+  Description: 'Document classes and non-namespace modules.'
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+    - 'test/**/*'
+
+Style/DoubleNegation:
+  Description: 'Checks for uses of double negation (!!).'
+  StyleGuide: '#no-bang-bang'
+  Enabled: true
+
+Style/EachForSimpleLoop:
+  Description: >-
+                 Use `Integer#times` for a simple loop which iterates a fixed
+                 number of times.
+  Enabled: true
+
+Style/EachWithObject:
+  Description: 'Prefer `each_with_object` over `inject` or `reduce`.'
+  Enabled: true
+
+Style/EmptyBlockParameter:
+  Description: 'Omit pipes for empty block parameters.'
+  Enabled: true
+
+Style/EmptyCaseCondition:
+  Description: 'Avoid empty condition in case statements.'
+  Enabled: true
+
+Style/EmptyElse:
+  Description: 'Avoid empty else-clauses.'
+  Enabled: true
+
+Style/EmptyLambdaParameter:
+  Description: 'Omit parens for empty lambda parameters.'
+  Enabled: true
+
+Style/EmptyLiteral:
+  Description: 'Prefer literals to Array.new/Hash.new/String.new.'
+  StyleGuide: '#literal-array-hash'
+  Enabled: true
+
+Style/EmptyMethod:
+  Description: 'Checks the formatting of empty method definitions.'
+  StyleGuide: '#no-single-line-methods'
+  Enabled: true
+
+Style/Encoding:
+  Description: 'Use UTF-8 as the source file encoding.'
+  StyleGuide: '#utf-8'
+  Enabled: true
+
+Style/EndBlock:
+  Description: 'Avoid the use of END blocks.'
+  StyleGuide: '#no-END-blocks'
+  Enabled: true
+
+Style/EvenOdd:
+  Description: 'Favor the use of Integer#even? && Integer#odd?'
+  StyleGuide: '#predicate-methods'
+  Enabled: true
+
+Style/ExtendSelf:
+  Description: 'Checks for uses of extend self.'
+  StyleGuide: '#module-function'
+  Enabled: true
+  # Using `module_function` results in private visibility scope when the
+  # module is included, so auto-correction is unsafe.
+  Autocorrect: false
+
+Style/FlipFlop:
+  Description: 'Checks for flip flops'
+  StyleGuide: '#no-flip-flops'
+  Enabled: true
+
+Style/For:
+  Description: 'Checks use of for or each in multiline loops.'
+  StyleGuide: '#no-for-loops'
+  Enabled: true
+
+Style/FormatString:
+  Description: 'Enforce the use of Kernel#sprintf, Kernel#format or String#%.'
+  StyleGuide: '#sprintf'
+  Enabled: true
+
+Style/FormatStringToken:
+  Description: 'Use a consistent style for format string tokens.'
+  Enabled: true
+
+Style/FrozenStringLiteralComment:
+  Description: >-
+                 Add the frozen_string_literal comment to the top of files
+                 to help transition from Ruby 2.3.0 to Ruby 3.0.
+  Enabled: true
+
+Style/GlobalVars:
+  Description: 'Do not introduce global variables.'
+  StyleGuide: '#instance-vars'
+  Reference: 'http://www.zenspider.com/Languages/Ruby/QuickRef.html'
+  Enabled: true
+
+Style/GuardClause:
+  Description: 'Check for conditionals that can be replaced with guard clauses'
+  StyleGuide: '#no-nested-conditionals'
+  Enabled: true
+
+Style/HashSyntax:
+  Description: >-
+                 Prefer Ruby 1.9 hash syntax { a: 1, b: 2 } over 1.8 syntax
+                 { :a => 1, :b => 2 }.
+  StyleGuide: '#hash-literals'
+  Enabled: true
+
+Style/IdenticalConditionalBranches:
+  Description: >-
+                 Checks that conditional statements do not have an identical
+                 line at the end of each branch, which can validly be moved
+                 out of the conditional.
+  Enabled: true
+
+Style/IfInsideElse:
+  Description: 'Finds if nodes inside else, which can be converted to elsif.'
+  Enabled: true
+
+Style/IfUnlessModifier:
+  Description: >-
+                 Favor modifier if/unless usage when you have a
+                 single-line body.
+  StyleGuide: '#if-as-a-modifier'
+  Enabled: true
+
+Style/IfUnlessModifierOfIfUnless:
+  Description: >-
+                 Avoid modifier if/unless usage on conditionals.
+  Enabled: true
+
+Style/IfWithSemicolon:
+  Description: 'Do not use if x; .... Use the ternary operator instead.'
+  StyleGuide: '#no-semicolon-ifs'
+  Enabled: true
+
+Style/InfiniteLoop:
+  Description: 'Use Kernel#loop for infinite loops.'
+  StyleGuide: '#infinite-loop'
+  Enabled: true
+
+Style/InverseMethods:
+  Description: >-
+                 Use the inverse method instead of `!.method`
+                 if an inverse method is defined.
+  Enabled: true
+
+Style/Lambda:
+  Description: 'Use the new lambda literal syntax for single-line blocks.'
+  StyleGuide: '#lambda-multi-line'
+  Enabled: true
+
+Style/LambdaCall:
+  Description: 'Use lambda.call(...) instead of lambda.(...).'
+  StyleGuide: '#proc-call'
+  Enabled: true
+
+Style/LineEndConcatenation:
+  Description: >-
+                 Use \ instead of + or << to concatenate two string literals at
+                 line end.
+  Enabled: true
+
+Style/MethodCallWithoutArgsParentheses:
+  Description: 'Do not use parentheses for method calls with no arguments.'
+  StyleGuide: '#method-invocation-parens'
+  Enabled: true
+
+Style/MethodDefParentheses:
+  Description: >-
+                 Checks if the method definitions have or don't have
+                 parentheses.
+  StyleGuide: '#method-parens'
+  Enabled: true
+
+Style/MethodMissing:
+  Description: 'Avoid using `method_missing`.'
+  StyleGuide: '#no-method-missing'
+  Enabled: true
+
+Style/MinMax:
+  Description: >-
+                 Use `Enumerable#minmax` instead of `Enumerable#min`
+                 and `Enumerable#max` in conjunction.'
+  Enabled: true
+
+Style/MixinGrouping:
+  Description: 'Checks for grouping of mixins in `class` and `module` bodies.'
+  StyleGuide: '#mixin-grouping'
+  Enabled: true
+
+Style/MixinUsage:
+  Description: 'Checks that `include`, `extend` and `prepend` exists at the top level.'
+  Enabled: true
+
+Style/ModuleFunction:
+  Description: 'Checks for usage of `extend self` in modules.'
+  StyleGuide: '#module-function'
+  Enabled: true
+
+Style/MultilineBlockChain:
+  Description: 'Avoid multi-line chains of blocks.'
+  StyleGuide: '#single-line-blocks'
+  Enabled: true
+
+Style/MultilineIfModifier:
+  Description: 'Only use if/unless modifiers on single line statements.'
+  StyleGuide: '#no-multiline-if-modifiers'
+  Enabled: true
+
+Style/MultilineIfThen:
+  Description: 'Do not use then for multi-line if/unless.'
+  StyleGuide: '#no-then'
+  Enabled: true
+
+Style/MultilineMemoization:
+  Description: 'Wrap multiline memoizations in a `begin` and `end` block.'
+  Enabled: true
+
+Style/MultilineTernaryOperator:
+  Description: >-
+                 Avoid multi-line ?: (the ternary operator);
+                 use if/unless instead.
+  StyleGuide: '#no-multiline-ternary'
+  Enabled: true
+
+Style/MultipleComparison:
+  Description: >-
+                 Avoid comparing a variable with multiple items in a conditional,
+                 use Array#include? instead.
+  Enabled: true
+
+Style/MutableConstant:
+  Description: 'Do not assign mutable objects to constants.'
+  Enabled: true
+
+Style/NegatedIf:
+  Description: >-
+                 Favor unless over if for negative conditions
+                 (or control flow or).
+  StyleGuide: '#unless-for-negatives'
+  Enabled: true
+
+Style/NegatedWhile:
+  Description: 'Favor until over while for negative conditions.'
+  StyleGuide: '#until-for-negatives'
+  Enabled: true
+
+Style/NestedModifier:
+  Description: 'Avoid using nested modifiers.'
+  StyleGuide: '#no-nested-modifiers'
+  Enabled: true
+
+Style/NestedParenthesizedCalls:
+  Description: >-
+                 Parenthesize method calls which are nested inside the
+                 argument list of another parenthesized method call.
+  Enabled: true
+
+Style/NestedTernaryOperator:
+  Description: 'Use one expression per branch in a ternary operator.'
+  StyleGuide: '#no-nested-ternary'
+  Enabled: true
+
+Style/Next:
+  Description: 'Use `next` to skip iteration instead of a condition at the end.'
+  StyleGuide: '#no-nested-conditionals'
+  Enabled: true
+
+Style/NilComparison:
+  Description: 'Prefer x.nil? to x == nil.'
+  StyleGuide: '#predicate-methods'
+  Enabled: true
+
+Style/NonNilCheck:
+  Description: 'Checks for redundant nil checks.'
+  StyleGuide: '#no-non-nil-checks'
+  Enabled: true
+
+Style/Not:
+  Description: 'Use ! instead of not.'
+  StyleGuide: '#bang-not-not'
+  Enabled: true
+
+Style/NumericLiteralPrefix:
+  Description: 'Use smallcase prefixes for numeric literals.'
+  StyleGuide: '#numeric-literal-prefixes'
+  Enabled: true
+
+Style/NumericLiterals:
+  Description: >-
+                 Add underscores to large numeric literals to improve their
+                 readability.
+  StyleGuide: '#underscores-in-numerics'
+  Enabled: true
+
+Style/NumericPredicate:
+  Description: >-
+                 Checks for the use of predicate- or comparison methods for
+                 numeric comparisons.
+  StyleGuide: '#predicate-methods'
+  # This will change to a new method call which isn't guaranteed to be on the
+  # object. Switching these methods has to be done with knowledge of the types
+  # of the variables which rubocop doesn't have.
+  AutoCorrect: false
+  Enabled: true
+
+Style/OneLineConditional:
+  Description: >-
+                 Favor the ternary operator(?:) over
+                 if/then/else/end constructs.
+  StyleGuide: '#ternary-operator'
+  Enabled: true
+
+Style/OptionalArguments:
+  Description: >-
+                 Checks for optional arguments that do not appear at the end
+                 of the argument list
+  StyleGuide: '#optional-arguments'
+  Enabled: true
+
+Style/OrAssignment:
+  Description: 'Recommend usage of double pipe equals (||=) where applicable.'
+  StyleGuide: '#double-pipe-for-uninit'
+  Enabled: true
+
+Style/ParallelAssignment:
+  Description: >-
+                  Check for simple usages of parallel assignment.
+                  It will only warn when the number of variables
+                  matches on both sides of the assignment.
+  StyleGuide: '#parallel-assignment'
+  Enabled: true
+
+Style/ParenthesesAroundCondition:
+  Description: >-
+                 Don't use parentheses around the condition of an
+                 if/unless/while.
+  StyleGuide: '#no-parens-around-condition'
+  Enabled: true
+
+Style/PercentLiteralDelimiters:
+  Description: 'Use `%`-literal delimiters consistently'
+  StyleGuide: '#percent-literal-braces'
+  Enabled: true
+
+Style/PercentQLiterals:
+  Description: 'Checks if uses of %Q/%q match the configured preference.'
+  Enabled: true
+
+Style/PerlBackrefs:
+  Description: 'Avoid Perl-style regex back references.'
+  StyleGuide: '#no-perl-regexp-last-matchers'
+  Enabled: true
+
+Style/PreferredHashMethods:
+  Description: 'Checks use of `has_key?` and `has_value?` Hash methods.'
+  StyleGuide: '#hash-key'
+  Enabled: true
+
+Style/Proc:
+  Description: 'Use proc instead of Proc.new.'
+  StyleGuide: '#proc'
+  Enabled: true
+
+Style/RaiseArgs:
+  Description: 'Checks the arguments passed to raise/fail.'
+  StyleGuide: '#exception-class-messages'
+  Enabled: true
+
+Style/RandomWithOffset:
+  Description: >-
+                 Prefer to use ranges when generating random numbers instead of
+                 integers with offsets.
+  StyleGuide: '#random-numbers'
+  Enabled: true
+
+Style/RedundantBegin:
+  Description: "Don't use begin blocks when they are not needed."
+  StyleGuide: '#begin-implicit'
+  Enabled: true
+
+Style/RedundantConditional:
+  Description: "Don't return true/false from a conditional."
+  Enabled: true
+
+Style/RedundantException:
+  Description: "Checks for an obsolete RuntimeException argument in raise/fail."
+  StyleGuide: '#no-explicit-runtimeerror'
+  Enabled: true
+
+Style/RedundantFreeze:
+  Description: "Checks usages of Object#freeze on immutable objects."
+  Enabled: true
+
+Style/RedundantParentheses:
+  Description: "Checks for parentheses that seem not to serve any purpose."
+  Enabled: true
+
+Style/RedundantReturn:
+  Description: "Don't use return where it's not required."
+  StyleGuide: '#no-explicit-return'
+  Enabled: true
+
+Style/RedundantSelf:
+  Description: "Don't use self where it's not needed."
+  StyleGuide: '#no-self-unless-required'
+  Enabled: true
+
+Style/RegexpLiteral:
+  Description: 'Use / or %r around regular expressions.'
+  StyleGuide: '#percent-r'
+  Enabled: true
+
+Style/RescueModifier:
+  Description: 'Avoid using rescue in its modifier form.'
+  StyleGuide: '#no-rescue-modifiers'
+  Enabled: true
+
+Style/RescueStandardError:
+  Description: 'Avoid rescuing without specifying an error class.'
+  Enabled: true
+
+Style/SafeNavigation:
+  Description: >-
+                  This cop transforms usages of a method call safeguarded by
+                  a check for the existence of the object to
+                  safe navigation (`&.`).
+  Enabled: true
+
+Style/SelfAssignment:
+  Description: >-
+                 Checks for places where self-assignment shorthand should have
+                 been used.
+  StyleGuide: '#self-assignment'
+  Enabled: true
+
+Style/Semicolon:
+  Description: "Don't use semicolons to terminate expressions."
+  StyleGuide: '#no-semicolon'
+  Enabled: true
+
+Style/SignalException:
+  Description: 'Checks for proper usage of fail and raise.'
+  StyleGuide: '#prefer-raise-over-fail'
+  Enabled: true
+
+Style/SingleLineMethods:
+  Description: 'Avoid single-line methods.'
+  StyleGuide: '#no-single-line-methods'
+  Enabled: true
+
+Style/SpecialGlobalVars:
+  Description: 'Avoid Perl-style global variables.'
+  StyleGuide: '#no-cryptic-perlisms'
+  Enabled: true
+
+Style/StabbyLambdaParentheses:
+  Description: 'Check for the usage of parentheses around stabby lambda arguments.'
+  StyleGuide: '#stabby-lambda-with-args'
+  Enabled: true
+
+Style/StderrPuts:
+  Description: 'Use `warn` instead of `$stderr.puts`.'
+  StyleGuide: '#warn'
+  Enabled: true
+
+Style/StringLiterals:
+  Description: 'Checks if uses of quotes match the configured preference.'
+  StyleGuide: '#consistent-string-literals'
+  Enabled: true
+
+Style/StringLiteralsInInterpolation:
+  Description: >-
+                 Checks if uses of quotes inside expressions in interpolated
+                 strings match the configured preference.
+  Enabled: true
+
+Style/StructInheritance:
+  Description: 'Checks for inheritance from Struct.new.'
+  StyleGuide: '#no-extend-struct-new'
+  Enabled: true
+
+Style/SymbolArray:
+  Description: 'Use %i or %I for arrays of symbols.'
+  StyleGuide: '#percent-i'
+  Enabled: true
+
+Style/SymbolLiteral:
+  Description: 'Use plain symbols instead of string symbols when possible.'
+  Enabled: true
+
+Style/SymbolProc:
+  Description: 'Use symbols as procs instead of blocks when possible.'
+  Enabled: true
+
+Style/TernaryParentheses:
+  Description: 'Checks for use of parentheses around ternary conditions.'
+  Enabled: true
+
+Style/TrailingBodyOnMethodDefinition:
+  Description: 'Method body goes below definition.'
+  Enabled: true
+
+Style/TrailingCommaInArguments:
+  Description: 'Checks for trailing comma in argument lists.'
+  StyleGuide: '#no-trailing-params-comma'
+  Enabled: true
+
+Style/TrailingCommaInLiteral:
+  Description: 'Checks for trailing comma in array and hash literals.'
+  StyleGuide: '#no-trailing-array-commas'
+  Enabled: true
+
+Style/TrailingMethodEndStatement:
+  Description: 'Checks for trailing end statement on line of method body.'
+  Enabled: true
+
+Style/TrailingUnderscoreVariable:
+  Description: >-
+                 Checks for the usage of unneeded trailing underscores at the
+                 end of parallel variable assignment.
+  AllowNamedUnderscoreVariables: true
+  Enabled: true
+
+Style/TrivialAccessors:
+  Description: 'Prefer attr_* methods to trivial readers/writers.'
+  StyleGuide: '#attr_family'
+  Enabled: true
+
+Style/UnlessElse:
+  Description: >-
+                 Do not use unless with else. Rewrite these with the positive
+                 case first.
+  StyleGuide: '#no-else-with-unless'
+  Enabled: true
+
+Style/UnneededCapitalW:
+  Description: 'Checks for %W when interpolation is not needed.'
+  Enabled: true
+
+Style/UnneededInterpolation:
+  Description: 'Checks for strings that are just an interpolated expression.'
+  Enabled: true
+
+Style/UnneededPercentQ:
+  Description: 'Checks for %q/%Q when single quotes or double quotes would do.'
+  StyleGuide: '#percent-q'
+  Enabled: true
+
+Style/VariableInterpolation:
+  Description: >-
+                 Don't interpolate global, instance and class variables
+                 directly in strings.
+  StyleGuide: '#curlies-interpolate'
+  Enabled: true
+
+Style/WhenThen:
+  Description: 'Use when x then ... for one-line cases.'
+  StyleGuide: '#one-line-cases'
+  Enabled: true
+
+Style/WhileUntilDo:
+  Description: 'Checks for redundant do after while or until.'
+  StyleGuide: '#no-multiline-while-do'
+  Enabled: true
+
+Style/WhileUntilModifier:
+  Description: >-
+                 Favor modifier while/until usage when you have a
+                 single-line body.
+  StyleGuide: '#while-as-a-modifier'
+  Enabled: true
+
+Style/WordArray:
+  Description: 'Use %w or %W for arrays of words.'
+  StyleGuide: '#percent-w'
+  Enabled: true
+
+Style/YodaCondition:
+  Description: 'Do not use literals as the first operand of a comparison.'
+  Reference: 'https://en.wikipedia.org/wiki/Yoda_conditions'
+  Enabled: true
+
+Style/ZeroLengthPredicate:
+  Description: 'Use #empty? when testing for objects of length 0.'
+  Enabled: true

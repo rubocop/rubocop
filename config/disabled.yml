@@ -109,8 +109,8 @@ Style/Send:
   StyleGuide: '#prefer-public-send'
   Enabled: false
 
-Style/StringMethods:
-  Description: 'Checks if configured preferred methods are used over non-preferred.'
+Style/SingleLineBlockParams:
+  Description: 'Enforces the names of some block params.'
   Enabled: false
 
 Style/StringHashKeys:
@@ -118,6 +118,6 @@ Style/StringHashKeys:
   StyleGuide: '#symbols-as-keys'
   Enabled: false
 
-Style/SingleLineBlockParams:
-  Description: 'Enforces the names of some block params.'
+Style/StringMethods:
+  Description: 'Checks if configured preferred methods are used over non-preferred.'
   Enabled: false

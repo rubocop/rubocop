@@ -71,6 +71,10 @@ describe 'RuboCop Project', type: :feature do
       expect(raw_configuration)
         .to all(match(hash_including('Enabled' => false)))
     end
+
+    it 'sorts configuration keys alphabetically' do
+      expect(configuration_keys).to eq configuration_keys.sort
+    end
   end
 
   describe 'config/enabled.yml' do
@@ -79,6 +83,10 @@ describe 'RuboCop Project', type: :feature do
     it 'enables all cops in the file' do
       expect(raw_configuration)
         .to all(match(hash_including('Enabled' => true)))
+    end
+
+    it 'sorts configuration keys alphabetically' do
+      expect(configuration_keys).to eq configuration_keys.sort
     end
   end
 
