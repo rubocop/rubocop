@@ -175,7 +175,11 @@ module RuboCop
         end
 
         def negated?(send_node)
-          send_node.parent.send_type? && send_node.parent.method?(:!)
+          if send_node.parent && send_node.parent.send_type?
+            negated?(send_node.parent)
+          else
+            send_node.send_type? && send_node.method?(:!)
+          end
         end
 
         def begin_range(node, method_call)
