@@ -40,6 +40,10 @@ describe RuboCop::Cop::Style::SafeNavigation, :config do
       expect_no_offenses('foo && !foo.bar?')
     end
 
+    it 'allows an object check before a negated predicate method chain' do
+      expect_no_offenses('foo && !foo.bar.baz?')
+    end
+
     it 'allows method call that are used in a comparison safe guarded by ' \
       'an object check' do
       expect_no_offenses('foo.bar > 2 if foo')
