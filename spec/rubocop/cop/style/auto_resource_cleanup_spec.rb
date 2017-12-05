@@ -17,4 +17,8 @@ describe RuboCop::Cop::Style::AutoResourceCleanup do
   it 'does not register an offense for File.open with block-pass' do
     expect_no_offenses('File.open("file", &:read)')
   end
+
+  it 'does not register an offense for File.open with immediate close' do
+    expect_no_offenses('File.open("file", "w", 0o777).close')
+  end
 end
