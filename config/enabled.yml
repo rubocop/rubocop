@@ -1163,6 +1163,10 @@ Rails/ReadWriteAttribute:
   StyleGuide: 'https://github.com/bbatsov/rails-style-guide#read-attribute'
   Enabled: true
 
+Rails/RedundantReceiverInWithOptions:
+  Description: 'Checks for redundant receiver in `with_options`.'
+  Enabled: true
+
 Rails/RelativeDateConstant:
   Description: 'Do not assign relative date to constants.'
   Enabled: true
