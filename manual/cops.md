@@ -337,6 +337,7 @@ In the following section you find all available cops:
 * [Rails/PluralizationGrammar](cops_rails.md#railspluralizationgrammar)
 * [Rails/Present](cops_rails.md#railspresent)
 * [Rails/ReadWriteAttribute](cops_rails.md#railsreadwriteattribute)
+* [Rails/RedundantReceiverInWithOptions](cops_rails.md#railsredundantreceiverinwithoptions)
 * [Rails/RelativeDateConstant](cops_rails.md#railsrelativedateconstant)
 * [Rails/RequestReferer](cops_rails.md#railsrequestreferer)
 * [Rails/ReversibleMigration](cops_rails.md#railsreversiblemigration)

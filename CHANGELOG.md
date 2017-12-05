@@ -23,6 +23,7 @@
 * [#5077](https://github.com/bbatsov/rubocop/pull/5077): Add new `Rails/CreateTableWithTimestamps` cop. ([@wata727][])
 * Add new `Style/ColonMethodDefinition` cop. ([@rrosenblum][])
 * Add new `Style/ExtendSelf` cop. ([@drenmi][])
+* [#5185](https://github.com/bbatsov/rubocop/pull/5185): Add new `Rails/RedundantReceiverInWithOptions` cop. ([@koic][])
 
 ### Bug fixes
 

@@ -907,6 +907,39 @@ Include | `app/models/**/*.rb` | Array
 
 * [https://github.com/bbatsov/rails-style-guide#read-attribute](https://github.com/bbatsov/rails-style-guide#read-attribute)
 
+## Rails/RedundantReceiverInWithOptions
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for redundant receiver in `with_options`.
+Receiver is implicit from Rails 4.2 or higher.
+
+### Examples
+
+```ruby
+# bad
+class Account < ApplicationRecord
+  with_options dependent: :destroy do |assoc|
+    assoc.has_many :customers
+    assoc.has_many :products
+    assoc.has_many :invoices
+    assoc.has_many :expenses
+  end
+end
+
+# good
+class Account < ApplicationRecord
+  with_options dependent: :destroy do
+    has_many :customers
+    has_many :products
+    has_many :invoices
+    has_many :expenses
+  end
+end
+```
+
 ## Rails/RelativeDateConstant
 
 Enabled by default | Supports autocorrection
