@@ -8,7 +8,7 @@ module RuboCop
       # In Ruby 2.3 or newer, squiggly heredocs (`<<~`) should be used. If you
       # use the older rubies, you should introduce some library to your project
       # (e.g. ActiveSupport, Powerpack or Unindent).
-      # Note: When `Metrics/LineLength`'s `AllowHeredoc` is false(not default),
+      # Note: When `Metrics/LineLength`'s `AllowHeredoc` is false (not default),
       #       this cop does not add any offenses for long here documents to
       #       avoid `Metrics/LineLength`'s offenses.
       #
