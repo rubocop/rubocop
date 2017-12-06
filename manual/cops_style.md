@@ -1361,26 +1361,12 @@ Enabled | Yes
 Checks for empty else-clauses, possibly including comments and/or an
 explicit `nil` depending on the EnforcedStyle.
 
-SupportedStyles:
-
 ### Examples
 
-```ruby
-# good for all styles
+#### EnforcedStyle: empty
 
-if condition
-  statement
-else
-  statement
-end
-
-# good for all styles
-if condition
-  statement
-end
-```
 ```ruby
-# empty - warn only on empty else
+# warn only on empty else
 
 # bad
 if condition
@@ -1394,9 +1380,23 @@ if condition
 else
   nil
 end
+
+# good
+if condition
+  statement
+else
+  statement
+end
+
+# good
+if condition
+  statement
+end
 ```
+#### EnforcedStyle: nil
+
 ```ruby
-# nil - warn on else with nil in it
+# warn on else with nil in it
 
 # bad
 if condition
@@ -1410,9 +1410,23 @@ if condition
   statement
 else
 end
+
+# good
+if condition
+  statement
+else
+  statement
+end
+
+# good
+if condition
+  statement
+end
 ```
+#### EnforcedStyle: both (default)
+
 ```ruby
-# both - warn on empty else and else with nil in it
+# warn on empty else and else with nil in it
 
 # bad
 if condition
@@ -1425,6 +1439,18 @@ end
 if condition
   statement
 else
+end
+
+# good
+if condition
+  statement
+else
+  statement
+end
+
+# good
+if condition
+  statement
 end
 ```
 
