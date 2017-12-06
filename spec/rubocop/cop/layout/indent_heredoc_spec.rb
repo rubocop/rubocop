@@ -270,7 +270,7 @@ describe RuboCop::Cop::Layout::IndentHeredoc, :config do
           RUBY2
         CORRECTION
 
-        include_examples :accept, 'indentaed, with `~`', <<-RUBY
+        include_examples :accept, 'indented, with `~`', <<-RUBY
           <<~#{quote}RUBY2#{quote}
             something
           RUBY2
