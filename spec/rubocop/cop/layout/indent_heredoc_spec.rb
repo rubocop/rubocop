@@ -269,6 +269,20 @@ describe RuboCop::Cop::Layout::IndentHeredoc, :config do
             foo
           RUBY2
         CORRECTION
+        include_examples :offense, 'not indented, with `-`',
+                         <<-RUBY, <<-CORRECTION
+          puts <<-#{quote}RUBY2#{quote}
+def foo
+  bar
+end
+RUBY2
+        RUBY
+          puts <<~#{quote}RUBY2#{quote}
+            def foo
+              bar
+            end
+          RUBY2
+        CORRECTION
 
         include_examples :accept, 'indented, with `~`', <<-RUBY
           <<~#{quote}RUBY2#{quote}
