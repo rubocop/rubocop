@@ -11,8 +11,8 @@ module RuboCop
       #   hash.merge!({'key' => 'value'})
       #   hash.merge!(a: 1, b: 2)
       class RedundantMerge < Cop
-        AREF_ASGN = '%s[%s] = %s'.freeze
-        MSG = 'Use `%s` instead of `%s`.'.freeze
+        AREF_ASGN = '%<receiver>s[%<key>s] = %<value>s'.freeze
+        MSG = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
 
         def_node_matcher :redundant_merge_candidate, <<-PATTERN
           (send $!nil? :merge! [(hash $...) !kwsplat_type?])
@@ -46,7 +46,7 @@ module RuboCop
           redundant_merge_candidate(node) do |receiver, pairs|
             assignments = to_assignments(receiver, pairs).join('; ')
 
-            format(MSG, assignments, node.source)
+            format(MSG, prefer: assignments, current: node.source)
           end
         end
 
@@ -94,7 +94,9 @@ module RuboCop
 
             key = key.sym_type? && pair.colon? ? ":#{key.source}" : key.source
 
-            format(AREF_ASGN, receiver.source, key, value.source)
+            format(AREF_ASGN, receiver: receiver.source,
+                              key: key,
+                              value: value.source)
           end
         end
 

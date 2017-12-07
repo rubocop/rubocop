@@ -14,8 +14,8 @@ module RuboCop
       #   URI::DEFAULT_PARSER
       #
       class UriDefaultParser < Cop
-        MSG = 'Use `%sURI::DEFAULT_PARSER` instead of ' \
-              '`%sURI::Parser.new`.'.freeze
+        MSG = 'Use `%<double_colon>sURI::DEFAULT_PARSER` instead of ' \
+              '`%<double_colon>sURI::Parser.new`.'.freeze
 
         def_node_matcher :uri_parser_new?, <<-PATTERN
           (send
@@ -26,7 +26,7 @@ module RuboCop
         def on_send(node)
           return unless uri_parser_new?(node) do |captured_value|
             double_colon = captured_value ? '::' : ''
-            message = format(MSG, double_colon, double_colon)
+            message = format(MSG, double_colon: double_colon)
 
             add_offense(node, message: message)
           end

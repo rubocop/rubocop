@@ -64,7 +64,8 @@ module RuboCop
         minimum_target_ruby_version 2.4
 
         MSG =
-          'Use `match?` instead of `%s` when `MatchData` is not used.'.freeze
+          'Use `match?` instead of `%<current>s` when `MatchData` ' \
+          'is not used.'.freeze
 
         def_node_matcher :match_method?, <<-PATTERN
           {
@@ -147,7 +148,7 @@ module RuboCop
         end
 
         def message(node)
-          format(MSG, node.loc.selector.source)
+          format(MSG, current: node.loc.selector.source)
         end
 
         def last_match_used?(match_node)
