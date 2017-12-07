@@ -223,16 +223,22 @@ task generate_cops_documentation: :yard_for_generate_documentation do
     end
   end
 
-  cops   = RuboCop::Cop::Cop.registry
-  config = RuboCop::ConfigLoader.default_configuration
-  config['Rails']['Enabled'] = true
+  def main
+    cops   = RuboCop::Cop::Cop.registry
+    config = RuboCop::ConfigLoader.default_configuration
+    config['Rails']['Enabled'] = true
 
-  YARD::Registry.load!
-  cops.departments.sort!.each do |department|
-    print_cops_of_department(cops, department, config)
+    YARD::Registry.load!
+    cops.departments.sort!.each do |department|
+      print_cops_of_department(cops, department, config)
+    end
+
+    print_table_of_contents(cops)
+
+    assert_manual_synchronized if ENV['CI'] == 'true'
+  ensure
+    RuboCop::ConfigLoader.default_configuration = nil
   end
 
-  print_table_of_contents(cops)
-
-  assert_manual_synchronized if ENV['CI'] == 'true'
+  main
 end

@@ -22,9 +22,9 @@ RSpec::Core::RakeTask.new(:ascii_spec) { |t| t.ruby_opts = '-E ASCII' }
 
 desc 'Run test and RuboCop in parallel'
 task parallel: %i[
+  documentation_syntax_check generate_cops_documentation
   parallel:spec parallel:ascii_spec
   internal_investigation
-  documentation_syntax_check generate_cops_documentation
 ]
 
 namespace :parallel do
@@ -54,9 +54,9 @@ RuboCop::RakeTask.new(:internal_investigation).tap do |task|
 end
 
 task default: %i[
+  documentation_syntax_check generate_cops_documentation
   spec ascii_spec
   internal_investigation
-  documentation_syntax_check generate_cops_documentation
 ]
 
 require 'yard'
