@@ -56,10 +56,6 @@ module RuboCop
         MSG = 'Place `when` conditions with a splat ' \
               'at the end of the `when` branches.'.freeze
         ARRAY_MSG = 'Do not expand array literals in `when` conditions.'.freeze
-        PERCENT_W = '%w'.freeze
-        PERCENT_CAPITAL_W = '%W'.freeze
-        PERCENT_I = '%i'.freeze
-        PERCENT_CAPITAL_I = '%I'.freeze
 
         def on_case(case_node)
           when_conditions = case_node.when_branches.flat_map(&:conditions)
