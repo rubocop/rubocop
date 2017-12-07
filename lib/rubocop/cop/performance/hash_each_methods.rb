@@ -22,7 +22,7 @@ module RuboCop
       class HashEachMethods < Cop
         include Lint::UnusedArgument
 
-        MSG = 'Use `%s` instead of `%s`.'.freeze
+        MSG = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
 
         def_node_matcher :plain_each, <<-PATTERN
           (block $(send !(send _ :to_a) :each) (args $(arg _k) $(arg _v)) ...)
@@ -47,14 +47,15 @@ module RuboCop
             add_offense(
               target,
               location: plain_range(target),
-              message: format(message, "each_#{used}", :each)
+              message: format(message, prefer: "each_#{used}", current: :each)
             )
           end
         end
 
         def register_kv_offense(node)
           kv_each(node) do |target, method|
-            msg = format(message, "each_#{method[0..-2]}", "#{method}.each")
+            msg = format(message, prefer: "each_#{method[0..-2]}",
+                                  current: "#{method}.each")
 
             add_offense(target, location: kv_range(target), message: msg)
           end

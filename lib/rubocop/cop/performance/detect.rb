@@ -25,8 +25,10 @@ module RuboCop
       class Detect < Cop
         include SafeMode
 
-        MSG = 'Use `%s` instead of `%s.%s`.'.freeze
-        REVERSE_MSG = 'Use `reverse.%s` instead of `%s.%s`.'.freeze
+        MSG = 'Use `%<prefer>s` instead of ' \
+              '`%<first_method>s.%<second_method>s`.'.freeze
+        REVERSE_MSG = 'Use `reverse.%<prefer>s` instead of ' \
+                      '`%<first_method>s.%<second_method>s`.'.freeze
 
         def_node_matcher :detect_candidate?, <<-PATTERN
           {
@@ -84,8 +86,9 @@ module RuboCop
           range = receiver.loc.selector.join(node.loc.selector)
 
           message = second_method == :last ? REVERSE_MSG : MSG
-          formatted_message = format(message, preferred_method, first_method,
-                                     second_method)
+          formatted_message = format(message, prefer: preferred_method,
+                                              first_method: first_method,
+                                              second_method: second_method)
 
           add_offense(node, location: range, message: formatted_message)
         end

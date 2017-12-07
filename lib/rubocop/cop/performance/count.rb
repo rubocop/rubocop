@@ -40,7 +40,7 @@ module RuboCop
       class Count < Cop
         include SafeMode
 
-        MSG = 'Use `count` instead of `%s...%s`.'.freeze
+        MSG = 'Use `count` instead of `%<selector>s...%<counter>s`.'.freeze
 
         def_node_matcher :count_candidate?, <<-PATTERN
           {
@@ -61,7 +61,8 @@ module RuboCop
 
             add_offense(node,
                         location: range,
-                        message: format(MSG, selector, counter))
+                        message: format(MSG, selector: selector,
+                                             counter: counter))
           end
         end
 

@@ -19,7 +19,7 @@ module RuboCop
       #   'abc'.tr('b', 'd')
       #   'a b c'.delete(' ')
       class StringReplacement < Cop
-        MSG = 'Use `%s` instead of `%s`.'.freeze
+        MSG = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
         DETERMINISTIC_REGEX = /\A(?:#{LITERAL_REGEX})+\Z/
         DELETE = 'delete'.freeze
         TR = 'tr'.freeze
@@ -151,7 +151,7 @@ module RuboCop
           replacement_method =
             replacement_method(node, first_source, second_source)
 
-          format(MSG, replacement_method, node.method_name)
+          format(MSG, prefer: replacement_method, current: node.method_name)
         end
 
         def method_suffix(node)
