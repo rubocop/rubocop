@@ -37,7 +37,8 @@ module RuboCop
       #
       # @return [Boolean] whether this method is a staby lambda
       def stabby_lambda?
-        loc.selector.source == ARROW
+        selector = loc.selector
+        selector && selector.source == ARROW
       end
     end
   end
