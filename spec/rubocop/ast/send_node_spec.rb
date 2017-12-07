@@ -882,12 +882,50 @@ describe RuboCop::AST::SendNode do
   describe '#lambda?' do
     context 'with a lambda method' do
       let(:source) { 'lambda { |foo| bar(foo) }' }
+      let(:send_node) { parse_source(source).ast.send_node }
+
+      it { expect(send_node.lambda?).to be_truthy }
+    end
+
+    context 'with a stabby lambda method' do
+      let(:source) { '-> (foo) { do_something(foo) }' }
+      let(:send_node) { parse_source(source).ast.send_node }
 
       it { expect(send_node.lambda?).to be_truthy }
     end
 
     context 'with a non-lambda method' do
       let(:source) { 'foo.bar' }
+
+      it { expect(send_node.lambda?).to be_falsey }
+    end
+  end
+
+  describe '#stabby_lambda?' do
+    context 'with a stabby lambda' do
+      let(:send_node) { parse_source(source).ast.send_node }
+      let(:source) { '-> (foo) { do_something(foo) }' }
+
+      it { expect(send_node.stabby_lambda?).to be(true) }
+    end
+
+    context 'with a lambda method' do
+      let(:send_node) { parse_source(source).ast.send_node }
+      let(:source) { 'lambda { |foo| bar(foo) }' }
+
+      it { expect(send_node.stabby_lambda?).to be(false) }
+    end
+
+    context 'with a non-lambda method' do
+      let(:source) { 'foo.bar' }
+
+      it { expect(send_node.lambda?).to be_falsey }
+    end
+
+    # Regression test https://github.com/bbatsov/rubocop/pull/5194
+    context 'with `a.() {}` style method' do
+      let(:send_node) { parse_source(source).ast.send_node }
+      let(:source) { 'a.() {}' }
 
       it { expect(send_node.lambda?).to be_falsey }
     end
