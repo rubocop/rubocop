@@ -121,6 +121,10 @@ Layout/EmptyLinesAroundAccessModifier:
   StyleGuide: '#empty-lines-around-access-modifier'
   Enabled: true
 
+Layout/EmptyLinesAroundArguments:
+  Description: "Keeps track of empty lines around method arguments."
+  Enabled: true
+
 Layout/EmptyLinesAroundBeginBody:
   Description: "Keeps track of empty lines around begin-end bodies."
   StyleGuide: '#empty-lines-around-bodies'

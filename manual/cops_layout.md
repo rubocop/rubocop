@@ -767,6 +767,50 @@ end
 
 * [https://github.com/bbatsov/ruby-style-guide#empty-lines-around-access-modifier](https://github.com/bbatsov/ruby-style-guide#empty-lines-around-access-modifier)
 
+## Layout/EmptyLinesAroundArguments
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cops checks if empty lines exist around the arguments
+of a method invocation.
+
+### Examples
+
+```ruby
+# bad
+do_something(
+  foo
+
+)
+
+process(bar,
+
+        baz: qux,
+        thud: fred)
+
+some_method(
+
+  [1,2,3],
+  x: y
+)
+
+# good
+do_something(
+  foo
+)
+
+process(bar,
+        baz: qux,
+        thud: fred)
+
+some_method(
+  [1,2,3],
+  x: y
+)
+```
+
 ## Layout/EmptyLinesAroundBeginBody
 
 Enabled by default | Supports autocorrection
