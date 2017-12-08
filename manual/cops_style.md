@@ -3670,6 +3670,34 @@ Enabled | Yes
 
 This cop checks for usage of the %Q() syntax when %q() would do.
 
+### Examples
+
+#### EnforcedStyle: lower_case_q (default)
+
+```ruby
+# The `lower_case_q` style prefers `%q` unless
+# interpolation is needed.
+# bad
+%Q[Mix the foo into the baz.]
+%Q(They all said: 'Hooray!')
+
+# good
+%q[Mix the foo into the baz]
+%q(They all said: 'Hooray!')
+```
+#### EnforcedStyle: upper_case_q
+
+```ruby
+# The `upper_case_q` style requires the sole use of `%Q`.
+# bad
+%q/Mix the foo into the baz./
+%q{They all said: 'Hooray!'}
+
+# good
+%Q/Mix the foo into the baz./
+%Q{They all said: 'Hooray!'}
+```
+
 ### Configurable attributes
 
 Name | Default value | Configurable values
