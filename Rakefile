@@ -135,15 +135,15 @@ task documentation_syntax_check: :yard_for_generate_documentation do
 
     examples.each do |example|
       begin
-        # Parser output syntax errors to stderr, but it is not needed.
-        $stderr = StringIO.new(''.dup)
-        Parser::Ruby24.parse(example.text)
+        buffer = Parser::Source::Buffer.new('<code>', 1)
+        buffer.source = example.text
+        parser = Parser::Ruby24.new(RuboCop::AST::Builder.new)
+        parser.diagnostics.all_errors_are_fatal = true
+        parser.parse(buffer)
       rescue Parser::SyntaxError => ex
         path = example.object.file
         puts "#{path}: Syntax Error in an example. #{ex}"
         ok = false
-      ensure
-        $stderr = STDERR
       end
     end
   end
