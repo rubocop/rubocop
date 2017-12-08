@@ -4,6 +4,15 @@ module RuboCop
   module Cop
     module Style
       # This cop checks for the use of the send method.
+      #
+      # @example
+      #   # bad
+      #   Foo.send(:bar)
+      #   quuz.send(:fred)
+      #
+      #   # good
+      #   Foo.__send__(:bar)
+      #   quuz.public_send(:fred)
       class Send < Cop
         MSG = 'Prefer `Object#__send__` or `Object#public_send` to ' \
               '`send`.'.freeze
