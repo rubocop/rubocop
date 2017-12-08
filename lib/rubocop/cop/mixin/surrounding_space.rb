@@ -14,6 +14,23 @@ module RuboCop
         token.pos.source_buffer.source.match(/\G\s/, token.pos.begin_pos - 1)
       end
 
+      def side_space_range(range:, side:)
+        buffer = @processed_source.buffer
+        src = buffer.source
+
+        begin_pos = range.begin_pos
+        end_pos = range.end_pos
+        if side == :left
+          begin_pos = reposition(src, begin_pos, -1)
+          end_pos -= 1
+        end
+        if side == :right
+          begin_pos += 1
+          end_pos = reposition(src, end_pos, 1)
+        end
+        Parser::Source::Range.new(buffer, begin_pos, end_pos)
+      end
+
       def index_of_first_token(node)
         range = node.source_range
         token_table[range.line][range.column]
@@ -37,6 +54,14 @@ module RuboCop
           end
           table
         end
+      end
+
+      private
+
+      def reposition(src, pos, step)
+        offset = step == -1 ? -1 : 0
+        pos += step while src[pos + offset] =~ /[ \t]/
+        pos < 0 ? 0 : pos
       end
     end
   end

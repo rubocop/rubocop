@@ -170,6 +170,7 @@ In the following section you find all available cops:
 * [Layout/SpaceInsideParens](cops_layout.md#layoutspaceinsideparens)
 * [Layout/SpaceInsidePercentLiteralDelimiters](cops_layout.md#layoutspaceinsidepercentliteraldelimiters)
 * [Layout/SpaceInsideRangeLiteral](cops_layout.md#layoutspaceinsiderangeliteral)
+* [Layout/SpaceInsideReferenceBrackets](cops_layout.md#layoutspaceinsidereferencebrackets)
 * [Layout/SpaceInsideStringInterpolation](cops_layout.md#layoutspaceinsidestringinterpolation)
 * [Layout/Tab](cops_layout.md#layouttab)
 * [Layout/TrailingBlankLines](cops_layout.md#layouttrailingblanklines)
