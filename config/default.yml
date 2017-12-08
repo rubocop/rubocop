@@ -526,6 +526,12 @@ Layout/SpaceInsideHashLiteralBraces:
     - space
     - no_space
 
+Layout/SpaceInsideReferenceBrackets:
+  EnforcedStyle: no_space
+  SupportedStyles:
+    - space
+    - no_space
+
 Layout/SpaceInsideStringInterpolation:
   EnforcedStyle: no_space
   SupportedStyles:

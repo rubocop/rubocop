@@ -2938,6 +2938,52 @@ Checks for spaces inside range literals.
 
 * [https://github.com/bbatsov/ruby-style-guide#no-space-inside-range-literals](https://github.com/bbatsov/ruby-style-guide#no-space-inside-range-literals)
 
+## Layout/SpaceInsideReferenceBrackets
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+Checks that reference brackets have or don't have
+surrounding space depending on configuration.
+
+### Examples
+
+#### EnforcedStyle: no_space (default)
+
+```ruby
+# The `no_space` style enforces that reference brackets have
+# no surrounding space.
+
+# bad
+hash[ :key ]
+array[ index ]
+
+# good
+hash[:key]
+array[index]
+```
+#### EnforcedStyle: space
+
+```ruby
+# The `space` style enforces that reference brackets have
+# surrounding space.
+
+# bad
+hash[:key]
+array[index]
+
+# good
+hash[ :key ]
+array[ index ]
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `no_space` | `space`, `no_space`
+
 ## Layout/SpaceInsideStringInterpolation
 
 Enabled by default | Supports autocorrection

@@ -365,6 +365,10 @@ Layout/SpaceInsideRangeLiteral:
   StyleGuide: '#no-space-inside-range-literals'
   Enabled: true
 
+Layout/SpaceInsideReferenceBrackets:
+  Description: 'Checks the spacing inside referential brackets.'
+  Enabled: true
+
 Layout/SpaceInsideStringInterpolation:
   Description: 'Checks for padding/surrounding spaces inside string interpolation.'
   StyleGuide: '#string-interpolation'
