@@ -346,11 +346,6 @@ Layout/SpaceInsideBlockBraces:
                  or doesn't have trailing space.
   Enabled: true
 
-Layout/SpaceInsideBrackets:
-  Description: 'No spaces after [ or before ].'
-  StyleGuide: '#spaces-braces'
-  Enabled: true
-
 Layout/SpaceInsideHashLiteralBraces:
   Description: "Use spaces inside hash literal braces - or don't."
   StyleGuide: '#spaces-operators'

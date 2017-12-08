@@ -2804,28 +2804,6 @@ EnforcedStyle | `space` | `space`, `no_space`
 EnforcedStyleForEmptyBraces | `no_space` | `space`, `no_space`
 SpaceBeforeBlockParameters | `true` | Boolean
 
-## Layout/SpaceInsideBrackets
-
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
-
-Checks for spaces inside square brackets.
-
-### Examples
-
-```ruby
-# bad
-array = [ 1, 2, 3 ]
-
-# good
-array = [1, 2, 3]
-```
-
-### References
-
-* [https://github.com/bbatsov/ruby-style-guide#spaces-braces](https://github.com/bbatsov/ruby-style-guide#spaces-braces)
-
 ## Layout/SpaceInsideHashLiteralBraces
 
 Enabled by default | Supports autocorrection

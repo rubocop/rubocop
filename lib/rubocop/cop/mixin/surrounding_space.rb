@@ -4,11 +4,14 @@ module RuboCop
   module Cop
     # Common functionality for checking surrounding space.
     module SurroundingSpace
-      def space_between?(t1, _t2)
-        # Check if the range between the tokens starts with a space. It can
-        # contain other characters, e.g. a unary plus, but it must start with
-        # space.
-        t1.pos.source_buffer.source.match(/\G\s/, t1.pos.end_pos)
+      def space_after?(token)
+        # Checks if there is whitespace after token
+        token.pos.source_buffer.source.match(/\G\s/, token.pos.end_pos)
+      end
+
+      def space_before?(token)
+        # Checks if there is whitespace before token
+        token.pos.source_buffer.source.match(/\G\s/, token.pos.begin_pos - 1)
       end
 
       def index_of_first_token(node)

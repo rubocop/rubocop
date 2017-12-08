@@ -203,9 +203,6 @@ describe RuboCop::Cop::Layout::SpaceAroundKeyword do
   # Layout/SpaceInsideBlockBraces
   it_behaves_like 'accept around', '{}', 'loop {next}'
 
-  # Layout/SpaceInsideBrackets
-  it_behaves_like 'accept around', '[]', '[begin end]'
-
   # Layout/SpaceInsideHashLiteralBraces
   it_behaves_like 'accept around', '{}', '{a: begin end}'
 
