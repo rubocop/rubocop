@@ -331,6 +331,10 @@ Layout/SpaceInLambdaLiteral:
   Description: 'Checks for spaces in lambda literals.'
   Enabled: true
 
+Layout/SpaceInsideArrayLiteralBrackets:
+  Description: 'Checks the spacing inside array literal brackets.'
+  Enabled: true
+
 Layout/SpaceInsideArrayPercentLiteral:
   Description: 'No unnecessary additional spaces between elements in %i/%w literals.'
   Enabled: true
