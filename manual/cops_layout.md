@@ -2686,6 +2686,62 @@ Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `require_no_space` | `require_no_space`, `require_space`
 
+## Layout/SpaceInsideArrayLiteralBrackets
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+Checks that brackets used for array literals have or don't have
+surrounding space depending on configuration.
+
+### Examples
+
+#### EnforcedStyle: space
+
+```ruby
+# The `space` style enforces that array literals have
+# surrounding space.
+
+# bad
+array = [a, b, c, d]
+
+# good
+array = [ a, b, c, d ]
+```
+#### EnforcedStyle: no_space
+
+```ruby
+# The `no_space` style enforces that array literals have
+# no surrounding space.
+
+# bad
+array = [ a, b, c, d ]
+
+# good
+array = [a, b, c, d]
+```
+#### EnforcedStyle: compact
+
+```ruby
+# The `compact` style normally requires a space inside
+# array brackets, with the exception that successive left
+# or right brackets are collapsed together in nested arrays.
+
+# bad
+array = [ a, [ b, c ] ]
+
+# good
+array = [ a, [ b, c ]]
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `no_space` | `space`, `no_space`, `compact`
+EnforcedStyleForEmptyBrackets | `no_space` | `space`, `no_space`
+
 ## Layout/SpaceInsideArrayPercentLiteral
 
 Enabled by default | Supports autocorrection

@@ -165,6 +165,7 @@ In the following section you find all available cops:
 * [Layout/SpaceBeforeFirstArg](cops_layout.md#layoutspacebeforefirstarg)
 * [Layout/SpaceBeforeSemicolon](cops_layout.md#layoutspacebeforesemicolon)
 * [Layout/SpaceInLambdaLiteral](cops_layout.md#layoutspaceinlambdaliteral)
+* [Layout/SpaceInsideArrayLiteralBrackets](cops_layout.md#layoutspaceinsidearrayliteralbrackets)
 * [Layout/SpaceInsideArrayPercentLiteral](cops_layout.md#layoutspaceinsidearraypercentliteral)
 * [Layout/SpaceInsideBlockBraces](cops_layout.md#layoutspaceinsideblockbraces)
 * [Layout/SpaceInsideHashLiteralBraces](cops_layout.md#layoutspaceinsidehashliteralbraces)
