@@ -4466,6 +4466,18 @@ Disabled | No
 
 This cop checks for the use of the send method.
 
+### Examples
+
+```ruby
+# bad
+Foo.send(:bar)
+quuz.send(:fred)
+
+# good
+Foo.__send__(:bar)
+quuz.public_send(:fred)
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#prefer-public-send](https://github.com/bbatsov/ruby-style-guide#prefer-public-send)
