@@ -4215,6 +4215,20 @@ Enabled | Yes
 
 This cop checks for uses of rescue in its modifier form.
 
+### Examples
+
+```ruby
+# bad
+some_method rescue handle_error
+
+# good
+begin
+  some_method
+rescue
+  handle_error
+end
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#no-rescue-modifiers](https://github.com/bbatsov/ruby-style-guide#no-rescue-modifiers)
