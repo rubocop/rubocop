@@ -82,7 +82,7 @@ module RuboCop
           is_empty_braces = left_brace?(t1) && right_brace?(t2)
           expect_space    = expect_space?(t1, t2)
 
-          if offense?(t1, t2, expect_space)
+          if offense?(t1, expect_space)
             incorrect_style_detected(t1, t2, expect_space, is_empty_braces)
           else
             correct_style_detected
@@ -123,8 +123,8 @@ module RuboCop
           end
         end
 
-        def offense?(t1, t2, expect_space)
-          has_space = space_between?(t1, t2)
+        def offense?(t1, expect_space)
+          has_space = space_after?(t1)
           expect_space ? !has_space : has_space
         end
 

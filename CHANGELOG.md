@@ -69,6 +69,7 @@
 * [#4943](https://github.com/bbatsov/rubocop/pull/4943): Make cop generator compliant with the repo's rubocop config. ([@tdeo][])
 * [#5011](https://github.com/bbatsov/rubocop/pull/5011): Remove `SupportedStyles` from "Configuration parameters" in `.rubocop_todo.yml`. ([@pocke][])
 * `Lint/RescueWithoutErrorClass` has been replaced by `Style/RescueStandardError`. ([@rrosenblum][])
+* [#4811](https://github.com/bbatsov/rubocop/issues/4811): Remove `Layout/SpaceInsideBrackets` in favor of two new configurable cops. ([@garettarrowood][])
 * [#5042](https://github.com/bbatsov/rubocop/pull/5042): Make offense locations of metrics cops to contain whole a method. ([@pocke][])
 * [#5044](https://github.com/bbatsov/rubocop/pull/5044): Add last_line and last_column into outputs of the JSON formatter. ([@pocke][])
 * [#4633](https://github.com/bbatsov/rubocop/issues/4633): Make metrics cops aware of `define_method`. ([@pocke][])

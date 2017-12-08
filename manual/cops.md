@@ -166,7 +166,6 @@ In the following section you find all available cops:
 * [Layout/SpaceInLambdaLiteral](cops_layout.md#layoutspaceinlambdaliteral)
 * [Layout/SpaceInsideArrayPercentLiteral](cops_layout.md#layoutspaceinsidearraypercentliteral)
 * [Layout/SpaceInsideBlockBraces](cops_layout.md#layoutspaceinsideblockbraces)
-* [Layout/SpaceInsideBrackets](cops_layout.md#layoutspaceinsidebrackets)
 * [Layout/SpaceInsideHashLiteralBraces](cops_layout.md#layoutspaceinsidehashliteralbraces)
 * [Layout/SpaceInsideParens](cops_layout.md#layoutspaceinsideparens)
 * [Layout/SpaceInsidePercentLiteralDelimiters](cops_layout.md#layoutspaceinsidepercentliteraldelimiters)
