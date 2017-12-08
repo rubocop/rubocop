@@ -471,6 +471,19 @@ Enabled | Yes
 
 Checks for uses of the character literal ?x.
 
+### Examples
+
+```ruby
+# bad
+?x
+
+# good
+'x'
+
+# good
+?\C-\M-d
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#no-character-literals](https://github.com/bbatsov/ruby-style-guide#no-character-literals)
