@@ -13,6 +13,7 @@ require 'rubocop/cop/internal_affairs'
 require 'webmock/rspec'
 
 require 'powerpack/string/strip_margin'
+require 'pry'
 
 # Require supporting files exposed for testing.
 require 'rubocop/rspec/support'
