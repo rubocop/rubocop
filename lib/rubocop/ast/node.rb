@@ -327,6 +327,18 @@ module RuboCop
         source_range.last_line - source_range.first_line + 1
       end
 
+      def nonempty_line_count
+        source.lines.grep(/\S/).size
+      end
+
+      def empty?
+        length.zero?
+      end
+
+      def length
+        source_range ? source_range.size : 0
+      end
+
       def asgn_method_call?
         !COMPARISON_OPERATORS.include?(method_name) &&
           method_name.to_s.end_with?('='.freeze)
