@@ -27,6 +27,7 @@
 * Add new `Style/ColonMethodDefinition` cop. ([@rrosenblum][])
 * Add new `Style/ExtendSelf` cop. ([@drenmi][])
 * [#5185](https://github.com/bbatsov/rubocop/pull/5185): Add new `Rails/RedundantReceiverInWithOptions` cop. ([@koic][])
+* [#5177](https://github.com/bbatsov/rubocop/pull/5177): Add new `Rails/LexicallyScopedActionFilter` cop. ([@wata727][])
 * [#5173](https://github.com/bbatsov/rubocop/pull/5173): Add new `Style/EvalWithLocation` cop. ([@pocke][])
 
 ### Bug fixes

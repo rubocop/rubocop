@@ -1137,6 +1137,10 @@ Rails/InverseOf:
   Description: 'Checks for associations where the inverse cannot be determined automatically.'
   Enabled: true
 
+Rails/LexicallyScopedActionFilter:
+  Description: "Checks that methods specified in the filter's `only` or `except` options are explicitly defined in the controller."
+  Enabled: true
+
 Rails/NotNullColumn:
   Description: 'Do not add a NOT NULL column without a default value'
   Enabled: true
