@@ -13,12 +13,15 @@ module RuboCop
       end
 
       def non_eligible_node?(node)
-        line_count(node) > 3 ||
+        node.nonempty_line_count > 3 ||
           !node.modifier_form? && commented?(node.loc.end)
       end
 
       def non_eligible_body?(body)
-        empty_body?(body) || body.begin_type? || commented?(body.source_range)
+        body.nil? ||
+          body.empty? ||
+          body.begin_type? ||
+          commented?(body.source_range)
       end
 
       def non_eligible_condition?(condition)
@@ -27,7 +30,7 @@ module RuboCop
 
       def modifier_fits_on_single_line?(node)
         modifier_length = length_in_modifier_form(node, node.condition,
-                                                  body_length(node.body))
+                                                  node.body.length)
 
         modifier_length <= max_line_length
       end
@@ -42,18 +45,6 @@ module RuboCop
 
       def max_line_length
         config.for_cop('Metrics/LineLength')['Max']
-      end
-
-      def line_count(node)
-        node.source.lines.grep(/\S/).size
-      end
-
-      def empty_body?(body)
-        !body || body_length(body).zero?
-      end
-
-      def body_length(body)
-        body.source_range ? body.source_range.size : 0
       end
 
       def commented?(source)
