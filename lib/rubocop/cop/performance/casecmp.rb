@@ -18,7 +18,7 @@ module RuboCop
       #   str.casecmp('ABC').zero?
       #   'abc'.casecmp(str).zero?
       class Casecmp < Cop
-        MSG = 'Use `casecmp` instead of `%s %s`.'.freeze
+        MSG = 'Use `casecmp` instead of `%<methods>s`.'.freeze
         CASE_METHODS = %i[downcase upcase].freeze
 
         def_node_matcher :downcase_eq, <<-PATTERN
@@ -40,7 +40,8 @@ module RuboCop
 
           inefficient_comparison(node) do |range, is_other_part, *methods|
             ignore_node(node) if is_other_part
-            add_offense(node, location: range, message: format(MSG, *methods))
+            add_offense(node, location: range,
+                              message: format(MSG, methods: methods.join(' ')))
           end
         end
 

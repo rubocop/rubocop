@@ -14,7 +14,7 @@ module RuboCop
       #   # good
       #   'abc'.strip
       class LstripRstrip < Cop
-        MSG = 'Use `strip` instead of `%s.%s`.'.freeze
+        MSG = 'Use `strip` instead of `%<methods>s`.'.freeze
 
         def_node_matcher :lstrip_rstrip, <<-PATTERN
           {(send $(send _ $:rstrip) $:lstrip)
@@ -27,7 +27,8 @@ module RuboCop
                                   node.source_range.end_pos)
             add_offense(node,
                         location: range,
-                        message: format(MSG, method_one, method_two))
+                        message: format(MSG,
+                                        methods: "#{method_one}.#{method_two}"))
           end
         end
 

@@ -16,7 +16,7 @@ module RuboCop
       #   # good
       #   array.sort
       class RedundantSortBy < Cop
-        MSG = 'Use `sort` instead of `sort_by { |%s| %s }`.'.freeze
+        MSG = 'Use `sort` instead of `sort_by { |%<var>s| %<var>s }`.'.freeze
 
         def_node_matcher :redundant_sort_by, <<-PATTERN
           (block $(send _ :sort_by) (args (arg $_x)) (lvar _x))
@@ -28,7 +28,7 @@ module RuboCop
 
             add_offense(node,
                         location: range,
-                        message: format(MSG, var_name, var_name))
+                        message: format(MSG, var: var_name))
           end
         end
 

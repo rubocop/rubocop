@@ -200,14 +200,17 @@ describe RuboCop::Cop::Layout::SpaceAroundKeyword do
   # Layout/SpaceBeforeSemicolon, Layout/SpaceAfterSemicolon
   it_behaves_like 'accept around', ';', 'test do;end'
 
+  # Layout/SpaceInsideArrayLiteralBrackets
+  it_behaves_like 'accept around', '[]', '[begin end]'
+
   # Layout/SpaceInsideBlockBraces
   it_behaves_like 'accept around', '{}', 'loop {next}'
 
-  # Layout/SpaceInsideBrackets
-  it_behaves_like 'accept around', '[]', '[begin end]'
-
   # Layout/SpaceInsideHashLiteralBraces
   it_behaves_like 'accept around', '{}', '{a: begin end}'
+
+  # Layout/SpaceInsideReferenceBrackets
+  it_behaves_like 'accept around', '[]', 'a[begin end]'
 
   # Layout/SpaceInsideStringInterpolation
   it_behaves_like 'accept around', '{}', '"#{begin end}"'

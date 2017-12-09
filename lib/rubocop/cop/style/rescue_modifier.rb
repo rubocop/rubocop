@@ -4,6 +4,17 @@ module RuboCop
   module Cop
     module Style
       # This cop checks for uses of rescue in its modifier form.
+      #
+      # @example
+      #   # bad
+      #   some_method rescue handle_error
+      #
+      #   # good
+      #   begin
+      #     some_method
+      #   rescue
+      #     handle_error
+      #   end
       class RescueModifier < Cop
         include AutocorrectAlignment
         include RescueNode

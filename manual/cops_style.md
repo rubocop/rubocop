@@ -471,6 +471,19 @@ Enabled | Yes
 
 Checks for uses of the character literal ?x.
 
+### Examples
+
+```ruby
+# bad
+?x
+
+# good
+'x'
+
+# good
+?\C-\M-d
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#no-character-literals](https://github.com/bbatsov/ruby-style-guide#no-character-literals)
@@ -484,17 +497,28 @@ Enabled | No
 This cop checks the style of children definitions at classes and
 modules. Basically there are two different styles:
 
-nested - have each child on its own line
-  class Foo
-    class Bar
-    end
-  end
-
-compact - combine definitions as much as possible
-  class Foo::Bar
-  end
-
 The compact style is only forced for classes/modules with one child.
+
+### Examples
+
+#### EnforcedStyle: nested (default)
+
+```ruby
+# good
+# have each child on its own line
+class Foo
+  class Bar
+  end
+end
+```
+#### EnforcedStyle: compact
+
+```ruby
+# good
+# combine definitions as much as possible
+class Foo::Bar
+end
+```
 
 ### Configurable attributes
 
@@ -1350,26 +1374,12 @@ Enabled | Yes
 Checks for empty else-clauses, possibly including comments and/or an
 explicit `nil` depending on the EnforcedStyle.
 
-SupportedStyles:
-
 ### Examples
 
-```ruby
-# good for all styles
+#### EnforcedStyle: empty
 
-if condition
-  statement
-else
-  statement
-end
-
-# good for all styles
-if condition
-  statement
-end
-```
 ```ruby
-# empty - warn only on empty else
+# warn only on empty else
 
 # bad
 if condition
@@ -1383,9 +1393,23 @@ if condition
 else
   nil
 end
+
+# good
+if condition
+  statement
+else
+  statement
+end
+
+# good
+if condition
+  statement
+end
 ```
+#### EnforcedStyle: nil
+
 ```ruby
-# nil - warn on else with nil in it
+# warn on else with nil in it
 
 # bad
 if condition
@@ -1399,9 +1423,23 @@ if condition
   statement
 else
 end
+
+# good
+if condition
+  statement
+else
+  statement
+end
+
+# good
+if condition
+  statement
+end
 ```
+#### EnforcedStyle: both (default)
+
 ```ruby
-# both - warn on empty else and else with nil in it
+# warn on empty else and else with nil in it
 
 # bad
 if condition
@@ -1414,6 +1452,18 @@ end
 if condition
   statement
 else
+end
+
+# good
+if condition
+  statement
+else
+  statement
+end
+
+# good
+if condition
+  statement
 end
 ```
 
@@ -1557,6 +1607,44 @@ This cop checks for END blocks.
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#no-END-blocks](https://github.com/bbatsov/ruby-style-guide#no-END-blocks)
+
+## Style/EvalWithLocation
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks `eval` method usage. `eval` can receive source location
+metadata, that are filename and line number. The metadata is used by
+backtraces. This cop recommends to pass the metadata to `eval` method.
+
+### Examples
+
+```ruby
+# bad
+eval <<-RUBY
+  def do_something
+  end
+RUBY
+
+# bad
+C.class_eval <<-RUBY
+  def do_something
+  end
+RUBY
+
+# good
+eval <<-RUBY, binding, __FILE__, __LINE__ + 1
+  def do_something
+  end
+RUBY
+
+# good
+C.class_eval <<-RUBY, __FILE__, __LINE__ + 1
+  def do_something
+  end
+RUBY
+```
 
 ## Style/EvenOdd
 
@@ -3517,6 +3605,26 @@ Enabled | Yes
 This cop checks for the presence of superfluous parentheses around the
 condition of if/unless/while/until.
 
+### Examples
+
+```ruby
+# bad
+x += 1 while (x < 10)
+foo unless (bar || baz)
+
+if (x > 10)
+elsif (x < 3)
+end
+
+# good
+x += 1 while x < 10
+foo unless bar || baz
+
+if x > 10
+elsif x < 3
+end
+```
+
 ### Configurable attributes
 
 Name | Default value | Configurable values
@@ -3574,6 +3682,34 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 This cop checks for usage of the %Q() syntax when %q() would do.
+
+### Examples
+
+#### EnforcedStyle: lower_case_q (default)
+
+```ruby
+# The `lower_case_q` style prefers `%q` unless
+# interpolation is needed.
+# bad
+%Q[Mix the foo into the baz.]
+%Q(They all said: 'Hooray!')
+
+# good
+%q[Mix the foo into the baz]
+%q(They all said: 'Hooray!')
+```
+#### EnforcedStyle: upper_case_q
+
+```ruby
+# The `upper_case_q` style requires the sole use of `%Q`.
+# bad
+%q/Mix the foo into the baz./
+%q{They all said: 'Hooray!'}
+
+# good
+%Q/Mix the foo into the baz./
+%Q{They all said: 'Hooray!'}
+```
 
 ### Configurable attributes
 
@@ -4092,6 +4228,20 @@ Enabled | Yes
 
 This cop checks for uses of rescue in its modifier form.
 
+### Examples
+
+```ruby
+# bad
+some_method rescue handle_error
+
+# good
+begin
+  some_method
+rescue
+  handle_error
+end
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#no-rescue-modifiers](https://github.com/bbatsov/ruby-style-guide#no-rescue-modifiers)
@@ -4328,6 +4478,18 @@ Enabled by default | Supports autocorrection
 Disabled | No
 
 This cop checks for the use of the send method.
+
+### Examples
+
+```ruby
+# bad
+Foo.send(:bar)
+quuz.send(:fred)
+
+# good
+Foo.__send__(:bar)
+quuz.public_send(:fred)
+```
 
 ### References
 

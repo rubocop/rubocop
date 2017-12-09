@@ -121,6 +121,10 @@ Layout/EmptyLinesAroundAccessModifier:
   StyleGuide: '#empty-lines-around-access-modifier'
   Enabled: true
 
+Layout/EmptyLinesAroundArguments:
+  Description: "Keeps track of empty lines around method arguments."
+  Enabled: true
+
 Layout/EmptyLinesAroundBeginBody:
   Description: "Keeps track of empty lines around begin-end bodies."
   StyleGuide: '#empty-lines-around-bodies'
@@ -331,6 +335,10 @@ Layout/SpaceInLambdaLiteral:
   Description: 'Checks for spaces in lambda literals.'
   Enabled: true
 
+Layout/SpaceInsideArrayLiteralBrackets:
+  Description: 'Checks the spacing inside array literal brackets.'
+  Enabled: true
+
 Layout/SpaceInsideArrayPercentLiteral:
   Description: 'No unnecessary additional spaces between elements in %i/%w literals.'
   Enabled: true
@@ -340,11 +348,6 @@ Layout/SpaceInsideBlockBraces:
                  Checks that block braces have or don't have surrounding space.
                  For blocks taking parameters, checks that the left brace has
                  or doesn't have trailing space.
-  Enabled: true
-
-Layout/SpaceInsideBrackets:
-  Description: 'No spaces after [ or before ].'
-  StyleGuide: '#spaces-braces'
   Enabled: true
 
 Layout/SpaceInsideHashLiteralBraces:
@@ -364,6 +367,10 @@ Layout/SpaceInsidePercentLiteralDelimiters:
 Layout/SpaceInsideRangeLiteral:
   Description: 'No spaces inside range literals.'
   StyleGuide: '#no-space-inside-range-literals'
+  Enabled: true
+
+Layout/SpaceInsideReferenceBrackets:
+  Description: 'Checks the spacing inside referential brackets.'
   Enabled: true
 
 Layout/SpaceInsideStringInterpolation:
@@ -1436,6 +1443,10 @@ Style/Encoding:
 Style/EndBlock:
   Description: 'Avoid the use of END blocks.'
   StyleGuide: '#no-END-blocks'
+  Enabled: true
+
+Style/EvalWithLocation:
+  Description: 'Pass `__FILE__` and `__LINE__` to `eval` method, as they are used by backtraces.'
   Enabled: true
 
 Style/EvenOdd:

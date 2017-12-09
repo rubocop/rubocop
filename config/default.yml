@@ -501,6 +501,19 @@ Layout/SpaceBeforeFirstArg:
   # lines.
   AllowForAlignment: true
 
+Layout/SpaceInsideArrayLiteralBrackets:
+  EnforcedStyle: no_space
+  SupportedStyles:
+    - space
+    - no_space
+    # 'compact' normally requires a space inside the brackets, with the exception
+    # that successive left brackets or right brackets are collapsed together
+    - compact
+  EnforcedStyleForEmptyBrackets: no_space
+  SupportedStylesForEmptyBrackets:
+    - space
+    - no_space
+
 Layout/SpaceInsideBlockBraces:
   EnforcedStyle: space
   SupportedStyles:
@@ -523,6 +536,12 @@ Layout/SpaceInsideHashLiteralBraces:
     - compact
   EnforcedStyleForEmptyBraces: no_space
   SupportedStylesForEmptyBraces:
+    - space
+    - no_space
+
+Layout/SpaceInsideReferenceBrackets:
+  EnforcedStyle: no_space
+  SupportedStyles:
     - space
     - no_space
 

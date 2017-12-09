@@ -1169,7 +1169,8 @@ describe RuboCop::CLI, :isolated_environment do
     expect(IO.read('example.rb')).to eq("some_method(a)\n")
   end
 
-  it 'does not hang SpaceAfterPunctuation and SpaceInsideBrackets' do
+  it 'does not hang SpaceAfterPunctuation and ' \
+     'SpaceInsideArrayLiteralBrackets' do
     create_file('example.rb', 'puts [1, ]')
     Timeout.timeout(10) do
       expect(cli.run(%w[--auto-correct])).to eq(0)

@@ -30,8 +30,8 @@ module RuboCop
         private
 
         def check_optarg(arg, equals, value)
-          space_on_both_sides = space_on_both_sides?(arg, equals, value)
-          no_surrounding_space = no_surrounding_space?(arg, equals, value)
+          space_on_both_sides = space_on_both_sides?(arg, equals)
+          no_surrounding_space = no_surrounding_space?(arg, equals)
 
           if style == :space && space_on_both_sides ||
              style == :no_space && no_surrounding_space
@@ -55,12 +55,12 @@ module RuboCop
           end
         end
 
-        def space_on_both_sides?(arg, equals, value)
-          space_between?(arg, equals) && space_between?(equals, value)
+        def space_on_both_sides?(arg, equals)
+          space_after?(arg) && space_after?(equals)
         end
 
-        def no_surrounding_space?(arg, equals, value)
-          !space_between?(arg, equals) && !space_between?(equals, value)
+        def no_surrounding_space?(arg, equals)
+          !space_after?(arg) && !space_after?(equals)
         end
 
         def message(_)

@@ -23,7 +23,7 @@ module RuboCop
       #     yield 1, 2, 3
       #   end
       class RedundantBlockCall < Cop
-        MSG = 'Use `yield` instead of `%s.call`.'.freeze
+        MSG = 'Use `yield` instead of `%<argname>s.call`.'.freeze
         YIELD = 'yield'.freeze
         OPEN_PAREN = '('.freeze
         CLOSE_PAREN = ')'.freeze
@@ -47,7 +47,7 @@ module RuboCop
             next unless body
 
             calls_to_report(argname, body).each do |blockcall|
-              add_offense(blockcall, message: format(MSG, argname))
+              add_offense(blockcall, message: format(MSG, argname: argname))
             end
           end
         end

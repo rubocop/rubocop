@@ -767,6 +767,50 @@ end
 
 * [https://github.com/bbatsov/ruby-style-guide#empty-lines-around-access-modifier](https://github.com/bbatsov/ruby-style-guide#empty-lines-around-access-modifier)
 
+## Layout/EmptyLinesAroundArguments
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cops checks if empty lines exist around the arguments
+of a method invocation.
+
+### Examples
+
+```ruby
+# bad
+do_something(
+  foo
+
+)
+
+process(bar,
+
+        baz: qux,
+        thud: fred)
+
+some_method(
+
+  [1,2,3],
+  x: y
+)
+
+# good
+do_something(
+  foo
+)
+
+process(bar,
+        baz: qux,
+        thud: fred)
+
+some_method(
+  [1,2,3],
+  x: y
+)
+```
+
 ## Layout/EmptyLinesAroundBeginBody
 
 Enabled by default | Supports autocorrection
@@ -2642,6 +2686,62 @@ Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `require_no_space` | `require_no_space`, `require_space`
 
+## Layout/SpaceInsideArrayLiteralBrackets
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+Checks that brackets used for array literals have or don't have
+surrounding space depending on configuration.
+
+### Examples
+
+#### EnforcedStyle: space
+
+```ruby
+# The `space` style enforces that array literals have
+# surrounding space.
+
+# bad
+array = [a, b, c, d]
+
+# good
+array = [ a, b, c, d ]
+```
+#### EnforcedStyle: no_space
+
+```ruby
+# The `no_space` style enforces that array literals have
+# no surrounding space.
+
+# bad
+array = [ a, b, c, d ]
+
+# good
+array = [a, b, c, d]
+```
+#### EnforcedStyle: compact
+
+```ruby
+# The `compact` style normally requires a space inside
+# array brackets, with the exception that successive left
+# or right brackets are collapsed together in nested arrays.
+
+# bad
+array = [ a, [ b, c ] ]
+
+# good
+array = [ a, [ b, c ]]
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `no_space` | `space`, `no_space`, `compact`
+EnforcedStyleForEmptyBrackets | `no_space` | `space`, `no_space`
+
 ## Layout/SpaceInsideArrayPercentLiteral
 
 Enabled by default | Supports autocorrection
@@ -2759,28 +2859,6 @@ Name | Default value | Configurable values
 EnforcedStyle | `space` | `space`, `no_space`
 EnforcedStyleForEmptyBraces | `no_space` | `space`, `no_space`
 SpaceBeforeBlockParameters | `true` | Boolean
-
-## Layout/SpaceInsideBrackets
-
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
-
-Checks for spaces inside square brackets.
-
-### Examples
-
-```ruby
-# bad
-array = [ 1, 2, 3 ]
-
-# good
-array = [1, 2, 3]
-```
-
-### References
-
-* [https://github.com/bbatsov/ruby-style-guide#spaces-braces](https://github.com/bbatsov/ruby-style-guide#spaces-braces)
 
 ## Layout/SpaceInsideHashLiteralBraces
 
@@ -2915,6 +2993,52 @@ Checks for spaces inside range literals.
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#no-space-inside-range-literals](https://github.com/bbatsov/ruby-style-guide#no-space-inside-range-literals)
+
+## Layout/SpaceInsideReferenceBrackets
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+Checks that reference brackets have or don't have
+surrounding space depending on configuration.
+
+### Examples
+
+#### EnforcedStyle: no_space (default)
+
+```ruby
+# The `no_space` style enforces that reference brackets have
+# no surrounding space.
+
+# bad
+hash[ :key ]
+array[ index ]
+
+# good
+hash[:key]
+array[index]
+```
+#### EnforcedStyle: space
+
+```ruby
+# The `space` style enforces that reference brackets have
+# surrounding space.
+
+# bad
+hash[:key]
+array[index]
+
+# good
+hash[ :key ]
+array[ index ]
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `no_space` | `space`, `no_space`
 
 ## Layout/SpaceInsideStringInterpolation
 

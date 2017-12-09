@@ -7,8 +7,11 @@
 * [#5101](https://github.com/bbatsov/rubocop/pull/5101): Allow to specify `TargetRubyVersion` 2.5. ([@walf443][])
 * [#1575](https://github.com/bbatsov/rubocop/issues/1575): Add new `Layout/ClassStructure` cop that checks whether definitions in a class are in the configured order. This cop is disabled by default. ([@jonatas][])
 * New cop `Rails/InverseOf` checks for association arguments that require setting the `inverse_of` option manually. ([@bdewater][])
+* [#4811](https://github.com/bbatsov/rubocop/issues/4811): Add new `Layout/SpaceInsideReferenceBrackets` cop. ([@garettarrowood][])
+* [#4811](https://github.com/bbatsov/rubocop/issues/4811): Add new `Layout/SpaceInsideArrayLiteralBrackets` cop. ([@garettarrowood][])
 * [#4252](https://github.com/bbatsov/rubocop/issues/4252): Add new `Style/TrailingBodyOnMethodDefinition` cop. ([@garettarrowood][])
 * Add new `Style/TrailingMethodEndStatment` cop. ([@garettarrowood][])
+* [#5074](https://github.com/bbatsov/rubocop/issues/5074): Add Layout/EmptyLinesAroundArguments cop. ([@garettarrowood][])
 * [#4650](https://github.com/bbatsov/rubocop/issues/4650): Add new `Style/StringHashKeys` cop. ([@donjar][])
 * [#1583](https://github.com/bbatsov/rubocop/issues/1583): Add a quiet formatter. ([@drenmi][])
 * Add new `Style/RandomWithOffset` cop. ([@donjar][])
@@ -25,6 +28,7 @@
 * Add new `Style/ExtendSelf` cop. ([@drenmi][])
 * [#5185](https://github.com/bbatsov/rubocop/pull/5185): Add new `Rails/RedundantReceiverInWithOptions` cop. ([@koic][])
 * [#5177](https://github.com/bbatsov/rubocop/pull/5177): Add new `Rails/LexicallyScopedActionFilter` cop. ([@wata727][])
+* [#5173](https://github.com/bbatsov/rubocop/pull/5173): Add new `Style/EvalWithLocation` cop. ([@pocke][])
 
 ### Bug fixes
 
@@ -70,6 +74,7 @@
 * [#4943](https://github.com/bbatsov/rubocop/pull/4943): Make cop generator compliant with the repo's rubocop config. ([@tdeo][])
 * [#5011](https://github.com/bbatsov/rubocop/pull/5011): Remove `SupportedStyles` from "Configuration parameters" in `.rubocop_todo.yml`. ([@pocke][])
 * `Lint/RescueWithoutErrorClass` has been replaced by `Style/RescueStandardError`. ([@rrosenblum][])
+* [#4811](https://github.com/bbatsov/rubocop/issues/4811): Remove `Layout/SpaceInsideBrackets` in favor of two new configurable cops. ([@garettarrowood][])
 * [#5042](https://github.com/bbatsov/rubocop/pull/5042): Make offense locations of metrics cops to contain whole a method. ([@pocke][])
 * [#5044](https://github.com/bbatsov/rubocop/pull/5044): Add last_line and last_column into outputs of the JSON formatter. ([@pocke][])
 * [#4633](https://github.com/bbatsov/rubocop/issues/4633): Make metrics cops aware of `define_method`. ([@pocke][])

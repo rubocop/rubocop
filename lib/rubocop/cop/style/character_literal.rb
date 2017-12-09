@@ -4,6 +4,16 @@ module RuboCop
   module Cop
     module Style
       # Checks for uses of the character literal ?x.
+      #
+      # @example
+      #   # bad
+      #   ?x
+      #
+      #   # good
+      #   'x'
+      #
+      #   # good
+      #   ?\C-\M-d
       class CharacterLiteral < Cop
         include StringHelp
 

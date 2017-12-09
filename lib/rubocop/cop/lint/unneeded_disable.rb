@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# The Lint/UnneededDisable cop needs to be disabled so as to be able to provide
+# a (bad) example of an unneeded disable.
+# rubocop:disable Lint/UnneededDisable
 module RuboCop
   module Cop
     module Lint
@@ -12,6 +15,16 @@ module RuboCop
       # their work. Instead, it waits until it's called in a later stage of the
       # execution. The reason it can't be implemented as a normal cop is that
       # it depends on the results of all other cops to do its work.
+      #
+      #
+      # @example
+      #   # bad
+      #   # rubocop:disable Metrics/LineLength
+      #   x += 1
+      #   # rubocop:enable Metrics/LineLength
+      #
+      #   # good
+      #   x += 1
       class UnneededDisable < Cop
         include NameSimilarity
 
@@ -240,3 +253,4 @@ module RuboCop
     end
   end
 end
+# rubocop:enable Lint/UnneededDisable
