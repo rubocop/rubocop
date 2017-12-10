@@ -86,7 +86,7 @@ module RuboCop
         end
 
         def remove_semicolon(corrector)
-          return unless token_before_end.type == :tSEMI
+          return unless token_before_end.semicolon?
           corrector.remove(token_before_end.pos)
         end
       end

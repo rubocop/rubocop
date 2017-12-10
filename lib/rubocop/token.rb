@@ -34,6 +34,14 @@ module RuboCop
       pos.end_pos
     end
 
+    def comment?
+      type == :tCOMMENT
+    end
+
+    def semicolon?
+      type == :tSEMI
+    end
+
     def to_s
       "[[#{@pos.line}, #{@pos.column}], #{@type}, #{@text.inspect}]"
     end

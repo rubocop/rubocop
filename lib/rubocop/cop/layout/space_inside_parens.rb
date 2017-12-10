@@ -37,7 +37,7 @@ module RuboCop
 
             # If the second token is a comment, that means that a line break
             # follows, and that the rules for space inside don't apply.
-            next if t2.type == :tCOMMENT
+            next if t2.comment?
             next unless t2.line == t1.line && space_after?(t1)
 
             yield range_between(t1.end_pos, t2.begin_pos)

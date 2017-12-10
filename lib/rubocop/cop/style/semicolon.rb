@@ -54,8 +54,8 @@ module RuboCop
 
         def each_semicolon
           tokens_for_lines.each do |line, tokens|
-            yield line, tokens.last.column if tokens.last.type == :tSEMI
-            yield line, tokens.first.column if tokens.first.type == :tSEMI
+            yield line, tokens.last.column if tokens.last.semicolon?
+            yield line, tokens.first.column if tokens.first.semicolon?
           end
         end
 

@@ -77,7 +77,7 @@ module RuboCop
         def check(t1, t2)
           # No offense if line break inside.
           return if t1.line < t2.line
-          return if t2.type == :tCOMMENT # Also indicates there's a line break.
+          return if t2.comment? # Also indicates there's a line break.
 
           is_empty_braces = left_brace?(t1) && right_brace?(t2)
           expect_space    = expect_space?(t1, t2)
