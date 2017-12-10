@@ -338,6 +338,7 @@ In the following section you find all available cops:
 * [Rails/Output](cops_rails.md#railsoutput)
 * [Rails/OutputSafety](cops_rails.md#railsoutputsafety)
 * [Rails/PluralizationGrammar](cops_rails.md#railspluralizationgrammar)
+* [Rails/Presence](cops_rails.md#railspresence)
 * [Rails/Present](cops_rails.md#railspresent)
 * [Rails/ReadWriteAttribute](cops_rails.md#railsreadwriteattribute)
 * [Rails/RedundantReceiverInWithOptions](cops_rails.md#railsredundantreceiverinwithoptions)

@@ -873,6 +873,50 @@ core extensions to the numeric classes.
 1.month.ago
 ```
 
+## Rails/Presence
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks code that can be written more easily using
+`Object#presence` defined by Active Support.
+
+### Examples
+
+```ruby
+# bad
+a.present? ? a : nil
+
+# bad
+!a.present? ? nil : a
+
+# bad
+a.blank? ? nil : a
+
+# bad
+!a.blank? ? a : nil
+
+# good
+a.presence
+```
+```ruby
+# bad
+a.present? ? a : b
+
+# bad
+!a.present? ? b : a
+
+# bad
+a.blank? ? b : a
+
+# bad
+!a.blank? ? a : b
+
+# good
+a.presence || b
+```
+
 ## Rails/Present
 
 Enabled by default | Supports autocorrection
