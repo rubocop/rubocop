@@ -34,6 +34,18 @@ Layout/MultilineAssignmentLayout:
   StyleGuide: '#indent-conditional-assignment'
   Enabled: false
 
+Naming/UncommunicativeBlockParamName:
+  Description: >-
+                Checks for block parameter names that contain capital letters,
+                end in numbers, or do not meet a minimal length.
+  Enabled: false
+
+Naming/UncommunicativeMethodArgName:
+  Description: >-
+                Checks for method argument names that contain capital letters,
+                end in numbers, or do not meet a minimal length.
+  Enabled: false
+
 # By default, the rails cops are not run. Override in project or home
 # directory .rubocop.yml files, or by giving the -R/--rails option.
 Rails:
