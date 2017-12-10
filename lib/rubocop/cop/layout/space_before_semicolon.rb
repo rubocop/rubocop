@@ -15,7 +15,7 @@ module RuboCop
         include SpaceBeforePunctuation
 
         def kind(token)
-          'semicolon' if token.type == :tSEMI
+          'semicolon' if token.semicolon?
         end
       end
     end

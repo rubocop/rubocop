@@ -126,7 +126,7 @@ module RuboCop
         end
 
         def aligned_tok?(token)
-          if token.type == :tCOMMENT
+          if token.comment?
             aligned_comments?(token)
           else
             aligned_with_something?(token.pos)

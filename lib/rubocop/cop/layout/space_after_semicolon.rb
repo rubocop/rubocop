@@ -20,7 +20,7 @@ module RuboCop
         end
 
         def kind(token)
-          'semicolon' if token.type == :tSEMI
+          'semicolon' if token.semicolon?
         end
       end
     end

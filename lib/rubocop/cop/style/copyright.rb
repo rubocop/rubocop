@@ -63,21 +63,20 @@ module RuboCop
         def shebang_token?(processed_source, token_index)
           return false if token_index >= processed_source.tokens.size
           token = processed_source.tokens[token_index]
-          token.type == :tCOMMENT && token.text =~ /^#!.*$/
+          token.comment? && token.text =~ /^#!.*$/
         end
 
         def encoding_token?(processed_source, token_index)
           return false if token_index >= processed_source.tokens.size
           token = processed_source.tokens[token_index]
-          token.type == :tCOMMENT &&
-            token.text =~ /^#.*coding\s?[:=]\s?(?:UTF|utf)-8/
+          token.comment? && token.text =~ /^#.*coding\s?[:=]\s?(?:UTF|utf)-8/
         end
 
         def notice_found?(processed_source)
           notice_found = false
           notice_regexp = Regexp.new(notice)
           processed_source.tokens.each do |token|
-            break unless token.type == :tCOMMENT
+            break unless token.comment?
             notice_found = !(token.text =~ notice_regexp).nil?
             break if notice_found
           end

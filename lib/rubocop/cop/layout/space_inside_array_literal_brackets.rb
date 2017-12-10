@@ -164,7 +164,7 @@ module RuboCop
         end
 
         def next_to_comment?(node, token)
-          tokens(node)[index_for(node, token) + 1].type == :tCOMMENT
+          tokens(node)[index_for(node, token) + 1].comment?
         end
 
         def compact_offenses(node, left, right, start_ok, end_ok)

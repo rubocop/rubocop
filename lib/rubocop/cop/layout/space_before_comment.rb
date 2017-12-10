@@ -17,7 +17,7 @@ module RuboCop
 
         def investigate(processed_source)
           processed_source.tokens.each_cons(2) do |t1, t2|
-            next unless t2.type == :tCOMMENT
+            next unless t2.comment?
             next unless t1.line == t2.line
             add_offense(t2.pos, location: t2.pos) if t1.pos.end == t2.pos.begin
           end
