@@ -32,7 +32,7 @@ module RuboCop
       end
 
       def space_required_after?(token)
-        token.type == :tLCURLY && space_required_after_lcurly?
+        token.left_curly_brace? && space_required_after_lcurly?
       end
 
       def space_required_after_lcurly?

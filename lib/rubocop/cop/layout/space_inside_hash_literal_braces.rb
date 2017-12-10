@@ -58,20 +58,12 @@ module RuboCop
         def hash_literal_with_braces(node)
           tokens = processed_source.tokens
           begin_index = index_of_first_token(node)
-          return unless left_brace?(tokens[begin_index])
+          return unless tokens[begin_index].left_brace?
 
           end_index = index_of_last_token(node)
-          return unless right_brace?(tokens[end_index])
+          return unless tokens[end_index].right_curly_brace?
 
           yield begin_index, end_index
-        end
-
-        def left_brace?(token)
-          token.type == :tLBRACE
-        end
-
-        def right_brace?(token)
-          token.type == :tRCURLY
         end
 
         def check(t1, t2)
@@ -79,7 +71,7 @@ module RuboCop
           return if t1.line < t2.line
           return if t2.comment? # Also indicates there's a line break.
 
-          is_empty_braces = left_brace?(t1) && right_brace?(t2)
+          is_empty_braces = t1.left_brace? && t2.right_curly_brace?
           expect_space    = expect_space?(t1, t2)
 
           if offense?(t1, expect_space)
@@ -91,7 +83,7 @@ module RuboCop
 
         def expect_space?(t1, t2)
           is_same_braces  = t1.type == t2.type
-          is_empty_braces = left_brace?(t1) && right_brace?(t2)
+          is_empty_braces = t1.left_brace? && t2.right_curly_brace?
 
           if is_same_braces && style == :compact
             false

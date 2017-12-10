@@ -30,7 +30,7 @@ module RuboCop
 
       def space_required_before?(token)
         !(allowed_type?(token) ||
-          (token.type == :tRCURLY && space_forbidden_before_rcurly?))
+          (token.right_curly_brace? && space_forbidden_before_rcurly?))
       end
 
       def allowed_type?(token)
