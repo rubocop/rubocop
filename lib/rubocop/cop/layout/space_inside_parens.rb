@@ -45,15 +45,7 @@ module RuboCop
         end
 
         def parens?(t1, t2)
-          left_parens?(t1) || right_parens?(t2)
-        end
-
-        def left_parens?(token)
-          %i[tLPAREN tLPAREN2].include?(token.type)
-        end
-
-        def right_parens?(token)
-          token.type == :tRPAREN
+          t1.left_parens? || t2.right_parens?
         end
       end
     end

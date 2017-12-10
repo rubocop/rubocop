@@ -19,7 +19,7 @@ module RuboCop
         include SpaceBeforePunctuation
 
         def kind(token)
-          'comma' if token.type == :tCOMMA
+          'comma' if token.comma?
         end
       end
     end
