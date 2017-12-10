@@ -20,15 +20,15 @@ module RuboCop
           next unless space_missing?(t1, t2)
           next if space_required_after?(t1)
 
-          pos_before_punctuation = range_between(t1.pos.end_pos,
-                                                 t2.pos.begin_pos)
+          pos_before_punctuation = range_between(t1.end_pos,
+                                                 t2.begin_pos)
 
           yield t2, pos_before_punctuation
         end
       end
 
       def space_missing?(t1, t2)
-        t1.pos.line == t2.pos.line && t2.pos.begin_pos > t1.pos.end_pos
+        t1.line == t2.line && t2.begin_pos > t1.end_pos
       end
 
       def space_required_after?(token)

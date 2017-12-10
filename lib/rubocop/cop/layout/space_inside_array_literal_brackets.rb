@@ -110,11 +110,11 @@ module RuboCop
         end
 
         def space_between?(left, right)
-          left.pos.end_pos + 1 == right.pos.begin_pos
+          left.end_pos + 1 == right.begin_pos
         end
 
         def no_space_between?(left, right)
-          left.pos.end_pos == right.pos.begin_pos
+          left.end_pos == right.begin_pos
         end
 
         def empty_config
@@ -133,7 +133,7 @@ module RuboCop
         end
 
         def next_to_newline?(node, token)
-          tokens(node)[index_for(node, token) + 1].pos.line != token.pos.line
+          tokens(node)[index_for(node, token) + 1].line != token.line
         end
 
         def end_has_own_line?(token)
@@ -147,7 +147,7 @@ module RuboCop
         end
 
         def line_and_column_for(token)
-          [token.pos.line - 1, token.pos.column - 1]
+          [token.line - 1, token.column - 1]
         end
 
         def issue_offenses(node, left, right, start_ok, end_ok)

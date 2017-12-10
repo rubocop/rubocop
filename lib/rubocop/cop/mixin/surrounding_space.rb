@@ -9,12 +9,12 @@ module RuboCop
 
       def space_after?(token)
         # Checks if there is whitespace after token
-        token.pos.source_buffer.source.match(/\G\s/, token.pos.end_pos)
+        token.pos.source_buffer.source.match(/\G\s/, token.end_pos)
       end
 
       def space_before?(token)
         # Checks if there is whitespace before token
-        token.pos.source_buffer.source.match(/\G\s/, token.pos.begin_pos - 1)
+        token.pos.source_buffer.source.match(/\G\s/, token.begin_pos - 1)
       end
 
       def side_space_range(range:, side:)
@@ -52,8 +52,8 @@ module RuboCop
         @token_table ||= begin
           table = {}
           @processed_source.tokens.each_with_index do |t, ix|
-            table[t.pos.line] ||= {}
-            table[t.pos.line][t.pos.column] = ix
+            table[t.line] ||= {}
+            table[t.line][t.column] = ix
           end
           table
         end
@@ -61,8 +61,8 @@ module RuboCop
 
       def tokens(node)
         processed_source.tokens.select do |token|
-          token.pos.end_pos <= node.source_range.end_pos &&
-            token.pos.begin_pos >= node.source_range.begin_pos
+          token.end_pos <= node.source_range.end_pos &&
+            token.begin_pos >= node.source_range.begin_pos
         end
       end
 

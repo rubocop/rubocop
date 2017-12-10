@@ -29,7 +29,7 @@ module RuboCop
 
           lines = Set.new
           processed_source.tokens.each do |token|
-            lines << token.pos.line
+            lines << token.line
           end
 
           each_extra_empty_line(lines.sort) do |range|

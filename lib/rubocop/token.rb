@@ -18,6 +18,22 @@ module RuboCop
       @text = text.to_s
     end
 
+    def line
+      pos.line
+    end
+
+    def column
+      pos.column
+    end
+
+    def begin_pos
+      pos.begin_pos
+    end
+
+    def end_pos
+      pos.end_pos
+    end
+
     def to_s
       "[[#{@pos.line}, #{@pos.column}], #{@type}, #{@text.inspect}]"
     end

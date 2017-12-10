@@ -148,7 +148,7 @@ module RuboCop
           token.type == :tCOMMENT
         end
 
-        non_comment_tokens.map { |token| token.pos.line }.uniq
+        non_comment_tokens.map(&:line).uniq
       end
     end
   end
