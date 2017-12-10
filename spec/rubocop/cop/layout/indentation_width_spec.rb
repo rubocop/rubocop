@@ -385,7 +385,7 @@ describe RuboCop::Cop::Layout::IndentationWidth do
       end
 
       context 'with assignment' do
-        context 'when alignment style is variable' do
+        shared_examples 'assignment with if statement' do
           context 'and end is aligned with variable' do
             it 'accepts an if with end aligned with setter' do
               expect_no_offenses(<<-RUBY.strip_indent)
@@ -537,7 +537,27 @@ describe RuboCop::Cop::Layout::IndentationWidth do
           end
         end
 
-        shared_examples 'assignment and if with keyword alignment' do
+        context 'when alignment style is variable' do
+          let(:end_alignment_config) do
+            { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'variable' }
+          end
+
+          include_examples 'assignment with if statement'
+        end
+
+        context 'when alignment style is start_of_line' do
+          let(:end_alignment_config) do
+            { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'start_of_line' }
+          end
+
+          include_examples 'assignment with if statement'
+        end
+
+        context 'when alignment style is keyword' do
+          let(:end_alignment_config) do
+            { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'keyword' }
+          end
+
           context 'and end is aligned with variable' do
             it 'registers an offense for an if' do
               inspect_source(<<-RUBY.strip_indent)
@@ -628,14 +648,6 @@ describe RuboCop::Cop::Layout::IndentationWidth do
               RUBY
             end
           end
-        end
-
-        context 'when alignment style is keyword by choice' do
-          let(:end_alignment_config) do
-            { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'keyword' }
-          end
-
-          include_examples 'assignment and if with keyword alignment'
         end
       end
 
