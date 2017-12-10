@@ -682,6 +682,15 @@ Naming/PredicateName:
   Exclude:
     - 'spec/**/*'
 
+Naming/UncommunicativeBlockParamName:
+  # Parameter names may be equal to or greater than this value
+  MinParamNameLength: 1
+
+Naming/UncommunicativeMethodArgName:
+  # Argrument names may be equal to or greater than this value
+  MinArgNameLength: 3
+
+
 Naming/VariableName:
   EnforcedStyle: snake_case
   SupportedStyles:

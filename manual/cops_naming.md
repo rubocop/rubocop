@@ -363,6 +363,90 @@ Exclude | `spec/**/*` | Array
 
 * [https://github.com/bbatsov/ruby-style-guide#bool-methods-qmark](https://github.com/bbatsov/ruby-style-guide#bool-methods-qmark)
 
+## Naming/UncommunicativeBlockParamName
+
+Enabled by default | Supports autocorrection
+--- | ---
+Disabled | No
+
+This cop makes sure block parameter names meet a configurable
+level of description
+
+### Examples
+
+```ruby
+# bad
+foo { |num1, num2| num1 + num2 }
+
+bar do |varOne, varTwo|
+  varOne + varTwo
+end
+
+# With `MinParamNameLength` set to number greater than 1
+baz { |x, y, z| do_stuff(x, y, z) }
+
+# good
+foo { |first_num, second_num| first_num + second_num }
+
+bar do |var_one, var_two|
+  var_one + var_two
+end
+
+baz { |age, height, gender| do_stuff(age, height, gender) }
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+MinParamNameLength | `1` | Integer
+
+## Naming/UncommunicativeMethodArgName
+
+Enabled by default | Supports autocorrection
+--- | ---
+Disabled | No
+
+This cop makes sure method argument names meet a configurable
+level of description
+
+### Examples
+
+```ruby
+# bad
+def foo(num1, num2)
+  num1 + num2
+end
+
+def bar(varOne, varTwo)
+  varOne + varTwo
+end
+
+# With `MinArgNameLength` set to number greater than 1
+def baz(x, y, z)
+  do_stuff(x, y, z)
+end
+
+# good
+def foo(first_num, second_num)
+  first_num + second_num
+end
+
+def bar(var_one, var_two)
+  var_one + var_two
+end
+
+def baz(age_x, height_y, gender_z)
+  do_stuff(age_x, height_y, gender_z)
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+MinArgNameLength | `3` | Integer
+
 ## Naming/VariableName
 
 Enabled by default | Supports autocorrection
