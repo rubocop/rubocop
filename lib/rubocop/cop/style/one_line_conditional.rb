@@ -17,13 +17,13 @@ module RuboCop
           add_offense(node)
         end
 
-        private
-
         def autocorrect(node)
           lambda do |corrector|
             corrector.replace(node.source_range, replacement(node))
           end
         end
+
+        private
 
         def message(node)
           format(MSG, keyword: node.keyword)

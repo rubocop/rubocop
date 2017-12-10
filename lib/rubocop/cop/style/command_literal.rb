@@ -91,6 +91,21 @@ module RuboCop
           end
         end
 
+        def autocorrect(node)
+          return if contains_backtick?(node)
+
+          replacement = if backtick_literal?(node)
+                          ['%x', ''].zip(preferred_delimiters).map(&:join)
+                        else
+                          %w[` `]
+                        end
+
+          lambda do |corrector|
+            corrector.replace(node.loc.begin, replacement.first)
+            corrector.replace(node.loc.end, replacement.last)
+          end
+        end
+
         private
 
         def check_backtick_literal(node)
@@ -157,21 +172,6 @@ module RuboCop
         def preferred_delimiters
           config.for_cop('Style/PercentLiteralDelimiters') \
             ['PreferredDelimiters']['%x'].split(//)
-        end
-
-        def autocorrect(node)
-          return if contains_backtick?(node)
-
-          replacement = if backtick_literal?(node)
-                          ['%x', ''].zip(preferred_delimiters).map(&:join)
-                        else
-                          %w[` `]
-                        end
-
-          lambda do |corrector|
-            corrector.replace(node.loc.begin, replacement.first)
-            corrector.replace(node.loc.end, replacement.last)
-          end
         end
       end
     end

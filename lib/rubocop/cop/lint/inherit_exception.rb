@@ -55,16 +55,16 @@ module RuboCop
           add_offense(base_class)
         end
 
-        private
-
-        def message(node)
-          format(MSG, preferred_base_class, node.const_name)
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             corrector.replace(node.loc.expression, preferred_base_class)
           end
+        end
+
+        private
+
+        def message(node)
+          format(MSG, preferred_base_class, node.const_name)
         end
 
         def illegal_class_name?(class_node)

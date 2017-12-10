@@ -63,6 +63,14 @@ module RuboCop
                                       current: node.source))
         end
 
+        def autocorrect(node)
+          _, replacement = check(node)
+
+          lambda do |corrector|
+            corrector.replace(node.loc.expression, replacement)
+          end
+        end
+
         private
 
         def check(node)
@@ -76,14 +84,6 @@ module RuboCop
           return unless numeric && operator && replacement_supported?(operator)
 
           [numeric, replacement(numeric, operator)]
-        end
-
-        def autocorrect(node)
-          _, replacement = check(node)
-
-          lambda do |corrector|
-            corrector.replace(node.loc.expression, replacement)
-          end
         end
 
         def replacement(numeric, operation)

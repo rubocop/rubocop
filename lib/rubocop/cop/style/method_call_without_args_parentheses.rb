@@ -25,14 +25,14 @@ module RuboCop
           add_offense(node, location: :begin)
         end
 
-        private
-
         def autocorrect(node)
           lambda do |corrector|
             corrector.remove(node.loc.begin)
             corrector.remove(node.loc.end)
           end
         end
+
+        private
 
         def ineligible_node?(node)
           node.camel_case_method? || node.implicit_call? || node.keyword_not?

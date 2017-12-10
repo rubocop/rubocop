@@ -30,8 +30,6 @@ module RuboCop
         end
         alias on_defs on_def
 
-        private
-
         def autocorrect(pos_before_left_paren)
           ->(corrector) { corrector.remove(pos_before_left_paren) }
         end

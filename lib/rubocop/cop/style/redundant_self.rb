@@ -100,14 +100,14 @@ module RuboCop
           add_scope(node, @local_variables_scopes[node])
         end
 
-        private
-
         def autocorrect(node)
           lambda do |corrector|
             corrector.remove(node.receiver.source_range)
             corrector.remove(node.loc.dot)
           end
         end
+
+        private
 
         def add_scope(node, local_variables = [])
           node.descendants.each do |child_node|

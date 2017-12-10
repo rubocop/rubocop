@@ -72,6 +72,16 @@ module RuboCop
         alias on_until on_while
         alias on_for on_while
 
+        def autocorrect(node)
+          lambda do |corrector|
+            if node.modifier_form?
+              autocorrect_modifier(corrector, node)
+            else
+              autocorrect_block(corrector, node)
+            end
+          end
+        end
+
         private
 
         def check(node)
@@ -128,16 +138,6 @@ module RuboCop
           condition_expression, = *offense_node
           offense_begin_pos = offense_node.source_range.begin
           offense_begin_pos.join(condition_expression.source_range)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            if node.modifier_form?
-              autocorrect_modifier(corrector, node)
-            else
-              autocorrect_block(corrector, node)
-            end
-          end
         end
 
         def autocorrect_modifier(corrector, node)

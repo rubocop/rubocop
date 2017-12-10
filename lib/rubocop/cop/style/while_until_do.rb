@@ -46,8 +46,6 @@ module RuboCop
                             message: format(MSG, keyword: node.keyword))
         end
 
-        private
-
         def autocorrect(node)
           do_range = node.condition.source_range.end.join(node.loc.begin)
 

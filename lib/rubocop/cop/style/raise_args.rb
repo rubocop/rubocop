@@ -51,8 +51,6 @@ module RuboCop
           end
         end
 
-        private
-
         def autocorrect(node)
           replacement = if style == :compact
                           correction_exploded_to_compact(node)
@@ -62,6 +60,8 @@ module RuboCop
 
           ->(corrector) { corrector.replace(node.source_range, replacement) }
         end
+
+        private
 
         def correction_compact_to_exploded(node)
           exception_node, _new, message_node = *node.first_argument

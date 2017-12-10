@@ -60,8 +60,6 @@ module RuboCop
           ignore_node(method_def) # Don't check the same `end` again.
         end
 
-        private
-
         def autocorrect(node)
           if style == :start_of_line && node.parent && node.parent.send_type?
             align(node, node.parent)

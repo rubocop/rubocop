@@ -62,8 +62,6 @@ module RuboCop
           add_offense(node)
         end
 
-        private
-
         def autocorrect(node)
           lambda do |corrector|
             if integer_op_rand?(node)
@@ -78,6 +76,8 @@ module RuboCop
             end
           end
         end
+
+        private
 
         def corrected_integer_op_rand(node)
           left, operator, right = *node

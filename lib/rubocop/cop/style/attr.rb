@@ -23,8 +23,6 @@ module RuboCop
           add_offense(node, location: :selector)
         end
 
-        private
-
         def autocorrect(node)
           attr_name, setter = *node.arguments
 
@@ -40,6 +38,8 @@ module RuboCop
             corrector.remove(remove) if remove
           end
         end
+
+        private
 
         def message(node)
           format(MSG, replacement: replacement_method(node))

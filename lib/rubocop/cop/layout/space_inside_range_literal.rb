@@ -28,21 +28,6 @@ module RuboCop
           check(node)
         end
 
-        private
-
-        def check(node)
-          expression = node.source
-          op = node.loc.operator.source
-          escaped_op = op.gsub(/\./, '\.')
-
-          # account for multiline range literals
-          expression.sub!(/#{escaped_op}\n\s*/, op)
-
-          return unless expression =~ /(\s#{escaped_op})|(#{escaped_op}\s)/
-
-          add_offense(node)
-        end
-
         def autocorrect(node)
           expression = node.source
           operator = node.loc.operator.source
@@ -56,6 +41,21 @@ module RuboCop
                 .sub(/#{operator_escaped}\s+/, operator)
             )
           end
+        end
+
+        private
+
+        def check(node)
+          expression = node.source
+          op = node.loc.operator.source
+          escaped_op = op.gsub(/\./, '\.')
+
+          # account for multiline range literals
+          expression.sub!(/#{escaped_op}\n\s*/, op)
+
+          return unless expression =~ /(\s#{escaped_op})|(#{escaped_op}\s)/
+
+          add_offense(node)
         end
       end
     end

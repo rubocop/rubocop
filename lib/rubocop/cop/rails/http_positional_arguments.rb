@@ -41,6 +41,31 @@ module RuboCop
           end
         end
 
+        # given a pre Rails 5 method: get :new, user_id: @user.id, {}
+        #
+        # @return lambda of auto correct procedure
+        # the result should look like:
+        #     get :new, params: { user_id: @user.id }, headers: {}
+        # the http_method is the method used to call the controller
+        # the controller node can be a symbol, method, object or string
+        # that represents the path/action on the Rails controller
+        # the data is the http parameters and environment sent in
+        # the Rails 5 http call
+        def autocorrect(node)
+          http_path, *data = *node.arguments
+
+          controller_action = http_path.source
+          params = convert_hash_data(data.first, 'params')
+          headers = convert_hash_data(data.last, 'headers') if data.size > 1
+          # the range of the text to replace, which is the whole line
+          code_to_replace = node.loc.expression
+          # what to replace with
+          format = parentheses?(node) ? '%s(%s%s%s)' : '%s %s%s%s'
+          new_code = format(format, node.method_name, controller_action,
+                            params, headers)
+          ->(corrector) { corrector.replace(code_to_replace, new_code) }
+        end
+
         def needs_conversion?(data)
           return true unless data.hash_type?
 
@@ -70,31 +95,6 @@ module RuboCop
                       end
 
           format(', %s: %s', type, hash_data)
-        end
-
-        # given a pre Rails 5 method: get :new, user_id: @user.id, {}
-        #
-        # @return lambda of auto correct procedure
-        # the result should look like:
-        #     get :new, params: { user_id: @user.id }, headers: {}
-        # the http_method is the method used to call the controller
-        # the controller node can be a symbol, method, object or string
-        # that represents the path/action on the Rails controller
-        # the data is the http parameters and environment sent in
-        # the Rails 5 http call
-        def autocorrect(node)
-          http_path, *data = *node.arguments
-
-          controller_action = http_path.source
-          params = convert_hash_data(data.first, 'params')
-          headers = convert_hash_data(data.last, 'headers') if data.size > 1
-          # the range of the text to replace, which is the whole line
-          code_to_replace = node.loc.expression
-          # what to replace with
-          format = parentheses?(node) ? '%s(%s%s%s)' : '%s %s%s%s'
-          new_code = format(format, node.method_name, controller_action,
-                            params, headers)
-          ->(corrector) { corrector.replace(code_to_replace, new_code) }
         end
       end
     end

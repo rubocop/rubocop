@@ -49,6 +49,16 @@ module RuboCop
           end
         end
 
+        def autocorrect(node)
+          if node.send_type?
+            correct_alias_method_to_alias(node)
+          elsif scope_type(node) == :dynamic || style == :prefer_alias_method
+            correct_alias_to_alias_method(node)
+          else
+            correct_alias_with_symbol_args(node)
+          end
+        end
+
         private
 
         def alias_keyword_possible?(node)
@@ -58,16 +68,6 @@ module RuboCop
         def alias_method_possible?(node)
           scope_type(node) != :instance_eval &&
             node.children.none?(&:gvar_type?)
-        end
-
-        def autocorrect(node)
-          if node.send_type?
-            correct_alias_method_to_alias(node)
-          elsif scope_type(node) == :dynamic || style == :prefer_alias_method
-            correct_alias_to_alias_method(node)
-          else
-            correct_alias_with_symbol_args(node)
-          end
         end
 
         def add_offense_for_args(node)

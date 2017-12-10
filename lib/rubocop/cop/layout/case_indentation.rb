@@ -81,6 +81,16 @@ module RuboCop
           end
         end
 
+        def autocorrect(node)
+          whitespace = whitespace_range(node)
+
+          return false unless whitespace.source.strip.empty?
+
+          lambda do |corrector|
+            corrector.replace(whitespace, replacement(node))
+          end
+        end
+
         private
 
         def check_when(when_node)
@@ -125,16 +135,6 @@ module RuboCop
           case base
           when :case then case_node.location.keyword.column
           when :end  then case_node.location.end.column
-          end
-        end
-
-        def autocorrect(node)
-          whitespace = whitespace_range(node)
-
-          return false unless whitespace.source.strip.empty?
-
-          lambda do |corrector|
-            corrector.replace(whitespace, replacement(node))
           end
         end
 

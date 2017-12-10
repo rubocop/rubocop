@@ -32,13 +32,13 @@ module RuboCop
           add_offense(offending_node)
         end
 
-        private
-
         def autocorrect(pair_node)
           lambda do |corrector|
             corrector.replace(pair_node.key.source_range, 'allow_nil')
           end
         end
+
+        private
 
         def allow_blank_option(node)
           delegate_options(node) do |hash|

@@ -44,6 +44,15 @@ module RuboCop
           check_each_arg(args)
         end
 
+        def autocorrect(range)
+          lambda do |corrector|
+            case range.source
+            when /^\s+$/ then corrector.remove(range)
+            else              corrector.insert_after(range, ' ')
+            end
+          end
+        end
+
         private
 
         def style_parameter_name
@@ -119,15 +128,6 @@ module RuboCop
           range = range_between(space_begin_pos, space_end_pos)
           add_offense(range, location: range,
                              message: "#{msg} block parameter detected.")
-        end
-
-        def autocorrect(range)
-          lambda do |corrector|
-            case range.source
-            when /^\s+$/ then corrector.remove(range)
-            else              corrector.insert_after(range, ' ')
-            end
-          end
         end
       end
     end

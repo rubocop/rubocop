@@ -66,8 +66,6 @@ module RuboCop
           end
         end
 
-        private
-
         def autocorrect(node)
           selector_node, selector, _counter = count_candidate?(node)
           selector_loc = selector_node.loc.selector
@@ -81,6 +79,8 @@ module RuboCop
             corrector.replace(selector_loc, 'count')
           end
         end
+
+        private
 
         def eligible_node?(node)
           !(node.parent && node.parent.block_type?)

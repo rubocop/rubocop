@@ -45,6 +45,13 @@ module RuboCop
           add_offense(node.to_a.last, location: end_token.pos)
         end
 
+        def autocorrect(_node)
+          lambda do |corrector|
+            break_line_before_end(corrector)
+            remove_semicolon(corrector)
+          end
+        end
+
         private
 
         def trailing_end?(node)
@@ -68,13 +75,6 @@ module RuboCop
           @token_before_end ||= begin
             i = processed_source.tokens.index(end_token)
             processed_source.tokens[i - 1]
-          end
-        end
-
-        def autocorrect(_node)
-          lambda do |corrector|
-            break_line_before_end(corrector)
-            remove_semicolon(corrector)
           end
         end
 

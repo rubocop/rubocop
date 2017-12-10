@@ -29,6 +29,13 @@ module RuboCop
           add_offense(node, location: :selector)
         end
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(node.loc.selector, 'validates')
+            correct_validate_type(corrector, node)
+          end
+        end
+
         private
 
         def message(node)
@@ -37,13 +44,6 @@ module RuboCop
 
         def preferred_method(method)
           WHITELIST[BLACKLIST.index(method.to_sym)]
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node.loc.selector, 'validates')
-            correct_validate_type(corrector, node)
-          end
         end
 
         def correct_validate_type(corrector, node)

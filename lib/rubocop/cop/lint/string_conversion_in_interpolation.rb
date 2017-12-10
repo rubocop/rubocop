@@ -33,12 +33,6 @@ module RuboCop
           end
         end
 
-        private
-
-        def message(node)
-          node.receiver ? MSG_DEFAULT : MSG_SELF
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             receiver, _method_name, *_args = *node
@@ -51,6 +45,12 @@ module RuboCop
               end
             )
           end
+        end
+
+        private
+
+        def message(node)
+          node.receiver ? MSG_DEFAULT : MSG_SELF
         end
       end
     end

@@ -43,8 +43,6 @@ module RuboCop
           add_offense(rhs, location: node.source_range)
         end
 
-        private
-
         def autocorrect(node)
           lambda do |corrector|
             if style == :keyword
@@ -55,6 +53,8 @@ module RuboCop
             end
           end
         end
+
+        private
 
         def bad_rhs?(rhs)
           return false unless rhs.multiline?

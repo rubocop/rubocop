@@ -88,6 +88,10 @@ module RuboCop
           end
         end
 
+        def autocorrect(node)
+          align(node, alignment_node(node))
+        end
+
         private
 
         def check_assignment(node, rhs)
@@ -129,10 +133,6 @@ module RuboCop
             start_of_line: start_line_range(node)
           }
           check_end_kw_alignment(node, align_with)
-        end
-
-        def autocorrect(node)
-          align(node, alignment_node(node))
         end
 
         def alignment_node(node)

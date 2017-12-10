@@ -58,8 +58,6 @@ module RuboCop
         alias on_cvasgn on_lvasgn
         alias on_gvasgn on_lvasgn
 
-        private
-
         def autocorrect(node)
           if ternary_assignment?(node)
             variable, default = take_variable_and_default_from_ternary(node)
@@ -72,6 +70,8 @@ module RuboCop
                               "#{variable} ||= #{default.source}")
           end
         end
+
+        private
 
         def take_variable_and_default_from_ternary(node)
           variable, if_statement = *node

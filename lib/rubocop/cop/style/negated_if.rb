@@ -79,14 +79,14 @@ module RuboCop
           check_negative_conditional(node)
         end
 
+        def autocorrect(node)
+          negative_conditional_corrector(node)
+        end
+
         private
 
         def message(node)
           format(MSG, inverse: node.inverse_keyword, current: node.keyword)
-        end
-
-        def autocorrect(node)
-          negative_conditional_corrector(node)
         end
 
         def correct_style?(node)

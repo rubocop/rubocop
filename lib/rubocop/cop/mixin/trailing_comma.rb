@@ -9,6 +9,17 @@ module RuboCop
 
       MSG = '%<command>s comma after the last %<unit>s.'.freeze
 
+      def autocorrect(range)
+        return unless range
+
+        lambda do |corrector|
+          case range.source
+          when ',' then corrector.remove(range)
+          else          corrector.insert_after(range, ',')
+          end
+        end
+      end
+
       def style_parameter_name
         'EnforcedStyleForMultiline'
       end
@@ -152,17 +163,6 @@ module RuboCop
       # By default, there's no reason to avoid auto-correct.
       def avoid_autocorrect?(_)
         false
-      end
-
-      def autocorrect(range)
-        return unless range
-
-        lambda do |corrector|
-          case range.source
-          when ',' then corrector.remove(range)
-          else          corrector.insert_after(range, ',')
-          end
-        end
       end
     end
   end

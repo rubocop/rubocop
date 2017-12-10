@@ -37,6 +37,20 @@ module RuboCop
           register_kv_offense(node)
         end
 
+        def autocorrect(node)
+          receiver = node.receiver
+          _caller, first_method = *receiver
+
+          lambda do |corrector|
+            case first_method
+            when :keys, :values
+              correct_key_value_each(node, corrector)
+            else
+              correct_plain_each(node, corrector)
+            end
+          end
+        end
+
         private
 
         def register_each_offense(node)
@@ -70,20 +84,6 @@ module RuboCop
           loc = arg.loc
           variable = @block_args.find { |var| var.declaration_node.loc == loc }
           variable.used?
-        end
-
-        def autocorrect(node)
-          receiver = node.receiver
-          _caller, first_method = *receiver
-
-          lambda do |corrector|
-            case first_method
-            when :keys, :values
-              correct_key_value_each(node, corrector)
-            else
-              correct_plain_each(node, corrector)
-            end
-          end
         end
 
         def correct_implicit(node, corrector, method_name)

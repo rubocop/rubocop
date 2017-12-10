@@ -51,6 +51,15 @@ module RuboCop
           check_node(rhs)
         end
 
+        def autocorrect(node)
+          _scope, const_name, value = *node
+          indent = ' ' * node.loc.column
+          new_code = ["def self.#{const_name.downcase}",
+                      "#{indent}#{value.source}",
+                      'end'].join("\n#{indent}")
+          ->(corrector) { corrector.replace(node.source_range, new_code) }
+        end
+
         private
 
         def check_node(node)
@@ -72,15 +81,6 @@ module RuboCop
           node.send_type? &&
             RELATIVE_DATE_METHODS.include?(node.method_name) &&
             !node.arguments?
-        end
-
-        def autocorrect(node)
-          _scope, const_name, value = *node
-          indent = ' ' * node.loc.column
-          new_code = ["def self.#{const_name.downcase}",
-                      "#{indent}#{value.source}",
-                      'end'].join("\n#{indent}")
-          ->(corrector) { corrector.replace(node.source_range, new_code) }
         end
       end
     end

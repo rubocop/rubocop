@@ -23,8 +23,6 @@ module RuboCop
           end
         end
 
-        private
-
         def autocorrect(range)
           ->(corrector) { corrector.insert_before(range, ' ') }
         end

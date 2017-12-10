@@ -24,8 +24,6 @@ module RuboCop
           add_offense(node.key)
         end
 
-        private
-
         def autocorrect(node)
           lambda do |corrector|
             symbol_content = node.str_content.to_sym.inspect

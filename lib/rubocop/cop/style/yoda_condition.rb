@@ -50,6 +50,12 @@ module RuboCop
           add_offense(node)
         end
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(actual_code_range(node), corrected_code(node))
+          end
+        end
+
         private
 
         def yoda_condition?(node)
@@ -67,12 +73,6 @@ module RuboCop
 
         def message(node)
           format(MSG, source: node.source)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(actual_code_range(node), corrected_code(node))
-          end
         end
 
         def corrected_code(node)

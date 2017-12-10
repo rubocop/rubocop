@@ -51,8 +51,6 @@ module RuboCop
           end
         end
 
-        private
-
         def autocorrect(node)
           if style == :percent
             correct_percent(node, 'i')
@@ -60,6 +58,8 @@ module RuboCop
             correct_bracketed(node)
           end
         end
+
+        private
 
         def symbols_contain_spaces?(node)
           node.children.any? do |sym|

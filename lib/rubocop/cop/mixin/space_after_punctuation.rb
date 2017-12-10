@@ -14,6 +14,10 @@ module RuboCop
         end
       end
 
+      def autocorrect(token)
+        ->(corrector) { corrector.replace(token.pos, token.pos.source + ' ') }
+      end
+
       def each_missing_space(tokens)
         tokens.each_cons(2) do |t1, t2|
           next unless kind(t1)
@@ -46,10 +50,6 @@ module RuboCop
       # token where a space should be, is 1.
       def offset
         1
-      end
-
-      def autocorrect(token)
-        ->(corrector) { corrector.replace(token.pos, token.pos.source + ' ') }
       end
     end
   end

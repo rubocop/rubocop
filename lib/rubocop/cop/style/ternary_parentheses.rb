@@ -58,6 +58,20 @@ module RuboCop
           add_offense(node, location: node.source_range)
         end
 
+        def autocorrect(node)
+          condition = node.condition
+
+          return nil if parenthesized?(condition) &&
+                        (safe_assignment?(condition) ||
+                        unsafe_autocorrect?(condition))
+
+          if parenthesized?(condition)
+            correct_parenthesized(condition)
+          else
+            correct_unparenthesized(condition)
+          end
+        end
+
         private
 
         def offense?(node)
@@ -73,20 +87,6 @@ module RuboCop
             else
               require_parentheses? ? !parens : parens
             end
-          end
-        end
-
-        def autocorrect(node)
-          condition = node.condition
-
-          return nil if parenthesized?(condition) &&
-                        (safe_assignment?(condition) ||
-                        unsafe_autocorrect?(condition))
-
-          if parenthesized?(condition)
-            correct_parenthesized(condition)
-          else
-            correct_unparenthesized(condition)
           end
         end
 

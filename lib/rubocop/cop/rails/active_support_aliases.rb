@@ -44,8 +44,6 @@ module RuboCop
           end
         end
 
-        private
-
         def autocorrect(node)
           return false if append(node)
           lambda do |corrector|
@@ -54,6 +52,8 @@ module RuboCop
             corrector.replace(node.loc.selector, replacement.to_s)
           end
         end
+
+        private
 
         def register_offense(node, method_name)
           add_offense(

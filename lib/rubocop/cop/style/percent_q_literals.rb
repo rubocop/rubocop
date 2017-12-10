@@ -37,6 +37,12 @@ module RuboCop
           process(node, '%Q', '%q')
         end
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(node.source_range, corrected(node.source))
+          end
+        end
+
         private
 
         def on_percent_literal(node)
@@ -56,12 +62,6 @@ module RuboCop
 
         def message(_node)
           style == :lower_case_q ? LOWER_CASE_Q_MSG : UPPER_CASE_Q_MSG
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node.source_range, corrected(node.source))
-          end
         end
 
         def corrected(src)

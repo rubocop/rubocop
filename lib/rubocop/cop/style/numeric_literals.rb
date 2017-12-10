@@ -41,6 +41,12 @@ module RuboCop
           check(node)
         end
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(node.source_range, format_number(node))
+          end
+        end
+
         private
 
         def max_parameter_name
@@ -66,12 +72,6 @@ module RuboCop
 
         def short_group_regex
           cop_config['Strict'] ? /_\d{1,2}(_|$)/ : /_\d{1,2}_/
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node.source_range, format_number(node))
-          end
         end
 
         def format_number(node)

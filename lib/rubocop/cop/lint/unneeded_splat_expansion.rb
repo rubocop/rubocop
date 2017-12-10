@@ -75,6 +75,14 @@ module RuboCop
           end
         end
 
+        def autocorrect(node)
+          range, content = replacement_range_and_content(node)
+
+          lambda do |corrector|
+            corrector.replace(range, content)
+          end
+        end
+
         private
 
         def unneeded_splat_expansion(node)
@@ -96,14 +104,6 @@ module RuboCop
 
           grandparent = array_new_node.parent.parent
           grandparent.array_type? && grandparent.children.size > 1
-        end
-
-        def autocorrect(node)
-          range, content = replacement_range_and_content(node)
-
-          lambda do |corrector|
-            corrector.replace(range, content)
-          end
         end
 
         def replacement_range_and_content(node)

@@ -62,8 +62,6 @@ module RuboCop
           add_offense(node, location: :keyword)
         end
 
-        private
-
         def autocorrect(node)
           method_name, _args, body = *node
           delegation = ["delegate :#{body.method_name}",
@@ -77,6 +75,8 @@ module RuboCop
             corrector.replace(node.source_range, delegation.join(', '))
           end
         end
+
+        private
 
         def trivial_delegate?(def_node)
           method_name, args, body = *def_node

@@ -76,6 +76,22 @@ module RuboCop
                       message: message(node, selector))
         end
 
+        def autocorrect(node)
+          block_method, _args = *node
+          selector = block_method.source
+
+          # Don't autocorrect if this would change the meaning of the code
+          return if selector == '->' && arg_to_unparenthesized_call?(node)
+
+          lambda do |corrector|
+            if selector == 'lambda'
+              autocorrect_method_to_literal(corrector, node)
+            else
+              autocorrect_literal_to_method(corrector, node)
+            end
+          end
+        end
+
         private
 
         def offending_selector?(node, selector)
@@ -96,22 +112,6 @@ module RuboCop
             node.multiline? ? 'multiline' : 'single line'
           else
             'all'
-          end
-        end
-
-        def autocorrect(node)
-          block_method, _args = *node
-          selector = block_method.source
-
-          # Don't autocorrect if this would change the meaning of the code
-          return if selector == '->' && arg_to_unparenthesized_call?(node)
-
-          lambda do |corrector|
-            if selector == 'lambda'
-              autocorrect_method_to_literal(corrector, node)
-            else
-              autocorrect_literal_to_method(corrector, node)
-            end
           end
         end
 

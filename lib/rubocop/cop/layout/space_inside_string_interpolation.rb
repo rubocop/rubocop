@@ -30,6 +30,16 @@ module RuboCop
           end
         end
 
+        def autocorrect(node)
+          new_source = style == :no_space ? node.source : " #{node.source} "
+          lambda do |corrector|
+            corrector.replace(
+              range_with_surrounding_space(range: node.source_range),
+              new_source
+            )
+          end
+        end
+
         private
 
         def each_style_violation(node)
@@ -63,16 +73,6 @@ module RuboCop
             range_with_surrounding_space(range: interp)
 
           interp_with_surrounding_space.source == " #{interp.source} "
-        end
-
-        def autocorrect(node)
-          new_source = style == :no_space ? node.source : " #{node.source} "
-          lambda do |corrector|
-            corrector.replace(
-              range_with_surrounding_space(range: node.source_range),
-              new_source
-            )
-          end
         end
       end
     end

@@ -31,16 +31,6 @@ module RuboCop
           add_offense(node, location: :selector)
         end
 
-        private
-
-        def message(node)
-          if node.method?(:read_attribute)
-            format(MSG, 'self[:attr]', 'read_attribute(:attr)')
-          else
-            format(MSG, 'self[:attr] = val', 'write_attribute(:attr, val)')
-          end
-        end
-
         def autocorrect(node)
           case node.method_name
           when :read_attribute
@@ -50,6 +40,16 @@ module RuboCop
           end
 
           ->(corrector) { corrector.replace(node.source_range, replacement) }
+        end
+
+        private
+
+        def message(node)
+          if node.method?(:read_attribute)
+            format(MSG, 'self[:attr]', 'read_attribute(:attr)')
+          else
+            format(MSG, 'self[:attr] = val', 'write_attribute(:attr, val)')
+          end
         end
 
         def read_attribute_replacement(node)

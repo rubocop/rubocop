@@ -27,6 +27,15 @@ module RuboCop
         end
         alias on_return on_array
 
+        def autocorrect(node)
+          receiver = node.children.first.receiver
+
+          lambda do |corrector|
+            corrector.replace(offending_range(node),
+                              "#{receiver.source}.minmax")
+          end
+        end
+
         private
 
         def_node_matcher :min_max_candidate, <<-PATTERN
@@ -36,15 +45,6 @@ module RuboCop
         def message(offender, receiver)
           format(MSG, offender: offender.source,
                       receiver: receiver.source)
-        end
-
-        def autocorrect(node)
-          receiver = node.children.first.receiver
-
-          lambda do |corrector|
-            corrector.replace(offending_range(node),
-                              "#{receiver.source}.minmax")
-          end
         end
 
         def offending_range(node)

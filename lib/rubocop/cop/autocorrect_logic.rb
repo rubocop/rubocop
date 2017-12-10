@@ -13,7 +13,7 @@ module RuboCop
       end
 
       def support_autocorrect?
-        respond_to?(:autocorrect, true)
+        respond_to?(:autocorrect)
       end
 
       def autocorrect_enabled?

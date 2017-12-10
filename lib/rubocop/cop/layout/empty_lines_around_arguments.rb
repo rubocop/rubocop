@@ -47,13 +47,13 @@ module RuboCop
           extra_lines(node) { |range| add_offense(node, location: range) }
         end
 
-        private
-
         def autocorrect(node)
           lambda do |corrector|
             extra_lines(node) { |range| corrector.remove(range) }
           end
         end
+
+        private
 
         def empty_lines(node)
           @empty_lines ||= begin

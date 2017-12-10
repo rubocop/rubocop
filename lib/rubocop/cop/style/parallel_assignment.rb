@@ -38,6 +38,19 @@ module RuboCop
           add_offense(node)
         end
 
+        def autocorrect(node)
+          lambda do |corrector|
+            left, right = *node
+            left_elements = *left
+            right_elements = [*right].compact
+            order = find_valid_order(left_elements, right_elements)
+            correction = assignment_corrector(node, order)
+
+            corrector.replace(correction.correction_range,
+                              correction.correction)
+          end
+        end
+
         private
 
         def allowed_masign?(lhs_elements, rhs_elements)
@@ -66,19 +79,6 @@ module RuboCop
 
         def return_of_method_call?(node)
           node.block_type? || node.send_type?
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            left, right = *node
-            left_elements = *left
-            right_elements = [*right].compact
-            order = find_valid_order(left_elements, right_elements)
-            correction = assignment_corrector(node, order)
-
-            corrector.replace(correction.correction_range,
-                              correction.correction)
-          end
         end
 
         def assignment_corrector(node, order)

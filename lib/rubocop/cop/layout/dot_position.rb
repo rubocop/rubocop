@@ -35,6 +35,18 @@ module RuboCop
           end
         end
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.remove(node.loc.dot)
+            case style
+            when :leading
+              corrector.insert_before(selector_range(node), '.')
+            when :trailing
+              corrector.insert_after(node.receiver.source_range, '.')
+            end
+          end
+        end
+
         private
 
         def message(_node)
@@ -73,18 +85,6 @@ module RuboCop
           case style
           when :leading then dot_line == selector_line
           when :trailing then dot_line != selector_line
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.remove(node.loc.dot)
-            case style
-            when :leading
-              corrector.insert_before(selector_range(node), '.')
-            when :trailing
-              corrector.insert_after(node.receiver.source_range, '.')
-            end
           end
         end
 

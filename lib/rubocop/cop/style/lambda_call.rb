@@ -31,13 +31,6 @@ module RuboCop
           end
         end
 
-        private
-
-        def offense?(node)
-          explicit_style? && node.implicit_call? ||
-            implicit_style? && !node.implicit_call?
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             if explicit_style?
@@ -50,6 +43,13 @@ module RuboCop
               corrector.remove(node.loc.selector)
             end
           end
+        end
+
+        private
+
+        def offense?(node)
+          explicit_style? && node.implicit_call? ||
+            implicit_style? && !node.implicit_call?
         end
 
         def add_parentheses(node, corrector)

@@ -55,8 +55,6 @@ module RuboCop
           "`#{delimiters[0]}` and `#{delimiters[1]}`."
         end
 
-        private
-
         def autocorrect(node)
           type = type(node)
 
@@ -67,6 +65,8 @@ module RuboCop
             corrector.replace(node.loc.end, closing_delimiter)
           end
         end
+
+        private
 
         def on_percent_literal(node)
           type = type(node)

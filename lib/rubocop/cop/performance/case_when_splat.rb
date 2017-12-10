@@ -68,8 +68,6 @@ module RuboCop
           end
         end
 
-        private
-
         def autocorrect(when_node)
           lambda do |corrector|
             if needs_reorder?(when_node)
@@ -79,6 +77,8 @@ module RuboCop
             end
           end
         end
+
+        private
 
         def replacement(conditions)
           reordered = conditions.partition(&:splat_type?).reverse

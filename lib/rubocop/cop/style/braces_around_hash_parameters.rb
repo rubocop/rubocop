@@ -53,6 +53,24 @@ module RuboCop
           check(node.last_argument, node.arguments)
         end
 
+        # We let AutocorrectUnlessChangingAST#autocorrect work with the send
+        # node, because that context is needed. When parsing the code to see if
+        # the AST has changed, a braceless hash would not be parsed as a hash
+        # otherwise.
+        def autocorrect(send_node)
+          hash_node = send_node.last_argument
+
+          lambda do |corrector|
+            if hash_node.braces?
+              remove_braces_with_whitespace(corrector,
+                                            hash_node,
+                                            extra_space(hash_node))
+            else
+              add_braces(corrector, hash_node)
+            end
+          end
+        end
+
         private
 
         def check(arg, args)
@@ -81,24 +99,6 @@ module RuboCop
           add_offense(arg.parent, location: arg.source_range,
                                   message: format(MSG,
                                                   type: type.to_s.capitalize))
-        end
-
-        # We let AutocorrectUnlessChangingAST#autocorrect work with the send
-        # node, because that context is needed. When parsing the code to see if
-        # the AST has changed, a braceless hash would not be parsed as a hash
-        # otherwise.
-        def autocorrect(send_node)
-          hash_node = send_node.last_argument
-
-          lambda do |corrector|
-            if hash_node.braces?
-              remove_braces_with_whitespace(corrector,
-                                            hash_node,
-                                            extra_space(hash_node))
-            else
-              add_braces(corrector, hash_node)
-            end
-          end
         end
 
         def extra_space(hash_node)

@@ -31,6 +31,12 @@ module RuboCop
           check_for_interpolation(node)
         end
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(node.source_range, "{#{node.source}}")
+          end
+        end
+
         private
 
         def check_for_interpolation(node)
@@ -41,12 +47,6 @@ module RuboCop
 
         def message(node)
           format(MSG, variable: node.source)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node.source_range, "{#{node.source}}")
-          end
         end
 
         def var_nodes(nodes)

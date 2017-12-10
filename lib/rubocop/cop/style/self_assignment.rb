@@ -32,6 +32,16 @@ module RuboCop
           check(node, :cvar)
         end
 
+        def autocorrect(node)
+          _var_name, rhs = *node
+
+          if rhs.send_type?
+            autocorrect_send_node(node, rhs)
+          elsif %i[and or].include?(rhs.type)
+            autocorrect_boolean_node(node, rhs)
+          end
+        end
+
         private
 
         def check(node, var_type)
@@ -63,16 +73,6 @@ module RuboCop
 
           operator = rhs.loc.operator.source
           add_offense(node, message: format(MSG, method: operator))
-        end
-
-        def autocorrect(node)
-          _var_name, rhs = *node
-
-          if rhs.send_type?
-            autocorrect_send_node(node, rhs)
-          elsif %i[and or].include?(rhs.type)
-            autocorrect_boolean_node(node, rhs)
-          end
         end
 
         def autocorrect_send_node(node, rhs)

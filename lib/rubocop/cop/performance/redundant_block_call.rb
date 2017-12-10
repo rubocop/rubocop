@@ -52,24 +52,6 @@ module RuboCop
           end
         end
 
-        private
-
-        def calls_to_report(argname, body)
-          return [] if blockarg_assigned?(body, argname)
-
-          calls = to_enum(:blockarg_calls, body, argname)
-
-          return [] if calls.any? { |call| args_include_block_pass?(call) }
-
-          calls
-        end
-
-        def args_include_block_pass?(blockcall)
-          _receiver, _call, *args = *blockcall
-
-          args.any?(&:block_pass_type?)
-        end
-
         # offenses are registered on the `block.call` nodes
         def autocorrect(node)
           _receiver, _method, *args = *node
@@ -86,6 +68,24 @@ module RuboCop
 
           new_source << CLOSE_PAREN if parentheses?(node) && !args.empty?
           ->(corrector) { corrector.replace(node.source_range, new_source) }
+        end
+
+        private
+
+        def calls_to_report(argname, body)
+          return [] if blockarg_assigned?(body, argname)
+
+          calls = to_enum(:blockarg_calls, body, argname)
+
+          return [] if calls.any? { |call| args_include_block_pass?(call) }
+
+          calls
+        end
+
+        def args_include_block_pass?(blockcall)
+          _receiver, _call, *args = *blockcall
+
+          args.any?(&:block_pass_type?)
         end
       end
     end

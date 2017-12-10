@@ -30,6 +30,18 @@ module RuboCop
           check(node)
         end
 
+        def autocorrect(node)
+          map_or_collect, count = times_map_call(node)
+
+          replacement =
+            "Array.new(#{count.source}" \
+            "#{map_or_collect.arguments.map { |arg| ", #{arg.source}" }.join})"
+
+          lambda do |corrector|
+            corrector.replace(map_or_collect.loc.expression, replacement)
+          end
+        end
+
         private
 
         def check(node)
@@ -53,18 +65,6 @@ module RuboCop
           {(block $(send (send $!nil? :times) {:map :collect}) ...)
            $(send (send $!nil? :times) {:map :collect} (block_pass ...))}
         PATTERN
-
-        def autocorrect(node)
-          map_or_collect, count = times_map_call(node)
-
-          replacement =
-            "Array.new(#{count.source}" \
-            "#{map_or_collect.arguments.map { |arg| ", #{arg.source}" }.join})"
-
-          lambda do |corrector|
-            corrector.replace(map_or_collect.loc.expression, replacement)
-          end
-        end
       end
     end
   end

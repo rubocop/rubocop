@@ -38,19 +38,19 @@ module RuboCop
           check(node)
         end
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.remove(node.loc.begin)
+            corrector.remove(node.loc.end)
+          end
+        end
+
         private
 
         def check(node)
           return unless node.body && node.body.kwbegin_type?
 
           add_offense(node.body, location: :begin)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.remove(node.loc.begin)
-            corrector.remove(node.loc.end)
-          end
         end
       end
     end

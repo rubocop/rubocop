@@ -30,6 +30,15 @@ module RuboCop
           check(node)
         end
 
+        def autocorrect(node)
+          delimiter =
+            node.source =~ /^%Q[^"]+$|'/ ? QUOTE : SINGLE_QUOTE
+          lambda do |corrector|
+            corrector.replace(node.loc.begin, delimiter)
+            corrector.replace(node.loc.end, delimiter)
+          end
+        end
+
         private
 
         def check(node)
@@ -57,15 +66,6 @@ module RuboCop
                     EMPTY
                   end
           format(MSG, q_type: src[0, 2], extra: extra)
-        end
-
-        def autocorrect(node)
-          delimiter =
-            node.source =~ /^%Q[^"]+$|'/ ? QUOTE : SINGLE_QUOTE
-          lambda do |corrector|
-            corrector.replace(node.loc.begin, delimiter)
-            corrector.replace(node.loc.end, delimiter)
-          end
         end
 
         def string_literal?(node)

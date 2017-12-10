@@ -27,8 +27,6 @@ module RuboCop
           check(node) if node.send_node.stabby_lambda?
         end
 
-        private
-
         def autocorrect(node)
           lambda do |corrector|
             send_node = node.parent.send_node

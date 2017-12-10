@@ -31,8 +31,6 @@ module RuboCop
           check(node) unless send_node.send_type? && send_node.stabby_lambda?
         end
 
-        private
-
         def autocorrect(node)
           lambda do |corrector|
             block = node.parent

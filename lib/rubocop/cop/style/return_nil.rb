@@ -57,14 +57,14 @@ module RuboCop
           add_offense(node) unless correct_style?(node)
         end
 
-        private
-
         def autocorrect(node)
           lambda do |corrector|
             corrected = style == :return ? 'return' : 'return nil'
             corrector.replace(node.source_range, corrected)
           end
         end
+
+        private
 
         def message(_node)
           style == :return ? RETURN_MSG : RETURN_NIL_MSG

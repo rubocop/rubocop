@@ -5,6 +5,17 @@ module RuboCop
     # Common functionality for Bundler/OrderedGems and
     # Gemspec/OrderedDependencies.
     module OrderedGemNode
+      def autocorrect(node)
+        previous = previous_declaration(node)
+
+        current_range = declaration_with_comment(node)
+        previous_range = declaration_with_comment(previous)
+
+        lambda do |corrector|
+          swap_range(corrector, current_range, previous_range)
+        end
+      end
+
       private
 
       def case_insensitive_out_of_order?(string_a, string_b)
@@ -27,17 +38,6 @@ module RuboCop
 
       def gem_name(declaration_node)
         declaration_node.first_argument.str_content
-      end
-
-      def autocorrect(node)
-        previous = previous_declaration(node)
-
-        current_range = declaration_with_comment(node)
-        previous_range = declaration_with_comment(previous)
-
-        lambda do |corrector|
-          swap_range(corrector, current_range, previous_range)
-        end
       end
 
       def declaration_with_comment(node)

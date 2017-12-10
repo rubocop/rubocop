@@ -31,8 +31,6 @@ module RuboCop
         end
         alias on_defs on_def
 
-        private
-
         def autocorrect(node) # rubocop:disable Metrics/MethodLength
           lambda do |corrector|
             unless arguments?(node.children)
@@ -51,6 +49,8 @@ module RuboCop
             corrector.remove(return_kw)
           end
         end
+
+        private
 
         def add_brackets(corrector, node)
           kids = node.children.map(&:source_range)
