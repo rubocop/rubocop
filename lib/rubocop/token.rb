@@ -66,6 +66,18 @@ module RuboCop
       type == :tRCURLY
     end
 
+    def left_parens?
+      %i[tLPAREN tLPAREN2].include?(type)
+    end
+
+    def right_parens?
+      type == :tRPAREN
+    end
+
+    def comma?
+      type == :tCOMMA
+    end
+
     def to_s
       "[[#{@pos.line}, #{@pos.column}], #{@type}, #{@text.inspect}]"
     end

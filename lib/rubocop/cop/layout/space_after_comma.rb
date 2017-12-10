@@ -23,7 +23,7 @@ module RuboCop
         end
 
         def kind(token)
-          'comma' if token.type == :tCOMMA
+          'comma' if token.comma?
         end
       end
     end
