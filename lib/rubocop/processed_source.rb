@@ -54,7 +54,7 @@ module RuboCop
     def lines
       @lines ||= begin
         all_lines = @buffer.source_lines
-        last_token_line = tokens.any? ? tokens.last.pos.line : all_lines.size
+        last_token_line = tokens.any? ? tokens.last.line : all_lines.size
         result = []
         all_lines.each_with_index do |line, ix|
           break if ix >= last_token_line && line == '__END__'

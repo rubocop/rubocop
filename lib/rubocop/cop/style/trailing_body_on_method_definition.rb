@@ -92,7 +92,7 @@ module RuboCop
 
         def semicolon
           @semicolon ||= processed_source.tokens.find do |token|
-            token.pos.line == 1 && token.type == :tSEMI
+            token.line == 1 && token.type == :tSEMI
           end
         end
       end

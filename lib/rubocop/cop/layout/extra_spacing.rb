@@ -31,7 +31,7 @@ module RuboCop
 
           if force_equal_sign_alignment?
             @asgn_tokens = assignment_tokens
-            @asgn_lines  = @asgn_tokens.map { |t| t.pos.line }
+            @asgn_lines  = @asgn_tokens.map(&:line)
             # Don't attempt to correct the same = more than once
             @corrected   = Set.new
           end
@@ -61,7 +61,7 @@ module RuboCop
           tokens = remove_optarg_equals(tokens, processed_source)
 
           # Only attempt to align the first = on each line
-          Set.new(tokens.uniq { |t| t.pos.line })
+          Set.new(tokens.uniq(&:line))
         end
 
         def check_tokens(ast, t1, t2)
@@ -69,8 +69,8 @@ module RuboCop
 
           if force_equal_sign_alignment? &&
              @asgn_tokens.include?(t2) &&
-             (@asgn_lines.include?(t2.pos.line - 1) ||
-              @asgn_lines.include?(t2.pos.line + 1))
+             (@asgn_lines.include?(t2.line - 1) ||
+              @asgn_lines.include?(t2.line + 1))
             check_assignment(t2)
           else
             check_other(t1, t2, ast)
@@ -92,15 +92,15 @@ module RuboCop
         end
 
         def should_aligned_with_preceding_line?(token)
-          @asgn_lines.include?(token.pos.line - 1)
+          @asgn_lines.include?(token.line - 1)
         end
 
         def preceding_line(token)
-          processed_source.lines[token.pos.line - 2]
+          processed_source.lines[token.line - 2]
         end
 
         def following_line(token)
-          processed_source.lines[token.pos.line]
+          processed_source.lines[token.line]
         end
 
         def check_other(t1, t2, ast)
@@ -114,10 +114,10 @@ module RuboCop
         end
 
         def extra_space_range(t1, t2)
-          return if t1.pos.line != t2.pos.line
+          return if t1.line != t2.line
 
-          start_pos = t1.pos.end_pos
-          end_pos = t2.pos.begin_pos - 1
+          start_pos = t1.end_pos
+          end_pos = t2.begin_pos - 1
           return if end_pos <= start_pos
 
           return if allow_for_alignment? && aligned_tok?(t2)
@@ -157,7 +157,7 @@ module RuboCop
 
         def aligned_comments?(token)
           ix = processed_source.comments.index do |c|
-            c.loc.expression.begin_pos == token.pos.begin_pos
+            c.loc.expression.begin_pos == token.begin_pos
           end
           aligned_with_previous_comment?(ix) || aligned_with_next_comment?(ix)
         end
@@ -185,7 +185,7 @@ module RuboCop
 
         def align_equal_signs(range, corrector)
           lines  = contiguous_assignment_lines(range)
-          tokens = @asgn_tokens.select { |t| lines.include?(t.pos.line) }
+          tokens = @asgn_tokens.select { |t| lines.include?(t.line) }
 
           columns  = tokens.map { |t| align_column(t) }
           align_to = columns.max
@@ -221,8 +221,8 @@ module RuboCop
         def align_column(asgn_token)
           # if we removed unneeded spaces from the beginning of this =,
           # what column would it end from?
-          line    = processed_source.lines[asgn_token.pos.line - 1]
-          leading = line[0...asgn_token.pos.column]
+          line    = processed_source.lines[asgn_token.line - 1]
+          leading = line[0...asgn_token.column]
           spaces  = leading.size - (leading =~ / *\Z/)
           asgn_token.pos.last_column - spaces + 1
         end
@@ -230,7 +230,7 @@ module RuboCop
         def remove_optarg_equals(asgn_tokens, processed_source)
           optargs    = processed_source.ast.each_node(:optarg)
           optarg_eql = optargs.map { |o| o.loc.operator.begin_pos }.to_set
-          asgn_tokens.reject { |t| optarg_eql.include?(t.pos.begin_pos) }
+          asgn_tokens.reject { |t| optarg_eql.include?(t.begin_pos) }
         end
       end
     end

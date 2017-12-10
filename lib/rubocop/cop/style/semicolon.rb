@@ -59,13 +59,13 @@ module RuboCop
 
         def each_semicolon
           tokens_for_lines.each do |line, tokens|
-            yield line, tokens.last.pos.column if tokens.last.type == :tSEMI
-            yield line, tokens.first.pos.column if tokens.first.type == :tSEMI
+            yield line, tokens.last.column if tokens.last.type == :tSEMI
+            yield line, tokens.first.column if tokens.first.type == :tSEMI
           end
         end
 
         def tokens_for_lines
-          @processed_source.tokens.group_by { |token| token.pos.line }
+          @processed_source.tokens.group_by(&:line)
         end
 
         def convention_on(line, column, autocorrect)

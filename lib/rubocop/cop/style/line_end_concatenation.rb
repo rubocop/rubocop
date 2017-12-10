@@ -61,7 +61,7 @@ module RuboCop
                         eligible_operator?(operator) &&
                         eligible_predecessor?(predecessor)
 
-          return if operator.pos.line == successor.pos.line
+          return if operator.line == successor.line
 
           next_successor = token_after_last_string(successor, index)
 

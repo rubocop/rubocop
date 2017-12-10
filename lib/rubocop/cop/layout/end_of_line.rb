@@ -13,7 +13,7 @@ module RuboCop
         def investigate(processed_source)
           last_token = processed_source.tokens.last
           last_line =
-            last_token ? last_token.pos.line : processed_source.lines.length
+            last_token ? last_token.line : processed_source.lines.length
 
           processed_source.raw_source.each_line.with_index do |line, index|
             break if index >= last_line

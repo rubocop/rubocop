@@ -68,7 +68,7 @@ module RuboCop
         end
 
         def body_and_end_on_same_line?
-          end_token.pos.line == token_before_end.pos.line
+          end_token.line == token_before_end.line
         end
 
         def token_before_end

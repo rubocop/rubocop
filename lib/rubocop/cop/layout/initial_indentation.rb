@@ -26,18 +26,18 @@ module RuboCop
 
         def space_before(token)
           return unless token
-          return if token.pos.column.zero?
+          return if token.column.zero?
 
-          token_with_space =
+          space_range =
             range_with_surrounding_space(range: token.pos,
                                          side: :left,
                                          newlines: false)
           # If the file starts with a byte order mark (BOM), the column can be
           # non-zero, but then we find out here if there's no space to the left
           # of the first token.
-          return if token_with_space == token.pos
+          return if space_range == token.pos
 
-          yield range_between(token_with_space.begin_pos, token.pos.begin_pos)
+          yield range_between(space_range.begin_pos, token.begin_pos)
         end
       end
     end

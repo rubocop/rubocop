@@ -29,7 +29,7 @@ module RuboCop
       end
 
       def space_missing?(t1, t2)
-        t1.pos.line == t2.pos.line && t2.pos.column == t1.pos.column + offset
+        t1.line == t2.line && t2.column == t1.column + offset
       end
 
       def space_required_before?(token)
