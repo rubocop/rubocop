@@ -1158,6 +1158,10 @@ Rails/PluralizationGrammar:
   Description: 'Checks for incorrect grammar when using methods like `3.day.ago`.'
   Enabled: true
 
+Rails/Presence:
+  Description: 'Checks code that can be written more easily using `Object#presence` defined by Active Support.'
+  Enabled: true
+
 Rails/Present:
   Description: 'Enforce using `blank?` and `present?`.'
   Enabled: true
