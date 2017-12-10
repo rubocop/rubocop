@@ -54,6 +54,18 @@ module RuboCop
       type == :tRBRACK
     end
 
+    def left_brace?
+      type == :tLBRACE
+    end
+
+    def left_curly_brace?
+      type == :tLCURLY
+    end
+
+    def right_curly_brace?
+      type == :tRCURLY
+    end
+
     def to_s
       "[[#{@pos.line}, #{@pos.column}], #{@type}, #{@text.inspect}]"
     end
