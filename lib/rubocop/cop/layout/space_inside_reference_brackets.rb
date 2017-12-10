@@ -68,12 +68,12 @@ module RuboCop
         end
 
         def left_ref_bracket(node)
-          tokens(node).reverse.find { |t| t.type == :tLBRACK2 }
+          tokens(node).reverse.find(&:left_ref_bracket?)
         end
 
         def right_ref_bracket(node, token)
           i = tokens(node).index(token)
-          tokens(node).slice(i..-1).find { |t| t.type == :tRBRACK }
+          tokens(node).slice(i..-1).find(&:right_bracket?)
         end
       end
     end
