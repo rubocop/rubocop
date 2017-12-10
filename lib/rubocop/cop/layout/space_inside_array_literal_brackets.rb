@@ -79,11 +79,11 @@ module RuboCop
         end
 
         def left_array_bracket(node)
-          tokens(node).find { |token| left_bracket?(token) }
+          tokens(node).find(&:left_array_bracket?)
         end
 
         def right_array_bracket(node)
-          tokens(node).reverse.find { |token| right_bracket?(token) }
+          tokens(node).reverse.find(&:right_bracket?)
         end
 
         def empty_brackets?(left, right)
@@ -195,18 +195,10 @@ module RuboCop
         def multi_dimensional_array?(node, token, side: :right)
           i = index_for(node, token)
           if side == :right
-            right_bracket?(tokens(node)[i - 1])
+            tokens(node)[i - 1].right_bracket?
           else
-            left_bracket?(tokens(node)[i + 1])
+            tokens(node)[i + 1].left_array_bracket?
           end
-        end
-
-        def right_bracket?(token)
-          token.type == :tRBRACK
-        end
-
-        def left_bracket?(token)
-          token.type == :tLBRACK
         end
 
         def next_to_bracket?(token, side: :right)

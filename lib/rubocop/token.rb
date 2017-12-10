@@ -42,6 +42,18 @@ module RuboCop
       type == :tSEMI
     end
 
+    def left_array_bracket?
+      type == :tLBRACK
+    end
+
+    def left_ref_bracket?
+      type == :tLBRACK2
+    end
+
+    def right_bracket?
+      type == :tRBRACK
+    end
+
     def to_s
       "[[#{@pos.line}, #{@pos.column}], #{@type}, #{@text.inspect}]"
     end
