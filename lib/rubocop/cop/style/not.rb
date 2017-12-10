@@ -31,8 +31,6 @@ module RuboCop
           add_offense(node, location: :selector)
         end
 
-        private
-
         def autocorrect(node)
           range = range_with_surrounding_space(range: node.loc.selector,
                                                side: :right)
@@ -45,6 +43,8 @@ module RuboCop
             correct_without_parens(range)
           end
         end
+
+        private
 
         def opposite_method?(child)
           child.send_type? && OPPOSITE_METHODS.key?(child.method_name)

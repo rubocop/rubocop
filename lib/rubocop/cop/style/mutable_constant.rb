@@ -30,18 +30,6 @@ module RuboCop
           on_assignment(value)
         end
 
-        private
-
-        def on_assignment(value)
-          value = splat_value(value) if splat_value(value)
-
-          return unless value && value.mutable_literal?
-          return if FROZEN_STRING_LITERAL_TYPES.include?(value.type) &&
-                    frozen_string_literals_enabled?
-
-          add_offense(value)
-        end
-
         def autocorrect(node)
           expr = node.source_range
 
@@ -53,6 +41,18 @@ module RuboCop
               corrector.insert_after(expr, '.freeze')
             end
           end
+        end
+
+        private
+
+        def on_assignment(value)
+          value = splat_value(value) if splat_value(value)
+
+          return unless value && value.mutable_literal?
+          return if FROZEN_STRING_LITERAL_TYPES.include?(value.type) &&
+                    frozen_string_literals_enabled?
+
+          add_offense(value)
         end
 
         def_node_matcher :splat_value, <<-PATTERN

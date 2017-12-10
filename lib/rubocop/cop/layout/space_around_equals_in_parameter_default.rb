@@ -27,6 +27,13 @@ module RuboCop
           check_optarg(arg, equals, value)
         end
 
+        def autocorrect(range)
+          m = range.source.match(/=\s*(\S+)/)
+          rest = m ? m.captures[0] : ''
+          replacement = style == :space ? ' = ' : '='
+          ->(corrector) { corrector.replace(range, replacement + rest) }
+        end
+
         private
 
         def check_optarg(arg, equals, value)
@@ -65,13 +72,6 @@ module RuboCop
 
         def message(_)
           format(MSG, type: style == :space ? 'missing' : 'detected')
-        end
-
-        def autocorrect(range)
-          m = range.source.match(/=\s*(\S+)/)
-          rest = m ? m.captures[0] : ''
-          replacement = style == :space ? ' = ' : '='
-          ->(corrector) { corrector.replace(range, replacement + rest) }
         end
       end
     end

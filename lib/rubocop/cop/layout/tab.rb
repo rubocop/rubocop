@@ -28,14 +28,14 @@ module RuboCop
           end
         end
 
-        private
-
         def autocorrect(range)
           lambda do |corrector|
             spaces = ' ' * configured_indentation_width
             corrector.replace(range, range.source.gsub(/\t/, spaces))
           end
         end
+
+        private
 
         def string_literal_lines(ast)
           # which lines start inside a string literal?

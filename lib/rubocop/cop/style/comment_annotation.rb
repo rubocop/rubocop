@@ -56,12 +56,6 @@ module RuboCop
           end
         end
 
-        private
-
-        def first_comment_line?(comments, ix)
-          ix.zero? || comments[ix - 1].loc.line < comments[ix].loc.line - 1
-        end
-
         def autocorrect(comment)
           margin, first_word, colon, space, note = split_comment(comment)
           return if note.nil?
@@ -70,6 +64,12 @@ module RuboCop
           range = annotation_range(comment, margin, length)
 
           ->(corrector) { corrector.replace(range, "#{first_word.upcase}: ") }
+        end
+
+        private
+
+        def first_comment_line?(comments, ix)
+          ix.zero? || comments[ix - 1].loc.line < comments[ix].loc.line - 1
         end
 
         def annotation_range(comment, margin, length)

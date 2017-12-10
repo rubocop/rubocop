@@ -59,8 +59,6 @@ module RuboCop
           end
         end
 
-        private
-
         def autocorrect(node)
           method_node, *params = *node.arguments
           method = method_node.source[1..-1]
@@ -72,6 +70,8 @@ module RuboCop
             corrector.replace(range, replacement(method, params))
           end
         end
+
+        private
 
         def replacement(method, params)
           new_params = params.map(&:source).join(', ')

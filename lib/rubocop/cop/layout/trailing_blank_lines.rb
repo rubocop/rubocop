@@ -28,6 +28,12 @@ module RuboCop
                            whitespace_at_end)
         end
 
+        def autocorrect(range)
+          lambda do |corrector|
+            corrector.replace(range, style == :final_newline ? "\n" : "\n\n")
+          end
+        end
+
         private
 
         def offense_detected(sb, wanted_blank_lines, blank_lines,
@@ -66,12 +72,6 @@ module RuboCop
                          end
             format('%d trailing blank lines %sdetected.', blank_lines,
                    instead_of)
-          end
-        end
-
-        def autocorrect(range)
-          lambda do |corrector|
-            corrector.replace(range, style == :final_newline ? "\n" : "\n\n")
           end
         end
       end

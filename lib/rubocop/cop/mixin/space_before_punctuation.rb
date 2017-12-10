@@ -14,6 +14,10 @@ module RuboCop
         end
       end
 
+      def autocorrect(pos_before_punctuation)
+        ->(corrector) { corrector.remove(pos_before_punctuation) }
+      end
+
       def each_missing_space(tokens)
         tokens.each_cons(2) do |t1, t2|
           next unless kind(t2)
@@ -39,10 +43,6 @@ module RuboCop
         cfg = config.for_cop('Layout/SpaceInsideBlockBraces')
         style = cfg['EnforcedStyle'] || 'space'
         style == 'space'
-      end
-
-      def autocorrect(pos_before_punctuation)
-        ->(corrector) { corrector.remove(pos_before_punctuation) }
       end
     end
   end

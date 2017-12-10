@@ -36,6 +36,14 @@ module RuboCop
           check(node)
         end
 
+        def autocorrect(node)
+          src = node.loc.begin.source
+          replacement = src.start_with?('%Q') ? '%' : '%Q'
+          lambda do |corrector|
+            corrector.replace(node.loc.begin, src.sub(/%Q?/, replacement))
+          end
+        end
+
         private
 
         def check(node)
@@ -63,14 +71,6 @@ module RuboCop
           add_offense(node, location: :begin, message: format(MSG,
                                                               good: good,
                                                               bad: bad))
-        end
-
-        def autocorrect(node)
-          src = node.loc.begin.source
-          replacement = src.start_with?('%Q') ? '%' : '%Q'
-          lambda do |corrector|
-            corrector.replace(node.loc.begin, src.sub(/%Q?/, replacement))
-          end
         end
       end
     end

@@ -29,8 +29,6 @@ module RuboCop
           end
         end
 
-        private
-
         def autocorrect(comment)
           eq_begin, eq_end, contents = parts(comment)
 
@@ -46,6 +44,8 @@ module RuboCop
             corrector.remove(eq_end)
           end
         end
+
+        private
 
         def parts(comment)
           expr = comment.loc.expression

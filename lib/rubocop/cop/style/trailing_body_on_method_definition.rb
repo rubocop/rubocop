@@ -37,6 +37,14 @@ module RuboCop
         end
         alias on_defs on_def
 
+        def autocorrect(node)
+          lambda do |corrector|
+            break_line_before_body(node, corrector)
+            move_comment(node, corrector)
+            remove_semicolon(corrector)
+          end
+        end
+
         private
 
         def trailing_body?(node)
@@ -45,14 +53,6 @@ module RuboCop
 
         def on_def_line?(node)
           node.source_range.first_line == node.body.source_range.first_line
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            break_line_before_body(node, corrector)
-            move_comment(node, corrector)
-            remove_semicolon(corrector)
-          end
         end
 
         def break_line_before_body(node, corrector)

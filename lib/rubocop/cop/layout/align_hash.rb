@@ -124,6 +124,21 @@ module RuboCop
           check_pairs(node)
         end
 
+        def autocorrect(node)
+          # We can't use the instance variable inside the lambda. That would
+          # just give each lambda the same reference and they would all get the
+          # last value of each. A local variable fixes the problem.
+          key_delta = column_deltas[:key] || 0
+
+          if !node.value
+            correct_no_value(key_delta, node.source_range)
+          else
+            correct_key_value(key_delta, node.key.source_range,
+                              node.value.source_range,
+                              node.loc.operator)
+          end
+        end
+
         private
 
         attr_accessor :column_deltas
@@ -170,21 +185,6 @@ module RuboCop
         def alignment_for_colons
           @alignment_for_colons ||=
             new_alignment('EnforcedColonStyle')
-        end
-
-        def autocorrect(node)
-          # We can't use the instance variable inside the lambda. That would
-          # just give each lambda the same reference and they would all get the
-          # last value of each. A local variable fixes the problem.
-          key_delta = column_deltas[:key] || 0
-
-          if !node.value
-            correct_no_value(key_delta, node.source_range)
-          else
-            correct_key_value(key_delta, node.key.source_range,
-                              node.value.source_range,
-                              node.loc.operator)
-          end
         end
 
         def correct_no_value(key_delta, key)

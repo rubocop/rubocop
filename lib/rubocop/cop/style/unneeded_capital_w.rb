@@ -24,6 +24,13 @@ module RuboCop
           process(node, '%W')
         end
 
+        def autocorrect(node)
+          lambda do |corrector|
+            src = node.loc.begin.source
+            corrector.replace(node.loc.begin, src.tr('W', 'w'))
+          end
+        end
+
         private
 
         def on_percent_literal(node)
@@ -36,13 +43,6 @@ module RuboCop
           node.child_nodes.any? do |string|
             string.dstr_type? ||
               double_quotes_required?(string.source)
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            src = node.loc.begin.source
-            corrector.replace(node.loc.begin, src.tr('W', 'w'))
           end
         end
       end

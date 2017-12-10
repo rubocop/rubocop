@@ -56,8 +56,6 @@ module RuboCop
           issue_offenses(node, left, right, start_ok, end_ok)
         end
 
-        private
-
         def autocorrect(node)
           left, right = array_brackets(node)
 
@@ -73,6 +71,8 @@ module RuboCop
             end
           end
         end
+
+        private
 
         def array_brackets(node)
           [left_array_bracket(node), right_array_bracket(node)]

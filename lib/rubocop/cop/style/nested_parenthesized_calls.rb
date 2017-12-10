@@ -27,20 +27,6 @@ module RuboCop
           end
         end
 
-        private
-
-        def allowed_omission?(send_node)
-          !send_node.arguments? || send_node.parenthesized? ||
-            send_node.setter_method? || send_node.operator_method? ||
-            whitelisted?(send_node)
-        end
-
-        def whitelisted?(send_node)
-          send_node.parent.arguments.one? &&
-            whitelisted_methods.include?(send_node.method_name.to_s) &&
-            send_node.arguments.one?
-        end
-
         def autocorrect(nested)
           first_arg = nested.first_argument.source_range
           last_arg = nested.last_argument.source_range
@@ -53,6 +39,20 @@ module RuboCop
             corrector.replace(leading_space, '(')
             corrector.insert_after(last_arg, ')')
           end
+        end
+
+        private
+
+        def allowed_omission?(send_node)
+          !send_node.arguments? || send_node.parenthesized? ||
+            send_node.setter_method? || send_node.operator_method? ||
+            whitelisted?(send_node)
+        end
+
+        def whitelisted?(send_node)
+          send_node.parent.arguments.one? &&
+            whitelisted_methods.include?(send_node.method_name.to_s) &&
+            send_node.arguments.one?
         end
 
         def whitelisted_methods

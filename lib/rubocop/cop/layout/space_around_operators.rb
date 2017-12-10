@@ -86,6 +86,18 @@ module RuboCop
         alias on_and_asgn on_binary
         alias on_op_asgn  on_special_asgn
 
+        def autocorrect(range)
+          lambda do |corrector|
+            if range.source =~ /\*\*/
+              corrector.replace(range, '**')
+            elsif range.source.end_with?("\n")
+              corrector.replace(range, " #{range.source.strip}\n")
+            else
+              corrector.replace(range, " #{range.source.strip} ")
+            end
+          end
+        end
+
         private
 
         def regular_operator?(send_node)
@@ -131,18 +143,6 @@ module RuboCop
         def excess_trailing_space?(right_operand, with_space)
           with_space.source =~ /  $/ &&
             (!allow_for_alignment? || !aligned_with_something?(right_operand))
-        end
-
-        def autocorrect(range)
-          lambda do |corrector|
-            if range.source =~ /\*\*/
-              corrector.replace(range, '**')
-            elsif range.source.end_with?("\n")
-              corrector.replace(range, " #{range.source.strip}\n")
-            else
-              corrector.replace(range, " #{range.source.strip} ")
-            end
-          end
         end
 
         def align_hash_cop_config

@@ -33,18 +33,18 @@ module RuboCop
           add_offense(node)
         end
 
-        private
-
-        def message(node)
-          self.class.const_get("#{literal_type(node).upcase}_MSG")
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             type = literal_type(node)
             corrector.replace(node.source_range,
                               send(:"format_#{type}", node.source))
           end
+        end
+
+        private
+
+        def message(node)
+          self.class.const_get("#{literal_type(node).upcase}_MSG")
         end
 
         def literal_type(node)

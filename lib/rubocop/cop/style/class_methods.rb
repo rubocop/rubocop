@@ -33,6 +33,10 @@ module RuboCop
           check(name, body)
         end
 
+        def autocorrect(node)
+          ->(corrector) { corrector.replace(node.loc.name, 'self') }
+        end
+
         private
 
         def check(name, node)
@@ -57,10 +61,6 @@ module RuboCop
 
         def message(class_name, method_name)
           format(MSG, method: method_name, class: class_name)
-        end
-
-        def autocorrect(node)
-          ->(corrector) { corrector.replace(node.loc.name, 'self') }
         end
       end
     end

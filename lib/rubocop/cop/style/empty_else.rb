@@ -103,6 +103,16 @@ module RuboCop
           check(node)
         end
 
+        def autocorrect(node)
+          return false if autocorrect_forbidden?(node.type.to_s)
+          return false if comment_in_else?(node)
+
+          lambda do |corrector|
+            end_pos = base_if_node(node).loc.end.begin_pos
+            corrector.remove(range_between(node.loc.else.begin_pos, end_pos))
+          end
+        end
+
         private
 
         def check(node)
@@ -128,16 +138,6 @@ module RuboCop
           return unless node.else_branch && node.else_branch.nil_type?
 
           add_offense(node, location: :else)
-        end
-
-        def autocorrect(node)
-          return false if autocorrect_forbidden?(node.type.to_s)
-          return false if comment_in_else?(node)
-
-          lambda do |corrector|
-            end_pos = base_if_node(node).loc.end.begin_pos
-            corrector.remove(range_between(node.loc.else.begin_pos, end_pos))
-          end
         end
 
         def comment_in_else?(node)

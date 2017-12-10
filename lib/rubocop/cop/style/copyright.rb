@@ -29,6 +29,20 @@ module RuboCop
                       location: range, message: format(MSG, notice: notice))
         end
 
+        def autocorrect(token)
+          raise Warning, AUTOCORRECT_EMPTY_WARNING if autocorrect_notice.empty?
+          regex = Regexp.new(notice)
+          unless autocorrect_notice =~ regex
+            raise Warning, "AutocorrectNotice '#{autocorrect_notice}' must " \
+                           "match Notice /#{notice}/"
+          end
+
+          lambda do |corrector|
+            range = token.nil? ? range_between(0, 0) : token.pos
+            corrector.insert_before(range, "#{autocorrect_notice}\n")
+          end
+        end
+
         private
 
         def notice
@@ -68,20 +82,6 @@ module RuboCop
             break if notice_found
           end
           notice_found
-        end
-
-        def autocorrect(token)
-          raise Warning, AUTOCORRECT_EMPTY_WARNING if autocorrect_notice.empty?
-          regex = Regexp.new(notice)
-          unless autocorrect_notice =~ regex
-            raise Warning, "AutocorrectNotice '#{autocorrect_notice}' must " \
-                           "match Notice /#{notice}/"
-          end
-
-          lambda do |corrector|
-            range = token.nil? ? range_between(0, 0) : token.pos
-            corrector.insert_before(range, "#{autocorrect_notice}\n")
-          end
         end
       end
     end

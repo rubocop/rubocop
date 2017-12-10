@@ -48,8 +48,6 @@ module RuboCop
           end
         end
 
-        private
-
         def autocorrect(node)
           lambda do |corrector|
             left, right = reference_brackets(node)
@@ -61,6 +59,8 @@ module RuboCop
             end
           end
         end
+
+        private
 
         def reference_brackets(node)
           left = left_ref_bracket(node)

@@ -55,8 +55,6 @@ module RuboCop
           )
         end
 
-        private
-
         def autocorrect(node)
           rescued, _, _body = *node
           range = Parser::Source::Range.new(node.loc.expression.source_buffer,
@@ -67,6 +65,8 @@ module RuboCop
             corrector.replace(range, correction(*rescued))
           end
         end
+
+        private
 
         def correction(*exceptions)
           correction = valid_exceptions(exceptions).map(&:source).join(', ')

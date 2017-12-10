@@ -89,6 +89,17 @@ module RuboCop
           check_inside(node, left_brace, right_brace)
         end
 
+        def autocorrect(range)
+          lambda do |corrector|
+            case range.source
+            when /\s/ then corrector.remove(range)
+            when '{}' then corrector.replace(range, '{ }')
+            when '{|' then corrector.replace(range, '{ |')
+            else           corrector.insert_before(range, ' ')
+            end
+          end
+        end
+
         private
 
         def check_inside(node, left_brace, right_brace)
@@ -209,17 +220,6 @@ module RuboCop
           when 'space'    then :space
           when 'no_space' then :no_space
           else raise 'Unknown EnforcedStyleForEmptyBraces selected!'
-          end
-        end
-
-        def autocorrect(range)
-          lambda do |corrector|
-            case range.source
-            when /\s/ then corrector.remove(range)
-            when '{}' then corrector.replace(range, '{ }')
-            when '{|' then corrector.replace(range, '{ |')
-            else           corrector.insert_before(range, ' ')
-            end
           end
         end
       end

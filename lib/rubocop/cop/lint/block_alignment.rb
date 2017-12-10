@@ -83,6 +83,19 @@ module RuboCop
           'EnforcedStyleAlignWith'
         end
 
+        def autocorrect(node)
+          ancestor_node = start_for_block_node(node)
+          start_col = compute_start_col(ancestor_node, node)
+          loc_end = node.loc.end
+          delta = start_col - loc_end.column
+
+          if delta > 0
+            add_space_before(loc_end, delta)
+          elsif delta < 0
+            remove_space_before(loc_end.begin_pos, -delta)
+          end
+        end
+
         private
 
         def start_for_block_node(block_node)
@@ -212,19 +225,6 @@ module RuboCop
             return do_loc.source_line =~ /\S/
           end
           (ancestor_node || node).source_range.column
-        end
-
-        def autocorrect(node)
-          ancestor_node = start_for_block_node(node)
-          start_col = compute_start_col(ancestor_node, node)
-          loc_end = node.loc.end
-          delta = start_col - loc_end.column
-
-          if delta > 0
-            add_space_before(loc_end, delta)
-          elsif delta < 0
-            remove_space_before(loc_end.begin_pos, -delta)
-          end
         end
 
         def add_space_before(loc, delta)

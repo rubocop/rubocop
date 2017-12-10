@@ -32,14 +32,14 @@ module RuboCop
           add_offense(colon, location: colon) unless followed_by_space?(colon)
         end
 
+        def autocorrect(range)
+          ->(corrector) { corrector.insert_after(range, ' ') }
+        end
+
         private
 
         def followed_by_space?(colon)
           colon.source_buffer.source[colon.end_pos] =~ /\s/
-        end
-
-        def autocorrect(range)
-          ->(corrector) { corrector.insert_after(range, ' ') }
         end
       end
     end

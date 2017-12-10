@@ -56,6 +56,17 @@ module RuboCop
         end
         alias on_defs on_def
 
+        def autocorrect(node)
+          case node.method_name
+          when :!=
+            autocorrect_comparison(node)
+          when :!
+            autocorrect_non_nil(node, node.receiver)
+          when :nil?
+            autocorrect_unless_nil(node, node.receiver)
+          end
+        end
+
         private
 
         def unless_and_nil_check?(send_node)
@@ -75,17 +86,6 @@ module RuboCop
 
         def include_semantic_changes?
           cop_config['IncludeSemanticChanges']
-        end
-
-        def autocorrect(node)
-          case node.method_name
-          when :!=
-            autocorrect_comparison(node)
-          when :!
-            autocorrect_non_nil(node, node.receiver)
-          when :nil?
-            autocorrect_unless_nil(node, node.receiver)
-          end
         end
 
         def autocorrect_comparison(node)

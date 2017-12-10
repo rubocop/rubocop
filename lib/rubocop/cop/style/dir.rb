@@ -31,13 +31,13 @@ module RuboCop
           end
         end
 
-        private
-
         def autocorrect(node)
           lambda do |corrector|
             corrector.replace(node.source_range, '__dir__')
           end
         end
+
+        private
 
         def file_keyword?(node)
           node.str_type? && node.source_range.is?('__FILE__')

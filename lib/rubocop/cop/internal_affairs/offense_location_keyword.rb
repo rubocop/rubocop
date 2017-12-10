@@ -25,6 +25,12 @@ module RuboCop
           end
         end
 
+        def autocorrect(node)
+          (*, keyword) = offending_location_argument(node.parent)
+
+          ->(corrector) { corrector.replace(node.source_range, ":#{keyword}") }
+        end
+
         private
 
         def_node_matcher :node_type_check, <<-PATTERN
@@ -34,12 +40,6 @@ module RuboCop
         def_node_matcher :offending_location_argument, <<-PATTERN
           (pair (sym :location) $(send (send $_node :loc) $_keyword))
         PATTERN
-
-        def autocorrect(node)
-          (*, keyword) = offending_location_argument(node.parent)
-
-          ->(corrector) { corrector.replace(node.source_range, ":#{keyword}") }
-        end
 
         def find_offending_argument(searched_node, kwargs)
           kwargs.pairs.each do |pair|

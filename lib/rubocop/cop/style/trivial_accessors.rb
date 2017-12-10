@@ -38,6 +38,14 @@ module RuboCop
         end
         alias on_defs on_def
 
+        def autocorrect(node)
+          if node.def_type?
+            autocorrect_instance(node)
+          elsif node.defs_type? && node.children.first.self_type?
+            autocorrect_class(node)
+          end
+        end
+
         private
 
         def in_module_or_instance_eval?(node)
@@ -141,14 +149,6 @@ module RuboCop
 
         def accessor(kind, method_name)
           "attr_#{kind} :#{method_name.to_s.chomp('=')}"
-        end
-
-        def autocorrect(node)
-          if node.def_type?
-            autocorrect_instance(node)
-          elsif node.defs_type? && node.children.first.self_type?
-            autocorrect_class(node)
-          end
         end
 
         def autocorrect_instance(node)

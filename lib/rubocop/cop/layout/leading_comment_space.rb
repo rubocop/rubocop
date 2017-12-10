@@ -28,14 +28,14 @@ module RuboCop
           end
         end
 
-        private
-
         def autocorrect(comment)
           expr = comment.loc.expression
           hash_mark = range_between(expr.begin_pos, expr.begin_pos + 1)
 
           ->(corrector) { corrector.insert_after(hash_mark, ' ') }
         end
+
+        private
 
         def allowed_on_first_line?(comment)
           shebang?(comment) || rackup_config_file? && rackup_options?(comment)

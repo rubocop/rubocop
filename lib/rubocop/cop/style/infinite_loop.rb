@@ -35,8 +35,6 @@ module RuboCop
         alias on_while_post on_while
         alias on_until_post on_until
 
-        private
-
         def autocorrect(node)
           if node.while_post_type? || node.until_post_type?
             replace_begin_end_with_modifier(node)
@@ -46,6 +44,8 @@ module RuboCop
             replace_source(non_modifier_range(node), 'loop do')
           end
         end
+
+        private
 
         def replace_begin_end_with_modifier(node)
           lambda do |corrector|

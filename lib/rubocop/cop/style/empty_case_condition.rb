@@ -45,8 +45,6 @@ module RuboCop
           add_offense(case_node, location: :keyword)
         end
 
-        private
-
         def autocorrect(case_node)
           when_branches = case_node.when_branches
 
@@ -55,6 +53,8 @@ module RuboCop
             correct_when_conditions(corrector, when_branches)
           end
         end
+
+        private
 
         def correct_case_when(corrector, case_node, when_nodes)
           case_range = case_node.loc.keyword.join(when_nodes.first.loc.keyword)

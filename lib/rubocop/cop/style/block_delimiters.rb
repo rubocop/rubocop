@@ -94,6 +94,16 @@ module RuboCop
           add_offense(node, location: :begin) unless proper_block_style?(node)
         end
 
+        def autocorrect(node)
+          return if correction_would_break_code?(node)
+
+          if node.braces?
+            replace_braces_with_do_end(node.loc)
+          else
+            replace_do_end_with_braces(node.loc)
+          end
+        end
+
         private
 
         def line_count_based_message(node)
@@ -131,16 +141,6 @@ module RuboCop
           when :line_count_based    then line_count_based_message(node)
           when :semantic            then semantic_message(node)
           when :braces_for_chaining then braces_for_chaining_message(node)
-          end
-        end
-
-        def autocorrect(node)
-          return if correction_would_break_code?(node)
-
-          if node.braces?
-            replace_braces_with_do_end(node.loc)
-          else
-            replace_do_end_with_braces(node.loc)
           end
         end
 

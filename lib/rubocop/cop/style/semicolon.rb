@@ -46,6 +46,11 @@ module RuboCop
           end
         end
 
+        def autocorrect(range)
+          return unless range
+          ->(corrector) { corrector.remove(range) }
+        end
+
         private
 
         def check_for_line_terminator_or_opener
@@ -68,11 +73,6 @@ module RuboCop
           # Don't attempt to autocorrect if semicolon is separating statements
           # on the same line
           add_offense(autocorrect ? range : nil, location: range)
-        end
-
-        def autocorrect(range)
-          return unless range
-          ->(corrector) { corrector.remove(range) }
         end
       end
     end

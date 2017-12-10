@@ -19,8 +19,6 @@ module RuboCop
           format(MSG, inverse: node.inverse_keyword, current: node.keyword)
         end
 
-        private
-
         def autocorrect(node)
           negative_conditional_corrector(node)
         end

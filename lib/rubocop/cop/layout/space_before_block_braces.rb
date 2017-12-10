@@ -41,6 +41,15 @@ module RuboCop
           end
         end
 
+        def autocorrect(range)
+          lambda do |corrector|
+            case range.source
+            when /\s/ then corrector.remove(range)
+            else           corrector.insert_before(range, ' ')
+            end
+          end
+        end
+
         private
 
         def check_empty(left_brace, space_plus_brace, used_style)
@@ -86,15 +95,6 @@ module RuboCop
           when 'no_space' then :no_space
           when nil then style
           else raise 'Unknown EnforcedStyleForEmptyBraces selected!'
-          end
-        end
-
-        def autocorrect(range)
-          lambda do |corrector|
-            case range.source
-            when /\s/ then corrector.remove(range)
-            else           corrector.insert_before(range, ' ')
-            end
           end
         end
 

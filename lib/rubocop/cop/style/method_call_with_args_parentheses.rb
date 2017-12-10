@@ -51,14 +51,14 @@ module RuboCop
         alias on_super on_send
         alias on_yield on_send
 
-        private
-
         def autocorrect(node)
           lambda do |corrector|
             corrector.replace(args_begin(node), '(')
             corrector.insert_after(args_end(node), ')')
           end
         end
+
+        private
 
         def ignored_method?(node)
           node.operator_method? || node.setter_method? ||

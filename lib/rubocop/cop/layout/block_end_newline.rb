@@ -39,8 +39,6 @@ module RuboCop
           add_offense(node, location: end_loc)
         end
 
-        private
-
         def autocorrect(node)
           lambda do |corrector|
             indentation = indentation_of_block_start_line(node)
@@ -48,6 +46,8 @@ module RuboCop
             corrector.replace(delimiter_range(node), new_block_end)
           end
         end
+
+        private
 
         def message(node)
           format(MSG, line: node.loc.end.line, column: node.loc.end.column + 1)

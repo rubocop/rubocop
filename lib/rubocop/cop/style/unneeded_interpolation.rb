@@ -28,6 +28,18 @@ module RuboCop
           add_offense(node) if single_interpolation?(node)
         end
 
+        def autocorrect(node)
+          embedded_node = node.children.first
+
+          if variable_interpolation?(embedded_node)
+            autocorrect_variable_interpolation(embedded_node, node)
+          elsif single_variable_interpolation?(embedded_node)
+            autocorrect_single_variable_interpolation(embedded_node, node)
+          else
+            autocorrect_other(embedded_node, node)
+          end
+        end
+
         private
 
         def single_interpolation?(node)
@@ -56,18 +68,6 @@ module RuboCop
         def embedded_in_percent_array?(node)
           node.parent && node.parent.array_type? &&
             percent_literal?(node.parent)
-        end
-
-        def autocorrect(node)
-          embedded_node = node.children.first
-
-          if variable_interpolation?(embedded_node)
-            autocorrect_variable_interpolation(embedded_node, node)
-          elsif single_variable_interpolation?(embedded_node)
-            autocorrect_single_variable_interpolation(embedded_node, node)
-          else
-            autocorrect_other(embedded_node, node)
-          end
         end
 
         def autocorrect_variable_interpolation(embedded_node, node)

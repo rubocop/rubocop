@@ -266,6 +266,14 @@ module RuboCop
           check_node(node, branches)
         end
 
+        def autocorrect(node)
+          if assignment_type?(node)
+            move_assignment_inside_condition(node)
+          else
+            move_assignment_outside_condition(node)
+          end
+        end
+
         private
 
         def check_assignment_to_condition(node)
@@ -296,14 +304,6 @@ module RuboCop
 
         def allowed_single_line?(branches)
           single_line_conditions_only? && branches.any?(&:begin_type?)
-        end
-
-        def autocorrect(node)
-          if assignment_type?(node)
-            move_assignment_inside_condition(node)
-          else
-            move_assignment_outside_condition(node)
-          end
         end
 
         def assignment_node(node)

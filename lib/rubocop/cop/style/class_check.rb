@@ -38,19 +38,19 @@ module RuboCop
           end
         end
 
-        def message(node)
-          if node.method?(:is_a?)
-            format(MSG, prefer: 'kind_of?', current: 'is_a?')
-          else
-            format(MSG, prefer: 'is_a?', current: 'kind_of?')
-          end
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             replacement = node.method?(:is_a?) ? 'kind_of?' : 'is_a?'
 
             corrector.replace(node.loc.selector, replacement)
+          end
+        end
+
+        def message(node)
+          if node.method?(:is_a?)
+            format(MSG, prefer: 'kind_of?', current: 'is_a?')
+          else
+            format(MSG, prefer: 'is_a?', current: 'kind_of?')
           end
         end
       end

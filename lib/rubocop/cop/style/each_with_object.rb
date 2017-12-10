@@ -39,8 +39,6 @@ module RuboCop
           end
         end
 
-        private
-
         # rubocop:disable Metrics/AbcSize
         def autocorrect(node)
           lambda do |corrector|
@@ -57,6 +55,8 @@ module RuboCop
           end
         end
         # rubocop:enable Metrics/AbcSize
+
+        private
 
         def simple_method_arg?(method_arg)
           method_arg && method_arg.basic_literal?

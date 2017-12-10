@@ -36,8 +36,6 @@ module RuboCop
           add_offense(node, location: range)
         end
 
-        private
-
         def autocorrect(node)
           lambda do |corrector|
             range_type, min, max = offending_each_range(node)
@@ -48,6 +46,8 @@ module RuboCop
                               "#{max - min}.times")
           end
         end
+
+        private
 
         def_node_matcher :offending_each_range, <<-PATTERN
           (block (send (begin (${irange erange} (int $_) (int $_))) :each) (args) ...)

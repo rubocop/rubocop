@@ -32,11 +32,11 @@ module RuboCop
           add_offense(node, location: :selector)
         end
 
-        private
-
         def autocorrect(node)
           ->(corrector) { corrector.replace(node.loc.selector, 'size') }
         end
+
+        private
 
         def eligible_node?(node)
           return false unless node.method?(:count) && !node.arguments?

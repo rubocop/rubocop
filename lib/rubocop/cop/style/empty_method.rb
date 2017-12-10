@@ -55,13 +55,13 @@ module RuboCop
         end
         alias on_defs on_def
 
-        private
-
         def autocorrect(node)
           lambda do |corrector|
             corrector.replace(node.source_range, corrected(node))
           end
         end
+
+        private
 
         def message(_node)
           compact_style? ? MSG_COMPACT : MSG_EXPANDED

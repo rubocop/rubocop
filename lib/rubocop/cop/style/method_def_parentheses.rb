@@ -29,8 +29,6 @@ module RuboCop
         end
         alias on_defs on_def
 
-        private
-
         def autocorrect(node)
           lambda do |corrector|
             if node.args_type?
@@ -48,6 +46,8 @@ module RuboCop
             end
           end
         end
+
+        private
 
         def require_parentheses?(args)
           style == :require_parentheses ||

@@ -40,19 +40,6 @@ module RuboCop
           add_offense(node)
         end
 
-        private
-
-        def contains_quotes_or_commas?(node)
-          node.values.any? do |value|
-            literal = value.children.first.to_s.scrub
-
-            # To avoid likely false positives (e.g. a single ' or ")
-            next if literal.gsub(/[^\p{Alnum}]/, '').empty?
-
-            QUOTES_AND_COMMAS.any? { |pat| literal =~ pat }
-          end
-        end
-
         # rubocop:disable Performance/HashEachMethods
         def autocorrect(node)
           lambda do |corrector|
@@ -69,6 +56,19 @@ module RuboCop
           end
         end
         # rubocop:enable Performance/HashEachMethods
+
+        private
+
+        def contains_quotes_or_commas?(node)
+          node.values.any? do |value|
+            literal = value.children.first.to_s.scrub
+
+            # To avoid likely false positives (e.g. a single ' or ")
+            next if literal.gsub(/[^\p{Alnum}]/, '').empty?
+
+            QUOTES_AND_COMMAS.any? { |pat| literal =~ pat }
+          end
+        end
       end
     end
   end

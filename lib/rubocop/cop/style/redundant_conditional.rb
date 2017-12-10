@@ -38,6 +38,12 @@ module RuboCop
           add_offense(node)
         end
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(node.loc.expression, replacement_condition(node))
+          end
+        end
+
         private
 
         def message(node)
@@ -58,12 +64,6 @@ module RuboCop
         def offense?(node)
           return if node.modifier_form?
           redundant_condition?(node) || redundant_condition_inverted?(node)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node.loc.expression, replacement_condition(node))
-          end
         end
 
         def replacement_condition(node)

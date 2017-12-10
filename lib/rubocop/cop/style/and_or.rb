@@ -54,6 +54,22 @@ module RuboCop
         alias on_until      on_if
         alias on_until_post on_if
 
+        def autocorrect(node)
+          lambda do |corrector|
+            node.each_child_node do |expr|
+              if expr.send_type?
+                correct_send(expr, corrector)
+              elsif expr.return_type?
+                correct_other(expr, corrector)
+              elsif expr.assignment?
+                correct_other(expr, corrector)
+              end
+            end
+
+            corrector.replace(node.loc.operator, node.alternate_operator)
+          end
+        end
+
         private
 
         def on_conditionals(node)
@@ -70,22 +86,6 @@ module RuboCop
 
         def message(node)
           format(MSG, prefer: node.alternate_operator, current: node.operator)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            node.each_child_node do |expr|
-              if expr.send_type?
-                correct_send(expr, corrector)
-              elsif expr.return_type?
-                correct_other(expr, corrector)
-              elsif expr.assignment?
-                correct_other(expr, corrector)
-              end
-            end
-
-            corrector.replace(node.loc.operator, node.alternate_operator)
-          end
         end
 
         def correct_send(node, corrector)

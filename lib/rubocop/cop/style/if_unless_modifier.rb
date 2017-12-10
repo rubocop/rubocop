@@ -23,13 +23,13 @@ module RuboCop
                             message: format(MSG, keyword: node.keyword))
         end
 
-        private
-
         def autocorrect(node)
           lambda do |corrector|
             corrector.replace(node.source_range, to_modifier_form(node))
           end
         end
+
+        private
 
         def eligible_node?(node)
           !non_eligible_if?(node) && !node.chained? &&

@@ -45,8 +45,6 @@ module RuboCop
         end
         alias on_defs on_def
 
-        private
-
         def autocorrect(node)
           lambda do |corrector|
             corrector.remove(node.loc.begin)

@@ -52,8 +52,6 @@ module RuboCop
           end
         end
 
-        private
-
         def autocorrect(node)
           if style == :percent
             correct_percent(node, 'w')
@@ -61,6 +59,8 @@ module RuboCop
             correct_bracketed(node)
           end
         end
+
+        private
 
         def check_bracketed_array(node)
           return if allowed_bracket_array?(node)

@@ -95,6 +95,21 @@ module RuboCop
           end
         end
 
+        def autocorrect(node)
+          return if contains_slash?(node)
+
+          replacement = if slash_literal?(node)
+                          ['%r', ''].zip(preferred_delimiters).map(&:join)
+                        else
+                          %w[/ /]
+                        end
+
+          lambda do |corrector|
+            corrector.replace(node.loc.begin, replacement.first)
+            corrector.replace(node.loc.end, replacement.last)
+          end
+        end
+
         private
 
         def check_slash_literal(node)
@@ -153,21 +168,6 @@ module RuboCop
         def preferred_delimiters
           config.for_cop('Style/PercentLiteralDelimiters') \
             ['PreferredDelimiters']['%r'].split(//)
-        end
-
-        def autocorrect(node)
-          return if contains_slash?(node)
-
-          replacement = if slash_literal?(node)
-                          ['%r', ''].zip(preferred_delimiters).map(&:join)
-                        else
-                          %w[/ /]
-                        end
-
-          lambda do |corrector|
-            corrector.replace(node.loc.begin, replacement.first)
-            corrector.replace(node.loc.end, replacement.last)
-          end
         end
       end
     end

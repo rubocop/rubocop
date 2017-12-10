@@ -35,6 +35,12 @@ module RuboCop
           check_nonzero_length_predicate(node)
         end
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(node.loc.expression, replacement(node))
+          end
+        end
+
         private
 
         def check_zero_length_predicate(node)
@@ -74,12 +80,6 @@ module RuboCop
           {(send (send (...) ${:length :size}) ${:> :!=} (int $0))
            (send (int $0) ${:< :!=} (send (...) ${:length :size}))}
         PATTERN
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node.loc.expression, replacement(node))
-          end
-        end
 
         def replacement(node)
           receiver = zero_length_receiver(node)

@@ -38,8 +38,6 @@ module RuboCop
           check(node)
         end
 
-        private
-
         def autocorrect(node)
           oneline = "#{node.body.source} #{node.keyword} " \
                     "#{node.condition.source}"
@@ -48,6 +46,8 @@ module RuboCop
             corrector.replace(node.source_range, oneline)
           end
         end
+
+        private
 
         def check(node)
           return unless node.multiline? && single_line_as_modifier?(node)

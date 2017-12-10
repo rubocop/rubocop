@@ -30,18 +30,18 @@ module RuboCop
                             message: format(MSG, keyword: node.keyword))
         end
 
-        private
-
-        def non_modifier_then?(node)
-          node.loc.begin && node.loc.begin.source_line =~ NON_MODIFIER_THEN
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             corrector.remove(
               range_with_surrounding_space(range: node.loc.begin, side: :left)
             )
           end
+        end
+
+        private
+
+        def non_modifier_then?(node)
+          node.loc.begin && node.loc.begin.source_line =~ NON_MODIFIER_THEN
         end
       end
     end
