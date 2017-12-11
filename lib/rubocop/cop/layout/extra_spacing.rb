@@ -54,7 +54,7 @@ module RuboCop
         private
 
         def assignment_tokens
-          tokens = processed_source.tokens.select { |t| equal_sign?(t) }
+          tokens = processed_source.tokens.select(&:equal_sign?)
           # we don't want to operate on equals signs which are part of an
           #   optarg in a method definition
           # e.g.: def method(optarg = default_val); end
@@ -177,10 +177,6 @@ module RuboCop
 
         def force_equal_sign_alignment?
           cop_config['ForceEqualSignAlignment']
-        end
-
-        def equal_sign?(token)
-          token.type == :tEQL || token.type == :tOP_ASGN
         end
 
         def align_equal_signs(range, corrector)

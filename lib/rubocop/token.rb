@@ -78,6 +78,10 @@ module RuboCop
       type == :tCOMMA
     end
 
+    def equal_sign?
+      %i[tEQL tOP_ASGN].include?(type)
+    end
+
     def to_s
       "[[#{@pos.line}, #{@pos.column}], #{@type}, #{@text.inspect}]"
     end
