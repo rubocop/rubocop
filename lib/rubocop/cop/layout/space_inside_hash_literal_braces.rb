@@ -133,7 +133,7 @@ module RuboCop
         end
 
         def offense?(t1, expect_space)
-          has_space = space_after?(t1)
+          has_space = t1.space_after?
           expect_space ? !has_space : has_space
         end
 

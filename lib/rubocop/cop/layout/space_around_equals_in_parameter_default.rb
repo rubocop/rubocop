@@ -63,11 +63,11 @@ module RuboCop
         end
 
         def space_on_both_sides?(arg, equals)
-          space_after?(arg) && space_after?(equals)
+          arg.space_after? && equals.space_after?
         end
 
         def no_surrounding_space?(arg, equals)
-          !space_after?(arg) && !space_after?(equals)
+          !arg.space_after? && !equals.space_after?
         end
 
         def message(_)

@@ -7,16 +7,6 @@ module RuboCop
       NO_SPACE_COMMAND = 'Do not use'.freeze
       SPACE_COMMAND = 'Use'.freeze
 
-      def space_after?(token)
-        # Checks if there is whitespace after token
-        token.pos.source_buffer.source.match(/\G\s/, token.end_pos)
-      end
-
-      def space_before?(token)
-        # Checks if there is whitespace before token
-        token.pos.source_buffer.source.match(/\G\s/, token.begin_pos - 1)
-      end
-
       def side_space_range(range:, side:)
         buffer = @processed_source.buffer
         src = buffer.source
@@ -80,11 +70,11 @@ module RuboCop
       end
 
       def no_space_corrector(corrector, left_token, right_token)
-        if space_after?(left_token)
+        if left_token.space_after?
           range = side_space_range(range: left_token.pos, side: :right)
           corrector.remove(range)
         end
-        return unless space_before?(right_token)
+        return unless right_token.space_before?
         range = side_space_range(range: right_token.pos, side: :left)
         corrector.remove(range)
       end
@@ -98,38 +88,27 @@ module RuboCop
         unless extra_space?(left_token, :left) || start_ok
           space_offense(node, left_token, :none, message, SPACE_COMMAND)
         end
-        return if right_bracket_ok?(right_token) || end_ok
+        return if extra_space?(right_token, :right) || end_ok
         space_offense(node, right_token, :none, message, SPACE_COMMAND)
       end
 
       def space_corrector(corrector, left_token, right_token)
-        unless space_after?(left_token)
+        unless left_token.space_after?
           corrector.insert_after(left_token.pos, ' ')
         end
-        return if space_before?(right_token)
+        return if right_token.space_before?
         corrector.insert_before(right_token.pos, ' ')
       end
 
       private
 
       def extra_space?(token, side)
+        return false unless token
         if side == :left
-          extra_space_after?(token)
+          String(token.space_after?) == ' '
         else
-          extra_space_before?(token)
+          String(token.space_before?) == ' '
         end
-      end
-
-      def extra_space_after?(token)
-        token && String(space_after?(token)) == ' '
-      end
-
-      def extra_space_before?(token)
-        token && String(space_before?(token)) == ' '
-      end
-
-      def right_bracket_ok?(token)
-        extra_space?(token, :right) || token.nil?
       end
 
       def reposition(src, pos, step)
