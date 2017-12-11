@@ -219,13 +219,13 @@ module RuboCop
           if qualifies_for_compact?(node, left, side: :left)
             range = side_space_range(range: left.pos, side: :right)
             corrector.remove(range)
-          elsif !space_after?(left)
+          elsif !left.space_after?
             corrector.insert_after(left.pos, ' ')
           end
           if qualifies_for_compact?(node, right)
             range = side_space_range(range: right.pos, side: :left)
             corrector.remove(range)
-          elsif !space_before?(right)
+          elsif !right.space_before?
             corrector.insert_before(right.pos, ' ')
           end
         end

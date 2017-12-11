@@ -81,5 +81,15 @@ module RuboCop
     def to_s
       "[[#{@pos.line}, #{@pos.column}], #{@type}, #{@text.inspect}]"
     end
+
+    # Checks if there is whitespace after token
+    def space_after?
+      pos.source_buffer.source.match(/\G\s/, end_pos)
+    end
+
+    # Checks if there is whitespace before token
+    def space_before?
+      pos.source_buffer.source.match(/\G\s/, begin_pos - 1)
+    end
   end
 end
