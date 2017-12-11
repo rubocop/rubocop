@@ -62,7 +62,7 @@
 * [#5075](https://github.com/bbatsov/rubocop/issues/5075): Fix auto-correct for `Style/RedundantParentheses` cop when unspaced ternary is present. ([@tiagotex][])
 * [#5155](https://github.com/bbatsov/rubocop/issues/5155): Fix a false negative for `Naming/ConstantName` cop when using frozen object assignment. ([@koic][])
 * Fix a false positive in `Style/SafeNavigation` when the right hand side is negated. ([@rrosenblum][])
-* [#5128](https://github.com/bbatsov/rubocop/issues/5128): Fix `Bundler/OrderedGems` when a gem name evaluates to nil (from a variable). ([@tdeo][])
+* [#5128](https://github.com/bbatsov/rubocop/issues/5128): Fix `Bundler/OrderedGems` when gems are references from variables (ignores them in the sorting). ([@tdeo][])
 
 ### Changes
 
