@@ -728,6 +728,10 @@ Name | Default value | Configurable values
 --- | --- | ---
 Include | `app/controllers/**/*.rb` | Array
 
+### References
+
+* [https://github.com/bbatsov/rails-style-guide#lexically-scoped-action-filter](https://github.com/bbatsov/rails-style-guide#lexically-scoped-action-filter)
+
 ## Rails/NotNullColumn
 
 Enabled by default | Supports autocorrection
