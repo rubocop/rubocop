@@ -722,12 +722,6 @@ start of the line where the matching keyword appears.
 
 ### Examples
 
-```ruby
-# bad
-
-variable = if true
-    end
-```
 #### EnforcedStyleAlignWith: keyword (default)
 
 ```ruby
