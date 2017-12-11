@@ -37,7 +37,7 @@ module RuboCop
       end
 
       def gem_name(declaration_node)
-        declaration_node.first_argument.str_content.to_s
+        declaration_node.first_argument.str_content
       end
 
       def declaration_with_comment(node)

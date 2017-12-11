@@ -22,11 +22,22 @@ describe RuboCop::Cop::Bundler::OrderedGems, :config do
         gem 'rubocop'
       RUBY
     end
+  end
 
-    it 'works if gem is referenced from an environment variable' do
+  context 'when a gem is referenced from a variable' do
+    it 'ignores the line' do
       expect_no_offenses(<<-RUBY.strip_indent)
-        gem ENV['env_key_not_defined'] if ENV.key?('env_key_not_defined')
+        gem 'rspec'
         gem ENV['env_key_undefined'] if ENV.key?('env_key_undefined')
+        gem 'rubocop'
+      RUBY
+    end
+
+    it 'resets the sorting to a new block' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        gem 'rubocop'
+        gem ENV['env_key_undefined'] if ENV.key?('env_key_undefined')
+        gem 'ast'
       RUBY
     end
   end
