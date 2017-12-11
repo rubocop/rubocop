@@ -17,13 +17,6 @@ module RuboCop
       # If it's set to `start_of_line`, the `end` shall be aligned with the
       # start of the line where the matching keyword appears.
       #
-      # @example
-      #
-      #   # bad
-      #
-      #   variable = if true
-      #       end
-      #
       # @example EnforcedStyleAlignWith: keyword (default)
       #   # bad
       #
