@@ -16,6 +16,8 @@ the use of filter methods.
 
 ### Examples
 
+#### EnforcedStyle: action (default)
+
 ```ruby
 # bad
 after_filter :do_stuff
@@ -26,6 +28,19 @@ skip_after_filter :do_stuff
 after_action :do_stuff
 append_around_action :do_stuff
 skip_after_action :do_stuff
+```
+#### EnforcedStyle: filter
+
+```ruby
+# bad
+after_action :do_stuff
+append_around_action :do_stuff
+skip_after_action :do_stuff
+
+# good
+after_filter :do_stuff
+append_around_filter :do_stuff
+skip_after_filter :do_stuff
 ```
 
 ### Configurable attributes

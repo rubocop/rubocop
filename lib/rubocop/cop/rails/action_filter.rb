@@ -10,7 +10,8 @@ module RuboCop
       #
       # If the TargetRailsVersion is set to less than 4.0, the cop will enforce
       # the use of filter methods.
-      # @example
+      #
+      # @example EnforcedStyle: action (default)
       #   # bad
       #   after_filter :do_stuff
       #   append_around_filter :do_stuff
@@ -20,6 +21,17 @@ module RuboCop
       #   after_action :do_stuff
       #   append_around_action :do_stuff
       #   skip_after_action :do_stuff
+      #
+      # @example EnforcedStyle: filter
+      #   # bad
+      #   after_action :do_stuff
+      #   append_around_action :do_stuff
+      #   skip_after_action :do_stuff
+      #
+      #   # good
+      #   after_filter :do_stuff
+      #   append_around_filter :do_stuff
+      #   skip_after_filter :do_stuff
       class ActionFilter < Cop
         extend TargetRailsVersion
         include ConfigurableEnforcedStyle
