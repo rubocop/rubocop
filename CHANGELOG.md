@@ -6,6 +6,7 @@
 
 * [#5241](https://github.com/bbatsov/rubocop/issues/5241): Fix an error for `Layout/AlignHash` when using a hash including only a keyword splat. ([@wata727][])
 * [#5245](https://github.com/bbatsov/rubocop/issues/5245): Make `Style/FormatStringToken` to allow regexp token. ([@pocke][])
+* [#5224](https://github.com/bbatsov/rubocop/pull/5224): Fix false positives for `Layout/EmptyLinesAroundArguments` operating on blocks. ([@garettarrowood][])
 * [#5234](https://github.com/bbatsov/rubocop/issues/5234): Fix a false positive for `Rails/HasManyOrHasOneDependent` when using `class_name` option. ([@koic][])
 
 ### Changes

@@ -42,8 +42,7 @@ module RuboCop
         MSG = 'Empty line detected around arguments.'.freeze
 
         def on_send(node)
-          return if node.single_line?
-          return if empty_lines(node).empty?
+          return if node.single_line? || node.arguments.empty?
           extra_lines(node) { |range| add_offense(node, location: range) }
         end
 
@@ -56,21 +55,9 @@ module RuboCop
         private
 
         def empty_lines(node)
-          @empty_lines ||= begin
-            lines = source_lines(node).map.with_index(1).to_a
-            lines.select! { |code, _| code == '' }
-            lines.map { |_, line| line }
-          end
-        end
-
-        def source_lines(node)
-          source =
-            if node.arguments.last && node.arguments.last.block_type?
-              source_without_block(node, node.arguments.last)
-            else
-              node.source
-            end
-          source.lines.map { |line| line.delete("\n") }
+          lines = processed_lines(node).map.with_index(first_line(node)).to_a
+          lines.select! { |code, _| code.empty? }
+          lines.map { |_, line| line }
         end
 
         def extra_lines(node)
@@ -80,8 +67,19 @@ module RuboCop
           end
         end
 
-        def source_without_block(node, block_node)
-          node.source.split(block_node.source).first
+        def first_line(node)
+          node.receiver ? node.receiver.last_line : node.first_line
+        end
+
+        def last_line(node)
+          last_arg = node.arguments.last
+          last_arg.block_type? ? last_arg.first_line : node.last_line
+        end
+
+        def processed_lines(node)
+          start = first_line(node) - 1
+          stop = last_line(node) - 1
+          processed_source.lines[start..stop]
         end
       end
     end
