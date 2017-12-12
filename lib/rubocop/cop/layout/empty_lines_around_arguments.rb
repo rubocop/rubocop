@@ -57,14 +57,20 @@ module RuboCop
 
         def empty_lines(node)
           @empty_lines ||= begin
-            lines = send_lines(node).map.with_index(1).to_a
+            lines = source_lines(node).map.with_index(1).to_a
             lines.select! { |code, _| code == '' }
             lines.map { |_, line| line }
           end
         end
 
-        def send_lines(node)
-          node.source.lines.map { |line| line.delete("\n") }
+        def source_lines(node)
+          source =
+            if node.arguments.last && node.arguments.last.block_type?
+              source_without_block(node, node.arguments.last)
+            else
+              node.source
+            end
+          source.lines.map { |line| line.delete("\n") }
         end
 
         def extra_lines(node)
@@ -72,6 +78,10 @@ module RuboCop
             range = source_range(processed_source.buffer, line, 0)
             yield(range)
           end
+        end
+
+        def source_without_block(node, block_node)
+          node.source.split(block_node.source).first
         end
       end
     end

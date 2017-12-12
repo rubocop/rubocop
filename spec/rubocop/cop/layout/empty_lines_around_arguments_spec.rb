@@ -63,6 +63,23 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundArguments, :config do
       expect(cop.messages)
         .to eq(['Empty line detected around arguments.'])
     end
+
+    it 'when empty line before a block argument' do
+      inspect_source(<<-RUBY.strip_indent)
+        Foo.prepend(
+          a,
+
+          Module.new do
+            def something; end
+
+            def anything; end
+          end
+        )
+      RUBY
+      expect(cop.offenses.size).to eq 1
+      expect(cop.messages)
+        .to eq(['Empty line detected around arguments.'])
+    end
   end
 
   context 'does not register offense' do
@@ -90,6 +107,17 @@ describe RuboCop::Cop::Layout::EmptyLinesAroundArguments, :config do
         foo(bar,
             [],
             qux: 2)
+      RUBY
+      expect(cop.offenses.empty?).to be(true)
+    end
+
+    it 'when passed block argument with empty line' do
+      inspect_source(<<-RUBY.strip_indent)
+        Foo.prepend(Module.new do
+          def something; end
+
+          def anything; end
+        end)
       RUBY
       expect(cop.offenses.empty?).to be(true)
     end
