@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.52.0 (2017-12-12)
+
 ### New features
 
 * [#5101](https://github.com/bbatsov/rubocop/pull/5101): Allow to specify `TargetRubyVersion` 2.5. ([@walf443][])
