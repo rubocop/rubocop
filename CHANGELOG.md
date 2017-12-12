@@ -15,6 +15,7 @@
 * [#5261](https://github.com/bbatsov/rubocop/issues/5261): Fix a false positive for `Style/MixinUsage` when using inside class or module. ([@koic][])
 * [#4444](https://github.com/bbatsov/rubocop/issues/4444): Fix `Style/AutoResourceCleanup` shouldn't flag `File.open(...).close. ([@dpostorivo][])
 * [#5278](https://github.com/bbatsov/rubocop/pull/5278): Fix deprecation check to use `loaded_path` in warning. ([@chrishulton][])
+* [#5223](https://github.com/bbatsov/rubocop/issues/5223): False offences in :unannotated Style/FormatStringToken. ([@nattfodd][])
 
 ### Changes
 
@@ -3100,3 +3101,4 @@
 [@chrishulton]: https://github.com/chrishulton
 [@siggymcfried]: https://github.com/siggymcfried
 [@melch]: https://github.com/melch
+[@nattfodd]: https://github.com/nattfodd
