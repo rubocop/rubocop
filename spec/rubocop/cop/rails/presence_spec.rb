@@ -50,6 +50,9 @@ describe RuboCop::Cop::Rails::Presence do
     end
   RUBY
 
+  it_behaves_like :offense, 'a if a.present?', 'a.presence', 1, 1
+  it_behaves_like :offense, 'a unless a.blank?', 'a.presence', 1, 1
+
   it 'does not register an offense when using `#presence`' do
     expect_no_offenses(<<-RUBY.strip_indent)
       a.presence
@@ -66,5 +69,12 @@ describe RuboCop::Cop::Rails::Presence do
     expect_no_offenses(<<-RUBY.strip_indent)
       a.blank? ? nil : b
     RUBY
+  end
+
+  it 'does not register an offense when if or unless modifier is used ' do
+    [
+      'a if a.blank?',
+      'a unless a.present?'
+    ].each { |source| expect_no_offenses(source) }
   end
 end
