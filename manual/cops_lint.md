@@ -2256,7 +2256,8 @@ URI.encode('http://example.com')
 
 # good
 CGI.escape('http://example.com')
-URI.encode_www_form('http://example.com')
+URI.encode_www_form([['example', 'param'], ['lang', 'en']])
+URI.encode_www_form(page: 10, locale: 'en')
 URI.encode_www_form_component('http://example.com')
 
 # bad

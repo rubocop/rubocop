@@ -339,6 +339,14 @@ describe RuboCop::Cop::Layout::AlignHash, :config do
       RUBY
     end
 
+    it 'accepts a keyword splat only hash' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        hash = {
+          **kw
+        }
+      RUBY
+    end
+
     it 'registers an offense for misaligned hash values' do
       expect_offense(<<-RUBY.strip_indent)
         hash1 = {
