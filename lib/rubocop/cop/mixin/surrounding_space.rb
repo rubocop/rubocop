@@ -50,7 +50,8 @@ module RuboCop
       end
 
       def tokens(node)
-        processed_source.tokens.select do |token|
+        @tokens ||= {}
+        @tokens[node.object_id] ||= processed_source.tokens.select do |token|
           token.end_pos <= node.source_range.end_pos &&
             token.begin_pos >= node.source_range.begin_pos
         end
