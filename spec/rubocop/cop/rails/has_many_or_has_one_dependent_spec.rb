@@ -51,6 +51,16 @@ describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
           end
         RUBY
       end
+
+      it 'does not register an offense for using `class_name` option' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          class Person
+            with_options dependent: :destroy do
+              has_one :foo, class_name: 'Foo'
+            end
+          end
+        RUBY
+      end
     end
   end
 

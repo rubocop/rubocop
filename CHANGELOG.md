@@ -2,14 +2,15 @@
 
 ## master (unreleased)
 
-### Changes
-
-* [#5233](https://github.com/bbatsov/rubocop/pull/5233): Remove `Style/ExtendSelf` cop. ([@pocke][])
-
 ### Bug fixes
 
 * [#5241](https://github.com/bbatsov/rubocop/issues/5241): Fix an error for `Layout/AlignHash` when using a hash including only a keyword splat. ([@wata727][])
 * [#5245](https://github.com/bbatsov/rubocop/issues/5245): Make `Style/FormatStringToken` to allow regexp token. ([@pocke][])
+* [#5234](https://github.com/bbatsov/rubocop/issues/5234): Fix a false positive for `Rails/HasManyOrHasOneDependent` when using `class_name` option. ([@koic][])
+
+### Changes
+
+* [#5233](https://github.com/bbatsov/rubocop/pull/5233): Remove `Style/ExtendSelf` cop. ([@pocke][])
 
 ## 0.52.0 (2017-12-12)
 

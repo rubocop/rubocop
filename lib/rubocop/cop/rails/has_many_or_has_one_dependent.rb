@@ -24,7 +24,7 @@ module RuboCop
         MSG = 'Specify a `:dependent` option.'.freeze
 
         def_node_matcher :association_without_options?, <<-PATTERN
-          (send nil? {:has_many :has_one} _)
+          (send nil? {:has_many :has_one} _ ...)
         PATTERN
 
         def_node_matcher :association_with_options?, <<-PATTERN
@@ -49,18 +49,26 @@ module RuboCop
         def on_send(node)
           if !association_without_options?(node)
             return if valid_options?(association_with_options?(node))
-          else
-            n = node.parent.begin_type? ? node.parent.parent : node.parent
-
-            if with_options_block(n)
-              return if valid_options?(with_options_block(n))
-            end
+          elsif valid_options_in_with_options_block?(node)
+            return
           end
 
           add_offense(node, location: :selector)
         end
 
         private
+
+        def valid_options_in_with_options_block?(node)
+          return true unless node.parent
+
+          n = node.parent.begin_type? ? node.parent.parent : node.parent
+
+          if with_options_block(n)
+            return true if valid_options?(with_options_block(n))
+          end
+
+          false
+        end
 
         def valid_options?(options)
           return true unless options
