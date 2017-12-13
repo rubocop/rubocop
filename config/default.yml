@@ -930,12 +930,6 @@ Style/EmptyMethod:
     - compact
     - expanded
 
-Style/ExtendSelf:
-  EnforcedStyle: module_function
-  SupportedStyles:
-    - module_function
-    - extend_self
-
 # Checks use of for or each in multiline loops.
 Style/For:
   EnforcedStyle: each

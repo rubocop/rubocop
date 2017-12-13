@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#5233](https://github.com/bbatsov/rubocop/pull/5233): Remove `Style/ExtendSelf` cop. ([@pocke][])
+
 ## 0.52.0 (2017-12-12)
 
 ### New features
