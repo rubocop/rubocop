@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#5241](https://github.com/bbatsov/rubocop/issues/5241): Fix an error for `Layout/AlignHash` when using a hash including only a keyword splat. ([@wata727][])
+
 ## 0.52.0 (2017-12-12)
 
 ### New features
