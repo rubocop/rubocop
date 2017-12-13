@@ -406,7 +406,6 @@ In the following section you find all available cops:
 * [Style/EndBlock](cops_style.md#styleendblock)
 * [Style/EvalWithLocation](cops_style.md#styleevalwithlocation)
 * [Style/EvenOdd](cops_style.md#styleevenodd)
-* [Style/ExtendSelf](cops_style.md#styleextendself)
 * [Style/FlipFlop](cops_style.md#styleflipflop)
 * [Style/For](cops_style.md#stylefor)
 * [Style/FormatString](cops_style.md#styleformatstring)

@@ -1671,54 +1671,6 @@ end
 
 * [https://github.com/bbatsov/ruby-style-guide#predicate-methods](https://github.com/bbatsov/ruby-style-guide#predicate-methods)
 
-## Style/ExtendSelf
-
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
-
-This cop checks that `#module_function` is used over `extend self`.
-
-### Examples
-
-#### EnforcedStyle: module_function (default)
-
-```ruby
-# bad
-module Foo
-  extend self
-end
-
-# good
-module Foo
-  module_function
-end
-```
-#### EnforcedStyle: extend_self
-
-```ruby
-# bad
-module Foo
-  module_function
-end
-
-# good
-module Foo
-  extend self
-end
-```
-
-### Configurable attributes
-
-Name | Default value | Configurable values
---- | --- | ---
-Autocorrect | `false` | Boolean
-EnforcedStyle | `module_function` | `module_function`, `extend_self`
-
-### References
-
-* [https://github.com/bbatsov/ruby-style-guide#module-function](https://github.com/bbatsov/ruby-style-guide#module-function)
-
 ## Style/FlipFlop
 
 Enabled by default | Supports autocorrection
