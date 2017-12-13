@@ -39,4 +39,22 @@ RSpec.describe RuboCop::Cop::Style::StringHashKeys do
       { one: 1 }
     RUBY
   end
+
+  it 'does not register an offense when string key is used in IO.popen' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      IO.popen({"RUBYOPT" => '-w'}, 'ruby', 'foo.rb')
+    RUBY
+  end
+
+  it 'does not register an offense when string key is used in Open3.capture3' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      Open3.capture3({"RUBYOPT" => '-w'}, 'ruby', 'foo.rb')
+    RUBY
+  end
+
+  it 'does not register an offense when string key is used in Open3.pipeline' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      Open3.pipeline([{"RUBYOPT" => '-w'}, 'ruby', 'foo.rb'], ['wc', '-l'])
+    RUBY
+  end
 end

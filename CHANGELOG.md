@@ -30,6 +30,7 @@
 * Rename `Lint/UnneededDisable` to `Lint/UnneededCopDisableDirective`. ([@garettarrowood][])
 * [#5365](https://github.com/bbatsov/rubocop/pull/5365): Add `*.gemfile` to Bundler cop target. ([@sue445][])
 * [#4477](https://github.com/bbatsov/rubocop/issues/4477): Warn when user configuration overrides other user configuration. ([@jonas054][])
+* [#5240](https://github.com/bbatsov/rubocop/pull/5240): Make `Style/StringHashKeys` to accepts environment variables. ([@pocke][])
 
 ## 0.52.1 (2017-12-27)
 
