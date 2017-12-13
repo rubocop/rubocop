@@ -19,8 +19,20 @@ module RuboCop
           (pair (str _) _)
         PATTERN
 
+        def_node_matcher :receive_environments_method?, <<-PATTERN
+          {
+            ^^(send (const {nil? cbase} :IO) :popen ...)
+            ^^(send (const {nil? cbase} :Open3)
+                {:capture2 :capture2e :capture3 :popen2 :popen2e :popen3} ...)
+            ^^^(send (const {nil? cbase} :Open3)
+                {:pipeline :pipeline_r :pipeline_rw :pipeline_start :pipeline_w} ...)
+            ^^(send {nil? (const {nil? cbase} :Kernel)} {:spawn :system} ...)
+          }
+        PATTERN
+
         def on_pair(node)
           return unless string_hash_key?(node)
+          return if receive_environments_method?(node)
           add_offense(node.key)
         end
 
