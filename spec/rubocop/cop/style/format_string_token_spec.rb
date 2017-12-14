@@ -85,6 +85,14 @@ describe RuboCop::Cop::Style::FormatStringToken, :config do
     expect_no_offenses('`echo "%s %<annotated>s %{template}"`')
   end
 
+  it 'ignores regexp' do
+    expect_no_offenses('/foo bar %u/')
+  end
+
+  it 'ignores `%r` regexp' do
+    expect_no_offenses('%r{foo bar %u}')
+  end
+
   it 'handles dstrs' do
     inspect_source('"c#{b}%{template}"')
     expect(cop.highlights).to eql(['%{template}'])

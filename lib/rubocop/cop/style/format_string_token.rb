@@ -45,7 +45,7 @@ module RuboCop
         TOKEN_PATTERN = Regexp.union(STYLE_PATTERNS.values)
 
         def on_str(node)
-          return if node.each_ancestor(:xstr).any?
+          return if node.each_ancestor(:xstr, :regexp).any?
 
           tokens(node) do |detected_style, token_range|
             if detected_style == style
