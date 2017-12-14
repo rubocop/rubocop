@@ -45,11 +45,11 @@ module RuboCop
             (if
               (send $_recv :present?)
               _recv
-              $_false
+              $!begin
             )
             (if
               (send $_recv :blank?)
-              $_true
+              $!begin
               _recv
             )
           }
@@ -59,41 +59,54 @@ module RuboCop
           {
             (if
               (send (send $_recv :present?) :!)
-              $_true
+              $!begin
               _recv
             )
             (if
               (send (send $_recv :blank?) :!)
               _recv
-              $_false
+              $!begin
             )
           }
         PATTERN
 
         def on_if(node)
-          receiver, other = redundant_receiver_and_other(node)
-          unless receiver
-            receiver, other = redundant_negative_receiver_and_other(node)
+          redundant_receiver_and_other(node) do |receiver, other|
+            unless ignore_other_node?(other)
+              add_offense(node, message: message(node, receiver, other))
+            end
           end
-          return unless receiver
-          message = format(MSG,
-                           prefer: replacement(receiver, other),
-                           current: node.source)
-          add_offense(node, message: message)
+
+          redundant_negative_receiver_and_other(node) do |receiver, other|
+            unless ignore_other_node?(other)
+              add_offense(node, message: message(node, receiver, other))
+            end
+          end
         end
 
         def autocorrect(node)
           lambda do |corrector|
-            receiver, other = redundant_receiver_and_other(node)
-            unless receiver
-              receiver, other = redundant_negative_receiver_and_other(node)
+            redundant_receiver_and_other(node) do |receiver, other|
+              corrector.replace(node.source_range, replacement(receiver, other))
             end
-            return unless receiver
-            corrector.replace(node.source_range, replacement(receiver, other))
+
+            redundant_negative_receiver_and_other(node) do |receiver, other|
+              corrector.replace(node.source_range, replacement(receiver, other))
+            end
           end
         end
 
         private
+
+        def ignore_other_node?(node)
+          node && (node.if_type? || node.rescue_type? || node.while_type?)
+        end
+
+        def message(node, receiver, other)
+          format(MSG,
+                 prefer: replacement(receiver, other),
+                 current: node.source)
+        end
 
         def replacement(receiver, other)
           or_source = other.nil? || other.nil_type? ? '' : " || #{other.source}"
