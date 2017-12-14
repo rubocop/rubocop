@@ -331,11 +331,11 @@ module RuboCop
         source.lines.grep(/\S/).size
       end
 
-      def empty?
-        length.zero?
+      def empty_source?
+        source_length.zero?
       end
 
-      def length
+      def source_length
         source_range ? source_range.size : 0
       end
 

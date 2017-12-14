@@ -19,7 +19,7 @@ module RuboCop
 
       def non_eligible_body?(body)
         body.nil? ||
-          body.empty? ||
+          body.empty_source? ||
           body.begin_type? ||
           commented?(body.source_range)
       end
@@ -30,7 +30,7 @@ module RuboCop
 
       def modifier_fits_on_single_line?(node)
         modifier_length = length_in_modifier_form(node, node.condition,
-                                                  node.body.length)
+                                                  node.body.source_length)
 
         modifier_length <= max_line_length
       end
