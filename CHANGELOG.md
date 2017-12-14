@@ -100,6 +100,7 @@
 * [#5173](https://github.com/bbatsov/rubocop/pull/5173): Add new `Style/EvalWithLocation` cop. ([@pocke][])
 * [#5208](https://github.com/bbatsov/rubocop/pull/5208): Add new `Rails/Presence` cop. ([@wata727][])
 * Allow auto-correction of ClassAndModuleChildren. ([@siggymcfried][], [@melch][])
+* Add new `Lint/MissingRequireStatement` cop. ([@milch][])
 
 ### Bug fixes
 

@@ -563,6 +563,10 @@ Lint/MissingCopEnableDirective:
   Description: 'Checks for a `# rubocop:enable` after `# rubocop:disable`'
   Enabled: true
 
+Lint/MissingRequireStatement:
+  Description: 'Checks for missing require statements that might cause implicit dependencies'
+  Enabled: true
+
 Lint/MultipleCompare:
   Description: "Use `&&` operator to compare multiple value."
   Enabled: true
