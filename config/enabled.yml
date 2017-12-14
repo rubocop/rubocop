@@ -421,6 +421,10 @@ Lint/AssignmentInCondition:
   StyleGuide: '#safe-assignment-in-condition'
   Enabled: true
 
+Lint/BigDecimalNew:
+  Description: '`BigDecimal.new()` is deprecated. Use `BigDecimal()` instead.'
+  Enabled: true
+
 Lint/BlockAlignment:
   Description: 'Align block ends correctly.'
   Enabled: true
