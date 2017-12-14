@@ -15,6 +15,7 @@
 * [#5261](https://github.com/bbatsov/rubocop/issues/5261): Fix a false positive for `Style/MixinUsage` when using inside class or module. ([@koic][])
 * [#4444](https://github.com/bbatsov/rubocop/issues/4444): Fix `Style/AutoResourceCleanup` shouldn't flag `File.open(...).close. ([@dpostorivo][])
 * [#5278](https://github.com/bbatsov/rubocop/pull/5278): Fix deprecation check to use `loaded_path` in warning. ([@chrishulton][])
+* [#5258](https://github.com/bbatsov/rubocop/issues/5258): Fix incorrect autocorrection for `Rails/Presence` when the else block is multiline. ([@wata727][])
 
 ### Changes
 
