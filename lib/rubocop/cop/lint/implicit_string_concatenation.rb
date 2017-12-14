@@ -49,7 +49,7 @@ module RuboCop
           node.children.each_cons(2) do |child1, child2|
             # `'abc' 'def'` -> (dstr (str "abc") (str "def"))
             next unless string_literal?(child1) && string_literal?(child2)
-            next unless child1.loc.last_line == child2.loc.line
+            next unless child1.last_line == child2.first_line
 
             # Make sure we don't flag a string literal which simply has
             # embedded newlines

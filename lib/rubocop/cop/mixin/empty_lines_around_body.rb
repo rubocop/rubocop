@@ -111,7 +111,7 @@ module RuboCop
           node = first_empty_line_required_child(body)
           return unless node
 
-          line = previous_line_ignoring_comments(node.loc.first_line)
+          line = previous_line_ignoring_comments(node.first_line)
           return if processed_source[line].empty?
 
           range = source_range(processed_source.buffer, line + 2, 0)

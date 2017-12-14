@@ -264,7 +264,7 @@ module RuboCop
         end
 
         def begin_pos_with_comment(node)
-          annotation_line = node.loc.line - 1
+          annotation_line = node.first_line - 1
           first_comment = nil
 
           comments_before_line(annotation_line).reverse_each do |comment|
@@ -278,7 +278,7 @@ module RuboCop
         end
 
         def start_line_position(node)
-          buffer.line_range(node.loc.line).begin_pos - 1
+          buffer.line_range(node.first_line).begin_pos - 1
         end
 
         def comments_before_line(line)

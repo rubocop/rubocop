@@ -54,7 +54,7 @@ module RuboCop
 
         def offending_range(node, lhs, rhs, given_style)
           return false unless begins_its_line?(rhs)
-          return false if lhs.loc.line == rhs.line # Needed for unary op.
+          return false if lhs.first_line == rhs.line # Needed for unary op.
           return false if not_for_this_cop?(node)
 
           correct_column = if should_align?(node, rhs, given_style)

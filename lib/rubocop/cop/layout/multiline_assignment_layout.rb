@@ -44,7 +44,7 @@ module RuboCop
         def check_assignment(node, rhs)
           return unless rhs
           return unless supported_types.include?(rhs.type)
-          return if rhs.loc.first_line == rhs.loc.last_line
+          return if rhs.first_line == rhs.last_line
 
           case style
           when :new_line
@@ -55,13 +55,13 @@ module RuboCop
         end
 
         def check_new_line_offense(node, rhs)
-          return unless node.loc.operator.line == rhs.loc.line
+          return unless node.loc.operator.line == rhs.first_line
 
           add_offense(node, message: NEW_LINE_OFFENSE)
         end
 
         def check_same_line_offense(node, rhs)
-          return unless node.loc.operator.line != rhs.loc.line
+          return unless node.loc.operator.line != rhs.first_line
 
           add_offense(node, message: SAME_LINE_OFFENSE)
         end

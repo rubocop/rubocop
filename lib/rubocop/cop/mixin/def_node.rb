@@ -14,7 +14,7 @@ module RuboCop
       end
 
       def preceding_non_public_modifier?(node)
-        stripped_source_upto(node.loc.line).any? do |line|
+        stripped_source_upto(node.first_line).any? do |line|
           NON_PUBLIC_MODIFIERS.include?(line)
         end
       end

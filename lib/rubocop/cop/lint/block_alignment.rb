@@ -124,7 +124,7 @@ module RuboCop
         end
 
         def disqualified_parent?(parent, node)
-          parent && parent.loc && parent.loc.line != node.loc.line &&
+          parent && parent.loc && parent.first_line != node.first_line &&
             !parent.masgn_type?
         end
 

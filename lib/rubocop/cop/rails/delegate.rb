@@ -112,7 +112,7 @@ module RuboCop
         end
 
         def private_or_protected_delegation(node)
-          line = node.loc.line
+          line = node.first_line
           private_or_protected_before(line) ||
             private_or_protected_inline(line)
         end

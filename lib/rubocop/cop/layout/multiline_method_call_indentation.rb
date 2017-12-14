@@ -191,7 +191,7 @@ module RuboCop
           node = node.parent
           node = node.parent until node.loc.dot
 
-          return if node.loc.dot.line != node.loc.line
+          return if node.loc.dot.line != node.first_line
           node
         end
 
