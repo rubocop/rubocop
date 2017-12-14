@@ -124,6 +124,26 @@ AllowSafeAssignment | `true` | Boolean
 
 * [https://github.com/bbatsov/ruby-style-guide#safe-assignment-in-condition](https://github.com/bbatsov/ruby-style-guide#safe-assignment-in-condition)
 
+## Lint/BigDecimalNew
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+`BigDecimal.new()` is deprecated since BigDecimal 1.3.3.
+This cop identifies places where `BigDecimal.new()`
+can be replaced by `BigDecimal()`.
+
+### Examples
+
+```ruby
+# bad
+BigDecimal.new(123.456, 3)
+
+# good
+BigDecimal(123.456, 3)
+```
+
 ## Lint/BlockAlignment
 
 Enabled by default | Supports autocorrection

@@ -184,6 +184,7 @@ In the following section you find all available cops:
 * [Lint/AmbiguousOperator](cops_lint.md#lintambiguousoperator)
 * [Lint/AmbiguousRegexpLiteral](cops_lint.md#lintambiguousregexpliteral)
 * [Lint/AssignmentInCondition](cops_lint.md#lintassignmentincondition)
+* [Lint/BigDecimalNew](cops_lint.md#lintbigdecimalnew)
 * [Lint/BlockAlignment](cops_lint.md#lintblockalignment)
 * [Lint/BooleanSymbol](cops_lint.md#lintbooleansymbol)
 * [Lint/CircularArgumentReference](cops_lint.md#lintcircularargumentreference)
