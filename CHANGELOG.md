@@ -7,6 +7,7 @@
 * [#5241](https://github.com/bbatsov/rubocop/issues/5241): Fix an error for `Layout/AlignHash` when using a hash including only a keyword splat. ([@wata727][])
 * [#5245](https://github.com/bbatsov/rubocop/issues/5245): Make `Style/FormatStringToken` to allow regexp token. ([@pocke][])
 * [#5234](https://github.com/bbatsov/rubocop/issues/5234): Fix a false positive for `Rails/HasManyOrHasOneDependent` when using `class_name` option. ([@koic][])
+* [#5228](https://github.com/bbatsov/rubocop/issues/5228): Handle overridden `Metrics/LineLength:Max` for `--auto-gen-config`. ([@jonas054][])
 
 ### Changes
 
