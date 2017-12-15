@@ -74,6 +74,7 @@ require_relative 'rubocop/cop/corrector'
 require_relative 'rubocop/cop/force'
 require_relative 'rubocop/cop/severity'
 require_relative 'rubocop/cop/generator'
+require_relative 'rubocop/cop/generator/require_file_injector'
 
 require_relative 'rubocop/cop/variable_force'
 require_relative 'rubocop/cop/variable_force/branch'

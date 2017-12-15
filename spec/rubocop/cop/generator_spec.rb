@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Generator do
-  subject(:generator)  { described_class.new(cop_identifier) }
+  subject(:generator) { described_class.new(cop_identifier, output: stdout) }
 
+  let(:stdout) { StringIO.new }
   let(:cop_identifier) { 'Style/FakeCop' }
 
   before do
@@ -60,6 +61,8 @@ RSpec.describe RuboCop::Cop::Generator do
       expect(File)
         .to have_received(:write)
         .with('lib/rubocop/cop/style/fake_cop.rb', generated_source)
+      expect(stdout.string)
+        .to eq("[create] lib/rubocop/cop/style/fake_cop.rb\n")
     end
 
     it 'refuses to overwrite existing files' do
@@ -78,7 +81,7 @@ RSpec.describe RuboCop::Cop::Generator do
       generated_source = <<-SPEC.strip_indent
         # frozen_string_literal: true
 
-        describe RuboCop::Cop::Style::FakeCop do
+        RSpec.describe RuboCop::Cop::Style::FakeCop do
           subject(:cop) { described_class.new(config) }
 
           let(:config) { RuboCop::Config.new }
@@ -122,14 +125,6 @@ RSpec.describe RuboCop::Cop::Generator do
   describe '#todo' do
     it 'provides a checklist for implementing the cop' do
       expect(generator.todo).to eql(<<-TODO.strip_indent)
-        Files created:
-          - lib/rubocop/cop/style/fake_cop.rb
-          - spec/rubocop/cop/style/fake_cop_spec.rb
-        File modified:
-          - `require_relative 'rubocop/cop/style/fake_cop'` added into lib/rubocop.rb
-          - A configuration for the cop is added into config/enabled.yml
-            - If you want to disable the cop by default, move the added config to config/disabled.yml
-
         Do 3 steps:
           1. Add an entry to the "New features" section in CHANGELOG.md,
              e.g. "Add new `Style/FakeCop` cop. ([@your_id][])"
@@ -144,199 +139,6 @@ RSpec.describe RuboCop::Cop::Generator do
       expect { described_class.new('FakeCop') }
         .to raise_error(ArgumentError)
         .with_message('Specify a cop name with Department/Name style')
-    end
-  end
-
-  describe '#inject_require' do
-    context 'when a `require_relative` entry does not exist from before' do
-      before do
-        allow(File)
-          .to receive(:readlines).with('lib/rubocop.rb')
-                                 .and_return(<<-RUBY.strip_indent.lines)
-          # frozen_string_literal: true
-
-          require 'parser'
-          require 'rainbow'
-
-          require 'English'
-          require 'set'
-          require 'forwardable'
-
-          require_relative 'rubocop/version'
-
-          require_relative 'rubocop/cop/style/end_block'
-          require_relative 'rubocop/cop/style/even_odd'
-          require_relative 'rubocop/cop/style/file_name'
-          require_relative 'rubocop/cop/style/flip_flop'
-
-          require_relative 'rubocop/cop/rails/action_filter'
-
-          require_relative 'rubocop/cop/team'
-        RUBY
-      end
-
-      it 'injects a `require_relative` statement ' \
-         'on the right line in the root file' do
-        generated_source = <<-RUBY.strip_indent
-          # frozen_string_literal: true
-
-          require 'parser'
-          require 'rainbow'
-
-          require 'English'
-          require 'set'
-          require 'forwardable'
-
-          require_relative 'rubocop/version'
-
-          require_relative 'rubocop/cop/style/end_block'
-          require_relative 'rubocop/cop/style/even_odd'
-          require_relative 'rubocop/cop/style/fake_cop'
-          require_relative 'rubocop/cop/style/file_name'
-          require_relative 'rubocop/cop/style/flip_flop'
-
-          require_relative 'rubocop/cop/rails/action_filter'
-
-          require_relative 'rubocop/cop/team'
-        RUBY
-
-        generator.inject_require
-
-        expect(File)
-          .to have_received(:write).with('lib/rubocop.rb', generated_source)
-      end
-    end
-
-    context 'when a cop of style department already exists' do
-      let(:cop_identifier) { 'Style/TheEndOfStyle' }
-
-      before do
-        allow(File)
-          .to receive(:readlines).with('lib/rubocop.rb')
-                                 .and_return(<<-RUBY.strip_indent.lines)
-          # frozen_string_literal: true
-
-          require 'parser'
-          require 'rainbow'
-
-          require 'English'
-          require 'set'
-          require 'forwardable'
-
-          require_relative 'rubocop/version'
-
-          require_relative 'rubocop/cop/style/end_block'
-          require_relative 'rubocop/cop/style/even_odd'
-          require_relative 'rubocop/cop/style/file_name'
-          require_relative 'rubocop/cop/style/flip_flop'
-
-          require_relative 'rubocop/cop/rails/action_filter'
-
-          require_relative 'rubocop/cop/team'
-        RUBY
-      end
-
-      it 'injects a `require_relative` statement ' \
-         'on the end of style department' do
-        generated_source = <<-RUBY.strip_indent
-          # frozen_string_literal: true
-
-          require 'parser'
-          require 'rainbow'
-
-          require 'English'
-          require 'set'
-          require 'forwardable'
-
-          require_relative 'rubocop/version'
-
-          require_relative 'rubocop/cop/style/end_block'
-          require_relative 'rubocop/cop/style/even_odd'
-          require_relative 'rubocop/cop/style/file_name'
-          require_relative 'rubocop/cop/style/flip_flop'
-          require_relative 'rubocop/cop/style/the_end_of_style'
-
-          require_relative 'rubocop/cop/rails/action_filter'
-
-          require_relative 'rubocop/cop/team'
-        RUBY
-
-        generator.inject_require
-        expect(File)
-          .to have_received(:write).with('lib/rubocop.rb', generated_source)
-      end
-    end
-
-    context 'when a `require` entry already exists' do
-      before do
-        allow(File)
-          .to receive(:readlines).with('lib/rubocop.rb')
-                                 .and_return(<<-RUBY.strip_indent.lines)
-          # frozen_string_literal: true
-
-          require 'parser'
-          require 'rainbow'
-
-          require 'English'
-          require 'set'
-          require 'forwardable'
-
-          require_relative 'rubocop/version'
-
-          require_relative 'rubocop/cop/style/end_block'
-          require_relative 'rubocop/cop/style/even_odd'
-          require_relative 'rubocop/cop/style/fake_cop'
-          require_relative 'rubocop/cop/style/file_name'
-          require_relative 'rubocop/cop/style/flip_flop'
-
-          require_relative 'rubocop/cop/rails/action_filter'
-
-          require_relative 'rubocop/cop/team'
-        RUBY
-      end
-
-      it 'does not write to any file' do
-        generator.inject_require
-
-        expect(File).not_to have_received(:write)
-      end
-    end
-
-    context 'when using an unknown department' do
-      let(:cop_identifier) { 'Unknown/FakeCop' }
-
-      before do
-        allow(File)
-          .to receive(:readlines).with('lib/rubocop.rb')
-                                 .and_return(<<-RUBY.strip_indent.lines)
-          # frozen_string_literal: true
-
-          require 'parser'
-          require 'rainbow'
-
-          require 'English'
-          require 'set'
-          require 'forwardable'
-
-          require_relative 'rubocop/version'
-
-          require_relative 'rubocop/cop/style/end_block'
-          require_relative 'rubocop/cop/style/even_odd'
-          require_relative 'rubocop/cop/style/fake_cop'
-          require_relative 'rubocop/cop/style/file_name'
-          require_relative 'rubocop/cop/style/flip_flop'
-
-          require_relative 'rubocop/cop/rails/action_filter'
-
-          require_relative 'rubocop/cop/team'
-        RUBY
-      end
-
-      it 'does not write to any file' do
-        generator.inject_require
-
-        expect(File).not_to have_received(:write)
-      end
     end
   end
 
@@ -378,7 +180,25 @@ RSpec.describe RuboCop::Cop::Generator do
         Style/SpecialGlobalVars:
           Enabled: true
       YAML
-      generator.inject_config(path)
+      generator.inject_config(config_file_path: path)
+      expect(stdout.string).to eq(<<-MESSAGE.strip_indent)
+        [modify] A configuration for the cop is added into #{path}.
+                 If you want to disable the cop by default, move the added config to config/disabled.yml
+      MESSAGE
+    end
+  end
+
+  describe '#snake_case' do
+    it 'converts "Lint" to snake_case' do
+      expect(generator.__send__(:snake_case, 'Lint')).to eq('lint')
+    end
+
+    it 'converts "FooBar" to snake_case' do
+      expect(generator.__send__(:snake_case, 'FooBar')).to eq('foo_bar')
+    end
+
+    it 'converts "RSpec" to snake_case' do
+      expect(generator.__send__(:snake_case, 'RSpec')).to eq('rspec')
     end
   end
 
