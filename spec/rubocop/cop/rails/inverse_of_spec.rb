@@ -86,7 +86,7 @@ describe RuboCop::Cop::Rails::InverseOf do
     context 'Rails >= 5.2', :config do
       let(:rails_version) { 5.2 }
 
-      it 'does not register an offense when not specifying `:inverse_of`' do
+      it 'does not register an offense when specifying `:inverse_of`' do
         expect_no_offenses(
           'belongs_to :foo, polymorphic: true'
         )
