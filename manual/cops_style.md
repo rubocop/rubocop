@@ -3079,6 +3079,28 @@ Enabled | No
 
 This cop checks for multi-line ternary op expressions.
 
+### Examples
+
+```ruby
+# bad
+a = cond ?
+  b : c
+a = cond ? b :
+    c
+a = cond ?
+    b :
+    c
+
+# good
+a = cond ? b : c
+a =
+  if cond
+    b
+  else
+    c
+  end
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#no-multiline-ternary](https://github.com/bbatsov/ruby-style-guide#no-multiline-ternary)
