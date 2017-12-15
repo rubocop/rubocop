@@ -15,21 +15,16 @@ module RuboCop
       #
       #   Faraday.new(...)
       class MissingRequireStatement < Cop
-        MSG = 'Symbol not found, you\'re probably missing a require statment'.freeze
+        MSG = '`%<constant>s` not found, you\'re probably missing a require statement'.freeze
 
-        attr_writer :required_so_far
-        attr_writer :classes_and_modules
+        attr_writer :timeline
 
-        def required_so_far
-          @required_so_far ||= []
+        def timeline
+          @timeline ||= []
         end
 
-        def classes_and_modules
-          @classes_and_modules ||= []
-        end
-
-        def_node_matcher :require?, <<-PATTERN
-          (send nil? :require (str $_))
+        def_node_matcher :extract_require, <<-PATTERN
+          (send nil? ${:require :require_relative} (str $_))
         PATTERN
 
         def_node_matcher :extract_inner_const, <<-PATTERN
@@ -48,111 +43,166 @@ module RuboCop
           (class (const nil? _) (const nil? $_) ...)
         PATTERN
 
-        def initialize(config = nil, options = nil)
-          super(config, options)
-        end
-
+        # Builds 
         def investigate(processed_source)
-          # TODO: Just found this method. Gameplan for next version: 
-          # - Put the AST traversal in here instead of relying on the `on_*` methods
-          # - Save a 'timeline' of the file, e.g. [{require: "filename}, {constant: "CONST"}, ...]
-          # - Rewrite AvailabilityChecker so that it gets that timeline and only has to fork once
-          # - Find a way to return data from the forked process (parallel gem is already used, possibly supports this, otherwise: pipes)
-          # It'll still be slow because of the requires but there's not much we can do about that
-          # This will also make time cost go down to O(n) vs O(n + m) now with n = required files, m = constants
+          processing_methods = self.methods.select { |m| m.to_s.start_with? "process_" }
+
+          stack = [processed_source.ast]
+          skip = Set.new
+          until stack.empty?
+            node = stack.pop
+            next unless node
+            results = processing_methods.map { |m| self.send(m, node, processed_source) }.compact
+
+            next if node.kind_of? Hash
+
+            to_skip, to_push = [:skip, :push].map { |mode| results.flat_map { |r| r[mode] }.compact }
+
+            skip.merge(to_skip)
+
+            children_to_explore = node.children
+                                      .select { |c| c.kind_of? RuboCop::AST::Node }
+                                      .reject { |c| skip.include? c }
+                                      .reverse
+            stack.push(*to_push)
+            stack.push(*children_to_explore)
+          end
+
+          # 
+          err_events = check_timeline(timeline).group_by { |e| e[:name] }.values
+          err_events.each do |events|
+            first = events.first
+            node = first[:node]
+            message = format(
+              MSG,
+              constant: first[:name]
+            )
+            add_offense(node, message: message)
+          end
         end
 
         def find_consts(node)
           inner = node
-          consts = []
+          outer_const = extract_const(node)
+          return unless outer_const
+          consts = [outer_const]
           while inner = extract_inner_const(inner)
             const = extract_const(inner)
             consts << const
           end
-          outer_const = extract_const(node)
-          consts << outer_const
+          consts.reverse
         end
 
 
-        def on_const(node)
+        def process_const(node, source)
+          return unless node.kind_of? RuboCop::AST::Node
           consts = find_consts(node)
+          return unless consts
           const_name = consts.join("::")
-          add_offense(node) unless AvailabilityChecker.check_if_exists(const_name, required_files: self.required_so_far, classes_and_modules: self.classes_and_modules)
+
+          self.timeline << { event: :const_access, name: const_name, node: node }
+
+          { skip: node.children }
         end
 
-        def save_name(class_or_module)
-          return unless class_or_module
-          self.classes_and_modules << class_or_module.to_s
-        end
-
-        def on_module(node)
-          save_name(module_or_class_name(node))
-        end
-
-        def on_class(node)
-          save_name(module_or_class_name(node))
-          save_name(inherited_class_name(node))
-        end
-
-        def on_send(node)
-          required = require?(node)
-          return unless required 
-          self.required_so_far << required
-        end
-
-        class AvailabilityChecker
-          @@builtin = [:UnboundMethod, :Integer, :Float, :String, :Array, :Hash, :NilClass, :STDOUT, :STDIN, :NIL, :STDERR, :Delegator, :SimpleDelegator, :ARGF, :UncaughtThrowError, :FileTest, :File, :GC, :Fiber, :FiberError, :Rational, :IRB, :Data, :TrueClass, :TRUE, :FalseClass, :FALSE, :Encoding, :ZeroDivisionError, :FloatDomainError, :Numeric, :DidYouMean, :Complex, :ObjectSpace, :Gem, :ENV, :Struct, :Enumerator, :RegexpError, :RUBY_RELEASE_DATE, :RUBY_VERSION, :Comparable, :RUBY_PLATFORM, :RUBY_PATCHLEVEL, :Enumerable, :StopIteration, :Regexp, :RUBY_REVISION, :RubyVM, :Thread, :RUBY_ENGINE, :Fixnum, :RUBY_DESCRIPTION, :RUBY_COPYRIGHT, :TracePoint, :RUBY_ENGINE_VERSION, :RubyLex, :TOPLEVEL_BINDING, :CROSS_COMPILING, :MatchData, :ARGV, :Bignum, :ThreadGroup, :Dir, :ThreadError, :Mutex, :Queue, :ClosedQueueError, :Exception2MessageMapper, :SizedQueue, :ConditionVariable, :Time, :Marshal, :Monitor, :Range, :IOError, :EOFError, :MonitorMixin, :RubyToken, :RbConfig, :Process, :IO, :Random, :Symbol, :Readline, :Exception, :Signal, :StringIO, :SystemExit, :BasicObject, :Object, :Module, :Class, :SignalException, :Kernel, :TypeError, :Interrupt, :StandardError, :KeyError, :ArgumentError, :IndexError, :SyntaxError, :RangeError, :ScriptError, :NameError, :NotImplementedError, :NoMethodError, :Proc, :SystemStackError, :RuntimeError, :SecurityError, :NoMemoryError, :EncodingError, :Method, :LoadError, :SystemCallError, :Errno, :Binding, :Warning, :LocalJumpError, :Math, :RUBYGEMS_ACTIVATION_MONITOR]
-
-          # @@cache = {}
-
-          def self.const_exists?(const, lookup: [])
-            lookup.map { |l| 
-              Object.const_get("#{l}::#{const}") rescue false 
-            }.any?
+        def process_definition(node, source)
+          if node.kind_of? Hash
+            self.timeline << node
+            return 
           end
 
-          def self.build_lookup_table(classes_and_modules: [])
-            classes_and_modules.reduce([Object]) do |lookup, class_or_module|
-              new = []
-              lookup.each do |l|
-                name = Object.const_get("#{l}::#{class_or_module}") rescue nil
-                new << name if name
-              end
-              lookup += new
-            end
-          end
+          name = module_or_class_name(node)
+          inherited = inherited_class_name(node)
+          return unless name
+          self.timeline << { event: :const_def, name: name }
 
-          def self.check_if_exists(const_name, required_files: [], classes_and_modules: [])
-            return true if @@builtin.include?(const_name)
-            # return @@cache[const_name] if @@cache.include?(const_name)
-            return true if classes_and_modules.include?(const_name)
-            pre_fork = Time.now
-            pid = Process.fork do 
-              puts "After fork: #{Time.now - pre_fork}"
-              puts "requireing #{required_files}"
-              now = Time.now
-              required_files.each do |r| 
-                begin
-                  require r 
-                rescue LoadError
-                rescue NameError
+          # Not entirely accurate, but the subclass has access to everything it's inherited, so this should work
+          self.timeline << { event: :const_def, name: inherited } if inherited
+
+          # First child is the module/class name => skip or it'll be picked up by `process_const`
+          skip_list = [node.children.first]
+          skip_list << node.children[1] if inherited
+
+          push_list = []
+          push_list << { event: :const_undef, name: inherited } if inherited
+          push_list << { event: :const_undef, name: name }
+
+
+          { skip: skip_list, push: push_list}
+        end
+
+        def process_require(node, source)
+          return unless node.kind_of? RuboCop::AST::Node
+          required = extract_require(node)
+          return unless required && required.length == 2
+          method, file = required
+          self.timeline << { event: method, file: file, path: source.path }
+
+          { skip: node.children }
+        end
+
+        private
+        
+        # Returns the problematic events from the timeline, i.e. those for which a require might be missing
+        def check_timeline(timeline)
+          # To avoid having to marshal/unmarshal the nodes, the fork will just return indices with an error
+          err_indices = perform_in_fork do
+            err_indices = []
+            defined_constants = []
+            timeline.each_with_index do |event, i|
+              case event[:event]
+              when :require
+                begin 
+                  require event[:file]
+                rescue Exception
                 end
-              end
-              puts "Require took #{Time.now - now}"
-
-              lookup = self.build_lookup_table(classes_and_modules: classes_and_modules)
-
-              if self.const_exists?(const_name, lookup: lookup)
-                exit! 0 
-              else 
-                exit! 1
+              when :require_relative
+                path_to_investigated_file = event[:path]
+                relative_path = File.expand_path(File.join(File.dirname(path_to_investigated_file), event[:file]))
+                require_relative relative_path rescue nil
+              when :const_def
+                name = event[:name]
+                new = []
+                defined_constants.each do |c|
+                  found = Object.const_get("#{c}::#{name}") rescue nil
+                  new << found if found
+                end
+                defined_constants.push(*new)
+                defined_constants << event[:name]
+              when :const_undef
+                defined_constants.delete_if { |c| c.to_s.end_with?(event[:name].to_s) }
+              when :const_access
+                name = event[:name]
+                result = Object.const_get(name.to_s) rescue nil
+                result ||= defined_constants.find { |c| Object.const_get("#{c}::#{name}") rescue nil }
+                err_indices << i unless result
               end
             end
-            pid, status = Process.waitpid2(pid)
-            result = (status == 0)
-            # @@cache[const_name] = result
-            return result
+            err_indices
           end
+
+          err_indices.map { |i| timeline[i] }
+        end
+
+        def perform_in_fork
+          r, w = IO.pipe
+
+          # The close statements are as they are used in the IO#pipe documentation
+          pid = Process.fork do
+            r.close
+            result = yield
+            Marshal.dump(result, w)
+            w.close
+          end
+
+          w.close
+          result = Marshal.load(r)
+          r.close
+          _, status = Process.waitpid2(pid)
+
+          raise "An error occured while forking" unless status == 0
+
+          return result
         end
       end
     end
