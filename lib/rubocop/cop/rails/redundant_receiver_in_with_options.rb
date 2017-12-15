@@ -42,14 +42,14 @@ module RuboCop
             ...)
         PATTERN
 
-        def_node_search :assoc_has_redundant_receiver, <<-PATTERN
+        def_node_search :rails_assoc_with_redundant_receiver, <<-PATTERN
           (send
-            (lvar _) ...)
+            (lvar _) {:has_many :has_one :belongs_to :has_and_belongs_to_many} ...)
         PATTERN
 
         def on_block(node)
           with_options?(node) do
-            assoc_has_redundant_receiver(node).each do |assoc|
+            rails_assoc_with_redundant_receiver(node).each do |assoc|
               add_offense(assoc, location: assoc.receiver.loc.expression)
             end
           end
