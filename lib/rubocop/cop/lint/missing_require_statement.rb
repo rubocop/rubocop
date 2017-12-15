@@ -149,6 +149,7 @@ module RuboCop
           err_indices = perform_in_fork do
             err_indices = []
             defined_constants = []
+            const_stack = []
             timeline.each_with_index do |event, i|
               case event[:event]
               when :require
@@ -168,13 +169,17 @@ module RuboCop
                   new << found if found
                 end
                 defined_constants.push(*new)
-                defined_constants << event[:name]
+                const_stack.push(event[:name])
+                defined_constants.push(event[:name], const_stack.join("::"))
               when :const_undef
-                defined_constants.delete_if { |c| c.to_s.end_with?(event[:name].to_s) }
+                const_stack.pop
+                defined_constants.delete_if { |c| c.to_s == event[:name] }
               when :const_access
                 name = event[:name]
-                result = Object.const_get(name.to_s) rescue nil
-                result ||= defined_constants.find { |c| Object.const_get("#{c}::#{name}") rescue nil }
+                result = Object.const_get(name.to_s) rescue nil                                        # Defined elsewhere, top-level
+                result ||= defined_constants.find { |c| Object.const_get("#{c}::#{name}") rescue nil } # Defined elsewhere, nested
+                result ||= defined_constants.find { |c| name.to_s == c }                               # Defined in this file, other module/class
+                result ||= const_stack.join("::") == name.to_s                                         # Defined in this file, in current module/class
                 err_indices << i unless result
               end
             end
