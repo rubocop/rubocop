@@ -60,7 +60,7 @@ module RuboCop
               register_offense(
                 node,
                 node.method_name,
-                nodes.first.loc.line
+                nodes.first.first_line
               )
             end
           end
@@ -88,7 +88,7 @@ module RuboCop
         def register_offense(node, assignment, line_of_first_occurrence)
           line_range = node.loc.column...node.loc.last_column
           offense_location =
-            source_range(processed_source.buffer, node.loc.line, line_range)
+            source_range(processed_source.buffer, node.first_line, line_range)
           message = format(
             MSG,
             assignment: assignment,

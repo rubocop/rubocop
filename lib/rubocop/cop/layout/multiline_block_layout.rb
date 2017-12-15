@@ -48,7 +48,7 @@ module RuboCop
             add_offense_for_expression(node, node.arguments, ARG_MSG)
           end
 
-          return unless node.body && node.loc.begin.line == node.body.loc.line
+          return unless node.body && node.loc.begin.line == node.body.first_line
 
           add_offense_for_expression(node, node.body, MSG)
         end
@@ -64,7 +64,7 @@ module RuboCop
 
             expr_before_body ||= node.loc.begin
 
-            if expr_before_body.line == node.body.loc.line
+            if expr_before_body.line == node.body.first_line
               autocorrect_body(corrector, node, node.body)
             end
           end

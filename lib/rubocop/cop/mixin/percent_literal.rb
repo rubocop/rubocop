@@ -38,7 +38,7 @@ module RuboCop
         escape = words.any? { |w| needs_escaping?(w.children[0]) }
         char = char.upcase if escape
         delimiters = preferred_delimiters_for("%#{char}")
-        contents = autocorrect_words(words, escape, node.loc.line, delimiters)
+        contents = autocorrect_words(words, escape, node.first_line, delimiters)
 
         lambda do |corrector|
           corrector.replace(
@@ -51,9 +51,9 @@ module RuboCop
       def autocorrect_words(word_nodes, escape, base_line_number, delimiters)
         previous_node_line_number = base_line_number
         word_nodes.map do |node|
-          number_of_line_breaks = node.loc.line - previous_node_line_number
+          number_of_line_breaks = node.first_line - previous_node_line_number
           line_breaks = "\n" * number_of_line_breaks
-          previous_node_line_number = node.loc.line
+          previous_node_line_number = node.first_line
           content = node.children.first.to_s
           content = escape ? escape_string(content) : content
           delimiters.each do |delimiter|

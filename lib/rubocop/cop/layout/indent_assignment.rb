@@ -31,7 +31,7 @@ module RuboCop
         def check_assignment(node, rhs)
           return unless rhs
           return unless node.loc.operator
-          return if node.loc.operator.line == rhs.loc.line
+          return if node.loc.operator.line == rhs.first_line
 
           base = display_column(node.source_range)
           check_alignment([rhs], base + configured_indentation_width)

@@ -58,7 +58,7 @@ module RuboCop
       end
 
       def line_break_before_keyword?(whole_expression, rhs)
-        rhs.loc.line > whole_expression.line
+        rhs.first_line > whole_expression.line
       end
 
       def align(node, align_to)

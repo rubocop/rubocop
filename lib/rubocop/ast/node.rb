@@ -259,6 +259,27 @@ module RuboCop
         loc.expression
       end
 
+      def first_line
+        loc.line
+      end
+
+      def last_line
+        loc.last_line
+      end
+
+      def line_count
+        return 0 unless source_range
+        source_range.last_line - source_range.first_line + 1
+      end
+
+      def nonempty_line_count
+        source.lines.grep(/\S/).size
+      end
+
+      def source_length
+        source_range ? source_range.size : 0
+      end
+
       ## Destructuring
 
       def_node_matcher :receiver, <<-PATTERN
@@ -322,21 +343,8 @@ module RuboCop
         line_count == 1
       end
 
-      def line_count
-        return 0 unless source_range
-        source_range.last_line - source_range.first_line + 1
-      end
-
-      def nonempty_line_count
-        source.lines.grep(/\S/).size
-      end
-
       def empty_source?
         source_length.zero?
-      end
-
-      def source_length
-        source_range ? source_range.size : 0
       end
 
       def asgn_method_call?

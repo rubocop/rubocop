@@ -54,7 +54,7 @@ module RuboCop
           if special_inner_call_indentation?(node)
             column_of(base_range(node, node.first_argument))
           else
-            previous_code_line(node.first_argument.loc.line) =~ /\S/
+            previous_code_line(node.first_argument.first_line) =~ /\S/
           end
         end
 

@@ -127,13 +127,13 @@ module RuboCop
       # This method depends on the fact that we have guarded
       # against implicit and empty literals.
       def opening_brace_on_same_line?(node)
-        node.loc.begin.line == children(node).first.loc.first_line
+        node.loc.begin.line == children(node).first.first_line
       end
 
       # This method depends on the fact that we have guarded
       # against implicit and empty literals.
       def closing_brace_on_same_line?(node)
-        node.loc.end.line == children(node).last.loc.last_line
+        node.loc.end.line == children(node).last.last_line
       end
 
       # Starting with the parent node and recursively for the parent node's
@@ -165,7 +165,7 @@ module RuboCop
 
         if node.respond_to?(:loc) &&
            node.loc.respond_to?(:heredoc_end) &&
-           node.loc.heredoc_end.last_line >= parent.loc.last_line
+           node.loc.heredoc_end.last_line >= parent.last_line
           return true
         end
 

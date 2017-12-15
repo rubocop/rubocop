@@ -110,7 +110,7 @@ module RuboCop
       rescue StandardError => e
         raise e if @options[:raise_error]
         if node
-          line = node.loc.line
+          line = node.first_line
           column = node.loc.column
         end
         error = CopError.new(e, line, column)
