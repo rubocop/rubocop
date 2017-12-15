@@ -89,7 +89,7 @@ module RuboCop
 
     def reset_config_and_auto_gen_file
       @config_store = ConfigStore.new
-      File.open(ConfigLoader::AUTO_GENERATED_FILE, 'w'){}
+      File.open(ConfigLoader::AUTO_GENERATED_FILE, 'w') {}
       ConfigLoader.add_inheritance_from_auto_generated_file
     end
 
