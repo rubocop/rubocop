@@ -23,26 +23,6 @@ module RuboCop
           @timeline ||= []
         end
 
-        def_node_matcher :extract_require, <<-PATTERN
-          (send nil? ${:require :require_relative} (str $_))
-        PATTERN
-
-        def_node_matcher :extract_inner_const, <<-PATTERN
-          (const $!nil? _)
-        PATTERN
-
-        def_node_matcher :extract_const, <<-PATTERN
-          (const _ $_)
-        PATTERN
-
-        def_node_matcher :module_or_class_name, <<-PATTERN
-          ({module class} (const nil? $_) ...)
-        PATTERN
-
-        def_node_matcher :inherited_class_name, <<-PATTERN
-          (class (const nil? _) (const nil? $_) ...)
-        PATTERN
-
         # Builds 
         def investigate(processed_source)
           processing_methods = self.methods.select { |m| m.to_s.start_with? "process_" }
@@ -81,6 +61,14 @@ module RuboCop
           end
         end
 
+        def_node_matcher :extract_inner_const, <<-PATTERN
+          (const $!nil? _)
+        PATTERN
+
+        def_node_matcher :extract_const, <<-PATTERN
+          (const _ $_)
+        PATTERN
+
         def find_consts(node)
           inner = node
           outer_const = extract_const(node)
@@ -104,6 +92,14 @@ module RuboCop
 
           { skip: node.children }
         end
+
+        def_node_matcher :module_or_class_name, <<-PATTERN
+          ({module class} (const nil? $_) ...)
+        PATTERN
+
+        def_node_matcher :inherited_class_name, <<-PATTERN
+          (class (const nil? _) (const nil? $_) ...)
+        PATTERN
 
         def process_definition(node, source)
           if node.kind_of? Hash
@@ -130,6 +126,10 @@ module RuboCop
 
           { skip: skip_list, push: push_list}
         end
+
+        def_node_matcher :extract_require, <<-PATTERN
+          (send nil? ${:require :require_relative} (str $_))
+        PATTERN
 
         def process_require(node, source)
           return unless node.kind_of? RuboCop::AST::Node
