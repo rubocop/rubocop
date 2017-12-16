@@ -26,6 +26,34 @@ module RuboCop
       #       has_many :expenses
       #     end
       #   end
+      #
+      # @example
+      #   # bad
+      #   with_options options: false do |merger|
+      #     merger.invoke(merger.something)
+      #   end
+      #
+      #   # good
+      #   with_options options: false do
+      #     invoke(something)
+      #   end
+      #
+      #   # good
+      #   client = Client.new
+      #   with_options options: false do |merger|
+      #     client.invoke(merger.something, something)
+      #   end
+      #
+      #   # ok
+      #   # When `with_options` includes a block, all scoping scenarios
+      #   # cannot be evaluated. Thus, it is ok to include the explicit
+      #   # receiver.
+      #   with_options options: false do |merger|
+      #     merger.invoke
+      #     with_another_method do |another_receiver|
+      #       merger.invoke(another_receiver)
+      #     end
+      #   end
       class RedundantReceiverInWithOptions < Cop
         extend TargetRailsVersion
 
@@ -38,26 +66,35 @@ module RuboCop
             (send nil? :with_options
               (...))
             (args
-              (...))
-            ...)
+              $_arg)
+            $_body)
         PATTERN
 
-        def_node_search :assoc_has_redundant_receiver, <<-PATTERN
-          (send
-            (lvar _) ...)
+        def_node_search :all_block_nodes_in, <<-PATTERN
+          (block ...)
+        PATTERN
+
+        def_node_search :all_send_nodes_in, <<-PATTERN
+          (send ...)
         PATTERN
 
         def on_block(node)
-          with_options?(node) do
-            assoc_has_redundant_receiver(node).each do |assoc|
-              add_offense(assoc, location: assoc.receiver.loc.expression)
+          with_options?(node) do |arg, body|
+            return unless all_block_nodes_in(body).count.zero?
+            send_nodes = all_send_nodes_in(body)
+
+            if send_nodes.all? { |n| same_value?(arg, n.receiver) }
+              send_nodes.each do |send_node|
+                receiver = send_node.receiver
+                add_offense(send_node, location: receiver.source_range)
+              end
             end
           end
         end
 
         def autocorrect(node)
           lambda do |corrector|
-            corrector.remove(node.receiver.loc.expression)
+            corrector.remove(node.receiver.source_range)
             corrector.remove(node.loc.dot)
             corrector.remove(block_argument_range(node))
           end
@@ -66,7 +103,8 @@ module RuboCop
         private
 
         def block_argument_range(node)
-          block_argument = node.parent.parent.children[1].loc.expression
+          block_node = node.each_ancestor(:block).first
+          block_argument = block_node.children[1].source_range
 
           range_between(
             search_begin_pos_of_space_before_block_argument(
@@ -84,6 +122,10 @@ module RuboCop
           else
             begin_pos
           end
+        end
+
+        def same_value?(arg_node, recv_node)
+          recv_node && recv_node.children[0] == arg_node.children[0]
         end
       end
     end
