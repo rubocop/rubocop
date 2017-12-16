@@ -81,7 +81,6 @@ module RuboCop
           consts.reverse
         end
 
-
         def process_const(node, source)
           return unless node.kind_of? RuboCop::AST::Node
           consts = find_consts(node)
@@ -89,6 +88,19 @@ module RuboCop
           const_name = consts.join("::")
 
           self.timeline << { event: :const_access, name: const_name, node: node }
+
+          { skip: node.children }
+        end
+
+        def_node_matcher :extract_const_assignment, <<-PATTERN
+          (casgn nil? $_ ...)
+        PATTERN
+
+        def process_const_assign(node, source)
+          const_assign_name = extract_const_assignment(node)
+          return unless const_assign_name
+
+          self.timeline << { event: :const_assign, name: const_assign_name}
 
           { skip: node.children }
         end
@@ -176,11 +188,15 @@ module RuboCop
                 defined_constants.delete_if { |c| c.to_s == event[:name] }
               when :const_access
                 name = event[:name]
+                prefix = const_stack.join("::")
                 result = Object.const_get(name.to_s) rescue nil                                        # Defined elsewhere, top-level
                 result ||= defined_constants.find { |c| Object.const_get("#{c}::#{name}") rescue nil } # Defined elsewhere, nested
-                result ||= defined_constants.find { |c| name.to_s == c }                               # Defined in this file, other module/class
+                result ||= defined_constants.find { |c| [name.to_s, "#{prefix}::#{name}"].include? c } # Defined in this file, other module/class
                 result ||= const_stack.join("::") == name.to_s                                         # Defined in this file, in current module/class
                 err_indices << i unless result
+              when :const_assign
+                full_name = [const_stack.join("::"), event[:name]].join("::")
+                defined_constants << full_name
               end
             end
             err_indices
