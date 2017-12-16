@@ -6,9 +6,9 @@ rvm:
   - jruby-9.1.15.0
   - jruby-head
   - 2.1.10
-  - 2.2.8
-  - 2.3.5
-  - 2.4.2
+  - 2.2.9
+  - 2.3.6
+  - 2.4.3
   - ruby-head
 env:
   global:
