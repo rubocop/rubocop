@@ -7,6 +7,8 @@ module RuboCop
       NO_SPACE_COMMAND = 'Do not use'.freeze
       SPACE_COMMAND = 'Use'.freeze
 
+      private
+
       def side_space_range(range:, side:)
         buffer = @processed_source.buffer
         src = buffer.source
@@ -99,8 +101,6 @@ module RuboCop
         return if right_token.space_before?
         corrector.insert_before(right_token.pos, ' ')
       end
-
-      private
 
       def extra_space?(token, side)
         return false unless token
