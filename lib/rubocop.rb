@@ -140,6 +140,7 @@ require_relative 'rubocop/cop/mixin/trailing_comma'
 require_relative 'rubocop/cop/mixin/unused_argument'
 
 require_relative 'rubocop/cop/correctors/alignment_corrector'
+require_relative 'rubocop/cop/correctors/condition_corrector'
 require_relative 'rubocop/cop/correctors/empty_line_corrector'
 require_relative 'rubocop/cop/correctors/multiline_literal_brace_corrector'
 require_relative 'rubocop/cop/correctors/ordered_gem_corrector'
