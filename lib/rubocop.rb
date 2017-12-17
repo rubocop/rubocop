@@ -88,7 +88,7 @@ require_relative 'rubocop/cop/mixin/annotation_comment'
 require_relative 'rubocop/cop/mixin/array_hash_indentation'
 require_relative 'rubocop/cop/mixin/array_min_size'
 require_relative 'rubocop/cop/mixin/array_syntax'
-require_relative 'rubocop/cop/mixin/autocorrect_alignment'
+require_relative 'rubocop/cop/mixin/alignment'
 require_relative 'rubocop/cop/mixin/check_assignment'
 require_relative 'rubocop/cop/mixin/configurable_max'
 require_relative 'rubocop/cop/mixin/code_length' # relies on configurable_max
@@ -138,6 +138,8 @@ require_relative 'rubocop/cop/mixin/target_rails_version'
 require_relative 'rubocop/cop/mixin/too_many_lines'
 require_relative 'rubocop/cop/mixin/trailing_comma'
 require_relative 'rubocop/cop/mixin/unused_argument'
+
+require_relative 'rubocop/cop/correctors/alignment_corrector'
 
 require_relative 'rubocop/cop/bundler/duplicated_gem'
 require_relative 'rubocop/cop/bundler/insecure_protocol_source'

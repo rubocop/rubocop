@@ -51,7 +51,7 @@ module RuboCop
       #     baz
       #   end
       class CaseWhenSplat < Cop
-        include AutocorrectAlignment
+        include Alignment
 
         MSG = 'Place `when` conditions with a splat ' \
               'at the end of the `when` branches.'.freeze

@@ -19,7 +19,7 @@ module RuboCop
       #     first_param,
       #   second_param)
       class FirstParameterIndentation < Cop
-        include AutocorrectAlignment
+        include Alignment
         include ConfigurableEnforcedStyle
 
         MSG = 'Indent the first parameter one step more than %<base>s.'.freeze
@@ -30,6 +30,10 @@ module RuboCop
           indent = base_indentation(node) + configured_indentation_width
 
           check_alignment([node.first_argument], indent)
+        end
+
+        def autocorrect(node)
+          AlignmentCorrector.correct(processed_source, node, column_delta)
         end
 
         private

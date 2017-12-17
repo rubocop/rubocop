@@ -33,13 +33,17 @@ module RuboCop
       #   end
       #
       class CommentIndentation < Cop
-        include AutocorrectAlignment
+        include Alignment
 
         MSG = 'Incorrect indentation detected (column %<column>d ' \
           'instead of %<correct_comment_indentation>d).'.freeze
 
         def investigate(processed_source)
           processed_source.comments.each { |comment| check(comment) }
+        end
+
+        def autocorrect(node)
+          AlignmentCorrector.correct(processed_source, node, @column_delta)
         end
 
         private
