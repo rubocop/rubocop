@@ -14,9 +14,7 @@ module RuboCop
         end
       end
 
-      def autocorrect(token)
-        ->(corrector) { corrector.replace(token.pos, token.pos.source + ' ') }
-      end
+      private
 
       def each_missing_space(tokens)
         tokens.each_cons(2) do |t1, t2|

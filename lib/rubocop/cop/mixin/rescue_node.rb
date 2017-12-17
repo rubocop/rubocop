@@ -11,6 +11,8 @@ module RuboCop
                               .map(&:pos)
       end
 
+      private
+
       def rescue_modifier?(node)
         node &&
           node.resbody_type? &&
