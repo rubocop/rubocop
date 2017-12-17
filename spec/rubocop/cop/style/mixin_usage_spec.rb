@@ -29,6 +29,16 @@ describe RuboCop::Cop::Style::MixinUsage do
       RUBY
     end
 
+    it 'registers an offense when using `include` in method definition ' \
+       'outside class or module' do
+      expect_offense(<<-RUBY.strip_indent)
+        def foo
+          include M
+          ^^^^^^^^^ `include` is used at the top level. Use inside `class` or `module`.
+        end
+      RUBY
+    end
+
     it 'does not register an offense when using outside class' do
       expect_no_offenses(<<-RUBY.strip_indent)
         Foo.include M
@@ -55,6 +65,28 @@ describe RuboCop::Cop::Style::MixinUsage do
     it "doesn't register an offense when `include` call is a method argument" do
       expect_no_offenses(<<-RUBY.strip_indent)
         do_something(include(M))
+      RUBY
+    end
+
+    it 'does not register an offense when using `include` in method ' \
+       'definition inside class' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class X
+          def foo
+            include M
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when using `include` in method ' \
+       'definition inside module' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        module X
+          def foo
+            include M
+          end
+        end
       RUBY
     end
 
