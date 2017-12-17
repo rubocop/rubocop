@@ -27,22 +27,6 @@ module RuboCop
 
         add_offense(node)
       end
-
-      def negative_conditional_corrector(node)
-        condition = negated_condition(node)
-
-        lambda do |corrector|
-          corrector.replace(node.loc.keyword, node.inverse_keyword)
-          corrector.replace(condition.source_range,
-                            condition.children.first.source)
-        end
-      end
-
-      def negated_condition(node)
-        condition = node.condition
-        condition = condition.children.first while condition.begin_type?
-        condition
-      end
     end
   end
 end
