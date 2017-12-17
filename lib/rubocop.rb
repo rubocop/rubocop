@@ -146,6 +146,7 @@ require_relative 'rubocop/cop/correctors/ordered_gem_corrector'
 require_relative 'rubocop/cop/correctors/parentheses_corrector'
 require_relative 'rubocop/cop/correctors/punctuation_corrector'
 require_relative 'rubocop/cop/correctors/string_literal_corrector'
+require_relative 'rubocop/cop/correctors/unused_arg_corrector'
 
 require_relative 'rubocop/cop/bundler/duplicated_gem'
 require_relative 'rubocop/cop/bundler/insecure_protocol_source'

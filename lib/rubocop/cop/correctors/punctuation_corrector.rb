@@ -12,6 +12,17 @@ module RuboCop
         def add_space(token)
           ->(corrector) { corrector.replace(token.pos, token.pos.source + ' ') }
         end
+
+        def swap_comma(range)
+          return unless range
+
+          lambda do |corrector|
+            case range.source
+            when ',' then corrector.remove(range)
+            else          corrector.insert_after(range, ',')
+            end
+          end
+        end
       end
     end
   end

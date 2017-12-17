@@ -17,6 +17,8 @@ module RuboCop
           end
         end
 
+        private
+
         def check_argument(variable)
           return if variable.should_be_unused?
           return if variable.referenced?
@@ -24,21 +26,6 @@ module RuboCop
           message = message(variable)
           add_offense(variable.declaration_node, location: :name,
                                                  message: message)
-        end
-
-        def autocorrect(node)
-          return if %i[kwarg kwoptarg].include?(node.type)
-
-          if node.blockarg_type?
-            lambda do |corrector|
-              range = range_with_surrounding_space(range: node.source_range,
-                                                   side: :left)
-              range = range_with_surrounding_comma(range, :left)
-              corrector.remove(range)
-            end
-          else
-            ->(corrector) { corrector.insert_before(node.loc.name, '_') }
-          end
         end
       end
     end

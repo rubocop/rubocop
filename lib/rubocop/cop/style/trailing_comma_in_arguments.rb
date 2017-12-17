@@ -51,6 +51,10 @@ module RuboCop
                 node.source_range.end_pos)
         end
 
+        def autocorrect(range)
+          PunctuationCorrector.swap_comma(range)
+        end
+
         private
 
         def avoid_autocorrect?(args)

@@ -39,6 +39,10 @@ module RuboCop
       class UnusedBlockArgument < Cop
         include UnusedArgument
 
+        def autocorrect(node)
+          UnusedArgCorrector.correct(processed_source, node)
+        end
+
         private
 
         def check_argument(variable)
