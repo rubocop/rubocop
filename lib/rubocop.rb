@@ -146,6 +146,7 @@ require_relative 'rubocop/cop/correctors/multiline_literal_brace_corrector'
 require_relative 'rubocop/cop/correctors/ordered_gem_corrector'
 require_relative 'rubocop/cop/correctors/parentheses_corrector'
 require_relative 'rubocop/cop/correctors/punctuation_corrector'
+require_relative 'rubocop/cop/correctors/space_corrector'
 require_relative 'rubocop/cop/correctors/string_literal_corrector'
 require_relative 'rubocop/cop/correctors/unused_arg_corrector'
 
