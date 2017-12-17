@@ -24,6 +24,8 @@ module RuboCop
         check(range, node, lhs, rhs)
       end
 
+      private
+
       # In a chain of method calls, we regard the top send node as the base
       # for indentation of all lines following the first. For example:
       # a.

@@ -4,6 +4,8 @@ module RuboCop
   module Cop
     # Common functionality for checking hash alignment.
     module HashAlignment
+      private
+
       # Handles calculation of deltas when the enforced style is 'key'.
       class KeyAlignment
         def checkable_layout?(_node)

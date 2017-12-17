@@ -43,6 +43,10 @@ module RuboCop
 
           check_method_line_break(node, args)
         end
+
+        def autocorrect(node)
+          EmptyLineCorrector.insert_before(node)
+        end
       end
     end
   end

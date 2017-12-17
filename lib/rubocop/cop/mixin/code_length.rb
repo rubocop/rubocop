@@ -6,6 +6,8 @@ module RuboCop
     module CodeLength
       include ConfigurableMax
 
+      private
+
       def max_length
         cop_config['Max']
       end

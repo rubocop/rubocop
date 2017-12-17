@@ -29,6 +29,10 @@ module RuboCop
         def on_block(node)
           check(node, node.body)
         end
+
+        def autocorrect(node)
+          EmptyLineCorrector.correct(node)
+        end
       end
     end
   end

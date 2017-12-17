@@ -15,22 +15,10 @@ module RuboCop
         MSG_DEFERRED = 'Empty line missing before first %<type>s ' \
                        'definition'.freeze
 
+        private
+
         def_node_matcher :constant_definition?, '{class module}'
         def_node_matcher :empty_line_required?, '{def defs class module}'
-
-        def autocorrect(args)
-          offense_style, range = args
-          lambda do |corrector|
-            case offense_style
-            when :no_empty_lines then
-              corrector.remove(range)
-            when :empty_lines then
-              corrector.insert_before(range, "\n")
-            end
-          end
-        end
-
-        private
 
         def check(node, body)
           # When style is `empty_lines`, if the body is empty, we don't enforce

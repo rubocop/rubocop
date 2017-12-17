@@ -73,6 +73,10 @@ module RuboCop
           check_body(body)
         end
 
+        def autocorrect(node)
+          EmptyLineCorrector.correct(node)
+        end
+
         private
 
         def check_body(node)

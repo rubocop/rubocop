@@ -5,6 +5,8 @@ module RuboCop
     # Handles `Max` configuration parameters, especially setting them to an
     # appropriate value with --auto-gen-config.
     module ConfigurableMax
+      private
+
       def max=(value)
         cfg = config_to_allow_offenses
         value = [cfg[max_parameter_name], value].max if cfg[max_parameter_name]
