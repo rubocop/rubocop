@@ -25,7 +25,7 @@ module RuboCop
       #   end
       #
       class TrailingBodyOnMethodDefinition < Cop
-        include AutocorrectAlignment
+        include Alignment
 
         MSG = "Place the first line of a multi-line method definition's " \
               'body on its own line.'.freeze

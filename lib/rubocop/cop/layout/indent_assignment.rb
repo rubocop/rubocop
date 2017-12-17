@@ -23,7 +23,7 @@ module RuboCop
       # other cops such as `IndentationConsistency` and `EndAlignment`.
       class IndentAssignment < Cop
         include CheckAssignment
-        include AutocorrectAlignment
+        include Alignment
 
         MSG = 'Indent the first line of the right-hand-side of a ' \
               'multi-line assignment.'.freeze
@@ -35,6 +35,10 @@ module RuboCop
 
           base = display_column(node.source_range)
           check_alignment([rhs], base + configured_indentation_width)
+        end
+
+        def autocorrect(node)
+          AlignmentCorrector.correct(processed_source, node, column_delta)
         end
       end
     end

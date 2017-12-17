@@ -80,7 +80,7 @@ module RuboCop
       #                             :completely_different
       #                           ]
       class IndentArray < Cop
-        include AutocorrectAlignment
+        include Alignment
         include ConfigurableEnforcedStyle
         include ArrayHashIndentation
 
@@ -95,6 +95,10 @@ module RuboCop
           each_argument_node(node, :array) do |array_node, left_parenthesis|
             check(array_node, left_parenthesis)
           end
+        end
+
+        def autocorrect(node)
+          AlignmentCorrector.correct(processed_source, node, @column_delta)
         end
 
         private

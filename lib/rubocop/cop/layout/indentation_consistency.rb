@@ -14,7 +14,7 @@ module RuboCop
       #     end
       #   end
       class IndentationConsistency < Cop
-        include AutocorrectAlignment
+        include Alignment
         include ConfigurableEnforcedStyle
 
         MSG = 'Inconsistent indentation detected.'.freeze
@@ -25,6 +25,10 @@ module RuboCop
 
         def on_kwbegin(node)
           check(node)
+        end
+
+        def autocorrect(node)
+          AlignmentCorrector.correct(processed_source, node, column_delta)
         end
 
         private
