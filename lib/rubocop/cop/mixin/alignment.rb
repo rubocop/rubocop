@@ -57,6 +57,15 @@ module RuboCop
           prev_line = current.loc.line
         end
       end
+
+      def display_column(range)
+        line = processed_source.lines[range.line - 1]
+        Unicode::DisplayWidth.of(line[0, range.column])
+      end
+
+      def within?(inner, outer)
+        inner.begin_pos >= outer.begin_pos && inner.end_pos <= outer.end_pos
+      end
     end
   end
 end
