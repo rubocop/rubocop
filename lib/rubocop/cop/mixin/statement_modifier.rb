@@ -4,6 +4,8 @@ module RuboCop
   module Cop
     # Common functionality for modifier cops.
     module StatementModifier
+      private
+
       def single_line_as_modifier?(node)
         return false if non_eligible_node?(node) ||
                         non_eligible_body?(node.body) ||

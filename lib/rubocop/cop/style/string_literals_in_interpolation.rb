@@ -23,6 +23,10 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include StringLiteralsHelp
 
+        def autocorrect(node)
+          StringLiteralCorrector.correct(node, style)
+        end
+
         private
 
         def message(*)
