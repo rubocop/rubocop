@@ -8,6 +8,8 @@ module RuboCop
     module SafeAssignment
       extend NodePattern::Macros
 
+      private
+
       def_node_matcher :empty_condition?, '(begin)'
       def_node_matcher :safe_assignment?,
                        '(begin {equals_asgn? asgn_method_call?})'

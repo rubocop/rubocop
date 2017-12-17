@@ -14,9 +14,7 @@ module RuboCop
         end
       end
 
-      def autocorrect(pos_before_punctuation)
-        ->(corrector) { corrector.remove(pos_before_punctuation) }
-      end
+      private
 
       def each_missing_space(tokens)
         tokens.each_cons(2) do |t1, t2|
