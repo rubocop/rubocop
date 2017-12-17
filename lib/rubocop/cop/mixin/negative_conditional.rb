@@ -10,6 +10,8 @@ module RuboCop
       MSG = 'Favor `%<inverse>s` over `%<current>s` for ' \
             'negative conditions.'.freeze
 
+      private
+
       def_node_matcher :single_negative?, '(send !(send _ :!) :!)'
       def_node_matcher :empty_condition?, '(begin)'
 

@@ -76,6 +76,15 @@ module RuboCop
           end
         end
 
+        def autocorrect(node)
+          OrderedGemCorrector.correct(
+            processed_source,
+            node,
+            previous_declaration(node),
+            treat_comments_as_separators
+          )
+        end
+
         private
 
         def previous_declaration(node)

@@ -7,6 +7,8 @@ module RuboCop
     module MultilineLiteralBraceLayout
       include ConfigurableEnforcedStyle
 
+      private
+
       def check_brace_layout(node)
         return if ignored_literal?(node)
 
@@ -16,8 +18,6 @@ module RuboCop
 
         check(node)
       end
-
-      private
 
       # Returns true for the case
       #   [a,
