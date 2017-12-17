@@ -1,5 +1,10 @@
 # These are all the cops that are disabled in the default configuration.
 
+Layout/ClassStructure:
+  Description: 'Enforces a configured order of definitions within a class body.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#consistent-classes'
+  Enabled: false
+
 Layout/FirstArrayElementLineBreak:
   Description: >-
                  Checks for a line break before the first element in a
