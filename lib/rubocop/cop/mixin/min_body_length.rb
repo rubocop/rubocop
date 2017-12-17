@@ -4,6 +4,8 @@ module RuboCop
   module Cop
     # Common functionality for checking minimum body length.
     module MinBodyLength
+      private
+
       def min_body_length?(node)
         (node.loc.end.line - node.loc.keyword.line) > min_body_length
       end

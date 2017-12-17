@@ -30,6 +30,10 @@ module RuboCop
         end
         alias on_defs on_def
 
+        def autocorrect(node)
+          EmptyLineCorrector.correct(node)
+        end
+
         private
 
         def style

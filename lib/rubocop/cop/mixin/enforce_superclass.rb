@@ -25,12 +25,6 @@ module RuboCop
           add_offense(node.children.last)
         end
       end
-
-      def autocorrect(node)
-        lambda do |corrector|
-          corrector.replace(node.source_range, self.class::SUPERCLASS)
-        end
-      end
     end
   end
 end

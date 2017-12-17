@@ -31,6 +31,10 @@ module RuboCop
           check(node, nil)
         end
 
+        def autocorrect(node)
+          EmptyLineCorrector.correct(node)
+        end
+
         private
 
         def style

@@ -8,6 +8,8 @@ module RuboCop
 
       NON_PUBLIC_MODIFIERS = %w[private protected].freeze
 
+      private
+
       def non_public?(node)
         non_public_modifier?(node.parent) ||
           preceding_non_public_modifier?(node)

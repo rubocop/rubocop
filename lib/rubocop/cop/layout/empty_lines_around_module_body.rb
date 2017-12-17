@@ -53,6 +53,10 @@ module RuboCop
           _name, body = *node
           check(node, body)
         end
+
+        def autocorrect(node)
+          EmptyLineCorrector.correct(node)
+        end
       end
     end
   end

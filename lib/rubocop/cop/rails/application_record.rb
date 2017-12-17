@@ -28,6 +28,12 @@ module RuboCop
         # rubocop:disable Layout/ClassStructure
         include RuboCop::Cop::EnforceSuperclass
         # rubocop:enable Layout/ClassStructure
+
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(node.source_range, self.class::SUPERCLASS)
+          end
+        end
       end
     end
   end
