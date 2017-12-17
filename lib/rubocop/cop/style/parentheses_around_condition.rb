@@ -37,6 +37,10 @@ module RuboCop
         end
         alias on_until on_while
 
+        def autocorrect(node)
+          ParenthesesCorrector.correct(node)
+        end
+
         private
 
         def_node_matcher :control_op_condition, <<-PATTERN
