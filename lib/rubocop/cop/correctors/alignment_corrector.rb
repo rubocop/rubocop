@@ -26,6 +26,15 @@ module RuboCop
           end
         end
 
+        def align_end(processed_source, node, align_to)
+          @processed_source = processed_source
+          whitespace = whitespace_range(node)
+          return false unless whitespace.source.strip.empty?
+
+          column = alignment_column(align_to)
+          ->(corrector) { corrector.replace(whitespace, ' ' * column) }
+        end
+
         private
 
         def autocorrect_line(corrector, line_begin_pos, expr, column_delta,
@@ -89,6 +98,22 @@ module RuboCop
 
         def begins_its_line?(range)
           (range.source_line =~ /\S/) == range.column
+        end
+
+        def whitespace_range(node)
+          begin_pos = node.loc.end.begin_pos
+
+          range_between(begin_pos - node.loc.end.column, begin_pos)
+        end
+
+        def alignment_column(align_to)
+          if !align_to
+            0
+          elsif align_to.respond_to?(:loc)
+            align_to.source_range.column
+          else
+            align_to.column
+          end
         end
       end
     end

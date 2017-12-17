@@ -62,9 +62,9 @@ module RuboCop
 
         def autocorrect(node)
           if style == :start_of_line && node.parent && node.parent.send_type?
-            align(node, node.parent)
+            AlignmentCorrector.align_end(processed_source, node, node.parent)
           else
-            align(node, node)
+            AlignmentCorrector.align_end(processed_source, node, node)
           end
         end
       end
