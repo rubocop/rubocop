@@ -76,6 +76,10 @@ module RuboCop
           check_brace_layout(node)
         end
 
+        def autocorrect(node)
+          MultilineLiteralBraceCorrector.correct(processed_source, node)
+        end
+
         private
 
         def children(node)

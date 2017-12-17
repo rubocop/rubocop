@@ -7,6 +7,7 @@ module RuboCop
     # variable column_delta.
     class AlignmentCorrector
       extend Util
+      extend Alignment
 
       class << self
         attr_reader :processed_source
