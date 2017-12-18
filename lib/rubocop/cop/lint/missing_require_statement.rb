@@ -105,12 +105,12 @@ module RuboCop
           { skip: node.children }
         end
 
-        def_node_matcher :module_or_class_name, <<-PATTERN
-          ({module class} (const nil? $_) ...)
+        def_node_matcher :is_module_or_class?, <<-PATTERN
+          ({module class} ...)
         PATTERN
 
-        def_node_matcher :inherited_class_name, <<-PATTERN
-          (class (const nil? _) (const nil? $_) ...)
+        def_node_matcher :has_superclass?, <<-PATTERN
+          (class (const ...) (const ...) ...)
         PATTERN
 
         def process_definition(node, source)
@@ -119,9 +119,9 @@ module RuboCop
             return 
           end
 
-          name = module_or_class_name(node)
-          inherited = inherited_class_name(node)
-          return unless name
+          return unless is_module_or_class?(node)
+          name = find_consts(node.children.first).join("::")
+          inherited = find_consts(node.children[1]).join("::") if has_superclass?(node)
 
           # Inheritance technically has to happen before the actual class definition
           self.timeline << { event: :const_inherit, name: inherited, node: node } if inherited
@@ -257,7 +257,6 @@ module RuboCop
 
         def undefine_const(const_name: nil)
           self.const_stack.pop
-          self.defined_constants.delete_if { |c| c.to_s == const_name }
         end
 
         def const_assigned(const_name: nil)
