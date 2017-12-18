@@ -11,6 +11,7 @@
 * [#5273](https://github.com/bbatsov/rubocop/issues/5273): Fix `Style/EvalWithLocation` reporting bad line offset. ([@pocke][])
 * [#5228](https://github.com/bbatsov/rubocop/issues/5228): Handle overridden `Metrics/LineLength:Max` for `--auto-gen-config`. ([@jonas054][])
 * [#5261](https://github.com/bbatsov/rubocop/issues/5261): Fix a false positive for `Style/MixinUsage` when using inside class or module. ([@koic][])
+* [#5278](https://github.com/bbatsov/rubocop/pull/5278): Fix deprecation check to use `loaded_path` in warning. ([@chrishulton][])
 
 ### Changes
 
@@ -3092,3 +3093,4 @@
 [@marcandre]: https://github.com/marcandre
 [@walf443]: https://github.com/walf443
 [@reitermarkus]: https://github.com/reitermarkus
+[@chrishulton]: https://github.com/chrishulton

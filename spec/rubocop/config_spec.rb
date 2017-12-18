@@ -516,6 +516,28 @@ describe RuboCop::Config do
     end
   end
 
+  describe '#check' do
+    subject(:configuration) do
+      described_class.new(hash, loaded_path)
+    end
+
+    let(:loaded_path) { 'example/.rubocop.yml' }
+
+    context 'when a deprecated configuration is detected' do
+      let(:hash) { { 'AllCops' => { 'Includes' => [] } } }
+
+      before { $stderr = StringIO.new }
+      after { $stderr = STDERR }
+
+      it 'prints a warning message for the loaded path' do
+        configuration.check
+        expect($stderr.string).to include(
+          "#{loaded_path} - AllCops/Includes was renamed"
+        )
+      end
+    end
+  end
+
   describe '#deprecation_check' do
     context 'when there is no AllCops configuration' do
       let(:hash) { {} }
