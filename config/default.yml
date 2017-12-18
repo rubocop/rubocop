@@ -552,9 +552,6 @@ Layout/SpaceInsideStringInterpolation:
     - no_space
 
 Layout/ClassStructure:
-  Description: 'Enforces a configured order of definitions within a class body.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#consistent-classes'
-  Enabled: false
   Categories:
     module_inclusion:
       - include
@@ -997,7 +994,6 @@ Style/HashSyntax:
   PreferHashRocketsForNonAlnumEndingSymbols: false
 
 Style/InverseMethods:
-  Enabled: true
   # `InverseMethods` are methods that can be inverted by a not (`not` or `!`)
   # The relationship of inverse methods only needs to be defined in one direction.
   # Keys and values both need to be defined as symbols.
