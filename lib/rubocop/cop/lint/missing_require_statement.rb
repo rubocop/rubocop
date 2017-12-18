@@ -246,12 +246,13 @@ module RuboCop
         def define_const(const_name: nil, is_part_of_stack: true)
           new = []
           self.defined_constants.each do |c|
-            found = Object.const_get("#{c}::#{name}") rescue nil
-            new << found if found
+            found = Object.const_get("#{c}::#{const_name}") rescue nil
+            new << found.to_s if found
           end
           self.defined_constants.push(*new)
           self.const_stack.push(const_name) if is_part_of_stack
-          self.defined_constants.push(const_name, self.const_stack.join("::"))
+          self.defined_constants.push(const_name.to_s, self.const_stack.join("::"))
+          self.defined_constants.uniq!
         end
 
         def undefine_const(const_name: nil)
@@ -262,6 +263,7 @@ module RuboCop
         def const_assigned(const_name: nil)
           full_name = [self.const_stack.join("::"), const_name].join("::")
           self.defined_constants << full_name
+          self.defined_constants.uniq!
         end
       end
     end
