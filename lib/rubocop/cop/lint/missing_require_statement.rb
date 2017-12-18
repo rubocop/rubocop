@@ -122,18 +122,20 @@ module RuboCop
           name = module_or_class_name(node)
           inherited = inherited_class_name(node)
           return unless name
+
+          # Inheritance technically has to happen before the actual class definition
+          self.timeline << { event: :const_inherit, name: inherited, node: node } if inherited
+
           self.timeline << { event: :const_def, name: name }
 
-          # Not entirely accurate, but the subclass has access to everything it's inherited, so this should work
-          self.timeline << { event: :const_def, name: inherited } if inherited
 
           # First child is the module/class name => skip or it'll be picked up by `process_const`
           skip_list = [node.children.first]
           skip_list << node.children[1] if inherited
 
           push_list = []
-          push_list << { event: :const_undef, name: inherited } if inherited
           push_list << { event: :const_undef, name: name }
+          push_list << { event: :const_undef, name: inherited } if inherited
 
 
           { skip: skip_list, push: push_list}
@@ -177,6 +179,13 @@ module RuboCop
                 state.undefine_const(const_name: event[:name])
               when :const_assign
                 state.const_assigned(const_name: event[:name])
+              when :const_inherit
+                success = state.access_const(const_name: event[:name])
+                if success
+                  state.define_const(const_name: event[:name], is_part_of_stack: false)
+                else
+                  err_indices << i
+                end
               end
             end
             err_indices
