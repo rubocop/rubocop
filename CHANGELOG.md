@@ -9,10 +9,12 @@
 * [#5224](https://github.com/bbatsov/rubocop/pull/5224): Fix false positives for `Layout/EmptyLinesAroundArguments` operating on blocks. ([@garettarrowood][])
 * [#5234](https://github.com/bbatsov/rubocop/issues/5234): Fix a false positive for `Rails/HasManyOrHasOneDependent` when using `class_name` option. ([@koic][])
 * [#5273](https://github.com/bbatsov/rubocop/issues/5273): Fix `Style/EvalWithLocation` reporting bad line offset. ([@pocke][])
+* [#5228](https://github.com/bbatsov/rubocop/issues/5228): Handle overridden `Metrics/LineLength:Max` for `--auto-gen-config`. ([@jonas054][])
 
 ### Changes
 
 * [#5233](https://github.com/bbatsov/rubocop/pull/5233): Remove `Style/ExtendSelf` cop. ([@pocke][])
+* [#5221](https://github.com/bbatsov/rubocop/issues/5221): Change `Layout/SpaceBeforeBlockBraces`'s `EnforcedStyleForEmptyBraces` from `no_space` to `space`. ([@garettarrowood][])
 
 ## 0.52.0 (2017-12-12)
 

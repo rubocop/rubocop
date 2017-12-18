@@ -6,6 +6,10 @@ module RuboCop
   class CLI
     include Formatter::TextUtil
 
+    SKIPPED_PHASE_1 = 'Phase 1 of 2: run Metrics/LineLength cop (skipped ' \
+                      'because the default Metrics/LineLength:Max is ' \
+                      'overridden)'.freeze
+
     class Finished < RuntimeError; end
 
     attr_reader :options, :config_store
@@ -54,11 +58,22 @@ module RuboCop
     def execute_runners(paths)
       if @options[:auto_gen_config]
         reset_config_and_auto_gen_file
-        line_length_contents = run_line_length_cop_auto_gen_config(paths)
+        line_length_contents =
+          if max_line_length(@config_store.for(Dir.pwd)) ==
+             max_line_length(ConfigLoader.default_configuration)
+            run_line_length_cop_auto_gen_config(paths)
+          else
+            puts Rainbow(SKIPPED_PHASE_1).yellow
+            ''
+          end
         run_all_cops_auto_gen_config(line_length_contents, paths)
       else
         execute_runner(paths)
       end
+    end
+
+    def max_line_length(config)
+      config.for_cop('Metrics/LineLength')['Max']
     end
 
     # Do an initial run with only Metrics/LineLength so that cops that depend
@@ -89,7 +104,7 @@ module RuboCop
 
     def reset_config_and_auto_gen_file
       @config_store = ConfigStore.new
-      File.open(ConfigLoader::AUTO_GENERATED_FILE, 'w'){}
+      File.open(ConfigLoader::AUTO_GENERATED_FILE, 'w') {}
       ConfigLoader.add_inheritance_from_auto_generated_file
     end
 

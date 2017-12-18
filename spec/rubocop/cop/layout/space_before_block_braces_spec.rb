@@ -63,11 +63,6 @@ describe RuboCop::Cop::Layout::SpaceBeforeBlockBraces, :config do
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
-    it 'auto-corrects unwanted space' do
-      new_source = autocorrect_source('each {}')
-      expect(new_source).to eq('each{}')
-    end
-
     it 'accepts left brace without outer space' do
       expect_no_offenses('each{ puts }')
     end

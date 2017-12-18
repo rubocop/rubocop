@@ -123,6 +123,107 @@ describe RuboCop::CLI, :isolated_environment do
                       'Style/For:',
                       '  Enabled: false']
 
+    context 'with Metrics/LineLength:Max overridden' do
+      before do
+        create_file('.rubocop.yml', ['Metrics/LineLength:',
+                                     "  Max: #{line_length_max}"])
+        create_file('.rubocop_todo.yml', [''])
+        create_file('example.rb', <<-RUBY.strip_indent)
+          def f
+          #{'  #' * 33}
+            if #{'a' * 80}
+              return y
+            end
+            z
+          end
+        RUBY
+      end
+
+      context 'when .rubocop.yml has Metrics/LineLength:Max less than code ' \
+              'base max' do
+        let(:line_length_max) { 90 }
+
+        it "bases other cops' configuration on the overridden LineLength:Max" do
+          expect(cli.run(['--auto-gen-config'])).to eq(1)
+          expect($stdout.string).to include(<<-YAML.strip_indent)
+            Added inheritance from `.rubocop_todo.yml` in `.rubocop.yml`.
+            Phase 1 of 2: run Metrics/LineLength cop (skipped because the default Metrics/LineLength:Max is overridden)
+            Phase 2 of 2: run all cops
+          YAML
+          # We generate a Metrics/LineLength:Max even though it's overridden in
+          # .rubocop.yml. We want to show somewhere what the actual maximum is.
+          #
+          # Note that there is no Style/IfUnlessModifier offense registered due
+          # to the Max:90 setting.
+          expect(IO.readlines('.rubocop_todo.yml')
+                  .drop_while { |line| line.start_with?('#') }.join)
+            .to eq(<<-YAML.strip_indent)
+
+              # Offense count: 1
+              # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
+              # URISchemes: http, https
+              Metrics/LineLength:
+                Max: 99
+            YAML
+          expect(IO.read('.rubocop.yml')).to eq(<<-YAML.strip_indent)
+            inherit_from: .rubocop_todo.yml
+
+            Metrics/LineLength:
+              Max: 90
+          YAML
+          $stdout = StringIO.new
+          expect(described_class.new.run(%w[--format simple])).to eq(1)
+          expect($stderr.string).to eq('')
+          expect($stdout.string).to eq(<<-OUTPUT.strip_indent)
+            == example.rb ==
+            C:  2: 91: Metrics/LineLength: Line is too long. [99/90]
+
+            1 file inspected, 1 offense detected
+          OUTPUT
+        end
+      end
+
+      context 'when .rubocop.yml has Metrics/LineLength:Max more than code ' \
+              'base max' do
+        let(:line_length_max) { 150 }
+
+        it "bases other cops' configuration on the overridden LineLength:Max" do
+          expect(cli.run(['--auto-gen-config'])).to eq(1)
+          expect($stdout.string).to include(<<-YAML.strip_indent)
+            Added inheritance from `.rubocop_todo.yml` in `.rubocop.yml`.
+            Phase 1 of 2: run Metrics/LineLength cop (skipped because the default Metrics/LineLength:Max is overridden)
+            Phase 2 of 2: run all cops
+          YAML
+          # The code base max line length is 99, but the setting Max:150
+          # overrides that so no Metrics/LineLength:Max setting is generated in
+          # .rubocop_todo.yml.
+          expect(IO.readlines('.rubocop_todo.yml')
+                  .drop_while { |line| line.start_with?('#') }.join)
+            .to eq(<<-YAML.strip_indent)
+
+              # Offense count: 1
+              # Cop supports --auto-correct.
+              Style/IfUnlessModifier:
+                Exclude:
+                  - 'example.rb'
+            YAML
+          expect(IO.read('.rubocop.yml')).to eq(<<-YAML.strip_indent)
+            inherit_from: .rubocop_todo.yml
+
+            Metrics/LineLength:
+              Max: 150
+          YAML
+          $stdout = StringIO.new
+          expect(described_class.new.run(%w[--format simple])).to eq(0)
+          expect($stderr.string).to eq('')
+          expect($stdout.string).to eq(<<-OUTPUT.strip_indent)
+
+            1 file inspected, no offenses detected
+          OUTPUT
+        end
+      end
+    end
+
     it 'overwrites an existing todo file' do
       create_file('example1.rb', ['x= 0 ',
                                   '#' * 85,

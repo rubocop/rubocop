@@ -2556,7 +2556,7 @@ foo.map { |a|
 Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `space` | `space`, `no_space`
-EnforcedStyleForEmptyBraces | `no_space` | `space`, `no_space`
+EnforcedStyleForEmptyBraces | `space` | `space`, `no_space`
 
 ## Layout/SpaceBeforeComma
 

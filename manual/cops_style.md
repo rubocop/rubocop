@@ -1834,6 +1834,61 @@ enable frozen string literals. Frozen string literals may be default
 in Ruby 3.0. The comment will be added below a shebang and encoding
 comment. The frozen string literal comment is only valid in Ruby 2.3+.
 
+### Examples
+
+#### EnforcedStyle: when_needed (default)
+
+```ruby
+# The `when_needed` style will add the frozen string literal comment
+# to files only when the `TargetRubyVersion` is set to 2.3+.
+# bad
+module Foo
+  # ...
+end
+
+# good
+# frozen_string_literal: true
+
+module Foo
+  # ...
+end
+```
+#### EnforcedStyle: always
+
+```ruby
+# The `always` style will always add the frozen string literal comment
+# to a file, regardless of the Ruby version or if `freeze` or `<<` are
+# called on a string literal.
+# bad
+module Bar
+  # ...
+end
+
+# good
+# frozen_string_literal: true
+
+module Bar
+  # ...
+end
+```
+#### EnforcedStyle: never
+
+```ruby
+# The `never` will enforce that the frozen string literal comment does
+# not exist in a file.
+# bad
+# frozen_string_literal: true
+
+module Baz
+  # ...
+end
+
+# good
+module Baz
+  # ...
+end
+```
+
 ### Configurable attributes
 
 Name | Default value | Configurable values
@@ -2122,6 +2177,23 @@ Enabled | Yes
 Checks for if and unless statements that would fit on one line
 if written as a modifier if/unless. The maximum line length is
 configured in the `Metrics/LineLength` cop.
+
+### Examples
+
+```ruby
+# bad
+if condition
+  do_stuff(bar)
+end
+
+unless qux.empty?
+  Foo.do_something
+end
+
+# good
+do_stuff(bar) if condition
+Foo.do_something unless qux.empty?
+```
 
 ### References
 
@@ -2529,6 +2601,94 @@ Enabled | Yes
 This cops checks for parentheses around the arguments in method
 definitions. Both instance and class/singleton methods are checked.
 
+### Examples
+
+#### EnforcedStyle: require_parentheses (default)
+
+```ruby
+# The `require_parentheses` style requires method definitions
+# to always use parentheses
+
+# bad
+def bar num1, num2
+  num1 + num2
+end
+
+def foo descriptive_var_name,
+        another_descriptive_var_name,
+        last_descriptive_var_name
+  do_something
+end
+
+# good
+def bar(num1, num2)
+  num1 + num2
+end
+
+def foo(descriptive_var_name,
+        another_descriptive_var_name,
+        last_descriptive_var_name)
+  do_something
+end
+```
+#### EnforcedStyle: require_no_parentheses
+
+```ruby
+# The `require_no_parentheses` style requires method definitions
+# to never use parentheses
+
+# bad
+def bar(num1, num2)
+  num1 + num2
+end
+
+def foo(descriptive_var_name,
+        another_descriptive_var_name,
+        last_descriptive_var_name)
+  do_something
+end
+
+# good
+def bar num1, num2
+  num1 + num2
+end
+
+def foo descriptive_var_name,
+        another_descriptive_var_name,
+        last_descriptive_var_name
+  do_something
+end
+```
+#### EnforcedStyle: require_no_parentheses_except_multiline
+
+```ruby
+# The `require_no_parentheses_except_multiline` style prefers no
+# parantheses when method definition arguments fit on single line,
+# but prefers parantheses when arguments span multiple lines.
+
+# bad
+def bar(num1, num2)
+  num1 + num2
+end
+
+def foo descriptive_var_name,
+        another_descriptive_var_name,
+        last_descriptive_var_name
+  do_something
+end
+
+# good
+def bar num1, num2
+  num1 + num2
+end
+
+def foo(descriptive_var_name,
+        another_descriptive_var_name,
+        last_descriptive_var_name)
+  do_something
+end
+```
+
 ### Configurable attributes
 
 Name | Default value | Configurable values
@@ -2918,6 +3078,28 @@ Enabled by default | Supports autocorrection
 Enabled | No
 
 This cop checks for multi-line ternary op expressions.
+
+### Examples
+
+```ruby
+# bad
+a = cond ?
+  b : c
+a = cond ? b :
+    c
+a = cond ?
+    b :
+    c
+
+# good
+a = cond ? b : c
+a =
+  if cond
+    b
+  else
+    c
+  end
+```
 
 ### References
 
