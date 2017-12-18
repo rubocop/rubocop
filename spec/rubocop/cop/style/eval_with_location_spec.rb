@@ -49,6 +49,16 @@ describe RuboCop::Cop::Style::EvalWithLocation do
     RUBY
   end
 
+  it 'registers an offense when using `#eval` with a string on a new line ' do
+    expect_offense(<<-RUBY.strip_indent)
+      eval('puts 42',
+           binding,
+           __FILE__,
+           __LINE__)
+           ^^^^^^^^ Use `__LINE__ - 3` instead of `__LINE__`, as they are used by backtraces.
+    RUBY
+  end
+
   it 'registers an offense when using `#class_eval` without any arguments' do
     expect_offense(<<-RUBY.strip_indent)
       C.class_eval <<-CODE
