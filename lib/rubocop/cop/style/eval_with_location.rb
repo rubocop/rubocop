@@ -137,7 +137,7 @@ module RuboCop
           add_offense(
             node,
             location: line_node.loc.expression,
-            message: message_incorrect_line(line_node, sign, line_diff)
+            message: message_incorrect_line(line_node, sign, line_diff.abs)
           )
         end
       end
