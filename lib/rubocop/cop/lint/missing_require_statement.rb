@@ -236,10 +236,11 @@ module RuboCop
         def access_const(const_name: nil)
           name = const_name.to_s.sub(/^:*/, '').sub(/:*$/, '') # Strip leading/trailing ::
           prefix = self.const_stack.join("::")
-          result = Object.const_defined?(name)                                                   # Defined elsewhere, top-level
-          result ||= self.defined_constants.find { |c| Object.const_defined?("#{c}::#{name}") }  # Defined elsewhere, nested
-          result ||= self.defined_constants.find { |c| [name, "#{prefix}::#{name}"].include? c } # Defined in this file, other module/class
-          result ||= self.const_stack.join("::") == name                                         # Defined in this file, in current module/class
+          # I use const_get here because in testing const_get and const_defined? have yielded different results
+          result = Object.const_get(name) rescue nil                                                   # Defined elsewhere, top-level
+          result ||= self.defined_constants.find { |c| Object.const_get("#{c}::#{name}") rescue nil }  # Defined elsewhere, nested
+          result ||= self.defined_constants.find { |c| [name, "#{prefix}::#{name}"].include? c }       # Defined in this file, other module/class
+          result ||= self.const_stack.join("::") == name                                               # Defined in this file, in current module/class
           return result
         end
 
