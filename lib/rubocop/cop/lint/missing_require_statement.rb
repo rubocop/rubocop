@@ -170,7 +170,7 @@ module RuboCop
               when :require_relative
                 path_to_investigated_file = event[:path]
                 relative_path = File.expand_path(File.join(File.dirname(path_to_investigated_file), event[:file]))
-                state.require_rel(relative_path: relative_path)
+                state.require_relative(relative_path: relative_path)
               when :const_access
                 err_indices << i unless state.access_const(const_name: event[:name])
               when :const_def
@@ -226,12 +226,11 @@ module RuboCop
         end
 
         def require(file: nil)
-          require file
+          Kernel.require(file)
         end
 
-        # naming this `require_relative` doesn't work
-        def require_rel(relative_path: nil)
-          require_relative relative_path
+        def require_relative(relative_path: nil)
+          Kernel.require_relative(relative_path)
         end
 
         def access_const(const_name: nil)
