@@ -159,44 +159,24 @@ module RuboCop
         def check_timeline(timeline)
           # To avoid having to marshal/unmarshal the nodes, the fork will just return indices with an error
           err_indices = perform_in_fork do
+            state = State.new
             err_indices = []
-            defined_constants = []
-            const_stack = []
             timeline.each_with_index do |event, i|
               case event[:event]
               when :require
-                begin 
-                  require event[:file]
-                rescue Exception
-                end
+                state.require(file: event[:file])
               when :require_relative
                 path_to_investigated_file = event[:path]
                 relative_path = File.expand_path(File.join(File.dirname(path_to_investigated_file), event[:file]))
-                require_relative relative_path rescue nil
-              when :const_def
-                name = event[:name]
-                new = []
-                defined_constants.each do |c|
-                  found = Object.const_get("#{c}::#{name}") rescue nil
-                  new << found if found
-                end
-                defined_constants.push(*new)
-                const_stack.push(event[:name])
-                defined_constants.push(event[:name], const_stack.join("::"))
-              when :const_undef
-                const_stack.pop
-                defined_constants.delete_if { |c| c.to_s == event[:name] }
+                state.require_rel(relative_path: relative_path)
               when :const_access
-                name = event[:name]
-                prefix = const_stack.join("::")
-                result = Object.const_get(name.to_s) rescue nil                                        # Defined elsewhere, top-level
-                result ||= defined_constants.find { |c| Object.const_get("#{c}::#{name}") rescue nil } # Defined elsewhere, nested
-                result ||= defined_constants.find { |c| [name.to_s, "#{prefix}::#{name}"].include? c } # Defined in this file, other module/class
-                result ||= const_stack.join("::") == name.to_s                                         # Defined in this file, in current module/class
-                err_indices << i unless result
+                err_indices << i unless state.access_const(const_name: event[:name])
+              when :const_def
+                state.define_const(const_name: event[:name])
+              when :const_undef
+                state.undefine_const(const_name: event[:name])
               when :const_assign
-                full_name = [const_stack.join("::"), event[:name]].join("::")
-                defined_constants << full_name
+                state.const_assigned(const_name: event[:name])
               end
             end
             err_indices
@@ -224,6 +204,56 @@ module RuboCop
           raise "An error occured while forking" unless status == 0
 
           return result
+        end
+      end
+
+      class State
+        attr_accessor :defined_constants
+        attr_accessor :const_stack
+
+        def initialize
+          self.defined_constants = []
+          self.const_stack = []
+        end
+
+        def require(file: nil)
+          require file
+        end
+
+        # naming this `require_relative` doesn't work
+        def require_rel(relative_path: nil)
+          require_relative relative_path
+        end
+
+        def access_const(const_name: nil)
+          name = const_name.to_s.sub(/^:*/, '').sub(/:*$/, '') # Strip leading/trailing ::
+          prefix = self.const_stack.join("::")
+          result = Object.const_defined?(name)                                                   # Defined elsewhere, top-level
+          result ||= self.defined_constants.find { |c| Object.const_defined?("#{c}::#{name}") }  # Defined elsewhere, nested
+          result ||= self.defined_constants.find { |c| [name, "#{prefix}::#{name}"].include? c } # Defined in this file, other module/class
+          result ||= self.const_stack.join("::") == name                                         # Defined in this file, in current module/class
+          return result
+        end
+
+        def define_const(const_name: nil, is_part_of_stack: true)
+          new = []
+          self.defined_constants.each do |c|
+            found = Object.const_get("#{c}::#{name}") rescue nil
+            new << found if found
+          end
+          self.defined_constants.push(*new)
+          self.const_stack.push(const_name) if is_part_of_stack
+          self.defined_constants.push(const_name, self.const_stack.join("::"))
+        end
+
+        def undefine_const(const_name: nil)
+          self.const_stack.pop
+          self.defined_constants.delete_if { |c| c.to_s == const_name }
+        end
+
+        def const_assigned(const_name: nil)
+          full_name = [self.const_stack.join("::"), const_name].join("::")
+          self.defined_constants << full_name
         end
       end
     end
