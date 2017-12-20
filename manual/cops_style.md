@@ -492,7 +492,7 @@ Checks for uses of the character literal ?x.
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | No
+Enabled | Yes
 
 This cop checks the style of children definitions at classes and
 modules. Basically there are two different styles:
@@ -524,6 +524,7 @@ end
 
 Name | Default value | Configurable values
 --- | --- | ---
+AutoCorrect | `false` | Boolean
 EnforcedStyle | `nested` | `nested`, `compact`
 
 ### References

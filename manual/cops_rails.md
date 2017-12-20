@@ -249,20 +249,32 @@ and only 'to_time' is reported as warning.
 
 ### Examples
 
-```ruby
-# no offense
-Time.zone.today
-Time.zone.today - 1.day
+#### EnforcedStyle: strict
 
-# flexible
+```ruby
+# bad
 Date.current
 Date.yesterday
+Date.today
+date.to_time
+date.to_time_in_current_zone
 
-# always reports offense
+# good
+Time.zone.today
+Time.zone.today - 1.day
+```
+#### EnforcedStyle: flexible (default)
+
+```ruby
+# bad
 Date.today
 date.to_time
 
-# reports offense only when style is 'strict'
+# good
+Time.zone.today
+Time.zone.today - 1.day
+Date.current
+Date.yesterday
 date.to_time_in_current_zone
 ```
 
