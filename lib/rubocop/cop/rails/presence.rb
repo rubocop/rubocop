@@ -96,7 +96,7 @@ module RuboCop
         private
 
         def replacement(receiver, other)
-          or_source = other.nil_type? ? '' : " || #{other.source}"
+          or_source = other.nil? || other.nil_type? ? '' : " || #{other.source}"
           "#{receiver.source}.presence" + or_source
         end
       end
