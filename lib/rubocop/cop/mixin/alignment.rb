@@ -2,9 +2,8 @@
 
 module RuboCop
   module Cop
-    # This module checks for of nodes that should just be moved to
-    # the left or to the right, amount being determined by the instance
-    # variable @column_delta.
+    # This module checks for nodes that should be aligned to the left or right.
+    # This amount is determined by the instance variable @column_delta.
     module Alignment
       private
 
