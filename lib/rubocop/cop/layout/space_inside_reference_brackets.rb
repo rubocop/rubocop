@@ -39,7 +39,7 @@ module RuboCop
           return if node.multiline?
           return unless left_ref_bracket(node)
           left_token = left_ref_bracket(node)
-          right_token = right_ref_bracket(node, left_token)
+          right_token = closing_bracket(node, left_token)
 
           if style == :no_space
             no_space_offenses(node, left_token, right_token, MSG)
@@ -65,16 +65,24 @@ module RuboCop
 
         def reference_brackets(node)
           left = left_ref_bracket(node)
-          [left, right_ref_bracket(node, left)]
+          [left, closing_bracket(node, left)]
         end
 
         def left_ref_bracket(node)
           tokens(node).reverse.find(&:left_ref_bracket?)
         end
 
-        def right_ref_bracket(node, token)
-          i = tokens(node).index(token)
-          tokens(node).slice(i..-1).find(&:right_bracket?)
+        def closing_bracket(node, opening_bracket)
+          i = tokens(node).index(opening_bracket)
+          inner_left_brackets_needing_closure = 0
+
+          tokens(node)[i..-1].each do |token|
+            inner_left_brackets_needing_closure += 1 if token.left_bracket?
+            inner_left_brackets_needing_closure -= 1 if token.right_bracket?
+            if inner_left_brackets_needing_closure.zero? && token.right_bracket?
+              return token
+            end
+          end
         end
       end
     end

@@ -50,6 +50,10 @@ module RuboCop
       type == :tLBRACK2
     end
 
+    def left_bracket?
+      %i[tLBRACK tLBRACK2].include?(type)
+    end
+
     def right_bracket?
       type == :tRBRACK
     end
