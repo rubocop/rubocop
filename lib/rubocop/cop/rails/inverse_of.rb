@@ -10,17 +10,96 @@ module RuboCop
       # for associations to work in both ways, or set to `false` to opt-out.
       #
       # @example
+      #   # good
+      #   class Blog < ApplicationRecord
+      #     has_many :posts
+      #   end
+      #
+      #   class Post < ApplicationRecord
+      #     belongs_to :blog
+      #   end
+      #
+      # @example
       #   # bad
       #   class Blog < ApplicationRecord
-      #     has_many :recent_posts, -> { order(published_at: :desc) }
+      #     has_many :posts, -> { order(published_at: :desc) }
+      #   end
+      #
+      #   class Post < ApplicationRecord
+      #     belongs_to :blog
       #   end
       #
       #   # good
       #   class Blog < ApplicationRecord
-      #     has_many(:recent_posts,
+      #     has_many(:posts,
       #       -> { order(published_at: :desc) },
       #       inverse_of: :blog
       #     )
+      #   end
+      #
+      #   class Post < ApplicationRecord
+      #     belongs_to :blog
+      #   end
+      #
+      # @example
+      #   # bad
+      #   class Picture < ApplicationRecord
+      #     belongs_to :imageable, polymorphic: true
+      #   end
+      #
+      #   class Employee < ApplicationRecord
+      #     has_many :pictures, as: :imageable
+      #   end
+      #
+      #   class Product < ApplicationRecord
+      #     has_many :pictures, as: :imageable
+      #   end
+      #
+      #   # good
+      #   class Picture < ApplicationRecord
+      #     belongs_to :imageable, polymorphic: true
+      #   end
+      #
+      #   class Employee < ApplicationRecord
+      #     has_many :pictures, as: :imageable, inverse_of: :imageable
+      #   end
+      #
+      #   class Product < ApplicationRecord
+      #     has_many :pictures, as: :imageable, inverse_of: :imageable
+      #   end
+      #
+      # @example
+      #   # bad
+      #   # However, RuboCop can not detect this pattern...
+      #   class Physician < ApplicationRecord
+      #     has_many :appointments
+      #     has_many :patients, through: :appointments
+      #   end
+      #
+      #   class Appointment < ApplicationRecord
+      #     belongs_to :physician
+      #     belongs_to :patient
+      #   end
+      #
+      #   class Patient < ApplicationRecord
+      #     has_many :appointments
+      #     has_many :physicians, through: :appointments
+      #   end
+      #
+      #   # good
+      #   class Physician < ApplicationRecord
+      #     has_many :appointments
+      #     has_many :patients, through: :appointments
+      #   end
+      #
+      #   class Appointment < ApplicationRecord
+      #     belongs_to :physician, inverse_of: :appointments
+      #     belongs_to :patient, inverse_of: :appointments
+      #   end
+      #
+      #   class Patient < ApplicationRecord
+      #     has_many :appointments
+      #     has_many :physicians, through: :appointments
       #   end
       #
       # @see http://guides.rubyonrails.org/association_basics.html#bi-directional-associations
@@ -52,6 +131,14 @@ module RuboCop
           (pair (sym :polymorphic) !nil)
         PATTERN
 
+        def_node_matcher :as_option?, <<-PATTERN
+          (pair (sym :as) !nil)
+        PATTERN
+
+        def_node_matcher :class_name_option?, <<-PATTERN
+          (pair (sym :class_name) !nil)
+        PATTERN
+
         def_node_matcher :foreign_key_option?, <<-PATTERN
           (pair (sym :foreign_key) !nil)
         PATTERN
@@ -65,6 +152,8 @@ module RuboCop
           return unless arguments
 
           options = arguments.flat_map { |arg| options_from_argument(arg) }
+          return if options_ignoring_inverse_of?(options)
+
           return unless scope?(arguments) ||
                         options_requiring_inverse_of?(options)
 
@@ -79,12 +168,18 @@ module RuboCop
         def options_requiring_inverse_of?(options)
           required = options.any? do |opt|
             conditions_option?(opt) ||
-              through_option?(opt) ||
+              class_name_option?(opt) ||
               foreign_key_option?(opt)
           end
 
           return required if target_rails_version >= 5.2
-          required || options.any? { |opt| polymorphic_option?(opt) }
+          required || options.any? { |opt| as_option?(opt) }
+        end
+
+        def options_ignoring_inverse_of?(options)
+          options.any? do |opt|
+            through_option?(opt) || polymorphic_option?(opt)
+          end
         end
 
         def options_contain_inverse_of?(options)

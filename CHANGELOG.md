@@ -18,6 +18,7 @@
 * [#5293](https://github.com/bbatsov/rubocop/issues/5293): Fix a regression for `Rails/HasManyOrHasOneDependent` when using a option of `has_many` or `has_one` association. ([@koic][])
 * [#5223](https://github.com/bbatsov/rubocop/issues/5223): False offences in :unannotated Style/FormatStringToken. ([@nattfodd][])
 * [#5258](https://github.com/bbatsov/rubocop/issues/5258): Fix incorrect autocorrection for `Rails/Presence` when the else block is multiline. ([@wata727][])
+* [#5297](https://github.com/bbatsov/rubocop/pull/5297): Improve inspection for `Rails/InverseOf` when including `through` or `polymorphic` options. ([@wata727][])
 
 ### Changes
 
