@@ -79,14 +79,21 @@ module RuboCop
         output.puts
         cfg = self.class.config_to_allow_offenses[cop_name] || {}
 
-        output_cop_comments(output, cfg, cop_name, offense_count)
-        output_cop_config(output, cfg, cop_name)
+        # To avoid malformed YAML when potentially reading the config in
+        # #excludes, we use an output buffer and append it to the actual output
+        # only when it results in valid YAML.
+        output_buffer = StringIO.new
+        output_cop_comments(output_buffer, cfg, cop_name, offense_count)
+        output_cop_config(output_buffer, cfg, cop_name)
+        output.puts(output_buffer.string)
       end
 
-      def output_cop_comments(output, cfg, cop_name, offense_count)
-        output.puts "# Offense count: #{offense_count}" if @show_offense_counts
+      def output_cop_comments(output_buffer, cfg, cop_name, offense_count)
+        if @show_offense_counts
+          output_buffer.puts "# Offense count: #{offense_count}"
+        end
         if COPS[cop_name] && COPS[cop_name].first.new.support_autocorrect?
-          output.puts '# Cop supports --auto-correct.'
+          output_buffer.puts '# Cop supports --auto-correct.'
         end
 
         default_cfg = default_config(cop_name)
@@ -95,7 +102,7 @@ module RuboCop
         params = cop_config_params(default_cfg, cfg)
         return if params.empty?
 
-        output_cop_param_comments(params, default_cfg)
+        output_cop_param_comments(output_buffer, params, default_cfg)
       end
 
       def cop_config_params(default_cfg, cfg)
@@ -104,15 +111,17 @@ module RuboCop
           cfg.keys
       end
 
-      def output_cop_param_comments(params, default_cfg)
+      def output_cop_param_comments(output_buffer, params, default_cfg)
         config_params = params.reject { |p| p.start_with?('Supported') }
-        output.puts "# Configuration parameters: #{config_params.join(', ')}."
+        output_buffer.puts(
+          "# Configuration parameters: #{config_params.join(', ')}."
+        )
 
         params.each do |param|
           value = default_cfg[param]
           if value.is_a?(Array)
             next if value.empty?
-            output.puts "# #{param}: #{value.join(', ')}"
+            output_buffer.puts "# #{param}: #{value.join(', ')}"
           end
         end
       end
@@ -121,38 +130,38 @@ module RuboCop
         RuboCop::ConfigLoader.default_configuration[cop_name]
       end
 
-      def output_cop_config(output, cfg, cop_name)
+      def output_cop_config(output_buffer, cfg, cop_name)
         # 'Enabled' option will be put into file only if exclude
         # limit is exceeded.
         cfg_without_enabled = cfg.reject { |key| key == 'Enabled' }
 
-        output.puts "#{cop_name}:"
+        output_buffer.puts "#{cop_name}:"
         cfg_without_enabled.each do |key, value|
           value = value[0] if value.is_a?(Array)
-          output.puts "  #{key}: #{value}"
+          output_buffer.puts "  #{key}: #{value}"
         end
 
-        output_offending_files(output, cfg_without_enabled, cop_name)
+        output_offending_files(output_buffer, cfg_without_enabled, cop_name)
       end
 
-      def output_offending_files(output, cfg, cop_name)
+      def output_offending_files(output_buffer, cfg, cop_name)
         return unless cfg.empty?
 
         offending_files = @files_with_offenses[cop_name].uniq.sort
         if offending_files.count > @exclude_limit
-          output.puts '  Enabled: false'
+          output_buffer.puts '  Enabled: false'
         else
-          output_exclude_list(output, offending_files, cop_name)
+          output_exclude_list(output_buffer, offending_files, cop_name)
         end
       end
 
-      def output_exclude_list(output, offending_files, cop_name)
+      def output_exclude_list(output_buffer, offending_files, cop_name)
         require 'pathname'
         parent = Pathname.new(Dir.pwd)
 
-        output.puts '  Exclude:'
+        output_buffer.puts '  Exclude:'
         excludes(offending_files, cop_name, parent).each do |file|
-          output_exclude_path(output, file, parent)
+          output_exclude_path(output_buffer, file, parent)
         end
       end
 
@@ -168,12 +177,12 @@ module RuboCop
         ((cfg['Exclude'] || []) + offending_files).uniq
       end
 
-      def output_exclude_path(output, file, parent)
+      def output_exclude_path(output_buffer, file, parent)
         file_path = Pathname.new(file)
         relative = file_path.relative_path_from(parent)
-        output.puts "    - '#{relative}'"
+        output_buffer.puts "    - '#{relative}'"
       rescue ArgumentError
-        output.puts "    - '#{file}'"
+        output_buffer.puts "    - '#{file}'"
       end
     end
   end
