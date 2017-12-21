@@ -13,6 +13,7 @@
 * [#5226](https://github.com/bbatsov/rubocop/issues/5226): Suppress false positives for `Rails/RedundantReceiverInWithOptions` when including another receiver in `with_options`. ([@wata727][])
 * [#5238](https://github.com/bbatsov/rubocop/pull/5238): Fix error when #present? or #blank? is used in if or unless modifier. ([@eitoball][])
 * [#5261](https://github.com/bbatsov/rubocop/issues/5261): Fix a false positive for `Style/MixinUsage` when using inside class or module. ([@koic][])
+* [#4444](https://github.com/bbatsov/rubocop/issues/4444): Fix `Style/AutoResourceCleanup` shouldn't flag `File.open(...).close. ([@dpostorivo][])
 * [#5278](https://github.com/bbatsov/rubocop/pull/5278): Fix deprecation check to use `loaded_path` in warning. ([@chrishulton][])
 
 ### Changes
