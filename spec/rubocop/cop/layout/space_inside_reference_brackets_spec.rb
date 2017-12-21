@@ -44,6 +44,10 @@ describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       expect_no_offenses('subject.[](0)')
     end
 
+    it 'accepts an array as a reference object' do
+      expect_no_offenses('a[[ 1, 2 ]]')
+    end
+
     it 'registers offense in ref brackets with leading whitespace' do
       expect_offense(<<-RUBY.strip_indent)
         a[  :key]
@@ -134,7 +138,7 @@ describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
     end
   end
 
-  context 'when EnforcedStyle is no_space' do
+  context 'when EnforcedStyle is space' do
     let(:cop_config) { { 'EnforcedStyle' => 'space' } }
 
     it 'does not register offense for array literals' do
@@ -173,6 +177,10 @@ describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
 
     it 'accepts square brackets called with method call syntax' do
       expect_no_offenses('subject.[](0)')
+    end
+
+    it 'accepts an array as a reference object' do
+      expect_no_offenses('a[ [1, 2] ]')
     end
 
     it 'registers offense in ref brackets with no leading whitespace' do

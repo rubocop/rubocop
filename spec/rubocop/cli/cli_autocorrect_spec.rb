@@ -309,6 +309,99 @@ describe RuboCop::CLI, :isolated_environment do
     end
   end
 
+  context 'space_inside_bracket cops' do
+    let(:source) do
+      <<-RUBY.strip_indent
+        [ a[b], c[ d ], [1, 2] ]
+        foo[[ 3, 4 ], [5, 6] ]
+      RUBY
+    end
+
+    let(:config) do
+      {
+        'Layout/SpaceInsideArrayLiteralBrackets' => {
+          'EnforcedStyle' => array_style
+        },
+        'Layout/SpaceInsideReferenceBrackets' => {
+          'EnforcedStyle' => reference_style
+        }
+      }
+    end
+
+    before do
+      create_file('example.rb', source)
+      create_file('.rubocop.yml', YAML.dump(config))
+    end
+
+    shared_examples 'corrects offenses' do
+      it 'corrects SpaceInsideArrayLiteralBrackets and ' \
+         'SpaceInsideReferenceBrackets' do
+        cli.run(['--auto-correct'])
+
+        expect(IO.read('example.rb'))
+          .to eq(corrected_source)
+
+        expect($stderr.string).to eq('')
+      end
+    end
+
+    context 'when array style is space & reference style is no space' do
+      let(:array_style) { 'space' }
+      let(:reference_style) { 'no_space' }
+
+      let(:corrected_source) do
+        <<-RUBY.strip_indent
+          [ a[b], c[d], [ 1, 2 ] ]
+          foo[[ 3, 4 ], [ 5, 6 ]]
+        RUBY
+      end
+
+      include_examples 'corrects offenses'
+    end
+
+    context 'when array style is no_space & reference style is space' do
+      let(:array_style) { 'no_space' }
+      let(:reference_style) { 'space' }
+
+      let(:corrected_source) do
+        <<-RUBY.strip_indent
+          [a[ b ], c[ d ], [1, 2]]
+          foo[ [3, 4], [5, 6] ]
+        RUBY
+      end
+
+      include_examples 'corrects offenses'
+    end
+
+    context 'when array style is compact & reference style is no_space' do
+      let(:array_style) { 'compact' }
+      let(:reference_style) { 'no_space' }
+
+      let(:corrected_source) do
+        <<-RUBY.strip_indent
+          [ a[b], c[d], [ 1, 2 ]]
+          foo[[ 3, 4 ], [ 5, 6 ]]
+        RUBY
+      end
+
+      include_examples 'corrects offenses'
+    end
+
+    context 'when array style is compact & reference style is space' do
+      let(:array_style) { 'compact' }
+      let(:reference_style) { 'space' }
+
+      let(:corrected_source) do
+        <<-RUBY.strip_indent
+          [ a[ b ], c[ d ], [ 1, 2 ]]
+          foo[ [ 3, 4 ], [ 5, 6 ] ]
+        RUBY
+      end
+
+      include_examples 'corrects offenses'
+    end
+  end
+
   it 'corrects IndentationWidth, RedundantBegin, and ' \
      'RescueEnsureAlignment offenses' do
     source = <<-RUBY.strip_indent
