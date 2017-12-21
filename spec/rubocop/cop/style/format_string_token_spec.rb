@@ -12,6 +12,32 @@ describe RuboCop::Cop::Style::FormatStringToken, :config do
     }
   end
 
+  it 'false positives for SQL string matches' do
+    inspect_source(<<~EOS)
+      ActiveRecord::Base.connection.execute(
+        "select * from comments where text like '%search_string%'"
+      )
+    EOS
+
+    expect(cop.highlights).to be_empty
+  end
+
+  it 'false positives for HAML literals' do
+    inspect_source(<<~EOS)
+      raw_haml = "%div.some-class hello I'm a div"
+    EOS
+
+    expect(cop.highlights).to be_empty
+  end
+
+  it 'false positives for %-encoded URL literals' do
+    inspect_source(<<~EOS)
+      expect(response.request.fullpath).to eq '/status?some_param=%EF%BF%BD'
+    EOS
+
+    expect(cop.highlights).to be_empty
+  end
+
   shared_examples 'format string token style' do |name, good, bad|
     bad_style1 = bad
 
