@@ -23,12 +23,20 @@ describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
     end
 
     it 'does not register an offense when specifying `:dependent` strategy' do
-      expect_no_offenses('has_one :foo, dependent: :bar')
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class Person
+          has_one :foo, dependent: :destroy
+        end
+      RUBY
     end
 
     context 'with :through option' do
       it 'does not register an offense for non-nil value' do
-        expect_no_offenses('has_one :foo, through: :bar')
+        expect_no_offenses(<<-RUBY.strip_indent)
+          class Person
+            has_one :foo, through: :bar
+          end
+        RUBY
       end
 
       it 'registers an offense for nil value' do
