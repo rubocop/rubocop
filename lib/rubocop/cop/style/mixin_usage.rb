@@ -53,8 +53,9 @@ module RuboCop
 
         def on_send(node)
           include_statement(node) do |statement|
-            return if node.argument?
-            return if accepted_include?(node)
+            return if node.argument? ||
+                      accepted_include?(node) ||
+                      belongs_to_class_or_module?(node)
 
             add_offense(node, message: format(MSG, statement: statement))
           end
@@ -64,6 +65,16 @@ module RuboCop
 
         def accepted_include?(node)
           node.parent && node.macro?
+        end
+
+        def belongs_to_class_or_module?(node)
+          if !node.parent
+            false
+          else
+            return true if node.parent.class_type? || node.parent.module_type?
+
+            belongs_to_class_or_module?(node.parent)
+          end
         end
       end
     end

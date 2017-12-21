@@ -11,6 +11,9 @@
 * [#5273](https://github.com/bbatsov/rubocop/issues/5273): Fix `Style/EvalWithLocation` reporting bad line offset. ([@pocke][])
 * [#5228](https://github.com/bbatsov/rubocop/issues/5228): Handle overridden `Metrics/LineLength:Max` for `--auto-gen-config`. ([@jonas054][])
 * [#5226](https://github.com/bbatsov/rubocop/issues/5226): Suppress false positives for `Rails/RedundantReceiverInWithOptions` when including another receiver in `with_options`. ([@wata727][])
+* [#5238](https://github.com/bbatsov/rubocop/pull/5238): Fix error when #present? or #blank? is used in if or unless modifier. ([@eitoball][])
+* [#5261](https://github.com/bbatsov/rubocop/issues/5261): Fix a false positive for `Style/MixinUsage` when using inside class or module. ([@koic][])
+* [#5278](https://github.com/bbatsov/rubocop/pull/5278): Fix deprecation check to use `loaded_path` in warning. ([@chrishulton][])
 
 ### Changes
 
@@ -47,6 +50,7 @@
 * [#5177](https://github.com/bbatsov/rubocop/pull/5177): Add new `Rails/LexicallyScopedActionFilter` cop. ([@wata727][])
 * [#5173](https://github.com/bbatsov/rubocop/pull/5173): Add new `Style/EvalWithLocation` cop. ([@pocke][])
 * [#5208](https://github.com/bbatsov/rubocop/pull/5208): Add new `Rails/Presence` cop. ([@wata727][])
+* Allow auto-correction of ClassAndModuleChildren. ([@siggymcfried][], [@melch][])
 
 ### Bug fixes
 
@@ -3092,3 +3096,6 @@
 [@marcandre]: https://github.com/marcandre
 [@walf443]: https://github.com/walf443
 [@reitermarkus]: https://github.com/reitermarkus
+[@chrishulton]: https://github.com/chrishulton
+[@siggymcfried]: https://github.com/siggymcfried
+[@melch]: https://github.com/melch
