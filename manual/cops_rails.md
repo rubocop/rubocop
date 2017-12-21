@@ -1060,6 +1060,34 @@ class Account < ApplicationRecord
   end
 end
 ```
+```ruby
+# bad
+with_options options: false do |merger|
+  merger.invoke(merger.something)
+end
+
+# good
+with_options options: false do
+  invoke(something)
+end
+
+# good
+client = Client.new
+with_options options: false do |merger|
+  client.invoke(merger.something, something)
+end
+
+# ok
+# When `with_options` includes a block, all scoping scenarios
+# cannot be evaluated. Thus, it is ok to include the explicit
+# receiver.
+with_options options: false do |merger|
+  merger.invoke
+  with_another_method do |another_receiver|
+    merger.invoke(another_receiver)
+  end
+end
+```
 
 ## Rails/RelativeDateConstant
 

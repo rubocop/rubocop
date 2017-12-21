@@ -195,7 +195,7 @@ module RuboCop
 
     def check
       deprecation_check do |deprecation_message|
-        warn("#{path} - #{deprecation_message}")
+        warn("#{loaded_path} - #{deprecation_message}")
       end
       validate
       make_excludes_absolute
