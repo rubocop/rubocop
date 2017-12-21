@@ -47,7 +47,25 @@ describe RuboCop::Cop::Rails::InverseOf do
     it 'registers an offense with other option and `:inverse_of` unset' do
       expect_offense(<<-RUBY.strip_indent)
       class Person
-        has_many :foo, class_name: "Bar", foreign_key: 'foo_id'
+        has_many :foo, dependent: :destroy, foreign_key: 'foo_id'
+        ^^^^^^^^ Specify an `:inverse_of` option.
+      end
+      RUBY
+    end
+
+    it 'registers an offense when including `class_name` option' do
+      expect_offense(<<-RUBY.strip_indent)
+      class Book < ApplicationRecord
+        belongs_to :author, class_name: "Patron"
+        ^^^^^^^^^^ Specify an `:inverse_of` option.
+      end
+      RUBY
+    end
+
+    it 'registers an offense when including `conditions` option' do
+      expect_offense(<<-RUBY.strip_indent)
+      class Person
+        has_many :foo, conditions: -> { where(bar: true) }
         ^^^^^^^^ Specify an `:inverse_of` option.
       end
       RUBY
@@ -57,27 +75,27 @@ describe RuboCop::Cop::Rails::InverseOf do
   context 'with scope and options' do
     it 'registers an offense when not specifying `:inverse_of`' do
       expect_offense(<<-RUBY.strip_indent)
-      class Person
-        has_many :foo, -> { group 'x' }, through: :bar
-        ^^^^^^^^ Specify an `:inverse_of` option.
-      end
+        class Person
+          has_many :foo, -> { group 'x' }, dependent: :destroy
+          ^^^^^^^^ Specify an `:inverse_of` option.
+        end
       RUBY
     end
 
     it 'does not register an offense when specifying `:inverse_of`' do
       expect_no_offenses(
-        "has_many :foo, -> { group 'x' }, through: :bar, inverse_of: :baz"
+        "has_many :foo, -> { group 'x' }, dependent: :destroy, inverse_of: :baz"
       )
     end
   end
 
-  context '`:polymorphic` option' do
+  context '`:as` option' do
     context 'Rails < 5.2', :rails5 do
       it 'registers an offense when not specifying `:inverse_of`' do
         expect_offense(<<-RUBY.strip_indent)
         class Person
-          belongs_to :foo, polymorphic: true
-          ^^^^^^^^^^ Specify an `:inverse_of` option.
+          has_many :pictures, as: :imageable
+          ^^^^^^^^ Specify an `:inverse_of` option.
         end
         RUBY
       end
@@ -88,7 +106,7 @@ describe RuboCop::Cop::Rails::InverseOf do
 
       it 'does not register an offense when not specifying `:inverse_of`' do
         expect_no_offenses(
-          'belongs_to :foo, polymorphic: true'
+          'has_many :pictures, as: :imageable'
         )
       end
     end
@@ -103,6 +121,25 @@ describe RuboCop::Cop::Rails::InverseOf do
   context 'with other options' do
     it 'does not register an offense' do
       expect_no_offenses('has_one :foo, dependent: :nullify')
+    end
+  end
+
+  context 'with option ignoring `:inverse_of`' do
+    it 'does not register an offense when including `through` option' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+      class Physician < ApplicationRecord
+        has_many :appointments
+        has_many :patients, -> () { where(bar: true) }, through: :appointments
+      end
+      RUBY
+    end
+
+    it 'does not register an offense when including `polymorphic` option' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+      class Picture < ApplicationRecord
+        belongs_to :imageable, -> () { where(bar: true) }, polymorphic: true
+      end
+      RUBY
     end
   end
 end
