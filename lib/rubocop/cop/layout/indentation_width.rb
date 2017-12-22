@@ -44,7 +44,7 @@ module RuboCop
       #   end
       class IndentationWidth < Cop
         include EndKeywordAlignment
-        include AutocorrectAlignment
+        include Alignment
         include CheckAssignment
         include IgnoredPattern
 
@@ -139,6 +139,10 @@ module RuboCop
           return if node.ternary? || node.modifier_form?
 
           check_if(node, node.body, node.else_branch, base.loc)
+        end
+
+        def autocorrect(node)
+          AlignmentCorrector.correct(processed_source, node, @column_delta)
         end
 
         private

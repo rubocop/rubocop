@@ -63,9 +63,10 @@ module RuboCop
             if empty_brackets?(left, right)
               empty_corrections(corrector, left, right)
             elsif style == :no_space
-              no_space_corrector(corrector, left, right)
+              SpaceCorrector.remove_space(processed_source, corrector,
+                                          left, right)
             elsif style == :space
-              space_corrector(corrector, left, right)
+              SpaceCorrector.add_space(processed_source, corrector, left, right)
             else
               compact_corrections(corrector, node, left, right)
             end

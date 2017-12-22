@@ -5,6 +5,8 @@ module RuboCop
     # Common code for ordinary arrays with [] that can be written with %
     # syntax.
     module ArraySyntax
+      private
+
       def bracketed_array_of?(element_type, node)
         return false unless node.square_brackets? && node.values.size > 1
 

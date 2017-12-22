@@ -31,7 +31,7 @@ module RuboCop
       #   end
       class ElseAlignment < Cop
         include EndKeywordAlignment
-        include AutocorrectAlignment
+        include Alignment
         include CheckAssignment
 
         MSG = 'Align `%<else_range>s` with `%<base_range>s`.'.freeze
@@ -64,6 +64,10 @@ module RuboCop
           return unless node.else?
 
           check_alignment(node.when_branches.last.loc.keyword, node.loc.else)
+        end
+
+        def autocorrect(node)
+          AlignmentCorrector.correct(processed_source, node, column_delta)
         end
 
         private

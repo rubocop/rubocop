@@ -174,7 +174,7 @@ module RuboCop
 
         # An internal class for correcting parallel assignment
         class GenericCorrector
-          include AutocorrectAlignment
+          include Alignment
 
           attr_reader :config, :node
 

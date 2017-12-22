@@ -16,7 +16,7 @@ module RuboCop
       #     handle_error
       #   end
       class RescueModifier < Cop
-        include AutocorrectAlignment
+        include Alignment
         include RescueNode
 
         MSG = 'Avoid using `rescue` in its modifier form.'.freeze

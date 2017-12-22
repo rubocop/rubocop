@@ -7,6 +7,8 @@ module RuboCop
       NO_SPACE_COMMAND = 'Do not use'.freeze
       SPACE_COMMAND = 'Use'.freeze
 
+      private
+
       def side_space_range(range:, side:)
         buffer = @processed_source.buffer
         src = buffer.source
@@ -70,16 +72,6 @@ module RuboCop
         space_offense(node, right_token, :left, message, NO_SPACE_COMMAND)
       end
 
-      def no_space_corrector(corrector, left_token, right_token)
-        if left_token.space_after?
-          range = side_space_range(range: left_token.pos, side: :right)
-          corrector.remove(range)
-        end
-        return unless right_token.space_before?
-        range = side_space_range(range: right_token.pos, side: :left)
-        corrector.remove(range)
-      end
-
       def space_offenses(node, # rubocop:disable Metrics/ParameterLists
                          left_token,
                          right_token,
@@ -92,16 +84,6 @@ module RuboCop
         return if extra_space?(right_token, :right) || end_ok
         space_offense(node, right_token, :none, message, SPACE_COMMAND)
       end
-
-      def space_corrector(corrector, left_token, right_token)
-        unless left_token.space_after?
-          corrector.insert_after(left_token.pos, ' ')
-        end
-        return if right_token.space_before?
-        corrector.insert_before(right_token.pos, ' ')
-      end
-
-      private
 
       def extra_space?(token, side)
         return false unless token

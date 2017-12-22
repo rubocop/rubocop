@@ -34,7 +34,7 @@ module RuboCop
       #   end
       #
       class TrailingMethodEndStatement < Cop
-        include AutocorrectAlignment
+        include Alignment
 
         MSG = 'Place the end statement of a multi-line method on ' \
               'its own line.'.freeze

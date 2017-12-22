@@ -54,6 +54,10 @@ module RuboCop
           ignore_node(node)
         end
 
+        def autocorrect(node)
+          StringLiteralCorrector.correct(node, style)
+        end
+
         private
 
         def all_string_literals?(nodes)

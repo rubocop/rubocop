@@ -32,7 +32,7 @@ module RuboCop
       #     def smooth; end
       #   end
       class AccessModifierIndentation < Cop
-        include AutocorrectAlignment
+        include Alignment
         include ConfigurableEnforcedStyle
 
         MSG = '%<style>s access modifiers like `%<node>s`.'.freeze
@@ -56,6 +56,10 @@ module RuboCop
           return unless node.class_constructor?
 
           check_body(node.body, node)
+        end
+
+        def autocorrect(node)
+          AlignmentCorrector.correct(processed_source, node, @column_delta)
         end
 
         private

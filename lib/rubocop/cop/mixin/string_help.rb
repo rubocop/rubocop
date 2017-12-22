@@ -24,6 +24,8 @@ module RuboCop
         ignore_node(node)
       end
 
+      private
+
       def inside_interpolation?(node)
         # A :begin node inside a :dstr node is an interpolation.
         node.ancestors.drop_while { |a| !a.begin_type? }.any?(&:dstr_type?)

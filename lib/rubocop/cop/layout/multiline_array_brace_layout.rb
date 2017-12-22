@@ -108,6 +108,10 @@ module RuboCop
         def on_array(node)
           check_brace_layout(node)
         end
+
+        def autocorrect(node)
+          MultilineLiteralBraceCorrector.correct(processed_source, node)
+        end
       end
     end
   end

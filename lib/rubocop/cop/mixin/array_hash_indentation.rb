@@ -4,6 +4,8 @@ module RuboCop
   module Cop
     # Common code for indenting literal arrays and hashes.
     module ArrayHashIndentation
+      private
+
       def each_argument_node(node, type)
         left_parenthesis = node.loc.begin
 

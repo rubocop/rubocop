@@ -18,6 +18,10 @@ module RuboCop
       class SpaceBeforeComma < Cop
         include SpaceBeforePunctuation
 
+        def autocorrect(space)
+          PunctuationCorrector.remove_space(space)
+        end
+
         def kind(token)
           'comma' if token.comma?
         end

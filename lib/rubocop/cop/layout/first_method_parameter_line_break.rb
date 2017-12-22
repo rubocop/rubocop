@@ -36,6 +36,10 @@ module RuboCop
           check_method_line_break(node, node.arguments)
         end
         alias on_defs on_def
+
+        def autocorrect(node)
+          EmptyLineCorrector.insert_before(node)
+        end
       end
     end
   end

@@ -10,6 +10,8 @@ module RuboCop
       MSG = 'Favor `%<inverse>s` over `%<current>s` for ' \
             'negative conditions.'.freeze
 
+      private
+
       def_node_matcher :single_negative?, '(send !(send _ :!) :!)'
       def_node_matcher :empty_condition?, '(begin)'
 
@@ -24,22 +26,6 @@ module RuboCop
         return if node.if_type? && node.else?
 
         add_offense(node)
-      end
-
-      def negative_conditional_corrector(node)
-        condition = negated_condition(node)
-
-        lambda do |corrector|
-          corrector.replace(node.loc.keyword, node.inverse_keyword)
-          corrector.replace(condition.source_range,
-                            condition.children.first.source)
-        end
-      end
-
-      def negated_condition(node)
-        condition = node.condition
-        condition = condition.children.first while condition.begin_type?
-        condition
       end
     end
   end
