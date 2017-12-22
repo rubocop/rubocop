@@ -1125,15 +1125,18 @@ This cop checks for consistent uses of `request.referer` or
 
 ### Examples
 
+#### EnforcedStyle: referer (default)
+
 ```ruby
-# EnforcedStyle: referer
 # bad
 request.referrer
 
 # good
 request.referer
+```
+#### EnforcedStyle: referrer
 
-# EnforcedStyle: referrer
+```ruby
 # bad
 request.referer
 
