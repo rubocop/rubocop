@@ -4,6 +4,8 @@ module RuboCop
   module Cop
     # Common functionality for obtaining source ranges from regexp matches
     module MatchRange
+      private
+
       # Return a new `Range` covering the first matching group number for each
       # match of `regex` inside `range`
       def each_match_range(range, regex)

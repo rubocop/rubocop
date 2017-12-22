@@ -28,7 +28,7 @@ module RuboCop
       #   foo :bar,
       #       :baz
       class AlignParameters < Cop
-        include AutocorrectAlignment
+        include Alignment
 
         ALIGN_PARAMS_MSG = 'Align the parameters of a method %<type>s if ' \
           'they span more than one line.'.freeze
@@ -44,6 +44,10 @@ module RuboCop
         end
         alias on_def  on_send
         alias on_defs on_send
+
+        def autocorrect(node)
+          AlignmentCorrector.correct(processed_source, node, column_delta)
+        end
 
         private
 

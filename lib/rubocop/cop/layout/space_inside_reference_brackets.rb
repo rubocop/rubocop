@@ -53,9 +53,10 @@ module RuboCop
             left, right = reference_brackets(node)
 
             if style == :no_space
-              no_space_corrector(corrector, left, right)
+              SpaceCorrector.remove_space(processed_source, corrector,
+                                          left, right)
             else
-              space_corrector(corrector, left, right)
+              SpaceCorrector.add_space(processed_source, corrector, left, right)
             end
           end
         end

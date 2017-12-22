@@ -9,16 +9,7 @@ module RuboCop
 
       MSG = '%<command>s comma after the last %<unit>s.'.freeze
 
-      def autocorrect(range)
-        return unless range
-
-        lambda do |corrector|
-          case range.source
-          when ',' then corrector.remove(range)
-          else          corrector.insert_after(range, ',')
-          end
-        end
-      end
+      private
 
       def style_parameter_name
         'EnforcedStyleForMultiline'

@@ -80,6 +80,10 @@ module RuboCop
           check_brace_layout(node.arguments)
         end
         alias on_defs on_def
+
+        def autocorrect(node)
+          MultilineLiteralBraceCorrector.correct(processed_source, node)
+        end
       end
     end
   end

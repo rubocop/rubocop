@@ -25,7 +25,7 @@ module RuboCop
       #   # good
       #   x != y
       class RedundantConditional < Cop
-        include AutocorrectAlignment
+        include Alignment
 
         COMPARISON_OPERATORS = RuboCop::AST::Node::COMPARISON_OPERATORS
 

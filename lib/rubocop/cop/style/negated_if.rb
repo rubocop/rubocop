@@ -80,7 +80,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          negative_conditional_corrector(node)
+          ConditionCorrector.correct_negative_condition(node)
         end
 
         private

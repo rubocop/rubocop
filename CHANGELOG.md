@@ -16,11 +16,14 @@
 * [#4444](https://github.com/bbatsov/rubocop/issues/4444): Fix `Style/AutoResourceCleanup` shouldn't flag `File.open(...).close`. ([@dpostorivo][])
 * [#5278](https://github.com/bbatsov/rubocop/pull/5278): Fix deprecation check to use `loaded_path` in warning. ([@chrishulton][])
 * [#5293](https://github.com/bbatsov/rubocop/issues/5293): Fix a regression for `Rails/HasManyOrHasOneDependent` when using a option of `has_many` or `has_one` association. ([@koic][])
+* [#5223](https://github.com/bbatsov/rubocop/issues/5223): False offences in :unannotated Style/FormatStringToken. ([@nattfodd][])
+* [#5258](https://github.com/bbatsov/rubocop/issues/5258): Fix incorrect autocorrection for `Rails/Presence` when the else block is multiline. ([@wata727][])
 
 ### Changes
 
 * [#5233](https://github.com/bbatsov/rubocop/pull/5233): Remove `Style/ExtendSelf` cop. ([@pocke][])
 * [#5221](https://github.com/bbatsov/rubocop/issues/5221): Change `Layout/SpaceBeforeBlockBraces`'s `EnforcedStyleForEmptyBraces` from `no_space` to `space`. ([@garettarrowood][])
+* [#3558](https://github.com/bbatsov/rubocop/pull/3558): Create `Corrector` classes and move all `autocorrect` methods out of mixin Modules. ([@garettarrowood][])
 
 ## 0.52.0 (2017-12-12)
 
@@ -3101,3 +3104,4 @@
 [@chrishulton]: https://github.com/chrishulton
 [@siggymcfried]: https://github.com/siggymcfried
 [@melch]: https://github.com/melch
+[@nattfodd]: https://github.com/nattfodd

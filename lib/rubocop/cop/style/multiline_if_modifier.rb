@@ -16,7 +16,7 @@ module RuboCop
       #   { result: 'ok' } if cond
       class MultilineIfModifier < Cop
         include StatementModifier
-        include AutocorrectAlignment
+        include Alignment
 
         MSG = 'Favor a normal %<keyword>s-statement over a modifier' \
               ' clause in a multiline statement.'.freeze

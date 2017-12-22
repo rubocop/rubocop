@@ -5,6 +5,8 @@ module RuboCop
     # Common functionality for checking whether an AST node/token is aligned
     # with something on a preceding or following line
     module PrecedingFollowingAlignment
+      private
+
       def allow_for_alignment?
         cop_config['AllowForAlignment']
       end

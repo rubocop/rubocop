@@ -5,6 +5,8 @@ module RuboCop
     # This module encapsulates the ability to ignore certain lines when
     # parsing.
     module IgnoredPattern
+      private
+
       def ignored_line?(line)
         line = if line.respond_to?(:source_line)
                  line.source_line

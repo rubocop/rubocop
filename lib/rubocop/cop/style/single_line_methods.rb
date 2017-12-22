@@ -18,7 +18,7 @@ module RuboCop
       #   def @table.columns; end
       #
       class SingleLineMethods < Cop
-        include AutocorrectAlignment
+        include Alignment
 
         MSG = 'Avoid single-line method definitions.'.freeze
 

@@ -29,6 +29,10 @@ module RuboCop
           check_children_line_break(node, node.children)
         end
 
+        def autocorrect(node)
+          EmptyLineCorrector.insert_before(node)
+        end
+
         private
 
         def assignment_on_same_line?(node)

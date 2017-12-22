@@ -31,6 +31,10 @@ module RuboCop
           check(node)
         end
 
+        def autocorrect(node)
+          ParenthesesCorrector.correct(node)
+        end
+
         private
 
         def parens_allowed?(node)

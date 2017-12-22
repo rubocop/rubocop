@@ -52,6 +52,18 @@ describe RuboCop::Cop::Rails::Presence do
 
   it_behaves_like :offense, 'a if a.present?', 'a.presence', 1, 1
   it_behaves_like :offense, 'a unless a.blank?', 'a.presence', 1, 1
+  it_behaves_like :offense, <<-RUBY.strip_indent.chomp, <<-FIXED.strip_indent.chomp, 1, 7 ## rubocop:disable Metrics/LineLength
+    if [1, 2, 3].map { |num| num + 1 }
+                .map { |num| num + 2 }
+                .present?
+      [1, 2, 3].map { |num| num + 1 }.map { |num| num + 2 }
+    else
+      b
+    end
+  RUBY
+    [1, 2, 3].map { |num| num + 1 }
+                .map { |num| num + 2 }.presence || b
+  FIXED
 
   it 'does not register an offense when using `#presence`' do
     expect_no_offenses(<<-RUBY.strip_indent)
@@ -76,5 +88,67 @@ describe RuboCop::Cop::Rails::Presence do
       'a if a.blank?',
       'a unless a.present?'
     ].each { |source| expect_no_offenses(source) }
+  end
+
+  it 'does not register an offense when the else block is multiline' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      if a.present?
+        a
+      else
+        something
+        something
+        something
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when the else block has multiple statements' do # rubocop:disable Metrics/LineLength
+    expect_no_offenses(<<-RUBY.strip_indent)
+      if a.present?
+        a
+      else
+        something; something; something
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when including the elsif block' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      if a.present?
+        a
+      elsif b
+        b
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when the else block has `if` node' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      if a.present?
+        a
+      else
+        b if c
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when the else block has `rescue` node' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      if something_method.present?
+        something_method
+      else
+        invalid_method rescue StandardError
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when the else block has `while` node' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      if a.present?
+        a
+      else
+        fetch_state while waiting?
+      end
+    RUBY
   end
 end

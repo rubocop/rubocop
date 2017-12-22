@@ -15,12 +15,14 @@ module RuboCop
           check_negative_conditional(node)
         end
 
-        def message(node)
-          format(MSG, inverse: node.inverse_keyword, current: node.keyword)
+        def autocorrect(node)
+          ConditionCorrector.correct_negative_condition(node)
         end
 
-        def autocorrect(node)
-          negative_conditional_corrector(node)
+        private
+
+        def message(node)
+          format(MSG, inverse: node.inverse_keyword, current: node.keyword)
         end
       end
     end

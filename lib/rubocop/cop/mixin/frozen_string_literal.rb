@@ -16,6 +16,8 @@ module RuboCop
         end
       end
 
+      private
+
       def frozen_string_literals_enabled?
         ruby_version = processed_source.ruby_version
         return false unless ruby_version
@@ -26,8 +28,6 @@ module RuboCop
           MagicComment.parse(line).frozen_string_literal?
         end
       end
-
-      private
 
       def leading_comment_lines
         processed_source[0..2].compact

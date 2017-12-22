@@ -7,7 +7,7 @@ module RuboCop
     module Layout
       # This cop checks for tabs inside the source code.
       class Tab < Cop
-        include AutocorrectAlignment
+        include Alignment
 
         MSG = 'Tab detected.'.freeze
 

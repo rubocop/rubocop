@@ -82,7 +82,9 @@ module RuboCop
         end
 
         def autocorrect(node)
-          align(node, alignment_node(node))
+          AlignmentCorrector.align_end(processed_source,
+                                       node,
+                                       alignment_node(node))
         end
 
         private

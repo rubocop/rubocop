@@ -14,6 +14,10 @@ module RuboCop
       class SpaceAfterSemicolon < Cop
         include SpaceAfterPunctuation
 
+        def autocorrect(semicolon)
+          PunctuationCorrector.add_space(semicolon)
+        end
+
         def space_style_before_rcurly
           cfg = config.for_cop('Layout/SpaceInsideBlockBraces')
           cfg['EnforcedStyle'] || 'space'

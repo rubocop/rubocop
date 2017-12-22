@@ -27,6 +27,10 @@ module RuboCop
           # If it doesn't, Style/FirstMethodArgumentLineBreak will handle it
           check_children_line_break(node, node.children) if node.loc.begin
         end
+
+        def autocorrect(node)
+          EmptyLineCorrector.insert_before(node)
+        end
       end
     end
   end

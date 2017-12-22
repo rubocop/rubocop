@@ -53,6 +53,10 @@ module RuboCop
           check_literal(node, 'item of %<article>s hash')
         end
 
+        def autocorrect(range)
+          PunctuationCorrector.swap_comma(range)
+        end
+
         private
 
         def check_literal(node, kind)
