@@ -143,6 +143,15 @@ describe RuboCop::CLI, :isolated_environment do
           .to include('Unrecognized cop or department: Style/123.')
       end
 
+      it 'displays correction candidate if an incorrect cop name is given' do
+        create_file('example.rb', ['x'])
+        expect(cli.run(['--only', 'Style/BlockComment'])).to eq(2)
+        expect($stderr.string)
+          .to include('Unrecognized cop or department: Style/BlockComment.')
+        expect($stderr.string)
+          .to include('Did you mean? Style/BlockComments')
+      end
+
       it 'exits with error if an empty string is given' do
         create_file('example.rb', 'x')
         expect(cli.run(['--only', ''])).to eq(2)
@@ -357,6 +366,15 @@ describe RuboCop::CLI, :isolated_environment do
         create_file('example.rb', 'x')
         expect(cli.run(['--except', ''])).to eq(2)
         expect($stderr.string).to include('Unrecognized cop or department: .')
+      end
+
+      it 'displays correction candidate if an incorrect cop name is given' do
+        create_file('example.rb', 'x')
+        expect(cli.run(['--except', 'Style/BlockComment'])).to eq(2)
+        expect($stderr.string)
+          .to include('Unrecognized cop or department: Style/BlockComment.')
+        expect($stderr.string)
+          .to include('Did you mean? Style/BlockComments')
       end
 
       %w[Syntax Lint/Syntax].each do |name|

@@ -183,19 +183,37 @@ module RuboCop
 
   # Validates option arguments and the options' compatibility with each other.
   class OptionsValidator
-    # Cop name validation must be done later than option parsing, so it's not
-    # called from within Options.
-    def self.validate_cop_list(names)
-      return unless names
+    class << self
+      # Cop name validation must be done later than option parsing, so it's not
+      # called from within Options.
+      def validate_cop_list(names)
+        return unless names
 
-      departments = Cop::Cop.registry.departments.map(&:to_s)
+        cop_names = Cop::Cop.registry.names
+        departments = Cop::Cop.registry.departments.map(&:to_s)
 
-      names.each do |name|
-        next if Cop::Cop.registry.names.include?(name)
-        next if departments.include?(name)
-        next if %w[Syntax Lint/Syntax].include?(name)
+        names.each do |name|
+          next if cop_names.include?(name)
+          next if departments.include?(name)
+          next if %w[Syntax Lint/Syntax].include?(name)
 
-        raise ArgumentError, "Unrecognized cop or department: #{name}."
+          raise ArgumentError, format_message_from(name, cop_names)
+        end
+      end
+
+      private
+
+      def format_message_from(name, cop_names)
+        message = 'Unrecognized cop or department: %{name}.'
+        message_with_candidate = "#{message}\nDid you mean? %{candidate}"
+        corrections = cop_names.select { |cn| cn =~ /\A#{name}/ }.sort
+
+        if corrections.empty?
+          format message, name: name
+        else
+          format message_with_candidate, name: name,
+                                         candidate: corrections.join(', ')
+        end
       end
     end
 
