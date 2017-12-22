@@ -93,9 +93,31 @@ describe RuboCop::Cop::Style::FormatStringToken, :config do
     expect_no_offenses('%r{foo bar %u}')
   end
 
+  %i[strptime strftime].each do |method_name|
+    it "ignores time format (when used as argument to #{method_name})" do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        Time.#{method_name}('2017-12-13', '%Y-%m-%d')
+      RUBY
+    end
+  end
+
+  it 'ignores time format when it is stored in a variable' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      time_format = '%Y-%m-%d'
+      Time.strftime('2017-12-13', time_format)
+    RUBY
+  end
+
   it 'handles dstrs' do
     inspect_source('"c#{b}%{template}"')
     expect(cop.highlights).to eql(['%{template}'])
+  end
+
+  it 'ignores http links' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      'https://ru.wikipedia.org/wiki/%D0%90_'\
+        '(%D0%BA%D0%B8%D1%80%D0%B8%D0%BB%D0%BB%D0%B8%D1%86%D0%B0)'
+    RUBY
   end
 
   it 'handles __FILE__' do

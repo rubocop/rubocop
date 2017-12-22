@@ -5,6 +5,13 @@ module RuboCop
     module Style
       # Use a consistent style for named format string tokens.
       #
+      # **Note:**
+      # `unannotated` style cop only works for strings
+      # which are passed as arguments to those methods:
+      # `sprintf`, `format`, `%`.
+      # The reason is that *unannotated* format is very similar
+      # to encoded URLs or Date/Time formatting strings.
+      #
       # @example EnforcedStyle: annotated (default)
       #
       #   # bad
@@ -35,6 +42,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         FIELD_CHARACTERS = Regexp.union(%w[A B E G X a b c d e f g i o p s u x])
+        FORMAT_STRING_METHODS = %i[sprintf format %].freeze
 
         STYLE_PATTERNS = {
           annotated: /(?<token>%<[^>]+>#{FIELD_CHARACTERS})/,
@@ -42,13 +50,12 @@ module RuboCop
           unannotated: /(?<token>%#{FIELD_CHARACTERS})/
         }.freeze
 
-        TOKEN_PATTERN = Regexp.union(STYLE_PATTERNS.values)
-
         def on_str(node)
           return if node.each_ancestor(:xstr, :regexp).any?
 
           tokens(node) do |detected_style, token_range|
-            if detected_style == style
+            if detected_style == style ||
+               unannotated_format?(node, detected_style)
               correct_style_detected
             else
               style_detected(detected_style)
@@ -59,6 +66,19 @@ module RuboCop
         end
 
         private
+
+        def includes_format_methods?(node)
+          root_node = node.ancestors.last
+          return unless root_node
+
+          root_node.descendants.any? do |desc_node|
+            FORMAT_STRING_METHODS.include?(desc_node.method_name)
+          end
+        end
+
+        def unannotated_format?(node, detected_style)
+          detected_style == :unannotated && !includes_format_methods?(node)
+        end
 
         def message(detected_style)
           "Prefer #{message_text(style)} over #{message_text(detected_style)}."
