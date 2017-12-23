@@ -11,6 +11,7 @@
 * [#5273](https://github.com/bbatsov/rubocop/issues/5273): Fix `Style/EvalWithLocation` reporting bad line offset. ([@pocke][])
 * [#5228](https://github.com/bbatsov/rubocop/issues/5228): Handle overridden `Metrics/LineLength:Max` for `--auto-gen-config`. ([@jonas054][])
 * [#5226](https://github.com/bbatsov/rubocop/issues/5226): Suppress false positives for `Rails/RedundantReceiverInWithOptions` when including another receiver in `with_options`. ([@wata727][])
+* [#5259](https://github.com/bbatsov/rubocop/pull/5259): Fix false positives in `Style/CommentedKeyword`. ([@garettarrowood][])
 * [#5238](https://github.com/bbatsov/rubocop/pull/5238): Fix error when #present? or #blank? is used in if or unless modifier. ([@eitoball][])
 * [#5261](https://github.com/bbatsov/rubocop/issues/5261): Fix a false positive for `Style/MixinUsage` when using inside class or module. ([@koic][])
 * [#4444](https://github.com/bbatsov/rubocop/issues/4444): Fix `Style/AutoResourceCleanup` shouldn't flag `File.open(...).close`. ([@dpostorivo][])
