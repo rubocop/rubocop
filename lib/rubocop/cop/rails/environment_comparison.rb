@@ -16,7 +16,7 @@ module RuboCop
       #   # good
       #   Rails.env.production?
       class EnvironmentComparison < Cop
-        MSG = 'Favor `Rails.env.%s?` over `Rails.env == %s`.'.freeze
+        MSG = "Favor `Rails.env.%<env>s?` over `Rails.env == '%<env>s'`.".freeze
 
         SYM_MSG = 'Do not compare `Rails.env` with a symbol, it will always ' \
           'evaluate to `false`.'.freeze
@@ -40,7 +40,7 @@ module RuboCop
         def on_send(node)
           environment_str_comparison?(node) do |env_node|
             env, = *env_node
-            add_offense(node, message: format(MSG, env, env_node.source))
+            add_offense(node, message: format(MSG, env: env))
           end
           environment_sym_comparison?(node) do |_|
             add_offense(node, message: SYM_MSG)

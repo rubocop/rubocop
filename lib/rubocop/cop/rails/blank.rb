@@ -38,9 +38,10 @@ module RuboCop
       #       something
       #     end
       class Blank < Cop
-        MSG_NIL_OR_EMPTY = 'Use `%s` instead of `%s`.'.freeze
-        MSG_NOT_PRESENT = 'Use `%s` instead of `%s`.'.freeze
-        MSG_UNLESS_PRESENT = 'Use `if %s` instead of `%s`.'.freeze
+        MSG_NIL_OR_EMPTY = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
+        MSG_NOT_PRESENT = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
+        MSG_UNLESS_PRESENT = 'Use `if %<prefer>s` instead of ' \
+                             '`%<current>s`.'.freeze
 
         # `(send nil $_)` is not actually a valid match for an offense. Nodes
         # that have a single method call on the left hand side
@@ -73,8 +74,8 @@ module RuboCop
           not_present?(node) do |receiver|
             add_offense(node,
                         message: format(MSG_NOT_PRESENT,
-                                        replacement(receiver),
-                                        node.source))
+                                        prefer: replacement(receiver),
+                                        current: node.source))
           end
         end
 
@@ -86,8 +87,8 @@ module RuboCop
 
             add_offense(node,
                         message: format(MSG_NIL_OR_EMPTY,
-                                        replacement(variable1),
-                                        node.source))
+                                        prefer: replacement(variable1),
+                                        current: node.source))
           end
         end
 
@@ -101,8 +102,8 @@ module RuboCop
             add_offense(node,
                         location: range,
                         message: format(MSG_UNLESS_PRESENT,
-                                        replacement(receiver),
-                                        range.source))
+                                        prefer: replacement(receiver),
+                                        current: range.source))
           end
         end
 

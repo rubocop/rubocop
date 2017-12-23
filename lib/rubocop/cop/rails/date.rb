@@ -47,9 +47,10 @@ module RuboCop
       class Date < Cop
         include ConfigurableEnforcedStyle
 
-        MSG = 'Do not use `%s` without zone. Use `%s` instead.'.freeze
+        MSG = 'Do not use `Date.%<day>s` without zone. Use ' \
+              '`Time.zone.%<day>s` instead.'.freeze
 
-        MSG_SEND = 'Do not use `%s` on Date objects, because they ' \
+        MSG_SEND = 'Do not use `%<method>s` on Date objects, because they ' \
                    'know nothing about the time zone in use.'.freeze
 
         BAD_DAYS = %i[today current yesterday tomorrow].freeze
@@ -68,7 +69,7 @@ module RuboCop
           return if safe_chain?(node) || safe_to_time?(node)
 
           add_offense(node, location: :selector,
-                            message: format(MSG_SEND, node.method_name))
+                            message: format(MSG_SEND, method: node.method_name))
         end
 
         private
@@ -81,9 +82,7 @@ module RuboCop
           method_name = (chain & bad_days).join('.')
 
           add_offense(node, location: :selector,
-                            message: format(MSG,
-                                            "Date.#{method_name}",
-                                            "Time.zone.#{method_name}"))
+                            message: format(MSG, day: method_name.to_s))
         end
 
         def extract_method_chain(node)
