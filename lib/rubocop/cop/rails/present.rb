@@ -35,9 +35,11 @@ module RuboCop
       #     # good
       #     something if  foo.present?
       class Present < Cop
-        MSG_NOT_BLANK = 'Use `%s` instead of `%s`.'.freeze
-        MSG_EXISTS_AND_NOT_EMPTY = 'Use `%s` instead of `%s`.'.freeze
-        MSG_UNLESS_BLANK = 'Use `if %s` instead of `%s`.'.freeze
+        MSG_NOT_BLANK = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
+        MSG_EXISTS_AND_NOT_EMPTY = 'Use `%<prefer>s` instead of ' \
+                                   '`%<current>s`.'.freeze
+        MSG_UNLESS_BLANK = 'Use `if %<prefer>s` instead of ' \
+                           '`%<current>s`.'.freeze
 
         def_node_matcher :exists_and_not_empty?, <<-PATTERN
           (and
@@ -65,8 +67,8 @@ module RuboCop
           not_blank?(node) do |receiver|
             add_offense(node,
                         message: format(MSG_NOT_BLANK,
-                                        replacement(receiver),
-                                        node.source))
+                                        prefer: replacement(receiver),
+                                        current: node.source))
           end
         end
 
@@ -78,8 +80,8 @@ module RuboCop
 
             add_offense(node,
                         message: format(MSG_EXISTS_AND_NOT_EMPTY,
-                                        replacement(variable1),
-                                        node.source))
+                                        prefer: replacement(variable1),
+                                        current: node.source))
           end
         end
 
@@ -99,7 +101,8 @@ module RuboCop
 
           unless_blank?(node) do |method_call, receiver|
             range = unless_condition(node, method_call)
-            msg = format(MSG_UNLESS_BLANK, replacement(receiver), range.source)
+            msg = format(MSG_UNLESS_BLANK, prefer: replacement(receiver),
+                                           current: range.source)
             add_offense(node, location: range, message: msg)
           end
         end

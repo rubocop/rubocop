@@ -14,7 +14,7 @@ module RuboCop
       #   # good
       #   User.find_by(name: 'Bruce')
       class FindBy < Cop
-        MSG = 'Use `find_by` instead of `where.%s`.'.freeze
+        MSG = 'Use `find_by` instead of `where.%<method>s`.'.freeze
         TARGET_SELECTORS = %i[first take].freeze
 
         def_node_matcher :where_first?, <<-PATTERN
@@ -28,7 +28,7 @@ module RuboCop
                                 node.loc.selector.end_pos)
 
           add_offense(node, location: range,
-                            message: format(MSG, node.method_name))
+                            message: format(MSG, method: node.method_name))
         end
 
         def autocorrect(node)

@@ -20,7 +20,7 @@ module RuboCop
         extend TargetRailsVersion
 
         MSG = 'Use keyword arguments instead of ' \
-              'positional arguments for http call: `%s`.'.freeze
+              'positional arguments for http call: `%<verb>s`.'.freeze
         KEYWORD_ARGS = %i[
           headers env params body flash as xhr session method
         ].freeze
@@ -37,7 +37,7 @@ module RuboCop
             return unless needs_conversion?(data)
 
             add_offense(node, location: :selector,
-                              message: format(MSG, node.method_name))
+                              message: format(MSG, verb: node.method_name))
           end
         end
 

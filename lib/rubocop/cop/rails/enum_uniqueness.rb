@@ -20,7 +20,8 @@ module RuboCop
       class EnumUniqueness < Cop
         include Duplication
 
-        MSG = 'Duplicate value `%s` found in `%s` enum declaration.'.freeze
+        MSG = 'Duplicate value `%<value>s` found in `%<enum>s` ' \
+              'enum declaration.'.freeze
 
         def_node_matcher :enum_declaration, <<-PATTERN
           (send nil? :enum (hash (pair (_ $_) ${array hash})))
@@ -33,7 +34,8 @@ module RuboCop
             return unless duplicates?(items)
 
             consecutive_duplicates(items).each do |item|
-              add_offense(item, message: format(MSG, item.source, name))
+              add_offense(item, message: format(MSG, value: item.source,
+                                                     enum: name))
             end
           end
         end

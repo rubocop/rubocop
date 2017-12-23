@@ -34,7 +34,7 @@ module RuboCop
       #     end
       #   end
       class LexicallyScopedActionFilter < Cop
-        MSG = '%s not explicitly defined on the controller.'.freeze
+        MSG = '%<action>s not explicitly defined on the controller.'.freeze
 
         FILTERS = %w[
           :after_action
@@ -101,9 +101,9 @@ module RuboCop
 
         def message(methods)
           if methods.size == 1
-            format(MSG, "`#{methods[0]}` is")
+            format(MSG, action: "`#{methods[0]}` is")
           else
-            format(MSG, "`#{methods.join('`, `')}` are")
+            format(MSG, action: "`#{methods.join('`, `')}` are")
           end
         end
       end
