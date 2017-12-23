@@ -155,4 +155,18 @@ describe RuboCop::Cop::Style::CommentedKeyword do
       end
     RUBY
   end
+
+  it 'accepts keyword letter sequences that are not keywords' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      options = {
+        end_buttons: true, # comment
+      }
+    RUBY
+    expect_no_offenses(<<-RUBY.strip_indent)
+      defined?(SomeModule).should be_nil # comment
+    RUBY
+    expect_no_offenses(<<-RUBY.strip_indent)
+      foo = beginning_statement # comment
+    RUBY
+  end
 end

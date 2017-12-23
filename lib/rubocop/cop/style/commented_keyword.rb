@@ -60,7 +60,7 @@ module RuboCop
 
         def offensive?(line)
           line = line.lstrip
-          line.start_with?(*KEYWORDS) &&
+          KEYWORDS.any? { |word| line =~ /^#{word}\s/ } &&
             ALLOWED_COMMENTS.none? { |c| line =~ /#\s*#{c}/ }
         end
 
