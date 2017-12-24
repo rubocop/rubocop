@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for trailing comma in array and hash literals.
+      # This cop checks for trailing comma in array literals.
       #
       # @example EnforcedStyleForMultiline: consistent_comma
       #   # bad
@@ -40,8 +40,7 @@ module RuboCop
       #     1,
       #     2
       #   ]
-      class TrailingCommaInLiteral < Cop
-        include ArraySyntax
+      class TrailingCommaInArrayLiteral < Cop
         include TrailingComma
 
         def on_array(node)
@@ -49,25 +48,8 @@ module RuboCop
           check_literal(node, 'item of %<article>s array')
         end
 
-        def on_hash(node)
-          check_literal(node, 'item of %<article>s hash')
-        end
-
         def autocorrect(range)
           PunctuationCorrector.swap_comma(range)
-        end
-
-        private
-
-        def check_literal(node, kind)
-          return if node.children.empty?
-          # A braceless hash is the last parameter of a method call and will be
-          # checked as such.
-          return unless brackets?(node)
-
-          check(node, node.children, kind,
-                node.children.last.source_range.end_pos,
-                node.loc.end.begin_pos)
         end
       end
     end

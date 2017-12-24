@@ -99,7 +99,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         'Style/TrailingCommaInArguments' => {
           'EnforcedStyleForMultiline' => comma_style
         },
-        'Style/TrailingCommaInLiteral' => {
+        'Style/TrailingCommaInArrayLiteral' => {
+          'EnforcedStyleForMultiline' => comma_style
+        },
+        'Style/TrailingCommaInHashLiteral' => {
           'EnforcedStyleForMultiline' => comma_style
         },
         'Style/BracesAroundHashParameters' =>
@@ -956,7 +959,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       #{e}:3:7: C: [Corrected] Style/WordArray: Use `%w` or `%W` for an array of words.
       #{e}:3:8: C: [Corrected] Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
       #{e}:3:15: C: [Corrected] Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
-      #{e}:3:21: C: [Corrected] Style/TrailingCommaInLiteral: Avoid comma after the last item of an array.
+      #{e}:3:21: C: [Corrected] Style/TrailingCommaInArrayLiteral: Avoid comma after the last item of an array.
       #{e}:4:7: C: [Corrected] Style/WordArray: Use `%w` or `%W` for an array of words.
     RESULT
   end
@@ -1295,7 +1298,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         EnforcedStyle: space
       Layout/SpaceInsideHashLiteralBraces:
         EnforcedStyle: no_space
-      Style/TrailingCommaInLiteral:
+      Style/TrailingCommaInHashLiteral:
         EnforcedStyleForMultiline: consistent_comma
     YAML
     expect(cli.run(%w[--auto-correct])).to eq(1)

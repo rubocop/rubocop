@@ -1909,9 +1909,13 @@ Style/TrailingCommaInArguments:
   StyleGuide: '#no-trailing-params-comma'
   Enabled: true
 
-Style/TrailingCommaInLiteral:
-  Description: 'Checks for trailing comma in array and hash literals.'
+Style/TrailingCommaInArrayLiteral:
+  Description: 'Checks for trailing comma in array literals.'
   StyleGuide: '#no-trailing-array-commas'
+  Enabled: true
+
+Style/TrailingCommaInHashLiteral:
+  Description: 'Checks for trailing comma in hash literals.'
   Enabled: true
 
 Style/TrailingMethodEndStatement:
