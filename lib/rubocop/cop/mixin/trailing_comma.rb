@@ -35,6 +35,17 @@ module RuboCop
         avoid_comma(kind, comma_pos, extra_avoid_comma_info)
       end
 
+      def check_literal(node, kind)
+        return if node.children.empty?
+        # A braceless hash is the last parameter of a method call and will be
+        # checked as such.
+        return unless brackets?(node)
+
+        check(node, node.children, kind,
+              node.children.last.source_range.end_pos,
+              node.loc.end.begin_pos)
+      end
+
       def extra_avoid_comma_info
         case style
         when :comma

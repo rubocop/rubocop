@@ -5315,13 +5315,13 @@ EnforcedStyleForMultiline | `no_comma` | `comma`, `consistent_comma`, `no_comma`
 
 * [https://github.com/bbatsov/ruby-style-guide#no-trailing-params-comma](https://github.com/bbatsov/ruby-style-guide#no-trailing-params-comma)
 
-## Style/TrailingCommaInLiteral
+## Style/TrailingCommaInArrayLiteral
 
 Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
-This cop checks for trailing comma in array and hash literals.
+This cop checks for trailing comma in array literals.
 
 ### Examples
 
@@ -5377,6 +5377,65 @@ EnforcedStyleForMultiline | `no_comma` | `comma`, `consistent_comma`, `no_comma`
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#no-trailing-array-commas](https://github.com/bbatsov/ruby-style-guide#no-trailing-array-commas)
+
+## Style/TrailingCommaInHashLiteral
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for trailing comma in hash literals.
+
+### Examples
+
+#### EnforcedStyleForMultiline: consistent_comma
+
+```ruby
+# bad
+a = { foo: 1, bar: 2, }
+
+# good
+a = {
+  foo: 1, bar: 2,
+  qux: 3,
+}
+
+# good
+a = {
+  foo: 1,
+  bar: 2,
+}
+```
+#### EnforcedStyleForMultiline: comma
+
+```ruby
+# bad
+a = { foo: 1, bar: 2, }
+
+# good
+a = {
+  foo: 1,
+  bar: 2,
+}
+```
+#### EnforcedStyleForMultiline: no_comma (default)
+
+```ruby
+# bad
+a = { foo: 1, bar: 2, }
+
+# good
+a = {
+  foo: 1,
+  bar: 2
+}
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyleForMultiline | `no_comma` | `comma`, `consistent_comma`, `no_comma`
 
 ## Style/TrailingMethodEndStatement
 
