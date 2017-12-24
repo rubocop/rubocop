@@ -2090,7 +2090,7 @@ that span more than one line.
 
 ### Examples
 
-#### EnforcedStyle: aligned
+#### EnforcedStyle: aligned (default)
 
 ```ruby
 # bad
@@ -2709,7 +2709,7 @@ array = [a, b, c, d]
 # good
 array = [ a, b, c, d ]
 ```
-#### EnforcedStyle: no_space
+#### EnforcedStyle: no_space (default)
 
 ```ruby
 # The `no_space` style enforces that array literals have
@@ -2871,7 +2871,7 @@ surrounding space depending on configuration.
 
 ### Examples
 
-#### EnforcedStyle: space
+#### EnforcedStyle: space (default)
 
 ```ruby
 # The `space` style enforces that hash literals have

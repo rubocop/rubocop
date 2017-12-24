@@ -6,7 +6,7 @@ module RuboCop
       # This cop checks the indentation of the method name part in method calls
       # that span more than one line.
       #
-      # @example EnforcedStyle: aligned
+      # @example EnforcedStyle: aligned (default)
       #   # bad
       #   while myvariable
       #   .b
