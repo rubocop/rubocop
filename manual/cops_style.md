@@ -1735,7 +1735,7 @@ argument is an array literal.
 
 ### Examples
 
-#### EnforcedStyle: format(default)
+#### EnforcedStyle: format (default)
 
 ```ruby
 # bad

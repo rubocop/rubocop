@@ -16,7 +16,7 @@ module RuboCop
       #   # good
       #   array = [ a, b, c, d ]
       #
-      # @example EnforcedStyle: no_space
+      # @example EnforcedStyle: no_space (default)
       #   # The `no_space` style enforces that array literals have
       #   # no surrounding space.
       #

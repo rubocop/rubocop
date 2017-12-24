@@ -11,7 +11,7 @@ module RuboCop
       # if the first argument is a string literal and if the second
       # argument is an array literal.
       #
-      # @example EnforcedStyle: format(default)
+      # @example EnforcedStyle: format (default)
       #   # bad
       #   puts sprintf('%10s', 'hoge')
       #   puts '%10s' % 'hoge'
