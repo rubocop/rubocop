@@ -215,4 +215,103 @@ RSpec.describe RuboCop::ProcessedSource do
       end
     end
   end
+
+  context 'with heavily commented source' do
+    let(:source) { <<-RUBY.strip_indent }
+      def foo # comment one
+        bar # comment two
+      end # comment three
+    RUBY
+
+    describe '#each_comment' do
+      it 'yields all comments' do
+        comments = []
+
+        processed_source.each_comment do |item|
+          expect(item.is_a?(Parser::Source::Comment)).to be true
+          comments << item
+        end
+
+        expect(comments.size).to eq 3
+      end
+    end
+
+    describe '#find_comment' do
+      it 'yields correct comment' do
+        comment = processed_source.find_comment do |item|
+          item.text == '# comment three'
+        end
+
+        expect(comment.text).to eq '# comment three'
+      end
+
+      it 'yields nil when there is no match' do
+        comment = processed_source.find_comment do |item|
+          item.text == '# comment four'
+        end
+
+        expect(comment).to eq nil
+      end
+    end
+  end
+
+  context 'token enumerables' do
+    let(:source) { <<-RUBY.strip_indent }
+      foo(1, 2)
+    RUBY
+
+    describe '#each_token' do
+      it 'yields all tokens' do
+        tokens = []
+
+        processed_source.each_token do |item|
+          expect(item.is_a?(RuboCop::Token)).to be true
+          tokens << item
+        end
+
+        expect(tokens.size).to eq 7
+      end
+    end
+
+    describe '#find_token' do
+      it 'yields correct token' do
+        token = processed_source.find_token(&:comma?)
+
+        expect(token.text).to eq ','
+      end
+
+      it 'yields nil when there is no match' do
+        token = processed_source.find_token(&:right_bracket?)
+
+        expect(token).to eq nil
+      end
+    end
+  end
+
+  describe '#file_path' do
+    it 'returns file path' do
+      expect(processed_source.file_path).to eq 'path/to/file.rb'
+    end
+  end
+
+  describe '#blank?' do
+    context 'with source of no content' do
+      let(:source) { <<-RUBY.strip_indent }
+      RUBY
+
+      it 'returns true' do
+        expect(processed_source.blank?).to eq true
+      end
+    end
+
+    context 'with source with content' do
+      let(:source) { <<-RUBY.strip_indent }
+        foo
+      RUBY
+
+      it 'returns false' do
+        expect(processed_source.blank?).to eq false
+      end
+    end
+  end
 end
