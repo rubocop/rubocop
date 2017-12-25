@@ -57,7 +57,7 @@ module RuboCop
         prepare(processed_source)
         invoke_custom_processing(@cops, processed_source)
         invoke_custom_processing(@forces, processed_source)
-        walk(processed_source.ast) if processed_source.ast
+        walk(processed_source.ast) unless processed_source.blank?
         @cops.flat_map(&:offenses)
       end
 

@@ -24,6 +24,10 @@ module RuboCop
         buffer.name
       end
 
+      def blank?
+        ast.nil?
+      end
+
       def aligned_comments?(token)
         ix = comments.index do |comment|
           comment.loc.expression.begin_pos == token.begin_pos

@@ -30,7 +30,7 @@ module RuboCop
           '%<line_of_first_occurrence>d of the Gemfile.'.freeze
 
         def investigate(processed_source)
-          return unless processed_source.ast
+          return if processed_source.blank?
 
           duplicated_gem_nodes.each do |nodes|
             nodes[1..-1].each do |node|

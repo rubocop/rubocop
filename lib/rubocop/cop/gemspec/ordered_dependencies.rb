@@ -60,7 +60,7 @@ module RuboCop
               .freeze
 
         def investigate(processed_source)
-          return if processed_source.ast.nil?
+          return if processed_source.blank?
           dependency_declarations(processed_source.ast)
             .each_cons(2) do |previous, current|
             next unless consecutive_lines(previous, current)
