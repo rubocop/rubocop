@@ -80,6 +80,30 @@ module RuboCop
       Digest::MD5.hexdigest(@raw_source)
     end
 
+    def each_comment
+      comments.each { |comment| yield comment }
+    end
+
+    def find_comment
+      comments.find { |comment| yield comment }
+    end
+
+    def each_token
+      tokens.each { |token| yield token }
+    end
+
+    def find_token
+      tokens.find { |token| yield token }
+    end
+
+    def file_path
+      buffer.name
+    end
+
+    def blank?
+      ast.nil?
+    end
+
     private
 
     def parse(source, ruby_version)
