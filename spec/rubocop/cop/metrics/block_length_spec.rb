@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Metrics::BlockLength, :config do
+RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:cop_config) { { 'Max' => 2, 'CountComments' => false } }

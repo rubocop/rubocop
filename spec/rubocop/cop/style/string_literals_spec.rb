@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::StringLiterals, :config do
+RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'configured with single quotes preferred' do

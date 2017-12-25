@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Performance::TimesMap do
+RSpec.describe RuboCop::Cop::Performance::TimesMap do
   subject(:cop) { described_class.new }
 
   before do

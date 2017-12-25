@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::MissingCopEnableDirective, :config do
+RSpec.describe RuboCop::Cop::Lint::MissingCopEnableDirective, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'when the maximum range size is infinite' do

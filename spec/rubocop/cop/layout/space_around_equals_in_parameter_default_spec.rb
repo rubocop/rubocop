@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault, :config do
+RSpec.describe RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault, :config do # rubocop:disable Metrics/LineLength
   subject(:cop) { described_class.new(config) }
 
   context 'when EnforcedStyle is space' do

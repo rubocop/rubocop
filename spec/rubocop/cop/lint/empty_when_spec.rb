@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::EmptyWhen, :config do
+RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
   subject(:cop) { described_class.new(config) }
 
   before do

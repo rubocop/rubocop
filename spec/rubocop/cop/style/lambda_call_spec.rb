@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::LambdaCall, :config do
+RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'when style is set to call' do

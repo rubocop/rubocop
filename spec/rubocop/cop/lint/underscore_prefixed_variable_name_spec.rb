@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
+RSpec.describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
   subject(:cop) { described_class.new }
 
   context 'when an underscore-prefixed variable is used' do

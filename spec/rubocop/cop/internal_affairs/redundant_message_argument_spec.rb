@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::InternalAffairs::RedundantMessageArgument do
+RSpec.describe RuboCop::Cop::InternalAffairs::RedundantMessageArgument do
   subject(:cop) { described_class.new }
 
   context 'when `MSG` is passed' do

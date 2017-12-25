@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::OptionalArguments do
+RSpec.describe RuboCop::Cop::Style::OptionalArguments do
   subject(:cop) { described_class.new }
 
   let(:message) do

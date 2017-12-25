@@ -5,7 +5,7 @@ def expect_copyright_offense(cop, source)
   expect(cop.offenses.size).to eq(1)
 end
 
-describe RuboCop::Cop::Style::Copyright, :config do
+RSpec.describe RuboCop::Cop::Style::Copyright, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:cop_config) { { 'Notice' => 'Copyright (\(c\) )?2015 Acme Inc' } }

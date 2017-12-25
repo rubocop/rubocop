@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::RedundantException do
+RSpec.describe RuboCop::Cop::Style::RedundantException do
   subject(:cop) { described_class.new }
 
   shared_examples 'common behavior' do |keyword|

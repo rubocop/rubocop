@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Gemspec::OrderedDependencies, :config do
+RSpec.describe RuboCop::Cop::Gemspec::OrderedDependencies, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:cop_config) do

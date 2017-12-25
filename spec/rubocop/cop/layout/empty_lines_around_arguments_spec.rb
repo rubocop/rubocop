@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Layout::EmptyLinesAroundArguments, :config do
+RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundArguments, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'when extra lines' do

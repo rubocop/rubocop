@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Rails::RelativeDateConstant do
+RSpec.describe RuboCop::Cop::Rails::RelativeDateConstant do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for ActiveSupport::Duration.since' do

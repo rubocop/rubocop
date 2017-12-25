@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::RequireParentheses do
+RSpec.describe RuboCop::Cop::Lint::RequireParentheses do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for missing parentheses around expression with ' \

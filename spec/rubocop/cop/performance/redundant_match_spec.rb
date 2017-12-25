@@ -9,7 +9,7 @@
 #   method(str.match(/regex/))
 #   return regex.match('str')
 
-describe RuboCop::Cop::Performance::RedundantMatch do
+RSpec.describe RuboCop::Cop::Performance::RedundantMatch do
   subject(:cop) { described_class.new }
 
   it 'autocorrects .match in if condition' do

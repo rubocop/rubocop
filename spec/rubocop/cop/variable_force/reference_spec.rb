@@ -2,7 +2,7 @@
 
 require 'rubocop/ast/sexp'
 
-describe RuboCop::Cop::VariableForce::Reference do
+RSpec.describe RuboCop::Cop::VariableForce::Reference do
   include RuboCop::AST::Sexp
 
   describe '.new' do

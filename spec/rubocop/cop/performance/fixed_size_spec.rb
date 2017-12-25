@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Performance::FixedSize do
+RSpec.describe RuboCop::Cop::Performance::FixedSize do
   subject(:cop) { described_class.new }
 
   let(:message) do

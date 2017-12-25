@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Team do
+RSpec.describe RuboCop::Cop::Team do
   subject(:team) { described_class.new(cop_classes, config, options) }
 
   let(:cop_classes) { RuboCop::Cop::Cop.non_rails }

@@ -34,6 +34,7 @@ RSpec.configure do |config|
   end
 
   config.example_status_persistence_file_path = 'spec/examples.txt'
+  config.disable_monkey_patching!
 
   config.include RuboCop::RSpec::ExpectOffense
 

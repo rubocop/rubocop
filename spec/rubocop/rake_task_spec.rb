@@ -3,7 +3,7 @@
 require 'support/file_helper'
 require 'rubocop/rake_task'
 
-describe RuboCop::RakeTask do
+RSpec.describe RuboCop::RakeTask do
   include FileHelper
 
   before do

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::InlineComment do
+RSpec.describe RuboCop::Cop::Style::InlineComment do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for a trailing inline comment' do

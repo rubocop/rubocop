@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
+RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
   subject(:cop) { described_class.new }
 
   %w[private protected public module_function].each do |access_modifier|

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Gemspec::RequiredRubyVersion, :config do
+RSpec.describe RuboCop::Cop::Gemspec::RequiredRubyVersion, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'target ruby version > 2.4', :ruby24 do

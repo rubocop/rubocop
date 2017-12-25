@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Severity do
+RSpec.describe RuboCop::Cop::Severity do
   let(:refactor) { described_class.new(:refactor) }
   let(:convention) { described_class.new(:convention) }
   let(:warning) { described_class.new(:warning) }

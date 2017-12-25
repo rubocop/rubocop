@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
+RSpec.describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
   cop_config = {
     'Blacklist' => %w[decrement!
                       decrement_counter

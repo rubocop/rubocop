@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::DeprecatedClassMethods do
+RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for File.exists?' do

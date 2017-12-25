@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Cop do
+RSpec.describe RuboCop::Cop::Cop do
   subject(:cop) { described_class.new }
 
   let(:location) do

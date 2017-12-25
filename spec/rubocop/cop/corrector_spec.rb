@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Corrector do
+RSpec.describe RuboCop::Cop::Corrector do
   describe '#rewrite' do
     it 'allows removal of a range' do
       source = 'true and false'

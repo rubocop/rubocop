@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Performance::Count do
+RSpec.describe RuboCop::Cop::Performance::Count do
   subject(:cop) { described_class.new }
 
   shared_examples 'selectors' do |selector|

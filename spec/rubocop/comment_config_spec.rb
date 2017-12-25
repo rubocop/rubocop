@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::CommentConfig do
+RSpec.describe RuboCop::CommentConfig do
   subject(:comment_config) { described_class.new(parse_source(source)) }
 
   describe '#cop_enabled_at_line?' do

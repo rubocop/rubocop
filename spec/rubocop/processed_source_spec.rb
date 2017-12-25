@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::ProcessedSource do
+RSpec.describe RuboCop::ProcessedSource do
   include FileHelper
 
   subject(:processed_source) { described_class.new(source, ruby_version, path) }

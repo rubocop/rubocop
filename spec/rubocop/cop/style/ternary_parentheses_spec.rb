@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::TernaryParentheses, :config do
+RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
   subject(:cop) { described_class.new(config) }
 
   before do

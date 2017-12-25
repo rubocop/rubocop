@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Registry do
+RSpec.describe RuboCop::Cop::Registry do
   subject(:registry) { described_class.new(cops) }
 
   let(:cops) do

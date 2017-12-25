@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::NonLocalExitFromIterator do
+RSpec.describe RuboCop::Cop::Lint::NonLocalExitFromIterator do
   subject(:cop) { described_class.new }
 
   context 'inspection' do

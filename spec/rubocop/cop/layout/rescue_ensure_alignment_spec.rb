@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Layout::RescueEnsureAlignment do
+RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment do
   subject(:cop) { described_class.new }
 
   shared_examples 'common behavior' do |keyword|

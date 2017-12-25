@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::StringInterpreter do
+RSpec.describe RuboCop::StringInterpreter do
   describe '.interpret' do
     shared_examples 'simple escape' do |escaped|
       it "handles #{escaped}" do

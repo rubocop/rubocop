@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Naming::BinaryOperatorParameterName do
+RSpec.describe RuboCop::Cop::Naming::BinaryOperatorParameterName do
   subject(:cop) { described_class.new }
 
   %i[+ eql? equal?].each do |op|

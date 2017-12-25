@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::MutableConstant do
+RSpec.describe RuboCop::Cop::Style::MutableConstant do
   subject(:cop) { described_class.new }
 
   let(:prefix) { nil }

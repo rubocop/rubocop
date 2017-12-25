@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Rails::ApplicationJob do
+RSpec.describe RuboCop::Cop::Rails::ApplicationJob do
   let(:msgs) { ['Jobs should subclass `ApplicationJob`.'] }
 
   context 'rails 4', :rails4, :config do

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Performance::StartWith do
+RSpec.describe RuboCop::Cop::Performance::StartWith do
   subject(:cop) { described_class.new }
 
   shared_examples 'different match methods' do |method|

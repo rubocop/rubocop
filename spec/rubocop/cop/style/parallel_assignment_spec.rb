@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::ParallelAssignment, :config do
+RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:config) do

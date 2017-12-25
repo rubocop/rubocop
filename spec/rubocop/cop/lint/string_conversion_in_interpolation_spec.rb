@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::StringConversionInInterpolation do
+RSpec.describe RuboCop::Cop::Lint::StringConversionInInterpolation do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for #to_s in interpolation' do

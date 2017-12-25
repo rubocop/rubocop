@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::UnlessElse do
+RSpec.describe RuboCop::Cop::Style::UnlessElse do
   subject(:cop) { described_class.new }
 
   context 'unless with else' do

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
+RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
   subject(:cop) { described_class.new(config) }
 
   it 'does not register offense for any kind of reference brackets' do

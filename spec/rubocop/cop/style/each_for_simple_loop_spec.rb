@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::EachForSimpleLoop do
+RSpec.describe RuboCop::Cop::Style::EachForSimpleLoop do
   subject(:cop) { described_class.new }
 
   OFFENSE_MSG = 'Use `Integer#times` for a simple loop ' \

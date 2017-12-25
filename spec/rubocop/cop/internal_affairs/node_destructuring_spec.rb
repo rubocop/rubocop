@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::InternalAffairs::NodeDestructuring do
+RSpec.describe RuboCop::Cop::InternalAffairs::NodeDestructuring do
   subject(:cop) { described_class.new }
 
   context 'when destructuring using `node.children`' do

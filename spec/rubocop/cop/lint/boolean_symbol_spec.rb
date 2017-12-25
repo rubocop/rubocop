@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::BooleanSymbol, :config do
+RSpec.describe RuboCop::Cop::Lint::BooleanSymbol, :config do
   subject(:cop) { described_class.new(config) }
 
   it 'registers an offense when using `:true`' do

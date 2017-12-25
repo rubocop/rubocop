@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::UnneededDisable do
+RSpec.describe RuboCop::Cop::Lint::UnneededDisable do
   describe '.check' do
     let(:cop) do
       cop = described_class.new

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Metrics::LineLength, :config do
+RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:cop_config) { { 'Max' => 80, 'IgnoredPatterns' => nil } }

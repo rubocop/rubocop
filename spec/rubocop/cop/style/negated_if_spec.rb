@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::NegatedIf do
+RSpec.describe RuboCop::Cop::Style::NegatedIf do
   subject(:cop) do
     config = RuboCop::Config.new(
       'Style/NegatedIf' => {

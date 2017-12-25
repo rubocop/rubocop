@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::MultipleComparison do
+RSpec.describe RuboCop::Cop::Style::MultipleComparison do
   subject(:cop) { described_class.new(config) }
 
   let(:config) { RuboCop::Config.new }

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::DefWithParentheses do
+RSpec.describe RuboCop::Cop::Style::DefWithParentheses do
   subject(:cop) { described_class.new }
 
   it 'reports an offense for def with empty parens' do

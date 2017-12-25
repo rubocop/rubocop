@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::AST::ForNode do
+RSpec.describe RuboCop::AST::ForNode do
   let(:for_node) { parse_source(source).ast }
 
   describe '.new' do

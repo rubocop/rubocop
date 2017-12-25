@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::EmptyElse do
+RSpec.describe RuboCop::Cop::Style::EmptyElse do
   subject(:cop) { described_class.new(config) }
 
   let(:missing_else_config) { {} }

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Naming::VariableNumber, :config do
+RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
   subject(:cop) { described_class.new(config) }
 
   shared_examples :offense do |style, variable, style_to_allow_offenses|

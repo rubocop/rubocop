@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Rails::NotNullColumn, :config do
+RSpec.describe RuboCop::Cop::Rails::NotNullColumn, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:cop_config) { { 'Include' => nil } }

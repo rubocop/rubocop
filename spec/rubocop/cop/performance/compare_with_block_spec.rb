@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Performance::CompareWithBlock do
+RSpec.describe RuboCop::Cop::Performance::CompareWithBlock do
   subject(:cop) { described_class.new }
 
   shared_examples 'compare with block' do |method|

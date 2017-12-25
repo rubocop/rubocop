@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::GuardClause, :config do
+RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
   let(:cop) { described_class.new(config) }
   let(:cop_config) { {} }
 

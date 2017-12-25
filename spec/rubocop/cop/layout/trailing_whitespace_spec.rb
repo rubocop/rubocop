@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Layout::TrailingWhitespace do
+RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for a line ending with space' do

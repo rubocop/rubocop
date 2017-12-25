@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Layout::SpaceBeforeComment do
+RSpec.describe RuboCop::Cop::Layout::SpaceBeforeComment do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for missing space before an EOL comment' do

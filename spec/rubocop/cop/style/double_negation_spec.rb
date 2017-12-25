@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::DoubleNegation do
+RSpec.describe RuboCop::Cop::Style::DoubleNegation do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for !!' do

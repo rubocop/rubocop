@@ -1,182 +1,179 @@
 # frozen_string_literal: true
 
-module RuboCop
-  module Formatter
-    describe BaseFormatter do
-      include FileHelper
+RSpec.describe RuboCop::Formatter::BaseFormatter do
+  include FileHelper
 
-      describe 'how the API methods are invoked', :isolated_environment do
-        subject(:formatter) { double('formatter').as_null_object }
+  describe 'how the API methods are invoked', :isolated_environment do
+    subject(:formatter) { double('formatter').as_null_object }
 
-        let(:runner) { Runner.new({}, ConfigStore.new) }
-        let(:output) { $stdout.string }
+    let(:runner) { RuboCop::Runner.new({}, RuboCop::ConfigStore.new) }
+    let(:output) { $stdout.string }
 
-        before do
-          create_file('1_offense.rb', '#' * 90)
+    before do
+      create_file('1_offense.rb', '#' * 90)
 
-          create_file('4_offenses.rb', ['puts x ', 'test;', 'top;', '#' * 90])
+      create_file('4_offenses.rb', ['puts x ', 'test;', 'top;', '#' * 90])
 
-          create_file('no_offense.rb', '# frozen_string_literal: true')
+      create_file('no_offense.rb', '# frozen_string_literal: true')
 
-          allow(SimpleTextFormatter).to receive(:new).and_return(formatter)
-          $stdout = StringIO.new
-          # avoid intermittent failure caused when another test set global
-          # options on ConfigLoader
-          ConfigLoader.clear_options
-        end
+      allow(RuboCop::Formatter::SimpleTextFormatter)
+        .to receive(:new).and_return(formatter)
+      $stdout = StringIO.new
+      # avoid intermittent failure caused when another test set global
+      # options on ConfigLoader
+      RuboCop::ConfigLoader.clear_options
+    end
 
-        after do
-          $stdout = STDOUT
-        end
+    after do
+      $stdout = STDOUT
+    end
 
-        def run
-          runner.run([])
-        end
+    def run
+      runner.run([])
+    end
 
-        describe 'invocation order' do
-          subject(:formatter) do
-            formatter = double('formatter')
-            %i[started file_started file_finished finished output]
-              .each do |message|
-              allow(formatter).to receive(message) do
-                puts message.to_s unless message == :output
-              end
-            end
-            formatter
-          end
-
-          it 'is called in the proper sequence' do
-            run
-            expect(output).to eq(<<-OUTPUT.strip_indent)
-              started
-              file_started
-              file_finished
-              file_started
-              file_finished
-              file_started
-              file_finished
-              finished
-            OUTPUT
+    describe 'invocation order' do
+      subject(:formatter) do
+        formatter = double('formatter')
+        %i[started file_started file_finished finished output]
+          .each do |message|
+          allow(formatter).to receive(message) do
+            puts message.to_s unless message == :output
           end
         end
+        formatter
+      end
 
-        shared_examples 'receives all file paths' do |method_name|
-          it 'receives all file paths' do
-            expected_paths = [
-              '1_offense.rb',
-              '4_offenses.rb',
-              'no_offense.rb'
-            ].map { |path| File.expand_path(path) }.sort
+      it 'is called in the proper sequence' do
+        run
+        expect(output).to eq(<<-OUTPUT.strip_indent)
+          started
+          file_started
+          file_finished
+          file_started
+          file_finished
+          file_started
+          file_finished
+          finished
+        OUTPUT
+      end
+    end
 
-            expect(formatter).to receive(method_name) do |all_files|
-              expect(all_files.sort).to eq(expected_paths)
-            end
+    shared_examples 'receives all file paths' do |method_name|
+      it 'receives all file paths' do
+        expected_paths = [
+          '1_offense.rb',
+          '4_offenses.rb',
+          'no_offense.rb'
+        ].map { |path| File.expand_path(path) }.sort
 
-            run
-          end
+        expect(formatter).to receive(method_name) do |all_files|
+          expect(all_files.sort).to eq(expected_paths)
+        end
 
-          describe 'the passed files paths' do
-            it 'is frozen' do
-              expect(formatter).to receive(method_name) do |all_files|
-                all_files.each do |path|
-                  expect(path.frozen?).to be(true)
-                end
-              end
-              run
+        run
+      end
+
+      describe 'the passed files paths' do
+        it 'is frozen' do
+          expect(formatter).to receive(method_name) do |all_files|
+            all_files.each do |path|
+              expect(path.frozen?).to be(true)
             end
           end
+          run
         end
+      end
+    end
 
-        describe '#started' do
-          include_examples 'receives all file paths', :started
-        end
+    describe '#started' do
+      include_examples 'receives all file paths', :started
+    end
 
-        describe '#finished' do
-          context 'when RuboCop finished inspecting all files normally' do
-            include_examples 'receives all file paths', :started
-          end
+    describe '#finished' do
+      context 'when RuboCop finished inspecting all files normally' do
+        include_examples 'receives all file paths', :started
+      end
 
-          context 'when RuboCop is interrupted by user' do
-            it 'receives only processed file paths' do
-              class << formatter
-                attr_reader :processed_file_count
+      context 'when RuboCop is interrupted by user' do
+        it 'receives only processed file paths' do
+          class << formatter
+            attr_reader :processed_file_count
 
-                def file_finished(_file, _offenses)
-                  @processed_file_count ||= 0
-                  @processed_file_count += 1
-                end
-              end
-
-              allow(runner).to receive(:aborting?) do
-                formatter.processed_file_count == 2
-              end
-
-              expect(formatter).to receive(:finished) do |processed_files|
-                expect(processed_files.size).to eq(2)
-              end
-
-              run
+            def file_finished(_file, _offenses)
+              @processed_file_count ||= 0
+              @processed_file_count += 1
             end
           end
-        end
 
-        shared_examples 'receives a file path' do |method_name|
-          it 'receives a file path' do
-            expect(formatter).to receive(method_name)
-              .with(File.expand_path('1_offense.rb'), anything)
-
-            expect(formatter).to receive(method_name)
-              .with(File.expand_path('4_offenses.rb'), anything)
-
-            expect(formatter).to receive(method_name)
-              .with(File.expand_path('no_offense.rb'), anything)
-
-            run
+          allow(runner).to receive(:aborting?) do
+            formatter.processed_file_count == 2
           end
 
-          describe 'the passed path' do
-            it 'is frozen' do
-              expect(formatter)
-                .to receive(method_name).exactly(3).times do |path|
-                expect(path.frozen?).to be(true)
-              end
-              run
-            end
+          expect(formatter).to receive(:finished) do |processed_files|
+            expect(processed_files.size).to eq(2)
           end
+
+          run
         end
+      end
+    end
 
-        describe '#file_started' do
-          include_examples 'receives a file path', :file_started
+    shared_examples 'receives a file path' do |method_name|
+      it 'receives a file path' do
+        expect(formatter).to receive(method_name)
+          .with(File.expand_path('1_offense.rb'), anything)
 
-          it 'receives file specific information hash' do
-            expect(formatter).to receive(:file_started)
-              .with(anything, an_instance_of(Hash)).exactly(3).times
-            run
+        expect(formatter).to receive(method_name)
+          .with(File.expand_path('4_offenses.rb'), anything)
+
+        expect(formatter).to receive(method_name)
+          .with(File.expand_path('no_offense.rb'), anything)
+
+        run
+      end
+
+      describe 'the passed path' do
+        it 'is frozen' do
+          expect(formatter)
+            .to receive(method_name).exactly(3).times do |path|
+            expect(path.frozen?).to be(true)
           end
+          run
         end
+      end
+    end
 
-        describe '#file_finished' do
-          include_examples 'receives a file path', :file_finished
+    describe '#file_started' do
+      include_examples 'receives a file path', :file_started
 
-          it 'receives an array of detected offenses for the file' do
-            expect(formatter).to receive(:file_finished)
-              .exactly(3).times do |file, offenses|
-              case File.basename(file)
-              when '1_offense.rb'
-                expect(offenses.size).to eq(1)
-              when '4_offenses.rb'
-                expect(offenses.size).to eq(4)
-              when 'no_offense.rb'
-                expect(offenses.empty?).to be(true)
-              else
-                raise
-              end
-              expect(offenses.all? { |o| o.is_a?(RuboCop::Cop::Offense) })
-                .to be_truthy
-            end
-            run
+      it 'receives file specific information hash' do
+        expect(formatter).to receive(:file_started)
+          .with(anything, an_instance_of(Hash)).exactly(3).times
+        run
+      end
+    end
+
+    describe '#file_finished' do
+      include_examples 'receives a file path', :file_finished
+
+      it 'receives an array of detected offenses for the file' do
+        expect(formatter).to receive(:file_finished)
+          .exactly(3).times do |file, offenses|
+          case File.basename(file)
+          when '1_offense.rb'
+            expect(offenses.size).to eq(1)
+          when '4_offenses.rb'
+            expect(offenses.size).to eq(4)
+          when 'no_offense.rb'
+            expect(offenses.empty?).to be(true)
+          else
+            raise
           end
+          expect(offenses.all? { |o| o.is_a?(RuboCop::Cop::Offense) })
+            .to be_truthy
         end
+        run
       end
     end
   end

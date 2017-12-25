@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::PercentSymbolArray do
+RSpec.describe RuboCop::Cop::Lint::PercentSymbolArray do
   subject(:cop) { described_class.new }
 
   let(:message) do

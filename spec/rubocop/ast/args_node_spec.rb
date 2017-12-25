@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::AST::ArgsNode do
+RSpec.describe RuboCop::AST::ArgsNode do
   let(:args_node) { parse_source(source).ast.arguments }
 
   describe '.new' do

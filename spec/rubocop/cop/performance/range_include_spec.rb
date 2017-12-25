@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Performance::RangeInclude do
+RSpec.describe RuboCop::Cop::Performance::RangeInclude do
   subject(:cop) { described_class.new }
 
   it 'autocorrects (a..b).include? without parens' do

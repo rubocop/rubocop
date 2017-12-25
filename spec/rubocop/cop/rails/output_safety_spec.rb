@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Rails::OutputSafety do
+RSpec.describe RuboCop::Cop::Rails::OutputSafety do
   subject(:cop) { described_class.new }
 
   context 'when using `#safe_concat`' do

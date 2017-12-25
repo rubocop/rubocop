@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::ConditionPosition do
+RSpec.describe RuboCop::Cop::Lint::ConditionPosition do
   subject(:cop) { described_class.new }
 
   %w[if unless while until].each do |keyword|

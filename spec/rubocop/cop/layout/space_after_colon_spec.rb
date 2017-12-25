@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Layout::SpaceAfterColon do
+RSpec.describe RuboCop::Cop::Layout::SpaceAfterColon do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for colon without space after it' do

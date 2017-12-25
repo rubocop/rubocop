@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::StructInheritance do
+RSpec.describe RuboCop::Cop::Style::StructInheritance do
   subject(:cop) { described_class.new }
 
   it 'registers an offense when extending instance of Struct' do

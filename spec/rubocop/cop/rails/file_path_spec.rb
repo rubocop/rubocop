@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Rails::FilePath do
+RSpec.describe RuboCop::Cop::Rails::FilePath do
   subject(:cop) { described_class.new }
 
   context 'when using Rails.root.join with some path strings' do

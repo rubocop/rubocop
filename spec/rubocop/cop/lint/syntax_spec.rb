@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::Syntax do
+RSpec.describe RuboCop::Cop::Lint::Syntax do
   let(:options) { nil }
   let(:ruby_version) { 2.4 }
   let(:path) { 'test.rb' }

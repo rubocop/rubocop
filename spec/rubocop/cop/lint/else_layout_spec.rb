@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::ElseLayout do
+RSpec.describe RuboCop::Cop::Lint::ElseLayout do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for expr on same line as else' do

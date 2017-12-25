@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::UnneededRequireStatement, :config do
+RSpec.describe RuboCop::Cop::Lint::UnneededRequireStatement, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'target ruby version < 2.2', :ruby21 do

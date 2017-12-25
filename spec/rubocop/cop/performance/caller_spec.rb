@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Performance::Caller do
+RSpec.describe RuboCop::Cop::Performance::Caller do
   subject(:cop) { described_class.new }
 
   it 'accepts `caller` without argument and method chain' do

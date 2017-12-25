@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Rails::ReadWriteAttribute do
+RSpec.describe RuboCop::Cop::Rails::ReadWriteAttribute do
   subject(:cop) { described_class.new }
 
   context 'read_attribute' do

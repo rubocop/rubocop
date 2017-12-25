@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::NextWithoutAccumulator do
+RSpec.describe RuboCop::Cop::Lint::NextWithoutAccumulator do
   subject(:cop) { described_class.new }
 
   def code_without_accumulator(method_name)

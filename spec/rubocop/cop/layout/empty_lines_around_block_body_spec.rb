@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
+RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
   subject(:cop) { described_class.new(config) }
 
   # Test blocks using both {} and do..end

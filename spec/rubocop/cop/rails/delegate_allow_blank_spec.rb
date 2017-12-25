@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Rails::DelegateAllowBlank do
+RSpec.describe RuboCop::Cop::Rails::DelegateAllowBlank do
   subject(:cop) { described_class.new }
 
   it 'registers an offense when using allow_blank' do

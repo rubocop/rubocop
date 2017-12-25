@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Performance::UnfreezeString, :config do
+RSpec.describe RuboCop::Cop::Performance::UnfreezeString, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'TargetRubyVersion >= 2.3', :ruby23 do

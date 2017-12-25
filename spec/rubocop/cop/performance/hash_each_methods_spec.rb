@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Performance::HashEachMethods do
+RSpec.describe RuboCop::Cop::Performance::HashEachMethods do
   subject(:cop) { described_class.new }
 
   context 'when node matches a plain `#each` ' \

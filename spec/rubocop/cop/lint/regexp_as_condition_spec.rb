@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::RegexpAsCondition do
+RSpec.describe RuboCop::Cop::Lint::RegexpAsCondition do
   subject(:cop) { described_class.new(config) }
 
   let(:config) { RuboCop::Config.new }

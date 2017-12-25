@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::ClassVars do
+RSpec.describe RuboCop::Cop::Style::ClassVars do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for class variable declaration' do

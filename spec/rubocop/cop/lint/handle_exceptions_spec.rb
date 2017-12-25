@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::HandleExceptions do
+RSpec.describe RuboCop::Cop::Lint::HandleExceptions do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for empty rescue block' do

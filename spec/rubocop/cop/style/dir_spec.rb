@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::Dir, :config do
+RSpec.describe RuboCop::Cop::Style::Dir, :config do
   subject(:cop) { described_class.new(config) }
 
   shared_examples 'auto-correct' do |original, expected|

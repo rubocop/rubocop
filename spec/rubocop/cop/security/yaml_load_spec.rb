@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Security::YAMLLoad, :config do
+RSpec.describe RuboCop::Cop::Security::YAMLLoad, :config do
   subject(:cop) { described_class.new(config) }
 
   it 'does not register an offense for YAML.dump' do

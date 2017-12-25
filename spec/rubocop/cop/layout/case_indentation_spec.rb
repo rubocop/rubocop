@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Layout::CaseIndentation do
+RSpec.describe RuboCop::Cop::Layout::CaseIndentation do
   subject(:cop) { described_class.new(config) }
 
   let(:config) do

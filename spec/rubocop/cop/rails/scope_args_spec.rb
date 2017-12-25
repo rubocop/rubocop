@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Rails::ScopeArgs do
+RSpec.describe RuboCop::Cop::Rails::ScopeArgs do
   subject(:cop) { described_class.new }
 
   it 'registers an offense a scope with a method arg' do

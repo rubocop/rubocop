@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::IfUnlessModifier do
+RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
   include StatementModifierHelper
 
   subject(:cop) { described_class.new(config) }

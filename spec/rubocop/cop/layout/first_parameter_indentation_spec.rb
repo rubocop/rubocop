@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Layout::FirstParameterIndentation do
+RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation do
   subject(:cop) { described_class.new(config) }
 
   let(:config) do

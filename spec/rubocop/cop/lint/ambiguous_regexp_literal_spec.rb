@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::AmbiguousRegexpLiteral do
+RSpec.describe RuboCop::Cop::Lint::AmbiguousRegexpLiteral do
   subject(:cop) { described_class.new }
 
   context 'with a regexp literal in the first argument' do

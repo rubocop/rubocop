@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe 'RuboCop Project', type: :feature do
+RSpec.describe 'RuboCop Project', type: :feature do
   let(:cop_names) do
     RuboCop::Cop::Cop
       .registry

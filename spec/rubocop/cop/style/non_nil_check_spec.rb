@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::NonNilCheck, :config do
+RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'when not allowing semantic changes' do

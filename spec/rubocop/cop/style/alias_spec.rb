@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::Alias, :config do
+RSpec.describe RuboCop::Cop::Style::Alias, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'when EnforcedStyle is prefer_alias_method' do

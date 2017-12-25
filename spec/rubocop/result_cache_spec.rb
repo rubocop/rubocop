@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::ResultCache, :isolated_environment do
+RSpec.describe RuboCop::ResultCache, :isolated_environment do
   include FileHelper
 
   subject(:cache) do

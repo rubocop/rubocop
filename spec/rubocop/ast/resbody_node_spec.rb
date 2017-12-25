@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::AST::ResbodyNode do
+RSpec.describe RuboCop::AST::ResbodyNode do
   let(:resbody_node) do
     begin_node = parse_source(source).ast
     rescue_node, = *begin_node
