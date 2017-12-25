@@ -52,7 +52,7 @@ module RuboCop
 
       def investigate(processed_source)
         reset_errors
-        remove_irrelevant_cops(processed_source.buffer.name)
+        remove_irrelevant_cops(processed_source.file_path)
         reset_callbacks
         prepare(processed_source)
         invoke_custom_processing(@cops, processed_source)

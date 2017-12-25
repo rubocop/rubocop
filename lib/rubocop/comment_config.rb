@@ -129,7 +129,7 @@ module RuboCop
     end
 
     def qualified_cop_name(cop_name)
-      Cop::Cop.qualified_cop_name(cop_name.strip, processed_source.buffer.name)
+      Cop::Cop.qualified_cop_name(cop_name.strip, processed_source.file_path)
     end
 
     def all_cop_names
