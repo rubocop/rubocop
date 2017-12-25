@@ -4,6 +4,8 @@ require 'optparse'
 require 'shellwords'
 
 module RuboCop
+  class IncorrectCopNameError < StandardError; end
+
   # This class handles command line options.
   class Options
     EXITING_OPTIONS = %i[version verbose_version show_cops].freeze
@@ -197,7 +199,7 @@ module RuboCop
           next if departments.include?(name)
           next if %w[Syntax Lint/Syntax].include?(name)
 
-          raise ArgumentError, format_message_from(name, cop_names)
+          raise IncorrectCopNameError, format_message_from(name, cop_names)
         end
       end
 

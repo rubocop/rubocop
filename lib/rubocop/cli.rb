@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/ClassLength
 module RuboCop
   # The CLI is a class responsible of handling all the command line interface
   # logic.
@@ -27,6 +28,8 @@ module RuboCop
     #
     # @param args [Array<String>] command line arguments
     # @return [Integer] UNIX exit code
+    #
+    # rubocop:disable Metrics/MethodLength
     def run(args = ARGV)
       @options, paths = Options.new.parse(args)
       validate_options_vs_config
@@ -38,11 +41,15 @@ module RuboCop
       return 2
     rescue Finished
       return 0
+    rescue IncorrectCopNameError => e
+      warn e.message
+      return 2
     rescue StandardError, SyntaxError, LoadError => e
       warn e.message
       warn e.backtrace
       return 2
     end
+    # rubocop:enable Metrics/MethodLength
 
     def trap_interrupt(runner)
       Signal.trap('INT') do
@@ -258,3 +265,4 @@ module RuboCop
     end
   end
 end
+# rubocop:enable Metrics/ClassLength
