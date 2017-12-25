@@ -41,6 +41,17 @@ module RuboCop
       #     belongs_to :blog
       #   end
       #
+      #   # good
+      #   class Blog < ApplicationRecord
+      #     with_options inverse_of: :blog do
+      #       has_many :posts, -> { order(published_at: :desc) }
+      #     end
+      #   end
+      #
+      #   class Post < ApplicationRecord
+      #     belongs_to :blog
+      #   end
+      #
       # @example
       #   # bad
       #   class Picture < ApplicationRecord
@@ -111,8 +122,8 @@ module RuboCop
 
         MSG = 'Specify an `:inverse_of` option.'.freeze
 
-        def_node_matcher :association_arguments, <<-PATTERN
-          (send nil? {:has_many :has_one :belongs_to} _ $...)
+        def_node_matcher :association_recv_arguments, <<-PATTERN
+          (send $_ {:has_many :has_one :belongs_to} _ $...)
         PATTERN
 
         def_node_matcher :options_from_argument, <<-PATTERN
@@ -148,10 +159,13 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          arguments = association_arguments(node)
+          recv, arguments = association_recv_arguments(node)
           return unless arguments
+          with_options = with_options_arguments(recv, node)
 
-          options = arguments.flat_map { |arg| options_from_argument(arg) }
+          options = arguments.concat(with_options).flat_map do |arg|
+            options_from_argument(arg)
+          end
           return if options_ignoring_inverse_of?(options)
 
           return unless scope?(arguments) ||
@@ -184,6 +198,19 @@ module RuboCop
 
         def options_contain_inverse_of?(options)
           options.any? { |opt| inverse_of_option?(opt) }
+        end
+
+        def with_options_arguments(recv, node)
+          blocks = node.each_ancestor(:block).select do |block|
+            block.send_node.command?(:with_options) &&
+              same_context_in_with_options?(block.arguments.first, recv)
+          end
+          blocks.flat_map { |n| n.send_node.arguments }
+        end
+
+        def same_context_in_with_options?(arg, recv)
+          return true if arg.nil? && recv.nil?
+          arg && recv && arg.children[0] == recv.children[0]
         end
       end
     end
