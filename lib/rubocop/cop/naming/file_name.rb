@@ -48,15 +48,12 @@ module RuboCop
 
                   no_definition_message(basename, file_path)
                 else
-                  return if ignore_executable_scripts? && shebang?(first_line)
+                  return if ignore_executable_scripts? &&
+                            processed_source.start_with?('#!')
                   other_message(basename)
                 end
 
           yield source_range(processed_source.buffer, 1, 0), msg
-        end
-
-        def first_line
-          processed_source.lines.first
         end
 
         def no_definition_message(basename, file_path)
@@ -71,10 +68,6 @@ module RuboCop
           else
             format(MSG_SNAKE_CASE, basename: basename)
           end
-        end
-
-        def shebang?(line)
-          line && line.start_with?('#!')
         end
 
         def ignore_executable_scripts?

@@ -12,7 +12,7 @@ module RuboCop
         def investigate(processed_source)
           return if @options.key?(:stdin)
           return if Platform.windows?
-          return unless start_with_shebang?(processed_source)
+          return unless processed_source.start_with?(SHEBANG)
           return if executable?(processed_source)
           comment = processed_source.comments[0]
           message = format_message_from(processed_source)
@@ -26,11 +26,6 @@ module RuboCop
         end
 
         private
-
-        def start_with_shebang?(processed_source)
-          return false if processed_source[0].nil?
-          processed_source[0].start_with?(SHEBANG)
-        end
 
         def executable?(processed_source)
           # Returns true if stat is executable or if the operating system

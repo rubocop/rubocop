@@ -96,10 +96,6 @@ module RuboCop
           end
         end
 
-        def begins_its_line?(range)
-          (range.source_line =~ /\S/) == range.column
-        end
-
         def whitespace_range(node)
           begin_pos = node.loc.end.begin_pos
 

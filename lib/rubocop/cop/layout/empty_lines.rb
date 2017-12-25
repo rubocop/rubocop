@@ -51,7 +51,9 @@ module RuboCop
               # we need to be wary of comments since they
               # don't show up in the tokens
               ((prev_line + 1)...cur_line).each do |line|
-                next unless previous_and_current_lines_empty?(line)
+                unless processed_source.previous_and_current_lines_empty?(line)
+                  next
+                end
 
                 yield source_range(processed_source.buffer, line, 0)
               end
@@ -63,10 +65,6 @@ module RuboCop
 
         def exceeds_line_offset?(line_diff)
           line_diff > LINE_OFFSET
-        end
-
-        def previous_and_current_lines_empty?(line)
-          processed_source[line - 2].empty? && processed_source[line - 1].empty?
         end
       end
     end
