@@ -31,11 +31,11 @@ module RuboCop
           # Returns true if stat is executable or if the operating system
           # doesn't distinguish executable files from nonexecutable files.
           # See at: https://github.com/ruby/ruby/blob/ruby_2_4/file.c#L5362
-          File.stat(processed_source.buffer.name).executable?
+          File.stat(processed_source.file_path).executable?
         end
 
         def format_message_from(processed_source)
-          basename = File.basename(processed_source.buffer.name)
+          basename = File.basename(processed_source.file_path)
           format(MSG, basename)
         end
       end

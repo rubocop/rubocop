@@ -29,7 +29,7 @@ module RuboCop
         SNAKE_CASE = /^[\da-z_.?!]+$/
 
         def investigate(processed_source)
-          file_path = processed_source.buffer.name
+          file_path = processed_source.file_path
           return if config.file_to_include?(file_path)
 
           for_bad_filename(file_path) do |range, msg|

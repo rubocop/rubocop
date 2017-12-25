@@ -50,7 +50,7 @@ module RuboCop
         end
 
         def rackup_config_file?
-          File.basename(processed_source.buffer.name).eql?('config.ru')
+          File.basename(processed_source.file_path).eql?('config.ru')
         end
       end
     end

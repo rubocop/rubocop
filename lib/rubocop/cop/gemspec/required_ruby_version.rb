@@ -72,12 +72,10 @@ module RuboCop
         end
 
         def message(required_ruby_version, target_ruby_version)
-          file_path = processed_source.buffer.name
-
           format(
             MSG,
             required_ruby_version: required_ruby_version,
-            gemspec_filename: File.basename(file_path),
+            gemspec_filename: File.basename(processed_source.file_path),
             target_ruby_version: target_ruby_version
           )
         end
