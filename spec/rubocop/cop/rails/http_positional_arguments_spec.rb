@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Rails::HttpPositionalArguments do
+RSpec.describe RuboCop::Cop::Rails::HttpPositionalArguments do
   context 'rails 4', :rails4, :config do
     subject(:cop) { described_class.new(config) }
 

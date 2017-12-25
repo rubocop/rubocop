@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Rails::Output do
+RSpec.describe RuboCop::Cop::Rails::Output do
   subject(:cop) { described_class.new }
 
   it 'records an offense for methods without a receiver' do

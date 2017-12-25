@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Performance::RedundantBlockCall do
+RSpec.describe RuboCop::Cop::Performance::RedundantBlockCall do
   subject(:cop) { described_class.new }
 
   it 'autocorrects block.call without arguments' do

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Layout::MultilineHashBraceLayout, :config do
+RSpec.describe RuboCop::Cop::Layout::MultilineHashBraceLayout, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:cop_config) { { 'EnforcedStyle' => 'symmetrical' } }

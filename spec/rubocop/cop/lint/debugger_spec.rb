@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::Debugger, :config do
+RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
   subject(:cop) { described_class.new(config) }
 
   include_examples 'debugger', 'debugger', 'debugger'

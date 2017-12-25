@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Performance::Sample do
+RSpec.describe RuboCop::Cop::Performance::Sample do
   subject(:cop) { described_class.new }
 
   shared_examples 'offense' do |wrong, right|

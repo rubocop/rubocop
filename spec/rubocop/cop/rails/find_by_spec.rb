@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Rails::FindBy do
+RSpec.describe RuboCop::Cop::Rails::FindBy do
   subject(:cop) { described_class.new }
 
   shared_examples 'registers_offense' do |selector|

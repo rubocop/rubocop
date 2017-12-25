@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Naming::PredicateName, :config do
+RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'with blacklisted prefixes' do

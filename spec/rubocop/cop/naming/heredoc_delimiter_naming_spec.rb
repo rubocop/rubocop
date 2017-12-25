@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
+RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:config) do

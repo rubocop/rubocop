@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Util do
+RSpec.describe RuboCop::Cop::Util do
   class TestUtil
     include RuboCop::Cop::Util
   end

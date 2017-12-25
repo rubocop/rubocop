@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::PercentQLiterals, :config do
+RSpec.describe RuboCop::Cop::Style::PercentQLiterals, :config do
   subject(:cop) { described_class.new(config) }
 
   shared_examples 'accepts quote characters' do

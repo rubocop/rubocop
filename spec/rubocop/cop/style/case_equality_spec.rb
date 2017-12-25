@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::CaseEquality do
+RSpec.describe RuboCop::Cop::Style::CaseEquality do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for ===' do

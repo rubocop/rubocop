@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Performance::RegexpMatch, :config do
+RSpec.describe RuboCop::Cop::Performance::RegexpMatch, :config do
   subject(:cop) { described_class.new(config) }
 
   shared_examples :accepts do |name, code|

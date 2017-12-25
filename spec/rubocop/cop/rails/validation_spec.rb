@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Rails::Validation do
+RSpec.describe RuboCop::Cop::Rails::Validation do
   subject(:cop) { described_class.new }
 
   described_class::BLACKLIST.each_with_index do |validation, number|

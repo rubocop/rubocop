@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::EachWithObject do
+RSpec.describe RuboCop::Cop::Style::EachWithObject do
   subject(:cop) { described_class.new }
 
   it 'finds inject and reduce with passed in and returned hash' do

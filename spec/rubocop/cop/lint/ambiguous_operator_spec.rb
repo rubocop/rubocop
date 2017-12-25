@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::AmbiguousOperator do
+RSpec.describe RuboCop::Cop::Lint::AmbiguousOperator do
   subject(:cop) { described_class.new }
 
   context 'with a splat operator in the first argument' do

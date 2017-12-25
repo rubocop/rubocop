@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::IdenticalConditionalBranches do
+RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches do
   subject(:cop) { described_class.new }
 
   context 'on if..else with identical bodies' do

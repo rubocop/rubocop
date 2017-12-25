@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::VariableForce::Assignment do
+RSpec.describe RuboCop::Cop::VariableForce::Assignment do
   include RuboCop::AST::Sexp
 
   let(:ast) do

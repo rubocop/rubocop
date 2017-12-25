@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::EvenOdd do
+RSpec.describe RuboCop::Cop::Style::EvenOdd do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for x % 2 == 0' do

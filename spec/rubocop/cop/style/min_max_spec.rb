@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::MinMax, :config do
+RSpec.describe RuboCop::Cop::Style::MinMax, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'with an array literal containing calls to `#min` and `#max`' do

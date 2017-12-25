@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Layout::SpaceInsidePercentLiteralDelimiters do
+RSpec.describe RuboCop::Cop::Layout::SpaceInsidePercentLiteralDelimiters do
   subject(:cop) { described_class.new }
 
   let(:message) do

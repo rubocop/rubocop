@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Security::Eval do
+RSpec.describe RuboCop::Cop::Security::Eval do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for eval as function' do

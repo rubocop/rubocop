@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::DuplicatedKey do
+RSpec.describe RuboCop::Cop::Lint::DuplicatedKey do
   subject(:cop) { described_class.new }
 
   context 'When there is a duplicated key in the hash literal' do

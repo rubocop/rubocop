@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
+RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
   subject(:cop) { described_class.new(config) }
 
   let(:config) do

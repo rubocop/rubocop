@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
+RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
   subject(:cop) { described_class.new(config) }
 
   shared_examples 'common behavior' do

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::UnneededPercentQ do
+RSpec.describe RuboCop::Cop::Style::UnneededPercentQ do
   subject(:cop) { described_class.new }
 
   context 'with %q strings' do

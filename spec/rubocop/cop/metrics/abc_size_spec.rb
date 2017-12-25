@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Metrics::AbcSize, :config do
+RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'when Max is 0' do

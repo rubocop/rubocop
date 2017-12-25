@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Rails::CreateTableWithTimestamps do
+RSpec.describe RuboCop::Cop::Rails::CreateTableWithTimestamps do
   subject(:cop) { described_class.new(config) }
 
   let(:config) { RuboCop::Config.new }

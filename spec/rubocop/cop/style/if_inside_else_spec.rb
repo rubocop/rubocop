@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::IfInsideElse do
+RSpec.describe RuboCop::Cop::Style::IfInsideElse do
   subject(:cop) { described_class.new }
 
   it 'catches an if node nested inside an else' do

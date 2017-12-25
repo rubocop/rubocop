@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Rails::TimeZone, :config do
+RSpec.describe RuboCop::Cop::Rails::TimeZone, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'when EnforcedStyle is "strict"' do

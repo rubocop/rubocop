@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::InternalAffairs::RedundantLocationArgument do
+RSpec.describe RuboCop::Cop::InternalAffairs::RedundantLocationArgument do
   subject(:cop) { described_class.new }
 
   shared_examples 'auto-correction' do |name, old_source, new_source|

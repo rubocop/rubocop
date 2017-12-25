@@ -2,7 +2,7 @@
 
 require 'parser/current'
 
-describe RuboCop::NodePattern do
+RSpec.describe RuboCop::NodePattern do
   let(:root_node) do
     buffer = Parser::Source::Buffer.new('(string)', 1)
     buffer.source = ruby

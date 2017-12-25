@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Rails::ActiveSupportAliases do
+RSpec.describe RuboCop::Cop::Rails::ActiveSupportAliases do
   subject(:cop) { described_class.new }
 
   describe 'String' do

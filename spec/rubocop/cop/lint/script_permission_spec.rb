@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # rubocop:disable Style/NumericLiteralPrefix
-describe RuboCop::Cop::Lint::ScriptPermission do
+RSpec.describe RuboCop::Cop::Lint::ScriptPermission do
   subject(:cop) { described_class.new(config, options) }
 
   let(:config) { RuboCop::Config.new }

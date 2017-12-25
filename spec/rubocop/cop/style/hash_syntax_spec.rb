@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::HashSyntax, :config do
+RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'configured to enforce ruby19 style' do

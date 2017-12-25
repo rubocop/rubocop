@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
+RSpec.describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
   subject(:cop) { described_class.new(config) }
 
   shared_examples 'single line lists' do |extra_info|

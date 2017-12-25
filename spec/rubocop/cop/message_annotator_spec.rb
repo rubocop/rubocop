@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::MessageAnnotator do
+RSpec.describe RuboCop::Cop::MessageAnnotator do
   let(:options) { {} }
   let(:config) { RuboCop::Config.new({}) }
   let(:annotator) { described_class.new(config, config['Cop/Cop'], options) }

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Performance::ReverseEach do
+RSpec.describe RuboCop::Cop::Performance::ReverseEach do
   subject(:cop) { described_class.new }
 
   it 'registers an offense when each is called on reverse' do

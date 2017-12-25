@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::Proc do
+RSpec.describe RuboCop::Cop::Style::Proc do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for a Proc.new call' do

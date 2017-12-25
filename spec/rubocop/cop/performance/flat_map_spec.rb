@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Performance::FlatMap, :config do
+RSpec.describe RuboCop::Cop::Performance::FlatMap, :config do
   subject(:cop) { described_class.new(config) }
 
   shared_examples 'map_and_collect' do |method, flatten|

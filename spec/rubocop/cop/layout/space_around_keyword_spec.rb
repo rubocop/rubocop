@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Layout::SpaceAroundKeyword do
+RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword do
   subject(:cop) { described_class.new }
 
   shared_examples 'missing before' do |highlight, expr, correct|

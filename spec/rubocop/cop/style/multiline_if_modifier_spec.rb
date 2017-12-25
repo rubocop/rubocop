@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::MultilineIfModifier do
+RSpec.describe RuboCop::Cop::Style::MultilineIfModifier do
   subject(:cop) { described_class.new }
 
   shared_examples 'offense' do |modifier|

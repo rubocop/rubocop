@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::WhileUntilDo do
+RSpec.describe RuboCop::Cop::Style::WhileUntilDo do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for do in multiline while' do

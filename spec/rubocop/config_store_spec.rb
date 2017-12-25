@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::ConfigStore do
+RSpec.describe RuboCop::ConfigStore do
   subject(:config_store) { described_class.new }
 
   before do

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::TargetFinder, :isolated_environment do
+RSpec.describe RuboCop::TargetFinder, :isolated_environment do
   include FileHelper
 
   subject(:target_finder) do

@@ -6,7 +6,7 @@ module RuboCop
   end
 end
 
-describe RuboCop::Runner, :isolated_environment do
+RSpec.describe RuboCop::Runner, :isolated_environment do
   include FileHelper
 
   let(:formatter_output_path) { 'formatter_output.txt' }

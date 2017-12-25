@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::UselessComparison do
+RSpec.describe RuboCop::Cop::Lint::UselessComparison do
   subject(:cop) { described_class.new }
 
   described_class::OPS.each do |op|

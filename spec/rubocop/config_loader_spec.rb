@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::ConfigLoader do
+RSpec.describe RuboCop::ConfigLoader do
   include FileHelper
 
   let(:default_config) { described_class.default_configuration }

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Rails::HasAndBelongsToMany do
+RSpec.describe RuboCop::Cop::Rails::HasAndBelongsToMany do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for has_and_belongs_to_many' do

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Commissioner do
+RSpec.describe RuboCop::Cop::Commissioner do
   describe '#investigate' do
     let(:cop) do
       double(RuboCop::Cop, offenses: [], excluded_file?: false).as_null_object

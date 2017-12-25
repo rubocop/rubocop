@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::EvalWithLocation do
+RSpec.describe RuboCop::Cop::Style::EvalWithLocation do
   subject(:cop) { described_class.new(config) }
 
   let(:config) { RuboCop::Config.new }

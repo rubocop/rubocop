@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Rails::PluralizationGrammar do
+RSpec.describe RuboCop::Cop::Rails::PluralizationGrammar do
   subject(:cop) { described_class.new }
 
   before do

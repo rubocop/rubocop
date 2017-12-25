@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses do
+RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for parens in method call without args' do

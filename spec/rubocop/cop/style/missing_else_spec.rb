@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::MissingElse do
+RSpec.describe RuboCop::Cop::Style::MissingElse do
   subject(:cop) { described_class.new(config) }
 
   context 'UnlessElse enabled' do

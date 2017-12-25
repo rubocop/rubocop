@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::RemoteConfig do
+RSpec.describe RuboCop::RemoteConfig do
   include FileHelper
 
   subject(:remote_config) do

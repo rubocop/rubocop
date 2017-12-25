@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::MixinUsage do
+RSpec.describe RuboCop::Cop::Style::MixinUsage do
   subject(:cop) { described_class.new }
 
   context 'include' do

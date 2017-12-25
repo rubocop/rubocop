@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Badge do
+RSpec.describe RuboCop::Cop::Badge do
   subject(:badge) { described_class.new('Test', 'ModuleMustBeAClassCop') }
 
   it 'exposes department name' do

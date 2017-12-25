@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Rails::RedundantReceiverInWithOptions, :config do
+RSpec.describe RuboCop::Cop::Rails::RedundantReceiverInWithOptions, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'rails >= 4.2' do

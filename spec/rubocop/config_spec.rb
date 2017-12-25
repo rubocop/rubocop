@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Config do
+RSpec.describe RuboCop::Config do
   include FileHelper
 
   subject(:configuration) { described_class.new(hash, loaded_path) }

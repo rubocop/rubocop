@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::AST::KeywordSplatNode do
+RSpec.describe RuboCop::AST::KeywordSplatNode do
   let(:kwsplat_node) { parse_source(source).ast.children.last }
 
   describe '.new' do

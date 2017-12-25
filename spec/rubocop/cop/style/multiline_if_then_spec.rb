@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::MultilineIfThen do
+RSpec.describe RuboCop::Cop::Style::MultilineIfThen do
   subject(:cop) { described_class.new }
 
   # if

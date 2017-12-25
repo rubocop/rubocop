@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Rails::ReversibleMigration, :config do
+RSpec.describe RuboCop::Cop::Rails::ReversibleMigration, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:source) do

@@ -2,7 +2,7 @@
 
 require 'timeout'
 
-describe RuboCop::CLI, :isolated_environment do
+RSpec.describe RuboCop::CLI, :isolated_environment do
   include_context 'cli spec behavior'
 
   subject(:cli) { described_class.new }

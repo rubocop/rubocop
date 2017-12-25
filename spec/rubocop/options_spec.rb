@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Options, :isolated_environment do
+RSpec.describe RuboCop::Options, :isolated_environment do
   include FileHelper
 
   subject(:options) { described_class.new }

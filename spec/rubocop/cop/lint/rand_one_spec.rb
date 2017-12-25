@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::RandOne do
+RSpec.describe RuboCop::Cop::Lint::RandOne do
   subject(:cop) { described_class.new }
 
   before { inspect_source(source) }

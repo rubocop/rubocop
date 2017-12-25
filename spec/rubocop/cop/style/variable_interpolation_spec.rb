@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::VariableInterpolation do
+RSpec.describe RuboCop::Cop::Style::VariableInterpolation do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for interpolated global variables in string' do

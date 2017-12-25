@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::NestedPercentLiteral do
+RSpec.describe RuboCop::Cop::Lint::NestedPercentLiteral do
   subject(:cop) { described_class.new }
 
   let(:message) do

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
+RSpec.describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
   subject(:cop) { described_class.new }
 
   context 'has_one' do

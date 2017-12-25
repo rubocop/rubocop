@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Performance::LstripRstrip do
+RSpec.describe RuboCop::Cop::Performance::LstripRstrip do
   subject(:cop) { described_class.new }
 
   it 'autocorrects str.lstrip.rstrip' do

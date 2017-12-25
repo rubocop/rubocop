@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::ArrayJoin do
+RSpec.describe RuboCop::Cop::Style::ArrayJoin do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for an array followed by string' do

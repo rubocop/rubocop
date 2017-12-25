@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::SelfAssignment do
+RSpec.describe RuboCop::Cop::Style::SelfAssignment do
   subject(:cop) { described_class.new }
 
   %i[+ - * ** / | & || &&].product(['x', '@x', '@@x']).each do |op, var|

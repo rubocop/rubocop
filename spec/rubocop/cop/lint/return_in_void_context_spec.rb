@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Lint::ReturnInVoidContext do
+RSpec.describe RuboCop::Cop::Lint::ReturnInVoidContext do
   subject(:cop) { described_class.new }
 
   context 'with an initialize method containing a return with a value' do

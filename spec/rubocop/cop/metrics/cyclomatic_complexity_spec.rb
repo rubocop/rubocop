@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
+RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'when Max is 1' do

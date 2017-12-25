@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::MultilineTernaryOperator do
+RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator do
   subject(:cop) { described_class.new }
 
   it 'registers offense when the if branch and the else branch are ' \

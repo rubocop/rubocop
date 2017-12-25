@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::AST::WhenNode do
+RSpec.describe RuboCop::AST::WhenNode do
   let(:when_node) { parse_source(source).ast.children[1] }
 
   describe '.new' do

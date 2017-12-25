@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Style::DateTime do
+RSpec.describe RuboCop::Cop::Style::DateTime do
   subject(:cop) { described_class.new }
 
   it 'registers an offense when using DateTime for current time' do

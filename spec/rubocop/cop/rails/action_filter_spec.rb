@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Rails::ActionFilter, :config do
+RSpec.describe RuboCop::Cop::Rails::ActionFilter, :config do
   describe '::FILTER_METHODS' do
     it 'contains all of the filter methods' do
       expect(described_class::FILTER_METHODS).to eq(%i[
