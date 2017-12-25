@@ -20,7 +20,7 @@ module RuboCop
         ].freeze
 
         def investigate(processed_source)
-          return unless processed_source.ast
+          return if processed_source.blank?
           max = cop_config['Max']
           check_nesting_level(processed_source.ast, max, 0)
         end

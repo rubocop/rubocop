@@ -19,7 +19,7 @@ module RuboCop
         MSG = 'Do not use semicolons to terminate expressions.'.freeze
 
         def investigate(processed_source)
-          return unless processed_source.ast
+          return if processed_source.blank?
           @processed_source = processed_source
 
           check_for_line_terminator_or_opener

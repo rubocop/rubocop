@@ -27,7 +27,7 @@ module RuboCop
                              'assignment.'.freeze
 
         def investigate(processed_source)
-          return if processed_source.ast.nil?
+          return if processed_source.blank?
 
           if force_equal_sign_alignment?
             @asgn_tokens = assignment_tokens
