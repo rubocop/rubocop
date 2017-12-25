@@ -719,6 +719,17 @@ end
 class Post < ApplicationRecord
   belongs_to :blog
 end
+
+# good
+class Blog < ApplicationRecord
+  with_options inverse_of: :blog do
+    has_many :posts, -> { order(published_at: :desc) }
+  end
+end
+
+class Post < ApplicationRecord
+  belongs_to :blog
+end
 ```
 ```ruby
 # bad
