@@ -142,7 +142,7 @@ module RuboCop
 
         def comment_in_else?(node)
           range = else_line_range(node.loc)
-          processed_source.comments.find { |c| range.include?(c.loc.line) }
+          processed_source.find_comment { |c| range.include?(c.loc.line) }
         end
 
         def else_line_range(loc)

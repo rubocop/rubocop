@@ -20,7 +20,7 @@ module RuboCop
         MSG = 'Missing space after `#`.'.freeze
 
         def investigate(processed_source)
-          processed_source.comments.each do |comment|
+          processed_source.each_comment do |comment|
             next unless comment.text =~ /\A#+[^#\s=:+-]/
             next if comment.loc.line == 1 && allowed_on_first_line?(comment)
 

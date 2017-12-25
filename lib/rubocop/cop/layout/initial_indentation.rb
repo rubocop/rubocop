@@ -21,7 +21,7 @@ module RuboCop
         private
 
         def first_token
-          processed_source.tokens.find { |t| !t.text.start_with?('#') }
+          processed_source.find_token { |t| !t.text.start_with?('#') }
         end
 
         def space_before(token)

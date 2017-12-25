@@ -40,7 +40,7 @@ module RuboCop
         MSG = 'Use only ascii symbols in identifiers.'.freeze
 
         def investigate(processed_source)
-          processed_source.tokens.each do |token|
+          processed_source.each_token do |token|
             next unless token.type == :tIDENTIFIER && !token.text.ascii_only?
             add_offense(token, location: first_offense_range(token))
           end

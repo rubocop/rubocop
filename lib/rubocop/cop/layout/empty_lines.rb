@@ -28,7 +28,7 @@ module RuboCop
           return if processed_source.tokens.empty?
 
           lines = Set.new
-          processed_source.tokens.each do |token|
+          processed_source.each_token do |token|
             lines << token.line
           end
 

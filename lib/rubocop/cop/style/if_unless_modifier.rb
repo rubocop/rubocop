@@ -85,7 +85,7 @@ module RuboCop
 
         def first_line_comment(node)
           comment =
-            processed_source.comments.find { |c| c.loc.line == node.loc.line }
+            processed_source.find_comment { |c| c.loc.line == node.loc.line }
 
           comment ? comment.loc.expression.source : nil
         end

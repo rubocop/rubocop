@@ -75,7 +75,7 @@ module RuboCop
         def notice_found?(processed_source)
           notice_found = false
           notice_regexp = Regexp.new(notice)
-          processed_source.tokens.each do |token|
+          processed_source.each_token do |token|
             break unless token.comment?
             notice_found = !(token.text =~ notice_regexp).nil?
             break if notice_found

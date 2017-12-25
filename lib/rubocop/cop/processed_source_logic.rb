@@ -4,6 +4,22 @@ module RuboCop
   module Cop
     # This module extends ProcessedSource with helper functionality.
     module ProcessedSourceLogic
+      def each_comment
+        comments.each { |comment| yield comment }
+      end
+
+      def find_comment
+        comments.find { |comment| yield comment }
+      end
+
+      def each_token
+        tokens.each { |token| yield token }
+      end
+
+      def find_token
+        tokens.find { |token| yield token }
+      end
+
       def aligned_comments?(token)
         ix = comments.index do |comment|
           comment.loc.expression.begin_pos == token.begin_pos

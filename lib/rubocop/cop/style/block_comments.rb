@@ -22,7 +22,7 @@ module RuboCop
         END_LENGTH = "\n=end".length
 
         def investigate(processed_source)
-          processed_source.comments.each do |comment|
+          processed_source.each_comment do |comment|
             next unless comment.document?
 
             add_offense(comment)
