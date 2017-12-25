@@ -267,7 +267,8 @@ module RuboCop
           annotation_line = node.first_line - 1
           first_comment = nil
 
-          comments_before_line(annotation_line).reverse_each do |comment|
+          processed_source.comments_before_line(annotation_line)
+                          .reverse_each do |comment|
             if comment.location.line == annotation_line
               first_comment = comment
               annotation_line -= 1
@@ -279,10 +280,6 @@ module RuboCop
 
         def start_line_position(node)
           buffer.line_range(node.first_line).begin_pos - 1
-        end
-
-        def comments_before_line(line)
-          processed_source.comments.select { |c| c.location.line <= line }
         end
 
         def buffer

@@ -272,10 +272,6 @@ module RuboCop
         line_distance(n1, n2) == 1
       end
 
-      def stripped_source_upto(line)
-        processed_source[0..line].map(&:strip)
-      end
-
       def to_supported_styles(enforced_style)
         enforced_style
           .sub(/^Enforced/, 'Supported')

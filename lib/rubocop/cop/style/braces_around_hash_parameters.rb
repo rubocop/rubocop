@@ -129,7 +129,7 @@ module RuboCop
         def remove_braces_with_whitespace(corrector, node, space)
           right_brace_and_space = right_brace_and_space(node.loc.end, space)
 
-          if comment_on_line?(right_brace_and_space.line)
+          if processed_source.comment_on_line?(right_brace_and_space.line)
             remove_braces(corrector, node)
           elsif node.multiline?
             remove_braces_with_range(corrector,
@@ -181,10 +181,6 @@ module RuboCop
               whitespace: space[:right]
             )
           range_with_surrounding_comma(brace_and_space, :left)
-        end
-
-        def comment_on_line?(line)
-          processed_source.comments.any? { |c| c.loc.line == line }
         end
 
         def remove_braces(corrector, node)

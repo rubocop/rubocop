@@ -16,14 +16,15 @@ module RuboCop
 
       def non_eligible_node?(node)
         node.nonempty_line_count > 3 ||
-          !node.modifier_form? && commented?(node.loc.end)
+          !node.modifier_form? &&
+            processed_source.commented?(node.loc.end)
       end
 
       def non_eligible_body?(body)
         body.nil? ||
           body.empty_source? ||
           body.begin_type? ||
-          commented?(body.source_range)
+          processed_source.commented?(body.source_range)
       end
 
       def non_eligible_condition?(condition)
@@ -47,14 +48,6 @@ module RuboCop
 
       def max_line_length
         config.for_cop('Metrics/LineLength')['Max']
-      end
-
-      def commented?(source)
-        comment_lines.include?(source.line)
-      end
-
-      def comment_lines
-        @comment_lines ||= processed_source.comments.map { |c| c.location.line }
       end
     end
   end

@@ -81,10 +81,10 @@ module RuboCop
           assignment_line = ''
           message = ''
           if should_aligned_with_preceding_line?(token)
-            assignment_line = preceding_line(token)
+            assignment_line = processed_source.preceding_line(token)
             message = format(MSG_UNALIGNED_ASGN, location: 'preceding')
           else
-            assignment_line = following_line(token)
+            assignment_line = processed_source.following_line(token)
             message = format(MSG_UNALIGNED_ASGN, location: 'following')
           end
           return if aligned_assignment?(token.pos, assignment_line)
@@ -93,14 +93,6 @@ module RuboCop
 
         def should_aligned_with_preceding_line?(token)
           @asgn_lines.include?(token.line - 1)
-        end
-
-        def preceding_line(token)
-          processed_source.lines[token.line - 2]
-        end
-
-        def following_line(token)
-          processed_source.lines[token.line]
         end
 
         def check_other(t1, t2, ast)
@@ -127,7 +119,7 @@ module RuboCop
 
         def aligned_tok?(token)
           if token.comment?
-            aligned_comments?(token)
+            processed_source.aligned_comments?(token)
           else
             aligned_with_something?(token.pos)
           end
@@ -153,26 +145,6 @@ module RuboCop
             key, value = *pair
             key.source_range.end_pos...value.source_range.begin_pos
           end.compact
-        end
-
-        def aligned_comments?(token)
-          ix = processed_source.comments.index do |c|
-            c.loc.expression.begin_pos == token.begin_pos
-          end
-          aligned_with_previous_comment?(ix) || aligned_with_next_comment?(ix)
-        end
-
-        def aligned_with_previous_comment?(ix)
-          ix > 0 && comment_column(ix - 1) == comment_column(ix)
-        end
-
-        def aligned_with_next_comment?(ix)
-          ix < processed_source.comments.length - 1 &&
-            comment_column(ix + 1) == comment_column(ix)
-        end
-
-        def comment_column(ix)
-          processed_source.comments[ix].loc.column
         end
 
         def force_equal_sign_alignment?
