@@ -21,7 +21,7 @@ module RuboCop
         MSG = 'Avoid trailing inline comments.'.freeze
 
         def investigate(processed_source)
-          processed_source.comments.each do |comment|
+          processed_source.each_comment do |comment|
             next if comment_line?(processed_source[comment.loc.line - 1])
             add_offense(comment)
           end

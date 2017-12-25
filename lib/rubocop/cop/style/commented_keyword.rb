@@ -39,7 +39,7 @@ module RuboCop
         def investigate(processed_source)
           heredoc_lines = extract_heredoc_lines(processed_source.ast)
 
-          processed_source.comments.each do |comment|
+          processed_source.each_comment do |comment|
             location = comment.location
             line_position = location.line
             line = processed_source.lines[line_position - 1]

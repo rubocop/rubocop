@@ -117,7 +117,7 @@ module RuboCop
         end
 
         def frozen_string_literal_comment(processed_source)
-          processed_source.tokens.find do |token|
+          processed_source.find_token do |token|
             token.text.start_with?(FrozenStringLiteral::FROZEN_STRING_LITERAL)
           end
         end

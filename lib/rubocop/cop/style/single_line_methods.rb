@@ -52,7 +52,7 @@ module RuboCop
         end
 
         def end_of_line_comment(line)
-          processed_source.comments.find { |c| c.loc.line == line }
+          processed_source.find_comment { |c| c.loc.line == line }
         end
 
         def each_part(body)
