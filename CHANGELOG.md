@@ -22,8 +22,9 @@
 * [#5258](https://github.com/bbatsov/rubocop/issues/5258): Fix incorrect autocorrection for `Rails/Presence` when the else block is multiline. ([@wata727][])
 * [#5297](https://github.com/bbatsov/rubocop/pull/5297): Improve inspection for `Rails/InverseOf` when including `through` or `polymorphic` options. ([@wata727][])
 * [#5281](https://github.com/bbatsov/rubocop/issues/5281): Fix issue where `--auto-gen-config` might fail on invalid YAML. ([@bquorning][])
+* [#5313](https://github.com/bbatsov/rubocop/issues/5313): Fix `Style/HashSyntax` from stripping quotes off of symbols during autocorrection for ruby22+. ([@garettarrowood][])
 * [#5315](https://github.com/bbatsov/rubocop/issues/5315): Fix a false positive of `Layout/RescueEnsureAlignment` in Ruby 2.5. ([@pocke][])
-* [#5236](https://github.com/bbatsov/rubocop/issues/5236): Fix false positives for `Rails/InverseOf` when using `with_options`. ([@wata727][]) 
+* [#5236](https://github.com/bbatsov/rubocop/issues/5236): Fix false positives for `Rails/InverseOf` when using `with_options`. ([@wata727][])
 
 ### Changes
 
