@@ -16,9 +16,13 @@ module RuboCop
       end
 
       def preceding_non_public_modifier?(node)
-        processed_source.stripped_upto(node.first_line).any? do |line|
+        stripped_source_upto(node.first_line).any? do |line|
           NON_PUBLIC_MODIFIERS.include?(line)
         end
+      end
+
+      def stripped_source_upto(index)
+        processed_source[0..index].map(&:strip)
       end
 
       def_node_matcher :non_public_modifier?, <<-PATTERN

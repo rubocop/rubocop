@@ -119,7 +119,7 @@ module RuboCop
 
         def aligned_tok?(token)
           if token.comment?
-            processed_source.aligned_comments?(token)
+            aligned_comments?(token)
           else
             aligned_with_something?(token.pos)
           end
@@ -145,6 +145,26 @@ module RuboCop
             key, value = *pair
             key.source_range.end_pos...value.source_range.begin_pos
           end.compact
+        end
+
+        def aligned_comments?(comment_token)
+          ix = processed_source.comments.index do |comment|
+            comment.loc.expression.begin_pos == comment_token.begin_pos
+          end
+          aligned_with_previous_comment?(ix) || aligned_with_next_comment?(ix)
+        end
+
+        def aligned_with_previous_comment?(index)
+          index > 0 && comment_column(index - 1) == comment_column(index)
+        end
+
+        def aligned_with_next_comment?(index)
+          index < processed_source.comments.length - 1 &&
+            comment_column(index + 1) == comment_column(index)
+        end
+
+        def comment_column(index)
+          processed_source.comments[index].loc.column
         end
 
         def force_equal_sign_alignment?
