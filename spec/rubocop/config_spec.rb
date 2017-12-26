@@ -662,7 +662,7 @@ RSpec.describe RuboCop::Config do
     end
   end
 
-  describe '#target_ruby_version' do
+  describe '#target_ruby_version', :isolated_environment do
     context 'when TargetRubyVersion is set' do
       let(:ruby_version) { 2.1 }
 
@@ -691,11 +691,8 @@ RSpec.describe RuboCop::Config do
     context 'when TargetRubyVersion is not set' do
       context 'when .ruby-version is present' do
         before do
-          allow(File).to receive(:file?).with('.ruby-version').and_return true
-          allow(File)
-            .to receive(:read)
-            .with('.ruby-version')
-            .and_return ruby_version
+          dir = configuration.base_dir_for_path_parameters
+          create_file(File.join(dir, '.ruby-version'), ruby_version)
         end
 
         context 'when .ruby-version contains an MRI version' do
@@ -754,13 +751,20 @@ RSpec.describe RuboCop::Config do
       end
 
       context 'when .ruby-version is not present' do
-        before do
-          allow(File).to receive(:file?).with('.ruby-version').and_return false
-        end
-
         it 'uses the default target ruby version' do
           expect(configuration.target_ruby_version)
             .to eq described_class::DEFAULT_RUBY_VERSION
+        end
+      end
+
+      context 'when .ruby-version is in a parent directory' do
+        before do
+          dir = configuration.base_dir_for_path_parameters
+          create_file(File.join(dir, '..', '.ruby-version'), '2.4.1')
+        end
+
+        it 'reads it to determine the target ruby version' do
+          expect(configuration.target_ruby_version).to eq 2.4
         end
       end
     end

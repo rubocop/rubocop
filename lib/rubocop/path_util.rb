@@ -43,6 +43,13 @@ module RuboCop
       end
     end
 
+    def find_file_upwards(filename, start_dir = PathUtil.pwd)
+      Pathname(File.expand_path(start_dir)).ascend do |dir|
+        file = File.join(dir, filename)
+        return file if File.exist?(file)
+      end
+    end
+
     # Returns true for an absolute Unix or Windows path.
     def absolute?(path)
       path =~ %r{\A([A-Z]:)?/}

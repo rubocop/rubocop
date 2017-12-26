@@ -26,6 +26,7 @@
 * [#5315](https://github.com/bbatsov/rubocop/issues/5315): Fix a false positive of `Layout/RescueEnsureAlignment` in Ruby 2.5. ([@pocke][])
 * [#5236](https://github.com/bbatsov/rubocop/issues/5236): Fix false positives for `Rails/InverseOf` when using `with_options`. ([@wata727][])
 * [#5291](https://github.com/bbatsov/rubocop/issues/5291): Fix multiline indent for `Style/BracesAroundHashParameters` autocorrect. ([@flyerhzm][])
+* [#3318](https://github.com/bbatsov/rubocop/issues/3318): Look for `.ruby-version` in parent directories. ([@ybiquitous][])
 
 ### Changes
 
@@ -3117,3 +3118,4 @@
 [@nattfodd]: https://github.com/nattfodd
 [@melch]: https://github.com/melch
 [@flyerhzm]: https://github.com/flyerhzm
+[@ybiquitous]: https://github.com/ybiquitous
