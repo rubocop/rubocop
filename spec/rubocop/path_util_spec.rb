@@ -85,4 +85,28 @@ RSpec.describe RuboCop::PathUtil do
       expect(described_class.match_path?(/^d.*$/, "dir/file\xBF")).to be(false)
     end
   end
+
+  describe '#find_file_upwards', :isolated_environment do
+    include FileHelper
+
+    before do
+      create_file('file', '')
+      create_file('dir/file', '')
+    end
+
+    it 'returns a file to be found upwards' do
+      expect(described_class.find_file_upwards('file'))
+        .to eq(File.join(Dir.pwd, 'file'))
+    end
+
+    it 'returns a file when start directory is given' do
+      expect(described_class.find_file_upwards('file', 'dir'))
+        .to eq(File.join(Dir.pwd, 'dir', 'file'))
+    end
+
+    it 'returns nil when file is not found' do
+      expect(described_class.find_file_upwards('xyz')).to be(nil)
+      expect(described_class.find_file_upwards('xyz', 'dir')).to be(nil)
+    end
+  end
 end

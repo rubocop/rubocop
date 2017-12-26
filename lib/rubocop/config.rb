@@ -19,6 +19,7 @@ module RuboCop
     DEFAULT_RUBY_VERSION = 2.1
     KNOWN_RUBIES = [2.1, 2.2, 2.3, 2.4, 2.5].freeze
     OBSOLETE_RUBIES = { 1.9 => '0.50', 2.0 => '0.50' }.freeze
+    RUBY_VERSION_FILENAME = '.ruby-version'.freeze
     DEFAULT_RAILS_VERSION = 5.0
     OBSOLETE_COPS = {
       'Style/TrailingComma' =>
@@ -383,12 +384,10 @@ module RuboCop
           @target_ruby_version_source = :rubocop_yml
 
           for_all_cops['TargetRubyVersion']
-        elsif File.file?('.ruby-version') &&
-              /\A(ruby-)?(?<version>\d+\.\d+)/ =~ File.read('.ruby-version')
+        elsif target_ruby_version_from_version_file
+          @target_ruby_version_source = :ruby_version_file
 
-          @target_ruby_version_source = :dot_ruby_version
-
-          version.to_f
+          target_ruby_version_from_version_file
         else
           DEFAULT_RUBY_VERSION
         end
@@ -513,11 +512,27 @@ module RuboCop
 
     def target_ruby_source
       case @target_ruby_version_source
-      when :dot_ruby_version
-        '`.ruby-version`'
+      when :ruby_version_file
+        "`#{RUBY_VERSION_FILENAME}`"
       when :rubocop_yml
         "`TargetRubyVersion` parameter (in #{smart_loaded_path})"
       end
+    end
+
+    def ruby_version_file
+      @ruby_version_file ||=
+        PathUtil.find_file_upwards(RUBY_VERSION_FILENAME,
+                                   base_dir_for_path_parameters)
+    end
+
+    def target_ruby_version_from_version_file
+      file = ruby_version_file
+      return unless file && File.file?(file)
+
+      @target_ruby_version_from_version_file ||=
+        File.read(file).match(/\A(ruby-)?(?<version>\d+\.\d+)/) do |md|
+          md[:version].to_f
+        end
     end
 
     def reject_mutually_exclusive_defaults
