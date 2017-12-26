@@ -67,6 +67,11 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
                   ^^^^^^^^^^^^ Use the new Ruby 1.9 hash syntax.
           RUBY
         end
+
+        it 'preserves quotes during autocorrection' do
+          new_source = autocorrect_source("{ :'&&' => foo }")
+          expect(new_source).to eq("{ '&&': foo }")
+        end
       end
 
       context 'if PreferHashRocketsForNonAlnumEndingSymbols is false' do

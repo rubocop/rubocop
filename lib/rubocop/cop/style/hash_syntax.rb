@@ -173,11 +173,12 @@ module RuboCop
           range = range_between(key.source_range.begin_pos, op.end_pos)
           range = range_with_surrounding_space(range: range, side: :right)
 
-          new_key = key.sym_type? ? key.value : key.source
-
           space = argument_without_space?(pair_node.parent) ? ' ' : ''
 
-          corrector.replace(range, "#{space}#{new_key}: ")
+          corrector.replace(
+            range,
+            range.source.sub(/^:(.*\S)\s*=>\s*$/, space.to_s + '\1: ')
+          )
         end
 
         def argument_without_space?(node)
