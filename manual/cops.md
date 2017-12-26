@@ -359,6 +359,7 @@ In the following section you find all available cops:
 * [Security/Eval](cops_security.md#securityeval)
 * [Security/JSONLoad](cops_security.md#securityjsonload)
 * [Security/MarshalLoad](cops_security.md#securitymarshalload)
+* [Security/Open](cops_security.md#securityopen)
 * [Security/YAMLLoad](cops_security.md#securityyamlload)
 
 #### Department [Style](cops_style.md)

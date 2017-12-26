@@ -6,6 +6,7 @@
 
 * [#3394](https://github.com/bbatsov/rubocop/issues/3394): Add new `Style/TrailingCommmaInArrayLiteral` cop. ([@garettarrowood][])
 * [#3394](https://github.com/bbatsov/rubocop/issues/3394): Add new `Style/TrailingCommmaInHashLiteral` cop. ([@garettarrowood][])
+* [#5319](https://github.com/bbatsov/rubocop/pull/5319): Add new `Security/Open` cop. ([@mame][])
 
 ### Changes
 
@@ -3130,3 +3131,4 @@
 [@melch]: https://github.com/melch
 [@flyerhzm]: https://github.com/flyerhzm
 [@ybiquitous]: https://github.com/ybiquitous
+[@mame]: https://github.com/mame
