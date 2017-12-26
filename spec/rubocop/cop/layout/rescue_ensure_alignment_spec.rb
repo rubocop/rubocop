@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment do
-  subject(:cop) { described_class.new }
+RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
+  subject(:cop) { described_class.new(config) }
 
   shared_examples 'common behavior' do |keyword|
     context 'bad alignment' do
@@ -96,6 +96,43 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment do
                       '    error',
                       'end'])
       expect(cop.messages.empty?).to be(true)
+    end
+
+    context '>= Ruby 2.5', :ruby25 do
+      it "accepts aligned #{keyword} in do-end block" do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          [1, 2, 3].each do |el|
+            el.to_s
+          rescue StandardError => _exception
+            next
+          end
+        RUBY
+      end
+
+      it "accepts aligned #{keyword} in do-end block in a method" do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          def foo
+            [1, 2, 3].each do |el|
+              el.to_s
+            rescue StandardError => _exception
+              next
+            end
+          end
+        RUBY
+      end
+
+      it "registers an offense for not aligned #{keyword} in do-end block" do
+        expect_offense(<<-RUBY.strip_indent)
+          def foo
+            [1, 2, 3].each do |el|
+              el.to_s
+          rescue StandardError => _exception
+          ^^^^^^ `rescue` at 4, 0 is not aligned with `end` at 6, 2.
+              next
+            end
+          end
+        RUBY
+      end
     end
   end
 
