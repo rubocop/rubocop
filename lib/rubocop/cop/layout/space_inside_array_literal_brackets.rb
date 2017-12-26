@@ -46,7 +46,7 @@ module RuboCop
         def on_array(node)
           return unless node.square_brackets?
           left, right = array_brackets(node)
-          if processed_source.empty_brackets?(left, right)
+          if empty_brackets?(left, right)
             return empty_offenses(node, left, right)
           end
 
@@ -60,7 +60,7 @@ module RuboCop
           left, right = array_brackets(node)
 
           lambda do |corrector|
-            if processed_source.empty_brackets?(left, right)
+            if empty_brackets?(left, right)
               empty_corrections(corrector, left, right)
             elsif style == :no_space
               SpaceCorrector.remove_space(processed_source, corrector,
@@ -85,6 +85,11 @@ module RuboCop
 
         def right_array_bracket(node)
           tokens(node).reverse.find(&:right_bracket?)
+        end
+
+        def empty_brackets?(left_bracket_token, right_bracket_token)
+          processed_source.tokens.index(left_bracket_token) ==
+            processed_source.tokens.index(right_bracket_token) - 1
         end
 
         def empty_offenses(node, left, right)

@@ -15,6 +15,7 @@
 ### Changes
 
 * [#3394](https://github.com/bbatsov/rubocop/issues/3394): Remove `Style/TrailingCommmaInLiteral` in favor of two new cops. ([@garettarrowood][])
+* [#5217](https://github.com/bbatsov/rubocop/pull/5217): Expand `ProcessedSource` with helper methods. ([@garettarrowood][])
 
 ## 0.52.1 (2017-12-27)
 
@@ -50,7 +51,6 @@
 * [#5233](https://github.com/bbatsov/rubocop/pull/5233): Remove `Style/ExtendSelf` cop. ([@pocke][])
 * [#5221](https://github.com/bbatsov/rubocop/issues/5221): Change `Layout/SpaceBeforeBlockBraces`'s `EnforcedStyleForEmptyBraces` from `no_space` to `space`. ([@garettarrowood][])
 * [#3558](https://github.com/bbatsov/rubocop/pull/3558): Create `Corrector` classes and move all `autocorrect` methods out of mixin Modules. ([@garettarrowood][])
-* [#5217](https://github.com/bbatsov/rubocop/pull/5217): Expand `ProcessedSource` with many helper methods. ([@garettarrowood][])
 
 ## 0.52.0 (2017-12-12)
 

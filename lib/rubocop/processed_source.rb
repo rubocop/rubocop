@@ -7,8 +7,6 @@ module RuboCop
   # and other information such as disabled lines for cops.
   # It also provides a convenient way to access source lines.
   class ProcessedSource
-    include Cop::ProcessedSourceLogic
-
     STRING_SOURCE_NAME = '(string)'.freeze
 
     attr_reader :path, :buffer, :ast, :comments, :tokens, :diagnostics,
@@ -104,7 +102,36 @@ module RuboCop
       ast.nil?
     end
 
+    def commented?(source_range)
+      comment_lines.include?(source_range.line)
+    end
+
+    def comment_on_line?(line)
+      comments.any? { |c| c.loc.line == line }
+    end
+
+    def comments_before_line(line)
+      comments.select { |c| c.location.line <= line }
+    end
+
+    def start_with?(string)
+      return false if self[0].nil?
+      self[0].start_with?(string)
+    end
+
+    def preceding_line(token)
+      lines[token.line - 2]
+    end
+
+    def following_line(token)
+      lines[token.line]
+    end
+
     private
+
+    def comment_lines
+      @comment_lines ||= comments.map { |c| c.location.line }
+    end
 
     def parse(source, ruby_version)
       buffer_name = @path || STRING_SOURCE_NAME
