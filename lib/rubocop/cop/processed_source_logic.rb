@@ -4,15 +4,15 @@ module RuboCop
   module Cop
     # This module extends ProcessedSource with helper functionality.
     module ProcessedSourceLogic
-      def aligned_comments?(token)
+      def aligned_comments?(comment_token)
         ix = comments.index do |comment|
-          comment.loc.expression.begin_pos == token.begin_pos
+          comment.loc.expression.begin_pos == comment_token.begin_pos
         end
         aligned_with_previous_comment?(ix) || aligned_with_next_comment?(ix)
       end
 
-      def commented?(source)
-        comment_lines.include?(source.line)
+      def commented?(source_range)
+        comment_lines.include?(source_range.line)
       end
 
       def comment_on_line?(line)
@@ -36,17 +36,17 @@ module RuboCop
         lines[token.line]
       end
 
-      def stripped_upto(line)
-        self[0..line].map(&:strip)
+      def stripped_upto(index)
+        self[0..index].map(&:strip)
       end
 
       def previous_and_current_lines_empty?(line)
         self[line - 2].empty? && self[line - 1].empty?
       end
 
-      def empty_brackets?(left_bracket, right_bracket)
-        tokens.index(left_bracket) ==
-          tokens.index(right_bracket) - 1
+      def empty_brackets?(left_bracket_token, right_bracket_token)
+        tokens.index(left_bracket_token) ==
+          tokens.index(right_bracket_token) - 1
       end
 
       private

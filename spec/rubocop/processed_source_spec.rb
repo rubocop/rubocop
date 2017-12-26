@@ -221,6 +221,7 @@ RSpec.describe RuboCop::ProcessedSource do
       def foo # comment one
         bar # comment two
       end # comment three
+      foo
     RUBY
 
     describe '#each_comment' do
@@ -251,6 +252,87 @@ RSpec.describe RuboCop::ProcessedSource do
         end
 
         expect(comment).to eq nil
+      end
+    end
+
+    describe '#comment_on_line?' do
+      it 'returns true when passed line number with comment' do
+        expect(processed_source.comment_on_line?(1)).to be true
+        expect(processed_source.comment_on_line?(2)).to be true
+        expect(processed_source.comment_on_line?(3)).to be true
+      end
+
+      it 'returns false when passed line number without comment' do
+        expect(processed_source.comment_on_line?(4)).to be false
+      end
+    end
+
+    describe '#commented?' do
+      let(:source) { <<-RUBY.strip_indent }
+        # comment
+        [ 1, 2 ]
+      RUBY
+
+      context 'provided source_range on line with comment' do
+        it 'returns true' do
+          bracket_range = processed_source.find_token(&:left_bracket?).pos
+          expect(processed_source.commented?(bracket_range)).to be false
+        end
+      end
+
+      context 'provided source_range on line without comment' do
+        it 'returns false' do
+          comment_range = processed_source.find_token(&:comment?).pos
+          expect(processed_source.commented?(comment_range)).to be true
+        end
+      end
+    end
+
+    describe '#comments_before_line' do
+      let(:source) { <<-RUBY.strip_indent }
+        # comment one
+        # comment two
+        [ 1, 2 ]
+        # comment three
+      RUBY
+
+      it 'returns comments on or before given line' do
+        expect(processed_source.comments_before_line(1).size).to eq 1
+        expect(processed_source.comments_before_line(2).size).to eq 2
+        expect(processed_source.comments_before_line(3).size).to eq 2
+        expect(processed_source.comments_before_line(4).size).to eq 3
+
+        expect(processed_source.comments_before_line(1)
+                               .first
+                               .is_a?(Parser::Source::Comment)).to be true
+      end
+    end
+
+    describe '#aligned_comments?' do
+      context 'with misaligned comments' do
+        let(:source) { <<-RUBY.strip_indent }
+            # Misaligned
+          # With this comment
+          def foo; end
+        RUBY
+
+        it 'returns false' do
+          comment_token = processed_source.find_token(&:comment?)
+          expect(processed_source.aligned_comments?(comment_token)).to be false
+        end
+      end
+
+      context 'with aligned comments' do
+        let(:source) { <<-RUBY.strip_indent }
+          # Aligned
+          # With this comment
+          def foo; end
+        RUBY
+
+        it 'returns true' do
+          comment_token = processed_source.find_token(&:comment?)
+          expect(processed_source.aligned_comments?(comment_token)).to be true
+        end
       end
     end
   end
@@ -311,6 +393,133 @@ RSpec.describe RuboCop::ProcessedSource do
 
       it 'returns false' do
         expect(processed_source.blank?).to eq false
+      end
+    end
+  end
+
+  describe '#start_with?' do
+    context 'with blank source' do
+      let(:source) { <<-RUBY.strip_indent }
+      RUBY
+
+      it 'returns false' do
+        expect(processed_source.start_with?('start')).to eq false
+        expect(processed_source.start_with?('#')).to eq false
+        expect(processed_source.start_with?('')).to eq false
+      end
+    end
+
+    context 'with present source' do
+      let(:source) { <<-RUBY.strip_indent }
+        foo
+      RUBY
+
+      it 'returns true when passed string that starts source' do
+        expect(processed_source.start_with?('foo')).to eq true
+        expect(processed_source.start_with?('f')).to eq true
+        expect(processed_source.start_with?('')).to eq true
+      end
+
+      it 'returns false when passed string that does not start source' do
+        expect(processed_source.start_with?('bar')).to eq false
+        expect(processed_source.start_with?('qux')).to eq false
+        expect(processed_source.start_with?('1')).to eq false
+      end
+    end
+  end
+
+  describe '#preceding_line' do
+    let(:source) { <<-RUBY.strip_indent }
+      [ line, 1 ]
+      { line: 2 }
+      # line 3
+    RUBY
+
+    it 'returns source of line before token' do
+      brace_token = processed_source.find_token(&:left_brace?)
+      expect(processed_source.preceding_line(brace_token)).to eq '[ line, 1 ]'
+
+      comment_token = processed_source.find_token(&:comment?)
+      expect(processed_source.preceding_line(comment_token)).to eq '{ line: 2 }'
+    end
+  end
+
+  describe '#following_line' do
+    let(:source) { <<-RUBY.strip_indent }
+      [ line, 1 ]
+      { line: 2 }
+      # line 3
+    RUBY
+
+    it 'returns source of line after token' do
+      bracket_token = processed_source.find_token(&:right_bracket?)
+      expect(processed_source.following_line(bracket_token)).to eq '{ line: 2 }'
+
+      brace_token = processed_source.find_token(&:left_brace?)
+      expect(processed_source.following_line(brace_token)).to eq '# line 3'
+    end
+  end
+
+  describe '#stripped_upto' do
+    let(:source) { <<-RUBY.strip_indent }
+      def foo
+        bar.map do
+          qux
+        end
+      end
+    RUBY
+
+    it 'returns stripped source upto given index' do
+      expect(processed_source.stripped_upto(3))
+        .to eq ['def foo', 'bar.map do', 'qux', 'end']
+    end
+  end
+
+  describe '#previous_and_current_lines_empty?' do
+    let(:source) { <<-RUBY.strip_indent }
+
+
+      foo
+    RUBY
+
+    it 'returns true if previous & current lines are blank' do
+      expect(processed_source.previous_and_current_lines_empty?(2)).to eq true
+    end
+
+    it 'returns false if previous or current line is not blank' do
+      expect(processed_source.previous_and_current_lines_empty?(3)).to eq false
+    end
+  end
+
+  describe '#empty_brackets?' do
+    let(:left_bracket_token) { processed_source.find_token(&:left_bracket?) }
+    let(:right_bracket_token) { processed_source.find_token(&:right_bracket?) }
+
+    context 'with empty brackets' do
+      let(:source) { <<-RUBY.strip_indent }
+        [ ]
+      RUBY
+
+      it 'returns true' do
+        expect(
+          processed_source.empty_brackets?(
+            left_bracket_token, right_bracket_token
+          )
+        ).to eq true
+      end
+    end
+
+    context 'with nonempty brackets' do
+      let(:source) { <<-RUBY.strip_indent }
+        [ 1 ]
+      RUBY
+
+      it 'returns false' do
+        expect(
+          processed_source.empty_brackets?(
+            left_bracket_token, right_bracket_token
+          )
+        ).to eq false
       end
     end
   end
