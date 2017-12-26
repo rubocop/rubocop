@@ -86,7 +86,9 @@ module RuboCop
         end
 
         def ancestor_node(node)
-          node.each_ancestor(:kwbegin, :def, :defs, :class, :module).first
+          types = %i[kwbegin def defs class module]
+          types << :block if target_ruby_version >= 2.5
+          node.each_ancestor(*types).first
         end
       end
     end
