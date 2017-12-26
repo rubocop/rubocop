@@ -558,6 +558,7 @@ require_relative 'rubocop/cop/rails/validation'
 require_relative 'rubocop/cop/security/eval'
 require_relative 'rubocop/cop/security/json_load'
 require_relative 'rubocop/cop/security/marshal_load'
+require_relative 'rubocop/cop/security/open'
 require_relative 'rubocop/cop/security/yaml_load'
 
 require_relative 'rubocop/cop/team'
