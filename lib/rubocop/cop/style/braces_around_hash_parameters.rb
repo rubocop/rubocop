@@ -125,23 +125,51 @@ module RuboCop
           end
         end
 
+        # rubocop:disable Metrics/AbcSize
         def remove_braces_with_whitespace(corrector, node, space)
           right_brace_and_space = right_brace_and_space(node.loc.end, space)
 
           if comment_on_line?(right_brace_and_space.line)
-            # Removing a line break between a comment and the closing
-            # parenthesis would cause a syntax error, so we only remove the
-            # braces in that case.
             remove_braces(corrector, node)
+          elsif node.multiline?
+            remove_braces_with_range(corrector,
+                                     left_whole_line_range(node.loc.begin),
+                                     right_whole_line_range(node.loc.end))
           else
-            left_brace_and_space =
-              range_with_surrounding_space(range: node.loc.begin,
-                                           side: :right,
-                                           newlines: space[:newlines],
-                                           whitespace: space[:left])
-            corrector.remove(left_brace_and_space)
-            corrector.remove(right_brace_and_space)
+            left_brace_and_space = left_brace_and_space(node.loc.begin, space)
+            remove_braces_with_range(corrector,
+                                     left_brace_and_space,
+                                     right_brace_and_space)
           end
+        end
+        # rubocop:enable Metrics/AbcSize
+
+        def remove_braces_with_range(corrector, left_range, right_range)
+          corrector.remove(left_range)
+          corrector.remove(right_range)
+        end
+
+        def left_whole_line_range(loc_begin)
+          if range_by_whole_lines(loc_begin).source.strip == '{'
+            range_by_whole_lines(loc_begin, include_final_newline: true)
+          else
+            loc_begin
+          end
+        end
+
+        def right_whole_line_range(loc_end)
+          if range_by_whole_lines(loc_end).source.strip == '}'
+            range_by_whole_lines(loc_end, include_final_newline: true)
+          else
+            loc_end
+          end
+        end
+
+        def left_brace_and_space(loc_begin, space)
+          range_with_surrounding_space(range: loc_begin,
+                                       side: :right,
+                                       newlines: space[:newlines],
+                                       whitespace: space[:left])
         end
 
         def right_brace_and_space(loc_end, space)

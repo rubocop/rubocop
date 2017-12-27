@@ -138,6 +138,22 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       expect(corrected).to eq('get :i, q: { x: 1 }')
     end
 
+    it 'does not break indent' do
+      src = <<-RUBY
+      foo({
+        a: 1,
+        b: 2
+      })
+      RUBY
+      corrected = autocorrect_source(src)
+      expect(corrected).to eq(<<-RUBY)
+      foo(
+        a: 1,
+        b: 2
+      )
+      RUBY
+    end
+
     it 'does not remove trailing comma nor realign args' do
       src = <<-RUBY.strip_indent
       foo({
@@ -165,7 +181,7 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       corrected = autocorrect_source(src)
       expect(corrected).to eq(<<-RUBY.strip_indent)
       foo(
-        baz: 10
+          baz: 10
       )
       RUBY
     end
@@ -183,7 +199,7 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       corrected = autocorrect_source(src)
       expect(corrected).to eq(<<-RUBY.strip_indent)
       foo(
-        qux: "bar",
+          qux: "bar",
           baz: "bar",
           thud: "bar"
       )
@@ -215,7 +231,7 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       corrected = autocorrect_source(src)
       expect(corrected).to eq(<<-RUBY.strip_indent)
       foo(
-        baz: 5
+          baz: 5
       )
       RUBY
     end
@@ -296,7 +312,7 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
           {
             qux: 9
           },
-          bar: 0
+            bar: 0
         )
         RUBY
       end

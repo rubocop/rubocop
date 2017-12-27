@@ -25,6 +25,7 @@
 * [#5313](https://github.com/bbatsov/rubocop/issues/5313): Fix `Style/HashSyntax` from stripping quotes off of symbols during autocorrection for ruby22+. ([@garettarrowood][])
 * [#5315](https://github.com/bbatsov/rubocop/issues/5315): Fix a false positive of `Layout/RescueEnsureAlignment` in Ruby 2.5. ([@pocke][])
 * [#5236](https://github.com/bbatsov/rubocop/issues/5236): Fix false positives for `Rails/InverseOf` when using `with_options`. ([@wata727][])
+* [#5291](https://github.com/bbatsov/rubocop/issues/5291): Fix multiline indent for `Style/BracesAroundHashParameters` autocorrect. ([@flyerhzm][])
 
 ### Changes
 
@@ -3115,3 +3116,4 @@
 [@nattfodd]: https://github.com/nattfodd
 [@nattfodd]: https://github.com/nattfodd
 [@melch]: https://github.com/melch
+[@flyerhzm]: https://github.com/flyerhzm
