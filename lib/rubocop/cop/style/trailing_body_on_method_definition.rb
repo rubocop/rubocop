@@ -41,7 +41,7 @@ module RuboCop
           lambda do |corrector|
             break_line_before_body(node, corrector)
             move_comment(node, corrector)
-            remove_semicolon(corrector)
+            remove_semicolon(node, corrector)
           end
         end
 
@@ -85,15 +85,13 @@ module RuboCop
           processed_source.comments.find { |c| c.loc.line == line }
         end
 
-        def remove_semicolon(corrector)
-          return unless semicolon
-          corrector.remove(semicolon.pos)
+        def remove_semicolon(node, corrector)
+          return unless semicolon(node)
+          corrector.remove(semicolon(node).pos)
         end
 
-        def semicolon
-          @semicolon ||= processed_source.tokens.find do |token|
-            token.line == 1 && token.semicolon?
-          end
+        def semicolon(node)
+          @semicolon ||= tokens(node).find(&:semicolon?)
         end
       end
     end

@@ -51,14 +51,6 @@ module RuboCop
         end
       end
 
-      def tokens(node)
-        @tokens ||= {}
-        @tokens[node.object_id] ||= processed_source.tokens.select do |token|
-          token.end_pos <= node.source_range.end_pos &&
-            token.begin_pos >= node.source_range.begin_pos
-        end
-      end
-
       def no_space_offenses(node, # rubocop:disable Metrics/ParameterLists
                             left_token,
                             right_token,
