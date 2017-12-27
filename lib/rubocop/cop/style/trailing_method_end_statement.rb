@@ -62,9 +62,7 @@ module RuboCop
         end
 
         def end_token
-          @end_token ||= processed_source.tokens.reverse.find do |token|
-            token.type == :kEND
-          end
+          @end_token ||= processed_source.tokens.reverse.find(&:end?)
         end
 
         def body_and_end_on_same_line?

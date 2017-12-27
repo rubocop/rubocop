@@ -34,6 +34,22 @@ module RuboCop
       pos.end_pos
     end
 
+    def to_s
+      "[[#{line}, #{column}], #{type}, #{text.inspect}]"
+    end
+
+    # Checks if there is whitespace after token
+    def space_after?
+      pos.source_buffer.source.match(/\G\s/, end_pos)
+    end
+
+    # Checks if there is whitespace before token
+    def space_before?
+      pos.source_buffer.source.match(/\G\s/, begin_pos - 1)
+    end
+
+    ## Type Predicates
+
     def comment?
       type == :tCOMMENT
     end
@@ -82,22 +98,16 @@ module RuboCop
       type == :tCOMMA
     end
 
+    def rescue_modifier?
+      type == :kRESCUE_MOD
+    end
+
+    def end?
+      type == :kEND
+    end
+
     def equal_sign?
       %i[tEQL tOP_ASGN].include?(type)
-    end
-
-    def to_s
-      "[[#{@pos.line}, #{@pos.column}], #{@type}, #{@text.inspect}]"
-    end
-
-    # Checks if there is whitespace after token
-    def space_after?
-      pos.source_buffer.source.match(/\G\s/, end_pos)
-    end
-
-    # Checks if there is whitespace before token
-    def space_before?
-      pos.source_buffer.source.match(/\G\s/, begin_pos - 1)
     end
   end
 end
