@@ -2,6 +2,15 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#3394](https://github.com/bbatsov/rubocop/issues/3394): Add new `Style/TrailingCommmaInArrayLiteral` cop. ([@garettarrowood][])
+* [#3394](https://github.com/bbatsov/rubocop/issues/3394): Add new `Style/TrailingCommmaInHashLiteral` cop. ([@garettarrowood][])
+
+### Changes
+
+* [#3394](https://github.com/bbatsov/rubocop/issues/3394): Remove `Style/TrailingCommmaInLiteral` in favor of two new cops. ([@garettarrowood][])
+
 ## 0.52.1 (2017-12-27)
 
 ### Bug fixes
