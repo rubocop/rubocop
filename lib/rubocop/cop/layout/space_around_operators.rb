@@ -110,34 +110,35 @@ module RuboCop
             !IRREGULAR_METHODS.include?(send_node.method_name)
         end
 
-        def check_operator(op, right_operand)
-          with_space = range_with_surrounding_space(range: op)
+        def check_operator(operator, right_operand)
+          with_space = range_with_surrounding_space(range: operator)
           return if with_space.source.start_with?("\n")
 
-          offense(op, with_space, right_operand) do |msg|
-            add_offense(with_space, location: op, message: msg)
+          offense(operator, with_space, right_operand) do |msg|
+            add_offense(with_space, location: operator, message: msg)
           end
         end
 
-        def offense(op, with_space, right_operand)
-          msg = offense_message(op, with_space, right_operand)
+        def offense(operator, with_space, right_operand)
+          msg = offense_message(operator, with_space, right_operand)
           yield msg if msg
         end
 
-        def offense_message(op, with_space, right_operand)
-          if op.is?('**')
+        def offense_message(operator, with_space, right_operand)
+          if operator.is?('**')
             'Space around operator `**` detected.' unless with_space.is?('**')
           elsif with_space.source !~ /^\s.*\s$/
-            "Surrounding space missing for operator `#{op.source}`."
-          elsif excess_leading_space?(op, with_space) ||
+            "Surrounding space missing for operator `#{operator.source}`."
+          elsif excess_leading_space?(operator, with_space) ||
                 excess_trailing_space?(right_operand, with_space)
-            "Operator `#{op.source}` should be surrounded by a single space."
+            "Operator `#{operator.source}` should be surrounded " \
+            'by a single space.'
           end
         end
 
-        def excess_leading_space?(op, with_space)
+        def excess_leading_space?(operator, with_space)
           with_space.source =~ /^  / &&
-            (!allow_for_alignment? || !aligned_with_operator?(op))
+            (!allow_for_alignment? || !aligned_with_operator?(operator))
         end
 
         def excess_trailing_space?(right_operand, with_space)

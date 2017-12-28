@@ -10,7 +10,7 @@ module RuboCop
           true
         end
 
-        def deltas_for_first_pair(*)
+        def deltas_for_first_pair(*_nodes)
           {}
         end
 
@@ -93,7 +93,7 @@ module RuboCop
       class SeparatorAlignment
         include ValueAlignment
 
-        def deltas_for_first_pair(*)
+        def deltas_for_first_pair(*_nodes)
           {}
         end
 

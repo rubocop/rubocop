@@ -70,7 +70,7 @@ module RuboCop
           !arg.space_after? && !equals.space_after?
         end
 
-        def message(_)
+        def message(_node)
           format(MSG, type: style == :space ? 'missing' : 'detected')
         end
       end
