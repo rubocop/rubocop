@@ -254,5 +254,16 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundArguments, :config do
       RUBY
       expect(cop.offenses.empty?).to be(true)
     end
+
+    it 'accepts method with argument that trails off heredoc' do
+      inspect_source(<<-RUBY.strip_indent)
+        bar(<<-DOCS)
+          foo
+
+        DOCS
+          .call!(true)
+      RUBY
+      expect(cop.offenses.empty?).to be(true)
+    end
   end
 end
