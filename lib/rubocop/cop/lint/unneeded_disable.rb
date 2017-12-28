@@ -223,7 +223,7 @@ module RuboCop
           ranges
             .drop_while { |r| !r.equal?(range) }
             .each_cons(2)
-            .map { |r1, r2| r1.end.join(r2.begin).source }
+            .map { |range1, range2| range1.end.join(range2.begin).source }
             .all? { |intervening| intervening =~ /\A\s*,\s*\Z/ }
         end
 

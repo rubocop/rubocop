@@ -17,17 +17,18 @@ module RuboCop
       private
 
       def each_missing_space(tokens)
-        tokens.each_cons(2) do |t1, t2|
-          next unless kind(t1)
-          next unless space_missing?(t1, t2)
-          next unless space_required_before?(t2)
+        tokens.each_cons(2) do |token1, token2|
+          next unless kind(token1)
+          next unless space_missing?(token1, token2)
+          next unless space_required_before?(token2)
 
-          yield t1
+          yield token1
         end
       end
 
-      def space_missing?(t1, t2)
-        t1.line == t2.line && t2.column == t1.column + offset
+      def space_missing?(token1, token2)
+        token1.line == token2.line &&
+          token2.column == token1.column + offset
       end
 
       def space_required_before?(token)

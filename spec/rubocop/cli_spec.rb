@@ -1502,7 +1502,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       it 'works when a configuration file specifies Severity for ' \
          "Metrics/ParameterLists and #{key}" do
         create_file('example/example1.rb', <<-RUBY.strip_indent)
-          def method(a, b, c, d, e, f) end #{'#' * 57}
+          def method(foo, bar, qux, fred, arg5, f) end #{'#' * 45}
         RUBY
 
         create_file('rubocop.yml', <<-YAML.strip_indent)
@@ -1516,10 +1516,12 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stdout.string).to eq(<<-RESULT.strip_indent)
             == example/example1.rb ==
             C:  1: 11: Metrics/ParameterLists: Avoid parameter lists longer than 5 parameters. [6/5]
-            C:  1: 34: Style/CommentedKeyword: Do not place comments on the same line as the def keyword.
+            C:  1: 33: Naming/UncommunicativeMethodArgName: Do not end method argument with a number.
+            C:  1: 39: Naming/UncommunicativeMethodArgName: Method argument must be longer than 3 characters.
+            C:  1: 46: Style/CommentedKeyword: Do not place comments on the same line as the def keyword.
             E:  1: 81: Metrics/LineLength: Line is too long. [90/80]
 
-            1 file inspected, 3 offenses detected
+            1 file inspected, 5 offenses detected
         RESULT
         expect($stderr.string).to eq('')
       end

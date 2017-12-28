@@ -367,7 +367,7 @@ Exclude | `spec/**/*` | Array
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop makes sure block parameter names meet a configurable
 level of description
@@ -405,7 +405,7 @@ MinParamNameLength | `1` | Integer
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | No
+Enabled | No
 
 This cop makes sure method argument names meet a configurable
 level of description

@@ -75,12 +75,12 @@ module RuboCop
         def on_and(node)
           return unless cop_config['NotNilAndNotEmpty']
 
-          exists_and_not_empty?(node) do |variable1, variable2|
-            return unless variable1 == variable2
+          exists_and_not_empty?(node) do |var1, var2|
+            return unless var1 == var2
 
             add_offense(node,
                         message: format(MSG_EXISTS_AND_NOT_EMPTY,
-                                        prefer: replacement(variable1),
+                                        prefer: replacement(var1),
                                         current: node.source))
           end
         end
@@ -88,8 +88,8 @@ module RuboCop
         def on_or(node)
           return unless cop_config['NilOrEmpty']
 
-          exists_and_not_empty?(node) do |variable1, variable2|
-            return unless variable1 == variable2
+          exists_and_not_empty?(node) do |var1, var2|
+            return unless var1 == var2
 
             add_offense(node, message: MSG_EXISTS_AND_NOT_EMPTY)
           end

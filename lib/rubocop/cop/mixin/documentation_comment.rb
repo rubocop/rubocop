@@ -23,9 +23,11 @@ module RuboCop
         end
       end
 
-      def preceding_comment?(n1, n2)
-        n1 && n2 && precede?(n2, n1) &&
-          comment_line?(n2.loc.expression.source)
+      # The args node1 & node2 may represent a RuboCop::AST::Node
+      # or a Parser::Source::Comment. Both respond to #loc.
+      def preceding_comment?(node1, node2)
+        node1 && node2 && precede?(node2, node1) &&
+          comment_line?(node2.loc.expression.source)
       end
 
       def preceding_lines(node)
