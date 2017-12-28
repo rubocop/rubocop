@@ -245,16 +245,6 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundArguments, :config do
       expect(cop.offenses.empty?).to be(true)
     end
 
-    it 'ignores empty lines inside of method arguments' do
-      inspect_source(<<-RUBY.strip_indent)
-        private(def bar
-
-          baz
-        end)
-      RUBY
-      expect(cop.offenses.empty?).to be(true)
-    end
-
     it 'accepts method with argument that trails off heredoc' do
       inspect_source(<<-RUBY.strip_indent)
         bar(<<-DOCS)
@@ -264,6 +254,30 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundArguments, :config do
           .call!(true)
       RUBY
       expect(cop.offenses.empty?).to be(true)
+    end
+
+    context 'with one argument' do
+      it 'ignores empty lines inside of method arguments' do
+        inspect_source(<<-RUBY.strip_indent)
+          private(def bar
+
+            baz
+          end)
+        RUBY
+        expect(cop.offenses.empty?).to be(true)
+      end
+    end
+
+    context 'with multiple arguments' do
+      it 'ignores empty lines inside of method arguments' do
+        inspect_source(<<-RUBY.strip_indent)
+          foo(:bar, [1,
+
+                     2]
+          )
+        RUBY
+        expect(cop.offenses.empty?).to be(true)
+      end
     end
   end
 end

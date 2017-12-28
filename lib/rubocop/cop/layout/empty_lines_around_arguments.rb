@@ -68,24 +68,26 @@ module RuboCop
         end
 
         def processed_lines(node)
-          line_nums = line_numbers(node)
-          line_nums.each_with_object([]) do |num, array|
+          line_numbers(node).each_with_object([]) do |num, array|
             array << [processed_source.lines[num - 1], num]
           end
         end
 
         def line_numbers(node)
-          line_nums = node.arguments.each_with_object([]) do |arg, array|
-            array << arg.first_line - 1
-            array << arg.last_line + 1
+          inner_lines = []
+          line_nums = node.arguments.each_with_object([]) do |arg_node, lines|
+            lines << outer_lines(arg_node)
+            inner_lines << inner_lines(arg_node) if arg_node.multiline?
           end
-          stay_inbounds(node, line_nums.uniq)
+          line_nums.flatten.uniq - inner_lines.flatten - outer_lines(node)
         end
 
-        def stay_inbounds(node, line_nums)
-          before_line = node.first_line - 1
-          after_line = node.last_line + 1
-          line_nums - [before_line, after_line]
+        def inner_lines(node)
+          [node.first_line + 1, node.last_line - 1]
+        end
+
+        def outer_lines(node)
+          [node.first_line - 1, node.last_line + 1]
         end
       end
     end
