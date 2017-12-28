@@ -76,8 +76,8 @@ module RuboCop
 
         def line_numbers(node)
           line_nums = node.arguments.each_with_object([]) do |arg, array|
-            array << arg.source_range.line - 1
-            array << arg.source_range.end.line + 1
+            array << arg.first_line - 1
+            array << arg.last_line + 1
           end
           stay_inbounds(node, line_nums.uniq)
         end
