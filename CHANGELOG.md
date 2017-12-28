@@ -18,7 +18,6 @@
 ### Changes
 
 * [#3394](https://github.com/bbatsov/rubocop/issues/3394): Remove `Style/TrailingCommmaInLiteral` in favor of two new cops. ([@garettarrowood][])
-* [#5217](https://github.com/bbatsov/rubocop/pull/5217): Expand `ProcessedSource` with helper methods. ([@garettarrowood][])
 
 ## 0.52.1 (2017-12-27)
 

@@ -14,30 +14,30 @@ RSpec.describe RuboCop::Token do
 
   let(:first_token) { processed_source.tokens.first }
   let(:comment_token) do
-    processed_source.tokens.find do |t|
+    processed_source.find_token do |t|
       t.text.start_with?('#') && t.line == 1
     end
   end
 
   let(:left_array_bracket_token) do
-    processed_source.tokens.find { |t| t.text == '[' && t.line == 3 }
+    processed_source.find_token { |t| t.text == '[' && t.line == 3 }
   end
-  let(:comma_token) { processed_source.tokens.find { |t| t.text == ',' } }
+  let(:comma_token) { processed_source.find_token { |t| t.text == ',' } }
   let(:right_array_bracket_token) do
-    processed_source.tokens.find { |t| t.text == ']' && t.line == 3 }
+    processed_source.find_token { |t| t.text == ']' && t.line == 3 }
   end
-  let(:semicolon_token) { processed_source.tokens.find { |t| t.text == ';' } }
+  let(:semicolon_token) { processed_source.find_token { |t| t.text == ';' } }
 
   let(:left_ref_bracket_token) do
-    processed_source.tokens.find { |t| t.text == '[' && t.line == 4 }
+    processed_source.find_token { |t| t.text == '[' && t.line == 4 }
   end
-  let(:zero_token) { processed_source.tokens.find { |t| t.text == '0' } }
+  let(:zero_token) { processed_source.find_token { |t| t.text == '0' } }
   let(:right_ref_bracket_token) do
-    processed_source.tokens.find { |t| t.text == ']' && t.line == 4 }
+    processed_source.find_token { |t| t.text == ']' && t.line == 4 }
   end
-  let(:equals_token) { processed_source.tokens.find { |t| t.text == '=' } }
+  let(:equals_token) { processed_source.find_token { |t| t.text == '=' } }
 
-  let(:end_token) { processed_source.tokens.find { |t| t.text == 'end' } }
+  let(:end_token) { processed_source.find_token { |t| t.text == 'end' } }
 
   describe '.from_parser_token' do
     subject(:token) { described_class.from_parser_token(parser_token) }
@@ -235,7 +235,7 @@ RSpec.describe RuboCop::Token do
       RUBY
 
       let(:rescue_modifier_token) do
-        processed_source.tokens.find { |t| t.text == 'rescue' }
+        processed_source.find_token { |t| t.text == 'rescue' }
       end
 
       it 'returns true for rescue modifier tokens' do
@@ -277,23 +277,23 @@ RSpec.describe RuboCop::Token do
       RUBY
 
       let(:left_hash_brace_token) do
-        processed_source.tokens.find { |t| t.text == '{' && t.line == 1 }
+        processed_source.find_token { |t| t.text == '{' && t.line == 1 }
       end
       let(:right_hash_brace_token) do
-        processed_source.tokens.find { |t| t.text == '}' && t.line == 1 }
+        processed_source.find_token { |t| t.text == '}' && t.line == 1 }
       end
 
       let(:left_block_brace_token) do
-        processed_source.tokens.find { |t| t.text == '{' && t.line == 2 }
+        processed_source.find_token { |t| t.text == '{' && t.line == 2 }
       end
       let(:left_parens_token) do
-        processed_source.tokens.find { |t| t.text == '(' }
+        processed_source.find_token { |t| t.text == '(' }
       end
       let(:right_parens_token) do
-        processed_source.tokens.find { |t| t.text == ')' }
+        processed_source.find_token { |t| t.text == ')' }
       end
       let(:right_block_brace_token) do
-        processed_source.tokens.find { |t| t.text == '}' && t.line == 2 }
+        processed_source.find_token { |t| t.text == '}' && t.line == 2 }
       end
 
       describe '#left_brace?' do
