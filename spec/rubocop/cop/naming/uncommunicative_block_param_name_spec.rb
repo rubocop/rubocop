@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe RuboCop::Cop::Naming::UncommunicativeBlockParamName, :config do
+RSpec.describe RuboCop::Cop::Naming::UncommunicativeBlockParamName, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:cop_config) { { 'MinParamNameLength' => 2 } }
@@ -60,5 +60,26 @@ describe RuboCop::Cop::Naming::UncommunicativeBlockParamName, :config do
       'Do not end block parameter with a number.',
       'Only use lowercase characters for block parameter.'
     ]
+  end
+
+  context 'with AllowedNames' do
+    let(:cop_config) do
+      {
+        'AllowedNames' => %w[foo1 foo2]
+      }
+    end
+
+    it 'accepts specified block param names' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        something { |foo1, foo2| do_things }
+      RUBY
+    end
+
+    it 'registers unlisted offensive names' do
+      expect_offense(<<-RUBY.strip_indent)
+        something { |bar, bar1| do_things }
+                          ^^^^ Do not end block parameter with a number.
+      RUBY
+    end
   end
 end

@@ -12,6 +12,7 @@ module RuboCop
       def check(node, args, min:)
         args.each do |arg|
           source = arg.children.first.to_s
+          next if allowed_names.include?(source)
           range = arg_range(arg, source.size)
           case_offense(node, range) if uppercase?(source)
           num_offense(node, range) if ends_with_num?(source)
@@ -62,6 +63,10 @@ module RuboCop
         Parser::Source::Range.new(processed_source.buffer,
                                   begin_pos,
                                   begin_pos + length)
+      end
+
+      def allowed_names
+        cop_config['AllowedNames'] || []
       end
     end
   end
