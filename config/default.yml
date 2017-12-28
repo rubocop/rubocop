@@ -684,13 +684,17 @@ Naming/PredicateName:
 
 Naming/UncommunicativeBlockParamName:
   # Parameter names may be equal to or greater than this value
-  MinParamNameLength: 1
-  AllowedNames:
+  MinNameLength: 1
+  AllowNamesEndingInNumbers: true
+  # Whitelisted names that will not register an offense
+  AllowedNames: []
 
 Naming/UncommunicativeMethodArgName:
   # Argrument names may be equal to or greater than this value
-  MinArgNameLength: 3
-  AllowedNames:
+  MinNameLength: 3
+  AllowNamesEndingInNumbers: true
+  # Whitelisted names that will not register an offense
+  AllowedNames: []
 
 Naming/VariableName:
   EnforcedStyle: snake_case

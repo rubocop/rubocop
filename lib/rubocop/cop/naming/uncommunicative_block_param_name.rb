@@ -30,13 +30,7 @@ module RuboCop
 
         def on_block(node)
           return unless node.arguments?
-          check(node, node.arguments, min: min_length)
-        end
-
-        private
-
-        def min_length
-          cop_config['MinParamNameLength']
+          check(node, node.arguments)
         end
       end
     end
