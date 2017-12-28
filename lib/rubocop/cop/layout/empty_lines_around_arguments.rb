@@ -55,7 +55,7 @@ module RuboCop
         private
 
         def empty_lines(node)
-          lines = processed_lines(node).map.with_index(first_line(node)).to_a
+          lines = processed_lines(node)
           lines.select! { |code, _| code.empty? }
           lines.map { |_, line| line }
         end
@@ -67,19 +67,25 @@ module RuboCop
           end
         end
 
-        def first_line(node)
-          node.receiver ? node.receiver.last_line : node.first_line
-        end
-
-        def last_line(node)
-          last_arg = node.arguments.last
-          last_arg.block_type? ? last_arg.first_line : node.last_line
-        end
-
         def processed_lines(node)
-          start = first_line(node) - 1
-          stop = last_line(node) - 1
-          processed_source.lines[start..stop]
+          line_nums = line_numbers(node)
+          line_nums.each_with_object([]) do |num, array|
+            array << [processed_source.lines[num - 1], num]
+          end
+        end
+
+        def line_numbers(node)
+          line_nums = node.arguments.each_with_object([]) do |arg, array|
+            array << arg.source_range.line - 1
+            array << arg.source_range.end.line + 1
+          end
+          stay_inbounds(node, line_nums.uniq)
+        end
+
+        def stay_inbounds(node, line_nums)
+          before_line = node.first_line - 1
+          after_line = node.last_line + 1
+          line_nums - [before_line, after_line]
         end
       end
     end
