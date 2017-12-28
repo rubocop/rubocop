@@ -282,6 +282,14 @@ module RuboCop
           .sub('Style', 'Styles')
       end
 
+      def tokens(node)
+        @tokens ||= {}
+        @tokens[node.object_id] ||= processed_source.tokens.select do |token|
+          token.end_pos <= node.source_range.end_pos &&
+            token.begin_pos >= node.source_range.begin_pos
+        end
+      end
+
       private
 
       def directions(side)

@@ -128,4 +128,16 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition do
                              '    even_more',
                              '  end'].join("\n")
   end
+
+  context 'when method not on first line of processed_source' do
+    it '' do
+      corrected = autocorrect_source(['',
+                                      '  def some_method; body',
+                                      '  end'].join("\n"))
+      expect(corrected).to eq ['',
+                               '  def some_method ',
+                               '    body',
+                               '  end'].join("\n")
+    end
+  end
 end
