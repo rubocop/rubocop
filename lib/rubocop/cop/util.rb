@@ -262,14 +262,16 @@ module RuboCop
         StringInterpreter.interpret(string)
       end
 
-      def same_line?(n1, n2)
-        n1.respond_to?(:loc) &&
-          n2.respond_to?(:loc) &&
-          n1.loc.line == n2.loc.line
+      def same_line?(node1, node2)
+        node1.respond_to?(:loc) &&
+          node2.respond_to?(:loc) &&
+          node1.loc.line == node2.loc.line
       end
 
-      def precede?(n1, n2)
-        line_distance(n1, n2) == 1
+      # The args node1 & node2 may represent a RuboCop::AST::Node
+      # or a Parser::Source::Comment. Both respond to #loc.
+      def precede?(node1, node2)
+        line_distance(node1, node2) == 1
       end
 
       def to_supported_styles(enforced_style)
@@ -313,8 +315,10 @@ module RuboCop
         src.force_encoding(Encoding.default_external).valid_encoding?
       end
 
-      def line_distance(n1, n2)
-        n2.loc.line - n1.loc.line
+      # The args node1 & node2 may represent a RuboCop::AST::Node
+      # or a Parser::Source::Comment. Both respond to #loc.
+      def line_distance(node1, node2)
+        node2.loc.line - node1.loc.line
       end
     end
   end

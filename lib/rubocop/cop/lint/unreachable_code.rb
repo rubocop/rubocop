@@ -40,10 +40,10 @@ module RuboCop
         def on_begin(node)
           expressions = *node
 
-          expressions.each_cons(2) do |e1, e2|
-            next unless flow_expression?(e1)
+          expressions.each_cons(2) do |expression1, expression2|
+            next unless flow_expression?(expression1)
 
-            add_offense(e2)
+            add_offense(expression2)
           end
         end
 

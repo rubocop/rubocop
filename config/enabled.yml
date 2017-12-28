@@ -855,6 +855,18 @@ Naming/PredicateName:
   StyleGuide: '#bool-methods-qmark'
   Enabled: true
 
+Naming/UncommunicativeBlockParamName:
+  Description: >-
+                Checks for block parameter names that contain capital letters,
+                end in numbers, or do not meet a minimal length.
+  Enabled: true
+
+Naming/UncommunicativeMethodArgName:
+  Description: >-
+                Checks for method argument names that contain capital letters,
+                end in numbers, or do not meet a minimal length.
+  Enabled: true
+
 Naming/VariableName:
   Description: 'Use the configured style when naming variables.'
   StyleGuide: '#snake-case-symbols-methods-vars'

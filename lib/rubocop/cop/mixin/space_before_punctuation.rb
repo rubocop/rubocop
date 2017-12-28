@@ -17,20 +17,20 @@ module RuboCop
       private
 
       def each_missing_space(tokens)
-        tokens.each_cons(2) do |t1, t2|
-          next unless kind(t2)
-          next unless space_missing?(t1, t2)
-          next if space_required_after?(t1)
+        tokens.each_cons(2) do |token1, token2|
+          next unless kind(token2)
+          next unless space_missing?(token1, token2)
+          next if space_required_after?(token1)
 
-          pos_before_punctuation = range_between(t1.end_pos,
-                                                 t2.begin_pos)
+          pos_before_punctuation = range_between(token1.end_pos,
+                                                 token2.begin_pos)
 
-          yield t2, pos_before_punctuation
+          yield token2, pos_before_punctuation
         end
       end
 
-      def space_missing?(t1, t2)
-        t1.line == t2.line && t2.begin_pos > t1.end_pos
+      def space_missing?(token1, token2)
+        token1.line == token2.line && token2.begin_pos > token1.end_pos
       end
 
       def space_required_after?(token)

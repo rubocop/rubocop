@@ -32,20 +32,20 @@ module RuboCop
         private
 
         def each_extraneous_space(tokens)
-          tokens.each_cons(2) do |t1, t2|
-            next unless parens?(t1, t2)
+          tokens.each_cons(2) do |token1, token2|
+            next unless parens?(token1, token2)
 
             # If the second token is a comment, that means that a line break
             # follows, and that the rules for space inside don't apply.
-            next if t2.comment?
-            next unless t2.line == t1.line && t1.space_after?
+            next if token2.comment?
+            next unless token2.line == token1.line && token1.space_after?
 
-            yield range_between(t1.end_pos, t2.begin_pos)
+            yield range_between(token1.end_pos, token2.begin_pos)
           end
         end
 
-        def parens?(t1, t2)
-          t1.left_parens? || t2.right_parens?
+        def parens?(token1, token2)
+          token1.left_parens? || token2.right_parens?
         end
       end
     end

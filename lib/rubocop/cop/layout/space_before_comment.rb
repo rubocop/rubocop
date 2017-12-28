@@ -16,10 +16,12 @@ module RuboCop
         MSG = 'Put a space before an end-of-line comment.'.freeze
 
         def investigate(processed_source)
-          processed_source.tokens.each_cons(2) do |t1, t2|
-            next unless t2.comment?
-            next unless t1.line == t2.line
-            add_offense(t2.pos, location: t2.pos) if t1.pos.end == t2.pos.begin
+          processed_source.tokens.each_cons(2) do |token1, token2|
+            next unless token2.comment?
+            next unless token1.line == token2.line
+            if token1.pos.end == token2.pos.begin
+              add_offense(token2.pos, location: token2.pos)
+            end
           end
         end
 

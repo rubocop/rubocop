@@ -36,8 +36,8 @@ module RuboCop
             @corrected   = Set.new
           end
 
-          processed_source.tokens.each_cons(2) do |t1, t2|
-            check_tokens(processed_source.ast, t1, t2)
+          processed_source.tokens.each_cons(2) do |token1, token2|
+            check_tokens(processed_source.ast, token1, token2)
           end
         end
 
@@ -64,16 +64,16 @@ module RuboCop
           Set.new(tokens.uniq(&:line))
         end
 
-        def check_tokens(ast, t1, t2)
-          return if t2.type == :tNL
+        def check_tokens(ast, token1, token2)
+          return if token2.type == :tNL
 
           if force_equal_sign_alignment? &&
-             @asgn_tokens.include?(t2) &&
-             (@asgn_lines.include?(t2.line - 1) ||
-              @asgn_lines.include?(t2.line + 1))
-            check_assignment(t2)
+             @asgn_tokens.include?(token2) &&
+             (@asgn_lines.include?(token2.line - 1) ||
+              @asgn_lines.include?(token2.line + 1))
+            check_assignment(token2)
           else
-            check_other(t1, t2, ast)
+            check_other(token1, token2, ast)
           end
         end
 
@@ -95,8 +95,8 @@ module RuboCop
           @asgn_lines.include?(token.line - 1)
         end
 
-        def check_other(t1, t2, ast)
-          extra_space_range(t1, t2) do |range|
+        def check_other(token1, token2, ast)
+          extra_space_range(token1, token2) do |range|
             # Unary + doesn't appear as a token and needs special handling.
             next if ignored_range?(ast, range.begin_pos)
             next if unary_plus_non_offense?(range)
@@ -105,14 +105,14 @@ module RuboCop
           end
         end
 
-        def extra_space_range(t1, t2)
-          return if t1.line != t2.line
+        def extra_space_range(token1, token2)
+          return if token1.line != token2.line
 
-          start_pos = t1.end_pos
-          end_pos = t2.begin_pos - 1
+          start_pos = token1.end_pos
+          end_pos = token2.begin_pos - 1
           return if end_pos <= start_pos
 
-          return if allow_for_alignment? && aligned_tok?(t2)
+          return if allow_for_alignment? && aligned_tok?(token2)
 
           yield range_between(start_pos, end_pos)
         end
