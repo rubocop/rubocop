@@ -43,6 +43,16 @@ RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement do
     RUBY
   end
 
+  it 'register offense with trailing end inside class' do
+    expect_offense(<<-RUBY.strip_indent)
+      class Foo
+        def some_method
+        foo; end
+             ^^^ Place the end statement of a multi-line method on its own line.
+      end
+    RUBY
+  end
+
   it 'does not register on single line no op' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def no_op; end
@@ -93,5 +103,17 @@ RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement do
                              '      foo',
                              '    end ',
                              '  end'].join("\n")
+  end
+
+  it 'auto-corrects trailing end for larger example' do
+    corrected = autocorrect_source(['class Foo',
+                                    '  def some_method',
+                                    '    []; end',
+                                    'end'].join("\n"))
+    expect(corrected).to eq ['class Foo',
+                             '  def some_method',
+                             '    [] ',
+                             '  end',
+                             'end'].join("\n")
   end
 end
