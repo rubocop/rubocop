@@ -120,8 +120,8 @@ module RuboCop
           location.first_line == location.last_line ? '' : " #{ELLIPSES}"
         end
 
-        def escape(s)
-          CGI.escapeHTML(s)
+        def escape(string)
+          CGI.escapeHTML(string)
         end
 
         def base64_encoded_logo_image

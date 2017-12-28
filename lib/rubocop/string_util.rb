@@ -18,13 +18,13 @@ module RuboCop
         new(*args).distance
       end
 
-      def initialize(a, b)
-        if a.size < b.size
-          @shorter = a
-          @longer = b
+      def initialize(string_a, string_b)
+        if string_a.size < string_b.size
+          @shorter = string_a
+          @longer = string_b
         else
-          @shorter = b
-          @longer = a
+          @shorter = string_b
+          @longer = string_a
         end
       end
 
@@ -116,8 +116,9 @@ module RuboCop
 
       attr_reader :boost_threshold, :scaling_factor
 
-      def initialize(a, b, boost_threshold = nil, scaling_factor = nil)
-        super(a, b)
+      def initialize(string_a, string_b,
+                     boost_threshold = nil, scaling_factor = nil)
+        super(string_a, string_b)
         @boost_threshold = boost_threshold || DEFAULT_BOOST_THRESHOLD
         @scaling_factor = scaling_factor || DEFAULT_SCALING_FACTOR
       end

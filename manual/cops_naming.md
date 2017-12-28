@@ -400,6 +400,7 @@ baz { |age, height, gender| do_stuff(age, height, gender) }
 Name | Default value | Configurable values
 --- | --- | ---
 MinParamNameLength | `1` | Integer
+AllowedNames | `<none>` | 
 
 ## Naming/UncommunicativeMethodArgName
 
@@ -446,6 +447,7 @@ end
 Name | Default value | Configurable values
 --- | --- | ---
 MinArgNameLength | `3` | Integer
+AllowedNames | `<none>` | 
 
 ## Naming/VariableName
 

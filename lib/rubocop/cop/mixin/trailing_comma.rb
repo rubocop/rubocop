@@ -122,8 +122,8 @@ module RuboCop
         items.each_cons(2).none? { |a, b| on_same_line?(a, b) }
       end
 
-      def on_same_line?(a, b)
-        a.last_line == b.line
+      def on_same_line?(range1, range2)
+        range1.last_line == range2.line
       end
 
       def avoid_comma(kind, comma_begin_pos, extra_info)
@@ -163,7 +163,7 @@ module RuboCop
       end
 
       # By default, there's no reason to avoid auto-correct.
-      def avoid_autocorrect?(_)
+      def avoid_autocorrect?(_nodes)
         false
       end
     end

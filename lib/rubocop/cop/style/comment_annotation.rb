@@ -40,8 +40,8 @@ module RuboCop
                        'is missing a note.'.freeze
 
         def investigate(processed_source)
-          processed_source.comments.each_with_index do |comment, ix|
-            next unless first_comment_line?(processed_source.comments, ix)
+          processed_source.comments.each_with_index do |comment, index|
+            next unless first_comment_line?(processed_source.comments, index)
 
             margin, first_word, colon, space, note = split_comment(comment)
             next unless annotation?(comment) &&
@@ -68,8 +68,9 @@ module RuboCop
 
         private
 
-        def first_comment_line?(comments, ix)
-          ix.zero? || comments[ix - 1].loc.line < comments[ix].loc.line - 1
+        def first_comment_line?(comments, index)
+          index.zero? ||
+            comments[index - 1].loc.line < comments[index].loc.line - 1
         end
 
         def annotation_range(comment, margin, length)

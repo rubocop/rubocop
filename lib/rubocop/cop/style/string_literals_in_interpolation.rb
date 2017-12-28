@@ -29,7 +29,7 @@ module RuboCop
 
         private
 
-        def message(*)
+        def message(_node)
           # single_quotes -> single-quoted
           kind = style.to_s.sub(/_(.*)s/, '-\1d')
 

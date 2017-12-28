@@ -119,17 +119,17 @@ task generate_cops_documentation: :yard_for_generate_documentation do
     table.join("\n") + "\n"
   end
 
-  def format_table_value(v)
+  def format_table_value(val)
     value =
-      case v
+      case val
       when Array
-        if v.empty?
+        if val.empty?
           '`[]`'
         else
-          v.map { |config| format_table_value(config) }.join(', ')
+          val.map { |config| format_table_value(config) }.join(', ')
         end
       else
-        "`#{v.nil? ? '<none>' : v}`"
+        "`#{val.nil? ? '<none>' : val}`"
       end
     value.gsub("#{Dir.pwd}/", '').rstrip
   end
