@@ -37,15 +37,9 @@ module RuboCop
 
         def on_def(node)
           return unless node.arguments?
-          check(node, node.arguments, min: min_length)
+          check(node, node.arguments)
         end
         alias on_defs on_def
-
-        private
-
-        def min_length
-          cop_config['MinArgNameLength']
-        end
       end
     end
   end

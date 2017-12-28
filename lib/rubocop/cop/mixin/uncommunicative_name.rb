@@ -9,15 +9,22 @@ module RuboCop
       LENGTH_MSG = '%<name_type>s must be longer than %<min>s ' \
                    'characters.'.freeze
 
-      def check(node, args, min:)
+      def check(node, args)
         args.each do |arg|
-          source = arg.children.first.to_s
-          next if allowed_names.include?(source)
-          range = arg_range(arg, source.size)
-          case_offense(node, range) if uppercase?(source)
-          num_offense(node, range) if ends_with_num?(source)
-          length_offense(node, range, min) unless long_enough?(source, min)
+          name = arg.children.first.to_s
+          next if allowed_names.include?(name)
+          range = arg_range(arg, name.size)
+          issue_offenses(node, range, name)
         end
+      end
+
+      private
+
+      def issue_offenses(node, range, name)
+        case_offense(node, range) if uppercase?(name)
+        length_offense(node, range) unless long_enough?(name)
+        return if allow_nums
+        num_offense(node, range) if ends_with_num?(name)
       end
 
       def case_offense(node, range)
@@ -47,15 +54,15 @@ module RuboCop
         name[-1] =~ /\d/
       end
 
-      def length_offense(node, range, min)
+      def length_offense(node, range)
         add_offense(node, location: range,
                           message: format(LENGTH_MSG,
                                           name_type: name_type(node).capitalize,
-                                          min: min))
+                                          min: min_length))
       end
 
-      def long_enough?(name, min)
-        name.size >= min
+      def long_enough?(name)
+        name.size >= min_length
       end
 
       def arg_range(arg, length)
@@ -66,7 +73,15 @@ module RuboCop
       end
 
       def allowed_names
-        cop_config['AllowedNames'] || []
+        cop_config['AllowedNames']
+      end
+
+      def allow_nums
+        cop_config['AllowNamesEndingInNumbers']
+      end
+
+      def min_length
+        cop_config['MinNameLength']
       end
     end
   end

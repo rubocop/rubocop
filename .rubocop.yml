@@ -20,32 +20,6 @@ Naming/PredicateName:
     - def_node_matcher
     - def_node_search
 
-Naming/UncommunicativeBlockParamName:
-  AllowedNames:
-    - 'child_node1'
-    - 'child_node2'
-    - 'expression1'
-    - 'expression2'
-    - 'node1'
-    - 'node2'
-    - 'operator1'
-    - 'operator2'
-    - 'range1'
-    - 'range2'
-    - 'token1'
-    - 'token2'
-    - 'var1'
-    - 'var2'
-
-Naming/UncommunicativeMethodArgName:
-  AllowedNames:
-    - 'node1'
-    - 'node2'
-    - 'range1'
-    - 'range2'
-    - 'token1'
-    - 'token2'
-
 Style/FrozenStringLiteralComment:
   EnforcedStyle: always
 

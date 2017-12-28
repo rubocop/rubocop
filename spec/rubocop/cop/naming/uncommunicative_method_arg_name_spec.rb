@@ -3,7 +3,12 @@
 RSpec.describe RuboCop::Cop::Naming::UncommunicativeMethodArgName, :config do
   subject(:cop) { described_class.new(config) }
 
-  let(:cop_config) { { 'MinParamNameLength' => 3 } }
+  let(:cop_config) do
+    {
+      'MinNameLength' => 3,
+      'AllowNamesEndingInNumbers' => false
+    }
+  end
 
   it 'does not register for method without arguments' do
     expect_no_offenses(<<-RUBY.strip_indent)
@@ -116,7 +121,8 @@ RSpec.describe RuboCop::Cop::Naming::UncommunicativeMethodArgName, :config do
   context 'with AllowedNames' do
     let(:cop_config) do
       {
-        'AllowedNames' => %w[foo1 foo2]
+        'AllowedNames' => %w[foo1 foo2],
+        'AllowNamesEndingInNumbers' => false
       }
     end
 
@@ -132,6 +138,22 @@ RSpec.describe RuboCop::Cop::Naming::UncommunicativeMethodArgName, :config do
       expect_offense(<<-RUBY.strip_indent)
         def quux(bar, bar1)
                       ^^^^ Do not end method argument with a number.
+          do_stuff
+        end
+      RUBY
+    end
+  end
+
+  context 'with AllowNamesEndingInNumbers' do
+    let(:cop_config) do
+      {
+        'AllowNamesEndingInNumbers' => true
+      }
+    end
+
+    it 'accept arguments that end in numbers' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def something(foo1, bar2, qux3)
           do_stuff
         end
       RUBY
