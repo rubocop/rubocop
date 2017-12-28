@@ -29,7 +29,6 @@ module RuboCop
       include RuboCop::AST::Sexp
       include Util
       include IgnoredNode
-      include AutocorrectLogic
 
       attr_reader :config, :offenses, :corrections
       attr_accessor :processed_source # TODO: Bad design.
@@ -189,7 +188,25 @@ module RuboCop
         !relevant_file?(file)
       end
 
+      def autocorrect?
+        autocorrect_requested? && support_autocorrect? && autocorrect_enabled?
+      end
+
+      def support_autocorrect?
+        respond_to?(:autocorrect)
+      end
+
       private
+
+      def autocorrect_requested?
+        @options.fetch(:auto_correct, false)
+      end
+
+      def autocorrect_enabled?
+        # allow turning off autocorrect on a cop by cop basis
+        return true unless cop_config
+        cop_config['AutoCorrect'] != false
+      end
 
       def annotate(message)
         RuboCop::Cop::MessageAnnotator.new(
