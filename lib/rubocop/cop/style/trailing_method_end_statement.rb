@@ -42,13 +42,13 @@ module RuboCop
         def on_def(node)
           return unless trailing_end?(node)
 
-          add_offense(node.to_a.last, location: end_token.pos)
+          add_offense(node.to_a.last, location: end_token(node).pos)
         end
 
-        def autocorrect(_node)
+        def autocorrect(node)
           lambda do |corrector|
-            break_line_before_end(corrector)
-            remove_semicolon(corrector)
+            break_line_before_end(node, corrector)
+            remove_semicolon(node, corrector)
           end
         end
 
@@ -57,35 +57,34 @@ module RuboCop
         def trailing_end?(node)
           node.body &&
             node.multiline? &&
-            end_token &&
-            body_and_end_on_same_line?
+            body_and_end_on_same_line?(node)
         end
 
-        def end_token
-          @end_token ||= processed_source.tokens.reverse.find(&:end?)
+        def end_token(node)
+          @end_token ||= tokens(node).reverse.find(&:end?)
         end
 
-        def body_and_end_on_same_line?
-          end_token.line == token_before_end.line
+        def body_and_end_on_same_line?(node)
+          end_token(node).line == token_before_end(node).line
         end
 
-        def token_before_end
+        def token_before_end(node)
           @token_before_end ||= begin
-            i = processed_source.tokens.index(end_token)
-            processed_source.tokens[i - 1]
+            i = tokens(node).index(end_token(node))
+            tokens(node)[i - 1]
           end
         end
 
-        def break_line_before_end(corrector)
+        def break_line_before_end(node, corrector)
           corrector.insert_before(
-            end_token.pos,
+            end_token(node).pos,
             "\n" + ' ' * configured_indentation_width
           )
         end
 
-        def remove_semicolon(corrector)
-          return unless token_before_end.semicolon?
-          corrector.remove(token_before_end.pos)
+        def remove_semicolon(node, corrector)
+          return unless token_before_end(node).semicolon?
+          corrector.remove(token_before_end(node).pos)
         end
       end
     end

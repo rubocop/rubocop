@@ -11,6 +11,7 @@
 
 ### Bug fixes
 
+* [#5343](https://github.com/bbatsov/rubocop/issues/5343): Fix offense detection in `Style/TrailingMethodEndStatement`. ([@garettarrowood][])
 * [#5334](https://github.com/bbatsov/rubocop/issues/5334): Fix semicolon removal for `Style/TrailingBodyOnMethodDefinition` autocorrection. ([@garettarrowood][])
 
 ### Changes
