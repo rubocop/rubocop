@@ -25,7 +25,7 @@ module RuboCop
         # if found within a percent literal expression, will cause a
         # NestedPercentLiteral violation to be emitted.
         REGEXES = PercentLiteral::PERCENT_LITERAL_TYPES.map do |percent_literal|
-          /#{percent_literal}\W/
+          /\A#{percent_literal}\W/
         end.freeze
 
         def on_array(node)
