@@ -12,6 +12,7 @@
 ### Bug fixes
 
 * [#5334](https://github.com/bbatsov/rubocop/issues/5334): Fix semicolon removal for `Style/TrailingBodyOnMethodDefinition` autocorrection. ([@garettarrowood][])
+# [#5333](https://github.com/bbatsov/rubocop/issues/5333): Fix `Layout/EmptyLinesAroundArguments` false positives for inline access modifiers. ([@garettarrowood][])
 
 ### Changes
 

@@ -38,18 +38,6 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundArguments, :config do
         .to eq(['Empty line detected around arguments.'])
     end
 
-    it 'registers offense for empty line in-between one arg' do
-      inspect_source(<<-RUBY.strip_indent)
-        do_stuff([
-          "some text",
-
-          "some more text"
-        ])
-      RUBY
-      expect(cop.messages)
-        .to eq(['Empty line detected around arguments.'])
-    end
-
     it 'registers offenses when multiple empty lines are detected' do
       inspect_source(<<-RUBY.strip_indent)
         foo(
@@ -169,18 +157,6 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundArguments, :config do
                                ')'].join("\n")
     end
 
-    it 'autocorrects empty line in-between one arg' do
-      corrected = autocorrect_source(['do_stuff([',
-                                      "  'some text',",
-                                      '',
-                                      "  'some more text'",
-                                      '])'].join("\n"))
-      expect(corrected).to eq ['do_stuff([',
-                               "  'some text',",
-                               "  'some more text'",
-                               '])'].join("\n")
-    end
-
     it 'autocorrects multiple empty lines' do
       corrected = autocorrect_source(['do_stuff(',
                                       '  baz,',
@@ -265,6 +241,16 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundArguments, :config do
 
           bar
         end.compact
+      RUBY
+      expect(cop.offenses.empty?).to be(true)
+    end
+
+    it 'ignores empty lines inside of method arguments' do
+      inspect_source(<<-RUBY.strip_indent)
+        private(def bar
+
+          baz
+        end)
       RUBY
       expect(cop.offenses.empty?).to be(true)
     end
