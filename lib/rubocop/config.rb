@@ -12,6 +12,7 @@ module RuboCop
   # rubocop:disable Metrics/ClassLength
   class Config
     include PathUtil
+    include FileFinder
 
     COMMON_PARAMS = %w[Exclude Include Severity
                        AutoCorrect StyleGuide Details].freeze
@@ -521,8 +522,7 @@ module RuboCop
 
     def ruby_version_file
       @ruby_version_file ||=
-        PathUtil.find_file_upwards(RUBY_VERSION_FILENAME,
-                                   base_dir_for_path_parameters)
+        find_file_upwards(RUBY_VERSION_FILENAME, base_dir_for_path_parameters)
     end
 
     def target_ruby_version_from_version_file
