@@ -249,6 +249,11 @@ module RuboCop
         def all_cop_names
           @all_cop_names ||= Cop.registry.names
         end
+
+        def ends_its_line?(range)
+          line = range.source_buffer.source_line(range.last_line)
+          (line =~ /\s*\z/) == range.last_column
+        end
       end
     end
   end
