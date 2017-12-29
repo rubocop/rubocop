@@ -209,26 +209,6 @@ RSpec.describe RuboCop::Cop::Util do
     end
   end
 
-  describe '#to_symbol_literal' do
-    [
-      ['foo', ':foo'],
-      ['foo?', ':foo?'],
-      ['foo!', ':foo!'],
-      ['@foo', ':@foo'],
-      ['@@foo', ':@@foo'],
-      ['$\\', ':$\\'],
-      ['$a', ':$a'],
-      ['==', ':=='],
-      ['a-b', ":'a-b'"]
-    ].each do |string, expectation|
-      context "when #{string}" do
-        it "returns #{expectation}" do
-          expect(described_class.to_symbol_literal(string)).to eq(expectation)
-        end
-      end
-    end
-  end
-
   describe '#to_supported_styles' do
     subject { described_class.to_supported_styles(enforced_style) }
 
