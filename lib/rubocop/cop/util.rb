@@ -188,12 +188,6 @@ module RuboCop
           node1.loc.line == node2.loc.line
       end
 
-      # The args node1 & node2 may represent a RuboCop::AST::Node
-      # or a Parser::Source::Comment. Both respond to #loc.
-      def precede?(node1, node2)
-        line_distance(node1, node2) == 1
-      end
-
       def to_supported_styles(enforced_style)
         enforced_style
           .sub(/^Enforced/, 'Supported')
@@ -233,12 +227,6 @@ module RuboCop
       def compatible_external_encoding_for?(src)
         src = src.dup if RUBY_VERSION < '2.3' || RUBY_ENGINE == 'jruby'
         src.force_encoding(Encoding.default_external).valid_encoding?
-      end
-
-      # The args node1 & node2 may represent a RuboCop::AST::Node
-      # or a Parser::Source::Comment. Both respond to #loc.
-      def line_distance(node1, node2)
-        node2.loc.line - node1.loc.line
       end
     end
   end
