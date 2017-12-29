@@ -36,18 +36,6 @@ module RuboCop
         OPERATOR_METHODS.include?(symbol)
       end
 
-      def strip_quotes(str)
-        if str[0] == '"' || str[0] == "'"
-          str[0] = ''
-        else
-          # we're dealing with %q or %Q
-          str[0, 3] = ''
-        end
-        str[-1] = ''
-
-        str
-      end
-
       def comment_line?(line_source)
         line_source =~ /^\s*#/
       end
