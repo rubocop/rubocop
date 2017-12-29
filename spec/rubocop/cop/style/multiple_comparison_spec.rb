@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 RSpec.describe RuboCop::Cop::Style::MultipleComparison do
   subject(:cop) { described_class.new(config) }
 
