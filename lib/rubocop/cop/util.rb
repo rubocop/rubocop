@@ -132,12 +132,6 @@ module RuboCop
         (range.source_line =~ /\S/) == range.column
       end
 
-      def within_node?(inner, outer)
-        o = outer.is_a?(AST::Node) ? outer.source_range : outer
-        i = inner.is_a?(AST::Node) ? inner.source_range : inner
-        i.begin_pos >= o.begin_pos && i.end_pos <= o.end_pos
-      end
-
       # Returns, for example, a bare `if` node if the given node is an `if`
       # with calls chained to the end of it.
       def first_part_of_call_chain(node)
