@@ -23,11 +23,19 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
   let(:location) { OpenStruct.new(line: 1, column: 5) }
 
   let(:heading) do
-    format(described_class::HEADING, expected_heading_command) + "\n"
+    format(
+      described_class::HEADING,
+      expected_heading_command,
+      expected_heading_timestamp
+    )
   end
 
   let(:expected_heading_command) do
     'rubocop --auto-gen-config'
+  end
+
+  let(:expected_heading_timestamp) do
+    "on #{Time.now} "
   end
 
   around do |example|
@@ -46,6 +54,8 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
   before do
     # Avoid intermittent failure when another test set ConfigLoader options
     RuboCop::ConfigLoader.clear_options
+
+    allow(Time).to receive(:now).and_return(Time.now)
   end
 
   context 'when any offenses are detected' do

@@ -10,6 +10,7 @@
 * [#3394](https://github.com/bbatsov/rubocop/issues/3394): Add new `Style/TrailingCommmaInArrayLiteral` cop. ([@garettarrowood][])
 * [#3394](https://github.com/bbatsov/rubocop/issues/3394): Add new `Style/TrailingCommmaInHashLiteral` cop. ([@garettarrowood][])
 * [#5319](https://github.com/bbatsov/rubocop/pull/5319): Add new `Security/Open` cop. ([@mame][])
+* [#5358](https://github.com/bbatsov/rubocop/pull/5358):  `--no-auto-gen-timestamp` CLI option suppresses the inclusion of the date and time it was generated in auto-generated config. ([@dominicsayers][])
 
 ### Bug fixes
 
@@ -3142,3 +3143,4 @@
 [@flyerhzm]: https://github.com/flyerhzm
 [@ybiquitous]: https://github.com/ybiquitous
 [@mame]: https://github.com/mame
+[@dominicsayers]: https://github.com/dominicsayers

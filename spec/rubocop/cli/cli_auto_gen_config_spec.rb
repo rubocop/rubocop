@@ -678,6 +678,13 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect(actual.size).to eq(expected.size)
     end
 
+    it 'does not include a timestamp when --no-auto-gen-timestamp is used' do
+      create_file('example1.rb', ['$!'])
+      expect(cli.run(['--auto-gen-config', '--no-auto-gen-timestamp'])).to eq(1)
+      expect(IO.readlines('.rubocop_todo.yml')[2])
+        .to match(/# using RuboCop version .*/)
+    end
+
     describe 'when different styles appear in different files' do
       before do
         create_file('example1.rb', ['$!'])
