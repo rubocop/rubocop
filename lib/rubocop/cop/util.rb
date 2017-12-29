@@ -178,35 +178,6 @@ module RuboCop
         end
       end
 
-      def to_symbol_literal(string)
-        if symbol_without_quote?(string)
-          ":#{string}"
-        else
-          ":#{to_string_literal(string)}"
-        end
-      end
-
-      def symbol_without_quote?(string)
-        special_gvars = %w[
-          $! $" $$ $& $' $* $+ $, $/ $; $: $. $< $= $> $? $@ $\\ $_ $` $~ $0
-          $-0 $-F $-I $-K $-W $-a $-d $-i $-l $-p $-v $-w
-        ]
-        redefinable_operators = %w(
-          | ^ & <=> == === =~ > >= < <= << >>
-          + - * / % ** ~ +@ -@ [] []= ` ! != !~
-        )
-
-        # method name
-        string =~ /\A[a-zA-Z_]\w*[!?]?\z/ ||
-          # instance / class variable
-          string =~ /\A\@\@?[a-zA-Z_]\w*\z/ ||
-          # global variable
-          string =~ /\A\$[1-9]\d*\z/ ||
-          string =~ /\A\$[a-zA-Z_]\w*\z/ ||
-          special_gvars.include?(string) ||
-          redefinable_operators.include?(string)
-      end
-
       def interpret_string_escapes(string)
         StringInterpreter.interpret(string)
       end
