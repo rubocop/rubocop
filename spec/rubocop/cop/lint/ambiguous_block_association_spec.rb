@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
   subject(:cop) { described_class.new }
 
