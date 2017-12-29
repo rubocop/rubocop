@@ -173,7 +173,7 @@ module RuboCop
           end
 
           return false unless parent && parent.send_type?
-          return false if parenthesized_call?(parent)
+          return false if parent.parenthesized_call?
 
           arg_node.sibling_index > 1
         end

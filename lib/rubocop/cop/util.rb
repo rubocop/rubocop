@@ -49,10 +49,6 @@ module RuboCop
           node.loc.end.is?(')'.freeze)
       end
 
-      def parenthesized_call?(send)
-        send.loc.begin && send.loc.begin.is?('(')
-      end
-
       def on_node(syms, sexp, excludes = [], &block)
         return to_enum(:on_node, syms, sexp, excludes) unless block_given?
 
