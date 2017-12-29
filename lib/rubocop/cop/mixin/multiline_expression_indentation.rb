@@ -221,6 +221,12 @@ module RuboCop
         node.source_range.begin_pos > ancestor.loc.begin.begin_pos &&
           node.source_range.end_pos < ancestor.loc.end.end_pos
       end
+
+      def within_node?(inner, outer)
+        o = outer.is_a?(AST::Node) ? outer.source_range : outer
+        i = inner.is_a?(AST::Node) ? inner.source_range : inner
+        i.begin_pos >= o.begin_pos && i.end_pos <= o.end_pos
+      end
     end
   end
 end
