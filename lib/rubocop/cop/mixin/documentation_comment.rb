@@ -30,6 +30,12 @@ module RuboCop
           comment_line?(node2.loc.expression.source)
       end
 
+      # The args node1 & node2 may represent a RuboCop::AST::Node
+      # or a Parser::Source::Comment. Both respond to #loc.
+      def precede?(node1, node2)
+        node2.loc.line - node1.loc.line == 1
+      end
+
       def preceding_lines(node)
         processed_source.ast_with_comments[node].select do |line|
           line.loc.line < node.loc.line
