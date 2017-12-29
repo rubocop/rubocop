@@ -24,18 +24,9 @@ RSpec.describe RuboCop::Cop::Util do
 
     let(:node) { ast.each_node.find(&:class_type?) }
 
-    context 'when Source::Range object is passed' do
-      it 'returns line range of that' do
-        line_range = described_class.line_range(node.loc.expression)
-        expect(line_range).to eq(3..7)
-      end
-    end
-
-    context 'when AST::Node object is passed' do
-      it 'returns line range of the expression' do
-        line_range = described_class.line_range(node)
-        expect(line_range).to eq(3..7)
-      end
+    it 'returns line range of the expression' do
+      line_range = described_class.line_range(node)
+      expect(line_range).to eq(3..7)
     end
   end
 

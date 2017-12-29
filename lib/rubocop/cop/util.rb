@@ -40,17 +40,8 @@ module RuboCop
         line_source =~ /^\s*#/
       end
 
-      def line_range(arg)
-        source_range = case arg
-                       when Parser::Source::Range
-                         arg
-                       when Parser::AST::Node
-                         arg.source_range
-                       else
-                         raise ArgumentError, "Invalid argument #{arg}"
-                       end
-
-        source_range.begin.line..source_range.end.line
+      def line_range(node)
+        node.first_line..node.last_line
       end
 
       def parentheses?(node)
