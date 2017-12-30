@@ -4,6 +4,8 @@ module RuboCop
   module Cop
     # Common functionality for handling percent literals.
     module PercentLiteral
+      include RangeHelp
+
       PERCENT_LITERAL_TYPES = %w[% %i %I %q %Q %r %s %w %W %x].freeze
 
       private

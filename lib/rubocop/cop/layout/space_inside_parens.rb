@@ -15,6 +15,7 @@ module RuboCop
       #   g = (a + 3)
       class SpaceInsideParens < Cop
         include SurroundingSpace
+        include RangeHelp
 
         MSG = 'Space inside parentheses detected.'.freeze
 

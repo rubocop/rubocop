@@ -36,6 +36,8 @@ module RuboCop
       #     bar(i)
       #   }
       class MultilineBlockLayout < Cop
+        include RangeHelp
+
         MSG = 'Block body expression is on the same line as ' \
               'the block start.'.freeze
         ARG_MSG = 'Block argument expression is not on the same line as the ' \

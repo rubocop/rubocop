@@ -23,6 +23,7 @@ module RuboCop
       # The compact style is only forced for classes/modules with one child.
       class ClassAndModuleChildren < Cop
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         NESTED_MSG = 'Use nested module/class definitions instead of ' \
                      'compact style.'.freeze

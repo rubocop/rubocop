@@ -16,6 +16,8 @@ module RuboCop
       # an offense is reported.
       #
       class Copyright < Cop
+        include RangeHelp
+
         MSG = 'Include a copyright notice matching /%<notice>s/ before ' \
               'any code.'.freeze
         AUTOCORRECT_EMPTY_WARNING = 'An AutocorrectNotice must be defined in' \

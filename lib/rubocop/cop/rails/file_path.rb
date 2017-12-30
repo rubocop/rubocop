@@ -15,6 +15,8 @@ module RuboCop
       #  # good
       #  Rails.root.join('app', 'models', 'goober')
       class FilePath < Cop
+        include RangeHelp
+
         MSG = 'Please use `Rails.root.join(\'path\', \'to\')` instead.'.freeze
 
         def_node_matcher :file_join_nodes?, <<-PATTERN

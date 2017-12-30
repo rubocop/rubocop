@@ -43,6 +43,8 @@ module RuboCop
       #   # rubocop:enable Layout/SpaceAroundOperators
       #
       class MissingCopEnableDirective < Cop
+        include RangeHelp
+
         MSG = 'Re-enable %{cop} cop with `# rubocop:enable` after disabling it.'
               .freeze
         MSG_BOUND = 'Re-enable %{cop} cop within %{max_range} lines after ' \

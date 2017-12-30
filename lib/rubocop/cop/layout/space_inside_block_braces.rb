@@ -79,6 +79,7 @@ module RuboCop
       class SpaceInsideBlockBraces < Cop
         include ConfigurableEnforcedStyle
         include SurroundingSpace
+        include RangeHelp
 
         def on_block(node)
           return if node.keywords?

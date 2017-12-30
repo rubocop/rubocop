@@ -15,6 +15,8 @@ module RuboCop
       #   warn('hello')
       #
       class StderrPuts < Cop
+        include RangeHelp
+
         MSG = 'Use `warn` instead of `$stderr.puts` to allow such output ' \
               'to be disabled.'.freeze
 

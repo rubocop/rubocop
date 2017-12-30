@@ -20,6 +20,8 @@ module RuboCop
       #   add_offense(node, message: message(other_node))
       #
       class RedundantMessageArgument < Cop
+        include RangeHelp
+
         MSG = 'Redundant message argument to `#add_offense`.'.freeze
 
         def_node_matcher :node_type_check, <<-PATTERN

@@ -41,6 +41,7 @@ module RuboCop
       #     foo&.bar { |e| e.baz }
       class SafeNavigation < Cop
         extend TargetRubyVersion
+        include RangeHelp
 
         MSG = 'Use safe navigation (`&.`) instead of `%s`.'.freeze
 

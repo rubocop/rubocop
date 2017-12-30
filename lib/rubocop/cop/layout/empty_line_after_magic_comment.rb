@@ -21,6 +21,8 @@ module RuboCop
       #     # Some code
       #   end
       class EmptyLineAfterMagicComment < Cop
+        include RangeHelp
+
         MSG = 'Add an empty line after magic comments.'.freeze
         BLANK_LINE = /\A\s*\z/
 

@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     # This auto-corrects unused arguments.
     class UnusedArgCorrector
-      extend Util
+      extend RangeHelp
 
       class << self
         attr_reader :processed_source

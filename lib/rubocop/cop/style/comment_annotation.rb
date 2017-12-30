@@ -32,6 +32,7 @@ module RuboCop
       #   # OPTIMIZE: does not work
       class CommentAnnotation < Cop
         include AnnotationComment
+        include RangeHelp
 
         MSG = 'Annotation keywords like `%<keyword>s` should be all ' \
               'upper case, followed by a colon, and a space, ' \

@@ -35,6 +35,8 @@ module RuboCop
       #     spec.add_runtime_dependency('parser', '>= 2.3.3.1', '< 3.0')
       #   end
       class DuplicatedAssignment < Cop
+        include RangeHelp
+
         MSG = '`%<assignment>s` method calls already given on line '\
               '%<line_of_first_occurrence>d of the gemspec.'.freeze
 

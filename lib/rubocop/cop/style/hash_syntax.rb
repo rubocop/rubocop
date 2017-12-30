@@ -56,6 +56,7 @@ module RuboCop
       #   {:c => 3, 'd' => 4}
       class HashSyntax < Cop
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         MSG_19 = 'Use the new Ruby 1.9 hash syntax.'.freeze
         MSG_NO_MIXED_KEYS = "Don't mix styles in the same hash.".freeze

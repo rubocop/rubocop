@@ -6,6 +6,7 @@ module RuboCop
     # Style/TrailingCommaInLiteral
     module TrailingComma
       include ConfigurableEnforcedStyle
+      include RangeHelp
 
       MSG = '%<command>s comma after the last %<unit>s.'.freeze
 

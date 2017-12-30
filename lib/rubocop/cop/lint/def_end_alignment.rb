@@ -35,6 +35,7 @@ module RuboCop
       #           end
       class DefEndAlignment < Cop
         include EndKeywordAlignment
+        include RangeHelp
 
         MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d.'.freeze
 

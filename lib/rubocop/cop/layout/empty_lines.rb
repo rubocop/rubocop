@@ -21,6 +21,8 @@ module RuboCop
       #   some_method
       #
       class EmptyLines < Cop
+        include RangeHelp
+
         MSG = 'Extra blank line detected.'.freeze
         LINE_OFFSET = 2
 

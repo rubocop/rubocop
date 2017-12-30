@@ -21,6 +21,7 @@ module RuboCop
       #     a = -> (x, y) { x + y }
       class SpaceInLambdaLiteral < Cop
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         ARROW = '->'.freeze
         MSG_REQUIRE_SPACE = 'Use a space between `->` and opening brace ' \

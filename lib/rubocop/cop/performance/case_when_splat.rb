@@ -52,6 +52,7 @@ module RuboCop
       #   end
       class CaseWhenSplat < Cop
         include Alignment
+        include RangeHelp
 
         MSG = 'Place `when` conditions with a splat ' \
               'at the end of the `when` branches.'.freeze

@@ -39,6 +39,7 @@ module RuboCop
       class SpaceInsideHashLiteralBraces < Cop
         include SurroundingSpace
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         MSG = 'Space inside %s.'.freeze
 

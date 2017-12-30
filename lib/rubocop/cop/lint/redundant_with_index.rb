@@ -27,6 +27,8 @@ module RuboCop
       #   end
       #
       class RedundantWithIndex < Cop
+        include RangeHelp
+
         MSG_EACH_WITH_INDEX = 'Use `each` instead of `each_with_index`.'.freeze
         MSG_WITH_INDEX = 'Remove redundant `with_index`.'.freeze
 

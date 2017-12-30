@@ -18,6 +18,7 @@ module RuboCop
       #   }
       class SpaceBeforeBlockBraces < Cop
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         MISSING_MSG = 'Space missing to the left of {.'.freeze
         DETECTED_MSG = 'Space detected to the left of {.'.freeze

@@ -37,6 +37,8 @@ module RuboCop
       #   params[:width_gteq]
       #
       class AsciiIdentifiers < Cop
+        include RangeHelp
+
         MSG = 'Use only ascii symbols in identifiers.'.freeze
 
         def investigate(processed_source)

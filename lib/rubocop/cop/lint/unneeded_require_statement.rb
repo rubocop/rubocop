@@ -23,6 +23,7 @@ module RuboCop
       #   require 'unloaded_feature'
       class UnneededRequireStatement < Cop
         extend TargetRubyVersion
+        include RangeHelp
 
         minimum_target_ruby_version 2.2
 

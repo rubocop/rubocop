@@ -23,6 +23,7 @@ module RuboCop
       #   a { do_something }
       class EmptyBlockParameter < Cop
         include EmptyParameter
+        include RangeHelp
 
         MSG = 'Omit pipes for the empty block parameters.'.freeze
 

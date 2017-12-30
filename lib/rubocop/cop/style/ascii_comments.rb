@@ -16,6 +16,8 @@ module RuboCop
       #   # good
       #   # Translates from English to Japanese
       class AsciiComments < Cop
+        include RangeHelp
+
         MSG = 'Use only ascii symbols in comments.'.freeze
 
         def investigate(processed_source)

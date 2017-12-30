@@ -6,6 +6,8 @@ module RuboCop
       # This cops checks for indentation of the first non-blank non-comment
       # line in a file.
       class InitialIndentation < Cop
+        include RangeHelp
+
         MSG = 'Indentation of first line in file detected.'.freeze
 
         def investigate(_processed_source)

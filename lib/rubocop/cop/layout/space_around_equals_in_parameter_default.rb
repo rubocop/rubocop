@@ -18,6 +18,7 @@ module RuboCop
       class SpaceAroundEqualsInParameterDefault < Cop
         include SurroundingSpace
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         MSG = 'Surrounding space %<type>s in default value assignment.'.freeze
 

@@ -20,6 +20,7 @@ module RuboCop
       #   a**b
       class SpaceAroundOperators < Cop
         include PrecedingFollowingAlignment
+        include RangeHelp
 
         IRREGULAR_METHODS = %i[[] ! []=].freeze
 

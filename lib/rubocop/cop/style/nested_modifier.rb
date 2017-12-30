@@ -14,6 +14,8 @@ module RuboCop
       #   # good
       #   something if b && a
       class NestedModifier < Cop
+        include RangeHelp
+
         MSG = 'Avoid using nested modifiers.'.freeze
 
         def on_while(node)

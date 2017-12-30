@@ -27,6 +27,8 @@ module RuboCop
       #   end
       #
       class RedundantWithObject < Cop
+        include RangeHelp
+
         MSG_EACH_WITH_OBJECT = 'Use `each` instead of `each_with_object`.'
                                .freeze
         MSG_WITH_OBJECT = 'Remove redundant `with_object`.'.freeze

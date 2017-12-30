@@ -18,6 +18,7 @@ module RuboCop
       #   s = ''
       class EmptyLiteral < Cop
         include FrozenStringLiteral
+        include RangeHelp
 
         ARR_MSG = 'Use array literal `[]` instead of `Array.new`.'.freeze
         HASH_MSG = 'Use hash literal `{}` instead of `Hash.new`.'.freeze

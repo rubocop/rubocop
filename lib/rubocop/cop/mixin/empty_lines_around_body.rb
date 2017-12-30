@@ -8,6 +8,7 @@ module RuboCop
       module EmptyLinesAroundBody
         extend NodePattern::Macros
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         MSG_EXTRA = 'Extra empty line detected at %<kind>s body ' \
                     '%<location>s.'.freeze

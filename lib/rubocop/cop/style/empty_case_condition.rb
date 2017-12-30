@@ -36,6 +36,8 @@ module RuboCop
       #     puts 'more'
       #   end
       class EmptyCaseCondition < Cop
+        include RangeHelp
+
         MSG = 'Do not use empty `case` condition, instead use an `if` '\
               'expression.'.freeze
 

@@ -36,6 +36,7 @@ module RuboCop
       #
       class UniqBeforePluck < RuboCop::Cop::Cop
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         MSG = 'Use `%s` before `pluck`.'.freeze
         NEWLINE = "\n".freeze

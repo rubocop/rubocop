@@ -92,6 +92,7 @@ module RuboCop
       class EmptyElse < Cop
         include OnNormalIfUnless
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         MSG = 'Redundant `else`-clause.'.freeze
 

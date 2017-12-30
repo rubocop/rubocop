@@ -17,6 +17,8 @@ module RuboCop
       #   add_offense(node, location: :selector)
       #
       class RedundantLocationArgument < Cop
+        include RangeHelp
+
         MSG = 'Redundant location argument to `#add_offense`.'.freeze
 
         def_node_matcher :add_offense_kwargs, <<-PATTERN
