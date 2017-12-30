@@ -539,7 +539,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(IO.read('example.rb')).to eq(corrected)
   end
 
-  it 'corrects UnneededDisable offenses' do
+  it 'corrects UnneededCopDisableDirective offenses' do
     source = <<-RUBY.strip_indent
       class A
         # rubocop:disable Metrics/MethodLength
@@ -556,9 +556,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect($stdout.string).to eq(<<-RESULT.strip_indent)
       == example.rb ==
       C:  1:  1: Style/Documentation: Missing top-level class documentation comment.
-      W:  2:  3: [Corrected] Lint/UnneededDisable: Unnecessary disabling of Metrics/MethodLength.
-      W:  4: 54: [Corrected] Lint/UnneededDisable: Unnecessary disabling of Style/For.
-      W:  6:  5: [Corrected] Lint/UnneededDisable: Unnecessary disabling of Style/ClassVars.
+      W:  2:  3: [Corrected] Lint/UnneededCopDisableDirective: Unnecessary disabling of Metrics/MethodLength.
+      W:  4: 54: [Corrected] Lint/UnneededCopDisableDirective: Unnecessary disabling of Style/For.
+      W:  6:  5: [Corrected] Lint/UnneededCopDisableDirective: Unnecessary disabling of Style/ClassVars.
 
       1 file inspected, 4 offenses detected, 3 offenses corrected
     RESULT

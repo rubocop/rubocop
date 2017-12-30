@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-# The Lint/UnneededDisable cop needs to be disabled so as to be able to provide
-# a (bad) example of an unneeded disable.
-# rubocop:disable Lint/UnneededDisable
+# The Lint/UnneededCopDisableDirective cop needs to be disabled so as
+# to be able to provide a (bad) example of an unneeded disable.
+# rubocop:disable Lint/UnneededCopDisableDirective
 module RuboCop
   module Cop
     module Lint
@@ -25,10 +25,10 @@ module RuboCop
       #
       #   # good
       #   x += 1
-      class UnneededDisable < Cop
+      class UnneededCopDisableDirective < Cop
         include NameSimilarity
 
-        COP_NAME = 'Lint/UnneededDisable'.freeze
+        COP_NAME = 'Lint/UnneededCopDisableDirective'.freeze
 
         def check(offenses, cop_disabled_line_ranges, comments)
           unneeded_cops = Hash.new { |h, k| h[k] = Set.new }
@@ -253,4 +253,4 @@ module RuboCop
     end
   end
 end
-# rubocop:enable Lint/UnneededDisable
+# rubocop:enable Lint/UnneededCopDisableDirective
