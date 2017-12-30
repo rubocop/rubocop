@@ -2043,34 +2043,74 @@ line as the last argument of the call.
 
 ### Examples
 
+#### EnforcedStyle: symmetrical (default)
+
 ```ruby
-# symmetrical: bad
-# new_line: good
-# same_line: bad
+# bad
 foo(a,
   b
 )
 
-# symmetrical: bad
-# new_line: bad
-# same_line: good
+# bad
 foo(
   a,
   b)
 
-# symmetrical: good
-# new_line: bad
-# same_line: good
+# good
 foo(a,
   b)
 
-# symmetrical: good
-# new_line: good
-# same_line: bad
+# good
 foo(
   a,
   b
 )
+```
+#### EnforcedStyle: new_line
+
+```ruby
+# bad
+foo(
+  a,
+  b)
+
+# bad
+foo(a,
+  b)
+
+# good
+foo(a,
+  b
+)
+
+# good
+foo(
+  a,
+  b
+)
+```
+#### EnforcedStyle: same_line
+
+```ruby
+# bad
+foo(a,
+  b
+)
+
+# bad
+foo(
+  a,
+  b
+)
+
+# good
+foo(
+  a,
+  b)
+
+# good
+foo(a,
+  b)
 ```
 
 ### Configurable attributes

@@ -26,35 +26,68 @@ module RuboCop
       # The closing brace of a multi-line method call must be on the same
       # line as the last argument of the call.
       #
-      # @example
+      # @example EnforcedStyle: symmetrical (default)
+      #   # bad
+      #   foo(a,
+      #     b
+      #   )
       #
-      #     # symmetrical: bad
-      #     # new_line: good
-      #     # same_line: bad
-      #     foo(a,
-      #       b
-      #     )
+      #   # bad
+      #   foo(
+      #     a,
+      #     b)
       #
-      #     # symmetrical: bad
-      #     # new_line: bad
-      #     # same_line: good
-      #     foo(
-      #       a,
-      #       b)
+      #   # good
+      #   foo(a,
+      #     b)
       #
-      #     # symmetrical: good
-      #     # new_line: bad
-      #     # same_line: good
-      #     foo(a,
-      #       b)
+      #   # good
+      #   foo(
+      #     a,
+      #     b
+      #   )
       #
-      #     # symmetrical: good
-      #     # new_line: good
-      #     # same_line: bad
-      #     foo(
-      #       a,
-      #       b
-      #     )
+      # @example EnforcedStyle: new_line
+      #   # bad
+      #   foo(
+      #     a,
+      #     b)
+      #
+      #   # bad
+      #   foo(a,
+      #     b)
+      #
+      #   # good
+      #   foo(a,
+      #     b
+      #   )
+      #
+      #   # good
+      #   foo(
+      #     a,
+      #     b
+      #   )
+      #
+      # @example EnforcedStyle: same_line
+      #   # bad
+      #   foo(a,
+      #     b
+      #   )
+      #
+      #   # bad
+      #   foo(
+      #     a,
+      #     b
+      #   )
+      #
+      #   # good
+      #   foo(
+      #     a,
+      #     b)
+      #
+      #   # good
+      #   foo(a,
+      #     b)
       class MultilineMethodCallBraceLayout < Cop
         include MultilineLiteralBraceLayout
 
