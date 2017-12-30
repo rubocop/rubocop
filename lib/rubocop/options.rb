@@ -230,7 +230,7 @@ module RuboCop
       @options = options
     end
 
-    def validate_compatibility
+    def validate_compatibility # rubocop:disable Metrics/MethodLength
       if only_includes_unneeded_disable?
         raise ArgumentError, 'Lint/UnneededCopDisableDirective can not ' \
                              'be used with --only.'
