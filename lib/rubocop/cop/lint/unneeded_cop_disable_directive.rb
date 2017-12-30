@@ -27,6 +27,7 @@ module RuboCop
       #   x += 1
       class UnneededCopDisableDirective < Cop
         include NameSimilarity
+        include RangeHelp
 
         COP_NAME = 'Lint/UnneededCopDisableDirective'.freeze
 

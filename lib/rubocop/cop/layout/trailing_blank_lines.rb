@@ -7,6 +7,7 @@ module RuboCop
       # source code.
       class TrailingBlankLines < Cop
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         def investigate(processed_source)
           buffer = processed_source.buffer

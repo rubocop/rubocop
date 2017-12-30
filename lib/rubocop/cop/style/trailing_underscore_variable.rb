@@ -24,6 +24,7 @@ module RuboCop
       #   a, b, _something = foo()
       class TrailingUnderscoreVariable < Cop
         include SurroundingSpace
+        include RangeHelp
 
         MSG = 'Do not use trailing `_`s in parallel assignment. ' \
               'Prefer `%<code>s`.'.freeze

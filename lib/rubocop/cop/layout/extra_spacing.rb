@@ -21,6 +21,7 @@ module RuboCop
       #   website  = "https://github.com/bbatsov/rubocop"
       class ExtraSpacing < Cop
         include PrecedingFollowingAlignment
+        include RangeHelp
 
         MSG_UNNECESSARY = 'Unnecessary spacing detected.'.freeze
         MSG_UNALIGNED_ASGN = '`=` is not aligned with the %<location>s ' \

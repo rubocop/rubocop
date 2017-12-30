@@ -26,6 +26,8 @@ module RuboCop
       #   # good
       #   gem 'rubocop', groups: [:development, :test]
       class DuplicatedGem < Cop
+        include RangeHelp
+
         MSG = 'Gem `%<gem_name>s` requirements already given on line '\
           '%<line_of_first_occurrence>d of the Gemfile.'.freeze
 

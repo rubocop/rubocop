@@ -18,6 +18,8 @@ module RuboCop
       #
       #   puts(x + y)
       class ParenthesesAsGroupedExpression < Cop
+        include RangeHelp
+
         MSG = '`(...)` interpreted as grouped expression.'.freeze
 
         def on_send(node)

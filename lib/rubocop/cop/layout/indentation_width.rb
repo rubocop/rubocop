@@ -42,11 +42,12 @@ module RuboCop
       #     end
       #   end
       #   end
-      class IndentationWidth < Cop
+      class IndentationWidth < Cop # rubocop:disable Metrics/ClassLength
         include EndKeywordAlignment
         include Alignment
         include CheckAssignment
         include IgnoredPattern
+        include RangeHelp
 
         MSG = 'Use %<configured_indentation_width>d (not %<indentation>d) ' \
               'spaces for%<name>s indentation.'.freeze

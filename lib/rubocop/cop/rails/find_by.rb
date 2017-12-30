@@ -14,6 +14,8 @@ module RuboCop
       #   # good
       #   User.find_by(name: 'Bruce')
       class FindBy < Cop
+        include RangeHelp
+
         MSG = 'Use `find_by` instead of `where.%<method>s`.'.freeze
         TARGET_SELECTORS = %i[first take].freeze
 

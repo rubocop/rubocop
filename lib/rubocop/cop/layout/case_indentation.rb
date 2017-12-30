@@ -70,6 +70,7 @@ module RuboCop
       class CaseIndentation < Cop
         include Alignment
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         MSG = 'Indent `when` %<depth>s `%<base>s`.'.freeze
 

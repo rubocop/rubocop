@@ -86,6 +86,7 @@ module RuboCop
       #   end
       class MethodDefParentheses < Cop
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         MSG_PRESENT = 'Use def without parentheses.'.freeze
         MSG_MISSING = 'Use def with parentheses when there are ' \

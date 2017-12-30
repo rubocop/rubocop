@@ -9,6 +9,8 @@ module RuboCop
       # allowed, however.
       class For < Cop
         include ConfigurableEnforcedStyle
+        include RangeHelp
+
         EACH_LENGTH = 'each'.length
 
         def on_for(node)

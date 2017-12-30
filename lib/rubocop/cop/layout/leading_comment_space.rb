@@ -17,6 +17,8 @@ module RuboCop
       #   # good
       #   # Some comment
       class LeadingCommentSpace < Cop
+        include RangeHelp
+
         MSG = 'Missing space after `#`.'.freeze
 
         def investigate(processed_source)

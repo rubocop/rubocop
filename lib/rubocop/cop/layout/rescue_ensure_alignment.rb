@@ -22,6 +22,8 @@ module RuboCop
       #     puts 'error'
       #   end
       class RescueEnsureAlignment < Cop
+        include RangeHelp
+
         MSG = '`%<kw_loc>s` at %<kw_loc_line>d, %<kw_loc_column>d is not ' \
               'aligned with `end` at %<end_loc_line>d, %<end_loc_column>d.'
               .freeze

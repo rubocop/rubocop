@@ -13,6 +13,8 @@ module RuboCop
       #   # bad
       #   method1(method2 arg, method3, arg)
       class NestedParenthesizedCalls < Cop
+        include RangeHelp
+
         MSG = 'Add parentheses to nested method call `%<source>s`.'.freeze
 
         def on_send(node)

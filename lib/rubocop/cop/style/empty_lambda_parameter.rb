@@ -18,6 +18,7 @@ module RuboCop
       #   -> (arg) { do_something(arg) }
       class EmptyLambdaParameter < Cop
         include EmptyParameter
+        include RangeHelp
 
         MSG = 'Omit parentheses for the empty lambda parameters.'.freeze
 

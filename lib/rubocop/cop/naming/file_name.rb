@@ -20,6 +20,8 @@ module RuboCop
       #
       #   anything/using_snake_case.rake
       class FileName < Cop
+        include RangeHelp
+
         MSG_SNAKE_CASE = 'The name of this source file (`%<basename>s`) ' \
                          'should use snake_case.'.freeze
         MSG_NO_DEFINITION = '%<basename>s should define a class or module ' \

@@ -52,6 +52,7 @@ module RuboCop
       class EndAlignment < Cop
         include CheckAssignment
         include EndKeywordAlignment
+        include RangeHelp
 
         def on_class(node)
           check_other_alignment(node)

@@ -18,6 +18,7 @@ module RuboCop
       #   end
       class MultilineIfThen < Cop
         include OnNormalIfUnless
+        include RangeHelp
 
         NON_MODIFIER_THEN = /then\s*(#.*)?$/
 

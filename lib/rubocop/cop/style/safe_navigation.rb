@@ -45,6 +45,7 @@ module RuboCop
       #   foo.to_i if foo
       class SafeNavigation < Cop
         extend TargetRubyVersion
+        include RangeHelp
 
         MSG = 'Use safe navigation (`&.`) instead of checking if an object ' \
               'exists before calling the method.'.freeze

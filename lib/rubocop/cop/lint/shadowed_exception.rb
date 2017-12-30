@@ -45,6 +45,7 @@ module RuboCop
       #
       class ShadowedException < Cop
         include RescueNode
+        include RangeHelp
 
         MSG = 'Do not shadow rescued Exceptions.'.freeze
 

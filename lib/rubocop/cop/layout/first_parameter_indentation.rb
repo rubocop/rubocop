@@ -21,6 +21,7 @@ module RuboCop
       class FirstParameterIndentation < Cop
         include Alignment
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         MSG = 'Indent the first parameter one step more than %<base>s.'.freeze
 

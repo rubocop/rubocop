@@ -10,6 +10,7 @@ module RuboCop
       class LineLength < Cop
         include ConfigurableMax
         include IgnoredPattern
+        include RangeHelp
 
         MSG = 'Line is too long. [%<length>d/%<max>d]'.freeze
 

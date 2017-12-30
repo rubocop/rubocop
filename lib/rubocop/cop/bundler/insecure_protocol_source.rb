@@ -26,6 +26,8 @@ module RuboCop
       #   source 'https://rubygems.org' # strongly recommended
       #   source 'http://rubygems.org'
       class InsecureProtocolSource < Cop
+        include RangeHelp
+
         MSG = 'The source `:%<source>s` is deprecated because HTTP requests ' \
               'are insecure. ' \
               "Please change your source to 'https://rubygems.org' " \
@@ -42,7 +44,7 @@ module RuboCop
 
             add_offense(
               node,
-              location: source_range(node.first_argument.loc.expression),
+              location: range(node.first_argument.loc.expression),
               message: message
             )
           end
@@ -58,7 +60,7 @@ module RuboCop
 
         private
 
-        def source_range(node)
+        def range(node)
           range_between(node.begin_pos, node.end_pos)
         end
       end

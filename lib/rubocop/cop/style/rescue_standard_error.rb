@@ -73,6 +73,7 @@ module RuboCop
       class RescueStandardError < Cop
         include RescueNode
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         MSG_IMPLICIT = 'Omit the error class when rescuing ' \
           '`StandardError` by itself.'.freeze

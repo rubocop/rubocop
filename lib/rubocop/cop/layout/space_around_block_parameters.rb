@@ -24,6 +24,7 @@ module RuboCop
       #   ->( x, y ) { puts x }
       class SpaceAroundBlockParameters < Cop
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         def on_block(node)
           return unless node.arguments?

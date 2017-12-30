@@ -6,7 +6,7 @@ module RuboCop
     # the left or to the right, amount being determined by the instance
     # variable column_delta.
     class AlignmentCorrector
-      extend Util
+      extend RangeHelp
       extend Alignment
 
       class << self

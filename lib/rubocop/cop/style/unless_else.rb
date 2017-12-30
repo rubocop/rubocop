@@ -20,6 +20,8 @@ module RuboCop
       #     # do a different thing...
       #   end
       class UnlessElse < Cop
+        include RangeHelp
+
         MSG = 'Do not use `unless` with `else`. Rewrite these with the ' \
               'positive case first.'.freeze
 

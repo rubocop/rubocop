@@ -14,6 +14,8 @@ module RuboCop
       #   # good
       #   'abc'.strip
       class LstripRstrip < Cop
+        include RangeHelp
+
         MSG = 'Use `strip` instead of `%<methods>s`.'.freeze
 
         def_node_matcher :lstrip_rstrip, <<-PATTERN

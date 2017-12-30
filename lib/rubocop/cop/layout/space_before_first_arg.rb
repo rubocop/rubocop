@@ -23,6 +23,7 @@ module RuboCop
       #
       class SpaceBeforeFirstArg < Cop
         include PrecedingFollowingAlignment
+        include RangeHelp
 
         MSG = 'Put one space between the method name and ' \
               'the first argument.'.freeze
