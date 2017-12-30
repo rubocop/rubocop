@@ -2216,37 +2216,85 @@ line as the last parameter of the definition.
 
 ### Examples
 
+#### EnforcedStyle: symmetrical (default)
+
 ```ruby
-# symmetrical: bad
-# new_line: good
-# same_line: bad
+# bad
 def foo(a,
   b
 )
 end
 
-# symmetrical: bad
-# new_line: bad
-# same_line: good
+# bad
 def foo(
   a,
   b)
 end
 
-# symmetrical: good
-# new_line: bad
-# same_line: good
+# good
 def foo(a,
   b)
 end
 
-# symmetrical: good
-# new_line: good
-# same_line: bad
+# good
 def foo(
   a,
   b
 )
+end
+```
+#### EnforcedStyle: new_line
+
+```ruby
+# bad
+def foo(
+  a,
+  b)
+end
+
+# bad
+def foo(a,
+  b)
+end
+
+# good
+def foo(a,
+  b
+)
+end
+
+# good
+def foo(
+  a,
+  b
+)
+end
+```
+#### EnforcedStyle: same_line
+
+```ruby
+# bad
+def foo(a,
+  b
+)
+end
+
+# bad
+def foo(
+  a,
+  b
+)
+end
+
+# good
+def foo(
+  a,
+  b)
+end
+
+# good
+def foo(a,
+  b)
 end
 ```
 
