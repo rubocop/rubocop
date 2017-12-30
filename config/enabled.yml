@@ -6,6 +6,7 @@ Bundler/DuplicatedGem:
   Description: 'Checks for duplicate gem entries in Gemfile.'
   Enabled: true
   Include:
+    - '**/*.gemfile'
     - '**/Gemfile'
     - '**/gems.rb'
 
@@ -16,6 +17,7 @@ Bundler/InsecureProtocolSource:
                  'https://rubygems.org' if possible, or 'http://rubygems.org' if not.
   Enabled: true
   Include:
+    - '**/*.gemfile'
     - '**/Gemfile'
     - '**/gems.rb'
 
@@ -24,6 +26,7 @@ Bundler/OrderedGems:
                  Gems within groups in the Gemfile should be alphabetically sorted.
   Enabled: true
   Include:
+    - '**/*.gemfile'
     - '**/Gemfile'
     - '**/gems.rb'
 

@@ -11,6 +11,7 @@ AllCops:
   Include:
     - '**/*.builder'
     - '**/*.fcgi'
+    - '**/*.gemfile'
     - '**/*.gemspec'
     - '**/*.god'
     - '**/*.jb'

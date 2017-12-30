@@ -37,7 +37,7 @@ gem 'rubocop', groups: [:development, :test]
 
 Name | Default value | Configurable values
 --- | --- | ---
-Include | `**/Gemfile`, `**/gems.rb` | Array
+Include | `**/*.gemfile`, `**/Gemfile`, `**/gems.rb` | Array
 
 ## Bundler/InsecureProtocolSource
 
@@ -75,7 +75,7 @@ source 'http://rubygems.org'
 
 Name | Default value | Configurable values
 --- | --- | ---
-Include | `**/Gemfile`, `**/gems.rb` | Array
+Include | `**/*.gemfile`, `**/Gemfile`, `**/gems.rb` | Array
 
 ## Bundler/OrderedGems
 
@@ -112,5 +112,5 @@ gem 'rspec'
 
 Name | Default value | Configurable values
 --- | --- | ---
-Include | `**/Gemfile`, `**/gems.rb` | Array
+Include | `**/*.gemfile`, `**/Gemfile`, `**/gems.rb` | Array
 TreatCommentsAsGroupSeparators | `true` | Boolean
