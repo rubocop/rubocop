@@ -43,6 +43,28 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
         inspect_source(source)
         expect(cop.offenses.empty?).to be(true)
       end
+
+      context 'and the URL is wrapped in single quotes' do
+        let(:source) { <<-RUBY }
+          # See: 'https://github.com/bbatsov/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c'
+        RUBY
+
+        it 'accepts the line' do
+          inspect_source(source)
+          expect(cop.offenses.empty?).to be(true)
+        end
+      end
+
+      context 'and the URL is wrapped in double quotes' do
+        let(:source) { <<-RUBY }
+          # See: "https://github.com/bbatsov/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c"
+        RUBY
+
+        it 'accepts the line' do
+          inspect_source(source)
+          expect(cop.offenses.empty?).to be(true)
+        end
+      end
     end
 
     context 'and the excessive characters include a complete URL' do
