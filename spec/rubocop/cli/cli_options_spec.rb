@@ -166,14 +166,17 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         end
       end
 
-      %w[Lint/UnneededDisable UnneededDisable].each do |name|
+      %w[Lint/UnneededCopDisableDirective
+         UnneededCopDisableDirective].each do |name|
         it "exits with error if cop name #{name} is passed" do
           create_file('example.rb', ['if x== 0 ',
                                      "\ty",
                                      'end'])
-          expect(cli.run(['--only', 'UnneededDisable'])).to eq(2)
+          expect(cli.run(['--only', 'UnneededCopDisableDirective'])).to eq(2)
           expect($stderr.string)
-            .to include('Lint/UnneededDisable can not be used with --only.')
+            .to include(
+              'Lint/UnneededCopDisableDirective can not be used with --only.'
+            )
         end
       end
 
@@ -435,7 +438,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
 
     context 'when several cops are given' do
-      %w[UnneededDisable Lint/UnneededDisable Lint].each do |cop_name|
+      %w[UnneededCopDisableDirective
+         Lint/UnneededCopDisableDirective Lint].each do |cop_name|
         it "disables the given cops including #{cop_name}" do
           create_file('example.rb', ['if x== 100000000000000 ',
                                      "\ty",
@@ -518,7 +522,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect(cli.run(['--format', 'emacs', '--display-cop-names',
                       'example1.rb'])).to eq(1)
       expect($stdout.string).to eq(<<-RESULT.strip_indent)
-        #{file}:1:8: W: Lint/UnneededDisable: Unnecessary disabling of `Style/NumericLiterals`.
+        #{file}:1:8: W: Lint/UnneededCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
         #{file}:1:41: C: Layout/TrailingWhitespace: Trailing whitespace detected.
       RESULT
     end
@@ -546,7 +550,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(['--format', 'emacs', '--display-cop-names',
                         'example1.rb'])).to eq(1)
         expect($stdout.string).to eq(<<-RESULT.strip_indent)
-          #{file}:1:8: W: Lint/UnneededDisable: Unnecessary disabling of `Style/NumericLiterals`.
+          #{file}:1:8: W: Lint/UnneededCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
           #{file}:1:41: C: Layout/TrailingWhitespace: Trailing whitespace detected.
         RESULT
       end
@@ -575,7 +579,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect(cli.run(['--format', 'emacs', '--extra-details',
                       'example1.rb'])).to eq(1)
       expect($stdout.string).to eq(<<-RESULT.strip_indent)
-        #{file}:1:8: W: Lint/UnneededDisable: Unnecessary disabling of `Style/NumericLiterals`.
+        #{file}:1:8: W: Lint/UnneededCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
         #{file}:1:41: C: Layout/TrailingWhitespace: Trailing whitespace detected. Trailing space is just sloppy.
       RESULT
 

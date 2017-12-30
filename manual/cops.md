@@ -240,7 +240,7 @@ In the following section you find all available cops:
 * [Lint/Syntax](cops_lint.md#lintsyntax)
 * [Lint/UnderscorePrefixedVariableName](cops_lint.md#lintunderscoreprefixedvariablename)
 * [Lint/UnifiedInteger](cops_lint.md#lintunifiedinteger)
-* [Lint/UnneededDisable](cops_lint.md#lintunneededdisable)
+* [Lint/UnneededCopDisableDirective](cops_lint.md#lintunneededcopdisabledirective)
 * [Lint/UnneededRequireStatement](cops_lint.md#lintunneededrequirestatement)
 * [Lint/UnneededSplatExpansion](cops_lint.md#lintunneededsplatexpansion)
 * [Lint/UnreachableCode](cops_lint.md#lintunreachablecode)

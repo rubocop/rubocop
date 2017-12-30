@@ -228,7 +228,8 @@ module RuboCop
 
     def validate_compatibility # rubocop:disable Metrics/MethodLength
       if only_includes_unneeded_disable?
-        raise ArgumentError, 'Lint/UnneededDisable can not be used with --only.'
+        raise ArgumentError, 'Lint/UnneededCopDisableDirective can not ' \
+                             'be used with --only.'
       end
       if except_syntax?
         raise ArgumentError, 'Syntax checking can not be turned off.'
@@ -269,7 +270,8 @@ module RuboCop
 
     def only_includes_unneeded_disable?
       @options.key?(:only) &&
-        (@options[:only] & %w[Lint/UnneededDisable UnneededDisable]).any?
+        (@options[:only] & %w[Lint/UnneededCopDisableDirective
+                              UnneededCopDisableDirective]).any?
     end
 
     def except_syntax?
