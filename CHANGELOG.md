@@ -20,6 +20,10 @@
 * [#5333](https://github.com/bbatsov/rubocop/issues/5333): Fix `Layout/EmptyLinesAroundArguments` false positives for inline access modifiers. ([@garettarrowood][])
 * [#5339](https://github.com/bbatsov/rubocop/issues/5339): Fix `Layout/EmptyLinesAroundArguments` false positives for multiline heredoc arguments. ([@garettarrowood][])
 
+### Bug fixes
+
+* [#5314](https://github.com/bbatsov/rubocop/issues/5314): Fix false positives for `Lint/NestedPercentLiteral` when percent characters are nested. ([@asherkach][])
+
 ### Changes
 
 * [#3394](https://github.com/bbatsov/rubocop/issues/3394): Remove `Style/TrailingCommmaInLiteral` in favor of two new cops. ([@garettarrowood][])

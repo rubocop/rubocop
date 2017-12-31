@@ -32,6 +32,10 @@ RSpec.describe RuboCop::Cop::Lint::NestedPercentLiteral do
     expect_no_offenses('%[a b %i[c d] xyz]')
   end
 
+  it 'registers no offense for percents in the middle of literals' do
+    expect_no_offenses('%w[1%+ 2]')
+  end
+
   it 'registers offense for nested percent literals' do
     expect_offense('%i[a b %i[c d] xyz]')
   end
