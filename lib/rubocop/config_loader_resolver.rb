@@ -18,10 +18,16 @@ module RuboCop
     end
 
     def resolve_inheritance(path, hash, file)
-      base_configs(path, hash['inherit_from'], file)
-        .reverse_each do |base_config|
+      inherited_files = Array(hash['inherit_from'])
+      base_configs(path, inherited_files, file)
+        .reverse.each_with_index do |base_config, index|
         base_config.each do |k, v|
-          hash[k] = hash.key?(k) ? merge(v, hash[k]) : v if v.is_a?(Hash)
+          next unless v.is_a?(Hash)
+          hash[k] = if hash.key?(k)
+                      merge(v, hash[k], k, file, inherited_files[index])
+                    else
+                      v
+                    end
         end
       end
     end
@@ -70,17 +76,30 @@ module RuboCop
     # Return a recursive merge of two hashes. That is, a normal hash merge,
     # with the addition that any value that is a hash, and occurs in both
     # arguments, will also be merged. And so on.
-    def merge(base_hash, derived_hash)
+    def merge(base_hash, derived_hash, cop_name = nil, file = nil,
+              inherited_file = nil)
       result = base_hash.merge(derived_hash)
       keys_appearing_in_both = base_hash.keys & derived_hash.keys
       keys_appearing_in_both.each do |key|
-        next unless base_hash[key].is_a?(Hash)
-        result[key] = merge(base_hash[key], derived_hash[key])
+        if base_hash[key].is_a?(Hash)
+          result[key] = merge(base_hash[key], derived_hash[key])
+        elsif duplicate_setting?(base_hash, derived_hash, key, inherited_file)
+          warn("#{PathUtil.smart_path(file)}: #{cop_name}:#{key} overrides " \
+               "the same parameter in #{inherited_file}")
+        end
       end
       result
     end
 
     private
+
+    def duplicate_setting?(base_hash, derived_hash, key, inherited_file)
+      return false if inherited_file.nil? # Not inheritance resolving merge
+      return false if inherited_file.start_with?('..') # Legitimate override
+      return false if base_hash[key] == derived_hash[key] # Same value
+      return false if remote_file?(inherited_file) # Can't change
+      Gem.path.none? { |dir| inherited_file.start_with?(dir) } # Can change?
+    end
 
     def base_configs(path, inherit_from, file)
       configs = Array(inherit_from).compact.map do |f|
@@ -91,8 +110,7 @@ module RuboCop
     end
 
     def inherited_file(path, inherit_from, file)
-      regex = URI::DEFAULT_PARSER.make_regexp(%w[http https])
-      if inherit_from =~ /\A#{regex}\z/
+      if remote_file?(inherit_from)
         RemoteConfig.new(inherit_from, File.dirname(path))
       elsif file.is_a?(RemoteConfig)
         file.inherit_from_remote(inherit_from, path)
@@ -100,6 +118,11 @@ module RuboCop
         print 'Inheriting ' if ConfigLoader.debug?
         File.expand_path(inherit_from, File.dirname(path))
       end
+    end
+
+    def remote_file?(uri)
+      regex = URI::DEFAULT_PARSER.make_regexp(%w[http https])
+      uri =~ /\A#{regex}\z/
     end
 
     def handle_disabled_by_default(config, new_default_configuration)

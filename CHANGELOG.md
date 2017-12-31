@@ -25,6 +25,7 @@
 * [#3394](https://github.com/bbatsov/rubocop/issues/3394): Remove `Style/TrailingCommmaInLiteral` in favor of two new cops. ([@garettarrowood][])
 * Rename `Lint/UnneededDisable` to `Lint/UnneededCopDisableDirective`. ([@garettarrowood][])
 * [#5365](https://github.com/bbatsov/rubocop/pull/5365): Add *.gemfile to Bundler cop target. ([@sue445][])
+* [#4477](https://github.com/bbatsov/rubocop/issues/4477): Warn when user configuration overrides other user configuration. ([@jonas054][])
 
 ## 0.52.1 (2017-12-27)
 

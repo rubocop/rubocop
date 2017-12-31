@@ -200,6 +200,36 @@ RSpec.describe RuboCop::ConfigLoader do
       end
     end
 
+    context 'when a file inherits and overrides an Exclude' do
+      let(:file_path) { '.rubocop.yml' }
+
+      before do
+        create_file(file_path, <<-YAML.strip_indent)
+          inherit_from: .rubocop_todo.yml
+
+          Style/For:
+            Exclude:
+              - spec/requests/group_invite_spec.rb
+        YAML
+
+        create_file('.rubocop_todo.yml', <<-YAML.strip_indent)
+          Style/For:
+            Exclude:
+              - 'spec/models/expense_spec.rb'
+              - 'spec/models/group_spec.rb'
+        YAML
+      end
+
+      it 'gets the Exclude overriding the inherited one with a warning' do
+        expect do
+          excludes = configuration_from_file['Style/For']['Exclude']
+          expect(excludes)
+            .to eq([File.expand_path('spec/requests/group_invite_spec.rb')])
+        end.to output('.rubocop.yml: Style/For:Exclude overrides the same ' \
+                      "parameter in .rubocop_todo.yml\n").to_stderr
+      end
+    end
+
     context 'when a third party require defines a new gem' do
       before do
         allow(RuboCop::Cop::Cop)
@@ -304,7 +334,9 @@ RSpec.describe RuboCop::ConfigLoader do
               'Max' => 5
             }
           )
-        expect(configuration_from_file.to_h).to eq(config)
+        expect do
+          expect(configuration_from_file.to_h).to eq(config)
+        end.to output('').to_stderr
       end
     end
 
@@ -341,10 +373,14 @@ RSpec.describe RuboCop::ConfigLoader do
         expected = { 'Enabled' => true,        # overridden in .rubocop.yml
                      'CountComments' => true,  # only defined in normal.yml
                      'Max' => 200 }            # special.yml takes precedence
-        expect(
-          configuration_from_file['Metrics/MethodLength']
-            .to_set.superset?(expected.to_set)
-        ).to be(true)
+        expect do
+          expect(configuration_from_file['Metrics/MethodLength']
+                   .to_set.superset?(expected.to_set)).to be(true)
+        end.to output(<<-OUTPUT.strip_indent).to_stderr
+          .rubocop.yml: Metrics/MethodLength:Enabled overrides the same parameter in normal.yml
+          .rubocop.yml: Metrics/MethodLength:Enabled overrides the same parameter in special.yml
+          .rubocop.yml: Metrics/MethodLength:Max overrides the same parameter in special.yml
+        OUTPUT
       end
     end
 
@@ -434,19 +470,23 @@ RSpec.describe RuboCop::ConfigLoader do
 
     context 'when a file inherits from a known gem' do
       let(:file_path) { '.rubocop.yml' }
+      let(:gem_root) { 'gems' }
 
       before do
-        create_file('gemone/config/rubocop.yml', <<-YAML.strip_indent)
+        create_file("#{gem_root}/gemone/config/rubocop.yml",
+                    <<-YAML.strip_indent)
           Metrics/MethodLength:
             Enabled: false
             Max: 200
             CountComments: false
         YAML
-        create_file('gemtwo/config/default.yml', <<-YAML.strip_indent)
+        create_file("#{gem_root}/gemtwo/config/default.yml",
+                    <<-YAML.strip_indent)
           Metrics/LineLength:
             Enabled: true
         YAML
-        create_file('gemtwo/config/strict.yml', <<-YAML.strip_indent)
+        create_file("#{gem_root}/gemtwo/config/strict.yml",
+                    <<-YAML.strip_indent)
           Metrics/LineLength:
             Max: 72
             AllowHeredoc: false
@@ -475,18 +515,19 @@ RSpec.describe RuboCop::ConfigLoader do
       it 'returns values from the gem config with local overrides' do
         gem_class = Struct.new(:gem_dir)
         %w[gemone gemtwo].each do |gem_name|
-          mock_spec = gem_class.new(gem_name)
+          mock_spec = gem_class.new(File.join(gem_root, gem_name))
           expect(Gem::Specification).to receive(:find_by_name)
             .at_least(:once).with(gem_name).and_return(mock_spec)
         end
+        expect(Gem).to receive(:path).at_least(:once).and_return([gem_root])
 
         expected = { 'Enabled' => true,        # overridden in .rubocop.yml
                      'CountComments' => true,  # overridden in local.yml
                      'Max' => 200 }            # inherited from somegem
-        expect(
-          configuration_from_file['Metrics/MethodLength']
-            .to_set.superset?(expected.to_set)
-        ).to be(true)
+        expect do
+          expect(configuration_from_file['Metrics/MethodLength']
+                   .to_set.superset?(expected.to_set)).to be(true)
+        end.to output('').to_stderr
 
         expected = { 'Enabled' => true,        # gemtwo/config/default.yml
                      'Max' => 72,              # gemtwo/config/strict.yml
@@ -505,9 +546,18 @@ RSpec.describe RuboCop::ConfigLoader do
 
       before do
         stub_request(:get, /example.com/)
-          .to_return(status: 200, body: "Style/Encoding:\n    Enabled: true")
+          .to_return(status: 200, body: <<-YAML.strip_indent)
+            Style/Encoding:
+              Enabled: true
+            Style/StringLiterals:
+              EnforcedStyle: double_quotes
+          YAML
+        create_file(file_path, <<-YAML.strip_indent)
+          inherit_from: http://example.com/rubocop.yml
 
-        create_file(file_path, ['inherit_from: http://example.com/rubocop.yml'])
+          Style/StringLiterals:
+            EnforcedStyle: single_quotes
+        YAML
       end
 
       after do
@@ -515,7 +565,7 @@ RSpec.describe RuboCop::ConfigLoader do
       end
 
       it 'creates the cached file alongside the owning file' do
-        configuration_from_file
+        expect { configuration_from_file }.to output('').to_stderr
         expect(File.exist?(cache_file)).to be true
       end
     end

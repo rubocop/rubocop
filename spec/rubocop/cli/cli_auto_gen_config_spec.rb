@@ -173,7 +173,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           YAML
           $stdout = StringIO.new
           expect(described_class.new.run(%w[--format simple])).to eq(1)
-          expect($stderr.string).to eq('')
+          expect($stderr.string)
+            .to eq('.rubocop.yml: Metrics/LineLength:Max overrides the same ' \
+                   "parameter in .rubocop_todo.yml\n")
           expect($stdout.string).to eq(<<-OUTPUT.strip_indent)
             == example.rb ==
             C:  2: 91: Metrics/LineLength: Line is too long. [99/90]
