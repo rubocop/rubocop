@@ -5,7 +5,8 @@ module RuboCop
     module Rails
       # This cop checks for the use of old-style attribute validation macros.
       class Validation < Cop
-        MSG = 'Prefer the new style validations `%s` over `%s`.'.freeze
+        MSG = 'Prefer the new style validations `%<prefer>s` over ' \
+              '`%<current>s`.'.freeze
 
         TYPES = %w[
           acceptance
@@ -39,7 +40,8 @@ module RuboCop
         private
 
         def message(node)
-          format(MSG, preferred_method(node.method_name), node.method_name)
+          format(MSG, prefer: preferred_method(node.method_name),
+                      current: node.method_name)
         end
 
         def preferred_method(method)
