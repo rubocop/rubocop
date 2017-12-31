@@ -22,7 +22,8 @@ module RuboCop
       class RequestReferer < Cop
         include ConfigurableEnforcedStyle
 
-        MSG = 'Use `request.%s` instead of `request.%s`.'.freeze
+        MSG = 'Use `request.%<prefer>s` instead of ' \
+              '`request.%<current>s`.'.freeze
 
         def_node_matcher :referer?, <<-PATTERN
           (send (send nil? :request) {:referer :referrer})
@@ -43,7 +44,7 @@ module RuboCop
         private
 
         def message(_node)
-          format(MSG, style, wrong_method_name)
+          format(MSG, prefer: style, current: wrong_method_name)
         end
 
         def wrong_method_name

@@ -43,7 +43,7 @@ module RuboCop
         extend TargetRubyVersion
         include RangeHelp
 
-        MSG = 'Use safe navigation (`&.`) instead of `%s`.'.freeze
+        MSG = 'Use safe navigation (`&.`) instead of `%<try>s`.'.freeze
 
         def_node_matcher :try_call, <<-PATTERN
           (send !nil? ${:try :try!} $_ ...)
@@ -56,7 +56,7 @@ module RuboCop
             return if try_method == :try && !cop_config['ConvertTry']
             return unless dispatch.sym_type? && dispatch.value =~ /\w+[=!?]?/
 
-            add_offense(node, message: format(MSG, try_method))
+            add_offense(node, message: format(MSG, try: try_method))
           end
         end
 

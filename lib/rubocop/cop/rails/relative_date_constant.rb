@@ -19,8 +19,8 @@ module RuboCop
       #     end
       #   end
       class RelativeDateConstant < Cop
-        MSG = 'Do not assign %s to constants as it will be evaluated only ' \
-              'once.'.freeze
+        MSG = 'Do not assign %<method_name>s to constants as it ' \
+              'will be evaluated only once.'.freeze
 
         RELATIVE_DATE_METHODS = %i[ago from_now since until].freeze
 
@@ -72,7 +72,8 @@ module RuboCop
 
           nodes.each do |n|
             if relative_date_method?(n)
-              add_offense(node.parent, message: format(MSG, n.method_name))
+              add_offense(node.parent,
+                          message: format(MSG, method_name: n.method_name))
             end
           end
         end

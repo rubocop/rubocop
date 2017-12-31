@@ -126,7 +126,7 @@ module RuboCop
       #
       # @see http://api.rubyonrails.org/classes/ActiveRecord/Migration/CommandRecorder.html
       class ReversibleMigration < Cop
-        MSG = '%s is not reversible.'.freeze
+        MSG = '%<action>s is not reversible.'.freeze
         IRREVERSIBLE_CHANGE_TABLE_CALLS = %i[
           change change_default remove
         ].freeze
@@ -177,7 +177,7 @@ module RuboCop
 
         def check_irreversible_schema_statement_node(node)
           irreversible_schema_statement_call(node) do |method_name|
-            add_offense(node, message: format(MSG, method_name))
+            add_offense(node, message: format(MSG, action: method_name))
           end
         end
 
@@ -186,7 +186,7 @@ module RuboCop
             unless node.parent.block_type?
               add_offense(
                 node,
-                message: format(MSG, 'drop_table(without block)')
+                message: format(MSG, action: 'drop_table(without block)')
               )
             end
           end
@@ -198,7 +198,7 @@ module RuboCop
               add_offense(
                 node,
                 message: format(
-                  MSG, 'change_column_default(without :from and :to)'
+                  MSG, action: 'change_column_default(without :from and :to)'
                 )
               )
             end
@@ -210,7 +210,7 @@ module RuboCop
             if args.to_a.size < 3
               add_offense(
                 node,
-                message: format(MSG, 'remove_column(without type)')
+                message: format(MSG, action: 'remove_column(without type)')
               )
             end
           end
@@ -221,7 +221,8 @@ module RuboCop
             if arg.hash_type?
               add_offense(
                 node,
-                message: format(MSG, 'remove_foreign_key(without table)')
+                message: format(MSG,
+                                action: 'remove_foreign_key(without table)')
               )
             end
           end
@@ -232,7 +233,7 @@ module RuboCop
             if target_rails_version < 4.0
               add_offense(
                 node,
-                message: format(MSG, 'change_table')
+                message: format(MSG, action: 'change_table')
               )
             elsif block.send_type?
               check_change_table_offense(arg, block)
@@ -250,7 +251,7 @@ module RuboCop
                     !IRREVERSIBLE_CHANGE_TABLE_CALLS.include?(method_name)
           add_offense(
             node,
-            message: format(MSG, "change_table(with #{method_name})")
+            message: format(MSG, action: "change_table(with #{method_name})")
           )
         end
 

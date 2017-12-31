@@ -30,15 +30,17 @@ module RuboCop
       class TimeZone < Cop
         include ConfigurableEnforcedStyle
 
-        MSG = 'Do not use `%s` without zone. Use `%s` instead.'.freeze
+        MSG = 'Do not use `%<current>s` without zone. Use `%<prefer>s` ' \
+              'instead.'.freeze
 
-        MSG_ACCEPTABLE = 'Do not use `%s` without zone. ' \
-                         'Use one of %s instead.'.freeze
+        MSG_ACCEPTABLE = 'Do not use `%<current>s` without zone. ' \
+                         'Use one of %<prefer>s instead.'.freeze
 
         MSG_LOCALTIME = 'Do not use `Time.localtime` without ' \
                         'offset or zone.'.freeze
 
-        MSG_CURRENT = 'Do not use `%s`. Use `Time.zone.now` instead.'.freeze
+        MSG_CURRENT = 'Do not use `%<current>s`. Use `Time.zone.now` ' \
+                      'instead.'.freeze
 
         TIMECLASS = %i[Time DateTime].freeze
 
@@ -77,21 +79,25 @@ module RuboCop
           add_offense(node, location: :selector, message: message)
         end
 
+        # rubocop:disable Metrics/MethodLength
         def build_message(klass, method_name, node)
           if acceptable?
-            format(MSG_ACCEPTABLE,
-                   "#{klass}.#{method_name}",
-                   acceptable_methods(klass, method_name, node).join(', '))
+            format(
+              MSG_ACCEPTABLE,
+              current: "#{klass}.#{method_name}",
+              prefer: acceptable_methods(klass, method_name, node).join(', ')
+            )
           elsif method_name == 'current'
             format(MSG_CURRENT,
-                   "#{klass}.#{method_name}")
+                   current: "#{klass}.#{method_name}")
           else
             safe_method_name = safe_method(method_name, node)
             format(MSG,
-                   "#{klass}.#{method_name}",
-                   "Time.zone.#{safe_method_name}")
+                   current: "#{klass}.#{method_name}",
+                   prefer: "Time.zone.#{safe_method_name}")
           end
         end
+        # rubocop:enable Metrics/MethodLength
 
         def extract_method_chain(node)
           chain = []
