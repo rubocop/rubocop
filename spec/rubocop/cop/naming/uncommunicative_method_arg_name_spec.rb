@@ -144,6 +144,31 @@ RSpec.describe RuboCop::Cop::Naming::UncommunicativeMethodArgName, :config do
     end
   end
 
+  context 'with ForbiddenNames' do
+    let(:cop_config) do
+      {
+        'ForbiddenNames' => %w[arg]
+      }
+    end
+
+    it 'registers offense for argument listed as forbidden' do
+      expect_offense(<<-RUBY.strip_indent)
+        def baz(arg)
+                ^^^ Do not use arg as a name for a method argument.
+          arg.do_things
+        end
+      RUBY
+    end
+
+    it "accepts argument that uses a forbidden name's letters" do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def baz(foo_argument)
+          foo_argument.do_things
+        end
+      RUBY
+    end
+  end
+
   context 'with AllowNamesEndingInNumbers' do
     let(:cop_config) do
       {

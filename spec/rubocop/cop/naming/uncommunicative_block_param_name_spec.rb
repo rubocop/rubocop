@@ -89,6 +89,27 @@ RSpec.describe RuboCop::Cop::Naming::UncommunicativeBlockParamName, :config do
     end
   end
 
+  context 'with ForbiddenNames' do
+    let(:cop_config) do
+      {
+        'ForbiddenNames' => %w[arg]
+      }
+    end
+
+    it 'registers offense for param listed as forbidden' do
+      expect_offense(<<-RUBY.strip_indent)
+        something { |arg| do_stuff }
+                     ^^^ Do not use arg as a name for a block parameter.
+      RUBY
+    end
+
+    it "accepts param that uses a forbidden name's letters" do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        something { |foo_arg| do_stuff }
+      RUBY
+    end
+  end
+
   context 'with AllowNamesEndingInNumbers' do
     let(:cop_config) do
       {

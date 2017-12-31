@@ -8,6 +8,8 @@ module RuboCop
       NUM_MSG = 'Do not end %<name_type>s with a number.'.freeze
       LENGTH_MSG = '%<name_type>s must be longer than %<min>s ' \
                    'characters.'.freeze
+      FORBIDDEN_MSG = 'Do not use %<name>s as a name for a ' \
+                      '%<name_type>s.'.freeze
 
       def check(node, args)
         args.each do |arg|
@@ -21,6 +23,7 @@ module RuboCop
       private
 
       def issue_offenses(node, range, name)
+        forbidden_offense(node, range, name) if forbidden_names.include?(name)
         case_offense(node, range) if uppercase?(name)
         length_offense(node, range) unless long_enough?(name)
         return if allow_nums
@@ -72,8 +75,20 @@ module RuboCop
                                   begin_pos + length)
       end
 
+      def forbidden_offense(node, range, name)
+        add_offense(
+          node,
+          location: range,
+          message: format(FORBIDDEN_MSG, name: name, name_type: name_type(node))
+        )
+      end
+
       def allowed_names
         cop_config['AllowedNames']
+      end
+
+      def forbidden_names
+        cop_config['ForbiddenNames']
       end
 
       def allow_nums
