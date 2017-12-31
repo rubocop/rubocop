@@ -402,6 +402,7 @@ Name | Default value | Configurable values
 MinNameLength | `1` | Integer
 AllowNamesEndingInNumbers | `true` | Boolean
 AllowedNames | `[]` | Array
+ForbiddenNames | `[]` | Array
 
 ## Naming/UncommunicativeMethodArgName
 
@@ -450,6 +451,7 @@ Name | Default value | Configurable values
 MinNameLength | `3` | Integer
 AllowNamesEndingInNumbers | `true` | Boolean
 AllowedNames | `[]` | Array
+ForbiddenNames | `[]` | Array
 
 ## Naming/VariableName
 

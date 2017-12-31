@@ -689,6 +689,8 @@ Naming/UncommunicativeBlockParamName:
   AllowNamesEndingInNumbers: true
   # Whitelisted names that will not register an offense
   AllowedNames: []
+  # Blacklisted names that will register an offense
+  ForbiddenNames: []
 
 Naming/UncommunicativeMethodArgName:
   # Argrument names may be equal to or greater than this value
@@ -696,6 +698,8 @@ Naming/UncommunicativeMethodArgName:
   AllowNamesEndingInNumbers: true
   # Whitelisted names that will not register an offense
   AllowedNames: []
+  # Blacklisted names that will register an offense
+  ForbiddenNames: []
 
 Naming/VariableName:
   EnforcedStyle: snake_case
