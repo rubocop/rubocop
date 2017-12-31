@@ -34,12 +34,17 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         MSG = '%<command>s space inside reference brackets.'.freeze
+        EMPTY_MSG = '%<command>s space inside empty reference brackets.'.freeze
 
         def on_send(node)
           return if node.multiline?
           return unless left_ref_bracket(node)
           left_token = left_ref_bracket(node)
           right_token = closing_bracket(node, left_token)
+
+          if empty_brackets?(left_token, right_token)
+            return empty_offenses(node, left_token, right_token, EMPTY_MSG)
+          end
 
           if style == :no_space
             no_space_offenses(node, left_token, right_token, MSG)
@@ -52,7 +57,10 @@ module RuboCop
           lambda do |corrector|
             left, right = reference_brackets(node)
 
-            if style == :no_space
+            if empty_brackets?(left, right)
+              SpaceCorrector.empty_corrections(processed_source, corrector,
+                                               empty_config, left, right)
+            elsif style == :no_space
               SpaceCorrector.remove_space(processed_source, corrector,
                                           left, right)
             else
@@ -83,6 +91,10 @@ module RuboCop
               return token
             end
           end
+        end
+
+        def empty_config
+          cop_config['EnforcedStyleForEmptyBrackets']
         end
       end
     end
