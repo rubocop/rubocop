@@ -19,6 +19,7 @@ module RuboCop
       #   foo = 1
       class UnneededCopEnableDirective < Cop
         include RangeHelp
+        include SurroundingSpace
 
         MSG = 'Unnecessary enabling of %<cop>s.'.freeze
 
@@ -36,40 +37,59 @@ module RuboCop
 
         def autocorrect(comment_and_name)
           lambda do |corrector|
-            comment, name = *comment_and_name
-            range = range_of_offense(*comment_and_name)
-            index = cop_name_indention(comment, name)
-            make_corrections(corrector, comment, name, range, index)
+            corrector.remove(range_with_comma(*comment_and_name))
           end
         end
 
         private
 
         def range_of_offense(comment, name)
-          comment_start = comment.loc.expression.begin_pos
-          offense_start = comment_start + cop_name_indention(comment, name)
-          range_between(offense_start, offense_start + name.size)
+          start_pos = comment_start(comment) + cop_name_indention(comment, name)
+          range_between(start_pos, start_pos + name.size)
+        end
+
+        def comment_start(comment)
+          comment.loc.expression.begin_pos
         end
 
         def cop_name_indention(comment, name)
           comment.text.index(name)
         end
 
-        # rubocop:disable Metrics/AbcSize
-        def make_corrections(corrector, comment, name, range, index)
-          if comment.text[index - 2] == ','
-            corrector.remove(
-              range_between(range.begin_pos - 2, range.end_pos)
-            )
-          elsif comment.text[index + name.size] == ','
-            corrector.remove(
-              range_between(range.begin_pos, range.end_pos + 2)
-            )
+        def range_with_comma(comment, name)
+          source = comment.loc.expression.source
+
+          begin_pos = cop_name_indention(comment, name)
+          end_pos = begin_pos + name.size
+          begin_pos = reposition(source, begin_pos, -1)
+          end_pos = reposition(source, end_pos, 1)
+
+          comma_pos =
+            if source[begin_pos - 1] == ','
+              :before
+            elsif source[end_pos] == ','
+              :after
+            else
+              :none
+            end
+
+          range_to_remove(begin_pos, end_pos, comma_pos, comment)
+        end
+
+        def range_to_remove(begin_pos, end_pos, comma_pos, comment)
+          start = comment_start(comment)
+          buffer = processed_source.buffer
+          range_class = Parser::Source::Range
+
+          case comma_pos
+          when :before
+            range_class.new(buffer, start + begin_pos - 1, start + end_pos)
+          when :after
+            range_class.new(buffer, start + begin_pos, start + end_pos + 1)
           else
-            corrector.remove(comment.loc.expression)
+            range_class.new(buffer, start, comment.loc.expression.end_pos)
           end
         end
-        # rubocop:enable Metrics/AbcSize
       end
     end
   end
