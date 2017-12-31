@@ -97,6 +97,40 @@ module RuboCop
         add_offense(node, location: range,
                           message: format(message, command: command))
       end
+
+      def empty_offenses(node, left, right, message)
+        if offending_empty_space?(empty_config, left, right)
+          empty_offense(node, message, 'Use one')
+        end
+        return unless offending_empty_no_space?(empty_config, left, right)
+        empty_offense(node, message, 'Do not use')
+      end
+
+      def empty_offense(node, message, command)
+        add_offense(node, message: format(message, command: command))
+      end
+
+      def empty_brackets?(left_bracket_token, right_bracket_token)
+        left_index = processed_source.tokens.index(left_bracket_token)
+        right_index = processed_source.tokens.index(right_bracket_token)
+        right_index && left_index == right_index - 1
+      end
+
+      def offending_empty_space?(config, left_token, right_token)
+        config == 'space' && !space_between?(left_token, right_token)
+      end
+
+      def offending_empty_no_space?(config, left_token, right_token)
+        config == 'no_space' && !no_space_between?(left_token, right_token)
+      end
+
+      def space_between?(left_bracket_token, right_bracket_token)
+        left_bracket_token.end_pos + 1 == right_bracket_token.begin_pos
+      end
+
+      def no_space_between?(left_bracket_token, right_bracket_token)
+        left_bracket_token.end_pos == right_bracket_token.begin_pos
+      end
     end
   end
 end

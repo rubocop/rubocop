@@ -3157,6 +3157,7 @@ array[ index ]
 Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `no_space` | `space`, `no_space`
+EnforcedStyleForEmptyBrackets | `no_space` | `space`, `no_space`
 
 ## Layout/SpaceInsideStringInterpolation
 
