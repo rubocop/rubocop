@@ -369,28 +369,38 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | No
 
-This cop makes sure block parameter names meet a configurable
-level of description
+This cop checks block parameter names for how descriptive they
+are. It is highly configurable.
+
+The `MinNameLength` config option takes an integer. It represents
+the minimum amount of characters the name must be. Its default is 1.
+The `AllowNamesEndingInNumbers` config option takes a boolean. When
+set to false, this cop will register offenses for names ending with
+numbers. Its default is false. The `AllowedNames` config option
+takes an array of whitelisted names that will never register an
+offense. The `ForbiddenNames` config option takes an array of
+blacklisted names that will always register an offense.
 
 ### Examples
 
 ```ruby
 # bad
-foo { |num1, num2| num1 + num2 }
-
 bar do |varOne, varTwo|
   varOne + varTwo
 end
 
+# With `AllowNamesEndingInNumbers` set to false
+foo { |num1, num2| num1 * num2 }
+
 # With `MinParamNameLength` set to number greater than 1
-baz { |x, y, z| do_stuff(x, y, z) }
+baz { |a, b, c| do_stuff(a, b, c) }
 
 # good
-foo { |first_num, second_num| first_num + second_num }
-
-bar do |var_one, var_two|
-  var_one + var_two
+bar do |thud, fred|
+  thud + fred
 end
+
+foo { |speed, distance| speed * distance }
 
 baz { |age, height, gender| do_stuff(age, height, gender) }
 ```
@@ -410,37 +420,47 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | No
 
-This cop makes sure method argument names meet a configurable
-level of description
+This cop checks method argument names for how descriptive they
+are. It is highly configurable.
+
+The `MinNameLength` config option takes an integer. It represents
+the minimum amount of characters the name must be. Its default is 3.
+The `AllowNamesEndingInNumbers` config option takes a boolean. When
+set to false, this cop will register offenses for names ending with
+numbers. Its default is false. The `AllowedNames` config option
+takes an array of whitelisted names that will never register an
+offense. The `ForbiddenNames` config option takes an array of
+blacklisted names that will always register an offense.
 
 ### Examples
 
 ```ruby
 # bad
-def foo(num1, num2)
-  num1 + num2
-end
-
 def bar(varOne, varTwo)
   varOne + varTwo
 end
 
+# With `AllowNamesEndingInNumbers` set to false
+def foo(num1, num2)
+  num1 * num2
+end
+
 # With `MinArgNameLength` set to number greater than 1
-def baz(x, y, z)
-  do_stuff(x, y, z)
+def baz(a, b, c)
+  do_stuff(a, b, c)
 end
 
 # good
-def foo(first_num, second_num)
-  first_num + second_num
+def bar(thud, fred)
+  thud + fred
 end
 
-def bar(var_one, var_two)
-  var_one + var_two
+def foo(speed, distance)
+  speed * distance
 end
 
-def baz(age_x, height_y, gender_z)
-  do_stuff(age_x, height_y, gender_z)
+def baz(age_a, height_b, gender_c)
+  do_stuff(age_a, height_b, gender_c)
 end
 ```
 
