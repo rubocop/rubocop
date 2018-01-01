@@ -5,7 +5,8 @@ module RuboCop
     module Layout
       # Checks that the equals signs in parameter default assignments
       # have or don't have surrounding space depending on configuration.
-      # @example
+      #
+      # @example EnforcedStyle: space (default)
       #   # bad
       #   def some_method(arg1=:default, arg2=nil, arg3=[])
       #     # do something...
@@ -13,6 +14,17 @@ module RuboCop
       #
       #   # good
       #   def some_method(arg1 = :default, arg2 = nil, arg3 = [])
+      #     # do something...
+      #   end
+      #
+      # @example EnforcedStyle: no_space
+      #   # bad
+      #   def some_method(arg1 = :default, arg2 = nil, arg3 = [])
+      #     # do something...
+      #   end
+      #
+      #   # good
+      #   def some_method(arg1=:default, arg2=nil, arg3=[])
       #     # do something...
       #   end
       class SpaceAroundEqualsInParameterDefault < Cop

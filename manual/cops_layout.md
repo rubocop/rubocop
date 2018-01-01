@@ -2529,6 +2529,8 @@ have or don't have surrounding space depending on configuration.
 
 ### Examples
 
+#### EnforcedStyle: space (default)
+
 ```ruby
 # bad
 def some_method(arg1=:default, arg2=nil, arg3=[])
@@ -2537,6 +2539,19 @@ end
 
 # good
 def some_method(arg1 = :default, arg2 = nil, arg3 = [])
+  # do something...
+end
+```
+#### EnforcedStyle: no_space
+
+```ruby
+# bad
+def some_method(arg1 = :default, arg2 = nil, arg3 = [])
+  # do something...
+end
+
+# good
+def some_method(arg1=:default, arg2=nil, arg3=[])
   # do something...
 end
 ```
