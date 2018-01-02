@@ -19,16 +19,13 @@
 * [#5350](https://github.com/bbatsov/rubocop/issues/5350): Fix `Metric/LineLength` false offenses for URLs in double quotes. ([@garettarrowood][])
 * [#5333](https://github.com/bbatsov/rubocop/issues/5333): Fix `Layout/EmptyLinesAroundArguments` false positives for inline access modifiers. ([@garettarrowood][])
 * [#5339](https://github.com/bbatsov/rubocop/issues/5339): Fix `Layout/EmptyLinesAroundArguments` false positives for multiline heredoc arguments. ([@garettarrowood][])
-
-### Bug fixes
-
 * [#5314](https://github.com/bbatsov/rubocop/issues/5314): Fix false positives for `Lint/NestedPercentLiteral` when percent characters are nested. ([@asherkach][])
 
 ### Changes
 
 * [#3394](https://github.com/bbatsov/rubocop/issues/3394): Remove `Style/TrailingCommmaInLiteral` in favor of two new cops. ([@garettarrowood][])
 * Rename `Lint/UnneededDisable` to `Lint/UnneededCopDisableDirective`. ([@garettarrowood][])
-* [#5365](https://github.com/bbatsov/rubocop/pull/5365): Add *.gemfile to Bundler cop target. ([@sue445][])
+* [#5365](https://github.com/bbatsov/rubocop/pull/5365): Add `*.gemfile` to Bundler cop target. ([@sue445][])
 * [#4477](https://github.com/bbatsov/rubocop/issues/4477): Warn when user configuration overrides other user configuration. ([@jonas054][])
 
 ## 0.52.1 (2017-12-27)
