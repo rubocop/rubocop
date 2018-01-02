@@ -2642,6 +2642,8 @@ brace depending on configuration.
 
 ### Examples
 
+#### EnforcedStyle: space (default)
+
 ```ruby
 # bad
 foo.map{ |a|
@@ -2650,6 +2652,19 @@ foo.map{ |a|
 
 # good
 foo.map { |a|
+  a.bar.to_s
+}
+```
+#### EnforcedStyle: no_space
+
+```ruby
+# bad
+foo.map { |a|
+  a.bar.to_s
+}
+
+# good
+foo.map{ |a|
   a.bar.to_s
 }
 ```
