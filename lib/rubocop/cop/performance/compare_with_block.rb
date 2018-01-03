@@ -24,6 +24,8 @@ module RuboCop
       #   array.min_by(&:foo)
       #   array.sort_by { |a| a[:foo] }
       class CompareWithBlock < Cop
+        include RangeHelp
+
         MSG = 'Use `%<compare_method>s_by%<instead>s` instead of ' \
               '`%<compare_method>s { |%<var_a>s, %<var_b>s| %<str_a>s ' \
               '<=> %<str_b>s }`.'.freeze

@@ -6,7 +6,7 @@ module RuboCop
     # on the same line as the last contained elements, or a new line.
     class MultilineLiteralBraceCorrector
       extend MultilineLiteralBraceLayout
-      extend Util
+      extend RangeHelp
 
       class << self
         attr_reader :processed_source

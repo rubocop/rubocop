@@ -56,6 +56,7 @@ module RuboCop
       #   end
       class RedundantReceiverInWithOptions < Cop
         extend TargetRailsVersion
+        include RangeHelp
 
         minimum_target_rails_version 4.2
 

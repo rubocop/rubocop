@@ -453,6 +453,10 @@ module RuboCop
           source_range.begin_pos != loc.selector.begin_pos
       end
 
+      def parenthesized_call?
+        loc.begin && loc.begin.is?('(')
+      end
+
       def chained?
         return false unless argument?
 

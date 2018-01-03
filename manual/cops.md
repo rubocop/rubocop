@@ -240,7 +240,7 @@ In the following section you find all available cops:
 * [Lint/Syntax](cops_lint.md#lintsyntax)
 * [Lint/UnderscorePrefixedVariableName](cops_lint.md#lintunderscoreprefixedvariablename)
 * [Lint/UnifiedInteger](cops_lint.md#lintunifiedinteger)
-* [Lint/UnneededDisable](cops_lint.md#lintunneededdisable)
+* [Lint/UnneededCopDisableDirective](cops_lint.md#lintunneededcopdisabledirective)
 * [Lint/UnneededRequireStatement](cops_lint.md#lintunneededrequirestatement)
 * [Lint/UnneededSplatExpansion](cops_lint.md#lintunneededsplatexpansion)
 * [Lint/UnreachableCode](cops_lint.md#lintunreachablecode)
@@ -280,6 +280,8 @@ In the following section you find all available cops:
 * [Naming/HeredocDelimiterNaming](cops_naming.md#namingheredocdelimiternaming)
 * [Naming/MethodName](cops_naming.md#namingmethodname)
 * [Naming/PredicateName](cops_naming.md#namingpredicatename)
+* [Naming/UncommunicativeBlockParamName](cops_naming.md#naminguncommunicativeblockparamname)
+* [Naming/UncommunicativeMethodArgName](cops_naming.md#naminguncommunicativemethodargname)
 * [Naming/VariableName](cops_naming.md#namingvariablename)
 * [Naming/VariableNumber](cops_naming.md#namingvariablenumber)
 

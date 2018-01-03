@@ -15,6 +15,8 @@ module RuboCop
       #   attr_reader :one, :two, :three
       #
       class Attr < Cop
+        include RangeHelp
+
         MSG = 'Do not use `attr`. Use `%<replacement>s` instead.'.freeze
 
         def on_send(node)

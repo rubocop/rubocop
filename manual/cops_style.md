@@ -2766,32 +2766,102 @@ Enabled by default | Supports autocorrection
 Disabled | No
 
 Checks for `if` expressions that do not have an `else` branch.
-SupportedStyles
 
-if
-case
+Supported styles are: if, case, both.
 
 ### Examples
 
+#### EnforcedStyle: if
+
 ```ruby
+# warn when an `if` expression is missing an `else` branch.
+
 # bad
 if condition
   statement
 end
+
+# good
+if condition
+  statement
+else
+  # the content of `else` branch will be determined by Style/EmptyElse
+end
+
+# good
+case var
+when condition
+  statement
+end
+
+# good
+case var
+when condition
+  statement
+else
+  # the content of `else` branch will be determined by Style/EmptyElse
+end
 ```
+#### EnforcedStyle: case
+
 ```ruby
+# warn when a `case` expression is missing an `else` branch.
+
 # bad
 case var
 when condition
   statement
 end
-```
-```ruby
+
+# good
+case var
+when condition
+  statement
+else
+  # the content of `else` branch will be determined by Style/EmptyElse
+end
+
+# good
+if condition
+  statement
+end
+
 # good
 if condition
   statement
 else
-# the content of the else branch will be determined by Style/EmptyElse
+  # the content of `else` branch will be determined by Style/EmptyElse
+end
+```
+#### EnforcedStyle: both (default)
+
+```ruby
+# warn when an `if` or `case` expression is missing an `else` branch.
+
+# bad
+if condition
+  statement
+end
+
+# bad
+case var
+when condition
+  statement
+end
+
+# good
+if condition
+  statement
+else
+  # the content of `else` branch will be determined by Style/EmptyElse
+end
+
+# good
+case var
+when condition
+  statement
+else
+  # the content of `else` branch will be determined by Style/EmptyElse
 end
 ```
 

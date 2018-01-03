@@ -34,6 +34,7 @@ module RuboCop
       class MultilineAssignmentLayout < Cop
         include CheckAssignment
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         NEW_LINE_OFFENSE = 'Right hand side of multi-line assignment is on ' \
           'the same line as the assignment operator `=`.'.freeze

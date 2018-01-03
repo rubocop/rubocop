@@ -11,7 +11,7 @@ module RuboCop
     class FuubarStyleFormatter < ClangStyleFormatter
       RESET_SEQUENCE = "\e[0m".freeze
 
-      def initialize(*)
+      def initialize(*output)
         @severest_offense = nil
 
         super

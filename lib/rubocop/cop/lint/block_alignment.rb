@@ -63,6 +63,7 @@ module RuboCop
       #   end
       class BlockAlignment < Cop
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         MSG = '%s is not aligned with %s%s.'.freeze
 

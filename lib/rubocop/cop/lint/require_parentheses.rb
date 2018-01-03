@@ -28,6 +28,8 @@ module RuboCop
       #     # ...
       #   end
       class RequireParentheses < Cop
+        include RangeHelp
+
         MSG = 'Use parentheses in the method call to avoid confusion about ' \
               'precedence.'.freeze
 

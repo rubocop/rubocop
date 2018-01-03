@@ -10,6 +10,7 @@ module RuboCop
       class LineLength < Cop
         include ConfigurableMax
         include IgnoredPattern
+        include RangeHelp
 
         MSG = 'Line is too long. [%<length>d/%<max>d]'.freeze
 
@@ -99,7 +100,8 @@ module RuboCop
         end
 
         def allowed_uri_position?(line, uri_range)
-          uri_range.begin < max && uri_range.end == line.length
+          uri_range.begin < max &&
+            (uri_range.end == line.length || uri_range.end == line.length - 1)
         end
 
         def find_excessive_uri_range(line)

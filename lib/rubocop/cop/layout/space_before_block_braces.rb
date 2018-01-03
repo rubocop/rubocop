@@ -6,7 +6,7 @@ module RuboCop
       # Checks that block braces have or don't have a space before the opening
       # brace depending on configuration.
       #
-      # @example
+      # @example EnforcedStyle: space (default)
       #   # bad
       #   foo.map{ |a|
       #     a.bar.to_s
@@ -16,8 +16,20 @@ module RuboCop
       #   foo.map { |a|
       #     a.bar.to_s
       #   }
+      #
+      # @example EnforcedStyle: no_space
+      #   # bad
+      #   foo.map { |a|
+      #     a.bar.to_s
+      #   }
+      #
+      #   # good
+      #   foo.map{ |a|
+      #     a.bar.to_s
+      #   }
       class SpaceBeforeBlockBraces < Cop
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         MISSING_MSG = 'Space missing to the left of {.'.freeze
         DETECTED_MSG = 'Space detected to the left of {.'.freeze

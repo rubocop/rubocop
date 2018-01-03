@@ -99,6 +99,7 @@ module RuboCop
       #   }
       class AlignHash < Cop
         include HashAlignment
+        include RangeHelp
 
         MSG = 'Align the elements of a hash literal if they span more than ' \
               'one line.'.freeze

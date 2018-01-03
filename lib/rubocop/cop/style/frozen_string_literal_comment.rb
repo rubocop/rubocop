@@ -57,6 +57,7 @@ module RuboCop
       class FrozenStringLiteralComment < Cop
         include ConfigurableEnforcedStyle
         include FrozenStringLiteral
+        include RangeHelp
 
         MSG = 'Missing magic comment `# frozen_string_literal: true`.'.freeze
         MSG_UNNECESSARY = 'Unnecessary frozen string literal comment.'.freeze

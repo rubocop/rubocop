@@ -7,10 +7,11 @@ module RuboCop
       # source code.
       class TrailingBlankLines < Cop
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         def investigate(processed_source)
-          sb = processed_source.buffer
-          return if sb.source.empty?
+          buffer = processed_source.buffer
+          return if buffer.source.empty?
 
           # The extra text that comes after the last token could be __END__
           # followed by some data to read. If so, we don't check it because
@@ -18,13 +19,13 @@ module RuboCop
           # number of newlines.
           return if ends_in_end?(processed_source)
 
-          whitespace_at_end = sb.source[/\s*\Z/]
+          whitespace_at_end = buffer.source[/\s*\Z/]
           blank_lines = whitespace_at_end.count("\n") - 1
           wanted_blank_lines = style == :final_newline ? 0 : 1
 
           return unless blank_lines != wanted_blank_lines
 
-          offense_detected(sb, wanted_blank_lines, blank_lines,
+          offense_detected(buffer, wanted_blank_lines, blank_lines,
                            whitespace_at_end)
         end
 
@@ -36,12 +37,12 @@ module RuboCop
 
         private
 
-        def offense_detected(sb, wanted_blank_lines, blank_lines,
+        def offense_detected(buffer, wanted_blank_lines, blank_lines,
                              whitespace_at_end)
-          begin_pos = sb.source.length - whitespace_at_end.length
-          autocorrect_range = range_between(begin_pos, sb.source.length)
+          begin_pos = buffer.source.length - whitespace_at_end.length
+          autocorrect_range = range_between(begin_pos, buffer.source.length)
           begin_pos += 1 unless whitespace_at_end.empty?
-          report_range = range_between(begin_pos, sb.source.length)
+          report_range = range_between(begin_pos, buffer.source.length)
 
           add_offense(autocorrect_range,
                       location: report_range,
@@ -49,12 +50,12 @@ module RuboCop
         end
 
         def ends_in_end?(processed_source)
-          sb = processed_source.buffer
+          buffer = processed_source.buffer
 
-          return true if sb.source.strip.start_with?('__END__')
+          return true if buffer.source.strip.start_with?('__END__')
           return false if processed_source.tokens.empty?
 
-          extra = sb.source[processed_source.tokens.last.end_pos..-1]
+          extra = buffer.source[processed_source.tokens.last.end_pos..-1]
           extra && extra.strip.start_with?('__END__')
         end
 

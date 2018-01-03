@@ -16,6 +16,8 @@ module RuboCop
       #   bar = 2
       #   baz = 3
       class Semicolon < Cop
+        include RangeHelp
+
         MSG = 'Do not use semicolons to terminate expressions.'.freeze
 
         def investigate(processed_source)

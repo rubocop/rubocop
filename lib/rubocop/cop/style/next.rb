@@ -49,6 +49,7 @@ module RuboCop
       class Next < Cop
         include ConfigurableEnforcedStyle
         include MinBodyLength
+        include RangeHelp
 
         MSG = 'Use `next` to skip iteration.'.freeze
         EXIT_TYPES = %i[break return].freeze

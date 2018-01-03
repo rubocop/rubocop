@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Lint/UnneededDisable
+# rubocop:disable Lint/UnneededCopDisableDirective
 module RuboCop
   module Cop
     module Lint
@@ -43,6 +43,8 @@ module RuboCop
       #   # rubocop:enable Layout/SpaceAroundOperators
       #
       class MissingCopEnableDirective < Cop
+        include RangeHelp
+
         MSG = 'Re-enable %{cop} cop with `# rubocop:enable` after disabling it.'
               .freeze
         MSG_BOUND = 'Re-enable %{cop} cop within %{max_range} lines after ' \
@@ -78,4 +80,4 @@ module RuboCop
     end
   end
 end
-# rubocop:enable Lint/UnneededDisable, Layout/SpaceAroundOperators
+# rubocop:enable Lint/UnneededCopDisableDirective, Layout/SpaceAroundOperators

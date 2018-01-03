@@ -36,17 +36,18 @@ module RuboCop
       #
       class UniqBeforePluck < RuboCop::Cop::Cop
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
-        MSG = 'Use `%s` before `pluck`.'.freeze
+        MSG = 'Use `%<method>s` before `pluck`.'.freeze
         NEWLINE = "\n".freeze
-        PATTERN = '[!^block (send (send %s :pluck ...) ${:uniq :distinct} ...)]'
-                  .freeze
+        PATTERN = '[!^block (send (send %<type>s :pluck ...) ' \
+                  '${:uniq :distinct} ...)]'.freeze
 
         def_node_matcher :conservative_node_match,
-                         format(PATTERN, 'const')
+                         format(PATTERN, type: 'const')
 
         def_node_matcher :aggressive_node_match,
-                         format(PATTERN, '_')
+                         format(PATTERN, type: '_')
 
         def on_send(node)
           method = if style == :conservative
@@ -57,7 +58,8 @@ module RuboCop
 
           return unless method
 
-          add_offense(node, location: :selector, message: format(MSG, method))
+          add_offense(node, location: :selector,
+                            message: format(MSG, method: method))
         end
 
         def autocorrect(node)

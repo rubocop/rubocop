@@ -39,6 +39,7 @@ module RuboCop
       class SpaceInsideHashLiteralBraces < Cop
         include SurroundingSpace
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         MSG = 'Space inside %s.'.freeze
 
@@ -83,24 +84,25 @@ module RuboCop
           yield begin_index, end_index
         end
 
-        def check(t1, t2)
+        def check(token1, token2)
           # No offense if line break inside.
-          return if t1.line < t2.line
-          return if t2.comment? # Also indicates there's a line break.
+          return if token1.line < token2.line
+          return if token2.comment? # Also indicates there's a line break.
 
-          is_empty_braces = t1.left_brace? && t2.right_curly_brace?
-          expect_space    = expect_space?(t1, t2)
+          is_empty_braces = token1.left_brace? && token2.right_curly_brace?
+          expect_space    = expect_space?(token1, token2)
 
-          if offense?(t1, expect_space)
-            incorrect_style_detected(t1, t2, expect_space, is_empty_braces)
+          if offense?(token1, expect_space)
+            incorrect_style_detected(token1, token2,
+                                     expect_space, is_empty_braces)
           else
             correct_style_detected
           end
         end
 
-        def expect_space?(t1, t2)
-          is_same_braces  = t1.type == t2.type
-          is_empty_braces = t1.left_brace? && t2.right_curly_brace?
+        def expect_space?(token1, token2)
+          is_same_braces  = token1.type == token2.type
+          is_empty_braces = token1.left_brace? && token2.right_curly_brace?
 
           if is_same_braces && style == :compact
             false
@@ -111,8 +113,9 @@ module RuboCop
           end
         end
 
-        def incorrect_style_detected(t1, t2, expect_space, is_empty_braces)
-          brace = (t1.text == '{' ? t1 : t2).pos
+        def incorrect_style_detected(token1, token2,
+                                     expect_space, is_empty_braces)
+          brace = (token1.text == '{' ? token1 : token2).pos
           range = expect_space ? brace : space_range(brace)
           add_offense(
             range,
@@ -120,7 +123,8 @@ module RuboCop
             message: message(brace, is_empty_braces, expect_space)
           ) do
             style = expect_space ? :no_space : :space
-            ambiguous_or_unexpected_style_detected(style, t1.text == t2.text)
+            ambiguous_or_unexpected_style_detected(style,
+                                                   token1.text == token2.text)
           end
         end
 
@@ -132,8 +136,8 @@ module RuboCop
           end
         end
 
-        def offense?(t1, expect_space)
-          has_space = t1.space_after?
+        def offense?(token1, expect_space)
+          has_space = token1.space_after?
           expect_space ? !has_space : has_space
         end
 

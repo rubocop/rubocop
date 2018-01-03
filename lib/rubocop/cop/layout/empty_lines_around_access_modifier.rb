@@ -23,6 +23,8 @@ module RuboCop
       #     def baz; end
       #   end
       class EmptyLinesAroundAccessModifier < Cop
+        include RangeHelp
+
         MSG_AFTER = 'Keep a blank line after `%s`.'.freeze
         MSG_BEFORE_AND_AFTER = 'Keep a blank line before and after `%<node>s`.'
                                .freeze

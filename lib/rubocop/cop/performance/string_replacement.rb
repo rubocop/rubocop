@@ -19,6 +19,8 @@ module RuboCop
       #   'abc'.tr('b', 'd')
       #   'a b c'.delete(' ')
       class StringReplacement < Cop
+        include RangeHelp
+
         MSG = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
         DETERMINISTIC_REGEX = /\A(?:#{LITERAL_REGEX})+\Z/
         DELETE = 'delete'.freeze

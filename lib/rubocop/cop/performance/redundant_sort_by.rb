@@ -16,6 +16,8 @@ module RuboCop
       #   # good
       #   array.sort
       class RedundantSortBy < Cop
+        include RangeHelp
+
         MSG = 'Use `sort` instead of `sort_by { |%<var>s| %<var>s }`.'.freeze
 
         def_node_matcher :redundant_sort_by, <<-PATTERN

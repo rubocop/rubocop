@@ -33,6 +33,8 @@ module RuboCop
       #     y
       #   end
       class CommentedKeyword < Cop
+        include RangeHelp
+
         MSG = 'Do not place comments on the same line as the ' \
               '`%<keyword>s` keyword.'.freeze
 

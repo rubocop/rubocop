@@ -16,7 +16,7 @@ module RuboCop
       #   x = self[:attr]
       #   self[:attr] = val
       class ReadWriteAttribute < Cop
-        MSG = 'Prefer `%s` over `%s`.'.freeze
+        MSG = 'Prefer `%<prefer>s` over `%<current>s`.'.freeze
 
         def_node_matcher :read_write_attribute?, <<-PATTERN
           {
@@ -46,9 +46,10 @@ module RuboCop
 
         def message(node)
           if node.method?(:read_attribute)
-            format(MSG, 'self[:attr]', 'read_attribute(:attr)')
+            format(MSG, prefer: 'self[:attr]', current: 'read_attribute(:attr)')
           else
-            format(MSG, 'self[:attr] = val', 'write_attribute(:attr, val)')
+            format(MSG, prefer: 'self[:attr] = val',
+                        current: 'write_attribute(:attr, val)')
           end
         end
 

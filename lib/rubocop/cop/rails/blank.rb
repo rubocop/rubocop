@@ -82,12 +82,12 @@ module RuboCop
         def on_or(node)
           return unless cop_config['NilOrEmpty']
 
-          nil_or_empty?(node) do |variable1, variable2|
-            return unless variable1 == variable2
+          nil_or_empty?(node) do |var1, var2|
+            return unless var1 == var2
 
             add_offense(node,
                         message: format(MSG_NIL_OR_EMPTY,
-                                        prefer: replacement(variable1),
+                                        prefer: replacement(var1),
                                         current: node.source))
           end
         end

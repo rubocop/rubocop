@@ -30,6 +30,8 @@ module RuboCop
       #   def b
       #   end
       class EmptyLineBetweenDefs < Cop
+        include RangeHelp
+
         MSG = 'Use empty lines between method definitions.'.freeze
 
         def self.autocorrect_incompatible_with

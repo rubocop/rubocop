@@ -21,6 +21,8 @@ module RuboCop
       # It should be extended to handle methods whose body is if/else
       # or a case expression with a default branch.
       class RedundantReturn < Cop
+        include RangeHelp
+
         MSG = 'Redundant `return` detected.'.freeze
         MULTI_RETURN_MSG = 'To return multiple values, use an array.'.freeze
 

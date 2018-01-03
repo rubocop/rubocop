@@ -6,6 +6,7 @@ Bundler/DuplicatedGem:
   Description: 'Checks for duplicate gem entries in Gemfile.'
   Enabled: true
   Include:
+    - '**/*.gemfile'
     - '**/Gemfile'
     - '**/gems.rb'
 
@@ -16,6 +17,7 @@ Bundler/InsecureProtocolSource:
                  'https://rubygems.org' if possible, or 'http://rubygems.org' if not.
   Enabled: true
   Include:
+    - '**/*.gemfile'
     - '**/Gemfile'
     - '**/gems.rb'
 
@@ -24,6 +26,7 @@ Bundler/OrderedGems:
                  Gems within groups in the Gemfile should be alphabetically sorted.
   Enabled: true
   Include:
+    - '**/*.gemfile'
     - '**/Gemfile'
     - '**/gems.rb'
 
@@ -680,7 +683,7 @@ Lint/UnifiedInteger:
   Description: 'Use Integer instead of Fixnum or Bignum'
   Enabled: true
 
-Lint/UnneededDisable:
+Lint/UnneededCopDisableDirective:
   Description: >-
                  Checks for rubocop:disable comments that can be removed.
                  Note: this cop is not disabled when disabling all cops.
@@ -853,6 +856,18 @@ Naming/MethodName:
 Naming/PredicateName:
   Description: 'Check the names of predicate methods.'
   StyleGuide: '#bool-methods-qmark'
+  Enabled: true
+
+Naming/UncommunicativeBlockParamName:
+  Description: >-
+                Checks for block parameter names that contain capital letters,
+                end in numbers, or do not meet a minimal length.
+  Enabled: true
+
+Naming/UncommunicativeMethodArgName:
+  Description: >-
+                Checks for method argument names that contain capital letters,
+                end in numbers, or do not meet a minimal length.
   Enabled: true
 
 Naming/VariableName:

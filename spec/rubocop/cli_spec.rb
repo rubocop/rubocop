@@ -255,7 +255,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
 
     context 'when --auto-correct is given' do
-      it 'does not trigger UnneededDisable due to lines moving around' do
+      it 'does not trigger UnneededCopDisableDirective due to ' \
+         'lines moving around' do
         src = ['a = 1 # rubocop:disable Lint/UselessAssignment']
         create_file('example.rb', src)
         create_file('.rubocop.yml', <<-YAML.strip_indent)
@@ -354,9 +355,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stderr.string).to eq('')
         expect($stdout.string).to eq(<<-RESULT.strip_indent)
           #{abs('example.rb')}:1:81: C: Metrics/LineLength: Line is too long. [95/80]
-          #{abs('example.rb')}:2:1: W: Lint/UnneededDisable: Unnecessary disabling of all cops.
-          #{abs('example.rb')}:3:12: W: Lint/UnneededDisable: Unnecessary disabling of `Metrics/ClassLength`, `Metrics/LineLength`.
-          #{abs('example.rb')}:4:8: W: Lint/UnneededDisable: Unnecessary disabling of all cops.
+          #{abs('example.rb')}:2:1: W: Lint/UnneededCopDisableDirective: Unnecessary disabling of all cops.
+          #{abs('example.rb')}:3:12: W: Lint/UnneededCopDisableDirective: Unnecessary disabling of `Metrics/ClassLength`, `Metrics/LineLength`.
+          #{abs('example.rb')}:4:8: W: Lint/UnneededCopDisableDirective: Unnecessary disabling of all cops.
         RESULT
       end
 
@@ -367,9 +368,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         end
       end
 
-      shared_examples 'UnneededDisable not run' do |state, config|
-        context "and UnneededDisable is #{state}" do
-          it 'does not report UnneededDisable offenses' do
+      shared_examples 'UnneededCopDisableDirective not run' do |state, config|
+        context "and UnneededCopDisableDirective is #{state}" do
+          it 'does not report UnneededCopDisableDirective offenses' do
             create_file('example.rb',
                         ['#' * 95,
                          '# rubocop:disable all',
@@ -386,18 +387,18 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         end
       end
 
-      include_examples 'UnneededDisable not run',
+      include_examples 'UnneededCopDisableDirective not run',
                        'individually disabled', <<-YAML.strip_indent
-        Lint/UnneededDisable:
+        Lint/UnneededCopDisableDirective:
           Enabled: false
       YAML
-      include_examples 'UnneededDisable not run',
+      include_examples 'UnneededCopDisableDirective not run',
                        'individually excluded', <<-YAML.strip_indent
-        Lint/UnneededDisable:
+        Lint/UnneededCopDisableDirective:
           Exclude:
             - example.rb
       YAML
-      include_examples 'UnneededDisable not run',
+      include_examples 'UnneededCopDisableDirective not run',
                        'disabled through department', <<-YAML.strip_indent
         Lint:
           Enabled: false
@@ -1502,7 +1503,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       it 'works when a configuration file specifies Severity for ' \
          "Metrics/ParameterLists and #{key}" do
         create_file('example/example1.rb', <<-RUBY.strip_indent)
-          def method(a, b, c, d, e, f) end #{'#' * 57}
+          def method(foo, bar, qux, fred, arg5, f) end #{'#' * 45}
         RUBY
 
         create_file('rubocop.yml', <<-YAML.strip_indent)
@@ -1516,10 +1517,11 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stdout.string).to eq(<<-RESULT.strip_indent)
             == example/example1.rb ==
             C:  1: 11: Metrics/ParameterLists: Avoid parameter lists longer than 5 parameters. [6/5]
-            C:  1: 34: Style/CommentedKeyword: Do not place comments on the same line as the def keyword.
+            C:  1: 39: Naming/UncommunicativeMethodArgName: Method argument must be longer than 3 characters.
+            C:  1: 46: Style/CommentedKeyword: Do not place comments on the same line as the def keyword.
             E:  1: 81: Metrics/LineLength: Line is too long. [90/80]
 
-            1 file inspected, 3 offenses detected
+            1 file inspected, 4 offenses detected
         RESULT
         expect($stderr.string).to eq('')
       end

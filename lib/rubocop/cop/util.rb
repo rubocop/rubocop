@@ -1,14 +1,11 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/ModuleLength
 module RuboCop
   module Cop
     # This module contains a collection of useful utility methods.
     module Util
       include PathUtil
       extend RuboCop::AST::Sexp
-
-      BYTE_ORDER_MARK = 0xfeff # The Unicode codepoint
 
       EQUALS_ASGN_NODES = %i[lvasgn ivasgn cvasgn gvasgn
                              casgn masgn].freeze
@@ -36,42 +33,17 @@ module RuboCop
         OPERATOR_METHODS.include?(symbol)
       end
 
-      def strip_quotes(str)
-        if str[0] == '"' || str[0] == "'"
-          str[0] = ''
-        else
-          # we're dealing with %q or %Q
-          str[0, 3] = ''
-        end
-        str[-1] = ''
-
-        str
-      end
-
       def comment_line?(line_source)
         line_source =~ /^\s*#/
       end
 
-      def line_range(arg)
-        source_range = case arg
-                       when Parser::Source::Range
-                         arg
-                       when Parser::AST::Node
-                         arg.source_range
-                       else
-                         raise ArgumentError, "Invalid argument #{arg}"
-                       end
-
-        source_range.begin.line..source_range.end.line
+      def line_range(node)
+        node.first_line..node.last_line
       end
 
       def parentheses?(node)
         node.loc.respond_to?(:end) && node.loc.end &&
           node.loc.end.is?(')'.freeze)
-      end
-
-      def parenthesized_call?(send)
-        send.loc.begin && send.loc.begin.is?('(')
       end
 
       def on_node(syms, sexp, excludes = [], &block)
@@ -83,104 +55,8 @@ module RuboCop
         sexp.each_child_node { |elem| on_node(syms, elem, excludes, &block) }
       end
 
-      def source_range(source_buffer, line_number, column, length = 1)
-        if column.is_a?(Range)
-          column_index = column.begin
-          length = column.size
-        else
-          column_index = column
-        end
-
-        line_begin_pos = if line_number.zero?
-                           0
-                         else
-                           source_buffer.line_range(line_number).begin_pos
-                         end
-        begin_pos = line_begin_pos + column_index
-        end_pos = begin_pos + length
-
-        Parser::Source::Range.new(source_buffer, begin_pos, end_pos)
-      end
-
-      # Returns the column attribute of the range, except if the range is on
-      # the first line and there's a byte order mark at the beginning of that
-      # line, in which case 1 is subtracted from the column value. This gives
-      # the column as it appears when viewing the file in an editor.
-      def effective_column(range)
-        if range.line == 1 &&
-           @processed_source.raw_source.codepoints.first == BYTE_ORDER_MARK
-          range.column - 1
-        else
-          range.column
-        end
-      end
-
-      def range_between(start_pos, end_pos)
-        Parser::Source::Range.new(processed_source.buffer, start_pos, end_pos)
-      end
-
-      def range_with_surrounding_comma(range, side = :both)
-        buffer = @processed_source.buffer
-        src = buffer.source
-
-        go_left, go_right = directions(side)
-
-        begin_pos = range.begin_pos
-        end_pos = range.end_pos
-        begin_pos = move_pos(src, begin_pos, -1, go_left, /,/)
-        end_pos = move_pos(src, end_pos, 1, go_right, /,/)
-
-        Parser::Source::Range.new(buffer, begin_pos, end_pos)
-      end
-
-      def range_with_surrounding_space(range:,
-                                       side: :both,
-                                       newlines: true,
-                                       whitespace: false)
-        buffer = @processed_source.buffer
-        src = buffer.source
-
-        go_left, go_right = directions(side)
-
-        begin_pos = range.begin_pos
-        if go_left
-          begin_pos =
-            final_pos(src, begin_pos, -1, newlines, whitespace)
-        end
-        end_pos = range.end_pos
-        end_pos = final_pos(src, end_pos, 1, newlines, whitespace) if go_right
-        Parser::Source::Range.new(buffer, begin_pos, end_pos)
-      end
-
-      def range_by_whole_lines(range, include_final_newline: false)
-        buffer = @processed_source.buffer
-
-        begin_pos = range.begin_pos
-        begin_offset = range.column
-        begin_of_first_line = begin_pos - begin_offset
-
-        last_line = buffer.source_line(range.last_line)
-        end_pos = range.end_pos
-        end_offset = last_line.length - range.last_column
-        end_offset += 1 if include_final_newline
-        end_of_last_line = end_pos + end_offset
-
-        Parser::Source::Range.new(buffer, begin_of_first_line, end_of_last_line)
-      end
-
       def begins_its_line?(range)
         (range.source_line =~ /\S/) == range.column
-      end
-
-      def ends_its_line?(range)
-        line = range.source_buffer.source_line(range.last_line)
-        (line =~ /\s*\z/) == range.last_column
-      end
-
-      def within_node?(inner, outer)
-        o = outer.is_a?(AST::Node) ? outer.source_range : outer
-        i = inner.is_a?(AST::Node) ? inner.source_range : inner
-        i.begin_pos >= o.begin_pos && i.end_pos <= o.end_pos
       end
 
       # Returns, for example, a bare `if` node if the given node is an `if`
@@ -229,47 +105,14 @@ module RuboCop
         end
       end
 
-      def to_symbol_literal(string)
-        if symbol_without_quote?(string)
-          ":#{string}"
-        else
-          ":#{to_string_literal(string)}"
-        end
-      end
-
-      def symbol_without_quote?(string)
-        special_gvars = %w[
-          $! $" $$ $& $' $* $+ $, $/ $; $: $. $< $= $> $? $@ $\\ $_ $` $~ $0
-          $-0 $-F $-I $-K $-W $-a $-d $-i $-l $-p $-v $-w
-        ]
-        redefinable_operators = %w(
-          | ^ & <=> == === =~ > >= < <= << >>
-          + - * / % ** ~ +@ -@ [] []= ` ! != !~
-        )
-
-        # method name
-        string =~ /\A[a-zA-Z_]\w*[!?]?\z/ ||
-          # instance / class variable
-          string =~ /\A\@\@?[a-zA-Z_]\w*\z/ ||
-          # global variable
-          string =~ /\A\$[1-9]\d*\z/ ||
-          string =~ /\A\$[a-zA-Z_]\w*\z/ ||
-          special_gvars.include?(string) ||
-          redefinable_operators.include?(string)
-      end
-
       def interpret_string_escapes(string)
         StringInterpreter.interpret(string)
       end
 
-      def same_line?(n1, n2)
-        n1.respond_to?(:loc) &&
-          n2.respond_to?(:loc) &&
-          n1.loc.line == n2.loc.line
-      end
-
-      def precede?(n1, n2)
-        line_distance(n1, n2) == 1
+      def same_line?(node1, node2)
+        node1.respond_to?(:loc) &&
+          node2.respond_to?(:loc) &&
+          node1.loc.line == node2.loc.line
       end
 
       def to_supported_styles(enforced_style)
@@ -278,45 +121,33 @@ module RuboCop
           .sub('Style', 'Styles')
       end
 
-      def tokens(node)
+      def tokens(node) # rubocop:disable Metrics/AbcSize
         @tokens ||= {}
-        @tokens[node.object_id] ||= processed_source.tokens.select do |token|
-          token.end_pos <= node.source_range.end_pos &&
-            token.begin_pos >= node.source_range.begin_pos
+        return @tokens[node.object_id] if @tokens[node.object_id]
+
+        source_range = node.source_range
+        begin_pos = source_range.begin_pos
+        end_pos = source_range.end_pos
+
+        tokens_to_node_end = processed_source.tokens.take_while do |token|
+          token.end_pos <= end_pos
         end
+
+        node_tokens = []
+        tokens_to_node_end.reverse_each do |token|
+          break unless token.begin_pos >= begin_pos
+          node_tokens.unshift(token)
+        end
+
+        @tokens[node.object_id] = node_tokens
       end
 
       private
-
-      def directions(side)
-        if side == :both
-          [true, true]
-        else
-          [side == :left, side == :right]
-        end
-      end
-
-      def final_pos(src, pos, increment, newlines, whitespace)
-        pos = move_pos(src, pos, increment, true, /[ \t]/)
-        pos = move_pos(src, pos, increment, newlines, /\n/)
-        move_pos(src, pos, increment, whitespace, /\s/)
-      end
-
-      def move_pos(src, pos, step, condition, regexp)
-        offset = step == -1 ? -1 : 0
-        pos += step while condition && src[pos + offset] =~ regexp
-        pos < 0 ? 0 : pos
-      end
 
       def compatible_external_encoding_for?(src)
         src = src.dup if RUBY_VERSION < '2.3' || RUBY_ENGINE == 'jruby'
         src.force_encoding(Encoding.default_external).valid_encoding?
       end
-
-      def line_distance(n1, n2)
-        n2.loc.line - n1.loc.line
-      end
     end
   end
 end
-# rubocop:enable Metrics/ModuleLength

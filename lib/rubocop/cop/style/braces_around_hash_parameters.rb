@@ -41,6 +41,7 @@ module RuboCop
       #   some_method(x, y, {a: 1, b: 2}, {a: 1, b: 2})
       class BracesAroundHashParameters < Cop
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         MSG = '%<type>s curly braces around a hash parameter.'.freeze
 

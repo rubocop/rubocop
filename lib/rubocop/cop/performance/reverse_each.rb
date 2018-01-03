@@ -13,6 +13,8 @@ module RuboCop
       #   # good
       #   [].reverse_each
       class ReverseEach < Cop
+        include RangeHelp
+
         MSG = 'Use `reverse_each` instead of `reverse.each`.'.freeze
         UNDERSCORE = '_'.freeze
 

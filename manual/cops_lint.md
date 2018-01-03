@@ -2017,7 +2017,7 @@ This cop checks for using Fixnum or Bignum constant.
 1.is_a?(Integer)
 ```
 
-## Lint/UnneededDisable
+## Lint/UnneededCopDisableDirective
 
 Enabled by default | Supports autocorrection
 --- | ---

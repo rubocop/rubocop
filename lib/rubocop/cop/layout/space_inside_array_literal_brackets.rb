@@ -88,8 +88,9 @@ module RuboCop
         end
 
         def empty_brackets?(left_bracket_token, right_bracket_token)
-          processed_source.tokens.index(left_bracket_token) ==
-            processed_source.tokens.index(right_bracket_token) - 1
+          left_index = processed_source.tokens.index(left_bracket_token)
+          right_index = processed_source.tokens.index(right_bracket_token)
+          right_index && left_index == right_index - 1
         end
 
         def empty_offenses(node, left, right)

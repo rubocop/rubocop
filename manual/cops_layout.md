@@ -2043,34 +2043,74 @@ line as the last argument of the call.
 
 ### Examples
 
+#### EnforcedStyle: symmetrical (default)
+
 ```ruby
-# symmetrical: bad
-# new_line: good
-# same_line: bad
+# bad
 foo(a,
   b
 )
 
-# symmetrical: bad
-# new_line: bad
-# same_line: good
+# bad
 foo(
   a,
   b)
 
-# symmetrical: good
-# new_line: bad
-# same_line: good
+# good
 foo(a,
   b)
 
-# symmetrical: good
-# new_line: good
-# same_line: bad
+# good
 foo(
   a,
   b
 )
+```
+#### EnforcedStyle: new_line
+
+```ruby
+# bad
+foo(
+  a,
+  b)
+
+# bad
+foo(a,
+  b)
+
+# good
+foo(a,
+  b
+)
+
+# good
+foo(
+  a,
+  b
+)
+```
+#### EnforcedStyle: same_line
+
+```ruby
+# bad
+foo(a,
+  b
+)
+
+# bad
+foo(
+  a,
+  b
+)
+
+# good
+foo(
+  a,
+  b)
+
+# good
+foo(a,
+  b)
 ```
 
 ### Configurable attributes
@@ -2176,37 +2216,85 @@ line as the last parameter of the definition.
 
 ### Examples
 
+#### EnforcedStyle: symmetrical (default)
+
 ```ruby
-# symmetrical: bad
-# new_line: good
-# same_line: bad
+# bad
 def foo(a,
   b
 )
 end
 
-# symmetrical: bad
-# new_line: bad
-# same_line: good
+# bad
 def foo(
   a,
   b)
 end
 
-# symmetrical: good
-# new_line: bad
-# same_line: good
+# good
 def foo(a,
   b)
 end
 
-# symmetrical: good
-# new_line: good
-# same_line: bad
+# good
 def foo(
   a,
   b
 )
+end
+```
+#### EnforcedStyle: new_line
+
+```ruby
+# bad
+def foo(
+  a,
+  b)
+end
+
+# bad
+def foo(a,
+  b)
+end
+
+# good
+def foo(a,
+  b
+)
+end
+
+# good
+def foo(
+  a,
+  b
+)
+end
+```
+#### EnforcedStyle: same_line
+
+```ruby
+# bad
+def foo(a,
+  b
+)
+end
+
+# bad
+def foo(
+  a,
+  b
+)
+end
+
+# good
+def foo(
+  a,
+  b)
+end
+
+# good
+def foo(a,
+  b)
 end
 ```
 
@@ -2441,6 +2529,8 @@ have or don't have surrounding space depending on configuration.
 
 ### Examples
 
+#### EnforcedStyle: space (default)
+
 ```ruby
 # bad
 def some_method(arg1=:default, arg2=nil, arg3=[])
@@ -2449,6 +2539,19 @@ end
 
 # good
 def some_method(arg1 = :default, arg2 = nil, arg3 = [])
+  # do something...
+end
+```
+#### EnforcedStyle: no_space
+
+```ruby
+# bad
+def some_method(arg1 = :default, arg2 = nil, arg3 = [])
+  # do something...
+end
+
+# good
+def some_method(arg1=:default, arg2=nil, arg3=[])
   # do something...
 end
 ```
@@ -2539,6 +2642,8 @@ brace depending on configuration.
 
 ### Examples
 
+#### EnforcedStyle: space (default)
+
 ```ruby
 # bad
 foo.map{ |a|
@@ -2547,6 +2652,19 @@ foo.map{ |a|
 
 # good
 foo.map { |a|
+  a.bar.to_s
+}
+```
+#### EnforcedStyle: no_space
+
+```ruby
+# bad
+foo.map { |a|
+  a.bar.to_s
+}
+
+# good
+foo.map{ |a|
   a.bar.to_s
 }
 ```

@@ -12,6 +12,8 @@ module RuboCop
       #   # good
       #   something.map(&:upcase)
       class SymbolProc < Cop
+        include RangeHelp
+
         MSG = 'Pass `&:%<method>s` as an argument to `%<block_method>s` ' \
               'instead of a block.'.freeze
         SUPER_TYPES = %i[super zsuper].freeze

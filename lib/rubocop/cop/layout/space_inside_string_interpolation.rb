@@ -20,6 +20,7 @@ module RuboCop
       #      var = "This is the #{ space } example"
       class SpaceInsideStringInterpolation < Cop
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         NO_SPACE_MSG = 'Space inside string interpolation detected.'.freeze
         SPACE_MSG = 'Missing space around string interpolation detected.'.freeze

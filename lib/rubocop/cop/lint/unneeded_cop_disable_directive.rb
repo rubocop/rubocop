@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-# The Lint/UnneededDisable cop needs to be disabled so as to be able to provide
-# a (bad) example of an unneeded disable.
-# rubocop:disable Lint/UnneededDisable
+# The Lint/UnneededCopDisableDirective cop needs to be disabled so as
+# to be able to provide a (bad) example of an unneeded disable.
+# rubocop:disable Lint/UnneededCopDisableDirective
 module RuboCop
   module Cop
     module Lint
@@ -25,10 +25,11 @@ module RuboCop
       #
       #   # good
       #   x += 1
-      class UnneededDisable < Cop
+      class UnneededCopDisableDirective < Cop
         include NameSimilarity
+        include RangeHelp
 
-        COP_NAME = 'Lint/UnneededDisable'.freeze
+        COP_NAME = 'Lint/UnneededCopDisableDirective'.freeze
 
         def check(offenses, cop_disabled_line_ranges, comments)
           unneeded_cops = Hash.new { |h, k| h[k] = Set.new }
@@ -223,7 +224,7 @@ module RuboCop
           ranges
             .drop_while { |r| !r.equal?(range) }
             .each_cons(2)
-            .map { |r1, r2| r1.end.join(r2.begin).source }
+            .map { |range1, range2| range1.end.join(range2.begin).source }
             .all? { |intervening| intervening =~ /\A\s*,\s*\Z/ }
         end
 
@@ -249,8 +250,13 @@ module RuboCop
         def all_cop_names
           @all_cop_names ||= Cop.registry.names
         end
+
+        def ends_its_line?(range)
+          line = range.source_buffer.source_line(range.last_line)
+          (line =~ /\s*\z/) == range.last_column
+        end
       end
     end
   end
 end
-# rubocop:enable Lint/UnneededDisable
+# rubocop:enable Lint/UnneededCopDisableDirective

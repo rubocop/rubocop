@@ -76,7 +76,7 @@ module RuboCop
           styles.map(&:source).uniq
         end
 
-        def message(*)
+        def message(_node)
           if style == :single_quotes
             "Prefer single-quoted strings when you don't need string " \
             'interpolation or special symbols.'

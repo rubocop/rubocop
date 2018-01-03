@@ -6,6 +6,7 @@ module RuboCop
   RUBY_EXTENSIONS = %w[.rb
                        .builder
                        .fcgi
+                       .gemfile
                        .gemspec
                        .god
                        .jb

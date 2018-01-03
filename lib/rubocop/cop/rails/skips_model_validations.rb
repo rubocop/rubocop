@@ -24,7 +24,7 @@ module RuboCop
       #   user.update_attributes(website: 'example.com')
       #   FileUtils.touch('file')
       class SkipsModelValidations < Cop
-        MSG = 'Avoid using `%s` because it skips validations.'.freeze
+        MSG = 'Avoid using `%<method>s` because it skips validations.'.freeze
 
         METHODS_WITH_ARGUMENTS = %w[decrement!
                                     decrement_counter
@@ -58,7 +58,7 @@ module RuboCop
         private
 
         def message(node)
-          format(MSG, node.method_name)
+          format(MSG, method: node.method_name)
         end
 
         def blacklist

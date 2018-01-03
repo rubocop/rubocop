@@ -17,6 +17,8 @@ module RuboCop
       #
       #   "result is 10"
       class LiteralInInterpolation < Cop
+        include RangeHelp
+
         MSG = 'Literal interpolation detected.'.freeze
         COMPOSITE = %i[array hash pair irange erange].freeze
 

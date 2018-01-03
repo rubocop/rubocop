@@ -38,6 +38,7 @@ module RuboCop
       #   end
       class AndOr < Cop
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         MSG = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
 

@@ -6,6 +6,7 @@ module RuboCop
       # This cop checks for Windows-style line endings in the source code.
       class EndOfLine < Cop
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         MSG_DETECTED = 'Carriage return character detected.'.freeze
         MSG_MISSING = 'Carriage return character missing.'.freeze

@@ -39,6 +39,7 @@ module RuboCop
       #   Model.where(id: [1, 2, 3]).to_a.count { |m| m.method == true }
       class Count < Cop
         include SafeMode
+        include RangeHelp
 
         MSG = 'Use `count` instead of `%<selector>s...%<counter>s`.'.freeze
 

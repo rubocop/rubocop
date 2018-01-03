@@ -164,21 +164,21 @@ module RuboCop
         end
       end
 
-      def handle_warning(e, location)
-        message = Rainbow("#{e.message} (from file: #{location})").yellow
+      def handle_warning(error, location)
+        message = Rainbow("#{error.message} (from file: #{location})").yellow
 
         @warnings << message
         warn message
-        puts e.backtrace if debug?
+        puts error.backtrace if debug?
       end
 
-      def handle_error(e, location, cop)
+      def handle_error(error, location, cop)
         message = Rainbow("An error occurred while #{cop.name}" \
                            " cop was inspecting #{location}.").red
         @errors << message
         warn message
         if debug?
-          puts e.message, e.backtrace
+          puts error.message, error.backtrace
         else
           warn 'To see the complete backtrace run rubocop -d.'
         end

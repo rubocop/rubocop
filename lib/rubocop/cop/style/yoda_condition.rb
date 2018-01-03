@@ -30,6 +30,7 @@ module RuboCop
       #   3 < a && a < 5
       class YodaCondition < Cop
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         MSG = 'Reverse the order of the operands `%<source>s`.'.freeze
 
