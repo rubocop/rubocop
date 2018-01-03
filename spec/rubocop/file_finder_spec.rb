@@ -22,12 +22,12 @@ RSpec.describe RuboCop::FileFinder, :isolated_environment do
       expect(finder.find_file_upwards('file2', 'dir')).to be(nil)
     end
 
-    context 'when given `home_dir` option' do
+    context 'when given `use_home` option' do
       before { create_file(File.join(Dir.home, 'file2'), '') }
 
       context 'and a file exists in home directory' do
         it 'returns the file' do
-          expect(finder.find_file_upwards('file2', 'dir', home_dir: true))
+          expect(finder.find_file_upwards('file2', 'dir', use_home: true))
             .to eq(File.expand_path('file2', Dir.home))
         end
       end
@@ -36,7 +36,7 @@ RSpec.describe RuboCop::FileFinder, :isolated_environment do
         before { ENV.delete('HOME') }
 
         it 'returns nil' do
-          expect(finder.find_file_upwards('file2', 'dir', home_dir: true))
+          expect(finder.find_file_upwards('file2', 'dir', use_home: true))
             .to be(nil)
         end
       end
@@ -54,12 +54,12 @@ RSpec.describe RuboCop::FileFinder, :isolated_environment do
       expect(finder.find_files_upwards('xyz', 'dir')).to eq([])
     end
 
-    context 'when given `home_dir` option' do
+    context 'when given `use_home` option' do
       before { create_file(File.join(Dir.home, 'file'), '') }
 
       context 'and a file exists in home directory' do
         it 'returns an array including the file' do
-          expect(finder.find_files_upwards('file', 'dir', home_dir: true))
+          expect(finder.find_files_upwards('file', 'dir', use_home: true))
             .to eq([File.expand_path('file', 'dir'),
                     File.expand_path('file'),
                     File.expand_path('file', Dir.home)])
@@ -70,7 +70,7 @@ RSpec.describe RuboCop::FileFinder, :isolated_environment do
         before { ENV.delete('HOME') }
 
         it 'returns an array not including the file' do
-          expect(finder.find_files_upwards('file', 'dir', home_dir: true))
+          expect(finder.find_files_upwards('file', 'dir', use_home: true))
             .to eq([File.expand_path('file', 'dir'),
                     File.expand_path('file')])
         end

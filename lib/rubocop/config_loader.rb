@@ -74,7 +74,7 @@ module RuboCop
       # user's home directory is checked. If there's no .rubocop.yml
       # there either, the path to the default file is returned.
       def configuration_file_for(target_dir)
-        find_file_upwards(DOTFILE, target_dir, home_dir: true) || DEFAULT_FILE
+        find_file_upwards(DOTFILE, target_dir, use_home: true) || DEFAULT_FILE
       end
 
       def configuration_from_file(config_file)
@@ -90,7 +90,7 @@ module RuboCop
       end
 
       def add_excludes_from_files(config, config_file)
-        found_files = find_files_upwards(DOTFILE, config_file, home_dir: true)
+        found_files = find_files_upwards(DOTFILE, config_file, use_home: true)
         return if found_files.empty?
         return if PathUtil.relative_path(found_files.last) ==
                   PathUtil.relative_path(config_file)
