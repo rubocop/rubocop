@@ -1572,7 +1572,6 @@ Time.parse('2015-03-02 19:05:37')
 
 # bad
 Time.current
-DateTime.strptime(str, "%Y-%m-%d %H:%M %Z").in_time_zone
 Time.at(timestamp).in_time_zone
 
 # good
@@ -1594,7 +1593,6 @@ Time.zone.parse('2015-03-02 19:05:37')
 
 # good
 Time.current
-DateTime.strptime(str, "%Y-%m-%d %H:%M %Z").in_time_zone
 Time.at(timestamp).in_time_zone
 ```
 
