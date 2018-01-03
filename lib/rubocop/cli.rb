@@ -29,13 +29,16 @@ module RuboCop
     # @param args [Array<String>] command line arguments
     # @return [Integer] UNIX exit code
     #
-    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     def run(args = ARGV)
       @options, paths = Options.new.parse(args)
       validate_options_vs_config
       act_on_options
       apply_default_formatter
       execute_runners(paths)
+    rescue RuboCop::ConfigNotFoundError => e
+      warn e.message
+      return e.status
     rescue RuboCop::Error => e
       warn Rainbow("Error: #{e.message}").red
       return 2
@@ -49,7 +52,7 @@ module RuboCop
       warn e.backtrace
       return 2
     end
-    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
     def trap_interrupt(runner)
       Signal.trap('INT') do
