@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'pathname'
+
 module RuboCop
   # Common methods for finding files.
   module FileFinder
