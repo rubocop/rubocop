@@ -6,6 +6,7 @@
 
 * [#3666](https://github.com/bbatsov/rubocop/issues/3666): Add new `Naming/UncommunicativeBlockParamName` cop. ([@garettarrowood][])
 * [#3666](https://github.com/bbatsov/rubocop/issues/3666): Add new `Naming/UncommunicativeMethodArgName` cop. ([@garettarrowood][])
+* [#5356](https://github.com/bbatsov/rubocop/issues/5356): Add new `Lint/UnneededCopEnableDirective` cop. ([@garettarrowood][])
 * [#5248](https://github.com/bbatsov/rubocop/pull/5248): Add new `Lint/BigDecimalNew` cop. ([@koic][])
 * [#3394](https://github.com/bbatsov/rubocop/issues/3394): Add new `Style/TrailingCommmaInArrayLiteral` cop. ([@garettarrowood][])
 * [#3394](https://github.com/bbatsov/rubocop/issues/3394): Add new `Style/TrailingCommmaInHashLiteral` cop. ([@garettarrowood][])

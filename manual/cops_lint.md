@@ -2045,6 +2045,26 @@ x += 1
 x += 1
 ```
 
+## Lint/UnneededCopEnableDirective
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop detects instances of rubocop:enable comments that can be
+removed.
+
+### Examples
+
+```ruby
+# bad
+foo = 1
+# rubocop:enable Metrics/LineLength
+
+# good
+foo = 1
+```
+
 ## Lint/UnneededRequireStatement
 
 Enabled by default | Supports autocorrection
