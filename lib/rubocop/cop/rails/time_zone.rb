@@ -14,16 +14,34 @@ module RuboCop
       # When EnforcedStyle is 'flexible' then it's also allowed
       # to use Time.in_time_zone.
       #
-      # @example
-      #   # always offense
+      # @example EnforcedStyle: strict
+      #   # `strict` means that `Time` should be used with `zone`.
+      #
+      #   # bad
       #   Time.now
       #   Time.parse('2015-03-02 19:05:37')
       #
-      #   # no offense
+      #   # bad
+      #   Time.current
+      #   DateTime.strptime(str, "%Y-%m-%d %H:%M %Z").in_time_zone
+      #   Time.at(timestamp).in_time_zone
+      #
+      #   # good
       #   Time.zone.now
       #   Time.zone.parse('2015-03-02 19:05:37')
       #
-      #   # no offense only if style is 'flexible'
+      # @example EnforcedStyle: flexible (default)
+      #   # `flexible` allows usage of `in_time_zone` instead of `zone`.
+      #
+      #   # bad
+      #   Time.now
+      #   Time.parse('2015-03-02 19:05:37')
+      #
+      #   # good
+      #   Time.zone.now
+      #   Time.zone.parse('2015-03-02 19:05:37')
+      #
+      #   # good
       #   Time.current
       #   DateTime.strptime(str, "%Y-%m-%d %H:%M %Z").in_time_zone
       #   Time.at(timestamp).in_time_zone
