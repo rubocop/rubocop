@@ -28,6 +28,8 @@ shared_context 'isolated environment', :isolated_environment do
         end
       ensure
         ENV['HOME'] = original_home
+
+        RuboCop::FileFinder.root_level = nil
       end
     end
   end
