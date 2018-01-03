@@ -29,6 +29,30 @@ module RuboCop
       #   # good
       #   hash[ :key ]
       #   array[ index ]
+      #
+      #
+      # @example EnforcedStyleForEmptyBrackets: no_space (default)
+      #   # The `no_space` EnforcedStyleForEmptyBrackets style enforces that
+      #   # empty reference brackets do not contain spaces.
+      #
+      #   # bad
+      #   foo[ ]
+      #   foo[     ]
+      #
+      #   # good
+      #   foo[]
+      #
+      # @example EnforcedStyleForEmptyBrackets: space
+      #   # The `space` EnforcedStyleForEmptyBrackets style enforces that
+      #   # empty reference brackets contain exactly one space.
+      #
+      #   # bad
+      #   foo[]
+      #   foo[    ]
+      #
+      #   # good
+      #   foo[ ]
+      #
       class SpaceInsideReferenceBrackets < Cop
         include SurroundingSpace
         include ConfigurableEnforcedStyle

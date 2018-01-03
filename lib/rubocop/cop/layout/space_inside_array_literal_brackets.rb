@@ -36,6 +36,32 @@ module RuboCop
       #
       #   # good
       #   array = [ a, [ b, c ]]
+      #
+      #
+      # @example EnforcedStyleForEmptyBrackets: no_space (default)
+      #   # The `no_space` EnforcedStyleForEmptyBrackets style enforces that
+      #   # empty array brackets do not contain spaces.
+      #
+      #   # bad
+      #   foo = [ ]
+      #   bar = [     ]
+      #
+      #   # good
+      #   foo = []
+      #   bar = []
+      #
+      # @example EnforcedStyleForEmptyBrackets: space
+      #   # The `space` EnforcedStyleForEmptyBrackets style enforces that
+      #   # empty array brackets contain exactly one space.
+      #
+      #   # bad
+      #   foo = []
+      #   bar = [    ]
+      #
+      #   # good
+      #   foo = [ ]
+      #   bar = [ ]
+      #
       class SpaceInsideArrayLiteralBrackets < Cop
         include SurroundingSpace
         include ConfigurableEnforcedStyle
