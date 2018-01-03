@@ -35,11 +35,15 @@ module RuboCop
 
         MSG = '%<command>s space inside reference brackets.'.freeze
 
+        BRACKET_METHODS = %i[[] []=].freeze
+
         def on_send(node)
           return if node.multiline?
-          return unless left_ref_bracket(node)
-          left_token = left_ref_bracket(node)
-          right_token = closing_bracket(node, left_token)
+          return unless bracket_method?(node)
+          tokens = tokens(node)
+          left_token = left_ref_bracket(tokens)
+          return unless left_token
+          right_token = closing_bracket(tokens, left_token)
 
           if style == :no_space
             no_space_offenses(node, left_token, right_token, MSG)
@@ -64,19 +68,25 @@ module RuboCop
         private
 
         def reference_brackets(node)
-          left = left_ref_bracket(node)
-          [left, closing_bracket(node, left)]
+          tokens = tokens(node)
+          left = left_ref_bracket(tokens)
+          [left, closing_bracket(tokens, left)]
         end
 
-        def left_ref_bracket(node)
-          tokens(node).reverse.find(&:left_ref_bracket?)
+        def bracket_method?(node)
+          _, method, = *node
+          BRACKET_METHODS.include?(method)
         end
 
-        def closing_bracket(node, opening_bracket)
-          i = tokens(node).index(opening_bracket)
+        def left_ref_bracket(tokens)
+          tokens.reverse.find(&:left_ref_bracket?)
+        end
+
+        def closing_bracket(tokens, opening_bracket)
+          i = tokens.index(opening_bracket)
           inner_left_brackets_needing_closure = 0
 
-          tokens(node)[i..-1].each do |token|
+          tokens[i..-1].each do |token|
             inner_left_brackets_needing_closure += 1 if token.left_bracket?
             inner_left_brackets_needing_closure -= 1 if token.right_bracket?
             if inner_left_brackets_needing_closure.zero? && token.right_bracket?
