@@ -23,7 +23,6 @@ module RuboCop
       #
       #   # bad
       #   Time.current
-      #   DateTime.strptime(str, "%Y-%m-%d %H:%M %Z").in_time_zone
       #   Time.at(timestamp).in_time_zone
       #
       #   # good
@@ -43,7 +42,6 @@ module RuboCop
       #
       #   # good
       #   Time.current
-      #   DateTime.strptime(str, "%Y-%m-%d %H:%M %Z").in_time_zone
       #   Time.at(timestamp).in_time_zone
       class TimeZone < Cop
         include ConfigurableEnforcedStyle
@@ -64,7 +62,7 @@ module RuboCop
 
         GOOD_METHODS = %i[zone zone_default find_zone find_zone!].freeze
 
-        DANGEROUS_METHODS = %i[now local new strftime
+        DANGEROUS_METHODS = %i[now local new
                                parse at current].freeze
 
         ACCEPTED_METHODS = %i[in_time_zone utc getlocal

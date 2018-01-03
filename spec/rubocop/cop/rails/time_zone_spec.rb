@@ -68,34 +68,6 @@ RSpec.describe RuboCop::Cop::Rails::TimeZone, :config do
       RUBY
     end
 
-    it 'registers an offense for Time.strftime' do
-      expect_offense(<<-RUBY.strip_indent)
-        Time.strftime(time_string, "%Y-%m-%dT%H:%M:%S%z")
-             ^^^^^^^^ Do not use `Time.strftime` without zone. Use `Time.zone.strftime` instead.
-      RUBY
-    end
-
-    it 'registers an offense for Time.strftime.in_time_zone' do
-      expect_offense(<<-RUBY.strip_indent)
-        Time.strftime(time_string, "%Y-%m-%dT%H:%M:%S%z").in_time_zone
-             ^^^^^^^^ Do not use `Time.strftime` without zone. Use `Time.zone.strftime` instead.
-      RUBY
-    end
-
-    it 'registers an offense for Time.strftime with nested Time.zone' do
-      expect_offense(<<-RUBY.strip_indent)
-        Time.strftime(Time.zone.now.to_s, "%Y-%m-%dT%H:%M:%S%z")
-             ^^^^^^^^ Do not use `Time.strftime` without zone. Use `Time.zone.strftime` instead.
-      RUBY
-    end
-
-    it 'registers an offense for Time.zone.strftime with nested Time.now' do
-      expect_offense(<<-RUBY.strip_indent)
-        Time.zone.strftime(Time.now.to_s, "%Y-%m-%dT%H:%M:%S%z")
-                                ^^^ Do not use `Time.now.strftime` without zone. Use `Time.zone.now.strftime` instead.
-      RUBY
-    end
-
     it 'registers an offense for Time.at' do
       expect_offense(<<-RUBY.strip_indent)
         Time.at(ts)
@@ -149,16 +121,6 @@ RSpec.describe RuboCop::Cop::Rails::TimeZone, :config do
 
     it 'accepts Time.zone.at' do
       expect_no_offenses('Time.zone.at(ts)')
-    end
-
-    it 'accepts Time.strptime' do
-      expect_no_offenses('Time.strptime(datetime, format).in_time_zone')
-    end
-
-    it 'accepts Time.zone.strftime' do
-      expect_no_offenses(
-        'Time.zone.strftime(time_string, "%Y-%m-%dT%H:%M:%S%z")'
-      )
     end
 
     it 'accepts Time.zone.parse.localtime' do
@@ -269,12 +231,6 @@ RSpec.describe RuboCop::Cop::Rails::TimeZone, :config do
           expect(cop.offenses.empty?).to be(true)
         end
       end
-    end
-
-    it 'accepts Time.strftime.in_time_zone' do
-      expect_no_offenses(
-        'Time.strftime(time_string, "%Y-%m-%dT%H:%M:%S%z").in_time_zone'
-      )
     end
 
     it 'accepts Time.parse.localtime(offset)' do
