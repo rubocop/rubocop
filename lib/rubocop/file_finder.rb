@@ -32,9 +32,9 @@ module RuboCop
 
     def traverse_files_upwards(filename, start_dir, use_home)
       Pathname.new(start_dir).expand_path.ascend do |dir|
+        break if FileFinder.root_level?(dir)
         file = dir + filename
         yield(file.to_s) if file.exist?
-        break if FileFinder.root_level?(dir)
       end
 
       return unless use_home && ENV.key?('HOME')
