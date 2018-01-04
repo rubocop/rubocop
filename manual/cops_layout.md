@@ -242,6 +242,86 @@ IndentationWidth | `<none>` | Integer
 
 * [https://github.com/bbatsov/ruby-style-guide#no-double-indent](https://github.com/bbatsov/ruby-style-guide#no-double-indent)
 
+## Layout/BlockAlignment
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks whether the end keywords are aligned properly for do
+end blocks.
+
+Three modes are supported through the `EnforcedStyleAlignWith`
+configuration parameter:
+
+`start_of_block` : the `end` shall be aligned with the
+start of the line where the `do` appeared.
+
+`start_of_line` : the `end` shall be aligned with the
+start of the line where the expression started.
+
+`either` (which is the default) : the `end` is allowed to be in either
+location. The autofixer will default to `start_of_line`.
+
+### Examples
+
+#### EnforcedStyleAlignWith: either (default)
+
+```ruby
+# bad
+
+foo.bar
+   .each do
+     baz
+       end
+
+# good
+
+variable = lambda do |i|
+  i
+end
+```
+#### EnforcedStyleAlignWith: start_of_block
+
+```ruby
+# bad
+
+foo.bar
+   .each do
+     baz
+       end
+
+# good
+
+foo.bar
+  .each do
+     baz
+   end
+```
+#### EnforcedStyleAlignWith: start_of_line
+
+```ruby
+# bad
+
+foo.bar
+   .each do
+     baz
+       end
+
+# good
+
+foo.bar
+  .each do
+     baz
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyleAlignWith | `either` | `either`, `start_of_block`, `start_of_line`
+
 ## Layout/BlockEndNewline
 
 Enabled by default | Supports autocorrection

@@ -96,6 +96,9 @@ module RuboCop
       'Style/VariableNumber' =>
         'The `Style/VariableNumber` cop has been renamed to ' \
           '`Naming/VariableNumber`.',
+      'Lint/BlockAlignment' =>
+        'The `Lint/BlockAlignment` cop has been renamed to ' \
+          '`Layout/BlockAlignment`.',
       'Lint/EndAlignment' =>
         'The `Lint/EndAlignment` cop has been renamed to ' \
           '`Layout/EndAlignment`.',
@@ -165,6 +168,12 @@ module RuboCop
       },
       {
         cop: 'Lint/BlockAlignment',
+        parameter: 'AlignWith',
+        alternative: '`AlignWith` has been renamed to ' \
+                     '`EnforcedStyleAlignWith`'
+      },
+      {
+        cop: 'Layout/BlockAlignment',
         parameter: 'AlignWith',
         alternative: '`AlignWith` has been renamed to ' \
                      '`EnforcedStyleAlignWith`'

@@ -47,8 +47,8 @@ RSpec.describe RuboCop::CommentConfig do
         'end',                                               # 38
         '# rubocop:enable Style/Not,Layout/Tab',
         '# rubocop:disable Style/Send, Lint/RandOne some comment why',
-        '# rubocop:disable Lint/BlockAlignment some comment why',
-        '# rubocop:enable Style/Send, Lint/BlockAlignment but why?',
+        '# rubocop:disable Layout/BlockAlignment some comment why',
+        '# rubocop:enable Style/Send, Layout/BlockAlignment but why?',
         '# rubocop:enable Lint/RandOne foo bar!',            # 43
         '# rubocop:disable FlatMap',
         '[1, 2, 3, 4].map { |e| [e, e] }.flatten(1)',
@@ -85,7 +85,7 @@ RSpec.describe RuboCop::CommentConfig do
       {
         'Style/Send' => 40..42,
         'Lint/RandOne' => 40..43,
-        'Lint/BlockAlignment' => 41..42
+        'Layout/BlockAlignment' => 41..42
       }.each do |cop_name, expected|
         actual = disabled_lines_of_cop(cop_name)
         expect(actual & expected.to_a).to eq(expected.to_a)

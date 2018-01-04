@@ -78,6 +78,10 @@ Layout/AlignParameters:
   StyleGuide: '#no-double-indent'
   Enabled: true
 
+Layout/BlockAlignment:
+  Description: 'Align block ends correctly.'
+  Enabled: true
+
 Layout/BlockEndNewline:
   Description: 'Put end statement of multiline block on its own line.'
   Enabled: true
@@ -434,10 +438,6 @@ Lint/AssignmentInCondition:
 
 Lint/BigDecimalNew:
   Description: '`BigDecimal.new()` is deprecated. Use `BigDecimal()` instead.'
-  Enabled: true
-
-Lint/BlockAlignment:
-  Description: 'Align block ends correctly.'
   Enabled: true
 
 Lint/BooleanSymbol:

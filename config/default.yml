@@ -224,6 +224,19 @@ Layout/AlignParameters:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
+# checks whether the end keywords are aligned properly for `do` `end` blocks.
+Layout/BlockAlignment:
+  # The value `start_of_block` means that the `end` should be aligned with line
+  # where the `do` keyword appears.
+  # The value `start_of_line` means it should be aligned with the whole
+  # expression's starting line.
+  # The value `either` means both are allowed.
+  EnforcedStyleAlignWith: either
+  SupportedStylesAlignWith:
+    - either
+    - start_of_block
+    - start_of_line
+
 # Indentation of `when`.
 Layout/CaseIndentation:
   EnforcedStyle: case
@@ -1514,19 +1527,6 @@ Metrics/PerceivedComplexity:
 # Allow safe assignment in conditions.
 Lint/AssignmentInCondition:
   AllowSafeAssignment: true
-
-# checks whether the end keywords are aligned properly for `do` `end` blocks.
-Lint/BlockAlignment:
-  # The value `start_of_block` means that the `end` should be aligned with line
-  # where the `do` keyword appears.
-  # The value `start_of_line` means it should be aligned with the whole
-  # expression's starting line.
-  # The value `either` means both are allowed.
-  EnforcedStyleAlignWith: either
-  SupportedStylesAlignWith:
-    - either
-    - start_of_block
-    - start_of_line
 
 Lint/InheritException:
   # The default base class in favour of `Exception`.

@@ -33,7 +33,7 @@
 * [#5240](https://github.com/bbatsov/rubocop/pull/5240): Make `Style/StringHashKeys` to accepts environment variables. ([@pocke][])
 * [#5395](https://github.com/bbatsov/rubocop/pull/5395): Always exit 2 when specified configuration file does not exist. ([@pocke][])
 * [#5402](https://github.com/bbatsov/rubocop/pull/5402): Remove undefined `ActiveSupport::TimeZone#strftime` method from defined dangerous methods of `Rails/TimeZone` cop. ([@koic][])
-* [#4704](https://github.com/bbatsov/rubocop/issues/4704): Move `Lint/EndAlignment` and `Lint/DefEndAlignment` to the `Layout` namespace. ([@bquorning][])
+* [#4704](https://github.com/bbatsov/rubocop/issues/4704): Move `Lint/EndAlignment`, `Lint/DefEndAlignment`, and `Lint/BlockAlignment` to the `Layout` namespace. ([@bquorning][])
 
 ## 0.52.1 (2017-12-27)
 

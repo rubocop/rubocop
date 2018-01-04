@@ -230,7 +230,7 @@ RSpec.describe RuboCop::Config do
             EnforcedMode: conservative
           Style/MethodCallParentheses:
             Enabled: false
-          Lint/BlockAlignment:
+          Layout/BlockAlignment:
             AlignWith: either
           Layout/SpaceBeforeModifierKeyword:
             Enabled: false
