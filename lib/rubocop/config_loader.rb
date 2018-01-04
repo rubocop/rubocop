@@ -26,8 +26,9 @@ module RuboCop
     AUTO_GENERATED_FILE = '.rubocop_todo.yml'.freeze
 
     class << self
+      include FileFinder
+
       attr_accessor :debug, :auto_gen_config, :ignore_parent_exclusion
-      attr_writer :root_level # The upwards search is stopped at this level.
       attr_writer :default_configuration
 
       alias debug? debug
@@ -35,7 +36,8 @@ module RuboCop
       alias ignore_parent_exclusion? ignore_parent_exclusion
 
       def clear_options
-        @debug = @auto_gen_config = @root_level = nil
+        @debug = @auto_gen_config = nil
+        FileFinder.root_level = nil
       end
 
       def load_file(file)
@@ -82,7 +84,7 @@ module RuboCop
       # user's home directory is checked. If there's no .rubocop.yml
       # there either, the path to the default file is returned.
       def configuration_file_for(target_dir)
-        config_files_in_path(target_dir).first || DEFAULT_FILE
+        find_file_upwards(DOTFILE, target_dir, use_home: true) || DEFAULT_FILE
       end
 
       def configuration_from_file(config_file)
@@ -98,7 +100,7 @@ module RuboCop
       end
 
       def add_excludes_from_files(config, config_file)
-        found_files = config_files_in_path(config_file)
+        found_files = find_files_upwards(DOTFILE, config_file, use_home: true)
         return if found_files.empty?
         return if PathUtil.relative_path(found_files.last) ==
                   PathUtil.relative_path(config_file)
@@ -192,23 +194,6 @@ module RuboCop
         else
           YAML.load(yaml_code, filename) # rubocop:disable Security/YAMLLoad
         end
-      end
-
-      def config_files_in_path(target)
-        possible_config_files = dirs_to_search(target).map do |dir|
-          File.join(dir, DOTFILE)
-        end
-        possible_config_files.select { |config_file| File.exist?(config_file) }
-      end
-
-      def dirs_to_search(target_dir)
-        dirs_to_search = []
-        Pathname.new(File.expand_path(target_dir)).ascend do |dir_pathname|
-          break if dir_pathname.to_s == @root_level
-          dirs_to_search << dir_pathname.to_s
-        end
-        dirs_to_search << Dir.home if ENV.key? 'HOME'
-        dirs_to_search
       end
     end
 
