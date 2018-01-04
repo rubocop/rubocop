@@ -26,6 +26,7 @@
 * [#5357](https://github.com/bbatsov/rubocop/issues/5357): Fix `Lint/InterpolationCheck` false positives on escaped interpolations. ([@pocke][])
 * [#5409](https://github.com/bbatsov/rubocop/issues/5409): Fix multiline indent for `Style/SymbolArray` and `Style/WordArray` autocorrect. ([@flyerhzm][])
 * [#5393](https://github.com/bbatsov/rubocop/issues/5393): Fix `Rails/Delegate`'s false positive with a method call with arguments. ([@pocke][])
+* [#5348](https://github.com/bbatsov/rubocop/issues/5348): Fix false positive for `Style/SafeNavigation` when safe guarding more comparison methods. ([@rrosenblum][])
 
 ### Changes
 

@@ -50,6 +50,7 @@ module RuboCop
         MSG = 'Use safe navigation (`&.`) instead of checking if an object ' \
               'exists before calling the method.'.freeze
         NIL_METHODS = nil.methods.freeze
+        ADDITIONAL_COMPARISON_METHODS = %i[<=> =~ !~].freeze
 
         minimum_target_ruby_version 2.3
 
@@ -167,7 +168,9 @@ module RuboCop
         end
 
         def comparison_node?(parent)
-          parent.send_type? && parent.comparison_method?
+          parent.send_type? &&
+            (parent.comparison_method? ||
+             ADDITIONAL_COMPARISON_METHODS.include?(parent.method_name))
         end
 
         def unsafe_method?(send_node)
