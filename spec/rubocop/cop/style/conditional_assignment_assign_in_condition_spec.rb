@@ -650,7 +650,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                             'SupportedStyles' => %w[assign_to_condition
                                                     assign_inside_condition]
                           },
-                          'Lint/EndAlignment' => {
+                          'Layout/EndAlignment' => {
                             'EnforcedStyleAlignWith' => 'keyword',
                             'Enabled' => true
                           },
@@ -867,7 +867,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                             'SupportedStyles' => %w[assign_to_condition
                                                     assign_inside_condition]
                           },
-                          'Lint/EndAlignment' => {
+                          'Layout/EndAlignment' => {
                             'EnforcedStyleAlignWith' => 'keyword',
                             'Enabled' => true
                           },
@@ -1144,7 +1144,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                             'SupportedStyles' => %w[assign_to_condition
                                                     assign_inside_condition]
                           },
-                          'Lint/EndAlignment' => {
+                          'Layout/EndAlignment' => {
                             'EnforcedStyleAlignWith' => 'keyword',
                             'Enabled' => true
                           },

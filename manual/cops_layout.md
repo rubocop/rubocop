@@ -1138,6 +1138,76 @@ EnforcedStyle | `no_empty_lines` | `empty_lines`, `empty_lines_except_namespace`
 
 * [https://github.com/bbatsov/ruby-style-guide#empty-lines-around-bodies](https://github.com/bbatsov/ruby-style-guide#empty-lines-around-bodies)
 
+## Layout/EndAlignment
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks whether the end keywords are aligned properly.
+
+Three modes are supported through the `EnforcedStyleAlignWith`
+configuration parameter:
+
+If it's set to `keyword` (which is the default), the `end`
+shall be aligned with the start of the keyword (if, class, etc.).
+
+If it's set to `variable` the `end` shall be aligned with the
+left-hand-side of the variable assignment, if there is one.
+
+If it's set to `start_of_line`, the `end` shall be aligned with the
+start of the line where the matching keyword appears.
+
+### Examples
+
+#### EnforcedStyleAlignWith: keyword (default)
+
+```ruby
+# bad
+
+variable = if true
+    end
+
+# good
+
+variable = if true
+           end
+```
+#### EnforcedStyleAlignWith: variable
+
+```ruby
+# bad
+
+variable = if true
+    end
+
+# good
+
+variable = if true
+end
+```
+#### EnforcedStyleAlignWith: start_of_line
+
+```ruby
+# bad
+
+variable = if true
+    end
+
+# good
+
+puts(if true
+end)
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyleAlignWith | `keyword` | `keyword`, `variable`, `start_of_line`
+AutoCorrect | `false` | Boolean
+Severity | `warning` | String
+
 ## Layout/EndOfLine
 
 Enabled by default | Supports autocorrection

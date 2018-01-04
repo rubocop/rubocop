@@ -9,7 +9,7 @@ module RuboCop
         extend NodePattern::Macros
 
         EQUAL = '='.freeze
-        END_ALIGNMENT = 'Lint/EndAlignment'.freeze
+        END_ALIGNMENT = 'Layout/EndAlignment'.freeze
         ALIGN_WITH = 'EnforcedStyleAlignWith'.freeze
         KEYWORD = 'keyword'.freeze
 

@@ -288,7 +288,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                                      "\ty = 3",
                                      '  end'])
           create_file('.rubocop.yml', <<-YAML.strip_indent)
-            Lint/EndAlignment:
+            Layout/EndAlignment:
               Enabled: false
           YAML
           expect(cli.run(['--format', 'simple',
@@ -921,7 +921,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             'Another good alternative is the usage of control flow &&/||.',
             '  if something',
             '  ^^',
-            'example3.rb:4:5: W: Lint/EndAlignment: ' \
+            'example3.rb:4:5: W: Layout/EndAlignment: ' \
             'end at 4, 4 is not aligned with if at 2, 2.',
             '    end',
             '    ^^^',
