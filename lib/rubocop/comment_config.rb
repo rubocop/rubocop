@@ -34,7 +34,28 @@ module RuboCop
       @cop_disabled_line_ranges ||= analyze
     end
 
+    def extra_enabled_comments
+      extra_enabled_comments_with_names([], {})
+    end
+
     private
+
+    def extra_enabled_comments_with_names(extras, names)
+      each_directive do |comment, cop_names, disabled|
+        next unless comment_only_line?(comment.loc.expression.line)
+        cop_names.each do |name|
+          names[name] ||= 0
+          if disabled
+            names[name] += 1
+          elsif names[name] > 0
+            names[name] -= 1
+          else
+            extras << [comment, name]
+          end
+        end
+      end
+      extras
+    end
 
     def analyze
       analyses = Hash.new { |hash, key| hash[key] = CopAnalysis.new([], nil) }

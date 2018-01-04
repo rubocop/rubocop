@@ -43,7 +43,7 @@ module RuboCop
       #
       # @example EnforcedStyleForEmptyBraces: space
       #   # The `space` EnforcedStyleForEmptyBraces style enforces that
-      #   # block braces have at least a spece in between when empty.
+      #   # block braces have at least a space in between when empty.
       #
       #   # bad
       #   some_array.each {}
@@ -65,7 +65,7 @@ module RuboCop
       #   # good
       #   [1, 2, 3].each { |n| n * 2 }
       #
-      # @example SpaceBeforeBlockParameters: true
+      # @example SpaceBeforeBlockParameters: false
       #   # The SpaceBeforeBlockParameters style set to `false` enforces that
       #   # there is no space between `{` and `|`. Overrides `EnforcedStyle`
       #   # if there is a conflict.

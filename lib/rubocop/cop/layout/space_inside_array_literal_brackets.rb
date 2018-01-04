@@ -36,6 +36,32 @@ module RuboCop
       #
       #   # good
       #   array = [ a, [ b, c ]]
+      #
+      #
+      # @example EnforcedStyleForEmptyBrackets: no_space (default)
+      #   # The `no_space` EnforcedStyleForEmptyBrackets style enforces that
+      #   # empty array brackets do not contain spaces.
+      #
+      #   # bad
+      #   foo = [ ]
+      #   bar = [     ]
+      #
+      #   # good
+      #   foo = []
+      #   bar = []
+      #
+      # @example EnforcedStyleForEmptyBrackets: space
+      #   # The `space` EnforcedStyleForEmptyBrackets style enforces that
+      #   # empty array brackets contain exactly one space.
+      #
+      #   # bad
+      #   foo = []
+      #   bar = [    ]
+      #
+      #   # good
+      #   foo = [ ]
+      #   bar = [ ]
+      #
       class SpaceInsideArrayLiteralBrackets < Cop
         include SurroundingSpace
         include ConfigurableEnforcedStyle
@@ -47,7 +73,7 @@ module RuboCop
           return unless node.square_brackets?
           left, right = array_brackets(node)
           if empty_brackets?(left, right)
-            return empty_offenses(node, left, right)
+            return empty_offenses(node, left, right, EMPTY_MSG)
           end
 
           start_ok = next_to_newline?(node, left)
@@ -61,7 +87,8 @@ module RuboCop
 
           lambda do |corrector|
             if empty_brackets?(left, right)
-              empty_corrections(corrector, left, right)
+              SpaceCorrector.empty_corrections(processed_source, corrector,
+                                               empty_config, left, right)
             elsif style == :no_space
               SpaceCorrector.remove_space(processed_source, corrector,
                                           left, right)
@@ -87,51 +114,8 @@ module RuboCop
           tokens(node).reverse.find(&:right_bracket?)
         end
 
-        def empty_brackets?(left_bracket_token, right_bracket_token)
-          left_index = processed_source.tokens.index(left_bracket_token)
-          right_index = processed_source.tokens.index(right_bracket_token)
-          right_index && left_index == right_index - 1
-        end
-
-        def empty_offenses(node, left, right)
-          empty_offense(node, 'Use one') if offending_empty_space?(left, right)
-          return unless offending_empty_no_space?(left, right)
-          empty_offense(node, 'Do not use')
-        end
-
-        def empty_offense(node, command)
-          add_offense(node, message: format(EMPTY_MSG, command: command))
-        end
-
-        def offending_empty_space?(left, right)
-          empty_config == 'space' && !space_between?(left, right)
-        end
-
-        def offending_empty_no_space?(left, right)
-          empty_config == 'no_space' && !no_space_between?(left, right)
-        end
-
-        def space_between?(left, right)
-          left.end_pos + 1 == right.begin_pos
-        end
-
-        def no_space_between?(left, right)
-          left.end_pos == right.begin_pos
-        end
-
         def empty_config
           cop_config['EnforcedStyleForEmptyBrackets']
-        end
-
-        def empty_corrections(corrector, left, right)
-          if offending_empty_space?(left, right)
-            range = side_space_range(range: left.pos, side: :right)
-            corrector.remove(range)
-            corrector.insert_after(left.pos, ' ')
-          elsif offending_empty_no_space?(left, right)
-            range = side_space_range(range: left.pos, side: :right)
-            corrector.remove(range)
-          end
         end
 
         def next_to_newline?(node, token)

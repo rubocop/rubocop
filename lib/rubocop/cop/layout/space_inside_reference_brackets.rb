@@ -29,17 +29,50 @@ module RuboCop
       #   # good
       #   hash[ :key ]
       #   array[ index ]
+      #
+      #
+      # @example EnforcedStyleForEmptyBrackets: no_space (default)
+      #   # The `no_space` EnforcedStyleForEmptyBrackets style enforces that
+      #   # empty reference brackets do not contain spaces.
+      #
+      #   # bad
+      #   foo[ ]
+      #   foo[     ]
+      #
+      #   # good
+      #   foo[]
+      #
+      # @example EnforcedStyleForEmptyBrackets: space
+      #   # The `space` EnforcedStyleForEmptyBrackets style enforces that
+      #   # empty reference brackets contain exactly one space.
+      #
+      #   # bad
+      #   foo[]
+      #   foo[    ]
+      #
+      #   # good
+      #   foo[ ]
+      #
       class SpaceInsideReferenceBrackets < Cop
         include SurroundingSpace
         include ConfigurableEnforcedStyle
 
         MSG = '%<command>s space inside reference brackets.'.freeze
+        EMPTY_MSG = '%<command>s space inside empty reference brackets.'.freeze
+
+        BRACKET_METHODS = %i[[] []=].freeze
 
         def on_send(node)
           return if node.multiline?
-          return unless left_ref_bracket(node)
-          left_token = left_ref_bracket(node)
-          right_token = closing_bracket(node, left_token)
+          return unless bracket_method?(node)
+          tokens = tokens(node)
+          left_token = left_ref_bracket(tokens)
+          return unless left_token
+          right_token = closing_bracket(tokens, left_token)
+
+          if empty_brackets?(left_token, right_token)
+            return empty_offenses(node, left_token, right_token, EMPTY_MSG)
+          end
 
           if style == :no_space
             no_space_offenses(node, left_token, right_token, MSG)
@@ -52,7 +85,10 @@ module RuboCop
           lambda do |corrector|
             left, right = reference_brackets(node)
 
-            if style == :no_space
+            if empty_brackets?(left, right)
+              SpaceCorrector.empty_corrections(processed_source, corrector,
+                                               empty_config, left, right)
+            elsif style == :no_space
               SpaceCorrector.remove_space(processed_source, corrector,
                                           left, right)
             else
@@ -64,25 +100,35 @@ module RuboCop
         private
 
         def reference_brackets(node)
-          left = left_ref_bracket(node)
-          [left, closing_bracket(node, left)]
+          tokens = tokens(node)
+          left = left_ref_bracket(tokens)
+          [left, closing_bracket(tokens, left)]
         end
 
-        def left_ref_bracket(node)
-          tokens(node).reverse.find(&:left_ref_bracket?)
+        def bracket_method?(node)
+          _, method, = *node
+          BRACKET_METHODS.include?(method)
         end
 
-        def closing_bracket(node, opening_bracket)
-          i = tokens(node).index(opening_bracket)
+        def left_ref_bracket(tokens)
+          tokens.reverse.find(&:left_ref_bracket?)
+        end
+
+        def closing_bracket(tokens, opening_bracket)
+          i = tokens.index(opening_bracket)
           inner_left_brackets_needing_closure = 0
 
-          tokens(node)[i..-1].each do |token|
+          tokens[i..-1].each do |token|
             inner_left_brackets_needing_closure += 1 if token.left_bracket?
             inner_left_brackets_needing_closure -= 1 if token.right_bracket?
             if inner_left_brackets_needing_closure.zero? && token.right_bracket?
               return token
             end
           end
+        end
+
+        def empty_config
+          cop_config['EnforcedStyleForEmptyBrackets']
         end
       end
     end
