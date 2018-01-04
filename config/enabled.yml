@@ -99,6 +99,13 @@ Layout/CommentIndentation:
   Description: 'Indentation of comments.'
   Enabled: true
 
+Layout/ConditionPosition:
+  Description: >-
+                 Checks for condition placed in a confusing position relative to
+                 the keyword.
+  StyleGuide: '#same-line-condition'
+  Enabled: true
+
 Layout/DefEndAlignment:
   Description: 'Align ends corresponding to defs correctly.'
   Enabled: true
@@ -446,13 +453,6 @@ Lint/BooleanSymbol:
 
 Lint/CircularArgumentReference:
   Description: "Default values in optional keyword arguments and optional ordinal arguments should not refer back to the name of the argument."
-  Enabled: true
-
-Lint/ConditionPosition:
-  Description: >-
-                 Checks for condition placed in a confusing position relative to
-                 the keyword.
-  StyleGuide: '#same-line-condition'
   Enabled: true
 
 Lint/Debugger:

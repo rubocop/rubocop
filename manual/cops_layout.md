@@ -633,6 +633,37 @@ if true
 end
 ```
 
+## Layout/ConditionPosition
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks for conditions that are not on the same line as
+if/while/until.
+
+### Examples
+
+```ruby
+# bad
+
+if
+  some_condition
+  do_something
+end
+```
+```ruby
+# good
+
+if some_condition
+  do_something
+end
+```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#same-line-condition](https://github.com/bbatsov/ruby-style-guide#same-line-condition)
+
 ## Layout/DefEndAlignment
 
 Enabled by default | Supports autocorrection
