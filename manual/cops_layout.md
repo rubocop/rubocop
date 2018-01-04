@@ -571,6 +571,58 @@ if true
 end
 ```
 
+## Layout/DefEndAlignment
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks whether the end keywords of method definitions are
+aligned properly.
+
+Two modes are supported through the EnforcedStyleAlignWith configuration
+parameter. If it's set to `start_of_line` (which is the default), the
+`end` shall be aligned with the start of the line where the `def`
+keyword is. If it's set to `def`, the `end` shall be aligned with the
+`def` keyword.
+
+### Examples
+
+#### EnforcedStyleAlignWith: start_of_line (default)
+
+```ruby
+# bad
+
+private def foo
+            end
+
+# good
+
+private def foo
+end
+```
+#### EnforcedStyleAlignWith: def
+
+```ruby
+# bad
+
+private def foo
+            end
+
+# good
+
+private def foo
+        end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyleAlignWith | `start_of_line` | `start_of_line`, `def`
+AutoCorrect | `false` | Boolean
+Severity | `warning` | String
+
 ## Layout/DotPosition
 
 Enabled by default | Supports autocorrection

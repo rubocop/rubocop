@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Lint
+    module Layout
       # This cop checks whether the end keywords of method definitions are
       # aligned properly.
       #

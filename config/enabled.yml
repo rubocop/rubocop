@@ -95,6 +95,10 @@ Layout/CommentIndentation:
   Description: 'Indentation of comments.'
   Enabled: true
 
+Layout/DefEndAlignment:
+  Description: 'Align ends corresponding to defs correctly.'
+  Enabled: true
+
 Layout/DotPosition:
   Description: 'Checks the position of the dot in multi-line method calls.'
   StyleGuide: '#consistent-multi-line-chains'
@@ -453,10 +457,6 @@ Lint/ConditionPosition:
 
 Lint/Debugger:
   Description: 'Check for debugger calls.'
-  Enabled: true
-
-Lint/DefEndAlignment:
-  Description: 'Align ends corresponding to defs correctly.'
   Enabled: true
 
 Lint/DeprecatedClassMethods:
