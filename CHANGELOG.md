@@ -3146,8 +3146,6 @@
 [@siggymcfried]: https://github.com/siggymcfried
 [@melch]: https://github.com/melch
 [@nattfodd]: https://github.com/nattfodd
-[@nattfodd]: https://github.com/nattfodd
-[@melch]: https://github.com/melch
 [@flyerhzm]: https://github.com/flyerhzm
 [@ybiquitous]: https://github.com/ybiquitous
 [@mame]: https://github.com/mame
