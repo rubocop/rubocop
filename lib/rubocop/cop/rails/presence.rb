@@ -72,13 +72,13 @@ module RuboCop
 
         def on_if(node)
           redundant_receiver_and_other(node) do |receiver, other|
-            unless ignore_other_node?(other)
+            unless ignore_other_node?(other) || receiver.nil?
               add_offense(node, message: message(node, receiver, other))
             end
           end
 
           redundant_negative_receiver_and_other(node) do |receiver, other|
-            unless ignore_other_node?(other)
+            unless ignore_other_node?(other) || receiver.nil?
               add_offense(node, message: message(node, receiver, other))
             end
           end
