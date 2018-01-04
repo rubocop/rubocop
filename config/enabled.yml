@@ -158,6 +158,10 @@ Layout/EmptyLinesAroundModuleBody:
   StyleGuide: '#empty-lines-around-bodies'
   Enabled: true
 
+Layout/EndAlignment:
+  Description: 'Align ends correctly.'
+  Enabled: true
+
 Layout/EndOfLine:
   Description: 'Use Unix-style line endings.'
   StyleGuide: '#crlf'
@@ -494,10 +498,6 @@ Lint/EmptyInterpolation:
 
 Lint/EmptyWhen:
   Description: 'Checks for `when` branches with empty bodies.'
-  Enabled: true
-
-Lint/EndAlignment:
-  Description: 'Align ends correctly.'
   Enabled: true
 
 Lint/EndInMethod:

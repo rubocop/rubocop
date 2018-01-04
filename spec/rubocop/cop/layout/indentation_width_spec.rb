@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
   let(:config) do
     RuboCop::Config.new('Layout/IndentationWidth' => cop_config,
                         'Layout/IndentationConsistency' => consistency_config,
-                        'Lint/EndAlignment' => end_alignment_config,
+                        'Layout/EndAlignment' => end_alignment_config,
                         'Lint/DefEndAlignment' => def_end_alignment_config)
   end
   let(:consistency_config) { { 'EnforcedStyle' => 'normal' } }

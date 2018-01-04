@@ -95,7 +95,10 @@ module RuboCop
           '`Naming/VariableName`.',
       'Style/VariableNumber' =>
         'The `Style/VariableNumber` cop has been renamed to ' \
-          '`Naming/VariableNumber`.'
+          '`Naming/VariableNumber`.',
+      'Lint/EndAlignment' =>
+        'The `Lint/EndAlignment` cop has been renamed to ' \
+          '`Layout/EndAlignment`.'
     }.freeze
 
     OBSOLETE_PARAMETERS = [
@@ -165,6 +168,12 @@ module RuboCop
       },
       {
         cop: 'Lint/EndAlignment',
+        parameter: 'AlignWith',
+        alternative: '`AlignWith` has been renamed to ' \
+                     '`EnforcedStyleAlignWith`'
+      },
+      {
+        cop: 'Layout/EndAlignment',
         parameter: 'AlignWith',
         alternative: '`AlignWith` has been renamed to ' \
                      '`EnforcedStyleAlignWith`'

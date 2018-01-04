@@ -43,7 +43,7 @@ test.rb:2:3: C: Style/GuardClause: Use a guard clause instead of wrapping the co
 test.rb:2:3: C: Style/IfUnlessModifier: Favor modifier if usage when having a single-line body. Another good alternative is the usage of control flow &&/||.
   if something
   ^^
-test.rb:4:5: W: Lint/EndAlignment: end at 4, 4 is not aligned with if at 2, 2.
+test.rb:4:5: W: Layout/EndAlignment: end at 4, 4 is not aligned with if at 2, 2.
     end
     ^^^
 

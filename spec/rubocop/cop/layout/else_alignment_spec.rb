@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
   subject(:cop) { described_class.new(config) }
 
   let(:config) do
-    RuboCop::Config.new('Lint/EndAlignment' => end_alignment_config)
+    RuboCop::Config.new('Layout/EndAlignment' => end_alignment_config)
   end
   let(:end_alignment_config) do
     { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'variable' }

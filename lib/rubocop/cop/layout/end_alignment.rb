@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Lint
+    module Layout
       # This cop checks whether the end keywords are aligned properly.
       #
       # Three modes are supported through the `EnforcedStyleAlignWith`
