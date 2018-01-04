@@ -690,6 +690,11 @@ Lint/UnneededCopDisableDirective:
                  It must be explicitly disabled.
   Enabled: true
 
+Lint/UnneededCopEnableDirective:
+  Description: Checks for rubocop:enable comments that can be removed.
+
+  Enabled: true
+
 Lint/UnneededRequireStatement:
   Description: 'Checks for unnecessary `require` statement.'
   Enabled: true

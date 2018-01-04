@@ -2852,6 +2852,34 @@ array = [ a, [ b, c ] ]
 # good
 array = [ a, [ b, c ]]
 ```
+#### EnforcedStyleForEmptyBrackets: no_space (default)
+
+```ruby
+# The `no_space` EnforcedStyleForEmptyBrackets style enforces that
+# empty array brackets do not contain spaces.
+
+# bad
+foo = [ ]
+bar = [     ]
+
+# good
+foo = []
+bar = []
+```
+#### EnforcedStyleForEmptyBrackets: space
+
+```ruby
+# The `space` EnforcedStyleForEmptyBrackets style enforces that
+# empty array brackets contain exactly one space.
+
+# bad
+foo = []
+bar = [    ]
+
+# good
+foo = [ ]
+bar = [ ]
+```
 
 ### Configurable attributes
 
@@ -2933,7 +2961,7 @@ some_array.each {}
 
 ```ruby
 # The `space` EnforcedStyleForEmptyBraces style enforces that
-# block braces have at least a spece in between when empty.
+# block braces have at least a space in between when empty.
 
 # bad
 some_array.each {}
@@ -2956,7 +2984,7 @@ some_array.each {   }
 # good
 [1, 2, 3].each { |n| n * 2 }
 ```
-#### SpaceBeforeBlockParameters: true
+#### SpaceBeforeBlockParameters: false
 
 ```ruby
 # The SpaceBeforeBlockParameters style set to `false` enforces that
@@ -3025,6 +3053,34 @@ h = { a: { b: 2 } }
 
 # good
 h = { a: { b: 2 }}
+```
+#### EnforcedStyleForEmptyBraces: no_space (default)
+
+```ruby
+# The `no_space` EnforcedStyleForEmptyBraces style enforces that
+# empty hash braces do not contain spaces.
+
+# bad
+foo = { }
+bar = {    }
+
+# good
+foo = {}
+bar = {}
+```
+#### EnforcedStyleForEmptyBraces: space
+
+```ruby
+# The `space` EnforcedStyleForEmptyBraces style enforces that
+# empty hash braces contain space.
+
+# bad
+foo = {}
+
+# good
+foo = { }
+foo = {  }
+foo = {     }
 ```
 
 ### Configurable attributes
@@ -3151,12 +3207,39 @@ array[index]
 hash[ :key ]
 array[ index ]
 ```
+#### EnforcedStyleForEmptyBrackets: no_space (default)
+
+```ruby
+# The `no_space` EnforcedStyleForEmptyBrackets style enforces that
+# empty reference brackets do not contain spaces.
+
+# bad
+foo[ ]
+foo[     ]
+
+# good
+foo[]
+```
+#### EnforcedStyleForEmptyBrackets: space
+
+```ruby
+# The `space` EnforcedStyleForEmptyBrackets style enforces that
+# empty reference brackets contain exactly one space.
+
+# bad
+foo[]
+foo[    ]
+
+# good
+foo[ ]
+```
 
 ### Configurable attributes
 
 Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `no_space` | `space`, `no_space`
+EnforcedStyleForEmptyBrackets | `no_space` | `space`, `no_space`
 
 ## Layout/SpaceInsideStringInterpolation
 

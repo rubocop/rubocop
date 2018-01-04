@@ -36,6 +36,32 @@ module RuboCop
       #
       #   # good
       #   h = { a: { b: 2 }}
+      #
+      #
+      # @example EnforcedStyleForEmptyBraces: no_space (default)
+      #   # The `no_space` EnforcedStyleForEmptyBraces style enforces that
+      #   # empty hash braces do not contain spaces.
+      #
+      #   # bad
+      #   foo = { }
+      #   bar = {    }
+      #
+      #   # good
+      #   foo = {}
+      #   bar = {}
+      #
+      # @example EnforcedStyleForEmptyBraces: space
+      #   # The `space` EnforcedStyleForEmptyBraces style enforces that
+      #   # empty hash braces contain space.
+      #
+      #   # bad
+      #   foo = {}
+      #
+      #   # good
+      #   foo = { }
+      #   foo = {  }
+      #   foo = {     }
+      #
       class SpaceInsideHashLiteralBraces < Cop
         include SurroundingSpace
         include ConfigurableEnforcedStyle

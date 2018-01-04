@@ -545,6 +545,10 @@ Layout/SpaceInsideReferenceBrackets:
   SupportedStyles:
     - space
     - no_space
+  EnforcedStyleForEmptyBrackets: no_space
+  SupportedStylesForEmptyBrackets:
+    - space
+    - no_space
 
 Layout/SpaceInsideStringInterpolation:
   EnforcedStyle: no_space
