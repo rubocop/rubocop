@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::Registry do
     end
 
     [
-      RuboCop::Cop::Lint::ConditionPosition,
+      RuboCop::Cop::Lint::BooleanSymbol,
       RuboCop::Cop::Lint::DuplicateMethods,
       RuboCop::Cop::Layout::IndentArray,
       RuboCop::Cop::Metrics::MethodLength,
@@ -117,12 +117,12 @@ RSpec.describe RuboCop::Cop::Registry do
 
   it 'exposes a mapping of cop names to cop classes' do
     expect(registry.to_h).to eql(
-      'Lint/ConditionPosition' => [RuboCop::Cop::Lint::ConditionPosition],
-      'Lint/DuplicateMethods'  => [RuboCop::Cop::Lint::DuplicateMethods],
-      'Layout/IndentArray'     => [RuboCop::Cop::Layout::IndentArray],
-      'Metrics/MethodLength'   => [RuboCop::Cop::Metrics::MethodLength],
-      'Test/IndentArray'       => [RuboCop::Cop::Test::IndentArray],
-      'RSpec/Foo'              => [RuboCop::Cop::RSpec::Foo]
+      'Lint/BooleanSymbol'    => [RuboCop::Cop::Lint::BooleanSymbol],
+      'Lint/DuplicateMethods' => [RuboCop::Cop::Lint::DuplicateMethods],
+      'Layout/IndentArray'    => [RuboCop::Cop::Layout::IndentArray],
+      'Metrics/MethodLength'  => [RuboCop::Cop::Metrics::MethodLength],
+      'Test/IndentArray'      => [RuboCop::Cop::Test::IndentArray],
+      'RSpec/Foo'             => [RuboCop::Cop::RSpec::Foo]
     )
   end
 
@@ -153,7 +153,7 @@ RSpec.describe RuboCop::Cop::Registry do
   it 'exposes a list of cop names' do
     expect(registry.names).to eql(
       [
-        'Lint/ConditionPosition',
+        'Lint/BooleanSymbol',
         'Lint/DuplicateMethods',
         'Layout/IndentArray',
         'Metrics/MethodLength',
