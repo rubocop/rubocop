@@ -520,7 +520,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       RUBY
     create_file('example.rb', source)
     create_file('.rubocop.yml', <<-YAML.strip_indent)
-      Lint/DefEndAlignment:
+      Layout/DefEndAlignment:
         AutoCorrect: true
     YAML
     expect(cli.run(['--auto-correct'])).to eq(0)

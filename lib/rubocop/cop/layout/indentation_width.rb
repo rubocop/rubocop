@@ -101,7 +101,7 @@ module RuboCop
 
           *_, body = *node.first_argument
 
-          def_end_config = config.for_cop('Lint/DefEndAlignment')
+          def_end_config = config.for_cop('Layout/DefEndAlignment')
           style = def_end_config['EnforcedStyleAlignWith'] || 'start_of_line'
           base = style == 'def' ? node.first_argument : node
 
