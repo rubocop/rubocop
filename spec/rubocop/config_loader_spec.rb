@@ -827,11 +827,10 @@ RSpec.describe RuboCop::ConfigLoader do
 
       it 'prints a friendly (concise) message to stderr and exits' do
         expect { load_file }.to(
-          output(/Configuration file not found/).to_stderr.and(
-            raise_error(SystemExit) do |e|
-              expect(e.status).to(eq(Errno::ENOENT::Errno))
-            end
-          )
+          raise_error(RuboCop::ConfigNotFoundError) do |e|
+            expect(e.status).to(eq(Errno::ENOENT::Errno))
+            expect(e.message).to(match(/\AConfiguration file not found: .+\z/))
+          end
         )
       end
     end

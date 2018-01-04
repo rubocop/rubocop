@@ -52,7 +52,7 @@ RSpec.describe RuboCop::Cop::Rails::Presence do
 
   it_behaves_like :offense, 'a if a.present?', 'a.presence', 1, 1
   it_behaves_like :offense, 'a unless a.blank?', 'a.presence', 1, 1
-  it_behaves_like :offense, <<-RUBY.strip_indent.chomp, <<-FIXED.strip_indent.chomp, 1, 7 ## rubocop:disable Metrics/LineLength
+  it_behaves_like :offense, <<-RUBY.strip_indent.chomp, <<-FIXED.strip_indent.chomp, 1, 7 # rubocop:disable Metrics/LineLength
     if [1, 2, 3].map { |num| num + 1 }
                 .map { |num| num + 2 }
                 .present?
@@ -71,15 +71,27 @@ RSpec.describe RuboCop::Cop::Rails::Presence do
     RUBY
   end
 
-  it 'does not register an offense when the expression does not return the receiver of `#present?`' do # rubocop:disable Metrics/LineLength
+  it 'does not register an offense when the expression does not ' \
+     'return the receiver of `#present?`' do
     expect_no_offenses(<<-RUBY.strip_indent)
       a.present? ? b : nil
     RUBY
+
+    expect_no_offenses(<<-RUBY.strip_indent)
+      puts foo if present?
+      puts foo if !present?
+    RUBY
   end
 
-  it 'does not register an offense when the expression does not return the receiver of `#blank?`' do # rubocop:disable Metrics/LineLength
+  it 'does not register an offense when the expression does not ' \
+     'return the receiver of `#blank?`' do
     expect_no_offenses(<<-RUBY.strip_indent)
       a.blank? ? nil : b
+    RUBY
+
+    expect_no_offenses(<<-RUBY.strip_indent)
+      puts foo if blank?
+      puts foo if !blank?
     RUBY
   end
 
@@ -102,7 +114,8 @@ RSpec.describe RuboCop::Cop::Rails::Presence do
     RUBY
   end
 
-  it 'does not register an offense when the else block has multiple statements' do # rubocop:disable Metrics/LineLength
+  it 'does not register an offense when the else block has multiple ' \
+     'statements' do
     expect_no_offenses(<<-RUBY.strip_indent)
       if a.present?
         a
