@@ -1969,6 +1969,10 @@ Style/UnlessElse:
   StyleGuide: '#no-else-with-unless'
   Enabled: true
 
+Style/UnlessMultipleConditions:
+  Description: 'Do not use `unless` with multiple conditions.'
+  Enabled: true
+
 Style/UnneededCapitalW:
   Description: 'Checks for %W when interpolation is not needed.'
   Enabled: true
