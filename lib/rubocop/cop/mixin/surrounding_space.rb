@@ -4,6 +4,8 @@ module RuboCop
   module Cop
     # Common functionality for checking and correcting surrounding whitespace.
     module SurroundingSpace
+      include RangeHelp
+
       NO_SPACE_COMMAND = 'Do not use'.freeze
       SPACE_COMMAND = 'Use'.freeze
 
@@ -99,15 +101,17 @@ module RuboCop
       end
 
       def empty_offenses(node, left, right, message)
+        range = range_between(left.begin_pos, right.end_pos)
         if offending_empty_space?(empty_config, left, right)
-          empty_offense(node, message, 'Use one')
+          empty_offense(node, range, message, 'Use one')
         end
         return unless offending_empty_no_space?(empty_config, left, right)
-        empty_offense(node, message, 'Do not use')
+        empty_offense(node, range, message, 'Do not use')
       end
 
-      def empty_offense(node, message, command)
-        add_offense(node, message: format(message, command: command))
+      def empty_offense(node, range, message, command)
+        add_offense(node, location: range,
+                          message: format(message, command: command))
       end
 
       def empty_brackets?(left_bracket_token, right_bracket_token)

@@ -12,15 +12,15 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
 
     it 'registers an offense for empty brackets with one space inside' do
       expect_offense(<<-RUBY.strip_indent)
-        a[ ]
-        ^^^^ Do not use space inside empty reference brackets.
+        foo[ ]
+           ^^^ Do not use space inside empty reference brackets.
       RUBY
     end
 
     it 'registers an offense for empty brackets with lots of space inside' do
       expect_offense(<<-RUBY.strip_indent)
         a[     ]
-        ^^^^^^^^ Do not use space inside empty reference brackets.
+         ^^^^^^^ Do not use space inside empty reference brackets.
       RUBY
     end
 
@@ -49,15 +49,15 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
 
     it 'registers offense for empty brackets with no space inside' do
       expect_offense(<<-RUBY.strip_indent)
-        a[]
-        ^^^ Use one space inside empty reference brackets.
+        foo[]
+           ^^ Use one space inside empty reference brackets.
       RUBY
     end
 
     it 'registers offense for empty brackets with more than one space inside' do
       expect_offense(<<-RUBY.strip_indent)
         a[      ]
-        ^^^^^^^^^ Use one space inside empty reference brackets.
+         ^^^^^^^^ Use one space inside empty reference brackets.
       RUBY
     end
 
