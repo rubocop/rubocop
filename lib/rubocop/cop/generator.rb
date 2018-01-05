@@ -14,25 +14,45 @@ module RuboCop
         module RuboCop
           module Cop
             module %<department>s
-              # TODO: Write cop description and example of bad / good code.
+              # TODO: Write cop description and example of bad / good code. For every
+              # `SupportedStyle` and unique configuration, there needs to be examples.
+              # Examples must have valid Ruby syntax. Do not use upticks.
               #
-              # @example
-              #   # bad
-              #   bad_method()
+              # @example EnforcedStyle: bar (default)
+              #   # Description of the `bar` style.
               #
               #   # bad
-              #   bad_method(args)
+              #   bad_bar_method
+              #
+              #   # bad
+              #   bad_bar_method(args)
               #
               #   # good
-              #   good_method()
+              #   good_bar_method
               #
               #   # good
-              #   good_method(args)
+              #   good_bar_method(args)
+              #
+              # @example EnforcedStyle: foo
+              #   # Description of the `foo` style.
+              #
+              #   # bad
+              #   bad_foo_method
+              #
+              #   # bad
+              #   bad_foo_method(args)
+              #
+              #   # good
+              #   good_foo_method
+              #
+              #   # good
+              #   good_foo_method(args)
+              #
               class %<cop_name>s < Cop
-                # TODO: Implement the cop into here.
+                # TODO: Implement the cop in here.
                 #
                 # In many cases, you can use a node matcher for matching node pattern.
-                # See. https://github.com/bbatsov/rubocop/blob/master/lib/rubocop/node_pattern.rb
+                # See https://github.com/bbatsov/rubocop/blob/master/lib/rubocop/node_pattern.rb
                 #
                 # For example
                 MSG = 'Use `#good_method` instead of `#bad_method`.'.freeze
