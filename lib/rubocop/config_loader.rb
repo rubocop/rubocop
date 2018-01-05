@@ -6,12 +6,6 @@ require 'pathname'
 module RuboCop
   # Raised when a RuboCop configuration file is not found.
   class ConfigNotFoundError < Error
-    attr_reader :status
-
-    def initialize(path, status)
-      super("Configuration file not found: #{path}")
-      @status = status
-    end
   end
 
   # This class represents the configuration of the RuboCop application
@@ -179,8 +173,9 @@ module RuboCop
       # found" error.
       def read_file(absolute_path)
         IO.read(absolute_path, encoding: Encoding::UTF_8)
-      rescue Errno::ENOENT => e
-        raise ConfigNotFoundError.new(absolute_path, e.errno)
+      rescue Errno::ENOENT
+        raise ConfigNotFoundError,
+              "Configuration file not found: #{absolute_path}"
       end
 
       def yaml_safe_load(yaml_code, filename)
