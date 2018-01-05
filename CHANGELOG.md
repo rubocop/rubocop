@@ -24,6 +24,7 @@
 * [#5383](https://github.com/bbatsov/rubocop/issues/5383): Fix `Rails/Presence` false detection of receiver for locally defined `blank?` & `present?` methods. ([@garettarrowood][])
 * [#5314](https://github.com/bbatsov/rubocop/issues/5314): Fix false positives for `Lint/NestedPercentLiteral` when percent characters are nested. ([@asherkach][])
 * [#5357](https://github.com/bbatsov/rubocop/issues/5357): Fix `Lint/InterpolationCheck` false positives on escaped interpolations. ([@pocke][])
+* [#5393](https://github.com/bbatsov/rubocop/issues/5393): Fix `Rails/Delegate`'s false positive with a method call with arguments. ([@pocke][])
 
 ### Changes
 

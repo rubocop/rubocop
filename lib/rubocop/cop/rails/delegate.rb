@@ -55,6 +55,11 @@ module RuboCop
       class Delegate < Cop
         MSG = 'Use `delegate` to define delegations.'.freeze
 
+        def_node_matcher :delegate?, <<-PATTERN
+          (def _method_name _args
+            (send (send nil? _) _ ...))
+        PATTERN
+
         def on_def(node)
           return unless trivial_delegate?(node)
           return if private_or_protected_delegation(node)
@@ -81,14 +86,9 @@ module RuboCop
         def trivial_delegate?(def_node)
           method_name, args, body = *def_node
 
-          delegate?(body) &&
+          delegate?(def_node) &&
             method_name_matches?(method_name, body) &&
             arguments_match?(args, body)
-        end
-
-        def delegate?(body)
-          body && body.send_type? && body.receiver &&
-            body.receiver.send_type? && !body.receiver.receiver
         end
 
         def arguments_match?(arg_array, body)
