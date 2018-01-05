@@ -25,8 +25,13 @@ module RuboCop
     OBSOLETE_COPS = {
       'Style/TrailingComma' =>
         'The `Style/TrailingComma` cop no longer exists. Please use ' \
-        '`Style/TrailingCommaInLiteral` and/or ' \
-        '`Style/TrailingCommaInArguments` instead.',
+        '`Style/TrailingCommaInArguments`, ' \
+        '`Style/TrailingCommaInArrayLiteral`, and/or ' \
+        '`Style/TrailingCommaInHashLiteral` instead.',
+      'Style/TrailingCommaInLiteral' =>
+        'The `Style/TrailingCommaInLiteral` cop no longer exists. Please use ' \
+        '`Style/TrailingCommaInArrayLiteral` and/or ' \
+        '`Style/TrailingCommaInHashLiteral` instead.',
       'Rails/DefaultScope' =>
         'The `Rails/DefaultScope` cop no longer exists.',
       'Lint/InvalidCharacterLiteral' =>
