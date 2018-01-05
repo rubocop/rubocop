@@ -18,12 +18,13 @@ module RuboCop
       #   foo = "something with #{interpolation} inside"
       class InterpolationCheck < Cop
         MSG = 'Interpolation in single quoted string detected. '\
-	      'Use double quoted strings if you need interpolation.'.freeze
+              'Use double quoted strings if you need interpolation.'.freeze
 
         def on_str(node)
           return if heredoc?(node)
-          return if node.parent && node.parent.dstr_type?
-          return unless node.str_content.scrub =~ /#\{.*\}/
+          parent = node.parent
+          return if parent && (parent.dstr_type? || parent.regexp_type?)
+          return unless node.source.scrub =~ /(?<!\\)#\{.*\}/
           add_offense(node)
         end
 
