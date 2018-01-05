@@ -10,6 +10,9 @@ module RuboCop
     SKIPPED_PHASE_1 = 'Phase 1 of 2: run Metrics/LineLength cop (skipped ' \
                       'because the default Metrics/LineLength:Max is ' \
                       'overridden)'.freeze
+    STATUS_SUCCESS  = 0
+    STATUS_OFFENSES = 1
+    STATUS_ERROR    = 2
 
     class Finished < RuntimeError; end
 
@@ -41,16 +44,16 @@ module RuboCop
       return e.status
     rescue RuboCop::Error => e
       warn Rainbow("Error: #{e.message}").red
-      return 2
+      return STATUS_ERROR
     rescue Finished
-      return 0
+      return STATUS_SUCCESS
     rescue IncorrectCopNameError => e
       warn e.message
-      return 2
+      return STATUS_ERROR
     rescue StandardError, SyntaxError, LoadError => e
       warn e.message
       warn e.backtrace
-      return 2
+      return STATUS_ERROR
     end
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
@@ -155,7 +158,11 @@ module RuboCop
       display_error_summary(runner.errors)
       maybe_print_corrected_source
 
-      all_passed && !runner.aborting? && runner.errors.empty? ? 0 : 1
+      if all_passed && !runner.aborting? && runner.errors.empty?
+        STATUS_SUCCESS
+      else
+        STATUS_OFFENSES
+      end
     end
 
     def handle_exiting_options
