@@ -954,8 +954,8 @@ Style/EmptyMethod:
 Style/For:
   EnforcedStyle: each
   SupportedStyles:
-    - for
     - each
+    - for
 
 # Enforce the method used for string formatting.
 Style/FormatString:
