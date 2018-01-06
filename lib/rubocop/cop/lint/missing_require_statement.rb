@@ -1,6 +1,4 @@
 # frozen_string_literal: true
-
-# TODO: when finished, run `rake generate_cops_documentation` to update the docs
 module RuboCop
   module Cop
     module Lint
@@ -8,12 +6,12 @@ module RuboCop
       #
       # @example
       #   # bad
-      #   Faraday.new(...)
+      #   Faraday.new
       #
       #   # good
       #   require 'faraday'
       #
-      #   Faraday.new(...)
+      #   Faraday.new
       class MissingRequireStatement < Cop
         MSG = '`%<constant>s` not found, you\'re probably missing a require statement or there is a cycle in your dependencies'.freeze
 

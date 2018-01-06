@@ -1245,6 +1245,26 @@ Name | Default value | Configurable values
 --- | --- | ---
 MaximumRangeSize | `Infinity` | Float
 
+## Lint/MissingRequireStatement
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+Checks for missing require statements in your code
+
+### Examples
+
+```ruby
+# bad
+Faraday.new
+
+# good
+require 'faraday'
+
+Faraday.new
+```
+
 ## Lint/MultipleCompare
 
 Enabled by default | Supports autocorrection
