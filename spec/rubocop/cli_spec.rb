@@ -1673,8 +1673,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(['example1.rb'])).to eq(2)
         expect($stderr.string.strip).to eq(
           ['Error: The `Style/TrailingComma` cop no longer exists. Please ' \
-           'use `Style/TrailingCommaInLiteral` and/or ' \
-           '`Style/TrailingCommaInArguments` instead.',
+           'use `Style/TrailingCommaInArguments`, ' \
+           '`Style/TrailingCommaInArrayLiteral`, and/or ' \
+           '`Style/TrailingCommaInHashLiteral` instead.',
            '(obsolete configuration found in .rubocop.yml, ' \
            'please update it)'].join("\n")
         )
