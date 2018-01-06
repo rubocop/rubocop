@@ -15,7 +15,7 @@ module RuboCop
       #
       #   Faraday.new(...)
       class MissingRequireStatement < Cop
-        MSG = '`%<constant>s` not found, you\'re probably missing a require statement'.freeze
+        MSG = '`%<constant>s` not found, you\'re probably missing a require statement or there is a cycle in your dependencies'.freeze
 
         attr_writer :timeline
 
@@ -227,10 +227,20 @@ module RuboCop
 
         def require(file: nil)
           Kernel.require(file)
+        rescue LoadError => ex
+        rescue NameError => ex
+          puts "Note: Could not load #{file}:"
+          puts ex.message
+          puts "Check your dependencies, they could be circular"
         end
 
         def require_relative(relative_path: nil)
           Kernel.require_relative(relative_path)
+        rescue LoadError => ex
+        rescue NameError => ex
+          puts "Note: Could not load relative file #{relative_path}:"
+          puts ex.message
+          puts "Check your dependencies, they could be circular"
         end
 
         def access_const(const_name: nil)
