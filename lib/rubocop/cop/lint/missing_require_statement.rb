@@ -13,7 +13,7 @@ module RuboCop
       #
       #   Faraday.new
       class MissingRequireStatement < Cop
-        MSG = '`%<constant>s` not found, you\'re probably missing a require statement or there is a cycle in your dependencies'.freeze
+        MSG = '`%<constant>s` not found, you\'re probably missing a require statement or there is a cycle in your dependencies.'.freeze
 
         attr_writer :timeline
 

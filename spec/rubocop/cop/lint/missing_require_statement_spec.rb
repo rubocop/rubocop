@@ -9,7 +9,7 @@ RSpec.describe RuboCop::Cop::Lint::MissingRequireStatement do
     it 'registers an offense when missing' do
       expect_offense(<<-RUBY.strip_indent)
         Abbrev.abbrev(["test"])
-        ^^^^^^ `Abbrev` not found, you're probably missing a require statement or there is a cycle in your dependencies
+        ^^^^^^ `Abbrev` not found, you're probably missing a require statement or there is a cycle in your dependencies.
       RUBY
     end
 
@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Lint::MissingRequireStatement do
     it 'registers an offense when too late' do
       expect_offense(<<-RUBY.strip_indent)
         Abbrev.abbrev(["test"])
-        ^^^^^^ `Abbrev` not found, you're probably missing a require statement or there is a cycle in your dependencies
+        ^^^^^^ `Abbrev` not found, you're probably missing a require statement or there is a cycle in your dependencies.
         require 'abbrev'
       RUBY
     end
@@ -82,7 +82,7 @@ RSpec.describe RuboCop::Cop::Lint::MissingRequireStatement do
     it 'registers an offense when not available' do
       expect_offense(<<-RUBY.strip_indent)
       class A < B
-      ^^^^^^^^^^^ `B` not found, you're probably missing a require statement or there is a cycle in your dependencies
+      ^^^^^^^^^^^ `B` not found, you're probably missing a require statement or there is a cycle in your dependencies.
       end
       RUBY
     end
