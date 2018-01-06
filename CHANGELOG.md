@@ -13,6 +13,7 @@
 * [#5319](https://github.com/bbatsov/rubocop/pull/5319): Add new `Security/Open` cop. ([@mame][])
 * Add `EnforcedStyleForEmptyBrackets` configuration to `Layout/SpaceInsideReferenceBrackets`.([@garettarrowood][])
 * [#5358](https://github.com/bbatsov/rubocop/pull/5358):  `--no-auto-gen-timestamp` CLI option suppresses the inclusion of the date and time it was generated in auto-generated config. ([@dominicsayers][])
+* New cop `MissingRequireStatement` that checks for potentially missing require statements in your code. ([@milch][])
 
 ### Bug fixes
 
@@ -3155,3 +3156,4 @@
 [@ybiquitous]: https://github.com/ybiquitous
 [@mame]: https://github.com/mame
 [@dominicsayers]: https://github.com/dominicsayers
+[@milch]: https://github.com/milch

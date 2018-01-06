@@ -34,6 +34,10 @@ Layout/MultilineAssignmentLayout:
   StyleGuide: '#indent-conditional-assignment'
   Enabled: false
 
+Lint/MissingRequireStatement:
+  Description: 'Checks for missing require statements that might cause implicit dependencies.'
+  Enabled: false
+
 # By default, the rails cops are not run. Override in project or home
 # directory .rubocop.yml files, or by giving the -R/--rails option.
 Rails:
