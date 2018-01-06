@@ -135,7 +135,6 @@ module RuboCop
 
           push_list = []
           push_list << { event: :const_undef, name: name }
-          push_list << { event: :const_undef, name: inherited } if inherited
 
 
           { skip: skip_list, push: push_list}
@@ -271,7 +270,7 @@ module RuboCop
         end
 
         def const_assigned(const_name: nil)
-          full_name = [self.const_stack.join("::"), const_name].join("::")
+          full_name = (self.const_stack +  [const_name]).join("::")
           self.defined_constants << full_name
           self.defined_constants.uniq!
         end
