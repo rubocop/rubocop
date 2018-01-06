@@ -19,84 +19,88 @@ module RuboCop
       #   - ignore_implicit (without curly braces)
       #   - ignore_explicit (with curly braces)
       #
-      # @example
+      # @example EnforcedHashRocketStyle: key (default)
+      #   # bad
+      #   {
+      #     :foo => bar,
+      #      :ba => baz
+      #   }
       #
-      #   # EnforcedHashRocketStyle: key (default)
-      #   # EnforcedColonStyle: key (default)
+      #   # good
+      #   {
+      #     :foo => bar,
+      #     :ba => baz
+      #   }
+      #
+      # @example EnforcedHashRocketStyle: separator
+      #   # bad
+      #   {
+      #     :foo => bar,
+      #     :ba => baz
+      #   }
+      #   {
+      #     :foo => bar,
+      #     :ba  => baz
+      #   }
+      #
+      #   # good
+      #   {
+      #     :foo => bar,
+      #      :ba => baz
+      #   }
+      #
+      # @example EnforcedHashRocketStyle: table
+      #   # bad
+      #   {
+      #     :foo => bar,
+      #      :ba => baz
+      #   }
+      #
+      #   # good
+      #   {
+      #     :foo => bar,
+      #     :ba  => baz
+      #   }
+      #
+      # @example EnforcedColonStyle: key (default)
+      #   # bad
+      #   {
+      #     foo: bar,
+      #      ba: baz
+      #   }
       #
       #   # good
       #   {
       #     foo: bar,
       #     ba: baz
       #   }
-      #   {
-      #     :foo => bar,
-      #     :ba => baz
-      #   }
       #
+      # @example EnforcedColonStyle: separator
       #   # bad
-      #   {
-      #     foo: bar,
-      #      ba: baz
-      #   }
-      #   {
-      #     :foo => bar,
-      #      :ba => baz
-      #   }
-      #
-      # @example
-      #
-      #   # EnforcedHashRocketStyle: separator
-      #   # EnforcedColonStyle: separator
-      #
-      #   #good
-      #   {
-      #     foo: bar,
-      #      ba: baz
-      #   }
-      #   {
-      #     :foo => bar,
-      #      :ba => baz
-      #   }
-      #
-      #   #bad
       #   {
       #     foo: bar,
       #     ba: baz
       #   }
+      #
+      #   # good
       #   {
-      #     :foo => bar,
-      #     :ba => baz
-      #   }
-      #   {
-      #     :foo => bar,
-      #     :ba  => baz
+      #     foo: bar,
+      #      ba: baz
       #   }
       #
-      # @example
+      # @example EnforcedColonStyle: table
+      #   # bad
+      #   {
+      #     foo: bar,
+      #     ba: baz
+      #   }
       #
-      #   # EnforcedHashRocketStyle: table
-      #   # EnforcedColonStyle: table
-      #
-      #   #good
+      #   # good
       #   {
       #     foo: bar,
       #     ba:  baz
       #   }
-      #   {
-      #     :foo => bar,
-      #     :ba  => baz
-      #   }
       #
-      #   #bad
-      #   {
-      #     foo: bar,
-      #     ba: baz
-      #   }
-      #   {
-      #     :foo => bar,
-      #      :ba => baz
-      #   }
       class AlignHash < Cop
         include HashAlignment
         include RangeHelp
