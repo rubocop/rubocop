@@ -174,10 +174,18 @@ module RuboCop
                 err_indices << i unless state.access_const(const_name: event[:name])
               when :const_def
                 state.define_const(const_name: event[:name])
+
+                previous_errors = err_indices.map { |i| timeline[i] }
+                outdated = outdated_errors(previous_errors, state)
+                err_indices = err_indices.reject { |i| outdated.include?(timeline[i]) }
               when :const_undef
                 state.undefine_const(const_name: event[:name])
               when :const_assign
                 state.const_assigned(const_name: event[:name])
+
+                previous_errors = err_indices.map { |i| timeline[i] }
+                outdated = outdated_errors(previous_errors, state)
+                err_indices = err_indices.reject { |i| outdated.include?(timeline[i]) }
               when :const_inherit
                 success = state.access_const(const_name: event[:name])
                 if success
@@ -191,6 +199,12 @@ module RuboCop
           end
 
           err_indices.map { |i| timeline[i] }
+        end
+
+        def outdated_errors(error_events, state)
+          error_events
+            .select { |e| %i(const_access const_inherit).include? e[:event] } # Only these types can be resolved by definitions later in the file
+            .select { |e| state.access_const(const_name: e[:name], local_only: true) }  
         end
 
         def perform_in_fork
@@ -242,14 +256,24 @@ module RuboCop
           puts "Check your dependencies, they could be circular"
         end
 
-        def access_const(const_name: nil)
+        def access_const(const_name: nil, local_only: false)
           name = const_name.to_s.sub(/^:*/, '').sub(/:*$/, '') # Strip leading/trailing ::
-          prefix = self.const_stack.join("::")
+
+          # If const_stack is ["A", "B", "C"] all of A, A::B, A::B::C are valid lookup combinations
+          prefixes = self.const_stack.reduce([]) { |a, c| a << [a.last, c].compact.join("::") }
+
           # I use const_get here because in testing const_get and const_defined? have yielded different results
-          result = Object.const_get(name) rescue nil                                                   # Defined elsewhere, top-level
-          result ||= self.defined_constants.find { |c| Object.const_get("#{c}::#{name}") rescue nil }  # Defined elsewhere, nested
-          result ||= self.defined_constants.find { |c| [name, "#{prefix}::#{name}"].include? c }       # Defined in this file, other module/class
-          result ||= self.const_stack.join("::") == name                                               # Defined in this file, in current module/class
+          unless local_only
+            result = Object.const_get(name) rescue nil                                                   # Defined elsewhere, top-level
+            result ||= self.defined_constants.find { |c| Object.const_get("#{c}::#{name}") rescue nil }  # Defined elsewhere, nested
+          end
+
+          result ||= self.defined_constants.find { |c| name == c }                                       # Defined in this file, other module/class
+          prefixes.each do |prefix|
+            result ||= self.defined_constants.find { |c| [name, "#{prefix}::#{name}"].include? c }       # Defined in this file, other module/class
+            result ||= prefix == name                                                                    # Defined in this file, in current module/class
+          end
+
           return result
         end
 
