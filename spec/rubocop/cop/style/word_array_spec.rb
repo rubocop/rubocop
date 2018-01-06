@@ -142,8 +142,25 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
     it 'keeps the line breaks in place after auto-correct' do
       new_source = autocorrect_source(["['one',",
                                        "'two', 'three']"])
-      expect(new_source).to eq(['%w(one ',
+      expect(new_source).to eq(['%w(one',
                                 'two three)'].join("\n"))
+    end
+
+    it 'auto-corrects an array of words in multiple lines' do
+      new_source = autocorrect_source(<<-RUBY)
+        [
+        "foo",
+        "bar",
+        "baz"
+        ]
+      RUBY
+      expect(new_source).to eq(<<-RUBY)
+        %w(
+        foo
+        bar
+        baz
+        )
+      RUBY
     end
 
     it 'detects right value of MinSize to use for --auto-gen-config' do
