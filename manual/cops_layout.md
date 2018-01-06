@@ -108,80 +108,98 @@ can also be configured. The options are:
 
 ### Examples
 
+#### EnforcedHashRocketStyle: key (default)
+
 ```ruby
-# EnforcedHashRocketStyle: key (default)
-# EnforcedColonStyle: key (default)
+# bad
+{
+  :foo => bar,
+   :ba => baz
+}
+
+# good
+{
+  :foo => bar,
+  :ba => baz
+}
+```
+#### EnforcedHashRocketStyle: separator
+
+```ruby
+# bad
+{
+  :foo => bar,
+  :ba => baz
+}
+{
+  :foo => bar,
+  :ba  => baz
+}
+
+# good
+{
+  :foo => bar,
+   :ba => baz
+}
+```
+#### EnforcedHashRocketStyle: table
+
+```ruby
+# bad
+{
+  :foo => bar,
+   :ba => baz
+}
+
+# good
+{
+  :foo => bar,
+  :ba  => baz
+}
+```
+#### EnforcedColonStyle: key (default)
+
+```ruby
+# bad
+{
+  foo: bar,
+   ba: baz
+}
 
 # good
 {
   foo: bar,
   ba: baz
 }
-{
-  :foo => bar,
-  :ba => baz
-}
+```
+#### EnforcedColonStyle: separator
 
+```ruby
 # bad
 {
   foo: bar,
-   ba: baz
+  ba: baz
 }
-{
-  :foo => bar,
-   :ba => baz
-}
-```
-```ruby
-# EnforcedHashRocketStyle: separator
-# EnforcedColonStyle: separator
 
-#good
+# good
 {
   foo: bar,
    ba: baz
 }
-{
-  :foo => bar,
-   :ba => baz
-}
+```
+#### EnforcedColonStyle: table
 
-#bad
+```ruby
+# bad
 {
   foo: bar,
   ba: baz
 }
-{
-  :foo => bar,
-  :ba => baz
-}
-{
-  :foo => bar,
-  :ba  => baz
-}
-```
-```ruby
-# EnforcedHashRocketStyle: table
-# EnforcedColonStyle: table
 
-#good
+# good
 {
   foo: bar,
   ba:  baz
-}
-{
-  :foo => bar,
-  :ba  => baz
-}
-
-#bad
-{
-  foo: bar,
-  ba: baz
-}
-{
-  :foo => bar,
-   :ba => baz
 }
 ```
 
