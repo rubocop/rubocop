@@ -1249,7 +1249,7 @@ MaximumRangeSize | `Infinity` | Float
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | No
+Disabled | No
 
 Checks for missing require statements in your code
 

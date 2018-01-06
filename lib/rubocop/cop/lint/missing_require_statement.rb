@@ -173,17 +173,16 @@ module RuboCop
               when :const_def
                 state.define_const(const_name: event[:name])
 
-                previous_errors = err_indices.map { |i| timeline[i] }
-                outdated = outdated_errors(previous_errors, state)
-                err_indices = err_indices.reject { |i| outdated.include?(timeline[i]) }
+                outdated = outdated_errors(err_indices.map { |e| timeline[e] }, state)
+                err_indices = err_indices.reject { |e| outdated.include?(timeline[e]) }
               when :const_undef
                 state.undefine_const(const_name: event[:name])
               when :const_assign
                 state.const_assigned(const_name: event[:name])
 
-                previous_errors = err_indices.map { |i| timeline[i] }
+                previous_errors = err_indices.map { |e| timeline[e] }
                 outdated = outdated_errors(previous_errors, state)
-                err_indices = err_indices.reject { |i| outdated.include?(timeline[i]) }
+                err_indices = err_indices.reject { |e| outdated.include?(timeline[e]) }
               when :const_inherit
                 success = state.access_const(const_name: event[:name])
                 if success
