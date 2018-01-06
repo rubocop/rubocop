@@ -2315,16 +2315,33 @@ binary operations that span more than one line.
 
 ### Examples
 
+#### EnforcedStyle: aligned (default)
+
 ```ruby
 # bad
 if a +
-b
+    b
   something
 end
 
 # good
 if a +
    b
+  something
+end
+```
+#### EnforcedStyle: indented
+
+```ruby
+# bad
+if a +
+   b
+  something
+end
+
+# good
+if a +
+    b
   something
 end
 ```

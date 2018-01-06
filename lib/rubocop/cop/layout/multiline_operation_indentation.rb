@@ -6,10 +6,10 @@ module RuboCop
       # This cop checks the indentation of the right hand side operand in
       # binary operations that span more than one line.
       #
-      # @example
+      # @example EnforcedStyle: aligned (default)
       #   # bad
       #   if a +
-      #   b
+      #       b
       #     something
       #   end
       #
@@ -18,6 +18,20 @@ module RuboCop
       #      b
       #     something
       #   end
+      #
+      # @example EnforcedStyle: indented
+      #   # bad
+      #   if a +
+      #      b
+      #     something
+      #   end
+      #
+      #   # good
+      #   if a +
+      #       b
+      #     something
+      #   end
+      #
       class MultilineOperationIndentation < Cop
         include ConfigurableEnforcedStyle
         include Alignment
