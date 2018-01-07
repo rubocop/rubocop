@@ -202,6 +202,78 @@ can also be configured. The options are:
   ba:  baz
 }
 ```
+#### EnforcedLastArgumentHashStyle: always_inspect (default)
+
+```ruby
+# Inspect both implicit and explicit hashes.
+
+# bad
+do_something(foo: 1,
+  bar: 2)
+
+# bad
+do_something({foo: 1,
+  bar: 2})
+
+# good
+do_something(foo: 1,
+             bar: 2)
+
+# good
+do_something(
+  foo: 1,
+  bar: 2
+)
+
+# good
+do_something({foo: 1,
+              bar: 2})
+
+# good
+do_something({
+  foo: 1,
+  bar: 2
+})
+```
+#### EnforcedLastArgumentHashStyle: always_ignore
+
+```ruby
+# Ignore both implicit and explicit hashes.
+
+# good
+do_something(foo: 1,
+  bar: 2)
+
+# good
+do_something({foo: 1,
+  bar: 2})
+```
+#### EnforcedLastArgumentHashStyle: ignore_implicit
+
+```ruby
+# Ignore only implicit hashes.
+
+# bad
+do_something({foo: 1,
+  bar: 2})
+
+# good
+do_something(foo: 1,
+  bar: 2)
+```
+#### EnforcedLastArgumentHashStyle: ignore_explicit
+
+```ruby
+# Ignore only explicit hashes.
+
+# bad
+do_something(foo: 1,
+  bar: 2)
+
+# good
+do_something({foo: 1,
+  bar: 2})
+```
 
 ### Configurable attributes
 
