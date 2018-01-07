@@ -4672,6 +4672,12 @@ foo&.bar(param) { |e| e.something }
 foo.nil? || foo.bar
 !foo || foo.bar
 
+# Methods that are used on assignment, arithmetic operation or
+# comparison should not be converted to use safe navigation
+foo.baz = bar if foo
+foo.baz + bar if foo
+foo.bar > 2 if foo
+
 # Methods that `nil` will `respond_to?` should not be converted to
 # use safe navigation
 foo.to_i if foo
