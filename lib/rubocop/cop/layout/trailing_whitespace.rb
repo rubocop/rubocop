@@ -4,6 +4,16 @@ module RuboCop
   module Cop
     module Layout
       # This cop looks for trailing whitespace in the source code.
+      #
+      # @example
+      #   # The line in this example contains spaces after the 0.
+      #   # bad
+      #   x = 0
+      #
+      #   # The line in this example ends directly after the 0.
+      #   # good
+      #   x = 0
+      #
       class TrailingWhitespace < Cop
         include RangeHelp
 
