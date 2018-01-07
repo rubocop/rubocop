@@ -98,7 +98,9 @@ module RuboCop
           lambda do |corrector|
             corrector.remove(begin_range(node, body))
             corrector.remove(end_range(node, body))
-            corrector.insert_before((method_call || body).loc.dot, '&')
+            corrector.insert_before(method_call.loc.dot, '&')
+
+            add_safe_nav_to_all_methods_in_chain(corrector, method_call, body)
           end
         end
 
@@ -194,6 +196,18 @@ module RuboCop
         def end_range(node, method_call)
           range_between(method_call.loc.expression.end_pos,
                         node.loc.expression.end_pos)
+        end
+
+        def add_safe_nav_to_all_methods_in_chain(corrector,
+                                                 start_method,
+                                                 method_chain)
+          start_method.each_ancestor do |ancestor|
+            break unless %i[send block].include?(ancestor.type)
+            next unless ancestor.send_type?
+            break if ancestor == method_chain
+
+            corrector.insert_before(ancestor.loc.dot, '&')
+          end
         end
       end
     end

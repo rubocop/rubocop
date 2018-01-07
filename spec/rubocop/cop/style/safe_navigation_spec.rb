@@ -724,7 +724,7 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
             RUBY
 
             expect(new_source).to eq(<<-RUBY.strip_indent)
-              #{variable}&.one.two(baz) { |e| e.qux }
+              #{variable}&.one&.two(baz) { |e| e.qux }
             RUBY
           end
 
@@ -735,7 +735,7 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
             RUBY
 
             expect(new_source).to eq(<<-RUBY.strip_indent)
-              #{variable}&.one.two(baz) { |e| e.qux }
+              #{variable}&.one&.two(baz) { |e| e.qux }
             RUBY
           end
 
@@ -746,7 +746,7 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
             RUBY
 
             expect(new_source).to eq(<<-RUBY.strip_indent)
-              #{variable}&.one.two(baz) { |e| e.qux }
+              #{variable}&.one&.two(baz) { |e| e.qux }
             RUBY
           end
         end
@@ -1021,7 +1021,7 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
               RUBY
 
               expect(new_source).to eq(<<-RUBY.strip_indent)
-                #{variable}&.one.two(baz) { |e| e.qux }
+                #{variable}&.one&.two(baz) { |e| e.qux }
               RUBY
             end
 
@@ -1032,7 +1032,7 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
               RUBY
 
               expect(new_source).to eq(<<-RUBY.strip_indent)
-                #{variable}&.one.two.three(baz) { |e| e.qux }
+                #{variable}&.one&.two&.three(baz) { |e| e.qux }
               RUBY
             end
 
@@ -1043,7 +1043,7 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
               RUBY
 
               expect(new_source).to eq(<<-RUBY.strip_indent)
-                #{variable}&.one { |a| b}.two(baz) { |e| e.qux }
+                #{variable}&.one { |a| b}&.two(baz) { |e| e.qux }
               RUBY
             end
           end
