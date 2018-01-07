@@ -15,16 +15,13 @@ Patches in any form are always welcome! GitHub pull requests are even better! :-
 Before submitting a patch or a pull request make sure all tests are
 passing and that your patch is in line with the [contribution
 guidelines](https://github.com/bbatsov/rubocop/blob/master/CONTRIBUTING.md).
-
-See also. [development.md](development.md)
+Also see the [Development section](development.md).
 
 ## Documentation
 
-Good documentation is just as important as good code.
-
-Consider improving and extending the
-this manual and the
-[community wiki](https://github.com/bbatsov/rubocop/wiki).
+Good documentation is just as important as good code. Check out the
+[Documentation section](development.md#documentation) of this guide and consider
+adding or improving Cop descriptions.
 
 ### Working on the Manual
 
