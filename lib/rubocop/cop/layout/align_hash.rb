@@ -101,6 +101,70 @@ module RuboCop
       #     ba:  baz
       #   }
       #
+      # @example EnforcedLastArgumentHashStyle: always_inspect (default)
+      #   # Inspect both implicit and explicit hashes.
+      #
+      #   # bad
+      #   do_something(foo: 1,
+      #     bar: 2)
+      #
+      #   # bad
+      #   do_something({foo: 1,
+      #     bar: 2})
+      #
+      #   # good
+      #   do_something(foo: 1,
+      #                bar: 2)
+      #
+      #   # good
+      #   do_something(
+      #     foo: 1,
+      #     bar: 2
+      #   )
+      #
+      #   # good
+      #   do_something({foo: 1,
+      #                 bar: 2})
+      #
+      #   # good
+      #   do_something({
+      #     foo: 1,
+      #     bar: 2
+      #   })
+      #
+      # @example EnforcedLastArgumentHashStyle: always_ignore
+      #   # Ignore both implicit and explicit hashes.
+      #
+      #   # good
+      #   do_something(foo: 1,
+      #     bar: 2)
+      #
+      #   # good
+      #   do_something({foo: 1,
+      #     bar: 2})
+      #
+      # @example EnforcedLastArgumentHashStyle: ignore_implicit
+      #   # Ignore only implicit hashes.
+      #
+      #   # bad
+      #   do_something({foo: 1,
+      #     bar: 2})
+      #
+      #   # good
+      #   do_something(foo: 1,
+      #     bar: 2)
+      #
+      # @example EnforcedLastArgumentHashStyle: ignore_explicit
+      #   # Ignore only explicit hashes.
+      #
+      #   # bad
+      #   do_something(foo: 1,
+      #     bar: 2)
+      #
+      #   # good
+      #   do_something({foo: 1,
+      #     bar: 2})
+      #
       class AlignHash < Cop
         include HashAlignment
         include RangeHelp
