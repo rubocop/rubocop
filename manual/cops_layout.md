@@ -3539,6 +3539,18 @@ Enabled | Yes
 
 This cop checks for tabs inside the source code.
 
+### Examples
+
+```ruby
+# This example uses a tab for indentation.
+# bad
+  x = 0
+
+# This example uses spaces for indentation.
+# good
+  x = 0
+```
+
 ### Configurable attributes
 
 Name | Default value | Configurable values
