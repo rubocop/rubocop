@@ -6,6 +6,16 @@ module RuboCop
   module Cop
     module Layout
       # This cop checks for tabs inside the source code.
+      #
+      # @example
+      #   # This example uses a tab for indentation.
+      #   # bad
+      #     x = 0
+      #
+      #   # This example uses spaces for indentation.
+      #   # good
+      #     x = 0
+      #
       class Tab < Cop
         include Alignment
         include RangeHelp
