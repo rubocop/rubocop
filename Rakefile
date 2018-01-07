@@ -79,7 +79,7 @@ task :bench_cop, %i[cop srcpath times] do |_task, args|
 
   cop_name = args[:cop]
   src_path = args[:srcpath]
-  iterations = args[:times] ? args[:times].to_i : 1
+  iterations = args[:times] ? Integer(args[:times]) : 1
 
   cop_class = if cop_name.include?('/')
                 Cop::Cop.all.find { |klass| klass.cop_name == cop_name }

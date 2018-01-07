@@ -25,6 +25,7 @@
 * [#5314](https://github.com/bbatsov/rubocop/issues/5314): Fix false positives for `Lint/NestedPercentLiteral` when percent characters are nested. ([@asherkach][])
 * [#5357](https://github.com/bbatsov/rubocop/issues/5357): Fix `Lint/InterpolationCheck` false positives on escaped interpolations. ([@pocke][])
 * [#5409](https://github.com/bbatsov/rubocop/issues/5409): Fix multiline indent for `Style/SymbolArray` and `Style/WordArray` autocorrect. ([@flyerhzm][])
+* [#5393](https://github.com/bbatsov/rubocop/issues/5393): Fix `Rails/Delegate`'s false positive with a method call with arguments. ([@pocke][]) 
 
 ### Changes
 
@@ -71,6 +72,7 @@
 * [#5233](https://github.com/bbatsov/rubocop/pull/5233): Remove `Style/ExtendSelf` cop. ([@pocke][])
 * [#5221](https://github.com/bbatsov/rubocop/issues/5221): Change `Layout/SpaceBeforeBlockBraces`'s `EnforcedStyleForEmptyBraces` from `no_space` to `space`. ([@garettarrowood][])
 * [#3558](https://github.com/bbatsov/rubocop/pull/3558): Create `Corrector` classes and move all `autocorrect` methods out of mixin Modules. ([@garettarrowood][])
+* [#3437](https://github.com/bbatsov/rubocop/issues/3437): Add new `Lint/NumberConversion` cop. ([@albertpaulp][])
 
 ## 0.52.0 (2017-12-12)
 
@@ -3156,3 +3158,4 @@
 [@ybiquitous]: https://github.com/ybiquitous
 [@mame]: https://github.com/mame
 [@dominicsayers]: https://github.com/dominicsayers
+[@albertpaulp]: https://github.com/albertpaulp

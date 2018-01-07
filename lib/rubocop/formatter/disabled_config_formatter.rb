@@ -32,9 +32,8 @@ module RuboCop
 
       def file_started(_file, _file_info)
         @exclude_limit_option = @options[:exclude_limit]
-        @exclude_limit = (
-          @exclude_limit_option ||
-          RuboCop::Options::DEFAULT_MAXIMUM_EXCLUSION_ITEMS).to_i
+        @exclude_limit = Integer(@exclude_limit_option ||
+          RuboCop::Options::DEFAULT_MAXIMUM_EXCLUSION_ITEMS)
         @show_offense_counts = !@options[:no_offense_counts]
       end
 
@@ -62,7 +61,8 @@ module RuboCop
       def command
         command = 'rubocop --auto-gen-config'
         if @exclude_limit_option
-          command += format(' --exclude-limit %d', @exclude_limit_option.to_i)
+          command +=
+            format(' --exclude-limit %d', Integer(@exclude_limit_option))
         end
         command += ' --no-offense-counts' if @options[:no_offense_counts]
 

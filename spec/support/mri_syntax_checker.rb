@@ -68,6 +68,6 @@ module MRISyntaxChecker
     return nil unless match_data
     line_number, warning, message = match_data.captures
     severity = warning ? :warning : :error
-    [line_number.to_i, severity, message]
+    [Integer(line_number), severity, message]
   end
 end
