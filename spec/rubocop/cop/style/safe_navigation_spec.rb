@@ -84,6 +84,16 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
       expect_no_offenses('foo && foo.bar <=> baz')
     end
 
+    it 'allows an object check before a method chain that is used in ' \
+      'a comparison' do
+      expect_no_offenses('foo && foo.bar.baz > 2')
+    end
+
+    it 'allows a method chain that is used in a comparison ' \
+      'safe guarded by an object check' do
+      expect_no_offenses('foo.bar.baz > 2 if foo')
+    end
+
     it 'allows method calls that do not get called using . safe guarded by ' \
       'an object check' do
       expect_no_offenses('foo + bar if foo')

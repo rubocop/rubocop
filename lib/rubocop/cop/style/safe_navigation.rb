@@ -5,7 +5,9 @@ module RuboCop
     module Style
       # This cop transforms usages of a method call safeguarded by a non `nil`
       # check for the variable whose method is being called to
-      # safe navigation (`&.`).
+      # safe navigation (`&.`). If there is a method chain, all of the methods
+      # in the chain need to be checked for safety, and all of the methods will
+      # need to be changed to use safe navigation.
       #
       # Configuration option: ConvertCodeThatCanStartToReturnNil
       # The default for this is `false`. When configured to `true`, this will
@@ -18,6 +20,7 @@ module RuboCop
       # @example
       #   # bad
       #   foo.bar if foo
+      #   foo.bar.baz if foo
       #   foo.bar(param1, param2) if foo
       #   foo.bar { |e| e.something } if foo
       #   foo.bar(param) { |e| e.something } if foo
@@ -27,16 +30,23 @@ module RuboCop
       #   foo.bar unless foo.nil?
       #
       #   foo && foo.bar
+      #   foo && foo.bar.baz
       #   foo && foo.bar(param1, param2)
       #   foo && foo.bar { |e| e.something }
       #   foo && foo.bar(param) { |e| e.something }
       #
       #   # good
       #   foo&.bar
+      #   foo&.bar&.baz
       #   foo&.bar(param1, param2)
       #   foo&.bar { |e| e.something }
       #   foo&.bar(param) { |e| e.something }
       #
+      #   # Method calls that do not use `.`
+      #   foo && foo < bar
+      #   foo < bar if foo
+      #
+      #   # This could start returning `nil` as well as the return of the method
       #   foo.nil? || foo.bar
       #   !foo || foo.bar
       #
@@ -83,9 +93,9 @@ module RuboCop
 
         def check_node(node)
           return if target_ruby_version < 2.3
-          checked_variable, receiver, method = extract_parts(node)
+          checked_variable, receiver, method_chain, method = extract_parts(node)
           return unless receiver == checked_variable
-          return if unsafe_method?(method)
+          return if unsafe_method_used?(method_chain, method)
 
           add_offense(node)
         end
@@ -120,10 +130,12 @@ module RuboCop
         end
 
         def extract_parts_from_if(node)
-          checked_variable, receiver =
+          variable, receiver =
             modifier_if_safe_navigation_candidate?(node)
 
-          extract_common_parts(receiver, checked_variable)
+          checked_variable, matching_receiver, method =
+            extract_common_parts(receiver, variable)
+          [checked_variable, matching_receiver, receiver, method]
         end
 
         def extract_parts_from_and(node)
@@ -133,29 +145,31 @@ module RuboCop
               not_nil_check?(checked_variable) || checked_variable
           end
 
-          extract_common_parts(rhs, checked_variable)
+          checked_variable, matching_receiver, method =
+            extract_common_parts(rhs, checked_variable)
+          [checked_variable, matching_receiver, rhs, method]
         end
 
-        def extract_common_parts(continuation, checked_variable)
+        def extract_common_parts(method_chain, checked_variable)
           matching_receiver =
-            find_matching_receiver_invocation(continuation, checked_variable)
+            find_matching_receiver_invocation(method_chain, checked_variable)
 
           method = matching_receiver.parent if matching_receiver
 
           [checked_variable, matching_receiver, method]
         end
 
-        def find_matching_receiver_invocation(node, checked_variable)
-          return nil unless node
+        def find_matching_receiver_invocation(method_chain, checked_variable)
+          return nil unless method_chain
 
-          receiver = if node.block_type?
-                       node.send_node.receiver
+          receiver = if method_chain.block_type?
+                       method_chain.send_node.receiver
                      else
-                       node.receiver
+                       method_chain.receiver
                      end
 
           if receiver == checked_variable
-            return nil if assignment_arithmetic_or_comparison?(node)
+            return nil if assignment_arithmetic_or_comparison?(method_chain)
 
             return receiver
           end
@@ -173,6 +187,15 @@ module RuboCop
           parent.send_type? &&
             (parent.comparison_method? ||
              ADDITIONAL_COMPARISON_METHODS.include?(parent.method_name))
+        end
+
+        def unsafe_method_used?(method_chain, method)
+          return true if unsafe_method?(method)
+
+          method.each_ancestor(:send).any? do |ancestor|
+            break true if unsafe_method?(ancestor)
+            break false if ancestor == method_chain
+          end
         end
 
         def unsafe_method?(send_node)

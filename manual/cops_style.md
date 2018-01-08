@@ -4635,7 +4635,9 @@ Enabled | Yes
 
 This cop transforms usages of a method call safeguarded by a non `nil`
 check for the variable whose method is being called to
-safe navigation (`&.`).
+safe navigation (`&.`). If there is a method chain, all of the methods
+in the chain need to be checked for safety, and all of the methods will
+need to be changed to use safe navigation.
 
 Configuration option: ConvertCodeThatCanStartToReturnNil
 The default for this is `false`. When configured to `true`, this will
@@ -4650,6 +4652,7 @@ returns.
 ```ruby
 # bad
 foo.bar if foo
+foo.bar.baz if foo
 foo.bar(param1, param2) if foo
 foo.bar { |e| e.something } if foo
 foo.bar(param) { |e| e.something } if foo
@@ -4659,16 +4662,23 @@ foo.bar unless !foo
 foo.bar unless foo.nil?
 
 foo && foo.bar
+foo && foo.bar.baz
 foo && foo.bar(param1, param2)
 foo && foo.bar { |e| e.something }
 foo && foo.bar(param) { |e| e.something }
 
 # good
 foo&.bar
+foo&.bar&.baz
 foo&.bar(param1, param2)
 foo&.bar { |e| e.something }
 foo&.bar(param) { |e| e.something }
 
+# Method calls that do not use `.`
+foo && foo < bar
+foo < bar if foo
+
+# This could start returning `nil` as well as the return of the method
 foo.nil? || foo.bar
 !foo || foo.bar
 
