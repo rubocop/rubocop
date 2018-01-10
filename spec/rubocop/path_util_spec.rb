@@ -10,6 +10,17 @@ RSpec.describe RuboCop::PathUtil do
     it 'supports custom base paths' do
       expect(described_class.relative_path('/foo/bar', '/foo')).to eq('bar')
     end
+
+    if RuboCop::Platform.windows?
+      it 'works for different drives' do
+        expect(described_class.relative_path('D:/foo/bar', 'C:/foo'))
+          .to eq('D:/foo/bar')
+      end
+      it 'works for the same drive' do
+        expect(described_class.relative_path('D:/foo/bar', 'D:/foo'))
+          .to eq('bar')
+      end
+    end
   end
 
   describe '#match_path?', :isolated_environment do
