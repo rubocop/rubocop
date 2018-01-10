@@ -36,6 +36,7 @@
 * [#5426](https://github.com/bbatsov/rubocop/issues/5426): Make `Rails/InverseOf` accept `inverse_of: nil` to opt-out. ([@wata727][])
 * [#5448](https://github.com/bbatsov/rubocop/issues/5448): Improve `Rails/LexicallyScopedActionFilter`. ([@wata727][])
 * [#3947](https://github.com/bbatsov/rubocop/issues/3947): Fix false positive for `Rails/FilePath` when using `Rails.root.join` in string interpolation of argument. ([@koic][])
+* [#5427](https://github.com/bbatsov/rubocop/pull/5427): Fix exception when executing from a different drive on Windows. ([@orgads][])
 
 ### Changes
 
@@ -3170,3 +3171,4 @@
 [@mame]: https://github.com/mame
 [@dominicsayers]: https://github.com/dominicsayers
 [@albertpaulp]: https://github.com/albertpaulp
+[@orgads]: https://github.com/orgads
