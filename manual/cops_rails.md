@@ -684,7 +684,8 @@ This cop looks for has_(one|many) and belongs_to associations where
 ActiveRecord can't automatically determine the inverse association
 because of a scope or the options used. This can result in unnecessary
 queries in some circumstances. `:inverse_of` must be manually specified
-for associations to work in both ways, or set to `false` to opt-out.
+for associations to work in both ways, or set to `false` or `nil`
+to opt-out.
 
 ### Examples
 
@@ -729,6 +730,24 @@ end
 
 class Post < ApplicationRecord
   belongs_to :blog
+end
+
+# good
+# When you don't want to use the inverse association.
+class Blog < ApplicationRecord
+  has_many(:posts,
+    -> { order(published_at: :desc) },
+    inverse_of: false
+  )
+end
+
+# good
+# You can also opt-out with specifying `inverse_of: nil`.
+class Blog < ApplicationRecord
+  has_many(:posts,
+    -> { order(published_at: :desc) },
+    inverse_of: nil
+  )
 end
 ```
 ```ruby
