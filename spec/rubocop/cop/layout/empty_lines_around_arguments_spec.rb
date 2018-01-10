@@ -202,7 +202,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundArguments, :config do
       expect(cop.offenses.empty?).to be(true)
     end
 
-    it 'accepts listed args starting on defintion line' do
+    it 'accepts listed args starting on definition line' do
       inspect_source(<<-RUBY.strip_indent)
         foo(bar,
             [],

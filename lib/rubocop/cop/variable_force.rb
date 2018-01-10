@@ -432,7 +432,7 @@ module RuboCop
       #     (send nil :puts
       #       (lvar :foo)))
       #
-      # So the the method argument nodes need to be processed
+      # So the method argument nodes need to be processed
       # in current scope.
       #
       # Same thing.

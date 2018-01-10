@@ -186,7 +186,7 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       RUBY
     end
 
-    it 'corrects brace removal with extra lines & mulitple pairs' do
+    it 'corrects brace removal with extra lines & multiple pairs' do
       src = <<-RUBY.strip_indent
       foo(
         {
