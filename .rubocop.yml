@@ -29,6 +29,12 @@ Style/FormatStringToken:
   Exclude:
     - spec/**/*
 
+Style/UnlessMultipleConditions:
+  # Because RuboCop currently supports Ruby 2.1.
+  # In Ruby 2.1 not implementing `Hash#dig`, the following code is useful.
+  # `unless hash[:a] && hash[:a][:b]`
+  Enabled: false
+
 Layout/EndOfLine:
   EnforcedStyle: lf
 

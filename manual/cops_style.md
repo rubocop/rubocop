@@ -5696,6 +5696,39 @@ end
 
 * [https://github.com/bbatsov/ruby-style-guide#no-else-with-unless](https://github.com/bbatsov/ruby-style-guide#no-else-with-unless)
 
+## Style/UnlessMultipleConditions
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks that `unless` is not used with multiple conditions.
+In general, using multiple conditions with `unless` reduces readability.
+
+### Examples
+
+```ruby
+# bad
+unless foo && bar
+  something
+end
+
+# bad
+unless foo || bar
+  something
+end
+
+# good
+if !foo || !bar
+  something
+end
+
+# good
+if !foo && !bar
+  something
+end
+```
+
 ## Style/UnneededCapitalW
 
 Enabled by default | Supports autocorrection
