@@ -3542,13 +3542,17 @@ This cop checks for tabs inside the source code.
 ### Examples
 
 ```ruby
-# This example uses a tab for indentation.
 # bad
-  x = 0
+# This example uses a tab to indent bar.
+def foo
+  bar
+end
 
-# This example uses spaces for indentation.
 # good
-  x = 0
+# This example uses spaces to indent bar.
+def foo
+  bar
+end
 ```
 
 ### Configurable attributes
@@ -3581,17 +3585,17 @@ source code.
 # bad
 class Foo; end
 
-__END__
+# EOF
 
 # bad
 class Foo; end
-__END__
+# EOF
 
 # good
 class Foo; end
 # a blank line
 
-__END__
+# EOF
 ```
 #### EnforcedStyle: final_newline (default)
 
@@ -3602,16 +3606,16 @@ __END__
 class Foo; end
 # a blank line
 
-__END__
+# EOF
 
 # bad
 class Foo; end
-__END__
+# EOF
 
 # good
 class Foo; end
 
-__END__
+# EOF
 ```
 
 ### Configurable attributes

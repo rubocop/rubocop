@@ -13,17 +13,17 @@ module RuboCop
       #   # bad
       #   class Foo; end
       #
-      #   __END__
+      #   # EOF
       #
       #   # bad
       #   class Foo; end
-      #   __END__
+      #   # EOF
       #
       #   # good
       #   class Foo; end
       #   # a blank line
       #
-      #   __END__
+      #   # EOF
       #
       # @example EnforcedStyle: final_newline (default)
       #   # `final_newline` looks for one newline at the end of files.
@@ -32,16 +32,16 @@ module RuboCop
       #   class Foo; end
       #   # a blank line
       #
-      #   __END__
+      #   # EOF
       #
       #   # bad
       #   class Foo; end
-      #   __END__
+      #   # EOF
       #
       #   # good
       #   class Foo; end
       #
-      #   __END__
+      #   # EOF
       #
       class TrailingBlankLines < Cop
         include ConfigurableEnforcedStyle
