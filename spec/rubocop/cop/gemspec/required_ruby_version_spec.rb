@@ -9,7 +9,7 @@ RSpec.describe RuboCop::Cop::Gemspec::RequiredRubyVersion, :config do
       expect_offense(<<-RUBY.strip_indent, '/path/to/foo.gemspec')
         Gem::Specification.new do |spec|
           spec.required_ruby_version = '>= 2.3.0'
-                                       ^^^^^^^^^^ `required_ruby_version` (2.3, declared in foo.gemspec) and `TargetRubyVersion` (2.4, declared in .rubocop.yml) should be equal.
+                                       ^^^^^^^^^^ `required_ruby_version` (2.3, declared in foo.gemspec) and `TargetRubyVersion` (2.4, which may be specified in .rubocop.yml) should be equal.
         end
       RUBY
     end
@@ -44,7 +44,7 @@ RSpec.describe RuboCop::Cop::Gemspec::RequiredRubyVersion, :config do
       expect_offense(<<-RUBY.strip_indent, '/path/to/bar.gemspec')
         Gem::Specification.new do |spec|
           spec.required_ruby_version = '>= 2.3.0'
-                                       ^^^^^^^^^^ `required_ruby_version` (2.3, declared in bar.gemspec) and `TargetRubyVersion` (2.2, declared in .rubocop.yml) should be equal.
+                                       ^^^^^^^^^^ `required_ruby_version` (2.3, declared in bar.gemspec) and `TargetRubyVersion` (2.2, which may be specified in .rubocop.yml) should be equal.
         end
       RUBY
     end
