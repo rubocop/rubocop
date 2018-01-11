@@ -40,6 +40,7 @@
 * [#3947](https://github.com/bbatsov/rubocop/issues/3947): Fix false positive for `Rails/FilePath` when using `Rails.root.join` in string interpolation of argument. ([@koic][])
 * [#5479](https://github.com/bbatsov/rubocop/issues/5479): Fix false positives for `Rails/Presence` when using with `elsif`. ([@wata727][])
 * [#5427](https://github.com/bbatsov/rubocop/pull/5427): Fix exception when executing from a different drive on Windows. ([@orgads][])
+* [#5429](https://github.com/bbatsov/rubocop/issues/5429): Detect tabs other than indentation by `Layout/Tab`. ([@pocke][])
 
 ### Changes
 

@@ -37,6 +37,13 @@ RSpec.describe RuboCop::Cop::Layout::Tab do
     RUBY
   end
 
+  it 'registers an offense for a tab other than indentation' do
+    expect_offense(<<-RUBY.strip_indent)
+      foo \t bar
+          ^ Tab detected.
+    RUBY
+  end
+
   it 'accepts a line with tab in a string' do
     expect_no_offenses("(x = \"\t\")")
   end
@@ -47,6 +54,10 @@ RSpec.describe RuboCop::Cop::Layout::Tab do
 
   it 'accepts a line which begins with tab in a heredoc' do
     expect_no_offenses("x = <<HELLO\n\thello\nHELLO")
+  end
+
+  it 'accepts a line which begins with tab in a multiline heredoc' do
+    expect_no_offenses("x = <<HELLO\n\thello\n\t\n\t\t\nhello\nHELLO")
   end
 
   it 'auto-corrects a line indented with tab' do

@@ -27,17 +27,18 @@ module RuboCop
         MSG = 'Tab detected.'.freeze
 
         def investigate(processed_source)
-          str_lines = string_literal_lines(processed_source.ast)
+          str_ranges = string_literal_ranges(processed_source.ast)
 
-          processed_source.lines.each_with_index do |line, index|
-            match = line.match(/^( *)[\t ]*\t/)
+          processed_source.lines.each.with_index(1) do |line, lineno|
+            match = line.match(/^([^\t]*)\t+/)
             next unless match
-            next if str_lines.include?(index + 1)
+            prefix = match.captures[0]
+            col = prefix.length
+            next if in_string_literal?(str_ranges, lineno, col)
 
-            spaces = match.captures[0]
             range = source_range(processed_source.buffer,
-                                 index + 1,
-                                 (spaces.length)...(match.end(0)))
+                                 lineno,
+                                 col...match.end(0))
 
             add_offense(range, location: range)
           end
@@ -52,21 +53,31 @@ module RuboCop
 
         private
 
-        def string_literal_lines(ast)
+        # rubocop:disable Metrics/CyclomaticComplexity
+        def in_string_literal?(ranges, line, col)
+          ranges.any? do |range|
+            (range.line == line && range.column <= col) ||
+              (range.line < line && line < range.last_line) ||
+              (range.line != line && range.last_line == line &&
+               range.last_column >= col)
+          end
+        end
+        # rubocop:enable Metrics/CyclomaticComplexity
+
+        def string_literal_ranges(ast)
           # which lines start inside a string literal?
           return [] if ast.nil?
 
-          ast.each_node(:str, :dstr).each_with_object(Set.new) do |str, lines|
+          ast.each_node(:str, :dstr).each_with_object(Set.new) do |str, ranges|
             loc = str.location
 
-            str_lines = if loc.is_a?(Parser::Source::Map::Heredoc)
-                          body = loc.heredoc_body
-                          (body.first_line)..(body.last_line)
-                        else
-                          (loc.first_line + 1)..(loc.last_line)
-                        end
+            range = if str.heredoc?
+                      loc.heredoc_body
+                    else
+                      loc.expression
+                    end
 
-            lines.merge(str_lines.to_a)
+            ranges << range
           end
         end
       end
