@@ -92,7 +92,3 @@ module RuboCop
     end
   end
 end
-
-RSpec.configure do |config|
-  config.include CopHelper
-end
