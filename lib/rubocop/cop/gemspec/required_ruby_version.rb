@@ -38,8 +38,8 @@ module RuboCop
       class RequiredRubyVersion < Cop
         MSG = '`required_ruby_version` (%<required_ruby_version>s, ' \
               'declared in %<gemspec_filename>s) and `TargetRubyVersion` ' \
-              '(%<target_ruby_version>s, declared in .rubocop.yml) ' \
-              'should be equal.'.freeze
+              '(%<target_ruby_version>s, which may be specified in ' \
+              '.rubocop.yml) should be equal.'.freeze
 
         def_node_search :required_ruby_version, <<-PATTERN
           (send _ :required_ruby_version= ${(str _) (array (str _))})
