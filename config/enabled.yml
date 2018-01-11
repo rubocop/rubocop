@@ -861,6 +861,11 @@ Naming/HeredocDelimiterNaming:
   StyleGuide: '#heredoc-delimiters'
   Enabled: true
 
+Naming/MemoizedInstanceVariableName:
+  Description: >-
+    Memoized method name should match memo instance variable name.
+  Enabled: true
+
 Naming/MethodName:
   Description: 'Use the configured style when naming methods.'
   StyleGuide: '#snake-case-symbols-methods-vars'

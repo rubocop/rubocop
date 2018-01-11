@@ -24,6 +24,7 @@
 * [#4812](https://github.com/bbatsov/rubocop/issues/4812): Add `beginning_only` and `ending_only` style options to `Layout/EmptyLinesAroundClassBody` cop. ([@jmks][])
 * [#5591](https://github.com/bbatsov/rubocop/pull/5591): Include `.arb` file by default. ([@deivid-rodriguez][])
 * [#5473](https://github.com/bbatsov/rubocop/issues/5473): Use `gems.locked` or `Gemfile.lock` to determine the best `TargetRailsVersion` when it is not specified in the config. ([@roberts1000][])
+* Add new `Naming/MemoizedInstanceVariableName` cop. ([@satyap][])
 
 ### Bug fixes
 
@@ -3209,3 +3210,7 @@
 [@Edouard-chin]: https://github.com/Edouard-chin
 [@eostrom]: https://github.com/eostrom
 [@roberts1000]: https://github.com/roberts1000
+[@leklund]: https://github.com/leklund
+[@walinga]: https://github.com/walinga
+[@georf]: https://github.com/georf
+[@satyap]: https://github.com/satyap

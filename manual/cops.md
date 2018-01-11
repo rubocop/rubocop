@@ -282,6 +282,7 @@ In the following section you find all available cops:
 * [Naming/FileName](cops_naming.md#namingfilename)
 * [Naming/HeredocDelimiterCase](cops_naming.md#namingheredocdelimitercase)
 * [Naming/HeredocDelimiterNaming](cops_naming.md#namingheredocdelimiternaming)
+* [Naming/MemoizedInstanceVariableName](cops_naming.md#namingmemoizedinstancevariablename)
 * [Naming/MethodName](cops_naming.md#namingmethodname)
 * [Naming/PredicateName](cops_naming.md#namingpredicatename)
 * [Naming/UncommunicativeBlockParamName](cops_naming.md#naminguncommunicativeblockparamname)
