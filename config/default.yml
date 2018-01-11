@@ -743,7 +743,9 @@ Naming/UncommunicativeMethodArgName:
   MinNameLength: 3
   AllowNamesEndingInNumbers: true
   # Whitelisted names that will not register an offense
-  AllowedNames: []
+  AllowedNames:
+    - io
+    - id
   # Blacklisted names that will register an offense
   ForbiddenNames: []
 
