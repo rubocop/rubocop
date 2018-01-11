@@ -29,6 +29,7 @@
 * [#5348](https://github.com/bbatsov/rubocop/issues/5348): Fix false positive for `Style/SafeNavigation` when safe guarding more comparison methods. ([@rrosenblum][])
 * [#4889](https://github.com/bbatsov/rubocop/issues/4889): Auto-correcting `Style/SafeNavigation` will add safe navigation to all methods in a method chain. ([@rrosenblum][])
 * [#5287](https://github.com/bbatsov/rubocop/issues/5287): Do not register an offense in `Style/SafeNavigation` if there is an unsafe method used in a method chain. ([@rrosenblum][])
+* [#5401](https://github.com/bbatsov/rubocop/issues/5401): Fix `Style/RedundantReturn` to trigger when begin-end, rescue, and ensure blocks present. ([@asherkach][])
 
 ### Changes
 

@@ -9,6 +9,8 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     src = <<-RUBY.strip_indent
       def func
         return something
+      ensure
+        2
       end
     RUBY
     inspect_source(src)
@@ -279,6 +281,97 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
       RUBY
       new_source = autocorrect_source(src)
       expect(new_source).to eq(src)
+    end
+  end
+
+  context 'when return is inside begin-end body' do
+    let(:src) do
+      <<-RUBY.strip_indent
+        def func
+          begin
+            return 1
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
+        def func
+          begin
+            return 1
+            ^^^^^^ Redundant `return` detected.
+          end
+        end
+      RUBY
+    end
+
+    it 'auto-corrects' do
+      corrected = autocorrect_source(src)
+      expect(corrected).to eq <<-RUBY.strip_indent
+        def func
+          begin
+            1
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'when rescue and return blocks present' do
+    let(:src) do
+      <<-RUBY.strip_indent
+        def func
+          1
+          2
+          return 3
+        rescue SomeException
+          4
+          return 5
+        rescue AnotherException
+          return 6
+        ensure
+          return 7
+        end
+      RUBY
+    end
+
+    it 'does register an offense when inside function or rescue block' do
+      expect_offense(<<-RUBY.strip_indent)
+        def func
+          1
+          2
+          return 3
+          ^^^^^^ Redundant `return` detected.
+        rescue SomeException
+          4
+          return 5
+          ^^^^^^ Redundant `return` detected.
+        rescue AnotherException
+          return 6
+          ^^^^^^ Redundant `return` detected.
+        ensure
+          return 7
+        end
+      RUBY
+    end
+
+    it 'auto-corrects' do
+      corrected = autocorrect_source(src)
+      expect(corrected).to eq <<-RUBY.strip_indent
+        def func
+          1
+          2
+          3
+        rescue SomeException
+          4
+          5
+        rescue AnotherException
+          6
+        ensure
+          return 7
+        end
+      RUBY
     end
   end
 

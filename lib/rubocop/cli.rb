@@ -41,19 +41,19 @@ module RuboCop
       execute_runners(paths)
     rescue RuboCop::ConfigNotFoundError => e
       warn e.message
-      return e.status
+      e.status
     rescue RuboCop::Error => e
       warn Rainbow("Error: #{e.message}").red
-      return STATUS_ERROR
+      STATUS_ERROR
     rescue Finished
-      return STATUS_SUCCESS
+      STATUS_SUCCESS
     rescue IncorrectCopNameError => e
       warn e.message
-      return STATUS_ERROR
+      STATUS_ERROR
     rescue StandardError, SyntaxError, LoadError => e
       warn e.message
       warn e.backtrace
-      return STATUS_ERROR
+      STATUS_ERROR
     end
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
