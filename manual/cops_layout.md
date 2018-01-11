@@ -1960,7 +1960,7 @@ end
 class A
   def test
     puts 'hello'
-     puts 'world'
+    puts 'world'
   end
 
   protected
@@ -1989,7 +1989,7 @@ end
 class A
   def test
     puts 'hello'
-     puts 'world'
+    puts 'world'
   end
 
   protected

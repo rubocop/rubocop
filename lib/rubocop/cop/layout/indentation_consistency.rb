@@ -51,7 +51,7 @@ module RuboCop
       #   class A
       #     def test
       #       puts 'hello'
-      #        puts 'world'
+      #       puts 'world'
       #     end
       #
       #     protected
@@ -78,7 +78,7 @@ module RuboCop
       #   class A
       #     def test
       #       puts 'hello'
-      #        puts 'world'
+      #       puts 'world'
       #     end
       #
       #     protected
