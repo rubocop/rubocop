@@ -32,6 +32,8 @@ other cop.
   for Homebrew-Cask files.
 * [rubocop-thread_safety](https://github.com/covermymeds/rubocop-thread_safety) -
   Thread-safety analysis
+* [rubocop-require_tools](https://github.com/milch/rubocop-require_tools) -
+  Dynamic analysis for missing require statements
 
 ### Custom Formatters
 
