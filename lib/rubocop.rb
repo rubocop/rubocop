@@ -377,6 +377,7 @@ require_relative 'rubocop/cop/performance/unfreeze_string'
 require_relative 'rubocop/cop/performance/unneeded_sort'
 require_relative 'rubocop/cop/performance/uri_default_parser'
 
+require_relative 'rubocop/cop/style/access_modifier_declarations'
 require_relative 'rubocop/cop/style/alias'
 require_relative 'rubocop/cop/style/and_or'
 require_relative 'rubocop/cop/style/array_join'

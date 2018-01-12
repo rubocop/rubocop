@@ -91,7 +91,7 @@ module RuboCop
         @mutable_attributes.frozen?
       end
 
-      protected :parent=
+      protected :parent= # rubocop:disable Style/AccessModifierDeclarations
 
       # Override `AST::Node#updated` so that `AST::Processor` does not try to
       # mutate our ASTs. Since we keep references from children to parents and
@@ -321,7 +321,9 @@ module RuboCop
          (casgn $_ $_        (send (const nil? {:Class :Module}) :new ...))
          (casgn $_ $_ (block (send (const nil? {:Class :Module}) :new ...) ...))}
       PATTERN
+      # rubocop:disable Style/AccessModifierDeclarations
       private :defined_module0
+      # rubocop:enable Style/AccessModifierDeclarations
 
       def defined_module
         namespace, name = *defined_module0
