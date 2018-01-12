@@ -46,7 +46,7 @@ module RuboCop
 
       def hash_for_file(file, offenses)
         {
-          path:     relative_path(file),
+          path:     smart_path(file),
           offenses: offenses.map { |o| hash_for_offense(o) }
         }
       end
