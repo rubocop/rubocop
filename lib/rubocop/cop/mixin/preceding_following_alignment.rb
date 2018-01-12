@@ -56,9 +56,10 @@ module RuboCop
       end
 
       def aligned_comment_lines
-        @comment_lines ||= processed_source.comments.map(&:loc).select do |r|
-          begins_its_line?(r.expression)
-        end.map(&:line)
+        @aligned_comment_lines ||=
+          processed_source.comments.map(&:loc).select do |r|
+            begins_its_line?(r.expression)
+          end.map(&:line)
       end
 
       def aligned_token?(range, line)
