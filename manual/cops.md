@@ -380,6 +380,7 @@ In the following section you find all available cops:
 
 #### Department [Style](cops_style.md)
 
+* [Style/AccessModifierDeclarations](cops_style.md#styleaccessmodifierdeclarations)
 * [Style/Alias](cops_style.md#stylealias)
 * [Style/AndOr](cops_style.md#styleandor)
 * [Style/ArrayJoin](cops_style.md#stylearrayjoin)

@@ -1,5 +1,69 @@
 # Style
 
+## Style/AccessModifierDeclarations
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+Access modifiers should be declared to apply to a group of methods
+or inline before each method, depending on configuration.
+
+### Examples
+
+#### EnforcedStyle: group (default)
+
+```ruby
+# bad
+
+class Foo
+
+  private def bar; end
+  private def baz; end
+
+end
+
+# good
+
+class Foo
+
+  private
+
+  def bar; end
+  def baz; end
+
+end
+```
+#### EnforcedStyle: inline
+
+```ruby
+# bad
+
+class Foo
+
+  private
+
+  def bar; end
+  def baz; end
+
+end
+
+# good
+
+class Foo
+
+  private def bar; end
+  private def baz; end
+
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `group` | `inline`, `group`
+
 ## Style/Alias
 
 Enabled by default | Supports autocorrection

@@ -169,6 +169,10 @@ module RuboCop
       def_node_matcher :bare_access_modifier?, <<-PATTERN
         (send nil? {:public :protected :private :module_function})
       PATTERN
+
+      def_node_matcher :non_bare_access_modifier?, <<-PATTERN
+        (send nil? {:public :protected :private :module_function} _)
+      PATTERN
     end
   end
 end

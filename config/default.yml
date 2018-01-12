@@ -809,6 +809,12 @@ Naming/VariableNumber:
 
 #################### Style ###########################
 
+Style/AccessModifierDeclarations:
+  EnforcedStyle: group
+  SupportedStyles:
+    - inline
+    - group
+
 Style/Alias:
   EnforcedStyle: prefer_alias
   SupportedStyles:

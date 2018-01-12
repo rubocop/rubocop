@@ -21,6 +21,10 @@
 * [#5917](https://github.com/bbatsov/rubocop/pull/5917): Let `inherit_mode` work for default configuration too. ([@jonas054][])
 * [#5929](https://github.com/bbatsov/rubocop/pull/5929): Stop including string extensions from `unicode/display_width`. ([@nroman-stripe][])
 
+### New features
+
+* [#5444](https://github.com/bbatsov/rubocop/pull/5444): Add new `Style/AccessModifierDeclarations` cop. ([@brandonweiss][])
+
 ## 0.56.0 (2018-05-14)
 
 ### New features
