@@ -24,6 +24,7 @@ module RuboCop
         ForNode          => [:for],
         HashNode         => [:hash],
         IfNode           => [:if],
+        InstanceVariableNode => [:ivar],
         KeywordSplatNode => [:kwsplat],
         OrNode           => [:or],
         PairNode         => [:pair],
