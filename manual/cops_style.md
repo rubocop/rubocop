@@ -611,6 +611,31 @@ This cop checks for uses of class variables. Offenses
 are signaled only on assignment to class variables to
 reduce the number of offenses that would be reported.
 
+Setting value for class variable need to take care.
+If some class has been inherited by other classes, setting value
+for class variable affected children classes.
+So using class instance variable is better in almost case.
+
+### Examples
+
+```ruby
+# bad
+class A
+  @@test = 10
+end
+
+# good
+class A
+  @test = 10
+end
+
+class A
+  def test
+    @@test # you can access class variable without offence
+  end
+end
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#no-class-vars](https://github.com/bbatsov/ruby-style-guide#no-class-vars)
@@ -4681,6 +4706,12 @@ foo < bar if foo
 # This could start returning `nil` as well as the return of the method
 foo.nil? || foo.bar
 !foo || foo.bar
+
+# Methods that are used on assignment, arithmetic operation or
+# comparison should not be converted to use safe navigation
+foo.baz = bar if foo
+foo.baz + bar if foo
+foo.bar > 2 if foo
 
 # Methods that `nil` will `respond_to?` should not be converted to
 # use safe navigation
