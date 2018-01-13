@@ -31,6 +31,7 @@
 * [#5287](https://github.com/bbatsov/rubocop/issues/5287): Do not register an offense in `Style/SafeNavigation` if there is an unsafe method used in a method chain. ([@rrosenblum][])
 * [#5401](https://github.com/bbatsov/rubocop/issues/5401): Fix `Style/RedundantReturn` to trigger when begin-end, rescue, and ensure blocks present. ([@asherkach][])
 * [#5426](https://github.com/bbatsov/rubocop/issues/5426): Make `Rails/InverseOf` accept `inverse_of: nil` to opt-out. ([@wata727][])
+* [#5448](https://github.com/bbatsov/rubocop/issues/5448): Improve `Rails/LexicallyScopedActionFilter`. ([@wata727][])
 
 ### Changes
 

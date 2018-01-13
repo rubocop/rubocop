@@ -825,12 +825,12 @@ Enabled by default | Supports autocorrection
 Enabled | No
 
 This cop checks that methods specified in the filter's `only`
-or `except` options are explicitly defined in the controller.
+or `except` options are explicitly defined in the class or module.
 
 You can specify methods of superclass or methods added by mixins
 on the filter, but these confuse developers. If you specify methods
-where are defined on another controller, you should define the filter
-in that controller.
+where are defined on another classes or modules, you should define
+the filter in that class or module.
 
 ### Examples
 
@@ -854,6 +854,29 @@ class LoginController < ApplicationController
   end
 
   def logout
+  end
+end
+```
+```ruby
+# bad
+module FooMixin
+  extend ActiveSupport::Concern
+
+  included do
+    before_action proc { authenticate }, only: :foo
+  end
+end
+
+# good
+module FooMixin
+  extend ActiveSupport::Concern
+
+  included do
+    before_action proc { authenticate }, only: :foo
+  end
+
+  def foo
+    # something
   end
 end
 ```
