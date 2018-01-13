@@ -336,7 +336,7 @@ require_relative 'rubocop/cop/naming/method_name'
 require_relative 'rubocop/cop/naming/binary_operator_parameter_name'
 require_relative 'rubocop/cop/naming/predicate_name'
 require_relative 'rubocop/cop/naming/uncommunicative_block_param_name'
-require_relative 'rubocop/cop/naming/uncommunicative_method_arg_name'
+require_relative 'rubocop/cop/naming/uncommunicative_method_param_name'
 require_relative 'rubocop/cop/naming/variable_name'
 require_relative 'rubocop/cop/naming/variable_number'
 

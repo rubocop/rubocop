@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Naming
-      # This cop checks method argument names for how descriptive they
+      # This cop checks method parameter names for how descriptive they
       # are. It is highly configurable.
       #
       # The `MinNameLength` config option takes an integer. It represents
@@ -43,7 +43,7 @@ module RuboCop
       #   def baz(age_a, height_b, gender_c)
       #     do_stuff(age_a, height_b, gender_c)
       #   end
-      class UncommunicativeMethodArgName < Cop
+      class UncommunicativeMethodParamName < Cop
         include UncommunicativeName
 
         def on_def(node)
