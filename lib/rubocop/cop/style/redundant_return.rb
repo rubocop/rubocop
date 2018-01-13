@@ -73,14 +73,20 @@ module RuboCop
           !args.first.begin_type? || !args.first.children.empty?
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity
         def check_branch(node)
           case node.type
           when :return then check_return_node(node)
           when :case   then check_case_node(node)
           when :if     then check_if_node(node)
-          when :begin  then check_begin_node(node)
+          when :rescue, :resbody
+            check_rescue_node(node)
+          when :ensure then check_ensure_node(node)
+          when :begin, :kwbegin
+            check_begin_node(node)
           end
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         def check_return_node(node)
           return if cop_config['AllowMultipleReturnValues'] &&
@@ -108,6 +114,17 @@ module RuboCop
 
           check_branch(if_node) if if_node
           check_branch(else_node) if else_node
+        end
+
+        def check_rescue_node(node)
+          node.child_nodes.each do |child_node|
+            check_branch(child_node)
+          end
+        end
+
+        def check_ensure_node(node)
+          rescue_node = node.node_parts[0]
+          check_branch(rescue_node)
         end
 
         def check_begin_node(node)
