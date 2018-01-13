@@ -4,12 +4,12 @@ module RuboCop
   module Cop
     module Rails
       # This cop checks that methods specified in the filter's `only`
-      # or `except` options are explicitly defined in the controller.
+      # or `except` options are explicitly defined in the class or module.
       #
       # You can specify methods of superclass or methods added by mixins
       # on the filter, but these confuse developers. If you specify methods
-      # where are defined on another controller, you should define the filter
-      # in that controller.
+      # where are defined on another classes or modules, you should define
+      # the filter in that class or module.
       #
       # @example
       #   # bad
@@ -33,8 +33,31 @@ module RuboCop
       #     def logout
       #     end
       #   end
+      #
+      # @example
+      #   # bad
+      #   module FooMixin
+      #     extend ActiveSupport::Concern
+      #
+      #     included do
+      #       before_action proc { authenticate }, only: :foo
+      #     end
+      #   end
+      #
+      #   # good
+      #   module FooMixin
+      #     extend ActiveSupport::Concern
+      #
+      #     included do
+      #       before_action proc { authenticate }, only: :foo
+      #     end
+      #
+      #     def foo
+      #       # something
+      #     end
+      #   end
       class LexicallyScopedActionFilter < Cop
-        MSG = '%<action>s not explicitly defined on the controller.'.freeze
+        MSG = '%<action>s not explicitly defined on the %<type>s.'.freeze
 
         FILTERS = %w[
           :after_action
@@ -67,12 +90,18 @@ module RuboCop
           methods_node = only_or_except_filter_methods(node)
           return unless methods_node
 
-          defined_methods = node.parent.each_child_node(:def).map(&:method_name)
+          parent = node.each_ancestor(:class, :module).first
+          return unless parent
+          block = parent.each_child_node(:begin).first
+          return unless block
+
+          defined_methods = block.each_child_node(:def).map(&:method_name)
           methods = array_values(methods_node).reject do |method|
             defined_methods.include?(method)
           end
 
-          add_offense(node, message: message(methods)) unless methods.empty?
+          message = message(methods, parent)
+          add_offense(node, message: message) unless methods.empty?
         end
 
         private
@@ -99,11 +128,18 @@ module RuboCop
           end
         end
 
-        def message(methods)
+        # @param methods [Array<String>]
+        # @param parent [RuboCop::AST::Node]
+        # @return [String]
+        def message(methods, parent)
           if methods.size == 1
-            format(MSG, action: "`#{methods[0]}` is")
+            format(MSG,
+                   action: "`#{methods[0]}` is",
+                   type: parent.type)
           else
-            format(MSG, action: "`#{methods.join('`, `')}` are")
+            format(MSG,
+                   action: "`#{methods.join('`, `')}` are",
+                   type: parent.type)
           end
         end
       end

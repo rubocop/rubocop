@@ -9,7 +9,7 @@ RSpec.describe RuboCop::Cop::Rails::LexicallyScopedActionFilter do
     expect_offense <<-RUBY
       class LoginController < ApplicationController
         before_action :require_login, except: 'health_check'
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `health_check` is not explicitly defined on the controller.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `health_check` is not explicitly defined on the class.
 
         def index
         end
@@ -21,7 +21,7 @@ RSpec.describe RuboCop::Cop::Rails::LexicallyScopedActionFilter do
     expect_offense <<-RUBY
       class LoginController < ApplicationController
         skip_before_action :require_login, only: :health_check
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `health_check` is not explicitly defined on the controller.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `health_check` is not explicitly defined on the class.
 
         def index
         end
@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::Rails::LexicallyScopedActionFilter do
     expect_offense <<-RUBY
       class LoginController < ApplicationController
         before_action :require_login, only: %w[index settings]
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `settings` is not explicitly defined on the controller.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `settings` is not explicitly defined on the class.
 
         def index
         end
@@ -45,9 +45,22 @@ RSpec.describe RuboCop::Cop::Rails::LexicallyScopedActionFilter do
     expect_offense <<-RUBY
       class LoginController < ApplicationController
         before_action :require_login, only: %i[index settings logout]
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `settings`, `logout` are not explicitly defined on the controller.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `settings`, `logout` are not explicitly defined on the class.
 
         def index
+        end
+      end
+    RUBY
+  end
+
+  it 'register an offense when using action filter in module' do
+    expect_offense <<-RUBY
+      module FooMixin
+        extend ActiveSupport::Concern
+
+        included do
+          before_action proc { authenticate }, only: :foo
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `foo` is not explicitly defined on the module.
         end
       end
     RUBY
@@ -102,6 +115,32 @@ RSpec.describe RuboCop::Cop::Rails::LexicallyScopedActionFilter do
 
         def logout
         end
+      end
+    RUBY
+  end
+
+  it "doesn't register an offense when using conditional statements" do
+    expect_no_offenses <<-RUBY
+      class Test < ActionController
+        before_action(:authenticate, only: %i[update cancel]) unless foo
+
+        def update; end
+
+        def cancel; end
+      end
+    RUBY
+  end
+
+  it "doesn't register an offense when using mixin" do
+    expect_no_offenses <<-RUBY
+      module FooMixin
+        extend ActiveSupport::Concern
+
+        included do
+          before_action proc { authenticate }, only: :foo
+        end
+
+        def foo; end
       end
     RUBY
   end
