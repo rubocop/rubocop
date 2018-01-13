@@ -283,7 +283,7 @@ In the following section you find all available cops:
 * [Naming/MethodName](cops_naming.md#namingmethodname)
 * [Naming/PredicateName](cops_naming.md#namingpredicatename)
 * [Naming/UncommunicativeBlockParamName](cops_naming.md#naminguncommunicativeblockparamname)
-* [Naming/UncommunicativeMethodArgName](cops_naming.md#naminguncommunicativemethodargname)
+* [Naming/UncommunicativeMethodParamName](cops_naming.md#naminguncommunicativemethodparamname)
 * [Naming/VariableName](cops_naming.md#namingvariablename)
 * [Naming/VariableNumber](cops_naming.md#namingvariablenumber)
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Naming::UncommunicativeMethodArgName, :config do
+RSpec.describe RuboCop::Cop::Naming::UncommunicativeMethodParamName, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:cop_config) do
@@ -10,7 +10,7 @@ RSpec.describe RuboCop::Cop::Naming::UncommunicativeMethodArgName, :config do
     }
   end
 
-  it 'does not register for method without arguments' do
+  it 'does not register for method without parameters' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def something
         do_stuff
@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Naming::UncommunicativeMethodArgName, :config do
     RUBY
   end
 
-  it 'does not register offense for valid argument names' do
+  it 'does not register offense for valid parameter names' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def something(foo, bar)
         do_stuff
@@ -26,7 +26,7 @@ RSpec.describe RuboCop::Cop::Naming::UncommunicativeMethodArgName, :config do
     RUBY
   end
 
-  it 'does not register offense for valid argument names on self.method' do
+  it 'does not register offense for valid parameter names on self.method' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def self.something(foo, bar)
         do_stuff
@@ -34,7 +34,7 @@ RSpec.describe RuboCop::Cop::Naming::UncommunicativeMethodArgName, :config do
     RUBY
   end
 
-  it 'does not register offense for valid default arguments' do
+  it 'does not register offense for valid default parameters' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def self.something(foo = Pwd.dir, bar = 1)
         do_stuff
@@ -42,7 +42,7 @@ RSpec.describe RuboCop::Cop::Naming::UncommunicativeMethodArgName, :config do
     RUBY
   end
 
-  it 'does not register offense for valid keyword arguments' do
+  it 'does not register offense for valid keyword parameters' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def self.something(foo: Pwd.dir, bar: 1)
         do_stuff
@@ -50,55 +50,55 @@ RSpec.describe RuboCop::Cop::Naming::UncommunicativeMethodArgName, :config do
     RUBY
   end
 
-  it 'registers offense when argument ends in number' do
+  it 'registers offense when parameter ends in number' do
     expect_offense(<<-RUBY.strip_indent)
       def something(foo1, bar)
-                    ^^^^ Do not end method argument with a number.
+                    ^^^^ Do not end method parameter with a number.
         do_stuff
        end
     RUBY
   end
 
-  it 'registers offense when argument ends in number on class method' do
+  it 'registers offense when parameter ends in number on class method' do
     expect_offense(<<-RUBY.strip_indent)
       def self.something(foo, bar1)
-                              ^^^^ Do not end method argument with a number.
+                              ^^^^ Do not end method parameter with a number.
         do_stuff
        end
     RUBY
   end
 
-  it 'registers offense when argument is less than minimum length' do
+  it 'registers offense when parameter is less than minimum length' do
     expect_offense(<<-RUBY.strip_indent)
       def something(ab)
-                    ^^ Method argument must be longer than 3 characters.
+                    ^^ Method parameter must be longer than 3 characters.
         do_stuff
       end
     RUBY
   end
 
-  it 'registers offense when argument contains uppercase characters' do
+  it 'registers offense when parameter contains uppercase characters' do
     expect_offense(<<-RUBY.strip_indent)
       def something(number_One)
-                    ^^^^^^^^^^ Only use lowercase characters for method argument.
+                    ^^^^^^^^^^ Only use lowercase characters for method parameter.
         do_stuff
       end
     RUBY
   end
 
-  it 'registers offense for offensive default argument' do
+  it 'registers offense for offensive default parameter' do
     expect_offense(<<-RUBY.strip_indent)
       def self.something(foo1 = Pwd.dir)
-                         ^^^^ Do not end method argument with a number.
+                         ^^^^ Do not end method parameter with a number.
         do_stuff
       end
     RUBY
   end
 
-  it 'registers offense for offensive keyword arguments' do
+  it 'registers offense for offensive keyword parameters' do
     expect_offense(<<-RUBY.strip_indent)
       def something(fooBar:)
-                    ^^^^^^ Only use lowercase characters for method argument.
+                    ^^^^^^ Only use lowercase characters for method parameter.
         do_stuff
       end
     RUBY
@@ -112,9 +112,9 @@ RSpec.describe RuboCop::Cop::Naming::UncommunicativeMethodArgName, :config do
     RUBY
     expect(cop.offenses.size).to eq(3)
     expect(cop.messages).to eq [
-      'Method argument must be longer than 3 characters.',
-      'Do not end method argument with a number.',
-      'Only use lowercase characters for method argument.'
+      'Method parameter must be longer than 3 characters.',
+      'Do not end method parameter with a number.',
+      'Only use lowercase characters for method parameter.'
     ]
   end
 
@@ -137,7 +137,7 @@ RSpec.describe RuboCop::Cop::Naming::UncommunicativeMethodArgName, :config do
     it 'registers unlisted offensive names' do
       expect_offense(<<-RUBY.strip_indent)
         def quux(bar, bar1)
-                      ^^^^ Do not end method argument with a number.
+                      ^^^^ Do not end method parameter with a number.
           do_stuff
         end
       RUBY
@@ -151,19 +151,19 @@ RSpec.describe RuboCop::Cop::Naming::UncommunicativeMethodArgName, :config do
       }
     end
 
-    it 'registers offense for argument listed as forbidden' do
+    it 'registers offense for parameter listed as forbidden' do
       expect_offense(<<-RUBY.strip_indent)
         def baz(arg)
-                ^^^ Do not use arg as a name for a method argument.
+                ^^^ Do not use arg as a name for a method parameter.
           arg.do_things
         end
       RUBY
     end
 
-    it "accepts argument that uses a forbidden name's letters" do
+    it "accepts parameter that uses a forbidden name's letters" do
       expect_no_offenses(<<-RUBY.strip_indent)
-        def baz(foo_argument)
-          foo_argument.do_things
+        def baz(foo_parameter)
+          foo_parameter.do_things
         end
       RUBY
     end
@@ -176,7 +176,7 @@ RSpec.describe RuboCop::Cop::Naming::UncommunicativeMethodArgName, :config do
       }
     end
 
-    it 'accept arguments that end in numbers' do
+    it 'accept parameters that end in numbers' do
       expect_no_offenses(<<-RUBY.strip_indent)
         def something(foo1, bar2, qux3)
           do_stuff

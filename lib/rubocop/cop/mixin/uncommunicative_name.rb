@@ -43,7 +43,7 @@ module RuboCop
         @name_type ||= begin
           case node.type
           when :block then 'block parameter'
-          when :def, :defs then 'method argument'
+          when :def, :defs then 'method parameter'
           end
         end
       end
