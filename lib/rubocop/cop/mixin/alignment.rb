@@ -65,6 +65,10 @@ module RuboCop
       def within?(inner, outer)
         inner.begin_pos >= outer.begin_pos && inner.end_pos <= outer.end_pos
       end
+
+      def end_of_line_comment(line)
+        processed_source.find_comment { |c| c.loc.line == line }
+      end
     end
   end
 end

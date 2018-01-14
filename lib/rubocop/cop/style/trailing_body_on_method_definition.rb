@@ -39,8 +39,14 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            break_line_before_body(node, corrector)
-            move_comment(node, corrector)
+            LineBreakCorrector.break_line_before(
+              range: first_part_of(node.body), node: node, corrector: corrector,
+              configured_width: configured_indentation_width
+            )
+            LineBreakCorrector.move_comment(
+              eol_comment: end_of_line_comment(node.source_range.line),
+              node: node, corrector: corrector
+            )
             remove_semicolon(node, corrector)
           end
         end
@@ -55,34 +61,12 @@ module RuboCop
           node.source_range.first_line == node.body.source_range.first_line
         end
 
-        def break_line_before_body(node, corrector)
-          corrector.insert_before(
-            first_part_of(node.body),
-            "\n" + ' ' * (node.loc.keyword.column +
-                          configured_indentation_width)
-          )
-        end
-
         def first_part_of(body)
           if body.begin_type?
             body.children.first.source_range
           else
             body.source_range
           end
-        end
-
-        def move_comment(node, corrector)
-          eol_comment = end_of_line_comment(node.source_range.line)
-          return unless eol_comment
-
-          text = eol_comment.loc.expression.source
-          corrector.insert_before(node.source_range,
-                                  text + "\n" + (' ' * node.loc.keyword.column))
-          corrector.remove(eol_comment.loc.expression)
-        end
-
-        def end_of_line_comment(line)
-          processed_source.find_comment { |c| c.loc.line == line }
         end
 
         def remove_semicolon(node, corrector)
