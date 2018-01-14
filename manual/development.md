@@ -302,48 +302,48 @@ module Department
   # configs with these value types.
   #
   # @example EnforcedStyle: bar
-  #    # Description about this particular option
+  #   # Description about this particular option
   #
-  #    # bad
-  #    bad_example1
-  #    bad_example2
+  #   # bad
+  #   bad_example1
+  #   bad_example2
   #
-  #    # good
-  #    good_example1
-  #    good_example2
+  #   # good
+  #   good_example1
+  #   good_example2
   #
   # @example EnforcedStyle: foo (default)
-  #    # Description about this particular option
+  #   # Description about this particular option
   #
-  #    # bad
-  #    bad_example1
-  #    bad_example2
+  #   # bad
+  #   bad_example1
+  #   bad_example2
   #
-  #    # good
-  #    good_example1
-  #    good_example2
+  #   # good
+  #   good_example1
+  #   good_example2
   #
   # @example AnyUniqueConfigKeyThatIsAString: qux (default)
-  #    # Description about this particular option
+  #   # Description about this particular option
   #
-  #    # bad
-  #    bad_example1
-  #    bad_example2
+  #   # bad
+  #   bad_example1
+  #   bad_example2
   #
-  #    # good
-  #    good_example1
-  #    good_example2
+  #   # good
+  #   good_example1
+  #   good_example2
   #
   # @example AnyUniqueConfigKeyThatIsAString: thud
-  #    # Description about this particular option
+  #   # Description about this particular option
   #
-  #    # bad
-  #    bad_example1
-  #    bad_example2
+  #   # bad
+  #   bad_example1
+  #   bad_example2
   #
-  #    # good
-  #    good_example1
-  #    good_example2
+  #   # good
+  #   good_example1
+  #   good_example2
   #
   class YourCop
     # ...
