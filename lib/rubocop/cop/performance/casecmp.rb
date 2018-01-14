@@ -35,6 +35,13 @@ module RuboCop
             $(send _ ${:downcase :upcase}))
         PATTERN
 
+        def_node_matcher :downcase_downcase, <<-PATTERN
+          (send
+            $(send _ ${:downcase :upcase})
+            ${:== :eql? :!=}
+            $(send _ ${:downcase :upcase}))
+        PATTERN
+
         def on_send(node)
           return if part_of_ignored_node?(node)
 
@@ -46,17 +53,19 @@ module RuboCop
         end
 
         def autocorrect(node)
-          downcase_eq(node) do
+          if downcase_downcase(node)
+            receiver, method, rhs = *node
+            arg, = *rhs
+          elsif downcase_eq(node)
             receiver, method, arg = *node
-            variable, = *receiver
-            return correction(node, receiver, method, arg, variable)
+          elsif eq_downcase(node)
+            arg, method, receiver = *node
+          else
+            return
           end
 
-          eq_downcase(node) do
-            arg, method, receiver = *node
-            variable, = *receiver
-            return correction(node, receiver, method, arg, variable)
-          end
+          variable, = *receiver
+          correction(node, receiver, method, arg, variable)
         end
 
         private
