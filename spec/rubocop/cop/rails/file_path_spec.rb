@@ -9,6 +9,12 @@ RSpec.describe RuboCop::Cop::Rails::FilePath do
     end
   end
 
+  context 'when using Rails.root.join in string interpolation of argument' do
+    it 'does not registers an offense' do
+      expect_no_offenses('system "rm -rf #{Rails.root.join(\'a\', \'b.png\')}"')
+    end
+  end
+
   context 'when using File.join with Rails.root' do
     it 'registers an offense' do
       expect_offense(<<-RUBY.strip_indent)
@@ -32,6 +38,26 @@ RSpec.describe RuboCop::Cop::Rails::FilePath do
       expect_offense(<<-'RUBY'.strip_indent)
         "#{Rails.root}/app/models/goober"
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please use `Rails.root.join('path', 'to')` instead.
+      RUBY
+    end
+  end
+
+  context 'when concat Rails.root and file separator ' \
+          'using string interpolation' do
+    it 'registers an offense' do
+      expect_offense(<<-'RUBY'.strip_indent)
+        system "rm -rf #{Rails.root}/foo/bar"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please use `Rails.root.join('path', 'to')` instead.
+      RUBY
+    end
+  end
+
+  context 'when concat Rails.root.join and extension ' \
+          'using string interpolation' do
+    it 'registers an offense' do
+      expect_offense(<<-'RUBY'.strip_indent)
+        "#{Rails.root.join('tmp', user.id, 'icon')}.png"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please use `Rails.root.join('path', 'to')` instead.
       RUBY
     end
   end
