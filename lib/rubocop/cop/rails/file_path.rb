@@ -32,7 +32,11 @@ module RuboCop
         PATTERN
 
         def on_dstr(node)
-          return unless rails_root_nodes?(node)
+          unless node.children.last.source.start_with?('.')
+            return if rails_root_nodes?(node) &&
+                      !node.children.last.source.include?(File::SEPARATOR)
+          end
+
           register_offense(node)
         end
 
