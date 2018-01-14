@@ -31,17 +31,20 @@ module RuboCop
         alias on_defs on_def
 
         def autocorrect(node)
-          body = node.body
-
           lambda do |corrector|
-            each_part(body) do |part|
-              break_line_before(part, node, corrector, 1)
+            each_part(node.body) do |part|
+              LineBreakCorrector.break_line_before(
+                range: part, node: node, corrector: corrector,
+                configured_width: configured_indentation_width
+              )
             end
 
-            break_line_before(node.loc.end, node, corrector, 0)
+            LineBreakCorrector.break_line_before(
+              range: node.loc.end, node: node, corrector: corrector,
+              indent_steps: 0, configured_width: configured_indentation_width
+            )
 
-            eol_comment = end_of_line_comment(node.source_range.line)
-            move_comment(eol_comment, node, corrector) if eol_comment
+            move_comment(node, corrector)
           end
         end
 
@@ -49,10 +52,6 @@ module RuboCop
 
         def allow_empty?
           cop_config['AllowIfMethodIsEmpty']
-        end
-
-        def end_of_line_comment(line)
-          processed_source.find_comment { |c| c.loc.line == line }
         end
 
         def each_part(body)
@@ -65,19 +64,11 @@ module RuboCop
           end
         end
 
-        def break_line_before(range, node, corrector, indent_steps)
-          corrector.insert_before(
-            range,
-            "\n" + ' ' * (node.loc.keyword.column +
-                          indent_steps * configured_indentation_width)
+        def move_comment(node, corrector)
+          LineBreakCorrector.move_comment(
+            eol_comment: end_of_line_comment(node.source_range.line),
+            node: node, corrector: corrector
           )
-        end
-
-        def move_comment(eol_comment, node, corrector)
-          text = eol_comment.loc.expression.source
-          corrector.insert_before(node.source_range,
-                                  text + "\n" + (' ' * node.loc.keyword.column))
-          corrector.remove(eol_comment.loc.expression)
         end
       end
     end
