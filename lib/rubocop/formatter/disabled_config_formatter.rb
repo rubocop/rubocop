@@ -140,23 +140,28 @@ module RuboCop
       end
 
       def output_cop_config(output_buffer, cfg, cop_name)
+        offending_files = @files_with_offenses[cop_name].uniq.sort
+        # Only modify the maximum if the files are not excluded one by one.
+        if offending_files.count > @exclude_limit && cfg[:exclude_limit]
+          cfg.merge! cfg[:exclude_limit]
+        end
+
         # 'Enabled' option will be put into file only if exclude
-        # limit is exceeded.
-        cfg_without_enabled = cfg.reject { |key| key == 'Enabled' }
+        # limit is exceeded. Remove already used exclude_limit.
+        cfg.reject! { |key| ['Enabled', :exclude_limit].include? key }
 
         output_buffer.puts "#{cop_name}:"
-        cfg_without_enabled.each do |key, value|
+        cfg.each do |key, value|
           value = value[0] if value.is_a?(Array)
           output_buffer.puts "  #{key}: #{value}"
         end
 
-        output_offending_files(output_buffer, cfg_without_enabled, cop_name)
+        output_offending_files(output_buffer, cfg, offending_files, cop_name)
       end
 
-      def output_offending_files(output_buffer, cfg, cop_name)
+      def output_offending_files(output_buffer, cfg, offending_files, cop_name)
         return unless cfg.empty?
 
-        offending_files = @files_with_offenses[cop_name].uniq.sort
         if offending_files.count > @exclude_limit
           output_buffer.puts '  Enabled: false'
         else
