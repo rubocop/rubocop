@@ -14,6 +14,7 @@ module RuboCop
       def check(node, args)
         args.each do |arg|
           name = arg.children.first.to_s
+          next if arg.restarg_type? && name.empty?
           next if allowed_names.include?(name)
           range = arg_range(arg, name.size)
           issue_offenses(node, range, name)
