@@ -3782,16 +3782,13 @@ source code.
 
 # bad
 class Foo; end
-
 # EOF
 
 # bad
-class Foo; end
-# EOF
+class Foo; end # EOF
 
 # good
 class Foo; end
-# a blank line
 
 # EOF
 ```
@@ -3802,17 +3799,14 @@ class Foo; end
 
 # bad
 class Foo; end
-# a blank line
 
 # EOF
 
 # bad
-class Foo; end
-# EOF
+class Foo; end # EOF
 
 # good
 class Foo; end
-
 # EOF
 ```
 
