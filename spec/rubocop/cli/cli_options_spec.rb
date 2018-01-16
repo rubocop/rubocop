@@ -1240,7 +1240,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     end
 
-    it 'prints corrected code to stdout if --autocorrect is used' do
+    it 'prints corrected code to stdout if --auto-correct is used' do
       begin
         $stdin = StringIO.new('p $/')
         argv   = ['--auto-correct',
