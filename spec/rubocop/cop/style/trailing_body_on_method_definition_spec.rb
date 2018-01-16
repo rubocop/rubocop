@@ -129,8 +129,8 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition do
                              '  end'].join("\n")
   end
 
-  context 'when method not on first line of processed_source' do
-    it '' do
+  context 'when method is not on first line of processed_source' do
+    it 'auto-corrects offense' do
       corrected = autocorrect_source(['',
                                       '  def some_method; body',
                                       '  end'].join("\n"))

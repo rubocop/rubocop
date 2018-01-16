@@ -5370,6 +5370,27 @@ Name | Default value | Configurable values
 EnforcedStyle | `require_no_parentheses` | `require_parentheses`, `require_no_parentheses`, `require_parentheses_when_complex`
 AllowSafeAssignment | `true` | Boolean
 
+## Style/TrailingBodyOnClass
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for trailing code after the class definition.
+
+### Examples
+
+```ruby
+# bad
+class Foo; def foo; end
+end
+
+# good
+class Foo
+  def foo; end
+end
+```
+
 ## Style/TrailingBodyOnMethodDefinition
 
 Enabled by default | Supports autocorrection
