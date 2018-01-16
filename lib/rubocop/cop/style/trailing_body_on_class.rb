@@ -3,40 +3,29 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for trailing code after the method definition.
+      # This cop checks for trailing code after the class definition.
       #
       # @example
       #   # bad
-      #   def some_method; do_stuff
-      #   end
-      #
-      #   def f(x); b = foo
-      #     b[c: x]
+      #   class Foo; def foo; end
       #   end
       #
       #   # good
-      #   def some_method
-      #     do_stuff
+      #   class Foo
+      #     def foo; end
       #   end
       #
-      #   def f(x)
-      #     b = foo
-      #     b[c: x]
-      #   end
-      #
-      class TrailingBodyOnMethodDefinition < Cop
+      class TrailingBodyOnClass < Cop
         include Alignment
         include TrailingBody
 
-        MSG = "Place the first line of a multi-line method definition's " \
-              'body on its own line.'.freeze
+        MSG = 'Place the first line of class body on its own line.'.freeze
 
-        def on_def(node)
+        def on_class(node)
           return unless trailing_body?(node)
 
-          add_offense(node, location: first_part_of(node.body))
+          add_offense(node, location: first_part_of(node.to_a.last))
         end
-        alias on_defs on_def
 
         def autocorrect(node)
           lambda do |corrector|

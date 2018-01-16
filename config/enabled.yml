@@ -1928,6 +1928,10 @@ Style/TernaryParentheses:
   Description: 'Checks for use of parentheses around ternary conditions.'
   Enabled: true
 
+Style/TrailingBodyOnClass:
+  Description: 'Class body goes below class statement.'
+  Enabled: true
+
 Style/TrailingBodyOnMethodDefinition:
   Description: 'Method body goes below definition.'
   Enabled: true
