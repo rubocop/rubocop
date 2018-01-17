@@ -119,6 +119,10 @@ Layout/ElseAlignment:
   Description: 'Align elses and elsifs correctly.'
   Enabled: true
 
+Layout/EmptyComment:
+  Description: 'Checks empty comment.'
+  Enabled: true
+
 Layout/EmptyLineAfterMagicComment:
   Description: 'Add an empty line after magic comments to separate them from code.'
   StyleGuide: '#separate-magic-comments-from-code'

@@ -118,6 +118,7 @@ In the following section you find all available cops:
 * [Layout/DefEndAlignment](cops_layout.md#layoutdefendalignment)
 * [Layout/DotPosition](cops_layout.md#layoutdotposition)
 * [Layout/ElseAlignment](cops_layout.md#layoutelsealignment)
+* [Layout/EmptyComment](cops_layout.md#layoutemptycomment)
 * [Layout/EmptyLineAfterMagicComment](cops_layout.md#layoutemptylineaftermagiccomment)
 * [Layout/EmptyLineBetweenDefs](cops_layout.md#layoutemptylinebetweendefs)
 * [Layout/EmptyLines](cops_layout.md#layoutemptylines)

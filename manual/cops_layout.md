@@ -885,6 +885,32 @@ else
 end
 ```
 
+## Layout/EmptyComment
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks empty comment.
+
+### Examples
+
+```ruby
+# bad
+
+#
+class Foo
+end
+
+# good
+
+#
+# Description of `Foo` class.
+#
+class Foo
+end
+```
+
 ## Layout/EmptyLineAfterMagicComment
 
 Enabled by default | Supports autocorrection
