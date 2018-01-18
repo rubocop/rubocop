@@ -3037,7 +3037,7 @@ end
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | No
+Enabled | Yes
 
 This cops checks for use of `extend self` or `module_function` in a
 module.

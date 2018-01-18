@@ -23,6 +23,22 @@ RSpec.describe RuboCop::Cop::Style::ModuleFunction, :config do
         end
       RUBY
     end
+
+    it 'auto-corrects `extend self` to `module_function`' do
+      source = <<-RUBY.strip_indent
+        module Foo
+          extend self
+          def test; end
+        end
+      RUBY
+      corrected = autocorrect_source(source)
+      expect(corrected).to eq <<-RUBY.strip_indent
+        module Foo
+          module_function
+          def test; end
+        end
+      RUBY
+    end
   end
 
   context 'when enforced style is `extend_self`' do
@@ -43,6 +59,22 @@ RSpec.describe RuboCop::Cop::Style::ModuleFunction, :config do
         module Test
           def test; end
           module_function :test
+        end
+      RUBY
+    end
+
+    it 'auto-corrects `module_function` to `extend self`' do
+      source = <<-RUBY.strip_indent
+        module Foo
+          module_function
+          def test; end
+        end
+      RUBY
+      corrected = autocorrect_source(source)
+      expect(corrected).to eq <<-RUBY.strip_indent
+        module Foo
+          extend self
+          def test; end
         end
       RUBY
     end
