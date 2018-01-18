@@ -1936,6 +1936,10 @@ Style/TrailingBodyOnMethodDefinition:
   Description: 'Method body goes below definition.'
   Enabled: true
 
+Style/TrailingBodyOnModule:
+  Description: 'Module body goes below module statement.'
+  Enabled: true
+
 Style/TrailingCommaInArguments:
   Description: 'Checks for trailing comma in argument lists.'
   StyleGuide: '#no-trailing-params-comma'

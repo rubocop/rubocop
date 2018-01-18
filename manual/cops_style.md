@@ -5421,6 +5421,27 @@ def f(x)
 end
 ```
 
+## Style/TrailingBodyOnModule
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for trailing code after the module definition.
+
+### Examples
+
+```ruby
+# bad
+module Foo extend self
+end
+
+# good
+module Foo
+  extend self
+end
+```
+
 ## Style/TrailingCommaInArguments
 
 Enabled by default | Supports autocorrection
