@@ -50,6 +50,14 @@ RSpec.describe RuboCop::Cop::Rails::Presence do
     end
   RUBY
 
+  it_behaves_like :offense, <<-RUBY.strip_indent.chomp, 'a.presence', 1, 5
+    unless a.present?
+      nil
+    else
+      a
+    end
+  RUBY
+
   it_behaves_like :offense, 'a if a.present?', 'a.presence', 1, 1
   it_behaves_like :offense, 'a unless a.blank?', 'a.presence', 1, 1
   it_behaves_like :offense, <<-RUBY.strip_indent.chomp, <<-FIXED.strip_indent.chomp, 1, 7 # rubocop:disable Metrics/LineLength
@@ -161,6 +169,16 @@ RSpec.describe RuboCop::Cop::Rails::Presence do
         a
       else
         fetch_state while waiting?
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using #present? with elsif block' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      if something?
+        a
+      elsif b.present?
+        b
       end
     RUBY
   end
