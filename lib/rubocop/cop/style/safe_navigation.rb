@@ -55,18 +55,12 @@ module RuboCop
       #   foo.baz = bar if foo
       #   foo.baz + bar if foo
       #   foo.bar > 2 if foo
-      #
-      #   # Methods that `nil` will `respond_to?` should not be converted to
-      #   # use safe navigation
-      #   foo.to_i if foo
       class SafeNavigation < Cop
         extend TargetRubyVersion
         include RangeHelp
 
         MSG = 'Use safe navigation (`&.`) instead of checking if an object ' \
               'exists before calling the method.'.freeze
-        NIL_METHODS = nil.methods.freeze
-        ADDITIONAL_COMPARISON_METHODS = %i[<=> =~ !~].freeze
 
         minimum_target_ruby_version 2.3
 
@@ -174,25 +168,8 @@ module RuboCop
                        method_chain.receiver
                      end
 
-          if receiver == checked_variable
-            return nil if assignment_arithmetic_or_comparison?(method_chain)
-
-            return receiver
-          end
-
+          return receiver if receiver == checked_variable
           find_matching_receiver_invocation(receiver, checked_variable)
-        end
-
-        def assignment_arithmetic_or_comparison?(node)
-          node.assignment? ||
-            node.parent.arithmetic_operation? ||
-            comparison_node?(node.parent)
-        end
-
-        def comparison_node?(parent)
-          parent.send_type? &&
-            (parent.comparison_method? ||
-             ADDITIONAL_COMPARISON_METHODS.include?(parent.method_name))
         end
 
         def unsafe_method_used?(method_chain, method)
@@ -205,8 +182,7 @@ module RuboCop
         end
 
         def unsafe_method?(send_node)
-          NIL_METHODS.include?(send_node.method_name) ||
-            negated?(send_node) || !send_node.dot?
+          negated?(send_node) || send_node.assignment? || !send_node.dot?
         end
 
         def negated?(send_node)

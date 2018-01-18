@@ -23,15 +23,6 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
       expect_no_offenses('nil&.bar')
     end
 
-    it 'allows method calls that nil responds to safe guarded by ' \
-      'an object check' do
-      expect_no_offenses('foo.to_i if foo')
-    end
-
-    it 'allows an object check before a method calls that nil responds to ' do
-      expect_no_offenses('foo && foo.to_i')
-    end
-
     it 'allows an object check before hash access' do
       expect_no_offenses('foo && foo[:bar]')
     end
@@ -127,6 +118,13 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
 
     shared_examples 'all variable types' do |variable|
       context 'modifier if' do
+        it 'registers an offense for a method call that nil responds to ' \
+        'safe guarded by an object check' do
+          inspect_source("#{variable}.to_i if #{variable}")
+
+          expect(cop.messages).to eq([message])
+        end
+
         it 'registers an offense for a method call on an accessor ' \
           'safeguarded by a check for the accessed variable' do
           inspect_source("#{variable}[1].bar if #{variable}[1]")
@@ -453,6 +451,13 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
             expect_no_offenses(<<-RUBY.strip_indent)
               !#{variable}.nil? && #{variable}.bar(baz) { |e| e.qux }
             RUBY
+          end
+
+          it 'registers an offense for an object check followed by ' \
+            'a method calls that nil responds to ' do
+            inspect_source("#{variable} && #{variable}.to_i")
+
+            expect(cop.messages).to eq([message])
           end
 
           it 'registers an offense for an object check followed by ' \

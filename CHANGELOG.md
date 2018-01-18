@@ -55,6 +55,7 @@
 * [#5402](https://github.com/bbatsov/rubocop/pull/5402): Remove undefined `ActiveSupport::TimeZone#strftime` method from defined dangerous methods of `Rails/TimeZone` cop. ([@koic][])
 * [#4704](https://github.com/bbatsov/rubocop/issues/4704): Move `Lint/EndAlignment`, `Lint/DefEndAlignment`, `Lint/BlockAlignment`, and `Lint/ConditionPosition` to the `Layout` namespace. ([@bquorning][])
 * [#5283](https://github.com/bbatsov/rubocop/issues/5283): Change file path output by `Formatter::JSONFormatter` from relative path to smart path. ([@koic][])
+* `Style/SafeNavigation` will now register an offense for methods that `nil` responds to. ([@rrosenblum][])
 
 ## 0.52.1 (2017-12-27)
 
