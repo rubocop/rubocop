@@ -10,14 +10,6 @@ module RuboCop
       include MethodDispatchNode
       ARROW = '->'.freeze
 
-      # Custom destructuring method. This can be used to normalize
-      # destructuring for different variations of the node.
-      #
-      # @return [Array] the different parts of the `send` node
-      def node_parts
-        to_a
-      end
-
       # Checks whether this is a negation method, i.e. `!` or keyword `not`.
       #
       # @return [Boolean] whether this method is a negation method
