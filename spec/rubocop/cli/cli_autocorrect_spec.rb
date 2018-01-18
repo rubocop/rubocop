@@ -974,7 +974,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     RUBY
     expect(cli.run(['--auto-correct'])).to eq(1)
     expect(IO.read('example.rb')).to eq(<<-RUBY.strip_indent)
-      module A module B
+      module A
+        module B
       end end
     RUBY
     uncorrected = $stdout.string.split($RS).select do |line|

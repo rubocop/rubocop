@@ -506,6 +506,7 @@ In the following section you find all available cops:
 * [Style/TernaryParentheses](cops_style.md#styleternaryparentheses)
 * [Style/TrailingBodyOnClass](cops_style.md#styletrailingbodyonclass)
 * [Style/TrailingBodyOnMethodDefinition](cops_style.md#styletrailingbodyonmethoddefinition)
+* [Style/TrailingBodyOnModule](cops_style.md#styletrailingbodyonmodule)
 * [Style/TrailingCommaInArguments](cops_style.md#styletrailingcommainarguments)
 * [Style/TrailingCommaInArrayLiteral](cops_style.md#styletrailingcommainarrayliteral)
 * [Style/TrailingCommaInHashLiteral](cops_style.md#styletrailingcommainhashliteral)
