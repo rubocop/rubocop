@@ -111,6 +111,16 @@ module RuboCop
         parent.children.index { |sibling| sibling.equal?(self) }
       end
 
+      # Common destructuring method. This can be used to normalize
+      # destructuring for different variations of the node.
+      # Some node types override this with their own custom
+      # destructuring method.
+      #
+      # @return [Array<Node>] the different parts of the ndde
+      def node_parts
+        to_a
+      end
+
       # Calls the given block for each ancestor node from parent to root.
       # If no block is given, an `Enumerator` is returned.
       #

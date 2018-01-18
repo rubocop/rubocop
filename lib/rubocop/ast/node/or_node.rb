@@ -24,14 +24,6 @@ module RuboCop
       def inverse_operator
         logical_operator? ? LOGICAL_AND : SEMANTIC_AND
       end
-
-      # Custom destructuring method. This can be used to normalize
-      # destructuring for different variations of the node.
-      #
-      # @return [Array<Node>] the different parts of the `or` predicate
-      def node_parts
-        to_a
-      end
     end
   end
 end

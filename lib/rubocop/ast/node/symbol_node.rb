@@ -7,14 +7,6 @@ module RuboCop
     # available to all `sym` nodes within RuboCop.
     class SymbolNode < Node
       include BasicLiteralNode
-
-      # Custom destructuring method. This can be used to normalize
-      # destructuring for different variations of the node.
-      #
-      # @return [Array] the different parts of the `sym` node
-      def node_parts
-        to_a
-      end
     end
   end
 end

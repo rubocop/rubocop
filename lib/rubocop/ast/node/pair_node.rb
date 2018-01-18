@@ -51,14 +51,6 @@ module RuboCop
           hash_rocket? ? COLON : HASH_ROCKET
         end
       end
-
-      # Custom destructuring method. This is used to normalize the branches
-      # for `pair` and `kwsplat` nodes, to add duck typing to `hash` elements.
-      #
-      # @return [Array<Node>] the different parts of the `pair`
-      def node_parts
-        to_a
-      end
     end
   end
 end

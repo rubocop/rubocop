@@ -30,14 +30,6 @@ module RuboCop
       def do?
         loc.begin && loc.begin.is?('do')
       end
-
-      # Custom destructuring method. This can be used to normalize
-      # destructuring for different variations of the node.
-      #
-      # @return [Array<Node>] the different parts of the `until` statement
-      def node_parts
-        to_a
-      end
     end
   end
 end

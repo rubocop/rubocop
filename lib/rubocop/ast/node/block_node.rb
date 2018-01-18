@@ -103,14 +103,6 @@ module RuboCop
       def void_context?
         VOID_CONTEXT_METHODS.include?(send_node.method_name)
       end
-
-      # Custom destructuring method. This can be used to normalize
-      # destructuring for different variations of the node.
-      #
-      # @return [Array] the different parts of the `block` node
-      def node_parts
-        to_a
-      end
     end
   end
 end
