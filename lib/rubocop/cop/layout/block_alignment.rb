@@ -65,7 +65,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include RangeHelp
 
-        MSG = '%s is not aligned with %s%s.'.freeze
+        MSG = '%<current>s is not aligned with %<prefer>s%<alt_prefer>s.'.freeze
 
         def_node_matcher :block_end_align_target?, <<-PATTERN
           {assignment?
@@ -170,9 +170,11 @@ module RuboCop
                            error_source_line_column)
           format(
             MSG,
-            format_source_line_column(loc_to_source_line_column(end_loc)),
-            format_source_line_column(error_source_line_column),
-            alt_start_msg(start_loc, do_source_line_column)
+            current: format_source_line_column(
+              loc_to_source_line_column(end_loc)
+            ),
+            prefer: format_source_line_column(error_source_line_column),
+            alt_prefer: alt_start_msg(start_loc, do_source_line_column)
           )
         end
 

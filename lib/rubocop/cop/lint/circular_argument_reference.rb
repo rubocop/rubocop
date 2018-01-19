@@ -48,7 +48,7 @@ module RuboCop
       #     dry_ingredients.combine
       #   end
       class CircularArgumentReference < Cop
-        MSG = 'Circular argument reference - `%s`.'.freeze
+        MSG = 'Circular argument reference - `%<arg_name>s`.'.freeze
 
         def on_kwoptarg(node)
           check_for_circular_argument_references(*node)
@@ -64,7 +64,7 @@ module RuboCop
           return unless arg_value.lvar_type?
           return unless arg_value.to_a == [arg_name]
 
-          add_offense(arg_value, message: format(MSG, arg_name))
+          add_offense(arg_value, message: format(MSG, arg_name: arg_name))
         end
       end
     end
