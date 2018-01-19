@@ -24,7 +24,9 @@ module RuboCop
         base_config.each do |k, v|
           next unless v.is_a?(Hash)
           hash[k] = if hash.key?(k)
-                      merge(v, hash[k], k, file, inherited_files[index])
+                      merge(v, hash[k],
+                            cop_name: k, file: file,
+                            inherited_file: inherited_files[index])
                     else
                       v
                     end
@@ -76,19 +78,30 @@ module RuboCop
     # Return a recursive merge of two hashes. That is, a normal hash merge,
     # with the addition that any value that is a hash, and occurs in both
     # arguments, will also be merged. And so on.
-    def merge(base_hash, derived_hash, cop_name = nil, file = nil,
-              inherited_file = nil)
+    def merge(base_hash, derived_hash, **opts)
       result = base_hash.merge(derived_hash)
       keys_appearing_in_both = base_hash.keys & derived_hash.keys
       keys_appearing_in_both.each do |key|
         if base_hash[key].is_a?(Hash)
           result[key] = merge(base_hash[key], derived_hash[key])
-        elsif duplicate_setting?(base_hash, derived_hash, key, inherited_file)
-          warn("#{PathUtil.smart_path(file)}: #{cop_name}:#{key} overrides " \
-               "the same parameter in #{inherited_file}")
+        else
+          warn_on_duplicate_setting(base_hash, derived_hash, key, opts)
         end
       end
       result
+    end
+
+    def warn_on_duplicate_setting(base_hash, derived_hash, key, **opts)
+      return unless duplicate_setting?(base_hash, derived_hash,
+                                       key, opts[:inherited_file])
+
+      inherit_mode = opts.dig(:inherit_mode, 'merge')
+      return if base_hash[key].is_a?(Array) &&
+                inherit_mode && inherit_mode.include?(key)
+
+      warn("#{PathUtil.smart_path(opts[:file])}: " \
+           "#{opts[:cop_name]}:#{key} overrides " \
+           "the same parameter in #{opts[:inherited_file]}")
     end
 
     private
