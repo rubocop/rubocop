@@ -230,6 +230,107 @@ RSpec.describe RuboCop::ConfigLoader do
       end
     end
 
+    context 'when inherit_mode is set to merge for Exclude' do
+      let(:file_path) { '.rubocop.yml' }
+
+      before do
+        create_file(file_path, <<-YAML.strip_indent)
+          inherit_from: .rubocop_parent.yml
+          inherit_mode:
+            merge:
+              - Exclude
+          AllCops:
+            Exclude:
+              - spec/requests/expense_spec.rb
+          Style/For:
+            Exclude:
+              - spec/requests/group_invite_spec.rb
+        YAML
+
+        create_file('.rubocop_parent.yml', <<-YAML.strip_indent)
+          Style/For:
+            Exclude:
+              - 'spec/models/expense_spec.rb'
+              - 'spec/models/group_spec.rb'
+        YAML
+      end
+
+      it 'unions the two lists of Excludes from the parent and child configs ' \
+         'and does not output a warning' do
+        expect do
+          excludes = configuration_from_file['Style/For']['Exclude']
+          expect(excludes.sort)
+            .to eq([File.expand_path('spec/requests/group_invite_spec.rb'),
+                    File.expand_path('spec/models/expense_spec.rb'),
+                    File.expand_path('spec/models/group_spec.rb')].sort)
+        end.not_to output.to_stderr
+      end
+
+      it 'does not merge the default_config' do
+        excludes = configuration_from_file['AllCops']['Exclude']
+        defaults = default_config['AllCops']['Exclude']
+
+        expect((excludes & defaults).empty?).to be true
+      end
+    end
+
+    context 'when inherit_mode overrides the global inherit_mode setting' do
+      let(:file_path) { '.rubocop.yml' }
+
+      before do
+        create_file(file_path, <<-YAML.strip_indent)
+          inherit_from: .rubocop_parent.yml
+          inherit_mode:
+            merge:
+              - Exclude
+
+          Style/For:
+            Exclude:
+              - spec/requests/group_invite_spec.rb
+
+          Style/Dir:
+            inherit_mode:
+              override:
+                - Exclude
+            Exclude:
+              - spec/requests/group_invite_spec.rb
+
+        YAML
+
+        create_file('.rubocop_parent.yml', <<-YAML.strip_indent)
+          Style/For:
+            Exclude:
+              - 'spec/models/expense_spec.rb'
+              - 'spec/models/group_spec.rb'
+
+          Style/Dir:
+            Exclude:
+              - 'spec/models/expense_spec.rb'
+              - 'spec/models/group_spec.rb'
+        YAML
+      end
+
+      it 'unions the two lists of Excludes from the parent and child configs ' \
+          'for cops that do not override the inherit_mode' do
+        expect do
+          excludes = configuration_from_file['Style/For']['Exclude']
+          expect(excludes.sort)
+            .to eq([File.expand_path('spec/requests/group_invite_spec.rb'),
+                    File.expand_path('spec/models/expense_spec.rb'),
+                    File.expand_path('spec/models/group_spec.rb')].sort)
+        end.not_to output.to_stderr
+      end
+
+      it 'overwrites the Exclude from the parent when the cop overrides' \
+          'the global inherit_mode' do
+        expect do
+          excludes = configuration_from_file['Style/Dir']['Exclude']
+          expect(excludes)
+            .to eq([File.expand_path('spec/requests/group_invite_spec.rb')])
+        end.not_to output.to_stderr
+      end
+    end
+
     context 'when a third party require defines a new gem' do
       before do
         allow(RuboCop::Cop::Cop)
