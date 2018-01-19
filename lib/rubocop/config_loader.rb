@@ -146,8 +146,8 @@ module RuboCop
 
       def write_dotfile(file_string, rubocop_yml_contents)
         File.open(DOTFILE, 'w') do |f|
-          f.write "inherit_from:#{file_string}\n\n"
-          f.write rubocop_yml_contents if rubocop_yml_contents
+          f.write "inherit_from:#{file_string}\n"
+          f.write "\n#{rubocop_yml_contents}" if rubocop_yml_contents
         end
       end
 
