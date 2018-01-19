@@ -25,8 +25,9 @@ module RuboCop
       #   # Lambda arguments require no disambiguation
       #   foo = ->(bar) { bar.baz }
       class AmbiguousBlockAssociation < Cop
-        MSG = 'Parenthesize the param `%s` to make sure that the block will be'\
-              ' associated with the `%s` method call.'.freeze
+        MSG = 'Parenthesize the param `%<param>s` to make sure that the ' \
+              'block will be associated with the `%<method>s` method ' \
+              'call.'.freeze
 
         def on_send(node)
           return if !node.arguments? || node.parenthesized? ||
@@ -51,7 +52,8 @@ module RuboCop
         def message(send_node)
           block_param = send_node.last_argument
 
-          format(MSG, block_param.source, block_param.send_node.source)
+          format(MSG, param: block_param.source,
+                      method: block_param.send_node.source)
         end
       end
     end

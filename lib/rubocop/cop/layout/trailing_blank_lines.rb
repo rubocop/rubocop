@@ -109,8 +109,8 @@ module RuboCop
                          else
                            "instead of #{wanted_blank_lines} "
                          end
-            format('%d trailing blank lines %sdetected.', blank_lines,
-                   instead_of)
+            format('%<current>d trailing blank lines %<prefer>sdetected.',
+                   current: blank_lines, prefer: instead_of)
           end
         end
       end

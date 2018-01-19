@@ -20,8 +20,8 @@ module RuboCop
       #   format('A value: %s and another: %i', a_value, another)
       class FormatParameterMismatch < Cop
         # http://rubular.com/r/CvpbxkcTzy
-        MSG = "Number of arguments (%i) to `%s` doesn't match the number of " \
-              'fields (%i).'.freeze
+        MSG = "Number of arguments (%<arg_num>i) to `%<method>s` doesn't " \
+              'match the number of fields (%<field_num>i).'.freeze
         FIELD_REGEX =
           /(%(([\s#+-0\*]*)(\d*)?(\.\d+)?[bBdiouxXeEfgGaAcps]|%))/
         NAMED_FIELD_REGEX = /%\{[_a-zA-Z][_a-zA-Z]+\}/
@@ -169,7 +169,8 @@ module RuboCop
 
           method_name = node.method?(:%) ? 'String#%' : node.method_name
 
-          format(MSG, num_args_for_format, method_name, num_expected_fields)
+          format(MSG, arg_num: num_args_for_format, method: method_name,
+                      field_num: num_expected_fields)
         end
       end
     end
