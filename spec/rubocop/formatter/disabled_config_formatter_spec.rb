@@ -25,8 +25,8 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
   let(:heading) do
     format(
       described_class::HEADING,
-      expected_heading_command,
-      expected_heading_timestamp
+      command: expected_heading_command,
+      timestamp: expected_heading_timestamp
     )
   end
 

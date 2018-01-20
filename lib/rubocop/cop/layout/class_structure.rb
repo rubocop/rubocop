@@ -112,7 +112,8 @@ module RuboCop
         }.freeze
 
         VISIBILITY_SCOPES = %i[private protected public].freeze
-        MSG = '`%s` is supposed to appear before `%s`.'.freeze
+        MSG = '`%<category>s` is supposed to appear before ' \
+              '`%<previous>s`.'.freeze
 
         def_node_matcher :visibility_block?, <<-PATTERN
           (send nil? { :private :protected :public })
@@ -125,7 +126,8 @@ module RuboCop
           walk_over_nested_class_definition(class_node) do |node, category|
             index = expected_order.index(category)
             if index < previous
-              message = format(MSG, category, expected_order[previous])
+              message = format(MSG, category: category,
+                                    previous: expected_order[previous])
               add_offense(node, message: message)
             end
             previous = index

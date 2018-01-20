@@ -28,8 +28,8 @@ module RuboCop
         }.freeze
         MSG = 'Replace unsafe number conversion with number '\
               'class parsing, instead of using '\
-              '%{number_object}.%{to_method}, use stricter '\
-              '%{corrected_method}(%{number_object}).'.freeze
+              '%<number_object>s.%<to_method>s, use stricter '\
+              '%<corrected_method>s(%<number_object>s).'.freeze
 
         def_node_matcher :to_method, <<-PATTERN
           (send $_ ${:to_i :to_f :to_c})
