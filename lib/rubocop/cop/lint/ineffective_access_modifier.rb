@@ -46,8 +46,8 @@ module RuboCop
       #     end
       #   end
       class IneffectiveAccessModifier < Cop
-        MSG = '`%s` (on line %d) does not make singleton methods %s. ' \
-              'Use %s instead.'.freeze
+        MSG = '`%<modifier>s` (on line %<line>d) does not make singleton ' \
+              'methods %<modifier>s. Use %<alternative>s instead.'.freeze
         ALTERNATIVE_PRIVATE = '`private_class_method` or `private` inside a ' \
                               '`class << self` block'.freeze
         ALTERNATIVE_PROTECTED = '`protected` inside a `class << self` ' \
@@ -91,8 +91,9 @@ module RuboCop
                         else
                           ALTERNATIVE_PROTECTED
                         end
-          format(MSG, visibility, modifier.location.expression.line, visibility,
-                 alternative)
+          format(MSG, modifier: visibility,
+                      line: modifier.location.expression.line,
+                      alternative: alternative)
         end
 
         def check_scope(node, cur_vis = :public)

@@ -6,7 +6,7 @@ module RuboCop
       # This cop checks if a file which has a shebang line as
       # its first line is granted execute permission.
       class ScriptPermission < Cop
-        MSG = "Script file %s doesn't have execute permission.".freeze
+        MSG = "Script file %<file>s doesn't have execute permission.".freeze
         SHEBANG = '#!'.freeze
 
         def investigate(processed_source)
@@ -36,7 +36,7 @@ module RuboCop
 
         def format_message_from(processed_source)
           basename = File.basename(processed_source.file_path)
-          format(MSG, basename)
+          format(MSG, file: basename)
         end
       end
     end

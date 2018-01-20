@@ -25,7 +25,7 @@ module RuboCop
       #     x
       #   end
       class UselessSetterCall < Cop
-        MSG = 'Useless setter call to local variable `%s`.'.freeze
+        MSG = 'Useless setter call to local variable `%<variable>s`.'.freeze
         ASSIGNMENT_TYPES = %i[lvasgn ivasgn cvasgn gvasgn].freeze
 
         def on_def(node)
@@ -42,7 +42,7 @@ module RuboCop
           add_offense(
             receiver,
             location: :name,
-            message: format(MSG, receiver.loc.name.source)
+            message: format(MSG, variable: receiver.loc.name.source)
           )
         end
         alias on_defs on_def

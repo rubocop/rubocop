@@ -21,7 +21,7 @@ module RuboCop
       #
       #   0 # just use 0 instead
       class RandOne < Cop
-        MSG = '`%s` always returns `0`. ' \
+        MSG = '`%<method>s` always returns `0`. ' \
               'Perhaps you meant `rand(2)` or `rand`?'.freeze
 
         def_node_matcher :rand_one?, <<-PATTERN
@@ -37,7 +37,7 @@ module RuboCop
         private
 
         def message(node)
-          format(MSG, node.source)
+          format(MSG, method: node.source)
         end
       end
     end
