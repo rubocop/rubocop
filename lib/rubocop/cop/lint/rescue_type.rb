@@ -37,8 +37,8 @@ module RuboCop
       class RescueType < Cop
         include RescueNode
 
-        MSG = 'Rescuing from `%s` will raise a `TypeError` instead of ' \
-              'catching the actual exception.'.freeze
+        MSG = 'Rescuing from `%<invalid_exceptions>s` will raise a ' \
+              '`TypeError` instead of catching the actual exception.'.freeze
         INVALID_TYPES = %i[array dstr float hash nil int str sym].freeze
 
         def on_resbody(node)
@@ -51,7 +51,10 @@ module RuboCop
           add_offense(
             node,
             location: node.loc.keyword.join(rescued.loc.expression),
-            message: format(MSG, invalid_exceptions.map(&:source).join(', '))
+            message: format(
+              MSG, invalid_exceptions: invalid_exceptions.map(&:source)
+                                                         .join(', ')
+            )
           )
         end
 

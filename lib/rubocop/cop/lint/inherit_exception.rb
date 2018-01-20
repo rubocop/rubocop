@@ -28,7 +28,7 @@ module RuboCop
       class InheritException < Cop
         include ConfigurableEnforcedStyle
 
-        MSG = 'Inherit from `%s` instead of `%s`.'.freeze
+        MSG = 'Inherit from `%<prefer>s` instead of `%<current>s`.'.freeze
         PREFERRED_BASE_CLASS = {
           runtime_error: 'RuntimeError',
           standard_error: 'StandardError'
@@ -64,7 +64,7 @@ module RuboCop
         private
 
         def message(node)
-          format(MSG, preferred_base_class, node.const_name)
+          format(MSG, prefer: preferred_base_class, current: node.const_name)
         end
 
         def illegal_class_name?(class_node)

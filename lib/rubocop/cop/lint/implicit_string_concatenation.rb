@@ -23,8 +23,8 @@ module RuboCop
       #     'Item 2'
       #   ]
       class ImplicitStringConcatenation < Cop
-        MSG = 'Combine %s and %s into a single string literal, rather than ' \
-              'using implicit string concatenation.'.freeze
+        MSG = 'Combine %<string1>s and %<string2>s into a single string ' \
+              'literal, rather than using implicit string concatenation.'.freeze
         FOR_ARRAY = ' Or, if they were intended to be separate array ' \
                     'elements, separate them with a comma.'.freeze
         FOR_METHOD = ' Or, if they were intended to be separate method ' \
@@ -34,8 +34,8 @@ module RuboCop
           each_bad_cons(node) do |child_node1, child_node2|
             range   = child_node1.source_range.join(child_node2.source_range)
             message = format(MSG,
-                             display_str(child_node1),
-                             display_str(child_node2))
+                             string1: display_str(child_node1),
+                             string2: display_str(child_node2))
             if node.parent && node.parent.array_type?
               message << FOR_ARRAY
             elsif node.parent && node.parent.send_type?

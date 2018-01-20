@@ -42,11 +42,11 @@ module RuboCop
       #     some_var
       #   end
       class Void < Cop
-        OP_MSG = 'Operator `%s` used in void context.'.freeze
-        VAR_MSG = 'Variable `%s` used in void context.'.freeze
-        LIT_MSG = 'Literal `%s` used in void context.'.freeze
+        OP_MSG = 'Operator `%<op>s` used in void context.'.freeze
+        VAR_MSG = 'Variable `%<var>s` used in void context.'.freeze
+        LIT_MSG = 'Literal `%<lit>s` used in void context.'.freeze
         SELF_MSG = '`self` used in void context.'.freeze
-        DEFINED_MSG = '`%s` used in void context.'.freeze
+        DEFINED_MSG = '`%<defined>s` used in void context.'.freeze
 
         BINARY_OPERATORS = %i[* / % + - == === != < > <= >= <=>].freeze
         UNARY_OPERATORS = %i[+@ -@ ~ !].freeze
@@ -77,7 +77,7 @@ module RuboCop
 
           add_offense(node,
                       location: :selector,
-                      message: format(OP_MSG, node.method_name))
+                      message: format(OP_MSG, op: node.method_name))
         end
 
         def check_var(node)
@@ -85,13 +85,13 @@ module RuboCop
 
           add_offense(node,
                       location: :name,
-                      message: format(VAR_MSG, node.loc.name.source))
+                      message: format(VAR_MSG, var: node.loc.name.source))
         end
 
         def check_literal(node)
           return if !node.literal? || node.xstr_type?
 
-          add_offense(node, message: format(LIT_MSG, node.source))
+          add_offense(node, message: format(LIT_MSG, lit: node.source))
         end
 
         def check_self(node)
@@ -103,7 +103,7 @@ module RuboCop
         def check_defined(node)
           return unless node.defined_type?
 
-          add_offense(node, message: format(DEFINED_MSG, node.source))
+          add_offense(node, message: format(DEFINED_MSG, defined: node.source))
         end
 
         def in_void_context?(node)

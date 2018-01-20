@@ -41,8 +41,9 @@ module RuboCop
           URI.decode_www_form_component
         ].freeze
 
-        MSG = '`%s` method is obsolete and should not be used. Instead, use ' \
-              '`%s`, `%s` or `%s` depending on your specific use case.'.freeze
+        MSG = '`%<uri_method>s` method is obsolete and should not be used. ' \
+              'Instead, use %<replacements>s depending on your specific use ' \
+              'case.'.freeze
 
         def_node_matcher :uri_escape_unescape?, <<-PATTERN
           (send
@@ -52,18 +53,18 @@ module RuboCop
 
         def on_send(node)
           uri_escape_unescape?(node) do |top_level, obsolete_method|
-            replacement_methods = if %i[escape encode].include?(obsolete_method)
-                                    ALTERNATE_METHODS_OF_URI_ESCAPE
-                                  else
-                                    ALTERNATE_METHODS_OF_URI_UNESCAPE
-                                  end
+            replacements = if %i[escape encode].include?(obsolete_method)
+                             ALTERNATE_METHODS_OF_URI_ESCAPE
+                           else
+                             ALTERNATE_METHODS_OF_URI_UNESCAPE
+                           end
 
             double_colon = top_level ? '::' : ''
 
             message = format(
-              MSG,
-              "#{double_colon}URI.#{obsolete_method}",
-              *replacement_methods
+              MSG, uri_method: "#{double_colon}URI.#{obsolete_method}",
+                   replacements: "`#{replacements[0]}`, `#{replacements[1]}` " \
+                                 "or `#{replacements[2]}`"
             )
 
             add_offense(node, message: message)
