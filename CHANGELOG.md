@@ -9,12 +9,12 @@
 * [#5356](https://github.com/bbatsov/rubocop/issues/5356): Add new `Lint/UnneededCopEnableDirective` cop. ([@garettarrowood][])
 * [#5248](https://github.com/bbatsov/rubocop/pull/5248): Add new `Lint/BigDecimalNew` cop. ([@koic][])
 * Add new `Style/TrailingBodyOnClass` cop. ([@garettarrowood][])
-* Add new `Style/TrailingBodyOnClassDefinition` cop. ([@garettarrowood][])
 * Add new `Style/TrailingBodyOnModule` cop. ([@garettarrowood][])
 * [#3394](https://github.com/bbatsov/rubocop/issues/3394): Add new `Style/TrailingCommmaInArrayLiteral` cop. ([@garettarrowood][])
 * [#3394](https://github.com/bbatsov/rubocop/issues/3394): Add new `Style/TrailingCommmaInHashLiteral` cop. ([@garettarrowood][])
 * [#5319](https://github.com/bbatsov/rubocop/pull/5319): Add new `Security/Open` cop. ([@mame][])
 * Add `EnforcedStyleForEmptyBrackets` configuration to `Layout/SpaceInsideReferenceBrackets`.([@garettarrowood][])
+* [#5050](https://github.com/bbatsov/rubocop/issues/5050): Add auto-correction to `Style/ModuleFunction`. ([@garettarrowood][])
 * [#5358](https://github.com/bbatsov/rubocop/pull/5358):  `--no-auto-gen-timestamp` CLI option suppresses the inclusion of the date and time it was generated in auto-generated config. ([@dominicsayers][])
 
 ### Bug fixes
@@ -38,6 +38,7 @@
 * [#5448](https://github.com/bbatsov/rubocop/issues/5448): Improve `Rails/LexicallyScopedActionFilter`. ([@wata727][])
 * [#3947](https://github.com/bbatsov/rubocop/issues/3947): Fix false positive for `Rails/FilePath` when using `Rails.root.join` in string interpolation of argument. ([@koic][])
 * [#5479](https://github.com/bbatsov/rubocop/issues/5479): Fix false positives for `Rails/Presence` when using with `elsif`. ([@wata727][])
+* [#5427](https://github.com/bbatsov/rubocop/pull/5427): Fix exception when executing from a different drive on Windows. ([@orgads][])
 
 ### Changes
 
@@ -3172,3 +3173,4 @@
 [@mame]: https://github.com/mame
 [@dominicsayers]: https://github.com/dominicsayers
 [@albertpaulp]: https://github.com/albertpaulp
+[@orgads]: https://github.com/orgads

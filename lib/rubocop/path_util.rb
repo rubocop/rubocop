@@ -15,7 +15,11 @@ module RuboCop
       end
 
       path_name = Pathname.new(File.expand_path(path))
-      path_name.relative_path_from(Pathname.new(base_dir)).to_s
+      begin
+        path_name.relative_path_from(Pathname.new(base_dir)).to_s
+      rescue ArgumentError
+        path
+      end
     end
 
     def smart_path(path)

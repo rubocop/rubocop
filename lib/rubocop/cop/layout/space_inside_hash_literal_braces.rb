@@ -67,7 +67,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include RangeHelp
 
-        MSG = 'Space inside %s.'.freeze
+        MSG = 'Space inside %<problem>s.'.freeze
 
         def on_hash(node)
           tokens = processed_source.tokens
@@ -174,7 +174,7 @@ module RuboCop
                           brace.source
                         end
           problem = expect_space ? 'missing' : 'detected'
-          format(MSG, "#{inside_what} #{problem}")
+          format(MSG, problem: "#{inside_what} #{problem}")
         end
 
         def space_range(token_range)

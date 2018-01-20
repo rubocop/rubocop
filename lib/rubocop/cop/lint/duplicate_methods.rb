@@ -40,7 +40,8 @@ module RuboCop
       #     2
       #   end
       class DuplicateMethods < Cop
-        MSG = 'Method `%s` is defined at both %s and %s.'.freeze
+        MSG = 'Method `%<method>s` is defined at both %<defined>s and ' \
+              '%<current>s.'.freeze
 
         def initialize(config = nil, options = nil)
           super
@@ -121,8 +122,8 @@ module RuboCop
         end
 
         def message_for_dup(node, method_name)
-          format(MSG, method_name, @definitions[method_name],
-                 source_location(node))
+          format(MSG, method: method_name, defined: @definitions[method_name],
+                      current: source_location(node))
         end
 
         def found_instance_method(node, name)

@@ -39,7 +39,7 @@ module RuboCop
           end
         end
 
-        MSG = '`%s` is deprecated in favor of `%s`.'.freeze
+        MSG = '`%<current>s` is deprecated in favor of `%<prefer>s`.'.freeze
         DEPRECATED_METHODS_OBJECT = [
           DeprecatedClassMethod.new(:File, :exists?, :exist?),
           DeprecatedClassMethod.new(:Dir, :exists?, :exist?)
@@ -47,8 +47,8 @@ module RuboCop
 
         def on_send(node)
           check(node) do |data|
-            message = format(MSG, deprecated_method(data),
-                             replacement_method(data))
+            message = format(MSG, current: deprecated_method(data),
+                                  prefer: replacement_method(data))
 
             add_offense(node, location: :selector, message: message)
           end
@@ -82,7 +82,8 @@ module RuboCop
         end
 
         def method_call(class_constant, method)
-          format('%s.%s', class_constant, method)
+          format('%<constant>s.%<method>s', constant: class_constant,
+                                            method: method)
         end
       end
     end

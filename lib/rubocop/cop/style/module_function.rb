@@ -56,6 +56,16 @@ module RuboCop
           end
         end
 
+        def autocorrect(node)
+          lambda do |corrector|
+            if extend_self_node?(node)
+              corrector.replace(node.source_range, 'module_function')
+            else
+              corrector.replace(node.source_range, 'extend self')
+            end
+          end
+        end
+
         private
 
         def each_wrong_style(nodes)
