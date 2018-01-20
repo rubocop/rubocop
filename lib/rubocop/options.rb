@@ -210,18 +210,18 @@ module RuboCop
       private
 
       def format_message_from(name, cop_names)
-        message = 'Unrecognized cop or department: %{name}.'
-        message_with_candidate = "#{message}\nDid you mean? %{candidate}"
+        message = 'Unrecognized cop or department: %<name>s.'
+        message_with_candidate = "%<message>s\nDid you mean? %<candidate>s"
         corrections = cop_names.select do |cn|
           score = StringUtil.similarity(cn, name)
           score >= NameSimilarity::MINIMUM_SIMILARITY_TO_SUGGEST
         end.sort
 
         if corrections.empty?
-          format message, name: name
+          format(message, name: name)
         else
-          format message_with_candidate, name: name,
-                                         candidate: corrections.join(', ')
+          format(message_with_candidate, message: format(message, name: name),
+                                         candidate: corrections.join(', '))
         end
       end
     end
@@ -252,11 +252,11 @@ module RuboCop
     def validate_auto_gen_config
       return if @options.key?(:auto_gen_config)
 
-      message = '--%s can only be used together with --auto-gen-config.'
+      message = '--%<flag>s can only be used together with --auto-gen-config.'
 
       %i[exclude_limit no_offense_counts no_auto_gen_timestamp].each do |option|
         if @options.key?(option)
-          raise ArgumentError, format(message, option.to_s.tr('_', '-'))
+          raise ArgumentError, format(message, flag: option.to_s.tr('_', '-'))
         end
       end
     end

@@ -45,9 +45,9 @@ module RuboCop
       class MissingCopEnableDirective < Cop
         include RangeHelp
 
-        MSG = 'Re-enable %{cop} cop with `# rubocop:enable` after disabling it.'
-              .freeze
-        MSG_BOUND = 'Re-enable %{cop} cop within %{max_range} lines after ' \
+        MSG = 'Re-enable %<cop>s cop with `# rubocop:enable` after ' \
+              'disabling it.'.freeze
+        MSG_BOUND = 'Re-enable %<cop>s cop within %<max_range>s lines after ' \
                     'disabling it.'.freeze
 
         def investigate(processed_source)

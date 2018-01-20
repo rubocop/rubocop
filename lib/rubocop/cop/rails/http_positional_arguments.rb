@@ -60,11 +60,14 @@ module RuboCop
           # the range of the text to replace, which is the whole line
           code_to_replace = node.loc.expression
           # what to replace with
-          format = parentheses?(node) ? '%s(%s%s%s)' : '%s %s%s%s'
-          new_code = format(format, node.method_name, controller_action,
-                            params, headers)
+          format = parentheses_format(node)
+          new_code = format(format, name: node.method_name,
+                                    action: controller_action,
+                                    params: params, headers: headers)
           ->(corrector) { corrector.replace(code_to_replace, new_code) }
         end
+
+        private
 
         def needs_conversion?(data)
           return true unless data.hash_type?
@@ -87,14 +90,23 @@ module RuboCop
           return '' if data.hash_type? && data.empty?
 
           hash_data = if data.hash_type?
-                        format('{ %s }', data.pairs.map(&:source).join(', '))
+                        format('{ %<data>s }',
+                               data: data.pairs.map(&:source).join(', '))
                       else
                         # user supplies an object,
                         # no need to surround with braces
                         data.source
                       end
 
-          format(', %s: %s', type, hash_data)
+          format(', %<type>s: %<hash_data>s', type: type, hash_data: hash_data)
+        end
+
+        def parentheses_format(node)
+          if parentheses?(node)
+            '%<name>s(%<action>s%<params>s%<headers>s)'
+          else
+            '%<name>s %<action>s%<params>s%<headers>s'
+          end
         end
       end
     end
