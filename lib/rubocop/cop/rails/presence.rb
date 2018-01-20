@@ -71,6 +71,8 @@ module RuboCop
         PATTERN
 
         def on_if(node)
+          return if ignore_if_node?(node)
+
           redundant_receiver_and_other(node) do |receiver, other|
             unless ignore_other_node?(other) || receiver.nil?
               add_offense(node, message: message(node, receiver, other))
@@ -97,6 +99,10 @@ module RuboCop
         end
 
         private
+
+        def ignore_if_node?(node)
+          node.elsif?
+        end
 
         def ignore_other_node?(node)
           node && (node.if_type? || node.rescue_type? || node.while_type?)
