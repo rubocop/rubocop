@@ -5,6 +5,18 @@ module RuboCop
     module Layout
       # This cops checks for indentation of the first non-blank non-comment
       # line in a file.
+      #
+      # @example
+      #   # bad
+      #      class A
+      #        def foo; end
+      #      end
+      #
+      #   # good
+      #   class A
+      #     def foo; end
+      #   end
+      #
       class InitialIndentation < Cop
         include RangeHelp
 

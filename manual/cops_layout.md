@@ -2169,6 +2169,20 @@ Enabled | Yes
 This cops checks for indentation of the first non-blank non-comment
 line in a file.
 
+### Examples
+
+```ruby
+# bad
+   class A
+     def foo; end
+   end
+
+# good
+class A
+  def foo; end
+end
+```
+
 ## Layout/LeadingCommentSpace
 
 Enabled by default | Supports autocorrection
