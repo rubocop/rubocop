@@ -68,11 +68,8 @@ module RuboCop
         private
 
         def includes_format_methods?(node)
-          root_node = node.ancestors.last
-          return unless root_node
-
-          root_node.descendants.any? do |desc_node|
-            FORMAT_STRING_METHODS.include?(desc_node.method_name)
+          node.each_ancestor.any? do |ancestor|
+            FORMAT_STRING_METHODS.include?(ancestor.method_name)
           end
         end
 
