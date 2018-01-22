@@ -41,6 +41,7 @@
 * [#5479](https://github.com/bbatsov/rubocop/issues/5479): Fix false positives for `Rails/Presence` when using with `elsif`. ([@wata727][])
 * [#5427](https://github.com/bbatsov/rubocop/pull/5427): Fix exception when executing from a different drive on Windows. ([@orgads][])
 * [#5429](https://github.com/bbatsov/rubocop/issues/5429): Detect tabs other than indentation by `Layout/Tab`. ([@pocke][])
+* [#5496](https://github.com/bbatsov/rubocop/pull/5496): Fix a false positive of `Style/FormatStringToken` with unrelated `format` call. ([@pocke][])
 
 ### Changes
 

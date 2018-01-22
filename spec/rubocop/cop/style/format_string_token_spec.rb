@@ -108,6 +108,13 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
     RUBY
   end
 
+  it 'ignores time format and unrelated `format` method using' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      Time.now.strftime('%Y-%m-%d-%H-%M-%S')
+      format
+    RUBY
+  end
+
   it 'handles dstrs' do
     inspect_source('"c#{b}%{template}"')
     expect(cop.highlights).to eql(['%{template}'])
