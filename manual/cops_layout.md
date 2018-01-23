@@ -910,6 +910,38 @@ end
 class Foo
 end
 ```
+#### AllowBorderComment: true (default)
+
+```ruby
+# good
+
+def foo
+end
+
+#################
+
+def bar
+end
+```
+#### AllowBorderComment: false
+
+```ruby
+# bad
+
+def foo
+end
+
+#################
+
+def bar
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+AllowBorderComment | `true` | Boolean
 
 ## Layout/EmptyLineAfterMagicComment
 

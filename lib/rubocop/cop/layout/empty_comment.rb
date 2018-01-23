@@ -20,6 +20,28 @@ module RuboCop
       #   class Foo
       #   end
       #
+      # @example AllowBorderComment: true (default)
+      #   # good
+      #
+      #   def foo
+      #   end
+      #
+      #   #################
+      #
+      #   def bar
+      #   end
+      #
+      # @example AllowBorderComment: false
+      #   # bad
+      #
+      #   def foo
+      #   end
+      #
+      #   #################
+      #
+      #   def bar
+      #   end
+      #
       class EmptyComment < Cop
         include RangeHelp
 
@@ -66,11 +88,21 @@ module RuboCop
         end
 
         def empty_comment_only?(comment_text)
-          comment_text =~ /\A(#\n)+\z/ ? true : false
+          empty_comment_pattern = if allow_border_comment?
+                                    /\A(#\n)+\z/
+                                  else
+                                    /\A(#+\n)+\z/
+                                  end
+
+          !(comment_text =~ empty_comment_pattern).nil?
         end
 
         def comment_text(comment)
           "#{comment.text.strip}\n"
+        end
+
+        def allow_border_comment?
+          cop_config['AllowBorderComment']
         end
       end
     end
