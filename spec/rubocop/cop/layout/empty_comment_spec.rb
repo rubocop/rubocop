@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::EmptyComment do
+RSpec.describe RuboCop::Cop::Layout::EmptyComment, :config do
   subject(:cop) { described_class.new(config) }
 
-  let(:config) { RuboCop::Config.new }
+  let(:cop_config) { { 'AllowBorderComment' => true } }
 
   it 'registers an offense when using single line empty comment' do
     expect_offense(<<-RUBY.strip_indent)
@@ -48,10 +48,30 @@ RSpec.describe RuboCop::Cop::Layout::EmptyComment do
     RUBY
   end
 
-  it 'does not register an offense when using border comment' do
-    expect_no_offenses(<<-RUBY.strip_indent)
-      #################################
-    RUBY
+  context 'allow border comment (default)' do
+    it 'does not register an offense when using border comment' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        #################################
+      RUBY
+    end
+  end
+
+  context 'disallow border comment' do
+    let(:cop_config) { { 'AllowBorderComment' => false } }
+
+    it 'registers an offense when using single line empty comment' do
+      expect_offense(<<-RUBY.strip_indent)
+        #
+        ^ Source code comment is empty.
+      RUBY
+    end
+
+    it 'registers an offense when using border comment' do
+      expect_offense(<<-RUBY.strip_indent)
+        #################################
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Source code comment is empty.
+      RUBY
+    end
   end
 
   it 'autocorrects empty comment' do
