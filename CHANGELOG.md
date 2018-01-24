@@ -237,6 +237,7 @@
 * [#5599](https://github.com/bbatsov/rubocop/issues/5599): Fix the suggestion being used by `Lint/NumberConversion` to use base 10 with Integer. ([@rrosenblum][])
 * [#5534](https://github.com/bbatsov/rubocop/issues/5534): Fix `Style/EachWithObject` auto-correction leaves an empty line. ([@flyerhzm][])
 * Fix `Layout/EmptyLinesAroundAccessModifier` false-negative when next string after access modifier started with end. ([@unkmas][])
+* [#3697](https://github.com/bbatsov/rubocop/issues/3697): Fix `Lint/UnusedBlockArgument` suggestion for multiple keyword arguments. ([@leklund][])
 
 ### Changes
 

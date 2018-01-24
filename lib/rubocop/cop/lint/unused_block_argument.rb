@@ -21,6 +21,10 @@ module RuboCop
       #     puts :baz
       #   end
       #
+      #   do_something do |used:, unused:|
+      #     puts used
+      #   end
+      #
       # @example
       #
       #   #good
@@ -35,6 +39,11 @@ module RuboCop
       #
       #   define_method(:foo) do |_bar|
       #     puts :baz
+      #   end
+      #
+      #   do_something do |used:, **|
+      #
+      #     puts used
       #   end
       class UnusedBlockArgument < Cop
         include UnusedArgument
@@ -102,12 +111,12 @@ module RuboCop
               "You can omit the argument if you don't care about it."
             end
           else
-            message_for_underscore_prefix(variable)
+            message_for_variable(variable, all_arguments.count)
           end
         end
 
         def message_for_lambda(variable, all_arguments)
-          message = message_for_underscore_prefix(variable)
+          message = message_for_variable(variable, all_arguments.count)
 
           if all_arguments.none?(&:referenced?)
             proc_message = 'Also consider using a proc without arguments ' \
@@ -116,6 +125,17 @@ module RuboCop
           end
 
           [message, proc_message].compact.join(' ')
+        end
+
+        def message_for_variable(variable, argument_count)
+          return message_for_keyword_argument if variable.keyword_argument? &&
+                                                 argument_count > 1
+          message_for_underscore_prefix(variable)
+        end
+
+        def message_for_keyword_argument
+          "If it's necessary, use a trailing `**` for unused keyword " \
+          "arguments to indicate that they won't be used."
         end
 
         def message_for_underscore_prefix(variable)

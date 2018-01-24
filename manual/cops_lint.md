@@ -2192,6 +2192,10 @@ end
 define_method(:foo) do |bar|
   puts :baz
 end
+
+do_something do |used:, unused:|
+  puts used
+end
 ```
 ```ruby
 #good
@@ -2206,6 +2210,11 @@ end
 
 define_method(:foo) do |_bar|
   puts :baz
+end
+
+do_something do |used:, **|
+
+  puts used
 end
 ```
 
