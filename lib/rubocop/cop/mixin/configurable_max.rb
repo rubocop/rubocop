@@ -9,8 +9,10 @@ module RuboCop
 
       def max=(value)
         cfg = config_to_allow_offenses
-        value = [cfg[max_parameter_name], value].max if cfg[max_parameter_name]
-        cfg[max_parameter_name] = value
+        current_max = cfg.dig(:exclude_limit, max_parameter_name)
+        value = [current_max, value].max if current_max
+        cfg[:exclude_limit] ||= {}
+        cfg[:exclude_limit][max_parameter_name] = value
       end
 
       def max_parameter_name
