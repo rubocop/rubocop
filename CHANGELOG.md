@@ -43,6 +43,7 @@
 * [#5427](https://github.com/bbatsov/rubocop/pull/5427): Fix exception when executing from a different drive on Windows. ([@orgads][])
 * [#5429](https://github.com/bbatsov/rubocop/issues/5429): Detect tabs other than indentation by `Layout/Tab`. ([@pocke][])
 * [#5496](https://github.com/bbatsov/rubocop/pull/5496): Fix a false positive of `Style/FormatStringToken` with unrelated `format` call. ([@pocke][])
+* [#5503](https://github.com/bbatsov/rubocop/issues/5503): Fix `Rails/CreateTableWithTimestamps` false positive when using `to_proc` syntax. ([@wata727][])
 
 ### Changes
 
