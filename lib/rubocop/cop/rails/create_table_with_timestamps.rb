@@ -50,6 +50,10 @@ module RuboCop
             _)
         PATTERN
 
+        def_node_matcher :create_table_with_timestamps_proc?, <<-PATTERN
+          (send nil? :create_table (sym _) (block-pass (sym :timestamps)))
+        PATTERN
+
         def_node_search :timestamps_included?, <<-PATTERN
           (send _var :timestamps ...)
         PATTERN
@@ -66,6 +70,8 @@ module RuboCop
             if parent.body.nil? || !time_columns_included?(parent.body)
               add_offense(parent)
             end
+          elsif create_table_with_timestamps_proc?(node)
+            # nothing to do
           else
             add_offense(node)
           end
