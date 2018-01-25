@@ -3,7 +3,9 @@
 RSpec.describe RuboCop::Cop::Layout::EmptyComment, :config do
   subject(:cop) { described_class.new(config) }
 
-  let(:cop_config) { { 'AllowBorderComment' => true } }
+  let(:cop_config) do
+    { 'AllowBorderComment' => true, 'AllowMarginComment' => true }
+  end
 
   it 'registers an offense when using single line empty comment' do
     expect_offense(<<-RUBY.strip_indent)
@@ -70,6 +72,34 @@ RSpec.describe RuboCop::Cop::Layout::EmptyComment, :config do
       expect_offense(<<-RUBY.strip_indent)
         #################################
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Source code comment is empty.
+      RUBY
+    end
+  end
+
+  context 'allow margin comment (default)' do
+    it 'does not register an offense when using margin comment' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        #
+        # Description of `hello` method.
+        #
+        def hello
+        end
+      RUBY
+    end
+  end
+
+  context 'disallow margin comment' do
+    let(:cop_config) { { 'AllowMarginComment' => false } }
+
+    it 'registers an offense when using margin comment' do
+      expect_offense(<<-RUBY.strip_indent)
+        #
+        ^ Source code comment is empty.
+        # Description of `hello` method.
+        #
+        ^ Source code comment is empty.
+        def hello
+        end
       RUBY
     end
   end

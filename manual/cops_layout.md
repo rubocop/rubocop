@@ -936,12 +936,35 @@ end
 def bar
 end
 ```
+#### AllowMarginComment: true (default)
+
+```ruby
+# good
+
+#
+# Description of `Foo` class.
+#
+class Foo
+end
+```
+#### AllowMarginComment: false
+
+```ruby
+# bad
+
+#
+# Description of `Foo` class.
+#
+class Foo
+end
+```
 
 ### Configurable attributes
 
 Name | Default value | Configurable values
 --- | --- | ---
 AllowBorderComment | `true` | Boolean
+AllowMarginComment | `true` | Boolean
 
 ## Layout/EmptyLineAfterMagicComment
 

@@ -42,19 +42,45 @@ module RuboCop
       #   def bar
       #   end
       #
+      # @example AllowMarginComment: true (default)
+      #   # good
+      #
+      #   #
+      #   # Description of `Foo` class.
+      #   #
+      #   class Foo
+      #   end
+      #
+      # @example AllowMarginComment: false
+      #   # bad
+      #
+      #   #
+      #   # Description of `Foo` class.
+      #   #
+      #   class Foo
+      #   end
+      #
       class EmptyComment < Cop
         include RangeHelp
 
         MSG = 'Source code comment is empty.'.freeze
 
         def investigate(processed_source)
-          comments = concat_consecutive_comments(processed_source.comments)
+          if allow_margin_comment?
+            comments = concat_consecutive_comments(processed_source.comments)
 
-          comments.each do |comment|
-            next unless empty_comment_only?(comment[0])
+            comments.each do |comment|
+              next unless empty_comment_only?(comment[0])
 
-            comment[1].each do |offense_comment|
-              add_offense(offense_comment)
+              comment[1].each do |offense_comment|
+                add_offense(offense_comment)
+              end
+            end
+          else
+            processed_source.comments.each do |comment|
+              next unless empty_comment_only?(comment_text(comment))
+
+              add_offense(comment)
             end
           end
         end
@@ -103,6 +129,10 @@ module RuboCop
 
         def allow_border_comment?
           cop_config['AllowBorderComment']
+        end
+
+        def allow_margin_comment?
+          cop_config['AllowMarginComment']
         end
       end
     end
