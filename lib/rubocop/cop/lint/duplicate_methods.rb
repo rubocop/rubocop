@@ -39,6 +39,8 @@ module RuboCop
       #   def other_duplicated
       #     2
       #   end
+      #
+      #   alias other_duplicated_2 duplicated
       class DuplicateMethods < Cop
         MSG = 'Method `%<method>s` is defined at both %<defined>s and ' \
               '%<current>s.'.freeze

@@ -349,6 +349,8 @@ end
 def other_duplicated
   2
 end
+
+alias other_duplicated_2 duplicated
 ```
 
 ## Lint/DuplicatedKey
