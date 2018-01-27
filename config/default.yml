@@ -119,7 +119,14 @@ AllCops:
   # Else if .ruby-version exists and it contains an MRI version it is used.
   # Otherwise we fallback to the oldest officially supported Ruby version (2.1).
   TargetRubyVersion: ~
-  TargetRailsVersion: 5.0
+  # What version of Rails is the inspected code using?  If a value is specified
+  # for TargetRailsVersion then it is used.  Acceptable values are specificed
+  # as a float (i.e. 5.1); the patch version of Rails should not be included.
+  # If TargetRailsVersion is not set, RuboCop will parse the Gemfile.lock or
+  # gems.locked file to find the version of Rails that has been bound to the
+  # application.  If neither of those files exist, RuboCop will use Rails 5.0
+  # as the default.
+  TargetRailsVersion: ~
 
 #################### Layout ###########################
 

@@ -633,8 +633,6 @@ RSpec.describe RuboCop::Config do
 
   describe '#target_rails_version' do
     context 'when TargetRailsVersion is set' do
-      let(:rails_version) { 4.0 }
-
       let(:hash) do
         {
           'AllCops' => {
@@ -643,21 +641,103 @@ RSpec.describe RuboCop::Config do
         }
       end
 
-      it 'uses TargetRailsVersion' do
-        expect(configuration.target_rails_version).to eq rails_version
+      context 'with patch version' do
+        let(:rails_version) { '5.1.4' }
+        let(:rails_version_to_f) { 5.1 }
+
+        it 'truncates the patch part and converts to a float' do
+          expect(configuration.target_rails_version).to eq rails_version_to_f
+        end
+      end
+
+      context 'correctly' do
+        let(:rails_version) { 4.0 }
+
+        it 'uses TargetRailsVersion' do
+          expect(configuration.target_rails_version).to eq rails_version
+        end
       end
     end
 
-    context 'when TargetRailsVersion is not set' do
+    context 'when TargetRailsVersion is not set', :isolated_environment do
       let(:hash) do
         {
           'AllCops' => {}
         }
       end
 
-      it 'uses the default rails version' do
-        default_version = RuboCop::Config::DEFAULT_RAILS_VERSION
-        expect(configuration.target_rails_version).to eq default_version
+      context 'and lock files do not exist' do
+        it 'uses the default rails version' do
+          default = RuboCop::Config::DEFAULT_RAILS_VERSION
+          expect(configuration.target_rails_version).to eq default
+        end
+      end
+
+      ['Gemfile.lock', 'gems.locked'].each do |file_name|
+        context "and #{file_name} exists" do
+          let(:base_path) { configuration.base_dir_for_path_parameters }
+          let(:lock_file_path) { File.join(base_path, file_name) }
+
+          it 'uses the Rails version when Rails is present in the lock file' do
+            content =
+              <<-HEREDOC
+                GEM
+                  remote: https://rubygems.org/
+                  specs:
+                    actionmailer (4.1.0)
+                    actionpack (= 4.1.0)
+                    actionview (= 4.1.0)
+                    mail (~> 2.5.4)
+                  rails (4.1.0)
+                    actionmailer (= 4.1.0)
+                    actionpack (= 4.1.0)
+                    actionview (= 4.1.0)
+                    activemodel (= 4.1.0)
+                    activerecord (= 4.1.0)
+                    activesupport (= 4.1.0)
+                    bundler (>= 1.3.0, < 2.0)
+                    railties (= 4.1.0)
+                    sprockets-rails (~> 2.0)
+
+                PLATFORMS
+                  ruby
+
+                DEPENDENCIES
+                  rails (= 4.1.0)
+
+                BUNDLED WITH
+                  1.16.1
+              HEREDOC
+            create_file(lock_file_path, content)
+            expect(configuration.target_rails_version).to eq 4.1
+          end
+
+          it "uses the default Rails when Rails is not in #{file_name}" do
+            content =
+              <<-HEREDOC
+                GEM
+                  remote: https://rubygems.org/
+                  specs:
+                    addressable (2.5.2)
+                      public_suffix (>= 2.0.2, < 4.0)
+                    ast (2.4.0)
+                    bump (0.5.4)
+
+                PLATFORMS
+                  ruby
+
+                DEPENDENCIES
+                  bump
+                  bundler (~> 1.3)
+
+                BUNDLED WITH
+                  1.16.1
+              HEREDOC
+            create_file(lock_file_path, content)
+            default = RuboCop::Config::DEFAULT_RAILS_VERSION
+            expect(configuration.target_rails_version).to eq default
+          end
+        end
       end
     end
   end
