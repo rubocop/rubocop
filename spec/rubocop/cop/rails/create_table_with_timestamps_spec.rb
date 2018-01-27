@@ -39,6 +39,14 @@ RSpec.describe RuboCop::Cop::Rails::CreateTableWithTimestamps do
     RUBY
   end
 
+  it 'registers an offense when not including timestamps' \
+     'with `to_proc` syntax' do
+    expect_offense <<-RUBY
+      create_table :users, &:extension_columns
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Add timestamps when creating a new table.
+    RUBY
+  end
+
   it 'does not register an offense when including timestamps in block' do
     expect_no_offenses <<-RUBY
       create_table :users do |t|
@@ -47,6 +55,13 @@ RSpec.describe RuboCop::Cop::Rails::CreateTableWithTimestamps do
 
         t.timestamps
       end
+    RUBY
+  end
+
+  it 'does not register an offense when including timestamps' \
+     'with `to_proc` syntax' do
+    expect_no_offenses <<-RUBY
+      create_table :users, &:timestamps
     RUBY
   end
 

@@ -936,12 +936,35 @@ end
 def bar
 end
 ```
+#### AllowMarginComment: true (default)
+
+```ruby
+# good
+
+#
+# Description of `Foo` class.
+#
+class Foo
+end
+```
+#### AllowMarginComment: false
+
+```ruby
+# bad
+
+#
+# Description of `Foo` class.
+#
+class Foo
+end
+```
 
 ### Configurable attributes
 
 Name | Default value | Configurable values
 --- | --- | ---
 AllowBorderComment | `true` | Boolean
+AllowMarginComment | `true` | Boolean
 
 ## Layout/EmptyLineAfterMagicComment
 
@@ -2168,6 +2191,20 @@ Enabled | Yes
 
 This cops checks for indentation of the first non-blank non-comment
 line in a file.
+
+### Examples
+
+```ruby
+# bad
+   class A
+     def foo; end
+   end
+
+# good
+class A
+  def foo; end
+end
+```
 
 ## Layout/LeadingCommentSpace
 

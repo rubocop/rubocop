@@ -270,6 +270,7 @@ Layout/DotPosition:
 
 Layout/EmptyComment:
   AllowBorderComment: true
+  AllowMarginComment: true
 
 # Use empty lines between defs.
 Layout/EmptyLineBetweenDefs:
