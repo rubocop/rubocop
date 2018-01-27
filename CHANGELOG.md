@@ -42,6 +42,7 @@
 * [#5427](https://github.com/bbatsov/rubocop/pull/5427): Fix exception when executing from a different drive on Windows. ([@orgads][])
 * [#5429](https://github.com/bbatsov/rubocop/issues/5429): Detect tabs other than indentation by `Layout/Tab`. ([@pocke][])
 * [#5496](https://github.com/bbatsov/rubocop/pull/5496): Fix a false positive of `Style/FormatStringToken` with unrelated `format` call. ([@pocke][])
+* [#5512](https://github.com/bbatsov/rubocop/issues/5512): Improve `Lint/Void` to detect `Kernel#tap` as method that ignores the block's value. ([@untitaker][])
 
 ### Changes
 
@@ -3177,3 +3178,4 @@
 [@dominicsayers]: https://github.com/dominicsayers
 [@albertpaulp]: https://github.com/albertpaulp
 [@orgads]: https://github.com/orgads
+[@untitaker]: https://github.com/untitaker

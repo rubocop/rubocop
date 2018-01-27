@@ -214,6 +214,12 @@ RSpec.describe RuboCop::AST::BlockNode do
       it { expect(block_node.void_context?).to be_truthy }
     end
 
+    context 'when block method is tap' do
+      let(:source) { 'tap { bar }' }
+
+      it { expect(block_node.void_context?).to be_truthy }
+    end
+
     context 'when block method is not each' do
       let(:source) { 'map { bar }' }
 
