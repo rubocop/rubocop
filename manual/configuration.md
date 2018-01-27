@@ -34,7 +34,8 @@ parameter that are hashes, for example `PreferredMethods` in
 configuration, while other parameter, such as `AllCops` / `Include`, are
 simply replaced by the local setting. If arrays were merged, there would
 be no way to remove elements through overriding them in local
-configuration.
+configuration. There is a way to have specific array settings merged using
+the `inherit_mode` setting.
 
 #### Inheriting from another configuration file in the project
 
@@ -120,6 +121,63 @@ dependency's installation path at runtime:
 ```
 $ bundle exec rubocop <options...>
 ```
+
+#### Merging arrays using inherit_mode
+
+The optional directive `inherit_mode` is used to specify which configuration
+keys that have array values should be merged together instead of overriding the
+inherited value.
+
+One caveat is that this directive only works with local and inherited
+configuration files, it is unable to merge with the default.yml config.
+
+Given the following config:
+```yaml
+# .rubocop.yml
+inherit_from:
+  - shared.yml
+
+inherit_mode:
+  merge:
+    - Exclude 
+
+Style/For:
+  Exclude:
+    - bar.rb
+```
+
+```yaml
+# .shared.yml
+Style/For:
+  Exclude:
+    - foo.rb
+```
+
+The list of `Exclude`s for the `Style/For` cop in this example will be
+`['foo.rb', 'bar.rb']`. 
+
+The directive can also be used on individual cop configurations to override
+the global setting.
+
+
+```yaml
+inherit_from:
+  - shared.yml
+
+inherit_mode:
+  merge:
+    - Exclude 
+
+Style/For:
+  inherit_mode:
+    override:
+      - Exclude
+  Exclude:
+    - bar.rb
+```
+
+In this example the `Exclude` would only include `bar.rb`.
+
 
 ### Defaults
 

@@ -23,11 +23,13 @@ module RuboCop
         .reverse.each_with_index do |base_config, index|
         base_config.each do |k, v|
           next unless v.is_a?(Hash)
-          hash[k] = if hash.key?(k)
-                      merge(v, hash[k], k, file, inherited_files[index])
-                    else
-                      v
-                    end
+          if hash.key?(k)
+            v = merge(v, hash[k],
+                      cop_name: k, file: file,
+                      inherited_file: inherited_files[index],
+                      inherit_mode: determine_inherit_mode(hash, k))
+          end
+          hash[k] = v
         end
       end
     end
@@ -76,16 +78,16 @@ module RuboCop
     # Return a recursive merge of two hashes. That is, a normal hash merge,
     # with the addition that any value that is a hash, and occurs in both
     # arguments, will also be merged. And so on.
-    def merge(base_hash, derived_hash, cop_name = nil, file = nil,
-              inherited_file = nil)
+    def merge(base_hash, derived_hash, **opts)
       result = base_hash.merge(derived_hash)
       keys_appearing_in_both = base_hash.keys & derived_hash.keys
       keys_appearing_in_both.each do |key|
         if base_hash[key].is_a?(Hash)
           result[key] = merge(base_hash[key], derived_hash[key])
-        elsif duplicate_setting?(base_hash, derived_hash, key, inherited_file)
-          warn("#{PathUtil.smart_path(file)}: #{cop_name}:#{key} overrides " \
-               "the same parameter in #{inherited_file}")
+        elsif should_union?(base_hash, key, opts[:inherit_mode])
+          result[key] = base_hash[key] | derived_hash[key]
+        else
+          warn_on_duplicate_setting(base_hash, derived_hash, key, opts)
         end
       end
       result
@@ -99,6 +101,33 @@ module RuboCop
       return false if base_hash[key] == derived_hash[key] # Same value
       return false if remote_file?(inherited_file) # Can't change
       Gem.path.none? { |dir| inherited_file.start_with?(dir) } # Can change?
+    end
+
+    def warn_on_duplicate_setting(base_hash, derived_hash, key, **opts)
+      return unless duplicate_setting?(base_hash, derived_hash,
+                                       key, opts[:inherited_file])
+
+      inherit_mode = opts[:inherit_mode]['merge'] ||
+                     opts[:inherit_mode]['override']
+      return if base_hash[key].is_a?(Array) &&
+                inherit_mode && inherit_mode.include?(key)
+
+      warn("#{PathUtil.smart_path(opts[:file])}: " \
+           "#{opts[:cop_name]}:#{key} overrides " \
+           "the same parameter in #{opts[:inherited_file]}")
+    end
+
+    def determine_inherit_mode(hash, key)
+      cop_cfg = hash[key]
+      local_inherit = cop_cfg.delete('inherit_mode') if cop_cfg.is_a?(Hash)
+      local_inherit || hash['inherit_mode'] || {}
+    end
+
+    def should_union?(base_hash, key, inherit_mode)
+      base_hash[key].is_a?(Array) &&
+        inherit_mode &&
+        inherit_mode['merge'] &&
+        inherit_mode['merge'].include?(key)
     end
 
     def base_configs(path, inherit_from, file)
