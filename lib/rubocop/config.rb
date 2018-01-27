@@ -428,7 +428,13 @@ module RuboCop
 
     def target_rails_version
       @target_rails_version ||=
-        for_all_cops.fetch('TargetRailsVersion', DEFAULT_RAILS_VERSION)
+        if for_all_cops['TargetRailsVersion']
+          for_all_cops['TargetRailsVersion'].to_f
+        elsif target_rails_version_from_bundler_lock_file
+          target_rails_version_from_bundler_lock_file
+        else
+          DEFAULT_RAILS_VERSION
+        end
     end
 
     private
@@ -565,6 +571,33 @@ module RuboCop
         File.read(file).match(/\A(ruby-)?(?<version>\d+\.\d+)/) do |md|
           md[:version].to_f
         end
+    end
+
+    def target_rails_version_from_bundler_lock_file
+      @target_rails_version_from_bundler_lock_file ||=
+        read_rails_version_from_bundler_lock_file
+    end
+
+    def read_rails_version_from_bundler_lock_file
+      lock_file_path = bundler_lock_file_path
+      return nil unless lock_file_path
+
+      File.foreach(lock_file_path) do |line|
+        # If rails is in the Gemfile, the lock file should have a line like:
+        #         rails (X.X.X)
+        result = line.match(/^\s+rails\s+\((\d\.\d\.\d)/)
+        return result.captures.first.to_f if result
+      end
+    end
+
+    def bundler_lock_file_path
+      return nil unless loaded_path
+      base_path = base_dir_for_path_parameters
+      ['gems.locked', 'Gemfile.lock'].each do |file_name|
+        path = File.join(base_path, file_name)
+        return path if File.file?(path)
+      end
+      nil
     end
 
     def reject_mutually_exclusive_defaults
