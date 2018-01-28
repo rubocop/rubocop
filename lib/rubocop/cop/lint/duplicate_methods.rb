@@ -10,11 +10,11 @@ module RuboCop
       #
       #   # bad
       #
-      #   def duplicated
+      #   def foo
       #     1
       #   end
       #
-      #   def duplicated
+      #   def foo
       #     2
       #   end
       #
@@ -22,25 +22,33 @@ module RuboCop
       #
       #   # bad
       #
-      #   def duplicated
+      #   def foo
       #     1
       #   end
       #
-      #   alias duplicated other_duplicated
+      #   alias foo bar
       #
       # @example
       #
       #   # good
       #
-      #   def duplicated
+      #   def foo
       #     1
       #   end
       #
-      #   def other_duplicated
+      #   def bar
       #     2
       #   end
       #
-      #   alias other_duplicated_2 duplicated
+      # @example
+      #
+      #   # good
+      #
+      #   def foo
+      #     1
+      #   end
+      #
+      #   alias bar foo
       class DuplicateMethods < Cop
         MSG = 'Method `%<method>s` is defined at both %<defined>s and ' \
               '%<current>s.'.freeze
