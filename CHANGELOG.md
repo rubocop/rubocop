@@ -44,6 +44,7 @@
 * [#5429](https://github.com/bbatsov/rubocop/issues/5429): Detect tabs other than indentation by `Layout/Tab`. ([@pocke][])
 * [#5496](https://github.com/bbatsov/rubocop/pull/5496): Fix a false positive of `Style/FormatStringToken` with unrelated `format` call. ([@pocke][])
 * [#5503](https://github.com/bbatsov/rubocop/issues/5503): Fix `Rails/CreateTableWithTimestamps` false positive when using `to_proc` syntax. ([@wata727][])
+* [#5520](https://github.com/bbatsov/rubocop/issues/5520): Fix `Style/RedundantException` auto-correction does not keep parenthesization. ([@dpostorivo][])
 
 ### Changes
 

@@ -33,6 +33,13 @@ RSpec.describe RuboCop::Cop::Style::RedundantException do
       expect(new_src).to eq(result_src)
     end
 
+    it "auto-corrects a #{keyword} RuntimeError and leaves parentheses" do
+      src = "#{keyword}(RuntimeError, msg)"
+      result_src = "#{keyword}(msg)"
+      new_src = autocorrect_source(src)
+      expect(new_src).to eq(result_src)
+    end
+
     it "auto-corrects a #{keyword} RuntimeError.new with parentheses by " \
        'removing RuntimeError.new' do
       src = "#{keyword} RuntimeError.new(msg)"
