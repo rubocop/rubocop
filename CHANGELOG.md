@@ -25,6 +25,7 @@
 * [#5591](https://github.com/bbatsov/rubocop/pull/5591): Include `.arb` file by default. ([@deivid-rodriguez][])
 * [#5473](https://github.com/bbatsov/rubocop/issues/5473): Use `gems.locked` or `Gemfile.lock` to determine the best `TargetRailsVersion` when it is not specified in the config. ([@roberts1000][])
 * Add new `Naming/MemoizedInstanceVariableName` cop. ([@satyap][])
+* [#5376](https://github.com/bbatsov/rubocop/issues/5376): Add new `Style/EmptyLineAfterGuardClause` cop. ([@unkmas][])
 
 ### Bug fixes
 
@@ -3214,3 +3215,5 @@
 [@walinga]: https://github.com/walinga
 [@georf]: https://github.com/georf
 [@satyap]: https://github.com/satyap
+[@Edouard-chin]: https://github.com/Edouard-chin
+[@unkmas]: https://github.com/unkmas

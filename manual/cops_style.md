@@ -1522,6 +1522,39 @@ redundant.
 -> (arg) { do_something(arg) }
 ```
 
+## Style/EmptyLineAfterGuardClause
+
+Enabled by default | Supports autocorrection
+--- | ---
+Disabled | Yes
+
+This cop enforces empty line after guard clause
+
+### Examples
+
+```ruby
+# bad
+def foo
+  return if need_return?
+  bar
+end
+
+# good
+def foo
+  return if need_return?
+
+  bar
+end
+
+# good
+def foo
+  if something?
+    do_something
+    return if need_return?
+  end
+end
+```
+
 ## Style/EmptyLiteral
 
 Enabled by default | Supports autocorrection
