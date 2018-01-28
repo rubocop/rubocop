@@ -28,11 +28,16 @@ module RuboCop
 
         # Switch `raise RuntimeError, 'message'` to `raise 'message'`, and
         # `raise RuntimeError.new('message')` to `raise 'message'`.
-        def autocorrect(node)
+        def autocorrect(node) # rubocop:disable Metrics/MethodLength
           exploded?(node) do |command, message|
             return lambda do |corrector|
-              corrector.replace(node.source_range,
-                                "#{command} #{message.source}")
+              if node.parenthesized?
+                corrector.replace(node.source_range,
+                                  "#{command}(#{message.source})")
+              else
+                corrector.replace(node.source_range,
+                                  "#{command} #{message.source}")
+              end
             end
           end
           compact?(node) do |new_call, message|
