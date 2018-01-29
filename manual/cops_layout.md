@@ -1952,6 +1952,8 @@ Note: When `Metrics/LineLength`'s `AllowHeredoc` is false(not default),
 
 ### Examples
 
+#### EnforcedStyle: auto_detection (default)
+
 ```ruby
 # bad
 <<-RUBY
@@ -1959,16 +1961,60 @@ something
 RUBY
 
 # good
-# When EnforcedStyle is squiggly, bad code is auto-corrected to the
-# following code.
+# When using Ruby 2.3 or higher.
 <<~RUBY
   something
 RUBY
 
 # good
+# When using Ruby 2.2 or lower and enabled Rails department.
+# The following is possible to enable Rails department by
+# adding for example:
+#
+# Rails:
+#   Enabled: true
+#
+<<-RUBY.strip_heredoc
+  something
+RUBY
+```
+#### EnforcedStyle: squiggly
+
+```ruby
+# good
+# When EnforcedStyle is squiggly, bad code is auto-corrected to the
+# following code.
+<<~RUBY
+  something
+RUBY
+```
+#### EnforcedStyle: active_support
+
+```ruby
+# good
 # When EnforcedStyle is active_support, bad code is auto-corrected to
 # the following code.
 <<-RUBY.strip_heredoc
+  something
+RUBY
+```
+#### EnforcedStyle: powerpack
+
+```ruby
+# good
+# When EnforcedStyle is powerpack, bad code is auto-corrected to
+# the following code.
+<<-RUBY.strip_indent
+  something
+RUBY
+```
+#### EnforcedStyle: unindent
+
+```ruby
+# good
+# When EnforcedStyle is unindent, bad code is auto-corrected to
+# the following code.
+<<-RUBY.unindent
   something
 RUBY
 ```
