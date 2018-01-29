@@ -322,33 +322,42 @@ definitions.
 ```ruby
 # bad
 
-def duplicated
+def foo
   1
 end
 
-def duplicated
+def foo
   2
 end
 ```
 ```ruby
 # bad
 
-def duplicated
+def foo
   1
 end
 
-alias duplicated other_duplicated
+alias foo bar
 ```
 ```ruby
 # good
 
-def duplicated
+def foo
   1
 end
 
-def other_duplicated
+def bar
   2
 end
+```
+```ruby
+# good
+
+def foo
+  1
+end
+
+alias bar foo
 ```
 
 ## Lint/DuplicatedKey
