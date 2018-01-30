@@ -168,6 +168,7 @@ cop scaffold already suggested:
 ```ruby
 def on_send(node)
   return unless not_empty_call?(node)
+
   add_offense(node)
 end
 ```
@@ -195,6 +196,7 @@ module RuboCop
 
         def on_send(node)
           return unless not_empty_call?(node)
+
           add_offense(node)
         end
       end
