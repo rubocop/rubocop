@@ -144,4 +144,18 @@ RSpec.describe RuboCop::Cop::Rails::LexicallyScopedActionFilter do
       end
     RUBY
   end
+
+  it "doesn't register an offense when using %I literal" do
+    expect_no_offenses <<-RUBY
+      class FooController < ApplicationController
+        before_action :foo, except: %I[index show]
+
+        def index
+        end
+
+        def show
+        end
+      end
+    RUBY
+  end
 end
