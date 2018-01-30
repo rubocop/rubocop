@@ -28,6 +28,8 @@ module RuboCop
       #     end
       #   end
       class EmptyLineAfterGuardClause < Cop
+        include RangeHelp
+
         MSG = 'Add empty line after guard clause.'.freeze
 
         def on_if(node)
@@ -45,7 +47,8 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            corrector.insert_after(node.source_range, "\n")
+            node_range = range_by_whole_lines(node.source_range)
+            corrector.insert_after(node_range, "\n")
           end
         end
 

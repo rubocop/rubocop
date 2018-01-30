@@ -67,4 +67,17 @@ RSpec.describe RuboCop::Cop::Style::EmptyLineAfterGuardClause do
       foobar
     RUBY
   end
+
+  it 'correctly autocorrects offence with comment on same line' do
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
+      next if foo? # This is foo
+      foobar
+    RUBY
+
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      next if foo? # This is foo
+
+      foobar
+    RUBY
+  end
 end
