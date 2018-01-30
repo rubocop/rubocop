@@ -100,7 +100,8 @@ module RuboCop
       # part of it is changed.
       def updated(type = nil, children = nil, properties = {})
         properties[:location] ||= @location
-        self.class.new(type || @type, children || @children, properties)
+        klass = RuboCop::AST::Builder::NODE_MAP[type || @type] || Node
+        klass.new(type || @type, children || @children, properties)
       end
 
       # Returns the index of the receiver node in its siblings. (Sibling index
