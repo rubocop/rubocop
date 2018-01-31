@@ -18,6 +18,7 @@
 * [#5358](https://github.com/bbatsov/rubocop/pull/5358):  `--no-auto-gen-timestamp` CLI option suppresses the inclusion of the date and time it was generated in auto-generated config. ([@dominicsayers][])
 * [#4274](https://github.com/bbatsov/rubocop/issues/4274): Add new `Layout/EmptyComment` cop. ([@koic][])
 * [#4477](https://github.com/bbatsov/rubocop/issues/4477): Add new configuration directive: `inherit_mode` for merging arrays. ([@leklund][])
+* [#5532](https://github.com/bbatsov/rubocop/pull/5532): Include `.axlsx` file by default. ([@georf][])
 
 ### Bug fixes
 
@@ -3186,3 +3187,4 @@
 [@orgads]: https://github.com/orgads
 [@leklund]: https://github.com/leklund
 [@walinga]: https://github.com/walinga
+[@georf]: https://github.com/georf
