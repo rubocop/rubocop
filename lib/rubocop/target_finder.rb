@@ -4,6 +4,7 @@ require 'set'
 
 module RuboCop
   RUBY_EXTENSIONS = %w[.rb
+                       .axlsx
                        .builder
                        .fcgi
                        .gemfile

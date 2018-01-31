@@ -9,6 +9,7 @@ inherit_from:
 AllCops:
   # Include common Ruby source files.
   Include:
+    - '**/*.axlsx'
     - '**/*.builder'
     - '**/*.fcgi'
     - '**/*.gemfile'
