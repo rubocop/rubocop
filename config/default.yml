@@ -624,12 +624,6 @@ Layout/Tab:
   # replace each tab.
   IndentationWidth: ~
 
-Layout/TrailingBlankLines:
-  EnforcedStyle: final_newline
-  SupportedStyles:
-    - final_newline
-    - final_blank_line
-
 #################### Naming ##########################
 
 Naming/FileName:
