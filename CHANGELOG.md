@@ -21,6 +21,7 @@
 * [#5532](https://github.com/bbatsov/rubocop/pull/5532): Include `.axlsx` file by default. ([@georf][])
 * [#5490](https://github.com/bbatsov/rubocop/issues/5490): Add new `Lint/OrderedMagicComments` cop. ([@koic][])
 * [#4008](https://github.com/bbatsov/rubocop/issues/4008): Add new `Style/ExpandPathArguments` cop. ([@koic][])
+* [#4812](https://github.com/bbatsov/rubocop/issues/4812): Add `beginning_only` and `ending_only` style options to `Layout/EmptyLinesAroundClassBody` cop. ([@jmks][])
 
 ### Bug fixes
 
