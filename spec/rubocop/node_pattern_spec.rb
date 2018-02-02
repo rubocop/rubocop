@@ -848,6 +848,23 @@ RSpec.describe RuboCop::NodePattern do
         it_behaves_like :nonmatching
       end
     end
+
+    context 'with multiple arguments' do
+      let(:pattern) { '(str between?(%1, %2))' }
+      let(:ruby) { '"c"' }
+
+      context 'for which the predicate is true' do
+        let(:params) { %w[a d] }
+
+        it_behaves_like :matching
+      end
+
+      context 'for which the predicate is false' do
+        let(:params) { %w[a b] }
+
+        it_behaves_like :nonmatching
+      end
+    end
   end
 
   describe 'params' do

@@ -384,10 +384,13 @@ module RuboCop
       end
 
       def compile_args(tokens)
-        args = []
-        args << compile_arg(tokens.shift) until tokens.first == ')'
-        tokens.shift # drop the )
-        args
+        index = tokens.find_index { |token| token == ')' }
+
+        tokens.slice!(0..index).each_with_object([]) do |token, args|
+          next if [')', ','].include?(token)
+
+          args << compile_arg(token)
+        end
       end
 
       def compile_arg(token)
