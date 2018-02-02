@@ -3915,29 +3915,7 @@ source code.
 
 ### Examples
 
-#### EnforcedStyle: final_blank_line
-
 ```ruby
-# `final_blank_line` looks for one blank line followed by a new line
-# at the end of files.
-
-# bad
-class Foo; end
-# EOF
-
-# bad
-class Foo; end # EOF
-
-# good
-class Foo; end
-
-# EOF
-```
-#### EnforcedStyle: final_newline (default)
-
-```ruby
-# `final_newline` looks for one newline at the end of files.
-
 # bad
 class Foo; end
 
@@ -3950,12 +3928,6 @@ class Foo; end # EOF
 class Foo; end
 # EOF
 ```
-
-### Configurable attributes
-
-Name | Default value | Configurable values
---- | --- | ---
-EnforcedStyle | `final_newline` | `final_newline`, `final_blank_line`
 
 ### References
 

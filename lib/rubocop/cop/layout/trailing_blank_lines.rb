@@ -6,25 +6,7 @@ module RuboCop
       # This cop looks for trailing blank lines and a final newline in the
       # source code.
       #
-      # @example EnforcedStyle: final_blank_line
-      #   # `final_blank_line` looks for one blank line followed by a new line
-      #   # at the end of files.
-      #
-      #   # bad
-      #   class Foo; end
-      #   # EOF
-      #
-      #   # bad
-      #   class Foo; end # EOF
-      #
-      #   # good
-      #   class Foo; end
-      #
-      #   # EOF
-      #
-      # @example EnforcedStyle: final_newline (default)
-      #   # `final_newline` looks for one newline at the end of files.
-      #
+      # @example
       #   # bad
       #   class Foo; end
       #
@@ -38,7 +20,6 @@ module RuboCop
       #   # EOF
       #
       class TrailingBlankLines < Cop
-        include ConfigurableEnforcedStyle
         include RangeHelp
 
         def investigate(processed_source)
@@ -53,24 +34,21 @@ module RuboCop
 
           whitespace_at_end = buffer.source[/\s*\Z/]
           blank_lines = whitespace_at_end.count("\n") - 1
-          wanted_blank_lines = style == :final_newline ? 0 : 1
 
-          return unless blank_lines != wanted_blank_lines
+          return if blank_lines.zero?
 
-          offense_detected(buffer, wanted_blank_lines, blank_lines,
-                           whitespace_at_end)
+          offense_detected(buffer, blank_lines, whitespace_at_end)
         end
 
         def autocorrect(range)
           lambda do |corrector|
-            corrector.replace(range, style == :final_newline ? "\n" : "\n\n")
+            corrector.replace(range, "\n")
           end
         end
 
         private
 
-        def offense_detected(buffer, wanted_blank_lines, blank_lines,
-                             whitespace_at_end)
+        def offense_detected(buffer, blank_lines, whitespace_at_end)
           begin_pos = buffer.source.length - whitespace_at_end.length
           autocorrect_range = range_between(begin_pos, buffer.source.length)
           begin_pos += 1 unless whitespace_at_end.empty?
@@ -78,7 +56,7 @@ module RuboCop
 
           add_offense(autocorrect_range,
                       location: report_range,
-                      message: message(wanted_blank_lines, blank_lines))
+                      message: message(blank_lines))
         end
 
         def ends_in_end?(processed_source)
@@ -91,20 +69,12 @@ module RuboCop
           extra && extra.strip.start_with?('__END__')
         end
 
-        def message(wanted_blank_lines, blank_lines)
-          case blank_lines
-          when -1
+        def message(blank_lines)
+          if blank_lines == -1
             'Final newline missing.'
-          when 0
-            'Trailing blank line missing.'
           else
-            instead_of = if wanted_blank_lines.zero?
-                           ''
-                         else
-                           "instead of #{wanted_blank_lines} "
-                         end
-            format('%<current>d trailing blank lines %<prefer>sdetected.',
-                   current: blank_lines, prefer: instead_of)
+            format('%<blank_lines>d trailing blank lines detected.',
+                   blank_lines: blank_lines)
           end
         end
       end
