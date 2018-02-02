@@ -295,6 +295,8 @@ Layout/EmptyLinesAroundClassBody:
     - empty_lines_except_namespace
     - empty_lines_special
     - no_empty_lines
+    - beginning_only
+    - ending_only
 
 Layout/EmptyLinesAroundModuleBody:
   EnforcedStyle: no_empty_lines
