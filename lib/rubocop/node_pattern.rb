@@ -369,7 +369,7 @@ module RuboCop
         if method.end_with?('(') # is there an arglist?
           args = compile_args(tokens)
           method = method[0..-2] # drop the trailing (
-          "(#{method}(#{cur_node}#{'.type' if seq_head}),#{args.join(',')})"
+          "(#{method}(#{cur_node}#{'.type' if seq_head},#{args.join(',')}))"
         else
           "(#{method}(#{cur_node}#{'.type' if seq_head}))"
         end

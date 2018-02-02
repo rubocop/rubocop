@@ -1052,12 +1052,12 @@ RSpec.describe RuboCop::NodePattern do
           false
         end
 
-        def witharg(_foo, bar)
-          bar
+        def witharg(foo, bar)
+          foo == bar
         end
 
-        def withargs(_foo, _bar, qux)
-          qux
+        def withargs(foo, bar, qux)
+          foo.between?(bar, qux)
         end
       end
     end
@@ -1065,6 +1065,22 @@ RSpec.describe RuboCop::NodePattern do
     context 'without extra arguments' do
       let(:pattern) { '(lvasgn #goodmatch ...)' }
       let(:ruby) { 'a = 1' }
+
+      it_behaves_like :matching
+    end
+
+    context 'with one argument' do
+      let(:pattern) { '(str #witharg(%1))' }
+      let(:ruby) { '"foo"' }
+      let(:params) { %w[foo] }
+
+      it_behaves_like :matching
+    end
+
+    context 'with multiple arguments' do
+      let(:pattern) { '(str #withargs(%1, %2))' }
+      let(:ruby) { '"c"' }
+      let(:params) { %w[a d] }
 
       it_behaves_like :matching
     end
