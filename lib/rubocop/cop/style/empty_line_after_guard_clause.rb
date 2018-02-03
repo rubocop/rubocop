@@ -35,10 +35,8 @@ module RuboCop
         def on_if(node)
           return unless contains_guard_clause?(node)
 
-          if node.parent
-            return if node.parent.single_line?
-            return if next_sibling_guard_clause?(node)
-          end
+          return if node.parent.nil? || node.parent.single_line?
+          return if next_sibling_empty_or_guard_clause?(node)
 
           return if next_line_empty?(node)
 
@@ -54,25 +52,19 @@ module RuboCop
 
         private
 
-        def next_sibling_guard_clause?(node)
-          next_sibling = node.parent.children[node.sibling_index + 1]
-          return false if next_sibling.nil?
-
-          next_sibling.if_type? && contains_guard_clause?(next_sibling)
+        def contains_guard_clause?(node)
+          node.if_branch && node.if_branch.guard_clause?
         end
 
         def next_line_empty?(node)
-          next_line = processed_source[node.last_line]
-
-          line_end?(next_line) || next_line.blank?
+          processed_source[node.last_line].blank?
         end
 
-        def line_end?(line)
-          line =~ /^\s*end/
-        end
+        def next_sibling_empty_or_guard_clause?(node)
+          next_sibling = node.parent.children[node.sibling_index + 1]
+          return true if next_sibling.nil?
 
-        def contains_guard_clause?(node)
-          node.if_branch && node.if_branch.guard_clause?
+          next_sibling.if_type? && contains_guard_clause?(next_sibling)
         end
       end
     end
