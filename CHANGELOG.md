@@ -19,6 +19,7 @@
 * [#4274](https://github.com/bbatsov/rubocop/issues/4274): Add new `Layout/EmptyComment` cop. ([@koic][])
 * [#4477](https://github.com/bbatsov/rubocop/issues/4477): Add new configuration directive: `inherit_mode` for merging arrays. ([@leklund][])
 * [#5532](https://github.com/bbatsov/rubocop/pull/5532): Include `.axlsx` file by default. ([@georf][])
+* [#5490](https://github.com/bbatsov/rubocop/issues/5490): Add new `Lint/OrderedMagicComments` cop. ([@koic][])
 
 ### Bug fixes
 
