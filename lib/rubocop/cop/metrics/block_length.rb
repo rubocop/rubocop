@@ -13,7 +13,7 @@ module RuboCop
         LABEL = 'Block'.freeze
 
         def on_block(node)
-          return if excluded_methods.include?(node.send_node.method_name.to_s)
+          return if excluded_methods.include?(node.send_node.source)
           check_code_length(node)
         end
 

@@ -90,6 +90,7 @@
 * Add new `Naming/MemoizedInstanceVariableName` cop. ([@satyap][])
 * [#5376](https://github.com/bbatsov/rubocop/issues/5376): Add new `Style/EmptyLineAfterGuardClause` cop. ([@unkmas][])
 * Add new `Rails/ActiveRecordAliases` cop. ([@elebow][])
+* [#4257](https://github.com/bbatsov/rubocop/issues/4257): Allow specifying module name in `Metrics/BlockLength`'s `ExcludedMethods` configuration option. ([@akhramov][])
 
 ### Bug fixes
 

@@ -5,6 +5,31 @@ RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
 
   let(:cop_config) { { 'Max' => 2, 'CountComments' => false } }
 
+  shared_examples 'ignoring an offense on an excluded method' do |excluded|
+    before { cop_config['ExcludedMethods'] = [excluded] }
+
+    it 'still rejects other methods with long blocks' do
+      expect_offense(<<-RUBY.strip_indent)
+        something do
+        ^^^^^^^^^^^^ Block has too many lines. [3/2]
+          a = 1
+          a = 2
+          a = 3
+        end
+      RUBY
+    end
+
+    it 'accepts the foo method with a long block' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        #{excluded} do
+          a = 1
+          a = 2
+          a = 3
+        end
+      RUBY
+    end
+  end
+
   it 'rejects a block with more than 5 lines' do
     inspect_source(<<-RUBY.strip_indent)
       something do
@@ -125,28 +150,13 @@ RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
     end
   end
 
-  context 'when foo method is excluded is enabled' do
-    before { cop_config['ExcludedMethods'] = ['foo'] }
+  context 'when ExcludedMethods is enabled' do
+    it_behaves_like('ignoring an offense on an excluded method', 'foo')
 
-    it 'still rejects other methods with long blocks' do
-      inspect_source(<<-RUBY.strip_indent)
-        something do
-          a = 1
-          a = 2
-          a = 3
-        end
-      RUBY
-      expect(cop.offenses.empty?).to be(false)
-    end
+    it_behaves_like('ignoring an offense on an excluded method',
+                    'Gem::Specification.new')
 
-    it 'accepts the foo method with a long block' do
-      expect_no_offenses(<<-RUBY.strip_indent)
-        foo do
-          a = 1
-          a = 2
-          a = 3
-        end
-      RUBY
-    end
+    it_behaves_like('ignoring an offense on an excluded method',
+                    'cool.method.chain')
   end
 end
