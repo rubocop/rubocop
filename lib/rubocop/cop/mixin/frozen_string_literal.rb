@@ -21,6 +21,10 @@ module RuboCop
       def frozen_string_literals_enabled?
         ruby_version = processed_source.ruby_version
         return false unless ruby_version
+        # TODO: Frozen string literal will be default in Ruby 3.0
+        # or not yet determinable.
+        # It is necessary to change according to trend in the future.
+        # https://bugs.ruby-lang.org/issues/8976#note-41
         return true if ruby_version >= 3.0
         return false unless ruby_version >= 2.3
 
