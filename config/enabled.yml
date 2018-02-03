@@ -590,6 +590,10 @@ Lint/NonLocalExitFromIterator:
   Description: 'Do not use return in iterator to cause non-local exit.'
   Enabled: true
 
+Lint/OrderedMagicComments:
+  Description: 'Checks the proper ordering of magic comments and whether a magic comment is not placed before a shebang.'
+  Enabled: true
+
 Lint/ParenthesesAsGroupedExpression:
   Description: >-
                  Checks for method calls with a space before the opening
