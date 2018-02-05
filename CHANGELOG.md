@@ -71,6 +71,7 @@
 * `Style/SafeNavigation` will now register an offense for methods that `nil` responds to. ([@rrosenblum][])
 * [#5542](https://github.com/bbatsov/rubocop/pull/5542): Exclude `.git/` by default. ([@pocke][])
 * Tell Read the Docs to build downloadable docs. ([@eostrom][])
+* `Lint/SafeNavigationChain` will now register an offense for methods that `nil` responds to. ([@rrosenblum][])
 
 ## 0.52.1 (2017-12-27)
 
