@@ -20,7 +20,7 @@ RSpec.describe RuboCop::Formatter::OffenseCountFormatter do
       let(:offenses) { [] }
 
       it 'does not add to offense_counts' do
-        expect { finish }.not_to change { formatter.offense_counts }
+        expect { finish }.not_to change(formatter, :offense_counts)
       end
     end
 
@@ -28,7 +28,7 @@ RSpec.describe RuboCop::Formatter::OffenseCountFormatter do
       let(:offenses) { [double('offense', cop_name: 'OffendedCop')] }
 
       it 'increments the count for the cop in offense_counts' do
-        expect { finish }.to change { formatter.offense_counts }
+        expect { finish }.to change(formatter, :offense_counts)
       end
     end
   end

@@ -322,33 +322,42 @@ definitions.
 ```ruby
 # bad
 
-def duplicated
+def foo
   1
 end
 
-def duplicated
+def foo
   2
 end
 ```
 ```ruby
 # bad
 
-def duplicated
+def foo
   1
 end
 
-alias duplicated other_duplicated
+alias foo bar
 ```
 ```ruby
 # good
 
-def duplicated
+def foo
   1
 end
 
-def other_duplicated
+def bar
   2
 end
+```
+```ruby
+# good
+
+def foo
+  1
+end
+
+alias bar foo
 ```
 
 ## Lint/DuplicatedKey
@@ -2347,8 +2356,8 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | No
 
-This cop checks for operators, variables and literals used
-in void context.
+This cop checks for operators, variables, literals, and nonmutating
+methods used in void context.
 
 ### Examples
 
@@ -2369,6 +2378,14 @@ def some_method(some_var)
 end
 ```
 ```ruby
+# bad, when CheckForMethodsWithNoSideEffects is set true
+
+def some_method(some_array)
+  some_array.sort
+  do_something(some_array)
+end
+```
+```ruby
 # good
 
 def some_method
@@ -2384,3 +2401,17 @@ def some_method(some_var)
   some_var
 end
 ```
+```ruby
+# good, when CheckForMethodsWithNoSideEffects is set true
+
+def some_method(some_array)
+  some_array.sort!
+  do_something(some_array)
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+CheckForMethodsWithNoSideEffects | `false` | Boolean

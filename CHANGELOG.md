@@ -18,10 +18,12 @@
 * [#5358](https://github.com/bbatsov/rubocop/pull/5358):  `--no-auto-gen-timestamp` CLI option suppresses the inclusion of the date and time it was generated in auto-generated config. ([@dominicsayers][])
 * [#4274](https://github.com/bbatsov/rubocop/issues/4274): Add new `Layout/EmptyComment` cop. ([@koic][])
 * [#4477](https://github.com/bbatsov/rubocop/issues/4477): Add new configuration directive: `inherit_mode` for merging arrays. ([@leklund][])
+* [#5532](https://github.com/bbatsov/rubocop/pull/5532): Include `.axlsx` file by default. ([@georf][])
 
 ### Bug fixes
 
 * [#4105](https://github.com/bbatsov/rubocop/issues/4105): Fix `Lint/IndentationWidth` when `Lint/EndAlignment` is configured with `start_of_line`. ([@brandonweiss][])
+* [#5453](https://github.com/bbatsov/rubocop/issues/5453): Fix erroneous downcase in `Performance/Casecmp` auto-correction. ([@walinga][])
 * [#5343](https://github.com/bbatsov/rubocop/issues/5343): Fix offense detection in `Style/TrailingMethodEndStatement`. ([@garettarrowood][])
 * [#5334](https://github.com/bbatsov/rubocop/issues/5334): Fix semicolon removal for `Style/TrailingBodyOnMethodDefinition` autocorrection. ([@garettarrowood][])
 * [#5350](https://github.com/bbatsov/rubocop/issues/5350): Fix `Metric/LineLength` false offenses for URLs in double quotes. ([@garettarrowood][])
@@ -45,6 +47,9 @@
 * [#5496](https://github.com/bbatsov/rubocop/pull/5496): Fix a false positive of `Style/FormatStringToken` with unrelated `format` call. ([@pocke][])
 * [#5503](https://github.com/bbatsov/rubocop/issues/5503): Fix `Rails/CreateTableWithTimestamps` false positive when using `to_proc` syntax. ([@wata727][])
 * [#5512](https://github.com/bbatsov/rubocop/issues/5512): Improve `Lint/Void` to detect `Kernel#tap` as method that ignores the block's value. ([@untitaker][])
+* [#5520](https://github.com/bbatsov/rubocop/issues/5520): Fix `Style/RedundantException` auto-correction does not keep parenthesization. ([@dpostorivo][])
+* [#5524](https://github.com/bbatsov/rubocop/issues/5524): Return the instance based on the new type when calls `RuboCop::AST::Node#updated`. ([@wata727][])
+* [#5539](https://github.com/bbatsov/rubocop/pull/5539): Fix compilation error and ruby code generation when passing args to funcall and predicates. ([@Edouard-chin][])
 
 ### Changes
 
@@ -58,6 +63,7 @@
 * [#4704](https://github.com/bbatsov/rubocop/issues/4704): Move `Lint/EndAlignment`, `Lint/DefEndAlignment`, `Lint/BlockAlignment`, and `Lint/ConditionPosition` to the `Layout` namespace. ([@bquorning][])
 * [#5283](https://github.com/bbatsov/rubocop/issues/5283): Change file path output by `Formatter::JSONFormatter` from relative path to smart path. ([@koic][])
 * `Style/SafeNavigation` will now register an offense for methods that `nil` responds to. ([@rrosenblum][])
+* [#5542](https://github.com/bbatsov/rubocop/pull/5542): Exclude `.git/` by default. ([@pocke][])
 
 ## 0.52.1 (2017-12-27)
 
@@ -199,6 +205,7 @@
 * [#4874](https://github.com/bbatsov/rubocop/pull/4874): Add new `Gemspec/OrderedDependencies` cop. ([@sue445][])
 * [#4840](https://github.com/bbatsov/rubocop/pull/4840): Add new `Style/MixinUsage` cop. ([@koic][])
 * [#1952](https://github.com/bbatsov/rubocop/issues/1952): Add new `Style/DateTime` cop. ([@dpostorivo][])
+* [#4727](https://github.com/bbatsov/rubocop/issues/4727): Make `Lint/Void` check for nonmutating methods as well. ([@donjar][])
 
 ### Bug fixes
 
@@ -3183,3 +3190,6 @@
 [@orgads]: https://github.com/orgads
 [@leklund]: https://github.com/leklund
 [@untitaker]: https://github.com/untitaker
+[@walinga]: https://github.com/walinga
+[@georf]: https://github.com/georf
+[@Edouard-chin]: https://github.com/Edouard-chin

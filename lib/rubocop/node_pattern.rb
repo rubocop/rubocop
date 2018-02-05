@@ -369,7 +369,7 @@ module RuboCop
         if method.end_with?('(') # is there an arglist?
           args = compile_args(tokens)
           method = method[0..-2] # drop the trailing (
-          "(#{method}(#{cur_node}#{'.type' if seq_head}),#{args.join(',')})"
+          "(#{method}(#{cur_node}#{'.type' if seq_head},#{args.join(',')}))"
         else
           "(#{method}(#{cur_node}#{'.type' if seq_head}))"
         end
@@ -384,10 +384,13 @@ module RuboCop
       end
 
       def compile_args(tokens)
-        args = []
-        args << compile_arg(tokens.shift) until tokens.first == ')'
-        tokens.shift # drop the )
-        args
+        index = tokens.find_index { |token| token == ')' }
+
+        tokens.slice!(0..index).each_with_object([]) do |token, args|
+          next if [')', ','].include?(token)
+
+          args << compile_arg(token)
+        end
       end
 
       def compile_arg(token)

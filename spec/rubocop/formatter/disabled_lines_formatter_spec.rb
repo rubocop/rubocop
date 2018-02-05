@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Formatter::DisabledLinesFormatter do
 
       it 'does not add to cop_disabled_line_ranges' do
         expect { file_started }.not_to(
-          change { formatter.cop_disabled_line_ranges }
+          change(formatter, :cop_disabled_line_ranges)
         )
       end
     end
@@ -35,7 +35,7 @@ RSpec.describe RuboCop::Formatter::DisabledLinesFormatter do
 
       it 'merges the changes into cop_disabled_line_ranges' do
         expect { file_started }.to(
-          change { formatter.cop_disabled_line_ranges }
+          change(formatter, :cop_disabled_line_ranges)
         )
       end
     end

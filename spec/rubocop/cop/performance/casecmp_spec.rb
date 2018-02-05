@@ -72,12 +72,12 @@ RSpec.describe RuboCop::Cop::Performance::Casecmp do
 
     it "autocorrects obj.#{selector} == str.#{selector}" do
       new_source = autocorrect_source("obj.#{selector} == str.#{selector}")
-      expect(new_source).to eq "obj.casecmp(str.#{selector}).zero?"
+      expect(new_source).to eq 'obj.casecmp(str).zero?'
     end
 
     it "autocorrects obj.#{selector} eql? str.#{selector}" do
       new_source = autocorrect_source("obj.#{selector}.eql? str.#{selector}")
-      expect(new_source).to eq "obj.casecmp(str.#{selector}).zero?"
+      expect(new_source).to eq 'obj.casecmp(str).zero?'
     end
 
     it "formats the error message correctly for str.#{selector} ==" do

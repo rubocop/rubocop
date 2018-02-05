@@ -12,13 +12,31 @@ module RuboCop
       #       this cop does not add any offenses for long here documents to
       #       avoid `Metrics/LineLength`'s offenses.
       #
-      # @example
-      #
+      # @example EnforcedStyle: auto_detection (default)
       #   # bad
       #   <<-RUBY
       #   something
       #   RUBY
       #
+      #   # good
+      #   # When using Ruby 2.3 or higher.
+      #   <<~RUBY
+      #     something
+      #   RUBY
+      #
+      #   # good
+      #   # When using Ruby 2.2 or lower and enabled Rails department.
+      #   # The following is possible to enable Rails department by
+      #   # adding for example:
+      #   #
+      #   # Rails:
+      #   #   Enabled: true
+      #   #
+      #   <<-RUBY.strip_heredoc
+      #     something
+      #   RUBY
+      #
+      # @example EnforcedStyle: squiggly
       #   # good
       #   # When EnforcedStyle is squiggly, bad code is auto-corrected to the
       #   # following code.
@@ -26,12 +44,30 @@ module RuboCop
       #     something
       #   RUBY
       #
+      # @example EnforcedStyle: active_support
       #   # good
       #   # When EnforcedStyle is active_support, bad code is auto-corrected to
       #   # the following code.
       #   <<-RUBY.strip_heredoc
       #     something
       #   RUBY
+      #
+      # @example EnforcedStyle: powerpack
+      #   # good
+      #   # When EnforcedStyle is powerpack, bad code is auto-corrected to
+      #   # the following code.
+      #   <<-RUBY.strip_indent
+      #     something
+      #   RUBY
+      #
+      # @example EnforcedStyle: unindent
+      #   # good
+      #   # When EnforcedStyle is unindent, bad code is auto-corrected to
+      #   # the following code.
+      #   <<-RUBY.unindent
+      #     something
+      #   RUBY
+      #
       class IndentHeredoc < Cop
         include Heredoc
         include ConfigurableEnforcedStyle
