@@ -1697,6 +1697,52 @@ end
 
 * [https://github.com/bbatsov/ruby-style-guide#predicate-methods](https://github.com/bbatsov/ruby-style-guide#predicate-methods)
 
+## Style/ExpandPathArguments
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for use of the `File.expand_path` arguments.
+Likewise, it also checks for the `Pathname.new` argument.
+
+Contrastive bad case and good case are alternately shown in
+the following examples.
+
+### Examples
+
+```ruby
+# bad
+File.expand_path('..', __FILE__)
+
+# good
+File.expand_path(__dir__)
+
+# bad
+File.expand_path('../..', __FILE__)
+
+# good
+File.expand_path('..', __dir__)
+
+# bad
+File.expand_path('.', __FILE__)
+
+# good
+File.expand_path(__FILE__)
+
+# bad
+Pathname(__FILE__).parent.expand_path
+
+# good
+Pathname(__dir__).expand_path
+
+# bad
+Pathname.new(__FILE__).parent.expand_path
+
+# good
+Pathname.new(__dir__).expand_path
+```
+
 ## Style/FlipFlop
 
 Enabled by default | Supports autocorrection

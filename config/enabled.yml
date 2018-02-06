@@ -1501,6 +1501,10 @@ Style/EvenOdd:
   StyleGuide: '#predicate-methods'
   Enabled: true
 
+Style/ExpandPathArguments:
+  Description: "Use `expand_path(__dir__)` instead of `expand_path('..', __FILE__)`."
+  Enabled: true
+
 Style/FlipFlop:
   Description: 'Checks for flip flops'
   StyleGuide: '#no-flip-flops'

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Formatter::HTMLFormatter, :isolated_environment do
-  spec_root = File.expand_path('../../..', __FILE__)
+  spec_root = File.expand_path('../..', __dir__)
 
   around do |example|
     project_path = File.join(spec_root, 'fixtures/html_formatter/project')

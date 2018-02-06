@@ -12,7 +12,7 @@ module RuboCop
     class HTMLFormatter < BaseFormatter
       ELLIPSES = '<span class="extra-code">...</span>'.freeze
       TEMPLATE_PATH =
-        File.expand_path('../../../../assets/output.html.erb', __FILE__)
+        File.expand_path('../../../assets/output.html.erb', __dir__)
 
       Color = Struct.new(:red, :green, :blue, :alpha) do
         def to_s
@@ -73,7 +73,7 @@ module RuboCop
         }.freeze
 
         LOGO_IMAGE_PATH =
-          File.expand_path('../../../../assets/logo.png', __FILE__)
+          File.expand_path('../../../assets/logo.png', __dir__)
 
         attr_reader :files, :summary
 
