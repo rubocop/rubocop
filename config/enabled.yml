@@ -1295,6 +1295,8 @@ Security/YAMLLoad:
                  security issues. See reference for more information.
   Reference: 'https://ruby-doc.org/stdlib-2.3.3/libdoc/yaml/rdoc/YAML.html#module-YAML-label-Security'
   Enabled: true
+  # Autocorrect will break yaml files using aliases
+  AutoCorrect: false
 
 #################### Style ###############################
 

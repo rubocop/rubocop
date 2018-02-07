@@ -50,6 +50,7 @@
 * [#5520](https://github.com/bbatsov/rubocop/issues/5520): Fix `Style/RedundantException` auto-correction does not keep parenthesization. ([@dpostorivo][])
 * [#5524](https://github.com/bbatsov/rubocop/issues/5524): Return the instance based on the new type when calls `RuboCop::AST::Node#updated`. ([@wata727][])
 * [#5539](https://github.com/bbatsov/rubocop/pull/5539): Fix compilation error and ruby code generation when passing args to funcall and predicates. ([@Edouard-chin][])
+* [#3998](https://github.com/bbatsov/rubocop/issues/3998): Disable autocorrect for Security/YAMLLoad. ([@annaswims][])
 
 ### Changes
 
