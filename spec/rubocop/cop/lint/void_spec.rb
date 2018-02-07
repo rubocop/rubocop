@@ -176,6 +176,17 @@ RSpec.describe RuboCop::Cop::Lint::Void do
     RUBY
   end
 
+  it 'registers two offenses for void literals in `#tap` method' do
+    expect_offense(<<-RUBY.strip_indent)
+      foo.tap do |x|
+        42
+        ^^ Literal `42` used in void context.
+        42
+        ^^ Literal `42` used in void context.
+      end
+    RUBY
+  end
+
   it 'registers two offenses for void literals in a `for`' do
     expect_offense(<<-RUBY.strip_indent)
       for _item in array do
