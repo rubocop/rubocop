@@ -5821,7 +5821,10 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
-This cop checks for usage of the %q/%Q syntax when '' or "" would do.
+# good
+name = 'Bruce Wayne'
+time = "8 o'clock"
+question = '"What did you say?"'
 
 ### References
 
