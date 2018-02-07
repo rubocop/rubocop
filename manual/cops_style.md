@@ -657,7 +657,7 @@ can yield some false positives.
 
 Name | Default value | Configurable values
 --- | --- | ---
-PreferredMethods | `{"collect"=>"map", "collect!"=>"map!", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select"}` | 
+PreferredMethods | `{"collect"=>"map", "collect!"=>"map!", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select"}` |
 
 ### References
 
@@ -2427,8 +2427,8 @@ foo == bar
 
 Name | Default value | Configurable values
 --- | --- | ---
-InverseMethods | `{:any?=>:none?, :even?=>:odd?, :===>:!=, :=~=>:!~, :<=>:>=, :>=>:<=}` | 
-InverseBlocks | `{:select=>:reject, :select!=>:reject!}` | 
+InverseMethods | `{:any?=>:none?, :even?=>:odd?, :===>:!=, :=~=>:!~, :<=>:>=, :>=>:<=}` |
+InverseBlocks | `{:select=>:reject, :select!=>:reject!}` |
 
 ## Style/Lambda
 
@@ -3941,7 +3941,7 @@ default.
 
 Name | Default value | Configurable values
 --- | --- | ---
-PreferredDelimiters | `{"default"=>"()", "%i"=>"[]", "%I"=>"[]", "%r"=>"{}", "%w"=>"[]", "%W"=>"[]"}` | 
+PreferredDelimiters | `{"default"=>"()", "%i"=>"[]", "%I"=>"[]", "%r"=>"{}", "%w"=>"[]", "%W"=>"[]"}` |
 
 ### References
 
@@ -5188,7 +5188,7 @@ from the String class.
 
 Name | Default value | Configurable values
 --- | --- | ---
-PreferredMethods | `{"intern"=>"to_sym"}` | 
+PreferredMethods | `{"intern"=>"to_sym"}` |
 
 ## Style/StructInheritance
 
@@ -5821,10 +5821,20 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
+This cop checks for usage of the %q/%Q syntax when '' or "" would do.
+### Examples
+
+```ruby
+# bad
+name = %q(Bruce Wayne)
+time = %q(8 o'clock)
+question = %q("What did you say?")
+
 # good
 name = 'Bruce Wayne'
 time = "8 o'clock"
 question = '"What did you say?"'
+```
 
 ### References
 
@@ -6000,7 +6010,7 @@ Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `percent` | `percent`, `brackets`
 MinSize | `0` | Integer
-WordRegex | `(?-mix:\A[\p{Word}\n\t]+\z)` | 
+WordRegex | `(?-mix:\A[\p{Word}\n\t]+\z)` |
 
 ### References
 
