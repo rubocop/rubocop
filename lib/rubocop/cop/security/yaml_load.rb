@@ -7,6 +7,9 @@ module RuboCop
       # potential security issues leading to remote code execution when
       # loading from an untrusted source.
       #
+      # Autocorrect is disabled by default because it's potentially dangerous.
+      # Autocorrect will break yaml files using aliases.
+      #
       # @example
       #   # bad
       #   YAML.load("--- foo")

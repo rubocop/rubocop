@@ -117,6 +117,9 @@ This cop checks for the use of YAML class methods which have
 potential security issues leading to remote code execution when
 loading from an untrusted source.
 
+Autocorrect is disabled by default because it's potentially dangerous.
+Autocorrect will break yaml files using aliases.
+
 ### Examples
 
 ```ruby
@@ -127,6 +130,12 @@ YAML.load("--- foo")
 YAML.safe_load("--- foo")
 YAML.dump("foo")
 ```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+AutoCorrect | `false` | Boolean
 
 ### References
 
