@@ -546,7 +546,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             baz
           end
         end
-      RUBY
+    RUBY
     create_file('example.rb', source)
     create_file('.rubocop.yml', <<-YAML.strip_indent)
       Layout/DefEndAlignment:

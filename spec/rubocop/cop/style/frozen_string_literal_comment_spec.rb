@@ -151,7 +151,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
           # -*- encoding: UTF-8; frozen_string_literal: true -*-
           # encoding: utf-8
           puts 1
-        RUBY
+      RUBY
     end
 
     context 'auto-correct' do

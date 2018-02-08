@@ -112,6 +112,7 @@ In the following section you find all available cops:
 * [Layout/BlockEndNewline](cops_layout.md#layoutblockendnewline)
 * [Layout/CaseIndentation](cops_layout.md#layoutcaseindentation)
 * [Layout/ClassStructure](cops_layout.md#layoutclassstructure)
+* [Layout/ClosingHeredocIndentation](cops_layout.md#layoutclosingheredocindentation)
 * [Layout/ClosingParenthesisIndentation](cops_layout.md#layoutclosingparenthesisindentation)
 * [Layout/CommentIndentation](cops_layout.md#layoutcommentindentation)
 * [Layout/ConditionPosition](cops_layout.md#layoutconditionposition)

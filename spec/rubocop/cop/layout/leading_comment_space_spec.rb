@@ -64,7 +64,7 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace do
         #\ -w -p 8765
         ^^^^^^^^^^^^^ Missing space after `#`.
         test
-       RUBY
+      RUBY
     end
 
     it 'registers an offense for #\ after the first line' do

@@ -72,7 +72,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstMethodParameterLineBreak do
         def foo(bar, baz, bing)
           do_something
         end
-      RUBY
+    RUBY
   end
 
   it 'ignores params without parens' do
@@ -81,7 +81,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstMethodParameterLineBreak do
           baz
           do_something
         end
-      RUBY
+    RUBY
   end
 
   it 'ignores single-line methods' do
@@ -93,7 +93,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstMethodParameterLineBreak do
         def foo
           bing
         end
-      RUBY
+    RUBY
   end
 
   context 'params with default values' do
