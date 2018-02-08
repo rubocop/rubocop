@@ -47,6 +47,7 @@
 * [#5429](https://github.com/bbatsov/rubocop/issues/5429): Detect tabs other than indentation by `Layout/Tab`. ([@pocke][])
 * [#5496](https://github.com/bbatsov/rubocop/pull/5496): Fix a false positive of `Style/FormatStringToken` with unrelated `format` call. ([@pocke][])
 * [#5503](https://github.com/bbatsov/rubocop/issues/5503): Fix `Rails/CreateTableWithTimestamps` false positive when using `to_proc` syntax. ([@wata727][])
+* [#5512](https://github.com/bbatsov/rubocop/issues/5512): Improve `Lint/Void` to detect `Kernel#tap` as method that ignores the block's value. ([@untitaker][])
 * [#5520](https://github.com/bbatsov/rubocop/issues/5520): Fix `Style/RedundantException` auto-correction does not keep parenthesization. ([@dpostorivo][])
 * [#5524](https://github.com/bbatsov/rubocop/issues/5524): Return the instance based on the new type when calls `RuboCop::AST::Node#updated`. ([@wata727][])
 * [#5539](https://github.com/bbatsov/rubocop/pull/5539): Fix compilation error and ruby code generation when passing args to funcall and predicates. ([@Edouard-chin][])
@@ -3188,6 +3189,7 @@
 [@albertpaulp]: https://github.com/albertpaulp
 [@orgads]: https://github.com/orgads
 [@leklund]: https://github.com/leklund
+[@untitaker]: https://github.com/untitaker
 [@walinga]: https://github.com/walinga
 [@georf]: https://github.com/georf
 [@Edouard-chin]: https://github.com/Edouard-chin

@@ -9,7 +9,7 @@ module RuboCop
     # A `block` node is essentially a method send with a block. Parser nests
     # the `send` node inside the `block` node.
     class BlockNode < Node
-      VOID_CONTEXT_METHODS = %i[each].freeze
+      VOID_CONTEXT_METHODS = %i[each tap].freeze
 
       # The `send` node associated with this block.
       #
