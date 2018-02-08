@@ -3077,7 +3077,6 @@
 [@groddeck]: https://github.com/groddeck
 [@b-t-g]: https://github.com/b-t-g
 [@coorasse]: https://github.com/coorasse
-[@scottmatthewman]: https://github.com/scottmatthewman
 [@tcdowney]: https://github.com/tcdowney
 [@logicminds]: https://github.com/logicminds
 [@abrom]: https://github.com/abrom
