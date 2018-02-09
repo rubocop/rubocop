@@ -71,6 +71,23 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         end
       end
 
+      context 'when end of line characters have changed' do
+        it 'is invalid' do
+          cache.save(offenses)
+          contents = File.binread(file)
+          File.open(file, 'wb') do |f|
+            if contents.include?("\r")
+              f.write(contents.delete("\r"))
+            else
+              f.write(contents.gsub(/\n/, "\r\n"))
+            end
+          end
+          cache2 = described_class.new(file, options,
+                                       config_store, cache_root)
+          expect(cache2.valid?).to eq(false)
+        end
+      end
+
       context 'when a symlink is present in the cache location' do
         let(:cache2) do
           described_class.new(file, options, config_store, cache_root)
