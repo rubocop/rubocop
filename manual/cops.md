@@ -321,6 +321,7 @@ In the following section you find all available cops:
 #### Department [Rails](cops_rails.md)
 
 * [Rails/ActionFilter](cops_rails.md#railsactionfilter)
+* [Rails/ActiveRecordAliases](cops_rails.md#railsactiverecordaliases)
 * [Rails/ActiveSupportAliases](cops_rails.md#railsactivesupportaliases)
 * [Rails/ApplicationJob](cops_rails.md#railsapplicationjob)
 * [Rails/ApplicationRecord](cops_rails.md#railsapplicationrecord)
