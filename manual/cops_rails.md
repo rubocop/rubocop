@@ -1674,6 +1674,8 @@ false positives.
 
 ### Examples
 
+#### EnforcedStyle: conservative (default)
+
 ```ruby
 # bad
 Model.pluck(:id).uniq
@@ -1681,12 +1683,22 @@ Model.pluck(:id).uniq
 # good
 Model.uniq.pluck(:id)
 ```
+#### EnforcedStyle: aggressive
+
 ```ruby
+# bad
 # this will return a Relation that pluck is called on
 Model.where(cond: true).pluck(:id).uniq
 
+# bad
 # an association on an instance will return a CollectionProxy
 instance.assoc.pluck(:id).uniq
+
+# bad
+Model.pluck(:id).uniq
+
+# good
+Model.uniq.pluck(:id)
 ```
 
 ### Configurable attributes

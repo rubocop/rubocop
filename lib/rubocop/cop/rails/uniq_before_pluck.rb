@@ -8,13 +8,6 @@ module RuboCop
       # The use of uniq before pluck is preferred because it executes within
       # the database.
       #
-      # @example
-      #   # bad
-      #   Model.pluck(:id).uniq
-      #
-      #   # good
-      #   Model.uniq.pluck(:id)
-      #
       # This cop has two different enforcement modes. When the EnforcedStyle
       # is conservative (the default) then only calls to pluck on a constant
       # (i.e. a model class) before uniq are added as offenses.
@@ -24,15 +17,30 @@ module RuboCop
       # cannot distinguish between calls to pluck on an ActiveRecord::Relation
       # vs a call to pluck on an ActiveRecord::Associations::CollectionProxy.
       #
-      # @example
+      # Autocorrect is disabled by default for this cop since it may generate
+      # false positives.
+      #
+      # @example EnforcedStyle: conservative (default)
+      #   # bad
+      #   Model.pluck(:id).uniq
+      #
+      #   # good
+      #   Model.uniq.pluck(:id)
+      #
+      # @example EnforcedStyle: aggressive
+      #   # bad
       #   # this will return a Relation that pluck is called on
       #   Model.where(cond: true).pluck(:id).uniq
       #
+      #   # bad
       #   # an association on an instance will return a CollectionProxy
       #   instance.assoc.pluck(:id).uniq
       #
-      # Autocorrect is disabled by default for this cop since it may generate
-      # false positives.
+      #   # bad
+      #   Model.pluck(:id).uniq
+      #
+      #   # good
+      #   Model.uniq.pluck(:id)
       #
       class UniqBeforePluck < RuboCop::Cop::Cop
         include ConfigurableEnforcedStyle
