@@ -36,7 +36,6 @@ module RuboCop
 
         PERCENT_MSG = 'Use `%w` or `%W` for an array of words.'.freeze
         ARRAY_MSG = 'Use `[]` for an array of words.'.freeze
-        QUESTION_MARK_SIZE = '?'.size
 
         class << self
           attr_accessor :largest_brackets
