@@ -1576,6 +1576,10 @@ Style/IfWithSemicolon:
   StyleGuide: '#no-semicolon-ifs'
   Enabled: true
 
+Style/ImplicitArray:
+  Description: 'Explicitly initialize arrays with `[` and `]`.'
+  Enabled: true
+
 Style/InfiniteLoop:
   Description: 'Use Kernel#loop for infinite loops.'
   StyleGuide: '#infinite-loop'

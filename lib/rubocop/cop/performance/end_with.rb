@@ -38,7 +38,9 @@ module RuboCop
 
         def autocorrect(node)
           redundant_regex?(node) do |receiver, regex_str|
-            receiver, regex_str = regex_str, receiver if receiver.is_a?(String)
+            if receiver.is_a?(String)
+              receiver, regex_str = [regex_str, receiver]
+            end
             regex_str = regex_str[0..-3] # drop \Z anchor
             regex_str = interpret_string_escapes(regex_str)
 

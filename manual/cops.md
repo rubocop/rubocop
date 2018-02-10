@@ -428,6 +428,7 @@ In the following section you find all available cops:
 * [Style/IfUnlessModifier](cops_style.md#styleifunlessmodifier)
 * [Style/IfUnlessModifierOfIfUnless](cops_style.md#styleifunlessmodifierofifunless)
 * [Style/IfWithSemicolon](cops_style.md#styleifwithsemicolon)
+* [Style/ImplicitArray](cops_style.md#styleimplicitarray)
 * [Style/ImplicitRuntimeError](cops_style.md#styleimplicitruntimeerror)
 * [Style/InfiniteLoop](cops_style.md#styleinfiniteloop)
 * [Style/InlineComment](cops_style.md#styleinlinecomment)

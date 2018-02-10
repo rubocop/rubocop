@@ -21,6 +21,7 @@
 * [#5532](https://github.com/bbatsov/rubocop/pull/5532): Include `.axlsx` file by default. ([@georf][])
 * [#5490](https://github.com/bbatsov/rubocop/issues/5490): Add new `Lint/OrderedMagicComments` cop. ([@koic][])
 * [#4008](https://github.com/bbatsov/rubocop/issues/4008): Add new `Style/ExpandPathArguments` cop. ([@koic][])
+* [#5526](https://github.com/bbatsov/rubocop/issues/5526): Add new `Style/ImplicitArray` cop. ([@asherkach][])
 
 ### Bug fixes
 
