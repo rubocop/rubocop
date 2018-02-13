@@ -116,6 +116,22 @@ RSpec.describe RuboCop::Cop::Performance::RegexpMatch, :config do
       RUBY
 
       include_examples :accepts,
+                       "#{name} in method with `#{var}` before `if`",
+                       <<-RUBY
+        def foo
+          return #{var} if #{cond}
+        end
+      RUBY
+
+      include_examples :accepts,
+                       "#{name} in method with `#{var}` before `unless`",
+                       <<-RUBY
+        def foo
+          return #{var} unless #{cond}
+        end
+      RUBY
+
+      include_examples :accepts,
                        "#{name} in method with `#{var}` in block", <<-RUBY
         def foo
           bar do
