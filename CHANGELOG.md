@@ -22,6 +22,7 @@
 
 * [#5752](https://github.com/bbatsov/rubocop/pull/5752): Add `String#delete_{prefix,suffix}` to Lint/Void cop. ([@bdewater][])
 * [#5734](https://github.com/bbatsov/rubocop/pull/5734): Add `by`, `on`, `in` and `at` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@AlexWayfer][])
+* [#4257](https://github.com/bbatsov/rubocop/issues/4257): Allow specifying module name in `Metrics/BlockLength`'s `ExcludedMethods` configuration option. ([@akhramov][])
 
 ## 0.54.0 (2018-03-21)
 
@@ -90,7 +91,6 @@
 * Add new `Naming/MemoizedInstanceVariableName` cop. ([@satyap][])
 * [#5376](https://github.com/bbatsov/rubocop/issues/5376): Add new `Style/EmptyLineAfterGuardClause` cop. ([@unkmas][])
 * Add new `Rails/ActiveRecordAliases` cop. ([@elebow][])
-* [#4257](https://github.com/bbatsov/rubocop/issues/4257): Allow specifying module name in `Metrics/BlockLength`'s `ExcludedMethods` configuration option. ([@akhramov][])
 
 ### Bug fixes
 

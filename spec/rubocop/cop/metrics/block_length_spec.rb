@@ -156,7 +156,33 @@ RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
     it_behaves_like('ignoring an offense on an excluded method',
                     'Gem::Specification.new')
 
-    it_behaves_like('ignoring an offense on an excluded method',
-                    'cool.method.chain')
+    context 'when receiver contains whitespaces' do
+      before { cop_config['ExcludedMethods'] = ['Foo::Bar.baz'] }
+
+      it 'ignores whitespaces' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          Foo::
+            Bar.baz do
+            a = 1
+            a = 2
+            a = 3
+          end
+        RUBY
+      end
+    end
+
+    context 'when a method is ignored, but receiver is a module' do
+      before { cop_config['ExcludedMethods'] = ['baz'] }
+
+      it 'does not report an offense' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          Foo::Bar.baz do
+            a = 1
+            a = 2
+            a = 3
+          end
+        RUBY
+      end
+    end
   end
 end
