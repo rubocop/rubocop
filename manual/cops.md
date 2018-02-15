@@ -340,6 +340,7 @@ In the following section you find all available cops:
 * [Rails/HasAndBelongsToMany](cops_rails.md#railshasandbelongstomany)
 * [Rails/HasManyOrHasOneDependent](cops_rails.md#railshasmanyorhasonedependent)
 * [Rails/HttpPositionalArguments](cops_rails.md#railshttppositionalarguments)
+* [Rails/HttpStatus](cops_rails.md#railshttpstatus)
 * [Rails/InverseOf](cops_rails.md#railsinverseof)
 * [Rails/LexicallyScopedActionFilter](cops_rails.md#railslexicallyscopedactionfilter)
 * [Rails/NotNullColumn](cops_rails.md#railsnotnullcolumn)
