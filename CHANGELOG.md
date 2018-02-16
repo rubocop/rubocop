@@ -67,6 +67,7 @@
 * [#5283](https://github.com/bbatsov/rubocop/issues/5283): Change file path output by `Formatter::JSONFormatter` from relative path to smart path. ([@koic][])
 * `Style/SafeNavigation` will now register an offense for methods that `nil` responds to. ([@rrosenblum][])
 * [#5542](https://github.com/bbatsov/rubocop/pull/5542): Exclude `.git/` by default. ([@pocke][])
+* Tell Read the Docs to build downloadable docs. ([@eostrom][])
 
 ## 0.52.1 (2017-12-27)
 
@@ -3195,3 +3196,4 @@
 [@walinga]: https://github.com/walinga
 [@georf]: https://github.com/georf
 [@Edouard-chin]: https://github.com/Edouard-chin
+[@eostrom]: https://github.com/eostrom
