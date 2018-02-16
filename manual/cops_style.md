@@ -2365,6 +2365,38 @@ result = some_condition ? something : another_thing
 
 * [https://github.com/bbatsov/ruby-style-guide#no-semicolon-ifs](https://github.com/bbatsov/ruby-style-guide#no-semicolon-ifs)
 
+## Style/ImplicitArray
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for arrays that are not explicitly initialized with
+brackets. Exceptions are allowed for implicit arrays of exceptions in a
+rescue block and for the result of a splat operator.
+
+### Examples
+
+```ruby
+# bad
+a = 1, 2, 3
+
+# good
+a = [1, 2, 3]
+```
+```ruby
+# good
+def foo
+  some_scary_method
+rescue SomeException, SomeOtherException
+  some_cleanup
+end
+```
+```ruby
+# good
+x = *y
+```
+
 ## Style/ImplicitRuntimeError
 
 Enabled by default | Supports autocorrection
