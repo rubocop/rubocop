@@ -154,6 +154,10 @@ module RuboCop
         def last_match_used?(match_node)
           scope_root = scope_root(match_node)
           body = scope_root ? scope_body(scope_root) : match_node.ancestors.last
+
+          return true if match_node.parent.if_type? &&
+                         match_node.parent.modifier_form?
+
           match_node_pos = match_node.loc.expression.begin_pos
 
           next_match_pos = next_match_pos(body, match_node_pos, scope_root)
