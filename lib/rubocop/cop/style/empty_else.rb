@@ -109,7 +109,7 @@ module RuboCop
           return false if comment_in_else?(node)
 
           lambda do |corrector|
-            end_pos = base_if_node(node).loc.end.begin_pos
+            end_pos = base_node(node).loc.end.begin_pos
             corrector.remove(range_between(node.loc.else.begin_pos, end_pos))
           end
         end
@@ -151,9 +151,12 @@ module RuboCop
           loc.else.first_line..loc.end.first_line
         end
 
-        def base_if_node(node)
-          return node unless node.case_type? || node.elsif?
-          node.each_ancestor(:if).find { |parent| parent.loc.end } || node
+        def base_node(node)
+          return node if node.case_type?
+          return node unless node.elsif?
+          node.each_ancestor(:if, :case, :when).find(-> { node }) do |parent|
+            parent.loc.end
+          end
         end
 
         def autocorrect_forbidden?(type)

@@ -21,7 +21,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
         end
       RUBY
       expect(cop.messages)
-        .to eq(['Extra empty line detected at class body beginning.'])
+        .to eq([extra_begin])
     end
 
     it 'autocorrects class body containing only a blank' do
@@ -44,7 +44,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
         end
       RUBY
       expect(cop.messages)
-        .to eq(['Extra empty line detected at class body end.'])
+        .to eq([extra_end])
     end
 
     it 'registers an offense for singleton class body starting with a blank' do
@@ -55,7 +55,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
         end
       RUBY
       expect(cop.messages)
-        .to eq(['Extra empty line detected at class body beginning.'])
+        .to eq([extra_begin])
     end
 
     it 'autocorrects singleton class body containing only a blank' do
@@ -78,7 +78,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
         end
       RUBY
       expect(cop.messages)
-        .to eq(['Extra empty line detected at class body end.'])
+        .to eq([extra_end])
     end
   end
 
@@ -92,8 +92,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
           do_something
         end
       RUBY
-      expect(cop.messages).to eq(['Empty line missing at class body beginning.',
-                                  'Empty line missing at class body end.'])
+      expect(cop.messages).to eq([missing_begin, missing_end])
     end
 
     it 'ignores classes with an empty body' do
@@ -124,8 +123,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
           do_something
         end
       RUBY
-      expect(cop.messages).to eq(['Empty line missing at class body beginning.',
-                                  'Empty line missing at class body end.'])
+      expect(cop.messages).to eq([missing_begin, missing_end])
     end
 
     it 'ignores singleton classes with an empty body' do
@@ -312,6 +310,90 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
         RUBY
         expect(cop.messages).to eq([missing_begin, missing_end])
       end
+    end
+  end
+
+  context 'when EnforcedStyle is beginning_only' do
+    let(:cop_config) { { 'EnforcedStyle' => 'beginning_only' } }
+
+    it 'ignores empty lines at the beginning of a class' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class SomeClass
+
+          do_something
+        end
+      RUBY
+    end
+
+    it 'registers an offense for an empty line at the end of a class' do
+      inspect_source(<<-RUBY.strip_indent)
+        class SomeClass
+
+          do_something
+
+        end
+      RUBY
+
+      expect(cop.messages).to eq([extra_end])
+    end
+
+    it 'autocorrects end' do
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        class SomeClass
+
+          do_something
+
+        end
+      RUBY
+
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        class SomeClass
+
+          do_something
+        end
+      RUBY
+    end
+  end
+
+  context 'when EnforcedStyle is ending_only' do
+    let(:cop_config) { { 'EnforcedStyle' => 'ending_only' } }
+
+    it 'ignores empty lines at the beginning of a class' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class SomeClass
+          do_something
+
+        end
+      RUBY
+    end
+
+    it 'registers an offense for an empty line at the end of a class' do
+      inspect_source(<<-RUBY.strip_indent)
+        class SomeClass
+
+          do_something
+
+        end
+      RUBY
+
+      expect(cop.messages).to eq([extra_begin])
+    end
+
+    it 'autocorrects end' do
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        class SomeClass
+
+          do_something
+
+        end
+      RUBY
+
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        class SomeClass
+          do_something
+
+        end
+      RUBY
     end
   end
 

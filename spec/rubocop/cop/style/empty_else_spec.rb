@@ -487,4 +487,45 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
       end
     end
   end
+
+  context 'with nested if and case statement' do
+    let(:config) do
+      RuboCop::Config.new('Style/EmptyElse' => {
+                            'EnforcedStyle' => 'nil',
+                            'SupportedStyles' => %w[empty nil both]
+                          },
+                          'Style/MissingElse' => missing_else_config)
+    end
+
+    let(:source) do
+      ['def foo',
+       '  if @params',
+       '    case @params[:x]',
+       '    when :a',
+       '      :b',
+       '    else',
+       '      nil',
+       '    end',
+       '  else',
+       '    :c',
+       '  end',
+       'end'].join("\n")
+    end
+
+    let(:corrected_source) do
+      ['def foo',
+       '  if @params',
+       '    case @params[:x]',
+       '    when :a',
+       '      :b',
+       '    end',
+       '  else',
+       '    :c',
+       '  end',
+       'end'].join("\n")
+    end
+
+    it_behaves_like 'offense registration'
+    it_behaves_like 'auto-correct', 'case'
+  end
 end

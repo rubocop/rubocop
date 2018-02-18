@@ -36,6 +36,26 @@ module RuboCop
       #
       #   end
       #
+      # @example Enforcedstyle: beginning_only
+      #   # good
+      #
+      #   class Foo
+      #
+      #     def bar
+      #       # ...
+      #     end
+      #   end
+      #
+      # @example Enforcedstyle: ending_only
+      #   # good
+      #
+      #   class Foo
+      #     def bar
+      #       # ...
+      #     end
+      #
+      #   end
+      #
       # @example EnforcedStyle: no_empty_lines (default)
       #   # good
       #

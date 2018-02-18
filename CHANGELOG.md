@@ -21,6 +21,7 @@
 * [#5532](https://github.com/bbatsov/rubocop/pull/5532): Include `.axlsx` file by default. ([@georf][])
 * [#5490](https://github.com/bbatsov/rubocop/issues/5490): Add new `Lint/OrderedMagicComments` cop. ([@koic][])
 * [#4008](https://github.com/bbatsov/rubocop/issues/4008): Add new `Style/ExpandPathArguments` cop. ([@koic][])
+* [#4812](https://github.com/bbatsov/rubocop/issues/4812): Add `beginning_only` and `ending_only` style options to `Layout/EmptyLinesAroundClassBody` cop. ([@jmks][])
 
 ### Bug fixes
 
@@ -54,6 +55,7 @@
 * [#5539](https://github.com/bbatsov/rubocop/pull/5539): Fix compilation error and ruby code generation when passing args to funcall and predicates. ([@Edouard-chin][])
 * [#4669](https://github.com/bbatsov/rubocop/issues/4669): Use binary file contents for cache key so changing EOL characters invalidates the cache. ([@jonas054][])
 * [#3947](https://github.com/bbatsov/rubocop/issues/3947): Fix false positive for `Performance::RegexpMatch` when using `MatchData` before guard clause. ([@koic][])
+* [#5515](https://github.com/bbatsov/rubocop/issues/5515): Fix `Style/EmptyElse` autocorrect for nested if and case statements. ([@asherkach][]) 
 
 ### Changes
 

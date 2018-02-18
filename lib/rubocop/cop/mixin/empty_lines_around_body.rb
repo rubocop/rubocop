@@ -65,8 +65,17 @@ module RuboCop
         end
 
         def check_both(style, first_line, last_line)
-          check_beginning(style, first_line)
-          check_ending(style, last_line)
+          case style
+          when :beginning_only
+            check_beginning(:empty_lines, first_line)
+            check_ending(:no_empty_lines, last_line)
+          when :ending_only
+            check_beginning(:no_empty_lines, first_line)
+            check_ending(:empty_lines, last_line)
+          else
+            check_beginning(style, first_line)
+            check_ending(style, last_line)
+          end
         end
 
         def check_beginning(style, first_line)

@@ -1265,6 +1265,30 @@ class Foo
 
 end
 ```
+#### Enforcedstyle: beginning_only
+
+```ruby
+# good
+
+class Foo
+
+  def bar
+    # ...
+  end
+end
+```
+#### Enforcedstyle: ending_only
+
+```ruby
+# good
+
+class Foo
+  def bar
+    # ...
+  end
+
+end
+```
 #### EnforcedStyle: no_empty_lines (default)
 
 ```ruby
@@ -1281,7 +1305,7 @@ end
 
 Name | Default value | Configurable values
 --- | --- | ---
-EnforcedStyle | `no_empty_lines` | `empty_lines`, `empty_lines_except_namespace`, `empty_lines_special`, `no_empty_lines`
+EnforcedStyle | `no_empty_lines` | `empty_lines`, `empty_lines_except_namespace`, `empty_lines_special`, `no_empty_lines`, `beginning_only`, `ending_only`
 
 ### References
 
