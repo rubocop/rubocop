@@ -22,6 +22,14 @@ module RuboCop
       #
       #   # good
       #   def foo
+      #     return if something?
+      #     return if something_different?
+      #
+      #     bar
+      #   end
+      #
+      #   # also good
+      #   def foo
       #     if something?
       #       do_something
       #       return if need_return?
