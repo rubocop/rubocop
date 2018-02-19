@@ -95,4 +95,12 @@ RSpec.describe RuboCop::Cop::Rails::FilePath do
       RUBY
     end
   end
+
+  context 'when string contains an interpolation followed by a period' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        puts "test #\{123\}. Hey!"
+      RUBY
+    end
+  end
 end
