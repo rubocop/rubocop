@@ -32,34 +32,32 @@ shared_examples_for 'mimics MRI 2.1' do |grep_mri_warning|
   end
 end
 
-shared_examples_for 'misaligned' do |prefix, alignment_base, arg, end_kw, name|
-  name ||= alignment_base
-  source = ["#{prefix}#{alignment_base} #{arg}",
-            end_kw]
+shared_examples_for 'misaligned' do |annotated_source, used_style|
+  config_to_allow_offenses = if used_style
+                               { 'EnforcedStyleAlignWith' => used_style.to_s }
+                             else
+                               { 'Enabled' => false }
+                             end
+  annotated_source.strip_indent.split(/\n\n/).each do |chunk|
+    chunk << "\n" unless chunk.end_with?("\n")
+    source = chunk.lines.reject { |line| line =~ /^ *\^/ }.join
+    name = source.gsub(/\n(?=[a-z ])/, ' <newline> ').gsub(/\s+/, ' ')
 
-  it "registers an offense for mismatched #{name} ... end" do
-    inspect_source(source)
-    expect(cop.offenses.size).to eq(1)
-    base_regexp = Regexp.escape(alignment_base)
-    regexp = /`end` at 2, \d+ is not aligned with `#{base_regexp}` at 1,/
-    expect(cop.messages.first).to match(regexp)
-    expect(cop.highlights.first).to eq('end')
+    it "registers an offense for mismatched #{name}" do
+      expect_offense(chunk)
+      expect(cop.config_to_allow_offenses).to eq(config_to_allow_offenses)
+    end
 
-    other_styles = (cop.supported_styles - [cop.style]).map(&:to_s)
-    # In some cases, the code under test will happen to match an alternative
-    # style. In other cases, it won't match any style at all
-    expect(cop.config_to_allow_offenses).to(
-      eq('Enabled' => false).or(
-        satisfy { |h| other_styles.include?(h['EnforcedStyleAlignWith']) }
-      )
-    )
-  end
+    it "auto-corrects mismatched #{name}" do
+      raise if chunk !~
+               /\^\^\^ `end` at (\d), \d is not aligned with `.*` at \d, (\d)./
 
-  it "auto-corrects mismatched #{name} ... end" do
-    aligned_source = ["#{prefix}#{alignment_base} #{arg}",
-                      "#{' ' * prefix.length}#{end_kw.strip}"].join("\n")
-    corrected = autocorrect_source(source)
-    expect(corrected).to eq(aligned_source)
+      line_index = Integer(Regexp.last_match(1)) - 1
+      correct_indentation = ' ' * Integer(Regexp.last_match(2))
+      expect(autocorrect_source(source))
+        .to eq(source.lines[0...line_index].join +
+               "#{correct_indentation}#{source.lines[line_index].strip}\n")
+    end
   end
 end
 
