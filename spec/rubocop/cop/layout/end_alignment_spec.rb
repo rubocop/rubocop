@@ -413,6 +413,32 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
               ^^^ `end` at 2, 6 is not aligned with `var = until` at 1, 0.
       RUBY
 
+      # If there's a line break after = we align with the keyword even if the
+      # style is `variable`.
+      include_examples 'misaligned', <<-RUBY, false
+        var =
+          if test
+        end
+        ^^^ `end` at 3, 0 is not aligned with `if` at 2, 2.
+
+        var =
+          unless test
+         end
+         ^^^ `end` at 3, 1 is not aligned with `unless` at 2, 2.
+
+        var =
+          # comment
+          while test
+           end
+           ^^^ `end` at 4, 3 is not aligned with `while` at 3, 2.
+
+        var =
+          until test
+            do_something
+            end
+            ^^^ `end` at 4, 4 is not aligned with `until` at 2, 2.
+      RUBY
+
       include_examples 'misaligned', <<-RUBY, :keyword
         var = until test
               end.j
@@ -507,10 +533,19 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
             ^^^ `end` at 2, 6 is not aligned with `var = case a when b` at 1, 0.
     RUBY
 
+    include_examples 'misaligned', <<-RUBY, false
+      var =
+        if test
+      end
+      ^^^ `end` at 3, 0 is not aligned with `if test` at 2, 2.
+    RUBY
+
     include_examples 'aligned', 'var = if',     'test',     'end'
     include_examples 'aligned', 'var = unless', 'test',     'end'
     include_examples 'aligned', 'var = while',  'test',     'end'
     include_examples 'aligned', 'var = until',  'test',     'end'
     include_examples 'aligned', 'var = case',   'a when b', 'end'
+
+    include_examples 'aligned', "var =\n  if",  'test', '  end'
   end
 end

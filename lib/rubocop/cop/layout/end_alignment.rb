@@ -28,6 +28,10 @@ module RuboCop
       #   variable = if true
       #              end
       #
+      #   variable =
+      #     if true
+      #     end
+      #
       # @example EnforcedStyleAlignWith: variable
       #   # bad
       #
@@ -39,16 +43,30 @@ module RuboCop
       #   variable = if true
       #   end
       #
+      #   variable =
+      #     if true
+      #     end
+      #
       # @example EnforcedStyleAlignWith: start_of_line
       #   # bad
       #
       #   variable = if true
       #       end
       #
+      #   puts(if true
+      #        end)
+      #
       #   # good
+      #
+      #   variable = if true
+      #   end
       #
       #   puts(if true
       #   end)
+      #
+      #   variable =
+      #     if true
+      #     end
       class EndAlignment < Cop
         include CheckAssignment
         include EndKeywordAlignment
@@ -104,7 +122,7 @@ module RuboCop
         def check_asgn_alignment(outer_node, inner_node)
           align_with = {
             keyword: inner_node.loc.keyword,
-            start_of_line: start_line_range(outer_node),
+            start_of_line: start_line_range(inner_node),
             variable: asgn_variable_align_with(outer_node, inner_node)
           }
 
@@ -135,12 +153,24 @@ module RuboCop
           if style == :keyword
             node
           elsif style == :variable
-            return node.parent if node.case_type? && node.argument?
-            # Fall back to 'keyword' style if this node is not on the RHS
-            # of an assignment
-            node.ancestors.find(&:assignment?) || node
+            alignment_node_for_variable_style(node)
           else
             start_line_range(node)
+          end
+        end
+
+        def alignment_node_for_variable_style(node)
+          return node.parent if node.case_type? && node.argument?
+
+          assignment = node.ancestors.find(&:assignment?)
+          if assignment && !line_break_before_keyword?(assignment.source_range,
+                                                       node)
+            assignment
+          else
+            # Fall back to 'keyword' style if this node is not on the RHS of an
+            # assignment, or if it is but there's a line break between LHS and
+            # RHS.
+            node
           end
         end
 

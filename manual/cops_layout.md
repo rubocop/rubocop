@@ -1512,6 +1512,10 @@ variable = if true
 
 variable = if true
            end
+
+variable =
+  if true
+  end
 ```
 #### EnforcedStyleAlignWith: variable
 
@@ -1525,6 +1529,10 @@ variable = if true
 
 variable = if true
 end
+
+variable =
+  if true
+  end
 ```
 #### EnforcedStyleAlignWith: start_of_line
 
@@ -1534,10 +1542,20 @@ end
 variable = if true
     end
 
+puts(if true
+     end)
+
 # good
+
+variable = if true
+end
 
 puts(if true
 end)
+
+variable =
+  if true
+  end
 ```
 
 ### Configurable attributes
