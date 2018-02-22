@@ -3,18 +3,16 @@
 RSpec.describe RuboCop::Cop::Layout::BlockEndNewline do
   subject(:cop) { described_class.new }
 
-  it 'does not register an offense for a one-liner' do
+  it 'accepts a one-liner' do
     expect_no_offenses('test do foo end')
   end
 
-  it 'does not register an offense for multiline blocks with newlines before '\
-     'the end' do
-    inspect_source(<<-RUBY.strip_indent)
+  it 'accepts multiline blocks with newlines before the end' do
+    expect_no_offenses(<<-RUBY.strip_indent)
       test do
         foo
       end
     RUBY
-    expect(cop.messages.empty?).to be(true)
   end
 
   it 'registers an offense when multiline block end is not on its own line' do
@@ -34,31 +32,29 @@ RSpec.describe RuboCop::Cop::Layout::BlockEndNewline do
   end
 
   it 'autocorrects a do/end block where the end is not on its own line' do
-    src = <<-RUBY.strip_indent
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       test do
         foo  end
     RUBY
 
-    new_source = autocorrect_source(src)
-
-    expect(new_source).to eq(['test do',
-                              '  foo',
-                              'end',
-                              ''].join("\n"))
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      test do
+        foo
+      end
+    RUBY
   end
 
   it 'autocorrects a {} block where the } is not on its own line' do
-    src = <<-RUBY.strip_indent
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
       test {
         foo  }
     RUBY
 
-    new_source = autocorrect_source(src)
-
-    expect(new_source).to eq(['test {',
-                              '  foo',
-                              '}',
-                              ''].join("\n"))
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      test {
+        foo
+      }
+    RUBY
   end
 
   it 'autocorrects a {} block where the } is top level code ' \
