@@ -22,6 +22,7 @@
 * [#5490](https://github.com/bbatsov/rubocop/issues/5490): Add new `Lint/OrderedMagicComments` cop. ([@koic][])
 * [#4008](https://github.com/bbatsov/rubocop/issues/4008): Add new `Style/ExpandPathArguments` cop. ([@koic][])
 * [#4812](https://github.com/bbatsov/rubocop/issues/4812): Add `beginning_only` and `ending_only` style options to `Layout/EmptyLinesAroundClassBody` cop. ([@jmks][])
+* [#5591](https://github.com/bbatsov/rubocop/pull/5591): Include `.arb` file by default. ([@deivid-rodriguez][])
 
 ### Bug fixes
 
