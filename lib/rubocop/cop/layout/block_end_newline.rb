@@ -25,6 +25,8 @@ module RuboCop
       #     foo(i)
       #   }
       class BlockEndNewline < Cop
+        include Alignment
+
         MSG = 'Expression at %<line>d, %<column>d should be on its own line.'
               .freeze
 
@@ -41,9 +43,8 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            indentation = indentation_of_block_start_line(node)
-            new_block_end = "\n" + node.loc.end.source + (' ' * indentation)
-            corrector.replace(delimiter_range(node), new_block_end)
+            corrector.replace(delimiter_range(node),
+                              "\n#{node.loc.end.source}#{offset(node)}")
           end
         end
 
@@ -53,21 +54,10 @@ module RuboCop
           format(MSG, line: node.loc.end.line, column: node.loc.end.column + 1)
         end
 
-        def indentation_of_block_start_line(node)
-          match = /\S.*/.match(node.loc.begin.source_line)
-          match.begin(0)
-        end
-
         def delimiter_range(node)
-          Parser::Source::Range.new(
-            node.loc.end.source_buffer,
-            index_of_delimiter_with_whitespaces(node),
-            node.source.length
-          )
-        end
-
-        def index_of_delimiter_with_whitespaces(node)
-          node.source =~ /\s*#{node.closing_delimiter}/
+          Parser::Source::Range.new(node.loc.expression.source_buffer,
+                                    node.children.last.loc.expression.end_pos,
+                                    node.loc.expression.end_pos)
         end
       end
     end

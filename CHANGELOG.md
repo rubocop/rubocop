@@ -62,6 +62,7 @@
 * [#5582](https://github.com/bbatsov/rubocop/issues/5582): Fix `end` alignment for variable assignment with line break after `=` in `Layout/EndAlignment`. ([@jonas054][])
 * [#5602](https://github.com/bbatsov/rubocop/pull/5602): Fix false positive for `Style/ColonMethodCall` when using Java package namespace. ([@koic][])
 * [#5603](https://github.com/bbatsov/rubocop/pull/5603): Fix falsy offense for `Style/RedundantSelf` with pseudo variables. ([@pocke][])
+* [#5547](https://github.com/bbatsov/rubocop/issues/5547): Fix auto-correction of of `Layout/BlockEndNewline` when there is top level code outside of a class. ([@rrosenblum][])
 
 ### Changes
 
