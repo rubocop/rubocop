@@ -60,4 +60,24 @@ RSpec.describe RuboCop::Cop::Layout::BlockEndNewline do
                               '}',
                               ''].join("\n"))
   end
+
+  it 'autocorrects a {} block where the } is top level code ' \
+    'outside of a class' do
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
+      # frozen_string_literal: true
+
+      test {[
+        foo
+      ]}
+    RUBY
+
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      # frozen_string_literal: true
+
+      test {[
+        foo
+      ]
+      }
+    RUBY
+  end
 end
