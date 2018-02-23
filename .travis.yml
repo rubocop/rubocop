@@ -3,7 +3,7 @@ cache: bundler
 language: ruby
 dist: trusty
 rvm:
-  - jruby-9.1.15.0
+  - jruby-9.1.16.0
   - jruby-head
   - 2.1.10
   - 2.2.9
