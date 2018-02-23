@@ -4778,6 +4778,7 @@ foo.bar > 2 if foo
 Name | Default value | Configurable values
 --- | --- | ---
 ConvertCodeThatCanStartToReturnNil | `false` | Boolean
+Whitelist | `present?`, `blank?`, `presence`, `try` | Array
 
 ## Style/SelfAssignment
 

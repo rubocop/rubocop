@@ -52,6 +52,7 @@
 * [#5512](https://github.com/bbatsov/rubocop/issues/5512): Improve `Lint/Void` to detect `Kernel#tap` as method that ignores the block's value. ([@untitaker][])
 * [#5520](https://github.com/bbatsov/rubocop/issues/5520): Fix `Style/RedundantException` auto-correction does not keep parenthesization. ([@dpostorivo][])
 * [#5524](https://github.com/bbatsov/rubocop/issues/5524): Return the instance based on the new type when calls `RuboCop::AST::Node#updated`. ([@wata727][])
+* [#5527](https://github.com/bbatsov/rubocop/issues/5527): Avoid behavior-changing corrections in `Style/SafeNavigation`. ([@jonas054][])
 * [#5539](https://github.com/bbatsov/rubocop/pull/5539): Fix compilation error and ruby code generation when passing args to funcall and predicates. ([@Edouard-chin][])
 * [#4669](https://github.com/bbatsov/rubocop/issues/4669): Use binary file contents for cache key so changing EOL characters invalidates the cache. ([@jonas054][])
 * [#3947](https://github.com/bbatsov/rubocop/issues/3947): Fix false positive for `Performance::RegexpMatch` when using `MatchData` before guard clause. ([@koic][])

@@ -10,7 +10,7 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
       'exists before calling the method.'
   end
 
-  context 'target_ruby_version > 2.3', :ruby23 do
+  context 'target_ruby_version >= 2.3', :ruby23 do
     it 'allows calls to methods not safeguarded by respond_to' do
       expect_no_offenses('foo.bar')
     end
@@ -29,6 +29,21 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
 
     it 'allows an object check before a negated predicate' do
       expect_no_offenses('foo && !foo.bar?')
+    end
+
+    it 'allows an object check before a nil check on a short chain' do
+      expect_no_offenses('user && user.thing.nil?')
+    end
+
+    it 'allows an object check before a nil check on a long chain' do
+      expect_no_offenses('user && user.thing.plus.some.other_thing.nil?')
+    end
+
+    it 'allows an object check before a blank check' do
+      # The `nil` object doesn't respond to `blank?` in normal Ruby (it's added
+      # by Rails), but it's included in the Whitelist parameter in default
+      # configuration for this cop.
+      expect_no_offenses('user && user.thing.blank?')
     end
 
     it 'allows an object check before a negated predicate method chain' do
@@ -416,13 +431,38 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
               expect(cop.messages).to eq([message])
             end
 
-            it 'registers an offense for an object check followed by a ' \
+            it 'registers an offense for an object check followed by ' \
               'chained method calls with blocks' do
               inspect_source(<<-RUBY.strip_indent)
                 #{variable} && #{variable}.one { |a| b}.two(baz) { |e| e.qux }
               RUBY
 
               expect(cop.messages).to eq([message])
+            end
+
+            context 'with Lint/SafeNavigationChain disabled' do
+              let(:config) do
+                RuboCop::Config.new('AllCops' => {
+                                      'TargetRubyVersion' => 2.3
+                                    },
+                                    'Lint/SafeNavigationChain' => {
+                                      'Enabled' => false
+                                    },
+                                    'Style/SafeNavigation' => cop_config)
+              end
+
+              it 'allows an object check followed by chained method calls' do
+                expect_no_offenses(<<-RUBY.strip_indent)
+                  #{variable} && #{variable}.one.two.three(baz) { |e| e.qux }
+                RUBY
+              end
+
+              it 'allows an object check followed by chained method calls ' \
+                 'with blocks' do
+                expect_no_offenses(<<-RUBY.strip_indent)
+                  #{variable} && #{variable}.one { |a| b }.two(baz) { |e| e.qux }
+                RUBY
+              end
             end
           end
         end

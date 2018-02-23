@@ -24,6 +24,7 @@ module RuboCop
       #   x&.foo&.bar
       #   x&.foo || bar
       class SafeNavigationChain < Cop
+        include NilMethods
         extend TargetRubyVersion
 
         MSG = 'Do not chain ordinary method call' \
@@ -53,16 +54,6 @@ module RuboCop
           lambda do |corrector|
             corrector.insert_before(dot, '&')
           end
-        end
-
-        private
-
-        def nil_methods
-          nil.methods + whitelist
-        end
-
-        def whitelist
-          cop_config['Whitelist'].map(&:to_sym)
         end
       end
     end
