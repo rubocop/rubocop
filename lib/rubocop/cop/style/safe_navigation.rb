@@ -57,6 +57,7 @@ module RuboCop
       #   foo.bar > 2 if foo
       class SafeNavigation < Cop
         extend TargetRubyVersion
+        include NilMethods
         include RangeHelp
 
         MSG = 'Use safe navigation (`&.`) instead of checking if an object ' \
@@ -176,7 +177,12 @@ module RuboCop
           return true if unsafe_method?(method)
 
           method.each_ancestor(:send).any? do |ancestor|
+            unless config.for_cop('Lint/SafeNavigationChain')['Enabled']
+              break true
+            end
+
             break true if unsafe_method?(ancestor)
+            break true if nil_methods.include?(ancestor.method_name)
             break false if ancestor == method_chain
           end
         end
