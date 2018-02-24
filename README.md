@@ -1,3 +1,4 @@
+
 [![Gem Version](https://badge.fury.io/rb/rubocop.svg)](http://badge.fury.io/rb/rubocop)
 [![Dependency Status](https://gemnasium.com/bbatsov/rubocop.svg)](https://gemnasium.com/bbatsov/rubocop)
 [![Travis Status](https://travis-ci.org/bbatsov/rubocop.svg?branch=master)](https://travis-ci.org/bbatsov/rubocop)
@@ -54,6 +55,10 @@ might want to use a conservative version locking in your `Gemfile`:
 ```rb
 gem 'rubocop', '~> 0.52.1', require: false
 ```
+To run RuboCop using the [Docker](https://hub.docker.com/r/coder95/tiller/) image
+```
+$ docker pull coder95/rubocop
+```
 
 ## Quickstart
 
@@ -63,6 +68,18 @@ Just type `rubocop` in a Ruby project's folder and watch the magic happen.
 $ cd my/cool/ruby/project
 $ rubocop
 ```
+### Docker
+```
+$ cd my/cool/ruby/project
+$ docker run -it --rm -v $PWD:/code --name rubocop coder95/rubocop
+```
+or alias docker image to mimic gem as follows
+```
+$ alias rubocop="docker run -it --rm -v $PWD:/code --name rubocop coder95/rubocop"
+$ cd my/cool/ruby/project
+$ rubocop
+```
+ 
 
 ## Official manual
 
