@@ -51,6 +51,10 @@ RSpec.describe RuboCop::Cop::Style::ColonMethodCall do
     expect_no_offenses('Java::int')
   end
 
+  it 'does not register an offense for Java package namespaces' do
+    expect_no_offenses('Java::com')
+  end
+
   it 'auto-corrects "::" with "."' do
     new_source = autocorrect_source('test::method')
     expect(new_source).to eq('test.method')
