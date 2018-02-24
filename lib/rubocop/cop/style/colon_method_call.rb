@@ -22,8 +22,7 @@ module RuboCop
 
         def_node_matcher :java_type_node?, <<-PATTERN
           (send
-            (const nil? :Java)
-            {:boolean :byte :char :double :float :int :long :short})
+            (const nil? :Java) _)
         PATTERN
 
         def self.autocorrect_incompatible_with
