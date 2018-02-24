@@ -28,6 +28,10 @@ module RuboCop
 
         MSG = 'Do not chain ordinary method call' \
               ' after safe navigation operator.'.freeze
+        NIL_MSG = MSG + ' %<method>s is a method that `nil` responds to. ' \
+          'This code might be relying on side effects, and ' \
+          'it may not be safe for auto-correction.'.freeze
+        NIL_METHODS = nil.methods.freeze
 
         def_node_matcher :bad_method?, <<-PATTERN
           (send (csend ...) $_ ...)
@@ -37,11 +41,15 @@ module RuboCop
 
         def on_send(node)
           bad_method?(node) do |method|
-            return if nil_methods.include?(method)
+            return if whitelist.include?(method)
 
             loc = node.loc.dot || :selector
-
-            add_offense(node, location: loc)
+            message = if NIL_METHODS.include?(method)
+                        format(NIL_MSG, method: method)
+                      else
+                        MSG
+                      end
+            add_offense(node, location: loc, message: message)
           end
         end
 
@@ -49,6 +57,8 @@ module RuboCop
           dot = node.loc.dot
 
           return unless dot
+          method = bad_method?(node)
+          return if NIL_METHODS.include?(method)
 
           lambda do |corrector|
             corrector.insert_before(dot, '&')
@@ -56,10 +66,6 @@ module RuboCop
         end
 
         private
-
-        def nil_methods
-          nil.methods + whitelist
-        end
 
         def whitelist
           cop_config['Whitelist'].map(&:to_sym)

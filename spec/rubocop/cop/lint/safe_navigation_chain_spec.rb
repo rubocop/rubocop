@@ -26,6 +26,20 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
     end
   end
 
+  shared_examples :nil_offense do |name, code, method|
+    it "registers an offense for #{name}" do
+      inspect_source(code)
+
+      expect(cop.messages)
+        .to eq(
+          ['Do not chain ordinary method call after safe navigation operator.' \
+           " #{method} is a method that `nil` responds to. " \
+           'This code might be relying on side effects, and ' \
+           'it may not be safe for auto-correction.']
+        )
+    end
+  end
+
   shared_examples :autocorrect do |name, source, correction|
     it "corrects #{name}" do
       new_source = autocorrect_source_with_loop(source)
@@ -43,13 +57,8 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
        'x&.foo(x)&.bar(y)&.baz(z)'],
       ['safe navigation at last only', 'x.foo.bar&.baz'],
       ['safe navigation at last only with argument', 'x.foo(x).bar(y)&.baz(z)'],
-      ['safe navigation with == operator', 'x&.foo == bar'],
-      ['safe navigation with === operator', 'x&.foo === bar'],
       ['safe navigation with || operator', 'x&.foo || bar'],
       ['safe navigation with && operator', 'x&.foo && bar'],
-      ['safe navigation with | operator', 'x&.foo | bar'],
-      ['safe navigation with & operator', 'x&.foo & bar'],
-      ['safe navigation with `nil?` method', 'x&.foo.nil?'],
       ['safe navigation with `present?` method', 'x&.foo.present?'],
       ['safe navigation with `blank?` method', 'x&.foo.blank?'],
       ['safe navigation with `try` method', 'a&.b.try(:c)'],
@@ -77,8 +86,19 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
       ['safe navigation with + operator', 'x&.foo + bar'],
       ['safe navigation with []', 'x&.foo[bar]'],
       ['safe navigation with []=', 'x&.foo[bar] = baz']
+
     ].each do |name, code|
       include_examples :offense, name, code
+    end
+
+    [
+      ['safe navigation with `nil?` method', 'x&.foo.nil?', 'nil?'],
+      ['safe navigation with == operator', 'x&.foo == bar', '=='],
+      ['safe navigation with === operator', 'x&.foo === bar', '==='],
+      ['safe navigation with | operator', 'x&.foo | bar', '|'],
+      ['safe navigation with & operator', 'x&.foo & bar', '&']
+    ].each do |name, code, method|
+      include_examples :nil_offense, name, code, method
     end
 
     [
@@ -99,7 +119,8 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
       ['safe navigation with >= operator', 'x&.foo >= bar', 'x&.foo >= bar'],
       ['safe navigation with + operator', 'x&.foo + bar', 'x&.foo + bar'],
       ['safe navigation with []', 'x&.foo[bar]', 'x&.foo[bar]'],
-      ['safe navigation with []=', 'x&.foo[bar] = baz', 'x&.foo[bar] = baz']
+      ['safe navigation with []=', 'x&.foo[bar] = baz', 'x&.foo[bar] = baz'],
+      ['safe navigation with nil?', 'x&.foo.nil?', 'x&.foo.nil?']
     ].each do |name, code, correction|
       include_examples :autocorrect, name, code, correction
     end
