@@ -104,7 +104,11 @@ module RuboCop
           '`Layout/EndAlignment`.',
       'Lint/DefEndAlignment' =>
         'The `Lint/DefEndAlignment` cop has been renamed to ' \
-          '`Layout/DefEndAlignment`.'
+          '`Layout/DefEndAlignment`.',
+      'Performance/HashEachMethods' =>
+        'The `Performance/HashEachMethods` cop has been removed ' \
+          'since it no longer provides performance benefits in ' \
+          'modern rubies.'
     }.freeze
 
     OBSOLETE_PARAMETERS = [

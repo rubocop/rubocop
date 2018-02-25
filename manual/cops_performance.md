@@ -371,42 +371,6 @@ EnabledForFlattenWithoutParams | `false` | Boolean
 
 * [https://github.com/JuanitoFatas/fast-ruby#enumerablemaparrayflatten-vs-enumerableflat_map-code](https://github.com/JuanitoFatas/fast-ruby#enumerablemaparrayflatten-vs-enumerableflat_map-code)
 
-## Performance/HashEachMethods
-
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
-
-This cop checks for uses of `each_key` and `each_value` Hash methods.
-
-Note: If you have an array of two-element arrays, you can put
-  parentheses around the block arguments to indicate that you're not
-  working with a hash, and suppress RuboCop offenses.
-
-### Examples
-
-```ruby
-# bad
-hash.keys.each { |k| p k }
-hash.values.each { |v| p v }
-hash.each { |k, _v| p k }
-hash.each { |_k, v| p v }
-
-# good
-hash.each_key { |k| p k }
-hash.each_value { |v| p v }
-```
-
-### Configurable attributes
-
-Name | Default value | Configurable values
---- | --- | ---
-AutoCorrect | `false` | Boolean
-
-### References
-
-* [https://github.com/bbatsov/ruby-style-guide#hash-each](https://github.com/bbatsov/ruby-style-guide#hash-each)
-
 ## Performance/LstripRstrip
 
 Enabled by default | Supports autocorrection

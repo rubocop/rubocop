@@ -65,6 +65,7 @@
 
 ### Changes
 
+* [#5589](https://github.com/bbatsov/rubocop/issues/5589): Remove `Performance/HashEachMethods` cop as it no longer provides a performance benefit. ([@urbanautomaton][])
 * [#3394](https://github.com/bbatsov/rubocop/issues/3394): Remove `Style/TrailingCommmaInLiteral` in favor of two new cops. ([@garettarrowood][])
 * Rename `Lint/UnneededDisable` to `Lint/UnneededCopDisableDirective`. ([@garettarrowood][])
 * [#5365](https://github.com/bbatsov/rubocop/pull/5365): Add `*.gemfile` to Bundler cop target. ([@sue445][])

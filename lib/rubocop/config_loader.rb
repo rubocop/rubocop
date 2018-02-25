@@ -55,7 +55,6 @@ module RuboCop
         Config.create(hash, path)
       end
 
-      # rubocop:disable Performance/HashEachMethods
       def add_missing_namespaces(path, hash)
         hash.keys.each do |key|
           q = Cop::Cop.qualified_cop_name(key, path)
@@ -64,7 +63,6 @@ module RuboCop
           hash[q] = hash.delete(key)
         end
       end
-      # rubocop:enable Performance/HashEachMethods
 
       # Return a recursive merge of two hashes. That is, a normal hash merge,
       # with the addition that any value that is a hash, and occurs in both
