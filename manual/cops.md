@@ -301,7 +301,6 @@ In the following section you find all available cops:
 * [Performance/EndWith](cops_performance.md#performanceendwith)
 * [Performance/FixedSize](cops_performance.md#performancefixedsize)
 * [Performance/FlatMap](cops_performance.md#performanceflatmap)
-* [Performance/HashEachMethods](cops_performance.md#performancehasheachmethods)
 * [Performance/LstripRstrip](cops_performance.md#performancelstriprstrip)
 * [Performance/RangeInclude](cops_performance.md#performancerangeinclude)
 * [Performance/RedundantBlockCall](cops_performance.md#performanceredundantblockcall)
