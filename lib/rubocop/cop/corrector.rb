@@ -33,7 +33,12 @@ module RuboCop
       def initialize(source_buffer, corrections = [])
         @source_buffer = source_buffer
         @corrections = corrections
-        @source_rewriter = Parser::Source::Rewriter.new(source_buffer)
+        @source_rewriter = Parser::Source::TreeRewriter.new(
+          source_buffer,
+          different_replacements: :raise,
+          swallowed_insertions: :raise,
+          crossing_deletions: :accept
+        )
 
         @diagnostics = []
         # Don't print warnings to stderr if corrections conflict with each other
