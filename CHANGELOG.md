@@ -83,6 +83,7 @@
 * [#5542](https://github.com/bbatsov/rubocop/pull/5542): Exclude `.git/` by default. ([@pocke][])
 * Tell Read the Docs to build downloadable docs. ([@eostrom][])
 * Change `Style/SafeNavigation` to no longer register an offense for method chains exceeding 2 methods. ([@rrosenblum][])
+* Remove auto-correction from `Lint/SafeNavigationChain`. ([@rrosenblum][])
 
 ## 0.52.1 (2017-12-27)
 

@@ -45,16 +45,6 @@ module RuboCop
             add_offense(node, location: loc)
           end
         end
-
-        def autocorrect(node)
-          dot = node.loc.dot
-
-          return unless dot
-
-          lambda do |corrector|
-            corrector.insert_before(dot, '&')
-          end
-        end
       end
     end
   end

@@ -26,14 +26,6 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
     end
   end
 
-  shared_examples :autocorrect do |name, source, correction|
-    it "corrects #{name}" do
-      new_source = autocorrect_source_with_loop(source)
-
-      expect(new_source).to eq(correction)
-    end
-  end
-
   context 'TargetRubyVersion >= 2.3', :ruby23 do
     [
       ['ordinary method chain', 'x.foo.bar.baz'],
@@ -79,29 +71,6 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
       ['safe navigation with []=', 'x&.foo[bar] = baz']
     ].each do |name, code|
       include_examples :offense, name, code
-    end
-
-    [
-      ['ordinary method call exists after safe navigation method call',
-       'x&.foo.bar', 'x&.foo&.bar'],
-      ['ordinary method call exists after safe navigation method call' \
-       'with argument',
-       'x&.foo(x).bar(y)', 'x&.foo(x)&.bar(y)'],
-      ['ordinary method chain exists after safe navigation method call',
-       'x&.foo.bar.baz', 'x&.foo&.bar&.baz'],
-      ['ordinary method chain exists after safe navigation method call' \
-      'with argument',
-       'x&.foo(x).bar(y).baz(z)', 'x&.foo(x)&.bar(y)&.baz(z)'],
-      # Do not autocorrect the followings
-      ['safe navigation with < operator', 'x&.foo < bar', 'x&.foo < bar'],
-      ['safe navigation with > operator', 'x&.foo > bar', 'x&.foo > bar'],
-      ['safe navigation with <= operator', 'x&.foo <= bar', 'x&.foo <= bar'],
-      ['safe navigation with >= operator', 'x&.foo >= bar', 'x&.foo >= bar'],
-      ['safe navigation with + operator', 'x&.foo + bar', 'x&.foo + bar'],
-      ['safe navigation with []', 'x&.foo[bar]', 'x&.foo[bar]'],
-      ['safe navigation with []=', 'x&.foo[bar] = baz', 'x&.foo[bar] = baz']
-    ].each do |name, code, correction|
-      include_examples :autocorrect, name, code, correction
     end
   end
 end
