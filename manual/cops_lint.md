@@ -1593,7 +1593,7 @@ end
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | Yes
+Enabled | No
 
 The safe navigation operator returns nil if the receiver is
 nil.  If you chain an ordinary method call after a safe
