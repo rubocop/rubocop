@@ -55,9 +55,9 @@ might want to use a conservative version locking in your `Gemfile`:
 ```rb
 gem 'rubocop', '~> 0.52.1', require: false
 ```
-To run RuboCop using the [Docker](https://hub.docker.com/r/coder95/tiller/) image
+To run RuboCop using the [Docker](https://hub.docker.com/r/rubocopz/rubocop/) image
 ```
-$ docker pull coder95/rubocop
+$ docker pull rubocopz/rubocop
 ```
 
 ## Quickstart
@@ -71,11 +71,11 @@ $ rubocop
 ### Docker
 ```
 $ cd my/cool/ruby/project
-$ docker run -it --rm -v $PWD:/code --name rubocop coder95/rubocop
+$ docker run -it --rm -v $PWD:/code --name rubocop rubocopz/rubocop
 ```
 or alias docker image to mimic gem as follows
 ```
-$ alias rubocop="docker run -it --rm -v $PWD:/code --name rubocop coder95/rubocop"
+$ alias rubocop="docker run -it --rm -v $PWD:/code --name rubocop rubocopz/rubocop"
 $ cd my/cool/ruby/project
 $ rubocop
 ```
