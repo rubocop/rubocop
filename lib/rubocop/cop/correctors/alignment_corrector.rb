@@ -45,7 +45,8 @@ module RuboCop
 
           if column_delta > 0
             unless range.source == "\n"
-              corrector.insert_before(range, ' ' * column_delta)
+              # TODO: Fix ranges instead of using `begin`
+              corrector.insert_before(range.begin, ' ' * column_delta)
             end
           elsif range.source =~ /\A[ \t]+\z/
             remove(range, corrector)
