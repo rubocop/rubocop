@@ -75,6 +75,11 @@ module RuboCop
       # @param [Parser::Source::Range] range
       # @param [String] content
       def insert_before(range, content)
+        # TODO: Fix Cops using bad ranges instead
+        if range.end_pos > @source_buffer.source.size
+          range = range.with(end_pos: @source_buffer.source.size)
+        end
+
         @source_rewriter.insert_before(range, content)
       end
 
