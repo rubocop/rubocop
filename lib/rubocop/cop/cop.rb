@@ -97,6 +97,8 @@ module RuboCop
 
         @offenses = []
         @corrections = []
+        @corrected_nodes = {}
+        @corrected_nodes.compare_by_identity
         @processed_source = nil
       end
 
@@ -145,7 +147,9 @@ module RuboCop
       def correct(node)
         return :unsupported unless support_autocorrect?
         return :uncorrected unless autocorrect?
+        return :already_corrected if @corrected_nodes.key?(node)
 
+        @corrected_nodes[node] = true
         correction = autocorrect(node)
         return :uncorrected unless correction
         @corrections << correction
