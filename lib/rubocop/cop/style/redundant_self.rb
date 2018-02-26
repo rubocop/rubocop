@@ -138,7 +138,7 @@ module RuboCop
              else elsif end ensure false for if in module
              next nil not or redo rescue retry return self
              super then true undef unless until when while
-             yield].include?(method_name)
+             yield __FILE__ __LINE__ __ENCODING__].include?(method_name)
         end
 
         def allow_self(node)

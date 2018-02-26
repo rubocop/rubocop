@@ -79,6 +79,9 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf do
       self.when
       self.while
       self.yield
+      self.__FILE__
+      self.__LINE__
+      self.__ENCODING__
     RUBY
   end
 

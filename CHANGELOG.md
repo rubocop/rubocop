@@ -61,6 +61,7 @@
 * [#5515](https://github.com/bbatsov/rubocop/issues/5515): Fix `Style/EmptyElse` autocorrect for nested if and case statements. ([@asherkach][])
 * [#5582](https://github.com/bbatsov/rubocop/issues/5582): Fix `end` alignment for variable assignment with line break after `=` in `Layout/EndAlignment`. ([@jonas054][])
 * [#5602](https://github.com/bbatsov/rubocop/pull/5602): Fix false positive for `Style/ColonMethodCall` when using Java package namespace. ([@koic][])
+* [#5603](https://github.com/bbatsov/rubocop/pull/5603): Fix falsy offense for `Style/RedundantSelf` with pseudo variables. ([@pocke][])
 
 ### Changes
 
