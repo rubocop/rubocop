@@ -9,7 +9,8 @@ RSpec.describe RuboCop::Cop::Lint::ScriptPermission do
 
   let(:file) { Tempfile.new('') }
   let(:filename) { file.path.split('/').last }
-  let(:source) { '#!/usr/bin/ruby' }
+  # HACK: extra empty line to bypass Parser 2.5.0.2 issue:
+  let(:source) { "#!/usr/bin/ruby\n\n" }
 
   after do
     file.close
@@ -27,6 +28,7 @@ RSpec.describe RuboCop::Cop::Lint::ScriptPermission do
         it 'allows any file permissions' do
           expect_no_offenses(<<-RUBY.strip_indent, file)
         #!/usr/bin/ruby
+
           RUBY
         end
       end
@@ -35,6 +37,7 @@ RSpec.describe RuboCop::Cop::Lint::ScriptPermission do
         expect_offense(<<-RUBY.strip_indent, file)
         #!/usr/bin/ruby
         ^^^^^^^^^^^^^^^ Script file #{filename} doesn't have execute permission.
+
           RUBY
       end
     end
