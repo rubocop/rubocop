@@ -4762,7 +4762,8 @@ This cop transforms usages of a method call safeguarded by a non `nil`
 check for the variable whose method is being called to
 safe navigation (`&.`). If there is a method chain, all of the methods
 in the chain need to be checked for safety, and all of the methods will
-need to be changed to use safe navigation.
+need to be changed to use safe navigation. We have limited the cop to
+not register an offense for method chains that exceed 2 methods.
 
 Configuration option: ConvertCodeThatCanStartToReturnNil
 The default for this is `false`. When configured to `true`, this will
@@ -4798,6 +4799,8 @@ foo&.bar&.baz
 foo&.bar(param1, param2)
 foo&.bar { |e| e.something }
 foo&.bar(param) { |e| e.something }
+foo && foo.bar.baz.qux # method chain with more than 2 methods
+foo && foo.nil? # method that `nil` responds to
 
 # Method calls that do not use `.`
 foo && foo < bar
