@@ -35,6 +35,14 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
       expect_no_offenses('user && user.thing.nil?')
     end
 
+    it 'allows an object check before a method chain longer than 2 methods' do
+      expect_no_offenses('user && user.one.two.three')
+    end
+
+    it 'allows an object check before a long chain with a block' do
+      expect_no_offenses('user && user.thing.plus.another { |a| a}.other_thing')
+    end
+
     it 'allows an object check before a nil check on a long chain' do
       expect_no_offenses('user && user.thing.plus.some.other_thing.nil?')
     end
@@ -422,15 +430,6 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
           end
 
           context 'method chaining' do
-            it 'registers an offense for an object check followed by ' \
-              'chained method calls' do
-              inspect_source(<<-RUBY.strip_indent)
-                #{variable} && #{variable}.one.two.three(baz) { |e| e.qux }
-              RUBY
-
-              expect(cop.messages).to eq([message])
-            end
-
             it 'registers an offense for an object check followed by ' \
               'chained method calls with blocks' do
               inspect_source(<<-RUBY.strip_indent)
@@ -1077,17 +1076,6 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
 
               expect(new_source).to eq(<<-RUBY.strip_indent)
                 #{variable}&.one&.two(baz) { |e| e.qux }
-              RUBY
-            end
-
-            it 'corrects an object check followed by ' \
-              'multiple chained method call' do
-              new_source = autocorrect_source(<<-RUBY.strip_indent)
-                #{variable} && #{variable}.one.two.three(baz) { |e| e.qux }
-              RUBY
-
-              expect(new_source).to eq(<<-RUBY.strip_indent)
-                #{variable}&.one&.two&.three(baz) { |e| e.qux }
               RUBY
             end
 

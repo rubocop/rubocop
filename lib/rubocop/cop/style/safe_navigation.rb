@@ -7,7 +7,8 @@ module RuboCop
       # check for the variable whose method is being called to
       # safe navigation (`&.`). If there is a method chain, all of the methods
       # in the chain need to be checked for safety, and all of the methods will
-      # need to be changed to use safe navigation.
+      # need to be changed to use safe navigation. We have limited the cop to
+      # not register an offense for method chains that exceed 2 methods.
       #
       # Configuration option: ConvertCodeThatCanStartToReturnNil
       # The default for this is `false`. When configured to `true`, this will
@@ -41,6 +42,8 @@ module RuboCop
       #   foo&.bar(param1, param2)
       #   foo&.bar { |e| e.something }
       #   foo&.bar(param) { |e| e.something }
+      #   foo && foo.bar.baz.qux # method chain with more than 2 methods
+      #   foo && foo.nil? # method that `nil` responds to
       #
       #   # Method calls that do not use `.`
       #   foo && foo < bar
@@ -96,6 +99,9 @@ module RuboCop
           return if target_ruby_version < 2.3
           checked_variable, receiver, method_chain, method = extract_parts(node)
           return unless receiver == checked_variable
+          # method is already a method call so this is actually checking for a
+          # chain greater than 2
+          return if chain_size(method_chain, method) > 1
           return if unsafe_method_used?(method_chain, method)
 
           add_offense(node)
@@ -171,6 +177,13 @@ module RuboCop
 
           return receiver if receiver == checked_variable
           find_matching_receiver_invocation(receiver, checked_variable)
+        end
+
+        def chain_size(method_chain, method)
+          method.each_ancestor(:send).inject(0) do |total, ancestor|
+            break total + 1 if ancestor == method_chain
+            total + 1
+          end
         end
 
         def unsafe_method_used?(method_chain, method)
