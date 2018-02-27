@@ -3215,5 +3215,4 @@
 [@walinga]: https://github.com/walinga
 [@georf]: https://github.com/georf
 [@satyap]: https://github.com/satyap
-[@Edouard-chin]: https://github.com/Edouard-chin
 [@unkmas]: https://github.com/unkmas
