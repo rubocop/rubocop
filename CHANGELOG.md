@@ -64,6 +64,7 @@
 * [#5602](https://github.com/bbatsov/rubocop/pull/5602): Fix false positive for `Style/ColonMethodCall` when using Java package namespace. ([@koic][])
 * [#5603](https://github.com/bbatsov/rubocop/pull/5603): Fix falsy offense for `Style/RedundantSelf` with pseudo variables. ([@pocke][])
 * [#5547](https://github.com/bbatsov/rubocop/issues/5547): Fix auto-correction of of `Layout/BlockEndNewline` when there is top level code outside of a class. ([@rrosenblum][])
+* [#5599](https://github.com/bbatsov/rubocop/issues/5599): Fix the suggestion being used by `Lint/NumberConversion` to use base 10 with Integer. ([@rrosenblum][])
 
 ### Changes
 

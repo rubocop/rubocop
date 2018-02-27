@@ -1222,7 +1222,7 @@ fails. Cop prefer parsing with number class instead.
 
 # good
 
-Integer('10')
+Integer('10', 10)
 Float('10.2')
 Complex('10')
 ```
