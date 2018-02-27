@@ -17,19 +17,19 @@ module RuboCop
       #
       #   # good
       #
-      #   Integer('10')
+      #   Integer('10', 10)
       #   Float('10.2')
       #   Complex('10')
       class NumberConversion < Cop
         CONVERSION_METHOD_CLASS_MAPPING = {
-          to_i: Integer.name,
-          to_f: Float.name,
-          to_c: Complex.name
+          to_i: "#{Integer.name}(%<number_object>s, 10)",
+          to_f: "#{Float.name}(%<number_object>s)",
+          to_c: "#{Complex.name}(%<number_object>s)"
         }.freeze
         MSG = 'Replace unsafe number conversion with number '\
               'class parsing, instead of using '\
               '%<number_object>s.%<to_method>s, use stricter '\
-              '%<corrected_method>s(%<number_object>s).'.freeze
+              '%<corrected_method>s.'.freeze
 
         def_node_matcher :to_method, <<-PATTERN
           (send $_ ${:to_i :to_f :to_c})
@@ -41,7 +41,7 @@ module RuboCop
               MSG,
               number_object: receiver.source,
               to_method: to_method,
-              corrected_method: correct_method(node)
+              corrected_method: correct_method(node, receiver)
             )
             add_offense(node, message: message)
           end
@@ -49,8 +49,9 @@ module RuboCop
 
         private
 
-        def correct_method(node)
-          CONVERSION_METHOD_CLASS_MAPPING[node.method_name]
+        def correct_method(node, receiver)
+          format(CONVERSION_METHOD_CLASS_MAPPING[node.method_name],
+                 number_object: receiver.source)
         end
       end
     end

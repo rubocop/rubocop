@@ -9,14 +9,14 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
     it 'when using `#to_i`' do
       expect_offense(<<-RUBY.strip_indent)
         "10".to_i
-        ^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using "10".to_i, use stricter Integer("10").
+        ^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using "10".to_i, use stricter Integer("10", 10).
       RUBY
     end
 
     it 'when using `#to_i` for integer' do
       expect_offense(<<-RUBY.strip_indent)
         10.to_i
-        ^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using 10.to_i, use stricter Integer(10).
+        ^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using 10.to_i, use stricter Integer(10, 10).
       RUBY
     end
 
@@ -38,7 +38,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
       expect_offense(<<-RUBY.strip_indent)
         string_value = '10'
         string_value.to_i
-        ^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using string_value.to_i, use stricter Integer(string_value).
+        ^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using string_value.to_i, use stricter Integer(string_value, 10).
       RUBY
     end
 
@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
       expect_offense(<<-RUBY.strip_indent)
         params = { id: 10 }
         params[:id].to_i
-        ^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using params[:id].to_i, use stricter Integer(params[:id]).
+        ^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using params[:id].to_i, use stricter Integer(params[:id], 10).
       RUBY
     end
 
@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
       expect_offense(<<-RUBY.strip_indent)
         args = [1,2,3]
         args[0].to_i
-        ^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using args[0].to_i, use stricter Integer(args[0]).
+        ^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using args[0].to_i, use stricter Integer(args[0], 10).
       RUBY
     end
   end
