@@ -68,6 +68,10 @@ Style/DocumentationMethod:
     - 'spec/**/*'
     - 'test/**/*'
 
+Style/EmptyLineAfterGuardClause:
+  Description: 'Add empty line after guard clause.'
+  Enabled: false
+
 Style/ImplicitRuntimeError:
   Description: >-
                  Use `raise` or `fail` with an explicit exception class and
