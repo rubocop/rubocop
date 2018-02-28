@@ -8,7 +8,7 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName do
       expect_offense(<<-RUBY.strip_indent)
       def x
         @my_var ||= :foo
-        ^^^^^^^ Memoized variable does not match method name.
+        ^^^^^^^ Memoized variable `@my_var` does not match method name `x`. Use `@x` instead.
       end
       RUBY
     end
@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName do
       expect_offense(<<-RUBY.strip_indent)
       def self.x
         @my_var ||= :foo
-        ^^^^^^^ Memoized variable does not match method name.
+        ^^^^^^^ Memoized variable `@my_var` does not match method name `x`. Use `@x` instead.
       end
       RUBY
     end
@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName do
       expect_offense(<<-RUBY.strip_indent)
       foo = def x
         @y ||= :foo
-        ^^ Memoized variable does not match method name.
+        ^^ Memoized variable `@y` does not match method name `x`. Use `@x` instead.
       end
       RUBY
     end
@@ -41,7 +41,7 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName do
       expect_offense(<<-RUBY.strip_indent)
       def x
         @y ||= begin
-        ^^ Memoized variable does not match method name.
+        ^^ Memoized variable `@y` does not match method name `x`. Use `@x` instead.
           :foo
         end
       end
@@ -55,7 +55,7 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName do
         def foo
           helper_variable = something_we_need_to_calculate_foo
           @bar ||= calculate_expensive_thing(helper_variable)
-          ^^^^ Memoized variable does not match method name.
+          ^^^^ Memoized variable `@bar` does not match method name `foo`. Use `@foo` instead.
         end
       RUBY
     end

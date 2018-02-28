@@ -33,7 +33,8 @@ module RuboCop
       #   end
       #
       class MemoizedInstanceVariableName < Cop
-        MSG = 'Memoized variable does not match method name.'.freeze
+        MSG = 'Memoized variable `%<var>s` does not match ' \
+          'method name `%<method>s`. Use `@%<method>s` instead.'.freeze
 
         def self.node_pattern
           memo_assign = '(or_asgn $(ivasgn _) _)'
@@ -51,7 +52,12 @@ module RuboCop
         def on_def(node)
           (method_name, ivar_assign) = memoized?(node)
           return if matches?(method_name, ivar_assign)
-          add_offense(node, location: ivar_assign.source_range)
+          msg = format(
+            MSG,
+            var: ivar_assign.children.first.to_s,
+            method: method_name
+          )
+          add_offense(node, location: ivar_assign.source_range, message: msg)
         end
         alias on_defs on_def
 
