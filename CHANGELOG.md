@@ -84,6 +84,7 @@
 * Tell Read the Docs to build downloadable docs. ([@eostrom][])
 * Change `Style/SafeNavigation` to no longer register an offense for method chains exceeding 2 methods. ([@rrosenblum][])
 * Remove auto-correction from `Lint/SafeNavigationChain`. ([@rrosenblum][])
+* Change the highlighting of `Lint/SafeNavigationChain` to highlight the entire method chain beyond the safe navigation portion. ([@rrosenblum][])
 
 ## 0.52.1 (2017-12-27)
 
