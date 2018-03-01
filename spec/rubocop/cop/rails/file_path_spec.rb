@@ -23,6 +23,14 @@ RSpec.describe RuboCop::Cop::Rails::FilePath do
     end
   end
 
+  context 'when using File::SEPARATOR string without Rails.root' do
+    it 'does not registers an offense' do
+      expect_no_offenses(<<-'RUBY'.strip_indent)
+        "#{42}/"
+      RUBY
+    end
+  end
+
   context 'when using File.join with Rails.root' do
     it 'registers an offense' do
       expect_offense(<<-RUBY.strip_indent)
