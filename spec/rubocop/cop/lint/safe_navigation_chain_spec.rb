@@ -15,17 +15,6 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
     end
   end
 
-  shared_examples :offense do |name, code|
-    it "registers an offense for #{name}" do
-      inspect_source(code)
-
-      expect(cop.messages)
-        .to eq(
-          ['Do not chain ordinary method call after safe navigation operator.']
-        )
-    end
-  end
-
   context 'TargetRubyVersion >= 2.3', :ruby23 do
     [
       ['ordinary method chain', 'x.foo.bar.baz'],
@@ -51,26 +40,129 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
       include_examples :accepts, name, code
     end
 
-    [
-      ['ordinary method call exists after safe navigation method call',
-       'x&.foo.bar'],
-      ['ordinary method call exists after safe navigation method call' \
-       'with argument',
-       'x&.foo(x).bar(y)'],
-      ['ordinary method chain exists after safe navigation method call',
-       'x&.foo.bar.baz'],
-      ['ordinary method chain exists after safe navigation method call' \
-      'with argument',
-       'x&.foo(x).bar(y).baz(z)'],
-      ['safe navigation with < operator', 'x&.foo < bar'],
-      ['safe navigation with > operator', 'x&.foo > bar'],
-      ['safe navigation with <= operator', 'x&.foo <= bar'],
-      ['safe navigation with >= operator', 'x&.foo >= bar'],
-      ['safe navigation with + operator', 'x&.foo + bar'],
-      ['safe navigation with []', 'x&.foo[bar]'],
-      ['safe navigation with []=', 'x&.foo[bar] = baz']
-    ].each do |name, code|
-      include_examples :offense, name, code
+    it 'registers an offense for ordinary method call exists after ' \
+      'safe navigation method call' do
+      expect_offense(<<-RUBY.strip_indent)
+        x&.foo.bar
+              ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+    end
+
+    it 'registers an offense for ordinary method call exists after ' \
+      'safe navigation method call with an argument' do
+      expect_offense(<<-RUBY.strip_indent)
+        x&.foo(x).bar(y)
+                 ^^^^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+    end
+
+    it 'registers an offense for ordinary method chain exists after ' \
+      'safe navigation method call' do
+      expect_offense(<<-RUBY.strip_indent)
+        something
+        x&.foo.bar.baz
+              ^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+    end
+
+    it 'registers an offense for ordinary method chain exists after ' \
+      'safe navigation method call with an argument' do
+      expect_offense(<<-RUBY.strip_indent)
+        x&.foo(x).bar(y).baz(z)
+                 ^^^^^^^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation with < operator' do
+      expect_offense(<<-RUBY.strip_indent)
+        x&.foo < bar
+              ^^^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation with > operator' do
+      expect_offense(<<-RUBY.strip_indent)
+        x&.foo > bar
+              ^^^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation with <= operator' do
+      expect_offense(<<-RUBY.strip_indent)
+        x&.foo <= bar
+              ^^^^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation with >= operator' do
+      expect_offense(<<-RUBY.strip_indent)
+        x&.foo >= bar
+              ^^^^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation with + operator' do
+      expect_offense(<<-RUBY.strip_indent)
+        x&.foo + bar
+              ^^^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation with [] operator' do
+      expect_offense(<<-RUBY.strip_indent)
+        x&.foo[bar]
+              ^^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation with []= operator' do
+      expect_offense(<<-RUBY.strip_indent)
+        x&.foo[bar] = baz
+              ^^^^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+    end
+
+    context 'proper highlighting' do
+      it 'when there are methods before' do
+        expect_offense(<<-RUBY.strip_indent)
+        something
+        x&.foo.bar.baz
+              ^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
+        RUBY
+      end
+
+      it 'when there are methods after' do
+        expect_offense(<<-RUBY.strip_indent)
+          x&.foo.bar.baz
+                ^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
+          something
+        RUBY
+      end
+
+      it 'when in a method' do
+        expect_offense(<<-RUBY.strip_indent)
+          def something
+            x&.foo.bar.baz
+                  ^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
+          end
+        RUBY
+      end
+
+      it 'when in a begin' do
+        expect_offense(<<-RUBY.strip_indent)
+          begin
+            x&.foo.bar.baz
+                  ^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
+          end
+        RUBY
+      end
+
+      it 'when used with a modifier if' do
+        expect_offense(<<-RUBY.strip_indent)
+          x&.foo.bar.baz if something
+                ^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
+        RUBY
+      end
     end
   end
 end
