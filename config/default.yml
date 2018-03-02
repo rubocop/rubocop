@@ -152,7 +152,7 @@ Layout/AccessModifierIndentation:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
-# Make sure all lines containing elements of a hash literal have the same indentation.
+# Make sure all lines containing elements on a hash literal have the same indentation.
 Layout/AlignHash:
   # Alignment of entries using hash rocket as separator. Valid values are:
   #

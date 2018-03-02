@@ -60,21 +60,21 @@ Layout/AccessModifierIndentation:
 
 Layout/AlignArray:
   Description: >-
-                 Align the elements of an array literal if they span more than
-                 one line.
+                 Make sure all lines containing elements on an array literal have
+                 the same indentation.
   StyleGuide: '#align-multiline-arrays'
   Enabled: true
 
 Layout/AlignHash:
   Description: >-
-                 Align the elements of a hash literal if they span more than
-                 one line.
+                 Make sure all lines containing elements on a hash literal have
+                 the same indentation.
   Enabled: true
 
 Layout/AlignParameters:
   Description: >-
-                 Align the parameters of a method call if they span more
-                 than one line.
+                 Make sure all lines containing parameters on a method call have
+                 the same indentation.
   StyleGuide: '#no-double-indent'
   Enabled: true
 

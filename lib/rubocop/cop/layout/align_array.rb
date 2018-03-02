@@ -23,8 +23,8 @@ module RuboCop
       class AlignArray < Cop
         include Alignment
 
-        MSG = 'Align the elements of an array literal if they span more ' \
-              'than one line.'.freeze
+        MSG = 'Make sure all lines containing elements on an array literal ' \
+              'have the same indentation.'.freeze
 
         def on_array(node)
           check_alignment(node.children)
