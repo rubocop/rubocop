@@ -27,7 +27,6 @@ RSpec.describe RuboCop::Cop::Style::EachWithObject do
 
     expect(corrected).to eq(['[1, 2, 3].each_with_object({}) do |i, h|',
                              '  h[i] = i',
-                             '  ',
                              'end',
                              ''].join("\n"))
   end
@@ -40,7 +39,6 @@ RSpec.describe RuboCop::Cop::Style::EachWithObject do
     RUBY
 
     expect(corrected).to eq(['[1, 2, 3].each_with_object({}) do |i, h|',
-                             '  ',
                              'end',
                              ''].join("\n"))
   end

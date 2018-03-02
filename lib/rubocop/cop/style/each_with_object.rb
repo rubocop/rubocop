@@ -17,6 +17,8 @@ module RuboCop
       #   # good
       #   [1, 2].each_with_object({}) { |e, a| a[e] = e }
       class EachWithObject < Cop
+        include RangeHelp
+
         MSG = 'Use `each_with_object` instead of `%<method>s`.'.freeze
         METHODS = %i[inject reduce].freeze
 
@@ -51,7 +53,11 @@ module RuboCop
 
             return_value = return_value(node.body)
 
-            corrector.remove(return_value.loc.expression)
+            if return_value_occupies_whole_line?(return_value)
+              corrector.remove(whole_line_expression(return_value))
+            else
+              corrector.remove(return_value.loc.expression)
+            end
           end
         end
         # rubocop:enable Metrics/AbcSize
@@ -89,6 +95,14 @@ module RuboCop
           return_var, = *return_value
 
           accumulator_var == return_var
+        end
+
+        def return_value_occupies_whole_line?(node)
+          whole_line_expression(node).source.strip == node.source
+        end
+
+        def whole_line_expression(node)
+          range_by_whole_lines(node.loc.expression, include_final_newline: true)
         end
       end
     end
