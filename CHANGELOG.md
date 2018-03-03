@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#5623](https://github.com/bbatsov/rubocop/pull/5623): Fix `Bundler/OrderedGems` when a group includes duplicate gems. ([@colorbox][])
+
 ## 0.53.0 (2018-03-05)
 
 ### New features
@@ -3225,3 +3229,4 @@
 [@satyap]: https://github.com/satyap
 [@unkmas]: https://github.com/unkmas
 [@elebow]: https://github.com/elebow
+[@colorbox]: https://github.com/colorbox
