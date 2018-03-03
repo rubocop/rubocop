@@ -50,6 +50,25 @@ Name | Default value | Configurable values
 EnforcedStyle | `action` | `action`, `filter`
 Include | `app/controllers/**/*.rb` | Array
 
+## Rails/ActiveRecordAliases
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+Checks that ActiveRecord aliases are not used. The direct method names
+are more clear and easier to read.
+
+### Examples
+
+```ruby
+#bad
+Book.update_attributes!(author: 'Alice')
+
+#good
+Book.update!(author: 'Alice')
+```
+
 ## Rails/ActiveSupportAliases
 
 Enabled by default | Supports autocorrection

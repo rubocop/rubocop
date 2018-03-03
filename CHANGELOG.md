@@ -26,6 +26,7 @@
 * [#5473](https://github.com/bbatsov/rubocop/issues/5473): Use `gems.locked` or `Gemfile.lock` to determine the best `TargetRailsVersion` when it is not specified in the config. ([@roberts1000][])
 * Add new `Naming/MemoizedInstanceVariableName` cop. ([@satyap][])
 * [#5376](https://github.com/bbatsov/rubocop/issues/5376): Add new `Style/EmptyLineAfterGuardClause` cop. ([@unkmas][])
+* Add new `Rails/ActiveRecordAliases` cop. ([@elebow][])
 
 ### Bug fixes
 
@@ -3221,3 +3222,4 @@
 [@georf]: https://github.com/georf
 [@satyap]: https://github.com/satyap
 [@unkmas]: https://github.com/unkmas
+[@elebow]: https://github.com/elebow

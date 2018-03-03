@@ -1066,6 +1066,13 @@ Rails/ActionFilter:
   Description: 'Enforces consistent use of action filter methods.'
   Enabled: true
 
+Rails/ActiveRecordAliases:
+  Description: >-
+                  Avoid Active Record aliases:
+                  Use `update` instead of `update_attributes`.
+                  Use `update!` instead of `update_attributes!`.
+  Enabled: true
+
 Rails/ActiveSupportAliases:
   Description: >-
                   Avoid ActiveSupport aliases of standard ruby methods:
