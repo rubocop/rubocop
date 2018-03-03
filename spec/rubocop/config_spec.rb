@@ -766,6 +766,12 @@ RSpec.describe RuboCop::Config do
         configuration.target_ruby_version
         expect(File).not_to have_received(:file?).with('.ruby-version')
       end
+
+      it 'does not read Gemfile.lock or gems.locked' do
+        configuration.target_ruby_version
+        expect(File).not_to have_received(:file?).with('Gemfile')
+        expect(File).not_to have_received(:file?).with('gems.locked')
+      end
     end
 
     context 'when TargetRubyVersion is not set' do
@@ -828,12 +834,171 @@ RSpec.describe RuboCop::Config do
               .to eq described_class::DEFAULT_RUBY_VERSION
           end
         end
+
+        it 'does not read Gemfile.lock or gems.locked' do
+          allow(File).to receive(:file?).and_call_original
+          configuration.target_ruby_version
+          expect(File).not_to have_received(:file?).with('Gemfile')
+          expect(File).not_to have_received(:file?).with('gems.locked')
+        end
       end
 
       context 'when .ruby-version is not present' do
-        it 'uses the default target ruby version' do
-          expect(configuration.target_ruby_version)
-            .to eq described_class::DEFAULT_RUBY_VERSION
+        ['Gemfile.lock', 'gems.locked'].each do |file_name|
+          context "and #{file_name} exists" do
+            let(:base_path) { configuration.base_dir_for_path_parameters }
+            let(:lock_file_path) { File.join(base_path, file_name) }
+
+            it "uses MRI Ruby version when it is present in #{file_name}" do
+              content =
+                <<-HEREDOC
+                  GEM
+                    remote: https://rubygems.org/
+                    specs:
+                      actionmailer (4.1.0)
+                      actionpack (= 4.1.0)
+                    rails (4.1.0)
+                      actionmailer (= 4.1.0)
+                      actionpack (= 4.1.0)
+
+                  PLATFORMS
+                    ruby
+
+                  DEPENDENCIES
+                    ruby-extensions (~> 1.9.0)
+
+                  RUBY VERSION
+                     ruby 2.0.0p0
+
+                  BUNDLED WITH
+                    1.16.1
+                HEREDOC
+              create_file(lock_file_path, content)
+              expect(configuration.target_ruby_version).to eq 2.0
+            end
+
+            it 'uses MRI Ruby version when it has multiple digits' do
+              content =
+                <<-HEREDOC
+                  GEM
+                    remote: https://rubygems.org/
+                    specs:
+                      actionmailer (4.1.0)
+                      actionpack (= 4.1.0)
+                    rails (4.1.0)
+                      actionmailer (= 4.1.0)
+                      actionpack (= 4.1.0)
+
+                  PLATFORMS
+                    ruby
+
+                  DEPENDENCIES
+                    ruby-extensions (~> 1.9.0)
+
+                  RUBY VERSION
+                     ruby 20.10.100p450
+
+                  BUNDLED WITH
+                    1.16.1
+                HEREDOC
+              create_file(lock_file_path, content)
+              expect(configuration.target_ruby_version).to eq 20.10
+            end
+
+            it "uses the default Ruby when Ruby is not in #{file_name}" do
+              content =
+                <<-HEREDOC
+                  GEM
+                    remote: https://rubygems.org/
+                    specs:
+                      addressable (2.5.2)
+                        public_suffix (>= 2.0.2, < 4.0)
+                      ast (2.4.0)
+                      bump (0.5.4)
+
+                  PLATFORMS
+                    ruby
+
+                  DEPENDENCIES
+                    bump
+                    bundler (~> 1.3)
+                    ruby-extensions (~> 1.9.0)
+
+                  BUNDLED WITH
+                    1.16.1
+                HEREDOC
+              create_file(lock_file_path, content)
+              default = RuboCop::Config::DEFAULT_RUBY_VERSION
+              expect(configuration.target_ruby_version).to eq default
+            end
+
+            it "uses the default Ruby when rbx is in #{file_name}" do
+              content =
+                <<-HEREDOC
+                  GEM
+                    remote: https://rubygems.org/
+                    specs:
+                      addressable (2.5.2)
+                        public_suffix (>= 2.0.2, < 4.0)
+                      ast (2.4.0)
+                      bump (0.5.4)
+
+                  PLATFORMS
+                    ruby
+
+                  DEPENDENCIES
+                    bump
+                    bundler (~> 1.3)
+                    ruby-extensions (~> 1.9.0)
+
+                  RUBY VERSION
+                     ruby 2.0.0p0 (rbx 3.42)
+
+                  BUNDLED WITH
+                    1.16.1
+                HEREDOC
+              create_file(lock_file_path, content)
+              default = RuboCop::Config::DEFAULT_RUBY_VERSION
+              expect(configuration.target_ruby_version).to eq default
+            end
+
+            it "uses the default Ruby when jruby is in #{file_name}" do
+              content =
+                <<-HEREDOC
+                  GEM
+                    remote: https://rubygems.org/
+                    specs:
+                      addressable (2.5.2)
+                        public_suffix (>= 2.0.2, < 4.0)
+                      ast (2.4.0)
+                      bump (0.5.4)
+
+                  PLATFORMS
+                    ruby
+
+                  DEPENDENCIES
+                    bump
+                    bundler (~> 1.3)
+                    ruby-extensions (~> 1.9.0)
+
+                  RUBY VERSION
+                     ruby 2.0.0p0 (jruby 9.1.13.0)
+
+                  BUNDLED WITH
+                    1.16.1
+                HEREDOC
+              create_file(lock_file_path, content)
+              default = RuboCop::Config::DEFAULT_RUBY_VERSION
+              expect(configuration.target_ruby_version).to eq default
+            end
+          end
+        end
+
+        context 'when bundler lock files are not present' do
+          it 'uses the default target ruby version' do
+            expect(configuration.target_ruby_version)
+              .to eq described_class::DEFAULT_RUBY_VERSION
+          end
         end
       end
 
@@ -845,6 +1010,41 @@ RSpec.describe RuboCop::Config do
 
         it 'reads it to determine the target ruby version' do
           expect(configuration.target_ruby_version).to eq 2.4
+        end
+      end
+
+      context 'when .ruby-version is not in a parent directory' do
+        ['Gemfile.lock', 'gems.locked'].each do |file_name|
+          context "when #{file_name} is in a parent directory" do
+            it 'does' do
+              content =
+                <<-HEREDOC
+                  GEM
+                    remote: https://rubygems.org/
+                    specs:
+                      actionmailer (4.1.0)
+                      actionpack (= 4.1.0)
+                    rails (4.1.0)
+                      actionmailer (= 4.1.0)
+                      actionpack (= 4.1.0)
+
+                  PLATFORMS
+                    ruby
+
+                  DEPENDENCIES
+                    ruby-extensions (~> 1.9.0)
+
+                  RUBY VERSION
+                     ruby 2.0.0p0
+
+                  BUNDLED WITH
+                    1.16.1
+                HEREDOC
+              dir = configuration.base_dir_for_path_parameters
+              create_file(File.join(dir, '..', file_name), content)
+              expect(configuration.target_ruby_version).to eq 2.0
+            end
+          end
         end
       end
     end
