@@ -58,7 +58,7 @@ module RuboCop
 
         def previous_declaration(node)
           declarations = gem_declarations(processed_source.ast)
-          node_index = declarations.find_index(node)
+          node_index = declarations.map(&:location).find_index(node.location)
           declarations.to_a[node_index - 1]
         end
 

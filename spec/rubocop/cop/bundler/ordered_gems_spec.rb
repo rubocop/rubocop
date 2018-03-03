@@ -276,4 +276,42 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
       RUBY
     end
   end
+
+  context 'When there are duplicated gems in group' do
+    let(:source) { <<-RUBY.strip_indent }
+      gem 'a'
+
+      group :development do
+        gem 'b'
+        gem 'c'
+        gem 'b'
+      end
+    RUBY
+
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
+        gem 'a'
+
+        group :development do
+          gem 'b'
+          gem 'c'
+          gem 'b'
+          ^^^^^^^ #{format(message, 'b', 'c')}
+        end
+      RUBY
+    end
+
+    it 'autocorrects' do
+      new_source = autocorrect_source_with_loop(source)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        gem 'a'
+
+        group :development do
+          gem 'b'
+          gem 'b'
+          gem 'c'
+        end
+      RUBY
+    end
+  end
 end
