@@ -6,7 +6,7 @@
 
 * [#5623](https://github.com/bbatsov/rubocop/pull/5623): Fix `Bundler/OrderedGems` when a group includes duplicate gems. ([@colorbox][])
 ### Changes
-* Change `Naming/UncommunicativeMethodParamName` add `to` to allowed names in default config. ([@unused][])
+* [#5626](https://github.com/bbatsov/rubocop/pull/5626): Change `Naming/UncommunicativeMethodParamName` add `to` to allowed names in default config. ([@unused][])
 
 ## 0.53.0 (2018-03-05)
 
