@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.53.0 (2018-03-05)
+
 ### New features
 
 * [#3666](https://github.com/bbatsov/rubocop/issues/3666): Add new `Naming/UncommunicativeBlockParamName` cop. ([@garettarrowood][])
