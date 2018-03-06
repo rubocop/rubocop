@@ -186,7 +186,7 @@ Name | Default value | Configurable values
 --- | --- | ---
 Exclude | `[]` | Array
 ExpectMatchingDefinition | `false` | Boolean
-Regex | `<none>` |
+Regex | `<none>` | 
 IgnoreExecutableScripts | `true` | Boolean
 AllowedAcronyms | `CLI`, `DSL`, `ACL`, `API`, `ASCII`, `CPU`, `CSS`, `DNS`, `EOF`, `GUID`, `HTML`, `HTTP`, `HTTPS`, `ID`, `IP`, `JSON`, `LHS`, `QPS`, `RAM`, `RHS`, `RPC`, `SLA`, `SMTP`, `SQL`, `SSH`, `TCP`, `TLS`, `TTL`, `UDP`, `UI`, `UID`, `UUID`, `URI`, `URL`, `UTF8`, `VM`, `XML`, `XMPP`, `XSRF`, `XSS` | Array
 
