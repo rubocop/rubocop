@@ -2508,6 +2508,7 @@ foo.any? { |f| f.even? }
 foo != bar
 foo == bar
 !!('foo' =~ /^\w+$/)
+!(foo.class < Numeric) # Checking class hierarchy is allowed
 ```
 
 ### Configurable attributes

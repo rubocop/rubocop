@@ -27,18 +27,21 @@ module RuboCop
       #   foo != bar
       #   foo == bar
       #   !!('foo' =~ /^\w+$/)
+      #   !(foo.class < Numeric) # Checking class hierarchy is allowed
       class InverseMethods < Cop
         include IgnoredNode
 
         MSG = 'Use `%<inverse>s` instead of inverting `%<method>s`.'.freeze
+        CLASS_COMPARISON_METHODS = %i[<= >= < >].freeze
         EQUALITY_METHODS = %i[== != =~ !~ <= >= < >].freeze
         NEGATED_EQUALITY_METHODS = %i[!= !~].freeze
+        CAMEL_CASE = /[A-Z]+[a-z]+/
 
         def_node_matcher :inverse_candidate?, <<-PATTERN
           {
-            (send $(send (...) $_ ...) :!)
-            (send (block $(send (...) $_) ...) :!)
-            (send (begin $(send (...) $_ ...)) :!)
+            (send $(send $(...) $_ $...) :!)
+            (send (block $(send $(...) $_) $...) :!)
+            (send (begin $(send $(...) $_ $...)) :!)
           }
         PATTERN
 
@@ -52,8 +55,9 @@ module RuboCop
 
         def on_send(node)
           return if part_of_ignored_node?(node)
-          inverse_candidate?(node) do |_method_call, method|
+          inverse_candidate?(node) do |_method_call, lhs, method, rhs|
             return unless inverse_methods.key?(method)
+            return if possible_class_hierarchy_check?(lhs, rhs, method)
             return if negated?(node)
 
             add_offense(node,
@@ -78,7 +82,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          method_call, method = inverse_candidate?(node)
+          method_call, _lhs, method, _rhs = inverse_candidate?(node)
 
           if method_call && method
             lambda do |corrector|
@@ -142,6 +146,19 @@ module RuboCop
           Parser::Source::Range.new(node.loc.expression.source_buffer,
                                     method_call.loc.expression.end_pos,
                                     node.loc.expression.end_pos)
+        end
+
+        # When comparing classes, `!(Integer < Numeric)` is not the same as
+        # `Integer > Numeric`.
+        def possible_class_hierarchy_check?(lhs, rhs, method)
+          CLASS_COMPARISON_METHODS.include?(method) &&
+            (camel_case_constant?(lhs) ||
+             (rhs.size == 1 &&
+              camel_case_constant?(rhs.first)))
+        end
+
+        def camel_case_constant?(node)
+          node.const_type? && node.source =~ CAMEL_CASE
         end
       end
     end
