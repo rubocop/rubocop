@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#5623](https://github.com/bbatsov/rubocop/pull/5623): Fix `Bundler/OrderedGems` when a group includes duplicate gems. ([@colorbox][])
+* [#5633](https://github.com/bbatsov/rubocop/pull/5633): Fix broken `--fail-fast`. ([@mmyoji][])
 
 ## 0.53.0 (2018-03-05)
 
@@ -3230,3 +3231,4 @@
 [@unkmas]: https://github.com/unkmas
 [@elebow]: https://github.com/elebow
 [@colorbox]: https://github.com/colorbox
+[@mmyoji]: https://github.com/mmyoji
