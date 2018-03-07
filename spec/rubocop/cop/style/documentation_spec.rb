@@ -212,6 +212,28 @@ RSpec.describe RuboCop::Cop::Style::Documentation do
     RUBY
   end
 
+  it 'registers an offence for compact-style nested module' do
+    expect_offense(<<-RUBY.strip_indent)
+      module A::B
+      ^^^^^^ Missing top-level module documentation comment.
+        C = 1
+        def method
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offence for compact-style nested class' do
+    expect_offense(<<-RUBY.strip_indent)
+      class A::B
+      ^^^^^ Missing top-level class documentation comment.
+        C = 1
+        def method
+        end
+      end
+    RUBY
+  end
+
   context 'sparse and trailing comments' do
     %w[class module].each do |keyword|
       it "ignores comments after #{keyword} node end" do
@@ -252,6 +274,15 @@ RSpec.describe RuboCop::Cop::Style::Documentation do
           end
         RUBY
         expect(cop.offenses.empty?).to be(true)
+      end
+
+      it "accepts compact-style nested #{keyword} without documentation" do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          #{keyword} A::B::Test #:nodoc:
+            def method
+            end
+          end
+        RUBY
       end
 
       it "registers an offense for nested #{keyword} without documentation" do

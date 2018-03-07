@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#5642](https://github.com/bbatsov/rubocop/pull/5642): Fix Style/Documentation :nodoc: for compact-style nested modules/classes. ([@ojab][])
+
 ## 0.53.0 (2018-03-05)
 
 ### New features
