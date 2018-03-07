@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#5648](https://github.com/bbatsov/rubocop/issues/5648): Suggest valid memoized instance variable for predicate method. ([@satyap][])
+
 ## 0.53.0 (2018-03-05)
 
 ### New features

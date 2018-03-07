@@ -61,6 +61,18 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName do
     end
   end
 
+  context 'memoized variable after other code does not match method name' do
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
+        def foo?
+          helper_variable = something_we_need_to_calculate_foo
+          @bar ||= calculate_expensive_thing(helper_variable)
+          ^^^^ Memoized variable `@bar` does not match method name `foo?`. Use `@foo` instead.
+        end
+      RUBY
+    end
+  end
+
   context 'memoized variable matches method name' do
     it 'does not register an offense' do
       expect_no_offenses(<<-RUBY.strip_indent)
