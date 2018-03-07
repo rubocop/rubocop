@@ -5954,6 +5954,29 @@ This cop checks for usage of the %q/%Q syntax when '' or "" would do.
 
 * [https://github.com/bbatsov/ruby-style-guide#percent-q](https://github.com/bbatsov/ruby-style-guide#percent-q)
 
+## Style/UnpackFirst
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for accessing the first element of `String#unpack`
+which can be replaced with the shorter method `unpack1`.
+
+### Examples
+
+```ruby
+# bad
+'foo'.unpack('h*').first
+'foo'.unpack('h*')[0]
+'foo'.unpack('h*').slice(0)
+'foo'.unpack('h*').at(0)
+'foo'.unpack('h*').take(1)
+
+# good
+'foo'.unpack1('h*')
+```
+
 ## Style/VariableInterpolation
 
 Enabled by default | Supports autocorrection

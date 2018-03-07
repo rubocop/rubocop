@@ -523,6 +523,7 @@ In the following section you find all available cops:
 * [Style/UnneededCapitalW](cops_style.md#styleunneededcapitalw)
 * [Style/UnneededInterpolation](cops_style.md#styleunneededinterpolation)
 * [Style/UnneededPercentQ](cops_style.md#styleunneededpercentq)
+* [Style/UnpackFirst](cops_style.md#styleunpackfirst)
 * [Style/VariableInterpolation](cops_style.md#stylevariableinterpolation)
 * [Style/WhenThen](cops_style.md#stylewhenthen)
 * [Style/WhileUntilDo](cops_style.md#stylewhileuntildo)

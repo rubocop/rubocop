@@ -2010,6 +2010,12 @@ Style/UnneededPercentQ:
   StyleGuide: '#percent-q'
   Enabled: true
 
+Style/UnpackFirst:
+  Description: >-
+                 Checks for accessing the first element of `String#unpack`
+                 instead of using `unpack1`
+  Enabled: true
+
 Style/VariableInterpolation:
   Description: >-
                  Don't interpolate global, instance and class variables
