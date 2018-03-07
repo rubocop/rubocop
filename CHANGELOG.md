@@ -5,6 +5,7 @@
 ### New features
 
 * [#5597](https://github.com/bbatsov/rubocop/pull/5597): Add new `Rails/HttpStatus` cop. ([@anthony-robin][])
+* [#5643](https://github.com/bbatsov/rubocop/pull/5643): Add new `Style/UnpackFirst` cop. ([@bdewater][])
 
 ### Bug fixes
 
