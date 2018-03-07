@@ -41,7 +41,7 @@ module RuboCop
       execute_runners(paths)
     rescue RuboCop::ConfigNotFoundError => e
       warn e.message
-      e.status
+      STATUS_ERROR
     rescue RuboCop::Error => e
       warn Rainbow("Error: #{e.message}").red
       STATUS_ERROR
