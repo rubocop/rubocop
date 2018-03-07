@@ -124,9 +124,6 @@ task documentation_syntax_check: :yard_for_generate_documentation do
   YARD::Registry.load!
   cops = RuboCop::Cop::Cop.registry
   cops.each do |cop|
-    # TODO: parser cannot parse the example, so skip it.
-    #       https://github.com/whitequark/parser/issues/407
-    next if cop == RuboCop::Cop::Layout::SpaceAroundKeyword
     next if %i[RSpec Capybara FactoryBot].include?(cop.department)
     examples = YARD::Registry.all(:class).find do |code_object|
       next unless RuboCop::Cop::Badge.for(code_object.to_s) == cop.badge
