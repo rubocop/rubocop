@@ -17,7 +17,7 @@ module RuboCop
       end
     end
 
-    def resolve_inheritance(path, hash, file)
+    def resolve_inheritance(path, hash, file, debug)
       inherited_files = Array(hash['inherit_from'])
       base_configs(path, inherited_files, file)
         .reverse.each_with_index do |base_config, index|
@@ -25,7 +25,7 @@ module RuboCop
           next unless v.is_a?(Hash)
           if hash.key?(k)
             v = merge(v, hash[k],
-                      cop_name: k, file: file,
+                      cop_name: k, file: file, debug: debug,
                       inherited_file: inherited_files[index],
                       inherit_mode: determine_inherit_mode(hash, k))
           end
@@ -86,7 +86,7 @@ module RuboCop
           result[key] = merge(base_hash[key], derived_hash[key])
         elsif should_union?(base_hash, key, opts[:inherit_mode])
           result[key] = base_hash[key] | derived_hash[key]
-        else
+        elsif opts[:debug]
           warn_on_duplicate_setting(base_hash, derived_hash, key, opts)
         end
       end
@@ -112,9 +112,9 @@ module RuboCop
       return if base_hash[key].is_a?(Array) &&
                 inherit_mode && inherit_mode.include?(key)
 
-      warn("#{PathUtil.smart_path(opts[:file])}: " \
+      puts "#{PathUtil.smart_path(opts[:file])}: " \
            "#{opts[:cop_name]}:#{key} overrides " \
-           "the same parameter in #{opts[:inherited_file]}")
+           "the same parameter in #{opts[:inherited_file]}"
     end
 
     def determine_inherit_mode(hash, key)

@@ -8,7 +8,9 @@
 * [#5633](https://github.com/bbatsov/rubocop/pull/5633): Fix broken `--fail-fast`. ([@mmyoji][])
 
 ### Changes
+
 * [#5626](https://github.com/bbatsov/rubocop/pull/5626): Change `Naming/UncommunicativeMethodParamName` add `to` to allowed names in default config. ([@unused][])
+* [#5640](https://github.com/bbatsov/rubocop/issues/5640): Warn about user configuration overriding other user configuration only with `--debug`. ([@jonas054][])
 
 ## 0.53.0 (2018-03-05)
 
