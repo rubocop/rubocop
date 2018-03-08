@@ -35,7 +35,6 @@ module RuboCop
       end
 
       def load_file(file)
-        return if file.nil?
         path = File.absolute_path(file.is_a?(RemoteConfig) ? file.file : file)
 
         hash = load_yaml_configuration(path)
@@ -47,7 +46,7 @@ module RuboCop
         target_ruby_version_to_f!(hash)
 
         resolver.resolve_inheritance_from_gems(hash, hash.delete('inherit_gem'))
-        resolver.resolve_inheritance(path, hash, file)
+        resolver.resolve_inheritance(path, hash, file, debug?)
 
         hash.delete('inherit_from')
         hash.delete('inherit_mode')
