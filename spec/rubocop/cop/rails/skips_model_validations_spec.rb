@@ -75,7 +75,7 @@ RSpec.describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
 
     it 'registers an offense for `update_attribute`' do
       expect_offense(<<-RUBY.strip_indent)
-        user.update_attribute('website': 'example.com')
+        user.update_attribute(:website, 'example.com')
              ^^^^^^^^^^^^^^^^ Avoid using `update_attribute` because it skips validations.
       RUBY
     end

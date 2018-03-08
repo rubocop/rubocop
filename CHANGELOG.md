@@ -7,6 +7,9 @@
 * [#5623](https://github.com/bbatsov/rubocop/pull/5623): Fix `Bundler/OrderedGems` when a group includes duplicate gems. ([@colorbox][])
 * [#5633](https://github.com/bbatsov/rubocop/pull/5633): Fix broken `--fail-fast`. ([@mmyoji][])
 
+### Changes
+* [#5626](https://github.com/bbatsov/rubocop/pull/5626): Change `Naming/UncommunicativeMethodParamName` add `to` to allowed names in default config. ([@unused][])
+
 ## 0.53.0 (2018-03-05)
 
 ### New features
@@ -3232,3 +3235,4 @@
 [@elebow]: https://github.com/elebow
 [@colorbox]: https://github.com/colorbox
 [@mmyoji]: https://github.com/mmyoji
+[@unused]: https://github.com/unused

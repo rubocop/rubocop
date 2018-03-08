@@ -508,7 +508,7 @@ Name | Default value | Configurable values
 --- | --- | ---
 MinNameLength | `3` | Integer
 AllowNamesEndingInNumbers | `true` | Boolean
-AllowedNames | `io`, `id` | Array
+AllowedNames | `io`, `id`, `to` | Array
 ForbiddenNames | `[]` | Array
 
 ## Naming/VariableName
