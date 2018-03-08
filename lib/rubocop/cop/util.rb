@@ -121,7 +121,7 @@ module RuboCop
           .sub('Style', 'Styles')
       end
 
-      def tokens(node) # rubocop:disable Metrics/AbcSize
+      def tokens(node)
         @tokens ||= {}
         return @tokens[node.object_id] if @tokens[node.object_id]
 
@@ -129,17 +129,9 @@ module RuboCop
         begin_pos = source_range.begin_pos
         end_pos = source_range.end_pos
 
-        tokens_to_node_end = processed_source.tokens.take_while do |token|
-          token.end_pos <= end_pos
+        @tokens[node.object_id] = processed_source.tokens.select do |token|
+          token.end_pos <= end_pos && token.begin_pos >= begin_pos
         end
-
-        node_tokens = []
-        tokens_to_node_end.reverse_each do |token|
-          break unless token.begin_pos >= begin_pos
-          node_tokens.unshift(token)
-        end
-
-        @tokens[node.object_id] = node_tokens
       end
 
       private

@@ -162,6 +162,16 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       RUBY
     end
 
+    it 'does not register offense when contains an array literal as ' \
+       'an argument after a heredoc is started' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        ActiveRecord::Base.connection.execute(<<-SQL, [self.class.to_s]).first["count"]
+          SELECT COUNT(widgets.id) FROM widgets
+          WHERE widget_type = $1
+        SQL
+      RUBY
+    end
+
     it 'accepts square brackets called with method call syntax' do
       expect_no_offenses('subject.[](0)')
     end
@@ -209,6 +219,17 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       expect_offense(<<-RUBY.strip_indent)
         [2,3,4] - [ 3,4]
                    ^ Do not use space inside array brackets.
+      RUBY
+    end
+
+    it 'registers offense when contains an array literal as ' \
+       'an argument with trailing whitespace after a heredoc is started' do
+      expect_offense(<<-RUBY.strip_indent)
+        ActiveRecord::Base.connection.execute(<<-SQL, [self.class.to_s ]).first["count"]
+                                                                      ^ Do not use space inside array brackets.
+          SELECT COUNT(widgets.id) FROM widgets
+          WHERE widget_type = $1
+        SQL
       RUBY
     end
 
