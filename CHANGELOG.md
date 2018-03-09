@@ -5,6 +5,13 @@
 ### Bug fixes
 
 * [#5648](https://github.com/bbatsov/rubocop/issues/5648): Suggest valid memoized instance variable for predicate method. ([@satyap][])
+* [#5623](https://github.com/bbatsov/rubocop/pull/5623): Fix `Bundler/OrderedGems` when a group includes duplicate gems. ([@colorbox][])
+* [#5633](https://github.com/bbatsov/rubocop/pull/5633): Fix broken `--fail-fast`. ([@mmyoji][])
+
+### Changes
+
+* [#5626](https://github.com/bbatsov/rubocop/pull/5626): Change `Naming/UncommunicativeMethodParamName` add `to` to allowed names in default config. ([@unused][])
+* [#5640](https://github.com/bbatsov/rubocop/issues/5640): Warn about user configuration overriding other user configuration only with `--debug`. ([@jonas054][])
 
 ## 0.53.0 (2018-03-05)
 
@@ -16,8 +23,8 @@
 * [#5248](https://github.com/bbatsov/rubocop/pull/5248): Add new `Lint/BigDecimalNew` cop. ([@koic][])
 * Add new `Style/TrailingBodyOnClass` cop. ([@garettarrowood][])
 * Add new `Style/TrailingBodyOnModule` cop. ([@garettarrowood][])
-* [#3394](https://github.com/bbatsov/rubocop/issues/3394): Add new `Style/TrailingCommmaInArrayLiteral` cop. ([@garettarrowood][])
-* [#3394](https://github.com/bbatsov/rubocop/issues/3394): Add new `Style/TrailingCommmaInHashLiteral` cop. ([@garettarrowood][])
+* [#3394](https://github.com/bbatsov/rubocop/issues/3394): Add new `Style/TrailingCommaInArrayLiteral` cop. ([@garettarrowood][])
+* [#3394](https://github.com/bbatsov/rubocop/issues/3394): Add new `Style/TrailingCommaInHashLiteral` cop. ([@garettarrowood][])
 * [#5319](https://github.com/bbatsov/rubocop/pull/5319): Add new `Security/Open` cop. ([@mame][])
 * Add `EnforcedStyleForEmptyBrackets` configuration to `Layout/SpaceInsideReferenceBrackets`.([@garettarrowood][])
 * [#5050](https://github.com/bbatsov/rubocop/issues/5050): Add auto-correction to `Style/ModuleFunction`. ([@garettarrowood][])
@@ -3229,3 +3236,6 @@
 [@satyap]: https://github.com/satyap
 [@unkmas]: https://github.com/unkmas
 [@elebow]: https://github.com/elebow
+[@colorbox]: https://github.com/colorbox
+[@mmyoji]: https://github.com/mmyoji
+[@unused]: https://github.com/unused

@@ -258,6 +258,8 @@ module RuboCop
       warn <<-WARNING.strip_indent
         Errors are usually caused by RuboCop bugs.
         Please, report your problems to RuboCop's issue tracker.
+        #{Gem.loaded_specs['rubocop'].metadata['bug_tracker_uri']}
+
         Mention the following information in the issue report:
         #{RuboCop::Version.version(true)}
       WARNING

@@ -268,5 +268,20 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
         end
       end
     end
+
+    context 'w/ --fail-fast option' do
+      let(:options) do
+        {
+          force_exclusion: force_exclusion,
+          debug: debug,
+          fail_fast: true
+        }
+      end
+
+      it 'works' do
+        rb_file_count = found_files.count { |f| f.end_with?('.rb') }
+        expect(rb_file_count).to eq(3)
+      end
+    end
   end
 end
