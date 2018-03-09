@@ -48,7 +48,7 @@ module RuboCop
               corrector.insert_before(line, "\n")
             end
 
-            unless next_line_empty?(node, next_line)
+            unless next_line_empty?(next_line)
               corrector.insert_after(line, "\n")
             end
           end
@@ -68,8 +68,8 @@ module RuboCop
             previous_line.blank?
         end
 
-        def next_line_empty?(node, next_line)
-          last_children?(node) || next_line.blank?
+        def next_line_empty?(next_line)
+          body_end?(next_line) || next_line.blank?
         end
 
         def empty_lines_around?(node)
@@ -78,8 +78,7 @@ module RuboCop
                                                           send_line)
           next_line = processed_source[send_line]
 
-          previous_line_empty?(previous_line) &&
-            next_line_empty?(node, next_line)
+          previous_line_empty?(previous_line) && next_line_empty?(next_line)
         end
 
         def class_def?(line)
@@ -90,10 +89,8 @@ module RuboCop
           line.match(/ (do|{)( \|.*?\|)?\s?$/)
         end
 
-        def last_children?(node)
-          next_sibling = node.parent.children[node.sibling_index + 1]
-
-          next_sibling.nil?
+        def body_end?(line)
+          line =~ /^\s*end\b/
         end
 
         def message(node)
