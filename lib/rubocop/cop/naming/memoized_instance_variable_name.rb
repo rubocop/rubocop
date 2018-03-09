@@ -34,7 +34,7 @@ module RuboCop
       #
       class MemoizedInstanceVariableName < Cop
         MSG = 'Memoized variable `%<var>s` does not match ' \
-          'method name `%<method>s`. Use `@%<method>s` instead.'.freeze
+          'method name `%<method>s`. Use `@%<suggested_var>s` instead.'.freeze
 
         def self.node_pattern
           memo_assign = '(or_asgn $(ivasgn _) _)'
@@ -55,6 +55,7 @@ module RuboCop
           msg = format(
             MSG,
             var: ivar_assign.children.first.to_s,
+            suggested_var: method_name.to_s.chomp('?'),
             method: method_name
           )
           add_offense(node, location: ivar_assign.source_range, message: msg)
