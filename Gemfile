@@ -6,6 +6,8 @@ gemspec
 
 gem 'bump', require: false
 gem 'pry'
+# pry-byebug requires MRI 2.2.0 or higher.
+gem 'pry-byebug' if RUBY_ENGINE == 'ruby' && RUBY_VERSION >= '2.2.0'
 gem 'rake', '~> 12.0'
 gem 'rspec', '~> 3.7'
 gem 'rubocop-rspec', '~> 1.22.0'
