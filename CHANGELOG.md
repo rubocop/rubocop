@@ -9,6 +9,7 @@
 * [#5633](https://github.com/bbatsov/rubocop/pull/5633): Fix broken `--fail-fast`. ([@mmyoji][])
 * [#5630](https://github.com/bbatsov/rubocop/issues/5630): Fix false positive for `Style/FormatStringToken` when using placeholder arguments in `format` method. ([@koic][])
 * [#5651](https://github.com/bbatsov/rubocop/pull/5651): Fix NoMethodError when specified config file that does not exist. ([@onk][])
+* [#5647](https://github.com/bbatsov/rubocop/pull/5647): Fix encoding method of RuboCop::MagicComment::SimpleComment. ([@htwroclau][])
 
 ### Changes
 
@@ -3241,3 +3242,4 @@
 [@colorbox]: https://github.com/colorbox
 [@mmyoji]: https://github.com/mmyoji
 [@unused]: https://github.com/unused
+[@htwroclau]: https://github.com/htwroclau
