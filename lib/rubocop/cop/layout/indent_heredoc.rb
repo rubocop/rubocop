@@ -73,9 +73,11 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include SafeMode
 
-        RUBY23_MSG = 'Use %<indentation_width>d spaces for indentation in a ' \
-                     'heredoc by using `<<~` instead of ' \
-                     '`%<current_indent_type>s`.'.freeze
+        RUBY23_TYPE_MSG = 'Use %<indentation_width>d spaces for indentation ' \
+                          'in a heredoc by using `<<~` instead of ' \
+                          '`%<current_indent_type>s`.'.freeze
+        RUBY23_WIDTH_MSG = 'Use %<indentation_width>d spaces for '\
+                           'indentation in a heredoc.'.freeze
         LIBRARY_MSG = 'Use %<indentation_width>d spaces for indentation in a ' \
                       'heredoc by using %<method>s.'.freeze
         STRIP_METHODS = {
@@ -148,10 +150,25 @@ module RuboCop
         end
 
         def ruby23_message(indentation_width, current_indent_type)
+          if current_indent_type == '<<~'
+            ruby23_width_message(indentation_width)
+          else
+            ruby23_type_message(indentation_width, current_indent_type)
+          end
+        end
+
+        def ruby23_type_message(indentation_width, current_indent_type)
           format(
-            RUBY23_MSG,
+            RUBY23_TYPE_MSG,
             indentation_width: indentation_width,
             current_indent_type: current_indent_type
+          )
+        end
+
+        def ruby23_width_message(indentation_width)
+          format(
+            RUBY23_WIDTH_MSG,
+            indentation_width: indentation_width
           )
         end
 
