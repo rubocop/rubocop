@@ -16,6 +16,7 @@
 * [#5626](https://github.com/bbatsov/rubocop/pull/5626): Change `Naming/UncommunicativeMethodParamName` add `to` to allowed names in default config. ([@unused][])
 * [#5640](https://github.com/bbatsov/rubocop/issues/5640): Warn about user configuration overriding other user configuration only with `--debug`. ([@jonas054][])
 * [#5637](https://github.com/bbatsov/rubocop/issues/5637): Fix error for `Layout/SpaceInsideArrayLiteralBrackets` when contains an array literal as an argument after a heredoc is started. ([@koic][])
+* [#5498](https://github.com/bbatsov/rubocop/issues/5498): Correct IndentHeredoc message for Ruby 2.3 when using `<<~` operator with invalid indentation. ([@hamada14][])
 
 ## 0.53.0 (2018-03-05)
 
@@ -3244,3 +3245,4 @@
 [@mmyoji]: https://github.com/mmyoji
 [@unused]: https://github.com/unused
 [@htwroclau]: https://github.com/htwroclau
+[@hamada14]: https://github.com/hamada14
