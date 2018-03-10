@@ -118,7 +118,7 @@ end
 
 desc 'Syntax check for the documentation comments'
 task documentation_syntax_check: :yard_for_generate_documentation do
-  require 'parser/ruby24'
+  require 'parser/ruby25'
 
   ok = true
   YARD::Registry.load!
@@ -134,7 +134,7 @@ task documentation_syntax_check: :yard_for_generate_documentation do
       begin
         buffer = Parser::Source::Buffer.new('<code>', 1)
         buffer.source = example.text
-        parser = Parser::Ruby24.new(RuboCop::AST::Builder.new)
+        parser = Parser::Ruby25.new(RuboCop::AST::Builder.new)
         parser.diagnostics.all_errors_are_fatal = true
         parser.parse(buffer)
       rescue Parser::SyntaxError => ex
