@@ -8,7 +8,7 @@ module RuboCop
       # In Ruby 2.3 or newer, squiggly heredocs (`<<~`) should be used. If you
       # use the older rubies, you should introduce some library to your project
       # (e.g. ActiveSupport, Powerpack or Unindent).
-      # Note: When `Metrics/LineLength`'s `AllowHeredoc` is false(not default),
+      # Note: When `Metrics/LineLength`'s `AllowHeredoc` is false (not default),
       #       this cop does not add any offenses for long here documents to
       #       avoid `Metrics/LineLength`'s offenses.
       #
@@ -177,6 +177,7 @@ module RuboCop
           lambda do |corrector|
             if heredoc_indent_type(node) == '~'
               corrector.replace(node.loc.heredoc_body, indented_body(node))
+              corrector.replace(node.loc.heredoc_end, indented_end(node))
             else
               heredoc_beginning = node.loc.expression.source
               corrected = heredoc_beginning.sub(/<<-?/, '<<~')
@@ -213,6 +214,18 @@ module RuboCop
           body.gsub(/^\s{#{body_indent_level}}/, ' ' * correct_indent_level)
         end
 
+        def indented_end(node)
+          end_ = heredoc_end(node)
+          end_indent_level = indent_level(end_)
+          correct_indent_level = base_indent_level(node)
+          # Necessary?
+          if end_indent_level < correct_indent_level
+            end_.gsub(/^\s{#{end_indent_level}}/, ' ' * correct_indent_level)
+          else
+            end_
+          end
+        end
+
         def base_indent_level(node)
           base_line_num = node.loc.expression.line
           base_line = processed_source.lines[base_line_num - 1]
@@ -237,6 +250,10 @@ module RuboCop
 
         def heredoc_body(node)
           node.loc.heredoc_body.source.scrub
+        end
+
+        def heredoc_end(node)
+          node.loc.heredoc_end.source.scrub
         end
       end
     end
