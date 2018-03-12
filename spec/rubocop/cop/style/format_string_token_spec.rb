@@ -127,6 +127,17 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
     RUBY
   end
 
+  it 'ignores placeholder argumetns' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      format(
+        '%<day>s %<start>s-%<end>s',
+        day: open_house.starts_at.strftime('%a'),
+        start: open_house.starts_at.strftime('%l'),
+        end: open_house.ends_at.strftime('%l %p').strip
+      )
+    RUBY
+  end
+
   it 'handles __FILE__' do
     expect_no_offenses('__FILE__')
   end

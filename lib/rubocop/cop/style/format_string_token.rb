@@ -51,6 +51,7 @@ module RuboCop
         }.freeze
 
         def on_str(node)
+          return if placeholder_argument?(node)
           return if node.each_ancestor(:xstr, :regexp).any?
 
           tokens(node) do |detected_style, token_range|
@@ -155,6 +156,13 @@ module RuboCop
             new_begin,
             new_end
           )
+        end
+
+        def placeholder_argument?(node)
+          return false unless node.parent
+          return true if node.parent.pair_type?
+
+          placeholder_argument?(node.parent)
         end
       end
     end

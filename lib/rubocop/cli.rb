@@ -41,7 +41,7 @@ module RuboCop
       execute_runners(paths)
     rescue RuboCop::ConfigNotFoundError => e
       warn e.message
-      e.status
+      STATUS_ERROR
     rescue RuboCop::Error => e
       warn Rainbow("Error: #{e.message}").red
       STATUS_ERROR
@@ -258,6 +258,8 @@ module RuboCop
       warn <<-WARNING.strip_indent
         Errors are usually caused by RuboCop bugs.
         Please, report your problems to RuboCop's issue tracker.
+        #{Gem.loaded_specs['rubocop'].metadata['bug_tracker_uri']}
+
         Mention the following information in the issue report:
         #{RuboCop::Version.version(true)}
       WARNING

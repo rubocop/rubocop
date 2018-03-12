@@ -84,6 +84,11 @@ RSpec.describe RuboCop::MagicComment do
                    encoding: 'ascii-8bit',
                    frozen_string_literal: nil
 
+  include_examples 'magic comment',
+                   ' CSV.generate(encoding: Encoding::UTF_8) do |csv|',
+                   encoding: nil,
+                   frozen_string_literal: nil
+
   include_examples(
     'magic comment',
     '# -*- encoding: ASCII-8BIT; frozen_string_literal: true -*-',

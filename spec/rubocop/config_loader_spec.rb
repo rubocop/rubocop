@@ -3,6 +3,9 @@
 RSpec.describe RuboCop::ConfigLoader do
   include FileHelper
 
+  before { described_class.debug = true }
+  after { described_class.debug = false }
+
   let(:default_config) { described_class.default_configuration }
 
   describe '.configuration_file_for', :isolated_environment do
@@ -202,6 +205,10 @@ RSpec.describe RuboCop::ConfigLoader do
 
     context 'when a file inherits and overrides an Exclude' do
       let(:file_path) { '.rubocop.yml' }
+      let(:message) do
+        '.rubocop.yml: Style/For:Exclude overrides the same parameter in ' \
+        '.rubocop_todo.yml'
+      end
 
       before do
         create_file(file_path, <<-YAML.strip_indent)
@@ -225,8 +232,7 @@ RSpec.describe RuboCop::ConfigLoader do
           excludes = configuration_from_file['Style/For']['Exclude']
           expect(excludes)
             .to eq([File.expand_path('spec/requests/group_invite_spec.rb')])
-        end.to output('.rubocop.yml: Style/For:Exclude overrides the same ' \
-                      "parameter in .rubocop_todo.yml\n").to_stderr
+        end.to output(/#{message}/).to_stdout
       end
     end
 
@@ -263,7 +269,7 @@ RSpec.describe RuboCop::ConfigLoader do
             .to eq([File.expand_path('spec/requests/group_invite_spec.rb'),
                     File.expand_path('spec/models/expense_spec.rb'),
                     File.expand_path('spec/models/group_spec.rb')].sort)
-        end.not_to output.to_stderr
+        end.not_to output(/overrides the same parameter/).to_stdout
       end
 
       it 'does not merge the default_config' do
@@ -318,7 +324,7 @@ RSpec.describe RuboCop::ConfigLoader do
             .to eq([File.expand_path('spec/requests/group_invite_spec.rb'),
                     File.expand_path('spec/models/expense_spec.rb'),
                     File.expand_path('spec/models/group_spec.rb')].sort)
-        end.not_to output.to_stderr
+        end.not_to output(/overrides the same parameter/).to_stdout
       end
 
       it 'overwrites the Exclude from the parent when the cop overrides' \
@@ -327,7 +333,7 @@ RSpec.describe RuboCop::ConfigLoader do
           excludes = configuration_from_file['Style/Dir']['Exclude']
           expect(excludes)
             .to eq([File.expand_path('spec/requests/group_invite_spec.rb')])
-        end.not_to output.to_stderr
+        end.not_to output(/overrides the same parameter/).to_stdout
       end
     end
 
@@ -477,7 +483,7 @@ RSpec.describe RuboCop::ConfigLoader do
         expect do
           expect(configuration_from_file['Metrics/MethodLength']
                    .to_set.superset?(expected.to_set)).to be(true)
-        end.to output(<<-OUTPUT.strip_indent).to_stderr
+        end.to output(/#{<<-OUTPUT.strip_indent}/).to_stdout
           .rubocop.yml: Metrics/MethodLength:Enabled overrides the same parameter in normal.yml
           .rubocop.yml: Metrics/MethodLength:Enabled overrides the same parameter in special.yml
           .rubocop.yml: Metrics/MethodLength:Max overrides the same parameter in special.yml

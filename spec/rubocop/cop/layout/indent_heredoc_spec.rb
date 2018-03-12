@@ -29,13 +29,17 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
     end
   end
 
-  shared_examples :check_message do |name, message|
+  shared_examples :check_message do |name, message, code = nil|
     it "displays a message with #{name}" do
-      inspect_source(<<-RUBY.strip_indent)
-        <<-RUBY2
-        foo
-        RUBY2
-      RUBY
+      if code
+        inspect_source(code.strip_indent)
+      else
+        inspect_source(<<-RUBY.strip_indent)
+          <<-RUBY2
+          foo
+          RUBY2
+        RUBY
+      end
       expect(cop.messages).to eq(message)
     end
   end
@@ -188,9 +192,19 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
         include_examples :warning, warning
 
         context 'Ruby 2.3', :ruby23 do
-          message = 'Use 2 spaces for indentation in a heredoc by using ' \
-                    '`<<~` instead of `<<-`.'
-          include_examples :check_message, 'squiggly heredoc', [message]
+          width_message = 'Use 2 spaces for indentation in a heredoc.'
+          include_examples :check_message, 'squiggly heredoc, with ~',
+                           [width_message], <<-RUBY
+            <<~#{quote}RUBY2#{quote}
+            \#{foo}
+            bar
+            RUBY2
+          RUBY
+
+          type_message = 'Use 2 spaces for indentation in a heredoc by using ' \
+                         '`<<~` instead of `<<-`.'
+          include_examples :check_message, 'squiggly heredoc, without ~',
+                           [type_message]
           include_examples :offense, 'not indented', <<-RUBY, <<-CORRECTION
             <<#{quote}RUBY2#{quote}
             \#{foo}
@@ -262,6 +276,17 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
         include_examples :offense, 'not indented, without `~`',
                          <<-RUBY, <<-CORRECTION
           <<#{quote}RUBY2#{quote}
+          foo
+          RUBY2
+        RUBY
+          <<~#{quote}RUBY2#{quote}
+            foo
+          RUBY2
+        CORRECTION
+
+        include_examples :offense, 'not indented, with `~`',
+                         <<-RUBY, <<-CORRECTION
+          <<~#{quote}RUBY2#{quote}
           foo
           RUBY2
         RUBY
