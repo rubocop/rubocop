@@ -90,7 +90,7 @@ module RuboCop
         end
 
         def body_end?(line)
-          line =~ /^\s*end/
+          line =~ /^\s*end\b/
         end
 
         def message(node)

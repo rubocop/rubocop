@@ -234,6 +234,19 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
       RUBY
     end
 
+    it 'requires blank line when next line started with end' do
+      inspect_source(<<-RUBY.strip_indent)
+        class Test
+          #{access_modifier}
+          end_this!
+        end
+      RUBY
+
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages)
+        .to eq(["Keep a blank line after `#{access_modifier}`."])
+    end
+
     it 'recognizes blank lines with DOS style line endings' do
       expect_no_offenses(<<-RUBY.strip_indent)
         class Test\r
