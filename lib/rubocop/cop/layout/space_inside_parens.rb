@@ -3,8 +3,6 @@
 module RuboCop
   module Cop
     module Layout
-      #
-
       # Checks for spaces inside ordinary round parentheses.
       #
       # @example EnforcedStyle: no_space (default)
@@ -20,7 +18,8 @@ module RuboCop
       #   g = (a + 3)
       #
       # @example EnforcedStyle: space
-      #   # The `space` style enforces that parentheses have a space at the beginning and end.
+      #   # The `space` style enforces that parentheses have a space at the
+      #   # beginning and end.
       #   # Note: Empty paraentheses should not have spaces.
       #
       #   # bad
@@ -43,22 +42,21 @@ module RuboCop
         def investigate(processed_source)
           @processed_source = processed_source
 
-          if cop_config["EnforcedStyle"] == "space"
+          if cop_config['EnforcedStyle'] == 'space'
             each_missing_space(processed_source.tokens) do |range|
               add_offense(range, location: range, message: MSG_SPACE)
             end
-          
+
           else
             each_extraneous_space(processed_source.tokens) do |range|
-              add_offense(range, location: range, message: MSG)
+              add_offense(range, location: range)
             end
           end
         end
 
         def autocorrect(range)
-          lambda do |corrector| 
-            if cop_config["EnforcedStyle"] == "space" 
-              # SpaceCorrector.add_space(processed_source, corrector, left, right)
+          lambda do |corrector|
+            if cop_config['EnforcedStyle'] == 'space'
               corrector.insert_before(range, ' ')
             else
               corrector.remove(range)
@@ -90,13 +88,14 @@ module RuboCop
             next if token2.comment?
             next unless token2.line == token1.line && !token1.space_after?
 
-            next if token1.left_parens? && token2.right_parens? # Ignore empty parens. # TODO: This could be another configuration option.
+            # Ignore empty parens. # TODO: Could be configurable.
+            next if token1.left_parens? && token2.right_parens?
 
-            if token1.left_parens? 
-              yield range_between(token2.begin_pos, token2.begin_pos + 1) 
+            if token1.left_parens?
+              yield range_between(token2.begin_pos, token2.begin_pos + 1)
 
-            elsif token2.right_parens? 
-              yield range_between(token2.begin_pos, token2.end_pos) 
+            elsif token2.right_parens?
+              yield range_between(token2.begin_pos, token2.end_pos)
             end
           end
         end

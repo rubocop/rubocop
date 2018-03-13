@@ -50,12 +50,11 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideParens, :config do
         g = (a + 3)
       RUBY
     end
-
   end
 
   context 'when EnforcedStyle is space' do
     let(:cop_config) { { 'EnforcedStyle' => 'space' } }
-    
+
     it 'registers an offense for no spaces inside parens' do
       expect_offense(<<-RUBY.strip_indent)
         f( 3)
