@@ -81,15 +81,9 @@ module RuboCop
 
         def each_missing_space(tokens)
           tokens.each_cons(2) do |token1, token2|
-            next unless parens?(token1, token2)
+            next if can_be_ignored?(token1, token2)
 
-            # If the second token is a comment, that means that a line break
-            # follows, and that the rules for space inside don't apply.
-            next if token2.comment?
             next unless token2.line == token1.line && !token1.space_after?
-
-            # Ignore empty parens. # TODO: Could be configurable.
-            next if token1.left_parens? && token2.right_parens?
 
             if token1.left_parens?
               yield range_between(token2.begin_pos, token2.begin_pos + 1)
@@ -102,6 +96,17 @@ module RuboCop
 
         def parens?(token1, token2)
           token1.left_parens? || token2.right_parens?
+        end
+
+        def can_be_ignored?(token1, token2)
+          return true unless parens?(token1, token2)
+
+          # If the second token is a comment, that means that a line break
+          # follows, and that the rules for space inside don't apply.
+          return true if token2.comment?
+
+          # Ignore empty parens. # TODO: Could be configurable.
+          return true if token1.left_parens? && token2.right_parens?
         end
       end
     end
