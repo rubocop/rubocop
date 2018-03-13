@@ -3,7 +3,12 @@
 module RuboCop
   module Cop
     module Layout
+      #
+
       # Checks for spaces inside ordinary round parentheses.
+      #
+      # @example EnforcedStyle: no_space (default)
+      #   # The `no_space` style enforces that parentheses do not have spaces
       #
       # @example
       #   # bad
@@ -13,10 +18,24 @@ module RuboCop
       #   # good
       #   f(3)
       #   g = (a + 3)
+      #
+      # @example EnforcedStyle: space
+      #   # The `space` style enforces that parentheses have a space at the beginning and end.
+      #   # Note: Empty paraentheses should not have spaces.
+      #
+      #   # bad
+      #   f(3)
+      #   g = (a + 3)
+      #   y( )
+      #
+      #   # good
+      #   f( 3 )
+      #   g = ( a + 3 )
+      #   y()
+      #
       class SpaceInsideParens < Cop
         include SurroundingSpace
         include RangeHelp
-        # include ConfigurableEnforcedStyle
 
         MSG       = 'Space inside parentheses detected.'.freeze
         MSG_SPACE = 'No space inside parentheses detected.'.freeze
