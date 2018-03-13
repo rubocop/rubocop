@@ -598,6 +598,12 @@ Layout/SpaceInsideHashLiteralBraces:
     - space
     - no_space
 
+Layout/SpaceInsideParens:
+  EnforcedStyle: no_space
+  SupportedStyles:
+    - space
+    - no_space
+
 Layout/SpaceInsideReferenceBrackets:
   EnforcedStyle: no_space
   SupportedStyles:
