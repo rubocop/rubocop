@@ -16,18 +16,35 @@ module RuboCop
       class SpaceInsideParens < Cop
         include SurroundingSpace
         include RangeHelp
+        # include ConfigurableEnforcedStyle
 
-        MSG = 'Space inside parentheses detected.'.freeze
+        MSG       = 'Space inside parentheses detected.'.freeze
+        MSG_SPACE = 'No space inside parentheses detected.'.freeze
 
         def investigate(processed_source)
           @processed_source = processed_source
-          each_extraneous_space(processed_source.tokens) do |range|
-            add_offense(range, location: range)
+
+          if cop_config["EnforcedStyle"] == "space"
+            each_missing_space(processed_source.tokens) do |range|
+              add_offense(range, location: range, message: MSG_SPACE)
+            end
+          
+          else
+            each_extraneous_space(processed_source.tokens) do |range|
+              add_offense(range, location: range, message: MSG)
+            end
           end
         end
 
         def autocorrect(range)
-          ->(corrector) { corrector.remove(range) }
+          lambda do |corrector| 
+            if cop_config["EnforcedStyle"] == "space" 
+              # SpaceCorrector.add_space(processed_source, corrector, left, right)
+              corrector.insert_before(range, ' ')
+            else
+              corrector.remove(range)
+            end
+          end
         end
 
         private
@@ -42,6 +59,26 @@ module RuboCop
             next unless token2.line == token1.line && token1.space_after?
 
             yield range_between(token1.end_pos, token2.begin_pos)
+          end
+        end
+
+        def each_missing_space(tokens)
+          tokens.each_cons(2) do |token1, token2|
+            next unless parens?(token1, token2)
+
+            # If the second token is a comment, that means that a line break
+            # follows, and that the rules for space inside don't apply.
+            next if token2.comment?
+            next unless token2.line == token1.line && !token1.space_after?
+
+            next if token1.left_parens? && token2.right_parens? # Ignore empty parens. # TODO: This could be another configuration option.
+
+            if token1.left_parens? 
+              yield range_between(token2.begin_pos, token2.begin_pos + 1) 
+
+            elsif token2.right_parens? 
+              yield range_between(token2.begin_pos, token2.end_pos) 
+            end
           end
         end
 
