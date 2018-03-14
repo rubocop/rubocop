@@ -6,8 +6,8 @@ module RuboCop
     module UncommunicativeName
       CASE_MSG = 'Only use lowercase characters for %<name_type>s.'.freeze
       NUM_MSG = 'Do not end %<name_type>s with a number.'.freeze
-      LENGTH_MSG = '%<name_type>s must be longer than %<min>s ' \
-                   'characters.'.freeze
+      LENGTH_MSG = '%<name_type>s must be at least %<min>s ' \
+                   'characters long.'.freeze
       FORBIDDEN_MSG = 'Do not use %<name>s as a name for a ' \
                       '%<name_type>s.'.freeze
 

@@ -7,6 +7,7 @@
 
 ### Bug fixes
 
+* [#5683](https://github.com/bbatsov/rubocop/issues/5683): Fix message for Naming/UncommunicativeXParamName cops. ([@jlfaber][])
 * [#5680](https://github.com/bbatsov/rubocop/issues/5680): Fix Layout/ElseAlignment for rescue/else/ensure inside do/end blocks. ([@YukiJikumaru][])
 * [#5642](https://github.com/bbatsov/rubocop/pull/5642): Fix Style/Documentation :nodoc: for compact-style nested modules/classes. ([@ojab][])
 * [#5648](https://github.com/bbatsov/rubocop/issues/5648): Suggest valid memoized instance variable for predicate method. ([@satyap][])
@@ -3255,3 +3256,4 @@
 [@hamada14]: https://github.com/hamada14
 [@anthony-robin]: https://github.com/anthony-robin
 [@YukiJikumaru]: https://github.com/YukiJikumaru
+[@jlfaber]: https://github.com/jlfaber
