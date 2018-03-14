@@ -40,7 +40,7 @@ module RuboCop
           return if ignored_node?(node)
           return unless node.else? && begins_its_line?(node.loc.else)
 
-          check_alignment(base_range(node, base), node.loc.else)
+          check_alignment(base_range_of_if(node, base), node.loc.else)
 
           return unless node.elsif_conditional?
 
@@ -50,14 +50,7 @@ module RuboCop
         def on_rescue(node)
           return unless node.loc.respond_to?(:else) && node.loc.else
 
-          parent = node.parent
-          parent = parent.parent if parent.ensure_type?
-          base = case parent.type
-                 when :def, :defs then base_for_method_definition(parent)
-                 when :kwbegin then parent.loc.begin
-                 else node.loc.keyword
-                 end
-          check_alignment(base, node.loc.else)
+          check_alignment(base_range_of_rescue(node), node.loc.else)
         end
 
         def on_case(node)
@@ -77,12 +70,23 @@ module RuboCop
           ignore_node(node)
         end
 
-        def base_range(node, base)
+        def base_range_of_if(node, base)
           if base
             base.source_range
           else
             lineage = [node, *node.each_ancestor(:if)]
             lineage.find { |parent| parent.if? || parent.unless? }.loc.keyword
+          end
+        end
+
+        def base_range_of_rescue(node)
+          parent = node.parent
+          parent = parent.parent if parent.ensure_type?
+          case parent.type
+          when :def, :defs then base_for_method_definition(parent)
+          when :kwbegin then parent.loc.begin
+          when :block then parent.send_node.source_range
+          else node.loc.keyword
           end
         end
 
