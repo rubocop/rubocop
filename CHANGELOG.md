@@ -2,6 +2,9 @@
 
 ## master (unreleased)
 
+### New features
+* [#5597](https://github.com/bbatsov/rubocop/pull/5597): Add new `Rails/HttpStatus` cop. ([@anthony-robin][])
+
 ### Bug fixes
 
 * [#5642](https://github.com/bbatsov/rubocop/pull/5642): Fix Style/Documentation :nodoc: for compact-style nested modules/classes. ([@ojab][])
@@ -3249,3 +3252,4 @@
 [@unused]: https://github.com/unused
 [@htwroclau]: https://github.com/htwroclau
 [@hamada14]: https://github.com/hamada14
+[@anthony-robin]: https://github.com/anthony-robin

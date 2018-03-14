@@ -1667,6 +1667,12 @@ Rails/HasManyOrHasOneDependent:
   Include:
     - app/models/**/*.rb
 
+Rails/HttpStatus:
+  EnforcedStyle: symbolic
+  SupportedStyles:
+    - numeric
+    - symbolic
+
 Rails/InverseOf:
   Include:
     - app/models/**/*.rb

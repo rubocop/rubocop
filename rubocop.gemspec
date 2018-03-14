@@ -44,5 +44,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('unicode-display_width', '~> 1.0', '>= 1.0.1')
 
   s.add_development_dependency('bundler', '~> 1.3')
+  s.add_development_dependency('rack')
 end
 # rubocop:enable Metrics/BlockLength
