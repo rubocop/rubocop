@@ -44,6 +44,7 @@ module RuboCop
           return unless contains_guard_clause?(node)
 
           return if next_line_rescue_or_ensure?(node)
+          return if next_sibling_parent_empty_or_else?(node)
           return if next_sibling_empty_or_guard_clause?(node)
 
           return if next_line_empty?(node)
@@ -71,6 +72,15 @@ module RuboCop
         def next_line_rescue_or_ensure?(node)
           parent = node.parent
           parent.nil? || parent.rescue_type? || parent.ensure_type?
+        end
+
+        def next_sibling_parent_empty_or_else?(node)
+          next_sibling = node.parent.children[node.sibling_index + 1]
+          return true if next_sibling.nil?
+
+          parent = next_sibling.parent
+
+          parent && parent.if_type? && parent.else?
         end
 
         def next_sibling_empty_or_guard_clause?(node)
