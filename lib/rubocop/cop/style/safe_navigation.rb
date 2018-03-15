@@ -228,9 +228,10 @@ module RuboCop
           start_method.each_ancestor do |ancestor|
             break unless %i[send block].include?(ancestor.type)
             next unless ancestor.send_type?
-            break if ancestor == method_chain
 
             corrector.insert_before(ancestor.loc.dot, '&')
+
+            break if ancestor == method_chain
           end
         end
       end

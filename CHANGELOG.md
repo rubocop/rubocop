@@ -16,6 +16,7 @@
 * [#5651](https://github.com/bbatsov/rubocop/pull/5651): Fix NoMethodError when specified config file that does not exist. ([@onk][])
 * [#5647](https://github.com/bbatsov/rubocop/pull/5647): Fix encoding method of RuboCop::MagicComment::SimpleComment. ([@htwroclau][])
 * [#5619](https://github.com/bbatsov/rubocop/issues/5619): Do not register an offense in `Style/InverseMethods` when comparing constants with `<`, `>`, `<=`, or `>=`. If the code is being used to determine class hierarchy, the correction might not be accurate. ([@rrosenblum][])
+* Fix bug where `Style/SafeNavigation` does not auto-correct all chained methods resulting in a `Lint/SafeNavigationChain` offense. ([@rrosenblum][])
 
 ### Changes
 
