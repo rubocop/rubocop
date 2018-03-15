@@ -39,6 +39,9 @@ module RuboCop
         alias on_defs on_def
 
         def autocorrect(node)
+          parent = node.parent
+          return if parent && parent.send_type?
+
           if node.def_type?
             autocorrect_instance(node)
           elsif node.defs_type? && node.children.first.self_type?
