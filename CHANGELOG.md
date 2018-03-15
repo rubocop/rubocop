@@ -7,6 +7,7 @@
 
 ### Bug fixes
 
+* [#5680](https://github.com/bbatsov/rubocop/issues/5680): Fix Layout/ElseAlignment for rescue/else/ensure inside do/end blocks. ([@YukiJikumaru][])
 * [#5642](https://github.com/bbatsov/rubocop/pull/5642): Fix Style/Documentation :nodoc: for compact-style nested modules/classes. ([@ojab][])
 * [#5648](https://github.com/bbatsov/rubocop/issues/5648): Suggest valid memoized instance variable for predicate method. ([@satyap][])
 * [#5623](https://github.com/bbatsov/rubocop/pull/5623): Fix `Bundler/OrderedGems` when a group includes duplicate gems. ([@colorbox][])
@@ -3253,3 +3254,4 @@
 [@htwroclau]: https://github.com/htwroclau
 [@hamada14]: https://github.com/hamada14
 [@anthony-robin]: https://github.com/anthony-robin
+[@YukiJikumaru]: https://github.com/YukiJikumaru
