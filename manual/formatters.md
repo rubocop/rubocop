@@ -55,7 +55,7 @@ Inspecting 26 files
 
 Offenses:
 
-lib/foo.rb:6:5: C: Missing top-level class documentation comment.
+lib/foo.rb:6:5: C: Style/Documentation: Missing top-level class documentation comment.
     class Foo
     ^^^^^
 
@@ -75,16 +75,16 @@ W
 
 Offenses:
 
-test.rb:1:5: C: Use snake_case for method names.
+test.rb:1:5: C: Naming/MethodName: Use snake_case for method names.
 def badName
     ^^^^^^^
-test.rb:2:3: C: Use a guard clause instead of wrapping the code inside a conditional expression.
+test.rb:2:3: C: Style/GuardClause: Use a guard clause instead of wrapping the code inside a conditional expression.
   if something
   ^^
-test.rb:2:3: C: Favor modifier if usage when having a single-line body. Another good alternative is the usage of control flow &&/||.
+test.rb:2:3: C: Style/IfUnlessModifier: Favor modifier if usage when having a single-line body. Another good alternative is the usage of control flow &&/||.
   if something
   ^^
-test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
+test.rb:4:5: W: Layout/DefEndAlignment: end at 4, 4 is not aligned with if at 2, 2
     end
     ^^^
 
@@ -99,10 +99,10 @@ This is inspired by the [Fuubar](https://github.com/thekompanee/fuubar) formatte
 
 ```sh
 $ rubocop --format fuubar
-lib/foo.rb.rb:1:1: C: Use snake_case for methods and variables.
+lib/foo.rb.rb:1:1: C: Naming/MethodName: Use snake_case for method names.
 def badName
     ^^^^^^^
-lib/bar.rb:13:14: W: File.exists? is deprecated in favor of File.exist?.
+lib/bar.rb:13:14: W: Lint/DeprecatedClassMethods: File.exists? is deprecated in favor of File.exist?.
         File.exists?(path)
              ^^^^^^^
  22/53 files |======== 43 ========>                           |  ETA: 00:00:02
@@ -116,9 +116,9 @@ The `emacs` formatter displays the offenses in a format suitable for consumption
 
 ```sh
 $ rubocop --format emacs test.rb
-/Users/bozhidar/projects/test.rb:1:1: C: Use snake_case for methods and variables.
-/Users/bozhidar/projects/test.rb:2:3: C: Favor modifier if/unless usage when you have a single-line body. Another good alternative is the usage of control flow &&/||.
-/Users/bozhidar/projects/test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
+/Users/bozhidar/projects/test.rb:1:1: C: Naming/MethodName: Use snake_case for method names.
+/Users/bozhidar/projects/test.rb:2:3: C: Style/IfUnlessModifier: Favor modifier if/unless usage when you have a single-line body. Another good alternative is the usage of control flow &&/||.
+/Users/bozhidar/projects/test.rb:4:5: W: Layout/DefEndAlignment: end at 4, 4 is not aligned with if at 2, 2
 ```
 
 ### Simple Formatter
@@ -128,10 +128,10 @@ The name of the formatter says it all :-)
 ```sh
 $ rubocop --format simple test.rb
 == test.rb ==
-C:  1:  5: Use snake_case for method names.
-C:  2:  3: Use a guard clause instead of wrapping the code inside a conditional expression.
-C:  2:  3: Favor modifier if usage when having a single-line body. Another good alternative is the usage of control flow &&/||.
-W:  4:  5: end at 4, 4 is not aligned with if at 2, 2
+C:  1:  5: Naming/MethodName: Use snake_case for method names.
+C:  2:  3: Style/GuardClause: Use a guard clause instead of wrapping the code inside a conditional expression.
+C:  2:  3: Style/IfUnlessModifier: Favor modifier if usage when having a single-line body. Another good alternative is the usage of control flow &&/||.
+W:  4:  5: Layout/DefEndAlignment: end at 4, 4 is not aligned with if at 2, 2
 
 1 file inspected, 4 offenses detected
 ```
@@ -216,19 +216,20 @@ cops and the number of offenses found for each by running:
 ```sh
 $ rubocop --format offenses
 
-87   Documentation
-12   DotPosition
-8    AvoidGlobalVars
-7    EmptyLines
-6    AssignmentInCondition
-4    Blocks
-4    CommentAnnotation
-3    BlockAlignment
-1    IndentationWidth
-1    AvoidPerlBackrefs
-1    ColonMethodCall
+36   Metrics/LineLength
+18   Style/StringLiterals
+13   Style/Documentation
+10   Style/ExpandPathArguments
+8    Style/EmptyMethod
+6    Layout/IndentationConsistency
+4    Lint/HandleExceptions
+3    Layout/EmptyLinesAroundAccessModifier
+2    Layout/ExtraSpacing
+1    Layout/AccessModifierIndentation
+1    Style/ClassAndModuleChildren
 --
-134  Total
+102  Total
+
 ```
 
 ### Worst Offenders Formatter
