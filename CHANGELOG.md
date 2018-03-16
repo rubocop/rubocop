@@ -23,7 +23,7 @@
 * Fix bug where `Style/SafeNavigation` does not auto-correct all chained methods resulting in a `Lint/SafeNavigationChain` offense. ([@rrosenblum][])
 * [#5436](https://github.com/bbatsov/rubocop/issues/5436): Allow empty kwrest args in UncommunicativeName cops. ([@pocke][])
 * [#5674](https://github.com/bbatsov/rubocop/issues/5674): Fix auto-correction of `Layout/EmptyComment` when the empty comment appears on the same line as code. ([@rrosenblum][])
-* [#5679](https://github.com/bbatsov/rubocop/pull/5679): Fix a false positive for `Style/EmptyLineAfterGuardClause` when guard clause is before `rescue` or `ensure`. ([@koic][]) 
+* [#5679](https://github.com/bbatsov/rubocop/pull/5679): Fix a false positive for `Style/EmptyLineAfterGuardClause` when guard clause is before `rescue` or `ensure`. ([@koic][])
 
 ### Changes
 
@@ -31,7 +31,6 @@
 * [#5640](https://github.com/bbatsov/rubocop/issues/5640): Warn about user configuration overriding other user configuration only with `--debug`. ([@jonas054][])
 * [#5637](https://github.com/bbatsov/rubocop/issues/5637): Fix error for `Layout/SpaceInsideArrayLiteralBrackets` when contains an array literal as an argument after a heredoc is started. ([@koic][])
 * [#5498](https://github.com/bbatsov/rubocop/issues/5498): Correct IndentHeredoc message for Ruby 2.3 when using `<<~` operator with invalid indentation. ([@hamada14][])
-
 * [#5610](https://github.com/bbatsov/rubocop/issues/5610): Use `gems.locked` or `Gemfile.lock` to determine the best `TargetRubyVersion` when it is not specified in the config. ([@roberts1000][])
 
 ## 0.53.0 (2018-03-05)
