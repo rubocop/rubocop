@@ -535,4 +535,35 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
       RUBY
     end
   end
+
+  context '>= Ruby 2.5 ensure/rescue/else in Block Argument', :ruby25 do
+    it 'accepts a correctly aligned else' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        array_like.each do |n|
+          puts 'do something error prone'
+        rescue SomeException
+          puts 'error handling'
+        rescue
+          puts 'error handling'
+        else
+          puts 'normal handling'
+        end
+      RUBY
+    end
+
+    it 'registers an offense for misaligned else' do
+      expect_offense(<<-RUBY.strip_indent)
+        array_like.each do |n|
+          puts 'do something error prone'
+        rescue SomeException
+          puts 'error handling'
+        rescue
+          puts 'error handling'
+          else
+          ^^^^ Align `else` with `array_like.each`.
+          puts 'normal handling'
+        end
+      RUBY
+    end
+  end
 end
