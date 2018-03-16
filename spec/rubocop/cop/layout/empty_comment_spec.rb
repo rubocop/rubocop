@@ -23,6 +23,15 @@ RSpec.describe RuboCop::Cop::Layout::EmptyComment, :config do
     RUBY
   end
 
+  it 'registers an offense when using an empty comment next to code' do
+    expect_offense(<<-RUBY.strip_indent)
+      def foo #
+              ^ Source code comment is empty.
+        something
+      end
+    RUBY
+  end
+
   it 'does not register an offense when using comment text' do
     expect_no_offenses(<<-RUBY.strip_indent)
       # Description of `Foo` class.
@@ -118,6 +127,62 @@ RSpec.describe RuboCop::Cop::Layout::EmptyComment, :config do
       class Foo
         def hello
         end
+      end
+    RUBY
+  end
+
+  it 'autocorrects an empty comment next to code' do
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
+      def foo #
+        something
+      end
+    RUBY
+
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      def foo
+        something
+      end
+    RUBY
+  end
+
+  it 'autocorrects an empty comment without space next to code' do
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
+      def foo#
+        something
+      end
+    RUBY
+
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      def foo
+        something
+      end
+    RUBY
+  end
+
+  it 'autocorrects multiple empty comments next to code' do
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
+      def foo #
+        something #
+      end
+    RUBY
+
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      def foo
+        something
+      end
+    RUBY
+  end
+
+  it 'autocorrects multiple aligned empty comments next to code' do
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
+      def foo     #
+        something #
+      end
+    RUBY
+
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      def foo
+        something
       end
     RUBY
   end
