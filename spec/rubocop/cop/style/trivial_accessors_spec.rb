@@ -101,11 +101,20 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
     RUBY
   end
 
-  it 'register an offense on DSL-style trivial writer' do
+  it 'registers an offense on DSL-style trivial writer' do
     expect_offense(<<-RUBY.strip_indent)
       def foo(val)
       ^^^ Use `attr_writer` to define trivial writer methods.
-       @foo = val
+        @foo = val
+      end
+    RUBY
+  end
+
+  it 'registers an offense on reader with `private`' do
+    expect_offense(<<-RUBY.strip_indent)
+      private def foo
+              ^^^ Use `attr_reader` to define trivial reader methods.
+        @foo
       end
     RUBY
   end
@@ -379,6 +388,19 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
 
       it 'autocorrects' do
         expect(autocorrect_source(source)).to eq(corrected_source)
+      end
+    end
+
+    context 'with `private`' do
+      let(:source) { <<-RUBY.strip_indent }
+        private def foo
+          @foo
+        end
+      RUBY
+
+      it 'does not autocorrect' do
+        expect(autocorrect_source(source)).to eq(source)
+        expect(cop.offenses.map(&:corrected?)).to eq [false]
       end
     end
 
