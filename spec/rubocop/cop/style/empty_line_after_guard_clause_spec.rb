@@ -23,6 +23,20 @@ RSpec.describe RuboCop::Cop::Style::EmptyLineAfterGuardClause do
     RUBY
   end
 
+  it 'registers offence when guard clause is before `begin`' do
+    expect_offense(<<-RUBY.strip_indent)
+      def foo
+        return another_object if something_different?
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Add empty line after guard clause.
+        begin
+          bar
+        rescue SomeException
+          baz
+        end
+      end
+    RUBY
+  end
+
   it 'does not register offence for modifier if' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def foo
@@ -67,6 +81,30 @@ RSpec.describe RuboCop::Cop::Style::EmptyLineAfterGuardClause do
     expect_no_offenses(<<-RUBY.strip_indent)
       def foo
         return another_object if something_different?
+      end
+    RUBY
+  end
+
+  it 'does not register offence when guard clause is before `rescue`' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      def foo
+        begin
+          return another_object if something_different?
+        rescue SomeException
+          bar
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register offence when guard clause is before `ensure`' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      def foo
+        begin
+          return another_object if something_different?
+        ensure
+          bar
+        end
       end
     RUBY
   end

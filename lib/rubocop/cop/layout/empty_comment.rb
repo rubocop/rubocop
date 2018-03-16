@@ -87,8 +87,14 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            range = range_by_whole_lines(node.loc.expression,
-                                         include_final_newline: true)
+            previous_token = previous_token(node)
+            range = if previous_token && node.loc.line == previous_token.line
+                      range_with_surrounding_space(range: node.loc.expression,
+                                                   newlines: false)
+                    else
+                      range_by_whole_lines(node.loc.expression,
+                                           include_final_newline: true)
+                    end
 
             corrector.remove(range)
           end
@@ -133,6 +139,20 @@ module RuboCop
 
         def allow_margin_comment?
           cop_config['AllowMarginComment']
+        end
+
+        def current_token(node)
+          processed_source.find_token do |token|
+            token.pos.column == node.loc.column &&
+              token.pos.last_column == node.loc.last_column &&
+              token.line == node.loc.line
+          end
+        end
+
+        def previous_token(node)
+          current_token = current_token(node)
+          index = processed_source.tokens.index(current_token)
+          index.zero? ? nil : processed_source.tokens[index - 1]
         end
       end
     end
