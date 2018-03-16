@@ -55,7 +55,7 @@ module RuboCop
           msg = format(
             MSG,
             var: ivar_assign.children.first.to_s,
-            suggested_var: method_name.to_s.chomp('?'),
+            suggested_var: method_name.to_s.delete('!?'),
             method: method_name
           )
           add_offense(node, location: ivar_assign.source_range, message: msg)
@@ -66,7 +66,7 @@ module RuboCop
 
         def matches?(method_name, ivar_assign)
           return true if ivar_assign.nil? || method_name == :initialize
-          method_name = method_name.to_s.sub('?', '')
+          method_name = method_name.to_s.delete('!?')
           variable = ivar_assign.children.first
           variable_name = variable.to_s.sub('@', '')
           variable_name == method_name
