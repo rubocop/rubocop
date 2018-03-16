@@ -3,6 +3,7 @@
 ## master (unreleased)
 
 ### New features
+
 * [#5597](https://github.com/bbatsov/rubocop/pull/5597): Add new `Rails/HttpStatus` cop. ([@anthony-robin][])
 
 ### Bug fixes
@@ -17,6 +18,7 @@
 * [#5651](https://github.com/bbatsov/rubocop/pull/5651): Fix NoMethodError when specified config file that does not exist. ([@onk][])
 * [#5647](https://github.com/bbatsov/rubocop/pull/5647): Fix encoding method of RuboCop::MagicComment::SimpleComment. ([@htwroclau][])
 * [#5619](https://github.com/bbatsov/rubocop/issues/5619): Do not register an offense in `Style/InverseMethods` when comparing constants with `<`, `>`, `<=`, or `>=`. If the code is being used to determine class hierarchy, the correction might not be accurate. ([@rrosenblum][])
+* [#5436](https://github.com/bbatsov/rubocop/issues/5436): Allow empty kwrest args in UncommunicativeName cops. ([@pocke][])
 * [#5674](https://github.com/bbatsov/rubocop/issues/5674): Fix auto-correction of `Layout/EmptyComment` when the empty comment appears on the same line as code. ([@rrosenblum][])
 * [#5679](https://github.com/bbatsov/rubocop/pull/5679): Fix a false positive for `Style/EmptyLineAfterGuardClause` when guard clause is before `rescue` or `ensure`. ([@koic][]) 
 
