@@ -1069,7 +1069,41 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
           end
 
           context 'method chaining' do
-            it 'corrects an object check followed by a chained method call' do
+            it 'corrects an object check followed by ' \
+              'a chained method call' do
+              new_source = autocorrect_source(<<-RUBY.strip_indent)
+                #{variable} && #{variable}.one.two
+              RUBY
+
+              expect(new_source).to eq(<<-RUBY.strip_indent)
+                #{variable}&.one&.two
+              RUBY
+            end
+
+            it 'corrects an object check followed by ' \
+              'a chained method call with params' do
+              new_source = autocorrect_source(<<-RUBY.strip_indent)
+                #{variable} && #{variable}.one.two(baz)
+              RUBY
+
+              expect(new_source).to eq(<<-RUBY.strip_indent)
+                #{variable}&.one&.two(baz)
+              RUBY
+            end
+
+            it 'corrects an object check followed by ' \
+              'a chained method call with a symbol proc' do
+              new_source = autocorrect_source(<<-RUBY.strip_indent)
+                #{variable} && #{variable}.one.two(&:baz)
+              RUBY
+
+              expect(new_source).to eq(<<-RUBY.strip_indent)
+                #{variable}&.one&.two(&:baz)
+              RUBY
+            end
+
+            it 'corrects an object check followed by ' \
+              'a chained method call with a block' do
               new_source = autocorrect_source(<<-RUBY.strip_indent)
                 #{variable} && #{variable}.one.two(baz) { |e| e.qux }
               RUBY
