@@ -89,20 +89,34 @@ module RuboCop
           end
         end
 
+        # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         def check_assignment(token)
-          assignment_line = ''
-          message = ''
-          if should_aligned_with_preceding_line?(token)
-            assignment_line = processed_source.preceding_line(token)
-            message = format(MSG_UNALIGNED_ASGN, location: 'preceding')
-          else
-            assignment_line = processed_source.following_line(token)
-            message = format(MSG_UNALIGNED_ASGN, location: 'following')
-          end
+          token_line_indent              = processed_source
+                                           .line_indentation(token.line)
+
+          preceding_line_range           = token.line.downto(1)
+          preceding_assignment_lines     = \
+            relevant_assignment_lines(preceding_line_range)
+          preceding_relevant_line_number = preceding_assignment_lines[1]
+
+          return unless preceding_relevant_line_number
+
+          preceding_relevant_indent = \
+            processed_source
+            .line_indentation(preceding_relevant_line_number)
+
+          return if preceding_relevant_indent < token_line_indent
+
+          assignment_line = processed_source
+                            .lines[preceding_relevant_line_number - 1]
+          message         = format(MSG_UNALIGNED_ASGN, location: 'preceding')
+
+          return unless assignment_line
           return if aligned_assignment?(token.pos, assignment_line)
 
           add_offense(token.pos, location: token.pos, message: message)
         end
+        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
         def should_aligned_with_preceding_line?(token)
           @asgn_lines.include?(token.line - 1)
@@ -188,7 +202,7 @@ module RuboCop
         end
 
         def align_equal_signs(range, corrector)
-          lines  = contiguous_assignment_lines(range)
+          lines  = all_relevant_assignment_lines(range.line)
           tokens = @asgn_tokens.select { |t| lines.include?(t.line) }
 
           columns  = tokens.map { |t| align_column(t) }
@@ -221,6 +235,48 @@ module RuboCop
 
           result.sort!
         end
+
+        def all_relevant_assignment_lines(line_number)
+          last_line_number = processed_source.lines.size
+
+          (
+            relevant_assignment_lines(line_number.downto(1)) +
+            relevant_assignment_lines(line_number.upto(last_line_number))
+          )
+            .uniq
+            .sort
+        end
+
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+        # rubocop:disable Metrics/PerceivedComplexity, Metrics/MethodLength
+        def relevant_assignment_lines(line_range)
+          result               = []
+          original_line_indent = processed_source
+                                 .line_indentation(line_range.first)
+          previous_line_indent_at_level = true
+
+          line_range.each do |line_number|
+            current_line_indent = processed_source.line_indentation(line_number)
+            blank_line          = processed_source.lines[line_number - 1].blank?
+
+            if (current_line_indent < original_line_indent && !blank_line) ||
+               (previous_line_indent_at_level && blank_line)
+              break
+            end
+
+            result << line_number if @asgn_lines.include?(line_number) &&
+                                     current_line_indent == original_line_indent
+
+            unless blank_line
+              previous_line_indent_at_level = \
+                current_line_indent == original_line_indent
+            end
+          end
+
+          result
+        end
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
+        # rubocop:enable Metrics/PerceivedComplexity, Metrics/MethodLength
 
         def align_column(asgn_token)
           # if we removed unneeded spaces from the beginning of this =,

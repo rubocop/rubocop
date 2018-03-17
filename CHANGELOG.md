@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#5265](https://github.com/rubocop-hq/rubocop/issues/5265): Improved `Layout/ExtraSpacing` cop to handle nested consecutive assignments. ([@jfelchner][])
+
 ## 0.73.0 (2019-07-16)
 
 ### New features
