@@ -87,6 +87,7 @@
 * [#5390](https://github.com/bbatsov/rubocop/issues/5390): Allow exceptions to `Style/InlineComment` for inline comments which enable or disable rubocop cops. ([@jfelchner][])
 * Add progress bar to offenses formatter. ([@drewpterry][])
 * [#5498](https://github.com/bbatsov/rubocop/issues/5498): Correct `IndentHeredoc` message for Ruby 2.3 when using `<<~` operator with invalid indentation. ([@hamada14][])
+* [#5265](https://github.com/bbatsov/rubocop/issues/5265): Improved `Layout/ExtraSpacing` cop to handle nested consecutive assignments. ([@jfelchner][])
 
 ## 0.53.0 (2018-03-05)
 

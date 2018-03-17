@@ -123,8 +123,19 @@ module RuboCop
       lines[token.line - 2]
     end
 
+    def current_line(token)
+      lines[token.line - 1]
+    end
+
     def following_line(token)
       lines[token.line]
+    end
+
+    def line_indentation(line_number)
+      lines[line_number - 1]
+        .match(/^(\s*)/)[1]
+        .to_s
+        .length
     end
 
     private

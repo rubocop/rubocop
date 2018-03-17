@@ -270,12 +270,37 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
         bb = 2
         ccc = 3
       RUBY
-      expect(cop.offenses.size).to eq(3)
+      expect(cop.offenses.size).to eq(2)
       expect(cop.messages).to eq(
-        ['`=` is not aligned with the following assignment.',
-         '`=` is not aligned with the preceding assignment.',
+        ['`=` is not aligned with the preceding assignment.',
          '`=` is not aligned with the preceding assignment.']
       )
+    end
+
+    it 'does not register offenses for multiple complex nested assignments' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def batch
+          @areas   = params[:param].map {
+                       var_1      = 123_456
+                       variable_2 = 456_123 }
+          @another = params[:param].map {
+                       char_1 = begin
+                                  variable_1_1  = 'a'
+                                  variable_1_20 = 'b'
+
+                                  variable_1_300  = 'c'
+                                  # A Comment
+                                  variable_1_4000 = 'd'
+
+                                  variable_1_50000           = 'e'
+                                  puts 'a non-assignment statement without a blank line'
+                                  some_other_length_variable = 'f'
+                                end
+                       var_2  = 456_123 }
+
+          render json: @areas
+        end
+      RUBY
     end
 
     it 'does not register an offense if assignments are separated by blanks' do
@@ -301,6 +326,14 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
         # comment
         a   = 1
         bb  = 2
+      RUBY
+    end
+
+    it 'does not register alignment errors on outdented lines' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        @areas = params[:param].map do |ca_params|
+                   ca_params = ActionController::Parameters.new(stuff)
+                 end
       RUBY
     end
 
@@ -385,6 +418,56 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
         abcde.blah       = 1
         a.attribute_name = 2
         abc[1]           = 3
+      RUBY
+    end
+
+    it 'autocorrects complex nested assignments' do
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        def batch
+          @areas = params[:param].map {
+                       var_1 = 123_456
+                       variable_2 = 456_123 }
+          @another = params[:param].map {
+                       char_1 = begin
+                                  variable_1_1     = 'a'
+                                  variable_1_20  = 'b'
+
+                                  variable_1_300    = 'c'
+                                  # A Comment
+                                  variable_1_4000      = 'd'
+
+                                  variable_1_50000     = 'e'
+                                  puts 'a non-assignment statement without a blank line'
+                                  some_other_length_variable     = 'f'
+                                end
+                       var_2 = 456_123 }
+
+          render json: @areas
+        end
+      RUBY
+
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        def batch
+          @areas   = params[:param].map {
+                       var_1      = 123_456
+                       variable_2 = 456_123 }
+          @another = params[:param].map {
+                       char_1 = begin
+                                  variable_1_1  = 'a'
+                                  variable_1_20 = 'b'
+
+                                  variable_1_300  = 'c'
+                                  # A Comment
+                                  variable_1_4000 = 'd'
+
+                                  variable_1_50000           = 'e'
+                                  puts 'a non-assignment statement without a blank line'
+                                  some_other_length_variable = 'f'
+                                end
+                       var_2  = 456_123 }
+
+          render json: @areas
+        end
       RUBY
     end
 
