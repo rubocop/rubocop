@@ -678,7 +678,7 @@ RSpec.describe RuboCop::Config do
           let(:base_path) { configuration.base_dir_for_path_parameters }
           let(:lock_file_path) { File.join(base_path, file_name) }
 
-          it 'uses the Rails version when Rails is present in the lock file' do
+          it "uses the single digit Rails version in #{file_name}" do
             content =
               <<-HEREDOC
                 GEM
@@ -710,6 +710,64 @@ RSpec.describe RuboCop::Config do
               HEREDOC
             create_file(lock_file_path, content)
             expect(configuration.target_rails_version).to eq 4.1
+          end
+
+          it "uses the multi digit Rails version in #{file_name}" do
+            content =
+              <<-HEREDOC
+                GEM
+                  remote: https://rubygems.org/
+                  specs:
+                    actionmailer (4.1.0)
+                    actionpack (= 4.1.0)
+                    actionview (= 4.1.0)
+                    mail (~> 2.5.4)
+                  rails (400.33.22)
+                    actionmailer (= 4.1.0)
+                    actionpack (= 4.1.0)
+                    actionview (= 4.1.0)
+                    activemodel (= 4.1.0)
+                    activerecord (= 4.1.0)
+                    activesupport (= 4.1.0)
+                    bundler (>= 1.3.0, < 2.0)
+                    railties (= 4.1.0)
+                    sprockets-rails (~> 2.0)
+
+                PLATFORMS
+                  ruby
+
+                DEPENDENCIES
+                  rails (= 900.88.77)
+
+                BUNDLED WITH
+                  1.16.1
+              HEREDOC
+            create_file(lock_file_path, content)
+            expect(configuration.target_rails_version).to eq 400.33
+          end
+
+          it "does not use the DEPENDENCIES Rails version in #{file_name}" do
+            content =
+              <<-HEREDOC
+                GEM
+                  remote: https://rubygems.org/
+                  specs:
+                    actionmailer (4.1.0)
+                    actionpack (= 4.1.0)
+                    actionview (= 4.1.0)
+                    mail (~> 2.5.4)
+
+                PLATFORMS
+                  ruby
+
+                DEPENDENCIES
+                  rails (= 900.88.77)
+
+                BUNDLED WITH
+                  1.16.1
+              HEREDOC
+            create_file(lock_file_path, content)
+            expect(configuration.target_rails_version).not_to eq 900.88
           end
 
           it "uses the default Rails when Rails is not in #{file_name}" do

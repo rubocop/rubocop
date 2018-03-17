@@ -626,7 +626,7 @@ module RuboCop
       File.foreach(lock_file_path) do |line|
         # If rails is in Gemfile.lock or gems.lock, there should be a line like:
         #         rails (X.X.X)
-        result = line.match(/^\s+rails\s+\((\d\.\d\.\d)/)
+        result = line.match(/^\s+rails\s+\((\d+\.\d+)/)
         return result.captures.first.to_f if result
       end
     end

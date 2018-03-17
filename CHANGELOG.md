@@ -24,6 +24,7 @@
 * [#5436](https://github.com/bbatsov/rubocop/issues/5436): Allow empty kwrest args in UncommunicativeName cops. ([@pocke][])
 * [#5674](https://github.com/bbatsov/rubocop/issues/5674): Fix auto-correction of `Layout/EmptyComment` when the empty comment appears on the same line as code. ([@rrosenblum][])
 * [#5679](https://github.com/bbatsov/rubocop/pull/5679): Fix a false positive for `Style/EmptyLineAfterGuardClause` when guard clause is before `rescue` or `ensure`. ([@koic][])
+* [#5694](https://github.com/bbatsov/rubocop/issues/5694): Match Rails versions with multiple digits when reading the TargetRailsVersion from the bundler lock files. ([@roberts1000][])
 
 ### Changes
 
