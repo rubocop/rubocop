@@ -67,38 +67,38 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
         expect_no_offenses('some_method()')
       end
 
-        it 'accepts a correctly indented )' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+      it 'accepts a correctly indented )' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          some_method(a,
+            x: 1,
+            y: 2
+          )
+          b =
             some_method(a,
-              x: 1,
-              y: 2
-            )
-            b =
-              some_method(a,
-                         )
-          RUBY
-        end
+                       )
+        RUBY
+      end
 
-        it 'autocorrects misindented )' do
-          corrected = autocorrect_source(<<-RUBY.strip_indent)
+      it 'autocorrects misindented )' do
+        corrected = autocorrect_source(<<-RUBY.strip_indent)
+          some_method(a,
+            x: 1,
+            y: 2
+                      )
+          b =
             some_method(a,
-              x: 1,
-              y: 2
                         )
-            b =
-              some_method(a,
-                          )
-          RUBY
-          expect(corrected).to eq <<-RUBY.strip_indent
+        RUBY
+        expect(corrected).to eq <<-RUBY.strip_indent
+          some_method(a,
+            x: 1,
+            y: 2
+          )
+          b =
             some_method(a,
-              x: 1,
-              y: 2
-            )
-            b =
-              some_method(a,
-                         )
-          RUBY
-        end
+                       )
+        RUBY
+      end
     end
   end
 
