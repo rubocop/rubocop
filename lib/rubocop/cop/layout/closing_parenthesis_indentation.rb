@@ -71,8 +71,8 @@ module RuboCop
       class ClosingParenthesisIndentation < Cop
         include Alignment
 
-        MSG_INDENT =
-          'Indent `)` the same as the start of the line where `(` is.'.freeze
+        MSG_INDENT = 'Indent `)` to column %<expected>d (not %<actual>d)'
+                     .freeze
         MSG_ALIGN = 'Align `)` with `(`.'.freeze
 
         def on_send(node)
@@ -106,9 +106,11 @@ module RuboCop
 
           return if @column_delta.zero?
 
-          msg = correct_column == left_paren.column ? MSG_ALIGN : MSG_INDENT
-
-          add_offense(right_paren, location: right_paren, message: msg)
+          add_offense(right_paren,
+                      location: right_paren,
+                      message:  message(correct_column,
+                                        left_paren,
+                                        right_paren))
         end
 
         def expected_column(left_paren, elements)
@@ -136,6 +138,18 @@ module RuboCop
             .last
             .loc
             .first_line
+        end
+
+        def message(correct_column, left_paren, right_paren)
+          if correct_column == left_paren.column
+            MSG_ALIGN
+          else
+            format(
+              MSG_INDENT,
+              expected: correct_column,
+              actual: right_paren.column
+            )
+          end
         end
 
         def indentation_width
