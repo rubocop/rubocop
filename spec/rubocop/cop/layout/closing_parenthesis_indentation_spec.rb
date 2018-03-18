@@ -10,7 +10,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
           some_method(
             a
             )
-            ^ Indent `)` the same as the start of the line where `(` is.
+            ^ Indent `)` to column 0 (not 2)
         RUBY
       end
 
@@ -310,7 +310,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
           def some_method(
             a
             )
-            ^ Indent `)` the same as the start of the line where `(` is.
+            ^ Indent `)` to column 0 (not 2)
           end
         RUBY
       end
@@ -387,7 +387,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
           w = x * (
             y + z
             )
-            ^ Indent `)` the same as the start of the line where `(` is.
+            ^ Indent `)` to column 0 (not 2)
         RUBY
       end
 
