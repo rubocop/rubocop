@@ -127,6 +127,13 @@ module RuboCop
       lines[token.line]
     end
 
+    def line_indentation(line_number)
+      lines[line_number - 1]
+        .match(/^(\s*)/)[1]
+        .to_s
+        .length
+    end
+
     private
 
     def comment_lines
