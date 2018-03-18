@@ -1,17 +1,18 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation do
+RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
   subject(:cop) { described_class.new(config) }
 
-  let(:config) do
-    RuboCop::Config
-      .new('Layout/FirstParameterIndentation' => {
-             'EnforcedStyle' => style,
-             'SupportedStyles' =>
-               %w[consistent special_for_inner_method_call
-                  special_for_inner_method_call_in_parentheses]
-           },
-           'Layout/IndentationWidth' => { 'Width' => indentation_width })
+  let(:cop_config) do
+    { 'EnforcedStyle' => style }
+  end
+
+  let(:other_cops) do
+    {
+      'Layout/IndentationWidth' => {
+        'Width' => indentation_width
+      }
+    }
   end
 
   shared_examples 'common behavior' do
@@ -250,16 +251,11 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation do
     end
 
     context 'when indentation width is overridden for this cop only' do
-      let(:config) do
-        RuboCop::Config
-          .new('Layout/FirstParameterIndentation' => {
-                 'EnforcedStyle' => style,
-                 'SupportedStyles' =>
-                   %w[consistent special_for_inner_method_call
-                      special_for_inner_method_call_in_parentheses],
-                 'IndentationWidth' => 4
-               },
-               'Layout/IndentationWidth' => { 'Width' => 2 })
+      let(:cop_config) do
+        {
+          'EnforcedStyle'    => style,
+          'IndentationWidth' => 4
+        }
       end
 
       it 'accepts a correctly indented first parameter' do
