@@ -32,6 +32,7 @@
 * [#5637](https://github.com/bbatsov/rubocop/issues/5637): Fix error for `Layout/SpaceInsideArrayLiteralBrackets` when contains an array literal as an argument after a heredoc is started. ([@koic][])
 * [#5498](https://github.com/bbatsov/rubocop/issues/5498): Correct IndentHeredoc message for Ruby 2.3 when using `<<~` operator with invalid indentation. ([@hamada14][])
 * [#5610](https://github.com/bbatsov/rubocop/issues/5610): Use `gems.locked` or `Gemfile.lock` to determine the best `TargetRubyVersion` when it is not specified in the config. ([@roberts1000][])
+* Add progress bar to offenses formatter. ([@drewpterry][])
 
 ## 0.53.0 (2018-03-05)
 
@@ -3265,3 +3266,4 @@
 [@anthony-robin]: https://github.com/anthony-robin
 [@YukiJikumaru]: https://github.com/YukiJikumaru
 [@jlfaber]: https://github.com/jlfaber
+[@drewpterry]: https://github.com/drewpterry

@@ -17,10 +17,27 @@ module RuboCop
       def started(target_files)
         super
         @offense_counts = Hash.new(0)
+
+        return unless output.tty?
+
+        file_phrase = target_files.count == 1 ? 'file' : 'files'
+
+        # 185/407 files |====== 45 ======>                    |  ETA: 00:00:04
+        # %c / %C       |       %w       >         %i         |       %e
+        bar_format = " %c/%C #{file_phrase} |%w>%i| %e "
+
+        @progressbar = ProgressBar.create(
+          output: output,
+          total: target_files.count,
+          format: bar_format,
+          autostart: false
+        )
+        @progressbar.start
       end
 
       def file_finished(_file, offenses)
         offenses.each { |o| @offense_counts[o.cop_name] += 1 }
+        @progressbar.increment if instance_variable_defined?(:@progressbar)
       end
 
       def finished(_inspected_files)
