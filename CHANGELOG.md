@@ -33,6 +33,7 @@
 * [#5498](https://github.com/bbatsov/rubocop/issues/5498): Correct IndentHeredoc message for Ruby 2.3 when using `<<~` operator with invalid indentation. ([@hamada14][])
 * [#5610](https://github.com/bbatsov/rubocop/issues/5610): Use `gems.locked` or `Gemfile.lock` to determine the best `TargetRubyVersion` when it is not specified in the config. ([@roberts1000][])
 * [#5390](https://github.com/bbatsov/rubocop/issues/5390): Allow exceptions to `Style/InlineComment` for inline comments which enable or disable rubocop cops. ([@jfelchner][])
+* Add progress bar to offenses formatter. ([@drewpterry][])
 
 ## 0.53.0 (2018-03-05)
 
@@ -3266,3 +3267,4 @@
 [@anthony-robin]: https://github.com/anthony-robin
 [@YukiJikumaru]: https://github.com/YukiJikumaru
 [@jlfaber]: https://github.com/jlfaber
+[@drewpterry]: https://github.com/drewpterry

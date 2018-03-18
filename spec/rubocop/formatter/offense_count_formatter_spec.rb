@@ -53,6 +53,7 @@ RSpec.describe RuboCop::Formatter::OffenseCountFormatter do
       end
 
       before do
+        allow(output).to receive(:tty?).and_return(false)
         formatter.started(files)
         finish
       end
@@ -68,6 +69,23 @@ RSpec.describe RuboCop::Formatter::OffenseCountFormatter do
           4  Total
 
         OUTPUT
+      end
+    end
+
+    context 'when output tty is true' do
+      let(:offenses) do
+        %w[CopB CopA CopC CopC].map { |c| double('offense', cop_name: c) }
+      end
+
+      before do
+        allow(output).to receive(:tty?).and_return(true)
+        formatter.started(files)
+        finish
+      end
+
+      it 'has a progresbar' do
+        formatter.finished(files)
+        expect(formatter.instance_variable_get(:@progressbar).progress).to eq 1
       end
     end
   end
