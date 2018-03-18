@@ -10,6 +10,12 @@ RSpec.describe RuboCop::Cop::Style::InlineComment do
     RUBY
   end
 
+  it 'does not register an offense for special rubocop inline comments' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      two = 1 + 1 # rubocop:disable Layout/ExtraSpacing
+    RUBY
+  end
+
   it 'does not register an offense for a standalone comment' do
     expect_no_offenses('# A standalone comment')
   end
