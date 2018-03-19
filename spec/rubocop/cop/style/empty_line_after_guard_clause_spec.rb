@@ -147,6 +147,18 @@ RSpec.describe RuboCop::Cop::Style::EmptyLineAfterGuardClause do
     RUBY
   end
 
+  it 'does not register offence when guard clause is after heredoc' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      def foo
+        raise ArgumentError, <<-MSG unless path
+          Must be called with mount point
+        MSG
+
+        bar
+      end
+    RUBY
+  end
+
   it 'registers an offence for methods starting with end_' do
     expect_offense(<<-RUBY.strip_indent)
       def foo
