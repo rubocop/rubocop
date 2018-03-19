@@ -11,6 +11,7 @@
 ### Changes
 
 * [#5734](https://github.com/bbatsov/rubocop/pull/5734): Add `by`, `on`, `in` and `at` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@AlexWayfer][])
+* [#5720](https://github.com/bbatsov/rubocop/pull/5720): Fix false positive for `Style/EmptyLineAfterGuardClause` when guard clause is after heredoc. ([@koic][])
 
 ## 0.54.0 (2018-03-21)
 
