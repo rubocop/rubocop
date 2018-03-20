@@ -30,7 +30,12 @@ module RuboCop
         PATTERN
 
         def on_casgn(node)
-          _scope, const_name, value = *node
+          if node.parent && node.parent.or_asgn_type?
+            lhs, value = *node.parent
+            _scope, const_name = *lhs
+          else
+            _scope, const_name, value = *node
+          end
 
           # We cannot know the result of method calls like
           # NewClass = something_that_returns_a_class
@@ -39,14 +44,18 @@ module RuboCop
           # SomeClass = SomeOtherClass
           # SomeClass = Class.new(...)
           # SomeClass = Struct.new(...)
-          return if value && %i[block const casgn].include?(value.type) ||
-                    allowed_method_call_on_rhs?(value) ||
-                    class_or_struct_return_method?(value)
+          return if allowed_assignment?(value)
 
           add_offense(node, location: :name) if const_name !~ SNAKE_CASE
         end
 
         private
+
+        def allowed_assignment?(value)
+          value && %i[block const casgn].include?(value.type) ||
+            allowed_method_call_on_rhs?(value) ||
+            class_or_struct_return_method?(value)
+        end
 
         def allowed_method_call_on_rhs?(node)
           node && node.send_type? &&
