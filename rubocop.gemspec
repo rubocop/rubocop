@@ -26,15 +26,13 @@ Gem::Specification.new do |s|
   s.licenses = ['MIT']
   s.summary = 'Automatic Ruby code style checking tool.'
 
-  if s.respond_to?(:metadata=)
-    s.metadata = {
-      'homepage_uri' => 'https://rubocop.readthedocs.io/',
-      'changelog_uri' => 'https://github.com/bbatsov/rubocop/blob/master/CHANGELOG.md',
-      'source_code_uri' => 'https://github.com/bbatsov/rubocop/',
-      'documentation_uri' => 'https://rubocop.readthedocs.io/',
-      'bug_tracker_uri' => 'https://github.com/bbatsov/rubocop/issues'
-    }
-  end
+  s.metadata = {
+    'homepage_uri' => 'https://rubocop.readthedocs.io/',
+    'changelog_uri' => 'https://github.com/bbatsov/rubocop/blob/master/CHANGELOG.md',
+    'source_code_uri' => 'https://github.com/bbatsov/rubocop/',
+    'documentation_uri' => 'https://rubocop.readthedocs.io/',
+    'bug_tracker_uri' => 'https://github.com/bbatsov/rubocop/issues'
+  }
 
   s.add_runtime_dependency('parallel', '~> 1.10')
   s.add_runtime_dependency('parser', '>= 2.5')
