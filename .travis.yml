@@ -4,7 +4,6 @@ language: ruby
 dist: trusty
 rvm:
   - jruby-9.1.16.0
-  - jruby-head
   - 2.1.10
   - 2.2.9
   - 2.3.6
@@ -21,7 +20,6 @@ env:
 matrix:
   allow_failures:
     - rvm: ruby-head
-    - rvm: jruby-head
   fast_finish: true
 before_install:
   - gem update --system
