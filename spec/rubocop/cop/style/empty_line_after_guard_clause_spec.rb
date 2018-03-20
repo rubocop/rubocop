@@ -109,6 +109,44 @@ RSpec.describe RuboCop::Cop::Style::EmptyLineAfterGuardClause do
     RUBY
   end
 
+  it 'does not register offence when guard clause is before `rescue`-`else`' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      def foo
+        begin
+          bar
+        rescue SomeException
+          return another_object if something_different?
+        else
+          bar
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register offence when guard clause is before `else`' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      def foo
+        if cond
+          return another_object if something_different?
+        else
+          bar
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register offence when guard clause is before `elsif`' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      def foo
+        if cond
+          return another_object if something_different?
+        elsif
+          bar
+        end
+      end
+    RUBY
+  end
+
   it 'registers an offence for methods starting with end_' do
     expect_offense(<<-RUBY.strip_indent)
       def foo
