@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#5707](https://github.com/bbatsov/rubocop/pull/5707): Fix NameError when execute `Rails/HttpStatus` cop without Rack. ([@onk][])
+
 ## 0.54.0 (2018-03-21)
 
 ### New features
