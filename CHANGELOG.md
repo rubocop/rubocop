@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.54.0 (2018-03-21)
+
 ### New features
 
 * [#5597](https://github.com/bbatsov/rubocop/pull/5597): Add new `Rails/HttpStatus` cop. ([@anthony-robin][])
