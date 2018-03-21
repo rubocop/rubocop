@@ -64,6 +64,18 @@ lib/foo.rb:6:5: C: Style/Documentation: Missing top-level class documentation co
 26 files inspected, 46 offenses detected
 ```
 
+### Auto Gen Formatter 
+
+Behaves like Progress Formatter except that it will not show any offenses.
+
+```sh
+$ rubocop
+Inspecting 26 files
+..W.C....C..CWCW.C...WC.CC
+
+26 files inspected, 46 offenses detected
+```
+
 ### Clang Style Formatter
 
 The `clang` formatter displays the offenses in a manner similar to `clang`:

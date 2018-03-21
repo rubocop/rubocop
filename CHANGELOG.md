@@ -6,6 +6,10 @@
 
 * [#5561](https://github.com/bbatsov/rubocop/issues/5561): Fix `Lint/ShadowedArgument` false positive with shorthand assignments. ([@akhramov][])
 
+### Changes
+
+* [#5451](https://github.com/bbatsov/rubocop/issues/5451): When using --auto-gen-config, do not ouput offenses unless the --output-offenses flag is also passed. ([@drewpterry][])
+
 ## 0.54.0 (2018-03-21)
 
 ### New features
