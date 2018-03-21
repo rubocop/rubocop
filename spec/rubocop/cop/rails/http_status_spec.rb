@@ -43,13 +43,13 @@ RSpec.describe RuboCop::Cop::Rails::HttpStatus, :config do
       it 'registers an offense when using numeric value' do
         expect_offense(<<-RUBY)
           render :foo, status: 200
-                               ^^^ Prefer `symbolic` over `numeric` to define HTTP status code.
+                               ^^^ Prefer `symbolic` over `numeric` to define HTTP status code. If the status code can not be written as symbol, this warning can be silenced by running rubocop with rack gem.
           render json: { foo: 'bar' }, status: 404
-                                               ^^^ Prefer `symbolic` over `numeric` to define HTTP status code.
+                                               ^^^ Prefer `symbolic` over `numeric` to define HTTP status code. If the status code can not be written as symbol, this warning can be silenced by running rubocop with rack gem.
           render plain: 'foo/bar', status: 304
-                                           ^^^ Prefer `symbolic` over `numeric` to define HTTP status code.
+                                           ^^^ Prefer `symbolic` over `numeric` to define HTTP status code. If the status code can not be written as symbol, this warning can be silenced by running rubocop with rack gem.
           redirect_to root_url, status: 301
-                                        ^^^ Prefer `symbolic` over `numeric` to define HTTP status code.
+                                        ^^^ Prefer `symbolic` over `numeric` to define HTTP status code. If the status code can not be written as symbol, this warning can be silenced by running rubocop with rack gem.
         RUBY
       end
     end

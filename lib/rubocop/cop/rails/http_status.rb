@@ -93,7 +93,10 @@ module RuboCop
           MSG = 'Prefer `%<prefer>s` over `%<current>s` ' \
                 'to define HTTP status code.'.freeze
           DEFAULT_MSG = 'Prefer `symbolic` over `numeric` ' \
-                        'to define HTTP status code.'.freeze
+                        'to define HTTP status code. ' \
+                        'If the status code can not be written as symbol, ' \
+                        'this warning can be silenced ' \
+                        'by running rubocop with rack gem.'.freeze
 
           attr_reader :node
           def initialize(node)
@@ -127,6 +130,10 @@ module RuboCop
           end
 
           def custom_http_status_code?
+            # Can not check if it is custom status code without Rack.
+            # So all int value are offensed (this make false positive)
+            return false unless RACK_LOADED
+
             node.int_type? &&
               !::Rack::Utils::SYMBOL_TO_STATUS_CODE.value?(number)
           end
