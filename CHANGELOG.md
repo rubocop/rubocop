@@ -9,9 +9,9 @@
 
 ### Bug fixes
 
-* [#5683](https://github.com/bbatsov/rubocop/issues/5683): Fix message for Naming/UncommunicativeXParamName cops. ([@jlfaber][])
-* [#5680](https://github.com/bbatsov/rubocop/issues/5680): Fix Layout/ElseAlignment for rescue/else/ensure inside do/end blocks. ([@YukiJikumaru][])
-* [#5642](https://github.com/bbatsov/rubocop/pull/5642): Fix Style/Documentation :nodoc: for compact-style nested modules/classes. ([@ojab][])
+* [#5683](https://github.com/bbatsov/rubocop/issues/5683): Fix message for `Naming/UncommunicativeXParamName` cops. ([@jlfaber][])
+* [#5680](https://github.com/bbatsov/rubocop/issues/5680): Fix `Layout/ElseAlignment` for `rescue/else/ensure` inside `do/end` blocks. ([@YukiJikumaru][])
+* [#5642](https://github.com/bbatsov/rubocop/pull/5642): Fix `Style/Documentation` `:nodoc:` for compact-style nested modules/classes. ([@ojab][])
 * [#5648](https://github.com/bbatsov/rubocop/issues/5648): Suggest valid memoized instance variable for predicate method. ([@satyap][])
 * [#5670](https://github.com/bbatsov/rubocop/issues/5670): Suggest valid memoized instance variable for bang method. ([@pocke][])
 * [#5623](https://github.com/bbatsov/rubocop/pull/5623): Fix `Bundler/OrderedGems` when a group includes duplicate gems. ([@colorbox][])
@@ -22,7 +22,7 @@
 * [#5619](https://github.com/bbatsov/rubocop/issues/5619): Do not register an offense in `Style/InverseMethods` when comparing constants with `<`, `>`, `<=`, or `>=`. If the code is being used to determine class hierarchy, the correction might not be accurate. ([@rrosenblum][])
 * [#5641](https://github.com/bbatsov/rubocop/issues/5641): Disable `Style/TrivialAccessors` auto-correction for `def` with `private`. ([@pocke][])
 * Fix bug where `Style/SafeNavigation` does not auto-correct all chained methods resulting in a `Lint/SafeNavigationChain` offense. ([@rrosenblum][])
-* [#5436](https://github.com/bbatsov/rubocop/issues/5436): Allow empty kwrest args in UncommunicativeName cops. ([@pocke][])
+* [#5436](https://github.com/bbatsov/rubocop/issues/5436): Allow empty kwrest args in `UncommunicativeName` cops. ([@pocke][])
 * [#5674](https://github.com/bbatsov/rubocop/issues/5674): Fix auto-correction of `Layout/EmptyComment` when the empty comment appears on the same line as code. ([@rrosenblum][])
 * [#5679](https://github.com/bbatsov/rubocop/pull/5679): Fix a false positive for `Style/EmptyLineAfterGuardClause` when guard clause is before `rescue` or `ensure`. ([@koic][])
 * [#5694](https://github.com/bbatsov/rubocop/issues/5694): Match Rails versions with multiple digits when reading the TargetRailsVersion from the bundler lock files. ([@roberts1000][])
@@ -38,6 +38,7 @@
 * [#5610](https://github.com/bbatsov/rubocop/issues/5610): Use `gems.locked` or `Gemfile.lock` to determine the best `TargetRubyVersion` when it is not specified in the config. ([@roberts1000][])
 * [#5390](https://github.com/bbatsov/rubocop/issues/5390): Allow exceptions to `Style/InlineComment` for inline comments which enable or disable rubocop cops. ([@jfelchner][])
 * Add progress bar to offenses formatter. ([@drewpterry][])
+* [#5498](https://github.com/bbatsov/rubocop/issues/5498): Correct `IndentHeredoc` message for Ruby 2.3 when using `<<~` operator with invalid indentation. ([@hamada14][])
 
 ## 0.53.0 (2018-03-05)
 
