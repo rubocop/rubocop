@@ -42,6 +42,17 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
         end
       end
 
+      context 'when argument was used in shorthand assignment' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            def do_something(bar)
+              bar = 'baz' if foo
+              bar ||= {}
+            end
+          RUBY
+        end
+      end
+
       context 'when binding is used' do
         it 'registers an offense' do
           expect_offense(<<-RUBY.strip_indent)

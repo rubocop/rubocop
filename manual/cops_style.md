@@ -3770,7 +3770,7 @@ but not `true` and `false`, and thus not always interchangeable with
 
 The cop ignores comparisons to global variables, since they are often
 populated with objects which can be compared with integers, but are
-not themselves `Interger` polymorphic.
+not themselves `Integer` polymorphic.
 
 ### Examples
 
