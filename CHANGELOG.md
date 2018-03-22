@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#5561](https://github.com/bbatsov/rubocop/issues/5561): Fix `Lint/ShadowedArgument` false positive with shorthand assignments. ([@akhramov][])
+* [#5403](https://github.com/bbatsov/rubocop/issues/5403): Fix `Naming/HeredocDelimiterNaming` blacklist patterns. ([@mcfisch])
 
 ## 0.54.0 (2018-03-21)
 
@@ -3279,3 +3280,4 @@
 [@YukiJikumaru]: https://github.com/YukiJikumaru
 [@jlfaber]: https://github.com/jlfaber
 [@drewpterry]: https://github.com/drewpterry
+[@mcfisch]: https://github.com/mcfisch
