@@ -349,7 +349,12 @@ module RuboCop
       end
 
       def compile_literal(cur_node, literal, seq_head)
-        "(#{cur_node}#{'.type' if seq_head} == #{literal})"
+        if seq_head
+          # During def_node_search `cur_node` might not be of Node type.
+          "(#{cur_node}.respond_to?(:type) && #{cur_node}.type == #{literal})"
+        else
+          "(#{cur_node} == #{literal})"
+        end
       end
 
       def compile_predicate(tokens, cur_node, predicate, seq_head)

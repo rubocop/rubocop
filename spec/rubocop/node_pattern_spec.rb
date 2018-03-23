@@ -1095,6 +1095,24 @@ RSpec.describe RuboCop::NodePattern do
     end
   end
 
+  describe 'def_node_search' do
+    context 'searching source code with no matches' do
+      let(:ruby) { "module Example\nmsg = 'Hello'\nmsg += 'Foo Bar'\nend" }
+
+      it 'return empty collection' do
+        class Dummy
+          extend RuboCop::NodePattern::Macros
+          pattern_str = '(:lvasgn ... (:send (:const nil? :Foo) :new _ _))'
+          def_node_search(:example_match, pattern_str)
+        end
+        dummy = Dummy.new
+        nodes = dummy.example_match(node)
+        # Must make sure to iterate the returned Enum.
+        expect(nodes.to_a.empty?).to be_truthy
+      end
+    end
+  end
+
   describe 'bad syntax' do
     context 'with empty parentheses' do
       let(:pattern) { '()' }
