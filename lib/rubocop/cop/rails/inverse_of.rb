@@ -165,10 +165,6 @@ module RuboCop
           (pair (sym :as) !nil)
         PATTERN
 
-        def_node_matcher :class_name_option?, <<-PATTERN
-          (pair (sym :class_name) !nil)
-        PATTERN
-
         def_node_matcher :foreign_key_option?, <<-PATTERN
           (pair (sym :foreign_key) !nil)
         PATTERN
@@ -201,7 +197,6 @@ module RuboCop
         def options_requiring_inverse_of?(options)
           required = options.any? do |opt|
             conditions_option?(opt) ||
-              class_name_option?(opt) ||
               foreign_key_option?(opt)
           end
 
