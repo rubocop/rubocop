@@ -21,10 +21,13 @@ RSpec.describe RuboCop::Cop::Rails::InverseOf do
       )
     end
 
-    it 'does not register an offense when specifying `inverse_of: nil`' do
-      expect_no_offenses(
-        'has_many :foo, -> () { where(bar: true) }, inverse_of: nil'
-      )
+    it 'registers an offense when specifying `inverse_of: nil`' do
+      expect_offense(<<-RUBY.strip_indent)
+        class Person
+          has_many :foo, -> () { where(bar: true) }, inverse_of: nil
+          ^^^^^^^^ You specified `inverse_of: nil`, you probably meant to use `inverse_of: false`.
+        end
+      RUBY
     end
   end
 
