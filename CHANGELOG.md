@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* Add new `Lint/SafeNavigationConsistency` cop. ([@rrosenblum][])
+
 ### Bug fixes
 
 * [#5759](https://github.com/bbatsov/rubocop/pull/5759): Fix `Performance/RegexpMatch` cop not correcting negated match operator. ([@bdewater][])
