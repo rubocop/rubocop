@@ -8,6 +8,10 @@
 * [#5561](https://github.com/bbatsov/rubocop/issues/5561): Fix `Lint/ShadowedArgument` false positive with shorthand assignments. ([@akhramov][])
 * [#4298](https://github.com/bbatsov/rubocop/issues/4298): Fix auto-correction of `Performance/RegexpMatch` to produce code that safe guards against the receiver being `nil`. ([@rrosenblum][])
 
+### Changes
+
+* [#5734](https://github.com/bbatsov/rubocop/pull/5734): Add `by` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@AlexWayfer][])
+
 ## 0.54.0 (2018-03-21)
 
 ### New features
