@@ -3,14 +3,6 @@
 RSpec.describe RuboCop::Cop::Performance::RegexpMatch, :config do
   subject(:cop) { described_class.new(config) }
 
-  shared_examples :accepts do |name, code|
-    it "accepts usages of #{name}" do
-      inspect_source(code)
-
-      expect(cop.offenses.empty?).to be(true)
-    end
-  end
-
   shared_examples :offense do |name, code, correction|
     it "registers an offense for #{name}" do
       inspect_source(code)
@@ -98,50 +90,54 @@ RSpec.describe RuboCop::Cop::Performance::RegexpMatch, :config do
       $MATCH
       Regexp.last_match Regexp.last_match(1)
     ].each do |var|
-      include_examples :accepts, "#{name} in method with `#{var}`", <<-RUBY
-        def foo
-          if #{cond}
-            do_something(#{var})
-          end
-        end
-      RUBY
-
-      include_examples :accepts, "#{name} in a class method with `#{var}`",
-                       <<-RUBY
-        def self.foo
-          if #{cond}
-            do_something(#{var})
-          end
-        end
-      RUBY
-
-      include_examples :accepts,
-                       "#{name} in method with `#{var}` before `if`",
-                       <<-RUBY
-        def foo
-          return #{var} if #{cond}
-        end
-      RUBY
-
-      include_examples :accepts,
-                       "#{name} in method with `#{var}` before `unless`",
-                       <<-RUBY
-        def foo
-          return #{var} unless #{cond}
-        end
-      RUBY
-
-      include_examples :accepts,
-                       "#{name} in method with `#{var}` in block", <<-RUBY
-        def foo
-          bar do
+      it "accepts #{name} in method with #{var}" do
+        expect_no_offenses(<<-RUBY)
+          def foo
             if #{cond}
-              do_something
+              do_something(#{var})
             end
           end
-          puts #{var}
-        end
-      RUBY
+        RUBY
+      end
+
+      it "accepts #{name} in a class method with #{var}" do
+        expect_no_offenses(<<-RUBY)
+          def self.foo
+            if #{cond}
+              do_something(#{var})
+            end
+          end
+        RUBY
+      end
+
+      it "accepts #{name} in method with #{var} before if" do
+        expect_no_offenses(<<-RUBY)
+          def foo
+            return #{var} if #{cond}
+          end
+        RUBY
+      end
+
+      it "accepts #{name} in method with #{var} before unless" do
+        expect_no_offenses(<<-RUBY)
+          def foo
+            return #{var} unless #{cond}
+          end
+        RUBY
+      end
+
+      it "accepts #{name} in method with #{var} in block" do
+        expect_no_offenses(<<-RUBY)
+          def foo
+            bar do
+              if #{cond}
+                do_something
+              end
+            end
+            puts #{var}
+          end
+        RUBY
+      end
 
       include_examples :offense,
                        "#{name} in method before `#{var}`", <<-RUBY, <<-RUBY2
@@ -161,8 +157,8 @@ RSpec.describe RuboCop::Cop::Performance::RegexpMatch, :config do
       RUBY2
 
       include_examples :offense,
-                       "#{name} in method" \
-                       ", `#{var}` is in other method", <<-RUBY, <<-RUBY2
+                       "#{name} in method, `#{var}` is in other method",
+                       <<-RUBY, <<-RUBY2
         def foo
           if #{cond}
             do_something2
@@ -185,8 +181,8 @@ RSpec.describe RuboCop::Cop::Performance::RegexpMatch, :config do
       RUBY2
 
       include_examples :offense,
-                       "#{name} in class method" \
-                       ", `#{var}` is in other method", <<-RUBY, <<-RUBY2
+                       "#{name} in class method, `#{var}` is in other method",
+                       <<-RUBY, <<-RUBY2
         def self.foo
           if #{cond}
             do_something2
@@ -209,8 +205,8 @@ RSpec.describe RuboCop::Cop::Performance::RegexpMatch, :config do
       RUBY2
 
       include_examples :offense,
-                       "#{name} in class" \
-                       ", `#{var}` is in method", <<-RUBY, <<-RUBY2
+                       "#{name} in class, `#{var}` is in method",
+                       <<-RUBY, <<-RUBY2
         class Foo
           if #{cond}
             do_something
@@ -233,8 +229,8 @@ RSpec.describe RuboCop::Cop::Performance::RegexpMatch, :config do
       RUBY2
 
       include_examples :offense,
-                       "#{name} in module" \
-                       ", `#{var}` is in method", <<-RUBY, <<-RUBY2
+                       "#{name} in module, `#{var}` is in method",
+                       <<-RUBY, <<-RUBY2
         module Foo
           if #{cond}
             do_something
@@ -274,74 +270,88 @@ RSpec.describe RuboCop::Cop::Performance::RegexpMatch, :config do
   end
 
   context 'target ruby version < 2.4', :ruby23 do
-    [
-      ['match method call in if condition', <<-RUBY],
+    it 'accepts match method call in if condition' do
+      expect_no_offenses(<<-RUBY)
         if foo.match(/re/)
           do_something
         end
       RUBY
-      ['match method call in elsif condition', <<-RUBY],
+    end
+
+    it 'accepts match method call in elsif condition' do
+      expect_no_offenses(<<-RUBY)
         if cond
           do_something
         elsif foo.match(/re/)
           do_something2
         end
       RUBY
-    ].each do |name, code|
-      include_examples :accepts, name, code
     end
   end
 
   context 'target ruby version >= 2.4', :ruby24 do
-    [
-      ['String#match method call', '"foo".match(re)', '"foo".match?(re)'],
-      ['String#match method call with position',
-       '"foo".match(re, 1)',
-       '"foo".match?(re, 1)'],
-      ['Regexp#match method call', '/re/.match(foo)', '/re/.match?(foo)'],
-      ['Regexp#match method call with position',
-       '/re/.match(foo, 1)',
-       '/re/.match?(foo, 1)'],
-      ['Symbol#match method call', ':foo.match(re)', ':foo.match?(re)'],
-      ['Symbol#match method call with position',
-       ':foo.match(re, 1)',
-       ':foo.match?(re, 1)'],
-      ['match method call for a variable',
-       'foo.match(/re/)',
-       'foo.match?(/re/)'],
-      ['match method call for a variable with position',
-       'foo.match(/re/, 1)',
-       'foo.match?(/re/, 1)'],
-      ['matching by =~`', '/re/ =~ foo', '/re/.match?(foo)'],
-      ['matching by =~`', 'foo =~ /re/', 'foo.match?(/re/)'],
-      ['matching by =~`', '"foo" =~ re', '"foo".match?(re)'],
-      ['matching by =~`', ':foo =~ re', ':foo.match?(re)'],
-      ['matching by ===`', '/re/ === foo', '/re/.match?(foo)'],
-      ['matching by ===`', '/re/i === foo', '/re/i.match?(foo)']
-    ].each do |name, code, correction|
-      include_examples :all_legacy_match_methods, name, code, correction
+    it_behaves_like(:all_legacy_match_methods, 'String#match method call',
+                    '"foo".match(re)', '"foo".match?(re)')
+    it_behaves_like(:all_legacy_match_methods,
+                    'String#match method call with position',
+                    '"foo".match(re, 1)', '"foo".match?(re, 1)')
+    it_behaves_like(:all_legacy_match_methods, 'Regexp#match method call',
+                    '/re/.match(foo)', '/re/.match?(foo)')
+    it_behaves_like(:all_legacy_match_methods,
+                    'Regexp#match method call with position',
+                    '/re/.match(foo, 1)', '/re/.match?(foo, 1)')
+    it_behaves_like(:all_legacy_match_methods, 'Symbol#match method call',
+                    ':foo.match(re)', ':foo.match?(re)')
+    it_behaves_like(:all_legacy_match_methods,
+                    'Symbol#match method call with position',
+                    ':foo.match(re, 1)', ':foo.match?(re, 1)')
+    it_behaves_like(:all_legacy_match_methods,
+                    'match method call for a variable',
+                    'foo.match(/re/)', 'foo.match?(/re/)')
+    it_behaves_like(:all_legacy_match_methods,
+                    'match method call for a variable with position',
+                    'foo.match(/re/, 1)', 'foo.match?(/re/, 1)')
+    it_behaves_like(:all_legacy_match_methods, 'matching by =~`',
+                    '/re/ =~ foo', '/re/.match?(foo)')
+    it_behaves_like(:all_legacy_match_methods, 'matching by =~`',
+                    'foo =~ /re/', 'foo.match?(/re/)')
+    it_behaves_like(:all_legacy_match_methods, 'matching by =~`',
+                    '"foo" =~ re', '"foo".match?(re)')
+    it_behaves_like(:all_legacy_match_methods, 'matching by =~`',
+                    ':foo =~ re', ':foo.match?(re)')
+    it_behaves_like(:all_legacy_match_methods, 'matching by ===`',
+                    '/re/ === foo', '/re/.match?(foo)')
+    it_behaves_like(:all_legacy_match_methods, 'matching by ===`',
+                    '/re/i === foo', '/re/i.match?(foo)')
+
+    it 'accepts Regexp#match? method call' do
+      expect_no_offenses(<<-RUBY)
+        if /re/.match?(str)
+          do_something
+        end
+      RUBY
     end
 
-    include_examples :accepts, '`Regexp#match?` method call', <<-RUBY
-      if /re/.match?(str)
-        do_something
-      end
-    RUBY
+    it 'accepts String#match? method call' do
+      expect_no_offenses(<<-RUBY)
+        if str.match?(/re/)
+          do_something
+        end
+      RUBY
+    end
 
-    include_examples :accepts, '`String#match?` method call', <<-RUBY
-      if str.match?(/re/)
-        do_something
-      end
-    RUBY
+    it 'accepts match without arguments' do
+      expect_no_offenses(<<-RUBY)
+        code if match
+      RUBY
+    end
 
-    include_examples :accepts, '`match` without arguments', <<-RUBY
-      code if match
-    RUBY
-
-    include_examples :accepts, '`=~` with assignment', <<-RUBY
-      if /alias_(?<alias_id>.*)/ =~ something
-        do_something
-      end
-    RUBY
+    it 'accepts =~ with assignment' do
+      expect_no_offenses(<<-RUBY)
+        if /alias_(?<alias_id>.*)/ =~ something
+          do_something
+        end
+      RUBY
+    end
   end
 end
