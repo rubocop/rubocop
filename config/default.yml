@@ -769,6 +769,7 @@ Naming/UncommunicativeMethodParamName:
     - io
     - id
     - to
+    - by
   # Blacklisted names that will register an offense
   ForbiddenNames: []
 

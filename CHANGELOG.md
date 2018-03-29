@@ -6,6 +6,10 @@
 
 * [#5561](https://github.com/bbatsov/rubocop/issues/5561): Fix `Lint/ShadowedArgument` false positive with shorthand assignments. ([@akhramov][])
 
+### Changes
+
+* [#5734](https://github.com/bbatsov/rubocop/pull/5734): Add `by` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@AlexWayfer][])
+
 ## 0.54.0 (2018-03-21)
 
 ### New features
