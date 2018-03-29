@@ -37,6 +37,41 @@ RSpec.describe RuboCop::Cop::Style::EmptyLineAfterGuardClause do
     RUBY
   end
 
+  it 'registers an offense for next guard clause not followed by empty line ' \
+     'when guard clause is after heredoc' do
+    expect_offense(<<-RUBY.strip_indent)
+      def foo
+        raise ArgumentError, <<-MSG unless path
+          Must be called with mount point
+        MSG
+      ^^^^^ Add empty line after guard clause.
+        bar
+      end
+    RUBY
+  end
+
+  it 'registers an offense for next guard clause not followed by empty line ' \
+     'when guard clause is after condition without method invocation' do
+    expect_no_offenses(<<-'RUBY'.strip_indent)
+      def foo
+        raise unless $1 == o
+
+        bar
+      end
+    RUBY
+  end
+
+  it 'registers an offense for next guard clause not followed by empty line ' \
+     'when guard clause is after method call with argument' do
+    expect_offense(<<-'RUBY'.strip_indent)
+      def foo
+        raise SerializationError.new("Unsupported argument type: #{argument.class.name}") unless serializer
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Add empty line after guard clause.
+        serializer.serialize(argument)
+      end
+    RUBY
+  end
+
   it 'does not register offence for modifier if' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def foo
@@ -147,11 +182,26 @@ RSpec.describe RuboCop::Cop::Style::EmptyLineAfterGuardClause do
     RUBY
   end
 
-  it 'does not register offence when guard clause is after heredoc' do
+  it 'does not register offence when guard clause is after single line ' \
+     'heredoc' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def foo
         raise ArgumentError, <<-MSG unless path
           Must be called with mount point
+        MSG
+
+        bar
+      end
+    RUBY
+  end
+
+  it 'does not register offence when guard clause is after multiline heredoc' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      def foo
+        raise ArgumentError, <<-MSG unless path
+          foo
+          bar
+          baz
         MSG
 
         bar
