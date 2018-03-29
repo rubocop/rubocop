@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#5726](https://github.com/bbatsov/rubocop/issues/5726): Fix false positive for `:class_name` option in Rails/InverseOf cop. ([@bdewater][])
+* [#5686](https://github.com/bbatsov/rubocop/issues/5686): Fix a regression for `Style/SymbolArray` and `Style/WordArray` for multiline Arrays. ([@istateside][])
 * [#5561](https://github.com/bbatsov/rubocop/issues/5561): Fix `Lint/ShadowedArgument` false positive with shorthand assignments. ([@akhramov][])
 * [#4298](https://github.com/bbatsov/rubocop/issues/4298): Fix auto-correction of `Performance/RegexpMatch` to produce code that safe guards against the receiver being `nil`. ([@rrosenblum][])
 * [#5738](https://github.com/bbatsov/rubocop/issues/5738): Make `Rails/HttpStatus` ignoring hash order to fix false negative. ([@pocke][])
@@ -3287,3 +3288,4 @@
 [@YukiJikumaru]: https://github.com/YukiJikumaru
 [@jlfaber]: https://github.com/jlfaber
 [@drewpterry]: https://github.com/drewpterry
+[@istateside]: https://github.com/istateside
