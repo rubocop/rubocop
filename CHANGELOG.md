@@ -8,7 +8,7 @@
 
 ### Changes
 
-* [#5734](https://github.com/bbatsov/rubocop/pull/5734): Add `by` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@AlexWayfer][])
+* [#5734](https://github.com/bbatsov/rubocop/pull/5734): Add `by`, `on`, `in` and `at` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@AlexWayfer][])
 
 ## 0.54.0 (2018-03-21)
 
