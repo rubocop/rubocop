@@ -314,11 +314,21 @@ RSpec.describe RuboCop::Cop::Performance::RegexpMatch, :config do
     it_behaves_like(:all_legacy_match_methods, 'matching by =~`',
                     '/re/ =~ foo', '/re/.match?(foo)')
     it_behaves_like(:all_legacy_match_methods, 'matching by =~`',
-                    'foo =~ /re/', 'foo.match?(/re/)')
+                    'foo =~ /re/', '/re/.match?(foo)')
     it_behaves_like(:all_legacy_match_methods, 'matching by =~`',
                     '"foo" =~ re', '"foo".match?(re)')
     it_behaves_like(:all_legacy_match_methods, 'matching by =~`',
+                    're =~ "foo"', '"foo".match?(re)')
+    it_behaves_like(:all_legacy_match_methods, 'matching by =~`',
                     ':foo =~ re', ':foo.match?(re)')
+    it_behaves_like(:all_legacy_match_methods, 'matching by =~`',
+                    're =~ :foo', ':foo.match?(re)')
+    it_behaves_like(:all_legacy_match_methods, 'matching by =~`',
+                    're =~ foo', 're&.match?(foo)')
+    it_behaves_like(:all_legacy_match_methods, 'matching by =~`',
+                    're =~ FOO', 'FOO.match?(re)')
+    it_behaves_like(:all_legacy_match_methods, 'matching by =~`',
+                    'FOO =~ re', 'FOO.match?(re)')
     it_behaves_like(:all_legacy_match_methods, 'matching by ===`',
                     '/re/ === foo', '/re/.match?(foo)')
     it_behaves_like(:all_legacy_match_methods, 'matching by ===`',

@@ -63,6 +63,9 @@ module RuboCop
 
         minimum_target_ruby_version 2.4
 
+        # Constants are included in this list because it is unlikely that
+        # someone will store `nil` as a constant and then use it for comparison
+        TYPES_IMPLEMENTING_MATCH = %i[const regexp str sym].freeze
         MSG =
           'Use `match?` instead of `%<current>s` when `MatchData` ' \
           'is not used.'.freeze
@@ -215,12 +218,30 @@ module RuboCop
         end
 
         def correct_operator(corrector, recv, arg)
+          op_range = correction_range(recv, arg)
+
+          if TYPES_IMPLEMENTING_MATCH.include?(recv.type)
+            corrector.replace(op_range, '.match?(')
+          elsif TYPES_IMPLEMENTING_MATCH.include?(arg.type)
+            corrector.replace(op_range, '.match?(')
+            swap_receiver_and_arg(corrector, recv, arg)
+          else
+            corrector.replace(op_range, '&.match?(')
+          end
+
+          corrector.insert_after(arg.loc.expression, ')')
+        end
+
+        def swap_receiver_and_arg(corrector, recv, arg)
+          corrector.replace(recv.loc.expression, arg.source)
+          corrector.replace(arg.loc.expression, recv.source)
+        end
+
+        def correction_range(recv, arg)
           buffer = processed_source.buffer
           op_begin_pos = recv.loc.expression.end_pos
           op_end_pos = arg.loc.expression.begin_pos
-          op_range = Parser::Source::Range.new(buffer, op_begin_pos, op_end_pos)
-          corrector.replace(op_range, '.match?(')
-          corrector.insert_after(arg.loc.expression, ')')
+          Parser::Source::Range.new(buffer, op_begin_pos, op_end_pos)
         end
       end
     end
