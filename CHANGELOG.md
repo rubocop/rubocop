@@ -4,6 +4,7 @@
 
 ### Bug fixes
 
+* [#5726](https://github.com/bbatsov/rubocop/issues/5726): Fix false positive for `:class_name` option in Rails/InverseOf cop. ([@bdewater][])
 * [#5561](https://github.com/bbatsov/rubocop/issues/5561): Fix `Lint/ShadowedArgument` false positive with shorthand assignments. ([@akhramov][])
 
 ## 0.54.0 (2018-03-21)
