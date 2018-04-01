@@ -12,6 +12,8 @@ RSpec.describe RuboCop::Cop::Rails::HttpStatus, :config do
                              ^^^ Prefer `:ok` over `200` to define HTTP status code.
         render json: { foo: 'bar' }, status: 404
                                              ^^^ Prefer `:not_found` over `404` to define HTTP status code.
+        render status: 404, json: { foo: 'bar' }
+                       ^^^ Prefer `:not_found` over `404` to define HTTP status code.
         render plain: 'foo/bar', status: 304
                                          ^^^ Prefer `:not_modified` over `304` to define HTTP status code.
         redirect_to root_url, status: 301
@@ -23,6 +25,7 @@ RSpec.describe RuboCop::Cop::Rails::HttpStatus, :config do
       expect_no_offenses(<<-RUBY.strip_indent)
         render :foo, status: :ok
         render json: { foo: bar }, status: :not_found
+        render status: :not_found, json: { foo: bar }
         render plain: 'foo/bar', status: :not_modified
         redirect_to root_url, status: :moved_permanently
       RUBY
@@ -98,6 +101,8 @@ RSpec.describe RuboCop::Cop::Rails::HttpStatus, :config do
                              ^^^ Prefer `200` over `:ok` to define HTTP status code.
         render json: { foo: 'bar' }, status: :not_found
                                              ^^^^^^^^^^ Prefer `404` over `:not_found` to define HTTP status code.
+        render status: :not_found, json: { foo: 'bar' }
+                       ^^^^^^^^^^ Prefer `404` over `:not_found` to define HTTP status code.
         render plain: 'foo/bar', status: :not_modified
                                          ^^^^^^^^^^^^^ Prefer `304` over `:not_modified` to define HTTP status code.
         redirect_to root_url, status: :moved_permanently
@@ -109,6 +114,7 @@ RSpec.describe RuboCop::Cop::Rails::HttpStatus, :config do
       expect_no_offenses(<<-RUBY.strip_indent)
         render :foo, status: 200
         render json: { foo: bar }, status: 404
+        render status: 404, json: { foo: bar }
         render plain: 'foo/bar', status: 304
         redirect_to root_url, status: 301
       RUBY

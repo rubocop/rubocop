@@ -41,29 +41,27 @@ module RuboCop
 
         include ConfigurableEnforcedStyle
 
-        def_node_matcher :http_status, <<-PATTERN
+        def_node_matcher :render, <<-PATTERN
           {
-            (send nil? {:render :redirect_to}
-              _
-              (hash
-                (pair
-                  (sym :status)
-                  ${int sym})))
-            (send nil? {:render}
-              (hash
-                _
-                (pair
-                  (sym :status)
-                  ${int sym})))
+            (send nil? {:render :redirect_to} _ $hash)
+            (send nil? {:render} $hash)
           }
         PATTERN
 
+        def_node_matcher :http_status, <<-PATTERN
+          (pair
+            (sym :status)
+            ${int sym})
+        PATTERN
+
         def on_send(node)
-          http_status(node) do |ast_node|
-            checker = checker_class.new(ast_node)
-            return unless checker.offensive?
-            add_offense(checker.node, message: checker.message)
-          end
+          status_node = find_status_node(node)
+          return unless status_node
+
+          checker = checker_class.new(status_node)
+          return unless checker.offensive?
+
+          add_offense(checker.node, message: checker.message)
         end
 
         def support_autocorrect?
@@ -78,6 +76,14 @@ module RuboCop
         end
 
         private
+
+        def find_status_node(node)
+          render(node) do |hash|
+            pair = hash.pairs.find { |pair_node| http_status(pair_node) }
+
+            http_status(pair)
+          end
+        end
 
         def checker_class
           case style
