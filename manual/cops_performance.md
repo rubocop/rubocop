@@ -272,6 +272,7 @@ would suffice.
 
 ```ruby
 # bad
+'abc'.match?(/bc\Z/)
 'abc' =~ /bc\Z/
 'abc'.match(/bc\Z/)
 
@@ -689,6 +690,7 @@ This cop identifies unnecessary use of a regex where
 
 ```ruby
 # bad
+'abc'.match?(/\Aab/)
 'abc' =~ /\Aab/
 'abc'.match(/\Aab/)
 
