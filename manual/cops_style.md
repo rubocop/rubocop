@@ -3369,6 +3369,11 @@ CONST = [1, 2, 3]
 
 # good
 CONST = [1, 2, 3].freeze
+
+# good
+CONST = <<~TESTING.freeze
+This is a heredoc
+TESTING
 ```
 
 ## Style/NegatedIf
