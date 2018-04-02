@@ -22,6 +22,7 @@
 
 ### Bug fixes
 
+* [#5744](https://github.com/bbatsov/rubocop/pull/5744): Teach `Performance/StartWith` and `EndWith` cops to look for `Regexp#match?`. ([@bdewater][])
 * [#5683](https://github.com/bbatsov/rubocop/issues/5683): Fix message for `Naming/UncommunicativeXParamName` cops. ([@jlfaber][])
 * [#5680](https://github.com/bbatsov/rubocop/issues/5680): Fix `Layout/ElseAlignment` for `rescue/else/ensure` inside `do/end` blocks. ([@YukiJikumaru][])
 * [#5642](https://github.com/bbatsov/rubocop/pull/5642): Fix `Style/Documentation` `:nodoc:` for compact-style nested modules/classes. ([@ojab][])

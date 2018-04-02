@@ -61,6 +61,7 @@ RSpec.describe RuboCop::Cop::Performance::StartWith do
     end
   end
 
+  include_examples('different match methods', '.match?')
   include_examples('different match methods', ' =~')
   include_examples('different match methods', '.match')
 
