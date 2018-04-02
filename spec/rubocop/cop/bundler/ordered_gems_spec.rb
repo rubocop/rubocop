@@ -10,10 +10,6 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
     }
   end
   let(:treat_comments_as_group_separators) { false }
-  let(:message) do
-    'Gems should be sorted in an alphabetical order within their ' \
-      'section of the Gemfile. Gem `%s` should appear before `%s`.'
-  end
 
   context 'When gems are alphabetically sorted' do
     it 'does not register any offenses' do
@@ -52,7 +48,7 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
       expect_offense(<<-RUBY.strip_indent)
         gem 'rubocop'
         gem 'rspec'
-        ^^^^^^^^^^^ #{format(message, 'rspec', 'rubocop')}
+        ^^^^^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `rspec` should appear before `rubocop`.
       RUBY
     end
 
@@ -89,7 +85,7 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
         gem 'rubocop',
             '0.1.1'
         gem 'rspec'
-        ^^^^^^^^^^^ #{format(message, 'rspec', 'rubocop')}
+        ^^^^^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `rspec` should appear before `rubocop`.
       RUBY
     end
 
@@ -128,18 +124,18 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
       expect_offense(<<-RUBY.strip_indent)
         gem "d"
         gem "b"
-        ^^^^^^^ #{format(message, 'b', 'd')}
+        ^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `b` should appear before `d`.
         gem "e"
         gem "a"
-        ^^^^^^^ #{format(message, 'a', 'e')}
+        ^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `a` should appear before `e`.
         gem "c"
 
         gem "h"
         gem "g"
-        ^^^^^^^ #{format(message, 'g', 'h')}
+        ^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `g` should appear before `h`.
         gem "j"
         gem "f"
-        ^^^^^^^ #{format(message, 'f', 'j')}
+        ^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `f` should appear before `j`.
         gem "i"
       RUBY
     end
@@ -193,7 +189,7 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
           # For
           # test
           gem 'rspec'
-          ^^^^^^^^^^^ #{format(message, 'rspec', 'rubocop')}
+          ^^^^^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `rspec` should appear before `rubocop`.
         RUBY
       end
 
@@ -221,7 +217,7 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
       expect_offense(<<-RUBY.strip_indent)
         gem 'rubocop' # For code quality
         gem 'pry'
-        ^^^^^^^^^ #{format(message, 'pry', 'rubocop')}
+        ^^^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `pry` should appear before `rubocop`.
         gem 'rspec'   # For test
       RUBY
     end
@@ -264,7 +260,7 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
       expect_offense(<<-RUBY.strip_indent)
         gem 'Z'
         gem 'a'
-        ^^^^^^^ #{format(message, 'a', 'Z')}
+        ^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `a` should appear before `Z`.
       RUBY
     end
 
@@ -296,7 +292,7 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
           gem 'b'
           gem 'c'
           gem 'b'
-          ^^^^^^^ #{format(message, 'b', 'c')}
+          ^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `b` should appear before `c`.
         end
       RUBY
     end
