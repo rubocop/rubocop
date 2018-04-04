@@ -205,6 +205,7 @@ In the following section you find all available cops:
 * [Lint/EmptyWhen](cops_lint.md#lintemptywhen)
 * [Lint/EndInMethod](cops_lint.md#lintendinmethod)
 * [Lint/EnsureReturn](cops_lint.md#lintensurereturn)
+* [Lint/ErbNewArguments](cops_lint.md#linterbnewarguments)
 * [Lint/FloatOutOfRange](cops_lint.md#lintfloatoutofrange)
 * [Lint/FormatParameterMismatch](cops_lint.md#lintformatparametermismatch)
 * [Lint/HandleExceptions](cops_lint.md#linthandleexceptions)

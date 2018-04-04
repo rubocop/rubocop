@@ -8,6 +8,7 @@
 * [#5805](https://github.com/bbatsov/rubocop/pull/5805): Add new `Rails/AssertNot` cop. ([@composerinteralia][])
 * [#4136](https://github.com/bbatsov/rubocop/issues/4136): Allow more robust `Layout/ClosingParenthesisIndentation` detection including method chaining. ([@jfelchner][])
 * [#5821](https://github.com/bbatsov/rubocop/pull/5821): Support `AR::Migration#up_only` for `Rails/ReversibleMigration` cop. ([@koic][])
+* [#5845](https://github.com/bbatsov/rubocop/pull/5845): Add new `Lint/ErbNewArguments` cop. ([@koic][])
 
 ### Bug fixes
 
