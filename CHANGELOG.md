@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#5753](https://github.com/bbatsov/rubocop/pull/5753): Add new `Performance/UnneededSort` cop. ([@parkerfinch][])
+
 ### Bug fixes
 
 * [#5726](https://github.com/bbatsov/rubocop/issues/5726): Fix false positive for `:class_name` option in Rails/InverseOf cop. ([@bdewater][])

@@ -316,6 +316,7 @@ In the following section you find all available cops:
 * [Performance/StringReplacement](cops_performance.md#performancestringreplacement)
 * [Performance/TimesMap](cops_performance.md#performancetimesmap)
 * [Performance/UnfreezeString](cops_performance.md#performanceunfreezestring)
+* [Performance/UnneededSort](cops_performance.md#performanceunneededsort)
 * [Performance/UriDefaultParser](cops_performance.md#performanceuridefaultparser)
 
 #### Department [Rails](cops_rails.md)

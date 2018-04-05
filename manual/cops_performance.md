@@ -797,6 +797,27 @@ String.new('something')
 +''
 ```
 
+## Performance/UnneededSort
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop is used to identify instances of sorting and then taking
+only the first or last element.
+
+### Examples
+
+```ruby
+# bad
+[].sort.first
+[].sort_by(&:length).last
+
+# good
+[].min
+[].max_by(&:length)
+```
+
 ## Performance/UriDefaultParser
 
 Enabled by default | Supports autocorrection

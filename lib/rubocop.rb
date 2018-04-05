@@ -370,6 +370,7 @@ require_relative 'rubocop/cop/performance/start_with'
 require_relative 'rubocop/cop/performance/string_replacement'
 require_relative 'rubocop/cop/performance/times_map'
 require_relative 'rubocop/cop/performance/unfreeze_string'
+require_relative 'rubocop/cop/performance/unneeded_sort'
 require_relative 'rubocop/cop/performance/uri_default_parser'
 
 require_relative 'rubocop/cop/style/alias'
