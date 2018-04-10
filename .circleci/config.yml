@@ -1,0 +1,126 @@
+version: 2
+
+steps: &steps
+  steps:
+    - checkout
+    - run: bundle install
+    - run: ruby .travis.rb
+
+spec_env: &spec_env
+  environment:
+    - TASK: "spec"
+
+ascii_spec_env: &ascii_spec_env
+  environment:
+    - TASK: "ascii_spec"
+
+rubocop_env: &rubocop_env
+  environment:
+    - TASK: "internal_investigation"
+
+jobs:
+
+  # Ruby 2.2
+  ruby-2.2-spec:
+    docker:
+      - image: circleci/ruby:2.2
+    <<: *spec_env
+    <<: *steps
+  ruby-2.2-ascii_spec:
+    docker:
+      - image: circleci/ruby:2.2
+    <<: *ascii_spec_env
+    <<: *steps
+  ruby-2.2-rubocop:
+    docker:
+      - image: circleci/ruby:2.2
+    <<: *rubocop_env
+    <<: *steps
+
+  # Ruby 2.3
+  ruby-2.3-spec:
+    docker:
+      - image: circleci/ruby:2.3
+    <<: *spec_env
+    <<: *steps
+  ruby-2.3-ascii_spec:
+    docker:
+      - image: circleci/ruby:2.3
+    <<: *ascii_spec_env
+    <<: *steps
+  ruby-2.3-rubocop:
+    docker:
+      - image: circleci/ruby:2.3
+    <<: *rubocop_env
+    <<: *steps
+
+  # Ruby 2.4
+  ruby-2.4-spec:
+    docker:
+      - image: circleci/ruby:2.4
+    <<: *spec_env
+    <<: *steps
+  ruby-2.4-ascii_spec:
+    docker:
+      - image: circleci/ruby:2.4
+    <<: *ascii_spec_env
+    <<: *steps
+  ruby-2.4-rubocop:
+    docker:
+      - image: circleci/ruby:2.4
+    <<: *rubocop_env
+    <<: *steps
+
+  # Ruby 2.5
+  ruby-2.5-spec:
+    docker:
+      - image: circleci/ruby:2.5
+    <<: *spec_env
+    <<: *steps
+  ruby-2.5-ascii_spec:
+    docker:
+      - image: circleci/ruby:2.5
+    <<: *ascii_spec_env
+    <<: *steps
+  ruby-2.5-rubocop:
+    docker:
+      - image: circleci/ruby:2.5
+    <<: *rubocop_env
+    <<: *steps
+
+  # JRuby 9.2
+  jruby-9.2-spec:
+    docker:
+      - image: circleci/jruby:9.2
+    <<: *spec_env
+    <<: *steps
+  jruby-9.2-ascii_spec:
+    docker:
+      - image: circleci/jruby:9.2
+    <<: *ascii_spec_env
+    <<: *steps
+  jruby-9.2-rubocop:
+    docker:
+      - image: circleci/jruby:9.2
+    <<: *rubocop_env
+    <<: *steps
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - ruby-2.2-spec
+      - ruby-2.2-ascii_spec
+      - ruby-2.2-rubocop
+      - ruby-2.3-spec
+      - ruby-2.3-ascii_spec
+      - ruby-2.3-rubocop
+      - ruby-2.4-spec
+      - ruby-2.4-ascii_spec
+      - ruby-2.4-rubocop
+      - ruby-2.5-spec
+      - ruby-2.5-ascii_spec
+      - ruby-2.5-rubocop
+      - jruby-9.2-spec
+      - jruby-9.2-ascii_spec
+      - jruby-9.2-rubocop
