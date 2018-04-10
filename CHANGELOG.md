@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#5761](https://github.com/bbatsov/rubocop/pull/5761): Add `httpdate` to accepted `Rails/TimeZone` methods. ([@cupakromer][])
+
 ## 0.56.0 (2018-05-14)
 
 ### New features
@@ -3365,3 +3369,4 @@
 [@shanecav84]: https://github.com/shanecav84
 [@thomasbrus]: https://github.com/thomasbrus
 [@balbesina]: https://github.com/balbesina
+[@cupakromer]: https://github.com/cupakromer
