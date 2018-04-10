@@ -543,6 +543,13 @@ end
 
 # bad
 def foo
+  if x !~ /re/
+    do_something
+  end
+end
+
+# bad
+def foo
   if x.match(/re/)
     do_something
   end
@@ -558,6 +565,13 @@ end
 # good
 def foo
   if x.match?(/re/)
+    do_something
+  end
+end
+
+# good
+def foo
+  if !x.match?(/re/)
     do_something
   end
 end
