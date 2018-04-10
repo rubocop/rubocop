@@ -19,6 +19,13 @@ module RuboCop
       #
       #   # bad
       #   def foo
+      #     if x !~ /re/
+      #       do_something
+      #     end
+      #   end
+      #
+      #   # bad
+      #   def foo
       #     if x.match(/re/)
       #       do_something
       #     end
@@ -34,6 +41,13 @@ module RuboCop
       #   # good
       #   def foo
       #     if x.match?(/re/)
+      #       do_something
+      #     end
+      #   end
+      #
+      #   # good
+      #   def foo
+      #     if !x.match?(/re/)
       #       do_something
       #     end
       #   end
@@ -78,7 +92,7 @@ module RuboCop
         PATTERN
 
         def_node_matcher :match_operator?, <<-PATTERN
-          (send !nil? :=~ !nil?)
+          (send !nil? {:=~ :!~} !nil?)
         PATTERN
 
         def_node_matcher :match_threequals?, <<-PATTERN
@@ -131,8 +145,8 @@ module RuboCop
             if match_method?(node)
               corrector.replace(node.loc.selector, 'match?')
             elsif match_operator?(node) || match_threequals?(node)
-              recv, _, arg = *node
-              correct_operator(corrector, recv, arg)
+              recv, oper, arg = *node
+              correct_operator(corrector, recv, arg, oper)
             elsif match_with_lvasgn?(node)
               recv, arg = *node
               correct_operator(corrector, recv, arg)
@@ -217,7 +231,7 @@ module RuboCop
           ].include?(sym)
         end
 
-        def correct_operator(corrector, recv, arg)
+        def correct_operator(corrector, recv, arg, oper = nil)
           op_range = correction_range(recv, arg)
 
           if TYPES_IMPLEMENTING_MATCH.include?(recv.type)
@@ -230,6 +244,7 @@ module RuboCop
           end
 
           corrector.insert_after(arg.loc.expression, ')')
+          corrector.insert_before(recv.loc.expression, '!') if oper == :!~
         end
 
         def swap_receiver_and_arg(corrector, recv, arg)
