@@ -3475,6 +3475,27 @@ Enabled | Yes
 
 Checks for uses of while with a negated condition.
 
+### Examples
+
+```ruby
+# bad
+while !foo
+  bar
+end
+
+# good
+until foo
+  bar
+end
+
+# bad
+bar until !foo
+
+# good
+bar while foo
+bar while !foo && baz
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#until-for-negatives](https://github.com/bbatsov/ruby-style-guide#until-for-negatives)
