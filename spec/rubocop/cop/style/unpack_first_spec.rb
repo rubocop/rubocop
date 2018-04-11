@@ -39,13 +39,6 @@ RSpec.describe RuboCop::Cop::Style::UnpackFirst, :config do
         ^^^^^^^^^^^^^^^^^^ Use `''.unpack1(y)` instead of `''.unpack(y).at(0)`.
         RUBY
       end
-
-      it 'when using `#unpack` with `#take`' do
-        expect_offense(<<-RUBY.strip_indent)
-        x.unpack('h*').take(1)
-        ^^^^^^^^^^^^^^^^^^^^^^ Use `x.unpack1('h*')` instead of `x.unpack('h*').take(1)`.
-        RUBY
-      end
     end
 
     context 'does not register offense' do
@@ -85,11 +78,6 @@ RSpec.describe RuboCop::Cop::Style::UnpackFirst, :config do
 
       it 'autocorrects `#unpack` with `#at`' do
         expect(autocorrect_source("x.unpack('h*').at(0)"))
-          .to eq("x.unpack1('h*')")
-      end
-
-      it 'autocorrects `#unpack` with `#take`' do
-        expect(autocorrect_source("x.unpack('h*').take(1)"))
           .to eq("x.unpack1('h*')")
       end
     end

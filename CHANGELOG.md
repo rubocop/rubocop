@@ -11,6 +11,7 @@
 * [#5738](https://github.com/bbatsov/rubocop/issues/5738): Make `Rails/HttpStatus` ignoring hash order to fix false negative. ([@pocke][])
 * [#5720](https://github.com/bbatsov/rubocop/pull/5720): Fix false positive for `Style/EmptyLineAfterGuardClause` when guard clause is after heredoc. ([@koic][])
 * [#5760](https://github.com/bbatsov/rubocop/pull/5760): Fix incorrect offense location for `Style/EmptyLineAfterGuardClause` when guard clause is after heredoc argument. ([@koic][])
+* [#5764](https://github.com/bbatsov/rubocop/pull/5764): Fix `Style/Unpackfirst` false positive of `unpack('h*').take(1)`. ([@parkerfinch][])
 
 ### Changes
 
@@ -3290,3 +3291,4 @@
 [@YukiJikumaru]: https://github.com/YukiJikumaru
 [@jlfaber]: https://github.com/jlfaber
 [@drewpterry]: https://github.com/drewpterry
+[@parkerfinch]: https://github.com/parkerfinch
