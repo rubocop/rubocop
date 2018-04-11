@@ -6033,7 +6033,6 @@ which can be replaced with the shorter method `unpack1`.
 'foo'.unpack('h*')[0]
 'foo'.unpack('h*').slice(0)
 'foo'.unpack('h*').at(0)
-'foo'.unpack('h*').take(1)
 
 # good
 'foo'.unpack1('h*')
