@@ -7,27 +7,20 @@ module RuboCop
       #
       # @example
       #   # bad
-      #
       #   while !foo
       #     bar
       #   end
       #
       #   # good
-      #
       #   until foo
       #     bar
       #   end
       #
       #   # bad
-      #
       #   bar until !foo
       #
       #   # good
-      #
       #   bar while foo
-      #
-      #   # good
-      #
       #   bar while !foo && baz
       class NegatedWhile < Cop
         include NegativeConditional

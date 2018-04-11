@@ -3479,27 +3479,20 @@ Checks for uses of while with a negated condition.
 
 ```ruby
 # bad
-
 while !foo
   bar
 end
 
 # good
-
 until foo
   bar
 end
 
 # bad
-
 bar until !foo
 
 # good
-
 bar while foo
-
-# good
-
 bar while !foo && baz
 ```
 
