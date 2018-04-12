@@ -5,7 +5,7 @@ module RuboCop
     module Rails
       # Enforces use of symbolic or numeric value to define HTTP status.
       #
-      # @example `EnforcedStyle: symbolic` (default)
+      # @example EnforcedStyle: symbolic (default)
       #   # bad
       #   render :foo, status: 200
       #   render json: { foo: 'bar' }, status: 200
@@ -18,7 +18,7 @@ module RuboCop
       #   render plain: 'foo/bar', status: :not_modified
       #   redirect_to root_url, status: :moved_permanently
       #
-      # @example `EnforcedStyle: numeric`
+      # @example EnforcedStyle: numeric
       #   # bad
       #   render :foo, status: :ok
       #   render json: { foo: 'bar' }, status: :not_found
