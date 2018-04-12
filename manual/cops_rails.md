@@ -704,7 +704,7 @@ Enforces use of symbolic or numeric value to define HTTP status.
 
 ### Examples
 
-#### `EnforcedStyle: symbolic` (default)
+#### EnforcedStyle: symbolic (default)
 
 ```ruby
 # bad
@@ -719,7 +719,7 @@ render json: { foo: 'bar' }, status: :ok
 render plain: 'foo/bar', status: :not_modified
 redirect_to root_url, status: :moved_permanently
 ```
-#### `EnforcedStyle: numeric`
+#### EnforcedStyle: numeric
 
 ```ruby
 # bad
