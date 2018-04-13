@@ -17,8 +17,7 @@ Gem::Specification.new do |s|
   DESCRIPTION
 
   s.email = 'rubocop@googlegroups.com'
-  s.files = `git ls-files assets bin config lib LICENSE.txt README.md \
-             spec/support/cop_helper.rb`
+  s.files = `git ls-files assets bin config lib LICENSE.txt README.md`
             .split($RS)
   s.executables = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
   s.extra_rdoc_files = ['LICENSE.txt', 'README.md']
@@ -42,6 +41,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('unicode-display_width', '~> 1.0', '>= 1.0.1')
 
   s.add_development_dependency('bundler', '~> 1.3')
-  s.add_development_dependency('rack')
+  # TODO: loosen rack dependency once Ruby 2.1.0 support is dropped.
+  # See https://git.io/vxWRB
+  s.add_development_dependency('rack', '>= 1.6.9', '< 2.0')
 end
 # rubocop:enable Metrics/BlockLength

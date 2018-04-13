@@ -4,11 +4,16 @@ module RuboCop
   module Cop
     module Rails
       # This cop looks for has_(one|many) and belongs_to associations where
-      # ActiveRecord can't automatically determine the inverse association
-      # because of a scope or the options used. This can result in unnecessary
-      # queries in some circumstances. `:inverse_of` must be manually specified
-      # for associations to work in both ways, or set to `false` or `nil`
-      # to opt-out.
+      # Active Record can't automatically determine the inverse association
+      # because of a scope or the options used. Using the blog with order scope
+      # example below, traversing the a Blog's association in both directions
+      # with `blog.posts.first.blog` would cause the `blog` to be loaded from
+      # the database twice.
+      #
+      # `:inverse_of` must be manually specified for Active Record to use the
+      # associated object in memory, or set to `false` to opt-out. Note that
+      # setting `nil` does not stop Active Record from trying to determine the
+      # inverse automatically, and is not considered a valid value for this.
       #
       # @example
       #   # good
@@ -59,15 +64,6 @@ module RuboCop
       #     has_many(:posts,
       #       -> { order(published_at: :desc) },
       #       inverse_of: false
-      #     )
-      #   end
-      #
-      #   # good
-      #   # You can also opt-out with specifying `inverse_of: nil`.
-      #   class Blog < ApplicationRecord
-      #     has_many(:posts,
-      #       -> { order(published_at: :desc) },
-      #       inverse_of: nil
       #     )
       #   end
       #
@@ -139,7 +135,9 @@ module RuboCop
 
         minimum_target_rails_version 4.1
 
-        MSG = 'Specify an `:inverse_of` option.'.freeze
+        SPECIFY_MSG = 'Specify an `:inverse_of` option.'.freeze
+        NIL_MSG = 'You specified `inverse_of: nil`, you probably meant to ' \
+          'use `inverse_of: false`.'.freeze
 
         def_node_matcher :association_recv_arguments, <<-PATTERN
           (send $_ {:has_many :has_one :belongs_to} _ $...)
@@ -165,16 +163,16 @@ module RuboCop
           (pair (sym :as) !nil)
         PATTERN
 
-        def_node_matcher :class_name_option?, <<-PATTERN
-          (pair (sym :class_name) !nil)
-        PATTERN
-
         def_node_matcher :foreign_key_option?, <<-PATTERN
           (pair (sym :foreign_key) !nil)
         PATTERN
 
         def_node_matcher :inverse_of_option?, <<-PATTERN
-          (pair (sym :inverse_of) _)
+          (pair (sym :inverse_of) !nil)
+        PATTERN
+
+        def_node_matcher :inverse_of_nil_option?, <<-PATTERN
+          (pair (sym :inverse_of) nil)
         PATTERN
 
         def on_send(node)
@@ -191,7 +189,7 @@ module RuboCop
                         options_requiring_inverse_of?(options)
 
           return if options_contain_inverse_of?(options)
-          add_offense(node, location: :selector)
+          add_offense(node, message: message(options), location: :selector)
         end
 
         def scope?(arguments)
@@ -201,7 +199,6 @@ module RuboCop
         def options_requiring_inverse_of?(options)
           required = options.any? do |opt|
             conditions_option?(opt) ||
-              class_name_option?(opt) ||
               foreign_key_option?(opt)
           end
 
@@ -230,6 +227,16 @@ module RuboCop
         def same_context_in_with_options?(arg, recv)
           return true if arg.nil? && recv.nil?
           arg && recv && arg.children[0] == recv.children[0]
+        end
+
+        private
+
+        def message(options)
+          if options.any? { |opt| inverse_of_nil_option?(opt) }
+            NIL_MSG
+          else
+            SPECIFY_MSG
+          end
         end
       end
     end

@@ -704,7 +704,7 @@ Enforces use of symbolic or numeric value to define HTTP status.
 
 ### Examples
 
-#### `EnforcedStyle: symbolic` (default)
+#### EnforcedStyle: symbolic (default)
 
 ```ruby
 # bad
@@ -719,7 +719,7 @@ render json: { foo: 'bar' }, status: :ok
 render plain: 'foo/bar', status: :not_modified
 redirect_to root_url, status: :moved_permanently
 ```
-#### `EnforcedStyle: numeric`
+#### EnforcedStyle: numeric
 
 ```ruby
 # bad
@@ -748,11 +748,16 @@ Enabled by default | Supports autocorrection
 Enabled | No
 
 This cop looks for has_(one|many) and belongs_to associations where
-ActiveRecord can't automatically determine the inverse association
-because of a scope or the options used. This can result in unnecessary
-queries in some circumstances. `:inverse_of` must be manually specified
-for associations to work in both ways, or set to `false` or `nil`
-to opt-out.
+Active Record can't automatically determine the inverse association
+because of a scope or the options used. Using the blog with order scope
+example below, traversing the a Blog's association in both directions
+with `blog.posts.first.blog` would cause the `blog` to be loaded from
+the database twice.
+
+`:inverse_of` must be manually specified for Active Record to use the
+associated object in memory, or set to `false` to opt-out. Note that
+setting `nil` does not stop Active Record from trying to determine the
+inverse automatically, and is not considered a valid value for this.
 
 ### Examples
 
@@ -805,15 +810,6 @@ class Blog < ApplicationRecord
   has_many(:posts,
     -> { order(published_at: :desc) },
     inverse_of: false
-  )
-end
-
-# good
-# You can also opt-out with specifying `inverse_of: nil`.
-class Blog < ApplicationRecord
-  has_many(:posts,
-    -> { order(published_at: :desc) },
-    inverse_of: nil
   )
 end
 ```
@@ -1202,8 +1198,15 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
-This cop checks for the use of the read_attribute or
-write_attribute methods.
+This cop checks for the use of the read_attribute or write_attribute
+methods, and recommends square brackets instead.
+
+If an attribute is missing from the instance (for example, when
+initialized by a partial `select`) then read_attribute will return nil,
+but square brackets will raise an ActiveModel::MissingAttributeError.
+
+Explicitly raising an error in this situation is preferable, and that
+is why rubocop recommends using square brackets.
 
 ### Examples
 

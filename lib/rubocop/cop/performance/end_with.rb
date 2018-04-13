@@ -8,6 +8,7 @@ module RuboCop
       #
       # @example
       #   # bad
+      #   'abc'.match?(/bc\Z/)
       #   'abc' =~ /bc\Z/
       #   'abc'.match(/bc\Z/)
       #
@@ -19,7 +20,7 @@ module RuboCop
         SINGLE_QUOTE = "'".freeze
 
         def_node_matcher :redundant_regex?, <<-PATTERN
-          {(send $!nil? {:match :=~} (regexp (str $#literal_at_end?) (regopt)))
+          {(send $!nil? {:match :=~ :match?} (regexp (str $#literal_at_end?) (regopt)))
            (send (regexp (str $#literal_at_end?) (regopt)) {:match :=~} $_)}
         PATTERN
 

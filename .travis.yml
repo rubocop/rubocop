@@ -6,14 +6,18 @@ rvm:
   - jruby-9.1.16.0
   - jruby-head
   - 2.1.10
-  - 2.2.9
-  - 2.3.6
-  - 2.4.3
-  - 2.5.0
+  - 2.2.10
+  - 2.3.7
+  - 2.4.4
+  - 2.5.1
   - ruby-head
 env:
   global:
     - JRUBY_OPTS='--debug -J-Xmx1000M' # get more accurate coverage data in JRuby
+    # Travis CI container has two cores, but Ruby can see 32 cores unfortunately.
+    # See https://github.com/bbatsov/rubocop/pull/5719
+    #     https://docs.travis-ci.com/user/reference/overview/#Virtualisation-Environment-vs-Operating-System
+    - TEST_QUEUE_WORKERS=2
   matrix:
     - 'TASK=spec'
     - 'TASK=ascii_spec'

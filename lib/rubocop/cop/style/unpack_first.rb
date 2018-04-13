@@ -13,7 +13,6 @@ module RuboCop
       #   'foo'.unpack('h*')[0]
       #   'foo'.unpack('h*').slice(0)
       #   'foo'.unpack('h*').at(0)
-      #   'foo'.unpack('h*').take(1)
       #
       #   # good
       #   'foo'.unpack1('h*')
@@ -30,7 +29,6 @@ module RuboCop
           {
             (send $(send (...) :unpack $(...)) :first)
             (send $(send (...) :unpack $(...)) {:[] :slice :at} (int 0))
-            (send $(send (...) :unpack $(...)) :take (int 1))
           }
         PATTERN
 

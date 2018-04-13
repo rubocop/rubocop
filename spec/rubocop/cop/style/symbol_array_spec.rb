@@ -135,6 +135,19 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
           ]
         RUBY
       end
+
+      it 'autocorrects an array using partial newlines' do
+        new_source = autocorrect_source(<<-RUBY)
+          [:foo, :bar, :baz,
+          :boz, :buz,
+          :biz]
+        RUBY
+        expect(new_source).to eq(<<-RUBY)
+          %i[foo bar baz
+          boz buz
+          biz]
+        RUBY
+      end
     end
   end
 

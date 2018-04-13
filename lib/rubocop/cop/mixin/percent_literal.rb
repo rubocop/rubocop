@@ -61,11 +61,12 @@ module RuboCop
       def autocorrect_multiline_words(node, escape, delimiters)
         base_line_number = node.first_line
         previous_line_number = base_line_number
-        contents = node.children.map do |word_node|
+        contents = node.children.map.with_index do |word_node, index|
           line_breaks = line_breaks(word_node,
                                     node.source,
                                     previous_line_number,
-                                    base_line_number)
+                                    base_line_number,
+                                    index)
           previous_line_number = word_node.first_line
           content = escaped_content(word_node, escape, delimiters)
           line_breaks + content
@@ -85,14 +86,14 @@ module RuboCop
         end.join(' ')
       end
 
-      def line_breaks(node, source, previous_line_number, base_line_number)
+      def line_breaks(node, source, previous_line_num, base_line_num, node_idx)
         source_in_lines = source.split("\n")
-        if node.first_line == previous_line_number
-          node.first_line == base_line_number ? '' : ' '
+        if node.first_line == previous_line_num
+          node_idx.zero? && node.first_line == base_line_num ? '' : ' '
         else
-          begin_line_number = previous_line_number - base_line_number + 1
-          end_line_number = node.first_line - base_line_number + 1
-          lines = source_in_lines[begin_line_number...end_line_number]
+          begin_line_num = previous_line_num - base_line_num + 1
+          end_line_num = node.first_line - base_line_num + 1
+          lines = source_in_lines[begin_line_num...end_line_num]
           "\n" + lines.join("\n").split(node.source).first
         end
       end

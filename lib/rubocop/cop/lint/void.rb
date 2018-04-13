@@ -72,7 +72,8 @@ module RuboCop
         UNARY_OPERATORS = %i[+@ -@ ~ !].freeze
         OPERATORS = (BINARY_OPERATORS + UNARY_OPERATORS).freeze
         VOID_CONTEXT_TYPES = %i[def for block].freeze
-        NONMUTATING_METHODS = %i[capitalize chomp chop collect compact downcase
+        NONMUTATING_METHODS = %i[capitalize chomp chop collect compact
+                                 delete_prefix delete_suffix downcase
                                  encode flatten gsub lstrip map next reject
                                  reverse rotate rstrip scrub select shuffle
                                  slice sort sort_by squeeze strip sub succ
