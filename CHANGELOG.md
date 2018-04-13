@@ -6,6 +6,7 @@
 
 * [#5759](https://github.com/bbatsov/rubocop/pull/5759): Fix `Performance/RegexpMatch` cop not correcting negated match operator. ([@bdewater][])
 * [#5726](https://github.com/bbatsov/rubocop/issues/5726): Fix false positive for `:class_name` option in Rails/InverseOf cop. ([@bdewater][])
+* [#5686](https://github.com/bbatsov/rubocop/issues/5686): Fix a regression for `Style/SymbolArray` and `Style/WordArray` for multiline Arrays. ([@istateside][])
 * [#5730](https://github.com/bbatsov/rubocop/pull/5730): Stop `Rails/InverseOf` cop allowing `inverse_of: nil` to opt-out. ([@bdewater][])
 * [#5561](https://github.com/bbatsov/rubocop/issues/5561): Fix `Lint/ShadowedArgument` false positive with shorthand assignments. ([@akhramov][])
 * [#4298](https://github.com/bbatsov/rubocop/issues/4298): Fix auto-correction of `Performance/RegexpMatch` to produce code that safe guards against the receiver being `nil`. ([@rrosenblum][])
@@ -3292,4 +3293,5 @@
 [@YukiJikumaru]: https://github.com/YukiJikumaru
 [@jlfaber]: https://github.com/jlfaber
 [@drewpterry]: https://github.com/drewpterry
+[@istateside]: https://github.com/istateside
 [@parkerfinch]: https://github.com/parkerfinch
