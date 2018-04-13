@@ -4,16 +4,21 @@
 
 ### Bug fixes
 
+* [#5759](https://github.com/bbatsov/rubocop/pull/5759): Fix `Performance/RegexpMatch` cop not correcting negated match operator. ([@bdewater][])
 * [#5726](https://github.com/bbatsov/rubocop/issues/5726): Fix false positive for `:class_name` option in Rails/InverseOf cop. ([@bdewater][])
 * [#5686](https://github.com/bbatsov/rubocop/issues/5686): Fix a regression for `Style/SymbolArray` and `Style/WordArray` for multiline Arrays. ([@istateside][])
+* [#5730](https://github.com/bbatsov/rubocop/pull/5730): Stop `Rails/InverseOf` cop allowing `inverse_of: nil` to opt-out. ([@bdewater][])
 * [#5561](https://github.com/bbatsov/rubocop/issues/5561): Fix `Lint/ShadowedArgument` false positive with shorthand assignments. ([@akhramov][])
 * [#4298](https://github.com/bbatsov/rubocop/issues/4298): Fix auto-correction of `Performance/RegexpMatch` to produce code that safe guards against the receiver being `nil`. ([@rrosenblum][])
 * [#5738](https://github.com/bbatsov/rubocop/issues/5738): Make `Rails/HttpStatus` ignoring hash order to fix false negative. ([@pocke][])
+* [#5720](https://github.com/bbatsov/rubocop/pull/5720): Fix false positive for `Style/EmptyLineAfterGuardClause` when guard clause is after heredoc. ([@koic][])
+* [#5760](https://github.com/bbatsov/rubocop/pull/5760): Fix incorrect offense location for `Style/EmptyLineAfterGuardClause` when guard clause is after heredoc argument. ([@koic][])
+* [#5764](https://github.com/bbatsov/rubocop/pull/5764): Fix `Style/Unpackfirst` false positive of `unpack('h*').take(1)`. ([@parkerfinch][])
 
 ### Changes
 
+* [#5752](https://github.com/bbatsov/rubocop/pull/5752): Add `String#delete_{prefix,suffix}` to Lint/Void cop. ([@bdewater][])
 * [#5734](https://github.com/bbatsov/rubocop/pull/5734): Add `by`, `on`, `in` and `at` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@AlexWayfer][])
-* [#5720](https://github.com/bbatsov/rubocop/pull/5720): Fix false positive for `Style/EmptyLineAfterGuardClause` when guard clause is after heredoc. ([@koic][])
 
 ## 0.54.0 (2018-03-21)
 
@@ -3289,3 +3294,4 @@
 [@jlfaber]: https://github.com/jlfaber
 [@drewpterry]: https://github.com/drewpterry
 [@istateside]: https://github.com/istateside
+[@parkerfinch]: https://github.com/parkerfinch
