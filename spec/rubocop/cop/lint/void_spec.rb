@@ -176,6 +176,21 @@ RSpec.describe RuboCop::Cop::Lint::Void do
     RUBY
   end
 
+  it 'handles `#each` block with single expression' do
+    expect_offense(<<-RUBY.strip_indent)
+      array.each do |_item|
+        42
+        ^^ Literal `42` used in void context.
+      end
+    RUBY
+  end
+
+  it 'handles empty block' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      array.each { |_item| }
+    RUBY
+  end
+
   it 'registers two offenses for void literals in `#tap` method' do
     expect_offense(<<-RUBY.strip_indent)
       foo.tap do |x|
