@@ -3876,6 +3876,15 @@ unless foo then boo end
 
 # good
 foo ? boo : doo
+boo unless foo
+boo if foo
+
+# good
+if foo
+  boo
+else
+  doo
+end
 ```
 
 ### References

@@ -14,6 +14,15 @@ module RuboCop
       #
       #   # good
       #   foo ? boo : doo
+      #   boo unless foo
+      #   boo if foo
+      #
+      #   # good
+      #   if foo
+      #     boo
+      #   else
+      #     doo
+      #   end
       class OneLineConditional < Cop
         include OnNormalIfUnless
 
