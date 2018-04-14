@@ -20,6 +20,7 @@ module RuboCop
         def on_send(node)
           return if ineligible_node?(node)
           return unless !node.arguments? && node.parenthesized?
+          return if ignored_method?(node.method_name)
           return if same_name_assignment?(node)
 
           add_offense(node, location: :begin)
@@ -36,6 +37,10 @@ module RuboCop
 
         def ineligible_node?(node)
           node.camel_case_method? || node.implicit_call? || node.keyword_not?
+        end
+
+        def ignored_method?(method)
+          cop_config['IgnoredMethods'].to_a.map(&:to_sym).include?(method)
         end
 
         def same_name_assignment?(node)
