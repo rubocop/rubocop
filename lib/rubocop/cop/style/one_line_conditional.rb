@@ -9,13 +9,12 @@ module RuboCop
       # @example
       #   # bad
       #   if foo then boo else doo end
-      #   if foo then boo end
-      #   unless foo then boo end
+      #   unless foo then boo else goo end
       #
       #   # good
       #   foo ? boo : doo
-      #   boo unless foo
       #   boo if foo
+      #   if foo then boo end
       #
       #   # good
       #   if foo
