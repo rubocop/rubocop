@@ -46,6 +46,7 @@
 * Add new `Naming/MemoizedInstanceVariableName` cop. ([@satyap][])
 * [#5376](https://github.com/bbatsov/rubocop/issues/5376): Add new `Style/EmptyLineAfterGuardClause` cop. ([@unkmas][])
 * Add new `Rails/ActiveRecordAliases` cop. ([@elebow][])
+* [#5666](https://github.com/bbatsov/rubocop/issues/5666) Add spaces as an `EnforcedStyle` option to `Layout/SpaceInsideParens`, allowing you to enforce spaces inside of parentheses. ([@joshuapinter][])
 
 ### Bug fixes
 
@@ -3248,3 +3249,4 @@
 [@unused]: https://github.com/unused
 [@htwroclau]: https://github.com/htwroclau
 [@hamada14]: https://github.com/hamada14
+[@joshuapinter]: https://github.com/joshuapinter
