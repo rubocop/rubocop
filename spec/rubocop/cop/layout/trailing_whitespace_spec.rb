@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace do
-  subject(:cop) { described_class.new }
+RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
+  subject(:cop) { described_class.new(config) }
+
+  let(:cop_config) { { 'AllowInHeredoc' => false } }
 
   it 'registers an offense for a line ending with space' do
     inspect_source('x = 0 ')
@@ -71,5 +73,23 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace do
                                      "x = 0\t"])
     expect(new_source).to eq(['x = 0',
                               'x = 0'].join("\n"))
+  end
+
+  context 'when `AllowInHeredoc` is set to true' do
+    let(:cop_config) { { 'AllowInHeredoc' => true } }
+
+    it 'accepts trailing whitespace in a heredoc string' do
+      inspect_source(['x = <<RUBY',
+                      '  Hi   ',
+                      'RUBY'])
+      expect(cop.offenses.size).to eq(0)
+    end
+
+    it 'registers an offence for trailing whitespace at the heredoc begin' do
+      inspect_source(['x = <<RUBY ',
+                      '  Hi   ',
+                      'RUBY'])
+      expect(cop.offenses.size).to eq(1)
+    end
   end
 end

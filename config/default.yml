@@ -648,6 +648,9 @@ Layout/TrailingBlankLines:
     - final_newline
     - final_blank_line
 
+Layout/TrailingWhitespace:
+  AllowInHeredoc: false
+
 #################### Naming ##########################
 
 Naming/FileName:

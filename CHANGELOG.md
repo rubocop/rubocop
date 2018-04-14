@@ -16,13 +16,15 @@
 * [#5760](https://github.com/bbatsov/rubocop/pull/5760): Fix incorrect offense location for `Style/EmptyLineAfterGuardClause` when guard clause is after heredoc argument. ([@koic][])
 * [#5764](https://github.com/bbatsov/rubocop/pull/5764): Fix `Style/Unpackfirst` false positive of `unpack('h*').take(1)`. ([@parkerfinch][])
 * [#5766](https://github.com/bbatsov/rubocop/issues/5766): Update `Style/FrozenStringLiteralComment` auto-correction to insert a new line between the comment and the code. ([@rrosenblum][])
-* [#5551](https://github.com/bbatsov/rubocop/issues/5551): Fix `Lint/Volib/rubocop/cop/style/and_or.rbid` not detecting void context in blocks with single expression. ([@Darhazer][])
+* [#5551](https://github.com/bbatsov/rubocop/issues/5551): Fix `Lint/Void` not detecting void context in blocks with single expression. ([@Darhazer][])
+
 
 ### Changes
 
 * [#5752](https://github.com/bbatsov/rubocop/pull/5752): Add `String#delete_{prefix,suffix}` to Lint/Void cop. ([@bdewater][])
 * [#5734](https://github.com/bbatsov/rubocop/pull/5734): Add `by`, `on`, `in` and `at` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@AlexWayfer][])
 * [#4753](https://github.com/bbatsov/rubocop/issues/4753): Add `IgnoredMethods` option to `Style/MethodCallWithoutArgsParentheses` cop. ([@Darhazer][])
+* [#4517](https://github.com/bbatsov/rubocop/issues/4517): Add option to allow trailing whitespaces inside heredoc strings. ([@Darhazer][])
 
 ## 0.54.0 (2018-03-21)
 
