@@ -116,7 +116,5 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideParens, :config do
         g = ( a + 3 )
       RUBY
     end
-
   end
-
 end
