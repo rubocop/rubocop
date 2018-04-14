@@ -3556,6 +3556,20 @@ Enabled | No
 
 This cop checks for nested ternary op expressions.
 
+### Examples
+
+```ruby
+# bad
+a ? (b ? b1 : b2) : a2
+
+# good
+if a
+  b ? b1 : b2
+else
+  a2
+end
+```
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#no-nested-ternary](https://github.com/bbatsov/ruby-style-guide#no-nested-ternary)
@@ -3851,6 +3865,18 @@ Enabled | Yes
 
 TODO: Make configurable.
 Checks for uses of if/then/else/end on a single line.
+
+### Examples
+
+```ruby
+# bad
+if foo then boo else doo end
+if foo then boo end
+unless foo then boo end
+
+# good
+foo ? boo : doo
+```
 
 ### References
 

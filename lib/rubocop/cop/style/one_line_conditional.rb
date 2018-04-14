@@ -5,6 +5,15 @@ module RuboCop
     module Style
       # TODO: Make configurable.
       # Checks for uses of if/then/else/end on a single line.
+      #
+      # @example
+      #   # bad
+      #   if foo then boo else doo end
+      #   if foo then boo end
+      #   unless foo then boo end
+      #
+      #   # good
+      #   foo ? boo : doo
       class OneLineConditional < Cop
         include OnNormalIfUnless
 
