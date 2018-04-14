@@ -272,6 +272,7 @@ would suffice.
 
 ```ruby
 # bad
+'abc'.match?(/bc\Z/)
 'abc' =~ /bc\Z/
 'abc'.match(/bc\Z/)
 
@@ -542,6 +543,13 @@ end
 
 # bad
 def foo
+  if x !~ /re/
+    do_something
+  end
+end
+
+# bad
+def foo
   if x.match(/re/)
     do_something
   end
@@ -557,6 +565,13 @@ end
 # good
 def foo
   if x.match?(/re/)
+    do_something
+  end
+end
+
+# good
+def foo
+  if !x.match?(/re/)
     do_something
   end
 end
@@ -689,6 +704,7 @@ This cop identifies unnecessary use of a regex where
 
 ```ruby
 # bad
+'abc'.match?(/\Aab/)
 'abc' =~ /\Aab/
 'abc'.match(/\Aab/)
 

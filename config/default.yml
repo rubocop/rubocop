@@ -115,9 +115,15 @@ AllCops:
   AllowSymlinksInCacheRootDirectory: false
   # What MRI version of the Ruby interpreter is the inspected code intended to
   # run on? (If there is more than one, set this to the lowest version.)
-  # If a value is specified for TargetRubyVersion then it is used.
-  # Else if .ruby-version exists and it contains an MRI version it is used.
-  # Otherwise we fallback to the oldest officially supported Ruby version (2.1).
+  # If a value is specified for TargetRubyVersion then it is used. Acceptable
+  # values are specificed as a float (i.e. 2.5); the teeny version of Ruby
+  # should not be included. If the project specifies a Ruby version in the
+  # .ruby-version file, Gemfile or gems.rb file, RuboCop will try to determine
+  # the desired version of Ruby by inspecting the .ruby-version file first,
+  # followed by the Gemfile.lock or gems.locked file. (Although the Ruby version
+  # is specified in the Gemfile or gems.rb file, RuboCop reads the final value
+  # from the lock file.) If the Ruby version is still unresolved, RuboCop will
+  # use the oldest officially supported Ruby version (currently Ruby 2.1).
   TargetRubyVersion: ~
   # What version of Rails is the inspected code using?  If a value is specified
   # for TargetRailsVersion then it is used.  Acceptable values are specificed
@@ -712,8 +718,7 @@ Naming/FileName:
 
 Naming/HeredocDelimiterNaming:
   Blacklist:
-    - END
-    - !ruby/regexp '/EO[A-Z]{1}/'
+    - !ruby/regexp '/(^|\s)(EO[A-Z]{1}|END)(\s|$)/'
 
 Naming/HeredocDelimiterCase:
   EnforcedStyle: uppercase
@@ -769,6 +774,10 @@ Naming/UncommunicativeMethodParamName:
     - io
     - id
     - to
+    - by
+    - 'on'
+    - in
+    - at
   # Blacklisted names that will register an offense
   ForbiddenNames: []
 
@@ -1672,6 +1681,12 @@ Rails/HasAndBelongsToMany:
 Rails/HasManyOrHasOneDependent:
   Include:
     - app/models/**/*.rb
+
+Rails/HttpStatus:
+  EnforcedStyle: symbolic
+  SupportedStyles:
+    - numeric
+    - symbolic
 
 Rails/InverseOf:
   Include:

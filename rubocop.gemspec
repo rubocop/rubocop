@@ -17,8 +17,7 @@ Gem::Specification.new do |s|
   DESCRIPTION
 
   s.email = 'rubocop@googlegroups.com'
-  s.files = `git ls-files assets bin config lib LICENSE.txt README.md \
-             spec/support/cop_helper.rb`
+  s.files = `git ls-files assets bin config lib LICENSE.txt README.md`
             .split($RS)
   s.executables = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
   s.extra_rdoc_files = ['LICENSE.txt', 'README.md']
@@ -26,15 +25,13 @@ Gem::Specification.new do |s|
   s.licenses = ['MIT']
   s.summary = 'Automatic Ruby code style checking tool.'
 
-  if s.respond_to?(:metadata=)
-    s.metadata = {
-      'homepage_uri' => 'https://rubocop.readthedocs.io/',
-      'changelog_uri' => 'https://github.com/bbatsov/rubocop/blob/master/CHANGELOG.md',
-      'source_code_uri' => 'https://github.com/bbatsov/rubocop/',
-      'documentation_uri' => 'https://rubocop.readthedocs.io/',
-      'bug_tracker_uri' => 'https://github.com/bbatsov/rubocop/issues'
-    }
-  end
+  s.metadata = {
+    'homepage_uri' => 'https://rubocop.readthedocs.io/',
+    'changelog_uri' => 'https://github.com/bbatsov/rubocop/blob/master/CHANGELOG.md',
+    'source_code_uri' => 'https://github.com/bbatsov/rubocop/',
+    'documentation_uri' => 'https://rubocop.readthedocs.io/',
+    'bug_tracker_uri' => 'https://github.com/bbatsov/rubocop/issues'
+  }
 
   s.add_runtime_dependency('parallel', '~> 1.10')
   s.add_runtime_dependency('parser', '>= 2.5')
@@ -44,5 +41,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('unicode-display_width', '~> 1.0', '>= 1.0.1')
 
   s.add_development_dependency('bundler', '~> 1.3')
+  # TODO: loosen rack dependency once Ruby 2.1.0 support is dropped.
+  # See https://git.io/vxWRB
+  s.add_development_dependency('rack', '>= 1.6.9', '< 2.0')
 end
 # rubocop:enable Metrics/BlockLength

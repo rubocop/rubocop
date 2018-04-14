@@ -95,6 +95,9 @@ module RuboCop
           argument.assignments.reduce(true) do |location_known, assignment|
             assignment_node = assignment.meta_assignment_node || assignment.node
 
+            # Shorthand assignments always use their arguments
+            next false if assignment_node.shorthand_asgn?
+
             node_within_block_or_conditional =
               node_within_block_or_conditional?(assignment_node.parent,
                                                 argument.scope.node)

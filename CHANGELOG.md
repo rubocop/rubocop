@@ -4,20 +4,63 @@
 
 ### Bug fixes
 
-* [#5642](https://github.com/bbatsov/rubocop/pull/5642): Fix Style/Documentation :nodoc: for compact-style nested modules/classes. ([@ojab][])
+* [#5759](https://github.com/bbatsov/rubocop/pull/5759): Fix `Performance/RegexpMatch` cop not correcting negated match operator. ([@bdewater][])
+* [#5726](https://github.com/bbatsov/rubocop/issues/5726): Fix false positive for `:class_name` option in Rails/InverseOf cop. ([@bdewater][])
+* [#5686](https://github.com/bbatsov/rubocop/issues/5686): Fix a regression for `Style/SymbolArray` and `Style/WordArray` for multiline Arrays. ([@istateside][])
+* [#5730](https://github.com/bbatsov/rubocop/pull/5730): Stop `Rails/InverseOf` cop allowing `inverse_of: nil` to opt-out. ([@bdewater][])
+* [#5561](https://github.com/bbatsov/rubocop/issues/5561): Fix `Lint/ShadowedArgument` false positive with shorthand assignments. ([@akhramov][])
+* [#5403](https://github.com/bbatsov/rubocop/issues/5403): Fix `Naming/HeredocDelimiterNaming` blacklist patterns. ([@mcfisch][])
+* [#4298](https://github.com/bbatsov/rubocop/issues/4298): Fix auto-correction of `Performance/RegexpMatch` to produce code that safe guards against the receiver being `nil`. ([@rrosenblum][])
+* [#5738](https://github.com/bbatsov/rubocop/issues/5738): Make `Rails/HttpStatus` ignoring hash order to fix false negative. ([@pocke][])
+* [#5720](https://github.com/bbatsov/rubocop/pull/5720): Fix false positive for `Style/EmptyLineAfterGuardClause` when guard clause is after heredoc. ([@koic][])
+* [#5760](https://github.com/bbatsov/rubocop/pull/5760): Fix incorrect offense location for `Style/EmptyLineAfterGuardClause` when guard clause is after heredoc argument. ([@koic][])
+* [#5764](https://github.com/bbatsov/rubocop/pull/5764): Fix `Style/Unpackfirst` false positive of `unpack('h*').take(1)`. ([@parkerfinch][])
+* [#5766](https://github.com/bbatsov/rubocop/issues/5766): Update `Style/FrozenStringLiteralComment` auto-correction to insert a new line between the comment and the code. ([@rrosenblum][])
+
+### Changes
+
+* [#5752](https://github.com/bbatsov/rubocop/pull/5752): Add `String#delete_{prefix,suffix}` to Lint/Void cop. ([@bdewater][])
+* [#5734](https://github.com/bbatsov/rubocop/pull/5734): Add `by`, `on`, `in` and `at` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@AlexWayfer][])
+
+## 0.54.0 (2018-03-21)
+
+### New features
+
+* [#5597](https://github.com/bbatsov/rubocop/pull/5597): Add new `Rails/HttpStatus` cop. ([@anthony-robin][])
+* [#5643](https://github.com/bbatsov/rubocop/pull/5643): Add new `Style/UnpackFirst` cop. ([@bdewater][])
+
+### Bug fixes
+
+* [#5744](https://github.com/bbatsov/rubocop/pull/5744): Teach `Performance/StartWith` and `EndWith` cops to look for `Regexp#match?`. ([@bdewater][])
+* [#5683](https://github.com/bbatsov/rubocop/issues/5683): Fix message for `Naming/UncommunicativeXParamName` cops. ([@jlfaber][])
+* [#5680](https://github.com/bbatsov/rubocop/issues/5680): Fix `Layout/ElseAlignment` for `rescue/else/ensure` inside `do/end` blocks. ([@YukiJikumaru][])
+* [#5642](https://github.com/bbatsov/rubocop/pull/5642): Fix `Style/Documentation` `:nodoc:` for compact-style nested modules/classes. ([@ojab][])
 * [#5648](https://github.com/bbatsov/rubocop/issues/5648): Suggest valid memoized instance variable for predicate method. ([@satyap][])
+* [#5670](https://github.com/bbatsov/rubocop/issues/5670): Suggest valid memoized instance variable for bang method. ([@pocke][])
 * [#5623](https://github.com/bbatsov/rubocop/pull/5623): Fix `Bundler/OrderedGems` when a group includes duplicate gems. ([@colorbox][])
 * [#5633](https://github.com/bbatsov/rubocop/pull/5633): Fix broken `--fail-fast`. ([@mmyoji][])
 * [#5630](https://github.com/bbatsov/rubocop/issues/5630): Fix false positive for `Style/FormatStringToken` when using placeholder arguments in `format` method. ([@koic][])
 * [#5651](https://github.com/bbatsov/rubocop/pull/5651): Fix NoMethodError when specified config file that does not exist. ([@onk][])
 * [#5647](https://github.com/bbatsov/rubocop/pull/5647): Fix encoding method of RuboCop::MagicComment::SimpleComment. ([@htwroclau][])
+* [#5619](https://github.com/bbatsov/rubocop/issues/5619): Do not register an offense in `Style/InverseMethods` when comparing constants with `<`, `>`, `<=`, or `>=`. If the code is being used to determine class hierarchy, the correction might not be accurate. ([@rrosenblum][])
+* [#5641](https://github.com/bbatsov/rubocop/issues/5641): Disable `Style/TrivialAccessors` auto-correction for `def` with `private`. ([@pocke][])
+* Fix bug where `Style/SafeNavigation` does not auto-correct all chained methods resulting in a `Lint/SafeNavigationChain` offense. ([@rrosenblum][])
+* [#5436](https://github.com/bbatsov/rubocop/issues/5436): Allow empty kwrest args in `UncommunicativeName` cops. ([@pocke][])
+* [#5674](https://github.com/bbatsov/rubocop/issues/5674): Fix auto-correction of `Layout/EmptyComment` when the empty comment appears on the same line as code. ([@rrosenblum][])
+* [#5679](https://github.com/bbatsov/rubocop/pull/5679): Fix a false positive for `Style/EmptyLineAfterGuardClause` when guard clause is before `rescue` or `ensure`. ([@koic][])
+* [#5694](https://github.com/bbatsov/rubocop/issues/5694): Match Rails versions with multiple digits when reading the TargetRailsVersion from the bundler lock files. ([@roberts1000][])
+* [#5700](https://github.com/bbatsov/rubocop/pull/5700): Fix a false positive for `Style/EmptyLineAfterGuardClause` when guard clause is before `else`. ([@koic][])
+* Fix false positive in `Naming/ConstantName` when using conditional assignment. ([@drenmi][])
 
 ### Changes
 
 * [#5626](https://github.com/bbatsov/rubocop/pull/5626): Change `Naming/UncommunicativeMethodParamName` add `to` to allowed names in default config. ([@unused][])
 * [#5640](https://github.com/bbatsov/rubocop/issues/5640): Warn about user configuration overriding other user configuration only with `--debug`. ([@jonas054][])
 * [#5637](https://github.com/bbatsov/rubocop/issues/5637): Fix error for `Layout/SpaceInsideArrayLiteralBrackets` when contains an array literal as an argument after a heredoc is started. ([@koic][])
-* [#5498](https://github.com/bbatsov/rubocop/issues/5498): Correct IndentHeredoc message for Ruby 2.3 when using `<<~` operator with invalid indentation. ([@hamada14][])
+* [#5610](https://github.com/bbatsov/rubocop/issues/5610): Use `gems.locked` or `Gemfile.lock` to determine the best `TargetRubyVersion` when it is not specified in the config. ([@roberts1000][])
+* [#5390](https://github.com/bbatsov/rubocop/issues/5390): Allow exceptions to `Style/InlineComment` for inline comments which enable or disable rubocop cops. ([@jfelchner][])
+* Add progress bar to offenses formatter. ([@drewpterry][])
+* [#5498](https://github.com/bbatsov/rubocop/issues/5498): Correct `IndentHeredoc` message for Ruby 2.3 when using `<<~` operator with invalid indentation. ([@hamada14][])
 
 ## 0.53.0 (2018-03-05)
 
@@ -3249,4 +3292,11 @@
 [@unused]: https://github.com/unused
 [@htwroclau]: https://github.com/htwroclau
 [@hamada14]: https://github.com/hamada14
+[@anthony-robin]: https://github.com/anthony-robin
+[@YukiJikumaru]: https://github.com/YukiJikumaru
+[@jlfaber]: https://github.com/jlfaber
+[@drewpterry]: https://github.com/drewpterry
+[@mcfisch]: https://github.com/mcfisch
+[@istateside]: https://github.com/istateside
+[@parkerfinch]: https://github.com/parkerfinch
 [@joshuapinter]: https://github.com/joshuapinter

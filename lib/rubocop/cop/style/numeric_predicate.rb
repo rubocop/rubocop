@@ -14,7 +14,7 @@ module RuboCop
       #
       # The cop ignores comparisons to global variables, since they are often
       # populated with objects which can be compared with integers, but are
-      # not themselves `Interger` polymorphic.
+      # not themselves `Integer` polymorphic.
       #
       # @example EnforcedStyle: predicate (default)
       #   # bad

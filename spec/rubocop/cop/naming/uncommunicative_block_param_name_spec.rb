@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::Naming::UncommunicativeBlockParamName, :config do
   it 'registers offense when param is less than minimum length' do
     expect_offense(<<-RUBY.strip_indent)
       something do |x|
-                    ^ Block parameter must be longer than 2 characters.
+                    ^ Block parameter must be at least 2 characters long.
         do_stuff
       end
     RUBY
@@ -61,7 +61,7 @@ RSpec.describe RuboCop::Cop::Naming::UncommunicativeBlockParamName, :config do
     RUBY
     expect(cop.offenses.size).to eq(3)
     expect(cop.messages).to eq [
-      'Block parameter must be longer than 2 characters.',
+      'Block parameter must be at least 2 characters long.',
       'Do not end block parameter with a number.',
       'Only use lowercase characters for block parameter.'
     ]

@@ -150,6 +150,36 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods do
     end
   end
 
+  it 'allows comparing camel case constants on the right' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      klass = self.class
+      !(klass < BaseClass)
+    RUBY
+  end
+
+  it 'allows comparing camel case constants on the left' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      klass = self.class
+      !(BaseClass < klass)
+    RUBY
+  end
+
+  it 'registers an offense for comparing snake case constants on the right' do
+    expect_offense(<<-RUBY.strip_indent)
+      klass = self.class
+      !(klass < FOO_BAR)
+      ^^^^^^^^^^^^^^^^^^ Use `>=` instead of inverting `<`.
+    RUBY
+  end
+
+  it 'registers an offense for comparing snake case constants on the left' do
+    expect_offense(<<-RUBY.strip_indent)
+      klass = self.class
+      !(FOO_BAR < klass)
+      ^^^^^^^^^^^^^^^^^^ Use `>=` instead of inverting `<`.
+    RUBY
+  end
+
   context 'inverse blocks' do
     { select: :reject,
       reject: :select,

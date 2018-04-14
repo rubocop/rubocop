@@ -6,15 +6,15 @@ module RuboCop
     module UncommunicativeName
       CASE_MSG = 'Only use lowercase characters for %<name_type>s.'.freeze
       NUM_MSG = 'Do not end %<name_type>s with a number.'.freeze
-      LENGTH_MSG = '%<name_type>s must be longer than %<min>s ' \
-                   'characters.'.freeze
+      LENGTH_MSG = '%<name_type>s must be at least %<min>s ' \
+                   'characters long.'.freeze
       FORBIDDEN_MSG = 'Do not use %<name>s as a name for a ' \
                       '%<name_type>s.'.freeze
 
       def check(node, args)
         args.each do |arg|
           name = arg.children.first.to_s
-          next if arg.restarg_type? && name.empty?
+          next if (arg.restarg_type? || arg.kwrestarg_type?) && name.empty?
           next if allowed_names.include?(name)
           range = arg_range(arg, name.size)
           issue_offenses(node, range, name)

@@ -58,6 +58,14 @@ RSpec.describe RuboCop::Cop::Naming::UncommunicativeMethodParamName, :config do
     RUBY
   end
 
+  it 'does not register offense for empty kwrestarg' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      def qux(**)
+        stuff!
+      end
+    RUBY
+  end
+
   it 'registers offense when parameter ends in number' do
     expect_offense(<<-RUBY.strip_indent)
       def something(foo1, bar)
@@ -79,7 +87,7 @@ RSpec.describe RuboCop::Cop::Naming::UncommunicativeMethodParamName, :config do
   it 'registers offense when parameter is less than minimum length' do
     expect_offense(<<-RUBY.strip_indent)
       def something(ab)
-                    ^^ Method parameter must be longer than 3 characters.
+                    ^^ Method parameter must be at least 3 characters long.
         do_stuff
       end
     RUBY
@@ -120,7 +128,7 @@ RSpec.describe RuboCop::Cop::Naming::UncommunicativeMethodParamName, :config do
     RUBY
     expect(cop.offenses.size).to eq(3)
     expect(cop.messages).to eq [
-      'Method parameter must be longer than 3 characters.',
+      'Method parameter must be at least 3 characters long.',
       'Do not end method parameter with a number.',
       'Only use lowercase characters for method parameter.'
     ]

@@ -52,7 +52,7 @@ haven't reached version 1.0 yet). To prevent an unwanted RuboCop update you
 might want to use a conservative version locking in your `Gemfile`:
 
 ```rb
-gem 'rubocop', '~> 0.53.0', require: false
+gem 'rubocop', '~> 0.54.0', require: false
 ```
 
 ## Quickstart
@@ -74,6 +74,10 @@ RuboCop supports the following Ruby implementations:
 
 * MRI 2.1+
 * JRuby 9.0+
+
+The Rails cops support the following versions:
+
+* Rails 4.0+
 
 ## Team
 

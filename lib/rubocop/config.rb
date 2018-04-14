@@ -425,6 +425,10 @@ module RuboCop
           @target_ruby_version_source = :ruby_version_file
 
           target_ruby_version_from_version_file
+        elsif target_ruby_version_from_bundler_lock_file
+          @target_ruby_version_source = :bundler_lock_file
+
+          target_ruby_version_from_bundler_lock_file
         else
           DEFAULT_RUBY_VERSION
         end
@@ -557,6 +561,8 @@ module RuboCop
       case @target_ruby_version_source
       when :ruby_version_file
         "`#{RUBY_VERSION_FILENAME}`"
+      when :bundler_lock_file
+        "`#{bundler_lock_file_path}`"
       when :rubocop_yml
         "`TargetRubyVersion` parameter (in #{smart_loaded_path})"
       end
@@ -577,6 +583,37 @@ module RuboCop
         end
     end
 
+    def target_ruby_version_from_bundler_lock_file
+      @target_ruby_version_from_bundler_lock_file ||=
+        read_ruby_version_from_bundler_lock_file
+    end
+
+    def read_ruby_version_from_bundler_lock_file
+      lock_file_path = bundler_lock_file_path
+      return nil unless lock_file_path
+
+      in_ruby_section = false
+      File.foreach(lock_file_path) do |line|
+        # If ruby is in Gemfile.lock or gems.lock, there should be two lines
+        # towards the bottom of the file that look like:
+        #     RUBY VERSION
+        #       ruby W.X.YpZ
+        # We ultimately want to match the "ruby W.X.Y.pZ" line, but there's
+        # extra logic to make sure we only start looking once we've seen the
+        # "RUBY VERSION" line.
+        in_ruby_section ||= line.match(/^\s*RUBY\s*VERSION\s*$/)
+        next unless in_ruby_section
+        # We currently only allow this feature to work with MRI ruby.  If jruby
+        # (or something else) is used by the project, it's lock file will have a
+        # line that looks like:
+        #     RUBY VERSION
+        #       ruby W.X.YpZ (jruby x.x.x.x)
+        # The regex won't match in this situation.
+        result = line.match(/^\s*ruby\s+(\d+\.\d+)[p.\d]*\s*$/)
+        return result.captures.first.to_f if result
+      end
+    end
+
     def target_rails_version_from_bundler_lock_file
       @target_rails_version_from_bundler_lock_file ||=
         read_rails_version_from_bundler_lock_file
@@ -587,9 +624,9 @@ module RuboCop
       return nil unless lock_file_path
 
       File.foreach(lock_file_path) do |line|
-        # If rails is in the Gemfile, the lock file should have a line like:
+        # If rails is in Gemfile.lock or gems.lock, there should be a line like:
         #         rails (X.X.X)
-        result = line.match(/^\s+rails\s+\((\d\.\d\.\d)/)
+        result = line.match(/^\s+rails\s+\((\d+\.\d+)/)
         return result.captures.first.to_f if result
       end
     end
@@ -598,8 +635,8 @@ module RuboCop
       return nil unless loaded_path
       base_path = base_dir_for_path_parameters
       ['gems.locked', 'Gemfile.lock'].each do |file_name|
-        path = File.join(base_path, file_name)
-        return path if File.file?(path)
+        path = find_file_upwards(file_name, base_path)
+        return path if path
       end
       nil
     end

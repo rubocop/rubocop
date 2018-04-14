@@ -119,7 +119,7 @@ array literal or the second is a string literal.
 %w(foo bar baz) * ","
 
 # good
-%w(foo bar bax).join(",")
+%w(foo bar baz).join(",")
 ```
 
 ### References
@@ -2508,6 +2508,7 @@ foo.any? { |f| f.even? }
 foo != bar
 foo == bar
 !!('foo' =~ /^\w+$/)
+!(foo.class < Numeric) # Checking class hierarchy is allowed
 ```
 
 ### Configurable attributes
@@ -3368,6 +3369,11 @@ CONST = [1, 2, 3]
 
 # good
 CONST = [1, 2, 3].freeze
+
+# good
+CONST = <<~TESTING.freeze
+This is a heredoc
+TESTING
 ```
 
 ## Style/NegatedIf
@@ -3468,6 +3474,27 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 Checks for uses of while with a negated condition.
+
+### Examples
+
+```ruby
+# bad
+while !foo
+  bar
+end
+
+# good
+until foo
+  bar
+end
+
+# bad
+bar until !foo
+
+# good
+bar while foo
+bar while !foo && baz
+```
 
 ### References
 
@@ -3769,7 +3796,7 @@ but not `true` and `false`, and thus not always interchangeable with
 
 The cop ignores comparisons to global variables, since they are often
 populated with objects which can be compared with integers, but are
-not themselves `Interger` polymorphic.
+not themselves `Integer` polymorphic.
 
 ### Examples
 
@@ -5108,6 +5135,63 @@ Enabled | Yes
 
 This cop looks for uses of Perl-style global variables.
 
+### Examples
+
+#### EnforcedStyle: use_english_names (default)
+
+```ruby
+# good
+puts $LOAD_PATH
+puts $LOADED_FEATURES
+puts $PROGRAM_NAME
+puts $ERROR_INFO
+puts $ERROR_POSITION
+puts $FIELD_SEPARATOR # or $FS
+puts $OUTPUT_FIELD_SEPARATOR # or $OFS
+puts $INPUT_RECORD_SEPARATOR # or $RS
+puts $OUTPUT_RECORD_SEPARATOR # or $ORS
+puts $INPUT_LINE_NUMBER # or $NR
+puts $LAST_READ_LINE
+puts $DEFAULT_OUTPUT
+puts $DEFAULT_INPUT
+puts $PROCESS_ID # or $PID
+puts $CHILD_STATUS
+puts $LAST_MATCH_INFO
+puts $IGNORECASE
+puts $ARGV # or ARGV
+puts $MATCH
+puts $PREMATCH
+puts $POSTMATCH
+puts $LAST_PAREN_MATCH
+```
+#### EnforcedStyle: use_perl_names
+
+```ruby
+# good
+puts $:
+puts $"
+puts $0
+puts $!
+puts $@
+puts $;
+puts $,
+puts $/
+puts $\
+puts $.
+puts $_
+puts $>
+puts $<
+puts $$
+puts $?
+puts $~
+puts $=
+puts $*
+puts $&
+puts $`
+puts $'
+puts $+
+```
+
 ### Configurable attributes
 
 Name | Default value | Configurable values
@@ -5952,6 +6036,28 @@ This cop checks for usage of the %q/%Q syntax when '' or "" would do.
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#percent-q](https://github.com/bbatsov/ruby-style-guide#percent-q)
+
+## Style/UnpackFirst
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for accessing the first element of `String#unpack`
+which can be replaced with the shorter method `unpack1`.
+
+### Examples
+
+```ruby
+# bad
+'foo'.unpack('h*').first
+'foo'.unpack('h*')[0]
+'foo'.unpack('h*').slice(0)
+'foo'.unpack('h*').at(0)
+
+# good
+'foo'.unpack1('h*')
+```
 
 ## Style/VariableInterpolation
 
