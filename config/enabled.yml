@@ -605,6 +605,9 @@ Lint/PercentStringArray:
   Description: >-
                  Checks for unwanted commas and quotes in %w/%W literals.
   Enabled: true
+  # This cop isn't smart enough to figure out when auto-correction is safe,
+  # and sometimes breaks the code.
+  AutoCorrect: false
 
 Lint/PercentSymbolArray:
   Description: >-

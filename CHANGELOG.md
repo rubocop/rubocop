@@ -21,6 +21,7 @@
 
 * [#5752](https://github.com/bbatsov/rubocop/pull/5752): Add `String#delete_{prefix,suffix}` to Lint/Void cop. ([@bdewater][])
 * [#5734](https://github.com/bbatsov/rubocop/pull/5734): Add `by`, `on`, `in` and `at` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@AlexWayfer][])
+* [#5660](https://github.com/bbatsov/rubocop/pull/5660): Disable auto-correct for `Lint/PercentStringArray` cop in default configuration. ([@drenmi][])
 
 ## 0.54.0 (2018-03-21)
 

@@ -1310,6 +1310,12 @@ rather than meant to be part of the resulting strings.
 %w(foo bar)
 ```
 
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+AutoCorrect | `false` | Boolean
+
 ## Lint/PercentSymbolArray
 
 Enabled by default | Supports autocorrection
