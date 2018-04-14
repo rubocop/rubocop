@@ -80,6 +80,12 @@ module RuboCop
                                  swapcase tr tr_s transform_values
                                  unicode_normalize uniq upcase].freeze
 
+        def on_block(node)
+          return unless node.body && !node.body.begin_type?
+          return unless in_void_context?(node.body)
+          check_expression(node.body)
+        end
+
         def on_begin(node)
           check_begin(node)
         end
@@ -91,15 +97,19 @@ module RuboCop
           expressions = *node
           expressions = expressions.drop_last(1) unless in_void_context?(node)
           expressions.each do |expr|
-            check_void_op(expr)
-            check_literal(expr)
-            check_var(expr)
-            check_self(expr)
-            check_defined(expr)
-            if cop_config['CheckForMethodsWithNoSideEffects']
-              check_nonmutating(expr)
-            end
+            check_expression(expr)
           end
+        end
+
+        def check_expression(expr)
+          check_void_op(expr)
+          check_literal(expr)
+          check_var(expr)
+          check_self(expr)
+          check_defined(expr)
+          return unless cop_config['CheckForMethodsWithNoSideEffects']
+
+          check_nonmutating(expr)
         end
 
         def check_void_op(node)
