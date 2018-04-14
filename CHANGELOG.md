@@ -21,6 +21,7 @@
 
 * [#5752](https://github.com/bbatsov/rubocop/pull/5752): Add `String#delete_{prefix,suffix}` to Lint/Void cop. ([@bdewater][])
 * [#5734](https://github.com/bbatsov/rubocop/pull/5734): Add `by`, `on`, `in` and `at` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@AlexWayfer][])
+* [#5666](https://github.com/bbatsov/rubocop/issues/5666): Add spaces as an `EnforcedStyle` option to `Layout/SpaceInsideParens`, allowing you to enforce spaces inside of parentheses. ([@joshuapinter][])
 
 ## 0.54.0 (2018-03-21)
 
@@ -89,7 +90,6 @@
 * Add new `Naming/MemoizedInstanceVariableName` cop. ([@satyap][])
 * [#5376](https://github.com/bbatsov/rubocop/issues/5376): Add new `Style/EmptyLineAfterGuardClause` cop. ([@unkmas][])
 * Add new `Rails/ActiveRecordAliases` cop. ([@elebow][])
-* [#5666](https://github.com/bbatsov/rubocop/issues/5666) Add spaces as an `EnforcedStyle` option to `Layout/SpaceInsideParens`, allowing you to enforce spaces inside of parentheses. ([@joshuapinter][])
 
 ### Bug fixes
 
