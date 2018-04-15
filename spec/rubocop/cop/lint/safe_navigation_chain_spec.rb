@@ -73,6 +73,24 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
       RUBY
     end
 
+    it 'registers an offense for ordinary method chain exists after ' \
+      'safe navigation method call with a block-pass' do
+      expect_offense(<<-RUBY.strip_indent)
+        something
+        x&.select(&:foo).bar
+                        ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+    end
+
+    it 'registers an offense for ordinary method chain exists after ' \
+      'safe navigation method call with a block' do
+      expect_offense(<<-RUBY.strip_indent)
+        something
+        x&.select { |x| foo(x) }.bar
+                                ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+    end
+
     it 'registers an offense for safe navigation with < operator' do
       expect_offense(<<-RUBY.strip_indent)
         x&.foo < bar

@@ -31,7 +31,10 @@ module RuboCop
               ' after safe navigation operator.'.freeze
 
         def_node_matcher :bad_method?, <<-PATTERN
+        {
           (send $(csend ...) $_ ...)
+          (send $(block (csend ...) ...) $_ ...)
+        }
         PATTERN
 
         minimum_target_ruby_version 2.3
