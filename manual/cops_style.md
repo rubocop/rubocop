@@ -2724,6 +2724,12 @@ object.some_method()
 object.some_method
 ```
 
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+IgnoredMethods | `[]` | Array
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#method-invocation-parens](https://github.com/bbatsov/ruby-style-guide#method-invocation-parens)
