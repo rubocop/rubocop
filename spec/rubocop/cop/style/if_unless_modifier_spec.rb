@@ -348,4 +348,62 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
       RUBY
     end
   end
+
+  context 'with disabled Layout/Tab cop' do
+    let(:config) do
+      RuboCop::Config.new(
+        'Layout/IndentationWidth' => {
+          'Width' => 1
+        },
+        'Layout/Tab' => {
+          'Enabled' => false,
+          'IndentationWidth' => 2
+        },
+        'Metrics/LineLength' => { 'Max' => 80 }
+      )
+    end
+
+    context 'with tabs indentation' do
+      let(:source) do
+        # Empty lines should make no difference.
+        <<-RUBY
+						if #{condition}
+							#{body}
+						end
+        RUBY
+      end
+
+      let(:body) { 'b' * 38 }
+
+      context 'it fits on one line' do
+        let(:condition) { 'a' * 26 }
+
+        it 'registers an offense' do
+          # This if statement fits exactly on one line if written as a
+          # modifier.
+          expect("#{body} if #{condition}".length).to eq(68)
+
+          inspect_source(source)
+          expect(cop.messages).to eq(
+            ['Favor modifier `if` usage when having a single-line' \
+             ' body. Another good alternative is the usage of control flow' \
+             ' `&&`/`||`.']
+          )
+        end
+      end
+
+      context "it doesn't fit on one line" do
+        let(:condition) { 'a' * 27 }
+
+        it "doesn't register an offense" do
+          # This if statement fits exactly on one line if written as a
+          # modifier.
+          expect("#{body} if #{condition}".length).to eq(69)
+
+          inspect_source(source)
+          expect(cop.offenses.empty?).to be(true)
+        end
+      end
+    end
+  end
 end

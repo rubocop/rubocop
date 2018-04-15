@@ -2376,7 +2376,8 @@ Enabled | Yes
 
 Checks for if and unless statements that would fit on one line
 if written as a modifier if/unless. The maximum line length is
-configured in the `Metrics/LineLength` cop.
+configured in the `Metrics/LineLength` cop. The tab size is configured
+in the `IndentationWidth` of the `Layout/Tab` cop.
 
 ### Examples
 

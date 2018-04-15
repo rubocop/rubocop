@@ -30,6 +30,7 @@
 * [#5990](https://github.com/bbatsov/rubocop/pull/5990): Drop support for MRI 2.1. ([@drenmi][])
 * [#3299](https://github.com/bbatsov/rubocop/issues/3299): `Lint/UselessAccessModifier` now warns when `private_class_method` is used without arguments. ([@Darhazer][])
 * [#6026](https://github.com/rubocop-hq/rubocop/pull/6026): Exclude `refine` by default from `Metrics/BlockLength` cop. ([@kddeisz][])
+* [#4882](https://github.com/bbatsov/rubocop/issues/4882): Use `IndentationWidth` of `Layout/Tab` for other cops. ([@AlexWayfer][])
 
 ## 0.57.2 (2018-06-12)
 
