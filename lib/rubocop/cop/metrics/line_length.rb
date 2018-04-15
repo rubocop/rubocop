@@ -76,11 +76,10 @@ module RuboCop
 
         def extract_heredocs(ast)
           return [] unless ast
-          ast.each_node.with_object([]) do |node, heredocs|
-            next unless node.location.is_a?(Parser::Source::Map::Heredoc)
+          ast.each_node(:str, :dstr, :xstr).select(&:heredoc?).map do |node|
             body = node.location.heredoc_body
             delimiter = node.location.heredoc_end.source.strip
-            heredocs << [body.first_line...body.last_line, delimiter]
+            [body.first_line...body.last_line, delimiter]
           end
         end
 
