@@ -7,6 +7,8 @@ module RuboCop
     module Metrics
       # This cop checks the length of lines in the source code.
       # The maximum length is configurable.
+      # The tab size is configured in the `IndentationWidth`
+      # of the `Layout/Tab` cop.
       class LineLength < Cop
         include ConfigurableMax
         include IgnoredPattern
@@ -23,8 +25,24 @@ module RuboCop
 
         private
 
+        def tab_indentation_width
+          config.for_cop('Layout/Tab')['IndentationWidth']
+        end
+
+        def line_length(line)
+          if tab_indentation_width
+            line = line.gsub("\t", ' ' * tab_indentation_width)
+          end
+          line.length
+        end
+
+        def highligh_start(line)
+          return max unless tab_indentation_width
+          max - (tab_indentation_width - 1) * line.count("\t")
+        end
+
         def check_line(line, index, heredocs)
-          return if line.length <= max
+          return if line_length(line) <= max
           return if ignored_line?(line, index, heredocs)
 
           if ignore_cop_directives? && directive_on_source_line?(index)
@@ -33,7 +51,10 @@ module RuboCop
           return check_uri_line(line, index) if allow_uri?
 
           register_offense(
-            source_range(processed_source.buffer, index + 1, 0...line.length),
+            source_range(
+              processed_source.buffer, index,
+              highligh_start(line)...line_length(line)
+            ),
             line
           )
         end
@@ -44,10 +65,10 @@ module RuboCop
         end
 
         def register_offense(loc, line)
-          message = format(MSG, length: line.length, max: max)
+          message = format(MSG, length: line_length(line), max: max)
 
           add_offense(nil, location: loc, message: message) do
-            self.max = line.length
+            self.max = line_length(line)
           end
         end
 
@@ -59,7 +80,7 @@ module RuboCop
                                end
 
           source_range(processed_source.buffer, index + 1,
-                       excessive_position...(line.length))
+                       excessive_position...(line_length(line)))
         end
 
         def max
@@ -100,7 +121,8 @@ module RuboCop
 
         def allowed_uri_position?(line, uri_range)
           uri_range.begin < max &&
-            (uri_range.end == line.length || uri_range.end == line.length - 1)
+            (uri_range.end == line_length(line) ||
+             uri_range.end == line_length(line) - 1)
         end
 
         def find_excessive_uri_range(line)

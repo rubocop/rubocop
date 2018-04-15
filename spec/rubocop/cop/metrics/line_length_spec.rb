@@ -205,6 +205,13 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
         inspect_source(source)
         expect(cop.offenses.size).to eq(1)
       end
+
+      it 'highlights excessive characters' do
+        inspect_source(source)
+        expect(cop.highlights).to eq(
+          ['061837309890f04ab08c']
+        )
+      end
     end
   end
 
@@ -332,6 +339,42 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
           expect(cop.highlights).to eq([']*={0,2})#([A-Za-z0-9+/#]*={0,2})z}'])
         end
       end
+    end
+  end
+
+  context 'affecting by IndentationWidth from Layout\Tab' do
+    let(:config) do
+      RuboCop::Config.new(
+        'Layout/IndentationWidth' => {
+          'Width' => 1
+        },
+        'Layout/Tab' => {
+          'Enabled' => false,
+          'IndentationWidth' => 2
+        },
+        'Metrics/LineLength' => {
+          'Max' => 80
+        }
+      )
+    end
+
+    it "registers an offense for a line that's including 1 tab with size 2" \
+       ' and 79 other characters' do
+      inspect_source("\t" + '#' * 79)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message).to eq('Line is too long. [81/80]')
+      expect(cop.config_to_allow_offenses).to eq('Max' => 81)
+    end
+
+    it 'highlights excessive characters' do
+      inspect_source("\t" + '#' * 78 + 'abc')
+      expect(cop.highlights).to eq(['abc'])
+    end
+
+    it "accepts a line that's including 1 tab with size 2" \
+       ' and 78 other characters' do
+      inspect_source("\t" + '#' * 78)
+      expect(cop.offenses.empty?).to be(true)
     end
   end
 end
