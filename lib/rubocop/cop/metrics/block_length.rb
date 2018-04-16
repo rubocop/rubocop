@@ -13,11 +13,27 @@ module RuboCop
         LABEL = 'Block'.freeze
 
         def on_block(node)
-          return if excluded_methods.include?(node.send_node.method_name.to_s)
+          return if excluded_method?(node)
           check_code_length(node)
         end
 
         private
+
+        def excluded_method?(node)
+          node_receiver = node.receiver && node.receiver.source.gsub(/\s+/, '')
+          node_method = String(node.method_name)
+
+          excluded_methods.any? do |config|
+            receiver, method = config.split('.')
+
+            unless method
+              method = receiver
+              receiver = node_receiver
+            end
+
+            method == node_method && receiver == node_receiver
+          end
+        end
 
         def excluded_methods
           cop_config['ExcludedMethods'] || []

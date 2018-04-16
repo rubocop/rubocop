@@ -27,6 +27,8 @@ module RuboCop
         PATTERN
 
         def on_args(node)
+          return if super_used?(node)
+
           option_hash(node) do |options|
             add_offense(options)
           end
@@ -37,6 +39,10 @@ module RuboCop
         def suspicious_name?(arg_name)
           cop_config.key?('SuspiciousParamNames') &&
             cop_config['SuspiciousParamNames'].include?(arg_name.to_s)
+        end
+
+        def super_used?(node)
+          node.parent.each_node(:zsuper).any?
         end
       end
     end

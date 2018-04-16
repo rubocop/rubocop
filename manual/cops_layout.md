@@ -3777,7 +3777,11 @@ Checks for spaces inside ordinary round parentheses.
 
 ### Examples
 
+#### EnforcedStyle: no_space (default)
+
 ```ruby
+# The `no_space` style enforces that parentheses do not have spaces.
+
 # bad
 f( 3)
 g = (a + 3 )
@@ -3786,6 +3790,29 @@ g = (a + 3 )
 f(3)
 g = (a + 3)
 ```
+#### EnforcedStyle: space
+
+```ruby
+# The `space` style enforces that parentheses have a space at the
+# beginning and end.
+# Note: Empty parentheses should not have spaces.
+
+# bad
+f(3)
+g = (a + 3)
+y( )
+
+# good
+f( 3 )
+g = ( a + 3 )
+y()
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `no_space` | `space`, `no_space`
 
 ### References
 

@@ -69,4 +69,34 @@ RSpec.describe RuboCop::Cop::Style::OptionHash, :config do
       RUBY
     end
   end
+
+  context 'when passing options hash to super' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def allowed(foo, options = {})
+          super
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when code exists before call to super' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def allowed(foo, options = {})
+          bar
+
+          super
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when call to super is in a nested block' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def allowed(foo, options = {})
+          5.times do
+            super
+          end
+        end
+      RUBY
+    end
+  end
 end
