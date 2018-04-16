@@ -6,9 +6,8 @@ module RuboCop
       # Checks for spaces inside ordinary round parentheses.
       #
       # @example EnforcedStyle: no_space (default)
-      #   # The `no_space` style enforces that parentheses do not have spaces
+      #   # The `no_space` style enforces that parentheses do not have spaces.
       #
-      # @example
       #   # bad
       #   f( 3)
       #   g = (a + 3 )
@@ -20,7 +19,7 @@ module RuboCop
       # @example EnforcedStyle: space
       #   # The `space` style enforces that parentheses have a space at the
       #   # beginning and end.
-      #   # Note: Empty paraentheses should not have spaces.
+      #   # Note: Empty parentheses should not have spaces.
       #
       #   # bad
       #   f(3)
@@ -35,6 +34,7 @@ module RuboCop
       class SpaceInsideParens < Cop
         include SurroundingSpace
         include RangeHelp
+        include ConfigurableEnforcedStyle
 
         MSG       = 'Space inside parentheses detected.'.freeze
         MSG_SPACE = 'No space inside parentheses detected.'.freeze
@@ -42,11 +42,10 @@ module RuboCop
         def investigate(processed_source)
           @processed_source = processed_source
 
-          if cop_config['EnforcedStyle'] == 'space'
+          if style == :space
             each_missing_space(processed_source.tokens) do |range|
               add_offense(range, location: range, message: MSG_SPACE)
             end
-
           else
             each_extraneous_space(processed_source.tokens) do |range|
               add_offense(range, location: range)
@@ -56,7 +55,7 @@ module RuboCop
 
         def autocorrect(range)
           lambda do |corrector|
-            if cop_config['EnforcedStyle'] == 'space'
+            if style == :space
               corrector.insert_before(range, ' ')
             else
               corrector.remove(range)
