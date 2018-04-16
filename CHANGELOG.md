@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#5286](https://github.com/bbatsov/rubocop/issues/5286): Fix `Lint/SafeNavigationChain` not detecting chained operators after block. ([@Darhazer][])
+* Fix bug where `Lint/SafeNavigationConsistency` registers multiple offenses for the same method call. ([@rrosenblum][])
 
 ## 0.55.0 (2018-04-16)
 

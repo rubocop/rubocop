@@ -126,6 +126,14 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationConsistency do
       RUBY
     end
 
+    it 'registers a single offense when safe navigation is ' \
+      'used multiple times' do
+      expect_offense(<<-RUBY.strip_indent)
+        foo&.bar && foo&.baz || foo.qux
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Ensure that safe navigation is used consistently inside of `&&` and `||`.
+      RUBY
+    end
+
     context 'auto-correct' do
       it 'does not correct non dot methods' do
         new_source = autocorrect_source(<<-RUBY.strip_indent)

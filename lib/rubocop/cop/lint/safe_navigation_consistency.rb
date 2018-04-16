@@ -27,6 +27,8 @@ module RuboCop
       #   foo&.bar && (foobar.baz || foo&.baz)
       #
       class SafeNavigationConsistency < Cop
+        include IgnoredNode
+
         MSG = 'Ensure that safe navigation is used consistently ' \
           'inside of `&&` and `||`.'.freeze
 
@@ -42,15 +44,16 @@ module RuboCop
           safe_nav_receiver = node.receiver
 
           method_calls = conditions.select(&:send_type?)
-          unsafe_method_calls = method_calls.select do |method_call|
-            safe_nav_receiver == method_call.receiver
-          end
+          unsafe_method_calls =
+            unsafe_method_calls(method_calls, safe_nav_receiver)
 
           unsafe_method_calls.each do |unsafe_method_call|
             location =
               node.loc.expression.join(unsafe_method_call.loc.expression)
             add_offense(unsafe_method_call,
                         location: location)
+
+            ignore_node(unsafe_method_call)
           end
         end
 
@@ -73,6 +76,13 @@ module RuboCop
             return node
           end
           top_conditional_ancestor(parent)
+        end
+
+        def unsafe_method_calls(method_calls, safe_nav_receiver)
+          method_calls.select do |method_call|
+            safe_nav_receiver == method_call.receiver &&
+              !ignored_node?(method_call)
+          end
         end
       end
     end
