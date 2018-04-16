@@ -1130,6 +1130,9 @@ Style/MethodCallWithArgsParentheses:
   IgnoreMacros: true
   IgnoredMethods: []
 
+Style/MethodCallWithoutArgsParentheses:
+  IgnoredMethods: []
+
 Style/MethodDefParentheses:
   EnforcedStyle: require_parentheses
   SupportedStyles:

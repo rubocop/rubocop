@@ -23,6 +23,9 @@
 * [#5752](https://github.com/bbatsov/rubocop/pull/5752): Add `String#delete_{prefix,suffix}` to Lint/Void cop. ([@bdewater][])
 * [#5734](https://github.com/bbatsov/rubocop/pull/5734): Add `by`, `on`, `in` and `at` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@AlexWayfer][])
 * [#5666](https://github.com/bbatsov/rubocop/issues/5666): Add spaces as an `EnforcedStyle` option to `Layout/SpaceInsideParens`, allowing you to enforce spaces inside of parentheses. ([@joshuapinter][])
+* [#4257](https://github.com/bbatsov/rubocop/issues/4257): Allow specifying module name in `Metrics/BlockLength`'s `ExcludedMethods` configuration option. ([@akhramov][])
+* [#4753](https://github.com/bbatsov/rubocop/issues/4753): Add `IgnoredMethods` option to `Style/MethodCallWithoutArgsParentheses` cop. ([@Darhazer][])
+* [#5652](https://github.com/bbatsov/rubocop/issues/5652): Make `Style/OptionHash` aware of implicit parameter passing to super. ([@Wei-LiangChew][])
 
 ## 0.54.0 (2018-03-21)
 
@@ -3302,3 +3305,4 @@
 [@parkerfinch]: https://github.com/parkerfinch
 [@joshuapinter]: https://github.com/joshuapinter
 [@Darhazer]: https://github.com/Darhazer
+[@Wei-LiangChew]: https://github.com/Wei-LiangChew
