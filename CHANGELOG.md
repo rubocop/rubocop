@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#5753](https://github.com/bbatsov/rubocop/pull/5753): Add new `Performance/UnneededSort` cop. ([@parkerfinch][])
 * Add new `Lint/SafeNavigationConsistency` cop. ([@rrosenblum][])
 
 ### Bug fixes
