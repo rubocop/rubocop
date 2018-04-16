@@ -4091,6 +4091,12 @@ x = 0
 x = 0
 ```
 
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+AllowInHeredoc | `false` | Boolean
+
 ### References
 
 * [https://github.com/bbatsov/ruby-style-guide#no-trailing-whitespace](https://github.com/bbatsov/ruby-style-guide#no-trailing-whitespace)

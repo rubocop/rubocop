@@ -16,7 +16,8 @@
 * [#5760](https://github.com/bbatsov/rubocop/pull/5760): Fix incorrect offense location for `Style/EmptyLineAfterGuardClause` when guard clause is after heredoc argument. ([@koic][])
 * [#5764](https://github.com/bbatsov/rubocop/pull/5764): Fix `Style/Unpackfirst` false positive of `unpack('h*').take(1)`. ([@parkerfinch][])
 * [#5766](https://github.com/bbatsov/rubocop/issues/5766): Update `Style/FrozenStringLiteralComment` auto-correction to insert a new line between the comment and the code. ([@rrosenblum][])
-* [#5551](https://github.com/bbatsov/rubocop/issues/5551): Fix `Lint/Volib/rubocop/cop/style/and_or.rbid` not detecting void context in blocks with single expression. ([@Darhazer][])
+* [#5551](https://github.com/bbatsov/rubocop/issues/5551): Fix `Lint/Void` not detecting void context in blocks with single expression. ([@Darhazer][])
+
 
 ### Changes
 
@@ -25,6 +26,7 @@
 * [#5666](https://github.com/bbatsov/rubocop/issues/5666): Add spaces as an `EnforcedStyle` option to `Layout/SpaceInsideParens`, allowing you to enforce spaces inside of parentheses. ([@joshuapinter][])
 * [#4257](https://github.com/bbatsov/rubocop/issues/4257): Allow specifying module name in `Metrics/BlockLength`'s `ExcludedMethods` configuration option. ([@akhramov][])
 * [#4753](https://github.com/bbatsov/rubocop/issues/4753): Add `IgnoredMethods` option to `Style/MethodCallWithoutArgsParentheses` cop. ([@Darhazer][])
+* [#4517](https://github.com/bbatsov/rubocop/issues/4517): Add option to allow trailing whitespaces inside heredoc strings. ([@Darhazer][])
 * [#5652](https://github.com/bbatsov/rubocop/issues/5652): Make `Style/OptionHash` aware of implicit parameter passing to super. ([@Wei-LiangChew][])
 
 ## 0.54.0 (2018-03-21)
