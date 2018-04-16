@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.55.0 (2018-04-16)
+
 ### New features
 
 * [#5753](https://github.com/bbatsov/rubocop/pull/5753): Add new `Performance/UnneededSort` cop. ([@parkerfinch][])
