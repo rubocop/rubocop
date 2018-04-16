@@ -9,19 +9,20 @@ module RuboCop
     # which invoke same method of each formatters.
     class FormatterSet < Array
       BUILTIN_FORMATTERS_FOR_KEYS = {
-        'progress' => ProgressFormatter,
-        'simple'   => SimpleTextFormatter,
-        'clang'    => ClangStyleFormatter,
-        'fuubar'   => FuubarStyleFormatter,
-        'emacs'    => EmacsStyleFormatter,
-        'json'     => JSONFormatter,
-        'html'     => HTMLFormatter,
-        'files'    => FileListFormatter,
-        'offenses' => OffenseCountFormatter,
-        'disabled' => DisabledLinesFormatter,
-        'worst'    => WorstOffendersFormatter,
-        'tap'      => TapFormatter,
-        'quiet'    => QuietFormatter
+        'progress'     => ProgressFormatter,
+        'simple'       => SimpleTextFormatter,
+        'clang'        => ClangStyleFormatter,
+        'fuubar'       => FuubarStyleFormatter,
+        'emacs'        => EmacsStyleFormatter,
+        'json'         => JSONFormatter,
+        'html'         => HTMLFormatter,
+        'files'        => FileListFormatter,
+        'offenses'     => OffenseCountFormatter,
+        'disabled'     => DisabledLinesFormatter,
+        'worst'        => WorstOffendersFormatter,
+        'tap'          => TapFormatter,
+        'quiet'        => QuietFormatter,
+        'autogenconf'  => AutoGenConfigFormatter
       }.freeze
 
       FORMATTER_APIS = %i[started finished].freeze

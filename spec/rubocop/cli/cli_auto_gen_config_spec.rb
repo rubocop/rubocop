@@ -730,6 +730,24 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     end
 
+    describe 'console output' do
+      before do
+        create_file('example1.rb', ['$!'])
+      end
+
+      it 'displays report summary but no offenses' do
+        expect(cli.run(['--auto-gen-config'])).to eq(1)
+
+        expect($stdout.string).to include(<<-OUTPUT.strip_indent)
+          Inspecting 1 file
+          C
+
+          1 file inspected, 1 offense detected
+          Created .rubocop_todo.yml.
+        OUTPUT
+      end
+    end
+
     it 'can be called when there are no files to inspection' do
       expect(cli.run(['--auto-gen-config'])).to eq(0)
     end

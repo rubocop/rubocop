@@ -33,6 +33,10 @@
 * [#4517](https://github.com/bbatsov/rubocop/issues/4517): Add option to allow trailing whitespaces inside heredoc strings. ([@Darhazer][])
 * [#5652](https://github.com/bbatsov/rubocop/issues/5652): Make `Style/OptionHash` aware of implicit parameter passing to super. ([@Wei-LiangChew][])
 
+### Changes
+
+* [#5451](https://github.com/bbatsov/rubocop/issues/5451): When using --auto-gen-config, do not ouput offenses unless the --output-offenses flag is also passed. ([@drewpterry][])
+
 ## 0.54.0 (2018-03-21)
 
 ### New features
