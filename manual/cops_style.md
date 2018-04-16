@@ -611,10 +611,11 @@ This cop checks for uses of class variables. Offenses
 are signaled only on assignment to class variables to
 reduce the number of offenses that would be reported.
 
-Setting value for class variable need to take care.
-If some class has been inherited by other classes, setting value
-for class variable affected children classes.
-So using class instance variable is better in almost case.
+You have to be careful when setting a value for a class
+variable; if a class has been inherited, changing the 
+value of a class variable also affects the inheriting
+classes. This means that it's almost always better to
+use a class instance variable instead.
 
 ### Examples
 
