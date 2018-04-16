@@ -275,7 +275,7 @@ EOS
 
 Name | Default value | Configurable values
 --- | --- | ---
-Blacklist | `END`, `(?-mix:EO[A-Z]{1})` | Array
+Blacklist | `(?-mix:(^|\s)(EO[A-Z]{1}|END)(\s|$))` | Array
 
 ### References
 

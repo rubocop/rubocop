@@ -604,6 +604,12 @@ Layout/SpaceInsideHashLiteralBraces:
     - space
     - no_space
 
+Layout/SpaceInsideParens:
+  EnforcedStyle: no_space
+  SupportedStyles:
+    - space
+    - no_space
+
 Layout/SpaceInsideReferenceBrackets:
   EnforcedStyle: no_space
   SupportedStyles:
@@ -647,6 +653,9 @@ Layout/TrailingBlankLines:
   SupportedStyles:
     - final_newline
     - final_blank_line
+
+Layout/TrailingWhitespace:
+  AllowInHeredoc: false
 
 #################### Naming ##########################
 
@@ -712,8 +721,7 @@ Naming/FileName:
 
 Naming/HeredocDelimiterNaming:
   Blacklist:
-    - END
-    - !ruby/regexp '/EO[A-Z]{1}/'
+    - !ruby/regexp '/(^|\s)(EO[A-Z]{1}|END)(\s|$)/'
 
 Naming/HeredocDelimiterCase:
   EnforcedStyle: uppercase
@@ -1123,6 +1131,9 @@ Style/LambdaCall:
 
 Style/MethodCallWithArgsParentheses:
   IgnoreMacros: true
+  IgnoredMethods: []
+
+Style/MethodCallWithoutArgsParentheses:
   IgnoredMethods: []
 
 Style/MethodDefParentheses:

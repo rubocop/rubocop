@@ -267,10 +267,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(['--format', 'offenses', '-a', 'example.rb'])).to eq(0)
         expect($stdout.string).to eq(<<-RESULT.strip_indent)
 
-          1  Layout/EmptyLineAfterMagicComment
           1  Style/FrozenStringLiteralComment
           --
-          2  Total
+          1  Total
 
         RESULT
         expect(IO.read('example.rb'))

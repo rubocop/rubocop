@@ -235,6 +235,7 @@ In the following section you find all available cops:
 * [Lint/RescueType](cops_lint.md#lintrescuetype)
 * [Lint/ReturnInVoidContext](cops_lint.md#lintreturninvoidcontext)
 * [Lint/SafeNavigationChain](cops_lint.md#lintsafenavigationchain)
+* [Lint/SafeNavigationConsistency](cops_lint.md#lintsafenavigationconsistency)
 * [Lint/ScriptPermission](cops_lint.md#lintscriptpermission)
 * [Lint/ShadowedArgument](cops_lint.md#lintshadowedargument)
 * [Lint/ShadowedException](cops_lint.md#lintshadowedexception)

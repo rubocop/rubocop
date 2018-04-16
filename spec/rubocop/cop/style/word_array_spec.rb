@@ -163,6 +163,19 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
       RUBY
     end
 
+    it 'auto-corrects an array of words using partial newlines' do
+      new_source = autocorrect_source(<<-RUBY)
+        ["foo", "bar", "baz",
+        "boz", "buz",
+        "biz"]
+      RUBY
+      expect(new_source).to eq(<<-RUBY)
+        %w(foo bar baz
+        boz buz
+        biz)
+      RUBY
+    end
+
     it 'detects right value of MinSize to use for --auto-gen-config' do
       inspect_source(<<-RUBY.strip_indent)
         ['one', 'two', 'three']

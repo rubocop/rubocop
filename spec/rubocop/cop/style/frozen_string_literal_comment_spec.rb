@@ -171,6 +171,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
         expect(new_source).to eq(<<-RUBY.strip_indent)
           # frozen_string_literal: true
+
           puts 1
         RUBY
       end
@@ -184,6 +185,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
         expect(new_source).to eq(<<-RUBY.strip_indent)
           #!/usr/bin/env ruby
           # frozen_string_literal: true
+
           puts 1
         RUBY
       end
@@ -197,6 +199,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
         expect(new_source).to eq(<<-RUBY.strip_indent)
           # encoding: utf-8
           # frozen_string_literal: true
+
           puts 1
         RUBY
       end
@@ -213,6 +216,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
           #!/usr/bin/env ruby
           # encoding: utf-8
           # frozen_string_literal: true
+
           puts 1
         RUBY
       end

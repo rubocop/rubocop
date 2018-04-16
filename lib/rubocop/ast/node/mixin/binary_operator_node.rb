@@ -18,6 +18,26 @@ module RuboCop
       def rhs
         node_parts[1]
       end
+
+      # Returns all of the conditions, including nested conditions,
+      # of the binary operation.
+      #
+      # @return [Array<Node>] the left and right hand side of the binary
+      # operation and the let and right hand side of any nested binary
+      # operators
+      def conditions
+        lhs, rhs = *self
+        lhs = lhs.children.first if lhs.begin_type?
+        rhs = rhs.children.first if rhs.begin_type?
+
+        [lhs, rhs].each_with_object([]) do |side, collection|
+          if AST::Node::OPERATOR_KEYWORDS.include?(side.type)
+            collection.concat(side.conditions)
+          else
+            collection << side
+          end
+        end
+      end
     end
   end
 end

@@ -1574,6 +1574,47 @@ Enabled | No
 
 This cop checks for Windows-style line endings in the source code.
 
+### Examples
+
+#### EnforcedStyle: native (default)
+
+```ruby
+# The `native` style means that CR+LF (Carriage Return + Line Feed) is
+# enforced on Windows, and LF is enforced on other platforms.
+
+# bad
+puts 'Hello' # Return character is LF on Windows.
+puts 'Hello' # Return character is CR+LF on other than Windows.
+
+# good
+puts 'Hello' # Return character is CR+LF on Windows.
+puts 'Hello' # Return character is LF on other than Windows.
+```
+#### EnforcedStyle: lf
+
+```ruby
+# The `lf` style means that LF (Line Feed) is enforced on
+# all platforms.
+
+# bad
+puts 'Hello' # Return character is CR+LF on all platfoms.
+
+# good
+puts 'Hello' # Return character is LF on all platfoms.
+```
+#### EnforcedStyle: crlf
+
+```ruby
+# The `crlf` style means that CR+LF (Carriage Return + Line Feed) is
+# enforced on all platforms.
+
+# bad
+puts 'Hello' # Return character is LF on all platfoms.
+
+# good
+puts 'Hello' # Return character is CR+LF on all platfoms.
+```
+
 ### Configurable attributes
 
 Name | Default value | Configurable values
@@ -3736,7 +3777,11 @@ Checks for spaces inside ordinary round parentheses.
 
 ### Examples
 
+#### EnforcedStyle: no_space (default)
+
 ```ruby
+# The `no_space` style enforces that parentheses do not have spaces.
+
 # bad
 f( 3)
 g = (a + 3 )
@@ -3745,6 +3790,29 @@ g = (a + 3 )
 f(3)
 g = (a + 3)
 ```
+#### EnforcedStyle: space
+
+```ruby
+# The `space` style enforces that parentheses have a space at the
+# beginning and end.
+# Note: Empty parentheses should not have spaces.
+
+# bad
+f(3)
+g = (a + 3)
+y( )
+
+# good
+f( 3 )
+g = ( a + 3 )
+y()
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `no_space` | `space`, `no_space`
 
 ### References
 
@@ -4022,6 +4090,12 @@ x = 0
 # good
 x = 0
 ```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+AllowInHeredoc | `false` | Boolean
 
 ### References
 

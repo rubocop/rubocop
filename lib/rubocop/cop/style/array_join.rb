@@ -15,7 +15,7 @@ module RuboCop
       #   %w(foo bar baz) * ","
       #
       #   # good
-      #   %w(foo bar bax).join(",")
+      #   %w(foo bar baz).join(",")
       #
       class ArrayJoin < Cop
         MSG = 'Favor `Array#join` over `Array#*`.'.freeze
