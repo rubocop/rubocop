@@ -19,6 +19,7 @@
 ### Changes
 
 * Split `Style/MethodMissing` into two cops, `Style/MethodMissingSuper` and `Style/MissingRespondToMissing`. ([@rrosenblum][])
+* [#5757](https://github.com/bbatsov/rubocop/issues/5757): Add `AllowInMultilineConditions` option to `Style/ParenthesesAroundCondition` cop. ([@Darhazer][])
 
 ## 0.55.0 (2018-04-16)
 
