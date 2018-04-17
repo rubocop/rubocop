@@ -4079,12 +4079,34 @@ if x > 10
 elsif x < 3
 end
 ```
+#### AllowInMultilineConditions: false (default)
+
+```ruby
+# bad
+if (x > 10 &&
+   y > 10)
+end
+
+# good
+ if x > 10 &&
+    y > 10
+ end
+```
+#### AllowInMultilineConditions: true
+
+```ruby
+# good
+if (x > 10 &&
+   y > 10)
+end
+```
 
 ### Configurable attributes
 
 Name | Default value | Configurable values
 --- | --- | ---
 AllowSafeAssignment | `true` | Boolean
+AllowInMultilineConditions | `false` | Boolean
 
 ### References
 
