@@ -63,8 +63,18 @@ module RuboCop
 
           n = node.parent.begin_type? ? node.parent.parent : node.parent
 
-          if with_options_block(n)
-            return true if valid_options?(with_options_block(n))
+          contain_valid_options_in_with_options_block?(n)
+        end
+
+        def contain_valid_options_in_with_options_block?(node)
+          if with_options_block(node)
+            return true if valid_options?(with_options_block(node))
+
+            return false unless node.parent
+
+            return true if contain_valid_options_in_with_options_block?(
+              node.parent.parent
+            )
           end
 
           false
