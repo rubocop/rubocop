@@ -1717,6 +1717,10 @@ Rails/ReadWriteAttribute:
   Include:
     - app/models/**/*.rb
 
+Rails/RefuteMethods:
+  Include:
+    - '**/test/**/*'
+
 Rails/RequestReferer:
   EnforcedStyle: referer
   SupportedStyles:

@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#5801](https://github.com/bbatsov/rubocop/pull/5801): Add new `Rails/RefuteMethods` cop. ([@koic][])
+
 ### Bug fixes
 
 * [#5286](https://github.com/bbatsov/rubocop/issues/5286): Fix `Lint/SafeNavigationChain` not detecting chained operators after block. ([@Darhazer][])
