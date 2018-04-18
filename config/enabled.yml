@@ -1236,6 +1236,10 @@ Rails/RedundantReceiverInWithOptions:
   Description: 'Checks for redundant receiver in `with_options`.'
   Enabled: true
 
+Rails/RefuteMethods:
+  Description: 'Use `assert_not` methods instead of `refute` methods.'
+  Enabled: true
+
 Rails/RelativeDateConstant:
   Description: 'Do not assign relative date to constants.'
   Enabled: true
