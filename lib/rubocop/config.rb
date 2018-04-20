@@ -291,6 +291,10 @@ module RuboCop
       @to_s ||= @hash.to_s
     end
 
+    def signature
+      @signature ||= Digest::MD5.hexdigest(to_s)
+    end
+
     def make_excludes_absolute
       each_key do |key|
         validate_section_presence(key)
