@@ -72,6 +72,7 @@ module RuboCop
           unless parent &&
                  (AST::Node::OPERATOR_KEYWORDS.include?(parent.type) ||
                   (parent.begin_type? &&
+                   parent.parent &&
                    AST::Node::OPERATOR_KEYWORDS.include?(parent.parent.type)))
             return node
           end

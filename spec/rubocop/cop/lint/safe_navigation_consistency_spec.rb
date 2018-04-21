@@ -52,6 +52,16 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationConsistency do
       RUBY
     end
 
+    it 'registers an offense when there is code before or after ' \
+      'the condition' do
+      expect_offense(<<-RUBY.strip_indent)
+        foo = nil
+        foo&.bar || foo.baz
+        ^^^^^^^^^^^^^^^^^^^ Ensure that safe navigation is used consistently inside of `&&` and `||`.
+        something
+      RUBY
+    end
+
     it 'registers an offense for non dot method calls' do
       expect_offense(<<-RUBY.strip_indent)
         foo&.start_with?('a') || foo =~ /b/

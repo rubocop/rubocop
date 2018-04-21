@@ -53,6 +53,7 @@ namespace :cut_release do
       file << release_notes
       file << "\n\n"
       file << contributor_links
+      file << "\n"
     end
   end
 

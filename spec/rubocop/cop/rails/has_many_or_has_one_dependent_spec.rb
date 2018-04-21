@@ -146,5 +146,20 @@ RSpec.describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
         end
       end
     end
+
+    context 'Nested `with_options` block' do
+      it 'does not register an offense when `dependent: :destroy` is present' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          class Article < ApplicationRecord
+            with_options dependent: :destroy do
+              has_many :tags
+              with_options class_name: 'Tag' do
+                has_many :special_tags, foreign_key: :special_id, inverse_of: :special
+              end
+            end
+          end
+        RUBY
+      end
+    end
   end
 end
