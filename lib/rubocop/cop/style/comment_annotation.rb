@@ -42,7 +42,8 @@ module RuboCop
 
         def investigate(processed_source)
           processed_source.comments.each_with_index do |comment, index|
-            next unless first_comment_line?(processed_source.comments, index)
+            next unless first_comment_line?(processed_source.comments, index) ||
+                        inline_comment?(comment)
 
             margin, first_word, colon, space, note = split_comment(comment)
             next unless annotation?(comment) &&
@@ -72,6 +73,10 @@ module RuboCop
         def first_comment_line?(comments, index)
           index.zero? ||
             comments[index - 1].loc.line < comments[index].loc.line - 1
+        end
+
+        def inline_comment?(comment)
+          !comment_line?(comment.loc.expression.source_line)
         end
 
         def annotation_range(comment, margin, length)

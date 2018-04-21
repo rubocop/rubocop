@@ -130,4 +130,19 @@ RSpec.describe RuboCop::Cop::Style::CommentAnnotation, :config do
       expect_no_offenses('# TODO make better')
     end
   end
+
+  context 'offenses in consecutive inline comments' do
+    it 'registers each of them' do
+      inspect_source(<<-RUBY.strip_indent)
+        class ToBeDone
+          ITEMS = [
+            '', # TODO Item 1
+            '', # TODO Item 2
+          ].freeze
+        end
+      RUBY
+
+      expect(cop.offenses.size).to be(2)
+    end
+  end
 end

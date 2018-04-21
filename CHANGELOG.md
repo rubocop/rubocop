@@ -10,6 +10,7 @@
 
 * [#5286](https://github.com/bbatsov/rubocop/issues/5286): Fix `Lint/SafeNavigationChain` not detecting chained operators after block. ([@Darhazer][])
 * Fix bug where `Lint/SafeNavigationConsistency` registers multiple offenses for the same method call. ([@rrosenblum][])
+* [#5713](https://github.com/bbatsov/rubocop/issues/5713): Fix `Style/CommentAnnotation` reporting only the first of multiple consecutive offending lines. ([@svendittmer][])
 * [#5791](https://github.com/bbatsov/rubocop/issues/5791): Fix exception in `Lint/SafeNavigationConsistency` when there is code around the condition. ([@rrosenblum][])
 * [#5784](https://github.com/bbatsov/rubocop/issues/5784): Fix a false positive for `Rails/HasManyOrHasOneDependent` when using nested `with_options`. ([@koic][])
 
@@ -3326,3 +3327,4 @@
 [@joshuapinter]: https://github.com/joshuapinter
 [@Darhazer]: https://github.com/Darhazer
 [@Wei-LiangChew]: https://github.com/Wei-LiangChew
+[@svendittmer]: https://github.com/svendittmer
