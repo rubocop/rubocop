@@ -54,16 +54,22 @@ module RuboCop
       warn e.message
       warn e.backtrace
       STATUS_ERROR
+    ensure
+      untrap_interrupt
     end
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
     def trap_interrupt(runner)
-      Signal.trap('INT') do
+      @old_interrupt_handler = Signal.trap('INT') do
         exit!(1) if runner.aborting?
         runner.abort
         warn
         warn 'Exiting... Interrupt again to exit immediately.'
       end
+    end
+
+    def untrap_interrupt
+      Signal.trap('INT', @old_interrupt_handler)
     end
 
     private
