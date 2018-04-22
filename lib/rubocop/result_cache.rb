@@ -134,7 +134,7 @@ module RuboCop
 
     def file_checksum(file, config_store)
       digester = Digest::MD5.new
-      digester.update(@pwd + file + File.stat(file).mode.to_s + config_store.for(file).signature)
+      digester.update("#{@pwd}#{file}#{File.stat(file).mode}#{config_store.for(file).signature}")
       digester.file(file)
       digester.hexdigest
     rescue Errno::ENOENT
