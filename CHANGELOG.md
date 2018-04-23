@@ -15,6 +15,7 @@
 * [#5713](https://github.com/bbatsov/rubocop/issues/5713): Fix `Style/CommentAnnotation` reporting only the first of multiple consecutive offending lines. ([@svendittmer][])
 * [#5791](https://github.com/bbatsov/rubocop/issues/5791): Fix exception in `Lint/SafeNavigationConsistency` when there is code around the condition. ([@rrosenblum][])
 * [#5784](https://github.com/bbatsov/rubocop/issues/5784): Fix a false positive for `Rails/HasManyOrHasOneDependent` when using nested `with_options`. ([@koic][])
+* [#5808](https://github.com/bbatsov/rubocop/pull/5808): Fix original interrupt signal handler not being restored after the rubocop run. ([@deivid-rodriguez][])
 
 ## 0.55.0 (2018-04-16)
 
