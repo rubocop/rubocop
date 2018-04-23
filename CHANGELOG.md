@@ -6,6 +6,7 @@
 
 * [#5801](https://github.com/bbatsov/rubocop/pull/5801): Add new `Rails/RefuteMethods` cop. ([@koic][])
 * [#5805](https://github.com/bbatsov/rubocop/pull/5805): Add new `Rails/AssertNot` cop. ([@composerinteralia][])
+* [#4136](https://github.com/bbatsov/rubocop/issues/4136): Allow more robust `Layout/ClosingParenthesisIndentation` detection including method chaining. ([@jfelchner][])
 
 ### Bug fixes
 

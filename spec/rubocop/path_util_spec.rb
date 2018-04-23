@@ -62,7 +62,7 @@ RSpec.describe RuboCop::PathUtil do
       expect(described_class.match_path?(
                "#{Dir.pwd}/dir/file",
                "#{Dir.pwd}/dir/dir/file"
-      )).to be(false)
+             )).to be(false)
     end
 
     it 'matches glob expressions' do

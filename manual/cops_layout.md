@@ -666,23 +666,63 @@ closing parenthesis means `)` preceded by a line break.
 ### Examples
 
 ```ruby
-# good: when x is on its own line, indent this way
-func(
-  x,
-  y
+# bad
+some_method(
+  a,
+  b
+  )
+
+some_method(
+  a, b
+  )
+
+some_method(a, b, c
+  )
+
+some_method(a,
+            b,
+            c
+  )
+
+some_method(a,
+  x: 1,
+  y: 2
+  )
+
+# Scenario 1: When First Parameter Is On Its Own Line
+
+# good: when first param is on a new line, right paren is *always*
+#       outdented by IndentationWidth
+some_method(
+  a,
+  b
 )
 
-# good: when x follows opening parenthesis, align parentheses
-a = b * (x +
-         y
-        )
+# good
+some_method(
+  a, b
+)
 
-# bad
-def func(
-  x,
-  y
-  )
-end
+# Scenario 2: When First Parameter Is On The Same Line
+
+# good: when all other params are also on the same line, outdent
+#       right paren by IndentationWidth
+some_method(a, b, c
+           )
+
+# good: when all other params are on multiple lines, but are lined
+#       up, align right paren with left paren
+some_method(a,
+            b,
+            c
+           )
+
+# good: when other params are not lined up on multiple lines, outdent
+#       right paren by IndentationWidth
+some_method(a,
+  x: 1,
+  y: 2
+)
 ```
 
 ## Layout/CommentIndentation
