@@ -1635,6 +1635,10 @@ Rails/ActionFilter:
   Include:
     - app/controllers/**/*.rb
 
+Rails/AssertNot:
+  Include:
+    - '**/test/**/*'
+
 Rails/CreateTableWithTimestamps:
   Include:
     - db/migrate/*.rb

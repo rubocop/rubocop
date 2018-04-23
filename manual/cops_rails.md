@@ -138,6 +138,30 @@ class Rails4Model < ActiveRecord::Base
 end
 ```
 
+## Rails/AssertNot
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+Use `assert_not` instead of `assert !`.
+
+### Examples
+
+```ruby
+# bad
+assert !x
+
+# good
+assert_not x
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `**/test/**/*` | Array
+
 ## Rails/Blank
 
 Enabled by default | Supports autocorrection

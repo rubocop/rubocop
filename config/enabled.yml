@@ -1101,6 +1101,10 @@ Rails/ApplicationRecord:
   Description: 'Check that models subclass ApplicationRecord.'
   Enabled: true
 
+Rails/AssertNot:
+  Description: 'Use `assert_not` instead of `assert !`.'
+  Enabled: true
+
 Rails/Blank:
   Description: 'Enforce using `blank?` and `present?`.'
   Enabled: true

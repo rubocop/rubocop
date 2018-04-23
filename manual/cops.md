@@ -327,6 +327,7 @@ In the following section you find all available cops:
 * [Rails/ActiveSupportAliases](cops_rails.md#railsactivesupportaliases)
 * [Rails/ApplicationJob](cops_rails.md#railsapplicationjob)
 * [Rails/ApplicationRecord](cops_rails.md#railsapplicationrecord)
+* [Rails/AssertNot](cops_rails.md#railsassertnot)
 * [Rails/Blank](cops_rails.md#railsblank)
 * [Rails/CreateTableWithTimestamps](cops_rails.md#railscreatetablewithtimestamps)
 * [Rails/Date](cops_rails.md#railsdate)
