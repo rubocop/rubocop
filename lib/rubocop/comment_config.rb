@@ -43,17 +43,14 @@ module RuboCop
     def extra_enabled_comments_with_names(extras, names)
       each_directive do |comment, cop_names, disabled|
         next unless comment_only_line?(comment.loc.expression.line)
-        cop_names.each do |name|
-          names[name] ||= 0
-          if disabled
-            names[name] += 1
-          elsif names[name] > 0
-            names[name] -= 1
-          else
-            extras << [comment, name]
-          end
+
+        if !disabled && enable_all?(comment)
+          handle_enable_all(names, extras, comment)
+        else
+          handle_switch(cop_names, names, disabled, extras, comment)
         end
       end
+
       extras
     end
 
@@ -167,6 +164,36 @@ module RuboCop
       @non_comment_token_line_numbers ||= begin
         non_comment_tokens = processed_source.tokens.reject(&:comment?)
         non_comment_tokens.map(&:line).uniq
+      end
+    end
+
+    def enable_all?(comment)
+      _, cops = comment.text.match(COMMENT_DIRECTIVE_REGEXP).captures
+      cops == 'all'
+    end
+
+    def handle_enable_all(names, extras, comment)
+      enabled_cops = 0
+      names.each do |name, counter|
+        next unless counter > 0
+
+        names[name] -= 1
+        enabled_cops += 1
+      end
+
+      extras << [comment, 'all'] if enabled_cops.zero?
+    end
+
+    def handle_switch(cop_names, names, disabled, extras, comment)
+      cop_names.each do |name|
+        names[name] ||= 0
+        if disabled
+          names[name] += 1
+        elsif names[name] > 0
+          names[name] -= 1
+        else
+          extras << [comment, name]
+        end
       end
     end
   end

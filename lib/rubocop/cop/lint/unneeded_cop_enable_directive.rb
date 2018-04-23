@@ -10,6 +10,8 @@ module RuboCop
       # This cop detects instances of rubocop:enable comments that can be
       # removed.
       #
+      # When comment enables all cops at once `rubocop:enable all`
+      # that cop checks whether any cop was actually enabled.
       # @example
       #   # bad
       #   foo = 1
@@ -17,6 +19,19 @@ module RuboCop
       #
       #   # good
       #   foo = 1
+      # @example
+      #   # bad
+      #   # rubocop:disable Metrics/LineLength
+      #   baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrr
+      #   # rubocop:enable Metrics/LineLength
+      #   baz
+      #   # rubocop:enable all
+      #
+      #   # good
+      #   # rubocop:disable Metrics/LineLength
+      #   baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrr
+      #   # rubocop:enable all
+      #   baz
       class UnneededCopEnableDirective < Cop
         include RangeHelp
         include SurroundingSpace
@@ -30,7 +45,7 @@ module RuboCop
             add_offense(
               [comment, name],
               location: range_of_offense(comment, name),
-              message: format(MSG, cop: name)
+              message: format(MSG, cop: all_or_name(name))
             )
           end
         end
@@ -90,8 +105,11 @@ module RuboCop
             range_class.new(buffer, start, comment.loc.expression.end_pos)
           end
         end
+
+        def all_or_name(name)
+          name == 'all' ? 'all cops' : name
+        end
       end
     end
   end
 end
-# rubocop:enable Lint/UnneededCopEnableDirective
