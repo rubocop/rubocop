@@ -108,7 +108,10 @@ module RuboCop
       'Performance/HashEachMethods' =>
         'The `Performance/HashEachMethods` cop has been removed ' \
           'since it no longer provides performance benefits in ' \
-          'modern rubies.'
+          'modern rubies.',
+      'Style/MethodMissing' =>
+        'The `Style/MethodMissing` cop has been split into ' \
+          '`Style/MethodMissingSuper` and `Style/MissingRespondToMissing`.'
     }.freeze
 
     OBSOLETE_PARAMETERS = [

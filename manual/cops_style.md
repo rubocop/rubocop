@@ -2864,14 +2864,14 @@ EnforcedStyle | `require_parentheses` | `require_parentheses`, `require_no_paren
 
 * [https://github.com/bbatsov/ruby-style-guide#method-parens](https://github.com/bbatsov/ruby-style-guide#method-parens)
 
-## Style/MethodMissing
+## Style/MethodMissingSuper
 
 Enabled by default | Supports autocorrection
 --- | ---
 Enabled | No
 
-This cop checks for the presence of `method_missing` without also
-defining `respond_to_missing?` and falling back on `super`.
+This cop checks for the presence of `method_missing` without
+falling back on `super`.
 
 ### Examples
 
@@ -2882,9 +2882,6 @@ def method_missing(name, *args)
 end
 
 #good
-def respond_to_missing?(name, include_private)
-  # ...
-end
 
 def method_missing(name, *args)
   # ...
@@ -3027,6 +3024,37 @@ end
 Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `both` | `if`, `case`, `both`
+
+## Style/MissingRespondToMissing
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop checks for the presence of `method_missing` without also
+defining `respond_to_missing?`.
+
+### Examples
+
+```ruby
+#bad
+def method_missing(name, *args)
+  # ...
+end
+
+#good
+def respond_to_missing?(name, include_private)
+  # ...
+end
+
+def method_missing(name, *args)
+  # ...
+end
+```
+
+### References
+
+* [https://github.com/bbatsov/ruby-style-guide#no-method-missing](https://github.com/bbatsov/ruby-style-guide#no-method-missing)
 
 ## Style/MixinGrouping
 
