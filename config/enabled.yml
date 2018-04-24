@@ -1644,8 +1644,8 @@ Style/MethodDefParentheses:
   StyleGuide: '#method-parens'
   Enabled: true
 
-Style/MethodMissing:
-  Description: 'Avoid using `method_missing`.'
+Style/MethodMissingSuper:
+  Description: Checks for `method_missing` to call `super`.
   StyleGuide: '#no-method-missing'
   Enabled: true
 
@@ -1653,6 +1653,13 @@ Style/MinMax:
   Description: >-
                  Use `Enumerable#minmax` instead of `Enumerable#min`
                  and `Enumerable#max` in conjunction.'
+  Enabled: true
+
+Style/MissingRespondToMissing:
+  Description: >-
+                  Checks if `method_missing` is implemented
+                  without implementing `respond_to_missing`.
+  StyleGuide: '#no-method-missing'
   Enabled: true
 
 Style/MixinGrouping:
