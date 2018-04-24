@@ -185,8 +185,13 @@ module RuboCop
       false
     end
 
+    def stdin?
+      @options.key?(:stdin)
+    end
+
     def ruby_file?(file)
-      ruby_extension?(file) || ruby_filename?(file) || ruby_executable?(file)
+      stdin? || ruby_extension?(file) || ruby_filename?(file) ||
+        ruby_executable?(file)
     end
 
     def process_explicit_path(path)
