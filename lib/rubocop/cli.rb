@@ -52,7 +52,7 @@ module RuboCop
       STATUS_ERROR
     rescue StandardError, SyntaxError, LoadError => e
       warn e.message
-      warn e.backtrace
+      warn 'For usage information, use --help'
       STATUS_ERROR
     end
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
