@@ -15,6 +15,7 @@
 * [#5713](https://github.com/bbatsov/rubocop/issues/5713): Fix `Style/CommentAnnotation` reporting only the first of multiple consecutive offending lines. ([@svendittmer][])
 * [#5791](https://github.com/bbatsov/rubocop/issues/5791): Fix exception in `Lint/SafeNavigationConsistency` when there is code around the condition. ([@rrosenblum][])
 * [#5784](https://github.com/bbatsov/rubocop/issues/5784): Fix a false positive for `Rails/HasManyOrHasOneDependent` when using nested `with_options`. ([@koic][])
+* [#4666](https://github.com/bbatsov/rubocop/issues/4666): `--stdin` always treats input as Ruby source irregardless of filename. ([@PointlessOne][])
 
 ### Changes
 
@@ -3335,3 +3336,4 @@
 [@Wei-LiangChew]: https://github.com/Wei-LiangChew
 [@svendittmer]: https://github.com/svendittmer
 [@composerinteralia]: https://github.com/composerinteralia
+[@PointlessOne]: https://github.com/PointlessOne
