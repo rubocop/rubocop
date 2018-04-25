@@ -36,6 +36,8 @@ module RuboCop
       #     # ...
       #   end
       class SaveBang < Cop
+        include NegativeConditional
+
         MSG = 'Use `%<prefer>s` instead of `%<current>s` if the return ' \
               'value is not checked.'.freeze
         CREATE_MSG = (MSG +
@@ -131,7 +133,8 @@ module RuboCop
         def conditional?(node)
           node.parent && (
             node.parent.if_type? || node.parent.case_type? ||
-            node.parent.or_type? || node.parent.and_type?
+            node.parent.or_type? || node.parent.and_type? ||
+            single_negative?(node.parent)
           )
         end
 
