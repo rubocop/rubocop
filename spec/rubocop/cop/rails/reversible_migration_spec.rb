@@ -43,6 +43,10 @@ RSpec.describe RuboCop::Cop::Rails::ReversibleMigration, :config do
     execute "ALTER TABLE `pages_linked_pages` ADD UNIQUE `page_id_linked_page_id` (`page_id`,`linked_page_id`)"
   RUBY
 
+  it_behaves_like :accepts, 'up_only', <<-RUBY
+    up_only { execute "UPDATE posts SET published = 'true'" }
+  RUBY
+
   context 'within block' do
     it_behaves_like :accepts, 'create_table', <<-RUBY
       [:users, :articles].each do |table|
