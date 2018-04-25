@@ -18,6 +18,7 @@
 * [#5791](https://github.com/bbatsov/rubocop/issues/5791): Fix exception in `Lint/SafeNavigationConsistency` when there is code around the condition. ([@rrosenblum][])
 * [#5784](https://github.com/bbatsov/rubocop/issues/5784): Fix a false positive for `Rails/HasManyOrHasOneDependent` when using nested `with_options`. ([@koic][])
 * [#4666](https://github.com/bbatsov/rubocop/issues/4666): `--stdin` always treats input as Ruby source irregardless of filename. ([@PointlessOne][])
+* [#5668](https://github.com/bbatsov/rubocop/issues/5668): Fix an issue where files with unknown extensions, listed in `AllCops/Include` were not inspected when passing the file name as an option. ([@drenmi][])
 
 ### Changes
 

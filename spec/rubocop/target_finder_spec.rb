@@ -155,6 +155,48 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
       end
     end
 
+    context 'when some non-known Ruby files are specified in the ' \
+            'configuration Include and they are explicitly passed ' \
+            'as arguments' do
+      before do
+        create_file('.rubocop.yml', <<-YAML.strip_indent)
+          AllCops:
+            Include:
+              - dir1/file
+        YAML
+      end
+
+      let(:args) do
+        ['dir1/file']
+      end
+
+      it 'includes them' do
+        expect(found_basenames)
+          .to contain_exactly('file')
+      end
+    end
+
+    context 'when some non-known Ruby files are specified in the ' \
+            'configuration Include and they are not explicitly passed ' \
+            'as arguments' do
+      before do
+        create_file('.rubocop.yml', <<-YAML.strip_indent)
+          AllCops:
+            Include:
+              - dir1/file
+        YAML
+      end
+
+      let(:args) do
+        ['dir1/**/*']
+      end
+
+      it 'includes them' do
+        expect(found_basenames)
+          .to contain_exactly('executable', 'file', 'ruby1.rb', 'ruby2.rb')
+      end
+    end
+
     context 'when input is passed on stdin' do
       let(:options) do
         {
