@@ -16,6 +16,7 @@
 * [#5791](https://github.com/bbatsov/rubocop/issues/5791): Fix exception in `Lint/SafeNavigationConsistency` when there is code around the condition. ([@rrosenblum][])
 * [#5784](https://github.com/bbatsov/rubocop/issues/5784): Fix a false positive for `Rails/HasManyOrHasOneDependent` when using nested `with_options`. ([@koic][])
 * [#4666](https://github.com/bbatsov/rubocop/issues/4666): `--stdin` always treats input as Ruby source irregardless of filename. ([@PointlessOne][])
+* Fix auto-correction for `Style/MethodCallWithArgsParentheses` adding extra parentheses if the method argument was already parenthesized. ([@dvandersluis][])
 
 ### Changes
 

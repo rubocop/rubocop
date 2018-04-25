@@ -115,6 +115,66 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     RUBY
   end
 
+  it 'auto-corrects fully parenthesized args by removing space' do
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
+      top.eq (1 + 2)
+    RUBY
+
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      top.eq(1 + 2)
+    RUBY
+  end
+
+  it 'auto-corrects parenthesized args for a local method by removing space' do
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
+      def foo
+        eq (1 + 2)
+      end
+    RUBY
+
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      def foo
+        eq(1 + 2)
+      end
+    RUBY
+  end
+
+  it 'auto-corrects call with multiple args by adding braces' do
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
+      def foo
+        eq 1, (2 + 3)
+        eq 1, 2, 3
+      end
+    RUBY
+
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      def foo
+        eq(1, (2 + 3))
+        eq(1, 2, 3)
+      end
+    RUBY
+  end
+
+  it 'auto-corrects partially parenthesized args by adding needed braces' do
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
+      top.eq (1 + 2) + 3
+    RUBY
+
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      top.eq((1 + 2) + 3)
+    RUBY
+  end
+
+  it 'auto-corrects calls with multiple args by adding needed braces' do
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
+      top.eq (1 + 2), 3
+    RUBY
+
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      top.eq((1 + 2), 3)
+    RUBY
+  end
+
   it 'ignores method listed in IgnoredMethods' do
     expect_no_offenses('puts :test')
   end
