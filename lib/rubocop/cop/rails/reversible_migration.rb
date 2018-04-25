@@ -157,7 +157,7 @@ module RuboCop
 
         def on_send(node)
           return unless within_change_method?(node)
-          return if within_reversible_block?(node)
+          return if within_reversible_or_up_only_block?(node)
 
           check_irreversible_schema_statement_node(node)
           check_drop_table_node(node)
@@ -168,7 +168,7 @@ module RuboCop
 
         def on_block(node)
           return unless within_change_method?(node)
-          return if within_reversible_block?(node)
+          return if within_reversible_or_up_only_block?(node)
 
           check_change_table_node(node.send_node, node.body)
         end
@@ -261,9 +261,11 @@ module RuboCop
           end
         end
 
-        def within_reversible_block?(node)
+        def within_reversible_or_up_only_block?(node)
           node.each_ancestor(:block).any? do |ancestor|
-            ancestor.block_type? && ancestor.send_node.method?(:reversible)
+            ancestor.block_type? &&
+              ancestor.send_node.method?(:reversible) ||
+              ancestor.send_node.method?(:up_only)
           end
         end
 
