@@ -89,6 +89,17 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang do
       end
     end
 
+    it "when using #{method} with negated if" do
+      inspect_source("if !object.#{method}; something; end")
+
+      if pass
+        expect(cop.messages.empty?).to be(true)
+      else
+        expect(cop.messages)
+          .to eq(["`#{method}` returns a model which is always truthy."])
+      end
+    end
+
     it "when using #{method} with multiple conditional" do
       inspect_source(<<-RUBY.strip_indent)
         if true && object.active? && object.#{method}
