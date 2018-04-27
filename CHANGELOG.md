@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#5848](https://github.com/bbatsov/rubocop/pull/5848): Add new `Performance/InefficientHashSearch` cop. ([@JacobEvelyn][])
 * [#5801](https://github.com/bbatsov/rubocop/pull/5801): Add new `Rails/RefuteMethods` cop. ([@koic][])
 * [#5805](https://github.com/bbatsov/rubocop/pull/5805): Add new `Rails/AssertNot` cop. ([@composerinteralia][])
 * [#4136](https://github.com/bbatsov/rubocop/issues/4136): Allow more robust `Layout/ClosingParenthesisIndentation` detection including method chaining. ([@jfelchner][])
@@ -3342,3 +3343,4 @@
 [@svendittmer]: https://github.com/svendittmer
 [@composerinteralia]: https://github.com/composerinteralia
 [@PointlessOne]: https://github.com/PointlessOne
+[@JacobEvelyn]: https://github.com/JacobEvelyn
