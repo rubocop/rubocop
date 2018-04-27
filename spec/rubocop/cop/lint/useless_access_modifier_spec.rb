@@ -6,49 +6,33 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
   let(:config) { RuboCop::Config.new }
 
   context 'when an access modifier has no effect' do
-    let(:source) do
-      <<-RUBY.strip_indent
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
         class SomeClass
           def some_method
             puts 10
           end
           private
+          ^^^^^^^ Useless `private` access modifier.
           def self.some_method
             puts 10
           end
         end
       RUBY
     end
-
-    it 'registers an offense' do
-      inspect_source(source)
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.first.message)
-        .to eq('Useless `private` access modifier.')
-      expect(cop.offenses.first.line).to eq(5)
-      expect(cop.highlights).to eq(['private'])
-    end
   end
 
   context 'when an access modifier has no methods' do
-    let(:source) do
-      <<-RUBY.strip_indent
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
         class SomeClass
           def some_method
             puts 10
           end
           protected
+          ^^^^^^^^^ Useless `protected` access modifier.
         end
       RUBY
-    end
-
-    it 'registers an offense' do
-      inspect_source(source)
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.first.message)
-        .to eq('Useless `protected` access modifier.')
-      expect(cop.offenses.first.line).to eq(5)
-      expect(cop.highlights).to eq(['protected'])
     end
   end
 
@@ -71,32 +55,26 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   context 'when an access modifier is followed by a ' \
     'class method defined on constant' do
-    let(:source) do
-      <<-RUBY.strip_indent
+
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
         class SomeClass
           protected
+          ^^^^^^^^^ Useless `protected` access modifier.
           def SomeClass.some_method
           end
         end
       RUBY
     end
-
-    it 'registers an offense' do
-      inspect_source(source)
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.first.message)
-        .to eq('Useless `protected` access modifier.')
-      expect(cop.offenses.first.line).to eq(2)
-      expect(cop.highlights).to eq(['protected'])
-    end
   end
 
   context 'when there are consecutive access modifiers' do
-    let(:source) do
-      <<-RUBY.strip_indent
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
         class SomeClass
          private
          private
+         ^^^^^^^ Useless `private` access modifier.
           def some_method
             puts 10
           end
@@ -105,15 +83,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
         end
       RUBY
-    end
-
-    it 'registers an offense' do
-      inspect_source(source)
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.first.message)
-        .to eq('Useless `private` access modifier.')
-      expect(cop.offenses.first.line).to eq(3)
-      expect(cop.highlights).to eq(['private'])
     end
   end
 
@@ -131,60 +100,39 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
   end
 
   context 'when class is empty save modifier' do
-    let(:source) do
-      <<-RUBY.strip_indent
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
         class SomeClass
           private
+          ^^^^^^^ Useless `private` access modifier.
         end
       RUBY
-    end
-
-    it 'registers an offense' do
-      inspect_source(source)
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.first.message)
-        .to eq('Useless `private` access modifier.')
-      expect(cop.offenses.first.line).to eq(2)
-      expect(cop.highlights).to eq(['private'])
     end
   end
 
   context 'when multiple class definitions in file but only one has offense' do
-    let(:source) do
-      <<-RUBY.strip_indent
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
         class SomeClass
           private
+          ^^^^^^^ Useless `private` access modifier.
         end
         class SomeOtherClass
         end
       RUBY
     end
-
-    it 'registers an offense' do
-      inspect_source(source)
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.first.message)
-        .to eq('Useless `private` access modifier.')
-      expect(cop.offenses.first.line).to eq(2)
-      expect(cop.highlights).to eq(['private'])
-    end
   end
 
   if RUBY_ENGINE == 'ruby' && RUBY_VERSION.start_with?('2.1')
     context 'ruby 2.1 style modifiers' do
-      let(:source) do
-        <<-RUBY.strip_indent
+      it 'does not register an offense' do
+        expect_no_offenses(<<-RUBY.strip_indent)
           class SomeClass
             private def some_method
               puts 10
             end
           end
         RUBY
-      end
-
-      it 'does not register an offense' do
-        inspect_source(source)
-        expect(cop.offenses.empty?).to be(true)
       end
     end
   end
@@ -250,7 +198,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
     end
 
     it 'still points out redundant uses within the block' do
-      src = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         class SomeClass
           concerning :FirstThing do
             def foo
@@ -268,20 +216,18 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
             def method
             end
             private
+            ^^^^^^^ Useless `private` access modifier.
             def another_method
             end
           end
          end
       RUBY
-      inspect_source(src)
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.first.line).to eq(17)
     end
   end
 
   context 'when using ActiveSupport behavior when Rails is not eabled' do
     it 'reports offenses' do
-      src = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         module SomeModule
           extend ActiveSupport::Concern
           class_methods do
@@ -294,12 +240,11 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
           def some_public_instance_method
           end
           private
+          ^^^^^^^ Useless `private` access modifier.
           def some_private_instance_method
           end
         end
       RUBY
-      inspect_source(src)
-      expect(cop.offenses.size).to eq(1)
     end
   end
 
@@ -353,16 +298,14 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
     end
 
     it 'still points out redundant uses within the module' do
-      src = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         class SomeClass
           delegate :foo, to: :bar
 
           private
+          ^^^^^^^ Useless `private` access modifier.
         end
       RUBY
-      inspect_source(src)
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.first.line).to eq(4)
     end
   end
 

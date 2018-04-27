@@ -12,13 +12,12 @@ RSpec.describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
       end
 
       it 'registers an offense for prefixes `0` and `0O`' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           a = 01234
+              ^^^^^ Use 0o for octal literals.
           b(0O1234)
+            ^^^^^^ Use 0o for octal literals.
         RUBY
-        expect(cop.offenses.size).to eq(2)
-        expect(cop.messages.uniq).to eq(['Use 0o for octal literals.'])
-        expect(cop.highlights).to eq(%w[01234 0O1234])
       end
 
       it 'does not register offense for lowercase prefix' do
@@ -47,13 +46,12 @@ RSpec.describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
       end
 
       it 'registers an offense for prefix `0O` and `0o`' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           a = 0O1234
+              ^^^^^^ Use 0 for octal literals.
           b(0o1234)
+            ^^^^^^ Use 0 for octal literals.
         RUBY
-        expect(cop.offenses.size).to eq(2)
-        expect(cop.messages.uniq).to eq(['Use 0 for octal literals.'])
-        expect(cop.highlights).to eq(%w[0O1234 0o1234])
       end
 
       it 'does not register offense for prefix `0`' do
@@ -81,13 +79,12 @@ RSpec.describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
 
   context 'hex literals' do
     it 'registers an offense for uppercase prefix' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a = 0X1AC
+            ^^^^^ Use 0x for hexadecimal literals.
         b(0XABC)
+          ^^^^^ Use 0x for hexadecimal literals.
       RUBY
-      expect(cop.offenses.size).to eq(2)
-      expect(cop.messages.uniq).to eq(['Use 0x for hexadecimal literals.'])
-      expect(cop.highlights).to eq(%w[0X1AC 0XABC])
     end
 
     it 'does not register offense for lowercase prefix' do
@@ -102,13 +99,12 @@ RSpec.describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
 
   context 'binary literals' do
     it 'registers an offense for uppercase prefix' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a = 0B10101
+            ^^^^^^^ Use 0b for binary literals.
         b(0B111)
+          ^^^^^ Use 0b for binary literals.
       RUBY
-      expect(cop.offenses.size).to eq(2)
-      expect(cop.messages.uniq).to eq(['Use 0b for binary literals.'])
-      expect(cop.highlights).to eq(%w[0B10101 0B111])
     end
 
     it 'does not register offense for lowercase prefix' do
@@ -123,14 +119,12 @@ RSpec.describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
 
   context 'decimal literals' do
     it 'registers an offense for prefixes' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a = 0d1234
+            ^^^^^^ Do not use prefixes for decimal literals.
         b(0D1234)
+          ^^^^^^ Do not use prefixes for decimal literals.
       RUBY
-      expect(cop.offenses.size).to eq(2)
-      expect(cop.messages.uniq)
-        .to eq(['Do not use prefixes for decimal literals.'])
-      expect(cop.highlights).to eq(%w[0d1234 0D1234])
     end
 
     it 'does not register offense for no prefix' do

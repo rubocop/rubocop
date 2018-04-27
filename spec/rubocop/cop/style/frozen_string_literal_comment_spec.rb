@@ -107,50 +107,42 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'accepts a frozen string literal comment below shebang and encoding ' \
        'comments' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         # encoding: utf-8
         # frozen_string_literal: true
         puts 1
       RUBY
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts a disabled frozen string literal comment below shebang and ' \
        'encoding comments' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         # encoding: utf-8
         # frozen_string_literal: false
         puts 1
       RUBY
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts a frozen string literal comment below shebang above an ' \
        'encoding comments' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         # frozen_string_literal: true
         # encoding: utf-8
         puts 1
       RUBY
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts a disabled frozen string literal comment below shebang above ' \
        'an encoding comments' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         # frozen_string_literal: false
         # encoding: utf-8
         puts 1
       RUBY
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts an emacs style combined magic comment' do
@@ -303,22 +295,18 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
         it 'accepts freezing a string when there is a frozen string literal ' \
            'comment' do
-          inspect_source(<<-RUBY.strip_indent)
+          expect_no_offenses(<<-RUBY.strip_indent)
             # frozen_string_literal: true
             "x".freeze
           RUBY
-
-          expect(cop.offenses.empty?).to be(true)
         end
 
         it 'accepts shoveling into a string when there is a frozen string ' \
            'literal comment' do
-          inspect_source(<<-RUBY.strip_indent)
+          expect_no_offenses(<<-RUBY.strip_indent)
             # frozen_string_literal: true
             "x" << "y"
           RUBY
-
-          expect(cop.offenses.empty?).to be(true)
         end
       end
     end
@@ -388,24 +376,20 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for a frozen string literal comment ' \
       'on the top line' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         # frozen_string_literal: true
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary frozen string literal comment.
         puts 1
       RUBY
-
-      expect(cop.messages).to eq(['Unnecessary frozen string literal comment.'])
-      expect(cop.highlights).to eq(['# frozen_string_literal: true'])
     end
 
     it 'registers an offense for a disabled frozen string literal comment ' \
       'on the top line' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         # frozen_string_literal: false
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary frozen string literal comment.
         puts 1
       RUBY
-
-      expect(cop.messages).to eq(['Unnecessary frozen string literal comment.'])
-      expect(cop.highlights).to eq(['# frozen_string_literal: false'])
     end
 
     it 'accepts not having a frozen string literal comment on the top line' do
@@ -414,133 +398,111 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'accepts not having not having a frozen string literal comment ' \
       'under a shebang' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         puts 1
       RUBY
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'registers an offense for a frozen string literal comment ' \
       'below a shebang comment' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         # frozen_string_literal: true
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary frozen string literal comment.
         puts 1
       RUBY
-
-      expect(cop.messages).to eq(['Unnecessary frozen string literal comment.'])
-      expect(cop.highlights).to eq(['# frozen_string_literal: true'])
     end
 
     it 'registers an offense for a disabled frozen string literal ' \
       'below a shebang comment' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         # frozen_string_literal: false
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary frozen string literal comment.
         puts 1
       RUBY
-
-      expect(cop.messages).to eq(['Unnecessary frozen string literal comment.'])
-      expect(cop.highlights).to eq(['# frozen_string_literal: false'])
     end
 
     it 'allows not having a frozen string literal comment ' \
       'under an encoding comment' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         # encoding: utf-8
         puts 1
       RUBY
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'registers an offense for a frozen string literal comment below ' \
       'an encoding comment' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         # encoding: utf-8
         # frozen_string_literal: true
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary frozen string literal comment.
         puts 1
       RUBY
-
-      expect(cop.messages).to eq(['Unnecessary frozen string literal comment.'])
-      expect(cop.highlights).to eq(['# frozen_string_literal: true'])
     end
 
     it 'registers an offense for a dsabled frozen string literal below ' \
       'an encoding comment' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         # encoding: utf-8
         # frozen_string_literal: false
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary frozen string literal comment.
         puts 1
       RUBY
-
-      expect(cop.messages).to eq(['Unnecessary frozen string literal comment.'])
-      expect(cop.highlights).to eq(['# frozen_string_literal: false'])
     end
 
     it 'allows not having a frozen string literal comment ' \
       'under a shebang and an encoding comment' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         # encoding: utf-8
         puts 1
       RUBY
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'registers an offense for a frozen string literal comment ' \
       'below shebang and encoding comments' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         # encoding: utf-8
         # frozen_string_literal: true
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary frozen string literal comment.
         puts 1
       RUBY
-
-      expect(cop.messages).to eq(['Unnecessary frozen string literal comment.'])
-      expect(cop.highlights).to eq(['# frozen_string_literal: true'])
     end
 
     it 'registers an offense for a disabled frozen string literal comment ' \
       'below shebang and encoding comments' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         # encoding: utf-8
         # frozen_string_literal: false
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary frozen string literal comment.
         puts 1
       RUBY
-
-      expect(cop.messages).to eq(['Unnecessary frozen string literal comment.'])
-      expect(cop.highlights).to eq(['# frozen_string_literal: false'])
     end
 
     it 'registers an offense for a frozen string literal comment ' \
       'below shebang above an encoding comments' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         # frozen_string_literal: true
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary frozen string literal comment.
         # encoding: utf-8
         puts 1
       RUBY
-
-      expect(cop.messages).to eq(['Unnecessary frozen string literal comment.'])
-      expect(cop.highlights).to eq(['# frozen_string_literal: true'])
     end
 
     it 'registers an offense for a disabled frozen string literal comment ' \
       'below shebang above an encoding comments' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
         # frozen_string_literal: false
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary frozen string literal comment.
         # encoding: utf-8
         puts 1
       RUBY
-
-      expect(cop.messages).to eq(['Unnecessary frozen string literal comment.'])
-      expect(cop.highlights).to eq(['# frozen_string_literal: false'])
     end
 
     context 'auto-correct' do
