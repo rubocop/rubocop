@@ -8,6 +8,7 @@
 * [#5444](https://github.com/bbatsov/rubocop/pull/5444): Add new `Style/AccessModifierDeclarations` cop. ([@brandonweiss][])
 * [#5803](https://github.com/bbatsov/rubocop/issues/5803): Add new `Style/UnneededCondition` cop. ([@balbesina][])
 * [#5406](https://github.com/bbatsov/rubocop/issues/5406): Add new `Layout/ClosingHeredocIndentation` cop. ([@siggymcfried][])
+* [#5823](https://github.com/bbatsov/rubocop/issues/5823): Add new `slashes` style to `Rails/FilePath` since Ruby accepts forward slashes even on Windows. ([@sunny][])
 
 ### Bug fixes
 
@@ -3395,3 +3396,4 @@
 [@TikiTDO]: https://github.com/TikiTDO
 [@EiNSTeiN-]: https://github.com/EiNSTeiN-
 [@nroman-stripe]: https://github.com/nroman-stripe
+[@sunny]: https://github.com/sunny
