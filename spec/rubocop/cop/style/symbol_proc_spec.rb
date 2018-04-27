@@ -7,11 +7,10 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
 
   it 'registers an offense for a block with parameterless method call on ' \
      'param' do
-    inspect_source('coll.map { |e| e.upcase }')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['Pass `&:upcase` as an argument to `map` instead of a block.'])
-    expect(cop.highlights).to eq(['{ |e| e.upcase }'])
+    expect_offense(<<-RUBY.strip_indent)
+      coll.map { |e| e.upcase }
+               ^^^^^^^^^^^^^^^^ Pass `&:upcase` as an argument to `map` instead of a block.
+    RUBY
   end
 
   it 'registers an offense for a block when method in body is unary -/=' do

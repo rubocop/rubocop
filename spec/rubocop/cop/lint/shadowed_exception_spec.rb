@@ -77,28 +77,26 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
 
     it 'registers an offense rescuing exceptions that are ' \
       'ancestors of each other ' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def
           something
         rescue StandardError, RuntimeError
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not shadow rescued Exceptions.
           handle_exception
         end
       RUBY
-
-      expect(cop.messages).to eq(['Do not shadow rescued Exceptions.'])
     end
 
     it 'registers an offense rescuing Exception with any other error or ' \
        'exception' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         begin
           something
         rescue NonStandardError, Exception
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not shadow rescued Exceptions.
           handle_exception
         end
       RUBY
-
-      expect(cop.messages).to eq(['Do not shadow rescued Exceptions.'])
     end
 
     it 'accepts rescuing a single exception that is assigned to a variable' do
@@ -137,7 +135,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
 
     it 'accepts rescuing a multiple exceptions that are not ancestors that ' \
        'have an else' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         begin
           something
         rescue NoMethodError, ZeroDivisionError
@@ -146,8 +144,6 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
           handle_non_exception
         end
       RUBY
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     context 'when there are multiple levels of exceptions in the same rescue' do
@@ -217,16 +213,14 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
 
     it 'registers an offense when rescuing nil multiple exceptions of ' \
        'different levels' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         begin
           a
         rescue nil, StandardError, Exception
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not shadow rescued Exceptions.
           b
         end
       RUBY
-
-      expect(cop.messages).to eq(['Do not shadow rescued Exceptions.'])
-      expect(cop.highlights).to eq(['rescue nil, StandardError, Exception'])
     end
   end
 
@@ -325,7 +319,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
 
     it 'accepts rescuing exceptions in order of level with multiple ' \
        'exceptions in a group' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         begin
           something
         rescue NoMethodError, ZeroDivisionError
@@ -334,13 +328,11 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
           handle_exception
         end
       RUBY
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts rescuing exceptions in order of level with multiple ' \
        'exceptions in a group with custom exceptions' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         begin
           something
         rescue NonStandardError, NoMethodError
@@ -349,8 +341,6 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
           handle_exception
         end
       RUBY
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts rescuing custom exceptions in multiple rescue groups' do
@@ -380,7 +370,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
 
       it 'registers an offense for splat arguments rescued after ' \
          'rescuing a known exception' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           begin
             a
           rescue StandardError
@@ -389,8 +379,6 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
             c
           end
         RUBY
-
-        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'registers an offense for splat arguments rescued after ' \
