@@ -6,6 +6,7 @@
 
 * [#5843](https://github.com/bbatsov/rubocop/issues/5843): Add configuration options to `Naming/MemoizedInstanceVariableName` cop to allow leading underscores. ([@leklund][])
 * [#5843](https://github.com/bbatsov/rubocop/issues/5843): Add `EnforcedStyleForLeadingUnderscores` to `Naming/MemoizedInstanceVariableName` cop to allow leading underscores. ([@leklund][])
+* New cop `Rails/ORMAbstraction` checks for setting of id attributes when there is access to the object. ([@kwstannard][])
 
 ### Bug fixes
 
@@ -3432,3 +3433,4 @@
 [@sunny]: https://github.com/sunny
 [@tatsuyafw]: https://github.com/tatsuyafw
 [@alexander-lazarov]: https://github.com/alexander-lazarov
+[@kwstannard]: https://github.com/kwstannard

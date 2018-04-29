@@ -1114,6 +1114,30 @@ Name | Default value | Configurable values
 --- | --- | ---
 Include | `db/migrate/*.rb` | Array
 
+## Rails/ORMAbstraction
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+Avoid breaking ORM abstraction.
+
+### Examples
+
+```ruby
+# bad
+where(foo_id: foo.id)
+
+# bad
+create(foo_id: foo.id)
+
+# good
+where(foo: foo)
+
+# good
+create(foo: foo)
+```
+
 ## Rails/Output
 
 Enabled by default | Supports autocorrection
