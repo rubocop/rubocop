@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::SafeNavigationConsistency do
+RSpec.describe RuboCop::Cop::Lint::SafeNavigationConsistency, :config do
   subject(:cop) { described_class.new(config) }
 
-  let(:config) { RuboCop::Config.new }
+  let(:cop_config) do
+    { 'Whitelist' => %w[present? blank? try presence] }
+  end
 
   context 'target_ruby_version >= 2.3', :ruby23 do
     it 'allows && without safe navigation' do
@@ -21,6 +23,12 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationConsistency do
     it 'allows safe navigation when different variables are used' do
       expect_no_offenses(<<-RUBY.strip_indent)
         foo&.bar || foobar.baz
+      RUBY
+    end
+
+    it 'allows calls to methods that nil responds to' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        return true if a.nil? || a&.whatever?
       RUBY
     end
 
@@ -64,8 +72,8 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationConsistency do
 
     it 'registers an offense for non dot method calls' do
       expect_offense(<<-RUBY.strip_indent)
-        foo&.start_with?('a') || foo =~ /b/
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Ensure that safe navigation is used consistently inside of `&&` and `||`.
+        foo&.zero? || foo > 5
+        ^^^^^^^^^^^^^^^^^^^^^ Ensure that safe navigation is used consistently inside of `&&` and `||`.
       RUBY
     end
 
