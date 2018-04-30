@@ -1719,6 +1719,12 @@ foo&.bar || foo&.baz
 foo&.bar && (foobar.baz || foo&.baz)
 ```
 
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+Whitelist | `present?`, `blank?`, `presence`, `try`, `try!` | Array
+
 ## Lint/ScriptPermission
 
 Enabled by default | Supports autocorrection
