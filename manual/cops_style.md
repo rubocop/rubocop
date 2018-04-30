@@ -1909,11 +1909,11 @@ puts format('%10s', 'hoge')
 
 ```ruby
 # bad
-puts format('%10s', 'hoge')
 puts sprintf('%10s', 'hoge')
+puts '%10s' % 'hoge'
 
 # good
-puts '%10s' % 'hoge'
+puts format('%10s', 'hoge')
 ```
 
 ### Configurable attributes
