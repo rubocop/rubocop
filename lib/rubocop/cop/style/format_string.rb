@@ -22,10 +22,10 @@ module RuboCop
       # @example EnforcedStyle: sprintf
       #   # bad
       #   puts sprintf('%10s', 'hoge')
+      #   puts '%10s' % 'hoge'
       #
       #   # good
       #   puts format('%10s', 'hoge')
-      #   puts '%10s' % 'hoge'
       #
       # @example EnforcedStyle: percent
       #   # bad
