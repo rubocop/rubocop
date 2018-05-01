@@ -1685,7 +1685,7 @@ x&.foo || bar
 
 Name | Default value | Configurable values
 --- | --- | ---
-Whitelist | `present?`, `blank?`, `presence`, `try` | Array
+Whitelist | `present?`, `blank?`, `presence`, `try`, `try!` | Array
 
 ## Lint/SafeNavigationConsistency
 
