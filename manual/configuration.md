@@ -199,7 +199,11 @@ Hidden directories (i.e., directories whose names start with a dot)
 are not searched by default.  If you'd like it to check files that are
 not included by default, you'll need to pass them in on the command
 line, or to add entries for them under `AllCops`/`Include`.  Files and
-directories can also be ignored through `AllCops`/`Exclude`.
+directories can also be ignored through `AllCops`/`Exclude`. The
+parameter `AllCops`/`IncludeOnly` is an empty list in default
+configuration. If you override it locally, RuboCop will only inspect
+files matching the given list of patterns and not include any files by
+default.
 
 Here is an example that might be used for a Rails project:
 

@@ -396,7 +396,11 @@ module RuboCop
     end
 
     def patterns_to_include
-      for_all_cops['Include']
+      include_only_explicitly? ? include_only : for_all_cops['Include']
+    end
+
+    def include_only_explicitly?
+      include_only.any?
     end
 
     def patterns_to_exclude
@@ -453,6 +457,10 @@ module RuboCop
     end
 
     private
+
+    def include_only
+      for_all_cops['IncludeOnly'] || []
+    end
 
     def warn_about_unrecognized_cops(invalid_cop_names)
       invalid_cop_names.each do |name|

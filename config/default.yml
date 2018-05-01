@@ -57,6 +57,11 @@ AllCops:
     - '**/Thorfile'
     - '**/Vagabondfile'
     - '**/Vagrantfile'
+  # IncludeOnly is empty in default configuration. If it is overridden in user
+  # configuration, the Include option is disregarded and regular ruby files,
+  # which are normally included by default, don't get included unless they are
+  # listed as a pattern in IncludeOnly.
+  IncludeOnly: []
   Exclude:
     - 'node_modules/**/*'
     - 'vendor/**/*'

@@ -268,6 +268,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
 
     it 'picks files specified to be included in config' do
       config = double('config')
+      allow(config).to receive(:include_only_explicitly?).and_return(false)
       allow(config).to receive(:file_to_include?) do |file|
         File.basename(file) == 'file'
       end

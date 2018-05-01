@@ -9,6 +9,7 @@
 * [#4136](https://github.com/bbatsov/rubocop/issues/4136): Allow more robust `Layout/ClosingParenthesisIndentation` detection including method chaining. ([@jfelchner][])
 * [#5821](https://github.com/bbatsov/rubocop/pull/5821): Support `AR::Migration#up_only` for `Rails/ReversibleMigration` cop. ([@koic][])
 * [#5845](https://github.com/bbatsov/rubocop/pull/5845): Add new `Lint/ErbNewArguments` cop. ([@koic][])
+* [#4247](https://github.com/bbatsov/rubocop/issues/4247): Add new `AllCops/IncludeOnly` configuration parameter. ([@jonas054][])
 
 ### Bug fixes
 

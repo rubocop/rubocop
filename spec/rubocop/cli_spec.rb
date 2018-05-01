@@ -959,27 +959,101 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         RESULT
     end
 
-    it 'finds included files' do
-      create_file('file.rb', 'x=0') # Included by default
-      create_file('example', 'x=0')
-      create_file('regexp', 'x=0')
-      create_file('.dot1/file.rb', 'x=0') # Hidden but explicitly included
-      create_file('.dot2/file.rb', 'x=0') # Hidden, excluded by default
-      create_file('.dot3/file.rake', 'x=0') # Hidden, not included by wildcard
-      create_file('.rubocop.yml', <<-YAML.strip_indent)
-        AllCops:
-          Include:
-            - example
-            - "**/*.rake"
-            - !ruby/regexp /regexp$/
-            - .dot1/**/*
-      YAML
-      expect(cli.run(%w[--format files])).to eq(1)
-      expect($stderr.string).to eq('')
-      expect($stdout.string.split($RS).sort).to eq([abs('.dot1/file.rb'),
-                                                    abs('example'),
-                                                    abs('file.rb'),
-                                                    abs('regexp')])
+    describe 'IncludeOnly config parameter' do
+      before do
+        create_file('file.rb', 'x=0') # Normally included by default
+        create_file('example', 'x=0')
+        create_file('regexp', 'x=0')
+        create_file('.dot1/file.rb', 'x=0') # Hidden but explicitly included
+        create_file('.dot2/file.rb', 'x=0') # Hidden, excluded by default
+        create_file('.dot3/file.rake', 'x=0') # Hidden, not included by wildcard
+      end
+
+      context 'when empty' do
+        it 'finds included files' do
+          create_file('.rubocop.yml', <<-YAML.strip_indent)
+            AllCops:
+              Include:
+                - example
+                - "**/*.rake"
+                - !ruby/regexp /regexp$/
+                - .dot1/**/*
+          YAML
+          expect(cli.run(%w[--format files])).to eq(1)
+          expect($stderr.string).to eq('')
+          expect($stdout.string.split($RS).sort).to eq([abs('.dot1/file.rb'),
+                                                        abs('example'),
+                                                        abs('file.rb'),
+                                                        abs('regexp')])
+        end
+      end
+
+      context 'when not empty' do
+        it 'finds only explicitly included files' do
+          create_file('.rubocop.yml', <<-YAML.strip_indent)
+            AllCops:
+              IncludeOnly:
+                - example
+                - "**/*.rake"
+                - !ruby/regexp /regexp$/
+                - .dot1/**/*
+          YAML
+          expect(cli.run(%w[--format files])).to eq(1)
+          expect($stderr.string).to eq('')
+          expect($stdout.string.split($RS).sort).to eq([abs('.dot1/file.rb'),
+                                                        abs('example'),
+                                                        abs('regexp')])
+        end
+
+        context 'and Exclude is not empty' do
+          it 'finds included files except excluded' do
+            create_file('.rubocop.yml', <<-YAML.strip_indent)
+              AllCops:
+                IncludeOnly:
+                  - example
+                  - "**/*.rake"
+                  - !ruby/regexp /regexp$/
+                  - .dot1/**/*
+                Exclude:
+                  - example
+            YAML
+            expect(cli.run(%w[--format files])).to eq(1)
+            expect($stderr.string).to eq('')
+            expect($stdout.string.split($RS).sort).to eq([abs('.dot1/file.rb'),
+                                                          abs('regexp')])
+          end
+        end
+
+        context 'and a cop Exclude is not empty' do
+          it 'finds included files except the excluded for one cop' do
+            create_file('.rubocop.yml', <<-YAML.strip_indent)
+              AllCops:
+                IncludeOnly:
+                  - example
+                  - "**/*.rake"
+                  - !ruby/regexp /regexp$/
+                  - .dot1/**/*
+              Lint/UselessAssignment:
+                Exclude:
+                  - example
+            YAML
+            expect(cli.run(%w[--format simple])).to eq(1)
+            expect($stderr.string).to eq('')
+            expect($stdout.string).to eq(<<-OUTPUT.strip_indent)
+              == example ==
+              C:  1:  2: Layout/SpaceAroundOperators: Surrounding space missing for operator =.
+              == regexp ==
+              W:  1:  1: Lint/UselessAssignment: Useless assignment to variable - x.
+              C:  1:  2: Layout/SpaceAroundOperators: Surrounding space missing for operator =.
+              == .dot1/file.rb ==
+              W:  1:  1: Lint/UselessAssignment: Useless assignment to variable - x.
+              C:  1:  2: Layout/SpaceAroundOperators: Surrounding space missing for operator =.
+
+              3 files inspected, 5 offenses detected
+            OUTPUT
+          end
+        end
+      end
     end
 
     it 'ignores excluded files' do
