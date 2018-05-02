@@ -416,7 +416,7 @@ h = { a: 1, b: 2 }; h.value?(nil)
 
 ### References
 
-* [https://github.com/JuanitoFatas/fast-ruby#hashkey-instead-of-hashkeysinclude-and-hashvalue-instead-of-hashvaluesinclude-code](https://github.com/JuanitoFatas/fast-ruby#hashkey-instead-of-hashkeysinclude-and-hashvalue-instead-of-hashvaluesinclude-code)
+* [https://github.com/JuanitoFatas/fast-ruby#hashkey-instead-of-hashkeysinclude-code](https://github.com/JuanitoFatas/fast-ruby#hashkey-instead-of-hashkeysinclude-code)
 
 ## Performance/LstripRstrip
 

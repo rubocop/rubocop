@@ -37,20 +37,12 @@ module RuboCop
       #   h = { a: 1, b: 2 }; h.value?(nil)
       #
       class InefficientHashSearch < Cop
-        KEYS_MSG = 'Use `#key?` instead of `#keys.include?`.'.freeze
-        VALUES_MSG = 'Use `#value?` instead of `#values.include?`.'.freeze
-
-        def_node_matcher :keys_include?, <<-PATTERN
-          (send (send _ :keys) :include? _)
-        PATTERN
-
-        def_node_matcher :values_include?, <<-PATTERN
-          (send (send _ :values) :include? _)
+        def_node_matcher :inefficient_include?, <<-PATTERN
+          (send $(send _ ${:keys :values}) :include? $_)
         PATTERN
 
         def on_send(node)
-          add_offense(node, message: KEYS_MSG) if keys_include?(node)
-          add_offense(node, message: VALUES_MSG) if values_include?(node)
+          add_offense(node, message: msg(node)) if inefficient_include?(node)
         end
 
         def autocorrect(node)
@@ -67,9 +59,27 @@ module RuboCop
 
         private
 
+        def msg(node)
+          "Use `##{autocorrect_method(node)}` instead of "\
+            "`##{current_method(node)}.include?`."
+        end
+
         def autocorrect_method(node)
-          old_method = node.children[0].loc.selector.source
-          old_method == 'keys' ? 'key?' : 'value?'
+          case current_method(node)
+          when :keys then use_long_method ? 'has_key?' : 'key?'
+          when :values then use_long_method ? 'has_value?' : 'value?'
+          end
+        end
+
+        def current_method(node)
+          node.children[0].method_name
+        end
+
+        def use_long_method
+          preferred_config = config.for_all_cops['Style/PreferredHashMethods']
+          preferred_config &&
+            preferred_config['EnforcedStyle'] == 'long' &&
+            preferred_config['Enabled']
         end
 
         def autocorrect_argument(node)

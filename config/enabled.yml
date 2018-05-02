@@ -985,7 +985,7 @@ Performance/FlatMap:
 
 Performance/InefficientHashSearch:
   Description: 'Use `key?` or `value?` instead of `keys.include?` or `values.include?`'
-  Reference: 'https://github.com/JuanitoFatas/fast-ruby#hashkey-instead-of-hashkeysinclude-and-hashvalue-instead-of-hashvaluesinclude-code'
+  Reference: 'https://github.com/JuanitoFatas/fast-ruby#hashkey-instead-of-hashkeysinclude-code'
   Enabled: true
 
 Performance/LstripRstrip:
