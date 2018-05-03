@@ -21,19 +21,19 @@ module RuboCop
       #
       # @example EnforcedStyle: sprintf
       #   # bad
-      #   puts format('%10s', 'hoge')
+      #   puts sprintf('%10s', 'hoge')
       #   puts '%10s' % 'hoge'
       #
       #   # good
-      #   puts sprintf('%10s', 'hoge')
+      #   puts format('%10s', 'hoge')
       #
       # @example EnforcedStyle: percent
       #   # bad
-      #   puts format('%10s', 'hoge')
       #   puts sprintf('%10s', 'hoge')
+      #   puts '%10s' % 'hoge'
       #
       #   # good
-      #   puts '%10s' % 'hoge'
+      #   puts format('%10s', 'hoge')
       #
       class FormatString < Cop
         include ConfigurableEnforcedStyle
