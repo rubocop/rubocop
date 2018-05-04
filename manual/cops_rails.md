@@ -168,42 +168,54 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
-This cops checks for code that can be changed to `blank?`.
-Settings:
-  NilOrEmpty: Convert checks for `nil` or `empty?` to `blank?`
-  NotPresent: Convert usages of not `present?` to `blank?`
-  UnlessPresent: Convert usages of `unless` `present?` to `blank?`
+This cop checks for code that can be written with simpler conditionals
+using `Object#blank?` defined by Active Support.
 
 ### Examples
 
+#### NilOrEmpty: true (default)
+
 ```ruby
-# NilOrEmpty: true
-  # bad
-  foo.nil? || foo.empty?
-  foo == nil || foo.empty?
+# Converts usages of `nil? || empty?` to `blank?`
 
-  # good
-  foo.blank?
+# bad
+foo.nil? || foo.empty?
+foo == nil || foo.empty?
 
-# NotPresent: true
-  # bad
-  !foo.present?
+# good
+foo.blank?
+```
+#### NotPresent: true (default)
 
-  # good
-  foo.blank?
+```ruby
+# Converts usages of `!present?` to `blank?`
 
-# UnlessPresent: true
-  # bad
-  something unless foo.present?
-  unless foo.present?
-    something
-  end
+# bad
+!foo.present?
 
-  # good
-  something if foo.blank?
-  if foo.blank?
-    something
-  end
+# good
+foo.blank?
+```
+#### UnlessPresent: true (default)
+
+```ruby
+# Converts usages of `unless present?` to `if blank?`
+
+# bad
+something unless foo.present?
+
+# good
+something if foo.blank?
+
+# bad
+unless foo.present?
+  something
+end
+
+# good
+if foo.blank?
+  something
+end
 ```
 
 ### Configurable attributes
@@ -1173,39 +1185,51 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
-This cops checks for code that can be changed to `blank?`.
-Settings:
-  NotNilAndNotEmpty: Convert checks for not `nil` and `not empty?`
-                     to `present?`
-  NotBlank: Convert usages of not `blank?` to `present?`
-  UnlessBlank: Convert usages of `unless` `blank?` to `if` `present?`
+This cop checks for code that can be written with simpler conditionals
+using `Object#present?` defined by Active Support.
+
+simpler conditionals.
 
 ### Examples
 
+#### NotNilAndNotEmpty: true (default)
+
 ```ruby
-# NotNilAndNotEmpty: true
-  # bad
-  !foo.nil? && !foo.empty?
-  foo != nil && !foo.empty?
-  !foo.blank?
+# Converts usages of `!nil? && !empty?` to `present?`
 
-  # good
-  foo.present?
+# bad
+!foo.nil? && !foo.empty?
 
-# NotBlank: true
-  # bad
-  !foo.blank?
-  not foo.blank?
+# bad
+foo != nil && !foo.empty?
 
-  # good
-  foo.present?
+# good
+foo.present?
+```
+#### NotBlank: true (default)
 
-# UnlessBlank: true
-  # bad
-  something unless foo.blank?
+```ruby
+# Converts usages of `!blank?` to `present?`
 
-  # good
-  something if  foo.present?
+# bad
+!foo.blank?
+
+# bad
+not foo.blank?
+
+# good
+foo.present?
+```
+#### UnlessBlank: true (default)
+
+```ruby
+# Converts usages of `unless blank?` to `if present?`
+
+# bad
+something unless foo.blank?
+
+# good
+something if foo.present?
 ```
 
 ### Configurable attributes
