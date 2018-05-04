@@ -3,37 +3,43 @@
 module RuboCop
   module Cop
     module Rails
-      # This cops checks for code that can be changed to `blank?`.
-      # Settings:
-      #   NotNilAndNotEmpty: Convert checks for not `nil` and `not empty?`
-      #                      to `present?`
-      #   NotBlank: Convert usages of not `blank?` to `present?`
-      #   UnlessBlank: Convert usages of `unless` `blank?` to `if` `present?`
+      # This cop checks for code that can be written with simpler conditionals
+      # using `Object#present?` defined by Active Support.
       #
-      # @example
-      #   # NotNilAndNotEmpty: true
-      #     # bad
-      #     !foo.nil? && !foo.empty?
-      #     foo != nil && !foo.empty?
-      #     !foo.blank?
+      # simpler conditionals.
       #
-      #     # good
-      #     foo.present?
+      # @example NotNilAndNotEmpty: true (default)
+      #   # Converts usages of `!nil? && !empty?` to `present?`
       #
-      #   # NotBlank: true
-      #     # bad
-      #     !foo.blank?
-      #     not foo.blank?
+      #   # bad
+      #   !foo.nil? && !foo.empty?
       #
-      #     # good
-      #     foo.present?
+      #   # bad
+      #   foo != nil && !foo.empty?
       #
-      #   # UnlessBlank: true
-      #     # bad
-      #     something unless foo.blank?
+      #   # good
+      #   foo.present?
       #
-      #     # good
-      #     something if  foo.present?
+      # @example NotBlank: true (default)
+      #   # Converts usages of `!blank?` to `present?`
+      #
+      #   # bad
+      #   !foo.blank?
+      #
+      #   # bad
+      #   not foo.blank?
+      #
+      #   # good
+      #   foo.present?
+      #
+      # @example UnlessBlank: true (default)
+      #   # Converts usages of `unless blank?` to `if present?`
+      #
+      #   # bad
+      #   something unless foo.blank?
+      #
+      #   # good
+      #   something if foo.present?
       class Present < Cop
         MSG_NOT_BLANK = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
         MSG_EXISTS_AND_NOT_EMPTY = 'Use `%<prefer>s` instead of ' \

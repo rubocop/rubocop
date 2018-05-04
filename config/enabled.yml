@@ -1115,7 +1115,7 @@ Rails/AssertNot:
   Enabled: true
 
 Rails/Blank:
-  Description: 'Enforce using `blank?` and `present?`.'
+  Description: 'Enforces use of `blank?`.'
   Enabled: true
 
 Rails/CreateTableWithTimestamps:
@@ -1223,7 +1223,7 @@ Rails/Presence:
   Enabled: true
 
 Rails/Present:
-  Description: 'Enforce using `blank?` and `present?`.'
+  Description: 'Enforces use of `present?`.'
   Enabled: true
 
 Rails/ReadWriteAttribute:
