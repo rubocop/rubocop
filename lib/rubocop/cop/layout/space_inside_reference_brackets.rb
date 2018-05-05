@@ -66,7 +66,7 @@ module RuboCop
           return if node.multiline?
           return unless bracket_method?(node)
           tokens = tokens(node)
-          left_token = left_ref_bracket(tokens)
+          left_token = left_ref_bracket(node, tokens)
           return unless left_token
           right_token = closing_bracket(tokens, left_token)
 
@@ -101,7 +101,7 @@ module RuboCop
 
         def reference_brackets(node)
           tokens = tokens(node)
-          left = left_ref_bracket(tokens)
+          left = left_ref_bracket(node, tokens)
           [left, closing_bracket(tokens, left)]
         end
 
@@ -110,8 +110,12 @@ module RuboCop
           BRACKET_METHODS.include?(method)
         end
 
-        def left_ref_bracket(tokens)
-          tokens.reverse.find(&:left_ref_bracket?)
+        def left_ref_bracket(node, tokens)
+          if node.method?(:[]=)
+            tokens.find(&:left_ref_bracket?)
+          else
+            tokens.reverse.find(&:left_ref_bracket?)
+          end
         end
 
         def closing_bracket(tokens, opening_bracket)

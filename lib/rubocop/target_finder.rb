@@ -194,10 +194,18 @@ module RuboCop
         ruby_executable?(file)
     end
 
+    def configured_include?(file)
+      @config_store.for(file).file_to_include?(file)
+    end
+
+    def included_file?(file)
+      ruby_file?(file) || configured_include?(file)
+    end
+
     def process_explicit_path(path)
       files = path.include?('*') ? Dir[path] : [path]
 
-      files.select! { |file| ruby_file?(file) }
+      files.select! { |file| included_file?(file) }
 
       return files unless force_exclusion?
 

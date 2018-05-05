@@ -4,20 +4,13 @@ RSpec.describe RuboCop::Cop::Rails::RequestReferer, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'when EnforcedStyle is referer' do
-    before { inspect_source('puts request.referrer') }
     let(:cop_config) { { 'EnforcedStyle' => 'referer' } }
 
     it 'registers an offense for request.referrer' do
-      expect(cop.offenses.size).to eq(1)
-    end
-
-    it 'highlights the offence' do
-      expect(cop.highlights).to eq(['request.referrer'])
-    end
-
-    it 'sends a message to the user' do
-      expect(cop.messages)
-        .to eq(['Use `request.referer` instead of `request.referrer`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        puts request.referrer
+             ^^^^^^^^^^^^^^^^ Use `request.referer` instead of `request.referrer`.
+      RUBY
     end
 
     it 'autocorrects referrer with referer' do
@@ -27,20 +20,13 @@ RSpec.describe RuboCop::Cop::Rails::RequestReferer, :config do
   end
 
   context 'when EnforcedStyle is referrer' do
-    before { inspect_source('puts request.referer') }
     let(:cop_config) { { 'EnforcedStyle' => 'referrer' } }
 
     it 'registers an offense for request.referer' do
-      expect(cop.offenses.size).to eq(1)
-    end
-
-    it 'highlights the offence' do
-      expect(cop.highlights).to eq(['request.referer'])
-    end
-
-    it 'sends a message to the user' do
-      expect(cop.messages)
-        .to eq(['Use `request.referrer` instead of `request.referer`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        puts request.referer
+             ^^^^^^^^^^^^^^^ Use `request.referrer` instead of `request.referer`.
+      RUBY
     end
 
     it 'autocorrects referer with referrer' do

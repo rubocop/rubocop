@@ -62,7 +62,7 @@ module RuboCop
             literal = value.children.first.to_s.scrub
 
             # To avoid likely false positives (e.g. a single ' or ")
-            next if literal.gsub(/[^\p{Alnum}]/, '').empty?
+            next if literal.gsub(/[^[[:alnum:]]]/, '').empty?
 
             QUOTES_AND_COMMAS.any? { |pat| literal =~ pat }
           end
