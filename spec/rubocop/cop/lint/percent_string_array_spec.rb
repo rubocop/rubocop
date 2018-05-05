@@ -81,4 +81,23 @@ RSpec.describe RuboCop::Cop::Lint::PercentStringArray do
       expect_no_offenses('%W(\255)')
     end
   end
+
+  context 'with binary encoded source' do
+    it 'adds an offense if tokens contain quotes' do
+      expect_offense(<<-RUBY.b.strip_indent)
+        # encoding: BINARY
+
+        %W[\xC0 "foo"]
+        ^^^^^^^^^^^ Within `%w`/`%W`, quotes and ',' are unnecessary and may be unwanted in the resulting strings.
+      RUBY
+    end
+
+    it 'accepts if tokens contain no quotes' do
+      expect_no_offenses(<<-RUBY.b.strip_indent)
+        # encoding: BINARY
+
+        %W[\xC0 \xC1]
+      RUBY
+    end
+  end
 end

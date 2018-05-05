@@ -513,6 +513,10 @@ Lint/EnsureReturn:
   StyleGuide: '#no-return-ensure'
   Enabled: true
 
+Lint/ErbNewArguments:
+  Description: 'Use `:trim_mode` and `:eoutvar` keyword arguments to `ERB.new`.'
+  Enabled: true
+
 Lint/FloatOutOfRange:
   Description: >-
                  Catches floating-point literals too large or small for Ruby to
