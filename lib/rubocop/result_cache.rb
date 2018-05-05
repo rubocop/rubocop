@@ -7,7 +7,7 @@ require 'etc'
 module RuboCop
   # Provides functionality for caching rubocop runs.
   class ResultCache
-    NON_CHANGING = %i[color format formatters out debug fail_level
+    NON_CHANGING = %i[color format formatters out debug fail_level auto_correct
                       cache fail_fast stdin parallel].freeze
 
     # Remove old files so that the cache doesn't grow too big. When the

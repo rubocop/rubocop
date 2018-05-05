@@ -30,6 +30,7 @@
 * Split `Style/MethodMissing` into two cops, `Style/MethodMissingSuper` and `Style/MissingRespondToMissing`. ([@rrosenblum][])
 * [#5757](https://github.com/bbatsov/rubocop/issues/5757): Add `AllowInMultilineConditions` option to `Style/ParenthesesAroundCondition` cop. ([@Darhazer][])
 * [#5806](https://github.com/bbatsov/rubocop/issues/5806): Fix `Layout/SpaceInsideReferenceBrackets` when assigning a reference bracket to a reference bracket. ([@joshuapinter][])
+* [#5082](https://github.com/bbatsov/rubocop/issues/5082): Allow caching together with `--auto-correct`. ([@jonas054][])
 * Add `try!` to the list of whitelisted methods for `Lint/SafeNavigationChain` and `Style/SafeNavigation`. ([@rrosenblum][])
 
 ## 0.55.0 (2018-04-16)
