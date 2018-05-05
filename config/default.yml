@@ -1331,6 +1331,7 @@ Style/SafeNavigation:
     - blank?
     - presence
     - try
+    - try!
 
 Style/Semicolon:
   # Allow `;` to separate several expressions on the same line.
@@ -1597,6 +1598,15 @@ Lint/SafeNavigationChain:
     - blank?
     - presence
     - try
+    - try!
+
+Lint/SafeNavigationConsistency:
+  Whitelist:
+    - present?
+    - blank?
+    - presence
+    - try
+    - try!
 
 # Checks for shadowed arguments
 Lint/ShadowedArgument:

@@ -4,10 +4,12 @@
 
 ### New features
 
+* [#5848](https://github.com/bbatsov/rubocop/pull/5848): Add new `Performance/InefficientHashSearch` cop. ([@JacobEvelyn][])
 * [#5801](https://github.com/bbatsov/rubocop/pull/5801): Add new `Rails/RefuteMethods` cop. ([@koic][])
 * [#5805](https://github.com/bbatsov/rubocop/pull/5805): Add new `Rails/AssertNot` cop. ([@composerinteralia][])
 * [#4136](https://github.com/bbatsov/rubocop/issues/4136): Allow more robust `Layout/ClosingParenthesisIndentation` detection including method chaining. ([@jfelchner][])
 * [#5821](https://github.com/bbatsov/rubocop/pull/5821): Support `AR::Migration#up_only` for `Rails/ReversibleMigration` cop. ([@koic][])
+* [#5800](https://github.com/bbatsov/rubocop/issues/5800): Don't show a stracktrace for invalid command-line params. ([@shanecav84][])
 * [#5845](https://github.com/bbatsov/rubocop/pull/5845): Add new `Lint/ErbNewArguments` cop. ([@koic][])
 
 ### Bug fixes
@@ -21,6 +23,7 @@
 * [#4666](https://github.com/bbatsov/rubocop/issues/4666): `--stdin` always treats input as Ruby source irregardless of filename. ([@PointlessOne][])
 * [#5668](https://github.com/bbatsov/rubocop/issues/5668): Fix an issue where files with unknown extensions, listed in `AllCops/Include` were not inspected when passing the file name as an option. ([@drenmi][])
 * [#5809](https://github.com/bbatsov/rubocop/issues/5809): Fix exception `Lint/PercentStringArray` and `Lint/PercentSymbolArray` when the inspected file is binary encoded. ([@akhramov][])
+* [#5840](https://github.com/bbatsov/rubocop/issues/5840): Do not register an offense for methods that `nil` responds to in `Lint/SafeNavigationConsistency`. ([@rrosenblum][])
 
 ### Changes
 
@@ -28,6 +31,7 @@
 * [#5757](https://github.com/bbatsov/rubocop/issues/5757): Add `AllowInMultilineConditions` option to `Style/ParenthesesAroundCondition` cop. ([@Darhazer][])
 * [#5806](https://github.com/bbatsov/rubocop/issues/5806): Fix `Layout/SpaceInsideReferenceBrackets` when assigning a reference bracket to a reference bracket. ([@joshuapinter][])
 * [#5082](https://github.com/bbatsov/rubocop/issues/5082): Allow caching together with `--auto-correct`. ([@jonas054][])
+* Add `try!` to the list of whitelisted methods for `Lint/SafeNavigationChain` and `Style/SafeNavigation`. ([@rrosenblum][])
 
 ## 0.55.0 (2018-04-16)
 
@@ -3345,3 +3349,5 @@
 [@svendittmer]: https://github.com/svendittmer
 [@composerinteralia]: https://github.com/composerinteralia
 [@PointlessOne]: https://github.com/PointlessOne
+[@JacobEvelyn]: https://github.com/JacobEvelyn
+[@shanecav84]: https://github.com/shanecav84

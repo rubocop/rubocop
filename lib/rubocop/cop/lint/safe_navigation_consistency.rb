@@ -28,6 +28,7 @@ module RuboCop
       #
       class SafeNavigationConsistency < Cop
         include IgnoredNode
+        include NilMethods
 
         MSG = 'Ensure that safe navigation is used consistently ' \
           'inside of `&&` and `||`.'.freeze
@@ -82,6 +83,7 @@ module RuboCop
         def unsafe_method_calls(method_calls, safe_nav_receiver)
           method_calls.select do |method_call|
             safe_nav_receiver == method_call.receiver &&
+              !nil_methods.include?(method_call.method_name) &&
               !ignored_node?(method_call)
           end
         end
