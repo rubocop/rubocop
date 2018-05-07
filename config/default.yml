@@ -1650,6 +1650,14 @@ Rails/AssertNot:
   Include:
     - '**/test/**/*'
 
+Rails/Blank:
+  # Convert checks for `nil` or `empty?` to `blank?`
+  NilOrEmpty: true
+  # Convert usages of not `present?` to `blank?`
+  NotPresent: true
+  # Convert usages of `unless` `present?` to `if` `blank?`
+  UnlessPresent: true
+
 Rails/CreateTableWithTimestamps:
   Include:
     - db/migrate/*.rb
@@ -1727,6 +1735,14 @@ Rails/Output:
     - config/**/*.rb
     - db/**/*.rb
     - lib/**/*.rb
+
+Rails/Present:
+  # Convert checks for not `nil` and not `empty?` to `present?`
+  NotNilAndNotEmpty: true
+  # Convert usages of not `blank?` to `present?`
+  NotBlank: true
+  # Convert usages of `unless` `blank?` to `if` `present?`
+  UnlessBlank: true
 
 Rails/ReadWriteAttribute:
   Include:
