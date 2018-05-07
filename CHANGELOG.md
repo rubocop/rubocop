@@ -14,6 +14,7 @@
 
 ### Bug fixes
 
+* Fix bug in `Style/EmptyMethod` which concatenated the method name and first argument if no method def parentheses are used. ([@thomasbrus][])
 * [#5819](https://github.com/bbatsov/rubocop/issues/5819): Fix `Rails/SaveBang` when using negated if. ([@Edouard-chin][])
 * [#5286](https://github.com/bbatsov/rubocop/issues/5286): Fix `Lint/SafeNavigationChain` not detecting chained operators after block. ([@Darhazer][])
 * Fix bug where `Lint/SafeNavigationConsistency` registers multiple offenses for the same method call. ([@rrosenblum][])
@@ -3351,3 +3352,4 @@
 [@PointlessOne]: https://github.com/PointlessOne
 [@JacobEvelyn]: https://github.com/JacobEvelyn
 [@shanecav84]: https://github.com/shanecav84
+[@thomasbrus]: https://github.com/thomasbrus
