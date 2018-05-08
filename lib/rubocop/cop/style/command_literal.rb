@@ -95,7 +95,7 @@ module RuboCop
           return if contains_backtick?(node)
 
           replacement = if backtick_literal?(node)
-                          ['%x', ''].zip(preferred_delimiters).map(&:join)
+                          ['%x', ''].zip(preferred_delimiter).map(&:join)
                         else
                           %w[` `]
                         end
@@ -169,9 +169,21 @@ module RuboCop
           node.loc.begin.source == '`'
         end
 
-        def preferred_delimiters
+        def preferred_delimiter
+          (command_delimiter || default_delimiter).split(//)
+        end
+
+        def command_delimiter
+          preferred_delimiters_config['%x']
+        end
+
+        def default_delimiter
+          preferred_delimiters_config['default']
+        end
+
+        def preferred_delimiters_config
           config.for_cop('Style/PercentLiteralDelimiters') \
-            ['PreferredDelimiters']['%x'].split(//)
+            ['PreferredDelimiters']
         end
       end
     end
