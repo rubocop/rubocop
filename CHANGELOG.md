@@ -11,6 +11,7 @@
 * [#5821](https://github.com/bbatsov/rubocop/pull/5821): Support `AR::Migration#up_only` for `Rails/ReversibleMigration` cop. ([@koic][])
 * [#5800](https://github.com/bbatsov/rubocop/issues/5800): Don't show a stracktrace for invalid command-line params. ([@shanecav84][])
 * [#5845](https://github.com/bbatsov/rubocop/pull/5845): Add new `Lint/ErbNewArguments` cop. ([@koic][])
+* [#5871](https://github.com/bbatsov/rubocop/pull/5871): Add new `Lint/SplatKeywordArguments` cop. ([@koic][])
 
 ### Bug fixes
 
