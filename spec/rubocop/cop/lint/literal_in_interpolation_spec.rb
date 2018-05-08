@@ -73,11 +73,12 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
 
   it_behaves_like('literal interpolation', 1)
   it_behaves_like('literal interpolation', -1)
-  it_behaves_like('literal interpolation', 1_123)
-  it_behaves_like('literal interpolation', 123_456_789_123_456_789)
-  it_behaves_like('literal interpolation', 1.2e-3)
-  it_behaves_like('literal interpolation', 0xaabb)
-  it_behaves_like('literal interpolation', 0o377)
+  it_behaves_like('literal interpolation', '1_123', '1123')
+  it_behaves_like('literal interpolation',
+                  '123_456_789_123_456_789', '123456789123456789')
+  it_behaves_like('literal interpolation', '1.2e-3', '0.0012')
+  it_behaves_like('literal interpolation', '0xaabb', '43707')
+  it_behaves_like('literal interpolation', '0o377', '255')
   it_behaves_like('literal interpolation', 2.0)
   it_behaves_like('literal interpolation', '[]', '[]')
   it_behaves_like('literal interpolation', '["a", "b"]', '[\"a\", \"b\"]')
