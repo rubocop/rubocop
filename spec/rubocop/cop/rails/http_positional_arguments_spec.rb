@@ -181,7 +181,7 @@ RSpec.describe RuboCop::Cop::Rails::HttpPositionalArguments do
       expect(new_source).to eq('get "/auth/linkedin/callback"')
     end
 
-    it 'does not add headers keyword when env or headers are used' do
+    it 'does not add session keyword when session is not used' do
       source = 'get some_path(profile.id), {},'
       source += " 'HTTP_REFERER' => p_url(p.id).to_s"
       new_source = autocorrect_source(source)
@@ -470,12 +470,12 @@ RSpec.describe RuboCop::Cop::Rails::HttpPositionalArguments do
       expect(new_source).to eq('get "/auth/linkedin/callback"')
     end
 
-    it 'does add headers keyword when env or headers are used' do
+    it 'does add session keyword when session is used' do
       source = 'get some_path(profile.id), {},'
       source += " 'HTTP_REFERER' => p_url(p.id).to_s"
       new_source = autocorrect_source(source)
       output = 'get some_path(profile.id),'
-      output += " headers: { 'HTTP_REFERER' => p_url(p.id).to_s }"
+      output += " session: { 'HTTP_REFERER' => p_url(p.id).to_s }"
       expect(new_source).to eq(output)
     end
 
@@ -486,7 +486,7 @@ RSpec.describe RuboCop::Cop::Rails::HttpPositionalArguments do
       new_source = autocorrect_source(source)
       output = 'get some_path(profile.id), params:'
       output += ' { user_id: @user.id, profile_id: p.id },'
-      output += " headers: { 'HTTP_REFERER' => p_url(p.id).to_s }"
+      output += " session: { 'HTTP_REFERER' => p_url(p.id).to_s }"
       expect(new_source).to eq(output)
     end
 

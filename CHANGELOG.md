@@ -26,6 +26,7 @@
 * [#5809](https://github.com/bbatsov/rubocop/issues/5809): Fix exception `Lint/PercentStringArray` and `Lint/PercentSymbolArray` when the inspected file is binary encoded. ([@akhramov][])
 * [#5840](https://github.com/bbatsov/rubocop/issues/5840): Do not register an offense for methods that `nil` responds to in `Lint/SafeNavigationConsistency`. ([@rrosenblum][])
 * [#5862](https://github.com/bbatsov/rubocop/issues/5862): Fix an incorrect auto-correct for `Lint/LiteralInInterpolation` if contains numbers. ([@koic][])
+* Fix auto-correction of `Rails/HttpPositionalArgumnets` to use `session` instead of `header`. ([@rrosenblum][])
 
 ### Changes
 
