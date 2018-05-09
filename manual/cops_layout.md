@@ -1046,12 +1046,12 @@ Enabled | Yes
 This cop checks whether method definitions are
 separated by one empty line.
 
-`NumberOfEmptyLines` can be and integer (e.g. 1 by default) or
-an array (e.g. [1, 2]) to specificy a minimum and a maximum of
-empty lines.
+`NumberOfEmptyLines` can be an integer (default is 1) or
+an array (e.g. [1, 2]) to specify a minimum and maximum
+number of empty lines permitted.
 
-`AllowAdjacentOneLineDefs` can be used to configure is adjacent
-one line methods definitions are an offense
+`AllowAdjacentOneLineDefs` configures whether adjacent
+one-line method definitions are considered an offense.
 
 ### Examples
 
