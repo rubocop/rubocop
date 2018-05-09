@@ -51,7 +51,7 @@ module RuboCop
         PATTERN
 
         def_node_matcher :create_table_with_timestamps_proc?, <<-PATTERN
-          (send nil? :create_table (sym _) (block-pass (sym :timestamps)))
+          (send nil? :create_table (sym _) ... (block-pass (sym :timestamps)))
         PATTERN
 
         def_node_search :timestamps_included?, <<-PATTERN
