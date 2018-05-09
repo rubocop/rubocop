@@ -128,7 +128,8 @@ module RuboCop
 
     def to_inspect?(file, hidden_files, base_dir_config)
       return false if base_dir_config.file_to_exclude?(file)
-      return true if !hidden_files.include?(file) && ruby_file?(file)
+      return true if !hidden_files.include?(file) && ruby_file?(file) &&
+                     !base_dir_config.include_only_explicitly?
       base_dir_config.file_to_include?(file)
     end
 
