@@ -106,10 +106,6 @@ module RuboCop
       comment_lines.include?(source_range.line)
     end
 
-    def comment_on_line?(line)
-      comments.any? { |c| c.loc.line == line }
-    end
-
     def comments_before_line(line)
       comments.select { |c| c.location.line <= line }
     end
