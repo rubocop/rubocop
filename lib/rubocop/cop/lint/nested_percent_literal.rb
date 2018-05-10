@@ -38,14 +38,6 @@ module RuboCop
 
         private
 
-        def str_content(node)
-          if node.str_type?
-            node.children[0]
-          else
-            node.children.map { |c| str_content(c) }.join
-          end
-        end
-
         def contains_percent_literals?(node)
           node.each_child_node.any? do |child|
             literal = child.children.first.to_s.scrub
