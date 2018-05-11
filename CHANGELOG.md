@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#5881](https://github.com/bbatsov/rubocop/pull/5881): Add new `Rails/BulkChangeTable` cop. ([@wata727][])
+
 ### Bug fixes
 
 * [#5897](https://github.com/bbatsov/rubocop/issues/5897): Fix `Style/SymbolArray` and `Style/WordArray` not working on arrays of size 1. ([@TikiTDO][])

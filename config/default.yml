@@ -1668,6 +1668,14 @@ Rails/Blank:
   # Convert usages of `unless present?` to `if blank?`
   UnlessPresent: true
 
+Rails/BulkChangeTable:
+  Database: null
+  SupportedDatabases:
+    - mysql
+    - postgresql
+  Include:
+    - db/migrate/*.rb
+
 Rails/CreateTableWithTimestamps:
   Include:
     - db/migrate/*.rb
