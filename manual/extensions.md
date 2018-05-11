@@ -24,6 +24,10 @@ starting with a `.` are resolved relative to `.rubocop.yml`.
 You can configure the custom cops in your `.rubocop.yml` just like any
 other cop.
 
+#### Writing your own Cops
+
+See [development](development.md).
+
 #### Known Custom Cops
 
 * [rubocop-rspec](https://github.com/nevir/rubocop-rspec) -
