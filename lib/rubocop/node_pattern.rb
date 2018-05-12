@@ -74,7 +74,7 @@ module RuboCop
   # You can nest arbitrarily deep:
   #
   #     # matches node parsed from 'Const = Class.new' or 'Const = Module.new':
-  #     '(casgn nil? const (send (const nil? {:Class :Module}) :new)))'
+  #     '(casgn nil? :Const (send (const nil? {:Class :Module}) :new))'
   #     # matches a node parsed from an 'if', with a '==' comparison,
   #     # and no 'else' branch:
   #     '(if (send _ :== _) _ nil?)'
