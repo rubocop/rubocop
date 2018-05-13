@@ -91,6 +91,8 @@ task generate_cops_documentation: :yard_for_generate_documentation do
       format_table_value(pars[supported_style_name])
     when 'IndentationWidth'
       'Integer'
+    when 'Database'
+      format_table_value(pars['SupportedDatabases'])
     else
       case pars[name]
       when String
