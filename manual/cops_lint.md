@@ -2042,6 +2042,9 @@ Enabled | Yes
 This cop detects instances of rubocop:enable comments that can be
 removed.
 
+When comment enables all cops at once `rubocop:enable all`
+that cop checks whether any cop was actually enabled.
+
 ### Examples
 
 ```ruby
@@ -2051,6 +2054,20 @@ foo = 1
 
 # good
 foo = 1
+```
+```ruby
+# bad
+# rubocop:disable Metrics/LineLength
+baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrr
+# rubocop:enable Metrics/LineLength
+baz
+# rubocop:enable all
+
+# good
+# rubocop:disable Metrics/LineLength
+baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrr
+# rubocop:enable all
+baz
 ```
 
 ## Lint/UnneededRequireStatement

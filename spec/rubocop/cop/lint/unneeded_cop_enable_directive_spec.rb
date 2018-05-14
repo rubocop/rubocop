@@ -45,6 +45,26 @@ RSpec.describe RuboCop::Cop::Lint::UnneededCopEnableDirective do
     RUBY
   end
 
+  context 'all switch' do
+    it 'registers offense for unnecessary enable all' do
+      expect_offense(<<-RUBY.strip_indent)
+      foo
+      # rubocop:enable all
+                       ^^^ Unnecessary enabling of all cops.
+      RUBY
+    end
+
+    context 'when at least one cop was disabled' do
+      it 'does not register offence' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+        # rubocop:disable Metrics/LineLength
+        foooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+        # rubocop:enable all
+        RUBY
+      end
+    end
+  end
+
   context 'autocorrection' do
     context 'when entire comment unnecessarily enables' do
       let(:source) do
