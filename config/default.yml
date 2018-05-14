@@ -788,6 +788,7 @@ Naming/UncommunicativeMethodParamName:
     - 'on'
     - in
     - at
+    - _
   # Blacklisted names that will register an offense
   ForbiddenNames: []
 
