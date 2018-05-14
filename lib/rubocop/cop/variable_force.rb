@@ -55,27 +55,6 @@ module RuboCop
 
       SEND_TYPE = :send
 
-      handlers = {}
-
-      handlers[VARIABLE_ASSIGNMENT_TYPE] = :process_variable_assignment
-      handlers[REGEXP_NAMED_CAPTURE_TYPE] = :process_regexp_named_captures
-      handlers[MULTIPLE_ASSIGNMENT_TYPE] = :process_variable_multiple_assignment
-      handlers[VARIABLE_REFERENCE_TYPE] = :process_variable_referencing
-      handlers[RESCUE_TYPE] = :process_rescue
-      handlers[ZERO_ARITY_SUPER_TYPE] = :process_zero_arity_super
-      handlers[SEND_TYPE] = :process_send
-
-      ARGUMENT_DECLARATION_TYPES.each do |type|
-        handlers[type] = :process_variable_declaration
-      end
-      OPERATOR_ASSIGNMENT_TYPES.each do |type|
-        handlers[type] = :process_variable_operator_assignment
-      end
-      LOOP_TYPES.each { |type| handlers[type] = :process_loop }
-      SCOPE_TYPES.each { |type| handlers[type] = :process_scope }
-
-      HANDLERS = handlers.freeze
-
       VariableReference = Struct.new(:name) do
         def assignment?
           false
@@ -103,8 +82,9 @@ module RuboCop
       end
 
       def process_node(node)
-        retval = send HANDLERS[node.type], node if HANDLERS.key? node.type
-        process_children(node) unless retval == :SKIP_CHILDREN
+        method_name = node_handler_method_name(node)
+        retval = send(method_name, node) if method_name
+        process_children(node) unless retval == :skip_children
       end
 
       private
@@ -124,8 +104,37 @@ module RuboCop
       end
 
       def skip_children!
-        :SKIP_CHILDREN
+        :skip_children
       end
+
+      # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
+      def node_handler_method_name(node)
+        case node.type
+        when VARIABLE_ASSIGNMENT_TYPE
+          :process_variable_assignment
+        when REGEXP_NAMED_CAPTURE_TYPE
+          :process_regexp_named_captures
+        when MULTIPLE_ASSIGNMENT_TYPE
+          :process_variable_multiple_assignment
+        when VARIABLE_REFERENCE_TYPE
+          :process_variable_referencing
+        when RESCUE_TYPE
+          :process_rescue
+        when ZERO_ARITY_SUPER_TYPE
+          :process_zero_arity_super
+        when SEND_TYPE
+          :process_send
+        when *ARGUMENT_DECLARATION_TYPES
+          :process_variable_declaration
+        when *OPERATOR_ASSIGNMENT_TYPES
+          :process_variable_operator_assignment
+        when *LOOP_TYPES
+          :process_loop
+        when *SCOPE_TYPES
+          :process_scope
+        end
+      end
+      # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity
 
       def process_variable_declaration(node)
         variable_name = node.children.first
