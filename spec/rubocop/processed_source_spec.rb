@@ -255,18 +255,6 @@ RSpec.describe RuboCop::ProcessedSource do
       end
     end
 
-    describe '#comment_on_line?' do
-      it 'returns true when passed line number with comment' do
-        expect(processed_source.comment_on_line?(1)).to be true
-        expect(processed_source.comment_on_line?(2)).to be true
-        expect(processed_source.comment_on_line?(3)).to be true
-      end
-
-      it 'returns false when passed line number without comment' do
-        expect(processed_source.comment_on_line?(4)).to be false
-      end
-    end
-
     describe '#commented?' do
       let(:source) { <<-RUBY.strip_indent }
         # comment

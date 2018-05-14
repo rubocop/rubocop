@@ -126,13 +126,10 @@ module RuboCop
           end
         end
 
-        # rubocop:disable Metrics/AbcSize
         def remove_braces_with_whitespace(corrector, node, space)
           right_brace_and_space = right_brace_and_space(node.loc.end, space)
 
-          if processed_source.comment_on_line?(right_brace_and_space.line)
-            remove_braces(corrector, node)
-          elsif node.multiline?
+          if node.multiline?
             remove_braces_with_range(corrector,
                                      left_whole_line_range(node.loc.begin),
                                      right_whole_line_range(node.loc.end))
@@ -143,7 +140,6 @@ module RuboCop
                                      right_brace_and_space)
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         def remove_braces_with_range(corrector, left_range, right_range)
           corrector.remove(left_range)
@@ -182,11 +178,6 @@ module RuboCop
               whitespace: space[:right]
             )
           range_with_surrounding_comma(brace_and_space, :left)
-        end
-
-        def remove_braces(corrector, node)
-          corrector.remove(node.loc.begin)
-          corrector.remove(node.loc.end)
         end
 
         def add_braces(corrector, node)

@@ -12,6 +12,7 @@
 * [#5800](https://github.com/bbatsov/rubocop/issues/5800): Don't show a stracktrace for invalid command-line params. ([@shanecav84][])
 * [#5845](https://github.com/bbatsov/rubocop/pull/5845): Add new `Lint/ErbNewArguments` cop. ([@koic][])
 * [#5871](https://github.com/bbatsov/rubocop/pull/5871): Add new `Lint/SplatKeywordArguments` cop. ([@koic][])
+* [#4247](https://github.com/bbatsov/rubocop/issues/4247): Remove hard-coded file patterns and use only `Include`, `Exclude` and the new `RubyInterpreters` parameters for file selection. ([@jonas054][])
 
 ### Bug fixes
 

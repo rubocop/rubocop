@@ -88,6 +88,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               Exclude:
                 - Gemfile
               Include:
+                - "**/*.rb"
+                - "**/*.rabl"
                 - "**/*.rabl2"
           YAML
         end
