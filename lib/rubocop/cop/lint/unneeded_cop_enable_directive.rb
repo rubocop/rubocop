@@ -26,6 +26,7 @@ module RuboCop
         def investigate(processed_source)
           return if processed_source.blank?
           offenses = processed_source.comment_config.extra_enabled_comments
+          offenses.reject! { |comment, _| all_enabled?(comment) }
           offenses.each do |comment, name|
             add_offense(
               [comment, name],
@@ -89,6 +90,10 @@ module RuboCop
           else
             range_class.new(buffer, start, comment.loc.expression.end_pos)
           end
+        end
+
+        def all_enabled?(comment)
+          comment.text =~ /rubocop\s*:\s*enable\s+all\b/
         end
       end
     end

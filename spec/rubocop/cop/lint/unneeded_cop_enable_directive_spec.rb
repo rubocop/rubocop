@@ -45,6 +45,14 @@ RSpec.describe RuboCop::Cop::Lint::UnneededCopEnableDirective do
     RUBY
   end
 
+  it 'raises no errors when named cop is disabled by name and enabled by all' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      # rubocop:disable Metrics/LineLength
+      fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo = barrrrrrrrrrrrrrrrrrrrrrrrrr
+      # rubocop:enable all
+    RUBY
+  end
+
   context 'autocorrection' do
     context 'when entire comment unnecessarily enables' do
       let(:source) do
