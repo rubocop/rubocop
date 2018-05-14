@@ -7,8 +7,15 @@ inherit_from:
 
 # Common configuration.
 AllCops:
+  RubyInterpreters:
+    - ruby
+    - macruby
+    - rake
+    - jruby
+    - rbx
   # Include common Ruby source files.
   Include:
+    - '**/*.rb'
     - '**/*.arb'
     - '**/*.axlsx'
     - '**/*.builder'
@@ -1261,6 +1268,7 @@ Style/OptionHash:
 # Allow safe assignment in conditions.
 Style/ParenthesesAroundCondition:
   AllowSafeAssignment: true
+  AllowInMultilineConditions: false
 
 Style/PercentLiteralDelimiters:
   # Specify the default preferred delimiter for all types with the 'default' key
@@ -1333,6 +1341,7 @@ Style/SafeNavigation:
     - blank?
     - presence
     - try
+    - try!
 
 Style/Semicolon:
   # Allow `;` to separate several expressions on the same line.
@@ -1599,6 +1608,15 @@ Lint/SafeNavigationChain:
     - blank?
     - presence
     - try
+    - try!
+
+Lint/SafeNavigationConsistency:
+  Whitelist:
+    - present?
+    - blank?
+    - presence
+    - try
+    - try!
 
 # Checks for shadowed arguments
 Lint/ShadowedArgument:
@@ -1641,6 +1659,14 @@ Rails/ActionFilter:
 Rails/AssertNot:
   Include:
     - '**/test/**/*'
+
+Rails/Blank:
+  # Convert usages of `nil? || empty?` to `blank?`
+  NilOrEmpty: true
+  # Convert usages of `!present?` to `blank?`
+  NotPresent: true
+  # Convert usages of `unless present?` to `if blank?`
+  UnlessPresent: true
 
 Rails/CreateTableWithTimestamps:
   Include:
@@ -1719,6 +1745,14 @@ Rails/Output:
     - config/**/*.rb
     - db/**/*.rb
     - lib/**/*.rb
+
+Rails/Present:
+  # Convert usages of `!nil? && !empty?` to `present?`
+  NotNilAndNotEmpty: true
+  # Convert usages of `!blank?` to `present?`
+  NotBlank: true
+  # Convert usages of `unless blank?` to `if present?`
+  UnlessBlank: true
 
 Rails/ReadWriteAttribute:
   Include:

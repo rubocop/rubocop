@@ -7,7 +7,7 @@ require 'etc'
 module RuboCop
   # Provides functionality for caching rubocop runs.
   class ResultCache
-    NON_CHANGING = %i[color format formatters out debug fail_level
+    NON_CHANGING = %i[color format formatters out debug fail_level auto_correct
                       cache fail_fast stdin parallel].freeze
 
     # Remove old files so that the cache doesn't grow too big. When the
@@ -84,6 +84,7 @@ module RuboCop
                         relevant_options_digest(options),
                         file_checksum(file, config_store))
       @cached_data = CachedData.new(file)
+      @pwd = Dir.pwd
     end
 
     def valid?
@@ -132,9 +133,13 @@ module RuboCop
     end
 
     def file_checksum(file, config_store)
-      Digest::MD5.hexdigest(Dir.pwd + file + IO.binread(file) +
-                            File.stat(file).mode.to_s +
-                            config_store.for(file).to_s)
+      digester = Digest::MD5.new
+      mode = File.stat(file).mode
+      digester.update(
+        "#{@pwd}#{file}#{mode}#{config_store.for(file).signature}"
+      )
+      digester.file(file)
+      digester.hexdigest
     rescue Errno::ENOENT
       # Spurious files that come and go should not cause a crash, at least not
       # here.

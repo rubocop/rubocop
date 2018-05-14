@@ -88,6 +88,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               Exclude:
                 - Gemfile
               Include:
+                - "**/*.rb"
+                - "**/*.rabl"
                 - "**/*.rabl2"
           YAML
         end
@@ -1292,6 +1294,18 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       ensure
         $stdin = STDIN
       end
+    end
+  end
+
+  describe 'option is invalid' do
+    it 'suggests to use the --help flag' do
+      invalid_option = '--invalid-option'
+
+      expect(cli.run([invalid_option])).to eq(2)
+      expect($stderr.string).to eq(<<-RESULT.strip_indent)
+        invalid option: #{invalid_option}
+        For usage information, use --help
+      RESULT
     end
   end
 end

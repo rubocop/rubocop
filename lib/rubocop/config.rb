@@ -108,7 +108,10 @@ module RuboCop
       'Performance/HashEachMethods' =>
         'The `Performance/HashEachMethods` cop has been removed ' \
           'since it no longer provides performance benefits in ' \
-          'modern rubies.'
+          'modern rubies.',
+      'Style/MethodMissing' =>
+        'The `Style/MethodMissing` cop has been split into ' \
+          '`Style/MethodMissingSuper` and `Style/MissingRespondToMissing`.'
     }.freeze
 
     OBSOLETE_PARAMETERS = [
@@ -286,6 +289,10 @@ module RuboCop
 
     def to_s
       @to_s ||= @hash.to_s
+    end
+
+    def signature
+      @signature ||= Digest::MD5.hexdigest(to_s)
     end
 
     def make_excludes_absolute

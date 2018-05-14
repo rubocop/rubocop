@@ -384,6 +384,58 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
   include_examples('in scope', 'dynamic module', 'A = Module.new do')
   include_examples('in scope', 'class_eval block', 'A.class_eval do')
 
+  %w[class module].each do |type|
+    it 'registers an offense for duplicate class methods with named receiver ' \
+       "in #{type}" do
+      inspect_source(["#{type} A",
+                      '  def A.some_method',
+                      '    implement 1',
+                      '  end',
+                      '  def A.some_method',
+                      '    implement 2',
+                      '  end',
+                      'end'], 'src.rb')
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages).to eq(
+        ['Method `A.some_method` is defined at both src.rb:2 and src.rb:5.']
+      )
+    end
+
+    it 'registers an offense for duplicate class methods with `self` and ' \
+       "named receiver in #{type}" do
+      inspect_source(["#{type} A",
+                      '  def self.some_method',
+                      '    implement 1',
+                      '  end',
+                      '  def A.some_method',
+                      '    implement 2',
+                      '  end',
+                      'end'], 'src.rb')
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages).to eq(
+        ['Method `A.some_method` is defined at both src.rb:2 and src.rb:5.']
+      )
+    end
+
+    it 'registers an offense for duplicate class methods with `<<` and named ' \
+       "receiver in #{type}" do
+      inspect_source(["#{type} A",
+                      '  class << self',
+                      '    def some_method',
+                      '      implement 1',
+                      '    end',
+                      '  end',
+                      '  def A.some_method',
+                      '    implement 2',
+                      '  end',
+                      'end'], 'test.rb')
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages).to eq(
+        ['Method `A.some_method` is defined at both test.rb:3 and test.rb:7.']
+      )
+    end
+  end
+
   it 'registers an offense for duplicate methods at top level' do
     inspect_source(['  def some_method',
                     '    implement 1',

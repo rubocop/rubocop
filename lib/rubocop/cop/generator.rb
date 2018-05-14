@@ -98,8 +98,9 @@ module RuboCop
         end
       SPEC
 
-      def initialize(name, output: $stdout)
+      def initialize(name, github_user, output: $stdout)
         @badge = Badge.parse(name)
+        @github_user = github_user
         @output = output
         return if badge.qualified?
 
@@ -145,7 +146,7 @@ module RuboCop
         <<-TODO.strip_indent
           Do 3 steps:
             1. Add an entry to the "New features" section in CHANGELOG.md,
-               e.g. "Add new `#{badge}` cop. ([@your_id][])"
+               e.g. "Add new `#{badge}` cop. ([@#{github_user}][])"
             2. Modify the description of #{badge} in config/enabled.yml
             3. Implement your new cop in the generated file!
         TODO
@@ -153,7 +154,7 @@ module RuboCop
 
       private
 
-      attr_reader :badge, :output
+      attr_reader :badge, :github_user, :output
 
       def write_unless_file_exists(path, contents)
         if File.exist?(path)

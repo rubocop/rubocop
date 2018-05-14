@@ -79,6 +79,10 @@ shared_context 'ruby 2.5', :ruby25 do
   let(:ruby_version) { 2.5 }
 end
 
+shared_context 'ruby 2.6', :ruby26 do
+  let(:ruby_version) { 2.6 }
+end
+
 shared_context 'with Rails', :enabled_rails do
   let(:enabled_rails) { true }
 end

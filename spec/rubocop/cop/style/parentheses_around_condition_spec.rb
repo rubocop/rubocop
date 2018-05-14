@@ -175,4 +175,44 @@ RSpec.describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
       expect(cop.offenses.size).to eq(1)
     end
   end
+
+  context 'parentheses in multiline conditions are allowed' do
+    let(:cop_config) { { 'AllowInMultilineConditions' => true } }
+
+    it 'accepts parentheses around multiline condition' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        if (
+          x > 3 &&
+          x < 10
+        )
+          return true
+        end
+      RUBY
+    end
+
+    it 'registers an offence for paranthesses in single line condition' do
+      expect_offense(<<-RUBY.strip_indent)
+        if (x > 3 && x < 10)
+           ^^^^^^^^^^^^^^^^^ Don't use parentheses around the condition of an `if`.
+          return true
+        end
+      RUBY
+    end
+  end
+
+  context 'parentheses in multiline conditions are not allowed' do
+    let(:cop_config) { { 'AllowInMultilineConditions' => false } }
+
+    it 'registers an offense for parentheses around multiline condition' do
+      expect_offense(<<-RUBY.strip_indent)
+        if (
+           ^ Don't use parentheses around the condition of an `if`.
+          x > 3 &&
+          x < 10
+        )
+          return true
+        end
+      RUBY
+    end
+  end
 end

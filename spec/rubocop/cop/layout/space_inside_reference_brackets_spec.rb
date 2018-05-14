@@ -109,6 +109,30 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       RUBY
     end
 
+    it 'registers an offense when a reference bracket with a leading whitespace
+        is assigned by another reference bracket' do
+      expect_offense(<<-RUBY.strip_indent)
+        a[ "foo"] = b["something"]
+          ^ Do not use space inside reference brackets.
+      RUBY
+    end
+
+    it 'registers an offense when a reference bracket with a trailing whitespace
+        is assigned by another reference bracket' do
+      expect_offense(<<-RUBY.strip_indent)
+        a["foo" ] = b["something"]
+               ^ Do not use space inside reference brackets.
+      RUBY
+    end
+
+    it 'registers an offense when a reference bracket is assigned by another
+        reference bracket with trailing whitespace' do
+      expect_offense(<<-RUBY.strip_indent)
+        a["foo"] = b["something" ]
+                                ^ Do not use space inside reference brackets.
+      RUBY
+    end
+
     it 'accepts square brackets as method name' do
       expect_no_offenses(<<-RUBY.strip_indent)
         def Vector.[](*array)
@@ -246,6 +270,30 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
         c[ "foo" ] = "qux"
         d[ :bar ] = var
         e[ ] = baz
+      RUBY
+    end
+
+    it 'registers an offense when a reference bracket with no leading whitespace
+        is assigned by another reference bracket' do
+      expect_offense(<<-RUBY.strip_indent)
+        a["foo" ] = b[ "something" ]
+         ^ Use space inside reference brackets.
+      RUBY
+    end
+
+    it 'registers an offense when a reference bracket with no trailing
+        whitespace is assigned by another reference bracket' do
+      expect_offense(<<-RUBY.strip_indent)
+        a[ "foo"] = b[ "something" ]
+                ^ Use space inside reference brackets.
+      RUBY
+    end
+
+    it 'registers an offense when a reference bracket is assigned by another
+        reference bracket with no trailing whitespace' do
+      expect_offense(<<-RUBY.strip_indent)
+        a[ "foo" ] = b[ "something"]
+                                   ^ Use space inside reference brackets.
       RUBY
     end
 

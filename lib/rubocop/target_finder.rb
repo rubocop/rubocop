@@ -3,61 +3,6 @@
 require 'set'
 
 module RuboCop
-  RUBY_EXTENSIONS = %w[.rb
-                       .arb
-                       .axlsx
-                       .builder
-                       .fcgi
-                       .gemfile
-                       .gemspec
-                       .god
-                       .jb
-                       .jbuilder
-                       .mspec
-                       .opal
-                       .pluginspec
-                       .podspec
-                       .rabl
-                       .rake
-                       .rbuild
-                       .rbw
-                       .rbx
-                       .ru
-                       .ruby
-                       .spec
-                       .thor
-                       .watchr].freeze
-
-  RUBY_INTERPRETERS = %w[ruby
-                         macruby
-                         rake
-                         jruby
-                         rbx].freeze
-
-  RUBY_FILENAMES = %w[.irbrc
-                      .pryrc
-                      Appraisals
-                      Berksfile
-                      Brewfile
-                      Buildfile
-                      Capfile
-                      Cheffile
-                      Dangerfile
-                      Deliverfile
-                      Fastfile
-                      Gemfile
-                      Guardfile
-                      Jarfile
-                      Mavenfile
-                      Podfile
-                      Puppetfile
-                      Rakefile
-                      Snapfile
-                      Thorfile
-                      Vagabondfile
-                      Vagrantfile
-                      buildfile].freeze
-
   # This class finds target files to inspect by scanning the directory tree
   # and picking ruby files.
   class TargetFinder
@@ -169,30 +114,65 @@ module RuboCop
     end
 
     def ruby_extension?(file)
-      RUBY_EXTENSIONS.include?(File.extname(file))
+      ruby_extensions.include?(File.extname(file))
+    end
+
+    def ruby_extensions
+      ext_patterns = all_cops_include.select do |pattern|
+        pattern.start_with?('**/*.')
+      end
+      ext_patterns.map { |pattern| pattern.sub('**/*', '') }
     end
 
     def ruby_filename?(file)
-      RUBY_FILENAMES.include?(File.basename(file))
+      ruby_filenames.include?(File.basename(file))
+    end
+
+    def ruby_filenames
+      file_patterns = all_cops_include.reject do |pattern|
+        pattern.start_with?('**/*.')
+      end
+      file_patterns.map { |pattern| pattern.sub('**/', '') }
+    end
+
+    def all_cops_include
+      @config_store.for('.').for_all_cops['Include'].map(&:to_s)
     end
 
     def ruby_executable?(file)
       return false unless File.extname(file).empty? && File.exist?(file)
       first_line = File.open(file, &:readline)
-      !(first_line =~ /#!.*(#{RUBY_INTERPRETERS.join('|')})/).nil?
+      !(first_line =~ /#!.*(#{ruby_interpreters(file).join('|')})/).nil?
     rescue EOFError, ArgumentError => e
       warn "Unprocessable file #{file}: #{e.class}, #{e.message}" if debug?
       false
     end
 
+    def ruby_interpreters(file)
+      @config_store.for(file).for_all_cops['RubyInterpreters']
+    end
+
+    def stdin?
+      @options.key?(:stdin)
+    end
+
     def ruby_file?(file)
-      ruby_extension?(file) || ruby_filename?(file) || ruby_executable?(file)
+      stdin? || ruby_extension?(file) || ruby_filename?(file) ||
+        ruby_executable?(file)
+    end
+
+    def configured_include?(file)
+      @config_store.for('.').file_to_include?(file)
+    end
+
+    def included_file?(file)
+      ruby_file?(file) || configured_include?(file)
     end
 
     def process_explicit_path(path)
       files = path.include?('*') ? Dir[path] : [path]
 
-      files.select! { |file| ruby_file?(file) }
+      files.select! { |file| included_file?(file) }
 
       return files unless force_exclusion?
 

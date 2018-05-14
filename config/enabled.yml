@@ -513,6 +513,10 @@ Lint/EnsureReturn:
   StyleGuide: '#no-return-ensure'
   Enabled: true
 
+Lint/ErbNewArguments:
+  Description: 'Use `:trim_mode` and `:eoutvar` keyword arguments to `ERB.new`.'
+  Enabled: true
+
 Lint/FloatOutOfRange:
   Description: >-
                  Catches floating-point literals too large or small for Ruby to
@@ -679,6 +683,10 @@ Lint/ShadowingOuterLocalVariable:
   Description: >-
                  Do not use the same name as outer local variable
                  for block arguments or block local variables.
+  Enabled: true
+
+Lint/SplatKeywordArguments:
+  Description: 'Checks for use of splat keyword arguments as a single Hash.'
   Enabled: true
 
 Lint/StringConversionInInterpolation:
@@ -983,6 +991,11 @@ Performance/FlatMap:
   # This can be dangerous since `flat_map` will only flatten 1 level, and
   # `flatten` without any parameters can flatten multiple levels.
 
+Performance/InefficientHashSearch:
+  Description: 'Use `key?` or `value?` instead of `keys.include?` or `values.include?`'
+  Reference: 'https://github.com/JuanitoFatas/fast-ruby#hashkey-instead-of-hashkeysinclude-code'
+  Enabled: true
+
 Performance/LstripRstrip:
   Description: 'Use `strip` instead of `lstrip.rstrip`.'
   Enabled: true
@@ -1106,14 +1119,8 @@ Rails/AssertNot:
   Enabled: true
 
 Rails/Blank:
-  Description: 'Enforce using `blank?` and `present?`.'
+  Description: 'Enforces use of `blank?`.'
   Enabled: true
-  # Convert checks for `nil` or `empty?` to `blank?`
-  NilOrEmpty: true
-  # Convert usages of not `present?` to `blank?`
-  NotPresent: true
-  # Convert usages of `unless` `present?` to `if` `blank?`
-  UnlessPresent: true
 
 Rails/CreateTableWithTimestamps:
   Description: >-
@@ -1220,14 +1227,8 @@ Rails/Presence:
   Enabled: true
 
 Rails/Present:
-  Description: 'Enforce using `blank?` and `present?`.'
+  Description: 'Enforces use of `present?`.'
   Enabled: true
-  NotNilAndNotEmpty: true
-  # Convert checks for not `nil` and not `empty?` to `present?`
-  NotBlank: true
-  # Convert usages of not `blank?` to `present?`
-  UnlessBlank: true
-  # Convert usages of `unless` `blank?` to `if` `present?`
 
 Rails/ReadWriteAttribute:
   Description: >-
@@ -1644,8 +1645,8 @@ Style/MethodDefParentheses:
   StyleGuide: '#method-parens'
   Enabled: true
 
-Style/MethodMissing:
-  Description: 'Avoid using `method_missing`.'
+Style/MethodMissingSuper:
+  Description: Checks for `method_missing` to call `super`.
   StyleGuide: '#no-method-missing'
   Enabled: true
 
@@ -1653,6 +1654,13 @@ Style/MinMax:
   Description: >-
                  Use `Enumerable#minmax` instead of `Enumerable#min`
                  and `Enumerable#max` in conjunction.'
+  Enabled: true
+
+Style/MissingRespondToMissing:
+  Description: >-
+                  Checks if `method_missing` is implemented
+                  without implementing `respond_to_missing`.
+  StyleGuide: '#no-method-missing'
   Enabled: true
 
 Style/MixinGrouping:

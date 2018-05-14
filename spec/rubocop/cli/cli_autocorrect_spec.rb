@@ -452,6 +452,35 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(IO.read('example.rb')).to eq(corrected)
   end
 
+  describe 'caching' do
+    let(:cache) { double('cache', 'valid?' => true, 'load' => cached_offenses) }
+    let(:source) { %(puts "Hi"\n) }
+
+    before do
+      allow(RuboCop::ResultCache).to receive(:new) { cache }
+      create_file('example.rb', source)
+    end
+
+    context 'with no offenses in the cache' do
+      let(:cached_offenses) { [] }
+
+      it "doesn't correct offenses" do
+        expect(cli.run(['--auto-correct'])).to eq(0)
+        expect(IO.read('example.rb')).to eq(source)
+      end
+    end
+
+    context 'with an offense in the cache' do
+      let(:cached_offenses) { ['Style/StringLiterals: ...'] }
+
+      it 'corrects offenses' do
+        allow(cache).to receive(:save)
+        expect(cli.run(['--auto-correct'])).to eq(0)
+        expect(IO.read('example.rb')).to eq("puts 'Hi'\n")
+      end
+    end
+  end
+
   %i[line_count_based semantic braces_for_chaining].each do |style|
     context "when BlockDelimiters has #{style} style" do
       it 'corrects SpaceBeforeBlockBraces, SpaceInsideBlockBraces offenses' do

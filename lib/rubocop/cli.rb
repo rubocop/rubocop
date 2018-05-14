@@ -50,6 +50,10 @@ module RuboCop
     rescue IncorrectCopNameError => e
       warn e.message
       STATUS_ERROR
+    rescue OptionParser::InvalidOption => e
+      warn e.message
+      warn 'For usage information, use --help'
+      STATUS_ERROR
     rescue StandardError, SyntaxError, LoadError => e
       warn e.message
       warn e.backtrace

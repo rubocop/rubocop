@@ -22,6 +22,23 @@ module RuboCop
       #   if x > 10
       #   elsif x < 3
       #   end
+      #
+      # @example AllowInMultilineConditions: false (default)
+      #   # bad
+      #   if (x > 10 &&
+      #      y > 10)
+      #   end
+      #
+      #   # good
+      #    if x > 10 &&
+      #       y > 10
+      #    end
+      #
+      # @example AllowInMultilineConditions: true
+      #   # good
+      #   if (x > 10 &&
+      #      y > 10)
+      #   end
       class ParenthesesAroundCondition < Cop
         include SafeAssignment
         include Parentheses
@@ -52,8 +69,7 @@ module RuboCop
 
           control_op_condition(cond) do |first_child|
             return if modifier_op?(first_child)
-            return if parens_required?(node.condition)
-            return if safe_assignment?(cond) && safe_assignment_allowed?
+            return if parens_allowed?(cond)
 
             add_offense(cond)
           end
@@ -70,6 +86,16 @@ module RuboCop
           kw = node.parent.keyword
           article = kw == 'while' ? 'a' : 'an'
           "Don't use parentheses around the condition of #{article} `#{kw}`."
+        end
+
+        def parens_allowed?(node)
+          parens_required?(node) ||
+            (safe_assignment?(node) && safe_assignment_allowed?) ||
+            (node.multiline? && allow_multiline_conditions?)
+        end
+
+        def allow_multiline_conditions?
+          cop_config['AllowInMultilineConditions']
         end
       end
     end

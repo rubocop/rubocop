@@ -42,13 +42,12 @@ RSpec.describe RuboCop::Cop::Style::MultilineBlockChain do
 
     it 'registers an offense for a chain where the second block is ' \
        'single-line' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         Thread.list.find_all { |t|
           t.alive?
         }.map { |thread| thread.object_id }
+        ^^^^^ Avoid multi-line chains of blocks.
       RUBY
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['}.map'])
     end
 
     it 'accepts a chain where the first block is single-line' do

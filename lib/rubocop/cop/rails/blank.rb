@@ -3,40 +3,46 @@
 module RuboCop
   module Cop
     module Rails
-      # This cops checks for code that can be changed to `blank?`.
-      # Settings:
-      #   NilOrEmpty: Convert checks for `nil` or `empty?` to `blank?`
-      #   NotPresent: Convert usages of not `present?` to `blank?`
-      #   UnlessPresent: Convert usages of `unless` `present?` to `blank?`
+      # This cop checks for code that can be written with simpler conditionals
+      # using `Object#blank?` defined by Active Support.
       #
-      # @example
-      #   # NilOrEmpty: true
-      #     # bad
-      #     foo.nil? || foo.empty?
-      #     foo == nil || foo.empty?
+      # @example NilOrEmpty: true (default)
+      #   # Converts usages of `nil? || empty?` to `blank?`
       #
-      #     # good
-      #     foo.blank?
+      #   # bad
+      #   foo.nil? || foo.empty?
+      #   foo == nil || foo.empty?
       #
-      #   # NotPresent: true
-      #     # bad
-      #     !foo.present?
+      #   # good
+      #   foo.blank?
       #
-      #     # good
-      #     foo.blank?
+      # @example NotPresent: true (default)
+      #   # Converts usages of `!present?` to `blank?`
       #
-      #   # UnlessPresent: true
-      #     # bad
-      #     something unless foo.present?
-      #     unless foo.present?
-      #       something
-      #     end
+      #   # bad
+      #   !foo.present?
       #
-      #     # good
-      #     something if foo.blank?
-      #     if foo.blank?
-      #       something
-      #     end
+      #   # good
+      #   foo.blank?
+      #
+      # @example UnlessPresent: true (default)
+      #   # Converts usages of `unless present?` to `if blank?`
+      #
+      #   # bad
+      #   something unless foo.present?
+      #
+      #   # good
+      #   something if foo.blank?
+      #
+      #   # bad
+      #   unless foo.present?
+      #     something
+      #   end
+      #
+      #   # good
+      #   if foo.blank?
+      #     something
+      #   end
       class Blank < Cop
         MSG_NIL_OR_EMPTY = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
         MSG_NOT_PRESENT = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze

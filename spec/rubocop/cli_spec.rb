@@ -970,6 +970,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         AllCops:
           Include:
             - example
+            - "**/*.rb"
             - "**/*.rake"
             - !ruby/regexp /regexp$/
             - .dot1/**/*
