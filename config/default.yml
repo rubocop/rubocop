@@ -7,8 +7,15 @@ inherit_from:
 
 # Common configuration.
 AllCops:
+  RubyInterpreters:
+    - ruby
+    - macruby
+    - rake
+    - jruby
+    - rbx
   # Include common Ruby source files.
   Include:
+    - '**/*.rb'
     - '**/*.arb'
     - '**/*.axlsx'
     - '**/*.builder'
@@ -361,6 +368,9 @@ Layout/FirstParameterIndentation:
     # The first parameter should always be indented one step more than the
     # preceding line.
     - consistent
+    # The first parameter should always be indented one level relative to the
+    # parent that is receiving the parameter
+    - consistent_relative_to_receiver
     # The first parameter should normally be indented one step more than the
     # preceding line, but if it's a parameter for a method call that is itself
     # a parameter in a method call, then the inner parameter should be indented

@@ -39,6 +39,30 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
     end
   end
 
+  describe 'when PercentLiteralDelimiters only has a default' do
+    let(:cop_config) { { 'EnforcedStyle' => 'percent_x' } }
+    let(:percent_literal_delimiters_config) do
+      { 'PreferredDelimiters' => { 'default' => '()' } }
+    end
+
+    it 'respects the configuration when auto-correcting' do
+      new_source = autocorrect_source('`ls`')
+      expect(new_source).to eq('%x(ls)')
+    end
+  end
+
+  describe 'when PercentLiteralDelimiters is configured and a default exists' do
+    let(:cop_config) { { 'EnforcedStyle' => 'percent_x' } }
+    let(:percent_literal_delimiters_config) do
+      { 'PreferredDelimiters' => { '%x' => '[]', 'default' => '()' } }
+    end
+
+    it 'ignores the default when auto-correcting and' do
+      new_source = autocorrect_source('`ls`')
+      expect(new_source).to eq('%x[ls]')
+    end
+  end
+
   describe 'heredoc commands' do
     let(:cop_config) { { 'EnforcedStyle' => 'backticks' } }
 

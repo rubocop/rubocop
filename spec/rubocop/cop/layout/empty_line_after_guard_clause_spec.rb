@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::EmptyLineAfterGuardClause do
+RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for guard clause not followed by empty line' do

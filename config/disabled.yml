@@ -5,6 +5,10 @@ Layout/ClassStructure:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#consistent-classes'
   Enabled: false
 
+Layout/EmptyLineAfterGuardClause:
+  Description: 'Add empty line after guard clause.'
+  Enabled: false
+
 Layout/FirstArrayElementLineBreak:
   Description: >-
                  Checks for a line break before the first element in a
@@ -67,10 +71,6 @@ Style/DocumentationMethod:
   Exclude:
     - 'spec/**/*'
     - 'test/**/*'
-
-Style/EmptyLineAfterGuardClause:
-  Description: 'Add empty line after guard clause.'
-  Enabled: false
 
 Style/ImplicitRuntimeError:
   Description: >-

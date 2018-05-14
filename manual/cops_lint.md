@@ -1892,6 +1892,29 @@ def some_method
 end
 ```
 
+## Lint/SplatKeywordArguments
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop emulates the following Ruby warnings in Ruby 2.6.
+
+% ruby -we "def m(a) end; h = {foo: 1}; m(**h)"
+-e:1: warning: passing splat keyword arguments as a single Hash to `m'
+
+It checks for use of splat keyword arguments as a single Hash.
+
+### Examples
+
+```ruby
+# bad
+do_something(**arguments)
+
+# good
+do_something(arguments)
+```
+
 ## Lint/StringConversionInInterpolation
 
 Enabled by default | Supports autocorrection
@@ -2019,6 +2042,9 @@ Enabled | Yes
 This cop detects instances of rubocop:enable comments that can be
 removed.
 
+When comment enables all cops at once `rubocop:enable all`
+that cop checks whether any cop was actually enabled.
+
 ### Examples
 
 ```ruby
@@ -2028,6 +2054,20 @@ foo = 1
 
 # good
 foo = 1
+```
+```ruby
+# bad
+# rubocop:disable Metrics/LineLength
+baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrr
+# rubocop:enable Metrics/LineLength
+baz
+# rubocop:enable all
+
+# good
+# rubocop:disable Metrics/LineLength
+baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrr
+# rubocop:enable all
+baz
 ```
 
 ## Lint/UnneededRequireStatement

@@ -8,9 +8,12 @@
 * [#5801](https://github.com/bbatsov/rubocop/pull/5801): Add new `Rails/RefuteMethods` cop. ([@koic][])
 * [#5805](https://github.com/bbatsov/rubocop/pull/5805): Add new `Rails/AssertNot` cop. ([@composerinteralia][])
 * [#4136](https://github.com/bbatsov/rubocop/issues/4136): Allow more robust `Layout/ClosingParenthesisIndentation` detection including method chaining. ([@jfelchner][])
+* [#5699](https://github.com/bbatsov/rubocop/pull/5699): Add `consistent_relative_to_receiver` style option to `Layout/FirstParameterIndentation`. ([@jfelchner][])
 * [#5821](https://github.com/bbatsov/rubocop/pull/5821): Support `AR::Migration#up_only` for `Rails/ReversibleMigration` cop. ([@koic][])
 * [#5800](https://github.com/bbatsov/rubocop/issues/5800): Don't show a stracktrace for invalid command-line params. ([@shanecav84][])
 * [#5845](https://github.com/bbatsov/rubocop/pull/5845): Add new `Lint/ErbNewArguments` cop. ([@koic][])
+* [#5871](https://github.com/bbatsov/rubocop/pull/5871): Add new `Lint/SplatKeywordArguments` cop. ([@koic][])
+* [#4247](https://github.com/bbatsov/rubocop/issues/4247): Remove hard-coded file patterns and use only `Include`, `Exclude` and the new `RubyInterpreters` parameters for file selection. ([@jonas054][])
 
 ### Bug fixes
 
@@ -22,11 +25,14 @@
 * [#5791](https://github.com/bbatsov/rubocop/issues/5791): Fix exception in `Lint/SafeNavigationConsistency` when there is code around the condition. ([@rrosenblum][])
 * [#5784](https://github.com/bbatsov/rubocop/issues/5784): Fix a false positive for `Rails/HasManyOrHasOneDependent` when using nested `with_options`. ([@koic][])
 * [#4666](https://github.com/bbatsov/rubocop/issues/4666): `--stdin` always treats input as Ruby source irregardless of filename. ([@PointlessOne][])
+* Fix auto-correction for `Style/MethodCallWithArgsParentheses` adding extra parentheses if the method argument was already parenthesized. ([@dvandersluis][])
 * [#5668](https://github.com/bbatsov/rubocop/issues/5668): Fix an issue where files with unknown extensions, listed in `AllCops/Include` were not inspected when passing the file name as an option. ([@drenmi][])
 * [#5809](https://github.com/bbatsov/rubocop/issues/5809): Fix exception `Lint/PercentStringArray` and `Lint/PercentSymbolArray` when the inspected file is binary encoded. ([@akhramov][])
 * [#5840](https://github.com/bbatsov/rubocop/issues/5840): Do not register an offense for methods that `nil` responds to in `Lint/SafeNavigationConsistency`. ([@rrosenblum][])
 * [#5862](https://github.com/bbatsov/rubocop/issues/5862): Fix an incorrect auto-correct for `Lint/LiteralInInterpolation` if contains numbers. ([@koic][])
 * [#5868](https://github.com/bbatsov/rubocop/pull/5868): Fix `Rails/CreateTableWithTimestamps` when using hash options. ([@wata727][])
+* [#5708](https://github.com/bbatsov/rubocop/issues/5708): Fix exception in `Lint/UnneededCopEnableDirective` for instruction '# rubocop:enable **all**'. ([@balbesina][])
+* Fix auto-correction of `Rails/HttpPositionalArgumnets` to use `session` instead of `header`. ([@rrosenblum][])
 
 ### Changes
 
@@ -35,6 +41,7 @@
 * [#5806](https://github.com/bbatsov/rubocop/issues/5806): Fix `Layout/SpaceInsideReferenceBrackets` when assigning a reference bracket to a reference bracket. ([@joshuapinter][])
 * [#5082](https://github.com/bbatsov/rubocop/issues/5082): Allow caching together with `--auto-correct`. ([@jonas054][])
 * Add `try!` to the list of whitelisted methods for `Lint/SafeNavigationChain` and `Style/SafeNavigation`. ([@rrosenblum][])
+* [#5886](https://github.com/bbatsov/rubocop/pull/5886): Move `Style/EmptyLineAfterGuardClause` cop to `Layout` department. ([@koic][])
 
 ## 0.55.0 (2018-04-16)
 
@@ -3355,3 +3362,4 @@
 [@JacobEvelyn]: https://github.com/JacobEvelyn
 [@shanecav84]: https://github.com/shanecav84
 [@thomasbrus]: https://github.com/thomasbrus
+[@balbesina]: https://github.com/balbesina

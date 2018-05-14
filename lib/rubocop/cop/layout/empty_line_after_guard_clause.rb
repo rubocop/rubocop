@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Layout
       # This cop enforces empty line after guard clause
       #
       # @example
