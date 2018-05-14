@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.56.0 (2018-05-14)
+
 ### New features
 
 * [#5848](https://github.com/bbatsov/rubocop/pull/5848): Add new `Performance/InefficientHashSearch` cop. ([@JacobEvelyn][])
