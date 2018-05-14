@@ -1006,6 +1006,47 @@ Name | Default value | Configurable values
 AllowBorderComment | `true` | Boolean
 AllowMarginComment | `true` | Boolean
 
+## Layout/EmptyLineAfterGuardClause
+
+Enabled by default | Supports autocorrection
+--- | ---
+Disabled | Yes
+
+This cop enforces empty line after guard clause
+
+### Examples
+
+```ruby
+# bad
+def foo
+  return if need_return?
+  bar
+end
+
+# good
+def foo
+  return if need_return?
+
+  bar
+end
+
+# good
+def foo
+  return if something?
+  return if something_different?
+
+  bar
+end
+
+# also good
+def foo
+  if something?
+    do_something
+    return if need_return?
+  end
+end
+```
+
 ## Layout/EmptyLineAfterMagicComment
 
 Enabled by default | Supports autocorrection
@@ -1815,17 +1856,125 @@ some_method(
 first_param,
 second_param)
 
+foo = some_method(
+first_param,
+second_param)
+
+foo = some_method(nested_call(
+nested_first_param),
+second_param)
+
+foo = some_method(
+nested_call(
+nested_first_param),
+second_param)
+
+some_method nested_call(
+nested_first_param),
+second_param
+
+# Style: consistent
+
 # good
 some_method(
   first_param,
 second_param)
+
+foo = some_method(
+  first_param,
+second_param)
+
+foo = some_method(nested_call(
+  nested_first_param),
+second_param)
+
+foo = some_method(
+  nested_call(
+    nested_first_param),
+second_param)
+
+some_method nested_call(
+  nested_first_param),
+second_param
+
+# Style: consistent_relative_to_receiver
+
+# good
+some_method(
+  first_param,
+second_param)
+
+foo = some_method(
+        first_param,
+second_param)
+
+foo = some_method(nested_call(
+                    nested_first_param),
+second_param)
+
+foo = some_method(
+        nested_call(
+          nested_first_param),
+second_param)
+
+some_method nested_call(
+              nested_first_param),
+second_params
+
+# Style: special_for_inner_method_call
+
+# good
+some_method(
+  first_param,
+second_param)
+
+foo = some_method(
+  first_param,
+second_param)
+
+foo = some_method(nested_call(
+                    nested_first_param),
+second_param)
+
+foo = some_method(
+  nested_call(
+    nested_first_param),
+second_param)
+
+some_method nested_call(
+              nested_first_param),
+second_param
+
+# Style: special_for_inner_method_call_in_parentheses
+
+# good
+some_method(
+  first_param,
+second_param)
+
+foo = some_method(
+  first_param,
+second_param)
+
+foo = some_method(nested_call(
+                    nested_first_param),
+second_param)
+
+foo = some_method(
+  nested_call(
+    nested_first_param),
+second_param)
+
+some_method nested_call(
+  nested_first_param),
+second_param
 ```
 
 ### Configurable attributes
 
 Name | Default value | Configurable values
 --- | --- | ---
-EnforcedStyle | `special_for_inner_method_call_in_parentheses` | `consistent`, `special_for_inner_method_call`, `special_for_inner_method_call_in_parentheses`
+EnforcedStyle | `special_for_inner_method_call_in_parentheses` | `consistent`, `consistent_relative_to_receiver`, `special_for_inner_method_call`, `special_for_inner_method_call_in_parentheses`
 IndentationWidth | `<none>` | Integer
 
 ## Layout/IndentArray

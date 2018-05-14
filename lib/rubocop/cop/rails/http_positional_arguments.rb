@@ -22,7 +22,7 @@ module RuboCop
         MSG = 'Use keyword arguments instead of ' \
               'positional arguments for http call: `%<verb>s`.'.freeze
         KEYWORD_ARGS = %i[
-          headers env params body flash as xhr session method
+          method params session body flash xhr as
         ].freeze
         HTTP_METHODS = %i[get post put patch delete head].freeze
 
@@ -41,11 +41,11 @@ module RuboCop
           end
         end
 
-        # given a pre Rails 5 method: get :new, user_id: @user.id, {}
+        # given a pre Rails 5 method: get :new, {user_id: @user.id}, {}
         #
         # @return lambda of auto correct procedure
         # the result should look like:
-        #     get :new, params: { user_id: @user.id }, headers: {}
+        #     get :new, params: { user_id: @user.id }, session: {}
         # the http_method is the method used to call the controller
         # the controller node can be a symbol, method, object or string
         # that represents the path/action on the Rails controller
@@ -56,14 +56,14 @@ module RuboCop
 
           controller_action = http_path.source
           params = convert_hash_data(data.first, 'params')
-          headers = convert_hash_data(data.last, 'headers') if data.size > 1
+          session = convert_hash_data(data.last, 'session') if data.size > 1
           # the range of the text to replace, which is the whole line
           code_to_replace = node.loc.expression
           # what to replace with
           format = parentheses_format(node)
           new_code = format(format, name: node.method_name,
                                     action: controller_action,
-                                    params: params, headers: headers)
+                                    params: params, session: session)
           ->(corrector) { corrector.replace(code_to_replace, new_code) }
         end
 
@@ -103,9 +103,9 @@ module RuboCop
 
         def parentheses_format(node)
           if parentheses?(node)
-            '%<name>s(%<action>s%<params>s%<headers>s)'
+            '%<name>s(%<action>s%<params>s%<session>s)'
           else
-            '%<name>s %<action>s%<params>s%<headers>s'
+            '%<name>s %<action>s%<params>s%<session>s'
           end
         end
       end
