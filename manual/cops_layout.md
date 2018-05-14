@@ -1006,6 +1006,47 @@ Name | Default value | Configurable values
 AllowBorderComment | `true` | Boolean
 AllowMarginComment | `true` | Boolean
 
+## Layout/EmptyLineAfterGuardClause
+
+Enabled by default | Supports autocorrection
+--- | ---
+Disabled | Yes
+
+This cop enforces empty line after guard clause
+
+### Examples
+
+```ruby
+# bad
+def foo
+  return if need_return?
+  bar
+end
+
+# good
+def foo
+  return if need_return?
+
+  bar
+end
+
+# good
+def foo
+  return if something?
+  return if something_different?
+
+  bar
+end
+
+# also good
+def foo
+  if something?
+    do_something
+    return if need_return?
+  end
+end
+```
+
 ## Layout/EmptyLineAfterMagicComment
 
 Enabled by default | Supports autocorrection
