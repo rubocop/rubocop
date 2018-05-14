@@ -38,6 +38,7 @@
 * [#5806](https://github.com/bbatsov/rubocop/issues/5806): Fix `Layout/SpaceInsideReferenceBrackets` when assigning a reference bracket to a reference bracket. ([@joshuapinter][])
 * [#5082](https://github.com/bbatsov/rubocop/issues/5082): Allow caching together with `--auto-correct`. ([@jonas054][])
 * Add `try!` to the list of whitelisted methods for `Lint/SafeNavigationChain` and `Style/SafeNavigation`. ([@rrosenblum][])
+* [#5886](https://github.com/bbatsov/rubocop/pull/5886): Move `Style/EmptyLineAfterGuardClause` cop to `Layout` department. ([@koic][])
 
 ## 0.55.0 (2018-04-16)
 
