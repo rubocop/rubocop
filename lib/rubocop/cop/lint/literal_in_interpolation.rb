@@ -50,6 +50,10 @@ module RuboCop
 
         def autocorrected_value(node)
           case node.type
+          when :int
+            node.children.last.to_i.to_s
+          when :float
+            node.children.last.to_f.to_s
           when :str
             node.children.last
           when :sym

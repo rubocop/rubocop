@@ -31,27 +31,23 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
   end
 
   it 'handles modifier rescue in normal rescue' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       begin
         test rescue modifier_handle
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
       rescue
         normal_handle
       end
     RUBY
-
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.offenses.first.line).to eq(2)
-    expect(cop.highlights).to eq(['test rescue modifier_handle'])
   end
 
   it 'handles modifier rescue in a method' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       def a_method
         test rescue nil
+        ^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
       end
     RUBY
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.offenses.first.line).to eq(2)
   end
 
   it 'does not register an offense for normal rescue' do
@@ -102,16 +98,14 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
     end
 
     it 'handles modifier rescue in body of implicit begin' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def some_method
           test rescue modifier_handle
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
         rescue
           normal_handle
         end
       RUBY
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.first.line).to eq(2)
-      expect(cop.highlights).to eq(['test rescue modifier_handle'])
     end
   end
 
@@ -127,16 +121,14 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
     end
 
     it 'handles modifier rescue in body of implicit begin' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def self.some_method
           test rescue modifier_handle
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
         rescue
           normal_handle
         end
       RUBY
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.first.line).to eq(2)
-      expect(cop.highlights).to eq(['test rescue modifier_handle'])
     end
   end
 

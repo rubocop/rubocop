@@ -55,7 +55,7 @@ module RuboCop
             literal = child.children.first
 
             # To avoid likely false positives (e.g. a single ' or ")
-            next if literal.to_s.gsub(/[^\p{Alnum}]/, '').empty?
+            next if literal.to_s.gsub(/[^[[:alnum:]]]/, '').empty?
 
             patterns.any? { |pat| literal =~ pat }
           end

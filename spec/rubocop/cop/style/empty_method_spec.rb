@@ -53,6 +53,11 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
                       'def foo(bar, baz); end'
 
       it_behaves_like 'code with offense',
+                      ['def foo bar, baz',
+                       'end'].join("\n"),
+                      'def foo bar, baz; end'
+
+      it_behaves_like 'code with offense',
                       ['def foo',
                        '',
                        'end'].join("\n"),

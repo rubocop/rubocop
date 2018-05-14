@@ -4,8 +4,8 @@ module RuboCop
   module Cop
     module Layout
       # This cop checks the indentation of the first parameter in a method call.
-      # Parameters after the first one are checked by Style/AlignParameters, not
-      # by this cop.
+      # Parameters after the first one are checked by Layout/AlignParameters,
+      # not by this cop.
       #
       # @example
       #
@@ -14,10 +14,119 @@ module RuboCop
       #   first_param,
       #   second_param)
       #
+      #   foo = some_method(
+      #   first_param,
+      #   second_param)
+      #
+      #   foo = some_method(nested_call(
+      #   nested_first_param),
+      #   second_param)
+      #
+      #   foo = some_method(
+      #   nested_call(
+      #   nested_first_param),
+      #   second_param)
+      #
+      #   some_method nested_call(
+      #   nested_first_param),
+      #   second_param
+      #
+      #   # Style: consistent
+      #
       #   # good
       #   some_method(
       #     first_param,
       #   second_param)
+      #
+      #   foo = some_method(
+      #     first_param,
+      #   second_param)
+      #
+      #   foo = some_method(nested_call(
+      #     nested_first_param),
+      #   second_param)
+      #
+      #   foo = some_method(
+      #     nested_call(
+      #       nested_first_param),
+      #   second_param)
+      #
+      #   some_method nested_call(
+      #     nested_first_param),
+      #   second_param
+      #
+      #   # Style: consistent_relative_to_receiver
+      #
+      #   # good
+      #   some_method(
+      #     first_param,
+      #   second_param)
+      #
+      #   foo = some_method(
+      #           first_param,
+      #   second_param)
+      #
+      #   foo = some_method(nested_call(
+      #                       nested_first_param),
+      #   second_param)
+      #
+      #   foo = some_method(
+      #           nested_call(
+      #             nested_first_param),
+      #   second_param)
+      #
+      #   some_method nested_call(
+      #                 nested_first_param),
+      #   second_params
+      #
+      #   # Style: special_for_inner_method_call
+      #
+      #   # good
+      #   some_method(
+      #     first_param,
+      #   second_param)
+      #
+      #   foo = some_method(
+      #     first_param,
+      #   second_param)
+      #
+      #   foo = some_method(nested_call(
+      #                       nested_first_param),
+      #   second_param)
+      #
+      #   foo = some_method(
+      #     nested_call(
+      #       nested_first_param),
+      #   second_param)
+      #
+      #   some_method nested_call(
+      #                 nested_first_param),
+      #   second_param
+      #
+      #   # Style: special_for_inner_method_call_in_parentheses
+      #
+      #   # good
+      #   some_method(
+      #     first_param,
+      #   second_param)
+      #
+      #   foo = some_method(
+      #     first_param,
+      #   second_param)
+      #
+      #   foo = some_method(nested_call(
+      #                       nested_first_param),
+      #   second_param)
+      #
+      #   foo = some_method(
+      #     nested_call(
+      #       nested_first_param),
+      #   second_param)
+      #
+      #   some_method nested_call(
+      #     nested_first_param),
+      #   second_param
+      #
       class FirstParameterIndentation < Cop
         include Alignment
         include ConfigurableEnforcedStyle
@@ -65,6 +174,7 @@ module RuboCop
 
         def special_inner_call_indentation?(node)
           return false if style == :consistent
+          return true  if style == :consistent_relative_to_receiver
 
           parent = node.parent
 
