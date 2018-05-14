@@ -41,4 +41,8 @@ RSpec.describe RuboCop::Cop::Security::JSONLoad, :config do
       ::JSON.dump(arg)
     RUBY
   end
+
+  it 'autocorrects .load to .parse' do
+    expect(autocorrect_source('JSON.load(arg)')).to eq 'JSON.parse(arg)'
+  end
 end
