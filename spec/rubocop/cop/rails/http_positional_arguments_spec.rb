@@ -157,10 +157,16 @@ RSpec.describe RuboCop::Cop::Rails::HttpPositionalArguments do
     end
 
     [
+      'method: :get',
       'params: { user_id: @user.id }',
       'xhr: true',
       'session: { foo: \'bar\' }',
-      'format: :json'
+      'format: :json',
+      'headers: {}',
+      'body: "foo"',
+      'flash: {}',
+      'as: :json',
+      'env: "test"'
     ].each do |keyword_args|
       describe "when using keyword args #{keyword_args}" do
         it 'does not register an offense' do
