@@ -6,6 +6,10 @@
 
 * [#5888](https://github.com/bbatsov/rubocop/issues/5888): Do not register an offense for `headers` or `env` keyword arguments in `Rails/HttpPositionalArguments`. ([@rrosenblum][])
 
+### Changes
+
+* [#5887](https://github.com/bbatsov/rubocop/issues/5887): Remove `Lint/SplatKeywordArguments` cop. ([@koic][])
+
 ## 0.56.0 (2018-05-14)
 
 ### New features

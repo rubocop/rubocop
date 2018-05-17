@@ -685,10 +685,6 @@ Lint/ShadowingOuterLocalVariable:
                  for block arguments or block local variables.
   Enabled: true
 
-Lint/SplatKeywordArguments:
-  Description: 'Checks for use of splat keyword arguments as a single Hash.'
-  Enabled: true
-
 Lint/StringConversionInInterpolation:
   Description: 'Checks for Object#to_s usage in string interpolation.'
   StyleGuide: '#no-to-s'
