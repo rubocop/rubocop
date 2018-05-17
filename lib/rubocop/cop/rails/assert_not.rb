@@ -16,7 +16,7 @@ module RuboCop
       class AssertNot < RuboCop::Cop::Cop
         MSG = 'Prefer `assert_not` over `assert !`.'.freeze
 
-        def_node_matcher :offensive?, '(send nil? :assert (send ... :!))'
+        def_node_matcher :offensive?, '(send nil? :assert (send ... :!) ...)'
 
         def on_send(node)
           add_offense(node) if offensive?(node)
