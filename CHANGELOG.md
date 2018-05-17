@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#5894](https://github.com/bbatsov/rubocop/pull/5894): Fix `Rails/AssertNot` to allow it to have failure message. ([@koic][])
+
 ## 0.56.0 (2018-05-14)
 
 ### New features

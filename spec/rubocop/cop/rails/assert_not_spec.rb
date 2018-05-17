@@ -10,6 +10,13 @@ RSpec.describe RuboCop::Cop::Rails::AssertNot do
     RUBY
   end
 
+  it 'registers an offense when using `assert !` with a failure message' do
+    expect_offense(<<-RUBY.strip_indent)
+      assert !foo, 'a failure message'
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `assert_not` over `assert !`.
+    RUBY
+  end
+
   it 'registers an offense when using `assert !` with a more complex value' do
     expect_offense(<<-RUBY.strip_indent)
       assert !foo.bar(baz)
