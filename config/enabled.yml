@@ -1209,7 +1209,7 @@ Rails/InverseOf:
   Enabled: true
 
 Rails/LeftJoin:
-  Description: 'Checks for `.joins("LEFT JOIN emails ON ...")` calls to be replaced with `.join_left(:emails)`'.
+  Description: 'Checks for `.joins("LEFT JOIN emails ON ...")` calls to be replaced with `.join_left(:emails)`.'
   Enabled: true
 
 Rails/LexicallyScopedActionFilter:
