@@ -119,6 +119,7 @@
 * [#5406](https://github.com/rubocop-hq/rubocop/issues/5406): Add new `Layout/ClosingHeredocIndentation` cop. ([@siggymcfried][])
 * [#5823](https://github.com/rubocop-hq/rubocop/issues/5823): Add new `slashes` style to `Rails/FilePath` since Ruby accepts forward slashes even on Windows. ([@sunny][])
 * New cop `Layout/LeadingBlankLines` checks for empty lines at the beginning of a file. ([@rrosenblum][])
+* [#5871](https://github.com/bbatsov/rubocop/pull/5871): Add new `Rails/LeftJoin` cop. ([@blackst0ne][])
 
 ### Bug fixes
 
@@ -3519,3 +3520,6 @@
 [@repinel]: https://github.com/repinel
 [@gmalette]: https://github.com/gmalette
 [@MagedMilad]: https://github.com/MagedMilad
+[@kenman345]: https://github.com/kenman345
+[@blackst0ne]: https://github.com/blackst0ne
+
