@@ -5541,7 +5541,7 @@ of 2 or fewer elements.
 Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `percent` | `percent`, `brackets`
-MinSize | `0` | Integer
+MinSize | `2` | Integer
 
 ### References
 
@@ -6313,7 +6313,7 @@ array of 2 or fewer elements.
 Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `percent` | `percent`, `brackets`
-MinSize | `0` | Integer
+MinSize | `2` | Integer
 WordRegex | `(?-mix:\A[\p{Word}\n\t]+\z)` | 
 
 ### References

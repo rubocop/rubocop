@@ -36,6 +36,11 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
       expect(new_source).to eq('%i(one two three)')
     end
 
+    it 'autocorrects arrays of one symbol' do
+      new_source = autocorrect_source('[:one]')
+      expect(new_source).to eq('%i(one)')
+    end
+
     it 'autocorrects arrays of symbols with new line' do
       new_source = autocorrect_source("[:one,\n:two, :three,\n:four]")
       expect(new_source).to eq("%i(one\ntwo three\nfour)")
@@ -58,10 +63,6 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
 
     it 'does not register an offense for array starting with %i' do
       expect_no_offenses('%i(one two three)')
-    end
-
-    it 'does not register an offense for array with one element' do
-      expect_no_offenses('[:three]')
     end
 
     it 'does not register an offense if symbol contains whitespace' do
@@ -168,6 +169,17 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
     it 'autocorrects an array starting with %i' do
       new_source = autocorrect_source('%i(one @two $three four-five)')
       expect(new_source).to eq("[:one, :@two, :$three, :'four-five']")
+    end
+  end
+
+  context 'with non-default MinSize' do
+    let(:cop_config) do
+      { 'MinSize' => 2,
+        'EnforcedStyle' => 'percent' }
+    end
+
+    it 'does not autocorrects array of one symbol if MinSize > 1' do
+      expect_no_offenses('[:one]')
     end
   end
 end

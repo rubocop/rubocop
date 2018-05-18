@@ -1405,7 +1405,7 @@ Style/StringMethods:
 
 Style/SymbolArray:
   EnforcedStyle: percent
-  MinSize: 0
+  MinSize: 2
   SupportedStyles:
     - percent
     - brackets
@@ -1511,7 +1511,7 @@ Style/WordArray:
   # The `MinSize` option causes the `WordArray` rule to be ignored for arrays
   # smaller than a certain size.  The rule is only applied to arrays
   # whose element count is greater than or equal to `MinSize`.
-  MinSize: 0
+  MinSize: 2
   # The regular expression `WordRegex` decides what is considered a word.
   WordRegex: !ruby/regexp '/\A[\p{Word}\n\t]+\z/'
 
