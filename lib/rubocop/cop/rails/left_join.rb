@@ -35,7 +35,7 @@ module RuboCop
         private
 
         def include_left_join?(node)
-          join_query_phrase(node).downcase == "left join"
+          join_query_phrase(node).casecmp?('left join')
         end
 
         def join_full_query(node)
