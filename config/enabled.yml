@@ -1208,6 +1208,10 @@ Rails/InverseOf:
   Description: 'Checks for associations where the inverse cannot be determined automatically.'
   Enabled: true
 
+Rails/LeftJoin:
+  Description: 'Checks for `.joins("LEFT JOIN emails ON ...")` calls to be replaced with `.join_left(:emails)`'.
+  Enabled: true
+
 Rails/LexicallyScopedActionFilter:
   Description: "Checks that methods specified in the filter's `only` or `except` options are explicitly defined in the controller."
   StyleGuide: 'https://github.com/rubocop-hq/rails-style-guide#lexically-scoped-action-filter'
