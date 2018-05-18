@@ -8,7 +8,7 @@ module RuboCop
       #
       # @example
       #  # bad
-      #  User.joins('LEFT JOIN emails ON user.id = emails.user_id )
+      #  User.joins('LEFT JOIN emails ON user.id = emails.user_id')
       #
       #  # good
       #  User.left_joins(:emails)

@@ -1012,6 +1012,31 @@ Name | Default value | Configurable values
 --- | --- | ---
 Include | `app/models/**/*.rb` | Array
 
+## Rails/LeftJoin
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | No
+
+This cop looks for .joins("LEFT JOIN ...") and
+proposes to use the .left_join("...") method introduced in Rails 5.0.
+
+### Examples
+
+```ruby
+# bad
+User.joins('LEFT JOIN emails ON user.id = emails.user_id')
+
+# good
+User.left_joins(:emails)
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `app/**/*.rb`, `db/**/*.rb`, `lib/**/*.rb` | Array
+
 ## Rails/LexicallyScopedActionFilter
 
 Enabled by default | Supports autocorrection

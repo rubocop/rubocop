@@ -352,6 +352,7 @@ In the following section you find all available cops:
 * [Rails/HttpPositionalArguments](cops_rails.md#railshttppositionalarguments)
 * [Rails/HttpStatus](cops_rails.md#railshttpstatus)
 * [Rails/InverseOf](cops_rails.md#railsinverseof)
+* [Rails/LeftJoin](cops_rails.md#railsleftjoin)
 * [Rails/LexicallyScopedActionFilter](cops_rails.md#railslexicallyscopedactionfilter)
 * [Rails/NotNullColumn](cops_rails.md#railsnotnullcolumn)
 * [Rails/Output](cops_rails.md#railsoutput)
