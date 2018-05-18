@@ -4,6 +4,7 @@
 
 ### Bug fixes
 
+* [#5897](https://github.com/bbatsov/rubocop/issues/5897): Fix `Style/SymbolArray` and `Style/WordArray` not working on arrays of size 1. ([@TikiTDO][])
 * [#5894](https://github.com/bbatsov/rubocop/pull/5894): Fix `Rails/AssertNot` to allow it to have failure message. ([@koic][])
 * [#5888](https://github.com/bbatsov/rubocop/issues/5888): Do not register an offense for `headers` or `env` keyword arguments in `Rails/HttpPositionalArguments`. ([@rrosenblum][])
 * Fix the indentation of autocorrected closing squiggly heredocs. ([@garettarrowood][])
@@ -3378,3 +3379,4 @@
 [@thomasbrus]: https://github.com/thomasbrus
 [@balbesina]: https://github.com/balbesina
 [@cupakromer]: https://github.com/cupakromer
+[@TikiTDO]: https://github.com/TikiTDO
