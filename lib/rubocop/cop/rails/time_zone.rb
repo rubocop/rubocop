@@ -67,7 +67,7 @@ module RuboCop
 
         ACCEPTED_METHODS = %i[in_time_zone utc getlocal
                               iso8601 jisx0301 rfc3339
-                              to_i to_f].freeze
+                              httpdate to_i to_f].freeze
 
         def on_const(node)
           mod, klass = *node
