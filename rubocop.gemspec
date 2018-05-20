@@ -34,6 +34,7 @@ Gem::Specification.new do |s|
     'bug_tracker_uri' => 'https://github.com/bbatsov/rubocop/issues'
   }
 
+  s.add_runtime_dependency('jaro_winkler', '~> 1.4.0')
   s.add_runtime_dependency('parallel', '~> 1.10')
   s.add_runtime_dependency('parser', '>= 2.5')
   s.add_runtime_dependency('powerpack', '~> 0.1')
