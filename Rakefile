@@ -63,6 +63,8 @@ YARD::Rake::YardocTask.new
 
 desc 'Open a REPL for experimentation'
 task :repl do
+  warn 'DEPRECATION WARNING: `rake repl` is deprecated and ' \
+       'will be removed in RuboCop 0.58.0. Please use `bin/console`.'
   require 'pry'
   require 'rubocop'
   ARGV.clear
