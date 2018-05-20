@@ -201,7 +201,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           end
         RUBY
         create_file('redirect.rb', '$stderr = STDOUT')
-        rubocop = "#{RuboCop::ConfigLoader::RUBOCOP_HOME}/bin/rubocop"
+        rubocop = "#{RuboCop::ConfigLoader::RUBOCOP_HOME}/exe/rubocop"
         # Since we define a new cop class, we have to do this in a separate
         # process. Otherwise, the extra cop will affect other specs.
         output =

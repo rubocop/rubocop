@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Formatter::ProgressFormatter do
   let(:output) { StringIO.new }
 
   let(:files) do
-    %w[lib/rubocop.rb spec/spec_helper.rb bin/rubocop].map do |path|
+    %w[lib/rubocop.rb spec/spec_helper.rb exe/rubocop].map do |path|
       File.expand_path(path)
     end
   end
@@ -153,10 +153,10 @@ RSpec.describe RuboCop::Formatter::ProgressFormatter do
           lib/rubocop.rb:2:3: C: foo
           This is line 2.
             ^
-          bin/rubocop:5:2: E: bar
+          exe/rubocop:5:2: E: bar
           This is line 5.
            ^
-          bin/rubocop:6:1: C: foo
+          exe/rubocop:6:1: C: foo
           This is line 6.
           ^
         OUTPUT
