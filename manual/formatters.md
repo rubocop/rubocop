@@ -279,11 +279,11 @@ not ok 1 - lib/rubocop.rb
 # This is line 2.
 #   ^
 ok 2 - spec/spec_helper.rb
-not ok 3 - bin/rubocop
-# bin/rubocop:5:2: E: bar
+not ok 3 - exe/rubocop
+# exe/rubocop:5:2: E: bar
 # This is line 5.
 #  ^
-# bin/rubocop:6:1: C: foo
+# exe/rubocop:6:1: C: foo
 # This is line 6.
 # ^
 

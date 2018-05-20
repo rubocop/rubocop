@@ -155,12 +155,12 @@ module RuboCop
       ResultCache.source_checksum ||=
         begin
           lib_root = File.join(File.dirname(__FILE__), '..')
-          bin_root = File.join(lib_root, '..', 'bin')
+          exe_root = File.join(lib_root, '..', 'exe')
 
           # These are all the files we have `require`d plus everything in the
-          # bin directory. A change to any of them could affect the cop output
+          # exe directory. A change to any of them could affect the cop output
           # so we include them in the cache hash.
-          source_files = $LOADED_FEATURES + Find.find(bin_root).to_a
+          source_files = $LOADED_FEATURES + Find.find(exe_root).to_a
           sources = source_files
                     .select { |path| File.file?(path) }
                     .sort
