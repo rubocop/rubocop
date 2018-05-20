@@ -69,7 +69,7 @@ $ ruby-parse -e '!array.empty?'
 Now, it's time to debug our expression using the REPL from RuboCop:
 
 ```sh
-$ rake repl
+$ bin/console
 ```
 
 First we need to declare the code that we want to match, and use the
