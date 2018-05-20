@@ -10,7 +10,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
     }
   end
 
-  shared_examples :offense do |name, code, correction = nil|
+  shared_examples :offense do |name, code, correction = nil, strip_fix = true|
     it "registers an offense for #{name}" do
       inspect_source(code.strip_indent)
       expect(cop.offenses.size).to eq(1)
@@ -18,7 +18,11 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
 
     it "autocorrects for #{name}" do
       corrected = autocorrect_source_with_loop(code.strip_indent)
-      expect(corrected).to eq(correction.strip_indent)
+      if strip_fix
+        expect(corrected).to eq(correction.strip_indent)
+      else
+        expect(corrected).to eq(correction)
+      end
     end
   end
 
@@ -295,7 +299,22 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
           RUBY2
         CORRECTION
 
-        include_examples :accept, 'indentaed, with `~`', <<-RUBY
+        include_examples :offense, 'first line minus-level indented, with `-`',
+                         <<-RUBY, <<-CORRECTION, false
+                  puts <<-#{quote}RUBY2#{quote}
+          def foo
+            bar
+          end
+          RUBY2
+        RUBY
+        puts <<~#{quote}RUBY2#{quote}
+          def foo
+            bar
+          end
+        RUBY2
+        CORRECTION
+
+        include_examples :accept, 'indented, with `~`', <<-RUBY
           <<~#{quote}RUBY2#{quote}
             something
           RUBY2
