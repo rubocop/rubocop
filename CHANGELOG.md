@@ -12,6 +12,7 @@
 
 * [#5887](https://github.com/bbatsov/rubocop/issues/5887): Remove `Lint/SplatKeywordArguments` cop. ([@koic][])
 * [#5761](https://github.com/bbatsov/rubocop/pull/5761): Add `httpdate` to accepted `Rails/TimeZone` methods. ([@cupakromer][])
+* [#5899](https://github.com/bbatsov/rubocop/pull/5899): Add `xmlschema` to accepted `Rails/TimeZone` methods. ([@koic][])
 
 ## 0.56.0 (2018-05-14)
 
