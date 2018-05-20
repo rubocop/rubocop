@@ -82,10 +82,9 @@ module RuboCop
       end
 
       def process_node(node)
-        catch(:skip_children) do
-          dispatch_node(node)
-          process_children(node)
-        end
+        method_name = node_handler_method_name(node)
+        retval = send(method_name, node) if method_name
+        process_children(node) unless retval == :skip_children
       end
 
       private
@@ -105,34 +104,34 @@ module RuboCop
       end
 
       def skip_children!
-        throw :skip_children
+        :skip_children
       end
 
       # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
-      def dispatch_node(node)
+      def node_handler_method_name(node)
         case node.type
         when VARIABLE_ASSIGNMENT_TYPE
-          process_variable_assignment(node)
+          :process_variable_assignment
         when REGEXP_NAMED_CAPTURE_TYPE
-          process_regexp_named_captures(node)
+          :process_regexp_named_captures
         when MULTIPLE_ASSIGNMENT_TYPE
-          process_variable_multiple_assignment(node)
+          :process_variable_multiple_assignment
         when VARIABLE_REFERENCE_TYPE
-          process_variable_referencing(node)
+          :process_variable_referencing
         when RESCUE_TYPE
-          process_rescue(node)
+          :process_rescue
         when ZERO_ARITY_SUPER_TYPE
-          process_zero_arity_super(node)
+          :process_zero_arity_super
         when SEND_TYPE
-          process_send(node)
+          :process_send
         when *ARGUMENT_DECLARATION_TYPES
-          process_variable_declaration(node)
+          :process_variable_declaration
         when *OPERATOR_ASSIGNMENT_TYPES
-          process_variable_operator_assignment(node)
+          :process_variable_operator_assignment
         when *LOOP_TYPES
-          process_loop(node)
+          :process_loop
         when *SCOPE_TYPES
-          process_scope(node)
+          :process_scope
         end
       end
       # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity
