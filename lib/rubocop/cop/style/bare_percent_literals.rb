@@ -47,7 +47,7 @@ module RuboCop
         private
 
         def check(node)
-          return if node.loc.respond_to?(:heredoc_body)
+          return if node.heredoc?
           return unless node.loc.respond_to?(:begin)
           return unless node.loc.begin
 

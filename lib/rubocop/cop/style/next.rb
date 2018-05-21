@@ -222,7 +222,7 @@ module RuboCop
 
         def heredoc_lines(node)
           node.each_node(:dstr)
-              .select { |n| n.loc.respond_to?(:heredoc_body) }
+              .select(&:heredoc?)
               .map { |n| n.loc.heredoc_body }
               .flat_map { |b| (b.line...b.last_line).to_a }
         end
