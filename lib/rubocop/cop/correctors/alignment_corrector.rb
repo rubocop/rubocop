@@ -57,7 +57,7 @@ module RuboCop
           return [] unless node.is_a?(Parser::AST::Node)
 
           node.each_node(:dstr)
-              .select { |n| n.loc.respond_to?(:heredoc_body) }
+              .select(&:heredoc?)
               .map { |n| n.loc.heredoc_body.join(n.loc.heredoc_end) }
         end
 
