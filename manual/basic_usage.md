@@ -85,6 +85,7 @@ Command flag                    | Description
 `--[no-]color`                  | Force color output on or off.
 `--parallel`                    | Use available CPUs to execute inspection in parallel.
 `--ignore-parent-exlusion`      | Ignores all Exclude: settings from all .rubocop.yml files present in parent folders. This is useful when you are importing submodules when you want to test them without being affected by the parent module's rubocop settings.
+`--force-exclusion`             | Force excluding files specified in the configuration `Exclude` even if they are explicitly passed as arguments.
 
 Default command-line options are loaded from `.rubocop` and `RUBOCOP_OPTS` and are combined with command-line options that are explicitly passed to `rubocop`.
 Thus, the options have the following order of precedence (from highest to lowest):
