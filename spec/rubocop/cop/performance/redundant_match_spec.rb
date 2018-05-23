@@ -70,33 +70,30 @@ RSpec.describe RuboCop::Cop::Performance::RedundantMatch do
 
   it 'does not register an error when return value of .match is passed ' \
      'to another method' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def method(str)
        something(str.match(/regex/))
       end
     RUBY
-    expect(cop.messages.empty?).to be(true)
   end
 
   it 'does not register an error when return value of .match is stored in an ' \
      'instance variable' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def method(str)
        @var = str.match(/regex/)
        true
       end
     RUBY
-    expect(cop.messages.empty?).to be(true)
   end
 
   it 'does not register an error when return value of .match is returned from' \
      ' surrounding method' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def method(str)
        str.match(/regex/)
       end
     RUBY
-    expect(cop.messages.empty?).to be(true)
   end
 
   it 'does not register an offense when match has a block' do

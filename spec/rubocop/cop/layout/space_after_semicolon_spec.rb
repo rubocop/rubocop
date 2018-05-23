@@ -27,8 +27,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterSemicolon do
   context 'inside block braces' do
     shared_examples 'common behavior' do
       it 'accepts a space between a semicolon and a closing brace' do
-        inspect_source('test { ; }')
-        expect(cop.messages.empty?).to be(true)
+        expect_no_offenses('test { ; }')
       end
     end
 
@@ -41,8 +40,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterSemicolon do
 
       it 'registers an offense for no space between a semicolon and a ' \
          'closing brace' do
-        inspect_source('test { ;}')
-        expect(cop.messages).to eq(['Space missing after semicolon.'])
+        expect_offense(<<-RUBY.strip_indent)
+          test { ;}
+                 ^ Space missing after semicolon.
+        RUBY
       end
     end
 
