@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#5917](https://github.com/bbatsov/rubocop/issues/5917): Fix erroneous warning for `inherit_mode` directive. ([@jonas054][])
+* [#5909](https://github.com/rubocop-hq/rubocop/pull/5909): Even when a module has no public methods, `Layout/IndentationConsistency` should still register an offense for private methods. ([@jaredbeck][])
 
 ## 0.57.0 (2018-06-06)
 

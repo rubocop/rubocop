@@ -536,6 +536,32 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
         end
       RUBY
     end
+
+    it 'registers an offense for bad indentation of private methods' do
+      expect_offense(<<-RUBY.strip_indent)
+        module Test
+          def pub
+          end
+          private
+            def priv
+            ^^^^^^^^ Inconsistent indentation detected.
+            end
+        end
+      RUBY
+    end
+
+    context 'even when there are no public methods' do
+      it 'still registers an offense for bad indentation of private methods' do
+        expect_offense(<<-RUBY.strip_indent)
+          module Test
+            private
+              def priv
+              ^^^^^^^^ Inconsistent indentation detected.
+              end
+          end
+        RUBY
+      end
+    end
   end
 
   context 'with block' do
