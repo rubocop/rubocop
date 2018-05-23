@@ -8,6 +8,7 @@
 * [#5894](https://github.com/bbatsov/rubocop/pull/5894): Fix `Rails/AssertNot` to allow it to have failure message. ([@koic][])
 * [#5888](https://github.com/bbatsov/rubocop/issues/5888): Do not register an offense for `headers` or `env` keyword arguments in `Rails/HttpPositionalArguments`. ([@rrosenblum][])
 * Fix the indentation of autocorrected closing squiggly heredocs. ([@garettarrowood][])
+* Fix a bug where `Style/FrozenStringLiteralComment` would be added to the second line if the first line is empty. ([@rrosenblum][])
 
 ### Changes
 
