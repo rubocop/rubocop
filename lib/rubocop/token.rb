@@ -45,7 +45,8 @@ module RuboCop
 
     # Checks if there is whitespace before token
     def space_before?
-      pos.source_buffer.source.match(/\G\s/, begin_pos - 1)
+      position = begin_pos.zero? ? begin_pos : begin_pos - 1
+      pos.source_buffer.source.match(/\G\s/, position)
     end
 
     ## Type Predicates
