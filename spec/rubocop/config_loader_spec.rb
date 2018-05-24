@@ -3,6 +3,8 @@
 RSpec.describe RuboCop::ConfigLoader do
   include FileHelper
 
+  include_context 'cli spec behavior'
+
   before { described_class.debug = true }
   after { described_class.debug = false }
 
