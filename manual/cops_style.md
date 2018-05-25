@@ -6079,6 +6079,35 @@ This cop checks for usage of the %W() syntax when %w() would do.
 %W(apple #{fruit} grape)
 ```
 
+## Style/UnneededCondition
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for unnecessary conditional expressions.
+
+### Examples
+
+```ruby
+# bad
+a = b ? b : c
+
+# good
+a = b || c
+```
+```ruby
+# bad
+if b
+  b
+else
+  c
+end
+
+# good
+b || c
+```
+
 ## Style/UnneededInterpolation
 
 Enabled by default | Supports autocorrection

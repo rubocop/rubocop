@@ -2026,6 +2026,10 @@ Style/UnneededCapitalW:
   Description: 'Checks for %W when interpolation is not needed.'
   Enabled: true
 
+Style/UnneededCondition:
+  Description: 'Checks for unnecessary conditional expressions.'
+  Enabled: true
+
 Style/UnneededInterpolation:
   Description: 'Checks for strings that are just an interpolated expression.'
   Enabled: true
