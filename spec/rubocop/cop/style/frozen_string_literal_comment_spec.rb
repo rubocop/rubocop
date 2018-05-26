@@ -168,6 +168,20 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
         RUBY
       end
 
+      it 'adds a frozen string literal comment to the first line if one is ' \
+         'missing and handles extra spacing' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+
+          puts 1
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          # frozen_string_literal: true
+
+          puts 1
+        RUBY
+      end
+
       it 'adds a frozen string literal comment after a shebang' do
         new_source = autocorrect_source(<<-RUBY.strip_indent)
           #!/usr/bin/env ruby

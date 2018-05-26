@@ -184,11 +184,6 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
 
       it 'accepts ruby19 syntax when no elements have symbol values ' \
         'in method calls' do
-        inspect_source('func(3, a: 0)')
-        expect(cop.messages.empty?).to be(true)
-      end
-
-      it 'accepts new syntax in method calls' do
         expect_no_offenses('func(3, a: 0)')
       end
 
@@ -206,8 +201,10 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
 
       it 'registers an offense when any element has a symbol value ' \
         'in method calls' do
-        inspect_source('func(3, b: :c)')
-        expect(cop.messages).to eq(['Use hash rockets syntax.'])
+        expect_offense(<<-RUBY.strip_indent)
+          func(3, b: :c)
+                  ^^ Use hash rockets syntax.
+        RUBY
       end
 
       it 'registers an offense when using hash rockets ' \
@@ -449,8 +446,10 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
 
       it 'registers an offense when any element has a symbol value ' \
         'in method calls' do
-        inspect_source('func(3, b: :c)')
-        expect(cop.messages).to eq(['Use hash rockets syntax.'])
+        expect_offense(<<-RUBY.strip_indent)
+          func(3, b: :c)
+                  ^^ Use hash rockets syntax.
+        RUBY
       end
 
       it 'auto-corrects to hash rockets ' \

@@ -5,9 +5,10 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
   shared_examples 'syntactic styles' do
     it 'registers an offense for a single line block with do-end' do
-      inspect_source('each do |x| end')
-      expect(cop.messages)
-        .to eq(['Prefer `{...}` over `do...end` for single-line blocks.'])
+      expect_offense(<<-RUBY.strip_indent)
+        each do |x| end
+             ^^ Prefer `{...}` over `do...end` for single-line blocks.
+      RUBY
     end
 
     it 'accepts a single line block with braces' do
@@ -22,12 +23,11 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
     end
 
     it 'accepts a multi-line block that needs braces to be valid ruby' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         puts [1, 2, 3].map { |n|
           n * n
         }, 1
       RUBY
-      expect(cop.messages.empty?).to be(true)
     end
   end
 
@@ -43,24 +43,22 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     it 'accepts a multi-line block with braces if the return value is ' \
        'assigned' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         foo = map { |x|
           x
         }
       RUBY
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts a multi-line block with braces if it is the return value ' \
        'of its scope' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         block do
           map { |x|
             x
           }
         end
       RUBY
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts a multi-line block with braces when passed to a method' do
@@ -81,57 +79,52 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     it 'accepts a multi-line block with braces when passed to a known ' \
        'functional method' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         let(:foo) {
           x
         }
       RUBY
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'registers an offense for a multi-line block with braces if the ' \
        'return value is not used' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         each { |x|
+             ^ Prefer `do...end` over `{...}` for procedural blocks.
           x
         }
       RUBY
-      expect(cop.messages)
-        .to eq(['Prefer `do...end` over `{...}` for procedural blocks.'])
     end
 
     it 'registers an offense for a multi-line block with do-end if the ' \
        'return value is assigned' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         foo = map do |x|
+                  ^^ Prefer `{...}` over `do...end` for functional blocks.
           x
         end
       RUBY
-      expect(cop.messages)
-        .to eq(['Prefer `{...}` over `do...end` for functional blocks.'])
     end
 
     it 'registers an offense for a multi-line block with do-end if the ' \
        'return value is passed to a method' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         puts (map do |x|
+                  ^^ Prefer `{...}` over `do...end` for functional blocks.
           x
         end)
       RUBY
-      expect(cop.messages)
-        .to eq(['Prefer `{...}` over `do...end` for functional blocks.'])
     end
 
     it 'accepts a multi-line block with do-end if it is the return value ' \
        'of its scope' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         block do
           map do |x|
             x
           end
         end
       RUBY
-      expect(cop.messages.empty?).to be(true)
     end
 
     it 'accepts a single line block with {} if used in an if statement' do
@@ -160,22 +153,20 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     it 'accepts a multi-line functional block with do-end if it is ' \
        'a known procedural method' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         foo = bar.tap do |x|
           x.age = 3
         end
       RUBY
-      expect(cop.messages.empty?).to be(true)
     end
 
     it 'accepts a multi-line functional block with do-end if it is ' \
        'an ignored method' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         foo = lambda do
           puts 42
         end
       RUBY
-      expect(cop.messages.empty?).to be(true)
     end
 
     it 'registers an offense for a single line procedural block' do
@@ -339,7 +330,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       end
 
       it 'accepts braces if do-end would change the meaning' do
-        src = <<-RUBY.strip_indent
+        expect_no_offenses(<<-RUBY.strip_indent)
           scope :foo, lambda { |f|
             where(condition: "value")
           }
@@ -357,38 +348,36 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
             expects :save
           }
         RUBY
-        inspect_source(src)
-        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'accepts a multi-line functional block with {} if it is ' \
          'an ignored method' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           foo = proc {
             puts 42
           }
         RUBY
-        expect(cop.messages.empty?).to be(true)
       end
 
       it 'registers an offense for braces if do-end would not change ' \
          'the meaning' do
-        src = <<-RUBY.strip_indent
+        expect_offense(<<-RUBY.strip_indent)
           scope :foo, (lambda { |f|
+                              ^ Avoid using `{...}` for multi-line blocks.
             where(condition: "value")
           })
 
           expect { something }.to(raise_error(ErrorClass) { |error|
+                                                          ^ Avoid using `{...}` for multi-line blocks.
             # ...
           })
         RUBY
-        inspect_source(src)
-        expect(cop.offenses.size).to eq(2)
       end
 
       it 'can handle special method names such as []= and done?' do
-        src = <<-RUBY.strip_indent
+        expect_offense(<<-RUBY.strip_indent)
           h2[k2] = Hash.new { |h3,k3|
+                            ^ Avoid using `{...}` for multi-line blocks.
             h3[k3] = 0
           }
 
@@ -396,9 +385,6 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
             e.nil?
           }
         RUBY
-        inspect_source(src)
-        expect(cop.messages)
-          .to eq(['Avoid using `{...}` for multi-line blocks.'])
       end
 
       it 'auto-corrects { and } to do and end' do
@@ -479,12 +465,11 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     it 'accepts a multi-line functional block with {} if it is ' \
        'an ignored method' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         foo = proc {
           puts 42
         }
       RUBY
-      expect(cop.messages.empty?).to be(true)
     end
 
     context 'when there are braces around a multi-line block' do

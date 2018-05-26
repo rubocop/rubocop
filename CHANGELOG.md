@@ -9,6 +9,7 @@
 * [#5888](https://github.com/bbatsov/rubocop/issues/5888): Do not register an offense for `headers` or `env` keyword arguments in `Rails/HttpPositionalArguments`. ([@rrosenblum][])
 * Fix the indentation of autocorrected closing squiggly heredocs. ([@garettarrowood][])
 * [#5908](https://github.com/bbatsov/rubocop/pull/5908): Fix `Style/BracesAroundHashParameters` auto-correct going past the end of the file when the closing curly brace is on the last line of a file. ([@EiNSTeiN-][])
+* Fix a bug where `Style/FrozenStringLiteralComment` would be added to the second line if the first line is empty. ([@rrosenblum][])
 
 ### Changes
 

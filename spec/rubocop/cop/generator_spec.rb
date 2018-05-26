@@ -13,6 +13,8 @@ RSpec.describe RuboCop::Cop::Generator do
   end
 
   describe '#write_source' do
+    include_context 'cli spec behavior'
+
     it 'generates a helpful source file with the name filled in' do
       generated_source = <<-RUBY.strip_indent
         # frozen_string_literal: true
@@ -100,6 +102,8 @@ RSpec.describe RuboCop::Cop::Generator do
   end
 
   describe '#write_spec' do
+    include_context 'cli spec behavior'
+
     it 'generates a helpful starting spec file with the class filled in' do
       generated_source = <<-SPEC.strip_indent
         # frozen_string_literal: true
