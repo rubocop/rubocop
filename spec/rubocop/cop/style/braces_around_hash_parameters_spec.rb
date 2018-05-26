@@ -261,6 +261,14 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
         expect(corrected).to eq('get :i, x: 1')
       end
     end
+
+    context 'in a method call with multi line arguments without parentheses' do
+      it 'removes hash braces' do
+        src = "render 'foo', {\n  foo: bar\n}"
+        corrected = autocorrect_source(src)
+        expect(corrected).to eq("render 'foo', \n  foo: bar\n")
+      end
+    end
   end
 
   context 'when EnforcedStyle is no_braces' do

@@ -180,6 +180,7 @@ RSpec.describe RuboCop::Cop::RangeHelp do
         let(:include_final_newline) { true }
 
         it { is_expected.to eq('newline_at_end') }
+        it { expect(output_range.end_pos).to eq(source.size) }
       end
     end
   end
