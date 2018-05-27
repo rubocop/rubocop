@@ -10,6 +10,7 @@
 * Fix the indentation of autocorrected closing squiggly heredocs. ([@garettarrowood][])
 * [#5908](https://github.com/bbatsov/rubocop/pull/5908): Fix `Style/BracesAroundHashParameters` auto-correct going past the end of the file when the closing curly brace is on the last line of a file. ([@EiNSTeiN-][])
 * Fix a bug where `Style/FrozenStringLiteralComment` would be added to the second line if the first line is empty. ([@rrosenblum][])
+* [#5788](https://github.com/bbatsov/rubocop/issues/5788): Fix `Layout/MultilineBlockLayout` cop auto-correct ignoring LineLength. ([@dpostorivo][])
 
 ### Changes
 

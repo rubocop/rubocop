@@ -37,7 +37,7 @@ module RuboCop
       #   }
       class MultilineBlockLayout < Cop
         include RangeHelp
-
+        include StatementModifier
         MSG = 'Block body expression is on the same line as ' \
               'the block start.'.freeze
         ARG_MSG = 'Block argument expression is not on the same line as the ' \
@@ -58,17 +58,14 @@ module RuboCop
         def autocorrect(node)
           lambda do |corrector|
             unless args_on_beginning_line?(node)
-              autocorrect_arguments(corrector, node)
+              range = argument_range node
+              return false if range.end_pos > max_line_length
+              corrector.replace(range, " |#{block_arg_string(node.arguments)}|")
               expr_before_body = node.arguments.source_range.end
             end
 
             return unless node.body
-
-            expr_before_body ||= node.loc.begin
-
-            if expr_before_body.line == node.body.first_line
-              autocorrect_body(corrector, node, node.body)
-            end
+            autocorrect_body(corrector, node, node.body, expr_before_body)
           end
         end
 
@@ -86,17 +83,18 @@ module RuboCop
           add_offense(node, location: range, message: msg)
         end
 
-        def autocorrect_arguments(corrector, node)
+        def argument_range(node)
           end_pos = range_with_surrounding_space(
             range: node.arguments.source_range,
             side: :right,
             newlines: false
           ).end_pos
-          range = range_between(node.loc.begin.end.begin_pos, end_pos)
-          corrector.replace(range, " |#{block_arg_string(node.arguments)}|")
+          range_between(node.loc.begin.end.begin_pos, end_pos)
         end
 
-        def autocorrect_body(corrector, node, block_body)
+        def autocorrect_body(corrector, node, block_body, expr_before_body)
+          expr_before_body ||= node.loc.begin
+          return unless expr_before_body.line == node.body.first_line
           first_node = if block_body.begin_type?
                          block_body.children.first
                        else
