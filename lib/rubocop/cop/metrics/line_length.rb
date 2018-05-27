@@ -99,8 +99,8 @@ module RuboCop
         end
 
         def allowed_uri_position?(line, uri_range)
-          uri_range.begin < max &&
-            (uri_range.end == line.length || uri_range.end == line.length - 1)
+          clean_line = line.gsub(/.[,"'}]$/, '')
+          uri_range.begin < max && uri_range.end >= clean_line.length
         end
 
         def find_excessive_uri_range(line)

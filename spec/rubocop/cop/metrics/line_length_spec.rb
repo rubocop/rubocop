@@ -65,6 +65,20 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
           expect(cop.offenses.empty?).to be(true)
         end
       end
+
+      context 'and the URL has comma at the end' do
+        let(:source) { <<-RUBY }
+          {
+            confirmation_url: "https://subodomain.example.com/with_a_length_path/?and=some&more=params",
+            foo: :bar
+          }
+        RUBY
+
+        it 'accepts the line' do
+          inspect_source(source)
+          expect(cop.offenses.empty?).to be(true)
+        end
+      end
     end
 
     context 'and the excessive characters include a complete URL' do
