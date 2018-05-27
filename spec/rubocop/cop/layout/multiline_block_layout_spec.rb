@@ -1,7 +1,14 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
-  subject(:cop) { described_class.new }
+  subject(:cop) { described_class.new(config) }
+
+  let(:config) do
+    RuboCop::Config.new('Metrics/LineLength' => {
+                          'Max' => 80,
+                          'Enabled' => true
+                        })
+  end
 
   it 'registers an offense for missing newline in do/end block w/o params' do
     expect_offense(<<-RUBY.strip_indent)
@@ -238,6 +245,27 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
       def f
         X.map do |(a, b)|
         end
+      end
+    RUBY
+  end
+
+  it "doesn't autocorrect if line will be too long" do
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
+      some_result = lambda do |
+          so_many_parameters,
+          it_will_be_too_long,
+          for_one_line_and_cop,
+          will_not_correct|
+        do_something
+      end
+    RUBY
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      some_result = lambda do |
+          so_many_parameters,
+          it_will_be_too_long,
+          for_one_line_and_cop,
+          will_not_correct|
+        do_something
       end
     RUBY
   end
