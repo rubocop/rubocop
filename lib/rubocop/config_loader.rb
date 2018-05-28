@@ -49,7 +49,6 @@ module RuboCop
         resolver.resolve_inheritance(path, hash, file, debug?)
 
         hash.delete('inherit_from')
-        hash.delete('inherit_mode')
 
         Config.create(hash, path)
       end

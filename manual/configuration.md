@@ -128,8 +128,8 @@ The optional directive `inherit_mode` is used to specify which configuration
 keys that have array values should be merged together instead of overriding the
 inherited value.
 
-One caveat is that this directive only works with local and inherited
-configuration files, it is unable to merge with the default.yml config.
+This applies to explicit inheritance using `inherit_from` as well as implicit
+inheritance from the default configuration.
 
 Given the following config:
 ```yaml
@@ -140,6 +140,10 @@ inherit_from:
 inherit_mode:
   merge:
     - Exclude 
+
+AllCops:
+  Exclude:
+    - 'generated/**/*.rb'
 
 Style/For:
   Exclude:
@@ -154,7 +158,8 @@ Style/For:
 ```
 
 The list of `Exclude`s for the `Style/For` cop in this example will be
-`['foo.rb', 'bar.rb']`. 
+`['foo.rb', 'bar.rb']`. Similarly, the `AllCops:Exclude` list will contain all
+the default patterns plus the `generated/**/*.rb` entry that was added locally.
 
 The directive can also be used on individual cop configurations to override
 the global setting.

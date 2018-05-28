@@ -18,6 +18,7 @@
 * [#5761](https://github.com/bbatsov/rubocop/pull/5761): Add `httpdate` to accepted `Rails/TimeZone` methods. ([@cupakromer][])
 * [#5899](https://github.com/bbatsov/rubocop/pull/5899): Add `xmlschema` to accepted `Rails/TimeZone` methods. ([@koic][])
 * [#5906](https://github.com/bbatsov/rubocop/pull/5906): Move REPL command from `rake repl` task to `bin/console` command. ([@koic][])
+* [#5917](https://github.com/bbatsov/rubocop/pull/5917): Let `inherit_mode` work for default configuration too. ([@jonas054][])
 
 ## 0.56.0 (2018-05-14)
 
