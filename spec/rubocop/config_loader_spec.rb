@@ -5,7 +5,12 @@ RSpec.describe RuboCop::ConfigLoader do
 
   include_context 'cli spec behavior'
 
-  before { described_class.debug = true }
+  before do
+    described_class.debug = true
+    # Force reload of default configuration
+    described_class.default_configuration = nil
+  end
+
   after { described_class.debug = false }
 
   let(:default_config) { described_class.default_configuration }
@@ -253,6 +258,11 @@ RSpec.describe RuboCop::ConfigLoader do
           Style/For:
             Exclude:
               - spec/requests/group_invite_spec.rb
+          Rails/Exit:
+            Include:
+              - extra/*.rb
+            Exclude:
+              - junk/*.rb
         YAML
 
         create_file('.rubocop_parent.yml', <<-YAML.strip_indent)
@@ -260,6 +270,12 @@ RSpec.describe RuboCop::ConfigLoader do
             Exclude:
               - 'spec/models/expense_spec.rb'
               - 'spec/models/group_spec.rb'
+          Rails/Exit:
+            inherit_mode:
+              merge:
+                - Exclude
+            Exclude:
+              - funk/*.rb
         YAML
       end
 
@@ -274,11 +290,22 @@ RSpec.describe RuboCop::ConfigLoader do
         end.not_to output(/overrides the same parameter/).to_stdout
       end
 
-      it 'does not merge the default_config' do
-        excludes = configuration_from_file['AllCops']['Exclude']
-        defaults = default_config['AllCops']['Exclude']
+      it 'merges AllCops:Exclude with the default configuration' do
+        expect(configuration_from_file['AllCops']['Exclude'].sort)
+          .to eq(([File.expand_path('spec/requests/expense_spec.rb')] +
+                  default_config['AllCops']['Exclude']).sort)
+      end
 
-        expect((excludes & defaults).empty?).to be true
+      it 'merges Rails/Exit:Exclude with parent and default configuration' do
+        expect(configuration_from_file['Rails/Exit']['Exclude'].sort)
+          .to eq(([File.expand_path('funk/*.rb'),
+                   File.expand_path('junk/*.rb')] +
+                  default_config['Rails/Exit']['Exclude']).sort)
+      end
+
+      it 'overrides Rails/Exit:Include' do
+        expect(configuration_from_file['Rails/Exit']['Include'].sort)
+          .to eq(['extra/*.rb'].sort)
       end
     end
 
