@@ -36,11 +36,16 @@ module RuboCop
         MIXIN_METHODS = %i[extend include prepend].freeze
         MSG = 'Put `%<mixin>s` mixins in %<suffix>s.'.freeze
 
-        def on_send(node)
-          return unless node.macro? && MIXIN_METHODS.include?(node.method_name)
+        def on_class(node)
+          begin_node = node.child_nodes.find(&:begin_type?) || node
+          begin_node.each_child_node(:send).select(&:macro?).each do |macro|
+            next unless MIXIN_METHODS.include?(macro.method_name)
 
-          check(node)
+            check(macro)
+          end
         end
+
+        alias on_module on_class
 
         def autocorrect(node)
           range = node.loc.expression
