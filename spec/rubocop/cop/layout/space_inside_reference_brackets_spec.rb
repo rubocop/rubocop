@@ -208,6 +208,15 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
         .to eq(['Do not use space inside reference brackets.'])
     end
 
+    it 'registers offense in outer ref brackets' do
+      inspect_source(<<-RUBY.strip_indent)
+        record[ options[:attribute] ]
+      RUBY
+      expect(cop.offenses.size).to eq(2)
+      expect(cop.messages.uniq)
+        .to eq(['Do not use space inside reference brackets.'])
+    end
+
     context 'auto-correct' do
       it 'fixes multiple offenses in one set of ref brackets' do
         new_source = autocorrect_source(<<-RUBY.strip_indent)
