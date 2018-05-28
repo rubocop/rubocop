@@ -66,7 +66,7 @@ RSpec.describe RuboCop::Cop::Style::MixinGrouping, :config do
 
       context 'when include call is an argument to another method' do
         it_behaves_like 'code without offense',
-                        'expect(foo).to include(bar, baz)'
+                        'expect(foo).to include { { bar: baz } }'
       end
 
       context 'with several mixins in separate calls' do

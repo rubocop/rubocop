@@ -18,6 +18,7 @@
 * [#5908](https://github.com/bbatsov/rubocop/pull/5908): Fix `Style/BracesAroundHashParameters` auto-correct going past the end of the file when the closing curly brace is on the last line of a file. ([@EiNSTeiN-][])
 * Fix a bug where `Style/FrozenStringLiteralComment` would be added to the second line if the first line is empty. ([@rrosenblum][])
 * [#5914](https://github.com/bbatsov/rubocop/issues/5914): Make `Layout/SpaceInsideReferenceBrackets` aware of `no_space` when using nested reference brackets. ([@koic][])
+* [#5799](https://github.com/bbatsov/rubocop/issues/5799): Fix false positive in `Style/MixinGrouping` when method named `include` accepts block. ([@Darhazer][])
 
 ### Changes
 
