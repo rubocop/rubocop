@@ -19,6 +19,7 @@
 * [#5899](https://github.com/bbatsov/rubocop/pull/5899): Add `xmlschema` to accepted `Rails/TimeZone` methods. ([@koic][])
 * [#5906](https://github.com/bbatsov/rubocop/pull/5906): Move REPL command from `rake repl` task to `bin/console` command. ([@koic][])
 * [#5917](https://github.com/bbatsov/rubocop/pull/5917): Let `inherit_mode` work for default configuration too. ([@jonas054][])
+* [#5929](https://github.com/bbatsov/rubocop/pull/5929): Stop including string extensions from `unicode/display_width`. ([@nroman-stripe][])
 
 ## 0.56.0 (2018-05-14)
 
@@ -3386,3 +3387,4 @@
 [@cupakromer]: https://github.com/cupakromer
 [@TikiTDO]: https://github.com/TikiTDO
 [@EiNSTeiN-]: https://github.com/EiNSTeiN-
+[@nroman-stripe]: https://github.com/nroman-stripe
