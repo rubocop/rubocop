@@ -100,7 +100,7 @@ RSpec.describe RuboCop::Cop::Style::WhileUntilModifier do
     expect_no_offenses('ala until bala')
   end
 
-  # Regression: https://github.com/bbatsov/rubocop/issues/4006
+  # Regression: https://github.com/rubocop-hq/rubocop/issues/4006
   context 'when the modifier condition is multiline' do
     it 'registers an offense' do
       expect_offense(<<-RUBY.strip_indent)

@@ -30,7 +30,7 @@ end
 
 ### References
 
-* [https://github.com/bbatsov/ruby-style-guide#accessor_mutator_method_names](https://github.com/bbatsov/ruby-style-guide#accessor_mutator_method_names)
+* [https://github.com/rubocop-hq/ruby-style-guide#accessor_mutator_method_names](https://github.com/rubocop-hq/ruby-style-guide#accessor_mutator_method_names)
 
 ## Naming/AsciiIdentifiers
 
@@ -74,7 +74,7 @@ params[:width_gteq]
 
 ### References
 
-* [https://github.com/bbatsov/ruby-style-guide#english-identifiers](https://github.com/bbatsov/ruby-style-guide#english-identifiers)
+* [https://github.com/rubocop-hq/ruby-style-guide#english-identifiers](https://github.com/rubocop-hq/ruby-style-guide#english-identifiers)
 
 ## Naming/BinaryOperatorParameterName
 
@@ -97,7 +97,7 @@ def +(other); end
 
 ### References
 
-* [https://github.com/bbatsov/ruby-style-guide#other-arg](https://github.com/bbatsov/ruby-style-guide#other-arg)
+* [https://github.com/rubocop-hq/ruby-style-guide#other-arg](https://github.com/rubocop-hq/ruby-style-guide#other-arg)
 
 ## Naming/ClassAndModuleCamelCase
 
@@ -126,7 +126,7 @@ end
 
 ### References
 
-* [https://github.com/bbatsov/ruby-style-guide#camelcase-classes](https://github.com/bbatsov/ruby-style-guide#camelcase-classes)
+* [https://github.com/rubocop-hq/ruby-style-guide#camelcase-classes](https://github.com/rubocop-hq/ruby-style-guide#camelcase-classes)
 
 ## Naming/ConstantName
 
@@ -154,7 +154,7 @@ INCH_IN_CM = 2.54
 
 ### References
 
-* [https://github.com/bbatsov/ruby-style-guide#screaming-snake-case](https://github.com/bbatsov/ruby-style-guide#screaming-snake-case)
+* [https://github.com/rubocop-hq/ruby-style-guide#screaming-snake-case](https://github.com/rubocop-hq/ruby-style-guide#screaming-snake-case)
 
 ## Naming/FileName
 
@@ -192,7 +192,7 @@ AllowedAcronyms | `CLI`, `DSL`, `ACL`, `API`, `ASCII`, `CPU`, `CSS`, `DNS`, `EOF
 
 ### References
 
-* [https://github.com/bbatsov/ruby-style-guide#snake-case-files](https://github.com/bbatsov/ruby-style-guide#snake-case-files)
+* [https://github.com/rubocop-hq/ruby-style-guide#snake-case-files](https://github.com/rubocop-hq/ruby-style-guide#snake-case-files)
 
 ## Naming/HeredocDelimiterCase
 
@@ -240,7 +240,7 @@ EnforcedStyle | `uppercase` | `lowercase`, `uppercase`
 
 ### References
 
-* [https://github.com/bbatsov/ruby-style-guide#heredoc-delimiters](https://github.com/bbatsov/ruby-style-guide#heredoc-delimiters)
+* [https://github.com/rubocop-hq/ruby-style-guide#heredoc-delimiters](https://github.com/rubocop-hq/ruby-style-guide#heredoc-delimiters)
 
 ## Naming/HeredocDelimiterNaming
 
@@ -279,7 +279,7 @@ Blacklist | `(?-mix:(^|\s)(EO[A-Z]{1}|END)(\s|$))` | Array
 
 ### References
 
-* [https://github.com/bbatsov/ruby-style-guide#heredoc-delimiters](https://github.com/bbatsov/ruby-style-guide#heredoc-delimiters)
+* [https://github.com/rubocop-hq/ruby-style-guide#heredoc-delimiters](https://github.com/rubocop-hq/ruby-style-guide#heredoc-delimiters)
 
 ## Naming/MemoizedInstanceVariableName
 
@@ -357,7 +357,7 @@ EnforcedStyle | `snake_case` | `snake_case`, `camelCase`
 
 ### References
 
-* [https://github.com/bbatsov/ruby-style-guide#snake-case-symbols-methods-vars](https://github.com/bbatsov/ruby-style-guide#snake-case-symbols-methods-vars)
+* [https://github.com/rubocop-hq/ruby-style-guide#snake-case-symbols-methods-vars](https://github.com/rubocop-hq/ruby-style-guide#snake-case-symbols-methods-vars)
 
 ## Naming/PredicateName
 
@@ -399,7 +399,7 @@ Exclude | `spec/**/*` | Array
 
 ### References
 
-* [https://github.com/bbatsov/ruby-style-guide#bool-methods-qmark](https://github.com/bbatsov/ruby-style-guide#bool-methods-qmark)
+* [https://github.com/rubocop-hq/ruby-style-guide#bool-methods-qmark](https://github.com/rubocop-hq/ruby-style-guide#bool-methods-qmark)
 
 ## Naming/UncommunicativeBlockParamName
 
@@ -549,7 +549,7 @@ EnforcedStyle | `snake_case` | `snake_case`, `camelCase`
 
 ### References
 
-* [https://github.com/bbatsov/ruby-style-guide#snake-case-symbols-methods-vars](https://github.com/bbatsov/ruby-style-guide#snake-case-symbols-methods-vars)
+* [https://github.com/rubocop-hq/ruby-style-guide#snake-case-symbols-methods-vars](https://github.com/rubocop-hq/ruby-style-guide#snake-case-symbols-methods-vars)
 
 ## Naming/VariableNumber
 

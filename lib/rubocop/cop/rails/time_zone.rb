@@ -5,7 +5,7 @@ module RuboCop
     module Rails
       # This cop checks for the use of Time methods without zone.
       #
-      # Built on top of Ruby on Rails style guide (https://github.com/bbatsov/rails-style-guide#time)
+      # Built on top of Ruby on Rails style guide (https://github.com/rubocop-hq/rails-style-guide#time)
       # and the article http://danilenko.org/2012/7/6/rails_timezones/ .
       #
       # Two styles are supported for this cop. When EnforcedStyle is 'strict'

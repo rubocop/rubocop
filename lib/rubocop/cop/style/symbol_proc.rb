@@ -35,7 +35,7 @@ module RuboCop
             block_method_name = resolve_block_method_name(send_or_super)
 
             # TODO: Rails-specific handling that we should probably make
-            # configurable - https://github.com/bbatsov/rubocop/issues/1485
+            # configurable - https://github.com/rubocop-hq/rubocop/issues/1485
             # we should ignore lambdas & procs
             return if proc_node?(send_or_super)
             return if %i[lambda proc].include?(block_method_name)

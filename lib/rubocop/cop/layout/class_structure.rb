@@ -103,7 +103,7 @@ module RuboCop
       #     end
       #   end
       #
-      # @see https://github.com/bbatsov/ruby-style-guide#consistent-classes
+      # @see https://github.com/rubocop-hq/ruby-style-guide#consistent-classes
       class ClassStructure < Cop
         HUMANIZED_NODE_TYPE = {
           casgn: :constants,

@@ -80,7 +80,7 @@ AllCops:
   DisplayStyleGuide: false
   # When specifying style guide URLs, any paths and/or fragments will be
   # evaluated relative to the base URL.
-  StyleGuideBaseURL: https://github.com/bbatsov/ruby-style-guide
+  StyleGuideBaseURL: https://github.com/rubocop-hq/ruby-style-guide
   # Extra details are not displayed in offense messages by default. Change
   # behavior by overriding ExtraDetails, or by giving the
   # `-E/--extra-details` option.
