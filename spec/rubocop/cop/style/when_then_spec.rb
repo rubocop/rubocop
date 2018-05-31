@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Cop::Style::WhenThen do
     RUBY
   end
 
-  # Regression: https://github.com/bbatsov/rubocop/issues/3868
+  # Regression: https://github.com/rubocop-hq/rubocop/issues/3868
   context 'when inspecting a case statement with an empty branch' do
     it 'does not register an offense' do
       expect_no_offenses(<<-RUBY.strip_indent)

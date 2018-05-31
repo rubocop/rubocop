@@ -13,7 +13,7 @@ and solves a problem that RuboCop contributors were facing for a long time:
 
 - Ability to declaratively define rules for node search, matching, and capture.
 
-The code below belongs to [Style/ArrayJoin](http://www.rubydoc.info/github/bbatsov/RuboCop/RuboCop/Cop/Style/ArrayJoin)
+The code below belongs to [Style/ArrayJoin](http://www.rubydoc.info/github/rubocop-hq/RuboCop/RuboCop/Cop/Style/ArrayJoin)
 cop and it's in favor of `Array#join` over `Array#*`. Then it tries to find
 code like `%w(one two three) * ", "` and suggest to use `#join` instead.
 
@@ -287,8 +287,8 @@ Curious about how it works?
 
 Check more details in the
 [documentation](http://www.rubydoc.info/gems/rubocop/RuboCop/NodePattern)
-or browse the [source code](https://github.com/bbatsov/rubocop/blob/master/lib/rubocop/node_pattern.rb)
+or browse the [source code](https://github.com/rubocop-hq/rubocop/blob/master/lib/rubocop/node_pattern.rb)
 directly. It's easy to read and hack on.
 
-The [specs](https://github.com/bbatsov/rubocop/blob/master/spec/rubocop/node_pattern_spec.rb)
+The [specs](https://github.com/rubocop-hq/rubocop/blob/master/spec/rubocop/node_pattern_spec.rb)
 are also very useful to comprehend each feature.

@@ -1140,7 +1140,7 @@ Rails/DelegateAllowBlank:
 
 Rails/DynamicFindBy:
   Description: 'Use `find_by` instead of dynamic `find_by_*`.'
-  StyleGuide: 'https://github.com/bbatsov/rails-style-guide#find_by'
+  StyleGuide: 'https://github.com/rubocop-hq/rails-style-guide#find_by'
   Enabled: true
 
 Rails/EnumUniqueness:
@@ -1164,22 +1164,22 @@ Rails/FilePath:
 
 Rails/FindBy:
   Description: 'Prefer find_by over where.first.'
-  StyleGuide: 'https://github.com/bbatsov/rails-style-guide#find_by'
+  StyleGuide: 'https://github.com/rubocop-hq/rails-style-guide#find_by'
   Enabled: true
 
 Rails/FindEach:
   Description: 'Prefer all.find_each over all.find.'
-  StyleGuide: 'https://github.com/bbatsov/rails-style-guide#find-each'
+  StyleGuide: 'https://github.com/rubocop-hq/rails-style-guide#find-each'
   Enabled: true
 
 Rails/HasAndBelongsToMany:
   Description: 'Prefer has_many :through to has_and_belongs_to_many.'
-  StyleGuide: 'https://github.com/bbatsov/rails-style-guide#has-many-through'
+  StyleGuide: 'https://github.com/rubocop-hq/rails-style-guide#has-many-through'
   Enabled: true
 
 Rails/HasManyOrHasOneDependent:
   Description: 'Define the dependent option to the has_many and has_one associations.'
-  StyleGuide: 'https://github.com/bbatsov/rails-style-guide#has_many-has_one-dependent-option'
+  StyleGuide: 'https://github.com/rubocop-hq/rails-style-guide#has_many-has_one-dependent-option'
   Enabled: true
 
 Rails/HttpPositionalArguments:
@@ -1199,7 +1199,7 @@ Rails/InverseOf:
 
 Rails/LexicallyScopedActionFilter:
   Description: "Checks that methods specified in the filter's `only` or `except` options are explicitly defined in the controller."
-  StyleGuide: 'https://github.com/bbatsov/rails-style-guide#lexically-scoped-action-filter'
+  StyleGuide: 'https://github.com/rubocop-hq/rails-style-guide#lexically-scoped-action-filter'
   Enabled: true
 
 Rails/NotNullColumn:
@@ -1230,7 +1230,7 @@ Rails/ReadWriteAttribute:
   Description: >-
                  Checks for read_attribute(:attr) and
                  write_attribute(:attr, val).
-  StyleGuide: 'https://github.com/bbatsov/rails-style-guide#read-attribute'
+  StyleGuide: 'https://github.com/rubocop-hq/rails-style-guide#read-attribute'
   Enabled: true
 
 Rails/RedundantReceiverInWithOptions:
@@ -1251,7 +1251,7 @@ Rails/RequestReferer:
 
 Rails/ReversibleMigration:
   Description: 'Checks whether the change method of the migration file is reversible.'
-  StyleGuide: 'https://github.com/bbatsov/rails-style-guide#reversible-migration'
+  StyleGuide: 'https://github.com/rubocop-hq/rails-style-guide#reversible-migration'
   Reference: 'http://api.rubyonrails.org/classes/ActiveRecord/Migration/CommandRecorder.html'
   Enabled: true
 
@@ -1272,7 +1272,7 @@ Rails/SkipsModelValidations:
 
 Rails/TimeZone:
   Description: 'Checks the correct usage of time zone aware methods.'
-  StyleGuide: 'https://github.com/bbatsov/rails-style-guide#time'
+  StyleGuide: 'https://github.com/rubocop-hq/rails-style-guide#time'
   Reference: 'http://danilenko.org/2012/7/6/rails_timezones'
   Enabled: true
 

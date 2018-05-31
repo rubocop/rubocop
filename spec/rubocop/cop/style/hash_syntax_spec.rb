@@ -141,7 +141,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         expect(new_source).to eq('{ a: 1, b: 2 }')
       end
 
-      # Bug: https://github.com/bbatsov/rubocop/issues/5019
+      # Bug: https://github.com/rubocop-hq/rubocop/issues/5019
       it 'auto-corrects a missing space when hash is used as argument' do
         new_source = autocorrect_source('foo:bar => 1')
         expect(new_source).to eq('foo bar: 1')

@@ -69,7 +69,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
       expect_no_offenses('[:one, :two, :"space here"]')
     end
 
-    # Bug: https://github.com/bbatsov/rubocop/issues/4481
+    # Bug: https://github.com/rubocop-hq/rubocop/issues/4481
     it 'does not register an offense in an ambiguous block context' do
       expect_no_offenses('foo [:bar, :baz] { qux }')
     end

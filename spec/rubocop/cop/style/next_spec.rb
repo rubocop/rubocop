@@ -515,7 +515,7 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
   end
 
   it 'allows super nodes' do
-    # https://github.com/bbatsov/rubocop/issues/1115
+    # https://github.com/rubocop-hq/rubocop/issues/1115
     expect_no_offenses(<<-RUBY.strip_indent)
       def foo
         super(a, a) { a }

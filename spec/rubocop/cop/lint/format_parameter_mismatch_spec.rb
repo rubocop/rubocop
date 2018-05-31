@@ -158,7 +158,7 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
     end
   end
 
-  # Regression: https://github.com/bbatsov/rubocop/issues/3869
+  # Regression: https://github.com/rubocop-hq/rubocop/issues/3869
   context 'when passed an empty array' do
     it 'does not register an offense' do
       expect_no_offenses("'%' % []")
