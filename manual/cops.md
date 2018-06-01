@@ -147,6 +147,7 @@ In the following section you find all available cops:
 * [Layout/IndentationConsistency](cops_layout.md#layoutindentationconsistency)
 * [Layout/IndentationWidth](cops_layout.md#layoutindentationwidth)
 * [Layout/InitialIndentation](cops_layout.md#layoutinitialindentation)
+* [Layout/LeadingBlankLines](cops_layout.md#layoutleadingblanklines)
 * [Layout/LeadingCommentSpace](cops_layout.md#layoutleadingcommentspace)
 * [Layout/MultilineArrayBraceLayout](cops_layout.md#layoutmultilinearraybracelayout)
 * [Layout/MultilineAssignmentLayout](cops_layout.md#layoutmultilineassignmentlayout)
