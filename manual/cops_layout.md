@@ -2574,6 +2574,35 @@ class A
 end
 ```
 
+## Layout/LeadingBlankLines
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for unnecessary leading blank lines at the beginning
+of a file.
+
+# bad
+# (start of file)
+
+class Foo
+end
+
+# bad
+# (start of file)
+
+# a comment
+
+# good
+# (start of file)
+class Foo
+end
+
+# good
+# (start of file)
+# a comment
+
 ## Layout/LeadingCommentSpace
 
 Enabled by default | Supports autocorrection

@@ -720,7 +720,6 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             EnforcedStyle: rails
         YAML
         create_file('example.rb', <<-RUBY.strip_indent)
-
           # A feline creature
           class Cat
             def meow
@@ -755,7 +754,6 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               EnforcedStyle: rails
           YAML
           create_file('example.rb', <<-RUBY.strip_indent)
-
             # A feline creature
             #{parent} Cat
               def meow
@@ -785,8 +783,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           expect($stdout.string)
             .to eq(<<-RESULT.strip_indent)
               == example.rb ==
-              C: 10:  3: Layout/IndentationWidth: Use 2 (not 0) spaces for rails indentation.
-              C: 16:  3: Layout/IndentationWidth: Use 2 (not 0) spaces for rails indentation.
+              C:  9:  3: Layout/IndentationWidth: Use 2 (not 0) spaces for rails indentation.
+              C: 15:  3: Layout/IndentationWidth: Use 2 (not 0) spaces for rails indentation.
 
               1 file inspected, 2 offenses detected
           RESULT
