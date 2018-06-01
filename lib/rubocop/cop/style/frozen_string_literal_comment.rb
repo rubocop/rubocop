@@ -139,13 +139,13 @@ module RuboCop
         def insert_comment(corrector)
           last_special_comment = last_special_comment(processed_source)
           if last_special_comment.nil?
-            corrector.insert_before(correction_range, preceeding_comment)
+            corrector.insert_before(correction_range, preceding_comment)
           else
             corrector.insert_after(correction_range, proceeding_comment)
           end
         end
 
-        def preceeding_comment
+        def preceding_comment
           if processed_source.tokens[0].space_before?
             "#{FROZEN_STRING_LITERAL_ENABLED}\n"
           else
