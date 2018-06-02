@@ -5,15 +5,17 @@ module RuboCop
     module Style
       # This cop checks for usage of the %q/%Q syntax when '' or "" would do.
       #
-      # # bad
-      # name = %q(Bruce Wayne)
-      # time = %q(8 o'clock)
-      # question = %q("What did you say?")
+      # @example
       #
-      # # good
-      # name = 'Bruce Wayne'
-      # time = "8 o'clock"
-      # question = '"What did you say?"'
+      #   # bad
+      #   name = %q(Bruce Wayne)
+      #   time = %q(8 o'clock)
+      #   question = %q("What did you say?")
+      #
+      #   # good
+      #   name = 'Bruce Wayne'
+      #   time = "8 o'clock"
+      #   question = '"What did you say?"'
       #
       class UnneededPercentQ < Cop
         MSG = 'Use `%<q_type>s` only for strings that contain both ' \
