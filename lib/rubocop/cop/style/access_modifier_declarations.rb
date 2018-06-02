@@ -62,7 +62,7 @@ module RuboCop
         ].join(' ')
 
         def on_send(node)
-          return unless node.access_modifier? || node.non_bare_access_modifier?
+          return unless node.access_modifier?
 
           if offense?(node)
             add_offense(node, location: :selector) do
