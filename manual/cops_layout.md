@@ -665,7 +665,6 @@ Checks the indentation of here document closings.
 
 ```ruby
 # bad
-
 class Foo
   def bar
     <<~SQL
@@ -675,7 +674,6 @@ class Foo
 end
 
 # good
-
 class Foo
   def bar
     <<~SQL
@@ -683,6 +681,26 @@ class Foo
     SQL
   end
 end
+
+# bad
+
+# heredoc contents is before closing heredoc.
+foo arg,
+    <<~EOS
+  Hi
+    EOS
+
+# good
+foo arg,
+    <<~EOS
+  Hi
+EOS
+
+# good
+foo arg,
+    <<~EOS
+      Hi
+    EOS
 ```
 
 ## Layout/ClosingParenthesisIndentation

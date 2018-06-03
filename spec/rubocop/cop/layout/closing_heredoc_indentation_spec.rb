@@ -20,6 +20,58 @@ RSpec.describe RuboCop::Cop::Layout::ClosingHeredocIndentation do
     RUBY
   end
 
+  it 'accepts correctly indented closing heredoc when ' \
+     'heredoc contents is after closing heredoc' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      include_examples :offense,
+                       <<-EOS
+                         foo
+                           bar
+                       EOS
+    RUBY
+  end
+
+  it 'accepts correctly indented closing heredoc when ' \
+     'heredoc contents with blank line' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      def_node_matcher :eval_without_location?, <<-PATTERN
+        {
+          (send $(send _ $:sort ...) ${:[] :at :slice} {(int 0) (int -1)})
+
+          (send $(send _ $:sort_by _) ${:last :first})
+        }
+      PATTERN
+    RUBY
+  end
+
+  it 'accepts correctly indented closing heredoc when aligned at ' \
+     'the beginning of method definition' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      include_examples :offense,
+                       <<-EOS
+        bar
+      EOS
+    RUBY
+  end
+
+  it 'accepts correctly indented closing heredoc when aligned at ' \
+     'the beginning of method definition and using `strip_indent`' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      include_examples :offense,
+                       <<-EOS.strip_indent
+        bar
+      EOS
+    RUBY
+  end
+
+  it 'accepts correctly indented closing heredoc when aligned at ' \
+     'the beginning of method definition and content is empty' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      let(:source) { <<-EOS.strip_indent }
+      EOS
+    RUBY
+  end
+
   it 'registers an offence for bad indentation of a closing heredoc' do
     expect_offense(<<-RUBY.strip_indent)
       class Test
@@ -30,6 +82,19 @@ RSpec.describe RuboCop::Cop::Layout::ClosingHeredocIndentation do
       ^^^^^ `SQL` is not aligned with `<<-SQL`.
         end
       end
+    RUBY
+  end
+
+  it 'registers correctly indented closing heredoc when ' \
+     'heredoc contents is before closing heredoc' do
+    expect_offense(<<-RUBY.strip_indent)
+      include_examples :offense,
+                       <<-EOS
+                         foo
+        bar
+                         baz
+                       EOS
+      ^^^^^^^^^^^^^^^^^^^^ `EOS` is not aligned with `<<-EOS` or beginning of method definition.
     RUBY
   end
 
