@@ -333,6 +333,7 @@ In the following section you find all available cops:
 * [Rails/ApplicationRecord](cops_rails.md#railsapplicationrecord)
 * [Rails/AssertNot](cops_rails.md#railsassertnot)
 * [Rails/Blank](cops_rails.md#railsblank)
+* [Rails/BulkChangeTable](cops_rails.md#railsbulkchangetable)
 * [Rails/CreateTableWithTimestamps](cops_rails.md#railscreatetablewithtimestamps)
 * [Rails/Date](cops_rails.md#railsdate)
 * [Rails/Delegate](cops_rails.md#railsdelegate)

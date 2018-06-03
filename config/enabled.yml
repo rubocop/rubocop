@@ -1122,6 +1122,10 @@ Rails/Blank:
   Description: 'Enforces use of `blank?`.'
   Enabled: true
 
+Rails/BulkChangeTable:
+  Description: 'Check whether alter queries are combinable.'
+  Enabled: true
+
 Rails/CreateTableWithTimestamps:
   Description: >-
                   Checks the migration for which timestamps are not included
