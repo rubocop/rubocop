@@ -147,11 +147,11 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'accepts an emacs style combined magic comment' do
       expect_no_offenses(<<-RUBY.strip_indent)
-          #!/usr/bin/env ruby
-          # -*- encoding: UTF-8; frozen_string_literal: true -*-
-          # encoding: utf-8
-          puts 1
-        RUBY
+        #!/usr/bin/env ruby
+        # -*- encoding: UTF-8; frozen_string_literal: true -*-
+        # encoding: utf-8
+        puts 1
+      RUBY
     end
 
     context 'auto-correct' do
