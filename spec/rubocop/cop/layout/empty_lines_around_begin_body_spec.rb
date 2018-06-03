@@ -31,11 +31,11 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
 
       foo
     end
-                   CODE
+  CODE
     begin
       foo
     end
-                   CORRECTION
+  CORRECTION
   include_examples :offense, 'begin body ending', 'end', <<-CODE, <<-CORRECTION
     begin
       foo
@@ -55,13 +55,13 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
         foo
       end
     end
-                   CODE
+  CODE
     def bar
       begin
         foo
       end
     end
-                   CORRECTION
+  CORRECTION
   include_examples :offense,
                    'begin body ending in method', 'end', <<-CODE, <<-CORRECTION
     def bar
@@ -70,13 +70,13 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
 
       end
     end
-                   CODE
+  CODE
     def bar
       begin
         foo
       end
     end
-                   CORRECTION
+  CORRECTION
 
   include_examples :offense,
                    'begin body starting with rescue', 'beginning',
@@ -87,13 +87,13 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
     rescue
       bar
     end
-                   CODE
+  CODE
     begin
       foo
     rescue
       bar
     end
-                   CORRECTION
+  CORRECTION
   include_examples :offense, 'rescue body ending', 'end', <<-CODE, <<-CORRECTION
     begin
       foo
@@ -199,5 +199,5 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
         bar
       end
     end
-                   RUBY
+  RUBY
 end

@@ -502,7 +502,7 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
                     'when expanding an assigned variable', <<-RUBY.strip_indent
       foo = [1, 2, 3]
       a, b, c = foo
-                    RUBY
+    RUBY
 
     describe 'using custom indentation width' do
       let(:config) do

@@ -35,13 +35,13 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords d
     rescue
       f2
     end
-                   CODE
+  CODE
     begin
       f1
     rescue
       f2
     end
-                   CORRECTION
+  CORRECTION
 
   include_examples :offense,
                    'rescue section starting',
@@ -53,13 +53,13 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords d
 
       f2
     end
-                   CODE
+  CODE
     begin
       f1
     rescue
       f2
     end
-                   CORRECTION
+  CORRECTION
 
   include_examples :offense,
                    'rescue section ending',
@@ -73,7 +73,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords d
     else
       f3
     end
-                   CODE
+  CODE
     begin
       f1
     rescue
@@ -81,7 +81,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords d
     else
       f3
     end
-                   CORRECTION
+  CORRECTION
 
   include_examples :offense,
                    'rescue section ending for method definition',
@@ -95,7 +95,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords d
     else
       f3
     end
-                   CODE
+  CODE
     def foo
       f1
     rescue
@@ -103,7 +103,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords d
     else
       f3
     end
-                   CORRECTION
+  CORRECTION
 
   include_examples :accepts, 'no empty line', <<-RUBY
     begin

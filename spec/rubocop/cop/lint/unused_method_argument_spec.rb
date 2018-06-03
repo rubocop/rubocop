@@ -174,7 +174,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
             def some_method(foo)
               super
             end
-          RUBY
+           RUBY
         end
       end
     end
