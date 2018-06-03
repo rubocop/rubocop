@@ -6,6 +6,7 @@
 
 * [#5444](https://github.com/bbatsov/rubocop/pull/5444): Add new `Style/AccessModifierDeclarations` cop. ([@brandonweiss][])
 * [#5803](https://github.com/bbatsov/rubocop/issues/5803): Add new `Style/UnneededCondition` cop. ([@balbesina][])
+* [#5406](https://github.com/bbatsov/rubocop/issues/5406): Add new `Layout/ClosingHeredocIndentation` cop. ([@siggymcfried][])
 
 ### Bug fixes
 
@@ -170,7 +171,6 @@
 * Add new `Naming/MemoizedInstanceVariableName` cop. ([@satyap][])
 * [#5376](https://github.com/bbatsov/rubocop/issues/5376): Add new `Style/EmptyLineAfterGuardClause` cop. ([@unkmas][])
 * Add new `Rails/ActiveRecordAliases` cop. ([@elebow][])
-* [#5406](https://github.com/bbatsov/rubocop/issues/5406): Add new `Layout/ClosingHeredocIndentation` cop. ([@siggymcfried][])
 
 ### Bug fixes
 
