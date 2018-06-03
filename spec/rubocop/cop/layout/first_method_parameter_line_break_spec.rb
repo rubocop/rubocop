@@ -69,19 +69,19 @@ RSpec.describe RuboCop::Cop::Layout::FirstMethodParameterLineBreak do
 
   it 'ignores params listed on a single line' do
     expect_no_offenses(<<-RUBY.strip_indent)
-        def foo(bar, baz, bing)
-          do_something
-        end
-      RUBY
+      def foo(bar, baz, bing)
+        do_something
+      end
+    RUBY
   end
 
   it 'ignores params without parens' do
     expect_no_offenses(<<-RUBY.strip_indent)
-        def foo bar,
-          baz
-          do_something
-        end
-      RUBY
+      def foo bar,
+        baz
+        do_something
+      end
+    RUBY
   end
 
   it 'ignores single-line methods' do
@@ -90,10 +90,10 @@ RSpec.describe RuboCop::Cop::Layout::FirstMethodParameterLineBreak do
 
   it 'ignores methods without params' do
     expect_no_offenses(<<-RUBY.strip_indent)
-        def foo
-          bing
-        end
-      RUBY
+      def foo
+        bing
+      end
+    RUBY
   end
 
   context 'params with default values' do
