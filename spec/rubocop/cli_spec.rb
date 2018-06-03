@@ -75,7 +75,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             W:  1:  1: Lint/UselessAssignment: Useless assignment to variable - x.
 
             1 file inspected, 1 offense detected
-          RESULT
+        RESULT
       end
     end
 
@@ -123,7 +123,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           C:  1:  1: Layout/EndOfLine: Carriage return character detected.
 
           1 file inspected, 1 offense detected
-        RESULT
+      RESULT
     end
   end
 
@@ -135,7 +135,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         .to eq(<<-RESULT.strip_indent)
 
           1 file inspected, no offenses detected
-        RESULT
+      RESULT
     end
 
     context 'when super is used with a block' do
@@ -163,7 +163,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           .to eq(<<-RESULT.strip_indent)
 
             1 file inspected, no offenses detected
-          RESULT
+        RESULT
       end
     end
   end
@@ -177,7 +177,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         C:  1:  6: Layout/TrailingWhitespace: Trailing whitespace detected.
 
         1 file inspected, 1 offense detected
-      RESULT
+    RESULT
   end
 
   it 'registers an offense for a syntax error' do
@@ -212,7 +212,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect($stdout.string)
       .to eq(<<-RESULT.strip_indent)
         #{abs('example.rb')}:1:1: F: Lint/Syntax: Invalid byte sequence in utf-8.
-      RESULT
+    RESULT
   end
 
   context 'when errors are raised while processing files due to bugs' do
@@ -277,7 +277,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             # frozen_string_literal: true
 
             a = 1 # rubocop:disable Lint/UselessAssignment
-          RUBY
+        RUBY
       end
     end
 
@@ -326,7 +326,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect($stdout.string)
         .to eq(<<-RESULT.strip_indent)
           #{abs('example.rb')}:2:81: C: Metrics/LineLength: Line is too long. [95/80]
-        RESULT
+      RESULT
     end
 
     context 'without using namespace' do
@@ -339,7 +339,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stdout.string)
           .to eq(<<-RESULT.strip_indent)
             #{abs('example.rb')}:2:81: C: Metrics/LineLength: Line is too long. [95/80]
-          RESULT
+        RESULT
       end
     end
 
@@ -391,18 +391,18 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                        'individually disabled', <<-YAML.strip_indent
         Lint/UnneededCopDisableDirective:
           Enabled: false
-                       YAML
+      YAML
       include_examples 'UnneededCopDisableDirective not run',
                        'individually excluded', <<-YAML.strip_indent
         Lint/UnneededCopDisableDirective:
           Exclude:
             - example.rb
-                       YAML
+      YAML
       include_examples 'UnneededCopDisableDirective not run',
                        'disabled through department', <<-YAML.strip_indent
         Lint:
           Enabled: false
-                       YAML
+      YAML
     end
   end
 
@@ -789,7 +789,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               C: 16:  3: Layout/IndentationWidth: Use 2 (not 0) spaces for rails indentation.
 
               1 file inspected, 2 offenses detected
-            RESULT
+          RESULT
         end
       end
     end
