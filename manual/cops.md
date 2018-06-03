@@ -529,6 +529,7 @@ In the following section you find all available cops:
 * [Style/TrivialAccessors](cops_style.md#styletrivialaccessors)
 * [Style/UnlessElse](cops_style.md#styleunlesselse)
 * [Style/UnneededCapitalW](cops_style.md#styleunneededcapitalw)
+* [Style/UnneededCondition](cops_style.md#styleunneededcondition)
 * [Style/UnneededInterpolation](cops_style.md#styleunneededinterpolation)
 * [Style/UnneededPercentQ](cops_style.md#styleunneededpercentq)
 * [Style/UnpackFirst](cops_style.md#styleunpackfirst)

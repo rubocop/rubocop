@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#5803](https://github.com/bbatsov/rubocop/issues/5803): Add new `Style/UnneededCondition` cop. ([@balbesina][])
+
 ### Bug fixes
 
 * [#5897](https://github.com/bbatsov/rubocop/issues/5897): Fix `Style/SymbolArray` and `Style/WordArray` not working on arrays of size 1. ([@TikiTDO][])
