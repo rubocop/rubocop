@@ -1061,7 +1061,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect(File.read('emacs_output.txt'))
         .to eq(<<-RESULT.strip_indent)
           #{abs(target_file)}:1:81: C: Metrics/LineLength: Line is too long. [90/80]
-      RESULT
+        RESULT
     end
   end
 

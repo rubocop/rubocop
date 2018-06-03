@@ -91,6 +91,10 @@ Layout/CaseIndentation:
   StyleGuide: '#indent-when-to-case'
   Enabled: true
 
+Layout/ClosingHeredocIndentation:
+  Description: 'Checks the indenation of here document closings.'
+  Enabled: true
+
 Layout/ClosingParenthesisIndentation:
   Description: 'Checks the indentation of hanging closing parentheses.'
   Enabled: true

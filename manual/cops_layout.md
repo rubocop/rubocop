@@ -653,6 +653,38 @@ ExpectedOrder | `module_inclusion`, `constants`, `public_class_methods`, `initia
 
 * [https://github.com/rubocop-hq/ruby-style-guide#consistent-classes](https://github.com/rubocop-hq/ruby-style-guide#consistent-classes)
 
+## Layout/ClosingHeredocIndentation
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+Checks the indentation of here document closings.
+
+### Examples
+
+```ruby
+# bad
+
+class Foo
+  def bar
+    <<~SQL
+      'Hi'
+  SQL
+  end
+end
+
+# good
+
+class Foo
+  def bar
+    <<~SQL
+      'Hi'
+    SQL
+  end
+end
+```
+
 ## Layout/ClosingParenthesisIndentation
 
 Enabled by default | Supports autocorrection

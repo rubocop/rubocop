@@ -615,18 +615,18 @@ RSpec.describe RuboCop::ConfigLoader do
             Enabled: false
             Max: 200
             CountComments: false
-        YAML
+                    YAML
         create_file("#{gem_root}/gemtwo/config/default.yml",
                     <<-YAML.strip_indent)
           Metrics/LineLength:
             Enabled: true
-        YAML
+                    YAML
         create_file("#{gem_root}/gemtwo/config/strict.yml",
                     <<-YAML.strip_indent)
           Metrics/LineLength:
             Max: 72
             AllowHeredoc: false
-        YAML
+                    YAML
         create_file('local.yml', <<-YAML.strip_indent)
           Metrics/MethodLength:
             CountComments: true
