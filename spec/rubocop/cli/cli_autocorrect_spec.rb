@@ -116,8 +116,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
 
     shared_examples 'corrects offenses without producing a double comma' do
-      it 'corrects TrailingCommaInLiteral and TrailingCommaInArguments ' \
-         'without producing a double comma' do
+      it 'corrects TrailingCommaInArrayLiteral, TrailingCommaInHashLiteral,' \
+         'and TrailingCommaInArguments without producing a double comma' do
         cli.run(['--auto-correct'])
 
         expect(IO.read('example.rb'))
@@ -162,6 +162,39 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         end
 
         include_examples 'corrects offenses without producing a double comma'
+
+        context 'within a nested Array' do
+          let(:source) do
+            <<-RUBY.strip_indent
+              [
+                { one: 'bar',
+                  bar: 'baz'
+                },
+                [
+                  1,
+                  2
+                ],
+              ]
+            RUBY
+          end
+
+          let(:expected_corrected_source) do
+            <<-RUBY.strip_indent
+              [
+                { one: 'bar',
+                  bar: 'baz'},,
+                [
+                  1,
+                  2,
+                ],
+              ]
+            RUBY
+          end
+
+          # The expected_corrected_source above is incorrect. Remove the
+          # double comma to produce the failure from issue #5932
+          include_examples 'corrects offenses without producing a double comma'
+        end
       end
 
       context 'and BracesAroundHashParameters style is `no_braces`' do

@@ -52,7 +52,7 @@ module RuboCop
         end
 
         def autocorrect(range)
-          PunctuationCorrector.swap_comma(range)
+          PunctuationCorrector.swap_comma(range, processed_source)
         end
 
         private
