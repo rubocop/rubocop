@@ -57,7 +57,7 @@ RSpec.describe RuboCop::Cop::Naming::VariableName, :config do
       expect_offense(<<-RUBY.strip_indent)
     _myLocal = 1
     ^^^^^^^^ Use snake_case for variable names.
-    RUBY
+      RUBY
     end
 
     it 'registers an offense for method arguments' do

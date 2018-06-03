@@ -203,7 +203,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang do
       expect(cop.messages.empty?).to be(true)
     end
 
-    # Bug: https://github.com/bbatsov/rubocop/issues/4264
+    # Bug: https://github.com/rubocop-hq/rubocop/issues/4264
     it 'when using the assigned variable as value in a hash' do
       inspect_source(['def foo',
                       "  foo = Foo.#{method}",

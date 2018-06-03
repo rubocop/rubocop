@@ -22,18 +22,19 @@ Gem::Specification.new do |s|
   s.bindir = 'exe'
   s.executables = ['rubocop']
   s.extra_rdoc_files = ['LICENSE.txt', 'README.md']
-  s.homepage = 'https://github.com/bbatsov/rubocop'
+  s.homepage = 'https://github.com/rubocop-hq/rubocop'
   s.licenses = ['MIT']
   s.summary = 'Automatic Ruby code style checking tool.'
 
   s.metadata = {
     'homepage_uri' => 'https://rubocop.readthedocs.io/',
-    'changelog_uri' => 'https://github.com/bbatsov/rubocop/blob/master/CHANGELOG.md',
-    'source_code_uri' => 'https://github.com/bbatsov/rubocop/',
+    'changelog_uri' => 'https://github.com/rubocop-hq/rubocop/blob/master/CHANGELOG.md',
+    'source_code_uri' => 'https://github.com/rubocop-hq/rubocop/',
     'documentation_uri' => 'https://rubocop.readthedocs.io/',
-    'bug_tracker_uri' => 'https://github.com/bbatsov/rubocop/issues'
+    'bug_tracker_uri' => 'https://github.com/rubocop-hq/rubocop/issues'
   }
 
+  s.add_runtime_dependency('jaro_winkler', '~> 1.4.0')
   s.add_runtime_dependency('parallel', '~> 1.10')
   s.add_runtime_dependency('parser', '>= 2.5')
   s.add_runtime_dependency('powerpack', '~> 0.1')

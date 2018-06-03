@@ -133,6 +133,10 @@ RSpec.describe RuboCop::Token do
       expect(semicolon_token.space_before?).to be nil
       expect(zero_token.space_before?).to be nil
     end
+
+    it 'returns nil when it is on the first line' do
+      expect(processed_source.tokens[0].space_before?).to be nil
+    end
   end
 
   context 'type predicates' do

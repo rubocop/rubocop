@@ -63,17 +63,13 @@ module RuboCop
       def range_by_whole_lines(range, include_final_newline: false)
         buffer = @processed_source.buffer
 
-        begin_pos = range.begin_pos
-        begin_offset = range.column
-        begin_of_first_line = begin_pos - begin_offset
-
         last_line = buffer.source_line(range.last_line)
-        end_pos = range.end_pos
         end_offset = last_line.length - range.last_column
         end_offset += 1 if include_final_newline
-        end_of_last_line = end_pos + end_offset
 
-        Parser::Source::Range.new(buffer, begin_of_first_line, end_of_last_line)
+        range
+          .adjust(begin_pos: -range.column, end_pos: end_offset)
+          .intersect(buffer.source_range)
       end
 
       ## Helpers for above range methods. Do not use inside Cops.

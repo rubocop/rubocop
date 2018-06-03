@@ -1,7 +1,7 @@
 ## Configuration
 
 The behavior of RuboCop can be controlled via the
-[.rubocop.yml](https://github.com/bbatsov/rubocop/blob/master/.rubocop.yml)
+[.rubocop.yml](https://github.com/rubocop-hq/rubocop/blob/master/.rubocop.yml)
 configuration file. It makes it possible to enable/disable certain cops
 (checks) and to alter their behavior if they accept any parameters. The file
 can be placed either in your home directory or in some project directory.
@@ -128,8 +128,8 @@ The optional directive `inherit_mode` is used to specify which configuration
 keys that have array values should be merged together instead of overriding the
 inherited value.
 
-One caveat is that this directive only works with local and inherited
-configuration files, it is unable to merge with the default.yml config.
+This applies to explicit inheritance using `inherit_from` as well as implicit
+inheritance from the default configuration.
 
 Given the following config:
 ```yaml
@@ -140,6 +140,10 @@ inherit_from:
 inherit_mode:
   merge:
     - Exclude 
+
+AllCops:
+  Exclude:
+    - 'generated/**/*.rb'
 
 Style/For:
   Exclude:
@@ -154,7 +158,8 @@ Style/For:
 ```
 
 The list of `Exclude`s for the `Style/For` cop in this example will be
-`['foo.rb', 'bar.rb']`. 
+`['foo.rb', 'bar.rb']`. Similarly, the `AllCops:Exclude` list will contain all
+the default patterns plus the `generated/**/*.rb` entry that was added locally.
 
 The directive can also be used on individual cop configurations to override
 the global setting.
@@ -182,7 +187,7 @@ In this example the `Exclude` would only include `bar.rb`.
 ### Defaults
 
 The file
-[config/default.yml](https://github.com/bbatsov/rubocop/blob/master/config/default.yml)
+[config/default.yml](https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml)
 under the RuboCop home directory contains the default settings that
 all configurations inherit from. Project and personal `.rubocop.yml`
 files need only make settings that are different from the default
@@ -277,7 +282,7 @@ Metrics/LineLength:
 ```
 
 Most cops are enabled by default. Some cops, configured in
-[config/disabled.yml](https://github.com/bbatsov/rubocop/blob/master/config/disabled.yml),
+[config/disabled.yml](https://github.com/rubocop-hq/rubocop/blob/master/config/disabled.yml),
 are disabled by default. The cop enabling process can be altered by
 setting `DisabledByDefault` or `EnabledByDefault` (but not both) to `true`.
 

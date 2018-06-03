@@ -116,7 +116,7 @@ module RuboCop
         end
 
         def check_send(node, cur_vis)
-          if node.access_modifier? && !node.method?(:module_function)
+          if node.bare_access_modifier? && !node.method?(:module_function)
             @last_access_modifier = node
             return node.method_name
           elsif (methods = private_class_method(node))

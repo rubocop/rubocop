@@ -40,12 +40,29 @@ module RuboCop
         !receiver && macro_scope?
       end
 
-      # Checks whether the dispatched method is a bare access modifier affects
-      # all methods defined after the macro.
+      # Checks whether the dispatched method is an access modifier.
       #
-      # @return [Boolean] whether the dispatched method is access modifier
+      # @return [Boolean] whether the dispatched method is an access modifier
       def access_modifier?
-        macro? && bare_access_modifier?
+        bare_access_modifier? || non_bare_access_modifier?
+      end
+
+      # Checks whether the dispatched method is a bare access modifier that
+      # affects all methods defined after the macro.
+      #
+      # @return [Boolean] whether the dispatched method is a bare
+      #                   access modifier
+      def bare_access_modifier?
+        macro? && bare_access_modifier_declaration?
+      end
+
+      # Checks whether the dispatched method is a non-bare access modifier that
+      # affects only the method it receives.
+      #
+      # @return [Boolean] whether the dispatched method is a non-bare
+      #                   access modifier
+      def non_bare_access_modifier?
+        macro? && non_bare_access_modifier_declaration?
       end
 
       # Checks whether the name of the dispatched method matches the argument
@@ -166,8 +183,12 @@ module RuboCop
         (send nil? _ ({def defs} ...))
       PATTERN
 
-      def_node_matcher :bare_access_modifier?, <<-PATTERN
+      def_node_matcher :bare_access_modifier_declaration?, <<-PATTERN
         (send nil? {:public :protected :private :module_function})
+      PATTERN
+
+      def_node_matcher :non_bare_access_modifier_declaration?, <<-PATTERN
+        (send nil? {:public :protected :private :module_function} _)
       PATTERN
     end
   end

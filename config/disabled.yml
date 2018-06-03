@@ -2,7 +2,7 @@
 
 Layout/ClassStructure:
   Description: 'Enforces a configured order of definitions within a class body.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#consistent-classes'
+  StyleGuide: 'https://github.com/rubocop-hq/ruby-style-guide#consistent-classes'
   Enabled: false
 
 Layout/EmptyLineAfterGuardClause:
@@ -49,7 +49,7 @@ Rails:
 
 Rails/SaveBang:
   Description: 'Identifies possible cases where Active Record save! or related should be used.'
-  StyleGuide: 'https://github.com/bbatsov/rails-style-guide#save-bang'
+  StyleGuide: 'https://github.com/rubocop-hq/rails-style-guide#save-bang'
   Enabled: false
 
 Style/AutoResourceCleanup:

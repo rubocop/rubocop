@@ -70,7 +70,9 @@ module RuboCop
         config = handle_disabled_by_default(config, default_configuration)
       end
 
-      Config.new(merge(default_configuration, config), config_file)
+      Config.new(merge(default_configuration, config,
+                       inherit_mode: config['inherit_mode'] || {}),
+                 config_file)
     end
 
     # Returns a new hash where the parameters of the given config hash have
@@ -83,7 +85,7 @@ module RuboCop
       keys_appearing_in_both = base_hash.keys & derived_hash.keys
       keys_appearing_in_both.each do |key|
         if base_hash[key].is_a?(Hash)
-          result[key] = merge(base_hash[key], derived_hash[key])
+          result[key] = merge(base_hash[key], derived_hash[key], **opts)
         elsif should_union?(base_hash, key, opts[:inherit_mode])
           result[key] = base_hash[key] | derived_hash[key]
         elsif opts[:debug]

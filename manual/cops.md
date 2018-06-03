@@ -13,7 +13,7 @@ You can also load [custom cops](extensions.md#custom-cops).
 ### Style
 
 Style cops check for stylistic consistency of your code. Many of the them are
-based on the [Ruby Style Guide](https://github.com/bbatsov/ruby-style-guide).
+based on the [Ruby Style Guide](https://github.com/rubocop-hq/ruby-style-guide).
 
 ### Layout
 
@@ -112,6 +112,7 @@ In the following section you find all available cops:
 * [Layout/BlockEndNewline](cops_layout.md#layoutblockendnewline)
 * [Layout/CaseIndentation](cops_layout.md#layoutcaseindentation)
 * [Layout/ClassStructure](cops_layout.md#layoutclassstructure)
+* [Layout/ClosingHeredocIndentation](cops_layout.md#layoutclosingheredocindentation)
 * [Layout/ClosingParenthesisIndentation](cops_layout.md#layoutclosingparenthesisindentation)
 * [Layout/CommentIndentation](cops_layout.md#layoutcommentindentation)
 * [Layout/ConditionPosition](cops_layout.md#layoutconditionposition)
@@ -381,6 +382,7 @@ In the following section you find all available cops:
 
 #### Department [Style](cops_style.md)
 
+* [Style/AccessModifierDeclarations](cops_style.md#styleaccessmodifierdeclarations)
 * [Style/Alias](cops_style.md#stylealias)
 * [Style/AndOr](cops_style.md#styleandor)
 * [Style/ArrayJoin](cops_style.md#stylearrayjoin)
@@ -529,6 +531,7 @@ In the following section you find all available cops:
 * [Style/TrivialAccessors](cops_style.md#styletrivialaccessors)
 * [Style/UnlessElse](cops_style.md#styleunlesselse)
 * [Style/UnneededCapitalW](cops_style.md#styleunneededcapitalw)
+* [Style/UnneededCondition](cops_style.md#styleunneededcondition)
 * [Style/UnneededInterpolation](cops_style.md#styleunneededinterpolation)
 * [Style/UnneededPercentQ](cops_style.md#styleunneededpercentq)
 * [Style/UnpackFirst](cops_style.md#styleunpackfirst)

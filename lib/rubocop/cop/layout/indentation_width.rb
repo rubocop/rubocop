@@ -173,7 +173,7 @@ module RuboCop
         end
 
         def special_modifier?(node)
-          node.access_modifier? && SPECIAL_MODIFIERS.include?(node.source)
+          node.bare_access_modifier? && SPECIAL_MODIFIERS.include?(node.source)
         end
 
         def indentation_consistency_style
@@ -307,7 +307,7 @@ module RuboCop
           return unless body_node.begin_type?
 
           starting_node = body_node.children.first
-          starting_node.send_type? && starting_node.access_modifier?
+          starting_node.send_type? && starting_node.bare_access_modifier?
         end
 
         def configured_indentation_width

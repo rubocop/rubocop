@@ -376,7 +376,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
     end
 
     context 'when left hand side is a comparison method' do
-      # Regression: https://github.com/bbatsov/rubocop/issues/4451
+      # Regression: https://github.com/rubocop-hq/rubocop/issues/4451
       it 'autocorrects "and" with && and adds parens' do
         new_source = autocorrect_source(<<-RUBY.strip_indent)
           foo == bar and baz

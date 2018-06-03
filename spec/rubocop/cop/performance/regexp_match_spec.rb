@@ -77,13 +77,13 @@ RSpec.describe RuboCop::Cop::Performance::RegexpMatch, :config do
           do_something
         end
       end
-    RUBY
+                     RUBY
       def foo
         if #{correction}
           do_something
         end
       end
-    RUBY2
+                     RUBY2
 
     %w[
       $& $' $` $~ $1 $2 $100
@@ -147,14 +147,14 @@ RSpec.describe RuboCop::Cop::Performance::RegexpMatch, :config do
             do_something2
           end
         end
-      RUBY
+                       RUBY
         def foo
           do_something(#{var})
           if #{correction}
             do_something2
           end
         end
-      RUBY2
+                       RUBY2
 
       include_examples :offense,
                        "#{name} in method, `#{var}` is in other method",
@@ -168,7 +168,7 @@ RSpec.describe RuboCop::Cop::Performance::RegexpMatch, :config do
         def bar
           do_something(#{var})
         end
-      RUBY
+                       RUBY
         def foo
           if #{correction}
             do_something2
@@ -178,7 +178,7 @@ RSpec.describe RuboCop::Cop::Performance::RegexpMatch, :config do
         def bar
           do_something(#{var})
         end
-      RUBY2
+                       RUBY2
 
       include_examples :offense,
                        "#{name} in class method, `#{var}` is in other method",
@@ -192,7 +192,7 @@ RSpec.describe RuboCop::Cop::Performance::RegexpMatch, :config do
         def self.bar
           do_something(#{var})
         end
-      RUBY
+                       RUBY
         def self.foo
           if #{correction}
             do_something2
@@ -202,7 +202,7 @@ RSpec.describe RuboCop::Cop::Performance::RegexpMatch, :config do
         def self.bar
           do_something(#{var})
         end
-      RUBY2
+                       RUBY2
 
       include_examples :offense,
                        "#{name} in class, `#{var}` is in method",
@@ -216,7 +216,7 @@ RSpec.describe RuboCop::Cop::Performance::RegexpMatch, :config do
             #{var}
           end
         end
-      RUBY
+                       RUBY
         class Foo
           if #{correction}
             do_something
@@ -226,7 +226,7 @@ RSpec.describe RuboCop::Cop::Performance::RegexpMatch, :config do
             #{var}
           end
         end
-      RUBY2
+                       RUBY2
 
       include_examples :offense,
                        "#{name} in module, `#{var}` is in method",
@@ -240,7 +240,7 @@ RSpec.describe RuboCop::Cop::Performance::RegexpMatch, :config do
             #{var}
           end
         end
-      RUBY
+                       RUBY
         module Foo
           if #{correction}
             do_something
@@ -250,7 +250,7 @@ RSpec.describe RuboCop::Cop::Performance::RegexpMatch, :config do
             #{var}
           end
         end
-      RUBY2
+                       RUBY2
 
       include_examples :offense, "#{name}, #{var} reference is overrided",
                        <<-RUBY, <<-RUBY2
@@ -259,13 +259,13 @@ RSpec.describe RuboCop::Cop::Performance::RegexpMatch, :config do
           #{cond}
           #{var}
         end
-      RUBY
+                       RUBY
         if #{correction}
           do_something
           #{cond}
           #{var}
         end
-      RUBY2
+                       RUBY2
     end
   end
 

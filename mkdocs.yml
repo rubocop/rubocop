@@ -1,5 +1,5 @@
 site_name: "RuboCop: The Ruby Linter that Serves and Protects"
-repo_url: https://github.com/bbatsov/rubocop
+repo_url: https://github.com/rubocop-hq/rubocop
 site_favicon: favicon.ico
 copyright: "Copyright (C) 2012-2018 Bozhidar Batsov and RuboCop contributors"
 docs_dir: manual

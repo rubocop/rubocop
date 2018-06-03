@@ -99,12 +99,12 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
         \#{foo}
         bar
         RUBY2
-      RUBY
+                       RUBY
         <<-#{quote}RUBY2#{quote}.strip_indent
           \#{foo}
           bar
         RUBY2
-      CORRECTION
+                       CORRECTION
       include_examples :offense, 'minus level indented, with `-`',
                        <<-RUBY, <<-CORRECTION
         def foo
@@ -113,14 +113,14 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
         bar
           RUBY2
         end
-      RUBY
+                       RUBY
         def foo
           <<-#{quote}RUBY2#{quote}.strip_indent
             \#{foo}
             bar
           RUBY2
         end
-      CORRECTION
+                       CORRECTION
 
       include_examples :accept, 'not indented but with whitespace, with `-`',
                        <<-RUBY
@@ -129,7 +129,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
           something
           RUBY2
         end
-      RUBY
+                       RUBY
       include_examples :accept, 'indented, but with `-`', <<-RUBY
         def foo
           <<-#{quote}RUBY2#{quote}
@@ -203,7 +203,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
             \#{foo}
             bar
             RUBY2
-          RUBY
+                           RUBY
 
           type_message = 'Use 2 spaces for indentation in a heredoc by using ' \
                          '`<<~` instead of `<<-`.'
@@ -261,13 +261,13 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
           something
             RUBY2
           end
-        RUBY
+                         RUBY
           def foo
             <<~#{quote}RUBY2#{quote}
               something
             RUBY2
           end
-        CORRECTION
+                         CORRECTION
         include_examples :offense, 'too deep indented', <<-RUBY, <<-CORRECTION
           <<~#{quote}RUBY2#{quote}
               something
@@ -282,22 +282,22 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
           <<#{quote}RUBY2#{quote}
           foo
           RUBY2
-        RUBY
+                         RUBY
           <<~#{quote}RUBY2#{quote}
             foo
           RUBY2
-        CORRECTION
+                         CORRECTION
 
         include_examples :offense, 'not indented, with `~`',
                          <<-RUBY, <<-CORRECTION
           <<~#{quote}RUBY2#{quote}
           foo
           RUBY2
-        RUBY
+                         RUBY
           <<~#{quote}RUBY2#{quote}
             foo
           RUBY2
-        CORRECTION
+                         CORRECTION
 
         include_examples :offense, 'first line minus-level indented, with `-`',
                          <<-RUBY, <<-CORRECTION, false
@@ -306,13 +306,13 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
             bar
           end
           RUBY2
-        RUBY
+                         RUBY
         puts <<~#{quote}RUBY2#{quote}
           def foo
             bar
           end
         RUBY2
-        CORRECTION
+                         CORRECTION
 
         include_examples :accept, 'indented, with `~`', <<-RUBY
           <<~#{quote}RUBY2#{quote}

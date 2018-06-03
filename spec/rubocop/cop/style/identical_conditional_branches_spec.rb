@@ -91,7 +91,7 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches do
     end
   end
 
-  # Regression: https://github.com/bbatsov/rubocop/issues/3868
+  # Regression: https://github.com/rubocop-hq/rubocop/issues/3868
   context 'when one of the case branches is empty' do
     it 'does not register an offense' do
       expect_no_offenses(<<-RUBY.strip_indent)

@@ -111,10 +111,14 @@ module RuboCop
         end
 
         def left_ref_bracket(node, tokens)
-          if node.method?(:[]=)
+          current_token = tokens.reverse.find(&:left_ref_bracket?)
+          previous_token = previous_token(current_token)
+
+          if node.method?(:[]=) ||
+             previous_token && !previous_token.right_bracket?
             tokens.find(&:left_ref_bracket?)
           else
-            tokens.reverse.find(&:left_ref_bracket?)
+            current_token
           end
         end
 
@@ -129,6 +133,11 @@ module RuboCop
               return token
             end
           end
+        end
+
+        def previous_token(current_token)
+          index = processed_source.tokens.index(current_token)
+          index.nil? || index.zero? ? nil : processed_source.tokens[index - 1]
         end
 
         def empty_config

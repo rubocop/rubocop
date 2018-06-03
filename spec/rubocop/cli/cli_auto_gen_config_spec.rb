@@ -54,7 +54,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               # URISchemes: http, https
               Metrics/LineLength:
                 Max: 99
-          YAML
+            YAML
           expect(IO.read('.rubocop.yml').strip).to eq(exp_dotfile.join($RS))
           $stdout = StringIO.new
           expect(described_class.new.run([])).to eq(0)

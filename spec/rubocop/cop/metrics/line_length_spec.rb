@@ -36,7 +36,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
       # This code example is allowed by AllowURI feature itself :).
       let(:source) { <<-RUBY }
         # Some documentation comment...
-        # See: https://github.com/bbatsov/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c
+        # See: https://github.com/rubocop-hq/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c
       RUBY
 
       it 'accepts the line' do
@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
       context 'and the URL is wrapped in single quotes' do
         let(:source) { <<-RUBY }
-          # See: 'https://github.com/bbatsov/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c'
+          # See: 'https://github.com/rubocop-hq/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c'
         RUBY
 
         it 'accepts the line' do
@@ -57,7 +57,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
       context 'and the URL is wrapped in double quotes' do
         let(:source) { <<-RUBY }
-          # See: "https://github.com/bbatsov/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c"
+          # See: "https://github.com/rubocop-hq/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c"
         RUBY
 
         it 'accepts the line' do
@@ -86,7 +86,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
     context 'and the excessive characters include part of an URL ' \
             'and another word' do
       let(:source) { <<-RUBY }
-        # See: https://github.com/bbatsov/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c and
+        # See: https://github.com/rubocop-hq/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c and
         #   http://google.com/
       RUBY
 
@@ -225,7 +225,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
     context 'and all the excessive characters are part of an URL' do
       let(:source) { <<-RUBY }
-        # See: https://github.com/bbatsov/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c
+        # See: https://github.com/rubocop-hq/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c
       RUBY
 
       it 'registers an offense for the line' do

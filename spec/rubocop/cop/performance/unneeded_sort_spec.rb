@@ -42,14 +42,14 @@ RSpec.describe RuboCop::Cop::Performance::UnneededSort do
     expect_offense(<<-RUBY.strip_indent)
       [1, 2, 3].sort[0]
                 ^^^^^^^ Use `min` instead of `sort...[0]`.
-     RUBY
+    RUBY
   end
 
   it 'registers an offense when [](0) is called on sort' do
     expect_offense(<<-RUBY.strip_indent)
       [1, 2, 3].sort.[](0)
                 ^^^^^^^^^^ Use `min` instead of `sort...[](0)`.
-     RUBY
+    RUBY
   end
 
   it 'registers an offense when at(0) is called on sort_by' do

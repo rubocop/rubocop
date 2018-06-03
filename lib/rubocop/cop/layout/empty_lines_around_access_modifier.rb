@@ -30,7 +30,7 @@ module RuboCop
                                '`%<modifier>s`.'.freeze
 
         def on_send(node)
-          return unless node.access_modifier?
+          return unless node.bare_access_modifier?
 
           return if empty_lines_around?(node)
 

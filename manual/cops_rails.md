@@ -508,7 +508,7 @@ Enabled | Yes
 
 This cop checks dynamic `find_by_*` methods.
 Use `find_by` instead of dynamic method.
-See. https://github.com/bbatsov/rails-style-guide#find_by
+See. https://github.com/rubocop-hq/rails-style-guide#find_by
 
 ### Examples
 
@@ -540,7 +540,7 @@ Whitelist | `find_by_sql` | Array
 
 ### References
 
-* [https://github.com/bbatsov/rails-style-guide#find_by](https://github.com/bbatsov/rails-style-guide#find_by)
+* [https://github.com/rubocop-hq/rails-style-guide#find_by](https://github.com/rubocop-hq/rails-style-guide#find_by)
 
 ## Rails/EnumUniqueness
 
@@ -681,7 +681,7 @@ Include | `app/models/**/*.rb` | Array
 
 ### References
 
-* [https://github.com/bbatsov/rails-style-guide#find_by](https://github.com/bbatsov/rails-style-guide#find_by)
+* [https://github.com/rubocop-hq/rails-style-guide#find_by](https://github.com/rubocop-hq/rails-style-guide#find_by)
 
 ## Rails/FindEach
 
@@ -710,7 +710,7 @@ Include | `app/models/**/*.rb` | Array
 
 ### References
 
-* [https://github.com/bbatsov/rails-style-guide#find-each](https://github.com/bbatsov/rails-style-guide#find-each)
+* [https://github.com/rubocop-hq/rails-style-guide#find-each](https://github.com/rubocop-hq/rails-style-guide#find-each)
 
 ## Rails/HasAndBelongsToMany
 
@@ -738,7 +738,7 @@ Include | `app/models/**/*.rb` | Array
 
 ### References
 
-* [https://github.com/bbatsov/rails-style-guide#has-many-through](https://github.com/bbatsov/rails-style-guide#has-many-through)
+* [https://github.com/rubocop-hq/rails-style-guide#has-many-through](https://github.com/rubocop-hq/rails-style-guide#has-many-through)
 
 ## Rails/HasManyOrHasOneDependent
 
@@ -775,7 +775,7 @@ Include | `app/models/**/*.rb` | Array
 
 ### References
 
-* [https://github.com/bbatsov/rails-style-guide#has_many-has_one-dependent-option](https://github.com/bbatsov/rails-style-guide#has_many-has_one-dependent-option)
+* [https://github.com/rubocop-hq/rails-style-guide#has_many-has_one-dependent-option](https://github.com/rubocop-hq/rails-style-guide#has_many-has_one-dependent-option)
 
 ## Rails/HttpPositionalArguments
 
@@ -1064,7 +1064,7 @@ Include | `app/controllers/**/*.rb` | Array
 
 ### References
 
-* [https://github.com/bbatsov/rails-style-guide#lexically-scoped-action-filter](https://github.com/bbatsov/rails-style-guide#lexically-scoped-action-filter)
+* [https://github.com/rubocop-hq/rails-style-guide#lexically-scoped-action-filter](https://github.com/rubocop-hq/rails-style-guide#lexically-scoped-action-filter)
 
 ## Rails/NotNullColumn
 
@@ -1352,7 +1352,7 @@ Include | `app/models/**/*.rb` | Array
 
 ### References
 
-* [https://github.com/bbatsov/rails-style-guide#read-attribute](https://github.com/bbatsov/rails-style-guide#read-attribute)
+* [https://github.com/rubocop-hq/rails-style-guide#read-attribute](https://github.com/rubocop-hq/rails-style-guide#read-attribute)
 
 ## Rails/RedundantReceiverInWithOptions
 
@@ -1642,7 +1642,7 @@ Include | `db/migrate/*.rb` | Array
 
 ### References
 
-* [https://github.com/bbatsov/rails-style-guide#reversible-migration](https://github.com/bbatsov/rails-style-guide#reversible-migration)
+* [https://github.com/rubocop-hq/rails-style-guide#reversible-migration](https://github.com/rubocop-hq/rails-style-guide#reversible-migration)
 * [http://api.rubyonrails.org/classes/ActiveRecord/Migration/CommandRecorder.html](http://api.rubyonrails.org/classes/ActiveRecord/Migration/CommandRecorder.html)
 
 ## Rails/SafeNavigation
@@ -1739,7 +1739,7 @@ end
 
 ### References
 
-* [https://github.com/bbatsov/rails-style-guide#save-bang](https://github.com/bbatsov/rails-style-guide#save-bang)
+* [https://github.com/rubocop-hq/rails-style-guide#save-bang](https://github.com/rubocop-hq/rails-style-guide#save-bang)
 
 ## Rails/ScopeArgs
 
@@ -1814,7 +1814,7 @@ Enabled | No
 
 This cop checks for the use of Time methods without zone.
 
-Built on top of Ruby on Rails style guide (https://github.com/bbatsov/rails-style-guide#time)
+Built on top of Ruby on Rails style guide (https://github.com/rubocop-hq/rails-style-guide#time)
 and the article http://danilenko.org/2012/7/6/rails_timezones/ .
 
 Two styles are supported for this cop. When EnforcedStyle is 'strict'
@@ -1868,7 +1868,7 @@ EnforcedStyle | `flexible` | `strict`, `flexible`
 
 ### References
 
-* [https://github.com/bbatsov/rails-style-guide#time](https://github.com/bbatsov/rails-style-guide#time)
+* [https://github.com/rubocop-hq/rails-style-guide#time](https://github.com/rubocop-hq/rails-style-guide#time)
 * [http://danilenko.org/2012/7/6/rails_timezones](http://danilenko.org/2012/7/6/rails_timezones)
 
 ## Rails/UniqBeforePluck

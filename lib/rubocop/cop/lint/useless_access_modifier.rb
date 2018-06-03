@@ -134,7 +134,7 @@ module RuboCop
 
           if node.begin_type?
             check_scope(node)
-          elsif node.send_type? && node.access_modifier?
+          elsif node.send_type? && node.bare_access_modifier?
             add_offense(node, message: format(MSG, current: node.method_name))
           end
         end
@@ -147,7 +147,7 @@ module RuboCop
 
         def check_child_nodes(node, unused, cur_vis)
           node.child_nodes.each do |child|
-            if child.send_type? && child.access_modifier?
+            if child.send_type? && child.bare_access_modifier?
               cur_vis, unused =
                 check_new_visibility(child, unused, child.method_name, cur_vis)
             elsif method_definition?(child)

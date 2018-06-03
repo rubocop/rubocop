@@ -99,9 +99,23 @@ RSpec.describe RuboCop::AST::SendNode do
 
     context 'when node is a bare `module_function`' do
       let(:source) do
-        ['module Foo',
-         '  module_function',
-         'end'].join("\n")
+        <<-RUBY.strip_indent
+          module Foo
+            module_function
+          end
+        RUBY
+      end
+
+      it { expect(send_node.access_modifier?).to be_truthy }
+    end
+
+    context 'when node is a non-bare `module_function`' do
+      let(:source) do
+        <<-RUBY.strip_indent
+          module Foo
+            module_function :foo
+          end
+        RUBY
       end
 
       it { expect(send_node.access_modifier?).to be_truthy }
@@ -109,9 +123,23 @@ RSpec.describe RuboCop::AST::SendNode do
 
     context 'when node is a bare `private`' do
       let(:source) do
-        ['module Foo',
-         '  private',
-         'end'].join("\n")
+        <<-RUBY.strip_indent
+          module Foo
+            private
+          end
+        RUBY
+      end
+
+      it { expect(send_node.access_modifier?).to be_truthy }
+    end
+
+    context 'when node is a non-bare `private`' do
+      let(:source) do
+        <<-RUBY.strip_indent
+          module Foo
+            private :foo
+          end
+        RUBY
       end
 
       it { expect(send_node.access_modifier?).to be_truthy }
@@ -119,9 +147,23 @@ RSpec.describe RuboCop::AST::SendNode do
 
     context 'when node is a bare `protected`' do
       let(:source) do
-        ['module Foo',
-         '  protected',
-         'end'].join("\n")
+        <<-RUBY.strip_indent
+          module Foo
+            protected
+          end
+        RUBY
+      end
+
+      it { expect(send_node.access_modifier?).to be_truthy }
+    end
+
+    context 'when node is a non-bare `protected`' do
+      let(:source) do
+        <<-RUBY.strip_indent
+          module Foo
+            protected :foo
+          end
+        RUBY
       end
 
       it { expect(send_node.access_modifier?).to be_truthy }
@@ -129,32 +171,190 @@ RSpec.describe RuboCop::AST::SendNode do
 
     context 'when node is a bare `public`' do
       let(:source) do
-        ['module Foo',
-         '  public',
-         'end'].join("\n")
+        <<-RUBY.strip_indent
+          module Foo
+            public
+          end
+        RUBY
       end
 
       it { expect(send_node.access_modifier?).to be_truthy }
     end
 
-    context 'when node has an argument' do
+    context 'when node is a non-bare `public`' do
       let(:source) do
-        ['module Foo',
-         '  private :foo',
-         'end'].join("\n")
+        <<-RUBY.strip_indent
+          module Foo
+            public :foo
+          end
+        RUBY
       end
 
-      it { expect(send_node.access_modifier?).to be_falsey }
+      it { expect(send_node.access_modifier?).to be_truthy }
     end
 
     context 'when node is not an access modifier' do
       let(:source) do
-        ['module Foo',
-         '  some_command',
-         'end'].join("\n")
+        <<-RUBY.strip_indent
+          module Foo
+            some_command
+          end
+        RUBY
       end
 
-      it { expect(send_node.access_modifier?).to be_falsey }
+      it { expect(send_node.bare_access_modifier?).to be_falsey }
+    end
+  end
+
+  describe '#bare_access_modifier?' do
+    let(:send_node) { parse_source(source).ast.children[1] }
+
+    context 'when node is a bare `module_function`' do
+      let(:source) do
+        <<-RUBY.strip_indent
+          module Foo
+            module_function
+          end
+        RUBY
+      end
+
+      it { expect(send_node.bare_access_modifier?).to be_truthy }
+    end
+
+    context 'when node is a bare `private`' do
+      let(:source) do
+        <<-RUBY.strip_indent
+          module Foo
+            private
+          end
+        RUBY
+      end
+
+      it { expect(send_node.bare_access_modifier?).to be_truthy }
+    end
+
+    context 'when node is a bare `protected`' do
+      let(:source) do
+        <<-RUBY.strip_indent
+          module Foo
+            protected
+          end
+        RUBY
+      end
+
+      it { expect(send_node.bare_access_modifier?).to be_truthy }
+    end
+
+    context 'when node is a bare `public`' do
+      let(:source) do
+        <<-RUBY.strip_indent
+          module Foo
+            public
+          end
+        RUBY
+      end
+
+      it { expect(send_node.bare_access_modifier?).to be_truthy }
+    end
+
+    context 'when node has an argument' do
+      let(:source) do
+        <<-RUBY.strip_indent
+          module Foo
+            private :foo
+          end
+        RUBY
+      end
+
+      it { expect(send_node.bare_access_modifier?).to be_falsey }
+    end
+
+    context 'when node is not an access modifier' do
+      let(:source) do
+        <<-RUBY.strip_indent
+          module Foo
+            some_command
+          end
+        RUBY
+      end
+
+      it { expect(send_node.bare_access_modifier?).to be_falsey }
+    end
+  end
+
+  describe '#non_bare_access_modifier?' do
+    let(:send_node) { parse_source(source).ast.children[1] }
+
+    context 'when node is a non-bare `module_function`' do
+      let(:source) do
+        <<-RUBY.strip_indent
+          module Foo
+            module_function :foo
+          end
+        RUBY
+      end
+
+      it { expect(send_node.non_bare_access_modifier?).to be_truthy }
+    end
+
+    context 'when node is a non-bare `private`' do
+      let(:source) do
+        <<-RUBY.strip_indent
+          module Foo
+            private :foo
+          end
+        RUBY
+      end
+
+      it { expect(send_node.non_bare_access_modifier?).to be_truthy }
+    end
+
+    context 'when node is a non-bare `protected`' do
+      let(:source) do
+        <<-RUBY.strip_indent
+          module Foo
+            protected :foo
+          end
+        RUBY
+      end
+
+      it { expect(send_node.non_bare_access_modifier?).to be_truthy }
+    end
+
+    context 'when node is a non-bare `public`' do
+      let(:source) do
+        <<-RUBY.strip_indent
+          module Foo
+            public :foo
+          end
+        RUBY
+      end
+
+      it { expect(send_node.non_bare_access_modifier?).to be_truthy }
+    end
+
+    context 'when node does not have an argument' do
+      let(:source) do
+        <<-RUBY.strip_indent
+          module Foo
+            private
+          end
+        RUBY
+      end
+
+      it { expect(send_node.non_bare_access_modifier?).to be_falsey }
+    end
+
+    context 'when node is not an access modifier' do
+      let(:source) do
+        <<-RUBY.strip_indent
+          module Foo
+            some_command
+          end
+        RUBY
+      end
+
+      it { expect(send_node.non_bare_access_modifier?).to be_falsey }
     end
   end
 
@@ -922,7 +1122,7 @@ RSpec.describe RuboCop::AST::SendNode do
       it { expect(send_node.lambda?).to be_falsey }
     end
 
-    # Regression test https://github.com/bbatsov/rubocop/pull/5194
+    # Regression test https://github.com/rubocop-hq/rubocop/pull/5194
     context 'with `a.() {}` style method' do
       let(:send_node) { parse_source(source).ast.send_node }
       let(:source) { 'a.() {}' }

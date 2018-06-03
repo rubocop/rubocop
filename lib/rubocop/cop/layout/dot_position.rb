@@ -89,12 +89,8 @@ module RuboCop
         end
 
         def selector_range(node)
-          if node.loc.selector
-            node.loc.selector
-          else
-            # l.(1) has no selector, so we use the opening parenthesis instead
-            node.loc.begin
-          end
+          # l.(1) has no selector, so we use the opening parenthesis instead
+          node.loc.selector || node.loc.begin
         end
       end
     end

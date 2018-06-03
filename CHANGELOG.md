@@ -5,6 +5,9 @@
 ### New features
 
 * [#5881](https://github.com/bbatsov/rubocop/pull/5881): Add new `Rails/BulkChangeTable` cop. ([@wata727][])
+* [#5444](https://github.com/bbatsov/rubocop/pull/5444): Add new `Style/AccessModifierDeclarations` cop. ([@brandonweiss][])
+* [#5803](https://github.com/bbatsov/rubocop/issues/5803): Add new `Style/UnneededCondition` cop. ([@balbesina][])
+* [#5406](https://github.com/bbatsov/rubocop/issues/5406): Add new `Layout/ClosingHeredocIndentation` cop. ([@siggymcfried][])
 
 ### Bug fixes
 
@@ -12,6 +15,9 @@
 * [#5894](https://github.com/bbatsov/rubocop/pull/5894): Fix `Rails/AssertNot` to allow it to have failure message. ([@koic][])
 * [#5888](https://github.com/bbatsov/rubocop/issues/5888): Do not register an offense for `headers` or `env` keyword arguments in `Rails/HttpPositionalArguments`. ([@rrosenblum][])
 * Fix the indentation of autocorrected closing squiggly heredocs. ([@garettarrowood][])
+* [#5908](https://github.com/bbatsov/rubocop/pull/5908): Fix `Style/BracesAroundHashParameters` auto-correct going past the end of the file when the closing curly brace is on the last line of a file. ([@EiNSTeiN-][])
+* Fix a bug where `Style/FrozenStringLiteralComment` would be added to the second line if the first line is empty. ([@rrosenblum][])
+* [#5914](https://github.com/bbatsov/rubocop/issues/5914): Make `Layout/SpaceInsideReferenceBrackets` aware of `no_space` when using nested reference brackets. ([@koic][])
 
 ### Changes
 
@@ -19,6 +25,8 @@
 * [#5761](https://github.com/bbatsov/rubocop/pull/5761): Add `httpdate` to accepted `Rails/TimeZone` methods. ([@cupakromer][])
 * [#5899](https://github.com/bbatsov/rubocop/pull/5899): Add `xmlschema` to accepted `Rails/TimeZone` methods. ([@koic][])
 * [#5906](https://github.com/bbatsov/rubocop/pull/5906): Move REPL command from `rake repl` task to `bin/console` command. ([@koic][])
+* [#5917](https://github.com/bbatsov/rubocop/pull/5917): Let `inherit_mode` work for default configuration too. ([@jonas054][])
+* [#5929](https://github.com/bbatsov/rubocop/pull/5929): Stop including string extensions from `unicode/display_width`. ([@nroman-stripe][])
 
 ## 0.56.0 (2018-05-14)
 
@@ -3385,3 +3393,5 @@
 [@balbesina]: https://github.com/balbesina
 [@cupakromer]: https://github.com/cupakromer
 [@TikiTDO]: https://github.com/TikiTDO
+[@EiNSTeiN-]: https://github.com/EiNSTeiN-
+[@nroman-stripe]: https://github.com/nroman-stripe
