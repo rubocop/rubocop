@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#5444](https://github.com/bbatsov/rubocop/pull/5444): Add new `Style/AccessModifierDeclarations` cop. ([@brandonweiss][])
 * [#5803](https://github.com/bbatsov/rubocop/issues/5803): Add new `Style/UnneededCondition` cop. ([@balbesina][])
 
 ### Bug fixes
@@ -24,10 +25,6 @@
 * [#5906](https://github.com/bbatsov/rubocop/pull/5906): Move REPL command from `rake repl` task to `bin/console` command. ([@koic][])
 * [#5917](https://github.com/bbatsov/rubocop/pull/5917): Let `inherit_mode` work for default configuration too. ([@jonas054][])
 * [#5929](https://github.com/bbatsov/rubocop/pull/5929): Stop including string extensions from `unicode/display_width`. ([@nroman-stripe][])
-
-### New features
-
-* [#5444](https://github.com/bbatsov/rubocop/pull/5444): Add new `Style/AccessModifierDeclarations` cop. ([@brandonweiss][])
 
 ## 0.56.0 (2018-05-14)
 
