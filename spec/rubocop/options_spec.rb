@@ -97,13 +97,14 @@ RSpec.describe RuboCop::Options, :isolated_environment do
               -E, --extra-details              Display extra details in offense messages.
               -S, --display-style-guide        Display style guide URLs in offense messages.
               -R, --rails                      Run extra Rails cops.
-              -l, --lint                       Run only lint cops.
               -a, --auto-correct               Auto-correct offenses.
                   --[no-]color                 Force color output on or off.
               -v, --version                    Display version.
               -V, --verbose-version            Display verbose version.
               -P, --parallel                   Use available CPUs to execute inspection in
                                                parallel.
+              -l, --lint                       Run only lint cops.
+              -x, --fix-layout                 Run only layout cops, with auto-correct on.
               -s, --stdin FILE                 Pipe source from STDIN, using FILE in offense
                                                reports. This is useful for editor integration.
         OUTPUT

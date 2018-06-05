@@ -65,6 +65,7 @@ module RuboCop
         add_severity_option(opts)
         add_flags_with_optional_args(opts)
         add_boolean_flags(opts)
+        add_aliases(opts)
 
         option(opts, '-s', '--stdin FILE')
       end
@@ -142,7 +143,7 @@ module RuboCop
       end
     end
 
-    def add_boolean_flags(opts) # rubocop:disable Metrics/MethodLength
+    def add_boolean_flags(opts)
       option(opts, '-F', '--fail-fast')
       option(opts, '-C', '--cache FLAG')
       option(opts, '-d', '--debug')
@@ -150,10 +151,6 @@ module RuboCop
       option(opts, '-E', '--extra-details')
       option(opts, '-S', '--display-style-guide')
       option(opts, '-R', '--rails')
-      option(opts, '-l', '--lint') do
-        @options[:only] ||= []
-        @options[:only] << 'Lint'
-      end
       option(opts, '-a', '--auto-correct')
 
       option(opts, '--[no-]color')
@@ -161,6 +158,18 @@ module RuboCop
       option(opts, '-v', '--version')
       option(opts, '-V', '--verbose-version')
       option(opts, '-P', '--parallel')
+    end
+
+    def add_aliases(opts)
+      option(opts, '-l', '--lint') do
+        @options[:only] ||= []
+        @options[:only] << 'Lint'
+      end
+      option(opts, '-x', '--fix-layout') do
+        @options[:only] ||= []
+        @options[:only] << 'Layout'
+        @options[:auto_correct] = true
+      end
     end
 
     def add_list_options(opts)
@@ -379,6 +388,7 @@ module RuboCop
       lint:                  'Run only lint cops.',
       list_target_files:     'List all files RuboCop will inspect.',
       auto_correct:          'Auto-correct offenses.',
+      fix_layout:            'Run only layout cops, with auto-correct on.',
       color:                 'Force color output on or off.',
       version:               'Display version.',
       verbose_version:       'Display verbose version.',
