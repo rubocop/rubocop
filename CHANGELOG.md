@@ -22,7 +22,7 @@
 
 ### Changes
 
-* [#5937](https://github.com/rubocop-hq/rubocop/pull/5937): Add new `--update-layout` command line alias. ([@scottmatthewman][])
+* [#5937](https://github.com/rubocop-hq/rubocop/pull/5937): Add new `--fix-layout/-x` command line alias. ([@scottmatthewman][])
 * [#5887](https://github.com/bbatsov/rubocop/issues/5887): Remove `Lint/SplatKeywordArguments` cop. ([@koic][])
 * [#5761](https://github.com/bbatsov/rubocop/pull/5761): Add `httpdate` to accepted `Rails/TimeZone` methods. ([@cupakromer][])
 * [#5899](https://github.com/bbatsov/rubocop/pull/5899): Add `xmlschema` to accepted `Rails/TimeZone` methods. ([@koic][])
