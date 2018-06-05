@@ -13,7 +13,7 @@ gem 'rspec', '~> 3.7'
 gem 'rubocop-rspec', '~> 1.22.0'
 gem 'simplecov', '~> 0.10'
 gem 'test-queue'
-gem 'yard', '0.9.12'
+gem 'yard', '~> 0.9'
 
 group :test do
   gem 'codeclimate-test-reporter', '~> 1.0', require: false
