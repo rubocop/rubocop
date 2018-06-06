@@ -1719,6 +1719,12 @@ Rails/Exit:
   Exclude:
     - lib/**/*.rake
 
+Rails/FilePath:
+  EnforcedStyle: arguments
+  SupportedStyles:
+    - slashes
+    - arguments
+
 Rails/FindBy:
   Include:
     - app/models/**/*.rb

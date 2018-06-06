@@ -638,10 +638,12 @@ Enabled by default | Supports autocorrection
 Enabled | No
 
 This cop is used to identify usages of file path joining process
-to use `Rails.root.join` clause. This is to avoid bugs on operating
-system that don't use '/' as the path separator.
+to use `Rails.root.join` clause. It is used to add uniformity when
+joining paths.
 
 ### Examples
+
+#### EnforcedStyle: arguments (default)
 
 ```ruby
 # bad
@@ -652,6 +654,23 @@ File.join(Rails.root, 'app/models/goober')
 # good
 Rails.root.join('app', 'models', 'goober')
 ```
+#### EnforcedStyle: slashes
+
+```ruby
+# bad
+Rails.root.join('app', 'models', 'goober')
+File.join(Rails.root, 'app/models/goober')
+"#{Rails.root}/app/models/goober"
+
+# good
+Rails.root.join('app/models/goober')
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `arguments` | `slashes`, `arguments`
 
 ## Rails/FindBy
 
