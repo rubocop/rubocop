@@ -960,6 +960,23 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
         RUBY
       end
 
+      context 'with access modifier' do
+        it 'registers an offense for bad indentation of sections' do
+          expect_offense(<<-RUBY.strip_indent)
+            class Test
+              public
+                def e
+            ^^^^ Use 2 (not 4) spaces for indentation.
+                end
+
+                def f
+            ^^^^ Use 2 (not 4) spaces for indentation.
+                end
+            end
+          RUBY
+        end
+      end
+
       context 'when consistency style is normal' do
         it 'accepts indented public, protected, and private' do
           expect_no_offenses(<<-RUBY.strip_indent)
@@ -980,6 +997,28 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
               end
             end
           RUBY
+        end
+
+        it 'registers offenses for rails indentation' do
+          inspect_source(<<-RUBY.strip_indent)
+            class Test
+              def e
+              end
+
+              protected
+
+                def f
+                end
+
+              private
+
+                def g
+                end
+            end
+          RUBY
+          expect(cop.messages)
+            .to eq(['Use 2 (not 4) spaces for indentation.'] * 2)
+          expect(cop.offenses.map(&:line)).to eq([7, 12])
         end
       end
 
