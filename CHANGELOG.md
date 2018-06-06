@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.57.1 (2018-06-07)
+
 ### Bug fixes
 
 * [#5963](https://github.com/bbatsov/rubocop/issues/5963): Allow Performance/ReverseEach to apply to any receiver. ([@dvandersluis][])
