@@ -39,7 +39,7 @@ RSpec.describe RuboCop::Cop::Lint::RescueType do
     RUBY
   end
 
-  shared_examples :offenses do |rescues|
+  shared_examples 'offenses' do |rescues|
     context 'begin rescue' do
       context "rescuing from #{rescues}" do
         let(:source) do
@@ -255,12 +255,12 @@ RSpec.describe RuboCop::Cop::Lint::RescueType do
     end
   end
 
-  it_behaves_like :offenses, 'nil'
-  it_behaves_like :offenses, "'string'"
-  it_behaves_like :offenses, '"#{string}"'
-  it_behaves_like :offenses, '0'
-  it_behaves_like :offenses, '0.0'
-  it_behaves_like :offenses, '[]'
-  it_behaves_like :offenses, '{}'
-  it_behaves_like :offenses, ':symbol'
+  it_behaves_like 'offenses', 'nil'
+  it_behaves_like 'offenses', "'string'"
+  it_behaves_like 'offenses', '"#{string}"'
+  it_behaves_like 'offenses', '0'
+  it_behaves_like 'offenses', '0.0'
+  it_behaves_like 'offenses', '[]'
+  it_behaves_like 'offenses', '{}'
+  it_behaves_like 'offenses', ':symbol'
 end

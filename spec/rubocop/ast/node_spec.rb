@@ -152,7 +152,7 @@ RSpec.describe RuboCop::AST::Node do
   describe '#recursive_basic_literal?' do
     let(:node) { RuboCop::ProcessedSource.new(src, ruby_version).ast }
 
-    shared_examples :literal do |source|
+    shared_examples 'literal' do |source|
       let(:src) { source }
 
       it "returns true for `#{source}`" do
@@ -160,24 +160,24 @@ RSpec.describe RuboCop::AST::Node do
       end
     end
 
-    it_behaves_like :literal, '!true'
-    it_behaves_like :literal, '"#{2}"'
-    it_behaves_like :literal, '(1)'
-    it_behaves_like :literal, '(false && true)'
-    it_behaves_like :literal, '(false <=> true)'
-    it_behaves_like :literal, '(false or true)'
-    it_behaves_like :literal, '[1, 2, 3]'
-    it_behaves_like :literal, '{ :a => 1, :b => 2 }'
-    it_behaves_like :literal, '{ a: 1, b: 2 }'
-    it_behaves_like :literal, '/./'
-    it_behaves_like :literal, '%r{abx}ixo'
-    it_behaves_like :literal, '1.0'
-    it_behaves_like :literal, '1'
-    it_behaves_like :literal, 'false'
-    it_behaves_like :literal, 'nil'
-    it_behaves_like :literal, "'str'"
+    it_behaves_like 'literal', '!true'
+    it_behaves_like 'literal', '"#{2}"'
+    it_behaves_like 'literal', '(1)'
+    it_behaves_like 'literal', '(false && true)'
+    it_behaves_like 'literal', '(false <=> true)'
+    it_behaves_like 'literal', '(false or true)'
+    it_behaves_like 'literal', '[1, 2, 3]'
+    it_behaves_like 'literal', '{ :a => 1, :b => 2 }'
+    it_behaves_like 'literal', '{ a: 1, b: 2 }'
+    it_behaves_like 'literal', '/./'
+    it_behaves_like 'literal', '%r{abx}ixo'
+    it_behaves_like 'literal', '1.0'
+    it_behaves_like 'literal', '1'
+    it_behaves_like 'literal', 'false'
+    it_behaves_like 'literal', 'nil'
+    it_behaves_like 'literal', "'str'"
 
-    shared_examples :non_literal do |source|
+    shared_examples 'non literal' do |source|
       let(:src) { source }
 
       it "returns false for `#{source}`" do
@@ -185,16 +185,16 @@ RSpec.describe RuboCop::AST::Node do
       end
     end
 
-    it_behaves_like :non_literal, '(x && false)'
-    it_behaves_like :non_literal, '(x == false)'
-    it_behaves_like :non_literal, '(x or false)'
-    it_behaves_like :non_literal, '[some_method_call]'
-    it_behaves_like :non_literal, '{ :sym => some_method_call }'
-    it_behaves_like :non_literal, '{ some_method_call => :sym }'
-    it_behaves_like :non_literal, '/.#{some_method_call}/'
-    it_behaves_like :non_literal, '%r{abx#{foo}}ixo'
-    it_behaves_like :non_literal, 'some_method_call'
-    it_behaves_like :non_literal, 'some_method_call(x, y)'
+    it_behaves_like 'non literal', '(x && false)'
+    it_behaves_like 'non literal', '(x == false)'
+    it_behaves_like 'non literal', '(x or false)'
+    it_behaves_like 'non literal', '[some_method_call]'
+    it_behaves_like 'non literal', '{ :sym => some_method_call }'
+    it_behaves_like 'non literal', '{ some_method_call => :sym }'
+    it_behaves_like 'non literal', '/.#{some_method_call}/'
+    it_behaves_like 'non literal', '%r{abx#{foo}}ixo'
+    it_behaves_like 'non literal', 'some_method_call'
+    it_behaves_like 'non literal', 'some_method_call(x, y)'
   end
 
   describe '#pure?' do

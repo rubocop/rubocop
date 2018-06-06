@@ -64,7 +64,7 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods do
     end
   end
 
-  shared_examples :all_variable_types do |variable|
+  shared_examples 'all variable types' do |variable|
     it "registers an offense for calling !#{variable}.none?" do
       inspect_source("!#{variable}.none?")
 
@@ -92,14 +92,14 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods do
     end
   end
 
-  it_behaves_like :all_variable_types, 'foo'
-  it_behaves_like :all_variable_types, '$foo'
-  it_behaves_like :all_variable_types, '@foo'
-  it_behaves_like :all_variable_types, '@@foo'
-  it_behaves_like :all_variable_types, 'FOO'
-  it_behaves_like :all_variable_types, 'FOO::BAR'
-  it_behaves_like :all_variable_types, 'foo["bar"]'
-  it_behaves_like :all_variable_types, 'foo.bar'
+  it_behaves_like 'all variable types', 'foo'
+  it_behaves_like 'all variable types', '$foo'
+  it_behaves_like 'all variable types', '@foo'
+  it_behaves_like 'all variable types', '@@foo'
+  it_behaves_like 'all variable types', 'FOO'
+  it_behaves_like 'all variable types', 'FOO::BAR'
+  it_behaves_like 'all variable types', 'foo["bar"]'
+  it_behaves_like 'all variable types', 'foo.bar'
 
   { any?: :none?,
     even?: :odd?,

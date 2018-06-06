@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Performance::FixedSize do
     'Do not compute the size of statically sized objects.'
   end
 
-  shared_examples :common_functionality do |method|
+  shared_examples 'common functionality' do |method|
     context 'strings' do
       it "registers an offense when calling #{method} on a single quoted " \
          'string' do
@@ -200,11 +200,11 @@ RSpec.describe RuboCop::Cop::Performance::FixedSize do
     end
   end
 
-  it_behaves_like :common_functionality, 'size'
-  it_behaves_like :common_functionality, 'length'
-  it_behaves_like :common_functionality, 'count'
+  it_behaves_like 'common functionality', 'size'
+  it_behaves_like 'common functionality', 'length'
+  it_behaves_like 'common functionality', 'count'
 
-  shared_examples :count_with_arguments do |variable|
+  shared_examples 'count with arguments' do |variable|
     it 'accepts calling count with a variable' do
       inspect_source("#{variable}.count(bar)")
 
@@ -236,7 +236,7 @@ RSpec.describe RuboCop::Cop::Performance::FixedSize do
     end
   end
 
-  it_behaves_like :count_with_arguments, '"foo"'
-  it_behaves_like :count_with_arguments, '[1, 2, 3]'
-  it_behaves_like :count_with_arguments, '{a: 1, b: 2}'
+  it_behaves_like 'count with arguments', '"foo"'
+  it_behaves_like 'count with arguments', '[1, 2, 3]'
+  it_behaves_like 'count with arguments', '{a: 1, b: 2}'
 end
