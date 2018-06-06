@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.57.0 (2018-06-06)
+
 ### New features
 
 * [#5881](https://github.com/bbatsov/rubocop/pull/5881): Add new `Rails/BulkChangeTable` cop. ([@wata727][])
