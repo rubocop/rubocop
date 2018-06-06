@@ -8,25 +8,25 @@ module RuboCop
       #
       # @example
       #
-      # # bad
-      # # (start of file)
+      #   # bad
+      #   # (start of file)
       #
-      # class Foo
-      # end
+      #   class Foo
+      #   end
       #
-      # # bad
-      # # (start of file)
+      #   # bad
+      #   # (start of file)
       #
-      # # a comment
+      #   # a comment
       #
-      # # good
-      # # (start of file)
-      # class Foo
-      # end
+      #   # good
+      #   # (start of file)
+      #   class Foo
+      #   end
       #
-      # # good
-      # # (start of file)
-      # # a comment
+      #   # good
+      #   # (start of file)
+      #   # a comment
       class LeadingBlankLines < Cop
         MSG = 'Unnecessary blank line at the beginning of the source.'.freeze
 
