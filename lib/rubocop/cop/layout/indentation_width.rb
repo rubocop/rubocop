@@ -152,11 +152,17 @@ module RuboCop
           check_indentation(base, members.first)
 
           return unless members.any? && members.first.begin_type?
-          return unless indentation_consistency_style == 'rails'
 
-          each_member(members) do |member, previous_modifier|
-            check_indentation(previous_modifier, member,
-                              indentation_consistency_style)
+          if indentation_consistency_style == 'rails'
+            each_member(members) do |member, previous_modifier|
+              check_indentation(previous_modifier, member,
+                                indentation_consistency_style)
+            end
+          else
+            members.first.children.each do |member|
+              next if member.send_type? && member.access_modifier?
+              check_indentation(base, member)
+            end
           end
         end
 

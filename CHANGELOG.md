@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#5917](https://github.com/bbatsov/rubocop/issues/5917): Fix erroneous warning for `inherit_mode` directive. ([@jonas054][])
+* [#5380](https://github.com/rubocop-hq/rubocop/issues/5380): Fix false negative in `Layout/IndentationWidth` when an access modifier section has an invalid indentation body. ([@tatsuyafw][])
 
 ## 0.57.0 (2018-06-06)
 
@@ -3406,3 +3407,4 @@
 [@EiNSTeiN-]: https://github.com/EiNSTeiN-
 [@nroman-stripe]: https://github.com/nroman-stripe
 [@sunny]: https://github.com/sunny
+[@tatsuyafw]: https://github.com/tatsuyafw
