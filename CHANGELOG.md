@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#5917](https://github.com/bbatsov/rubocop/issues/5917): Fix erroneous warning for `inherit_mode` directive. ([@jonas054][])
+* [#5909](https://github.com/rubocop-hq/rubocop/pull/5909): Even when a module has no public methods, `Layout/IndentationConsistency` should still register an offense for private methods. ([@jaredbeck][])
 * [#5958](https://github.com/rubocop-hq/rubocop/issues/5958): Handle empty method body in `Rails/BulkChangeTable`. ([@wata727][])
 * [#5954](https://github.com/bbatsov/rubocop/issues/5954): Make `Style/UnneededCondition` cop accepts a case of condition and `if_branch` are same when using `elsif` branch. ([@koic][])
 
