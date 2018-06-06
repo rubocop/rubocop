@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#5917](https://github.com/bbatsov/rubocop/issues/5917): Fix erroneous warning for `inherit_mode` directive. ([@jonas054][])
+* [#5954](https://github.com/bbatsov/rubocop/issues/5954): Make `Style/UnneededCondition` cop accepts a case of condition and `if_branch` are same when using `elsif` branch. ([@koic][])
 
 ## 0.57.0 (2018-06-06)
 

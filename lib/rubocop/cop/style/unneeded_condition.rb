@@ -22,6 +22,14 @@ module RuboCop
       #
       #   # good
       #   b || c
+      #
+      #   # good
+      #   if b
+      #     b
+      #   elsif cond
+      #     c
+      #   end
+      #
       class UnneededCondition < Cop
         include RangeHelp
 
@@ -53,6 +61,8 @@ module RuboCop
         end
 
         def offense?(node)
+          return false if node.elsif_conditional?
+
           condition, if_branch, else_branch = *node
 
           condition == if_branch && !node.elsif? && (
