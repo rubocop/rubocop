@@ -6200,6 +6200,13 @@ end
 
 # good
 b || c
+
+# good
+if b
+  b
+elsif cond
+  c
+end
 ```
 
 ## Style/UnneededInterpolation

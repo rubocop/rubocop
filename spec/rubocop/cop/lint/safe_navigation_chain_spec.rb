@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
     { 'Whitelist' => %w[present? blank? try presence] }
   end
 
-  shared_examples :accepts do |name, code|
+  shared_examples 'accepts' do |name, code|
     it "accepts usages of #{name}" do
       inspect_source(code)
 
@@ -37,7 +37,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
       ['safe navigation with assignment method', 'x&.foo = bar'],
       ['safe navigation with self assignment method', 'x&.foo += bar']
     ].each do |name, code|
-      include_examples :accepts, name, code
+      include_examples 'accepts', name, code
     end
 
     it 'registers an offense for ordinary method call exists after ' \

@@ -51,6 +51,18 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
           RUBY
         end
       end
+
+      context 'when using elsif branch' do
+        it 'registers no offense' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            if a
+              a
+            elsif cond
+              d
+            end
+          RUBY
+        end
+      end
     end
 
     describe '#autocorrection' do

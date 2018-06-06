@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant do
 
   let(:prefix) { nil }
 
-  shared_examples :mutable_objects do |o|
+  shared_examples 'mutable objects' do |o|
     context 'when assigning with =' do
       it "registers an offense for #{o} assigned to a constant" do
         source = [prefix, "CONST = #{o}"].compact.join("\n")
@@ -35,12 +35,12 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant do
     end
   end
 
-  it_behaves_like :mutable_objects, '[1, 2, 3]'
-  it_behaves_like :mutable_objects, '{ a: 1, b: 2 }'
-  it_behaves_like :mutable_objects, "'str'"
-  it_behaves_like :mutable_objects, '"top#{1 + 2}"'
+  it_behaves_like 'mutable objects', '[1, 2, 3]'
+  it_behaves_like 'mutable objects', '{ a: 1, b: 2 }'
+  it_behaves_like 'mutable objects', "'str'"
+  it_behaves_like 'mutable objects', '"top#{1 + 2}"'
 
-  shared_examples :immutable_objects do |o|
+  shared_examples 'immutable objects' do |o|
     it "allows #{o} to be assigned to a constant" do
       source = [prefix, "CONST = #{o}"].compact.join("\n")
       inspect_source(source)
@@ -54,9 +54,9 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant do
     end
   end
 
-  it_behaves_like :immutable_objects, '1'
-  it_behaves_like :immutable_objects, '1.5'
-  it_behaves_like :immutable_objects, ':sym'
+  it_behaves_like 'immutable objects', '1'
+  it_behaves_like 'immutable objects', '1.5'
+  it_behaves_like 'immutable objects', ':sym'
 
   it 'allows method call assignments' do
     expect_no_offenses('TOP_TEST = Something.new')
@@ -101,19 +101,19 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant do
         let(:ruby_version) { 3.0 }
 
         context 'when the frozen string literal comment is missing' do
-          it_behaves_like :immutable_objects, '"#{a}"'
+          it_behaves_like 'immutable objects', '"#{a}"'
         end
 
         context 'when the frozen string literal comment is true' do
           let(:prefix) { '# frozen_string_literal: true' }
 
-          it_behaves_like :immutable_objects, '"#{a}"'
+          it_behaves_like 'immutable objects', '"#{a}"'
         end
 
         context 'when the frozen string literal comment is false' do
           let(:prefix) { '# frozen_string_literal: false' }
 
-          it_behaves_like :immutable_objects, '"#{a}"'
+          it_behaves_like 'immutable objects', '"#{a}"'
         end
       end
     end
@@ -122,19 +122,19 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant do
       let(:ruby_version) { 2.3 }
 
       context 'when the frozen string literal comment is missing' do
-        it_behaves_like :mutable_objects, '"#{a}"'
+        it_behaves_like 'mutable objects', '"#{a}"'
       end
 
       context 'when the frozen string literal comment is true' do
         let(:prefix) { '# frozen_string_literal: true' }
 
-        it_behaves_like :immutable_objects, '"#{a}"'
+        it_behaves_like 'immutable objects', '"#{a}"'
       end
 
       context 'when the frozen string literal comment is false' do
         let(:prefix) { '# frozen_string_literal: false' }
 
-        it_behaves_like :mutable_objects, '"#{a}"'
+        it_behaves_like 'mutable objects', '"#{a}"'
       end
     end
   end
